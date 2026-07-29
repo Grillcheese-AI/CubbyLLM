@@ -1,0 +1,29 @@
+# CubbyLLM — TODO
+
+Working checklist for what's left after the 2026-07-23 validation campaign and first implementation pass. All four structural decisions are made (binding algebra, vocab shape, backbone, memory approach — see `CLAUDE.md`) and a first-pass `cubbyllm/` package already trains end-to-end on a toy corpus. Everything below is what's left before that becomes a real model, plus a few smaller follow-ups the campaign surfaced. Check items off as they're done. If a new one comes up mid-work, add it here the same way a hypothesis gets added to `CUBBYLLM_HYPOTHESES.md` — with enough context that a future session doesn't have to re-derive why it matters.
+
+## Blocking real training
+
+- [ ] **Clean up `unified/` (H-G3).** 120GB corpus, currently the best pretraining-mix candidate, has confirmed issues: NSFW-labeled sources (`bluuwhale_nsfwstory2`, `mickume_alt_nsfw`, ~3.1GB) blended into the general pool with no filter or tag; composition has drifted from its own tokenizer-training report; a byte-identical 4.8GB file duplicated across `jsonl/` and `knowledgetxt/`; other `kbtxt/` duplicates; a broken 0-byte file in the `v3_3/` alternative build. Before any real run: decide NSFW scope explicitly (in or out, and how it's tagged if in), dedup, and pin a manifest hash so results are reproducible. (One sub-fear already checked and retired: `factual/`↔`gbooks/` Gutenberg-ID overlap is only 9 IDs — effectively disjoint, not a real duplication source.)
+- [ ] **Build the 128k–256k BPE tokenizer (H-G1).** The concrete first step on the decided hybrid vocab. Already costed: ~5 minutes single-machine CPU on the existing pipeline, same tooling as the 65,536 build — vocab size was never the expensive part.
+- [ ] **Build a real corpus-backed `DataPipeline`.** The current training loop uses `InMemoryDataPipeline` (toy data only, proves the model trains end-to-end but nothing more). Needs the cleaned `unified/` corpus and the new tokenizer wired in.
+- [ ] **Run a real (non-toy) training pass** once the three items above are done.
+
+## Architecture work still open
+
+- [ ] **Build real VSA unbind on the VM/reasoning side.** The validation campaign found the placeholder `UNBIND_ROLE` lives in cubemind's `reasoning/vm.py:602-606`, not cubby-lm's LM head — the LM head itself turned out to be clean, well-engineered code with no unbind mechanism at all. No real unbind implementation exists on the VM side yet. Natural candidate: the now-decided `BlockCodeOps` algebra.
+- [ ] **Define the Cubby↔CubeMind bridges concretely (H-F2).** H0's validated mechanism implies the bridges need to carry a context/task embedding in both directions plus generated-parameter/specialist handles. Neither current bridge (`NoveltyToWorldBridge`, the CubeLang subprocess bridge) carries either. This was explicitly deferred until the backbone/vocab/binding decisions landed — they have, so this is unblocked.
+- [ ] **Re-verify `CUBEMIND_CLEANUP_PLAN.md`'s status table before starting either item above.** Its own numbers already drifted from cubemind's own refactor plan once in a single day — confirm `sandbox/`, `_archive/`, MoQE, and the `core`/`functional` duplication haven't shifted again, and specifically that `ops/block_codes.py` and `reasoning/vm.py` (the two files the unbind and bridge work actually touch) haven't moved or changed shape.
+- [ ] **Scale H0 past toy scale.** Everything validated so far (the hardening countermeasure, the offline-pretrained router, both forgetting benchmarks) used small D, a handful of tasks, CPU only. Two specific unknowns: how the hardening's compute cost grows with the number of protected contexts, and whether the mechanism stays correctly scoped to the memory pathway once it's inside a real (not toy) network.
+
+## Smaller follow-ups
+
+- [ ] **Re-check H-C1 (hyper-encoder embedding quality) at real scale.** The toy-scale result used a pure surface-form generator and lost about 0.5 nats versus a static embedding table. A context-conditioned generator, or zip2zip-style composition over the now-decided static core, could flip this — untested at the scale that matters.
+- [ ] **Resolve the H-B5 generalization question.** grilly's SVC role-filler binding scheme was built for subject/verb/context triples. Whether it generalizes cleanly to CubbyLLM's actual token/concept binding needs is still open.
+- [ ] **Sign off on `PACKAGE_LAYOUT.md`.** Status is currently PROPOSAL — the implementation pass has followed it in practice, but nobody's explicitly confirmed it as final.
+
+## Reference
+
+- `CUBBYLLM_HYPOTHESES.md` — the authoritative hypothesis/decision record; every item above traces back to a numbered hypothesis there.
+- `VALIDATION_REPORT.md` — the campaign that produced the four architecture decisions, including a "what would change these conclusions" section worth rereading before treating any toy-scale result above as final.
+- `CLAUDE.md` — orientation for any session picking this up; its "Where to start" section mirrors this list at a higher level.
