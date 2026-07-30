@@ -34,6 +34,8 @@ class TrainLoop:
         seq_len: int = 16,
         device=None,
         amp: bool = True,
+        grad_clip: float = 1.0,
+        warmup: int = 0,
     ) -> None:
         import torch
 
@@ -48,6 +50,13 @@ class TrainLoop:
         # amp: bf16 autocast, applied ONLY on CUDA (halves memory, ~2-3x faster at
         # 2B scale). bf16 needs no GradScaler; weights stay fp32. No-op off CUDA.
         self.amp = bool(amp)
+        # grad_clip: global-norm clip before opt.step — REQUIRED for stability with
+        # the generated θ=f(c) memory (a single bad batch otherwise detonates the
+        # loss). warmup: linear LR ramp over the first N steps (early-divergence guard).
+        self.grad_clip = float(grad_clip)
+        self.warmup = int(warmup)
+        self._base_lr = float(lr)
+        self._nstep = 0
         self.opt = torch.optim.Adam(list(model.parameters()), lr=lr)
         self._batches = data.batches(self.batch_size, self.seq_len)
 
@@ -79,8 +88,15 @@ class TrainLoop:
                 if torch.is_tensor(pen):
                     loss = loss + pen
 
+        self._nstep += 1
+        if self.warmup and self._nstep <= self.warmup:           # linear LR warmup
+            for g in self.opt.param_groups:
+                g["lr"] = self._base_lr * self._nstep / self.warmup
+
         self.opt.zero_grad()
         loss.backward()
+        if self.grad_clip and self.grad_clip > 0:                # kill explosion spikes
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_clip)
         self.opt.step()
         return float(loss.detach())
 

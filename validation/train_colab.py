@@ -69,6 +69,8 @@ N_GEN = _env("CB_GEN_N", 5)                  # how many sample sentences
 CKPT = os.environ.get("CB_CKPT", "")         # checkpoint path (Drive) -> enables resume
 CKPT_EVERY = _env("CB_CKPT_EVERY", 500)      # save a checkpoint every N steps
 AMP = bool(_env("CB_AMP", 1))                # bf16 mixed precision (CUDA only)
+CLIP = _env("CB_CLIP", 1.0, float)           # grad-norm clip (stability) — 0 disables
+WARMUP = _env("CB_WARMUP", 0)                # linear LR warmup steps (early-divergence guard)
 STORIES_N = _env("CB_STORIES_N", 20000)
 SPM = os.environ.get("CUBBY_SPM", r"C:\Users\grill\Documents\GitHub\cubby-lm"
                      r"\cubby\tokenizers\spm32k_1p7b\grillcheese_spm32k_v2.model")
@@ -257,7 +259,8 @@ def main():
     model = build(vocab, dev)
     n_params = sum(p.numel() for p in model.parameters())
     loop = TrainLoop(model, pipe, SnapshotHardener(), lr=LR,
-                     batch_size=BATCH, seq_len=SEQ, device=dev, amp=AMP)
+                     batch_size=BATCH, seq_len=SEQ, device=dev, amp=AMP,
+                     grad_clip=CLIP, warmup=WARMUP)
     print(f"trainable params: {n_params:,} | manifest {pipe.manifest_hash()[:16]}\n")
 
     meta = {"D": D, "L": N_LAYERS, "vocab": vocab}
