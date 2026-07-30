@@ -38,6 +38,7 @@ class TrainLoop:
         warmup: int = 0,
         total_steps: int = 0,
         min_lr_ratio: float = 0.1,
+        reduce_grads: bool = False,
     ) -> None:
         import torch
 
@@ -62,6 +63,9 @@ class TrainLoop:
         # _nstep to the global step so the schedule continues (see train_colab).
         self.total_steps = int(total_steps)
         self.min_lr_ratio = float(min_lr_ratio)
+        # reduce_grads: DDP data-parallel — average .grad across ranks after
+        # backward (manual, since CubbyModel is not an nn.Module to hand to DDP).
+        self.reduce_grads = bool(reduce_grads)
         self._base_lr = float(lr)
         self._nstep = 0
         self.opt = torch.optim.Adam(list(model.parameters()), lr=lr)
@@ -119,7 +123,14 @@ class TrainLoop:
 
         self.opt.zero_grad()
         loss.backward()
-        if self.grad_clip and self.grad_clip > 0:                # kill explosion spikes
+        if self.reduce_grads:                                    # DDP: average grads across ranks
+            import torch.distributed as dist
+            ws = dist.get_world_size()
+            for p in self.model.parameters():
+                if p.grad is not None:
+                    dist.all_reduce(p.grad, op=dist.ReduceOp.SUM)
+                    p.grad /= ws
+        if self.grad_clip and self.grad_clip > 0:                # kill explosion spikes (after reduce)
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_clip)
         self.opt.step()
         return float(loss.detach())

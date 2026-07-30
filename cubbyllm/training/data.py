@@ -15,9 +15,20 @@ source specs + every input file's signature so a run pins its exact mixture.
 from __future__ import annotations
 
 import hashlib
+import re
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from ..core.protocols import Wiring
+
+# Strip CR (CRLF -> LF) and stray control chars (keep \t \n) before tokenizing —
+# otherwise \r and control bytes byte-fallback into pathologically frequent junk
+# tokens (e.g. wiki_full's CRLF gave a \r\n token at ~2%). Shared with the
+# tokenize_parallel runner, which inlines the same normalize.
+_CTRL_CHARS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
+
+
+def _normalize_text(t: str) -> str:
+    return _CTRL_CHARS.sub("", t.replace("\r", ""))
 
 # Token-cache element type. The 128k BPE core vocab (H-C3/H-G1) exceeds uint16's
 # 65,535 ceiling, so shards are uint32. Kept as one constant so a vocab change is
@@ -196,7 +207,7 @@ class WeightedCorpusPipeline:
         for fp in self._files(source):
             if fmt == "txt":
                 try:
-                    yield open(fp, encoding="utf-8", errors="replace").read()
+                    yield _normalize_text(open(fp, encoding="utf-8", errors="replace").read())
                 except OSError:
                     continue
             else:  # jsonl
@@ -210,7 +221,7 @@ class WeightedCorpusPipeline:
                         except json.JSONDecodeError:
                             continue
                         if t:
-                            yield t
+                            yield _normalize_text(t)
 
     def prepare(self) -> "WeightedCorpusPipeline":
         """Tokenize every source into a cached uint32 shard (skips fresh ones).
