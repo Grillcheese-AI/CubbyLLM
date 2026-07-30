@@ -275,19 +275,23 @@ def main():
 
     if dev.type == "cuda":
         torch.cuda.synchronize(); torch.cuda.reset_peak_memory_stats()
-    t0 = time.perf_counter(); toks = 0; recent = []
+    t0 = last_t = time.perf_counter(); toks = 0; recent = []; last_step = start_step
     for s in range(start_step + 1, STEPS + 1):
         loss = loop.step(); toks += BATCH * SEQ; recent.append(loss)
         if s % EVAL_EVERY == 0 or s == 1:
             if dev.type == "cuda":
-                torch.cuda.synchronize()
-            dt = time.perf_counter() - t0
+                torch.cuda.synchronize()                     # accurate wall time (GPU is async)
+            now = time.perf_counter()
+            dt = now - t0
+            # avg over this log interval -> exactly seconds/step when CB_EVAL=1
+            sec_step = (now - last_t) / max(s - last_step, 1)
+            last_t, last_step = now, s
             # held-out eval for tinystories; recent train-loss avg for the corpus mode
             ce = (eval_ce(model, val, vocab, dev) if val is not None
                   else sum(recent[-EVAL_EVERY:]) / len(recent[-EVAL_EVERY:]))
             tag = "val" if val is not None else "train"
             print(f"  step {s:>5}  {tag} loss {ce:6.3f}  ppl {math.exp(ce):8.1f}  "
-                  f"bpc {ce/math.log(2)/cpt:5.3f}  {toks/dt:>9,.0f} tok/s")
+                  f"bpc {ce/math.log(2)/cpt:5.3f}  {sec_step:6.3f} s/step  {toks/dt:>9,.0f} tok/s")
         if GEN_EVERY and (s % GEN_EVERY == 0 or s == 1):
             print(f"  — {N_GEN} sample generations @ step {s} —")
             for j, txt in enumerate(sample_text(model, decode, dev, vocab,
