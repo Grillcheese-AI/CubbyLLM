@@ -36,6 +36,8 @@ class TrainLoop:
         amp: bool = True,
         grad_clip: float = 1.0,
         warmup: int = 0,
+        total_steps: int = 0,
+        min_lr_ratio: float = 0.1,
     ) -> None:
         import torch
 
@@ -55,6 +57,11 @@ class TrainLoop:
         # loss). warmup: linear LR ramp over the first N steps (early-divergence guard).
         self.grad_clip = float(grad_clip)
         self.warmup = int(warmup)
+        # total_steps>0 turns on cosine LR decay (warmup -> peak -> min_lr_ratio*lr
+        # over the run). 0 keeps the flat-after-warmup schedule. On resume, set
+        # _nstep to the global step so the schedule continues (see train_colab).
+        self.total_steps = int(total_steps)
+        self.min_lr_ratio = float(min_lr_ratio)
         self._base_lr = float(lr)
         self._nstep = 0
         self.opt = torch.optim.Adam(list(model.parameters()), lr=lr)
@@ -62,6 +69,22 @@ class TrainLoop:
 
     def _generator(self) -> "ParameterGenerator | None":
         return getattr(self.model.memory, "generator", None)
+
+    def _lr_at(self, t: int):
+        """LR at global step ``t``: linear warmup, then cosine decay to
+        ``min_lr_ratio*base`` if total_steps is set, else hold at base. Returns
+        None when no schedule is configured (leaves the optimizer LR untouched)."""
+        if not self.warmup and not self.total_steps:
+            return None
+        base = self._base_lr
+        if self.warmup and t <= self.warmup:
+            return base * t / self.warmup
+        if self.total_steps and self.total_steps > self.warmup:
+            import math
+            prog = min(1.0, (t - self.warmup) / max(self.total_steps - self.warmup, 1))
+            floor = base * self.min_lr_ratio
+            return floor + 0.5 * (base - floor) * (1.0 + math.cos(math.pi * prog))
+        return base                                          # warmup-only: hold after ramp
 
     def step(self) -> float:
         """One training step. Returns the scalar loss (CE + hardener penalty)."""
@@ -89,9 +112,10 @@ class TrainLoop:
                     loss = loss + pen
 
         self._nstep += 1
-        if self.warmup and self._nstep <= self.warmup:           # linear LR warmup
+        lr = self._lr_at(self._nstep)                            # warmup + cosine decay
+        if lr is not None:
             for g in self.opt.param_groups:
-                g["lr"] = self._base_lr * self._nstep / self.warmup
+                g["lr"] = lr
 
         self.opt.zero_grad()
         loss.backward()

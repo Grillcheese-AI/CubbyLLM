@@ -71,6 +71,7 @@ CKPT_EVERY = _env("CB_CKPT_EVERY", 500)      # save a checkpoint every N steps
 AMP = bool(_env("CB_AMP", 1))                # bf16 mixed precision (CUDA only)
 CLIP = _env("CB_CLIP", 1.0, float)           # grad-norm clip (stability) — 0 disables
 WARMUP = _env("CB_WARMUP", 0)                # linear LR warmup steps (early-divergence guard)
+MIN_LR = _env("CB_MIN_LR", 0.1, float)       # cosine-decay floor as a fraction of CB_LR
 GRAD_CKPT = bool(_env("CB_GRAD_CKPT", 0))    # backbone activation checkpointing (fit bigger batch)
 STORIES_N = _env("CB_STORIES_N", 20000)
 SPM = os.environ.get("CUBBY_SPM", r"C:\Users\grill\Documents\GitHub\cubby-lm"
@@ -261,13 +262,14 @@ def main():
     n_params = sum(p.numel() for p in model.parameters())
     loop = TrainLoop(model, pipe, SnapshotHardener(), lr=LR,
                      batch_size=BATCH, seq_len=SEQ, device=dev, amp=AMP,
-                     grad_clip=CLIP, warmup=WARMUP)
+                     grad_clip=CLIP, warmup=WARMUP, total_steps=STEPS, min_lr_ratio=MIN_LR)
     print(f"trainable params: {n_params:,} | manifest {pipe.manifest_hash()[:16]}\n")
 
     meta = {"D": D, "L": N_LAYERS, "vocab": vocab}
     start_step = 0
     if CKPT and os.path.exists(CKPT):
         start_step = load_ckpt(CKPT, model, loop.opt, dev, meta)
+        loop._nstep = start_step                     # continue the LR schedule, don't restart it
         # advance the data stream so the resumed run draws fresh windows instead
         # of replaying the exact pseudo-random sequence the pre-resume run saw
         pipe.seed = int(getattr(pipe, "seed", 0)) + start_step
@@ -294,8 +296,10 @@ def main():
             ce = (eval_ce(model, val, vocab, dev) if val is not None
                   else sum(recent[-EVAL_EVERY:]) / len(recent[-EVAL_EVERY:]))
             tag = "val" if val is not None else "train"
+            lr_now = loop.opt.param_groups[0]["lr"]
             print(f"  step {s:>5}  {tag} loss {ce:6.3f}  ppl {math.exp(ce):8.1f}  "
-                  f"bpc {ce/math.log(2)/cpt:5.3f}  {sec_step:6.3f} s/step  {toks/dt:>9,.0f} tok/s")
+                  f"bpc {ce/math.log(2)/cpt:5.3f}  lr {lr_now:.2e}  {sec_step:6.3f} s/step  "
+                  f"{toks/dt:>9,.0f} tok/s")
         if GEN_EVERY and (s % GEN_EVERY == 0 or s == 1):
             print(f"  — {N_GEN} sample generations @ step {s} —")
             for j, txt in enumerate(sample_text(model, decode, dev, vocab,
