@@ -73,6 +73,8 @@ CLIP = _env("CB_CLIP", 1.0, float)           # grad-norm clip (stability) — 0 
 WARMUP = _env("CB_WARMUP", 0)                # linear LR warmup steps (early-divergence guard)
 MIN_LR = _env("CB_MIN_LR", 0.1, float)       # cosine-decay floor as a fraction of CB_LR
 GRAD_CKPT = bool(_env("CB_GRAD_CKPT", 0))    # backbone activation checkpointing (fit bigger batch)
+BIND_W = _env("CB_BIND_W", 0.0, float)       # VSA binding aux-loss weight (0 = off) — MAP scheme
+BIND_N = _env("CB_BIND_N", 16)               # role/filler pairs bundled per step
 STORIES_N = _env("CB_STORIES_N", 20000)
 SPM = os.environ.get("CUBBY_SPM", r"C:\Users\grill\Documents\GitHub\cubby-lm"
                      r"\cubby\tokenizers\spm32k_1p7b\grillcheese_spm32k_v2.model")
@@ -262,7 +264,8 @@ def main():
     n_params = sum(p.numel() for p in model.parameters())
     loop = TrainLoop(model, pipe, SnapshotHardener(), lr=LR,
                      batch_size=BATCH, seq_len=SEQ, device=dev, amp=AMP,
-                     grad_clip=CLIP, warmup=WARMUP, total_steps=STEPS, min_lr_ratio=MIN_LR)
+                     grad_clip=CLIP, warmup=WARMUP, total_steps=STEPS, min_lr_ratio=MIN_LR,
+                     bind_weight=BIND_W, bind_n=BIND_N)
     print(f"trainable params: {n_params:,} | manifest {pipe.manifest_hash()[:16]}\n")
 
     meta = {"D": D, "L": N_LAYERS, "vocab": vocab}
@@ -297,8 +300,9 @@ def main():
                   else sum(recent[-EVAL_EVERY:]) / len(recent[-EVAL_EVERY:]))
             tag = "val" if val is not None else "train"
             lr_now = loop.opt.param_groups[0]["lr"]
+            bind = f"  bind {loop._last_bind:5.3f}" if BIND_W > 0 else ""
             print(f"  step {s:>5}  {tag} loss {ce:6.3f}  ppl {math.exp(ce):8.1f}  "
-                  f"bpc {ce/math.log(2)/cpt:5.3f}  lr {lr_now:.2e}  {sec_step:6.3f} s/step  "
+                  f"bpc {ce/math.log(2)/cpt:5.3f}  lr {lr_now:.2e}{bind}  {sec_step:6.3f} s/step  "
                   f"{toks/dt:>9,.0f} tok/s")
         if GEN_EVERY and (s % GEN_EVERY == 0 or s == 1):
             print(f"  — {N_GEN} sample generations @ step {s} —")

@@ -39,6 +39,8 @@ class TrainLoop:
         total_steps: int = 0,
         min_lr_ratio: float = 0.1,
         reduce_grads: bool = False,
+        bind_weight: float = 0.0,
+        bind_n: int = 16,
     ) -> None:
         import torch
 
@@ -66,6 +68,12 @@ class TrainLoop:
         # reduce_grads: DDP data-parallel — average .grad across ranks after
         # backward (manual, since CubbyModel is not an nn.Module to hand to DDP).
         self.reduce_grads = bool(reduce_grads)
+        # bind_weight>0 adds the VSA binding aux loss (shapes the trunk's h to be
+        # bindable). Parameter-free: N fixed role keys, block-code bind/unbind.
+        self.bind_weight = float(bind_weight)
+        self.bind_n = int(bind_n)
+        self._roles = None
+        self._last_bind = 0.0
         self._base_lr = float(lr)
         self._nstep = 0
         self.opt = torch.optim.Adam(list(model.parameters()), lr=lr)
@@ -105,8 +113,13 @@ class TrainLoop:
         use_amp = self.amp and self.device is not None and self.device.type == "cuda"
         actx = (torch.autocast(device_type="cuda", dtype=torch.bfloat16)
                 if use_amp else contextlib.nullcontext())
+        h = None
         with actx:
-            logits = self.model.forward(x)                   # (B, S, V)
+            if self.bind_weight > 0:                          # need the trunk features
+                h = self.model.features(x)
+                logits = self.model.logits_from(h)
+            else:
+                logits = self.model.forward(x)               # (B, S, V)
             vocab = logits.shape[-1]
             loss = F.cross_entropy(logits.reshape(-1, vocab), y.reshape(-1))
             gen = self._generator()
@@ -114,6 +127,14 @@ class TrainLoop:
                 pen = self.hardener.penalty(gen)
                 if torch.is_tensor(pen):
                     loss = loss + pen
+        if self.bind_weight > 0 and h is not None:            # VSA binding aux loss (fp32)
+            from ..model.binding.torch_ops import binding_aux_loss, make_roles
+            hf = h.float()
+            if self._roles is None or self._roles.shape[-1] != hf.shape[-1]:
+                self._roles = make_roles(self.bind_n, hf.shape[-1], hf.device)
+            bl = binding_aux_loss(hf, self._roles)
+            self._last_bind = float(bl.detach())
+            loss = loss + self.bind_weight * bl
 
         self._nstep += 1
         lr = self._lr_at(self._nstep)                            # warmup + cosine decay

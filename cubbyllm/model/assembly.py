@@ -86,17 +86,25 @@ class CubbyModel:
         core_feat = self.embedding.embed(tokens, ctx=None).mean(dim=1)  # (B, d)
         return self.context_source.infer(core_feat)
 
+    def features(self, tokens: "Tensor") -> "Tensor":
+        """The trunk representation h (B, S, d) — pre-head hidden states. Exposed
+        so an auxiliary objective (e.g. the VSA binding loss) can shape h without
+        re-running the forward."""
+        ctx = self.infer_context(tokens)                     # frozen at inference
+        x = self.embedding.embed(tokens, ctx)                # (B, S, d), hybrid
+        h = self.backbone.forward(x)                         # (B, S, d)
+        return self.memory.forward_generated(h, ctx)         # (B, S, d), hardened
+
+    def logits_from(self, h: "Tensor") -> "Tensor":
+        return self.head.logits(h, self.retrieval_k)         # (B, S, V), top-K
+
     def forward(self, tokens: "Tensor") -> "Tensor":
         """Context-threaded forward pass -> next-token logits (B, S, V).
 
         ``ctx`` is a required argument to every generated call below — a
         context-ignoring path cannot be written here without a type error.
         """
-        ctx = self.infer_context(tokens)                     # frozen at inference
-        x = self.embedding.embed(tokens, ctx)                # (B, S, d), hybrid
-        h = self.backbone.forward(x)                         # (B, S, d)
-        h = self.memory.forward_generated(h, ctx)            # (B, S, d), hardened
-        return self.head.logits(h, self.retrieval_k)         # (B, S, V), top-K
+        return self.logits_from(self.features(tokens))
 
 
 __wiring__ = Wiring.WIRED

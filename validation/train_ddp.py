@@ -58,6 +58,7 @@ WARMUP = _env("CB_WARMUP", 2000); CLIP = _env("CB_CLIP", 1.0, float)
 MIN_LR = _env("CB_MIN_LR", 0.1, float); EVAL = _env("CB_EVAL", 50)
 GEN = _env("CB_GEN", 500); N_GEN = _env("CB_GEN_N", 5)
 AMP = bool(_env("CB_AMP", 1)); GRAD_CKPT = bool(_env("CB_GRAD_CKPT", 1))
+BIND_W = _env("CB_BIND_W", 0.0, float); BIND_N = _env("CB_BIND_N", 16)
 SEED = _env("CB_SEED", 0); LR_SCALE = os.environ.get("CB_LR_SCALE", "sqrt")
 CKPT = os.environ.get("CB_CKPT", ""); CKPT_EVERY = _env("CB_CKPT_EVERY", 500)
 CORPUS = os.environ.get("CB_CORPUS", ""); SOURCES = os.environ.get("CB_SOURCES", "")
@@ -161,7 +162,8 @@ def main():
 
     loop = TrainLoop(model, pipe, SnapshotHardener(), lr=lr, batch_size=BATCH, seq_len=SEQ,
                      device=dev, amp=amp, grad_clip=CLIP, warmup=WARMUP,
-                     total_steps=STEPS, min_lr_ratio=MIN_LR, reduce_grads=True)
+                     total_steps=STEPS, min_lr_ratio=MIN_LR, reduce_grads=True,
+                     bind_weight=BIND_W, bind_n=BIND_N)
     log(f"trainable params {sum(p.numel() for p in model.parameters()):,} | "
         f"manifest {pipe.manifest_hash()[:16]}")
 
