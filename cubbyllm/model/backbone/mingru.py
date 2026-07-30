@@ -20,6 +20,7 @@ from typing import TYPE_CHECKING
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.utils.checkpoint
 
 from ...core.protocols import Wiring
 
@@ -100,18 +101,33 @@ class MinGRUBackbone(nn.Module):
     Conforms to ``cubbyllm.model.backbone.Backbone``.
     """
 
-    def __init__(self, d_model: int, n_layers: int = 2):
+    def __init__(self, d_model: int, n_layers: int = 2,
+                 grad_checkpoint: bool = False):
         super().__init__()
         self.d_model = int(d_model)
         self.n1 = nn.ModuleList([_RMSNorm(d_model) for _ in range(n_layers)])
         self.mix = nn.ModuleList([_MinGRUMixer(d_model) for _ in range(n_layers)])
         self.n2 = nn.ModuleList([_RMSNorm(d_model) for _ in range(n_layers)])
         self.ffn = nn.ModuleList([_SwiGLU(d_model) for _ in range(n_layers)])
+        # grad_checkpoint: recompute each layer in backward instead of storing its
+        # activations — the big activation-memory saver at 2B/deep (32 layers), so a
+        # much larger batch fits. ~30% more compute; the batch win dominates.
+        self.grad_checkpoint = bool(grad_checkpoint)
+
+    @staticmethod
+    def _layer(x, n1, m, n2, f):
+        x = x + m(n1(x))
+        x = x + f(n2(x))
+        return x
 
     def forward(self, x: "torch.Tensor") -> "torch.Tensor":
+        ckpt = self.grad_checkpoint and torch.is_grad_enabled()
         for n1, m, n2, f in zip(self.n1, self.mix, self.n2, self.ffn):
-            x = x + m(n1(x))
-            x = x + f(n2(x))
+            if ckpt:
+                x = torch.utils.checkpoint.checkpoint(
+                    self._layer, x, n1, m, n2, f, use_reentrant=False)
+            else:
+                x = self._layer(x, n1, m, n2, f)
         return x
 
 
