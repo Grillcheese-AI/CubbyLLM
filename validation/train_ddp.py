@@ -59,6 +59,7 @@ MIN_LR = _env("CB_MIN_LR", 0.1, float); EVAL = _env("CB_EVAL", 50)
 GEN = _env("CB_GEN", 500); N_GEN = _env("CB_GEN_N", 5)
 AMP = bool(_env("CB_AMP", 1)); GRAD_CKPT = bool(_env("CB_GRAD_CKPT", 1))
 BIND_W = _env("CB_BIND_W", 0.0, float); BIND_N = _env("CB_BIND_N", 16)
+REP_PEN = _env("CB_REP_PEN", 1.3, float); NO_REPEAT = _env("CB_NO_REPEAT", 3)
 SEED = _env("CB_SEED", 0); LR_SCALE = os.environ.get("CB_LR_SCALE", "sqrt")
 CKPT = os.environ.get("CB_CKPT", ""); CKPT_EVERY = _env("CB_CKPT_EVERY", 500)
 CORPUS = os.environ.get("CB_CORPUS", ""); SOURCES = os.environ.get("CB_SOURCES", "")
@@ -100,7 +101,12 @@ def load_ckpt(path, model, opt, dev, meta):
 
 
 @torch.no_grad()
-def sample_text(model, decode, dev, vocab, n, eos, use_amp, max_new=48, temp=0.8, top_k=40):
+def sample_text(model, decode, dev, vocab, n, eos, use_amp, max_new=48, temp=0.8, top_k=40,
+                rep_pen=1.3, no_repeat=3):
+    # Anti-repetition (DISPLAY-only, never touches training): a frequency-aware
+    # repetition penalty + an n-gram block, so early-training loops ("and and",
+    # "m/m/m") don't make the samples look worse than the model is. rep_pen=1.0 /
+    # no_repeat=0 disables. Mirrors validation/train_colab.py::sample_text.
     seed = eos if eos >= 0 else 0
     outs = []
     for _ in range(n):
@@ -112,6 +118,17 @@ def sample_text(model, decode, dev, vocab, n, eos, use_amp, max_new=48, temp=0.8
             with ctx:
                 logits = model.forward(x)[0, -1]
             logits = logits.float() / max(temp, 1e-6)
+            gen = ids[1:]                               # generated so far (skip seed/EOS)
+            if rep_pen and rep_pen != 1.0 and gen:
+                counts = torch.bincount(torch.tensor(gen, device=logits.device),
+                                        minlength=logits.shape[0]).float()
+                factor = torch.pow(rep_pen, counts)     # 1.0 unseen; grows with repeats
+                logits = torch.where(logits > 0, logits / factor, logits * factor)
+            if no_repeat and len(ids) >= no_repeat:
+                prefix = tuple(ids[-(no_repeat - 1):])
+                for i in range(len(ids) - no_repeat + 1):
+                    if tuple(ids[i:i + no_repeat - 1]) == prefix:
+                        logits[ids[i + no_repeat - 1]] = float("-inf")
             if top_k and top_k < vocab:
                 kth = torch.topk(logits, top_k).values[-1]
                 logits = torch.where(logits < kth, torch.full_like(logits, float("-inf")), logits)
@@ -192,7 +209,8 @@ def main():
                 f"lr {lrn:.2e}  {sps:6.3f} s/step  {toks/dt:>11,.0f} tok/s")
         if is0 and GEN and (s % GEN == 0 or s == 1):
             log(f"  — {N_GEN} sample generations @ step {s} —")
-            for j, t in enumerate(sample_text(model, decode, dev, vocab, N_GEN, eos, amp), 1):
+            for j, t in enumerate(sample_text(model, decode, dev, vocab, N_GEN, eos, amp,
+                                              rep_pen=REP_PEN, no_repeat=NO_REPEAT), 1):
                 log(f"    [{j}] {t}")
         if CKPT and CKPT_EVERY and s % CKPT_EVERY == 0 and is0:
             save_ckpt(CKPT, model, loop.opt, s, meta); log(f"  ✓ ckpt @ {s} -> {CKPT}")

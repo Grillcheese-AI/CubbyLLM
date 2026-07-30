@@ -22,7 +22,7 @@ For a real corpus set CB_STAGE to a local dir — it copies the Drive shards to
 local disk once (idempotent) so random-window reads don't crawl over the FUSE mount.
 
 Env knobs (all optional): CB_D CB_L CB_CTX CB_SLOTS CB_B CB_S CB_STEPS CB_LR
-CB_EVAL CB_GEN CB_GEN_N CB_CKPT CB_CKPT_EVERY CB_STORIES_N ; corpus: CB_CORPUS
+CB_EVAL CB_GEN CB_GEN_N CB_REP_PEN CB_NO_REPEAT CB_CKPT CB_CKPT_EVERY CB_STORIES_N ; corpus: CB_CORPUS
 CB_SOURCES CB_STAGE ; data: CUBBY_SPM CUBBY_STORIES ; device: CB_DEVICE.
 """
 from __future__ import annotations
@@ -75,6 +75,8 @@ MIN_LR = _env("CB_MIN_LR", 0.1, float)       # cosine-decay floor as a fraction 
 GRAD_CKPT = bool(_env("CB_GRAD_CKPT", 0))    # backbone activation checkpointing (fit bigger batch)
 BIND_W = _env("CB_BIND_W", 0.0, float)       # VSA binding aux-loss weight (0 = off) — MAP scheme
 BIND_N = _env("CB_BIND_N", 16)               # role/filler pairs bundled per step
+REP_PEN = _env("CB_REP_PEN", 1.3, float)     # sampling repetition penalty (1.0 = off); freq-aware, breaks loops
+NO_REPEAT = _env("CB_NO_REPEAT", 3)          # block repeating any n-gram of this size while sampling (0 = off)
 STORIES_N = _env("CB_STORIES_N", 20000)
 SPM = os.environ.get("CUBBY_SPM", r"C:\Users\grill\Documents\GitHub\cubby-lm"
                      r"\cubby\tokenizers\spm32k_1p7b\grillcheese_spm32k_v2.model")
@@ -136,11 +138,20 @@ def eval_ce(model, val, vocab, dev, n_batches=12):
 
 
 @torch.no_grad()
-def sample_text(model, decode, dev, vocab, n=5, max_new=48, temp=0.8, top_k=40, seed_id=2):
+def sample_text(model, decode, dev, vocab, n=5, max_new=48, temp=0.8, top_k=40, seed_id=2,
+                rep_pen=1.3, no_repeat=3):
     """Autoregressively sample ``n`` short generations (temperature + top-k).
 
     Each starts from EOS (the document-boundary token the corpus is EOS-separated
-    on, so this reads as "begin a fresh document") and stops on EOS or max_new."""
+    on, so this reads as "begin a fresh document") and stops on EOS or max_new.
+
+    Two anti-repetition guards make the samples reflect the model, not the decoder
+    (early training loves to fall into "and and and" / "m/m/m" loops): a
+    frequency-aware repetition penalty (``rep_pen``, CTRL-style but scaled by how
+    many times a token already fired, so tight loops get hit progressively) and an
+    ``no_repeat``-gram block (a token that would repeat any n-gram is forbidden).
+    Both are DISPLAY-only — they touch sampling, never training. Set rep_pen=1.0 /
+    no_repeat=0 to disable."""
     seed = seed_id if seed_id is not None and seed_id >= 0 else 0
     outs = []
     for _ in range(n):
@@ -150,6 +161,17 @@ def sample_text(model, decode, dev, vocab, n=5, max_new=48, temp=0.8, top_k=40, 
             with _autocast(dev):
                 logits = model.forward(x)[0, -1]
             logits = logits.float() / max(temp, 1e-6)   # fp32 for stable sampling
+            gen = ids[1:]                               # generated so far (skip the seed/EOS token)
+            if rep_pen and rep_pen != 1.0 and gen:      # freq-aware repetition penalty
+                counts = torch.bincount(torch.tensor(gen, device=logits.device),
+                                        minlength=logits.shape[0]).float()
+                factor = torch.pow(rep_pen, counts)     # 1.0 where unseen; >1 grows with repeats
+                logits = torch.where(logits > 0, logits / factor, logits * factor)
+            if no_repeat and len(ids) >= no_repeat:     # ban tokens that would repeat an n-gram
+                prefix = tuple(ids[-(no_repeat - 1):])
+                for i in range(len(ids) - no_repeat + 1):
+                    if tuple(ids[i:i + no_repeat - 1]) == prefix:
+                        logits[ids[i + no_repeat - 1]] = float("-inf")
             if top_k and top_k < vocab:
                 kth = torch.topk(logits, top_k).values[-1]
                 logits = torch.where(logits < kth, torch.full_like(logits, float("-inf")), logits)
@@ -307,7 +329,8 @@ def main():
         if GEN_EVERY and (s % GEN_EVERY == 0 or s == 1):
             print(f"  — {N_GEN} sample generations @ step {s} —")
             for j, txt in enumerate(sample_text(model, decode, dev, vocab,
-                                                N_GEN, seed_id=eos_id), 1):
+                                                N_GEN, seed_id=eos_id,
+                                                rep_pen=REP_PEN, no_repeat=NO_REPEAT), 1):
                 print(f"    [{j}] {txt}")
         if CKPT and CKPT_EVERY and s % CKPT_EVERY == 0:
             save_ckpt(CKPT, model, loop.opt, s, meta)
