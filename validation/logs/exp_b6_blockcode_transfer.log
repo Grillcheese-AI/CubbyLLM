@@ -1,0 +1,41 @@
+
+# ============ DIAGNOSIS, 2026-08-02 — H-B6 FALSIFIED ============
+# The v2 gate PASSED (MAP on trained h = 0.840 vs the run's logged 0.842), so the
+# probe measures the trained objective faithfully. The verdict line said
+# "TRANSFERS: POSITIVE" — that heuristic keyed on cosine delta and IGNORED the
+# retrieval column, which tells the opposite story:
+#
+#   n=16   trained:   cos 0.840   retrieval  11.5%   (chance 6.25%)
+#          untrained: cos 0.251   retrieval  97.5%
+#
+# Training made the trunk far WORSE at telling which filler was bound — the only
+# thing a binding channel is for.
+#
+# MECHANISM (reproduced synthetically: optimize h against binding_aux_loss alone,
+# no LM objective, B=8 S=256 d=2048 n=16, Adam lr 6e-2):
+#    step |   cos  | retrieval | filler-filler cos
+#       0 | 0.251  |   96.1%   |   +0.006
+#     800 | 0.685  |   10.2%   |   +0.943
+#    1600 | 0.835  |    6.2%   |   +0.988
+#    4000 | 0.863  |    4.7%   |   +0.974
+# The loss rewards cos(recovered_i, f_i) and never penalizes cos(recovered_i, f_j).
+# Collapsing every hidden state in a sequence onto one direction scores ~0.86.
+# The trained checkpoint sits exactly on this curve (0.840 / 11.5%).
+#
+# ATTEMPTED FIX (InfoNCE over the bundled set, tau=0.1) — same setup:
+#    step |   cos  | retrieval | filler-filler cos
+#       0 | 0.251  |   96.1%   |   +0.006
+#    1600 | 0.247  |   96.9%   |   -0.001
+#    4000 | 0.250  |   98.4%   |   -0.003
+# It PREVENTS the collapse but leaves cosine pinned at the 1/sqrt(16)=0.25
+# crosstalk floor: it buys nothing over random init.
+#
+# WHY NO FIX IS WORTH BUILDING: retrieval is already 96-98% at random init.
+# High-dimensional random vectors are quasi-orthogonal by construction — the
+# founding property of hyperdimensional computing — so an untrained trunk is
+# ALREADY a near-optimal VSA substrate. A binding objective has nothing to add
+# and, as measured, plenty to destroy.
+#
+# ACTION: set bind_weight=0 (CB_BIND_W=0) for the DDP run.
+# NOTE the norm signature, consistent with the collapse: trained ||h|| std 79.9
+# (mean 182.8, max 602.8) vs control std 14.7 (mean 199.7, max 236.7).
