@@ -1,0 +1,38 @@
+==============================================================================
+H0 part 2 — INFERRED context (router) vs oracle vs fixed  (6 sequential tasks, no replay)
+==============================================================================
+  task inputs are task-specific (separated means) so context is inferable from x; chance MSE ~= 1.50
+
+  task-0 MSE after finishing task t   (retention)
+  t                    0        1        2        3        4        5
+  baseline         0.099    2.385    2.050    2.437    2.492    2.265
+  oracle-ctx       0.099    0.100    0.101    0.102    0.099    0.097
+  router-naive     0.103    2.428    1.937    2.475    2.411    2.205
+  router-super     0.100    0.548    1.120    2.356    1.878    1.745
+
+  [router-naive health] slot chosen per task after full training:
+    task 0: slot 3  (confidence 98%)
+    task 1: slot 3  (confidence 100%)
+    task 2: slot 3  (confidence 100%)
+    task 3: slot 3  (confidence 100%)
+    task 4: slot 3  (confidence 100%)
+    task 5: slot 3  (confidence 100%)
+    -> 1/6 distinct slots (COLLAPSE)
+    [P5] task-0 right ctx MSE 2.181 | forced-wrong slot MSE 1.401 (chance 1.50) -> BYPASS (wrong ctx not worse)
+
+  [router-super health] slot chosen per task after full training:
+    task 0: slot 4  (confidence 37%)
+    task 1: slot 5  (confidence 79%)
+    task 2: slot 5  (confidence 59%)
+    task 3: slot 3  (confidence 59%)
+    task 4: slot 4  (confidence 92%)
+    task 5: slot 5  (confidence 100%)
+    -> 3/6 distinct slots (COLLAPSE)
+    [P5] task-0 right ctx MSE 1.713 | forced-wrong slot MSE 2.274 (chance 1.50) -> context load-bearing (wrong ctx hurts)
+
+[verdict]
+  final task-0 MSE: baseline 2.26 | oracle 0.097 | router-naive 2.20 | router-super 1.745  (chance 1.50)
+  - router-NAIVE collapses to 1/6 slots -> reverts to the baseline (2.20, 23x oracle): unsupervised context DISCOVERY is the hard part, not θ=f(c) generation.
+  - router-SUPERVISED (task-label routing, trained ONLINE alongside the head) roughly halves the forgetting (1.74 vs baseline 2.26) but stays 18x the oracle and its OWN slots drift to 3/6 distinct with task-0 confidence falling off -> THE ROUTER IS ITSELF A SEQUENTIAL LEARNER THAT FORGETS.
+  Actionable: the θ=f(c) generation is not the bottleneck — context INFERENCE is. Use an OFFLINE-pretrained router over all contexts (H-C4's domain_head.pt is exactly that: trained once on 88 domains, not online), or harden the router too. An online-learned router recreates the very forgetting problem H0 solves for the head.
+run: 2026-07-23, python 3.12.10, torch 2.10.0+cpu (CPU only)

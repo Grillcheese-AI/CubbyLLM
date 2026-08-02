@@ -1,0 +1,16 @@
+============================================================================
+H-D2  TTT fast-weights vs KV-cache attention — compute side  (d=512, CPU fp32)
+============================================================================
+
+     L (ctx)  kv-attn ms/tok   ttt ms/tok  kv state MB  ttt state MB
+       1,024           0.545        0.253          4.2           1.0
+       8,192          14.184        0.253         33.6           1.0
+      32,768          49.362        0.253        134.2           1.0
+     131,072         210.410        0.253        536.9           1.0
+
+[verdict]
+  TTT per-token cost is constant (0.253ms at d=512); kv-attn grows with L.
+  measured crossover: TTT cheaper from L ~ 1,024 up (on this machine/shape).
+  memory side confirmed trivially (O(d^2) vs O(L*d)).
+  STILL OPEN (needs a trained model): whether local-gradient fast weights RETAIN long-context information competitively — the compute win measured here says nothing about quality.
+run: 2026-07-23, python 3.12.10, numpy 2.4.6 (CPU only)

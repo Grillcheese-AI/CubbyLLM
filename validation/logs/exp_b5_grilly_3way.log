@@ -1,0 +1,56 @@
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_b5_grilly_3way.py:264: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  first_loss = float(loss)
+==============================================================================
+Group B step 5 — 3-way prototype on grilly's production algebras   (D=10240 / k=80,l=128, V=32,000)
+==============================================================================
+
+[1] parity, roundtrip, latency
+  parity: grilly BinaryOps.bind == cubby-concepts vsa.core.bind  OK
+   family  roundtrip sim   bind us  unbind us  readout ms (V=32k)
+   binary         1.0000         3          3               36.69
+      hrr         0.7109       309        333              428.52
+    block         1.0000       186        173               37.17
+
+[2] vocab-scale readout: top-1 accuracy vs signal fraction f  (V=32,000)
+  family       1.0    0.75     0.5    0.25     0.1    0.05
+  binary      100%    100%    100%    100%    100%     84%
+  hrr         100%    100%    100%    100%    100%     86%
+  block       100%    100%    100%    100%    100%    100%
+
+[3] role-filler unbind from bundled superposition  (100-filler codebook)
+  family         1       5      20      80     160     320
+  binary      100%    100%    100%    100%    100%     96%
+  hrr         100%    100%    100%    100%    100%    100%
+  block       100%    100%    100%    100%    100%    100%
+
+[4] trainability probe: learn 32-dim inputs -> 512 codewords through each canonical readout (2k steps, Adam 3e-3)
+  binary hard sign(STE)  loss  6.71 ->  4.04   train acc  19.8%
+  binary tanh (relaxed)  loss  6.37 ->  0.73   train acc  99.6%
+  hrr linear             loss  6.25 ->  5.23   train acc  12.8%
+  block softmax/blocks   loss  6.24 ->  0.99   train acc  96.3%
+
+[read the numbers, then decide] duties matrix: readout robustness (part 2), compositional load (part 3), gradient-friendliness (part 4), raw speed (part 1).
+
+(wall 377.3s)
+run: 2026-07-23, python 3.12.10, torch 2.10.0+cpu, numpy 2.4.6, grilly@source (CPU only)

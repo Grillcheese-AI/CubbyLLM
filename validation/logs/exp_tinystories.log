@@ -1,0 +1,22 @@
+==========================================================================
+CubbyLLM integration test — TinyStories (SUBWORD spm32k, full stack)
+==========================================================================
+  8000 stories -> 1,739,764 tokens (vocab 32000, 3.91 chars/token)
+  trainable params: 9,407,680  (router frozen; head learnable)
+  manifest: 67881dc08e6608ed...
+
+    step     loss      ppl     bpc
+       1   10.411  25455.2   3.739
+     150    4.089     64.1   1.534
+     300    3.701     47.8   1.425
+     450    3.598     41.5   1.373
+     600    3.700     39.0   1.350
+     750    3.466     37.7   1.338
+
+  held-out: perplexity 36.2/token, 1.323 bits/char  (exp_d1 char MinGRU was ~1.45 bpc)
+
+  --- sampled story (prompt: 'Once upon a time', T=0.8 top-k=40) ---
+  Once upon a time, she was going with her mommy.  Lily and Lily went to the park with her grandma. She loved to explore. They are very happy. Once upon a time, there were two friends. One day, she found a special, a little rabbit ate on it.   The shopkeeper and Jill
+
+(wall 148.5s)
+run: 2026-07-23, python 3.12.10, torch 2.10.0+cpu, cubbyllm package, TinyStories spm32k subword

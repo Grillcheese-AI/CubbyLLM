@@ -1,0 +1,15 @@
+==============================================================================
+H-C1  Generated vs static token embeddings  (real spm32k stream, V=8000, d=64, 4000 steps)
+==============================================================================
+  corpus stream: 1,038,832 tokens; UNK rate 0.0%
+
+  static   val loss 3.886  ppl    48.7  params   577,856  train  37.3s
+  hyper    val loss 4.389  ppl    80.6  params    77,248  train 163.4s
+
+  hyper-encoder full-table regen: 10.0 ms for 8,000 tokens (1.26 us/token, one-off/cacheable at inference)
+
+[verdict]
+  quality gap (hyper - static val loss): +0.504 nats  (NOT competitive at matched budget)
+  param scaling: static grows 512,000+ with V; hyper's embedding params are V-independent (+11,392 vs the table's 512,000).
+  caveat: toy scale (V=8k, d=64, trigram LM). The H-C1 kill criterion needs re-checking at the real target vocab/model size before betting the vocab strategy on it.
+run: 2026-07-23, python 3.12.10, torch 2.10.0+cpu, real spm32k tokenizer + valid.txt

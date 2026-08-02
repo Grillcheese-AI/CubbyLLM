@@ -1,0 +1,6 @@
+H-G3 sub-check: Gutenberg ID overlap between factual/ and gbooks/
+  factual/: 1976 book txts (0.90GB)   gbooks/: 3612 book txts (1.87GB)
+  OVERLAPPING IDs: 9  (0.5% of factual/)
+  of which byte-identical size: 8   overlap volume: 0.00GB
+  sample overlapping IDs: [30923, 31190, 31310, 32039, 34411, 34726, 35639, 36978, 42854]
+run: 2026-07-23, name+size only (no content hashing of 120GB)

@@ -1,0 +1,17 @@
+
+
+
+
+
+
+============================================================================
+H-G1  BPE build costing  (200MB slice of corpus_hf.txt, HF tokenizers 0.22.2)
+============================================================================
+  vocab  65,536:     9.9s  (72.6 GB/h at this vocab)
+  vocab 131,072:     9.9s  (72.8 GB/h at this vocab)
+
+[costing]
+  vocab 65k->131k cost ratio on identical data: 1.00x
+  extrapolated 131k build on the production-size subsample (~6.3GB, linear-in-data assumption): ~0.1h single-machine CPU
+  => the next fixed-vocab step is an HOURS-scale, zero-new-tooling job. The real work is choosing/pinning the subsample mix (H-G3) — note the 65k build's own report shows the NSFW-labeled sources contributed ~136k lines to tokenizer training.
+run: 2026-07-23, python 3.12.10, tokenizers 0.22.2 (CPU)

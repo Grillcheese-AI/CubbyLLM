@@ -1,0 +1,51 @@
+# tokenize_parallel  procs=10  spm=grillcheese_bpe128k.model
+# sources: ['arxiv', 'pretrain_ext']
+
+[arxiv]  13 files -> 13 tasks, tokenizing...
+    13/13 chunks  11,780,217 toks  (19s)
+[arxiv]  11,780,217 tokens  (19s, 0.61M tok/s)  -> arxiv.u32
+
+[pretrain_ext]  1 files -> 1 tasks, tokenizing...
+    1/1 chunks  843,477 toks  (4s)
+[pretrain_ext]  843,477 tokens  (4s, 0.20M tok/s)  -> pretrain_ext.u32
+
+# TOTAL 12,623,694 tokens across 2 sources in 23s
+# manifest_hash (full corpus): 2ccf6e1a8deddc7543234ca7e17f8ba325e7909a5dbcdd11d557e96c4891fe0b
+# log: C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\tokenize_parallel_1785387551.log
+# tokenize_parallel  procs=10  spm=grillcheese_bpe128k.model
+# sources: ['books', 'verified_facts', 'wikipedia', 'arxiv', 'pretrain_ext', 'unified', 'wiki_full', 'fineweb_edu', 'wikibooks', 'kbtxt']
+
+[books]  7764 files -> 7764 tasks, tokenizing...
+    25/7764 chunks  2,285,709 toks  (4s)
+    50/7764 chunks  5,540,813 toks  (7s)
+    75/7764 chunks  7,544,376 toks  (9s)
+    100/7764 chunks  9,806,782 toks  (11s)
+    125/7764 chunks  12,243,374 toks  (13s)
+    150/7764 chunks  15,422,366 toks  (16s)
+    175/7764 chunks  18,267,052 toks  (20s)
+    200/7764 chunks  21,708,029 toks  (25s)
+    225/7764 chunks  27,756,377 toks  (31s)
+    250/7764 chunks  32,412,379 toks  (36s)
+    275/7764 chunks  35,076,301 toks  (37s)
+    300/7764 chunks  35,999,057 toks  (38s)
+    325/7764 chunks  37,013,057 toks  (38s)
+    350/7764 chunks  37,709,635 toks  (39s)
+    375/7764 chunks  38,893,504 toks  (40s)
+    400/7764 chunks  40,506,276 toks  (41s)
+    425/7764 chunks  42,835,900 toks  (45s)
+    450/7764 chunks  47,578,028 toks  (48s)
+    475/7764 chunks  51,241,810 toks  (51s)
+    500/7764 chunks  53,207,149 toks  (53s)
+    525/7764 chunks  55,702,415 toks  (55s)
+    550/7764 chunks  57,904,442 toks  (57s)
+    575/7764 chunks  60,069,336 toks  (59s)
+    600/7764 chunks  62,287,729 toks  (62s)
+    625/7764 chunks  64,935,797 toks  (64s)
+    650/7764 chunks  67,026,640 toks  (66s)
+    675/7764 chunks  68,928,442 toks  (67s)
+    700/7764 chunks  70,913,872 toks  (69s)
+    725/7764 chunks  72,756,651 toks  (72s)
+    750/7764 chunks  77,022,327 toks  (75s)
+    775/7764 chunks  79,354,768 toks  (77s)
+    800/7764 chunks  82,004,897 toks  (80s)
+    825/7764 chunks  84,604,851 toks  (82s)

@@ -1,0 +1,22 @@
+============================================================================
+H-C2  LZW hypertoken compression on real tokenizer output
+  tokenizer: grillcheese_spm32k_v2 (V=32000)
+============================================================================
+  corpus: valid.txt, first 8MB -> 2651 documents > 200 chars
+  base token count: 2,073,072  (tokenize 1.1s)
+
+    dict cap                setting  emitted codes  reduction  hypertokens minted
+      32,000            global dict        966,442      53.4%              32,000
+                 reset per document      1,613,220      22.2%               3,857 (max/doc)
+      96,000            global dict        824,850      60.2%              96,000
+                 reset per document      1,613,220      22.2%               3,857 (max/doc)
+     224,000            global dict        743,696      64.1%             224,000
+                 reset per document      1,613,220      22.2%               3,857 (max/doc)
+     992,000            global dict        691,396      66.6%             691,395
+                 reset per document      1,613,220      22.2%               3,857 (max/doc)
+
+[verdict]
+  best observed step reduction: global dict 66.6%, per-document 22.2%
+  zip2zip's claimed 20-60% range: REPRODUCED — the streaming (per-document) number lands at 22%, and a persistent dictionary reaches 67% (at/above the claimed top).
+  note: the honest streaming number is the per-document one; the global number assumes a persistent cross-document dictionary (= a bigger effective vocab, which is exactly H-C6's open choice).
+run: 2026-07-23, python 3.12.10, sentencepiece, corpus=cubby-lm valid.txt 8MB

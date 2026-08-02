@@ -1,0 +1,17 @@
+==========================================================================
+H-D1  Backbone viability on real char-LM  (d=128, L=4, seq=128, 2500 steps)
+==========================================================================
+  corpus: valid.txt char stream, 3,000,000 chars, vocab 78
+  (lower bits-per-char = better; per-step wall is implementation latency at T=128, NOT the asymptotic scaling claim)
+
+  mingru   val bpc 1.454   non-emb params  592,512    183.0 ms/step
+  bdh      val bpc 1.584   non-emb params  591,488    118.1 ms/step
+  attn     val bpc 2.470   non-emb params  656,512     78.4 ms/step
+
+[verdict]
+  best val bpc: mingru (1.454)
+  attention-free Q=K (bdh-style) vs MinGRU: +0.130 bpc  (MinGRU ahead).
+  VIABILITY only: this says an attention-free Q=K recurrence does/doesn't learn text at small scale — it does NOT test BDH's 35x/10x efficiency claims (those need scale + a faithful BDH impl; the asymptotic compute trade is H-D2). Backbone choice stays the last, most expensive decision per the doc's own ordering.
+
+(wall 976.0s)
+run: 2026-07-23, python 3.12.10, torch 2.10.0+cpu (CPU only)

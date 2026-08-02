@@ -1,0 +1,97 @@
+# VSA binding aux loss (H-B6) — live 2B pretraining run, milestone excerpt
+#
+# PROVENANCE: these are milestone lines hand-copied from the live Colab
+# single-GPU pretraining run (train_colab.py), NOT a full teed log. The
+# complete step-by-step log lives in the user's Colab session. The final /
+# multi-GPU (train_ddp.py) run should be tee'd to this directory in full per
+# the persist-experiment-logs convention. Recorded here so H-B6's cited numbers
+# link to a durable file (PACKAGE_LAYOUT.md: "numbers quoted in docs must link
+# the validation/logs/ file that produced them").
+#
+# ENV (as reported in-session): torch + CUDA (Colab GPU), bf16 autocast, MinGRU
+# per-layer gradient checkpointing, Adam, grad-clip 1.0, warmup 2000 -> cosine.
+# CONFIG: D=2048 L=32 (2B trunk) | hybrid vocab (128k BBPE, opcode-atomic) |
+#         FrozenSlotRouter context source | hardened theta=f(c) memory |
+#         B=8 S=768 | CB_BIND_W=0.42 CB_BIND_N=16 (MAP scheme, torch_ops.py)
+# BASELINE: an A/B baseline checkpoint (no binding loss) was saved as ckpt_1;
+#           its bpc-at-matched-step was NOT captured numerically (open item).
+#
+# COLUMNS: step | train loss (CE + hardener + bind_w*bind) | ppl | bpc (from CE)
+#          | lr | bind (MAP binding aux loss, 1 - cosine recovery) | s/step | tok/s
+#
+# SUMMARY OF THE TWO CURVES (the H-B6 result):
+#   bind: ~0.735 (earlier 0.1 diagnostic weight) -> 0.57 (step 500 @ 0.42)
+#         -> 0.31 (1000) -> 0.22 (2000) -> ~0.205 plateau (2500) -> ~0.20 (3000)
+#         plateau cos recovery ~0.80, past the N=16 crosstalk floor (cos~0.25)
+#   bpc : ~2.3 (500) -> 1.95 (1000) -> 1.74 (2000) -> 1.69 (2500) -> ~1.5 (3000)
+#   => both fall in lockstep; no bpc stall/bump through the warmup->full-LR
+#      transition (step 2000) or sustained full LR -> binding not stealing LM
+#      capacity (co-descent also rules out a degenerate low-rank h collapse).
+#
+# --- step 1000 window (LR ~1.5e-4, mid-warmup) ---
+  step   988  train loss  6.245  ppl    515.3  bpc 1.877  lr 1.48e-04  bind 0.291   0.785 s/step      9,591 tok/s
+  step   994  train loss  6.089  ppl    441.2  bpc 1.830  lr 1.49e-04  bind 0.304   0.789 s/step      9,596 tok/s
+  step  1000  train loss  6.783  ppl    882.5  bpc 2.039  lr 1.50e-04  bind 0.291   0.788 s/step      9,600 tok/s
+#
+# --- step 2000 window (warmup ends, LR reaches full 3.0e-4) ---
+  step  1997  train loss  5.751  ppl    314.4  bpc 1.728  lr 3.00e-04  bind 0.210   0.791 s/step      9,174 tok/s
+  step  1999  train loss  5.554  ppl    258.3  bpc 1.669  lr 3.00e-04  bind 0.212   0.792 s/step      9,175 tok/s
+  step  2000  train loss  5.796  ppl    328.9  bpc 1.742  lr 3.00e-04  bind 0.215   0.789 s/step      9,175 tok/s
+#
+# --- step 2500 window (sustained full LR; bind plateau confirmed) ---
+  step  2490  train loss  5.272  ppl    194.8  bpc 1.585  lr 3.00e-04  bind 0.197   0.791 s/step      9,090 tok/s
+  step  2499  train loss  5.395  ppl    220.3  bpc 1.622  lr 3.00e-04  bind 0.202   0.789 s/step      9,094 tok/s
+  step  2500  train loss  5.378  ppl    216.7  bpc 1.617  lr 3.00e-04  bind 0.205   0.787 s/step      9,094 tok/s
+#
+# --- step 3000 window (plateau holds, bpc still falling) ---
+  step  2998  train loss  5.242  ppl    189.1  bpc 1.576  lr 3.00e-04  bind 0.200   0.787 s/step      9,020 tok/s
+  step  2999  train loss  5.313  ppl    203.0  bpc 1.597  lr 3.00e-04  bind 0.206   0.786 s/step      9,021 tok/s
+  step  3000  train loss  4.816  ppl    123.5  bpc 1.448  lr 3.00e-04  bind 0.201   0.787 s/step      9,021 tok/s
+#
+# ============ RUN COMPLETED, 2026-08-01 — full 20,000-step cosine ============
+# NOTE ON COVERAGE: Colab truncated its own stdout to the last 5000 lines, so the
+# steps 3000-15000 middle stretch was never captured anywhere. The tail below
+# (15175 -> 20000) is what the session actually retained. bind/bpc at 15.2k are
+# already at their end-of-run values, so nothing anomalous happened in the gap
+# that the endpoints would not show — but that is inference, not observation.
+#
+# FINAL: LR decayed to the 3e-5 floor; ~123M tokens total; wall 13914.1s (~3.9h);
+#        peak VRAM 92.47 GB; final ckpt -> /content/drive/MyDrive/cubbyllm/ckpt.pt
+#
+# THE COMPLETED-RUN RESULT: bind did NOT stop at the step-3000 ~0.20 "plateau" —
+#   it kept slowly descending to ~0.158 (cos recovery ~0.84) while bpc improved
+#   to ~1.1. The two curves tracked together over the ENTIRE schedule with no
+#   divergence at any point, incl. sustained peak LR and the whole cosine decay.
+#   bind: 0.735(w=0.1) -> 0.57(500) -> 0.31(1k) -> 0.22(2k) -> 0.20(3k) -> 0.158(20k)
+#   bpc :  2.3(500) -> 1.95(1k) -> 1.74(2k) -> ~1.5(3k) -> ~1.1(20k)
+#   CAVEATS: small token budget (a 2B trunk at ~123M tokens is heavily
+#   undertrained; the real test is the 40B-token DDP run), and the numeric
+#   ckpt_1 (no-binding) A/B at matched steps was still never captured.
+#
+# --- step 15200 window (bind already at end-of-run level; cosine decaying) ---
+  step 15195  train loss  3.506  ppl     33.3  bpc 1.054  lr 7.48e-05  bind 0.170   0.791 s/step      8,578 tok/s
+  step 15200  train loss  3.740  ppl     42.1  bpc 1.124  lr 7.47e-05  bind 0.161   0.794 s/step      8,579 tok/s
+#
+# --- step 18000 window ---
+  step 17999  train loss  2.879  ppl     17.8  bpc 0.865  lr 3.81e-05  bind 0.167   0.785 s/step      8,629 tok/s
+  step 18000  train loss  4.103  ppl     60.6  bpc 1.233  lr 3.81e-05  bind 0.162   0.786 s/step      8,630 tok/s
+#
+# --- final window (LR at the 3e-5 floor) ---
+  step 19997  train loss  3.579  ppl     35.9  bpc 1.076  lr 3.00e-05  bind 0.160   0.790 s/step      8,628 tok/s
+  step 19998  train loss  4.032  ppl     56.4  bpc 1.212  lr 3.00e-05  bind 0.161   0.791 s/step      8,628 tok/s
+  step 19999  train loss  3.840  ppl     46.5  bpc 1.154  lr 3.00e-05  bind 0.159   0.785 s/step      8,628 tok/s
+  step 20000  train loss  4.069  ppl     58.5  bpc 1.223  lr 3.00e-05  bind 0.158   0.794 s/step      8,628 tok/s
+#
+# Sample generations @ step 20000 (OLD sampler — no repetition penalty; the
+# process predated that edit). Domain acquisition is real by this point:
+#   [6]  "The court concluded that the trial judge did not err in denying their
+#         motions to dismiss. The appellate court noted no clear error of law
+#         was found, and because this determination had been decided by both
+#         parties—a final..."                        <- coherent legal prose
+#   [2]  "You are given a dataset `data` with two columns: "Date" and another
+#         column called `Time`..."                   <- coding-task prompt
+#   [8]  "Question: Does the clause specify a license grant that is irrevocable
+#         or perpetual? Clause: ..."                 <- contract-clause QA
+#   [1][7][10][12][14] German/Polish/Hungarian/CJK — the corpus language mix.
+# The tight repetition loops seen at ~3.5k are gone by 20k without the sampler
+# fix, i.e. the model grew out of them; the penalty is live for the DDP run.

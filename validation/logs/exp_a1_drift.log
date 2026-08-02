@@ -1,0 +1,25 @@
+==========================================================================
+H-A1  cubby-lm HebbianGrowthLayer — context-capacity + drift diagnosis
+==========================================================================
+
+[structural] HebbianGrowthLayer.forward signature: (self, x: 'torch.Tensor') -> 'tuple[torch.Tensor, torch.Tensor, bool]'
+[structural] update depends on any context arg besides x? False
+[structural] _update_basis references a 'context' signal?   False
+[structural] => weight update is dW = f(x, xW^T, W); no c enters it.
+[structural] => C_ctx = 0 BY CONSTRUCTION (GCE Structural Bypass at its limit).
+
+[empirical] task = one random rank-16 subspace of R^256; 4 disjoint tasks, sanger mode, 30 online epochs each.
+
+  [growth OFF — pure shared-basis drift]  K=16->16
+    retained EV(A):  A:0.97  +B:0.07  +C:0.06  +D:0.06
+    EV(A) learned=0.97  after all tasks=0.06  -> forgot 94% of task A
+
+  [growth ON — neurogenesis mitigation]  K=16->40
+    retained EV(A):  A:1.62  +B:0.57  +C:0.53  +D:0.45
+    EV(A) learned=1.62  after all tasks=0.45  -> forgot 72% of task A
+
+[verdict]
+  structural C_ctx=0 (no context enters the update): CONFIRMED.
+  growth-off shared basis forgets 94% of task A -> CONFIRMED catastrophic drift.
+  neurogenesis (K->40) forgets 72% -> helps.
+run: 2026-07-23, python 3.12.10, torch 2.10.0+cpu, numpy 2.4.6 (CPU only)

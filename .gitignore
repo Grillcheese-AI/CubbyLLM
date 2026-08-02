@@ -183,3 +183,11 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+# Validation evidence — MUST stay tracked.
+# The generic "*.log" above (Django boilerplate) was silently excluding all of
+# validation/logs/, while VALIDATION_REPORT.md, CUBBYLLM_HYPOTHESES.md,
+# Architecture.md, TODO.md and README.md all cite those files by name. That
+# broke PACKAGE_LAYOUT.md's rule that any number quoted in docs must link the
+# validation/logs/ file that produced it: on a fresh clone every citation
+# dangled. These are small (~226K total) plain-text run logs; keep them in.
+!validation/logs/*.log

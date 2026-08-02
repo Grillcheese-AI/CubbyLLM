@@ -1,0 +1,18 @@
+==============================================================================
+H-D1  Backbone bake-off in the real CubbyModel  (subword spm32k, d=128, L=2, 600 steps)
+==============================================================================
+  8000 stories -> 1,739,764 tokens, 3.91 chars/token
+
+  mingru  ppl    34.8  bpc  1.308  backbone-params  296,192  total  9,555,264     155 ms/step
+  bdh     ppl    49.1  bpc  1.435  backbone-params  295,426  total  9,554,498     137 ms/step
+  gru     ppl    34.0  bpc  1.300  backbone-params  395,264  total  9,654,336     157 ms/step
+  attn    ppl    48.0  bpc  1.427  backbone-params  328,192  total  9,587,264     135 ms/step
+
+[verdict]
+  best quality: gru (ppl 34.0, bpc 1.300)
+  fastest:      attn (135 ms/step)
+  -> promote the quality winner into cubbyllm/model/backbone/ (replacing
+     the reference stand-in) unless the speed gap changes the call.
+
+(wall 374.6s)
+run: 2026-07-23, python 3.12.10, torch 2.10.0+cpu, cubbyllm CubbyModel, subword TinyStories

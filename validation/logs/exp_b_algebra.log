@@ -1,0 +1,24 @@
+============================================================================
+H-B1 vs H-B2  Binding-head algebra comparison   (D=10240 = cubby-lm head)
+============================================================================
+
+[H-B3 corollary] cubby-lm VSABindingHead query is CONTINUOUS.
+  cos(continuous query, sign(query))              = 0.798  (theory sqrt(2/pi)=0.798)
+  argmax agreement, NO-signal (untrained) regime  = 17.6%  (worst case: argmax over pure crosstalk)
+  top-1 = target, cos=0.55 signal, continuous q   = 100.0%
+  top-1 = target, cos=0.55 signal, sign(q)        = 100.0%
+  => in the OPERATING regime binarization is nearly lossless for readout.
+  => H-B1's bipolar algebra needs a sign() step; H-B2's HRR does not.
+
+[H-B1 vs H-B2] role-filler unbind from a superposition of n pairs
+  (100-filler codebook; accuracy = correct filler is nearest)
+  n pairs       1      3      5      8     12     20     40     80    160    320
+  HRR        100   100   100   100   100   100   100   100   100   100   (%)
+  BSC/MAP    100   100   100   100   100   100   100   100   100    97   (%)
+
+[verdict]
+  HRR  >=90%-recall capacity: n<= 320 pairs
+  BSC  >=90%-recall capacity: n<= 320 pairs
+  Both are viable; the deciding factor is the head's CONTINUOUS query:
+  HRR unbinds it natively; BSC needs sign(), which is ~free in the signal regime.
+run: 2026-07-23, python 3.12.10, torch 2.10.0+cpu, numpy 2.4.6 (CPU only)

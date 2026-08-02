@@ -1,0 +1,30 @@
+============================================================================
+H-C7  Codebook capacity vs vocabulary size   (D=10240 = cubby-lm head)
+============================================================================
+
+[1] DIRECT READOUT (one codeword per token — what the head does today)
+           V   E[max crosstalk]   margin @cos=0.55  empirical top-1   codebook fp32
+      32,000              0.045             +0.505           100.0%          1.31GB
+     100,000              0.047             +0.503           100.0%          4.10GB
+     250,000              0.049             +0.501           100.0%         10.24GB
+   1,000,000              0.052             +0.498           100.0%         40.96GB
+  => crosstalk grows only as sqrt(ln V): a modest-quality query (cos=0.55) separates cleanly even at V=1M.
+  => the DIRECT-readout binding constraint does NOT kill a 1M vocab at D=10240.
+  => the real cost is the codebook itself: memory AND the O(V*D) matmul per step (see exp_c3_latency).
+
+[2] FACTORED identities (resonator law P_cap ~= 0.64*D^(1/(F-1)), VERIFIED in cubby-concepts)
+  per-slot capacity at D=10240: F=2: 6,554  F=3: 65  F=4: 14  F=5: 6
+
+           V                     F=3                   F=4
+      32,000          32/slot     OK             13/slot     OK     
+     100,000          46/slot     OK             18/slot   OVER     
+     250,000          63/slot     OK             22/slot   OVER     
+   1,000,000         100/slot   OVER             32/slot   OVER     
+  D required for single-token factored readout at F=3: V=32k -> D>=2,461, V=100k -> D>=5,260, V=250k -> D>=9,689, V=1000k -> D>=24,414
+  D required for single-token factored readout at F=4: V=32k -> D>=9,127, V=100k -> D>=21,452, V=250k -> D>=42,650, V=1000k -> D>=120,631
+
+[verdict]
+  - One-codeword-per-token direct readout scales to 1M vocab at D=10240 (crosstalk margin positive, empirically 100% at cos=0.55).
+  - FLAT factored readout (resonator) does NOT: F=3 needs ~100/slot at D=10240 but 1M vocab needs 100^3 exactly at the edge; F>=4 is over capacity. Chained F=2 hops (H-B4) remain the workaround.
+  - So H-C7's real pressure point is memory+compute of the flat codebook, not binding algebra capacity.
+run: 2026-07-23, python 3.12.10, numpy 2.4.6 (CPU only)

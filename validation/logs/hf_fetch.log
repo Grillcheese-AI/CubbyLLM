@@ -1,0 +1,171 @@
+# hf_fetch  6 jobs
+[legal/ca_code] streaming nvidia/Nemotron-Pretraining-Legal-v1 :: Nemotron-Pretraining-Legal-California-Code-Of-Regulations ...
+[legal/ca_code] DONE 57,523 rows, 0.16 GB, 13s -> E:\datasets\_pipeline\nemotron_legal\california_code.jsonl
+[legal/case_law] streaming nvidia/Nemotron-Pretraining-Legal-v1 :: Nemotron-Pretraining-Legal-Case-Law-Summary ...
+[legal/case_law] DONE 53,137 rows, 0.13 GB, 9s -> E:\datasets\_pipeline\nemotron_legal\case_law_summary.jsonl
+[legal/cuad] streaming nvidia/Nemotron-Pretraining-Legal-v1 :: Nemotron-Pretraining-Legal-LegalBench-CUAD-v2 ...
+[legal/cuad]   100,000 rows, 0.05 GB, 17s
+[legal/cuad]   200,000 rows, 0.11 GB, 27s
+[legal/cuad]   300,000 rows, 0.16 GB, 36s
+[legal/cuad]   400,000 rows, 0.22 GB, 46s
+[legal/cuad] DONE 460,031 rows, 0.26 GB, 51s -> E:\datasets\_pipeline\nemotron_legal\cuad.jsonl
+[legal/ecfr] streaming nvidia/Nemotron-Pretraining-Legal-v1 :: Nemotron-Pretraining-Legal-eCFR ...
+[legal/ecfr] DONE 35,173 rows, 0.57 GB, 23s -> E:\datasets\_pipeline\nemotron_legal\ecfr.jsonl
+[legal/casehold] streaming nvidia/Nemotron-Pretraining-Legal-v1 :: Nemotron-Pretraining-Legal-CaseHOLD ...
+[legal/casehold]   100,000 rows, 0.40 GB, 48s
+[legal/casehold]   200,000 rows, 0.74 GB, 62s
+[legal/casehold]   300,000 rows, 1.10 GB, 73s
+[legal/casehold]   400,000 rows, 1.46 GB, 85s
+[legal/casehold]   500,000 rows, 1.83 GB, 96s
+[legal/casehold]   600,000 rows, 2.19 GB, 108s
+[legal/casehold] DONE 691,518 rows, 2.50 GB, 118s -> E:\datasets\_pipeline\nemotron_legal\casehold.jsonl
+[fineinstructions] streaming AjayP13/nemotron_fineinstructions_1T_judged_exp_chat ...
+[fineinstructions]   100,000 rows, 0.17 GB, 133s
+[fineinstructions]   200,000 rows, 0.33 GB, 164s
+[fineinstructions]   300,000 rows, 0.50 GB, 195s
+[fineinstructions]   400,000 rows, 0.67 GB, 226s
+[fineinstructions]   500,000 rows, 0.84 GB, 257s
+[fineinstructions]   600,000 rows, 1.00 GB, 286s
+[fineinstructions]   700,000 rows, 1.17 GB, 318s
+[fineinstructions]   800,000 rows, 1.34 GB, 350s
+[fineinstructions]   900,000 rows, 1.51 GB, 378s
+[fineinstructions]   1,000,000 rows, 1.67 GB, 408s
+[fineinstructions]   1,100,000 rows, 1.84 GB, 434s
+[fineinstructions]   1,200,000 rows, 2.01 GB, 464s
+[fineinstructions]   1,300,000 rows, 2.18 GB, 490s
+[fineinstructions]   1,400,000 rows, 2.35 GB, 520s
+[fineinstructions]   1,500,000 rows, 2.51 GB, 550s
+[fineinstructions]   1,600,000 rows, 2.68 GB, 576s
+[fineinstructions]   1,700,000 rows, 2.85 GB, 606s
+[fineinstructions]   1,800,000 rows, 3.02 GB, 637s
+[fineinstructions]   1,900,000 rows, 3.18 GB, 664s
+[fineinstructions]   2,000,000 rows, 3.35 GB, 691s
+[fineinstructions]   2,100,000 rows, 3.52 GB, 716s
+[fineinstructions]   2,200,000 rows, 3.69 GB, 744s
+[fineinstructions]   2,300,000 rows, 3.86 GB, 770s
+[fineinstructions]   2,400,000 rows, 4.02 GB, 796s
+[fineinstructions]   2,500,000 rows, 4.19 GB, 822s
+[fineinstructions]   2,600,000 rows, 4.36 GB, 850s
+[fineinstructions]   2,700,000 rows, 4.53 GB, 876s
+[fineinstructions]   2,800,000 rows, 4.69 GB, 904s
+[fineinstructions]   2,900,000 rows, 4.86 GB, 935s
+[fineinstructions]   3,000,000 rows, 5.03 GB, 975s
+[fineinstructions]   3,100,000 rows, 5.20 GB, 1007s
+[fineinstructions]   3,200,000 rows, 5.36 GB, 1039s
+[fineinstructions]   3,300,000 rows, 5.53 GB, 1073s
+[fineinstructions]   3,400,000 rows, 5.70 GB, 1106s
+[fineinstructions]   3,500,000 rows, 5.87 GB, 1135s
+# hf_fetch  9 jobs
+[legal/ca_code] skip (exists, 0.16 GB)
+[legal/case_law] skip (exists, 0.13 GB)
+[legal/cuad] skip (exists, 0.27 GB)
+[legal/ecfr] skip (exists, 0.57 GB)
+[legal/casehold] skip (exists, 2.52 GB)
+[chatbot_arena] streaming lmsys/chatbot_arena_conversations ...
+[chatbot_arena] DONE 33,000 kept / 33,000 seen, 0.04 GB, 21s -> E:\datasets\domains\conversation\chatbot_arena.jsonl
+[synthetic_code] streaming nvidia/Nemotron-Pretraining-Code-v1 :: Synthetic-Code ...
+[synthetic_code]   100,000 kept / 100,000 seen, 0.25 GB, 34s
+[synthetic_code]   200,000 kept / 200,000 seen, 0.49 GB, 46s
+[synthetic_code]   300,000 kept / 300,000 seen, 0.74 GB, 57s
+[synthetic_code]   400,000 kept / 400,000 seen, 0.97 GB, 68s
+[synthetic_code]   500,000 kept / 500,000 seen, 1.22 GB, 79s
+[synthetic_code]   600,000 kept / 600,000 seen, 1.46 GB, 90s
+[synthetic_code]   700,000 kept / 700,000 seen, 1.70 GB, 101s
+[synthetic_code]   800,000 kept / 800,000 seen, 1.95 GB, 111s
+[synthetic_code]   900,000 kept / 900,000 seen, 2.20 GB, 121s
+[synthetic_code]   1,000,000 kept / 1,000,000 seen, 2.44 GB, 152s
+[synthetic_code]   1,100,000 kept / 1,100,000 seen, 2.67 GB, 165s
+[synthetic_code]   1,200,000 kept / 1,200,000 seen, 2.92 GB, 178s
+[synthetic_code]   1,300,000 kept / 1,300,000 seen, 3.17 GB, 188s
+[synthetic_code]   1,400,000 kept / 1,400,000 seen, 3.41 GB, 199s
+[synthetic_code]   1,500,000 kept / 1,500,000 seen, 3.63 GB, 210s
+[synthetic_code]   1,600,000 kept / 1,600,000 seen, 3.88 GB, 221s
+[synthetic_code]   1,700,000 kept / 1,700,000 seen, 4.12 GB, 232s
+[synthetic_code]   1,800,000 kept / 1,800,000 seen, 4.38 GB, 242s
+[synthetic_code]   1,900,000 kept / 1,900,000 seen, 4.63 GB, 251s
+[synthetic_code]   2,000,000 kept / 2,000,000 seen, 4.89 GB, 279s
+[synthetic_code] DONE 2,047,718 kept / 2,047,718 seen, 5.00 GB, 285s -> E:\datasets\_pipeline\nemotron_code\synthetic_code.jsonl
+[nemotron_qa] streaming fineinstructions-pretraining/nemotron_qa_1T_exp ...
+[nemotron_qa]   100,000 kept / 100,000 seen, 0.24 GB, 163s
+[nemotron_qa]   200,000 kept / 200,000 seen, 0.49 GB, 196s
+[nemotron_qa]   300,000 kept / 300,000 seen, 0.73 GB, 227s
+[nemotron_qa]   400,000 kept / 400,000 seen, 0.97 GB, 270s
+[nemotron_qa]   500,000 kept / 500,000 seen, 1.21 GB, 313s
+[nemotron_qa]   600,000 kept / 600,000 seen, 1.46 GB, 352s
+[nemotron_qa]   700,000 kept / 700,000 seen, 1.70 GB, 382s
+[nemotron_qa]   800,000 kept / 800,000 seen, 1.94 GB, 412s
+[nemotron_qa]   900,000 kept / 900,000 seen, 2.18 GB, 445s
+[nemotron_qa]   1,000,000 kept / 1,000,000 seen, 2.43 GB, 478s
+[nemotron_qa]   1,100,000 kept / 1,100,000 seen, 2.67 GB, 510s
+[nemotron_qa]   1,200,000 kept / 1,200,000 seen, 2.91 GB, 540s
+[nemotron_qa]   1,300,000 kept / 1,300,000 seen, 3.15 GB, 571s
+[nemotron_qa]   1,400,000 kept / 1,400,000 seen, 3.40 GB, 602s
+[nemotron_qa]   1,500,000 kept / 1,500,000 seen, 3.64 GB, 633s
+[nemotron_qa]   1,600,000 kept / 1,600,000 seen, 3.88 GB, 664s
+[nemotron_qa]   1,700,000 kept / 1,700,000 seen, 4.13 GB, 694s
+[nemotron_qa]   1,800,000 kept / 1,800,000 seen, 4.37 GB, 727s
+[nemotron_qa]   1,900,000 kept / 1,900,000 seen, 4.61 GB, 761s
+[nemotron_qa]   2,000,000 kept / 2,000,000 seen, 4.85 GB, 793s
+[nemotron_qa]   2,100,000 kept / 2,100,000 seen, 5.10 GB, 826s
+[nemotron_qa]   2,200,000 kept / 2,200,000 seen, 5.34 GB, 857s
+[nemotron_qa]   2,300,000 kept / 2,300,000 seen, 5.58 GB, 887s
+[nemotron_qa]   2,400,000 kept / 2,400,000 seen, 5.82 GB, 917s
+[nemotron_qa]   2,500,000 kept / 2,500,000 seen, 6.07 GB, 948s
+[nemotron_qa]   2,600,000 kept / 2,600,000 seen, 6.31 GB, 979s
+[nemotron_qa]   2,700,000 kept / 2,700,000 seen, 6.55 GB, 1009s
+[nemotron_qa]   2,800,000 kept / 2,800,000 seen, 6.79 GB, 1040s
+[nemotron_qa]   2,900,000 kept / 2,900,000 seen, 7.04 GB, 1074s
+[nemotron_qa]   3,000,000 kept / 3,000,000 seen, 7.28 GB, 1109s
+[nemotron_qa]   3,100,000 kept / 3,100,000 seen, 7.52 GB, 1138s
+[nemotron_qa]   3,200,000 kept / 3,200,000 seen, 7.76 GB, 1169s
+[nemotron_qa] DONE 3,297,555 kept / 3,297,555 seen, 8.00 GB, 1198s -> E:\datasets\_pipeline\nemotron_qa\nemotron_qa.jsonl
+[fineinstructions] streaming AjayP13/nemotron_fineinstructions_1T_judged_exp_chat ...
+[fineinstructions]   100,000 kept / 100,000 seen, 0.17 GB, 118s
+[fineinstructions]   200,000 kept / 200,000 seen, 0.33 GB, 140s
+[fineinstructions]   300,000 kept / 300,000 seen, 0.50 GB, 162s
+[fineinstructions]   400,000 kept / 400,000 seen, 0.67 GB, 184s
+[fineinstructions]   500,000 kept / 500,000 seen, 0.84 GB, 205s
+[fineinstructions]   600,000 kept / 600,000 seen, 1.00 GB, 229s
+[fineinstructions]   700,000 kept / 700,000 seen, 1.17 GB, 262s
+[fineinstructions]   800,000 kept / 800,000 seen, 1.34 GB, 293s
+[fineinstructions]   900,000 kept / 900,000 seen, 1.51 GB, 320s
+[fineinstructions]   1,000,000 kept / 1,000,000 seen, 1.67 GB, 361s
+[fineinstructions]   1,100,000 kept / 1,100,000 seen, 1.84 GB, 399s
+[fineinstructions]   1,200,000 kept / 1,200,000 seen, 2.01 GB, 613s
+[fineinstructions]   1,300,000 kept / 1,300,000 seen, 2.18 GB, 648s
+[fineinstructions]   1,400,000 kept / 1,400,000 seen, 2.35 GB, 676s
+[fineinstructions]   1,500,000 kept / 1,500,000 seen, 2.51 GB, 705s
+[fineinstructions]   1,600,000 kept / 1,600,000 seen, 2.68 GB, 734s
+[fineinstructions]   1,700,000 kept / 1,700,000 seen, 2.85 GB, 765s
+[fineinstructions]   1,800,000 kept / 1,800,000 seen, 3.02 GB, 795s
+[fineinstructions]   1,900,000 kept / 1,900,000 seen, 3.18 GB, 826s
+[fineinstructions]   2,000,000 kept / 2,000,000 seen, 3.35 GB, 956s
+[fineinstructions]   2,100,000 kept / 2,100,000 seen, 3.52 GB, 1007s
+[fineinstructions]   2,200,000 kept / 2,200,000 seen, 3.69 GB, 1036s
+[fineinstructions]   2,300,000 kept / 2,300,000 seen, 3.86 GB, 1066s
+[fineinstructions]   2,400,000 kept / 2,400,000 seen, 4.02 GB, 1095s
+[fineinstructions]   2,500,000 kept / 2,500,000 seen, 4.19 GB, 1126s
+[fineinstructions]   2,600,000 kept / 2,600,000 seen, 4.36 GB, 1155s
+[fineinstructions]   2,700,000 kept / 2,700,000 seen, 4.53 GB, 1185s
+[fineinstructions]   2,800,000 kept / 2,800,000 seen, 4.69 GB, 1213s
+[fineinstructions]   2,900,000 kept / 2,900,000 seen, 4.86 GB, 1241s
+[fineinstructions]   3,000,000 kept / 3,000,000 seen, 5.03 GB, 1276s
+[fineinstructions]   3,100,000 kept / 3,100,000 seen, 5.20 GB, 1322s
+[fineinstructions]   3,200,000 kept / 3,200,000 seen, 5.36 GB, 1364s
+[fineinstructions]   3,300,000 kept / 3,300,000 seen, 5.53 GB, 1402s
+[fineinstructions]   3,400,000 kept / 3,400,000 seen, 5.70 GB, 1439s
+[fineinstructions]   3,500,000 kept / 3,500,000 seen, 5.87 GB, 1475s
+[fineinstructions]   3,600,000 kept / 3,600,000 seen, 6.03 GB, 1511s
+[fineinstructions]   3,700,000 kept / 3,700,000 seen, 6.20 GB, 1542s
+[fineinstructions]   3,800,000 kept / 3,800,000 seen, 6.37 GB, 1590s
+[fineinstructions]   3,900,000 kept / 3,900,000 seen, 6.54 GB, 1659s
+[fineinstructions]   4,000,000 kept / 4,000,000 seen, 6.70 GB, 1726s
+[fineinstructions]   4,100,000 kept / 4,100,000 seen, 6.87 GB, 1773s
+[fineinstructions]   4,200,000 kept / 4,200,000 seen, 7.04 GB, 1815s
+[fineinstructions]   4,300,000 kept / 4,300,000 seen, 7.21 GB, 1853s
+[fineinstructions]   4,400,000 kept / 4,400,000 seen, 7.37 GB, 1887s
+[fineinstructions]   4,500,000 kept / 4,500,000 seen, 7.54 GB, 1919s
+[fineinstructions]   4,600,000 kept / 4,600,000 seen, 7.71 GB, 1951s
+[fineinstructions]   4,700,000 kept / 4,700,000 seen, 7.88 GB, 1984s
+[fineinstructions] DONE 4,773,852 kept / 4,773,852 seen, 8.00 GB, 2009s -> E:\datasets\domains\instruction\nemotron_fineinstructions.jsonl
+# hf_fetch complete

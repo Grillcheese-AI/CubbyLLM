@@ -1,0 +1,25 @@
+==============================================================================
+H0/H-A2  GCE-style controller vs fixed weights  (6 sequential tasks, no replay)
+==============================================================================
+  predict-zero (chance) MSE ~= 0.994
+
+
+  task-0 MSE after finishing task t   (retention curve; chance=0.99)
+  t                  0        1        2        3        4        5
+  baseline       0.060    2.074    1.722    1.853    1.934    1.778
+  gce-naive      0.062    0.103    1.176    1.072    1.537    2.734
+  gce+hard       0.062    0.060    0.060    0.062    0.061    0.060
+
+  baseline: 0.41ms/step, 2,080p  gce-naive: 0.85ms/step, 136,384p  gce+hard: 1.70ms/step, 136,384p
+
+  [P5] gce-naive: task-0 data RIGHT ctx MSE 2.719, WRONG ctx mean 2.000 (chance 0.99)
+  [P5] gce-naive: wrong-ctx error LOW -> STRUCTURAL BYPASS suspected
+
+  [P5] gce+hard: task-0 data RIGHT ctx MSE 0.060, WRONG ctx mean 1.866 (chance 0.99)
+  [P5] gce+hard: context signal is load-bearing (no bypass)
+
+[verdict]
+  final task-0 MSE: baseline 1.778 | gce-naive 2.734 | gce+hardening 0.060   (just-learned ~0.001, chance 0.99)
+  naive theta=f(c) alone: partial (interference persists INSIDE the shared hypernetwork).
+  hardened theta=f(c): near-zero forgetting -> H0 mechanism SUPPORTED at toy scale.
+run: 2026-07-23, python 3.12.10, torch 2.10.0+cpu (CPU only)

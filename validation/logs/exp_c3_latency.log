@@ -1,0 +1,24 @@
+==============================================================================
+H-C3  Output-head latency: full softmax vs retrieval   (CPU fp32, batch=1)
+==============================================================================
+           V       D      head   ms/token  top1 vs full  codebook GB
+      32,000   10240      full      47.88             -         1.31
+                           ivf      63.68           80%             
+                       ideal-K       1.50       (floor)        0.042
+      32,000    2560      full      10.45             -         0.33
+                           ivf      19.74           80%             
+                       ideal-K       0.24       (floor)        0.010
+     128,000    2560      full      41.76             -         1.31
+                           ivf      16.17           63%             
+                       ideal-K       0.18       (floor)        0.010
+     256,000    2560      full      81.89             -         2.62
+                           ivf      25.21           37%             
+                       ideal-K       0.19       (floor)        0.010
+
+  [extrapolated, NOT measured] full head at V=1M, D=2560: ~315.1 ms/token, 10.2GB fp32  (linear-in-V fit of the measured 128k->256k segment)
+  [extrapolated, NOT measured] at V=1M, D=10240: codebook 41.0GB fp32 — not allocatable here.
+
+[verdict]
+  - full-softmax cost grows ~linearly in V (32k->256k measured: 7.8x for 8x vocab); retrieval cost stays ~flat.
+  - IVF top-1 agreement on RANDOM codewords is the pessimistic bound (random vectors cluster terribly); trained/structured embeddings can only cluster better.
+  - at V=1M the fp32 codebook is 10-41GB depending on D: MEMORY, not matmul, is the first wall. A large vocab NEEDS low-precision/low-d codes + retrieval — H-C3's mechanism is REQUIRED, not optional.

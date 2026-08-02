@@ -1,0 +1,51 @@
+# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=E:/datasets/_pipeline/token_cache
+# sources: ['arxiv']
+
+[arxiv]  tokenizing…
+[arxiv]  14,054,712 tokens  (9s, 1.61M tok/s)  -> arxiv.u16
+
+# TOTAL 14,054,712 tokens across 1 sources in 9s
+# manifest_hash (full corpus): 99b5460440160b03c3db074f235778ee13896f734938d9634f36142a5d7bb8c5
+# log: C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\tokenize_all_1785381600.log
+# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=E:/datasets/_pipeline/token_cache
+# sources: ['books', 'verified_facts', 'wikipedia', 'arxiv', 'pretrain_ext', 'unified']
+
+[books]  tokenizing...
+[books]  1,238,862,177 tokens  (706s, 1.75M tok/s)  -> books.u16
+
+[verified_facts]  tokenizing...
+[verified_facts]  1,185,903,120 tokens  (650s, 1.82M tok/s)  -> verified_facts.u16
+
+[wikipedia]  tokenizing...
+[wikipedia]  96,474,158 tokens  (55s, 1.76M tok/s)  -> wikipedia.u16
+
+[arxiv]  tokenizing...
+[arxiv]  14,054,712 tokens  (8s, 1.70M tok/s)  -> arxiv.u16
+
+[pretrain_ext]  tokenizing...
+[pretrain_ext]  970,667 tokens  (1s, 1.55M tok/s)  -> pretrain_ext.u16
+
+[unified] cap=2.0B  tokenizing...
+# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=E:/datasets/_pipeline/token_cache
+# sources: ['books', 'verified_facts', 'wikipedia', 'arxiv', 'pretrain_ext', 'unified']
+
+[books]  tokenizing...
+# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=E:/datasets/_pipeline/token_cache
+# sources: ['books', 'verified_facts', 'wikipedia', 'arxiv', 'pretrain_ext', 'unified']
+
+[books]  tokenizing...
+[books]  1,238,862,177 tokens  (701s, 1.77M tok/s)  -> books.u16
+
+[verified_facts]  tokenizing...
+[verified_facts]  1,185,903,120 tokens  (1s, 2299.19M tok/s)  -> verified_facts.u16
+
+[wikipedia]  tokenizing...
+[wikipedia]  96,474,158 tokens  (0s, 2125.15M tok/s)  -> wikipedia.u16
+
+[arxiv]  tokenizing...
+[arxiv]  14,054,712 tokens  (0s, 318.19M tok/s)  -> arxiv.u16
+
+[pretrain_ext]  tokenizing...
+[pretrain_ext]  970,667 tokens  (0s, 21.91M tok/s)  -> pretrain_ext.u16
+
+[unified] cap=2.0B  tokenizing...

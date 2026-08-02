@@ -1,0 +1,13 @@
+============================================================================
+H-A5  DG sparse expansion vs dense storage  (D=1024, Hebbian store, recall@cos>0.9)
+============================================================================
+   N assoc   dense D  dense-wide  dg-sparse 2%   (D_exp = 8*D = 8192)
+       128    100.0%      100.0%        100.0%
+       256    100.0%       98.8%        100.0%
+       512      0.0%        0.0%        100.0%
+      1024      0.0%        0.0%          0.0%
+      2048      0.0%        0.0%          0.0%
+
+[verdict]
+  If dg-sparse beats dense-wide at matched W size, sparsity (pattern separation) is doing real work beyond mere parameter count -> H-A5's mechanism validated as a complement (NOT a replacement) for the memory-rule fix.
+run: 2026-07-23, python 3.12.10, numpy 2.4.6 (CPU only)
