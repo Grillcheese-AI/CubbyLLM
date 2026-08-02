@@ -39,3 +39,24 @@
 # ACTION: set bind_weight=0 (CB_BIND_W=0) for the DDP run.
 # NOTE the norm signature, consistent with the collapse: trained ||h|| std 79.9
 # (mean 182.8, max 602.8) vs control std 14.7 (mean 199.7, max 236.7).
+#
+# ============ CONFIRMED ON A TRAINED CONTROL, 2026-08-02 ============
+# exp_b6b_ckpt_ab.py, 49,152 held-out tokens, eval seed 12345 (training used 0):
+#
+#                          A binding(20k)   B control(7.5k)
+#   held-out CE                   3.5673            4.6325
+#   held-out bpc                  1.0722            1.3924   <- CONFOUNDED, see below
+#   binding cos (n=16)             0.841             0.243   <- B sits on the 1/sqrt(16) floor
+#   RETRIEVAL acc                  11.9%             96.9%   <- decisive
+#   filler-filler cos              0.934             0.276   <- collapse fingerprint
+#
+# ckpt_1 is a genuinely trained model (same corpus, same architecture, binding
+# OFF) and retains 96.9% retrieval — indistinguishable from random init. So the
+# theta=f(c) memory layer / MinGRU trunk / hybrid vocab are NOT the cause; the
+# aux loss alone is. Healthy baseline for real features: within-sequence
+# filler-filler ~0.28 is harmless (synthetic random is ~0.00); the jump to ~0.93
+# is what destroys discrimination.
+#
+# The LM half is permanently unanswerable from these artifacts: 20000 vs 7500
+# steps, and the run overwrote a single checkpoint path, so no matched-step
+# binding checkpoint exists. Moot for the decision either way.
