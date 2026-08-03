@@ -98,6 +98,36 @@ class CubbyModel:
     def logits_from(self, h: "Tensor") -> "Tensor":
         return self.head.logits(h, self.retrieval_k)         # (B, S, V), top-K
 
+    def step(self, token: "Tensor", state: "dict | None" = None):
+        """Decode ONE token, carrying state. token: (B,) ids -> (logits, state).
+
+        The inference path. Cost per token is independent of how many tokens came
+        before, and the carried state is n_layers x (B, d) plus two context
+        accumulators — it does not grow with context, unlike a KV cache. Without
+        this, generation re-runs the whole prefix per token (O(S) work per token,
+        worse than attention-with-cache), which is what ``sample_text`` does today.
+
+        ONE DOCUMENTED DIFFERENCE FROM ``forward``: ``infer_context`` mean-pools
+        the embedding over the WHOLE sequence, so in training the context at
+        position t sees tokens after t. That is not reproducible causally, so
+        decode uses a running mean over tokens seen so far. Contexts therefore
+        differ slightly from a full forward on the same prefix; everything else
+        is exact (see tests/model/test_mingru_decode.py).
+        """
+        import torch
+
+        if state is None:
+            state = {"bb": None, "ctx_sum": None, "ctx_n": 0}
+        e = self.embedding.embed(token.unsqueeze(1), ctx=None)[:, 0]   # (B, d)
+        s = e if state["ctx_sum"] is None else state["ctx_sum"] + e
+        n = state["ctx_n"] + 1
+        ctx = self.context_source.infer(s / n)                          # running mean
+        x = self.embedding.embed(token.unsqueeze(1), ctx)[:, 0]
+        y, bb = self.backbone.step(x, state["bb"])
+        y = self.memory.forward_generated(y.unsqueeze(1), ctx)[:, 0]
+        logits = self.head.logits(y.unsqueeze(1), self.retrieval_k)[:, 0]
+        return logits, {"bb": bb, "ctx_sum": s, "ctx_n": n}
+
     def forward(self, tokens: "Tensor") -> "Tensor":
         """Context-threaded forward pass -> next-token logits (B, S, V).
 

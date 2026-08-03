@@ -93,6 +93,25 @@ class _MinGRUMixer(nn.Module):
         a = 0.001 + 0.998 * torch.sigmoid(self.proj_d(x))
         return _log_domain_scan(x_scan, a)
 
+    def step(self, x_t, h_prev=None):
+        """ONE token, carrying state — the decode path. x_t: (B, d) -> (y, h).
+
+        The parallel scan above is a TRAINING optimisation; the recurrence itself
+        (h_t = a_t*h_{t-1} + x_t, h_0 = 0) is inherently sequential and O(1) per
+        token in both compute and memory. That is the whole inference argument for
+        this backbone, and without this method it is unrealised: generating with
+        ``forward`` re-runs the entire prefix per token, which is O(S) work per
+        token and strictly worse than a transformer with a KV cache.
+
+        Must agree with ``forward`` to floating-point tolerance — see
+        tests/model/test_mingru_decode.py, which is what makes any throughput
+        comparison meaningful rather than a measurement of a different model.
+        """
+        x_scan = torch.sigmoid(self.proj_g(x_t)) * torch.tanh(self.proj_v(x_t))
+        a = 0.001 + 0.998 * torch.sigmoid(self.proj_d(x_t))
+        h = x_scan if h_prev is None else a * h_prev + x_scan
+        return h, h
+
 
 class MinGRUBackbone(nn.Module):
     """The default CubbyLLM backbone: a MinGRU + SwiGLU trunk.
@@ -119,6 +138,25 @@ class MinGRUBackbone(nn.Module):
         x = x + m(n1(x))
         x = x + f(n2(x))
         return x
+
+    def step(self, x_t, states=None):
+        """Decode one token. x_t: (B, d_model). states: list of per-layer (B, d)
+        or None to start. Returns (y_t, new_states).
+
+        Cost per token is O(d^2) and INDEPENDENT of how many tokens preceded it;
+        the carried state is n_layers x (B, d) floats and does not grow. Compare a
+        KV cache, which grows linearly in context. Never grad-checkpointed — this
+        path is inference-only and runs under no_grad.
+        """
+        n = len(self.mix)
+        states = [None] * n if states is None else states
+        new_states = []
+        for i in range(n):
+            h, s = self.mix[i].step(self.n1[i](x_t), states[i])
+            x_t = x_t + h
+            x_t = x_t + self.ffn[i](self.n2[i](x_t))
+            new_states.append(s)
+        return x_t, new_states
 
     def forward(self, x: "torch.Tensor") -> "torch.Tensor":
         ckpt = self.grad_checkpoint and torch.is_grad_enabled()
