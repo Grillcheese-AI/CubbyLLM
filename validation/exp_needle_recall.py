@@ -10,11 +10,26 @@ next-token prediction. Nothing in training rewarded keeping the date on page 312
 
 External evidence says this matters. Kimi K3 reaches 1M context with THREE
 KDA (linear-attention) layers per ONE full-attention layer — a 3:1 hybrid, not
-pure linear. cubby-lm's own 500M run used attention every 3rd layer and its
-ablation recorded the largest single component gain in the table (+0.55
-consistency). CubbyLLM is 0% attention, and `exp_d1b_backbone_bakeoff.py` chose
-MinGRU on **bpc** — a prediction metric — against pure alternatives. A hybrid was
-never on the ballot, and recall was never scored.
+pure linear. cubby-lm's production 1.7B run was also a hybrid: 22 MinGRU layers
+with sliding-window attention on every 3rd (`trunk_torch/blocks.py:133`,
+`--attn-every-n 3` in `runpod_launch.sh:104`) = 8 of 22.
+
+RETRACTION (2026-08-03). An earlier version of this docstring claimed cubby-lm's
+ablation recorded "+0.55 consistency" for that attention. THAT NUMBER DOES NOT
+EXIST. A repo-wide search of cubby-lm found no such figure and NO with-attention
+vs without-attention ablation at all; its own `TASKS.md:360` still queues the
+2x2 as unrun, and `docs/ARCHITECTURE.md:288` labels the entry "IN VALIDATION —
+not a proven result." What cubby-lm did measure points the other way: at step
+110k the learned residual scale on its 8 attention layers had fallen to 0.109,
+attenuated ~9x (`docs/MEMORY_PROBE.md:24,145`) — the model withdrawing from the
+attention stream, though that is one telemetry reading, not an ablation either.
+
+So: the hybrid is the inherited DESIGN, not an inherited RESULT. Nobody in
+either repo has measured whether attention helps here. Meanwhile
+`exp_d1b_backbone_bakeoff.py` chose MinGRU on **bpc** — a prediction metric —
+and its `Trunk(d, n_layers, mixer_cls)` applies ONE mixer class to every layer,
+so a hybrid was not merely unchosen, it was unrepresentable. Recall was never
+scored. That is the gap this file exists to close.
 
 METHOD. Plant a verbatim fact at a controlled depth in filler drawn from the real
 corpus, then score whether the model assigns higher likelihood to the true
