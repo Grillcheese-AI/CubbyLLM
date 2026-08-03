@@ -89,6 +89,99 @@ class HyperGenerator:
         return GeneratedParams(weights=theta, meta={"source_id": ctx.source_id})
 
 
+class BasisHyperGenerator:
+    """theta=f(c) as a mix over learned LOW-RANK BASES — the scalable form.
+
+    Ported from cubemind's ``execution/mindforge.py`` (surveyed 2026-08-02: real,
+    runs, full analytic backward, wired into its own ``VSALayer``). That design is
+    adopted here because ``HyperGenerator``'s shape does not survive contact with
+    a 2B model: emitting a flat ``d*d`` block means its final layer alone is
+    ``hidden x d^2`` — measured at **272.6M parameters** for d=2048, hidden=64,
+    i.e. **13.6% of the whole model spent on one generator**. This form is ~400x
+    smaller and conditions on the layer as well as the context::
+
+        h       = GELU(LayerNorm(W_proj @ c) ++ layer_emb[layer_id])
+        coeffs  = W_coeff @ MLP(h)                       # (B, n_basis)
+        A       = sum_i coeffs[i] * A_basis[i]           # (B, rank, d)
+        B       = sum_i coeffs[i] * B_basis[i]           # (B, d, rank)
+        W       = B @ A                                  # never materialised
+
+    ``apply`` uses the factored path (``(x @ A^T) @ B^T``), so the d x d transform
+    is never built. ``generate`` materialises it only for drop-in compatibility
+    with the existing ``ParameterGenerator`` protocol and ``MemoryLayer``.
+
+    ``B_basis`` is zero-initialised: standard LoRA init, so the generated delta is
+    exactly identity at step 0. Verified 2026-08-02 that this does NOT block
+    training — the delta is linear in B so ``B_basis`` receives gradient
+    immediately, and ``A_basis`` (zero-grad only at step 0) unblocks as soon as B
+    moves. A cubemind comment claiming zero-init "kills gradients" was checked and
+    is wrong for this parameterisation.
+    """
+
+    def __init__(self, ctx_dim: int, d_model: int, n_layers: int = 1,
+                 n_basis: int = 16, rank: int = 8, hidden: int = 256) -> None:
+        import math
+
+        import torch
+        import torch.nn as nn
+
+        self.d_model, self.rank, self.n_basis = int(d_model), int(rank), int(n_basis)
+        self.n_layers = int(n_layers)
+        self.ctx_proj = nn.Linear(ctx_dim, hidden)
+        self.ctx_norm = nn.LayerNorm(hidden)
+        self.layer_emb = nn.Parameter(torch.randn(self.n_layers, hidden) * 0.02)
+        self.mix = nn.Sequential(nn.Linear(hidden * 2, hidden), nn.GELU(),
+                                 nn.Linear(hidden, self.n_basis))
+        std = math.sqrt(2.0 / (d_model + rank))
+        self.A_basis = nn.Parameter(torch.randn(self.n_basis, rank, d_model) * std)
+        # zero-init => identity adapter at step 0 (standard LoRA; see docstring)
+        self.B_basis = nn.Parameter(torch.zeros(self.n_basis, d_model, rank))
+
+    def parameters(self):
+        yield from self.ctx_proj.parameters()
+        yield from self.ctx_norm.parameters()
+        yield from self.mix.parameters()
+        yield self.layer_emb
+        yield self.A_basis
+        yield self.B_basis
+
+    def _coeffs(self, ctx: "Context", layer_id: int):
+        import torch
+        import torch.nn.functional as F
+
+        h = F.gelu(self.ctx_norm(self.ctx_proj(ctx.vector)))      # (B, hidden)
+        emb = self.layer_emb[int(layer_id) % self.n_layers]        # (hidden,)
+        h = torch.cat([h, emb.expand(h.shape[0], -1)], dim=-1)     # (B, 2*hidden)
+        return self.mix(h)                                         # (B, n_basis)
+
+    def factors(self, ctx: "Context", layer_id: int = 0):
+        """The (A, B) low-rank factors — the form to actually compute with."""
+        import torch
+
+        c = self._coeffs(ctx, layer_id)
+        A = torch.einsum("bn,nrd->brd", c, self.A_basis)           # (B, rank, d)
+        B = torch.einsum("bn,ndr->bdr", c, self.B_basis)           # (B, d, rank)
+        return A, B
+
+    def apply(self, x: "Tensor", ctx: "Context", layer_id: int = 0) -> "Tensor":
+        """x @ W^T computed as (x @ A^T) @ B^T — never builds the d x d matrix."""
+        import torch
+
+        A, B = self.factors(ctx, layer_id)
+        A, B = A.mean(dim=0), B.mean(dim=0)                        # shared context
+        return torch.einsum("...d,rd->...r", x, A) @ B.t()
+
+    def generate(self, ctx: "Context", layer_id: int = 0) -> GeneratedParams:
+        """Materialise the flat d*d block. Drop-in for ``ParameterGenerator``;
+        prefer ``apply``/``factors``, which skip the d x d entirely."""
+        import torch
+
+        A, B = self.factors(ctx, layer_id)
+        W = torch.einsum("bdr,brk->bdk", B, A)                     # (B, d, d)
+        return GeneratedParams(weights=W.reshape(W.shape[0], -1),
+                               meta={"source_id": ctx.source_id, "layer_id": layer_id})
+
+
 @dataclass
 class SnapshotHardener:
     """von-Oswald-style output regularization (exp_h0_gce.py's ``harden`` path).
