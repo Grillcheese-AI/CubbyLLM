@@ -85,6 +85,8 @@ GEN_KIND = os.environ.get("CB_GEN_KIND", "basis")
 GEN_BASIS = _env("CB_GEN_BASIS", 16)         # number of low-rank bases
 GEN_RANK = _env("CB_GEN_RANK", 8)            # rank of each basis adapter
 HEALTH_EVERY = _env("CB_HEALTH", 250)        # representation-health probe cadence (0 = off)
+PROMPTED = bool(_env("CB_GEN_PROMPT", 1))    # continue REAL text instead of cold-starting from EOS
+PROMPT_LEN = _env("CB_PROMPT_LEN", 24)       # tokens of real prefix to condition on
 BIND_N = _env("CB_BIND_N", 16)               # role/filler pairs bundled per step
 REP_PEN = _env("CB_REP_PEN", 1.3, float)     # sampling repetition penalty (1.0 = off); freq-aware, breaks loops
 NO_REPEAT = _env("CB_NO_REPEAT", 3)          # block repeating any n-gram of this size while sampling (0 = off)
@@ -238,6 +240,51 @@ def representation_health(model, pipe, dev, n=16, seqs=4, seq=256):
     ff = torch.bmm(fn, fn.transpose(1, 2))
     off = ff[:, ~torch.eye(n, dtype=bool, device=h.device)].mean()
     return float(acc), float(off)
+
+
+@torch.no_grad()
+def sample_continuations(model, decode, dev, vocab, pipe, n, max_new=64,
+                         temp=0.8, top_k=40, rep_pen=1.3, no_repeat=3):
+    """Continue REAL corpus text instead of cold-starting from EOS.
+
+    Cold-starting exposes only the EOS->next distribution, which is sharply
+    peaked: at step 500 all five samples opened with the same token, and the
+    previous run kept landing on the same wikibooks title stub. That is a
+    CROSS-sample diversity failure, and the repetition penalty cannot touch it —
+    the penalty only sees within one generation. Conditioning each sample on a
+    different real prefix both fixes the artefact and shows the thing actually
+    worth judging: whether the model continues real text coherently.
+
+    Returns (prompt_tail, continuation) pairs so the seam is visible.
+    """
+    x, _ = next(pipe.batches(n, PROMPT_LEN))
+    outs = []
+    for row in x:
+        ids = [int(v) for v in row]
+        prompt = list(ids)
+        for _ in range(max_new):
+            xb = torch.tensor([ids[-SEQ:]], dtype=torch.long, device=dev)
+            with _autocast(dev):
+                logits = model.forward(xb)[0, -1]
+            logits = logits.float() / max(temp, 1e-6)
+            gen = ids[len(prompt):]
+            if rep_pen and rep_pen != 1.0 and gen:
+                counts = torch.bincount(torch.tensor(gen, device=logits.device),
+                                        minlength=logits.shape[0]).float()
+                factor = torch.pow(rep_pen, counts)
+                logits = torch.where(logits > 0, logits / factor, logits * factor)
+            if no_repeat and len(ids) >= no_repeat:
+                pre = tuple(ids[-(no_repeat - 1):])
+                for i in range(len(ids) - no_repeat + 1):
+                    if tuple(ids[i:i + no_repeat - 1]) == pre:
+                        logits[ids[i + no_repeat - 1]] = float("-inf")
+            if top_k and top_k < vocab:
+                kth = torch.topk(logits, top_k).values[-1]
+                logits = torch.where(logits < kth, torch.full_like(logits, float("-inf")), logits)
+            ids.append(int(torch.multinomial(torch.softmax(logits, dim=-1), 1)))
+        outs.append((decode(prompt).replace("\n", " ").strip()[-90:],
+                     decode(ids[len(prompt):]).replace("\n", " ").strip()[:200]))
+    return outs
 
 
 def stage_cache(src_dir, dst_dir):
@@ -399,11 +446,18 @@ def main():
                   f"bpc {ce/math.log(2)/cpt:5.3f}  lr {lr_now:.2e}{bind}{health}  "
                   f"{sec_step:6.3f} s/step  {toks/dt:>9,.0f} tok/s")
         if GEN_EVERY and (s % GEN_EVERY == 0 or s == 1):
-            print(f"  — {N_GEN} sample generations @ step {s} —")
-            for j, txt in enumerate(sample_text(model, decode, dev, vocab,
-                                                N_GEN, seed_id=eos_id,
-                                                rep_pen=REP_PEN, no_repeat=NO_REPEAT), 1):
-                print(f"    [{j}] {txt}")
+            if PROMPTED and pipe is not None:
+                print(f"  — {N_GEN} continuations @ step {s} (prompt -> generated) —")
+                for j, (pr, co) in enumerate(sample_continuations(
+                        model, decode, dev, vocab, pipe, N_GEN,
+                        rep_pen=REP_PEN, no_repeat=NO_REPEAT), 1):
+                    print(f"    [{j}] ...{pr}  ||  {co}")
+            else:
+                print(f"  — {N_GEN} sample generations @ step {s} —")
+                for j, txt in enumerate(sample_text(model, decode, dev, vocab,
+                                                    N_GEN, seed_id=eos_id,
+                                                    rep_pen=REP_PEN, no_repeat=NO_REPEAT), 1):
+                    print(f"    [{j}] {txt}")
         if CKPT and CKPT_EVERY and s % CKPT_EVERY == 0:
             save_ckpt(CKPT, model, loop.opt, s, meta)
             print(f"  ✓ checkpoint @ step {s} -> {CKPT}")
