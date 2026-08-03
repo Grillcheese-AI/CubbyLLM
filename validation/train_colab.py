@@ -206,28 +206,57 @@ def sample_text(model, decode, dev, vocab, n=5, max_new=48, temp=0.8, top_k=40, 
     return outs
 
 
-@torch.no_grad()
-def copy_floor(model, dev, vocab, n=32):
-    """Can the model copy a token it saw 3 positions back? 'A B C A B -> C'.
+def _distinct_triples(pool, n, g):
+    """n rows of 3 DISTINCT ids drawn from ``pool``. Distinctness matters: if
+    A == B the 'A B C A B' pattern is ambiguous about which position to continue
+    from, and a hit stops being evidence of copying."""
+    rows = []
+    while len(rows) < n:
+        t = pool[torch.randint(0, pool.numel(), (3,), generator=g)].tolist()
+        if len(set(t)) == 3:
+            rows.append(t)
+    return torch.tensor(rows, dtype=torch.long)
 
-    THE CAPABILITY GATE, and it costs one batched forward. In-context copying is
-    a learned circuit that appears at a training threshold; until it does, the
+
+@torch.no_grad()
+def copy_floor(model, dev, vocab, pipe=None, n=32):
+    """Can the model copy a token it saw 3 positions back? 'A B C A B -> C'.
+    Returns (rand, freq) — the same task over two token distributions.
+
+    THE CAPABILITY GATE, and it costs two batched forwards. In-context copying
+    is a learned circuit that appears at a training threshold; until it does, the
     model cannot use its context for anything retrieval-like no matter how the
     state is designed. Measured 2026-08-03 on ckpt_v21 at ~11k steps: 0/20. A
-    needle-in-a-haystack sweep run against that checkpoint sat at chance across
-    every depth — not because a fixed recurrent state loses recall, but because
-    there was no copying circuit to lose it with.
+    needle-in-a-haystack sweep against that checkpoint sat at chance across every
+    depth — not because a fixed recurrent state loses recall, but because there
+    was no copying circuit to lose it with.
 
-    So this is the metric that says when capability claims become TESTABLE.
-    Random tokens, no semantics: chance is 1/vocab, i.e. ~0%. Any sustained
-    non-zero reading means in-context learning has emerged.
+    WHY TWO NUMBERS. The original drew ids uniformly over the vocabulary. Over a
+    128k byte-level BPE that means almost every draw is a RARE fragment the model
+    has seen a handful of times; copying an id it barely represents is the hard
+    end of the ability, and it stays at 0% well past the point where copying has
+    actually emerged for ordinary text. As an "is the needle test worth running
+    yet" gate that is the wrong sensitivity — it lags the thing it gates.
+
+    So ``freq`` draws from a REAL corpus batch, which is exactly the natural
+    frequency distribution, and ``rand`` is kept unchanged so the ckpt_v21
+    baseline stays comparable. Read the pair, not either alone:
+      both 0%       -> no copying circuit yet
+      freq > 0, rand 0 -> copying emerged for common tokens, not yet general
+      both > 0      -> copying generalises; needle results are now interpretable
     """
     g = torch.Generator().manual_seed(1234)
-    abc = torch.randint(0, vocab, (n, 3), generator=g)
-    seq = torch.cat([abc, abc[:, :2]], dim=1).to(dev)          # A B C A B
-    with _autocast(dev):
-        logits = model.forward(seq)[:, -1]
-    return float((logits.argmax(-1) == abc[:, 2].to(dev)).float().mean())
+    pools = {"rand": torch.randint(0, vocab, (4096,), generator=g)}
+    if pipe is not None:
+        pools["freq"] = next(pipe.batches(2, 512))[0].flatten().cpu()
+    out = {}
+    for key, pool in pools.items():
+        abc = _distinct_triples(pool, n, g)
+        seq = torch.cat([abc, abc[:, :2]], dim=1).to(dev)      # A B C A B
+        with _autocast(dev):
+            logits = model.forward(seq)[:, -1]
+        out[key] = float((logits.argmax(-1) == abc[:, 2].to(dev)).float().mean())
+    return out["rand"], out.get("freq", float("nan"))
 
 
 @torch.no_grad()
@@ -410,6 +439,14 @@ def main():
 
     print(f"config: d={D} L={N_LAYERS} B={BATCH} S={SEQ} steps={STEPS} | vocab {vocab}"
           f" | amp {'bf16' if (AMP and dev.type == 'cuda') else 'off'}")
+    # Echo every RESOLVED knob. A duplicate key in a Colab env dict silently keeps
+    # the last value, so "I set CB_EVAL=1" and "it logs every 50" can both be true
+    # and there is nothing on screen to show which won. Print what actually took
+    # effect, not what was intended.
+    print(f"cadence: eval/{EVAL_EVERY} gen/{GEN_EVERY} health/{HEALTH_EVERY} "
+          f"ckpt/{CKPT_EVERY} | grad_ckpt {int(GRAD_CKPT)} bind_w {BIND_W} "
+          f"gen_kind {GEN_KIND} | lr {LR:.1e} warmup {WARMUP} min_lr {MIN_LR}"
+          f" | tok/step {BATCH*SEQ:,}")
     model = build(vocab, dev)
     n_params = sum(p.numel() for p in model.parameters())
     loop = TrainLoop(model, pipe, SnapshotHardener(), lr=LR,
@@ -456,7 +493,7 @@ def main():
             health = ""
             if HEALTH_EVERY and s % HEALTH_EVERY == 0:
                 acc, ff = representation_health(model, pipe, dev)
-                cp = copy_floor(model, dev, vocab)
+                cp_r, cp_f = copy_floor(model, dev, vocab, pipe)
                 # RETRIEVAL ONLY drives the alarm. ff is printed as context and
                 # must NOT gate it: measured 2026-08-02, a perfectly healthy run at
                 # step 250 read ret 96.9% / ff 0.680, because early in training the
@@ -466,11 +503,15 @@ def main():
                 # Collapse is ret 11.5% / ff 0.934 — retrieval separates the cases,
                 # a cosine statistic does not. Chance at n=16 is 6.25%.
                 flag = "  <<< COLLAPSING" if acc < 0.75 else ""
-                # copy: 0% until an in-context copying circuit emerges. Until it
-                # is non-zero, no retrieval or long-context CAPABILITY claim is
+                # copy r/f: 0% until an in-context copying circuit emerges. Until
+                # it is non-zero, no retrieval or long-context CAPABILITY claim is
                 # testable — measured 0/20 on ckpt_v21 at ~11k steps, which is
-                # why the needle sweep sat at chance across every depth.
-                health = f"  ret {acc:5.1%} ff {ff:+.3f} copy {cp:4.0%}{flag}"
+                # why the needle sweep sat at chance across every depth. `f`
+                # (corpus-frequency tokens) is the SENSITIVE one and should move
+                # first; `r` (uniform over 128k, mostly rare fragments) is the
+                # strict one and is kept only so the ckpt_v21 baseline compares.
+                health = (f"  ret {acc:5.1%} ff {ff:+.3f} "
+                          f"copy r{cp_r:3.0%}/f{cp_f:3.0%}{flag}")
             print(f"  step {s:>5}  {tag} loss {ce:6.3f}  ppl {math.exp(ce):8.1f}  "
                   f"bpc {ce/math.log(2)/cpt:5.3f}  lr {lr_now:.2e}{bind}{health}  "
                   f"{sec_step:6.3f} s/step  {toks/dt:>9,.0f} tok/s")
