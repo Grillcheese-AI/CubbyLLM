@@ -207,6 +207,30 @@ def sample_text(model, decode, dev, vocab, n=5, max_new=48, temp=0.8, top_k=40, 
 
 
 @torch.no_grad()
+def copy_floor(model, dev, vocab, n=32):
+    """Can the model copy a token it saw 3 positions back? 'A B C A B -> C'.
+
+    THE CAPABILITY GATE, and it costs one batched forward. In-context copying is
+    a learned circuit that appears at a training threshold; until it does, the
+    model cannot use its context for anything retrieval-like no matter how the
+    state is designed. Measured 2026-08-03 on ckpt_v21 at ~11k steps: 0/20. A
+    needle-in-a-haystack sweep run against that checkpoint sat at chance across
+    every depth — not because a fixed recurrent state loses recall, but because
+    there was no copying circuit to lose it with.
+
+    So this is the metric that says when capability claims become TESTABLE.
+    Random tokens, no semantics: chance is 1/vocab, i.e. ~0%. Any sustained
+    non-zero reading means in-context learning has emerged.
+    """
+    g = torch.Generator().manual_seed(1234)
+    abc = torch.randint(0, vocab, (n, 3), generator=g)
+    seq = torch.cat([abc, abc[:, :2]], dim=1).to(dev)          # A B C A B
+    with _autocast(dev):
+        logits = model.forward(seq)[:, -1]
+    return float((logits.argmax(-1) == abc[:, 2].to(dev)).float().mean())
+
+
+@torch.no_grad()
 def representation_health(model, pipe, dev, n=16, seqs=4, seq=256):
     """Is the trunk's h still a usable VSA substrate? Returns (retrieval, ff_cos).
 
@@ -432,6 +456,7 @@ def main():
             health = ""
             if HEALTH_EVERY and s % HEALTH_EVERY == 0:
                 acc, ff = representation_health(model, pipe, dev)
+                cp = copy_floor(model, dev, vocab)
                 # RETRIEVAL ONLY drives the alarm. ff is printed as context and
                 # must NOT gate it: measured 2026-08-02, a perfectly healthy run at
                 # step 250 read ret 96.9% / ff 0.680, because early in training the
@@ -441,7 +466,11 @@ def main():
                 # Collapse is ret 11.5% / ff 0.934 — retrieval separates the cases,
                 # a cosine statistic does not. Chance at n=16 is 6.25%.
                 flag = "  <<< COLLAPSING" if acc < 0.75 else ""
-                health = f"  ret {acc:5.1%} ff {ff:+.3f}{flag}"
+                # copy: 0% until an in-context copying circuit emerges. Until it
+                # is non-zero, no retrieval or long-context CAPABILITY claim is
+                # testable — measured 0/20 on ckpt_v21 at ~11k steps, which is
+                # why the needle sweep sat at chance across every depth.
+                health = f"  ret {acc:5.1%} ff {ff:+.3f} copy {cp:4.0%}{flag}"
             print(f"  step {s:>5}  {tag} loss {ce:6.3f}  ppl {math.exp(ce):8.1f}  "
                   f"bpc {ce/math.log(2)/cpt:5.3f}  lr {lr_now:.2e}{bind}{health}  "
                   f"{sec_step:6.3f} s/step  {toks/dt:>9,.0f} tok/s")
