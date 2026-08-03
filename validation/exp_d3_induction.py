@@ -166,30 +166,60 @@ def evaluate(model, dev, n=512):
     return float(ok.float().mean()), bands
 
 
-def run(name, dev):
+def train_once(name, lr, dev, steps, quiet=False):
+    """One arm at one learning rate. Warmup included — see LRS for why."""
     torch.manual_seed(0)                                  # identical init per arm
     model = Model(pattern_for(name), S).to(dev)
-    n_p = sum(p.numel() for p in model.parameters())
-    n_attn = sum(1 for m in pattern_for(name) if m is AttnMixer)
-    opt = torch.optim.AdamW(model.parameters(), lr=LR)
+    opt = torch.optim.AdamW(model.parameters(), lr=lr)
+    warm = max(1, steps // 20)
     g = torch.Generator().manual_seed(1)
-    print(f"  --- {name}: {n_attn}/{L} attention layers, {n_p:,} params ---", flush=True)
-    t0, hist = time.perf_counter(), []
-    for s in range(1, STEPS + 1):
+    best = 0.0
+    for s in range(1, steps + 1):
+        for grp in opt.param_groups:                      # linear warmup, then flat
+            grp["lr"] = lr * min(1.0, s / warm)
         x, y, _ = make_batch(B, S, g, dev)
         loss = F.cross_entropy(model(x), y)
         opt.zero_grad(set_to_none=True)
         loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         opt.step()
-        if s % EVERY == 0 or s == STEPS:
+        if s % EVERY == 0 or s == steps:
             acc, bands = evaluate(model, dev)
-            hist.append((s, acc))
-            print(f"    step {s:>5}  loss {float(loss):6.3f}  induction acc {acc:6.1%}"
-                  f"   by distance {' '.join(f'{b:5.1%}' for b in bands)}", flush=True)
+            best = max(best, acc)
+            if not quiet:
+                print(f"    step {s:>5}  loss {float(loss):6.3f}  acc {acc:6.1%}"
+                      f"   by distance {' '.join(f'{b:5.1%}' for b in bands)}",
+                      flush=True)
     acc, bands = evaluate(model, dev)
+    return model, acc, bands, best
+
+
+# One shared LR across three architectures is not a fair comparison, and the first
+# two runs of this file proved it the hard way: at a single lr=3e-3 the pure-ATTN
+# ceiling arm sat at loss 3.87 = ln(48) for 8000 steps — exactly uniform, i.e. it
+# never left initialisation — while a 2/6 hybrid hit 100%. Pure attention can
+# certainly do induction, so that was an optimisation artifact being read as an
+# architectural result. Each arm now gets its own best LR.
+LRS = [float(x) for x in os.environ.get("CB_LRS", "3e-3,1e-3,3e-4").split(",")]
+
+
+def run(name, dev):
+    n_attn = sum(1 for m in pattern_for(name) if m is AttnMixer)
+    print(f"  --- {name}: {n_attn}/{L} attention layers ---", flush=True)
+    t0 = time.perf_counter()
+    probe = max(1, STEPS // 4)                            # short LR probe per arm
+    scores = []
+    for lr in LRS:
+        _, _, _, best = train_once(name, lr, dev, probe, quiet=True)
+        scores.append((best, lr))
+        print(f"    probe lr={lr:.0e} ({probe} steps) -> best acc {best:6.1%}", flush=True)
+    lr = max(scores)[1]
+    print(f"    -> full run at lr={lr:.0e}", flush=True)
+    model, acc, bands, _ = train_once(name, lr, dev, STEPS)
+    n_p = sum(p.numel() for p in model.parameters())
     print(f"    done in {time.perf_counter()-t0:.0f}s\n", flush=True)
     return {"name": name, "acc": acc, "bands": bands, "params": n_p,
-            "n_attn": n_attn, "hist": hist}
+            "n_attn": n_attn, "lr": lr}
 
 
 def main():
@@ -203,11 +233,11 @@ def main():
     res = [run(n, dev) for n in ("mingru", "hybrid", "attn")]
 
     print("  === RESULT ===")
-    print("   arm    | attn |     params | induction acc | vs chance")
-    print("  --------+------+------------+---------------+----------")
+    print("   arm    | attn |     params |     lr | induction acc | vs chance")
+    print("  --------+------+------------+--------+---------------+----------")
     for r in res:
         print(f"  {r['name']:>7} | {r['n_attn']:>2}/{L} | {r['params']:>10,} |"
-              f" {r['acc']:>12.1%}  | {r['acc']/chance:>6.1f}x")
+              f" {r['lr']:.0e} | {r['acc']:>12.1%}  | {r['acc']/chance:>6.1f}x")
     print()
     print("  accuracy by query-to-plant distance (near -> far):")
     q = [f"{int(S*a)}-{int(S*b)}" for a, b in ((0,.25),(.25,.5),(.5,.75),(.75,1))]
@@ -217,6 +247,20 @@ def main():
     print()
     pure = next(r for r in res if r["name"] == "mingru")
     hyb = next(r for r in res if r["name"] == "hybrid")
+    ceil = next(r for r in res if r["name"] == "attn")
+    # THE GUARD. Pure attention provably can do induction — it is the textbook
+    # task for it. If the ceiling arm is at chance, the harness is broken and
+    # nothing below it can be ranked, however clean the other rows look. Two
+    # earlier runs of this file printed a confident verdict over exactly this
+    # failure; the guard exists so a third cannot.
+    if ceil["acc"] < 0.5:
+        print("  HARNESS FAILURE — the pure-attention CEILING arm scored"
+              f" {ceil['acc']:.1%}.")
+        print("  Attention can solve induction; at chance it means this harness is")
+        print("  not training, so NO comparison below it is valid. Do not read the")
+        print("  mingru/hybrid rows. Check: loss stuck near ln(V_FILL)=3.87 means")
+        print("  the model never left init — widen CB_LRS or raise CB_STEPS.")
+        return
     if pure["acc"] > 0.5 and pure["acc"] >= hyb["acc"] * 0.9:
         print("  VERDICT: pure recurrence learns induction at parity with the hybrid.")
         print("  Attention is NOT mechanistically required for this circuit, the")
