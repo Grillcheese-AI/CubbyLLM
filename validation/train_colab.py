@@ -385,7 +385,15 @@ def main():
             health = ""
             if HEALTH_EVERY and s % HEALTH_EVERY == 0:
                 acc, ff = representation_health(model, pipe, dev)
-                flag = "  <<< COLLAPSING" if (acc < 0.5 or ff > 0.6) else ""
+                # RETRIEVAL ONLY drives the alarm. ff is printed as context and
+                # must NOT gate it: measured 2026-08-02, a perfectly healthy run at
+                # step 250 read ret 96.9% / ff 0.680, because early in training the
+                # hidden states share a large common component and mean pairwise
+                # cosine is high while residual differences stay discriminable. ff
+                # falls as the model differentiates (a 7.5k-step control read 0.276).
+                # Collapse is ret 11.5% / ff 0.934 — retrieval separates the cases,
+                # a cosine statistic does not. Chance at n=16 is 6.25%.
+                flag = "  <<< COLLAPSING" if acc < 0.75 else ""
                 health = f"  ret {acc:5.1%} ff {ff:+.3f}{flag}"
             print(f"  step {s:>5}  {tag} loss {ce:6.3f}  ppl {math.exp(ce):8.1f}  "
                   f"bpc {ce/math.log(2)/cpt:5.3f}  lr {lr_now:.2e}{bind}{health}  "
