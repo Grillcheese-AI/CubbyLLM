@@ -122,6 +122,42 @@ def prefix_state(model, ids, dev, amp):
 
 
 @torch.no_grad()
+def neutral_baselines(model, encode, dev, amp):
+    """logP(candidate | probe alone) for every (probe, candidate) pair.
+
+    THE FIX FOR A PROBE THAT WAS STRUCTURALLY PINNED TO 1/8. Until 2026-08-03
+    candidates were ranked on RAW mean log-prob, which compares " 47213" against
+    " 3092" on absolute likelihood — and those differ by several nats before any
+    needle is planted, because one is a short common number and the other is a
+    long rare one. The ranking was therefore decided by unconditional frequency,
+    not by context: the same candidate won every trial, and since each answer is
+    the true one exactly once over eight trials, accuracy came out to EXACTLY
+    1/8 = 12.5%. That is what the whole sweep reported, in every cell, at every
+    depth and length. It was not chance. It was a constant argmax.
+
+    Subtracting the no-context score cancels the base rate, so a candidate can
+    only win by being RAISED by the planted fact — standard PMI / contrastive
+    scoring. 4 probes x 8 candidates = 32 short forwards, computed once.
+
+    Caveat worth stating: the neutral context has no filler, while the real one
+    has thousands of corpus tokens, so the two states differ by more than the
+    needle. That shift hits all candidates within a cell about equally, so it
+    cannot manufacture a constant argmax — but it does mean the PMI value is not
+    a clean effect size. The properly matched comparison is TRAINED vs the
+    shuffled-needle arm, which sees identical filler and now gets the identical
+    correction. Read those two tables against each other, not the absolute PMI.
+    """
+    base = {}
+    for _, probe in FACTS:
+        pre = torch.tensor(encode(" " + probe), dtype=torch.long, device=dev)
+        lg, st = prefix_state(model, pre, dev, amp)
+        for c in ANSWERS:
+            cid = torch.tensor(encode(" " + c), dtype=torch.long, device=dev)
+            base[(probe, c)] = score_from(model, lg, st, cid, amp)
+    return base
+
+
+@torch.no_grad()
 def score_from(model, logits0, state, cont_ids, amp):
     """Mean log-prob of ``cont_ids`` branching from a snapshotted state."""
     import contextlib
@@ -169,12 +205,14 @@ def main():
     g = torch.Generator().manual_seed(7)
 
     amp = dev.type == "cuda"
+    base = neutral_baselines(model, encode, dev, amp)   # base rates, cancelled below
     batches = {ln: pipe.batches(1, ln) for ln in LENGTHS}   # one generator per length
 
     def run(tag, shuffled=False):
         print(f"  --- {tag} ---", flush=True)
         print("   length |" + "".join(f"  d={int(dd*100):>3}% " for dd in DEPTHS), flush=True)
         print("  --------+" + "-" * (9 * len(DEPTHS)), flush=True)
+        winners = {}                    # which candidate STRING won, over all cells
         for ln in LENGTHS:
             row, t_row = [], time.perf_counter()
             for dep in DEPTHS:
@@ -191,14 +229,30 @@ def main():
                     ctx = filler[:pos] + n_ids + filler[pos:] + encode(" " + probe)
                     pre = torch.tensor(ctx, dtype=torch.long, device=dev)
                     lg0, st0 = prefix_state(model, pre, dev, amp)     # haystack ONCE
+                    cands = [ans] + distract
+                    # PMI, not raw likelihood: subtract each candidate's score with
+                    # no context at all, so a rare long number is not beaten by a
+                    # common short one before the needle is even read. See
+                    # neutral_baselines() for what this was hiding.
                     scores = [score_from(model, lg0, st0,
                               torch.tensor(encode(" " + c), dtype=torch.long, device=dev), amp)
-                              for c in [ans] + distract]              # branch per candidate
-                    hits += int(max(range(len(scores)), key=lambda i: scores[i]) == 0)
+                              - base[(probe, c)] for c in cands]      # branch per candidate
+                    win = max(range(len(scores)), key=lambda i: scores[i])
+                    winners[cands[win]] = winners.get(cands[win], 0) + 1
+                    hits += int(win == 0)
                 row.append(hits / TRIALS)
                 print(f"      [len {ln} depth {dep:.2f}] {row[-1]:.1%}", flush=True)
             print(f"  {ln:>7} |" + "".join(f"  {v:>5.1%} " for v in row)
                   + f"   ({time.perf_counter()-t_row:.0f}s)", flush=True)
+        # THE CHECK THAT WOULD HAVE CAUGHT THE ORIGINAL BUG. A probe whose winner
+        # never changes with context is broken no matter what accuracy it prints
+        # — and a constant winner yields exactly 1/n_candidates by construction,
+        # which is indistinguishable from chance if you only look at the number.
+        top, n = max(winners.items(), key=lambda kv: kv[1]), sum(winners.values())
+        print(f"  argmax spread: {len(winners)} distinct winners over {n} trials; "
+              f"most frequent {top[0]!r} took {top[1]}/{n} ({top[1]/n:.0%})"
+              + ("   <<< CONSTANT ARGMAX — probe is not reading context"
+                 if len(winners) == 1 else ""), flush=True)
         print(flush=True)
 
     run("TRAINED MODEL")

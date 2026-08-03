@@ -72,21 +72,39 @@ def main():
 
     print("=== 2. ZERO-DISTANCE — needle then question, no filler ===")
     print("  (pure continuation, not retrieval. chance = 12.5%)")
-    hits = 0
+    # Base rates first. Ranking candidates on RAW likelihood compares " 47213"
+    # against " 3092" on absolute probability, and those differ by nats before
+    # any needle exists — so the same candidate wins every trial and accuracy is
+    # pinned to exactly 1/8 regardless of what the model knows. Subtract the
+    # no-context score (PMI) so a candidate only wins by being RAISED.
+    nl = torch.tensor(encode(" " + PROBE), dtype=torch.long, device=dev)
+    lg_n, st_n = prefix_state(model, nl, dev, amp)
+    base = {c: score_from(model, lg_n, st_n,
+                          torch.tensor(encode(" " + c), dtype=torch.long, device=dev), amp)
+            for c in ANS}
+    print(f"  no-context base rates: {[f'{base[c]:.2f}' for c in ANS]}")
+    print(f"  base-rate spread = {max(base.values())-min(base.values()):.4f}"
+          "   (this is the confound PMI removes)")
+    hits, winners = 0, {}
     for i, a in enumerate(ANS):
         ctx = encode(FACT.format(a)) + encode(" " + PROBE)
         pre = torch.tensor(ctx, dtype=torch.long, device=dev)
         lg, st = prefix_state(model, pre, dev, amp)
         sc = [score_from(model, lg, st,
                          torch.tensor(encode(" " + c), dtype=torch.long, device=dev), amp)
-              for c in ANS]
+              - base[c] for c in ANS]
         win = max(range(len(sc)), key=lambda j: sc[j])
+        winners[ANS[win]] = winners.get(ANS[win], 0) + 1
         hits += int(win == i)
         if i == 0:
             rng = max(sc) - min(sc)
-            print(f"  trial 0 scores: {[f'{s:.3f}' for s in sc]}")
+            print(f"  trial 0 PMI scores: {[f'{s:.3f}' for s in sc]}  (true = index 0)")
             print(f"  spread max-min = {rng:.4f}   (near 0 => no discrimination at all)")
     print(f"  zero-distance accuracy: {hits}/{len(ANS)} = {hits/len(ANS):.1%}")
+    print(f"  argmax spread: {len(winners)} distinct winners over {len(ANS)} trials"
+          + ("   <<< CONSTANT ARGMAX — probe is not reading context, the accuracy"
+             "\n      number is 1/n by construction and means nothing"
+             if len(winners) == 1 else ""))
     print("  PASS if well above 12.5%. At chance here, retrieval at 4k is moot.\n")
 
     print("=== 3. COPY FLOOR — repeat a token seen 2 positions back ===")
@@ -103,8 +121,14 @@ def main():
     print("  a heavily undertrained model, and it makes needle tests uninformative.\n")
 
     print("=== 4. VERDICT ===")
-    print("  broken instrument  -> check 1 mismatched, or check 2 at chance with a")
-    print("                        near-zero score spread")
+    print("  broken instrument  -> check 1 mismatched, OR check 2 reports a constant")
+    print("                        argmax, OR check 2 at chance with a near-zero")
+    print("                        spread. NOTE: a LARGE spread does not clear the")
+    print("                        probe — before 2026-08-03 the spread was 3.9 and")
+    print("                        the probe was still broken, because the spread")
+    print("                        came from candidate base rates rather than from")
+    print("                        the model discriminating. Constant argmax is the")
+    print("                        check that catches it; spread alone is not.")
     print("  model not ready    -> checks 1 and 2 fine but check 3 at 0%: no copying")
     print("                        circuit has emerged; rerun on the final checkpoint")
     print("  genuine limitation -> checks 1-3 all pass and accuracy still decays with")
