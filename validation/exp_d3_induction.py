@@ -115,15 +115,30 @@ class Trunk(nn.Module):
 
 
 class Model(nn.Module):
-    def __init__(self, pattern):
+    """Token + LEARNED POSITION embeddings, then the trunk.
+
+    The positional term is not decoration. This task asks for the token at
+    KEY+1, which is a positional relation; attention is permutation-equivariant
+    apart from the causal mask, so with content alone it can locate the key and
+    still have no way to say "the next one". The first run of this file omitted
+    positions entirely and the pure-attention CEILING arm scored 3.9% — at chance
+    — while a 2/6 hybrid hit 100%. A control that cannot do the task is what
+    caught it; without that arm the table would have looked clean and been wrong.
+    MinGRU gets ordering free from the recurrence, so this only ever handicapped
+    the arms meant to be strongest.
+    """
+
+    def __init__(self, pattern, seq):
         super().__init__()
         self.emb = nn.Embedding(V, D)
+        self.pos = nn.Embedding(seq, D)
         self.trunk = Trunk(D, pattern)
         self.norm = RMSNorm(D)
         self.head = nn.Linear(D, V, bias=False)
 
     def forward(self, x):
-        return self.head(self.norm(self.trunk(self.emb(x))))[:, -1]   # last pos only
+        h = self.emb(x) + self.pos(torch.arange(x.shape[1], device=x.device))
+        return self.head(self.norm(self.trunk(h)))[:, -1]             # last pos only
 
 
 def pattern_for(name):
@@ -153,7 +168,7 @@ def evaluate(model, dev, n=512):
 
 def run(name, dev):
     torch.manual_seed(0)                                  # identical init per arm
-    model = Model(pattern_for(name)).to(dev)
+    model = Model(pattern_for(name), S).to(dev)
     n_p = sum(p.numel() for p in model.parameters())
     n_attn = sum(1 for m in pattern_for(name) if m is AttnMixer)
     opt = torch.optim.AdamW(model.parameters(), lr=LR)

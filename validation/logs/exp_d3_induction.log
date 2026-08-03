@@ -15,3 +15,14 @@ Consider using tensor.detach() first. (Triggered internally at C:\actions-runner
     step  1500  loss  1.627  induction acc  38.7%   by distance 37.5% 44.7% 36.3% 35.6%
     step  1750  loss  0.266  induction acc  89.5%   by distance 92.3% 95.7% 93.3% 76.5%
     step  2000  loss  0.159  induction acc  93.2%   by distance 92.3% 95.7% 96.3% 87.9%
+    step  2250  loss  0.003  induction acc 100.0%   by distance 100.0% 100.0% 100.0% 100.0%
+    step  2500  loss  0.002  induction acc 100.0%   by distance 100.0% 100.0% 100.0% 100.0%
+    step  2750  loss  0.036  induction acc 100.0%   by distance 100.0% 100.0% 100.0% 100.0%
+    step  3000  loss  0.002  induction acc  99.8%   by distance 100.0% 100.0% 100.0% 99.2%
+    step  3250  loss  0.001  induction acc 100.0%   by distance 100.0% 100.0% 100.0% 100.0%
+    step  3500  loss  0.001  induction acc 100.0%   by distance 100.0% 100.0% 100.0% 100.0%
+    step  3750  loss  0.000  induction acc 100.0%   by distance 100.0% 100.0% 100.0% 100.0%
+    step  4000  loss  0.000  induction acc 100.0%   by distance 100.0% 100.0% 100.0% 100.0%
+    done in 780s
+
+  --- hybrid: 2/6 attention layers, 937,088 params ---
