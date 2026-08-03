@@ -96,21 +96,42 @@ def build(meta, dev):
     return m, d, L, V, kind
 
 
-@torch.no_grad()
-def score_continuation(model, prefix_ids, cont_ids, dev):
-    """Mean log-prob the model assigns to ``cont_ids`` following ``prefix_ids``.
+def _clone(state):
+    """Snapshot decode state. n_layers x (1, d) tensors — cheap next to a prefix."""
+    return {"bb": [s.clone() for s in state["bb"]],
+            "ctx_sum": state["ctx_sum"].clone(), "ctx_n": state["ctx_n"]}
 
-    Uses the incremental decode path, so cost is O(1) per token and a 4k-token
-    haystack costs 4k cheap steps rather than a 4k-wide forward.
+
+@torch.no_grad()
+def prefix_state(model, ids, dev, amp):
+    """Consume the haystack ONCE. Returns (last_logits, state) to branch from.
+
+    The whole reason a recurrent model can do this cheaply: state is a fixed-size
+    snapshot, so N candidates cost one prefix pass plus N short continuations —
+    not N prefix passes. (The first version of this file re-ran the prefix per
+    candidate, an 8x waste that made a 4k row take hours.)
     """
-    state = None
-    for t in range(prefix_ids.shape[0]):
-        logits, state = model.step(prefix_ids[t].view(1), state)
-    total = 0.0
-    for t in range(cont_ids.shape[0]):
-        lp = F.log_softmax(logits.float(), dim=-1)[0, int(cont_ids[t])]
-        total += float(lp)
-        logits, state = model.step(cont_ids[t].view(1), state)
+    import contextlib
+    ctx = (torch.autocast(device_type="cuda", dtype=torch.bfloat16)
+           if amp else contextlib.nullcontext())
+    state, logits = None, None
+    with ctx:
+        for t in range(ids.shape[0]):
+            logits, state = model.step(ids[t].view(1), state)
+    return logits, state
+
+
+@torch.no_grad()
+def score_from(model, logits0, state, cont_ids, amp):
+    """Mean log-prob of ``cont_ids`` branching from a snapshotted state."""
+    import contextlib
+    ctx = (torch.autocast(device_type="cuda", dtype=torch.bfloat16)
+           if amp else contextlib.nullcontext())
+    s, logits, total = _clone(state), logits0, 0.0
+    with ctx:
+        for t in range(cont_ids.shape[0]):
+            total += float(F.log_softmax(logits.float(), dim=-1)[0, int(cont_ids[t])])
+            logits, s = model.step(cont_ids[t].view(1), s)
     return total / max(1, cont_ids.shape[0])
 
 
@@ -147,36 +168,38 @@ def main():
 
     g = torch.Generator().manual_seed(7)
 
+    amp = dev.type == "cuda"
+    batches = {ln: pipe.batches(1, ln) for ln in LENGTHS}   # one generator per length
+
     def run(tag, shuffled=False):
-        print(f"  --- {tag} ---")
-        print("   length |" + "".join(f"  d={int(dd*100):>3}% " for dd in DEPTHS))
-        print("  --------+" + "-" * (9 * len(DEPTHS)))
+        print(f"  --- {tag} ---", flush=True)
+        print("   length |" + "".join(f"  d={int(dd*100):>3}% " for dd in DEPTHS), flush=True)
+        print("  --------+" + "-" * (9 * len(DEPTHS)), flush=True)
         for ln in LENGTHS:
-            row = []
+            row, t_row = [], time.perf_counter()
             for dep in DEPTHS:
                 hits = 0
                 for tr in range(TRIALS):
                     fact, probe = FACTS[tr % len(FACTS)]
                     ans = ANSWERS[(tr * 3) % len(ANSWERS)]
                     distract = [a for a in ANSWERS if a != ans][:N_DISTRACT]
-                    x, _ = next(pipe.batches(1, ln))
-                    filler = x[0].tolist()
-                    n_ids = encode(fact.format(ans))
-                    if shuffled:                       # CONTROL: needle present but
-                        n_ids = encode(fact.format(   # answering a DIFFERENT question
-                            [a for a in ANSWERS if a != ans][tr % (len(ANSWERS) - 1)]))
+                    filler = next(batches[ln])[0][0].tolist()
+                    shown = (ans if not shuffled else
+                             [a for a in ANSWERS if a != ans][tr % (len(ANSWERS) - 1)])
+                    n_ids = encode(fact.format(shown))
                     pos = int(dep * max(0, len(filler) - len(n_ids)))
-                    ctx = filler[:pos] + n_ids + filler[pos:]
-                    ctx = ctx + encode(" " + probe)
+                    ctx = filler[:pos] + n_ids + filler[pos:] + encode(" " + probe)
                     pre = torch.tensor(ctx, dtype=torch.long, device=dev)
-                    cands = [ans] + distract
-                    scores = [score_continuation(model, pre,
-                              torch.tensor(encode(" " + c), dtype=torch.long, device=dev), dev)
-                              for c in cands]
+                    lg0, st0 = prefix_state(model, pre, dev, amp)     # haystack ONCE
+                    scores = [score_from(model, lg0, st0,
+                              torch.tensor(encode(" " + c), dtype=torch.long, device=dev), amp)
+                              for c in [ans] + distract]              # branch per candidate
                     hits += int(max(range(len(scores)), key=lambda i: scores[i]) == 0)
                 row.append(hits / TRIALS)
-            print(f"  {ln:>7} |" + "".join(f"  {v:>5.1%} " for v in row))
-        print()
+                print(f"      [len {ln} depth {dep:.2f}] {row[-1]:.1%}", flush=True)
+            print(f"  {ln:>7} |" + "".join(f"  {v:>5.1%} " for v in row)
+                  + f"   ({time.perf_counter()-t_row:.0f}s)", flush=True)
+        print(flush=True)
 
     run("TRAINED MODEL")
     run("CONTROL: shuffled needle (no true signal present)", shuffled=True)
