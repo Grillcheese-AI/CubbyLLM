@@ -49,7 +49,9 @@ import os
 import sys
 import time
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+_HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, _HERE)                       # for exp_d1b_* siblings
+sys.path.insert(0, os.path.dirname(_HERE))      # for `cubbyllm` (repo root)
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 import torch  # noqa: E402

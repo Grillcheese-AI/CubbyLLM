@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import sys
 import time
 
@@ -36,7 +37,9 @@ import torch.nn.functional as F
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-sys.path.insert(0, r"C:\Users\grill\Documents\GitHub\CubbyLLM")
+# Repo root, derived from THIS file — was a hardcoded C:\... absolute path, which
+# imports fine on the machine it was written on and dies everywhere else (Colab).
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import sentencepiece as spm  # noqa: E402
 
 from cubbyllm.core.config import CubbyConfig  # noqa: E402

@@ -1,0 +1,17 @@
+induction-circuit bake-off — pure recurrence vs cubby-lm's hybrid
+  d=128 L=6 seq=64 batch=32 steps=4000 | cpu
+  task: filler + planted 'KEY VALUE' + trailing KEY -> predict VALUE
+  loss at the FINAL position only. chance = 1/48 = 2.1%
+
+  --- mingru: 0/6 attention layers, 905,088 params ---
+C:\Users\grill\Documents\GitHub\CubbyLLM\validation\exp_d3_induction.py:170: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  print(f"    step {s:>5}  loss {float(loss):6.3f}  induction acc {acc:6.1%}"
+    step   250  loss  3.978  induction acc   1.2%   by distance  1.0%  0.0%  1.5%  2.3%
+    step   500  loss  3.868  induction acc   2.3%   by distance  2.9%  1.4%  2.2%  3.0%
+    step   750  loss  3.845  induction acc   3.3%   by distance  3.8%  3.5%  3.0%  3.0%
+    step  1000  loss  3.883  induction acc   1.8%   by distance  2.9%  0.0%  2.2%  2.3%
+    step  1250  loss  3.383  induction acc   5.7%   by distance  5.8%  5.0%  5.9%  6.1%
+    step  1500  loss  1.627  induction acc  38.7%   by distance 37.5% 44.7% 36.3% 35.6%
+    step  1750  loss  0.266  induction acc  89.5%   by distance 92.3% 95.7% 93.3% 76.5%
+    step  2000  loss  0.159  induction acc  93.2%   by distance 92.3% 95.7% 96.3% 87.9%
