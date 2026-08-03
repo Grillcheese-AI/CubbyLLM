@@ -33,3 +33,50 @@ Consider using tensor.detach() first. (Triggered internally at C:\actions-runner
     step  1250  loss  3.878  induction acc   1.8%   by distance  3.8%  0.7%  0.0%  3.0%
     step  1500  loss  3.857  induction acc   2.5%   by distance  1.9%  3.5%  1.5%  3.0%
     step  1750  loss  3.886  induction acc   2.7%   by distance  1.0%  2.1%  4.4%  3.0%
+    step  2000  loss  3.904  induction acc   2.3%   by distance  0.0%  2.8%  4.4%  1.5%
+    step  2250  loss  3.850  induction acc   1.4%   by distance  1.0%  0.7%  3.0%  0.8%
+    step  2500  loss  3.882  induction acc   2.3%   by distance  2.9%  2.8%  2.2%  1.5%
+    step  2750  loss  3.869  induction acc   2.1%   by distance  1.0%  2.1%  0.7%  4.5%
+    step  3000  loss  3.850  induction acc   1.6%   by distance  1.0%  1.4%  3.0%  0.8%
+    step  3250  loss  3.868  induction acc   2.5%   by distance  1.0%  0.7%  4.4%  3.8%
+    step  3500  loss  3.827  induction acc   4.3%   by distance  4.8%  3.5%  5.2%  3.8%
+    step  3750  loss  3.840  induction acc   2.3%   by distance  0.0%  2.8%  4.4%  1.5%
+    step  4000  loss  3.878  induction acc   2.9%   by distance  2.9%  2.1%  3.7%  3.0%
+    done in 642s
+
+  --- attn: 6/6 attention layers, 1,001,088 params ---
+    step   250  loss  4.035  induction acc   1.0%   by distance  1.9%  0.7%  0.7%  0.8%
+    step   500  loss  3.876  induction acc   2.3%   by distance  1.9%  2.1%  3.7%  1.5%
+    step   750  loss  3.864  induction acc   1.6%   by distance  1.9%  0.7%  2.2%  1.5%
+    step  1000  loss  3.912  induction acc   2.0%   by distance  1.9%  2.1%  2.2%  1.5%
+    step  1250  loss  3.871  induction acc   1.8%   by distance  3.8%  0.0%  2.2%  1.5%
+    step  1500  loss  3.870  induction acc   3.1%   by distance  3.8%  2.1%  4.4%  2.3%
+    step  1750  loss  3.870  induction acc   2.0%   by distance  1.0%  1.4%  1.5%  3.8%
+    step  2000  loss  3.906  induction acc   1.8%   by distance  1.0%  2.1%  0.7%  3.0%
+    step  2250  loss  3.858  induction acc   2.1%   by distance  2.9%  2.1%  3.7%  0.0%
+    step  2500  loss  3.890  induction acc   1.2%   by distance  0.0%  0.0%  0.7%  3.8%
+    step  2750  loss  3.879  induction acc   2.0%   by distance  1.9%  1.4%  2.2%  2.3%
+    step  3000  loss  3.855  induction acc   2.1%   by distance  1.0%  2.8%  0.7%  3.8%
+    step  3250  loss  3.901  induction acc   2.1%   by distance  0.0%  3.5%  3.7%  0.8%
+    step  3500  loss  3.865  induction acc   2.9%   by distance  1.0%  5.0%  5.2%  0.0%
+    step  3750  loss  3.865  induction acc   1.2%   by distance  1.0%  1.4%  1.5%  0.8%
+    step  4000  loss  3.891  induction acc   2.1%   by distance  2.9%  2.1%  3.0%  0.8%
+    done in 333s
+
+  === RESULT ===
+   arm    | attn |     params | induction acc | vs chance
+  --------+------+------------+---------------+----------
+   mingru |  0/6 |    905,088 |       100.0%  |   48.0x
+   hybrid |  2/6 |    937,088 |         2.9%  |    1.4x
+     attn |  6/6 |  1,001,088 |         2.1%  |    1.0x
+
+  accuracy by query-to-plant distance (near -> far):
+   arm    |      0-16      16-32      32-48      48-64 
+   mingru |   100.0%    100.0%    100.0%    100.0% 
+   hybrid |     2.9%      2.1%      3.7%      3.0% 
+     attn |     2.9%      2.1%      3.0%      0.8% 
+
+  VERDICT: pure recurrence learns induction at parity with the hybrid.
+  Attention is NOT mechanistically required for this circuit, the
+  hybrid question closes, and cubby-lm's alpha_attn -> 0.109 is
+  consistent with attention simply not earning its place.

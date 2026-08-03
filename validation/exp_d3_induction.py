@@ -166,60 +166,74 @@ def evaluate(model, dev, n=512):
     return float(ok.float().mean()), bands
 
 
-def train_once(name, lr, dev, steps, quiet=False):
-    """One arm at one learning rate. Warmup included — see LRS for why."""
-    torch.manual_seed(0)                                  # identical init per arm
+# FIXED LR, not a swept one. Three earlier revisions of this file failed here:
+# a single lr=3e-3 let one arm escape and called it architecture; a per-arm LR
+# PROBE then picked on noise, because this task is GROKKING-SHAPED — accuracy is
+# flat at chance through a long plateau and then jumps abruptly (S=64 jumped at
+# ~1500, S=256 at ~4500). You cannot predict the winning LR from the first
+# quarter when nothing has generalised yet, and one run is close to a coin flip on
+# whether/when it escapes. So the honest instrument is not one run per arm but
+# MANY SEEDS at a known-good LR, scored on how OFTEN and how FAST each arm solves.
+# A binary escape/no-escape reversing with config was the coin; solve-rate and
+# median steps-to-solve are the graded signal that survives it.
+LR = float(os.environ.get("CB_LR", "3e-3"))
+SEEDS = int(os.environ.get("CB_SEEDS", "4"))
+SOLVE = 0.90                                              # acc that counts as solved
+
+
+def train_once(name, dev, seed):
+    """One arm, one seed, to STEPS. Returns (final_acc, bands, steps_to_solve)."""
+    torch.manual_seed(seed)
     model = Model(pattern_for(name), S).to(dev)
-    opt = torch.optim.AdamW(model.parameters(), lr=lr)
-    warm = max(1, steps // 20)
-    g = torch.Generator().manual_seed(1)
-    best = 0.0
-    for s in range(1, steps + 1):
+    opt = torch.optim.AdamW(model.parameters(), lr=LR)
+    warm = max(1, STEPS // 20)
+    g = torch.Generator().manual_seed(seed + 1)
+    solved_at = None
+    acc, bands = 0.0, []
+    for s in range(1, STEPS + 1):
         for grp in opt.param_groups:                      # linear warmup, then flat
-            grp["lr"] = lr * min(1.0, s / warm)
+            grp["lr"] = LR * min(1.0, s / warm)
         x, y, _ = make_batch(B, S, g, dev)
         loss = F.cross_entropy(model(x), y)
         opt.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         opt.step()
-        if s % EVERY == 0 or s == steps:
+        if s % EVERY == 0 or s == STEPS:
             acc, bands = evaluate(model, dev)
-            best = max(best, acc)
-            if not quiet:
-                print(f"    step {s:>5}  loss {float(loss):6.3f}  acc {acc:6.1%}"
-                      f"   by distance {' '.join(f'{b:5.1%}' for b in bands)}",
-                      flush=True)
-    acc, bands = evaluate(model, dev)
-    return model, acc, bands, best
+            if solved_at is None and acc >= SOLVE:
+                solved_at = s
+    return acc, bands, solved_at
 
 
-# One shared LR across three architectures is not a fair comparison, and the first
-# two runs of this file proved it the hard way: at a single lr=3e-3 the pure-ATTN
-# ceiling arm sat at loss 3.87 = ln(48) for 8000 steps — exactly uniform, i.e. it
-# never left initialisation — while a 2/6 hybrid hit 100%. Pure attention can
-# certainly do induction, so that was an optimisation artifact being read as an
-# architectural result. Each arm now gets its own best LR.
-LRS = [float(x) for x in os.environ.get("CB_LRS", "3e-3,1e-3,3e-4").split(",")]
+def _median(xs):
+    xs = sorted(xs)
+    n = len(xs)
+    return None if not n else xs[n // 2] if n % 2 else (xs[n//2-1] + xs[n//2]) / 2
 
 
 def run(name, dev):
     n_attn = sum(1 for m in pattern_for(name) if m is AttnMixer)
-    print(f"  --- {name}: {n_attn}/{L} attention layers ---", flush=True)
-    t0 = time.perf_counter()
-    probe = max(1, STEPS // 4)                            # short LR probe per arm
-    scores = []
-    for lr in LRS:
-        _, _, _, best = train_once(name, lr, dev, probe, quiet=True)
-        scores.append((best, lr))
-        print(f"    probe lr={lr:.0e} ({probe} steps) -> best acc {best:6.1%}", flush=True)
-    lr = max(scores)[1]
-    print(f"    -> full run at lr={lr:.0e}", flush=True)
-    model, acc, bands, _ = train_once(name, lr, dev, STEPS)
-    n_p = sum(p.numel() for p in model.parameters())
+    n_p = sum(p.numel() for p in Model(pattern_for(name), S).parameters())
+    print(f"  --- {name}: {n_attn}/{L} attention layers, {n_p:,} params, "
+          f"{SEEDS} seeds @ lr={LR:.0e} ---", flush=True)
+    t0, accs, solves, last_bands = time.perf_counter(), [], [], []
+    for seed in range(SEEDS):
+        acc, bands, at = train_once(name, dev, seed)
+        accs.append(acc)
+        if at is not None:
+            solves.append(at)
+        last_bands.append(bands)
+        tag = f"solved @ {at}" if at else "NOT solved"
+        print(f"    seed {seed}: final acc {acc:6.1%}  ({tag})", flush=True)
+    n_solved = sum(a >= SOLVE for a in accs)
+    # bands averaged over the seeds that solved (an unsolved seed's bands are noise)
+    ok = [b for a, b in zip(accs, last_bands) if a >= SOLVE]
+    bands = [sum(x) / len(x) for x in zip(*ok)] if ok else [float("nan")] * 4
     print(f"    done in {time.perf_counter()-t0:.0f}s\n", flush=True)
-    return {"name": name, "acc": acc, "bands": bands, "params": n_p,
-            "n_attn": n_attn, "lr": lr}
+    return {"name": name, "params": n_p, "n_attn": n_attn,
+            "solve_rate": n_solved / SEEDS, "n_solved": n_solved,
+            "median_solve": _median(solves), "bands": bands}
 
 
 def main():
@@ -230,16 +244,22 @@ def main():
     print(f"  task: filler + planted 'KEY VALUE' + trailing KEY -> predict VALUE")
     print(f"  loss at the FINAL position only. chance = 1/{V_FILL} = {chance:.1%}\n")
 
+    print(f"  {SEEDS} seeds/arm at lr={LR:.0e}. Solve = final acc >= {SOLVE:.0%}.")
+    print("  Ranking on solve-RATE and steps-to-solve, not one run — this task is")
+    print("  grokking-shaped, so a single run is a coin flip and reverses with"
+          " config.\n")
+
     res = [run(n, dev) for n in ("mingru", "hybrid", "attn")]
 
     print("  === RESULT ===")
-    print("   arm    | attn |     params |     lr | induction acc | vs chance")
-    print("  --------+------+------------+--------+---------------+----------")
+    print("   arm    | attn |     params | solve rate | median steps-to-solve")
+    print("  --------+------+------------+------------+----------------------")
     for r in res:
+        ms = "—" if r["median_solve"] is None else f"{int(r['median_solve']):,}"
         print(f"  {r['name']:>7} | {r['n_attn']:>2}/{L} | {r['params']:>10,} |"
-              f" {r['lr']:.0e} | {r['acc']:>12.1%}  | {r['acc']/chance:>6.1f}x")
+              f"  {r['n_solved']}/{SEEDS} = {r['solve_rate']:>3.0%} | {ms:>14}")
     print()
-    print("  accuracy by query-to-plant distance (near -> far):")
+    print("  accuracy by query-to-plant distance, over seeds that solved:")
     q = [f"{int(S*a)}-{int(S*b)}" for a, b in ((0,.25),(.25,.5),(.5,.75),(.75,1))]
     print("   arm    |" + "".join(f" {h:>9} " for h in q))
     for r in res:
@@ -248,33 +268,36 @@ def main():
     pure = next(r for r in res if r["name"] == "mingru")
     hyb = next(r for r in res if r["name"] == "hybrid")
     ceil = next(r for r in res if r["name"] == "attn")
-    # THE GUARD. Pure attention provably can do induction — it is the textbook
-    # task for it. If the ceiling arm is at chance, the harness is broken and
-    # nothing below it can be ranked, however clean the other rows look. Two
-    # earlier runs of this file printed a confident verdict over exactly this
-    # failure; the guard exists so a third cannot.
-    if ceil["acc"] < 0.5:
-        print("  HARNESS FAILURE — the pure-attention CEILING arm scored"
-              f" {ceil['acc']:.1%}.")
-        print("  Attention can solve induction; at chance it means this harness is")
-        print("  not training, so NO comparison below it is valid. Do not read the")
-        print("  mingru/hybrid rows. Check: loss stuck near ln(V_FILL)=3.87 means")
-        print("  the model never left init — widen CB_LRS or raise CB_STEPS.")
+    # THE GUARD. Pure attention provably does induction — it is the textbook task
+    # for it. If the ceiling arm never solves across ALL seeds, the harness is not
+    # training and nothing below it can be ranked, however clean it looks. Three
+    # earlier revisions printed a verdict over exactly this failure; the guard is
+    # why a fourth cannot.
+    if ceil["n_solved"] == 0:
+        print(f"  HARNESS FAILURE — pure attention solved 0/{SEEDS} seeds.")
+        print("  Attention can do induction; never solving means this harness is not")
+        print("  training. No row is rankable. Loss stuck near ln(V_FILL)=3.87 means")
+        print("  it never left init — raise CB_STEPS or CB_LR, or lower CB_S.")
         return
-    if pure["acc"] > 0.5 and pure["acc"] >= hyb["acc"] * 0.9:
-        print("  VERDICT: pure recurrence learns induction at parity with the hybrid.")
-        print("  Attention is NOT mechanistically required for this circuit, the")
-        print("  hybrid question closes, and cubby-lm's alpha_attn -> 0.109 is")
-        print("  consistent with attention simply not earning its place.")
-    elif hyb["acc"] > 0.5 and pure["acc"] < 0.5:
-        print("  VERDICT: the hybrid learns induction and pure recurrence does not.")
-        print("  This is the ablation neither repo ran. It says CubbyLLM's 0%-attention")
-        print("  backbone cannot form the circuit that copying and needle recall need,")
-        print("  and that the drift away from cubby-lm's shape was load-bearing.")
+    # Real architectural signal is GRADED and SEED-ROBUST: a difference in how
+    # reliably / how fast arms solve, not one arm at 100% and two at chance.
+    rates = {r["name"]: r["solve_rate"] for r in res}
+    if pure["solve_rate"] >= 0.75 and pure["solve_rate"] >= hyb["solve_rate"] - 1e-9:
+        print(f"  VERDICT: pure recurrence solves as reliably as the hybrid "
+              f"({rates['mingru']:.0%} vs {rates['hybrid']:.0%}).")
+        print("  Attention is not required for THIS circuit at THIS scale; the burden")
+        print("  shifts to showing where (longer context, real tokens) it starts to")
+        print("  matter. cubby-lm's alpha_attn -> 0.109 is consistent with this.")
+    elif hyb["solve_rate"] - pure["solve_rate"] >= 0.5:
+        print(f"  VERDICT: the hybrid solves far more reliably than pure recurrence "
+              f"({rates['hybrid']:.0%} vs {rates['mingru']:.0%}), seed-robust.")
+        print("  This is the ablation neither repo ran: at this context length the")
+        print("  attention layers are load-bearing for the copying circuit, and")
+        print("  CubbyLLM's drift to 0% attention dropped something real.")
     else:
-        print("  VERDICT: inconclusive — neither arm cleared 50%. Raise CB_STEPS or")
-        print("  shorten CB_S before reading anything into the comparison; a task no")
-        print("  arm can learn ranks nothing.")
+        print(f"  VERDICT: partial separation (mingru {rates['mingru']:.0%}, hybrid "
+              f"{rates['hybrid']:.0%}). Suggestive, not decisive — add seeds")
+        print("  (CB_SEEDS) or sweep CB_S to see if the gap holds before acting on it.")
 
 
 if __name__ == "__main__":
