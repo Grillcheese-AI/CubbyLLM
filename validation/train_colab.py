@@ -42,7 +42,8 @@ import torch.nn.functional as F  # noqa: E402
 from cubbyllm.core.config import CubbyConfig  # noqa: E402
 from cubbyllm.core.context import FrozenSlotRouter  # noqa: E402
 from cubbyllm.core.device import describe, move_model, resolve_device  # noqa: E402
-from cubbyllm.core.generation import HyperGenerator, SnapshotHardener  # noqa: E402
+from cubbyllm.core.generation import (BasisHyperGenerator, HyperGenerator,  # noqa: E402
+                                      SnapshotHardener)
 from cubbyllm.model.assembly import CubbyModel  # noqa: E402
 from cubbyllm.model.backbone import MinGRUBackbone  # noqa: E402
 from cubbyllm.model.binding import BindingHead  # noqa: E402
@@ -73,7 +74,17 @@ CLIP = _env("CB_CLIP", 1.0, float)           # grad-norm clip (stability) — 0 
 WARMUP = _env("CB_WARMUP", 0)                # linear LR warmup steps (early-divergence guard)
 MIN_LR = _env("CB_MIN_LR", 0.1, float)       # cosine-decay floor as a fraction of CB_LR
 GRAD_CKPT = bool(_env("CB_GRAD_CKPT", 0))    # backbone activation checkpointing (fit bigger batch)
+# CB_BIND_W: LEAVE AT 0. H-B6 was falsified 2026-08-02 — this loss is Goodhart-able
+# and the trunk takes the degenerate solution: it drove retrieval 97% -> 11.5%
+# (chance 6.25%) while its own number looked like clean progress. See H-B6.
 BIND_W = _env("CB_BIND_W", 0.0, float)       # VSA binding aux-loss weight (0 = off) — MAP scheme
+# CB_GEN: 'basis' = BasisHyperGenerator (context+layer -> coefficients over low-rank
+# bases, 676,880 params). 'flat' = the original dense HyperGenerator, which emits a
+# d*d block and costs 272,631,872 params — 13.6% of a 2B model. 403x difference.
+GEN_KIND = os.environ.get("CB_GEN_KIND", "basis")
+GEN_BASIS = _env("CB_GEN_BASIS", 16)         # number of low-rank bases
+GEN_RANK = _env("CB_GEN_RANK", 8)            # rank of each basis adapter
+HEALTH_EVERY = _env("CB_HEALTH", 250)        # representation-health probe cadence (0 = off)
 BIND_N = _env("CB_BIND_N", 16)               # role/filler pairs bundled per step
 REP_PEN = _env("CB_REP_PEN", 1.3, float)     # sampling repetition penalty (1.0 = off); freq-aware, breaks loops
 NO_REPEAT = _env("CB_NO_REPEAT", 3)          # block repeating any n-gram of this size while sampling (0 = off)
@@ -99,6 +110,16 @@ def check_gpu(dev):
         print(f"  torch {torch.__version__}, built for CUDA {torch.version.cuda}")
 
 
+def _make_generator():
+    """The theta=f(c) generator. 'basis' is the default: 676,880 params against
+    the flat form's 272,631,872 at d=2048 (13.6% of a 2B model), and it conditions
+    on layer identity as well as context. 'flat' keeps the original for A/B."""
+    if GEN_KIND == "flat":
+        return HyperGenerator(ctx_dim=CTX, n_out=D * D)
+    return BasisHyperGenerator(ctx_dim=CTX, d_model=D, n_layers=N_LAYERS,
+                               n_basis=GEN_BASIS, rank=GEN_RANK)
+
+
 def build(vocab, dev):
     torch.manual_seed(0)
     cfg = CubbyConfig(d_model=D, n_layers=N_LAYERS, ctx_dim=CTX, vocab_core=vocab)
@@ -106,7 +127,7 @@ def build(vocab, dev):
         config=cfg,
         context_source=FrozenSlotRouter(input_dim=D, n_slots=N_SLOTS, ctx_dim=CTX).freeze(),
         backbone=MinGRUBackbone(D, N_LAYERS, grad_checkpoint=GRAD_CKPT),
-        memory=MemoryLayer(HyperGenerator(ctx_dim=CTX, n_out=D * D), SnapshotHardener(), d_model=D),
+        memory=MemoryLayer(_make_generator(), SnapshotHardener(), d_model=D),
         binding=BindingHead(), embedding=HybridEmbedding(vocab, D),
         head=TopKRetrievalHead(torch.randn(vocab, D) * 0.02, learnable=True),
         retrieval_k=vocab,
@@ -181,6 +202,42 @@ def sample_text(model, decode, dev, vocab, n=5, max_new=48, temp=0.8, top_k=40, 
             ids.append(nxt)
         outs.append(decode([t for t in ids if t != seed]).replace("\n", " ").strip()[:220])
     return outs
+
+
+@torch.no_grad()
+def representation_health(model, pipe, dev, n=16, seqs=4, seq=256):
+    """Is the trunk's h still a usable VSA substrate? Returns (retrieval, ff_cos).
+
+    THE METRIC THAT CAN FAIL. On 2026-08-02 a 20,000-step run drove its binding
+    loss 0.735 -> 0.158 while silently collapsing every hidden state in a sequence
+    onto one direction: filler-filler cosine 0.006 -> 0.974, retrieval 97% -> 11.5%
+    (chance 6.25%). Nothing in the training loss could see it, because the loss
+    rewarded cosine-to-own-filler and never penalised cosine-to-OTHER-fillers.
+
+    Retrieval is the property that actually matters — can you tell WHICH item was
+    bound — and it costs one bundle/unbind on features we already computed.
+    Healthy: retrieval ~95%+, ff ~0.2-0.3 on real text. Collapsed: retrieval near
+    chance, ff -> 1.0. An UNTRAINED trunk scores ~97%, so this can only get worse.
+    """
+    import torch.nn.functional as F
+
+    from cubbyllm.model.binding.torch_ops import make_roles
+
+    it = pipe.batches(seqs, seq)
+    x, _ = next(it)
+    h = model.features(x.to(dev)).float()
+    ns, S, d = h.shape
+    roles = make_roles(n, d, h.device)
+    idx = torch.randint(0, S, (ns, n), device=h.device)
+    f = torch.gather(h, 1, idx.unsqueeze(-1).expand(-1, -1, d))
+    r = roles.unsqueeze(0)
+    rec = (r * f).sum(dim=1, keepdim=True) * r
+    rn, fn = F.normalize(rec, dim=-1), F.normalize(f, dim=-1)
+    sim = torch.bmm(rn, fn.transpose(1, 2))
+    acc = (sim.argmax(-1) == torch.arange(n, device=h.device)).float().mean()
+    ff = torch.bmm(fn, fn.transpose(1, 2))
+    off = ff[:, ~torch.eye(n, dtype=bool, device=h.device)].mean()
+    return float(acc), float(off)
 
 
 def stage_cache(src_dir, dst_dir):
@@ -290,7 +347,9 @@ def main():
                      bind_weight=BIND_W, bind_n=BIND_N)
     print(f"trainable params: {n_params:,} | manifest {pipe.manifest_hash()[:16]}\n")
 
-    meta = {"D": D, "L": N_LAYERS, "vocab": vocab}
+    # gen kind is part of the architecture identity: swapping generators changes
+    # the parameter list, so a stale checkpoint must be refused, not half-loaded.
+    meta = {"D": D, "L": N_LAYERS, "vocab": vocab, "gen": GEN_KIND}
     start_step = 0
     if CKPT and os.path.exists(CKPT):
         start_step = load_ckpt(CKPT, model, loop.opt, dev, meta)
@@ -323,9 +382,14 @@ def main():
             tag = "val" if val is not None else "train"
             lr_now = loop.opt.param_groups[0]["lr"]
             bind = f"  bind {loop._last_bind:5.3f}" if BIND_W > 0 else ""
+            health = ""
+            if HEALTH_EVERY and s % HEALTH_EVERY == 0:
+                acc, ff = representation_health(model, pipe, dev)
+                flag = "  <<< COLLAPSING" if (acc < 0.5 or ff > 0.6) else ""
+                health = f"  ret {acc:5.1%} ff {ff:+.3f}{flag}"
             print(f"  step {s:>5}  {tag} loss {ce:6.3f}  ppl {math.exp(ce):8.1f}  "
-                  f"bpc {ce/math.log(2)/cpt:5.3f}  lr {lr_now:.2e}{bind}  {sec_step:6.3f} s/step  "
-                  f"{toks/dt:>9,.0f} tok/s")
+                  f"bpc {ce/math.log(2)/cpt:5.3f}  lr {lr_now:.2e}{bind}{health}  "
+                  f"{sec_step:6.3f} s/step  {toks/dt:>9,.0f} tok/s")
         if GEN_EVERY and (s % GEN_EVERY == 0 or s == 1):
             print(f"  — {N_GEN} sample generations @ step {s} —")
             for j, txt in enumerate(sample_text(model, decode, dev, vocab,

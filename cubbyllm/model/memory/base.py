@@ -51,6 +51,15 @@ class MemoryLayer(Generable):
         """
         import torch
 
+        # Factored fast path: a generator that exposes ``apply`` (e.g.
+        # BasisHyperGenerator) computes x @ W^T from low-rank factors and never
+        # materialises the d_model x d_model block. At d=2048 that block is 4.2M
+        # floats per call, and emitting it flat is what makes the dense generator
+        # cost 272.6M parameters — 13.6% of a 2B model. Same arithmetic, no matrix.
+        apply_fn = getattr(self.generator, "apply", None)
+        if callable(apply_fn):
+            return x + torch.tanh(apply_fn(x, ctx))
+
         gp = self.generator.generate(ctx)
         theta = gp.weights                                 # (..., d_model*d_model)
         # collapse any batch dim on the generated params to a single matrix when
