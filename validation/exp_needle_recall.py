@@ -219,7 +219,8 @@ def main():
         raise SystemExit("set CB_CKPT")
     ck = torch.load(CKPT, map_location="cpu")
     beat(f"checkpoint loaded ({os.path.getsize(CKPT)/1e6:.0f} MB)")
-    model, d, L, V, kind = build(ck["meta"], dev)
+    meta = dict(ck["meta"])            # keep for the untrained-control rebuild below
+    model, d, L, V, kind = build(meta, dev)
     beat(f"model built (d={d} L={L} gen={kind})")
     trained = [p.detach().clone() for p in ck["params"]]
     with torch.no_grad():
@@ -308,7 +309,9 @@ def main():
 
     with torch.no_grad():                              # CONTROL: untrained = chance
         torch.manual_seed(0)
-        fresh, *_ = build({"D": d, "L": L, "vocab": V, "gen": kind}, dev)
+        # SAME meta (incl. backbone) — a partial dict silently built a MinGRU
+        # against a hybrid model and the params mismatched (1536 qkv vs 512).
+        fresh, *_ = build(meta, dev)
         for p, q in zip(model.parameters(), fresh.parameters()):
             p.copy_(q)
     run("CONTROL: untrained model (this is what chance looks like here)")

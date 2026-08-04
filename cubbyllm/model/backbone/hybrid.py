@@ -1,16 +1,20 @@
 """HybridBackbone — MinGRU trunk with a sliding-window attention layer every Nth.
 
-Wired: STANDALONE — a pluggable ALTERNATE backbone, not the default path. It
-becomes a candidate for the default only after a real-scale A/B against pure
-``MinGRUBackbone`` on retrieval (needle recall), not before. See H-D2.
+Wired: WIRED — the chosen default backbone. It won the H-D4 A/B against pure
+``MinGRUBackbone`` on real needle recall (2026-08-04): at d=512/L=8/~0.98B tokens,
+matched, the hybrid hit ~98% recall inside its window vs ~32% for pure MinGRU,
+both at bounded decode state. ``MinGRUBackbone`` remains a tested, pluggable
+baseline — the interface-only ``base.py`` keeps both selectable.
 
 WHY IT EXISTS. The bake-off that chose MinGRU (H-D1) scored on bpc — a prediction
 metric that is blind to content-based lookup, which is the one thing attention
-buys. The dense induction probe (``validation/exp_d3_induction``) then measured
-what bpc could not: at induction distance T, pure MinGRU sits at chance while a
-2-of-6 windowed-attention hybrid solves 100%, at BOUNDED state. This is cubby-lm's
-own production shape (``trunk_torch/blocks.py``: attention every 3rd layer,
-``runpod_launch.sh``: 8 of 22), which CubbyLLM had dropped without a decision.
+buys. The dense induction probe (``validation/exp_d3_induction``) measured what
+bpc could not: at induction distance T, pure MinGRU sits at chance while a
+windowed-attention hybrid solves 100%, at BOUNDED state — then the 413M-config
+needle A/B confirmed it at scale (recall is a clean step function of needle
+distance vs window; see H-D4). This is cubby-lm's own production shape
+(``trunk_torch/blocks.py``: attention every 3rd layer, ``runpod_launch.sh``: 8 of
+22), which CubbyLLM had dropped on the strength of a bpc-only bake-off.
 
 WHY WINDOWED, NOT FULL. A full-attention layer keeps a KV cache that grows with
 context, which would break the O(1)-decode guarantee that
@@ -209,4 +213,4 @@ class HybridBackbone(nn.Module):
         return x
 
 
-__wiring__ = Wiring.STANDALONE
+__wiring__ = Wiring.WIRED

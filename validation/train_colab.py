@@ -74,12 +74,13 @@ CLIP = _env("CB_CLIP", 1.0, float)           # grad-norm clip (stability) — 0 
 WARMUP = _env("CB_WARMUP", 0)                # linear LR warmup steps (early-divergence guard)
 MIN_LR = _env("CB_MIN_LR", 0.1, float)       # cosine-decay floor as a fraction of CB_LR
 GRAD_CKPT = bool(_env("CB_GRAD_CKPT", 0))    # backbone activation checkpointing (fit bigger batch)
-# CB_BACKBONE: 'mingru' (default) = pure MinGRUBackbone. 'hybrid' = HybridBackbone
-# (MinGRU + sliding-window attention every CB_ATTN_EVERY-th layer, cubby-lm's
-# shape). The H-D3 A/B: the hybrid should hold needle recall past the distance
-# where pure MinGRU's fixed state loses it, up to ~window. Both keep bounded
-# decode state, so both preserve the O(1) inference claim.
-BACKBONE = os.environ.get("CB_BACKBONE", "mingru")
+# CB_BACKBONE: 'hybrid' (DEFAULT, won the H-D4 A/B) = HybridBackbone (MinGRU +
+# sliding-window attention every CB_ATTN_EVERY-th layer, RoPE, cubby-lm's shape).
+# 'mingru' = the pure-recurrence baseline it beat. In the 2026-08-04 needle A/B
+# (d=512/L=8/~0.98B tokens, matched) the hybrid hit ~98% recall inside its window
+# vs ~32% for pure MinGRU, both at bounded decode state — so hybrid is the default
+# now. Beyond the window both fall to the floor (that is the memory layer's job).
+BACKBONE = os.environ.get("CB_BACKBONE", "hybrid")
 ATTN_EVERY = _env("CB_ATTN_EVERY", 3)        # attention on layers 0, 3, 6, ...
 ATTN_WINDOW = _env("CB_WINDOW", 512)         # sliding-window size (bounded KV)
 ATTN_HEADS = _env("CB_HEADS", 8)             # attention heads (must divide CB_D)

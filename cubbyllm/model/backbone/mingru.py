@@ -1,6 +1,11 @@
-"""MinGRUBackbone — the chosen default backbone (H-D1 RESOLVED 2026-07-23).
+"""MinGRUBackbone — the pure-recurrence baseline (H-D1 2026-07-23).
 
-Wired: WIRED — the trunk in the default forward path.
+Wired: WIRED — a tested, selectable backbone. NOTE: no longer THE default. H-D1
+picked MinGRU on bpc, which is blind to retrieval; the H-D4 needle A/B
+(2026-08-04) then showed a windowed-attention hybrid recalls ~98% inside its
+window vs ~32% here, at the same bounded state, so ``HybridBackbone`` is now the
+default (it embeds this same MinGRU recurrence on its non-attention layers). This
+class stays as the baseline and the fallback where attention isn't wanted.
 
 Resolved by the in-architecture bake-off (``validation/exp_d1b_backbone_bakeoff``):
 in the real CubbyModel on subword TinyStories, gated recurrence beat the

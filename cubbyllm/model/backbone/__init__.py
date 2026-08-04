@@ -1,8 +1,9 @@
 """cubbyllm.model.backbone — the sequence backbone.
 
 Wired: WIRED — package marker. ``base.py`` holds the ``Backbone`` protocol only,
-so alternate backbones stay pluggable; ``MinGRUBackbone`` (mingru.py) is the
-chosen default (H-D1 resolved 2026-07-23 via the in-architecture bake-off).
+so alternate backbones stay pluggable; ``HybridBackbone`` (hybrid.py) is the
+chosen default after the H-D4 needle A/B (2026-08-04: ~98% vs ~32% recall inside
+its window, bounded state), with ``MinGRUBackbone`` the pure-recurrence baseline.
 """
 from __future__ import annotations
 
