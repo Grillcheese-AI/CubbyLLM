@@ -194,28 +194,42 @@ SOLVE = 0.90                                              # acc that counts as s
 
 
 def train_once(name, dev, seed):
-    """One arm, one seed, to STEPS. Returns (final_acc, bands, steps_to_solve)."""
+    """One arm, one seed, to STEPS. Returns (final_acc, bands, steps_to_solve, diverged).
+
+    Prints a line every EVERY steps so a long silent run is legible AND a NaN is
+    caught the moment it happens — otherwise a seed that diverges is indistinct
+    from one that merely never groks: both just report a low final accuracy. On
+    non-finite loss it stops that seed early and flags it.
+    """
     torch.manual_seed(seed)
     model = Model(pattern_for(name), S).to(dev)
     opt = torch.optim.AdamW(model.parameters(), lr=LR)
     warm = max(1, STEPS // 20)
     g = torch.Generator().manual_seed(seed + 1)
-    solved_at = None
+    solved_at, diverged = None, False
     acc, bands = 0.0, []
     for s in range(1, STEPS + 1):
         for grp in opt.param_groups:                      # linear warmup, then flat
             grp["lr"] = LR * min(1.0, s / warm)
         x, y, _ = make_batch(B, S, g, dev)
         loss = F.cross_entropy(model(x), y)
+        lv = loss.detach().item()
+        if not (lv == lv) or lv in (float("inf"), float("-inf")):   # NaN or inf
+            print(f"      seed {seed} step {s:>5}: loss {lv} — NON-FINITE, "
+                  f"stopping this seed (lr={grp['lr']:.1e}, grad blew up)", flush=True)
+            diverged = True
+            break
         opt.zero_grad(set_to_none=True)
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        gn = float(torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0))
         opt.step()
         if s % EVERY == 0 or s == STEPS:
             acc, bands = evaluate(model, dev)
             if solved_at is None and acc >= SOLVE:
                 solved_at = s
-    return acc, bands, solved_at
+            print(f"      seed {seed} step {s:>5}  loss {lv:6.3f}  acc {acc:6.1%}"
+                  f"  |grad| {gn:6.2f}", flush=True)
+    return acc, bands, solved_at, diverged
 
 
 def _median(xs):
@@ -229,15 +243,20 @@ def run(name, dev):
     n_p = sum(p.numel() for p in Model(pattern_for(name), S).parameters())
     print(f"  --- {name}: {n_attn}/{L} attention layers, {n_p:,} params, "
           f"{SEEDS} seeds @ lr={LR:.0e} ---", flush=True)
-    t0, accs, solves, last_bands = time.perf_counter(), [], [], []
+    t0, accs, solves, last_bands, n_div = time.perf_counter(), [], [], [], 0
     for seed in range(SEEDS):
-        acc, bands, at = train_once(name, dev, seed)
+        acc, bands, at, diverged = train_once(name, dev, seed)
         accs.append(acc)
         if at is not None:
             solves.append(at)
         last_bands.append(bands)
-        tag = f"solved @ {at}" if at else "NOT solved"
+        n_div += int(diverged)
+        tag = "DIVERGED (NaN/inf)" if diverged else (f"solved @ {at}" if at
+                                                     else "NOT solved")
         print(f"    seed {seed}: final acc {acc:6.1%}  ({tag})", flush=True)
+    if n_div:
+        print(f"    !! {n_div}/{SEEDS} seeds diverged — lr={LR:.0e} too high for"
+              f" {name}; lower CB_LR before trusting its solve-rate", flush=True)
     n_solved = sum(a >= SOLVE for a in accs)
     # bands averaged over the seeds that solved (an unsolved seed's bands are noise)
     ok = [b for a, b in zip(accs, last_bands) if a >= SOLVE]

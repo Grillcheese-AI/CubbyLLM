@@ -476,6 +476,14 @@ def main():
     t0 = last_t = time.perf_counter(); toks = 0; recent = []; last_step = start_step
     for s in range(start_step + 1, STEPS + 1):
         loss = loop.step(); toks += BATCH * SEQ; recent.append(loss)
+        # A NaN/inf here poisons every later step, so a run can burn credits
+        # producing garbage that only shows up at the next eval. Catch it the
+        # step it happens, name the last checkpoint, and stop.
+        if not (loss == loss) or loss in (float("inf"), float("-inf")):
+            print(f"  step {s:>5}  loss {loss} — NON-FINITE. Training is poisoned;"
+                  f" stopping. Resume from the last checkpoint at step "
+                  f"{(s // CKPT_EVERY) * CKPT_EVERY} with a lower CB_LR.", flush=True)
+            break
         if s % EVAL_EVERY == 0 or s == 1:
             if dev.type == "cuda":
                 torch.cuda.synchronize()                     # accurate wall time (GPU is async)
