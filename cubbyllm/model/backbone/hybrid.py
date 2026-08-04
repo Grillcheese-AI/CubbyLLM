@@ -23,6 +23,15 @@ tokens at fixed state — beyond that, recall falls back to what the recurrent
 state retains. No bounded-state model does arbitrary-distance recall; that is a
 property of the information, not of this design.
 
+POSITIONS. The attention layers carry **RoPE** (rotary position encoding). The
+package has no other positional signal — MinGRU gets order from its recurrence —
+so without this the windowed attention would be position-blind (permutation-
+invariant over its window), which is exactly what the induction prev-token head
+cannot be. RoPE also extrapolates past the training length, so a model trained at
+S=1024 is scored fairly on a 4096-token needle. Applied by absolute position, so a
+cached key keeps its rotation as the window slides and decode still matches the
+parallel forward.
+
 Trunk: N layers of [RMSNorm -> mixer -> +res, RMSNorm -> SwiGLU -> +res], where
 the mixer is windowed attention on layers where ``i % attn_every == 0`` and MinGRU
 elsewhere. Both mixers share the (x -> same-shape) forward and the
@@ -40,6 +49,28 @@ from ...core.protocols import Wiring
 from .mingru import _MinGRUMixer, _RMSNorm, _SwiGLU
 
 
+def _rope_tables(dh: int, positions, device):
+    """cos/sin for rotary position encoding at the given absolute positions.
+    positions: (P,) long -> returns (P, dh) cos and sin."""
+    inv = 1.0 / (10000.0 ** (torch.arange(0, dh, 2, device=device).float() / dh))
+    ang = torch.outer(positions.float(), inv)            # (P, dh/2)
+    emb = torch.cat([ang, ang], dim=-1)                  # (P, dh)
+    return emb.cos(), emb.sin()
+
+
+def _rotate_half(x):
+    half = x.shape[-1] // 2
+    return torch.cat([-x[..., half:], x[..., :half]], dim=-1)
+
+
+def _apply_rope(x, cos, sin):
+    """x: (B, h, S, dh); cos/sin broadcastable to it. Rotates by absolute
+    position, so a q·k dot depends only on the RELATIVE offset — which is what
+    lets the windowed cache reuse keys rotated once, at their own position, and
+    still match the parallel forward."""
+    return x * cos + _rotate_half(x) * sin
+
+
 class _WindowedAttnMixer(nn.Module):
     """Causal multi-head attention restricted to the last ``window`` tokens.
 
@@ -55,6 +86,8 @@ class _WindowedAttnMixer(nn.Module):
         super().__init__()
         if d % heads:
             raise ValueError(f"d_model {d} not divisible by heads {heads}")
+        if (d // heads) % 2:
+            raise ValueError(f"head dim {d // heads} must be even for RoPE")
         self.h = int(heads)
         self.dh = d // heads
         self.window = int(window)
@@ -65,26 +98,42 @@ class _WindowedAttnMixer(nn.Module):
         B, S, d = x.shape
         q, k, v = self.qkv(x).chunk(3, -1)
         q, k, v = (t.view(B, S, self.h, self.dh).transpose(1, 2) for t in (q, k, v))
+        cos, sin = _rope_tables(self.dh, torch.arange(S, device=x.device), x.device)
+        cos, sin = cos.view(1, 1, S, self.dh), sin.view(1, 1, S, self.dh)
+        q, k = _apply_rope(q, cos, sin), _apply_rope(k, cos, sin)      # rotary position
         i = torch.arange(S, device=x.device)
         keep = (i[:, None] >= i[None, :]) & (i[:, None] - i[None, :] < self.window)
         o = F.scaled_dot_product_attention(q, k, v, attn_mask=keep)   # causal+window
         return self.o(o.transpose(1, 2).reshape(B, S, d))
 
     def step(self, x_t, cache=None):
-        """One token. x_t: (B, d). cache: (k, v) each (B, h, <=window, dh) or None.
+        """One token. x_t: (B, d). cache: (k, v, pos) with k,v each
+        (B, h, <=window, dh) and pos a 0-dim tensor (the next absolute position),
+        or None to start.
 
-        Appends the new key/value, trims to the last ``window``, and attends the
-        query over exactly the window ``forward`` would have used for this
-        position — so decode reproduces the parallel path. State is bounded by
-        ``window``; it never grows with how many tokens came before.
+        RoPE is applied at the token's ABSOLUTE position before caching, so a
+        retained key keeps the rotation it had in ``forward`` even after the window
+        slides — which is why the query (rotated at the current position) dotted
+        against the cached keys reproduces the masked parallel attention exactly.
+        State is bounded by ``window`` (plus one scalar); it never grows with
+        context length.
         """
         B, d = x_t.shape
+        if cache is None:
+            kc = vc = None
+            pos = 0
+        else:
+            kc, vc, pos_t = cache
+            pos = int(pos_t)
         q, k, v = self.qkv(x_t).chunk(3, -1)
         q = q.view(B, self.h, 1, self.dh)
         k = k.view(B, self.h, 1, self.dh)
         v = v.view(B, self.h, 1, self.dh)
-        if cache is not None:
-            kc, vc = cache
+        cos, sin = _rope_tables(self.dh, torch.tensor([pos], device=x_t.device),
+                                x_t.device)
+        cos, sin = cos.view(1, 1, 1, self.dh), sin.view(1, 1, 1, self.dh)
+        q, k = _apply_rope(q, cos, sin), _apply_rope(k, cos, sin)
+        if kc is not None:
             k = torch.cat([kc, k], dim=2)
             v = torch.cat([vc, v], dim=2)
         if k.shape[2] > self.window:                     # keep only the last window
@@ -92,7 +141,8 @@ class _WindowedAttnMixer(nn.Module):
         # every cached key is a valid (past-or-current, within-window) attendee,
         # so no mask is needed — the trim already enforces the window.
         o = F.scaled_dot_product_attention(q, k, v)
-        return self.o(o.reshape(B, d)), (k, v)
+        new_pos = torch.tensor(pos + 1, device=x_t.device)
+        return self.o(o.reshape(B, d)), (k, v, new_pos)
 
 
 class HybridBackbone(nn.Module):

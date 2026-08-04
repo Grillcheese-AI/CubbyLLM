@@ -120,9 +120,19 @@ def build(meta, dev):
     return m, d, L, V, kind
 
 
+def _clone_bb(s):
+    """One backbone layer's state. MinGRU layers carry a (1, d) tensor; hybrid
+    attention layers carry a (k, v, pos) tuple — so recurse rather than assume
+    every element is a tensor (which broke on the first hybrid checkpoint)."""
+    if torch.is_tensor(s):
+        return s.clone()
+    return tuple(_clone_bb(e) for e in s)
+
+
 def _clone(state):
-    """Snapshot decode state. n_layers x (1, d) tensors — cheap next to a prefix."""
-    return {"bb": [s.clone() for s in state["bb"]],
+    """Snapshot decode state — cheap next to a prefix. Handles both pure-MinGRU
+    (all-tensor) and hybrid (tuple KV-cache) per-layer states."""
+    return {"bb": [_clone_bb(s) for s in state["bb"]],
             "ctx_sum": state["ctx_sum"].clone(), "ctx_n": state["ctx_n"]}
 
 

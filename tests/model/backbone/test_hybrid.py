@@ -135,6 +135,25 @@ def test_window_actually_bounds_reach():
         "a token outside the window changed the output — the window is not bounding reach")
 
 
+def test_rope_makes_attention_position_aware():
+    """Swapping two tokens WITHIN the window must change the output. Without
+    positional encoding, attention is a permutation-invariant weighted sum over
+    the attended set — swapping same-content tokens at different positions would
+    give the identical result. That it changes here proves RoPE is encoding
+    position, which is what the induction prev-token head needs and what the
+    validated toy had (the package had none before this)."""
+    torch.manual_seed(3)
+    bb = HybridBackbone(D, n_layers=1, attn_every=1, window=W, heads=4)  # one attn
+    base = torch.randn(1, 5, D)                          # 5 < W: pos 4 sees all
+    perm = base.clone()
+    perm[0, [1, 3]] = base[0, [3, 1]]                    # same multiset, swapped order
+    with torch.no_grad():
+        a = bb.forward(base)[0, -1]
+        b = bb.forward(perm)[0, -1]
+    assert not torch.allclose(a, b, atol=1e-5), (
+        "output invariant to token order within the window — positions are not encoded")
+
+
 def test_stacked_windows_compound_reach():
     """Two windowed layers reach ~2*(window-1): a token that one layer cannot see
     CAN influence the output through a second hop. This is why a few windowed
