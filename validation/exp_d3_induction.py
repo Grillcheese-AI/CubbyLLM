@@ -123,6 +123,28 @@ def induction_loss_acc(model, x):
     return loss, float(acc)
 
 
+def _rope_tables(dh: int, positions, device):
+    """cos/sin for rotary position encoding at the given absolute positions.
+    positions: (P,) long -> returns (P, dh) cos and sin."""
+    inv = 1.0 / (10000.0 ** (torch.arange(0, dh, 2, device=device).float() / dh))
+    ang = torch.outer(positions.float(), inv)            # (P, dh/2)
+    emb = torch.cat([ang, ang], dim=-1)                  # (P, dh)
+    return emb.cos(), emb.sin()
+
+
+def _rotate_half(x):
+    half = x.shape[-1] // 2
+    return torch.cat([-x[..., half:], x[..., :half]], dim=-1)
+
+
+def _apply_rope(x, cos, sin):
+    """x: (B, h, S, dh); cos/sin broadcastable to it. Rotates by absolute
+    position, so a q·k dot depends only on the RELATIVE offset — which is what
+    lets the windowed cache reuse keys rotated once, at their own position, and
+    still match the parallel forward."""
+    return x * cos + _rotate_half(x) * sin
+
+
 class Trunk(nn.Module):
     """N layers, but the mixer is chosen PER LAYER — the thing exp_d1b could not do.
 

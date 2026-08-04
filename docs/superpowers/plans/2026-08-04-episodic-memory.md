@@ -4,7 +4,7 @@
 
 **Goal:** Give CubbyLLM recall past the attention window — a trained, differentiable per-token episodic memory whose read is soft attention over the top-K most similar past tokens, retrieved from the beyond-window causal past.
 
-**Architecture:** A shared differentiable read (`MemoryRead`: soft attention over a (key, value) set) drives two paths — a masked dense top-K over the sequence's own beyond-window past during training, and an `EpisodicStore` (a persisted, growing per-sequence store, retrieved by exact Hamming over binary key-codes) at inference. Prove the capability on a toy needle-beyond-window gate BEFORE integrating into `HybridBackbone` as a third interleaved mixer.
+**Architecture:** A shared differentiable read (`MemoryRead`: soft attention over a (key, value) set) drives two paths — a masked dense top-K over the sequence's own beyond-window past during training, and an `EpisodicStore` (a persisted, growing per-sequence store, retrieved by Hamming over 256-bit SimHash key-codes, an approximation to cosine with ~70% top-K overlap) at inference. Prove the capability on a toy needle-beyond-window gate BEFORE integrating into `HybridBackbone` as a third interleaved mixer.
 
 **Tech Stack:** Python, PyTorch (lazy-imported), numpy. No new deps. Torch-free `import cubbyllm` preserved.
 
@@ -493,6 +493,11 @@ Claude-Session: https://claude.ai/code/session_01JNaPeo6tU6xubkEfWTTLav"
 ---
 
 ### Task 4: Hamming retrieval + the training/serving-skew guard
+
+**Superseded during implementation:** the single-bit `sign(k)` sketch below measured
+only ~34% cosine-top-K overlap under small perturbation (too few bits); the actual
+code uses a 256-bit SimHash (`sign(k · R)`, fixed random projection `R`), which
+restores ~70% overlap — see spec §3.1.
 
 **Files:**
 - Modify: `cubbyllm/model/recall/store.py` (add `retrieve_hamming`)

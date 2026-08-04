@@ -84,6 +84,14 @@ BACKBONE = os.environ.get("CB_BACKBONE", "hybrid")
 ATTN_EVERY = _env("CB_ATTN_EVERY", 3)        # attention on layers 0, 3, 6, ...
 ATTN_WINDOW = _env("CB_WINDOW", 512)         # sliding-window size (bounded KV)
 ATTN_HEADS = _env("CB_HEADS", 8)             # attention heads (must divide CB_D)
+# CB_MEM_EVERY: episodic memory (rung 0.0.5, H-D5) — reads the BEYOND-window
+# causal past via a differentiable top-K lookup (HDC/SimHash as the O(1) index).
+# 0 (default) = off; HybridBackbone constructs no MemoryRead modules at all, so
+# the default path is unchanged until a real run opts in. >0 = MemoryRead every
+# Nth layer. See docs/superpowers/specs/2026-08-04-episodic-memory-design.md.
+MEM_EVERY = _env("CB_MEM_EVERY", 0)          # 0 = off; >0 = MemoryRead every Nth layer
+MEM_TOPK = _env("CB_MEM_TOPK", 8)
+MEM_KEY = _env("CB_MEM_KEY", 64)
 # CB_BIND_W: LEAVE AT 0. H-B6 was falsified 2026-08-02 — this loss is Goodhart-able
 # and the trunk takes the degenerate solution: it drove retrieval 97% -> 11.5%
 # (chance 6.25%) while its own number looked like clean progress. See H-B6.
@@ -135,7 +143,8 @@ def _make_generator():
 def _make_backbone():
     if BACKBONE == "hybrid":
         return HybridBackbone(D, N_LAYERS, attn_every=ATTN_EVERY, window=ATTN_WINDOW,
-                              heads=ATTN_HEADS, grad_checkpoint=GRAD_CKPT)
+                              heads=ATTN_HEADS, grad_checkpoint=GRAD_CKPT,
+                              mem_every=MEM_EVERY, mem_topk=MEM_TOPK, mem_key=MEM_KEY)
     return MinGRUBackbone(D, N_LAYERS, grad_checkpoint=GRAD_CKPT)
 
 
@@ -476,7 +485,8 @@ def main():
     # the parameter list, so a stale checkpoint must be refused, not half-loaded.
     meta = {"D": D, "L": N_LAYERS, "vocab": vocab, "gen": GEN_KIND,
             "backbone": BACKBONE, "attn_every": ATTN_EVERY,
-            "window": ATTN_WINDOW, "heads": ATTN_HEADS}
+            "window": ATTN_WINDOW, "heads": ATTN_HEADS,
+            "mem_every": MEM_EVERY, "mem_topk": MEM_TOPK, "mem_key": MEM_KEY}
     start_step = 0
     if CKPT and os.path.exists(CKPT):
         start_step = load_ckpt(CKPT, model, loop.opt, dev, meta)
