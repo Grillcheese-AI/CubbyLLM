@@ -174,6 +174,25 @@ This group comes from a single "trillion-parameter architecture blueprint" docum
 
 **Scale result (2026-08-04): DECISIVE — kill-criterion (1) retired.** Two matched runs, identical except `CB_BACKBONE` — pure MinGRU vs windowed-hybrid (MinGRU + windowed attention every 3rd of 8 layers, `window=512`, RoPE), d=512 / L=8 / ~0.98B tokens each — scored on `exp_needle_recall` (PMI, shuffled + untrained controls, argmax-spread check) across lengths **256 / 512 / 1024 / 4096**. Floor: MinGRU's shuffled control ~15%, untrained ~33% (a PMI base-rate residual), chance 12.5%. **Pure MinGRU (trained): ~28–32% at every length** — barely above its own shuffled floor, flat, weak. **Windowed hybrid (trained): ~98% at 256, ~100% at 512** (every depth except the window-edge depth 0.0 = 41.7%), and at **1024 the depth pattern IS the window, drawn to a single step:** `16.7 / 16.7 / 8.3 / 91.7 / 100` — chance while the needle sits beyond the 512 window (depths 0.0–0.5), near-perfect once it is inside it (depths 0.75–1.0), the transition landing exactly at the window boundary. Recall is a pure function of one variable — **needle-to-query distance vs window**: inside → ~100%, outside → chance. That fingerprint rules out memorisation or artifact; it is the sliding-window mechanism itself, at scale. So a windowed-attention hybrid gives near-perfect long-context recall within its window at bounded, context-independent state, and pure recurrence does not (**98% vs 32%** at 256). The honest bound is in the same data: beyond the window the hybrid falls to the floor like MinGRU — windowed attention buys perfect recall to ~window (×depth for stacked layers), no further; recall *past* the window is the memory layer's job (rung 0.0.5, still unbuilt). **Decision: the backbone is the hybrid** — H-D1's "RESOLVED: MinGRU" is superseded; it was resolved on the one metric (bpc) that cannot see retrieval. `validation/logs/needle_mingru.log`, `validation/logs/needle_hybrid.log`.
 
+**H-D5 — a trained per-token episodic memory (differentiable top-K read over the
+beyond-window causal past, HDC as the O(1) index) extends recall past the window
+that H-D4 bounded.** Status: **design + toy-gate stage.** Built:
+`cubbyllm/model/recall/{read,store}.py`, interleaved into `HybridBackbone`
+(`mem_every`). Success metric = the beyond-window depths of `exp_needle_recall`
+(currently chance) rising off the floor. **Kill criterion:** the `exp_d5` toy gate
+must show memory-on beating memory-off on needle-beyond-window recall before the
+real-trunk run; if not, the design is wrong. Design:
+`docs/superpowers/specs/2026-08-04-episodic-memory-design.md`. The store's
+Hamming index is a **256-bit SimHash** (`sign(k · R)`, `R` a fixed random
+projection), not single-bit `sign(k)` — Task 4 measured single-bit binarization
+recovering only ~34% of the cosine top-K under small perturbation (too few bits),
+and the 256-bit SimHash restores ~70% overlap, the honest-negative-result-first
+finding this repo values. Caveat: `MemoryRead.forward`'s top-K selection is now
+**cosine** (changed from dot-product during Task 5 to match the decode-time
+`EpisodicStore.retrieve_cosine`/Hamming path), so `validation/exp_d5_episodic.py`'s
+earlier green (memory-on 99.9%) predates that change and should be re-run against
+the current selection metric before its number is treated as canonical.
+
 **H-D2 — In-place Test-Time Training eliminates the KV-cache but is a compute-for-memory trade, not a free win.** The blueprint proposes repurposing FFN projection layers as dynamically-updated fast weights during inference, updated via local next-token-prediction gradients, to handle long context (128k tokens) without KV-cache memory-bandwidth cost. Status: SPECULATIVE as a net win — TTT's per-token update is itself a gradient step, so inference compute per token goes up even as cache memory goes down. **Validate** by measuring wall-clock/FLOPs per generated token with TTT-in-the-loop versus standard KV-cache attention at matched context length — the blueprint only argues the memory side, not the compute side, of this trade.
 
 **Validation result (2026-07-23 campaign): compute side now measured (d=512, CPU, rank-1/NLMS-style update — the cheap TTT variant).** TTT per-token cost is constant 0.253ms; KV-attention grows 0.545→210.4ms from L=1k→131k; measured crossover **L≈1,024 (≈d)** — so on this shape the compute side *also* favors TTT for essentially all long-context regimes, rather than opposing the memory win (1.0MB vs 536.9MB state at 128k). Two honest limits: full-backprop TTT variants cost more than the rank-1 form measured, and — stated plainly — nothing here tests whether local-gradient fast weights actually *retain* 128k tokens of usable context. The quality half still needs a trained model. `validation/exp_d2_ttt.py`.

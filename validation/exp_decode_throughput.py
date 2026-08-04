@@ -81,7 +81,10 @@ def build_cubby(meta, dev):
     if meta.get("backbone") == "hybrid":
         backbone = HybridBackbone(d, L, attn_every=int(meta.get("attn_every", 3)),
                                   window=int(meta.get("window", 512)),
-                                  heads=int(meta.get("heads", 8)))
+                                  heads=int(meta.get("heads", 8)),
+                                  mem_every=int(meta.get("mem_every", 0)),
+                                  mem_topk=int(meta.get("mem_topk", 8)),
+                                  mem_key=int(meta.get("mem_key", 64)))
     else:
         backbone = MinGRUBackbone(d, L)
     torch.manual_seed(0)

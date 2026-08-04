@@ -494,6 +494,11 @@ Claude-Session: https://claude.ai/code/session_01JNaPeo6tU6xubkEfWTTLav"
 
 ### Task 4: Hamming retrieval + the training/serving-skew guard
 
+**Superseded during implementation:** the single-bit `sign(k)` sketch below measured
+only ~34% cosine-top-K overlap under small perturbation (too few bits); the actual
+code uses a 256-bit SimHash (`sign(k · R)`, fixed random projection `R`), which
+restores ~70% overlap — see spec §3.1.
+
 **Files:**
 - Modify: `cubbyllm/model/recall/store.py` (add `retrieve_hamming`)
 - Test: `tests/model/recall/test_store.py` (add the guard)

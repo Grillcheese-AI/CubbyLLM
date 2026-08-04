@@ -38,8 +38,9 @@ Three forks were decided during brainstorming; each is load-bearing.
   compute and GPU state stay bounded** even as the store grows. This is "bounded
   *compute*, cheap growing *store*," stated honestly — not "bounded total memory."
 - **(i) HDC as the index, not the representation.** Each token gets a *learned*
-  dense key/value (`k = W_k·h`, `v = W_v·h`); the key is binarized to a hypervector
-  (`sign` → bipolar) so retrieval is **O(1) Hamming** content-addressing — the
+  dense key/value (`k = W_k·h`, `v = W_v·h`); the key is projected to an `n_bits`-
+  wide binary hypervector by a **SimHash** (`sign(k · R)`, `R` a fixed random
+  projection) so retrieval is **O(1) Hamming** content-addressing — the
   CubeMind FAISS-binary trick. Memories still *are* hypervectors and the lookup is
   still content-addressable ("1 vector = 1 neuron, retrieved by Hamming"), but the
   values read out are learned and differentiable. Role-filler *unbinding* (VSA
@@ -54,13 +55,19 @@ Four units with clean boundaries. Each is understandable and testable alone.
 
 ### 3.1 `EpisodicStore` (`cubbyllm/model/recall/store.py`)
 Holds the memory for one sequence (batched): dense `keys (N,d_k)`, dense
-`values (N,d_v)`, and their binary `codes (N,d_k)` (bipolar `sign(keys)`).
+`values (N,d_v)`, and their binary `codes (N, n_bits)` (a 256-bit **SimHash**:
+`sign(keys · R)`, `R` a fixed `d_k × n_bits` random projection). Single-bit
+`sign(keys)` (one bit per key dimension) was tried first and measured to recover
+only ~34% of the cosine top-K under small perturbation — too few bits for a
+robust index; the 256-bit SimHash restores ~70% overlap, enough for the Hamming
+path to approximate (not exactly reproduce) the cosine path training uses.
 - `write(k, v)` — append a token's key/value (and its code). Per-sequence.
 - `retrieve(q, topk)` — return the top-K keys+values for a query. **Two paths that
-  must agree on which set they return:** training uses dense cosine over the
-  live set (differentiable, O(N) — fine at training S); inference uses Hamming on
-  the codes (O(1)-ish via popcount / an index). The *read* over the returned set
-  is identical in both.
+  should closely agree on which set they return** (the 256-bit SimHash gets them
+  to ~70% overlap, not exact): training uses dense cosine over the live set
+  (differentiable, O(N) — fine at training S); inference uses Hamming over the
+  SimHash codes (O(1)-ish via popcount / an index). The *read* over the returned
+  set is identical in both.
 - `state_dict()` / `load_state_dict()` — the store is an explicit, **checkpointed**
   object (trap 2). It is not held in `__dict__`.
 
@@ -91,8 +98,9 @@ curve we are trying to lift.
   retrieval); read (§3.2). Straight-through on the top-K selection so gradient
   flows to keys and the read.
 - **Inference (decode):** each new token writes its (k, v, code) to the store;
-  each query retrieves top-K by O(1) Hamming over codes, reads the same way. The
-  carried recurrent/window state stays bounded; the store grows off-GPU.
+  each query retrieves top-K by O(1) Hamming over the SimHash codes (approximating
+  the training-time cosine selection, not reproducing it exactly), reads the same
+  way. The carried recurrent/window state stays bounded; the store grows off-GPU.
 
 ## 4. The four traps (hard constraints, from `MEMORY_PROBE.md`)
 
@@ -117,19 +125,24 @@ curve we are trying to lift.
   same controls as `exp_needle_recall` (shuffled, untrained).
 - **Package unit tests (`tests/model/recall/`)**, mirroring the backbone's:
   store write/retrieve round-trip; the dense-training path and the Hamming-inference
-  path return the *same* top-K set on the same data (the training/serving-skew
-  guard); `MemoryRead` is per-position (two positions with different queries get
-  different reads); the store round-trips through `state_dict`; decode with memory
-  still matches a full forward to tolerance where the store is fixed.
+  path return a **high-overlap, not identical**, top-K set on the same data — the
+  training/serving-skew guard (`test_hamming_topk_recovers_the_cosine_neighbour_set`)
+  asserts >60% overlap on well-separated keys, matching the ~70% SimHash finding
+  above, not exact agreement; `MemoryRead` is per-position (two positions with
+  different queries get different reads); the store round-trips through
+  `state_dict`; decode with memory still matches a full forward to tolerance where
+  the store is fixed.
 
 ## 6. Scope — explicitly deferred (YAGNI)
 
 - **Surprise-gated pruning / eviction.** v1 keeps everything for a sequence. Only
   build eviction when a real run shows the store is too large to hold, and make it
   importance-based (not recency).
-- **A production ANN index.** v1's inference path is exact Hamming (popcount over
-  codes) — correct and cheap enough to validate. A FAISS/`IndexBinaryFlat`-grade
-  index is a later optimization, not a correctness dependency.
+- **A production ANN index.** v1's inference path is Hamming over the 256-bit
+  SimHash codes (popcount) — an approximation of the cosine path training uses
+  (~70% top-K overlap, measured), cheap enough to validate. A FAISS/
+  `IndexBinaryFlat`-grade index is a later optimization, not a correctness
+  dependency.
 - **Structured VSA-unbind memory (representation-ii).** That is the symbolic/VM
   memory (H-B3), a different job; not in this component.
 - **Cross-sequence / persistent-across-documents store.** v1 is per-sequence
