@@ -8,7 +8,8 @@ from __future__ import annotations
 
 from ...core.protocols import Wiring
 from .base import Backbone
+from .hybrid import HybridBackbone
 from .mingru import MinGRUBackbone
 
-__all__ = ["Backbone", "MinGRUBackbone"]
+__all__ = ["Backbone", "MinGRUBackbone", "HybridBackbone"]
 __wiring__ = Wiring.WIRED

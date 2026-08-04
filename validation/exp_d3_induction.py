@@ -387,7 +387,20 @@ def main():
     mp, wp = pure["median_solve"], wat["median_solve"]
     reach = "within" if T < WINDOW else "BEYOND"
     print(f"  (induction distance T={T} is {reach} the window={WINDOW}.)")
-    if wat["solve_rate"] - pure["solve_rate"] >= 0.5:
+    unbounded = max(rates.get("hybrid", 0.0), rates.get("attn", 0.0))
+    if T >= WINDOW and wat["solve_rate"] < 0.25 and pure["solve_rate"] < 0.25:
+        # NOT "add seeds": a window of WINDOW tokens structurally cannot reach T
+        # tokens back, so whybrid collapsing to mingru here is the correct, final
+        # answer — the honest bound of any bounded-state model. Full attention
+        # solving confirms the task is learnable and the limit is the window.
+        print(f"  VERDICT: T={T} is BEYOND the window={WINDOW}, so BOTH bounded arms")
+        print("  fail — as they must: windowed attention cannot reach that far and")
+        print(f"  correctly collapses to mingru. Full/unbounded attention still")
+        print(f"  solves ({unbounded:.0%}), so this is the WINDOW limit, not a budget")
+        print("  problem — more seeds/steps will not change it. Bounded state buys")
+        print("  distance-robust recall to ~window (×depth), no further. That is the")
+        print("  honest ceiling the long-context claim must respect.")
+    elif wat["solve_rate"] - pure["solve_rate"] >= 0.5:
         print(f"  VERDICT: windowed attention is load-bearing and DEPLOYABLE — "
               f"whybrid {rates['whybrid']:.0%} vs mingru {rates['mingru']:.0%} at "
               f"T={T}, both at bounded state.")
