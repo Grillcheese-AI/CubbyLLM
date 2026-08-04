@@ -31,12 +31,18 @@ class EpisodicStore:
         self.values = torch.cat([self.values.to(v.device), v], 0)
         self.codes = torch.cat([self.codes.to(k.device), torch.sign(k)], 0)
 
-    def retrieve_cosine(self, q, topk):
-        n = len(self)
-        kk = min(topk, n)
-        sims = F.cosine_similarity(q.unsqueeze(0), self.keys, dim=-1)   # (N,)
+    def retrieve_cosine(self, q, topk, return_idx=False):
+        kk = min(topk, len(self))
+        sims = F.cosine_similarity(q.unsqueeze(0), self.keys, dim=-1)
         idx = sims.topk(kk).indices
-        return self.keys[idx], self.values[idx]
+        return (idx, self.keys[idx], self.values[idx]) if return_idx else (self.keys[idx], self.values[idx])
+
+    def retrieve_hamming(self, q, topk, return_idx=False):
+        kk = min(topk, len(self))
+        qc = torch.sign(q)
+        ham = (qc.unsqueeze(0) != self.codes).sum(-1)          # (N,) Hamming distance
+        idx = (-ham).topk(kk).indices
+        return (idx, self.keys[idx], self.values[idx]) if return_idx else (self.keys[idx], self.values[idx])
 
     def state_dict(self):
         return {"keys": self.keys, "values": self.values, "codes": self.codes,
