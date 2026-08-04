@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from ...core.protocols import Wiring
 from .read import MemoryRead
+from .store import EpisodicStore
 
-__all__ = ["MemoryRead"]
+__all__ = ["MemoryRead", "EpisodicStore"]
 __wiring__ = Wiring.WIRED
