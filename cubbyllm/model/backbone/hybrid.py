@@ -41,6 +41,19 @@ the mixer is windowed attention on layers where ``i % attn_every == 0`` and MinG
 elsewhere. Both mixers share the (x -> same-shape) forward and the
 ``step(x_t, state) -> (out, new_state)`` decode contract, so the trunk loops over
 them uniformly. Conforms to ``cubbyllm.model.backbone.Backbone``.
+
+EPISODIC MEMORY (rung 0.0.5, opt-in via ``mem_every``). The honest limit above —
+recall degrades past ``window`` — is exactly what ``cubbyllm.model.recall``
+(``MemoryRead`` + ``EpisodicStore``) targets: a per-position kNN read over the
+BEYOND-window causal past, interleaved after the mixer residual on layers where
+``i % mem_every == 0``. ``mem_every=0`` (the default) constructs no ``MemoryRead``
+modules at all, so the default path is unchanged until a real run opts in. In
+``forward`` the read is masked and dense (attends over the whole beyond-window
+past each call, training-time cost); in ``step`` it is backed by a persisted,
+per-layer ``EpisodicStore`` plus a small FIFO buffer that ages a token into the
+store only once it falls off the back of the last ``window`` steps — which is
+what makes the store's causal contents agree with ``forward``'s ``j < i - window``
+mask at every step, and is what the incremental-decode equivalence test checks.
 """
 from __future__ import annotations
 
@@ -50,6 +63,7 @@ import torch.nn.functional as F
 import torch.utils.checkpoint
 
 from ...core.protocols import Wiring
+from ..recall import EpisodicStore, MemoryRead
 from .mingru import _MinGRUMixer, _RMSNorm, _SwiGLU
 
 
@@ -154,10 +168,14 @@ class HybridBackbone(nn.Module):
 
     forward: (B, S, d_model) -> (B, S, d_model). Conforms to ``Backbone``.
     ``attn_every=3`` reproduces cubby-lm's interleave (layers 0, 3, 6, ...).
+    ``mem_every>0`` additionally interleaves an episodic ``MemoryRead`` on
+    layers where ``i % mem_every == 0`` (default 0: memory off, see module
+    docstring).
     """
 
     def __init__(self, d_model: int, n_layers: int = 2, attn_every: int = 3,
-                 window: int = 512, heads: int = 4, grad_checkpoint: bool = False):
+                 window: int = 512, heads: int = 4, grad_checkpoint: bool = False,
+                 mem_every: int = 0, mem_topk: int = 8, mem_key: int = 64):
         super().__init__()
         self.d_model = int(d_model)
         self.attn_every = int(attn_every)
@@ -172,44 +190,124 @@ class HybridBackbone(nn.Module):
         self.ffn = nn.ModuleList([_SwiGLU(d_model) for _ in range(n_layers)])
         self.grad_checkpoint = bool(grad_checkpoint)
 
+        # Episodic memory: reads the BEYOND-window past (rung 0.0.5). mem_every=0
+        # disables it entirely (no MemoryRead modules constructed) so the default
+        # path stays behaviour-identical until a real run turns this on.
+        self.mem_every = int(mem_every)
+        self.mem_topk = int(mem_topk)
+        self.mem_key = int(mem_key)
+        self.is_mem = [bool(self.mem_every) and (i % self.mem_every == 0)
+                       for i in range(n_layers)]
+        self.mem_n = nn.ModuleList([_RMSNorm(d_model) if a else nn.Identity()
+                                    for a in self.is_mem])
+        self.mem = nn.ModuleList([MemoryRead(d_model, d_key=mem_key, topk=mem_topk)
+                                  if a else nn.Identity() for a in self.is_mem])
+
     @property
     def n_attn_layers(self) -> int:
         return sum(self.is_attn)
 
-    @staticmethod
-    def _layer(x, n1, m, n2, f):
+    def _layer(self, idx: int, x):
+        """One layer: mixer residual, then (memory read if this is a memory
+        layer), then the FFN residual. An instance method (not the old
+        staticmethod) because the memory branch needs ``self.is_mem``/``self.mem``
+        — passed whole to ``torch.utils.checkpoint.checkpoint`` in ``forward`` so
+        the memory branch's params also get gradients under grad_checkpoint."""
+        n1, m, n2, f = self.n1[idx], self.mix[idx], self.n2[idx], self.ffn[idx]
         x = x + m(n1(x))
+        if self.is_mem[idx]:
+            x = x + self.mem[idx](self.mem_n[idx](x), self.window)
         x = x + f(n2(x))
         return x
 
     def step(self, x_t, states=None):
-        """Decode one token. x_t: (B, d_model). states: per-layer state list or
-        None. Returns (y_t, new_states).
+        """Decode one token. x_t: (B, d_model). states: per-layer state, or None.
+        Returns (y_t, new_states).
+
+        With ``mem_every=0`` (the default) this is byte-for-byte the original
+        behaviour: ``states`` is a plain per-layer list. With ``mem_every>0``,
+        ``states`` becomes ``{"mix": [...], "mem": {layer_idx: {"store":
+        EpisodicStore, "buf": [...]}}}`` — the mixer states plus, per memory
+        layer, a growing ``EpisodicStore`` and a small FIFO buffer of the last
+        ``window`` (k, v) pairs that have NOT yet been written to the store.
+
+        Causal contract (must match ``forward``'s ``j < i - window`` mask
+        exactly): the buffer holds the ``window`` most recent tokens' (k, v) —
+        exactly the ones ``forward`` excludes as "inside the window" — and only
+        the token falling OFF the back of that FIFO (now older than ``window``
+        steps) gets written into the store. So at step t, the store the read
+        queries holds exactly tokens ``0 .. t-window-1``: the same beyond-window
+        candidate set ``forward`` computes for query i=t. Retrieval is by
+        ``EpisodicStore.retrieve_cosine`` — the same selection metric
+        ``MemoryRead.forward`` now uses — so the two paths pick the same top-K.
 
         State per recurrent layer is (B, d); per attention layer it is a KV cache
-        (B, h, <=window, dh) — bounded by ``window``, so the TOTAL carried state
-        stops growing once context exceeds the window, unlike a full KV cache.
-        Both mixers expose ``step(x_t, state) -> (out, new_state)``, so the loop is
-        uniform. Inference-only: never grad-checkpointed, runs under no_grad.
+        (B, h, <=window, dh) — bounded by ``window``, so the TOTAL carried
+        MIXER state stops growing once context exceeds the window, unlike a full
+        KV cache. Both mixers expose ``step(x_t, state) -> (out, new_state)``, so
+        the mixer loop is uniform. Inference-only: never grad-checkpointed, runs
+        under no_grad. (The per-layer ``EpisodicStore`` itself grows with
+        context off the recurrent path, by design — only the COMPUTE per step,
+        the top-K read, stays bounded.)
+
+        v1 scope: memory-enabled decode (``mem_every>0``) is single-sequence
+        (B=1). Each memory layer keeps ONE ``EpisodicStore``, not one per batch
+        row — passing B>1 would interleave different sequences' (k, v) into the
+        same store. Matches eval decode (``exp_needle_recall``), which is B=1;
+        a batched store is future work, not silently handled here.
         """
         n = len(self.mix)
-        states = [None] * n if states is None else states
-        new_states = []
+        if self.mem_every <= 0:
+            states = [None] * n if states is None else states
+            new_states = []
+            for i in range(n):
+                h, s = self.mix[i].step(self.n1[i](x_t), states[i])
+                x_t = x_t + h
+                x_t = x_t + self.ffn[i](self.n2[i](x_t))
+                new_states.append(s)
+            return x_t, new_states
+
+        if states is None:
+            states = {
+                "mix": [None] * n,
+                "mem": {i: {"store": EpisodicStore(self.mem_key, self.d_model), "buf": []}
+                       for i in range(n) if self.is_mem[i]},
+            }
+        mixs, mems = states["mix"], states["mem"]
+        new_mix = []
         for i in range(n):
-            h, s = self.mix[i].step(self.n1[i](x_t), states[i])
+            h, s = self.mix[i].step(self.n1[i](x_t), mixs[i])
             x_t = x_t + h
+            if self.is_mem[i]:
+                st = mems[i]
+                store, buf = st["store"], st["buf"]
+                q, k, v = self.mem[i].qkv(self.mem_n[i](x_t))    # (B,dk),(B,dk),(B,d)
+                # Retrieve from what is ALREADY in the store (0..t-window-1),
+                # THEN buffer/age-out the current token — never read what was
+                # just written, that would violate the causal mask forward uses.
+                if len(store) > 0:
+                    kk = min(self.mem_topk, len(store))
+                    k_top, v_top = store.retrieve_cosine(q[0], kk)       # (kk,dk),(kk,d)
+                    r = self.mem[i].read(q.unsqueeze(1),                 # (B,1,dk)
+                                         k_top.unsqueeze(0).unsqueeze(0),  # (1,1,kk,dk)
+                                         v_top.unsqueeze(0).unsqueeze(0))  # (1,1,kk,d)
+                    x_t = x_t + r[:, 0]
+                buf.append((k, v))
+                if len(buf) > self.window:          # oldest token just fell out of window
+                    k_old, v_old = buf.pop(0)
+                    store.write(k_old, v_old)
             x_t = x_t + self.ffn[i](self.n2[i](x_t))
-            new_states.append(s)
-        return x_t, new_states
+            new_mix.append(s)
+        return x_t, {"mix": new_mix, "mem": mems}
 
     def forward(self, x: "torch.Tensor") -> "torch.Tensor":
         ckpt = self.grad_checkpoint and torch.is_grad_enabled()
-        for n1, m, n2, f in zip(self.n1, self.mix, self.n2, self.ffn):
+        for idx in range(len(self.mix)):
             if ckpt:
                 x = torch.utils.checkpoint.checkpoint(
-                    self._layer, x, n1, m, n2, f, use_reentrant=False)
+                    self._layer, idx, x, use_reentrant=False)
             else:
-                x = self._layer(x, n1, m, n2, f)
+                x = self._layer(idx, x)
         return x
 
 

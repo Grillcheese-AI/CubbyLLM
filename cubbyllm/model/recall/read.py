@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from ...core.protocols import Wiring
 
@@ -46,7 +47,15 @@ class MemoryRead(nn.Module):
     def forward(self, h, window):
         B, S, d = h.shape
         q, k, v = self.qkv(h)
-        sim = torch.einsum("bik,bjk->bij", q, k) * self.scale
+        # Selection metric is COSINE, not scaled dot-product: it must match
+        # EpisodicStore.retrieve_cosine (the decode-time selector) and the
+        # Hamming index (Task 4), which both approximate cosine, not raw dot
+        # products. Only the SELECTION uses normalized q/k; the gathered
+        # k_set/v_set below are the ORIGINAL (un-normalized) projections, and
+        # self.read()'s softmax weighting stays dot-product, unchanged.
+        qn = F.normalize(q, dim=-1)
+        kn = F.normalize(k, dim=-1)
+        sim = torch.einsum("bik,bjk->bij", qn, kn)
         i = torch.arange(S, device=h.device)
         allowed = (i[:, None] - i[None, :]) > window             # j < i - window
         sim = sim.masked_fill(~allowed[None], float("-inf"))

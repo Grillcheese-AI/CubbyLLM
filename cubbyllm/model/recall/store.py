@@ -29,9 +29,10 @@ class EpisodicStore:
         return self.keys.shape[0]
 
     def write(self, k, v):
+        self.R = self.R.to(k.device)                           # cache: avoid re-copy every call
         self.keys = torch.cat([self.keys.to(k.device), k], 0)
         self.values = torch.cat([self.values.to(v.device), v], 0)
-        code = torch.sign(k @ self.R.to(k.device))             # (M, n_bits) SimHash
+        code = torch.sign(k @ self.R)                          # (M, n_bits) SimHash
         self.codes = torch.cat([self.codes.to(k.device), code], 0)
 
     def retrieve_cosine(self, q, topk, return_idx=False):
@@ -42,8 +43,9 @@ class EpisodicStore:
 
     def retrieve_hamming(self, q, topk, return_idx=False):
         kk = min(topk, len(self))
-        qc = torch.sign(q @ self.R.to(q.device))               # (n_bits,) SimHash of query
-        ham = (qc.unsqueeze(0) != self.codes).sum(-1)          # (N,) Hamming over 128 bits
+        self.R = self.R.to(q.device)                           # cache: avoid re-copy every call
+        qc = torch.sign(q @ self.R)                             # (n_bits,) SimHash of query
+        ham = (qc.unsqueeze(0) != self.codes).sum(-1)          # (N,) Hamming over n_bits bits
         idx = (-ham).topk(kk).indices
         return (idx, self.keys[idx], self.values[idx]) if return_idx else (self.keys[idx], self.values[idx])
 
