@@ -189,3 +189,4 @@ cython_debug/
 # validation/logs/ file that produced it: on a fresh clone every citation
 # dangled. These are small (~226K total) plain-text run logs; keep them in.
 !validation/logs/*.log
+.superpowers/
