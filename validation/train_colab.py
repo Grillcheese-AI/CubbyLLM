@@ -492,6 +492,7 @@ def main():
     if dev.type == "cuda":
         torch.cuda.synchronize(); torch.cuda.reset_peak_memory_stats()
     t0 = last_t = time.perf_counter(); toks = 0; recent = []; last_step = start_step
+    first_loss = None
     for s in range(start_step + 1, STEPS + 1):
         loss = loop.step(); toks += BATCH * SEQ; recent.append(loss)
         # A NaN/inf here poisons every later step, so a run can burn credits
@@ -501,6 +502,17 @@ def main():
             print(f"  step {s:>5}  loss {loss} — NON-FINITE. Training is poisoned;"
                   f" stopping. Resume from the last checkpoint at step "
                   f"{(s // CKPT_EVERY) * CKPT_EVERY} with a lower CB_LR.", flush=True)
+            break
+        # DIVERGENCE guard: a too-high LR blows up while staying finite (loss
+        # climbing to 30-40 when init is ~ln(vocab)≈10-12), so the NaN guard never
+        # trips and the run burns credits on garbage. Healthy loss only decreases
+        # from init; >1.8x the first step means it is diverging, not learning.
+        if first_loss is None and loss == loss:
+            first_loss = loss
+        if first_loss and s > start_step + 2 and loss > 1.8 * first_loss:
+            print(f"  step {s:>5}  loss {loss:.2f} — DIVERGING (init was "
+                  f"{first_loss:.2f}). LR too high; stopping. Restart with a lower "
+                  f"CB_LR and CB_WARMUP > 0.", flush=True)
             break
         if s % EVAL_EVERY == 0 or s == 1:
             if dev.type == "cuda":
