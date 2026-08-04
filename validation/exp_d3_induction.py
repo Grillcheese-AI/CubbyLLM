@@ -291,7 +291,16 @@ def main():
     print("  grokking-shaped, so a single run is a coin flip and reverses with"
           " config.\n")
 
-    res = [run(n, dev) for n in ("mingru", "hybrid", "attn")]
+    # Default order runs HYBRID first as a positive control: it is the arm most
+    # likely to solve, so if it groks the harness works and any later arm's
+    # failure is real signal — whereas leading with an arm we expect to fail
+    # (mingru at long S) means watching SEEDS*STEPS of guaranteed-null before the
+    # first informative result. If hybrid ALSO fails to solve, S is too hard for
+    # this budget: lower CB_S or raise CB_STEPS before reading anything. Override
+    # with CB_ARMS to pick/reorder (e.g. CB_ARMS=hybrid to sanity-check one arm).
+    arms = [a.strip() for a in os.environ.get("CB_ARMS", "hybrid,mingru,attn").split(",")
+            if a.strip()]
+    res = [run(n, dev) for n in arms]
 
     print("  === RESULT ===")
     print("   arm    | attn |     params | solve rate | median steps-to-solve")
@@ -307,10 +316,15 @@ def main():
     for r in res:
         print(f"  {r['name']:>7} |" + "".join(f" {b:>8.1%} " for b in r["bands"]))
     print()
-    pure = next(r for r in res if r["name"] == "mingru")
-    hyb = next(r for r in res if r["name"] == "hybrid")
-    ceil = next(r for r in res if r["name"] == "attn")
+    by = {r["name"]: r for r in res}
     rates = {r["name"]: r["solve_rate"] for r in res}
+    # CB_ARMS may omit arms (e.g. a single-arm sanity check). The full verdict
+    # needs both mingru and hybrid; without them, stop after the table.
+    if "mingru" not in by or "hybrid" not in by:
+        print(f"  (ran {', '.join(by)} — full verdict needs both mingru and hybrid;"
+              " table above stands on its own.)")
+        return
+    pure, hyb = by["mingru"], by["hybrid"]
     # THE GUARD, CORRECTED. Earlier revisions gated on "pure attention must solve,
     # it is the ceiling." That premise is WRONG for this task at this scale, which
     # is why every run tripped it. Induction is a TWO-layer circuit: a prev-token
@@ -328,8 +342,9 @@ def main():
         return
     # The real question is mingru vs hybrid: does adding attention to a recurrent
     # backbone make the circuit form more reliably, or hold at longer distance?
-    print(f"  (pure attn solved {rates['attn']:.0%} — expected low; it is the hard arm,")
-    print("   not the ceiling. It is reported, it does not gate the verdict.)")
+    if "attn" in rates:
+        print(f"  (pure attn solved {rates['attn']:.0%} — expected low; it is the hard")
+        print("   arm, not the ceiling. It is reported, it does not gate the verdict.)")
     if hyb["solve_rate"] - pure["solve_rate"] >= 0.5:
         print(f"  VERDICT: hybrid solves far more reliably than pure recurrence "
               f"({rates['hybrid']:.0%} vs {rates['mingru']:.0%}), seed-robust.")
