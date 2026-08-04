@@ -34,14 +34,20 @@ sometimes solving) and every run called it "harness failure". The guard now trip
 only when NOTHING trains, and the verdict compares minGRU vs hybrid — the real
 question — with pure-attn reported but not gating.
 
-THE TASK. Pure induction, nothing else: a random filler sequence, one planted
-`KEY VALUE` pair, then `KEY` again at the end. Predict VALUE. Keys are drawn from
-a reserved range that never occurs as filler, so the match is unambiguous. Loss is
-scored ONLY at the final position — no language modelling to hide behind.
+THE TASK (canonical, dense — 2026-08-03). A random block repeated once:
+`[r_0..r_{T-1}  r_0..r_{T-1}]`. Predict the next token at every position; score
+the SECOND half, where the only way to predict is to recall what followed this
+same token T positions back. That is induction, and it gives T supervised
+examples PER SEQUENCE. This replaced a single-needle task that scored ONE final
+position — a signal so sparse that whether a model escaped its init basin was a
+coin flip (an arm would solve S=256 but not S=64, which is optimisation noise, not
+architecture). The dense form is how induction heads are actually studied (Olsson
+et al.) and is reliably learnable at this scale, so the arms can be RANKED.
 
-WHY IT BEATS A LANGUAGE RUN FOR THIS. Induction is a phase change: accuracy sits
-at chance, then jumps. You read it without statistics. The 413M/1.16B-token run
-took 13 GPU-hours to report copy 0/20, which distinguishes nothing.
+WHY IT BEATS A LANGUAGE RUN FOR THIS. It isolates the circuit: no vocabulary
+frequency, no register, just "did the model learn to copy-by-content-match". The
+413M/1.16B-token run took 13 GPU-hours to report copy 0/20, which distinguishes
+nothing about the architecture.
 
 KILL CRITERION, stated before running. If `mingru` reaches the induction task at
 parity with `hybrid`, attention is not mechanistically required here, the hybrid
@@ -76,33 +82,45 @@ from exp_d1b_backbone_bakeoff import (RMSNorm, SwiGLU, AttnMixer,  # noqa: E402
 D = int(os.environ.get("CB_D", "128"))
 L = int(os.environ.get("CB_L", "6"))
 S = int(os.environ.get("CB_S", "128"))
+if S % 2:
+    S += 1                                               # sequence is [half, half]
+T = S // 2                                               # repeat offset = induction distance
 B = int(os.environ.get("CB_B", "32"))
 STEPS = int(os.environ.get("CB_STEPS", "3000"))
 EVERY = int(os.environ.get("CB_EVAL", "250"))
 LR = float(os.environ.get("CB_LR", "3e-3"))
-V_FILL = 48                      # filler + legal answers
-V_KEY = 16                       # reserved keys, never appear as filler
-V = V_FILL + V_KEY
+V = int(os.environ.get("CB_V", "128"))                   # a larger vocab -> fewer
+CHANCE = 1.0 / V                                          # within-half collisions
 ATTN_EVERY = int(os.environ.get("CB_ATTN_EVERY", "3"))   # cubby-lm's rule
 
 
-def make_batch(n, seq, g, dev):
-    """Filler noise + one planted `KEY VALUE` + trailing `KEY`. Target = VALUE.
+def make_seq(n, g):
+    """The CANONICAL induction task: a random block, then the SAME block again.
 
-    Keys come from a reserved range so the sequence contains the key exactly
-    twice: once at the plant, once as the query. Any hit is a real lookup — there
-    is no second occurrence to get lucky on, and VALUE is drawn from the filler
-    range so the answer cannot be identified by token type.
+    x = [r_0 .. r_{T-1}  r_0 .. r_{T-1}]. In the SECOND copy every next-token is
+    determined only by having seen the first copy — the sole way to predict token
+    i (i>=T) is to recall what followed this same token T positions back. That is
+    induction, and here it supplies T supervised examples PER SEQUENCE instead of
+    the single end-of-sequence signal the old single-needle task gave. The sparse
+    old signal is why nothing learned reliably; this is how induction heads are
+    actually studied (Olsson et al.), and it is reliably learnable at this scale.
     """
-    x = torch.randint(0, V_FILL, (n, seq), generator=g)
-    k = torch.randint(V_FILL, V, (n,), generator=g)
-    v = torch.randint(0, V_FILL, (n,), generator=g)
-    p = torch.randint(0, seq - 3, (n,), generator=g)      # plant position
-    idx = torch.arange(n)
-    x[idx, p] = k
-    x[idx, p + 1] = v
-    x[idx, seq - 1] = k                                   # the query
-    return x.to(dev), v.to(dev), p
+    base = torch.randint(0, V, (n, T), generator=g)
+    return torch.cat([base, base], dim=1)                # (n, 2T) = (n, S)
+
+
+def induction_loss_acc(model, x):
+    """Next-token loss/accuracy on the SECOND half only — the induction region.
+
+    First-half tokens are genuinely random (chance-only), so scoring or training
+    on them just dilutes the gradient. Predicting position i uses logits at i-1,
+    so the second half's targets x[:, T:] are read from logits[:, T-1:-1]."""
+    logits = model(x)                                    # (B, S, V), all positions
+    pred = logits[:, T - 1:-1]                           # -> predicts x[:, T:]
+    tgt = x[:, T:]
+    loss = F.cross_entropy(pred.reshape(-1, V), tgt.reshape(-1))
+    acc = (pred.argmax(-1) == tgt).float().mean()
+    return loss, float(acc)
 
 
 class Trunk(nn.Module):
@@ -127,17 +145,12 @@ class Trunk(nn.Module):
 
 
 class Model(nn.Module):
-    """Token + LEARNED POSITION embeddings, then the trunk.
+    """Token + learned position embeddings, trunk, per-position head.
 
-    The positional term is not decoration. This task asks for the token at
-    KEY+1, which is a positional relation; attention is permutation-equivariant
-    apart from the causal mask, so with content alone it can locate the key and
-    still have no way to say "the next one". The first run of this file omitted
-    positions entirely and the pure-attention CEILING arm scored 3.9% — at chance
-    — while a 2/6 hybrid hit 100%. A control that cannot do the task is what
-    caught it; without that arm the table would have looked clean and been wrong.
-    MinGRU gets ordering free from the recurrence, so this only ever handicapped
-    the arms meant to be strongest.
+    The prev-token head that induction needs is learned from these absolute
+    positions; recurrent layers also get ordering free from their state. Returns
+    logits at EVERY position (B, S, V) — the dense task scores next-token over the
+    whole second half, not one final slot as the old single-needle version did.
     """
 
     def __init__(self, pattern, seq):
@@ -150,32 +163,65 @@ class Model(nn.Module):
 
     def forward(self, x):
         h = self.emb(x) + self.pos(torch.arange(x.shape[1], device=x.device))
-        return self.head(self.norm(self.trunk(h)))[:, -1]             # last pos only
+        return self.head(self.norm(self.trunk(h)))                   # (B, S, V)
+
+
+WINDOW = int(os.environ.get("CB_WINDOW", "96"))                       # cubby-lm: 512
+
+
+class WindowedAttnMixer(nn.Module):
+    """Causal attention restricted to the last WINDOW tokens — cubby-lm's
+    LocalCausalAttention (attention.py:33, W=512).
+
+    THE POINT, and why the two package tests matter here. Full attention keeps a
+    KV cache that GROWS with context, so a full-attention hybrid would break
+    tests/model/test_mingru_decode.py::test_state_size_is_independent_of_context
+    _length and kill the O(1)-inference claim. A bounded window keeps state at
+    O(WINDOW) = constant, so decode stays context-independent. The catch that
+    buys: a token can only reach back WINDOW-1, so this solves induction only when
+    the induction distance T (= S/2 here) is within the window. Sweeping S past
+    2*WINDOW is where it falls back to chance — the deployable arm's real limit.
+    """
+
+    def __init__(self, d, heads=4):
+        super().__init__()
+        self.h = heads
+        self.qkv = nn.Linear(d, 3 * d, bias=False)
+        self.o = nn.Linear(d, d, bias=False)
+
+    def forward(self, x):
+        B, Sx, d = x.shape
+        q, k, v = self.qkv(x).chunk(3, -1)
+        q, k, v = (t.view(B, Sx, self.h, d // self.h).transpose(1, 2)
+                   for t in (q, k, v))
+        i = torch.arange(Sx, device=x.device)
+        keep = (i[:, None] >= i[None, :]) & (i[:, None] - i[None, :] < WINDOW)
+        o = F.scaled_dot_product_attention(q, k, v, attn_mask=keep)   # causal+window
+        return self.o(o.transpose(1, 2).reshape(B, Sx, d))
+
+
+ATTN_TYPES = (AttnMixer, WindowedAttnMixer)                          # for counting
 
 
 def pattern_for(name):
     if name == "mingru":
         return [MinGRUMixer] * L
-    if name == "attn":
+    if name == "attn":                                    # pure full attention
         return [AttnMixer] * L
-    if name == "hybrid":            # cubby-lm: attention on every ATTN_EVERY-th
+    if name == "hybrid":            # MinGRU + FULL attention every ATTN_EVERY-th
         return [AttnMixer if i % ATTN_EVERY == 0 else MinGRUMixer for i in range(L)]
+    if name == "whybrid":           # MinGRU + WINDOWED attention — the deployable
+        return [WindowedAttnMixer if i % ATTN_EVERY == 0 else MinGRUMixer
+                for i in range(L)]
     raise ValueError(name)
 
 
 @torch.no_grad()
 def evaluate(model, dev, n=512):
-    """Overall accuracy, plus a breakdown by how far back the pair was planted."""
-    g = torch.Generator().manual_seed(999)                # SAME eval set every arm
-    x, y, p = make_batch(n, S, g, dev)
-    pred = model(x).argmax(-1).cpu()
-    ok = (pred == y.cpu())
-    dist = (S - 1) - p                                    # query-to-plant distance
-    bands, edges = [], [0, S // 4, S // 2, 3 * S // 4, S]
-    for lo, hi in zip(edges[:-1], edges[1:]):
-        m = (dist >= lo) & (dist < hi)
-        bands.append(float(ok[m].float().mean()) if m.any() else float("nan"))
-    return float(ok.float().mean()), bands
+    """Second-half induction accuracy on a FIXED eval set (same for every arm)."""
+    g = torch.Generator().manual_seed(999)
+    x = make_seq(n, g).to(dev)
+    return induction_loss_acc(model, x)[1]
 
 
 # FIXED LR, not a swept one. Three earlier revisions of this file failed here:
@@ -214,12 +260,12 @@ def train_once(name, dev, seed):
     warm = max(1, STEPS // 20)
     g = torch.Generator().manual_seed(seed + 1)
     solved_at, diverged = None, False
-    acc, bands, acc_shown = 0.0, [], "  --  "
+    acc, acc_shown = 0.0, "  --  "
     for s in range(1, STEPS + 1):
         for grp in opt.param_groups:                      # linear warmup, then flat
             grp["lr"] = LR * min(1.0, s / warm)
-        x, y, _ = make_batch(B, S, g, dev)
-        loss = F.cross_entropy(model(x), y)
+        x = make_seq(B, g).to(dev)
+        loss, _ = induction_loss_acc(model, x)
         lv = loss.detach().item()
         if not (lv == lv) or lv in (float("inf"), float("-inf")):   # NaN or inf
             print(f"      seed {seed} step {s:>5}: loss {lv} — NON-FINITE, "
@@ -232,15 +278,15 @@ def train_once(name, dev, seed):
         opt.step()
         fresh_acc = s % EVERY == 0 or s == STEPS
         if fresh_acc:
-            acc, bands = evaluate(model, dev)
+            acc = evaluate(model, dev)
             acc_shown = f"{acc:5.1%}"
             if solved_at is None and acc >= SOLVE:
                 solved_at = s
         if s % LOG_EVERY == 0 or fresh_acc or s == 1:
             # a big |grad| here is the early warning; it grows before loss NaNs
-            print(f"      seed {seed} step {s:>5}  loss {lv:6.3f}  acc {acc_shown}"
+            print(f"      seed {seed} step {s:>5}  loss {lv:6.3f}  ind-acc {acc_shown}"
                   f"  |grad| {gn:7.2f}  lr {grp['lr']:.1e}", flush=True)
-    return acc, bands, solved_at, diverged
+    return acc, solved_at, diverged
 
 
 def _median(xs):
@@ -250,46 +296,47 @@ def _median(xs):
 
 
 def run(name, dev):
-    n_attn = sum(1 for m in pattern_for(name) if m is AttnMixer)
+    n_attn = sum(1 for m in pattern_for(name) if m in ATTN_TYPES)
     n_p = sum(p.numel() for p in Model(pattern_for(name), S).parameters())
     print(f"  --- {name}: {n_attn}/{L} attention layers, {n_p:,} params, "
           f"{SEEDS} seeds @ lr={LR:.0e} ---", flush=True)
-    t0, accs, solves, last_bands, n_div = time.perf_counter(), [], [], [], 0
+    t0, accs, solves, n_div = time.perf_counter(), [], [], 0
     for seed in range(SEEDS):
-        acc, bands, at, diverged = train_once(name, dev, seed)
+        acc, at, diverged = train_once(name, dev, seed)
         accs.append(acc)
         if at is not None:
             solves.append(at)
-        last_bands.append(bands)
         n_div += int(diverged)
         tag = "DIVERGED (NaN/inf)" if diverged else (f"solved @ {at}" if at
                                                      else "NOT solved")
-        print(f"    seed {seed}: final acc {acc:6.1%}  ({tag})", flush=True)
+        print(f"    seed {seed}: final ind-acc {acc:6.1%}  ({tag})", flush=True)
     if n_div:
         print(f"    !! {n_div}/{SEEDS} seeds diverged — lr={LR:.0e} too high for"
               f" {name}; lower CB_LR before trusting its solve-rate", flush=True)
     n_solved = sum(a >= SOLVE for a in accs)
-    # bands averaged over the seeds that solved (an unsolved seed's bands are noise)
-    ok = [b for a, b in zip(accs, last_bands) if a >= SOLVE]
-    bands = [sum(x) / len(x) for x in zip(*ok)] if ok else [float("nan")] * 4
     print(f"    done in {time.perf_counter()-t0:.0f}s\n", flush=True)
     return {"name": name, "params": n_p, "n_attn": n_attn,
             "solve_rate": n_solved / SEEDS, "n_solved": n_solved,
-            "median_solve": _median(solves), "bands": bands}
+            "median_solve": _median(solves),
+            "best_acc": max(accs) if accs else 0.0}
 
 
 def main():
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    chance = 1.0 / V_FILL
-    print("induction-circuit bake-off — pure recurrence vs cubby-lm's hybrid")
-    print(f"  d={D} L={L} seq={S} batch={B} steps={STEPS} | {dev}")
-    print(f"  task: filler + planted 'KEY VALUE' + trailing KEY -> predict VALUE")
-    print(f"  loss at the FINAL position only. chance = 1/{V_FILL} = {chance:.1%}\n")
+    print("induction bake-off — pure recurrence vs cubby-lm's hybrid")
+    print(f"  d={D} L={L} seq={S} (repeat offset T={T}) batch={B} steps={STEPS}"
+          f" vocab={V} | {dev}")
+    print("  task: [random block | same block], predict next token; scored on the")
+    print(f"  SECOND half where only induction can. chance = 1/{V} = {CHANCE:.1%}\n")
 
-    print(f"  {SEEDS} seeds/arm at lr={LR:.0e}. Solve = final acc >= {SOLVE:.0%}.")
-    print("  Ranking on solve-RATE and steps-to-solve, not one run — this task is")
-    print("  grokking-shaped, so a single run is a coin flip and reverses with"
-          " config.\n")
+    print(f"  {SEEDS} seeds/arm at lr={LR:.0e}. Solve = 2nd-half acc >= {SOLVE:.0%}.")
+    print("  Dense signal (T examples/seq) so it learns reliably; the discriminator")
+    print("  is STEPS-TO-SOLVE (speed) and, as T grows, whether an arm solves at all.")
+    print(f"  arms: mingru & whybrid keep BOUNDED, context-independent state (whybrid")
+    print(f"  window={WINDOW}, so it solves only while T={T} < window); hybrid & attn")
+    print(f"  use FULL attention — solve at any T but state GROWS with context, which")
+    print(f"  would break test_mingru_decode's O(1) guarantee. Only the bounded arms")
+    print(f"  are deployable. Sweep CB_S across 2*window={2*WINDOW} to see whybrid fall.\n")
 
     # Default order runs HYBRID first as a positive control: it is the arm most
     # likely to solve, so if it groks the harness works and any later arm's
@@ -298,70 +345,67 @@ def main():
     # first informative result. If hybrid ALSO fails to solve, S is too hard for
     # this budget: lower CB_S or raise CB_STEPS before reading anything. Override
     # with CB_ARMS to pick/reorder (e.g. CB_ARMS=hybrid to sanity-check one arm).
-    arms = [a.strip() for a in os.environ.get("CB_ARMS", "hybrid,mingru,attn").split(",")
+    arms = [a.strip() for a in
+            os.environ.get("CB_ARMS", "hybrid,whybrid,mingru").split(",")
             if a.strip()]
     res = [run(n, dev) for n in arms]
 
-    print("  === RESULT ===")
-    print("   arm    | attn |     params | solve rate | median steps-to-solve")
-    print("  --------+------+------------+------------+----------------------")
+    print(f"  === RESULT (T={T}) ===")
+    print("   arm    | attn |     params | solve rate | median steps | best acc")
+    print("  --------+------+------------+------------+--------------+---------")
     for r in res:
         ms = "—" if r["median_solve"] is None else f"{int(r['median_solve']):,}"
         print(f"  {r['name']:>7} | {r['n_attn']:>2}/{L} | {r['params']:>10,} |"
-              f"  {r['n_solved']}/{SEEDS} = {r['solve_rate']:>3.0%} | {ms:>14}")
-    print()
-    print("  accuracy by query-to-plant distance, over seeds that solved:")
-    q = [f"{int(S*a)}-{int(S*b)}" for a, b in ((0,.25),(.25,.5),(.5,.75),(.75,1))]
-    print("   arm    |" + "".join(f" {h:>9} " for h in q))
-    for r in res:
-        print(f"  {r['name']:>7} |" + "".join(f" {b:>8.1%} " for b in r["bands"]))
+              f"  {r['n_solved']}/{SEEDS} = {r['solve_rate']:>3.0%} | {ms:>12} |"
+              f" {r['best_acc']:>7.1%}")
     print()
     by = {r["name"]: r for r in res}
     rates = {r["name"]: r["solve_rate"] for r in res}
-    # CB_ARMS may omit arms (e.g. a single-arm sanity check). The full verdict
-    # needs both mingru and hybrid; without them, stop after the table.
-    if "mingru" not in by or "hybrid" not in by:
-        print(f"  (ran {', '.join(by)} — full verdict needs both mingru and hybrid;"
-              " table above stands on its own.)")
-        return
-    pure, hyb = by["mingru"], by["hybrid"]
-    # THE GUARD, CORRECTED. Earlier revisions gated on "pure attention must solve,
-    # it is the ceiling." That premise is WRONG for this task at this scale, which
-    # is why every run tripped it. Induction is a TWO-layer circuit: a prev-token
-    # head (VALUE learns "I follow KEY") then a match head (final KEY finds it).
-    # The prev-token head must be learned from absolute positions and is famously
-    # slow from scratch — the "induction bump". A recurrent layer gets the
-    # prev-token carry FREE from its state, so minGRU and hybrid have a structural
-    # head start and PURE ATTENTION IS THE HARDEST ARM, not the easiest. So the
-    # only real harness failure is when NOTHING trains at all.
+    # Only real harness failure is when NOTHING trains — the dense task is
+    # reliably learnable, so a zero across every arm means the budget/LR is wrong,
+    # not the architecture.
     if all(r["n_solved"] == 0 for r in res):
         print(f"  HARNESS FAILURE — every arm solved 0/{SEEDS}. Nothing trained.")
-        print("  Loss stuck near ln(V_FILL)=3.87 means no arm left init: raise")
-        print("  CB_STEPS or CB_LR, or lower CB_S. (A run where mingru/hybrid solve")
-        print("  and pure attn does not is NOT a failure — attn is the hard arm here.)")
+        print(f"  Loss stuck near ln(V)={__import__('math').log(V):.2f} means no arm")
+        print("  left init: raise CB_STEPS or CB_LR, or lower CB_S.")
         return
-    # The real question is mingru vs hybrid: does adding attention to a recurrent
-    # backbone make the circuit form more reliably, or hold at longer distance?
+    # The DEPLOYABLE comparison is mingru vs whybrid: both keep bounded,
+    # context-independent state, so both preserve test_mingru_decode's O(1)
+    # guarantee. Full hybrid/attn are the unbounded reference — they show what is
+    # achievable if you were willing to pay a growing KV cache (you are not).
     if "attn" in rates:
-        print(f"  (pure attn solved {rates['attn']:.0%} — expected low; it is the hard")
-        print("   arm, not the ceiling. It is reported, it does not gate the verdict.)")
-    if hyb["solve_rate"] - pure["solve_rate"] >= 0.5:
-        print(f"  VERDICT: hybrid solves far more reliably than pure recurrence "
-              f"({rates['hybrid']:.0%} vs {rates['mingru']:.0%}), seed-robust.")
-        print("  The attention layers are load-bearing at this context length, and")
-        print("  CubbyLLM's drift to 0% attention dropped something real. Also read")
-        print("  the by-distance row: if mingru holds near and fails far while hybrid")
-        print("  holds throughout, that is the fixed-state length limit, measured.")
-    elif pure["solve_rate"] >= 0.75 and pure["solve_rate"] >= hyb["solve_rate"] - 1e-9:
-        print(f"  VERDICT: pure recurrence solves as reliably as the hybrid "
-              f"({rates['mingru']:.0%} vs {rates['hybrid']:.0%}) at this length.")
-        print("  Attention earns nothing HERE — re-run at larger CB_S before")
-        print("  concluding it earns nothing at length. minGRU's own state limit is")
-        print("  the thing to find: the CB_S where its solve-rate starts to fall.")
+        print(f"  (attn/full = {rates.get('attn', 0):.0%}; full-hybrid = "
+              f"{rates.get('hybrid', 0):.0%} — UNBOUNDED state, reference only.)")
+    elif "hybrid" in rates:
+        print(f"  (full-hybrid = {rates['hybrid']:.0%} — UNBOUNDED state, the")
+        print("   'if we could pay a growing cache' reference. Not deployable as-is.)")
+    if "whybrid" not in by or "mingru" not in by:
+        print(f"  (ran {', '.join(by)} — the deployable verdict needs mingru AND")
+        print("   whybrid; table stands on its own.)")
+        return
+    pure, wat = by["mingru"], by["whybrid"]
+    mp, wp = pure["median_solve"], wat["median_solve"]
+    reach = "within" if T < WINDOW else "BEYOND"
+    print(f"  (induction distance T={T} is {reach} the window={WINDOW}.)")
+    if wat["solve_rate"] - pure["solve_rate"] >= 0.5:
+        print(f"  VERDICT: windowed attention is load-bearing and DEPLOYABLE — "
+              f"whybrid {rates['whybrid']:.0%} vs mingru {rates['mingru']:.0%} at "
+              f"T={T}, both at bounded state.")
+        print(f"  A window={WINDOW} attention layer holds the association where the")
+        print("  recurrent state loses it. This is the hybrid rung CubbyLLM skipped,")
+        print("  and it keeps O(1)-ish decode. Confirm: raise CB_S past 2*window and")
+        print("  whybrid should collapse to mingru (the association leaves the window).")
+    elif pure["solve_rate"] >= 0.75 and wat["solve_rate"] >= 0.75 and mp and wp:
+        faster = "whybrid" if wp < mp else "mingru"
+        ratio = max(mp, wp) / max(1, min(mp, wp))
+        print(f"  VERDICT: both bounded arms solve at T={T}; {faster} groks "
+              f"{ratio:.1f}x faster ({int(min(mp,wp)):,} vs {int(max(mp,wp)):,} steps).")
+        print("  Windowed attention earns only speed here, not capability. Raise CB_S")
+        print("  toward 2*window: the length where mingru drops but whybrid still")
+        print("  holds is where the window becomes load-bearing.")
     else:
-        print(f"  VERDICT: partial separation (mingru {rates['mingru']:.0%}, hybrid "
-              f"{rates['hybrid']:.0%}). Suggestive, not decisive — add seeds")
-        print("  (CB_SEEDS) or sweep CB_S to see if the gap holds before acting on it.")
+        print(f"  VERDICT: mixed (mingru {rates['mingru']:.0%}, whybrid "
+              f"{rates['whybrid']:.0%}). Add CB_SEEDS or adjust CB_STEPS/CB_S.")
 
 
 if __name__ == "__main__":
