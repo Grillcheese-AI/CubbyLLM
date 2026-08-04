@@ -4,7 +4,7 @@
 
 **Goal:** Give CubbyLLM recall past the attention window — a trained, differentiable per-token episodic memory whose read is soft attention over the top-K most similar past tokens, retrieved from the beyond-window causal past.
 
-**Architecture:** A shared differentiable read (`MemoryRead`: soft attention over a (key, value) set) drives two paths — a masked dense top-K over the sequence's own beyond-window past during training, and an `EpisodicStore` (a persisted, growing per-sequence store, retrieved by exact Hamming over binary key-codes) at inference. Prove the capability on a toy needle-beyond-window gate BEFORE integrating into `HybridBackbone` as a third interleaved mixer.
+**Architecture:** A shared differentiable read (`MemoryRead`: soft attention over a (key, value) set) drives two paths — a masked dense top-K over the sequence's own beyond-window past during training, and an `EpisodicStore` (a persisted, growing per-sequence store, retrieved by Hamming over 256-bit SimHash key-codes, an approximation to cosine with ~70% top-K overlap) at inference. Prove the capability on a toy needle-beyond-window gate BEFORE integrating into `HybridBackbone` as a third interleaved mixer.
 
 **Tech Stack:** Python, PyTorch (lazy-imported), numpy. No new deps. Torch-free `import cubbyllm` preserved.
 

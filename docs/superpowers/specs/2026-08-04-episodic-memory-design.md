@@ -98,9 +98,12 @@ curve we are trying to lift.
   retrieval); read (§3.2). Straight-through on the top-K selection so gradient
   flows to keys and the read.
 - **Inference (decode):** each new token writes its (k, v, code) to the store;
-  each query retrieves top-K by O(1) Hamming over the SimHash codes (approximating
-  the training-time cosine selection, not reproducing it exactly), reads the same
-  way. The carried recurrent/window state stays bounded; the store grows off-GPU.
+  each query retrieves top-K — the **wired v1 decode retrieves by exact
+  `retrieve_cosine`** (zero train/serve skew), while `retrieve_hamming` over the
+  SimHash codes is implemented and tested (~70% overlap) as the **deferred O(1)
+  production index** (approximating the training-time cosine selection, not
+  reproducing it exactly) — reads the same way. The carried recurrent/window
+  state stays bounded; the store grows off-GPU.
 
 ## 4. The four traps (hard constraints, from `MEMORY_PROBE.md`)
 

@@ -267,6 +267,7 @@ class HybridBackbone(nn.Module):
                 new_states.append(s)
             return x_t, new_states
 
+        assert x_t.shape[0] == 1, "memory-enabled decode (mem_every>0) supports batch size 1 only"
         if states is None:
             states = {
                 "mix": [None] * n,
