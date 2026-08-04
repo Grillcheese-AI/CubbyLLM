@@ -2,11 +2,11 @@
 
 Wired: STANDALONE — the decode-side counterpart to MemoryRead's training path.
 
-Holds one sequence's (key, value) pairs plus binary key-codes (sign(key)) for
-O(N) Hamming retrieval. An explicit state_dict object so it can be checkpointed —
-the fix for MEMORY_PROBE.md trap 2 (the last store lived in __dict__ and every
-resume wiped it). retrieve_* return the top-K set; the read over that set is
-MemoryRead.read, identical to training.
+Holds one sequence's (key, value) pairs plus binary key-codes (SimHash via random
+projection for O(N) Hamming retrieval). An explicit state_dict object so it can be
+checkpointed — the fix for MEMORY_PROBE.md trap 2 (the last store lived in __dict__
+and every resume wiped it). retrieve_* return the top-K set; the read over that set
+is MemoryRead.read, identical to training.
 """
 from __future__ import annotations
 
@@ -17,11 +17,13 @@ from ...core.protocols import Wiring
 
 
 class EpisodicStore:
-    def __init__(self, d_key: int, d_model: int):
-        self.d_key, self.d_model = int(d_key), int(d_model)
+    def __init__(self, d_key: int, d_model: int, n_bits: int = 256):
+        self.d_key, self.d_model, self.n_bits = int(d_key), int(d_model), int(n_bits)
+        g = torch.Generator().manual_seed(0xC0DEB00C)          # fixed -> identical R everywhere
+        self.R = torch.randn(d_key, n_bits, generator=g)       # (d_key, n_bits) SimHash projection
         self.keys = torch.empty(0, d_key)
         self.values = torch.empty(0, d_model)
-        self.codes = torch.empty(0, d_key)
+        self.codes = torch.empty(0, n_bits)
 
     def __len__(self):
         return self.keys.shape[0]
@@ -29,7 +31,8 @@ class EpisodicStore:
     def write(self, k, v):
         self.keys = torch.cat([self.keys.to(k.device), k], 0)
         self.values = torch.cat([self.values.to(v.device), v], 0)
-        self.codes = torch.cat([self.codes.to(k.device), torch.sign(k)], 0)
+        code = torch.sign(k @ self.R.to(k.device))             # (M, n_bits) SimHash
+        self.codes = torch.cat([self.codes.to(k.device), code], 0)
 
     def retrieve_cosine(self, q, topk, return_idx=False):
         kk = min(topk, len(self))
@@ -39,18 +42,18 @@ class EpisodicStore:
 
     def retrieve_hamming(self, q, topk, return_idx=False):
         kk = min(topk, len(self))
-        qc = torch.sign(q)
-        ham = (qc.unsqueeze(0) != self.codes).sum(-1)          # (N,) Hamming distance
+        qc = torch.sign(q @ self.R.to(q.device))               # (n_bits,) SimHash of query
+        ham = (qc.unsqueeze(0) != self.codes).sum(-1)          # (N,) Hamming over 128 bits
         idx = (-ham).topk(kk).indices
         return (idx, self.keys[idx], self.values[idx]) if return_idx else (self.keys[idx], self.values[idx])
 
     def state_dict(self):
         return {"keys": self.keys, "values": self.values, "codes": self.codes,
-                "d_key": self.d_key, "d_model": self.d_model}
+                "R": self.R, "d_key": self.d_key, "d_model": self.d_model, "n_bits": self.n_bits}
 
     def load_state_dict(self, sd):
-        self.keys, self.values, self.codes = sd["keys"], sd["values"], sd["codes"]
-        self.d_key, self.d_model = sd["d_key"], sd["d_model"]
+        self.keys, self.values, self.codes, self.R = sd["keys"], sd["values"], sd["codes"], sd["R"]
+        self.d_key, self.d_model, self.n_bits = sd["d_key"], sd["d_model"], sd["n_bits"]
 
 
 __wiring__ = Wiring.STANDALONE
