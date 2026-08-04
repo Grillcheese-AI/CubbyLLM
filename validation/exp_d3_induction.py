@@ -191,15 +191,22 @@ def evaluate(model, dev, n=512):
 LR = float(os.environ.get("CB_LR", "3e-3"))
 SEEDS = int(os.environ.get("CB_SEEDS", "4"))
 SOLVE = 0.90                                              # acc that counts as solved
+# Two cadences, deliberately separate. LOG_EVERY prints the CHEAP per-step values
+# (loss, |grad|) that are already computed — set it to 1 to see every step and
+# catch anything strange (a loss spike, a grad blow-up before it becomes NaN).
+# EVERY runs the EXPENSIVE accuracy eval (512 examples); doing that per step would
+# ~500x the runtime, so it stays periodic. Default LOG_EVERY=1 per request.
+LOG_EVERY = int(os.environ.get("CB_LOG", "1"))
 
 
 def train_once(name, dev, seed):
     """One arm, one seed, to STEPS. Returns (final_acc, bands, steps_to_solve, diverged).
 
-    Prints a line every EVERY steps so a long silent run is legible AND a NaN is
-    caught the moment it happens — otherwise a seed that diverges is indistinct
-    from one that merely never groks: both just report a low final accuracy. On
-    non-finite loss it stops that seed early and flags it.
+    Per-step loss/|grad| logging (CB_LOG) makes a long run legible and surfaces a
+    NaN the instant it happens — otherwise a diverged seed is indistinct from one
+    that merely never groks; both just report low final accuracy. Accuracy (the
+    costly eval) is refreshed every EVERY steps. On non-finite loss the seed stops
+    early and is flagged.
     """
     torch.manual_seed(seed)
     model = Model(pattern_for(name), S).to(dev)
@@ -207,7 +214,7 @@ def train_once(name, dev, seed):
     warm = max(1, STEPS // 20)
     g = torch.Generator().manual_seed(seed + 1)
     solved_at, diverged = None, False
-    acc, bands = 0.0, []
+    acc, bands, acc_shown = 0.0, [], "  --  "
     for s in range(1, STEPS + 1):
         for grp in opt.param_groups:                      # linear warmup, then flat
             grp["lr"] = LR * min(1.0, s / warm)
@@ -223,12 +230,16 @@ def train_once(name, dev, seed):
         loss.backward()
         gn = float(torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0))
         opt.step()
-        if s % EVERY == 0 or s == STEPS:
+        fresh_acc = s % EVERY == 0 or s == STEPS
+        if fresh_acc:
             acc, bands = evaluate(model, dev)
+            acc_shown = f"{acc:5.1%}"
             if solved_at is None and acc >= SOLVE:
                 solved_at = s
-            print(f"      seed {seed} step {s:>5}  loss {lv:6.3f}  acc {acc:6.1%}"
-                  f"  |grad| {gn:6.2f}", flush=True)
+        if s % LOG_EVERY == 0 or fresh_acc or s == 1:
+            # a big |grad| here is the early warning; it grows before loss NaNs
+            print(f"      seed {seed} step {s:>5}  loss {lv:6.3f}  acc {acc_shown}"
+                  f"  |grad| {gn:7.2f}  lr {grp['lr']:.1e}", flush=True)
     return acc, bands, solved_at, diverged
 
 
