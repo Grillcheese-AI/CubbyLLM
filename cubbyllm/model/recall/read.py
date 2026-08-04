@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from ...core.protocols import Wiring
 
@@ -31,35 +30,35 @@ class MemoryRead(nn.Module):
     def qkv(self, h):
         return self.q(h), self.k(h), self.v(h)
 
-    def read(self, q, k_set, v_set):
-        """q (B,S,dk); k_set (B,S,K,dk); v_set (B,S,K,d) -> r (B,S,d)."""
-        sim = (q.unsqueeze(2) * k_set).sum(-1) * self.scale     # (B,S,K)
+    def read(self, q, k_set, v_set, valid=None):
+        """q (B,S,dk); k_set (B,S,K,dk); v_set (B,S,K,d); valid (B,S,K) bool or
+        None -> r (B,S,d). Rows with no valid candidate read zero."""
+        sim = (q.unsqueeze(2) * k_set).sum(-1) * self.scale      # (B,S,K)
+        if valid is not None:
+            sim = sim.masked_fill(~valid, -1e9)                  # finite -> backward-safe
         w = torch.softmax(sim, dim=-1)
-        w = torch.nan_to_num(w)                                 # all-(-inf) row -> 0
-        r = (w.unsqueeze(-1) * v_set).sum(2)                    # (B,S,d)
-        return self.o(r)
+        r = self.o((w.unsqueeze(-1) * v_set).sum(2))
+        if valid is not None:
+            no_mem = ~valid.any(-1, keepdim=True)                # (B,S,1)
+            r = torch.where(no_mem, torch.zeros_like(r), r)
+        return r
 
     def forward(self, h, window):
         B, S, d = h.shape
         q, k, v = self.qkv(h)
-        sim = torch.einsum("bik,bjk->bij", q, k) * self.scale   # (B,S,S)
+        sim = torch.einsum("bik,bjk->bij", q, k) * self.scale
         i = torch.arange(S, device=h.device)
-        allowed = (i[:, None] - i[None, :]) > window            # j < i - window
+        allowed = (i[:, None] - i[None, :]) > window             # j < i - window
         sim = sim.masked_fill(~allowed[None], float("-inf"))
         kk = min(self.topk, S)
-        topv, topi = sim.topk(kk, dim=-1)                       # (B,S,kk)
-        # gather the selected keys/values per query
+        topv, topi = sim.topk(kk, dim=-1)                        # (B,S,kk)
         dk = k.shape[-1]
         k_set = torch.gather(k.unsqueeze(1).expand(B, S, S, dk), 2,
                              topi.unsqueeze(-1).expand(B, S, kk, dk))
         v_set = torch.gather(v.unsqueeze(1).expand(B, S, S, d), 2,
                              topi.unsqueeze(-1).expand(B, S, kk, d))
-        # rows whose every candidate was masked (-inf): read zero
-        no_mem = torch.isinf(topv).all(-1, keepdim=True)        # (B,S,1)
-        sim_set = torch.where(torch.isinf(topv), torch.full_like(topv, -1e9), topv)
-        w = torch.nan_to_num(torch.softmax(sim_set, dim=-1))
-        r = self.o((w.unsqueeze(-1) * v_set).sum(2))
-        return torch.where(no_mem, torch.zeros_like(r), r)
+        valid = ~torch.isinf(topv)                               # real vs masked-pad slots
+        return self.read(q, k_set, v_set, valid)
 
 
 __wiring__ = Wiring.STANDALONE
