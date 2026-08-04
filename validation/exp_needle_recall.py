@@ -207,19 +207,30 @@ def score_from(model, logits0, state, cont_ids, amp):
 
 def main():
     t0 = time.perf_counter()
+    # Heartbeat through every silent setup phase, so "nothing printed yet" tells
+    # you WHICH phase is slow (usually the corpus prepare) instead of leaving you
+    # guessing whether it hung. Each line flushes immediately.
+    def beat(msg):
+        print(f"  [{time.perf_counter()-t0:5.1f}s] {msg}", flush=True)
+
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    beat(f"start | device {dev}")
     if not CKPT or not os.path.exists(CKPT):
         raise SystemExit("set CB_CKPT")
     ck = torch.load(CKPT, map_location="cpu")
+    beat(f"checkpoint loaded ({os.path.getsize(CKPT)/1e6:.0f} MB)")
     model, d, L, V, kind = build(ck["meta"], dev)
+    beat(f"model built (d={d} L={L} gen={kind})")
     trained = [p.detach().clone() for p in ck["params"]]
     with torch.no_grad():
         for p, s in zip(model.parameters(), trained):
             p.copy_(s.to(p.device))
     del ck
+    beat("weights loaded")
 
     from cubbyllm.training.data import _load_tokenizer
     encode, decode, eos, _ = _load_tokenizer(SPM)
+    beat("tokenizer loaded")
 
     # filler from the REAL corpus — synthetic filler would make the task easier
     # than reality and the number would not transfer
@@ -227,7 +238,9 @@ def main():
     srcs = (json.load(open(SOURCES, encoding="utf-8"))["sources"] if SOURCES else
             [{"name": os.path.splitext(os.path.basename(p))[0], "weight": 1.0}
              for p in sorted(glob.glob(os.path.join(CORPUS, "*.u32")))])
+    beat(f"preparing corpus pipeline ({len(srcs)} sources)...")
     pipe = WeightedCorpusPipeline(srcs, SPM, CORPUS, seed=99, cache_only=True).prepare()
+    beat("corpus ready — starting probes")
 
     print("needle-in-a-haystack — does the recurrent state retain retrievable detail?")
     print(f"  ckpt {CKPT}")
@@ -241,6 +254,7 @@ def main():
     amp = dev.type == "cuda"
     base = neutral_baselines(model, encode, dev, amp)   # base rates, cancelled below
     batches = {ln: pipe.batches(1, ln) for ln in LENGTHS}   # one generator per length
+    beat("baselines done — first table below (each cell = TRIALS prefills)")
 
     def run(tag, shuffled=False):
         print(f"  --- {tag} ---", flush=True)
