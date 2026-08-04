@@ -67,7 +67,7 @@ def build_cubby(meta, dev):
     from cubbyllm.core.generation import (BasisHyperGenerator, HyperGenerator,
                                           SnapshotHardener)
     from cubbyllm.model.assembly import CubbyModel
-    from cubbyllm.model.backbone import MinGRUBackbone
+    from cubbyllm.model.backbone import HybridBackbone, MinGRUBackbone
     from cubbyllm.model.binding import BindingHead
     from cubbyllm.model.memory import MemoryLayer
     from cubbyllm.model.vocab import HybridEmbedding, TopKRetrievalHead
@@ -76,11 +76,19 @@ def build_cubby(meta, dev):
     kind = GEN_KIND or meta.get("gen", "flat")
     gen = (HyperGenerator(ctx_dim=CTX_DIM, n_out=d * d) if kind == "flat" else
            BasisHyperGenerator(ctx_dim=CTX_DIM, d_model=d, n_layers=L))
+    # match the trained backbone — a hybrid checkpoint keeps a windowed KV cache,
+    # so its decode state is O(window), still bounded but larger than pure MinGRU.
+    if meta.get("backbone") == "hybrid":
+        backbone = HybridBackbone(d, L, attn_every=int(meta.get("attn_every", 3)),
+                                  window=int(meta.get("window", 512)),
+                                  heads=int(meta.get("heads", 8)))
+    else:
+        backbone = MinGRUBackbone(d, L)
     torch.manual_seed(0)
     m = CubbyModel(
         config=CubbyConfig(d_model=d, n_layers=L, ctx_dim=CTX_DIM, vocab_core=V),
         context_source=FrozenSlotRouter(input_dim=d, n_slots=8, ctx_dim=CTX_DIM).freeze(),
-        backbone=MinGRUBackbone(d, L),
+        backbone=backbone,
         memory=MemoryLayer(gen, SnapshotHardener(), d_model=d),
         binding=BindingHead(), embedding=HybridEmbedding(V, d),
         head=TopKRetrievalHead(torch.randn(V, d) * 0.02, learnable=True),

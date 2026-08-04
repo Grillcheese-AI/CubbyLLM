@@ -45,7 +45,7 @@ from cubbyllm.core.device import describe, move_model, resolve_device  # noqa: E
 from cubbyllm.core.generation import (BasisHyperGenerator, HyperGenerator,  # noqa: E402
                                       SnapshotHardener)
 from cubbyllm.model.assembly import CubbyModel  # noqa: E402
-from cubbyllm.model.backbone import MinGRUBackbone  # noqa: E402
+from cubbyllm.model.backbone import HybridBackbone, MinGRUBackbone  # noqa: E402
 from cubbyllm.model.binding import BindingHead  # noqa: E402
 from cubbyllm.model.memory import MemoryLayer  # noqa: E402
 from cubbyllm.model.vocab import HybridEmbedding, TopKRetrievalHead  # noqa: E402
@@ -74,6 +74,15 @@ CLIP = _env("CB_CLIP", 1.0, float)           # grad-norm clip (stability) — 0 
 WARMUP = _env("CB_WARMUP", 0)                # linear LR warmup steps (early-divergence guard)
 MIN_LR = _env("CB_MIN_LR", 0.1, float)       # cosine-decay floor as a fraction of CB_LR
 GRAD_CKPT = bool(_env("CB_GRAD_CKPT", 0))    # backbone activation checkpointing (fit bigger batch)
+# CB_BACKBONE: 'mingru' (default) = pure MinGRUBackbone. 'hybrid' = HybridBackbone
+# (MinGRU + sliding-window attention every CB_ATTN_EVERY-th layer, cubby-lm's
+# shape). The H-D3 A/B: the hybrid should hold needle recall past the distance
+# where pure MinGRU's fixed state loses it, up to ~window. Both keep bounded
+# decode state, so both preserve the O(1) inference claim.
+BACKBONE = os.environ.get("CB_BACKBONE", "mingru")
+ATTN_EVERY = _env("CB_ATTN_EVERY", 3)        # attention on layers 0, 3, 6, ...
+ATTN_WINDOW = _env("CB_WINDOW", 512)         # sliding-window size (bounded KV)
+ATTN_HEADS = _env("CB_HEADS", 8)             # attention heads (must divide CB_D)
 # CB_BIND_W: LEAVE AT 0. H-B6 was falsified 2026-08-02 — this loss is Goodhart-able
 # and the trunk takes the degenerate solution: it drove retrieval 97% -> 11.5%
 # (chance 6.25%) while its own number looked like clean progress. See H-B6.
@@ -122,13 +131,20 @@ def _make_generator():
                                n_basis=GEN_BASIS, rank=GEN_RANK)
 
 
+def _make_backbone():
+    if BACKBONE == "hybrid":
+        return HybridBackbone(D, N_LAYERS, attn_every=ATTN_EVERY, window=ATTN_WINDOW,
+                              heads=ATTN_HEADS, grad_checkpoint=GRAD_CKPT)
+    return MinGRUBackbone(D, N_LAYERS, grad_checkpoint=GRAD_CKPT)
+
+
 def build(vocab, dev):
     torch.manual_seed(0)
     cfg = CubbyConfig(d_model=D, n_layers=N_LAYERS, ctx_dim=CTX, vocab_core=vocab)
     model = CubbyModel(
         config=cfg,
         context_source=FrozenSlotRouter(input_dim=D, n_slots=N_SLOTS, ctx_dim=CTX).freeze(),
-        backbone=MinGRUBackbone(D, N_LAYERS, grad_checkpoint=GRAD_CKPT),
+        backbone=_make_backbone(),
         memory=MemoryLayer(_make_generator(), SnapshotHardener(), d_model=D),
         binding=BindingHead(), embedding=HybridEmbedding(vocab, D),
         head=TopKRetrievalHead(torch.randn(vocab, D) * 0.02, learnable=True),
@@ -457,7 +473,9 @@ def main():
 
     # gen kind is part of the architecture identity: swapping generators changes
     # the parameter list, so a stale checkpoint must be refused, not half-loaded.
-    meta = {"D": D, "L": N_LAYERS, "vocab": vocab, "gen": GEN_KIND}
+    meta = {"D": D, "L": N_LAYERS, "vocab": vocab, "gen": GEN_KIND,
+            "backbone": BACKBONE, "attn_every": ATTN_EVERY,
+            "window": ATTN_WINDOW, "heads": ATTN_HEADS}
     start_step = 0
     if CKPT and os.path.exists(CKPT):
         start_step = load_ckpt(CKPT, model, loop.opt, dev, meta)
