@@ -28,6 +28,38 @@ def test_memory_layer_reads_the_beyond_window_past_in_forward():
     assert not torch.allclose(y0, yf, atol=1e-6), "memory did not carry the far token"
 
 
+def test_grad_checkpoint_with_memory_flows_grads_to_memory_params():
+    """Under grad_checkpoint=True the per-layer body (including the memory branch)
+    is recomputed in backward; MemoryRead's params must receive the SAME gradients
+    as the non-checkpointed path, and non-zero ones. If `_layer` weren't the whole
+    checkpointed unit — or if use_reentrant were True — the memory params would
+    silently get zero/wrong grads. Guards the first real CB_MEM_EVERY>0 training run.
+    """
+    def build(gc):
+        torch.manual_seed(0)
+        return HybridBackbone(D, n_layers=L, attn_every=3, window=W, heads=4,
+                              grad_checkpoint=gc, mem_every=2, mem_topk=8)
+
+    torch.manual_seed(1)
+    x0 = torch.randn(B, S, D, requires_grad=True)
+    x1 = x0.detach().clone().requires_grad_(True)   # same values, own leaf per model
+
+    bb0 = build(False)                              # checkpointing OFF
+    bb0.forward(x0).pow(2).sum().backward()
+    bb1 = build(True)                               # same init, checkpointing ON
+    bb1.forward(x1).pow(2).sum().backward()
+
+    g0 = {n: p.grad for n, p in bb0.named_parameters()}
+    g1 = {n: p.grad for n, p in bb1.named_parameters()}
+    mem_params = [n for n in g0 if n.startswith("mem.")]   # MemoryRead q/k/v/o only
+    assert mem_params, "no MemoryRead params found — mem_every wiring changed?"
+    for n in mem_params:
+        assert g0[n] is not None and g1[n] is not None, f"{n} received no gradient"
+        assert g0[n].abs().sum() > 0, f"{n} gradient is all-zero (memory branch not exercised)"
+        assert torch.allclose(g0[n], g1[n], atol=1e-4), \
+            f"checkpointed grad diverges on {n}: max|diff| {(g0[n] - g1[n]).abs().max():.2e}"
+
+
 def test_step_with_memory_matches_forward():
     """Incremental decode with the store must equal the parallel forward, so a
     benchmark measures the trained model. Single sequence (B=1): the v1 store is
