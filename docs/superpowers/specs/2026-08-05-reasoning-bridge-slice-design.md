@@ -47,10 +47,30 @@ H-F2 bridge, grilly-in-Rust) is deferred (§6).
 - **Transport: protobuf-over-stdio on the existing `cubelang run` subprocess** — the
   code's own stated direction. One-shot, isolated, not in the torch graph (matches
   the bridge's existing shape).
-- **De-risk in two milestones (§4): JSON first (zero Rust change), then protobuf.**
-  The existing `run --json` already returns structured results, and the cleanup
-  result is `(string, float)` — which serialises today — so the roundtrip can be
-  proven before any schema work.
+- **De-risk in two milestones (§4): JSON first, then protobuf.**
+- **UPDATE 2026-08-05 (post-foundation-cycle) — the M1 unbind surface is already
+  built; no compiler patch needed.** The original recon budgeted a 5-file patch to
+  add an `unbind` keyword because `unbind` had no surface syntax. The CubeLang
+  foundation cycle (merged to cubelang `main` @ `ea8f41e`) since built
+  **`recover(reg, role)`** — a `use vsa;` registry helper that runs the real
+  `BIND_ROLE`/`UNBIND`+cosine-cleanup internally and returns the recovered
+  `Value::Str` symbol. That *is* the intended surface, and it matches the owner's
+  decision that generated programs call `recover`, never a raw `unbind` (raw opcodes
+  are `asm`-only, for building helpers). **Proven end-to-end via the CLI (recon
+  2026-08-05):** `use vsa; … bind frame, SUBJECT, "cat"; … return recover(frame,
+  SUBJECT);` run through `cubelang run --fn solve --json` returns `{"result":"cat"}`;
+  the wrong-role control returns `{"result":"mouse"}`; the unbound control returns
+  `{"result":null}`. `value_to_json` already renders `Value::Str` as a bare string.
+  **M1 therefore needs zero Rust change** — it collapses to authoring the example +
+  the Python client.
+- **Note (non-blocking, settles §8.3):** a `use`-ing program cannot be compiled to
+  `.cubebin` (the binary format does not yet carry capability/`use` info — it errors
+  *"run from source instead"*). M1 runs from **source** via `run --json`, so this
+  doesn't block the slice, and it decides the wire format: **source, not bytecode.**
+  It also means the reasoning example cannot live in cubelang's compile-swept
+  `examples/` dir — it needs a run-from-source home (plan §placement). Serializing
+  capability info into `.cubebin` is deferred (only needed to cache/verify a
+  reasoning program as a binary artifact).
 
 ## 3. Architecture
 
@@ -81,14 +101,21 @@ regex-scraping in `cubemind/model/cubby/cubelang_bridge.py` for this path.
 
 ## 4. Milestones
 
-### M1 — prove the roundtrip over JSON (zero Rust code change)
+### M1 — prove the roundtrip over JSON (zero Rust code change — confirmed 2026-08-05)
 1. Rebuild `cubelang` (`cargo build --release`); repoint the client at the fresh exe.
-2. Author the bind→unbind CubeLang program (§3.1); run it via `run --json`.
-3. Python client drives it, parses the `(symbol, similarity)` out of the JSON.
-4. **Assert recovery + a control:** unbinding the *right* role returns the planted
-   filler at high similarity; unbinding a *wrong/absent* role returns a different
-   filler / low similarity. (The control is what makes a hit mean something — same
-   standard as the needle test's shuffled control.)
+   *(Done during recon — the fresh exe is at `cubelang/target/release/cubelang.exe`.)*
+2. Author the bind→recover CubeLang example (§3.1) using `use vsa; recover(reg, role)`
+   — the surface the foundation cycle built (no `unbind` keyword). Proven shape:
+   `tests/asm_vsa.rs::VSA_RECOVER`.
+3. Python client shells to the fresh exe, drives the example via
+   `run --fn solve --json`, and parses the recovered symbol from `{"result": <sym>}`
+   (symbol-only; `recover`/`UNBIND` discards the similarity float — surfacing
+   confidence is a deferred larger change, symbol suffices for M1).
+4. **Assert recovery + controls:** `recover(frame, SUBJECT)` returns the planted
+   `"cat"`; the wrong-role control `recover(frame, OBJECT)` returns a *different*
+   symbol (`"mouse"`); the absent-role control (unbound frame) returns `null`. (The
+   controls are what make a hit mean something — same standard as the needle test's
+   shuffled control. All three already pass via the CLI, recon 2026-08-05.)
 
 ### M2 — swap the transport to protobuf
 5. Author the `.proto`; add `prost` + `build.rs`; add the protobuf-stdio mode to
@@ -139,10 +166,16 @@ it before building the protobuf layer on top.
 
 ## 8. Open questions for the plan
 
-1. **CubeLang surface for bind/unbind.** Confirm the source syntax that compiles to
-   `BIND_ROLE`/`UNBIND` (the opcodes are in `compiler.rs mod op`, so the language
-   likely exposes them) — or whether the slice hand-assembles bytecode. First plan
-   task, because M1 depends on it.
+1. **RESOLVED — and superseded by the foundation cycle (2026-08-05):** the original
+   recon recommended adding an `unbind` keyword via a 5-file compiler patch. That is
+   **no longer needed.** The foundation cycle built **`recover(reg, role)`** (a
+   `use vsa;` registry helper doing real `UNBIND`+cleanup, returning the `Value::Str`
+   symbol) — the intended user-facing surface (raw `unbind` stays `asm`-only, for
+   helper-building). Planting is the existing `bind` statement. The full
+   `bind` → `recover` roundtrip is proven end-to-end through `run --json` (recon
+   2026-08-05: solve→"cat", wrong-role→"mouse", unbound→null). `recover`/`UNBIND`
+   still discards the similarity float — symbol-only, which suffices for M1's
+   recovery + controls; surfacing confidence is a deferred larger change.
 2. **Client repo.** Does the Python reasoning client live in CubbyLLM (the trunk's
    own reasoning bridge) or cubemind (extend `cubelang_bridge.py`)? Default: a thin
    CubbyLLM-side client for the slice, since the point is *CubbyLLM* reaching the VM;
