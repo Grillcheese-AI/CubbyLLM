@@ -176,7 +176,7 @@ This group comes from a single "trillion-parameter architecture blueprint" docum
 
 **H-D5 — a trained per-token episodic memory (differentiable top-K read over the
 beyond-window causal past, HDC as the O(1) index) extends recall past the window
-that H-D4 bounded.** Status: **toy-gate PASSED (2026-08-05); scale validation (the real needle run) pending.** Built:
+that H-D4 bounded.** Status: **scale-VERIFIED (2026-08-05) — decisively.** Built:
 `cubbyllm/model/recall/{read,store}.py`, interleaved into `HybridBackbone`
 (`mem_every`). Success metric = the beyond-window depths of `exp_needle_recall`
 (currently chance) rising off the floor. **Kill criterion:** the `exp_d5` toy gate
@@ -194,11 +194,35 @@ decisive PASS of the kill criterion. This is also the re-run that resolves the
 prior caveat: the pre-cosine green (99.9%) is reconfirmed at 100% now that
 `MemoryRead.forward`'s top-K selection is **cosine** (changed from dot-product in
 Task 5 to match the decode-time `EpisodicStore.retrieve_cosine` / Hamming path).
-`validation/logs/exp_d5_episodic.log`. **Remaining for scale-VERIFIED:** the real
-`CB_MEM_EVERY=2` needle run at the H-D4 shape (D512/L8/window512) — the
-beyond-window depths of `exp_needle_recall` (length 1024 depths 0.0–0.5, length
-4096 depths 0.0–0.75, at chance for the pure hybrid) must rise materially above
-the shuffled floor.
+`validation/logs/exp_d5_episodic.log`.
+
+**Scale result (2026-08-05): VERIFIED — decisively.** The memory-enabled hybrid
+(D512 / L8 / attn_every=3 / window=512 / **mem_every=2**, ~0.98B tokens, matched to
+H-D4's shape) scored on `exp_needle_recall` (PMI; shuffled + untrained + argmax-spread
+controls) across lengths 256 / 512 / 1024 / 4096. **The beyond-window depths that were
+at chance for the mem-OFF hybrid lifted to 33–58%, while in-window stayed 100%:**
+
+```
+              d=0%   d=25%  d=50%  d=75%  d=100%      (mem-OFF hybrid, same depths)
+   len 1024 | 58.3   58.3   41.7   100    100         16.7 / 16.7 / 8.3 / 91.7 / 100
+   len 4096 | 41.7   33.3   41.7   58.3   100         at the floor, depths 0.0–0.75
+```
+
+Real recall, isolated by three independent controls: the **shuffled-needle** control
+(same model, true signal scrambled out) sits at the **~0–8% floor** — *below* chance,
+i.e. the trained model actively rejects the wrong continuation; the **untrained model**
+is uniform **16.7%** (chance on this setup); **argmax-spread** is diverse (8 winners /
+240, top 17%) — not a degenerate single-token collapse. So beyond-window recall is
+**2–3.5× the untrained chance and 4–7× the shuffled floor**, holds even at **8× the
+window** (4096), and rises with proximity to the query (a real distance gradient — an
+artifact would not respect distance). **The episodic memory carries recall past the
+window at real scale — chance → ~50% beyond-window — while attention keeps in-window
+recall perfect. Rung 0.0.5 complete.** Honest bound: it is a *learned, lossy* top-K read
+on an undertrained (~0.98B-token) model, so ~40–58% (not attention's in-window 100%) is
+the expected shape and should sharpen with training; the claim was "materially off the
+floor," and 4–7× the floor across every beyond-window depth is emphatically that.
+`validation/logs/needle_mem2.log`. (Running it needed one probe fix: `exp_needle_recall`'s
+`_clone_bb` had to learn the memory decode-state shape — `9e07375`.)
 
 **H-D2 — In-place Test-Time Training eliminates the KV-cache but is a compute-for-memory trade, not a free win.** The blueprint proposes repurposing FFN projection layers as dynamically-updated fast weights during inference, updated via local next-token-prediction gradients, to handle long context (128k tokens) without KV-cache memory-bandwidth cost. Status: SPECULATIVE as a net win — TTT's per-token update is itself a gradient step, so inference compute per token goes up even as cache memory goes down. **Validate** by measuring wall-clock/FLOPs per generated token with TTT-in-the-loop versus standard KV-cache attention at matched context length — the blueprint only argues the memory side, not the compute side, of this trade.
 

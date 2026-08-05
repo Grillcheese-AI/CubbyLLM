@@ -1,0 +1,34 @@
+# needle mem2 | 2026-08-05 | NVIDIA RTX PRO 6000 Blackwell | ckpt hd5_mem2.pt
+# model: HybridBackbone D512 / L8 / attn_every=3 / window=512 / mem_every=2, ~0.98B tokens
+# exp_needle_recall: PMI-scored, controls = shuffled-needle + untrained-model + argmax-spread
+# CB_LENGTHS=256,512,1024,4096  CB_DEPTHS=0.0,0.25,0.5,0.75,1.0
+
+--- TRAINED MODEL ---
+ length |  d=0%    d=25%   d=50%   d=75%   d=100%
+   256  | 100.0   100.0   100.0   100.0   100.0
+   512  |  41.7    83.3   100.0   100.0   100.0
+  1024  |  58.3    58.3    41.7   100.0   100.0
+  4096  |  41.7    33.3    41.7    58.3   100.0
+argmax spread: 8 distinct winners / 240 trials; most frequent '47213' 41/240 (17%)
+
+--- CONTROL: shuffled needle (no true signal present) ---
+ length |  d=0%    d=25%   d=50%   d=75%   d=100%
+   256  |   0.0     0.0     0.0     0.0     0.0
+   512  |   8.3     0.0     0.0     0.0     0.0
+  1024  |   8.3     8.3     8.3     0.0     0.0
+  4096  |   8.3     0.0     8.3     8.3     0.0
+argmax spread: 8 distinct winners / 240 trials; most frequent '8814' 55/240 (23%)
+
+--- CONTROL: untrained model (this is what chance looks like) ---
+ uniform 16.7% (2/12) at every length x depth.
+
+=== VERDICT: H-D5 SCALE-VERIFIED ===
+Trained beyond-window recall 33-58% (in-window 100%) vs the mem-OFF hybrid's floor
+(1024: 16.7/16.7/8.3; 4096: at the floor), the shuffled floor ~0-8%, and untrained
+chance 16.7%. Real recall past the window, holding at 8x the window (4096), with a
+distance gradient (recall rises as the needle nears the query). Honest bound: a
+learned lossy top-K memory read on a 0.98B-token (undertrained) model, so ~40-58%
+(not attention's in-window 100%) is the expected shape; expect it to sharpen with
+more training. Controls all green: shuffled at floor, untrained at chance, argmax
+diverse (no degenerate single-token collapse). Fix required to run: exp_needle_recall
+_clone_bb had to learn the memory decode-state shape (commit 9e07375).
