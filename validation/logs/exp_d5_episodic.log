@@ -1,0 +1,5 @@
+# exp_d5 gate | 2026-08-05 02:49:28 | torch 2.11.0+cu128 | NVIDIA RTX PRO 6000 Blackwell Server Edition | CB_STEPS=6000 CB_S=256 CB_WINDOW=32
+gate: window=32, induction distance T=128 (>32) | cuda
+  memory OFF: 2nd-half acc 0.8%
+  memory ON : 2nd-half acc 100.0%
+  PASS: the memory read recalls past the window. Proceed to integration.

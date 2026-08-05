@@ -176,7 +176,7 @@ This group comes from a single "trillion-parameter architecture blueprint" docum
 
 **H-D5 — a trained per-token episodic memory (differentiable top-K read over the
 beyond-window causal past, HDC as the O(1) index) extends recall past the window
-that H-D4 bounded.** Status: **design + toy-gate stage.** Built:
+that H-D4 bounded.** Status: **toy-gate PASSED (2026-08-05); scale validation (the real needle run) pending.** Built:
 `cubbyllm/model/recall/{read,store}.py`, interleaved into `HybridBackbone`
 (`mem_every`). Success metric = the beyond-window depths of `exp_needle_recall`
 (currently chance) rising off the floor. **Kill criterion:** the `exp_d5` toy gate
@@ -187,11 +187,18 @@ Hamming index is a **256-bit SimHash** (`sign(k · R)`, `R` a fixed random
 projection), not single-bit `sign(k)` — Task 4 measured single-bit binarization
 recovering only ~34% of the cosine top-K under small perturbation (too few bits),
 and the 256-bit SimHash restores ~70% overlap, the honest-negative-result-first
-finding this repo values. Caveat: `MemoryRead.forward`'s top-K selection is now
-**cosine** (changed from dot-product during Task 5 to match the decode-time
-`EpisodicStore.retrieve_cosine`/Hamming path), so `validation/exp_d5_episodic.py`'s
-earlier green (memory-on 99.9%) predates that change and should be re-run against
-the current selection metric before its number is treated as canonical.
+finding this repo values. **Toy-gate result (2026-08-05, `exp_d5_episodic.py`,
+D=128/L=4, window=32, induction distance T=128 > window, 6000 steps, RTX PRO 6000):
+memory-ON 100.0% vs memory-OFF 0.8%** second-half (beyond-window) recall — a
+decisive PASS of the kill criterion. This is also the re-run that resolves the
+prior caveat: the pre-cosine green (99.9%) is reconfirmed at 100% now that
+`MemoryRead.forward`'s top-K selection is **cosine** (changed from dot-product in
+Task 5 to match the decode-time `EpisodicStore.retrieve_cosine` / Hamming path).
+`validation/logs/exp_d5_episodic.log`. **Remaining for scale-VERIFIED:** the real
+`CB_MEM_EVERY=2` needle run at the H-D4 shape (D512/L8/window512) — the
+beyond-window depths of `exp_needle_recall` (length 1024 depths 0.0–0.5, length
+4096 depths 0.0–0.75, at chance for the pure hybrid) must rise materially above
+the shuffled floor.
 
 **H-D2 — In-place Test-Time Training eliminates the KV-cache but is a compute-for-memory trade, not a free win.** The blueprint proposes repurposing FFN projection layers as dynamically-updated fast weights during inference, updated via local next-token-prediction gradients, to handle long context (128k tokens) without KV-cache memory-bandwidth cost. Status: SPECULATIVE as a net win — TTT's per-token update is itself a gradient step, so inference compute per token goes up even as cache memory goes down. **Validate** by measuring wall-clock/FLOPs per generated token with TTT-in-the-loop versus standard KV-cache attention at matched context length — the blueprint only argues the memory side, not the compute side, of this trade.
 
