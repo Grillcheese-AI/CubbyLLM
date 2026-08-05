@@ -123,19 +123,39 @@ def build(meta, dev):
     return m, d, L, V, kind
 
 
+def _clone_store(store):
+    """Deep-copy an EpisodicStore (duck-typed) so a branched candidate's writes
+    stay isolated — else scoring candidate A pollutes candidate B's memory."""
+    import copy
+    new = copy.copy(store)
+    new.load_state_dict({k: (v.clone() if torch.is_tensor(v) else v)
+                         for k, v in store.state_dict().items()})
+    return new
+
+
 def _clone_bb(s):
-    """One backbone layer's state. MinGRU layers carry a (1, d) tensor; hybrid
-    attention layers carry a (k, v, pos) tuple — so recurse rather than assume
-    every element is a tensor (which broke on the first hybrid checkpoint)."""
+    """Deep-clone a backbone decode state of ANY shape. MinGRU layers carry a
+    (1, d) tensor; hybrid attention layers a (k, v, pos) tuple; the episodic-memory
+    hybrid a dict ``{"mix": [...], "mem": {i: {"store": EpisodicStore, "buf": [...]}}}``.
+    Tensors clone; the store gets a real deep copy; ints/None pass through. (The
+    old version assumed every non-tensor was a tuple, which recursed forever on the
+    memory dict's string keys.)"""
     if torch.is_tensor(s):
         return s.clone()
-    return tuple(_clone_bb(e) for e in s)
+    if hasattr(s, "state_dict") and hasattr(s, "retrieve_cosine"):   # EpisodicStore
+        return _clone_store(s)
+    if isinstance(s, dict):
+        return {k: _clone_bb(v) for k, v in s.items()}
+    if isinstance(s, (list, tuple)):
+        return type(s)(_clone_bb(e) for e in s)
+    return s                                                          # int / None / scalar
 
 
 def _clone(state):
-    """Snapshot decode state — cheap next to a prefix. Handles both pure-MinGRU
-    (all-tensor) and hybrid (tuple KV-cache) per-layer states."""
-    return {"bb": [_clone_bb(s) for s in state["bb"]],
+    """Snapshot decode state — cheap next to a prefix. Handles pure-MinGRU
+    (all-tensor), hybrid (tuple KV-cache), and episodic-memory (dict-with-store)
+    backbone states uniformly by deep-cloning the whole ``bb`` state."""
+    return {"bb": _clone_bb(state["bb"]),
             "ctx_sum": state["ctx_sum"].clone(), "ctx_n": state["ctx_n"]}
 
 
