@@ -64,6 +64,7 @@ The near and far horizon — specced or on the axis:
 - **"Remember forever," as a program.** A memory service — itself a verified CubeLang program — where you submit content and it's remembered permanently: **domain-organized** (routed by topic), **searchable** by keyword or query, and, when you opt in, feeding **continual learning**. Nothing enters the shared world model until it's checked against real facts (including live web verification through a guarded gateway) so it can't be poisoned.
 - **A capabilities showcase.** The "remember forever" demo as the homepage; a game as a second capability test; and eventually a **harness that lets any model plug into the VM** — the VM markets itself by being useful to everyone.
 - **An affective cortex.** A hormonal system that modulates learning, attention, and caution — and a personality that *develops* through experience rather than being hardcoded, so the empathy is earned and individual.
+- **Living NPCs.** Game characters that genuinely feel alive — each with its own **hormonal state** and **neuromorphic (spiking-net) adapters**, so they *develop* distinct personalities and emotional arcs through play instead of running a canned script. The demo where the affective cortex meets the game world.
 - **A full immune system.** Intelligent guardians at every boundary that can only ever *restrict, never grant*, plus safe ingestion of the outside world.
 - **Self-writing, self-repairing.** A code-generation specialist that produces verified CubeLang on demand, and self-repair as a permitted, bounded function call.
 
