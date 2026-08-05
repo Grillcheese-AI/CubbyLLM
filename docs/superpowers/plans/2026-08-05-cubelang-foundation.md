@@ -85,16 +85,18 @@
 
 ---
 
-### Task 4: Standard interfaces (VM-internal) + validated, required `implements`
+### Task 4: Standard interfaces (VM-internal) + validated `implements`
 
-**Files:** the registry (Task 3) — add `ISolve`/`ISolver` interface entries; `src/compiler.rs`/`src/validate.rs` (a validation pass); `src/parser.rs:380-384` (required check).
+**Files:** a VM interface registry (new module, or alongside Task 3's `vm/registry.rs`); a validation pass in `src/compiler.rs`/`src/validate.rs`.
 
-**Interfaces:** Consumes: the registry (Task 3). Produces: `use isolve;`/`use isolver;`; `implements` required + validated against the registry.
+**Interfaces:** Consumes: Task 3's registry infra. Produces: a VM-internal interface registry (`ISolve`, `ISolver`); `implements X` **validated** against it. **Required-enforcement (rejecting empty `implements`) is deferred to Task 7** — after all programs conform — so Task 4 does NOT break existing no-`implements` programs or tests.
 
-- [ ] **Step 1: Failing tests.** (a) `program P { }` (no `implements`) → error; (b) `program P implements ISolver { use isolver; … }` missing a required `abstract` fn → error; (c) a program implementing an interface it never `use`d / that isn't in the registry → error; (d) a valid program with `use isolver;` + all three functions → ok. (Interfaces are registry entries, so no inline interface decl needed.)
-- [ ] **Step 2: Run — fails** (implements is decorative today).
-- [ ] **Step 3: Implement.** Add `ISolve {abstract solve}` and `ISolver {abstract parse; abstract solve; abstract verify}` to the registry. In the parser (`~380-384`), reject empty `implements`. Add a validation pass (natural home: `compiler.rs::compile()` before `compile_program`, or `validate.rs`): for each name in `prog.implements`, look it up in the registry; error if absent; for each `abstract` (non-`optional`) member, confirm the program body has a matching function (name/arity). All under the Task-0 strict discipline.
-- [ ] **Step 4: Run — all cases pass.** (Existing programs that break here are Task 7's job — expect some example/test failures until then; keep *this task's* new tests self-contained so the suite for this task is green.)
+**Decision (supersedes the spec's `use isolver;` shorthand):** `implements X` resolves **directly** against the VM interface registry — no `use` prerequisite. Interfaces are *implemented*, not *called*, so they don't go through Task 3's `use`/call-resolution; `use` stays for callable helpers only. Being VM-internal (Rust, not user source) is what makes them tamper-proof and lets Task 7 delete the six duplicate inline `ISolver` decls.
+
+- [ ] **Step 1: Failing tests.** (a) `implements ISolver` **missing a required `abstract` fn** (e.g. no `verify`) → compile error; (b) `implements INotReal` (not in registry, no in-file decl) → error; (c) valid `implements ISolver` providing `parse`/`solve`/`verify` → ok; (d) valid `implements ISolve` providing `solve` → ok; (e) a program with **no** `implements` **still compiles** (required NOT enforced yet).
+- [ ] **Step 2: Run — (a)/(b) don't error today** (implements is decorative); confirm they fail.
+- [ ] **Step 3: Implement.** Add a VM interface registry: `ISolve {abstract solve}`, `ISolver {abstract parse; abstract solve; abstract verify}` (name/arity sigs). Add a validation pass (`compiler.rs::compile()` before `compile_program`, or `validate.rs`): for each name in `prog.implements`, resolve it against the **registry OR an in-file inline `interface` decl** (existing inline-interface programs must keep working until Task 7 migrates them); **error if it resolves to neither**; for each `abstract` (non-`optional`) member, confirm the program provides a matching function (name/arity), **error if missing**. **Do NOT reject empty `implements`** (Task 7). Interfaces are a *separate* registry from Task 3's modules — but if you touch the module registry's resolution, re-check the `check_override_validity` "any-module vs first-hit" note the Task-3 fix flagged.
+- [ ] **Step 4: Run — all new cases pass; `cargo test` green** (nothing existing breaks: required isn't enforced, and inline interfaces still validate). examples/ sweep unchanged.
 - [ ] **Step 5: Commit.**
 
 ---
@@ -127,15 +129,16 @@
 
 ---
 
-### Task 7: Conformance migration (~12 programs)
+### Task 7: Conformance migration (~12 programs) + make `implements` required
 
-**Files:** the six `ISolver`-duplicate `.cube` files (`recall_min`, `decision_min`, `compare_min`, `loop_min`, `qc_decision`, `conversation_min`), `fibonacci.cube`, `ground_min.cube`, `ask_min.cube`, the 4-method variants (`gsm8k`, `conversation_agent`), and the inline test programs in `tests/query_grounding.rs`/`tests/ask_suspend.rs`.
+**Files:** the six `ISolver`-duplicate `.cube` files (`recall_min`, `decision_min`, `compare_min`, `loop_min`, `qc_decision`, `conversation_min`), `fibonacci.cube`, `ground_min.cube`, `ask_min.cube`, the 4-method variants (`gsm8k`, `conversation_agent`), the inline test programs in `tests/query_grounding.rs`/`tests/ask_suspend.rs`; plus the parser/validation site that enforces required `implements`.
 
-**Interfaces:** Consumes: `use isolve/isolver` (Task 4), `import` (Task 5) if any user interface is shared via file.
+**Interfaces:** Consumes: the VM interface registry + validated `implements` (Task 4).
 
-- [ ] **Step 1:** For each program, replace its inline/duplicate/phantom interface with `use isolver;` (or `use isolve;` for solve-only programs like `ground_min`/`ask_min`), and ensure it provides the interface's required functions (add real `parse`/`verify` only where the program genuinely does them; otherwise it implements `ISolve`). Update the inline test programs likewise.
-- [ ] **Step 2: Run `cargo test` + the `examples/` suite under `--strict`** — everything green. This is the task that turns the whole repo valid under the new required-`implements` rule.
-- [ ] **Step 3: Commit.**
+- [ ] **Step 1: Conform every program** to `implements` a **registry** interface (delete the inline/duplicate `interface` decls — the registry's `ISolver`/`ISolve` back them). Solve-only programs (`ground_min`, `ask_min`) `implements ISolve` + provide `solve`; programs that genuinely parse/solve/verify `implements ISolver` + provide all three (real functions where the program does them, not stubs). Give `fibonacci` (phantom `ISolver`) and the inline test programs a real registry `implements`. For the 4-method `learn` variant (`gsm8k`/`conversation_agent`), add a matching registry interface (e.g. `ISolverLearn`) or keep an in-file interface if genuinely program-specific.
+- [ ] **Step 2: Make `implements` required** — now that every program conforms, reject a `program` with empty `implements` (the enforcement deferred from Task 4).
+- [ ] **Step 3: Run `cargo test` + the `examples/` suite under `--strict`** — everything green. This turns the whole repo valid under the new required + validated `implements` rule.
+- [ ] **Step 4: Commit.**
 
 ---
 
