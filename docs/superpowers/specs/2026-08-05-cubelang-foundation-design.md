@@ -52,7 +52,7 @@ Ordered roughly by dependency. Each is TDD'd; `cargo test` green is the gate.
 
 ### H. Polish (audit's safe cleanups)
 - Remove root scratch files (`_t_*.cube`, `_verify*.ps1`) and the empty `src/cubelang/` orphan dir; drop stale binaries + fix `.gitignore` so a clean `cargo build --release` is the source of truth.
-- Delete genuinely-dead AST stubs (`Stmt::Export`/`Exec`/`Gate`, the `bytecode wasm import` cluster) — but **keep `Stmt::Import`** (external file import is in scope, §3.I / §5) and anything else on the roadmap.
+- Delete genuinely-dead AST stubs (`Stmt::Export`/`Exec`/`Gate`, the dead ES-module `Stmt::Import`/`ImportStmt` — file import is a NEW top-level decl in Task 5, not this in-body stmt-stub — and the `bytecode wasm import` cluster) + Task 0's now-orphaned `Stmt::Import` strict-arm. Keep anything else on the roadmap.
 - Fix drift: the `MEM_DIM=4096` comment that claims to match opcode-vsa-rs (8192); stale dimension doc-comments. **Do not** reconcile VSA dims across repos here (bigger cross-repo call — just stop the comments lying).
 - Test hygiene: the `Import`/`Export`/`BytecodeKw` **lexer-only** tests create false confidence (they prove tokenization, not that the parser does anything) — remove or upgrade. Add the missing coverage around `use`/override/`asm`/UNBIND/interface-conformance the audit flagged.
 
@@ -76,7 +76,7 @@ Two complementary mechanisms — the split is **who owns the code:**
 - **`use <name>;` — VM-internal core.** Helpers and standard interfaces baked into the VM (Rust), tamper-proof, versioned, deny-by-default — like EVM precompiles. This is where the six-duplicate-`ISolver` collapse happens (the interfaces are core) and where safety-critical machinery lives; nothing a program does can modify it.
 - **`import "path.cube";` — external user files.** For splitting a large program across files and reusing *your own* authored functionality (interfaces, structs, types, **and helper functions**). Built with the loader pre-pass from the interface/module recon: AST-level merge (preserves line numbers for errors), resolve **relative to the importing file**, cycle detection, error-on-duplicate-name. Imported code is **verified like any code** — it passes `--strict` and validation; `import` is modularity, never a trust bypass.
 
-Security split: the *core* (dangerous to tamper with) is VM-internal and unmodifiable; *your files* are your own trusted code. The one remaining question — **who may `import` what** when the author is the codegen model, not a human (path-allowlisting, sandboxed project roots) — is a capability governed by the guardian layer (§4, deferred). For now `import` assumes a trusted author. So `Stmt::Import` is **kept** and the loader is **built**; only the genuinely-dead stubs (`Export`/`Exec`/`Gate`, the wasm-import cluster) go.
+Security split: the *core* (dangerous to tamper with) is VM-internal and unmodifiable; *your files* are your own trusted code. The one remaining question — **who may `import` what** when the author is the codegen model, not a human (path-allowlisting, sandboxed project roots) — is a capability governed by the guardian layer (§4, deferred). For now `import` assumes a trusted author. File import is built as a **new top-level decl** (`TopLevel::Import`) + the loader; the dead ES-module `Stmt::Import` *statement*-stub is the wrong shape and gets deleted with the other dead stubs (`Export`/`Exec`/`Gate`, wasm-import cluster).
 
 ## 6. Testing
 

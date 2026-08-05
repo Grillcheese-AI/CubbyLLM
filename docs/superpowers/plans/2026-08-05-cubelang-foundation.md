@@ -53,7 +53,7 @@
 **Files:** repo root (scratch files, stale binaries, `.gitignore`), `src/` (dead stubs), `src/vm/engine.rs` (`MEM_DIM` comment), lexer tests.
 
 - [ ] **Step 1: Remove cruft.** Delete root scratch files (`_t_*.cube`, `_verify*.ps1`) and the empty `src/cubelang/` orphan dir. Ensure stale binaries aren't tracked; `.gitignore` covers `target/` and any built `.exe`. (No behavior change — no test needed beyond `cargo build` clean.)
-- [ ] **Step 2: Delete genuinely-dead AST stubs.** Remove `Stmt::Export`, `Stmt::Exec`, `Stmt::Gate`, and the `bytecode wasm import` cluster (`BytecodeKind::WasmImport`/`CodebookLoad`/`CodebookExport`) + their tokens/lexer entries — **KEEP `Stmt::Import` / `ImportStmt`** (Task 5 uses it). Compile-check that nothing references the deleted variants.
+- [ ] **Step 2: Delete genuinely-dead AST stubs.** Remove `Stmt::Export`, `Stmt::Exec`, `Stmt::Gate`, **the dead ES-module `Stmt::Import` / `ImportStmt`** (wrong shape — file import will be a NEW top-level decl in Task 5, not an in-body statement), and the `bytecode wasm import` cluster (`BytecodeKind::WasmImport`/`CodebookLoad`/`CodebookExport`) + their tokens/lexer entries. **Also remove Task 0's now-orphaned `Stmt::Import` arm in `strict_check_stmt`** (the exhaustive match must still cover every remaining `Stmt` variant with no wildcard). Verify (grep) each variant is genuinely unused before deleting; compile-check that nothing references the deleted variants.
 - [ ] **Step 3: Fix drift comments.** `engine.rs:12-14` `MEM_DIM=4096` comment claims it matches opcode-vsa-rs (which is 8192) — correct the comment to state the real value and that cross-repo dim reconciliation is out of scope. Fix other stale dimension doc-comments the audit flagged. (No behavior change.)
 - [ ] **Step 4: Test hygiene.** Remove/upgrade the lexer-only false-confidence tests for the deleted tokens; keep `Import` tokenization test (still used). `cargo test` green.
 - [ ] **Step 5: Commit.**
@@ -103,11 +103,11 @@
 
 **Files:** new `src/loader.rs`; `src/main.rs` (call the loader at the 3 read sites ~103,318,449 instead of bare `read_to_string`+`parse`).
 
-**Interfaces:** Consumes: `Stmt::Import`/`ImportStmt` (kept in Task 1). Produces: `import "path.cube";` resolving external user files.
+**Interfaces:** Produces: a new `TopLevel::Import(path)` variant + `src/loader.rs`; `import "path.cube";` resolving external user files. (The old in-body `Stmt::Import`/`ImportStmt` was deleted in Task 1 as wrong-shaped.)
 
 - [ ] **Step 1: Failing test.** A fixture `tests/fixtures/lib.cube` defining a helper `fn`/interface; a program `import "lib.cube"; …` that uses them → compiles+runs. Plus: duplicate-name across two imported files → error; an import cycle (`a`→`b`→`a`) → detected/error; a path relative to the importing file resolves.
 - [ ] **Step 2: Run — fails** (parser rejects `import` as a statement today; make it a `TopLevel::Import`).
-- [ ] **Step 3: Implement.** (a) Parse `import "path";` as a **top-level** decl (add the parser arm in the `parse()` loop; reuse/repoint the kept `ImportStmt` shape). (b) `src/loader.rs`: parse the entry file → walk `TopLevel::Import` items → resolve each relative to the importing file (`Path::new(current).parent().join(path)`) → recursively load → **AST-merge** top-level items (interfaces/structs/types/functions), tracking a visited-set for cycles and erroring on duplicate names. Keep `parser::parse`/`compiler::compile` `&str` signatures; the loader wraps them. (c) Imported code runs through the same `--strict`/validation. (d) Wire the loader into `main.rs`'s read sites.
+- [ ] **Step 3: Implement.** (a) Add a new `TopLevel::Import(path)` variant and parse `import "path";` as a **top-level** decl (parser arm in the `parse()` loop, sibling to `interface`/`struct`). (b) `src/loader.rs`: parse the entry file → walk `TopLevel::Import` items → resolve each relative to the importing file (`Path::new(current).parent().join(path)`) → recursively load → **AST-merge** top-level items (interfaces/structs/types/functions), tracking a visited-set for cycles and erroring on duplicate names. Keep `parser::parse`/`compiler::compile` `&str` signatures; the loader wraps them. (c) Imported code runs through the same `--strict`/validation. (d) Wire the loader into `main.rs`'s read sites.
 - [ ] **Step 4: Run — all cases pass; `examples/` still build.**
 - [ ] **Step 5: Commit.**
 
