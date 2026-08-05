@@ -64,7 +64,10 @@ def run_program(
     cmd = [str(exe_path), "run", program_path, "--fn", fn, "--json"]
     for a in args or []:
         cmd += ["--arg", a]
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    except subprocess.TimeoutExpired as e:
+        raise CubelangRunError(f"cubelang timed out after {timeout}s: {cmd}") from e
     if proc.returncode != 0 and not proc.stdout.strip():
         raise CubelangRunError(f"cubelang exited {proc.returncode}: {proc.stderr.strip()}")
     try:
