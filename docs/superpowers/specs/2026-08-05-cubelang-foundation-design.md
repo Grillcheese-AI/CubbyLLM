@@ -52,22 +52,31 @@ Ordered roughly by dependency. Each is TDD'd; `cargo test` green is the gate.
 
 ### H. Polish (audit's safe cleanups)
 - Remove root scratch files (`_t_*.cube`, `_verify*.ps1`) and the empty `src/cubelang/` orphan dir; drop stale binaries + fix `.gitignore` so a clean `cargo build --release` is the source of truth.
-- Delete genuinely-dead AST stubs (`Stmt::Export`/`Exec`/`Gate`, and now `Stmt::Import` — file-import is dropped, §5; the `bytecode wasm import` cluster) — **keep** anything on the roadmap.
+- Delete genuinely-dead AST stubs (`Stmt::Export`/`Exec`/`Gate`, the `bytecode wasm import` cluster) — but **keep `Stmt::Import`** (external file import is in scope, §3.I / §5) and anything else on the roadmap.
 - Fix drift: the `MEM_DIM=4096` comment that claims to match opcode-vsa-rs (8192); stale dimension doc-comments. **Do not** reconcile VSA dims across repos here (bigger cross-repo call — just stop the comments lying).
 - Test hygiene: the `Import`/`Export`/`BytecodeKw` **lexer-only** tests create false confidence (they prove tokenization, not that the parser does anything) — remove or upgrade. Add the missing coverage around `use`/override/`asm`/UNBIND/interface-conformance the audit flagged.
+
+### I. `import` — external user files (modularity)
+- A loader pre-pass (§5): given the entry file, parse it, walk top-level `import "path.cube";` decls, resolve each **relative to the importing file**, recursively load + **AST-merge** their top-level items (interfaces/structs/types/**and helper functions**), with **cycle detection** and **error-on-duplicate-name**. Keep `parse`/`compile`'s `&str` signatures untouched (the loader wraps them, preserving spans for error line numbers). Imported code is verified (`--strict`, validated `implements`) exactly like inline code — never a bypass.
+- **Test:** a program `import`s a user file's helper function + interface and uses them; duplicate-name across files errors; an import cycle is detected; a relative path resolves. (Untrusted-author path-allowlisting is deferred to the guardian layer — §4.)
 
 ## 4. Deferred — captured, next cycles (not built here)
 
 - **The security / ingestion layer:** the `net` capability (allowlist + anti-SSRF + sandboxed fetch + inert-data + provenance/trust), the **guardian / reference-monitor** layer (deny-by-default reference monitors at every entry/exit; intelligent layer *restricts-never-grants*, tiered by risk), and the **learning-gate** (Cubby-side; poisoning defense on real-time learning). Its own cycle — needs real security engineering + Cubby-side work. This foundation (verification + capability core) is what it builds on.
 - **The codegen specialist model** (writes CubeLang; separate from trunk0) — future; this cycle just makes the language it will target safe and writable.
 - **Real-time learning from live sources** — Cubby-side (H0-adjacent), future.
-- **External `.cube` file imports** — dropped in favor of VM-internal `use` (removes the tamper surface). Revisit only if user-defined shared-code-across-files becomes a real need.
+- **Governing *untrusted* `import`** — *who* may import *what* when the author is the codegen model, not a human (path-allowlisting, sandboxed project roots). External `import` itself is IN scope this cycle (§3.I, §5) for the trusted-author case; policing it for generated code is part of the deferred guardian layer.
 - **Self-generating virtual processors, self-patch-as-a-call** — the far vision; `override`-with-permission is the seed, not the deliverable.
 - **Reconciling VSA dims / algebras across grilly / opcode-vsa-rs / cubelang** — separate cross-repo decision.
 
-## 5. Why `use` supersedes file imports
+## 5. Two module mechanisms: `use` (core) + `import` (your files)
 
-The earlier plan (from the interface/module recon) was external `.cube` imports with a loader pre-pass. The owner's capability design overrides it: core helpers **and** standard interfaces live *in the VM*, tamper-proof, reached by `use` — like EVM precompiles. That both (a) solves the six-duplicate-`ISolver` problem the tamper-proof way and (b) *removes* the file-loading tamper surface entirely. So no `loader.rs`, no path resolution, no cycle detection — `use` is the one module mechanism, and `Stmt::Import` becomes dead code to delete (§H).
+Two complementary mechanisms — the split is **who owns the code:**
+
+- **`use <name>;` — VM-internal core.** Helpers and standard interfaces baked into the VM (Rust), tamper-proof, versioned, deny-by-default — like EVM precompiles. This is where the six-duplicate-`ISolver` collapse happens (the interfaces are core) and where safety-critical machinery lives; nothing a program does can modify it.
+- **`import "path.cube";` — external user files.** For splitting a large program across files and reusing *your own* authored functionality (interfaces, structs, types, **and helper functions**). Built with the loader pre-pass from the interface/module recon: AST-level merge (preserves line numbers for errors), resolve **relative to the importing file**, cycle detection, error-on-duplicate-name. Imported code is **verified like any code** — it passes `--strict` and validation; `import` is modularity, never a trust bypass.
+
+Security split: the *core* (dangerous to tamper with) is VM-internal and unmodifiable; *your files* are your own trusted code. The one remaining question — **who may `import` what** when the author is the codegen model, not a human (path-allowlisting, sandboxed project roots) — is a capability governed by the guardian layer (§4, deferred). For now `import` assumes a trusted author. So `Stmt::Import` is **kept** and the loader is **built**; only the genuinely-dead stubs (`Export`/`Exec`/`Gate`, the wasm-import cluster) go.
 
 ## 6. Testing
 
