@@ -1,0 +1,28 @@
+use vsa;
+
+# Reasoning-bridge demonstration: plant (role -> filler) bindings, recover by
+# role through cubelang's real UNBIND + cosine cleanup. Runs from source
+# (a `use`-ing program cannot compile to .cubebin). Proven shape: matches
+# cubelang/tests/asm_vsa.rs::VSA_RECOVER.
+program ReasoningBridge implements ISolve {
+    public function solve(mention: str): str {
+        create frame: number;
+        bind frame, SUBJECT, "cat";
+        bind frame, OBJECT, "mouse";
+        return recover(frame, SUBJECT);
+    }
+
+    # control: a different role in the same frame recovers a different filler
+    public function wrong_role(): str {
+        create frame: number;
+        bind frame, SUBJECT, "cat";
+        bind frame, OBJECT, "mouse";
+        return recover(frame, OBJECT);
+    }
+
+    # control: an unbound frame recovers no symbol
+    public function unbound(): str {
+        create frame: number;
+        return recover(frame, SUBJECT);
+    }
+}
