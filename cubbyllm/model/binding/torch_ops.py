@@ -17,6 +17,8 @@ makes the trunk "know about" binding, rather than training the parameter-free al
 """
 from __future__ import annotations
 
+import math
+
 import torch
 import torch.nn.functional as F
 
@@ -40,11 +42,30 @@ def make_roles(n: int, d: int, device, seed: int = 0) -> "torch.Tensor":
     return (torch.randint(0, 2, (n, d), generator=g).float() * 2.0 - 1.0).to(device)
 
 
-def binding_aux_loss(h: "torch.Tensor", roles: "torch.Tensor") -> "torch.Tensor":
-    """Bundle N (role*filler) pairs, unbind each, cosine-reconstruct.
+def binding_aux_loss(h: "torch.Tensor", roles: "torch.Tensor", tau: float = 0.1) -> "torch.Tensor":
+    """Contrastive binding loss: each recovered filler must match its OWN filler
+    AND be distinguishable from every OTHER. Cross-entropy over the full
+    (recovered x fillers) cosine-similarity matrix with target = identity,
+    normalized by log(N) to ~[0, 1] (0 = perfect retrieval of every bundled
+    filler; 1 = chance = total collapse).
 
-    h: (B, S, d) trunk hidden states (fp32). roles: (N, d) bipolar keys.
-    Returns a scalar in [0, 2] (0 = perfect recovery of every bundled filler).
+    Why contrastive (fix, 2026-08-05). The prior loss scored only each recovered
+    filler's cosine to ITS OWN filler, ``(1 - cos).mean()``. That has a
+    degenerate free minimum: if the trunk collapses every hidden state onto one
+    direction, own-cosine stays high, so the loss is *happy* while the
+    representation dies — the exact silent collapse ``representation_health`` was
+    added to DETECT (ff -> 1.0, retrieval -> chance) but the loss never
+    PENALIZED. Late in a run the trunk drifts into it. Cross-entropy over the
+    whole similarity matrix makes collapse the HIGH-loss state instead: when
+    every filler looks alike you cannot retrieve the right one, softmax cannot
+    concentrate on the diagonal, and the loss saturates at log(N)/log(N) = 1.
+    This is the differentiable form of the argmax-retrieval ``ret`` metric, so
+    the loss and the alarm finally optimize the same thing.
+
+    h: (B, S, d) trunk hidden states (fp32). roles: (N>=2, d) bipolar keys.
+    tau: softmax temperature over the cosine logits (smaller = sharper).
+    Scale note: returns ~[0, 1] where the old loss returned ~[0, 2] — the
+    caller's ``bind_weight`` may want a small re-tune for the new range.
     """
     B, S, d = h.shape
     n = roles.shape[0]
@@ -53,8 +74,12 @@ def binding_aux_loss(h: "torch.Tensor", roles: "torch.Tensor") -> "torch.Tensor"
     r = roles.unsqueeze(0)                                            # (1, N, d)
     composite = (r * fillers).sum(dim=1, keepdim=True)               # (B, 1, d) bundle
     recovered = composite * r                                        # (B, N, d) unbind
-    cos = (F.normalize(recovered, dim=-1) * F.normalize(fillers, dim=-1)).sum(-1)
-    return (1.0 - cos).mean()
+    rn = F.normalize(recovered, dim=-1)
+    fn = F.normalize(fillers, dim=-1)
+    sim = torch.bmm(rn, fn.transpose(1, 2)) / tau                    # (B, N, N) logits: recovered_i . filler_j
+    target = torch.arange(n, device=h.device).expand(B, n)          # (B, N) — each recovered retrieves its own
+    ce = F.cross_entropy(sim.reshape(B * n, n), target.reshape(B * n))
+    return ce / math.log(n)
 
 
 __wiring__ = Wiring.WIRED
