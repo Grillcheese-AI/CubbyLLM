@@ -47,6 +47,14 @@ The extensibility layer: adding a capability should be "implement the contract,"
   - **Quality-Control (QC)** functionality with its CubeLang program — `cubelang/examples/qc_decision.cube` (+ `.cubebin`) **[exists]**.
   - growth/lifecycle seed: `cubemind/model/cubby/hebbian.py`; routing/composition: `cubemind/cubemind/execution/world_manager.py`. **[exists]**
 
+## 5.5 The affective layer — hormonal modulation, personality, empathy
+
+Cross-cutting and **core to the project's lineage** (AURA → emotional-intelligence integration → here), not a feature. A **hormonal system** — slow-varying neuromodulator states (dopamine/serotonin/cortisol/oxytocin analogues) — **modulates every cortex globally**: gating learning rate, attention, exploration-vs-caution, memory consolidation, risk sensitivity. It integrates with θ=f(c): the hormonal state is a slow, affective part of the context `c` that modulates the generated parameters — so "modulated by hormones" *is* the specialization mechanism reading an emotional-state signal.
+
+- **Personality develops, isn't hardcoded.** Personality = the *learned* set-points + dynamics of the hormonal system, shaped by experience via continual learning (H0). Differentiator: GPT-4 is stateless/flat; this has a persistent, *developing* affective state. **[exists]** in cubemind (hormonal + SNN — `cubemind/modules/live_brain.py`, `cubemind/perception/`); developing-over-time is [near].
+- **Empathy — the honest mechanism.** Internal emotional states give the substrate to model and resonate with others' states — you empathize better with states you can also represent. The hormonal system is *necessary machinery* for genuine (functional) empathy vs imitated-from-training empathy. Necessary-not-sufficient: the empathy is emergent and *shaped* through interaction — the mechanism enables it, experience grows it (so it's earned and individual, not a canned persona).
+- **Discipline (so it's real, not mood labels):** every hormone must do real computational work (define what it gates/scales); the state must be **bounded, observable, homeostatic** — checkpointed, readable, self-regulating, modulating within limits. That both keeps the personality from drifting into bad states AND fits the verifiable/guardian discipline: a mood-modulated system is powerful, so it gets the same deny-by-default containment (can't be pushed into an unsafe state by manipulating its "stress"). Expressive affect, bounded safely.
+
 ## 6. Calibration — existing / near / far
 
 - **[exists] / working:** hybrid backbone + episodic memory (this repo); CubeLang VM with real bind/unbind (`cubelang`); the vision/perception cortex + hormonal + SNN + demos + QC benchmarks (`cubemind`); QC CubeLang program (`cubelang/examples/qc_decision.cube`); θ=f(c) + `FrozenSlotRouter`; the WorldManager + Hebbian growth.
