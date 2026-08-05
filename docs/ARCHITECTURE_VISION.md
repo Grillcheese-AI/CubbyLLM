@@ -11,6 +11,7 @@ A **safe, self-improving AI system**: a continually-learning trunk (**Cubby**) p
 - **Cubby (the trunk) — the intelligence.** The base model + memory + specialization. Continual / real-time learning without catastrophic forgetting (H0, θ=f(c)). Efficient by design (bounded state, O(1) decode). *This repo (`cubbyllm/`).*
 - **CubeLang (the VM) — the safe execution substrate.** The reasoning engine and the place programs run: verified-before-execution, tamper-proof core, capability-based. *`cubelang` repo (Rust).*
 - **cubemind — the environment/substrate.** Hosts the VM, the WorldManager/arena, the brain modules and bridges. *`cubemind` repo.*
+  - **Integration rule (owner, 2026-08-05): CubbyLLM never links cubemind code as a cross-repo dependency.** cubemind stays the environment/host that *runs* things, but any reusable **code** CubbyLLM adopts (cortex / hormonal / SNN / perception / QC — the `[exists]` cubemind pointers in §5 and §8) is **ported into CubbyLLM cleanly and owned here** (its own subpackage, tests, `__wiring__`), superseding cubemind's version rather than importing it. So the §5/§8 cubemind references are *port sources*, not runtime dependencies. Precedent: `cubbyllm/bridges/cubelang_client.py` supersedes cubemind's regex-scrape `model/cubby/cubelang_bridge.py`.
 
 Split of concerns: **Cubby learns; CubeLang executes safely; cubemind is the body/world they live in.**
 
