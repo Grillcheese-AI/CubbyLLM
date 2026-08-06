@@ -350,6 +350,106 @@ def run_stage1() -> dict:
     return results
 
 
+def argmax_onehot(codes: np.ndarray) -> np.ndarray:
+    """One-hot at the max signed value per block — LSH-style on a random
+    orthonormal projection. Cosine between two such codes is
+    (#matching blocks)/K, i.e. 81 distinct levels at K=80."""
+    idx = codes.argmax(axis=2)                                   # (n, K)
+    out = np.zeros_like(codes, dtype=np.float32)
+    n_idx, k_idx = np.meshgrid(
+        np.arange(codes.shape[0]), np.arange(K), indexing="ij"
+    )
+    out[n_idx, k_idx, idx] = 1.0
+    return out
+
+
+def fit_pq(codes: np.ndarray, iters: int = 25, seed: int = 0) -> np.ndarray:
+    """Per-block k-means (hand-rolled Lloyd's; no scikit-learn) -> (K, L, L).
+
+    Each block's L-dim sub-vectors are clustered into L centroids, so a code
+    becomes one-hot at its nearest centroid per block.
+    """
+    rng = np.random.default_rng(seed)
+    centroids = np.zeros((K, L, L), dtype=np.float32)
+    for b in range(K):
+        X = codes[:, b, :].astype(np.float32)                    # (n, L)
+        start = rng.choice(len(X), size=min(L, len(X)), replace=False)
+        C = np.zeros((L, L), dtype=np.float32)
+        C[: len(start)] = X[start]
+        for _ in range(iters):
+            d = ((X[:, None, :] - C[None, :, :]) ** 2).sum(axis=2)
+            assign = d.argmin(axis=1)
+            for j in range(L):
+                sel = assign == j
+                if sel.any():
+                    C[j] = X[sel].mean(axis=0)
+        centroids[b] = C
+    return centroids
+
+
+def pq_onehot(codes: np.ndarray, centroids: np.ndarray) -> np.ndarray:
+    out = np.zeros_like(codes, dtype=np.float32)
+    for b in range(K):
+        d = ((codes[:, b, :][:, None, :] - centroids[b][None, :, :]) ** 2).sum(axis=2)
+        out[np.arange(len(codes)), b, d.argmin(axis=1)] = 1.0
+    return out
+
+
+def recalibrate_tau(same_cos: np.ndarray, diff_cos: np.ndarray) -> tuple[float, float]:
+    """Pick tau at max Youden's J over same-domain vs different-domain maxima.
+    Returns (tau, roc_auc). M1's 0.35 does not transfer to this distribution."""
+    scores = np.concatenate([same_cos, diff_cos])
+    labels = np.concatenate([np.ones(len(same_cos)), np.zeros(len(diff_cos))])
+    order = np.argsort(-scores)
+    s, y = scores[order], labels[order]
+    tp = np.cumsum(y)
+    fp = np.cumsum(1 - y)
+    tpr = tp / max(tp[-1], 1)
+    fpr = fp / max(fp[-1], 1)
+    auc = float(np.trapezoid(tpr, fpr)) if hasattr(np, "trapezoid") else float(np.trapz(tpr, fpr))
+    j = tpr - fpr
+    return float(s[int(j.argmax())]), auc
+
+
+def run_stage2(arm: str) -> dict:
+    names, formulas, domains = load_corpus()
+    # Report BOTH baselines, each labelled, so no reader can repeat the
+    # macro-vs-majority-class category error. Bar 4 is dense-relative and does
+    # not use either.
+    micro_chance = majority_class(domains)
+    mac_chance = macro_chance(domains)
+    name_codes, formula_codes = _encode_arm(arm, names, formulas)
+
+    variants = {"dense": (name_codes, formula_codes)}
+    variants["argmax"] = (argmax_onehot(name_codes), argmax_onehot(formula_codes))
+    cent = fit_pq(formula_codes)
+    variants["pq"] = (pq_onehot(name_codes, cent), pq_onehot(formula_codes, cent))
+
+    out = {"arm": arm, "micro_chance": micro_chance, "macro_chance": mac_chance,
+           "variants": {}}
+    for label, (nc, fc) in variants.items():
+        routed = loo_domain_routing(nc, fc, domains)
+        tau, auc = recalibrate_tau(routed["same_cos"], routed["diff_cos"])
+        out["variants"][label] = {
+            "micro": routed["micro"], "macro": routed["macro"],
+            "tau_match": tau, "roc_auc": auc,
+        }
+        print(f"{label:>7}: micro={routed['micro']:.3f} macro={routed['macro']:.3f} "
+              f"| tau={tau:.3f} auc={auc:.3f}")
+
+    dense_macro = out["variants"]["dense"]["macro"]
+    best = max(("argmax", "pq"), key=lambda v: out["variants"][v]["macro"])
+    ok = out["variants"][best]["macro"] >= 0.80 * dense_macro
+    print(f"\n--- kill criterion ---\n  [{'PASS' if ok else 'FAIL'}] "
+          f"4 discretization (best one-hot '{best}' >= 0.80x dense)")
+    if not ok:
+        print("  => FINDING: semantic routing works only in DENSE space; the "
+              "dense-vs-one-hot algebra choice is now explicit, not silent.")
+    out["winner"] = best if ok else "dense"
+    out["discretization_passed"] = bool(ok)
+    return out
+
+
 def self_test() -> None:
     names, formulas, domains = load_corpus()
     assert len(names) == len(formulas) == len(domains) == 280
@@ -441,6 +541,21 @@ def self_test() -> None:
     assert abs(majority_class(skew) - 0.9) < 1e-9
     assert abs(macro_chance(skew) - 0.5) < 1e-9
 
+    # Discretizers emit valid one-hot-per-block codes; PQ is deterministic.
+    dense = np.random.default_rng(3).standard_normal((5, K, L)).astype(np.float32)
+    am = argmax_onehot(dense)
+    assert am.shape == dense.shape
+    assert np.array_equal(am.sum(axis=2), np.ones((5, K), dtype=np.float32))
+    cent = fit_pq(dense)
+    assert cent.shape == (K, L, L)
+    pq = pq_onehot(dense, cent)
+    assert np.array_equal(pq.sum(axis=2), np.ones((5, K), dtype=np.float32))
+    assert np.array_equal(pq, pq_onehot(dense, fit_pq(dense)))       # deterministic
+
+    # Threshold recalibration separates a trivially separable pair of populations.
+    tau, auc = recalibrate_tau(np.full(20, 0.9), np.full(20, 0.1))
+    assert 0.1 < tau < 0.9 and auc == 1.0, (tau, auc)
+
     print(f"self-test OK — corpus 280/15 domains; cosine-exact max|delta|={err:.2e}")
 
 
@@ -448,6 +563,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--self-test", action="store_true", help="run invariants and exit")
     ap.add_argument("--stage1", action="store_true", help="rank embedders (dense)")
+    ap.add_argument("--stage2", metavar="ARM", help="settle discretization for ARM")
     args = ap.parse_args()
     if args.self_test:
         self_test()
@@ -461,6 +577,26 @@ def main() -> None:
         }
         path.write_text(json.dumps(serialisable, indent=1), encoding="utf-8")
         print(f"\nwrote {path}")
+        return
+    if args.stage2:
+        res = run_stage2(args.stage2)
+        names, formulas, domains = load_corpus()
+        encoder = {"t-bag": tbag_encode, "t-ctx": tctx_encode, "ref": ref_encode}[args.stage2]
+        # DEVIATION from task-5-brief.md (see task brief header): output paths are
+        # suffixed with the arm name so the t-ctx and ref runs do not clobber
+        # each other -- the brief's un-suffixed `axiom_embeddings.npz` /
+        # `exp_f2m2_stage2.json` assumed a single winning-arm run.
+        npz_path = ROOT / "data" / f"axiom_embeddings_{args.stage2}.npz"
+        json_path = ROOT / "validation" / "logs" / f"exp_f2m2_stage2_{args.stage2}.json"
+        np.savez_compressed(
+            npz_path,
+            name_emb=encoder(names), formula_emb=encoder(formulas),
+            domains=np.array(domains), names=np.array(names),
+            arm=np.array(args.stage2), discretization=np.array(res["winner"]),
+            tau_match=np.array(res["variants"][res["winner"]]["tau_match"], dtype=np.float32),
+        )
+        json_path.write_text(json.dumps(res, indent=1), encoding="utf-8")
+        print(f"\nwrote {npz_path} and {json_path}")
         return
     raise SystemExit("pass --self-test or --stage1")
 
