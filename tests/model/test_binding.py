@@ -51,3 +51,45 @@ def test_unbinder_satisfies_protocol():
 
 def test_wiring_is_wired():
     assert mod.__wiring__ is Wiring.WIRED
+
+
+def test_binding_aux_loss_penalizes_collapse():
+    """The contrastive binding loss must make representation COLLAPSE the
+    high-loss state (2026-08-05 fix — the old own-cosine-only loss gave collapse
+    a free ride). Collapse = every hidden state on one direction -> fillers are
+    indistinguishable -> loss saturates at chance (log(N)/log(N) = 1.0). A
+    healthy, distinct representation is retrievable -> low loss.
+    """
+    import torch
+
+    from cubbyllm.model.binding.torch_ops import binding_aux_loss, make_roles
+
+    torch.manual_seed(0)
+    B, S, d, n = 4, 64, 256, 8
+    roles = make_roles(n, d, device="cpu")
+
+    # healthy: distinct random hidden states -> separable fillers -> low loss
+    loss_healthy = binding_aux_loss(torch.randn(B, S, d), roles).item()
+
+    # collapsed: every hidden state identical -> indistinguishable -> ~chance
+    v = torch.randn(1, 1, d)
+    loss_collapsed = binding_aux_loss(v.expand(B, S, d).contiguous(), roles).item()
+
+    assert loss_collapsed > 0.95, f"collapse should score ~chance (1.0), got {loss_collapsed}"
+    assert loss_healthy < 0.6, f"healthy should be low, got {loss_healthy}"
+    assert loss_collapsed > loss_healthy + 0.3, (
+        f"collapse ({loss_collapsed}) must be clearly worse than healthy ({loss_healthy})"
+    )
+
+
+def test_binding_aux_loss_backprops():
+    """Loss is differentiable end-to-end into the trunk's hidden states."""
+    import torch
+
+    from cubbyllm.model.binding.torch_ops import binding_aux_loss, make_roles
+
+    torch.manual_seed(1)
+    h = torch.randn(2, 48, 128, requires_grad=True)
+    loss = binding_aux_loss(h, make_roles(8, 128, device="cpu"))
+    loss.backward()
+    assert h.grad is not None and torch.isfinite(h.grad).all()
