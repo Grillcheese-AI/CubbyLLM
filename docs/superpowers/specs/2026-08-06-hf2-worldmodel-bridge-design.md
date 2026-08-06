@@ -89,17 +89,47 @@ A deterministic, mowm-free `WorldModelBridge` implementation so CubbyLLM's side 
 
 ### 4.4 `CubbyBridge` adapter (MoWM side, `mowm/bridges/cubby_bridge.py`)
 
-Implements `WorldModelBridge` over a `MoWMPipeline`:
-- `attempt(challenge)`: `router.route(challenge.context)` → if the top world's gate weight ≥ `tau`, `predict` with it (`spawned=False`); else `router.maybe_spawn(residual, library)` to grow a world from the nearest axioms, `predict` with it (`spawned=True`), and `register_specialist`. Returns `ChallengeResult(result, world_id, confidence, spawned)`.
-- `emit_novelty` / `register_specialist`: fire as observable side effects during a spawn.
-- Idempotence: a spawned world enters the router's active pool, so re-posing the same challenge routes to it (no second spawn) — this is what the single-spawn control checks.
+Implements `WorldModelBridge` over a real `AxiomLibrary` + `MoWMRouter` + `World`s.
+
+> **As-built (2026-08-06).** The shipped decision is deterministic and does **not** use the (untrained, meaningless at toy scale) DSelect-k gate — the plan self-review justified this deviation. The whole-branch review then caught a second correction: routing must compare against a world's **individual axioms**, not its `axiom_vec` *signature* (a `bind`-chain, quasi-orthogonal to real contexts, so cosine against it is inert). The bullets below are the shipped mechanism.
+
+- `attempt(challenge)` decides in three tiers:
+  1. **Exact-tag reuse** — a `tag → world_id` memo (`_specialist_for`) returns the same specialist for a repeated challenge (`spawned=False`); self-heals (drops the entry, re-routes) if that world was pruned.
+  2. **Similarity route** — else the best world by **max cosine of `challenge.context` to any of that world's individual axiom vectors** (the basis `AxiomLibrary.select` ranks over — an *any-axiom* match, not per-world-normalized); if that best ≥ `tau_match`, `predict` with it (`spawned=False`).
+  3. **Spawn** — else `router.maybe_spawn(context, library)` grows a specialist from the nearest axioms, `predict`s (`spawned=True`), and registers it; raises if the pool is full or no axioms are found.
+  Returns `ChallengeResult(result, world_id: str, confidence, spawned)`.
+- `register_specialist` records a spawned world's id — `attempt` routes its own spawn through it, so there is a single write-path; `push_context`/`pull_context`/`emit_novelty` are the remaining Protocol channels.
+- **Idempotence has two sources:** an exact repeat is served from the `_specialist_for` memo (tier 1); a *similar* in-axiom-space context re-routes via tier 2's cosine. (The original draft claimed idempotence came from "a spawned world entering the active pool" — only true for contexts near the axiom basis; the guaranteed path for an exact repeat is the memo.)
 
 ## 5. Data flow (one challenge)
 
 1. CubbyLLM builds a `Challenge` — for tests, `context = WorldEncoder(tag)` (deterministic block-code from a symbolic tag); in real use, the trunk's inferred context `c` encoded to a block-code.
 2. `attempt_challenge(challenge)` calls `bridge.attempt(challenge)`.
-3. MoWM adapter: **route** over active worlds → confident world found? **predict** and return (`spawned=False`). No confident world? **maybe_spawn** from nearest axioms → **predict** → **register_specialist** → return (`spawned=True`).
+3. MoWM adapter (`CubbyBridge.attempt`): **exact-tag reuse** from the `_specialist_for` memo, else **similarity route** by max cosine of the context to each world's *individual axioms* (≥ `tau_match` → `predict`, `spawned=False`), else **maybe_spawn** from the nearest axioms → `predict` → `register_specialist` → return (`spawned=True`).
 4. CubbyLLM receives `ChallengeResult`, reads `spawned`/`world_id` (M1 asserts on these), and can reuse `world_id` on the next matching challenge.
+
+### 5.1 As-built route-vs-spawn flow (M1, 2026-08-06)
+
+```mermaid
+flowchart TD
+    A["CubbyLLM builds a Challenge<br/>context = k×l block-code, optional tag"] --> B["attempt_challenge(bridge, context, tag)<br/>→ CubbyBridge.attempt"]
+    B --> C{"tag seen before?<br/>_specialist_for memo"}
+    C -->|"yes, world still live"| REUSE["reuse that specialist<br/>spawned = False"]
+    C -->|"yes, but world was pruned"| DROP["drop stale memo entry"]
+    DROP --> D
+    C -->|no| D{"best world by MAX cosine of ctx<br/>to any of its INDIVIDUAL axioms<br/>≥ tau_match?"}
+    D -->|yes| ROUTE["route to that world<br/>spawned = False"]
+    D -->|no| E{"maybe_spawn:<br/>‖ctx‖ ≥ tau_spawn,<br/>pool not full,<br/>axioms found?"}
+    E -->|yes| SPAWN["spawn specialist from nearest axioms<br/>register_specialist + memo<br/>spawned = True"]
+    E -->|no| ERR["RuntimeError<br/>pool full / no axioms"]
+    REUSE --> P["World.predict(ctx)<br/>→ result, confidence"]
+    ROUTE --> P
+    SPAWN --> P
+    P --> R["ChallengeResult<br/>result, world_id, confidence, spawned"]
+    R --> Z["CubbyLLM reuses world_id<br/>on the next matching challenge"]
+```
+
+Tiers: **(1)** exact-tag reuse (memo) · **(2)** similarity route on individual axioms · **(3)** spawn-on-novel. Idempotence for an exact repeat is guaranteed by tier 1; tier 2's cosine only fires for contexts near the library's axiom basis (a real-context data question deferred to a later slice).
 
 ## 6. Testing strategy
 
