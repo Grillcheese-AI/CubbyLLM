@@ -11,6 +11,12 @@ requires-python = ">=3.12"
 # imports none of them at module top level (TYPE_CHECKING only).
 dependencies = []
 
+[project.optional-dependencies]
+# grpcio-tools bundles its own protoc (no system protoc needed) and pulls in
+# the `protobuf` runtime the pinned cubbyllm/bridges/reasoning_pb2.py stub
+# imports. Regen command: see cubelang_client.py's module docstring.
+dev = ["grpcio-tools"]
+
 [tool.setuptools.packages.find]
 include = ["cubbyllm*"]
 

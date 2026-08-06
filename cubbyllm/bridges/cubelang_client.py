@@ -8,6 +8,16 @@ Shells to a freshly-built ``cubelang.exe`` and drives a CubeLang program via
 (``{"result": symbol}``) — no raw hypervector crosses, because the trunk's
 grilly algebra and cubelang's Rust VSA are different families. Supersedes, for
 this path, cubemind's regex-scraping ``model/cubby/cubelang_bridge.py``.
+
+``run_program_proto`` is a second, wire-compatible transport (M2): instead of
+a JSON line on ``run --json``'s stdout, it speaks ``run-proto`` — a
+length-prefixed ``RunRequest``/``RunResult`` protobuf pair over stdin/stdout
+(``cubelang/proto/reasoning.proto``). Same return shape as ``run_program``
+(``{"ok": bool, "result": <symbol|None>}``), so the same assertions apply to
+either transport. Regenerate the pinned stub after changing the proto::
+
+    python -m grpc_tools.protoc -I <cubelang>/proto \\
+        --python_out=cubbyllm/bridges <cubelang>/proto/reasoning.proto
 """
 from __future__ import annotations
 
@@ -77,3 +87,72 @@ def run_program(
     if not out.get("ok", False):
         raise CubelangRunError(f"cubelang error: {out.get('error', out)}")
     return out
+
+
+def run_program_proto(
+    program_source: str,
+    fn: str = "solve",
+    args: list[str] | None = None,
+    exe: str | None = None,
+    timeout: float = 30.0,
+) -> dict:
+    """Run CubeLang source's function via `cubelang run-proto`'s stdio
+    transport: a u32-big-endian-length-prefixed `RunRequest` written to
+    stdin, a length-prefixed `RunResult` read back from stdout (both encoded
+    per `cubelang/proto/reasoning.proto`). Unlike `run_program`, this takes
+    program SOURCE directly (no filesystem path — `run-proto` compiles
+    in-memory, matching the proto's `program` field doc).
+
+    Returns `{"ok": bool, "result": <symbol|None>}` — the `None` case is the
+    oneof left unset (e.g. `recover()` finding no bound filler), not a
+    stringified "null". Raises CubelangRunError when the decoded
+    `RunResult.ok` is false, or when the process didn't produce a decodable
+    result at all (spawn failure, timeout, truncated/undecodable output).
+
+    Gates on the *parsed* `RunResult.ok`, never on the subprocess exit code:
+    `run-proto` intentionally exits 0 even when the run itself errored.
+    """
+    from . import reasoning_pb2  # lazy: keep `import cubbyllm` protobuf-free
+
+    exe_path = find_cubelang_exe(exe)
+    request = reasoning_pb2.RunRequest(
+        program=program_source, args=list(args or []), fn_name=fn
+    )
+    payload = request.SerializeToString()
+    framed_request = len(payload).to_bytes(4, "big") + payload
+
+    cmd = [str(exe_path), "run-proto"]
+    try:
+        proc = subprocess.run(
+            cmd, input=framed_request, capture_output=True, timeout=timeout
+        )
+    except subprocess.TimeoutExpired as e:
+        raise CubelangRunError(f"cubelang timed out after {timeout}s: {cmd}") from e
+    except OSError as e:
+        raise CubelangRunError(f"cubelang failed to spawn: {cmd}: {e}") from e
+
+    out = proc.stdout
+    if len(out) < 4:
+        raise CubelangRunError(
+            f"cubelang run-proto produced no length-prefixed RunResult "
+            f"(exit {proc.returncode}): stdout={out!r} stderr={proc.stderr!r}"
+        )
+    result_len = int.from_bytes(out[:4], "big")
+    body = out[4 : 4 + result_len]
+    if len(body) != result_len:
+        raise CubelangRunError(
+            f"cubelang run-proto RunResult truncated: expected {result_len} "
+            f"bytes, got {len(body)} (exit {proc.returncode}): stderr={proc.stderr!r}"
+        )
+
+    result = reasoning_pb2.RunResult()
+    try:
+        result.ParseFromString(body)
+    except Exception as e:  # google.protobuf.message.DecodeError
+        raise CubelangRunError(f"undecodable cubelang RunResult: {e}") from e
+
+    which = result.WhichOneof("result")
+    if not result.ok:
+        err = result.error if which == "error" else "cubelang run-proto reported ok:false"
+        raise CubelangRunError(f"cubelang error: {err}")
+    return {"ok": result.ok, "result": result.symbol if which == "symbol" else None}
