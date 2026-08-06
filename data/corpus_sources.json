@@ -1,0 +1,170 @@
+{
+  "spm_path": "E:/datasets/_pipeline/tokenizer/grillcheese_bbpe128k.json",
+  "cache_dir": "D:/grillcheese_training_data/token_cache",
+  "note": "PRETRAIN ~17B (H-G3). Deferred: temporal(nested schema), gbooks/factual(dedup vs books/facts), open_thoughts 23B + Nemotron/WikiQA -> SFT phase. See corpus_manifest.md.",
+  "sources": [
+    {
+      "name": "books",
+      "paths": [
+        "E:/datasets/domains/IT/*.txt",
+        "E:/datasets/domains/art/*.txt",
+        "E:/datasets/domains/business_management/*.txt",
+        "E:/datasets/domains/cognition/*.txt",
+        "E:/datasets/domains/data_management/*.txt",
+        "E:/datasets/domains/drama/*.txt",
+        "E:/datasets/domains/electronic/*.txt",
+        "E:/datasets/domains/factual_books/*.txt",
+        "E:/datasets/domains/fiction/*.txt",
+        "E:/datasets/domains/finance/*.txt",
+        "E:/datasets/domains/general_mainstream/*.txt",
+        "E:/datasets/domains/general_science/*.txt",
+        "E:/datasets/domains/governance/*.txt",
+        "E:/datasets/domains/health/*.txt",
+        "E:/datasets/domains/history/*.txt",
+        "E:/datasets/domains/language/*.txt",
+        "E:/datasets/domains/legal/*.txt",
+        "E:/datasets/domains/marketing/*.txt",
+        "E:/datasets/domains/math/*.txt",
+        "E:/datasets/domains/ml/*.txt",
+        "E:/datasets/domains/neuroscience/*.txt",
+        "E:/datasets/domains/philosophy/*.txt",
+        "E:/datasets/domains/poetry/*.txt",
+        "E:/datasets/domains/political_science/*.txt",
+        "E:/datasets/domains/psychology/*.txt",
+        "E:/datasets/domains/quantum_mechanics/*.txt",
+        "E:/datasets/domains/reference/*.txt",
+        "E:/datasets/domains/religion/*.txt",
+        "E:/datasets/domains/self_improvement/*.txt",
+        "E:/datasets/domains/software_engineering/*.txt",
+        "E:/datasets/domains/startup/*.txt",
+        "E:/datasets/domains/transport/*.txt"
+      ],
+      "format": "txt",
+      "weight": 1.0
+    },
+    {
+      "name": "verified_facts",
+      "paths": [
+        "E:/datasets/domains/verified_facts/**/*.txt"
+      ],
+      "format": "txt",
+      "weight": 0.6
+    },
+    {
+      "name": "wikipedia",
+      "paths": [
+        "E:/datasets/_pipeline/wikipedia_dedup/*.jsonl"
+      ],
+      "format": "jsonl",
+      "text_key": "text",
+      "weight": 1.0,
+      "note": "routed EN+FR, deduped across 20231101+latest snapshots (keep latest)"
+    },
+    {
+      "name": "arxiv",
+      "paths": [
+        "E:/datasets/_pipeline/arxiv/*.jsonl"
+      ],
+      "format": "jsonl",
+      "text_key": "text",
+      "weight": 1.0
+    },
+    {
+      "name": "pretrain_ext",
+      "paths": [
+        "D:/grillcheese_training_data/pretrain_ext_v1.txt"
+      ],
+      "format": "txt",
+      "weight": 1.0
+    },
+    {
+      "name": "unified",
+      "paths": [
+        "D:/grillcheese_training_data/unified/allenai_c4_realnewslike.500m_tokens.jsonl",
+        "D:/grillcheese_training_data/unified/arnavl_twteval_pretraining_processed.full.jsonl",
+        "D:/grillcheese_training_data/unified/infini_news_2017_2026_enfr.jsonl",
+        "D:/grillcheese_training_data/unified/microsoft_orca_agentinstruct_1m_v1.full.jsonl",
+        "D:/grillcheese_training_data/unified/nemotron_cc_math_v1_4plus_mind.500m_tokens.jsonl",
+        "D:/grillcheese_training_data/unified/nemotron_cc_v2_high_quality.1b_tokens.jsonl",
+        "D:/grillcheese_training_data/unified/nemotron_personas_usa.full.jsonl",
+        "D:/grillcheese_training_data/unified/openbmb_factnet_factsense_enfr.jsonl",
+        "D:/grillcheese_training_data/unified/openbmb_ultradata_math_ultradata_math_l1.500m_tokens.jsonl",
+        "D:/grillcheese_training_data/unified/openbmb_ultradata_math_ultradata_math_l2_preview.500m_tokens.jsonl",
+        "D:/grillcheese_training_data/unified/openbmb_ultradata_math_ultradata_math_l3_conversation_synthetic.500m_tokens.jsonl"
+      ],
+      "format": "jsonl",
+      "text_key": "auto",
+      "weight": 1.0,
+      "note": "web/edu/math/news; open_thoughts(23B reasoning)->SFT, NSFW excluded"
+    },
+    {
+      "name": "wiki_full",
+      "paths": [
+        "D:/grillcheese_training_data/wiki_full/wiki_en.txt",
+        "D:/grillcheese_training_data/wiki_full/wiki_fr.txt"
+      ],
+      "format": "txt",
+      "weight": 1.0,
+      "note": "full Wikipedia EN+FR plain text"
+    },
+    {
+      "name": "fineweb_edu",
+      "paths": [
+        "D:/grillcheese_training_data/v3_3/fineweb_edu.2m.jsonl"
+      ],
+      "format": "jsonl",
+      "text_key": "auto",
+      "weight": 1.0,
+      "note": "FineWeb-Edu 2M high-quality web"
+    },
+    {
+      "name": "wikibooks",
+      "paths": [
+        "D:/grillcheese_training_data/jsonl/wikibooks_corpus.jsonl"
+      ],
+      "format": "jsonl",
+      "text_key": "auto",
+      "weight": 1.0,
+      "note": "Wikibooks (deduped: same file also in knowledgetxt/)"
+    },
+    {
+      "name": "kbtxt",
+      "paths": [
+        "D:/grillcheese_training_data/kbtxt/*.txt"
+      ],
+      "format": "txt",
+      "weight": 1.0,
+      "note": "knowledge-base textbooks (2818 txt)"
+    },
+    {
+      "name": "nemotron_legal",
+      "paths": [
+        "E:/datasets/_pipeline/nemotron_legal/*.jsonl"
+      ],
+      "format": "jsonl",
+      "text_key": "auto",
+      "weight": 1.0,
+      "note": "Nemotron-Legal-v1 (eCFR/CaseHOLD/CUAD/etc.), pretrain"
+    },
+    {
+      "name": "nemotron_qa",
+      "paths": [
+        "E:/datasets/_pipeline/nemotron_qa/*.jsonl"
+      ],
+      "format": "jsonl",
+      "text_key": "auto",
+      "weight": 1.0,
+      "note": "FineInstructions nemotron_qa (web doc + grounded QA), pretrain, ~8GB cap"
+    },
+    {
+      "name": "nemotron_code",
+      "paths": [
+        "E:/datasets/_pipeline/nemotron_code/*.jsonl"
+      ],
+      "format": "jsonl",
+      "text_key": "auto",
+      "weight": 1.0,
+      "note": "Nemotron-Code-v1 Synthetic-Code (problems+solutions), pretrain, ~5GB cap"
+    }
+  ]
+}
