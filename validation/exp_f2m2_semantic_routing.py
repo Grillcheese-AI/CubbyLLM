@@ -417,6 +417,21 @@ def self_test() -> None:
     assert self_retrieval_top1(orient_n, orient_f) == 1.0          # names -> formulas
     assert self_retrieval_top1(orient_f, orient_n) < 1.0           # transposed must FAIL
 
+    # Orientation guard for the ROUTING metric (the one the kill criterion uses).
+    # 4 items, 2 domains, asymmetric by design: name_0 (domain a) is also the
+    # best match for formula_2 (domain b), but in the correct direction name_0's
+    # own best NON-SELF formula is still f_1 (domain a) -- so correct scores
+    # macro 1.0, while the transposed direction misroutes formula_2 to a
+    # domain-a name and drops to 0.75. The clustered fake_n/fake_f pair cannot
+    # catch this: it is diagonal-dominant on both axes.
+    route_f = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+                       dtype=np.float32).reshape(4, 4, 1)
+    route_n = np.array([[0, 0.9, 0.8, 0], [0.8, 1, 0, 0], [0, 0, 1, 0.6], [0, 0, 0.5, 1]],
+                       dtype=np.float32).reshape(4, 4, 1)
+    route_dom = ["a", "a", "b", "b"]
+    assert loo_domain_routing(route_n, route_f, route_dom)["macro"] == 1.0
+    assert loo_domain_routing(route_f, route_n, route_dom)["macro"] < 1.0   # transposed must FAIL
+
     assert abs(majority_class(fake_dom) - 0.5) < 1e-9
 
     # micro and macro chance are DIFFERENT baselines and must not be conflated:
