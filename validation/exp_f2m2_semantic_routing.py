@@ -1,9 +1,9 @@
 """exp_f2m2_semantic_routing — H-F2 M2: can semantic block codes route?
 
-Stage 1 ranks embedders (HASH / T-bag / T-ctx / REF) under a dense,
-cosine-exact orthonormal projection into (80,128). Stage 2 settles
-discretization (dense / argmax / PQ) for the winner and recalibrates
-tau_match.
+Stage 1 ranks embedders (HASH / NGRAM / T-bag / T-ctx / REF) under a dense,
+cosine-exact orthonormal projection into (80,128) (HASH/NGRAM are born directly
+in block space, so they skip the projection). Stage 2 settles discretization
+(dense / argmax / PQ / PQ-ADC) for the winner and recalibrates tau_match.
 
 Standalone experiment: NEVER imported by cubbyllm/. Design:
 docs/superpowers/specs/2026-08-06-hf2-m2-semantic-context-encoding-design.md
@@ -81,6 +81,26 @@ def hash_encode(texts: list[str]) -> np.ndarray:
         seed = int.from_bytes(digest, "little") % (2**63)
         idx = np.random.default_rng(seed).integers(0, L, size=K)
         out[i, np.arange(K), idx] = 1.0
+    return out
+
+
+def ngram_encode(texts: list[str], n: int = 3) -> np.ndarray:
+    """Training-free lexical sketch: bundle seeded block codes of character n-grams.
+
+    Each unique character n-gram gets a permanent BLAKE2b-seeded one-hot-per-block
+    code; bundling (superposing) them makes a string similar to any string sharing
+    substrings -- bundling preserves similarity-to-parts, unlike binding. Born in
+    block space, so no projection step is involved.
+    """
+    out = np.zeros((len(texts), K, L), dtype=np.float32)
+    for i, text in enumerate(texts):
+        s = text.lower()
+        grams = {s[j:j + n] for j in range(max(1, len(s) - n + 1))}
+        for g in grams:
+            digest = hashlib.blake2b(g.encode("utf-8"), digest_size=8).digest()
+            seed = int.from_bytes(digest, "little") % (2**63)
+            idx = np.random.default_rng(seed).integers(0, L, size=K)
+            out[i, np.arange(K), idx] += 1.0
     return out
 
 
@@ -283,13 +303,15 @@ def loo_domain_routing(
     }
 
 
-STAGE1_ARMS = ("hash", "t-bag", "t-ctx", "ref")
+STAGE1_ARMS = ("hash", "ngram", "t-bag", "t-ctx", "ref")
 
 
 def _encode_arm(arm: str, names: list[str], formulas: list[str]):
     """-> (name_codes, formula_codes) as (n, K, L) dense block codes."""
     if arm == "hash":
         return hash_encode(names), hash_encode(formulas)
+    if arm == "ngram":
+        return ngram_encode(names), ngram_encode(formulas)
     encoder = {"t-bag": tbag_encode, "t-ctx": tctx_encode, "ref": ref_encode}[arm]
     name_emb, formula_emb = encoder(names), encoder(formulas)
     P = make_projection(name_emb.shape[1])
@@ -424,6 +446,9 @@ def run_stage2(arm: str) -> dict:
     variants["argmax"] = (argmax_onehot(name_codes), argmax_onehot(formula_codes))
     cent = fit_pq(formula_codes)
     variants["pq"] = (pq_onehot(name_codes, cent), pq_onehot(formula_codes, cent))
+    # ADC: query stays DENSE, only the stored side is quantized. This mirrors the
+    # real bridge -- axioms must be one-hot for bind/bundle, challenges never do.
+    variants["pq-adc"] = (name_codes, pq_onehot(formula_codes, cent))
 
     out = {"arm": arm, "micro_chance": micro_chance, "macro_chance": mac_chance,
            "variants": {}}
@@ -554,7 +579,7 @@ def self_test() -> None:
 
     # Threshold recalibration separates a trivially separable pair of populations.
     tau, auc = recalibrate_tau(np.full(20, 0.9), np.full(20, 0.1))
-    assert 0.1 < tau < 0.9 and auc == 1.0, (tau, auc)
+    assert 0.1 < tau <= 0.9 and auc == 1.0, (tau, auc)   # tau=0.9 separates perfectly
 
     print(f"self-test OK — corpus 280/15 domains; cosine-exact max|delta|={err:.2e}")
 

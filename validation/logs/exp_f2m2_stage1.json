@@ -33,6 +33,28 @@
     "social": 0.0
    }
   },
+  "ngram": {
+   "self_retrieval_top1": 0.1,
+   "micro": 0.10357142857142858,
+   "macro": 0.1400475341651812,
+   "per_domain": {
+    "atomic": 0.17647058823529413,
+    "bio": 0.0,
+    "causal": 0.06666666666666667,
+    "colors": 0.13333333333333333,
+    "economics": 0.0,
+    "ensemble": 0.3333333333333333,
+    "historical": 0.13333333333333333,
+    "identity": 0.2,
+    "language": 0.2,
+    "linguistics": 0.5,
+    "logic": 0.0,
+    "music": 0.09090909090909091,
+    "physics": 0.0,
+    "security": 0.26666666666666666,
+    "social": 0.0
+   }
+  },
   "t-bag": {
    "self_retrieval_top1": 0.03214285714285714,
    "micro": 0.11071428571428571,

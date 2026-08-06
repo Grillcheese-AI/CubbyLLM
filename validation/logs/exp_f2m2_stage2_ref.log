@@ -1,6 +1,6 @@
 python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6 | torch 2.10.0+cpu | sentence-transformers 5.3.0
 checkpoint: D:\CUBBY-TRAINED-MODELS\hd5_mem21.pt | size=1840724473 bytes (1.841 GB) | mtime=2026-08-05 18:51:32 | blake2b-128=6c9f6ddff5342e268cac805615d0d74a (hashed in 2.9s)
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 12897.46it/s]
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 20493.99it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -8,7 +8,7 @@ embeddings.position_ids | UNEXPECTED |  |
 
 Notes:
 - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 6841.07it/s]
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 5820.32it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -19,10 +19,11 @@ Notes:
   dense: micro=0.450 macro=0.358 | tau=0.358 auc=0.430
  argmax: micro=0.371 macro=0.313 | tau=0.112 auc=0.358
      pq: micro=0.443 macro=0.372 | tau=0.237 auc=0.427
+ pq-adc: micro=0.136 macro=0.080 | tau=0.005 auc=0.134
 
 --- kill criterion ---
   [PASS] 4 discretization (best one-hot 'pq' >= 0.80x dense)
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 8819.12it/s]
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 10692.08it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -30,7 +31,7 @@ embeddings.position_ids | UNEXPECTED |  |
 
 Notes:
 - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 12426.67it/s]
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 11179.60it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
