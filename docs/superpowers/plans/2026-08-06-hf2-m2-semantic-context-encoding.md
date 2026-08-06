@@ -776,7 +776,11 @@ def recalibrate_tau(same_cos: np.ndarray, diff_cos: np.ndarray) -> tuple[float, 
 
 def run_stage2(arm: str) -> dict:
     names, formulas, domains = load_corpus()
-    chance = majority_class(domains)
+    # Report BOTH baselines, each labelled, so no reader can repeat the
+    # macro-vs-majority-class category error. Bar 4 is dense-relative and does
+    # not use either.
+    micro_chance = majority_class(domains)
+    mac_chance = macro_chance(domains)
     name_codes, formula_codes = _encode_arm(arm, names, formulas)
 
     variants = {"dense": (name_codes, formula_codes)}
@@ -784,7 +788,8 @@ def run_stage2(arm: str) -> dict:
     cent = fit_pq(formula_codes)
     variants["pq"] = (pq_onehot(name_codes, cent), pq_onehot(formula_codes, cent))
 
-    out = {"arm": arm, "chance": chance, "variants": {}}
+    out = {"arm": arm, "micro_chance": micro_chance, "macro_chance": mac_chance,
+           "variants": {}}
     for label, (nc, fc) in variants.items():
         routed = loo_domain_routing(nc, fc, domains)
         tau, auc = recalibrate_tau(routed["same_cos"], routed["diff_cos"])

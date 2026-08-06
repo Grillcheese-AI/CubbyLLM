@@ -60,7 +60,9 @@ One-hot cosine is `(#matching blocks)/k` — at k=80 that is 81 levels, versus t
 
 ### 4.1 Metric
 
-**Two measurements, both by leave-one-out over all 280 axioms** (LOO beats a split on a corpus this small — 280 evaluations instead of ~90), and **cross-view so nothing is authored**: seeds are encoded from `formula_str`, challenges are posed as `name` (the reverse direction is reported too).
+**Two measurements, both by leave-one-out over all 280 axioms** (LOO beats a split on a corpus this small — 280 evaluations instead of ~90), and **cross-view so nothing is authored**: seeds are encoded from `formula_str`, challenges are posed as `name`.
+
+> **Not run (corrected 2026-08-06).** An earlier draft of this line claimed "the reverse direction is reported too". It is not: `run_stage1` measures name→formula only. The reverse adds no information for the verdict (both directions share one symmetric cosine matrix; only the argmax axis differs), so it is dropped rather than deferred — recorded here because a spec that claims a measurement the code never takes is exactly the failure mode this repo tracks.
 
 - **Self-retrieval (encoder sanity):** does `name_i` retrieve `formula_i` as top-1 among all 280 formulas? Tests only that the encoder pairs two surface forms of one concept.
 - **Domain routing (the real metric, mirroring `_best_match`):** hold out axiom *i* **including its own formula**, seed one world per domain from the remaining axioms, route `name_i` to the world holding the single highest-cosine individual axiom, and check the top-level domain. Excluding its own formula is deliberate: in production a new challenge must reach the right world via *other* axioms, not by matching itself.
@@ -75,7 +77,7 @@ One-hot cosine is `(#matching blocks)/k` — at k=80 that is 81 levels, versus t
 ### 4.2 Kill criterion
 
 1. **Baseline sanity:** `HASH macro-acc ≤ 1.2 × macro-chance (1/n_domains)`. If HASH routes well, §1 is wrong — stop and redesign.
-2. **Encoder sanity:** the best trunk arm reaches **self-retrieval top-1 ≥ 0.50**. Below that the trunk does not pair surface forms at all and no routing result is interpretable. *(Calibration caveat, learned from the run: this corpus poses `name` against `formula_str`, i.e. natural language against symbolic notation — a **cross-modal** match harder than production routing. 0.50 was set for a same-modality task; even a strong pretrained reference scores ~0.23 here, so read this bar as diagnostic rather than decisive.)*
+2. **Encoder sanity:** the best trunk arm reaches **self-retrieval top-1 ≥ 0.50**. Below that the trunk does not pair surface forms at all and no routing result is interpretable. *(Calibration caveat, learned from the run: this corpus poses `name` against `formula_str`, i.e. natural language against symbolic notation — a **cross-modal** match harder than production routing. 0.50 was set for a same-modality task; even a strong pretrained reference scores **0.229** here (`validation/logs/exp_f2m2_stage1.json`, arm `ref`), so read this bar as diagnostic rather than decisive. Note this caveat was written **after** the run and retroactively softens a bar that FAILED — treat it as context for interpreting the failure, not as a reason to discount it.)*
 3. **Routing bar:** the best trunk arm reaches **macro-acc ≥ 2 × macro-chance** *and* **≥ 0.60 × REF macro-acc**.
 4. **Discretization bar:** the best discretized arm reaches **≥ 0.80 × its dense counterpart**.
 
