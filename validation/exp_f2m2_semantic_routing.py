@@ -212,11 +212,23 @@ def tctx_encode(texts: list[str], batch: int = 16) -> np.ndarray:
 
 
 def majority_class(domains: list[str]) -> float:
-    """The honest chance level for an imbalanced corpus (physics is 84/280)."""
+    """MICRO chance: what "always guess the biggest domain" scores (physics is 84/280)."""
     counts = {}
     for d in domains:
         counts[d] = counts.get(d, 0) + 1
     return max(counts.values()) / len(domains)
+
+
+def macro_chance(domains: list[str]) -> float:
+    """MACRO chance: 1/n_domains.
+
+    Macro-averaging removes class imbalance by construction, so EVERY constant
+    classifier -- the majority-class strategy included -- and uniform-random
+    guessing all score exactly 1/n_domains in macro. Comparing a macro accuracy
+    against the majority-class rate is a category error: they are baselines for
+    different metrics.
+    """
+    return 1.0 / len(set(domains))
 
 
 def self_retrieval_top1(name_codes: np.ndarray, formula_codes: np.ndarray) -> float:
@@ -273,11 +285,13 @@ def _encode_arm(arm: str, names: list[str], formulas: list[str]):
 
 def run_stage1() -> dict:
     names, formulas, domains = load_corpus()
-    chance = majority_class(domains)
-    print(f"corpus: {len(names)} axioms, {len(set(domains))} domains, "
-          f"majority-class chance = {chance:.3f}\n")
+    micro_chance = majority_class(domains)
+    mac_chance = macro_chance(domains)
+    print(f"corpus: {len(names)} axioms, {len(set(domains))} domains | "
+          f"micro chance (majority-class) = {micro_chance:.3f} | "
+          f"macro chance (1/{len(set(domains))}) = {mac_chance:.3f}\n")
 
-    results = {"chance": chance, "arms": {}}
+    results = {"micro_chance": micro_chance, "macro_chance": mac_chance, "arms": {}}
     for arm in STAGE1_ARMS:
         name_codes, formula_codes = _encode_arm(arm, names, formulas)
         top1 = self_retrieval_top1(name_codes, formula_codes)
@@ -289,8 +303,9 @@ def run_stage1() -> dict:
             "per_domain": routed["per_domain"],
         }
         print(f"{arm:>6}: self-retrieval top1={top1:.3f} | "
-              f"routing micro={routed['micro']:.3f} macro={routed['macro']:.3f} "
-              f"({routed['macro'] / chance:.2f}x chance)")
+              f"routing micro={routed['micro']:.3f} (vs {micro_chance:.3f}) "
+              f"macro={routed['macro']:.3f} "
+              f"({routed['macro'] / mac_chance:.2f}x macro-chance)")
 
     hash_macro = results["arms"]["hash"]["macro"]
     ref_macro = results["arms"]["ref"]["macro"]
@@ -299,11 +314,13 @@ def run_stage1() -> dict:
     results["best_trunk"] = trunk
 
     print("\n--- kill criterion ---")
+    # NOTE: every macro figure is compared against MACRO chance (1/n_domains).
+    # Comparing macro against the majority-class rate would be a category error.
     checks = {
-        "1 baseline sanity (hash <= 1.2x chance)": hash_macro <= 1.2 * chance,
+        "1 baseline sanity (hash macro <= 1.2x macro-chance)": hash_macro <= 1.2 * mac_chance,
         "2 encoder sanity (best trunk self-retrieval >= 0.50)":
             results["arms"][trunk]["self_retrieval_top1"] >= 0.50,
-        "3a routing (best trunk macro >= 2x chance)": trunk_macro >= 2 * chance,
+        "3a routing (best trunk macro >= 2x macro-chance)": trunk_macro >= 2 * mac_chance,
         "3b routing (best trunk >= 0.60x ref)": trunk_macro >= 0.60 * ref_macro,
     }
     for label, ok in checks.items():
@@ -371,6 +388,13 @@ def self_test() -> None:
     routed = loo_domain_routing(fake, fake, fake_dom)
     assert routed["macro"] == 1.0, routed
     assert abs(majority_class(fake_dom) - 0.5) < 1e-9
+
+    # micro and macro chance are DIFFERENT baselines and must not be conflated:
+    # on a skewed corpus the majority-class rate is high while macro-chance stays
+    # 1/n_domains, because macro-averaging removes the imbalance by construction.
+    skew = ["a"] * 9 + ["b"]
+    assert abs(majority_class(skew) - 0.9) < 1e-9
+    assert abs(macro_chance(skew) - 0.5) < 1e-9
 
     print(f"self-test OK — corpus 280/15 domains; cosine-exact max|delta|={err:.2e}")
 

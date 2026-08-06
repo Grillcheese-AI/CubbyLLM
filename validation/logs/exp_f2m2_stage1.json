@@ -1,10 +1,11 @@
 {
- "chance": 0.3,
+ "micro_chance": 0.3,
+ "macro_chance": 0.06666666666666667,
  "best_trunk": "t-ctx",
  "checks": {
-  "1 baseline sanity (hash <= 1.2x chance)": true,
+  "1 baseline sanity (hash macro <= 1.2x macro-chance)": true,
   "2 encoder sanity (best trunk self-retrieval >= 0.50)": false,
-  "3a routing (best trunk macro >= 2x chance)": false,
+  "3a routing (best trunk macro >= 2x macro-chance)": false,
   "3b routing (best trunk >= 0.60x ref)": false
  },
  "trunk_vs_ref": 0.268728097006255,

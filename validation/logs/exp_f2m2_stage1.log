@@ -36,12 +36,12 @@ INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/se
 INFO:httpx:HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
 INFO:httpx:HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
 INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json "HTTP/1.1 200 OK"
-corpus: 280 axioms, 15 domains, majority-class chance = 0.300
+corpus: 280 axioms, 15 domains | micro chance (majority-class) = 0.300 | macro chance (1/15) = 0.067
 
-  hash: self-retrieval top1=0.004 | routing micro=0.118 macro=0.075 (0.25x chance)
- t-bag: self-retrieval top1=0.032 | routing micro=0.111 macro=0.075 (0.25x chance)
- t-ctx: self-retrieval top1=0.029 | routing micro=0.079 macro=0.096 (0.32x chance)
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 30513.72it/s]
+  hash: self-retrieval top1=0.004 | routing micro=0.118 (vs 0.300) macro=0.075 (1.12x macro-chance)
+ t-bag: self-retrieval top1=0.032 | routing micro=0.111 (vs 0.300) macro=0.075 (1.13x macro-chance)
+ t-ctx: self-retrieval top1=0.029 | routing micro=0.079 (vs 0.300) macro=0.096 (1.44x macro-chance)
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<?, ?it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -75,7 +75,7 @@ INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/se
 INFO:httpx:HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
 INFO:httpx:HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
 INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json "HTTP/1.1 200 OK"
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 12540.66it/s]
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 10004.25it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -92,12 +92,12 @@ INFO:httpx:HTTP Request: GET https://huggingface.co/api/models/sentence-transfor
 INFO:httpx:HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/1_Pooling/config.json "HTTP/1.1 307 Temporary Redirect"
 INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/1_Pooling%2Fconfig.json "HTTP/1.1 200 OK"
 INFO:httpx:HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2 "HTTP/1.1 200 OK"
-   ref: self-retrieval top1=0.229 | routing micro=0.450 macro=0.358 (1.19x chance)
+   ref: self-retrieval top1=0.229 | routing micro=0.450 (vs 0.300) macro=0.358 (5.37x macro-chance)
 
 --- kill criterion ---
-  [PASS] 1 baseline sanity (hash <= 1.2x chance)
+  [PASS] 1 baseline sanity (hash macro <= 1.2x macro-chance)
   [FAIL] 2 encoder sanity (best trunk self-retrieval >= 0.50)
-  [FAIL] 3a routing (best trunk macro >= 2x chance)
+  [FAIL] 3a routing (best trunk macro >= 2x macro-chance)
   [FAIL] 3b routing (best trunk >= 0.60x ref)
 
 best trunk = t-ctx; trunk/ref = 0.269 -> fine-tune (M3) — gap is large
