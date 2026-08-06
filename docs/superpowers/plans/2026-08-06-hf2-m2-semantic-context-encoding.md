@@ -400,7 +400,11 @@ def _rebuild_trunk():
         "CB_ATTN_EVERY": str(meta["attn_every"]), "CB_WINDOW": str(meta["window"]),
         "CB_HEADS": str(meta["heads"]), "CB_MEM_EVERY": str(meta["mem_every"]),
         "CB_MEM_TOPK": str(meta["mem_topk"]), "CB_MEM_KEY": str(meta["mem_key"]),
-        "CB_BACKBONE": str(meta["backbone"]), "CB_GEN": str(meta["gen"]),
+        "CB_BACKBONE": str(meta["backbone"]),
+        # NOTE: the generator kind is CB_GEN_KIND, not CB_GEN -- CB_GEN is an
+        # unrelated integer (GEN_EVERY, "sample generations every N steps"), and
+        # setting it to "basis" raises ValueError at train_colab import time.
+        "CB_GEN_KIND": str(meta["gen"]),
         "CB_AMP": "0", "CUBBY_SPM": str(TOKENIZER),
     })
     spec = importlib.util.spec_from_file_location(
