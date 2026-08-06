@@ -478,12 +478,18 @@ Claude-Session: https://claude.ai/code/session_01JNaPeo6tU6xubkEfWTTLav"
 - [ ] **Step 1: Write the failing metric self-test.** Append to `self_test()` before its final `print`:
 
 ```python
-    # A synthetic corpus where name==formula per item and domains are separable:
-    # both metrics must be perfect, which pins the metric's orientation.
+    # A synthetic corpus with two well-separated clusters (name == formula per
+    # item): both metrics must be perfect, which pins the metrics' orientation.
+    # NOTE: the clusters must genuinely cluster — an orthonormal basis would NOT
+    # work, because with every off-diagonal cosine equal to 0 the leave-one-out
+    # argmax is decided by tie-breaking, not by domain.
+    fake_rng = np.random.default_rng(7)
+    centers = fake_rng.standard_normal((2, 32)).astype(np.float32)
+    fake = np.concatenate([np.tile(centers[0], (4, 1)), np.tile(centers[1], (4, 1))])
+    fake = (fake + 0.01 * fake_rng.standard_normal((8, 32))).astype(np.float32).reshape(8, 32, 1)
     fake_dom = ["a"] * 4 + ["b"] * 4
-    base = np.eye(8, dtype=np.float32).reshape(8, 8, 1) * np.ones((1, 1, 4), dtype=np.float32)
-    assert self_retrieval_top1(base, base) == 1.0
-    routed = loo_domain_routing(base, base, fake_dom)
+    assert self_retrieval_top1(fake, fake) == 1.0
+    routed = loo_domain_routing(fake, fake, fake_dom)
     assert routed["macro"] == 1.0, routed
     assert abs(majority_class(fake_dom) - 0.5) < 1e-9
 ```
