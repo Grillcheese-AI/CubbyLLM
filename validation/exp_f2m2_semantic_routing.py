@@ -211,6 +211,115 @@ def tctx_encode(texts: list[str], batch: int = 16) -> np.ndarray:
     return out
 
 
+def majority_class(domains: list[str]) -> float:
+    """The honest chance level for an imbalanced corpus (physics is 84/280)."""
+    counts = {}
+    for d in domains:
+        counts[d] = counts.get(d, 0) + 1
+    return max(counts.values()) / len(domains)
+
+
+def self_retrieval_top1(name_codes: np.ndarray, formula_codes: np.ndarray) -> float:
+    """Encoder sanity: does name_i retrieve formula_i as top-1 among all formulas?"""
+    sims = cosine_matrix(name_codes, formula_codes)
+    return float((sims.argmax(axis=1) == np.arange(len(name_codes))).mean())
+
+
+def loo_domain_routing(
+    name_codes: np.ndarray, formula_codes: np.ndarray, domains: list[str]
+) -> dict:
+    """Leave-one-out domain routing, mirroring CubbyBridge._best_match.
+
+    For each axiom i, pose name_i and route it to the domain owning the single
+    highest-cosine INDIVIDUAL formula vector, with formula_i itself excluded --
+    a real challenge must reach the right world via OTHER axioms, not itself.
+    """
+    sims = cosine_matrix(name_codes, formula_codes)
+    np.fill_diagonal(sims, -np.inf)                    # leave-one-out
+    doms = np.asarray(domains)
+    picked = doms[sims.argmax(axis=1)]
+    hit = picked == doms
+
+    per_domain = {}
+    for d in sorted(set(domains)):
+        sel = doms == d
+        per_domain[d] = float(hit[sel].mean())
+
+    best = sims.max(axis=1)
+    same = np.array([sims[i][doms == doms[i]].max() for i in range(len(doms))])
+    diff = np.array([sims[i][doms != doms[i]].max() for i in range(len(doms))])
+    return {
+        "micro": float(hit.mean()),
+        "macro": float(np.mean(list(per_domain.values()))),
+        "per_domain": per_domain,
+        "best_cos_mean": float(best.mean()),
+        "same_cos": same,
+        "diff_cos": diff,
+    }
+
+
+STAGE1_ARMS = ("hash", "t-bag", "t-ctx", "ref")
+
+
+def _encode_arm(arm: str, names: list[str], formulas: list[str]):
+    """-> (name_codes, formula_codes) as (n, K, L) dense block codes."""
+    if arm == "hash":
+        return hash_encode(names), hash_encode(formulas)
+    encoder = {"t-bag": tbag_encode, "t-ctx": tctx_encode, "ref": ref_encode}[arm]
+    name_emb, formula_emb = encoder(names), encoder(formulas)
+    P = make_projection(name_emb.shape[1])
+    return project(P, name_emb), project(P, formula_emb)
+
+
+def run_stage1() -> dict:
+    names, formulas, domains = load_corpus()
+    chance = majority_class(domains)
+    print(f"corpus: {len(names)} axioms, {len(set(domains))} domains, "
+          f"majority-class chance = {chance:.3f}\n")
+
+    results = {"chance": chance, "arms": {}}
+    for arm in STAGE1_ARMS:
+        name_codes, formula_codes = _encode_arm(arm, names, formulas)
+        top1 = self_retrieval_top1(name_codes, formula_codes)
+        routed = loo_domain_routing(name_codes, formula_codes, domains)
+        results["arms"][arm] = {
+            "self_retrieval_top1": top1,
+            "micro": routed["micro"],
+            "macro": routed["macro"],
+            "per_domain": routed["per_domain"],
+        }
+        print(f"{arm:>6}: self-retrieval top1={top1:.3f} | "
+              f"routing micro={routed['micro']:.3f} macro={routed['macro']:.3f} "
+              f"({routed['macro'] / chance:.2f}x chance)")
+
+    hash_macro = results["arms"]["hash"]["macro"]
+    ref_macro = results["arms"]["ref"]["macro"]
+    trunk = max(("t-bag", "t-ctx"), key=lambda a: results["arms"][a]["macro"])
+    trunk_macro = results["arms"][trunk]["macro"]
+    results["best_trunk"] = trunk
+
+    print("\n--- kill criterion ---")
+    checks = {
+        "1 baseline sanity (hash <= 1.2x chance)": hash_macro <= 1.2 * chance,
+        "2 encoder sanity (best trunk self-retrieval >= 0.50)":
+            results["arms"][trunk]["self_retrieval_top1"] >= 0.50,
+        "3a routing (best trunk macro >= 2x chance)": trunk_macro >= 2 * chance,
+        "3b routing (best trunk >= 0.60x ref)": trunk_macro >= 0.60 * ref_macro,
+    }
+    for label, ok in checks.items():
+        print(f"  [{'PASS' if ok else 'FAIL'}] {label}")
+    results["checks"] = {k: bool(v) for k, v in checks.items()}
+
+    ratio = trunk_macro / ref_macro if ref_macro else float("nan")
+    verdict = ("ship the trunk" if ratio >= 0.90 else
+               "fine-tune (M3) — gap is large" if ratio < 0.60 else
+               "judgment call — document it")
+    results["trunk_vs_ref"] = ratio
+    results["decision"] = verdict
+    print(f"\nbest trunk = {trunk}; trunk/ref = {ratio:.3f} -> {verdict}")
+    return results
+
+
 def self_test() -> None:
     names, formulas, domains = load_corpus()
     assert len(names) == len(formulas) == len(domains) == 280
@@ -248,17 +357,43 @@ def self_test() -> None:
     assert abs(ctx_cos) < 0.999, f"t-ctx collapsed: cos={ctx_cos:.4f}"
     print(f"trunk arms OK — t-bag cos(unrelated)={bag_cos:.3f}, t-ctx={ctx_cos:.3f}")
 
+    # A synthetic corpus with two well-separated clusters (name == formula per
+    # item): both metrics must be perfect, which pins the metrics' orientation.
+    # NOTE: the clusters must genuinely cluster — an orthonormal basis would NOT
+    # work, because with every off-diagonal cosine equal to 0 the leave-one-out
+    # argmax is decided by tie-breaking, not by domain.
+    fake_rng = np.random.default_rng(7)
+    centers = fake_rng.standard_normal((2, 32)).astype(np.float32)
+    fake = np.concatenate([np.tile(centers[0], (4, 1)), np.tile(centers[1], (4, 1))])
+    fake = (fake + 0.01 * fake_rng.standard_normal((8, 32))).astype(np.float32).reshape(8, 32, 1)
+    fake_dom = ["a"] * 4 + ["b"] * 4
+    assert self_retrieval_top1(fake, fake) == 1.0
+    routed = loo_domain_routing(fake, fake, fake_dom)
+    assert routed["macro"] == 1.0, routed
+    assert abs(majority_class(fake_dom) - 0.5) < 1e-9
+
     print(f"self-test OK — corpus 280/15 domains; cosine-exact max|delta|={err:.2e}")
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--self-test", action="store_true", help="run invariants and exit")
+    ap.add_argument("--stage1", action="store_true", help="rank embedders (dense)")
     args = ap.parse_args()
     if args.self_test:
         self_test()
         return
-    raise SystemExit("nothing to run yet — see --self-test")
+    if args.stage1:
+        out = run_stage1()
+        (ROOT / "validation" / "logs").mkdir(parents=True, exist_ok=True)
+        path = ROOT / "validation" / "logs" / "exp_f2m2_stage1.json"
+        serialisable = {k: v for k, v in out.items() if k != "arms"} | {
+            "arms": {a: {k: v for k, v in d.items()} for a, d in out["arms"].items()}
+        }
+        path.write_text(json.dumps(serialisable, indent=1), encoding="utf-8")
+        print(f"\nwrote {path}")
+        return
+    raise SystemExit("pass --self-test or --stage1")
 
 
 if __name__ == "__main__":

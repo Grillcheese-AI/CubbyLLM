@@ -1,0 +1,102 @@
+{
+ "chance": 0.3,
+ "best_trunk": "t-ctx",
+ "checks": {
+  "1 baseline sanity (hash <= 1.2x chance)": true,
+  "2 encoder sanity (best trunk self-retrieval >= 0.50)": false,
+  "3a routing (best trunk macro >= 2x chance)": false,
+  "3b routing (best trunk >= 0.60x ref)": false
+ },
+ "trunk_vs_ref": 0.268728097006255,
+ "decision": "fine-tune (M3) \u2014 gap is large",
+ "arms": {
+  "hash": {
+   "self_retrieval_top1": 0.0035714285714285713,
+   "micro": 0.11785714285714285,
+   "macro": 0.07468720821661998,
+   "per_domain": {
+    "atomic": 0.29411764705882354,
+    "bio": 0.13333333333333333,
+    "causal": 0.13333333333333333,
+    "colors": 0.06666666666666667,
+    "economics": 0.0,
+    "ensemble": 0.0,
+    "historical": 0.13333333333333333,
+    "identity": 0.0,
+    "language": 0.13333333333333333,
+    "linguistics": 0.0,
+    "logic": 0.0,
+    "music": 0.0,
+    "physics": 0.2261904761904762,
+    "security": 0.0,
+    "social": 0.0
+   }
+  },
+  "t-bag": {
+   "self_retrieval_top1": 0.03214285714285714,
+   "micro": 0.11071428571428571,
+   "macro": 0.07539682539682539,
+   "per_domain": {
+    "atomic": 0.0,
+    "bio": 0.13333333333333333,
+    "causal": 0.0,
+    "colors": 0.0,
+    "economics": 0.13333333333333333,
+    "ensemble": 0.13333333333333333,
+    "historical": 0.0,
+    "identity": 0.0,
+    "language": 0.0,
+    "linguistics": 0.25,
+    "logic": 0.13333333333333333,
+    "music": 0.0,
+    "physics": 0.21428571428571427,
+    "security": 0.13333333333333333,
+    "social": 0.0
+   }
+  },
+  "t-ctx": {
+   "self_retrieval_top1": 0.02857142857142857,
+   "micro": 0.07857142857142857,
+   "macro": 0.09620151090739328,
+   "per_domain": {
+    "atomic": 0.058823529411764705,
+    "bio": 0.2,
+    "causal": 0.0,
+    "colors": 0.0,
+    "economics": 0.0,
+    "ensemble": 0.0,
+    "historical": 0.06666666666666667,
+    "identity": 0.0,
+    "language": 0.4,
+    "linguistics": 0.5,
+    "logic": 0.0,
+    "music": 0.18181818181818182,
+    "physics": 0.03571428571428571,
+    "security": 0.0,
+    "social": 0.0
+   }
+  },
+  "ref": {
+   "self_retrieval_top1": 0.22857142857142856,
+   "micro": 0.45,
+   "macro": 0.35798828622358037,
+   "per_domain": {
+    "atomic": 0.35294117647058826,
+    "bio": 0.13333333333333333,
+    "causal": 0.0,
+    "colors": 0.5333333333333333,
+    "economics": 0.0,
+    "ensemble": 0.26666666666666666,
+    "historical": 0.6666666666666666,
+    "identity": 0.3,
+    "language": 0.26666666666666666,
+    "linguistics": 0.8333333333333334,
+    "logic": 0.26666666666666666,
+    "music": 0.36363636363636365,
+    "physics": 0.7380952380952381,
+    "security": 0.4666666666666667,
+    "social": 0.18181818181818182
+   }
+  }
+ }
+}
