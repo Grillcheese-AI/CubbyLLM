@@ -1,0 +1,1410 @@
+{
+ "_provenance": {
+  "source": "mowm/domains/*.py via seed_all()",
+  "mowm_commit": "bd1f092",
+  "exported": "2026-08-06",
+  "n": 280
+ },
+ "axioms": [
+  {
+   "name": "Schrodinger Equation",
+   "domain": "atomic.qm",
+   "formula_str": "i*hbar * d(psi)/dt = H * psi"
+  },
+  {
+   "name": "Time-Independent Schrodinger",
+   "domain": "atomic.qm",
+   "formula_str": "H * psi = E * psi"
+  },
+  {
+   "name": "Heisenberg Uncertainty",
+   "domain": "atomic.qm",
+   "formula_str": "delta_x * delta_p >= hbar / 2"
+  },
+  {
+   "name": "Pauli Exclusion",
+   "domain": "atomic.qm",
+   "formula_str": "no two fermions share the same quantum state (n, l, m_l, m_s)"
+  },
+  {
+   "name": "Planck-Einstein",
+   "domain": "atomic.qm",
+   "formula_str": "E = h * f = hbar * omega"
+  },
+  {
+   "name": "Bohr Model",
+   "domain": "atomic.qm",
+   "formula_str": "E_n = -13.6 eV / n^2"
+  },
+  {
+   "name": "Quantum Superposition",
+   "domain": "atomic.qm",
+   "formula_str": "|psi> = alpha*|0> + beta*|1>; |alpha|^2 + |beta|^2 = 1"
+  },
+  {
+   "name": "Wave Function Collapse",
+   "domain": "atomic.qm",
+   "formula_str": "measurement of |psi> = alpha*|0> + beta*|1> yields |0> with P=|alpha|^2"
+  },
+  {
+   "name": "Quantum Entanglement",
+   "domain": "atomic.qm",
+   "formula_str": "|psi_AB> != |psi_A> tensor |psi_B> for entangled states"
+  },
+  {
+   "name": "De Broglie Wavelength",
+   "domain": "atomic.qm",
+   "formula_str": "lambda = h / p = h / (m * v)"
+  },
+  {
+   "name": "Fermi-Dirac Distribution",
+   "domain": "atomic.qm",
+   "formula_str": "f(E) = 1 / (exp((E - mu) / (k_B * T)) + 1)"
+  },
+  {
+   "name": "Lennard-Jones Potential",
+   "domain": "atomic.md",
+   "formula_str": "V(r) = 4*epsilon*((sigma/r)^12 - (sigma/r)^6)"
+  },
+  {
+   "name": "Coulomb Integral",
+   "domain": "atomic.qm",
+   "formula_str": "J_ij = integral(psi_i*(r1) * psi_j*(r2) * (1/r12) * psi_i(r1) * psi_j(r2))"
+  },
+  {
+   "name": "Born-Oppenheimer",
+   "domain": "atomic.qm",
+   "formula_str": "Psi(r,R) approx psi_e(r;R) * chi_n(R)"
+  },
+  {
+   "name": "Bragg's Law",
+   "domain": "atomic.crystal",
+   "formula_str": "2 * d * sin(theta) = n * lambda"
+  },
+  {
+   "name": "Bloch's Theorem",
+   "domain": "atomic.crystal",
+   "formula_str": "psi_k(r) = u_k(r) * exp(i*k*r)"
+  },
+  {
+   "name": "Density of States",
+   "domain": "atomic.crystal",
+   "formula_str": "g(E) = (1/(2*pi^2)) * (2*m/hbar^2)^(3/2) * sqrt(E)"
+  },
+  {
+   "name": "Hardy-Weinberg",
+   "domain": "bio.genetics",
+   "formula_str": "p^2 + 2*p*q + q^2 = 1"
+  },
+  {
+   "name": "Mendelian Segregation",
+   "domain": "bio.genetics",
+   "formula_str": "P(allele A from parent) = 0.5"
+  },
+  {
+   "name": "Independent Assortment",
+   "domain": "bio.genetics",
+   "formula_str": "P(A and B) = P(A) * P(B) for unlinked loci"
+  },
+  {
+   "name": "Hamilton's Rule",
+   "domain": "bio.evolution",
+   "formula_str": "r * B > C"
+  },
+  {
+   "name": "Price Equation",
+   "domain": "bio.evolution",
+   "formula_str": "w * delta_z = Cov(w_i, z_i) + E(w_i * delta_z_i)"
+  },
+  {
+   "name": "Fisher's Fundamental Theorem",
+   "domain": "bio.evolution",
+   "formula_str": "dw/dt = Var(w) / w"
+  },
+  {
+   "name": "Mutation-Selection Balance",
+   "domain": "bio.evolution",
+   "formula_str": "q_hat = sqrt(mu / s)"
+  },
+  {
+   "name": "DNA Complementarity",
+   "domain": "bio.molecular",
+   "formula_str": "A pairs T, C pairs G (Watson-Crick base pairing)"
+  },
+  {
+   "name": "Central Dogma",
+   "domain": "bio.molecular",
+   "formula_str": "DNA -> RNA -> Protein"
+  },
+  {
+   "name": "K-mer Frequency",
+   "domain": "bio.molecular",
+   "formula_str": "freq(k-mer) = count(k-mer) / (len(seq) - k + 1)"
+  },
+  {
+   "name": "Michaelis-Menten",
+   "domain": "bio.biochem",
+   "formula_str": "v = V_max * [S] / (K_m + [S])"
+  },
+  {
+   "name": "Lotka-Volterra Prey",
+   "domain": "bio.ecology",
+   "formula_str": "dx/dt = alpha*x - beta*x*y"
+  },
+  {
+   "name": "Lotka-Volterra Predator",
+   "domain": "bio.ecology",
+   "formula_str": "dy/dt = delta*x*y - gamma*y"
+  },
+  {
+   "name": "Logistic Growth",
+   "domain": "bio.ecology",
+   "formula_str": "dN/dt = r*N*(1 - N/K)"
+  },
+  {
+   "name": "Shannon Biodiversity",
+   "domain": "bio.ecology",
+   "formula_str": "H = -sum(p_i * log(p_i))"
+  },
+  {
+   "name": "Bayes' Theorem",
+   "domain": "causal.probability",
+   "formula_str": "P(A|B) = P(B|A) * P(A) / P(B)"
+  },
+  {
+   "name": "Chain Rule",
+   "domain": "causal.probability",
+   "formula_str": "P(X1,...,Xn) = prod(P(Xi | X1,...,X{i-1}))"
+  },
+  {
+   "name": "Marginalization",
+   "domain": "causal.probability",
+   "formula_str": "P(X) = sum(P(X,Y) for all Y)"
+  },
+  {
+   "name": "Do-Calculus Rule 1",
+   "domain": "causal.intervention",
+   "formula_str": "P(Y|do(X), Z) = P(Y|do(X)) if Z ind Y | X in G_X"
+  },
+  {
+   "name": "Do-Calculus Rule 2",
+   "domain": "causal.intervention",
+   "formula_str": "P(Y|do(X), Z) = P(Y|X,Z) if Z not descendant of X in G"
+  },
+  {
+   "name": "Do-Calculus Rule 3",
+   "domain": "causal.intervention",
+   "formula_str": "P(Y|do(X), Z) = P(Y|Z) if X not ancestor of Y in G_Z"
+  },
+  {
+   "name": "Signed Positive Cause",
+   "domain": "causal.graph",
+   "formula_str": "X ->+ Y: increasing X increases P(Y=1)"
+  },
+  {
+   "name": "Signed Negative Cause",
+   "domain": "causal.graph",
+   "formula_str": "X ->- Y: increasing X decreases P(Y=1)"
+  },
+  {
+   "name": "Causal Markov",
+   "domain": "causal.graph",
+   "formula_str": "Xi ind non-descendants(Xi) | parents(Xi) in DAG G"
+  },
+  {
+   "name": "Faithfulness",
+   "domain": "causal.graph",
+   "formula_str": "all conditional independencies in P arise from d-separation in G"
+  },
+  {
+   "name": "Counterfactual",
+   "domain": "causal.probability",
+   "formula_str": "Y_{x}(u) = Y value in world where X=x and context U=u"
+  },
+  {
+   "name": "Average Treatment Effect",
+   "domain": "causal.intervention",
+   "formula_str": "ATE = E[Y|do(X=1)] - E[Y|do(X=0)]"
+  },
+  {
+   "name": "Instrumental Variable",
+   "domain": "causal.discovery",
+   "formula_str": "beta = Cov(Z,Y) / Cov(Z,X) where Z instrument for X on Y"
+  },
+  {
+   "name": "PC Algorithm Step",
+   "domain": "causal.discovery",
+   "formula_str": "remove edge (X,Y) if exists S: X ind Y | S"
+  },
+  {
+   "name": "Granger Causality",
+   "domain": "causal.discovery",
+   "formula_str": "X Granger-causes Y if P(Y_t | Y_{t-1},..., X_{t-1},...) > P(Y_t | Y_{t-1},...)"
+  },
+  {
+   "name": "Wavelength-Frequency",
+   "domain": "colors.physics",
+   "formula_str": "c = lambda * f"
+  },
+  {
+   "name": "Planck to Perception",
+   "domain": "colors.physics",
+   "formula_str": "L(lambda) = 2*h*c^2 / (lambda^5 * (exp(h*c/(lambda*k_B*T)) - 1))"
+  },
+  {
+   "name": "RGB Additive",
+   "domain": "colors.space",
+   "formula_str": "C = R + G + B"
+  },
+  {
+   "name": "CMYK Subtractive",
+   "domain": "colors.space",
+   "formula_str": "C_ink = 1 - R, M_ink = 1 - G, Y_ink = 1 - B"
+  },
+  {
+   "name": "HSV to RGB",
+   "domain": "colors.space",
+   "formula_str": "R,G,B = f(H, S, V) with sector index i = floor(H/60)"
+  },
+  {
+   "name": "CIE XYZ Tristimulus",
+   "domain": "colors.space",
+   "formula_str": "X = integral(S(lambda)*x_bar(lambda)dlambda)"
+  },
+  {
+   "name": "Complementary Colors",
+   "domain": "colors.harmony",
+   "formula_str": "H_complement = (H + 180) mod 360"
+  },
+  {
+   "name": "Triadic Harmony",
+   "domain": "colors.harmony",
+   "formula_str": "H_triad = {H, (H+120) mod 360, (H+240) mod 360}"
+  },
+  {
+   "name": "Analogous Harmony",
+   "domain": "colors.harmony",
+   "formula_str": "H_analogous = {H-30, H, H+30} mod 360"
+  },
+  {
+   "name": "Color Temperature",
+   "domain": "colors.perception",
+   "formula_str": "T_color approx 1.438e7 / lambda_peak (Wien's displacement)"
+  },
+  {
+   "name": "Weber-Fechner (color)",
+   "domain": "colors.perception",
+   "formula_str": "delta_L* = k * delta_L / L"
+  },
+  {
+   "name": "Metamerism",
+   "domain": "colors.perception",
+   "formula_str": "C1 = C2 perceptually if integral(S1*ck) = integral(S2*ck) for k in {x,y,z}"
+  },
+  {
+   "name": "Chromatic Adaptation",
+   "domain": "colors.perception",
+   "formula_str": "R_adapted = R / (R + sigma_R)"
+  },
+  {
+   "name": "Gamma Correction",
+   "domain": "colors.display",
+   "formula_str": "V_out = V_in ^ (1/gamma)"
+  },
+  {
+   "name": "sRGB Transfer",
+   "domain": "colors.display",
+   "formula_str": "C_linear = C_sRGB/12.92 if C<=0.04045 else ((C+0.055)/1.055)^2.4"
+  },
+  {
+   "name": "Supply-Demand Equilibrium",
+   "domain": "economics.micro",
+   "formula_str": "Q_d(P*) = Q_s(P*)"
+  },
+  {
+   "name": "Price Elasticity",
+   "domain": "economics.micro",
+   "formula_str": "epsilon = (dQ/Q) / (dP/P)"
+  },
+  {
+   "name": "Utility Maximization",
+   "domain": "economics.micro",
+   "formula_str": "max U(x) subject to P*x = I"
+  },
+  {
+   "name": "Marginal Utility",
+   "domain": "economics.micro",
+   "formula_str": "MU_i = dU / dx_i"
+  },
+  {
+   "name": "Consumer Surplus",
+   "domain": "economics.micro",
+   "formula_str": "CS = integral(D(Q), 0, Q*) - P* * Q*"
+  },
+  {
+   "name": "Nash Equilibrium",
+   "domain": "economics.game_theory",
+   "formula_str": "u_i(s_i*, s_{-i}*) >= u_i(s_i, s_{-i}*) for all s_i"
+  },
+  {
+   "name": "Pareto Optimality",
+   "domain": "economics.game_theory",
+   "formula_str": "no s' such that u_i(s') >= u_i(s) for all i with strict for some"
+  },
+  {
+   "name": "Mixed Strategy Nash",
+   "domain": "economics.game_theory",
+   "formula_str": "E[u_i | sigma_i*] = E[u_i | sigma_i] for all sigma_i in support"
+  },
+  {
+   "name": "Fisher Equation",
+   "domain": "economics.macro",
+   "formula_str": "i = r + pi"
+  },
+  {
+   "name": "Quantity Theory",
+   "domain": "economics.macro",
+   "formula_str": "M * V = P * Y"
+  },
+  {
+   "name": "GDP Identity",
+   "domain": "economics.macro",
+   "formula_str": "Y = C + I + G + NX"
+  },
+  {
+   "name": "Phillips Curve",
+   "domain": "economics.macro",
+   "formula_str": "pi = pi_e - alpha * (u - u_n)"
+  },
+  {
+   "name": "IS-LM Equilibrium",
+   "domain": "economics.macro",
+   "formula_str": "Y = C(Y-T) + I(r) + G and M/P = L(Y,r)"
+  },
+  {
+   "name": "Cobb-Douglas Production",
+   "domain": "economics.macro",
+   "formula_str": "Y = A * K^alpha * L^(1-alpha)"
+  },
+  {
+   "name": "Present Value",
+   "domain": "economics.finance",
+   "formula_str": "PV = FV / (1 + r)^t"
+  },
+  {
+   "name": "Population Superposition",
+   "domain": "ensemble.vsa",
+   "formula_str": "V_pop = sum(V_i) / N"
+  },
+  {
+   "name": "Mean-Field Approximation",
+   "domain": "ensemble.mf",
+   "formula_str": "E[f(x_i, x_j)] approx f(E[x_i], E[x_j]) when correlations weak"
+  },
+  {
+   "name": "Mean-Field Nash",
+   "domain": "ensemble.mf",
+   "formula_str": "mu* satisfies: s*(x,mu*) is optimal for agent x given distribution mu*"
+  },
+  {
+   "name": "Boltzmann Distribution",
+   "domain": "ensemble.stat",
+   "formula_str": "P(state_i) = exp(-E_i / (k_B*T)) / Z"
+  },
+  {
+   "name": "Phase Transition",
+   "domain": "ensemble.stat",
+   "formula_str": "order_param(T) = 0 for T>T_c, nonzero for T<T_c"
+  },
+  {
+   "name": "Critical Exponent",
+   "domain": "ensemble.stat",
+   "formula_str": "m ~ |T - T_c|^beta near critical point"
+  },
+  {
+   "name": "Fractal Causal Graph",
+   "domain": "ensemble.fractal",
+   "formula_str": "dim_H = lim(log N(epsilon) / log(1/epsilon)) as epsilon->0"
+  },
+  {
+   "name": "Self-Similarity",
+   "domain": "ensemble.fractal",
+   "formula_str": "S(lambda*r) = lambda^d * S(r) for fractal S"
+  },
+  {
+   "name": "Renormalization Group",
+   "domain": "ensemble.fractal",
+   "formula_str": "R(H) = H' where H' is effective Hamiltonian at coarser scale"
+  },
+  {
+   "name": "Wisdom of Crowds",
+   "domain": "ensemble.collective",
+   "formula_str": "E[(mean(X_i) - mu)^2] = sigma^2 / N + bias^2"
+  },
+  {
+   "name": "Condorcet Jury Theorem",
+   "domain": "ensemble.collective",
+   "formula_str": "P(majority correct) -> 1 as N->inf when p_individual > 0.5"
+  },
+  {
+   "name": "Social Choice Arrow",
+   "domain": "ensemble.collective",
+   "formula_str": "no social welfare function satisfies unanimity + IIA + non-dictatorship"
+  },
+  {
+   "name": "Voter Model",
+   "domain": "ensemble.dynamics",
+   "formula_str": "state_i(t+1) = state_j(t) where j chosen uniformly from N(i)"
+  },
+  {
+   "name": "Schelling Segregation",
+   "domain": "ensemble.dynamics",
+   "formula_str": "agent_i moves if fraction_similar(N(i)) < threshold_i"
+  },
+  {
+   "name": "Emergent Behavior",
+   "domain": "ensemble.dynamics",
+   "formula_str": "macro_pattern not predictable from individual rules alone"
+  },
+  {
+   "name": "Temporal Before",
+   "domain": "historical.logic",
+   "formula_str": "event_A before event_B IFF t(A) < t(B)"
+  },
+  {
+   "name": "Temporal After",
+   "domain": "historical.logic",
+   "formula_str": "event_A after event_B IFF t(A) > t(B)"
+  },
+  {
+   "name": "Temporal During",
+   "domain": "historical.logic",
+   "formula_str": "event_A during period_P IFF t_start(P) <= t(A) <= t_end(P)"
+  },
+  {
+   "name": "Temporal Overlap",
+   "domain": "historical.logic",
+   "formula_str": "period_A overlaps period_B IFF t_start(A) < t_end(B) AND t_start(B) < t_end(A)"
+  },
+  {
+   "name": "Event Causation",
+   "domain": "historical.causal",
+   "formula_str": "event_A causes event_B IFF A before B AND P(B|A) > P(B|not A)"
+  },
+  {
+   "name": "Periodicity",
+   "domain": "historical.pattern",
+   "formula_str": "period(event_type) = mean(t_{i+1} - t_i) for recurrent events"
+  },
+  {
+   "name": "Epoch Binding",
+   "domain": "historical.encoding",
+   "formula_str": "epoch_vector = sum(event_vector_i * recency_weight_i for i in epoch)"
+  },
+  {
+   "name": "Historical Analogy",
+   "domain": "historical.reasoning",
+   "formula_str": "sim(epoch_A, epoch_B) > threshold IMPLIES analogous patterns"
+  },
+  {
+   "name": "Counterfactual History",
+   "domain": "historical.reasoning",
+   "formula_str": "CF(event_A removed) = trajectory without A given same initial conditions"
+  },
+  {
+   "name": "Civilizational Cycle",
+   "domain": "historical.pattern",
+   "formula_str": "T_cycle approx 250 years: rise + peak + decline + fall"
+  },
+  {
+   "name": "Technology S-Curve",
+   "domain": "historical.statistics",
+   "formula_str": "adoption(t) = K / (1 + exp(-r*(t - t0)))"
+  },
+  {
+   "name": "Generational Period",
+   "domain": "historical.statistics",
+   "formula_str": "generation_span approx 25 years; T_gen = birth_year_child - birth_year_parent"
+  },
+  {
+   "name": "Empire Duration",
+   "domain": "historical.statistics",
+   "formula_str": "mean_empire_lifespan approx 250 years; sd approx 150 years"
+  },
+  {
+   "name": "Demographic Transition",
+   "domain": "historical.dynamics",
+   "formula_str": "stage: high birth+death -> high birth+low death -> low birth+low death"
+  },
+  {
+   "name": "Power Transition",
+   "domain": "historical.dynamics",
+   "formula_str": "conflict_risk = f(power_parity(A,B)) peaks when relative_power(A,B) approx 1"
+  },
+  {
+   "name": "Self-Consistency",
+   "domain": "identity.core",
+   "formula_str": "belief(t+1) consistent with belief(t) unless evidence E exceeds threshold"
+  },
+  {
+   "name": "Trait Stability",
+   "domain": "identity.personality",
+   "formula_str": "trait(t) = trait(0) * exp(-lambda * t) + trait_base * (1 - exp(-lambda * t))"
+  },
+  {
+   "name": "Value Hierarchy",
+   "domain": "identity.values",
+   "formula_str": "priority(v_i) > priority(v_j) IMPLIES choose(v_i) when conflict"
+  },
+  {
+   "name": "Emotional Baseline",
+   "domain": "identity.affect",
+   "formula_str": "affect(t) = affect_set_point + transient(t)"
+  },
+  {
+   "name": "Plutchik Primary",
+   "domain": "identity.affect",
+   "formula_str": "emotion = weighted_sum(joy, trust, fear, surprise, sadness, disgust, anger, anticipation)"
+  },
+  {
+   "name": "IQ Calibration",
+   "domain": "identity.cognitive",
+   "formula_str": "score(t+1) = score(t) + alpha * (observed - predicted)"
+  },
+  {
+   "name": "Memory Strength",
+   "domain": "identity.memory",
+   "formula_str": "m(t) = m_0 * exp(-t / tau)"
+  },
+  {
+   "name": "Habit Formation",
+   "domain": "identity.behavior",
+   "formula_str": "P(habit) = 1 - exp(-n / N_0)"
+  },
+  {
+   "name": "Lineage Ledger",
+   "domain": "identity.lineage",
+   "formula_str": "lineage_score = sum(contribution_i * recency_weight_i)"
+  },
+  {
+   "name": "Growth Mindset",
+   "domain": "identity.core",
+   "formula_str": "capability(t+dt) = capability(t) + effort * learning_rate"
+  },
+  {
+   "name": "Morpheme Composition",
+   "domain": "language.morphology",
+   "formula_str": "word = root + affix_1 + ... + affix_n"
+  },
+  {
+   "name": "Inflectional Paradigm",
+   "domain": "language.morphology",
+   "formula_str": "paradigm(lexeme) = {stem + infl_suffix for infl in morphosyntax}"
+  },
+  {
+   "name": "Derivational Rule",
+   "domain": "language.morphology",
+   "formula_str": "derived_word = base + derivational_affix -> new_category"
+  },
+  {
+   "name": "Constituency",
+   "domain": "language.syntax",
+   "formula_str": "XP = head(X) + complements + specifier"
+  },
+  {
+   "name": "Merge Operation",
+   "domain": "language.syntax",
+   "formula_str": "Merge(alpha, beta) = {alpha, {alpha, beta}}"
+  },
+  {
+   "name": "Case Assignment",
+   "domain": "language.syntax",
+   "formula_str": "NP gets Case from governing head under agreement"
+  },
+  {
+   "name": "Theta Role Assignment",
+   "domain": "language.syntax",
+   "formula_str": "verb assigns theta roles to arguments: agent, patient, goal, theme"
+  },
+  {
+   "name": "Compositionality",
+   "domain": "language.semantics",
+   "formula_str": "meaning(XP) = f(meaning(X), meaning(complement))"
+  },
+  {
+   "name": "Lambda Calculus",
+   "domain": "language.semantics",
+   "formula_str": "[[VP]]([[NP]]) = lambda x . P(x) applied to individual a"
+  },
+  {
+   "name": "Distributional Hypothesis",
+   "domain": "language.distributional",
+   "formula_str": "meaning(w) approx context_vector(w) = sum(PMI(w,c)*e_c)"
+  },
+  {
+   "name": "PMI",
+   "domain": "language.distributional",
+   "formula_str": "PMI(w,c) = log(P(w,c) / (P(w)*P(c)))"
+  },
+  {
+   "name": "Grice Maxim Quality",
+   "domain": "language.pragmatics",
+   "formula_str": "assert P only if believe P AND have evidence for P"
+  },
+  {
+   "name": "Grice Maxim Quantity",
+   "domain": "language.pragmatics",
+   "formula_str": "be as informative as required AND no more informative than required"
+  },
+  {
+   "name": "Speech Act",
+   "domain": "language.pragmatics",
+   "formula_str": "utterance U performs illocutionary act F with propositional content P"
+  },
+  {
+   "name": "Zipf's Law",
+   "domain": "language.distributional",
+   "formula_str": "freq(word_r) proportional to 1/r"
+  },
+  {
+   "name": "S -> NP VP",
+   "domain": "linguistics.cfg",
+   "formula_str": "S = NP + VP"
+  },
+  {
+   "name": "NP -> Det N",
+   "domain": "linguistics.cfg",
+   "formula_str": "NP = Det + N"
+  },
+  {
+   "name": "VP -> V NP",
+   "domain": "linguistics.cfg",
+   "formula_str": "VP = V + NP"
+  },
+  {
+   "name": "VP -> V NP PP",
+   "domain": "linguistics.cfg",
+   "formula_str": "VP = V + NP + PP"
+  },
+  {
+   "name": "PP -> P NP",
+   "domain": "linguistics.cfg",
+   "formula_str": "PP = P + NP"
+  },
+  {
+   "name": "X-bar Schema",
+   "domain": "linguistics.syntax",
+   "formula_str": "XP = Spec + X-bar, X-bar = X + Complement"
+  },
+  {
+   "name": "Head Parameter",
+   "domain": "linguistics.syntax",
+   "formula_str": "X-bar = X + Complement OR X-bar = Complement + X"
+  },
+  {
+   "name": "Dependency Arc",
+   "domain": "linguistics.dependency",
+   "formula_str": "arc(head, dependent) with label rel"
+  },
+  {
+   "name": "Projectivity",
+   "domain": "linguistics.dependency",
+   "formula_str": "for arc(h,d): no word w between h,d has head outside interval(h,d)"
+  },
+  {
+   "name": "Theta Criterion",
+   "domain": "linguistics.syntax",
+   "formula_str": "each argument receives exactly one theta role AND each role assigned once"
+  },
+  {
+   "name": "Binding Principle A",
+   "domain": "linguistics.syntax",
+   "formula_str": "anaphor must be bound in its local binding domain"
+  },
+  {
+   "name": "Binding Principle B",
+   "domain": "linguistics.syntax",
+   "formula_str": "pronoun must be free in its local binding domain"
+  },
+  {
+   "name": "Modus Ponens",
+   "domain": "logic.deductive",
+   "formula_str": "(P AND (P IMPLIES Q)) IMPLIES Q"
+  },
+  {
+   "name": "Modus Tollens",
+   "domain": "logic.deductive",
+   "formula_str": "((P IMPLIES Q) AND NOT Q) IMPLIES NOT P"
+  },
+  {
+   "name": "Hypothetical Syllogism",
+   "domain": "logic.deductive",
+   "formula_str": "((P IMPLIES Q) AND (Q IMPLIES R)) IMPLIES (P IMPLIES R)"
+  },
+  {
+   "name": "Disjunctive Syllogism",
+   "domain": "logic.deductive",
+   "formula_str": "((P OR Q) AND NOT P) IMPLIES Q"
+  },
+  {
+   "name": "De Morgan 1",
+   "domain": "logic.propositional",
+   "formula_str": "NOT (P AND Q) = (NOT P) OR (NOT Q)"
+  },
+  {
+   "name": "De Morgan 2",
+   "domain": "logic.propositional",
+   "formula_str": "NOT (P OR Q) = (NOT P) AND (NOT Q)"
+  },
+  {
+   "name": "Double Negation",
+   "domain": "logic.propositional",
+   "formula_str": "NOT (NOT P) = P"
+  },
+  {
+   "name": "Contrapositive",
+   "domain": "logic.propositional",
+   "formula_str": "(P IMPLIES Q) = (NOT Q IMPLIES NOT P)"
+  },
+  {
+   "name": "Law of Excluded Middle",
+   "domain": "logic.propositional",
+   "formula_str": "P OR NOT P = TRUE"
+  },
+  {
+   "name": "Deontic Obligation",
+   "domain": "logic.deontic",
+   "formula_str": "O(P) IMPLIES P is obligatory"
+  },
+  {
+   "name": "Deontic Permission",
+   "domain": "logic.deontic",
+   "formula_str": "P(P) = NOT O(NOT P)"
+  },
+  {
+   "name": "Modal Necessity",
+   "domain": "logic.modal",
+   "formula_str": "BOX P IMPLIES P"
+  },
+  {
+   "name": "Modal Possibility",
+   "domain": "logic.modal",
+   "formula_str": "DIAMOND P = NOT BOX NOT P"
+  },
+  {
+   "name": "Modal K Axiom",
+   "domain": "logic.modal",
+   "formula_str": "BOX (P IMPLIES Q) IMPLIES (BOX P IMPLIES BOX Q)"
+  },
+  {
+   "name": "Distribution",
+   "domain": "logic.propositional",
+   "formula_str": "P AND (Q OR R) = (P AND Q) OR (P AND R)"
+  },
+  {
+   "name": "Harmonic Series",
+   "domain": "music.harmony",
+   "formula_str": "f_n = n * f_0 for n = 1, 2, 3, ..."
+  },
+  {
+   "name": "Equal Temperament",
+   "domain": "music.harmony",
+   "formula_str": "f_n = f_0 * 2^(n/12)"
+  },
+  {
+   "name": "Consonance Ratio",
+   "domain": "music.harmony",
+   "formula_str": "consonance = simple integer ratio p/q, e.g. 3/2 (fifth)"
+  },
+  {
+   "name": "Phasor Representation",
+   "domain": "music.phasor",
+   "formula_str": "x(t) = A * cos(omega*t + phi)"
+  },
+  {
+   "name": "Beat Frequency",
+   "domain": "music.harmony",
+   "formula_str": "f_beat = |f1 - f2|"
+  },
+  {
+   "name": "Counterpoint Parallel Fifths",
+   "domain": "music.counterpoint",
+   "formula_str": "avoid consecutive P5 intervals between voices"
+  },
+  {
+   "name": "Counterpoint Voice Leading",
+   "domain": "music.counterpoint",
+   "formula_str": "prefer contrary motion: delta_v1 * delta_v2 < 0"
+  },
+  {
+   "name": "Distortion Nonlinearity",
+   "domain": "music.synthesis",
+   "formula_str": "y(t) = a1*x + a2*x^2 + a3*x^3 + ..."
+  },
+  {
+   "name": "Fourier Decomposition",
+   "domain": "music.analysis",
+   "formula_str": "x(t) = sum(A_n * sin(n*omega*t + phi_n))"
+  },
+  {
+   "name": "ADSR Envelope",
+   "domain": "music.synthesis",
+   "formula_str": "A(t): attack + decay + sustain + release phases"
+  },
+  {
+   "name": "Nyquist Theorem",
+   "domain": "music.sampling",
+   "formula_str": "f_s >= 2 * f_max to avoid aliasing"
+  },
+  {
+   "name": "Position Update",
+   "domain": "physics.kinematics",
+   "formula_str": "x = x0 + v*t"
+  },
+  {
+   "name": "Velocity Update",
+   "domain": "physics.kinematics",
+   "formula_str": "v = v0 + a*t"
+  },
+  {
+   "name": "Displacement (constant accel)",
+   "domain": "physics.kinematics",
+   "formula_str": "x = x0 + v0*t + 0.5*a*t^2"
+  },
+  {
+   "name": "Velocity-Displacement",
+   "domain": "physics.kinematics",
+   "formula_str": "v^2 = v0^2 + 2*a*(x - x0)"
+  },
+  {
+   "name": "Average Velocity",
+   "domain": "physics.kinematics",
+   "formula_str": "v_avg = (v + v0) / 2"
+  },
+  {
+   "name": "Angular Velocity",
+   "domain": "physics.kinematics",
+   "formula_str": "omega = d_theta / dt"
+  },
+  {
+   "name": "Angular Acceleration",
+   "domain": "physics.kinematics",
+   "formula_str": "alpha = d_omega / dt"
+  },
+  {
+   "name": "Centripetal Acceleration",
+   "domain": "physics.kinematics",
+   "formula_str": "a_c = v^2 / r"
+  },
+  {
+   "name": "Projectile Range",
+   "domain": "physics.kinematics",
+   "formula_str": "R = v0^2 * sin(2*theta) / g"
+  },
+  {
+   "name": "Projectile Max Height",
+   "domain": "physics.kinematics",
+   "formula_str": "H = v0^2 * sin^2(theta) / (2*g)"
+  },
+  {
+   "name": "Newton's First Law",
+   "domain": "physics.dynamics",
+   "formula_str": "F_net = 0 -> v = const"
+  },
+  {
+   "name": "Newton's Second Law",
+   "domain": "physics.dynamics",
+   "formula_str": "F = m * a"
+  },
+  {
+   "name": "Newton's Third Law",
+   "domain": "physics.dynamics",
+   "formula_str": "F_12 = -F_21"
+  },
+  {
+   "name": "Weight",
+   "domain": "physics.dynamics",
+   "formula_str": "W = m * g"
+  },
+  {
+   "name": "Friction",
+   "domain": "physics.dynamics",
+   "formula_str": "f = mu * N"
+  },
+  {
+   "name": "Spring Force",
+   "domain": "physics.dynamics",
+   "formula_str": "F = -k * x"
+  },
+  {
+   "name": "Gravitational Force",
+   "domain": "physics.dynamics",
+   "formula_str": "F = G * m1 * m2 / r^2"
+  },
+  {
+   "name": "Momentum",
+   "domain": "physics.dynamics",
+   "formula_str": "p = m * v"
+  },
+  {
+   "name": "Impulse",
+   "domain": "physics.dynamics",
+   "formula_str": "J = F * dt = dp"
+  },
+  {
+   "name": "Conservation of Momentum",
+   "domain": "physics.dynamics",
+   "formula_str": "p1 + p2 = p1' + p2'"
+  },
+  {
+   "name": "Torque",
+   "domain": "physics.dynamics",
+   "formula_str": "tau = r x F = I * alpha"
+  },
+  {
+   "name": "Angular Momentum",
+   "domain": "physics.dynamics",
+   "formula_str": "L = I * omega"
+  },
+  {
+   "name": "Drag Force",
+   "domain": "physics.dynamics",
+   "formula_str": "F_d = 0.5 * C_d * rho * A * v^2"
+  },
+  {
+   "name": "Kinetic Energy",
+   "domain": "physics.energy",
+   "formula_str": "KE = 0.5 * m * v^2"
+  },
+  {
+   "name": "Gravitational PE",
+   "domain": "physics.energy",
+   "formula_str": "PE = m * g * h"
+  },
+  {
+   "name": "Elastic PE",
+   "domain": "physics.energy",
+   "formula_str": "PE = 0.5 * k * x^2"
+  },
+  {
+   "name": "Conservation of Energy",
+   "domain": "physics.energy",
+   "formula_str": "E_total = KE + PE = const"
+  },
+  {
+   "name": "Work",
+   "domain": "physics.energy",
+   "formula_str": "W = F * d * cos(theta)"
+  },
+  {
+   "name": "Power",
+   "domain": "physics.energy",
+   "formula_str": "P = W / t = F * v"
+  },
+  {
+   "name": "Work-Energy Theorem",
+   "domain": "physics.energy",
+   "formula_str": "W_net = delta_KE"
+  },
+  {
+   "name": "Rotational KE",
+   "domain": "physics.energy",
+   "formula_str": "KE_rot = 0.5 * I * omega^2"
+  },
+  {
+   "name": "Pressure",
+   "domain": "physics.fluids",
+   "formula_str": "P = F / A"
+  },
+  {
+   "name": "Hydrostatic Pressure",
+   "domain": "physics.fluids",
+   "formula_str": "P = rho * g * h"
+  },
+  {
+   "name": "Continuity Equation",
+   "domain": "physics.fluids",
+   "formula_str": "A1 * v1 = A2 * v2"
+  },
+  {
+   "name": "Bernoulli's Equation",
+   "domain": "physics.fluids",
+   "formula_str": "P + 0.5*rho*v^2 + rho*g*h = const"
+  },
+  {
+   "name": "Buoyancy",
+   "domain": "physics.fluids",
+   "formula_str": "F_b = rho_f * V * g"
+  },
+  {
+   "name": "Viscous Flow (Poiseuille)",
+   "domain": "physics.fluids",
+   "formula_str": "Q = pi*r^4*dP / (8*mu*L)"
+  },
+  {
+   "name": "Reynolds Number",
+   "domain": "physics.fluids",
+   "formula_str": "Re = rho*v*L / mu"
+  },
+  {
+   "name": "Navier-Stokes (simplified)",
+   "domain": "physics.fluids",
+   "formula_str": "rho*(dv/dt + v.grad(v)) = -grad(P) + mu*laplacian(v)"
+  },
+  {
+   "name": "Ideal Gas Law",
+   "domain": "physics.thermo",
+   "formula_str": "PV = nRT"
+  },
+  {
+   "name": "First Law of Thermo",
+   "domain": "physics.thermo",
+   "formula_str": "dU = Q - W"
+  },
+  {
+   "name": "Entropy Change",
+   "domain": "physics.thermo",
+   "formula_str": "dS = dQ / T"
+  },
+  {
+   "name": "Specific Heat",
+   "domain": "physics.thermo",
+   "formula_str": "Q = m * c * dT"
+  },
+  {
+   "name": "Carnot Efficiency",
+   "domain": "physics.thermo",
+   "formula_str": "eta = 1 - T_cold / T_hot"
+  },
+  {
+   "name": "Stefan-Boltzmann",
+   "domain": "physics.thermo",
+   "formula_str": "P = sigma * A * T^4"
+  },
+  {
+   "name": "Fourier's Law",
+   "domain": "physics.thermo",
+   "formula_str": "q = -k * dT/dx"
+  },
+  {
+   "name": "Boltzmann Distribution",
+   "domain": "physics.thermo",
+   "formula_str": "P(E) = exp(-E / (k_B * T)) / Z"
+  },
+  {
+   "name": "Maxwell-Boltzmann Speed",
+   "domain": "physics.thermo",
+   "formula_str": "f(v) = 4*pi*(m/(2*pi*k_B*T))^1.5 * v^2 * exp(-m*v^2/(2*k_B*T))"
+  },
+  {
+   "name": "Clausius Inequality",
+   "domain": "physics.thermo",
+   "formula_str": "dS >= dQ / T"
+  },
+  {
+   "name": "Coulomb's Law",
+   "domain": "physics.em",
+   "formula_str": "F = k_e * q1 * q2 / r^2"
+  },
+  {
+   "name": "Electric Field",
+   "domain": "physics.em",
+   "formula_str": "E = F / q = k_e * Q / r^2"
+  },
+  {
+   "name": "Gauss's Law",
+   "domain": "physics.em",
+   "formula_str": "flux(E) = Q_enc / epsilon_0"
+  },
+  {
+   "name": "Electric Potential",
+   "domain": "physics.em",
+   "formula_str": "V = k_e * Q / r"
+  },
+  {
+   "name": "Ohm's Law",
+   "domain": "physics.em",
+   "formula_str": "V = I * R"
+  },
+  {
+   "name": "Power (electrical)",
+   "domain": "physics.em",
+   "formula_str": "P = I * V = I^2 * R"
+  },
+  {
+   "name": "Capacitance",
+   "domain": "physics.em",
+   "formula_str": "C = Q / V = epsilon_0 * A / d"
+  },
+  {
+   "name": "Magnetic Force",
+   "domain": "physics.em",
+   "formula_str": "F = q * v x B"
+  },
+  {
+   "name": "Faraday's Law",
+   "domain": "physics.em",
+   "formula_str": "emf = -d(flux_B)/dt"
+  },
+  {
+   "name": "Ampere's Law",
+   "domain": "physics.em",
+   "formula_str": "curl(B) = mu_0 * J + mu_0*epsilon_0 * dE/dt"
+  },
+  {
+   "name": "Lorentz Force",
+   "domain": "physics.em",
+   "formula_str": "F = q*(E + v x B)"
+  },
+  {
+   "name": "Biot-Savart",
+   "domain": "physics.em",
+   "formula_str": "dB = mu_0/(4*pi) * I*dl x r_hat / r^2"
+  },
+  {
+   "name": "Inductance",
+   "domain": "physics.em",
+   "formula_str": "V_L = -L * dI/dt"
+  },
+  {
+   "name": "Maxwell Displacement Current",
+   "domain": "physics.em",
+   "formula_str": "J_d = epsilon_0 * dE/dt"
+  },
+  {
+   "name": "Wave Speed",
+   "domain": "physics.waves",
+   "formula_str": "v = f * lambda"
+  },
+  {
+   "name": "Wave Equation",
+   "domain": "physics.waves",
+   "formula_str": "d2y/dx2 = (1/v^2) * d2y/dt2"
+  },
+  {
+   "name": "Standing Wave",
+   "domain": "physics.waves",
+   "formula_str": "y = 2*A*sin(kx)*cos(omega*t)"
+  },
+  {
+   "name": "Doppler Effect",
+   "domain": "physics.waves",
+   "formula_str": "f' = f * (v + v_obs) / (v + v_src)"
+  },
+  {
+   "name": "Intensity",
+   "domain": "physics.waves",
+   "formula_str": "I = P / (4*pi*r^2)"
+  },
+  {
+   "name": "Snell's Law",
+   "domain": "physics.waves",
+   "formula_str": "n1*sin(theta1) = n2*sin(theta2)"
+  },
+  {
+   "name": "Diffraction (single slit)",
+   "domain": "physics.waves",
+   "formula_str": "a*sin(theta) = m*lambda"
+  },
+  {
+   "name": "Interference (double slit)",
+   "domain": "physics.waves",
+   "formula_str": "d*sin(theta) = m*lambda"
+  },
+  {
+   "name": "Photon Energy",
+   "domain": "physics.waves",
+   "formula_str": "E = h * f = h*c / lambda"
+  },
+  {
+   "name": "De Broglie Wavelength",
+   "domain": "physics.waves",
+   "formula_str": "lambda = h / p"
+  },
+  {
+   "name": "Lorentz Factor",
+   "domain": "physics.relativity",
+   "formula_str": "gamma = 1 / sqrt(1 - v^2/c^2)"
+  },
+  {
+   "name": "Time Dilation",
+   "domain": "physics.relativity",
+   "formula_str": "dt' = gamma * dt"
+  },
+  {
+   "name": "Length Contraction",
+   "domain": "physics.relativity",
+   "formula_str": "L = L0 / gamma"
+  },
+  {
+   "name": "Mass-Energy Equivalence",
+   "domain": "physics.relativity",
+   "formula_str": "E = m * c^2"
+  },
+  {
+   "name": "Relativistic Momentum",
+   "domain": "physics.relativity",
+   "formula_str": "p = gamma * m * v"
+  },
+  {
+   "name": "Relativistic Energy",
+   "domain": "physics.relativity",
+   "formula_str": "E^2 = (pc)^2 + (mc^2)^2"
+  },
+  {
+   "name": "Gravitational PE (orbital)",
+   "domain": "physics.gravity",
+   "formula_str": "U = -G*M*m / r"
+  },
+  {
+   "name": "Escape Velocity",
+   "domain": "physics.gravity",
+   "formula_str": "v_esc = sqrt(2*G*M / r)"
+  },
+  {
+   "name": "Orbital Velocity",
+   "domain": "physics.gravity",
+   "formula_str": "v_orb = sqrt(G*M / r)"
+  },
+  {
+   "name": "Kepler's Third Law",
+   "domain": "physics.gravity",
+   "formula_str": "T^2 = (4*pi^2 / (G*M)) * a^3"
+  },
+  {
+   "name": "Schwarzschild Radius",
+   "domain": "physics.gravity",
+   "formula_str": "r_s = 2*G*M / c^2"
+  },
+  {
+   "name": "Shannon Entropy (Key)",
+   "domain": "security.crypto",
+   "formula_str": "H = -sum(p_i * log2(p_i))"
+  },
+  {
+   "name": "Brute Force Complexity",
+   "domain": "security.crypto",
+   "formula_str": "attempts = 2^key_length"
+  },
+  {
+   "name": "RSA Key Generation",
+   "domain": "security.crypto",
+   "formula_str": "n = p * q; phi = (p-1)*(q-1)"
+  },
+  {
+   "name": "Diffie-Hellman Exchange",
+   "domain": "security.crypto",
+   "formula_str": "shared = g^(a*b) mod p"
+  },
+  {
+   "name": "Hash Collision Probability",
+   "domain": "security.crypto",
+   "formula_str": "P_collision = 1 - exp(-n^2 / (2 * H))"
+  },
+  {
+   "name": "Multi-Factor Auth",
+   "domain": "security.auth",
+   "formula_str": "auth = factor_know AND factor_have AND factor_are"
+  },
+  {
+   "name": "Password Strength",
+   "domain": "security.auth",
+   "formula_str": "entropy = log2(charset^length)"
+  },
+  {
+   "name": "Session Timeout",
+   "domain": "security.auth",
+   "formula_str": "valid = (now - issued) < max_age"
+  },
+  {
+   "name": "CIA Triad",
+   "domain": "security.network",
+   "formula_str": "security = confidentiality AND integrity AND availability"
+  },
+  {
+   "name": "Defense in Depth",
+   "domain": "security.network",
+   "formula_str": "P_breach = P_layer1 * P_layer2 * P_layer3"
+  },
+  {
+   "name": "Firewall Rule",
+   "domain": "security.network",
+   "formula_str": "allow = src_match AND dst_match AND port_match AND NOT blacklisted"
+  },
+  {
+   "name": "Risk Assessment",
+   "domain": "security.risk",
+   "formula_str": "risk = likelihood * impact"
+  },
+  {
+   "name": "CVSS Score",
+   "domain": "security.vulnerability",
+   "formula_str": "score = base * temporal * environmental"
+  },
+  {
+   "name": "Attack Surface",
+   "domain": "security.vulnerability",
+   "formula_str": "surface = sum(entry_points * exposure_factor)"
+  },
+  {
+   "name": "Zero Trust Principle",
+   "domain": "security.network",
+   "formula_str": "trust = NOT implicit; verify = always"
+  },
+  {
+   "name": "PageRank",
+   "domain": "social.graph",
+   "formula_str": "PR(u) = (1-d)/N + d * sum(PR(v)/L(v) for v in B_u)"
+  },
+  {
+   "name": "Degree Centrality",
+   "domain": "social.graph",
+   "formula_str": "C_D(v) = deg(v) / (n - 1)"
+  },
+  {
+   "name": "Betweenness Centrality",
+   "domain": "social.graph",
+   "formula_str": "C_B(v) = sum(sigma_st(v) / sigma_st for s != t != v)"
+  },
+  {
+   "name": "Closeness Centrality",
+   "domain": "social.graph",
+   "formula_str": "C_C(v) = (n-1) / sum(d(v, u) for u != v)"
+  },
+  {
+   "name": "Eigenvector Centrality",
+   "domain": "social.graph",
+   "formula_str": "x_v = (1/lambda) * sum(x_u for u in N(v))"
+  },
+  {
+   "name": "Network Diffusion",
+   "domain": "social.dynamics",
+   "formula_str": "dI/dt = beta * S * I - gamma * I"
+  },
+  {
+   "name": "SIR Model",
+   "domain": "social.dynamics",
+   "formula_str": "dS/dt = -beta*S*I, dI/dt = beta*S*I - gamma*I, dR/dt = gamma*I"
+  },
+  {
+   "name": "Homophily",
+   "domain": "social.formation",
+   "formula_str": "P(edge(u,v)) proportional to sim(u, v)"
+  },
+  {
+   "name": "Preferential Attachment",
+   "domain": "social.formation",
+   "formula_str": "P(connect to v) = k_v / sum(k_i)"
+  },
+  {
+   "name": "Granovetter Strength",
+   "domain": "social.formation",
+   "formula_str": "strength(A,B) = overlap(N(A), N(B)) / union(N(A), N(B))"
+  },
+  {
+   "name": "Clustering Coefficient",
+   "domain": "social.graph",
+   "formula_str": "C(v) = 2*t(v) / (k_v * (k_v - 1))"
+  }
+ ]
+}
