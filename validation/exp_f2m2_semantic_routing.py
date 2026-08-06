@@ -405,6 +405,18 @@ def self_test() -> None:
     assert self_retrieval_top1(fake_n, fake_f) == 1.0
     routed = loo_domain_routing(fake_n, fake_f, fake_dom)
     assert routed["macro"] == 1.0, routed
+
+    # Orientation guard: a DELIBERATELY ASYMMETRIC pair. name_0 matches its own
+    # formula best (so the correct orientation scores 1.0), but name_0 is also
+    # closer to formula_1 than name_1 is -- so the COLUMN-wise (transposed)
+    # argmax picks the wrong row for item 1. The clustered case above cannot
+    # catch this: both views perturb the same item-level point, leaving it
+    # diagonal-dominant on both axes.
+    orient_f = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]], dtype=np.float32).reshape(2, 3, 1)
+    orient_n = np.array([[1.0, 0.9, 0.0], [0.0, 0.6, 0.8]], dtype=np.float32).reshape(2, 3, 1)
+    assert self_retrieval_top1(orient_n, orient_f) == 1.0          # names -> formulas
+    assert self_retrieval_top1(orient_f, orient_n) < 1.0           # transposed must FAIL
+
     assert abs(majority_class(fake_dom) - 0.5) < 1e-9
 
     # micro and macro chance are DIFFERENT baselines and must not be conflated:
