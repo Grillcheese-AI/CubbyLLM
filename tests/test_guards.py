@@ -13,6 +13,14 @@ ROOT = pathlib.Path(cubbyllm.__file__).parent
 
 def _modules():
     for m in pkgutil.walk_packages([str(ROOT)], prefix="cubbyllm."):
+        # Generated protobuf stubs (`*_pb2.py`) are protoc output, fully
+        # overwritten on every regen — a hand-appended `__wiring__` tail
+        # would just get silently dropped next regen. They're pure
+        # generated data schemas, never a forward path, so the wiring
+        # guard doesn't apply to them; skip by module-name suffix rather
+        # than requiring each one to carry a manual tail.
+        if m.name.endswith("_pb2"):
+            continue
         yield m.name
 
 

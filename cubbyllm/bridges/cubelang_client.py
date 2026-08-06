@@ -13,11 +13,26 @@ this path, cubemind's regex-scraping ``model/cubby/cubelang_bridge.py``.
 a JSON line on ``run --json``'s stdout, it speaks ``run-proto`` — a
 length-prefixed ``RunRequest``/``RunResult`` protobuf pair over stdin/stdout
 (``cubelang/proto/reasoning.proto``). Same return shape as ``run_program``
-(``{"ok": bool, "result": <symbol|None>}``), so the same assertions apply to
-either transport. Regenerate the pinned stub after changing the proto::
+(``{"ok": bool, "result": <symbol|None>, "similarity": <float|None>}``), so
+the same assertions apply to either transport. ``similarity`` (Task 9,
+Feature A) is the cosine similarity of the winning ``recover()``/``UNBIND``
+match — present and high for a real recovery, ``None`` (not ``0.0``) when
+nothing was bound. Regenerate the pinned stub after changing the proto::
 
     python -m grpc_tools.protoc -I <cubelang>/proto \\
         --python_out=cubbyllm/bridges <cubelang>/proto/reasoning.proto
+
+No manual edit is needed afterwards — ``tests/test_guards.py`` excludes
+``*_pb2.py`` modules from the ``__wiring__`` guard (they're protoc output,
+fully overwritten on every regen, never a forward path), so the old
+"re-append the ``__wiring__`` tail by hand" step is gone.
+
+``run_program``'s ``--json`` path also takes a ``strict`` kwarg (Feature B,
+verify-before-execute; default ``True``) that passes ``--strict`` through to
+``cubelang run``, rejecting non-executing constructs at compile time instead
+of silently no-op'ing them. ``run_program_proto``'s ``run-proto`` transport
+has no equivalent flag: it is unconditionally strict server-side, so every
+protobuf request is already verified before it executes.
 """
 from __future__ import annotations
 
@@ -67,11 +82,25 @@ def run_program(
     args: list[str] | None = None,
     exe: str | None = None,
     timeout: float = 30.0,
+    strict: bool = True,
 ) -> dict:
     """Run a CubeLang program's function via `cubelang run … --json`; return the
-    parsed JSON. Raises CubelangRunError on ok:false or a non-zero exit."""
+    parsed JSON (plus a normalized `"similarity"` key -- see below). Raises
+    CubelangRunError on ok:false or a non-zero exit.
+
+    `strict` (Task 8/9, verify-before-execute) passes `--strict` to `cubelang
+    run`, so non-executing constructs (trace-only ext ops, `match`, ...) fail
+    loudly at compile time instead of silently compiling to no-ops. Defaults
+    to True: the reasoning bridge's program always passes strict cleanly, so
+    verify-before-execute should be the default a caller has to opt out of,
+    not opt into. `run_program_proto`'s `run-proto` transport has no
+    equivalent flag -- it is unconditionally strict server-side (cubelang
+    Task 8), so there's nothing to thread on that side.
+    """
     exe_path = find_cubelang_exe(exe)
     cmd = [str(exe_path), "run", program_path, "--fn", fn, "--json"]
+    if strict:
+        cmd.append("--strict")
     for a in args or []:
         cmd += ["--arg", a]
     try:
@@ -86,6 +115,12 @@ def run_program(
         raise CubelangRunError(f"unparseable cubelang output: {proc.stdout!r} / {proc.stderr!r}") from e
     if not out.get("ok", False):
         raise CubelangRunError(f"cubelang error: {out.get('error', out)}")
+    # Task 9 (Feature A, similarity-surfacing): cmd_run's `--json` carries
+    # `"similarity"` on a normal Ok/Return result, but the shape omits the
+    # key entirely on other ok:true paths (e.g. a suspended run's JSON has
+    # no recover() outcome to report). Normalize so callers can always
+    # index `out["similarity"]` instead of needing their own `.get(...)`.
+    out["similarity"] = out.get("similarity")
     return out
 
 
@@ -155,4 +190,13 @@ def run_program_proto(
     if not result.ok:
         err = result.error if which == "error" else "cubelang run-proto reported ok:false"
         raise CubelangRunError(f"cubelang error: {err}")
-    return {"ok": result.ok, "result": result.symbol if which == "symbol" else None}
+    return {
+        "ok": result.ok,
+        "result": result.symbol if which == "symbol" else None,
+        # Task 7 (cubelang): `similarity` is `optional double`, OUTSIDE the
+        # `result` oneof -- a side-channel confidence score for `symbol`,
+        # not an alternative to it. `HasField` (proto3 explicit presence,
+        # not a truthiness/zero check) distinguishes "no winning match"
+        # (unset -> None) from a real match that happened to score 0.0.
+        "similarity": result.similarity if result.HasField("similarity") else None,
+    }
