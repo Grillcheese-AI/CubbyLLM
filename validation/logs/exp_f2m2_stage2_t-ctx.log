@@ -1,5 +1,5 @@
 python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6 | torch 2.10.0+cpu | sentence-transformers 5.3.0
-checkpoint: D:\CUBBY-TRAINED-MODELS\hd5_mem21.pt | size=1840724473 bytes (1.841 GB) | mtime=2026-08-05 18:51:32 | blake2b-128=6c9f6ddff5342e268cac805615d0d74a (hashed in 2.8s)
+checkpoint: D:\CUBBY-TRAINED-MODELS\hd5_mem21.pt | size=1840724473 bytes (1.841 GB) | mtime=2026-08-05 18:51:32 | blake2b-128=6c9f6ddff5342e268cac805615d0d74a (hashed in 2.9s)
 [OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
 [OK] Using GPU: AMD Radeon RX 6750 XT
 [OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
@@ -23,7 +23,7 @@ checkpoint: D:\CUBBY-TRAINED-MODELS\hd5_mem21.pt | size=1840724473 bytes (1.841 
   dense: micro=0.079 macro=0.096 | tau=0.257 auc=0.227
  argmax: micro=0.064 macro=0.074 | tau=0.025 auc=0.182
      pq: micro=0.079 macro=0.103 | tau=0.850 auc=0.092
- pq-adc: micro=0.171 macro=0.069 | tau=0.001 auc=0.150
+ pq-adc: micro=0.086 macro=0.107 | tau=0.267 auc=0.246
 
 --- kill criterion ---
   [PASS] 4 discretization (best one-hot 'pq' >= 0.80x dense)

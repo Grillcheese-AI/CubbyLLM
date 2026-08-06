@@ -417,6 +417,19 @@ def pq_onehot(codes: np.ndarray, centroids: np.ndarray) -> np.ndarray:
     return out
 
 
+def pq_reconstruct(codes: np.ndarray, centroids: np.ndarray) -> np.ndarray:
+    """Replace each block with its NEAREST CENTROID VECTOR (not a one-hot label).
+
+    This is what PQ retrieval actually stores-and-reconstructs: the code is an
+    index, and the reconstruction is the centroid it points at. Comparing a dense
+    query against the one-hot INDICATOR instead is meaningless -- the indicator's
+    direction (a basis vector at the centroid's index) is unrelated to the
+    centroid's direction.
+    """
+    idx = pq_onehot(codes, centroids).argmax(axis=2)                  # (n, K)
+    return np.stack([centroids[b][idx[:, b]] for b in range(K)], axis=1).astype(np.float32)
+
+
 def recalibrate_tau(same_cos: np.ndarray, diff_cos: np.ndarray) -> tuple[float, float]:
     """Pick tau at max Youden's J over same-domain vs different-domain maxima.
     Returns (tau, roc_auc). M1's 0.35 does not transfer to this distribution."""
@@ -446,9 +459,11 @@ def run_stage2(arm: str) -> dict:
     variants["argmax"] = (argmax_onehot(name_codes), argmax_onehot(formula_codes))
     cent = fit_pq(formula_codes)
     variants["pq"] = (pq_onehot(name_codes, cent), pq_onehot(formula_codes, cent))
-    # ADC: query stays DENSE, only the stored side is quantized. This mirrors the
-    # real bridge -- axioms must be one-hot for bind/bundle, challenges never do.
-    variants["pq-adc"] = (name_codes, pq_onehot(formula_codes, cent))
+    # ADC (Asymmetric Distance Computation): the query stays DENSE and only the
+    # stored side is quantized -- then RECONSTRUCTED to its centroid vectors.
+    # Mirrors the real bridge: axioms must be one-hot to participate in
+    # bind/bundle, but a routing comparison never requires quantizing the query.
+    variants["pq-adc"] = (name_codes, pq_reconstruct(formula_codes, cent))
 
     out = {"arm": arm, "micro_chance": micro_chance, "macro_chance": mac_chance,
            "variants": {}}
@@ -576,6 +591,12 @@ def self_test() -> None:
     pq = pq_onehot(dense, cent)
     assert np.array_equal(pq.sum(axis=2), np.ones((5, K), dtype=np.float32))
     assert np.array_equal(pq, pq_onehot(dense, fit_pq(dense)))       # deterministic
+
+    # pq_reconstruct must return centroid VECTORS, not one-hot labels.
+    rec = pq_reconstruct(dense, cent)
+    assert rec.shape == dense.shape
+    assert not np.array_equal(rec, pq_onehot(dense, cent))            # not indicators
+    assert (np.abs(rec).sum(axis=2) > 0).all()                        # every block populated
 
     # Threshold recalibration separates a trivially separable pair of populations.
     tau, auc = recalibrate_tau(np.full(20, 0.9), np.full(20, 0.1))
