@@ -1,4 +1,5 @@
-python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6 | torch 2.10.0+cpu | sentence-transformers 5.3.0
+checkpoint: D:\CUBBY-TRAINED-MODELS\hd5_mem21.pt | size=1840724473 bytes (1.841 GB) | mtime=2026-08-05 18:51:32 | blake2b-128=6c9f6ddff5342e268cac805615d0d74a (hashed in 2.7s)
 [OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
 [OK] Using GPU: AMD Radeon RX 6750 XT
 [OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
@@ -41,7 +42,7 @@ corpus: 280 axioms, 15 domains | micro chance (majority-class) = 0.300 | macro c
   hash: self-retrieval top1=0.004 | routing micro=0.118 (vs 0.300) macro=0.075 (1.12x macro-chance)
  t-bag: self-retrieval top1=0.032 | routing micro=0.111 (vs 0.300) macro=0.075 (1.13x macro-chance)
  t-ctx: self-retrieval top1=0.029 | routing micro=0.079 (vs 0.300) macro=0.096 (1.44x macro-chance)
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 7987.82it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -75,7 +76,7 @@ INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/se
 INFO:httpx:HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
 INFO:httpx:HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
 INFO:httpx:HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/config.json "HTTP/1.1 200 OK"
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 10004.25it/s]
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 7276.99it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -100,6 +101,6 @@ INFO:httpx:HTTP Request: GET https://huggingface.co/api/models/sentence-transfor
   [FAIL] 3a routing (best trunk macro >= 2x macro-chance)
   [FAIL] 3b routing (best trunk >= 0.60x ref)
 
-best trunk = t-ctx; trunk/ref = 0.269 -> fine-tune (M3) � gap is large
+best trunk = t-ctx; trunk/ref = 0.269 -> fine-tune (M3) — gap is large
 
 wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_f2m2_stage1.json

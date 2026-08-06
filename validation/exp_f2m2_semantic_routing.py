@@ -232,7 +232,13 @@ def macro_chance(domains: list[str]) -> float:
 
 
 def self_retrieval_top1(name_codes: np.ndarray, formula_codes: np.ndarray) -> float:
-    """Encoder sanity: does name_i retrieve formula_i as top-1 among all formulas?"""
+    """Encoder sanity: does name_i retrieve formula_i as top-1 among all formulas?
+
+    Ceiling on this corpus is 278/280 = 0.993, not 1.0: two `name` values
+    (De Broglie Wavelength, Boltzmann Distribution) each appear twice with
+    different formulas, so the duplicate-name pair embeds identically, shares
+    a single argmax, and at most one of the two can be retrieved correctly.
+    """
     sims = cosine_matrix(name_codes, formula_codes)
     return float((sims.argmax(axis=1) == np.arange(len(name_codes))).mean())
 
@@ -246,6 +252,13 @@ def loo_domain_routing(
     highest-cosine INDIVIDUAL formula vector, with formula_i itself excluded --
     a real challenge must reach the right world via OTHER axioms, not itself.
     """
+    sizes = {d: domains.count(d) for d in set(domains)}
+    too_small = sorted(d for d, n in sizes.items() if n < 2)
+    if too_small:
+        raise ValueError(
+            f"leave-one-out needs >=2 axioms per domain; got singletons: {too_small}"
+        )
+
     sims = cosine_matrix(name_codes, formula_codes)
     np.fill_diagonal(sims, -np.inf)                    # leave-one-out
     doms = np.asarray(domains)
@@ -374,8 +387,8 @@ def self_test() -> None:
     assert abs(ctx_cos) < 0.999, f"t-ctx collapsed: cos={ctx_cos:.4f}"
     print(f"trunk arms OK — t-bag cos(unrelated)={bag_cos:.3f}, t-ctx={ctx_cos:.3f}")
 
-    # A synthetic corpus with two well-separated clusters (name == formula per
-    # item): both metrics must be perfect, which pins the metrics' orientation.
+    # A synthetic corpus with two well-separated clusters: both metrics must be
+    # perfect, which pins the metrics' orientation (name/formula views built below).
     # NOTE: the clusters must genuinely cluster — an orthonormal basis would NOT
     # work, because with every off-diagonal cosine equal to 0 the leave-one-out
     # argmax is decided by tie-breaking, not by domain.
@@ -384,8 +397,13 @@ def self_test() -> None:
     fake = np.concatenate([np.tile(centers[0], (4, 1)), np.tile(centers[1], (4, 1))])
     fake = (fake + 0.01 * fake_rng.standard_normal((8, 32))).astype(np.float32).reshape(8, 32, 1)
     fake_dom = ["a"] * 4 + ["b"] * 4
-    assert self_retrieval_top1(fake, fake) == 1.0
-    routed = loo_domain_routing(fake, fake, fake_dom)
+    # Two DIFFERENT views of the same 8 items (name-view vs formula-view), so
+    # this catches a transposed/axis-flipped metric -- a symmetric fake=fake
+    # input cannot, because cosine_matrix(X, X) is symmetric.
+    fake_n = (fake + 0.005 * fake_rng.standard_normal(fake.shape)).astype(np.float32)
+    fake_f = (fake + 0.005 * fake_rng.standard_normal(fake.shape)).astype(np.float32)
+    assert self_retrieval_top1(fake_n, fake_f) == 1.0
+    routed = loo_domain_routing(fake_n, fake_f, fake_dom)
     assert routed["macro"] == 1.0, routed
     assert abs(majority_class(fake_dom) - 0.5) < 1e-9
 
