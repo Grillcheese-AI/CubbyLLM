@@ -46,6 +46,14 @@ def test_attempt_challenge_drives_the_bridge_and_flags_new_specialists():
 
 
 def test_import_cubbyllm_stays_light():
-    import sys, cubbyllm  # noqa: F401
-    assert "torch" not in sys.modules
-    assert not any(m == "mowm" or m.startswith("mowm.") for m in sys.modules)
+    # Fresh interpreter: pytest collection imports other test modules (some import
+    # torch at module scope), polluting an in-process sys.modules check. A subprocess
+    # isolates "import cubbyllm alone".
+    import subprocess, sys
+    code = (
+        "import sys, cubbyllm\n"
+        "assert 'torch' not in sys.modules, 'import cubbyllm pulled torch'\n"
+        "assert not any(m == 'mowm' or m.startswith('mowm.') for m in sys.modules), 'import cubbyllm pulled mowm'\n"
+    )
+    r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
