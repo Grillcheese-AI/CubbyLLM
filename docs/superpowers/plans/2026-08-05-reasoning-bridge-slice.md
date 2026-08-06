@@ -518,3 +518,39 @@ Claude-Session: https://claude.ai/code/session_01JNaPeo6tU6xubkEfWTTLav"
 - **Type consistency:** `run_program`/`run_program_proto` both return `{"ok", "result"}` so Task 2's assertions are reused verbatim in Task 5. `fn_name` (not `fn`) throughout the proto/Rust to avoid the Rust keyword.
 - **Cross-repo:** Tasks 1–2, 5–6 are CubbyLLM (CubbyLLM trailers); Tasks 3–4 are cubelang (cubelang style, no trailers). The plan lives in CubbyLLM.
 - **Placement constraint honored:** the `.cube` lives in `cubbyllm/bridges/programs/`, never `cubelang/examples/` (which is compile-swept and would fail the `.cubebin` write on a `use`-ing program).
+
+---
+
+## M2 Extension — Features A + B (added 2026-08-05, from design investigation)
+
+User chose "full expanded M2." Both features are **Size S** (wiring, not redesign). **Execution order: Task 7 → 8 → 9 → 6 (doc) → whole-branch review.** Tasks 7-8 are cubelang (both touch `src/main.rs`, so sequential); Task 9 is CubbyLLM and needs the exe rebuilt with 7+8. Line numbers are ~approx guides from the investigation (may drift).
+
+### Task 7: Feature A — similarity-surfacing (cubelang)
+**Files:** `src/vm/engine.rs`, `proto/reasoning.proto`, `src/main.rs`, `tests/proto_stdio.rs`.
+**Approach — ADDITIVE. Do NOT change `recover()`'s bare-string (`Value::Str`) return** — that would break `tests/asm_vsa.rs` (`b1`/`b3`/`b5`) and M1's `result == "cat"`. Instead surface similarity as a side-channel:
+- `engine.rs`: add `pub last_recover_similarity: Option<f64>` to `VM` (struct ~132-175), init `None` in `VM::new()` (~184-216), and SET it inside the shared chokepoint `vsa_unbind_cleanup()` (~1288-1310, where the winning `cosine_sim` is computed ~1303) — one point covers both `op::UNBIND` and `recover()`.
+- `proto/reasoning.proto`: add `optional double similarity = 4;` to `RunResult`, **OUTSIDE the `oneof`** (symbol/error untouched → existing Python `result.symbol` unaffected).
+- `main.rs`: `run_request_result` (~629-664) reads `vm.last_recover_similarity` after the call and sets `RunResult.similarity`; `cmd_run`'s JSON object (~481-486) gets the same `similarity` key for parity.
+- `tests/proto_stdio.rs`: assert `solve`/`wrong_role` carry a similarity that is present + high; `unbound` has none.
+- Document the "last recover this run" semantics — correct here because `run_request_result` builds a fresh `VM::new()` per request and the reasoning program does one `recover` per fn.
+
+### Task 8: Feature B — verify-before-execute (cubelang)
+**Files:** `src/main.rs` (+ a test). Key finding: `compile_strict`/`compile_ast_strict` (compiler.rs ~1965-1989) run on SOURCE — they do NOT need `.cubebin`. The reasoning program passes strict cleanly; the gap is only that the from-source entry points don't CALL strict.
+**Approach — wire the existing engine. Do NOT touch `.cubebin`/the wire proto** (the `.cubebin` capability-carrying upgrade is separate, larger (M) work, OUT OF SCOPE):
+- `run_request_result` (main.rs ~630): swap `compiler::compile(&req.program)` → `compiler::compile_strict(&req.program)` (~1 line; the `Err(String)` already flows to the existing `Error` arm → surfaces over the wire, no schema change). Protobuf reasoning path becomes always-verified.
+- `cmd_run`: add a `--strict` flag (mirror `cmd_compile`'s existing 88-94/123-130 pattern) branching `compile_ast`/`compile_ast_strict`, so the JSON path can verify too.
+- Optional: teach `cmd_check` (~323-357, currently parse-only) to call `compile`/`compile_strict` for a standalone "will it run safely" preflight (~10-15 lines).
+- One-line pre-existing doc-drift fix if you're in the function: `compile_strict`'s doc-comment (~1954-1957) claims `for` is strict-rejected; the code (`strict_check_stmt` ~1000-1001) exempts it.
+**Risk (intended — document it):** strict rejects the trace-only ext ops (`infer`/`score`/`analogy`/`discover`/`predict`/`debate`, currently silent no-ops per engine.rs ~935-940) — a future reasoning program reaching for them fails LOUDLY instead of silently no-op'ing. That is the point of verify-before-execute.
+
+### Task 9: Feature A — Python side (CubbyLLM)
+**Files:** `cubbyllm/bridges/cubelang_client.py`, `cubbyllm/bridges/reasoning_pb2.py` (regen), `tests/bridges/test_reasoning_bridge_proto.py`.
+**Approach:**
+- Rebuild the cubelang release exe (now carries A+B from Tasks 7-8).
+- Regenerate `reasoning_pb2.py` (regen command in the module docstring; **RE-APPEND the `__wiring__` tail** per its comment).
+- `run_program_proto` (~line 158): also return `"similarity"` from `RunResult` (`res.similarity if res.HasField("similarity") else None`). `run_program` (JSON) returns `similarity` too (cmd_run's JSON now carries it). Recommend `run_program`/`run_program_proto` also request `--strict` verification of the reasoning path where applicable.
+- Tests: strengthen the controls with similarity separation — `solve`→cat HIGH sim, `wrong_role`→mouse HIGH sim, `unbound`→None with no/low sim.
+- CubbyLLM trailers (Opus 5 + Claude-Session).
+
+### Task 6 (doc) — executes AFTER 7-9
+Reflect the FINAL bridge in H-B3: real unbind exposed to Python over a symbolic boundary (JSON + protobuf), now carrying **confidence (similarity)** AND **verify-before-execute** (strict compile from source). H-F2 first-step note unchanged.
