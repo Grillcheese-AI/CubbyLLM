@@ -46,14 +46,19 @@ def test_attempt_challenge_drives_the_bridge_and_flags_new_specialists():
 
 
 def test_import_cubbyllm_stays_light():
-    # Fresh interpreter: pytest collection imports other test modules (some import
-    # torch at module scope), polluting an in-process sys.modules check. A subprocess
-    # isolates "import cubbyllm alone".
-    import subprocess, sys
+    # A bare `import cubbyllm` must not pull torch or mowm. Check in a FRESH
+    # interpreter: pytest's collection imports sibling test modules (some import
+    # torch at module scope), so an in-process sys.modules check is polluted.
+    # Pin the child's import path to the repo root (from __file__, not cwd) so
+    # the check doesn't depend on where pytest was invoked from.
+    import pathlib, subprocess, sys
+    root = pathlib.Path(__file__).resolve().parents[2]  # tests/bridges/ -> repo root
     code = (
-        "import sys, cubbyllm\n"
+        "import sys\n"
+        f"sys.path.insert(0, {str(root)!r})\n"
+        "import cubbyllm\n"
         "assert 'torch' not in sys.modules, 'import cubbyllm pulled torch'\n"
         "assert not any(m == 'mowm' or m.startswith('mowm.') for m in sys.modules), 'import cubbyllm pulled mowm'\n"
     )
-    r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+    r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=30)
     assert r.returncode == 0, r.stdout + r.stderr
