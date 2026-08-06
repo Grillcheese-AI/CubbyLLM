@@ -391,6 +391,12 @@ def fit_pq(codes: np.ndarray, iters: int = 25, seed: int = 0) -> np.ndarray:
     Each block's L-dim sub-vectors are clustered into L centroids, so a code
     becomes one-hot at its nearest centroid per block.
     """
+    if len(codes) < L:
+        raise ValueError(
+            f"fit_pq needs >= L={L} points to seed every centroid; got {len(codes)}. "
+            f"Fewer points than centroids would silently leave {L - len(codes)} "
+            f"centroids at an all-zero init -- report this, don't work around it."
+        )
     rng = np.random.default_rng(seed)
     centroids = np.zeros((K, L, L), dtype=np.float32)
     for b in range(K):
@@ -446,7 +452,7 @@ def recalibrate_tau(same_cos: np.ndarray, diff_cos: np.ndarray) -> tuple[float, 
     return float(s[int(j.argmax())]), auc
 
 
-def run_stage2(arm: str) -> dict:
+def run_stage2(arm: str) -> tuple[dict, np.ndarray]:
     names, formulas, domains = load_corpus()
     # Report BOTH baselines, each labelled, so no reader can repeat the
     # macro-vs-majority-class category error. Bar 4 is dense-relative and does
@@ -487,6 +493,67 @@ def run_stage2(arm: str) -> dict:
               "dense-vs-one-hot algebra choice is now explicit, not silent.")
     out["winner"] = best if ok else "dense"
     out["discretization_passed"] = bool(ok)
+    return out, cent
+
+
+def _stratified_half(domains: list[str], seed: int = 0):
+    """Split indices in two, stratified by domain so every domain keeps >=2 members
+    in each half (smallest domain here is 10, so each half gets >=5)."""
+    rng = np.random.default_rng(seed)
+    a, b = [], []
+    for d in sorted(set(domains)):
+        idx = [i for i, x in enumerate(domains) if x == d]
+        rng.shuffle(idx)
+        cut = len(idx) // 2
+        a.extend(idx[:cut]); b.extend(idx[cut:])
+    return np.array(sorted(a)), np.array(sorted(b))
+
+
+def run_leakage_check(arm: str) -> dict:
+    """Is 'quantized beats dense' real, or an artifact of fitting the codebook on
+    the very items LOO excludes?
+
+    Control A (disjoint SOURCE, same n): fit the codebook on the NAME side. Same
+    280 points and same saturation regime as the shipped run, but zero formula
+    content, so a surviving gain cannot come from formula leakage. Confound:
+    names are a different surface modality.
+    Control B (disjoint ITEMS, same modality): fit on formula half A, score only
+    on half B, so no fitted item is ever a scored candidate. Confound: the
+    codebook is fit on ~140 points, a more saturated regime.
+    """
+    names, formulas, domains = load_corpus()
+    name_codes, formula_codes = _encode_arm(arm, names, formulas)
+    out = {"arm": arm}
+
+    # --- shipped (leaky) reference, recomputed here so the table is self-contained
+    cent_all = fit_pq(formula_codes)
+    out["shipped"] = {
+        "dense": loo_domain_routing(name_codes, formula_codes, domains)["macro"],
+        "argmax": loo_domain_routing(argmax_onehot(name_codes), argmax_onehot(formula_codes), domains)["macro"],
+        "pq": loo_domain_routing(pq_onehot(name_codes, cent_all), pq_onehot(formula_codes, cent_all), domains)["macro"],
+        "pq-adc": loo_domain_routing(name_codes, pq_reconstruct(formula_codes, cent_all), domains)["macro"],
+    }
+
+    # --- Control A: codebook fit on the NAME side (no formula content at all)
+    cent_names = fit_pq(name_codes)
+    out["control_a_name_fit"] = {
+        "dense": out["shipped"]["dense"],
+        "pq": loo_domain_routing(pq_onehot(name_codes, cent_names), pq_onehot(formula_codes, cent_names), domains)["macro"],
+        "pq-adc": loo_domain_routing(name_codes, pq_reconstruct(formula_codes, cent_names), domains)["macro"],
+    }
+
+    # --- Control B: fit on formula half A, score only on half B
+    A, B = _stratified_half(domains)
+    cent_a = fit_pq(formula_codes[A])
+    doms_b = [domains[i] for i in B]
+    nb, fb = name_codes[B], formula_codes[B]
+    out["control_b_halfsplit"] = {
+        "dense": loo_domain_routing(nb, fb, doms_b)["macro"],
+        "argmax": loo_domain_routing(argmax_onehot(nb), argmax_onehot(fb), doms_b)["macro"],
+        "pq": loo_domain_routing(pq_onehot(nb, cent_a), pq_onehot(fb, cent_a), doms_b)["macro"],
+        "pq-adc": loo_domain_routing(nb, pq_reconstruct(fb, cent_a), doms_b)["macro"],
+        "n_scored": int(len(B)),
+    }
     return out
 
 
@@ -523,6 +590,7 @@ def self_test() -> None:
     ctx = tctx_encode(probe)
     assert ctx.shape == (2, 512), ctx.shape
     assert np.isfinite(ctx).all()
+    assert np.array_equal(ctx, tctx_encode(probe))          # deterministic
     ctx_cos = float(cosine_matrix(ctx[:1], ctx[1:])[0, 0])
     assert abs(ctx_cos) < 0.999, f"t-ctx collapsed: cos={ctx_cos:.4f}"
     print(f"trunk arms OK — t-bag cos(unrelated)={bag_cos:.3f}, t-ctx={ctx_cos:.3f}")
@@ -582,21 +650,36 @@ def self_test() -> None:
     assert abs(macro_chance(skew) - 0.5) < 1e-9
 
     # Discretizers emit valid one-hot-per-block codes; PQ is deterministic.
-    dense = np.random.default_rng(3).standard_normal((5, K, L)).astype(np.float32)
+    # n_probe >= L=128: fit_pq now raises below that (see fit_pq's own guard), so
+    # the probe must be at least as large as the real corpus's saturation regime,
+    # not the small n=5 this used before that guard existed.
+    n_probe = 150
+    dense = np.random.default_rng(3).standard_normal((n_probe, K, L)).astype(np.float32)
     am = argmax_onehot(dense)
     assert am.shape == dense.shape
-    assert np.array_equal(am.sum(axis=2), np.ones((5, K), dtype=np.float32))
+    assert np.array_equal(am.sum(axis=2), np.ones((n_probe, K), dtype=np.float32))
     cent = fit_pq(dense)
     assert cent.shape == (K, L, L)
     pq = pq_onehot(dense, cent)
-    assert np.array_equal(pq.sum(axis=2), np.ones((5, K), dtype=np.float32))
+    assert np.array_equal(pq.sum(axis=2), np.ones((n_probe, K), dtype=np.float32))
     assert np.array_equal(pq, pq_onehot(dense, fit_pq(dense)))       # deterministic
 
-    # pq_reconstruct must return centroid VECTORS, not one-hot labels.
+    # fit_pq must refuse fewer points than centroids rather than silently
+    # zero-padding the codebook.
+    try:
+        fit_pq(dense[:5])
+        raise AssertionError("fit_pq should have rejected n=5 < L=128")
+    except ValueError:
+        pass
+
+    # pq_reconstruct must return centroid VECTORS, not one-hot labels: every
+    # reconstructed row must equal some actual row of the codebook.
     rec = pq_reconstruct(dense, cent)
     assert rec.shape == dense.shape
-    assert not np.array_equal(rec, pq_onehot(dense, cent))            # not indicators
     assert (np.abs(rec).sum(axis=2) > 0).all()                        # every block populated
+    for b in range(K):
+        matches = np.all(rec[:, b, :][:, None, :] == cent[b][None, :, :], axis=2)
+        assert matches.any(axis=1).all(), f"block {b}: a row of rec is not a row of cent"
 
     # Threshold recalibration separates a trivially separable pair of populations.
     tau, auc = recalibrate_tau(np.full(20, 0.9), np.full(20, 0.1))
@@ -610,6 +693,7 @@ def main() -> None:
     ap.add_argument("--self-test", action="store_true", help="run invariants and exit")
     ap.add_argument("--stage1", action="store_true", help="rank embedders (dense)")
     ap.add_argument("--stage2", metavar="ARM", help="settle discretization for ARM")
+    ap.add_argument("--leakage-check", metavar="ARM", help="check PQ codebook leakage for ARM")
     args = ap.parse_args()
     if args.self_test:
         self_test()
@@ -625,26 +709,96 @@ def main() -> None:
         print(f"\nwrote {path}")
         return
     if args.stage2:
-        res = run_stage2(args.stage2)
+        # FIX (review): --stage2 hash / --stage2 ngram used to crash with KeyError
+        # AFTER a full run_stage2() completed, because the export encoder dict was
+        # never extended when ngram joined STAGE1_ARMS. Validate up front instead.
+        if args.stage2 not in STAGE1_ARMS:
+            raise SystemExit(f"--stage2 {args.stage2!r} not in STAGE1_ARMS={STAGE1_ARMS}")
+        res, cent = run_stage2(args.stage2)
         names, formulas, domains = load_corpus()
-        encoder = {"t-bag": tbag_encode, "t-ctx": tctx_encode, "ref": ref_encode}[args.stage2]
+        # Branch the export the same way _encode_arm does: hash/ngram are born
+        # directly in block space (no separate pre-projection embedding exists),
+        # so their "raw embedding" IS their (n, K, L) block code.
+        if args.stage2 in ("hash", "ngram"):
+            raw_encoder = {"hash": hash_encode, "ngram": ngram_encode}[args.stage2]
+            name_emb, formula_emb = raw_encoder(names), raw_encoder(formulas)
+        else:
+            encoder = {"t-bag": tbag_encode, "t-ctx": tctx_encode, "ref": ref_encode}[args.stage2]
+            name_emb, formula_emb = encoder(names), encoder(formulas)
         # DEVIATION from task-5-brief.md (see task brief header): output paths are
         # suffixed with the arm name so the t-ctx and ref runs do not clobber
         # each other -- the brief's un-suffixed `axiom_embeddings.npz` /
         # `exp_f2m2_stage2.json` assumed a single winning-arm run.
         npz_path = ROOT / "data" / f"axiom_embeddings_{args.stage2}.npz"
         json_path = ROOT / "validation" / "logs" / f"exp_f2m2_stage2_{args.stage2}.json"
+        winner = res["winner"]
+        # FIX (review): the artifact used to store tau_match from the WINNER
+        # variant (measured in 10240-D one-hot block-code space) alongside
+        # name_emb/formula_emb in the RAW pre-projection space (384/512-D) -- a
+        # threshold that doesn't apply to the vectors actually stored. Now also
+        # exports the codebook (centroids) so the winner's space is reachable,
+        # the winner's roc_auc alongside its tau_match, the DENSE tau under a
+        # distinct key (the threshold that DOES apply to name_emb/formula_emb as
+        # stored), and the projection/PQ seeds so both are exactly re-derivable.
         np.savez_compressed(
             npz_path,
-            name_emb=encoder(names), formula_emb=encoder(formulas),
+            name_emb=name_emb, formula_emb=formula_emb,
             domains=np.array(domains), names=np.array(names),
-            arm=np.array(args.stage2), discretization=np.array(res["winner"]),
-            tau_match=np.array(res["variants"][res["winner"]]["tau_match"], dtype=np.float32),
+            arm=np.array(args.stage2), discretization=np.array(winner),
+            tau_match=np.array(res["variants"][winner]["tau_match"], dtype=np.float32),
+            roc_auc=np.array(res["variants"][winner]["roc_auc"], dtype=np.float32),
+            tau_match_dense=np.array(res["variants"]["dense"]["tau_match"], dtype=np.float32),
+            centroids=cent,
+            proj_seed=np.array(PROJ_SEED),
+            pq_iters=np.array(25),
+            pq_seed=np.array(0),
         )
         json_path.write_text(json.dumps(res, indent=1), encoding="utf-8")
         print(f"\nwrote {npz_path} and {json_path}")
         return
-    raise SystemExit("pass --self-test or --stage1")
+    if args.leakage_check:
+        if args.leakage_check not in STAGE1_ARMS:
+            raise SystemExit(f"--leakage-check {args.leakage_check!r} not in STAGE1_ARMS={STAGE1_ARMS}")
+        res = run_leakage_check(args.leakage_check)
+        print(f"=== leakage check: {args.leakage_check} ===")
+        print(f"{'':>26}{'dense':>10}{'argmax':>10}{'pq':>10}{'pq-adc':>10}")
+        s = res["shipped"]
+        print(f"{'shipped (leaky)':>26}{s['dense']:>10.4f}{s['argmax']:>10.4f}"
+              f"{s['pq']:>10.4f}{s['pq-adc']:>10.4f}")
+        a = res["control_a_name_fit"]
+        print(f"{'control A (name-fit)':>26}{a['dense']:>10.4f}{'--':>10}"
+              f"{a['pq']:>10.4f}{a['pq-adc']:>10.4f}")
+        b = res["control_b_halfsplit"]
+        print(f"{'control B (half-split)':>26}{b['dense']:>10.4f}{b['argmax']:>10.4f}"
+              f"{b['pq']:>10.4f}{b['pq-adc']:>10.4f}   (n_scored={b['n_scored']})")
+
+        checks = {
+            "control A pq > dense": a["pq"] > a["dense"],
+            "control A pq-adc > dense": a["pq-adc"] > a["dense"],
+            "control B pq > dense": b["pq"] > b["dense"],
+            "control B pq-adc > dense": b["pq-adc"] > b["dense"],
+        }
+        print("\n--- read ---")
+        for label, ok in checks.items():
+            print(f"  [{'HOLDS' if ok else 'FAILS'}] {label}")
+        a_holds = checks["control A pq > dense"] and checks["control A pq-adc > dense"]
+        b_holds = checks["control B pq > dense"] and checks["control B pq-adc > dense"]
+        if a_holds and b_holds:
+            verdict = "gain SURVIVES both controls -- cluster-smoothing explanation stands"
+        elif not a_holds and not b_holds:
+            verdict = "gain FAILS both controls -- shipped result was leakage"
+        else:
+            verdict = "SPLIT verdict -- survives one control, not the other"
+        print(f"  => {verdict}")
+        res["checks"] = checks
+        res["verdict"] = verdict
+
+        (ROOT / "validation" / "logs").mkdir(parents=True, exist_ok=True)
+        json_path = ROOT / "validation" / "logs" / f"exp_f2m2_leakage_{args.leakage_check}.json"
+        json_path.write_text(json.dumps(res, indent=1), encoding="utf-8")
+        print(f"\nwrote {json_path}")
+        return
+    raise SystemExit("pass --self-test, --stage1, --stage2 ARM, or --leakage-check ARM")
 
 
 if __name__ == "__main__":

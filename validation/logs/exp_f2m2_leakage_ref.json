@@ -1,0 +1,28 @@
+{
+ "arm": "ref",
+ "shipped": {
+  "dense": 0.35798828622358037,
+  "argmax": 0.3133206009676598,
+  "pq": 0.3719276801629743,
+  "pq-adc": 0.41875647228588403
+ },
+ "control_a_name_fit": {
+  "dense": 0.35798828622358037,
+  "pq": 0.33781173075290716,
+  "pq-adc": 0.38743994567523976
+ },
+ "control_b_halfsplit": {
+  "dense": 0.3016931216931217,
+  "argmax": 0.3281481481481482,
+  "pq": 0.19708994708994707,
+  "pq-adc": 0.21164021164021163,
+  "n_scored": 146
+ },
+ "checks": {
+  "control A pq > dense": false,
+  "control A pq-adc > dense": true,
+  "control B pq > dense": false,
+  "control B pq-adc > dense": false
+ },
+ "verdict": "gain FAILS both controls -- shipped result was leakage"
+}

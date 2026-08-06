@@ -1,0 +1,28 @@
+{
+ "arm": "t-ctx",
+ "shipped": {
+  "dense": 0.09620151090739328,
+  "argmax": 0.07355742296918769,
+  "pq": 0.103015873015873,
+  "pq-adc": 0.10680757151345387
+ },
+ "control_a_name_fit": {
+  "dense": 0.09620151090739328,
+  "pq": 0.09764790764790764,
+  "pq-adc": 0.08206349206349207
+ },
+ "control_b_halfsplit": {
+  "dense": 0.12761904761904763,
+  "argmax": 0.11492063492063491,
+  "pq": 0.08277777777777778,
+  "pq-adc": 0.07777777777777778,
+  "n_scored": 146
+ },
+ "checks": {
+  "control A pq > dense": true,
+  "control A pq-adc > dense": false,
+  "control B pq > dense": false,
+  "control B pq-adc > dense": false
+ },
+ "verdict": "gain FAILS both controls -- shipped result was leakage"
+}
