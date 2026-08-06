@@ -32,3 +32,20 @@ def test_fake_satisfies_protocol():
 
 def test_wiring_is_standalone():
     assert fwm.__wiring__ is Wiring.STANDALONE
+
+
+def test_attempt_challenge_drives_the_bridge_and_flags_new_specialists():
+    from cubbyllm.bridges.world_model_client import attempt_challenge, newly_specialized
+    fake = fwm.FakeWorldModel(seeded_tags=("X",))
+    known = attempt_challenge(fake, _ctx(), tag="X")
+    assert newly_specialized(known) is False
+    novel = attempt_challenge(fake, _ctx(), tag="Z")
+    assert newly_specialized(novel) is True
+    again = attempt_challenge(fake, _ctx(), tag="Z")
+    assert again.world_id == novel.world_id and again.spawned is False
+
+
+def test_import_cubbyllm_stays_light():
+    import sys, cubbyllm  # noqa: F401
+    assert "torch" not in sys.modules
+    assert not any(m == "mowm" or m.startswith("mowm.") for m in sys.modules)
