@@ -1,0 +1,32 @@
+{
+ "matched_macro_null": 0.06332138590203105,
+ "n_docs": 20000,
+ "doc_len": 200,
+ "top_words": 2000,
+ "arms": {
+  "in-IDF / in-PC1 (shipped)": {
+   "self_retrieval_top1": 0.175,
+   "macro": 0.340686698921993,
+   "macro_x_null": 5.380278622598268,
+   "micro": 0.34285714285714286
+  },
+  "in-IDF / ext-PC1": {
+   "self_retrieval_top1": 0.17142857142857143,
+   "macro": 0.2910686698921993,
+   "macro_x_null": 4.596688239618318,
+   "micro": 0.275
+  },
+  "ext-IDF / in-PC1": {
+   "self_retrieval_top1": 0.16428571428571428,
+   "macro": 0.3166717596129361,
+   "macro_x_null": 5.001023826340142,
+   "micro": 0.29285714285714287
+  },
+  "ext-IDF / ext-PC1 (honest)": {
+   "self_retrieval_top1": 0.16428571428571428,
+   "macro": 0.3079416008827773,
+   "macro_x_null": 4.863153206394049,
+   "micro": 0.275
+  }
+ }
+}

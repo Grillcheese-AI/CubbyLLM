@@ -1,0 +1,20 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+mode: --m2v-ood -- refit IDF + PC1 on wiki_full (20000 docs x 200 tokens); teacher table unchanged
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 10221.30it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+external stats built in 11s: 146172 corpus words; PC1 fit on top 2000; axiom words seen in corpus: 744/848
+
+                     variant   self   macro  xnull   micro
+   in-IDF / in-PC1 (shipped)  0.175  0.3407   5.38  0.3429
+            in-IDF / ext-PC1  0.171  0.2911   4.60  0.2750
+            ext-IDF / in-PC1  0.164  0.3167   5.00  0.2929
+  ext-IDF / ext-PC1 (honest)  0.164  0.3079   4.86  0.2750
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_f2m2_m2v_ood.json
