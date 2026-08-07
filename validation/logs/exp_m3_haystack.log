@@ -1,0 +1,43 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+table fastword_table_v1.npz | targets valid_scaling_law_with_facts.pq | distractors full-dbpedia
+
+400 questions ({1: 190, 2: 121, 3: 89} hops) | 636 unique supporting facts (store rows 0..635)
+encoded questions+targets in 0s
+  encoded     50k distractors (34s, 680 us/doc)
+  encoded    100k distractors (60s, 596 us/doc)
+  encoded    150k distractors (87s, 580 us/doc)
+  encoded    200k distractors (115s, 577 us/doc)
+  encoded    250k distractors (143s, 572 us/doc)
+  encoded    300k distractors (172s, 572 us/doc)
+  encoded    350k distractors (199s, 569 us/doc)
+  encoded    400k distractors (226s, 565 us/doc)
+  encoded    450k distractors (252s, 561 us/doc)
+  encoded    500k distractors (279s, 558 us/doc)
+  encoded    550k distractors (306s, 556 us/doc)
+  encoded    600k distractors (333s, 555 us/doc)
+  encoded    650k distractors (359s, 552 us/doc)
+  encoded    700k distractors (387s, 552 us/doc)
+  encoded    750k distractors (413s, 550 us/doc)
+  encoded    800k distractors (440s, 550 us/doc)
+  encoded    850k distractors (465s, 548 us/doc)
+  encoded    900k distractors (491s, 546 us/doc)
+  encoded    950k distractors (517s, 544 us/doc)
+  encoded   1000k distractors (543s, 543 us/doc)
+
+         N     form   hit@1   hit@5  hit@20     MRR  score-ms/q
+         0  compact   0.910   0.938   0.943   0.924         0.2
+         0    dense   0.978   0.998   1.000   0.986         0.1
+    100000  compact   0.853   0.920   0.930   0.883        40.8
+    100000    dense   0.973   0.998   1.000   0.983         9.5
+   1000000  compact   0.713   0.873   0.920   0.784       424.2
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 8402.15it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+         0   MiniLM   0.993   1.000   1.000   0.995   (1772 us/text; at 1M docs the teacher store-encode alone would be ~0.5 h)
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_haystack.json
