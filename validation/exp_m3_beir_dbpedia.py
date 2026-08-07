@@ -112,10 +112,14 @@ def main() -> None:
                     help="cap corpus size for smoke runs (0 = all)")
     ap.add_argument("--shortlist", type=int, default=100)
     ap.add_argument("--potion", default="minishlab/potion-base-8M")
+    ap.add_argument("--table", default=str(TABLE),
+                    help="fastword table npz (default: v1, the recorded run)")
+    ap.add_argument("--tag", default="", help="suffix for the output json/log")
     args = ap.parse_args()
 
     import platform
     print(f"python {platform.python_version()} | {platform.platform()} | numpy {np.__version__}")
+    print(f"table: {pathlib.Path(args.table).name}")
 
     qrels = load_qrels()
     qids, qtexts = load_queries(set(qrels))
@@ -124,7 +128,7 @@ def main() -> None:
 
     judged_ids = {cid for v in qrels.values() for cid in v}
     sw = _load_semantic_words()
-    enc = sw.FastWordEncoder.from_npz(TABLE)
+    enc = sw.FastWordEncoder.from_npz(pathlib.Path(args.table))
     from model2vec import StaticModel
     potion = StaticModel.from_pretrained(args.potion)
 
