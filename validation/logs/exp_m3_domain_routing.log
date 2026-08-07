@@ -1,0 +1,28 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+table: fastword_table_v1.npz | domains root: E:\datasets\domains
+encoder: 30275 words, k=80 l=128
+
+39 usable domains -> 34 seeded, open-set held out entirely: [np.str_('business_management'), np.str_('history'), np.str_('neuroscience'), np.str_('political_science'), np.str_('verified_facts')]
+
+sampled 1120 exemplars / 1120 challenges / 160 open-set in 0s | skipped thin domains: ['QA(0)', 'conversation(0)', 'instruction(0)', 'labeling(0)', 'temporal_timelines_events(0)', 'thinking(0)', 'verified_facts(0)']
+encoded 2400 passages at 1105 us/passage
+
+routing  : macro 0.5946 (noise null 0.0339) | micro 0.5946 (null 0.0339)
+tau      : Youden tau = 0.4518 | ROC-AUC 0.5684 (noise-null AUC 0.0332)
+best domains : drama 1.00, transport 1.00, electronic 0.95, governance 0.93, marketing 0.90
+worst domains: self_improvement 0.25, poetry 0.28, reference 0.28, general_mainstream 0.30, language 0.33
+open-set : closed best-cos 0.4793 +/- 0.0861 vs open 0.4447 +/- 0.0727
+           spawn-detection AUC 0.6239 | at routing tau 0.452: 65% closed routed, 49% open sent to spawn
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 9098.66it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+MiniLM ref: macro 0.7973 | micro 0.7973 | AUC 0.7942 | 15175 us/passage batched
+table/ref: macro 0.75x | AUC 0.72x
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_domain_routing.json

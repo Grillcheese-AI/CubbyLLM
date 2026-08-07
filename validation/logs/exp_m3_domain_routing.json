@@ -1,0 +1,86 @@
+{
+ "config": {
+  "exemplars": 40,
+  "challenges": 40,
+  "files": 8,
+  "open_set": 5,
+  "noise_seeds": 3,
+  "with_ref": true
+ },
+ "open_set_domains": [
+  "business_management",
+  "history",
+  "neuroscience",
+  "political_science",
+  "verified_facts"
+ ],
+ "n_exemplars": 1120,
+ "n_challenges": 1120,
+ "n_open": 160,
+ "encode_us_per_passage": 1105.2679583341767,
+ "skipped": [
+  "QA(0)",
+  "conversation(0)",
+  "instruction(0)",
+  "labeling(0)",
+  "temporal_timelines_events(0)",
+  "thinking(0)",
+  "verified_facts(0)"
+ ],
+ "open_set": {
+  "spawn_auc": 0.6239397321428571,
+  "spawn_tau": 0.5140571594238281,
+  "closed_best_mean": 0.4792715311050415,
+  "open_best_mean": 0.4446764588356018,
+  "frac_open_below_tau": 0.4875,
+  "frac_closed_above_tau": 0.6508928571428572
+ },
+ "routing": {
+  "macro": 0.5946428571428571,
+  "micro": 0.5946428571428571,
+  "per_domain": {
+   "IT": 0.75,
+   "art": 0.725,
+   "cognition": 0.45,
+   "data_management": 0.5,
+   "drama": 1.0,
+   "electronic": 0.95,
+   "factual_books": 0.55,
+   "fiction": 0.425,
+   "finance": 0.575,
+   "general_mainstream": 0.3,
+   "general_science": 0.85,
+   "governance": 0.925,
+   "health": 0.825,
+   "language": 0.325,
+   "legal": 0.575,
+   "marketing": 0.9,
+   "math": 0.5,
+   "ml": 0.475,
+   "philosophy": 0.55,
+   "poetry": 0.275,
+   "psychology": 0.375,
+   "quantum_mechanics": 0.55,
+   "reference": 0.275,
+   "religion": 0.425,
+   "self_improvement": 0.25,
+   "software_engineering": 0.5,
+   "startup": 0.85,
+   "transport": 1.0
+  },
+  "tau": 0.4517969489097595,
+  "auc": 0.5683808992346939,
+  "noise_null": {
+   "macro": 0.03392857142857144,
+   "micro": 0.033928571428571426,
+   "auc": 0.03316698554421769
+  }
+ },
+ "ref": {
+  "macro": 0.7973214285714285,
+  "micro": 0.7973214285714286,
+  "auc": 0.7942402742346939,
+  "tau": 0.43291300535202026,
+  "batched_us_per_passage": 15175.071785714472
+ }
+}
