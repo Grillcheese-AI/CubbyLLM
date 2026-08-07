@@ -1,0 +1,4 @@
+candidate meta: {'teacher': 'm2v:minishlab/potion-retrieval-32M', 'n_words': 60151, 'top_words': 60000}
+v3 (30k, same teacher): routing 0.6795 | NYT exact 0.0799 MAE med 15 | potion-native ceiling 0.7223
+  60k-candidate    macro 0.6991 micro 0.6991 auc 0.6587 @ 1227 us/passage
+  60k-candidate    exact 0.0760 ±10y 0.4091 MAE med 15 mean 28

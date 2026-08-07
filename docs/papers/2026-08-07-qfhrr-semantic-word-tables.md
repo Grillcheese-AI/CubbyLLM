@@ -364,6 +364,51 @@ NYT, worth 0.064 → 0.372 exact on its own). As with every threshold in this
 paper, τ is corpus-specific: the same τ=0.6 that delegates 2% of curated
 queries delegates ~99% of NYT queries.
 
+### 5.8 Released-baseline head-to-head, the teacher ladder, and where the method ends
+
+**model2vec/potion, same protocols, same machine**
+(`exp_m3_potion_baseline.py`, `exp_m3_teacher_ladder.py`). The released
+potion-base-8M beats our MiniLM-taught table on 42-domain routing (0.722 vs
+0.595 macro) and loses NYT year placement (0.044 vs 0.064 exact). Distilling
+*potion itself* into block space through the identical recipe answers the
+attribution question: routing recovers to 0.646 — the block-code target
+space costs nothing (the projection is cosine-exact); the gap was teacher
+strength plus vocabulary coverage. A blend sweep confirms the 0.5
+signal-code blend optimal (0/0.25 lose on both screens): exact-surface
+sharpness is load-bearing even under a strong teacher.
+
+**The teacher ladder** (routing macro / NYT exact, all → block space, same
+recipe): raw **bge-m3 0.566/0.070** — a measured *negative*: a far stronger
+sentence embedder is a *worse* word-table teacher than MiniLM (0.595/0.064),
+because single words are not its input regime. Its Tokenlearn-compiled
+static form (potion-multilingual-128M, whose teacher IS bge-m3) jumps to
+0.622 — compilation into static token vectors is the load-bearing step.
+English retrieval-tuned potions win: potion-base-32M 0.671/0.072,
+**potion-retrieval-32M 0.680/0.080** (the production choice), with SBERT's
+static-retrieval-mrl-en-v1 close (0.670/0.081). Lesson: pick teachers by
+*static-token-vector* quality, never sentence-benchmark rank.
+
+**Vocabulary scaling** (potion-retrieval-32M teacher): 30k words → 0.680,
+60k → 0.699, 100k → 0.705 (within noise of 60k; ±0.014 at n=1120). Coverage
+was most of the residual gap to the teacher's native 0.722, and it
+saturates at 60k — the shipped table (`fastword_table_v4`, 60,151 words,
+1.1 GB f16, ~33 µs/challenge) sits at **97% of its teacher's routing
+quality with the algebra and the 80-byte form intact**.
+
+**Where the method ends — BEIR dbpedia-entity, full 4.64M corpus**
+(`exp_m3_beir_dbpedia.py`; graded nDCG@10, all 43,515 judged docs present).
+Open-web *entity* search with short keyword queries is the measured
+boundary: the MiniLM-taught v1 table scores 0.081 two-stage (compact-alone
+0.040, shortlist recall@100 0.143 — the compact stage is the bottleneck at
+this scale), released potion-8M dense scores 0.224, and published BM25
+sits near 0.313 (literature anchor, unverified) — everything static loses
+to lexical BM25 here, and our word table loses worst: entity names are
+exactly the tail vocabulary a corpus-DF word list misses. (Caveat: this run
+predates the ladder — it used the weakest table (v1); the v4 number would
+improve but not close a 3× gap.) The table's validated domain is routing,
+temporal placement, and known-corpus retrieval — not open-vocabulary web
+entity search.
+
 ---
 
 ## 6. What did not work (measured)
@@ -387,6 +432,12 @@ queries delegates ~99% of NYT queries.
 - **BPE token IDs as table keys** (0.152 vs 0.173 words even without distillation):
   subword fragments don't carry lexical semantics; the tokenizer's vocabulary is
   the wrong unit for a semantic table.
+- **bge-m3 as a direct word-table teacher** (0.566 routing — below MiniLM's
+  0.595): sentence-embedder strength is the wrong selection axis; the same
+  model's knowledge works once Tokenlearn-compiled to static form (§5.8).
+- **Open-vocabulary web entity search** (BEIR dbpedia-entity, §5.8): the
+  word table's weakest measured regime — 0.081 nDCG@10 vs published BM25's
+  ~0.313; tail entity vocabulary defeats a corpus-DF word list.
 
 ---
 
@@ -418,8 +469,10 @@ queries delegates ~99% of NYT queries.
 **model2vec / potion** distill sentence encoders into static token tables (our
 steps 1–3 follow their recipe); we differ in the target space (structured qFHRR
 blocks, not free dense space), the signal-code blend, and the resulting
-algebra/storage properties. A head-to-head against released model2vec checkpoints
-is queued work. **BEAGLE** (Jones & Mewhort) is the classic distributional
+algebra/storage properties. The head-to-head is now measured (§5.8): the
+recipe is teacher-portable, potion-retrieval-32M is the best teacher found,
+and the shipped table reaches 97% of its teacher's routing quality while
+keeping the algebra. **BEAGLE** (Jones & Mewhort) is the classic distributional
 hypervector memory — measured negative here at our scale. **NVSA block codes**
 (Hersche et al.) and **qFHRR** (Snyder, Poursiami, Parsa) supply the substrate and
 its integer-phase reading; our contribution is putting distilled semantic geometry
@@ -458,6 +511,10 @@ that is the property that matters.
 | Injection / chase (§5.6) | `validation/exp_m3_injection.py` | `logs/exp_m3_injection.{log,json}` |
 | Temporal worlds / causal / delegation (§5.7) | `validation/exp_m3_temporal_causal.py` | `logs/exp_m3_temporal_causal.{log,json}` |
 | NYT year-worlds (§5.7) | `validation/exp_m3_nyt_years.py` | `logs/exp_m3_nyt_years.{log,json}` |
+| potion head-to-head + blend (§5.8) | `validation/exp_m3_potion_baseline.py` | `logs/exp_m3_potion_baseline.{log,json}`, `logs/exp_m3_potion_blend0.log` |
+| Teacher ladder incl. bge-m3 negative (§5.8) | `validation/exp_m3_teacher_ladder.py` | `logs/exp_m3_teacher_ladder.{log,json}`, `logs/exp_m3_bgem3_block_arm.log` |
+| Vocab scaling 30k/60k/100k (§5.8) | `mowm/scripts/build_fastword_table.py --top-words` | `logs/exp_m3_table_{v2,60k,100k}_validation.log`, build logs beside the npz files on D: |
+| BEIR dbpedia-entity (§5.8) | `validation/exp_m3_beir_dbpedia.py` | `logs/exp_m3_beir_dbpedia.{log,json}` |
 | Production table build | `mowm/scripts/build_fastword_table.py` | `D:\CUBBY-TRAINED-MODELS\fastword_table_v1.npz.build.log` |
 | Bridge wiring + tests (§3.4) | `mowm/bridges/cubby_bridge.py` | `mowm/tests/test_cubby_bridge.py` (6 green) |
 

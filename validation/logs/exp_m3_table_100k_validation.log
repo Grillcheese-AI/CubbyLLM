@@ -1,0 +1,5 @@
+candidate meta: {'teacher': 'm2v:minishlab/potion-retrieval-32M', 'n_words': 100091, 'top_words': 100000, 'docs': 100000}
+ladder: v3(30k) 0.6795 | v4(60k) 0.6991 | potion-native 0.7223
+  100k-candidate   macro 0.7045 micro 0.7045 auc 0.6468 @ 1042 us/passage
+ladder NYT: v3 exact 0.0799/15 | v4 0.0760/15
+  100k-candidate   exact 0.0759 ±10y 0.4063 MAE med 15 mean 28
