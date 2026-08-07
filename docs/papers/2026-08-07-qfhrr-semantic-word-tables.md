@@ -377,37 +377,82 @@ strength plus vocabulary coverage. A blend sweep confirms the 0.5
 signal-code blend optimal (0/0.25 lose on both screens): exact-surface
 sharpness is load-bearing even under a strong teacher.
 
-**The teacher ladder** (routing macro / NYT exact, all → block space, same
-recipe): raw **bge-m3 0.566/0.070** — a measured *negative*: a far stronger
-sentence embedder is a *worse* word-table teacher than MiniLM (0.595/0.064),
-because single words are not its input regime. Its Tokenlearn-compiled
-static form (potion-multilingual-128M, whose teacher IS bge-m3) jumps to
-0.622 — compilation into static token vectors is the load-bearing step.
-English retrieval-tuned potions win: potion-base-32M 0.671/0.072,
-**potion-retrieval-32M 0.680/0.080** (the production choice), with SBERT's
-static-retrieval-mrl-en-v1 close (0.670/0.081). Lesson: pick teachers by
-*static-token-vector* quality, never sentence-benchmark rank.
+**The teacher ladder.** Every teacher distilled into block space through the
+identical recipe; native endpoints for reference:
 
-**Vocabulary scaling** (potion-retrieval-32M teacher): 30k words → 0.680,
-60k → 0.699, 100k → 0.705 (within noise of 60k; ±0.014 at n=1120). Coverage
-was most of the residual gap to the teacher's native 0.722, and it
-saturates at 60k — the shipped table (`fastword_table_v4`, 60,151 words,
-1.1 GB f16, ~33 µs/challenge) sits at **97% of its teacher's routing
-quality with the algebra and the 80-byte form intact**.
+| teacher → block space | teacher dim | routing macro | NYT exact | NYT MAE med |
+|---|---|---|---|---|
+| bge-m3 (GGUF Q8, direct) | 1024 | 0.566 | 0.070 | 17 |
+| all-MiniLM-L6-v2 (= v1 table) | 384 | 0.595 | 0.064 | 19 |
+| potion-multilingual-128M | 256 | 0.622 | 0.069 | 17 |
+| potion-base-8M (= v2 table) | 256 | 0.646 | 0.069 | 17 |
+| static-retrieval-mrl-en-v1 | 1024 | 0.670 | **0.081** | 15 |
+| **potion-retrieval-32M (= v3 table)** | 512 | **0.680** | 0.080 | **15** |
+| *potion-base-8M, native (no block space)* | 256 | *0.722* | *0.044* | *22* |
+| *all-MiniLM-L6-v2, live (the ceiling)* | 384 | *0.797* | *0.046* | *21* |
+
+Raw **bge-m3 is a measured negative**: a far stronger sentence embedder is a
+*worse* word-table teacher than MiniLM, because single words are not its
+input regime — while its Tokenlearn-compiled static form
+(potion-multilingual-128M, whose teacher IS bge-m3) jumps to 0.622.
+Compilation into static token vectors is the load-bearing step; retrieval
+tuning stacks on top. Lesson: pick teachers by *static-token-vector*
+quality, never sentence-benchmark rank. Note also the NYT column: every
+block-space table out-dates both native models — the word+IDF+block recipe
+is the better serving form for temporal placement regardless of teacher.
+
+**Vocabulary scaling** (potion-retrieval-32M teacher, same recipe):
+
+| vocab | routing macro | NYT exact / MAE med | axiom screen | table size |
+|---|---|---|---|---|
+| 30k (v3) | 0.680 | 0.080 / 15 | 0.313 | 573 MB |
+| **60k (v4, shipped)** | **0.699** | 0.076 / 15 | 0.309 | 1.1 GB |
+| 100k | 0.705 (±0.014 noise) | 0.076 / 15 | 0.310 | 1.9 GB |
+| *teacher native ceiling* | *0.722* | — | — | — |
+
+Coverage was most of the residual gap and saturates at 60k: the shipped
+table (`fastword_table_v4`, 60,151 words, ~33 µs/challenge) sits at **97% of
+its teacher's routing quality with the algebra and the 80-byte form intact**.
 
 **Where the method ends — BEIR dbpedia-entity, full 4.64M corpus**
 (`exp_m3_beir_dbpedia.py`; graded nDCG@10, all 43,515 judged docs present).
-Open-web *entity* search with short keyword queries is the measured
-boundary: the MiniLM-taught v1 table scores 0.081 two-stage (compact-alone
-0.040, shortlist recall@100 0.143 — the compact stage is the bottleneck at
-this scale), released potion-8M dense scores 0.224, and published BM25
-sits near 0.313 (literature anchor, unverified) — everything static loses
-to lexical BM25 here, and our word table loses worst: entity names are
-exactly the tail vocabulary a corpus-DF word list misses. (Caveat: this run
-predates the ladder — it used the weakest table (v1); the v4 number would
-improve but not close a 3× gap.) The table's validated domain is routing,
-temporal placement, and known-corpus retrieval — not open-vocabulary web
-entity search.
+Open-web *entity* search with short keyword queries is the measured boundary:
+
+| arm | store form | nDCG@10 | recall@100 |
+|---|---|---|---|
+| table v1, compact only | 80 B/doc (371 MB) | 0.040 | 0.143 |
+| table v1, two-stage | compact + dense rerank | 0.081 | 0.143 |
+| potion-8M, dense | 256-d f16 (2.4 GB) | 0.224 | 0.352 |
+| *BM25 (published, unverified)* | inverted index | *~0.313* | — |
+
+Everything static loses to lexical BM25 here, and the word table loses
+worst: entity names are exactly the tail vocabulary a corpus-DF word list
+misses, and the compact shortlist's 0.143 recall@100 caps the pipeline.
+(The run used the weakest table (v1) — it predates the ladder; a v4 rerun
+is in flight and will be recorded here, but a 3× gap will not close on
+teacher quality alone.) The table's validated domain is routing, temporal
+placement, and known-corpus retrieval — not open-vocabulary web entity
+search.
+
+**The cascade, measured — and no longer needed for its original purpose**
+(`exp_m3_cascade.py`; v4 table + MiniLM, teacher consulted only inside an
+ambiguity band of width δ around the route/spawn decision boundary):
+
+| δ | teacher calls | spawn detect | closed routed | routed precision | est. µs/challenge |
+|---|---|---|---|---|---|
+| 0 (pure table) | 0% | **0.956** | 0.355 | **0.935** | 1,284 |
+| 0.01 | 15% | 0.956 | 0.372 | 0.928 | 3,736 |
+| 0.05 | 61% | 0.894 | 0.430 | 0.925 | 11,130 |
+| ∞ (pure teacher) | 100% | 0.869 | 0.539 | 0.930 | 17,546 |
+
+The confidence gap that motivated the cascade closed at the source: on the
+same split and statistic, v4's closed-vs-open AUC is **0.690 vs the
+teacher's 0.707** (the earlier 0.666-vs-0.825 comparison was the v1 table
+on a different protocol). The pure-table point is the *most conservative
+and most precise* operating profile; escalation trades spawn detection
+*down* for routing coverage at up to 13× latency. Verdict: the cascade is
+a **coverage lever** for deployments that prefer routing over spawning —
+not a confidence fix, because the teacher ladder already delivered that.
 
 ---
 
@@ -443,10 +488,12 @@ entity search.
 
 ## 7. Limitations
 
-1. **Confidence, not accuracy, is the gap.** Routing decisions match the teacher
-   closely, but the *score distribution* separates known from novel less cleanly
-   (open-set AUC 0.666 vs 0.825). A cascade — teacher consulted only inside the
-   ambiguous margin band — is the designed-but-unbuilt answer.
+1. **Confidence was the gap — and the teacher upgrade closed it.** The v1
+   table separated known from novel less cleanly than the teacher (open-set
+   AUC 0.666 vs 0.825); with v4 the same-split, same-statistic comparison is
+   0.690 vs 0.707, and the measured cascade (§5.8) showed escalation no
+   longer buys confidence — only routing coverage. The residual limitation
+   is that all such τ-based profiles remain deployment-calibrated.
 2. **No word order.** The encoder is a weighted bag of words; every n-gram and
    phase-binding variant we measured cost more than it bought at these scales.
    Tasks where order is the signal will need the binding layer above the table.
@@ -514,7 +561,8 @@ that is the property that matters.
 | potion head-to-head + blend (§5.8) | `validation/exp_m3_potion_baseline.py` | `logs/exp_m3_potion_baseline.{log,json}`, `logs/exp_m3_potion_blend0.log` |
 | Teacher ladder incl. bge-m3 negative (§5.8) | `validation/exp_m3_teacher_ladder.py` | `logs/exp_m3_teacher_ladder.{log,json}`, `logs/exp_m3_bgem3_block_arm.log` |
 | Vocab scaling 30k/60k/100k (§5.8) | `mowm/scripts/build_fastword_table.py --top-words` | `logs/exp_m3_table_{v2,60k,100k}_validation.log`, build logs beside the npz files on D: |
-| BEIR dbpedia-entity (§5.8) | `validation/exp_m3_beir_dbpedia.py` | `logs/exp_m3_beir_dbpedia.{log,json}` |
+| BEIR dbpedia-entity (§5.8) | `validation/exp_m3_beir_dbpedia.py` | `logs/exp_m3_beir_dbpedia.{log,json}` (+ `_v4` when the rerun lands) |
+| Cascade (§5.8) | `validation/exp_m3_cascade.py` | `logs/exp_m3_cascade.{log,json}` |
 | Production table build | `mowm/scripts/build_fastword_table.py` | `D:\CUBBY-TRAINED-MODELS\fastword_table_v1.npz.build.log` |
 | Bridge wiring + tests (§3.4) | `mowm/bridges/cubby_bridge.py` | `mowm/tests/test_cubby_bridge.py` (6 green) |
 
