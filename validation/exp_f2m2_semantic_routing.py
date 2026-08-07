@@ -52,9 +52,13 @@ NPZ_NOTE = (
     "advantage was later shown to be a codebook-leakage artifact and is RETRACTED "
     "(validation/logs/exp_f2m2_leakage_ref.json / _t-ctx.json); (2) `centroids` IS "
     "that leakage-contaminated codebook, fit on all 280 formulas including the "
-    "held-out item; (3) every roc_auc here sits at or below its measured null "
-    "(validation/logs/exp_f2m2_null_baseline.json), so no tau_match in this file is "
-    "a usable threshold -- M1's tau_match = 0.35 is NOT replaced by any M2 number. "
+    "held-out item; (3) `roc_auc` is that same pq variant's and inherits the same "
+    "retraction -- on t-ctx it sits BELOW its measured null (0.0915 vs the one-hot "
+    "null 0.1605 +/- 0.0162, validation/logs/exp_f2m2_null_baseline.json), and even "
+    "where the AUC does clear its null the threshold does not transfer, because "
+    "these taus are one-hot block-code cosines (81 levels at K=80) from a "
+    "CROSS-MODAL corpus while M1's 0.35 is a k=4/l=32 cosine. M1's tau_match = 0.35 "
+    "is NOT replaced by any M2 number. "
     "Nothing in CubbyLLM or mowm reads this file: the consumer it was written for "
     "(the mowm-side semantic path) was gated out by the Stage-1 kill criterion and "
     "never built. Kept as a record of the screen. See CUBBYLLM_HYPOTHESES.md, "
@@ -1075,16 +1079,22 @@ def main() -> None:
         # --stage2 runs carry the same note from the savez call.
         for arm in ("ref", "t-ctx"):
             p = ROOT / "data" / f"axiom_embeddings_{arm}.npz"
+            stamped = ("note", "retracted")
             with np.load(p, allow_pickle=False) as z:
                 before = {k: z[k] for k in z.files}
-            after = dict(before) | {"note": np.array(NPZ_NOTE),
-                                    "retracted": np.array(NPZ_RETRACTED)}
-            np.savez_compressed(p, **after)
+            # The DATA keys must survive byte-for-byte; the stamp keys are the
+            # ones being (re)written, so they are excluded from that check and
+            # verified against the current constants instead. Re-annotating with
+            # a corrected note must stay possible without tripping the guard.
+            data_keys = {k: v for k, v in before.items() if k not in stamped}
+            np.savez_compressed(p, **(data_keys | {"note": np.array(NPZ_NOTE),
+                                                   "retracted": np.array(NPZ_RETRACTED)}))
             with np.load(p, allow_pickle=False) as z:
-                for k, v in before.items():
+                assert set(z.files) == set(data_keys) | set(stamped), z.files
+                for k, v in data_keys.items():
                     assert np.array_equal(z[k], v), f"{p.name}: {k} changed"
                 assert str(z["note"]) == NPZ_NOTE and str(z["retracted"]) == NPZ_RETRACTED
-            print(f"annotated {p} ({len(before)} pre-existing keys verified unchanged)")
+            print(f"annotated {p} ({len(data_keys)} data keys verified unchanged)")
         return
     if args.stage1:
         out = run_stage1()
