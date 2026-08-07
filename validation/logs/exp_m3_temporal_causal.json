@@ -1,0 +1,309 @@
+{
+ "config": {
+  "noise_seeds": 3,
+  "with_ref": true
+ },
+ "n_events": 4000,
+ "encode_us_per_text": 415.53353749998223,
+ "results": {
+  "table": {
+   "era": {
+    "macro": 0.6686802207282815,
+    "micro": 0.6955,
+    "per_era": {
+     "Ancient": 0.8078602620087336,
+     "Early_Modern": 0.6194398682042833,
+     "Industrial": 0.6158940397350994,
+     "Medieval": 0.5620253164556962,
+     "Modern": 0.6995447647951442,
+     "Neolithic": 0.7073170731707317
+    }
+   },
+   "n_year_worlds": 239,
+   "n_events_in_year_worlds": 3783,
+   "year_flat": {
+    "n": 3980,
+    "n_own_world": 3783,
+    "exact": 0.7353951890034365,
+    "within10": 0.8045226130653267,
+    "within50": 0.8992462311557788,
+    "mae_mean": 79.84572864321608,
+    "mae_median": 0.0,
+    "comparisons": 239
+   },
+   "year_hier": {
+    "n": 3980,
+    "n_own_world": 3783,
+    "exact": 0.542162305048903,
+    "within10": 0.5964824120603015,
+    "within50": 0.6952261306532663,
+    "mae_mean": 197.2675879396985,
+    "mae_median": 0.0,
+    "comparisons": 59.10075376884422
+   },
+   "causal_event_to_impact": {
+    "hit1": 0.337,
+    "hit5": 0.631,
+    "hit20": 0.82825,
+    "mrr": 0.47234902319086425,
+    "strict_hit1": 0.04125,
+    "strict_mrr": 0.10932030507067457,
+    "chance_hit1": 0.00025
+   },
+   "causal_impact_to_event": {
+    "strict_hit1": 0.031,
+    "strict_mrr": 0.08436319039231639
+   },
+   "forward": {
+    "n": 3956,
+    "frac_later": 0.551567239635996,
+    "matched_null": 0.4464357706225177
+   },
+   "delegation": {
+    "tau=0.0": {
+     "found": 0.5430295331851381,
+     "answer_year_exact": 0.9215624007621467,
+     "answer_year_within50": 0.9834868212130835,
+     "mean_worlds_consulted": 1.0,
+     "mean_member_comparisons": 28.024769768180374,
+     "frac_delegated": 0.0
+    },
+    "tau=0.3": {
+     "found": 0.5430295331851381,
+     "answer_year_exact": 0.9215624007621467,
+     "answer_year_within50": 0.9834868212130835,
+     "mean_worlds_consulted": 1.0006351222610352,
+     "mean_member_comparisons": 28.03048586852969,
+     "frac_delegated": 0.00031756113051762465
+    },
+    "tau=0.4": {
+     "found": 0.5442997777072086,
+     "answer_year_exact": 0.9231502064147349,
+     "answer_year_within50": 0.9850746268656716,
+     "mean_worlds_consulted": 1.021911718005716,
+     "mean_member_comparisons": 28.402032391235313,
+     "frac_delegated": 0.0025404890441409972
+    },
+    "tau=0.5": {
+     "found": 0.5471578278818673,
+     "answer_year_exact": 0.9269609399809463,
+     "answer_year_within50": 0.9882502381708479,
+     "mean_worlds_consulted": 1.3108923467767546,
+     "mean_member_comparisons": 33.21816449666561,
+     "frac_delegated": 0.007939028262940616
+    },
+    "tau=0.6": {
+     "found": 0.5538266116227374,
+     "answer_year_exact": 0.9358526516354398,
+     "answer_year_within50": 0.9914258494760241,
+     "mean_worlds_consulted": 3.1533820260400125,
+     "mean_member_comparisons": 62.777707208637665,
+     "frac_delegated": 0.024134645919339472
+    },
+    "tau=1.01": {
+     "found": 0.554144172753255,
+     "answer_year_exact": 0.9415687519847571,
+     "answer_year_within50": 0.9917434106065418,
+     "mean_worlds_consulted": 239.0,
+     "mean_member_comparisons": 3783.0,
+     "frac_delegated": 1.0
+    },
+    "flat_member_comparisons": 3783,
+    "n_challenges": 3149
+   },
+   "gradient": {
+    "0-10": [
+     0.34197017550468445,
+     429
+    ],
+    "10-25": [
+     0.31156831979751587,
+     665
+    ],
+    "25-50": [
+     0.30033057928085327,
+     1036
+    ],
+    "50-100": [
+     0.2885788679122925,
+     1694
+    ],
+    "100-250": [
+     0.28417497873306274,
+     3308
+    ],
+    "250-500": [
+     0.262121319770813,
+     3896
+    ],
+    "500-100000": [
+     0.2505080997943878,
+     17413
+    ]
+   }
+  },
+  "table_masked": {
+   "era": {
+    "macro": 0.669449185183807,
+    "micro": 0.696,
+    "per_era": {
+     "Ancient": 0.8043668122270743,
+     "Early_Modern": 0.6260296540362438,
+     "Industrial": 0.6158940397350994,
+     "Medieval": 0.5620253164556962,
+     "Modern": 0.701062215477997,
+     "Neolithic": 0.7073170731707317
+    }
+   },
+   "year_flat": {
+    "n": 3980,
+    "n_own_world": 3783,
+    "exact": 0.7348665080623844,
+    "within10": 0.8037688442211055,
+    "within50": 0.8982412060301508,
+    "mae_mean": 79.15778894472362,
+    "mae_median": 0.0,
+    "comparisons": 239
+   },
+   "year_hier": {
+    "n": 3980,
+    "n_own_world": 3783,
+    "exact": 0.542162305048903,
+    "within10": 0.5962311557788945,
+    "within50": 0.6952261306532663,
+    "mae_mean": 196.6854271356784,
+    "mae_median": 0.0,
+    "comparisons": 59.08743718592965
+   }
+  },
+  "ref": {
+   "era": {
+    "macro": 0.7126679450153368,
+    "micro": 0.71575,
+    "per_era": {
+     "Ancient": 0.8104803493449781,
+     "Early_Modern": 0.7331136738056013,
+     "Industrial": 0.5982339955849889,
+     "Medieval": 0.6,
+     "Modern": 0.6927162367223065,
+     "Neolithic": 0.8414634146341463
+    }
+   },
+   "n_year_worlds": 239,
+   "n_events_in_year_worlds": 3783,
+   "year_flat": {
+    "n": 3980,
+    "n_own_world": 3783,
+    "exact": 0.7470261697065821,
+    "within10": 0.8123115577889447,
+    "within50": 0.8917085427135678,
+    "mae_mean": 67.13768844221106,
+    "mae_median": 0.0,
+    "comparisons": 239
+   },
+   "year_hier": {
+    "n": 3980,
+    "n_own_world": 3783,
+    "exact": 0.5622521808088818,
+    "within10": 0.6188442211055276,
+    "within50": 0.7103015075376884,
+    "mae_mean": 170.52914572864321,
+    "mae_median": 0.0,
+    "comparisons": 58.03266331658291
+   },
+   "causal_event_to_impact": {
+    "hit1": 0.44775,
+    "hit5": 0.75675,
+    "hit20": 0.94575,
+    "mrr": 0.5878743168979459,
+    "strict_hit1": 0.0865,
+    "strict_mrr": 0.20099333974996386,
+    "chance_hit1": 0.00025
+   },
+   "causal_impact_to_event": {
+    "strict_hit1": 0.0745,
+    "strict_mrr": 0.18549880977379926
+   },
+   "forward": {
+    "n": 3956,
+    "frac_later": 0.5497977755308392,
+    "matched_null": 0.4464357706225177
+   },
+   "delegation": {
+    "tau=0.0": {
+     "found": 0.554144172753255,
+     "answer_year_exact": 0.9167989838043823,
+     "answer_year_within50": 0.9815814544299778,
+     "mean_worlds_consulted": 1.0,
+     "mean_member_comparisons": 27.87583359796761,
+     "frac_delegated": 0.0
+    },
+    "tau=0.3": {
+     "found": 0.554144172753255,
+     "answer_year_exact": 0.9167989838043823,
+     "answer_year_within50": 0.9815814544299778,
+     "mean_worlds_consulted": 1.0006351222610352,
+     "mean_member_comparisons": 27.879961892664337,
+     "frac_delegated": 0.0006351222610352493
+    },
+    "tau=0.4": {
+     "found": 0.5547792950142902,
+     "answer_year_exact": 0.9174341060654176,
+     "answer_year_within50": 0.982216576691013,
+     "mean_worlds_consulted": 1.0371546522705621,
+     "mean_member_comparisons": 28.34328358208955,
+     "frac_delegated": 0.0006351222610352493
+    },
+    "tau=0.5": {
+     "found": 0.5554144172753255,
+     "answer_year_exact": 0.9180692283264529,
+     "answer_year_within50": 0.982216576691013,
+     "mean_worlds_consulted": 1.0587488091457606,
+     "mean_member_comparisons": 28.738329628453478,
+     "frac_delegated": 0.0028580501746586218
+    },
+    "tau=0.6": {
+     "found": 0.559225150841537,
+     "answer_year_exact": 0.9231502064147349,
+     "answer_year_within50": 0.9863448713877422,
+     "mean_worlds_consulted": 1.1610034931724358,
+     "mean_member_comparisons": 30.635757383296284,
+     "frac_delegated": 0.009844395046046363
+    },
+    "tau=1.01": {
+     "found": 0.5766910130200064,
+     "answer_year_exact": 0.94919021911718,
+     "answer_year_within50": 0.9914258494760241,
+     "mean_worlds_consulted": 239.0,
+     "mean_member_comparisons": 3783.0,
+     "frac_delegated": 1.0
+    },
+    "flat_member_comparisons": 3783,
+    "n_challenges": 3149
+   },
+   "batched_us_per_text": 3457.4197250000225
+  }
+ },
+ "noise_null": {
+  "era_macro": [
+   0.16256427276882432,
+   0.006230413584069564
+  ],
+  "year_exact": [
+   0.004581901489117984,
+   0.0006938063154473358
+  ],
+  "year_mae_median": [
+   729.8333333333334,
+   53.368738248362426
+  ],
+  "causal_hit1": [
+   0.0025833333333333333,
+   0.0005892556509887896
+  ],
+  "forward_frac": [
+   0.44598921469497804,
+   0.001326930885408128
+  ]
+ }
+}

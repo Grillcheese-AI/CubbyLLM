@@ -1,0 +1,34 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+table fastword_table_v1.npz | nyt_data (100/year)
+
+14700 texts across 147 years (1852..2024, median 100/year)
+encoded in 7s (478 us/text)
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 7557.44it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+=== table
+  year  exact 0.064 ±1y 0.114 ±5y 0.243 ±10y 0.354 ±25y 0.573 MAE med 19 mean 34
+  gradient 0-2:0.918 2-5:0.910 5-10:0.900 10-25:0.889 25-50:0.872 50-100:0.855 100-200:0.857
+  delegation (n=14700, flat=14700):
+    tau=0.0   yr-exact 0.064 ±50y 0.753 worlds   1.0 member-cmps    100 delegated 0.00
+    tau=0.4   yr-exact 0.068 ±50y 0.787 worlds  82.0 member-cmps   8204 delegated 0.84
+    tau=0.5   yr-exact 0.067 ±50y 0.791 worlds 131.5 member-cmps  13155 delegated 0.97
+    tau=0.6   yr-exact 0.068 ±50y 0.790 worlds 143.5 member-cmps  14350 delegated 0.99
+    tau=1.01  yr-exact 0.069 ±50y 0.791 worlds 147.0 member-cmps  14700 delegated 1.00
+=== ref
+  year  exact 0.046 ±1y 0.098 ±5y 0.228 ±10y 0.338 ±25y 0.569 MAE med 21 mean 32
+  delegation (n=14700, flat=14700):
+    tau=0.0   yr-exact 0.046 ±50y 0.783 worlds   1.0 member-cmps    100 delegated 0.00
+    tau=0.4   yr-exact 0.051 ±50y 0.791 worlds  14.4 member-cmps   1435 delegated 0.60
+    tau=0.5   yr-exact 0.061 ±50y 0.782 worlds  84.4 member-cmps   8440 delegated 0.91
+    tau=0.6   yr-exact 0.065 ±50y 0.781 worlds 131.0 member-cmps  13096 delegated 0.98
+    tau=1.01  yr-exact 0.068 ±50y 0.781 worlds 147.0 member-cmps  14700 delegated 1.00
+noise null: {'exact': [0.0064, 0.0007], 'within10': [0.1198, 0.0007], 'mae_median': [50.6667, 0.4714]}
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_nyt_years.json

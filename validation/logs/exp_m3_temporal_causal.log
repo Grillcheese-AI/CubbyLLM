@@ -1,0 +1,50 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+table fastword_table_v1.npz | events train_augmented.jsonl
+
+4000 events | eras {'Ancient': 1145, 'Medieval': 395, 'Early_Modern': 607, 'Industrial': 453, 'Modern': 1318, 'Neolithic': 82}
+deep-time events excluded from year-level metrics: 20
+event groups: 1349 (3187 rows are duplicates of another row's event)
+encoded 8000 texts (416 us/text)
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 6412.45it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+=== table
+  era     macro 0.669 micro 0.696
+  year_flat exact 0.735 ±10y 0.805 ±50y 0.899 MAE med 0 (cmp 239)
+  year_hier exact 0.542 ±10y 0.596 ±50y 0.695 MAE med 0 (cmp 59)
+  causal  e->i hit@1 0.337 hit@5 0.631 MRR 0.472 (chance 0.00025)
+  forward frac-later 0.552 vs null 0.446 (n=3956)
+  delegation (n=3149, flat=3783 member cmps):
+    tau=0.0   found 0.543 yr-exact 0.922 worlds   1.0 member-cmps     28 delegated 0.00
+    tau=0.3   found 0.543 yr-exact 0.922 worlds   1.0 member-cmps     28 delegated 0.00
+    tau=0.4   found 0.544 yr-exact 0.923 worlds   1.0 member-cmps     28 delegated 0.00
+    tau=0.5   found 0.547 yr-exact 0.927 worlds   1.3 member-cmps     33 delegated 0.01
+    tau=0.6   found 0.554 yr-exact 0.936 worlds   3.2 member-cmps     63 delegated 0.02
+    tau=1.01  found 0.554 yr-exact 0.942 worlds 239.0 member-cmps   3783 delegated 1.00
+  gradient 0-10:0.342 10-25:0.312 25-50:0.300 50-100:0.289 100-250:0.284 250-500:0.262 500-100000:0.251
+=== table_masked
+  era     macro 0.669 micro 0.696
+  year_flat exact 0.735 ±10y 0.804 ±50y 0.898 MAE med 0 (cmp 239)
+  year_hier exact 0.542 ±10y 0.596 ±50y 0.695 MAE med 0 (cmp 59)
+=== ref
+  era     macro 0.713 micro 0.716
+  year_flat exact 0.747 ±10y 0.812 ±50y 0.892 MAE med 0 (cmp 239)
+  year_hier exact 0.562 ±10y 0.619 ±50y 0.710 MAE med 0 (cmp 58)
+  causal  e->i hit@1 0.448 hit@5 0.757 MRR 0.588 (chance 0.00025)
+  forward frac-later 0.550 vs null 0.446 (n=3956)
+  delegation (n=3149, flat=3783 member cmps):
+    tau=0.0   found 0.554 yr-exact 0.917 worlds   1.0 member-cmps     28 delegated 0.00
+    tau=0.3   found 0.554 yr-exact 0.917 worlds   1.0 member-cmps     28 delegated 0.00
+    tau=0.4   found 0.555 yr-exact 0.917 worlds   1.0 member-cmps     28 delegated 0.00
+    tau=0.5   found 0.555 yr-exact 0.918 worlds   1.1 member-cmps     29 delegated 0.00
+    tau=0.6   found 0.559 yr-exact 0.923 worlds   1.2 member-cmps     31 delegated 0.01
+    tau=1.01  found 0.577 yr-exact 0.949 worlds 239.0 member-cmps   3783 delegated 1.00
+noise null: {'era_macro': [0.1626, 0.0062], 'year_exact': [0.0046, 0.0007], 'year_mae_median': [729.8333, 53.3687], 'causal_hit1': [0.0026, 0.0006], 'forward_frac': [0.446, 0.0013]}
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_temporal_causal.json

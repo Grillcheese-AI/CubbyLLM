@@ -1,0 +1,174 @@
+{
+ "config": {
+  "per_year": 100,
+  "noise_seeds": 3,
+  "with_ref": true
+ },
+ "n_texts": 14700,
+ "n_year_worlds": 147,
+ "results": {
+  "table": {
+   "year_flat": {
+    "n": 14700,
+    "n_own_world": 14700,
+    "exact": 0.06380952380952382,
+    "within10": 0.3542176870748299,
+    "within50": 0.7529931972789116,
+    "mae_mean": 34.31387755102041,
+    "mae_median": 19.0,
+    "within1": 0.11414965986394558,
+    "within5": 0.24258503401360546,
+    "within25": 0.5730612244897959,
+    "comparisons": 147
+   },
+   "gradient": {
+    "0-2": [
+     0.9184585213661194,
+     125
+    ],
+    "2-5": [
+     0.9096155762672424,
+     366
+    ],
+    "5-10": [
+     0.9000386595726013,
+     599
+    ],
+    "10-25": [
+     0.8893707990646362,
+     1702
+    ],
+    "25-50": [
+     0.871504008769989,
+     2407
+    ],
+    "50-100": [
+     0.8548907041549683,
+     3476
+    ],
+    "100-200": [
+     0.8572690486907959,
+     2056
+    ]
+   },
+   "delegation": {
+    "tau=0.0": {
+     "found": 0.0,
+     "answer_year_exact": 0.06380952380952382,
+     "answer_year_within50": 0.7529931972789116,
+     "mean_worlds_consulted": 1.0,
+     "mean_member_comparisons": 100.0,
+     "frac_delegated": 0.0
+    },
+    "tau=0.4": {
+     "found": 0.0,
+     "answer_year_exact": 0.06802721088435375,
+     "answer_year_within50": 0.7873469387755102,
+     "mean_worlds_consulted": 82.03809523809524,
+     "mean_member_comparisons": 8203.809523809523,
+     "frac_delegated": 0.8355102040816327
+    },
+    "tau=0.5": {
+     "found": 0.0,
+     "answer_year_exact": 0.06727891156462586,
+     "answer_year_within50": 0.7906802721088435,
+     "mean_worlds_consulted": 131.54789115646258,
+     "mean_member_comparisons": 13154.78911564626,
+     "frac_delegated": 0.9680952380952381
+    },
+    "tau=0.6": {
+     "found": 0.0,
+     "answer_year_exact": 0.06775510204081632,
+     "answer_year_within50": 0.7902721088435374,
+     "mean_worlds_consulted": 143.50299319727893,
+     "mean_member_comparisons": 14350.299319727892,
+     "frac_delegated": 0.9910884353741497
+    },
+    "tau=1.01": {
+     "found": 0.0,
+     "answer_year_exact": 0.06850340136054421,
+     "answer_year_within50": 0.7906802721088435,
+     "mean_worlds_consulted": 147.0,
+     "mean_member_comparisons": 14700.0,
+     "frac_delegated": 1.0
+    },
+    "flat_member_comparisons": 14700,
+    "n_challenges": 14700
+   }
+  },
+  "ref": {
+   "year_flat": {
+    "n": 14700,
+    "n_own_world": 14700,
+    "exact": 0.046054421768707485,
+    "within10": 0.337687074829932,
+    "within50": 0.7833333333333333,
+    "mae_mean": 31.802585034013607,
+    "mae_median": 21.0,
+    "within1": 0.09768707482993197,
+    "within5": 0.22775510204081634,
+    "within25": 0.5692517006802721,
+    "comparisons": 147
+   },
+   "batched_us_per_text": 5887.093462585041,
+   "delegation": {
+    "tau=0.0": {
+     "found": 0.0,
+     "answer_year_exact": 0.046054421768707485,
+     "answer_year_within50": 0.7833333333333333,
+     "mean_worlds_consulted": 1.0,
+     "mean_member_comparisons": 100.0,
+     "frac_delegated": 0.0
+    },
+    "tau=0.4": {
+     "found": 0.0,
+     "answer_year_exact": 0.05142857142857143,
+     "answer_year_within50": 0.7914965986394558,
+     "mean_worlds_consulted": 14.353809523809524,
+     "mean_member_comparisons": 1435.3809523809523,
+     "frac_delegated": 0.6010204081632653
+    },
+    "tau=0.5": {
+     "found": 0.0,
+     "answer_year_exact": 0.060816326530612246,
+     "answer_year_within50": 0.7819727891156463,
+     "mean_worlds_consulted": 84.4,
+     "mean_member_comparisons": 8440.0,
+     "frac_delegated": 0.9085714285714286
+    },
+    "tau=0.6": {
+     "found": 0.0,
+     "answer_year_exact": 0.06517006802721088,
+     "answer_year_within50": 0.7808163265306123,
+     "mean_worlds_consulted": 130.95537414965986,
+     "mean_member_comparisons": 13095.537414965986,
+     "frac_delegated": 0.9770748299319728
+    },
+    "tau=1.01": {
+     "found": 0.0,
+     "answer_year_exact": 0.06761904761904762,
+     "answer_year_within50": 0.7806122448979592,
+     "mean_worlds_consulted": 147.0,
+     "mean_member_comparisons": 14700.0,
+     "frac_delegated": 1.0
+    },
+    "flat_member_comparisons": 14700,
+    "n_challenges": 14700
+   }
+  }
+ },
+ "noise_null": {
+  "exact": [
+   0.0064172335600907035,
+   0.0006696064879924443
+  ],
+  "within10": [
+   0.11975056689342405,
+   0.0007141957255339475
+  ],
+  "mae_median": [
+   50.666666666666664,
+   0.4714045207910317
+  ]
+ }
+}

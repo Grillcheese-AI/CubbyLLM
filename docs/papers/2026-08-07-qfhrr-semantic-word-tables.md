@@ -327,6 +327,43 @@ dilutes its embedding as much as it informs it. The load-bearing claims are the
 table's own paired improvement and the protocol asymmetry, not per-hop superiority
 over the teacher.
 
+### 5.7 Temporal worlds, causal events, and inter-world query
+
+Modeling time as *worlds* — each era and each year a world, routed by bundled
+centroid — was screened on two corpora (`exp_m3_temporal_causal.py`,
+`exp_m3_nyt_years.py`). On 4,000 curated dated events (six named eras, years
+with BC negative), the table routes eras at 0.669 macro (0.94× teacher; null
+0.163) and places events in their exact year at **0.735** over 239 year-worlds
+(0.98× teacher; noise-null MAE median ~730 years vs the table's 0). A
+digit-masked arm is identical (0.735) — placement is content, not
+date-reading. Year-world centroids decay monotonically in similarity with
+temporal distance (0.342 at Δ<10y → 0.251 at Δ>500y): "the world was not the
+same from one year to the next" is measurably in the representation. On
+14,700 real NYT abstracts (147 year-worlds, 1852–2024, timeless content
+included) **the table beats the teacher on every year metric** — MAE median
+19y vs 21y (null 50.7) — a third instance of dating and routing being
+surface-vocabulary tasks.
+
+Causal structure: each event's stated consequence (`impact`) is retrieved
+from among all 4,000 at 0.337 hit@1 / 0.631 hit@5 (0.75× teacher; chance
+0.00025), and consequence texts route to *later* year-worlds than their
+events at 55.2% vs a matched null of 44.6% — in both encoders: causality
+points forward, measurably.
+
+Two-level routing is a real trade, not a free win: gating year-choice behind
+an era gate costs ~19 points of exact-year accuracy (identically for the
+teacher) at 4× fewer comparisons. The repair is **inter-world query**: a
+consulted world answers only if its best member clears τ, else the query
+passes to the next-best world. At τ=0.6 this matches exhaustive flat
+search's answer-found rate at **63 vs 3,783 member comparisons** (60×
+cheaper, 2% of queries delegated). Two more leakage variants were caught and
+excluded en route: paraphrase-duplicate events inflating row-level LOO
+(exact-year 0.890 → honest 0.735 under event-level exclusion), and full
+centroids letting a challenge's own stored vector nudge world ranking (on
+NYT, worth 0.064 → 0.372 exact on its own). As with every threshold in this
+paper, τ is corpus-specific: the same τ=0.6 that delegates 2% of curated
+queries delegates ~99% of NYT queries.
+
 ---
 
 ## 6. What did not work (measured)
@@ -419,6 +456,8 @@ that is the property that matters.
 | Science QA (§5.4) | `validation/exp_m3_science_qa.py` | `logs/exp_m3_science_qa.{log,json}` |
 | Haystack curve (§5.5) | `validation/exp_m3_haystack.py` | `logs/exp_m3_haystack.{log,json}` |
 | Injection / chase (§5.6) | `validation/exp_m3_injection.py` | `logs/exp_m3_injection.{log,json}` |
+| Temporal worlds / causal / delegation (§5.7) | `validation/exp_m3_temporal_causal.py` | `logs/exp_m3_temporal_causal.{log,json}` |
+| NYT year-worlds (§5.7) | `validation/exp_m3_nyt_years.py` | `logs/exp_m3_nyt_years.{log,json}` |
 | Production table build | `mowm/scripts/build_fastword_table.py` | `D:\CUBBY-TRAINED-MODELS\fastword_table_v1.npz.build.log` |
 | Bridge wiring + tests (§3.4) | `mowm/bridges/cubby_bridge.py` | `mowm/tests/test_cubby_bridge.py` (6 green) |
 
