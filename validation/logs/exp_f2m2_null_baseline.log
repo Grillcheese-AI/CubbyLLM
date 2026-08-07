@@ -1,0 +1,38 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6 | torch 2.10.0+cpu | sentence-transformers 5.3.0
+checkpoint: NOT LOADED — --null-baseline uses a pure-noise encoder (no trunk, no tokenizer, no pretrained model)
+
+=== structure: corpus (15 domains, n=280) ===
+  analytic matched nulls: micro=0.1226 macro=0.0633 | for contrast: majority-class=0.3000, 1/n_domains=0.0667
+  [ gauss] micro=0.1232+/-0.0074 macro=0.0599+/-0.0098 auc=0.1133+/-0.0072 self-top1=0.0032+/-0.0026
+  [onehot] micro=0.0921+/-0.0184 macro=0.0666+/-0.0125 auc=0.1605+/-0.0162 self-top1=0.0029+/-0.0033
+
+=== structure: balanced (2 domains, n=280) ===
+  analytic matched nulls: micro=0.4982 macro=0.4982 | for contrast: majority-class=0.5000, 1/n_domains=0.5000
+  [ gauss] micro=0.5096+/-0.0219 macro=0.5096+/-0.0219 auc=0.5131+/-0.0191 self-top1=0.0032+/-0.0026
+  [onehot] micro=0.4875+/-0.0182 macro=0.4875+/-0.0182 auc=0.5170+/-0.0331 self-top1=0.0029+/-0.0033
+
+--- per-domain null, corpus structure (baseline is NOT flat) ---
+      domain   n_d   (n_d-1)/279     gauss    onehot
+      atomic    17        0.0573    0.0647    0.1529
+         bio    15        0.0502    0.0533    0.1467
+      causal    15        0.0502    0.0600    0.0733
+      colors    15        0.0502    0.0600    0.0867
+   economics    15        0.0502    0.0400    0.0533
+    ensemble    15        0.0502    0.0467    0.0533
+  historical    15        0.0502    0.0533    0.0467
+    identity    10        0.0323    0.0200    0.0700
+    language    15        0.0502    0.0467    0.0333
+ linguistics    12        0.0394    0.0333    0.0167
+       logic    15        0.0502    0.0200    0.0467
+       music    11        0.0358    0.0000    0.0273
+     physics    84        0.2975    0.3071    0.1595
+    security    15        0.0502    0.0667    0.0333
+      social    11        0.0358    0.0273    0.0000
+
+--- read ---
+  AUC null on the corpus structure is 0.1133 (gauss) / 0.1605 (onehot), NOT 0.5.
+  AUC null on a BALANCED structure is 0.5131 (gauss) -> the sub-0.5 null is a candidate-set-size artifact.
+  Empirical micro null (gauss) 0.1232 vs analytic 0.1226.
+  A one-hot noise encoder scores ABOVE the analytic macro null (0.0666 vs 0.0633) because one-hot cosines tie constantly and np.argmax breaks ties toward LOW indices, which in a domain-GROUPED corpus means the first-listed domain.
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_f2m2_null_baseline.json

@@ -22,6 +22,33 @@ K, L = 80, 128
 VSA_DIM = K * L          # 10240
 PROJ_SEED = 0
 
+# Stamped INSIDE data/axiom_embeddings_*.npz. Those files record what a Stage-2
+# run produced; they are NOT a configuration to load a threshold or a codebook
+# from. Nothing in this repo reads them, and the only place they were ever meant
+# to be consumed (the plan's Task 7, the mowm-side semantic path) was gated out
+# and never built -- exactly the "looks live, documented only by the killed
+# path's instructions" shape this repo names as an anti-pattern.
+NPZ_RETRACTED = (
+    "discretization + tau_match are RETRACTED: the pq variant won only because "
+    "its codebook was fit on the items leave-one-out excludes (leakage). See "
+    "validation/logs/exp_f2m2_leakage_*.json."
+)
+NPZ_NOTE = (
+    "RECORD, NOT CONFIGURATION. Produced by validation/exp_f2m2_semantic_routing.py "
+    "--stage2. Do NOT load `discretization`, `tau_match` or `centroids` as settings: "
+    "(1) `discretization='pq'` and its `tau_match` come from the variant whose "
+    "advantage was later shown to be a codebook-leakage artifact and is RETRACTED "
+    "(validation/logs/exp_f2m2_leakage_ref.json / _t-ctx.json); (2) `centroids` IS "
+    "that leakage-contaminated codebook, fit on all 280 formulas including the "
+    "held-out item; (3) every roc_auc here sits at or below its measured null "
+    "(validation/logs/exp_f2m2_null_baseline.json), so no tau_match in this file is "
+    "a usable threshold -- M1's tau_match = 0.35 is NOT replaced by any M2 number. "
+    "Nothing in CubbyLLM or mowm reads this file: the consumer it was written for "
+    "(the mowm-side semantic path) was gated out by the Stage-1 kill criterion and "
+    "never built. Kept as a record of the screen. See CUBBYLLM_HYPOTHESES.md, "
+    "H-F2 M2."
+)
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 # Make the repo root importable so `import cubbyllm` works without an editable
 # install — mirrors tests/conftest.py; needed because running this file
@@ -249,6 +276,48 @@ def macro_chance(domains: list[str]) -> float:
     different metrics.
     """
     return 1.0 / len(set(domains))
+
+
+# --- MATCHED nulls -----------------------------------------------------------
+# majority_class / macro_chance are baselines for a classifier that PICKS A
+# LABEL. Our metric does not pick a label -- it takes an argmax over the other
+# n-1 CANDIDATE ITEMS and reads off that item's domain. The matched null for
+# that procedure is "pick a uniformly random other item", which is a different
+# number, because a domain is hit in proportion to how many candidates it owns.
+
+def per_domain_null(domains: list[str]) -> dict:
+    """Per-domain chance for argmax-over-the-other-(n-1)-items: (n_d - 1)/(n - 1).
+
+    NOT flat. On this corpus it ranges from 9/279 = 0.032 for a 10-member domain
+    to 83/279 = 0.297 for physics (84 members), so a per-domain score must be
+    read against its OWN domain's baseline, never against one shared number.
+    """
+    n = len(domains)
+    sizes = {d: domains.count(d) for d in sorted(set(domains))}
+    return {d: (nd - 1) / (n - 1) for d, nd in sizes.items()}
+
+
+def matched_micro_null(domains: list[str]) -> float:
+    """MICRO null for argmax-over-candidates: sum_d n_d(n_d - 1) / (n(n - 1)).
+
+    The probability that a uniformly random OTHER item shares the query's
+    domain. This is the random-encoder floor; majority_class() is a different,
+    also-legitimate baseline (a strong constant strategy). Report both, labelled.
+    """
+    n = len(domains)
+    sizes = {d: domains.count(d) for d in set(domains)}
+    return sum(nd * (nd - 1) for nd in sizes.values()) / (n * (n - 1))
+
+
+def matched_macro_null(domains: list[str]) -> float:
+    """MACRO null for argmax-over-candidates: mean_d (n_d - 1)/(n - 1).
+
+    Equals sum_d (n_d - 1) / (n_domains * (n - 1)) = (n - n_domains)/(n_d*(n-1)).
+    Close to 1/n_domains but NOT equal to it (0.0633 vs 0.0667 here), because
+    excluding the query itself shrinks its own domain's candidate pool.
+    """
+    nulls = per_domain_null(domains)
+    return sum(nulls.values()) / len(nulls)
 
 
 def self_retrieval_top1(name_codes: np.ndarray, formula_codes: np.ndarray) -> float:
@@ -557,6 +626,177 @@ def run_leakage_check(arm: str) -> dict:
     return out
 
 
+NULL_KINDS = ("gauss", "onehot")
+
+
+def _null_codes(n: int, kind: str, rng: np.random.Generator) -> np.ndarray:
+    """A PURE-NOISE encoder: (n, K, L) codes carrying zero information.
+
+    `gauss` matches the dense arms' format (t-bag / t-ctx / ref after the
+    orthonormal projection, and ngram's multi-hot bundles); `onehot` matches the
+    one-hot-per-block format of the `hash` arm and of the argmax/pq discretizers,
+    where cosine quantizes to (#matching blocks)/K and exact ties are common.
+    Both are needed: a tie-heavy code interacts with np.argmax's low-index
+    tie-breaking in a way a continuous code does not.
+    """
+    if kind == "gauss":
+        return rng.standard_normal((n, K, L)).astype(np.float32)
+    if kind == "onehot":
+        out = np.zeros((n, K, L), dtype=np.float32)
+        idx = rng.integers(0, L, size=(n, K))
+        out[np.arange(n)[:, None], np.arange(K)[None, :], idx] = 1.0
+        return out
+    raise ValueError(f"unknown null kind {kind!r}; expected one of {NULL_KINDS}")
+
+
+def run_null_baseline(seeds: int = 10) -> dict:
+    """Measure the NULL of every Stage-1/Stage-2 statistic, empirically.
+
+    WHY THIS EXISTS. Three of this screen's statistics have nulls that are NOT
+    the baselines they were first read against:
+
+      * `micro` was read against the majority-class rate (0.300). That is a
+        legitimate strong baseline, but the RANDOM-ENCODER floor for an
+        argmax-over-279-candidates metric is matched_micro_null() = 0.1226.
+      * `macro` was read against 1/n_domains = 0.0667; the matched null is
+        matched_macro_null() = 0.0633.
+      * `roc_auc` was read against 0.5. It cannot be: same_cos[i] is a max over
+        (n_d - 1) same-domain candidates while diff_cos[i] is a max over
+        (n - n_d) different-domain candidates, and the max of more draws is
+        stochastically larger. On this corpus that is ~14 vs ~265 draws, so the
+        pooled unpaired statistic has a null FAR below 0.5 BY CONSTRUCTION.
+
+    Method: feed pure noise through the SHIPPED loo_domain_routing /
+    self_retrieval_top1 / recalibrate_tau (unchanged) over the real corpus's
+    domain structure, several seeds, and report mean +/- sd. The `balanced`
+    structure (two equal domains, so ~139 vs 140 candidates) is the control that
+    shows the sub-0.5 AUC null is a CANDIDATE-SET-SIZE artifact and not a defect
+    of the encoders: it should land near 0.5.
+    """
+    names, formulas, domains = load_corpus()
+    n = len(domains)
+    balanced = ["A"] * (n // 2) + ["B"] * (n - n // 2)
+    structures = {"corpus": domains, "balanced": balanced}
+
+    out = {"n": n, "seeds": seeds, "structures": {}}
+    for sname, doms in structures.items():
+        entry = {
+            "n_domains": len(set(doms)),
+            "analytic": {
+                "matched_micro_null": matched_micro_null(doms),
+                "matched_macro_null": matched_macro_null(doms),
+                "majority_class": majority_class(doms),
+                "macro_chance_1_over_n": macro_chance(doms),
+                "per_domain_null": per_domain_null(doms),
+            },
+            "kinds": {},
+        }
+        print(f"\n=== structure: {sname} ({entry['n_domains']} domains, n={n}) ===")
+        a = entry["analytic"]
+        print(f"  analytic matched nulls: micro={a['matched_micro_null']:.4f} "
+              f"macro={a['matched_macro_null']:.4f} "
+              f"| for contrast: majority-class={a['majority_class']:.4f}, "
+              f"1/n_domains={a['macro_chance_1_over_n']:.4f}")
+
+        for kind in NULL_KINDS:
+            rows = []
+            for s in range(seeds):
+                rng = np.random.default_rng(1000 + s)
+                # name and formula codes drawn INDEPENDENTLY: a "name" carries
+                # zero information about its own "formula", which is the null.
+                nc = _null_codes(n, kind, rng)
+                fc = _null_codes(n, kind, rng)
+                routed = loo_domain_routing(nc, fc, doms)
+                tau, auc = recalibrate_tau(routed["same_cos"], routed["diff_cos"])
+                rows.append({
+                    "seed": 1000 + s,
+                    "self_retrieval_top1": self_retrieval_top1(nc, fc),
+                    "micro": routed["micro"],
+                    "macro": routed["macro"],
+                    "roc_auc": auc,
+                    "tau_match": tau,
+                    "per_domain": routed["per_domain"],
+                })
+            summary = {}
+            for key in ("self_retrieval_top1", "micro", "macro", "roc_auc", "tau_match"):
+                v = np.array([r[key] for r in rows], dtype=np.float64)
+                summary[key] = {
+                    "mean": float(v.mean()), "sd": float(v.std(ddof=1)),
+                    "min": float(v.min()), "max": float(v.max()),
+                }
+            per_dom_mean = {
+                d: float(np.mean([r["per_domain"][d] for r in rows]))
+                for d in sorted(set(doms))
+            }
+            entry["kinds"][kind] = {
+                "summary": summary,
+                "per_domain_mean": per_dom_mean,
+                "per_seed": rows,
+            }
+            m = summary
+            print(f"  [{kind:>6}] micro={m['micro']['mean']:.4f}+/-{m['micro']['sd']:.4f} "
+                  f"macro={m['macro']['mean']:.4f}+/-{m['macro']['sd']:.4f} "
+                  f"auc={m['roc_auc']['mean']:.4f}+/-{m['roc_auc']['sd']:.4f} "
+                  f"self-top1={m['self_retrieval_top1']['mean']:.4f}"
+                  f"+/-{m['self_retrieval_top1']['sd']:.4f}")
+        out["structures"][sname] = entry
+
+    # Per-domain detail for the corpus structure: the baseline SCALES WITH
+    # DOMAIN SIZE, so a flat per-domain baseline does not exist.
+    print("\n--- per-domain null, corpus structure (baseline is NOT flat) ---")
+    print(f"{'domain':>12}{'n_d':>6}{'(n_d-1)/279':>14}{'gauss':>10}{'onehot':>10}")
+    corpus = out["structures"]["corpus"]
+    for d, null in sorted(corpus["analytic"]["per_domain_null"].items()):
+        nd = domains.count(d)
+        g = corpus["kinds"]["gauss"]["per_domain_mean"][d]
+        o = corpus["kinds"]["onehot"]["per_domain_mean"][d]
+        print(f"{d:>12}{nd:>6}{null:>14.4f}{g:>10.4f}{o:>10.4f}")
+
+    print("\n--- read ---")
+    cg = corpus["kinds"]["gauss"]["summary"]
+    co = corpus["kinds"]["onehot"]["summary"]
+    bg = out["structures"]["balanced"]["kinds"]["gauss"]["summary"]
+    print(f"  AUC null on the corpus structure is {cg['roc_auc']['mean']:.4f} "
+          f"(gauss) / {co['roc_auc']['mean']:.4f} (onehot), NOT 0.5.")
+    print(f"  AUC null on a BALANCED structure is {bg['roc_auc']['mean']:.4f} "
+          f"(gauss) -> the sub-0.5 null is a candidate-set-size artifact.")
+    print(f"  Empirical micro null (gauss) {cg['micro']['mean']:.4f} vs analytic "
+          f"{corpus['analytic']['matched_micro_null']:.4f}.")
+    print("  A one-hot noise encoder scores ABOVE the analytic macro null "
+          f"({co['macro']['mean']:.4f} vs "
+          f"{corpus['analytic']['matched_macro_null']:.4f}) because one-hot "
+          "cosines tie constantly and np.argmax breaks ties toward LOW indices, "
+          "which in a domain-GROUPED corpus means the first-listed domain.")
+    return out
+
+
+def _env_stamp() -> str:
+    """The environment stamp every exp_f2m2_* log carries, generated in-repo.
+
+    The earlier logs' stamps came from a one-off script that lived outside the
+    repo, which made them regenerable only by hand. This mode generates its own.
+    """
+    import platform
+
+    parts = [f"python {platform.python_version()}", platform.platform()]
+    parts.append(f"numpy {np.__version__}")
+    try:
+        import torch
+        parts.append(f"torch {torch.__version__}")
+    except Exception:                                          # pragma: no cover
+        parts.append("torch not-imported")
+    try:
+        import sentence_transformers as st
+        parts.append(f"sentence-transformers {st.__version__}")
+    except Exception:                                          # pragma: no cover
+        parts.append("sentence-transformers not-imported")
+    stamp = " | ".join(parts)
+    # This mode is PURE NOISE end to end: no checkpoint, no tokenizer, no
+    # pretrained model is opened, so there is no checkpoint identity to pin.
+    return (stamp + "\ncheckpoint: NOT LOADED — --null-baseline uses a pure-noise "
+            "encoder (no trunk, no tokenizer, no pretrained model)")
+
+
 def self_test() -> None:
     names, formulas, domains = load_corpus()
     assert len(names) == len(formulas) == len(domains) == 280
@@ -572,11 +812,48 @@ def self_test() -> None:
     # Determinism.
     assert np.array_equal(make_projection(512), make_projection(512))
 
+    # 384 is the `ref` arm's latent dim -- every `ref` headline number came from
+    # this projection, so it is exercised explicitly and not left to inference
+    # from the 512 case.
+    E384 = rng.standard_normal((16, 384)).astype(np.float32)
+    P384 = make_projection(384)
+    err384 = np.abs(
+        cosine_matrix(E384, E384) - cosine_matrix(project(P384, E384), project(P384, E384))
+    ).max()
+    assert err384 < 1e-5, f"384-D projection is not cosine-exact: max|delta|={err384:.2e}"
+
     # The hash arm emits valid, deterministic one-hot-per-block codes.
     h = hash_encode(["a", "b", "a"])
     assert h.shape == (3, K, L)
     assert np.array_equal(h.sum(axis=2), np.ones((3, K), dtype=np.float32))
     assert np.array_equal(h[0], h[2]) and not np.array_equal(h[0], h[1])
+
+    # The ngram arm. Every other encoder and discretizer is guarded here; this
+    # one produced the result the write-up calls uncomfortable (a training-free
+    # sketch beating the trained trunk), and M3's central question rests on it,
+    # so it gets asserts too -- not just shape and determinism, but THE PROPERTY
+    # THAT ACTUALLY MATTERS: bundling makes substring overlap show up as cosine.
+    g_over = "the quick brown fox"          # shares most 3-grams with g_near
+    g_near = "the quick brown dog"
+    g_far = "12345 67890"                   # 3-grams disjoint from both
+    ng = ngram_encode([g_over, g_near, g_far])
+    assert ng.shape == (3, K, L), ng.shape
+    assert np.array_equal(ng, ngram_encode([g_over, g_near, g_far]))    # deterministic
+    # Structural invariant of bundling: each unique n-gram adds 1.0 to exactly
+    # one index in EVERY block, so every block's mass equals the n-gram count.
+    n_grams = len({g_over[j:j + 3] for j in range(len(g_over) - 2)})
+    assert np.array_equal(ng[0].sum(axis=1), np.full(K, float(n_grams), dtype=np.float32))
+    # Short strings (len < n) must still emit one gram, not zero.
+    assert np.array_equal(ngram_encode(["ab"])[0].sum(axis=1),
+                          np.ones(K, dtype=np.float32))
+    ng_near = float(cosine_matrix(ng[:1], ng[1:2])[0, 0])
+    ng_far = float(cosine_matrix(ng[:1], ng[2:3])[0, 0])
+    assert ng_near > ng_far, f"ngram lost substring locality: {ng_near} !> {ng_far}"
+    assert ng_near > 0.5, f"ngram overlap cosine too low: {ng_near}"
+    # A hashed one-hot encoder has NO such property -- this is what separates
+    # the ngram arm from the hash arm, and it is the whole point of the control.
+    hh = hash_encode([g_over, g_near, g_far])
+    assert float(cosine_matrix(hh[:1], hh[1:2])[0, 0]) < ng_near
 
     # Trunk arms: shapes, determinism, and that they are NOT degenerate.
     probe = ["force equals mass times acceleration", "a cat sat on the mat"]
@@ -649,6 +926,33 @@ def self_test() -> None:
     assert abs(majority_class(skew) - 0.9) < 1e-9
     assert abs(macro_chance(skew) - 0.5) < 1e-9
 
+    # MATCHED nulls (argmax over the other n-1 items) are a THIRD thing again,
+    # distinct from both baselines above. On the real corpus they are exact
+    # rationals: micro = 9576/78120 = 19/155, macro = 265/(15*279) = 53/837.
+    assert abs(matched_micro_null(domains) - 19 / 155) < 1e-12
+    assert abs(matched_macro_null(domains) - 53 / 837) < 1e-12
+    # ... and NOT equal to the baselines they were first read against.
+    assert matched_micro_null(domains) < majority_class(domains)
+    assert matched_macro_null(domains) < macro_chance(domains)
+    # The per-domain null SCALES WITH DOMAIN SIZE -- physics (84) is ~9x
+    # identity (10), so a flat per-domain baseline does not exist.
+    pdn = per_domain_null(domains)
+    assert abs(pdn["physics"] - 83 / 279) < 1e-12
+    assert abs(pdn["identity"] - 9 / 279) < 1e-12
+    assert pdn["physics"] > 9 * pdn["identity"]
+    # On a BALANCED corpus micro and macro nulls coincide, which is the property
+    # that makes the balanced structure a clean control in --null-baseline.
+    bal = ["A"] * 140 + ["B"] * 140
+    assert abs(matched_micro_null(bal) - matched_macro_null(bal)) < 1e-12
+    # Pure-noise codes are valid inputs to the shipped metrics.
+    for kind in NULL_KINDS:
+        nz = _null_codes(6, kind, np.random.default_rng(0))
+        assert nz.shape == (6, K, L) and np.isfinite(nz).all()
+    assert np.array_equal(
+        _null_codes(6, "onehot", np.random.default_rng(0)).sum(axis=2),
+        np.ones((6, K), dtype=np.float32),
+    )
+
     # Discretizers emit valid one-hot-per-block codes; PQ is deterministic.
     # n_probe >= L=128: fit_pq now raises below that (see fit_pq's own guard), so
     # the probe must be at least as large as the real corpus's saturation regime,
@@ -694,9 +998,41 @@ def main() -> None:
     ap.add_argument("--stage1", action="store_true", help="rank embedders (dense)")
     ap.add_argument("--stage2", metavar="ARM", help="settle discretization for ARM")
     ap.add_argument("--leakage-check", metavar="ARM", help="check PQ codebook leakage for ARM")
+    ap.add_argument("--null-baseline", action="store_true",
+                    help="measure the null of macro/micro/ROC-AUC with a pure-noise encoder")
+    ap.add_argument("--annotate-npz", action="store_true",
+                    help="stamp the retraction note into the exported data/axiom_embeddings_*.npz")
+    ap.add_argument("--seeds", type=int, default=10,
+                    help="number of noise seeds for --null-baseline (default 10)")
     args = ap.parse_args()
     if args.self_test:
         self_test()
+        return
+    if args.null_baseline:
+        print(_env_stamp())
+        out = run_null_baseline(seeds=args.seeds)
+        (ROOT / "validation" / "logs").mkdir(parents=True, exist_ok=True)
+        path = ROOT / "validation" / "logs" / "exp_f2m2_null_baseline.json"
+        path.write_text(json.dumps(out, indent=1), encoding="utf-8")
+        print(f"\nwrote {path}")
+        return
+    if args.annotate_npz:
+        # Retro-annotates the two ALREADY-EXPORTED artifacts rather than
+        # re-running --stage2, so every pre-existing array stays bit-identical
+        # (asserted below) and no other measurement is disturbed. Future
+        # --stage2 runs carry the same note from the savez call.
+        for arm in ("ref", "t-ctx"):
+            p = ROOT / "data" / f"axiom_embeddings_{arm}.npz"
+            with np.load(p, allow_pickle=False) as z:
+                before = {k: z[k] for k in z.files}
+            after = dict(before) | {"note": np.array(NPZ_NOTE),
+                                    "retracted": np.array(NPZ_RETRACTED)}
+            np.savez_compressed(p, **after)
+            with np.load(p, allow_pickle=False) as z:
+                for k, v in before.items():
+                    assert np.array_equal(z[k], v), f"{p.name}: {k} changed"
+                assert str(z["note"]) == NPZ_NOTE and str(z["retracted"]) == NPZ_RETRACTED
+            print(f"annotated {p} ({len(before)} pre-existing keys verified unchanged)")
         return
     if args.stage1:
         out = run_stage1()
@@ -752,6 +1088,9 @@ def main() -> None:
             proj_seed=np.array(PROJ_SEED),
             pq_iters=np.array(25),
             pq_seed=np.array(0),
+            # FIX (whole-branch review): the artifact shipped the RETRACTED
+            # conclusion as machine-readable config with nothing in it saying so.
+            note=np.array(NPZ_NOTE), retracted=np.array(NPZ_RETRACTED),
         )
         json_path.write_text(json.dumps(res, indent=1), encoding="utf-8")
         print(f"\nwrote {npz_path} and {json_path}")
@@ -798,7 +1137,8 @@ def main() -> None:
         json_path.write_text(json.dumps(res, indent=1), encoding="utf-8")
         print(f"\nwrote {json_path}")
         return
-    raise SystemExit("pass --self-test, --stage1, --stage2 ARM, or --leakage-check ARM")
+    raise SystemExit("pass --self-test, --stage1, --stage2 ARM, --leakage-check ARM, "
+                     "--null-baseline, or --annotate-npz")
 
 
 if __name__ == "__main__":
