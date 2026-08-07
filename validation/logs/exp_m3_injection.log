@@ -1,0 +1,34 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+table fastword_table_v1.npz | rows valid_scaling_law_with_facts.pq
+
+800 questions {1: 385, 2: 256, 3: 159} | 1241 unique facts in store rows 0..1240
+encoded 800+1241 texts in 0s
+  encoded     50k distractors (31s)
+  encoded    100k distractors (55s)
+
+N=0 store=1241 (chance hit@20 = 0.01612)
+  inject   hit@1 0.481 hit@5 0.616 hit@20 0.703 MRR 0.551 | hit5 by hop {'1': 0.9948051948051948, '2': 0.2890625, '3': 0.22641509433962265}
+  answer   hit@1 0.485 hit@5 0.604 hit@20 0.694
+  chain    cov@20 0.827 full@20 0.665 by hop {'1': 1.0, '2': 0.453125, '3': 0.1949685534591195} | cov@n_hop-budget 0.743
+  chase    cov 0.855 full 0.733 by hop {'1': 0.9844155844155844, '2': 0.578125, '3': 0.3710691823899371}
+
+N=100000 store=101241 (chance hit@20 = 0.00020)
+  inject   hit@1 0.480 hit@5 0.583 hit@20 0.641 MRR 0.530 | hit5 by hop {'1': 0.9948051948051948, '2': 0.21875, '3': 0.16981132075471697}
+  answer   hit@1 0.484 hit@5 0.575 hit@20 0.632
+  chain    cov@20 0.791 full@20 0.605 by hop {'1': 1.0, '2': 0.328125, '3': 0.09433962264150944} | cov@n_hop-budget 0.728
+  chase    cov 0.840 full 0.706 by hop {'1': 0.9818181818181818, '2': 0.52734375, '3': 0.3270440251572327}
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 6880.51it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+N=0 MiniLM anchor
+  inject   hit@1 0.490 hit@5 0.649 hit@20 0.765 MRR 0.570 | hit5 by hop {'1': 1.0, '2': 0.3359375, '3': 0.3018867924528302}
+  chain    cov@20 0.864 full@20 0.719 by hop {'1': 1.0, '2': 0.54296875, '3': 0.32075471698113206}
+  chase    cov 0.858 full 0.720 by hop {'1': 0.9974025974025974, '2': 0.55078125, '3': 0.32075471698113206}
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_injection.json
