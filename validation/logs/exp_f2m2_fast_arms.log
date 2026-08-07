@@ -1,0 +1,31 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+mode: --fast-arms -- model-free challenge encoders vs latency; no checkpoint,
+      no tokenizer; MiniLM loaded ONLY for the reference row's timing
+corpus: 280 axioms, 15 domains | matched macro null 0.0633 | matched micro null 0.1226
+self-retrieval ceiling 278/280 = 0.993 (two duplicate names)
+
+                       arm   self   macro  xnull   micro  cold-us  warm-us
+      ngram3 (M2 baseline)  0.100  0.1400   2.21  0.1036      517      313
+                 var-n 2-4  0.104  0.1234   1.95  0.0929      602      156
+           var-n 2-4 + idf  0.114  0.1306   2.06  0.0964      594      154
+   var-n 2-4 + words + idf  0.125  0.1628   2.57  0.1179      649      174
+          words only + idf  0.136  0.1730   2.73  0.1536       48       19
+  bpe tokens (ids as keys)  0.100  0.1150   1.82  0.1143       91       29
+          bpe tokens + idf  0.100  0.1520   2.40  0.1536       86       29
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 6549.63it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+       MiniLM ref (stage1)  0.229  0.3580   5.65  0.4500       --      877   (single-query 8.9 ms; +1.6s model load)
+
+K-sweep on best lexical arm (words only + idf); l=128 fixed, one seed per K:
+  K= 80 (d= 10240): macro 0.1730 (2.73x null)  micro 0.1536
+  K=160 (d= 20480): macro 0.1807 (2.85x null)  micro 0.1571
+  K=320 (d= 40960): macro 0.1835 (2.90x null)  micro 0.1536
+
+best model-free arm: words only + idf -- macro 0.1730 (2.73x null, 0.48x MiniLM) at ~19 us/challenge warm
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_f2m2_fast_arms.json

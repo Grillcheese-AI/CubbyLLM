@@ -1,0 +1,259 @@
+{
+ "matched_macro_null": 0.06332138590203105,
+ "matched_micro_null": 0.12258064516129032,
+ "l": 128,
+ "k": 80,
+ "arms": {
+  "ngram3 (M2 baseline)": {
+   "self_retrieval_top1": 0.1,
+   "macro": 0.1400475341651812,
+   "macro_x_null": 2.211694077287862,
+   "micro": 0.10357142857142858,
+   "per_domain": {
+    "atomic": 0.17647058823529413,
+    "bio": 0.0,
+    "causal": 0.06666666666666667,
+    "colors": 0.13333333333333333,
+    "economics": 0.0,
+    "ensemble": 0.3333333333333333,
+    "historical": 0.13333333333333333,
+    "identity": 0.2,
+    "language": 0.2,
+    "linguistics": 0.5,
+    "logic": 0.0,
+    "music": 0.09090909090909091,
+    "physics": 0.0,
+    "security": 0.26666666666666666,
+    "social": 0.0
+   },
+   "cold_us_per_text": 516.8871428655361,
+   "warm_us_per_text": 312.7160714419526,
+   "config": null
+  },
+  "var-n 2-4": {
+   "self_retrieval_top1": 0.10357142857142858,
+   "macro": 0.12338086749851455,
+   "macro_x_null": 1.948486530118051,
+   "micro": 0.09285714285714286,
+   "per_domain": {
+    "atomic": 0.17647058823529413,
+    "bio": 0.0,
+    "causal": 0.06666666666666667,
+    "colors": 0.13333333333333333,
+    "economics": 0.0,
+    "ensemble": 0.3333333333333333,
+    "historical": 0.26666666666666666,
+    "identity": 0.1,
+    "language": 0.2,
+    "linguistics": 0.4166666666666667,
+    "logic": 0.0,
+    "music": 0.09090909090909091,
+    "physics": 0.0,
+    "security": 0.06666666666666667,
+    "social": 0.0
+   },
+   "cold_us_per_text": 601.9624999940528,
+   "warm_us_per_text": 155.56249997773972,
+   "config": {
+    "ns": [
+     2,
+     3,
+     4
+    ],
+    "words": false,
+    "idf": false
+   }
+  },
+  "var-n 2-4 + idf": {
+   "self_retrieval_top1": 0.11428571428571428,
+   "macro": 0.13055258467023173,
+   "macro_x_null": 2.0617455352638485,
+   "micro": 0.09642857142857143,
+   "per_domain": {
+    "atomic": 0.17647058823529413,
+    "bio": 0.0,
+    "causal": 0.06666666666666667,
+    "colors": 0.13333333333333333,
+    "economics": 0.0,
+    "ensemble": 0.4,
+    "historical": 0.2,
+    "identity": 0.2,
+    "language": 0.2,
+    "linguistics": 0.3333333333333333,
+    "logic": 0.0,
+    "music": 0.18181818181818182,
+    "physics": 0.0,
+    "security": 0.06666666666666667,
+    "social": 0.0
+   },
+   "cold_us_per_text": 594.4714285630783,
+   "warm_us_per_text": 154.13357143968045,
+   "config": {
+    "ns": [
+     2,
+     3,
+     4
+    ],
+    "words": false,
+    "idf": true
+   }
+  },
+  "var-n 2-4 + words + idf": {
+   "self_retrieval_top1": 0.125,
+   "macro": 0.16277480689245394,
+   "macro_x_null": 2.5706134597921504,
+   "micro": 0.11785714285714285,
+   "per_domain": {
+    "atomic": 0.17647058823529413,
+    "bio": 0.0,
+    "causal": 0.0,
+    "colors": 0.13333333333333333,
+    "economics": 0.0,
+    "ensemble": 0.4666666666666667,
+    "historical": 0.3333333333333333,
+    "identity": 0.4,
+    "language": 0.2,
+    "linguistics": 0.4166666666666667,
+    "logic": 0.0,
+    "music": 0.18181818181818182,
+    "physics": 0.0,
+    "security": 0.13333333333333333,
+    "social": 0.0
+   },
+   "cold_us_per_text": 649.1189285692859,
+   "warm_us_per_text": 173.79499999411306,
+   "config": {
+    "ns": [
+     2,
+     3,
+     4
+    ],
+    "words": true,
+    "idf": true
+   }
+  },
+  "words only + idf": {
+   "self_retrieval_top1": 0.1357142857142857,
+   "macro": 0.1730455818691113,
+   "macro_x_null": 2.732814189140494,
+   "micro": 0.15357142857142858,
+   "per_domain": {
+    "atomic": 0.23529411764705882,
+    "bio": 0.06666666666666667,
+    "causal": 0.26666666666666666,
+    "colors": 0.06666666666666667,
+    "economics": 0.0,
+    "ensemble": 0.26666666666666666,
+    "historical": 0.26666666666666666,
+    "identity": 0.0,
+    "language": 0.13333333333333333,
+    "linguistics": 0.75,
+    "logic": 0.06666666666666667,
+    "music": 0.09090909090909091,
+    "physics": 0.09523809523809523,
+    "security": 0.2,
+    "social": 0.09090909090909091
+   },
+   "cold_us_per_text": 48.42732142995893,
+   "warm_us_per_text": 18.721071423247587,
+   "config": {
+    "ns": [],
+    "words": true,
+    "idf": true
+   }
+  },
+  "bpe tokens (ids as keys)": {
+   "self_retrieval_top1": 0.1,
+   "macro": 0.11498599439775911,
+   "macro_x_null": 1.8159108926589507,
+   "micro": 0.11428571428571428,
+   "per_domain": {
+    "atomic": 0.11764705882352941,
+    "bio": 0.06666666666666667,
+    "causal": 0.13333333333333333,
+    "colors": 0.2,
+    "economics": 0.0,
+    "ensemble": 0.13333333333333333,
+    "historical": 0.4,
+    "identity": 0.0,
+    "language": 0.06666666666666667,
+    "linguistics": 0.5,
+    "logic": 0.0,
+    "music": 0.0,
+    "physics": 0.10714285714285714,
+    "security": 0.0,
+    "social": 0.0
+   },
+   "cold_us_per_text": 91.3571428619824,
+   "warm_us_per_text": 28.653214264652757,
+   "config": {
+    "tokenizer": "grillcheese_bbpe128k",
+    "idf": false,
+    "note": "timing includes tokenization; ids are free in serving"
+   }
+  },
+  "bpe tokens + idf": {
+   "self_retrieval_top1": 0.1,
+   "macro": 0.1519989814107461,
+   "macro_x_null": 2.400436744165934,
+   "micro": 0.15357142857142858,
+   "per_domain": {
+    "atomic": 0.11764705882352941,
+    "bio": 0.06666666666666667,
+    "causal": 0.13333333333333333,
+    "colors": 0.2,
+    "economics": 0.06666666666666667,
+    "ensemble": 0.2,
+    "historical": 0.4666666666666667,
+    "identity": 0.0,
+    "language": 0.06666666666666667,
+    "linguistics": 0.5833333333333334,
+    "logic": 0.0,
+    "music": 0.09090909090909091,
+    "physics": 0.15476190476190477,
+    "security": 0.13333333333333333,
+    "social": 0.0
+   },
+   "cold_us_per_text": 85.85910714568205,
+   "warm_us_per_text": 28.671071439540746,
+   "config": {
+    "tokenizer": "grillcheese_bbpe128k",
+    "idf": true,
+    "note": "timing includes tokenization; ids are free in serving"
+   }
+  },
+  "MiniLM ref (stage1)": {
+   "self_retrieval_top1": 0.22857142857142856,
+   "macro": 0.35798828622358037,
+   "macro_x_null": 5.653513123945977,
+   "micro": 0.45,
+   "quality_source": "exp_f2m2_stage1.json",
+   "model_load_s": 1.5594841999991331,
+   "batched_us_per_text": 877.0185714248718,
+   "single_query_us_per_text": 8856.790625031863
+  }
+ },
+ "k_sweep": {
+  "arm": "words only + idf",
+  "l": 128,
+  "results": {
+   "80": {
+    "d": 10240,
+    "macro": 0.1730455818691113,
+    "micro": 0.15357142857142858
+   },
+   "160": {
+    "d": 20480,
+    "macro": 0.18065359477124185,
+    "micro": 0.15714285714285714
+   },
+   "320": {
+    "d": 40960,
+    "macro": 0.18351073762838468,
+    "micro": 0.15357142857142858
+   }
+  },
+  "note": "different K redraws every gram layout, so small deltas are seed-level noise; only a clear monotone trend counts"
+ },
+ "best_fast_arm": "words only + idf"
+}

@@ -26,6 +26,7 @@ import argparse
 import hashlib
 import json
 import pathlib
+import re
 import sys
 
 import numpy as np
@@ -144,6 +145,100 @@ def ngram_encode(texts: list[str], n: int = 3) -> np.ndarray:
             seed = int.from_bytes(digest, "little") % (2**63)
             idx = np.random.default_rng(seed).integers(0, L, size=K)
             out[i, np.arange(K), idx] += 1.0
+    return out
+
+
+_GRAM_CACHE: dict[str, np.ndarray] = {}
+
+
+def _grams(text: str, ns: tuple[int, ...] = (2, 3, 4), words: bool = False) -> set[str]:
+    """Namespaced gram set for a text: char n-grams per n, optional word tokens."""
+    s = text.lower()
+    out: set[str] = set()
+    for n in ns:
+        for j in range(max(1, len(s) - n + 1)):
+            out.add(f"{n}:{s[j:j + n]}")
+    if words:
+        for tok in re.split(r"[^a-z0-9]+", s):
+            if len(tok) >= 2:
+                out.add(f"w:{tok}")
+    return out
+
+
+def build_idf(texts: list[str], ns: tuple[int, ...] = (2, 3, 4), words: bool = False):
+    """OFFLINE corpus statistics for gram weighting -> (idf dict, unseen-gram default).
+
+    Nothing here runs per-challenge: the serving-path cost of using the weights
+    is one dict lookup per gram. Unseen grams get the maximum weight (they are
+    by definition distinctive).
+    """
+    df: dict[str, int] = {}
+    for t in texts:
+        for g in _grams(t, ns, words):
+            df[g] = df.get(g, 0) + 1
+    n_docs = max(1, len(texts))
+    idf = {g: float(np.log(n_docs / c)) for g, c in df.items()}
+    return idf, float(np.log(n_docs))
+
+
+def ngram_encode_v2(
+    texts: list[str],
+    ns: tuple[int, ...] = (2, 3, 4),
+    words: bool = False,
+    idf: dict[str, float] | None = None,
+    default_idf: float | None = None,
+) -> np.ndarray:
+    """The fast-path challenge encoder: weighted bundle of seeded block codes.
+
+    Same BLAKE2b primitive as hash_encode/ngram_encode; the upgrades measured
+    by --fast-arms are variable-length grams, word tokens, and IDF weighting.
+    The weight scales the bundle CONTRIBUTION (a real scalar on magnitude) --
+    NOT a phase rotation, which would compress common grams into one arc and
+    amplify exactly what it means to attenuate. Per-gram codes are memoized in
+    _GRAM_CACHE, since a serving vocabulary of grams stabilizes quickly.
+    """
+    out = np.zeros((len(texts), K, L), dtype=np.float32)
+    rows = np.arange(K)
+    for i, text in enumerate(texts):
+        for g in _grams(text, ns, words):
+            idx = _GRAM_CACHE.get(g)
+            if idx is None:
+                digest = hashlib.blake2b(g.encode("utf-8"), digest_size=8).digest()
+                seed = int.from_bytes(digest, "little") % (2**63)
+                idx = np.random.default_rng(seed).integers(0, L, size=K)
+                _GRAM_CACHE[g] = idx
+            w = 1.0 if idf is None else idf.get(g, default_idf)
+            out[i, rows, idx] += w
+    return out
+
+
+def token_encode(
+    texts: list[str],
+    encode_fn,
+    idf: dict[int, float] | None = None,
+    default_idf: float | None = None,
+) -> np.ndarray:
+    """Token-ID bundle: use the numbers the pipeline already has.
+
+    In serving, the trunk has ALREADY tokenized the challenge, so this
+    encoder's marginal cost is scatter-adds over ids that exist for free. A
+    token id's numeric VALUE carries no meaning (43706 and 43707 are unrelated)
+    -- the id is a stable KEY seeding a block code, never a coordinate, so no
+    arithmetic (and no fractional binding) over ids. Structurally this is
+    t-bag with the trained embedding rows replaced by random block codes.
+    --fast-arms timing INCLUDES tokenization, overstating the marginal cost.
+    """
+    out = np.zeros((len(texts), K, L), dtype=np.float32)
+    rows = np.arange(K)
+    for i, text in enumerate(texts):
+        for tid in set(encode_fn(text.lower())):
+            key = f"t:{tid}"
+            idx = _GRAM_CACHE.get(key)
+            if idx is None:
+                idx = np.random.default_rng(1_000_003 + tid).integers(0, L, size=K)
+                _GRAM_CACHE[key] = idx
+            w = 1.0 if idf is None else idf.get(tid, default_idf)
+            out[i, rows, idx] += w
     return out
 
 
@@ -817,6 +912,758 @@ def run_null_baseline(seeds: int = 10) -> dict:
     return out
 
 
+def run_fast_arms() -> dict:
+    """Latency-constrained routing: how far does a MODEL-FREE challenge encoder get?
+
+    Axioms are encoded OFFLINE regardless (H0's frozen shape), so latency only
+    binds the CHALLENGE side. Every arm below is BLAKE2b hashing plus
+    scatter-adds -- no torch, no model in the hot path, the same primitive the
+    Rust VM / Vulkan shaders can reimplement. The `ngram3` row is M2's shipped
+    encoder unchanged and must reproduce Stage 1's 0.1400 macro exactly (the
+    harness regression check). The IDF table + gram vocabulary is the fast
+    path's offline "codebook"; MiniLM appears only as the quality/latency
+    reference. The K-sweep at the end asks whether dimensionality is a binding
+    constraint for the bundled codes (one-hot cosine has K+1 levels; bundle
+    crosstalk ~ sqrt(m/D)) -- or whether the ceiling is the lexical signal.
+    """
+    import platform
+    import time
+
+    names, formulas, domains = load_corpus()
+    mac_null = matched_macro_null(domains)
+    mic_null = matched_micro_null(domains)
+    texts = names + formulas
+
+    print(f"python {platform.python_version()} | {platform.platform()} | numpy {np.__version__}")
+    print("mode: --fast-arms -- model-free challenge encoders vs latency; no checkpoint,")
+    print("      no tokenizer; MiniLM loaded ONLY for the reference row's timing")
+    print(f"corpus: {len(names)} axioms, {len(set(domains))} domains | "
+          f"matched macro null {mac_null:.4f} | matched micro null {mic_null:.4f}")
+    print(f"self-retrieval ceiling 278/280 = 0.993 (two duplicate names)\n")
+
+    arms: dict[str, dict | None] = {
+        "ngram3 (M2 baseline)": None,
+        "var-n 2-4": {"ns": (2, 3, 4), "words": False, "idf": False},
+        "var-n 2-4 + idf": {"ns": (2, 3, 4), "words": False, "idf": True},
+        "var-n 2-4 + words + idf": {"ns": (2, 3, 4), "words": True, "idf": True},
+        "words only + idf": {"ns": (), "words": True, "idf": True},
+    }
+
+    print(f"{'arm':>26} {'self':>6} {'macro':>7} {'xnull':>6} {'micro':>7} "
+          f"{'cold-us':>8} {'warm-us':>8}")
+    out: dict = {"matched_macro_null": mac_null, "matched_micro_null": mic_null,
+                 "l": L, "k": K, "arms": {}}
+    for label, cfg in arms.items():
+        _GRAM_CACHE.clear()
+        idf = default = None
+        if cfg is not None and cfg["idf"]:
+            idf, default = build_idf(texts, cfg["ns"], cfg["words"])   # offline cost
+        t0 = time.perf_counter()
+        if cfg is None:
+            nc, fc = ngram_encode(names), ngram_encode(formulas)
+        else:
+            nc = ngram_encode_v2(names, cfg["ns"], cfg["words"], idf, default)
+            fc = ngram_encode_v2(formulas, cfg["ns"], cfg["words"], idf, default)
+        cold = (time.perf_counter() - t0) / len(texts) * 1e6
+        t0 = time.perf_counter()
+        if cfg is None:
+            ngram_encode(names)
+        else:
+            ngram_encode_v2(names, cfg["ns"], cfg["words"], idf, default)
+        warm = (time.perf_counter() - t0) / len(names) * 1e6
+        top1 = self_retrieval_top1(nc, fc)
+        routed = loo_domain_routing(nc, fc, domains)
+        out["arms"][label] = {
+            "self_retrieval_top1": top1,
+            "macro": routed["macro"], "macro_x_null": routed["macro"] / mac_null,
+            "micro": routed["micro"], "per_domain": routed["per_domain"],
+            "cold_us_per_text": cold, "warm_us_per_text": warm,
+            "config": cfg,
+        }
+        print(f"{label:>26} {top1:6.3f} {routed['macro']:7.4f} "
+              f"{routed['macro'] / mac_null:6.2f} {routed['micro']:7.4f} "
+              f"{cold:8.0f} {warm:8.0f}")
+
+    # -- token-ID arms: use the numbers the serving pipeline ALREADY has -------
+    #    (the trunk tokenizes every challenge anyway; ids are free at routing
+    #    time, so measured timing -- which includes tokenization -- overstates
+    #    the marginal cost)
+    encode_fn, _tok_vocab = load_tokenizer()
+    token_sets = [set(encode_fn(t.lower())) for t in texts]
+    df_tok: dict[int, int] = {}
+    for s_ in token_sets:
+        for tid in s_:
+            df_tok[tid] = df_tok.get(tid, 0) + 1
+    idf_tok = {tid: float(np.log(len(texts) / c)) for tid, c in df_tok.items()}
+    default_tok = float(np.log(len(texts)))
+    for label, use_idf in (("bpe tokens (ids as keys)", False),
+                           ("bpe tokens + idf", True)):
+        _GRAM_CACHE.clear()
+        t0 = time.perf_counter()
+        nc = token_encode(names, encode_fn, idf_tok if use_idf else None, default_tok)
+        fc = token_encode(formulas, encode_fn, idf_tok if use_idf else None, default_tok)
+        cold = (time.perf_counter() - t0) / len(texts) * 1e6
+        t0 = time.perf_counter()
+        token_encode(names, encode_fn, idf_tok if use_idf else None, default_tok)
+        warm = (time.perf_counter() - t0) / len(names) * 1e6
+        top1 = self_retrieval_top1(nc, fc)
+        routed = loo_domain_routing(nc, fc, domains)
+        out["arms"][label] = {
+            "self_retrieval_top1": top1,
+            "macro": routed["macro"], "macro_x_null": routed["macro"] / mac_null,
+            "micro": routed["micro"], "per_domain": routed["per_domain"],
+            "cold_us_per_text": cold, "warm_us_per_text": warm,
+            "config": {"tokenizer": "grillcheese_bbpe128k", "idf": use_idf,
+                       "note": "timing includes tokenization; ids are free in serving"},
+        }
+        print(f"{label:>26} {top1:6.3f} {routed['macro']:7.4f} "
+              f"{routed['macro'] / mac_null:6.2f} {routed['micro']:7.4f} "
+              f"{cold:8.0f} {warm:8.0f}")
+
+    # -- reference row: quality from the committed Stage-1 artifact; latency
+    #    measured here (model pre-loaded; batched AND single-query, since a
+    #    routing challenge arrives alone in serving).
+    stage1 = json.loads(
+        (ROOT / "validation" / "logs" / "exp_f2m2_stage1.json").read_text(encoding="utf-8"))
+    ref = stage1["arms"]["ref"]
+    ref_row: dict = {"self_retrieval_top1": ref["self_retrieval_top1"],
+                     "macro": ref["macro"], "macro_x_null": ref["macro"] / mac_null,
+                     "micro": ref["micro"], "quality_source": "exp_f2m2_stage1.json"}
+    try:
+        from sentence_transformers import SentenceTransformer
+
+        t0 = time.perf_counter()
+        model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+        load_s = time.perf_counter() - t0
+        model.encode(names[:4], show_progress_bar=False)                 # warmup
+        t0 = time.perf_counter()
+        model.encode(names, batch_size=64, show_progress_bar=False)
+        batched_us = (time.perf_counter() - t0) / len(names) * 1e6
+        t0 = time.perf_counter()
+        for t in names[:32]:
+            model.encode([t], show_progress_bar=False)
+        single_us = (time.perf_counter() - t0) / 32 * 1e6
+        ref_row.update({"model_load_s": load_s, "batched_us_per_text": batched_us,
+                        "single_query_us_per_text": single_us})
+        print(f"{'MiniLM ref (stage1)':>26} {ref['self_retrieval_top1']:6.3f} "
+              f"{ref['macro']:7.4f} {ref['macro'] / mac_null:6.2f} {ref['micro']:7.4f} "
+              f"{'--':>8} {batched_us:8.0f}   "
+              f"(single-query {single_us / 1000:.1f} ms; +{load_s:.1f}s model load)")
+    except Exception as exc:                                             # pragma: no cover
+        print(f"{'MiniLM ref (stage1)':>26} latency not measured ({exc})")
+    out["arms"]["MiniLM ref (stage1)"] = ref_row
+
+    # -- K-sweep on the best lexical arm: is dimensionality the constraint? ----
+    best_label, best_cfg = max(
+        ((lb, c) for lb, c in arms.items() if c is not None),
+        key=lambda lc: out["arms"][lc[0]]["macro"])
+    print(f"\nK-sweep on best lexical arm ({best_label}); l={L} fixed, one seed per K:")
+    k0 = K
+    sweep: dict = {}
+    for k_try in (80, 160, 320):
+        globals()["K"] = k_try
+        _GRAM_CACHE.clear()
+        idf = default = None
+        if best_cfg["idf"]:
+            idf, default = build_idf(texts, best_cfg["ns"], best_cfg["words"])
+        nc = ngram_encode_v2(names, best_cfg["ns"], best_cfg["words"], idf, default)
+        fc = ngram_encode_v2(formulas, best_cfg["ns"], best_cfg["words"], idf, default)
+        r = loo_domain_routing(nc, fc, domains)
+        sweep[str(k_try)] = {"d": k_try * L, "macro": r["macro"], "micro": r["micro"]}
+        print(f"  K={k_try:>3} (d={k_try * L:>6}): macro {r['macro']:.4f} "
+              f"({r['macro'] / mac_null:.2f}x null)  micro {r['micro']:.4f}")
+    globals()["K"] = k0
+    _GRAM_CACHE.clear()
+    out["k_sweep"] = {"arm": best_label, "l": L, "results": sweep,
+                      "note": "different K redraws every gram layout, so small deltas "
+                              "are seed-level noise; only a clear monotone trend counts"}
+
+    fast_labels = [lb for lb in out["arms"] if lb != "MiniLM ref (stage1)"]
+    top_label = max(fast_labels, key=lambda lb: out["arms"][lb]["macro"])
+    fb = out["arms"][top_label]
+    print(f"\nbest model-free arm: {top_label} -- macro {fb['macro']:.4f} "
+          f"({fb['macro_x_null']:.2f}x null, {fb['macro'] / ref['macro']:.2f}x MiniLM) "
+          f"at ~{fb['warm_us_per_text']:.0f} us/challenge warm")
+    out["best_fast_arm"] = top_label
+
+    (ROOT / "validation" / "logs").mkdir(parents=True, exist_ok=True)
+    json_path = ROOT / "validation" / "logs" / "exp_f2m2_fast_arms.json"
+    json_path.write_text(json.dumps(out, indent=1), encoding="utf-8")
+    print(f"wrote {json_path}")
+    return out
+
+
+# ---------------------------------------------------------------------------
+# BEAGLE-style distributional memory (user-proposed; Jones & Mewhort family):
+# a token's MEMORY vector = superposition of the SIGNAL codes of tokens it
+# co-occurs with over a real corpus. Semantics from statistics, no gradients,
+# and the corpus pass is OFFLINE -- serving stays table-lookup + scatter-adds.
+# ---------------------------------------------------------------------------
+
+_SPECIALS_FROM = 127933          # <pad>/<unk>/<s>/</s>/chat specials start here
+_FULL_VOCAB = 127996
+
+
+def beagle_build_memory(
+    interest_ids: np.ndarray,
+    shard_path: str,
+    n_tokens: int = 200_000_000,
+    window: int = 5,
+    max_positions: int = 4_000_000,
+    top_neighbors: int = 8000,
+    chunk: int = 20_000_000,
+    seed: int = 0,
+) -> dict:
+    """One streaming pass of BEAGLE context accumulation for the interest ids.
+
+    Counting is exact over a position subsample; the projection through signal
+    codes runs once per unique (row, neighbor) pair via per-row bincount, so
+    cost scales with unique pairs, not corpus length. Returns three memory
+    tables (raw counts, log1p-damped, PPMI-weighted), each (n_interest, K, L).
+    """
+    import time
+
+    t0 = time.perf_counter()
+    rng = np.random.default_rng(seed)
+    lut_row = np.full(_FULL_VOCAB, -1, dtype=np.int64)
+    lut_row[np.asarray(interest_ids, dtype=np.int64)] = np.arange(len(interest_ids))
+
+    corpus = np.memmap(shard_path, dtype=np.uint32, mode="r")
+    n_tokens = int(min(n_tokens, len(corpus)))
+    offsets = [d for d in range(-window, window + 1) if d != 0]
+    n_chunks = max(1, n_tokens // chunk)
+    budget_per_chunk = max(1, max_positions // n_chunks)
+
+    key_parts: list[np.ndarray] = []
+    cnt_parts: list[np.ndarray] = []
+    seen = used = 0
+    for a in range(0, n_tokens, chunk):
+        seg = np.asarray(corpus[a:min(a + chunk, n_tokens)]).astype(np.int64)
+        rows_here = lut_row[np.clip(seg, 0, _FULL_VOCAB - 1)]
+        pos = np.nonzero(rows_here >= 0)[0]
+        pos = pos[(pos >= window) & (pos < len(seg) - window)]
+        seen += len(pos)
+        if len(pos) > budget_per_chunk:
+            pos = rng.choice(pos, size=budget_per_chunk, replace=False)
+        used += len(pos)
+        if not len(pos):
+            continue
+        tgt = rows_here[pos]
+        for d in offsets:
+            nb = seg[pos + d]
+            ok = nb < _SPECIALS_FROM
+            keys = tgt[ok] * _FULL_VOCAB + nb[ok]
+            uk, uc = np.unique(keys, return_counts=True)
+            key_parts.append(uk)
+            cnt_parts.append(uc.astype(np.int64))
+        print(f"  scanned {min(a + chunk, n_tokens) / 1e6:6.0f}M tokens | "
+              f"interest positions seen {seen / 1e6:.2f}M used {used / 1e6:.2f}M", flush=True)
+
+    keys = np.concatenate(key_parts); del key_parts
+    cnts = np.concatenate(cnt_parts); del cnt_parts
+    uk, inv = np.unique(keys, return_inverse=True)
+    counts = np.zeros(len(uk), dtype=np.int64)
+    np.add.at(counts, inv, cnts)
+    del keys, cnts, inv
+    pair_rows = (uk // _FULL_VOCAB).astype(np.int64)
+    pair_nbs = (uk % _FULL_VOCAB).astype(np.int64)
+    del uk
+
+    # cap unique neighbors per row (largest counts first) so no row's projection
+    # is dominated by an unbounded stop-token tail
+    order = np.lexsort((-counts, pair_rows))
+    pair_rows, pair_nbs, counts = pair_rows[order], pair_nbs[order], counts[order]
+    starts = np.nonzero(np.r_[True, np.diff(pair_rows) > 0])[0]
+    seg_len = np.diff(np.r_[starts, len(pair_rows)])
+    rank = np.arange(len(pair_rows)) - np.repeat(starts, seg_len)
+    keep = rank < top_neighbors
+    pair_rows, pair_nbs, counts = pair_rows[keep], pair_nbs[keep], counts[keep]
+
+    # signal codes for every unique neighbor (same seeding as token_encode)
+    unb = np.unique(pair_nbs)
+    sig_lut = np.zeros((len(unb), K), dtype=np.int64)
+    for j, tid in enumerate(unb):
+        sig_lut[j] = np.random.default_rng(1_000_003 + int(tid)).integers(0, L, size=K)
+    nb_slot = np.searchsorted(unb, pair_nbs)
+    sig_pairs = sig_lut[nb_slot]                                    # (P, K)
+
+    # weights: raw counts / log damping / PPMI (the count -> semantics transform)
+    total = float(counts.sum())
+    row_tot = np.zeros(len(interest_ids)); np.add.at(row_tot, pair_rows, counts.astype(np.float64))
+    nb_tot = np.zeros(len(unb)); np.add.at(nb_tot, nb_slot, counts.astype(np.float64))
+    w_raw = counts.astype(np.float64)
+    w_log = np.log1p(w_raw)
+    with np.errstate(divide="ignore"):
+        pmi = np.log((w_raw * total) / (row_tot[pair_rows] * nb_tot[nb_slot]))
+    w_ppmi = np.maximum(0.0, pmi)
+
+    base = (np.arange(K) * L)[None, :]
+    flat_all = (base + sig_pairs)                                   # (P, K)
+
+    def _project(w: np.ndarray) -> np.ndarray:
+        mem = np.zeros((len(interest_ids), K * L), dtype=np.float64)
+        for r in range(len(interest_ids)):
+            lo = np.searchsorted(pair_rows, r)
+            hi = np.searchsorted(pair_rows, r + 1)
+            if lo == hi:
+                continue
+            mem[r] = np.bincount(flat_all[lo:hi].ravel(),
+                                 weights=np.repeat(w[lo:hi], K), minlength=K * L)
+        return mem.reshape(len(interest_ids), K, L).astype(np.float32)
+
+    out = {
+        "raw": _project(w_raw), "log": _project(w_log), "ppmi": _project(w_ppmi),
+        "lut_row": lut_row,
+        "stats": {
+            "shard": str(shard_path), "n_tokens": n_tokens, "window": window,
+            "positions_seen": int(seen), "positions_used": int(used),
+            "unique_pairs_kept": int(len(pair_rows)),
+            "rows_total": int(len(interest_ids)),
+            "rows_with_mass": int((row_tot > 0).sum()),
+            "top_neighbors_cap": top_neighbors,
+            "elapsed_s": time.perf_counter() - t0,
+        },
+    }
+    return out
+
+
+def beagle_encode(
+    texts: list[str],
+    encode_fn,
+    mem: np.ndarray | None,
+    lut_row: np.ndarray,
+    idf: dict[int, float],
+    default_idf: float,
+    blend_signal: bool = False,
+) -> np.ndarray:
+    """IDF-weighted bundle of MEMORY vectors of a text's token ids (RAW case,
+    matching the corpus). Memory rows are L2-normalized so corpus-frequent
+    tokens don't dominate by mass; a token with no accumulated memory falls
+    back to its SIGNAL code, so surface identity still contributes. mem=None
+    is the pure-signal control at matched case handling; blend_signal=True
+    adds each token's own signal code alongside its memory (surface + meaning).
+    """
+    out = np.zeros((len(texts), K, L), dtype=np.float32)
+    rows_k = np.arange(K)
+    inv_sqrt_k = 1.0 / np.sqrt(K)
+    for i, text in enumerate(texts):
+        acc = np.zeros(K * L, dtype=np.float64)
+        for tid in set(encode_fn(text)):
+            if tid >= _SPECIALS_FROM:
+                continue
+            w = idf.get(tid, default_idf)
+            sig = np.random.default_rng(1_000_003 + int(tid)).integers(0, L, size=K)
+            sig_vec = np.zeros(K * L)
+            sig_vec[rows_k * L + sig] = inv_sqrt_k                  # unit norm
+            v = None
+            row = lut_row[tid] if 0 <= tid < len(lut_row) else -1
+            if mem is not None and row >= 0:
+                m = mem[row].ravel().astype(np.float64)
+                nrm = np.linalg.norm(m)
+                if nrm > 0:
+                    v = m / nrm
+            if v is None:
+                v = sig_vec
+            elif blend_signal:
+                v = 0.5 * (v + sig_vec)
+            acc += w * v
+        out[i] = acc.reshape(K, L).astype(np.float32)
+    return out
+
+
+def run_beagle(shard_path: str, n_tokens: int, window: int) -> dict:
+    """The BEAGLE arm: does distributional superposition close the semantic gap
+    the surface-lexical arms cap at -- while keeping serving at table lookups?
+    """
+    import platform
+    import time
+
+    from cubbyllm.training.data import _load_tokenizer
+
+    names, formulas, domains = load_corpus()
+    mac_null = matched_macro_null(domains)
+    texts = names + formulas
+    encode_fn, decode_fn, _eos, _vocab = _load_tokenizer(str(TOKENIZER))
+
+    print(f"python {platform.python_version()} | {platform.platform()} | numpy {np.__version__}")
+    print(f"mode: --beagle -- distributional memory from {pathlib.Path(shard_path).name}, "
+          f"first {n_tokens / 1e6:.0f}M tokens, window +/-{window}")
+    print("case handling: RAW (matches the corpus; the earlier token arm lowercased)\n")
+
+    # interest ids + raw-case IDF over the 560 texts
+    tok_sets = [set(t for t in encode_fn(x) if t < _SPECIALS_FROM) for x in texts]
+    interest = np.array(sorted(set().union(*tok_sets)), dtype=np.int64)
+    df_tok: dict[int, int] = {}
+    for s_ in tok_sets:
+        for tid in s_:
+            df_tok[tid] = df_tok.get(tid, 0) + 1
+    idf = {tid: float(np.log(len(texts) / c)) for tid, c in df_tok.items()}
+    default_idf = float(np.log(len(texts)))
+    print(f"interest tokens: {len(interest)} unique ids across {len(texts)} texts")
+
+    built = beagle_build_memory(interest, shard_path, n_tokens=n_tokens, window=window)
+    st = built["stats"]
+    print(f"memory built in {st['elapsed_s']:.0f}s | positions used {st['positions_used'] / 1e6:.2f}M "
+          f"| pairs kept {st['unique_pairs_kept'] / 1e6:.2f}M "
+          f"| rows with mass {st['rows_with_mass']}/{st['rows_total']}\n")
+
+    # neighborhood demo: are the memory vectors semantic at all?
+    probe_words = ["force", "energy", "probability"]
+    ppmi = built["ppmi"]
+    norms = np.linalg.norm(ppmi.reshape(len(interest), -1), axis=1)
+    normed = ppmi.reshape(len(interest), -1) / np.maximum(norms, 1e-12)[:, None]
+    for w_ in probe_words:
+        ids = [t for t in encode_fn(w_) if t < _SPECIALS_FROM]
+        if not ids or built["lut_row"][ids[0]] < 0:
+            continue
+        r = int(built["lut_row"][ids[0]])
+        sims = normed @ normed[r]
+        top = np.argsort(-sims)[1:6]
+        nbs = ", ".join(f"{decode_fn([int(interest[j])])!r}({sims[j]:.2f})" for j in top)
+        print(f"  nearest to {decode_fn([ids[0]])!r}: {nbs}")
+    print()
+
+    fast = json.loads((ROOT / "validation" / "logs" / "exp_f2m2_fast_arms.json")
+                      .read_text(encoding="utf-8"))
+    print(f"{'arm':>26} {'self':>6} {'macro':>7} {'xnull':>6} {'micro':>7}")
+    for lb in ("words only + idf", "bpe tokens + idf", "MiniLM ref (stage1)"):
+        fa = fast["arms"][lb]
+        print(f"{lb:>26} {fa['self_retrieval_top1']:6.3f} {fa['macro']:7.4f} "
+              f"{fa['macro'] / mac_null:6.2f} {fa['micro']:7.4f}   (prior run)")
+
+    out: dict = {"stats": st, "matched_macro_null": mac_null, "arms": {}}
+    arms = {
+        "signal only (raw case)": (None, False),
+        "beagle raw": (built["raw"], False),
+        "beagle log": (built["log"], False),
+        "beagle ppmi": (built["ppmi"], False),
+        "beagle ppmi + signal": (built["ppmi"], True),
+    }
+    for label, (mem, blend) in arms.items():
+        t0 = time.perf_counter()
+        nc = beagle_encode(names, encode_fn, mem, built["lut_row"], idf, default_idf, blend)
+        fc = beagle_encode(formulas, encode_fn, mem, built["lut_row"], idf, default_idf, blend)
+        us = (time.perf_counter() - t0) / len(texts) * 1e6
+        top1 = self_retrieval_top1(nc, fc)
+        routed = loo_domain_routing(nc, fc, domains)
+        out["arms"][label] = {
+            "self_retrieval_top1": top1, "macro": routed["macro"],
+            "macro_x_null": routed["macro"] / mac_null, "micro": routed["micro"],
+            "per_domain": routed["per_domain"], "encode_us_per_text": us,
+        }
+        print(f"{label:>26} {top1:6.3f} {routed['macro']:7.4f} "
+              f"{routed['macro'] / mac_null:6.2f} {routed['micro']:7.4f}   ({us:.0f} us/text)")
+
+    best = max(out["arms"], key=lambda lb: out["arms"][lb]["macro"])
+    out["best_arm"] = best
+    print(f"\nbest beagle-mode arm: {best} -- macro {out['arms'][best]['macro']:.4f} "
+          f"({out['arms'][best]['macro_x_null']:.2f}x null) vs words+idf 0.1730 / MiniLM 0.3580")
+
+    (ROOT / "validation" / "logs").mkdir(parents=True, exist_ok=True)
+    json_path = ROOT / "validation" / "logs" / "exp_f2m2_beagle.json"
+    json_path.write_text(json.dumps(out, indent=1), encoding="utf-8")
+    print(f"wrote {json_path}")
+    return out
+
+
+# ---------------------------------------------------------------------------
+# model2vec-style static distillation: run the TEACHER once, offline, over the
+# vocabulary's strings; serve from the resulting table with lookup + adds.
+# The model never enters the hot path. Ablation against the random-code token
+# arm isolates exactly what learned vectors buy over seeded noise.
+# ---------------------------------------------------------------------------
+
+def _remove_top_pc(X: np.ndarray, n_pc: int = 1) -> np.ndarray:
+    """All-but-the-top: mean-center, strip the top principal component(s),
+    re-normalize rows. The classic anisotropy fix, applied to the TABLE."""
+    Xc = X - X.mean(axis=0, keepdims=True)
+    _, _, Vt = np.linalg.svd(Xc, full_matrices=False)
+    for i in range(n_pc):
+        Xc = Xc - np.outer(Xc @ Vt[i], Vt[i])
+    return Xc / (np.linalg.norm(Xc, axis=1, keepdims=True) + 1e-12)
+
+
+def _unit_rows(X: np.ndarray) -> np.ndarray:
+    return X / (np.linalg.norm(X, axis=1, keepdims=True) + 1e-12)
+
+
+def _bundle_from_table(
+    texts: list[str],
+    keys_of,                       # text -> iterable of table keys
+    vec_of: dict,                  # key -> unit vector (all same dim)
+    weight_of,                     # key -> float
+    dim: int,
+) -> np.ndarray:
+    """The one serving primitive every fast arm shares: lookup + weighted add."""
+    out = np.zeros((len(texts), dim), dtype=np.float32)
+    for i, t in enumerate(texts):
+        for k_ in keys_of(t):
+            v = vec_of.get(k_)
+            if v is not None:
+                out[i] += weight_of(k_) * v
+    return out
+
+
+def run_m2v() -> dict:
+    """Distill MiniLM into static per-token / per-word tables and route with
+    the same lookup+add path as the random-code arms. Teacher cost is OFFLINE
+    (embed ~2k vocabulary strings once); serving never touches the model."""
+    import platform
+    import time
+
+    from cubbyllm.training.data import _load_tokenizer
+    from sentence_transformers import SentenceTransformer
+
+    names, formulas, domains = load_corpus()
+    mac_null = matched_macro_null(domains)
+    texts = names + formulas
+    encode_fn, decode_fn, _e, _v = _load_tokenizer(str(TOKENIZER))
+
+    print(f"python {platform.python_version()} | {platform.platform()} | numpy {np.__version__}")
+    print("mode: --m2v -- static distillation of MiniLM into token/word tables;")
+    print("      teacher runs ONCE offline, serving is table lookup + adds\n")
+
+    # -- vocabulary of this corpus: lowered BPE ids and lowered words ----------
+    tok_sets = [set(t for t in encode_fn(x.lower()) if t < _SPECIALS_FROM) for x in texts]
+    tok_ids = sorted(set().union(*tok_sets))
+    df_tok: dict[int, int] = {}
+    for s_ in tok_sets:
+        for tid in s_:
+            df_tok[tid] = df_tok.get(tid, 0) + 1
+    idf_tok = {tid: float(np.log(len(texts) / c)) for tid, c in df_tok.items()}
+    dflt = float(np.log(len(texts)))
+
+    word_sets = [{w for w in re.split(r"[^a-z0-9]+", x.lower()) if len(w) >= 2} for x in texts]
+    words = sorted(set().union(*word_sets))
+    df_w: dict[str, int] = {}
+    for s_ in word_sets:
+        for w_ in s_:
+            df_w[w_] = df_w.get(w_, 0) + 1
+    idf_w = {w_: float(np.log(len(texts) / c)) for w_, c in df_w.items()}
+
+    # -- the offline distillation pass ----------------------------------------
+    t0 = time.perf_counter()
+    model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+    tok_strings = [decode_fn([int(t)]) for t in tok_ids]
+    E_tok = _unit_rows(np.asarray(model.encode(tok_strings, batch_size=256,
+                                               show_progress_bar=False), dtype=np.float32))
+    E_wrd = _unit_rows(np.asarray(model.encode(words, batch_size=256,
+                                               show_progress_bar=False), dtype=np.float32))
+    build_s = time.perf_counter() - t0
+    print(f"distilled tables: {len(tok_ids)} token strings + {len(words)} words "
+          f"in {build_s:.1f}s (one-off, offline)\n")
+
+    E_tok_pc = _remove_top_pc(E_tok)
+    E_wrd_pc = _remove_top_pc(E_wrd)
+
+    # block-space forms for the surface-blend arms (cosine-exact projection)
+    P384 = make_projection(384)
+    rows_k = np.arange(K)
+    inv_sqrt_k = 1.0 / np.sqrt(K)
+
+    def _tok_signal(tid: int) -> np.ndarray:
+        sig = np.random.default_rng(1_000_003 + int(tid)).integers(0, L, size=K)
+        v = np.zeros(K * L, dtype=np.float32)
+        v[rows_k * L + sig] = inv_sqrt_k
+        return v
+
+    def _word_signal(w_: str) -> np.ndarray:
+        digest = hashlib.blake2b(f"w:{w_}".encode("utf-8"), digest_size=8).digest()
+        seed = int.from_bytes(digest, "little") % (2**63)
+        sig = np.random.default_rng(seed).integers(0, L, size=K)
+        v = np.zeros(K * L, dtype=np.float32)
+        v[rows_k * L + sig] = inv_sqrt_k
+        return v
+
+    tok_keys = lambda t: set(x for x in encode_fn(t.lower()) if x < _SPECIALS_FROM)  # noqa: E731
+    wrd_keys = lambda t: {w for w in re.split(r"[^a-z0-9]+", t.lower()) if len(w) >= 2}  # noqa: E731
+
+    def _blend(table_pc: np.ndarray, keys, signal_fn) -> dict:
+        proj = _unit_rows(table_pc @ P384.T)                       # (n, K*L), unit
+        return {k_: 0.5 * proj[j] + 0.5 * signal_fn(k_) for j, k_ in enumerate(keys)}
+
+    arms: dict[str, tuple] = {
+        "m2v tokens + idf": ({t: E_tok[j] for j, t in enumerate(tok_ids)},
+                             tok_keys, lambda k_: idf_tok.get(k_, dflt), 384),
+        "m2v tokens -pc1 + idf": ({t: E_tok_pc[j] for j, t in enumerate(tok_ids)},
+                                  tok_keys, lambda k_: idf_tok.get(k_, dflt), 384),
+        "m2v words + idf": ({w_: E_wrd[j] for j, w_ in enumerate(words)},
+                            wrd_keys, lambda k_: idf_w.get(k_, dflt), 384),
+        "m2v words -pc1 + idf": ({w_: E_wrd_pc[j] for j, w_ in enumerate(words)},
+                                 wrd_keys, lambda k_: idf_w.get(k_, dflt), 384),
+        "m2v tok -pc1 + signal": (_blend(E_tok_pc, tok_ids, _tok_signal),
+                                  tok_keys, lambda k_: idf_tok.get(k_, dflt), K * L),
+        "m2v word -pc1 + signal": (_blend(E_wrd_pc, words, _word_signal),
+                                   wrd_keys, lambda k_: idf_w.get(k_, dflt), K * L),
+    }
+
+    fast = json.loads((ROOT / "validation" / "logs" / "exp_f2m2_fast_arms.json")
+                      .read_text(encoding="utf-8"))
+    print(f"{'arm':>26} {'self':>6} {'macro':>7} {'xnull':>6} {'micro':>7}")
+    for lb in ("bpe tokens + idf", "words only + idf", "MiniLM ref (stage1)"):
+        fa = fast["arms"][lb]
+        print(f"{lb:>26} {fa['self_retrieval_top1']:6.3f} {fa['macro']:7.4f} "
+              f"{fa['macro'] / mac_null:6.2f} {fa['micro']:7.4f}   (prior run)")
+
+    out: dict = {"matched_macro_null": mac_null, "build_s": build_s,
+                 "n_token_strings": len(tok_ids), "n_words": len(words), "arms": {}}
+    for label, (vec_of, keys_of, weight_of, dim) in arms.items():
+        t0 = time.perf_counter()
+        nc = _bundle_from_table(names, keys_of, vec_of, weight_of, dim)
+        fc = _bundle_from_table(formulas, keys_of, vec_of, weight_of, dim)
+        us = (time.perf_counter() - t0) / len(texts) * 1e6
+        top1 = self_retrieval_top1(nc, fc)
+        routed = loo_domain_routing(nc, fc, domains)
+        out["arms"][label] = {
+            "self_retrieval_top1": top1, "macro": routed["macro"],
+            "macro_x_null": routed["macro"] / mac_null, "micro": routed["micro"],
+            "per_domain": routed["per_domain"], "encode_us_per_text": us,
+        }
+        print(f"{label:>26} {top1:6.3f} {routed['macro']:7.4f} "
+              f"{routed['macro'] / mac_null:6.2f} {routed['micro']:7.4f}   ({us:.0f} us/text)")
+
+    best = max(out["arms"], key=lambda lb: out["arms"][lb]["macro"])
+    fb = out["arms"][best]
+    ref_macro = fast["arms"]["MiniLM ref (stage1)"]["macro"]
+    out["best_arm"] = best
+    print(f"\nbest distilled arm: {best} -- macro {fb['macro']:.4f} "
+          f"({fb['macro_x_null']:.2f}x null, {fb['macro'] / ref_macro:.2f}x the live teacher) "
+          f"at ~{fb['encode_us_per_text']:.0f} us/challenge")
+
+    (ROOT / "validation" / "logs").mkdir(parents=True, exist_ok=True)
+    json_path = ROOT / "validation" / "logs" / "exp_f2m2_m2v.json"
+    json_path.write_text(json.dumps(out, indent=1), encoding="utf-8")
+    print(f"wrote {json_path}")
+    return out
+
+
+def _fit_pc(X: np.ndarray, n_pc: int = 1) -> tuple[np.ndarray, np.ndarray]:
+    """Fit the anisotropy stats (mean + top principal components) on X."""
+    mu = X.mean(axis=0, keepdims=True)
+    _, _, Vt = np.linalg.svd(X - mu, full_matrices=False)
+    return mu, Vt[:n_pc]
+
+
+def _apply_pc(X: np.ndarray, mu: np.ndarray, pcs: np.ndarray) -> np.ndarray:
+    """Apply externally-fit anisotropy removal to X; _remove_top_pc(X) is the
+    self-fit special case _apply_pc(X, *_fit_pc(X))."""
+    Xc = X - mu
+    for v in pcs:
+        Xc = Xc - np.outer(Xc @ v, v)
+    return _unit_rows(Xc)
+
+
+def run_m2v_ood(n_docs: int = 20_000, doc_len: int = 200, top_words: int = 2000) -> dict:
+    """Does the winning m2v arm survive OUT-OF-DOMAIN statistics?
+
+    The teacher table is corpus-independent, but the shipped winner's IDF and
+    anisotropy direction (mean+PC1) were fit on the 560 eval texts themselves
+    -- the same-corpus-statistics error class this project has been burned by
+    twice. Here both are refit on wiki_full text the eval corpus never saw:
+    IDF from word document-frequencies over sampled decoded windows, PC1 from
+    teacher embeddings of the corpus's most frequent words. A 2x2 grid
+    (in/ext IDF x in/ext PC1) attributes any change to its ingredient.
+    """
+    import platform
+    import time
+
+    from cubbyllm.training.data import _load_tokenizer
+    from sentence_transformers import SentenceTransformer
+
+    names, formulas, domains = load_corpus()
+    mac_null = matched_macro_null(domains)
+    texts = names + formulas
+    _enc, decode_fn, _e, _v = _load_tokenizer(str(TOKENIZER))
+
+    print(f"python {platform.python_version()} | {platform.platform()} | numpy {np.__version__}")
+    print(f"mode: --m2v-ood -- refit IDF + PC1 on wiki_full ({n_docs} docs x {doc_len} tokens); "
+          f"teacher table unchanged\n")
+
+    # -- in-domain ingredients (reproduce the shipped winner exactly) ----------
+    word_sets = [{w for w in re.split(r"[^a-z0-9]+", x.lower()) if len(w) >= 2} for x in texts]
+    words = sorted(set().union(*word_sets))
+    df_in: dict[str, int] = {}
+    for s_ in word_sets:
+        for w_ in s_:
+            df_in[w_] = df_in.get(w_, 0) + 1
+    idf_in = {w_: float(np.log(len(texts) / c)) for w_, c in df_in.items()}
+    dflt_in = float(np.log(len(texts)))
+
+    model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+    E_wrd = _unit_rows(np.asarray(model.encode(words, batch_size=256,
+                                               show_progress_bar=False), dtype=np.float32))
+
+    # -- external statistics from wiki_full ------------------------------------
+    t0 = time.perf_counter()
+    shard = np.memmap(r"D:\grillcheese_training_data\token_cache\wiki_full.u32",
+                      dtype=np.uint32, mode="r")
+    rng = np.random.default_rng(0)
+    starts = rng.integers(0, len(shard) - doc_len, size=n_docs)
+    df_ext: dict[str, int] = {}
+    freq_ext: dict[str, int] = {}
+    for s_ in starts:
+        doc = decode_fn([int(t) for t in shard[s_:s_ + doc_len]]).lower()
+        ws = {w for w in re.split(r"[^a-z0-9]+", doc) if len(w) >= 2}
+        for w_ in ws:
+            df_ext[w_] = df_ext.get(w_, 0) + 1
+            freq_ext[w_] = freq_ext.get(w_, 0) + 1
+    idf_ext = {w_: float(np.log(n_docs / c)) for w_, c in df_ext.items()}
+    dflt_ext = float(np.log(n_docs))
+    ext_vocab = sorted(freq_ext, key=lambda w_: -freq_ext[w_])[:top_words]
+    E_ext = _unit_rows(np.asarray(model.encode(ext_vocab, batch_size=256,
+                                               show_progress_bar=False), dtype=np.float32))
+    mu_ext, pc_ext = _fit_pc(E_ext)
+    print(f"external stats built in {time.perf_counter() - t0:.0f}s: "
+          f"{len(df_ext)} corpus words; PC1 fit on top {len(ext_vocab)}; "
+          f"axiom words seen in corpus: "
+          f"{sum(1 for w_ in words if w_ in idf_ext)}/{len(words)}\n")
+
+    mu_in, pc_in = _fit_pc(E_wrd)
+    P384 = make_projection(384)
+    rows_k = np.arange(K)
+    inv_sqrt_k = 1.0 / np.sqrt(K)
+
+    def _word_signal(w_: str) -> np.ndarray:
+        digest = hashlib.blake2b(f"w:{w_}".encode("utf-8"), digest_size=8).digest()
+        seed = int.from_bytes(digest, "little") % (2**63)
+        sig = np.random.default_rng(seed).integers(0, L, size=K)
+        v = np.zeros(K * L, dtype=np.float32)
+        v[rows_k * L + sig] = inv_sqrt_k
+        return v
+
+    wrd_keys = lambda t: {w for w in re.split(r"[^a-z0-9]+", t.lower()) if len(w) >= 2}  # noqa: E731
+
+    variants = {
+        "in-IDF / in-PC1 (shipped)": (idf_in, dflt_in, mu_in, pc_in),
+        "in-IDF / ext-PC1": (idf_in, dflt_in, mu_ext, pc_ext),
+        "ext-IDF / in-PC1": (idf_ext, dflt_ext, mu_in, pc_in),
+        "ext-IDF / ext-PC1 (honest)": (idf_ext, dflt_ext, mu_ext, pc_ext),
+    }
+    out: dict = {"matched_macro_null": mac_null, "n_docs": n_docs,
+                 "doc_len": doc_len, "top_words": top_words, "arms": {}}
+    print(f"{'variant':>28} {'self':>6} {'macro':>7} {'xnull':>6} {'micro':>7}")
+    for label, (idf, dflt, mu, pcs) in variants.items():
+        E_pc = _apply_pc(E_wrd, mu, pcs)
+        proj = _unit_rows(E_pc @ P384.T)
+        vec_of = {w_: 0.5 * proj[j] + 0.5 * _word_signal(w_) for j, w_ in enumerate(words)}
+        nc = _bundle_from_table(names, wrd_keys, vec_of, lambda k_: idf.get(k_, dflt), K * L)
+        fc = _bundle_from_table(formulas, wrd_keys, vec_of, lambda k_: idf.get(k_, dflt), K * L)
+        top1 = self_retrieval_top1(nc, fc)
+        routed = loo_domain_routing(nc, fc, domains)
+        out["arms"][label] = {
+            "self_retrieval_top1": top1, "macro": routed["macro"],
+            "macro_x_null": routed["macro"] / mac_null, "micro": routed["micro"],
+        }
+        print(f"{label:>28} {top1:6.3f} {routed['macro']:7.4f} "
+              f"{routed['macro'] / mac_null:6.2f} {routed['micro']:7.4f}")
+
+    (ROOT / "validation" / "logs").mkdir(parents=True, exist_ok=True)
+    json_path = ROOT / "validation" / "logs" / "exp_f2m2_m2v_ood.json"
+    json_path.write_text(json.dumps(out, indent=1), encoding="utf-8")
+    print(f"\nwrote {json_path}")
+    return out
+
+
 def _env_stamp() -> str:
     """The environment stamp every exp_f2m2_* log carries, generated in-repo.
 
@@ -1052,6 +1899,21 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--self-test", action="store_true", help="run invariants and exit")
     ap.add_argument("--stage1", action="store_true", help="rank embedders (dense)")
+    ap.add_argument("--fast-arms", action="store_true",
+                    help="model-free challenge encoders vs latency (the fast path)")
+    ap.add_argument("--beagle", action="store_true",
+                    help="BEAGLE distributional-memory arm (offline corpus pass)")
+    ap.add_argument("--beagle-shard",
+                    default=r"D:\grillcheese_training_data\token_cache\wiki_full.u32",
+                    help="uint32 token shard to accumulate co-occurrence from")
+    ap.add_argument("--beagle-tokens", type=int, default=200_000_000,
+                    help="corpus-slice length in tokens")
+    ap.add_argument("--beagle-window", type=int, default=5,
+                    help="co-occurrence half-window")
+    ap.add_argument("--m2v", action="store_true",
+                    help="static distillation of the teacher into token/word tables")
+    ap.add_argument("--m2v-ood", action="store_true",
+                    help="refit IDF + PC1 on external text (the honesty check)")
     ap.add_argument("--stage2", metavar="ARM", help="settle discretization for ARM")
     ap.add_argument("--leakage-check", metavar="ARM", help="check PQ codebook leakage for ARM")
     ap.add_argument("--null-baseline", action="store_true",
@@ -1199,8 +2061,21 @@ def main() -> None:
         json_path.write_text(json.dumps(res, indent=1), encoding="utf-8")
         print(f"\nwrote {json_path}")
         return
+    if args.fast_arms:
+        run_fast_arms()
+        return
+    if args.beagle:
+        run_beagle(args.beagle_shard, args.beagle_tokens, args.beagle_window)
+        return
+    if args.m2v:
+        run_m2v()
+        return
+    if args.m2v_ood:
+        run_m2v_ood()
+        return
     raise SystemExit("pass --self-test, --stage1, --stage2 ARM, --leakage-check ARM, "
-                     "--null-baseline, or --annotate-npz")
+                     "--null-baseline, --fast-arms, --beagle, --m2v, --m2v-ood, "
+                     "or --annotate-npz")
 
 
 if __name__ == "__main__":
