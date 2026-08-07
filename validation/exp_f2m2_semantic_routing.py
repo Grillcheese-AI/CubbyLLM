@@ -649,6 +649,25 @@ def _null_codes(n: int, kind: str, rng: np.random.Generator) -> np.ndarray:
     raise ValueError(f"unknown null kind {kind!r}; expected one of {NULL_KINDS}")
 
 
+def _tie_stats(name_codes: np.ndarray, formula_codes: np.ndarray) -> dict:
+    """How often is the routing argmax a TIE, and how big is the tied group?
+
+    One-hot-per-block cosine is (#matching blocks)/K, i.e. 81 discrete levels at
+    K=80, so exact ties are routine -- and `np.argmax` silently breaks every tie
+    toward the LOWEST index. In a domain-GROUPED corpus (data/mowm_axioms.json
+    stores all 15 domains as contiguous runs) that is a systematic pull toward
+    the first-listed domains. Continuous codes have essentially no ties, which is
+    why the one-hot null and the dense null differ at all.
+    """
+    sims = cosine_matrix(name_codes, formula_codes)
+    np.fill_diagonal(sims, -np.inf)
+    groups = (np.abs(sims - sims.max(axis=1, keepdims=True)) < 1e-9).sum(axis=1)
+    return {
+        "tied_argmax_frac": float((groups > 1).mean()),
+        "tie_group_mean": float(groups.mean()),
+    }
+
+
 def run_null_baseline(seeds: int = 10) -> dict:
     """Measure the NULL of every Stage-1/Stage-2 statistic, empirically.
 
@@ -716,9 +735,11 @@ def run_null_baseline(seeds: int = 10) -> dict:
                     "roc_auc": auc,
                     "tau_match": tau,
                     "per_domain": routed["per_domain"],
+                    **_tie_stats(nc, fc),
                 })
             summary = {}
-            for key in ("self_retrieval_top1", "micro", "macro", "roc_auc", "tau_match"):
+            for key in ("self_retrieval_top1", "micro", "macro", "roc_auc", "tau_match",
+                        "tied_argmax_frac", "tie_group_mean"):
                 v = np.array([r[key] for r in rows], dtype=np.float64)
                 summary[key] = {
                     "mean": float(v.mean()), "sd": float(v.std(ddof=1)),
@@ -751,6 +772,16 @@ def run_null_baseline(seeds: int = 10) -> dict:
         g = corpus["kinds"]["gauss"]["per_domain_mean"][d]
         o = corpus["kinds"]["onehot"]["per_domain_mean"][d]
         print(f"{d:>12}{nd:>6}{null:>14.4f}{g:>10.4f}{o:>10.4f}")
+
+    # The `hash` arm IS a draw from the one-hot null by construction (same
+    # BLAKE2b-seeded one-hot-per-block format, and a name's code carries no
+    # information about its own formula's code), so its own tie statistics
+    # belong in this characterization.
+    hash_ties = _tie_stats(hash_encode(names), hash_encode(formulas))
+    out["hash_arm_tie_stats"] = hash_ties
+    print(f"\nhash arm on the real corpus: tied argmax on "
+          f"{hash_ties['tied_argmax_frac']:.3f} of rows, mean tie-group "
+          f"{hash_ties['tie_group_mean']:.2f} candidates")
 
     print("\n--- read ---")
     cg = corpus["kinds"]["gauss"]["summary"]
@@ -952,6 +983,15 @@ def self_test() -> None:
         _null_codes(6, "onehot", np.random.default_rng(0)).sum(axis=2),
         np.ones((6, K), dtype=np.float32),
     )
+    # Tie diagnostics: one-hot codes tie constantly, continuous codes never do.
+    # That difference is the whole reason the two nulls differ.
+    oh_a = _null_codes(60, "onehot", np.random.default_rng(11))
+    oh_b = _null_codes(60, "onehot", np.random.default_rng(12))
+    gz_a = _null_codes(60, "gauss", np.random.default_rng(11))
+    gz_b = _null_codes(60, "gauss", np.random.default_rng(12))
+    assert _tie_stats(oh_a, oh_b)["tied_argmax_frac"] > 0.2
+    assert _tie_stats(gz_a, gz_b)["tied_argmax_frac"] == 0.0
+    assert _tie_stats(gz_a, gz_b)["tie_group_mean"] == 1.0
 
     # Discretizers emit valid one-hot-per-block codes; PQ is deterministic.
     # n_probe >= L=128: fit_pq now raises below that (see fit_pq's own guard), so

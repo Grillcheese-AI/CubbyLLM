@@ -29,6 +29,8 @@ checkpoint: NOT LOADED — --null-baseline uses a pure-noise encoder (no trunk, 
     security    15        0.0502    0.0667    0.0333
       social    11        0.0358    0.0273    0.0000
 
+hash arm on the real corpus: tied argmax on 0.596 of rows, mean tie-group 3.21 candidates
+
 --- read ---
   AUC null on the corpus structure is 0.1133 (gauss) / 0.1605 (onehot), NOT 0.5.
   AUC null on a BALANCED structure is 0.5131 (gauss) -> the sub-0.5 null is a candidate-set-size artifact.
