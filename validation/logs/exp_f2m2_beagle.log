@@ -1,0 +1,30 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+mode: --beagle -- distributional memory from wiki_full.u32, first 200M tokens, window +/-5
+case handling: RAW (matches the corpus; the earlier token arm lowercased)
+
+interest tokens: 1337 unique ids across 560 texts
+  scanned     20M tokens | interest positions seen 7.54M used 0.40M
+  scanned     40M tokens | interest positions seen 15.16M used 0.80M
+  scanned     60M tokens | interest positions seen 22.72M used 1.20M
+  scanned     80M tokens | interest positions seen 30.23M used 1.60M
+  scanned    100M tokens | interest positions seen 37.81M used 2.00M
+  scanned    120M tokens | interest positions seen 45.38M used 2.40M
+  scanned    140M tokens | interest positions seen 52.96M used 2.80M
+  scanned    160M tokens | interest positions seen 60.54M used 3.20M
+  scanned    180M tokens | interest positions seen 68.05M used 3.60M
+  scanned    200M tokens | interest positions seen 75.66M used 4.00M
+memory built in 10s | positions used 4.00M | pairs kept 1.93M | rows with mass 1276/1337
+
+
+                       arm   self   macro  xnull   micro
+          words only + idf  0.136  0.1730   2.73  0.1536   (prior run)
+          bpe tokens + idf  0.100  0.1520   2.40  0.1536   (prior run)
+       MiniLM ref (stage1)  0.229  0.3580   5.65  0.4500   (prior run)
+    signal only (raw case)  0.046  0.1125   1.78  0.1429   (361 us/text)
+                beagle raw  0.025  0.0767   1.21  0.1357   (1063 us/text)
+                beagle log  0.025  0.0640   1.01  0.0571   (1041 us/text)
+               beagle ppmi  0.032  0.0825   1.30  0.0821   (1102 us/text)
+      beagle ppmi + signal  0.032  0.1204   1.90  0.1036   (1134 us/text)
+
+best beagle-mode arm: beagle ppmi + signal -- macro 0.1204 (1.90x null) vs words+idf 0.1730 / MiniLM 0.3580
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_f2m2_beagle.json

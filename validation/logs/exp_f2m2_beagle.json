@@ -1,0 +1,138 @@
+{
+ "stats": {
+  "shard": "D:\\grillcheese_training_data\\token_cache\\wiki_full.u32",
+  "n_tokens": 200000000,
+  "window": 5,
+  "positions_seen": 75664964,
+  "positions_used": 4000000,
+  "unique_pairs_kept": 1927000,
+  "rows_total": 1337,
+  "rows_with_mass": 1276,
+  "top_neighbors_cap": 8000,
+  "elapsed_s": 10.418625400001474
+ },
+ "matched_macro_null": 0.06332138590203105,
+ "arms": {
+  "signal only (raw case)": {
+   "self_retrieval_top1": 0.04642857142857143,
+   "macro": 0.11253968253968254,
+   "macro_x_null": 1.7772776280323452,
+   "micro": 0.14285714285714285,
+   "per_domain": {
+    "atomic": 0.0,
+    "bio": 0.13333333333333333,
+    "causal": 0.0,
+    "colors": 0.3333333333333333,
+    "economics": 0.06666666666666667,
+    "ensemble": 0.06666666666666667,
+    "historical": 0.2,
+    "identity": 0.1,
+    "language": 0.06666666666666667,
+    "linguistics": 0.4166666666666667,
+    "logic": 0.0,
+    "music": 0.0,
+    "physics": 0.23809523809523808,
+    "security": 0.06666666666666667,
+    "social": 0.0
+   },
+   "encode_us_per_text": 361.49678571746335
+  },
+  "beagle raw": {
+   "self_retrieval_top1": 0.025,
+   "macro": 0.0766955266955267,
+   "macro_x_null": 1.2112104876255823,
+   "micro": 0.1357142857142857,
+   "per_domain": {
+    "atomic": 0.0,
+    "bio": 0.26666666666666666,
+    "causal": 0.13333333333333333,
+    "colors": 0.0,
+    "economics": 0.0,
+    "ensemble": 0.06666666666666667,
+    "historical": 0.13333333333333333,
+    "identity": 0.0,
+    "language": 0.06666666666666667,
+    "linguistics": 0.08333333333333333,
+    "logic": 0.0,
+    "music": 0.09090909090909091,
+    "physics": 0.30952380952380953,
+    "security": 0.0,
+    "social": 0.0
+   },
+   "encode_us_per_text": 1062.5771428619503
+  },
+  "beagle log": {
+   "self_retrieval_top1": 0.025,
+   "macro": 0.063997113997114,
+   "macro_x_null": 1.0106714040676306,
+   "micro": 0.05714285714285714,
+   "per_domain": {
+    "atomic": 0.0,
+    "bio": 0.0,
+    "causal": 0.0,
+    "colors": 0.26666666666666666,
+    "economics": 0.0,
+    "ensemble": 0.0,
+    "historical": 0.2,
+    "identity": 0.0,
+    "language": 0.06666666666666667,
+    "linguistics": 0.16666666666666666,
+    "logic": 0.0,
+    "music": 0.09090909090909091,
+    "physics": 0.03571428571428571,
+    "security": 0.13333333333333333,
+    "social": 0.0
+   },
+   "encode_us_per_text": 1040.8971428530224
+  },
+  "beagle ppmi": {
+   "self_retrieval_top1": 0.03214285714285714,
+   "macro": 0.08253968253968254,
+   "macro_x_null": 1.3035040431266849,
+   "micro": 0.08214285714285714,
+   "per_domain": {
+    "atomic": 0.0,
+    "bio": 0.0,
+    "causal": 0.06666666666666667,
+    "colors": 0.13333333333333333,
+    "economics": 0.7333333333333333,
+    "ensemble": 0.0,
+    "historical": 0.0,
+    "identity": 0.0,
+    "language": 0.06666666666666667,
+    "linguistics": 0.16666666666666666,
+    "logic": 0.0,
+    "music": 0.0,
+    "physics": 0.07142857142857142,
+    "security": 0.0,
+    "social": 0.0
+   },
+   "encode_us_per_text": 1102.4299999917275
+  },
+  "beagle ppmi + signal": {
+   "self_retrieval_top1": 0.03214285714285714,
+   "macro": 0.12043290043290042,
+   "macro_x_null": 1.90193089928939,
+   "micro": 0.10357142857142858,
+   "per_domain": {
+    "atomic": 0.0,
+    "bio": 0.0,
+    "causal": 0.4666666666666667,
+    "colors": 0.13333333333333333,
+    "economics": 0.4,
+    "ensemble": 0.0,
+    "historical": 0.06666666666666667,
+    "identity": 0.0,
+    "language": 0.06666666666666667,
+    "linguistics": 0.25,
+    "logic": 0.0,
+    "music": 0.09090909090909091,
+    "physics": 0.05952380952380952,
+    "security": 0.0,
+    "social": 0.2727272727272727
+   },
+   "encode_us_per_text": 1134.3687499902444
+  }
+ },
+ "best_arm": "beagle ppmi + signal"
+}
