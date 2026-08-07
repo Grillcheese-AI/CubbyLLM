@@ -119,8 +119,7 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
                 ok = False
         ctrl = run_fn(source, fns[-1])                   # control
         ctrl_sim = ctrl.get("similarity")
-        if ctrl.get("result") is not None and ctrl_sim is not None \
-                and ctrl_sim >= tau_vm:
+        if ctrl.get("result") is not None or (ctrl_sim is not None and ctrl_sim >= tau_vm):
             ok = False
 
         if ok:
@@ -131,13 +130,13 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
                              trace=trace, repairs_used=used)
 
         # verify failed: blacklist the weakest hop's fact and retry once
-        weakest = min(range(len(trace)),
-                      key=lambda i: trace[i].similarity or -1.0)
-        banned.add(trace[weakest].fact)
+        # (only if another attempt will actually run)
+        if _attempt == 0:
+            weakest = min(range(len(trace)),
+                          key=lambda i: trace[i].similarity or -1.0)
+            banned.add(trace[weakest].fact)
+            budget[0] -= 1
         last_trace = trace
-        if budget[0] <= 0:
-            break
-        budget[0] -= 1
 
     return CoTResult(answer=None, verified=False, trace=last_trace,
                      repairs_used=max_repairs - budget[0],

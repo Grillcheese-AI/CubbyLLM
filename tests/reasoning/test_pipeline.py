@@ -79,3 +79,94 @@ def test_claimed_answer_invariant():
     if r.verified:
         assert all(h.similarity is not None and h.similarity >= 0.5
                    for h in r.trace)
+
+
+def test_control_leak_with_result_no_similarity():
+    """Control returning result with no similarity is a leak."""
+    def leaky_result_vm(source, fn):
+        if fn == "control":
+            return {"ok": True, "result": "ghost", "similarity": None}
+        return good_vm(source, fn)
+    r = answer(Q3, good_retriever, leaky_result_vm, tau_vm=0.5, tau_ret=0.2)
+    assert r.verified is False
+
+
+def test_verify_fail_twice_single_repair_used():
+    """Double verify failure uses exactly 1 repair (ban + retry, then fail).
+
+    Both walks succeed without retries (retriever provides alternates after ban),
+    but verify fails both times due to weak VM similarity.
+    """
+    F1_alt = "usa is the country of citizenship of cynthia basinet"
+    F2_alt = "usa is the country usa is in"
+    F3_alt = "oceania is the continent of usa"
+
+    fact_index = {"solve": 0, "hop_2": 0, "hop_3": 0}
+
+    def retriever_with_backup(query, k):
+        ql = query.lower()
+        if "cynthia" in ql:
+            # Return both F1 and F1_alt; walk will use F1 first, then F1_alt after ban
+            return [(0.9, F1), (0.8, F1_alt)]
+        if "continent" in ql:
+            return [(0.9, F3), (0.8, F3_alt)]
+        # For "country" queries
+        return [(0.9, F2), (0.8, F2_alt)]
+
+    def weak_vm_both(source, fn):
+        # All hops return weak similarity to trigger verify failure both times
+        if fn == "control":
+            return {"ok": True, "result": None, "similarity": None}
+        return {"ok": True, "result": good_vm(source, fn)["result"],
+                "similarity": 0.1}  # Below tau_vm=0.5
+
+    r = answer(Q3, retriever_with_backup, weak_vm_both, tau_vm=0.5, tau_ret=0.2)
+    assert r.verified is False
+    assert r.repairs_used == 1  # ban + retry on attempt 0, then fail again
+
+
+def test_repair_recovers_with_alternate_fact():
+    """Verify fails on attempt 0, fact is banned, attempt 1 finds alternate.
+
+    Tests that when verify fails on a weak hop, that hop's fact is banned,
+    and attempt 1 can find an alternate fact and succeed.
+    repairs_used == 1 (the ban+retry counts as one repair).
+    """
+    # F2_alt: different phrasing, same meaning as F2 (same obj for downstream)
+    F2_alt = "united stated is the country of united stated"
+
+    def retriever_with_backup(query, k):
+        """Provides both primary and alternate facts."""
+        ql = query.lower()
+        if "cynthia" in ql:
+            return [(0.9, F1)]
+        if "continent" in ql:
+            return [(0.9, F3)]
+        # For country queries: provide both F2 and F2_alt
+        return [(0.9, F2), (0.85, F2_alt)]
+
+    hop2_verify_count = [0]
+
+    def vm_weak_then_strong(source, fn):
+        """Weak on first verify, strong on retry."""
+        if fn == "control":
+            return {"ok": True, "result": None, "similarity": None}
+        if fn == "solve":
+            return {"ok": True, "result": "united stated", "similarity": 0.93}
+        if fn == "hop_2":
+            hop2_verify_count[0] += 1
+            if hop2_verify_count[0] == 1:
+                # First verify: weak similarity causes failure
+                return {"ok": True, "result": "united stated", "similarity": 0.1}
+            else:
+                # Second verify: strong similarity succeeds
+                return {"ok": True, "result": "united stated", "similarity": 0.93}
+        if fn == "hop_3":
+            return {"ok": True, "result": "oceania portal", "similarity": 0.93}
+        return {"ok": True, "result": "unknown", "similarity": 0.93}
+
+    r = answer(Q3, retriever_with_backup, vm_weak_then_strong,
+               tau_vm=0.5, tau_ret=0.2, max_repairs=3)
+    assert r.verified is True
+    assert r.answer == "oceania portal"
+    assert r.repairs_used == 1
