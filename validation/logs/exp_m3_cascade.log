@@ -1,0 +1,28 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+table: fastword_table_v4.npz | teacher: MiniLM-L6-v2
+
+1120 exemplars / 1120 closed challenges / 160 open-set (held out: [np.str_('business_management'), np.str_('history'), np.str_('neuroscience'), np.str_('political_science'), np.str_('verified_facts')])
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 6587.07it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+encoded: table 1284 us/passage, teacher 16262 us/passage (batched)
+
+closed-vs-open AUC on best-centroid score: table 0.6901 | teacher 0.7070
+calibrated tau_match: table 0.5047 | teacher 0.4515
+
+ delta   tch% spawn-det  routed% routed-acc  us/chal
+  0.00   0.0%     0.956    0.355      0.935     1284
+  0.01  15.1%     0.956    0.372      0.928     3736
+  0.02  34.5%     0.938    0.392      0.920     6900
+  0.05  60.5%     0.894    0.430      0.925    11130
+  0.10  86.3%     0.875    0.500      0.929    15323
+  0.15  96.6%     0.869    0.530      0.929    16987
+  0.25 100.0%     0.869    0.539      0.930    17546
+  9.00 100.0%     0.869    0.539      0.930    17546
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_cascade.json

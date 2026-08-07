@@ -1,0 +1,85 @@
+{
+ "config": {
+  "table": "D:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+  "deltas": [
+   0.0,
+   0.01,
+   0.02,
+   0.05,
+   0.1,
+   0.15,
+   0.25,
+   9.0
+  ]
+ },
+ "auc": {
+  "table": 0.6901060267857143,
+  "teacher": 0.70703125
+ },
+ "tau_match": {
+  "table": 0.504669725894928,
+  "teacher": 0.4514802396297455
+ },
+ "encode_us": {
+  "table": 1284.2397083333406,
+  "teacher_batched": 16262.063291666587
+ },
+ "sweep": {
+  "delta=0.0": {
+   "teacher_frac": 0.0,
+   "spawn_detect": 0.95625,
+   "frac_closed_routed": 0.35535714285714287,
+   "acc_routed": 0.9346733668341709,
+   "est_us_per_challenge": 1284.2397083333406
+  },
+  "delta=0.01": {
+   "teacher_frac": 0.15078125,
+   "spawn_detect": 0.95625,
+   "frac_closed_routed": 0.3723214285714286,
+   "acc_routed": 0.9280575539568345,
+   "est_us_per_challenge": 3736.2539390299435
+  },
+  "delta=0.02": {
+   "teacher_frac": 0.3453125,
+   "spawn_detect": 0.9375,
+   "frac_closed_routed": 0.3919642857142857,
+   "acc_routed": 0.9202733485193622,
+   "est_us_per_challenge": 6899.733438736959
+  },
+  "delta=0.05": {
+   "teacher_frac": 0.60546875,
+   "spawn_detect": 0.89375,
+   "frac_closed_routed": 0.4303571428571429,
+   "acc_routed": 0.9253112033195021,
+   "est_us_per_challenge": 11130.410841959594
+  },
+  "delta=0.1": {
+   "teacher_frac": 0.86328125,
+   "spawn_detect": 0.875,
+   "frac_closed_routed": 0.5,
+   "acc_routed": 0.9285714285714286,
+   "est_us_per_challenge": 15322.974034342385
+  },
+  "delta=0.15": {
+   "teacher_frac": 0.965625,
+   "spawn_detect": 0.86875,
+   "frac_closed_routed": 0.5303571428571429,
+   "acc_routed": 0.9292929292929293,
+   "est_us_per_challenge": 16987.29457434889
+  },
+  "delta=0.25": {
+   "teacher_frac": 1.0,
+   "spawn_detect": 0.86875,
+   "frac_closed_routed": 0.5392857142857143,
+   "acc_routed": 0.9304635761589404,
+   "est_us_per_challenge": 17546.302999999927
+  },
+  "delta=9.0": {
+   "teacher_frac": 1.0,
+   "spawn_detect": 0.86875,
+   "frac_closed_routed": 0.5392857142857143,
+   "acc_routed": 0.9304635761589404,
+   "est_us_per_challenge": 17546.302999999927
+  }
+ }
+}
