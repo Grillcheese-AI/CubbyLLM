@@ -1,0 +1,27 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+table: fastword_table_v1.npz | data: KonstantyM___science_qa_prep (15 shard(s))
+
+loaded 60 QA pairs across 3 tags in 66s: ['color', 'gravity', 'light']...
+
+encoded 120 texts at 691 us/text
+       table: Q->A hit@1 0.667 hit@5 0.900 MRR 0.754 (chance hit@1 0.0167)
+              tag-route macro 0.9000 micro 0.9000 | margin mean 0.0557 | AUC 0.6728 tau 0.4227
+    noise[0]: Q->A hit@1 0.033 hit@5 0.133 MRR 0.101 (chance hit@1 0.0167)
+              tag-route macro 0.2500 micro 0.2500 | margin mean 0.0085 | AUC 0.2583 tau 0.0176
+    noise[1]: Q->A hit@1 0.000 hit@5 0.067 MRR 0.071 (chance hit@1 0.0167)
+              tag-route macro 0.3500 micro 0.3500 | margin mean 0.0080 | AUC 0.3617 tau 0.0250
+    noise[2]: Q->A hit@1 0.017 hit@5 0.150 MRR 0.079 (chance hit@1 0.0167)
+              tag-route macro 0.3667 micro 0.3667 | margin mean 0.0083 | AUC 0.3336 tau 0.0155
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 9741.66it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+  MiniLM ref: Q->A hit@1 0.950 hit@5 1.000 MRR 0.975 (chance hit@1 0.0167)
+              tag-route macro 0.9000 micro 0.9000 | margin mean 0.2184 | AUC 0.9053 tau 0.2869
+              (MiniLM 9305 us/text batched | table/ref: hit@1 0.70x, route 1.00x)
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_science_qa.json

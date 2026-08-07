@@ -1,0 +1,55 @@
+{
+ "config": {
+  "tags": 40,
+  "per_tag": 20,
+  "shards": 15,
+  "noise_seeds": 3,
+  "with_ref": true
+ },
+ "n_pairs": 60,
+ "tags": [
+  "color",
+  "gravity",
+  "light"
+ ],
+ "encode_us_per_text": 691.3491666637128,
+ "table": {
+  "hit1": 0.6666666666666666,
+  "hit5": 0.9,
+  "mrr": 0.7542757936507936,
+  "route_macro": 0.9,
+  "route_micro": 0.9,
+  "auc": 0.6727777777777776,
+  "tau": 0.42269617319107056,
+  "per_tag": {
+   "color": 0.95,
+   "gravity": 0.9,
+   "light": 0.85
+  }
+ },
+ "noise_null": {
+  "hit1": [
+   0.016666666666666666,
+   0.013608276348795434
+  ],
+  "route_macro": [
+   0.3222222222222222,
+   0.0515201027527539
+  ]
+ },
+ "ref": {
+  "hit1": 0.95,
+  "hit5": 1.0,
+  "mrr": 0.975,
+  "route_macro": 0.8999999999999999,
+  "route_micro": 0.9,
+  "auc": 0.9052777777777778,
+  "tau": 0.2868894934654236,
+  "per_tag": {
+   "color": 0.95,
+   "gravity": 0.85,
+   "light": 0.9
+  },
+  "batched_us_per_text": 9304.910833331329
+ }
+}
