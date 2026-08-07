@@ -1,0 +1,43 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+mode: --open-screen | 3 rotated open-set splits x 5 held-out domains | table fastword_table_v1.npz
+
+split 0: open=[np.str_('business_management'), np.str_('history'), np.str_('neuroscience'), np.str_('political_science'), np.str_('verified_facts')] | 1120 ex / 1120 closed / 160 open
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 10478.89it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+split 1: open=[np.str_('QA'), np.str_('governance'), np.str_('instruction'), np.str_('math'), np.str_('ml')] | 1160 ex / 1160 closed / 120 open
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 9026.04it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+split 2: open=[np.str_('cognition'), np.str_('factual_books'), np.str_('ml'), np.str_('philosophy'), np.str_('reference')] | 1080 ex / 1080 closed / 200 open
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 10025.84it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+          scorer    spawn-AUC  route-macro  routed@tau  acc|routed  open->spawn
+        max/top1  0.6544±0.054  0.5887±0.004        61%        61%         65%
+      max/margin  0.6625±0.024  0.5887±0.004        44%        86%         86%
+       topk/top1  0.6437±0.065  0.6079±0.021        67%        60%         58%
+     topk/margin  0.6569±0.047  0.6079±0.021        45%        89%         84%
+   centroid/top1  0.6597±0.084  0.6796±0.006        58%        69%         70%
+ centroid/margin  0.6661±0.045  0.6796±0.006        41%        92%         87%
+      topk/znorm  0.6411±0.115  0.4351±0.023        52%        35%         74%
+MiniLM topk/top1  0.8245±0.049  0.8137±0.043                                    (reference ceiling)
+
+best spawn scorer: centroid/margin (AUC 0.6661 vs shipped max/top1 0.6544)
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_open_set.json
