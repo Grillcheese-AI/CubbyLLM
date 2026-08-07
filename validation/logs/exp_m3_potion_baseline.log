@@ -1,0 +1,19 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files: 100%|##########| 10/10 [00:00<?, ?it/s]
+potion: minishlab/potion-base-8M (model2vec 0.8.2) vs table fastword_table_v1.npz
+
+potion->block table built: 30275 words in 13s (in-vocab anisotropy fit)
+
+=== 42-domain routing (exp_m3_domain_routing protocol; recorded table 0.5946 / MiniLM 0.7973)
+  1120 exemplars / 1120 challenges (28 domains; open-set excluded: [np.str_('business_management'), np.str_('history'), np.str_('neuroscience'), np.str_('political_science'), np.str_('verified_facts')])
+  potion           macro 0.7223 micro 0.7223 auc 0.6768 @ 247 us/passage
+  potion->block    macro 0.6464 micro 0.6464 auc 0.5955 @ 1387 us/passage
+  table            macro 0.5946 micro 0.5946 auc 0.5684 @ 1076 us/passage
+
+=== NYT year placement (exp_m3_nyt_years protocol; recorded table exact 0.064 / MAE med 19, MiniLM 0.046 / 21)
+  14700 texts, 147 years
+  potion           exact 0.0443 ±10y 0.3203 MAE med 22 mean 33
+  potion->block    exact 0.0689 ±10y 0.3744 MAE med 17 mean 31
+  table            exact 0.0638 ±10y 0.3542 MAE med 19 mean 34
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_potion_baseline.json

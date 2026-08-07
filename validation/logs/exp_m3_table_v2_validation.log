@@ -1,0 +1,5 @@
+v2 meta: {'teacher': 'sentence-transformers/all-MiniLM-L6-v2', 'n_words': 30275, 'signal_blend': 0.5}
+recorded: v1 routing 0.5946 / potion-native 0.7223 / potion->block(in-vocab anis) 0.6464
+  table_v2         macro 0.6464 micro 0.6464 auc 0.5955 @ 1262 us/passage
+recorded: v1 NYT exact 0.0638 MAE med 19 / potion-native 0.0443 / potion->block 0.0689
+  table_v2         exact 0.0689 ±10y 0.3745 MAE med 17 mean 31

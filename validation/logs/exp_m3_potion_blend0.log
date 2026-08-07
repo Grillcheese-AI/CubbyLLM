@@ -1,0 +1,8 @@
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files: 100%|##########| 10/10 [00:00<?, ?it/s]
+blend attribution: potion->block at signal_blend 0.0 / 0.25 (0.5 already measured: routing 0.6464, nyt exact 0.0689)
+-- blend=0.0
+  p2b blend=0.0    macro 0.6188 micro 0.6188 auc 0.5675 @ 1099 us/passage
+  p2b blend=0.0    exact 0.0556 ±10y 0.3391 MAE med 21 mean 33
+-- blend=0.25
+  p2b blend=0.25   macro 0.6179 micro 0.6179 auc 0.5713 @ 1122 us/passage
+  p2b blend=0.25   exact 0.0591 ±10y 0.3467 MAE med 20 mean 32

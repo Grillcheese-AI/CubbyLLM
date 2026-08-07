@@ -1,0 +1,23 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+30275 vocab words | 1120 routing challenges | 14700 NYT texts
+ladder so far (routing / NYT-exact): bge-m3 0.566/0.070 | MiniLM 0.595/0.064 | potion-8M 0.646/0.069
+
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files:  10%|#         | 1/10 [00:00<00:01,  7.35it/s]Fetching 10 files:  30%|###       | 3/10 [00:00<00:00, 12.78it/s]Fetching 10 files:  50%|#####     | 5/10 [00:16<00:21,  4.32s/it]Fetching 10 files: 100%|##########| 10/10 [00:16<00:00,  1.69s/it]
+-- potion-base-32M: dim 512, embed 21s
+  potion-base-32M  macro 0.6714 micro 0.6714 auc 0.6256 @ 1135 us/passage
+  potion-base-32M  exact 0.0723 ±10y 0.3899 MAE med 16 mean 30
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files:  10%|#         | 1/10 [00:00<00:01,  7.87it/s]Fetching 10 files:  40%|####      | 4/10 [00:15<00:25,  4.21s/it]Fetching 10 files: 100%|##########| 10/10 [00:15<00:00,  1.56s/it]
+-- potion-retrieval-32M: dim 512, embed 17s
+  potion-retrieval-32M macro 0.6795 micro 0.6795 auc 0.6630 @ 1153 us/passage
+  potion-retrieval-32M exact 0.0799 ±10y 0.4114 MAE med 15 mean 29
+Fetching 30 files:   0%|          | 0/30 [00:00<?, ?it/s]Fetching 30 files:   3%|3         | 1/30 [00:00<00:03,  7.41it/s]Fetching 30 files:  10%|#         | 3/30 [00:00<00:01, 13.58it/s]Fetching 30 files:  40%|####      | 12/30 [00:00<00:00, 43.99it/s]Fetching 30 files:  60%|######    | 18/30 [00:00<00:00, 40.02it/s]Fetching 30 files:  60%|######    | 18/30 [00:11<00:00, 40.02it/s]Fetching 30 files:  80%|########  | 24/30 [00:57<00:22,  3.67s/it]Fetching 30 files:  87%|########6 | 26/30 [00:58<00:12,  3.16s/it]Fetching 30 files: 100%|##########| 30/30 [00:58<00:00,  1.94s/it]
+C:\Users\grill\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\joblib\externals\loky\process_executor.py:782: UserWarning: A worker stopped while some jobs were given to the executor. This can be caused by a too short worker timeout or by a memory leak.
+  warnings.warn(
+-- potion-multilingual-128M: dim 256, embed 74s
+  potion-multilingual-128M macro 0.6223 micro 0.6223 auc 0.5621 @ 1458 us/passage
+  potion-multilingual-128M exact 0.0690 ±10y 0.3768 MAE med 17 mean 32
+-- static-retrieval-mrl-en-v1: dim 1024, embed 25s
+  static-retrieval-mrl-en-v1 macro 0.6696 micro 0.6696 auc 0.6599 @ 1381 us/passage
+  static-retrieval-mrl-en-v1 exact 0.0806 ±10y 0.4058 MAE med 15 mean 29
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_teacher_ladder.json

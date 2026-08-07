@@ -1,0 +1,36 @@
+llama_context: n_ctx_seq (512) < n_ctx_train (8192) -- the full capacity of the model will not be utilized
+  embedded 1024/30275 (1s)
+  embedded 2048/30275 (1s)
+  embedded 3072/30275 (2s)
+  embedded 4096/30275 (2s)
+  embedded 5120/30275 (3s)
+  embedded 6144/30275 (3s)
+  embedded 7168/30275 (4s)
+  embedded 8192/30275 (4s)
+  embedded 9216/30275 (5s)
+  embedded 10240/30275 (5s)
+  embedded 11264/30275 (6s)
+  embedded 12288/30275 (6s)
+  embedded 13312/30275 (7s)
+  embedded 14336/30275 (7s)
+  embedded 15360/30275 (8s)
+  embedded 16384/30275 (8s)
+  embedded 17408/30275 (9s)
+  embedded 18432/30275 (9s)
+  embedded 19456/30275 (10s)
+  embedded 20480/30275 (10s)
+  embedded 21504/30275 (11s)
+  embedded 22528/30275 (11s)
+  embedded 23552/30275 (12s)
+  embedded 24576/30275 (12s)
+  embedded 25600/30275 (13s)
+  embedded 26624/30275 (13s)
+  embedded 27648/30275 (14s)
+  embedded 28672/30275 (14s)
+  embedded 29696/30275 (15s)
+  embedded 30275/30275 (15s)
+bge-m3 vocab embed: 15s total
+ladder: v1(MiniLM) 0.5946 | potion->block 0.6464 | potion-native 0.7223 | MiniLM-live 0.7973
+  bge-m3->block    macro 0.5661 micro 0.5661 auc 0.5500 @ 1086 us/passage
+ladder: v1 NYT exact 0.0638 MAE med 19 | potion->block 0.0689 / 17 | potion-native 0.0443 / 22
+  bge-m3->block    exact 0.0704 ±10y 0.3781 MAE med 17 mean 31

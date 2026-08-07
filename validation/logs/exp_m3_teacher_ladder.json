@@ -1,0 +1,76 @@
+{
+ "results": {
+  "m2v:minishlab/potion-base-32M": {
+   "routing": {
+    "macro": 0.6714285714285715,
+    "micro": 0.6714285714285714,
+    "auc": 0.6256281887755102,
+    "encode_us_per_passage": 1134.8591071428668
+   },
+   "nyt": {
+    "n": 14700,
+    "n_own_world": 14700,
+    "exact": 0.07231292517006803,
+    "within10": 0.3899319727891156,
+    "within50": 0.7972108843537415,
+    "mae_mean": 29.61,
+    "mae_median": 16.0
+   },
+   "teacher_dim": 512
+  },
+  "m2v:minishlab/potion-retrieval-32M": {
+   "routing": {
+    "macro": 0.6794642857142856,
+    "micro": 0.6794642857142857,
+    "auc": 0.6630476721938775,
+    "encode_us_per_passage": 1153.2595535714204
+   },
+   "nyt": {
+    "n": 14700,
+    "n_own_world": 14700,
+    "exact": 0.07986394557823129,
+    "within10": 0.4113605442176871,
+    "within50": 0.8036054421768708,
+    "mae_mean": 28.715102040816326,
+    "mae_median": 15.0
+   },
+   "teacher_dim": 512
+  },
+  "m2v:minishlab/potion-multilingual-128M": {
+   "routing": {
+    "macro": 0.6223214285714287,
+    "micro": 0.6223214285714286,
+    "auc": 0.5620870535714286,
+    "encode_us_per_passage": 1457.5513392860069
+   },
+   "nyt": {
+    "n": 14700,
+    "n_own_world": 14700,
+    "exact": 0.06897959183673469,
+    "within10": 0.3768027210884354,
+    "within50": 0.7774829931972789,
+    "mae_mean": 31.768843537414966,
+    "mae_median": 17.0
+   },
+   "teacher_dim": 256
+  },
+  "st:sentence-transformers/static-retrieval-mrl-en-v1": {
+   "routing": {
+    "macro": 0.6696428571428571,
+    "micro": 0.6696428571428571,
+    "auc": 0.6599410076530612,
+    "encode_us_per_passage": 1381.2883482139732
+   },
+   "nyt": {
+    "n": 14700,
+    "n_own_world": 14700,
+    "exact": 0.08061224489795918,
+    "within10": 0.4057823129251701,
+    "within50": 0.7957823129251701,
+    "mae_mean": 29.486122448979593,
+    "mae_median": 15.0
+   },
+   "teacher_dim": 1024
+  }
+ }
+}
