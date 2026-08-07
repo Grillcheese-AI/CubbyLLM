@@ -1,5 +1,13 @@
 # H-F2 M2 — Semantic Context Encoding Implementation Plan
 
+> ## OUTCOME (2026-08-06) — Tasks 1–6 RAN AND ARE COMPLETE; Tasks 7–8 were GATED OUT and are correctly unbuilt
+>
+> **The checkboxes below are all unticked and stay that way — read this header, not them, for status.** Tasks 1–6 each landed with a per-task review (commits `3666012`, `a310574`, `a1509fb`, `82f701f..e54557f`, `d0c49f8..5dacdd2`, `1224dd4..99e8e58`, plus this branch's whole-branch fix wave). **Tasks 7–8 (mowm's semantic axiom path and the live confirm) were NOT run**, because Stage 1's kill criterion FAILED bars 2, 3a and 3b — which is this plan's own rule, not an omission: a failed screen ends M2 at Task 6 with a negative result rather than wiring a semantic path the screen just showed does not route.
+>
+> **The plan also drifted from what ran**, in ways recorded in the design spec's amendments: a fifth Stage-1 arm (`ngram`) and a fourth Stage-2 variant (`pq-adc`) were added mid-cycle, Stage 2 ran on two arms rather than one, and Stage 2's headline result was later **RETRACTED** as codebook leakage. Two methodology errors originating in this plan were also caught and fixed — macro accuracy compared against a micro baseline, and (in the whole-branch review) three statistics read against baselines that are not their nulls.
+>
+> **Authoritative record: `CUBBYLLM_HYPOTHESES.md`, entry "H-F2 M2 screened (2026-08-06)".** Every figure there links a file in `validation/logs/`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Give challenges and axioms a shared semantic space so M1's similarity-routing tier fires on organic contexts — measured against our own trunk, with a kill criterion that also decides whether fine-tuning is worth doing.
