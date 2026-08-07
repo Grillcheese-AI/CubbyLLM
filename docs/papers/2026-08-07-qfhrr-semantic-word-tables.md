@@ -422,17 +422,20 @@ Open-web *entity* search with short keyword queries is the measured boundary:
 |---|---|---|---|
 | table v1, compact only | 80 B/doc (371 MB) | 0.040 | 0.143 |
 | table v1, two-stage | compact + dense rerank | 0.081 | 0.143 |
+| table v4, compact only | 80 B/doc (371 MB) | 0.046 | 0.135 |
+| table v4, two-stage | compact + dense rerank | 0.096 | 0.135 |
 | potion-8M, dense | 256-d f16 (2.4 GB) | 0.224 | 0.352 |
 | *BM25 (published, unverified)* | inverted index | *~0.313* | — |
 
 Everything static loses to lexical BM25 here, and the word table loses
 worst: entity names are exactly the tail vocabulary a corpus-DF word list
-misses, and the compact shortlist's 0.143 recall@100 caps the pipeline.
-(The run used the weakest table (v1) — it predates the ladder; a v4 rerun
-is in flight and will be recorded here, but a 3× gap will not close on
-teacher quality alone.) The table's validated domain is routing, temporal
-placement, and known-corpus retrieval — not open-vocabulary web entity
-search.
+misses, and the compact shortlist's ~0.14 recall@100 caps the pipeline.
+The v4 rerun (best teacher, 60k vocab) confirms the boundary is
+structural, not a teacher artifact: +18% nDCG over v1 (0.081 → 0.096) but
+no dent in the 2.3× gap to potion-dense — and the potion arm reproduced
+to four decimals across both runs, a determinism check on the whole
+harness. The table's validated domain is routing, temporal placement, and
+known-corpus retrieval — not open-vocabulary web entity search.
 
 **The cascade, measured — and no longer needed for its original purpose**
 (`exp_m3_cascade.py`; v4 table + MiniLM, teacher consulted only inside an

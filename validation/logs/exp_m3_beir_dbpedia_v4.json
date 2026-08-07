@@ -1,0 +1,36 @@
+{
+ "config": {
+  "max_docs": 0,
+  "shortlist": 100,
+  "potion": "minishlab/potion-base-8M",
+  "table": "D:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+  "tag": "_v4"
+ },
+ "n_docs": 4635922,
+ "n_queries": 400,
+ "table_encode_us_per_doc": 489.59296051573006,
+ "potion_encode_us_per_doc": 33.822082985867475,
+ "results": {
+  "table_compact": {
+   "ndcg10": 0.045898923440080196,
+   "recall100": 0.13479715701311432,
+   "n_queries": 400,
+   "score_ms_per_q": 1886.7707012500023
+  },
+  "table_two_stage": {
+   "ndcg10": 0.09559299246475296,
+   "recall100": 0.13479715701311432,
+   "n_queries": 400
+  },
+  "potion_dense": {
+   "ndcg10": 0.22370789183122483,
+   "recall100": 0.35151655919604324,
+   "n_queries": 400,
+   "score_ms_per_q": 144.31342674999996
+  }
+ },
+ "literature_anchors_UNVERIFIED": {
+  "BM25_ndcg10": 0.313,
+  "all-MiniLM-L6-v2_ndcg10": 0.32
+ }
+}
