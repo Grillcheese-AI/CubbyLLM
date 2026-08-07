@@ -4,8 +4,20 @@ Stage 1 ranks embedders (HASH / NGRAM / T-bag / T-ctx / REF) under a dense,
 cosine-exact orthonormal projection into (80,128) (HASH/NGRAM are born directly
 in block space, so they skip the projection). Stage 2 settles discretization
 (dense / argmax / PQ / PQ-ADC) for the winner and recalibrates tau_match.
+--leakage-check controls Stage 2's codebook; --null-baseline measures what each
+statistic scores under a PURE-NOISE encoder, which is the only honest thing to
+read the results against.
 
-Standalone experiment: NEVER imported by cubbyllm/. Design:
+Standalone experiment: NEVER imported by cubbyllm/.
+
+RESULT AND AUTHORITY. The Stage-1 kill criterion CLOSED (bars 2/3a/3b failed),
+so the design's SS4.3 live confirm and its mowm-side path were never built, and
+Stage 2's "quantization improves routing" was RETRACTED as codebook leakage.
+The authoritative record is CUBBYLLM_HYPOTHESES.md, entry "H-F2 M2 screened
+(2026-08-06)" -- every figure there links a file in validation/logs/. The design
+doc below is amended-in-place with dated notes rather than rewritten, so it
+still carries forward-looking prose that the run overtook; read it for intent,
+read the hypotheses entry for what happened:
 docs/superpowers/specs/2026-08-06-hf2-m2-semantic-context-encoding-design.md
 """
 from __future__ import annotations
