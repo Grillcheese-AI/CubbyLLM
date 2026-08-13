@@ -188,15 +188,21 @@ def main() -> None:
     sw = _load_semantic_words()
     enc = sw.FastWordEncoder.from_npz(args.table)
 
+    # Fixed seeds (spec section 7): eval=0 is exp_m3_injection's sample seed;
+    # calibration=1 is sampled disjoint from it. Recorded in the json config
+    # below so a run is reproducible from the json alone.
+    eval_seed = 0
+    calibration_seed = 1
+
     # -- eval sample -------------------------------------------------------
-    questions, answers, hops, chains, store = load_sample(args.questions, seed=0)
+    questions, answers, hops, chains, store = load_sample(args.questions, seed=eval_seed)
     hop_counts = {h: hops.count(h) for h in sorted(set(hops))}
     print(f"eval: {len(questions)} questions {hop_counts} | {len(store)} unique facts in store")
     retrieve = make_retriever(store, enc)
 
     # -- calibration sample (disjoint by question text) --------------------
     cal_q, cal_a, cal_h, cal_chains, cal_store = load_sample(
-        args.calibration, seed=1, exclude=set(questions))
+        args.calibration, seed=calibration_seed, exclude=set(questions))
     cal_hop_counts = {h: cal_h.count(h) for h in sorted(set(cal_h))}
     print(f"calibration: {len(cal_q)} questions {cal_hop_counts} | "
           f"{len(cal_store)} unique facts in its own store (disjoint from eval)\n")
@@ -248,19 +254,37 @@ def main() -> None:
           f"{len(per_hop_obs)} per-hop observations "
           f"({sum(c for _, c in per_hop_obs)} correct)")
 
+    n_incorrect_obs = sum(1 for _, c in per_hop_obs if not c)
+    # DEGENERATE-CALIBRATION WARNING, stated outright: after excluding
+    # mojibake-corrupted hops, every remaining calibration observation came
+    # back hop_correct=True (n_incorrect_obs == 0 below, at both n=30 smoke
+    # and n=200 full-run scale). youden_tau on an all-positive set is NOT a
+    # discriminator -- there is no negative class for it to separate against.
+    # Its argmax degenerates to a FLOOR: with an empty "diff" side, fpr stays
+    # 0 throughout, so the argmax lands on the last (lowest-scored) "same"
+    # point and tau_vm resolves to min(correct sims). That's a defensible
+    # floor (every genuinely-correct observed hop clears it), but it is NOT
+    # a threshold *validated* against a real negative example the way Youden
+    # calibration is supposed to produce -- the walk's structural
+    # `_accept()` filter apparently already screens out wrong-fact hops
+    # before they ever reach the VM, so this calibration slice never
+    # produced a genuine "confidently wrong" recovery to calibrate against.
+    # Whatever confidence the eval's downstream claimed-answer precision
+    # (0.994 in the committed run) carries is therefore POST-HOC evidence
+    # that tau_vm generalizes, not something this calibration step itself
+    # established. See tau_vm_calibration_degenerate in the json output and
+    # the one-line verdict caveat below.
     if per_hop_obs:
         sims_arr = np.array([s for s, _ in per_hop_obs])
         correct_arr = np.array([c for _, c in per_hop_obs])
-        # youden_tau handles a one-sided (all-correct or all-wrong) split on
-        # its own: with an empty "diff" side, fpr stays 0 throughout and the
-        # argmax lands on the last (lowest-scored) "same" point, so tau ends
-        # up at min(correct sims) rather than an artificially strict value.
         tau_vm, tau_vm_auc = youden_tau(sims_arr[correct_arr], sims_arr[~correct_arr])
     else:
         tau_vm, tau_vm_auc = 0.3, float("nan")
         print("  WARNING: zero calibration hop observations -- falling back to tau_vm=0.3")
+    tau_vm_calibration_degenerate = n_incorrect_obs == 0
     tau_ret = float(np.percentile(accepted_ret_scores, 5)) if accepted_ret_scores else 0.0
-    print(f"tau_vm = {tau_vm:.4f} (Youden AUC {tau_vm_auc:.4f} on {len(per_hop_obs)} hop obs) | "
+    print(f"tau_vm = {tau_vm:.4f} (Youden AUC {tau_vm_auc:.4f} on {len(per_hop_obs)} hop obs, "
+          f"{n_incorrect_obs} incorrect) | "
           f"tau_ret = {tau_ret:.4f} (5th pct of {len(accepted_ret_scores)} accepted-hop scores)\n")
 
     # =======================================================================
@@ -445,13 +469,22 @@ def main() -> None:
           f"{sub_tau_violations} violations")
     print(f"  [{'PASS' if clause4 else 'FAIL'}] (4) control role below tau_vm in >= 95% of programs: "
           f"{control_pass_rate:.4f}")
+    if tau_vm_calibration_degenerate:
+        print(f"  CAVEAT: calibration observed zero incorrect hops ({len(per_hop_obs)} obs) -- "
+              f"tau_vm={tau_vm:.4f} is a floor (min of correct sims), not a validated "
+              f"discriminator; clause 2's claimed precision is the only post-hoc evidence it generalizes.")
     print(f"\n  informative (not a kill-criterion clause): CoT vs chase-only -- "
           f"2-hop cot={cot_by_hop.get('2', float('nan')):.3f} vs chase={chase_by_hop.get('2', float('nan')):.3f}; "
           f"3-hop cot={cot_by_hop.get('3', float('nan')):.3f} vs chase={chase_by_hop.get('3', float('nan')):.3f}")
     print(f"\n  OVERALL: {'PASS' if overall else 'FAIL'}")
 
+    config = {k_: (str(v_) if isinstance(v_, pathlib.Path) else v_) for k_, v_ in vars(args).items()}
+    config["eval_seed"] = eval_seed
+    config["calibration_seed"] = calibration_seed
+    config["tau_vm_calibration_degenerate"] = tau_vm_calibration_degenerate
+
     out = {
-        "config": {k_: (str(v_) if isinstance(v_, pathlib.Path) else v_) for k_, v_ in vars(args).items()},
+        "config": config,
         "n_eval_questions": len(questions),
         "n_calibration_questions": len(cal_q),
         "eval_hop_counts": {str(k_): v_ for k_, v_ in hop_counts.items()},
@@ -461,7 +494,9 @@ def main() -> None:
             "cal_unparseable_questions": cal_unparseable_q,
             "cal_mojibake_excluded_hop_obs": cal_mojibake_excluded,
             "n_hop_observations": len(per_hop_obs),
+            "n_incorrect_hop_observations": n_incorrect_obs,
             "tau_vm": tau_vm, "tau_vm_youden_auc": tau_vm_auc,
+            "tau_vm_calibration_degenerate": tau_vm_calibration_degenerate,
             "tau_ret": tau_ret,
         },
         "arms": {
