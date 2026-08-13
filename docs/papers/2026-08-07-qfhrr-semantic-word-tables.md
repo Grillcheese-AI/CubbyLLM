@@ -35,10 +35,13 @@ open-set challenges with 92% precision while sending 87% of never-seen-domain in
 to spawn. On multi-hop fact retrieval, iterative query expansion — a protocol that
 measurably does nothing for the neural teacher — lifts the table's full-chain
 recovery to parity with the teacher (0.733 vs 0.720), because retrieved facts
-donate exactly the bridging words a bag-of-words query lacks. We report the
-negative results with the same care: distributional (BEAGLE-style) co-occurrence
-memory, frequency-weighted phase advancement, complex bundling, and a
-product-quantization win that we retracted after finding codebook leakage.
+donate exactly the bridging words a bag-of-words query lacks. As the retriever
+of an end-to-end *verified* reasoning pipeline (a symbolic VM checks every hop),
+the table supports 99.4%-precision claimed answers with a 17× live margin
+between bound and absent bindings. We report the negative results with the same
+care: distributional (BEAGLE-style) co-occurrence memory, frequency-weighted
+phase advancement, complex bundling, and a product-quantization win that we
+retracted after finding codebook leakage.
 
 ---
 
@@ -457,6 +460,35 @@ and most precise* operating profile; escalation trades spawn detection
 a **coverage lever** for deployments that prefer routing over spawning —
 not a confidence fix, because the teacher ladder already delivered that.
 
+### 5.9 End-to-end: the table inside a verified reasoning pipeline
+
+The serve stack's final test is not a retrieval metric but a *product*
+property: can a pipeline built on the table produce answers that are **right
+when claimed**? We built one: a grammar parses a multi-hop question into a
+relation chain (95.4% parse coverage on the corpus after a six-frame grammar;
+nested relative clauses excluded by design); the table retrieves each hop's
+fact; a symbolic VM holds the chain in a VSA frame, re-verifies every hop by
+`recover` with cosine confidence, and reads the answer out — with an
+absent-role control in every program. Live measurements: bound hops recover at
+~0.50 similarity, the never-bound control at **0.029** — a 17× margin — and
+across 800 questions the pipeline's **claimed-answer precision is 0.994 with
+zero sub-threshold claims and 341/341 control passes**.
+
+The kill-criterion verdict is an honest partial falsification, reported as
+such: an unverified retrieve-and-chase baseline wins raw accuracy (0.724 vs
+0.390) because it never refuses, while the verified pipeline declines
+questions it cannot parse or prove. The narrowed claim survives with teeth:
+**when this stack claims, it is right — an auditable per-hop trace with
+confidences, which neither free-form generation nor unverified retrieval can
+offer.** A calibration lesson is recorded with it: the first threshold
+calibration degenerated (a clean fact store yields *zero* organic negative
+examples, so the threshold was a floor validated only post-hoc) — the repaired
+protocol calibrates on planted near-miss faults at a fixed false-accept budget
+on the hardest fault class and holds organic confusables out as the test set.
+Every verified (question, program, trace) triple is also harvested as free,
+denotation-checked supervision for a future program-emitting model — the
+grammar is an asset generator, not scaffolding.
+
 ---
 
 ## 6. What did not work (measured)
@@ -511,37 +543,122 @@ not a confidence fix, because the teacher ladder already delivered that.
    single-machine screens. No claim survives past the regimes measured here;
    in particular the science-QA slice is n=60.
 6. **English, lowercase, len≥2 word splitting.** Untested beyond it.
+7. **Red-team status, itemized.** A five-model adversarial review of this
+   paper's claims surfaced, in convergence order: (a) date-leakage on the
+   temporal results — closed for the curated corpus (digit-masked arm
+   identical) but the NYT claim still lacks a masked/scrubbed rerun
+   (pending); (b) the null-model ablation (train-free-then-project vs
+   train-structured) — already measured here as the potion→block
+   attribution (§5.8); (c) second-teacher controls — supplied by the
+   teacher ladder; (d) an equal-byte-budget teacher comparison (teacher
+   compressed to the table's storage) — not yet run; (e) per-query
+   bootstrap CIs on the smaller evals — not yet added.
 
 ---
 
 ## 8. Related work
 
-**model2vec / potion** distill sentence encoders into static token tables (our
-steps 1–3 follow their recipe); we differ in the target space (structured qFHRR
-blocks, not free dense space), the signal-code blend, and the resulting
-algebra/storage properties. The head-to-head is now measured (§5.8): the
-recipe is teacher-portable, potion-retrieval-32M is the best teacher found,
-and the shipped table reaches 97% of its teacher's routing quality while
-keeping the algebra. **BEAGLE** (Jones & Mewhort) is the classic distributional
-hypervector memory — measured negative here at our scale. **NVSA block codes**
-(Hersche et al.) and **qFHRR** (Snyder, Poursiami, Parsa) supply the substrate and
-its integer-phase reading; our contribution is putting distilled semantic geometry
-*inside* that substrate. **PQ/ADC** (Jégou et al.) inspired the compact scoring
-path; our one-hot blocks make the codebook free and leakage-proof.
+**Semantics in hypervectors — the lineage we join, not found.** The idea that
+VSA atoms need not be random has deep roots, and we cite it generously rather
+than contest it: Plate's HRR and fractional binding; Smolensky & Legendre's
+*Harmonic Mind* tensor-product binding with learned fillers; Eliasmith's
+**Semantic Pointer Architecture** (semantically-derived compressed pointers,
+manipulated symbolically — in production in Spaun); **Random Indexing**
+(Sahlgren 2005), where random index vectors *accumulate* semantics from
+co-occurrence — the literal empirical ancestor of our headline; **BEAGLE**
+(Jones & Mewhort 2007), measured negative at our scale in §6; learned item
+memories in modern HDC (THDC, LeHDC/AdaptHD, FLASH); and **Thomas et al.
+(JAIR 2021)**, who prove the load-bearing property is *incoherence*, not
+randomness per se. **Semantic hashing** (Salakhutdinov & Hinton 2009)
+established that learned discrete codes carry semantics.
+
+**Distillation into static and constrained forms.** **model2vec/potion**
+distill sentence encoders into static token tables (our steps 1–3 follow their
+recipe; the head-to-head is measured in §5.8 — the recipe is teacher-portable
+and potion-retrieval-32M is the best teacher found). **Sparse Distillation**
+(NAACL 2022) is the existence proof for our whole approach: n-gram-table
+students retaining ~97% of a RoBERTa classifier at 600× speedup. **BPEmb** and
+**Bag of Subwords** supply the subword-composition line our coverage follow-up
+builds on. The constrained-training line — **JPQ, RepCONC, Poeem, DPQ, FSQ**
+— trains representations *inside* quantized geometry rather than projecting
+after; "Tokenlearn into sparse block codes" remains, to our knowledge,
+unpublished (our open problem #2). **Contrastive Weight Tying / Headless LMs**
+(ICLR 2024) train LMs against input-embedding targets with no softmax
+projection — the published neighbor of our retrieval-head economics.
+
+**Substrate and scoring.** **NVSA block codes** (Hersche et al.) and **qFHRR**
+(Snyder, Poursiami, Parsa) supply the substrate and its integer-phase reading.
+**PQ/ADC** (Jégou et al.) inspired the compact scoring path; our one-hot
+blocks make the codebook free and leakage-proof. Kanerva's SDM, modern
+Hopfield networks, and resonator networks (Frady, Kent, Olshausen, Sommer)
+are the associative-memory machinery our delegation and (future) evidence-
+collapse mechanisms inherit capacity theory from.
+
+**Positioning.** The bare claim "hypervectors can carry semantics" is old; the
+defensible contribution is the **conjunction**: teacher distillation, *no
+neural encoder at serve time*, a strongly structured sparse/qFHRR geometry,
+retained binding/bundling/cleanup behavior, a strict byte budget — and a
+measured envelope (quality ratios, scale curves, calibrated thresholds,
+negative results) across routing, temporal placement, retrieval, and verified
+reasoning. In bias-variance terms: random atoms are the right prior with no
+data; distilled, structure-constrained atoms dominate when a teacher and a
+hard storage budget exist. Quasi-orthogonality becomes a *constraint preserved
+under learning*, not an axiom requiring randomness — and the capacity analysis
+under learned (non-random, correlated) codes is part of the remaining burden
+we list in §10.
 
 ---
 
 ## 9. Conclusion
 
-"Random hypervectors have no semantics" was a modeling choice, not a law. A
-sentence encoder distilled through a cosine-exact orthonormal projection puts real
-semantic geometry into qFHRR phasor space at 0.75–0.95× the teacher's measured
-quality; a 0.5/0.5 blend with hashed phasor identities keeps exact-match sharpness
-and OOV coverage; per-block argmax turns any encoding into an 80-byte integer-phase
-code that scores ADC-style at millions of documents and binds like any other block
-code. The serving path is a dictionary and a matmul. For architectures that route,
-spawn, and remember on every input — and cannot afford a model call to do it —
-that is the property that matters.
+VSA-compatible atomic vectors need not trade semantic geometry for algebraic
+structure. A teacher distilled through a cosine-exact orthonormal projection
+puts real semantic geometry into qFHRR phasor space at 0.75–0.98× the
+teacher's measured quality (0.97× with the best static teacher and a
+saturated vocabulary); a 0.5/0.5 blend with hashed phasor identities — the
+measured optimum — keeps exact-match sharpness and OOV coverage; per-block
+argmax turns any encoding into an 80-byte integer-phase code that scores
+ADC-style at millions of documents and binds like any other block code. The
+serving path is a dictionary and a matmul, and it is strong enough to be the
+retriever of a verified reasoning pipeline whose claimed answers are right
+99.4% of the time. For architectures that route, spawn, remember, and *prove*
+on every input — and cannot afford a model call to do it — that is the
+property that matters.
+
+---
+
+## 10. Open problems
+
+Six concrete gaps this work exposes, none of which we found published
+solutions for, listed with the cheapest decisive experiment for each:
+
+1. **Weighted bundling as an amortized Bayesian posterior** — evidence-cue
+   unbinding as likelihood, temperature-calibrated collapse as MAP selection
+   over superposed hypotheses (with an immutable bundle and an external
+   weight vector making collapse reversible). Decisive: a 2-D sweep of
+   candidate count × evidence strength mapping the winner-separability
+   phase boundary.
+2. **Tokenlearn-style training directly inside sparse block codes**
+   (per-block Gumbel/STE; codes closed under the algebra by construction)
+   vs our measured train-free-then-project baseline.
+3. **Verifier-grounded heterogeneous debate** — specialist stores proposing
+   only machine-checkable claims, judged by deterministic execution
+   (GAVEL verifies provenance; nobody executes). Decisive: single-best-world
+   acceptance rate vs union-of-worlds acceptance rate.
+4. **Absence-vs-misrouting discrimination** in partitioned multi-hop
+   retrieval, from per-partition score-distribution shapes plus cheap
+   centroid probes.
+5. **Frozen-both-vocab-surfaces language modeling** — input table and
+   retrieval-output index both distilled from one teacher into shared
+   codebook geometry, only the reasoning stack training (Headless-LM/CWT is
+   the closest published neighbor; the closed-schema program-emitting regime
+   is where the claim is strongest).
+6. **Retrieval-for-attention substitution in hybrid recurrent LMs** —
+   attention-layers-out vs recurrent-layers-out with retrieval held fixed;
+   no clean ablation exists.
+
+Each sits on infrastructure this paper already describes; #2, #4, and #5 are
+executable with no new assets.
 
 ---
 
@@ -566,6 +683,7 @@ that is the property that matters.
 | Vocab scaling 30k/60k/100k (§5.8) | `mowm/scripts/build_fastword_table.py --top-words` | `logs/exp_m3_table_{v2,60k,100k}_validation.log`, build logs beside the npz files on D: |
 | BEIR dbpedia-entity (§5.8) | `validation/exp_m3_beir_dbpedia.py` | `logs/exp_m3_beir_dbpedia.{log,json}` (+ `_v4` when the rerun lands) |
 | Cascade (§5.8) | `validation/exp_m3_cascade.py` | `logs/exp_m3_cascade.{log,json}` |
+| Verified CoT pipeline (§5.9) | `cubbyllm/reasoning/` + `validation/exp_m3_cot_pipeline.py` | `logs/exp_m3_cot_pipeline*.{log,json}`, harvest `logs/cot_harvest*.jsonl` |
 | Production table build | `mowm/scripts/build_fastword_table.py` | `D:\CUBBY-TRAINED-MODELS\fastword_table_v1.npz.build.log` |
 | Bridge wiring + tests (§3.4) | `mowm/bridges/cubby_bridge.py` | `mowm/tests/test_cubby_bridge.py` (6 green) |
 
