@@ -1,0 +1,102 @@
+{
+ "config": {
+  "questions": 800,
+  "calibration": 200,
+  "table": "D:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+  "top_k": 3,
+  "max_repairs": 3,
+  "exe": null
+ },
+ "n_eval_questions": 800,
+ "n_calibration_questions": 200,
+ "eval_hop_counts": {
+  "1": 385,
+  "2": 256,
+  "3": 159
+ },
+ "calibration_hop_counts": {
+  "1": 101,
+  "2": 64,
+  "3": 35
+ },
+ "n_store_facts": 1241,
+ "calibration": {
+  "cal_unparseable_questions": 84,
+  "cal_mojibake_excluded_hop_obs": 8,
+  "n_hop_observations": 102,
+  "tau_vm": 0.23779296875,
+  "tau_vm_youden_auc": 0.0,
+  "tau_ret": 0.595863088965416
+ },
+ "arms": {
+  "retrieval_only": {
+   "overall": 0.48625,
+   "by_hop": {
+    "1": 0.9558441558441558,
+    "2": 0.0234375,
+    "3": 0.09433962264150944
+   },
+   "mean_wall_ms": 4.68965912485146
+  },
+  "chase_only": {
+   "overall": 0.72375,
+   "by_hop": {
+    "1": 0.9558441558441558,
+    "2": 0.625,
+    "3": 0.32075471698113206
+   },
+   "mean_wall_ms": 8.108650374915669
+  },
+  "cot": {
+   "overall": 0.39,
+   "by_hop": {
+    "1": 0.4675324675324675,
+    "2": 0.45703125,
+    "3": 0.09433962264150944
+   },
+   "mean_wall_ms": 107.09865324995917
+  }
+ },
+ "cot_verified_coverage": 0.3925,
+ "cot_verified_count": 314,
+ "claimed_answer_precision": 0.9936305732484076,
+ "claimed_correct": 312,
+ "control_pass_rate": 1.0,
+ "control_total": 341,
+ "unparseable_questions": 337,
+ "unparseable_facts": 56,
+ "non_ascii_questions": 30,
+ "sub_tau_violations": 0,
+ "repairs_histogram": {
+  "0": 649,
+  "1": 4,
+  "3": 147
+ },
+ "tau_vm_sensitivity": {
+  "0.8x": {
+   "tau_vm": 0.190234375,
+   "verified_coverage": 0.39,
+   "claimed_precision": 1.0,
+   "verified_count": 312
+  },
+  "1.0x": {
+   "tau_vm": 0.23779296875,
+   "verified_coverage": 0.39,
+   "claimed_precision": 1.0,
+   "verified_count": 312
+  },
+  "1.2x": {
+   "tau_vm": 0.2853515625,
+   "verified_coverage": 0.37125,
+   "claimed_precision": 1.0,
+   "verified_count": 297
+  }
+ },
+ "verdict": {
+  "clause1_cot_beats_retrieval_2h_3h": false,
+  "clause2_claimed_precision_ge_0.90": true,
+  "clause3_zero_sub_tau_violations": true,
+  "clause4_control_pass_rate_ge_0.95": true,
+  "overall": false
+ }
+}

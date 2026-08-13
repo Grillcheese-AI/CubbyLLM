@@ -1,0 +1,66 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+table fastword_table_v4.npz | rows valid_scaling_law_with_facts.pq | cubelang C:\Users\grill\Documents\GitHub\cubelang\target\release\cubelang.exe
+
+eval: 800 questions {1: 385, 2: 256, 3: 159} | 1241 unique facts in store
+calibration: 200 questions {1: 101, 2: 64, 3: 35} | 317 unique facts in its own store (disjoint from eval)
+
+=== calibration (tau_vm=0.0, tau_ret=-1.0) ===
+  calibration 100/200 (10s)
+  calibration 150/200 (15s)
+calibration done in 21s | 84 unparseable calibration questions | 8 non-ASCII hop obs excluded (mojibake) | 102 per-hop observations (102 correct)
+tau_vm = 0.2378 (Youden AUC 0.0000 on 102 hop obs) | tau_ret = 0.5959 (5th pct of 136 accepted-hop scores)
+
+=== eval (800 questions, tau_vm=0.2378 tau_ret=0.5959) ===
+
+  example (q5): What is the component of the instance of Scopula mustangensis?
+    hop: fact='Taxxon is the instance of Scopula mustangensis' symbol='Taxxon' sim=0.49072265625
+    hop: fact='Books/Organism is the component of Taxxon' symbol='Books/Organism' sim=0.53125
+    -> answer='Books/Organism' verified=True repairs=0
+
+  eval 50/800 (7s)
+  eval 100/800 (13s)
+  eval 150/800 (19s)
+  eval 200/800 (24s)
+  eval 250/800 (29s)
+  eval 300/800 (36s)
+  eval 350/800 (41s)
+  eval 400/800 (48s)
+  eval 450/800 (54s)
+  eval 500/800 (61s)
+  eval 550/800 (67s)
+  eval 600/800 (72s)
+  eval 650/800 (80s)
+  eval 700/800 (85s)
+  eval 750/800 (90s)
+  eval 800/800 (96s)
+eval done in 96s
+
+=== results ===
+  retrieval_only   overall=0.486 by-hop={'1': 0.9558441558441558, '2': 0.0234375, '3': 0.09433962264150944} mean_wall_ms=4.7
+  chase_only       overall=0.724 by-hop={'1': 0.9558441558441558, '2': 0.625, '3': 0.32075471698113206} mean_wall_ms=8.1
+  cot              overall=0.390 by-hop={'1': 0.4675324675324675, '2': 0.45703125, '3': 0.09433962264150944} mean_wall_ms=107.1
+
+  CoT verified-coverage: 0.393 (314/800)
+  CoT claimed-answer precision: 0.994 (312/314)
+  control pass rate: 1.000 (341/341)
+  unparseable questions: 337 | unparseable facts: 56
+  non-ascii-walked-fact questions: 30
+  sub-tau verified violations: 0
+  repairs histogram: {0: 649, 1: 4, 3: 147}
+
+  tau_vm sensitivity (re-verify cached decisions only):
+    0.8x (tau=0.1902): coverage=0.390 precision=1.000 (n=312)
+    1.0x (tau=0.2378): coverage=0.390 precision=1.000 (n=312)
+    1.2x (tau=0.2854): coverage=0.371 precision=1.000 (n=297)
+
+=== verdict ===
+  [FAIL] (1) CoT beats retrieval-only on 2-hop AND 3-hop: 2-hop cot=0.457 vs ret=0.023 (beats); 3-hop cot=0.094 vs ret=0.094 (does not beat)
+  [PASS] (2) claimed-answer precision >= 0.90: 0.9936
+  [PASS] (3) zero verified results with a sub-tau hop: 0 violations
+  [PASS] (4) control role below tau_vm in >= 95% of programs: 1.0000
+
+  informative (not a kill-criterion clause): CoT vs chase-only -- 2-hop cot=0.457 vs chase=0.625; 3-hop cot=0.094 vs chase=0.321
+
+  OVERALL: FAIL
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_cot_pipeline.json
