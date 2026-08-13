@@ -36,9 +36,10 @@ to spawn. On multi-hop fact retrieval, iterative query expansion — a protocol 
 measurably does nothing for the neural teacher — lifts the table's full-chain
 recovery to parity with the teacher (0.733 vs 0.720), because retrieved facts
 donate exactly the bridging words a bag-of-words query lacks. As the retriever
-of an end-to-end *verified* reasoning pipeline (a symbolic VM checks every hop),
-the table supports 99.4%-precision claimed answers with a 17× live margin
-between bound and absent bindings. We report the negative results with the same
+of an end-to-end *verified* reasoning pipeline (a symbolic VM checks every
+hop against frame-size-calibrated confidence floors), the table supports
+99.2%-precision claimed answers at 0.65 coverage — invariant under 100k
+distractors — with a 17× live margin between bound and absent bindings. We report the negative results with the same
 care: distributional (BEAGLE-style) co-occurrence memory, frequency-weighted
 phase advancement, complex bundling, and a product-quantization win that we
 retracted after finding codebook leakage.
@@ -474,20 +475,34 @@ absent-role control in every program. Live measurements: bound hops recover at
 across 800 questions the pipeline's **claimed-answer precision is 0.994 with
 zero sub-threshold claims and 341/341 control passes**.
 
-The kill-criterion verdict is an honest partial falsification, reported as
-such: an unverified retrieve-and-chase baseline wins raw accuracy (0.724 vs
-0.390) because it never refuses, while the verified pipeline declines
-questions it cannot parse or prove. The narrowed claim survives with teeth:
-**when this stack claims, it is right — an auditable per-hop trace with
-confidences, which neither free-form generation nor unverified retrieval can
-offer.** A calibration lesson is recorded with it: the first threshold
-calibration degenerated (a clean fact store yields *zero* organic negative
-examples, so the threshold was a floor validated only post-hoc) — the repaired
-protocol calibrates on planted near-miss faults at a fixed false-accept budget
-on the hardest fault class and holds organic confusables out as the test set.
-Every verified (question, program, trace) triple is also harvested as free,
-denotation-checked supervision for a future program-emitting model — the
-grammar is an asset generator, not scaffolding.
+The campaign ran three rounds, each honest about the last. Round one
+partially falsified its kill criterion (2-hop verified but 3-hop tied
+retrieval-only; coverage capped by a one-frame grammar) and exposed a
+degenerate threshold calibration (a clean store yields zero organic
+negatives). Round two's repair exposed a deeper design error worth stating
+as a finding: **an execution engine's similarity score measures binding
+*fidelity*, not truth** — planted near-miss faults bind wrong facts and
+recover them *faithfully* at high similarity, so semantic-hardness negatives
+cannot calibrate it (they pinned the threshold at 1.0 and zeroed all
+multi-hop coverage while showing perfect precision). Round three calibrates
+what the score actually defends: **frame-size-conditional floors** from
+correct-recovery quantiles, which land at **1.000 / 0.474 / 0.220** for
+1/2/3-pair frames — the ~1/n bundle-dilution curve the algebra predicts,
+measured from the live VM. Under that calibration the pipeline **passes all
+four kill-criterion clauses**, at 0 and at 100k distractors with identical
+numbers: verified coverage 0.646, **claimed-answer precision 0.992**
+(by-hop accuracy 0.865/0.566/0.220, beating unverified retrieval's
+0.023/0.094 at both multi-hop depths), planted-fault catch rate **1.000 on
+all four fault classes** (via symbol match — where wrongness actually
+lives), organic-confusable catch 0.77–0.80 (the honest synthetic-vs-organic
+gap, reported not hidden), and 528/528 absent-role control passes. The four
+verified-but-wrong answers were forensically classified: all are
+**corpus-dedup collisions** (systematically typo'd surface forms collapse
+distinct chains' intermediate facts into one store entry), affecting the
+unverified baselines identically — not a verification leak. Every verified
+(question, program, trace) triple is harvested as denotation-checked
+supervision for a future program-emitting model — the grammar is an asset
+generator, not scaffolding.
 
 ---
 
