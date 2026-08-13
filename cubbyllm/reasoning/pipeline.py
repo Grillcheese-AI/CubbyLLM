@@ -130,8 +130,11 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
                              trace=trace, repairs_used=used)
 
         # verify failed: blacklist the weakest hop's fact and retry once
-        # (only if another attempt will actually run)
+        # (only if another attempt will actually run and budget remains)
         if _attempt == 0:
+            if budget[0] <= 0:
+                # No budget left: can't retry, so break
+                break
             weakest = min(range(len(trace)),
                           key=lambda i: trace[i].similarity or -1.0)
             banned.add(trace[weakest].fact)

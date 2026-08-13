@@ -125,6 +125,47 @@ def test_verify_fail_twice_single_repair_used():
     assert r.repairs_used == 1  # ban + retry on attempt 0, then fail again
 
 
+def test_walk_exhausts_budget_then_verify_fails():
+    """Regression test: walk's retries exhaust budget, verify fails — no budget underflow.
+
+    Scenario: max_repairs=1, walk uses that 1 repair on retrieval retry,
+    succeeds with triples, but verify fails (weak similarity). Should not
+    decrement budget to -1 (which would make repairs_used > max_repairs).
+    Assert: verified=False, repairs_used == 1 (not 2), no exception.
+    """
+    retriever_call_count = [0]
+
+    def retriever_one_then_valid(query, k):
+        """First call returns nothing (triggers retry), second returns valid fact."""
+        ql = query.lower()
+        if "cynthia" in ql:
+            retriever_call_count[0] += 1
+            if retriever_call_count[0] == 1:
+                # First call: return nothing to force a retry
+                return []
+            else:
+                # Second call (after query refinement): return valid fact
+                return [(0.9, F1)]
+        if "continent" in ql:
+            return [(0.9, F3)]
+        # "country" queries always work
+        return [(0.9, F2)]
+
+    def vm_all_weak(source, fn):
+        """All hops return weak similarity to fail verify."""
+        if fn == "control":
+            return {"ok": True, "result": None, "similarity": None}
+        # All hops weak to trigger verify failure
+        return {"ok": True, "result": "dummy", "similarity": 0.1}
+
+    # max_repairs=1: walk uses it on retry, verify fails, no budget left
+    r = answer(Q3, retriever_one_then_valid, vm_all_weak,
+               tau_vm=0.5, tau_ret=0.2, max_repairs=1)
+    assert r.verified is False
+    assert r.repairs_used == 1  # Not 2; budget never goes negative
+    assert r.reason == "vm_verify_failed"
+
+
 def test_repair_recovers_with_alternate_fact():
     """Verify fails on attempt 0, fact is banned, attempt 1 finds alternate.
 
