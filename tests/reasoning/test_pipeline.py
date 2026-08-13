@@ -164,6 +164,10 @@ def test_walk_exhausts_budget_then_verify_fails():
     assert r.verified is False
     assert r.repairs_used == 1  # Not 2; budget never goes negative
     assert r.reason == "vm_verify_failed"
+    # Trace must be preserved even when budget exhausted on verify failure
+    assert len(r.trace) >= 1, "Trace should be populated from the walk"
+    assert all(h.similarity is not None for h in r.trace), \
+        "Trace entries should have similarities from verify step"
 
 
 def test_repair_recovers_with_alternate_fact():
