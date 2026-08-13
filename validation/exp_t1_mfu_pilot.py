@@ -277,6 +277,7 @@ def main() -> None:
                   f"~{hours:,.0f} A100-hrs -> ${1.2 * hours:,.0f}-{1.9 * hours:,.0f}")
 
     log = ROOT / "validation" / "logs" / f"exp_t1_mfu_pilot{args.tag}.json"
+    log.parent.mkdir(parents=True, exist_ok=True)   # fresh Colab unzip has no logs/
     log.write_text(json.dumps(out, indent=2))
     print(f"\njson -> {log.relative_to(ROOT)}")
 
