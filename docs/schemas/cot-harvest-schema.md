@@ -46,6 +46,14 @@ The same record serves three consumers, so under-harvesting is irreversible:
 
 ## Rules
 
+- **Harvested text inherits corpus orthography — do not "fix" it in the
+  record.** The source corpus is systematically typo'd ("Huamn" for "Human"
+  ~95% of occurrences: 568 answers/1,098 facts; "united stated" ×387) and
+  typos are chain-consistent, so verification depends on preserving them
+  verbatim. Normalization is a *consumer-side* concern (a read-time pass in
+  front of any user-facing answer surface, or a mapping applied uniformly at
+  SFT-data build time) — never a write-time mutation of the harvest.
+
 - **Never merge harvested negatives into SFT data** — they are a separate
   calibration/test split (Q21 assignment: planted faults calibrate, organic
   harvested confusables test).

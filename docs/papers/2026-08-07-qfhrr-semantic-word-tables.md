@@ -543,7 +543,14 @@ grammar is an asset generator, not scaffolding.
    single-machine screens. No claim survives past the regimes measured here;
    in particular the science-QA slice is n=60.
 6. **English, lowercase, len≥2 word splitting.** Untested beyond it.
-7. **Red-team status, itemized.** A five-model adversarial review of this
+7. **Multi-hop corpus orthography is systematically noisy** — e.g. "Huamn"
+   for "Human" in 568 answers/1,098 facts vs 29/61 spelled correctly (~95%
+   typo'd), "united stated" in 387 answers. Typos are chain-consistent, so
+   exact-match scoring is internally coherent, but every §5.5/§5.6/§5.9
+   accuracy figure measures chain-recovery fidelity against the corpus's
+   *own* ground truth, not real-world correctness; harvested supervision
+   inherits the orthography.
+8. **Red-team status, itemized.** A five-model adversarial review of this
    paper's claims surfaced, in convergence order: (a) date-leakage on the
    temporal results — closed for the curated corpus (digit-masked arm
    identical) but the NYT claim still lacks a masked/scrubbed rerun
