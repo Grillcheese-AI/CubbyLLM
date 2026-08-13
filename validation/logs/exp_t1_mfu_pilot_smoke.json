@@ -1,0 +1,60 @@
+{
+  "config": {
+    "D": 256,
+    "L": 6,
+    "B": 4,
+    "S": 256,
+    "W": 512,
+    "heads": 8,
+    "V": 0,
+    "steps": 3,
+    "warmup": 1,
+    "ckpt": false
+  },
+  "env": {
+    "python": "3.12.10",
+    "torch": "2.10.0+cpu",
+    "git": "1f698da",
+    "device": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel",
+    "peak_tflops": 0.5,
+    "amp": "off"
+  },
+  "results": {
+    "hybrid/eager": {
+      "ms_per_step": 216.40430000024935,
+      "ms_p10": 212.65849999963393,
+      "ms_p90": 225.51539999949455,
+      "tok_per_s": 4731.883793431185,
+      "final_loss": 1.6283392906188965,
+      "peak_mem_gb": null,
+      "params": 3676160,
+      "flops_per_token_train": 22846464.0,
+      "achieved_tflops": 0.10810681273880901,
+      "mfu": 0.21621362547761802
+    },
+    "mingru/eager": {
+      "ms_per_step": 232.60019999997894,
+      "ms_p10": 229.65750000003027,
+      "ms_p90": 236.19270000017423,
+      "tok_per_s": 4402.403781252521,
+      "final_loss": 2.0715596675872803,
+      "peak_mem_gb": null,
+      "params": 3546624,
+      "flops_per_token_train": 21279744.0,
+      "achieved_tflops": 0.09368202544968565,
+      "mfu": 0.1873640508993713
+    },
+    "attn/eager": {
+      "ms_per_step": 173.17240000011225,
+      "ms_p10": 167.83339999983582,
+      "ms_p90": 175.97290000048815,
+      "tok_per_s": 5913.182470181948,
+      "final_loss": 1.0535318851470947,
+      "peak_mem_gb": null,
+      "params": 3935232,
+      "flops_per_token_train": 25979904.0,
+      "achieved_tflops": 0.15362391290980987,
+      "mfu": 0.30724782581961974
+    }
+  }
+}

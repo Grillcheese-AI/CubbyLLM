@@ -167,3 +167,30 @@ or tokenizer needed), samples windows **by weight**, and prints the source mix +
 (`unified/`, arxiv-latex, temporal) are documented in
 `E:\datasets\_pipeline\corpus_manifest.md`. Swapping to the 128k BPE tokenizer
 later is just a new `spm_path` + re-tokenize.
+
+## MFU pilot (run BEFORE renting anything for the 2B cycle)
+
+The panel-settled decision chain (docs/research/2026-08-model-panel-agenda.md)
+starts with a ~2-hour measured-MFU pilot: hybrid vs pure-MinGRU vs transformer
+comparator, eager vs torch.compile, at the 150M shape. It needs **no data
+files** (random tokens) — just the package + the script:
+
+```python
+# after step 2 (code on Colab) — no sentencepiece, no corpus needed
+!cd /content/CubbyLLM && python validation/exp_t1_mfu_pilot.py --tag _colab
+# 2B-shape memory/throughput probe (grad-ckpt on):
+!cd /content/CubbyLLM && MFU_D=2048 MFU_L=32 MFU_B=4 MFU_S=1024 MFU_CKPT=1 \
+    python validation/exp_t1_mfu_pilot.py --tag _colab_2b --arms hybrid,attn
+```
+
+It prints an arm x mode table (ms/step, tok/s, achieved TFLOPS, MFU vs the
+card's dense-bf16 peak, peak memory) and a projected A100-hours/$ for the
+14.37B-token cycle-one run at each arm's best measured MFU. Unknown card names:
+set `MFU_PEAK_TFLOPS`. Download `validation/logs/exp_t1_mfu_pilot_colab*.json`
+back into `validation/logs/` when done — the decision record lives there.
+
+**What decides what** (3/3 panel-convergent): hybrid MFU ≥ ~2/3 of the
+transformer arm → cycle-one dense hybrid as planned; a large gap that
+torch.compile does not close → budget the Triton MinGRU-scan port (days,
+saves hundreds of $) before renting; ratio shift (1:3 → more attention) is
+the last resort, not the first.
