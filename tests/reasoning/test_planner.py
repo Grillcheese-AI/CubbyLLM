@@ -1,7 +1,9 @@
 """Grammar of the .pq corpus: templated questions and (two) fact templates."""
+import time
+
 from cubbyllm.reasoning.planner import (
-    QuestionPlan, Triple, normalize, parse_fact, parse_question,
-    relation_matches)
+    MAX_QUESTION_LEN, QuestionPlan, Triple, normalize, parse_fact,
+    parse_question, relation_matches)
 
 
 def test_parse_three_hop_question():
@@ -127,3 +129,33 @@ def test_parse_nested_relative_clause_stays_unparseable():
     q = ("Which list includes the list that includes the component of "
          "the instance of Speranza coortaria?")
     assert parse_question(q) is None
+
+
+# --- backtracking guard (reviewer finding on grammar v2) ---------------
+
+
+def test_parse_adversarial_long_input_returns_none_fast():
+    # Many near-miss ' is ' occurrences and no closing '?' used to trigger
+    # quadratic backtracking in the v2 frames (~10.7s measured at 80k
+    # chars). MAX_QUESTION_LEN + the '?' pre-check reject this in O(len)
+    # before any regex runs, so it must return instantly.
+    q = "which " + ("is " * 33334)  # ~100k chars, no '?'
+    assert len(q) > 90_000
+    start = time.perf_counter()
+    result = parse_question(q)
+    elapsed = time.perf_counter() - start
+    assert result is None
+    assert elapsed < 1.0
+
+
+def test_parse_boundary_length_question_still_parses():
+    # A legitimate question at exactly MAX_QUESTION_LEN must still parse —
+    # the length guard rejects strictly-longer input, not the boundary.
+    prefix, suffix = "What is the capital of ", "?"
+    tail_entity = "x" * (MAX_QUESTION_LEN - len(prefix) - len(suffix))
+    q = f"{prefix}{tail_entity}{suffix}"
+    assert len(q) == MAX_QUESTION_LEN
+    p = parse_question(q)
+    assert p is not None
+    assert p.relations == [None]
+    assert p.tail == f"capital of {tail_entity}"

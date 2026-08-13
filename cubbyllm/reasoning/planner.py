@@ -1,4 +1,4 @@
-"""Question/fact grammar for the multi-hop corpus (spec section 4.1).
+r"""Question/fact grammar for the multi-hop corpus (spec section 4.1).
 
 The .pq questions follow `What is the R_n of the R_{n-1} of ... of <tail>?`
 where the tail mixes the hop-1 relation and the seed entity (relations
@@ -36,6 +36,14 @@ Excluded by design: nested relative-clause forms ("Which list includes
 the list that includes ...") stay unparseable — depth>=2 recursion is
 the future LM tier's job, not this regex grammar's (model-panel-validated
 boundary).
+
+Backtracking guard: four v2 frames pair a non-greedy capture with a
+literal the regex engine has to search for (e.g. `\s+is\s+`), which is
+quadratic on adversarial input with many near-miss occurrences of that
+literal and no closing "?" (measured ~10.7s at 80k chars). `parse_question`
+rejects oversized/unterminated input up front (`MAX_QUESTION_LEN`, the
+"?" pre-check) so the worst case stays trivial regardless of engine
+behavior; the capture groups are also bounded as defense in depth.
 """
 from __future__ import annotations
 
@@ -52,27 +60,33 @@ _Q = re.compile(
     r"^\s*(?:what|where|who|which)\s+(?:is|was)\s+the\s+(?P<body>.+?)\s*\?\s*$",
     re.I)
 # "Which <class> is the R of the R of ... <tail>?" / "Which <class> is <entity> in?"
+# cls is bounded (class nouns run 1-3 words in the corpus) to cap the
+# backtracking multiplier when the "\s+is\s+" literal isn't found.
 _Q_WHICH_CLASS = re.compile(
-    r"^\s*which\s+(?P<cls>[A-Za-z][\w\s]*?)\s+is\s+(?P<rest>.+?)\s*\?\s*$",
+    r"^\s*which\s+(?P<cls>[A-Za-z][\w\s]{0,63}?)\s+is\s+(?P<rest>.+?)\s*\?\s*$",
     re.I)
 # "Which <class> is <entity> in?" — rest with no leading "the" chain.
 _ENTITY_IN = re.compile(r"^(?P<entity>.+?)\s+in$", re.I)
-# "What R does <entity> have?"  (inversion)
+# "What R does <entity> have?"  (inversion); rel bounded similarly.
 _Q_INV_HAVE = re.compile(
-    r"^\s*what\s+(?P<rel>.+?)\s+does\s+(?P<entity>.+?)\s+have\s*\?\s*$", re.I)
+    r"^\s*what\s+(?P<rel>.{1,80}?)\s+does\s+(?P<entity>.+?)\s+have\s*\?\s*$",
+    re.I)
 # "To which R does <entity> belong?"  (inversion, "belong" phrasing)
 _Q_INV_BELONG = re.compile(
-    r"^\s*to\s+which\s+(?P<rel>.+?)\s+does\s+(?P<entity>.+?)\s+belong\s*\?\s*$",
+    r"^\s*to\s+which\s+(?P<rel>.{1,80}?)\s+does\s+(?P<entity>.+?)\s+belong\s*\?\s*$",
     re.I)
 # "What R is <entity>?"  (bare inversion, no "the"/"does"/"have")
 _Q_WHAT_IS = re.compile(
-    r"^\s*what\s+(?P<rel>[A-Za-z][\w\s]*?)\s+is\s+(?P<entity>.+?)\s*\?\s*$",
+    r"^\s*what\s+(?P<rel>[A-Za-z][\w\s]{0,63}?)\s+is\s+(?P<entity>.+?)\s*\?\s*$",
     re.I)
 # "O is the R of S"  (non-greedy obj, greedy rel, greedy subj)
 _F_OF = re.compile(r"^(?P<obj>.+?) is the (?P<rel>.+) of (?P<subj>.+)$")
 # "O is the R S is in"  (the corpus's second template)
 _F_IN = re.compile(r"^(?P<obj>.+?) is the (?P<rel>\S+) (?P<subj>.+) is in$")
 _ARTICLES = ("the ", "a ", "an ")
+# Corpus questions run <200 chars; longer input is pathological, not a
+# real question, so it's rejected before any regex work is attempted.
+MAX_QUESTION_LEN = 512
 
 
 @dataclass(frozen=True)
@@ -111,6 +125,12 @@ def _split_chain(body: str) -> tuple[list[str], str]:
 
 
 def parse_question(q: str) -> QuestionPlan | None:
+    # Backtracking guard: bound worst-case input size, and reject anything
+    # without a "?" up front (every frame requires one) — cheap and O(n),
+    # so pathological "no closing ?" input never reaches the regexes below.
+    if len(q) > MAX_QUESTION_LEN or "?" not in q:
+        return None
+
     m = _Q.match(q)
     if m:
         rels, tail = _split_chain(m.group("body"))
