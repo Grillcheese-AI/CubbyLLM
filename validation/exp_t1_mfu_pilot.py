@@ -260,11 +260,20 @@ def main() -> None:
                   f"{r['tok_per_s']:10.0f} tok/s | {achieved_tf:6.1f} TF | MFU {mfu_s}"
                   f" | {n_params / 1e6:.1f}M params{mem_s}")
 
-    # projection: cycle-one cost at the 2B shape, using each arm's best measured MFU
+    # projection: cycle-one cost at the 2B shape, using each arm's best measured
+    # MFU applied to a menu of rental cards. MFU is a fraction of each card's own
+    # peak, so it transfers only APPROXIMATELY across architectures — the row
+    # matching the pilot card is the measured one, the others are estimates.
+    RENTALS = [  # (name, dense-bf16 TFLOPS, $/hr lo-hi) — re-verify prices at rental time
+        ("A100-80G", 312.0, 1.2, 1.9),           # cheapest $/hr, 80G
+        ("RTX PRO 6000 Blackwell 96G", 252.0, 1.8, 2.3),  # faster in practice, 96G, pricier
+        ("H100-80G", 989.0, 2.0, 3.0),
+    ]
     if peak and rows:
-        print("\n=== projection -- 14.37B tokens at the 2B shape (D2048/L32/V131k), "
-              "A100 $1.2-1.9/hr spot")
+        print("\n=== projection -- 14.37B tokens at the 2B shape (D2048/L32/V131k)")
+        print("    (pilot-card row = measured; other cards = MFU-transfer estimate)")
         d2, l2, v2 = 2048, 32, 131072
+        out["projection"] = {}
         # rough 2B analytic: params scale ~ (d2/D)^2 * (l2/L) on the trunk + head
         for arm in dict.fromkeys(r[0] for r in rows):
             best = max((r for r in rows if r[0] == arm), key=lambda r: r[2]["tok_per_s"])
@@ -272,9 +281,14 @@ def main() -> None:
             fpt2 = 6.0 * n2 + (3.0 * attn_flops_per_token_fwd(build_arm(arm))
                                * (d2 / D) * (l2 / L) if arm != "mingru" else 0.0)
             mfu = best[2]["mfu"]
-            hours = TOKENS_2B * fpt2 / (mfu * peak * 1e12) / 3600
-            print(f"  {arm:7s} (best={best[1]}, MFU {100 * mfu:.1f}%): "
-                  f"~{hours:,.0f} A100-hrs -> ${1.2 * hours:,.0f}-{1.9 * hours:,.0f}")
+            print(f"  {arm} (best={best[1]}, MFU {100 * mfu:.1f}%):")
+            out["projection"][arm] = {"mfu": mfu, "flops_per_token_2b": fpt2, "cards": {}}
+            for name, ptf, lo, hi in RENTALS:
+                hours = TOKENS_2B * fpt2 / (mfu * ptf * 1e12) / 3600
+                out["projection"][arm]["cards"][name] = {
+                    "hours": hours, "usd_lo": lo * hours, "usd_hi": hi * hours}
+                print(f"    {name:28s} ~{hours:7,.0f} hrs ({hours / 24:5.1f} d) "
+                      f"-> ${lo * hours:,.0f}-{hi * hours:,.0f}")
 
     log = ROOT / "validation" / "logs" / f"exp_t1_mfu_pilot{args.tag}.json"
     log.parent.mkdir(parents=True, exist_ok=True)   # fresh Colab unzip has no logs/

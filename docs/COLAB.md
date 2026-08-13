@@ -184,10 +184,15 @@ files** (random tokens) — just the package + the script:
 ```
 
 It prints an arm x mode table (ms/step, tok/s, achieved TFLOPS, MFU vs the
-card's dense-bf16 peak, peak memory) and a projected A100-hours/$ for the
-14.37B-token cycle-one run at each arm's best measured MFU. Unknown card names:
-set `MFU_PEAK_TFLOPS`. Download `validation/logs/exp_t1_mfu_pilot_colab*.json`
-back into `validation/logs/` when done — the decision record lives there.
+card's dense-bf16 peak, peak memory) and a rental-menu projection for the
+14.37B-token cycle-one run — hours + $ on A100-80G (cheapest $/hr), RTX PRO
+6000 Blackwell 96G (faster per card, pricier), and H100 — at each arm's best
+measured MFU. The row matching the pilot card is measured; the others are
+MFU-transfer estimates. Unknown card names: set `MFU_PEAK_TFLOPS`. On the 96G
+card also try the 2B probe WITHOUT grad-ckpt and bigger batch (`MFU_CKPT=0
+MFU_B=8` or 16) — checkpointing costs MFU, and the printed peak-mem shows the
+headroom. Download `validation/logs/exp_t1_mfu_pilot_colab*.json` back into
+`validation/logs/` when done — the decision record lives there.
 
 **What decides what** (3/3 panel-convergent): hybrid MFU ≥ ~2/3 of the
 transformer arm → cycle-one dense hybrid as planned; a large gap that
