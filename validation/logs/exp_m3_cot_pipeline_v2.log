@@ -1,0 +1,121 @@
+python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
+table fastword_table_v4.npz | rows valid_scaling_law_with_facts.pq | cubelang C:\Users\grill\Documents\GitHub\cubelang\target\release\cubelang.exe
+
+eval: 800 questions {1: 385, 2: 256, 3: 159} | 1241 unique facts in store
+calibration: 200 questions {1: 101, 2: 64, 3: 35} | 317 unique facts in its own store (disjoint from eval)
+
+=== calibration pass 1 (tau_vm=0.0, tau_ret=-1.0) ===
+  calibration 25/200 (4s)
+  calibration 50/200 (9s)
+  calibration 75/200 (13s)
+  calibration 100/200 (17s)
+  calibration 125/200 (22s)
+  calibration 150/200 (27s)
+  calibration 175/200 (31s)
+  calibration 200/200 (35s)
+calibration pass 1 done in 35s | 6 unparseable calibration questions | 15 non-ASCII hop obs excluded (mojibake) | 151 per-hop observations (149 correct) | 127 clean gold-matching walks (planted-fault source)
+  [reference only] tau_vm_youden = 0.5015 (AUC 0.7248 on 151 hop obs, 2 incorrect, degenerate=False) | tau_ret = 0.5959 (5th pct of 216 accepted-hop scores)
+
+=== tau_vm floors (frame-size-conditional; bootstrap-95%-CI LOWER bound of q01 correct-recovery similarity) ===
+  n_hop=1: floor=1.0000 (q01 point=1.0000, CI=[1.0000,1.0000], n=86) | control_role_mean=0.0225 (n=95) | margin=0.9775
+  n_hop=2: floor=0.4736 (q01 point=0.4760, CI=[0.4736,0.4800], n=50) | control_role_mean=0.0254 (n=48) | margin=0.4482
+  n_hop=3: floor=0.2202 (q01 point=0.2216, CI=[0.2202,0.2388], n=13) | control_role_mean=0.0277 (n=9) | margin=0.1925
+  fallback tau_vm (frame sizes unseen in calibration) = 0.2202
+
+=== planted-fault calibration ===
+  fault-calibration 25/127 chains (9s, 95 VM calls so far)
+  fault-calibration 50/127 chains (15s, 168 VM calls so far)
+  fault-calibration 75/127 chains (22s, 240 VM calls so far)
+  fault-calibration 100/127 chains (29s, 316 VM calls so far)
+  fault-calibration 125/127 chains (37s, 402 VM calls so far)
+planted-fault calibration done in 37s | 127 verified chains used | 406 VM calls | 28 mojibake-excluded
+  catch rate (symbol mismatch OR sub-floor similarity -- the REAL verify decision):
+    wrong_entity         attempted= 142 caught= 142 catch_rate=1.0000 | fidelity(informational, NOT truth): n= 142 mean=0.7966 q50=1.0000 q99=1.0000
+    wrong_relation       attempted=  40 caught=  40 catch_rate=1.0000 | fidelity(informational, NOT truth): n=  40 mean=0.4041 q50=0.4839 q99=0.5125
+    inverted_direction   attempted= 155 caught= 155 catch_rate=1.0000 | fidelity(informational, NOT truth): n= 155 mean=0.7858 q50=1.0000 q99=1.0000
+    wrong_hop_order      attempted=  69 caught=  69 catch_rate=1.0000 | fidelity(informational, NOT truth): n=  69 mean=0.4364 q50=0.4966 q99=0.5298
+
+=== organic-confusable held-out test (never calibration) ===
+  organic-confusable: 100 chains, 88 attempted, caught=68, catch_rate=0.7727 | fidelity(informational): mean_sim=0.7073
+
+=== random-distractor sanity gate (unit test, not calibration) ===
+  random-distractor: 50 bindings, 47 attempted, caught=47, catch_rate=1.0000 (expect ~1.0) | fidelity(informational): mean_sim=0.7564
+
+=== calibration card ===
+  hardness ladder (by catch rate, ascending = most dangerous first): organic_confusable(catch=0.773) < random_distractor(catch=1.000) < wrong_entity(catch=1.000) < wrong_relation(catch=1.000) < inverted_direction(catch=1.000) < wrong_hop_order(catch=1.000)
+  mix counts: {'wrong_entity': 142, 'wrong_relation': 40, 'inverted_direction': 155, 'wrong_hop_order': 69} | organic n=100 | random n=50
+  tau_vm_floors: {1: 1.0, 2: 0.4736, 3: 0.2202} | fallback=0.2202
+
+=== eval (800 questions, tau_vm_floors={1: 1.0, 2: 0.4736, 3: 0.2202} fallback=0.2202 tau_ret=0.5959) ===
+
+  example (q0): What is the component of the instance of the parent taxon of iridomyrmex bigi?
+    hop: fact='Iridomyrmex is the parent taxon of iridomyrmex bigi' symbol='Iridomyrmex' sim=0.2353515625
+    hop: fact='Taxxon is the instance of Iridomyrmex' symbol='Taxxon' sim=0.22998046875
+    hop: fact='Books/Organism is the component of Taxxon' symbol='Books/Organism' sim=0.27587890625
+    -> answer='Books/Organism' verified=True repairs=0
+
+  eval 25/800 (5s)
+  eval 50/800 (9s)
+  eval 75/800 (12s)
+  eval 100/800 (17s)
+  eval 125/800 (21s)
+  eval 150/800 (26s)
+  eval 175/800 (30s)
+  eval 200/800 (33s)
+  eval 225/800 (36s)
+  eval 250/800 (40s)
+  eval 275/800 (44s)
+  eval 300/800 (49s)
+  eval 325/800 (52s)
+  eval 350/800 (55s)
+  eval 375/800 (60s)
+  eval 400/800 (64s)
+  eval 425/800 (68s)
+  eval 450/800 (72s)
+  eval 475/800 (77s)
+  eval 500/800 (81s)
+  eval 525/800 (86s)
+  eval 550/800 (89s)
+  eval 575/800 (93s)
+  eval 600/800 (98s)
+  eval 625/800 (102s)
+  eval 650/800 (107s)
+  eval 675/800 (112s)
+  eval 700/800 (116s)
+  eval 725/800 (121s)
+  eval 750/800 (124s)
+  eval 775/800 (128s)
+  eval 800/800 (133s)
+eval done in 133s
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\cot_harvest_v2.jsonl (800 records)
+
+=== results ===
+  retrieval_only   overall=0.486 by-hop={'1': 0.9558441558441558, '2': 0.0234375, '3': 0.09433962264150944} mean_wall_ms=3.9
+  chase_only       overall=0.724 by-hop={'1': 0.9558441558441558, '2': 0.625, '3': 0.32075471698113206} mean_wall_ms=7.8
+  cot              overall=0.641 by-hop={'1': 0.8649350649350649, '2': 0.56640625, '3': 0.22012578616352202} mean_wall_ms=154.2
+
+  CoT verified-coverage: 0.646 (517/800)
+  CoT claimed-answer precision: 0.992 (513/517)
+  control pass rate: 1.000 (528/528)
+  unparseable questions: 37 | unparseable facts: 56
+  non-ascii-walked-fact questions: 70
+  sub-tau verified violations: 0
+  repairs histogram: {0: 551, 1: 3, 3: 246}
+
+  tau_vm sensitivity (re-verify cached decisions only, scaling each record's own frame-size floor):
+    0.8x: coverage=0.641 precision=1.000 (n=513)
+    1.0x: coverage=0.641 precision=1.000 (n=513)
+    1.2x: coverage=0.001 precision=1.000 (n=1)
+
+=== verdict ===
+  [PASS] (1) CoT beats retrieval-only on 2-hop AND 3-hop: 2-hop cot=0.566 vs ret=0.023 (beats); 3-hop cot=0.220 vs ret=0.094 (beats)
+  [PASS] (2) claimed-answer precision >= 0.90: 0.9923
+  [PASS] (3) zero verified results with a sub-tau hop: 0 violations
+  [PASS] (4) control role below tau_vm in >= 95% of programs: 1.0000
+
+  informative (not a kill-criterion clause): CoT vs chase-only -- 2-hop cot=0.566 vs chase=0.625; 3-hop cot=0.220 vs chase=0.321
+
+  OVERALL: PASS
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_cot_pipeline_v2.json
+FULL_A_EXIT=0

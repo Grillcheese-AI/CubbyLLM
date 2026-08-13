@@ -230,3 +230,34 @@ def test_repair_recovers_with_alternate_fact():
     assert r.verified is True
     assert r.answer == "oceania portal"
     assert r.repairs_used == 1
+    # DPO pair: hop_2's fact (F2) was rejected, F2_alt replaced it
+    assert r.repairs == [{"hop": 1, "rejected_fact": F2,
+                          "replacement_fact": F2_alt}]
+
+
+def test_source_populated_on_verified_result():
+    r = answer(Q3, good_retriever, good_vm, tau_vm=0.5, tau_ret=0.2)
+    assert r.verified is True
+    assert r.source is not None
+    assert "program CotChain" in r.source
+    assert r.repairs == []
+
+
+def test_source_none_on_unparseable():
+    r = answer("Tell me about cheese.", good_retriever, good_vm,
+               tau_vm=0.5, tau_ret=0.2)
+    assert r.source is None
+    assert r.repairs == []
+
+
+def test_source_populated_on_vm_verify_failed():
+    """A program IS built even when verify fails and no repair budget remains
+    (max_repairs=0: attempt 0 fails, no retry possible, no second attempt)."""
+    r = answer(Q3, good_retriever, lambda source, fn: (
+        {"ok": True, "result": None, "similarity": None} if fn == "control"
+        else {"ok": True, "result": "wrong", "similarity": 0.1}),
+        tau_vm=0.5, tau_ret=0.2, max_repairs=0)
+    assert r.verified is False
+    assert r.reason == "vm_verify_failed"
+    assert r.source is not None
+    assert r.repairs == []

@@ -2,24 +2,63 @@
 
 800 eval questions (seed 0, the exp_m3_injection sample), a DISJOINT
 200-question calibration slice (seed 1) for tau_vm/tau_ret. Store = the
-eval sample's unique facts. Arms: retrieval-only (top-1 fact's parsed
-object), chase-only (n_hop-step chase, final fact's object), CoT pipeline
-(walk + VM verify + readout). Normalized exact match vs the dataset answer,
-by hop; claimed-answer precision; control pass rate.
+eval sample's unique facts (+N DBpedia distractors, retrieval-only, when
+--distractors is set). Arms: retrieval-only (top-1 fact's parsed object),
+chase-only (n_hop-step full-store masked-argmax chase, final fact's
+object), CoT pipeline (walk + VM verify + readout). Normalized exact match
+vs the dataset answer, by hop; claimed-answer precision; control pass rate.
+
+Calibration v2 (eval-wave, 3-model literature panel, Q21) -- REVISED
+same-day after a first full run exposed a design flaw in the original
+FPR-target plan: the VM's `similarity` measures binding FIDELITY (was
+something cleanly recovered), not semantic TRUTH (was the correct thing
+recovered). A wrong-entity/inverted-direction planted fault binds a
+definitely-wrong filler and recovers it FAITHFULLY -- often at ~1.0
+similarity in a single-binding (1-hop, zero-crosstalk) frame -- because
+content-correctness is caught by the exact STRING-MATCH check
+`pipeline.answer()` already runs alongside tau_vm
+(`normalize(symbol) != normalize(triples[i].obj)`), not by the similarity
+score. Calibrating an FPR-target threshold over fault-class similarities
+therefore pins to the similarity ceiling and starves multi-hop coverage as
+a side effect -- measured, not hypothesized, in the first eval-wave run
+(2-hop/3-hop CoT accuracy collapsed to 0.000 under a tau_vm=1.0000 deployed
+from that scheme). Fixed: DEPLOYED tau_vm is now a set of FRAME-SIZE-
+CONDITIONAL FLOORS -- for each n_hop seen in calibration, tau_vm[n] = the
+bootstrap-95%-CI LOWER bound of the 1st-percentile CORRECT-recovery
+similarity at that frame size (a scalar fallback = min over sizes covers
+frame sizes unseen in calibration). Each floor is reported alongside its
+margin over the control role's own similarity (~0.01-0.04) -- that margin
+is what tau_vm actually defends: a real, confident recovery vs an absent/
+garbled one, NOT correct-vs-wrong content. Planted-fault instances
+(wrong-entity / wrong-relation / inverted-direction / wrong-hop-order)
+still get built and run, but are now reported as a CATCH RATE (does the
+REAL verify decision -- symbol mismatch OR sub-floor similarity -- reject
+the corrupted recovery?), not an FPR-calibration signal; their similarity
+distributions stay in the calibration card as informational binding-
+fidelity scores only. Organic cross-chain confusables (held-out) and
+random-distractor substitutions (a unit sanity test) are reported the same
+way. The OLD Youden number (on the walk's own organic structural near-
+misses) stays as `tau_vm_youden_reference`, comparison only. Every eval
+question is also harvested to validation/logs/cot_harvest{tag}.jsonl per
+docs/schemas/cot-harvest-schema.md.
 
 Kill criterion (all four): CoT beats retrieval-only on 2-hop AND 3-hop;
 claimed precision >= 0.90; zero verified results with a sub-tau hop
 (asserted in the pipeline itself); control role below tau_vm in >= 95% of
-programs. Standalone; never imported by cubbyllm/.
+programs (every control call across every attempt). Standalone; never
+imported by cubbyllm/.
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import pathlib
+import subprocess
 import sys
 import time
 from collections import Counter, defaultdict
+from datetime import datetime, timezone
 
 import numpy as np
 
@@ -37,14 +76,23 @@ for p in (str(ROOT), str(VAL)):
         sys.path.insert(0, p)
 
 from exp_m3_domain_routing import _load_semantic_words, youden_tau  # noqa: E402
+from exp_m3_haystack import iter_distractors  # noqa: E402
 
 from cubbyllm.bridges import cubelang_client as cc  # noqa: E402
 from cubbyllm.reasoning import answer as pipeline_answer  # noqa: E402
-from cubbyllm.reasoning import parse_fact, parse_question  # noqa: E402
-from cubbyllm.reasoning.planner import normalize  # noqa: E402
+from cubbyllm.reasoning import build_chain_program, parse_fact, parse_question  # noqa: E402
+from cubbyllm.reasoning.planner import Triple, normalize  # noqa: E402
 
 PQ_FILE = pathlib.Path(r"E:\valid_scaling_law_with_facts.pq")
 V4_TABLE = pathlib.Path(r"D:\CUBBY-TRAINED-MODELS\fastword_table_v4.npz")
+
+FAULT_CLASSES = ["wrong_entity", "wrong_relation", "inverted_direction", "wrong_hop_order"]
+MAX_FAULTS_PER_CLASS_PER_CHAIN = 2
+# Soft cap on total planted-fault VM calls -- stops the fault-calibration
+# pass once comfortably past what a default-sized (200-question) run needs
+# (~550 calls observed), regardless of how many verified calibration
+# chains are available.
+MAX_FAULT_VM_CALLS = 900
 
 
 # --------------------------------------------------------------------------
@@ -115,7 +163,7 @@ def make_retriever(store_texts: list[str], enc):
 
 
 # --------------------------------------------------------------------------
-# 4. Baselines.
+# 3. Baselines.
 # --------------------------------------------------------------------------
 def retrieval_only(question: str, retrieve) -> str | None:
     """Top-1 fact, parsed object. None on empty retrieval or unparseable fact."""
@@ -127,15 +175,19 @@ def retrieval_only(question: str, retrieve) -> str | None:
     return t.obj if t is not None else None
 
 
-def chase_only(question: str, n_hop: int, retrieve, k: int = 5) -> str | None:
-    """n_hop rounds of top-1 with text-level query expansion (exp_m3_injection's
-    chase protocol, reused inline): each round re-encodes question + facts
-    retrieved so far; already-picked facts are skipped so expansion can't
-    just re-pick the same top hit."""
+def chase_only(question: str, n_hop: int, retrieve, store_size: int) -> str | None:
+    """n_hop rounds of full-store masked argmax -- exp_m3_injection.chase's
+    fidelity bar, not a small top-k window. Each round ranks the WHOLE
+    store (requesting `store_size` candidates from the shared retriever's
+    top-k closure forces a full sort of every row, since k >= N), and picks
+    the single best row not already chosen. "First not-yet-picked entry in
+    a full ranking" IS the masked argmax over score[picked]=-inf: same
+    operation, reusing the shared scorer instead of a second dense-matmul
+    implementation."""
     got: list[str] = []
     for step in range(max(n_hop, 1)):
         query = question if step == 0 else question + " " + " ".join(got)
-        cands = retrieve(query, k)
+        cands = retrieve(query, store_size)
         pick = next((f for _, f in cands if f not in got), None)
         if pick is None:
             break
@@ -162,10 +214,305 @@ def control_violation(sim: float | None, result: str | None, tau: float) -> bool
 
 
 def hops_symbol_ok(trace, gold_objs: list[str | None]) -> bool:
+    """NOTE (sensitivity-table gating, fixed post-review): this compares
+    each walked hop's recovered SYMBOL against the DATASET's own gold
+    chain object for that hop position (`gold_objs`, from
+    `dataset_objects`) -- a cheap proxy for "would this hop still verify
+    at a different tau_vm," used ONLY by the cached +/-tau_vm sensitivity
+    re-verification below (no re-retrieval, no re-VM-call). It is NOT the
+    same check the live pipeline runs: `cubbyllm.reasoning.pipeline.answer`
+    verifies each hop against the WALKED triple's OWN retrieved object
+    (`triples[i].obj`), which can legitimately differ from the dataset's
+    gold chain if retrieval found a different, still relation-correct fact
+    that reaches the same final answer through a different path. So a
+    sensitivity-table row can diverge slightly from what actually re-
+    running the pipeline at that tau would report -- it's a proxy for "how
+    sensitive is the verified set to tau_vm," not a byte-identical replay
+    of the pipeline's own accept gate. Computation unchanged; comment only.
+    """
     if len(trace) > len(gold_objs):
         return False
     return all(normalize(ht.symbol or "") == normalize(gold_objs[j] or "")
                for j, ht in enumerate(trace))
+
+
+# --------------------------------------------------------------------------
+# 4. Shared plumbing for planted-fault calibration + harvest.
+# --------------------------------------------------------------------------
+def store_hash(texts: list[str]) -> str:
+    """sha256 over sorted fact texts -- a store snapshot's invalidation key."""
+    h = hashlib.sha256()
+    for t in sorted(texts):
+        h.update(t.encode("utf-8"))
+        h.update(b"\n")
+    return h.hexdigest()
+
+
+def _git_rev() -> str:
+    try:
+        out = subprocess.run(["git", "rev-parse", "HEAD"], cwd=str(ROOT),
+                             capture_output=True, text=True, timeout=10)
+        rev = out.stdout.strip()
+        return rev if rev else "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _display_rels(plan, triples: list[Triple]) -> list[str]:
+    """Exactly mirrors pipeline.answer's own display-relation computation,
+    so a rebuilt program's role names are byte-identical to what the
+    pipeline actually used for the same (plan, triples)."""
+    return [(t.rel if i == 0 else plan.relations[i]) or t.rel
+            for i, t in enumerate(triples)]
+
+
+def _dataset_plan_and_triples(q: str, chain_ids: list[int], store: list[str]):
+    """-> (plan, triples, display_rels, true_objs) built from the
+    DATASET's own gold chain (not a pipeline walk) -- used by the
+    organic-confusable and random-distractor held-out tests, neither of
+    which needs `pipeline_answer` to have run at all. None if the question
+    or any of its own chain facts fails to parse, or the chain length
+    doesn't match the parsed plan's hop count."""
+    plan = parse_question(q)
+    if plan is None:
+        return None
+    triples = []
+    for fid_ in chain_ids:
+        t = parse_fact(store[fid_])
+        if t is None:
+            return None
+        triples.append(t)
+    if not triples or len(triples) != plan.n_hop:
+        return None
+    return plan, triples, _display_rels(plan, triples), [t.obj for t in triples]
+
+
+def _run_fault_program(triples: list[Triple], display_rels: list[str],
+                       compare_objs: list[str | None], run_fn,
+                       tau_vm_floor: float | None = None):
+    """Build the (possibly corrupted) chain program and recover every hop
+    role (never control -- that's a separate always-on sanity check
+    elsewhere). For each attempted hop (one with a comparison target and
+    ASCII-safe content), determine:
+      - a "negative" (binding-fidelity) observation: the hop's own
+        similarity, recorded ONLY when the recovered symbol does NOT
+        normalize-match its comparison target -- kept for the calibration
+        card's INFORMATIONAL fidelity stats, not for setting tau_vm (see
+        the module docstring: fidelity != truth).
+      - "caught": whether the REAL pipeline verify decision would reject
+        this hop -- symbol mismatch (content wrong) OR no similarity
+        returned OR similarity below `tau_vm_floor` (when given). This is
+        the honest hardness measurement: the string-match check catches
+        content corruption; the floor catches absent/garbled recovery.
+    A hop with no comparison target (compare_objs entry None -- "not
+    constructible" for that hop, e.g. wrong-relation's last hop) is
+    skipped entirely. Mojibake-affected (non-ASCII) hops are excluded,
+    same rationale as the calibration mojibake guard.
+    -> (negatives: list[float], n_vm_calls: int, n_mojibake_excluded: int,
+        n_caught: int)
+    """
+    source, fns = build_chain_program(triples, display_rels)
+    negatives: list[float] = []
+    n_calls = 0
+    n_mojibake = 0
+    n_caught = 0
+    for k, fn in enumerate(fns[:-1]):
+        compare_obj = compare_objs[k] if k < len(compare_objs) else None
+        if compare_obj is None:
+            continue
+        t = triples[k]
+        if not (t.obj.isascii() and t.subj.isascii() and t.rel.isascii()):
+            n_mojibake += 1
+            continue
+        out = run_fn(source, fn)
+        n_calls += 1
+        sim = out.get("similarity")
+        symbol = out.get("result")
+        mismatch = normalize(symbol or "") != normalize(compare_obj)
+        if mismatch and sim is not None:
+            negatives.append(float(sim))
+        below_floor = (sim is None) or (tau_vm_floor is not None and sim < tau_vm_floor)
+        if mismatch or below_floor:
+            n_caught += 1
+    return negatives, n_calls, n_mojibake, n_caught
+
+
+def _pick_other_object(store_texts: list[str], exclude_norm: set[str], rng) -> str | None:
+    """A parsed fact's object from elsewhere in the (calibration-only)
+    store, normalized-distinct from every true object already in this
+    chain. Bounded retries; None if the store can't offer one."""
+    if not store_texts:
+        return None
+    for _ in range(8):
+        f = store_texts[int(rng.integers(0, len(store_texts)))]
+        t = parse_fact(f)
+        if t is not None and normalize(t.obj) not in exclude_norm:
+            return t.obj
+    return None
+
+
+def _fault_instances(triples: list[Triple], cal_store_texts: list[str], rng
+                     ) -> dict[str, list[tuple[list[Triple], list[str | None]]]]:
+    """-> {class_name: [(corrupted_triples, compare_objs), ...]} for the
+    four planted-fault classes, capped at MAX_FAULTS_PER_CLASS_PER_CHAIN
+    instances/class (VM-cost cap). `cal_store_texts` MUST be the
+    calibration slice's own store -- distractors are never calibration
+    negatives, and this is the only place "another calibration fact's
+    object" is sourced from, so that invariant holds structurally (the
+    eval store, where distractors live, never reaches this function)."""
+    n = len(triples)
+    true_objs = [t.obj for t in triples]
+    exclude_norm = {normalize(o) for o in true_objs}
+    out: dict[str, list[tuple[list[Triple], list[str | None]]]] = {c: [] for c in FAULT_CLASSES}
+
+    hop_order = list(range(n))
+    rng.shuffle(hop_order)
+    hop_pick = hop_order[:MAX_FAULTS_PER_CLASS_PER_CHAIN]
+
+    # wrong-entity: swap ONE hop's object for another calibration fact's
+    # object. compare_objs is None everywhere EXCEPT the corrupted hop --
+    # the other hops in this chain's frame are innocent bystanders (still
+    # correctly bound), not faults, so they must not count toward
+    # "attempted"/"caught": including them would dilute the catch rate
+    # with hops that never needed catching in the first place.
+    for hop_i in hop_pick:
+        swap_obj = _pick_other_object(cal_store_texts, exclude_norm, rng)
+        if swap_obj is None:
+            continue
+        corrupted = list(triples)
+        t = triples[hop_i]
+        corrupted[hop_i] = Triple(obj=swap_obj, rel=t.rel, subj=t.subj)
+        compare: list[str | None] = [None] * n
+        compare[hop_i] = true_objs[hop_i]
+        out["wrong_entity"].append((corrupted, compare))
+
+    # inverted-direction: bind the SUBJECT as the filler instead of the
+    # object -- same single-hop-fault scoping as wrong-entity above.
+    for hop_i in hop_pick:
+        t = triples[hop_i]
+        if normalize(t.subj) == normalize(t.obj):
+            continue                       # not a real corruption, skip
+        corrupted = list(triples)
+        corrupted[hop_i] = Triple(obj=t.subj, rel=t.rel, subj=t.subj)
+        compare = [None] * n
+        compare[hop_i] = true_objs[hop_i]
+        out["inverted_direction"].append((corrupted, compare))
+
+    # wrong-hop-order: swap two hops' objects between each other (needs
+    # n>=2) -- only the two swapped positions are faults.
+    if n >= 2:
+        pair_pool = [(a, b) for a in range(n) for b in range(a + 1, n)]
+        rng.shuffle(pair_pool)
+        for a, b in pair_pool[:MAX_FAULTS_PER_CLASS_PER_CHAIN]:
+            ta, tb = triples[a], triples[b]
+            if normalize(ta.obj) == normalize(tb.obj):
+                continue                   # no-op swap, skip
+            corrupted = list(triples)
+            corrupted[a] = Triple(obj=tb.obj, rel=ta.rel, subj=ta.subj)
+            corrupted[b] = Triple(obj=ta.obj, rel=tb.rel, subj=tb.subj)
+            compare = [None] * n
+            compare[a] = true_objs[a]
+            compare[b] = true_objs[b]
+            out["wrong_hop_order"].append((corrupted, compare))
+
+    # wrong-relation: NO binding corruption -- query role H_{k+1} (hop k's
+    # own recover call) but compare its answer against a DIFFERENT hop's
+    # true object, shifted by 1 (and by 2 when a 3rd hop exists to shift
+    # into) -- exactly "ask for H1, compare against hop-2's object."
+    for shift in range(1, MAX_FAULTS_PER_CLASS_PER_CHAIN + 1):
+        if shift >= n:
+            break
+        shifted: list[str | None] = list(true_objs[shift:]) + [None] * shift
+        out["wrong_relation"].append((list(triples), shifted))
+
+    return out
+
+
+def bootstrap_quantile_ci(sims: np.ndarray, q: float, n_boot: int, rng
+                          ) -> tuple[float, float, float]:
+    """-> (point estimate, ci95 lo, ci95 hi) of the q-th percentile of
+    `sims`, via case resampling (n_boot draws, each the same size as
+    `sims`)."""
+    n = len(sims)
+    point = float(np.percentile(sims, q))
+    if n < 2:
+        return point, point, point
+    boots = np.empty(n_boot, dtype=np.float64)
+    for b in range(n_boot):
+        sample = sims[rng.integers(0, n, size=n)]
+        boots[b] = np.percentile(sample, q)
+    lo, hi = np.percentile(boots, [2.5, 97.5])
+    return point, float(lo), float(hi)
+
+
+def _quantile_stats(sims: list[float]) -> dict:
+    arr = np.array(sims, dtype=np.float64)
+    n = len(arr)
+    return {"n": n,
+           "mean": float(arr.mean()) if n else float("nan"),
+           "q50": float(np.percentile(arr, 50)) if n else float("nan"),
+           "q90": float(np.percentile(arr, 90)) if n else float("nan"),
+           "q99": float(np.percentile(arr, 99)) if n else float("nan")}
+
+
+def _harvest_record(q: str, plan, gold_norm: str, gold_raw, h: int, result,
+                    ret_calls: list[dict], tau_vm: float, tau_ret: float,
+                    store_hash_: str, table_path_: str, git_rev_: str,
+                    timestamp_: str) -> dict:
+    """One record per docs/schemas/cot-harvest-schema.md (canonical v1).
+    `tau_vm` is the FRAME-SIZE-CONDITIONAL floor actually used for this
+    question (tau_vm_floors[h] or the fallback), not a single global
+    scalar -- see the module docstring."""
+    trace_out = []
+    for ht in result.trace:
+        hop_verified = (ht.similarity is not None and ht.similarity >= tau_vm
+                        and ht.triple is not None
+                        and normalize(ht.symbol or "") == normalize(ht.triple.obj))
+        trace_out.append({
+            "query": ht.query, "fact": ht.fact,
+            "triple": ({"obj": ht.triple.obj, "rel": ht.triple.rel, "subj": ht.triple.subj}
+                      if ht.triple is not None else None),
+            "ret_score": ht.ret_score, "symbol": ht.symbol,
+            "similarity": ht.similarity, "hop_verified": hop_verified,
+        })
+
+    candidates_topk = []
+    for ht in result.trace:
+        cands = next((c["candidates"] for c in reversed(ret_calls)
+                     if c["query"] == ht.query), [])
+        candidates_topk.append([[float(s), f] for s, f in cands])
+
+    hops_verified_before_failure = 0
+    for row in trace_out:
+        if not row["hop_verified"]:
+            break
+        hops_verified_before_failure += 1
+
+    cot_pred = result.answer if result.verified else None
+    correct = bool(cot_pred is not None and normalize(cot_pred) == gold_norm)
+
+    return {
+        "question": q,
+        "parsed": plan is not None,
+        "n_hop": h,
+        "answer_class": plan.answer_class if plan is not None else None,
+        "program_source": result.source,
+        "verified": result.verified,
+        "answer": result.answer,
+        "gold_answer": gold_raw,
+        "correct": correct,
+        "trace": trace_out,
+        "candidates_topk": candidates_topk,
+        "reason": result.reason,
+        "repairs_used": result.repairs_used,
+        "banned_facts": result.repairs,
+        "hops_verified_before_failure": hops_verified_before_failure,
+        "taus": {"tau_vm": tau_vm, "tau_ret": tau_ret},
+        "store_snapshot_hash": store_hash_,
+        "table_path": table_path_,
+        "git_rev": git_rev_,
+        "timestamp": timestamp_,
+    }
 
 
 # --------------------------------------------------------------------------
@@ -179,6 +526,10 @@ def main() -> None:
     ap.add_argument("--top-k", type=int, default=3)
     ap.add_argument("--max-repairs", type=int, default=3)
     ap.add_argument("--exe", type=str, default=None, help="cubelang exe override")
+    ap.add_argument("--distractors", type=int, default=0,
+                    help="N DBpedia distractor texts appended to the EVAL "
+                         "retrieval store only (never calibration)")
+    ap.add_argument("--tag", default="", help="suffix for the output json/log/harvest files")
     args = ap.parse_args()
 
     import platform
@@ -187,6 +538,11 @@ def main() -> None:
 
     sw = _load_semantic_words()
     enc = sw.FastWordEncoder.from_npz(args.table)
+
+    logs = ROOT / "validation" / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    json_path = logs / f"exp_m3_cot_pipeline{args.tag}.json"
+    harvest_path = logs / f"cot_harvest{args.tag}.jsonl"
 
     # Fixed seeds (spec section 7): eval=0 is exp_m3_injection's sample seed;
     # calibration=1 is sampled disjoint from it. Recorded in the json config
@@ -197,10 +553,27 @@ def main() -> None:
     # -- eval sample -------------------------------------------------------
     questions, answers, hops, chains, store = load_sample(args.questions, seed=eval_seed)
     hop_counts = {h: hops.count(h) for h in sorted(set(hops))}
-    print(f"eval: {len(questions)} questions {hop_counts} | {len(store)} unique facts in store")
-    retrieve = make_retriever(store, enc)
+    n_facts_only = len(store)
+    print(f"eval: {len(questions)} questions {hop_counts} | {n_facts_only} unique facts in store")
 
-    # -- calibration sample (disjoint by question text) --------------------
+    # -- distractors (retrieval store ONLY; never a calibration negative) --
+    n_distractors_added = 0
+    if args.distractors > 0:
+        print(f"loading {args.distractors} DBpedia distractors into the EVAL "
+              f"retrieval store only ...", flush=True)
+        td0 = time.perf_counter()
+        for chunk in iter_distractors(args.distractors):
+            store.extend(chunk)
+            n_distractors_added += len(chunk)
+            print(f"  {n_distractors_added} distractors loaded "
+                  f"({time.perf_counter() - td0:.0f}s)", flush=True)
+        print(f"eval store: {n_facts_only} facts + {n_distractors_added} distractors "
+              f"= {len(store)} total ({time.perf_counter() - td0:.0f}s)\n", flush=True)
+
+    retrieve = make_retriever(store, enc)
+    store_size = len(store)
+
+    # -- calibration sample (disjoint by question text; NEVER sees distractors) --
     cal_q, cal_a, cal_h, cal_chains, cal_store = load_sample(
         args.calibration, seed=calibration_seed, exclude=set(questions))
     cal_hop_counts = {h: cal_h.count(h) for h in sorted(set(cal_h))}
@@ -211,18 +584,53 @@ def main() -> None:
     def run_fn(source: str, fn: str, exe=args.exe) -> dict:
         return cc.run_program_proto(source, fn=fn, exe=exe)
 
+    table_path_str = str(args.table)
+    git_rev = _git_rev()
+
     # =======================================================================
-    # 3. Calibration: permissive taus, collect (similarity, hop_correct).
+    # 5. Calibration pass 1: permissive taus, collect (similarity,
+    #    hop_correct, frame_size) for the frame-size-conditional floors,
+    #    control-role similarity by frame size (the margin floors defend),
+    #    the OLD Youden reference number, tau_ret, and the set of CLEAN
+    #    walks that feed planted-fault calibration.
+    #
+    #    Real finding: `result.verified` is near-unreachable at tau_vm=0.0.
+    #    The control role's cosine cleanup returns a small POSITIVE
+    #    similarity (measured ~0.01-0.04, not 0 and not None), so
+    #    `ctrl_sim >= tau_vm` trips on almost every walk when tau_vm=0.0 --
+    #    independent of whether the retrieved chain is correct. Pipeline.
+    #    answer()'s repair heuristic then makes it worse: it blames the
+    #    LOWEST-similarity HOP for a failure that was actually the control
+    #    check, bans that hop's (perfectly good) fact, and retries -- which
+    #    often can't find a distinct alternate for a tightly-constrained
+    #    hop, burning the walk down to reason="retrieval_exhausted" even
+    #    though the ORIGINAL attempt-0 walk was a complete, correct chain
+    #    (still recoverable via `last_trace`, which `answer()` does
+    #    return). So this loop follows the same precedent the v1 script
+    #    already used for `per_hop_obs`: judge chain quality from
+    #    `result.trace`'s own content (complete + every triple's object
+    #    matches the dataset's gold chain), never from `result.verified`
+    #    or `result.reason`.
     # =======================================================================
-    print("=== calibration (tau_vm=0.0, tau_ret=-1.0) ===")
-    per_hop_obs: list[tuple[float, bool]] = []
+    print("=== calibration pass 1 (tau_vm=0.0, tau_ret=-1.0) ===")
+    per_hop_obs: list[tuple[float, bool, int]] = []   # (similarity, hop_correct, frame_size)
+    control_obs_by_size: dict[int, list[float]] = defaultdict(list)
     accepted_ret_scores: list[float] = []
     cal_unparseable_q = 0
     cal_mojibake_excluded = 0
+    cal_results: list[tuple[int, object]] = []       # (idx into cal_q, CoTResult) for clean walks
     t0 = time.perf_counter()
     for i, (q, chain_ids, h) in enumerate(zip(cal_q, cal_chains, cal_h)):
         gold_objs = dataset_objects(chain_ids, cal_store)
-        result = pipeline_answer(q, cal_retrieve, run_fn, tau_vm=0.0, tau_ret=-1.0,
+        cal_ctrl_calls: list[dict] = []
+
+        def cal_run_fn(source: str, fn: str, _log=cal_ctrl_calls) -> dict:
+            out = run_fn(source, fn)
+            if fn == "control":
+                _log.append(out)
+            return out
+
+        result = pipeline_answer(q, cal_retrieve, cal_run_fn, tau_vm=0.0, tau_ret=-1.0,
                                  top_k=args.top_k, max_repairs=args.max_repairs)
         if result.reason == "unparseable":
             cal_unparseable_q += 1
@@ -235,62 +643,363 @@ def main() -> None:
                 # cubelang mojibake-corrupts non-ASCII fillers on the way back
                 # through run-proto (ledger note): the VM's returned symbol
                 # bytes get mangled independent of similarity/genuine binding
-                # quality (verified empirically: sim=1.0 "correct" 1-hop
-                # recoveries and mojibake-corrupted "incorrect" ones land at
-                # the same similarity), so a string-equality hop_correct check
-                # here measures an encoding bug, not reasoning quality. Counted
-                # separately in the eval loop's non_ascii_questions instead of
-                # poisoning the tau_vm separation.
+                # quality, so a string-equality hop_correct check here would
+                # measure an encoding bug, not reasoning quality.
                 cal_mojibake_excluded += 1
                 continue
             correct_obj = gold_objs[hop_i] if hop_i < len(gold_objs) else None
             hop_correct = correct_obj is not None and normalize(ht.symbol or "") == normalize(correct_obj)
-            per_hop_obs.append((ht.similarity, hop_correct))
-        if (i + 1) % 50 == 0:
+            per_hop_obs.append((ht.similarity, hop_correct, h))
+        for ctrl in cal_ctrl_calls:
+            csim = ctrl.get("similarity")
+            if csim is not None:
+                control_obs_by_size[h].append(csim)
+        chain_ok = (bool(result.trace) and len(result.trace) == len(gold_objs)
+                   and all(ht.triple is not None
+                           and normalize(ht.triple.obj) == normalize(gold_objs[j] or "")
+                           for j, ht in enumerate(result.trace)))
+        if chain_ok:
+            cal_results.append((i, result))
+        if (i + 1) % 25 == 0:
             print(f"  calibration {i + 1}/{len(cal_q)} ({time.perf_counter() - t0:.0f}s)", flush=True)
-    print(f"calibration done in {time.perf_counter() - t0:.0f}s | "
+    print(f"calibration pass 1 done in {time.perf_counter() - t0:.0f}s | "
           f"{cal_unparseable_q} unparseable calibration questions | "
           f"{cal_mojibake_excluded} non-ASCII hop obs excluded (mojibake) | "
           f"{len(per_hop_obs)} per-hop observations "
-          f"({sum(c for _, c in per_hop_obs)} correct)")
+          f"({sum(1 for _, c, _ in per_hop_obs if c)} correct) | "
+          f"{len(cal_results)} clean gold-matching walks (planted-fault source)", flush=True)
 
-    n_incorrect_obs = sum(1 for _, c in per_hop_obs if not c)
-    # DEGENERATE-CALIBRATION WARNING, stated outright: after excluding
-    # mojibake-corrupted hops, every remaining calibration observation came
-    # back hop_correct=True (n_incorrect_obs == 0 below, at both n=30 smoke
-    # and n=200 full-run scale). youden_tau on an all-positive set is NOT a
-    # discriminator -- there is no negative class for it to separate against.
-    # Its argmax degenerates to a FLOOR: with an empty "diff" side, fpr stays
-    # 0 throughout, so the argmax lands on the last (lowest-scored) "same"
-    # point and tau_vm resolves to min(correct sims). That's a defensible
-    # floor (every genuinely-correct observed hop clears it), but it is NOT
-    # a threshold *validated* against a real negative example the way Youden
-    # calibration is supposed to produce -- the walk's structural
-    # `_accept()` filter apparently already screens out wrong-fact hops
-    # before they ever reach the VM, so this calibration slice never
-    # produced a genuine "confidently wrong" recovery to calibrate against.
-    # Whatever confidence the eval's downstream claimed-answer precision
-    # (0.994 in the committed run) carries is therefore POST-HOC evidence
-    # that tau_vm generalizes, not something this calibration step itself
-    # established. See tau_vm_calibration_degenerate in the json output and
-    # the one-line verdict caveat below.
-    if per_hop_obs:
-        sims_arr = np.array([s for s, _ in per_hop_obs])
-        correct_arr = np.array([c for _, c in per_hop_obs])
-        tau_vm, tau_vm_auc = youden_tau(sims_arr[correct_arr], sims_arr[~correct_arr])
-    else:
-        tau_vm, tau_vm_auc = 0.3, float("nan")
-        print("  WARNING: zero calibration hop observations -- falling back to tau_vm=0.3")
+    # -- OLD Youden number: computed-and-reported for comparison ONLY, per
+    # the eval-wave redesign -- it no longer sets the deployed tau_vm. ------
+    n_incorrect_obs = sum(1 for _, c, _ in per_hop_obs if not c)
     tau_vm_calibration_degenerate = n_incorrect_obs == 0
+    if per_hop_obs:
+        sims_arr = np.array([s for s, _, _ in per_hop_obs])
+        correct_arr = np.array([c for _, c, _ in per_hop_obs])
+        tau_vm_youden_reference, tau_vm_youden_auc = youden_tau(sims_arr[correct_arr], sims_arr[~correct_arr])
+    else:
+        tau_vm_youden_reference, tau_vm_youden_auc = float("nan"), float("nan")
     tau_ret = float(np.percentile(accepted_ret_scores, 5)) if accepted_ret_scores else 0.0
-    print(f"tau_vm = {tau_vm:.4f} (Youden AUC {tau_vm_auc:.4f} on {len(per_hop_obs)} hop obs, "
-          f"{n_incorrect_obs} incorrect) | "
+    print(f"  [reference only] tau_vm_youden = {tau_vm_youden_reference:.4f} "
+          f"(AUC {tau_vm_youden_auc:.4f} on {len(per_hop_obs)} hop obs, "
+          f"{n_incorrect_obs} incorrect, degenerate={tau_vm_calibration_degenerate}) | "
           f"tau_ret = {tau_ret:.4f} (5th pct of {len(accepted_ret_scores)} accepted-hop scores)\n")
 
     # =======================================================================
-    # 5. Main eval loop: three arms per question.
+    # 6. Frame-size-conditional tau_vm floors (the actual deployed
+    #    calibration -- see module docstring for why this replaced the
+    #    FPR-target planted-fault scheme).
     # =======================================================================
-    print(f"=== eval ({len(questions)} questions, tau_vm={tau_vm:.4f} tau_ret={tau_ret:.4f}) ===")
+    per_hop_obs_by_size: dict[int, list[tuple[float, bool]]] = defaultdict(list)
+    for sim, correct, size in per_hop_obs:
+        per_hop_obs_by_size[size].append((sim, correct))
+
+    floor_rng = np.random.default_rng(505)
+    tau_vm_floors: dict[int, float] = {}
+    floor_details: dict[int, dict] = {}
+    for size in sorted(per_hop_obs_by_size):
+        correct_sims = np.array([s for s, c in per_hop_obs_by_size[size] if c], dtype=np.float64)
+        n = len(correct_sims)
+        if n == 0:
+            continue
+        point, lo, hi = bootstrap_quantile_ci(correct_sims, 1.0, 1000, floor_rng)
+        floor = lo                                    # DEPLOY THE LOWER BOUND (conservative)
+        ctrl_sims = control_obs_by_size.get(size, [])
+        if ctrl_sims:
+            ctrl_mean = float(np.mean(ctrl_sims))
+        else:
+            all_ctrl = [s for v in control_obs_by_size.values() for s in v]
+            ctrl_mean = float(np.mean(all_ctrl)) if all_ctrl else float("nan")
+        control_margin = (floor - ctrl_mean) if not np.isnan(ctrl_mean) else float("nan")
+        tau_vm_floors[size] = floor
+        floor_details[size] = {
+            "n_correct_obs": n, "q01_point_estimate": point,
+            "q01_ci95_lo": lo, "q01_ci95_hi": hi, "deployed_floor": floor,
+            "n_control_obs": len(ctrl_sims), "control_role_mean_similarity": ctrl_mean,
+            "control_margin": control_margin,
+        }
+
+    fallback_tau_vm = float(min(tau_vm_floors.values())) if tau_vm_floors else 0.3
+    if not tau_vm_floors:
+        print("  WARNING: zero per-frame-size floors computable -- "
+              "falling back to tau_vm=0.3 for every question", flush=True)
+
+    def tau_vm_for_size(size: int) -> float:
+        return tau_vm_floors.get(size, fallback_tau_vm)
+
+    print("=== tau_vm floors (frame-size-conditional; bootstrap-95%-CI LOWER "
+          "bound of q01 correct-recovery similarity) ===")
+    for size in sorted(floor_details):
+        d = floor_details[size]
+        print(f"  n_hop={size}: floor={d['deployed_floor']:.4f} "
+              f"(q01 point={d['q01_point_estimate']:.4f}, "
+              f"CI=[{d['q01_ci95_lo']:.4f},{d['q01_ci95_hi']:.4f}], n={d['n_correct_obs']}) | "
+              f"control_role_mean={d['control_role_mean_similarity']:.4f} (n={d['n_control_obs']}) | "
+              f"margin={d['control_margin']:.4f}")
+    print(f"  fallback tau_vm (frame sizes unseen in calibration) = {fallback_tau_vm:.4f}\n")
+
+    # =======================================================================
+    # 7. Planted-fault calibration (Q21): four corruption classes on
+    #    verified calibration chains, now reported as a CATCH RATE against
+    #    the REAL verify decision (symbol mismatch OR sub-floor
+    #    similarity), not an FPR-target threshold -- see module docstring.
+    # =======================================================================
+    print("=== planted-fault calibration ===")
+    fault_rng = np.random.default_rng(303)
+    fault_obs: dict[str, list[float]] = {c: [] for c in FAULT_CLASSES}       # informational fidelity scores
+    fault_attempted: dict[str, int] = {c: 0 for c in FAULT_CLASSES}
+    fault_caught: dict[str, int] = {c: 0 for c in FAULT_CLASSES}
+    fault_vm_calls = 0
+    fault_mojibake_excluded = 0
+    n_fault_chains = 0
+    t1 = time.perf_counter()
+    for ci, (qi, result) in enumerate(cal_results):
+        if fault_vm_calls >= MAX_FAULT_VM_CALLS:
+            print(f"  VM-call cap reached ({MAX_FAULT_VM_CALLS}) -- stopping early "
+                  f"at chain {ci}/{len(cal_results)}", flush=True)
+            break
+        q = cal_q[qi]
+        plan = parse_question(q)
+        if plan is None or not result.trace:
+            continue
+        triples = [ht.triple for ht in result.trace if ht.triple is not None]
+        if len(triples) != len(result.trace) or not triples:
+            continue
+        display_rels = _display_rels(plan, triples)
+        floor = tau_vm_for_size(len(triples))
+        instances = _fault_instances(triples, cal_store, fault_rng)
+        n_fault_chains += 1
+        for cls, insts in instances.items():
+            for corrupted, compare_objs in insts:
+                negs, n_calls, n_moji, n_caught = _run_fault_program(
+                    corrupted, display_rels, compare_objs, run_fn, tau_vm_floor=floor)
+                fault_obs[cls].extend(negs)
+                fault_attempted[cls] += n_calls
+                fault_caught[cls] += n_caught
+                fault_vm_calls += n_calls
+                fault_mojibake_excluded += n_moji
+        if (ci + 1) % 25 == 0:
+            print(f"  fault-calibration {ci + 1}/{len(cal_results)} chains "
+                  f"({time.perf_counter() - t1:.0f}s, {fault_vm_calls} VM calls so far)", flush=True)
+    print(f"planted-fault calibration done in {time.perf_counter() - t1:.0f}s | "
+          f"{n_fault_chains} verified chains used | {fault_vm_calls} VM calls | "
+          f"{fault_mojibake_excluded} mojibake-excluded", flush=True)
+
+    class_stats = {c: _quantile_stats(fault_obs[c]) for c in FAULT_CLASSES}
+    catch_rate = {c: (fault_caught[c] / fault_attempted[c] if fault_attempted[c] else float("nan"))
+                  for c in FAULT_CLASSES}
+    untested_against = [c for c in FAULT_CLASSES if fault_attempted[c] < 20]
+
+    print("  catch rate (symbol mismatch OR sub-floor similarity -- the REAL verify decision):")
+    for c in FAULT_CLASSES:
+        print(f"    {c:20s} attempted={fault_attempted[c]:4d} caught={fault_caught[c]:4d} "
+              f"catch_rate={catch_rate[c]:.4f} | fidelity(informational, NOT truth): "
+              f"n={class_stats[c]['n']:4d} mean={class_stats[c]['mean']:.4f} "
+              f"q50={class_stats[c]['q50']:.4f} q99={class_stats[c]['q99']:.4f}")
+    if untested_against:
+        print(f"  untested_against (n_attempted<20): {untested_against}")
+
+    # =======================================================================
+    # 8. Organic-confusable held-out test (never used for calibration):
+    #    ~100 eval questions, substitute a fact from an OTHER eval chain
+    #    sharing an entity token; report catch rate at the deployed floors.
+    # =======================================================================
+    print("\n=== organic-confusable held-out test (never calibration) ===", flush=True)
+    STOP_LEN = 3
+    token_index: dict[str, set[int]] = defaultdict(set)
+    for qi, chain_ids in enumerate(chains):
+        for fid_ in chain_ids:
+            t = parse_fact(store[fid_])
+            if t is None:
+                continue
+            for tok in (normalize(t.subj) + " " + normalize(t.obj)).split():
+                if len(tok) >= STOP_LEN:
+                    token_index[tok].add(qi)
+
+    organic_rng = np.random.default_rng(101)
+    organic_sims: list[float] = []
+    organic_attempted = 0
+    organic_caught = 0
+    organic_n_chains = 0
+    for qi in organic_rng.permutation(len(questions)):
+        if organic_n_chains >= 100:
+            break
+        qi = int(qi)
+        parsed = _dataset_plan_and_triples(questions[qi], chains[qi], store)
+        if parsed is None:
+            continue
+        plan, triples, display_rels, true_objs = parsed
+        own_tokens = set()
+        for t in triples:
+            own_tokens |= set(normalize(t.subj).split()) | set(normalize(t.obj).split())
+        own_tokens = {tok for tok in own_tokens if len(tok) >= STOP_LEN}
+        own_fact_ids = set(chains[qi])
+        candidate_qs: set[int] = set()
+        for tok in own_tokens:
+            candidate_qs |= token_index.get(tok, set())
+        candidate_qs.discard(qi)
+        candidate_facts = [fid_ for j in candidate_qs for fid_ in chains[j]
+                           if fid_ not in own_fact_ids]
+        if not candidate_facts:
+            continue
+        fid_pick = int(candidate_facts[int(organic_rng.integers(0, len(candidate_facts)))])
+        sub = parse_fact(store[fid_pick])
+        if sub is None:
+            continue
+        hop_i = int(organic_rng.integers(0, len(triples)))
+        corrupted = list(triples)
+        t0_ = triples[hop_i]
+        corrupted[hop_i] = Triple(obj=sub.obj, rel=t0_.rel, subj=t0_.subj)
+        # Only the corrupted hop is a fault -- the chain's other (still
+        # correctly-bound) hops must not count toward attempted/caught.
+        compare_only_hop_i: list[str | None] = [None] * len(triples)
+        compare_only_hop_i[hop_i] = true_objs[hop_i]
+        negs, n_calls, _n_moji, n_caught = _run_fault_program(
+            corrupted, display_rels, compare_only_hop_i, run_fn,
+            tau_vm_floor=tau_vm_for_size(len(triples)))
+        organic_sims.extend(negs)
+        organic_attempted += n_calls
+        organic_caught += n_caught
+        organic_n_chains += 1
+    organic_stats = _quantile_stats(organic_sims)
+    organic_catch_rate = organic_caught / organic_attempted if organic_attempted else float("nan")
+    print(f"  organic-confusable: {organic_n_chains} chains, {organic_attempted} attempted, "
+          f"caught={organic_caught}, catch_rate={organic_catch_rate:.4f} | "
+          f"fidelity(informational): mean_sim={organic_stats['mean']:.4f}")
+
+    # =======================================================================
+    # 9. Random-distractor sanity gate (unit test, NEVER calibration):
+    #    ~50 distractor-substituted bindings; report catch rate (expect ~100%).
+    # =======================================================================
+    print("\n=== random-distractor sanity gate (unit test, not calibration) ===", flush=True)
+    distractor_titles: list[str] = []
+    try:
+        for chunk in iter_distractors(50):
+            distractor_titles.extend(t.split(".", 1)[0].strip() for t in chunk)
+            break
+    except Exception as e:
+        print(f"  WARNING: could not load distractor titles for the sanity gate: {e}")
+
+    random_rng = np.random.default_rng(202)
+    random_sims: list[float] = []
+    random_attempted = 0
+    random_caught = 0
+    random_n = 0
+    if distractor_titles:
+        di = 0
+        for qi in random_rng.permutation(len(questions)):
+            if random_n >= 50:
+                break
+            qi = int(qi)
+            parsed = _dataset_plan_and_triples(questions[qi], chains[qi], store)
+            if parsed is None:
+                continue
+            plan, triples, display_rels, true_objs = parsed
+            hop_i = int(random_rng.integers(0, len(triples)))
+            title = distractor_titles[di % len(distractor_titles)]
+            di += 1
+            t0_ = triples[hop_i]
+            corrupted = list(triples)
+            corrupted[hop_i] = Triple(obj=title, rel=t0_.rel, subj=t0_.subj)
+            # Only the corrupted hop is a fault -- see the organic-confusable
+            # test's identical scoping note above.
+            compare_only_hop_i: list[str | None] = [None] * len(triples)
+            compare_only_hop_i[hop_i] = true_objs[hop_i]
+            negs, n_calls, _n_moji, n_caught = _run_fault_program(
+                corrupted, display_rels, compare_only_hop_i, run_fn,
+                tau_vm_floor=tau_vm_for_size(len(triples)))
+            random_sims.extend(negs)
+            random_attempted += n_calls
+            random_caught += n_caught
+            random_n += 1
+    else:
+        print("  no distractor titles available -- random-distractor gate skipped")
+    random_stats = _quantile_stats(random_sims)
+    random_catch_rate = random_caught / random_attempted if random_attempted else float("nan")
+    print(f"  random-distractor: {random_n} bindings, {random_attempted} attempted, "
+          f"caught={random_caught}, catch_rate={random_catch_rate:.4f} (expect ~1.0) | "
+          f"fidelity(informational): mean_sim={random_stats['mean']:.4f}\n")
+
+    # -- calibration card ----------------------------------------------------
+    cal_store_snapshot_hash = store_hash(cal_store)
+    hardness_entries = (
+        [("random_distractor", {"n_attempted": random_attempted, "n_caught": random_caught,
+                                "catch_rate": random_catch_rate, **random_stats})]
+        + [("organic_confusable", {"n_attempted": organic_attempted, "n_caught": organic_caught,
+                                   "catch_rate": organic_catch_rate, **organic_stats})]
+        + [(c, {"n_attempted": fault_attempted[c], "n_caught": fault_caught[c],
+               "catch_rate": catch_rate[c], **class_stats[c]}) for c in FAULT_CLASSES]
+    )
+    # Ascending catch_rate -- the LOWEST-catch (most dangerous / hardest for
+    # the verify layer to catch) first; untested (n_attempted=0) classes
+    # sort last (nan catch_rate treated as "no evidence of danger yet").
+    hardness_ladder = [
+        {"class": name, **stats} for name, stats in
+        sorted(hardness_entries,
+              key=lambda kv: kv[1]["catch_rate"] if kv[1]["n_attempted"] else 2.0)
+    ]
+    calibration_card = {
+        "note": ("Similarity measures binding FIDELITY (was something cleanly "
+                 "recovered), not semantic TRUTH (was the correct thing "
+                 "recovered). A wrong-entity/inverted-direction planted fault "
+                 "binds a definitely-wrong filler and recovers it faithfully "
+                 "-- often at ~1.0 similarity in a single-binding (1-hop, "
+                 "zero-crosstalk) frame -- so fault-class similarity "
+                 "distributions below CANNOT be calibrated into a truth-"
+                 "discriminating threshold; they are informational binding-"
+                 "fidelity scores only. Content-correctness is enforced by "
+                 "the exact string-match check pipeline.answer() already "
+                 "runs alongside tau_vm ('normalize(symbol) != "
+                 "normalize(triples[i].obj)'), not by similarity "
+                 "thresholding. tau_vm is therefore calibrated as a FRAME-"
+                 "SIZE-CONDITIONAL FLOOR over CORRECT recoveries' own "
+                 "fidelity (defending against absent/garbled recoveries -- "
+                 "the control-role failure mode); the semantic hardness "
+                 "ladder for content-correctness belongs to the RETRIEVAL "
+                 "side (relation+entity structural filtering), not this VM "
+                 "verify layer. 'catch_rate' below is the honest measurement "
+                 "of that string-match defense (expect ~1.0 for every class, "
+                 "by construction: a corrupted binding almost always fails "
+                 "the string match against the true object)."),
+        "tau_vm_floors": {str(size): floor_details[size] for size in sorted(floor_details)},
+        "fallback_tau_vm": fallback_tau_vm,
+        "bootstrap_draws": 1000,
+        "fault_classes": {
+            c: {**class_stats[c], "n_attempted": fault_attempted[c],
+               "n_caught": fault_caught[c], "catch_rate": catch_rate[c]}
+            for c in FAULT_CLASSES
+        },
+        "hardness_ladder_by_catch_rate": hardness_ladder,
+        "mix_counts": {c: class_stats[c]["n"] for c in FAULT_CLASSES},
+        "n_fault_chains_processed": n_fault_chains,
+        "n_fault_vm_calls": fault_vm_calls,
+        "fault_mojibake_excluded": fault_mojibake_excluded,
+        "untested_against": untested_against,
+        "organic_confusable": {"n_chains": organic_n_chains, "n_attempted": organic_attempted,
+                               "n_caught": organic_caught, "catch_rate": organic_catch_rate,
+                               **organic_stats},
+        "random_distractor_sanity": {"n_bindings": random_n, "n_attempted": random_attempted,
+                                     "n_caught": random_caught, "catch_rate": random_catch_rate,
+                                     **random_stats},
+        "tau_vm_youden_reference": tau_vm_youden_reference,
+        "tau_vm_youden_auc": tau_vm_youden_auc,
+        "tau_vm_youden_reference_degenerate": tau_vm_calibration_degenerate,
+        "store_snapshot_hash": cal_store_snapshot_hash,
+    }
+    print("=== calibration card ===")
+    print(f"  hardness ladder (by catch rate, ascending = most dangerous first): " + " < ".join(
+        f"{e['class']}(catch={e['catch_rate']:.3f})" if e["n_attempted"] else f"{e['class']}(untested)"
+        for e in hardness_ladder))
+    print(f"  mix counts: {calibration_card['mix_counts']} | "
+          f"organic n={organic_n_chains} | random n={random_n}")
+    print(f"  tau_vm_floors: { {k_: round(v_, 4) for k_, v_ in tau_vm_floors.items()} } | "
+          f"fallback={fallback_tau_vm:.4f}\n")
+
+    # =======================================================================
+    # 10. Main eval loop: three arms per question + harvest.
+    # =======================================================================
+    print(f"=== eval ({len(questions)} questions, tau_vm_floors={ {k_: round(v_, 4) for k_, v_ in tau_vm_floors.items()} } "
+          f"fallback={fallback_tau_vm:.4f} tau_ret={tau_ret:.4f}) ===")
     acc: dict[str, dict[int, list[int]]] = {
         "retrieval_only": defaultdict(list), "chase_only": defaultdict(list), "cot": defaultdict(list)}
     wall_ms: dict[str, list[float]] = {"retrieval_only": [], "chase_only": [], "cot": []}
@@ -305,94 +1014,114 @@ def main() -> None:
     sub_tau_violations = 0
     sensitivity_records: list[dict] = []
     example_printed = False
+    eval_store_hash = store_hash(store)
+    run_timestamp = datetime.now(timezone.utc).isoformat()
 
-    t0 = time.perf_counter()
-    for i, (q, a, h, chain_ids) in enumerate(zip(questions, answers, hops, chains)):
-        gold = normalize(a)
-        gold_objs = dataset_objects(chain_ids, store)
+    t2 = time.perf_counter()
+    with open(harvest_path, "w", encoding="utf-8") as harvest_f:
+        for i, (q, a, h, chain_ids) in enumerate(zip(questions, answers, hops, chains)):
+            gold = normalize(a)
+            gold_objs = dataset_objects(chain_ids, store)
+            plan = parse_question(q)
+            tau_vm_q = tau_vm_for_size(h)
 
-        # -- retrieval-only ---------------------------------------------
-        s0 = time.perf_counter()
-        r1 = retrieval_only(q, retrieve)
-        wall_ms["retrieval_only"].append((time.perf_counter() - s0) * 1000)
-        if r1 is None:
-            unparseable_facts += 1
-        acc["retrieval_only"][h].append(int(r1 is not None and normalize(r1) == gold))
+            # -- retrieval-only ---------------------------------------------
+            s0 = time.perf_counter()
+            r1 = retrieval_only(q, retrieve)
+            wall_ms["retrieval_only"].append((time.perf_counter() - s0) * 1000)
+            if r1 is None:
+                unparseable_facts += 1
+            acc["retrieval_only"][h].append(int(r1 is not None and normalize(r1) == gold))
 
-        # -- chase-only ---------------------------------------------------
-        s0 = time.perf_counter()
-        r2 = chase_only(q, h, retrieve)
-        wall_ms["chase_only"].append((time.perf_counter() - s0) * 1000)
-        if r2 is None:
-            unparseable_facts += 1
-        acc["chase_only"][h].append(int(r2 is not None and normalize(r2) == gold))
+            # -- chase-only (full-store masked argmax) -----------------------
+            s0 = time.perf_counter()
+            r2 = chase_only(q, h, retrieve, store_size)
+            wall_ms["chase_only"].append((time.perf_counter() - s0) * 1000)
+            if r2 is None:
+                unparseable_facts += 1
+            acc["chase_only"][h].append(int(r2 is not None and normalize(r2) == gold))
 
-        # -- CoT pipeline ---------------------------------------------------
-        ctrl_calls: list[dict] = []
+            # -- CoT pipeline ---------------------------------------------------
+            ctrl_calls: list[dict] = []
+            ret_calls: list[dict] = []
 
-        def vm_run_fn(source: str, fn: str, _log=ctrl_calls) -> dict:
-            out = run_fn(source, fn)
-            if fn == "control":
-                _log.append(out)
-            return out
+            def vm_run_fn(source: str, fn: str, _log=ctrl_calls) -> dict:
+                out = run_fn(source, fn)
+                if fn == "control":
+                    _log.append(out)
+                return out
 
-        s0 = time.perf_counter()
-        result = pipeline_answer(q, retrieve, vm_run_fn, tau_vm=tau_vm, tau_ret=tau_ret,
-                                 top_k=args.top_k, max_repairs=args.max_repairs)
-        wall_ms["cot"].append((time.perf_counter() - s0) * 1000)
-        repairs_hist[result.repairs_used] += 1
-        if result.reason == "unparseable":
-            unparseable_questions += 1
+            def retrieve_log(query: str, k: int, _log=ret_calls) -> list[tuple[float, str]]:
+                out = retrieve(query, k)
+                _log.append({"query": query, "candidates": out})
+                return out
 
-        cot_pred = result.answer if result.verified else None
-        cot_correct = int(cot_pred is not None and normalize(cot_pred) == gold)
-        acc["cot"][h].append(cot_correct)
+            s0 = time.perf_counter()
+            result = pipeline_answer(q, retrieve_log, vm_run_fn, tau_vm=tau_vm_q, tau_ret=tau_ret,
+                                     top_k=args.top_k, max_repairs=args.max_repairs)
+            wall_ms["cot"].append((time.perf_counter() - s0) * 1000)
+            repairs_hist[result.repairs_used] += 1
+            if result.reason == "unparseable":
+                unparseable_questions += 1
 
-        if result.verified:
-            verified_count += 1
-            claimed_correct += cot_correct
-            if not all(ht.similarity is not None and ht.similarity >= tau_vm for ht in result.trace):
-                sub_tau_violations += 1
+            cot_pred = result.answer if result.verified else None
+            cot_correct = int(cot_pred is not None and normalize(cot_pred) == gold)
+            acc["cot"][h].append(cot_correct)
 
-        if ctrl_calls:
-            last_ctrl = ctrl_calls[-1]
-            control_total += 1
-            if not control_violation(last_ctrl.get("similarity"), last_ctrl.get("result"), tau_vm):
-                control_pass += 1
+            if result.verified:
+                verified_count += 1
+                claimed_correct += cot_correct
+                if not all(ht.similarity is not None and ht.similarity >= tau_vm_q for ht in result.trace):
+                    sub_tau_violations += 1
 
-        if any(not ht.fact.isascii() for ht in result.trace):
-            non_ascii_questions += 1
+            # Per-program control accounting: EVERY control-role call across
+            # every attempt (not just the last) counts toward the denominator
+            # -- a question that retried once can log up to 2 control calls.
+            for ctrl in ctrl_calls:
+                control_total += 1
+                if not control_violation(ctrl.get("similarity"), ctrl.get("result"), tau_vm_q):
+                    control_pass += 1
 
-        # cheap ±20% tau_vm sensitivity: reuses this attempt's cached
-        # similarities/control observation, no re-retrieval / no re-VM-call
-        if (result.reason in (None, "vm_verify_failed") and result.trace
-                and all(ht.similarity is not None for ht in result.trace)):
-            symbol_ok = hops_symbol_ok(result.trace, gold_objs)
-            last_ctrl = ctrl_calls[-1] if ctrl_calls else {}
-            sensitivity_records.append({
-                "hop": h,
-                "sims": [ht.similarity for ht in result.trace],
-                "ctrl_sim": last_ctrl.get("similarity"),
-                "ctrl_result": last_ctrl.get("result"),
-                "symbol_ok": symbol_ok,
-                "predicted": normalize(result.trace[-1].symbol or ""),
-                "gold": gold,
-            })
+            if any(not ht.fact.isascii() for ht in result.trace):
+                non_ascii_questions += 1
 
-        if not example_printed and result.verified:
-            print(f"\n  example (q{i}): {q}")
-            for ht in result.trace:
-                print(f"    hop: fact={ht.fact!r} symbol={ht.symbol!r} sim={ht.similarity}")
-            print(f"    -> answer={result.answer!r} verified={result.verified} "
-                 f"repairs={result.repairs_used}\n")
-            example_printed = True
+            # cheap +/-20% tau_vm sensitivity: reuses this attempt's cached
+            # similarities/control observation, no re-retrieval / no re-VM-call
+            if (result.reason in (None, "vm_verify_failed") and result.trace
+                    and all(ht.similarity is not None for ht in result.trace)):
+                symbol_ok = hops_symbol_ok(result.trace, gold_objs)
+                last_ctrl = ctrl_calls[-1] if ctrl_calls else {}
+                sensitivity_records.append({
+                    "hop": h,
+                    "sims": [ht.similarity for ht in result.trace],
+                    "ctrl_sim": last_ctrl.get("similarity"),
+                    "ctrl_result": last_ctrl.get("result"),
+                    "symbol_ok": symbol_ok,
+                    "predicted": normalize(result.trace[-1].symbol or ""),
+                    "gold": gold,
+                    "tau_vm_used": tau_vm_q,
+                })
 
-        if (i + 1) % 50 == 0:
-            print(f"  eval {i + 1}/{len(questions)} ({time.perf_counter() - t0:.0f}s)", flush=True)
+            # -- harvest (every eval question, per docs/schemas/cot-harvest-schema.md) --
+            rec = _harvest_record(q, plan, gold, a, h, result, ret_calls, tau_vm_q, tau_ret,
+                                  eval_store_hash, table_path_str, git_rev, run_timestamp)
+            harvest_f.write(json.dumps(rec) + "\n")
+
+            if not example_printed and result.verified:
+                print(f"\n  example (q{i}): {q}")
+                for ht in result.trace:
+                    print(f"    hop: fact={ht.fact!r} symbol={ht.symbol!r} sim={ht.similarity}")
+                print(f"    -> answer={result.answer!r} verified={result.verified} "
+                     f"repairs={result.repairs_used}\n")
+                example_printed = True
+
+            if (i + 1) % 25 == 0:
+                print(f"  eval {i + 1}/{len(questions)} ({time.perf_counter() - t2:.0f}s)", flush=True)
 
     if not example_printed:
         print("\n  (no verified example encountered to print)\n")
-    print(f"eval done in {time.perf_counter() - t0:.0f}s\n")
+    print(f"eval done in {time.perf_counter() - t2:.0f}s")
+    print(f"wrote {harvest_path} ({len(questions)} records)\n")
 
     # =======================================================================
     # Aggregate stats.
@@ -408,12 +1137,14 @@ def main() -> None:
     verified_coverage = verified_count / len(questions) if questions else 0.0
     control_pass_rate = control_pass / control_total if control_total else 0.0
 
-    # ±20% tau_vm sensitivity (re-verification only, no re-retrieval)
+    # +/-20% tau_vm sensitivity (re-verification only, no re-retrieval);
+    # scales EACH record's own frame-size floor, since there's no single
+    # global tau_vm anymore.
     def sensitivity_at(scale: float) -> dict:
-        tau = tau_vm * scale
         would_verify_all = 0
         would_correct = 0
         for rec in sensitivity_records:
+            tau = rec["tau_vm_used"] * scale
             wv = (rec["symbol_ok"]
                   and all(s is not None and s >= tau for s in rec["sims"])
                   and not control_violation(rec["ctrl_sim"], rec["ctrl_result"], tau))
@@ -423,7 +1154,7 @@ def main() -> None:
                     would_correct += 1
         coverage = would_verify_all / len(questions) if questions else 0.0
         precision = would_correct / would_verify_all if would_verify_all else 0.0
-        return {"tau_vm": tau, "verified_coverage": coverage,
+        return {"scale": scale, "verified_coverage": coverage,
                "claimed_precision": precision, "verified_count": would_verify_all}
 
     sensitivity = {"0.8x": sensitivity_at(0.8), "1.0x": sensitivity_at(1.0), "1.2x": sensitivity_at(1.2)}
@@ -439,13 +1170,14 @@ def main() -> None:
     print(f"  non-ascii-walked-fact questions: {non_ascii_questions}")
     print(f"  sub-tau verified violations: {sub_tau_violations}")
     print(f"  repairs histogram: {dict(sorted(repairs_hist.items()))}")
-    print(f"\n  tau_vm sensitivity (re-verify cached decisions only):")
+    print(f"\n  tau_vm sensitivity (re-verify cached decisions only, scaling each "
+          f"record's own frame-size floor):")
     for k_, v_ in sensitivity.items():
-        print(f"    {k_} (tau={v_['tau_vm']:.4f}): coverage={v_['verified_coverage']:.3f} "
+        print(f"    {k_}: coverage={v_['verified_coverage']:.3f} "
               f"precision={v_['claimed_precision']:.3f} (n={v_['verified_count']})")
 
     # =======================================================================
-    # 6. Verdict.
+    # 11. Verdict.
     # =======================================================================
     cot_by_hop = acc_by_hop("cot")
     ret_by_hop = acc_by_hop("retrieval_only")
@@ -469,10 +1201,6 @@ def main() -> None:
           f"{sub_tau_violations} violations")
     print(f"  [{'PASS' if clause4 else 'FAIL'}] (4) control role below tau_vm in >= 95% of programs: "
           f"{control_pass_rate:.4f}")
-    if tau_vm_calibration_degenerate:
-        print(f"  CAVEAT: calibration observed zero incorrect hops ({len(per_hop_obs)} obs) -- "
-              f"tau_vm={tau_vm:.4f} is a floor (min of correct sims), not a validated "
-              f"discriminator; clause 2's claimed precision is the only post-hoc evidence it generalizes.")
     print(f"\n  informative (not a kill-criterion clause): CoT vs chase-only -- "
           f"2-hop cot={cot_by_hop.get('2', float('nan')):.3f} vs chase={chase_by_hop.get('2', float('nan')):.3f}; "
           f"3-hop cot={cot_by_hop.get('3', float('nan')):.3f} vs chase={chase_by_hop.get('3', float('nan')):.3f}")
@@ -481,7 +1209,9 @@ def main() -> None:
     config = {k_: (str(v_) if isinstance(v_, pathlib.Path) else v_) for k_, v_ in vars(args).items()}
     config["eval_seed"] = eval_seed
     config["calibration_seed"] = calibration_seed
-    config["tau_vm_calibration_degenerate"] = tau_vm_calibration_degenerate
+    config["n_facts_only"] = n_facts_only
+    config["n_distractors_added"] = n_distractors_added
+    config["store_size"] = store_size
 
     out = {
         "config": config,
@@ -495,10 +1225,15 @@ def main() -> None:
             "cal_mojibake_excluded_hop_obs": cal_mojibake_excluded,
             "n_hop_observations": len(per_hop_obs),
             "n_incorrect_hop_observations": n_incorrect_obs,
-            "tau_vm": tau_vm, "tau_vm_youden_auc": tau_vm_auc,
+            "n_verified_calibration_walks": len(cal_results),
+            "tau_vm_floors": {str(k_): v_ for k_, v_ in tau_vm_floors.items()},
+            "fallback_tau_vm": fallback_tau_vm,
+            "tau_vm_youden_reference": tau_vm_youden_reference,
+            "tau_vm_youden_auc": tau_vm_youden_auc,
             "tau_vm_calibration_degenerate": tau_vm_calibration_degenerate,
             "tau_ret": tau_ret,
         },
+        "calibration_card": calibration_card,
         "arms": {
             arm: {"overall": acc_overall(arm), "by_hop": acc_by_hop(arm),
                  "mean_wall_ms": float(np.mean(wall_ms[arm]))}
@@ -516,6 +1251,9 @@ def main() -> None:
         "sub_tau_violations": sub_tau_violations,
         "repairs_histogram": {str(k_): v_ for k_, v_ in sorted(repairs_hist.items())},
         "tau_vm_sensitivity": sensitivity,
+        "harvest_file": str(harvest_path),
+        "n_harvest_records": len(questions),
+        "git_rev": git_rev,
         "verdict": {
             "clause1_cot_beats_retrieval_2h_3h": clause1,
             "clause2_claimed_precision_ge_0.90": clause2,
@@ -525,10 +1263,8 @@ def main() -> None:
         },
     }
 
-    logs = ROOT / "validation" / "logs"
-    logs.mkdir(parents=True, exist_ok=True)
-    (logs / "exp_m3_cot_pipeline.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
-    print(f"\nwrote {logs / 'exp_m3_cot_pipeline.json'}")
+    json_path.write_text(json.dumps(out, indent=1), encoding="utf-8")
+    print(f"\nwrote {json_path}")
 
 
 if __name__ == "__main__":

@@ -33,6 +33,20 @@ class CoTResult:
     trace: list[HopTrace] = field(default_factory=list)
     repairs_used: int = 0
     reason: str | None = None
+    # The exact CubeLang source built for `trace` (the LAST attempt that
+    # reached build_chain_program) -- set whenever a program actually got
+    # built, i.e. reason in (None, "vm_verify_failed"); stays None for
+    # "unparseable"/"retrieval_exhausted", where no program was ever built.
+    source: str | None = None
+    # Verify-stage repair DPO pairs: one entry per fact the walk banned and
+    # retried, {"hop": int, "rejected_fact": str, "replacement_fact": str |
+    # None}. `replacement_fact` is the fact the NEXT attempt picked for that
+    # same hop position (None if that attempt's walk never reached the hop,
+    # e.g. retrieval_exhausted before getting there). At most one entry is
+    # possible today (the walk allows a single ban-and-retry round), but the
+    # shape is a list so a future multi-repair budget doesn't need a format
+    # change.
+    repairs: list[dict] = field(default_factory=list)
 
 
 def _accept(plan: QuestionPlan, hop: int, entity: str | None,
@@ -95,15 +109,28 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
     budget = [max_repairs]
     banned: set[str] = set()
     last_trace: list[HopTrace] = []
+    repairs: list[dict] = []
+    pending_repair: dict | None = None
     # up to two walk+verify rounds (spec 4.4: one verify-stage repair pass)
     for _attempt in range(2):
         trace: list[HopTrace] = []
         triples = _walk(plan, retrieve, tau_ret, top_k, budget, trace, banned)
         used = max_repairs - budget[0]
+
+        # Close out a pending repair from the PREVIOUS attempt's ban: the
+        # replacement is whatever fact THIS attempt's walk landed on at that
+        # same hop position (None if the walk didn't get that far).
+        if pending_repair is not None:
+            hop_i = pending_repair["hop"]
+            if hop_i < len(trace):
+                pending_repair["replacement_fact"] = trace[hop_i].fact
+            repairs.append(pending_repair)
+            pending_repair = None
+
         if triples is None:
             return CoTResult(answer=None, verified=False,
                              trace=trace or last_trace, repairs_used=used,
-                             reason="retrieval_exhausted")
+                             reason="retrieval_exhausted", repairs=repairs)
 
         display_rels = [(t.rel if i == 0 else plan.relations[i]) or t.rel
                         for i, t in enumerate(triples)]
@@ -132,7 +159,8 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
             assert all(h.similarity is not None and h.similarity >= tau_vm
                        for h in trace)
             return CoTResult(answer=triples[-1].obj, verified=True,
-                             trace=trace, repairs_used=used)
+                             trace=trace, repairs_used=used, source=source,
+                             repairs=repairs)
 
         # verify failed: blacklist the weakest hop's fact and retry once
         # (only if another attempt will actually run and budget remains)
@@ -144,8 +172,10 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
             weakest = min(range(len(trace)),
                           key=lambda i: trace[i].similarity or -1.0)
             banned.add(trace[weakest].fact)
+            pending_repair = {"hop": weakest, "rejected_fact": trace[weakest].fact,
+                              "replacement_fact": None}
             budget[0] -= 1
 
     return CoTResult(answer=None, verified=False, trace=last_trace,
                      repairs_used=max_repairs - budget[0],
-                     reason="vm_verify_failed")
+                     reason="vm_verify_failed", source=source, repairs=repairs)
