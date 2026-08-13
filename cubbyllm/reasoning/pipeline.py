@@ -118,8 +118,13 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
                     != normalize(triples[i].obj)):
                 ok = False
         ctrl = run_fn(source, fns[-1])                   # control
+        ctrl_result = ctrl.get("result")
         ctrl_sim = ctrl.get("similarity")
-        if ctrl.get("result") is not None or (ctrl_sim is not None and ctrl_sim >= tau_vm):
+        # Control role must stay below tau_vm. The real VM's cosine cleanup always
+        # returns the nearest symbol from a populated frame — an absent role returns
+        # (noise_symbol, low_similarity), never None. Violation if: high similarity
+        # (≥tau_vm) OR a symbol without verifiable similarity (unbound frame edge case).
+        if (ctrl_sim is not None and ctrl_sim >= tau_vm) or (ctrl_result is not None and ctrl_sim is None):
             ok = False
 
         if ok:

@@ -91,6 +91,21 @@ def test_control_leak_with_result_no_similarity():
     assert r.verified is False
 
 
+def test_control_low_similarity_symbol_passes():
+    """Control returning a symbol with low similarity is the expected absent-role
+    outcome (noise from cosine cleanup on populated frame) and passes verification.
+    High similarity would indicate leaked information; None result is unverifiable.
+    """
+    def real_vm_behavior(source, fn):
+        if fn == "control":
+            # Real VM's nearest-neighbor cleanup: returns (noise_symbol, low_sim)
+            return {"ok": True, "result": "noise_word", "similarity": 0.2}
+        return good_vm(source, fn)
+    r = answer(Q3, good_retriever, real_vm_behavior, tau_vm=0.5, tau_ret=0.2)
+    assert r.verified is True
+    assert r.answer == "oceania portal"
+
+
 def test_verify_fail_twice_single_repair_used():
     """Double verify failure uses exactly 1 repair (ban + retry, then fail).
 
