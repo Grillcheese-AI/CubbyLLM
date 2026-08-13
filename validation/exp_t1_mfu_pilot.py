@@ -81,7 +81,8 @@ TOKENS_2B = 14.37e9              # the built pretraining cache (memory: uint32 s
 
 # dense bf16/fp16 tensor-core peaks, TFLOPS (substring-matched on device name)
 PEAKS = {
-    "A100": 312.0, "H100": 989.0, "H200": 989.0, "L40S": 181.0, "L4": 121.0,
+    "A100": 312.0, "H100": 989.0, "H200": 989.0, "B200": 2250.0,
+    "L40S": 181.0, "L4": 121.0,
     "A40": 74.8, "A10": 62.5, "T4": 65.0, "V100": 125.0,
     "PRO 6000": 252.0,           # RTX PRO 6000 Blackwell (docs/COLAB.md card)
     "4090": 165.2, "3090": 71.0, "5090": 209.5,
@@ -268,6 +269,8 @@ def main() -> None:
         ("A100-80G", 312.0, 1.2, 1.9),           # cheapest $/hr, 80G
         ("RTX PRO 6000 Blackwell 96G", 252.0, 1.8, 2.3),  # faster in practice, 96G, pricier
         ("H100-80G", 989.0, 2.0, 3.0),
+        ("H200-141G", 989.0, 2.3, 3.5),          # H100 compute + 141G HBM3e / 4.8TB/s
+        ("B200-180G", 2250.0, 4.5, 6.5),         # Blackwell DC: ~2.3x H100 peak, 180G
     ]
     if peak and rows:
         print("\n=== projection -- 14.37B tokens at the 2B shape (D2048/L32/V131k)")
