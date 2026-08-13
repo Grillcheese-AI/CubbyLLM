@@ -251,9 +251,9 @@ def main() -> None:
 
     logs = ROOT / "validation" / "logs"
     logs.mkdir(parents=True, exist_ok=True)
-    (logs / "exp_m3_beir_dbpedia.json").write_text(json.dumps(out, indent=1),
-                                                  encoding="utf-8")
-    print(f"\nwrote {logs / 'exp_m3_beir_dbpedia.json'}")
+    name = f"exp_m3_beir_dbpedia{args.tag}.json"
+    (logs / name).write_text(json.dumps(out, indent=1), encoding="utf-8")
+    print(f"\nwrote {logs / name}")
 
 
 if __name__ == "__main__":
