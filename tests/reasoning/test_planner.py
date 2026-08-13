@@ -48,3 +48,82 @@ def test_relation_matches_exact_and_fuzzy():
 
 def test_normalize_strips_articles_case_punct():
     assert normalize("  The Oceania Portal! ") == "oceania portal"
+
+
+# --- grammar v2: WH-frame coverage (the 337/800 ceiling) ---------------
+
+
+def test_parse_which_class_three_hop_chain():
+    # "Which <class> is the R of the R of ... <tail>?" — leading class noun
+    # duplicates the final relation's answer type; captured, not a hop.
+    q = ("Which country is the country of the currency of the country of "
+         "citizenship of Henry Allcock?")
+    p = parse_question(q)
+    assert p is not None and p.n_hop == 3
+    assert p.answer_class == "country"
+    assert p.tail == "country of citizenship of Henry Allcock"
+    assert p.relations == [None, "currency", "country"]
+
+
+def test_parse_which_class_direct_in_form():
+    # "Which <class> is <entity> in?" — no "of the" chain at all.
+    p = parse_question("Which country is arcadia, maryland in?")
+    assert p is not None and p.n_hop == 1
+    assert p.answer_class == "country"
+    assert p.relations == [None]
+    assert p.tail == "country of arcadia, maryland"
+
+
+def test_parse_where_one_hop():
+    p = parse_question("Where is the administrative territorial entity of inster?")
+    assert p is not None and p.n_hop == 1
+    assert p.relations == [None]
+    assert p.tail == "administrative territorial entity of inster"
+
+
+def test_parse_where_two_hop():
+    q = ("Where is the legislative body of the administrative territorial "
+         "entity of Grand Saconnex?")
+    p = parse_question(q)
+    assert p is not None and p.n_hop == 2
+    assert p.relations == [None, "legislative body"]
+    assert p.tail == "administrative territorial entity of Grand Saconnex"
+
+
+def test_parse_who_one_hop():
+    p = parse_question("Who is the parent taxon of Biwia tama?")
+    assert p is not None and p.n_hop == 1
+    assert p.relations == [None]
+    assert p.tail == "parent taxon of Biwia tama"
+
+
+def test_parse_does_have_inversion():
+    # "What R does <entity> have?" — synthesized into canonical "R of E".
+    p = parse_question("What given name does margit koloczy have?")
+    assert p is not None
+    assert p.relations == [None]
+    assert p.tail == "given name of margit koloczy"
+
+
+def test_parse_does_have_inversion_predecessor():
+    p = parse_question("What Predecessor does attitude adjuster (album) have?")
+    assert p is not None
+    assert p.relations == [None]
+    assert p.tail == "Predecessor of attitude adjuster (album)"
+
+
+def test_parse_which_is_variant():
+    # "Which is the R of the R of ... <tail>?" — no class noun this time.
+    p = parse_question("Which is the flag of the country of xia county?")
+    assert p is not None and p.n_hop == 2
+    assert p.answer_class is None
+    assert p.relations == [None, "flag"]
+    assert p.tail == "country of xia county"
+
+
+def test_parse_nested_relative_clause_stays_unparseable():
+    # By-design exclusion: recursion (relative-clause nesting) stays out
+    # of the grammar tier — future LM-tier job, not this parser's.
+    q = ("Which list includes the list that includes the component of "
+         "the instance of Speranza coortaria?")
+    assert parse_question(q) is None
