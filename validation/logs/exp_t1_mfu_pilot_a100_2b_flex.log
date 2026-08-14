@@ -1,0 +1,23 @@
+# exp_t1_mfu_pilot — 2B shape S=1024/B8 re-run with the FLEX mixer (c5e7aa9)
+# = THE CYCLE-ONE OPERATING POINT, superseding _a100_2b_nockpt.log's 40.3%.
+# Colab A100-SXM4-80GB, 2026-08-14. Provenance: console output pasted from the
+# Colab session; companion json _a100_2b_flex.json.
+# Cmd: MFU_D=2048 MFU_L=32 MFU_B=8 MFU_S=1024 MFU_CKPT=0 --arms hybrid
+
+  hybrid /eager       923.2 ms/step       8873 tok/s |   67.7 TF | MFU 21.7% | 1254.4M params | mem 58.9G
+  hybrid /compile     440.0 ms/step      18619 tok/s |  142.1 TF | MFU 45.5% | 1254.4M params | mem 40.0G
+
+=== projection (at 45.5%): A100 ~260 hrs (10.8 d) $312-493 | H100 ~82 hrs
+    (3.4 d) $164-246 | H200 ~82 hrs $188-287 | B200 ~36 hrs (1.5 d) $162-234
+    | RTX PRO 6000 ~321 hrs $579-739
+
+# READING:
+# - Flex helps at S1024 too: 40.3% -> 45.5% (496.8 -> 440.0 ms/step). With
+#   window=512, half of the S1024 dense-mask pairs were masked-out waste; the
+#   BlockMask never computes them. A recurrent hybrid now sits INSIDE the
+#   panel's 35-50% transformer band on a stock A100 with stock torch.compile.
+# - Eager slower than the dense-mask eager (823.7 -> 923.2 ms): unfused flex
+#   materializes full scores. Compile-only path, as designed.
+# - Cycle-one budget floor: ~82 H100-hrs ($164-246, ~3.4 d) or ~36 B200-hrs
+#   ($162-234, ~1.5 d); A100 ~260 hrs ($312-493). Long-S arm (S4096) at
+#   32.5% remains ~ the same dollars (see _s4096_flex.log).

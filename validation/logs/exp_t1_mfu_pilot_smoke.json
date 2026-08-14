@@ -14,22 +14,22 @@
   "env": {
     "python": "3.12.10",
     "torch": "2.10.0+cpu",
-    "git": "4f5c626",
+    "git": "b08fd2f",
     "device": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel",
     "peak_tflops": null,
     "amp": "off"
   },
   "results": {
     "hybrid/eager": {
-      "ms_per_step": 65.9077999953297,
-      "ms_p10": 57.44449999474455,
-      "ms_p90": 74.37109999591485,
-      "tok_per_s": 3884.214008328915,
+      "ms_per_step": 64.5975500010536,
+      "ms_p10": 50.61350000323728,
+      "ms_p90": 78.58159999886993,
+      "tok_per_s": 3962.998596631367,
       "final_loss": 1.2848037481307983,
       "peak_mem_gb": null,
       "params": 460288,
       "flops_per_token_train": 2860800.0,
-      "achieved_tflops": 0.01111195943502736,
+      "achieved_tflops": 0.011337346385243014,
       "mfu": null
     }
   }

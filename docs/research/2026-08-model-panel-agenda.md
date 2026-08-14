@@ -966,11 +966,15 @@ E7 H0 350M 3-arm slot experiment (biggest) — decides memory architecture
    eager artifact — compiled, hybrid=32.8% / mingru=32.6% / attn=33.5% at
    150M (hybrid = 98% of transformer; bar was 2/3), and at the true 2B shape
    hybrid/compile hits 40.3% (no ckpt, B8, 40G/80G) BEATING attn (26.2 vs
-   25.4 in the ckpt arm). Decisions: Triton port SKIPPED; ratio 1:3 stands;
-   torch.compile is the kernel story; no grad-ckpt at 2B/80G. Budget:
-   ~293 A100-hrs ($352-557) or ~92 H100-hrs ($185-277, ~4 d) — 3.7x under
-   the panel estimate; H100-class wins both axes (spot-check the actual
-   rental card ~15 min with the same script first).**
+   25.4 in the ckpt arm) — then the same-day FlexAttention window fix
+   (dense S x S masks were forcing full-quadratic SDPA) lifted it to
+   **45.5%** at S1024/B8 and 32.5% at S4096 (was 21.8%). Decisions: Triton
+   port SKIPPED; ratio 1:3 stands; torch.compile+flex is the kernel story;
+   no grad-ckpt at 2B/80G; long context ~ free (curriculum choice, not
+   budget). Budget: ~82 H100-hrs ($164-246, ~3.4 d) / ~36 B200-hrs
+   ($162-234, ~1.5 d) / ~260 A100-hrs ($312-493) — 4-5x under the panel
+   estimate; H100-class wins both axes (spot-check the actual rental card
+   ~15 min with the same script first).**
 2. Cycle-one dense hybrid @ 1:3, WSD, full-vocab cosine-CE; frozen-
    embedding 3-arm test at 151M first; curriculum-MTP arm at pilot.
 3. Rent single-node A100s, stream shards, ckpt 15-30min, spot.

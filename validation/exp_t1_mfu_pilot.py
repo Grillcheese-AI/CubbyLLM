@@ -234,9 +234,13 @@ def main() -> None:
                          "amp": amp_name},
                  "results": {}}
 
+    # MFU_MODES=compile skips eager entirely — needed when unfused-flex eager
+    # OOMs at shapes the compiled path fits (its full-scores materialization)
+    modes = os.environ.get("MFU_MODES",
+                           "eager,compile" if COMPILE else "eager").split(",")
     rows = []
     for arm in args.arms.split(","):
-        for mode in (["eager", "compile"] if COMPILE else ["eager"]):
+        for mode in modes:
             torch.manual_seed(0)
             model = build_arm(arm)
             fpt, n_params = model_flops_per_token_train(model)
