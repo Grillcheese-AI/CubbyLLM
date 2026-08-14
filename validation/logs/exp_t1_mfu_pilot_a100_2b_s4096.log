@@ -1,0 +1,30 @@
+# exp_t1_mfu_pilot — 2B shape, LONG-CONTEXT arm (S=4096, B=2, no ckpt),
+# Colab A100-SXM4-80GB, 2026-08-14. Provenance: console output pasted from the
+# Colab session (script from cubby_mfu_pilot.zip @ f90a646).
+# Cmd: MFU_D=2048 MFU_L=32 MFU_B=2 MFU_S=4096 MFU_CKPT=0 --arms hybrid
+
+python 3.12.13 | torch 2.11.0+cu128 | git unknown
+device NVIDIA A100-SXM4-80GB | peak 312 TF | amp=bf16 | ckpt=0
+shapes D=2048 L=32 B=2 S=4096 W=512 heads=8 V=trunk-only | steps 30 (+5 warmup)
+
+  hybrid /eager      1403.4 ms/step       5837 tok/s |   44.7 TF | MFU 14.3% | 1254.4M params | mem 59.3G
+  hybrid /compile     924.0 ms/step       8866 tok/s |   67.9 TF | MFU 21.8% | 1254.4M params | mem 40.1G
+
+=== projection (at 21.8%): A100 ~545 hrs $654-1,035 | H100 ~172 hrs $344-516
+    | B200 ~76 hrs (3.1 d) $340-491
+
+# READING:
+# - Same B*S (8192 tok/step) and same memory (40.1G) as the S1024/B8 run, but
+#   MFU HALVED (40.3% -> 21.8%). Two causes:
+#   (1) _WindowedAttnMixer.forward hands SDPA a dense S x S bool mask ->
+#       arbitrary-mask SDPA computes FULL quadratic attention then masks.
+#       S^2 waste grows 16x from S1024 to S4096 while useful (banded) work
+#       grows 4x. The architecture is linear-in-S; this implementation is not.
+#   (2) B=2 underutilizes SMs on batch-parallel kernels (scan, elementwise).
+# - FIX (queued): FlexAttention (torch>=2.5) sliding-window BlockMask does
+#   only the banded work at near-flash speed — contained change to the mixer's
+#   forward; step() decode path unaffected. Re-measure S4096 after.
+# - Implication for the long-context question: big-VRAM cards (B200 180G) buy
+#   the MEMORY for long-S training (~8x the B*S budget vs 80G), but until the
+#   flex fix lands, ~half the throughput is given back at S4096. Software
+#   first, then buy context.

@@ -215,7 +215,8 @@ def main() -> None:
     amp_name = ("bf16" if torch.cuda.is_bf16_supported() else "fp16") if use_amp else "off"
     try:
         rev = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"],
-                                      cwd=ROOT, text=True).strip()
+                                      cwd=ROOT, text=True,
+                                      stderr=subprocess.DEVNULL).strip()
     except Exception:
         rev = "unknown"
 
