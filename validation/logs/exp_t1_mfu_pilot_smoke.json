@@ -1,69 +1,36 @@
 {
   "config": {
-    "D": 256,
-    "L": 6,
-    "B": 4,
-    "S": 256,
+    "D": 128,
+    "L": 3,
+    "B": 2,
+    "S": 128,
     "W": 512,
     "heads": 8,
     "V": 0,
-    "steps": 3,
+    "steps": 2,
     "warmup": 1,
     "ckpt": false
   },
   "env": {
     "python": "3.12.10",
     "torch": "2.10.0+cpu",
-    "git": "1b7701b",
+    "git": "4f5c626",
     "device": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel",
-    "peak_tflops": 0.5,
+    "peak_tflops": null,
     "amp": "off"
   },
   "results": {
     "hybrid/eager": {
-      "ms_per_step": 214.4782999985182,
-      "ms_p10": 202.23499999883643,
-      "ms_p90": 221.0069000011572,
-      "tok_per_s": 4774.375776043892,
-      "final_loss": 1.6283392906188965,
+      "ms_per_step": 65.9077999953297,
+      "ms_p10": 57.44449999474455,
+      "ms_p90": 74.37109999591485,
+      "tok_per_s": 3884.214008328915,
+      "final_loss": 1.2848037481307983,
       "peak_mem_gb": null,
-      "params": 3676160,
-      "flops_per_token_train": 22846464.0,
-      "achieved_tflops": 0.10907760428985884,
-      "mfu": 0.21815520857971768
-    }
-  },
-  "projection": {
-    "hybrid": {
-      "mfu": 0.21815520857971768,
-      "flops_per_token_2b": 9173073920.0,
-      "cards": {
-        "A100-80G": {
-          "hours": 537.9587553406851,
-          "usd_lo": 645.5505064088221,
-          "usd_hi": 1022.1216351473016
-        },
-        "RTX PRO 6000 Blackwell 96G": {
-          "hours": 666.0441732789435,
-          "usd_lo": 1198.8795119020983,
-          "usd_hi": 1531.90159854157
-        },
-        "H100-80G": {
-          "hours": 169.7099410174861,
-          "usd_lo": 339.4198820349722,
-          "usd_hi": 509.1298230524583
-        },
-        "H200-141G": {
-          "hours": 169.7099410174861,
-          "usd_lo": 390.332864340218,
-          "usd_hi": 593.9847935612014
-        },
-        "B200-180G": {
-          "hours": 74.59694740724166,
-          "usd_lo": 335.6862633325875,
-          "usd_hi": 484.8801581470708
-        }
-      }
+      "params": 460288,
+      "flops_per_token_train": 2860800.0,
+      "achieved_tflops": 0.01111195943502736,
+      "mfu": null
     }
   }
 }

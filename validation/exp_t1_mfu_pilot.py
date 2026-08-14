@@ -178,7 +178,10 @@ def bench(model: nn.Module, device: torch.device, use_amp: bool) -> dict:
         t0 = time.perf_counter()
         opt.zero_grad(set_to_none=True)
         if use_amp:
-            with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
+            # bf16 where supported (Ampere+); fp16 on older cards (e.g. the free-
+            # tier T4, sm_75) — throughput-only, so no GradScaler needed
+            dt = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+            with torch.autocast(device_type="cuda", dtype=dt):
                 loss = loss_of(model, x, y)
         else:
             loss = loss_of(model, x, y)
@@ -209,6 +212,7 @@ def main() -> None:
     peak = device_peak_tflops(dev_name)   # name table is CUDA-only; the env
     # override works on any device (e.g. a DirectML bench with a known peak)
     use_amp = device.type == "cuda"
+    amp_name = ("bf16" if torch.cuda.is_bf16_supported() else "fp16") if use_amp else "off"
     try:
         rev = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"],
                                       cwd=ROOT, text=True).strip()
@@ -217,7 +221,7 @@ def main() -> None:
 
     print(f"python {platform.python_version()} | torch {torch.__version__} | git {rev}")
     print(f"device {dev_name} | peak {'%.0f TF' % peak if peak else 'UNKNOWN (set MFU_PEAK_TFLOPS)'}"
-          f" | amp={'bf16' if use_amp else 'off'} | ckpt={int(CKPT)}")
+          f" | amp={amp_name} | ckpt={int(CKPT)}")
     print(f"shapes D={D} L={L} B={B} S={S} W={W} heads={HEADS} V={V or 'trunk-only'}"
           f" | steps {STEPS} (+{WARMUP} warmup)\n")
 
@@ -226,7 +230,7 @@ def main() -> None:
                  "env": {"python": platform.python_version(),
                          "torch": torch.__version__, "git": rev,
                          "device": dev_name, "peak_tflops": peak,
-                         "amp": "bf16" if use_amp else "off"},
+                         "amp": amp_name},
                  "results": {}}
 
     rows = []
