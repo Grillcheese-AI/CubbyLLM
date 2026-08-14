@@ -170,3 +170,29 @@ def test_stacked_windows_compound_reach():
         b = bb.forward(x2)[0, -1]
     assert not torch.allclose(a, b, atol=1e-5), (
         "two windowed layers failed to compound reach — expected 2-hop propagation")
+
+
+def test_flex_attention_path_matches_the_masked_sdpa_reference(monkeypatch):
+    """The FlexAttention fast path (CUDA default) must be numerically the same
+    attention as the dense-mask SDPA reference — otherwise the MFU fix trains
+    a different model. Forced on here (CPU) at a shape where S > window so the
+    banded structure actually matters."""
+    from cubbyllm.model.backbone import hybrid as hy
+
+    if hy.flex_attention is None:
+        pytest.skip("torch without flex_attention")
+    mixer = _backbone().mix[0]                       # a _WindowedAttnMixer
+    x = torch.randn(B, S, D)
+    with torch.no_grad():
+        ref = mixer(x)                               # CPU -> masked-SDPA path
+        monkeypatch.setattr(type(mixer), "_use_flex", staticmethod(lambda t: True))
+        out = mixer(x)                               # forced flex path
+    assert torch.allclose(ref, out, atol=1e-5), (ref - out).abs().max()
+
+
+def test_cb_no_flex_forces_the_reference_path(monkeypatch):
+    from cubbyllm.model.backbone import hybrid as hy
+
+    monkeypatch.setenv("CB_NO_FLEX", "1")
+    fake_cuda = type("T", (), {"is_cuda": True})()
+    assert hy._WindowedAttnMixer._use_flex(fake_cuda) is False

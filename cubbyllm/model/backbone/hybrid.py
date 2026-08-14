@@ -57,6 +57,8 @@ mask at every step, and is what the incremental-decode equivalence test checks.
 """
 from __future__ import annotations
 
+import functools
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -65,6 +67,30 @@ import torch.utils.checkpoint
 from ...core.protocols import Wiring
 from ..recall import EpisodicStore, MemoryRead
 from .mingru import _MinGRUMixer, _RMSNorm, _SwiGLU
+
+try:  # torch >= 2.5; used on CUDA where it does only the banded work
+    from torch.nn.attention.flex_attention import create_block_mask, flex_attention
+except ImportError:  # pragma: no cover - older torch (e.g. the .venv-dml 2.4.1)
+    create_block_mask = flex_attention = None
+
+
+@functools.lru_cache(maxsize=8)
+def _window_block_mask(S: int, window: int, device: str):
+    """Sliding-window causal BlockMask, cached per (S, window, device).
+
+    Why this exists: handing SDPA a dense (S, S) bool mask forces the
+    arbitrary-mask fallback, which computes FULL quadratic attention and then
+    masks — measured at 2B scale as MFU 40.3% (S=1024) collapsing to 21.8%
+    (S=4096) at identical B*S (exp_t1_mfu_pilot_a100_2b_s4096.log). FlexAttention
+    skips the masked-out blocks entirely, restoring the linear-in-S cost the
+    windowed design promises. The cache matters: building a BlockMask traces the
+    mask_mod, which is far too slow to redo every forward.
+    """
+    def keep(b, h, q_idx, kv_idx):
+        return (q_idx >= kv_idx) & (q_idx - kv_idx < window)
+
+    return create_block_mask(keep, B=None, H=None, Q_LEN=S, KV_LEN=S,
+                             device=device)
 
 
 def _rope_tables(dh: int, positions, device):
@@ -119,10 +145,24 @@ class _WindowedAttnMixer(nn.Module):
         cos, sin = _rope_tables(self.dh, torch.arange(S, device=x.device), x.device)
         cos, sin = cos.view(1, 1, S, self.dh), sin.view(1, 1, S, self.dh)
         q, k = _apply_rope(q, cos, sin), _apply_rope(k, cos, sin)      # rotary position
-        i = torch.arange(S, device=x.device)
-        keep = (i[:, None] >= i[None, :]) & (i[:, None] - i[None, :] < self.window)
-        o = F.scaled_dot_product_attention(q, k, v, attn_mask=keep)   # causal+window
+        if self._use_flex(x):
+            bm = _window_block_mask(S, self.window, str(x.device))
+            o = flex_attention(q, k, v, block_mask=bm)   # banded work only
+        else:
+            i = torch.arange(S, device=x.device)
+            keep = (i[:, None] >= i[None, :]) & (i[:, None] - i[None, :] < self.window)
+            o = F.scaled_dot_product_attention(q, k, v, attn_mask=keep)  # causal+window
         return self.o(o.transpose(1, 2).reshape(B, S, d))
+
+    @staticmethod
+    def _use_flex(x) -> bool:
+        """flex on CUDA when available; the dense-mask SDPA path stays the
+        reference (CPU tests, DirectML, old torch). CB_NO_FLEX=1 forces the
+        reference path everywhere (A/B and escape hatch)."""
+        import os
+        if flex_attention is None or os.environ.get("CB_NO_FLEX") == "1":
+            return False
+        return x.is_cuda
 
     def step(self, x_t, cache=None):
         """One token. x_t: (B, d). cache: (k, v, pos) with k,v each
