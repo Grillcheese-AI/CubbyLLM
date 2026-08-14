@@ -77,7 +77,10 @@ STEPS = _env("MFU_STEPS", 30)
 WARMUP = _env("MFU_WARMUP", 5)
 CKPT = bool(_env("MFU_CKPT", 0))
 COMPILE = bool(_env("MFU_COMPILE", 1))   # compile arms attempted (skipped on failure)
-TOKENS_2B = 14.37e9              # the built pretraining cache (memory: uint32 shards, D:)
+# Disk-verified cache size (H-G3, 2026-08-14): 17,744,604,983 tokens. The
+# earlier 14.37e9 figure was stale session memory. Override with MFU_TOKENS
+# (e.g. 40e9 for the Chinchilla ~2.25-epoch cycle-one target).
+TOKENS_2B = float(os.environ.get("MFU_TOKENS", 17.744e9))
 
 # dense bf16/fp16 tensor-core peaks, TFLOPS (substring-matched on device name)
 PEAKS = {
@@ -282,7 +285,8 @@ def main() -> None:
         ("B200-180G", 2250.0, 4.5, 6.5),         # Blackwell DC: ~2.3x H100 peak, 180G
     ]
     if peak and rows:
-        print("\n=== projection -- 14.37B tokens at the 2B shape (D2048/L32/V131k)")
+        print(f"\n=== projection -- {TOKENS_2B / 1e9:.2f}B tokens at the 2B shape "
+              "(D2048/L32/V131k)")
         print("    (pilot-card row = measured; other cards = MFU-transfer estimate)")
         d2, l2, v2 = 2048, 32, 131072
         out["projection"] = {}

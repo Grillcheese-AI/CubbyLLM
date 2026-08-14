@@ -971,10 +971,12 @@ E7 H0 350M 3-arm slot experiment (biggest) — decides memory architecture
    **45.5%** at S1024/B8 and 32.5% at S4096 (was 21.8%). Decisions: Triton
    port SKIPPED; ratio 1:3 stands; torch.compile+flex is the kernel story;
    no grad-ckpt at 2B/80G; long context ~ free (curriculum choice, not
-   budget). Budget: ~82 H100-hrs ($164-246, ~3.4 d) / ~36 B200-hrs
-   ($162-234, ~1.5 d) / ~260 A100-hrs ($312-493) — 4-5x under the panel
-   estimate; H100-class wins both axes (spot-check the actual rental card
-   ~15 min with the same script first).**
+   budget). Budget (token basis corrected by H-G3 2026-08-14: cache is
+   17.74B, not 14.37B): one epoch ~101 H100-hrs ($203-304); Chinchilla
+   ~40B (~2.25 epochs) ~228 H100-hrs ($457-685) / ~100 B200-hrs
+   ($451-651) / ~724 A100-hrs — still under the panel estimate, which
+   assumed ~14B tokens at far lower MFU. H100-class wins both axes
+   (spot-check the actual rental card ~15 min with the same script first).**
 2. Cycle-one dense hybrid @ 1:3, WSD, full-vocab cosine-CE; frozen-
    embedding 3-arm test at 151M first; curriculum-MTP arm at pilot.
 3. Rent single-node A100s, stream shards, ckpt 15-30min, spot.
