@@ -1,0 +1,23 @@
+# exp_t1_mfu_pilot — 2B shape, S=4096/B=4 (flex mixer, c5e7aa9) — the arm that
+# closes the long-context question. Colab A100-SXM4-80GB, 2026-08-14.
+# Provenance: console output pasted from the Colab session.
+# Cmd: MFU_D=2048 MFU_L=32 MFU_B=4 MFU_S=4096 MFU_CKPT=0 --arms hybrid
+# NOTE: hybrid/eager FAILED OOM (expected — unfused flex materializes full
+# S^2 scores; B2/S4096 eager already needed 64.1G). Script continued to the
+# compile row per design; error recorded in the run json.
+
+  hybrid /compile     895.5 ms/step      18296 tok/s |  140.1 TF | MFU 44.9% | 1254.4M params | mem 62.5G
+
+=== projection (at 44.9%): A100 ~264 hrs (11.0 d) $317-502 | H100 ~83 hrs
+    (3.5 d) $167-250 | H200 ~83 hrs $192-292 | B200 ~37 hrs (1.5 d) $165-238
+
+# READING (closes the pilot campaign):
+# - S4096/B4 = 44.9% vs S1024/B8 = 45.5% (_a100_2b_flex.log): the 32.5%
+#   S4096/B2 result was pure batch starvation. With flex + adequate batch,
+#   sequence length is MFU-NEUTRAL — same ~18.3-18.6k tok/s at 1k and 4k
+#   context. Long-S costs only activation memory (62.5G vs 40.0G on 80G).
+# - Final operating envelope on A100-80G, compiled, no ckpt: ~45% MFU at any
+#   S with B*S >= ~16k tokens/step and memory <= 80G. Bigger cards convert
+#   directly into longer S or bigger B at constant efficiency.
+# - Cycle-one budget (unchanged from the 45.5% headline, within noise):
+#   ~83 H100-hrs ($167-250) / ~37 B200-hrs ($165-238) / ~264 A100-hrs.
