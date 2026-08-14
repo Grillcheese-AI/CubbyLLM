@@ -961,9 +961,21 @@ E7 H0 350M 3-arm slot experiment (biggest) — decides memory architecture
 
 ### Decision chain settled (3/3)
 1. MFU pilot (2h, local) -> decides kernels/ratio/budget.
+   **DONE 2026-08-14 (Colab A100-SXM4-80GB; H-E4; logs
+   `validation/logs/exp_t1_mfu_pilot_a100*`): the recurrence penalty is an
+   eager artifact — compiled, hybrid=32.8% / mingru=32.6% / attn=33.5% at
+   150M (hybrid = 98% of transformer; bar was 2/3), and at the true 2B shape
+   hybrid/compile hits 40.3% (no ckpt, B8, 40G/80G) BEATING attn (26.2 vs
+   25.4 in the ckpt arm). Decisions: Triton port SKIPPED; ratio 1:3 stands;
+   torch.compile is the kernel story; no grad-ckpt at 2B/80G. Budget:
+   ~293 A100-hrs ($352-557) or ~92 H100-hrs ($185-277, ~4 d) — 3.7x under
+   the panel estimate; H100-class wins both axes (spot-check the actual
+   rental card ~15 min with the same script first).**
 2. Cycle-one dense hybrid @ 1:3, WSD, full-vocab cosine-CE; frozen-
    embedding 3-arm test at 151M first; curriculum-MTP arm at pilot.
 3. Rent single-node A100s, stream shards, ckpt 15-30min, spot.
+   (Per step 1's measurement, prefer H100-class over A100 — better $ AND
+   wall-clock at measured MFU.)
 4. After: offline ULD-KD subset pass, int8 PTQ, MQAR probe battery.
 5. Cycle two: upcycle to fine-grained tag-initialized MoE (Nexus router
    fed by our table), shared attention block.

@@ -1,0 +1,37 @@
+# exp_t1_mfu_pilot — 2B-shape, NO grad-ckpt, B8 — THE CYCLE-ONE OPERATING POINT
+# Colab A100-SXM4-80GB, 2026-08-14. Provenance: console output pasted from the
+# Colab session (script from cubby_mfu_pilot.zip @ f90a646); companion json
+# exp_t1_mfu_pilot_a100_2b_nockpt.json.
+# Cmd: MFU_D=2048 MFU_L=32 MFU_B=8 MFU_S=1024 MFU_CKPT=0 --arms hybrid
+
+python 3.12.13 | torch 2.11.0+cu128 | git unknown
+device NVIDIA A100-SXM4-80GB | peak 312 TF | amp=bf16 | ckpt=0
+shapes D=2048 L=32 B=8 S=1024 W=512 heads=8 V=trunk-only | steps 30 (+5 warmup)
+
+  hybrid /eager       823.7 ms/step       9945 tok/s |   75.9 TF | MFU 24.3% | 1254.4M params | mem 58.9G
+  hybrid /compile     496.8 ms/step      16488 tok/s |  125.8 TF | MFU 40.3% | 1254.4M params | mem 40.0G
+
+=== projection -- 14.37B tokens at the 2B shape (D2048/L32/V131k)
+    (pilot-card row = measured; other cards = MFU-transfer estimate)
+  hybrid (best=compile, MFU 40.3%):
+    A100-80G                     ~    293 hrs ( 12.2 d) -> $352-557
+    RTX PRO 6000 Blackwell 96G   ~    363 hrs ( 15.1 d) -> $653-835
+    H100-80G                     ~     92 hrs (  3.9 d) -> $185-277
+    H200-141G                    ~     92 hrs (  3.9 d) -> $213-324
+    B200-180G                    ~     41 hrs (  1.7 d) -> $183-264
+
+json -> validation/logs/exp_t1_mfu_pilot_a100_2b_nockpt.json
+
+# READING (closes the pilot):
+# - 40.3% MFU at the true 2B shape, no ckpt, B8 (compile mem 40.0G of 80G;
+#   B12-16 would still fit and may add a little more). ABOVE the panel's
+#   transformer band floor (35-50%) — for the hybrid they feared would sit
+#   at 10-35%. Larger matmuls utilize better: 150M 32.8% -> 2B 40.3%.
+# - Grad-ckpt tax measured: 40.3% -> 26.2% (with B8->B4 confounded in);
+#   on 80G cards ckpt is unnecessary for 2B — do not pay it.
+# - Cycle-one budget at measured 40.3%: ~293 A100-hrs ($352-557 spot) or
+#   ~92 H100-hrs ($185-277, ~4 days) — H100-class wins on BOTH dollars and
+#   wall-clock; B200 similar dollars at ~1.7 days (transfer estimate: run
+#   this script ~15 min on the actual rental card before committing).
+# - Real-run overhead not in these numbers: data loading, eval, ckpt saves
+#   (~5-15% wall-clock) + the V=131k head (its FLOPs ARE in the projection).

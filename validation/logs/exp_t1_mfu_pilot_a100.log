@@ -1,0 +1,49 @@
+# exp_t1_mfu_pilot — 150M decision run, Colab A100-SXM4-80GB, 2026-08-14
+# Provenance: console output pasted from the Colab session (script from
+# cubby_mfu_pilot.zip @ f90a646); companion json exp_t1_mfu_pilot_a100.json
+# downloaded from the same run.
+
+python 3.12.13 | torch 2.11.0+cu128 | git unknown
+device NVIDIA A100-SXM4-80GB | peak 312 TF | amp=bf16 | ckpt=0
+shapes D=1024 L=16 B=16 S=1024 W=512 heads=8 V=trunk-only | steps 30 (+5 warmup)
+
+  hybrid /eager       317.3 ms/step      51637 tok/s |   50.2 TF | MFU 16.1% | 157.3M params | mem 22.7G
+  hybrid /compile     155.5 ms/step     105359 tok/s |  102.5 TF | MFU 32.8% | 157.3M params | mem 13.5G
+  mingru /eager       357.7 ms/step      45806 tok/s |   41.5 TF | MFU 13.3% | 151.1M params | mem 26.6G
+  mingru /compile     146.1 ms/step     112164 tok/s |  101.7 TF | MFU 32.6% | 151.1M params | mem 14.2G
+  attn   /eager       250.3 ms/step      65449 tok/s |   72.5 TF | MFU 23.2% | 167.8M params | mem 16.2G
+  attn   /compile     173.9 ms/step      94230 tok/s |  104.4 TF | MFU 33.5% | 167.8M params | mem 12.3G
+
+=== projection -- 14.37B tokens at the 2B shape (D2048/L32/V131k)
+    (pilot-card row = measured; other cards = MFU-transfer estimate)
+  hybrid (best=compile, MFU 32.8%):
+    A100-80G                     ~    361 hrs ( 15.1 d) -> $434-687
+    RTX PRO 6000 Blackwell 96G   ~    447 hrs ( 18.6 d) -> $805-1,029
+    H100-80G                     ~    114 hrs (  4.8 d) -> $228-342
+    H200-141G                    ~    114 hrs (  4.8 d) -> $262-399
+    B200-180G                    ~     50 hrs (  2.1 d) -> $226-326
+  mingru (best=compile, MFU 32.6%):
+    A100-80G                     ~    348 hrs ( 14.5 d) -> $418-661
+    RTX PRO 6000 Blackwell 96G   ~    431 hrs ( 17.9 d) -> $775-991
+    H100-80G                     ~    110 hrs (  4.6 d) -> $220-329
+    H200-141G                    ~    110 hrs (  4.6 d) -> $252-384
+    B200-180G                    ~     48 hrs (  2.0 d) -> $217-314
+  attn (best=compile, MFU 33.5%):
+    A100-80G                     ~    385 hrs ( 16.0 d) -> $462-732
+    RTX PRO 6000 Blackwell 96G   ~    477 hrs ( 19.9 d) -> $858-1,097
+    H100-80G                     ~    121 hrs (  5.1 d) -> $243-364
+    H200-141G                    ~    121 hrs (  5.1 d) -> $279-425
+    B200-180G                    ~     53 hrs (  2.2 d) -> $240-347
+
+json -> validation/logs/exp_t1_mfu_pilot_a100.json
+
+# READING (decision per the 3/3-convergent panel rule, docs/COLAB.md):
+# - hybrid/compile = 98% of attn/compile MFU (bar was >=2/3): cycle-one DENSE
+#   HYBRID at 1:3 proceeds; Triton MinGRU-scan port SKIPPED; no ratio shift.
+# - compile is load-bearing: 2.04x throughput AND memory 22.7G->13.5G (fuses
+#   the parallel-scan intermediates). Eager numbers reproduce the panel's
+#   feared band (13-23%); the penalty is an eager artifact, not architectural.
+# - budget: measured-MFU projection ~3.7x cheaper than the panel's estimate
+#   (~361 A100-hrs / $434-687 vs their ~1,350 hrs / $1.3-1.9k). H100/B200 rows
+#   suggest better $/FLOP than A100 but are transfer estimates — spot-check
+#   with this script for ~15 min at rental time before committing.

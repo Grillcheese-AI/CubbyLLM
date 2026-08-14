@@ -1,0 +1,24 @@
+# exp_t1_mfu_pilot — 2B-shape probe (grad-ckpt ON, B4), Colab A100-SXM4-80GB, 2026-08-14
+# Provenance: console output pasted from the Colab session (script from
+# cubby_mfu_pilot.zip @ f90a646); companion json exp_t1_mfu_pilot_a100_2b.json.
+# Cmd: MFU_D=2048 MFU_L=32 MFU_B=4 MFU_S=1024 MFU_CKPT=1 --arms hybrid,attn
+
+  hybrid /eager       654.7 ms/step       6257 tok/s |   47.7 TF | MFU 15.3% | 1254.4M params | mem 20.8G
+  hybrid /compile     382.5 ms/step      10708 tok/s |   81.7 TF | MFU 26.2% | 1254.4M params | mem 20.5G
+  attn   /eager       557.8 ms/step       7343 tok/s |   62.1 TF | MFU 19.9% | 1342.3M params | mem 22.0G
+  attn   /compile     436.7 ms/step       9380 tok/s |   79.3 TF | MFU 25.4% | 1342.3M params | mem 21.9G
+
+=== projection -- 14.37B tokens at the 2B shape (D2048/L32/V131k)
+  hybrid (best=compile, MFU 26.2%):
+    A100-80G ~451 hrs (18.8 d) -> $542-858 | H100-80G ~142 hrs (5.9 d) -> $285-427
+    H200 ~142 hrs -> $328-498 | B200 ~63 hrs (2.6 d) -> $282-407
+    RTX PRO 6000 96G ~559 hrs -> $1,006-1,286
+  attn (best=compile, MFU 25.4%):
+    A100-80G ~507 hrs (21.1 d) -> $608-963 | H100-80G ~160 hrs (6.7 d) -> $320-479
+
+# READING:
+# - At the 2B shape the hybrid BEATS the attn comparator (26.2% vs 25.4%) —
+#   the quadratic term costs more at D2048 while recurrent layers stay dense.
+# - 20.5G at B4+ckpt ~= weights+optimizer alone (1.25B params) -> activations
+#   nearly free under ckpt; 80G card has ~60G activation headroom -> no-ckpt
+#   probe (see _a100_2b_nockpt.log) is the real cycle-one operating point.

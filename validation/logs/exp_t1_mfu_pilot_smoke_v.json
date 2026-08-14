@@ -1,0 +1,36 @@
+{
+  "config": {
+    "D": 256,
+    "L": 6,
+    "B": 4,
+    "S": 256,
+    "W": 512,
+    "heads": 8,
+    "V": 4096,
+    "steps": 3,
+    "warmup": 1,
+    "ckpt": false
+  },
+  "env": {
+    "python": "3.12.10",
+    "torch": "2.10.0+cpu",
+    "git": "1f698da",
+    "device": "Intel64 Family 6 Model 151 Stepping 5, GenuineIntel",
+    "peak_tflops": null,
+    "amp": "off"
+  },
+  "results": {
+    "hybrid/eager": {
+      "ms_per_step": 243.56890000035492,
+      "ms_p10": 242.17609999959677,
+      "ms_p90": 248.21929999961867,
+      "tok_per_s": 4204.149216088375,
+      "final_loss": 245.86013793945312,
+      "peak_mem_gb": null,
+      "params": 4724736,
+      "flops_per_token_train": 29137920.0,
+      "achieved_tflops": 0.1225001635264458,
+      "mfu": null
+    }
+  }
+}
