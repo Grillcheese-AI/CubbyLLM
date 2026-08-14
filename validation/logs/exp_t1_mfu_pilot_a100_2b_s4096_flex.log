@@ -1,0 +1,31 @@
+# exp_t1_mfu_pilot — 2B shape, S=4096 LONG-CONTEXT arm, FLEX-ATTENTION mixer
+# (c5e7aa9), Colab A100-SXM4-80GB, 2026-08-14. Provenance: console output
+# pasted from the Colab session; companion json _a100_2b_s4096_flex.json.
+# Cmd: MFU_D=2048 MFU_L=32 MFU_B=2 MFU_S=4096 MFU_CKPT=0 --arms hybrid
+# A/B against the dense-mask run: exp_t1_mfu_pilot_a100_2b_s4096.log
+
+python 3.12.13 | torch 2.11.0+cu128 | git unknown
+device NVIDIA A100-SXM4-80GB | peak 312 TF | amp=bf16 | ckpt=0
+shapes D=2048 L=32 B=2 S=4096 W=512 heads=8 V=trunk-only | steps 30 (+5 warmup)
+
+  hybrid /eager      1691.5 ms/step       4843 tok/s |   37.1 TF | MFU 11.9% | 1254.4M params | mem 64.1G
+  hybrid /compile     618.6 ms/step      13243 tok/s |  101.4 TF | MFU 32.5% | 1254.4M params | mem 40.0G
+
+=== projection (at 32.5%): A100 ~365 hrs $438-693 | H100 ~115 hrs (4.8 d)
+    $230-345 | B200 ~51 hrs (2.1 d) $228-329
+
+# READING (closes the long-context question):
+# - Flex BlockMask restores the banded cost: S4096/compile 21.7% -> 32.5%
+#   (1.49x throughput). Long-S tax vs the S1024/B8 point (40.3%) is now
+#   ~8 MFU points and is mostly B=2 SM underutilization, not attention:
+#   S4096/B4 (~60G compiled, fits on 80G) should close most of it.
+# - Eager flex is WORSE (14.3% -> 11.9%): unfused flex materializes the full
+#   scores matrix (upstream UserWarning says exactly this). Cycle-one runs
+#   compiled; the eager row is a non-goal.
+# - Dynamo warns it traces through the lru_cache'd _window_block_mask —
+#   correctness is pinned by the eager equivalence test
+#   (test_flex_attention_path_matches_the_masked_sdpa_reference); compiled
+#   flex numerics are upstream-tested. Known, accepted.
+# - Long-context economics with the fix: S4096 cycle-one ~ $230-345 on H100
+#   (~4.8 d) / ~$228-329 on B200 (~2.1 d) — essentially S1024 economics, so
+#   context length is no longer a budget axis; it's a data/curriculum choice.
