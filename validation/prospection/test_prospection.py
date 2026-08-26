@@ -92,3 +92,36 @@ def test_multihorizon_targets_match_naive_recursion():
             want[:, t] = num / mass
         assert torch.allclose(got, want, atol=1e-4), f"gamma={gamma}: max err {(got-want).abs().max()}"
     assert got.shape == (B, S - 1, d)
+
+
+def test_chrono_wrapper_and_impulse_response_discriminate():
+    """H-P7 mechanics: the wrapper turns chrono on; chrono init sets a slow
+    spectrum the runner can read back; and the impulse-response probe reads a
+    substituted token's perturbation of the recurrent state at long lags — non-zero
+    for a chrono-initialised model, ~0 past the window for the default init."""
+    os.environ["CB_CHRONO"] = "1"
+    import numpy as np
+    mh = importlib.import_module("exp_p6_multihorizon_pilot")
+    p7 = importlib.import_module("exp_p7_chrono_pilot")
+    assert p7.runner is mh and mh.CHRONO_TMAX < C.TAU_CAP
+    g = C.BranchGrammar()
+    toks, _ = g.sample(64, np.random.default_rng(3))                 # 512 tokens
+    x = torch.from_numpy(toks[:512]).view(2, 256)
+    dev = torch.device("cpu")
+
+    def one_batch():
+        while True:
+            yield x, x
+
+    plain = C.build_model(V=g.V, d=32, L=3, backbone="hybrid", window=16)
+    chrono = C.build_model(V=g.V, d=32, L=3, backbone="hybrid", window=16)
+    for _, mx in C.mingru_mixers(chrono.backbone):
+        C.chrono_init_(mx, 1.0, 500.0, weight_scale=1.0)
+    lags = [1, 8, 32, 64, 128]
+    ir_plain = mh.impulse_response(plain, one_batch(), dev, lags, n_seqs=2)
+    ir_chrono = mh.impulse_response(chrono, one_batch(), dev, lags, n_seqs=2)
+    assert ir_plain["1"] > 0 and ir_chrono["1"] > 0
+    assert ir_plain["128"] < 1e-3, ir_plain                           # default init forgets past the window
+    assert ir_chrono["128"] > 10 * max(ir_plain["128"], 1e-6), (ir_plain, ir_chrono)
+    spec = mh.gate_spectrum(chrono, one_batch(), dev)
+    assert all(v["slow100"] > 0.1 for v in spec.values())

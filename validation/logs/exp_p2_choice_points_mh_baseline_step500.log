@@ -1,0 +1,14 @@
+H-P2 choice points — does entropy localize the real choices, and how sparse are they?
+
+[branch grammar K=4 seg_len=8, toy model, 400 steps]
+  train loss 0.198 nats/token vs grammar floor 0.173 (ln K = 1.386 once per segment)
+  entropy at true choice points 1.375 vs elsewhere 0.002 (step path)
+  AUROC(entropy -> choice point): forward 1.000 | step 1.000
+  fraction flagged above ln(K)/2: 0.125 (true choice fraction 0.125)
+
+[checkpoint mh_baseline.pt on 4095 real positions]
+  entropy median 6.47 nats, p90 8.56
+  fraction above 1 / 2 / 3 nats: 0.984 / 0.961 / 0.926
+  -> that fraction is the share of steps a prospection budget would open branches at
+
+PASS: entropy is a usable choice-point detector on the toy; the budget rule has a signal.

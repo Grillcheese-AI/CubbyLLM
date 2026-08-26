@@ -1,0 +1,30 @@
+H-P3 gate spectrum — what timescales can the MinGRU state hold?
+
+[pin] retention formula vs _MinGRUMixer.step:
+  max |diff| = 6.0e-08
+
+[a] at init (proj_d bias = 1):
+  layer 0: tau p10    2.5 | p50    2.8 | p90    3.5 | >=8 steps 0.00 | >=100 steps 0.00
+  layer 1: tau p10    2.3 | p50    2.9 | p90    3.8 | >=8 steps 0.00 | >=100 steps 0.00
+
+[b] after toy training (grammar's longest dependency: 3 steps, branch id -> first divergent token):
+  layer 0: tau p10    1.5 | p50    2.1 | p90    4.1 | >=8 steps 0.00 | >=100 steps 0.00
+  layer 1: tau p10    1.8 | p50    2.5 | p90    3.2 | >=8 steps 0.00 | >=100 steps 0.00
+
+[c] chrono init, target tau log-uniform in [1, 500]:
+  layer 0: tau p10    2.4 | p50   15.3 | p90  255.7 | >=8 steps 0.66 | >=100 steps 0.22
+  layer 1: tau p10    2.2 | p50   15.0 | p90  268.8 | >=8 steps 0.66 | >=100 steps 0.22
+
+[ceiling] a <= 0.999 =>
+  tau can never exceed 999.5 steps on this gate (TAU_CAP = 999.5)
+
+[checkpoint mh_baseline.pt d=512 L=8 (recurrent layers only) on 2048 real tokens]
+  layer 1: tau p10    1.6 | p50    2.0 | p90    2.4 | >=8 steps 0.00 | >=100 steps 0.00
+  layer 2: tau p10    1.6 | p50    2.0 | p90    2.5 | >=8 steps 0.00 | >=100 steps 0.00
+  layer 4: tau p10    1.6 | p50    2.1 | p90    3.1 | >=8 steps 0.00 | >=100 steps 0.00
+  layer 5: tau p10    1.6 | p50    2.1 | p90    3.2 | >=8 steps 0.00 | >=100 steps 0.00
+  layer 7: tau p10    1.4 | p50    2.1 | p90    3.5 | >=8 steps 0.00 | >=100 steps 0.00
+  all recurrent units: >=8 steps 0.000 | >=100 steps 0.000 | slowest unit tau = 7.9 (cap 999)
+  conditional latching (instantaneous tau>=100): units doing it on >=10% of steps 0.000 | on >=50% of steps 0.000 | p90 unit latches on 0.000 of steps
+
+PASS: init is uniformly short-memory, the gate ceiling is ~1000 steps, chrono init spreads the spectrum. Set CB_P3_TRAIN=1 for the delayed-copy arm.

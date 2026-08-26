@@ -35,7 +35,8 @@ candidates under test, not dependencies.
 | `prospection/exp_p3_gate_spectrum.py` | H-P3 | MinGRU retention time-constant spectrum at init / trained / chrono init; the gate's ~1000-step ceiling; `CB_P3_TRAIN=1` delayed-copy arm |
 | `prospection/exp_p4_keyframe_interp.py` | H-P4 | Keyframe compression: linear interpolation vs hold-last vs exact recompute, per-unit error vs tau; numerical pins on the AURA note's Hilbert/Fourier/Hamiltonian operators |
 | `prospection/exp_p5_counterfactual_probe.py` | H-P5 | Snapshot at a choice point, substitute the choice, re-run: counterfactual accuracy with ground truth, overdetermined vs fragile positions, washout |
-| `prospection/exp_p6_multihorizon_pilot.py` | H-P6 | GPU pilot arm (`notebooks/multihorizon_pilot.ipynb`): baseline vs + multi-horizon successor-feature head at matched tokens — held-out CE, per-horizon skill, linear probe, gate spectrum, H-B6 health gates |
+| `prospection/exp_p6_multihorizon_pilot.py` | H-P6 | GPU pilot arm (`notebooks/multihorizon_pilot.ipynb`) and the Group P pilot-arm runner: baseline vs + multi-horizon successor-feature head at matched tokens — held-out CE, per-horizon skill, linear probe, gate spectrum at init/end, beyond-window impulse response, H-B6 health gates. Ran 2026-08-26: free but redundant |
+| `prospection/exp_p7_chrono_pilot.py` | H-P7 | GPU pilot arm (`notebooks/chrono_pilot.ipynb`): chrono init on the recurrent gates vs default — held-out CE, survival of the init spectrum, beyond-window impulse response, needle recall at 256/512/1024/4096 |
 
 `prospection/` is a subfolder because its five scripts share a toy corpus and
 helpers (`prospection/_common.py`, `prospection/README.md`); run

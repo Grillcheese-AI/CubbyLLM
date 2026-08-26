@@ -24,8 +24,9 @@ CPU in seconds. Every script also runs on a real checkpoint — same
 | `exp_p3_gate_spectrum.py` | H-P3 | Per-unit retention time constant tau at init, after training, under chrono init; the gate's tau ceiling; formula pin vs `_MinGRUMixer.step`. `CB_P3_TRAIN=1`: delayed-copy default vs chrono at lags 8/32/128 | any substrate fact wrong |
 | `exp_p4_keyframe_interp.py` | H-P4 | Linear-interpolation error between keyframes vs hold-last, per gap; per-unit error vs tau (Spearman); recompute exactness; bytes/step; numerical pins on the AURA note's Hilbert/Fourier/Hamiltonian operators | interpolation not under hold-last at gap 4; recompute not exact |
 | `exp_p5_counterfactual_probe.py` | H-P5 | Snapshot at SEP, substitute the branch token, re-run: counterfactual accuracy vs ground-truth template, overdetermined positions unchanged, fragile position flipped, next-choice washout KL, state-distance profile | counterfactual at chance; overdetermined changing; no washout |
-| `exp_p6_multihorizon_pilot.py` | H-P6 | **GPU / Colab** (`notebooks/multihorizon_pilot.ipynb`). Two matched arms, baseline vs + a multi-horizon (successor-feature) head at γ = 0 / 0.875 / 0.98 / 0.998: held-out CE at matched tokens, per-horizon cosine skill vs the trivial predictor, a linear probe on frozen features of both arms, the H-P3 gate spectrum of both, the H-B6 health gates. Reuses `train_colab.py`; falls back to tokenizing the Wikipedia jsonl on Drive | head costs CE beyond noise; skill only at horizon 1 |
-| `test_prospection.py` | — | `run(quick=True)` of all five in one pytest session (`python -m pytest validation/prospection -q`, ~15 s) | — |
+| `exp_p6_multihorizon_pilot.py` | H-P6 | **GPU / Colab** (`notebooks/multihorizon_pilot.ipynb`) and the Group P **pilot-arm runner**. Two matched arms, baseline vs + a multi-horizon (successor-feature) head at γ = 0 / 0.875 / 0.98 / 0.998: held-out CE at matched tokens, per-horizon cosine skill vs the trivial predictor, a linear probe on frozen features of both arms, the H-P3 gate spectrum at init and after training, a beyond-window impulse response, the H-B6 health gates. Reuses `train_colab.py`; falls back to tokenizing the Wikipedia jsonl on Drive; saves once, staged locally, and verifies the step | head costs CE beyond noise; skill only at horizon 1 |
+| `exp_p7_chrono_pilot.py` | H-P7 | **GPU / Colab** (`notebooks/chrono_pilot.ipynb`). Thin wrapper over the runner with `CB_CHRONO=1`: chrono init (τ log-uniform in [1, 500], bias-only) on every recurrent gate vs default init. Reads, in order: held-out CE; **survival** (spectrum at init vs after training); **beyond-window memory** (impulse response past the 512 window — only the recurrence can carry it; baseline reads 0.000); **capability** (`exp_needle_recall.py` at 256/512/1024/4096) | CE worse beyond ~0.01 nats; trained spectrum collapses onto the baseline's |
+| `test_prospection.py` | — | `run(quick=True)` of P1–P5 plus the P6 target-math pin and the P7 chrono/impulse-response pin, in one pytest session (`python -m pytest validation/prospection -q`, ~10 s) | — |
 | `make_text_sample.py` | — | Builds the `CB_TEXT` plain-text sample from the domain-tagged Wikipedia jsonl next to the checkpoints (writes to `%TEMP%`, never into the repo) | — |
 
 `_common.py` holds the shared pieces: the `BranchGrammar` toy corpus with
@@ -108,7 +109,7 @@ explicit long-horizon objective, or the LRU-style rotation-block recurrence —
 or the timescale machinery has to live in attention and the episodic store,
 where the H-D5 memory rung already is.
 
-## H-P6 — the pilot arm that follows from the above (built 2026-08-25, UNRUN at scale)
+## H-P6 — the pilot arm that follows from the above (built 2026-08-25, RUN 2026-08-26)
 
 `exp_p6_multihorizon_pilot.py` + `notebooks/multihorizon_pilot.ipynb` implement
 the recommendation: leave the backbone alone, and put the medium horizon where
@@ -120,11 +121,53 @@ log-domain scan run time-reversed (pinned against the naive recursion in
 `test_prospection.py`). Two arms at matched tokens, then: held-out CE, per-horizon
 cosine skill vs the trivial mean-direction predictor, a linear probe on frozen
 features of *both* arms, the H-P3 gate spectrum of both, and the H-B6 health
-gates. CPU-smoked end to end at d=64 (tokenize → train → checkpoint → eval →
-probe → spectrum → JSON); the numbers that matter need the A100 run.
+gates.
 
-Reading it: Δ held-out CE within ±0.01 nats = the head is free (keep it as a 2B
-runbook arm); probe-multihorizon above probe-baseline = the objective changed
-the representation; recurrent `p50`/`slow8` moving above the baseline's = an
-explicit long-horizon objective *does* lengthen the recurrence, the first
-evidence for the "made, not inherited" route.
+**Result (A100-80G, d=512/L=8 hybrid, 2000 steps = 65.5M tokens/arm, ~16.5 min
+each; head arm at weight 0.03; `../logs/exp_p6_{baseline,multihorizon}.{json,log}`):**
+
+| | baseline | + head (w=0.03) |
+|---|---|---|
+| held-out CE (nats) | 5.0025 | 5.0044 (Δ +0.0019) |
+| retrieval / ff / copy-freq | 95.3% / 0.415 / 12% | 92.2% / 0.418 / 12% |
+| trivial predictor, horizons 1 / 8 / 50 / 500 | 0.004 / 0.014 / 0.031 / 0.079 | same targets |
+| linear probe on frozen h | **0.188 / 0.232 / 0.331 / 0.414** | 0.191 / 0.240 / 0.348 / 0.437 |
+| trained head | — | 0.194 / 0.237 / 0.340 / 0.426 |
+| recurrent τ p50 (layers 1/2/4/5/7) | 1.18 / 1.40 / 1.86 / 2.01 / 2.09 | 1.18 / 1.41 / 1.87 / 2.02 / 2.10 |
+
+Verdict: **free, but redundant.** The trunk trained on plain next-token CE
+already exposes the 50- and 500-token future linearly (0.33 / 0.41 vs trivial
+0.03 / 0.08); the explicit objective adds ~0.02 cosine at 500 tokens and moves
+no recurrent time constant at all. So the successor-feature readouts the
+prospection design wants are **post-training probes on the frozen trunk** (300
+steps, no risk to the run), not a pretraining objective — the head is out of the
+2B runbook. The objective route to long *recurrent* time constants is closed;
+chrono init (H-P3) is the one still open.
+
+Checkpoint caveat: five 1.8 GB writes to the same Drive path raced, and the
+`mh_baseline.pt` on Drive is the **step-500** periodic save (`mh_multihorizon.pt`
+is step 2000). The optional P2/P3 cell therefore measured a step-500 baseline —
+kept as `../logs/*_mh_baseline_step500.log` (τ p50 ≈ 2.0 flat, entropy median
+6.47) and useful only as a trajectory point: τ shortens 2.8 (init) → 2.0 (step
+500) → 1.2–2.1 (step 2000) → 0.5–1.8 (~1B tokens). The step-2000 head arm's P2/P3
+are `../logs/*_mh_multihorizon_step2000.log` (entropy median 5.61 nats,
+0.962 / 0.919 / 0.845 above 1 / 2 / 3 nats). All table numbers above come from
+the in-script evaluation of the in-memory models and are unaffected; the script
+now saves once, staged locally, and verifies the step it wrote.
+
+## H-P7 — chrono init, the last open route (built 2026-08-26, UNRUN at scale)
+
+`exp_p7_chrono_pilot.py` + `notebooks/chrono_pilot.ipynb`. H-P6 closed the
+"make long time constants with an objective" route; what is left is setting the
+spectrum at init (Tallec & Ollivier's chrono init, τ log-uniform in [1, 500] on
+every recurrent gate, bias-only) and asking whether training keeps it when
+attention is there to do the long-range work more cheaply. The runner now records
+the gate spectrum **at init and after training** (survival) and an **impulse
+response** — one substituted token's relative perturbation of the recurrent
+state read at lags past the attention window, where only the recurrence can
+carry it. CPU smoke at d=64 / window 32: chrono init τ p50 16–23 with 20–30% of
+units ≥ 100 steps, preserved after 30 steps; impulse response 0.115 at lag 64
+(past the window) vs **0.000** for the default init — the probe discriminates.
+Then `exp_needle_recall.py` at 256 / 512 / 1024 / 4096 on both checkpoints for
+the capability read. Verdict goes into H-P7; even a pass makes chrono a
+cycle-one *arm* at the 2B pilot, not a default.

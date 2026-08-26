@@ -25,7 +25,8 @@ layout before running.
 | [`induction_probe.ipynb`](induction_probe.ipynb) | the toy behind H-D3 — pure recurrence vs windowed/full hybrid on canonical induction, within vs beyond the window | GPU only, ~20 min |
 | [`decode_throughput.ipynb`](decode_throughput.ipynb) | the O(1)-state inference claim — incremental `step()` vs naive, and vs a real peer | a trained checkpoint |
 | [`ffn_spectrum.ipynb`](ffn_spectrum.ipynb) | the low-rank FFN gate — is the trained FFN compressible? | a trained checkpoint, minutes |
-| [`multihorizon_pilot.ipynb`](multihorizon_pilot.ipynb) | **H-P6** — the multi-horizon (successor-feature) prediction head as a pilot arm: baseline vs +head at matched tokens, held-out CE, per-horizon skill, linear probe, gate spectrum | tokenizer + corpus (falls back to the Wikipedia jsonl on Drive), ~15 min/arm on an A100 |
+| [`multihorizon_pilot.ipynb`](multihorizon_pilot.ipynb) | **H-P6** — the multi-horizon (successor-feature) prediction head as a pilot arm: baseline vs +head at matched tokens, held-out CE, per-horizon skill, linear probe, gate spectrum. **Ran 2026-08-26: free but redundant — post-hoc probes read the same future; not in the runbook** | tokenizer + corpus (falls back to the Wikipedia jsonl on Drive), ~15 min/arm on an A100 |
+| [`chrono_pilot.ipynb`](chrono_pilot.ipynb) | **H-P7** — chrono init on the recurrent gates vs default init: held-out CE, **survival** of the init spectrum through training, **beyond-window impulse response** (recurrence-only memory), needle recall at 256/512/1024/4096. The last open route to long recurrent time constants | same as above, ~16 min/arm + needle eval |
 
 ## Lessons baked in (so they don't bite again)
 
@@ -39,3 +40,11 @@ layout before running.
 - **Read the right metric.** For H-D3 that's the *needle table at distance*, not
   bpc or the live `copy` floor — both arms look alike on those; only recall at
   distance separates them.
+- **Repeated big checkpoint writes to the same Drive path race.** The H-P6 pilot
+  (2026-08-26) saved 1.8 GB every 500 steps plus at the end; the file that
+  survived for the baseline arm was the **step-500** one although the final save
+  had printed, and the optional P2/P3 cell then measured a different model than
+  the JSON. Pilots without resume now save once, staged to local disk, and read
+  the `step` back (`save_final` in `exp_p6_multihorizon_pilot.py`); the optional
+  cell prints each checkpoint's step before using it. In-script metrics (the
+  JSON) are computed on the in-memory model and are never affected.

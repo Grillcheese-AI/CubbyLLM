@@ -273,6 +273,30 @@ is worth a matched-budget A/B. Ternary is a *bytes* play, unaffected either way.
 )
 
 # ── 5. Multi-horizon pilot arm (H-P6, Group P) ──────────────────────────────
+# Paths cell shared by the Group P pilots: the full token cache if present,
+# else the mirrored Wikipedia cache, else the pilot script tokenizes the jsonl.
+P_PATHS = code("""
+# --- EDIT to your Drive locations ---
+!pip -q install tokenizers                          # the 128k BBPE is an HF tokenizer .json
+DRIVE     = '/content/drive/MyDrive/cubbyllm'
+TOKENIZER = f'{DRIVE}/grillcheese_bbpe128k.json'
+CORPUS_DRIVE = f'{DRIVE}/token_cache'               # full uint32 cache, if you still have it
+JSONL_DIR    = f'{DRIVE}/wikipedia'                 # domain-tagged jsonl (fallback corpus)
+CACHE_MIRROR = f'{DRIVE}/token_cache_wiki'          # where the tokenized jsonl gets mirrored
+CORPUS    = '/content/token_cache'                  # LOCAL SSD (Drive-FUSE random reads crawl)
+import os, glob
+os.makedirs(CORPUS, exist_ok=True)
+if glob.glob(f'{CORPUS_DRIVE}/*.u32'):
+    !rsync -a --info=progress2 {CORPUS_DRIVE}/ {CORPUS}/
+    print('staged the full token cache')
+elif glob.glob(f'{CACHE_MIRROR}/*.u32'):
+    !rsync -a --info=progress2 {CACHE_MIRROR}/ {CORPUS}/
+    print('staged the mirrored Wikipedia cache')
+else:
+    print('no cache on Drive — the script will tokenize', JSONL_DIR, 'once and mirror it to', CACHE_MIRROR)
+!du -sh {CORPUS}
+""")
+
 write(
     "multihorizon_pilot.ipynb",
     md("""
@@ -307,27 +331,7 @@ Wikipedia jsonl next to the checkpoints is tokenized once (~200M tokens, a few
 minutes) and mirrored back to Drive for the next session.
 """),
     SETUP,
-    code("""
-# --- EDIT to your Drive locations ---
-!pip -q install tokenizers                          # the 128k BBPE is an HF tokenizer .json
-DRIVE     = '/content/drive/MyDrive/cubbyllm'
-TOKENIZER = f'{DRIVE}/grillcheese_bbpe128k.json'
-CORPUS_DRIVE = f'{DRIVE}/token_cache'               # full uint32 cache, if you still have it
-JSONL_DIR    = f'{DRIVE}/wikipedia'                 # domain-tagged jsonl (fallback corpus)
-CACHE_MIRROR = f'{DRIVE}/token_cache_wiki'          # where the tokenized jsonl gets mirrored
-CORPUS    = '/content/token_cache'                  # LOCAL SSD (Drive-FUSE random reads crawl)
-import os, glob
-os.makedirs(CORPUS, exist_ok=True)
-if glob.glob(f'{CORPUS_DRIVE}/*.u32'):
-    !rsync -a --info=progress2 {CORPUS_DRIVE}/ {CORPUS}/
-    print('staged the full token cache')
-elif glob.glob(f'{CACHE_MIRROR}/*.u32'):
-    !rsync -a --info=progress2 {CACHE_MIRROR}/ {CORPUS}/
-    print('staged the mirrored Wikipedia cache')
-else:
-    print('no cache on Drive — the script will tokenize', JSONL_DIR, 'once and mirror it to', CACHE_MIRROR)
-!du -sh {CORPUS}
-"""),
+    P_PATHS,
     runner(),
     code("""
 # --- shared config: identical for both arms except CB_MH_W ---
@@ -337,7 +341,7 @@ BASE = dict(
     CB_ATTN_EVERY='3', CB_WINDOW='512',
     CB_B='32', CB_S='1024', CB_STEPS='2000',          # 32k tok/step, 65M tokens/arm
     CB_LR='3e-4', CB_WARMUP='200',                    # real-corpus LR + warmup (3e-3 diverges)
-    CB_EVAL='50', CB_HEALTH='500', CB_CKPT_EVERY='500',
+    CB_EVAL='50', CB_HEALTH='500', CB_CKPT_EVERY='0',   # save ONCE at the end (see README lesson)
     CB_MH_GAMMAS='0,0.875,0.98,0.998',                # mean horizons 1 / 8 / 50 / 500 tokens
     CB_MH_PROBE_STEPS='300', CB_MH_EVAL_BATCHES='16',
     CB_JSONL_DIR=JSONL_DIR, CB_CACHE_MIRROR=CACHE_MIRROR,
@@ -352,9 +356,12 @@ run('prospection/exp_p6_multihorizon_pilot.py',
     'exp_p6_baseline.log')
 """),
     code("""
-# --- ARM 2: + multi-horizon head, weight 0.1 — one flag different ---
+# --- ARM 2: + multi-horizon head — one flag different ---
+# 2026-08-26 run used 0.03 (a 0.1 attempt was stopped at ~500 steps; its head
+# cosines at step 500 matched 0.03's within 0.01, so the weight barely moves the
+# head's skill — the CE cost is what a higher weight would have to justify).
 run('prospection/exp_p6_multihorizon_pilot.py',
-    dict(BASE, CB_MH_W='0.1', CB_MH_TAG='multihorizon',
+    dict(BASE, CB_MH_W='0.03', CB_MH_TAG='multihorizon',
          CB_CKPT=f'{DRIVE}/mh_multihorizon.pt', CB_MH_OUT=f'{LOGS}/exp_p6_multihorizon.json'),
     'exp_p6_multihorizon.log')
 """),
@@ -385,6 +392,12 @@ print('copied logs + json to', f'{DRIVE}/logs/')
 """),
     code("""
 # --- OPTIONAL: the Group P checkpoint arms on the new checkpoints (P2 entropy budget, P3 spectrum) ---
+# Check the step FIRST: the 2026-08-26 baseline file on Drive turned out to be
+# the step-500 periodic save, not the final one (Drive sync race) — its P2/P3
+# numbers described a different model than the JSON.
+import torch
+for a in ('baseline', 'multihorizon'):
+    print(a, 'checkpoint step =', torch.load(f'{DRIVE}/mh_{a}.pt', map_location='cpu', mmap=True)['step'])
 !cd {REPO} && python validation/prospection/make_text_sample.py {JSONL_DIR} /content/wiki_sample.txt
 for a in ('baseline', 'multihorizon'):
     for script in ('exp_p2_choice_points.py', 'exp_p3_gate_spectrum.py'):
@@ -417,6 +430,136 @@ Three numbers decide it, in this order:
 `ret` must stay ~95%+ and `copy f` must be non-zero by the end for either arm's
 numbers to mean anything (the H-B6 gates). Record the verdict in
 `CUBBYLLM_HYPOTHESES.md` H-P6 with the log links.
+"""),
+)
+
+# ── 6. Chrono-init pilot arm (H-P7, Group P) ────────────────────────────────
+write(
+    "chrono_pilot.ipynb",
+    md("""
+# H-P7 — Chrono init on the recurrent gates: a pilot arm (Group P)
+
+**Why this is the last open route.** H-P3 measured the trained hybrid's
+recurrence at 0.5–2 steps per unit, shortening monotonically from init (2.8)
+through step 500 (2.0), step 2000 (1.2–2.1) and ~1B tokens (0.5–1.8); the gate
+caps τ at ~1000. H-P6 then closed the "make it with an objective" route — an
+explicit 500-token prediction loss moved no recurrent time constant. What's left
+is setting the spectrum at **init** (Tallec & Ollivier's chrono init, τ
+log-uniform over decades) and asking whether training keeps it when attention is
+there to do the long-range work instead.
+
+**Two matched arms**, identical except `CB_CHRONO`:
+
+| arm | init | kill |
+|---|---|---|
+| `baseline` | proj_d bias 1.0 → every unit τ ≈ 2.8 | — |
+| `chrono` | τ log-uniform in [1, 500] on every recurrent layer | held-out CE worse beyond ~0.01 nats; **or** the trained spectrum collapses onto the baseline's (survival fails) |
+
+Four readings, in order: Δ held-out CE · **survival** (gate spectrum at init vs
+after training, per layer) · **beyond-window memory** (impulse response of the
+recurrent state to one substituted token, at lags past the 512 window — only the
+recurrence can carry it there; baseline reads 0.000) · **capability** (needle
+recall at 256 / 512 / 1024 / 4096, TRAINED vs its own shuffled control).
+
+~16 min per arm on an A100, plus a few minutes of needle eval per checkpoint.
+"""),
+    SETUP,
+    P_PATHS,
+    runner(),
+    code("""
+# --- shared config: identical for both arms except CB_CHRONO ---
+BASE = dict(
+    CB_D='512', CB_L='8', CB_HEADS='8', CB_BACKBONE='hybrid',
+    CB_ATTN_EVERY='3', CB_WINDOW='512',
+    CB_B='32', CB_S='1024', CB_STEPS='2000',          # 32k tok/step, 65M tokens/arm
+    CB_LR='3e-4', CB_WARMUP='200',
+    CB_EVAL='50', CB_HEALTH='500', CB_CKPT_EVERY='0',   # save ONCE at the end, staged + verified
+    CB_MH_W='0', CB_MH_PROBE_STEPS='300', CB_MH_EVAL_BATCHES='16',
+    CB_CHRONO_TMIN='1', CB_CHRONO_TMAX='500', CB_CHRONO_WSCALE='1.0',   # bias-only = the paper's form
+    CB_IMPULSE_LAGS='1,2,4,8,16,32,64,128,256,512,768,1000',            # past 512 = recurrence only
+    CB_JSONL_DIR=JSONL_DIR, CB_CACHE_MIRROR=CACHE_MIRROR,
+)
+LOGS = f'{REPO}/validation/logs'
+"""),
+    code("""
+# --- ARM 1: baseline (default gate init) ---
+run('prospection/exp_p7_chrono_pilot.py',
+    dict(BASE, CB_CHRONO='0', CB_MH_TAG='baseline',
+         CB_CKPT=f'{DRIVE}/chrono_baseline.pt', CB_MH_OUT=f'{LOGS}/exp_p7_baseline.json'),
+    'exp_p7_baseline.log')
+"""),
+    code("""
+# --- ARM 2: chrono init — one flag different ---
+run('prospection/exp_p7_chrono_pilot.py',
+    dict(BASE, CB_CHRONO='1', CB_MH_TAG='chrono',
+         CB_CKPT=f'{DRIVE}/chrono_arm.pt', CB_MH_OUT=f'{LOGS}/exp_p7_chrono.json'),
+    'exp_p7_chrono.log')
+"""),
+    code("""
+# --- COMPARE: CE, survival, beyond-window memory; keep the evidence on Drive ---
+import json, shutil, math, torch
+R = {a: json.load(open(f'{LOGS}/exp_p7_{a}.json')) for a in ('baseline', 'chrono')}
+b, c = R['baseline'], R['chrono']
+print(f"tokens/arm {b['tokens']:,}  |  steps {b['steps']} / {c['steps']}")
+print(f"held-out CE   baseline {b['heldout_ce']:.4f}  chrono {c['heldout_ce']:.4f}  "
+      f"delta {c['heldout_ce']-b['heldout_ce']:+.4f} nats")
+print(f"health        baseline ret {b['retrieval']:.1%} copy f{b['copy_freq']:.0%}   "
+      f"chrono ret {c['retrieval']:.1%} copy f{c['copy_freq']:.0%}")
+print('\\nSURVIVAL — gate spectrum per recurrent layer (p50 tau | fraction >=8 | fraction >=100):')
+for a, r in R.items():
+    for when, key in (('init', 'gate_spectrum_init'), ('end ', 'gate_spectrum')):
+        print(f"  {a:<9}{when}  " + '  '.join(f"L{i}: {v['p50']:5.1f} | {v['slow8']:.2f} | {v['slow100']:.2f}"
+                                          for i, v in r[key].items()))
+w = b['config']['window']
+print(f"\\nBEYOND-WINDOW MEMORY — impulse response |dh|/|h| vs lag (window {w}):")
+lags = list(b['impulse'].keys())
+print('  lag      ' + ''.join(f"{k:>7}" for k in lags))
+for a, r in R.items():
+    print(f"  {a:<9}" + ''.join(f"{r['impulse'][k]:7.3f}" for k in lags))
+beyond = [k for k in lags if int(k) > w]
+print(f"  past the window {beyond}: baseline {[round(b['impulse'][k],3) for k in beyond]}  "
+      f"chrono {[round(c['impulse'][k],3) for k in beyond]}")
+for a in ('baseline', 'chrono'):
+    p = f'{DRIVE}/chrono_{"arm" if a == "chrono" else "baseline"}.pt'
+    print(a, 'checkpoint step =', torch.load(p, map_location='cpu', mmap=True)['step'])
+os.makedirs(f'{DRIVE}/logs', exist_ok=True)
+for f in glob.glob(f'{LOGS}/exp_p7_*'):
+    shutil.copy2(f, f'{DRIVE}/logs/')
+print('copied logs + json to', f'{DRIVE}/logs/')
+"""),
+    code("""
+# --- CAPABILITY: needle recall on both checkpoints, within and beyond the window ---
+for a, ck in (('baseline', 'chrono_baseline'), ('chrono', 'chrono_arm')):
+    print(f'\\n########## NEEDLE: {a} ##########', flush=True)
+    run('exp_needle_recall.py',
+        dict(CB_CKPT=f'{DRIVE}/{ck}.pt', CB_LENGTHS='256,512,1024,4096'),
+        f'needle_chrono_{a}.log')
+for f in glob.glob(f'{LOGS}/needle_chrono_*'):
+    shutil.copy2(f, f'{DRIVE}/logs/')
+"""),
+    md("""
+### How to read
+
+1. **Δ held-out CE** within ±0.01 nats → chrono is free at this scale. Worse →
+   the long time constants cost prediction; the route is closed unless (3) or (4)
+   pays for it.
+2. **Survival.** The chrono arm starts with ~22% of units at τ ≥ 100. If the
+   `end` row still shows a meaningful fraction ≥ 8 and ≥ 100, training kept the
+   spectrum; if it reads like the baseline (p50 1–2, 0.00, 0.00), gradient descent
+   eroded chrono the way it erodes the default init — **the route is closed** and
+   the H-P3 conclusion stands as final: beyond-window memory lives in the store.
+3. **Beyond-window impulse response.** Baseline reads 0.000 past 512 (nothing but
+   the recurrence can carry a perturbation there, and its τ is ~2). A surviving
+   chrono spectrum shows a non-zero tail. This is the mechanism; it can be
+   non-zero even when (4) doesn't move.
+4. **Needle at 1024 / 4096** (needle beyond the window), TRAINED vs its own
+   shuffled control — never vs 100%. Both arms should match inside the window
+   (attention's job). Chrono earns a place in the 2B runbook only if recall past
+   the window rises above the floor. Survival without recall is still a recorded
+   fact: the gate *can* hold a long time constant but has nothing useful to put
+   in it at this scale.
+
+Record the verdict in `CUBBYLLM_HYPOTHESES.md` H-P7 with the log links.
 """),
 )
 

@@ -1,4 +1,13 @@
 """H-P6 — the multi-horizon prediction head as a pilot arm (Colab, GPU).
+Also the Group P PILOT-ARM RUNNER: ``exp_p7_chrono_pilot.py`` is a thin wrapper
+that runs this same script with CB_CHRONO=1 (chrono init on the recurrent
+gates), so both pilots share data, loop, evaluation and the checkpoint fix.
+
+RESULT (2026-08-26, A100, 65M tokens/arm — see CUBBYLLM_HYPOTHESES.md H-P6):
+the head is free (Δ held-out CE +0.002 nats) but redundant — a 300-step linear
+probe on the plain next-token trunk already reads the 50/500-token future at
+cosine 0.33/0.41 vs trivial 0.03/0.08; the objective adds ~0.02 and moves no
+recurrent time constant. Successor readouts are post-training probes now.
 
 THE RECOMMENDATION THIS IMPLEMENTS. The Group P checkpoint arms showed the
 trained hybrid's recurrence is a 1-2-step mixer (H-P3): there is no slow
@@ -82,6 +91,46 @@ JSONL_DIR = os.environ.get("CB_JSONL_DIR", "")
 MIRROR = os.environ.get("CB_CACHE_MIRROR", "")
 CAP = int(os.environ.get("CB_MH_CAP", "0")) or None
 COMPILE = os.environ.get("CB_COMPILE", "0") == "1"
+# Periodic checkpoints are OFF here by default (this script has no resume, so
+# they only add Drive traffic). The 2026-08-26 pilot showed why that matters:
+# five 1.8 GB writes to the same Drive path in 16 minutes raced, and the file
+# that survived for the baseline arm was the STEP-500 one although the final
+# save had printed. Pilots save once, staged on local disk, and verify.
+CKPT_EVERY = int(os.environ.get("CB_CKPT_EVERY", "0"))
+# H-P7 arm: chrono init (Tallec & Ollivier 2018) on every recurrent layer's
+# retention-gate bias — tau log-uniform in [CB_CHRONO_TMIN, CB_CHRONO_TMAX]
+# at init. CB_CHRONO_WSCALE=1.0 is the paper-faithful bias-only form; P3's CPU
+# measurement used 0.1 only to make the init spectrum legible.
+CHRONO = os.environ.get("CB_CHRONO", "0") == "1"
+CHRONO_TMIN = float(os.environ.get("CB_CHRONO_TMIN", "1"))
+CHRONO_TMAX = float(os.environ.get("CB_CHRONO_TMAX", "500"))
+CHRONO_WSCALE = float(os.environ.get("CB_CHRONO_WSCALE", "1.0"))
+IMPULSE_LAGS = [int(v) for v in os.environ.get("CB_IMPULSE_LAGS", "1,2,4,8,16,32,64,128,256,512,768,1024,1536").split(",")]
+if CHRONO and TAG == "baseline":
+    TAG = "chrono"
+
+
+def save_final(path: str, model, opt, step: int, meta: dict) -> None:
+    """Write the checkpoint to LOCAL disk first, copy it to ``path`` (Drive),
+    then read ``step`` back from ``path`` and refuse to stay silent if the copy
+    that landed is not the one just written."""
+    import shutil
+    import tempfile
+    local = os.path.join(tempfile.gettempdir(), os.path.basename(path) + ".local")
+    tc.save_ckpt(local, model, opt, step, meta)
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    shutil.copy2(local, path)
+    try:
+        got = int(torch.load(path, map_location="cpu", mmap=True)["step"])
+    except Exception as e:                                     # pragma: no cover
+        got = f"unreadable ({e})"
+    if got != step:
+        print(f"  !! checkpoint at {path} reads step {got}, expected {step} — "
+              f"Drive sync race; the local copy {local} is correct, copy it by hand",
+              flush=True)
+    else:
+        os.remove(local)
+        print(f"checkpoint -> {path} (verified step {step})", flush=True)
 
 
 # ── the head ─────────────────────────────────────────────────────────────────
@@ -302,6 +351,38 @@ def gate_spectrum(model, pipe_eval, dev):
                          slow100=float((t >= 100).float().mean())) for i, t in taus.items()}
 
 
+@torch.no_grad()
+def impulse_response(model, pipe_eval, dev, lags, n_seqs: int = 4) -> dict:
+    """How long does ONE substituted token keep changing the recurrent state?
+
+    Two decode passes over the same real text, differing in a single token at
+    position t0; the relative perturbation ||h - h'|| / ||h|| of the stacked
+    recurrent-layer states is read at t0 + lag. Inside the attention window
+    the perturbation can travel through attention as well, so the numbers at
+    lags <= window are the TRUNK's memory; the numbers at lags beyond the window
+    are carried by the recurrence alone — the only place a chrono-lengthened
+    gate could show up in a hybrid, and the number the H-P7 kill reads."""
+    import _common as C
+    x, _ = next(pipe_eval)
+    T = x.shape[1]
+    t0 = 8
+    lags = [k for k in lags if t0 + k < T]
+    out = {k: [] for k in lags}
+    for row in x[:n_seqs]:
+        ids = row.clone()
+        alt = ids.clone()
+        alt[t0] = (int(alt[t0]) + 1) % int(model.config.vocab_core)     # one different token
+        state = state_alt = None
+        for t in range(T):
+            _, state = model.step(ids[t].view(1).to(dev), state)
+            _, state_alt = model.step(alt[t].view(1).to(dev), state_alt)
+            k = t - t0
+            if k in out:
+                h, h2 = C.gru_states(state).float(), C.gru_states(state_alt).float()
+                out[k].append(float((h - h2).norm() / (h.norm() + 1e-9)))
+    return {str(k): float(np.mean(v)) for k, v in out.items()}
+
+
 # ── main ─────────────────────────────────────────────────────────────────────
 
 def main():
@@ -328,6 +409,18 @@ def main():
           f"manifest {pipe.manifest_hash()[:16]}")
 
     model = tc.build(vocab, dev)
+    chrono_target = None
+    if CHRONO:
+        import _common as C
+        mixers = C.mingru_mixers(model.backbone)
+        taus = [C.chrono_init_(mx, CHRONO_TMIN, CHRONO_TMAX, seed=i, weight_scale=CHRONO_WSCALE)
+                for i, (_, mx) in enumerate(mixers)]
+        chrono_target = dict(t_min=CHRONO_TMIN, t_max=CHRONO_TMAX, weight_scale=CHRONO_WSCALE,
+                             layers=[i for i, _ in mixers],
+                             target_p50=float(np.median(torch.cat(taus).numpy())))
+        print(f"chrono init on {len(mixers)} recurrent layers: tau log-uniform in "
+              f"[{CHRONO_TMIN}, {CHRONO_TMAX}], gate weights x{CHRONO_WSCALE}", flush=True)
+    spec_init = gate_spectrum(model, pipe_eval, dev)          # the substrate BEFORE training
     if COMPILE and dev.type == "cuda":
         model.backbone = torch.compile(model.backbone)
     head = MultiHorizonHead(tc.D, GAMMAS).to(dev) if MH_W > 0 else None
@@ -372,33 +465,34 @@ def main():
             print(f"  step {s:>5}  train {tr:6.3f}  lr {loop.opt.param_groups[0]['lr']:.2e}{aux}"
                   f"{health}  {s*tc.BATCH*tc.SEQ/el:>9,.0f} tok/s", flush=True)
             curve.append((s, tr))
-        if tc.CKPT and tc.CKPT_EVERY and s % tc.CKPT_EVERY == 0:
+        if tc.CKPT and CKPT_EVERY and s % CKPT_EVERY == 0:
             tc.save_ckpt(tc.CKPT, model, loop.opt, s, meta)
     wall = time.perf_counter() - t0
     steps_done = len(recent)
     if tc.CKPT:
-        tc.save_ckpt(tc.CKPT, model, loop.opt, steps_done, meta)
+        save_final(tc.CKPT, model, loop.opt, steps_done, meta)
         if head is not None:
             torch.save({"gammas": GAMMAS, "state": head.state_dict()}, tc.CKPT + ".mhhead.pt")
-        print(f"checkpoint -> {tc.CKPT}")
 
     print("\nheld-out evaluation ...", flush=True)
     ev = held_out(model, head, pipe_eval, dev, GAMMAS, EVAL_BATCHES)
     probe = linear_probe(model, pipe.batches(min(tc.BATCH, 16), tc.SEQ), pipe_eval, dev,
                          GAMMAS, PROBE_STEPS, EVAL_BATCHES) if PROBE_STEPS > 0 else None
     spec = gate_spectrum(model, pipe_eval, dev)
+    impulse = impulse_response(model, pipe_eval, dev, IMPULSE_LAGS)
     acc, ff = tc.representation_health(model, pipe, dev)
     cp_r, cp_f = tc.copy_floor(model, dev, vocab, pipe)
-    res = dict(arm=TAG, aux_weight=MH_W, gammas=GAMMAS, steps=steps_done,
+    res = dict(arm=TAG, aux_weight=MH_W, gammas=GAMMAS, chrono=chrono_target, steps=steps_done,
                tokens=steps_done * tc.BATCH * tc.SEQ, wall_s=wall,
                config=dict(D=tc.D, L=tc.N_LAYERS, backbone=tc.BACKBONE, B=tc.BATCH, S=tc.SEQ,
-                           lr=tc.LR, warmup=tc.WARMUP),
+                           lr=tc.LR, warmup=tc.WARMUP, window=tc.ATTN_WINDOW),
                train_loss_last=float(np.mean(recent[-max(1, tc.EVAL_EVERY):])),
                heldout_ce=ev["ce"], heldout_bits_per_token=ev["ce"] / math.log(2),
                cos_mean_baseline=ev["cos_mean"], cos_head=ev["cos_head"], cos_probe=probe,
                skill_head=[None if c is None else c - m for c, m in zip(ev["cos_head"], ev["cos_mean"])],
                skill_probe=None if probe is None else [c - m for c, m in zip(probe, ev["cos_mean"])],
-               gate_spectrum=spec, retrieval=acc, ff_cos=ff, copy_rand=cp_r, copy_freq=cp_f,
+               gate_spectrum_init=spec_init, gate_spectrum=spec, impulse=impulse,
+               retrieval=acc, ff_cos=ff, copy_rand=cp_r, copy_freq=cp_f,
                curve=curve, manifest=pipe.manifest_hash(),
                peak_vram_gb=(torch.cuda.max_memory_allocated() / 1e9 if dev.type == "cuda" else None))
     if OUT:
@@ -421,9 +515,15 @@ def main():
         print("  cos probe (frozen h):   " + "".join(f"{c:9.3f}" for c in probe))
         print("  skill probe:            " + "".join(f"{c:+9.3f}" for c in res["skill_probe"]))
     if spec:
-        print("  gate spectrum (recurrent layers): " + ", ".join(
-            f"L{i}: tau p50 {v['p50']:.1f} p90 {v['p90']:.1f} slow8 {v['slow8']:.2f}"
+        print("  gate spectrum at init:            " + ", ".join(
+            f"L{i}: p50 {v['p50']:.1f} slow8 {v['slow8']:.2f} slow100 {v['slow100']:.2f}"
+            for i, v in spec_init.items()))
+        print("  gate spectrum after training:     " + ", ".join(
+            f"L{i}: p50 {v['p50']:.1f} slow8 {v['slow8']:.2f} slow100 {v['slow100']:.2f}"
             for i, v in spec.items()))
+    print(f"  impulse response |dh|/|h| vs lag (window {tc.ATTN_WINDOW}; beyond it = recurrence only):")
+    print("    lag  " + "".join(f"{k:>7}" for k in impulse))
+    print("    resp " + "".join(f"{v:7.3f}" for v in impulse.values()))
 
 
 if __name__ == "__main__":
