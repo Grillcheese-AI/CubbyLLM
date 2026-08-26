@@ -272,4 +272,152 @@ is worth a matched-budget A/B. Ternary is a *bytes* play, unaffected either way.
 """),
 )
 
+# ── 5. Multi-horizon pilot arm (H-P6, Group P) ──────────────────────────────
+write(
+    "multihorizon_pilot.ipynb",
+    md("""
+# H-P6 — Multi-horizon prediction head: a pilot arm (Group P)
+
+**Why this exists.** The Group P checkpoint arms (`validation/prospection/`,
+`CUBBYLLM_HYPOTHESES.md` §9b) found that after ~1B tokens the hybrid's recurrent
+layers have median time constants of 0.5–1.8 steps — the recurrence is a local
+mixer, and every long-range dependency lives in the windowed attention. So the
+"short / medium / long-term outcome" horizons of the branching-futures thread
+map onto the mechanisms that exist: recurrence → attention window → episodic
+store. This notebook is the **medium** piece: an auxiliary head that predicts,
+from the trunk feature at each position, the discounted average of the *future*
+tokens' embeddings at four time constants (mean horizons 1 / 8 / 50 / 500
+tokens — successor-feature style), trained next to plain next-token CE.
+
+**Two matched arms**, identical except `CB_MH_W`:
+
+| arm | what | kill |
+|---|---|---|
+| `baseline` | next-token CE only | — |
+| `multihorizon` | + the head at weight 0.1 | held-out CE worse than baseline by more than noise → the head is not free; skill only at horizon 1 → the trunk cannot express the medium-term future at this scale |
+
+Both arms also get: a **linear probe** on frozen features (how much future
+information the trunk carries *anyway*), the **H-P3 gate spectrum** (does an
+explicit long-horizon objective lengthen any recurrent time constant?), and the
+representation-health / copy-floor gates that caught the H-B6 Goodhart.
+
+~15 min per arm on an A100 at the default shape (d=512, L=8, 2000 steps ≈ 65M
+tokens). Corpus: the `token_cache` on Drive if present, else the domain-tagged
+Wikipedia jsonl next to the checkpoints is tokenized once (~200M tokens, a few
+minutes) and mirrored back to Drive for the next session.
+"""),
+    SETUP,
+    code("""
+# --- EDIT to your Drive locations ---
+!pip -q install tokenizers                          # the 128k BBPE is an HF tokenizer .json
+DRIVE     = '/content/drive/MyDrive/cubbyllm'
+TOKENIZER = f'{DRIVE}/grillcheese_bbpe128k.json'
+CORPUS_DRIVE = f'{DRIVE}/token_cache'               # full uint32 cache, if you still have it
+JSONL_DIR    = f'{DRIVE}/wikipedia'                 # domain-tagged jsonl (fallback corpus)
+CACHE_MIRROR = f'{DRIVE}/token_cache_wiki'          # where the tokenized jsonl gets mirrored
+CORPUS    = '/content/token_cache'                  # LOCAL SSD (Drive-FUSE random reads crawl)
+import os, glob
+os.makedirs(CORPUS, exist_ok=True)
+if glob.glob(f'{CORPUS_DRIVE}/*.u32'):
+    !rsync -a --info=progress2 {CORPUS_DRIVE}/ {CORPUS}/
+    print('staged the full token cache')
+elif glob.glob(f'{CACHE_MIRROR}/*.u32'):
+    !rsync -a --info=progress2 {CACHE_MIRROR}/ {CORPUS}/
+    print('staged the mirrored Wikipedia cache')
+else:
+    print('no cache on Drive — the script will tokenize', JSONL_DIR, 'once and mirror it to', CACHE_MIRROR)
+!du -sh {CORPUS}
+"""),
+    runner(),
+    code("""
+# --- shared config: identical for both arms except CB_MH_W ---
+# A100: ~15 min/arm. T4: set CB_B='16', CB_S='512' and expect ~1h/arm.
+BASE = dict(
+    CB_D='512', CB_L='8', CB_HEADS='8', CB_BACKBONE='hybrid',
+    CB_ATTN_EVERY='3', CB_WINDOW='512',
+    CB_B='32', CB_S='1024', CB_STEPS='2000',          # 32k tok/step, 65M tokens/arm
+    CB_LR='3e-4', CB_WARMUP='200',                    # real-corpus LR + warmup (3e-3 diverges)
+    CB_EVAL='50', CB_HEALTH='500', CB_CKPT_EVERY='500',
+    CB_MH_GAMMAS='0,0.875,0.98,0.998',                # mean horizons 1 / 8 / 50 / 500 tokens
+    CB_MH_PROBE_STEPS='300', CB_MH_EVAL_BATCHES='16',
+    CB_JSONL_DIR=JSONL_DIR, CB_CACHE_MIRROR=CACHE_MIRROR,
+)
+LOGS = f'{REPO}/validation/logs'
+"""),
+    code("""
+# --- ARM 1: baseline (next-token CE only) ---
+run('prospection/exp_p6_multihorizon_pilot.py',
+    dict(BASE, CB_MH_W='0', CB_MH_TAG='baseline',
+         CB_CKPT=f'{DRIVE}/mh_baseline.pt', CB_MH_OUT=f'{LOGS}/exp_p6_baseline.json'),
+    'exp_p6_baseline.log')
+"""),
+    code("""
+# --- ARM 2: + multi-horizon head, weight 0.1 — one flag different ---
+run('prospection/exp_p6_multihorizon_pilot.py',
+    dict(BASE, CB_MH_W='0.1', CB_MH_TAG='multihorizon',
+         CB_CKPT=f'{DRIVE}/mh_multihorizon.pt', CB_MH_OUT=f'{LOGS}/exp_p6_multihorizon.json'),
+    'exp_p6_multihorizon.log')
+"""),
+    code("""
+# --- COMPARE the two arms, and keep the evidence on Drive ---
+import json, shutil, math
+R = {a: json.load(open(f'{LOGS}/exp_p6_{a}.json')) for a in ('baseline', 'multihorizon')}
+b, m = R['baseline'], R['multihorizon']
+hz = [round(1/(1-g)) if g < 1 else 'inf' for g in b['gammas']]
+print(f"tokens/arm {b['tokens']:,}  |  steps {b['steps']} / {m['steps']}")
+print(f"held-out CE   baseline {b['heldout_ce']:.4f}  multihorizon {m['heldout_ce']:.4f}  "
+      f"delta {m['heldout_ce']-b['heldout_ce']:+.4f} nats ({(m['heldout_ce']-b['heldout_ce'])/math.log(2):+.4f} bits/tok)")
+print(f"health        baseline ret {b['retrieval']:.1%} copy f{b['copy_freq']:.0%}   "
+      f"multihorizon ret {m['retrieval']:.1%} copy f{m['copy_freq']:.0%}")
+row = lambda name, vals: print(f"{name:<34}" + ''.join('      n/a' if v is None else f'{v:9.3f}' for v in vals))
+print('horizon (mean tokens)' + ''.join(f'{str(h):>9}' for h in hz))
+row('trivial baseline (mean dir)', b['cos_mean_baseline'])
+row('probe on frozen h — baseline', b['cos_probe'])
+row('probe on frozen h — multihorizon', m['cos_probe'])
+row('trained head — multihorizon', m['cos_head'])
+for a, r in R.items():
+    print(f"gate spectrum {a:<13}", ', '.join(f"L{i}: p50 {v['p50']:.1f} slow8 {v['slow8']:.2f}"
+                                           for i, v in r['gate_spectrum'].items()))
+os.makedirs(f'{DRIVE}/logs', exist_ok=True)
+for f in glob.glob(f'{LOGS}/exp_p6_*'):
+    shutil.copy2(f, f'{DRIVE}/logs/')
+print('copied logs + json to', f'{DRIVE}/logs/')
+"""),
+    code("""
+# --- OPTIONAL: the Group P checkpoint arms on the new checkpoints (P2 entropy budget, P3 spectrum) ---
+!cd {REPO} && python validation/prospection/make_text_sample.py {JSONL_DIR} /content/wiki_sample.txt
+for a in ('baseline', 'multihorizon'):
+    for script in ('exp_p2_choice_points.py', 'exp_p3_gate_spectrum.py'):
+        run(f'prospection/{script}',
+            dict(CB_CKPT=f'{DRIVE}/mh_{a}.pt', CB_TEXT='/content/wiki_sample.txt'),
+            f"{script[:-3]}_mh_{a}.log")
+"""),
+    md("""
+### How to read
+
+Three numbers decide it, in this order:
+
+1. **Δ held-out CE** (multihorizon − baseline). Within ±0.01 nats at 65M tokens
+   is noise: the head is free, keep it in the 2B runbook as an arm. Clearly
+   positive: the head taxes the trunk at this scale; try `CB_MH_W='0.03'` before
+   dropping it. Negative: a regularization win — worth a second seed before
+   believing it.
+2. **Skill by horizon** = cosine minus the trivial baseline. Trained head *and*
+   probe should be well above the trivial row at horizons 8 and 50; that is the
+   medium-term future being expressible from the trunk. If only horizon 1 has
+   skill, the successor-feature design is dead at this scale. Probe-multihorizon
+   above probe-baseline means the objective changed the representation, not
+   just added a readout.
+3. **Gate spectrum.** If the multihorizon arm's recurrent `p50`/`slow8` move
+   above the baseline's (~1–3 steps, ~0), an explicit long-horizon objective
+   *does* lengthen the recurrence — the first evidence for the "made, not
+   inherited" route of H-P3. If they don't move, the horizons live in attention
+   as measured, and that is the design.
+
+`ret` must stay ~95%+ and `copy f` must be non-zero by the end for either arm's
+numbers to mean anything (the H-B6 gates). Record the verdict in
+`CUBBYLLM_HYPOTHESES.md` H-P6 with the log links.
+"""),
+)
+
 print("done.")

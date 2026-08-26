@@ -25,6 +25,7 @@ layout before running.
 | [`induction_probe.ipynb`](induction_probe.ipynb) | the toy behind H-D3 — pure recurrence vs windowed/full hybrid on canonical induction, within vs beyond the window | GPU only, ~20 min |
 | [`decode_throughput.ipynb`](decode_throughput.ipynb) | the O(1)-state inference claim — incremental `step()` vs naive, and vs a real peer | a trained checkpoint |
 | [`ffn_spectrum.ipynb`](ffn_spectrum.ipynb) | the low-rank FFN gate — is the trained FFN compressible? | a trained checkpoint, minutes |
+| [`multihorizon_pilot.ipynb`](multihorizon_pilot.ipynb) | **H-P6** — the multi-horizon (successor-feature) prediction head as a pilot arm: baseline vs +head at matched tokens, held-out CE, per-horizon skill, linear probe, gate spectrum | tokenizer + corpus (falls back to the Wikipedia jsonl on Drive), ~15 min/arm on an A100 |
 
 ## Lessons baked in (so they don't bite again)
 

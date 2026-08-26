@@ -190,3 +190,7 @@ cython_debug/
 # dangled. These are small (~226K total) plain-text run logs; keep them in.
 !validation/logs/*.log
 .superpowers/
+*.gguf
+data/teacher_golden_trajectories.jsonl
+data/taxonomy_detector.jsonl
+data/subdomain_taxonomy_patterns.jsonl

@@ -30,6 +30,16 @@ candidates under test, not dependencies.
 | `exp_d1_backbone.py` | H-D1 | Char-LM viability bake-off: cubby-lm MinGRU vs BDH-style Q=K recurrence vs attention |
 | `exp_d2_ttt.py` | H-D2 | TTT fast-weights vs KV-cache: per-token compute + state size vs context length |
 | `exp_g3_overlap.log` | H-G3 | (inline check) Gutenberg ID overlap between factual/ and gbooks/ |
+| `prospection/exp_p1_fork_equivalence.py` | H-P1 | Decode-state forking: forked branches vs independent passes (exact), state size vs prefix length (bounded), branch/store isolation |
+| `prospection/exp_p2_choice_points.py` | H-P2 | Next-token entropy as a detector of ground-truth choice points (AUROC, flagged fraction); real-text entropy profile with `CB_CKPT` |
+| `prospection/exp_p3_gate_spectrum.py` | H-P3 | MinGRU retention time-constant spectrum at init / trained / chrono init; the gate's ~1000-step ceiling; `CB_P3_TRAIN=1` delayed-copy arm |
+| `prospection/exp_p4_keyframe_interp.py` | H-P4 | Keyframe compression: linear interpolation vs hold-last vs exact recompute, per-unit error vs tau; numerical pins on the AURA note's Hilbert/Fourier/Hamiltonian operators |
+| `prospection/exp_p5_counterfactual_probe.py` | H-P5 | Snapshot at a choice point, substitute the choice, re-run: counterfactual accuracy with ground truth, overdetermined vs fragile positions, washout |
+| `prospection/exp_p6_multihorizon_pilot.py` | H-P6 | GPU pilot arm (`notebooks/multihorizon_pilot.ipynb`): baseline vs + multi-horizon successor-feature head at matched tokens — held-out CE, per-horizon skill, linear probe, gate spectrum, H-B6 health gates |
+
+`prospection/` is a subfolder because its five scripts share a toy corpus and
+helpers (`prospection/_common.py`, `prospection/README.md`); run
+`python -m pytest validation/prospection -q` for the quick pass of all five.
 
 Run any script directly: `python validation/exp_*.py`. Each prints its own
 results block and asserts its headline numbers, so a silent regression fails

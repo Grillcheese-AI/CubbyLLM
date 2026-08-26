@@ -1,0 +1,11 @@
+H-P5 counterfactual probe — snapshot, intervene, re-run: does the branch switch?
+
+[toy model, 118 choice points, K=4, shared prefix 2, template 6]
+  factual teacher-forced accuracy (control): 1.000
+  COUNTERFACTUAL accuracy vs template_j:      1.000  (chance ~ 0.125)
+  overdetermined positions unchanged:        1.000
+  fragile position flipped / correct:        1.000 / 1.000
+  washout KL(factual || counterfactual) at next SEP: 0.0498 nats
+  |h_f - h_cf| per step (B, t1..tM, SEP):    5.56 5.04 5.47 7.87 8.94 9.03 7.58 4.56
+
+PASS: re-entry from a snapshot with a substituted choice yields the ground-truth counterfactual; overdetermined tokens stay put, the fragile one flips, and the next choice washes out.

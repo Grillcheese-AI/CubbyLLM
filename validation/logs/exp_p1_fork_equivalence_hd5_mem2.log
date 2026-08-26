@@ -1,0 +1,27 @@
+H-P1 fork equivalence — is the decode state an exact, bounded, isolated snapshot?
+
+[mingru]
+  (a) max |forked - independent| over 4 branches x 12 steps: 0.00e+00
+  (b) state floats after prefixes [8, 32, 64]: [96, 96, 96]
+  (c) origin snapshot moved by 0.0e+00; store mutated: False
+  work: 96 step()s forked vs 240 independent (2.50x); wall 0.064s vs 0.164s
+
+[hybrid]
+  (a) max |forked - independent| over 4 branches x 12 steps: 0.00e+00
+  (b) state floats after prefixes [8, 32, 64]: [577, 577, 577]
+  (c) origin snapshot moved by 0.0e+00; store mutated: False
+  work: 96 step()s forked vs 240 independent (2.50x); wall 0.103s vs 0.229s
+
+[hybrid+mem]
+  (a) max |forked - independent| over 4 branches x 12 steps: 0.00e+00
+  (b) state floats after prefixes [8, 32, 64]: [1345, 1345, 1345]
+  (c) origin snapshot moved by 0.0e+00; store mutated: False
+  work: 96 step()s forked vs 240 independent (2.50x); wall 0.165s vs 0.398s
+
+[checkpoint hd5_mem2.pt d=512 L=8 window=512]
+  (a) max |forked - independent|: 0.00e+00
+  (b) state floats after prefixes [512, 576, 768]: [2755075, 2755075, 2755075]
+  (c) origin moved 0.0e+00; store mutated: False
+  wall 2.48s forked vs 5.73s independent
+
+PASS: forking a state is exact, its cost is context-independent, and branches are isolated. Counterfactual re-entry (H-P5) and keyframe recompute (H-P4) may rely on it.

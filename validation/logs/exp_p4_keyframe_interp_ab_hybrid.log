@@ -1,0 +1,28 @@
+H-P4 keyframe compression — interpolate between stored states, or recompute?
+
+[toy model, branch grammar: T=512 steps, 2 recurrent layers x d=32]
+  gap  2: linear interp rel-RMS 0.594 | hold-last 0.795 | ratio 0.75
+  gap  4: linear interp rel-RMS 0.825 | hold-last 1.032 | ratio 0.80
+  gap  8: linear interp rel-RMS 1.155 | hold-last 1.260 | ratio 0.92
+  gap 16: linear interp rel-RMS 1.186 | hold-last 1.289 | ratio 0.92
+  gap 32: linear interp rel-RMS 1.194 | hold-last 1.287 | ratio 0.93
+  Spearman(log tau, per-unit interp error @gap 8) = -0.382 (negative = slow units interpolate better)
+  recompute from keyframe + tokens: max |err| = 0.0e+00
+  bytes/step — full states: 256 | keyframes+tokens at gap 8: 32.5 | gap 32: 8.5
+
+[AURA note operators, two real keyframes (t=0, t=8)]
+  Hilbert-interp vs linear: max |diff| = 4.4e-16  (identical)
+  Fourier-interp vs linear: max |diff| = 4.4e-16  (identical)
+  Hamiltonian flow at tau=1: analytic norm drift 4.3e-10 (conserved), rel err to keyframe 1 = 0.715 (linear: 0.0e+00)
+
+[checkpoint ab_hybrid.pt: T=1024 steps, 5 recurrent layers x d=512]
+  gap  2: linear interp rel-RMS 0.737 | hold-last 0.924 | ratio 0.80
+  gap  4: linear interp rel-RMS 0.870 | hold-last 1.095 | ratio 0.79
+  gap  8: linear interp rel-RMS 1.004 | hold-last 1.214 | ratio 0.83
+  gap 16: linear interp rel-RMS 1.102 | hold-last 1.301 | ratio 0.85
+  gap 32: linear interp rel-RMS 1.170 | hold-last 1.338 | ratio 0.87
+  Spearman(log tau, per-unit interp error @gap 8) = -0.880 (negative = slow units interpolate better)
+  recompute from keyframe + tokens: max |err| = 0.0e+00
+  bytes/step — full states: 10240 | keyframes+tokens at gap 8: 1282.1 | gap 32: 322.1
+
+PASS: interpolation barely beats hold-last: recompute wins.
