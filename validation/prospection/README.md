@@ -142,7 +142,8 @@ no recurrent time constant at all. So the successor-feature readouts the
 prospection design wants are **post-training probes on the frozen trunk** (300
 steps, no risk to the run), not a pretraining objective — the head is out of the
 2B runbook. The objective route to long *recurrent* time constants is closed;
-chrono init (H-P3) is the one still open.
+chrono init (H-P7) was the one still open — it ran 2026-08-26 and is closed
+too (see below).
 
 Checkpoint caveat: five 1.8 GB writes to the same Drive path raced, and the
 `mh_baseline.pt` on Drive is the **step-500** periodic save (`mh_multihorizon.pt`
@@ -155,7 +156,7 @@ are `../logs/*_mh_multihorizon_step2000.log` (entropy median 5.61 nats,
 the in-script evaluation of the in-memory models and are unaffected; the script
 now saves once, staged locally, and verifies the step it wrote.
 
-## H-P7 — chrono init, the last open route (built 2026-08-26, UNRUN at scale)
+## H-P7 — chrono init, the last open route (built 2026-08-26, RAN same day, KILLED)
 
 `exp_p7_chrono_pilot.py` + `notebooks/chrono_pilot.ipynb`. H-P6 closed the
 "make long time constants with an objective" route; what is left is setting the
@@ -171,3 +172,33 @@ units ≥ 100 steps, preserved after 30 steps; impulse response 0.115 at lag 64
 Then `exp_needle_recall.py` at 256 / 512 / 1024 / 4096 on both checkpoints for
 the capability read. Verdict goes into H-P7; even a pass makes chrono a
 cycle-one *arm* at the 2B pilot, not a default.
+
+**Result (Colab A100, 2026-08-26; two matched arms, 2000 steps × 32 × 1024 =
+65.5M tokens/arm, ~15–16 min/arm; `../logs/exp_p7_{baseline,chrono}.{log,json}`,
+copied from `D:\My Drive\cubbyllm\logs` 2026-08-28; checkpoints
+`chrono_{baseline,arm}.pt` on Drive): KILLED on CE.**
+
+| | baseline | chrono | |
+|---|---|---|---|
+| held-out CE (nats) | 4.998 | **5.442** | +0.444 — kill threshold was 0.01 |
+| train loss step 1 / 100 / 500 / 2000 | 12.0 / 8.2 / 5.9 / 4.9 | 63.1 / 12.3 / 6.6 / 5.4 | gap 51 → 4.1 → 0.73 → 0.44: decelerating, not closing; LR already at 3e-5 |
+| τ p50 after training (per recurrent layer) | 1.2–2.2 | 4.4–9.4 | init 2.9 vs 18–28 |
+| units ≥ 8 / ≥ 100 steps after training | 0 / 0 | 40–54% / 5–10% | init 0/0 vs 62–70% / 23–27% — eroded ~4×, did **not** collapse |
+| impulse response, lag 768 / 1000 (past window 512) | 0.00016 / 0.00002 | 0.0015 / 0.0010 | 9× / 45× baseline, still ~1e-3 |
+| impulse response, lag 1 (in window) | 0.525 | 0.252 | slow gates halve the immediate response |
+| frozen-trunk probe cos @ 500 tokens | 0.416 | 0.447 | on the worse model — not comparable |
+| binding health (retrieval / ff-cos) | 95.3% / 0.41 | 92.2% / 0.43 | |
+
+The pre-registered "recorded fact, not a pass" case, at full strength: the
+gate **can** hold a long time constant through training — and has nothing
+useful to put in it at this scale, at a cost of 0.44 nats. The step-1 loss of
+63 (vs 12) says the paper-form bias-only init at weight scale 1.0 starts the
+recurrence saturated; a weight-scale-0.1 / τ_max≈64 variant at more tokens is
+the only arm that could re-open this, and it is not queued. The needle-recall
+step was not run on Colab (no log) and not run afterwards either: a CPU smoke
+(2026-08-28, 256 tokens × 2 trials on the baseline checkpoint) priced the full
+read at ~13 CPU-hours for both checkpoints, and at 65.5M tokens/arm the
+baseline is far below where H-D4's hybrid first showed needle recall (~1B
+tokens; copy-frequency health 12% / 9%) — both arms would read near chance
+regardless of the gates. Moot for the decision. **H-P3 is final:
+beyond-window memory lives in the attention window and the episodic store.**

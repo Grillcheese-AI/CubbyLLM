@@ -66,11 +66,42 @@ The same record serves three consumers, so under-harvesting is irreversible:
   difficulty beats heuristic proxies; filtering (verified-only, error-tagged)
   is the bigger lever than ordering.
 
+## `counterfactuals[]` — the counterfactual neighborhood (emitted since 2026-08-28)
+
+The Q23 "regretted discard", now harvested (additive field, still schema v1;
+first run `validation/logs/cot_harvest_v3cf.jsonl`, summary in
+`exp_m3_cot_pipeline_v3cf.json` → `counterfactual_neighborhood`). For **every
+verified chain**, the four planted-fault classes (`wrong_entity`,
+`wrong_relation`, `inverted_direction`, `wrong_hop_order` — the same generator
+the calibration pass uses; swap objects come from the calibration store, never
+from distractors) are re-planted on the pipeline's *own accepted triples*, the
+program is rebuilt per instance, each corrupted hop is recovered through the
+VM at the deployed frame-size floor, and the outcome is logged per hop:
+
+| Field | Type | Notes |
+|---|---|---|
+| `cls` | str | fault class |
+| `hop` | int | 0-based hop index of the corrupted hop (innocent bystander hops are never attempted) |
+| `n_hop` | int | frame size |
+| `planted` | obj `{obj, rel, subj}` | the triple actually bound at that hop in the corrupted chain (for `wrong_relation` the binding is untouched — the fault is in `compare_obj`) |
+| `compare_obj` | str | what the recovery was checked against |
+| `symbol`, `similarity` | str\|null, float\|null | the VM's recovery |
+| `symbol_mismatch`, `below_floor` | bool | the two halves of the real verify decision |
+| `caught` | bool | the real verify decision rejects this hop (`symbol_mismatch or below_floor`) |
+| `caught_by` | `symbol_mismatch` \| `below_floor` \| null | content corruption is credited first; `below_floor` only when the content was faithful; null = **escaped** (a would-be false accept) |
+
+Value of the field is `null` when not computed for the record (unverified,
+`--no-counterfactuals`, or the run's VM-call cap `--max-cf-vm-calls` was
+exhausted), else a list (possibly empty). Consumers: caught records are
+per-hop hard negatives for the verifier's successor and a self-refilling
+per-fault-class calibration stratum (Q21); escaped records are the
+calibration's real adversaries and should be reported per class with the
+calibration card. Non-ASCII hops are excluded (same mojibake guard as
+calibration). Unit pins: `validation/test_cot_counterfactuals.py`.
+
 ## Future fields (reserved, not yet emitted)
 
 - `frame_id` — which grammar frame parsed the question (needs planner support).
-- `counterfactuals[]` — which planted faults this verified chain rejects
-  (hard negatives for the verifier's successor; log at calibration time).
 - `world_ids[]` / routing scores — when the world-backed retriever lands (Q22
   labels).
 - `rationalized` — flag for STaR-style backward-derived programs on unsolved

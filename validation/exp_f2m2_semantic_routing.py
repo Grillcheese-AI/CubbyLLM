@@ -257,7 +257,7 @@ def ref_encode(texts: list[str]) -> np.ndarray:
     )
 
 
-CKPT = pathlib.Path(r"D:\CUBBY-TRAINED-MODELS\hd5_mem21.pt")
+CKPT = pathlib.Path(r"I:\CUBBY-TRAINED-MODELS\hd5_mem21.pt")
 TOKENIZER = ROOT / "data" / "grillcheese_bbpe128k.json"
 
 

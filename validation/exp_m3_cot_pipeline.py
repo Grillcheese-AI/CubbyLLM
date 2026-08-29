@@ -42,6 +42,21 @@ misses) stays as `tau_vm_youden_reference`, comparison only. Every eval
 question is also harvested to validation/logs/cot_harvest{tag}.jsonl per
 docs/schemas/cot-harvest-schema.md.
 
+Counterfactual neighborhood (2026-08-28; harvest-schema `counterfactuals[]`,
+the Q23 "regretted discard" and N4 of docs/research/2026-08-28-oracle-
+competition-scored.md): for EVERY verified eval chain, the four planted-fault
+classes are re-planted on the pipeline's OWN accepted triples (same generator
+as the calibration pass; swap objects sourced from the calibration store,
+never from distractors), each corrupted hop is recovered through the VM at the
+deployed floor, and the per-hop outcome -- caught by symbol mismatch / below
+floor / no similarity, or ESCAPED -- is written into that question's harvest
+record. Caught records are per-hop hard negatives for the verifier's
+successor and a self-refilling per-fault-class calibration stratum; escaped
+records are the would-be false accepts the calibration must defend against.
+Reported as an aggregate catch map (class x hop) in the json, plus the first
+escaped examples. Disable with --no-counterfactuals; VM-call cap
+--max-cf-vm-calls (default MAX_CF_VM_CALLS).
+
 Kill criterion (all four): CoT beats retrieval-only on 2-hop AND 3-hop;
 claimed precision >= 0.90; zero verified results with a sub-tau hop
 (asserted in the pipeline itself); control role below tau_vm in >= 95% of
@@ -84,7 +99,7 @@ from cubbyllm.reasoning import build_chain_program, parse_fact, parse_question  
 from cubbyllm.reasoning.planner import Triple, normalize  # noqa: E402
 
 PQ_FILE = pathlib.Path(r"E:\valid_scaling_law_with_facts.pq")
-V4_TABLE = pathlib.Path(r"D:\CUBBY-TRAINED-MODELS\fastword_table_v4.npz")
+V4_TABLE = pathlib.Path(r"I:\CUBBY-TRAINED-MODELS\fastword_table_v4.npz")
 
 FAULT_CLASSES = ["wrong_entity", "wrong_relation", "inverted_direction", "wrong_hop_order"]
 MAX_FAULTS_PER_CLASS_PER_CHAIN = 2
@@ -93,6 +108,9 @@ MAX_FAULTS_PER_CLASS_PER_CHAIN = 2
 # (~550 calls observed), regardless of how many verified calibration
 # chains are available.
 MAX_FAULT_VM_CALLS = 900
+# Soft cap on counterfactual-neighborhood VM calls over the whole eval loop
+# (v2 shape: ~517 verified chains x ~5-7 attempted corrupted hops ~= 3k).
+MAX_CF_VM_CALLS = 6000
 
 
 # --------------------------------------------------------------------------
@@ -423,9 +441,90 @@ def _fault_instances(triples: list[Triple], cal_store_texts: list[str], rng
         if shift >= n:
             break
         shifted: list[str | None] = list(true_objs[shift:]) + [None] * shift
+        # A chain whose hop-k and hop-(k+shift) objects coincide makes this a
+        # no-op "fault" (the recovery is compared against itself) -- skip that
+        # hop, exactly as wrong-hop-order skips a same-object swap. Found by
+        # the counterfactual harvest 2026-08-28: 3/236 wrong_relation
+        # "escapes" in the first v3cf run were all this degenerate case.
+        shifted = [None if (o is not None and normalize(o) == normalize(true_objs[k])) else o
+                   for k, o in enumerate(shifted)]
+        if all(o is None for o in shifted):
+            continue
         out["wrong_relation"].append((list(triples), shifted))
 
     return out
+
+
+def _cf_outcome(symbol: str | None, sim: float | None, compare_obj: str,
+                tau_vm_floor: float | None) -> tuple[bool, bool, bool, str | None]:
+    """Classify one corrupted-hop recovery against the REAL verify decision
+    (mirrors pipeline.answer: symbol mismatch OR sub-floor similarity OR no
+    similarity rejects). -> (symbol_mismatch, below_floor, caught, caught_by)
+    with caught_by in {"symbol_mismatch", "below_floor", None}: content
+    corruption is the primary catch (it is what the string check defends);
+    below_floor is credited only when the content was faithful."""
+    mismatch = normalize(symbol or "") != normalize(compare_obj)
+    below_floor = (sim is None) or (tau_vm_floor is not None and sim < tau_vm_floor)
+    caught = mismatch or below_floor
+    caught_by = "symbol_mismatch" if mismatch else ("below_floor" if below_floor else None)
+    return mismatch, below_floor, caught, caught_by
+
+
+def _counterfactual_neighborhood(triples: list[Triple], display_rels: list[str],
+                                 cal_store_texts: list[str], rng, run_fn,
+                                 tau_vm_floor: float | None, budget: list[int]
+                                 ) -> tuple[list[dict], int, int, bool]:
+    """The counterfactual neighborhood of ONE verified chain (harvest-schema
+    `counterfactuals[]`): plant the four fault classes on the chain's own
+    accepted triples via `_fault_instances` (swap objects from the
+    calibration store only -- the same never-a-distractor invariant), rebuild
+    the program per instance, recover each corrupted hop through the VM, and
+    return one record per attempted hop:
+      {"cls", "hop" (0-based), "n_hop", "planted": {obj, rel, subj} (the
+       triple bound at that hop in the corrupted chain), "compare_obj" (what
+       the recovery was checked against), "symbol", "similarity",
+       "symbol_mismatch", "below_floor", "caught", "caught_by"}
+    Innocent bystander hops (compare None) are never attempted; non-ASCII
+    hops are excluded (mojibake guard, same as calibration). `budget` is the
+    shared remaining-VM-calls counter ([n]); planting stops when it reaches
+    zero and the result is flagged truncated.
+    -> (records, n_vm_calls, n_mojibake_excluded, truncated)"""
+    records: list[dict] = []
+    n_calls = 0
+    n_moji = 0
+    truncated = False
+    n = len(triples)
+    instances = _fault_instances(triples, cal_store_texts, rng)
+    for cls in FAULT_CLASSES:
+        for corrupted, compare in instances[cls]:
+            source, fns = build_chain_program(corrupted, display_rels)
+            for k, fn in enumerate(fns[:-1]):
+                compare_obj = compare[k] if k < len(compare) else None
+                if compare_obj is None:
+                    continue
+                t = corrupted[k]
+                if not (t.obj.isascii() and t.subj.isascii() and t.rel.isascii()):
+                    n_moji += 1
+                    continue
+                if budget[0] <= 0:
+                    truncated = True
+                    return records, n_calls, n_moji, truncated
+                out = run_fn(source, fn)
+                budget[0] -= 1
+                n_calls += 1
+                sim = out.get("similarity")
+                symbol = out.get("result")
+                mismatch, below, caught, caught_by = _cf_outcome(symbol, sim, compare_obj, tau_vm_floor)
+                records.append({
+                    "cls": cls, "hop": k, "n_hop": n,
+                    "planted": {"obj": t.obj, "rel": t.rel, "subj": t.subj},
+                    "compare_obj": compare_obj,
+                    "symbol": symbol,
+                    "similarity": (float(sim) if sim is not None else None),
+                    "symbol_mismatch": mismatch, "below_floor": below,
+                    "caught": caught, "caught_by": caught_by,
+                })
+    return records, n_calls, n_moji, truncated
 
 
 def bootstrap_quantile_ci(sims: np.ndarray, q: float, n_boot: int, rng
@@ -458,8 +557,11 @@ def _quantile_stats(sims: list[float]) -> dict:
 def _harvest_record(q: str, plan, gold_norm: str, gold_raw, h: int, result,
                     ret_calls: list[dict], tau_vm: float, tau_ret: float,
                     store_hash_: str, table_path_: str, git_rev_: str,
-                    timestamp_: str) -> dict:
-    """One record per docs/schemas/cot-harvest-schema.md (canonical v1).
+                    timestamp_: str, counterfactuals: list[dict] | None = None) -> dict:
+    """One record per docs/schemas/cot-harvest-schema.md (canonical v1 +
+    the `counterfactuals[]` field, 2026-08-28: None when not computed for
+    this record -- unverified, disabled, or VM budget exhausted -- else the
+    list from `_counterfactual_neighborhood`, possibly empty).
     `tau_vm` is the FRAME-SIZE-CONDITIONAL floor actually used for this
     question (tau_vm_floors[h] or the fallback), not a single global
     scalar -- see the module docstring."""
@@ -507,6 +609,7 @@ def _harvest_record(q: str, plan, gold_norm: str, gold_raw, h: int, result,
         "repairs_used": result.repairs_used,
         "banned_facts": result.repairs,
         "hops_verified_before_failure": hops_verified_before_failure,
+        "counterfactuals": counterfactuals,
         "taus": {"tau_vm": tau_vm, "tau_ret": tau_ret},
         "store_snapshot_hash": store_hash_,
         "table_path": table_path_,
@@ -530,6 +633,10 @@ def main() -> None:
                     help="N DBpedia distractor texts appended to the EVAL "
                          "retrieval store only (never calibration)")
     ap.add_argument("--tag", default="", help="suffix for the output json/log/harvest files")
+    ap.add_argument("--no-counterfactuals", action="store_true",
+                    help="skip the per-verified-chain counterfactual neighborhood harvest")
+    ap.add_argument("--max-cf-vm-calls", type=int, default=MAX_CF_VM_CALLS,
+                    help="VM-call cap for the counterfactual neighborhood over the whole eval loop")
     args = ap.parse_args()
 
     import platform
@@ -1017,6 +1124,25 @@ def main() -> None:
     eval_store_hash = store_hash(store)
     run_timestamp = datetime.now(timezone.utc).isoformat()
 
+    # counterfactual-neighborhood state (schema `counterfactuals[]`)
+    cf_enabled = not args.no_counterfactuals
+    cf_budget = [int(args.max_cf_vm_calls)]
+    cf_rng = np.random.default_rng(404)
+    cf_chains = 0
+    cf_vm_calls = 0
+    cf_mojibake = 0
+    cf_truncated = 0
+    cf_skipped_budget = 0
+    cf_wall_ms: list[float] = []
+    cf_attempted: dict[str, int] = {c: 0 for c in FAULT_CLASSES}
+    cf_caught: dict[str, int] = {c: 0 for c in FAULT_CLASSES}
+    cf_caught_by: Counter = Counter()
+    cf_hop_map: dict[str, dict[str, list[int]]] = {c: {} for c in FAULT_CLASSES}   # cls -> hop -> [attempted, caught]
+    cf_frame_map: dict[str, list[int]] = {}                                         # n_hop -> [attempted, caught]
+    cf_escaped_examples: list[dict] = []
+    cf_escaped_sims: list[float] = []
+    cf_caught_sims: list[float] = []
+
     t2 = time.perf_counter()
     with open(harvest_path, "w", encoding="utf-8") as harvest_f:
         for i, (q, a, h, chain_ids) in enumerate(zip(questions, answers, hops, chains)):
@@ -1074,6 +1200,42 @@ def main() -> None:
                 if not all(ht.similarity is not None and ht.similarity >= tau_vm_q for ht in result.trace):
                     sub_tau_violations += 1
 
+            # -- counterfactual neighborhood (every verified chain) ------------
+            cf_records: list[dict] | None = None
+            if cf_enabled and result.verified and plan is not None:
+                cf_triples = [ht.triple for ht in result.trace]
+                if cf_triples and all(t is not None for t in cf_triples):
+                    if cf_budget[0] <= 0:
+                        cf_skipped_budget += 1
+                    else:
+                        s0 = time.perf_counter()
+                        cf_records, n_cf_calls, n_cf_moji, cf_trunc = _counterfactual_neighborhood(
+                            cf_triples, _display_rels(plan, cf_triples), cal_store,
+                            cf_rng, run_fn, tau_vm_q, cf_budget)
+                        cf_wall_ms.append((time.perf_counter() - s0) * 1000)
+                        cf_chains += 1
+                        cf_vm_calls += n_cf_calls
+                        cf_mojibake += n_cf_moji
+                        cf_truncated += int(cf_trunc)
+                        for r_ in cf_records:
+                            cf_attempted[r_["cls"]] += 1
+                            hm = cf_hop_map[r_["cls"]].setdefault(str(r_["hop"]), [0, 0])
+                            fm = cf_frame_map.setdefault(str(r_["n_hop"]), [0, 0])
+                            hm[0] += 1
+                            fm[0] += 1
+                            if r_["caught"]:
+                                cf_caught[r_["cls"]] += 1
+                                cf_caught_by[r_["caught_by"]] += 1
+                                hm[1] += 1
+                                fm[1] += 1
+                                if r_["similarity"] is not None:
+                                    cf_caught_sims.append(r_["similarity"])
+                            else:
+                                if r_["similarity"] is not None:
+                                    cf_escaped_sims.append(r_["similarity"])
+                                if len(cf_escaped_examples) < 20:
+                                    cf_escaped_examples.append({"question": q, **r_})
+
             # Per-program control accounting: EVERY control-role call across
             # every attempt (not just the last) counts toward the denominator
             # -- a question that retried once can log up to 2 control calls.
@@ -1104,7 +1266,8 @@ def main() -> None:
 
             # -- harvest (every eval question, per docs/schemas/cot-harvest-schema.md) --
             rec = _harvest_record(q, plan, gold, a, h, result, ret_calls, tau_vm_q, tau_ret,
-                                  eval_store_hash, table_path_str, git_rev, run_timestamp)
+                                  eval_store_hash, table_path_str, git_rev, run_timestamp,
+                                  counterfactuals=cf_records)
             harvest_f.write(json.dumps(rec) + "\n")
 
             if not example_printed and result.verified:
@@ -1122,6 +1285,37 @@ def main() -> None:
         print("\n  (no verified example encountered to print)\n")
     print(f"eval done in {time.perf_counter() - t2:.0f}s")
     print(f"wrote {harvest_path} ({len(questions)} records)\n")
+
+    # =======================================================================
+    # 10b. Counterfactual-neighborhood summary (class x hop catch map).
+    # =======================================================================
+    cf_total_attempted = sum(cf_attempted.values())
+    cf_total_caught = sum(cf_caught.values())
+    cf_catch_rate = {c: (cf_caught[c] / cf_attempted[c] if cf_attempted[c] else float("nan"))
+                     for c in FAULT_CLASSES}
+    print("=== counterfactual neighborhood (harvest `counterfactuals[]`) ===")
+    if not cf_enabled:
+        print("  disabled (--no-counterfactuals)")
+    else:
+        print(f"  chains={cf_chains} (of {verified_count} verified; {cf_skipped_budget} skipped: budget) | "
+              f"VM calls={cf_vm_calls} (cap {args.max_cf_vm_calls}; truncated chains={cf_truncated}) | "
+              f"mojibake-excluded hops={cf_mojibake} | mean {float(np.mean(cf_wall_ms)) if cf_wall_ms else 0.0:.0f} ms/chain")
+        print(f"  hard negatives (caught)={cf_total_caught} | ESCAPED (would-be false accepts)="
+              f"{cf_total_attempted - cf_total_caught} | overall catch="
+              f"{cf_total_caught / cf_total_attempted if cf_total_attempted else float('nan'):.4f}")
+        print(f"  caught_by: {dict(cf_caught_by)}")
+        for c in FAULT_CLASSES:
+            hops = " ".join(f"h{k_}={v_[1]}/{v_[0]}" for k_, v_ in sorted(cf_hop_map[c].items()))
+            print(f"    {c:20s} attempted={cf_attempted[c]:4d} caught={cf_caught[c]:4d} "
+                  f"catch={cf_catch_rate[c]:.4f} | by hop: {hops}")
+        frames = " ".join(f"n{k_}={v_[1]}/{v_[0]}" for k_, v_ in sorted(cf_frame_map.items()))
+        print(f"  by frame size: {frames}")
+        if cf_escaped_examples:
+            print(f"  first escaped examples ({len(cf_escaped_examples)} shown):")
+            for ex in cf_escaped_examples[:5]:
+                print(f"    [{ex['cls']} hop{ex['hop']}/{ex['n_hop']}] planted={ex['planted']['obj']!r} "
+                      f"compare={ex['compare_obj']!r} symbol={ex['symbol']!r} sim={ex['similarity']}")
+    print()
 
     # =======================================================================
     # Aggregate stats.
@@ -1253,6 +1447,38 @@ def main() -> None:
         "tau_vm_sensitivity": sensitivity,
         "harvest_file": str(harvest_path),
         "n_harvest_records": len(questions),
+        "counterfactual_neighborhood": {
+            "enabled": cf_enabled,
+            "note": ("Per verified eval chain: the four planted-fault classes re-planted on the "
+                     "pipeline's own accepted triples (swap objects from the calibration store, "
+                     "never distractors), each corrupted hop recovered through the VM at the "
+                     "deployed frame-size floor. caught = the real verify decision rejects it; "
+                     "escaped = a would-be false accept. Per-record detail lives in the harvest "
+                     "file's `counterfactuals[]`."),
+            "n_chains": cf_chains,
+            "n_verified_chains": verified_count,
+            "n_skipped_budget": cf_skipped_budget,
+            "n_vm_calls": cf_vm_calls,
+            "vm_call_cap": int(args.max_cf_vm_calls),
+            "n_truncated_chains": cf_truncated,
+            "n_mojibake_excluded_hops": cf_mojibake,
+            "mean_wall_ms_per_chain": (float(np.mean(cf_wall_ms)) if cf_wall_ms else 0.0),
+            "n_attempted": cf_total_attempted,
+            "n_caught": cf_total_caught,
+            "n_escaped": cf_total_attempted - cf_total_caught,
+            "overall_catch_rate": (cf_total_caught / cf_total_attempted if cf_total_attempted else float("nan")),
+            "caught_by": dict(cf_caught_by),
+            "by_class": {c: {"n_attempted": cf_attempted[c], "n_caught": cf_caught[c],
+                             "catch_rate": cf_catch_rate[c],
+                             "by_hop": {k_: {"n_attempted": v_[0], "n_caught": v_[1]}
+                                        for k_, v_ in sorted(cf_hop_map[c].items())}}
+                         for c in FAULT_CLASSES},
+            "by_frame_size": {k_: {"n_attempted": v_[0], "n_caught": v_[1]}
+                              for k_, v_ in sorted(cf_frame_map.items())},
+            "caught_similarity": _quantile_stats(cf_caught_sims),
+            "escaped_similarity": _quantile_stats(cf_escaped_sims),
+            "escaped_examples": cf_escaped_examples,
+        },
         "git_rev": git_rev,
         "verdict": {
             "clause1_cot_beats_retrieval_2h_3h": clause1,
