@@ -367,6 +367,28 @@ def build_identity_records(facts: dict | None = None, seed: int = 7, answers_per
 _NEG = {"en": r"\b(not|no)\b", "fr": r"\b(non|pas|ne|n')\b"}
 
 
+def voice_ok(text: str, facts: dict | None = None) -> bool:
+    """The intent-free voice check for free chat (the chat loop's host-side
+    filter): no forbidden word, never claims to be another model, never
+    affirms AGI / consciousness / feelings. Everything `identity_ok` checks
+    that does not need to know the intent."""
+    f = facts or load_facts()
+    t = text.lower()
+    if any(re.search(rf"\b{re.escape(w.lower())}", t) for w in f.get("forbidden_words", [])):
+        return False
+    return identity_ok("", text, f)
+
+
+def guess_lang(text: str) -> str:
+    """fr if the text carries French function words / accents, else en."""
+    t = " " + text.lower() + " "
+    fr = sum(1 for w in (" je ", " tu ", " es ", " est ", " quoi ", " comment ", " qui ", " quel ", " quelle ", " bonjour ", " salut ",
+                         " merci ", " pas ", " une ", " des ", " les ", " ça ", " t'", " qu'", " c'est ") if w in t)
+    if re.search(r"[éèêàçùâîô]", text):
+        fr += 1
+    return "fr" if fr >= 1 else "en"
+
+
 def identity_ok(intent: str, text: str, facts: dict | None = None, lang: str = "en") -> bool:
     """The identity check: facts present where required, no forbidden claims,
     no base-model leak, the don't-know line verbatim — in the turn's language."""
