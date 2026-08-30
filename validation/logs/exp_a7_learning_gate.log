@@ -1,5 +1,0 @@
-python 3.12.10 | Windows-11-10.0.26200-SP0 | torch 2.10.0+cpu | numpy 2.4.6 | threads 6
-base I:\CUBBY-TRAINED-MODELS\hd5_mem21.pt | corpus I:\grillcheese_training_data\token_cache | sources D:\My Drive\cubbyllm\corpus_sources.json | gsm8k I:\grillcheese_training_data\socratic_test_text.jsonl
-deltas: 120 steps x B4 x S512 = 245,760 tokens, lr 0.0001, warmup 10 | A = slice [nemotron_code] no replay | B = full mixture (replay)
-eval: mix 16 batches, 8/source, gsm8k 8; thresholds = max(min eps {'mix': 0.01, 'src': 0.03, 'gsm': 0.02, 'ret': 0.05}, 3.0x paired SE); retrieval collapse floor 0.5
-
