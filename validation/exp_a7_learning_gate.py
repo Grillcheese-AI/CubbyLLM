@@ -53,8 +53,13 @@ KILL (H-A7). The gate is not a gate if it cannot separate A from B — if it
 passes A, or rejects B or C, at these pre-registered epsilons. Second kill:
 if the full gate pass costs more than a nightly budget it must be tiered.
 
-Standalone; never imported by cubbyllm/. CPU-tolerable (~9 s/step at B4/S512
-on 12 cores; ~45-60 min end to end at the defaults).
+Standalone; never imported by cubbyllm/. Device: CB_DEVICE (auto -> cuda if
+present; bf16 autocast for the fine-tunes on cuda). The env defaults below are
+the CPU shape (~9 s/step at B4/S512 on 12 cores, ~50 min end to end, and a
+session teardown killed it twice at step ~100 on 2026-08-28); the recorded run
+is the Colab one — `notebooks/a7_learning_gate.ipynb` sets the GPU shape
+(B32, 200 steps = 3.3M tokens per delta, 32 mix batches) and copies the
+log + json to Drive.
 
   CB_CKPT=I:\\CUBBY-TRAINED-MODELS\\hd5_mem21.pt CB_CORPUS=I:\\grillcheese_training_data\\token_cache \\
   CB_SOURCES="D:\\My Drive\\cubbyllm\\corpus_sources.json" \\
@@ -106,6 +111,7 @@ MIN_EPS = {"mix": 0.01, "src": 0.03, "gsm": 0.02, "ret": 0.05}   # pre-registere
 NOISE_MULT = 3.0
 EVAL_SEED_A, EVAL_SEED_B = 777, 779                   # two held-out streams for the noise floor
 SAVE_DELTAS = os.environ.get("CB_A7_SAVE", "1") == "1"
+DEVICE = os.environ.get("CB_DEVICE", "auto")
 
 
 # ── the gate, as a pure function (unit-pinned in test_a7_gate.py) ──────────
@@ -200,7 +206,25 @@ def restore(ps, base_params):
 
 
 def source_specs():
-    return json.load(open(SOURCES, encoding="utf-8"))["sources"]
+    """The pretrain mixture from CB_SOURCES (corpus_sources.json, weights and
+    all) when every named shard is present in CB_CORPUS; otherwise the shards
+    that ARE present at weight 1.0 (Colab staging may hold a different cache)
+    -- printed, so a run on a different mixture is never silent."""
+    import glob
+    present = {os.path.splitext(os.path.basename(f))[0]
+               for f in glob.glob(os.path.join(CORPUS, "*.u32"))}
+    if os.path.exists(SOURCES):
+        specs = json.load(open(SOURCES, encoding="utf-8"))["sources"]
+        missing = [x["name"] for x in specs if x["name"] not in present]
+        if not missing:
+            return [{"name": x["name"], "weight": float(x.get("weight", 1.0))} for x in specs]
+        print(f"  !! {len(missing)} sources named in {SOURCES} have no shard in {CORPUS}: {missing}\n"
+              f"     falling back to the {len(present)} shards present at weight 1.0", flush=True)
+    else:
+        print(f"  !! {SOURCES} not found; using the {len(present)} shards in {CORPUS} at weight 1.0", flush=True)
+    if not present:
+        raise SystemExit(f"no *.u32 shards in {CORPUS}")
+    return [{"name": n, "weight": 1.0} for n in sorted(present)]
 
 
 def pipeline(sources, seed):
@@ -294,7 +318,7 @@ def finetune(model, sources, steps: int, seed: int, dev) -> dict:
     from cubbyllm.training import TrainLoop
     pipe = pipeline(sources, seed)
     loop = TrainLoop(model, pipe, SnapshotHardener(), lr=LR, batch_size=BATCH, seq_len=SEQ,
-                     device=dev, amp=False, warmup=WARMUP, total_steps=0)
+                     device=dev, amp=(dev.type == "cuda"), warmup=WARMUP, total_steps=0)
     t0 = time.perf_counter()
     losses = []
     for i in range(1, steps + 1):
@@ -326,9 +350,13 @@ def fmt(dec: dict) -> str:
 
 def main():
     torch.manual_seed(0)
-    dev = torch.device("cpu")
+    if DEVICE == "auto":
+        dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    else:
+        dev = torch.device(DEVICE)
+    gpu = torch.cuda.get_device_name(0) if dev.type == "cuda" else "cpu"
     print(f"python {platform.python_version()} | {platform.platform()} | torch {torch.__version__} "
-          f"| numpy {np.__version__} | threads {torch.get_num_threads()}")
+          f"| numpy {np.__version__} | device {dev} ({gpu}) | threads {torch.get_num_threads()}")
     print(f"base {CKPT} | corpus {CORPUS} | sources {SOURCES} | gsm8k {GSM8K}")
     print(f"deltas: {STEPS} steps x B{BATCH} x S{SEQ} = {STEPS * BATCH * SEQ:,} tokens, lr {LR:g}, "
           f"warmup {WARMUP} | A = slice [{SLICE}] no replay | B = full mixture (replay)")
@@ -339,7 +367,8 @@ def main():
     model, ps, base_params, meta, base_step, d, V = load_base(dev)
     sources = source_specs()
     names = [s["name"] for s in sources]
-    assert SLICE in names, (SLICE, names)
+    if SLICE not in names:
+        raise SystemExit(f"CB_A7_SLICE={SLICE!r} is not a staged source; choose one of {names}")
     slice_sources = [{"name": SLICE, "weight": 1.0}]
     print(f"base: step {base_step} | meta {meta} | {sum(p.numel() for p in ps):,} params")
     print(f"sources ({len(names)}): {names}\n")
@@ -397,6 +426,7 @@ def main():
           f"one full eval {base_a['eval_wall_s']:.0f}s (nightly budget check)")
 
     out = {"config": {k: v for k, v in dict(CKPT=CKPT, CORPUS=CORPUS, SOURCES=SOURCES, SPM=SPM, GSM8K=GSM8K,
+                                            DEVICE=str(dev), GPU=gpu,
                                             STEPS=STEPS, LR=LR, WARMUP=WARMUP, BATCH=BATCH, SEQ=SEQ, SLICE=SLICE,
                                             MIX_BATCHES=MIX_BATCHES, SRC_BATCHES=SRC_BATCHES, GSM_BATCHES=GSM_BATCHES,
                                             N_BIND=N_BIND, RETRIEVAL_COLLAPSE_FLOOR=RETRIEVAL_COLLAPSE_FLOOR, MIN_EPS=MIN_EPS,
