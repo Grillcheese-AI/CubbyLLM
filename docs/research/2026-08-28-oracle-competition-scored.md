@@ -90,9 +90,14 @@ Result: the gate rejects a code-only forgetting update and names it (every
 unseen source +0.12–0.19 nats, the memorized `pretrain_ext` +1.09, trained
 source flat), passes the null, and rejected the replay arm for a *uniform*
 +0.04–0.07 on all 13 sources — whose own train loss rose 3.05 → 3.27, i.e. a
-fresh-Adam-at-1e-4 perturbation of a converged checkpoint, not forgetting.
-Separation inconclusive on the clean arm; the LR ladder decides. Full record
-on H-A7.
+an LR-1e-4 perturbation of a converged checkpoint, not forgetting (the
+"train loss rose" part of that reading was wrong — same curve at every LR,
+i.e. batch order). **The LR ladder decided it the same day: the gate
+separates.** Replay is CE-neutral at 3e-5 and 1e-5; the code-only update is
+still rejected there, named source by source at 3e-5 (12/12 unseen sources,
+`pretrain_ext` +0.208, trained source −0.019) and via mix + the memorized
+source at 1e-5. Restoring the optimizer state at 1e-4 is worse; LR is the
+lever. Nightly LR = 3e-5. Full record on H-A7.
 
 ### 3.3 von Oswald et al. 2019 is H0's hardening term, by name
 
