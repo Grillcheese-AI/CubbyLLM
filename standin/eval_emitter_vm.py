@@ -10,9 +10,10 @@ data was verified:
   arithmetic / kernel / chain : executes AND the result matches the record's gold
   role_binding                : executes (returns a bound symbol) — no gold exists
 
-Two ways to get generations:
+Three ways to get generations:
   --val-generations FILE   replay the notebook's val_generations.json (exact, no model needed)
-  --server URL             generate live through a local llama-server (temperature 0)
+  --gguf PATH              generate live in-process via llama-cpp-python (Vulkan on the AMD card)
+  --server URL             generate live through an OpenAI-compatible server (temperature 0)
 
 Reads the val split of standin/data/out/emitter_sft.jsonl for prompts/gold
 (or the generations file's own reference/gold when replaying). Writes
@@ -20,6 +21,7 @@ standin/data/out/eval_emitter_vm{TAG}.json. Every number it prints is
 [stand-in].
 
   python standin/eval_emitter_vm.py --val-generations "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b/val_generations.json"
+  python standin/eval_emitter_vm.py --gguf "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b/gguf/emitter-q8_0.gguf" --limit 200
   python standin/eval_emitter_vm.py --server http://127.0.0.1:8080 --limit 200
 """
 from __future__ import annotations
@@ -43,7 +45,7 @@ __wiring__ = "STANDALONE"
 
 from build_emitter_sft import answer_fn, gold_matches, shim_isolver  # noqa: E402
 from identity import identity_ok, load_facts  # noqa: E402
-from standin.emitter import LlamaServerEmitter, ReplayEmitter  # noqa: E402
+from standin.emitter import LlamaCppEmitter, LlamaServerEmitter, ReplayEmitter  # noqa: E402
 
 DATA = os.environ.get("STANDIN_SFT", os.path.join(ROOT, "standin", "data", "out", "emitter_sft.jsonl"))
 OUT_DIR = os.path.join(ROOT, "standin", "data", "out")
@@ -71,13 +73,15 @@ def run_vm(source: str):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--val-generations", help="the notebook's val_generations.json (replay mode)")
-    ap.add_argument("--server", help="llama-server base URL (live mode)")
+    ap.add_argument("--gguf", help="GGUF file for in-process llama-cpp-python inference (live mode, Vulkan)")
+    ap.add_argument("--server", help="OpenAI-compatible server base URL (live mode)")
+    ap.add_argument("--n-gpu-layers", type=int, default=-1)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--tag", default="")
     ap.add_argument("--no-shim", action="store_true", help="do not apply the ISolver parse/verify shim to generations")
     args = ap.parse_args()
-    if not (args.val_generations or args.server):
-        raise SystemExit("give --val-generations FILE or --server URL")
+    if not (args.val_generations or args.server or args.gguf):
+        raise SystemExit("give --val-generations FILE, --gguf PATH or --server URL")
 
     if args.val_generations:
         gens = json.load(open(args.val_generations, encoding="utf-8"))
@@ -88,7 +92,7 @@ def main():
                     "lang": g.get("lang", "en")}
                    for g in items]
     else:
-        emitter = LlamaServerEmitter(args.server)
+        emitter = LlamaCppEmitter(args.gguf, n_gpu_layers=args.n_gpu_layers) if args.gguf else LlamaServerEmitter(args.server)
         records = [json.loads(l) for l in open(DATA, encoding="utf-8")]
         records = [r for r in records if r["split"] == "val"]
         random.Random(1).shuffle(records)

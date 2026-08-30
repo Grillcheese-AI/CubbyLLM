@@ -98,9 +98,11 @@ def test_cubbyllm_never_imports_standin():
 
 def test_emitter_protocol_and_replay():
     sys.path.insert(0, str(ROOT))
-    from standin.emitter import Emitter, LlamaServerEmitter, ReplayEmitter
+    from standin.emitter import Emitter, LlamaCppEmitter, LlamaServerEmitter, ReplayEmitter
     rep = ReplayEmitter([{"prompt": "q1", "generated": "program X"}])
     assert isinstance(rep, Emitter) and isinstance(LlamaServerEmitter(), Emitter)
+    lc = LlamaCppEmitter("C:/x/emitter-q4_k_m.gguf")          # lazy: no load until emit()
+    assert isinstance(lc, Emitter) and lc.name == "llama-cpp:emitter-q4_k_m.gguf" and lc._llm is None
     assert rep.emit("q1") == "program X"
     try:
         rep.emit("unknown"); assert False, "must raise on an unrecorded prompt"
