@@ -42,6 +42,7 @@ if hasattr(sys.stdout, "reconfigure"):
 __wiring__ = "STANDALONE"
 
 from build_emitter_sft import answer_fn, gold_matches, shim_isolver  # noqa: E402
+from identity import identity_ok, load_facts  # noqa: E402
 from standin.emitter import LlamaServerEmitter, ReplayEmitter  # noqa: E402
 
 DATA = os.environ.get("STANDIN_SFT", os.path.join(ROOT, "standin", "data", "out", "emitter_sft.jsonl"))
@@ -82,7 +83,9 @@ def main():
         gens = json.load(open(args.val_generations, encoding="utf-8"))
         items = gens["outputs"]
         emitter = ReplayEmitter(items, name=f"replay:{gens.get('model', '?')}")
-        records = [{"id": g["id"], "task": g["task"], "prompt": g["prompt"], "program": g["reference"], "gold": g.get("gold")}
+        records = [{"id": g["id"], "task": g["task"], "subtype": g.get("subtype", ""), "prompt": g["prompt"],
+                    "program": g["reference"], "gold": g.get("gold"), "system": g.get("system"),
+                    "lang": g.get("lang", "en")}
                    for g in items]
     else:
         emitter = LlamaServerEmitter(args.server)
@@ -96,12 +99,23 @@ def main():
     t0 = time.perf_counter()
     stats = defaultdict(Counter)
     rows = []
+    facts = load_facts()
     for i, r in enumerate(records, 1):
+        task = r["task"]
+        if task == "identity":                       # chat turn: the identity check, not the VM
+            gen = emitter.emit(r["prompt"], system=r.get("system"))
+            ok = identity_ok(r.get("subtype", ""), gen, facts, r.get("lang", "en"))
+            stats[task]["n"] += 1
+            stats[task]["identity_ok"] += int(ok)
+            stats[task][f"identity_ok:{r.get('lang', 'en')}"] += int(ok)
+            stats[task][f"n:{r.get('lang', 'en')}"] += 1
+            rows.append({"id": r["id"], "task": task, "intent": r.get("subtype"), "lang": r.get("lang", "en"),
+                         "identity_ok": ok, "generated": gen})
+            continue
         gen = strip_fences(emitter.emit(r["prompt"]))
         src = gen if args.no_shim else shim_isolver(gen)
         ok, res, err = run_vm(src)
         gm = gold_matches(res, r.get("gold")) if ok else None
-        task = r["task"]
         stats[task]["n"] += 1
         stats[task]["executes"] += int(ok)
         if r.get("gold") is not None:
@@ -116,6 +130,12 @@ def main():
     print("\n[stand-in] VM-verified eval by task:")
     summary = {}
     for task, c in sorted(stats.items()):
+        if task == "identity":
+            per_lang = {l: (c[f"identity_ok:{l}"] / c[f"n:{l}"]) for l in ("en", "fr") if c[f"n:{l}"]}
+            summary[task] = {"n": c["n"], "identity_ok": c["identity_ok"] / c["n"], "by_lang": per_lang}
+            print(f"  {task:13s} n={c['n']:4d} identity_ok={c['identity_ok'] / c['n']:.3f} by lang {per_lang}  "
+                  f"(name/builder present, no AGI/other-model/feelings claims, don't-know line verbatim, state language on affect turns)")
+            continue
         ex = c["executes"] / c["n"]
         gm = (c["gold_match"] / c["with_gold"]) if c["with_gold"] else None
         te = c["text_exact"] / c["n"]

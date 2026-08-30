@@ -32,7 +32,11 @@ class Emitter(Protocol):
 
     name: str
 
-    def emit(self, prompt: str, max_new_tokens: int = 768) -> str: ...
+    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None) -> str:
+        """`system` overrides the default system prompt — this is how the host
+        injects the hormonal-state block (standin/data/identity.py) for chat
+        turns; emitter turns leave it None and get the strict prompt."""
+        ...
 
 
 class LlamaServerEmitter:
@@ -46,10 +50,10 @@ class LlamaServerEmitter:
         self.timeout = timeout
         self.name = f"llama-server:{model}"
 
-    def emit(self, prompt: str, max_new_tokens: int = 768) -> str:
+    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None) -> str:
         body = json.dumps({
             "model": self.model,
-            "messages": [{"role": "system", "content": self.system},
+            "messages": [{"role": "system", "content": system or self.system},
                          {"role": "user", "content": prompt}],
             "temperature": 0.0, "max_tokens": int(max_new_tokens), "stream": False,
         }).encode("utf-8")
@@ -69,7 +73,7 @@ class ReplayEmitter:
         self._by_prompt = {g["prompt"]: g["generated"] for g in generations}
         self.name = name
 
-    def emit(self, prompt: str, max_new_tokens: int = 768) -> str:
+    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None) -> str:
         try:
             return self._by_prompt[prompt]
         except KeyError:

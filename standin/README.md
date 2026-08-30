@@ -42,9 +42,34 @@ trains. It is replaced the day the 2B checkpoint exists.
 | kernel (decision / compare / loop / recall) | 593 | 564 / 29 | 593 execute, **593 match gold** |
 | role_binding (capped from 32k; 4,992 dups removed) | 4,000 | 3,780 / 220 | 4,000 execute (no gold exists) |
 | chain (ours, `ISolve`/`recover`, 1–3 hops) | 517 | 492 / 25 | 517 execute, **517 match gold** — scored on the last hop's function (`hop_N`), not `solve()` |
-| **total** | **11,258** | 10,655 / 603 | 0 dropped; VM pass 293 s |
+| identity (EN 276 / FR 250, own system prompt + hormonal state) | 526 | by prompt hash | skipped by the VM pass; scored by `identity_ok` |
+| **total** | **11,784** | (see manifest `by_split`) | 0 dropped; VM pass ~5 min |
 
 Excluded by rule: **1,057 + 4,220 GSM8K-test-derived programs** (H-G4's eval), 24,997 role-binding programs over the cap. The first build dropped all 180 multi-hop chains as "gold mismatch" because it called `solve()` (hop 1) on every program — fixed (`answer_fn`, pinned by a test); the mistake is the kind the VM pass exists to catch.
+
+## Identity + hormones (`data/identity_facts.json`, `data/identity.py`)
+
+The SFT mix carries ~550 **bilingual (EN/FR)** identity turns — a French question
+gets a French answer; the FR strings sit next to the EN ones in the facts file and
+use *tu* — **Cubby**, built by **Grillcheese Research
+Lab**, "a small model that thinks big", friendly, never claims AGI / consciousness /
+to be another model. **Owner's voice rules, test-enforced** (`identity_facts.json`
+→ `forbidden_words`): the word *honest* must NEVER appear in the model's voice, nor
+program / verifier / internals talk; when unsure it says "If I don't know yet, I
+will tell you instead of giving you the wrong answer." The turns ride under their
+**own** system prompt. That prompt includes a sampled **hormonal state**: dopamine, serotonin,
+cortisol, oxytocin, noradrenaline in the same clip bands as
+`cubemind/brain/neurochemistry.py` (the cubbyverse demo), with derived valence /
+arousal and a register (calm · curious · warm · cautious — stress wins). The
+turns answer in that register (openers/closers, and the `affect` intent reads
+the state back). True by construction: the stand-in has no hormone
+machinery, so "everything is modulated by hormones" is made true at the
+**serving layer** — the host runs the neurochemistry and injects
+`affect_block(state)` into the system prompt (`Emitter.emit(..., system=...)`).
+Tone, caution and exploration change; facts never do; **emitter turns carry no
+state** (programs stay deterministic). Scored by `identity_ok` (facts present,
+no forbidden claims, no base-model leak, state language on affect turns) in
+both the notebook and `eval_emitter_vm.py`; the VM pass skips these records.
 
 ## Data facts worth knowing (2026-08-30 audit of `cubemind/sandbox/regen`)
 

@@ -215,6 +215,20 @@ def collect(limit: int | None):
     for instr, prog, src, realm in dedup[:CAP_ROLE]:
         add("role_binding", realm, src, instr, prog)
 
+    # identity turns (Cubby / Grillcheese Research Lab / not-AGI / hormonal register) —
+    # their OWN system prompt carries the sampled hormonal state; the emitter's
+    # strict prompt is the switch. See identity.py; skipped by the VM pass.
+    from identity import EMITTER_SYSTEM, build_identity_records
+    for rec in build_identity_records(seed=SEED):
+        key = ("identity", rec["prompt"].strip(), rec["response"].strip())
+        if key in seen_prompts:
+            excluded["dup:identity"] += 1
+            continue
+        seen_prompts.add(key)
+        records.append({"task": "identity", "subtype": rec["intent"], "source": "standin/identity",
+                        "prompt": rec["prompt"].strip(), "program": rec["response"], "gold": None,
+                        "system": rec["system"], "state": rec["state"], "lang": rec["lang"]})
+
     # our verified multi-hop chains (ISolve dialect) — kept whole
     n_chain = 0
     for r in load_jsonl(HARVEST):
@@ -226,8 +240,10 @@ def collect(limit: int | None):
     if limit:
         records = records[:limit]
     for i, r in enumerate(records):
-        r["id"] = f"{r['task']}-{hashlib.sha256((r['task'] + r['prompt']).encode('utf-8')).hexdigest()[:12]}"
+        r["id"] = f"{r['task']}-{hashlib.sha256((r['task'] + r['prompt'] + r['program']).encode('utf-8')).hexdigest()[:12]}"
         r["split"] = split_of(r["prompt"])
+        r.setdefault("system", EMITTER_SYSTEM)       # every record names its system prompt
+        r.setdefault("state", None)
     return records, excluded, len(gsm_test)
 
 
@@ -236,6 +252,10 @@ def verify_all(records, verbose_every=500):
     t0 = time.perf_counter()
     stats = Counter()
     for i, r in enumerate(records, 1):
+        if r["task"] == "identity":                  # chat turn, not a program: no VM
+            r["vm_ok"], r["vm_result"], r["vm_error"], r["gold_match"] = None, None, None, None
+            stats["identity:skipped"] += 1
+            continue
         try:
             out = cc.run_program_proto(r["program"], fn=answer_fn(r["program"]))
             r["vm_ok"] = bool(out.get("ok"))
