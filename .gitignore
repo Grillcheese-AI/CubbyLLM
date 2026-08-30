@@ -194,3 +194,7 @@ cython_debug/
 data/teacher_golden_trajectories.jsonl
 data/taxonomy_detector.jsonl
 data/subdomain_taxonomy_patterns.jsonl
+
+# stand-in trunk artifacts (generated SFT data, adapters, GGUFs) -- never committed
+standin/data/out/
+standin/models/
