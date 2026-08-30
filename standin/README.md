@@ -77,6 +77,39 @@ state** (programs stay deterministic). Scored by `identity_ok` (facts present,
 no forbidden claims, no base-model leak, state language on affect turns) in
 both the notebook and `eval_emitter_vm.py`; the VM pass skips these records.
 
+## Chat is mediated by a VM program, not emitted as one (design note, 2026-08-30)
+
+Checked in the cubelang source. The VM's **registry-seeded (tamper-proof) interfaces
+are `ISolve`, `ISolver`, `ISolverLearn` only**. The conversational interface the spec
+defines — **`IAgent`** (`think(input, ctx): str` · `act` · `observe` + optional `plan`,
+`reflect`; `container cMathTutor implements IAgent, IDeployable` with a persona, a
+rag memory and a gguf model is the spec's own example) — has **0 hits in `src/`**
+(`container` parses; `agent.create`/`persona`/`think` do not exist). The one
+conversational program that runs today, `examples/conversation_agent/
+conversation_agent.cube::ConversationReasoner implements ISolverLearn`, is a
+dialogue *substrate* (turn → intent / act / plan / risk flags / trace → `verify`
+refuses empty text / zero confidence / empty trace); its reply text is canned.
+
+**ASK is real and is the seam.** `examples/ask_min.cube` + `ground_min.cube`: the `ask`
+opcode yields `ExecResult::Suspend(Suspension{question, candidates, pc, …})`;
+`VM::resume(susp, answer)` pushes the answer and continues, and *rejects any answer
+that is not identical to one of the offered candidates* — "the trunk supplies syntax
+and selection, never content". `cubelang run --json` surfaces a suspension as
+`{suspended: true, question, candidates}`; **`run-proto` (what `cubelang_client`
+uses) cannot represent it and reports it as an error** — the deferred "memory-service
+ASK cycle".
+
+So for the stand-in: identity/chat turns stay text (they are the model's `Reply.text`
+/ `IAgent.think` output); the serve loop should wrap each turn in a
+`ConversationReasoner`-shaped program (state, risk flags, `verify`; the hormonal
+state belongs in `DialogueState` — cortisol raising the verify bar is the
+`neurochemistry.py::modulate_threshold` analogue). Prerequisites, both in the
+**cubelang** repo: (1) seed `IAgent` in `src/vm/interfaces.rs` (think/act/observe,
+arity 2/2/2 — an afternoon, same pattern as `ISolverLearn`); (2) a suspend/resume
+round-trip over the bridge (proto `RunResult` needs a `suspended{question,
+candidates}` variant + a `ResumeRequest`, and the Python client a `resume()`),
+keeping `resume`'s identical-to-a-candidate guard. Not on the emitter's critical path.
+
 ## Data facts worth knowing (2026-08-30 audit of `cubemind/sandbox/regen`)
 
 - 38.6k programs in `cubby_aug_v4.txt`: 32k role-binding (`Evt`/`Ev`), 4.2k GSM
