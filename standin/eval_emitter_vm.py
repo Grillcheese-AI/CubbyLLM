@@ -30,6 +30,7 @@ import argparse
 import json
 import os
 import random
+import re
 import sys
 import time
 from collections import Counter, defaultdict
@@ -51,9 +52,21 @@ DATA = os.environ.get("STANDIN_SFT", os.path.join(ROOT, "standin", "data", "out"
 OUT_DIR = os.path.join(ROOT, "standin", "data", "out")
 
 
+_THINK_RE = re.compile(r"^\s*(?:<think>)?.*?</think>\s*", re.S)
+
+
+def strip_think(s: str) -> str:
+    """LFM2.5's chat template opens a <think> block in the generation prompt
+    and the model fills it before the answer (seen on the first SFT run,
+    2026-08-30). Everything up to and including </think> is reasoning, not
+    the answer: drop it before scoring programs OR identity turns (the
+    reasoning text talks about AGI/other models and would trip the check)."""
+    return _THINK_RE.sub("", s, count=1) if "</think>" in s else s
+
+
 def strip_fences(s: str) -> str:
     """Models sometimes wrap programs in ``` fences; the VM does not want them."""
-    s = s.strip()
+    s = strip_think(s).strip()
     if s.startswith("```"):
         s = s.split("\n", 1)[1] if "\n" in s else ""
         if s.rstrip().endswith("```"):
@@ -107,7 +120,7 @@ def main():
     for i, r in enumerate(records, 1):
         task = r["task"]
         if task == "identity":                       # chat turn: the identity check, not the VM
-            gen = emitter.emit(r["prompt"], system=r.get("system"))
+            gen = strip_think(emitter.emit(r["prompt"], system=r.get("system"))).strip()
             ok = identity_ok(r.get("subtype", ""), gen, facts, r.get("lang", "en"))
             stats[task]["n"] += 1
             stats[task]["identity_ok"] += int(ok)

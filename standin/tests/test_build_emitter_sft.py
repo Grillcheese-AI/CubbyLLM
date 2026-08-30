@@ -110,11 +110,16 @@ def test_emitter_protocol_and_replay():
         pass
 
 
-def test_strip_fences():
+def test_strip_fences_and_think_blocks():
     sys.path.insert(0, str(ROOT / "standin"))
-    from eval_emitter_vm import strip_fences
+    from eval_emitter_vm import strip_fences, strip_think
     assert strip_fences("```cubelang\nprogram A {}\n```") == "program A {}\n"
     assert strip_fences("program A {}") == "program A {}\n"
+    # LFM2.5 reasoning prefix: with or without the opening tag, multi-line, dropped once
+    assert strip_think("<think>let me reason\nabout it</think>\nprogram A {}") == "program A {}"
+    assert strip_think("The user wants X.\nLet me...\n</think># q\nprogram A {}") == "# q\nprogram A {}"
+    assert strip_think("No — I'm Cubby.") == "No — I'm Cubby."                       # nothing to strip
+    assert strip_fences("thinking...</think>```\nprogram A {}\n```") == "program A {}\n"
 
 
 def test_gold_matches_numeric_and_string_and_missing():
