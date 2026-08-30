@@ -46,7 +46,23 @@ trains. It is replaced the day the 2B checkpoint exists.
 | identity (EN 276 / FR 250, own system prompt + hormonal state) | 526 | 504 / 22 | skipped by the VM pass; scored by `identity_ok` |
 | **total (v1, 2026-08-30 a.m.)** | **11,784** | 11,159 / 625 | 0 dropped; VM pass 296 s; output sha256 `8c90a685…` |
 
-**v2 (same day, after the first SFT run; the set now on Drive, sha256 `510ee476…`): 9,284 records.**
+**v1 emitter, VM-verified (2026-08-30; LFM2.5-2.6B LoRA on the v1 set; 166 stratified val
+records replayed through the real VM — `data/out/eval_emitter_vm_v1_replay.json`):**
+
+| task | executes | gold_match | text-EM | reading |
+|---|---|---|---|---|
+| arithmetic (60) | 0.967 | **0.617** | 0.000 | solves parametrically with *different* decompositions — EM blind, VM sees it |
+| chain (25) | 0.960 | **0.200** | 0.200 | perfectly-formed programs binding the WRONG fact — the prompt lacked the retrieved facts (fixed in v3) |
+| kernel (29) | 0.759 | 0.759 | 0.000 | lower bound: the eval capped generation at 320 tokens and long kernels truncated (parse error at Eof) |
+| role_binding (30) | 1.000 | — | 0.100 | all execute |
+| identity (22) | — | **identity_ok 1.000** (EN and FR) | — | voice rules hold |
+
+**v3 (the set to train next): chain prompts carry the walked facts** (`question + "Facts:" + one
+line per hop`, from the harvest trace) — at serve time the host retrieves first and formats the
+same block, so question+facts → program is the real task; v1 asked for parametric recall of a
+1,241-fact corpus instead. Everything else as v2.
+
+**v2 (same day, after the first SFT run; superseded by v3 before training): 9,284 records.**
 Role-binding is the curated `svc` set only (the 31,989 template-generated `Evt` programs are off — their
 prompts are instruction-dataset lines and chat fillers that taught the emitter to bind any chatty sentence),
 13 chat fillers dropped, cap **1,500**, every prompt wrapped **"Record this as an event: …"**; chains carry

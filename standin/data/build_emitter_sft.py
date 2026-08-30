@@ -77,6 +77,7 @@ CAP_ROLE = int(os.environ.get("STANDIN_CAP_ROLE", "1500"))
 ROLE_SOURCES = [s.strip() for s in os.environ.get("STANDIN_ROLE_SOURCES", "svc").split(",") if s.strip()]
 ROLE_WRAP = os.environ.get("STANDIN_ROLE_WRAP", "Record this as an event: {text}")
 CHAIN_MULT = int(os.environ.get("STANDIN_CHAIN_MULT", "3"))     # train-only upsampling of the chain task
+CHAIN_FACTS = os.environ.get("STANDIN_CHAIN_FACTS", "1") == "1"  # v3: walked facts in the chain prompt (see below)
 _FILLER_RE = re.compile(
     r"^\s*(let me know|thanks?|thank you|sure|ok(ay)?|hello|hi\b|hey|please continue|continue|you'?re welcome|"
     r"sounds good|great|good (morning|evening|night)|no problem|yes|no\b|i see|got it|alright|cool|nice)\b", re.I)
@@ -262,11 +263,22 @@ def collect(limit: int | None):
                         "prompt": rec["prompt"].strip(), "program": rec["response"], "gold": None,
                         "system": rec["system"], "state": rec["state"], "lang": rec["lang"]})
 
-    # our verified multi-hop chains (ISolve dialect) — kept whole
+    # our verified multi-hop chains (ISolve dialect) — kept whole. v3
+    # (2026-08-30, after the v1 VM replay): the prompt carries the walked
+    # facts. Without them the emitter must recall exact corpus facts from
+    # parametric memory — v1 produced perfectly-formed chains binding the
+    # WRONG fact (gold_match 0.20 while executes 0.96). At serve time the
+    # host retrieves first and formats the same block, so question+facts →
+    # program is the real task. (Later: add distractor facts to teach
+    # selection; for now the walked facts, in walk order.)
     n_chain = 0
     for r in load_jsonl(HARVEST):
         if r.get("verified") and r.get("program_source"):
-            add("chain", f"n_hop={r.get('n_hop')}", "cubbyllm/cot_harvest_v3cf", r["question"], r["program_source"],
+            prompt = r["question"]
+            facts = [t.get("fact") for t in (r.get("trace") or []) if t.get("fact")]
+            if CHAIN_FACTS and facts:
+                prompt = prompt + "\nFacts:\n" + "\n".join(f"- {f}" for f in facts)
+            add("chain", f"n_hop={r.get('n_hop')}", "cubbyllm/cot_harvest_v3cf", prompt, r["program_source"],
                 r.get("answer"))
             n_chain += 1
 

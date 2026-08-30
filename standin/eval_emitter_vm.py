@@ -158,7 +158,7 @@ def main():
         te = c["text_exact"] / c["n"]
         summary[task] = {"n": c["n"], "executes": ex, "gold_match": gm, "text_exact": te}
         print(f"  {task:13s} n={c['n']:4d} executes={ex:.3f} gold_match={'—' if gm is None else f'{gm:.3f}'} text_exact={te:.3f}")
-    errs = Counter((row["vm_error"] or "")[:70] for row in rows if not row["executes"])
+    errs = Counter((row.get("vm_error") or "")[:70] for row in rows if row.get("executes") is False)
     if errs:
         print("  top VM errors:")
         for e, k in errs.most_common(5):
