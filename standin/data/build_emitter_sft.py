@@ -68,7 +68,18 @@ REGEN = os.environ.get("STANDIN_REGEN", r"C:\Users\grill\Documents\GitHub\cubemi
 HARVEST = os.environ.get("STANDIN_HARVEST", os.path.join(ROOT, "validation", "logs", "cot_harvest_v3cf.jsonl"))
 GSM_TEST = os.environ.get("STANDIN_GSM_TEST", r"E:\datasets\misc\test_socratic.jsonl")
 OUT_DIR = os.environ.get("STANDIN_OUT", os.path.join(ROOT, "standin", "data", "out"))
-CAP_ROLE = int(os.environ.get("STANDIN_CAP_ROLE", "4000"))
+CAP_ROLE = int(os.environ.get("STANDIN_CAP_ROLE", "1500"))
+# v2 (2026-08-30, after the first SFT run): role-binding comes from the curated svc
+# jsonl only ("svc"); "svc,aug_txt" re-adds the 30k template-generated Evt programs
+# whose prompts are instruction-dataset lines and chat fillers ("Let me know what
+# you'd like to focus on next!") -- they taught the emitter to bind any chatty
+# sentence as an event. Every role-binding prompt is wrapped as an explicit task.
+ROLE_SOURCES = [s.strip() for s in os.environ.get("STANDIN_ROLE_SOURCES", "svc").split(",") if s.strip()]
+ROLE_WRAP = os.environ.get("STANDIN_ROLE_WRAP", "Record this as an event: {text}")
+CHAIN_MULT = int(os.environ.get("STANDIN_CHAIN_MULT", "3"))     # train-only upsampling of the chain task
+_FILLER_RE = re.compile(
+    r"^\s*(let me know|thanks?|thank you|sure|ok(ay)?|hello|hi\b|hey|please continue|continue|you'?re welcome|"
+    r"sounds good|great|good (morning|evening|night)|no problem|yes|no\b|i see|got it|alright|cool|nice)\b", re.I)
 VAL_FRAC = float(os.environ.get("STANDIN_VAL_FRAC", "0.05"))
 SEED = 20260830
 
@@ -132,6 +143,17 @@ def answer_fn(src: str) -> str:
     return f"hop_{max(hops)}" if hops else "solve"
 
 
+def is_chat_filler(text: str) -> bool:
+    """Instruction-dataset lines that are conversation glue, not tasks: too
+    short, or opening with a chat phrase. Never an event worth binding."""
+    t = text.strip()
+    return len(t.split()) < 4 or bool(_FILLER_RE.match(t))
+
+
+def wrap_role_prompt(text: str, template: str = ROLE_WRAP) -> str:
+    return template.format(text=text.strip())
+
+
 def gold_matches(result, gold) -> bool | None:
     if gold is None:
         return None
@@ -187,19 +209,27 @@ def collect(limit: int | None):
     for r in load_jsonl(os.path.join(REGEN, "multitask_v4_atier.jsonl")):
         add("kernel", r.get("subtype", ""), "regen/atier", r["text"], r["cubelang_program"], r.get("gold"))
 
-    # role binding: svc jsonl + the txt's Evt/Ev programs, deduped, capped
+    # role binding: curated svc jsonl (+ the txt's Evt/Ev programs only if asked),
+    # chat fillers dropped, deduped, capped, and every prompt wrapped as an
+    # explicit task so a bare sentence never means "bind it as an event"
     role_pool = []
-    for r in load_jsonl(os.path.join(REGEN, "multitask_v4_svc.jsonl")):
-        role_pool.append((r["text"], r["cubelang_program"], "regen/svc", r.get("realm_src", "")))
+    if "svc" in ROLE_SOURCES:
+        for r in load_jsonl(os.path.join(REGEN, "multitask_v4_svc.jsonl")):
+            role_pool.append((r["text"], r["cubelang_program"], "regen/svc", r.get("realm_src", "")))
     n_txt_gsm_excluded = 0
+    n_txt_role_skipped = 0
     for instr, prog in parse_aug_txt(os.path.join(REGEN, "cubby_aug_v4.txt")):
         m = re.search(r'program ([A-Za-z]+)\d*', prog)
         fam = m.group(1) if m else ""
         if fam in ("Evt", "Ev"):
-            role_pool.append((instr, prog, "regen/aug_txt", ""))
+            if "aug_txt" in ROLE_SOURCES:
+                role_pool.append((instr, prog, "regen/aug_txt", ""))
+            else:
+                n_txt_role_skipped += 1
         elif fam == "GSM":
             n_txt_gsm_excluded += 1          # all GSM8K test (audit 2026-08-30) — excluded
     excluded["gsm8k_test:aug_txt"] = n_txt_gsm_excluded
+    excluded["source_off:aug_txt_role_binding"] = n_txt_role_skipped
     seen_instr = set()
     dedup = []
     for instr, prog, src, realm in role_pool:
@@ -208,12 +238,15 @@ def collect(limit: int | None):
             excluded["dup:role_binding"] += 1
             continue
         seen_instr.add(k)
+        if is_chat_filler(instr):
+            excluded["chat_filler:role_binding"] += 1
+            continue
         dedup.append((instr, prog, src, realm))
     rng = random.Random(SEED)
     rng.shuffle(dedup)
     excluded["cap:role_binding"] = max(0, len(dedup) - CAP_ROLE)
     for instr, prog, src, realm in dedup[:CAP_ROLE]:
-        add("role_binding", realm, src, instr, prog)
+        add("role_binding", realm, src, wrap_role_prompt(instr), prog)
 
     # identity turns (Cubby / Grillcheese Research Lab / not-AGI / hormonal register) —
     # their OWN system prompt carries the sampled hormonal state; the emitter's
@@ -244,6 +277,7 @@ def collect(limit: int | None):
         r["split"] = split_of(r["prompt"])
         r.setdefault("system", EMITTER_SYSTEM)       # every record names its system prompt
         r.setdefault("state", None)
+        r["repeat"] = CHAIN_MULT if (r["task"] == "chain" and r["split"] == "train") else 1   # train-only upsampling weight
     return records, excluded, len(gsm_test)
 
 
@@ -311,7 +345,10 @@ def main():
     manifest = {
         "built": datetime.now(timezone.utc).isoformat(), "git_rev": git_rev,
         "config": {"REGEN": REGEN, "HARVEST": HARVEST, "GSM_TEST": GSM_TEST, "CAP_ROLE": CAP_ROLE,
-                   "VAL_FRAC": VAL_FRAC, "SEED": SEED, "verified": not args.no_verify, "limit": args.limit},
+                   "ROLE_SOURCES": ROLE_SOURCES, "ROLE_WRAP": ROLE_WRAP, "CHAIN_MULT": CHAIN_MULT,
+                   "VAL_FRAC": VAL_FRAC, "SEED": SEED, "verified": not args.no_verify, "limit": args.limit,
+                   "schema_note": "v2: role-binding prompts wrapped as explicit tasks; `repeat` = train-only "
+                                  "upsampling weight (chains x3); consumers repeat the record that many times"},
         "inputs_sha256": inputs,
         "n_records_collected": len(records), "n_records_kept": len(kept),
         "dropped_by_vm": dict(dropped), "excluded": dict(excluded),

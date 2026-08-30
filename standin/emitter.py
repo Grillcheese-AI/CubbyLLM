@@ -68,19 +68,41 @@ class LlamaServerEmitter:
         return out["choices"][0]["message"]["content"]
 
 
+NO_THINK_PREFILL = "<think>\n</think>\n"
+
+
+def render_chatml(system: str, user: str, prefill: str = NO_THINK_PREFILL) -> str:
+    """LFM2.5's chat template, rendered by hand (verified against the GGUF's
+    tokenizer.chat_template 2026-08-30): ChatML, system optional, generation
+    prompt `<|im_start|>assistant\\n` with NO think opener — the model opens
+    <think> on its own, so an empty `<think>\\n</think>\\n` prefill is how the
+    answer is made to start immediately. The BOS token is added by the
+    tokenizer, not here."""
+    out = ""
+    if system:
+        out += f"<|im_start|>system\n{system}<|im_end|>\n"
+    out += f"<|im_start|>user\n{user}<|im_end|>\n<|im_start|>assistant\n{prefill}"
+    return out
+
+
 class LlamaCppEmitter:
     """In-process GGUF inference through llama-cpp-python (the installed
     0.3.30 bundles ggml-vulkan.dll and finds the RX 6750 XT — verified
     2026-08-30; there is no standalone llama-server on this machine).
-    Loads lazily on first emit; n_gpu_layers=-1 offloads everything."""
+    Loads lazily on first emit; n_gpu_layers=-1 offloads everything.
+    `prefill` (default: an empty think block) is appended to the rendered
+    assistant turn so the model does not spend tokens reasoning — the first
+    SFT run showed LFM2.5 opening <think> on its own and confabulating
+    context; set prefill="" to let it think."""
 
     def __init__(self, gguf_path: str, system: str = SYSTEM, n_ctx: int = 4096,
-                 n_gpu_layers: int = -1, verbose: bool = False) -> None:
+                 n_gpu_layers: int = -1, verbose: bool = False, prefill: str = NO_THINK_PREFILL) -> None:
         self.gguf_path = gguf_path
         self.system = system
         self.n_ctx = int(n_ctx)
         self.n_gpu_layers = int(n_gpu_layers)
         self.verbose = verbose
+        self.prefill = prefill
         self.name = f"llama-cpp:{gguf_path.replace(chr(92), '/').rsplit('/', 1)[-1]}"
         self._llm = None
 
@@ -92,11 +114,10 @@ class LlamaCppEmitter:
         return self._llm
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None) -> str:
-        out = self._load().create_chat_completion(
-            messages=[{"role": "system", "content": system or self.system},
-                      {"role": "user", "content": prompt}],
-            temperature=0.0, max_tokens=int(max_new_tokens), seed=0)
-        return out["choices"][0]["message"]["content"]
+        text = render_chatml(system or self.system, prompt, self.prefill)
+        out = self._load().create_completion(text, temperature=0.0, max_tokens=int(max_new_tokens), seed=0,
+                                             stop=["<|im_end|>"])
+        return out["choices"][0]["text"]
 
 
 class ReplayEmitter:

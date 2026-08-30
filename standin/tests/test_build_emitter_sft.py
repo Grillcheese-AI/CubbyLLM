@@ -122,6 +122,25 @@ def test_strip_fences_and_think_blocks():
     assert strip_fences("thinking...</think>```\nprogram A {}\n```") == "program A {}\n"
 
 
+def test_role_binding_fillers_dropped_and_prompts_wrapped():
+    assert b.is_chat_filler("Let me know what you'd like to focus on next!")
+    assert b.is_chat_filler("Thanks!") and b.is_chat_filler("Sure, go ahead.") and b.is_chat_filler("Hi there")
+    assert b.is_chat_filler("Do it.")                                             # < 4 words
+    assert not b.is_chat_filler("Give three tips for staying healthy.")
+    assert not b.is_chat_filler("Rearrange the words to create a complete sentence.")
+    assert b.wrap_role_prompt("Give three tips for staying healthy.") == "Record this as an event: Give three tips for staying healthy."
+    assert b.ROLE_SOURCES == ["svc"] and b.CAP_ROLE == 1500 and b.CHAIN_MULT == 3
+
+
+def test_render_chatml_matches_the_lfm25_template():
+    sys.path.insert(0, str(ROOT))
+    from standin.emitter import NO_THINK_PREFILL, render_chatml
+    t = render_chatml("SYS", "hello")
+    assert t == "<|im_start|>system\nSYS<|im_end|>\n<|im_start|>user\nhello<|im_end|>\n<|im_start|>assistant\n<think>\n</think>\n"
+    assert render_chatml("", "hello", "") == "<|im_start|>user\nhello<|im_end|>\n<|im_start|>assistant\n"
+    assert NO_THINK_PREFILL == "<think>\n</think>\n"
+
+
 def test_gold_matches_numeric_and_string_and_missing():
     assert b.gold_matches("72", 72) is True
     assert b.gold_matches("72.0", 72) is True
