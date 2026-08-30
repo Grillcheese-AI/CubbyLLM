@@ -34,7 +34,7 @@ trains. It is replaced the day the 2B checkpoint exists.
 | `tests/` | Unit pins for the builder's pure helpers + the import guard. `python -m pytest standin/tests -q` |
 | `../notebooks/standin_emitter_sft.ipynb` | Unsloth LoRA SFT on Colab, format-level exact-match eval, GGUF export to Drive. |
 
-## The built set (2026-08-30, `data/out/emitter_sft.manifest.json`, output sha256 `5efc50f2…`)
+## The built set (2026-08-30, `data/out/emitter_sft.manifest.json`; on Drive at `cubbyllm/standin/`)
 
 | task | records | train / val | verification on the Rust VM |
 |---|---|---|---|
@@ -42,8 +42,8 @@ trains. It is replaced the day the 2B checkpoint exists.
 | kernel (decision / compare / loop / recall) | 593 | 564 / 29 | 593 execute, **593 match gold** |
 | role_binding (capped from 32k; 4,992 dups removed) | 4,000 | 3,780 / 220 | 4,000 execute (no gold exists) |
 | chain (ours, `ISolve`/`recover`, 1–3 hops) | 517 | 492 / 25 | 517 execute, **517 match gold** — scored on the last hop's function (`hop_N`), not `solve()` |
-| identity (EN 276 / FR 250, own system prompt + hormonal state) | 526 | by prompt hash | skipped by the VM pass; scored by `identity_ok` |
-| **total** | **11,784** | (see manifest `by_split`) | 0 dropped; VM pass ~5 min |
+| identity (EN 276 / FR 250, own system prompt + hormonal state) | 526 | 504 / 22 | skipped by the VM pass; scored by `identity_ok` |
+| **total** | **11,784** | 11,159 / 625 | 0 dropped; VM pass 296 s; output sha256 `8c90a685…` |
 
 Excluded by rule: **1,057 + 4,220 GSM8K-test-derived programs** (H-G4's eval), 24,997 role-binding programs over the cap. The first build dropped all 180 multi-hop chains as "gold mismatch" because it called `solve()` (hop 1) on every program — fixed (`answer_fn`, pinned by a test); the mistake is the kind the VM pass exists to catch.
 
