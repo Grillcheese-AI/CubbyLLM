@@ -103,12 +103,14 @@ So for the stand-in: identity/chat turns stay text (they are the model's `Reply.
 / `IAgent.think` output); the serve loop should wrap each turn in a
 `ConversationReasoner`-shaped program (state, risk flags, `verify`; the hormonal
 state belongs in `DialogueState` — cortisol raising the verify bar is the
-`neurochemistry.py::modulate_threshold` analogue). Prerequisites, both in the
-**cubelang** repo: (1) seed `IAgent` in `src/vm/interfaces.rs` (think/act/observe,
-arity 2/2/2 — an afternoon, same pattern as `ISolverLearn`); (2) a suspend/resume
-round-trip over the bridge (proto `RunResult` needs a `suspended{question,
-candidates}` variant + a `ResumeRequest`, and the Python client a `resume()`),
-keeping `resume`'s identical-to-a-candidate guard. Not on the emitter's critical path.
+`neurochemistry.py::modulate_threshold` analogue). **Both prerequisites landed the
+same day (cubelang `d969a76`):** `IAgent` is registry-seeded (think/act/observe), and
+`run-proto` now reports `suspended{question, candidates}` and resumes **by
+re-execution** (`RunRequest.answers`; `VM::resume`'s identical-to-a-candidate guard
+kept) — `cubelang_client.run_program_proto` returns `suspended: True` + decoded
+candidates, `resume_program_proto(answers=[…])` continues. The actual blocker was
+the strict verifier calling `ask` "trace-only" although it executes; fixed. What is
+left is the chat program itself (`think` ASKs with the model's candidate replies).
 
 ## Data facts worth knowing (2026-08-30 audit of `cubemind/sandbox/regen`)
 

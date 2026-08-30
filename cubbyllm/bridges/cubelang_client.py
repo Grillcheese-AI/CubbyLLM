@@ -124,12 +124,42 @@ def run_program(
     return out
 
 
+def _json_loads_lenient(s: str):
+    """Decode a JSON-encoded Value from the wire; a bare (non-JSON) string is
+    returned as-is so an older binary's plain-text question still reads."""
+    try:
+        return json.loads(s)
+    except (ValueError, TypeError):
+        return s
+
+
+def resume_program_proto(
+    program_source: str,
+    fn: str = "solve",
+    answers: list | None = None,
+    args: list[str] | None = None,
+    exe: str | None = None,
+    timeout: float = 30.0,
+) -> dict:
+    """Resume a program that ASKed, by re-execution (2026-08-30): the same
+    request goes back with `answers` — one per ASK, in order, each EXACTLY
+    one of the `candidates` the suspension offered (the VM rejects an
+    invented answer: "chosen, not invented"). `run-proto` is one-shot, so
+    the program re-runs from scratch and consumes the answers at each ASK;
+    deterministic programs reach the same ASK, so no VM state crosses the
+    wire. Returns the same dict shape as `run_program_proto` — including
+    another `suspended: True` if the program asks again."""
+    return run_program_proto(program_source, fn=fn, args=args, exe=exe, timeout=timeout,
+                             answers=list(answers or []))
+
+
 def run_program_proto(
     program_source: str,
     fn: str = "solve",
     args: list[str] | None = None,
     exe: str | None = None,
     timeout: float = 30.0,
+    answers: list | None = None,
 ) -> dict:
     """Run CubeLang source's function via `cubelang run-proto`'s stdio
     transport: a u32-big-endian-length-prefixed `RunRequest` written to
@@ -151,7 +181,8 @@ def run_program_proto(
 
     exe_path = find_cubelang_exe(exe)
     request = reasoning_pb2.RunRequest(
-        program=program_source, args=list(args or []), fn_name=fn
+        program=program_source, args=list(args or []), fn_name=fn,
+        answers=[json.dumps(a) for a in (answers or [])],
     )
     payload = request.SerializeToString()
     framed_request = len(payload).to_bytes(4, "big") + payload
@@ -190,8 +221,22 @@ def run_program_proto(
     if not result.ok:
         err = result.error if which == "error" else "cubelang run-proto reported ok:false"
         raise CubelangRunError(f"cubelang error: {err}")
+    if which == "suspended":
+        # The third outcome (2026-08-30): the program grounded several
+        # candidates and is asking. Not an error, not a result. Candidates
+        # and the question are JSON-encoded Values; decode them so the
+        # caller sees `1969`, not `"1969"`. Resume with
+        # `resume_program_proto(..., answers=[<chosen candidate>])`.
+        s = result.suspended
+        return {
+            "ok": True, "result": None, "similarity": None, "suspended": True,
+            "question": _json_loads_lenient(s.question),
+            "candidates": [_json_loads_lenient(c) for c in s.candidates],
+            "program": s.program, "function": s.function,
+        }
     return {
         "ok": result.ok,
+        "suspended": False,
         "result": result.symbol if which == "symbol" else None,
         # Task 7 (cubelang): `similarity` is `optional double`, OUTSIDE the
         # `result` oneof -- a side-channel confidence score for `symbol`,
