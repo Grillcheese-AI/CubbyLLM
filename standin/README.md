@@ -43,7 +43,13 @@ trains. It is replaced the day the 2B checkpoint exists.
 | role_binding (capped from 32k; 4,992 dups removed) | 4,000 | 3,780 / 220 | 4,000 execute (no gold exists) |
 | chain (ours, `ISolve`/`recover`, 1–3 hops) | 517 | 492 / 25 | 517 execute, **517 match gold** — scored on the last hop's function (`hop_N`), not `solve()` |
 | identity (EN 276 / FR 250, own system prompt + hormonal state) | 526 | 504 / 22 | skipped by the VM pass; scored by `identity_ok` |
-| **total** | **11,784** | 11,159 / 625 | 0 dropped; VM pass 296 s; output sha256 `8c90a685…` |
+| **total (v1, 2026-08-30 a.m.)** | **11,784** | 11,159 / 625 | 0 dropped; VM pass 296 s; output sha256 `8c90a685…` |
+
+**v2 (same day, after the first SFT run; the set now on Drive, sha256 `510ee476…`): 9,284 records.**
+Role-binding is the curated `svc` set only (the 31,989 template-generated `Evt` programs are off — their
+prompts are instruction-dataset lines and chat fillers that taught the emitter to bind any chatty sentence),
+13 chat fillers dropped, cap **1,500**, every prompt wrapped **"Record this as an event: …"**; chains carry
+`repeat: 3` in train (9,799 train rows after weights); everything else unchanged and re-verified (0 dropped).
 
 Excluded by rule: **1,057 + 4,220 GSM8K-test-derived programs** (H-G4's eval), 24,997 role-binding programs over the cap. The first build dropped all 180 multi-hop chains as "gold mismatch" because it called `solve()` (hop 1) on every program — fixed (`answer_fn`, pinned by a test); the mistake is the kind the VM pass exists to catch.
 
