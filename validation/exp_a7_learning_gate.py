@@ -112,6 +112,13 @@ NOISE_MULT = 3.0
 EVAL_SEED_A, EVAL_SEED_B = 777, 779                   # two held-out streams for the noise floor
 SAVE_DELTAS = os.environ.get("CB_A7_SAVE", "1") == "1"
 DEVICE = os.environ.get("CB_DEVICE", "auto")
+# LR-ladder decider (2026-08-30 result: the replay arm regressed uniformly at
+# 1e-4 with a fresh Adam — its own train loss rose). CB_A7_ARMS picks which
+# fine-tune arms run (A = slice/no replay, B = mixture/replay); C always runs.
+# CB_A7_RESUME_OPT=1 restores the checkpoint's Adam state instead of a fresh
+# optimizer, so the update continues the run rather than perturbing it.
+ARMS = [a.strip().upper() for a in os.environ.get("CB_A7_ARMS", "A,B").split(",") if a.strip()]
+RESUME_OPT = os.environ.get("CB_A7_RESUME_OPT", "0") == "1"
 
 
 # ── the gate, as a pure function (unit-pinned in test_a7_gate.py) ──────────
@@ -196,7 +203,8 @@ def load_base(dev):
     assert len(ps) == len(ck["params"]), (len(ps), len(ck["params"]))
     base_params = [s.detach().clone() for s in ck["params"]]
     restore(ps, base_params)          # the model is built at random init; load the checkpoint INTO it
-    return model, ps, base_params, meta, int(ck.get("step", -1)), d, V
+    opt_state = ck.get("opt") if RESUME_OPT else None
+    return model, ps, base_params, meta, int(ck.get("step", -1)), d, V, opt_state
 
 
 def restore(ps, base_params):
@@ -313,12 +321,21 @@ def evaluate(model, sources, d, dev, seed: int, gsm) -> dict:
     return out
 
 
-def finetune(model, sources, steps: int, seed: int, dev) -> dict:
+def finetune(model, sources, steps: int, seed: int, dev, opt_state=None) -> dict:
     from cubbyllm.core.generation import SnapshotHardener
     from cubbyllm.training import TrainLoop
     pipe = pipeline(sources, seed)
     loop = TrainLoop(model, pipe, SnapshotHardener(), lr=LR, batch_size=BATCH, seq_len=SEQ,
                      device=dev, amp=(dev.type == "cuda"), warmup=WARMUP, total_steps=0)
+    resumed = False
+    if opt_state is not None:
+        try:
+            loop.opt.load_state_dict(opt_state)
+            for g in loop.opt.param_groups:
+                g["lr"] = LR
+            resumed = True
+        except Exception as e:                       # shape/order mismatch -> say so, run fresh
+            print(f"    !! could not restore optimizer state ({str(e)[:120]}); running with a fresh Adam", flush=True)
     t0 = time.perf_counter()
     losses = []
     for i in range(1, steps + 1):
@@ -328,7 +345,8 @@ def finetune(model, sources, steps: int, seed: int, dev) -> dict:
                   f"({time.perf_counter() - t0:.0f}s)", flush=True)
     return {"steps": steps, "lr": LR, "warmup": WARMUP, "tokens": steps * BATCH * SEQ,
             "loss_first10": float(np.mean(losses[:10])), "loss_last10": float(np.mean(losses[-10:])),
-            "wall_s": time.perf_counter() - t0, "sources": [s["name"] for s in sources]}
+            "wall_s": time.perf_counter() - t0, "sources": [s["name"] for s in sources],
+            "optimizer": "resumed" if resumed else "fresh"}
 
 
 def save_delta(path, ps, meta, step, info):
@@ -364,7 +382,8 @@ def main():
           f"thresholds = max(min eps {MIN_EPS}, {NOISE_MULT}x paired SE); retrieval collapse floor {RETRIEVAL_COLLAPSE_FLOOR}\n")
     t_all = time.perf_counter()
 
-    model, ps, base_params, meta, base_step, d, V = load_base(dev)
+    model, ps, base_params, meta, base_step, d, V, opt_state = load_base(dev)
+    print(f"arms: {ARMS} | optimizer: {'resumed from checkpoint' if opt_state is not None else 'fresh Adam'}")
     sources = source_specs()
     names = [s["name"] for s in sources]
     if SLICE not in names:
@@ -388,40 +407,56 @@ def main():
     print(f"  unpaired seed-to-seed noise (information; CE terms use the paired SE): {eps['unpaired_raw']} "
           f"-> retrieval eps {eps['ret']:.3f}\n")
 
+    ft_a = eval_a = path_a = ft_b = eval_b = path_b = None
     # 2. A: forgetting delta (slice only, no replay)
-    print(f"=== delta A: {STEPS} steps on [{SLICE}] only (no replay) ===", flush=True)
-    restore(ps, base_params)
-    ft_a = finetune(model, slice_sources, STEPS, seed=11, dev=dev)
-    eval_a = evaluate(model, sources, d, dev, EVAL_SEED_A, gsm)
-    print(f"  A: ce_mix {eval_a['ce_mix']:.4f} gsm8k {eval_a['ce_gsm8k']:.4f} retrieval {eval_a['retrieval_acc']:.3f} "
-          f"| train loss {ft_a['loss_first10']:.3f} -> {ft_a['loss_last10']:.3f} ({ft_a['wall_s']:.0f}s)", flush=True)
-    path_a = save_delta(os.path.join(SAVE_DIR, f"a7_forget_{SLICE}{TAG}.pt"), ps, meta, base_step + STEPS, ft_a)
+    if "A" in ARMS:
+        print(f"=== delta A: {STEPS} steps on [{SLICE}] only (no replay) ===", flush=True)
+        restore(ps, base_params)
+        ft_a = finetune(model, slice_sources, STEPS, seed=11, dev=dev, opt_state=opt_state)
+        eval_a = evaluate(model, sources, d, dev, EVAL_SEED_A, gsm)
+        print(f"  A: ce_mix {eval_a['ce_mix']:.4f} gsm8k {eval_a['ce_gsm8k']:.4f} retrieval {eval_a['retrieval_acc']:.3f} "
+              f"| train loss {ft_a['loss_first10']:.3f} -> {ft_a['loss_last10']:.3f} ({ft_a['wall_s']:.0f}s, "
+              f"optimizer {ft_a['optimizer']})", flush=True)
+        path_a = save_delta(os.path.join(SAVE_DIR, f"a7_forget_{SLICE}{TAG}.pt"), ps, meta, base_step + STEPS, ft_a)
 
     # 3. B: clean delta (full mixture = replay)
-    print(f"\n=== delta B: {STEPS} steps on the full mixture (replay) ===", flush=True)
-    restore(ps, base_params)
-    ft_b = finetune(model, sources, STEPS, seed=11, dev=dev)
-    eval_b = evaluate(model, sources, d, dev, EVAL_SEED_A, gsm)
-    print(f"  B: ce_mix {eval_b['ce_mix']:.4f} gsm8k {eval_b['ce_gsm8k']:.4f} retrieval {eval_b['retrieval_acc']:.3f} "
-          f"| train loss {ft_b['loss_first10']:.3f} -> {ft_b['loss_last10']:.3f} ({ft_b['wall_s']:.0f}s)", flush=True)
-    path_b = save_delta(os.path.join(SAVE_DIR, f"a7_replay{TAG}.pt"), ps, meta, base_step + STEPS, ft_b)
+    if "B" in ARMS:
+        print(f"\n=== delta B: {STEPS} steps on the full mixture (replay) ===", flush=True)
+        restore(ps, base_params)
+        ft_b = finetune(model, sources, STEPS, seed=11, dev=dev, opt_state=opt_state)
+        eval_b = evaluate(model, sources, d, dev, EVAL_SEED_A, gsm)
+        print(f"  B: ce_mix {eval_b['ce_mix']:.4f} gsm8k {eval_b['ce_gsm8k']:.4f} retrieval {eval_b['retrieval_acc']:.3f} "
+              f"| train loss {ft_b['loss_first10']:.3f} -> {ft_b['loss_last10']:.3f} ({ft_b['wall_s']:.0f}s, "
+              f"optimizer {ft_b['optimizer']})", flush=True)
+        path_b = save_delta(os.path.join(SAVE_DIR, f"a7_replay{TAG}.pt"), ps, meta, base_step + STEPS, ft_b)
 
-    # 4. the gate on all three
-    decisions = {"A": gate_decision(eval_a, base_a, eps),
-                 "B": gate_decision(eval_b, base_a, eps),
-                 "C": gate_decision(base_a, base_a, eps)}
-    verdict = separation_verdict(decisions)
+    # 4. the gate on whatever ran (C always)
+    decisions = {"C": gate_decision(base_a, base_a, eps)}
+    if eval_a is not None:
+        decisions["A"] = gate_decision(eval_a, base_a, eps)
+    if eval_b is not None:
+        decisions["B"] = gate_decision(eval_b, base_a, eps)
+    verdict = (separation_verdict(decisions) if {"A", "B"} <= set(decisions)
+               else {"partial_run": True, "arms": sorted(decisions),
+                     **{f"{'rejects' if k == 'A' else 'passes'}_{k}": (not decisions[k]["promote"]) if k == "A" else decisions[k]["promote"]
+                        for k in decisions}})
     print("\n=== gate decisions (base = seed-777 evaluation; C = null delta) ===")
     for k, label in (("A", f"forgetting ({SLICE} only)"), ("B", "clean (replay)"), ("C", "null")):
-        print(f"  {k} {label:28s}: {fmt(decisions[k])}")
-    print("  per-source dCE, A vs B: " + " ".join(
-        f"{s}={decisions['A']['margins']['d_ce_by_source'][s]:+.3f}/{decisions['B']['margins']['d_ce_by_source'][s]:+.3f}"
-        for s in names))
-    print(f"  not applicable to a trunk delta: {decisions['A']['not_applicable']}")
+        if k in decisions:
+            print(f"  {k} {label:28s}: {fmt(decisions[k])}")
+    if eval_a is not None and eval_b is not None:
+        print("  per-source dCE, A vs B: " + " ".join(
+            f"{s}={decisions['A']['margins']['d_ce_by_source'][s]:+.3f}/{decisions['B']['margins']['d_ce_by_source'][s]:+.3f}"
+            for s in names))
+    elif eval_b is not None:
+        print("  per-source dCE, B: " + " ".join(
+            f"{s}={decisions['B']['margins']['d_ce_by_source'][s]:+.3f}" for s in names))
+    print(f"  not applicable to a trunk delta: {decisions['C']['not_applicable']}")
     print("\n=== verdict (H-A7 kill: reject A, pass B, pass C) ===")
     for k, v in verdict.items():
-        print(f"  [{'PASS' if v else 'FAIL'}] {k}")
-    print(f"\n  GATE {'SEPARATES' if verdict['gate_separates'] else 'DOES NOT SEPARATE'} | "
+        print(f"  [{'PASS' if v is True else ('FAIL' if v is False else v)}] {k}")
+    sep = verdict.get("gate_separates")
+    print(f"\n  GATE {'SEPARATES' if sep else ('DOES NOT SEPARATE' if sep is False else 'PARTIAL RUN (arms ' + ','.join(ARMS) + ')')} | "
           f"total wall {(time.perf_counter() - t_all) / 60:.1f} min | "
           f"one full eval {base_a['eval_wall_s']:.0f}s (nightly budget check)")
 
@@ -433,6 +468,7 @@ def main():
                                             NOISE_MULT=NOISE_MULT, EVAL_SEEDS=[EVAL_SEED_A, EVAL_SEED_B]).items()},
            "base": {"step": base_step, "meta": meta, "eval_seedA": base_a, "eval_seedB": base_b},
            "epsilon": eps,
+           "arms": ARMS, "resume_opt": RESUME_OPT,
            "deltas": {"A": {"finetune": ft_a, "eval": eval_a, "saved": path_a},
                       "B": {"finetune": ft_b, "eval": eval_b, "saved": path_b},
                       "C": {"eval": base_a}},

@@ -80,6 +80,20 @@ two kills. The arXiv IDs above are as reported by GLM's own search passes
 (it corrected one of its own from memory, Online-LoRA) — **not re-verified in
 this repo**; verify before citing in a paper.
 
+**Built and run 2026-08-30** (`validation/exp_a7_learning_gate.py`,
+`notebooks/a7_learning_gate.ipynb`, logs `validation/logs/exp_a7_learning_gate.*`).
+Two corrections to the composed rule surfaced in the build: three of its six
+terms cannot see a trunk delta (CoT precision and routing precision are
+model-free surfaces; NYT-vs-NLMS benchmarks memory methods), and thresholds
+must be *paired* (delta vs base on identical windows), not seed-to-seed.
+Result: the gate rejects a code-only forgetting update and names it (every
+unseen source +0.12–0.19 nats, the memorized `pretrain_ext` +1.09, trained
+source flat), passes the null, and rejected the replay arm for a *uniform*
++0.04–0.07 on all 13 sources — whose own train loss rose 3.05 → 3.27, i.e. a
+fresh-Adam-at-1e-4 perturbation of a converged checkpoint, not forgetting.
+Separation inconclusive on the clean arm; the LR ladder decides. Full record
+on H-A7.
+
 ### 3.3 von Oswald et al. 2019 is H0's hardening term, by name
 
 GLM identified the "von-Oswald-style output regularization" that makes H0
