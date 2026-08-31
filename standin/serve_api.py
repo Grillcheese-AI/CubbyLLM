@@ -64,7 +64,19 @@ def make_handler(brain):
             self.end_headers()
 
         def do_GET(self):
-            if self.path == "/health":
+            if self.path in ("/", "/index.html"):
+                page = os.path.join(os.path.dirname(os.path.abspath(__file__)), "demo.html")
+                try:
+                    body = open(page, "rb").read()
+                except OSError:
+                    self._send(404, {"error": "demo.html not found"})
+                    return
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+            elif self.path == "/health":
                 self._send(200, {"ok": True, "emitter": getattr(brain.emitter, "name", "?")})
             elif self.path == "/state":
                 self._send(200, brain.chat.chem.to_dict())
@@ -72,6 +84,13 @@ def make_handler(brain):
                 self._send(200, {"worlds": {n: len(getattr(w, "texts", []))
                                             for n, w in brain.worlds.items()},
                                  "cortices": sorted(brain.cortices)})
+            elif self.path.startswith("/events"):
+                try:
+                    since = int(self.path.split("since=", 1)[1].split("&")[0]) if "since=" in self.path else 0
+                except ValueError:
+                    since = 0
+                evs = [e for e in list(brain.events) if e["i"] > since]
+                self._send(200, {"next": evs[-1]["i"] if evs else since, "events": evs})
             else:
                 self._send(404, {"error": "unknown path"})
 

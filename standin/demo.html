@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cubby Console</title>
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --line:#21262d; --txt:#c9d1d9; --dim:#8b949e;
+          --green:#3fb950; --blue:#58a6ff; --amber:#d29922; --red:#f85149; --purple:#bc8cff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--txt);
+         font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; height:100vh; display:flex; flex-direction:column; }
+  header { padding:8px 14px; border-bottom:1px solid var(--line); display:flex; gap:16px; align-items:center; }
+  header b { color:var(--blue); }
+  #hormones { display:flex; gap:10px; margin-left:auto; align-items:center; }
+  .h { display:flex; flex-direction:column; align-items:center; width:46px; }
+  .h .bar { width:100%; height:5px; background:var(--line); border-radius:3px; overflow:hidden; }
+  .h .bar i { display:block; height:100%; background:var(--blue); width:0; transition:width .4s; }
+  .h label { color:var(--dim); font-size:10px; }
+  #emotion { color:var(--purple); }
+  main { flex:1; display:flex; min-height:0; }
+  #chat { flex:1; display:flex; flex-direction:column; border-right:1px solid var(--line); min-width:0; }
+  #msgs { flex:1; overflow-y:auto; padding:14px; }
+  .you { color:var(--amber); margin:8px 0 2px; }
+  .cubby { color:var(--txt); margin:0 0 8px; white-space:pre-wrap; }
+  .cubby small { color:var(--dim); }
+  #bar { display:flex; border-top:1px solid var(--line); }
+  #inp { flex:1; background:var(--panel); border:0; color:var(--txt); padding:12px 14px; font:inherit; outline:none; }
+  #send { background:var(--panel); border:0; border-left:1px solid var(--line); color:var(--blue); padding:0 18px; font:inherit; cursor:pointer; }
+  #console { flex:1.2; overflow-y:auto; padding:10px 14px; background:var(--panel); min-width:0; }
+  .ev { margin:1px 0; white-space:pre-wrap; word-break:break-word; }
+  .ev .k { display:inline-block; min-width:74px; }
+  .k-user{color:var(--amber)} .k-sense{color:var(--purple)} .k-route{color:var(--blue)}
+  .k-walk{color:var(--green)} .k-emit{color:var(--dim)} .k-vm{color:var(--green)}
+  .k-gate{color:var(--amber)} .k-learn{color:var(--green)} .k-speak{color:var(--txt)}
+  .k-explore{color:var(--blue)} .k-probe{color:var(--red)} .k-derive{color:var(--purple)}
+  .k-retrieve_fallback{color:var(--dim)}
+</style>
+</head>
+<body>
+<header>
+  <b>cubby</b> <span style="color:var(--dim)">[stand-in] console — every action below is real: routing, walks, VM runs, gates</span>
+  <span id="emotion">neutral</span>
+  <div id="hormones"></div>
+</header>
+<main>
+  <section id="chat">
+    <div id="msgs"></div>
+    <div id="bar">
+      <input id="inp" placeholder="talk to Cubby — try: go explore, then ask about the cubbyverse" autofocus>
+      <button id="send">send</button>
+    </div>
+  </section>
+  <section id="console"></section>
+</main>
+<script>
+const H = ["dopamine","serotonin","cortisol","oxytocin","noradrenaline"];
+const hormEl = document.getElementById("hormones");
+for (const h of H) hormEl.insertAdjacentHTML("beforeend",
+  `<div class="h"><div class="bar"><i id="h-${h}"></i></div><label>${h.slice(0,4)}</label></div>`);
+const msgs = document.getElementById("msgs"), con = document.getElementById("console");
+const inp = document.getElementById("inp");
+let since = 0, busy = false;
+
+function esc(s){ const d=document.createElement("div"); d.textContent=String(s); return d.innerHTML; }
+function line(kind, text){
+  con.insertAdjacentHTML("beforeend",
+    `<div class="ev"><span class="k k-${kind}">${kind}</span> ${esc(text)}</div>`);
+  con.scrollTop = con.scrollHeight;
+}
+function fmt(e){
+  const d = {...e}; delete d.i; delete d.t; delete d.kind;
+  if (e.kind === "sense") return `emotion=${d.emotion} ` + H.map(h=>`${h.slice(0,4)}=${(d.state?.[h]??0).toFixed(2)}`).join(" ");
+  if (e.kind === "walk") return `${d.verified ? "VERIFIED" : (d.reason||"walked")} answer=${d.answer??"-"} facts=[${(d.facts||[]).join(" | ")}]`;
+  if (e.kind === "speak") return `(${d.turn_kind}, ${d.register||"-"}) "${d.reply}"`;
+  return Object.entries(d).map(([k,v])=>`${k}=${typeof v==="object"?JSON.stringify(v):v}`).join(" ");
+}
+async function poll(){
+  try {
+    const ev = await (await fetch(`/events?since=${since}`)).json();
+    for (const e of ev.events){ line(e.kind, fmt(e)); }
+    since = ev.next;
+    const st = await (await fetch("/state")).json();
+    for (const h of H) document.getElementById(`h-${h}`).style.width = (100*st[h]).toFixed(0)+"%";
+    document.getElementById("emotion").textContent = st.emotion;
+  } catch (e) { /* server restarting; keep polling */ }
+  setTimeout(poll, busy ? 400 : 1200);
+}
+async function send(){
+  const text = inp.value.trim();
+  if (!text || busy) return;
+  inp.value = ""; busy = true;
+  msgs.insertAdjacentHTML("beforeend", `<div class="you">you&gt; ${esc(text)}</div>`);
+  msgs.insertAdjacentHTML("beforeend", `<div class="cubby" id="pending">…</div>`);
+  msgs.scrollTop = msgs.scrollHeight;
+  try {
+    const r = await fetch("/turn", {method:"POST", headers:{"Content-Type":"application/json"},
+                                    body: JSON.stringify({text})});
+    const rec = await r.json();
+    document.getElementById("pending").outerHTML =
+      `<div class="cubby">cubby&gt; ${esc(rec.reply ?? rec.error)} <small>[${esc(rec.kind||"error")}${rec.emotion?", "+esc(rec.emotion):""}]</small></div>`;
+  } catch (e) {
+    document.getElementById("pending").outerHTML = `<div class="cubby">cubby&gt; (connection error)</div>`;
+  }
+  busy = false; msgs.scrollTop = msgs.scrollHeight;
+}
+document.getElementById("send").onclick = send;
+inp.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+poll();
+</script>
+</body>
+</html>

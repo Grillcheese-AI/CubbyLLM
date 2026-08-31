@@ -224,5 +224,14 @@ def test_live_api_surface_turn_state_worlds():
         with urllib.request.urlopen(req, timeout=120) as r:
             rec = json.load(r)
         assert rec["reply"] == "Quuxville" and rec["emotion"]
+        # the console feed: the turn's reasoning/actions are visible events
+        ev = get("/events?since=0")
+        kinds = [e["kind"] for e in ev["events"]]
+        for k in ("user", "sense", "route", "walk", "gate", "speak"):
+            assert k in kinds, f"console must show {k}: {kinds}"
+        assert get(f"/events?since={ev['next']}")["events"] == []
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=30) as r:
+            page = r.read().decode("utf-8")
+        assert "Cubby Console" in page
     finally:
         httpd.shutdown()

@@ -37,6 +37,7 @@ answered through the brain's own retrieval — the serve stack's own number.
 from __future__ import annotations
 
 import argparse
+import collections
 import json
 import os
 import re
@@ -147,19 +148,24 @@ class ReasoningCortex:
         # distribution and the emitter derails (echoes the list, wrong style)
         return out[: self.k_facts + 1]
 
-    def task_answer(self, question: str, retriever) -> dict:
+    def task_answer(self, question: str, retriever, trace=None) -> dict:
         t0 = time.perf_counter()
+        trace = trace or (lambda kind, **d: None)
         facts, walk = self.walk_facts(question, retriever)
+        trace("walk", facts=list(facts), verified=walk["walk_verified"],
+              answer=walk["walk_answer"], reason=walk["walk_reason"])
         scores: list[float] = []
         if not facts:                                    # planner miss -> flat retrieval fallback
             hits = self.gather_facts(question, retriever)
             facts, scores = [f for _, f in hits], [s for s, _ in hits]
+            trace("retrieve_fallback", facts=list(facts))
         prompt = question + "\nFacts:\n" + "\n".join(f"- {f}" for f in facts) if facts else question
         gen = self.emitter.emit(prompt, max_new_tokens=450, system=EMITTER_SYSTEM,
                                 prefix=PROGRAM_PREFIX)
         raw = gen
         cleaned = _clean(gen)
         program = shim_isolver(cleaned) if cleaned else ""
+        trace("emit", chars=len(program), ok=bool(program))
         from cubbyllm.bridges import cubelang_client as cc
         if not program:
             vm_answer, vm_error = None, "no program emitted"
@@ -170,6 +176,7 @@ class ReasoningCortex:
                 vm_error = None
             except cc.CubelangRunError as e:
                 vm_answer, vm_error = None, str(e)[:200]
+        trace("vm", answer=vm_answer, error=vm_error)
         # ground check: the VM's answer must be the object of an offered fact —
         # the emitter may only ever bind what retrieval put on the table.
         grounded = False
@@ -182,6 +189,7 @@ class ReasoningCortex:
         agrees = (walk["walk_answer"] is not None and vm_answer is not None
                   and normalize(vm_answer) == normalize(walk["walk_answer"]))
         speak_ok = grounded and (agrees or not walk["walk_verified"])
+        trace("gate", grounded=grounded, walk_agrees=agrees, speak_ok=speak_ok)
         return {"kind": "task", "question": question, "facts": facts, "scores": scores,
                 "walk": walk, "program": program, "raw": raw, "vm_answer": vm_answer,
                 "vm_error": vm_error, "grounded": grounded, "walk_agrees": agrees,
@@ -219,9 +227,11 @@ class MemoryCortex:
             return text.strip().rstrip(".")
         return None
 
-    def contradiction(self, fact: str, world) -> str | None:
+    @staticmethod
+    def contradiction(fact: str, world) -> str | None:
         """A stored fact with the same (subject, relation) but a different
-        object, else None."""
+        object, else None. Static so any writer (the explorer's discovery
+        loop included) runs the same anti-poisoning gate."""
         t = parse_fact(fact)
         if t is None:
             return None
@@ -307,9 +317,20 @@ class CubbyBrain:
         self.memory = MemoryCortex(emitter, self.facts, exe=exe)
         self.cortices: dict[str, object] = {}                   # plugin cortices: match/handle
         self._observers: list = []
+        self.events: collections.deque = collections.deque(maxlen=500)   # the console feed
+        self._event_i = 0
+
+    def trace(self, kind: str, **data) -> None:
+        """One console-visible event. Bounded; `serve_api` streams these so a
+        demo window can SHOW the reasoning and actions as they happen."""
+        self._event_i += 1
+        self.events.append({"i": self._event_i, "t": round(time.time(), 3),
+                            "kind": kind, **data})
 
     # ── plugin mount (MindForge style: plugins sit on top, never inside) ────
     def mount(self, plugin) -> None:
+        if hasattr(plugin, "bind"):                      # hand the plugin the brain it sits on
+            plugin.bind(self)
         for name, world in plugin.worlds().items():
             if name in self.worlds:
                 raise ValueError(f"world name already mounted: {name}")
@@ -345,10 +366,14 @@ class CubbyBrain:
 
     # ── one turn ────────────────────────────────────────────────────────────
     def turn(self, user_text: str, feedback: str | None = None) -> dict:
+        self.trace("user", text=user_text)
         self.chat.nudge(user_text)                       # sense: appraisal -> ODE
+        self.trace("sense", signals=getattr(self.chat, "signals", None),
+                   state=dict(self.chat.state), emotion=self.chat.emotion)
         lang = guess_lang(user_text)
         dont_know = T(self.facts, "dont_know_line", lang)
         route = self.route(user_text)
+        self.trace("route", **route)
         cortex = route["cortex"]
 
         if cortex == "talk":
@@ -357,12 +382,14 @@ class CubbyBrain:
         elif cortex == "memory":
             world = self.worlds[route.get("world", "facts")]
             learn = self.memory.learn(user_text, route["fact"], world)
+            self.trace("learn", fact=learn["fact"], accepted=learn["accepted"],
+                       reason=learn["reason"], vm_written=learn["vm_written"])
             offered = ([learn["line"], dont_know] if learn["line"] and voice_ok(learn["line"], self.facts)
                        else [dont_know])
             rec = self.chat.mediate(user_text, offered, rejected=[], feedback=feedback)
             rec.update({"kind": "learn", "learn": learn})
         elif cortex == "reasoning":
-            task = self.reason.task_answer(user_text, self.worlds[route["world"]])
+            task = self.reason.task_answer(user_text, self.worlds[route["world"]], trace=self.trace)
             offered = ([task["vm_answer"], dont_know] if task["speak_ok"] else [dont_know])
             rec = self.chat.mediate(user_text, offered, rejected=[], feedback=feedback)
             rec.update({"kind": "task", "task": task})
@@ -375,6 +402,8 @@ class CubbyBrain:
         rec["route"] = route
         rec["signals"] = getattr(self.chat, "signals", None)
         rec["emotion"] = self.chat.emotion
+        self.trace("speak", turn_kind=rec["kind"], reply=rec["reply"],
+                   offered=len(rec.get("offered", [])), register=rec.get("register"))
         for obs in self._observers:
             try:
                 obs.on_turn(dict(rec))
