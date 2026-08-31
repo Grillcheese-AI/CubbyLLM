@@ -70,7 +70,13 @@ landed decisively.**
 | identity (22) | — | **identity_ok 1.000** (EN + FR) | held |
 
 This is the serviceable emitter: retrieve → format the Facts block → emit → VM verifies.
-Export the v3 GGUFs from the notebook for local serving (the ones on Drive are v1).
+**v3 Q4_K_M verified locally (2026-08-31, `standin/models/emitter_v3.Q4_K_M.gguf`)** by two
+discriminating probes (`scripts/probe_v3.py`): closes the think block immediately and binds an
+*invented* Facts block (Zorblax → Fnordovia → Quuxville) from the prompt, not from memory.
+Drive's `Q8_0` is still the v1 export. **GPU serving works again**: the 2026-08-30 system crash
+was the stale June llama-cpp-python 0.3.30 Vulkan backend — after upgrading to **0.3.35**
+(`scripts/probe_v3_gpu.ps1 -Upgrade`, Vulkan wheel index) the same card runs the Q4 fully
+offloaded at ~1.5 s per program.
 
 **v3 (data): chain prompts carry the walked facts** (`question + "Facts:" + one
 line per hop`, from the harvest trace) — at serve time the host retrieves first and formats the
