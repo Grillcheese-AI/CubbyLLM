@@ -1,0 +1,116 @@
+"""Pins for the serve loop (standin/serve.py): routing, fact expansion,
+ground check, and the VM-mediated turn (live tests skip without the exe).
+Run: python -m pytest standin/tests -q"""
+from __future__ import annotations
+
+import pathlib
+import sys
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+for p in (str(ROOT), str(ROOT / "validation"), str(ROOT / "standin"), str(ROOT / "standin" / "data")):
+    if p not in sys.path:
+        sys.path.insert(0, p)
+
+import identity as idn  # noqa: E402
+import serve as sv  # noqa: E402
+
+F = idn.load_facts()
+DK_EN = idn.T(F, "dont_know_line", "en")
+
+STORE = [
+    "Fnordovia is the homeland of Zorblax the Painter",
+    "Quuxville is the capital of Fnordovia",
+    "berlin is the capital of germany",
+    "mars is the planet of olympus mons",
+]
+
+
+def overlap_retriever(query, k):
+    """Deterministic token-overlap retriever for tests."""
+    q = set(query.lower().split())
+    scored = sorted(((len(q & set(f.lower().split())) / (len(q) or 1), f) for f in STORE), reverse=True)
+    return [(s, f) for s, f in scored[:k] if s > 0]
+
+
+class ChainEmitter:
+    """Emits a correct CotChain by actually chaining: takes the top fact's
+    object, finds the offered fact that mentions it, answers with that fact's
+    object — enough to pin the task path end to end."""
+    name = "fake-chain"
+
+    def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+        assert "Facts:" in prompt, "task prompts must carry the Facts block"
+        assert prefix.startswith("use vsa"), "task turns must pin the CotChain style"
+        facts = [l[2:] for l in prompt.split("Facts:\n", 1)[1].splitlines() if l.startswith("- ")]
+        from cubbyllm.reasoning.planner import parse_fact
+        first = parse_fact(facts[0])
+        nxt = next(f for f in facts[1:] if first.obj.lower() in f.lower())
+        answer = parse_fact(nxt).obj
+        return ("use vsa;\n\nprogram CotChain implements ISolve {\n"
+                "    public function solve(mention: str): str {\n"
+                "        create frame: number;\n"
+                f'        bind frame, H1_ANSWER, "{answer}";\n'
+                "        return recover(frame, H1_ANSWER);\n    }\n}\n")
+
+
+class ChatterEmitter:
+    name = "fake-chat"
+
+    def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+        return "I'm Cubby — a small model that thinks big. Glad to help!"
+
+
+def test_gather_facts_expands_through_the_top_facts_object():
+    s = sv.CubbyServe(ChatterEmitter(), overlap_retriever, STORE)
+    facts = [f for _, f in s.gather_facts("What is the homeland of Zorblax the Painter?")]
+    assert facts[0] == STORE[0]
+    assert STORE[1] in facts, "the expansion hop must pull the capital-of-Fnordovia fact"
+
+
+def test_clean_strips_think_and_fences():
+    assert sv._clean("<think>hm</think>\n```\nprogram A {}\n```") == "program A {}\n"
+
+
+def test_clean_cuts_echoed_header_and_rejects_babble():
+    echoed = "# Which country?\n- a fact echoed as a bullet\nuse vsa;\nprogram A {}"
+    assert sv._clean(echoed) == "use vsa;\nprogram A {}\n"
+    assert sv._clean("# The country of the currency of the country is the United States.") == ""
+
+
+def _exe_or_skip():
+    from cubbyllm.bridges import cubelang_client as cc
+    try:
+        return cc.find_cubelang_exe()
+    except cc.CubelangNotFound as e:
+        pytest.skip(f"cubelang.exe not found ({e})")
+
+
+def test_live_task_turn_grounded_answer_is_spoken_through_the_vm():
+    _exe_or_skip()
+    s = sv.CubbyServe(ChainEmitter(), overlap_retriever, STORE, route_tau=0.2)
+    rec = s.turn("What is the capital of the homeland of Zorblax the Painter?")
+    assert rec["kind"] == "task"
+    assert rec["task"]["grounded"] is True and rec["task"]["vm_answer"] == "Quuxville"
+    assert rec["reply"] == "Quuxville" and rec["offered"] == ["Quuxville", DK_EN]
+
+
+def test_live_ungrounded_task_answer_degrades_to_the_dont_know_line():
+    _exe_or_skip()
+
+    class Confabulator(ChainEmitter):
+        def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+            return super().emit(prompt, max_new_tokens, system, prefix).replace("Quuxville", "Atlantis")
+
+    s = sv.CubbyServe(Confabulator(), overlap_retriever, STORE, route_tau=0.2)
+    rec = s.turn("What is the capital of the homeland of Zorblax the Painter?")
+    assert rec["task"]["vm_answer"] == "Atlantis" and rec["task"]["grounded"] is False
+    assert rec["reply"] == DK_EN and rec["offered"] == [DK_EN]
+
+
+def test_live_low_retrieval_routes_to_chat():
+    _exe_or_skip()
+    s = sv.CubbyServe(ChatterEmitter(), overlap_retriever, STORE, route_tau=0.9)
+    rec = s.turn("Hello!")
+    assert rec["kind"] == "chat" and "Cubby" in rec["reply"]

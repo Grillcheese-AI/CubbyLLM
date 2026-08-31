@@ -150,25 +150,33 @@ class CubbyChat:
         offered.append(dont_know)
         return offered, rejected
 
-    def turn(self, user_text: str, feedback: str | None = None) -> dict:
+    def mediate(self, user_text: str, offered: list[str], rejected: list[str] | None = None,
+                feedback: str | None = None) -> dict:
+        """The VM-mediated half of a turn, shared by chat AND task replies:
+        render CubbyTalk with `offered` embedded, think() ASKs, the host
+        selects offered[0], resume returns it (the VM rejects anything not
+        offered), act() remembers, observe() records feedback."""
         from cubbyllm.bridges import cubelang_client as cc
         t0 = time.perf_counter()
         register = derived(self.state)["register"]
-        offered, rejected = self.candidates(user_text)
         src = render_talk_program(offered)
         asked = cc.run_program_proto(src, fn="think", args=[user_text, register], exe=self.exe)
         if not asked.get("suspended"):
             raise RuntimeError(f"CubbyTalk.think did not ASK: {asked}")
         if asked["candidates"] != offered:
             raise RuntimeError("the VM offered different candidates than the host embedded")
-        chosen = offered[0]                              # policy: the model's reply when it passed, else the don't-know line
+        chosen = offered[0]                              # policy: the first surviving candidate
         res = cc.resume_program_proto(src, fn="think", args=[user_text, register], answers=[chosen], exe=self.exe)
         reply = res["result"]
         acted = cc.run_program_proto(src, fn="act", args=[reply, register], exe=self.exe)
         if feedback is not None:
             cc.run_program_proto(src, fn="observe", args=[feedback, register], exe=self.exe)
         rec = {"user": user_text, "reply": reply, "register": register, "state": dict(self.state),
-               "offered": offered, "rejected": rejected, "question": asked["question"],
+               "offered": offered, "rejected": list(rejected or []), "question": asked["question"],
                "acted": acted["result"], "wall_s": round(time.perf_counter() - t0, 3)}
         self.history.append(rec)
         return rec
+
+    def turn(self, user_text: str, feedback: str | None = None) -> dict:
+        offered, rejected = self.candidates(user_text)
+        return self.mediate(user_text, offered, rejected, feedback)

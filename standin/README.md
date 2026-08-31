@@ -32,6 +32,7 @@ trains. It is replaced the day the 2B checkpoint exists.
 | `emitter.py` | The trunk-facing interface (`Emitter` protocol) and three implementations: `LlamaCppEmitter` (in-process GGUF via `llama-cpp-python` 0.3.30 — **verified 2026-08-30: it bundles `ggml-vulkan.dll` and finds the RX 6750 XT**; no standalone `llama-server` exists on this machine; end-to-end check same day with `LiquidAI/LFM2.5-1.2B-Instruct-Q4_K_M.gguf` in `standin/models/` (gitignored): the LFM2 architecture loads, first turn 4.2 s incl. load, next turns ~0.2 s, and the untrained base already reads the injected hormonal block), `LlamaServerEmitter` (OpenAI-compatible HTTP, e.g. `python -m llama_cpp.server`), `ReplayEmitter` (the notebook's recorded generations). |
 | `chat.py` | **The VM-mediated chat turn.** `CubbyTalk implements IAgent` is rendered per turn with the model's voice-filtered reply + the verbatim don't-know line embedded as literals; `think` ASKs, the host selects, `VM::resume` rejects anything not offered (tested through the whole stack), `act` remembers, `observe` counts. Hormonal state reaches the model via `identity_system(state)`; `nudge()` is a transparent placeholder for the host's neurochemistry. The voice filter is host-side (`identity.voice_ok`) because two VM string constructs are silent stubs under strict — pinned in cubelang `tests/str_semantics.rs`. |
 | `eval_emitter_vm.py` | The **verified** read: runs generated programs through `cubelang.exe`, compares to gold (arithmetic / kernels / chains) or to execution (role-binding). Consumes the Colab notebook's `val_generations.json` or generates live through `LlamaServerEmitter`. |
+| `serve.py` | **The wired serve loop** (2026-08-31): one process, one turn — route (retrieval score vs `route_tau`) → chat (`CubbyChat`, hormones) or task: plan+**walk** the fact store with the measured CoT pipeline (`cubbyllm.reasoning.answer` at the harvest-v2 operating point tau_vm=0.2202 / tau_ret=0.5959; flat top-k fallback when the planner can't parse) → Facts block of the walked facts → v3 emitter with the CotChain opening **prefilled** → VM executes → ground check + **consistency gate** (a verified walk that disagrees with the emitter's answer means the answer is never spoken) → the reply or the verbatim don't-know line. Every spoken reply, task or chat, goes through `CubbyTalk`'s ASK (`CubbyChat.mediate`) — the VM rejects any selection it didn't offer. Task programs never see the hormonal state. REPL: `python standin/serve.py --gguf standin/models/emitter_v3.Q4_K_M.gguf`. |
 | `tests/` | Unit pins for the builder's pure helpers + the import guard. `python -m pytest standin/tests -q` |
 | `../notebooks/standin_emitter_sft.ipynb` | Unsloth LoRA SFT on Colab, format-level exact-match eval, GGUF export to Drive. |
 
@@ -68,6 +69,21 @@ landed decisively.**
 | arithmetic (60) | 1.000 | **0.650** | 0.617 → 0.650 |
 | role_binding (30) | 1.000 | — | all execute |
 | identity (22) | — | **identity_ok 1.000** (EN + FR) | held |
+
+**Serve selftest (2026-08-31, `data/out/serve_selftest_v3.json`; 25 val chain questions with
+their Facts blocks STRIPPED — serve retrieves/walks its own facts from a 2,942-fact store,
+the one link no prior eval covered):** gold_match **0.76**, walked-facts recovery 0.96;
+what the turn would actually SAY: **76% correct, 20% the don't-know line, 4% wrong**
+(the consistency gate caught 5 of the 6 emitter misses — their verified walks held gold and
+disagreed; the one spoken-wrong is the row whose walk failed, leaving nothing to catch it).
+Getting here was a ladder of three measured serve-side failures, each a real finding:
+flat top-k facts with distractors → **0/25** (the model learned "every fact = a hop" and
+`answer_fn`'s last hop reads a distractor; style flips to the event/kernel shapes);
+prefilling only `program CotChain … {` mid-line → still 0/25 (degenerate flattened
+non-syntax — the prefill must run through `create frame: number;`); walking at
+`tau_vm=0.0` → every good walk banned (the control role's ~0.05 similarity always reads
+as a violation at that degenerate threshold). Steering note: serve prefills the CotChain
+opening; `eval_emitter_vm`'s 0.929 was measured WITHOUT steering.
 
 This is the serviceable emitter: retrieve → format the Facts block → emit → VM verifies.
 **v3 Q4_K_M verified locally (2026-08-31, `standin/models/emitter_v3.Q4_K_M.gguf`)** by two

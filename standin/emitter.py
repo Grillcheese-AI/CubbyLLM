@@ -36,10 +36,14 @@ class Emitter(Protocol):
 
     name: str
 
-    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None) -> str:
+    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
+             prefix: str = "") -> str:
         """`system` overrides the default system prompt — this is how the host
         injects the hormonal-state block (standin/data/identity.py) for chat
-        turns; emitter turns leave it None and get the strict prompt."""
+        turns; emitter turns leave it None and get the strict prompt.
+        `prefix` is forced assistant-prefill text (style steering: the serve
+        loop pins task turns to the CotChain opening); implementations return
+        prefix + continuation so callers always see the full program."""
         ...
 
 
@@ -54,7 +58,10 @@ class LlamaServerEmitter:
         self.timeout = timeout
         self.name = f"llama-server:{model}"
 
-    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None) -> str:
+    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
+             prefix: str = "") -> str:
+        if prefix:
+            raise NotImplementedError("assistant prefill is not supported over the chat endpoint")
         body = json.dumps({
             "model": self.model,
             "messages": [{"role": "system", "content": system or self.system},
@@ -113,11 +120,12 @@ class LlamaCppEmitter:
                               verbose=self.verbose, seed=0)
         return self._llm
 
-    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None) -> str:
-        text = render_chatml(system or self.system, prompt, self.prefill)
+    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
+             prefix: str = "") -> str:
+        text = render_chatml(system or self.system, prompt, self.prefill + prefix)
         out = self._load().create_completion(text, temperature=0.0, max_tokens=int(max_new_tokens), seed=0,
                                              stop=["<|im_end|>"])
-        return out["choices"][0]["text"]
+        return prefix + out["choices"][0]["text"]
 
 
 class ReplayEmitter:
@@ -129,8 +137,9 @@ class ReplayEmitter:
         self._by_prompt = {g["prompt"]: g["generated"] for g in generations}
         self.name = name
 
-    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None) -> str:
+    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
+             prefix: str = "") -> str:
         try:
-            return self._by_prompt[prompt]
+            return self._by_prompt[prompt]                # recordings are complete programs
         except KeyError:
             raise KeyError(f"no recorded generation for prompt: {prompt[:80]!r}") from None
