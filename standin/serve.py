@@ -496,11 +496,17 @@ def main():
     ap.add_argument("--route-tau", type=float, default=0.30)
     ap.add_argument("--selftest", type=int, default=0)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--pacman", action="store_true",
+                    help="mount cubby-man in the cubbyverse pac maze (standin/pacman.py)")
     args = ap.parse_args()
     chains = load_val_chains(args.selftest) if args.selftest else []
     extra = [f for r in chains for f in given_facts(r)]
     serve = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers,
                         extra_facts=extra)
+    if args.pacman:
+        from pacman import CubbyPac
+        serve.mount(CubbyPac())
+        print("mounted: cubby-man in the pac maze (say 'play pacman for 30')")
     if args.selftest:
         selftest(serve, chains, args.tag)
         return

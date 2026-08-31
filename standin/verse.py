@@ -105,9 +105,14 @@ class ToyVerse:
 class CubbyMan:
     """The explorer-cortex: owns the cubbyverse world model, starts with the
     basics, learns as he goes. Implements the plugin contract in one object
-    (worlds/cortices/bind/on_turn-free)."""
+    (worlds/cortices/bind/on_turn-free). Subclasses re-skin it for other
+    worlds (see standin/pacman.py) by overriding the class attrs, the env,
+    and the `on_arrive` hook."""
 
     name = "cubbyverse"
+    CORTEX = "game"
+    DIR_NAMES = ("north", "south", "east", "west")
+    OPP = _OPP
     _GO = re.compile(r"\b(explore|wander|play|adventure|explore[rz]?|balade|visite|joue|aventure)\b", re.I)
 
     def __init__(self, env: ToyVerse | None = None, exe: str | None = None, seed: int = 0,
@@ -116,10 +121,10 @@ class CubbyMan:
         self.exe = exe
         self.rng = random.Random(seed)
         self.probe = float(probe)                        # chance of trying an unoffered direction
-        self.world = FactStore(name="cubbyverse")
-        # the basics — everything else must be discovered
-        self.world.add(f"cubbyman is the explorer of the cubbyverse")
-        self.world.add(f"{self.env.start} is the start of the cubbyverse")
+        self.world = FactStore(name=self.name)
+        self._nbr_re = re.compile(rf"^(?P<b>.+?) is the (?P<d>{'|'.join(self.DIR_NAMES)}) "
+                                  rf"neighbor of (?P<a>.+)$")
+        self._seed_basics()                              # everything else must be discovered
         self.place = self.env.start
         self.visits: dict[str, int] = {}
         self.chem = None                                 # set by bind(); optional
@@ -128,7 +133,17 @@ class CubbyMan:
         self.anomalies: list[str] = []                   # a guard that FAILED to reject
         self.log: list[dict] = []
         self._learn(self.env.observe(self.place))        # he can see where he stands
+        self.on_arrive(self.place)
         self.visits[self.place] = 1
+
+    def _seed_basics(self) -> None:
+        self.world.add(f"cubbyman is the explorer of the {self.name}")
+        self.world.add(f"{self.env.start} is the start of the {self.name}")
+
+    def on_arrive(self, place: str) -> int:
+        """Hook for worlds where arriving DOES something (eating a pellet,
+        triggering an event). Returns extra facts learned."""
+        return 0
 
     # ── plugin contract ─────────────────────────────────────────────────────
     def bind(self, brain) -> None:
@@ -141,10 +156,10 @@ class CubbyMan:
             self._trace(kind, **data)
 
     def worlds(self) -> dict[str, FactStore]:
-        return {"cubbyverse": self.world}
+        return {self.name: self.world}
 
     def cortices(self) -> dict[str, object]:
-        return {"game": self}
+        return {self.CORTEX: self}
 
     def match(self, text: str) -> float:
         return 1.0 if self._GO.search(text) else 0.0
@@ -185,7 +200,7 @@ class CubbyMan:
         the guard ever ACCEPTS, that is an anomaly worth recording, not a
         fact worth learning."""
         from cubbyllm.bridges import cubelang_client as cc
-        missing = sorted(set(_DIRS.values()) - set(dirs))
+        missing = sorted(set(self.DIR_NAMES) - set(dirs))
         if not missing or self.rng.random() >= self.probe:
             return None
         d = self.rng.choice(missing)
@@ -220,6 +235,7 @@ class CubbyMan:
         self.visits[self.place] = self.visits.get(self.place, 0) + 1
         obs = self.env.observe(self.place)
         new = self._learn(obs)
+        new += self.on_arrive(self.place)                # world-specific arrival effects (eating…)
         new += self.derive_symmetry(obs)                 # join facts the moment they land
         if self.chem is not None:                        # discovery feeds curiosity
             self.chem.update(novelty=new / max(1, len(obs)), valence=0.2 * min(1, new))
@@ -230,8 +246,6 @@ class CubbyMan:
         return rec
 
     # ── his own programs: join known facts on the VM ────────────────────────
-    _NBR = re.compile(r"^(?P<b>.+?) is the (?P<d>north|south|east|west) neighbor of (?P<a>.+)$")
-
     def _certify_join(self, program: str, expect: str) -> bool:
         """Run one of his own join programs; the derivation is accepted only
         if it executes and recovers exactly the proposed object."""
@@ -249,10 +263,10 @@ class CubbyMan:
         from serve import MemoryCortex
         n = 0
         for f in facts:
-            m = self._NBR.match(" ".join(f.split()))
+            m = self._nbr_re.match(" ".join(f.split()))
             if not m or m.group("b") == "a wall":
                 continue
-            derived = f"{m.group('a')} is the {_OPP[m.group('d')]} neighbor of {m.group('b')}"
+            derived = f"{m.group('a')} is the {self.OPP[m.group('d')]} neighbor of {m.group('b')}"
             if derived in self.world or MemoryCortex.contradiction(derived, self.world) is not None:
                 continue
             program = ("use vsa;\n\nprogram JoinSym implements ISolve {\n"
@@ -274,7 +288,7 @@ class CubbyMan:
         n = 0
         by_place: dict[str, int] = {}
         for f in self.world.texts:
-            m = self._NBR.match(f)
+            m = self._nbr_re.match(f)
             if m and m.group("b") != "a wall":
                 by_place[m.group("a")] = by_place.get(m.group("a"), 0) + 1
         for place, count in sorted(by_place.items()):

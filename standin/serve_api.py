@@ -133,8 +133,14 @@ def main():
     ap.add_argument("--route-tau", type=float, default=0.30)
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=8765)
+    ap.add_argument("--pacman", action="store_true",
+                    help="mount cubby-man in the cubbyverse pac maze (standin/pacman.py)")
     args = ap.parse_args()
     brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers)
+    if args.pacman:
+        from pacman import CubbyPac
+        brain.mount(CubbyPac())
+        print("mounted: cubby-man in the pac maze (say 'play pacman for 30')")
     serve_http(brain, args.host, args.port).serve_forever()
 
 
