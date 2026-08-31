@@ -1,34 +1,37 @@
-"""serve — the stand-in serve loop, wired end to end.
+"""serve — the stand-in brain, wired end to end.
 
 Wired: STANDALONE (stand-in; nothing in cubbyllm/ imports this).
 
-One process, one turn at a time:
+The turn is a brain pipeline (owner's shape, 2026-08-31):
 
-    question ──route──► TASK: plan+walk the fact store with the measured CoT
-                        pipeline (cubbyllm.reasoning.answer — v3's training
-                        prompts carried WALKED facts, so serve must too; flat
-                        top-k is the fallback when the planner can't parse)
-                        ──► Facts block ──► v3 emitter (CotChain opening
-                        prefilled) ──► VM executes (answer_fn) ──► ground
-                        check (the answer must be an object of an offered
-                        fact) ──► spoken reply
-              └───────► CHAT: CubbyChat.candidates (voice-filtered)
-    …and EVERY spoken reply — task or chat — goes through CubbyTalk's ASK
-    (`CubbyChat.mediate`): the VM offers the candidates and rejects any
-    selection that was not offered. The don't-know line (user's language) is
-    always a candidate and is what an ungrounded task answer degrades to.
+    input ──► sense (appraisal → the cubemind neurochemistry ODE; hormones
+              modulate ROUTING CAUTION via modulate_threshold, never facts)
+          ──► fast route (the SNN slot: today a lexical + retrieval read —
+              the interface is shaped for the spikeybrain SNN port, and this
+              implementation does NOT claim to be one)
+          ──► cortex router ──► the right cortex:
+                MemoryCortex     "remember that …" / a bare template fact —
+                                 gate (parse, contradiction, dedup) → world
+                                 .add() → the trained Evt write through the
+                                 VM → it is retrievable NEXT turn (live
+                                 learning, host-store durable)
+                ReasoningCortex  plan+walk the routed world (measured CoT
+                                 pipeline, tau_vm=0.2202/tau_ret=0.5959) →
+                                 Facts block → v3 emitter (CotChain opening
+                                 prefilled) → VM → ground check + consistency
+                                 gate (a verified walk that disagrees vetoes)
+                plugin cortices  mounted MindForge-style (cubbyverse mounts
+                                 its world models / game here; it imports us,
+                                 never the reverse)
+                TalkCortex       CubbyChat — the DEFAULT, and the only EXIT:
+    every spoken reply, from ANY cortex, leaves through CubbyTalk's ASK
+    (`CubbyChat.mediate`) — the VM rejects a reply it was not offered, and
+    the voice rules + the verbatim don't-know line hold whatever is mounted.
 
-Routing v0: if the best retrieval score for the question is below
-`route_tau`, the turn is chat; otherwise it is a task. The hormonal state is
-shared (CubbyChat owns it; `nudge` per turn) and reaches the emitter only
-through chat turns — task programs are never modulated (facts, not tone).
+`--selftest N`: N val chain questions with their Facts blocks STRIPPED,
+answered through the brain's own retrieval — the serve stack's own number.
 
-`--selftest N` is the serve loop's OWN measured number: it takes N chain
-questions from the val split, STRIPS their given Facts block, retrieves with
-its own retriever, and reports how often the VM's answer matches gold — the
-link (flat retrieval instead of the walked facts) that no prior eval covered.
-
-  python standin/serve.py --gguf standin/models/emitter_v3.Q4_K_M.gguf              # REPL
+  python standin/serve.py --gguf standin/models/emitter_v3.Q4_K_M.gguf   # REPL
   python standin/serve.py --gguf ... --selftest 25 --tag _v3
 """
 from __future__ import annotations
@@ -50,9 +53,10 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-from build_emitter_sft import answer_fn, shim_isolver  # noqa: E402
-from chat import RESTING, CubbyChat  # noqa: E402
-from identity import EMITTER_SYSTEM, T, guess_lang, load_facts  # noqa: E402
+from build_emitter_sft import answer_fn, shim_isolver, wrap_role_prompt  # noqa: E402
+from chat import CubbyChat  # noqa: E402
+from identity import EMITTER_SYSTEM, T, guess_lang, load_facts, voice_ok  # noqa: E402
+from worlds import FactStore, route_world  # noqa: E402
 
 from cubbyllm.reasoning import answer as pipeline_answer  # noqa: E402
 from cubbyllm.reasoning.planner import normalize, parse_fact  # noqa: E402
@@ -86,8 +90,9 @@ def _clean(gen: str) -> str:
     return ""
 
 
-class CubbyServe:
-    """The assembled stand-in: retriever + emitter + VM + chat, one state."""
+# ── the reasoning cortex ────────────────────────────────────────────────────
+class ReasoningCortex:
+    """plan+walk → Facts block → emitter → VM → ground + consistency gates."""
 
     # the measured verify/walk operating point (cot_harvest_v2:
     # validation/logs/exp_m3_cot_pipeline_v2.log); tau_vm=0.0 is degenerate —
@@ -96,25 +101,33 @@ class CubbyServe:
     TAU_VM = 0.22021484375
     TAU_RET = 0.595863088965416
 
-    def __init__(self, emitter, retriever, store_texts: list[str], facts: dict | None = None,
-                 exe: str | None = None, route_tau: float = 0.30, k_facts: int = 3,
+    def __init__(self, emitter, exe: str | None = None, k_facts: int = 3,
                  tau_vm: float = TAU_VM, tau_ret: float = TAU_RET) -> None:
         self.emitter = emitter
-        self.retriever = retriever                       # (query, k) -> [(score, fact_text)]
-        self.store_texts = store_texts
-        self.facts = facts or load_facts()
         self.exe = exe
-        self.route_tau = float(route_tau)
         self.k_facts = int(k_facts)
         self.tau_vm = float(tau_vm)
         self.tau_ret = float(tau_ret)
-        self.chat = CubbyChat(emitter, self.facts, exe=exe)
 
-    # ── the task half ───────────────────────────────────────────────────────
-    def gather_facts(self, question: str) -> list[tuple[float, str]]:
-        """Top-k for the question plus ONE expansion hop through the best
-        facts' objects (multi-hop questions need the next link, which does not
-        share words with the question). Deduped, discovery order."""
+    def walk_facts(self, question: str, retriever) -> tuple[list[str], dict]:
+        """Plan+walk through the measured CoT pipeline: the walked facts, in
+        hop order, are what v3's chain prompts were trained on. Empty when
+        the planner can't parse the question or the walk finds no path."""
+        from cubbyllm.bridges import cubelang_client as cc
+
+        def run_fn(source: str, fn: str) -> dict:
+            return cc.run_program_proto(source, fn=fn, exe=self.exe)
+
+        res = pipeline_answer(question, retriever, run_fn, tau_vm=self.tau_vm,
+                              tau_ret=self.tau_ret, top_k=self.k_facts, max_repairs=3)
+        facts = [h.fact for h in res.trace if h.fact]
+        meta = {"walk_answer": res.answer, "walk_verified": res.verified,
+                "walk_reason": res.reason, "repairs": res.repairs_used}
+        return facts, meta
+
+    def gather_facts(self, question: str, retriever) -> list[tuple[float, str]]:
+        """Flat fallback: top-k for the question plus ONE expansion hop
+        through the best facts' objects. Deduped, discovery order."""
         seen, out = set(), []
 
         def take(hits):
@@ -124,38 +137,22 @@ class CubbyServe:
                     seen.add(key)
                     out.append((float(s), f))
 
-        first = self.retriever(question, self.k_facts)
+        first = retriever(question, self.k_facts)
         take(first)
         for _, f in first[:2]:
             t = parse_fact(f)
             if t is not None:
-                take(self.retriever(f"{t.obj} ", 2))
+                take(retriever(f"{t.obj} ", 2))
         # v3 trained on 1-3 walked facts; past ~4 the block is out of
         # distribution and the emitter derails (echoes the list, wrong style)
         return out[: self.k_facts + 1]
 
-    def walk_facts(self, question: str) -> tuple[list[str], dict]:
-        """Plan+walk through the measured CoT pipeline: the walked facts, in
-        hop order, are what v3's chain prompts were trained on. Empty when
-        the planner can't parse the question or the walk finds no path."""
-        from cubbyllm.bridges import cubelang_client as cc
-
-        def run_fn(source: str, fn: str) -> dict:
-            return cc.run_program_proto(source, fn=fn, exe=self.exe)
-
-        res = pipeline_answer(question, self.retriever, run_fn, tau_vm=self.tau_vm,
-                              tau_ret=self.tau_ret, top_k=self.k_facts, max_repairs=3)
-        facts = [h.fact for h in res.trace if h.fact]
-        meta = {"walk_answer": res.answer, "walk_verified": res.verified,
-                "walk_reason": res.reason, "repairs": res.repairs_used}
-        return facts, meta
-
-    def task_answer(self, question: str) -> dict:
+    def task_answer(self, question: str, retriever) -> dict:
         t0 = time.perf_counter()
-        facts, walk = self.walk_facts(question)
+        facts, walk = self.walk_facts(question, retriever)
         scores: list[float] = []
         if not facts:                                    # planner miss -> flat retrieval fallback
-            hits = self.gather_facts(question)
+            hits = self.gather_facts(question, retriever)
             facts, scores = [f for _, f in hits], [s for s, _ in hits]
         prompt = question + "\nFacts:\n" + "\n".join(f"- {f}" for f in facts) if facts else question
         gen = self.emitter.emit(prompt, max_new_tokens=450, system=EMITTER_SYSTEM,
@@ -190,28 +187,214 @@ class CubbyServe:
                 "vm_error": vm_error, "grounded": grounded, "walk_agrees": agrees,
                 "speak_ok": speak_ok, "wall_s": round(time.perf_counter() - t0, 3)}
 
-    # ── one turn, VM-mediated speech for both paths ─────────────────────────
-    def turn(self, user_text: str, feedback: str | None = None) -> dict:
-        self.chat.nudge(user_text)
-        hits = self.retriever(user_text, 1)
-        top = float(hits[0][0]) if hits else 0.0
-        dont_know = T(self.facts, "dont_know_line", guess_lang(user_text))
-        if top < self.route_tau:
-            rec = self.chat.turn(user_text, feedback)
-            rec.update({"kind": "chat", "route_score": top})
-            return rec
-        task = self.task_answer(user_text)
-        offered = ([task["vm_answer"], dont_know] if task["speak_ok"] else [dont_know])
-        rec = self.chat.mediate(user_text, offered, rejected=[], feedback=feedback)
-        rec.update({"kind": "task", "route_score": top, "task": task})
+
+# ── the memory cortex: live learning ("remember forever" v0) ────────────────
+_LEARN_EN = re.compile(r"^\s*(?:please\s+)?(?:remember|note)(?:\s+that)?\s*[:,]?\s+(.+?)\s*$", re.I)
+_LEARN_FR = re.compile(r"^\s*(?:retiens|retenez|souviens-toi|rappelle-toi|note)"
+                       r"(?:\s+que)?\s*[:,]?\s+(.+?)\s*$", re.I)
+
+
+class MemoryCortex:
+    """Gate → store → VM event write. The gate is the anti-poisoning shape's
+    v0: only template facts (`X is the R of Y` — what parse_fact reads), no
+    duplicates, and no contradiction of a stored fact with the same (subject,
+    relation). Accepted facts go into the world's store (durable, retrievable
+    next turn) and through the trained Evt path ("Record this as an event: …")
+    so the write executes on the VM."""
+
+    def __init__(self, emitter, facts: dict, exe: str | None = None) -> None:
+        self.emitter = emitter
+        self.facts = facts
+        self.exe = exe
+
+    @staticmethod
+    def detect(text: str) -> str | None:
+        """The fact to learn, or None. Explicit remember/retiens prefixes, or
+        a bare statement that already parses as a template fact."""
+        for rx in (_LEARN_EN, _LEARN_FR):
+            m = rx.match(text)
+            if m:
+                return m.group(1).rstrip(".").strip()
+        if "?" not in text and parse_fact(text.strip().rstrip(".")) is not None:
+            return text.strip().rstrip(".")
+        return None
+
+    def contradiction(self, fact: str, world) -> str | None:
+        """A stored fact with the same (subject, relation) but a different
+        object, else None."""
+        t = parse_fact(fact)
+        if t is None:
+            return None
+        for known in getattr(world, "texts", []):
+            k = parse_fact(known)
+            if (k is not None and normalize(k.subj) == normalize(t.subj)
+                    and normalize(k.rel) == normalize(t.rel)
+                    and normalize(k.obj) != normalize(t.obj)):
+                return known
+        return None
+
+    def learn(self, user_text: str, fact: str, world) -> dict:
+        t0 = time.perf_counter()
+        lang = guess_lang(user_text)
+        rec = {"kind": "learn", "fact": fact, "accepted": False, "vm_written": False,
+               "reason": None, "line": None}
+        if parse_fact(fact) is None:
+            rec["reason"] = "unparseable"
+            rec["line"] = ("For now I can only remember simple facts, like "
+                           "'Quuxville is the capital of Fnordovia'." if lang == "en" else
+                           "Pour l'instant je ne peux retenir que des faits simples, comme "
+                           "« Quuxville is the capital of Fnordovia ».")
+        elif not hasattr(world, "add"):
+            rec["reason"] = "store_is_read_only"
+            rec["line"] = ("I can't save new facts right now." if lang == "en"
+                           else "Je ne peux pas enregistrer de nouveaux faits pour le moment.")
+        elif fact in world:
+            rec["reason"] = "duplicate"
+            rec["line"] = ("I already know that." if lang == "en" else "Je le sais déjà.")
+        else:
+            clash = self.contradiction(fact, world)
+            if clash is not None:
+                rec["reason"] = "contradiction"
+                rec["clash"] = clash
+                rec["line"] = (f"That clashes with what I know: {clash}." if lang == "en"
+                               else f"Cela contredit ce que je sais : {clash}.")
+            else:
+                world.add(fact)
+                rec["accepted"] = True
+                rec["vm_written"] = self._vm_write(fact)
+                rec["line"] = (f"Got it — I'll remember: {fact}." if lang == "en"
+                               else f"C'est noté — je retiendrai : {fact}.")
+        rec["wall_s"] = round(time.perf_counter() - t0, 3)
         return rec
+
+    def _vm_write(self, fact: str) -> bool:
+        """The trained Evt path: "Record this as an event: {fact}" -> program
+        -> VM executes (`remember`). run-proto is per-process, so the durable
+        store is the host world; this proves the write EXECUTES on the VM —
+        VM-side persistence is the memory-service cycle, not claimed here."""
+        from cubbyllm.bridges import cubelang_client as cc
+        try:
+            gen = self.emitter.emit(wrap_role_prompt(fact), max_new_tokens=450,
+                                    system=EMITTER_SYSTEM)
+            program = shim_isolver(_clean(gen))
+            if not program:
+                return False
+            cc.run_program_proto(program, fn=answer_fn(program), exe=self.exe)
+            return True
+        except Exception:
+            return False
+
+
+# ── the brain: sense → fast route → cortex router → cortex → CubbyTalk ─────
+class CubbyBrain:
+    """One Cubby: one hormonal state, mounted worlds and cortices, and one
+    speech exit (CubbyTalk's ASK). `CubbyServe` is the back-compat alias."""
+
+    def __init__(self, emitter, retriever, store_texts: list[str] | None = None,
+                 facts: dict | None = None, exe: str | None = None,
+                 route_tau: float = 0.30, k_facts: int = 3,
+                 tau_vm: float = ReasoningCortex.TAU_VM,
+                 tau_ret: float = ReasoningCortex.TAU_RET) -> None:
+        self.emitter = emitter
+        self.facts = facts or load_facts()
+        self.exe = exe
+        self.route_tau = float(route_tau)
+        self.worlds: dict[str, object] = {"facts": retriever}   # FactStore or bare callable
+        self.store_texts = store_texts if store_texts is not None else getattr(retriever, "texts", [])
+        self.chat = CubbyChat(emitter, self.facts, exe=exe)     # TalkCortex + the speech exit
+        self.reason = ReasoningCortex(emitter, exe=exe, k_facts=k_facts,
+                                      tau_vm=tau_vm, tau_ret=tau_ret)
+        self.memory = MemoryCortex(emitter, self.facts, exe=exe)
+        self.cortices: dict[str, object] = {}                   # plugin cortices: match/handle
+        self._observers: list = []
+
+    # ── plugin mount (MindForge style: plugins sit on top, never inside) ────
+    def mount(self, plugin) -> None:
+        for name, world in plugin.worlds().items():
+            if name in self.worlds:
+                raise ValueError(f"world name already mounted: {name}")
+            self.worlds[name] = world
+        for name, cortex in (plugin.cortices() if hasattr(plugin, "cortices") else {}).items():
+            if name in self.cortices:
+                raise ValueError(f"cortex name already mounted: {name}")
+            self.cortices[name] = cortex
+        if hasattr(plugin, "on_turn"):
+            self._observers.append(plugin)
+
+    # ── fast route (the SNN slot) + cortex router ───────────────────────────
+    def route(self, text: str) -> dict:
+        """Today: learn-detect + per-world retrieval scores + the hormone-
+        modulated engage threshold. The interface (text + state in, cortex
+        name out) is the slot the spikeybrain SNN port fills later — this
+        lexical implementation makes no SNN claim."""
+        fact = MemoryCortex.detect(text)
+        if fact is not None:
+            return {"cortex": "memory", "fact": fact, "score": 1.0}
+        best_c, best_m = None, 0.0
+        for name, cortex in self.cortices.items():
+            m = float(cortex.match(text)) if hasattr(cortex, "match") else 0.0
+            if m > best_m:
+                best_c, best_m = name, m
+        if best_c is not None and best_m >= 0.5:
+            return {"cortex": best_c, "score": best_m}
+        world, score = route_world(self.worlds, text)
+        tau_eff = self.chat.chem.modulate_threshold(self.route_tau)
+        if score >= tau_eff:
+            return {"cortex": "reasoning", "world": world, "score": score, "tau_eff": round(tau_eff, 3)}
+        return {"cortex": "talk", "score": score, "tau_eff": round(tau_eff, 3)}
+
+    # ── one turn ────────────────────────────────────────────────────────────
+    def turn(self, user_text: str, feedback: str | None = None) -> dict:
+        self.chat.nudge(user_text)                       # sense: appraisal -> ODE
+        lang = guess_lang(user_text)
+        dont_know = T(self.facts, "dont_know_line", lang)
+        route = self.route(user_text)
+        cortex = route["cortex"]
+
+        if cortex == "talk":
+            rec = self.chat.turn(user_text, feedback)
+            rec["kind"] = "chat"
+        elif cortex == "memory":
+            world = self.worlds[route.get("world", "facts")]
+            learn = self.memory.learn(user_text, route["fact"], world)
+            offered = ([learn["line"], dont_know] if learn["line"] and voice_ok(learn["line"], self.facts)
+                       else [dont_know])
+            rec = self.chat.mediate(user_text, offered, rejected=[], feedback=feedback)
+            rec.update({"kind": "learn", "learn": learn})
+        elif cortex == "reasoning":
+            task = self.reason.task_answer(user_text, self.worlds[route["world"]])
+            offered = ([task["vm_answer"], dont_know] if task["speak_ok"] else [dont_know])
+            rec = self.chat.mediate(user_text, offered, rejected=[], feedback=feedback)
+            rec.update({"kind": "task", "task": task})
+        else:                                            # a mounted plugin cortex
+            res = self.cortices[cortex].handle(user_text) or {}
+            raw = [c for c in res.get("offered", []) if c and voice_ok(c, self.facts)]
+            rec = self.chat.mediate(user_text, raw + [dont_know], rejected=[], feedback=feedback)
+            rec.update({"kind": f"plugin:{cortex}", "plugin": res.get("meta")})
+
+        rec["route"] = route
+        rec["signals"] = getattr(self.chat, "signals", None)
+        rec["emotion"] = self.chat.emotion
+        for obs in self._observers:
+            try:
+                obs.on_turn(dict(rec))
+            except Exception as e:                       # a plugin must not kill the turn
+                rec.setdefault("plugin_errors", []).append(f"{getattr(obs, 'name', obs)}: {e}")
+        return rec
+
+    # back-compat for the selftest and tests
+    def task_answer(self, question: str) -> dict:
+        return self.reason.task_answer(question, self.worlds["facts"])
+
+
+CubbyServe = CubbyBrain
 
 
 # ── assembly from the real artifacts ────────────────────────────────────────
 def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
                 route_tau: float, n_gpu_layers: int,
-                extra_facts: list[str] | None = None) -> CubbyServe:
-    from exp_m3_cot_pipeline import V4_TABLE, load_sample, make_retriever
+                extra_facts: list[str] | None = None) -> CubbyBrain:
+    from exp_m3_cot_pipeline import V4_TABLE, load_sample
     from exp_m3_domain_routing import _load_semantic_words
 
     from standin.emitter import LlamaCppEmitter
@@ -223,10 +406,10 @@ def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
     print(f"  {len(store)} facts | loading fastword table ...", flush=True)
     sw = _load_semantic_words()
     enc = sw.FastWordEncoder.from_npz(str(table or V4_TABLE))
-    retr = make_retriever(store, enc)
+    world = FactStore(store, enc=enc, name="facts")
     print(f"loading emitter {gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
     emitter = LlamaCppEmitter(gguf, n_ctx=2048, n_gpu_layers=n_gpu_layers)
-    return CubbyServe(emitter, retr, store, exe=exe, route_tau=route_tau)
+    return CubbyBrain(emitter, world, exe=exe, route_tau=route_tau)
 
 
 def load_val_chains(n: int) -> list[dict]:
@@ -241,10 +424,10 @@ def given_facts(r: dict) -> list[str]:
     return [l[2:] for l in r["prompt"].split("\nFacts:\n", 1)[1].splitlines() if l.startswith("- ")]
 
 
-def selftest(serve: CubbyServe, chains: list[dict], tag: str) -> dict:
+def selftest(serve: CubbyBrain, chains: list[dict], tag: str) -> dict:
     """Re-answer val chain questions WITHOUT their given facts: retrieval's
-    own read. Reports gold-match and whether retrieval recovered the walked
-    facts (the failure split: retrieval miss vs emitter miss)."""
+    own read. Reports gold-match, what the turn would SAY, and whether
+    retrieval recovered the walked facts."""
     rows, hit, ret_ok = [], 0, 0
     spoken = {"correct": 0, "dont_know": 0, "wrong": 0}
     for i, r in enumerate(chains, 1):
@@ -254,8 +437,6 @@ def selftest(serve: CubbyServe, chains: list[dict], tag: str) -> dict:
         gold = r.get("gold")
         ok = out["vm_answer"] is not None and gold is not None and normalize(out["vm_answer"]) == normalize(str(gold))
         recovered = all(any(" ".join(g.split()) == " ".join(f.split()) for f in out["facts"]) for g in given) if given else None
-        # what the TURN would actually say: the answer if the consistency gate
-        # passes, the don't-know line otherwise
         say = "correct" if (out["speak_ok"] and ok) else ("wrong" if out["speak_ok"] else "dont_know")
         spoken[say] += 1
         hit += int(ok)
@@ -304,8 +485,13 @@ def main():
         if not text:
             continue
         rec = serve.turn(text)
-        extra = f"  [task, grounded={rec['task']['grounded']}]" if rec["kind"] == "task" else f"  [chat, {rec['register']}]"
-        print(f"cubby> {rec['reply']}{extra}")
+        if rec["kind"] == "task":
+            extra_s = f"  [task, grounded={rec['task']['grounded']}]"
+        elif rec["kind"] == "learn":
+            extra_s = f"  [learn, accepted={rec['learn']['accepted']}]"
+        else:
+            extra_s = f"  [{rec['kind']}, {rec['register']}, {rec['emotion']}]"
+        print(f"cubby> {rec['reply']}{extra_s}")
 
 
 if __name__ == "__main__":

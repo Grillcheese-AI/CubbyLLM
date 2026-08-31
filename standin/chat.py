@@ -36,6 +36,7 @@ for p in (ROOT, os.path.join(ROOT, "standin", "data")):
 
 from identity import (T, affect_block, derived, identity_system, load_facts,  # noqa: E402
                       guess_lang, voice_ok)
+from neurochem import Neurochemistry, appraise  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
@@ -110,27 +111,36 @@ class CubbyChat:
                  exe: str | None = None, max_new_tokens: int = 200) -> None:
         self.emitter = emitter
         self.facts = facts or load_facts()
-        self.state = dict(state or RESTING)
+        self.chem = Neurochemistry()                     # the real ODE (cubemind port)
+        self._seen_vocab: set[str] = set()
+        self.state = dict(state) if state else self._hormones()
         self.exe = exe
         self.max_new_tokens = max_new_tokens
         self.history: list[dict] = []
 
-    # ── hormones (host-owned; a real host passes neurochemistry.to_dict()) ──
+    # ── hormones: the cubemind neurochemistry ODE is the state source ───────
+    def _hormones(self) -> dict:
+        d = self.chem.to_dict()
+        return {h: round(d[h], 3) for h in ("dopamine", "serotonin", "cortisol",
+                                            "oxytocin", "noradrenaline")}
+
     def set_state(self, state: dict) -> None:
+        """Pin an explicit state (tests / replaying a recorded trajectory);
+        the next nudge() resumes from the ODE, not from this override."""
         self.state = dict(state)
 
     def nudge(self, user_text: str) -> dict:
-        """A tiny, transparent stand-in for the host's neurochemistry: decay
-        toward resting, bump noradrenaline on shouting/urgency, oxytocin on
-        thanks/greetings. Replace with the real ODE at serve time."""
-        st = {h: round(v + 0.5 * (RESTING[h] - v), 3) for h, v in self.state.items()}
-        t = user_text
-        if t.isupper() and len(t) > 3 or "!!" in t or re.search(r"\b(urgent|now|hurry|asap)\b", t, re.I):
-            st["noradrenaline"] = min(0.9, st["noradrenaline"] + 0.4)
-        if re.search(r"\b(thanks|thank you|merci|please|s'il te plaît|hi|hello|bonjour|salut)\b", t, re.I):
-            st["oxytocin"] = min(0.85, st["oxytocin"] + 0.3)
-        self.state = st
-        return st
+        """One message through appraisal -> the ODE (a couple of perception
+        frames), then the 5-hormone slice becomes the serving state."""
+        self.signals = appraise(user_text, self._seen_vocab)
+        self._seen_vocab.update(re.findall(r"[\w']+", user_text.lower()))
+        self.chem.step_message(self.signals)
+        self.state = self._hormones()
+        return self.state
+
+    @property
+    def emotion(self) -> str:
+        return self.chem.dominant_emotion
 
     # ── the turn ────────────────────────────────────────────────────────────
     def candidates(self, user_text: str) -> tuple[list[str], list[str]]:
