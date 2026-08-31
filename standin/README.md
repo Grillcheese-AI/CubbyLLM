@@ -57,7 +57,22 @@ records replayed through the real VM — `data/out/eval_emitter_vm_v1_replay.jso
 | role_binding (30) | 1.000 | — | 0.100 | all execute |
 | identity (22) | — | **identity_ok 1.000** (EN and FR) | — | voice rules hold |
 
-**v3 (the set to train next): chain prompts carry the walked facts** (`question + "Facts:" + one
+**v3 emitter, VM-verified (2026-08-31; trained on the v3 set; 169 val records replayed —
+`data/out/eval_emitter_vm_v3_replay.json`): every program executes, and the chain fix
+landed decisively.**
+
+| task | executes | gold_match | vs v1 |
+|---|---|---|---|
+| chain (28) | 1.000 | **0.929** | 0.200 → **0.929** (facts in the prompt) |
+| kernel (29) | 1.000 | **0.862** | 0.759 → 0.862 (eval `max_new` 600 removed the truncation) |
+| arithmetic (60) | 1.000 | **0.650** | 0.617 → 0.650 |
+| role_binding (30) | 1.000 | — | all execute |
+| identity (22) | — | **identity_ok 1.000** (EN + FR) | held |
+
+This is the serviceable emitter: retrieve → format the Facts block → emit → VM verifies.
+Export the v3 GGUFs from the notebook for local serving (the ones on Drive are v1).
+
+**v3 (data): chain prompts carry the walked facts** (`question + "Facts:" + one
 line per hop`, from the harvest trace) — at serve time the host retrieves first and formats the
 same block, so question+facts → program is the real task; v1 asked for parametric recall of a
 1,241-fact corpus instead. Everything else as v2.
