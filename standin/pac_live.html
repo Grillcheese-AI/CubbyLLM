@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>cubby-man — live</title>
+<style>
+  html,body{margin:0;height:100%;background:#05070d;color:#e6e6e6;font-family:system-ui,Segoe UI,sans-serif;overflow:hidden}
+  #hud{position:fixed;top:14px;left:14px;z-index:10;background:rgba(10,14,22,.85);padding:14px 16px;border-radius:10px;border:1px solid #233047;max-width:340px}
+  #hud h1{font-size:14px;margin:0 0 8px}
+  #score{font-size:30px;font-weight:800;color:#ffe66d}
+  .row{font-size:13px;color:#aeb6c4;margin-top:4px}
+  .row b{color:#e6e6e6}
+  #emotion{color:#bc8cff}
+  #beat{position:fixed;top:42%;left:0;right:0;text-align:center;font-size:46px;font-weight:900;color:#2ce6a8;z-index:20;display:none;text-shadow:0 0 24px #0a6}
+  #err{position:fixed;bottom:40px;left:14px;color:#f85149;font-size:13px;z-index:10;max-width:60%}
+  #foot{position:fixed;bottom:10px;left:14px;color:#566;font-size:12px;z-index:10}
+</style></head>
+<body>
+<div id="hud"><h1>cubby-man · 3D Pac-Man — LIVE, every move VM-guarded</h1>
+  <div><span id="score">0</span> <span style="font-size:16px;color:#8b93a3">/ <span id="total">0</span> pellets</span></div>
+  <div class="row">steps <b id="steps">0</b> · facts <b id="facts">0</b> · walls learned <b id="wallsL">0</b> · derived <b id="derived">0</b></div>
+  <div class="row">feeling <b id="emotion">neutral</b></div>
+  <div class="row" style="color:#566">he plays only while this page is open — the poll drives the step</div>
+</div>
+<div id="beat">★ MAP BEATEN ★</div>
+<div id="err"></div>
+<div id="foot">drag to orbit · console at <a href="/" style="color:#58a6ff">/</a> streams the same run's reasoning</div>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+let W=7,H=7,DEP=3, built=false;
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x05070d);
+const cam=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,200);
+const rnd=new THREE.WebGLRenderer({antialias:true}); rnd.setSize(innerWidth,innerHeight); rnd.setPixelRatio(devicePixelRatio);
+document.body.appendChild(rnd.domElement);
+const ctr=new OrbitControls(cam,rnd.domElement);
+scene.add(new THREE.AmbientLight(0xffffff,0.55));
+const dl=new THREE.DirectionalLight(0xffffff,0.85); scene.add(dl);
+const agent=new THREE.Mesh(new THREE.SphereGeometry(0.42,20,20),
+  new THREE.MeshStandardMaterial({color:0xff4d6d,emissive:0xff1f4f,emissiveIntensity:0.7}));
+scene.add(agent);
+const trailPts=[]; const trail=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0x3a4a6a}));
+scene.add(trail);
+const pellets=new Map();
+const pgeo=new THREE.SphereGeometry(0.16,14,14);
+const pmat=new THREE.MeshStandardMaterial({color:0xffe66d,emissive:0xffd000,emissiveIntensity:0.8});
+
+function build(s){
+  W=s.w; H=s.h; DEP=s.d;
+  cam.position.set(W*1.4,H*1.5,DEP*4+6);
+  ctr.target.set((W-1)/2,(H-1)/2,(DEP-1)/2); ctr.update();
+  dl.position.set(W,H*2,DEP*2);
+  const box=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,DEP)),
+    new THREE.LineBasicMaterial({color:0x1b2740}));
+  box.position.set((W-1)/2,(H-1)/2,(DEP-1)/2); scene.add(box);
+  const wgeo=new THREE.BoxGeometry(0.92,0.92,0.92);
+  const wmat=new THREE.MeshStandardMaterial({color:0x21407a,transparent:true,opacity:0.5,metalness:0.2,roughness:0.6});
+  for(const w of s.walls){const m=new THREE.Mesh(wgeo,wmat);m.position.set(...w);scene.add(m);}
+  for(const p of s.pellets){const m=new THREE.Mesh(pgeo,pmat);m.position.set(...p);scene.add(m);pellets.set(p.join(','),m);}
+  agent.position.set(...s.start);
+  trailPts.push(new THREE.Vector3(...s.start));
+  document.getElementById('total').textContent=s.total;
+  built=true;
+}
+
+let prev=null, target=null, t0=0; const STEP=380;
+function setTarget(pos){
+  prev=[agent.position.x,agent.position.y,agent.position.z];
+  target=pos; t0=performance.now();
+}
+const lerp=(a,b,t)=>a+(b-a)*t;
+
+async function poll(){
+  try{
+    const s=await (await fetch('/pac/state')).json();
+    if(s.error){ document.getElementById('err').textContent='VM error: '+s.error; }
+    if(!built) build(s);
+    // pellets: remove any no longer remaining (he ate them)
+    const alive=new Set(s.pellets.map(p=>p.join(',')));
+    for(const [k,m] of pellets){ if(!alive.has(k)){ scene.remove(m); pellets.delete(k); } }
+    const cur=[agent.position.x,agent.position.y,agent.position.z];
+    if(!target || s.pos.join(',')!==target.join(',')) setTarget(s.pos);
+    document.getElementById('score').textContent=s.score;
+    document.getElementById('steps').textContent=s.steps;
+    document.getElementById('facts').textContent=s.facts;
+    document.getElementById('wallsL').textContent=s.walls_learned;
+    document.getElementById('derived').textContent=s.derived;
+    document.getElementById('emotion').textContent=s.emotion;
+    if(s.beaten) document.getElementById('beat').style.display='block';
+  }catch(e){ /* server away; keep trying */ }
+  setTimeout(poll,180);
+}
+function frame(now){
+  if(target){
+    let t=(now-t0)/STEP; if(t>1)t=1;
+    const e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    agent.position.set(lerp(prev[0],target[0],e),lerp(prev[1],target[1],e),lerp(prev[2],target[2],e));
+    if(t>=1 && (trailPts.length===0 || !trailPts[trailPts.length-1].equals(new THREE.Vector3(...target)))){
+      trailPts.push(new THREE.Vector3(...target)); trail.geometry.setFromPoints(trailPts);
+    }
+  }
+  ctr.update(); rnd.render(scene,cam); requestAnimationFrame(frame);
+}
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();rnd.setSize(innerWidth,innerHeight);});
+poll(); requestAnimationFrame(frame);
+</script></body></html>

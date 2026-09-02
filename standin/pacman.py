@@ -151,11 +151,16 @@ class CubbyPac(CubbyMan):
         return 0
 
     def step(self) -> dict:
-        rec = super().step()
-        self.traj.append({"to": list(self.env.coords(self.place)), "move": rec["chosen"],
-                          "eaten": self._last_eaten, "score": self.env.score,
-                          "remaining": len(self.env.remaining)})
-        return rec
+        with self._step_lock:                            # move + traj append are one unit
+            rec = super().step()
+            self.traj.append({"to": list(self.env.coords(self.place)), "move": rec["chosen"],
+                              "eaten": self._last_eaten, "score": self.env.score,
+                              "remaining": len(self.env.remaining)})
+            return rec
+
+    @property
+    def beaten(self) -> bool:
+        return not self.env.remaining
 
     def handle(self, text: str) -> dict:
         m = re.search(r"\b(\d{1,3})\b", text)
@@ -170,6 +175,56 @@ class CubbyPac(CubbyMan):
                 f"in {steps} steps, and learned {rep['new_facts']} new things on the way.{beaten}"
                 + (f" Watch my run: {replay}" if replay else ""))
         return {"offered": [line], "meta": rep}
+
+
+class LivePac:
+    """Poll-driven live play — the pacman_live.py pattern: the browser polls
+    /pac/state, each due poll advances ONE VM-guarded step (rate-limited so
+    extra tabs can't race him, paused the moment nobody polls), and the
+    response is everything the live three.js page needs. The chat cortex
+    ("play pacman for N") still works on the same CubbyPac — the step lock
+    keeps the two drivers from interleaving a move."""
+
+    def __init__(self, man: CubbyPac, min_interval: float = 0.35, derive_every: int = 15) -> None:
+        import threading
+        self.man = man
+        self.min_interval = float(min_interval)
+        self.derive_every = int(derive_every)
+        self._lock = threading.Lock()
+        self._last = 0.0
+        self._error: str | None = None
+
+    def poll(self) -> dict:
+        import time
+        stepped = False
+        with self._lock:
+            now = time.monotonic()
+            if not self.man.beaten and self._error is None and now - self._last >= self.min_interval:
+                self._last = now
+                try:
+                    self.man.step()
+                    stepped = True
+                    if len(self.man.traj) % self.derive_every == 0:
+                        self.man.derive_counts()
+                    if self.man.beaten:                  # the last pellet: join what the run collected
+                        self.man.derive_counts()
+                        render_replay(self.man.env, self.man.traj)
+                except Exception as e:                   # a dead VM must not kill the server
+                    self._error = str(e)[:200]
+        return self.state(stepped)
+
+    def state(self, stepped: bool = False) -> dict:
+        man, env = self.man, self.man.env
+        return {"w": env.w, "h": env.h, "d": env.d, "start": list(env.coords(env.start)),
+                "walls": [list(w) for w in sorted(env.walls)],
+                "pellets": [list(p) for p in sorted(env.remaining)],
+                "pos": list(env.coords(man.place)),
+                "move": man.traj[-1]["move"] if man.traj else None,
+                "score": env.score, "total": len(env.pellets), "beaten": man.beaten,
+                "steps": len(man.traj), "facts": len(man.world),
+                "walls_learned": len(man.walls), "derived": len(man.derived),
+                "emotion": man.chem.dominant_emotion if man.chem is not None else "neutral",
+                "stepped": stepped, "error": self._error}
 
 
 def render_replay(env: PacVerse, traj: list[dict],

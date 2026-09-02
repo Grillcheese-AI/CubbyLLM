@@ -46,6 +46,7 @@ from __future__ import annotations
 
 import random
 import re
+import threading
 import time
 
 __wiring__ = "WIRED"
@@ -132,6 +133,7 @@ class CubbyMan:
         self.walls: set[str] = set()                     # learned from VM rejections
         self.anomalies: list[str] = []                   # a guard that FAILED to reject
         self.log: list[dict] = []
+        self._step_lock = threading.RLock()              # one move at a time (live poller vs chat turn)
         self._learn(self.env.observe(self.place))        # he can see where he stands
         self.on_arrive(self.place)
         self.visits[self.place] = 1
@@ -217,6 +219,10 @@ class CubbyMan:
             return d
 
     def step(self) -> dict:
+        with self._step_lock:
+            return self._step()
+
+    def _step(self) -> dict:
         from cubbyllm.bridges import cubelang_client as cc
         exits = self.env.exits(self.place)
         dirs = sorted(exits)

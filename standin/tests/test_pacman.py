@@ -76,6 +76,26 @@ def test_live_the_pac_arc_through_the_brain():
     assert after["reply"] == gold, "a discovered maze fact must answer through the reasoning cortex"
 
 
+def test_live_pac_polls_step_rate_limited_through_the_vm():
+    _exe_or_skip()
+    from pacman import LivePac
+    man = CubbyPac(small(), probe=0.0, seed=0)
+    live = LivePac(man, min_interval=0.0)
+    s1 = live.poll()
+    assert s1["stepped"] and s1["steps"] == 1 and s1["error"] is None
+    assert {"w", "pos", "pellets", "score", "facts", "emotion", "beaten"} <= set(s1)
+    live.min_interval = 3600.0                           # not due -> a poll must NOT step
+    s2 = live.poll()
+    assert not s2["stepped"] and s2["steps"] == 1
+    live.min_interval = 0.0
+    for _ in range(20):                                  # let him finish the small maze
+        if live.poll()["beaten"]:
+            break
+    if man.beaten:                                       # beaten: polls stop stepping
+        n = live.poll()["steps"]
+        assert live.poll()["steps"] == n
+
+
 def test_replay_uses_the_pacman3d_template_with_his_trajectory(tmp_path):
     if not PACMAN_3D.exists():
         pytest.skip("cubbyverse checkout not on this machine")

@@ -63,19 +63,30 @@ def make_handler(brain):
             self.send_header("Access-Control-Allow-Headers", "Content-Type")
             self.end_headers()
 
+        def _page(self, name: str) -> None:
+            page = os.path.join(os.path.dirname(os.path.abspath(__file__)), name)
+            try:
+                body = open(page, "rb").read()
+            except OSError:
+                self._send(404, {"error": f"{name} not found"})
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
         def do_GET(self):
             if self.path in ("/", "/index.html"):
-                page = os.path.join(os.path.dirname(os.path.abspath(__file__)), "demo.html")
-                try:
-                    body = open(page, "rb").read()
-                except OSError:
-                    self._send(404, {"error": "demo.html not found"})
-                    return
-                self.send_response(200)
-                self.send_header("Content-Type", "text/html; charset=utf-8")
-                self.send_header("Content-Length", str(len(body)))
-                self.end_headers()
-                self.wfile.write(body)
+                self._page("demo.html")
+            elif self.path == "/pac":
+                self._page("pac_live.html")
+            elif self.path == "/pac/state":
+                live = getattr(brain, "pac_live", None)
+                if live is None:
+                    self._send(404, {"error": "no pac maze mounted (start with --pacman)"})
+                else:
+                    self._send(200, live.poll())
             elif self.path == "/health":
                 self._send(200, {"ok": True, "emitter": getattr(brain.emitter, "name", "?")})
             elif self.path == "/state":
@@ -138,9 +149,12 @@ def main():
     args = ap.parse_args()
     brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers)
     if args.pacman:
-        from pacman import CubbyPac
-        brain.mount(CubbyPac())
-        print("mounted: cubby-man in the pac maze (say 'play pacman for 30')")
+        from pacman import CubbyPac, LivePac
+        man = CubbyPac()
+        brain.mount(man)
+        brain.pac_live = LivePac(man)
+        print(f"mounted: cubby-man in the pac maze — LIVE view at "
+              f"http://{args.host}:{args.port}/pac (he plays while it is open)")
     serve_http(brain, args.host, args.port).serve_forever()
 
 
