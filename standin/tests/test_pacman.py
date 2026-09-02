@@ -342,6 +342,21 @@ def test_live_cubbyghost_plays_the_big_game():
     assert s["steps"] <= s["budget"]
 
 
+def test_live_game_commands_route_to_the_game_cortex():
+    _exe_or_skip()
+    from pacman import CubbyGhost, GhostVerse
+    man = CubbyGhost(GhostVerse(), probe=0.0, seed=0)
+    s = sv.CubbyServe(ChainEmitter(), sv.FactStore([]), route_tau=0.35)
+    s.mount(man)
+    st = s.turn("status")
+    assert st["kind"] == "plugin:pacman" and st["reply"].startswith("Level 1") and not man.traj, \
+        "status reports without stepping"
+    go = s.turn("explore for 3 steps")
+    assert go["kind"] == "plugin:pacman" and len(man.traj) == 3 and "level 1" in go["reply"].lower()
+    fr = s.turn("statut ? score")
+    assert fr["kind"] == "plugin:pacman" and fr["reply"].startswith("Niveau 1")
+
+
 def test_replay_uses_the_pacman3d_template_with_his_trajectory(tmp_path):
     if not PACMAN_3D.exists():
         pytest.skip("cubbyverse checkout not on this machine")

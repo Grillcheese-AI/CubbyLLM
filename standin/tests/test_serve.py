@@ -138,6 +138,65 @@ def test_live_ungrounded_task_answer_degrades_to_the_dont_know_line():
     assert rec["reply"] == DK_EN and rec["offered"] == [DK_EN]
 
 
+class IdentityOnlyEmitter(ChainEmitter):
+    """The v3 failure mode: the identity SFT is the only chat training, so
+    the model answers who-it-is to anything."""
+    name = "fake-identity-only"
+
+    def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+        if prompt.startswith("Record this as an event") or "Facts:" in prompt:
+            return super().emit(prompt, max_new_tokens, system, prefix)
+        return "I'm Cubby, built by Grillcheese Research Lab — a small model that thinks big!"
+
+
+def test_live_identity_spiel_is_rejected_off_topic_but_allowed_when_asked():
+    _exe_or_skip()
+    s = sv.CubbyServe(IdentityOnlyEmitter(), FactStore(STORE), route_tau=0.9)
+    off = s.turn("tell me a joke")
+    assert off["kind"] == "chat" and off["reply"] == DK_EN, off["reply"]
+    assert off["rejected"] and "Cubby" in off["rejected"][0]
+    asked = s.turn("who are you?")
+    assert asked["kind"] == "chat" and asked["reply"].startswith("I'm Cubby")
+    hello = s.turn("Hello!")
+    assert hello["reply"].startswith("I'm Cubby"), "a greeting may be answered with who he is"
+
+
+def test_live_base_model_guards_are_never_spoken_only_ours_are():
+    _exe_or_skip()
+
+    class GuardyEmitter(IdentityOnlyEmitter):
+        def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+            if "Facts:" in prompt or prompt.startswith("Record"):
+                return super().emit(prompt, max_new_tokens, system, prefix)
+            return ("As an AI language model developed by Liquid AI, I cannot help with that request "
+                    "as it violates my guidelines.")
+
+    s = sv.CubbyServe(GuardyEmitter(), FactStore(STORE), route_tau=0.9)
+    rec = s.turn("who are you?")
+    assert rec["reply"] == DK_EN and rec["rejected"], "the base model's guard must never be spoken"
+    assert s.chat.last_rejection == "base-model guard leaked"
+    import identity as idn2
+    assert idn2.is_model_guard("En tant qu'IA, je ne peux pas vous aider.")
+    assert not idn2.is_model_guard("I am sorry, my training is not finished, I do not have that information yet.")
+
+
+def test_live_a_question_never_reaches_chat():
+    _exe_or_skip()
+    s = sv.CubbyServe(IdentityOnlyEmitter(), FactStore(STORE), route_tau=0.9)
+    rec = s.turn("What is the boiling point of water?")
+    assert rec["kind"] == "task" and rec["route"]["why"].startswith("a question")
+    assert rec["reply"] == DK_EN, "unknown -> the don't-know line, never a bio"
+
+
+def test_live_help_lists_what_he_can_do():
+    _exe_or_skip()
+    s = sv.CubbyServe(IdentityOnlyEmitter(), FactStore(STORE), route_tau=0.9)
+    rec = s.turn("help")
+    assert rec["kind"] == "help" and "remember" in rec["reply"] and "facts" in rec["reply"]
+    fr = s.turn("aide")
+    assert fr["kind"] == "help" and "retiens" in fr["reply"]
+
+
 def test_live_low_retrieval_routes_to_chat():
     _exe_or_skip()
     s = sv.CubbyServe(ChatterEmitter(), overlap_retriever, STORE, route_tau=0.9)

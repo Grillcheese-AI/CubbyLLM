@@ -96,6 +96,55 @@ def affect_block(state: dict) -> str:
             f"It modulates your tone, caution and playfulness — never the facts.")
 
 
+# ── what is an identity turn, and what is an identity answer ────────────────
+_IDENTITY_Q = re.compile(
+    r"\b(who are you|what are you|your name|who (built|made|created|trained) you|what can you do|"
+    r"how do you work|how are you|how do you feel|are you (an? )?(ai|agi|robot|model|conscious|alive|"
+    r"chatgpt|gpt|claude|llama)|do you (feel|have feelings)|introduce yourself|"
+    r"hello|hi|hey|good (morning|evening)|thanks|thank you|bye|"
+    r"qui es[- ]tu|tu es qui|comment (tu t'appelles|t'appelles[- ]tu)|qui t'a (fait|construit|cr[ée]{2}|entra[iî]n[ée])|"
+    r"que sais[- ]tu faire|comment (vas[- ]tu|[çc]a va)|es[- ]tu (une? )?(ia|agi|robot)|"
+    r"bonjour|salut|coucou|merci|au revoir)\b", re.I)
+
+
+def is_identity_question(text: str) -> bool:
+    """A turn where answering with who/what Cubby is IS the right answer
+    (the intents the identity SFT taught, greetings included)."""
+    return bool(_IDENTITY_Q.search(text))
+
+
+# ── the BASE model's own guards must not leak: only ours are enforced ──────
+# LFM2.5's alignment shows up as refusals, "as an AI language model" framing,
+# and its maker's identity. Cubby's answers come from Cubby's rules (the
+# voice rules, the VM's ASK, the don't-know line) — a reply carrying the base
+# model's guard is rejected like a forbidden word, never spoken.
+_MODEL_GUARD = re.compile(
+    r"\b(as an? (ai|artificial intelligence|language model|llm|assistant)|i am an? (ai|artificial intelligence|"
+    r"language model|llm)|i'?m an? (ai|artificial intelligence|language model|llm)|"
+    r"i (cannot|can'?t|am not able to|am unable to) (help|assist|comply|provide|do that|answer that)|"
+    r"i'?m (not able|unable) to (help|assist|comply|provide)|"
+    r"(against|violates?) (my|the) (guidelines|policy|policies|programming)|"
+    r"liquid ?ai|lfm2?|openai|chatgpt|anthropic|meta ai|"
+    r"en tant qu'?(ia|intelligence artificielle|mod[èe]le de langage|assistant)|"
+    r"je (ne peux pas|suis incapable de) (vous |t')?(aider|r[ée]pondre)|"
+    r"je suis une? (ia|intelligence artificielle|mod[èe]le de langage))\b", re.I)
+
+
+def is_model_guard(text: str) -> bool:
+    return bool(_MODEL_GUARD.search(text))
+
+
+def is_identity_reply(text: str, facts: dict) -> bool:
+    """A reply that is about Cubby itself: the name plus the builder, the
+    tagline or the AGI disclaimer. Off topic unless the turn asked for it."""
+    t = text.lower()
+    if facts["name"].lower() not in t:
+        return False
+    cues = [facts["builder"].lower(), "agi", "small model", "thinks big", "next generation",
+            "petit mod", "nouvelle g[ée]n[ée]ration"]
+    return any(re.search(c, t) for c in cues)
+
+
 def identity_system(facts: dict, state: dict | None = None) -> str:
     base = (f"You are {facts['name']}, built by {facts['builder']}. {T(facts, 'tagline', 'en')} "
             f"Answer briefly and warmly, in the user's language (English or French). "
@@ -383,7 +432,9 @@ def guess_lang(text: str) -> str:
     """fr if the text carries French function words / accents, else en."""
     t = " " + text.lower() + " "
     fr = sum(1 for w in (" je ", " tu ", " es ", " est ", " quoi ", " comment ", " qui ", " quel ", " quelle ", " bonjour ", " salut ",
-                         " merci ", " pas ", " une ", " des ", " les ", " ça ", " t'", " qu'", " c'est ") if w in t)
+                         " merci ", " pas ", " une ", " des ", " les ", " ça ", " t'", " qu'", " c'est ",
+                         " aide ", " statut ", " niveau ", " vies ", " joue ", " jouer ", " retiens ", " souviens-toi ",
+                         " labyrinthe ") if w in t)
     if re.search(r"[éèêàçùâîô]", text):
         fr += 1
     return "fr" if fr >= 1 else "en"

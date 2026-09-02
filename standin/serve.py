@@ -56,7 +56,8 @@ __wiring__ = "STANDALONE"
 
 from build_emitter_sft import answer_fn, shim_isolver, wrap_role_prompt  # noqa: E402
 from chat import CubbyChat  # noqa: E402
-from identity import EMITTER_SYSTEM, T, guess_lang, load_facts, voice_ok  # noqa: E402
+from identity import (EMITTER_SYSTEM, T, guess_lang, is_identity_question,  # noqa: E402
+                      load_facts, voice_ok)
 from worlds import FactStore, route_world  # noqa: E402
 
 from cubbyllm.reasoning import answer as pipeline_answer  # noqa: E402
@@ -148,17 +149,21 @@ class ReasoningCortex:
         # distribution and the emitter derails (echoes the list, wrong style)
         return out[: self.k_facts + 1]
 
-    def task_answer(self, question: str, retriever, trace=None) -> dict:
+    def task_answer(self, question: str, retriever, trace=None, allow_flat: bool = True) -> dict:
         t0 = time.perf_counter()
         trace = trace or (lambda kind, **d: None)
         facts, walk = self.walk_facts(question, retriever)
         trace("walk", facts=list(facts), verified=walk["walk_verified"],
               answer=walk["walk_answer"], reason=walk["walk_reason"])
         scores: list[float] = []
-        if not facts:                                    # planner miss -> flat retrieval fallback
+        if not facts and allow_flat:                     # planner miss -> flat retrieval fallback
             hits = self.gather_facts(question, retriever)
             facts, scores = [f for _, f in hits], [s for s, _ in hits]
             trace("retrieve_fallback", facts=list(facts))
+        elif not facts:
+            # a question retrieval was NOT confident about: no walk -> no answer.
+            # Flat facts here would let the emitter ground something irrelevant.
+            trace("no_walk", reason="retrieval below threshold; flat fallback disabled")
         prompt = question + "\nFacts:\n" + "\n".join(f"- {f}" for f in facts) if facts else question
         gen = self.emitter.emit(prompt, max_new_tokens=450, system=EMITTER_SYSTEM,
                                 prefix=PROGRAM_PREFIX)
@@ -343,14 +348,23 @@ class CubbyBrain:
             self._observers.append(plugin)
 
     # ── fast route (the SNN slot) + cortex router ───────────────────────────
+    _HELP = re.compile(r"^\s*(help|aide|what can you do|que sais[- ]tu faire)\b", re.I)
+    _QUESTION = re.compile(r"\?|^\s*(what|who|where|which|when|how many|how much|"
+                           r"quel(le)?s?|qui|o[ùu]|combien|quand)\b", re.I)
+
     def route(self, text: str) -> dict:
-        """Today: learn-detect + per-world retrieval scores + the hormone-
-        modulated engage threshold. The interface (text + state in, cortex
-        name out) is the slot the spikeybrain SNN port fills later — this
-        lexical implementation makes no SNN claim."""
+        """Today: learn-detect, commands, per-world retrieval scores and the
+        hormone-modulated engage threshold. A QUESTION always goes to the
+        reasoning cortex (an unknown answer is the don't-know line, never an
+        improvised chat reply); only identity turns and small talk reach the
+        talk cortex. The interface (text + state in, cortex name out) is the
+        slot the spikeybrain SNN port fills later — this lexical
+        implementation makes no SNN claim."""
         fact = MemoryCortex.detect(text)
         if fact is not None:
             return {"cortex": "memory", "fact": fact, "score": 1.0}
+        if self._HELP.search(text):
+            return {"cortex": "help", "score": 1.0}
         best_c, best_m = None, 0.0
         for name, cortex in self.cortices.items():
             m = float(cortex.match(text)) if hasattr(cortex, "match") else 0.0
@@ -360,9 +374,24 @@ class CubbyBrain:
             return {"cortex": best_c, "score": best_m}
         world, score = route_world(self.worlds, text)
         tau_eff = self.chat.chem.modulate_threshold(self.route_tau)
-        if score >= tau_eff:
-            return {"cortex": "reasoning", "world": world, "score": score, "tau_eff": round(tau_eff, 3)}
-        return {"cortex": "talk", "score": score, "tau_eff": round(tau_eff, 3)}
+        identity = is_identity_question(text)
+        if identity:
+            return {"cortex": "talk", "score": score, "tau_eff": round(tau_eff, 3), "why": "identity turn"}
+        if score >= tau_eff or self._QUESTION.search(text):
+            return {"cortex": "reasoning", "world": world, "score": score, "tau_eff": round(tau_eff, 3),
+                    "why": "retrieval" if score >= tau_eff else "a question: reason, never improvise"}
+        return {"cortex": "talk", "score": score, "tau_eff": round(tau_eff, 3), "why": "small talk"}
+
+    def help_line(self, lang: str) -> str:
+        games = [n for n in self.cortices]
+        worlds = ", ".join(f"{n} ({len(getattr(w, 'texts', []))} facts)" for n, w in self.worlds.items())
+        if lang == "fr":
+            return (f"Je peux répondre à des questions sur ce que je sais ({worlds}), retenir un fait "
+                    f"(« retiens que X est la capitale de Y »)"
+                    + (f", et jouer : dis « explore 30 » ou « status » ({', '.join(games)})." if games else "."))
+        return (f"I can answer questions about what I know ({worlds}), remember a fact "
+                f"('remember that X is the capital of Y')"
+                + (f", and play: say 'explore for 30' or 'status' ({', '.join(games)})." if games else "."))
 
     # ── one turn ────────────────────────────────────────────────────────────
     def turn(self, user_text: str, feedback: str | None = None) -> dict:
@@ -379,6 +408,11 @@ class CubbyBrain:
         if cortex == "talk":
             rec = self.chat.turn(user_text, feedback)
             rec["kind"] = "chat"
+        elif cortex == "help":
+            line = self.help_line("fr" if re.search(r"\b(aide|que sais)", user_text, re.I) else lang)
+            rec = self.chat.mediate(user_text, [line, dont_know] if voice_ok(line, self.facts) else [dont_know],
+                                    rejected=[], feedback=feedback)
+            rec["kind"] = "help"
         elif cortex == "memory":
             world = self.worlds[route.get("world", "facts")]
             learn = self.memory.learn(user_text, route["fact"], world)
@@ -389,7 +423,8 @@ class CubbyBrain:
             rec = self.chat.mediate(user_text, offered, rejected=[], feedback=feedback)
             rec.update({"kind": "learn", "learn": learn})
         elif cortex == "reasoning":
-            task = self.reason.task_answer(user_text, self.worlds[route["world"]], trace=self.trace)
+            task = self.reason.task_answer(user_text, self.worlds[route["world"]], trace=self.trace,
+                                           allow_flat=(route.get("why") == "retrieval"))
             offered = ([task["vm_answer"], dont_know] if task["speak_ok"] else [dont_know])
             rec = self.chat.mediate(user_text, offered, rejected=[], feedback=feedback)
             rec.update({"kind": "task", "task": task})

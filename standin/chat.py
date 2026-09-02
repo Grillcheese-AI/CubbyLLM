@@ -35,7 +35,7 @@ for p in (ROOT, os.path.join(ROOT, "standin", "data")):
         sys.path.insert(0, p)
 
 from identity import (T, affect_block, derived, identity_system, load_facts,  # noqa: E402
-                      guess_lang, voice_ok)
+                      guess_lang, is_identity_question, is_identity_reply, is_model_guard, voice_ok)
 from neurochem import Neurochemistry, appraise  # noqa: E402
 
 __wiring__ = "STANDALONE"
@@ -153,10 +153,22 @@ class CubbyChat:
         lang = guess_lang(user_text)
         dont_know = T(self.facts, "dont_know_line", lang)
         offered, rejected = [], []
-        if reply and voice_ok(reply, self.facts):
-            offered.append(reply)
-        elif reply:
+        if reply and is_model_guard(reply):
+            # the base model's own guard (refusal / "as an AI" / its maker):
+            # not Cubby's rule, never spoken — only OUR guards are enforced
             rejected.append(reply)
+            self.last_rejection = "base-model guard leaked"
+        elif reply and not voice_ok(reply, self.facts):
+            rejected.append(reply)
+            self.last_rejection = "voice rule"
+        elif reply and is_identity_reply(reply, self.facts) and not is_identity_question(user_text):
+            # the identity SFT is the model's only chat training: it answers
+            # who-it-is to anything. Off topic -> not offered; the don't-know
+            # line is the sanctioned answer for what it can't do yet.
+            rejected.append(reply)
+            self.last_rejection = "identity reply to a non-identity turn"
+        elif reply:
+            offered.append(reply)
         offered.append(dont_know)
         return offered, rejected
 

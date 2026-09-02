@@ -141,7 +141,21 @@ class CubbyPac(CubbyMan):
     CORTEX = "pacman"
     DIR_NAMES = tuple(MOVES)
     OPP = OPP
-    _GO = re.compile(r"\b(pac[- ]?man|pellets?|maze|labyrinthe)\b", re.I)
+    # the game's keywords AND the plain commands a player types
+    _GO = re.compile(r"\b(pac[- ]?man|pellets?|maze|labyrinthe|explore[rsz]?|wander|play|joue[rz]?|"
+                     r"keep going|continue|go on|next level|niveau suivant|status|score|lives|vies)\b", re.I)
+    _STATUS = re.compile(r"\b(status|score|lives|vies|how (is|are) (it|things|you) going)\b", re.I)
+    _PLAY = re.compile(r"\b(play|explore[rsz]?|wander|joue[rz]?|go|continue|keep going|next)\b", re.I)
+
+    def status_line(self, lang: str = "en") -> str:
+        env = self.env
+        if lang == "fr":
+            return (f"Niveau {env.level}, essai {env.attempt} : {env.score}/{len(env.pellets)} pastilles, "
+                    f"score total {env.total_score}, {env.lives} vies, {len(self.world)} faits appris, "
+                    f"{len(self.library.entries)} pouvoirs à moi.")
+        return (f"Level {env.level}, try {env.attempt}: {env.score}/{len(env.pellets)} pellets, "
+                f"total score {env.total_score}, {env.lives} lives, {len(self.world)} facts learned, "
+                f"{len(self.library.entries)} moves of my own.")
 
     def __init__(self, env: PacVerse | None = None, exe: str | None = None, seed: int = 0,
                  probe: float = 0.35) -> None:
@@ -1200,14 +1214,23 @@ class CubbyGhost(CubbyPac):
                 **self.affect()}
 
     def handle(self, text: str) -> dict:
+        from identity import guess_lang
+        lang = guess_lang(text)
+        if self._STATUS.search(text) and not self._PLAY.search(text):   # a report, no stepping
+            return {"offered": [self.status_line(lang)], "meta": {"status": True, "level": self.env.level}}
         m = re.search(r"\b(\d{1,3})\b", text)
         steps = int(m.group(1)) if m else 30
         rep = self.explore(steps)
         rep.update({"level": self.env.level, "lives": self.env.lives,
                     "score": self.env.score, "total_score": self.env.total_score})
-        line = (f"I'm on level {self.env.level} of the pacman maze — total score "
-                f"{self.env.total_score}, {self.env.lives} lives left, and I learned "
-                f"{rep['new_facts']} new things this run. Watch me live at /pac!")
+        if lang == "fr":
+            line = (f"Je suis au niveau {self.env.level} du labyrinthe — score total {self.env.total_score}, "
+                    f"{self.env.lives} vies, et j'ai appris {rep['new_facts']} choses nouvelles. "
+                    f"Regarde-moi en direct sur /pac !")
+        else:
+            line = (f"I'm on level {self.env.level} of the pacman maze — total score "
+                    f"{self.env.total_score}, {self.env.lives} lives left, and I learned "
+                    f"{rep['new_facts']} new things this run. Watch me live at /pac!")
         return {"offered": [line], "meta": rep}
 
 

@@ -136,6 +136,31 @@ state** (programs stay deterministic). Scored by `identity_ok` (facts present,
 no forbidden claims, no base-model leak, state language on affect turns) in
 both the notebook and `eval_emitter_vm.py`; the VM pass skips these records.
 
+## Routing fixes after the first live sessions (2026-09-02)
+
+Symptom reported: "it keeps saying its identity no matter what I ask and does not respond to my
+commands." Cause: anything that was not a fact, a matched game keyword or a strong retrieval hit
+fell through to the **talk** cortex, and the identity SFT is the v3 model's only chat training — under
+the identity system prompt it answers who-it-is to anything. Fixes, all in the router's spirit:
+
+- **A question never reaches chat.** `route()` sends any question (a `?`, a wh-word, EN/FR) to the
+  reasoning cortex unless it is an identity turn; and when retrieval was *not* confident the flat
+  fact fallback is disabled — no walk, no answer — so an unknown question gets the don't-know line,
+  never an improvised bio or a grounded-but-irrelevant fact (`allow_flat`).
+- **Commands route to the game.** The pac cortex matches explore / play / go on / continue /
+  next level / status / score / lives (EN+FR); `status` reports without stepping; `help` / `aide`
+  is its own cortex listing what he can do.
+- **Off-topic identity is rejected host-side** (`identity.is_identity_reply` on a turn that is not
+  `is_identity_question`), the same mechanism as the voice filter: the VM is offered only the
+  don't-know line. Greetings and who/what-are-you keep their identity answers.
+- **Only OUR guards are enforced.** The base model's own alignment — refusals, "as an AI language
+  model…", its maker's identity (Liquid/LFM), other-model names — is matched by
+  `identity.is_model_guard` and rejected before anything else; Cubby's answers come from Cubby's
+  rules (voice rules, the VM's ASK, the don't-know line). The v4/v5 SFT should also train these
+  prompts to Cubby's own answers so the guard fires less; the host filter is the floor either way.
+
+Restart `serve_api.py` after pulling — the running process has the old router.
+
 ## Chat is mediated by a VM program, not emitted as one (design note, 2026-08-30)
 
 Checked in the cubelang source. The VM's **registry-seeded (tamper-proof) interfaces
