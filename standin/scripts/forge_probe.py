@@ -33,14 +33,18 @@ def main():
     ap.add_argument("--gguf", required=True)
     ap.add_argument("--n", type=int, default=12, help="tasks per kind")
     ap.add_argument("--n-gpu-layers", type=int, default=-1)
+    ap.add_argument("--level", type=int, default=1,
+                    help="maze level for the chain tasks; v4 trained on levels 1-3, so >= 4 is held out")
+    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--tag", default="")
     args = ap.parse_args()
     from standin.emitter import LlamaCppEmitter
     emitter = LlamaCppEmitter(args.gguf, n_ctx=2048, n_gpu_layers=args.n_gpu_layers)
     lib = ProgramLibrary()
     events = []
     forge = ToolForge(emitter, lib, trace=lambda kind, **d: events.append({"kind": kind, **d}))
-    rng = random.Random(0)
-    env = GhostVerse()
+    rng = random.Random(args.seed)
+    env = GhostVerse(level=args.level)
     tasks = []
     for _ in range(args.n):
         near, radius = rng.randint(0, 4), rng.randint(1, 3)
@@ -60,9 +64,10 @@ def main():
         print(f"  {i}/{len(tasks)} {t.kind:9s} ok={r['ok']} got={r['got']!r} expected={t.expected!r}"
               + (f" err={r['error'][:60]}" if r["error"] else ""), flush=True)
     acc = forge.acceptance()
-    print(f"\n[stand-in] forge acceptance ({len(tasks)} tasks, {time.time() - t0:.0f}s): "
+    print(f"\n[stand-in] forge acceptance ({len(tasks)} tasks, level {args.level}, seed {args.seed}, "
+          f"{time.time() - t0:.0f}s): "
           + ", ".join(f"{k} {v:.2f} ({a}/{n})" for k, (a, n) in forge.stats.items() for v in [acc[k]]))
-    out = os.path.join(ROOT, "standin", "data", "out", "forge_probe.json")
+    out = os.path.join(ROOT, "standin", "data", "out", f"forge_probe{args.tag}.json")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     json.dump({"acceptance": acc, "stats": forge.stats, "events": events}, open(out, "w", encoding="utf-8"), indent=1)
     print(f"wrote {out}")
