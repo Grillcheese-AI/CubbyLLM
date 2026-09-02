@@ -120,9 +120,15 @@ def main():
     facts = load_facts()
     for i, r in enumerate(records, 1):
         task = r["task"]
-        if task == "identity":                       # chat turn: the identity check, not the VM
+        if task in ("identity", "chat", "content"):  # conversational turns: checks, not the VM
             gen = strip_think(emitter.emit(r["prompt"], system=r.get("system"))).strip()
-            ok = identity_ok(r.get("subtype", ""), gen, facts, r.get("lang", "en"))
+            if task == "identity":
+                ok = identity_ok(r.get("subtype", ""), gen, facts, r.get("lang", "en"))
+            elif task == "chat":                     # v5: Cubby's rules hold and it is NOT a bio
+                from identity import is_identity_reply, is_model_guard, voice_ok
+                ok = bool(gen) and voice_ok(gen, facts) and not is_model_guard(gen) and not is_identity_reply(gen, facts)
+            else:                                    # content awareness: the label comes first
+                ok = gen.lower().split(" ")[0].strip(" —-:.,") == str(r.get("gold")).lower()
             stats[task]["n"] += 1
             stats[task]["identity_ok"] += int(ok)
             stats[task][f"identity_ok:{r.get('lang', 'en')}"] += int(ok)
@@ -150,11 +156,13 @@ def main():
     print("\n[stand-in] VM-verified eval by task:")
     summary = {}
     for task, c in sorted(stats.items()):
-        if task == "identity":
+        if task in ("identity", "chat", "content"):
             per_lang = {l: (c[f"identity_ok:{l}"] / c[f"n:{l}"]) for l in ("en", "fr") if c[f"n:{l}"]}
-            summary[task] = {"n": c["n"], "identity_ok": c["identity_ok"] / c["n"], "by_lang": per_lang}
-            print(f"  {task:13s} n={c['n']:4d} identity_ok={c['identity_ok'] / c['n']:.3f} by lang {per_lang}  "
-                  f"(name/builder present, no AGI/other-model/feelings claims, don't-know line verbatim, state language on affect turns)")
+            summary[task] = {"n": c["n"], "ok": c["identity_ok"] / c["n"], "by_lang": per_lang}
+            note = {"identity": "name/builder present, no AGI/other-model/feelings claims, don't-know line verbatim",
+                    "chat": "voice rules hold, no base-model guard, not an identity bio",
+                    "content": "the nsfw/safe label comes first"}[task]
+            print(f"  {task:13s} n={c['n']:4d} ok={c['identity_ok'] / c['n']:.3f} by lang {per_lang}  ({note})")
             continue
         ex = c["executes"] / c["n"]
         gm = (c["gold_match"] / c["with_gold"]) if c["with_gold"] else None

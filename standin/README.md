@@ -161,6 +161,26 @@ the identity system prompt it answers who-it-is to anything. Fixes, all in the r
 
 Restart `serve_api.py` after pulling — the running process has the old router.
 
+**v5 BUILT (2026-09-02, `data/build_chat_sft.py`; on Drive as `emitter_sft_v5.jsonl`, sha `6ddda0d0…`): 21,113
+records = the whole v4 as replay (11,144) + 9,385 chat pairs + 1,400 content-awareness records.** The chat
+fixes the identity-only collapse at its source. The local corpus (`I:\grillcheese_training_data`) turned out
+to hold no dialogue — its `*_svc` files are parsed prompt banks, `conversations_svc_threaded` is a coding-session
+log, and `identity_corpus.txt` is an **older, different persona** (kept out) — so the pairs come from
+`unified/` Orca AgentInstruct (1,500, task-instruction heavy) and four Apache-2.0 Hugging Face sets fetched to
+`data/hf/` (gitignored): `HuggingFaceTB/everyday-conversations-llama3.1-2k` (2,500 — real small talk),
+`HuggingFaceTB/smoltalk` systemchats-30k (1,500 — answering under a system prompt, the shape serving uses),
+`OpenAssistant/oasst2` rank-0 human replies screened by its own detoxify scores (EN 1,500, **FR 385**), and
+`jpacifico/French-Alpaca-dataset-Instruct-110K` (**FR 2,000**). Every pair passes the same gate the router
+enforces live: Cubby's voice rules, no base-model guard, no other assistant's identity, no identity bio, no
+explicit content, short — 40k+ rejections on record in the manifest. System prompt = `identity_system` with a
+sampled hormonal state, exactly what serving injects; FR records repeat 2. **Content awareness** (owner's
+ask: the model should learn what NSFW *is* so censorship can be decided later, at a gate): 700 `nsfw` + 700
+`safe` passage→label records — explicit chunks from `bluuwhale_nsfwstory2` (+ `mickume_alt_nsfw` only when a
+chunk carries explicit cues; its prose mostly does not), safe from nemotron web text and EN/FR news; every
+chunk that trips the minors or non-consent screens is dropped first (628 screened out). Generation exposure
+(continuing explicit prose) exists as `--exposure N` and is **off** — the owner's switch, never the builder's.
+`eval_emitter_vm.py` scores `chat` (voice rules hold, no guard, not a bio) and `content` (label first).
+
 ## Chat is mediated by a VM program, not emitted as one (design note, 2026-08-30)
 
 Checked in the cubelang source. The VM's **registry-seeded (tamper-proof) interfaces
