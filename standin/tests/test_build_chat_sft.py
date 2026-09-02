@@ -43,9 +43,11 @@ def test_finish_dedupes_and_sets_split_and_repeat():
     recs = [{"id": "a", "task": "chat", "prompt": "same prompt", "program": "x"},
             {"id": "b", "task": "chat", "prompt": "same prompt ", "program": "y"},
             {"id": "c", "task": "content", "prompt": "other", "program": "safe — general content.", "gold": "safe"}]
-    out = b.finish(recs)
+    out = b.finish(recs, F)
     assert [r["id"] for r in out] == ["a", "c"]
     assert all(r["split"] in ("train", "val") and r["repeat"] == 1 and "vm_ok" in r for r in out)
+    assert all(r["system"] and "CubeLang" not in r["system"] for r in out), \
+        "never the emitter prompt on a label/chat record"
 
 
 def test_hf_parsers_yield_pairs_and_oasst2_is_screened():

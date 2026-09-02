@@ -445,13 +445,22 @@ def build_exposure(rng: random.Random, n: int, limit_lines: int | None = None) -
     return out, why
 
 
-def finish(records: list[dict]) -> list[dict]:
+def finish(records: list[dict], facts: dict | None = None) -> list[dict]:
+    """Dedupe on the prompt, split, repeat weights — and a system prompt on
+    EVERY record: the notebook falls back to the EMITTER prompt ("output
+    only a CubeLang program") when one is missing, which would train the
+    label/chat tasks under a contradictory instruction. Perception tasks
+    (content, emotion) get the plain identity prompt, the one the host
+    sends at appraisal time."""
+    facts = facts or load_facts()
     seen, out = set(), []
     for r in records:
         key = r["prompt"].strip()
         if key in seen:
             continue
         seen.add(key)
+        if not r.get("system"):
+            r["system"] = identity_system(facts)
         r["split"] = split_of(r["prompt"])
         r["repeat"] = r.get("repeat", 1) if r["split"] == "train" else 1
         r.setdefault("vm_ok", None)
@@ -495,7 +504,7 @@ def main():
         print(f"=== generation exposure ON ({args.exposure}) ...", flush=True)
         exposure, why_exp = build_exposure(rng, args.exposure, lim)
         print(f"  kept {len(exposure)} | skipped {dict(why_exp)}")
-    new = finish(chat + content + emotion + exposure)
+    new = finish(chat + content + emotion + exposure, facts)
     replay = [] if args.no_replay else [json.loads(l) for l in open(V4_PATH, encoding="utf-8")]
     records = replay + new
     os.makedirs(OUT_DIR, exist_ok=True)
