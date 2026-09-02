@@ -14,7 +14,9 @@
 </style></head>
 <body>
 <div id="hud"><h1>cubby-man · 3D Pac-Man — LIVE, every move VM-guarded</h1>
-  <div><span id="score">0</span> <span style="font-size:16px;color:#8b93a3">/ <span id="total">0</span> pellets</span></div>
+  <div><span id="score">0</span> <span style="font-size:16px;color:#8b93a3">/ <span id="total">0</span> pellets</span>
+       <span id="lives" style="font-size:16px;color:#ff4d6d;margin-left:10px"></span></div>
+  <div class="row" id="lvlrow" style="display:none">level <b id="level">1</b> · total score <b id="tscore">0</b> · <span id="fright"></span></div>
   <div class="row">steps <b id="steps">0</b> · facts <b id="facts">0</b> · walls learned <b id="wallsL">0</b> · derived <b id="derived">0</b></div>
   <div class="row">feeling <b id="emotion">neutral</b></div>
   <div class="row" style="color:#566">he plays only while this page is open — the poll drives the step</div>
@@ -27,38 +29,54 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-let W=7,H=7,DEP=3, built=false;
+let W=7,H=7,DEP=3, built=false, lastLevel=null;
 const scene=new THREE.Scene(); scene.background=new THREE.Color(0x05070d);
 const cam=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,200);
 const rnd=new THREE.WebGLRenderer({antialias:true}); rnd.setSize(innerWidth,innerHeight); rnd.setPixelRatio(devicePixelRatio);
 document.body.appendChild(rnd.domElement);
 const ctr=new OrbitControls(cam,rnd.domElement);
-scene.add(new THREE.AmbientLight(0xffffff,0.55));
-const dl=new THREE.DirectionalLight(0xffffff,0.85); scene.add(dl);
 const agent=new THREE.Mesh(new THREE.SphereGeometry(0.42,20,20),
   new THREE.MeshStandardMaterial({color:0xff4d6d,emissive:0xff1f4f,emissiveIntensity:0.7}));
-scene.add(agent);
-const trailPts=[]; const trail=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0x3a4a6a}));
-scene.add(trail);
-const pellets=new Map();
+let trailPts=[]; const trail=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:0x3a4a6a}));
+const pellets=new Map(), ghosts=[];
 const pgeo=new THREE.SphereGeometry(0.16,14,14);
 const pmat=new THREE.MeshStandardMaterial({color:0xffe66d,emissive:0xffd000,emissiveIntensity:0.8});
+const smat=new THREE.MeshStandardMaterial({color:0x27d3ff,emissive:0x0aa0d0,emissiveIntensity:1.0});
+const ggeo=new THREE.SphereGeometry(0.34,18,18);
+const frightMat=new THREE.MeshStandardMaterial({color:0x4d79ff,emissive:0x2244cc,emissiveIntensity:0.9});
 
 function build(s){
-  W=s.w; H=s.h; DEP=s.d;
+  W=s.w; H=s.h; DEP=s.d; lastLevel=s.level??null;
+  scene.clear(); pellets.clear(); ghosts.length=0;
+  trailPts=[]; trail.geometry.setFromPoints(trailPts);
+  scene.add(new THREE.AmbientLight(0xffffff,0.55));
+  const dl=new THREE.DirectionalLight(0xffffff,0.85); dl.position.set(W,H*2,DEP*2); scene.add(dl);
+  scene.add(agent); scene.add(trail);
   cam.position.set(W*1.4,H*1.5,DEP*4+6);
   ctr.target.set((W-1)/2,(H-1)/2,(DEP-1)/2); ctr.update();
-  dl.position.set(W,H*2,DEP*2);
   const box=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,DEP)),
     new THREE.LineBasicMaterial({color:0x1b2740}));
   box.position.set((W-1)/2,(H-1)/2,(DEP-1)/2); scene.add(box);
   const wgeo=new THREE.BoxGeometry(0.92,0.92,0.92);
   const wmat=new THREE.MeshStandardMaterial({color:0x21407a,transparent:true,opacity:0.5,metalness:0.2,roughness:0.6});
   for(const w of s.walls){const m=new THREE.Mesh(wgeo,wmat);m.position.set(...w);scene.add(m);}
-  for(const p of s.pellets){const m=new THREE.Mesh(pgeo,pmat);m.position.set(...p);scene.add(m);pellets.set(p.join(','),m);}
-  agent.position.set(...s.start);
-  trailPts.push(new THREE.Vector3(...s.start));
+  const hmat=new THREE.MeshStandardMaterial({color:0xb3123a,transparent:true,opacity:0.45,emissive:0x80122e,emissiveIntensity:0.5});
+  for(const hz of (s.hazards||[])){const m=new THREE.Mesh(wgeo,hmat);m.position.set(...hz);scene.add(m);}
+  const starSet=new Set((s.power||[]).map(p=>p.join(',')));
+  for(const p of s.pellets){
+    const star=starSet.has(p.join(','));
+    const m=new THREE.Mesh(star?new THREE.SphereGeometry(0.26,14,14):pgeo, star?smat:pmat);
+    m.position.set(...p);scene.add(m);pellets.set(p.join(','),m);
+  }
+  for(const [i,g] of (s.ghosts||[]).entries()){
+    const col=(s.ghost_colors||[])[i]||'#ff4d5e';
+    const m=new THREE.Mesh(ggeo,new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:0.45}));
+    m.userData.mat=m.material; m.position.set(...g); scene.add(m); ghosts.push(m);
+  }
+  agent.position.set(...s.pos||s.start);
+  trailPts.push(new THREE.Vector3(...(s.pos||s.start)));
   document.getElementById('total').textContent=s.total;
+  if(s.level!==undefined) document.getElementById('lvlrow').style.display='';
   built=true;
 }
 
@@ -73,18 +91,28 @@ async function poll(){
   try{
     const s=await (await fetch('/pac/state')).json();
     if(s.error){ document.getElementById('err').textContent='VM error: '+s.error; }
-    if(!built) build(s);
+    if(!built || (s.level!==undefined && s.level!==lastLevel)){ build(s); target=null; }
     // pellets: remove any no longer remaining (he ate them)
     const alive=new Set(s.pellets.map(p=>p.join(',')));
     for(const [k,m] of pellets){ if(!alive.has(k)){ scene.remove(m); pellets.delete(k); } }
-    const cur=[agent.position.x,agent.position.y,agent.position.z];
     if(!target || s.pos.join(',')!==target.join(',')) setTarget(s.pos);
+    for(const [i,m] of ghosts.entries()){
+      const g=(s.ghosts||[])[i]; if(!g) continue;
+      m.position.set(...g);
+      m.material=(s.frightened>0)?frightMat:m.userData.mat;
+    }
     document.getElementById('score').textContent=s.score;
     document.getElementById('steps').textContent=s.steps;
     document.getElementById('facts').textContent=s.facts;
     document.getElementById('wallsL').textContent=s.walls_learned;
     document.getElementById('derived').textContent=s.derived;
     document.getElementById('emotion').textContent=s.emotion;
+    if(s.lives!==undefined) document.getElementById('lives').textContent='♥'.repeat(Math.max(0,s.lives));
+    if(s.level!==undefined){
+      document.getElementById('level').textContent=s.level;
+      document.getElementById('tscore').textContent=s.total_score;
+      document.getElementById('fright').textContent=s.frightened>0?('★ ghosts edible: '+s.frightened):'';
+    }
     if(s.beaten) document.getElementById('beat').style.display='block';
   }catch(e){ /* server away; keep trying */ }
   setTimeout(poll,180);

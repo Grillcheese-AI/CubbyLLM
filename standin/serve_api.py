@@ -149,12 +149,12 @@ def main():
     args = ap.parse_args()
     brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers)
     if args.pacman:
-        from pacman import CubbyPac, LivePac
-        man = CubbyPac()
+        from pacman import CubbyGhost, LivePac
+        man = CubbyGhost()                               # the big game: ghosts, hazards, stars, levels
         brain.mount(man)
         brain.pac_live = LivePac(man)
-        print(f"mounted: cubby-man in the pac maze — LIVE view at "
-              f"http://{args.host}:{args.port}/pac (he plays while it is open)")
+        print(f"mounted: cubby-man in the pac maze (ghosts, hazards, power stars, levels) — "
+              f"LIVE view at http://{args.host}:{args.port}/pac (he plays while it is open)")
     serve_http(brain, args.host, args.port).serve_forever()
 
 
