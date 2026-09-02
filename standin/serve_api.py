@@ -103,6 +103,13 @@ def make_handler(brain):
                     self._send(200, live.poll())
                 elif self.path.startswith("/pac/next"):
                     self._send(200, live.next_level())
+                elif self.path.startswith("/pac/programs"):   # his notebook: the programs + reasoning
+                    lib = live.man.library
+                    if self.path.endswith(".md"):
+                        self._raw(200, lib.notebook().encode("utf-8"), "text/markdown; charset=utf-8")
+                    else:
+                        self._send(200, {"path": str(lib.path) if lib.path else None,
+                                         "entries": lib.entries})
                 elif self.path.startswith("/pac/assets/"):
                     from pacman import load_asset
                     data = load_asset(self.path[len("/pac/assets/"):])
@@ -174,12 +181,16 @@ def main():
     args = ap.parse_args()
     brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers)
     if args.pacman:
-        from pacman import CubbyGhost, LivePac
-        man = CubbyGhost()                               # the big game: ghosts, hazards, stars, levels
+        from pacman import PROGRAMS_PATH, CubbyGhost, LivePac
+        man = CubbyGhost(memory=PROGRAMS_PATH)           # the big game; his programs persist on disk
         brain.mount(man)
         brain.pac_live = LivePac(man)
         print(f"mounted: cubby-man in the pac maze (ghosts, hazards, power stars, levels) — "
-              f"LIVE view at http://{args.host}:{args.port}/pac (he plays while it is open)")
+              f"LIVE view at http://{args.host}:{args.port}/pac (he plays while it is open)\n"
+              f"  his programs + reasoning: {PROGRAMS_PATH} (and .md) | "
+              f"http://{args.host}:{args.port}/pac/programs.md"
+              + (f" | {len(man.library.entries)} programs remembered from earlier runs"
+                 if man.library.entries else ""))
     serve_http(brain, args.host, args.port).serve_forever()
 
 

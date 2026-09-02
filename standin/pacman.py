@@ -194,6 +194,146 @@ class CubbyPac(CubbyMan):
 FRIGHT_STEPS = 14                                        # pacman_live.py's constants
 GHOST_BONUS = 5
 GHOST_COLORS = ["#ff4d5e", "#27d3ff", "#ff9ff3", "#36e07a"]
+JUMP_COST = 20                                           # our energy price for a hop (theirs is unrecorded here)
+PROGRAMS_PATH = pathlib.Path(__file__).resolve().parent / "data" / "out" / "cubbyman_programs.json"
+
+# ── generative superpowers: patterns over move SLOTS ────────────────────────
+# A pattern is a word over slots A/B/C ("AAA" = one direction three times,
+# "AB" = two perpendicular directions, "ABC" = three axes). At use time the
+# slots are instantiated with any assignment of distinct, non-opposite
+# directions, so one program covers a whole family of moves. The live game's
+# DASH / BLINK / COMBO are three points in this space; the rest is his to
+# find — combos that did not exist until he composed them.
+_FLAVOR = {"AAA": "DASH", "AAAAA": "BLINK", "AB": "COMBO", "AAB": "KNIGHT", "ABC": "WARP",
+           "AAAA": "SPRINT", "AABB": "ZIGZAG", "ABAB": "STAIRS", "ABA": "HOOK", "ABB": "ELBOW"}
+
+
+def pattern_name(pattern: str) -> str:
+    return _FLAVOR.get(pattern, f"COMBO-{pattern}")
+
+
+def _assignments(pattern: str):
+    """Every injective slot -> direction assignment with no two slots on
+    opposite directions (a back-and-forth is not a move)."""
+    slots = []
+    for ch in pattern:
+        if ch not in slots:
+            slots.append(ch)
+    dirs = list(MOVES)
+
+    def rec(i, chosen):
+        if i == len(slots):
+            yield dict(zip(slots, chosen))
+            return
+        for d in dirs:
+            if d in chosen or OPP[d] in chosen:
+                continue
+            yield from rec(i + 1, chosen + [d])
+    yield from rec(0, [])
+
+
+class ProgramLibrary:
+    """His generated programs — each with its source, the REASONING that led
+    to it (what triggered it, the situation he was in, how the proposal was
+    sampled, the VM's verdict) and a log of every use and what it earned.
+    Nothing is ever deleted: a pattern that never pays is RETIRED (kept in
+    the notebook, no longer offered) — he does not forget what he learned.
+    Kept on disk as JSON plus a readable Markdown notebook (pacman_live
+    persists procedural memory the same way) so the knowledge survives a
+    restart and can be read afterwards."""
+
+    def __init__(self, path: pathlib.Path | None = None) -> None:
+        self.path = path
+        self.entries: dict[str, dict] = {}
+        if path is not None:
+            try:
+                self.entries = json.loads(path.read_text(encoding="utf-8")).get("entries", {})
+            except (OSError, ValueError):
+                self.entries = {}
+
+    def __contains__(self, name: str) -> bool:
+        return name in self.entries
+
+    def names(self) -> list[str]:
+        return [n for n, e in self.entries.items() if not e.get("retired")]
+
+    def active(self) -> dict[str, dict]:
+        return {n: e for n, e in self.entries.items() if not e.get("retired")}
+
+    def add(self, name: str, pattern: str | None, program: str, kind: str, step: int,
+            reasoning: dict) -> None:
+        self.entries[name] = {"pattern": pattern, "kind": kind, "program": program,
+                              "born": step, "legal": 0, "used": 0, "saved": 0,
+                              "reasoning": reasoning, "uses": [], "retired": False}
+        self.save()
+
+    def note_legal(self, name: str) -> None:
+        if name in self.entries:
+            self.entries[name]["legal"] += 1
+
+    def note_used(self, name: str, saved: int, context: dict) -> None:
+        if name in self.entries:
+            e = self.entries[name]
+            e["used"] += 1
+            e["saved"] += saved
+            if len(e["uses"]) < 200:
+                e["uses"].append({"saved": saved, **context})
+            self.save()
+
+    def value(self, name: str) -> float:
+        e = self.entries[name]
+        return e["saved"] / (e["used"] + 1) + 0.05 * min(e["legal"], 20)
+
+    def retire(self, step: int, keep: int = 10) -> str | None:
+        """Stop OFFERING the least valuable never-used pattern once the active
+        set is crowded (every legal move is an ASK candidate; a useless one is
+        noise). It stays in the notebook with the reason — not forgotten."""
+        act = self.active()
+        cands = [n for n, e in act.items()
+                 if e["kind"] == "pattern" and e["used"] == 0 and step - e["born"] > 40]
+        if len(act) > keep and cands:
+            worst = min(cands, key=self.value)
+            self.entries[worst]["retired"] = True
+            self.entries[worst]["retired_reason"] = (f"never used in {step - self.entries[worst]['born']} "
+                                                     f"steps; legal {self.entries[worst]['legal']} times")
+            self.save()
+            return worst
+        return None
+
+    def save(self) -> None:
+        if self.path is None:
+            return
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            self.path.write_text(json.dumps({"entries": self.entries}, indent=1), encoding="utf-8")
+            self.path.with_suffix(".md").write_text(self.notebook(), encoding="utf-8")
+        except OSError:
+            pass
+
+    def notebook(self) -> str:
+        """The readable record: one section per program, reasoning first."""
+        out = ["# cubby-man's programs\n",
+               "Every move he composed himself: why, the situation, the program the VM certified, "
+               "and what it earned. Retired programs are kept — nothing learned is forgotten.\n"]
+        for name, e in self.entries.items():
+            r = e.get("reasoning", {})
+            out.append(f"\n## {name}  ({'pattern ' + e['pattern'] if e.get('pattern') else e['kind']})"
+                       f"{'  — RETIRED: ' + e.get('retired_reason', '') if e.get('retired') else ''}\n")
+            out.append(f"- **trigger:** {r.get('why', '?')} — {r.get('because', '')}\n")
+            s = r.get("situation", {})
+            if s:
+                out.append("- **situation:** " + ", ".join(f"{k} {v}" for k, v in s.items()) + "\n")
+            if r.get("rationale"):
+                out.append(f"- **proposal:** {r['rationale']}\n")
+            out.append(f"- **VM verdict:** {r.get('verdict', '?')}\n")
+            out.append(f"- **earned:** used {e['used']}× · saved {e['saved']} steps · legal {e['legal']}×\n")
+            out.append("\n```cubelang\n" + e["program"].rstrip() + "\n```\n")
+            if e.get("uses"):
+                out.append("\n| step | level | move | landed on | saved |\n|---|---|---|---|---|\n")
+                for u in e["uses"][-12:]:
+                    out.append(f"| {u.get('step')} | {u.get('level')} | {u.get('move')} | "
+                               f"{u.get('landed', '')} | {u.get('saved')} |\n")
+        return "".join(out)
 
 
 class _Mulberry32:
@@ -279,6 +419,7 @@ class GhostVerse(PacVerse):
     def __init__(self, level: int = 1, seed_extra: int = 0) -> None:
         self.total_score = 0
         self.lives = 3
+        self.energy = 100
         self.seed_extra = int(seed_extra)
         self._start_level(level)
 
@@ -361,6 +502,39 @@ class GhostVerse(PacVerse):
             q = (x + dx, y + dy, z + dz)
             if _in(q, self.w, self.h, self.d) and q not in self.walls and q not in self.hazards:
                 out[m] = self.cell(*q)
+        return out
+
+    def _open(self, q) -> bool:
+        return _in(q, self.w, self.h, self.d) and q not in self.walls and q not in self.hazards
+
+    def power_moves(self, place: str, library, energy: int) -> dict[str, str]:
+        """The superpower moves legal HERE from his program library: JUMP =
+        a hop over ONE hazard (costs energy); a pattern = its slots
+        instantiated with directions, every cell on the way open. Move names
+        carry the instantiation (`knight_right_right_up`); `jump_*` keeps the
+        live page's hop animation."""
+        x, y, z = self.coords(place)
+        out = {}
+        for name, e in library.entries.items():
+            if e["kind"] == "jump":
+                if energy < JUMP_COST:
+                    continue
+                for d, (dx, dy, dz) in MOVES.items():
+                    mid, land = (x + dx, y + dy, z + dz), (x + 2 * dx, y + 2 * dy, z + 2 * dz)
+                    if _in(mid, self.w, self.h, self.d) and mid in self.hazards and self._open(land):
+                        out[f"jump_{d}"] = self.cell(*land)
+                continue
+            pattern = e["pattern"]
+            for asg in _assignments(pattern):
+                cur, ok = (x, y, z), True
+                for ch in pattern:
+                    dx, dy, dz = MOVES[asg[ch]]
+                    cur = (cur[0] + dx, cur[1] + dy, cur[2] + dz)
+                    if not self._open(cur):
+                        ok = False
+                        break
+                if ok and cur != (x, y, z):
+                    out[f"{name.lower()}_{'_'.join(asg[ch] for ch in pattern)}"] = self.cell(*cur)
         return out
 
     def observe(self, place: str) -> list[str]:
@@ -473,7 +647,7 @@ class CubbyGhost(CubbyPac):
     `init_payload()` speak the live frontend's exact schema."""
 
     def __init__(self, env: GhostVerse | None = None, exe: str | None = None, seed: int = 0,
-                 probe: float = 0.35) -> None:
+                 probe: float = 0.35, memory: pathlib.Path | None = None) -> None:
         self.brain = None
         self.fear = 0.3                                  # pacman_live's ghost_penalty, learned
         self.vocab: list[str] = []                       # words grounded by collecting their letters
@@ -482,7 +656,131 @@ class CubbyGhost(CubbyPac):
         self._cool: dict[str, int] = {}
         self._last: dict = {}
         self._pending_says: str | None = None
+        self.sighted: set[str] = set()                   # cells where he SAW a pellet (facts too)
+        self._eaten_run: set[str] = set()                # eaten THIS run (pellets respawn on a retry)
+        self._plan_next: str | None = None               # the cell his map says to go to next
+        self._graph_n = -1
+        self._graph: dict[str, set[str]] = {}
+        self.library = ProgramLibrary(memory)            # his generated programs (+ stats), persisted
+        self._last_proposal = -99
         super().__init__(env or GhostVerse(), exe=exe, seed=seed, probe=probe)
+
+    @property
+    def powers(self) -> list[str]:
+        return self.library.names()
+
+    # ── superpowers: programs he GENERATES, the VM certifies, he keeps ──────
+    _BECAUSE = {"stuck": "a pellet I have SEEN has no path on my map — something walls it off",
+                "out_of_time": "the level's time budget ran out — I need to cover ground faster",
+                "curious": "nothing to chase right now and I feel like inventing a move"}
+
+    def _situation(self) -> dict:
+        env = self.env
+        near = min((_manh(env.coords(self.place), g) for g in env.ghosts), default=None)
+        st = {"level": env.level, "attempt": env.attempt, "step": env.steps, "budget": env.budget,
+              "pellets_left": len(env.remaining), "seen_unreached": len(self.sighted - self._eaten_run),
+              "lives": env.lives, "fear": round(self.fear, 2), "ghost_distance": near,
+              "facts_known": len(self.world), "programs": len(self.library.entries)}
+        if self.chem is not None:
+            st.update({"dopamine": round(self.chem.dopamine, 2), "cortisol": round(self.chem.cortisol, 2),
+                       "emotion": self.emotion()["name"]})
+        return st
+
+    def _compose(self, name: str, why: str, steps: list[str], pattern: str | None, kind: str,
+                 rationale: str = "") -> str | None:
+        """Write the composition as a CubeLang program (bind the steps,
+        recover the name), have the VM certify it, store it with its source
+        AND the reasoning that led to it, and learn the facts. Only then is
+        it a move he can use."""
+        if name in self.library:
+            return None
+        binds = "".join(f'        bind frame, H{i + 1}_STEP, "{s}";\n' for i, s in enumerate(steps))
+        program = ("use vsa;\n\nprogram Superpower implements ISolve {\n"
+                   "    public function solve(mention: str): str {\n"
+                   "        create frame: number;\n"
+                   f"{binds}"
+                   f'        bind frame, H{len(steps) + 1}_NAME, "{name}";\n'
+                   f"        return recover(frame, H{len(steps) + 1}_NAME);\n    }}\n}}\n")
+        reasoning = {"why": why, "because": self._BECAUSE.get(why, why), "situation": self._situation(),
+                     "rationale": rationale, "steps": steps}
+        ok = self._certify_join(program, name)
+        reasoning["verdict"] = ("certified: the VM bound the steps and recovered the name" if ok
+                                else "REJECTED by the VM (did not execute or recover the name)")
+        if not ok:
+            self._t("program_rejected", name=name, why=why, program=program, reasoning=reasoning)
+            return None
+        self.library.add(name, pattern, program, kind, self.env.steps, reasoning)
+        self._learn([f"{name} is the superpower {len(self.library.entries)} of cubbyman",
+                     f"{' '.join(steps)} is the recipe of {name}"])
+        self._t("program", name=name, why=why, pattern=pattern, program=program, reasoning=reasoning)
+        if self.chem is not None:
+            self.chem.update(novelty=1.0, valence=0.9)
+        return name
+
+    def _propose(self, why: str) -> str | None:
+        """GENERATE a new composition. Lengths are sampled from what has paid
+        off (steps saved per use of the patterns he has), with a prior toward
+        3; out-of-time asks for longer ones. Slots are drawn from A/B/C. A
+        pattern he already holds is skipped; dead weight is retired (not
+        forgotten) first. The sampling rationale is written into the
+        program's reasoning trace."""
+        retired = self.library.retire(self.env.steps)
+        if retired:
+            self._t("retire", name=retired, reason=self.library.entries[retired]["retired_reason"])
+        weight = {2: 1.0, 3: 2.0, 4: 1.0, 5: 0.6}
+        paid = []
+        for n, e in self.library.entries.items():
+            if e["kind"] == "pattern" and e["used"]:
+                gain = e["saved"] / e["used"]
+                weight[len(e["pattern"])] = weight.get(len(e["pattern"]), 1.0) + gain
+                paid.append(f"{n} saved {gain:.1f}/use")
+        if why == "out_of_time":
+            weight = {k: v * (k / 2.0) for k, v in weight.items()}
+        lengths, ws = zip(*weight.items())
+        for _ in range(12):
+            n = self.rng.choices(lengths, ws)[0]
+            pattern = "A" + "".join(self.rng.choice("AAB" if i < 2 else "ABC") for i in range(n - 1))
+            name = pattern_name(pattern)
+            if name not in self.library:
+                self._last_proposal = self.env.steps
+                rationale = (f"sampled length {n} from weights "
+                             + ", ".join(f"{k}:{v:.1f}" for k, v in sorted(weight.items()))
+                             + (" (longer favored: out of time)" if why == "out_of_time" else "")
+                             + (f"; what paid so far: {'; '.join(paid)}" if paid else "; nothing has paid yet")
+                             + f" -> pattern {pattern}")
+                return self._compose(name, why, list(pattern), pattern, "pattern", rationale)
+        return None
+
+    def candidate_moves(self, exits: dict[str, str]) -> dict[str, str]:
+        """The ASK offers the base exits PLUS the superpower moves from his
+        library that are legal here (and notes which programs were usable)."""
+        if not self.library.entries:
+            return exits
+        power = self.env.power_moves(self.place, self.library, self.env.energy)
+        for move in power:
+            self.library.note_legal("JUMP" if move.startswith("jump_") else move.split("_")[0].upper())
+        return {**exits, **power}
+
+    # ── ghosts: a berth that GROWS with learned fear ────────────────────────
+    @property
+    def danger_radius(self) -> int:
+        return 1 if self.fear < 1.0 else 2 if self.fear < 2.4 else 3
+
+    def danger_cells(self) -> set[str]:
+        """Cells within the fear radius of a hunting ghost (empty while they
+        are frightened)."""
+        env = self.env
+        if env.frightened > 0:
+            return set()
+        r = self.danger_radius
+        out = set()
+        for g in env.ghosts:
+            for dx in range(-r, r + 1):
+                for dy in range(-r, r + 1):
+                    for dz in range(-r, r + 1):
+                        if abs(dx) + abs(dy) + abs(dz) <= r:
+                            out.add(env.cell(g[0] + dx, g[1] + dy, g[2] + dz))
+        return out
 
     def bind(self, brain) -> None:
         super().bind(brain)
@@ -520,12 +818,27 @@ class CubbyGhost(CubbyPac):
             self._say(word, why)
 
     # ── the moves ────────────────────────────────────────────────────────────
+    SIGHT = 2                                            # pellets glow: he sees them this far
+
+    def _sight(self, place: str) -> list[str]:
+        """Pellets within SIGHT (Manhattan) of where he stands become
+        sighting facts — perception, learned like everything else."""
+        x, y, z = self.env.coords(place)
+        out = []
+        for c in self.env.remaining:
+            if _manh(c, (x, y, z)) <= self.SIGHT:
+                cell = self.env.cell(*c)
+                self.sighted.add(cell)
+                out.append(f"{'a star' if c in self.env.power else 'a pellet'} is the sighting of {cell}")
+        return out
+
     def on_arrive(self, place: str) -> int:
         self._last_eaten = None
         ate = self.env.eat(place)
         new = 0
         if ate["pellet"]:
             self._last_eaten = list(self.env.coords(place))
+            self._eaten_run.add(place)
             fact = f"pellet {self.env.score} is the discovery of {place}"
             self._t("eat", place=place, pellet=self.env.score, power=ate["power"],
                     letter=ate["letter"], remaining=len(self.env.remaining))
@@ -540,13 +853,84 @@ class CubbyGhost(CubbyPac):
                     self.vocab.append(word)
                 self._pending_says = word
                 self._say(word, _WORD_CONCEPT.get(word, "learned"))
+        new += self._learn(self._sight(place))
         return new
 
+    # ── planning over HIS map (the facts he learned), never the env ─────────
+    def _known_graph(self) -> dict[str, set[str]]:
+        if self._graph_n != len(self.world):
+            g: dict[str, set[str]] = {}
+            for f in self.world.texts:
+                m = self._nbr_re.match(f)
+                if m and m.group("b") not in ("a wall", "a hazard"):
+                    g.setdefault(m.group("a"), set()).add(m.group("b"))
+                    g.setdefault(m.group("b"), set())
+            self._graph, self._graph_n = g, len(self.world)
+        return self._graph
+
+    def _bfs(self, start: str, goals: set[str], avoid: set[str]) -> tuple[int | None, str | None]:
+        """(distance to the nearest goal, the first cell on the way) over the
+        graph of neighbor facts he holds; (None, None) when no path."""
+        g = self._known_graph()
+        if start in goals:
+            return 0, None
+        if start not in g:
+            return None, None
+        prev = {start: None}
+        dq = collections.deque([(start, 0)])
+        while dq:
+            cur, d = dq.popleft()
+            for nxt in g.get(cur, ()):
+                if nxt in prev or nxt in avoid:
+                    continue
+                prev[nxt] = cur
+                if nxt in goals:
+                    first = nxt
+                    while prev[first] != start:
+                        first = prev[first]
+                    return d + 1, first
+                dq.append((nxt, d + 1))
+        return None, None
+
+    def plan_next(self, avoid: set[str] = frozenset()) -> str | None:
+        """The cell his MAP says to go to next: BFS across the neighbor facts
+        he holds to the nearest pellet he has SEEN and not eaten this run,
+        else to the nearest known cell he never stood on (the frontier).
+        A discovered superpower move is taken when it lands where the rest
+        of the way is at least two steps shorter — or when the base map has
+        no path at all (a JUMP over the hazard that walls a pellet off).
+        None when neither his map nor his powers reach anything."""
+        goals = (self.sighted - self._eaten_run) - avoid
+        if not goals:
+            g = self._known_graph()
+            goals = {c for c in g if c not in self.visits and c.startswith(f"level-{self.env.level} ")} - avoid
+        if not goals:
+            return None
+        base_d, first = self._bfs(self.place, goals, avoid)
+        best_cell, best_d = first, base_d
+        for move, land in self.env.power_moves(self.place, self.library, self.env.energy).items():
+            if land in avoid:
+                continue
+            d, _ = self._bfs(land, goals, avoid)
+            if d is None:
+                continue
+            if best_d is None or d + 1 <= best_d - 2:
+                best_cell, best_d = land, d + 1
+        return best_cell
+
+    def _try_the_wall(self, src: str, dirs: list[str]) -> str | None:
+        if self._plan_next is not None:                  # on a path: no time to poke walls
+            return None
+        return super()._try_the_wall(src, dirs)
+
     def _pick(self, exits: dict[str, str]) -> str:
-        """Fear-aware: never step onto a hunting ghost if there is any other
-        exit; when they are frightened, hunt them instead."""
-        ghost_cells = {self.env.cell(*g) for g in self.env.ghosts}
-        if self.env.frightened > 0:
+        """Fear-aware and map-driven: hunt frightened ghosts; never step onto
+        a hunting one; FLEE when one is inside his fear radius (the exit that
+        maximizes the distance to them); otherwise follow the path his map
+        planned; only with no plan fall back to novelty."""
+        env = self.env
+        ghost_cells = {env.cell(*g) for g in env.ghosts}
+        if env.frightened > 0:
             hunt = [m for m, p in exits.items() if p in ghost_cells]
             if hunt:
                 return hunt[0]
@@ -554,6 +938,23 @@ class CubbyGhost(CubbyPac):
             safe = {m: p for m, p in exits.items() if p not in ghost_cells}
             if safe:
                 exits = safe
+            if env.ghosts:
+                here = env.coords(self.place)
+                near = min(_manh(here, g) for g in env.ghosts)
+                if near <= self.danger_radius:           # too close: run, then think
+                    def gap(m):
+                        return min(_manh(env.coords(exits[m]), g) for g in env.ghosts)
+                    best = max(gap(m) for m in exits)
+                    fled = [m for m in exits if gap(m) == best]
+                    self._t("flee", place=self.place, ghost_distance=near, radius=self.danger_radius)
+                    for m in fled:
+                        if exits[m] == self._plan_next:
+                            return m
+                    return fled[0]
+        if self._plan_next is not None:
+            for m, p in exits.items():
+                if p == self._plan_next:
+                    return m
         return super()._pick(exits)
 
     def next_level(self) -> None:
@@ -562,8 +963,11 @@ class CubbyGhost(CubbyPac):
         self._t("level_up", cleared=self.env.level, next=nxt, total_score=self.env.total_score)
         self.env._start_level(nxt)
         self.place = self.env.start
+        self.sighted.clear()
+        self._eaten_run.clear()
         self._seed_basics()
         self._learn(self.env.observe(self.place))
+        self._learn(self._sight(self.place))
         self.visits[self.place] = self.visits.get(self.place, 0) + 1
         self._percept("new_maze")
 
@@ -575,20 +979,50 @@ class CubbyGhost(CubbyPac):
             if env.game_over:
                 env.restart_run()
                 self.place = env.start
+                self._eaten_run.clear()
                 self._t("restart", level=env.level, lives=env.lives)
             if not env.remaining:                        # headless driver: nobody called next_level
                 self.next_level()
             env.steps += 1
-            if env.steps > env.budget:                   # OUT OF TIME -> fail, redo (his map stands)
+            if env.steps > env.budget:                   # OUT OF TIME -> fail, learn a speedup, redo
                 env.attempt += 1
                 env.begin_run()
                 self.place = env.start
+                self._eaten_run.clear()                  # the pellets are back; his sightings still hold
                 ev["failed"] = True
-                self._t("out_of_time", level=env.level, attempt=env.attempt)
+                ev["learned"] = self._propose("out_of_time")     # too slow -> generate a faster move
+                self._t("out_of_time", level=env.level, attempt=env.attempt, learned=ev["learned"])
                 self._last = ev
                 return {"from": None, "place": self.place, "chosen": None, "new": 0, "probed": None}
             self._pending_says = None
+            danger = self.danger_cells()                 # the berth grows with learned fear
+            self._plan_next = self.plan_next(avoid=danger)
+            seen_left = bool(self.sighted - self._eaten_run)
+            if self._plan_next is None and seen_left and "JUMP" not in self.library:
+                # a pellet he has SEEN with no path on his map: hazard-walled -> compose a JUMP
+                ev["learned"] = self._compose("JUMP", "stuck", ["hop", "hop"], None, "jump",
+                                              "two hops in one direction clear the hazard in between")
+                self._plan_next = self.plan_next(avoid=danger)
+            elif (not seen_left and self.chem is not None and self.chem.dopamine > 0.5
+                  and env.steps - self._last_proposal >= 12):
+                ev["learned"] = self._propose("curious")         # nothing to chase: invent a move
+            if self._plan_next is not None:
+                self._t("plan", to=self._plan_next,
+                        goal="pellet" if seen_left else "frontier")
             rec = super().step()                         # his move + eating + learning + traj
+            chosen = rec.get("chosen") or ""
+            if chosen.startswith("jump_"):
+                env.energy = max(0, env.energy - JUMP_COST)
+            else:
+                env.energy = min(100, env.energy + 2)    # simplified regen (theirs: +1/pellet, +4 resting)
+            if "_" in chosen:                            # only superpower moves carry an underscore
+                pname = "JUMP" if chosen.startswith("jump_") else chosen.split("_")[0].upper()
+                e = self.library.entries.get(pname)
+                saved = (len(e["pattern"]) - 1) if e and e.get("pattern") else 1
+                self.library.note_used(pname, saved, {"step": env.steps, "level": env.level, "move": chosen,
+                                                      "landed": ("pellet" if self._last_eaten else "empty")})
+                self._t("superpower_move", move=chosen, program=pname, saved_steps=saved,
+                        to=self.place, energy=env.energy)
             ev["eaten"] = self._last_eaten
             ev["says"] = self._pending_says
             gh = env.ghost_turn(self.place)              # then the ghosts move
@@ -683,14 +1117,15 @@ class CubbyGhost(CubbyPac):
         env, ev = self.env, self._last
         return {"to": list(env.coords(self.place)),
                 "move": (self.traj[-1]["move"] if self.traj and not ev.get("failed") else None),
-                "eaten": ev.get("eaten"), "learned": None,
+                "eaten": ev.get("eaten"), "learned": ev.get("learned"),
                 "score": env.score, "total_score": env.total_score, "remaining": len(env.remaining),
                 "beaten": bool(ev.get("beaten")) or not env.remaining, "failed": bool(ev.get("failed")),
-                "level": env.level, "attempt": env.attempt, "planned": 0, "energy": 100,
+                "level": env.level, "attempt": env.attempt, "planned": 0, "energy": env.energy,
                 "steps": env.steps, "budget": env.budget,
                 "ghosts": [list(g) for g in env.ghosts], "lives": env.lives, "caught": ev.get("caught"),
                 "fear": round(self.fear, 2), "frightened": env.frightened,
-                "ate_ghost": bool(ev.get("ate_ghost")), "ghost_bonus": GHOST_BONUS, "superpowers": [],
+                "ate_ghost": bool(ev.get("ate_ghost")), "ghost_bonus": GHOST_BONUS,
+                "superpowers": list(self.powers),
                 **self.affect()}
 
     def init_payload(self) -> dict:
@@ -700,11 +1135,11 @@ class CubbyGhost(CubbyPac):
                 "walls": [list(c) for c in sorted(env.walls)],
                 "hazards": [list(c) for c in sorted(env.hazards)],
                 "pellets": [list(p) for p in sorted(env.remaining)], "total": len(env.pellets),
-                "total_score": env.total_score, "energy": 100, "steps": env.steps,
+                "total_score": env.total_score, "energy": env.energy, "steps": env.steps,
                 "budget": env.budget, "attempt": env.attempt,
                 "ghosts": [list(g) for g in env.ghosts], "lives": env.lives,
                 "ghost_colors": GHOST_COLORS[: env.n_ghosts], "fear": round(self.fear, 2),
-                "power": [list(c) for c in sorted(env.power)], "superpowers": [],
+                "power": [list(c) for c in sorted(env.power)], "superpowers": list(self.powers),
                 **self.affect()}
 
     def handle(self, text: str) -> dict:

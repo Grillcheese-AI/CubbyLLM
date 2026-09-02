@@ -100,6 +100,79 @@ def test_letters_spell_the_level_word_and_ground_it():
     assert "".join(env.collected[i] for i in range(5)) == "HELLO"
 
 
+def test_plan_next_runs_over_his_own_facts_not_the_env():
+    from pacman import CubbyGhost, GhostVerse
+    man = CubbyGhost(GhostVerse(), probe=0.0)
+    L = "level-1 cell "
+    # a map he "learned": start -> A -> B, with a pellet he saw at B
+    for f in (f"{L}1-0-0 is the right neighbor of {L}0-0-0",
+              f"{L}2-0-0 is the right neighbor of {L}1-0-0",
+              f"a pellet is the sighting of {L}2-0-0"):
+        man.world.add(f)
+    man.sighted.add(f"{L}2-0-0")
+    assert man.plan_next() == f"{L}1-0-0", "first step of the path to the seen pellet"
+    man._eaten_run.add(f"{L}2-0-0")                     # eaten this run -> frontier instead
+    assert man.plan_next() in {f"{L}1-0-0"} | set(man.env.exits(man.place).values())
+    man._eaten_run.clear()
+    assert man.plan_next(avoid={f"{L}1-0-0"}) != f"{L}1-0-0", "a hunting ghost blocks the path"
+
+
+def test_pattern_moves_instantiate_slots_over_open_cells():
+    from pacman import GhostVerse, ProgramLibrary, _assignments, pattern_name
+    assert pattern_name("AAA") == "DASH" and pattern_name("ABC") == "WARP"
+    assert pattern_name("AACB") == "COMBO-AACB", "a pattern with no flavor name is still a move"
+    asg = list(_assignments("AB"))
+    assert len(asg) == 24 and all(a["A"] != a["B"] for a in asg)
+    assert not any(a["B"] == {"right": "left", "left": "right", "up": "down", "down": "up",
+                              "forward": "back", "back": "forward"}[a["A"]] for a in asg), \
+        "a slot pair never maps to opposite directions"
+    env = GhostVerse()
+    lib = ProgramLibrary()
+    lib.add("DASH", "AAA", "program …", "pattern", 0, {"why": "test"})
+    moves = env.power_moves(env.start, lib, 100)
+    for move, land in moves.items():
+        assert move.startswith("dash_") and env.coords(land) not in env.walls | env.hazards
+        x, y, z = env.coords(land)
+        assert abs(x) + abs(y) + abs(z) == 3, "DASH lands three cells away along one open line"
+
+
+def test_program_library_persists_a_readable_notebook_and_never_forgets(tmp_path):
+    from pacman import ProgramLibrary
+    p = tmp_path / "programs.json"
+    lib = ProgramLibrary(p)
+    lib.add("KNIGHT", "AAB", "use vsa;\nprogram Superpower …", "pattern", 3,
+            {"why": "curious", "because": "felt like it", "situation": {"level": 1},
+             "rationale": "sampled length 3", "verdict": "certified"})
+    lib.note_used("KNIGHT", 2, {"step": 9, "level": 1, "move": "knight_right_right_up", "landed": "pellet"})
+    again = ProgramLibrary(p)                            # a restart reloads what he learned
+    assert "KNIGHT" in again and again.entries["KNIGHT"]["used"] == 1
+    md = p.with_suffix(".md").read_text(encoding="utf-8")
+    for needle in ("## KNIGHT", "trigger:** curious", "sampled length 3", "certified",
+                   "```cubelang", "knight_right_right_up"):
+        assert needle in md, f"the notebook must carry the reasoning trace: {needle}"
+    for i in range(12):                                  # crowd the active set with dead patterns
+        again.add(f"P{i}", "AAAB", "…", "pattern", 0, {"why": "curious"})
+    gone = again.retire(step=100)
+    assert gone and again.entries[gone]["retired"] and gone in again.entries, \
+        "retired, not deleted — he does not forget what he learned"
+    assert gone not in again.names()
+
+
+def test_live_he_generates_a_program_with_a_reasoning_trace():
+    _exe_or_skip()
+    from pacman import CubbyGhost, GhostVerse
+    man = CubbyGhost(GhostVerse(), probe=0.0, seed=1)
+    name = man._propose("out_of_time")
+    assert name and name in man.library
+    e = man.library.entries[name]
+    r = e["reasoning"]
+    assert r["why"] == "out_of_time" and "time budget" in r["because"]
+    assert r["verdict"].startswith("certified") and "sampled length" in r["rationale"]
+    assert r["situation"]["level"] == 1 and "program Superpower" in e["program"]
+    assert any(f"is the recipe of {name}" in f for f in man.world.texts), "the recipe is a learned fact"
+    assert man.env.power_moves is not None and name in man.powers
+
+
 def test_emotion_maps_to_the_plutchik_compass():
     from neurochem import Neurochemistry
     from pacman import CubbyGhost, GhostVerse

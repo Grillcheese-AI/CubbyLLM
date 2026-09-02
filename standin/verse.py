@@ -222,9 +222,14 @@ class CubbyMan:
         with self._step_lock:
             return self._step()
 
+    def candidate_moves(self, exits: dict[str, str]) -> dict[str, str]:
+        """Hook: the moves the ASK will OFFER this step (base exits by default;
+        a world may add discovered superpower moves)."""
+        return exits
+
     def _step(self) -> dict:
         from cubbyllm.bridges import cubelang_client as cc
-        exits = self.env.exits(self.place)
+        exits = self.candidate_moves(self.env.exits(self.place))
         dirs = sorted(exits)
         src = render_talk_program(dirs, question="which way next")
         asked = cc.run_program_proto(src, fn="think", args=[self.place, "explore"], exe=self.exe)
