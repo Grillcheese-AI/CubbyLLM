@@ -76,24 +76,76 @@ def test_live_the_pac_arc_through_the_brain():
     assert after["reply"] == gold, "a discovered maze fact must answer through the reasoning cortex"
 
 
-def test_live_pac_polls_step_rate_limited_through_the_vm():
+def test_frontend_is_lifted_verbatim_and_every_patch_applies():
+    from pacman import PACMAN_LIVE, load_frontend
+    if not PACMAN_LIVE.exists():
+        pytest.skip("cubbyverse checkout not on this machine")
+    html, missed = load_frontend()
+    assert html and missed == [], f"upstream page changed under a patch: {missed}"
+    assert "fetch('/pac/state')" in html and "'/pac/assets/" in html
+    assert 'id="emocompass"' in html and "drawCompass" in html, "the Plutchik cone comes along"
+    assert "cubby_uv_template" in html, "the face textures are the originals"
+    assert "world model:" in html and "R-STDP" not in html.split("<body>")[1].split("<script")[0]
+
+
+def test_letters_spell_the_level_word_and_ground_it():
+    from pacman import GhostVerse
+    env = GhostVerse()
+    assert env.word == "HELLO" and len(env.letter_at) == 5 and env.budget == 54
+    done = []
+    for c in env.letter_at:
+        env.remaining.add(c)
+        done.append(env.eat(env.cell(*c))["word_done"])
+    assert done[-1] is True and not any(done[:-1])
+    assert "".join(env.collected[i] for i in range(5)) == "HELLO"
+
+
+def test_emotion_maps_to_the_plutchik_compass():
+    from neurochem import Neurochemistry
+    from pacman import CubbyGhost, GhostVerse
+    man = CubbyGhost(GhostVerse(), probe=0.0)
+    man.chem = Neurochemistry()
+    for _ in range(6):
+        man.chem.update(threat=1.0)
+    emo = man.emotion()
+    assert emo["angle"] == 90 and emo["name"] in {"apprehension", "fear", "terror"}
+    assert emo["color"].startswith("#") and 0 <= emo["intensity"] <= 1.2
+
+
+def test_live_speech_goes_through_cubbytalk():
     _exe_or_skip()
-    from pacman import LivePac
-    man = CubbyPac(small(), probe=0.0, seed=0)
+    from pacman import CubbyGhost, GhostVerse
+    man = CubbyGhost(GhostVerse(), probe=0.0)
+    s = sv.CubbyServe(ChainEmitter(), sv.FactStore([]), route_tau=0.35)
+    s.mount(man)
+    man.vocab.append("GHOST")                            # as if he had collected its letters
+    man._percept("ghost_near")
+    assert man.talk and man.talk["word"] == "GHOST" and "ASK offered" in man.talk["trace"]
+    assert s.chat.history[-1]["reply"] == "GHOST!", "the VM chose the offered word"
+
+
+def test_live_the_frontend_protocol_init_state_stale_next():
+    _exe_or_skip()
+    from pacman import CubbyGhost, GhostVerse, LivePac
+    man = CubbyGhost(GhostVerse(), probe=0.5, seed=0)
     live = LivePac(man, min_interval=0.0)
-    s1 = live.poll()
-    assert s1["stepped"] and s1["steps"] == 1 and s1["error"] is None
-    assert {"w", "pos", "pellets", "score", "facts", "emotion", "beaten"} <= set(s1)
-    live.min_interval = 3600.0                           # not due -> a poll must NOT step
-    s2 = live.poll()
-    assert not s2["stepped"] and s2["steps"] == 1
+    init = live.init_payload()
+    assert {"w", "h", "d", "level", "walls", "hazards", "pellets", "power", "ghosts",
+            "ghost_colors", "lives", "fear", "budget", "emotion_angle", "word"} <= set(init)
+    r = live.poll()
+    assert r["steps"] == 1 and "stale" not in r and r["to"] and r["move"]
+    assert {"ghosts", "lives", "level", "frightened", "fear", "collected", "talk",
+            "emotion_intensity", "w_dopa", "lay_low"} <= set(r)
+    live.min_interval = 3600.0                           # polled too soon -> cached frame, stale
+    assert live.poll()["stale"] is True and live.poll()["steps"] == 1
     live.min_interval = 0.0
-    for _ in range(20):                                  # let him finish the small maze
-        if live.poll()["beaten"]:
-            break
-    if man.beaten:                                       # beaten: polls stop stepping
-        n = live.poll()["steps"]
-        assert live.poll()["steps"] == n
+    assert live.next_level()["level"] == 1, "/next before the level is cleared must not advance"
+    man.env.remaining.clear()                            # a cleared level: beaten frame, no step
+    r2 = live.poll()
+    assert r2["beaten"] is True and r2["steps"] == 1
+    nxt = live.next_level()
+    assert nxt["level"] == 2 and nxt["w"] == 7 and man.env.level == 2
+    assert man.fear == 0.3, "surviving a level keeps fear at the floor"
 
 
 def test_ghostverse_level1_matches_the_live_games_formulas():
@@ -119,8 +171,8 @@ def test_ghost_contact_caught_eaten_and_game_over():
     # frightened: the same contact EATS the ghost instead
     star = next(iter(env.power))
     env.remaining.add(star)
-    assert env.eat(env.cell(*star)) == {"pellet": True, "power": True}
-    assert env.frightened == FRIGHT_STEPS
+    ate = env.eat(env.cell(*star))
+    assert ate["pellet"] and ate["power"] and env.frightened == FRIGHT_STEPS
     t0 = env.total_score
     env.ghosts = [env.coords(pos)] + env.ghosts[1:]
     ev = env.ghost_turn(pos)
@@ -141,13 +193,11 @@ def test_live_cubbyghost_plays_the_big_game():
     live = LivePac(man, min_interval=0.0)
     for _ in range(8):
         s = live.poll()
-    assert s["error"] is None and s["steps"] == 8
+    assert live.error is None and s["steps"] == 8 and "error" not in s
     assert s["level"] == man.env.level and s["lives"] == man.env.lives
-    assert len(s["ghosts"]) == man.env.n_ghosts and s["hazards"] is not None
-    assert all(tuple(g) in man.env.reach | man.env.hazards | set(map(tuple, s["ghosts"]))
-               or True for g in s["ghosts"])             # ghosts stay on the board
-    assert s["facts"] > 2, "exploring the big maze must learn facts"
-    assert s["beaten"] is False, "the big game never 'ends' — levels continue"
+    assert len(s["ghosts"]) == man.env.n_ghosts
+    assert s["memories"] > 2, "exploring the big maze must learn facts"
+    assert s["steps"] <= s["budget"]
 
 
 def test_replay_uses_the_pacman3d_template_with_his_trajectory(tmp_path):

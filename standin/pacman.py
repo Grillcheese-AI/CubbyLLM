@@ -35,8 +35,21 @@ __wiring__ = "WIRED"
 
 from verse import CubbyMan  # noqa: E402
 
-PACMAN_3D = pathlib.Path(r"C:\Users\grill\Documents\GitHub\cubbyverse\examples\pacman_3d.py")
+_CV = pathlib.Path(r"C:\Users\grill\Documents\GitHub\cubbyverse")
+PACMAN_3D = _CV / "examples" / "pacman_3d.py"
+PACMAN_LIVE = _CV / "examples" / "pacman_live.py"        # the exact frontend is lifted from here
+ASSETS_DIR = _CV / "examples" / "assets"                 # cubby's face textures
+PLUTCHIK_JSON = _CV / "cubbyverse" / "core" / "emotion" / "plutchik.json"
 REPLAY_OUT = pathlib.Path(r"C:/tmp/cubbyman_pacman_3d.html")
+
+# the live game's hidden word per level and what each word NAMES (ostensive
+# definition): collect its letters and the word is grounded -> cubby SAYS it
+# when the percept recurs. Speech goes through CubbyTalk's ASK like all speech.
+_WORDS = ["HELLO", "CUBBY", "MAZE", "LEARN", "GHOST", "POWER", "SMART"]
+_WORD_CONCEPT = {"HELLO": "player_present", "CUBBY": "proud", "MAZE": "new_maze",
+                 "LEARN": "discovery", "GHOST": "ghost_near", "POWER": "power_up",
+                 "SMART": "solved"}
+_CONCEPT_WORD = {v: k for k, v in _WORD_CONCEPT.items()}
 
 # the six moves, exactly as pacman_3d.MOVES (pacman_live imports these too)
 MOVES = {"right": (1, 0, 0), "left": (-1, 0, 0), "up": (0, 1, 0),
@@ -300,6 +313,7 @@ class GhostVerse(PacVerse):
             ref = self.power or {start}
             self.power.add(max((p for p in self.pellets if p not in self.power),
                                key=lambda p: min(_manh(p, q) for q in ref)))
+        self._power_all = set(self.power)
         self.score = 0
         self.frightened = 0
         self.start = self.cell(*start)
@@ -311,6 +325,25 @@ class GhostVerse(PacVerse):
         self.ghost_spawn = [far[i % len(far)] for i in range(self.n_ghosts)] if far else [start]
         self.ghosts = list(self.ghost_spawn)
         self.game_over = False
+        # the live game's time budget + the hidden word (letter pellets = the
+        # first len(word) non-star pellets, exactly as pacman_live assigns them)
+        self.budget = int(46 + 8 * level)
+        self.attempt = 1
+        self.steps = 0
+        self.word = _WORDS[(level - 1) % len(_WORDS)]
+        cells = [c for c in sorted(self.pellets) if c not in self.power][: len(self.word)]
+        self.letter_at = {c: (i, self.word[i]) for i, c in enumerate(cells)}
+        self.collected: dict[int, str] = {}
+
+    def begin_run(self) -> None:
+        """Out of time: same level, fresh run (pacman_live's _begin_run)."""
+        self.remaining = set(self.pellets)
+        self.power = set(self._power_all)
+        self.score = 0
+        self.steps = 0
+        self.frightened = 0
+        self.collected = {}
+        self.ghosts = list(self.ghost_spawn)
 
     # level-scoped names so facts stay true forever across levels
     def cell(self, x: int, y: int, z: int) -> str:
@@ -343,7 +376,7 @@ class GhostVerse(PacVerse):
 
     def eat(self, place: str) -> dict:
         c = self.coords(place)
-        out = {"pellet": False, "power": False}
+        out = {"pellet": False, "power": False, "letter": None, "word_done": False}
         if c in self.remaining:
             self.remaining.discard(c)
             self.score += 1
@@ -353,6 +386,11 @@ class GhostVerse(PacVerse):
                 self.power.discard(c)
                 self.frightened = FRIGHT_STEPS
                 out["power"] = True
+            if c in self.letter_at:                      # a LETTER pellet
+                i, ch = self.letter_at[c]
+                self.collected[i] = ch
+                out["letter"] = ch
+                out["word_done"] = len(self.collected) == len(self.word)
         return out
 
     def ghost_turn(self, cubby: str) -> dict:
@@ -393,23 +431,62 @@ class GhostVerse(PacVerse):
     def restart_run(self) -> None:
         """After game over: same level, fresh lives — his world model stands."""
         self.lives = 3
-        self.remaining = set(self.pellets)
-        self.score = 0
-        self.frightened = 0
-        self.ghosts = list(self.ghost_spawn)
+        self.begin_run()
         self.game_over = False
+
+
+# our Lövheim readout -> the live game's Plutchik compass (petal, angle, petal
+# color, the three intensity tiers whose color/message come from plutchik.json)
+_PETAL = {"joy": ("joy", 0, "#ffca05", ("serenity", "joy", "ecstasy")),
+          "warm": ("trust", 45, "#8ac650", ("acceptance", "trust", "admiration")),
+          "anxious": ("fear", 90, "#00a551", ("apprehension", "fear", "terror")),
+          "surprise": ("surprise", 135, "#0099cd", ("distraction", "surprise", "amazement")),
+          "sad": ("sadness", 180, "#2983c5", ("pensiveness", "sadness", "grief")),
+          "shame": ("sadness", 180, "#2983c5", ("pensiveness", "sadness", "grief")),
+          "contempt": ("disgust", 225, "#8973b3", ("boredom", "disgust", "loathing")),
+          "angry": ("anger", 270, "#f05b61", ("annoyance", "anger", "rage")),
+          "curious": ("anticipation", 315, "#f6923d", ("interest", "anticipation", "vigilance"))}
+_PLUTCHIK: dict | None = None
+
+
+def _plutchik() -> dict:
+    """cubbyverse's Plutchik metadata (tier color + felt message), loaded by
+    file path — data, not a package import. {} when the checkout is absent."""
+    global _PLUTCHIK
+    if _PLUTCHIK is None:
+        try:
+            _PLUTCHIK = json.loads(PLUTCHIK_JSON.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            _PLUTCHIK = {}
+    return _PLUTCHIK
 
 
 class CubbyGhost(CubbyPac):
     """cubby-man in the big game: the same explorer brain, now hunted. Ghost
-    proximity feeds THREAT into the neurochemistry (he gets anxious when
-    chased, bold when they are frightened), being caught is learned as a
-    danger fact, and clearing a level advances to the next maze while every
-    fact he ever learned stays true (level-scoped names)."""
+    proximity feeds THREAT into the neurochemistry (anxious when chased, bold
+    when they are frightened), being caught is learned as a danger fact and
+    raises a learned ghost-fear (pacman_live's exact +0.7 / ×0.9 rule),
+    running out of the level's time budget restarts the run (his world model
+    stands, so attempt 2 knows the maze), letter pellets spell the level's
+    hidden word, and SPEECH — the grounded word when its percept recurs —
+    goes through CubbyTalk's ASK like every other utterance. `resp()` /
+    `init_payload()` speak the live frontend's exact schema."""
 
     def __init__(self, env: GhostVerse | None = None, exe: str | None = None, seed: int = 0,
                  probe: float = 0.35) -> None:
+        self.brain = None
+        self.fear = 0.3                                  # pacman_live's ghost_penalty, learned
+        self.vocab: list[str] = []                       # words grounded by collecting their letters
+        self.talk: dict | None = None
+        self._talk_id = 0
+        self._cool: dict[str, int] = {}
+        self._last: dict = {}
+        self._pending_says: str | None = None
         super().__init__(env or GhostVerse(), exe=exe, seed=seed, probe=probe)
+
+    def bind(self, brain) -> None:
+        super().bind(brain)
+        self.brain = brain
 
     def _seed_basics(self) -> None:
         self.world.add("cubbyman is the explorer of the pacman maze")
@@ -419,6 +496,30 @@ class CubbyGhost(CubbyPac):
     def beaten(self) -> bool:
         return False                                     # levels continue; the game never "ends"
 
+    # ── speech: grounded words through CubbyTalk ─────────────────────────────
+    def _say(self, word: str, why: str) -> dict | None:
+        if self.brain is None:
+            return None
+        try:
+            rec = self.brain.chat.mediate(f"[{why}]", [f"{word}!"], rejected=[])
+        except Exception as e:                           # speech must never stop the game
+            self._t("talk_error", word=word, error=str(e)[:120])
+            return None
+        self._talk_id += 1
+        self.talk = {"word": word, "why": why, "sim": 1.0, "id": self._talk_id,
+                     "trace": f"ASK offered {rec['offered']} -> chose {rec['reply']!r} -> act remembered"}
+        self._t("talk", word=word, why=why)
+        return self.talk
+
+    def _percept(self, why: str) -> None:
+        """A percept a word may NAME: if he has grounded that word (collected
+        its letters) and the cooldown passed, he says it."""
+        word = _CONCEPT_WORD.get(why)
+        if word in self.vocab and self.env.steps - self._cool.get(why, -99) >= 6:
+            self._cool[why] = self.env.steps
+            self._say(word, why)
+
+    # ── the moves ────────────────────────────────────────────────────────────
     def on_arrive(self, place: str) -> int:
         self._last_eaten = None
         ate = self.env.eat(place)
@@ -427,10 +528,18 @@ class CubbyGhost(CubbyPac):
             self._last_eaten = list(self.env.coords(place))
             fact = f"pellet {self.env.score} is the discovery of {place}"
             self._t("eat", place=place, pellet=self.env.score, power=ate["power"],
-                    remaining=len(self.env.remaining))
+                    letter=ate["letter"], remaining=len(self.env.remaining))
             new += self._learn([fact])
             if self.chem is not None:
                 self.chem.update(valence=0.8 if ate["power"] else 0.3)
+            if ate["power"]:
+                self._percept("power_up")
+            if ate["word_done"]:                         # the hidden word is complete -> grounded + said
+                word = self.env.word
+                if word not in self.vocab:
+                    self.vocab.append(word)
+                self._pending_says = word
+                self._say(word, _WORD_CONCEPT.get(word, "learned"))
         return new
 
     def _pick(self, exits: dict[str, str]) -> str:
@@ -447,41 +556,156 @@ class CubbyGhost(CubbyPac):
                 exits = safe
         return super()._pick(exits)
 
+    def next_level(self) -> None:
+        self.fear = max(0.3, self.fear * 0.9)           # survived a level -> a little bolder
+        nxt = self.env.level + 1
+        self._t("level_up", cleared=self.env.level, next=nxt, total_score=self.env.total_score)
+        self.env._start_level(nxt)
+        self.place = self.env.start
+        self._seed_basics()
+        self._learn(self.env.observe(self.place))
+        self.visits[self.place] = self.visits.get(self.place, 0) + 1
+        self._percept("new_maze")
+
     def step(self) -> dict:
         with self._step_lock:
-            if self.env.game_over:
-                self.env.restart_run()
-                self.place = self.env.start
-                self._t("restart", level=self.env.level, lives=self.env.lives)
-            rec = super().step()                         # his move + eating + learning
-            ev = self.env.ghost_turn(self.place)         # then the ghosts move
-            if ev["eaten"]:
-                self._t("ghost_eaten", n=ev["eaten"], bonus=GHOST_BONUS * ev["eaten"])
+            env = self.env
+            ev = {"eaten": None, "caught": None, "ate_ghost": False, "failed": False,
+                  "beaten": False, "says": None}
+            if env.game_over:
+                env.restart_run()
+                self.place = env.start
+                self._t("restart", level=env.level, lives=env.lives)
+            if not env.remaining:                        # headless driver: nobody called next_level
+                self.next_level()
+            env.steps += 1
+            if env.steps > env.budget:                   # OUT OF TIME -> fail, redo (his map stands)
+                env.attempt += 1
+                env.begin_run()
+                self.place = env.start
+                ev["failed"] = True
+                self._t("out_of_time", level=env.level, attempt=env.attempt)
+                self._last = ev
+                return {"from": None, "place": self.place, "chosen": None, "new": 0, "probed": None}
+            self._pending_says = None
+            rec = super().step()                         # his move + eating + learning + traj
+            ev["eaten"] = self._last_eaten
+            ev["says"] = self._pending_says
+            gh = env.ghost_turn(self.place)              # then the ghosts move
+            if gh["eaten"]:
+                ev["ate_ghost"] = True
+                self._t("ghost_eaten", n=gh["eaten"], bonus=GHOST_BONUS * gh["eaten"])
                 if self.chem is not None:
                     self.chem.update(valence=1.0)
-            if ev["caught"]:
+            if gh["caught"]:
+                self.fear = min(4.0, self.fear + 0.7)    # LEARN: that hurt -> fear ghosts more
                 fact = f"a ghost is the danger of {self.place}"
                 self._learn([fact])
-                self._t("caught", place=self.place, lives=self.env.lives,
-                        game_over=self.env.game_over, learned=fact)
-                self.place = self.env.start
+                ev["caught"] = "gameover" if env.game_over else True
+                self._t("caught", place=self.place, lives=env.lives, fear=round(self.fear, 2),
+                        game_over=env.game_over, learned=fact)
+                self.place = env.start
                 if self.chem is not None:
                     self.chem.update(threat=1.0, valence=-0.8)
-            elif self.chem is not None and self.env.ghosts:
-                near = min(_manh(self.env.coords(self.place), g) for g in self.env.ghosts)
-                threat = 0.0 if self.env.frightened else (1.0 if near <= 1 else 0.5 if near <= 2 else 0.0)
-                if threat:
-                    self.chem.update(threat=threat)
-            if not self.env.remaining:                   # level cleared -> the next maze
-                nxt = self.env.level + 1
-                self._t("level_up", cleared=self.env.level, next=nxt,
-                        total_score=self.env.total_score)
-                self.env._start_level(nxt)
-                self.place = self.env.start
-                self._seed_basics()
-                self._learn(self.env.observe(self.place))
-                self.visits[self.place] = self.visits.get(self.place, 0) + 1
+            elif env.ghosts:
+                near = min(_manh(env.coords(self.place), g) for g in env.ghosts)
+                if self.chem is not None:
+                    threat = 0.0 if env.frightened else (1.0 if near <= 1 else 0.5 if near <= 2 else 0.0)
+                    if threat:
+                        self.chem.update(threat=threat)
+                if near <= 2 and not env.frightened:
+                    self._percept("ghost_near")
+            if rec["new"] >= 3:
+                self._percept("discovery")
+            if not env.remaining:
+                ev["beaten"] = True
+                self._percept("solved")
+            self._last = ev
             return rec
+
+    # ── the live frontend's schema ──────────────────────────────────────────
+    def emotion(self) -> dict:
+        """The compass reading. The Lövheim corner label when the state sits
+        near a corner; in the mid-range (where the corner readout says
+        'neutral' — e.g. sustained threat lifts NE AND, via the NE→DA
+        coupling, dopamine) the petal comes from the ODE's own last appraisal
+        (affect_arousal, valence) and the hormone deviations from resting."""
+        chem = self.chem
+        calm = {"name": "calm", "intensity": 0.0, "angle": 0, "color": "#dfe6ff", "msg": None}
+        if chem is None:
+            return calm
+        name = chem.dominant_emotion
+        if name not in _PETAL:
+            ar, val = chem.affect_arousal, chem.valence
+            ne, da, ot = chem.noradrenaline - 0.15, chem.dopamine - 0.30, chem.oxytocin - 0.20
+            if ar >= 0.5 and val <= 0 and ne > 0.05:
+                name = "anxious"
+            elif ar >= 0.5 and val > 0:
+                name = "curious"
+            elif ot > 0.10:
+                name = "warm"
+            elif da > 0.10 and val >= 0:
+                name = "joy"
+            elif da < -0.05 or val < -0.3:
+                name = "sad"
+            else:
+                return calm
+        petal, angle, pcolor, tiers = _PETAL[name]
+        intensity = round(min(1.2, 0.6 * chem.arousal + 0.6 * chem.affect_arousal), 2)
+        tier = tiers[0 if intensity < 0.4 else 1 if intensity < 0.8 else 2]
+        meta = _plutchik().get(tier, {})
+        return {"name": tier, "intensity": intensity, "angle": angle,
+                "color": meta.get("color", pcolor), "msg": meta.get("message")}
+
+    def affect(self) -> dict:
+        env, chem, ev = self.env, self.chem, self._last
+        near = min((_manh(env.coords(self.place), g) for g in env.ghosts), default=99)
+        scared = bool(env.ghosts) and env.frightened == 0 and near <= 2
+        da = chem.dopamine if chem is not None else 0.30
+        c = chem.cortisol if chem is not None else 0.15
+        mood = max(-1.0, min(1.0, (da - c) * 2.0))
+        emo = self.emotion()
+        return {"mood": round(mood, 2), "dopa": round(da / 0.5, 2), "cort": round(c / 0.4, 2),
+                "satisfaction": round(chem.weight if chem is not None else 0.67, 2),
+                "depressed": bool(da < 0.2 and mood < -0.3), "scared": scared,
+                # relabeled in the lifted page: world model = facts / derived / walls
+                "w_dopa": len(self.world), "w_cort": len(self.derived), "w_treat": len(self.walls),
+                "memories": len(self.world),
+                "emotion": emo["name"], "emotion_intensity": emo["intensity"],
+                "emotion_angle": emo["angle"], "emotion_color": emo["color"], "emotion_msg": emo["msg"],
+                "word": env.word,
+                "collected": "".join(env.collected.get(i, "_") for i in range(len(env.word))),
+                "says": ev.get("says"), "thought": None, "vocab": list(self.vocab), "talk": self.talk,
+                "lay_low": len(self.walls),              # relabeled: refused moves (walls learned)
+                "pursuit": sum(1 for g in env.ghosts if _manh(env.coords(self.place), g) <= 2)}
+
+    def resp(self) -> dict:
+        env, ev = self.env, self._last
+        return {"to": list(env.coords(self.place)),
+                "move": (self.traj[-1]["move"] if self.traj and not ev.get("failed") else None),
+                "eaten": ev.get("eaten"), "learned": None,
+                "score": env.score, "total_score": env.total_score, "remaining": len(env.remaining),
+                "beaten": bool(ev.get("beaten")) or not env.remaining, "failed": bool(ev.get("failed")),
+                "level": env.level, "attempt": env.attempt, "planned": 0, "energy": 100,
+                "steps": env.steps, "budget": env.budget,
+                "ghosts": [list(g) for g in env.ghosts], "lives": env.lives, "caught": ev.get("caught"),
+                "fear": round(self.fear, 2), "frightened": env.frightened,
+                "ate_ghost": bool(ev.get("ate_ghost")), "ghost_bonus": GHOST_BONUS, "superpowers": [],
+                **self.affect()}
+
+    def init_payload(self) -> dict:
+        env = self.env
+        return {"w": env.w, "h": env.h, "d": env.d, "level": env.level,
+                "start": list(env.coords(env.start)),
+                "walls": [list(c) for c in sorted(env.walls)],
+                "hazards": [list(c) for c in sorted(env.hazards)],
+                "pellets": [list(p) for p in sorted(env.remaining)], "total": len(env.pellets),
+                "total_score": env.total_score, "energy": 100, "steps": env.steps,
+                "budget": env.budget, "attempt": env.attempt,
+                "ghosts": [list(g) for g in env.ghosts], "lives": env.lives,
+                "ghost_colors": GHOST_COLORS[: env.n_ghosts], "fear": round(self.fear, 2),
+                "power": [list(c) for c in sorted(env.power)], "superpowers": [],
+                **self.affect()}
 
     def handle(self, text: str) -> dict:
         m = re.search(r"\b(\d{1,3})\b", text)
@@ -495,62 +719,120 @@ class CubbyGhost(CubbyPac):
         return {"offered": [line], "meta": rep}
 
 
-class LivePac:
-    """Poll-driven live play — the pacman_live.py pattern: the browser polls
-    /pac/state, each due poll advances ONE VM-guarded step (rate-limited so
-    extra tabs can't race him, paused the moment nobody polls), and the
-    response is everything the live three.js page needs. The chat cortex
-    ("play pacman for N") still works on the same CubbyPac — the step lock
-    keeps the two drivers from interleaving a move."""
+# the lifted page's strings we change: endpoint prefixes (so it can live under
+# /pac next to the console), the subtitle/foot (say what actually drives him),
+# and the two HUD rows we back with different real numbers than the original
+_FRONTEND_PATCHES = [
+    ("fetch('/state')", "fetch('/pac/state')"),
+    ("fetch('/init')", "fetch('/pac/init')"),
+    ("fetch('/next')", "fetch('/pac/next')"),
+    ("'/assets/", "'/pac/assets/"),
+    ('<div id="sub">live MoWM + VSA planner · CVL value</div>',
+     '<div id="sub">live CubbyLLM stand-in brain · every move VM-guarded · learns as he explores</div>'),
+    ("isometric · drag to orbit · CVL picks the target (evades ghosts) · BFS plans + discovers JUMP · "
+     "mSA ghosts flank · fear is learned",
+     "isometric · drag to orbit · explorer brain: the VM offers the exits and guards the choice · "
+     "walls learned from refused moves · joins are his own programs · fear is learned"),
+    ('R-STDP learned: <b id="wd">dopa +0</b> · <b id="wc">cort 0</b> · <b id="wt">treat 0</b>',
+     'world model: <b id="wd">facts 0</b> · <b id="wc">derived 0</b> · <b id="wt">walls 0</b>'),
+    ("$('wd').textContent='dopa '+sg(s.w_dopa); $('wc').textContent='cort '+sg(s.w_cort); "
+     "$('wt').textContent='treat '+sg(s.w_treat);",
+     "$('wd').textContent='facts '+s.w_dopa; $('wc').textContent='derived '+s.w_cort; "
+     "$('wt').textContent='walls '+s.w_treat;"),
+    ('covers tracks (learned): <b id="laylow">0.3</b>', 'refused moves (walls learned): <b id="laylow">0</b>'),
+    ("$('laylow').textContent=s.lay_low.toFixed(2)", "$('laylow').textContent=String(s.lay_low)"),
+    ("INTERVAL=320", "INTERVAL=600"),                   # our VM-guarded steps are slower than the planner's
+]
 
-    def __init__(self, man: CubbyPac, min_interval: float = 0.35, derive_every: int = 15) -> None:
+
+def load_frontend(source: pathlib.Path = PACMAN_LIVE) -> tuple[str | None, list[str]]:
+    """pacman_live.py's EXACT page, extracted at serve time (never imported),
+    with the patches above applied. -> (html, patches that did not apply)."""
+    try:
+        src = source.read_text(encoding="utf-8")
+    except OSError:
+        return None, ["source missing"]
+    m = re.search(r'FRONTEND = r"""(.*?)"""\s*\n', src, re.S)
+    if not m:
+        return None, ["FRONTEND block not found"]
+    html, missed = m.group(1), []
+    for old, new in _FRONTEND_PATCHES:
+        if old in html:
+            html = html.replace(old, new)
+        else:
+            missed.append(old[:40])
+    return html, missed
+
+
+def load_asset(rel: str, base: pathlib.Path = ASSETS_DIR) -> bytes | None:
+    """A face texture from cubbyverse's assets dir (png only, path-safe)."""
+    try:
+        fp = (base / rel.split("?")[0]).resolve()
+        if fp.suffix.lower() == ".png" and base.resolve() in fp.parents and fp.is_file():
+            return fp.read_bytes()
+    except OSError:
+        pass
+    return None
+
+
+class LivePac:
+    """The live frontend's protocol over our brain — pacman_live's own
+    contract: GET /init (the level), GET /state (one step per due poll; polled
+    too soon -> the cached frame tagged `stale`, so any number of tabs see
+    one steady game and he pauses when nobody watches), GET /next (advance
+    the level after `beaten`), GET /assets/* (cubby's faces). The chat
+    cortex ("play pacman for N") still drives the same CubbyGhost — the step
+    lock keeps the two from interleaving a move."""
+
+    def __init__(self, man: CubbyGhost, min_interval: float = 0.28, derive_every: int = 15) -> None:
         import threading
         self.man = man
         self.min_interval = float(min_interval)
         self.derive_every = int(derive_every)
         self._lock = threading.Lock()
         self._last = 0.0
-        self._error: str | None = None
+        self._last_resp: dict | None = None
+        self._html: str | None = None
+        self.error: str | None = None
+
+    def init_payload(self) -> dict:
+        with self._lock:
+            return self.man.init_payload()
 
     def poll(self) -> dict:
         import time
-        stepped = False
         with self._lock:
             now = time.monotonic()
-            if not self.man.beaten and self._error is None and now - self._last >= self.min_interval:
-                self._last = now
-                try:
+            if self._last_resp is not None and now - self._last < self.min_interval:
+                return {**self._last_resp, "stale": True}
+            try:
+                if self.man.env.remaining:               # a cleared level waits for /next
                     self.man.step()
-                    stepped = True
                     if len(self.man.traj) % self.derive_every == 0:
                         self.man.derive_counts()
-                    if self.man.beaten:                  # the last pellet: join what the run collected
-                        self.man.derive_counts()
-                        render_replay(self.man.env, self.man.traj)
-                except Exception as e:                   # a dead VM must not kill the server
-                    self._error = str(e)[:200]
-        return self.state(stepped)
+                r = self.man.resp()
+            except Exception as e:                       # a dead VM must not kill the server
+                self.error = str(e)[:200]
+                self.man._t("live_error", error=self.error)
+                r = {**(self._last_resp or self.man.resp()), "error": self.error}
+            self._last = now
+            self._last_resp = r
+            return r
 
-    def state(self, stepped: bool = False) -> dict:
-        man, env = self.man, self.man.env
-        out = {"w": env.w, "h": env.h, "d": env.d, "start": list(env.coords(env.start)),
-               "walls": [list(w) for w in sorted(env.walls)],
-               "pellets": [list(p) for p in sorted(env.remaining)],
-               "pos": list(env.coords(man.place)),
-               "move": man.traj[-1]["move"] if man.traj else None,
-               "score": env.score, "total": len(env.pellets), "beaten": man.beaten,
-               "steps": len(man.traj), "facts": len(man.world),
-               "walls_learned": len(man.walls), "derived": len(man.derived),
-               "emotion": man.chem.dominant_emotion if man.chem is not None else "neutral",
-               "stepped": stepped, "error": self._error}
-        if isinstance(env, GhostVerse):                  # the big game's extras
-            out.update({"hazards": [list(h) for h in sorted(env.hazards)],
-                        "ghosts": [list(g) for g in env.ghosts],
-                        "ghost_colors": GHOST_COLORS[: env.n_ghosts],
-                        "power": [list(p) for p in sorted(env.power)],
-                        "frightened": env.frightened, "lives": env.lives,
-                        "level": env.level, "total_score": env.total_score})
-        return out
+    def next_level(self) -> dict:
+        with self._lock:
+            if not self.man.env.remaining:
+                self.man.derive_counts()                 # join what the level collected
+                self.man.next_level()
+            self._last_resp = None
+            return self.man.init_payload()
+
+    def frontend(self) -> str | None:
+        if self._html is None:
+            self._html, missed = load_frontend()
+            if missed and self._html is not None:
+                self.man._t("frontend_patch_missed", patches=missed)
+        return self._html
 
 
 def render_replay(env: PacVerse, traj: list[dict],

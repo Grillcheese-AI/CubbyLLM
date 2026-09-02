@@ -76,17 +76,42 @@ def make_handler(brain):
             self.end_headers()
             self.wfile.write(body)
 
+        def _raw(self, code: int, body: bytes, ctype: str) -> None:
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Cache-Control", "no-store, no-cache, must-revalidate")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
         def do_GET(self):
+            live = getattr(brain, "pac_live", None)
             if self.path in ("/", "/index.html"):
                 self._page("demo.html")
-            elif self.path == "/pac":
-                self._page("pac_live.html")
-            elif self.path == "/pac/state":
-                live = getattr(brain, "pac_live", None)
+            elif self.path.startswith("/pac"):           # pacman_live's exact frontend + its protocol
                 if live is None:
                     self._send(404, {"error": "no pac maze mounted (start with --pacman)"})
-                else:
+                elif self.path in ("/pac", "/pac/"):
+                    html = live.frontend()
+                    if html is None:
+                        self._send(404, {"error": "pacman_live.py frontend not found (cubbyverse checkout)"})
+                    else:
+                        self._raw(200, html.encode("utf-8"), "text/html; charset=utf-8")
+                elif self.path.startswith("/pac/init"):
+                    self._send(200, live.init_payload())
+                elif self.path.startswith("/pac/state"):
                     self._send(200, live.poll())
+                elif self.path.startswith("/pac/next"):
+                    self._send(200, live.next_level())
+                elif self.path.startswith("/pac/assets/"):
+                    from pacman import load_asset
+                    data = load_asset(self.path[len("/pac/assets/"):])
+                    if data is None:
+                        self._raw(404, b"not found", "text/plain")
+                    else:
+                        self._raw(200, data, "image/png")
+                else:
+                    self._send(404, {"error": "unknown path"})
             elif self.path == "/health":
                 self._send(200, {"ok": True, "emitter": getattr(brain.emitter, "name", "?")})
             elif self.path == "/state":
