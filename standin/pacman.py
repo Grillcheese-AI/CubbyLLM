@@ -326,7 +326,11 @@ class ProgramLibrary:
             if r.get("rationale"):
                 out.append(f"- **proposal:** {r['rationale']}\n")
             out.append(f"- **VM verdict:** {r.get('verdict', '?')}\n")
-            out.append(f"- **earned:** used {e['used']}× · saved {e['saved']} steps · legal {e['legal']}×\n")
+            if e["kind"] == "tool":
+                out.append(f"- **task:** expected `{r.get('expected')}` · got `{r.get('got')}` · "
+                           f"{'PASS' if r.get('ok') else 'FAIL'}\n")
+            else:
+                out.append(f"- **earned:** used {e['used']}× · saved {e['saved']} steps · legal {e['legal']}×\n")
             out.append("\n```cubelang\n" + e["program"].rstrip() + "\n```\n")
             if e.get("uses"):
                 out.append("\n| step | level | move | landed on | saved |\n|---|---|---|---|---|\n")
@@ -785,6 +789,49 @@ class CubbyGhost(CubbyPac):
     def bind(self, brain) -> None:
         super().bind(brain)
         self.brain = brain
+        from forge import ToolForge
+        self.forge = ToolForge(brain.emitter, self.library, exe=self.exe, trace=self._t)
+        self._last_forge = -99
+
+    # ── arbitrary CubeLang: tasks he poses to his trunk in play ─────────────
+    FORGE_EVERY = 3                                      # steps between live forges (the trunk is slow)
+
+    def _can_forge(self) -> bool:
+        return getattr(self, "forge", None) is not None and self.env.steps - self._last_forge >= self.FORGE_EVERY
+
+    def _forge_flee(self, near: int) -> bool | None:
+        """Ask the trunk for a decision program on the live numbers; act on
+        the VM's answer only when it is certified against his own rule."""
+        from forge import decision_true, flee_task
+        self._last_forge = self.env.steps
+        r = self.forge.forge(flee_task(near, self.danger_radius, self._situation()), self.env.steps)
+        return decision_true(r["got"]) if r["ok"] else None
+
+    def _forge_safer_exit(self, gaps: dict[str, int]) -> str | None:
+        """Two candidate exits -> a compare program picks the safer distance."""
+        from forge import safer_exit_task
+        top = sorted(gaps, key=lambda m: -gaps[m])[:2]
+        if len(top) < 2 or gaps[top[0]] == gaps[top[1]]:
+            return None
+        self._last_forge = self.env.steps
+        r = self.forge.forge(safer_exit_task(gaps[top[0]], gaps[top[1]], self._situation()), self.env.steps)
+        if r["ok"] and str(r["got"]) == str(gaps[top[0]]):
+            return top[0]
+        return None
+
+    def _forge_orientation(self) -> None:
+        """Level/attempt start: does a program his trunk writes reproduce
+        his own map? A chain task over the facts he holds about where he
+        stands."""
+        from forge import orientation_task
+        facts = [f for f in self.env.observe(self.place) if self._nbr_re.match(f)]
+        if not facts or getattr(self, "forge", None) is None:
+            return
+        f = facts[0]
+        m = self._nbr_re.match(f)
+        self._last_forge = self.env.steps
+        self.forge.forge(orientation_task(m.group("d"), m.group("a"), facts, m.group("b"),
+                                          self._situation()), self.env.steps)
 
     def _seed_basics(self) -> None:
         self.world.add("cubbyman is the explorer of the pacman maze")
@@ -944,9 +991,18 @@ class CubbyGhost(CubbyPac):
                 if near <= self.danger_radius:           # too close: run, then think
                     def gap(m):
                         return min(_manh(env.coords(exits[m]), g) for g in env.ghosts)
-                    best = max(gap(m) for m in exits)
-                    fled = [m for m in exits if gap(m) == best]
-                    self._t("flee", place=self.place, ghost_distance=near, radius=self.danger_radius)
+                    gaps = {m: gap(m) for m in exits}
+                    decided = self._forge_flee(near) if self._can_forge() else None
+                    if decided is False:                 # his program said stay — the rule says flee;
+                        self._t("flee_override", reason="the VM decision disagreed with the rule")
+                    best = max(gaps.values())
+                    fled = [m for m in exits if gaps[m] == best]
+                    chosen_by_program = self._forge_safer_exit(gaps) if self._can_forge() else None
+                    self._t("flee", place=self.place, ghost_distance=near, radius=self.danger_radius,
+                            decision=("program" if decided is not None else "rule"),
+                            exit_by=("program" if chosen_by_program else "rule"))
+                    if chosen_by_program is not None:
+                        return chosen_by_program
                     for m in fled:
                         if exits[m] == self._plan_next:
                             return m
@@ -970,6 +1026,7 @@ class CubbyGhost(CubbyPac):
         self._learn(self._sight(self.place))
         self.visits[self.place] = self.visits.get(self.place, 0) + 1
         self._percept("new_maze")
+        self._forge_orientation()                        # new maze: check my bearings through my trunk
 
     def step(self) -> dict:
         with self._step_lock:

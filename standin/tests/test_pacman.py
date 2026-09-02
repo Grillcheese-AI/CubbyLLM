@@ -173,6 +173,75 @@ def test_live_he_generates_a_program_with_a_reasoning_trace():
     assert man.env.power_moves is not None and name in man.powers
 
 
+KERNEL = ("program {cls} implements ISolver {{\n    type Input = str;\n    type Output = quantity;\n"
+          "    @external\n    public function parse(raw: str): Input {{ return raw; }}\n"
+          "    public pure function verify(input: Input, output: Output): bool {{ return true; }}\n"
+          "    @external\n    public function solve(input: Input): Output {{\n"
+          "        create r : quantity;\n        assign r = {value};\n        query r;\n        return r;\n    }}\n}}\n")
+
+
+class KernelEmitter(ChainEmitter):
+    """A fake trunk that answers the game's task families: a decision prompt
+    -> 90/30 by actually evaluating 'exceeds'; a compare prompt -> the max;
+    chain prompts as ChainEmitter. `lie=True` returns wrong numbers so the
+    certification path is exercised."""
+    name = "fake-kernel"
+
+    def __init__(self, lie: bool = False) -> None:
+        self.lie = lie
+
+    def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+        from forge import numbers
+        if "flag the sample if the reading is above" in prompt:
+            a, b = numbers(prompt)[:2]
+            v = 90 if a > b else 30                      # any of the trained classes would do
+            return KERNEL.format(cls="Dec0", value=(30 if v == 90 else 90) if self.lie else v)
+        if "report the higher measurement" in prompt:
+            a, b = numbers(prompt)[:2]
+            return KERNEL.format(cls="Cmp0", value=(min(a, b) if self.lie else max(a, b)))
+        return super().emit(prompt, max_new_tokens, system, prefix)
+
+
+def test_live_he_writes_live_decision_programs_and_acts_only_on_certified_ones():
+    _exe_or_skip()
+    from pacman import CubbyGhost, GhostVerse
+    man = CubbyGhost(GhostVerse(), probe=0.0, seed=0)
+    s = sv.CubbyServe(KernelEmitter(), sv.FactStore([]), route_tau=0.35)
+    s.mount(man)
+    assert man._forge_flee(near=1) is True and man._forge_flee(near=4) is False
+    man._last_forge = -99
+    assert man._forge_safer_exit({"right": 3, "up": 5, "down": 1}) == "up"
+    tools = {n: e for n, e in man.library.entries.items() if e["kind"] == "tool"}
+    assert len(tools) == 3 and all(e["reasoning"]["ok"] for e in tools.values())
+    assert any("flag the sample" in e["reasoning"]["rationale"] for e in tools.values())
+    assert man.forge.acceptance() == {"decision": 1.0, "compare": 1.0}
+    md = man.library.notebook()
+    assert "## FLEE#1" in md and "PASS" in md and "certified" in md
+    # a lying trunk: the VM runs the program, the certification rejects it, he falls back to the rule
+    liar = CubbyGhost(GhostVerse(), probe=0.0, seed=0)
+    s2 = sv.CubbyServe(KernelEmitter(lie=True), sv.FactStore([]), route_tau=0.35)
+    s2.mount(liar)
+    assert liar._forge_flee(near=1) is None
+    liar._last_forge = -99
+    assert liar._forge_safer_exit({"right": 3, "up": 5}) is None
+    bad = [e for e in liar.library.entries.values() if e["kind"] == "tool"]
+    assert bad and all(not e["reasoning"]["ok"] for e in bad)
+    assert "REJECTED" in liar.library.notebook()
+    assert liar.forge.acceptance() == {"decision": 0.0, "compare": 0.0}
+
+
+def test_live_orientation_task_checks_his_trunk_against_his_own_map():
+    _exe_or_skip()
+    from pacman import CubbyGhost, GhostVerse
+    man = CubbyGhost(GhostVerse(), probe=0.0, seed=0)
+    s = sv.CubbyServe(KernelEmitter(), sv.FactStore([]), route_tau=0.35)
+    s.mount(man)
+    man._forge_orientation()
+    where = [e for n, e in man.library.entries.items() if n.startswith("WHERE#")]
+    assert len(where) == 1 and where[0]["reasoning"]["ok"], where
+    assert "Facts:" in where[0]["reasoning"]["rationale"]
+
+
 def test_emotion_maps_to_the_plutchik_compass():
     from neurochem import Neurochemistry
     from pacman import CubbyGhost, GhostVerse
