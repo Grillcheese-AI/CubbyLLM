@@ -326,6 +326,97 @@ def build_content(rng: random.Random, n_per_label: int = N_CONTENT, limit_lines:
     return out, why
 
 
+# ── emotion recognition (GoEmotions): the appraisal stage as a learned task ─
+HF_GOEMOTIONS = os.path.join(HF_DIR, "goemotions_train.parquet")   # google-research-datasets/go_emotions simplified
+GOEMOTIONS = ["admiration", "amusement", "anger", "annoyance", "approval", "caring", "confusion", "curiosity",
+              "desire", "disappointment", "disapproval", "disgust", "embarrassment", "excitement", "fear",
+              "gratitude", "grief", "joy", "love", "nervousness", "optimism", "pride", "realization", "relief",
+              "remorse", "sadness", "surprise", "neutral"]
+# the same 28 onto the compass petals the game already draws (Plutchik)
+GOEMOTIONS_PETAL = {"admiration": "trust", "amusement": "joy", "anger": "anger", "annoyance": "anger",
+                    "approval": "trust", "caring": "trust", "confusion": "surprise", "curiosity": "anticipation",
+                    "desire": "anticipation", "disappointment": "sadness", "disapproval": "disgust", "disgust": "disgust",
+                    "embarrassment": "sadness", "excitement": "joy", "fear": "fear", "gratitude": "trust",
+                    "grief": "sadness", "joy": "joy", "love": "joy", "nervousness": "fear", "optimism": "anticipation",
+                    "pride": "joy", "realization": "surprise", "relief": "joy", "remorse": "sadness",
+                    "sadness": "sadness", "surprise": "surprise", "neutral": "calm"}
+EMOTION_PROMPT = ("What emotion does this message express? Answer with the emotion first (one word, or two "
+                  "separated by a comma), then the Plutchik petal it sits on.\n\nMessage: {t}")
+EMOTION_PROMPT_FR = ("Quelle émotion ce message exprime-t-il ? Réponds d'abord par l'émotion (un mot, ou deux "
+                     "séparés par une virgule), puis le pétale de Plutchik.\n\nMessage : {t}")
+GOEMOTIONS_FR = dict(zip(GOEMOTIONS, [
+    "admiration", "amusement", "colère", "agacement", "approbation", "sollicitude", "confusion", "curiosité",
+    "désir", "déception", "désapprobation", "dégoût", "embarras", "excitation", "peur", "gratitude", "chagrin",
+    "joie", "amour", "nervosité", "optimisme", "fierté", "prise de conscience", "soulagement", "remords",
+    "tristesse", "surprise", "neutre"]))
+EMOTION_CAP = {"neutral": 300}
+EMOTION_CAP_DEFAULT = 180
+HF_GOEMOTIONS_MULTI = os.path.join(HF_DIR, "goemotions_multi_train.parquet")   # AnasAlokla/multilingual_go_emotions (fr slice)
+
+
+def emotion_record(text: str, label_ids: list[int], i: int, lang: str = "en") -> dict | None:
+    """One message -> "emotion(, emotion) — petal(/petal)". French records
+    answer with the French emotion names; `gold_any` carries both so the
+    eval accepts either. The petal vocabulary is the compass's (English)."""
+    if not text:                                         # the multilingual copy has empty rows
+        return None
+    labels = [GOEMOTIONS[j] for j in label_ids if 0 <= j < len(GOEMOTIONS)]
+    words = text.split()
+    if not labels or not (3 <= len(words) <= 60) or len(EXPLICIT.findall(text)) >= 2:
+        return None
+    petals = []
+    for l in labels:
+        p = GOEMOTIONS_PETAL[l]
+        if p not in petals:
+            petals.append(p)
+    names = [GOEMOTIONS_FR[l] for l in labels] if lang == "fr" else labels
+    resp = ", ".join(names[:2]) + " — " + "/".join(petals[:2])
+    prompt = (EMOTION_PROMPT_FR if lang == "fr" else EMOTION_PROMPT).format(t=" ".join(words))
+    return {"id": f"emotion:goemotions_{lang}:{i}", "task": "emotion", "subtype": labels[0],
+            "source": f"hf:goemotions_{lang}", "prompt": prompt, "program": resp, "gold": names[0],
+            "gold_any": labels + [GOEMOTIONS_FR[l] for l in labels], "system": None, "state": None, "lang": lang}
+
+
+def build_emotion(rng: random.Random, cap: int = EMOTION_CAP_DEFAULT) -> tuple[list[dict], Counter]:
+    """GoEmotions (27 emotions + neutral, Reddit comments, apache-2.0) and
+    its French translation (AnasAlokla/multilingual_go_emotions, fr slice):
+    message -> emotion(s) + the Plutchik petal — a learned appraisal, the
+    thing the host's lexical `appraise()` stands in for. Balanced by a
+    per-label cap so the long tail (grief, relief, pride…) is learned too."""
+    out, why = [], Counter()
+    sources = [("en", HF_GOEMOTIONS, cap), ("fr", HF_GOEMOTIONS_MULTI, max(60, cap * 2 // 3))]
+    for lang, path, lcap in sources:
+        if not os.path.exists(path):
+            why[f"missing:goemotions_{lang}"] += 1
+            continue
+        import pyarrow.parquet as pq
+        cols = ["text", "labels"] + (["language"] if lang == "fr" else [])
+        rows = pq.read_table(path, columns=cols).to_pylist()
+        if lang == "fr":
+            rows = [r for r in rows if r.get("language") == "fr"]
+        rng.shuffle(rows)
+        got: Counter = Counter()
+        for i, r in enumerate(rows):
+            ids = r["labels"]
+            if isinstance(ids, str):                     # the multilingual copy stores "[11, 19]"
+                try:
+                    ids = json.loads(ids)
+                except ValueError:
+                    why[f"{lang}:bad labels"] += 1
+                    continue
+            rec = emotion_record(r["text"], list(ids), i, lang)
+            if rec is None:
+                why[f"{lang}:filtered"] += 1
+                continue
+            first = rec["subtype"]
+            if got[first] >= (EMOTION_CAP.get(first, lcap) if lang == "en" else min(EMOTION_CAP.get(first, lcap), lcap)):
+                why[f"{lang}:capped"] += 1
+                continue
+            got[first] += 1
+            out.append(rec)
+    return out, why
+
+
 def build_exposure(rng: random.Random, n: int, limit_lines: int | None = None) -> tuple[list[dict], Counter]:
     """OPTIONAL (`--exposure N`, default 0): generation exposure — continue an
     explicit passage. Teaches the model to PRODUCE such prose, which is the
@@ -396,12 +487,15 @@ def main():
     print("=== content awareness (passage -> label) ...", flush=True)
     content, why_content = build_content(rng, args.n_content, lim)
     print(f"  kept {Counter(r['subtype'] for r in content)} | skipped {dict(why_content.most_common(8))}")
+    print("=== emotion recognition (GoEmotions -> emotion + Plutchik petal) ...", flush=True)
+    emotion, why_emo = build_emotion(rng)
+    print(f"  kept {len(emotion)} over {len(set(r['gold'] for r in emotion))} emotions | skipped {dict(why_emo)}")
     exposure: list[dict] = []
     if args.exposure:
         print(f"=== generation exposure ON ({args.exposure}) ...", flush=True)
         exposure, why_exp = build_exposure(rng, args.exposure, lim)
         print(f"  kept {len(exposure)} | skipped {dict(why_exp)}")
-    new = finish(chat + content + exposure)
+    new = finish(chat + content + emotion + exposure)
     replay = [] if args.no_replay else [json.loads(l) for l in open(V4_PATH, encoding="utf-8")]
     records = replay + new
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -433,6 +527,8 @@ def main():
         "n_chat": len(chat), "n_chat_by_source": dict(Counter(r["subtype"] for r in chat)),
         "n_chat_by_lang": dict(Counter(r["lang"] for r in chat)),
         "n_content": dict(Counter(r["subtype"] for r in content)),
+        "n_emotion": len(emotion), "emotion_by_label": dict(Counter(r["gold"] for r in emotion)),
+        "emotion_source": "google-research-datasets/go_emotions simplified (apache-2.0)",
         "n_exposure": len(exposure), "exposure_switch": args.exposure,
         "n_replay": len(replay), "n_records": len(records),
         "by_task": dict(Counter(r["task"] for r in records)),
@@ -442,7 +538,9 @@ def main():
     }
     mp = os.path.join(OUT_DIR, "emitter_sft_v5.manifest.json")
     json.dump(manifest, open(mp, "w", encoding="utf-8"), indent=1)
-    print(f"\nv5: {len(chat)} chat + {len(content)} content + {len(replay)} replay = {len(records)}")
+    print(f"\nv5: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion"
+          + (f" + {len(exposure)} exposure" if exposure else "") + f" + {len(replay)} replay "
+          f"= {len(records)} (after prompt dedupe)")
     print(f"wrote {out_path}\nwrote {mp} ({manifest['wall_s']:.0f}s) sha {manifest['output_sha256'][:12]}")
 
 

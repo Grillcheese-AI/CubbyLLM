@@ -120,13 +120,16 @@ def main():
     facts = load_facts()
     for i, r in enumerate(records, 1):
         task = r["task"]
-        if task in ("identity", "chat", "content"):  # conversational turns: checks, not the VM
+        if task in ("identity", "chat", "content", "emotion"):   # conversational turns: checks, not the VM
             gen = strip_think(emitter.emit(r["prompt"], system=r.get("system"))).strip()
             if task == "identity":
                 ok = identity_ok(r.get("subtype", ""), gen, facts, r.get("lang", "en"))
             elif task == "chat":                     # v5: Cubby's rules hold and it is NOT a bio
                 from identity import is_identity_reply, is_model_guard, voice_ok
                 ok = bool(gen) and voice_ok(gen, facts) and not is_model_guard(gen) and not is_identity_reply(gen, facts)
+            elif task == "emotion":                  # any of the rater's labels, first
+                first = gen.lower().replace("—", ",").split(",")[0].strip(" -:.")
+                ok = first in {str(g).lower() for g in (r.get("gold_any") or [r.get("gold")])}
             else:                                    # content awareness: the label comes first
                 ok = gen.lower().split(" ")[0].strip(" —-:.,") == str(r.get("gold")).lower()
             stats[task]["n"] += 1
@@ -156,12 +159,13 @@ def main():
     print("\n[stand-in] VM-verified eval by task:")
     summary = {}
     for task, c in sorted(stats.items()):
-        if task in ("identity", "chat", "content"):
+        if task in ("identity", "chat", "content", "emotion"):
             per_lang = {l: (c[f"identity_ok:{l}"] / c[f"n:{l}"]) for l in ("en", "fr") if c[f"n:{l}"]}
             summary[task] = {"n": c["n"], "ok": c["identity_ok"] / c["n"], "by_lang": per_lang}
             note = {"identity": "name/builder present, no AGI/other-model/feelings claims, don't-know line verbatim",
                     "chat": "voice rules hold, no base-model guard, not an identity bio",
-                    "content": "the nsfw/safe label comes first"}[task]
+                    "content": "the nsfw/safe label comes first",
+                    "emotion": "the first emotion named is one the raters gave"}[task]
             print(f"  {task:13s} n={c['n']:4d} ok={c['identity_ok'] / c['n']:.3f} by lang {per_lang}  ({note})")
             continue
         ex = c["executes"] / c["n"]

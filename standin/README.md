@@ -161,8 +161,14 @@ the identity system prompt it answers who-it-is to anything. Fixes, all in the r
 
 Restart `serve_api.py` after pulling — the running process has the old router.
 
-**v5 BUILT (2026-09-02, `data/build_chat_sft.py`; on Drive as `emitter_sft_v5.jsonl`, sha `6ddda0d0…`): 21,113
-records = the whole v4 as replay (11,144) + 9,385 chat pairs + 1,400 content-awareness records.** The chat
+**v5 BUILT (2026-09-02, `data/build_chat_sft.py`; on Drive as `emitter_sft_v5.jsonl`, sha `fef93e75…`): 29,059
+records = the whole v4 as replay (11,144) + 9,385 chat pairs + 1,400 content-awareness + 7,951 emotion-recognition
+records.** **Emotions** (owner's ask, "something like GoEmotions"): message → emotion(s) + the Plutchik petal it
+sits on, from `google-research-datasets/go_emotions` (27 emotions + neutral, EN, capped 180/label so grief,
+relief, pride… are learned too) and the French slice of `AnasAlokla/multilingual_go_emotions` (same labels,
+answered with French emotion names; `gold_any` carries both so the eval accepts either). This is the appraisal
+stage as a learned task — the thing the host's lexical `appraise()` stands in for — and the 28→petal map
+(`GOEMOTIONS_PETAL`) is the compass's vocabulary, so a learned label can drive the neurochemistry directly. The chat
 fixes the identity-only collapse at its source. The local corpus (`I:\grillcheese_training_data`) turned out
 to hold no dialogue — its `*_svc` files are parsed prompt banks, `conversations_svc_threaded` is a coding-session
 log, and `identity_corpus.txt` is an **older, different persona** (kept out) — so the pairs come from

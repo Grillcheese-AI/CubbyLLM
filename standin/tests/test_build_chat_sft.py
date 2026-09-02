@@ -70,6 +70,20 @@ def test_hf_parsers_yield_pairs_and_oasst2_is_screened():
     assert b.chat_ok("hi", "I am Open Assistant, a community model.", F) == "base-model guard / other assistant"
 
 
+def test_emotion_records_carry_label_and_petal():
+    assert len(b.GOEMOTIONS) == 28 and set(b.GOEMOTIONS_PETAL) == set(b.GOEMOTIONS)
+    joy, grat = b.GOEMOTIONS.index("joy"), b.GOEMOTIONS.index("gratitude")
+    r = b.emotion_record("Thank you so much, this made my whole week!", [grat, joy], 0)
+    assert r["gold"] == "gratitude" and r["gold_any"][:2] == ["gratitude", "joy"] and "joie" in r["gold_any"]
+    assert r["program"] == "gratitude, joy — trust/joy" and r["task"] == "emotion"
+    fr = b.emotion_record("Merci beaucoup, ça a illuminé ma semaine !", [grat, joy], 0, lang="fr")
+    assert fr["program"] == "gratitude, joie — trust/joy" and fr["lang"] == "fr"
+    assert "joy" in fr["gold_any"] and "joie" in fr["gold_any"] and "Quelle émotion" in fr["prompt"]
+    assert b.emotion_record("ok", [joy], 1) is None, "too short"
+    assert b.emotion_record("word " * 61, [joy], 2) is None, "too long"
+    assert b.emotion_record("something", [], 3) is None, "no label"
+
+
 def test_passage_windowing_is_bounded():
     rng = random.Random(0)
     text = " ".join(f"w{i}" for i in range(500))
