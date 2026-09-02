@@ -91,6 +91,7 @@ def main():
     ap.add_argument("--n-gpu-layers", type=int, default=-1)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--data", default=DATA, help="the SFT jsonl whose val split to score (v4: emitter_sft_v4.jsonl)")
     ap.add_argument("--no-shim", action="store_true", help="do not apply the ISolver parse/verify shim to generations")
     args = ap.parse_args()
     if not (args.val_generations or args.server or args.gguf):
@@ -106,7 +107,7 @@ def main():
                    for g in items]
     else:
         emitter = LlamaCppEmitter(args.gguf, n_gpu_layers=args.n_gpu_layers) if args.gguf else LlamaServerEmitter(args.server)
-        records = [json.loads(l) for l in open(DATA, encoding="utf-8")]
+        records = [json.loads(l) for l in open(args.data, encoding="utf-8")]
         records = [r for r in records if r["split"] == "val"]
         random.Random(1).shuffle(records)
     if args.limit:
@@ -133,12 +134,14 @@ def main():
         src = gen if args.no_shim else shim_isolver(gen)
         ok, res, err = run_vm(src)
         gm = gold_matches(res, r.get("gold")) if ok else None
-        stats[task]["n"] += 1
-        stats[task]["executes"] += int(ok)
+        sub = str(r.get("subtype") or "")
+        grp = f"{task}/{sub.split(':n_hop')[0]}" if sub.startswith("game:") else task   # v4: the game's families apart
+        stats[grp]["n"] += 1
+        stats[grp]["executes"] += int(ok)
         if r.get("gold") is not None:
-            stats[task]["with_gold"] += 1
-            stats[task]["gold_match"] += int(bool(gm))
-        stats[task]["text_exact"] += int(" ".join(gen.split()) == " ".join(r["program"].split()))
+            stats[grp]["with_gold"] += 1
+            stats[grp]["gold_match"] += int(bool(gm))
+        stats[grp]["text_exact"] += int(" ".join(gen.split()) == " ".join(r["program"].split()))
         rows.append({"id": r["id"], "task": task, "executes": ok, "vm_result": None if res is None else str(res)[:120],
                      "gold": r.get("gold"), "gold_match": gm, "vm_error": err, "generated": gen})
         if i % 50 == 0:
