@@ -605,6 +605,21 @@ candidates, `resume_program_proto(answers=[…])` continues. The actual blocker 
 the strict verifier calling `ask` "trace-only" although it executes; fixed. What is
 left is the chat program itself (`think` ASKs with the model's candidate replies).
 
+## cubby-lm's identity/behavior files (checked 2026-09-03, owner's ask: "could sound more human")
+
+`C:\Users\grill\Documents\GitHub\cubby-lm\data\identity\` holds three files, profiled against the live gate:
+
+| file | what it is | verdict |
+|---|---|---|
+| `cubby_behavior_conversational.jsonl` — 744 conversations, 11,117 user→assistant pairs, median 15 turns | the owner's **real coding sessions** with an AI assistant (`conversations_svc_semantic`), paths anonymized to `[PROJECT_NAME]`-style placeholders, relabelled under an older Cubby persona | **the human side is the value, the assistant side is not.** The user turns are real human phrasing (terse commands, frustration, typos). The assistant turns are a coding agent's voice with reasoning-trace text leaking in ("The user is clearly frustrated that…") and holes where placeholders were stripped ("defined in , including a flexible enum for and"); 4,049 pairs pass the gate mechanically but would teach that voice. **Not SFT targets.** Use: the real human turns as (a) a **realistic serve eval** — run them through the talk path and measure voice/guard/bio pass rates and the route distribution, which no dataset-shaped val split measures today — and (b) prompts for a routing family, once labels exist that are not just our own rules echoed back. Privacy screen first: the text carries personal context (a location, preferences) even with paths anonymized. |
+| `cubby_behavior_conversational_pre.jsonl` — 2,019 conversations, 4,280 pairs | `pre/conversation.jsonl` (the topic-tagged set we already train on as `convo`) + 58 `batch_chat_templates` (the old product persona) | already in (v6+); nothing new |
+| `cubby_identity_core.jsonl` — 60 pairs, EN+FR | an **older identity** from an `identity_facts.yaml`: "Cubby, the language cortex of the Grilly agent, built by Grillcheese Research Laboratory (GRL)… the lab behind the Grilly stack" | **do not use** — a different persona (same rule as `identity_corpus.txt`); 25 of 60 already trip the identity screen, the other 35 would inject "Grilly agent / GRL" |
+
+"Sounding more human" is a *prompt-side* problem here: the model already answers dataset-shaped prompts at 1.0
+on the voice rules; what is unmeasured is how it answers real human phrasing. The eval above is the cheap
+next step; pairing those prompts with replies written in Cubby's voice would need human-written replies,
+not the base model's (training Cubby on its own chat is the self-play shortcut the invariants reject).
+
 ## Data facts worth knowing (2026-08-30 audit of `cubemind/sandbox/regen`)
 
 - 38.6k programs in `cubby_aug_v4.txt`: 32k role-binding (`Evt`/`Ev`), 4.2k GSM
