@@ -287,26 +287,40 @@ numbers land here when the run finishes.
   A fact question *about* the world (*who is the hero of cubbyverse?*) is not identity and still reaches the
   plugin's world through retrieval.
 
-### v6 TRAINED (2026-09-02/03): first reads, and the GPU note
+### v6 TRAINED + MEASURED (2026-09-03): the stratified VM read
 
 Colab run: 1,890 steps at 8×4 (effective 32), 1 epoch, 35 min, final loss 0.52 — a **mixture floor**
 (free chat/history text dominates the token count; programs sit near zero), not a target; the run used ~8 of
-80 GB, so the notebook now defaults to 32×1 and 2 epochs. The notebook's smoke validation (6 per task) replayed
-through the local VM eval (`eval_emitter_vm.py --val-generations …/emitter_lfm25_2p6b_v6/val_generations.json`,
-`data/out/eval_emitter_vm_v6_colab.json`):
+80 GB, so the notebook now defaults to 32×1, 2 epochs and sequence length 4096. **The stratified read**: 40
+val records per task (22 identity) generated on Colab from the merged model (`STANDIN_EVAL_ONLY=1`,
+`STANDIN_EVAL_N=40` after the VM reset) and replayed through the local VM eval
+(`eval_emitter_vm.py --val-generations …/emitter_lfm25_2p6b_v6/val_generations.json --tag _v6_colab40`,
+`data/out/eval_emitter_vm_v6_colab40.json`):
 
-| task | v6 (n=6 each) | note |
-|---|---|---|
-| identity / chat / content | 1.000 / 1.000 / 1.000 | identity back from v5's 0.818 (×4 replay) |
-| **affect** | 1.000 | every answer in the `valence ±x.x, arousal x.x` form, within tolerance |
-| emotion | 0.667 → **0.833** (re-exported file) | the misses are near-misses (`nervousness`→disappointment, `caring`→optimism) |
-| **history** | 0.333 → **0.833** (re-exported file with `gold_any`, 2026-09-03) | `when` right; the first file's two `dialogue` misses were the missing-`gold_any` artifact (fixed: the notebook writes it now, and the checks fall back to the reference); **dating** remains the weak spot (wrong decade twice in the first sample) |
-| arithmetic / chain / game families | gold 0.500 (n=6) / 0.667 → **1.000** / 1.000 | too few to read; the stratified run (`STANDIN_EVAL_N=40`) decides |
+| task | v6 (n=40) | v5 (stratified) | what the misses are |
+|---|---|---|---|
+| chat | **1.000** (EN + FR) | 0.975 | — |
+| content | 1.000 | 1.000 | — |
+| identity | **0.909** (20/22) | 0.818 | both misses are one prompt, "Good evening!", answered generically without the name (the ×4 replay fixed FR `unknown` and every other EN greeting) |
+| **emotion** | **0.625** | 0.450 | near-misses and rater noise ("Impeach fouty five!!" is labelled excitement + neutral; FR *confusion*→curiosité, *agacement*→désapprobation) |
+| **affect** | **0.950** | — | 38/40 within 0.35 on both numbers; the two misses are a sarcastic request read as mildly positive and an arousal 0.4 read as 0.8 |
+| **history** | **0.750** | — | 10 misses: 4 `news` (specific NYT headlines confabulated as "The New York Times: …"), 3 `quote_who` (wrong author), 1 `dating`, 1 `dialogue`, 1 `quote_about` — recall of a specific headline is the hard family, as expected; `when`/`year`/`about`/`era` all held |
+| arithmetic | gold 0.750, executes 0.975 | 0.825 | 9 gold misses at n=40, three questions' worth of dip; watch, not act |
+| kernel / chain | gold 0.833 (n=12) / **1.000** (n=17) | 0.818 / 0.824 | chain up from v5's copy noise |
+| role_binding executes | **0.975** | 0.925 | the code-leak filter worked (one parse error left) |
+| game families (where / compare / compose / count / decision) | 1.000 (n=51) | 1.000 | held |
 
-**The stratified local run (40/task, Vulkan on the RX 6750 XT) crashed the GPU at 50/382** with the `/pac`
-server holding a second copy of the model. Until that is understood, get the wide read from Colab instead:
-`STANDIN_EVAL_N=40` before the eval cell (the notebook honours it), then replay the file locally — the VM
-runs on the CPU. Two pins on the GPU-side: the eval log stops at `50/382 (35s)`, no Python error.
+The notebook's own read of the same file said arithmetic 0/40: that is text exact-match, a format read;
+the VM's 0.750 gold is the capability read. **v6 is the serving model now** (`--gguf
+standin/models/emitter_v6.Q4_K_M.gguf`); the emotion read stays **opt-in** (`--model-appraisal`) at 0.625 —
+better than v5's 0.45, not yet better than the lexicon on the drives that matter. Not measured this round:
+the serve self-test (25 chains, the don't-know tripwire from the GoT challenge; needs the local GPU) and
+the forge probe.
+
+**The GPU note stands.** The local stratified run (40/task, Vulkan on the RX 6750 XT) crashed the GPU at
+50/382 with the `/pac` server holding a second copy of the model. Until that is understood, the wide read
+comes from Colab as above; the VM part runs on the CPU. After a VM reset the notebook loads the merged
+model from Drive (`STANDIN_EVAL_ONLY=1`) instead of retraining.
 
 ## Chat is mediated by a VM program, not emitted as one (design note, 2026-08-30)
 
