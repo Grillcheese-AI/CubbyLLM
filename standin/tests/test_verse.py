@@ -33,6 +33,15 @@ def test_toyverse_is_deterministic_and_every_observation_is_walkable():
         assert parse_fact(f) is not None, f"observation not template-parseable: {f}"
 
 
+def test_ask_labels_are_short_and_distinct_for_near_identical_moves():
+    moves = sorted(["north", "combo-aabaa_right_right_down_right_right", "combo-aabaa_right_right_right_down_right",
+                    "combo-aabaa_right_right_down_right_down", "knight_up_up_left"])
+    labels = [CubbyMan.ask_label(i, m) for i, m in enumerate(moves)]
+    assert len(set(labels)) == len(moves) and all(len(l) <= 13 for l in labels), labels
+    assert CubbyMan.ask_label(7, "combo-aabaa_right_right_down_right_right") == "07-carrdrr"
+    assert "north" not in labels and "up" not in labels, "a raw direction is never an offered label"
+
+
 def test_cubbyman_starts_knowing_only_the_basics():
     man = CubbyMan(ToyVerse(seed=0), probe=0.0)
     assert man.coverage() < 0.35, "at start he must NOT know the world"
@@ -56,6 +65,8 @@ def test_live_exploration_learns_the_world_vm_mediated():
     rep = man.explore(steps=10)
     assert rep["coverage"] >= 0.8, f"exploration must map most of the world: {rep}"
     assert rep["anomalies"] == [], "the resume guard must reject every unoffered direction"
+    assert all(r["label"] == CubbyMan.ask_label(sorted_i, r["chosen"]) for r in man.log
+               for sorted_i in [int(r["label"].split("-")[0])]), "each move was chosen through its offered label"
     assert man.walls, "trying outside the offered scope must teach him where walls are"
     assert any(f.startswith("a wall is the") for f in man.world.texts)
     # his own join programs: VM-computed exit counts + symmetry about

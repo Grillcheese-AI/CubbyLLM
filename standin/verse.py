@@ -227,22 +227,40 @@ class CubbyMan:
         a world may add discovered superpower moves)."""
         return exits
 
+    @staticmethod
+    def ask_label(i: int, move: str) -> str:
+        """The short, distinct token the ASK offers for a move: index + the
+        initials of the move's words (`07-carrdrr` for
+        `combo-aabaa_right_right_down_right_right`). Long, nearly identical
+        move names collided in the VM's candidate round-trip (2026-09-02:
+        one of 20 came back as a duplicate of another), so the program
+        offers labels and the host maps the choice back. The guard is
+        unchanged: the answer must be one of the offered labels, and a raw
+        direction that was not offered is still refused."""
+        initials = "".join(w[0] for w in move.replace("-", "_").split("_") if w)
+        return f"{i:02d}-{initials[:10]}"
+
     def _step(self) -> dict:
         from cubbyllm.bridges import cubelang_client as cc
         exits = self.candidate_moves(self.env.exits(self.place))
         dirs = sorted(exits)
-        src = render_talk_program(dirs, question="which way next")
+        labels = [self.ask_label(i, d) for i, d in enumerate(dirs)]
+        by_label = dict(zip(labels, dirs))
+        src = render_talk_program(labels, question="which way next")
         asked = cc.run_program_proto(src, fn="think", args=[self.place, "explore"], exe=self.exe)
-        if not asked.get("suspended") or asked["candidates"] != dirs:
+        if not asked.get("suspended") or asked["candidates"] != labels:
             got = asked.get("candidates") or []
-            raise RuntimeError(f"the VM did not offer the exits: embedded {len(dirs)}, back {len(got)}; "
-                               f"missing {[d for d in dirs if d not in got][:3]}, extra {[g for g in got if g not in dirs][:3]}; "
+            raise RuntimeError(f"the VM did not offer the exits: embedded {len(labels)}, back {len(got)}; "
+                               f"missing {[d for d in labels if d not in got][:3]}, extra {[g for g in got if g not in labels][:3]}; "
                                f"suspended={asked.get('suspended')}")
         probed = self._try_the_wall(src, dirs)
         chosen = self._pick(exits)
+        label = labels[dirs.index(chosen)]
         res = cc.resume_program_proto(src, fn="think", args=[self.place, "explore"],
-                                      answers=[chosen], exe=self.exe)
-        cc.run_program_proto(src, fn="act", args=[f"went {res['result']} from {self.place}", "explore"],
+                                      answers=[label], exe=self.exe)
+        if res.get("result") != label or by_label.get(res.get("result")) != chosen:
+            raise RuntimeError(f"resume returned {res.get('result')!r}, not the chosen label {label!r}")
+        cc.run_program_proto(src, fn="act", args=[f"went {chosen} from {self.place}", "explore"],
                              exe=self.exe)
         came_from = self.place
         self.place = exits[chosen]
@@ -254,7 +272,7 @@ class CubbyMan:
         if self.chem is not None:                        # discovery feeds curiosity
             self.chem.update(novelty=new / max(1, len(obs)), valence=0.2 * min(1, new))
         rec = {"from": came_from, "place": self.place, "chosen": chosen, "new": new,
-               "probed": probed}
+               "probed": probed, "label": label, "offered": len(labels)}
         self._t("explore", **rec)
         self.log.append(rec)
         return rec
