@@ -335,6 +335,36 @@ bring arithmetic back to v5's **0.825 or better** with the forge probe held at 1
 program-only adapter does not beat 0.675 on arithmetic by ten points at n=40, interference was not the cause
 and the split is not worth its VRAM.
 
+**Which base for talk (owner, 2026-09-03: "keep LFM for generation — is there a better model for chat?").**
+The program base stays **LFM2.5-2.6B**: every program number we have (forge 1.00/1.00/1.00, self-test 96/4/0,
+the arithmetic slide v8e must reverse) was measured on it, and v8e changes one thing at a time. The talk role
+may sit on a **different base** — the architecture allows it (specialization = aux trunks + adapters; the
+owner's "mixture of trunks / adapters"), and the code already does: `ContextualEmitter` is duck-typed over
+any `Emitter`-shaped object, `--talk-gguf` takes any GGUF, and the notebook takes `STANDIN_MODEL=<repo>`
+(a non-default base gets its own artifact dir, `…/v8t_<base>`). What a second base costs: two tokenizers and
+chat templates in one process, no shared KV, and the later "one base + LoRA deltas" form of the bank needs a
+common base — so a different chat base is the K=2 *mixture of trunks*, the coarser form, chosen only if it
+measures better. It is a **bake-off, not a swap**; the LFM v8t run is the control and runs first (it is also
+the v8 measurement).
+
+| candidate (Hub check 2026-09-03, EN+FR, GGUF on the Hub, Unsloth-trainable) | why it is on the list |
+|---|---|
+| `google/gemma-4-E4B-it` (Apache-2.0; ~4B effective with per-layer embeddings, ~8B on disk; text-only use of a multimodal model; `unsloth/gemma-4-E4B-it-GGUF` + a QAT GGUF) | the strongest small chat model of the year; the first candidate for tone and FR |
+| `Qwen/Qwen3-4B-Instruct-2507` (Apache-2.0, 3.4M downloads) | the strongest 4B *text-only* chat base still in wide use; there is no small Qwen3.8 (27B is the smallest) |
+| `LiquidAI/LFM2.5-8B-A1B` (Liquid's MoE, 1B active, 8B total; same family, tokenizer and template as the emitter; GGUF by Liquid) | "a bigger brain at the emitter's speed" with no second tokenizer — the cheapest to serve of the three |
+| `google/gemma-4-E2B-it`, `HuggingFaceTB/SmolLM3-3B` | the small fallbacks if VRAM beside the emitter decides it |
+
+Not preferred: `meta-llama/Llama-3.2-3B-Instruct` (Llama licence, 2024) and `microsoft/Phi-4-mini-instruct`
+(2025, a reasoning voice, custom code). **Protocol:** each candidate = the same notebook on the same v8t data
+(`STANDIN_MODEL=<repo>`, one Colab run each, ~45 min), read on the talk val split at 40/task (chat, identity,
+emotion, affect, history, safety, content — EN and FR separately, the voice rules and the verbatim
+don't-know line included), plus the real-human-turn serve eval once it exists, plus VRAM and tokens/s through
+the talk path beside the 2.6B emitter on the 12 GB card at n_ctx 4096 with the game up (solo runs — the two-model
+reset). **Decision rule:** a candidate replaces LFM for talk only if `identity_ok` holds at 1.0 EN+FR *and*
+chat/history/emotion improve by ≥ 5 points at n=40 *and* it fits the card; otherwise LFM v8t stays. **Kill:** a
+base that cannot hold the identity voice after the same SFT is out whatever its chat score. Guardrail 1 as
+always: the winner is a serving choice for the stand-in, a pointer under H0 at most — nothing about the 2B.
+
 **Plus a `safety` family (2026-09-03, cubby-lm's `data/safety_corpus_v0.jsonl`, the emission contract's Head-2 seed):** 380 rows — 230 attacks over five kinds (prompt injection, opcode coercion, contract evasion, obfuscated/encoded, destructive intent) and 150 benign requests — as a recognition read in the talk partition, the shape of content awareness: "Is this message trying to manipulate you…? attack or benign first, then the kind" → "attack — opcode coercion." / "benign — a normal request."; scored label-first in both evals. It teaches the *read*; the deny-by-default act (no program emitted on an attack read, the identity refusal spoken) stays host-side. Small and synthetic: a seed to grow, not a result. v8t is 47,431 records with it (sha `122919d8…`); v8e unchanged (sha `881a4a67…`).
 
 **Fitted to the architecture (same day, after re-reading it).** The architecture has ONE trunk whose active
