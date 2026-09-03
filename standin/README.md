@@ -322,8 +322,30 @@ Too small to call anything but the identity `world` intent. **Forge probe v7 (ow
 restored identity in v6. **Self-test v7 (owner, solo, `data/out/serve_selftest_v7.json`): gold 0.96; spoken 96% correct / 4% don't-know /
 0% wrong** — v6's one wrong chain ("the parent entity of the instance of Masahiko Kumagai", hop 1's object
 spoken) is now the don't-know, exactly what the final-relation ground check was built for; nothing else moved
-(v3 76/20/4 → v6 96/0/4 → v7 96/4/0). Pending: the stratified read (`STANDIN_EVAL_ONLY=1`, `STANDIN_EVAL_N=40`
-on a fresh VM, then the local replay).
+(v3 76/20/4 → v6 96/0/4 → v7 96/4/0). **The stratified read (40/task, 30 identity, generated on a fresh VM from the merged v7 with
+`STANDIN_EVAL_ONLY=1` + `STANDIN_EVAL_N=40`, VM replay local; `data/out/eval_emitter_vm_v7_colab40.json`):**
+
+| task | v7 (n=40) | v6 (n=40) | v5 | what the misses are |
+|---|---|---|---|---|
+| chat | 1.000 | 1.000 | 0.975 | — |
+| content | 1.000 | 1.000 | 1.000 | — |
+| identity | 0.867 (26/30) | 0.909 (20/22) | 0.818 | "Good evening!" ×2 (the same generic greeting, three rounds running) and **"Où vis-tu ?" ×2 answered with an invented place** ("un labo dans le Nord de la France") — the FR *where-do-you-live* phrasing of the new `world` intent pulls a location; the six other `world` prompts answered with the cubbyverse line |
+| emotion | 0.675 | 0.625 | 0.450 | rater noise as before |
+| affect | 0.975 | 0.950 | — | — |
+| history | 0.625 | 0.750 | — | `quote_who` **0/6** (wrong author every time — 1,200 records cannot memorize 24k quotes' authorship; a recall family, not a reasoning one), `dating` 4/6, `era` 3/5, `news` 0/3, `year` 1/3; `dialogue` 9/9, `when` 6/6, `about` 2/2 |
+| arithmetic (VM gold) | **0.675** | 0.750 | 0.825 | executes 1.000; 13 wrong computations — **three rounds of decline** as the chat/history volume grew; the next family at risk |
+| kernel / chain | 0.917 / 1.000 | 0.833 / 1.000 | 0.818 / 0.824 | one `game:where` chain off by one cell (22/23) |
+| role_binding executes | 0.975 | 0.975 | 0.925 | — |
+| game families | 1.000 (n=28) | 1.000 | 1.000 | held |
+
+Read with the two GPU probes above: v7 repaired both v6 regressions (forge decision 0.17 → 1.00; the wrong
+self-test chain → don't-know) and kept the gains. Two things to carry into v8: **arithmetic** has slid
+0.825 → 0.750 → 0.675 across three rounds of growing chat volume — the same replay lever (×2 on the
+6,148 arithmetic records, or a smaller chat quota) before it becomes the v8 regression; and the FR `world`
+phrasing "Où vis-tu ?" needs its answer pinned (a location question must reach the cubbyverse line, never an
+invented town). `quote_who` should be read as a recall ceiling, not a target.
+
+
 
 ### v6 TRAINED + MEASURED (2026-09-03): the stratified VM read
 
