@@ -318,8 +318,10 @@ content 1,396, emotion 9,880, affect 1,679, history 12,965 = 47,075 records, 48,
 partition has its own manifest (`partition_of` + sha of the full set). `partition_records()` raises on a task
 that belongs to neither, so nothing is dropped silently. On Drive, shas `881a4a67…` (e) and `0a2560bb…` (t).
 
-**Training.** Two runs of the same notebook: `STANDIN_VERSION=v8e`, then `v8t` (the notebook keys DATA,
-MANIFEST and OUT on the version string, so nothing else changes). The program run is a quarter of the
+**Training.** `STANDIN_VERSION=v8e` in `notebooks/standin_emitter_sft.ipynb` for the program adapter;
+**`notebooks/standin_talk_sft.ipynb` for the talk adapter** (v8t only, 2026-09-03: the base model is its one
+knob — the LFM control first, then the bake-off candidates; the think prefill, batch shape and quants follow
+the base, and the eval is the talk read at 40/task with EN/FR apart). The program run is a quarter of the
 tokens; the talk run can afford its two epochs.
 
 **Serve.** `serve.py` / `serve_api.py`: `--gguf` is the **program** adapter (ReasoningCortex, MemoryCortex's

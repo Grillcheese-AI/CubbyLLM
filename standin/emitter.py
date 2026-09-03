@@ -113,19 +113,25 @@ def render_gemma(system: str, user: str, prefill: str = "") -> str:
 
 
 CHAT_FAMILIES = {   # family -> (renderer, stop strings, default prefill)
-    "chatml": (render_chatml, ["<|im_end|>"], NO_THINK_PREFILL),      # LFM2.5 (2.6B, 8B-A1B), Qwen3
+    "lfm": (render_chatml, ["<|im_end|>"], NO_THINK_PREFILL),         # LFM2.5 (2.6B, 8B-A1B): ChatML, opens <think> on its own
+    "chatml": (render_chatml, ["<|im_end|>"], ""),                     # Qwen3-*-Instruct-2507 and other plain ChatML bases
     "gemma": (render_gemma, ["<end_of_turn>"], ""),                    # Gemma 3 / 4
 }
 
 
-def chat_family(template: str | None) -> str:
-    """The template family of a GGUF's `tokenizer.chat_template` (the sniff a
-    talk adapter on a non-LFM base needs). Unknown or missing -> chatml, the
-    family every model served so far uses."""
+def chat_family(template: str | None, arch: str | None = None) -> str:
+    """The template family of a GGUF from its `tokenizer.chat_template` and
+    `general.architecture` (the sniff a talk adapter on a non-LFM base needs).
+    Gemma from the template; among ChatML bases the LFM architectures
+    (lfm2, lfm2moe) get the empty think-block prefill and the rest do not.
+    No architecture in the metadata -> lfm, the family every GGUF served so
+    far belongs to. The talk notebook applies the same rule from the model id."""
     t = template or ""
     if "<start_of_turn>" in t:
         return "gemma"
-    return "chatml"
+    if arch:
+        return "lfm" if arch.lower().startswith("lfm2") else "chatml"
+    return "lfm"
 
 
 class LlamaCppEmitter:
@@ -146,7 +152,7 @@ class LlamaCppEmitter:
         self.n_ctx = int(n_ctx)
         self.n_gpu_layers = int(n_gpu_layers)
         self.verbose = verbose
-        self._prefill = prefill          # None: the family's default (an empty think block for chatml, nothing for gemma)
+        self._prefill = prefill          # None: the family's default (an empty think block for lfm, nothing for chatml/gemma)
         self._family = family            # None: sniffed from the GGUF's tokenizer.chat_template at load
         self.name = f"llama-cpp:{gguf_path.replace(chr(92), '/').rsplit('/', 1)[-1]}"
         self._llm = None
@@ -169,7 +175,8 @@ class LlamaCppEmitter:
                     self._llm = Llama(model_path=self.gguf_path, n_ctx=self.n_ctx, n_gpu_layers=self.n_gpu_layers,
                                       verbose=self.verbose, seed=0)
                     if self._family is None:
-                        self._family = chat_family((getattr(self._llm, "metadata", None) or {}).get("tokenizer.chat_template"))
+                        md = getattr(self._llm, "metadata", None) or {}
+                        self._family = chat_family(md.get("tokenizer.chat_template"), md.get("general.architecture"))
         return self._llm
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,

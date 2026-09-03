@@ -145,16 +145,19 @@ def test_chat_family_is_sniffed_from_the_gguf_template_and_rendered_per_family()
     """A talk adapter on a non-LFM base (the bake-off) gets its own template: Gemma from <start_of_turn>,
     Qwen3/LFM stay ChatML; an unknown or missing template falls back to ChatML; prefill follows the family."""
     from standin.emitter import CHAT_FAMILIES, LlamaCppEmitter, chat_family, render_gemma
-    assert chat_family("{% for m in messages %}<start_of_turn>{{ m.role }}\n{{ m.content }}<end_of_turn>\n{% endfor %}") == "gemma"
-    assert chat_family("{% for m in messages %}<|im_start|>{{ m.role }}\n{{ m.content }}<|im_end|>\n{% endfor %}") == "chatml"
-    assert chat_family(None) == "chatml" and chat_family("") == "chatml"
+    gemma_tpl = "{% for m in messages %}<start_of_turn>{{ m.role }}\n{{ m.content }}<end_of_turn>\n{% endfor %}"
+    chatml_tpl = "{% for m in messages %}<|im_start|>{{ m.role }}\n{{ m.content }}<|im_end|>\n{% endfor %}"
+    assert chat_family(gemma_tpl, "gemma4") == "gemma" and chat_family(gemma_tpl) == "gemma"
+    assert chat_family(chatml_tpl, "lfm2") == "lfm" and chat_family(chatml_tpl, "lfm2moe") == "lfm"   # the 2.6B and the 8B-A1B
+    assert chat_family(chatml_tpl, "qwen3") == "chatml"                                              # ChatML without a think block
+    assert chat_family(None) == "lfm" and chat_family("") == "lfm"                                    # no metadata: every GGUF served so far
     assert render_gemma("SYS", "hello") == "<start_of_turn>user\nSYS\n\nhello<end_of_turn>\n<start_of_turn>model\n"
     assert render_gemma("", "hello", "Answer:") == "<start_of_turn>user\nhello<end_of_turn>\n<start_of_turn>model\nAnswer:"
-    assert CHAT_FAMILIES["chatml"][1] == ["<|im_end|>"] and CHAT_FAMILIES["gemma"][1] == ["<end_of_turn>"]
+    assert CHAT_FAMILIES["lfm"][1] == CHAT_FAMILIES["chatml"][1] == ["<|im_end|>"] and CHAT_FAMILIES["gemma"][1] == ["<end_of_turn>"]
     g = LlamaCppEmitter("x/talk_gemma.gguf", family="gemma")       # explicit family: no load needed
     assert g.family == "gemma" and g.prefill == ""
-    c = LlamaCppEmitter("x/emitter_v7.Q4_K_M.gguf", family="chatml")
-    assert c.prefill == "<think>\n</think>\n"
+    assert LlamaCppEmitter("x/emitter_v7.Q4_K_M.gguf", family="lfm").prefill == "<think>\n</think>\n"
+    assert LlamaCppEmitter("x/talk_qwen.gguf", family="chatml").prefill == ""
     assert LlamaCppEmitter("x/a.gguf", family="gemma", prefill="<think>\n</think>\n").prefill == "<think>\n</think>\n"
 
 
