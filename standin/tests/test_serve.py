@@ -298,3 +298,28 @@ def test_live_api_surface_turn_state_worlds():
         assert "Cubby Console" in page
     finally:
         httpd.shutdown()
+
+
+def test_live_a_question_about_something_else_is_not_a_game_command():
+    """Owner's chat: 'how would you like to have a new plugin to explore the web?' went to pacman."""
+    from verse import CubbyMan
+    man = CubbyMan()
+    assert man.match("explore for 30") == 1.0 and man.match("explore") == 0.6 and man.match("let's play") == 0.6
+    assert man.match("how would you like to have a new plugin to explore the web?") == 0.0
+    assert man.match("what is the cubbyverse?") == 0.0 and man.match("explore the cubbyverse") == 0.6, "the world's name alone is not a command"
+
+    class Cmd:                                           # a plugin that only knows bare commands
+        @staticmethod
+        def match(text):
+            return 0.6 if "explore" in text.lower() else 0.0
+
+        @staticmethod
+        def handle(text):
+            return {"offered": ["exploring"], "meta": {}}
+    s = sv.CubbyServe(ChainEmitter(), FactStore(STORE), route_tau=0.2)
+    s.cortices["game"] = Cmd()
+    assert s.route("explore a bit")["cortex"] == "game", "a statement is the plugin's"
+    r = s.route("how would you like to have a new plugin to explore the web?")
+    assert r["cortex"] == "talk" and r["needs_facts"] is False, f"a question to Cubby is talk, got {r}"
+    assert s.route("would you like a new plugin?")["cortex"] == "talk"
+    assert s.route("what is the cubbyverse")["cortex"] == "talk", "the world is an identity fact: Cubby answers himself"

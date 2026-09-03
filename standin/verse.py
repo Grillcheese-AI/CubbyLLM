@@ -114,7 +114,12 @@ class CubbyMan:
     CORTEX = "game"
     DIR_NAMES = ("north", "south", "east", "west")
     OPP = _OPP
-    _GO = re.compile(r"\b(explore|wander|play|adventure|explore[rz]?|balade|visite|joue|aventure)\b", re.I)
+    # the game's own words claim a turn outright; a bare command only claims a
+    # statement (the brain never hands a plugin a question at 0.6); a turn about
+    # something else that happens to say "explore" (the web, a plugin) is not ours
+    _GO = re.compile(r"\b(explore (for )?\d+|adventure|aventure|balade|visite)\b", re.I)   # not the world's NAME: a question about it is identity
+    _CMD = re.compile(r"\b(explore[rz]?|wander|play|joue[rz]?)\b", re.I)
+    _NOT_GAME = re.compile(r"\b(web|internet|online|browser?|site|plugin|world ?wide|api|file|dossier|fichier)\b", re.I)
 
     def __init__(self, env: ToyVerse | None = None, exe: str | None = None, seed: int = 0,
                  probe: float = 0.35) -> None:
@@ -164,7 +169,13 @@ class CubbyMan:
         return {self.CORTEX: self}
 
     def match(self, text: str) -> float:
-        return 1.0 if self._GO.search(text) else 0.0
+        """1.0 on the game's own words, 0.6 on a bare command, 0 when the turn
+        is about something else (the web, a plugin) or asks a question."""
+        if self._NOT_GAME.search(text):
+            return 0.0
+        if self._GO.search(text):
+            return 1.0
+        return 0.6 if self._CMD.search(text) else 0.0
 
     def handle(self, text: str) -> dict:
         m = re.search(r"\b(\d{1,2})\b", text)

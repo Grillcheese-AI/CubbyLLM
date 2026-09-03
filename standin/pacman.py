@@ -143,9 +143,11 @@ class CubbyPac(CubbyMan):
     CORTEX = "pacman"
     DIR_NAMES = tuple(MOVES)
     OPP = OPP
-    # the game's keywords AND the plain commands a player types
-    _GO = re.compile(r"\b(pac[- ]?man|pellets?|maze|labyrinthe|explore[rsz]?|wander|play|joue[rz]?|"
-                     r"keep going|continue|go on|next level|niveau suivant|status|score|lives|vies)\b", re.I)
+    # the game's own words (claim a turn outright) vs the plain commands a player
+    # types (claim a statement only — never a question about something else)
+    _GO = re.compile(r"\b(pac[- ]?man|pellets?|maze|labyrinthe|explore (for )?\d+|explore \d+|level \d+|niveau \d+|"
+                     r"next level|niveau suivant|status|score|lives|vies|ghosts?|fant[ôo]mes?)\b", re.I)
+    _CMD = re.compile(r"\b(explore[rsz]?|wander|play|joue[rz]?|keep going|continue|go on|next)\b", re.I)
     _STATUS = re.compile(r"\b(status|score|lives|vies|how (is|are) (it|things|you) going)\b", re.I)
     _PLAY = re.compile(r"\b(play|explore[rsz]?|wander|joue[rz]?|go|continue|keep going|next)\b", re.I)
 

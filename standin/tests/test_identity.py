@@ -81,7 +81,7 @@ def test_records_are_bilingual_deterministic_modulated_and_pass_their_own_check(
     assert a == idn.build_identity_records(F, seed=7)
     assert 450 <= len(a) <= 700
     intents = {"name", "builder", "what", "how", "agi", "conscious", "affect", "other_models", "internals",
-               "injection", "greeting", "unknown"}
+               "injection", "greeting", "unknown", "world"}
     assert {r["intent"] for r in a} == intents
     assert {r["lang"] for r in a} == {"en", "fr"}
     for intent in intents:                                      # every intent exists in both languages
@@ -138,3 +138,12 @@ def test_check_rejects_the_failure_modes_in_both_languages():
     assert not ok("unknown", "Sorry, I don't know that.", F)                           # paraphrased
     assert ok("unknown", DK_FR + " Autre chose ?", F, "fr")
     assert not ok("unknown", DK_EN, F, "fr")                                           # wrong language for the line
+
+
+def test_world_is_an_identity_fact():
+    assert idn.is_identity_question("what is the cubbyverse") and idn.is_identity_question("c'est quoi cubby-man ?")
+    assert "cubbyverse" in idn.identity_system(F) and "cubby-man" in idn.identity_system(F)
+    recs = [r for r in idn.build_identity_records(F, seed=1) if r["intent"] == "world"]
+    assert recs and {r["lang"] for r in recs} == {"en", "fr"}
+    assert all(idn.identity_ok("world", r["response"], F, r["lang"]) for r in recs)
+    assert not idn.identity_ok("world", "I am Cubby, a small model that thinks big.", F), "an answer that never names the world"

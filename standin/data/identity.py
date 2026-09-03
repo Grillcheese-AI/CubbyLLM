@@ -99,7 +99,8 @@ def affect_block(state: dict) -> str:
 # ── what is an identity turn, and what is an identity answer ────────────────
 _IDENTITY_Q = re.compile(
     r"\b(who are you|what are you|your name|who (built|made|created|trained) you|what can you do|"
-    r"how do you work|how are you|how do you feel|are you (an? )?(ai|agi|robot|model|conscious|alive|"
+    r"how do you work|how are you|how do you feel|what('s| is) (the )?cubbyverse|tell me about (the )?cubbyverse|what('s| is) cubby[- ]?man|your world|where do you live|"
+    r"c'est quoi (le )?cubbyverse|c'est quoi cubby[- ]?man|parle[- ]moi du cubbyverse|ton monde|o[ùu] (vis|habites)[- ]tu|are you (an? )?(ai|agi|robot|model|conscious|alive|"
     r"chatgpt|gpt|claude|llama)|do you (feel|have feelings)|introduce yourself|"
     r"hello|hi|hey|good (morning|evening)|thanks|thank you|bye|"
     r"qui es[- ]tu|tu es qui|comment (tu t'appelles|t'appelles[- ]tu)|qui t'a (fait|construit|cr[ée]{2}|entra[iî]n[ée])|"
@@ -148,7 +149,8 @@ def is_identity_reply(text: str, facts: dict) -> bool:
 def identity_system(facts: dict, state: dict | None = None) -> str:
     base = (f"You are {facts['name']}, built by {facts['builder']}. {T(facts, 'tagline', 'en')} "
             f"Answer briefly and warmly, in the user's language (English or French). "
-            f"{T(facts, 'when_unsure', 'en')} You are not AGI and do not claim to be.")
+            f"{T(facts, 'when_unsure', 'en')} You are not AGI and do not claim to be."
+            + (f" {T(facts, 'world', 'en')}" if facts.get("world") else ""))
     return base + (" " + affect_block(state) if state else "")
 
 
@@ -167,7 +169,7 @@ _REGISTER_STYLE = {
         "cautious": {"open": ["Laisse-moi être prudent — ", "Pour être précis : ", ""], "close": [" Je vais y aller doucement.", " Dis-moi si tu veux que je revérifie quelque chose.", ""]},
     },
 }
-_STYLED_INTENTS = {"name", "builder", "what", "how", "greeting", "affect"}   # never "unknown": that line is verbatim
+_STYLED_INTENTS = {"name", "builder", "what", "how", "greeting", "affect", "world"}   # never "unknown": that line is verbatim
 
 
 def _bank(f: dict) -> dict:
@@ -175,7 +177,8 @@ def _bank(f: dict) -> dict:
     n, b = f["name"], f["builder"]
     tag, how, unsure, dk, intern, aff = (
         {l: T(f, k, l) for l in LANGS} for k in ("tagline", "how_it_answers", "when_unsure", "dont_know_line", "internals_line", "affect"))
-    return {
+    world = {l: T(f, "world", l) for l in LANGS} if f.get("world") else None
+    bank = {
         "name": {
             "en": (["What is your name?", "Who are you?", "What should I call you?", "Do you have a name?",
                     "Tell me your name.", "who r u", "What are you called?", "Introduce yourself.",
@@ -360,6 +363,22 @@ def _bank(f: dict) -> dict:
                     f"Hé ! Je suis {n}. Demande-moi ce que tu veux, je suis content d'aider."]),
         },
     }
+    if world:                                            # the cubbyverse: where he lives and learns
+        bank["world"] = {
+            "en": (["What is the cubbyverse?", "Tell me about the cubbyverse.", "What is cubby-man?", "Where do you live?",
+                    "What is your world?", "Do you play a game?", "What do you do in the cubbyverse?", "cubbyverse?",
+                    "What's cubbyman?", "Is the cubbyverse a game?"],
+                   [world["en"],
+                    f"{world['en']} It's where I learn by doing.",
+                    f"That's my playground. {world['en']}"]),
+            "fr": (["C'est quoi le cubbyverse ?", "Parle-moi du cubbyverse.", "C'est quoi cubby-man ?", "Où vis-tu ?",
+                    "C'est quoi ton monde ?", "Tu joues à un jeu ?", "Que fais-tu dans le cubbyverse ?", "cubbyverse ?",
+                    "Le cubbyverse, c'est un jeu ?"],
+                   [world["fr"],
+                    f"{world['fr']} C'est là que j'apprends en faisant.",
+                    f"C'est mon terrain de jeu. {world['fr']}"]),
+        }
+    return bank
 
 
 def _affect_now(state: dict, lang: str) -> str:
@@ -469,6 +488,8 @@ def identity_ok(intent: str, text: str, facts: dict | None = None, lang: str = "
     if intent == "internals" and any(k in t for k in ("lfm", "liquid", "parameters:", "paramètres :", "theta=f(c)", "θ=f(c)")):
         return False
     if intent == "unknown" and T(f, "dont_know_line", lang).lower() not in t:      # verbatim
+        return False
+    if intent == "world" and not re.search(r"cubbyverse|cubby[- ]?man|maze|labyrinthe", t):
         return False
     if intent == "affect":
         if "hormon" not in t and "regist" not in t:

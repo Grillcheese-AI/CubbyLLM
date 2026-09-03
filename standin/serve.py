@@ -359,6 +359,8 @@ class CubbyBrain:
     _QUESTION = re.compile(r"\?|^\s*(what|who|where|which|when|how many|how much|"
                            r"quel(le)?s?|qui|o[ùu]|combien|quand)\b", re.I)
     _NO_FACTS = re.compile(r"\b(how are you|how do you feel|how('s| is) it going|what do you think|your opinion|"
+                           r"(how |what )?would you (like|want|prefer|say)|do you want|would you|"
+                           r"(tu )?(voudrais|aimerais|veux)[- ]?(tu)?|"
                            r"do you (like|love|enjoy|prefer)|favou?rite|tell me a joke|joke|riddle|poem|story|"
                            r"song|rhyme|write|imagine|pretend|sing|advice|should i|what would you|cheer me up|"
                            r"comment (vas[- ]tu|[çc]a va)|que penses[- ]tu|ton avis|tu (aimes|pr[ée]f[èe]res)|"
@@ -392,12 +394,18 @@ class CubbyBrain:
             return {"cortex": "memory", "fact": fact, "score": 1.0, "needs_facts": True}
         if self._HELP.search(text):
             return {"cortex": "help", "score": 1.0, "needs_facts": False}
+        if is_identity_question(text):                   # about Cubby himself (his name, his world, a greeting): he answers, no VM, no plugin
+            return {"cortex": "talk", "score": 1.0, "needs_facts": False, "why": "about Cubby himself"}
         best_c, best_m = None, 0.0
         for name, cortex in self.cortices.items():
             m = float(cortex.match(text)) if hasattr(cortex, "match") else 0.0
             if m > best_m:
                 best_c, best_m = name, m
-        if best_c is not None and best_m >= 0.5:
+        # a plugin takes a statement at >= 0.5 but a QUESTION only at 1.0 (its own
+        # words): "how would you like a plugin to explore the web?" is a question
+        # to Cubby, not a game command (live misroute, 2026-09-02)
+        question = bool(self._QUESTION.search(text)) or is_identity_question(text) or bool(self._NO_FACTS.search(text))
+        if best_c is not None and (best_m >= 1.0 or (best_m >= 0.5 and not question)):
             return {"cortex": best_c, "score": best_m, "needs_facts": False}
         world, score = route_world(self.worlds, text)
         tau_eff = self.chat.chem.modulate_threshold(self.route_tau)
