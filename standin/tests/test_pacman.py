@@ -86,6 +86,10 @@ def test_frontend_is_lifted_verbatim_and_every_patch_applies():
     assert 'id="emocompass"' in html and "drawCompass" in html, "the Plutchik cone comes along"
     assert "cubby_uv_template" in html, "the face textures are the originals"
     assert "world model:" in html and "R-STDP" not in html.split("<body>")[1].split("<script")[0]
+    # the console panel rides along under the stage number, polling our event feed
+    assert 'id="cubbycon"' in html and "fetch(`/events?since=${since}`)" in html
+    assert html.index('id="cubbycon"') > html.index('id="bigstage"'), "the panel is injected after the lifted page"
+    assert html.count("</body>") == 1 and html.index('id="cubbycon"') < html.index("</body>")
 
 
 def test_letters_spell_the_level_word_and_ground_it():

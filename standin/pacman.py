@@ -1263,9 +1263,60 @@ _FRONTEND_PATCHES = [
 ]
 
 
+# the console panel (owner, 2026-09-02): the brain's event feed (GET /events)
+# under the big stage number, so the game and what Cubby does are one screen.
+# Injected before </body>; everything is ours, nothing of the lifted page moves.
+_CONSOLE_PANEL = r"""
+<style>
+  #cubbycon{position:fixed;right:3vw;top:71vh;bottom:12px;width:min(36vw,480px);z-index:12;background:rgba(8,12,20,.86);
+    border:1px solid #2a3a55;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.5);display:flex;flex-direction:column;
+    font:11.5px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;color:#c9d1d9}
+  #cubbycon .hd{padding:7px 12px;border-bottom:1px solid #2a3a55;color:#8b949e;display:flex;gap:10px;align-items:center}
+  #cubbycon .hd b{color:#58a6ff}#cubbycon .hd a{color:#58a6ff;text-decoration:none;margin-left:auto}
+  #cubbycon .hd label{cursor:pointer}
+  #cubbylog{flex:1;overflow-y:auto;padding:8px 12px;white-space:pre-wrap;word-break:break-word}
+  #cubbylog .ev{margin:1px 0}#cubbylog .k{display:inline-block;min-width:88px}
+  .k-user{color:#d29922}.k-sense{color:#bc8cff}.k-route{color:#58a6ff}.k-walk{color:#3fb950}.k-emit{color:#8b949e}
+  .k-vm{color:#3fb950}.k-gate{color:#d29922}.k-learn{color:#3fb950}.k-speak{color:#c9d1d9}.k-explore{color:#58a6ff}
+  .k-probe{color:#f85149}.k-derive{color:#bc8cff}.k-eat{color:#ffe66d}.k-caught{color:#f85149}.k-flee{color:#ff9f43}
+  .k-plan{color:#8b949e}.k-program{color:#bc8cff}.k-forge{color:#bc8cff}.k-superpower_move{color:#27d3ff}
+  .k-level_up{color:#2ce6a8}.k-out_of_time{color:#ff7043}.k-live_error{color:#f85149}.k-ghost_eaten{color:#2ce6a8}
+  .k-says{color:#ffe66d}.k-retire{color:#8b949e}.k-restart{color:#ff7043}
+</style>
+<div id="cubbycon"><div class="hd"><b>cubby</b> console · what he does, as he does it
+  <label><input id="cubbyauto" type="checkbox" checked> follow</label><a href="/" target="_blank">full console ↗</a></div>
+  <div id="cubbylog"></div></div>
+<script>
+(function(){
+  const log=document.getElementById('cubbylog'), auto=document.getElementById('cubbyauto');
+  let since=0; const H=['dopamine','serotonin','cortisol','oxytocin','noradrenaline'];
+  const esc=s=>{const d=document.createElement('div');d.textContent=String(s);return d.innerHTML;};
+  function fmt(e){const d={...e};delete d.i;delete d.t;delete d.kind;
+    if(e.kind==='sense')return `emotion=${d.emotion} `+H.map(h=>`${h.slice(0,4)}=${(d.state?.[h]??0).toFixed(2)}`).join(' ');
+    if(e.kind==='walk')return `${d.verified?'VERIFIED':(d.reason||'walked')} answer=${d.answer??'-'} facts=[${(d.facts||[]).join(' | ')}]`;
+    if(e.kind==='speak')return `(${d.turn_kind}, ${d.register||'-'}) "${d.reply}"`;
+    if(e.kind==='program')return `${d.name} (${d.pattern||d.why}) — ${d.why}: ${(d.reasoning&&d.reasoning.verdict)||''}`;
+    if(e.kind==='forge')return `${d.name} ${d.ok?'CERTIFIED':'REJECTED'} got=${d.got} expected=${d.expected}`;
+    if(e.kind==='explore')return `${d.from||''} —${d.chosen}→ ${d.place} new=${d.new}${d.probed?' probed='+d.probed:''}`;
+    return Object.entries(d).filter(([k])=>k!=='program'&&k!=='reasoning').map(([k,v])=>`${k}=${typeof v==='object'?JSON.stringify(v):v}`).join(' ');}
+  async function poll(){
+    try{const r=await fetch(`/events?since=${since}`);const j=await r.json();
+      for(const e of j.events){log.insertAdjacentHTML('beforeend',`<div class="ev"><span class="k k-${e.kind}">${esc(e.kind)}</span> ${esc(fmt(e))}</div>`);}
+      while(log.children.length>400)log.removeChild(log.firstChild);
+      since=j.next; if(auto.checked&&j.events.length)log.scrollTop=log.scrollHeight;
+    }catch(err){}
+    setTimeout(poll,700);
+  }
+  poll();
+})();
+</script>
+"""
+
+
 def load_frontend(source: pathlib.Path = PACMAN_LIVE) -> tuple[str | None, list[str]]:
     """pacman_live.py's EXACT page, extracted at serve time (never imported),
-    with the patches above applied. -> (html, patches that did not apply)."""
+    with the patches above applied and our console panel injected before
+    </body>. -> (html, patches that did not apply)."""
     try:
         src = source.read_text(encoding="utf-8")
     except OSError:
@@ -1279,6 +1330,10 @@ def load_frontend(source: pathlib.Path = PACMAN_LIVE) -> tuple[str | None, list[
             html = html.replace(old, new)
         else:
             missed.append(old[:40])
+    if "</body>" in html:
+        html = html.replace("</body>", _CONSOLE_PANEL + "</body>", 1)
+    else:
+        html += _CONSOLE_PANEL
     return html, missed
 
 
