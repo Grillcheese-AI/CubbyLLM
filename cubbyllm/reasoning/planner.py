@@ -124,12 +124,46 @@ def _split_chain(body: str) -> tuple[list[str], str]:
     return rels, tail
 
 
+# Causal phrasings -> the relation-of-entity forms the grammar already parses
+# (2026-09-03, GoT challenge pre-check (k): "What is the cause of X?" and
+# "What is the impact of X?" parsed, four common phrasings did not — a
+# lexical gap, not a structural one). Rewritten before the regexes run:
+#   what led to X / what caused X / what brought about X / why did X happen
+#       -> what is the cause of X
+#   what happened because of X / what did X lead to / what did X cause /
+#   what resulted from X / what were the consequences of X
+#       -> what is the impact of X
+# "Did A cause B?" is a yes/no question, not a chain: left unparsed on purpose.
+_CAUSAL_REWRITES = [
+    (re.compile(r"^\s*what\s+(?:led|leads)\s+to\s+(?P<x>.+?)\s*\?\s*$", re.I), "what is the cause of {x}?"),
+    (re.compile(r"^\s*what\s+(?:caused|causes|brought\s+about)\s+(?P<x>.+?)\s*\?\s*$", re.I), "what is the cause of {x}?"),
+    (re.compile(r"^\s*what\s+(?:was|were|is|are)\s+the\s+causes?\s+of\s+(?P<x>.+?)\s*\?\s*$", re.I), "what is the cause of {x}?"),
+    (re.compile(r"^\s*why\s+did\s+(?P<x>.+?)\s+(?:happen|occur)\s*\?\s*$", re.I), "what is the cause of {x}?"),
+    (re.compile(r"^\s*what\s+happened\s+(?:because|as\s+a\s+result)\s+of\s+(?P<x>.+?)\s*\?\s*$", re.I), "what is the impact of {x}?"),
+    (re.compile(r"^\s*what\s+did\s+(?P<x>.+?)\s+(?:lead\s+to|cause|bring\s+about)\s*\?\s*$", re.I), "what is the impact of {x}?"),
+    (re.compile(r"^\s*what\s+(?:resulted|followed)\s+from\s+(?P<x>.+?)\s*\?\s*$", re.I), "what is the impact of {x}?"),
+    (re.compile(r"^\s*what\s+(?:was|were|is|are)\s+the\s+(?:impacts?|consequences?|effects?|results?)\s+of\s+(?P<x>.+?)\s*\?\s*$", re.I), "what is the impact of {x}?"),
+]
+
+
+def normalize_causal(q: str) -> str:
+    """Rewrite a causal phrasing onto 'what is the cause/impact of X?'; any other text is returned unchanged."""
+    for pat, tmpl in _CAUSAL_REWRITES:
+        m = pat.match(q)
+        if m:
+            # a leading article would read as a chain boundary ("cause of the X" splits on " of the ")
+            x = re.sub(r"^(?:the|a|an)\s+", "", m.group("x").strip(), flags=re.I)
+            return tmpl.format(x=x)
+    return q
+
+
 def parse_question(q: str) -> QuestionPlan | None:
     # Backtracking guard: bound worst-case input size, and reject anything
     # without a "?" up front (every frame requires one) — cheap and O(n),
     # so pathological "no closing ?" input never reaches the regexes below.
     if len(q) > MAX_QUESTION_LEN or "?" not in q:
         return None
+    q = normalize_causal(q)
 
     m = _Q.match(q)
     if m:

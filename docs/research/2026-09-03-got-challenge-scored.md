@@ -30,11 +30,14 @@ counterfactual plantings over the verified chains.
 | (h) sibling rate: hop positions with ≥2 logged candidates (GLM, "probably wrong" 1) | **858 / 858 = 100%** logged; 19.8% above the threshold | the fear (out-degree 1) is answered by materializing the logged runners-up as sibling nodes |
 | (i) fact overlap across verified chains (GLM, idea 4) | 17 of 671 facts (3%) used by ≥2 chains; 81 / 517 chains touch a shared fact | cross-question reuse is bounded at ~16% of chains; the within-conversation case is untested |
 | (j) relation-path templates, leave-100-out, seen ≥3× (GLM, idea 6) | 65 / 100 held-out chains subsumed overall; **8 / 36 (22%)** of the ≥2-hop chains, by (`instance`,`component`) 18×, (`occupation`,`instance`) 6×, (`parent taxon`,`instance`,`component`) 6× | passes its 20% kill line only just; 1-hop "templates" are the grammar, not skills |
+| (l) **why do the 246 walks exhaust?** replayed against the rebuilt store with an unbounded acceptance scan (`validation/exp_m3_exhaustion_decomp.py`, logs `exp_m3_exhaustion_decomp.{json,log}`; GLM's step 1 + Gemini's backward check) | **misparsed chain 92 (37%)** — the grammar returned a different hop count than the gold chain (1→2: 25, 2→3: 38, 3→2: 14, 4→3: 9; openers "what is the source that…", "which is the … contained within…", "who is the editor of…"); **not retrieved 88 (36%)** — the gold fact is in the store but not in the forward top-50; **threshold-bound 36 (15%)** — a serving fact scored 0.503–0.594, just under 0.5959; far below 19 (8%); 11 complete on replay. Object-side (backward) retrieval reaches the threshold for **59 of the 72** correctly-parsed not-retrieved/far-below cases (82%) | three levers with measured ceilings: **grammar parse-correctness** (92; the 95.4% coverage counts parses, not correct parses), **`tau_ret` → 0.50** (36; the VM gates), **object-side retrieval** (59; Gemini's bidirectional walk) — together up to ~187 of 246, i.e. verified coverage could rise from 64.6% toward ~88% if verification holds |
 | (k) hop grammar on causal phrasings (GLM, generality test) | "What led to X?", "Did A cause B?", "What caused X?", "What happened because of X?" do **not** parse; "What is the cause of X?" and "What is the impact of X?" do | prediction confirmed: 4 of 6 causal forms starve the frontier before any walk |
 
 What the numbers say together: the chain path does not fail by choosing the wrong candidate; it fails by
 **finding nothing above the threshold** (246 of 283 failures, every one with zero hops verified), and the
-retrieval score is not the signal that separates verified hops from failed ones. The verifier is not the
+retrieval score is not the signal that separates verified hops from failed ones. (l) then splits the
+exhaustion three ways — a grammar that parses the wrong hop count, facts the forward query never reaches
+but the object-side query does, and a threshold set eight thousandths too high for 36 questions. The verifier is not the
 weak point either: it caught all 1,899 planted faults. So the frontier walk fixes a minority case (19.8% of
 hops have an alternative at all), skill reuse has little to reuse on this corpus, merge guards protect
 against a fault the symbol check already rejects, and the experiment the data points at is ours: **lower
@@ -270,7 +273,31 @@ noradrenaline is a near-miss, not penalized.
   parse rate on 50 causal questions, 50 planted inverted chains, and a date-normalization pass before
   the ground check.
 
-## 6. Across the five answers
+## 6. Post-round replies (the models read this document)
+
+All five replied; the full OpenRouter room is archived as
+`docs/research/2026-09-03-got-challenge-openrouter-chat.json`. What was acted on:
+
+- **GLM** named its own metric error (VM calls cannot see a walk-time saving), retracted idea 1 on the
+  strength of (b), and proposed three free steps: the exhaustion decomposition — **run, row (l)**; the causal
+  grammar gap as lexical, not structural — **confirmed and shipped**: `planner.normalize_causal` rewrites
+  "what led to / what caused / what happened because of / what were the consequences of X" onto the two
+  forms that already parse (leading article dropped, since " of the " is a chain boundary; "Did A cause B?"
+  stays unparsed as a yes/no question), pinned by `tests/reasoning/test_planner.py`; and a noise floor for
+  the self-test tripwire (25 chains: one chain is 4 points; don't-know up *with* wrong down and gold ≥ 0.76
+  is healthy abstention, don't-know up with gold falling is abstention eating recoverable answers) —
+  **adopted as the decision rule** for the per-round self-test, together with its caution that a lower
+  `tau_ret` will surface as consistency-gate vetoes (don't-know), not as wrong-but-verified.
+- **Qwen 3.8**: re-run pre-check (a) after the `tau_ret` change before fixing the branch criterion; merge
+  fails open — canonicalize entities before the isomorphism test and keep two branches when identity is
+  uncertain (a merge is a provenance commitment); withdrew idea 4 (no verify-stage failure population
+  exists). All three adopted into the spec notes.
+- **Gemini**: the backward-query recipe — **run, row (l)**: 59 of 72 reachable; the invariant-preserving
+  contradiction rule (tie-breaker world or abstain, never a density pick); the Pareto priority
+  ⟨ground-check gate, verified depth, retrieval score⟩ in place of the seven-term score; fork handles +
+  VM-as-rejector as one mechanism. Adopted.
+
+## 7. Across the five answers
 
 - **Convergence** (skill extraction ×5, hormones as search control ×5, contradiction handling ×4, fork-based
   branching ×5) is the plan reflected back, not evidence. Two of the five fork proposals put the model in
@@ -285,9 +312,12 @@ noradrenaline is a near-miss, not penalized.
   local-view prompt correction, one invariant fail, weak citations), then Qwen 3.7 (one strong idea killed,
   two required measurements), then MiniMax M3 (eight fabricated citations; one metric and two critiques kept).
 - **Build order that survives the numbers:** (0) the model sees a 1-hop local view and an ASK, never the
-  serialized graph (Gemini's correction, evidenced by M1); (1) repair budget 3 → 1 — **done** — and the
-  VM-gated lower `tau_ret` experiment plus the exhaustion pre-check (is the missing fact in the store, and
-  retrievable from the object side — Gemini's bidirectional walk lives or dies on it); (2) Qwen 3.8's ambiguity-triggered frontier walk with its merge rule
+  serialized graph (Gemini's correction, evidenced by M1); (1) repair budget 3 → 1 — **done** — then, in
+  the order (l) sizes them: **grammar parse-correctness on the 92 misparsed chains** (the openers are
+  listed in the log; re-run the harvest, expect verified coverage to move first), **`tau_ret` → 0.50 with the
+  VM gating** (36 questions; watch the wrong-but-verified count and the don't-know rate through GLM's
+  tripwire rule), and **object-side retrieval at the failing hop** (59 of 72 reachable — Gemini's
+  bidirectional walk, now with a measured ceiling; canonicalize the meeting entity first); (2) Qwen 3.8's ambiguity-triggered frontier walk with its merge rule
   (isomorphism + agreeing verdicts) and GLM's materialized siblings, measured on the 19.8% of hops it can
   touch; (3) fork handles on nodes, restore latency on day one; (4) GLM's dependency-tracked
   re-verification on the 100 mutate-and-re-ask cases; (5) slot-template skills only if slot certification

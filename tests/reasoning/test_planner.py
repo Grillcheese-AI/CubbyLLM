@@ -159,3 +159,18 @@ def test_parse_boundary_length_question_still_parses():
     assert p is not None
     assert p.relations == [None]
     assert p.tail == f"capital of {tail_entity}"
+
+
+def test_causal_phrasings_rewrite_onto_the_cause_and_impact_relations():
+    """GoT challenge pre-check (k), 2026-09-03: the gap was lexical."""
+    from cubbyllm.reasoning.planner import normalize_causal, parse_question
+    assert normalize_causal("What led to the French Revolution?") == "what is the cause of French Revolution?", "leading article dropped: ' of the ' is a chain boundary"
+    assert normalize_causal("What caused the fall of Rome?") == "what is the cause of fall of Rome?"
+    assert normalize_causal("What happened because of the printing press?") == "what is the impact of printing press?"
+    assert normalize_causal("What were the consequences of the Black Death?") == "what is the impact of Black Death?"
+    assert normalize_causal("what is the capital of France?") == "what is the capital of France?", "non-causal text untouched"
+    for q in ("What led to the French Revolution?", "What caused the fall of Rome?", "What happened because of the printing press?",
+              "What is the cause of Bronze Age collapse?", "What is the impact of Black Death?"):
+        plan = parse_question(q)
+        assert plan is not None and plan.n_hop == 1 and plan.tail.split(" of ")[0] in ("cause", "impact"), q
+    assert parse_question("Did the Great Depression cause the New Deal?") is None, "a yes/no question is not a chain"

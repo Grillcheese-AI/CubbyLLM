@@ -1,0 +1,2339 @@
+{
+ "harvest": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\validation\\logs\\cot_harvest_v3cf.jsonl",
+ "tau_ret": 0.595863088965416,
+ "floor": 0.5,
+ "top_k": 50,
+ "n_exhausted": 246,
+ "classified": {
+  "not_retrieved": 88,
+  "threshold_bound": 36,
+  "misparsed_chain": 92,
+  "far_below": 19,
+  "walk_completes_now": 11
+ },
+ "failing_hop": {
+  "1": 63,
+  "0": 152,
+  "2": 28,
+  "3": 3
+ },
+ "misparsed_forms": {
+  "1->2": 25,
+  "2->3": 38,
+  "3->2": 14,
+  "4->3": 9,
+  "4->2": 1,
+  "1->3": 4,
+  "2->1": 1
+ },
+ "misparsed_openers": [
+  [
+   "what is the source that",
+   21
+  ],
+  [
+   "which is the administrative territorial",
+   7
+  ],
+  [
+   "what is the instance of",
+   7
+  ],
+  [
+   "where is the history of",
+   7
+  ],
+  [
+   "who is the editor of",
+   5
+  ],
+  [
+   "which is the office held",
+   5
+  ],
+  [
+   "what is the award received",
+   3
+  ],
+  [
+   "what is the language of",
+   3
+  ],
+  [
+   "which country is the country",
+   3
+  ],
+  [
+   "which entity is the entity",
+   3
+  ],
+  [
+   "what is the component of",
+   2
+  ],
+  [
+   "which is the languages spoken,",
+   2
+  ]
+ ],
+ "threshold_bound_scores": [
+  0.5028018355369568,
+  0.5050212740898132,
+  0.5088622570037842,
+  0.519640326499939,
+  0.5257477760314941,
+  0.5272392630577087,
+  0.5311289429664612,
+  0.534604549407959,
+  0.5359642505645752,
+  0.5393409729003906,
+  0.5393409729003906,
+  0.5393649339675903,
+  0.5441042184829712,
+  0.5462566614151001,
+  0.54707932472229,
+  0.5474556088447571,
+  0.5475018620491028,
+  0.5545071363449097,
+  0.5547257661819458,
+  0.5549913048744202,
+  0.5592374801635742,
+  0.5610089898109436,
+  0.5634663701057434,
+  0.5676313638687134,
+  0.5736303329467773,
+  0.5738099217414856,
+  0.5749659538269043,
+  0.5751229524612427,
+  0.5800343751907349,
+  0.5804516673088074,
+  0.5804516673088074,
+  0.5818222165107727,
+  0.5880059599876404,
+  0.5896739959716797,
+  0.590580940246582,
+  0.5943639278411865
+ ],
+ "backward": {
+  "hits": 59,
+  "tries": 72
+ },
+ "git_rev": "96db562f1f71c29990bc1972107848e2ef30af29",
+ "wall_s": 10.379988699999558,
+ "details": [
+  {
+   "question": "What is the capital of the administrative territorial entity of madison township, clarion county, pennsylvania?",
+   "gold_answer": "Clarion (PA)",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.8522289991378784
+  },
+  {
+   "question": "What is the instance of anthony sale?",
+   "gold_answer": "Huamn",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5088622570037842,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the administrative territorial entity contained within the country of citizenship of felix joseph widder?",
+   "gold_answer": "districts of burgenland",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the capital of the location of final assembly of ss canberra?",
+   "gold_answer": "nothern ireland",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.9297515153884888
+  },
+  {
+   "question": "What is the component of the source that describes the instance of Sirzar, Lorestan?",
+   "gold_answer": "volume (bibliography)",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the administrative territorial entity contained within the country of samsinbong?",
+   "gold_answer": "Wulsan",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the occupation of Currie, Steve?",
+   "gold_answer": "guitarrist",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5545071363449097,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of james burr?",
+   "gold_answer": "Huamn",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5592374801635742,
+   "backward_score": null
+  },
+  {
+   "question": "What is the successor of the event that sally robbins a participant of?",
+   "gold_answer": "2008 Summer Games",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.5274652242660522
+  },
+  {
+   "question": "What is the continent of the highest point of the country of Geography of vietnam?",
+   "gold_answer": "asia",
+   "n_hop": 3,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5462566614151001,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the award received by the creator of murder in the first (tv series)?",
+   "gold_answer": "awards/sandbox",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the class component of the conviction of rattlesnake james?",
+   "gold_answer": "Nonnegligent manslaughter",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.4523566961288452
+  },
+  {
+   "question": "What is the color of the flag of the administrative territorial entity of yeoman island?",
+   "gold_answer": "(255, 255, 0)",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the instance of the institution where Christian Friedrich Henrici was educated?",
+   "gold_answer": "el panson",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the membership of the country of citizenship of Frank Möller (footballer)?",
+   "gold_answer": "Etymology of Austria",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.4948189854621887
+  },
+  {
+   "question": "What is the successor of the predecessor of XM (album)?",
+   "gold_answer": "deadwing",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5880059599876404,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the work that based on the genre of Crispian St. Peters?",
+   "gold_answer": "styles of music",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the linguistic typology of the languages spoken, written or signed by pedret master?",
+   "gold_answer": "constituent order",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.6528116464614868
+  },
+  {
+   "question": "What is the parent astronomical body of the minor planet group of 7777 consadole?",
+   "gold_answer": "internal structure of the sun",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the membership of the employer of herbert w. roesky?",
+   "gold_answer": "e. V.",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.5779982209205627
+  },
+  {
+   "question": "What is the parent entity of the name day of the given name of Roland de Mecquenem (soldier)?",
+   "gold_answer": "Aug.",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the family of the child of the father of king jeongjong of joseon?",
+   "gold_answer": "choson dynasty",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": 0.6620039343833923
+  },
+  {
+   "question": "What is the parent entity of the instance of james g. robinson?",
+   "gold_answer": "worldliness",
+   "n_hop": 2,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.49458491802215576,
+   "backward_score": 0.8611458539962769
+  },
+  {
+   "question": "To which ethnic group does the ethnic group of the country of coana (parish) belong?",
+   "gold_answer": "The Spanish",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the parent astronomical body of the minor planet group of (6652) 1991 SJ1?",
+   "gold_answer": "g-type dwarf",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the location on the terrain feature of mount archer, queensland?",
+   "gold_answer": "Mountain system",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.8059437274932861
+  },
+  {
+   "question": "Who is the editor of the source that describes the administrative territorial entity of Lakewood, Edmonton?",
+   "gold_answer": "konstantin khudaverdyan",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the location on the terrain feature of the award received by judy herrera?",
+   "gold_answer": "new york city",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.562473475933075
+  },
+  {
+   "question": "What is the component of the entity that different from the instance of el alcázar, misiones?",
+   "gold_answer": "Municipal Council",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is The Educational Alliance in?",
+   "gold_answer": "united stated",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.5802218914031982
+  },
+  {
+   "question": "Where is the membership of the institution where Greg Lukianoff was educated?",
+   "gold_answer": "sparc europe",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the different from of lagnolalia?",
+   "gold_answer": "dirty talk (klein + m.b.o. song)",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the instance of Lost in Thailand?",
+   "gold_answer": "el panson",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the award received by the head of government of the country of Thombattu?",
+   "gold_answer": "Bharat ratna",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the capital of the administrative territorial entity of park, california?",
+   "gold_answer": "united stated",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.6539637446403503
+  },
+  {
+   "question": "What is the continent of the country of origin of the successor of crazy cool?",
+   "gold_answer": "oceania portal",
+   "n_hop": 3,
+   "kind": "walk_completes_now",
+   "hop": 3,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the languages spoken, written or signed by the cast member of La distancia más larga?",
+   "gold_answer": "Modern Spanish",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the language of work or name of the language of work or name of the given name of gillian thurlow?",
+   "gold_answer": "Number of words in English",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the capital of the country of citizenship of yury shavrin?",
+   "gold_answer": "Moskva",
+   "n_hop": 2,
+   "kind": "far_below",
+   "hop": 1,
+   "serving_score": 0.4592427909374237,
+   "backward_score": 0.8946611285209656
+  },
+  {
+   "question": "Who is the editor of the source that describes the genre of Leo Fall?",
+   "gold_answer": "Konstantin Arsenyev",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the time zone of the continent of the location of formation of the starfires?",
+   "gold_answer": "clevland time zone",
+   "n_hop": 4,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the content type of the list that includes the instance of galle lighthouse?",
+   "gold_answer": "Lighthouse",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the capital of the administrative territorial entity of Korday?",
+   "gold_answer": "qazaqstan respwblïkası",
+   "n_hop": 3,
+   "kind": "threshold_bound",
+   "hop": 2,
+   "serving_score": 0.5751229524612427,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the membership of the country of the instance of 1984 Liège–Bastogne–Liège?",
+   "gold_answer": "nederlandse taalunie",
+   "n_hop": 3,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.47267937660217285,
+   "backward_score": 0.8748165369033813
+  },
+  {
+   "question": "Which is the office held by the head of government of the office held by the head of government of the administrative territorial entity of Biltmore Apartments?",
+   "gold_answer": "Oregon Governor",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the author of the source that describes the instance of little island, cork?",
+   "gold_answer": "Viktor Ambartsumyan",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the given name of Chris Brink?",
+   "gold_answer": "unisex given names",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5359642505645752,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the instance of john weeks moore?",
+   "gold_answer": "krugosvet",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the described by source of jános garay?",
+   "gold_answer": "nordisk familjebok",
+   "n_hop": 1,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.47040435671806335,
+   "backward_score": 0.8787899017333984
+  },
+  {
+   "question": "What is the sports team of Eric Hellemons?",
+   "gold_answer": "NOAD ADVENDO Combinatie Breda",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.519640326499939,
+   "backward_score": null
+  },
+  {
+   "question": "What is the occupation of the head of government of the administrative territorial entity of Japan National Route 285?",
+   "gold_answer": "Politician",
+   "n_hop": 3,
+   "kind": "far_below",
+   "hop": 1,
+   "serving_score": 0.49705052375793457,
+   "backward_score": 0.8836259841918945
+  },
+  {
+   "question": "Who is the editor of the source that describes the country of origin of Tarentel (band)?",
+   "gold_answer": "Konstantin Arsenyev",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the headquarters location of the membership of the country of citizenship of Louis Joseph Vance?",
+   "gold_answer": "Rural Abidjan",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.8293836712837219
+  },
+  {
+   "question": "What is the source that describes the instance of Siegmund Salfeld?",
+   "gold_answer": "brockhaus and efron encyclopaedia",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the flag of the country of the instance of contamine-sur-arve?",
+   "gold_answer": "Flag of Kingdom of France (Early Modern)",
+   "n_hop": 3,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5804516673088074,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the administrative territorial entity contained within the country of gepis river?",
+   "gold_answer": "Timiş County",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the membership of the country of Prahali?",
+   "gold_answer": "australian group",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.8502375483512878
+  },
+  {
+   "question": "What is the source that describes the instance of the material used in Yermak Monument?",
+   "gold_answer": "el panson",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the parent entity of the headquarters location of Metaplan?",
+   "gold_answer": "greater hamburg",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.6069756746292114
+  },
+  {
+   "question": "What is the instance of the official language of the country of Plumb Grove?",
+   "gold_answer": "modern languages",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": 0.6433077454566956
+  },
+  {
+   "question": "Where is the legislative body of the country of citizenship of the cast member of A Man Named John?",
+   "gold_answer": "italian parliament",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the ethnic group of william johnson (artist)?",
+   "gold_answer": "Ethnick",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the award received by the genre of Joan Rivers: A Piece of Work?",
+   "gold_answer": "Genesis Awards",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the instance of the given name of salil shetty?",
+   "gold_answer": "el panson",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the name day of the given name of david carr (phenomenology scholar)?",
+   "gold_answer": "june 25",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the flag of the country of Mamming?",
+   "gold_answer": "Third Reich flag",
+   "n_hop": 2,
+   "kind": "walk_completes_now",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the legislative body of the country of vatolaivy?",
+   "gold_answer": "Parliament of madagascar",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5800343751907349,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the history of the topic of the country of palace basilica?",
+   "gold_answer": "Iron Age Anatolia",
+   "n_hop": 3,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5257477760314941,
+   "backward_score": null
+  },
+  {
+   "question": "What is the component of the instance of griffin-christopher house?",
+   "gold_answer": "Crawl space (basement)",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5943639278411865,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the instance of bukovo monastery?",
+   "gold_answer": "the great danish encyclopedia",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the name day of the given name of John Bluck?",
+   "gold_answer": "May 03",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the linguistic typology of the original language of the film or TV show of Diary of Korean-Japanese War?",
+   "gold_answer": "subjectobjectverb",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the official language of the country of essex, ohio?",
+   "gold_answer": "modern languages",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": 0.6433077454566956
+  },
+  {
+   "question": "What is the country of citizenship of the architect of Regions Center (Birmingham)?",
+   "gold_answer": "united stated",
+   "n_hop": 2,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.42964255809783936,
+   "backward_score": 0.8991875052452087
+  },
+  {
+   "question": "What is the capital of the country of katueté?",
+   "gold_answer": "Asunción/Comments",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.7884208559989929
+  },
+  {
+   "question": "What is the source that describes the instance of Roland Pidoux?",
+   "gold_answer": "Catholic Encyclopedia (1913)",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the parent entity of the language used by the institution where Nikolai Dmitriev was educated?",
+   "gold_answer": "List of East Slavic languages",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the official symbol of the country of the institution where russell \"rusty\" hardin, jr. was educated?",
+   "gold_answer": "national bird of the united states",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the flag of the country of the instance of santa ana canton, ecuador?",
+   "gold_answer": "flag of ecuador",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": 0.9005374312400818
+  },
+  {
+   "question": "Where is the Alasdair MacLean educated at?",
+   "gold_answer": "University Court of the University of Edinburgh",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the office held by the head of government of the office held by the head of government of the administrative territorial entity of the emergency room?",
+   "gold_answer": "Prime Minister of British Columbia",
+   "n_hop": 4,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of jeremy commons?",
+   "gold_answer": "Huamn",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5749659538269043,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the administrative territorial entity of the headquarters location of Russian Citizens Union?",
+   "gold_answer": "sukhumi (district)",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5738099217414856,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the instance of the parent entity of portal:current events/2006 july 3?",
+   "gold_answer": "el panson",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the component of the instance of the parent taxon of Arctopsychidae?",
+   "gold_answer": "Books/Organism",
+   "n_hop": 3,
+   "kind": "walk_completes_now",
+   "hop": 3,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the director of 7 Days in Syria?",
+   "gold_answer": "robert rippberger",
+   "n_hop": 1,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.4599195122718811,
+   "backward_score": 0.8729870319366455
+  },
+  {
+   "question": "Where is the history of the topic of the field of this occupation of the occupation of harley o. staggers?",
+   "gold_answer": "political history",
+   "n_hop": 4,
+   "kind": "misparsed_chain",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the successor of the fictional universe of Stature?",
+   "gold_answer": "MC2 alternate future",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.7063093185424805
+  },
+  {
+   "question": "Who is the namesake of the country of Nowe Wielątki?",
+   "gold_answer": "polans (western)",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5050212740898132,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the flag of the country of the event that boniface kiprop toroitich a participant of?",
+   "gold_answer": "china's national flag",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.28416162729263306
+  },
+  {
+   "question": "What is the capital of the administrative territorial entity contained within the country of Hungary–Malaysia relations?",
+   "gold_answer": "victoria, labuan",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the administrative territorial entity of the instance of wusab as safil district?",
+   "gold_answer": "provinces of yemen",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.6681966781616211
+  },
+  {
+   "question": "Which conflict is the conflict involving the head of state of the country of Rover Records involved in?",
+   "gold_answer": "WwI",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the history of the topic of the material used in the instance of death of contract?",
+   "gold_answer": "History of paper",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.9054408669471741
+  },
+  {
+   "question": "What is the language of work or name of the language of work or name of the source that describes the instance of rebecca l. cann?",
+   "gold_answer": "ruckii",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.6582432389259338
+  },
+  {
+   "question": "Where is the location of li po (crater)?",
+   "gold_answer": "Kuiper quadrangle",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5474556088447571,
+   "backward_score": null
+  },
+  {
+   "question": "What is the linguistic typology of the official language of the country of Sandusky Bay Conference?",
+   "gold_answer": "Nominative–accusative language",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": 0.81227707862854
+  },
+  {
+   "question": "Which is the administrative territorial entity contained within the administrative territorial entity of fehérgyarmat district?",
+   "gold_answer": "Nyírbátor District",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the award received by the director of photography of Anji (film)?",
+   "gold_answer": "ਭਾਰਤ ਗਣਤੰਤਰ",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the location on the terrain feature of mount ptolemy (crowsnest range)?",
+   "gold_answer": "Mountain system",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.808205246925354
+  },
+  {
+   "question": "Which entity is the entity that different from the characteristic of the instance of narong prangcharoen?",
+   "gold_answer": "the word sex",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the official language of the country of the instance of gençay?",
+   "gold_answer": "french vocabulary",
+   "n_hop": 3,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5804516673088074,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the country of the manufacturer of Australian Cruiser Tank Mk1 - Sentinel?",
+   "gold_answer": "1991 Britannica",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the officeholder of the office held by the head of government of the country of citizenship of marcel seip?",
+   "gold_answer": "Pm rutte",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": 0.6918280124664307
+  },
+  {
+   "question": "What is the field of this occupation of the occupation of the composer of central intelligence?",
+   "gold_answer": "Composing of music",
+   "n_hop": 3,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.4432266354560852,
+   "backward_score": 0.8880016207695007
+  },
+  {
+   "question": "What genre is Dancing on A'A?",
+   "gold_answer": "1990s prog rock",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5549913048744202,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the source that describes the instance of Dry Creek (Big Creek)?",
+   "gold_answer": "Hayastani Hanrapetut’yun",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the office held by the head of government of the office held by the head of government of the country of citizenship of kégham atmadjian?",
+   "gold_answer": "French Prime Minister",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the history of the topic of the country of yeonhwasan (gyeongsangnam-do)?",
+   "gold_answer": "제6공화국",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the water body located near the country of citizenship of Jade ell?",
+   "gold_answer": "nordisk familjebok",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the characteristic of the entity that different from the instance of Hyalurga uria?",
+   "gold_answer": "Monophyletic group",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the director of for the love of a man (film)?",
+   "gold_answer": "Huamn",
+   "n_hop": 2,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.3555171489715576,
+   "backward_score": 0.9299780130386353
+  },
+  {
+   "question": "What is the linguistic typology of the official language of the country of citizenship of daniel boone?",
+   "gold_answer": "Nominative–accusative language",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": 0.81227707862854
+  },
+  {
+   "question": "What is the component of the instance of the parent taxon of Speocropia?",
+   "gold_answer": "Books/Organism",
+   "n_hop": 3,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5676313638687134,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the administrative territorial entity contained within the country of citizenship of Johanne Defay?",
+   "gold_answer": "midi pyrenees",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the languages spoken, written or signed by the child of Theodor Hilgard?",
+   "gold_answer": "iso 639:deu",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the head of state of the country of gölpazarı?",
+   "gold_answer": "abdullah guel",
+   "n_hop": 2,
+   "kind": "walk_completes_now",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the predecessor of the successor of the foul play mixtape?",
+   "gold_answer": "audio album",
+   "n_hop": 4,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the water body located near the country of sami shamoun college of engineering?",
+   "gold_answer": "Embayment",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the successor of Planet Voyage?",
+   "gold_answer": "audio album",
+   "n_hop": 2,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.4741843342781067,
+   "backward_score": 0.8735054135322571
+  },
+  {
+   "question": "What is the continent of the country of the institution where gelasio caetani was educated?",
+   "gold_answer": "oceania portal",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "To which ethnic group does dovid bornsztain belong?",
+   "gold_answer": "the jewish people",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the head of state of the country of the location on the terrain feature of Corfu airport?",
+   "gold_answer": "Ioannis Alevras",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.7231553196907043
+  },
+  {
+   "question": "What is the instance of the membership of the country of Horse Sand Fort?",
+   "gold_answer": "Global organization",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.856544017791748
+  },
+  {
+   "question": "To which parent entity does December 29, 2009 belong?",
+   "gold_answer": "Wikinews:2009/December",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5547257661819458,
+   "backward_score": null
+  },
+  {
+   "question": "What is the sports team of Thomas Jacobsen (footballer)?",
+   "gold_answer": "Bodo-Glimt",
+   "n_hop": 1,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.4903857409954071,
+   "backward_score": 0.865943431854248
+  },
+  {
+   "question": "What is the opposite of the occupation of charles wooden?",
+   "gold_answer": "Civillian",
+   "n_hop": 2,
+   "kind": "far_below",
+   "hop": 1,
+   "serving_score": 0.48169204592704773,
+   "backward_score": 0.8768064379692078
+  },
+  {
+   "question": "What is the occupation of the head of government of the country of citizenship of Abdoulaye sadji?",
+   "gold_answer": "Politician",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.6818541288375854
+  },
+  {
+   "question": "Where is the history of the topic of the administrative territorial entity of Liechtenstein at the 1972 Summer Olympics?",
+   "gold_answer": "History of Munich",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the parent entity of the country of citizenship of ed samples?",
+   "gold_answer": "demographics of north america",
+   "n_hop": 2,
+   "kind": "walk_completes_now",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the language of work or name of the language of work or name of the given name of Jacques Davy, Bishop of Evreux Du Perron?",
+   "gold_answer": "french vocabulary",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the operator of north american x-10?",
+   "gold_answer": "US Aerospace Defense Force",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.54707932472229,
+   "backward_score": null
+  },
+  {
+   "question": "What is the award received by the administrative territorial entity of Palladium Riga?",
+   "gold_answer": "European City of Culture",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the maintainer of the highway system of texas loop 485?",
+   "gold_answer": "Texas Highway Department",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the continent of the country of origin of shadow of the day?",
+   "gold_answer": "oceania portal",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the vasil gyuzelev member of?",
+   "gold_answer": "Bulgarian Literary Society",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.5103713870048523
+  },
+  {
+   "question": "Who is the head coach of the sports team of bertie foster?",
+   "gold_answer": "Gary Simpson (footballer born 1961)",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.590580940246582,
+   "backward_score": null
+  },
+  {
+   "question": "What is the continent of the country of the institution where Samim bilgen was educated?",
+   "gold_answer": "oceania portal",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the editor of the source that describes the country of bacup cricket club?",
+   "gold_answer": "Konstantin Arsenyev",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the capital of the administrative territorial entity contained within the administrative territorial entity of srebarna?",
+   "gold_answer": "Glavinica",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the head of government of the country of origin of nyan koi!?",
+   "gold_answer": "shinzō abe",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5272392630577087,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the mother of the child of rabia bala hatun?",
+   "gold_answer": "rabia bala hatun",
+   "n_hop": 2,
+   "kind": "walk_completes_now",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the successor of the predecessor of frank black and the catholics (album)?",
+   "gold_answer": "audio album",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.7051964998245239
+  },
+  {
+   "question": "Which is the administrative territorial entity contained within the capital of the country of origin of the westing game (movie)?",
+   "gold_answer": "queens, united states",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the entity that conferred the award received by the country of Mazurki, Masovian Voivodeship?",
+   "gold_answer": "thomas merton center for peace and social justice",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the linguistic typology of the languages spoken, written or signed by Marietta Piekenbrock?",
+   "gold_answer": "Nominative–accusative language",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.6773741245269775
+  },
+  {
+   "question": "Who is the operator of the parent entity of the instance of mixed motive?",
+   "gold_answer": "Wikimedia Foundatiom",
+   "n_hop": 3,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.49469929933547974,
+   "backward_score": 0.8555088043212891
+  },
+  {
+   "question": "Which country is the country of the instance of plužine municipality?",
+   "gold_answer": "Montonegro",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5896739959716797,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the water body located near the country of origin of Charuulata 2011?",
+   "gold_answer": "el panson",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the parent entity of the country of the instance of itaguatins?",
+   "gold_answer": "latam (region)",
+   "n_hop": 3,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5393409729003906,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the calvin e. wright educated at?",
+   "gold_answer": "leland stanford jr. university",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the institution where Courtney VanBuren was educated?",
+   "gold_answer": "united stated",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the parent astronomical body of the minor planet group of 3481 Xianglupeak?",
+   "gold_answer": "internal structure of the sun",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the noble title of johan casimir van erbach?",
+   "gold_answer": "titles of nobility",
+   "n_hop": 2,
+   "kind": "walk_completes_now",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the location on the terrain feature of the conflict involving frederick w. gibb?",
+   "gold_answer": "Continent of Africa",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.4218994677066803
+  },
+  {
+   "question": "What is the continent of the participant of Mayagueez Incident?",
+   "gold_answer": "oceania portal",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the instance of sao joao do ivai?",
+   "gold_answer": "Brzil",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5393409729003906,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the parent entity of chemical reaction (song)?",
+   "gold_answer": "audio album",
+   "n_hop": 2,
+   "kind": "walk_completes_now",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "To which minor planet group does the minor planet group of the successor of 2640 Hallstrom belong?",
+   "gold_answer": "outer main-belt asteroid",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the instance of the administrative territorial entity of Villerbon?",
+   "gold_answer": "iso 3166-1:fr",
+   "n_hop": 3,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5028018355369568,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the water body located near the administrative territorial entity of Raatti Stadion?",
+   "gold_answer": "riverine",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the institution where gilles archambault was educated?",
+   "gold_answer": "Vniversity",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who was the cast member for Chhote Sarkar (1996 film)?",
+   "gold_answer": "AK Films",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the membership of the country of hudscott?",
+   "gold_answer": "EU treaties",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.7719008922576904
+  },
+  {
+   "question": "Which is the water body located near the administrative territorial entity of matanzas pass bridge?",
+   "gold_answer": "Mexico Gulf",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the history of the topic of the administrative territorial entity of World Trade Center (Barcelona)?",
+   "gold_answer": "History of Barcelona",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the predecessor of 55 cadillac?",
+   "gold_answer": "Promotional EP",
+   "n_hop": 2,
+   "kind": "walk_completes_now",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the content type of the list that includes the instance of deulikot?",
+   "gold_answer": "Village Development committee",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the taxon in which the chromosome of skiv2l found?",
+   "gold_answer": "Taxxon",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the officeholder of the office held by the head of government of the country of Champdani (Vidhan Sabha constituency)?",
+   "gold_answer": "Environmental policies of Narendra Modi",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": 0.7131032347679138
+  },
+  {
+   "question": "What is the parent entity of the name day of the given name of Fred Cosgrove?",
+   "gold_answer": "november (month)",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the official symbol of the country of citizenship of Ron Adams (American football)?",
+   "gold_answer": "Taxxon",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": 0.8516008853912354
+  },
+  {
+   "question": "To which competition class does Vic Toweel belong?",
+   "gold_answer": "Bantam weight",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the office held by the head of government of the office held by the head of government of the country of thudupathi?",
+   "gold_answer": "prime minister of india",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the administrative territorial entity contained within the instance of Canton of Saint-Gilles?",
+   "gold_answer": "iso 3166-1:fr",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the constellation of HD 45652b?",
+   "gold_answer": "IAU constellations",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the successor of the parent entity of the event that bonoli a participant of?",
+   "gold_answer": "Berlin Olympic Games",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.7935546040534973
+  },
+  {
+   "question": "What is the source that describes the country of Dorohusk?",
+   "gold_answer": "1991 Britannica",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the hubert nyssen educated at?",
+   "gold_answer": "vrije universiteit brussel",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the predecessor of the event that Jean Govaerts a participant of?",
+   "gold_answer": "Commonwealth Australia",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.5769731402397156
+  },
+  {
+   "question": "To which parent entity does from the word go (song) belong?",
+   "gold_answer": "river of time (michael martin murphey album)",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5634663701057434,
+   "backward_score": null
+  },
+  {
+   "question": "Which entity is the entity that different from the parent taxon of Helicina (genus)?",
+   "gold_answer": "Helicidae",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the administrative territorial entity of french garden, celle?",
+   "gold_answer": "Germanz",
+   "n_hop": 2,
+   "kind": "far_below",
+   "hop": 1,
+   "serving_score": 0.41577744483947754,
+   "backward_score": 0.906420111656189
+  },
+  {
+   "question": "What is the jurisdiction of the flag of the country of citizenship of Eriko Hara?",
+   "gold_answer": "p:jp",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": 0.6231915354728699
+  },
+  {
+   "question": "What is the source that describes the instance of S. Rao Aiyagari?",
+   "gold_answer": "brockhaus and efron encyclopaedia",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the membership of the architect of the birches (garrison, new york)?",
+   "gold_answer": "American Academy of Arts and Sciences",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What Predecessor does left hanging have?",
+   "gold_answer": "Chicken Noodles II",
+   "n_hop": 1,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.47797727584838867,
+   "backward_score": 0.8646239042282104
+  },
+  {
+   "question": "Who is the head of government of the country of Fufu (Tanzanian ward)?",
+   "gold_answer": "Majaliwa K. Majaliwa",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5311289429664612,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the history of the topic of the country of Lot 13, Prince Edward Island?",
+   "gold_answer": "Post-Confederation history of Canada",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the institution where seweryn franciszek czetwertyński-światopełk was educated?",
+   "gold_answer": "letland",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the electrical plug type of the administrative territorial entity of reservoir fissure?",
+   "gold_answer": "electrical terminal",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the language of work or name of the language of work or name of the source that describes Philip Francis (translator)?",
+   "gold_answer": "swedishlanguage",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the institution where KuduIO/Gabriel Nadeau-Dubois was educated?",
+   "gold_answer": "Vniversity",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the administrative territorial entity contained within the country of chard town railway station?",
+   "gold_answer": "nothern ireland",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the office held by the head of government of the office held by the head of government of the country of the administrative territorial entity of Chah-e Shahdoost, Zahedan?",
+   "gold_answer": "Iranian President",
+   "n_hop": 4,
+   "kind": "misparsed_chain",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the primary classification of 1953 in aviation?",
+   "gold_answer": "aeronautic",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.534604549407959,
+   "backward_score": null
+  },
+  {
+   "question": "To which competition class does Marvis Frazier belong?",
+   "gold_answer": "Heavyweight boxer",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the namesake of the time zone of the administrative territorial entity of ubehebe crater?",
+   "gold_answer": "north pacific fisheries",
+   "n_hop": 3,
+   "kind": "walk_completes_now",
+   "hop": 3,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the author of the source that describes Chondrilla (plant)?",
+   "gold_answer": "Viktor Ambartsumyan",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.6807454228401184
+  },
+  {
+   "question": "What is the currency of the namesake of the country of Kouwo?",
+   "gold_answer": "gold toxicity",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.6272830963134766
+  },
+  {
+   "question": "Which is the different from of afflicted (film)?",
+   "gold_answer": "Afflicted (Swedish band)",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of the genre of the predecessor of Under The Sign Of The Black Mark?",
+   "gold_answer": "styles of music",
+   "n_hop": 3,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5393649339675903,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the author of the source that describes Dalton's Law of Partial Pressures?",
+   "gold_answer": "Viktor Ambartsumyan",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.7270093560218811
+  },
+  {
+   "question": "What is the given name of the participant of the predecessor of 1995 IBF World Championships - Mixed Doubles?",
+   "gold_answer": "thomas (name)",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the instance of A Friend of the Family?",
+   "gold_answer": "wikipedia books/sandbox",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the administrative territorial entity of the institution where john dearman was educated?",
+   "gold_answer": "califnornia",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the primary classification of the history of the topic of the country of deal, england?",
+   "gold_answer": "royaume-uni",
+   "n_hop": 4,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the author of the source that describes the instance of Estadio Vivaldo Lima?",
+   "gold_answer": "Viktor Ambartsumyan",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the history of the topic of the diplomatic relation of the country of origin of amantes de luna llena?",
+   "gold_answer": "history of malaysia",
+   "n_hop": 4,
+   "kind": "misparsed_chain",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the administrative territorial entity of the capital of the country of Chaa Creek?",
+   "gold_answer": "Cayo District",
+   "n_hop": 3,
+   "kind": "far_below",
+   "hop": 1,
+   "serving_score": 0.40073108673095703,
+   "backward_score": 0.9222673177719116
+  },
+  {
+   "question": "What given name does Matthew Cameron have?",
+   "gold_answer": "mattay",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5441042184829712,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the highest point of the country of danilov, yaroslavl oblast?",
+   "gold_answer": "Ialbuzi",
+   "n_hop": 2,
+   "kind": "far_below",
+   "hop": 1,
+   "serving_score": 0.37548622488975525,
+   "backward_score": 0.9299307465553284
+  },
+  {
+   "question": "What is the instance of b. d. hogarth?",
+   "gold_answer": "Huamn",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5475018620491028,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is Číměř in?",
+   "gold_answer": "czech rep.",
+   "n_hop": 1,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.29312005639076233,
+   "backward_score": 0.9093207716941833
+  },
+  {
+   "question": "Which is the administrative territorial entity contained within the capital of the country of Glassford Peak?",
+   "gold_answer": "queens, united states",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the country of citizenship of lamar patterson?",
+   "gold_answer": "united stated",
+   "n_hop": 2,
+   "kind": "walk_completes_now",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the genre of the source that describes the instance of smca?",
+   "gold_answer": "encyclopeadia",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the primary classification of the history of the topic of the administrative territorial entity of Articles for creation/SightLife?",
+   "gold_answer": "Seattle, WA, USA",
+   "n_hop": 4,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the water body located near the administrative territorial entity of koner island?",
+   "gold_answer": "el panson",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the administrative territorial entity of the administrative territorial entity contained within the country of citizenship of jolanda annen?",
+   "gold_answer": "zentralschweiz",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which country is the country of the instance of the administrative territorial entity of westruther?",
+   "gold_answer": "royaume-uni",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.8672212958335876
+  },
+  {
+   "question": "What is the instance of Mark Scott (businessman)?",
+   "gold_answer": "Huamn",
+   "n_hop": 1,
+   "kind": "threshold_bound",
+   "hop": 0,
+   "serving_score": 0.5610089898109436,
+   "backward_score": null
+  },
+  {
+   "question": "Which is the name day of the given name of Märta Allerts?",
+   "gold_answer": "11th of may",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the parent entity of the mountain range of articles for creation/col du corbier?",
+   "gold_answer": "Savoy Prealps",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.6871852874755859
+  },
+  {
+   "question": "What is the source that describes the instance of the cause of death of mathias mainza chona?",
+   "gold_answer": "el panson",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the Marcus Storch member of?",
+   "gold_answer": "the royal swedish academy of sciences",
+   "n_hop": 1,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.49248629808425903
+  },
+  {
+   "question": "Which country is the country of the league of the sports team of siiri välimaa?",
+   "gold_answer": "🇳🇴",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the content type of list of ship launches in 1885?",
+   "gold_answer": "dahl’s explanatory dictionary",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the successor of the predecessor of I Break Chairs?",
+   "gold_answer": "I Break Chairs",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.7022120952606201
+  },
+  {
+   "question": "Who is the operator of the location on the terrain feature of NA62 experiment?",
+   "gold_answer": "Cristoforo Benvenuti",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": 0.6303024291992188
+  },
+  {
+   "question": "Which is the name day of the given name of roger wallace?",
+   "gold_answer": "4th of january",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the jurisdiction of the office held by the head of government of the country of citizenship of lolo lui?",
+   "gold_answer": "Samoa",
+   "n_hop": 3,
+   "kind": "not_retrieved",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": 0.5981359481811523
+  },
+  {
+   "question": "What is the linguistic typology of the original language of the film or TV show of vietnam idol?",
+   "gold_answer": "svo word order",
+   "n_hop": 3,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Who is the editor of the source that describes the country of citizenship of hatrick, alexander?",
+   "gold_answer": "Konstantin Arsenyev",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the history of the topic of the official language of the country of citizenship of hans rasmussen?",
+   "gold_answer": "proto-english",
+   "n_hop": 4,
+   "kind": "misparsed_chain",
+   "hop": 2,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the location on the terrain feature of the commander of Sergey Surovikin?",
+   "gold_answer": "Klintsy",
+   "n_hop": 2,
+   "kind": "not_retrieved",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": 0.7334367036819458
+  },
+  {
+   "question": "What is the parent entity of the instance of the director of the whoopee party?",
+   "gold_answer": "worldliness",
+   "n_hop": 4,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Where is the highest point of the continent of Broad Valley?",
+   "gold_answer": "vinson masiff",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5818222165107727,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the instance of alexandra dobolyi?",
+   "gold_answer": "brockhaus and efron encyclopaedia",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the diplomatic relation of the country of Silchar (Vidhan Sabha constituency)?",
+   "gold_answer": "ISO 3166-1:GT",
+   "n_hop": 2,
+   "kind": "threshold_bound",
+   "hop": 1,
+   "serving_score": 0.5736303329467773,
+   "backward_score": null
+  },
+  {
+   "question": "Which entity is the entity that different from the parent astronomical body of the minor planet group of 16817 Onderlička?",
+   "gold_answer": "Sonne (album)",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the sports team of Antonio Molina (cyclist)?",
+   "gold_answer": "Caja Rura–Seguros RGA",
+   "n_hop": 1,
+   "kind": "far_below",
+   "hop": 0,
+   "serving_score": 0.4465586841106415,
+   "backward_score": 0.8924247026443481
+  },
+  {
+   "question": "What is the source that describes the instance of Richard R. Jones?",
+   "gold_answer": "Catholic Encyclopedia (1913)",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the field of this occupation of the occupation of Priscilla K. Coleman?",
+   "gold_answer": "el panson",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 1,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "Which conflict is the conflict involving the ammunition of the armament of Vultee P-48C involved in?",
+   "gold_answer": "second world war",
+   "n_hop": 2,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  },
+  {
+   "question": "What is the source that describes the instance of The Diggi Palace Hotel?",
+   "gold_answer": "el panson",
+   "n_hop": 1,
+   "kind": "misparsed_chain",
+   "hop": 0,
+   "serving_score": null,
+   "backward_score": null
+  }
+ ]
+}
