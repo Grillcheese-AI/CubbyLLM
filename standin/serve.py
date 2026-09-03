@@ -316,14 +316,20 @@ class CubbyBrain:
                  facts: dict | None = None, exe: str | None = None,
                  route_tau: float = 0.30, k_facts: int = 3,
                  tau_vm: float = ReasoningCortex.TAU_VM,
-                 tau_ret: float = ReasoningCortex.TAU_RET, appraiser=None) -> None:
+                 tau_ret: float = ReasoningCortex.TAU_RET, appraiser=None, talk_emitter=None) -> None:
+        # two adapters on one base (2026-09-03): `emitter` writes PROGRAMS (reasoning, memory writes,
+        # forge, the game); `talk_emitter` speaks (chat, the perception reads, the thought verbalizer).
+        # One model for both was measured to interfere — identity fell in v5, forge decision in v6,
+        # arithmetic 0.825 -> 0.75 -> 0.675 over three rounds as the chat volume grew. With one GGUF given,
+        # both roles fall back to it (the pre-v8 behaviour).
         self.emitter = emitter
+        self.talk_emitter = talk_emitter if talk_emitter is not None else emitter
         self.facts = facts or load_facts()
         self.exe = exe
         self.route_tau = float(route_tau)
         self.worlds: dict[str, object] = {"facts": retriever}   # FactStore or bare callable
         self.store_texts = store_texts if store_texts is not None else getattr(retriever, "texts", [])
-        self.chat = CubbyChat(emitter, self.facts, exe=exe, appraiser=appraiser)   # TalkCortex + the speech exit
+        self.chat = CubbyChat(self.talk_emitter, self.facts, exe=exe, appraiser=appraiser)   # TalkCortex + the speech exit
         self.mediate_chat = False                        # no-facts turns skip the VM (task/learn/help answers still go through the ASK)
         self.reason = ReasoningCortex(emitter, exe=exe, k_facts=k_facts,
                                       tau_vm=tau_vm, tau_ret=tau_ret)
@@ -497,7 +503,7 @@ CubbyServe = CubbyBrain
 # ── assembly from the real artifacts ────────────────────────────────────────
 def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
                 route_tau: float, n_gpu_layers: int,
-                extra_facts: list[str] | None = None) -> CubbyBrain:
+                extra_facts: list[str] | None = None, talk_gguf: str | None = None) -> CubbyBrain:
     from exp_m3_cot_pipeline import V4_TABLE, load_sample
     from exp_m3_domain_routing import _load_semantic_words
 
@@ -513,7 +519,11 @@ def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
     world = FactStore(store, enc=enc, name="facts")
     print(f"loading emitter {gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
     emitter = LlamaCppEmitter(gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers)   # v6 trained at 4096
-    return CubbyBrain(emitter, world, exe=exe, route_tau=route_tau)
+    talk = None
+    if talk_gguf and os.path.abspath(talk_gguf) != os.path.abspath(gguf):
+        print(f"loading talk emitter {talk_gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
+        talk = LlamaCppEmitter(talk_gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers)
+    return CubbyBrain(emitter, world, exe=exe, route_tau=route_tau, talk_emitter=talk)
 
 
 def load_val_chains(n: int) -> list[dict]:
@@ -564,7 +574,8 @@ def selftest(serve: CubbyBrain, chains: list[dict], tag: str) -> dict:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--gguf", required=True)
+    ap.add_argument("--gguf", required=True, help="the PROGRAM adapter (emitter): reasoning, memory writes, forge, the game")
+    ap.add_argument("--talk-gguf", default=None, help="the TALK adapter (chat, perception, thoughts); defaults to --gguf")
     ap.add_argument("--table", default=None)
     ap.add_argument("--n-store", type=int, default=2000, help="questions sampled to build the fact store")
     ap.add_argument("--n-gpu-layers", type=int, default=-1)
@@ -577,7 +588,7 @@ def main():
     chains = load_val_chains(args.selftest) if args.selftest else []
     extra = [f for r in chains for f in given_facts(r)]
     serve = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers,
-                        extra_facts=extra)
+                        extra_facts=extra, talk_gguf=args.talk_gguf)
     if args.pacman:
         from pacman import CubbyPac
         serve.mount(CubbyPac())

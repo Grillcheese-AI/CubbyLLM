@@ -142,6 +142,8 @@ def test_check_rejects_the_failure_modes_in_both_languages():
 
 def test_world_is_an_identity_fact():
     assert idn.is_identity_question("what is the cubbyverse") and idn.is_identity_question("c'est quoi cubby-man ?")
+    for q in ("Où vis-tu ?", "Tu habites où ?", "Où es-tu ?", "Where are you?", "Which world do you live in?", "Où est ta maison ?"):
+        assert idn.is_identity_question(q), q   # v7 read: 'Où vis-tu ?' invented a town — location phrasings are identity, never facts
     assert "cubbyverse" in idn.identity_system(F) and "cubby-man" in idn.identity_system(F)
     recs = [r for r in idn.build_identity_records(F, seed=1) if r["intent"] == "world"]
     assert recs and {r["lang"] for r in recs} == {"en", "fr"}

@@ -212,6 +212,9 @@ URL = re.compile(r"https?://|www\.", re.I)
 CODE_LEAK = re.compile(r"(^|\n)\s*(def |class |import |from \w+ import|print\(|return |#include|<\?php|\$\(|=>)|\bconsole\.log\b")
 LATEX = re.compile(r"\\(\[|\(|frac|begin|end|left|right|sqrt|tan|sin|cos|sum|int)|\\[\[\(]|\$\$")
 GAME_FORGE_REPEAT = 3                                    # v7: forge decision/compare records replayed x3 (v6 probe regression)
+# the two adapters (v8): the trunk EMITS programs; the talk cortex is a second adapter on the same base
+PROGRAM_TASKS = ("arithmetic", "kernel", "role_binding", "chain")          # VM-verified; the game families are kernel/chain subtypes
+TALK_TASKS = ("identity", "chat", "content", "emotion", "affect", "history", "exposure")
 IDENTITY_REPEAT = 4                                      # v6: 526 identity records vs ~20k chat pairs pulled the greeting/unknown intents
 
 
@@ -1253,6 +1256,19 @@ def fresh_identity_records(repeat: int, facts: dict | None = None) -> list[dict]
     return out
 
 
+def partition_records(records: list[dict]) -> tuple[list[dict], list[dict]]:
+    """-> (program records, talk records); a task outside both lists raises (nothing is silently dropped)."""
+    prog, talk = [], []
+    for r in records:
+        if r["task"] in PROGRAM_TASKS:
+            prog.append(r)
+        elif r["task"] in TALK_TASKS:
+            talk.append(r)
+        else:
+            raise ValueError(f"task {r['task']!r} belongs to neither adapter")
+    return prog, talk
+
+
 def finish(records: list[dict], facts: dict | None = None) -> list[dict]:
     """Dedupe on the prompt, split, repeat weights — and a system prompt on
     EVERY record: the notebook falls back to the EMITTER prompt ("output
@@ -1291,6 +1307,9 @@ def main():
     ap.add_argument("--version", default="v7", help="output name: emitter_sft_{version}.jsonl (v6 is trained; v7 = v6 + "
                                                      "regenerated identity (the world intent) + forge families x3 + science + movie scenes)")
     ap.add_argument("--identity-repeat", type=int, default=IDENTITY_REPEAT)
+    ap.add_argument("--partition", choices=["all", "both"], default="both",
+                    help="both = ALSO write emitter_sft_{version}e.jsonl (program tasks) and _{version}t.jsonl (talk tasks) "
+                         "with their manifests, for the two-adapter training (v8)")
     ap.add_argument("--keep-replay-identity", action="store_true",
                     help="keep the v4 replay's identity records instead of regenerating them from identity.py "
                          "(v7 regenerates: the `world` intent is new)")
@@ -1425,6 +1444,23 @@ def main():
           + (f" + {len(exposure)} exposure" if exposure else "") + f" + {len(replay)} replay "
           f"= {len(records)} (after prompt dedupe)")
     print(f"wrote {out_path}\nwrote {mp} ({manifest['wall_s']:.0f}s) sha {manifest['output_sha256'][:12]}")
+    if args.partition == "both":
+        prog, talk = partition_records(records)
+        for suffix, part, role in (("e", prog, "emitter (programs)"), ("t", talk, "talk")):
+            pp = os.path.join(OUT_DIR, f"emitter_sft_{args.version}{suffix}.jsonl")
+            with open(pp, "w", encoding="utf-8") as f:
+                for r in part:
+                    f.write(json.dumps(r, ensure_ascii=False) + "\n")
+            pm = dict(manifest)
+            pm.update({"version": f"{args.version}{suffix}", "partition": role, "partition_of": out_path,
+                       "partition_of_sha256": manifest["output_sha256"], "n_records": len(part),
+                       "by_task": dict(Counter(r["task"] for r in part)),
+                       "by_split": dict(Counter(r["split"] for r in part)),
+                       "train_rows_after_repeat": sum(int(r.get("repeat", 1)) for r in part if r["split"] == "train"),
+                       "output": pp, "output_sha256": sha256_file(pp)})
+            json.dump(pm, open(os.path.join(OUT_DIR, f"emitter_sft_{args.version}{suffix}.manifest.json"), "w", encoding="utf-8"), indent=1)
+            print(f"partition {suffix} ({role}): {len(part)} records {pm['by_task']} | train rows after repeat "
+                  f"{pm['train_rows_after_repeat']} | sha {pm['output_sha256'][:12]} -> {pp}")
 
 
 if __name__ == "__main__":

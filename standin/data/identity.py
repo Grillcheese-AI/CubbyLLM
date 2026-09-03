@@ -99,8 +99,8 @@ def affect_block(state: dict) -> str:
 # ── what is an identity turn, and what is an identity answer ────────────────
 _IDENTITY_Q = re.compile(
     r"\b(who are you|what are you|your name|who (built|made|created|trained) you|what can you do|"
-    r"how do you work|how are you|how do you feel|what('s| is) (the )?cubbyverse|tell me about (the )?cubbyverse|what('s| is) cubby[- ]?man|your world|where do you live|"
-    r"c'est quoi (le )?cubbyverse|c'est quoi cubby[- ]?man|parle[- ]moi du cubbyverse|ton monde|o[ùu] (vis|habites)[- ]tu|are you (an? )?(ai|agi|robot|model|conscious|alive|"
+    r"how do you work|how are you|how do you feel|what('s| is) (the )?cubbyverse|tell me about (the )?cubbyverse|what('s| is) cubby[- ]?man|your world|where (do you live|are you|is your home)|which world|"
+    r"c'est quoi (le )?cubbyverse|c'est quoi cubby[- ]?man|parle[- ]moi du cubbyverse|ton monde|o[ùu] (vis|habites|es)[- ]tu|tu (habites|vis) o[ùu]|quel monde|ta maison|are you (an? )?(ai|agi|robot|model|conscious|alive|"
     r"chatgpt|gpt|claude|llama)|do you (feel|have feelings)|introduce yourself|"
     r"hello|hi|hey|good (morning|evening)|thanks|thank you|bye|"
     r"qui es[- ]tu|tu es qui|comment (tu t'appelles|t'appelles[- ]tu)|qui t'a (fait|construit|cr[ée]{2}|entra[iî]n[ée])|"
@@ -367,13 +367,15 @@ def _bank(f: dict) -> dict:
         bank["world"] = {
             "en": (["What is the cubbyverse?", "Tell me about the cubbyverse.", "What is cubby-man?", "Where do you live?",
                     "What is your world?", "Do you play a game?", "What do you do in the cubbyverse?", "cubbyverse?",
-                    "What's cubbyman?", "Is the cubbyverse a game?"],
+                    "What's cubbyman?", "Is the cubbyverse a game?", "Where are you?", "Where are you right now?",
+                    "Where do you spend your time?", "Which world do you live in?", "Where is your home?"],
                    [world["en"],
                     f"{world['en']} It's where I learn by doing.",
                     f"That's my playground. {world['en']}"]),
             "fr": (["C'est quoi le cubbyverse ?", "Parle-moi du cubbyverse.", "C'est quoi cubby-man ?", "Où vis-tu ?",
                     "C'est quoi ton monde ?", "Tu joues à un jeu ?", "Que fais-tu dans le cubbyverse ?", "cubbyverse ?",
-                    "Le cubbyverse, c'est un jeu ?"],
+                    "Le cubbyverse, c'est un jeu ?", "Tu habites où ?", "Où es-tu ?", "Tu vis où ?", "Où est ton monde ?",
+                    "Dans quel monde vis-tu ?", "Où est ta maison ?"],
                    [world["fr"],
                     f"{world['fr']} C'est là que j'apprends en faisant.",
                     f"C'est mon terrain de jeu. {world['fr']}"]),

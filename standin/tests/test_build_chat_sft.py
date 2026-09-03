@@ -238,3 +238,13 @@ def test_fresh_identity_records_carry_the_world_intent_in_the_replay_schema():
     assert r["task"] == "identity" and r["id"].startswith("identity-") and r["system"] and "CubeLang" not in r["system"]
     assert {r["repeat"] for r in recs if r["split"] == "train"} == {4} and all(r["repeat"] == 1 for r in recs if r["split"] == "val")
     assert len({r["prompt"] for r in recs}) >= 250                 # ~282 questions x 2 answers each
+
+
+def test_partition_splits_programs_from_talk_and_drops_nothing():
+    recs = [{"task": t} for t in ("arithmetic", "kernel", "role_binding", "chain", "identity", "chat", "content", "emotion", "affect", "history")]
+    prog, talk = b.partition_records(recs)
+    assert [r["task"] for r in prog] == ["arithmetic", "kernel", "role_binding", "chain"]
+    assert [r["task"] for r in talk] == ["identity", "chat", "content", "emotion", "affect", "history"]
+    import pytest
+    with pytest.raises(ValueError):
+        b.partition_records([{"task": "mystery"}])

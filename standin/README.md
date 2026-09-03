@@ -287,6 +287,45 @@ numbers land here when the run finishes.
   A fact question *about* the world (*who is the hero of cubbyverse?*) is not identity and still reaches the
   plugin's world through retrieval.
 
+### Two adapters on one base — v8 (2026-09-03)
+
+**Why.** One model carried two jobs, and every time the conversational half grew a program family paid:
+identity fell in v5, forge decision collapsed in v6 (1.00 → 0.17), arithmetic slid 0.825 → 0.750 → 0.675
+across three rounds. Replaying the hurt family ×3/×4 repaired each case (identity, forge) — a treadmill.
+The owner's call: **the trunk should emit; the talk cortex should be attached to the trunk so no capability
+is lost.** That is the stand-in's version of θ = f(c) and of the MindForge-adapter idea: one base, two
+LoRA adapters, the route (the thalamus, already there) picks which weights are active.
+
+**Data.** `build_chat_sft.py --version v8` (default `--partition both`) writes the full set as before and two
+partitions of the same records: **`emitter_sft_v8e.jsonl`** — the program adapter: arithmetic 6,148, kernel
+1,769, role_binding 1,500, chain 1,201 (the game families are kernel/chain subtypes; forge decision/compare
+×3 kept) = 10,618 records, 13,531 train rows after repeats — and **`emitter_sft_v8t.jsonl`** — the talk
+adapter: identity 586 (the `world` intent now 60 records with the location phrasings, ×4), chat 20,569,
+content 1,396, emotion 9,880, affect 1,679, history 12,965 = 47,075 records, 48,610 train rows. Each
+partition has its own manifest (`partition_of` + sha of the full set). `partition_records()` raises on a task
+that belongs to neither, so nothing is dropped silently. On Drive, shas `881a4a67…` (e) and `0a2560bb…` (t).
+
+**Training.** Two runs of the same notebook: `STANDIN_VERSION=v8e`, then `v8t` (the notebook keys DATA,
+MANIFEST and OUT on the version string, so nothing else changes). The program run is a quarter of the
+tokens; the talk run can afford its two epochs.
+
+**Serve.** `serve.py` / `serve_api.py`: `--gguf` is the **program** adapter (ReasoningCortex, MemoryCortex's
+Evt writes, ToolForge, the game's programs, the self-test), `--talk-gguf` the **talk** adapter (CubbyChat, the
+`--model-appraisal` perception reads, the game's thought verbalizer). With one GGUF both roles fall back to
+it. `/health` reports both names and `two_adapters`. VRAM: two Q4 models are ~3.4 GB; the first two-model
+run is a solo test (the RX 6750 XT reset once with two models loaded). Pinned by
+`test_live_two_adapters_programs_go_to_the_emitter_and_talk_to_the_talk_adapter`.
+
+**How we will know (same 40/task protocol, each adapter on its own val split):** the program adapter must
+bring arithmetic back to v5's **0.825 or better** with the forge probe held at 1.00 and the self-test at
+96/4/0; the talk adapter must hold chat, identity, emotion, affect and history at v7 or better. **Kill:** if the
+program-only adapter does not beat 0.675 on arithmetic by ten points at n=40, interference was not the cause
+and the split is not worth its VRAM.
+
+**Also in v8's data:** the FR location phrasings of the `world` intent ("Tu habites où ?", "Où es-tu ?", "Où
+est ta maison ?" + EN "Where are you?", "Which world do you live in?") after v7 answered "Où vis-tu ?" with an
+invented town; the identity-question detector catches them so they never reach the fact path.
+
 ### v7 set BUILT (2026-09-03, `--version v7`; on Drive, sha `565b89e3…`)
 
 What v6's reads asked for, in one build: **57,671 records** = v4's program families replayed (arithmetic

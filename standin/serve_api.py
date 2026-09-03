@@ -134,7 +134,9 @@ def make_handler(brain):
                 else:
                     self._send(404, {"error": "unknown path"})
             elif self.path == "/health":
-                self._send(200, {"ok": True, "emitter": getattr(brain.emitter, "name", "?")})
+                self._send(200, {"ok": True, "emitter": getattr(brain.emitter, "name", "?"),
+                                 "talk_emitter": getattr(brain.talk_emitter, "name", "?"),
+                                 "two_adapters": brain.talk_emitter is not brain.emitter})
             elif self.path == "/state":
                 self._send(200, brain.chat.chem.to_dict())
             elif self.path == "/worlds":
@@ -189,7 +191,8 @@ def main():
     except Exception:
         pass
     ap = argparse.ArgumentParser()
-    ap.add_argument("--gguf", required=True)
+    ap.add_argument("--gguf", required=True, help="the PROGRAM adapter (emitter)")
+    ap.add_argument("--talk-gguf", default=None, help="the TALK adapter (chat, perception, thoughts); defaults to --gguf")
     ap.add_argument("--table", default=None)
     ap.add_argument("--n-store", type=int, default=2000)
     ap.add_argument("--n-gpu-layers", type=int, default=-1)
@@ -201,10 +204,11 @@ def main():
     ap.add_argument("--model-appraisal", action="store_true",
                     help="the trunk reads each turn's emotion (the v5 task); its Plutchik petal drives the hormones")
     args = ap.parse_args()
-    brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers)
+    brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers,
+                        talk_gguf=args.talk_gguf)
     if args.model_appraisal:
         from perception import ModelAppraiser
-        brain.chat.appraiser = ModelAppraiser(brain.emitter, brain.facts)
+        brain.chat.appraiser = ModelAppraiser(brain.talk_emitter, brain.facts)   # a perception read: the talk adapter
         print("model appraisal ON: the trunk reads the emotion of every turn (sense events carry the label)")
     if args.pacman:
         from pacman import PROGRAMS_PATH, CubbyGhost, LivePac

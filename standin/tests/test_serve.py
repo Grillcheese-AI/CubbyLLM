@@ -339,3 +339,32 @@ def test_live_a_multi_hop_answer_must_carry_the_final_relation():
     # a single-hop question with a confident flat hit still answers
     rec1 = s.turn("What is the capital of germany?")
     assert rec1["reply"] == "berlin"
+
+
+def test_live_two_adapters_programs_go_to_the_emitter_and_talk_to_the_talk_adapter():
+    """v8: one base, two adapters. The VM path (a fact question) must call the program emitter; a no-facts
+    turn ("how are you") must call the talk adapter; with one emitter given, both roles use it."""
+    _exe_or_skip()
+
+    class Counting(ChainEmitter):
+        def __init__(self, name):
+            self.name, self.calls = name, []
+
+        def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
+            self.calls.append(prompt[:40])
+            return super().emit(prompt, max_new_tokens, system, prefix)
+
+    class Talker(Counting):
+        def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
+            self.calls.append(prompt[:40])
+            return "Doing well, thanks for asking! What can I do for you?"
+
+    prog, talk = Counting("prog"), Talker("talk")
+    s = sv.CubbyServe(prog, overlap_retriever, STORE, route_tau=0.2, talk_emitter=talk)
+    assert s.talk_emitter is talk and s.chat.emitter is talk and s.reason.emitter is prog and s.memory.emitter is prog
+    rec = s.turn("What is the capital of the homeland of Zorblax the Painter?")
+    assert rec["kind"] == "task" and rec["reply"] == "Quuxville" and prog.calls and not talk.calls
+    rec2 = s.turn("how are you today?")
+    assert rec2["kind"] == "chat" and talk.calls and len(prog.calls) == 1, "the no-facts turn never touched the program adapter"
+    solo = sv.CubbyServe(Counting("only"), overlap_retriever, STORE, route_tau=0.2)
+    assert solo.talk_emitter is solo.emitter, "one GGUF: both roles fall back to it"
