@@ -234,7 +234,10 @@ class CubbyMan:
         src = render_talk_program(dirs, question="which way next")
         asked = cc.run_program_proto(src, fn="think", args=[self.place, "explore"], exe=self.exe)
         if not asked.get("suspended") or asked["candidates"] != dirs:
-            raise RuntimeError(f"the VM did not offer the exits: {asked}")
+            got = asked.get("candidates") or []
+            raise RuntimeError(f"the VM did not offer the exits: embedded {len(dirs)}, back {len(got)}; "
+                               f"missing {[d for d in dirs if d not in got][:3]}, extra {[g for g in got if g not in dirs][:3]}; "
+                               f"suspended={asked.get('suspended')}")
         probed = self._try_the_wall(src, dirs)
         chosen = self._pick(exits)
         res = cc.resume_program_proto(src, fn="think", args=[self.place, "explore"],
@@ -257,12 +260,12 @@ class CubbyMan:
         return rec
 
     # ── his own programs: join known facts on the VM ────────────────────────
-    def _certify_join(self, program: str, expect: str) -> bool:
-        """Run one of his own join programs; the derivation is accepted only
-        if it executes and recovers exactly the proposed object."""
+    def _certify_join(self, program: str, expect: str, fn: str = "solve") -> bool:
+        """Run one of his own programs (function `fn`); the derivation is
+        accepted only if it executes and recovers exactly the proposed object."""
         from cubbyllm.bridges import cubelang_client as cc
         try:
-            out = cc.run_program_proto(program, fn="solve", exe=self.exe)
+            out = cc.run_program_proto(program, fn=fn, exe=self.exe)
             return out.get("result") is not None and str(out["result"]) == expect
         except cc.CubelangRunError:
             return False

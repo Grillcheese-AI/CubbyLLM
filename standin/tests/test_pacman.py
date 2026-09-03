@@ -140,6 +140,58 @@ def test_pattern_moves_instantiate_slots_over_open_cells():
         assert abs(x) + abs(y) + abs(z) == 3, "DASH lands three cells away along one open line"
 
 
+def test_moves_program_is_one_program_with_a_function_per_active_combo():
+    from pacman import ProgramLibrary
+    lib = ProgramLibrary()
+    lib.add("JUMP", None, "…", "jump", 0, {"why": "stuck"})
+    lib.add("KNIGHT", "AAB", "…", "pattern", 0, {"why": "curious"})
+    lib.add("COMBO-AABA", "AABA", "…", "pattern", 0, {"why": "curious"})
+    lib.add("FLEE#1", None, "…", "tool", 0, {"why": "test"})       # a tool is not a move
+    lib.entries["COMBO-AABA"]["retired"] = True                     # retired: no function
+    src = lib.moves_program()
+    assert src.count("program Moves implements ISolve") == 1
+    assert "public function jump()" in src and "public function knight()" in src
+    assert "combo_aaba" not in src and "flee" not in src
+    assert 'bind frame, H1_MOVES, "2"' in src, "solve() is the catalogue smoke: two active moves"
+    assert ProgramLibrary.fn_name("COMBO-AAB") == "combo_aab"
+
+
+def test_live_a_new_combo_is_certified_as_a_function_of_the_one_program(tmp_path):
+    _exe_or_skip()
+    from pacman import CubbyGhost, GhostVerse
+    man = CubbyGhost(GhostVerse(), probe=0.0, seed=1, memory=tmp_path / "programs.json")
+    a = man._compose("DASH", "out_of_time", list("AAA"), "AAA", "pattern", "test")
+    b = man._compose("KNIGHT", "curious", list("AAB"), "AAB", "pattern", "test")
+    assert a == "DASH" and b == "KNIGHT"
+    for name in ("DASH", "KNIGHT"):
+        e = man.library.entries[name]
+        assert e["reasoning"]["function"] == name.lower() and "certified: Moves." in e["reasoning"]["verdict"]
+        assert "program Moves implements ISolve" in e["program"]
+    assert "public function dash()" in man.library.entries["KNIGHT"]["program"], \
+        "the second certification ran inside the program that already held the first"
+    cube = tmp_path / "cubbyman_moves.cube"
+    assert cube.exists() and "public function knight()" in cube.read_text(encoding="utf-8")
+    # editing: a modified combo carries its lineage
+    child = man._mutate("curious")
+    assert child and man.library.entries[child]["reasoning"].get("parent") in ("DASH", "KNIGHT")
+    assert man.library.fn_name(child) in cube.read_text(encoding="utf-8")
+
+
+def test_consolidate_keeps_the_best_and_retires_the_rest_never_deletes():
+    from pacman import ProgramLibrary
+    lib = ProgramLibrary()
+    lib.add("JUMP", None, "…", "jump", 0, {"why": "stuck"})
+    for i in range(10):
+        lib.add(f"P{i}", "AAB" + "ABC"[i % 3], "…", "pattern", 0, {"why": "curious"})
+        lib.entries[f"P{i}"]["used"] = i
+        lib.entries[f"P{i}"]["saved"] = 2 * i
+    gone = lib.consolidate(level=1, keep=3)
+    assert len(gone) == 7 and all(lib.entries[n]["retired"] for n in gone)
+    assert {n for n in lib.names() if n != "JUMP"} == {"P9", "P8", "P7"}, "the most valuable stay active"
+    assert len(lib.entries) == 11, "retired, never deleted"
+    assert "consolidated after level 1" in lib.entries["P0"]["retired_reason"]
+
+
 def test_power_moves_ignore_tools_and_retired_entries():
     """Live bug (2026-09-02): the persisted notebook holds forge TOOL entries
     (no pattern) -> power_moves iterated them -> 'NoneType' object is not
@@ -189,7 +241,7 @@ def test_live_he_generates_a_program_with_a_reasoning_trace():
     r = e["reasoning"]
     assert r["why"] == "out_of_time" and "time budget" in r["because"]
     assert r["verdict"].startswith("certified") and "sampled length" in r["rationale"]
-    assert r["situation"]["level"] == 1 and "program Superpower" in e["program"]
+    assert r["situation"]["level"] == 1 and "program Moves implements ISolve" in e["program"]
     assert any(f"is the recipe of {name}" in f for f in man.world.texts), "the recipe is a learned fact"
     assert man.env.power_moves is not None and name in man.powers
 

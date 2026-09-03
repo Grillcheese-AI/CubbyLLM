@@ -314,6 +314,56 @@ class ProgramLibrary:
             return worst
         return None
 
+    # ── ONE program, a reusable function per combo ─────────────────────────
+    @staticmethod
+    def fn_name(name: str) -> str:
+        """A move's function in the Moves program: `COMBO-AAB` -> `combo_aab`."""
+        return re.sub(r"[^a-z0-9_]", "_", name.lower()).strip("_") or "move"
+
+    def moves_program(self, extra: dict | None = None) -> str:
+        """The one program he keeps editing: `program Moves implements ISolve`
+        with a function per ACTIVE move (jump + patterns) — `extra` = {name:
+        steps} adds the candidate function being certified. solve() is the
+        catalogue smoke: it recovers how many moves the program holds."""
+        fns = {}
+        for name, e in self.active().items():
+            if e["kind"] == "jump":
+                fns[name] = ["hop", "hop"]
+            elif e["kind"] == "pattern" and e.get("pattern"):
+                fns[name] = list(e["pattern"])
+        if extra:
+            fns.update(extra)
+        out = ["use vsa;\n\n# cubby-man's moves: one program, a reusable function per combo (edited in play)\n"
+               "program Moves implements ISolve {\n"
+               "    public function solve(mention: str): str {\n        create frame: number;\n"
+               f'        bind frame, H1_MOVES, "{len(fns)}";\n        return recover(frame, H1_MOVES);\n    }}\n']
+        for name, steps in fns.items():
+            binds = "".join(f'        bind frame, H{i + 1}_STEP, "{s}";\n' for i, s in enumerate(steps))
+            out.append(f"\n    public function {self.fn_name(name)}(): str {{\n        create frame: number;\n"
+                       f"{binds}        bind frame, H{len(steps) + 1}_NAME, \"{name}\";\n"
+                       f"        return recover(frame, H{len(steps) + 1}_NAME);\n    }}\n")
+        out.append("}\n")
+        return "".join(out)
+
+    def consolidate(self, level: int, keep: int = 6) -> list[str]:
+        """After a level: keep the `keep` most valuable ACTIVE patterns, retire
+        the rest with the reason (never deleted). JUMP is structural and
+        always stays. Returns the names retired."""
+        act = {n: e for n, e in self.active().items() if e["kind"] == "pattern"}
+        if len(act) <= keep:
+            return []
+        ranked = sorted(act, key=self.value, reverse=True)
+        out = []
+        for n in ranked[keep:]:
+            e = self.entries[n]
+            e["retired"] = True
+            e["retired_reason"] = (f"consolidated after level {level}: value {self.value(n):.2f} below the "
+                                   f"top {keep} (used {e['used']}x, saved {e['saved']}, legal {e['legal']}x)")
+            out.append(n)
+        if out:
+            self.save()
+        return out
+
     def save(self) -> None:
         if self.path is None:
             return
@@ -321,14 +371,19 @@ class ProgramLibrary:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             self.path.write_text(json.dumps({"entries": self.entries}, indent=1), encoding="utf-8")
             self.path.with_suffix(".md").write_text(self.notebook(), encoding="utf-8")
+            self.path.with_name("cubbyman_moves.cube").write_text(self.moves_program(), encoding="utf-8")
         except OSError:
             pass
 
     def notebook(self) -> str:
-        """The readable record: one section per program, reasoning first."""
+        """The readable record: the ONE Moves program as it stands, then one
+        section per move/tool with its reasoning (each stores the program as
+        it was when certified, so the evolution is readable)."""
         out = ["# cubby-man's programs\n",
                "Every move he composed himself: why, the situation, the program the VM certified, "
-               "and what it earned. Retired programs are kept — nothing learned is forgotten.\n"]
+               "and what it earned. Retired moves are kept — nothing learned is forgotten.\n",
+               "\n## The Moves program (as it stands — a reusable function per active combo)\n",
+               "\n```cubelang\n" + self.moves_program().rstrip() + "\n```\n"]
         for name, e in self.entries.items():
             r = e.get("reasoning", {})
             out.append(f"\n## {name}  ({'pattern ' + e['pattern'] if e.get('pattern') else e['kind']})"
@@ -715,18 +770,15 @@ class CubbyGhost(CubbyPac):
         it a move he can use."""
         if name in self.library:
             return None
-        binds = "".join(f'        bind frame, H{i + 1}_STEP, "{s}";\n' for i, s in enumerate(steps))
-        program = ("use vsa;\n\nprogram Superpower implements ISolve {\n"
-                   "    public function solve(mention: str): str {\n"
-                   "        create frame: number;\n"
-                   f"{binds}"
-                   f'        bind frame, H{len(steps) + 1}_NAME, "{name}";\n'
-                   f"        return recover(frame, H{len(steps) + 1}_NAME);\n    }}\n}}\n")
+        # ONE program: the Moves program as it stands plus the candidate function;
+        # certification runs THAT function inside THAT program on the VM
+        program = self.library.moves_program(extra={name: steps})
+        fn = self.library.fn_name(name)
         reasoning = {"why": why, "because": self._BECAUSE.get(why, why), "situation": self._situation(),
-                     "rationale": rationale, "steps": steps}
-        ok = self._certify_join(program, name)
-        reasoning["verdict"] = ("certified: the VM bound the steps and recovered the name" if ok
-                                else "REJECTED by the VM (did not execute or recover the name)")
+                     "rationale": rationale, "steps": steps, "function": fn}
+        ok = self._certify_join(program, name, fn=fn)
+        reasoning["verdict"] = (f"certified: Moves.{fn}() bound the steps and recovered the name" if ok
+                                else f"REJECTED by the VM (Moves.{fn}() did not execute or recover the name)")
         if not ok:
             self._t("program_rejected", name=name, why=why, program=program, reasoning=reasoning)
             return None
@@ -738,16 +790,64 @@ class CubbyGhost(CubbyPac):
             self.chem.update(novelty=1.0, valence=0.9)
         return name
 
+    MAX_ACTIVE_PATTERNS = 8                               # the library stays small; consolidate() enforces it per level
+
+    def _mutate(self, why: str) -> str | None:
+        """MODIFY an existing program instead of composing a fresh one: pick an
+        active pattern (the most valuable, or one that was legal but never
+        paid), apply ONE edit — append a slot, drop a slot, or swap one — and
+        compose the child with its lineage (parent, edit) in the reasoning.
+        The parent stays (retire/consolidate decide its fate)."""
+        act = {n: e for n, e in self.library.active().items() if e["kind"] == "pattern" and e.get("pattern")}
+        if not act:
+            return None
+        weights = [max(0.1, self.library.value(n)) + (0.5 if e["used"] == 0 and e["legal"] else 0) for n, e in act.items()]
+        parent = self.rng.choices(list(act), weights)[0]
+        p = act[parent]["pattern"]
+        for _ in range(8):
+            op = self.rng.choice(["append", "drop", "swap"] if len(p) > 2 else ["append", "swap"])
+            if op == "append":
+                child, edit = p + self.rng.choice("ABC"), "appended a slot"
+            elif op == "drop":
+                i = self.rng.randrange(len(p))
+                child, edit = p[:i] + p[i + 1:], f"dropped slot {i + 1}"
+            else:
+                i = self.rng.randrange(len(p))
+                child, edit = p[:i] + self.rng.choice("ABC".replace(p[i], "")) + p[i + 1:], f"swapped slot {i + 1}"
+            if len(child) < 2 or len(child) > 5 or not child.startswith("A"):
+                continue
+            name = pattern_name(child)
+            if name in self.library:
+                continue
+            self._last_proposal = self.env.steps
+            rationale = (f"edited {parent} ({p}) — {edit} -> {child}; parent value {self.library.value(parent):.2f}, "
+                         f"used {act[parent]['used']}x, legal {act[parent]['legal']}x")
+            made = self._compose(name, why, list(child), child, "pattern", rationale)
+            if made:
+                self.library.entries[made]["reasoning"]["parent"] = parent
+                self.library.entries[made]["reasoning"]["edit"] = edit
+                self.library.entries[parent].setdefault("children", []).append(made)
+                self.library.save()
+                self._t("modify", parent=parent, child=made, edit=edit)
+            return made
+        return None
+
     def _propose(self, why: str) -> str | None:
-        """GENERATE a new composition. Lengths are sampled from what has paid
-        off (steps saved per use of the patterns he has), with a prior toward
-        3; out-of-time asks for longer ones. Slots are drawn from A/B/C. A
-        pattern he already holds is skipped; dead weight is retired (not
-        forgotten) first. The sampling rationale is written into the
-        program's reasoning trace."""
+        """Improve what he has before inventing: MODIFY an existing program
+        (one edit, lineage recorded); only with nothing to edit — or when the
+        active set is at its cap — sample a fresh composition. Lengths are
+        sampled from what has paid off; out-of-time asks for longer ones. The
+        rationale is written into the program's reasoning trace."""
         retired = self.library.retire(self.env.steps)
         if retired:
             self._t("retire", name=retired, reason=self.library.entries[retired]["retired_reason"])
+        n_active = sum(1 for e in self.library.active().values() if e["kind"] == "pattern")
+        if n_active >= self.MAX_ACTIVE_PATTERNS:          # full: consolidate now, then edit rather than add
+            for n in self.library.consolidate(self.env.level, keep=self.MAX_ACTIVE_PATTERNS - 2):
+                self._t("retire", name=n, reason=self.library.entries[n]["retired_reason"])
+        made = self._mutate(why)
+        if made:
+            return made
         weight = {2: 1.0, 3: 2.0, 4: 1.0, 5: 0.6}
         paid = []
         for n, e in self.library.entries.items():
@@ -772,14 +872,28 @@ class CubbyGhost(CubbyPac):
                 return self._compose(name, why, list(pattern), pattern, "pattern", rationale)
         return None
 
+    MAX_POWER_CANDIDATES = 16                             # the ASK stays small (a >100-operand ask altered a candidate, 2026-09-02)
+
     def candidate_moves(self, exits: dict[str, str]) -> dict[str, str]:
-        """The ASK offers the base exits PLUS the superpower moves from his
-        library that are legal here (and notes which programs were usable)."""
+        """The ASK offers the base exits PLUS a BOUNDED set of the superpower
+        moves legal here: ranked by landing near a seen pellet (then any goal),
+        then the program's value. Every legal one still counts as `legal`."""
         if not self.library.entries:
             return exits
         power = self.env.power_moves(self.place, self.library, self.env.energy)
         for move in power:
             self.library.note_legal("JUMP" if move.startswith("jump_") else move.split("_")[0].upper())
+        if len(power) > self.MAX_POWER_CANDIDATES:
+            goals = [self.env.coords(c) for c in (self.sighted - self._eaten_run)] or \
+                    [self.env.coords(c) for c in self._known_graph() if c not in self.visits
+                     and c.startswith(f"level-{self.env.level} ")]
+
+            def rank(item):
+                move, land = item
+                pname = "JUMP" if move.startswith("jump_") else move.split("_")[0].upper()
+                near = min((_manh(self.env.coords(land), g) for g in goals), default=99)
+                return (near, -self.library.value(pname) if pname in self.library else 0.0)
+            power = dict(sorted(power.items(), key=rank)[: self.MAX_POWER_CANDIDATES])
         return {**exits, **power}
 
     # ── ghosts: a berth that GROWS with learned fear ────────────────────────
@@ -1034,6 +1148,8 @@ class CubbyGhost(CubbyPac):
         self.fear = max(0.3, self.fear * 0.9)           # survived a level -> a little bolder
         nxt = self.env.level + 1
         self._t("level_up", cleared=self.env.level, next=nxt, total_score=self.env.total_score)
+        for n in self.library.consolidate(self.env.level, keep=self.MAX_ACTIVE_PATTERNS - 2):   # sleep on it
+            self._t("retire", name=n, reason=self.library.entries[n]["retired_reason"])
         self.env._start_level(nxt)
         self.place = self.env.start
         self.sighted.clear()
