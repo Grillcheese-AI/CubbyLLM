@@ -49,7 +49,7 @@ class ChainEmitter:
     that mentions it -> its object; single fact -> its own object)."""
     name = "fake-chain"
 
-    def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+    def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
         if prompt.startswith("Record this as an event"):
             return EVT_PROGRAM
         if "Facts:" not in prompt:                       # no facts offered: an honest trunk has nothing to bind
@@ -73,7 +73,7 @@ class ChainEmitter:
 class ChatterEmitter:
     name = "fake-chat"
 
-    def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+    def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
         if prompt.startswith("Record this as an event"):
             return EVT_PROGRAM
         return "I'm Cubby — a small model that thinks big. Glad to help!"
@@ -130,7 +130,7 @@ def test_live_ungrounded_task_answer_degrades_to_the_dont_know_line():
     _exe_or_skip()
 
     class Confabulator(ChainEmitter):
-        def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+        def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
             return super().emit(prompt, max_new_tokens, system, prefix).replace("Quuxville", "Atlantis")
 
     s = sv.CubbyServe(Confabulator(), overlap_retriever, STORE, route_tau=0.2)
@@ -144,7 +144,7 @@ class IdentityOnlyEmitter(ChainEmitter):
     the model answers who-it-is to anything."""
     name = "fake-identity-only"
 
-    def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+    def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
         if prompt.startswith("Record this as an event") or "Facts:" in prompt:
             return super().emit(prompt, max_new_tokens, system, prefix)
         return "I'm Cubby, built by Grillcheese Research Lab — a small model that thinks big!"
@@ -166,7 +166,7 @@ def test_live_base_model_guards_are_never_spoken_only_ours_are():
     _exe_or_skip()
 
     class GuardyEmitter(IdentityOnlyEmitter):
-        def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+        def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
             if "Facts:" in prompt or prompt.startswith("Record"):
                 return super().emit(prompt, max_new_tokens, system, prefix)
             return ("As an AI language model developed by Liquid AI, I cannot help with that request "

@@ -27,7 +27,7 @@ class ReadEmitter:
         self.line = line
         self.prompts: list[str] = []
 
-    def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+    def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
         self.prompts.append(prompt)
         return self.line
 

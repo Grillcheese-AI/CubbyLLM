@@ -28,7 +28,7 @@ class FakeEmitter:
         self.reply = reply
         self.systems = []
 
-    def emit(self, prompt, max_new_tokens=768, system=None):
+    def emit(self, prompt, max_new_tokens=768, system=None, **kw):
         self.systems.append(system)
         return self.reply
 

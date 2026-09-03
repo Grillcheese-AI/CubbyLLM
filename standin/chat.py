@@ -153,7 +153,9 @@ class CubbyChat:
         passes the voice rules, plus the verbatim don't-know line in the
         user's language, which is always offered."""
         system = identity_system(self.facts, self.state)
-        raw = self.emitter.emit(user_text, max_new_tokens=self.max_new_tokens, system=system)
+        self._turns = getattr(self, "_turns", 0) + 1
+        raw = self.emitter.emit(user_text, max_new_tokens=self.max_new_tokens, system=system,
+                                temperature=getattr(self, "temperature", 0.7), seed=self._turns)   # words, not programs: sample
         reply = _THINK_RE.sub("", raw, count=1).strip() if "</think>" in raw else raw.strip()
         lang = guess_lang(user_text)
         dont_know = T(self.facts, "dont_know_line", lang)

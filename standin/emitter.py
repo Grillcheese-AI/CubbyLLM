@@ -31,13 +31,14 @@ SYSTEM = ("You are the CubeLang emitter. Given a question or instruction, output
 
 @runtime_checkable
 class Emitter(Protocol):
-    """Text -> CubeLang program source. Implementations must be deterministic
-    at temperature 0 so the VM-verified eval is reproducible."""
+    """Text -> CubeLang program source. Deterministic at the default temperature 0
+    (programs, the VM-verified eval); `temperature`/`seed` exist for the words —
+    thought verbalization and free chat — where sameness is the defect."""
 
     name: str
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
-             prefix: str = "") -> str:
+             prefix: str = "", temperature: float = 0.0, seed: int | None = None) -> str:
         """`system` overrides the default system prompt — this is how the host
         injects the hormonal-state block (standin/data/identity.py) for chat
         turns; emitter turns leave it None and get the strict prompt.
@@ -59,14 +60,14 @@ class LlamaServerEmitter:
         self.name = f"llama-server:{model}"
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
-             prefix: str = "") -> str:
+             prefix: str = "", temperature: float = 0.0, seed: int | None = None) -> str:
         if prefix:
             raise NotImplementedError("assistant prefill is not supported over the chat endpoint")
         body = json.dumps({
             "model": self.model,
             "messages": [{"role": "system", "content": system or self.system},
                          {"role": "user", "content": prompt}],
-            "temperature": 0.0, "max_tokens": int(max_new_tokens), "stream": False,
+            "temperature": float(temperature), "max_tokens": int(max_new_tokens), "stream": False,
         }).encode("utf-8")
         req = urllib.request.Request(f"{self.base_url}/v1/chat/completions", data=body,
                                      headers={"Content-Type": "application/json"})
@@ -121,9 +122,11 @@ class LlamaCppEmitter:
         return self._llm
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
-             prefix: str = "") -> str:
+             prefix: str = "", temperature: float = 0.0, seed: int | None = None) -> str:
         text = render_chatml(system or self.system, prompt, self.prefill + prefix)
-        out = self._load().create_completion(text, temperature=0.0, max_tokens=int(max_new_tokens), seed=0,
+        sampling = {"temperature": float(temperature), "top_p": 0.9} if temperature > 0 else {"temperature": 0.0}
+        out = self._load().create_completion(text, max_tokens=int(max_new_tokens), seed=(0 if seed is None else int(seed)),
+                                             **sampling,
                                              stop=["<|im_end|>"])
         return prefix + out["choices"][0]["text"]
 
@@ -138,7 +141,7 @@ class ReplayEmitter:
         self.name = name
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
-             prefix: str = "") -> str:
+             prefix: str = "", temperature: float = 0.0, seed: int | None = None) -> str:
         try:
             return self._by_prompt[prompt]                # recordings are complete programs
         except KeyError:

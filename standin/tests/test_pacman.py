@@ -251,7 +251,7 @@ class KernelEmitter(ChainEmitter):
     def __init__(self, lie: bool = False) -> None:
         self.lie = lie
 
-    def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+    def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
         from forge import numbers
         if "flag the sample if the reading is above" in prompt:
             a, b = numbers(prompt)[:2]
@@ -490,10 +490,15 @@ def test_thoughts_are_first_person_voice_safe_and_bilingual():
              "level_up": dict(cleared=1, next=2), "forge": dict(ok=True, answer="flee"), "idle": dict(to="level-1 cell 0-0-0")}
     for lang in ("en", "fr"):
         for kind, d in cases.items():
-            line = CubbyGhost.think(kind, lang, "", **d)
-            assert line and idn.voice_ok(line, F), (kind, lang, line)
-    assert CubbyGhost.think("flee", "en", "(nervous) ", ghost_distance=1, radius=2).startswith("(nervous) A ghost 1 cells")
-    assert "pastille" in CubbyGhost.think("plan", "fr", "", to="x", goal="pellet")
+            for pick in range(3):                        # every phrasing of every event, both languages
+                line = CubbyGhost.think(kind, lang, "", pick=pick, **d)
+                assert line and idn.voice_ok(line, F), (kind, lang, pick, line)
+    assert CubbyGhost.think("flee", "en", "(nervous) ", pick=0, ghost_distance=1, radius=2) \
+        == "(nervous) A ghost 1 cells away — too close for my nerves (2), I'm running."
+    assert "pastille" in CubbyGhost.think("plan", "fr", "", pick=0, to="x", goal="pellet")
+    lines = {CubbyGhost.think("eat", "en", "", pick=i, score=3, total=12) for i in range(3)}
+    assert len(lines) == 3, "a repeated event is not a repeated sentence"
+    assert "?" in CubbyGhost.think("mine", "en", "", pick=0), "a missing field renders as ? instead of raising"
 
 
 def test_live_a_step_thinks_out_loud_and_the_model_may_phrase_it():
@@ -502,7 +507,7 @@ def test_live_a_step_thinks_out_loud_and_the_model_may_phrase_it():
 
     class Phraser(ChainEmitter):
         """Rephrases a thought when asked; keeps the numbers/names."""
-        def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+        def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
             if prompt.startswith("Say this in your own words"):
                 line = prompt.split(": ", 1)[1]
                 return "Hmm - " + line.replace("Tried", "I tried").replace("Noted.", "noted!")
