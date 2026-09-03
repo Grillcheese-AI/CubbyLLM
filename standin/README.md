@@ -233,25 +233,41 @@ the serving model now** (`--gguf standin/models/emitter_v5.Q4_K_M.gguf`), the em
 (`--model-appraisal`) at 0.45, and v6's data fixes are in the builder: identity records replayed ×3, a
 code-leak filter on chat replies (`def`/`import`/`print(`), output versioned (`--version v6`).
 
-### v6 set BUILT (2026-09-02, `--version v6`; on Drive, sha `c4bf7f9d…`): history joins the data
+### v6 set BUILT (2026-09-02, `--version v6`; on Drive, sha `a68135a6…`): history, the sorted local sources, affect
 
-The owner's ask: *historical sentences in the training that it can refer to*. The temporal corpus
-(`I:\grillcheese_training_data\temporal`, never used before) now feeds a `history` task, all through the
-same screens as chat (voice rules, no base-model guard, no URL, no explicit, no code) and under the identity
-system prompt — **38,777 records** = v5's families (identity ×3 replay, code-leak filter) + **8,745 history**
-after prompt dedupe (8,927 built; `build_history()` in `data/build_chat_sft.py`):
+Two owner asks landed in one set: *historical sentences in the training that it can refer to*, then *the
+sorted local data* (`I:\grillcheese_training_data\knowledgetxt`, `E:\datasets\domains`, `E:\datasetshistorical-quotes`, `E:\datasets\domains\verified_facts`) for chat. Everything new goes through the live gate
+(voice rules, no base-model guard, no other assistant, no URL, no explicit, no code/LaTeX, **no non-Latin
+script**) under the identity system prompt. **57,179 records** (manifest `by_task`, after prompt dedupe) =
+v4 replay (identity now ×4) + 20,335 chat + 1,397 content + 9,659 emotion + **1,679 affect** + **12,965
+history**. Builder: `data/build_chat_sft.py` (`build_local_chat` / `build_affect` / `build_history` /
+`build_era`); every source, quota, cap and skip count is in the manifest.
 
-| subtype | n | source → shape | eval check |
+| task / subtype | n | source → shape | eval check |
 |---|---|---|---|
-| about / when / year | 1,264 / 1,282 / 868 | `historical/train_augmented.jsonl` (4,000 dated world-history events, 2,717 duplicate titles dropped): "Tell me about the X" → the event text + "That was in/around Y" · "When was the X?" → "The X was in Y" (BCE handled) · one "What happened in Y?" per year, plus the clean half of the three "10k years" Q&A sets (the 1,242 book-summary answers — "the text discusses…" — and 524 undated ones dropped) | a proper noun / year of the record appears · the gold year is named · a proper noun appears |
-| event | 33 | `historical_events_1800-1900.jsonl`: "What happened on December 5, 1830?" → the summary | proper noun |
-| dialogue | 2,000 | the arkona student/expert turns on 2,633 historical persons (≤2 per person; a follow-up that does not name its subject is prefixed "Regarding X:") | proper noun of the reply |
-| news | 1,722 | NYT archive, up to 6 distinct days per month across all 294 month files 1851–2024: "What was in the news on May 8, 1868?" → "Headline: abstract" (ALL-CAPS headlines title-cased, kickers and `LEAD:` stripped) | proper noun / year |
-| dating | 1,758 | the same items reversed — "When was this reported? Headline: abstract" → "May 8, 1868." — **the temporal-orientation read** | the first year named is within ±5 of the gold |
+| chat: orca, everyday, systemchats, oasst2 EN/FR, french_alpaca | 9,537 | v5's sources, unchanged | voice rules hold, no guard, not a bio |
+| chat: **arena** | 1,873 | `domains/conversation/chatbot_arena.jsonl` — 33k REAL human↔LLM convos (moderation-flagged rows already dropped); first exchange | same |
+| chat: **convo** / **instruct** / **nemotron** | 2,363 / 2,000 / 2,000 | `knowledgetxt/conversation.jsonl` (topic-tagged multi-turn), `instruct_55k_clean` (alpaca-style, cap 150 words), the head of `nemotron_fineinstructions.jsonl` (factual Q&A, cap 120) | same |
+| chat: **wikiqa** / **grammar** / **ei** | 1,211 / 650 / 701 | `domains/QA/wikiqa.jsonl`; `combined_grammar.jsonl` ("Is this sentence right?" → why + the fix); `ei_11.jsonl` (emotion-adapted replies) | same |
+| emotion (+ **plutchik**) | 9,659 | GoEmotions EN+FR as in v5, plus `knowledgetxt/emotions.jsonl` (1,818 messages labelled with a Plutchik primary/secondary — the petal itself) | the first emotion named is one the raters gave |
+| **affect** | 1,679 | `emotion_valence_arousal_realm_phase` + `amygdala_affect` (its 58% exact-zero valences dropped as unrated) + `affect_from_convos` (placeholder rows dropped): message → "valence +0.7, arousal 0.2" — the ODE's own drive space | both numbers within 0.35 (`affect_ok`) |
+| history: about / when / year | 1,264 / 1,282 / 692 | `temporal/historical/train_augmented.jsonl` (4,000 dated world-history events, duplicate titles dropped): "Tell me about the X" → the text + "That was in/around Y" · "When was the X?" → "The X was in Y" (BCE handled) · one "What happened in Y?" per year, plus the clean half of the three "10k years" Q&A sets (book-summary answers — "the text discusses…" — and undated ones dropped) | a proper noun / year of the record · the gold year · a proper noun |
+| history: event | 29 | `historical_events_1800-1900.jsonl`: "What happened on December 5, 1830?" → the summary | proper noun |
+| history: dialogue | 3,101 | the arkona student/expert turns on 2,633 historical persons (≤2 per person; a follow-up that does not name its subject is prefixed) + `knowledgetxt/conversations_individual_events.jsonl` (expert turns on events) | a proper noun of the reply |
+| history: **quote_about** / **quote_who** | 425 / 1,200 | `historical-quotes` (24k quotes, 3,955 authors, ≤3 per author): "Give me a quote about trust." → "“…” — Goethe" · "Who said: …?" → the author | the author is named |
+| history: news / dating | 1,716 / 1,758 | NYT archive, up to 6 distinct days per month across all 294 month files 1851–2024: "What was in the news on May 8, 1868?" → "Headline: abstract" · the reverse, "When was this reported?" → "May 8, 1868." — **the temporal-orientation read** | proper noun / year · the first year named within ±5 |
+| history: **era** | 1,498 | `domains/verified_facts` — 4,322 history books sorted by era and subject (the tree is the verified label): a clean 90-word window from the middle of a book → "The Middle Ages — Crusades." | the period is named (prehistor- / ancient, classical / middle ages, medieval) |
 
-Gap on record: **history is EN only** (every temporal source is English). The local eval
-(`eval_emitter_vm.py`) and the notebook's smoke eval both score `history` with `history_ok` (the notebook
-inlines it). Train with `VERSION='v6'`; the v6 numbers land here when the run finishes.
+**Not used, on record in the manifest:** the old persona files (`greetings`, `identity*`, `inquiry`, `tonal`,
+`philosophical`, `capability_*`, `batch_chat_templates_*` — Cubby's identity comes from `identity_facts.json`
+only), `tool_usage_training_data` (its instructions do not match their tool calls), `intent_all` (legal-topic
+labels), `snn_training_data`, `wikibooks_corpus` (raw chunks), `timeline_conversations.csv` (templated),
+`historical_facts.jsonl` (= `train_augmented`), `E:\datasets` `symbolic` (wiki MCQ), `sagi` (logic tasks), the
+spatial CSV (robot semantic parses — a candidate for a future spatial family for the game), and the
+`verified_facts` books as text (pretraining material; only their labels are used here). Gap on record:
+**history and affect are EN only**. `eval_emitter_vm.py` and the notebook's smoke eval score `history` with
+`history_ok` and `affect` with `affect_ok` (the notebook inlines both). Train with `VERSION='v6'`; the v6
+numbers land here when the run finishes.
 
 ## Chat is mediated by a VM program, not emitted as one (design note, 2026-08-30)
 

@@ -146,3 +146,57 @@ def test_history_ok_scores_when_dating_and_containment():
     assert b.history_ok(about, "William won at Hastings.", F) and not b.history_ok(about, "A battle somewhere, long ago.", F)
     assert not b.history_ok(about, "To be honest, William won at Hastings.", F), "voice rules still hold"
     assert b.proper_nouns("During the siege, General Grant took Vicksburg in 1863.") == ["General", "Grant", "Vicksburg", "1863"]
+
+
+def test_local_chat_parsers_and_the_non_latin_screen():
+    assert b.pair_from_arena("user: Count to 3\nassistant: 1, 2, 3.\nuser: thanks\nassistant: welcome") == ("Count to 3", "1, 2, 3.")
+    assert b.pair_from_arena("assistant: no user turn") is None
+    assert b.pair_from_nemotron("Instruction: how often?\n\nAnswer: Weekly, at least.") == ("how often?", "Weekly, at least.")
+    assert b.wikiqa_pair({"question": "HOW ARE GLACIER CAVES FORMED", "answer": "Within the ice of a glacier."}) \
+        == ("How are glacier caves formed?", "Within the ice of a glacier.")
+    p, a = b.grammar_pair({"incorrect_example": "The dog barked, it wanted out.", "correct_example": "The dog barked; it wanted out.",
+                           "explanation": "A comma splice joins two clauses with only a comma."})
+    assert "The dog barked, it wanted out." in p and a.endswith('Better: "The dog barked; it wanted out."')
+    assert b.ei_pair({"context_input": "{'conversation_history': [], 'query': \"It still fails!\"}",
+                      "emotion_adapted_response": "{'content': \"That sounds frustrating. Let's get this sorted.\"}"}) \
+        == ("It still fails!", "That sounds frustrating. Let's get this sorted.")
+    assert b.chat_ok("what is OpenCL?", "OpenCL is a 并行编程接口 for parallel code on any platform.", F) == "non-latin"
+    long = "word " * 120
+    assert b.chat_ok("hi", long, F) == "assistant length" and b.chat_ok("hi", long, F, max_words=150) is None
+    assert b.chat_ok("tangent of a sum?", "Use the formula \[\tan(A+B) = \frac{a+b}{1-ab}\] and expand it.", F) == "code/format", "LaTeX is a format leak"
+    assert b.chat_ok("hi", "The cost is $$ high, but the view is worth it, they say.", F) == "code/format"
+
+
+def test_plutchik_affect_and_quote_records():
+    r = b.plutchik_record({"text": "I'm thrilled about the launch, all our work paid off!", "plutchik": {"primary": "joy", "secondary": "optimism"}}, 0)
+    assert r["task"] == "emotion" and r["program"] == "joy, optimism — joy/anticipation" and r["gold"] == "joy" and "joie" in r["gold_any"]
+    assert b.plutchik_record({"text": "x", "plutchik": {"primary": ["joy"]}}, 1) is None and \
+        b.plutchik_record({"text": "a calm and quiet evening at home", "plutchik": {"primary": "stress"}}, 2) is None
+    a = b.affect_record("A sense of calm washes over me.", 0.7, 0.2, 0, "realm_phase")
+    assert a["task"] == "affect" and a["program"] == "valence +0.7, arousal 0.2" and a["gold_any"] == [0.7, 0.2]
+    assert b.affect_record("see [FILE_PATH_6] please", 0.1, 0.2, 1, "convos") is None, "placeholder rows are dropped"
+    assert b.affect_ok(a, "valence +0.5, arousal 0.4") and not b.affect_ok(a, "valence -0.5, arousal 0.2")
+    assert b.affect_ok(a, "I'd say 0.6 and 0.3.") and not b.affect_ok(a, "calm and warm")
+    rng = random.Random(0)
+    recs = {x["subtype"]: x for x in b.quote_records({"quote": "As soon as you trust yourself, you will know how to live.",
+                                                       "author": "Johann Wolfgang von Goethe", "category": "['trust']"}, rng, F, 0)}
+    assert set(recs) == {"quote_about", "quote_who"}
+    assert recs["quote_about"]["program"] == "“As soon as you trust yourself, you will know how to live.” — Johann Wolfgang von Goethe"
+    assert "trust" in recs["quote_about"]["prompt"] and recs["quote_who"]["program"] == "Johann Wolfgang von Goethe." \
+        and recs["quote_who"]["gold"] == "Johann Wolfgang von Goethe"
+    assert b.history_ok(recs["quote_who"], "That is Goethe — Johann Wolfgang von Goethe.", F)
+    assert b.quote_records({"quote": "Short one.", "author": "Unknown", "category": "[]"}, rng, F, 1) == []
+
+
+def test_era_records_take_clean_book_windows():
+    rng = random.Random(0)
+    body = ("The Athenian assembly met on the Pnyx and voted on war and peace. " * 60)
+    text = "ISBN 978-0-00 copyright 1998 all rights reserved. " * 5 + body + "Index: Athens, Sparta. " * 20
+    p = b.era_passage(text, rng)
+    assert p and len(p.split()) == b.PASSAGE_WORDS and "ISBN" not in p
+    assert b.era_passage("too short", rng) is None
+    r = b.era_record("AncientClassical", "Ancient Greece", p, 0, F)
+    assert r["task"] == "history" and r["subtype"] == "era" and r["program"] == "The ancient and classical world — Ancient Greece."
+    assert b.history_ok(r, "This is about the ancient world, Greece I think.", F) and not b.history_ok(r, "Medieval Europe.", F)
+    m = b.era_record("MiddleAges", "Miscellaneous", p, 1, F)
+    assert m["program"] == "The Middle Ages." and b.history_ok(m, "The Middle Ages, a monastery.", F)

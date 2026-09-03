@@ -26,6 +26,14 @@ Sources (I:\\grillcheese_training_data, drive letter changed from D:):
             Chunks that trip the minors or non-consent screens are DROPPED
             before anything else. Generation-exposure (continuing explicit
             prose) is NOT built here — a separate switch, deliberately off.
+  local     (v6) the sorted sources: E:\\datasets\\domains (chatbot_arena,
+            FineInstructions, WikiQA), E:\\datasets\\historical-quotes, and
+            knowledgetxt (conversation, instruct_55k, grammar, ei_11, the
+            Plutchik-labelled emotions, valence/arousal affect, expert turns
+            on events). See build_local_chat / build_affect / quote_records.
+  era       (v6) E:\\datasets\\domains\\verified_facts (4,322 history books
+            sorted by era/subject): passage -> period (+ subject), the tree
+            as the verified label. history subtype `era`. See build_era().
   history   (v6) temporal/historical/* + temporal/nyt_data/*: dated events
             (about / when / year), expert dialogues on historical persons,
             NYT recall (date -> headline) and dating (headline -> date, the
@@ -43,6 +51,7 @@ EN+FR, dialogue is EN only) — drop a FR dialogue set into unified/ for v6.
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
 import os
@@ -50,6 +59,7 @@ import random
 import subprocess
 import sys
 import time
+import zlib
 from collections import Counter
 from datetime import datetime, timezone
 
@@ -200,17 +210,20 @@ def build_hf_chat(rng: random.Random, facts: dict, quota: dict | None = None) ->
     return out, why
 URL = re.compile(r"https?://|www\.", re.I)
 CODE_LEAK = re.compile(r"(^|\n)\s*(def |class |import |from \w+ import|print\(|return |#include|<\?php|\$\(|=>)|\bconsole\.log\b")
-IDENTITY_REPEAT = 3                                      # v6: 526 identity records vs 9k chat pairs pulled the greeting/unknown intents
+LATEX = re.compile(r"\\(\[|\(|frac|begin|end|left|right|sqrt|tan|sin|cos|sum|int)|\\[\[\(]|\$\$")
+IDENTITY_REPEAT = 4                                      # v6: 526 identity records vs ~20k chat pairs pulled the greeting/unknown intents
 
 
-def chat_ok(user: str, assistant: str, facts: dict) -> str | None:
+def chat_ok(user: str, assistant: str, facts: dict, max_words: int = MAX_ASSISTANT_WORDS) -> str | None:
     """Why a pair is rejected, or None when it can be Cubby's answer."""
     if not (1 <= len(user.split()) <= MAX_USER_WORDS):
         return "user length"
-    if not (MIN_ASSISTANT_WORDS <= len(assistant.split()) <= MAX_ASSISTANT_WORDS):
+    if not (MIN_ASSISTANT_WORDS <= len(assistant.split()) <= max_words):
         return "assistant length"
     if URL.search(user) or URL.search(assistant):
         return "url"
+    if NON_LATIN.search(user) or NON_LATIN.search(assistant):   # arena leaks CJK/Cyrillic mid-answer; Cubby is EN/FR
+        return "non-latin"
     if is_model_guard(assistant) or OTHER_ASSISTANT.search(assistant):
         return "base-model guard / other assistant"
     if not voice_ok(assistant, facts):
@@ -221,7 +234,7 @@ def chat_ok(user: str, assistant: str, facts: dict) -> str | None:
         return "explicit"
     if "```" in assistant or assistant.count("\n") > 6:
         return "code/format"
-    if CODE_LEAK.search(assistant):                      # v5 lesson: Python leaked into role-binding programs
+    if CODE_LEAK.search(assistant) or LATEX.search(assistant):   # v5 lesson: Python leaked into role-binding programs; v6: LaTeX from FineInstructions
         return "code/format"
     return None
 
@@ -422,6 +435,15 @@ def build_emotion(rng: random.Random, cap: int = EMOTION_CAP_DEFAULT) -> tuple[l
                 continue
             got[first] += 1
             out.append(rec)
+    if os.path.exists(EMOTIONS_PLUTCHIK):                # the local Plutchik-labelled messages (EN)
+        for i, r in enumerate(iter_jsonl(EMOTIONS_PLUTCHIK)):
+            rec = plutchik_record(r, i)
+            if rec is None:
+                why["plutchik:filtered"] += 1
+            else:
+                out.append(rec)
+    else:
+        why["missing:emotions_plutchik"] += 1
     return out, why
 
 
@@ -547,7 +569,7 @@ def history_record(subtype: str, i: int, prompt: str, answer: str, gold: str | N
     prompt = prompt.strip()
     if not gold_any or not prompt:
         return None
-    if not ((1 if subtype == "dating" else 5) <= len(answer.split()) <= MAX_HISTORY_WORDS):   # a dating answer is a date
+    if not ((1 if subtype in ("dating", "quote_who", "era") else 5) <= len(answer.split()) <= MAX_HISTORY_WORDS):   # a date / a name / a period
         return None
     if URL.search(prompt) or URL.search(answer) or EXPLICIT.search(answer) or CODE_LEAK.search(answer):
         return None
@@ -640,9 +662,11 @@ def nyt_records(r: dict, rng: random.Random, facts: dict, i: int) -> list[dict]:
     return [x for x in recs if x]
 
 
-def iter_jsonl(path: str):
+def iter_jsonl(path: str, limit: int | None = None):
     with open(path, encoding="utf-8", errors="replace") as f:
-        for line in f:
+        for i, line in enumerate(f):
+            if limit and i >= limit:
+                return
             try:
                 yield json.loads(line)
             except ValueError:
@@ -737,6 +761,49 @@ def build_history(rng: random.Random, facts: dict, quota: dict | None = None,
             out.append(rec)
     else:
         why["missing:arkona"] += 1
+    # 4b. expert turns on historical events (knowledgetxt) — the same dialogue subtype
+    if os.path.exists(INDIVIDUAL_EVENTS):
+        ev = list(iter_jsonl(INDIVIDUAL_EVENTS))
+        for i, (a, b) in enumerate(zip(ev, ev[1:])):
+            if a.get("role") != "student" or b.get("role") != "expert":
+                continue
+            rec = history_record("dialogue", 20000 + i, " ".join((a.get("text") or "").split()),
+                                 " ".join((b.get("text") or "").split()), None,
+                                 proper_nouns(b.get("text") or ""), "individual_events", facts)
+            if rec:
+                out.append(rec)
+            else:
+                why["events_dialogue:screened"] += 1
+    else:
+        why["missing:individual_events"] += 1
+    # 4c. historical quotes: about a theme / who said it (spread over authors)
+    if os.path.exists(QUOTES):
+        try:
+            qs = json.load(open(QUOTES, encoding="utf-8", errors="replace"))
+            qs = qs if isinstance(qs, list) else next((v for v in qs.values() if isinstance(v, list)), [])
+        except ValueError:
+            qs, why["quotes:bad file"] = [], 1
+        rng.shuffle(qs)
+        per_author: Counter = Counter()
+        got = Counter()
+        for i, r in enumerate(qs):
+            if got["quote_about"] >= QUOTE_QUOTA["quote_about"] and got["quote_who"] >= QUOTE_QUOTA["quote_who"]:
+                break
+            author = (r.get("author") or "").strip()
+            if per_author[author] >= QUOTE_QUOTA["per_author"]:
+                why["quotes:author cap"] += 1
+                continue
+            recs = quote_records(r, rng, facts, i, want_about=got["quote_about"] < QUOTE_QUOTA["quote_about"],
+                                 want_who=got["quote_who"] < QUOTE_QUOTA["quote_who"])
+            if not recs:
+                why["quotes:screened"] += 1
+                continue
+            per_author[author] += 1
+            for x in recs:
+                got[x["subtype"]] += 1
+            out += recs
+    else:
+        why["missing:quotes"] += 1
     # 5. NYT archive: a few distinct days per month, every month on disk
     files = sorted(f for f in os.listdir(NYT_DIR) if f.endswith(".json")) if os.path.isdir(NYT_DIR) else []
     if not files:
@@ -763,6 +830,325 @@ def build_history(rng: random.Random, facts: dict, quota: dict | None = None,
             out += recs
             if len(days) >= quota["nyt_days_per_month"]:
                 break
+    return out, why
+
+
+# ── the sorted local sources (2026-09-02, owner: "there's a lot of useful data
+# for chat" in knowledgetxt, "here they are all sorted" in E:\datasets) ─────
+# Chat: chatbot_arena (33k REAL human<->LLM convos, moderation-flagged rows
+# already dropped), the topic-tagged conversation set, alpaca-style
+# instruct_55k, FineInstructions (factual Q&A, head of an 8 GB file), WikiQA,
+# a grammar-fix set, the emotion-adapted replies (ei_11). Emotion: the
+# Plutchik-labelled messages. Affect: valence/arousal-rated messages (the
+# neurochemistry's own drive space). History: expert turns on historical
+# events + 24k historical quotes with authors. Everything passes the same
+# gate as the HF chat; long-answer sources get their own word cap.
+E_DATASETS = r"E:\datasets"
+DOMAINS = os.path.join(E_DATASETS, "domains")
+KNOWLEDGE = os.path.join(DATA, "knowledgetxt")
+ARENA = os.path.join(DOMAINS, "conversation", "chatbot_arena.jsonl")
+CONVO = os.path.join(KNOWLEDGE, "conversation.jsonl")
+INSTRUCT_55K = os.path.join(KNOWLEDGE, "instruct_55k_clean.jsonl")
+NEMOTRON_FI = os.path.join(DOMAINS, "instruction", "nemotron_fineinstructions.jsonl")
+WIKIQA = os.path.join(DOMAINS, "QA", "wikiqa.jsonl")
+GRAMMAR = os.path.join(KNOWLEDGE, "combined_grammar.jsonl")
+EI = os.path.join(KNOWLEDGE, "ei_11.jsonl")
+EMOTIONS_PLUTCHIK = os.path.join(KNOWLEDGE, "emotions.jsonl")
+AFFECT_FILES = [("realm_phase", os.path.join(KNOWLEDGE, "emotion_valence_arousal_realm_phase.jsonl")),
+                ("amygdala", os.path.join(KNOWLEDGE, "amygdala_affect.jsonl")),
+                ("convos", os.path.join(KNOWLEDGE, "affect_from_convos.jsonl"))]
+INDIVIDUAL_EVENTS = os.path.join(KNOWLEDGE, "conversations_individual_events.jsonl")
+QUOTES = os.path.join(E_DATASETS, "historical-quotes", "english_historical_quotes.json")
+LOCAL_QUOTA = {"arena": 2000, "convo": 3000, "instruct": 2000, "nemotron": 2000, "wikiqa": 1500, "grammar": 800, "ei": 800}
+LOCAL_CAP = {"instruct": 150, "nemotron": 120, "ei": 150}          # word caps above the chat default
+NEMOTRON_SCAN = 60000                                              # lines read from the head of the 8 GB file
+QUOTE_QUOTA = {"quote_about": 1200, "quote_who": 1200, "per_author": 3}
+NON_LATIN = re.compile(r"[\u0400-\u04ff\u0600-\u06ff\u0900-\u097f\u3040-\u30ff\u4e00-\u9fff\uac00-\ud7af]")
+ARENA_PAIR = re.compile(r"^user: (.*?)\nassistant: (.*?)(?=\nuser: |\Z)", re.S)
+NEMOTRON_PAIR = re.compile(r"^Instruction: (.*?)\n\nAnswer: (.*)$", re.S)
+GRAMMAR_PROMPTS = ["Is this sentence right? \"{s}\"", "Can you fix this sentence: \"{s}\"", "What's wrong with this: \"{s}\"",
+                   "Check my grammar: \"{s}\""]
+QUOTE_PROMPTS = ["Give me a quote about {c}.", "Do you know a quote about {c}?", "A famous line about {c}?",
+                 "Any wise words on {c}?", "Quote me something about {c}."]
+WHO_PROMPTS = ["Who said: \"{q}\"?", "Who is this quote from? \"{q}\"", "\"{q}\" — who wrote that?"]
+PLUTCHIK = {"joy", "trust", "fear", "surprise", "sadness", "disgust", "anger", "anticipation"}
+AFFECT_PROMPT = ("How does this message feel? Give its valence from -1 (very negative) to +1 (very positive) and its "
+                 "arousal from 0 (calm) to 1 (agitated).\n\nMessage: {t}")
+
+
+def pair_from_arena(text: str) -> tuple[str, str] | None:
+    """The first user -> assistant exchange of a 'user: …\\nassistant: …' transcript."""
+    m = ARENA_PAIR.match(text or "")
+    return (m.group(1).strip(), m.group(2).strip()) if m else None
+
+
+def pair_from_nemotron(text: str) -> tuple[str, str] | None:
+    m = NEMOTRON_PAIR.match((text or "").strip())
+    return (m.group(1).strip(), m.group(2).strip()) if m else None
+
+
+def wikiqa_pair(r: dict) -> tuple[str, str] | None:
+    q, a = " ".join((r.get("question") or "").split()), " ".join((r.get("answer") or "").split())
+    if not q or not a:
+        return None
+    if q.isupper():
+        q = q.capitalize()
+    q = q[0].upper() + q[1:]
+    if not q.endswith("?"):
+        q += "?"
+    return q, a
+
+
+def grammar_pair(r: dict) -> tuple[str, str] | None:
+    """incorrect -> explanation + the corrected sentence."""
+    inc, cor, exp = (" ".join((r.get(k) or "").split()) for k in ("incorrect_example", "correct_example", "explanation"))
+    if not (inc and cor and exp) or inc == cor:
+        return None
+    prompt = GRAMMAR_PROMPTS[zlib.crc32(inc.encode("utf-8")) % len(GRAMMAR_PROMPTS)].format(s=inc)
+    return prompt, f"{exp} Better: \"{cor}\""
+
+
+def _loose_dict(s) -> dict:
+    """ei_11 stores dicts as Python/JSON-ish strings; read what can be read."""
+    if isinstance(s, dict):
+        return s
+    for loader in (json.loads, ast.literal_eval):
+        try:
+            d = loader(s)
+            if isinstance(d, dict):
+                return d
+        except Exception:
+            pass
+    out = {}
+    for key in ("query", "content", "label"):
+        m = re.search(r"['\"]" + key + r"['\"]\s*:\s*(['\"])(.*?)\1\s*[,}]", s or "", re.S)
+        if m:
+            out[key] = m.group(2)
+    return out
+
+
+def ei_pair(r: dict) -> tuple[str, str] | None:
+    q = _loose_dict(r.get("context_input")).get("query")
+    a = _loose_dict(r.get("emotion_adapted_response")).get("content")
+    if not q or not a:
+        return None
+    return " ".join(str(q).split()), " ".join(str(a).split())
+
+
+def build_local_chat(rng: random.Random, facts: dict, quota: dict | None = None,
+                     limit_lines: int | None = None) -> tuple[list[dict], Counter]:
+    """The local chat sources through the live gate; per-source word caps."""
+    quota = quota or LOCAL_QUOTA
+    out, why = [], Counter()
+
+    def take(pairs, name: str):
+        kept, cap = 0, LOCAL_CAP.get(name, MAX_ASSISTANT_WORDS)
+        for user, assistant in pairs:
+            if kept >= quota[name]:
+                break
+            reason = chat_ok(user, assistant, facts, max_words=cap)
+            if reason:
+                why[f"{name}:{reason}"] += 1
+                continue
+            state = sample_state(rng)
+            out.append({"id": f"chat:{name}:{kept}", "task": "chat", "subtype": name, "source": f"local:{name}",
+                        "prompt": user, "program": assistant, "gold": None,
+                        "system": identity_system(facts, state), "state": state, "lang": "en"})
+            kept += 1
+
+    def shuffled(path, limit=None):
+        rows = list(iter_jsonl(path, limit))
+        rng.shuffle(rows)
+        return rows
+
+    sources = [
+        ("arena", ARENA, lambda p: (x for x in (pair_from_arena(r.get("text")) for r in shuffled(p, limit_lines)) if x)),
+        ("convo", CONVO, lambda p: pairs_from_messages(shuffled(p, limit_lines), key="turns")),
+        ("instruct", INSTRUCT_55K, lambda p: ((r.get("prompt") or "", r.get("response") or "") for r in shuffled(p, limit_lines))),
+        ("nemotron", NEMOTRON_FI, lambda p: (x for x in (pair_from_nemotron(r.get("text")) for r in shuffled(p, limit_lines or NEMOTRON_SCAN)) if x)),
+        ("wikiqa", WIKIQA, lambda p: (x for x in (wikiqa_pair(r) for r in shuffled(p, limit_lines)) if x)),
+        ("grammar", GRAMMAR, lambda p: (x for x in (grammar_pair(r) for r in shuffled(p, limit_lines)) if x)),
+        ("ei", EI, lambda p: (x for x in (ei_pair(r) for r in shuffled(p, limit_lines)) if x)),
+    ]
+    for name, path, pairs in sources:
+        if not os.path.exists(path):
+            why[f"missing:{name}"] += 1
+            continue
+        take(pairs(path), name)
+    return out, why
+
+
+def plutchik_record(r: dict, i: int) -> dict | None:
+    """emotions.jsonl: message -> Plutchik primary (+ secondary) in the emotion
+    task's own format; the primary IS the petal."""
+    p = r.get("plutchik") or {}
+    primary, text = p.get("primary"), " ".join((r.get("text") or "").split())
+    if not isinstance(primary, str) or primary not in PLUTCHIK or not text:
+        return None
+    words = text.split()
+    if not (3 <= len(words) <= 60) or len(EXPLICIT.findall(text)) >= 2:
+        return None
+    sec = p.get("secondary") if isinstance(p.get("secondary"), str) else None
+    names = [primary] + ([sec] if sec and sec != primary else [])
+    petals = [primary]
+    if sec in GOEMOTIONS_PETAL and GOEMOTIONS_PETAL[sec] not in petals:
+        petals.append(GOEMOTIONS_PETAL[sec])
+    return {"id": f"emotion:plutchik:{i}", "task": "emotion", "subtype": primary, "source": "local:emotions_plutchik",
+            "prompt": EMOTION_PROMPT.format(t=text), "program": ", ".join(names) + " — " + "/".join(petals),
+            "gold": primary, "gold_any": names + [GOEMOTIONS_FR.get(primary, primary)],
+            "system": None, "state": None, "lang": "en"}
+
+
+def affect_answer(v: float, a: float) -> str:
+    return f"valence {v:+.1f}, arousal {a:.1f}"
+
+
+def affect_record(text: str, v, a, i: int, source: str) -> dict | None:
+    """A valence/arousal-rated message -> the two numbers (the ODE's drives)."""
+    text = " ".join((text or "").split())
+    try:
+        v, a = float(v), float(a)
+    except (TypeError, ValueError):
+        return None
+    if not text or "[" in text or not (3 <= len(text.split()) <= 60) or not (-1 <= v <= 1 and 0 <= a <= 1):
+        return None
+    if len(EXPLICIT.findall(text)) >= 2:
+        return None
+    return {"id": f"affect:{source}:{i}", "task": "affect", "subtype": source, "source": f"local:{source}",
+            "prompt": AFFECT_PROMPT.format(t=text), "program": affect_answer(v, a), "gold": affect_answer(v, a),
+            "gold_any": [v, a], "system": None, "state": None, "lang": "en"}
+
+
+def parse_affect(gen: str) -> tuple[float, float] | None:
+    m = re.search(r"valence\s*[:=]?\s*([+-]?\d*\.?\d+)", gen or "", re.I)
+    n = re.search(r"arousal\s*[:=]?\s*([+-]?\d*\.?\d+)", gen or "", re.I)
+    if m and n:
+        return float(m.group(1)), float(n.group(1))
+    nums = re.findall(r"[+-]?\d*\.?\d+", gen or "")
+    return (float(nums[0]), float(nums[1])) if len(nums) >= 2 else None
+
+
+def affect_ok(rec: dict, gen: str, tol: float = 0.35) -> bool:
+    """Both numbers within `tol` of the rated ones."""
+    p = parse_affect(gen)
+    if p is None:
+        return False
+    v, a = (rec.get("gold_any") or [None, None])[:2]
+    return v is not None and abs(p[0] - v) <= tol and abs(p[1] - a) <= tol
+
+
+def build_affect(rng: random.Random) -> tuple[list[dict], Counter]:
+    """The three valence/arousal files. amygdala's exact-zero valences (58% of
+    it) are dropped as unrated; the convo file's placeholder rows too."""
+    out, why = [], Counter()
+    for name, path in AFFECT_FILES:
+        if not os.path.exists(path):
+            why[f"missing:{name}"] += 1
+            continue
+        for i, r in enumerate(iter_jsonl(path)):
+            aff = r.get("affect") or r
+            v, a = aff.get("valence"), aff.get("arousal")
+            if name == "amygdala" and v == 0:
+                why["amygdala:zero valence"] += 1
+                continue
+            rec = affect_record(r.get("text"), v, a, i, name)
+            if rec is None:
+                why[f"{name}:screened"] += 1
+                continue
+            out.append(rec)
+    rng.shuffle(out)
+    return out, why
+
+
+def quote_records(r: dict, rng: random.Random, facts: dict, i: int, want_about: bool = True,
+                  want_who: bool = True) -> list[dict]:
+    """A historical quote -> 'a quote about <category>' and 'who said …'."""
+    q, author = " ".join((r.get("quote") or "").split()).strip("\"“” "), " ".join((r.get("author") or "").split())
+    if not q or not author or not (4 <= len(q.split()) <= 60) or author.lower() in ("unknown", "anonymous"):
+        return []
+    try:
+        cats = [c for c in ast.literal_eval(r.get("category") or "[]") if isinstance(c, str) and c.strip()]
+    except (ValueError, SyntaxError):
+        cats = []
+    recs = []
+    if want_about and cats:
+        recs.append(history_record("quote_about", i, rng.choice(QUOTE_PROMPTS).format(c=rng.choice(cats)),
+                                   f"\u201c{q}\u201d — {author}", author, [author] + proper_nouns(q), "historical_quotes", facts))
+    if want_who:
+        recs.append(history_record("quote_who", i, rng.choice(WHO_PROMPTS).format(q=q), f"{author}.", author, [author],
+                                   "historical_quotes", facts))
+    return [x for x in recs if x]
+
+
+# ── verified facts (E:\datasets\domains\verified_facts): 4,322 history books
+# sorted by era and subject — the tree IS the verified label. Used as a
+# period-orientation task: passage -> era (+ subject), scored on the era. ─
+VERIFIED_FACTS = os.path.join(DOMAINS, "verified_facts")
+ERAS = {"1. Prehistory": ("prehistory", ["prehistor"]),
+        "AncientClassical": ("the ancient and classical world", ["ancient", "classical", "antiquity"]),
+        "MiddleAges": ("the Middle Ages", ["middle ages", "medieval"])}
+ERA_PROMPT = ("Which period of history is this passage about — prehistory, the ancient and classical world, or the "
+              "Middle Ages? Name the period first, then its subject if you can tell.\n\nPassage: {p}")
+ERA_PER_ERA = 600
+ERA_SKIP_SUBJECTS = {"miscellaneous", ""}
+FRONT_MATTER = re.compile(r"\b(isbn|copyright|all rights reserved|published by|library of congress|printed in|"
+                          r"first published|cataloguing|routledge|university press|www\.|http|contents|acknowledg)\b", re.I)
+
+
+def era_passage(text: str, rng: random.Random) -> str | None:
+    """A clean window from the middle of a book (front matter and indexes
+    skipped): mostly letters, few digits, no publishing boilerplate."""
+    words = text.split()
+    if len(words) < 800:
+        return None
+    for _ in range(6):
+        start = rng.randint(len(words) // 5, max(len(words) // 5, len(words) * 4 // 5 - PASSAGE_WORDS))
+        p = " ".join(words[start:start + PASSAGE_WORDS])
+        letters = sum(c.isalpha() for c in p)
+        digits = sum(c.isdigit() for c in p)
+        if letters >= 0.72 * len(p) and digits <= 0.03 * len(p) and not FRONT_MATTER.search(p) and p.count("[") < 2:
+            return p
+    return None
+
+
+def era_record(era_key: str, subject: str, passage: str, i: int, facts: dict) -> dict | None:
+    name, words = ERAS[era_key]
+    subj = subject.strip()
+    answer = f"{name[0].upper() + name[1:]} — {subj}." if subj.lower() not in ERA_SKIP_SUBJECTS else f"{name[0].upper() + name[1:]}."
+    return history_record("era", i, ERA_PROMPT.format(p=passage), answer, name, list(words), "verified_facts:" + era_key, facts)
+
+
+def build_era(rng: random.Random, facts: dict, per_era: int = ERA_PER_ERA, limit_lines: int | None = None) -> tuple[list[dict], Counter]:
+    out, why = [], Counter()
+    if not os.path.isdir(VERIFIED_FACTS):
+        why["missing:verified_facts"] += 1
+        return out, why
+    for era_key in ERAS:
+        root = os.path.join(VERIFIED_FACTS, era_key)
+        files = [os.path.join(dp, f) for dp, _, fn in os.walk(root) for f in fn if f.endswith(".txt")]
+        rng.shuffle(files)
+        if limit_lines:
+            files = files[:max(3, limit_lines // 1000)]
+        kept = 0
+        for i, fp in enumerate(files):
+            if kept >= per_era:
+                break
+            try:
+                text = open(fp, encoding="utf-8", errors="replace").read()
+            except OSError:
+                why[f"{era_key}:unreadable"] += 1
+                continue
+            p = era_passage(text, rng)
+            if p is None:
+                why[f"{era_key}:no clean window"] += 1
+                continue
+            subject = os.path.relpath(fp, root).split(os.sep)[0] if os.sep in os.path.relpath(fp, root) else ""
+            rec = era_record(era_key, subject, p, i, facts)
+            if rec is None:
+                why[f"{era_key}:screened"] += 1
+                continue
+            kept += 1
+            out.append(rec)
     return out, why
 
 
@@ -817,21 +1203,34 @@ def main():
     print(f"  kept {dict(Counter(r['subtype'] for r in hf_chat))} | rejected {dict(why_hf.most_common(10))}")
     chat += hf_chat
     why_chat.update(why_hf)
+    print("=== chat pairs from the sorted local sources (arena, convo, instruct, nemotron, wikiqa, grammar, ei) ...", flush=True)
+    local_chat, why_local = build_local_chat(rng, facts, limit_lines=lim)
+    print(f"  kept {dict(Counter(r['subtype'] for r in local_chat))} | rejected {dict(why_local.most_common(12))}")
+    chat += local_chat
+    why_chat.update(why_local)
     print("=== content awareness (passage -> label) ...", flush=True)
     content, why_content = build_content(rng, args.n_content, lim)
     print(f"  kept {Counter(r['subtype'] for r in content)} | skipped {dict(why_content.most_common(8))}")
     print("=== emotion recognition (GoEmotions -> emotion + Plutchik petal) ...", flush=True)
     emotion, why_emo = build_emotion(rng)
     print(f"  kept {len(emotion)} over {len(set(r['gold'] for r in emotion))} emotions | skipped {dict(why_emo)}")
-    print("=== history (dated events, expert dialogues, NYT recall + dating) ...", flush=True)
+    print("=== affect (valence/arousal-rated messages) ...", flush=True)
+    affect, why_aff = build_affect(rng)
+    print(f"  kept {len(affect)} {dict(Counter(r['subtype'] for r in affect))} | skipped {dict(why_aff)}")
+    print("=== history (dated events, expert dialogues, quotes, NYT recall + dating) ...", flush=True)
     history, why_hist = build_history(rng, facts, limit_lines=lim)
     print(f"  kept {dict(Counter(r['subtype'] for r in history))} | skipped {dict(why_hist.most_common(10))}")
+    print("=== era orientation (verified_facts books -> period + subject) ...", flush=True)
+    era, why_era = build_era(rng, facts, limit_lines=lim)
+    print(f"  kept {len(era)} {dict(Counter(r['source'] for r in era))} | skipped {dict(why_era)}")
+    history += era
+    why_hist.update(why_era)
     exposure: list[dict] = []
     if args.exposure:
         print(f"=== generation exposure ON ({args.exposure}) ...", flush=True)
         exposure, why_exp = build_exposure(rng, args.exposure, lim)
         print(f"  kept {len(exposure)} | skipped {dict(why_exp)}")
-    new = finish(chat + content + emotion + history + exposure, facts)
+    new = finish(chat + content + emotion + affect + history + exposure, facts)
     replay = [] if args.no_replay else [json.loads(l) for l in open(V4_PATH, encoding="utf-8")]
     n_id = 0
     for r in replay:                                     # the identity contract outweighs the chat volume
@@ -857,7 +1256,12 @@ def main():
                                   "system prompt with a sampled state) + content awareness (passage -> nsfw/safe; "
                                   "minors/non-consent screened out; generation-exposure deliberately NOT built)",
                    "not_used": ["identity_corpus.txt (older, different persona)", "conversations_svc_* (prompt banks)",
-                                "mental_health_svc (single lines, sensitive)"]},
+                                "mental_health_svc (single lines, sensitive)",
+                                "knowledgetxt greetings/identity*/inquiry/tonal/philosophical/capability_* + batch_chat_templates_* (the old persona)",
+                                "knowledgetxt tool_usage_training_data (instructions do not match their tool calls)",
+                                "knowledgetxt intent_all (legal-topic labels), snn_training_data, wikibooks_corpus (raw chunks), timeline_conversations.csv (templated)",
+                                "knowledgetxt historical_facts.jsonl (= temporal/train_augmented)",
+                                "E:/datasets symbolic (wiki MCQ), sagi (logic tasks), spatial CSV (robot semantic parses — a future spatial family), verified_facts tree (books)"]},
         "inputs_sha256": {V4_PATH: sha256_file(V4_PATH) if os.path.exists(V4_PATH) else None},
         "sources": {"chat": [ORCA, HF_EVERYDAY, HF_SYSTEMCHATS, HF_OASST2, HF_FR_ALPACA],
                     "hf": {"everyday": "HuggingFaceTB/everyday-conversations-llama3.1-2k (apache-2.0)",
@@ -871,8 +1275,15 @@ def main():
         "n_content": dict(Counter(r["subtype"] for r in content)),
         "n_emotion": len(emotion), "emotion_by_label": dict(Counter(r["gold"] for r in emotion)),
         "emotion_source": "google-research-datasets/go_emotions simplified (apache-2.0)",
+        "n_affect": len(affect), "affect_by_source": dict(Counter(r["subtype"] for r in affect)),
+        "affect_skips": dict(why_aff),
+        "local_sources": {"arena": ARENA, "convo": CONVO, "instruct": INSTRUCT_55K, "nemotron": NEMOTRON_FI,
+                          "wikiqa": WIKIQA, "grammar": GRAMMAR, "ei": EI, "emotions_plutchik": EMOTIONS_PLUTCHIK,
+                          "affect": dict(AFFECT_FILES), "individual_events": INDIVIDUAL_EVENTS, "quotes": QUOTES,
+                          "quota": LOCAL_QUOTA, "caps": LOCAL_CAP, "nemotron_scan": NEMOTRON_SCAN, "quote_quota": QUOTE_QUOTA},
         "n_history": len(history), "history_by_subtype": dict(Counter(r["subtype"] for r in history)),
-        "history_sources": {"events": HIST_EVENTS, "events_1800s": HIST_1800, "10k_years": HIST_10K,
+        "history_sources": {"verified_facts": VERIFIED_FACTS, "era_per_era": ERA_PER_ERA,
+                            "events": HIST_EVENTS, "events_1800s": HIST_1800, "10k_years": HIST_10K,
                             "dialogues": HIST_DIALOGUE, "nyt": NYT_DIR, "quota": HIST_QUOTA},
         "history_skips": dict(why_hist),
         "n_exposure": len(exposure), "exposure_switch": args.exposure,
@@ -885,7 +1296,7 @@ def main():
     }
     mp = os.path.join(OUT_DIR, f"emitter_sft_{args.version}.manifest.json")
     json.dump(manifest, open(mp, "w", encoding="utf-8"), indent=1)
-    print(f"\n{args.version}: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion + {len(history)} history"
+    print(f"\n{args.version}: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion + {len(affect)} affect + {len(history)} history"
           + (f" + {len(exposure)} exposure" if exposure else "") + f" + {len(replay)} replay "
           f"= {len(records)} (after prompt dedupe)")
     print(f"wrote {out_path}\nwrote {mp} ({manifest['wall_s']:.0f}s) sha {manifest['output_sha256'][:12]}")
