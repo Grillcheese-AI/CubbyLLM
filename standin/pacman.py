@@ -533,7 +533,7 @@ class GhostVerse(PacVerse):
         live page's hop animation."""
         x, y, z = self.coords(place)
         out = {}
-        for name, e in library.entries.items():
+        for name, e in library.active().items():         # never retired ones; never his TOOLS (forge entries have no pattern)
             if e["kind"] == "jump":
                 if energy < JUMP_COST:
                     continue
@@ -541,6 +541,8 @@ class GhostVerse(PacVerse):
                     mid, land = (x + dx, y + dy, z + dz), (x + 2 * dx, y + 2 * dy, z + 2 * dz)
                     if _in(mid, self.w, self.h, self.d) and mid in self.hazards and self._open(land):
                         out[f"jump_{d}"] = self.cell(*land)
+                continue
+            if e["kind"] != "pattern" or not e.get("pattern"):
                 continue
             pattern = e["pattern"]
             for asg in _assignments(pattern):
@@ -685,7 +687,8 @@ class CubbyGhost(CubbyPac):
 
     @property
     def powers(self) -> list[str]:
-        return self.library.names()
+        """His MOVES (jump + patterns), not his forged tools — the HUD's list."""
+        return [n for n, e in self.library.active().items() if e["kind"] in ("jump", "pattern")]
 
     # ── superpowers: programs he GENERATES, the VM certifies, he keeps ──────
     _BECAUSE = {"stuck": "a pellet I have SEEN has no path on my map — something walls it off",

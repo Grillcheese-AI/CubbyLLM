@@ -136,6 +136,23 @@ def test_pattern_moves_instantiate_slots_over_open_cells():
         assert abs(x) + abs(y) + abs(z) == 3, "DASH lands three cells away along one open line"
 
 
+def test_power_moves_ignore_tools_and_retired_entries():
+    """Live bug (2026-09-02): the persisted notebook holds forge TOOL entries
+    (no pattern) -> power_moves iterated them -> 'NoneType' object is not
+    iterable on every /pac poll."""
+    from pacman import GhostVerse, ProgramLibrary
+    env = GhostVerse()
+    lib = ProgramLibrary()
+    lib.add("FLEE#1", None, "program Dec0 …", "tool", 0, {"why": "test", "ok": True})
+    lib.add("WHERE#1", None, "use vsa; …", "tool", 0, {"why": "test", "ok": True})
+    lib.add("DASH", "AAA", "program …", "pattern", 0, {"why": "test"})
+    lib.entries["DASH"]["retired"] = True
+    assert env.power_moves(env.start, lib, 100) == {}, "tools and retired patterns offer no moves"
+    lib.add("COMBO", "AB", "program …", "pattern", 0, {"why": "test"})
+    moves = env.power_moves(env.start, lib, 100)
+    assert moves and all(m.startswith("combo_") for m in moves)
+
+
 def test_program_library_persists_a_readable_notebook_and_never_forgets(tmp_path):
     from pacman import ProgramLibrary
     p = tmp_path / "programs.json"
