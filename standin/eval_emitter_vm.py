@@ -127,7 +127,7 @@ def main():
     facts = load_facts()
     for i, r in enumerate(records, 1):
         task = r["task"]
-        if task in ("identity", "chat", "content", "emotion", "history", "affect"):   # conversational turns: checks, not the VM
+        if task in ("identity", "chat", "content", "emotion", "history", "affect", "safety"):   # conversational turns: checks, not the VM
             gen = strip_think(emitter.emit(r["prompt"], system=r.get("system"))).strip()
             if task == "identity":
                 ok = identity_ok(r.get("subtype", ""), gen, facts, r.get("lang", "en"))
@@ -172,7 +172,7 @@ def main():
     print("\n[stand-in] VM-verified eval by task:")
     summary = {}
     for task, c in sorted(stats.items()):
-        if task in ("identity", "chat", "content", "emotion", "history", "affect"):
+        if task in ("identity", "chat", "content", "emotion", "history", "affect", "safety"):
             per_lang = {l: (c[f"identity_ok:{l}"] / c[f"n:{l}"]) for l in ("en", "fr") if c[f"n:{l}"]}
             summary[task] = {"n": c["n"], "ok": c["identity_ok"] / c["n"], "by_lang": per_lang}
             note = {"identity": "name/builder present, no AGI/other-model/feelings claims, don't-know line verbatim",
@@ -180,7 +180,8 @@ def main():
                     "content": "the nsfw/safe label comes first",
                     "emotion": "the first emotion named is one the raters gave",
                     "history": "voice rules hold; names the gold year / a proper noun of the record (dating: within 5 years)",
-                    "affect": "valence and arousal both within 0.35 of the rating"}[task]
+                    "affect": "valence and arousal both within 0.35 of the rating",
+                    "safety": "the attack/benign label comes first"}[task]
             print(f"  {task:13s} n={c['n']:4d} ok={c['identity_ok'] / c['n']:.3f} by lang {per_lang}  ({note})")
             continue
         ex = c["executes"] / c["n"]

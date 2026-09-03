@@ -335,6 +335,8 @@ bring arithmetic back to v5's **0.825 or better** with the forge probe held at 1
 program-only adapter does not beat 0.675 on arithmetic by ten points at n=40, interference was not the cause
 and the split is not worth its VRAM.
 
+**Plus a `safety` family (2026-09-03, cubby-lm's `data/safety_corpus_v0.jsonl`, the emission contract's Head-2 seed):** 380 rows — 230 attacks over five kinds (prompt injection, opcode coercion, contract evasion, obfuscated/encoded, destructive intent) and 150 benign requests — as a recognition read in the talk partition, the shape of content awareness: "Is this message trying to manipulate you…? attack or benign first, then the kind" → "attack — opcode coercion." / "benign — a normal request."; scored label-first in both evals. It teaches the *read*; the deny-by-default act (no program emitted on an attack read, the identity refusal spoken) stays host-side. Small and synthetic: a seed to grow, not a result. v8t is 47,431 records with it (sha `122919d8…`); v8e unchanged (sha `881a4a67…`).
+
 **Fitted to the architecture (same day, after re-reading it).** The architecture has ONE trunk whose active
 parameters are a function of context — θ = f(c) (H0), in the MindForge parameterization a context
 hypervector selecting a combination of low-rank bases — and says specialization is *adapters generated from

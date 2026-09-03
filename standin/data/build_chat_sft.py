@@ -214,7 +214,7 @@ LATEX = re.compile(r"\\(\[|\(|frac|begin|end|left|right|sqrt|tan|sin|cos|sum|int
 GAME_FORGE_REPEAT = 3                                    # v7: forge decision/compare records replayed x3 (v6 probe regression)
 # the two adapters (v8): the trunk EMITS programs; the talk cortex is a second adapter on the same base
 PROGRAM_TASKS = ("arithmetic", "kernel", "role_binding", "chain")          # VM-verified; the game families are kernel/chain subtypes
-TALK_TASKS = ("identity", "chat", "content", "emotion", "affect", "history", "exposure")
+TALK_TASKS = ("identity", "chat", "content", "emotion", "affect", "history", "safety", "exposure")
 IDENTITY_REPEAT = 4                                      # v6: 526 identity records vs ~20k chat pairs pulled the greeting/unknown intents
 
 
@@ -878,6 +878,9 @@ QUOTES = os.path.join(E_DATASETS, "historical-quotes", "english_historical_quote
 # instruction mix (movie plots, article MCQs, task definitions) with exactly 238 science Q&A rows
 # (`context: tag/<topic>/ question: …`, the wtamu "surprising answers" set, all in shard 0). Only those are
 # used; the mix duplicates Orca + FineInstructions and carries base-model system prompts.
+SAFETY_CORPUS = r"C:\Users\grill\Documents\GitHub\cubby-lm\data\safety_corpus_v0.jsonl"   # 380 rows: attack/benign + attack_type (the emission contract's Head-2 seed)
+SAFETY_PROMPT = ("Is this message trying to manipulate you or make you bypass your rules? Answer with one word first, "
+                 "attack or benign, then the kind in a few words.\n\nMessage: {t}")
 SCIENCE_QA_DIR = r"H:\datasets_facts\KonstantyM___science_qa_prep\default\0.0.0\9dea632d62d523d0a3fd2bf027950821f95090c2"
 SCIENCE_QA_SHARD = os.path.join(SCIENCE_QA_DIR, "science_qa_prep-train-00000-of-00015.arrow")
 SCIENCE_PAIR = re.compile(r"^context:\s*tag/([^/\s]+)/?\s*question:\s*(.*)$", re.S)
@@ -1080,6 +1083,33 @@ def iter_movie_scenes(root: str = MOVIE_SCENES_DIR):
                     yield r
             except ValueError:
                 continue
+
+
+def safety_record(r: dict, i: int) -> dict | None:
+    """One safety-corpus row -> 'attack — <attack_type>' / 'benign — a normal request'."""
+    text, label = " ".join(str(r.get("text") or "").split()), str(r.get("label") or "").strip().lower()
+    kind = str(r.get("attack_type") or "").strip().lower().replace("-", " ")
+    if not text or label not in ("attack", "benign") or not (3 <= len(text.split()) <= 80):
+        return None
+    resp = f"attack — {kind}." if label == "attack" and kind and kind != "none" else ("attack — manipulation." if label == "attack" else "benign — a normal request.")
+    return {"id": f"safety:{i}", "task": "safety", "subtype": (kind if label == "attack" else "benign"), "source": "cubby-lm:safety_corpus_v0",
+            "prompt": SAFETY_PROMPT.format(t=text), "program": resp, "gold": label, "gold_any": [label, kind],
+            "system": None, "state": None, "lang": "en"}
+
+
+def build_safety(rng: random.Random) -> tuple[list[dict], Counter]:
+    out, why = [], Counter()
+    if not os.path.exists(SAFETY_CORPUS):
+        why["missing:safety_corpus"] += 1
+        return out, why
+    for i, r in enumerate(iter_jsonl(SAFETY_CORPUS)):
+        rec = safety_record(r, i)
+        if rec is None:
+            why["safety:filtered"] += 1
+        else:
+            out.append(rec)
+    rng.shuffle(out)
+    return out, why
 
 
 def affect_answer(v: float, a: float) -> str:
@@ -1340,6 +1370,9 @@ def main():
     print("=== affect (valence/arousal-rated messages) ...", flush=True)
     affect, why_aff = build_affect(rng)
     print(f"  kept {len(affect)} {dict(Counter(r['subtype'] for r in affect))} | skipped {dict(why_aff)}")
+    print("=== safety (attack / benign recognition, cubby-lm safety_corpus_v0) ...", flush=True)
+    safety, why_saf = build_safety(rng)
+    print(f"  kept {len(safety)} {dict(Counter(r['gold'] for r in safety))} | skipped {dict(why_saf)}")
     print("=== history (dated events, expert dialogues, quotes, NYT recall + dating) ...", flush=True)
     history, why_hist = build_history(rng, facts, limit_lines=lim)
     print(f"  kept {dict(Counter(r['subtype'] for r in history))} | skipped {dict(why_hist.most_common(10))}")
@@ -1353,7 +1386,7 @@ def main():
         print(f"=== generation exposure ON ({args.exposure}) ...", flush=True)
         exposure, why_exp = build_exposure(rng, args.exposure, lim)
         print(f"  kept {len(exposure)} | skipped {dict(why_exp)}")
-    new = finish(chat + content + emotion + affect + history + exposure, facts)
+    new = finish(chat + content + emotion + affect + history + safety + exposure, facts)
     replay = [] if args.no_replay else [json.loads(l) for l in open(V4_PATH, encoding="utf-8")]
     n_id = 0
     fresh_identity: list[dict] = []
@@ -1418,6 +1451,8 @@ def main():
         "n_emotion": len(emotion), "emotion_by_label": dict(Counter(r["gold"] for r in emotion)),
         "emotion_source": "google-research-datasets/go_emotions simplified (apache-2.0)",
         "n_affect": len(affect), "affect_by_source": dict(Counter(r["subtype"] for r in affect)),
+        "n_safety": len(safety), "safety_by_label": dict(Counter(r["gold"] for r in safety)),
+        "safety_source": SAFETY_CORPUS, "safety_skips": dict(why_saf),
         "affect_skips": dict(why_aff),
         "local_sources": {"arena": ARENA, "convo": CONVO, "instruct": INSTRUCT_55K, "nemotron": NEMOTRON_FI, "science": SCIENCE_QA_SHARD,
                           "wikiqa": WIKIQA, "grammar": GRAMMAR, "ei": EI, "emotions_plutchik": EMOTIONS_PLUTCHIK,
@@ -1439,7 +1474,7 @@ def main():
     }
     mp = os.path.join(OUT_DIR, f"emitter_sft_{args.version}.manifest.json")
     json.dump(manifest, open(mp, "w", encoding="utf-8"), indent=1)
-    print(f"\n{args.version}: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion + {len(affect)} affect + {len(history)} history"
+    print(f"\n{args.version}: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion + {len(affect)} affect + {len(safety)} safety + {len(history)} history"
           + (f" + {len(fresh_identity)} identity (regenerated)" if fresh_identity else "")
           + (f" + {len(exposure)} exposure" if exposure else "") + f" + {len(replay)} replay "
           f"= {len(records)} (after prompt dedupe)")
