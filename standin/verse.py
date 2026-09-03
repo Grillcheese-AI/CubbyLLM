@@ -269,8 +269,15 @@ class CubbyMan:
         new = self._learn(obs)
         new += self.on_arrive(self.place)                # world-specific arrival effects (eating…)
         new += self.derive_symmetry(obs)                 # join facts the moment they land
-        if self.chem is not None:                        # discovery feeds curiosity
-            self.chem.update(novelty=new / max(1, len(obs)), valence=0.2 * min(1, new))
+        if self.chem is not None:                        # discovery feeds curiosity -- as SURPRISE, not routine
+            # habituation: what he usually learns per step is expected; only a
+            # burst above that expectation reads as novelty (a steady trickle
+            # used to pin dopamine high and every mood read "excited")
+            ema = getattr(self, "_expect_new", None)
+            expected = 1.0 if ema is None else ema
+            surprise = max(0.0, new - expected) / (expected + 1.0)
+            self._expect_new = new if ema is None else 0.8 * ema + 0.2 * new
+            self.chem.update(novelty=min(1.0, 0.7 * surprise), valence=0.1 * min(1, new))
         rec = {"from": came_from, "place": self.place, "chosen": chosen, "new": new,
                "probed": probed, "label": label, "offered": len(labels)}
         self._t("explore", **rec)

@@ -776,8 +776,8 @@ class CubbyGhost(CubbyPac):
                      f"{' '.join(steps)} is the recipe of {name}"])
         self._t("program", name=name, why=why, pattern=pattern, program=program, reasoning=reasoning)
         self._think("program", name=name, pattern=pattern or " ".join(steps))
-        if self.chem is not None:
-            self.chem.update(novelty=1.0, valence=0.9)
+        if self.chem is not None:                        # a move of his own: a real surprise, a real reward
+            self.chem.update(novelty=0.7, valence=0.8)
         return name
 
     MAX_ACTIVE_PATTERNS = 8                               # the library stays small; consolidate() enforces it per level
@@ -1014,15 +1014,32 @@ class CubbyGhost(CubbyPac):
         line = t.get(kind, lambda: "")()
         return (mood + line) if line else ""
 
+    # the compass tiers -> a mood word (EN, FR); calm / faint readings get none
+    _MOOD = {"serenity": ("content", "serein"), "joy": ("glad", "content"), "ecstasy": ("thrilled", "ravi"),
+             "acceptance": ("at ease", "à l'aise"), "trust": ("trusting", "confiant"), "admiration": ("grateful", "reconnaissant"),
+             "apprehension": ("uneasy", "inquiet"), "fear": ("scared", "effrayé"), "terror": ("terrified", "terrifié"),
+             "distraction": ("puzzled", "perplexe"), "surprise": ("surprised", "surpris"), "amazement": ("stunned", "sidéré"),
+             "pensiveness": ("wistful", "songeur"), "sadness": ("down", "triste"), "grief": ("crushed", "abattu"),
+             "boredom": ("bored", "blasé"), "disgust": ("fed up", "dégoûté"), "loathing": ("sick of it", "écœuré"),
+             "annoyance": ("annoyed", "agacé"), "anger": ("angry", "en colère"), "rage": ("furious", "furieux"),
+             "interest": ("curious", "curieux"), "anticipation": ("eager", "impatient"), "vigilance": ("alert", "aux aguets")}
+
     def _mood(self) -> str:
+        """The mood prefix from the compass he already computes: the Plutchik
+        tier (with its intensity) rather than a dopamine switch — so the same
+        state that colors the compass colors the thought. Slow stress (high
+        cortisol) shows as 'on edge' when the compass is not already afraid."""
         if self.chem is None:
             return ""
         fr = self.lang == "fr"
-        if self.chem.cortisol >= 0.35:
-            return "(nerveux) " if fr else "(nervous) "
-        if self.chem.dopamine >= 0.55:
-            return "(excité) " if fr else "(excited) "
-        return ""
+        emo = self.emotion()
+        name, intensity = emo["name"], emo["intensity"]
+        if self.chem.cortisol >= 0.35 and name not in ("apprehension", "fear", "terror"):
+            return "(sur les nerfs) " if fr else "(on edge) "
+        if name == "calm" or intensity < 0.25 or name not in self._MOOD:
+            return ""
+        en, fr_word = self._MOOD[name]
+        return f"({fr_word}) " if fr else f"({en}) "
 
     verbalize = True                                     # let the LLM phrase the thought (content stays the host's)
 

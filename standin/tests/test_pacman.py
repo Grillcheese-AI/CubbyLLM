@@ -315,6 +315,48 @@ def test_emotion_maps_to_the_plutchik_compass():
     assert emo["color"].startswith("#") and 0 <= emo["intensity"] <= 1.2
 
 
+def test_mood_prefix_follows_the_compass_not_a_dopamine_switch():
+    from pacman import CubbyGhost, GhostVerse
+    from neurochem import Neurochemistry
+    import identity as idn
+    F = idn.load_facts()
+    man = CubbyGhost(GhostVerse(), probe=0.0)
+    man.chem = Neurochemistry()
+    assert man._mood() == "", "resting: no mood word"
+    seen = set()
+    for signals in ({"threat": 1.0}, {"novelty": 1.0, "valence": 0.8}, {"valence": -0.9}, {"social": 1.0, "valence": 0.5}):
+        man.chem = Neurochemistry()
+        for _ in range(6):
+            man.chem.update(**signals)
+        m = man._mood()
+        seen.add(m)
+        assert m == "" or (m.startswith("(") and idn.voice_ok(m, F)), m
+    assert len(seen) >= 3, f"different states must read differently: {seen}"
+    for word_en, word_fr in CubbyGhost._MOOD.values():
+        assert idn.voice_ok(word_en, F) and idn.voice_ok(word_fr, F)
+    man.chem = Neurochemistry()
+    for _ in range(80):
+        man.chem.update(threat=1.0)                      # sustained stress -> cortisol climbs
+    assert man._mood() in ("(on edge) ", "(scared) ", "(terrified) ", "(uneasy) ")
+
+
+def test_routine_learning_no_longer_pins_dopamine():
+    from verse import CubbyMan, ToyVerse
+    from neurochem import Neurochemistry
+    man = CubbyMan(ToyVerse(seed=0), probe=0.0)
+    man.chem = Neurochemistry()
+    # the same steady trickle of facts every step: habituation -> little novelty
+    for _ in range(12):
+        man._expect_new = getattr(man, "_expect_new", None)
+        new = 3
+        ema = man._expect_new
+        expected = 1.0 if ema is None else ema
+        surprise = max(0.0, new - expected) / (expected + 1.0)
+        man._expect_new = new if ema is None else 0.8 * ema + 0.2 * new
+        man.chem.update(novelty=min(1.0, 0.7 * surprise), valence=0.1)
+    assert man.chem.dopamine < 0.55, f"a routine trickle must not read as excitement: {man.chem.dopamine:.2f}"
+
+
 def test_thoughts_are_first_person_voice_safe_and_bilingual():
     from pacman import CubbyGhost
     import identity as idn
