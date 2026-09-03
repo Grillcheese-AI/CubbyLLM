@@ -285,6 +285,27 @@ numbers land here when the run finishes.
   A fact question *about* the world (*who is the hero of cubbyverse?*) is not identity and still reaches the
   plugin's world through retrieval.
 
+### v6 TRAINED (2026-09-02/03): first reads, and the GPU note
+
+Colab run: 1,890 steps at 8×4 (effective 32), 1 epoch, 35 min, final loss 0.52 — a **mixture floor**
+(free chat/history text dominates the token count; programs sit near zero), not a target; the run used ~8 of
+80 GB, so the notebook now defaults to 32×1 and 2 epochs. The notebook's smoke validation (6 per task) replayed
+through the local VM eval (`eval_emitter_vm.py --val-generations …/emitter_lfm25_2p6b_v6/val_generations.json`,
+`data/out/eval_emitter_vm_v6_colab.json`):
+
+| task | v6 (n=6 each) | note |
+|---|---|---|
+| identity / chat / content | 1.000 / 1.000 / 1.000 | identity back from v5's 0.818 (×4 replay) |
+| **affect** | 1.000 | every answer in the `valence ±x.x, arousal x.x` form, within tolerance |
+| emotion | 0.667 | the two misses are near-misses (`nervousness`→disappointment, `caring`→optimism) |
+| **history** | 0.333 | `when` right; **dating** guesses the wrong decade twice (1869 for 1885, 1981 for 1998) and hits once (1898 for 1899); the two `dialogue` misses are a scoring artifact — the replay file lacked `gold_any` (fixed: the notebook writes it now, and the checks fall back to the reference) |
+| arithmetic / chain / game families | gold 0.500 (n=6) / 0.667 / 1.000 | too few to read; the stratified run decides |
+
+**The stratified local run (40/task, Vulkan on the RX 6750 XT) crashed the GPU at 50/382** with the `/pac`
+server holding a second copy of the model. Until that is understood, get the wide read from Colab instead:
+`STANDIN_EVAL_N=40` before the eval cell (the notebook honours it), then replay the file locally — the VM
+runs on the CPU. Two pins on the GPU-side: the eval log stops at `50/382 (35s)`, no Python error.
+
 ## Chat is mediated by a VM program, not emitted as one (design note, 2026-08-30)
 
 Checked in the cubelang source. The VM's **registry-seeded (tamper-proof) interfaces
