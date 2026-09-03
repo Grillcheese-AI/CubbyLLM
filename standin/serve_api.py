@@ -110,6 +110,20 @@ def make_handler(brain):
                     else:
                         self._send(200, {"path": str(lib.path) if lib.path else None,
                                          "entries": lib.entries})
+                elif self.path.startswith("/pac/music"):     # the soundtrack under the 8-bit effects
+                    from pacman import load_music
+                    data = load_music()
+                    if data is None:
+                        self._raw(404, b"no soundtrack (CB_PAC_MUSIC)", "text/plain")
+                    else:
+                        self._raw(200, data, "audio/mpeg")
+                elif self.path.startswith("/pac/sfx/"):        # sampled effects (the level-start jingle)
+                    from pacman import load_sfx
+                    data = load_sfx(self.path[len("/pac/sfx/"):].split("?")[0])
+                    if data is None:
+                        self._raw(404, b"no such effect", "text/plain")
+                    else:
+                        self._raw(200, data, "audio/mpeg")
                 elif self.path.startswith("/pac/assets/"):
                     from pacman import load_asset
                     data = load_asset(self.path[len("/pac/assets/"):])

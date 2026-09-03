@@ -26,6 +26,10 @@ Sources (I:\\grillcheese_training_data, drive letter changed from D:):
             Chunks that trip the minors or non-consent screens are DROPPED
             before anything else. Generation-exposure (continuing explicit
             prose) is NOT built here — a separate switch, deliberately off.
+  history   (v6) temporal/historical/* + temporal/nyt_data/*: dated events
+            (about / when / year), expert dialogues on historical persons,
+            NYT recall (date -> headline) and dating (headline -> date, the
+            temporal-orientation read). EN only. See build_history().
   NOT used  identity_corpus*.txt — an older, different persona (a "friendly
             guide" for a subscription chat product). Cubby's identity comes
             from identity_facts.json only.
@@ -449,6 +453,319 @@ def build_exposure(rng: random.Random, n: int, limit_lines: int | None = None) -
     return out, why
 
 
+# ── history: dated sentences Cubby can refer to (2026-09-02, owner's ask) ───
+# Sources under I:\grillcheese_training_data\temporal (all EN — the FR gap
+# stands): `historical/train_augmented.jsonl` (4,000 dated world-history
+# events, ~1.3k distinct titles), `historical_events_1800-1900.jsonl` (36
+# full-date summaries), the three "10k_years" Q&A sets (only the half whose
+# answer is not a book summary — "the text discusses…" is dropped), the
+# arkona student/expert dialogues on 2.6k historical persons, and the NYT
+# archive (294 month files, 1851..2024) as BOTH a recall task ("what was in
+# the news on <date>") and a dating task ("when was this reported" — the
+# temporal-orientation read; scored within ±5 years).
+TEMPORAL = os.path.join(DATA, "temporal")
+HIST_DIR = os.path.join(TEMPORAL, "historical")
+HIST_EVENTS = os.path.join(HIST_DIR, "train_augmented.jsonl")
+HIST_1800 = os.path.join(HIST_DIR, "historical_events_1800-1900.jsonl")
+HIST_10K = [os.path.join(HIST_DIR, n) for n in ("historical_high_confidence_831_samples.json",
+                                                 "historical_modern_history_771_samples.json",
+                                                 "historical_wars_conflicts_648_samples.json")]
+HIST_DIALOGUE = os.path.join(HIST_DIR, "arkona_intermediate_3000_detailed.json")
+NYT_DIR = os.path.join(TEMPORAL, "nyt_data")
+HIST_QUOTA = {"dialogue": 2000, "per_topic": 2, "nyt_days_per_month": 6}
+MAX_HISTORY_WORDS = 120
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+          "November", "December"]
+BOOK_VOICE = re.compile(r"\bthe (text|passage|document|book|chapter|author|excerpt)\b", re.I)
+_NOUN_STOP = {"the", "this", "that", "these", "those", "during", "after", "before", "when", "while", "however",
+              "although", "despite", "also", "with", "from", "into", "over", "under", "about", "their", "they",
+              "there", "then", "than", "some", "many", "most", "more", "such", "which", "what", "where", "other",
+              "first", "later", "early", "both", "each", "between", "around", "following", "established", "regarding",
+              "certainly", "indeed", "well", "yes", "absolutely", "great", "good", "here", "his", "her", "its",
+              "several", "another", "though", "because", "since", "until", "through", "without", "within"}
+ABOUT_PROMPTS = ["Tell me about {t}.", "What do you know about {t}?", "Briefly, what was {t}?",
+                 "Can you tell me about {t}?", "What was {t}?"]
+WHEN_PROMPTS = ["When was {t}?", "When did {t} happen?", "In what year was {t}?", "What year was {t}?"]
+YEAR_PROMPTS = ["What happened in {y}?", "What happened around {y}?", "Name one event from {y}.",
+                "Tell me something that happened in {y}.", "Anything notable from {y}?"]
+NEWS_PROMPTS = ["What was in the news on {d}?", "Any headline from {d}?", "What was reported on {d}?",
+                "Give me a news item from {d}."]
+DATING_PROMPTS = ["When was this reported?\n\n{h}: {a}", "Date this news item.\n\n{h}: {a}",
+                  "From what date is this headline?\n\n{h}: {a}"]
+
+
+def year_key(y: int) -> str:
+    """The gold string for a year: 1066 -> '1066', -3100 -> '3100 BCE'."""
+    return f"{abs(y)} BCE" if y < 0 else str(y)
+
+
+def year_phrase(y0: int, y1: int | None = None) -> str:
+    """'in 1066' / 'around 3100 BCE' / 'from 1914 to 1918'."""
+    if y1 is not None and y1 != y0:
+        return f"from {year_key(y0)} to {year_key(y1)}"
+    return ("around " if y0 < 0 else "in ") + year_key(y0)
+
+
+def proper_nouns(text: str, cap: int = 12) -> list[str]:
+    """Capitalised words (4+ letters, not sentence-opening stopwords) and
+    years — what an answer must mention to count as being about the same
+    thing (the eval's containment check)."""
+    out: list[str] = []
+    for m in re.finditer(r"\b([A-Z][A-Za-z'\-]{3,}|\d{3,4}(?: BCE)?)\b", text):
+        w = m.group(1)
+        if w.lower() in _NOUN_STOP or w in out:
+            continue
+        out.append(w)
+        if len(out) >= cap:
+            break
+    return out
+
+
+def history_ok(rec: dict, gen: str, facts: dict) -> bool:
+    """The eval's read of a history answer: Cubby's rules hold, and the
+    answer is about the right thing — `when`: the gold year is named;
+    `dating`: the first year named is within 5 years of the gold; the rest:
+    one of the record's proper nouns / years appears."""
+    if not gen or not voice_ok(gen, facts) or is_model_guard(gen):
+        return False
+    sub = rec.get("subtype")
+    gold = str(rec.get("gold") or "")
+    if sub == "dating":
+        m = re.search(r"\b(\d{4})\b", gen)
+        return bool(m) and gold[:4].isdigit() and abs(int(m.group(1)) - int(gold[:4])) <= 5
+    if sub == "when":
+        return re.sub(r"\s*BCE?$", "", gold) in gen if gold else False
+    low = gen.lower()
+    return any(str(g).lower() in low for g in (rec.get("gold_any") or []))
+
+
+def history_record(subtype: str, i: int, prompt: str, answer: str, gold: str | None, gold_any: list[str],
+                   source: str, facts: dict) -> dict | None:
+    """One dated record after the shared screens (length, URL, explicit,
+    base-model guard, voice rules) — None when it cannot be Cubby's answer."""
+    answer = " ".join(answer.split())
+    prompt = prompt.strip()
+    if not gold_any or not prompt:
+        return None
+    if not ((1 if subtype == "dating" else 5) <= len(answer.split()) <= MAX_HISTORY_WORDS):   # a dating answer is a date
+        return None
+    if URL.search(prompt) or URL.search(answer) or EXPLICIT.search(answer) or CODE_LEAK.search(answer):
+        return None
+    if is_model_guard(answer) or OTHER_ASSISTANT.search(answer) or not voice_ok(answer, facts):
+        return None
+    return {"id": f"history:{subtype}:{i}", "task": "history", "subtype": subtype, "source": source,
+            "prompt": prompt, "program": answer, "gold": gold, "gold_any": gold_any,
+            "system": None, "state": None, "lang": "en"}
+
+
+_COMMON_HEAD = {"unification", "invention", "battle", "treaty", "founding", "fall", "rise", "discovery", "death",
+                "birth", "signing", "construction", "establishment", "reign", "siege", "assassination", "publication",
+                "first", "great", "end", "beginning", "introduction", "creation", "coronation", "declaration",
+                "abolition", "opening", "launch", "formation", "conquest", "independence", "revolution", "partition",
+                "sinking", "election", "outbreak", "spread", "development", "adoption", "completion", "collapse",
+                "dissolution", "expansion", "emergence", "founding", "invasion", "sack", "plague", "eruption"}
+
+
+def title_phrase(title: str) -> str:
+    """'Unification of Ancient Egypt' -> 'the Unification of Ancient Egypt';
+    a proper name ('Magna Carta', 'The Black Death') is left alone."""
+    t = title.strip().rstrip(".")
+    if t.lower().startswith("the ") or not t:
+        return t
+    if " of " in t or t.split()[0].lower() in _COMMON_HEAD:
+        return "the " + t
+    return t
+
+
+def event_records(r: dict, rng: random.Random, facts: dict, i: int, first_of_year: bool) -> list[dict]:
+    """A dated world-history event -> about / when (/ year) records."""
+    t, text = title_phrase(r.get("title") or ""), " ".join((r.get("text") or "").split())
+    y0, y1 = r.get("year_start"), r.get("year_end")
+    if not t or not text or y0 is None:
+        return []
+    yp, gold = year_phrase(y0, y1), year_key(y0)
+    nouns = proper_nouns(t + " " + " ".join(r.get("actors") or []))
+    body = text if gold in text else f"{text} That was {yp}."
+    recs = [history_record("about", i, rng.choice(ABOUT_PROMPTS).format(t=t), body, gold, nouns + [gold],
+                           "train_augmented", facts),
+            history_record("when", i, rng.choice(WHEN_PROMPTS).format(t=t), f"{t[0].upper() + t[1:]} was {yp}.", gold, [gold],
+                           "train_augmented", facts)]
+    if first_of_year:
+        recs.append(history_record("year", i, rng.choice(YEAR_PROMPTS).format(y=gold), body, gold, nouns,
+                                   "train_augmented", facts))
+    return [x for x in recs if x]
+
+
+def dialogue_pairs(rows: list[dict]):
+    """Consecutive student -> expert turns on the same person; a follow-up
+    that does not name its subject gets it prefixed so the pair stands alone."""
+    for a, b in zip(rows, rows[1:]):
+        if a.get("speaker") != "student" or b.get("speaker") != "expert" or a.get("topic") != b.get("topic"):
+            continue
+        topic = (a.get("topic") or "").strip()
+        q, ans = " ".join((a.get("message") or "").split()), " ".join((b.get("message") or "").split())
+        if not topic or not q or not ans:
+            continue
+        if topic.split()[-1].lower() not in q.lower():
+            q = f"Regarding {topic}: {q}"
+        yield topic, q, ans
+
+
+def clean_headline(main: str) -> str | None:
+    h = (main or "").split(";")[0].strip().rstrip(".").strip()
+    if h.isupper():
+        h = h.title()
+    if len(h.split()) < 2 or re.search(r"paid notice|no headline", h, re.I):
+        return None
+    return h
+
+
+def nyt_records(r: dict, rng: random.Random, facts: dict, i: int) -> list[dict]:
+    """One NYT item -> a recall record (date -> headline: abstract) and a
+    dating record (headline: abstract -> date)."""
+    h = clean_headline((r.get("headline") or {}).get("main") or "")
+    a = re.sub(r"^\s*LEAD:\s*", "", " ".join((r.get("abstract") or "").split()))
+    pub = (r.get("pub_date") or "")[:10]
+    if not h or not a or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", pub):
+        return []
+    if not (8 <= len(a.split()) <= 80) or a.endswith("...") or not a[0].isupper() or a.lower() == h.lower():
+        return []
+    y, m, d = int(pub[:4]), int(pub[5:7]), int(pub[8:10])
+    date = f"{MONTHS[m - 1]} {d}, {y}"
+    nouns = proper_nouns(h + " " + a)
+    recs = [history_record("news", i, rng.choice(NEWS_PROMPTS).format(d=date), f"{h}: {a}", str(y),
+                           nouns + [str(y)], "nyt_archive", facts),
+            history_record("dating", i, rng.choice(DATING_PROMPTS).format(h=h, a=a), f"{date}.", str(y), [str(y)],
+                           "nyt_archive", facts)]
+    return [x for x in recs if x]
+
+
+def iter_jsonl(path: str):
+    with open(path, encoding="utf-8", errors="replace") as f:
+        for line in f:
+            try:
+                yield json.loads(line)
+            except ValueError:
+                continue
+
+
+def build_history(rng: random.Random, facts: dict, quota: dict | None = None,
+                  limit_lines: int | None = None) -> tuple[list[dict], Counter]:
+    """All history sources through `history_record`. `limit_lines` (debug)
+    reads only the first NYT month files. Missing sources are reported."""
+    quota = quota or HIST_QUOTA
+    out, why = [], Counter()
+    # 1. dated world-history events (dedupe on title; one `year` record per year)
+    if os.path.exists(HIST_EVENTS):
+        seen_t, seen_y = set(), set()
+        for i, r in enumerate(iter_jsonl(HIST_EVENTS)):
+            t = (r.get("title") or "").strip().lower()
+            if not t or t in seen_t:
+                why["events:dup title"] += 1
+                continue
+            seen_t.add(t)
+            y0 = r.get("year_start")
+            first = y0 not in seen_y
+            seen_y.add(y0)
+            recs = event_records(r, rng, facts, i, first_of_year=first)
+            why["events:screened"] += (3 if first else 2) - len(recs)
+            out += recs
+    else:
+        why["missing:train_augmented"] += 1
+    # 2. the 36 full-date 1800s events
+    if os.path.exists(HIST_1800):
+        for i, r in enumerate(iter_jsonl(HIST_1800)):
+            s = " ".join((r.get("summary") or "").split())
+            m = re.match(r"On ((?:" + "|".join(MONTHS) + r") \d{1,2}, (\d{4})),", s)
+            if m:
+                prompt, gold = f"What happened on {m.group(1)}?", m.group(2)
+            elif r.get("earliest_date_year"):
+                gold = str(r["earliest_date_year"])
+                prompt = rng.choice(YEAR_PROMPTS).format(y=gold)
+            else:
+                why["1800s:no date"] += 1
+                continue
+            rec = history_record("event", i, prompt, s, gold, proper_nouns(s), "historical_events_1800-1900", facts)
+            if rec:
+                out.append(rec)
+            else:
+                why["1800s:screened"] += 1
+    # 3. the 10k-years Q&A sets: answers in their own voice, dated by the answer itself
+    for path in HIST_10K:
+        if not os.path.exists(path):
+            why[f"missing:{os.path.basename(path)}"] += 1
+            continue
+        name = os.path.basename(path).split("_")[1]
+        rows = json.load(open(path, encoding="utf-8", errors="replace")).get("training_data", [])
+        for i, r in enumerate(rows):
+            ans = " ".join((r.get("answer") or "").split())
+            if BOOK_VOICE.search(ans):
+                why[f"10k:{name}:book voice"] += 1
+                continue
+            m = re.match(r"In (\d{3,4})( BCE)?, (.+)", ans)
+            if m:
+                gold = m.group(1) + (m.group(2) or "")
+            elif r.get("year") is not None and str(r["year"]) in ans:
+                gold = str(r["year"]) + (" BCE" if re.search(rf"\b{r['year']} BCE?\b", ans) else "")
+            else:
+                why[f"10k:{name}:undated"] += 1
+                continue
+            rec = history_record("year", 10000 + i, rng.choice(YEAR_PROMPTS).format(y=gold), ans, gold,
+                                 proper_nouns(ans), f"10k_years:{name}", facts)
+            if rec:
+                out.append(rec)
+            else:
+                why[f"10k:{name}:screened"] += 1
+    # 4. expert dialogues on historical persons (spread over topics)
+    if os.path.exists(HIST_DIALOGUE):
+        pairs = list(dialogue_pairs(json.load(open(HIST_DIALOGUE, encoding="utf-8", errors="replace"))))
+        rng.shuffle(pairs)
+        per_topic: Counter = Counter()
+        kept = 0
+        for i, (topic, q, ans) in enumerate(pairs):
+            if kept >= quota["dialogue"]:
+                break
+            if per_topic[topic] >= quota["per_topic"]:
+                why["dialogue:topic cap"] += 1
+                continue
+            rec = history_record("dialogue", i, q, ans, None, proper_nouns(ans + " " + topic), "arkona_dialogues", facts)
+            if rec is None:
+                why["dialogue:screened"] += 1
+                continue
+            per_topic[topic] += 1
+            kept += 1
+            out.append(rec)
+    else:
+        why["missing:arkona"] += 1
+    # 5. NYT archive: a few distinct days per month, every month on disk
+    files = sorted(f for f in os.listdir(NYT_DIR) if f.endswith(".json")) if os.path.isdir(NYT_DIR) else []
+    if not files:
+        why["missing:nyt_data"] += 1
+    if limit_lines:
+        files = files[:max(1, limit_lines // 1000)]
+    for k, name in enumerate(files):
+        try:
+            items = json.load(open(os.path.join(NYT_DIR, name), encoding="utf-8", errors="replace"))
+        except ValueError:
+            why["nyt:bad file"] += 1
+            continue
+        rng.shuffle(items)
+        days: set[str] = set()
+        for r in items:
+            pub = (r.get("pub_date") or "")[:10]
+            if pub in days:
+                continue
+            recs = nyt_records(r, rng, facts, k * 100 + len(days))
+            if not recs:
+                why["nyt:screened"] += 1
+                continue
+            days.add(pub)
+            out += recs
+            if len(days) >= quota["nyt_days_per_month"]:
+                break
+    return out, why
+
+
 def finish(records: list[dict], facts: dict | None = None) -> list[dict]:
     """Dedupe on the prompt, split, repeat weights — and a system prompt on
     EVERY record: the notebook falls back to the EMITTER prompt ("output
@@ -485,7 +802,7 @@ def main():
                     help="ALSO add N explicit-prose continuation records (generation exposure). Off by default; "
                          "the owner's switch.")
     ap.add_argument("--version", default="v6", help="output name: emitter_sft_{version}.jsonl (v5 is trained; v6 = "
-                                                     "v5 data + identity x3 replay + the code-leak filter)")
+                                                     "v5 data + identity x3 replay + the code-leak filter + history)")
     ap.add_argument("--identity-repeat", type=int, default=IDENTITY_REPEAT)
     args = ap.parse_args()
     t0 = time.perf_counter()
@@ -506,12 +823,15 @@ def main():
     print("=== emotion recognition (GoEmotions -> emotion + Plutchik petal) ...", flush=True)
     emotion, why_emo = build_emotion(rng)
     print(f"  kept {len(emotion)} over {len(set(r['gold'] for r in emotion))} emotions | skipped {dict(why_emo)}")
+    print("=== history (dated events, expert dialogues, NYT recall + dating) ...", flush=True)
+    history, why_hist = build_history(rng, facts, limit_lines=lim)
+    print(f"  kept {dict(Counter(r['subtype'] for r in history))} | skipped {dict(why_hist.most_common(10))}")
     exposure: list[dict] = []
     if args.exposure:
         print(f"=== generation exposure ON ({args.exposure}) ...", flush=True)
         exposure, why_exp = build_exposure(rng, args.exposure, lim)
         print(f"  kept {len(exposure)} | skipped {dict(why_exp)}")
-    new = finish(chat + content + emotion + exposure, facts)
+    new = finish(chat + content + emotion + history + exposure, facts)
     replay = [] if args.no_replay else [json.loads(l) for l in open(V4_PATH, encoding="utf-8")]
     n_id = 0
     for r in replay:                                     # the identity contract outweighs the chat volume
@@ -551,16 +871,21 @@ def main():
         "n_content": dict(Counter(r["subtype"] for r in content)),
         "n_emotion": len(emotion), "emotion_by_label": dict(Counter(r["gold"] for r in emotion)),
         "emotion_source": "google-research-datasets/go_emotions simplified (apache-2.0)",
+        "n_history": len(history), "history_by_subtype": dict(Counter(r["subtype"] for r in history)),
+        "history_sources": {"events": HIST_EVENTS, "events_1800s": HIST_1800, "10k_years": HIST_10K,
+                            "dialogues": HIST_DIALOGUE, "nyt": NYT_DIR, "quota": HIST_QUOTA},
+        "history_skips": dict(why_hist),
         "n_exposure": len(exposure), "exposure_switch": args.exposure,
         "n_replay": len(replay), "n_records": len(records),
         "by_task": dict(Counter(r["task"] for r in records)),
         "by_split_new": dict(Counter(r["split"] for r in new)),
-        "gaps": ["the local corpus has no dialogue/French chat; both come from the HF sources above"],
+        "gaps": ["the local corpus has no dialogue/French chat; both come from the HF sources above",
+                 "history is EN only (every temporal source is English)"],
         "output": out_path, "output_sha256": sha256_file(out_path), "wall_s": time.perf_counter() - t0,
     }
     mp = os.path.join(OUT_DIR, f"emitter_sft_{args.version}.manifest.json")
     json.dump(manifest, open(mp, "w", encoding="utf-8"), indent=1)
-    print(f"\n{args.version}: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion"
+    print(f"\n{args.version}: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion + {len(history)} history"
           + (f" + {len(exposure)} exposure" if exposure else "") + f" + {len(replay)} replay "
           f"= {len(records)} (after prompt dedupe)")
     print(f"wrote {out_path}\nwrote {mp} ({manifest['wall_s']:.0f}s) sha {manifest['output_sha256'][:12]}")

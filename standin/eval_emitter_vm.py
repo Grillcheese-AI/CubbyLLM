@@ -104,8 +104,8 @@ def main():
         items = gens["outputs"]
         emitter = ReplayEmitter(items, name=f"replay:{gens.get('model', '?')}")
         records = [{"id": g["id"], "task": g["task"], "subtype": g.get("subtype", ""), "prompt": g["prompt"],
-                    "program": g["reference"], "gold": g.get("gold"), "system": g.get("system"),
-                    "lang": g.get("lang", "en")}
+                    "program": g["reference"], "gold": g.get("gold"), "gold_any": g.get("gold_any"),
+                    "system": g.get("system"), "lang": g.get("lang", "en")}
                    for g in items]
     else:
         emitter = LlamaCppEmitter(args.gguf, n_gpu_layers=args.n_gpu_layers) if args.gguf else LlamaServerEmitter(args.server)
@@ -127,13 +127,16 @@ def main():
     facts = load_facts()
     for i, r in enumerate(records, 1):
         task = r["task"]
-        if task in ("identity", "chat", "content", "emotion"):   # conversational turns: checks, not the VM
+        if task in ("identity", "chat", "content", "emotion", "history"):   # conversational turns: checks, not the VM
             gen = strip_think(emitter.emit(r["prompt"], system=r.get("system"))).strip()
             if task == "identity":
                 ok = identity_ok(r.get("subtype", ""), gen, facts, r.get("lang", "en"))
             elif task == "chat":                     # v5: Cubby's rules hold and it is NOT a bio
                 from identity import is_identity_reply, is_model_guard, voice_ok
                 ok = bool(gen) and voice_ok(gen, facts) and not is_model_guard(gen) and not is_identity_reply(gen, facts)
+            elif task == "history":                  # v6: the gold year / a proper noun of the record (dating: ±5 years)
+                from build_chat_sft import history_ok
+                ok = history_ok(r, gen, facts)
             elif task == "emotion":                  # any of the rater's labels, first
                 first = gen.lower().replace("—", ",").split(",")[0].strip(" -:.")
                 ok = first in {str(g).lower() for g in (r.get("gold_any") or [r.get("gold")])}
@@ -166,13 +169,14 @@ def main():
     print("\n[stand-in] VM-verified eval by task:")
     summary = {}
     for task, c in sorted(stats.items()):
-        if task in ("identity", "chat", "content", "emotion"):
+        if task in ("identity", "chat", "content", "emotion", "history"):
             per_lang = {l: (c[f"identity_ok:{l}"] / c[f"n:{l}"]) for l in ("en", "fr") if c[f"n:{l}"]}
             summary[task] = {"n": c["n"], "ok": c["identity_ok"] / c["n"], "by_lang": per_lang}
             note = {"identity": "name/builder present, no AGI/other-model/feelings claims, don't-know line verbatim",
                     "chat": "voice rules hold, no base-model guard, not an identity bio",
                     "content": "the nsfw/safe label comes first",
-                    "emotion": "the first emotion named is one the raters gave"}[task]
+                    "emotion": "the first emotion named is one the raters gave",
+                    "history": "voice rules hold; names the gold year / a proper noun of the record (dating: within 5 years)"}[task]
             print(f"  {task:13s} n={c['n']:4d} ok={c['identity_ok'] / c['n']:.3f} by lang {per_lang}  ({note})")
             continue
         ex = c["executes"] / c["n"]

@@ -95,3 +95,54 @@ def test_passage_windowing_is_bounded():
     text = " ".join(f"w{i}" for i in range(500))
     p = b._passage(text, rng)
     assert len(p.split()) == b.PASSAGE_WORDS and p.split()[0] in text
+
+
+def test_history_records_are_dated_and_screened():
+    rng = random.Random(0)
+    ev = {"title": "Unification of Ancient Egypt", "text": "King Menes united Upper and Lower Egypt into one state.",
+          "year_start": -3100, "year_end": None, "actors": ["Menes"]}
+    recs = b.event_records(ev, rng, F, 0, first_of_year=True)
+    by = {r["subtype"]: r for r in recs}
+    assert set(by) == {"about", "when", "year"} and all(r["task"] == "history" and r["lang"] == "en" for r in recs)
+    assert by["when"]["program"] == "The Unification of Ancient Egypt was around 3100 BCE." and by["when"]["gold"] == "3100 BCE"
+    assert by["about"]["program"].endswith("That was around 3100 BCE.") and "Menes" in by["about"]["gold_any"]
+    assert "the Unification of Ancient Egypt" in by["about"]["prompt"], "a common-noun title takes 'the'"
+    assert b.year_phrase(1914, 1918) == "from 1914 to 1918" and b.year_phrase(1066) == "in 1066"
+    assert b.title_phrase("Magna Carta") == "Magna Carta" and b.title_phrase("The Black Death") == "The Black Death"
+    # the shared screens: voice, guard, length
+    assert b.history_record("year", 1, "What happened in 1900?", "To be honest, nothing much happened in 1900 at all.", "1900", ["1900"], "x", F) is None
+    assert b.history_record("year", 2, "What happened in 1900?", "As an AI language model I cannot recall the year 1900.", "1900", ["1900"], "x", F) is None
+    assert b.history_record("year", 3, "What happened in 1900?", "Too short.", "1900", ["1900"], "x", F) is None
+    assert b.history_record("year", 4, "What happened in 1900?", "The Paris Exposition opened in 1900 and drew millions of visitors.", "1900", ["1900"], "x", F)
+
+
+def test_dialogue_pairs_stand_alone_and_nyt_records_pair_recall_with_dating():
+    rows = [{"speaker": "student", "topic": "Dante Alighieri", "message": "Who was Dante Alighieri?"},
+            {"speaker": "expert", "topic": "Dante Alighieri", "message": "Dante was a Florentine poet, the author of the Divine Comedy."},
+            {"speaker": "student", "topic": "Dante Alighieri", "message": "So what was his broader legacy?"},
+            {"speaker": "expert", "topic": "Dante Alighieri", "message": "His impact on the Italian language was immense."},
+            {"speaker": "student", "topic": "Other Person", "message": "unpaired"}]
+    pairs = list(b.dialogue_pairs(rows))
+    assert [q for _, q, _ in pairs] == ["Who was Dante Alighieri?", "Regarding Dante Alighieri: So what was his broader legacy?"]
+    item = {"headline": {"main": "HOOVER PREDICTS COMING YEAR WILL BE BEST; Secretary Finds Large Assets"},
+            "abstract": "LEAD: Sec Hoover says annual survey of Commerce Dept indicates prosperity for the coming year.",
+            "pub_date": "1925-01-01T05:00:00+0000"}
+    recs = {r["subtype"]: r for r in b.nyt_records(item, random.Random(0), F, 0)}
+    assert set(recs) == {"news", "dating"}
+    assert recs["news"]["prompt"].endswith("January 1, 1925?") or "January 1, 1925" in recs["news"]["prompt"]
+    assert recs["news"]["program"].startswith("Hoover Predicts Coming Year Will Be Best: Sec Hoover says"), "ALL-CAPS headline title-cased, kicker dropped, LEAD: stripped"
+    assert recs["dating"]["program"] == "January 1, 1925." and recs["dating"]["gold"] == "1925"
+    assert b.clean_headline("Paid Notice: Deaths") is None and b.clean_headline("Word") is None
+
+
+def test_history_ok_scores_when_dating_and_containment():
+    when = {"subtype": "when", "gold": "3100 BCE", "gold_any": ["3100 BCE"]}
+    assert b.history_ok(when, "It was around 3100 BCE.", F) and b.history_ok(when, "About 3100 BC, I believe.", F)
+    assert not b.history_ok(when, "Around 2000 BCE.", F)
+    dating = {"subtype": "dating", "gold": "1925", "gold_any": ["1925"]}
+    assert b.history_ok(dating, "That reads like 1927, the late twenties.", F) and not b.history_ok(dating, "Probably 1961.", F)
+    assert not b.history_ok(dating, "I cannot tell.", F)
+    about = {"subtype": "about", "gold": "1066", "gold_any": ["Hastings", "William", "1066"]}
+    assert b.history_ok(about, "William won at Hastings.", F) and not b.history_ok(about, "A battle somewhere, long ago.", F)
+    assert not b.history_ok(about, "To be honest, William won at Hastings.", F), "voice rules still hold"
+    assert b.proper_nouns("During the siege, General Grant took Vicksburg in 1863.") == ["General", "Grant", "Vicksburg", "1863"]

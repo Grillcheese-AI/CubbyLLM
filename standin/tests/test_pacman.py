@@ -82,6 +82,9 @@ def test_frontend_is_lifted_verbatim_and_every_patch_applies():
         pytest.skip("cubbyverse checkout not on this machine")
     html, missed = load_frontend()
     assert html and missed == [], f"upstream page changed under a patch: {missed}"
+    assert "cbSfx(s)" in html and 'src="/pac/music"' in html and "cbLevelStart(D)" in html, "the sound layer is wired"
+    from pacman import load_music, load_sfx
+    assert load_music() and load_sfx("game_start") and load_sfx("../x") is None, "soundtrack + jingle ship with the repo"
     assert "fetch('/pac/state')" in html and "'/pac/assets/" in html
     assert 'id="emocompass"' in html and "drawCompass" in html, "the Plutchik cone comes along"
     assert "cubby_uv_template" in html, "the face textures are the originals"

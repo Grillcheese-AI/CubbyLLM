@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import collections
 import json
+import os
 import pathlib
 import random
 import re
@@ -1646,6 +1647,9 @@ class CubbyGhost(CubbyPac):
 # and the two HUD rows we back with different real numbers than the original
 _FRONTEND_PATCHES = [
     ("fetch('/state')", "fetch('/pac/state')"),
+    ('function build(D){', 'function build(D){ if(window.cbLevelStart) cbLevelStart(D);'),   # the level-start jingle
+    ("  if(s.lives!=null) $('lives').innerHTML=",
+     "  if(window.cbSfx) cbSfx(s);\n  if(s.lives!=null) $('lives').innerHTML="),   # the sound layer reads every frame
     ("fetch('/init')", "fetch('/pac/init')"),
     ("fetch('/next')", "fetch('/pac/next')"),
     ("'/assets/", "'/pac/assets/"),
@@ -1741,6 +1745,87 @@ _CONSOLE_PANEL = r"""
 </script>
 """
 
+# the sound layer (2026-09-02): the owner's soundtrack loops quietly under
+# 8-bit oscillator effects for the game's events (a step ticks, a pellet is
+# the two-note waka, a star an arpeggio, a trap a noise burst, a catch a
+# falling saw…). Browsers need a gesture before audio: the toggle is that
+# gesture; the choice and the music volume are remembered per browser.
+_SOUND_PANEL = r"""
+<audio id="bgm" loop preload="auto" src="/pac/music"></audio>
+<audio id="jingle" preload="auto" src="/pac/sfx/game_start"></audio>
+<div id="sndbox" style="position:fixed;left:14px;bottom:14px;z-index:60;display:flex;gap:8px;align-items:center;
+  background:rgba(8,10,24,.78);border:1px solid rgba(120,140,255,.35);border-radius:10px;padding:6px 10px;
+  font:600 12px system-ui,sans-serif;color:#dfe6ff;backdrop-filter:blur(6px)">
+  <button id="sndbtn" style="background:#22264a;color:#dfe6ff;border:1px solid #5a63b0;border-radius:6px;padding:3px 9px;cursor:pointer;font:inherit">♪ sound off</button>
+  <label style="display:flex;align-items:center;gap:5px;opacity:.9">music <input id="bgmvol" type="range" min="0" max="60" value="18" style="width:70px"></label>
+</div>
+<script>
+(function(){
+  const bgm=document.getElementById('bgm'), btn=document.getElementById('sndbtn'), vol=document.getElementById('bgmvol');
+  let ac=null, on=false;
+  try{ on=localStorage.getItem('cb_sound')==='1'; const v=localStorage.getItem('cb_bgm'); if(v!=null) vol.value=v; }catch(e){}
+  bgm.volume=vol.value/100;                                   // the soundtrack sits UNDER the effects
+  function ctx(){ if(!ac){ const AC=window.AudioContext||window.webkitAudioContext; if(AC) ac=new AC(); }
+    if(ac&&ac.state==='suspended') ac.resume(); return ac; }
+  function paint(){ btn.textContent=on?'♪ sound on':'♪ sound off'; btn.style.background=on?'#2f8a5a':'#22264a'; }
+  function start(){ ctx(); bgm.play().catch(()=>{}); }
+  function stop(){ bgm.pause(); }
+  btn.onclick=function(){ on=!on; try{ localStorage.setItem('cb_sound',on?'1':'0'); }catch(e){} paint(); if(on){ start(); SFX.pellet(); } else stop(); };
+  vol.oninput=function(){ bgm.volume=vol.value/100; try{ localStorage.setItem('cb_bgm',vol.value); }catch(e){} };
+  if(on){ const kick=()=>{ start(); window.removeEventListener('pointerdown',kick); window.removeEventListener('keydown',kick); };
+    window.addEventListener('pointerdown',kick); window.addEventListener('keydown',kick); }
+  paint();
+  // 8-bit voice: square/triangle/saw oscillators with short envelopes
+  function tone(f0, ms, type, vol, f1){ const a=ctx(); if(!a||!on) return; const t=a.currentTime, o=a.createOscillator(), g=a.createGain();
+    o.type=type||'square'; o.frequency.setValueAtTime(f0,t); if(f1) o.frequency.exponentialRampToValueAtTime(f1,t+ms/1000);
+    g.gain.setValueAtTime(vol||0.1,t); g.gain.exponentialRampToValueAtTime(0.0001,t+ms/1000);
+    o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+ms/1000+0.02); }
+  function seq(notes, step, type, vol){ notes.forEach((f,i)=>setTimeout(()=>tone(f, step*1.7, type, vol), i*step)); }
+  function noise(ms, vol){ const a=ctx(); if(!a||!on) return; const n=Math.floor(a.sampleRate*ms/1000), b=a.createBuffer(1,n,a.sampleRate), d=b.getChannelData(0);
+    for(let i=0;i<n;i++) d[i]=(Math.random()*2-1)*(1-i/n); const src=a.createBufferSource(); src.buffer=b; const g=a.createGain(); g.gain.value=vol||0.16;
+    src.connect(g); g.connect(a.destination); src.start(); }
+  const SFX={
+    move:      ()=>tone(170,45,'triangle',0.05),
+    jump:      ()=>tone(280,140,'square',0.09,1100),
+    rest:      ()=>tone(330,260,'sine',0.05,495),
+    pellet:    ()=>{ tone(880,60,'square',0.11); setTimeout(()=>tone(1320,80,'square',0.10),60); },
+    star:      ()=>seq([523,659,784,1047,1319],70,'square',0.11),
+    ghost:     ()=>seq([1047,1319,1568,2093],55,'square',0.11),
+    caught:    ()=>tone(540,650,'sawtooth',0.13,55),
+    gameover:  ()=>seq([392,349,311,262,196],170,'sawtooth',0.12),
+    trapped:   ()=>{ noise(200,0.2); tone(130,240,'square',0.12,40); },
+    mine:      ()=>tone(250,100,'square',0.08,125),
+    level:     ()=>seq([523,659,784,1047,784,1047,1319],95,'square',0.12),
+    fail:      ()=>seq([440,415,392,370],150,'triangle',0.10),
+    superpower:()=>seq([659,880,1175,1568],65,'square',0.10),
+  };
+  // level start: the jingle plays over the ducked soundtrack (owner's game-start sample)
+  const jingle=document.getElementById('jingle'); jingle.volume=0.55;
+  jingle.addEventListener('ended', ()=>{ bgm.volume=vol.value/100; });
+  window.cbLevelStart=function(D){ if(!on) return; try{ bgm.volume=(vol.value/100)*0.3; jingle.currentTime=0; jingle.play().catch(()=>{ bgm.volume=vol.value/100; }); }catch(e){} };
+  let last={fr:0, to:null, rest:false};
+  window.cbSfx=function(s){
+    const fr=s.frightened||0, star=!!s.eaten && fr>last.fr, moved=s.to && (!last.to || s.to[0]!==last.to[0]||s.to[1]!==last.to[1]||s.to[2]!==last.to[2]);
+    if(on){
+      if(s.caught) SFX[s.caught==='gameover'?'gameover':'caught']();
+      else if(s.trapped>0) SFX.trapped();
+      else if(s.ate_ghost) SFX.ghost();
+      else if(s.beaten) SFX.level();
+      else if(s.failed) SFX.fail();
+      else if(star) SFX.star();
+      else if(s.learned) SFX.superpower();
+      else if(s.eaten) SFX.pellet();
+      else if(s.mined) SFX.mine();
+      else if(s.move==='rest'){ if(!last.rest) SFX.rest(); }
+      else if(s.move && s.move.indexOf('jump_')===0) SFX.jump();
+      else if(moved) SFX.move();
+    }
+    last={fr:fr, to:s.to, rest:s.move==='rest'};
+  };
+})();
+</script>
+"""
+
 
 def load_frontend(source: pathlib.Path = PACMAN_LIVE) -> tuple[str | None, list[str]]:
     """pacman_live.py's EXACT page, extracted at serve time (never imported),
@@ -1760,10 +1845,36 @@ def load_frontend(source: pathlib.Path = PACMAN_LIVE) -> tuple[str | None, list[
         else:
             missed.append(old[:40])
     if "</body>" in html:
-        html = html.replace("</body>", _CONSOLE_PANEL + "</body>", 1)
+        html = html.replace("</body>", _CONSOLE_PANEL + _SOUND_PANEL + "</body>", 1)
     else:
-        html += _CONSOLE_PANEL
+        html += _CONSOLE_PANEL + _SOUND_PANEL
     return html, missed
+
+
+MUSIC_PATH = pathlib.Path(os.environ.get("CB_PAC_MUSIC") or
+                          (pathlib.Path(__file__).resolve().parent / "data" / "music" / "neon_pixel_dash.mp3"))
+
+
+def load_music(path: pathlib.Path = MUSIC_PATH) -> bytes | None:
+    """The background soundtrack (the owner's "Neon Pixel Dash", 2026-09-02;
+    override with CB_PAC_MUSIC). None when absent -> the page stays silent
+    but the 8-bit effects still play."""
+    try:
+        return path.read_bytes() if path.suffix.lower() in (".mp3", ".ogg", ".wav") and path.is_file() else None
+    except OSError:
+        return None
+
+
+def load_sfx(name: str, base: pathlib.Path = MUSIC_PATH.parent) -> bytes | None:
+    """A sampled effect from the music dir: /pac/sfx/<name> -> <name>.mp3
+    (name-safe). Today: `game_start` (the level-start jingle)."""
+    if not re.fullmatch(r"[a-z0-9_]{1,40}", name or ""):
+        return None
+    try:
+        fp = base / f"{name}.mp3"
+        return fp.read_bytes() if fp.is_file() else None
+    except OSError:
+        return None
 
 
 def load_asset(rel: str, base: pathlib.Path = ASSETS_DIR) -> bytes | None:
