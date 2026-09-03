@@ -168,6 +168,12 @@ def serve_http(brain, host: str = "127.0.0.1", port: int = 8765) -> ThreadingHTT
 
 def main():
     from serve import build_serve
+    try:                                                 # say which code is running (a stale process is the usual "still broken")
+        import subprocess
+        rev = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+        print(f"CubbyServe at git {rev or '?'}")
+    except Exception:
+        pass
     ap = argparse.ArgumentParser()
     ap.add_argument("--gguf", required=True)
     ap.add_argument("--table", default=None)

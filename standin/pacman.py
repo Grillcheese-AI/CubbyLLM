@@ -1330,8 +1330,18 @@ class LivePac:
                         self.man.derive_counts()
                 r = self.man.resp()
             except Exception as e:                       # a dead VM must not kill the server
+                import traceback
+                tb = traceback.format_exc().strip().splitlines()
+                where = " | ".join(l.strip() for l in tb[-4:-1])   # the last frames: file:line + the line
                 self.error = str(e)[:200]
-                self.man._t("live_error", error=self.error)
+                self.man._t("live_error", error=self.error, where=where)
+                try:                                     # and on disk, so the trace survives the console
+                    log = PROGRAMS_PATH.parent / "live_errors.log"
+                    log.parent.mkdir(parents=True, exist_ok=True)
+                    with open(log, "a", encoding="utf-8") as f:
+                        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {self.error}\n" + "\n".join(tb) + "\n\n")
+                except OSError:
+                    pass
                 r = {**(self._last_resp or self.man.resp()), "error": self.error}
             self._last = now
             self._last_resp = r
