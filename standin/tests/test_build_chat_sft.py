@@ -177,6 +177,10 @@ def test_plutchik_affect_and_quote_records():
     assert b.affect_record("see [FILE_PATH_6] please", 0.1, 0.2, 1, "convos") is None, "placeholder rows are dropped"
     assert b.affect_ok(a, "valence +0.5, arousal 0.4") and not b.affect_ok(a, "valence -0.5, arousal 0.2")
     assert b.affect_ok(a, "I'd say 0.6 and 0.3.") and not b.affect_ok(a, "calm and warm")
+    replay = {"subtype": "realm_phase", "gold": None, "program": "valence +0.7, arousal 0.2"}   # the notebook's file: reference only
+    assert b.affect_ok(replay, "valence +0.5, arousal 0.3") and not b.affect_ok(replay, "valence -0.9, arousal 0.3")
+    hist = {"subtype": "dialogue", "gold": None, "program": "Dante was a Florentine poet, the author of the Divine Comedy."}
+    assert b.history_ok(hist, "He was Dante, the poet of Florence.", F) and not b.history_ok(hist, "A poet, I believe.", F)
     rng = random.Random(0)
     recs = {x["subtype"]: x for x in b.quote_records({"quote": "As soon as you trust yourself, you will know how to live.",
                                                        "author": "Johann Wolfgang von Goethe", "category": "['trust']"}, rng, F, 0)}

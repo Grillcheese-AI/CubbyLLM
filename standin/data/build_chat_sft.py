@@ -558,7 +558,8 @@ def history_ok(rec: dict, gen: str, facts: dict) -> bool:
     if sub == "when":
         return re.sub(r"\s*BCE?$", "", gold) in gen if gold else False
     low = gen.lower()
-    return any(str(g).lower() in low for g in (rec.get("gold_any") or []))
+    keys = rec.get("gold_any") or proper_nouns(str(rec.get("program") or ""))   # replay files carry the reference, not gold_any
+    return any(str(g).lower() in low for g in keys)
 
 
 def history_record(subtype: str, i: int, prompt: str, answer: str, gold: str | None, gold_any: list[str],
@@ -1033,7 +1034,8 @@ def affect_ok(rec: dict, gen: str, tol: float = 0.35) -> bool:
     p = parse_affect(gen)
     if p is None:
         return False
-    v, a = (rec.get("gold_any") or [None, None])[:2]
+    ga = rec.get("gold_any") or parse_affect(str(rec.get("gold") or rec.get("program") or ""))   # replay files carry the reference
+    v, a = (list(ga) if ga else [None, None])[:2]
     return v is not None and abs(p[0] - v) <= tol and abs(p[1] - a) <= tol
 
 
