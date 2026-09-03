@@ -299,9 +299,9 @@ through the local VM eval (`eval_emitter_vm.py --val-generations …/emitter_lfm
 |---|---|---|
 | identity / chat / content | 1.000 / 1.000 / 1.000 | identity back from v5's 0.818 (×4 replay) |
 | **affect** | 1.000 | every answer in the `valence ±x.x, arousal x.x` form, within tolerance |
-| emotion | 0.667 | the two misses are near-misses (`nervousness`→disappointment, `caring`→optimism) |
-| **history** | 0.333 | `when` right; **dating** guesses the wrong decade twice (1869 for 1885, 1981 for 1998) and hits once (1898 for 1899); the two `dialogue` misses are a scoring artifact — the replay file lacked `gold_any` (fixed: the notebook writes it now, and the checks fall back to the reference) |
-| arithmetic / chain / game families | gold 0.500 (n=6) / 0.667 / 1.000 | too few to read; the stratified run decides |
+| emotion | 0.667 → **0.833** (re-exported file) | the misses are near-misses (`nervousness`→disappointment, `caring`→optimism) |
+| **history** | 0.333 → **0.833** (re-exported file with `gold_any`, 2026-09-03) | `when` right; the first file's two `dialogue` misses were the missing-`gold_any` artifact (fixed: the notebook writes it now, and the checks fall back to the reference); **dating** remains the weak spot (wrong decade twice in the first sample) |
+| arithmetic / chain / game families | gold 0.500 (n=6) / 0.667 → **1.000** / 1.000 | too few to read; the stratified run (`STANDIN_EVAL_N=40`) decides |
 
 **The stratified local run (40/task, Vulkan on the RX 6750 XT) crashed the GPU at 50/382** with the `/pac`
 server holding a second copy of the model. Until that is understood, get the wide read from Colab instead:
