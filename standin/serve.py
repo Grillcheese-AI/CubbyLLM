@@ -56,6 +56,7 @@ __wiring__ = "STANDALONE"
 
 from build_emitter_sft import answer_fn, shim_isolver, wrap_role_prompt  # noqa: E402
 from chat import CubbyChat  # noqa: E402
+from emitter import ContextualEmitter  # noqa: E402
 from identity import (EMITTER_SYSTEM, T, guess_lang, is_identity_question,  # noqa: E402
                       load_facts, voice_ok)
 from worlds import FactStore, route_world  # noqa: E402
@@ -165,7 +166,7 @@ class ReasoningCortex:
             # Flat facts here would let the emitter ground something irrelevant.
             trace("no_walk", reason="retrieval below threshold; flat fallback disabled")
         prompt = question + "\nFacts:\n" + "\n".join(f"- {f}" for f in facts) if facts else question
-        gen = self.emitter.emit(prompt, max_new_tokens=450, system=EMITTER_SYSTEM,
+        gen = self.emitter.emit(prompt, context="programs", max_new_tokens=450, system=EMITTER_SYSTEM,
                                 prefix=PROGRAM_PREFIX)
         raw = gen
         cleaned = _clean(gen)
@@ -296,7 +297,7 @@ class MemoryCortex:
         VM-side persistence is the memory-service cycle, not claimed here."""
         from cubbyllm.bridges import cubelang_client as cc
         try:
-            gen = self.emitter.emit(wrap_role_prompt(fact), max_new_tokens=450,
+            gen = self.emitter.emit(wrap_role_prompt(fact), context="programs", max_new_tokens=450,
                                     system=EMITTER_SYSTEM)
             program = shim_isolver(_clean(gen))
             if not program:
@@ -317,23 +318,29 @@ class CubbyBrain:
                  route_tau: float = 0.30, k_facts: int = 3,
                  tau_vm: float = ReasoningCortex.TAU_VM,
                  tau_ret: float = ReasoningCortex.TAU_RET, appraiser=None, talk_emitter=None) -> None:
-        # two adapters on one base (2026-09-03): `emitter` writes PROGRAMS (reasoning, memory writes,
-        # forge, the game); `talk_emitter` speaks (chat, the perception reads, the thought verbalizer).
-        # One model for both was measured to interfere — identity fell in v5, forge decision in v6,
-        # arithmetic 0.825 -> 0.75 -> 0.675 over three rounds as the chat volume grew. With one GGUF given,
-        # both roles fall back to it (the pre-v8 behaviour).
-        self.emitter = emitter
-        self.talk_emitter = talk_emitter if talk_emitter is not None else emitter
+        # ONE trunk interface, theta = f(c) shaped (2026-09-03): every cortex calls `self.emitter.emit(...,
+        # context=<role>)` — "programs" for the VM path (reasoning, memory writes, forge, the game),
+        # "talk" for the words (chat, the perception reads, the thought verbalizer). A `ContextualEmitter`
+        # resolves the role to an adapter (v8: two fine-tunes on one base — one model for both was measured
+        # to interfere: identity fell in v5, forge decision in v6, arithmetic 0.825 -> 0.75 -> 0.675 as the
+        # chat volume grew); a single model ignores the context; the 2B trunk will condition on it. Callers
+        # never pick weights (guardrail 2: the trunk drops in behind the same interface).
+        if hasattr(emitter, "resolve") and hasattr(emitter, "adapters"):   # already contextual (duck-typed: `emitter` vs `standin.emitter` import paths)
+            self.emitter = emitter
+        elif talk_emitter is not None and talk_emitter is not emitter:
+            self.emitter = ContextualEmitter({"programs": emitter, "talk": talk_emitter}, default="programs")
+        else:
+            self.emitter = emitter                        # one model, both roles (pre-v8 behaviour)
         self.facts = facts or load_facts()
         self.exe = exe
         self.route_tau = float(route_tau)
         self.worlds: dict[str, object] = {"facts": retriever}   # FactStore or bare callable
         self.store_texts = store_texts if store_texts is not None else getattr(retriever, "texts", [])
-        self.chat = CubbyChat(self.talk_emitter, self.facts, exe=exe, appraiser=appraiser)   # TalkCortex + the speech exit
+        self.chat = CubbyChat(self.emitter, self.facts, exe=exe, appraiser=appraiser)   # TalkCortex + the speech exit
         self.mediate_chat = False                        # no-facts turns skip the VM (task/learn/help answers still go through the ASK)
-        self.reason = ReasoningCortex(emitter, exe=exe, k_facts=k_facts,
+        self.reason = ReasoningCortex(self.emitter, exe=exe, k_facts=k_facts,
                                       tau_vm=tau_vm, tau_ret=tau_ret)
-        self.memory = MemoryCortex(emitter, self.facts, exe=exe)
+        self.memory = MemoryCortex(self.emitter, self.facts, exe=exe)
         self.cortices: dict[str, object] = {}                   # plugin cortices: match/handle
         self._observers: list = []
         self.events: collections.deque = collections.deque(maxlen=500)   # the console feed
@@ -507,7 +514,7 @@ def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
     from exp_m3_cot_pipeline import V4_TABLE, load_sample
     from exp_m3_domain_routing import _load_semantic_words
 
-    from standin.emitter import LlamaCppEmitter
+    from standin.emitter import ContextualEmitter, LlamaCppEmitter
     print(f"loading fact store ({n_store} sampled questions' fact pool) ...", flush=True)
     _q, _a, _h, _chains, store = load_sample(n_store, seed=0)
     if extra_facts:                                      # selftest: the walked facts must BE in the store
@@ -519,11 +526,11 @@ def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
     world = FactStore(store, enc=enc, name="facts")
     print(f"loading emitter {gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
     emitter = LlamaCppEmitter(gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers)   # v6 trained at 4096
-    talk = None
     if talk_gguf and os.path.abspath(talk_gguf) != os.path.abspath(gguf):
-        print(f"loading talk emitter {talk_gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
+        print(f"loading talk adapter {talk_gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
         talk = LlamaCppEmitter(talk_gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers)
-    return CubbyBrain(emitter, world, exe=exe, route_tau=route_tau, talk_emitter=talk)
+        emitter = ContextualEmitter({"programs": emitter, "talk": talk}, default="programs")
+    return CubbyBrain(emitter, world, exe=exe, route_tau=route_tau)
 
 
 def load_val_chains(n: int) -> list[dict]:

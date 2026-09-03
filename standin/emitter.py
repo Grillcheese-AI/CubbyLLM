@@ -38,13 +38,18 @@ class Emitter(Protocol):
     name: str
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
-             prefix: str = "", temperature: float = 0.0, seed: int | None = None) -> str:
+             prefix: str = "", temperature: float = 0.0, seed: int | None = None,
+             context: "str | dict | None" = None) -> str:
         """`system` overrides the default system prompt — this is how the host
         injects the hormonal-state block (standin/data/identity.py) for chat
         turns; emitter turns leave it None and get the strict prompt.
         `prefix` is forced assistant-prefill text (style steering: the serve
         loop pins task turns to the CotChain opening); implementations return
-        prefix + continuation so callers always see the full program."""
+        prefix + continuation so callers always see the full program.
+        `context` is the trunk's c in theta = f(c): today a role tag ("programs" |
+        "talk") or a dict with a "role" (and, when the host has them, "world" and
+        "state"); a single-model emitter ignores it, `ContextualEmitter` resolves it
+        to an adapter, the 2B trunk will condition its parameters on it."""
         ...
 
 
@@ -60,7 +65,8 @@ class LlamaServerEmitter:
         self.name = f"llama-server:{model}"
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
-             prefix: str = "", temperature: float = 0.0, seed: int | None = None) -> str:
+             prefix: str = "", temperature: float = 0.0, seed: int | None = None,
+             context: "str | dict | None" = None) -> str:   # a single model: the context is the caller's business
         if prefix:
             raise NotImplementedError("assistant prefill is not supported over the chat endpoint")
         body = json.dumps({
@@ -122,7 +128,8 @@ class LlamaCppEmitter:
         return self._llm
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
-             prefix: str = "", temperature: float = 0.0, seed: int | None = None) -> str:
+             prefix: str = "", temperature: float = 0.0, seed: int | None = None,
+             context: "str | dict | None" = None) -> str:   # a single model: the context is the caller's business
         text = render_chatml(system or self.system, prompt, self.prefill + prefix)
         sampling = {"temperature": float(temperature), "top_p": 0.9} if temperature > 0 else {"temperature": 0.0}
         out = self._load().create_completion(text, max_tokens=int(max_new_tokens), seed=(0 if seed is None else int(seed)),
@@ -141,8 +148,57 @@ class ReplayEmitter:
         self.name = name
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
-             prefix: str = "", temperature: float = 0.0, seed: int | None = None) -> str:
+             prefix: str = "", temperature: float = 0.0, seed: int | None = None,
+             context: "str | dict | None" = None) -> str:   # a single model: the context is the caller's business
         try:
             return self._by_prompt[prompt]                # recordings are complete programs
         except KeyError:
             raise KeyError(f"no recorded generation for prompt: {prompt[:80]!r}") from None
+
+
+def context_role(context) -> str | None:
+    """The role tag inside a context: the tag itself, or a dict's "role"."""
+    if context is None:
+        return None
+    if isinstance(context, str):
+        return context
+    if isinstance(context, dict):
+        return context.get("role")
+    return None
+
+
+class ContextualEmitter:
+    """One trunk interface over several adapters, selected by the context — the
+    stand-in's stand-in for theta = f(c): a K-entry, tag-indexed adapter bank (the
+    "cheapest MoE" of the panel agenda: no learned router; the thalamus's rules are
+    the frozen router H-C4 asked for). Today the entries are whole fine-tunes on one
+    base ("programs": the emitter, "talk": the talk cortex); the same object later
+    holds one base + LoRA deltas, and the 2B trunk replaces the lookup with generated
+    parameters — callers never change. An unknown or missing role uses `default`."""
+
+    def __init__(self, adapters: dict, default: str = "programs") -> None:
+        if not adapters:
+            raise ValueError("ContextualEmitter needs at least one adapter")
+        if default not in adapters:
+            raise ValueError(f"default role {default!r} not among adapters {sorted(adapters)}")
+        self.adapters = dict(adapters)
+        self.default = default
+        self.name = "ctx[" + ",".join(f"{k}={getattr(v, 'name', '?')}" for k, v in self.adapters.items()) + "]"
+        self.calls: dict = {k: 0 for k in self.adapters}   # per-role usage, for /health and tests
+
+    @property
+    def is_split(self) -> bool:
+        """True when at least two roles resolve to different adapters."""
+        return len({id(v) for v in self.adapters.values()}) > 1
+
+    def resolve(self, context) -> str:
+        role = context_role(context)
+        return role if role in self.adapters else self.default
+
+    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
+             prefix: str = "", temperature: float = 0.0, seed: int | None = None,
+             context: "str | dict | None" = None) -> str:
+        role = self.resolve(context)
+        self.calls[role] += 1
+        return self.adapters[role].emit(prompt, max_new_tokens=max_new_tokens, system=system, prefix=prefix,
+                                        temperature=temperature, seed=seed, context=context)

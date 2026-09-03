@@ -98,7 +98,7 @@ class ToolForge:
         t0 = time.perf_counter()
         prefix = PROGRAM_PREFIX if task.kind == "chain" else ""
         try:
-            raw = self.emitter.emit(task.prompt, max_new_tokens=self.max_new_tokens,
+            raw = self.emitter.emit(task.prompt, context="programs", max_new_tokens=self.max_new_tokens,
                                     system=EMITTER_SYSTEM, prefix=prefix)
         except Exception as e:                           # the trunk must never stop the game
             raw, err = "", f"emitter error: {e}"[:200]

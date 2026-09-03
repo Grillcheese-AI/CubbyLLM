@@ -135,8 +135,8 @@ def make_handler(brain):
                     self._send(404, {"error": "unknown path"})
             elif self.path == "/health":
                 self._send(200, {"ok": True, "emitter": getattr(brain.emitter, "name", "?"),
-                                 "talk_emitter": getattr(brain.talk_emitter, "name", "?"),
-                                 "two_adapters": brain.talk_emitter is not brain.emitter})
+                                 "two_adapters": bool(getattr(brain.emitter, "is_split", False)),
+                                 "adapter_calls": getattr(brain.emitter, "calls", None)})
             elif self.path == "/state":
                 self._send(200, brain.chat.chem.to_dict())
             elif self.path == "/worlds":
@@ -208,7 +208,7 @@ def main():
                         talk_gguf=args.talk_gguf)
     if args.model_appraisal:
         from perception import ModelAppraiser
-        brain.chat.appraiser = ModelAppraiser(brain.talk_emitter, brain.facts)   # a perception read: the talk adapter
+        brain.chat.appraiser = ModelAppraiser(brain.emitter, brain.facts)   # asks with context="talk"
         print("model appraisal ON: the trunk reads the emotion of every turn (sense events carry the label)")
     if args.pacman:
         from pacman import PROGRAMS_PATH, CubbyGhost, LivePac

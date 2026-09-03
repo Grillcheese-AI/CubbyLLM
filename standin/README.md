@@ -322,6 +322,28 @@ bring arithmetic back to v5's **0.825 or better** with the forge probe held at 1
 program-only adapter does not beat 0.675 on arithmetic by ten points at n=40, interference was not the cause
 and the split is not worth its VRAM.
 
+**Fitted to the architecture (same day, after re-reading it).** The architecture has ONE trunk whose active
+parameters are a function of context — θ = f(c) (H0), in the MindForge parameterization a context
+hypervector selecting a combination of low-rank bases — and says specialization is *adapters generated from
+context*, that the world mixture and the hormonal state *are* the context, and (guardrail 2) that the
+stand-in sits behind the trunk interface so the 2B drops in unchanged. The first cut of v8 had grown a second
+handle on the brain (`talk_emitter`) with cortices choosing weights by hand — a fork of the interface. Now:
+- **The interface takes the context.** `Emitter.emit(..., context=)` — a role tag or a dict with `role`
+  (and `state`: CubbyChat passes the hormonal state, the trunk's slow affective part of c). A single model
+  ignores it; the 2B trunk will condition on it.
+- **One emitter object resolves it.** `emitter.ContextualEmitter({"programs": …, "talk": …})` is the
+  stand-in's θ = f(c): a K=2 **tag-indexed adapter bank** (the agenda's "cheapest MoE — no learned router";
+  the thalamus's rules are the frozen router H-C4 asked for). Today the entries are two fine-tunes of one
+  base; the same object later holds one base plus LoRA deltas; the trunk replaces the lookup with generated
+  parameters. Callers never change.
+- **Cortices declare their role, never pick weights.** ReasoningCortex, MemoryCortex, ToolForge and the
+  game's programs say `context="programs"`; CubbyChat, the perception reads and the thought verbalizer say
+  `context="talk"`. `build_serve` builds the contextual emitter from `--gguf` + `--talk-gguf`; one GGUF
+  stays a plain emitter. `/health` reports `two_adapters` and the per-role call counts.
+- What the split will and will not say (guardrail 1): a positive result says *route-selected adapters remove
+  a measured program/talk interference in a 2.6B LoRA fine-tune* — a stand-in fact, a pointer under H0 in the
+  hypotheses doc, nothing about the trunk's own θ = f(c).
+
 **Also in v8's data:** the FR location phrasings of the `world` intent ("Tu habites où ?", "Où es-tu ?", "Où
 est ta maison ?" + EN "Where are you?", "Which world do you live in?") after v7 answered "Où vis-tu ?" with an
 invented town; the identity-question detector catches them so they never reach the fact path.

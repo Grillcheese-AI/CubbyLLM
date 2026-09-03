@@ -341,30 +341,44 @@ def test_live_a_multi_hop_answer_must_carry_the_final_relation():
     assert rec1["reply"] == "berlin"
 
 
-def test_live_two_adapters_programs_go_to_the_emitter_and_talk_to_the_talk_adapter():
-    """v8: one base, two adapters. The VM path (a fact question) must call the program emitter; a no-facts
-    turn ("how are you") must call the talk adapter; with one emitter given, both roles use it."""
+def test_live_the_context_selects_the_adapter_and_callers_hold_one_emitter():
+    """v8, fitted to the architecture (theta = f(c)): every cortex calls ONE emitter with a context role;
+    a ContextualEmitter resolves "programs" / "talk" to adapters; a fact question never reaches the talk
+    adapter, a no-facts turn never reaches the program adapter; one model serves both roles unchanged."""
     _exe_or_skip()
+    from emitter import ContextualEmitter
 
     class Counting(ChainEmitter):
         def __init__(self, name):
             self.name, self.calls = name, []
 
         def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
-            self.calls.append(prompt[:40])
+            self.calls.append((kw.get("context"), prompt[:30]))
             return super().emit(prompt, max_new_tokens, system, prefix)
 
     class Talker(Counting):
         def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
-            self.calls.append(prompt[:40])
+            self.calls.append((kw.get("context"), prompt[:30]))
             return "Doing well, thanks for asking! What can I do for you?"
 
     prog, talk = Counting("prog"), Talker("talk")
-    s = sv.CubbyServe(prog, overlap_retriever, STORE, route_tau=0.2, talk_emitter=talk)
-    assert s.talk_emitter is talk and s.chat.emitter is talk and s.reason.emitter is prog and s.memory.emitter is prog
+    ctx = ContextualEmitter({"programs": prog, "talk": talk}, default="programs")
+    assert ctx.is_split and ctx.resolve("talk") == "talk" and ctx.resolve({"role": "talk"}) == "talk" \
+        and ctx.resolve(None) == "programs" and ctx.resolve("mystery") == "programs"
+    s = sv.CubbyServe(ctx, overlap_retriever, STORE, route_tau=0.2)
+    assert s.emitter is ctx and s.chat.emitter is ctx and s.reason.emitter is ctx and s.memory.emitter is ctx
     rec = s.turn("What is the capital of the homeland of Zorblax the Painter?")
-    assert rec["kind"] == "task" and rec["reply"] == "Quuxville" and prog.calls and not talk.calls
+    assert rec["kind"] == "task" and rec["reply"] == "Quuxville"
+    assert prog.calls and prog.calls[0][0] == "programs" and not talk.calls
     rec2 = s.turn("how are you today?")
     assert rec2["kind"] == "chat" and talk.calls and len(prog.calls) == 1, "the no-facts turn never touched the program adapter"
+    assert isinstance(talk.calls[0][0], dict) and talk.calls[0][0]["role"] == "talk" and "dopamine" in talk.calls[0][0]["state"], \
+        "the hormonal state rides in the context (the trunk's c)"
+    assert ctx.calls == {"programs": 1, "talk": 1}
+    # the pre-v8 shape still works: two handles fold into one contextual emitter
+    p2, t2 = Counting("p2"), Talker("t2")
+    s2 = sv.CubbyServe(p2, overlap_retriever, STORE, route_tau=0.2, talk_emitter=t2)
+    assert isinstance(s2.emitter, ContextualEmitter) and s2.emitter.is_split
+    # one model: both roles, no ContextualEmitter needed
     solo = sv.CubbyServe(Counting("only"), overlap_retriever, STORE, route_tau=0.2)
-    assert solo.talk_emitter is solo.emitter, "one GGUF: both roles fall back to it"
+    assert not isinstance(solo.emitter, ContextualEmitter) and solo.turn("how are you today?")["kind"] == "chat"

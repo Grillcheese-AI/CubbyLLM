@@ -88,7 +88,7 @@ class ModelAppraiser:
     def read(self, text: str, lang: str = "en") -> dict:
         prompt = (EMOTION_PROMPT_FR if lang == "fr" else EMOTION_PROMPT).format(t=" ".join(text.split()))
         try:
-            raw = self.emitter.emit(prompt, max_new_tokens=self.max_new_tokens, system=self.system)
+            raw = self.emitter.emit(prompt, context="talk", max_new_tokens=self.max_new_tokens, system=self.system)   # a perception read: the talk adapter
         except Exception as e:                           # the trunk must never stop a turn
             self.last = {"label": None, "petal": None, "error": str(e)[:120]}
             return self.last

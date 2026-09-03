@@ -1230,7 +1230,7 @@ class CubbyGhost(CubbyPac):
                   (f"Say this in your own words, one short sentence, first person, keeping every number "
                    f"and every name: {line}"))
         try:
-            raw = self.brain.talk_emitter.emit(prompt, max_new_tokens=48,   # words, not programs: the talk adapter
+            raw = self.brain.emitter.emit(prompt, context="talk", max_new_tokens=48,   # words, not programs: the talk adapter
                                           system=identity_system(self.brain.facts, self.brain.chat.state),
                                           temperature=0.85, seed=self.env.steps * 7919 + self.env.level)   # words: sample, never repeat verbatim
         except Exception:
