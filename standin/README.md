@@ -269,6 +269,22 @@ spatial CSV (robot semantic parses — a candidate for a future spatial family f
 `history_ok` and `affect` with `affect_ok` (the notebook inlines both). Train with `VERSION='v6'`; the v6
 numbers land here when the run finishes.
 
+### Two more live misroutes (owner's chat, 2026-09-02, while v6 trained)
+
+- *"how would you like to have a new plugin to explore the web?"* went to **pacman** — the bare word
+  `explore` claimed it. Plugins now match in tiers: the game's own words (pellets, maze, `explore for 30`,
+  `status`, ghosts…) score 1.0 and claim a turn outright; a bare command (`explore`, `play`, `continue`) scores
+  0.6 and claims a **statement only** — the brain never hands a plugin a question below 1.0; a turn about
+  something else (the web, a plugin, a file) scores 0. Opinion questions to Cubby (*would you like…*, *do you
+  want…*, *tu voudrais…*) are no-facts talk.
+- *"what is the cubbyverse"* went to the fact path and the don't-know line. The cubbyverse is now an
+  **identity fact** (`world` in `identity_facts.json`, EN+FR): the identity system prompt carries the line, so
+  the served model answers it himself (no VM, no plugin — identity questions route to talk *before* plugins and
+  retrieval), and `build_identity_records` has a `world` intent (10 EN + 9 FR questions, `identity_ok` requires
+  the world to be named) that enters the training set at the **next data build** — v6 was already training.
+  A fact question *about* the world (*who is the hero of cubbyverse?*) is not identity and still reaches the
+  plugin's world through retrieval.
+
 ## Chat is mediated by a VM program, not emitted as one (design note, 2026-08-30)
 
 Checked in the cubelang source. The VM's **registry-seeded (tamper-proof) interfaces
