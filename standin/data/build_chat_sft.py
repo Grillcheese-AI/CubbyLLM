@@ -195,6 +195,8 @@ def build_hf_chat(rng: random.Random, facts: dict, quota: dict | None = None) ->
         why["missing:french_alpaca"] += 1
     return out, why
 URL = re.compile(r"https?://|www\.", re.I)
+CODE_LEAK = re.compile(r"(^|\n)\s*(def |class |import |from \w+ import|print\(|return |#include|<\?php|\$\(|=>)|\bconsole\.log\b")
+IDENTITY_REPEAT = 3                                      # v6: 526 identity records vs 9k chat pairs pulled the greeting/unknown intents
 
 
 def chat_ok(user: str, assistant: str, facts: dict) -> str | None:
@@ -214,6 +216,8 @@ def chat_ok(user: str, assistant: str, facts: dict) -> str | None:
     if EXPLICIT.search(user) or EXPLICIT.search(assistant):
         return "explicit"
     if "```" in assistant or assistant.count("\n") > 6:
+        return "code/format"
+    if CODE_LEAK.search(assistant):                      # v5 lesson: Python leaked into role-binding programs
         return "code/format"
     return None
 
@@ -480,6 +484,9 @@ def main():
     ap.add_argument("--exposure", type=int, default=0,
                     help="ALSO add N explicit-prose continuation records (generation exposure). Off by default; "
                          "the owner's switch.")
+    ap.add_argument("--version", default="v6", help="output name: emitter_sft_{version}.jsonl (v5 is trained; v6 = "
+                                                     "v5 data + identity x3 replay + the code-leak filter)")
+    ap.add_argument("--identity-repeat", type=int, default=IDENTITY_REPEAT)
     args = ap.parse_args()
     t0 = time.perf_counter()
     rng = random.Random(SEED)
@@ -506,9 +513,14 @@ def main():
         print(f"  kept {len(exposure)} | skipped {dict(why_exp)}")
     new = finish(chat + content + emotion + exposure, facts)
     replay = [] if args.no_replay else [json.loads(l) for l in open(V4_PATH, encoding="utf-8")]
+    n_id = 0
+    for r in replay:                                     # the identity contract outweighs the chat volume
+        if r["task"] == "identity" and r["split"] == "train":
+            r["repeat"] = max(int(r.get("repeat", 1)), args.identity_repeat)
+            n_id += 1
     records = replay + new
     os.makedirs(OUT_DIR, exist_ok=True)
-    out_path = os.path.join(OUT_DIR, "emitter_sft_v5.jsonl")
+    out_path = os.path.join(OUT_DIR, f"emitter_sft_{args.version}.jsonl")
     with open(out_path, "w", encoding="utf-8") as f:
         for r in records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
@@ -517,9 +529,10 @@ def main():
     except Exception:
         git_rev = "unknown"
     manifest = {
-        "built": datetime.now(timezone.utc).isoformat(), "git_rev": git_rev, "version": "v5",
+        "built": datetime.now(timezone.utc).isoformat(), "git_rev": git_rev, "version": args.version,
         "config": {"SEED": SEED, "N_CHAT": args.n_chat, "N_CONTENT": args.n_content, "limit_lines": args.limit_lines,
-                   "replay": not args.no_replay,
+                   "replay": not args.no_replay, "identity_repeat": args.identity_repeat,
+                   "identity_train_records_upweighted": n_id,
                    "schema_note": "v5 = v4 (replay, unchanged) + chat pairs (Orca, voice/guard-filtered, identity "
                                   "system prompt with a sampled state) + content awareness (passage -> nsfw/safe; "
                                   "minors/non-consent screened out; generation-exposure deliberately NOT built)",
@@ -545,9 +558,9 @@ def main():
         "gaps": ["the local corpus has no dialogue/French chat; both come from the HF sources above"],
         "output": out_path, "output_sha256": sha256_file(out_path), "wall_s": time.perf_counter() - t0,
     }
-    mp = os.path.join(OUT_DIR, "emitter_sft_v5.manifest.json")
+    mp = os.path.join(OUT_DIR, f"emitter_sft_{args.version}.manifest.json")
     json.dump(manifest, open(mp, "w", encoding="utf-8"), indent=1)
-    print(f"\nv5: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion"
+    print(f"\n{args.version}: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion"
           + (f" + {len(exposure)} exposure" if exposure else "") + f" + {len(replay)} replay "
           f"= {len(records)} (after prompt dedupe)")
     print(f"wrote {out_path}\nwrote {mp} ({manifest['wall_s']:.0f}s) sha {manifest['output_sha256'][:12]}")

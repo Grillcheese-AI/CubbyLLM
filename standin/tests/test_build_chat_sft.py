@@ -28,6 +28,10 @@ def test_chat_pairs_must_pass_cubbys_rules_not_the_base_models():
     assert b.chat_ok("hi", "See https://example.com for more.", F) == "url"
     assert b.chat_ok("hi", "ok", F) == "assistant length"
     assert b.chat_ok("write a poem", "Here you go:\n```python\nprint(1)\n```", F) == "code/format"
+    assert b.chat_ok("sort a list", "Sure:\ndef sort(xs):\n    return sorted(xs)", F) == "code/format", \
+        "v5 lesson: bare Python leaked into role-binding programs"
+    assert b.chat_ok("hi", "I would return the book to the library tomorrow, I think.", F) is None, \
+        "'return' mid-sentence is prose, not code"
 
 
 def test_content_labels_and_screens():
