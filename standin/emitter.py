@@ -99,6 +99,31 @@ def render_chatml(system: str, user: str, prefill: str = NO_THINK_PREFILL) -> st
     return out
 
 
+def render_gemma(system: str, user: str, prefill: str = "") -> str:
+    """Gemma's chat template (Gemma 3/4, `google/gemma-4-*-it`): turns are
+    `<start_of_turn>{role}\n…<end_of_turn>\n`, the system text rides in the
+    first user turn, the generation prompt is `<start_of_turn>model\n`. No
+    think block, so the default prefill is empty. BOS is the tokenizer's."""
+    body = f"{system}\n\n{user}" if system else user
+    return f"<start_of_turn>user\n{body}<end_of_turn>\n<start_of_turn>model\n{prefill}"
+
+
+CHAT_FAMILIES = {   # family -> (renderer, stop strings, default prefill)
+    "chatml": (render_chatml, ["<|im_end|>"], NO_THINK_PREFILL),      # LFM2.5 (2.6B, 8B-A1B), Qwen3
+    "gemma": (render_gemma, ["<end_of_turn>"], ""),                    # Gemma 3 / 4
+}
+
+
+def chat_family(template: str | None) -> str:
+    """The template family of a GGUF's `tokenizer.chat_template` (the sniff a
+    talk adapter on a non-LFM base needs). Unknown or missing -> chatml, the
+    family every model served so far uses."""
+    t = template or ""
+    if "<start_of_turn>" in t:
+        return "gemma"
+    return "chatml"
+
+
 class LlamaCppEmitter:
     """In-process GGUF inference through llama-cpp-python (the installed
     0.3.30 bundles ggml-vulkan.dll and finds the RX 6750 XT — verified
@@ -110,31 +135,46 @@ class LlamaCppEmitter:
     context; set prefill="" to let it think."""
 
     def __init__(self, gguf_path: str, system: str = SYSTEM, n_ctx: int = 4096,
-                 n_gpu_layers: int = -1, verbose: bool = False, prefill: str = NO_THINK_PREFILL) -> None:
+                 n_gpu_layers: int = -1, verbose: bool = False, prefill: str | None = None,
+                 family: str | None = None) -> None:
         self.gguf_path = gguf_path
         self.system = system
         self.n_ctx = int(n_ctx)
         self.n_gpu_layers = int(n_gpu_layers)
         self.verbose = verbose
-        self.prefill = prefill
+        self._prefill = prefill          # None: the family's default (an empty think block for chatml, nothing for gemma)
+        self._family = family            # None: sniffed from the GGUF's tokenizer.chat_template at load
         self.name = f"llama-cpp:{gguf_path.replace(chr(92), '/').rsplit('/', 1)[-1]}"
         self._llm = None
+
+    @property
+    def family(self) -> str:
+        if self._family is None:
+            self._load()
+        return self._family
+
+    @property
+    def prefill(self) -> str:
+        return CHAT_FAMILIES[self.family][2] if self._prefill is None else self._prefill
 
     def _load(self):
         if self._llm is None:
             from llama_cpp import Llama
             self._llm = Llama(model_path=self.gguf_path, n_ctx=self.n_ctx, n_gpu_layers=self.n_gpu_layers,
                               verbose=self.verbose, seed=0)
+            if self._family is None:
+                self._family = chat_family((getattr(self._llm, "metadata", None) or {}).get("tokenizer.chat_template"))
         return self._llm
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
              prefix: str = "", temperature: float = 0.0, seed: int | None = None,
              context: "str | dict | None" = None) -> str:   # a single model: the context is the caller's business
-        text = render_chatml(system or self.system, prompt, self.prefill + prefix)
+        llm = self._load()
+        render, stop, _ = CHAT_FAMILIES[self.family]
+        text = render(system or self.system, prompt, self.prefill + prefix)
         sampling = {"temperature": float(temperature), "top_p": 0.9} if temperature > 0 else {"temperature": 0.0}
-        out = self._load().create_completion(text, max_tokens=int(max_new_tokens), seed=(0 if seed is None else int(seed)),
-                                             **sampling,
-                                             stop=["<|im_end|>"])
+        out = llm.create_completion(text, max_tokens=int(max_new_tokens), seed=(0 if seed is None else int(seed)),
+                                    **sampling, stop=stop)
         return prefix + out["choices"][0]["text"]
 
 
