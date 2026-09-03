@@ -300,6 +300,29 @@ manifest carries every count. Train with `VERSION='v7'` (the notebook default no
 must climb back from 0.17), and the self-test (the chain fixed by the final-relation gate must read as
 don't-know).
 
+### v7 TRAINED (2026-09-03): the smoke read, the GPU reads pending
+
+Colab run on the v7 set (32×1, 2 epochs, seq 4096; adapter, merged model and both GGUFs on Drive under
+`emitter_lfm25_2p6b_v7/`, the Q4 copied to `standin/models/emitter_v7.Q4_K_M.gguf`). The notebook's
+validation came out at 6 per task again (the eval-size variable was not set), replayed through the VM
+(`data/out/eval_emitter_vm_v7_colab.json`):
+
+| task | v7 (n=6) | note |
+|---|---|---|
+| chat / content / affect | 1.000 | — |
+| identity | 0.833 | **the `world` intent works from training** ("What is cubby-man?" → the cubbyverse line verbatim); the one miss is the same "Good evening!" that missed in v6 — a generic greeting without the name |
+| emotion | 0.833 | the miss is rater noise ("I'm O.K., honey" labelled serenity/trust, read as caring/neutral) |
+| history | 0.333 | the four misses are two `news` and two `dating` — the headline-recall and decade-dating families that were the weak spot at n=40 in v6 (0.75); `when` and `dialogue` right |
+| game families | 1.000 (n=8) | — |
+| arithmetic / chain | gold 0.500 / 0.667 (n=6 / 3) | too few to read |
+
+Too small to call anything but the identity `world` intent. Pending: the stratified read (`STANDIN_EVAL_ONLY=1`,
+`STANDIN_EVAL_N=40` on a fresh VM, then the local replay), the **forge probe** (decision must climb back from
+0.17 — the ×3 replay's whole purpose) and the **self-test** (the final-relation gate should turn v6's one wrong
+chain into a don't-know), both run solo on the local GPU:
+`python standin/scripts/forge_probe.py --gguf standin/models/emitter_v7.Q4_K_M.gguf --n 12 --tag _v7` and
+`python standin/serve.py --gguf standin/models/emitter_v7.Q4_K_M.gguf --selftest 25 --tag _v7`.
+
 ### v6 TRAINED + MEASURED (2026-09-03): the stratified VM read
 
 Colab run: 1,890 steps at 8×4 (effective 32), 1 epoch, 35 min, final loss 0.52 — a **mixture floor**
