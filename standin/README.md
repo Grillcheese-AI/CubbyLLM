@@ -258,6 +258,8 @@ history**. Builder: `data/build_chat_sft.py` (`build_local_chat` / `build_affect
 | history: news / dating | 1,716 / 1,758 | NYT archive, up to 6 distinct days per month across all 294 month files 1851–2024: "What was in the news on May 8, 1868?" → "Headline: abstract" · the reverse, "When was this reported?" → "May 8, 1868." — **the temporal-orientation read** | proper noun / year · the first year named within ±5 |
 | history: **era** | 1,498 | `domains/verified_facts` — 4,322 history books sorted by era and subject (the tree is the verified label): a clean 90-word window from the middle of a book → "The Middle Ages — Crusades." | the period is named (prehistor- / ancient, classical / middle ages, medieval) |
 
+**Added for the next build (2026-09-03):** `science` — the 238 real science Q&A rows (wtamu "surprising answers", `context: tag/<topic>/`) of `KonstantyM/science_qa_prep`, answers cut to their opening sentences (≤110 words); the other 4.28M rows, and the Hub's `KonstantyM/science_qa` (checked at row 2,000,000), are an OpenOrca/FLAN instruction mix under base-model system prompts — already covered by Orca + FineInstructions, not used. `movie` — AURA's 365 annotated screenplay scenes (`H:\AURA_GENESIS\datasets\movie_annotated`; 225 carry dialogue) → the emotion task in the **spoken register**: "regret, sadness — sadness", the Plutchik base as the petal, the finer label kept in `gold_any`.
+
 **Not used, on record in the manifest:** the old persona files (`greetings`, `identity*`, `inquiry`, `tonal`,
 `philosophical`, `capability_*`, `batch_chat_templates_*` — Cubby's identity comes from `identity_facts.json`
 only), `tool_usage_training_data` (its instructions do not match their tool calls), `intent_all` (legal-topic

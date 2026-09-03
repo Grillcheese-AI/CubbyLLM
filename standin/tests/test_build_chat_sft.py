@@ -204,3 +204,27 @@ def test_era_records_take_clean_book_windows():
     assert b.history_ok(r, "This is about the ancient world, Greece I think.", F) and not b.history_ok(r, "Medieval Europe.", F)
     m = b.era_record("MiddleAges", "Miscellaneous", p, 1, F)
     assert m["program"] == "The Middle Ages." and b.history_ok(m, "The Middle Ages, a monastery.", F)
+
+
+def test_science_pairs_keep_the_answers_opening_sentences():
+    r = {"input": "context: tag/antimatter/ question: Does antimatter have negative mass?",
+         "label": " Antimatter does not have negative mass. In our universe, there is no such thing as negative mass. " + "Extra sentence here. " * 40}
+    q, a = b.science_pair(r, cap=18)                   # 17 words fit; the 3-word filler would make 20
+    assert q == "Does antimatter have negative mass?" and a == "Antimatter does not have negative mass. In our universe, there is no such thing as negative mass."
+    assert b.science_pair({"input": "context: You are an AI assistant. question: hi", "label": "x"}) is None, "only the tag/ science rows"
+    assert b.first_sentences("One. Two. Three.", cap=2) == "One. Two."
+
+
+def test_movie_scene_records_read_the_dialogue_register():
+    r = {"movie_title": "X", "scene_number": 1, "original_scene_text": "INT. ROOM - NIGHT ...",
+         "full_dialogue_context": "I don't have a few years. Wish to hell I did, though.",
+         "main_base_emotion": "Sadness", "plutchik_score": -0.7, "plutchik_label": "Regret",
+         "emotion_timeline": ["Resignation (Michael)"], "annotated_dialogue": [{"line": "I don't have a few years.", "keyword": "years"}]}
+    rec = b.movie_scene_record(r, 0)
+    assert rec["task"] == "emotion" and rec["program"] == "regret, sadness — sadness" and rec["gold"] == "sadness"
+    assert "regret" in rec["gold_any"] and "tristesse" in rec["gold_any"] and "Wish to hell" in rec["prompt"]
+    assert "INT. ROOM" not in rec["prompt"], "the scene direction never reaches the prompt"
+    only_lines = dict(r, full_dialogue_context="")
+    assert "I don't have a few years." in b.movie_scene_record(only_lines, 1)["prompt"], "falls back to the annotated lines"
+    assert b.movie_scene_record(dict(r, full_dialogue_context="", annotated_dialogue=[]), 2) is None, "no dialogue, no record"
+    assert b.movie_scene_record(dict(r, main_base_emotion="Stress"), 3) is None, "only the eight Plutchik bases"

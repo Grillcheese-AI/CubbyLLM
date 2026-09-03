@@ -444,6 +444,15 @@ def build_emotion(rng: random.Random, cap: int = EMOTION_CAP_DEFAULT) -> tuple[l
                 out.append(rec)
     else:
         why["missing:emotions_plutchik"] += 1
+    if os.path.isdir(MOVIE_SCENES_DIR):                  # screenplay dialogue -> Plutchik (the spoken register)
+        for i, r in enumerate(iter_movie_scenes()):
+            rec = movie_scene_record(r, i)
+            if rec is None:
+                why["movie:filtered"] += 1
+            else:
+                out.append(rec)
+    else:
+        why["missing:movie_scenes"] += 1
     return out, why
 
 
@@ -855,13 +864,22 @@ WIKIQA = os.path.join(DOMAINS, "QA", "wikiqa.jsonl")
 GRAMMAR = os.path.join(KNOWLEDGE, "combined_grammar.jsonl")
 EI = os.path.join(KNOWLEDGE, "ei_11.jsonl")
 EMOTIONS_PLUTCHIK = os.path.join(KNOWLEDGE, "emotions.jsonl")
+MOVIE_SCENES_DIR = r"H:\AURA_GENESIS\datasets\movie_annotated"   # 5 screenplays, 365 scenes: dialogue -> Plutchik base + label + score
 AFFECT_FILES = [("realm_phase", os.path.join(KNOWLEDGE, "emotion_valence_arousal_realm_phase.jsonl")),
                 ("amygdala", os.path.join(KNOWLEDGE, "amygdala_affect.jsonl")),
                 ("convos", os.path.join(KNOWLEDGE, "affect_from_convos.jsonl"))]
 INDIVIDUAL_EVENTS = os.path.join(KNOWLEDGE, "conversations_individual_events.jsonl")
 QUOTES = os.path.join(E_DATASETS, "historical-quotes", "english_historical_quotes.json")
-LOCAL_QUOTA = {"arena": 2000, "convo": 3000, "instruct": 2000, "nemotron": 2000, "wikiqa": 1500, "grammar": 800, "ei": 800}
-LOCAL_CAP = {"instruct": 150, "nemotron": 120, "ei": 150}          # word caps above the chat default
+# KonstantyM/science_qa_prep (HF datasets cache, 4.28M rows): measured 2026-09-03 — an OpenOrca/FLAN-style
+# instruction mix (movie plots, article MCQs, task definitions) with exactly 238 science Q&A rows
+# (`context: tag/<topic>/ question: …`, the wtamu "surprising answers" set, all in shard 0). Only those are
+# used; the mix duplicates Orca + FineInstructions and carries base-model system prompts.
+SCIENCE_QA_DIR = r"H:\datasets_facts\KonstantyM___science_qa_prep\default\0.0.0\9dea632d62d523d0a3fd2bf027950821f95090c2"
+SCIENCE_QA_SHARD = os.path.join(SCIENCE_QA_DIR, "science_qa_prep-train-00000-of-00015.arrow")
+SCIENCE_PAIR = re.compile(r"^context:\s*tag/([^/\s]+)/?\s*question:\s*(.*)$", re.S)
+LOCAL_QUOTA = {"arena": 2000, "convo": 3000, "instruct": 2000, "nemotron": 2000, "wikiqa": 1500, "grammar": 800, "ei": 800,
+               "science": 300}
+LOCAL_CAP = {"instruct": 150, "nemotron": 120, "ei": 150, "science": 120}   # word caps above the chat default
 NEMOTRON_SCAN = 60000                                              # lines read from the head of the 8 GB file
 QUOTE_QUOTA = {"quote_about": 1200, "quote_who": 1200, "per_author": 3}
 NON_LATIN = re.compile(r"[\u0400-\u04ff\u0600-\u06ff\u0900-\u097f\u3040-\u30ff\u4e00-\u9fff\uac00-\ud7af]")
@@ -886,6 +904,33 @@ def pair_from_arena(text: str) -> tuple[str, str] | None:
 def pair_from_nemotron(text: str) -> tuple[str, str] | None:
     m = NEMOTRON_PAIR.match((text or "").strip())
     return (m.group(1).strip(), m.group(2).strip()) if m else None
+
+
+def first_sentences(text: str, cap: int) -> str:
+    """The leading sentences that fit in `cap` words (a long explanation
+    keeps its opening, which states the answer, and stays coherent)."""
+    out: list[str] = []
+    for sent in re.split(r"(?<=[.!?])\s+", " ".join((text or "").split())):
+        if len(" ".join(out + [sent]).split()) > cap:
+            break
+        out.append(sent)
+    return " ".join(out)
+
+
+def science_pair(r: dict, cap: int = 110) -> tuple[str, str] | None:
+    """science_qa_prep: 'context: tag/<topic>/ question: <q>' -> (q, the answer's opening sentences)."""
+    m = SCIENCE_PAIR.match(r.get("input") or "")
+    if not m:
+        return None
+    q, a = " ".join(m.group(2).split()), first_sentences(r.get("label") or "", cap)
+    return (q, a) if q and a else None
+
+
+def iter_arrow(path: str):
+    """Rows of one HF-cache arrow shard (pyarrow IPC stream)."""
+    import pyarrow.ipc as ipc
+    with open(path, "rb") as f:
+        yield from ipc.open_stream(f).read_all().to_pylist()
 
 
 def wikiqa_pair(r: dict) -> tuple[str, str] | None:
@@ -970,6 +1015,7 @@ def build_local_chat(rng: random.Random, facts: dict, quota: dict | None = None,
         ("wikiqa", WIKIQA, lambda p: (x for x in (wikiqa_pair(r) for r in shuffled(p, limit_lines)) if x)),
         ("grammar", GRAMMAR, lambda p: (x for x in (grammar_pair(r) for r in shuffled(p, limit_lines)) if x)),
         ("ei", EI, lambda p: (x for x in (ei_pair(r) for r in shuffled(p, limit_lines)) if x)),
+        ("science", SCIENCE_QA_SHARD, lambda p: (x for x in (science_pair(r) for r in iter_arrow(p)) if x)),
     ]
     for name, path, pairs in sources:
         if not os.path.exists(path):
@@ -998,6 +1044,38 @@ def plutchik_record(r: dict, i: int) -> dict | None:
             "prompt": EMOTION_PROMPT.format(t=text), "program": ", ".join(names) + " — " + "/".join(petals),
             "gold": primary, "gold_any": names + [GOEMOTIONS_FR.get(primary, primary)],
             "system": None, "state": None, "lang": "en"}
+
+
+def movie_scene_record(r: dict, i: int) -> dict | None:
+    """One annotated scene -> the emotion task on its DIALOGUE: '<label> — <base>'
+    (the base emotion is the Plutchik petal; the label is the finer word:
+    'regret — sadness', 'terror — fear'). Scenes without dialogue are skipped."""
+    base = str(r.get("main_base_emotion") or "").strip().lower()
+    label = str(r.get("plutchik_label") or "").strip().lower()
+    text = " ".join(str(r.get("full_dialogue_context") or "").split())
+    if not text:
+        lines = [str(d.get("line") or "") for d in (r.get("annotated_dialogue") or []) if isinstance(d, dict)]
+        text = " ".join(" ".join(lines).split())
+    if base not in PLUTCHIK or not text or not (3 <= len(text.split()) <= 90) or len(EXPLICIT.findall(text)) >= 2:
+        return None
+    names = [label] if label and label != base else []
+    names.append(base)
+    return {"id": f"emotion:movie:{i}", "task": "emotion", "subtype": base, "source": "local:movie_scenes",
+            "prompt": EMOTION_PROMPT.format(t=text), "program": ", ".join(names[:2]) + " — " + base,
+            "gold": base, "gold_any": names + [GOEMOTIONS_FR.get(base, base)],
+            "system": None, "state": None, "lang": "en"}
+
+
+def iter_movie_scenes(root: str = MOVIE_SCENES_DIR):
+    if not os.path.isdir(root):
+        return
+    for name in sorted(os.listdir(root)):
+        if name.endswith(".json"):
+            try:
+                for r in json.load(open(os.path.join(root, name), encoding="utf-8", errors="replace")):
+                    yield r
+            except ValueError:
+                continue
 
 
 def affect_answer(v: float, a: float) -> str:
@@ -1263,7 +1341,8 @@ def main():
                                 "knowledgetxt tool_usage_training_data (instructions do not match their tool calls)",
                                 "knowledgetxt intent_all (legal-topic labels), snn_training_data, wikibooks_corpus (raw chunks), timeline_conversations.csv (templated)",
                                 "knowledgetxt historical_facts.jsonl (= temporal/train_augmented)",
-                                "E:/datasets symbolic (wiki MCQ), sagi (logic tasks), spatial CSV (robot semantic parses — a future spatial family), verified_facts tree (books)"]},
+                                "E:/datasets symbolic (wiki MCQ), sagi (logic tasks), spatial CSV (robot semantic parses — a future spatial family), verified_facts tree (books)",
+                                "KonstantyM/science_qa_prep beyond its 238 science rows (an OpenOrca/FLAN instruction mix under base-model system prompts)"]},
         "inputs_sha256": {V4_PATH: sha256_file(V4_PATH) if os.path.exists(V4_PATH) else None},
         "sources": {"chat": [ORCA, HF_EVERYDAY, HF_SYSTEMCHATS, HF_OASST2, HF_FR_ALPACA],
                     "hf": {"everyday": "HuggingFaceTB/everyday-conversations-llama3.1-2k (apache-2.0)",
@@ -1279,8 +1358,9 @@ def main():
         "emotion_source": "google-research-datasets/go_emotions simplified (apache-2.0)",
         "n_affect": len(affect), "affect_by_source": dict(Counter(r["subtype"] for r in affect)),
         "affect_skips": dict(why_aff),
-        "local_sources": {"arena": ARENA, "convo": CONVO, "instruct": INSTRUCT_55K, "nemotron": NEMOTRON_FI,
+        "local_sources": {"arena": ARENA, "convo": CONVO, "instruct": INSTRUCT_55K, "nemotron": NEMOTRON_FI, "science": SCIENCE_QA_SHARD,
                           "wikiqa": WIKIQA, "grammar": GRAMMAR, "ei": EI, "emotions_plutchik": EMOTIONS_PLUTCHIK,
+                          "movie_scenes": MOVIE_SCENES_DIR,
                           "affect": dict(AFFECT_FILES), "individual_events": INDIVIDUAL_EVENTS, "quotes": QUOTES,
                           "quota": LOCAL_QUOTA, "caps": LOCAL_CAP, "nemotron_scan": NEMOTRON_SCAN, "quote_quota": QUOTE_QUOTA},
         "n_history": len(history), "history_by_subtype": dict(Counter(r["subtype"] for r in history)),
