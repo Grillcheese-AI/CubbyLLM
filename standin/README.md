@@ -319,9 +319,11 @@ validation came out at 6 per task again (the eval-size variable was not set), re
 Too small to call anything but the identity `world` intent. **Forge probe v7 (owner, solo on the local GPU, 58 s,
 `data/out/forge_probe_v7.json`): decision 1.00 (12/12) · compare 1.00 (12/12) · chain 1.00 (12/12)** — back from v6's
 0.17 / 0.83 / 1.00; the ×3 replay of the 727 decision/compare records was the whole fix, the same lever that
-restored identity in v6. Pending: the stratified read (`STANDIN_EVAL_ONLY=1`, `STANDIN_EVAL_N=40` on a fresh VM,
-then the local replay) and the **self-test** (the final-relation gate should turn v6's one wrong chain into a
-don't-know): `python standin/serve.py --gguf standin/models/emitter_v7.Q4_K_M.gguf --selftest 25 --tag _v7`.
+restored identity in v6. **Self-test v7 (owner, solo, `data/out/serve_selftest_v7.json`): gold 0.96; spoken 96% correct / 4% don't-know /
+0% wrong** — v6's one wrong chain ("the parent entity of the instance of Masahiko Kumagai", hop 1's object
+spoken) is now the don't-know, exactly what the final-relation ground check was built for; nothing else moved
+(v3 76/20/4 → v6 96/0/4 → v7 96/4/0). Pending: the stratified read (`STANDIN_EVAL_ONLY=1`, `STANDIN_EVAL_N=40`
+on a fresh VM, then the local replay).
 
 ### v6 TRAINED + MEASURED (2026-09-03): the stratified VM read
 
