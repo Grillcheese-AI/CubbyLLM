@@ -209,6 +209,18 @@ FRIGHT_STEPS = 14                                        # pacman_live.py's cons
 GHOST_BONUS = 5
 GHOST_COLORS = ["#ff4d5e", "#27d3ff", "#ff9ff3", "#36e07a"]
 JUMP_COST = 20                                           # our energy price for a hop (theirs is unrecorded here)
+# the energy economy (owner, 2026-09-02: every move costs, combos cost more,
+# and energy only comes back by RESTING in a safe place — or a little from pellets)
+MOVE_COST = 1                                            # a base step
+PELLET_ENERGY, STAR_ENERGY = 4, 12                       # what eating gives back
+REST_GAIN = 8                                            # per step of rest, in a safe spot
+REST_BELOW, REST_UNTIL = 30, 60                          # start resting under 30, stop at 60 (hysteresis)
+REST = "rest"                                            # the ASK candidate: stay put
+
+
+def pattern_cost(pattern: str | None) -> int:
+    """A combo costs twice its length (AAB -> 6, AAAAA -> 10); a jump 20."""
+    return JUMP_COST if pattern is None else 2 * len(pattern)
 PROGRAMS_PATH = pathlib.Path(__file__).resolve().parent / "data" / "out" / "cubbyman_programs.json"
 
 # ── generative superpowers: patterns over move SLOTS ────────────────────────
@@ -595,6 +607,8 @@ class GhostVerse(PacVerse):
             if e["kind"] != "pattern" or not e.get("pattern"):
                 continue
             pattern = e["pattern"]
+            if energy < pattern_cost(pattern):          # can't afford it: not offered
+                continue
             for asg in _assignments(pattern):
                 cur, ok = (x, y, z), True
                 for ch in pattern:
@@ -869,6 +883,8 @@ class CubbyGhost(CubbyPac):
         """The ASK offers the base exits PLUS a BOUNDED set of the superpower
         moves legal here: ranked by landing near a seen pellet (then any goal),
         then the program's value. Every legal one still counts as `legal`."""
+        if self._rest_wanted() and self._safe_here():    # rest is a move too: stay put, in a safe spot only
+            exits = {**exits, REST: self.place}
         if not self.library.entries:
             return exits
         power = self.env.power_moves(self.place, self.library, self.env.energy)
@@ -886,6 +902,34 @@ class CubbyGhost(CubbyPac):
                 return (near, -self.library.value(pname) if pname in self.library else 0.0)
             power = dict(sorted(power.items(), key=rank)[: self.MAX_POWER_CANDIDATES])
         return {**exits, **power}
+
+    # ── energy: every move costs, rest brings it back (in a safe spot) ─────
+    def move_cost(self, move: str) -> int:
+        if move == REST:
+            return 0
+        if move.startswith("jump_"):
+            return JUMP_COST
+        if "_" in move:
+            e = self.library.entries.get(move.split("_")[0].upper())
+            return pattern_cost(e.get("pattern")) if e else MOVE_COST
+        return MOVE_COST
+
+    def _safe_here(self) -> bool:
+        """No hunting ghost inside his fear radius (+1 for a resting margin)."""
+        env = self.env
+        if env.frightened > 0 or not env.ghosts:
+            return True
+        here = env.coords(self.place)
+        return min(_manh(here, g) for g in env.ghosts) > self.danger_radius + 1
+
+    def _rest_wanted(self) -> bool:
+        """Hysteresis: start under REST_BELOW, keep resting until REST_UNTIL."""
+        e = self.env.energy
+        if e < REST_BELOW:
+            self._resting = True
+        elif e >= REST_UNTIL:
+            self._resting = False
+        return getattr(self, "_resting", False)
 
     # ── ghosts: a berth that GROWS with learned fear ────────────────────────
     @property
@@ -970,7 +1014,7 @@ class CubbyGhost(CubbyPac):
     # the model; voice rules apply (no forbidden words). One thought per
     # step wins by priority; the salient ones also reach the page's bubble.
     _PRIO = {"caught": 6, "level_up": 6, "out_of_time": 5, "program": 5, "modify": 5, "power": 4,
-             "forge": 4, "flee": 4, "superpower_move": 3, "eat": 3, "probe": 2, "derive": 2,
+             "forge": 4, "flee": 4, "superpower_move": 3, "eat": 3, "rest": 3, "probe": 2, "derive": 2,
              "plan": 1, "idle": 0}
 
     @staticmethod
@@ -1010,6 +1054,8 @@ class CubbyGhost(CubbyPac):
                       (f"Let me think this through… my check says: {d.get('answer')}." if d.get("ok") else
                        "Let me think this through… my check does not hold, I'll go with my rule.")),
             "idle": (lambda: f"Je continue vers {d.get('to')}." if fr else f"Carrying on toward {d.get('to')}."),
+            "rest": (lambda: f"Fatigué ({d.get('energy')}) — l'endroit est sûr, je me repose un instant." if fr else
+                     f"Tired ({d.get('energy')}) — this spot looks safe, resting a moment."),
         }
         line = t.get(kind, lambda: "")()
         return (mood + line) if line else ""
@@ -1114,6 +1160,7 @@ class CubbyGhost(CubbyPac):
             self._t("eat", place=place, pellet=self.env.score, power=ate["power"],
                     remaining=len(self.env.remaining))
             new += self._learn([fact])
+            self.env.energy = min(100, self.env.energy + (STAR_ENERGY if ate["power"] else PELLET_ENERGY))
             if self.chem is not None:
                 self.chem.update(valence=0.8 if ate["power"] else 0.3)
             if ate["power"]:
@@ -1196,6 +1243,10 @@ class CubbyGhost(CubbyPac):
         maximizes the distance to them); otherwise follow the path his map
         planned; only with no plan fall back to novelty."""
         env = self.env
+        if REST in exits and not (env.frightened > 0 and any(p in {env.cell(*g) for g in env.ghosts}
+                                                                for p in exits.values())):
+            self._think("rest", energy=env.energy)       # tired, and this spot is safe: rest
+            return REST
         ghost_cells = {env.cell(*g) for g in env.ghosts}
         if env.frightened > 0:
             hunt = [m for m, p in exits.items() if p in ghost_cells]
@@ -1241,6 +1292,8 @@ class CubbyGhost(CubbyPac):
         for n in self.library.consolidate(self.env.level, keep=self.MAX_ACTIVE_PATTERNS - 2):   # sleep on it
             self._t("retire", name=n, reason=self.library.entries[n]["retired_reason"])
         self.env._start_level(nxt)
+        self.env.energy = 100                            # a cleared level is a night's rest
+        self._resting = False
         self.place = self.env.start
         self.sighted.clear()
         self._eaten_run.clear()
@@ -1294,11 +1347,12 @@ class CubbyGhost(CubbyPac):
                         goal="pellet" if seen_left else "frontier")
             rec = super().step()                         # his move + eating + learning + traj
             chosen = rec.get("chosen") or ""
-            if chosen.startswith("jump_"):
-                env.energy = max(0, env.energy - JUMP_COST)
-            else:
-                env.energy = min(100, env.energy + 2)    # simplified regen (theirs: +1/pellet, +4 resting)
-            if "_" in chosen:                            # only superpower moves carry an underscore
+            if chosen == REST:                           # a step of rest in a safe spot: energy back, time spent
+                env.energy = min(100, env.energy + REST_GAIN)
+                self._t("rest", place=self.place, energy=env.energy)
+            else:                                        # every move costs; combos cost more; nothing regenerates by itself
+                env.energy = max(0, env.energy - self.move_cost(chosen))
+            if chosen.startswith("jump_") or ("_" in chosen and chosen != REST):   # a superpower move
                 pname = "JUMP" if chosen.startswith("jump_") else chosen.split("_")[0].upper()
                 e = self.library.entries.get(pname)
                 saved = (len(e["pattern"]) - 1) if e and e.get("pattern") else 1

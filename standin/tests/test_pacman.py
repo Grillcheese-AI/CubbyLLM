@@ -315,6 +315,55 @@ def test_emotion_maps_to_the_plutchik_compass():
     assert emo["color"].startswith("#") and 0 <= emo["intensity"] <= 1.2
 
 
+def test_energy_costs_moves_combos_more_and_only_rest_or_pellets_bring_it_back():
+    from pacman import (JUMP_COST, MOVE_COST, PELLET_ENERGY, REST, REST_BELOW, CubbyGhost, GhostVerse,
+                        ProgramLibrary, pattern_cost)
+    assert pattern_cost("AAB") == 6 and pattern_cost("AAAAA") == 10 and pattern_cost(None) == JUMP_COST
+    man = CubbyGhost(GhostVerse(), probe=0.0)
+    assert man.move_cost("right") == MOVE_COST and man.move_cost(REST) == 0 and man.move_cost("jump_up") == JUMP_COST
+    man.library.add("KNIGHT", "AAB", "…", "pattern", 0, {"why": "t"})
+    assert man.move_cost("knight_right_right_up") == 6, "a combo costs more than a step"
+    env = man.env
+    env.energy = 5
+    assert not any(m.startswith("knight_") for m in env.power_moves(env.start, man.library, env.energy)), \
+        "an unaffordable combo is not offered"
+    env.energy = 100
+    # rest is offered only when tired AND safe; it restores energy
+    env.ghosts = []
+    env.energy = REST_BELOW - 1
+    assert REST in man.candidate_moves(env.exits(man.place)) and man._rest_wanted()
+    env.ghosts = [env.coords(man.place)]                 # a ghost on top of him: not safe
+    assert REST not in man.candidate_moves(env.exits(man.place))
+    env.ghosts = []
+    env.energy = 90
+    assert REST not in man.candidate_moves(env.exits(man.place)), "hysteresis: rested enough, back to work"
+    # eating gives a little back
+    p = next(iter(env.remaining))
+    env.energy = 50
+    man.on_arrive(env.cell(*p))
+    assert env.energy == 50 + PELLET_ENERGY
+
+
+def test_live_tired_cubby_rests_in_a_safe_spot_and_energy_climbs():
+    _exe_or_skip()
+    from pacman import REST, REST_BELOW, REST_GAIN, CubbyGhost, GhostVerse
+    man = CubbyGhost(GhostVerse(), probe=0.0, seed=0)
+    man.env.ghosts = []                                  # nobody hunting: everywhere is safe
+    man.env.ghost_spawn = []
+    man.env.energy = REST_BELOW - 5
+    e0 = man.env.energy
+    rec = man.step()
+    assert rec["chosen"] == REST and man.env.energy == e0 + REST_GAIN and man.traj[-1]["move"] == REST
+    assert man.traj[-1]["to"] == list(man.env.coords(man.place)), "resting does not move him"
+    steps = 0
+    while man._rest_wanted() and steps < 12:
+        man.step(); steps += 1
+    assert man.env.energy >= 60 and not man._rest_wanted()
+    e1 = man.env.energy
+    man.step()
+    assert man.env.energy <= e1, "a move costs; nothing regenerates by itself"
+
+
 def test_mood_prefix_follows_the_compass_not_a_dopamine_switch():
     from pacman import CubbyGhost, GhostVerse
     from neurochem import Neurochemistry
