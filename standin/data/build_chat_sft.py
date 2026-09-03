@@ -211,6 +211,7 @@ def build_hf_chat(rng: random.Random, facts: dict, quota: dict | None = None) ->
 URL = re.compile(r"https?://|www\.", re.I)
 CODE_LEAK = re.compile(r"(^|\n)\s*(def |class |import |from \w+ import|print\(|return |#include|<\?php|\$\(|=>)|\bconsole\.log\b")
 LATEX = re.compile(r"\\(\[|\(|frac|begin|end|left|right|sqrt|tan|sin|cos|sum|int)|\\[\[\(]|\$\$")
+GAME_FORGE_REPEAT = 3                                    # v7: forge decision/compare records replayed x3 (v6 probe regression)
 IDENTITY_REPEAT = 4                                      # v6: 526 identity records vs ~20k chat pairs pulled the greeting/unknown intents
 
 
@@ -1313,10 +1314,18 @@ def main():
     new = finish(chat + content + emotion + affect + history + exposure, facts)
     replay = [] if args.no_replay else [json.loads(l) for l in open(V4_PATH, encoding="utf-8")]
     n_id = 0
+    n_game = 0
     for r in replay:                                     # the identity contract outweighs the chat volume
         if r["task"] == "identity" and r["split"] == "train":
             r["repeat"] = max(int(r.get("repeat", 1)), args.identity_repeat)
             n_id += 1
+        # v7: the forge DECISION/COMPARE families regressed under v6's chat volume (forge probe decision
+        # 1.00 -> 0.17, compare 1.00 -> 0.83: programs return the raw reading, one invents a `comp` opcode);
+        # replay them x3 like identity
+        sub = str(r.get("subtype") or "")
+        if r["split"] == "train" and (sub.startswith("game:decision") or sub.startswith("game:compare")):
+            r["repeat"] = max(int(r.get("repeat", 1)), GAME_FORGE_REPEAT)
+            n_game += 1
     records = replay + new
     os.makedirs(OUT_DIR, exist_ok=True)
     out_path = os.path.join(OUT_DIR, f"emitter_sft_{args.version}.jsonl")
@@ -1332,6 +1341,7 @@ def main():
         "config": {"SEED": SEED, "N_CHAT": args.n_chat, "N_CONTENT": args.n_content, "limit_lines": args.limit_lines,
                    "replay": not args.no_replay, "identity_repeat": args.identity_repeat,
                    "identity_train_records_upweighted": n_id,
+                   "game_forge_train_records_upweighted": n_game, "game_forge_repeat": GAME_FORGE_REPEAT,
                    "schema_note": "v5 = v4 (replay, unchanged) + chat pairs (Orca, voice/guard-filtered, identity "
                                   "system prompt with a sampled state) + content awareness (passage -> nsfw/safe; "
                                   "minors/non-consent screened out; generation-exposure deliberately NOT built)",

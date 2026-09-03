@@ -61,7 +61,7 @@ from identity import (EMITTER_SYSTEM, T, guess_lang, is_identity_question,  # no
 from worlds import FactStore, route_world  # noqa: E402
 
 from cubbyllm.reasoning import answer as pipeline_answer  # noqa: E402
-from cubbyllm.reasoning.planner import normalize, parse_fact  # noqa: E402
+from cubbyllm.reasoning.planner import normalize, parse_fact, parse_question, relation_matches  # noqa: E402
 
 _THINK_RE = re.compile(r"^\s*(?:<think>)?.*?</think>\s*", re.S)
 
@@ -184,10 +184,17 @@ class ReasoningCortex:
         trace("vm", answer=vm_answer, error=vm_error)
         # ground check: the VM's answer must be the object of an offered fact —
         # the emitter may only ever bind what retrieval put on the table.
+        # For a PARSED multi-hop question the answer must also come from a fact carrying the question's
+        # FINAL relation: an exhausted walk offers hop 1's fact, and "the parent entity of the instance of
+        # X" must not be answered with the instance (v6 self-test, 2026-09-03: the one wrong chain).
+        plan = parse_question(question)
+        final_rel = plan.relations[-1] if (plan is not None and plan.n_hop >= 2) else None
         grounded = False
         if vm_answer is not None:
-            objs = {normalize(t.obj) for t in (parse_fact(f) for f in facts) if t is not None}
-            grounded = normalize(vm_answer) in objs
+            hits = [t for t in (parse_fact(f) for f in facts) if t is not None and normalize(t.obj) == normalize(vm_answer)]
+            grounded = bool(hits) and (final_rel is None or any(relation_matches(final_rel, t.rel) for t in hits))
+            if hits and not grounded:
+                trace("gate_relation", answer=vm_answer, final_relation=final_rel, offered=[t.rel for t in hits])
         # consistency gate: a VERIFIED walk that disagrees with the emitter is a
         # caught inconsistency — never speak the suspect answer (selftest: 5 of
         # the 6 emitter misses had a verified walk holding the gold answer)
@@ -505,7 +512,7 @@ def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
     enc = sw.FastWordEncoder.from_npz(str(table or V4_TABLE))
     world = FactStore(store, enc=enc, name="facts")
     print(f"loading emitter {gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
-    emitter = LlamaCppEmitter(gguf, n_ctx=2048, n_gpu_layers=n_gpu_layers)
+    emitter = LlamaCppEmitter(gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers)   # v6 trained at 4096
     return CubbyBrain(emitter, world, exe=exe, route_tau=route_tau)
 
 

@@ -323,3 +323,19 @@ def test_live_a_question_about_something_else_is_not_a_game_command():
     assert r["cortex"] == "talk" and r["needs_facts"] is False, f"a question to Cubby is talk, got {r}"
     assert s.route("would you like a new plugin?")["cortex"] == "talk"
     assert s.route("what is the cubbyverse")["cortex"] == "talk", "the world is an identity fact: Cubby answers himself"
+
+
+def test_live_a_multi_hop_answer_must_carry_the_final_relation():
+    """v6 self-test (2026-09-03): the one wrong chain was a 2-hop question whose walk exhausted at hop 2
+    while retrieval was confident on hop 1's fact; the emitter bound hop 1's object and the ground check took it."""
+    _exe_or_skip()
+    s = sv.CubbyServe(ChainEmitter(), overlap_retriever, STORE, route_tau=0.2)
+    rec = s.turn("What is the capital of the planet of olympus mons?")   # hop 1 is in the store, "capital of mars" is not
+    assert rec["kind"] == "task" and rec["route"]["cortex"] == "reasoning"
+    assert rec["task"]["vm_answer"] == "mars", "the emitter binds hop 1's object (the partial walk offered it)"
+    assert rec["task"]["grounded"] is False, "a 'planet' fact cannot ground a 'capital' answer"
+    assert rec["reply"] == DK_EN and rec["offered"] == [DK_EN]
+    assert "gate_relation" in [e.get("kind") for e in list(s.events)]
+    # a single-hop question with a confident flat hit still answers
+    rec1 = s.turn("What is the capital of germany?")
+    assert rec1["reply"] == "berlin"

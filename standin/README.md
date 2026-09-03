@@ -310,6 +310,28 @@ val records per task (22 identity) generated on Colab from the merged model (`ST
 | role_binding executes | **0.975** | 0.925 | the code-leak filter worked (one parse error left) |
 | game families (where / compare / compose / count / decision) | 1.000 (n=51) | 1.000 | held |
 
+**The two GPU reads, run solo by the owner (2026-09-03, no reset):**
+
+- **Serve self-test** (25 val chains, facts stripped from the prompt, own retrieval; `serve.py --selftest 25
+  --tag _v6`, `data/out/serve_selftest_v6.json`): gold **0.96**; spoken **96% correct / 0% don't-know / 4%
+  wrong** against v3's 76 / 20 / 4. By the tripwire rule adopted from the GoT challenge (one chain is four
+  points; don't-know down with wrong flat and gold up is healthy) this is healthy abstention, not silence.
+  The one wrong chain is a **gate gap, now closed**: "What is the parent entity of the instance of X?" — the
+  walk exhausted at hop 2 and offered hop 1's fact, the emitter bound hop 1's object, and the ground check
+  accepted it because it only asked whether the answer was *some* offered fact's object. The ground check
+  now also requires, for a parsed multi-hop question, that the answer's fact carry the question's **final
+  relation** (`ReasoningCortex.task_answer`, trace event `gate_relation`; single hops and planner misses
+  unchanged; pinned by `test_live_a_multi_hop_answer_must_carry_the_final_relation`). Re-run the self-test to
+  confirm the chain becomes a don't-know.
+- **Forge probe** (`scripts/forge_probe.py --n 12 --tag _v6`, `data/out/forge_probe_v6.json`): decision
+  **0.17** / compare **0.83** / chain **1.00** against v4's 1.00 / 1.00 / 1.00 — **a regression on the decision
+  family.** Failure modes: eight decision programs execute but return the raw reading instead of the ≥50
+  decision class, two invent a `comp` opcode (`compare` is the real one), two compares pick the wrong index.
+  Cause: v6's 20k chat pairs outweigh the ~200 decision/compare records in the v4 replay, the same pull that
+  hit identity in v5. Fix queued in the builder for the next build: the forge decision/compare records replay
+  ×3 (`GAME_FORGE_REPEAT`), as identity does ×4. The serve context now matches training (`n_ctx` 4096 in
+  `serve.py` and the probe; the 2048 warning was not the cause — these prompts are a few hundred tokens).
+
 The notebook's own read of the same file said arithmetic 0/40: that is text exact-match, a format read;
 the VM's 0.750 gold is the capability read. **v6 is the serving model now** (`--gguf
 standin/models/emitter_v6.Q4_K_M.gguf`); the emotion read stays **opt-in** (`--model-appraisal`) at 0.625 —

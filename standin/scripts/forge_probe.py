@@ -39,7 +39,7 @@ def main():
     ap.add_argument("--tag", default="")
     args = ap.parse_args()
     from standin.emitter import LlamaCppEmitter
-    emitter = LlamaCppEmitter(args.gguf, n_ctx=2048, n_gpu_layers=args.n_gpu_layers)
+    emitter = LlamaCppEmitter(args.gguf, n_ctx=4096, n_gpu_layers=args.n_gpu_layers)   # v6 trained at 4096
     lib = ProgramLibrary()
     events = []
     forge = ToolForge(emitter, lib, trace=lambda kind, **d: events.append({"kind": kind, **d}))
