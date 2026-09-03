@@ -178,8 +178,14 @@ def main():
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument("--pacman", action="store_true",
                     help="mount cubby-man in the cubbyverse pac maze (standin/pacman.py)")
+    ap.add_argument("--model-appraisal", action="store_true",
+                    help="the trunk reads each turn's emotion (the v5 task); its Plutchik petal drives the hormones")
     args = ap.parse_args()
     brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers)
+    if args.model_appraisal:
+        from perception import ModelAppraiser
+        brain.chat.appraiser = ModelAppraiser(brain.emitter, brain.facts)
+        print("model appraisal ON: the trunk reads the emotion of every turn (sense events carry the label)")
     if args.pacman:
         from pacman import PROGRAMS_PATH, CubbyGhost, LivePac
         man = CubbyGhost(memory=PROGRAMS_PATH)           # the big game; his programs persist on disk

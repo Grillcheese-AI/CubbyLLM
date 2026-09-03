@@ -309,14 +309,14 @@ class CubbyBrain:
                  facts: dict | None = None, exe: str | None = None,
                  route_tau: float = 0.30, k_facts: int = 3,
                  tau_vm: float = ReasoningCortex.TAU_VM,
-                 tau_ret: float = ReasoningCortex.TAU_RET) -> None:
+                 tau_ret: float = ReasoningCortex.TAU_RET, appraiser=None) -> None:
         self.emitter = emitter
         self.facts = facts or load_facts()
         self.exe = exe
         self.route_tau = float(route_tau)
         self.worlds: dict[str, object] = {"facts": retriever}   # FactStore or bare callable
         self.store_texts = store_texts if store_texts is not None else getattr(retriever, "texts", [])
-        self.chat = CubbyChat(emitter, self.facts, exe=exe)     # TalkCortex + the speech exit
+        self.chat = CubbyChat(emitter, self.facts, exe=exe, appraiser=appraiser)   # TalkCortex + the speech exit
         self.reason = ReasoningCortex(emitter, exe=exe, k_facts=k_facts,
                                       tau_vm=tau_vm, tau_ret=tau_ret)
         self.memory = MemoryCortex(emitter, self.facts, exe=exe)

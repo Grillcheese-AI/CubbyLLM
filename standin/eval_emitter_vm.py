@@ -92,6 +92,8 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--tag", default="")
     ap.add_argument("--data", default=DATA, help="the SFT jsonl whose val split to score (v4: emitter_sft_v4.jsonl)")
+    ap.add_argument("--per-task", type=int, default=0,
+                    help="stratified: at most N val records per task (v5 val is ~1,200 records; 40/task ~ 15 min)")
     ap.add_argument("--no-shim", action="store_true", help="do not apply the ISolver parse/verify shim to generations")
     args = ap.parse_args()
     if not (args.val_generations or args.server or args.gguf):
@@ -110,6 +112,11 @@ def main():
         records = [json.loads(l) for l in open(args.data, encoding="utf-8")]
         records = [r for r in records if r["split"] == "val"]
         random.Random(1).shuffle(records)
+    if args.per_task:
+        by = {}
+        for r in records:
+            by.setdefault(r["task"], []).append(r)
+        records = [r for t in sorted(by) for r in by[t][:args.per_task]]
     if args.limit:
         records = records[:args.limit]
     print(f"[stand-in] emitter {emitter.name} | {len(records)} val records | shim {'off' if args.no_shim else 'on'}")

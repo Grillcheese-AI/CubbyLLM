@@ -108,8 +108,9 @@ class CubbyChat:
     """One Cubby, one hormonal state, one VM-mediated turn at a time."""
 
     def __init__(self, emitter, facts: dict | None = None, state: dict | None = None,
-                 exe: str | None = None, max_new_tokens: int = 200) -> None:
+                 exe: str | None = None, max_new_tokens: int = 200, appraiser=None) -> None:
         self.emitter = emitter
+        self.appraiser = appraiser                       # perception.ModelAppraiser: the trunk reads emotions
         self.facts = facts or load_facts()
         self.chem = Neurochemistry()                     # the real ODE (cubemind port)
         self._seen_vocab: set[str] = set()
@@ -132,9 +133,13 @@ class CubbyChat:
     def nudge(self, user_text: str) -> dict:
         """One message through appraisal -> the ODE (a couple of perception
         frames), then the 5-hormone slice becomes the serving state."""
-        self.signals = appraise(user_text, self._seen_vocab)
+        if self.appraiser is not None:                   # v5: the trunk reads the emotion, its petal drives
+            self.signals = self.appraiser.signals(user_text, self._seen_vocab, guess_lang(user_text))
+        else:
+            self.signals = appraise(user_text, self._seen_vocab)
         self._seen_vocab.update(re.findall(r"[\w']+", user_text.lower()))
-        self.chem.step_message(self.signals)
+        self.chem.step_message({k: v for k, v in self.signals.items()
+                                if k in ("novelty", "threat", "focus", "valence", "social")})
         self.state = self._hormones()
         return self.state
 
