@@ -1,13 +1,9 @@
 # GoT challenge — scoring (2026-09-03)
 
-Prompt: `docs/research/2026-09-03-got-challenge-prompt.md`. **Correction from the archived room**
-(`2026-09-03-got-challenge-openrouter-chat.json`): the five models sat in ONE OpenRouter room and the brief was
-sent once to all of them, so the answers were not independent. Order of arrival: GLM 5.3, Qwen 3.7 (after
-its own arXiv searches), Qwen 3.8, MiniMax M3, then — after the owner's "if you already answered, do not
-answer again" — Gemini 3.8 Flash, which could see the four earlier answers. Convergence is discounted
-accordingly (it already scored as non-evidence); the order also means Gemini's local-view correction and
-bidirectional walk were written with the others in view, and GLM's answer was the only one written blind.
-Scored per
+Prompt: `docs/research/2026-09-03-got-challenge-prompt.md`. Each model answered once, independently (the owner's confirmation, 2026-09-03: the archived room
+`2026-09-03-got-challenge-openrouter-chat.json` shows all five in one thread only because sharing was
+switched on by mistake after the answers were in; no model saw another's answer). Order of arrival, for
+the record: GLM 5.3, Qwen 3.7, Qwen 3.8, MiniMax M3, Gemini 3.8 Flash. Scored per
 idea with the prompt's §6 rubric against the measured record. **Every arXiv ID was resolved** (the Hub's
 paper index for existence, arXiv's export API for the title where it answered; arXiv returned 503 for the
 GLM batch, whose seven IDs all exist on the Hub and whose titles match the claims from memory): an ID that
