@@ -340,21 +340,29 @@ def test_mood_prefix_follows_the_compass_not_a_dopamine_switch():
     assert man._mood() in ("(on edge) ", "(scared) ", "(terrified) ", "(uneasy) ")
 
 
-def test_routine_learning_no_longer_pins_dopamine():
-    from verse import CubbyMan, ToyVerse
+def test_routine_learning_reads_calm_a_burst_reads_curious():
+    """The ODE's zero-input dopamine equilibrium is ~0.51 by construction (a
+    baseline drive of 0.15), which is why a dopamine switch at 0.55 said
+    'excited' on everything. The claim that matters: a steady trickle of
+    learned facts leaves NO mood word; a burst above expectation does."""
+    from pacman import CubbyGhost, GhostVerse
     from neurochem import Neurochemistry
-    man = CubbyMan(ToyVerse(seed=0), probe=0.0)
-    man.chem = Neurochemistry()
-    # the same steady trickle of facts every step: habituation -> little novelty
-    for _ in range(12):
-        man._expect_new = getattr(man, "_expect_new", None)
-        new = 3
-        ema = man._expect_new
+
+    def feed(man, new):                                  # verse.py's habituated novelty feed, verbatim
+        ema = getattr(man, "_expect_new", None)
         expected = 1.0 if ema is None else ema
         surprise = max(0.0, new - expected) / (expected + 1.0)
         man._expect_new = new if ema is None else 0.8 * ema + 0.2 * new
-        man.chem.update(novelty=min(1.0, 0.7 * surprise), valence=0.1)
-    assert man.chem.dopamine < 0.55, f"a routine trickle must not read as excitement: {man.chem.dopamine:.2f}"
+        man.chem.update(novelty=min(1.0, 0.7 * surprise), valence=0.1 * min(1, new))
+
+    man = CubbyGhost(GhostVerse(), probe=0.0)
+    man.chem = Neurochemistry()
+    for _ in range(12):
+        feed(man, 3)                                     # the same 3 facts every step
+    assert man._mood() == "", f"routine learning must not read as excitement: {man._mood()!r} {man.emotion()}"
+    for _ in range(3):
+        feed(man, 14)                                    # a burst: a new wing of the maze
+    assert man.chem.affect_arousal > 0.3 and man.emotion()["name"] != "calm", man.emotion()
 
 
 def test_thoughts_are_first_person_voice_safe_and_bilingual():
