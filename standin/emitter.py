@@ -174,7 +174,9 @@ class ContextualEmitter:
     the frozen router H-C4 asked for). Today the entries are whole fine-tunes on one
     base ("programs": the emitter, "talk": the talk cortex); the same object later
     holds one base + LoRA deltas, and the 2B trunk replaces the lookup with generated
-    parameters — callers never change. An unknown or missing role uses `default`."""
+    parameters — callers never change. An unknown or missing role uses `default` —
+    the exact-match version of MindForge's SDLS purification (a context below the
+    similarity threshold of every registered context gets the default adapter)."""
 
     def __init__(self, adapters: dict, default: str = "programs") -> None:
         if not adapters:

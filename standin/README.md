@@ -372,6 +372,45 @@ training step is a Colab run today):**
    default. **Prune** — a specialist whose calls or margin fall away is `unregister`ed into history (retire,
    never delete; the ProgramLibrary's rule).
 
+**Checked against the original (cubemind, 2026-09-03; cubby-lm has no MindForge at all).**
+`cubemind/execution/mindforge.py` defines the context precisely: **`context_hv = bind(task_hv, personality_hv)`**
+— a block-code hypervector binding the *task* with the *personality* (the affective state), projected, LayerNormed,
+concatenated with a per-layer embedding and mixed into a continuous combination of 16 learned low-rank bases
+(rank 8). Two mechanisms there are exactly the two halves the owner asked for, and both are already the
+shape of what the stand-in built:
+- **"Used only when needed" = SDLS purification.** Contexts are *registered by name* in a cleanup memory
+  (`register_context`); an incoming context is cleaned to its nearest registered one and, if the similarity
+  is below **0.85**, replaced by the **default context, whose adapter is the identity** — the base model
+  answers. `ContextualEmitter.resolve` (a registered role or the default) is the exact-match version of this;
+  the similarity version arrives with the H-C4 domain head. One difference to keep in mind: MindForge's default
+  is the *base* (zero adapter), ours is the caller's declared family (`programs` or `talk`), which is right for
+  a bank whose two roots are whole fine-tunes.
+- **"Created when needed" = Hebbian expert-on-demand + the novelty bridge** (`docs/architecture/13`):
+  a `HebbianGrowthLayer` tracks the reconstruction residual of its inputs as an EMA; crossing `grow_threshold`
+  (0.35, cooldown 100 steps, capped) spawns a new MoE expert and fires a `NoveltyEvent` whose `direction` is
+  the semantic tag; `NoveltyToWorldBridge` projects it to block code and `WorldManager.register_specialist`
+  spawns-or-consolidates it by the existing tau rule. MindForge's own bases are updated in the **sleep phase**
+  (`docs/architecture/09`, every 1,000 steps or at session end), never live — the H-A7 shape.
+- **One wiring gap to not repeat.** The definition is right; the trainer that uses it is not: in
+  `cubemind/training/vsa_lm.py` the context handed to `forge_with_cache` is `temporal_ctx = liquid.step(x_mean)`
+  — the input's own temporal state, padded to k×l and discretized — so the adapters are conditioned on the
+  model's own activity, not on an external task/personality context (the same self-conditioning the hypotheses
+  doc flagged in the torch `MindForgeLoRAHead`). Here the context is **host-supplied by construction**: the
+  thalamus's route and the neurochemistry state come from outside the model, which is what H0's context
+  channel needs and what H-C4 requires (an offline, frozen source).
+
+Two adjustments to the lifecycle above, from the check: **(1) Detect has two sources, not one** — *novelty*
+(a context no registered specialist is near: the bank's fallback rate today, the domain head's purify
+threshold tomorrow; cubemind's residual-EMA trigger is the input-side version of it) and *deficit* (the
+measured verified-rate gap that gates promotion). Novelty proposes, the verified deficit disposes. **(2) The
+promotion rule should be a CubeLang program.** cubemind's QC cortex (`QC_APP_PLAN.md`, `cubelang/examples/
+qc_decision.cube`) already has the pattern: perception emits `(class, confidence)`, a compiled `.cube` rule
+returns PASS / REJECT / REVIEW, and the audit record carries the rule's artifact hash with the confidence. The
+H-A7 gate is the same shape — candidate-vs-incumbent margins in, PROMOTE / KEEP / REVIEW out, thresholds
+pre-registered *in the program*, deny-by-default in the VM, hash-audited. (The QC cortex's Python sources are
+no longer in cubemind's tree — only `__pycache__` remains for `qc_perception`, `anomaly`, `patch_features` —
+so the concept is what carries over, ported clean per the integration rule, not the code.)
+
 What exists as of this commit: the bank with `register` / `unregister` / `fallbacks` / `usage()` and the
 retirement history (pinned by `test_the_adapter_bank_grows_and_counts_what_it_cannot_serve`), the partition
 builder for the task split, the frozen router, and the eval harnesses the gate composes. The next cycle
