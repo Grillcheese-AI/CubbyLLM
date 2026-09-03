@@ -287,6 +287,19 @@ numbers land here when the run finishes.
   A fact question *about* the world (*who is the hero of cubbyverse?*) is not identity and still reaches the
   plugin's world through retrieval.
 
+### v7 set BUILT (2026-09-03, `--version v7`; on Drive, sha `565b89e3…`)
+
+What v6's reads asked for, in one build: **57,671 records** = v4's program families replayed (arithmetic
+6,148, kernel 1,769, role_binding 1,500, chain 1,201) with the **forge decision/compare records replayed ×3**
+(727 train records — the v6 probe regression) + **identity regenerated from `identity.py`** (564 records
+across 13 intents, the new `world` intent — the cubbyverse — at 38; ×4 on train; the v4 replay's copy
+dropped) + 20,569 chat (v6's sources + the 234 real science Q&A rows) + 1,396 content + 9,880 emotion (v6's
++ 220 screenplay scenes in the spoken register) + 1,679 affect + 12,965 history. Same gate everywhere; the
+manifest carries every count. Train with `VERSION='v7'` (the notebook default now; 32×1, 2 epochs, seq
+4096); the reads to take afterwards: the stratified VM eval (`STANDIN_EVAL_N=40`), the forge probe (decision
+must climb back from 0.17), and the self-test (the chain fixed by the final-relation gate must read as
+don't-know).
+
 ### v6 TRAINED + MEASURED (2026-09-03): the stratified VM read
 
 Colab run: 1,890 steps at 8×4 (effective 32), 1 epoch, 35 min, final loss 0.52 — a **mixture floor**

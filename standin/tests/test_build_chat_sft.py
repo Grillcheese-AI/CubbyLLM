@@ -228,3 +228,13 @@ def test_movie_scene_records_read_the_dialogue_register():
     assert "I don't have a few years." in b.movie_scene_record(only_lines, 1)["prompt"], "falls back to the annotated lines"
     assert b.movie_scene_record(dict(r, full_dialogue_context="", annotated_dialogue=[]), 2) is None, "no dialogue, no record"
     assert b.movie_scene_record(dict(r, main_base_emotion="Stress"), 3) is None, "only the eight Plutchik bases"
+
+
+def test_fresh_identity_records_carry_the_world_intent_in_the_replay_schema():
+    recs = b.fresh_identity_records(repeat=4, facts=F)
+    assert recs and "world" in {r["subtype"] for r in recs}, "v7: the cubbyverse intent enters training here"
+    r = recs[0]
+    assert set(r) >= {"task", "subtype", "source", "prompt", "program", "gold", "system", "state", "lang", "id", "split", "repeat", "vm_ok"}
+    assert r["task"] == "identity" and r["id"].startswith("identity-") and r["system"] and "CubeLang" not in r["system"]
+    assert {r["repeat"] for r in recs if r["split"] == "train"} == {4} and all(r["repeat"] == 1 for r in recs if r["split"] == "val")
+    assert len({r["prompt"] for r in recs}) >= 250                 # ~282 questions x 2 answers each

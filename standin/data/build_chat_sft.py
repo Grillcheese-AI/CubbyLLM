@@ -75,9 +75,9 @@ __wiring__ = "STANDALONE"
 
 import re  # noqa: E402
 
-from build_emitter_sft import OUT_DIR, sha256_file, split_of  # noqa: E402
-from identity import (identity_system, is_identity_reply, is_model_guard, load_facts,  # noqa: E402
-                      sample_state, voice_ok)
+from build_emitter_sft import OUT_DIR, SEED as EMITTER_SEED, sha256_file, split_of  # noqa: E402
+from identity import (build_identity_records, identity_system, is_identity_reply, is_model_guard,  # noqa: E402
+                      load_facts, sample_state, voice_ok)
 
 DATA = r"I:\grillcheese_training_data"
 UNIFIED = os.path.join(DATA, "unified")
@@ -1233,6 +1233,26 @@ def build_era(rng: random.Random, facts: dict, per_era: int = ERA_PER_ERA, limit
     return out, why
 
 
+def fresh_identity_records(repeat: int, facts: dict | None = None) -> list[dict]:
+    """The identity turns regenerated from identity.py (v7: the `world` intent — the cubbyverse — exists
+    only there; the v4 replay predates it). Same schema and seed as build_emitter_sft's identity block."""
+    out, seen = [], set()
+    for rec in build_identity_records(facts, seed=EMITTER_SEED):
+        key = (rec["prompt"].strip(), rec["response"].strip())
+        if key in seen:
+            continue
+        seen.add(key)
+        prompt = rec["prompt"].strip()
+        split = split_of(prompt)
+        out.append({"task": "identity", "subtype": rec["intent"], "source": "standin/identity",
+                    "prompt": prompt, "program": rec["response"], "gold": None,
+                    "system": rec["system"], "state": rec["state"], "lang": rec["lang"],
+                    "id": "identity-" + hashlib.sha1((prompt + "\n" + rec["response"]).encode("utf-8")).hexdigest()[:12],
+                    "split": split, "repeat": repeat if split == "train" else 1,
+                    "vm_ok": None, "vm_result": None, "vm_error": None, "gold_match": None})
+    return out
+
+
 def finish(records: list[dict], facts: dict | None = None) -> list[dict]:
     """Dedupe on the prompt, split, repeat weights — and a system prompt on
     EVERY record: the notebook falls back to the EMITTER prompt ("output
@@ -1268,9 +1288,12 @@ def main():
     ap.add_argument("--exposure", type=int, default=0,
                     help="ALSO add N explicit-prose continuation records (generation exposure). Off by default; "
                          "the owner's switch.")
-    ap.add_argument("--version", default="v6", help="output name: emitter_sft_{version}.jsonl (v5 is trained; v6 = "
-                                                     "v5 data + identity x3 replay + the code-leak filter + history)")
+    ap.add_argument("--version", default="v7", help="output name: emitter_sft_{version}.jsonl (v6 is trained; v7 = v6 + "
+                                                     "regenerated identity (the world intent) + forge families x3 + science + movie scenes)")
     ap.add_argument("--identity-repeat", type=int, default=IDENTITY_REPEAT)
+    ap.add_argument("--keep-replay-identity", action="store_true",
+                    help="keep the v4 replay's identity records instead of regenerating them from identity.py "
+                         "(v7 regenerates: the `world` intent is new)")
     args = ap.parse_args()
     t0 = time.perf_counter()
     rng = random.Random(SEED)
@@ -1314,6 +1337,14 @@ def main():
     new = finish(chat + content + emotion + affect + history + exposure, facts)
     replay = [] if args.no_replay else [json.loads(l) for l in open(V4_PATH, encoding="utf-8")]
     n_id = 0
+    fresh_identity: list[dict] = []
+    if replay and not args.keep_replay_identity:       # v7: identity regenerated (the `world` intent), replay's copy dropped
+        n_replay_identity = sum(r["task"] == "identity" for r in replay)
+        replay = [r for r in replay if r["task"] != "identity"]
+        fresh_identity = fresh_identity_records(args.identity_repeat, facts)
+        n_id = sum(r["split"] == "train" for r in fresh_identity)
+        print(f"=== identity regenerated from identity.py: {len(fresh_identity)} records "
+              f"({dict(Counter(r['subtype'] for r in fresh_identity))}) replace the replay's {n_replay_identity}", flush=True)
     n_game = 0
     for r in replay:                                     # the identity contract outweighs the chat volume
         if r["task"] == "identity" and r["split"] == "train":
@@ -1326,7 +1357,7 @@ def main():
         if r["split"] == "train" and (sub.startswith("game:decision") or sub.startswith("game:compare")):
             r["repeat"] = max(int(r.get("repeat", 1)), GAME_FORGE_REPEAT)
             n_game += 1
-    records = replay + new
+    records = replay + fresh_identity + new
     os.makedirs(OUT_DIR, exist_ok=True)
     out_path = os.path.join(OUT_DIR, f"emitter_sft_{args.version}.jsonl")
     with open(out_path, "w", encoding="utf-8") as f:
@@ -1341,6 +1372,7 @@ def main():
         "config": {"SEED": SEED, "N_CHAT": args.n_chat, "N_CONTENT": args.n_content, "limit_lines": args.limit_lines,
                    "replay": not args.no_replay, "identity_repeat": args.identity_repeat,
                    "identity_train_records_upweighted": n_id,
+                   "identity_regenerated": bool(fresh_identity), "identity_intents": dict(Counter(r["subtype"] for r in fresh_identity)),
                    "game_forge_train_records_upweighted": n_game, "game_forge_repeat": GAME_FORGE_REPEAT,
                    "schema_note": "v5 = v4 (replay, unchanged) + chat pairs (Orca, voice/guard-filtered, identity "
                                   "system prompt with a sampled state) + content awareness (passage -> nsfw/safe; "
@@ -1389,6 +1421,7 @@ def main():
     mp = os.path.join(OUT_DIR, f"emitter_sft_{args.version}.manifest.json")
     json.dump(manifest, open(mp, "w", encoding="utf-8"), indent=1)
     print(f"\n{args.version}: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion + {len(affect)} affect + {len(history)} history"
+          + (f" + {len(fresh_identity)} identity (regenerated)" if fresh_identity else "")
           + (f" + {len(exposure)} exposure" if exposure else "") + f" + {len(replay)} replay "
           f"= {len(records)} (after prompt dedupe)")
     print(f"wrote {out_path}\nwrote {mp} ({manifest['wall_s']:.0f}s) sha {manifest['output_sha256'][:12]}")
