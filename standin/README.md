@@ -236,7 +236,7 @@ code-leak filter on chat replies (`def`/`import`/`print(`), output versioned (`-
 ### v6 set BUILT (2026-09-02, `--version v6`; on Drive, sha `c4bf7f9d…`): history joins the data
 
 The owner's ask: *historical sentences in the training that it can refer to*. The temporal corpus
-(`I:\grillcheese_training_data	emporal`, never used before) now feeds a `history` task, all through the
+(`I:\grillcheese_training_data\temporal`, never used before) now feeds a `history` task, all through the
 same screens as chat (voice rules, no base-model guard, no URL, no explicit, no code) and under the identity
 system prompt — **38,777 records** = v5's families (identity ×3 replay, code-leak filter) + **8,745 history**
 after prompt dedupe (8,927 built; `build_history()` in `data/build_chat_sft.py`):
