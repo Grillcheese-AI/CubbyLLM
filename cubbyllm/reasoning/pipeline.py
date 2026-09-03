@@ -101,7 +101,11 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
 
 
 def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
-           top_k: int = 3, max_repairs: int = 3) -> CoTResult:
+           top_k: int = 3, max_repairs: int = 1) -> CoTResult:
+    # max_repairs 3 -> 1 (2026-09-03): on the 800-question harvest every failure burned all three
+    # repairs with zero hops verified and no verified chain ever needed more than one; budget 1
+    # reproduces 517 verified / 513 correct / control 528/528 exactly at 45.9 ms vs 120.9 ms per
+    # question (validation/logs/exp_m3_cot_pipeline_rb1.json vs _v3cf.json).
     plan = parse_question(question)
     if plan is None:
         return CoTResult(answer=None, verified=False, reason="unparseable")

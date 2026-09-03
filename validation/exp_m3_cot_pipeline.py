@@ -627,7 +627,8 @@ def main() -> None:
     ap.add_argument("--calibration", type=int, default=200)
     ap.add_argument("--table", type=pathlib.Path, default=V4_TABLE)
     ap.add_argument("--top-k", type=int, default=3)
-    ap.add_argument("--max-repairs", type=int, default=3)
+    ap.add_argument("--max-repairs", type=int, default=1,   # was 3; lossless at 1 on the 800-question set (rb1 run, 2026-09-03)
+                    help="repair budget per question (3 -> 1 measured lossless, 2.6x faster; see logs/exp_m3_cot_pipeline_rb1.json)")
     ap.add_argument("--exe", type=str, default=None, help="cubelang exe override")
     ap.add_argument("--distractors", type=int, default=0,
                     help="N DBpedia distractor texts appended to the EVAL "

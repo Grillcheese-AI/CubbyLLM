@@ -49,9 +49,12 @@ def test_missing_hop_repairs_then_fails_honestly():
         if "cynthia" in ql:
             return [(0.9, F1)]
         return [(0.9, "totally unrelated text with no template")]
-    r = answer(Q3, no_hop2, good_vm, tau_vm=0.5, tau_ret=0.2)
+    r = answer(Q3, no_hop2, good_vm, tau_vm=0.5, tau_ret=0.2, max_repairs=3)
     assert r.verified is False and r.answer is None
     assert r.repairs_used == 3
+    # the DEFAULT budget is 1 since 2026-09-03 (lossless on the 800-question harvest, 2.6x faster walks)
+    d = answer(Q3, no_hop2, good_vm, tau_vm=0.5, tau_ret=0.2)
+    assert d.verified is False and d.repairs_used == 1 and d.reason == "retrieval_exhausted"
     assert len(r.trace) >= 1                       # partial trace preserved
 
 

@@ -25,7 +25,7 @@ counterfactual plantings over the verified chains.
 | (c) per-relation score ranges of verified vs failed hops (MiniMax, idea 7) | min verified 0.60–0.77 vs max failed 0.88–0.99 on every frequent relation | **killed**: the ranges overlap completely |
 | (d) share of not-correct answers whose gold sat in a top-3 runner-up (Qwen 3.8, idea 1) | 17 / 250 = **7%**; within 0.05 of the accepted fact: 1 | below its own 30% kill line: killed before training |
 | (e) verified 2-hop fact pairs shared by ≥2 questions (fact-path skill mining, all models) | **1 of 219** | killed on the QA side, as Qwen 3.7's generality test predicted |
-| (f) does the three-repair budget bind? (GLM, idea 2) | all 246 failures used all 3 repairs and verified **0 hops**; verified chains used 0 (514) or 1 (3) repairs; P(verified · repairs = 3) = 0/246 | the stop table is a **step function**: a repair budget of 1 loses nothing on this set and cuts two wasted re-walks on 31% of questions — but saves retrieval work, not VM calls (exhausted walks never reach the VM) |
+| (f) does the three-repair budget bind? (GLM, idea 2) | all 246 failures used all 3 repairs and verified **0 hops**; verified chains used 0 (514) or 1 (3) repairs; P(verified · repairs = 3) = 0/246 | the stop table is a **step function**; **confirmed by re-run** (`validation/logs/exp_m3_cot_pipeline_rb1.json`): budget 1 reproduces 517 verified / 513 correct / precision 0.9923 / control 528/528 exactly, CoT arm **45.9 ms vs 120.9 ms** per question — saves walk time, not VM calls (exhausted walks never reach the VM); now the pipeline default |
 | (g) are planted inverted-direction faults ever merge collisions? (GLM, idea 5) | **1,899 / 1,899 plantings caught**, all by `symbol_mismatch` (wrong entity 598, wrong relation 233, inverted direction 662, wrong hop order 406) | **killed** by its own rule: the symbol check rejects every direction flip, the guard is dead code |
 | (h) sibling rate: hop positions with ≥2 logged candidates (GLM, "probably wrong" 1) | **858 / 858 = 100%** logged; 19.8% above the threshold | the fear (out-degree 1) is answered by materializing the logged runners-up as sibling nodes |
 | (i) fact overlap across verified chains (GLM, idea 4) | 17 of 671 facts (3%) used by ≥2 chains; 81 / 517 chains touch a shared fact | cross-question reuse is bounded at ~16% of chains; the within-conversation case is untested |
@@ -40,8 +40,8 @@ hops have an alternative at all), skill reuse has little to reuse on this corpus
 against a fault the symbol check already rejects, and the experiment the data points at is ours: **lower
 `tau_ret` and let the VM decide per hop** — since (b) shows candidates just above the threshold verify as
 well as candidates far above it, candidates just *below* it may too. Metric: verified and correct out of
-800 vs 517 / 513, cost in VM calls; kill if the wrong-but-verified count leaves 4. Free win from (f): the
-repair budget goes from 3 to 1.
+800 vs 517 / 513, cost in VM calls; kill if the wrong-but-verified count leaves 4. Free win from (f), confirmed and shipped: the
+repair budget went from 3 to 1 (identical results, 2.6× faster walks).
 
 ## 1. Qwen 3.7
 
