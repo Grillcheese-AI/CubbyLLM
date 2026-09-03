@@ -228,38 +228,62 @@ class CubbyMan:
         return exits
 
     @staticmethod
-    def ask_label(i: int, move: str) -> str:
+    def ask_label(i: int, move: str, salt: int = 0) -> str:
         """The short, distinct token the ASK offers for a move: index + the
         initials of the move's words (`07-carrdrr` for
-        `combo-aabaa_right_right_down_right_right`). Long, nearly identical
-        move names collided in the VM's candidate round-trip (2026-09-02:
-        one of 20 came back as a duplicate of another), so the program
-        offers labels and the host maps the choice back. The guard is
-        unchanged: the answer must be one of the offered labels, and a raw
-        direction that was not offered is still refused."""
+        `combo-aabaa_right_right_down_right_right`). The VM decodes string
+        values through its symbol space and unrelated strings can collide
+        there (2026-09-02: a long name came back as another's duplicate;
+        later a label came back as the ASK's own question text), so the
+        program offers labels, the host maps the choice back, and on a
+        mismatch the labels are RE-ROLLED with a salt (`07a-…`) — a
+        collision depends on the exact strings. The guard is unchanged: the
+        answer must be one of the offered labels, and a raw direction that
+        was not offered is still refused."""
         initials = "".join(w[0] for w in move.replace("-", "_").split("_") if w)
-        return f"{i:02d}-{initials[:10]}"
+        return f"{i:02d}{'' if salt == 0 else chr(96 + salt)}-{initials[:10]}"
+
+    ASK_RETRIES = 3
+
+    def _ask_exits(self, dirs: list[str]) -> tuple[str, list[str]]:
+        """think() with labels for `dirs`; re-rolled on a VM decode glitch.
+        -> (program source, labels). Every retry is traced (`ask_retry`) so
+        the glitch rate is a number, not a feeling."""
+        from cubbyllm.bridges import cubelang_client as cc
+        last = ""
+        for salt in range(self.ASK_RETRIES):
+            labels = [self.ask_label(i, d, salt) for i, d in enumerate(dirs)]
+            src = render_talk_program(labels, question="which way next")
+            asked = cc.run_program_proto(src, fn="think", args=[self.place, "explore"], exe=self.exe)
+            got = asked.get("candidates") or []
+            if asked.get("suspended") and got == labels:
+                return src, labels
+            last = (f"embedded {len(labels)}, back {len(got)}; missing {[d for d in labels if d not in got][:3]}, "
+                    f"extra {[g for g in got if g not in labels][:3]}; suspended={asked.get('suspended')}")
+            self._t("ask_retry", salt=salt + 1, why=last)
+        raise RuntimeError(f"the VM did not offer the exits after {self.ASK_RETRIES} label sets: {last}")
 
     def _step(self) -> dict:
         from cubbyllm.bridges import cubelang_client as cc
         exits = self.candidate_moves(self.env.exits(self.place))
         dirs = sorted(exits)
-        labels = [self.ask_label(i, d) for i, d in enumerate(dirs)]
+        src, labels = self._ask_exits(dirs)
         by_label = dict(zip(labels, dirs))
-        src = render_talk_program(labels, question="which way next")
-        asked = cc.run_program_proto(src, fn="think", args=[self.place, "explore"], exe=self.exe)
-        if not asked.get("suspended") or asked["candidates"] != labels:
-            got = asked.get("candidates") or []
-            raise RuntimeError(f"the VM did not offer the exits: embedded {len(labels)}, back {len(got)}; "
-                               f"missing {[d for d in labels if d not in got][:3]}, extra {[g for g in got if g not in labels][:3]}; "
-                               f"suspended={asked.get('suspended')}")
         probed = self._try_the_wall(src, dirs)
         chosen = self._pick(exits)
         label = labels[dirs.index(chosen)]
         res = cc.resume_program_proto(src, fn="think", args=[self.place, "explore"],
                                       answers=[label], exe=self.exe)
         if res.get("result") != label or by_label.get(res.get("result")) != chosen:
-            raise RuntimeError(f"resume returned {res.get('result')!r}, not the chosen label {label!r}")
+            # the same decode glitch on the way back: re-ask with fresh labels once, then give up loudly
+            self._t("ask_retry", salt="resume", why=f"resume returned {res.get('result')!r} for {label!r}")
+            src, labels = self._ask_exits(dirs)
+            by_label = dict(zip(labels, dirs))
+            label = labels[dirs.index(chosen)]
+            res = cc.resume_program_proto(src, fn="think", args=[self.place, "explore"],
+                                          answers=[label], exe=self.exe)
+            if res.get("result") != label:
+                raise RuntimeError(f"resume returned {res.get('result')!r}, not the chosen label {label!r}")
         cc.run_program_proto(src, fn="act", args=[f"went {chosen} from {self.place}", "explore"],
                              exe=self.exe)
         came_from = self.place

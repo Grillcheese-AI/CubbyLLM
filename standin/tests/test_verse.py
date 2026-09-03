@@ -39,6 +39,8 @@ def test_ask_labels_are_short_and_distinct_for_near_identical_moves():
     labels = [CubbyMan.ask_label(i, m) for i, m in enumerate(moves)]
     assert len(set(labels)) == len(moves) and all(len(l) <= 13 for l in labels), labels
     assert CubbyMan.ask_label(7, "combo-aabaa_right_right_down_right_right") == "07-carrdrr"
+    assert CubbyMan.ask_label(7, "combo-aabaa_right_right_down_right_right", salt=1) == "07a-carrdrr", \
+        "a re-roll changes every label (a VM decode collision depends on the exact strings)"
     assert "north" not in labels and "up" not in labels, "a raw direction is never an offered label"
 
 
@@ -65,8 +67,8 @@ def test_live_exploration_learns_the_world_vm_mediated():
     rep = man.explore(steps=10)
     assert rep["coverage"] >= 0.8, f"exploration must map most of the world: {rep}"
     assert rep["anomalies"] == [], "the resume guard must reject every unoffered direction"
-    assert all(r["label"] == CubbyMan.ask_label(sorted_i, r["chosen"]) for r in man.log
-               for sorted_i in [int(r["label"].split("-")[0])]), "each move was chosen through its offered label"
+    assert all(r["label"].split("-", 1)[1] == CubbyMan.ask_label(0, r["chosen"]).split("-", 1)[1]
+               for r in man.log), "each move was chosen through its offered label (whatever the salt)"
     assert man.walls, "trying outside the offered scope must teach him where walls are"
     assert any(f.startswith("a wall is the") for f in man.world.texts)
     # his own join programs: VM-computed exit counts + symmetry about
