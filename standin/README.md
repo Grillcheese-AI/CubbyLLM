@@ -236,7 +236,7 @@ code-leak filter on chat replies (`def`/`import`/`print(`), output versioned (`-
 ### v6 set BUILT (2026-09-02, `--version v6`; on Drive, sha `a68135a6…`): history, the sorted local sources, affect
 
 Two owner asks landed in one set: *historical sentences in the training that it can refer to*, then *the
-sorted local data* (`I:\grillcheese_training_data\knowledgetxt`, `E:\datasets\domains`, `E:\datasetshistorical-quotes`, `E:\datasets\domains\verified_facts`) for chat. Everything new goes through the live gate
+sorted local data* (`I:\grillcheese_training_data\knowledgetxt`, `E:\datasets\domains`, `E:\datasets\historical-quotes`, `E:\datasets\domains\verified_facts`) for chat. Everything new goes through the live gate
 (voice rules, no base-model guard, no other assistant, no URL, no explicit, no code/LaTeX, **no non-Latin
 script**) under the identity system prompt. **57,179 records** (manifest `by_task`, after prompt dedupe) =
 v4 replay (identity now ×4) + 20,335 chat + 1,397 content + 9,659 emotion + **1,679 affect** + **12,965
