@@ -315,6 +315,23 @@ def test_emotion_maps_to_the_plutchik_compass():
     assert emo["color"].startswith("#") and 0 <= emo["intensity"] <= 1.2
 
 
+def test_being_caught_raises_fear_learned_and_hormonal():
+    from pacman import CubbyGhost, GhostVerse
+    from neurochem import Neurochemistry
+    man = CubbyGhost(GhostVerse(), probe=0.0)
+    man.chem = Neurochemistry()
+    fear0, r0 = man.fear, man.danger_radius
+    ne0, c0 = man.chem.noradrenaline, man.chem.cortisol
+    man._on_caught()
+    assert man.fear == fear0 + 0.7, "the learned fear climbs (pacman_live's +0.7)"
+    assert man.chem.noradrenaline > ne0 + 0.3, "the shock: noradrenaline surges"
+    assert man.chem.cortisol > c0, "and the slow cortisol moves"
+    assert man.emotion()["name"] in ("apprehension", "fear", "terror"), man.emotion()
+    assert man._mood() in ("(uneasy) ", "(scared) ", "(terrified) ", "(on edge) ")
+    man._on_caught()
+    assert man.danger_radius > r0, "two catches: he keeps a wider berth from now on"
+
+
 def test_traps_are_one_per_level_cumulative_ghost_only_and_used_wisely():
     from pacman import TRAP_BONUS, CubbyGhost, GhostVerse
     env = GhostVerse()

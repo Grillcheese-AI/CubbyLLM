@@ -943,6 +943,25 @@ class CubbyGhost(CubbyPac):
         here = env.coords(self.place)
         return min(_manh(here, g) for g in env.ghosts) > self.danger_radius + 1
 
+    CAUGHT_FEAR = 0.7                                    # the live game's ghost_penalty increment
+    CAUGHT_SHOCK_FRAMES = 6                              # frames of full threat: NE surges, cortisol integrates
+
+    def _on_caught(self) -> None:
+        """Being caught raises fear TWICE: the learned scalar (+0.7, the
+        danger radius grows — pacman_live's rule) and the neurochemistry —
+        not one frame of threat but a shock of several, so noradrenaline
+        surges and the slow cortisol actually moves; the compass reads it
+        as fear, and the mood word follows for a while."""
+        self.fear = min(4.0, self.fear + self.CAUGHT_FEAR)
+        if self.chem is not None:
+            for _ in range(self.CAUGHT_SHOCK_FRAMES):
+                self.chem.update(threat=1.0, valence=-0.8)
+            # the aversive outcome: a dopamine DIP (reward-prediction error), which the
+            # port has no input for -- without it the NE->DA coupling lifts dopamine and
+            # Lövheim's low-5HT/high-DA/high-NE corner reads as RAGE instead of fear
+            self.chem.dopamine = max(0.15, self.chem.dopamine - 0.30)
+            self.chem.dominant_emotion = self.chem._classify_emotion(0.0)   # the corner label is set inside update()
+
     def _mine_wise(self) -> bool:
         """Use a trap only when it will count: he holds one, the ghosts are
         hunting (not frightened), one is inside his fear radius + 1, and the
@@ -1429,16 +1448,14 @@ class CubbyGhost(CubbyPac):
                 if self.chem is not None:
                     self.chem.update(valence=1.0)
             if gh["caught"]:
-                self.fear = min(4.0, self.fear + 0.7)    # LEARN: that hurt -> fear ghosts more
                 fact = f"a ghost is the danger of {self.place}"
                 self._learn([fact])
+                self._on_caught()                        # fear up (learned) and the shock (hormonal)
                 ev["caught"] = "gameover" if env.game_over else True
                 self._t("caught", place=self.place, lives=env.lives, fear=round(self.fear, 2),
                         game_over=env.game_over, learned=fact)
                 self._think("caught", place=self.place)
                 self.place = env.start
-                if self.chem is not None:
-                    self.chem.update(threat=1.0, valence=-0.8)
             elif env.ghosts:
                 near = min(_manh(env.coords(self.place), g) for g in env.ghosts)
                 if self.chem is not None:
