@@ -136,7 +136,7 @@ def make_handler(brain):
             elif self.path == "/health":
                 self._send(200, {"ok": True, "emitter": getattr(brain.emitter, "name", "?"),
                                  "two_adapters": bool(getattr(brain.emitter, "is_split", False)),
-                                 "adapter_calls": getattr(brain.emitter, "calls", None)})
+                                 "adapters": (brain.emitter.usage() if hasattr(brain.emitter, "usage") else None)})
             elif self.path == "/state":
                 self._send(200, brain.chat.chem.to_dict())
             elif self.path == "/worlds":

@@ -183,17 +183,52 @@ class ContextualEmitter:
             raise ValueError(f"default role {default!r} not among adapters {sorted(adapters)}")
         self.adapters = dict(adapters)
         self.default = default
-        self.name = "ctx[" + ",".join(f"{k}={getattr(v, 'name', '?')}" for k, v in self.adapters.items()) + "]"
         self.calls: dict = {k: 0 for k in self.adapters}   # per-role usage, for /health and tests
+        self.fallbacks: dict = {}                            # role asked for but absent -> count: the "need" monitor
+        self.history: list = []                              # (role, adapter name, "registered"|"retired")
+
+    @property
+    def name(self) -> str:
+        return "ctx[" + ",".join(f"{k}={getattr(v, 'name', '?')}" for k, v in self.adapters.items()) + "]"
 
     @property
     def is_split(self) -> bool:
         """True when at least two roles resolve to different adapters."""
         return len({id(v) for v in self.adapters.values()}) > 1
 
+    # ── the bank grows and shrinks at runtime (spawned specialists arrive here after promotion) ──
+    def register(self, role: str, adapter) -> None:
+        """Add (or replace) the adapter for a role; the retired one is kept in `history`, never lost."""
+        if not role or not hasattr(adapter, "emit"):
+            raise ValueError("register(role, adapter) needs a role and an object with .emit")
+        old = self.adapters.get(role)
+        if old is not None:
+            self.history.append((role, getattr(old, "name", "?"), "retired"))
+        self.adapters[role] = adapter
+        self.calls.setdefault(role, 0)
+        self.history.append((role, getattr(adapter, "name", "?"), "registered"))
+
+    def unregister(self, role: str) -> None:
+        if role == self.default:
+            raise ValueError("the default adapter cannot be unregistered")
+        if role in self.adapters:
+            self.history.append((role, getattr(self.adapters.pop(role), "name", "?"), "retired"))
+
     def resolve(self, context) -> str:
         role = context_role(context)
-        return role if role in self.adapters else self.default
+        if role in self.adapters:
+            return role
+        if role is not None and role != self.default:          # a context asked for a specialist that does not exist
+            self.fallbacks[role] = self.fallbacks.get(role, 0) + 1
+        return self.default
+
+    def usage(self) -> dict:
+        """What /health shows and the need-detector reads: calls per role, fallbacks per missing role,
+        and the fallback rate (the share of contexts no specialist claimed)."""
+        total = sum(self.calls.values())
+        fb = sum(self.fallbacks.values())
+        return {"roles": sorted(self.adapters), "calls": dict(self.calls), "fallbacks": dict(self.fallbacks),
+                "fallback_rate": (fb / total) if total else 0.0, "history": list(self.history)}
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
              prefix: str = "", temperature: float = 0.0, seed: int | None = None,

@@ -382,3 +382,36 @@ def test_live_the_context_selects_the_adapter_and_callers_hold_one_emitter():
     # one model: both roles, no ContextualEmitter needed
     solo = sv.CubbyServe(Counting("only"), overlap_retriever, STORE, route_tau=0.2)
     assert not isinstance(solo.emitter, ContextualEmitter) and solo.turn("how are you today?")["kind"] == "chat"
+
+
+def test_the_adapter_bank_grows_and_counts_what_it_cannot_serve():
+    """The automatic half of "specialization, automatic": a context that asks for a specialist the bank
+    lacks falls back to the default AND is counted (the need monitor); a promoted specialist registers at
+    runtime and takes its role over; retirement keeps history, never deletes."""
+    from emitter import ContextualEmitter
+
+    class Fake:
+        def __init__(self, name):
+            self.name, self.calls = name, 0
+
+        def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
+            self.calls += 1
+            return f"{self.name}:{prompt}"
+
+    base, talk = Fake("base"), Fake("talk")
+    bank = ContextualEmitter({"programs": base, "talk": talk}, default="programs")
+    assert bank.emit("q", context={"role": "pacman", "world": "pacman"}) == "base:q"   # no pacman specialist yet
+    assert bank.emit("q", context="pacman") == "base:q" and bank.fallbacks == {"pacman": 2}
+    u = bank.usage()
+    assert u["fallback_rate"] == 1.0 and u["roles"] == ["programs", "talk"]
+    spec = Fake("pacman-v1")
+    bank.register("pacman", spec)                       # a spawned specialist, promoted
+    assert bank.emit("q", context="pacman") == "pacman-v1:q" and spec.calls == 1 and bank.fallbacks == {"pacman": 2}
+    assert bank.name == "ctx[programs=base,talk=talk,pacman=pacman-v1]"
+    bank.register("pacman", Fake("pacman-v2"))           # replaced: v1 retired into history, not lost
+    assert [h for h in bank.history if h[2] == "retired"] == [("pacman", "pacman-v1", "retired")]
+    bank.unregister("pacman")
+    assert "pacman" not in bank.adapters and bank.emit("q", context="pacman") == "base:q"
+    import pytest
+    with pytest.raises(ValueError):
+        bank.unregister("programs")

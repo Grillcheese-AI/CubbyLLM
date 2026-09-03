@@ -344,6 +344,41 @@ handle on the brain (`talk_emitter`) with cortices choosing weights by hand — 
   a measured program/talk interference in a 2.6B LoRA fine-tune* — a stand-in fact, a pointer under H0 in the
   hypotheses doc, nothing about the trunk's own θ = f(c).
 
+**The automatic half — adapters created when needed, used only when needed (owner, 2026-09-03).** Two
+hand-trained adapters are the K=2 *seed* of "specialization, automatic", not the mechanism. The architecture
+already names the mechanism's parts: H0 (parameters as a function of context), H-C4 (the router is
+offline-pretrained and frozen — an online router forgets its own routing), H-A7 (weight updates enter only
+through a pre-registered promotion rule), MoWM ("worlds are an adaptive-k discrete mixture: spawn = grow k,
+prune = shrink it", the agenda's Q7 "OOD-spawn + frozen router; ADWIN/PSI triggers; shadow/canary"). The
+stand-in's version, a mixture of adapters over one base with a frozen tag router, is the discrete precursor
+of generated adapters — the same lifecycle, cheaper weights. **The lifecycle (each step is a script; the
+training step is a Colab run today):**
+
+1. **Detect** — a *need* is a measured deficit on a context cluster, never the model's opinion: the VM
+   eval / forge probe / self-test rates and the brain's trace, bucketed by context (task, world, subtype,
+   language), fall below the bank's default by a pre-registered margin over a minimum window (the v6 forge
+   decision at 0.17 vs 1.00 is what a detection looks like), **or** the bank's `fallback_rate` shows a
+   context role no adapter claims (`ContextualEmitter.usage()`; `/health` reports it). Thresholds are set
+   before the run, deny-by-default: no detection, no spawn.
+2. **Spawn** — build the cluster's partition from the verified records that carry its context (the
+   partition builder generalized from `partition_records` to any tag: task, subtype, world, language), with
+   its own manifest and the sha of the set it came from.
+3. **Train** — one LoRA on the shared base from that partition (the notebook, `STANDIN_VERSION=<cluster>`).
+4. **Promote** — the H-A7 gate: the candidate must beat the incumbent on the cluster's held-out VM eval by
+   the pre-registered margin **and** not regress a canary set of the other roles; otherwise it is kept
+   pass-or-fail in the bank's history and never routed to.
+5. **Route** — `ContextualEmitter.register(role, adapter)`; the frozen router (the thalamus rules today, the
+   H-C4 domain head as clusters multiply) sends only matching contexts to it; everything else stays on the
+   default. **Prune** — a specialist whose calls or margin fall away is `unregister`ed into history (retire,
+   never delete; the ProgramLibrary's rule).
+
+What exists as of this commit: the bank with `register` / `unregister` / `fallbacks` / `usage()` and the
+retirement history (pinned by `test_the_adapter_bank_grows_and_counts_what_it_cannot_serve`), the partition
+builder for the task split, the frozen router, and the eval harnesses the gate composes. The next cycle
+(spec → plan → build) is the detector + the tag-general partition builder + the promote script; the v8e /
+v8t A/B is its first measurement — it tells whether adapter-per-context removes the interference at all,
+which the whole lifecycle presupposes.
+
 **Also in v8's data:** the FR location phrasings of the `world` intent ("Tu habites où ?", "Où es-tu ?", "Où
 est ta maison ?" + EN "Where are you?", "Which world do you live in?") after v7 answered "Où vis-tu ?" with an
 invented town; the identity-question detector catches them so they never reach the fact path.
