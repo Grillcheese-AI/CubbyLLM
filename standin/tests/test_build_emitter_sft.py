@@ -165,3 +165,35 @@ def test_gold_matches_numeric_and_string_and_missing():
     assert b.gold_matches("Paris ", "paris") is False              # exact string compare after strip
     assert b.gold_matches("paris", "paris") is True
     assert b.gold_matches("anything", None) is None
+
+
+
+def test_llama_cpp_emitters_take_turns_on_the_gpu_across_threads():
+    """serve_api is a ThreadingHTTPServer: a chat turn and a /pac step reach the emitters from two threads.
+    Llama is not thread-safe, so every LlamaCppEmitter decodes under one process-wide lock — two adapters
+    included (the two-model reset). Pinned with a fake Llama that fails on re-entry."""
+    import threading, time
+    from standin.emitter import LlamaCppEmitter
+
+    class FakeLlama:
+        busy = 0
+        overlaps = 0
+        metadata = {"tokenizer.chat_template": "<|im_start|>"}
+
+        def create_completion(self, text, **kw):
+            FakeLlama.busy += 1
+            if FakeLlama.busy > 1:
+                FakeLlama.overlaps += 1
+            time.sleep(0.01)
+            FakeLlama.busy -= 1
+            return {"choices": [{"text": "ok"}]}
+
+    a, b = LlamaCppEmitter("x/a.gguf", family="chatml"), LlamaCppEmitter("x/b.gguf", family="chatml")
+    a._llm, b._llm = FakeLlama(), FakeLlama()
+    outs = []
+    ts = [threading.Thread(target=lambda e=e: outs.append(e.emit("hi", max_new_tokens=4))) for e in (a, b, a, b, a, b)]
+    for th in ts:
+        th.start()
+    for th in ts:
+        th.join()
+    assert outs == ["ok"] * 6 and FakeLlama.overlaps == 0

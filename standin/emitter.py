@@ -84,6 +84,10 @@ class LlamaServerEmitter:
 
 NO_THINK_PREFILL = "<think>\n</think>\n"
 
+import threading
+
+GPU_LOCK = threading.Lock()   # one decode at a time on the card: Llama is not thread-safe, and two decodes cannot overlap usefully
+
 
 def render_chatml(system: str, user: str, prefill: str = NO_THINK_PREFILL) -> str:
     """LFM2.5's chat template, rendered by hand (verified against the GGUF's
@@ -159,11 +163,13 @@ class LlamaCppEmitter:
 
     def _load(self):
         if self._llm is None:
-            from llama_cpp import Llama
-            self._llm = Llama(model_path=self.gguf_path, n_ctx=self.n_ctx, n_gpu_layers=self.n_gpu_layers,
-                              verbose=self.verbose, seed=0)
-            if self._family is None:
-                self._family = chat_family((getattr(self._llm, "metadata", None) or {}).get("tokenizer.chat_template"))
+            with GPU_LOCK:                                # a load beside a running decode is the two-model reset
+                if self._llm is None:
+                    from llama_cpp import Llama
+                    self._llm = Llama(model_path=self.gguf_path, n_ctx=self.n_ctx, n_gpu_layers=self.n_gpu_layers,
+                                      verbose=self.verbose, seed=0)
+                    if self._family is None:
+                        self._family = chat_family((getattr(self._llm, "metadata", None) or {}).get("tokenizer.chat_template"))
         return self._llm
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
@@ -173,8 +179,9 @@ class LlamaCppEmitter:
         render, stop, _ = CHAT_FAMILIES[self.family]
         text = render(system or self.system, prompt, self.prefill + prefix)
         sampling = {"temperature": float(temperature), "top_p": 0.9} if temperature > 0 else {"temperature": 0.0}
-        out = llm.create_completion(text, max_tokens=int(max_new_tokens), seed=(0 if seed is None else int(seed)),
-                                    **sampling, stop=stop)
+        with GPU_LOCK:                                    # the HTTP server is threaded; the game and a chat turn take turns here
+            out = llm.create_completion(text, max_tokens=int(max_new_tokens), seed=(0 if seed is None else int(seed)),
+                                        **sampling, stop=stop)
         return prefix + out["choices"][0]["text"]
 
 
