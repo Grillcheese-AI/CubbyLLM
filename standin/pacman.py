@@ -539,15 +539,11 @@ class GhostVerse(PacVerse):
         self.ghost_spawn = [far[i % len(far)] for i in range(self.n_ghosts)] if far else [start]
         self.ghosts = list(self.ghost_spawn)
         self.game_over = False
-        # the live game's time budget + the hidden word (letter pellets = the
-        # first len(word) non-star pellets, exactly as pacman_live assigns them)
+        # the live game's time budget (the hidden-word/letter mechanic was
+        # dropped 2026-09-02 — his THOUGHTS are the speech surface now)
         self.budget = int(46 + 8 * level)
         self.attempt = 1
         self.steps = 0
-        self.word = _WORDS[(level - 1) % len(_WORDS)]
-        cells = [c for c in sorted(self.pellets) if c not in self.power][: len(self.word)]
-        self.letter_at = {c: (i, self.word[i]) for i, c in enumerate(cells)}
-        self.collected: dict[int, str] = {}
 
     def begin_run(self) -> None:
         """Out of time: same level, fresh run (pacman_live's _begin_run)."""
@@ -556,7 +552,6 @@ class GhostVerse(PacVerse):
         self.score = 0
         self.steps = 0
         self.frightened = 0
-        self.collected = {}
         self.ghosts = list(self.ghost_spawn)
 
     # level-scoped names so facts stay true forever across levels
@@ -625,7 +620,7 @@ class GhostVerse(PacVerse):
 
     def eat(self, place: str) -> dict:
         c = self.coords(place)
-        out = {"pellet": False, "power": False, "letter": None, "word_done": False}
+        out = {"pellet": False, "power": False}
         if c in self.remaining:
             self.remaining.discard(c)
             self.score += 1
@@ -635,11 +630,6 @@ class GhostVerse(PacVerse):
                 self.power.discard(c)
                 self.frightened = FRIGHT_STEPS
                 out["power"] = True
-            if c in self.letter_at:                      # a LETTER pellet
-                i, ch = self.letter_at[c]
-                self.collected[i] = ch
-                out["letter"] = ch
-                out["word_done"] = len(self.collected) == len(self.word)
         return out
 
     def ghost_turn(self, cubby: str) -> dict:
@@ -725,12 +715,11 @@ class CubbyGhost(CubbyPac):
                  probe: float = 0.35, memory: pathlib.Path | None = None) -> None:
         self.brain = None
         self.fear = 0.3                                  # pacman_live's ghost_penalty, learned
-        self.vocab: list[str] = []                       # words grounded by collecting their letters
-        self.talk: dict | None = None
-        self._talk_id = 0
-        self._cool: dict[str, int] = {}
         self._last: dict = {}
-        self._pending_says: str | None = None
+        self.lang = "en"                                 # the language he thinks in (follows the chat)
+        self._thought: str | None = None                 # this step's thought, rendered from what he DID
+        self._thought_prio = -1
+        self._say_aloud: str | None = None               # the salient ones also go to the page's bubble
         self.sighted: set[str] = set()                   # cells where he SAW a pellet (facts too)
         self._eaten_run: set[str] = set()                # eaten THIS run (pellets respawn on a retry)
         self._plan_next: str | None = None               # the cell his map says to go to next
@@ -786,6 +775,7 @@ class CubbyGhost(CubbyPac):
         self._learn([f"{name} is the superpower {len(self.library.entries)} of cubbyman",
                      f"{' '.join(steps)} is the recipe of {name}"])
         self._t("program", name=name, why=why, pattern=pattern, program=program, reasoning=reasoning)
+        self._think("program", name=name, pattern=pattern or " ".join(steps))
         if self.chem is not None:
             self.chem.update(novelty=1.0, valence=0.9)
         return name
@@ -829,6 +819,7 @@ class CubbyGhost(CubbyPac):
                 self.library.entries[parent].setdefault("children", []).append(made)
                 self.library.save()
                 self._t("modify", parent=parent, child=made, edit=edit)
+                self._think("modify", parent=parent, child=made, edit=edit)
             return made
         return None
 
@@ -936,7 +927,9 @@ class CubbyGhost(CubbyPac):
         from forge import decision_true, flee_task
         self._last_forge = self.env.steps
         r = self.forge.forge(flee_task(near, self.danger_radius, self._situation()), self.env.steps)
-        return decision_true(r["got"]) if r["ok"] else None
+        verdict = decision_true(r["got"]) if r["ok"] else None
+        self._think("forge", ok=r["ok"], answer=(("flee" if verdict else "stay") if verdict is not None else None))
+        return verdict
 
     def _forge_safer_exit(self, gaps: dict[str, int]) -> str | None:
         """Two candidate exits -> a compare program picks the safer distance."""
@@ -972,28 +965,111 @@ class CubbyGhost(CubbyPac):
     def beaten(self) -> bool:
         return False                                     # levels continue; the game never "ends"
 
-    # ── speech: grounded words through CubbyTalk ─────────────────────────────
-    def _say(self, word: str, why: str) -> dict | None:
-        if self.brain is None:
-            return None
-        try:
-            rec = self.brain.chat.mediate(f"[{why}]", [f"{word}!"], rejected=[])
-        except Exception as e:                           # speech must never stop the game
-            self._t("talk_error", word=word, error=str(e)[:120])
-            return None
-        self._talk_id += 1
-        self.talk = {"word": word, "why": why, "sim": 1.0, "id": self._talk_id,
-                     "trace": f"ASK offered {rec['offered']} -> chose {rec['reply']!r} -> act remembered"}
-        self._t("talk", word=word, why=why)
-        return self.talk
+    # ── thinking out loud: his decisions rendered as first-person lines ─────
+    # Rendered from what he actually did (the trace data), never invented by
+    # the model; voice rules apply (no forbidden words). One thought per
+    # step wins by priority; the salient ones also reach the page's bubble.
+    _PRIO = {"caught": 6, "level_up": 6, "out_of_time": 5, "program": 5, "modify": 5, "power": 4,
+             "forge": 4, "flee": 4, "superpower_move": 3, "eat": 3, "probe": 2, "derive": 2,
+             "plan": 1, "idle": 0}
 
-    def _percept(self, why: str) -> None:
-        """A percept a word may NAME: if he has grounded that word (collected
-        its letters) and the cooldown passed, he says it."""
-        word = _CONCEPT_WORD.get(why)
-        if word in self.vocab and self.env.steps - self._cool.get(why, -99) >= 6:
-            self._cool[why] = self.env.steps
-            self._say(word, why)
+    @staticmethod
+    def think(kind: str, lang: str = "en", mood: str = "", **d) -> str:
+        """The line for one event kind (EN/FR)."""
+        fr = lang == "fr"
+        t = {
+            "plan": (lambda: (f"Je vois une pastille en {d.get('to')} — j'y vais." if d.get("goal") == "pellet"
+                              else f"Rien en vue, je vais explorer {d.get('to')}.") if fr else
+                     (f"I saw a pellet at {d.get('to')} — heading there." if d.get("goal") == "pellet"
+                      else f"Nothing in sight; let me explore {d.get('to')}.")),
+            "flee": (lambda: f"Un fantôme à {d.get('ghost_distance')} — trop près pour mes nerfs ({d.get('radius')}), je file." if fr else
+                     f"A ghost {d.get('ghost_distance')} cells away — too close for my nerves ({d.get('radius')}), I'm running."),
+            "caught": (lambda: f"Aïe, attrapé en {d.get('place')}. Je retiens que cet endroit est dangereux." if fr else
+                       f"Ouch, caught at {d.get('place')}. I'll remember that spot is dangerous."),
+            "probe": (lambda: f"J'ai essayé {d.get('tried')} — un mur. Noté." if fr else
+                      f"Tried {d.get('tried')} — a wall. Noted."),
+            "eat": (lambda: f"Une pastille ({d.get('score')}/{d.get('total')})." if fr else
+                    f"Got a pellet ({d.get('score')}/{d.get('total')})."),
+            "power": (lambda: f"Une étoile ! Les fantômes sont à moi pendant {d.get('steps')} coups." if fr else
+                      f"A star! The ghosts are mine for {d.get('steps')} moves."),
+            "program": (lambda: f"Un nouveau coup, {d.get('name')} — la VM a vérifié ma recette {d.get('pattern')}." if fr else
+                        f"Made a new move, {d.get('name')} — the VM checked my recipe {d.get('pattern')}."),
+            "modify": (lambda: f"J'ai retouché {d.get('parent')} en {d.get('child')} ({d.get('edit')})." if fr else
+                       f"Tweaked {d.get('parent')} into {d.get('child')} ({d.get('edit')})."),
+            "superpower_move": (lambda: f"Coup spécial {d.get('name')} : {d.get('saved')} pas gagnés." if fr else
+                                f"Using {d.get('name')}: {d.get('saved')} steps saved."),
+            "out_of_time": (lambda: (f"Plus de temps au niveau {d.get('level')} — essai {d.get('attempt')}. Il me faut être plus rapide"
+                                     + (f" : j'ai inventé {d.get('learned')}." if d.get('learned') else ".")) if fr else
+                            (f"Out of time on level {d.get('level')} — attempt {d.get('attempt')}. I need to be faster"
+                             + (f": I made {d.get('learned')}." if d.get('learned') else "."))),
+            "level_up": (lambda: f"Niveau {d.get('cleared')} terminé ! Au suivant : {d.get('next')}." if fr else
+                         f"Level {d.get('cleared')} cleared! On to {d.get('next')}."),
+            "derive": (lambda: f"J'en déduis : {d.get('fact')}." if fr else f"Worked out: {d.get('fact')}."),
+            "forge": (lambda: (f"Réfléchissons… mon calcul dit : {d.get('answer')}." if d.get("ok") else
+                               "Réfléchissons… mon calcul ne tient pas, je m'en tiens à ma règle.") if fr else
+                      (f"Let me think this through… my check says: {d.get('answer')}." if d.get("ok") else
+                       "Let me think this through… my check does not hold, I'll go with my rule.")),
+            "idle": (lambda: f"Je continue vers {d.get('to')}." if fr else f"Carrying on toward {d.get('to')}."),
+        }
+        line = t.get(kind, lambda: "")()
+        return (mood + line) if line else ""
+
+    def _mood(self) -> str:
+        if self.chem is None:
+            return ""
+        fr = self.lang == "fr"
+        if self.chem.cortisol >= 0.35:
+            return "(nerveux) " if fr else "(nervous) "
+        if self.chem.dopamine >= 0.55:
+            return "(excité) " if fr else "(excited) "
+        return ""
+
+    verbalize = True                                     # let the LLM phrase the thought (content stays the host's)
+
+    def _verbalize(self, line: str) -> tuple[str, bool]:
+        """The model says the host's thought in its own words, under the
+        hormonal state. Accepted only if it keeps every number and name of
+        the original, passes the voice rules, carries no base-model guard
+        and is not a bio — else the host line stands. -> (text, verbalized)."""
+        if self.brain is None or not self.verbalize:
+            return line, False
+        from forge import numbers
+        from identity import identity_system, is_identity_reply, is_model_guard, voice_ok
+        fr = self.lang == "fr"
+        prompt = ((f"Dis ceci avec tes propres mots, une phrase courte, à la première personne, en gardant "
+                   f"chaque nombre et chaque nom : {line}") if fr else
+                  (f"Say this in your own words, one short sentence, first person, keeping every number "
+                   f"and every name: {line}"))
+        try:
+            raw = self.brain.emitter.emit(prompt, max_new_tokens=48,
+                                          system=identity_system(self.brain.facts, self.brain.chat.state))
+        except Exception:
+            return line, False
+        text = re.sub(r"^\s*(?:<think>)?.*?</think>\s*", "", raw, count=1, flags=re.S) if "</think>" in raw else raw
+        text = " ".join(text.strip().split())
+        # what must survive the rephrasing: cells and move NAMES (all caps), not sentence-initial words
+        names = re.findall(r"level-\d+ cell [\d\-]+|\b[A-Z][A-Z0-9\-]{2,}\b", line)
+        facts = self.brain.facts
+        ok = (bool(text) and len(text.split()) <= 40 and voice_ok(text, facts) and not is_model_guard(text)
+              and not is_identity_reply(text, facts) and set(numbers(line)) <= set(numbers(text))
+              and all(n in text for n in names))
+        return (text, True) if ok else (line, False)
+
+    def _think(self, kind: str, **d) -> None:
+        """Record a thought for this step if it outranks the current one; the
+        line is also a `thought` event, so the console shows it. Thoughts
+        that matter (probe and up) are verbalized by the model."""
+        prio = self._PRIO.get(kind, 0)
+        if prio < self._thought_prio:
+            return
+        line = self.think(kind, self.lang, self._mood(), **d)
+        if not line:
+            return
+        text, verbalized = self._verbalize(line) if prio >= 2 else (line, False)
+        self._thought, self._thought_prio = text, prio
+        if prio >= 4:
+            self._say_aloud = text
+        self._t("thought", text=text, about=kind, verbalized=verbalized, **({"raw": line} if verbalized else {}))
 
     # ── the moves ────────────────────────────────────────────────────────────
     SIGHT = 2                                            # pellets glow: he sees them this far
@@ -1019,18 +1095,14 @@ class CubbyGhost(CubbyPac):
             self._eaten_run.add(place)
             fact = f"pellet {self.env.score} is the discovery of {place}"
             self._t("eat", place=place, pellet=self.env.score, power=ate["power"],
-                    letter=ate["letter"], remaining=len(self.env.remaining))
+                    remaining=len(self.env.remaining))
             new += self._learn([fact])
             if self.chem is not None:
                 self.chem.update(valence=0.8 if ate["power"] else 0.3)
             if ate["power"]:
-                self._percept("power_up")
-            if ate["word_done"]:                         # the hidden word is complete -> grounded + said
-                word = self.env.word
-                if word not in self.vocab:
-                    self.vocab.append(word)
-                self._pending_says = word
-                self._say(word, _WORD_CONCEPT.get(word, "learned"))
+                self._think("power", steps=FRIGHT_STEPS)
+            else:
+                self._think("eat", score=self.env.score, total=len(self.env.pellets))
         new += self._learn(self._sight(place))
         return new
 
@@ -1132,6 +1204,7 @@ class CubbyGhost(CubbyPac):
                     self._t("flee", place=self.place, ghost_distance=near, radius=self.danger_radius,
                             decision=("program" if decided is not None else "rule"),
                             exit_by=("program" if chosen_by_program else "rule"))
+                    self._think("flee", ghost_distance=near, radius=self.danger_radius)
                     if chosen_by_program is not None:
                         return chosen_by_program
                     for m in fled:
@@ -1158,7 +1231,7 @@ class CubbyGhost(CubbyPac):
         self._learn(self.env.observe(self.place))
         self._learn(self._sight(self.place))
         self.visits[self.place] = self.visits.get(self.place, 0) + 1
-        self._percept("new_maze")
+        self._think("level_up", cleared=nxt - 1, next=nxt)
         self._forge_orientation()                        # new maze: check my bearings through my trunk
 
     def step(self) -> dict:
@@ -1182,9 +1255,12 @@ class CubbyGhost(CubbyPac):
                 ev["failed"] = True
                 ev["learned"] = self._propose("out_of_time")     # too slow -> generate a faster move
                 self._t("out_of_time", level=env.level, attempt=env.attempt, learned=ev["learned"])
+                self._thought, self._thought_prio, self._say_aloud = None, -1, None
+                self._think("out_of_time", level=env.level, attempt=env.attempt, learned=ev["learned"])
+                ev["says"] = self._say_aloud
                 self._last = ev
                 return {"from": None, "place": self.place, "chosen": None, "new": 0, "probed": None}
-            self._pending_says = None
+            self._thought, self._thought_prio, self._say_aloud = None, -1, None   # a fresh thought each step
             danger = self.danger_cells()                 # the berth grows with learned fear
             self._plan_next = self.plan_next(avoid=danger)
             seen_left = bool(self.sighted - self._eaten_run)
@@ -1214,7 +1290,15 @@ class CubbyGhost(CubbyPac):
                 self._t("superpower_move", move=chosen, program=pname, saved_steps=saved,
                         to=self.place, energy=env.energy)
             ev["eaten"] = self._last_eaten
-            ev["says"] = self._pending_says
+            if rec.get("probed"):
+                self._think("probe", tried=rec["probed"])
+            if chosen and "_" in chosen:
+                self._think("superpower_move", name=pname, saved=saved)
+            if self._thought is None:                    # nothing notable: the plan, or just moving on
+                if self._plan_next is not None:
+                    self._think("plan", to=self._plan_next, goal="pellet" if seen_left else "frontier")
+                else:
+                    self._think("idle", to=self.place)
             gh = env.ghost_turn(self.place)              # then the ghosts move
             if gh["eaten"]:
                 ev["ate_ghost"] = True
@@ -1228,6 +1312,7 @@ class CubbyGhost(CubbyPac):
                 ev["caught"] = "gameover" if env.game_over else True
                 self._t("caught", place=self.place, lives=env.lives, fear=round(self.fear, 2),
                         game_over=env.game_over, learned=fact)
+                self._think("caught", place=self.place)
                 self.place = env.start
                 if self.chem is not None:
                     self.chem.update(threat=1.0, valence=-0.8)
@@ -1237,13 +1322,9 @@ class CubbyGhost(CubbyPac):
                     threat = 0.0 if env.frightened else (1.0 if near <= 1 else 0.5 if near <= 2 else 0.0)
                     if threat:
                         self.chem.update(threat=threat)
-                if near <= 2 and not env.frightened:
-                    self._percept("ghost_near")
-            if rec["new"] >= 3:
-                self._percept("discovery")
             if not env.remaining:
                 ev["beaten"] = True
-                self._percept("solved")
+            ev["says"] = self._say_aloud
             self._last = ev
             return rec
 
@@ -1297,9 +1378,8 @@ class CubbyGhost(CubbyPac):
                 "memories": len(self.world),
                 "emotion": emo["name"], "emotion_intensity": emo["intensity"],
                 "emotion_angle": emo["angle"], "emotion_color": emo["color"], "emotion_msg": emo["msg"],
-                "word": env.word,
-                "collected": "".join(env.collected.get(i, "_") for i in range(len(env.word))),
-                "says": ev.get("says"), "thought": None, "vocab": list(self.vocab), "talk": self.talk,
+                "word": None, "collected": "",           # the letter mechanic is gone; the page's guard stays false
+                "says": ev.get("says"), "thought": self._thought, "vocab": [], "talk": None,
                 "lay_low": len(self.walls),              # relabeled: refused moves (walls learned)
                 "pursuit": sum(1 for g in env.ghosts if _manh(env.coords(self.place), g) <= 2)}
 
@@ -1376,6 +1456,11 @@ _FRONTEND_PATCHES = [
     ('covers tracks (learned): <b id="laylow">0.3</b>', 'refused moves (walls learned): <b id="laylow">0</b>'),
     ("$('laylow').textContent=s.lay_low.toFixed(2)", "$('laylow').textContent=String(s.lay_low)"),
     ("INTERVAL=320", "INTERVAL=600"),                   # our VM-guarded steps are slower than the planner's
+    # the letter/word mechanic is gone: the speech line shows his THOUGHT, the flash says so
+    ("if(s.word){ const prog=(s.collected||'').split('').join(' '); $('speaktxt').textContent = s.says ? "
+     "('💬 says: \"'+s.says+'\"') : ('letters: '+(prog||'—')); }",
+     "$('speaktxt').textContent = s.thought ? ('💭 '+s.thought) : '';"),
+    ("flash('💬 CUBBY SAYS: \"'+s.says+'\"','#7fe0ff')", "flash('💭 '+s.says,'#7fe0ff')"),
 ]
 
 
@@ -1398,6 +1483,7 @@ _CONSOLE_PANEL = r"""
   .k-plan{color:#8b949e}.k-program{color:#bc8cff}.k-forge{color:#bc8cff}.k-superpower_move{color:#27d3ff}
   .k-level_up{color:#2ce6a8}.k-out_of_time{color:#ff7043}.k-live_error{color:#f85149}.k-ghost_eaten{color:#2ce6a8}
   .k-says{color:#ffe66d}.k-retire{color:#8b949e}.k-restart{color:#ff7043}
+  .k-thought{color:#ffe66d;font-style:italic}.k-modify{color:#bc8cff}
 </style>
 <div id="cubbycon"><div class="hd"><b>cubby</b> console · what he does, as he does it
   <label><input id="cubbyauto" type="checkbox" checked> follow</label><a href="/" target="_blank">full console ↗</a></div>
@@ -1414,6 +1500,7 @@ _CONSOLE_PANEL = r"""
     if(e.kind==='program')return `${d.name} (${d.pattern||d.why}) — ${d.why}: ${(d.reasoning&&d.reasoning.verdict)||''}`;
     if(e.kind==='forge')return `${d.name} ${d.ok?'CERTIFIED':'REJECTED'} got=${d.got} expected=${d.expected}`;
     if(e.kind==='explore')return `${d.from||''} —${d.chosen}→ ${d.place} new=${d.new}${d.probed?' probed='+d.probed:''}`;
+    if(e.kind==='thought')return `“${d.text}”${d.verbalized?'':' (host)'}`;
     return Object.entries(d).filter(([k])=>k!=='program'&&k!=='reasoning').map(([k,v])=>`${k}=${typeof v==='object'?JSON.stringify(v):v}`).join(' ');}
   async function poll(){
     try{const r=await fetch(`/events?since=${since}`);const j=await r.json();

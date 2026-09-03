@@ -317,6 +317,7 @@ class CubbyBrain:
         self.worlds: dict[str, object] = {"facts": retriever}   # FactStore or bare callable
         self.store_texts = store_texts if store_texts is not None else getattr(retriever, "texts", [])
         self.chat = CubbyChat(emitter, self.facts, exe=exe, appraiser=appraiser)   # TalkCortex + the speech exit
+        self.mediate_chat = False                        # no-facts turns skip the VM (task/learn/help answers still go through the ASK)
         self.reason = ReasoningCortex(emitter, exe=exe, k_facts=k_facts,
                                       tau_vm=tau_vm, tau_ret=tau_ret)
         self.memory = MemoryCortex(emitter, self.facts, exe=exe)
@@ -347,40 +348,64 @@ class CubbyBrain:
         if hasattr(plugin, "on_turn"):
             self._observers.append(plugin)
 
-    # ── fast route (the SNN slot) + cortex router ───────────────────────────
+    # ── the thalamus: what needs FACTS, and what does not ───────────────────
+    # Owner's shape (2026-09-02): input neurons (sense) -> THALAMUS (this) ->
+    # the routed cortex -> CubbyTalk (the LLM speaks) -> routed again -> the
+    # VM, or not. A turn that needs facts goes to the VM-verified reasoning
+    # path; one that does not ("how are you", a joke, an opinion) is answered
+    # by the model itself, modulated by the hormones only — our host guards
+    # (voice rules, no base-model guard, no bio) still apply to the words.
     _HELP = re.compile(r"^\s*(help|aide|what can you do|que sais[- ]tu faire)\b", re.I)
     _QUESTION = re.compile(r"\?|^\s*(what|who|where|which|when|how many|how much|"
                            r"quel(le)?s?|qui|o[ùu]|combien|quand)\b", re.I)
+    _NO_FACTS = re.compile(r"\b(how are you|how do you feel|how('s| is) it going|what do you think|your opinion|"
+                           r"do you (like|love|enjoy|prefer)|favou?rite|tell me a joke|joke|riddle|poem|story|"
+                           r"song|rhyme|write|imagine|pretend|sing|advice|should i|what would you|cheer me up|"
+                           r"comment (vas[- ]tu|[çc]a va)|que penses[- ]tu|ton avis|tu (aimes|pr[ée]f[èe]res)|"
+                           r"raconte|blague|devinette|po[èe]me|histoire|chanson|[ée]cris|imagine|conseil)\b", re.I)
+
+    def needs_facts(self, text: str) -> tuple[bool, str]:
+        """Does answering need facts about the world? Facts: a question the
+        fact grammar parses, or a wh-question that is not about Cubby himself
+        or a matter of taste. No facts: identity turns, feelings, opinions,
+        creative asks, small talk."""
+        from cubbyllm.reasoning import parse_question
+        if is_identity_question(text):
+            return False, "about Cubby himself"
+        if parse_question(text) is not None:
+            return True, "the fact grammar parses it"
+        if self._NO_FACTS.search(text):
+            return False, "a feeling, opinion or creative ask"
+        if self._QUESTION.search(text):
+            return True, "a question about the world"
+        return False, "small talk"
 
     def route(self, text: str) -> dict:
-        """Today: learn-detect, commands, per-world retrieval scores and the
-        hormone-modulated engage threshold. A QUESTION always goes to the
-        reasoning cortex (an unknown answer is the don't-know line, never an
-        improvised chat reply); only identity turns and small talk reach the
-        talk cortex. The interface (text + state in, cortex name out) is the
-        slot the spikeybrain SNN port fills later — this lexical
-        implementation makes no SNN claim."""
+        """Learn-detect, commands, plugin cortices, then the thalamus:
+        needs facts -> reasoning (the VM path; an unknown answer is the
+        don't-know line, never improvised); no facts -> talk (the model,
+        hormones only). Confident retrieval also engages reasoning. The
+        interface (text + state in, cortex out) is the slot the spikeybrain
+        SNN port fills later — this lexical implementation makes no SNN claim."""
         fact = MemoryCortex.detect(text)
         if fact is not None:
-            return {"cortex": "memory", "fact": fact, "score": 1.0}
+            return {"cortex": "memory", "fact": fact, "score": 1.0, "needs_facts": True}
         if self._HELP.search(text):
-            return {"cortex": "help", "score": 1.0}
+            return {"cortex": "help", "score": 1.0, "needs_facts": False}
         best_c, best_m = None, 0.0
         for name, cortex in self.cortices.items():
             m = float(cortex.match(text)) if hasattr(cortex, "match") else 0.0
             if m > best_m:
                 best_c, best_m = name, m
         if best_c is not None and best_m >= 0.5:
-            return {"cortex": best_c, "score": best_m}
+            return {"cortex": best_c, "score": best_m, "needs_facts": False}
         world, score = route_world(self.worlds, text)
         tau_eff = self.chat.chem.modulate_threshold(self.route_tau)
-        identity = is_identity_question(text)
-        if identity:
-            return {"cortex": "talk", "score": score, "tau_eff": round(tau_eff, 3), "why": "identity turn"}
-        if score >= tau_eff or self._QUESTION.search(text):
+        facts, why = self.needs_facts(text)
+        if facts or score >= tau_eff:
             return {"cortex": "reasoning", "world": world, "score": score, "tau_eff": round(tau_eff, 3),
-                    "why": "retrieval" if score >= tau_eff else "a question: reason, never improvise"}
-        return {"cortex": "talk", "score": score, "tau_eff": round(tau_eff, 3), "why": "small talk"}
+                    "needs_facts": True, "why": why if facts else "retrieval"}
+        return {"cortex": "talk", "score": score, "tau_eff": round(tau_eff, 3), "needs_facts": False, "why": why}
 
     def help_line(self, lang: str) -> str:
         games = [n for n in self.cortices]
@@ -405,8 +430,8 @@ class CubbyBrain:
         self.trace("route", **route)
         cortex = route["cortex"]
 
-        if cortex == "talk":
-            rec = self.chat.turn(user_text, feedback)
+        if cortex == "talk":                             # no facts at stake: the model speaks, hormones only
+            rec = self.chat.turn(user_text, feedback, mediate=self.mediate_chat)
             rec["kind"] = "chat"
         elif cortex == "help":
             line = self.help_line("fr" if re.search(r"\b(aide|que sais)", user_text, re.I) else lang)
@@ -424,7 +449,7 @@ class CubbyBrain:
             rec.update({"kind": "learn", "learn": learn})
         elif cortex == "reasoning":
             task = self.reason.task_answer(user_text, self.worlds[route["world"]], trace=self.trace,
-                                           allow_flat=(route.get("why") == "retrieval"))
+                                           allow_flat=(route.get("score", 0.0) >= route.get("tau_eff", 1.0)))
             offered = ([task["vm_answer"], dont_know] if task["speak_ok"] else [dont_know])
             rec = self.chat.mediate(user_text, offered, rejected=[], feedback=feedback)
             rec.update({"kind": "task", "task": task})

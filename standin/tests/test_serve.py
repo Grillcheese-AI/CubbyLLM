@@ -52,7 +52,8 @@ class ChainEmitter:
     def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
         if prompt.startswith("Record this as an event"):
             return EVT_PROGRAM
-        assert "Facts:" in prompt, "task prompts must carry the Facts block"
+        if "Facts:" not in prompt:                       # no facts offered: an honest trunk has nothing to bind
+            return ""
         assert prefix.startswith("use vsa"), "task turns must pin the CotChain style"
         facts = [l[2:] for l in prompt.split("Facts:\n", 1)[1].splitlines() if l.startswith("- ")]
         from cubbyllm.reasoning.planner import parse_fact
@@ -184,8 +185,11 @@ def test_live_a_question_never_reaches_chat():
     _exe_or_skip()
     s = sv.CubbyServe(IdentityOnlyEmitter(), FactStore(STORE), route_tau=0.9)
     rec = s.turn("What is the boiling point of water?")
-    assert rec["kind"] == "task" and rec["route"]["why"].startswith("a question")
+    assert rec["kind"] == "task" and rec["route"]["needs_facts"] is True
     assert rec["reply"] == DK_EN, "unknown -> the don't-know line, never a bio"
+    # the thalamus: no facts at stake -> the model speaks, no VM in the loop
+    free = s.turn("how are you today?")
+    assert free["kind"] == "chat" and free["route"]["needs_facts"] is False and free.get("vm_mediated") is False
 
 
 def test_live_help_lists_what_he_can_do():

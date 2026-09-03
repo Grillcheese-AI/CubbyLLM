@@ -92,18 +92,6 @@ def test_frontend_is_lifted_verbatim_and_every_patch_applies():
     assert html.count("</body>") == 1 and html.index('id="cubbycon"') < html.index("</body>")
 
 
-def test_letters_spell_the_level_word_and_ground_it():
-    from pacman import GhostVerse
-    env = GhostVerse()
-    assert env.word == "HELLO" and len(env.letter_at) == 5 and env.budget == 54
-    done = []
-    for c in env.letter_at:
-        env.remaining.add(c)
-        done.append(env.eat(env.cell(*c))["word_done"])
-    assert done[-1] is True and not any(done[:-1])
-    assert "".join(env.collected[i] for i in range(5)) == "HELLO"
-
-
 def test_plan_next_runs_over_his_own_facts_not_the_env():
     from pacman import CubbyGhost, GhostVerse
     man = CubbyGhost(GhostVerse(), probe=0.0)
@@ -327,16 +315,49 @@ def test_emotion_maps_to_the_plutchik_compass():
     assert emo["color"].startswith("#") and 0 <= emo["intensity"] <= 1.2
 
 
-def test_live_speech_goes_through_cubbytalk():
+def test_thoughts_are_first_person_voice_safe_and_bilingual():
+    from pacman import CubbyGhost
+    import identity as idn
+    F = idn.load_facts()
+    cases = {"plan": dict(to="level-1 cell 2-0-0", goal="pellet"), "flee": dict(ghost_distance=1, radius=2),
+             "caught": dict(place="level-1 cell 3-3-0"), "probe": dict(tried="up"), "eat": dict(score=3, total=12),
+             "power": dict(steps=14), "program": dict(name="KNIGHT", pattern="AAB"),
+             "modify": dict(parent="DASH", child="SPRINT", edit="appended a slot"),
+             "superpower_move": dict(name="DASH", saved=2), "out_of_time": dict(level=1, attempt=2, learned="DASH"),
+             "level_up": dict(cleared=1, next=2), "forge": dict(ok=True, answer="flee"), "idle": dict(to="level-1 cell 0-0-0")}
+    for lang in ("en", "fr"):
+        for kind, d in cases.items():
+            line = CubbyGhost.think(kind, lang, "", **d)
+            assert line and idn.voice_ok(line, F), (kind, lang, line)
+    assert CubbyGhost.think("flee", "en", "(nervous) ", ghost_distance=1, radius=2).startswith("(nervous) A ghost 1 cells")
+    assert "pastille" in CubbyGhost.think("plan", "fr", "", to="x", goal="pellet")
+
+
+def test_live_a_step_thinks_out_loud_and_the_model_may_phrase_it():
     _exe_or_skip()
     from pacman import CubbyGhost, GhostVerse
-    man = CubbyGhost(GhostVerse(), probe=0.0)
-    s = sv.CubbyServe(ChainEmitter(), sv.FactStore([]), route_tau=0.35)
+
+    class Phraser(ChainEmitter):
+        """Rephrases a thought when asked; keeps the numbers/names."""
+        def emit(self, prompt, max_new_tokens=768, system=None, prefix=""):
+            if prompt.startswith("Say this in your own words"):
+                line = prompt.split(": ", 1)[1]
+                return "Hmm - " + line.replace("Tried", "I tried").replace("Noted.", "noted!")
+            return super().emit(prompt, max_new_tokens, system, prefix)
+
+    man = CubbyGhost(GhostVerse(), probe=1.0, seed=0)
+    s = sv.CubbyServe(Phraser(), sv.FactStore([]), route_tau=0.35)
     s.mount(man)
-    man.vocab.append("GHOST")                            # as if he had collected its letters
-    man._percept("ghost_near")
-    assert man.talk and man.talk["word"] == "GHOST" and "ASK offered" in man.talk["trace"]
-    assert s.chat.history[-1]["reply"] == "GHOST!", "the VM chose the offered word"
+    for _ in range(6):
+        man.step()
+    thoughts = [e for e in s.events if e["kind"] == "thought"]
+    assert thoughts and all(e["text"] for e in thoughts)
+    assert man.resp()["thought"] == thoughts[-1]["text"], "the page's bubble carries the step's thought"
+    probes = [e for e in thoughts if e["about"] == "probe"]
+    if probes:
+        assert any(e["verbalized"] and e["text"].startswith("Hmm") and "raw" in e for e in probes), \
+            "a verbalized thought keeps the host line beside it"
+    assert man.resp()["word"] is None and man.resp()["collected"] == "", "the letter mechanic is gone"
 
 
 def test_live_the_frontend_protocol_init_state_stale_next():
@@ -349,7 +370,7 @@ def test_live_the_frontend_protocol_init_state_stale_next():
             "ghost_colors", "lives", "fear", "budget", "emotion_angle", "word"} <= set(init)
     r = live.poll()
     assert r["steps"] == 1 and "stale" not in r and r["to"] and r["move"]
-    assert {"ghosts", "lives", "level", "frightened", "fear", "collected", "talk",
+    assert {"ghosts", "lives", "level", "frightened", "fear", "thought", "says",
             "emotion_intensity", "w_dopa", "lay_low"} <= set(r)
     live.min_interval = 3600.0                           # polled too soon -> cached frame, stale
     assert live.poll()["stale"] is True and live.poll()["steps"] == 1

@@ -204,6 +204,16 @@ class CubbyChat:
         self.history.append(rec)
         return rec
 
-    def turn(self, user_text: str, feedback: str | None = None) -> dict:
+    def turn(self, user_text: str, feedback: str | None = None, mediate: bool = True) -> dict:
+        """A chat turn. `mediate=False` (no facts at stake): the model's
+        reply is spoken directly under the host guards, no VM in the loop —
+        the hormones modulate it, nothing verifies it, because there is
+        nothing to verify."""
         offered, rejected = self.candidates(user_text)
-        return self.mediate(user_text, offered, rejected, feedback)
+        if mediate:
+            return self.mediate(user_text, offered, rejected, feedback)
+        rec = {"user": user_text, "reply": offered[0], "register": derived(self.state)["register"],
+               "state": dict(self.state), "offered": offered, "rejected": rejected, "question": None,
+               "acted": None, "vm_mediated": False, "wall_s": 0.0}
+        self.history.append(rec)
+        return rec

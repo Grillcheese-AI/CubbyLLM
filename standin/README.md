@@ -137,6 +137,27 @@ state** (programs stay deterministic). Scored by `identity_ok` (facts present,
 no forbidden claims, no base-model leak, state language on affect turns) in
 both the notebook and `eval_emitter_vm.py`; the VM pass skips these records.
 
+## The thalamus, thinking out loud, and the LLM speaking for itself (2026-09-02)
+
+Owner's shape: **input neurons → thalamus → external neurons (routed) → CubbyTalk → routed → VM or not.**
+In code: `sense` (appraisal → the neurochemistry) → `CubbyBrain.needs_facts()` **the thalamus** — does
+answering need facts about the world? (the fact grammar parses it, or a wh-question that is not about
+Cubby himself or a matter of taste → **yes** → the VM-verified reasoning path, an unknown answer is the
+don't-know line; identity turns, feelings, opinions, creative asks, small talk → **no** → the model
+answers itself, **modulated by the hormones only, no VM in the loop** — `CubbyChat.turn(mediate=False)`;
+our host guards on the words still hold: voice rules, no base-model guard, not a bio). "How are you" is
+the canonical no-facts turn. Task, learn and help answers still exit through the ASK.
+
+**Thinking out loud.** Every game step produces a first-person thought rendered from what he actually
+did — the plan, a flee, a caught, a refused move, a pellet, a star, a new or modified move, a forged
+decision, out of time, a level cleared — one per step by priority (`CubbyGhost.think`, EN/FR, mood
+prefix from the hormones, voice-safe by test). Thoughts that matter are then **verbalized by the LLM**
+(`_verbalize`: "say this in your own words, keeping every number and name"): the model's phrasing is
+accepted only if every number and every move/cell name of the host line survives and the host guards
+pass — otherwise the host line stands; the `thought` event carries both (`raw` beside `text`). The
+letter-collecting/word mechanic of the lifted game is gone: the page's speech line now shows the thought
+(`💭 …`), the salient ones flash, and the console panel shows them in yellow.
+
 ## Routing fixes after the first live sessions (2026-09-02)
 
 Symptom reported: "it keeps saying its identity no matter what I ask and does not respond to my
