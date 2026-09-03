@@ -217,23 +217,77 @@ every quote from the brief is verbatim; the cost lines are priced against §3.5 
 
 ## 5. Gemini 3.8 Flash
 
-_(pending)_
+| # | idea | novelty | generality | falsifiability | cost | invariants | penalties | total |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Bidirectional meet-in-the-middle walks | 3 | 2 | 3 | 2 | pass | — | **10** — the one search-shape idea nobody else had |
+| 2 | Hormonal modulation of beam and threshold | 1 | 2 | 3 | 2 | pass | — | 8 — fifth arrival |
+| 3 | Planted-fault rejection distillation | 1 | 2 | 2 | 2 | pass | — | 7 — targets the verify-stage repair, where (f) found zero failures |
+| 4 | Behaviour-signature dedup across worlds | 1 | 2 | 3 | 1 | pass | — | 7 — three VM runs per candidate to save one |
+| 5 | KV-forked speculative rollouts, VM as rejector | 2 | 2 | 3 | 2 | pass | — | 9 — the fork idea done right: the VM drops the branch |
+| 6 | Subgraph axiom routing for conflicts | — | — | — | — | **fail** (§3.1/§3.3: "certify the candidate whose axiom support subgraph has higher … density" is certification by a structural heuristic, not a VM verdict) | — | 0 |
+| 7 | Lineage-grounded skill abstraction | 1 | 3 | 3 | 2 | pass | — | 9 — fifth arrival, bounded by (e)/(j) |
 
-## 6. Across the four answers
+Citations: 2305.10601 (ToT), 2305.14992 (RAP, Hao et al.), 2310.01801 (FastGen, Ge et al.), 2304.03442
+(Generative Agents, Park et al.) all resolve to real papers — three of the four are loosely related to the
+idea they are attached to (ToT is not bidirectional search; RAP is not fault distillation; Generative
+Agents is not skill abstraction), which is weak support, not fabrication. "POPL 2013 … unknown exact
+paper" is an honest unknown. Numbers: quotes from the brief are correct; "3,200 planted-fault repair
+graphs" is an experiment size the harvest cannot supply (1,899 plantings); "adrenaline" for our
+noradrenaline is a near-miss, not penalized.
 
-- **Convergence** (skill extraction ×4, hormones as search control ×4, contradiction handling ×3, fork-based
-  branching ×4) is the plan reflected back, not evidence. Two of the four fork proposals put the model in
-  the scorer's seat and fail §3.1; Qwen 3.8 and GLM kept the VM as the scorer.
+- **Idea 1** is the only proposal that changes the *shape* of the search rather than its bookkeeping:
+  expand forward from the question and backward from the answer class, splice at a shared entity, verify
+  the spliced chain once. Against §0 it is also the only idea with a route to the real bottleneck: an
+  exhausted forward hop ("X relation" finds nothing above the threshold) might be reachable from the
+  object side. Pre-check before building: for the 246 exhausted questions, is the missing hop fact in the
+  store at all, and does the object-side query retrieve it above the threshold? If the fact is absent, no
+  search direction helps. Its own way of being wrong (alias mismatch at the meeting entity) is real — the
+  corpus's orthography is systematically typo'd, which the harvest schema already warns about.
+- **Idea 5** is the fork proposal that respects §3.1: the trunk decodes candidate programs from forked
+  state and *the VM* drops a branch; the claim is latency (no prefix re-encoding), the experiment is a
+  latency A/B on the 12 GB card with an OOM kill. It pairs with Qwen 3.8's fork handles; the "~6 MB"
+  figure is the real trunk's and the stand-in's KV size is what the experiment measures.
+- Idea 3 aims at "first-repair success within the 3-repair budget" — (f) says no failure ever reached
+  that stage and the budget is now 1; the mechanism converges with Qwen 3.8 idea 4 and GLM idea 3 and
+  inherits their caveats (training-only planting; every planted fault carries the same verdict).
+- Idea 4 states the cost the other dedup proposals hid: three boundary executions per candidate to save at
+  most one; its own caveat (small programs, AST hashing already catches >95%) is the likely outcome.
+- Idea 6's tie-breaker delegation half is fine; the "certify by density" half speaks an unverified claim.
+- **"Probably wrong" 1** gives the priority score a concrete instability test (log per-term variance; if a
+  ±10% weight change flips >40% of top-1 selections the score is unstable) and the right fix: a Pareto
+  order over the verified-depth gate and the retrieval score — which is the current walk. Adopted with
+  Qwen 3.7's ablation.
+- **"Probably wrong" 2 is the best correction Gemini made and it is already evidenced in our record**: a
+  serialized 32-node neighbourhood will disperse a 2.6B's attention (primacy/recency selection, no
+  binding between non-adjacent nodes). M1 measured exactly this shape of failure — flat distractor facts
+  derailed the emitter 0/25 until the walked facts and the prefill replaced them — and the game already
+  works the way Gemini prescribes: the ASK offers the exits, never the map. **Adopted: the model gets a
+  1-hop local view (focus node, incoming edge types, an ASK of ≤8 host-curated operations); the graph
+  stays in the host.** This retires §2's "bounded graph neighbourhood" prompt as written.
+- Generality test: date-grain mismatch ("1914" vs "August 12, 1914") and multi-decade indirect causes
+  will make the symbol check reject valid chains, inflating don't-know. Together with Qwen 3.8's missing
+  temporal predicate and GLM's grammar gap this gives the causal-history world its three pre-checks:
+  parse rate on 50 causal questions, 50 planted inverted chains, and a date-normalization pass before
+  the ground check.
+
+## 6. Across the five answers
+
+- **Convergence** (skill extraction ×5, hormones as search control ×5, contradiction handling ×4, fork-based
+  branching ×5) is the plan reflected back, not evidence. Two of the five fork proposals put the model in
+  the scorer's seat and fail §3.1; Qwen 3.8, GLM and Gemini kept the VM as the scorer.
 - **The pre-checks moved more than the ideas did.** Four ideas that scored 9–11 on paper are dead on the
   real harvest (per-relation thresholds, near-miss contrastive SFT, fact-path skill mining, the merge
   guard), one "probably wrong" was falsified (the threshold cliff), and two predictions were confirmed
   (the causal grammar gap; siblings exist in the log). The data point at a different bottleneck: retrieval
   exhaustion on 31% of questions, which no branching, skill, threshold table or guard addresses.
 - **Ranking by what survived:** GLM 5.3 and Qwen 3.8 (clean, every idea with an offline falsifier, one
-  free win each: the repair budget and the merge rule), then Qwen 3.7 (one strong idea killed, two required
-  measurements), then MiniMax M3 (eight fabricated citations; one metric and two critiques kept).
-- **Build order that survives the numbers:** (1) repair budget 3 → 1 and the VM-gated lower `tau_ret`
-  experiment (ours, from §0); (2) Qwen 3.8's ambiguity-triggered frontier walk with its merge rule
+  free win each: the repair budget and the merge rule), then Gemini 3.8 Flash (one new search shape, the
+  local-view prompt correction, one invariant fail, weak citations), then Qwen 3.7 (one strong idea killed,
+  two required measurements), then MiniMax M3 (eight fabricated citations; one metric and two critiques kept).
+- **Build order that survives the numbers:** (0) the model sees a 1-hop local view and an ASK, never the
+  serialized graph (Gemini's correction, evidenced by M1); (1) repair budget 3 → 1 — **done** — and the
+  VM-gated lower `tau_ret` experiment plus the exhaustion pre-check (is the missing fact in the store, and
+  retrievable from the object side — Gemini's bidirectional walk lives or dies on it); (2) Qwen 3.8's ambiguity-triggered frontier walk with its merge rule
   (isomorphism + agreeing verdicts) and GLM's materialized siblings, measured on the 19.8% of hops it can
   touch; (3) fork handles on nodes, restore latency on day one; (4) GLM's dependency-tracked
   re-verification on the 100 mutate-and-re-ask cases; (5) slot-template skills only if slot certification
@@ -245,4 +299,4 @@ _(pending)_
   set before any causal-history world ships.
 - **Fabrications, do not reuse:** Qwen 3.7's "endorphins" and "Dendrite project"; MiniMax's eight arXiv
   IDs (2009.08483, 2006.03388, 2007.00734, 2104.13542, 1604.04656, 1503.06267, 2104.08756 ×2,
-  2004.07560), all resolving to unrelated papers. Qwen 3.8 and GLM 5.3: none.
+  2004.07560), all resolving to unrelated papers. Qwen 3.8 and GLM 5.3: none. Gemini: none (three off-topic but real citations; an invented experiment size).
