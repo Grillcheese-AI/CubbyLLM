@@ -138,6 +138,7 @@ def test_render_chatml_matches_the_lfm25_template():
     t = render_chatml("SYS", "hello")
     assert t == "<|im_start|>system\nSYS<|im_end|>\n<|im_start|>user\nhello<|im_end|>\n<|im_start|>assistant\n<think>\n</think>\n"
     assert render_chatml("", "hello", "") == "<|im_start|>user\nhello<|im_end|>\n<|im_start|>assistant\n"
+    assert NO_THINK_PREFILL == "<think>\n</think>\n"
 
 
 def test_chat_family_is_sniffed_from_the_gguf_template_and_rendered_per_family():
@@ -155,7 +156,6 @@ def test_chat_family_is_sniffed_from_the_gguf_template_and_rendered_per_family()
     c = LlamaCppEmitter("x/emitter_v7.Q4_K_M.gguf", family="chatml")
     assert c.prefill == "<think>\n</think>\n"
     assert LlamaCppEmitter("x/a.gguf", family="gemma", prefill="<think>\n</think>\n").prefill == "<think>\n</think>\n"
-    assert NO_THINK_PREFILL == "<think>\n</think>\n"
 
 
 def test_gold_matches_numeric_and_string_and_missing():
