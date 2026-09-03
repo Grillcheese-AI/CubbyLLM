@@ -6,6 +6,19 @@ Fast and profitable LLM gen 2 hybrid — general tasks, plus specialization auto
 
 Validated, with a first-pass implementation already running: a full validation campaign (`VALIDATION_REPORT.md`, 2026-07-23) resolved all three structural decisions below, and a first-pass `cubbyllm/` package now exists and trains end to end on a toy corpus. This isn't a finished model — real training data still needs a cleanup pass, and several follow-on questions remain open — but it's well past the planning-only stage. See `CUBBYLLM_HYPOTHESES.md` for the full hypothesis-by-hypothesis record (most entries now carry a dated validation result, not just a claim), `VALIDATION_REPORT.md` for the campaign itself, and `TODO.md` for the working checklist of what's left.
 
+## The stand-in serve stack (2026-08-30 → 2026-09-03)
+
+While the 2B trunk trains, a small open model fine-tuned on Colab stands in behind the trunk interface so the
+serve stack could be built and measured: a brain (neurochemistry → route → thalamus → cortices), every spoken
+line through a CubeLang VM program, live learning of facts, a 3D Pac-Man world (cubby-man) in which the model
+learns the maze from VM refusals and writes its own certified programs, and eight SFT rounds whose measured
+reads drove the design — most recently to **two adapters on one base** (the trunk emits programs, the talk
+cortex is a second adapter) behind a θ = f(c) interface, with the adapter lifecycle (created when needed, used
+only when needed) specced. Nothing it measures is a CubbyLLM result; it is replaced the day the 2B checkpoint
+exists. `standin/README.md` is the record; `docs/research/2026-09-03-got-challenge-scored.md` is the five-model
+challenge on the graph-of-thought plan, whose pre-checks on the real harvest reshaped the reasoning roadmap and
+landed two changes in `cubbyllm/reasoning/`.
+
 ## Where this comes from
 
 CubbyLLM is the redesigned successor to `cubby-lm`, drawing on lessons from `cubby-lm` itself and its environment sibling `cubemind` — but it's a genuinely fresh design, not a fork. Two different axes worth keeping separate: the *package/directory structure* mirrors cubemind's — its intended, documented layout, not the sprawl both sibling repos have actually accumulated (duplicated trunk implementations, an oversized tracked sandbox directory, a stale-but-still-importable archive, and so on — see `CUBBYLLM_HYPOTHESES.md`, Group F, and `PACKAGE_LAYOUT.md` for the concrete spec). The *model architecture* is an entirely different structure than cubby-lm's, built from scratch, including the vocabulary — cubby-lm's frozen trunk shape and 32k tokenizer are reference and lessons-learned, not a constraint CubbyLLM inherits.
@@ -31,6 +44,12 @@ All three decisions traced back to the same underlying idea (`CUBBYLLM_HYPOTHESE
 `PACKAGE_LAYOUT.md` — the target package layout, written as its own short spec before code could accumulate it by accident, the way it did twice already in the sibling repos.
 
 `docs/superpowers/` — the implemented package's design spec and implementation plan.
+
+`docs/ARCHITECTURE_VISION.md` — the north star: Cubby (the trunk) + CubeLang (the verified VM, an OS for AI) + cubemind (the environment); deny-by-default; the Brain-SDK cortex/adapter contracts; the affective layer.
+
+`docs/research/` — the model-panel agenda (2026-08), the oracle-competition scoring (2026-08-28), and the GoT challenge prompt + scoring (2026-09-03): what outside models proposed, scored against the measured record, and which pre-checks decided.
+
+`standin/README.md` — the stand-in trunk and serve stack: guardrails, the brain, the game, the SFT rounds with their VM-verified reads, the two-adapter design and the adapter lifecycle.
 
 `TODO.md` — the working checklist for what's left, grouped by what blocks real training, what architecture work is still open, and smaller follow-ups.
 

@@ -1,6 +1,6 @@
 # standin/ — the stand-in trunk
 
-**Status:** tooling for a disposable stand-in, 2026-08-30. Nothing here is CubbyLLM.
+**Status (2026-09-03):** v7 is the serving model; v8 (two adapters on one base) is built and on Drive, awaiting its two training runs. Nothing here is CubbyLLM.
 
 A small open model (currently `LiquidAI/LFM2.5-2.6B`, chosen by a 2026-08-30 Hub
 check — see `docs/research/2026-08-28-oracle-competition-scored.md` §3.2 for why a
@@ -9,6 +9,19 @@ GGUF, so the parts of the serve stack that need *some* trunk — the CubeLang pr
 emitter, the learning gate as a live nightly loop, the chat/grounded-answer surface,
 the H-F2 bridge contract — can be built and measured while the 2B CubbyLLM trunk
 trains. It is replaced the day the 2B checkpoint exists.
+
+## Where things stand (2026-09-03) — read this first
+
+- **Serving:** `serve_api.py --gguf standin/models/emitter_v7.Q4_K_M.gguf --pacman` (add `--talk-gguf` once v8t exists). `/` chat + console, `/pac` the live game, `/health` the adapters.
+- **Measured (v7, VM-verified):** chat 1.0 · content 1.0 · identity 0.867 · emotion 0.675 · affect 0.975 · history 0.625 · arithmetic 0.675 · chain 1.0 · game families 1.0 · forge probe 1.00/1.00/1.00 · self-test 96% correct / 4% don't-know / 0% wrong.
+- **Open:** the v8e/v8t runs and their A/B (does adapter-per-context remove the interference?); arithmetic's three-round slide; "Good evening!"; the adapter lifecycle's detector, tag-general partition builder and promote rule; the reasoning roadmap from the GoT challenge (`docs/research/2026-09-03-got-challenge-scored.md` §7).
+
+**Sections, in reading order (not date order):** the two guardrails · what is here (the file map) · the built
+set (the program families and their VM re-verification) · identity + hormones · the thalamus, thinking out
+loud, the LLM speaking for itself · routing fixes after the first live sessions (the v5 → v6 → v7 data rounds,
+each with its measured read) · **two adapters on one base — v8** (the θ = f(c) interface, the adapter bank,
+the lifecycle, the concept sources) · the v7 / v6 reads · chat is mediated by a VM program (design note) ·
+data facts worth knowing.
 
 ## The two guardrails
 
