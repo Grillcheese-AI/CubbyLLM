@@ -399,6 +399,23 @@ shape of what the stand-in built:
   thalamus's route and the neurochemistry state come from outside the model, which is what H0's context
   channel needs and what H-C4 requires (an offline, frozen source).
 
+**Two more concept sources (owner, 2026-09-03: cubemind's live brain and GrillCheese — concept only, the
+wiring is not compatible):**
+
+| source | concept | what ports into the lifecycle | what does not |
+|---|---|---|---|
+| GrillCheese `brain/specialist.py` + `unified_brain.py` | a **SpecialistRegistry keyed by the router's domain**: `ensure(domain)` creates a specialist on the first training signal for that domain, `get(domain)` consults it at inference only when the thalamus names that domain | the registry shape (our bank, keyed by the context role); create on the first *verified* signal, consult only on a matching route | its specialists are NLMS heads on a sentence embedding updated live — no gate, no verification; live weight updates are what H-A7 forbids |
+| GrillCheese `Specialist` maturation | **PROGENITOR → MIGRATING → DIFFERENTIATED → MYELINATED** by update count; RESTING / FIRING / REFRACTORY activity | a **maturation ladder** for adapters: *candidate* (in shadow: comparable, never routed) → *routed* (promoted by the rule) → *stable* (N verified turns without a regression); activity = the bank's per-role calls | stages by raw update count (10k updates ≠ trust); ours advance by verified evaluations |
+| GrillCheese `cns.py` | consciousness levels; **DEEP_SLEEP = consolidation only** | training and promotion happen offline, never in a live turn (the sleep phase; H-A7's nightly rule) | — |
+| GrillCheese `limbic_system.py` | consolidation by **salience = \|valence\| + arousal**: strengthen high, decay low | a **salience weight on the spawn partition**: every SFT record already carries the hormonal state it was produced under; records from high-salience turns are sampled first when a specialist's partition is built | salience as the *only* signal — the verified deficit still decides |
+| GrillCheese `thalamus.py` / `basal_ganglia.py` | sensory gating + routing by salience/arousal; go/no-go response gating, winner-take-all | already ours: the thalamus route and the ASK-mediated speech exit | — |
+| cubemind `brain/neurogenesis.py` (ported from superfast-neuro / aura-hybrid / AURA_GENESIS) | growth when the residual EMA > 0.35 (cooldown), **prune when recent_spikes < 0.001** (neurons that never fire), Oja normalization, the same maturation stages | **usage-based pruning**: a routed specialist whose calls stay under the line over a window is retired into history (`idle_roles`); growth cooldown and a cap on the number of specialists | residual EMA on activations (the input-side novelty signal belongs to the domain head, not the bank) |
+| cubemind live brain (`_archive/scripts/live_brain.py`, `create_cubemind(growth_threshold=0.3, enable_neurochemistry=True)`) | the whole loop on camera input: perception → reasoning → memory → neurogenesis, with the neurochemistry visible | the loop shape is the serve brain's; the on-screen neurogenesis counters become `/health`'s `usage()` (roles, candidates, calls, fallbacks, idle) | the script is archived; the wiring is not ours |
+
+What the bank gained from this pass: **shadow candidates** (`shadow` / `emit_candidate` / `promote` / `reject`,
+`stage(role)`), so the promote step has something to compare and promotion is an explicit, logged act, and
+**`idle_roles()`** as the prune monitor. Pinned in the same test.
+
 Two adjustments to the lifecycle above, from the check: **(1) Detect has two sources, not one** — *novelty*
 (a context no registered specialist is near: the bank's fallback rate today, the domain head's purify
 threshold tomorrow; cubemind's residual-EMA trigger is the input-side version of it) and *deficit* (the

@@ -415,3 +415,15 @@ def test_the_adapter_bank_grows_and_counts_what_it_cannot_serve():
     import pytest
     with pytest.raises(ValueError):
         bank.unregister("programs")
+
+    # the maturation ladder: a spawned adapter waits in SHADOW — comparable, never routed — until promoted
+    cand = Fake("history-v1")
+    bank.shadow("history", cand)
+    assert bank.stage("history") == "candidate" and bank.emit("q", context="history") == "base:q" and cand.calls == 0
+    assert bank.emit_candidate("history", "q") == "history-v1:q" and cand.calls == 1, "the promote step can compare it"
+    bank.promote("history")
+    assert bank.stage("history") == "routed" and bank.emit("q", context="history") == "history-v1:q"
+    bank.shadow("history", Fake("history-v2")); bank.reject("history")
+    assert bank.stage("history") == "routed" and [h for h in bank.history if h[2] == "rejected"] == [("history", "history-v2", "rejected")]
+    assert bank.idle_roles(min_calls=2) == ["history", "talk"], "history used once, talk never: both below the prune line; the default is never listed"
+    assert bank.usage()["candidates"] == [] and "history" in bank.usage()["roles"]

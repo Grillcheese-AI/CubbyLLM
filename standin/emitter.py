@@ -187,7 +187,8 @@ class ContextualEmitter:
         self.default = default
         self.calls: dict = {k: 0 for k in self.adapters}   # per-role usage, for /health and tests
         self.fallbacks: dict = {}                            # role asked for but absent -> count: the "need" monitor
-        self.history: list = []                              # (role, adapter name, "registered"|"retired")
+        self.history: list = []                              # (role, adapter name, "registered"|"retired"|"shadowed"|"promoted"|"rejected")
+        self.candidates: dict = {}                           # role -> adapter in SHADOW: evaluated, never routed (GrillCheese's PROGENITOR stage)
 
     @property
     def name(self) -> str:
@@ -216,6 +217,45 @@ class ContextualEmitter:
         if role in self.adapters:
             self.history.append((role, getattr(self.adapters.pop(role), "name", "?"), "retired"))
 
+    # ── the maturation ladder: candidate (shadow) -> routed -> stable ─────────────────────────
+    def shadow(self, role: str, adapter) -> None:
+        """Hold a spawned adapter as a CANDIDATE for a role: it can be emitted from explicitly
+        (`emit_candidate`) so the promote step can compare it against the incumbent on the same
+        contexts, but `resolve` never routes live traffic to it."""
+        if not role or not hasattr(adapter, "emit"):
+            raise ValueError("shadow(role, adapter) needs a role and an object with .emit")
+        self.candidates[role] = adapter
+        self.history.append((role, getattr(adapter, "name", "?"), "shadowed"))
+
+    def emit_candidate(self, role: str, prompt: str, **kw) -> str:
+        return self.candidates[role].emit(prompt, **kw)
+
+    def promote(self, role: str) -> None:
+        """The candidate becomes the routed adapter for its role (the incumbent, if any, is retired
+        into history). Called ONLY by the promotion rule after it passed."""
+        if role not in self.candidates:
+            raise KeyError(f"no candidate in shadow for role {role!r}")
+        self.register(role, self.candidates.pop(role))
+        self.history.append((role, getattr(self.adapters[role], "name", "?"), "promoted"))
+
+    def reject(self, role: str) -> None:
+        """The candidate failed the promotion rule: dropped from shadow, kept in history."""
+        if role in self.candidates:
+            self.history.append((role, getattr(self.candidates.pop(role), "name", "?"), "rejected"))
+
+    def stage(self, role: str) -> str:
+        """'routed' (in the bank), 'candidate' (in shadow), or 'absent'."""
+        if role in self.adapters:
+            return "routed"
+        if role in self.candidates:
+            return "candidate"
+        return "absent"
+
+    def idle_roles(self, min_calls: int = 1) -> list:
+        """Routed specialists below `min_calls` — the prune candidates (neurogenesis prunes what never
+        fires); the default is never listed."""
+        return sorted(r for r, n in self.calls.items() if r != self.default and r in self.adapters and n < min_calls)
+
     def resolve(self, context) -> str:
         role = context_role(context)
         if role in self.adapters:
@@ -229,8 +269,9 @@ class ContextualEmitter:
         and the fallback rate (the share of contexts no specialist claimed)."""
         total = sum(self.calls.values())
         fb = sum(self.fallbacks.values())
-        return {"roles": sorted(self.adapters), "calls": dict(self.calls), "fallbacks": dict(self.fallbacks),
-                "fallback_rate": (fb / total) if total else 0.0, "history": list(self.history)}
+        return {"roles": sorted(self.adapters), "candidates": sorted(self.candidates), "calls": dict(self.calls),
+                "fallbacks": dict(self.fallbacks), "fallback_rate": (fb / total) if total else 0.0,
+                "idle": self.idle_roles(), "history": list(self.history)}
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
              prefix: str = "", temperature: float = 0.0, seed: int | None = None,
