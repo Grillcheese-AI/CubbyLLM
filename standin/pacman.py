@@ -216,6 +216,8 @@ PELLET_ENERGY, STAR_ENERGY = 4, 12                       # what eating gives bac
 REST_GAIN = 8                                            # per step of rest, in a safe spot
 REST_BELOW, REST_UNTIL = 30, 60                          # start resting under 30, stop at 60 (hysteresis)
 REST = "rest"                                            # the ASK candidate: stay put
+TRAP_BONUS = 3                                           # a ghost walked into his trap
+MINE = "mine"                                            # the ASK candidate: drop a trap here, then move
 
 
 def pattern_cost(pattern: str | None) -> int:
@@ -505,8 +507,19 @@ class GhostVerse(PacVerse):
         self.total_score = 0
         self.lives = 3
         self.energy = 100
+        self.mines_left = 0                              # traps: +1 per level, unused ones carry over
+        self.mines: set = set()                          # cells holding a trap (ghosts only)
         self.seed_extra = int(seed_extra)
         self._start_level(level)
+
+    # ── traps (owner, 2026-09-02): ghosts only; 1 per level, cumulative ─────
+    def place_mine(self, place: str) -> bool:
+        c = self.coords(place)
+        if self.mines_left <= 0 or c in self.mines or c in self.walls or c in self.hazards:
+            return False
+        self.mines.add(c)
+        self.mines_left -= 1
+        return True
 
     def _start_level(self, level: int) -> None:
         import numpy as np
@@ -551,6 +564,8 @@ class GhostVerse(PacVerse):
         self.ghost_spawn = [far[i % len(far)] for i in range(self.n_ghosts)] if far else [start]
         self.ghosts = list(self.ghost_spawn)
         self.game_over = False
+        self.mines = set()                               # a new maze: the floor is clean
+        self.mines_left = getattr(self, "mines_left", 0) + 1   # one more trap; unused ones carry over
         # the live game's time budget (the hidden-word/letter mechanic was
         # dropped 2026-09-02 — his THOUGHTS are the speech surface now)
         self.budget = int(46 + 8 * level)
@@ -664,7 +679,13 @@ class GhostVerse(PacVerse):
             key = (lambda q: _manh(q, pos)) if self.frightened == 0 else (lambda q: -_manh(q, pos))
             placed.append(min(cands, key=lambda q: (key(q), self._grng.random())))
         self.ghosts = placed
-        out = {"caught": False, "eaten": 0}
+        out = {"caught": False, "eaten": 0, "trapped": 0}
+        for i, g in enumerate(self.ghosts):              # a trap fires on the ghost that steps on it
+            if g in self.mines:
+                self.mines.discard(g)
+                self.ghosts[i] = self.ghost_spawn[i % len(self.ghost_spawn)]
+                self.total_score += TRAP_BONUS
+                out["trapped"] += 1
         for i, g in enumerate(self.ghosts):
             if g == pos:
                 if self.frightened > 0:
@@ -922,6 +943,21 @@ class CubbyGhost(CubbyPac):
         here = env.coords(self.place)
         return min(_manh(here, g) for g in env.ghosts) > self.danger_radius + 1
 
+    def _mine_wise(self) -> bool:
+        """Use a trap only when it will count: he holds one, the ghosts are
+        hunting (not frightened), one is inside his fear radius + 1, and the
+        threat is real — it is adjacent, or two are near, or his fear has
+        grown, or lives are down to two. Dropped on the cell he is leaving:
+        the chaser walks into it."""
+        env = self.env
+        if env.mines_left <= 0 or env.frightened > 0 or not env.ghosts or env.coords(self.place) in env.mines:
+            return False
+        here = env.coords(self.place)
+        dists = sorted(_manh(here, g) for g in env.ghosts)
+        if dists[0] > self.danger_radius + 1:
+            return False
+        return dists[0] <= 1 or (len(dists) > 1 and dists[1] <= self.danger_radius + 1) or self.fear >= 1.0 or env.lives <= 2
+
     def _rest_wanted(self) -> bool:
         """Hysteresis: start under REST_BELOW, keep resting until REST_UNTIL."""
         e = self.env.energy
@@ -1014,8 +1050,8 @@ class CubbyGhost(CubbyPac):
     # the model; voice rules apply (no forbidden words). One thought per
     # step wins by priority; the salient ones also reach the page's bubble.
     _PRIO = {"caught": 6, "level_up": 6, "out_of_time": 5, "program": 5, "modify": 5, "power": 4,
-             "forge": 4, "flee": 4, "superpower_move": 3, "eat": 3, "rest": 3, "probe": 2, "derive": 2,
-             "plan": 1, "idle": 0}
+             "forge": 4, "flee": 4, "trapped": 5, "mine": 4, "superpower_move": 3, "eat": 3, "rest": 3,
+             "probe": 2, "derive": 2, "plan": 1, "idle": 0}
 
     @staticmethod
     def think(kind: str, lang: str = "en", mood: str = "", **d) -> str:
@@ -1056,6 +1092,10 @@ class CubbyGhost(CubbyPac):
             "idle": (lambda: f"Je continue vers {d.get('to')}." if fr else f"Carrying on toward {d.get('to')}."),
             "rest": (lambda: f"Fatigué ({d.get('energy')}) — l'endroit est sûr, je me repose un instant." if fr else
                      f"Tired ({d.get('energy')}) — this spot looks safe, resting a moment."),
+            "mine": (lambda: f"Je pose un piège ici — celui qui me suit va le regretter (il m'en reste {d.get('left')})." if fr else
+                     f"Dropping a trap here — whoever chases me will regret it ({d.get('left')} left)."),
+            "trapped": (lambda: f"Et de {d.get('n')} ! Un fantôme est tombé dans mon piège." if fr else
+                        f"Got one! A ghost walked into my trap."),
         }
         line = t.get(kind, lambda: "")()
         return (mood + line) if line else ""
@@ -1331,6 +1371,12 @@ class CubbyGhost(CubbyPac):
                 self._last = ev
                 return {"from": None, "place": self.place, "chosen": None, "new": 0, "probed": None}
             self._thought, self._thought_prio, self._say_aloud = None, -1, None   # a fresh thought each step
+            if self._mine_wise() and env.place_mine(self.place):   # drop a trap on the way out
+                self._learn([f"a trap is the marker of {self.place}"])
+                ev["mined"] = list(env.coords(self.place))
+                self._t("mine", place=self.place, left=env.mines_left,
+                        ghost_distance=min(_manh(env.coords(self.place), g) for g in env.ghosts))
+                self._think("mine", left=env.mines_left)
             danger = self.danger_cells()                 # the berth grows with learned fear
             self._plan_next = self.plan_next(avoid=danger)
             seen_left = bool(self.sighted - self._eaten_run)
@@ -1371,6 +1417,12 @@ class CubbyGhost(CubbyPac):
                 else:
                     self._think("idle", to=self.place)
             gh = env.ghost_turn(self.place)              # then the ghosts move
+            if gh.get("trapped"):
+                ev["trapped"] = gh["trapped"]
+                self._t("trapped", n=gh["trapped"], bonus=TRAP_BONUS * gh["trapped"], total_score=env.total_score)
+                self._think("trapped", n=gh["trapped"])
+                if self.chem is not None:
+                    self.chem.update(valence=0.9, novelty=0.3)
             if gh["eaten"]:
                 ev["ate_ghost"] = True
                 self._t("ghost_eaten", n=gh["eaten"], bonus=GHOST_BONUS * gh["eaten"])
@@ -1467,6 +1519,8 @@ class CubbyGhost(CubbyPac):
                 "fear": round(self.fear, 2), "frightened": env.frightened,
                 "ate_ghost": bool(ev.get("ate_ghost")), "ghost_bonus": GHOST_BONUS,
                 "superpowers": list(self.powers),
+                "mines": [list(c) for c in sorted(env.mines)], "mines_left": env.mines_left,
+                "mined": ev.get("mined"), "trapped": ev.get("trapped", 0),
                 **self.affect()}
 
     def init_payload(self) -> dict:
@@ -1481,6 +1535,7 @@ class CubbyGhost(CubbyPac):
                 "ghosts": [list(g) for g in env.ghosts], "lives": env.lives,
                 "ghost_colors": GHOST_COLORS[: env.n_ghosts], "fear": round(self.fear, 2),
                 "power": [list(c) for c in sorted(env.power)], "superpowers": list(self.powers),
+                "mines": [list(c) for c in sorted(env.mines)], "mines_left": env.mines_left,
                 **self.affect()}
 
     def handle(self, text: str) -> dict:
@@ -1532,6 +1587,24 @@ _FRONTEND_PATCHES = [
      "('💬 says: \"'+s.says+'\"') : ('letters: '+(prog||'—')); }",
      "$('speaktxt').textContent = s.thought ? ('💭 '+s.thought) : '';"),
     ("flash('💬 CUBBY SAYS: \"'+s.says+'\"','#7fe0ff')", "flash('💭 '+s.says,'#7fe0ff')"),
+    # traps (owner, 2026-09-02): a flashing red vortex per mine, drawn in the page's own scene
+    ("let scene,cam,rnd,ctr,composer,vintagePass,agent,group,pellets,trailDots=[]",
+     "let scene,cam,rnd,ctr,composer,vintagePass,agent,group,pellets,mines=new Map(),trailDots=[]"),
+    ("function drawCompass(angle,intensity,name,color,msg){",
+     "function syncMines(list){ const want=new Set((list||[]).map(c=>c.join(','))); "
+     "for(const [k,m] of mines){ if(!want.has(k)){ group.remove(m); mines.delete(k); } } "
+     "for(const c of (list||[])){ const k=c.join(','); if(mines.has(k)) continue; "
+     "const m=new THREE.Mesh(new THREE.TorusGeometry(0.30,0.07,10,28), new THREE.MeshStandardMaterial({color:0xff2d2d,emissive:0xff1a1a,emissiveIntensity:1.0,metalness:0.3,roughness:0.4})); "
+     "m.position.set(...W3(...c)); m.rotation.x=Math.PI/2; m.userData.vortex=true; group.add(m); mines.set(k,m); } }\n"
+     "function drawCompass(angle,intensity,name,color,msg){"),
+    ("pellets.set(p.join(','),m);}", "pellets.set(p.join(','),m);}\n  syncMines(D.mines);"),
+    ("if(s.eaten){const k=s.eaten.join(',');", "syncMines(s.mines); if(s.eaten){const k=s.eaten.join(',');"),
+    ("'  ·  pellets left: '+s.remaining", "'  ·  pellets left: '+s.remaining+'  ·  ◎ traps: '+(s.mines_left??0)"),
+    ("<b>● pellet</b> · <i>◆ hazard</i>", "<b>● pellet</b> · <b style=\"color:#ff3b3b\">◎ trap</b> · <i>◆ hazard</i>"),
+    ("pellets.forEach(m=>{ if(m.userData.star) m.rotation.z=now/600; });",
+     "pellets.forEach(m=>{ if(m.userData.star) m.rotation.z=now/600; }); "
+     "mines.forEach(m=>{ m.rotation.z=now/220; const sc=1+0.22*Math.sin(now/130); m.scale.set(sc,sc,1); "
+     "m.material.emissiveIntensity=0.6+0.9*Math.abs(Math.sin(now/160)); });"),
 ]
 
 

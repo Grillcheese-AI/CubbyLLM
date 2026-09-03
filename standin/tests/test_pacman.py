@@ -315,6 +315,53 @@ def test_emotion_maps_to_the_plutchik_compass():
     assert emo["color"].startswith("#") and 0 <= emo["intensity"] <= 1.2
 
 
+def test_traps_are_one_per_level_cumulative_ghost_only_and_used_wisely():
+    from pacman import TRAP_BONUS, CubbyGhost, GhostVerse
+    env = GhostVerse()
+    assert env.mines_left == 1, "one trap at level 1"
+    env._start_level(2)
+    assert env.mines_left == 2, "unused: it carries over"
+    env.place_mine(env.start)
+    assert env.mines_left == 1 and env.coords(env.start) in env.mines
+    assert not env.place_mine(env.start), "no double trap on one cell"
+    # a ghost stepping on it is sent home; the trap is spent; ghosts only
+    env.ghosts = [env.coords(env.start)] + env.ghosts[1:]
+    env.ghost_speed = 0.0
+    t0 = env.total_score
+    env.mines.add(env.ghosts[0])                          # (re-arm on the ghost's cell after the level reset)
+    cubby_far = env.cell(*next(c for c in sorted(env.reach) if c not in env.ghost_spawn and c != env.coords(env.start)))
+    out = env.ghost_turn(cubby_far)
+    assert out["trapped"] == 1 and env.ghosts[0] == env.ghost_spawn[0] and not env.mines
+    assert env.total_score == t0 + TRAP_BONUS and not out["caught"]
+    env._start_level(3)
+    assert env.mines_left == 2, "level 3: the unused one + one new"
+    # wisely: only under real threat
+    man = CubbyGhost(GhostVerse(), probe=0.0)
+    here = man.env.coords(man.place)
+    man.env.ghosts = [(here[0] + 5, here[1] + 5, here[2])]
+    assert not man._mine_wise(), "a far ghost is not worth a trap"
+    man.env.ghosts = [(here[0] + 1, here[1], here[2])]
+    assert man._mine_wise(), "an adjacent hunting ghost is"
+    man.env.frightened = 5
+    assert not man._mine_wise(), "frightened ghosts flee: no trap"
+
+
+def test_live_a_trap_is_dropped_on_the_way_out_and_thought_aloud():
+    _exe_or_skip()
+    from pacman import CubbyGhost, GhostVerse
+    man = CubbyGhost(GhostVerse(), probe=0.0, seed=0)
+    env = man.env
+    here = env.coords(man.place)
+    env.ghosts = [(here[0] + 1, here[1], here[2])] + env.ghosts[1:]
+    env.ghost_speed = 0.0
+    rec = man.step()
+    assert here in env.mines or env.mines_left == 0, "the trap went down on the cell he left"
+    assert any(e["kind"] == "mine" for e in man.log_events()) if hasattr(man, "log_events") else True
+    assert any(f"a trap is the marker of" in f for f in man.world.texts)
+    r = man.resp()
+    assert r["mines_left"] == 0 and r["mines"] and r["mined"] == list(here)
+
+
 def test_energy_costs_moves_combos_more_and_only_rest_or_pellets_bring_it_back():
     from pacman import (JUMP_COST, MOVE_COST, PELLET_ENERGY, REST, REST_BELOW, CubbyGhost, GhostVerse,
                         ProgramLibrary, pattern_cost)
