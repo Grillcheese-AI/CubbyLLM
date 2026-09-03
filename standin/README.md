@@ -316,12 +316,12 @@ validation came out at 6 per task again (the eval-size variable was not set), re
 | game families | 1.000 (n=8) | — |
 | arithmetic / chain | gold 0.500 / 0.667 (n=6 / 3) | too few to read |
 
-Too small to call anything but the identity `world` intent. Pending: the stratified read (`STANDIN_EVAL_ONLY=1`,
-`STANDIN_EVAL_N=40` on a fresh VM, then the local replay), the **forge probe** (decision must climb back from
-0.17 — the ×3 replay's whole purpose) and the **self-test** (the final-relation gate should turn v6's one wrong
-chain into a don't-know), both run solo on the local GPU:
-`python standin/scripts/forge_probe.py --gguf standin/models/emitter_v7.Q4_K_M.gguf --n 12 --tag _v7` and
-`python standin/serve.py --gguf standin/models/emitter_v7.Q4_K_M.gguf --selftest 25 --tag _v7`.
+Too small to call anything but the identity `world` intent. **Forge probe v7 (owner, solo on the local GPU, 58 s,
+`data/out/forge_probe_v7.json`): decision 1.00 (12/12) · compare 1.00 (12/12) · chain 1.00 (12/12)** — back from v6's
+0.17 / 0.83 / 1.00; the ×3 replay of the 727 decision/compare records was the whole fix, the same lever that
+restored identity in v6. Pending: the stratified read (`STANDIN_EVAL_ONLY=1`, `STANDIN_EVAL_N=40` on a fresh VM,
+then the local replay) and the **self-test** (the final-relation gate should turn v6's one wrong chain into a
+don't-know): `python standin/serve.py --gguf standin/models/emitter_v7.Q4_K_M.gguf --selftest 25 --tag _v7`.
 
 ### v6 TRAINED + MEASURED (2026-09-03): the stratified VM read
 
