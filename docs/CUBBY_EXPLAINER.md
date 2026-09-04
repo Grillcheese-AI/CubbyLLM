@@ -74,6 +74,60 @@ could reach is off by default until you turn it on.
 **Coming:** ask it "what's in the news about the Canadiens tonight" and it fetches it, through a tool you have
 explicitly allowed, with the source attached. The mechanism is built and being trained; the switch is still off.
 
+## Real use cases
+
+The thread through all of these: Cubby does not come with a fixed set of abilities. It comes with a way of gaining them.
+A need shows up in your environment, Cubby writes the program for it, the verifier certifies the program on your own
+examples, and from then on it is a skill it keeps. With the right program you can make it do what you need, and the
+program is something it learns to write as it lives with you. Each case below says what runs today and what is the next
+step, so nobody mistakes a plan for a feature.
+
+**For a student.** Cubby becomes a study partner that never invents a citation. Feed it your course notes and it keeps
+them as facts with a source, so "when did the Treaty of Paris get signed" comes back with the date and the page it came
+from, and "what does this expression mean" gets an answer in your French, Quebec included. Ask past what the notes cover
+and it says it does not know yet, then offers to look it up, and what it finds joins the notes with its source attached.
+It quizzes you from the facts it holds, not from things it made up, and it shows every step of a multi-step answer so you
+can see where your own reasoning went wrong. *Today: the facts with provenance, the don't-know, the steps, the two
+languages. Next: the search-and-learn loop.*
+
+**For medical alerts.** A rule like "flag the sample if the reading is above the threshold" is exactly the kind of small
+decision program Cubby already writes and has certified, and every one of those decisions is signed and kept in a ledger
+with the reading, the threshold, the verdict and which verifier made the call. An alert therefore never comes from a
+guess, a value it never measured cannot be spoken, and a contradiction between two readings stops the chain instead of
+picking one. When someone asks for a dosage it has no fact for, the answer is the same short line, not a plausible
+number. *Today: certified decision programs, the signed ledger, the contradiction gate, the don't-know. Next: the sensor
+plugin. And to be clear, none of this is a medical device until it has been validated as one.*
+
+**For secure environments.** Cubby runs on the machine in the room, with no cloud, no account and no traffic out. What
+it stores about conversations is encrypted with a key that never leaves that machine. Every tool it could reach is off by
+default and turned on one capability at a time, so a program it writes can compose the tools it has but never grant
+itself a new one. Every decision it certifies is signed and logged, which gives an auditor a trail rather than a
+transcript, and it recognises attempts to manipulate it into breaking its rules before they reach anything. Reasoning
+happens inside a verifier that runs programs, not inside a model that can be talked into things. *Today: local, encrypted
+at rest, the signed ledger, the manipulation read, tools off by default. Next: the per-tool capability switches.*
+
+**For video games.** cubby-man is the demonstration you can watch: a character that starts with no map, learns the
+maze from the moves it is refused, invents its own shortcut moves and has them certified before it trusts them, sets
+traps, gets scared when a ghost is close, rests when it is tired, and says what it is thinking in its own words. Nothing
+it learns is scripted, and nothing it learns is thrown away: a move that stops paying is retired, not deleted, so the
+character you meet in level seven is shaped by levels one to six. The same brain, dropped into another game, is a
+character that remembers you between sessions, has moods that come from its own state, and grows skills across a
+playthrough instead of picking from a menu of animations. *Today: all of it, in the maze. Next: the same engine behind a
+character in a game that is not the maze.*
+
+**For manufacturing, soldering for instance.** A typical robot cell repeats one fixed path and only learns that
+something went wrong after it went wrong. Cubby already reasons in three dimensions: the maze is a stack of levels with
+six directions, and it derives where things are, which cells are dead ends and what a path costs, as verified programs
+over that space. A soldering path is the same kind of object as one of its maze moves, a program certified before it
+runs, and a defect check is the same kind of object as its threshold decisions, a rule that flags a reading, signed and
+kept. Add the sensor, and the rule can run before the joint is made rather than after. *Today: the 3D reasoning and the
+certified move and decision programs. Next: the vision and sensor cortex, which exists in the lab lineage and is not yet
+attached.*
+
+Five very different rooms, one mechanism: see the need, write the program, certify it, keep it. That is what "with the
+right program you can make it do whatever you need" means in practice, and why the right program is something Cubby
+learns to write for you as it evolves in your environment.
+
 ## What it is not, for now
 
 Today Cubby is not an all-knowing oracle, not a search engine, and not a coding agent that rewrites your files. It is a
