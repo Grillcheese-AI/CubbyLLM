@@ -30,8 +30,11 @@ def fetch_rows(ds: str, cfg: str, split: str, n: int, cache: str = CACHE_DIR, pa
     429 waits 15 s x attempt before retrying."""
     os.makedirs(cache, exist_ok=True)
     out: list[dict] = []
-    for off in range(0, n, page):
-        want = min(page, n - off)
+    off = 0
+    while len(out) < n:
+        # the API trims a page when its payload is large (SQuAD contexts, CANARD passages): a short page is NOT the
+        # end of the split — advance by the rows actually returned; only an empty page ends the loop (2026-09-03)
+        want = min(page, n - len(out))
         f = os.path.join(cache, f"{ds.replace('/', '__')}__{cfg}__{split}__{off}.json")
         if not os.path.exists(f):
             url = API.format(ds=urllib.parse.quote(ds, safe=""), cfg=cfg, split=split, off=off, n=want)
@@ -52,7 +55,8 @@ def fetch_rows(ds: str, cfg: str, split: str, n: int, cache: str = CACHE_DIR, pa
                     time.sleep(15.0 * (attempt + 1) if code == 429 else 2.0 * (attempt + 1))
         j = json.load(open(f, encoding="utf-8"))
         rows = [r["row"] for r in j.get("rows", [])]
-        out += rows
-        if len(rows) < want:                             # the split ended
+        if not rows:                                     # the split ended
             break
+        out += rows
+        off += len(rows)
     return out[:n]
