@@ -1,0 +1,355 @@
+<title>Cubby Pitch</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Public+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #F2F5F7; --ink: #14213D; --ink-soft: #4A5677; --line: #C9D1DF;
+    --accent: #1F4FD8; --accent-ink: #FFFFFF; --stamp: #E4572E; --ok: #1E9E6A;
+    --card: #FFFFFF; --receipt: #E9EEF4;
+    --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", "Consolas", "SFMono-Regular", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0B1220; --ink: #E8ECF3; --ink-soft: #A7B1C7; --line: #2A3650;
+      --accent: #7AA2FF; --accent-ink: #0B1220; --stamp: #FF7A50; --ok: #57D39B;
+      --card: #121B2E; --receipt: #151F34;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0B1220; --ink: #E8ECF3; --ink-soft: #A7B1C7; --line: #2A3650;
+    --accent: #7AA2FF; --accent-ink: #0B1220; --stamp: #FF7A50; --ok: #57D39B;
+    --card: #121B2E; --receipt: #151F34;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.45; overflow: hidden; }
+  html[data-lang="fr"] [lang="en"] { display: none !important; }
+  html[data-lang="en"] [lang="fr"] { display: none !important; }
+  .deck { position: relative; height: 100vh; width: 100%; overflow: hidden; }
+  .slide { position: absolute; inset: 0; display: none; padding: clamp(28px, 6vh, 72px) clamp(24px, 7vw, 120px); }
+  .slide.on { display: grid; grid-template-rows: auto 1fr auto; }
+  .eyebrow { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  .eyebrow b { color: var(--accent); font-weight: 500; }
+  .body { display: grid; align-content: center; gap: clamp(14px, 2.4vh, 26px); max-width: 26ch; }
+  .body.wide { max-width: 44ch; }
+  .body.full { max-width: 100%; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: clamp(40px, 7.2vw, 96px); line-height: 0.98; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+  h2 { font-family: var(--display); font-weight: 700; font-size: clamp(34px, 5.6vw, 76px); line-height: 1.02; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+  h2 .quiet { color: var(--ink-soft); font-weight: 500; }
+  p.lead { font-size: clamp(18px, 2.2vw, 28px); margin: 0; max-width: 34ch; color: var(--ink); text-wrap: pretty; }
+  p.sub { font-size: clamp(16px, 1.6vw, 21px); margin: 0; max-width: 40ch; color: var(--ink-soft); }
+  .stamp { display: inline-block; font-family: var(--mono); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--stamp);
+           border: 3px solid var(--stamp); border-radius: 6px; padding: 8px 14px; transform: rotate(-3deg); font-size: clamp(14px, 1.5vw, 20px); width: max-content; }
+  .stamp.ok { color: var(--ok); border-color: var(--ok); transform: rotate(2deg); }
+  .foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; font-family: var(--mono); font-size: 13px; color: var(--ink-soft); }
+  .receipt { background: var(--receipt); border-left: 3px solid var(--accent); padding: 8px 12px; max-width: 60ch; }
+  .receipt b { color: var(--ink); font-weight: 500; }
+  .counter { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  ul.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: clamp(17px, 1.9vw, 24px); }
+  ul.list li { display: grid; grid-template-columns: 1.2em 1fr; gap: 10px; align-items: baseline; }
+  ul.list li::before { content: "×"; color: var(--stamp); font-family: var(--mono); font-weight: 500; }
+  ul.list.yes li::before { content: "✓"; color: var(--ok); }
+  .cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; max-width: 1100px; }
+  .case { background: var(--card); border: 1px solid var(--line); padding: 16px 18px; display: grid; gap: 6px; }
+  .case h3 { margin: 0; font-family: var(--display); font-size: 22px; font-weight: 700; }
+  .case p { margin: 0; color: var(--ink-soft); font-size: 16px; }
+  .case .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 900px; }
+  .step { border-top: 3px solid var(--accent); padding-top: 10px; font-family: var(--display); font-weight: 700; font-size: clamp(18px, 2vw, 26px); }
+  .step small { display: block; font-family: var(--body); font-weight: 400; font-size: 15px; color: var(--ink-soft); margin-top: 4px; }
+  .nav { position: fixed; right: 18px; bottom: 16px; display: flex; gap: 6px; z-index: 3; }
+  .nav button { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--ink-soft); background: transparent; padding: 0; cursor: pointer; }
+  .nav button.on { background: var(--accent); border-color: var(--accent); }
+  .nav button:focus-visible, .lang button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .hint { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); font-family: var(--mono); font-size: 12px; color: var(--ink-soft); z-index: 3; }
+  .lang { position: fixed; top: 14px; right: 18px; z-index: 4; display: flex; gap: 4px; font-family: var(--mono); font-size: 12px; }
+  .lang button { background: transparent; border: 1px solid var(--line); color: var(--ink-soft); padding: 4px 10px; cursor: pointer; letter-spacing: 0.08em; }
+  .lang button.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .zone { position: absolute; top: 0; bottom: 64px; width: 50%; z-index: 2; cursor: pointer; background: transparent; border: 0; }
+  .zone.l { left: 0; } .zone.r { right: 0; }
+  @media (max-width: 700px) { .steps { grid-template-columns: 1fr 1fr; } .body { max-width: 100%; } h1 { font-size: 40px; } }
+  @media print {
+    body { overflow: visible; }
+    .deck { height: auto; }
+    .slide { display: grid !important; position: relative; height: 100vh; page-break-after: always; grid-template-rows: auto 1fr auto; }
+    .nav, .hint, .zone, .lang { display: none; }
+  }
+</style>
+
+<div class="lang" role="group" aria-label="Language / Langue"><button id="lang-fr">FR</button><button id="lang-en">EN</button></div>
+
+<div class="deck" id="deck">
+
+  <section class="slide on">
+    <div class="eyebrow"><b>Cubby</b> · Grillcheese Research Lab · Québec</div>
+    <div class="body">
+      <h1 lang="en">A small AI that is right. Or says so.</h1>
+      <h1 lang="fr">Une petite IA qui a raison. Ou qui le dit.</h1>
+      <p class="lead" lang="en">It runs on your computer. It checks its answers before it speaks. When it cannot check, it tells you.</p>
+      <p class="lead" lang="fr">Elle tourne sur votre ordinateur. Elle vérifie ses réponses avant de parler. Quand elle ne peut pas vérifier, elle vous le dit.</p>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">small model · <b>big thinking</b></span><span lang="fr">petit modèle · <b>grande pensée</b></span></div><div class="counter">01 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">The problem</span><span lang="fr">Le problème</span></div>
+    <div class="body wide">
+      <h2 lang="en">AI assistants guess.</h2>
+      <h2 lang="fr">Les assistants IA devinent.</h2>
+      <ul class="list" lang="en">
+        <li>They sound sure when they are wrong.</li>
+        <li>You cannot check them.</li>
+        <li>Teach them something new and they forget something old.</li>
+        <li>They cost a fortune to run.</li>
+      </ul>
+      <ul class="list" lang="fr">
+        <li>Ils ont l'air sûrs quand ils se trompent.</li>
+        <li>Vous ne pouvez pas les vérifier.</li>
+        <li>Apprenez-leur du nouveau et ils oublient de l'ancien.</li>
+        <li>Ils coûtent une fortune à faire tourner.</li>
+      </ul>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">a model that predicts the next word <b>cannot check itself</b></span><span lang="fr">un modèle qui prédit le prochain mot <b>ne peut pas se vérifier</b></span></div><div class="counter">02 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">Cubby's answer</span><span lang="fr">La réponse de Cubby</span></div>
+    <div class="body wide">
+      <h2 lang="en">Built the other way round.</h2>
+      <h2 lang="fr">Construite à l'envers.</h2>
+      <div class="steps" lang="en">
+        <div class="step">A small model proposes.<small>the talking part</small></div>
+        <div class="step">A machine checks.<small>the verifier</small></div>
+        <div class="step">Only what passes is said.<small>the rest is "I don't know yet"</small></div>
+        <div class="step">Everything is traceable.<small>the facts and the steps</small></div>
+      </div>
+      <div class="steps" lang="fr">
+        <div class="step">Un petit modèle propose.<small>la partie qui parle</small></div>
+        <div class="step">Une machine vérifie.<small>le vérificateur</small></div>
+        <div class="step">Seul ce qui passe est dit.<small>le reste, c'est « je ne sais pas encore »</small></div>
+        <div class="step">Tout est traçable.<small>les faits et les étapes</small></div>
+      </div>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">the verifier runs <b>programs</b>, not guesses</span><span lang="fr">le vérificateur exécute des <b>programmes</b>, pas des devinettes</span></div><div class="counter">03 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">Claim one</span><span lang="fr">Promesse un</span></div>
+    <div class="body">
+      <span class="stamp" lang="en">I don't know yet</span>
+      <span class="stamp" lang="fr">Je ne sais pas encore</span>
+      <h2 lang="en">It says so. <span class="quiet">Instead of inventing an answer.</span></h2>
+      <h2 lang="fr">Elle le dit. <span class="quiet">Au lieu d'inventer une réponse.</span></h2>
+      <p class="sub" lang="en">And when you allow it to search: "I can look it up for you if you want." What it finds is kept with its source.</p>
+      <p class="sub" lang="fr">Et si vous lui permettez de chercher : « Je peux chercher pour toi si tu veux. » Ce qu'elle trouve est gardé avec sa source.</p>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">own test, 25 questions: <b>96% right · 4% don't know · 0% wrong</b></span><span lang="fr">son propre test, 25 questions : <b>96 % justes · 4 % « je ne sais pas » · 0 % fausses</b></span></div><div class="counter">04 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">Claim two</span><span lang="fr">Promesse deux</span></div>
+    <div class="body">
+      <h2 lang="en">It remembers what you tell it.</h2>
+      <h2 lang="fr">Elle se souvient de ce que vous lui dites.</h2>
+      <p class="lead" lang="en">And you can check that it did.</p>
+      <p class="lead" lang="fr">Et vous pouvez le vérifier.</p>
+      <p class="sub" lang="en">Every fact keeps its source. A contradiction is caught, not quietly overwritten.</p>
+      <p class="sub" lang="fr">Chaque fait garde sa source. Une contradiction est attrapée, pas écrasée en silence.</p>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">say it once · <b>answerable the next moment</b></span><span lang="fr">dites-le une fois · <b>elle peut y répondre l'instant d'après</b></span></div><div class="counter">05 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">Claim three</span><span lang="fr">Promesse trois</span></div>
+    <div class="body">
+      <h2 lang="en">It shows its work.</h2>
+      <h2 lang="fr">Elle montre son travail.</h2>
+      <p class="lead" lang="en">Every answer comes with the facts it used and the steps it ran.</p>
+      <p class="lead" lang="fr">Chaque réponse vient avec les faits utilisés et les étapes suivies.</p>
+      <p class="sub" lang="en">If you disagree, you see exactly where.</p>
+      <p class="sub" lang="fr">Si vous n'êtes pas d'accord, vous voyez exactement où.</p>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">an answer is a <b>program that ran</b>, and you can read it</span><span lang="fr">une réponse est un <b>programme qui a tourné</b>, et vous pouvez le lire</span></div><div class="counter">06 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">Claim four</span><span lang="fr">Promesse quatre</span></div>
+    <div class="body wide">
+      <h2 lang="en">It stays on your machine.</h2>
+      <h2 lang="fr">Elle reste sur votre machine.</h2>
+      <ul class="list yes" lang="en">
+        <li>No cloud. No account.</li>
+        <li>Your chats are stored encrypted.</li>
+        <li>Every tool is off until you turn it on.</li>
+      </ul>
+      <ul class="list yes" lang="fr">
+        <li>Pas d'infonuagique. Pas de compte.</li>
+        <li>Vos conversations sont stockées chiffrées.</li>
+        <li>Chaque outil est éteint tant que vous ne l'allumez pas.</li>
+      </ul>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">a normal gaming PC · <b>12 GB of graphics memory</b> is enough</span><span lang="fr">un PC de jeu ordinaire · <b>12 Go de mémoire graphique</b> suffisent</span></div><div class="counter">07 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">Claim five</span><span lang="fr">Promesse cinq</span></div>
+    <div class="body wide">
+      <span class="stamp ok" lang="en">Certified</span>
+      <span class="stamp ok" lang="fr">Certifié</span>
+      <h2 lang="en">It learns new skills. <span class="quiet">Without retraining.</span></h2>
+      <h2 lang="fr">Elle apprend de nouvelles compétences. <span class="quiet">Sans réentraînement.</span></h2>
+      <div class="steps" lang="en">
+        <div class="step">A need appears.</div>
+        <div class="step">It writes the program.</div>
+        <div class="step">The verifier certifies it.</div>
+        <div class="step">It keeps it.</div>
+      </div>
+      <div class="steps" lang="fr">
+        <div class="step">Un besoin apparaît.</div>
+        <div class="step">Elle écrit le programme.</div>
+        <div class="step">Le vérificateur le certifie.</div>
+        <div class="step">Elle le garde.</div>
+      </div>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">every certificate <b>signed and kept in a ledger</b></span><span lang="fr">chaque certificat <b>signé et gardé dans un registre</b></span></div><div class="counter">08 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">Claim six</span><span lang="fr">Promesse six</span></div>
+    <div class="body">
+      <h2 lang="en">It thinks cheaply on hard problems.</h2>
+      <h2 lang="fr">Elle réfléchit à peu de frais sur les problèmes difficiles.</h2>
+      <p class="lead" lang="en">A program once. Milliseconds after.</p>
+      <p class="lead" lang="fr">Un programme, une fois. Des millisecondes ensuite.</p>
+      <p class="sub" lang="en">Not pages of "thinking" every single time, paid for word by word.</p>
+      <p class="sub" lang="fr">Pas des pages de « réflexion » à chaque fois, payées mot par mot.</p>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">a multi-step lookup: <b>46 milliseconds</b> · a reused shortcut: <b>0 words</b></span><span lang="fr">une recherche en plusieurs étapes : <b>46 millisecondes</b> · un raccourci réutilisé : <b>0 mot</b></span></div><div class="counter">09 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">Claim seven</span><span lang="fr">Promesse sept</span></div>
+    <div class="body">
+      <h2 lang="en">It reads the room.</h2>
+      <h2 lang="fr">Elle lit l'ambiance.</h2>
+      <p class="lead" lang="en">Your mood sets its tone. It does not fake feelings.</p>
+      <p class="lead" lang="fr">Votre humeur règle son ton. Elle ne simule pas d'émotions.</p>
+      <p class="sub" lang="en">It speaks your French. Québec included.</p>
+      <p class="sub" lang="fr">Elle parle votre français. Le québécois inclus.</p>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">trained on <b>Québec expressions</b> and on how people here text</span><span lang="fr">entraînée sur les <b>expressions québécoises</b> et sur la façon dont on texte ici</span></div><div class="counter">10 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">Watch it think</span><span lang="fr">Regardez-la penser</span></div>
+    <div class="body wide">
+      <h2>cubby-man.</h2>
+      <ul class="list yes" lang="en">
+        <li>Learns the maze from the moves it is refused.</li>
+        <li>Invents its own shortcuts and has them certified.</li>
+        <li>Sets traps. Gets scared. Rests when tired.</li>
+        <li>Says what it is thinking, in its own words.</li>
+      </ul>
+      <ul class="list yes" lang="fr">
+        <li>Apprend le labyrinthe à partir des mouvements qu'on lui refuse.</li>
+        <li>Invente ses propres raccourcis et les fait certifier.</li>
+        <li>Pose des pièges. A peur. Se repose quand il est fatigué.</li>
+        <li>Dit ce qu'il pense, dans ses propres mots.</li>
+      </ul>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">nothing scripted · a move that stops paying is <b>retired, never deleted</b></span><span lang="fr">rien de scénarisé · un mouvement qui ne rapporte plus est <b>retiré, jamais effacé</b></span></div><div class="counter">11 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">Where it fits</span><span lang="fr">Où ça sert</span></div>
+    <div class="body full">
+      <h2 lang="en">Five rooms. One mechanism.</h2>
+      <h2 lang="fr">Cinq pièces. Un seul mécanisme.</h2>
+      <div class="cases" lang="en">
+        <div class="case"><span class="tag">student</span><h3>Notes that never invent a citation.</h3><p>Facts with a source, answers with steps, in your French.</p></div>
+        <div class="case"><span class="tag">medical alerts</span><h3>A rule, certified and signed.</h3><p>Never a guessed value. Not a medical device until validated as one.</p></div>
+        <div class="case"><span class="tag">secure rooms</span><h3>Nothing leaves the machine.</h3><p>Encrypted chats, tools off by default, an audit trail.</p></div>
+        <div class="case"><span class="tag">games</span><h3>A character that grows.</h3><p>Remembers you. Has moods. Keeps what it learned.</p></div>
+        <div class="case"><span class="tag">manufacturing</span><h3>Thinks in three dimensions.</h3><p>A path is a certified program. A defect check is a signed rule.</p></div>
+      </div>
+      <div class="cases" lang="fr">
+        <div class="case"><span class="tag">étudiant</span><h3>Des notes qui n'inventent jamais une citation.</h3><p>Des faits avec leur source, des réponses avec leurs étapes, dans votre français.</p></div>
+        <div class="case"><span class="tag">alertes médicales</span><h3>Une règle, certifiée et signée.</h3><p>Jamais une valeur devinée. Pas un dispositif médical tant que ce n'est pas validé comme tel.</p></div>
+        <div class="case"><span class="tag">salles sécurisées</span><h3>Rien ne sort de la machine.</h3><p>Conversations chiffrées, outils éteints par défaut, une trace d'audit.</p></div>
+        <div class="case"><span class="tag">jeux vidéo</span><h3>Un personnage qui grandit.</h3><p>Se souvient de vous. A des humeurs. Garde ce qu'il a appris.</p></div>
+        <div class="case"><span class="tag">fabrication</span><h3>Pense en trois dimensions.</h3><p>Une trajectoire est un programme certifié. Un contrôle de défaut est une règle signée.</p></div>
+      </div>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">see the need · write the program · <b>certify it · keep it</b></span><span lang="fr">voir le besoin · écrire le programme · <b>le certifier · le garder</b></span></div><div class="counter">12 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><span lang="en">Where it is going</span><span lang="fr">Où ça s'en va</span></div>
+    <div class="body wide">
+      <h2 lang="en">Beat the big models at what they cannot do right.</h2>
+      <h2 lang="fr">Battre les gros modèles là où ils ne peuvent pas avoir raison.</h2>
+      <p class="lead" lang="en">Not by knowing more. By never being confidently wrong, learning while you use it, and showing its work.</p>
+      <p class="lead" lang="fr">Pas en sachant plus. En n'étant jamais sûre d'elle à tort, en apprenant pendant que vous l'utilisez, et en montrant son travail.</p>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">built from the <b>verifier outward</b></span><span lang="fr">construite <b>à partir du vérificateur</b></span></div><div class="counter">13 / 14</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow"><b>Cubby</b></div>
+    <div class="body">
+      <h1 lang="en">Small model. Big thinking.</h1>
+      <h1 lang="fr">Petit modèle. Grande pensée.</h1>
+      <p class="lead" lang="en">Built in Québec by Grillcheese Research Lab.</p>
+      <p class="lead" lang="fr">Conçue au Québec par Grillcheese Research Lab.</p>
+    </div>
+    <div class="foot"><div class="receipt"><span lang="en">every number on these slides has a <b>log behind it</b></span><span lang="fr">chaque chiffre de ces diapos a un <b>journal derrière lui</b></span></div><div class="counter">14 / 14</div></div>
+  </section>
+
+  <button class="zone l" aria-label="Previous slide"></button>
+  <button class="zone r" aria-label="Next slide"></button>
+</div>
+<div class="nav" id="nav" aria-label="Slides"></div>
+<div class="hint"><span lang="en">← → to move · click either half · P to print</span><span lang="fr">← → pour avancer · cliquez une moitié · P pour imprimer</span></div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var nav = document.getElementById('nav');
+  var i = 0;
+  function setLang(l) {
+    root.setAttribute('data-lang', l);
+    document.getElementById('lang-fr').classList.toggle('on', l === 'fr');
+    document.getElementById('lang-en').classList.toggle('on', l === 'en');
+    try { localStorage.setItem('cubby-pitch-lang', l); } catch (e) {}
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('cubby-pitch-lang'); } catch (e) {}
+  setLang(saved || ((navigator.language || '').toLowerCase().indexOf('fr') === 0 ? 'fr' : 'en'));
+  document.getElementById('lang-fr').addEventListener('click', function () { setLang('fr'); });
+  document.getElementById('lang-en').addEventListener('click', function () { setLang('en'); });
+  function fromHash() { var n = parseInt((location.hash || '').replace('#', ''), 10); return (n >= 1 && n <= slides.length) ? n - 1 : 0; }
+  slides.forEach(function (_, k) {
+    var b = document.createElement('button'); b.setAttribute('aria-label', 'Slide ' + (k + 1));
+    b.addEventListener('click', function () { go(k); }); nav.appendChild(b);
+  });
+  function go(k) {
+    i = Math.max(0, Math.min(slides.length - 1, k));
+    slides.forEach(function (s, j) { s.classList.toggle('on', j === i); });
+    Array.prototype.forEach.call(nav.children, function (b, j) { b.classList.toggle('on', j === i); });
+    if (history.replaceState) history.replaceState(null, '', '#' + (i + 1));
+  }
+  document.querySelector('.zone.l').addEventListener('click', function () { go(i - 1); });
+  document.querySelector('.zone.r').addEventListener('click', function () { go(i + 1); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(i + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(i - 1); }
+    else if (e.key === 'Home') { go(0); } else if (e.key === 'End') { go(slides.length - 1); }
+    else if (e.key === 'p' || e.key === 'P') { window.print(); }
+    else if (e.key === 'f' || e.key === 'F') { setLang('fr'); } else if (e.key === 'e' || e.key === 'E') { setLang('en'); }
+  });
+  window.addEventListener('hashchange', function () { go(fromHash()); });
+  go(fromHash());
+})();
+</script>
