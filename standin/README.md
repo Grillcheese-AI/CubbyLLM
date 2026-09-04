@@ -380,6 +380,30 @@ did not name their weights — fixed the same day: the forge probe writes `emitt
 `emitter` and the adapter bank's usage. **Still pending: arithmetic at n=40** (the Colab eval cell on v8e, then
 `eval_emitter_vm.py --val-generations`) — the kill line itself.
 
+**First two-adapter LIVE run (2026-09-03, `--gguf v8e --talk-gguf v8t --pacman`): the game side is clean, the talk
+side found four bugs, all fixed the same day (`standin/tests` pins carry the trace's real lines).**
+- **Game (programs adapter):** level 1 cleared with FLEE#1–4 forged and certified (decision programs, 2–4 s each),
+  WHERE#5 chain ok, a rejected program (`COMBO-AAACC`, reason `curious`) retired not deleted, combos saving 4 steps,
+  a trap that sent a ghost home, rest under 30 energy. The GPU lock held with both models loaded.
+- **Verbalizer (talk adapter rephrasing the host's thought):** about half the verbalized lines were bad — instruction
+  echoes ("My own words, one short sentence, first person: …"), second person ("I see, so you're saying…"), the mood
+  tag read as content ("reword the phrase 'alert'"), and invented meaning around the kept numbers ("6 grains weighing
+  12 grams", "7 fingers on one hand", "score is 58", "saved 4 times"). The old guard checked numbers, names, voice and
+  length only. Now (`pacman.rephrase_ok`, `split_mood`): the mood tag is host-side (stripped before the prompt,
+  re-attached after), and a rephrase must have no instruction echo, no second person, no question back, stay under
+  2× the host line and add at most one content word the host line did not have — else the host line stands. The
+  proper fix is a `verbalize` SFT family (host line → first-person one-liner, template-derived targets, never the
+  model's own output) — queued for v9.
+- **Two chat misroutes:** "awesome, what are the things you learned?" → `lists`, "do you know how to write code?" →
+  `audio album`. Traced on CPU: the first is a wh-question the grammar does not parse → flat fallback → the emitter
+  bound a 0.137 hit's object and the ground check took it (an unparsed question has no relation to hold the answer
+  to); the second was a definite no-facts read ('write' = creative) that "confident retrieval engages reasoning"
+  overrode (0.377 > tau_eff 0.319). Fixes: retrieval overrides only residual small talk; capability questions
+  ("do you know how to", "can you", "peux-tu"…) are about Cubby when the grammar does not parse them; an unparsed
+  question grounds only on a hit for the question itself at ≥ tau_ret (0.596 — real fact questions the grammar misses
+  score 0.82–0.97; expansion-hop facts inherit their parent's score instead of their object-query score); and
+  cubby-man claims "what did you learn / qu'as-tu appris" as a status question when mounted.
+
 **v8t control — READ (2026-09-03, LFM2.5-2.6B, r 64 / alpha 128 / LR 1e-4 / adamw_8bit; Colab 40/task, replayed
 locally: `validation/logs/standin_v8t_talk_replay.{log,json}`):** the talk side of the split **holds v7**.
 
