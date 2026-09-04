@@ -183,13 +183,23 @@ def test_llama_cpp_emitters_take_turns_on_the_gpu_across_threads():
         overlaps = 0
         metadata = {"tokenizer.chat_template": "<|im_start|>"}
 
-        def create_completion(self, text, **kw):
+        def tokenize(self, text, add_bos=True, special=False):
+            return [9] if text == b"<|im_end|>" else [1, 2]
+
+        def token_eos(self):
+            return 9
+
+        def detokenize(self, toks, prev_tokens=None, special=False):
+            return b"ok" if toks else b""
+
+        def generate(self, ids, **kw):              # the whole decode holds the lock: re-entry from another thread is the reset
             FakeLlama.busy += 1
             if FakeLlama.busy > 1:
                 FakeLlama.overlaps += 1
             time.sleep(0.01)
+            yield 3
             FakeLlama.busy -= 1
-            return {"choices": [{"text": "ok"}]}
+            yield 9
 
     a, b = LlamaCppEmitter("x/a.gguf", family="chatml"), LlamaCppEmitter("x/b.gguf", family="chatml")
     a._llm, b._llm = FakeLlama(), FakeLlama()
@@ -217,8 +227,12 @@ def test_clean_reply_strips_qwen_fragments_and_keeps_complete_tool_calls():
 
 
 class _FakeLlama:
-    """n_vocab/detokenize/metadata/create_completion — enough to load a LlamaCppEmitter without a model."""
-    PIECES = [b"Hi", b" there", "建筑师".encode(), b" 8", "Ещё".encode(), b"<tool_call>", b"\xe5"]   # the last: a lone byte
+    """n_vocab/tokenize/detokenize(special=)/generate/token_eos/set_seed/metadata — enough to load and decode
+    through a LlamaCppEmitter without a model. Piece 5 is a CONTROL token: rendered only with special=True."""
+    PIECES = [b"Hi", b" there", "建筑师".encode(), b" 8", "Ещё".encode(), b"<|tool_call_start|>", b"\xe5"]   # the last: a lone byte
+    SPECIAL = {5, 7}
+    EOS = 7
+    SCRIPT = [0, 1, EOS]          # what generate() yields
 
     def __init__(self, **kw):
         self.kw = kw
@@ -228,12 +242,23 @@ class _FakeLlama:
     def n_vocab(self):
         return len(self.PIECES)
 
-    def detokenize(self, toks, **kw):
-        return self.PIECES[toks[0]]
+    def token_eos(self):
+        return self.EOS
 
-    def create_completion(self, text, **kw):
+    def set_seed(self, seed):
+        self.seed = seed
+
+    def tokenize(self, text, add_bos=True, special=False):
+        if text == b"<|im_end|>":
+            return [self.EOS]
+        return [0] * (len(text) // 4 + 1)
+
+    def detokenize(self, toks, prev_tokens=None, special=False):
+        return b"".join(self.PIECES[t] if (t not in self.SPECIAL or special) else b"" for t in toks if t < len(self.PIECES))
+
+    def generate(self, ids, **kw):
         self.calls.append(kw)
-        return {"choices": [{"text": "Hi there"}]}
+        yield from self.SCRIPT
 
 
 def test_script_ban_ids_come_from_the_vocab_and_zero_the_logits(tmp_path, monkeypatch):
@@ -260,8 +285,29 @@ def test_llama_emitter_passes_the_script_ban_to_every_decode(tmp_path, monkeypat
     assert e.emit("hello") == "Hi there"
     lp = e._llm.calls[0]["logits_processor"]
     assert lp is not None and list(lp[0].ids) == [2, 4]
+    assert e._llm.calls[0]["temp"] == 0.0, "temperature 0 = greedy, as create_completion did"
     assert (tmp_path / "talk.gguf.scriptban.npy").exists(), "cached beside the GGUF"
     assert list(np.load(tmp_path / "talk.gguf.scriptban.npy")) == [2, 4]
     off = em.LlamaCppEmitter(str(gguf), script_ban=False)
     off.emit("hello")
     assert off._llm.calls[0]["logits_processor"] is None
+
+
+
+def test_llama_emitter_renders_control_tokens_and_stops_at_eos(tmp_path, monkeypatch):
+    """The v10 tool probe (2026-09-04): create_completion dropped LFM's <|tool_call_start|> (a control token) and
+    the host saw a bare call body. The token-level decode renders it; EOS and the family's stop token end it."""
+    import llama_cpp
+    from standin import emitter as em
+
+    class _Tool(_FakeLlama):
+        SCRIPT = [5, 0, 1, 5, _FakeLlama.EOS, 3, 3]      # the EOS ends the reply; the trailing pieces are never read
+
+    monkeypatch.setattr(llama_cpp, "Llama", _Tool)
+    gguf = tmp_path / "talk.gguf"
+    gguf.write_bytes(b"GGUF")
+    e = em.LlamaCppEmitter(str(gguf), script_ban=False)
+    assert e.emit("news?") == "<|tool_call_start|>Hi there<|tool_call_start|>"
+    assert e.emit("news?", max_new_tokens=2) == "<|tool_call_start|>Hi", "max_new_tokens bounds the decode"
+    e2 = em.LlamaCppEmitter(str(gguf), script_ban=False)
+    assert e2.emit("x", temperature=0.7, seed=3) and e2._llm.seed == 3 and e2._llm.calls[0]["temp"] == 0.7

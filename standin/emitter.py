@@ -260,11 +260,43 @@ class LlamaCppEmitter:
         llm = self._load()
         render, stop, _ = CHAT_FAMILIES[self.family]
         text = render(system or self.system, prompt, self.prefill + prefix)
-        sampling = {"temperature": float(temperature), "top_p": 0.9} if temperature > 0 else {"temperature": 0.0}
         with GPU_LOCK:                                    # the HTTP server is threaded; the game and a chat turn take turns here
-            out = llm.create_completion(text, max_tokens=int(max_new_tokens), seed=(0 if seed is None else int(seed)),
-                                        **sampling, stop=stop, logits_processor=self._logits_processor)
-        return prefix + out["choices"][0]["text"]
+            out = self._decode(llm, text, int(max_new_tokens), float(temperature), seed, stop)
+        return prefix + out
+
+    def _decode(self, llm, text: str, max_new: int, temperature: float, seed: int | None, stop: list[str]) -> str:
+        """Token-level decode with special tokens RENDERED. `create_completion` detokenizes with special=False, so a
+        base's control tokens never reach the host — LFM2.5's <|tool_call_start|>/<|tool_call_end|> vanished and the
+        v10 tool probe read a bare call body, 0/3, where the merged model read 3/3 (2026-09-04). Same sampler
+        defaults as create_completion (min_p 0.05, top_k 40; temperature 0 = greedy), the script ban applied, stop
+        at EOS or a stop string (single-token stops by id, others by text)."""
+        ids = llm.tokenize(text.encode("utf-8"), add_bos=True, special=True)
+        if temperature > 0:
+            llm.set_seed(0 if seed is None else int(seed))
+        sampling = {"temp": temperature, "top_p": 0.9} if temperature > 0 else {"temp": 0.0}
+        end = {int(llm.token_eos())}
+        text_stops: list[str] = []
+        for st in stop or []:
+            st_ids = llm.tokenize(st.encode("utf-8"), add_bos=False, special=True)
+            if len(st_ids) == 1:
+                end.add(int(st_ids[0]))
+            else:
+                text_stops.append(st)
+        out: list[int] = []
+        for tok in llm.generate(ids, logits_processor=self._logits_processor, **sampling):
+            if int(tok) in end:
+                break
+            out.append(int(tok))
+            if len(out) >= max_new:
+                break
+            if text_stops and len(out) % 8 == 0:
+                partial = llm.detokenize(out, special=True).decode("utf-8", "replace")
+                if any(st in partial for st in text_stops):
+                    break
+        decoded = llm.detokenize(out, special=True).decode("utf-8", "replace")
+        for st in text_stops:
+            decoded = decoded.split(st, 1)[0]
+        return decoded
 
 
 class ReplayEmitter:

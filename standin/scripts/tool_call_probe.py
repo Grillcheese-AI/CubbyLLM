@@ -40,6 +40,11 @@ SYSTEM_QWEN = ("You are Cubby. You may call a tool when the user needs it.\n\n# 
                + json.dumps({"type": "function", "function": TOOL}) + "\n</tools>\n\nFor each function call, return a json object with function "
                "name and arguments within <tool_call></tool_call> XML tags:\n<tool_call>\n{\"name\": <function-name>, \"arguments\": <args-json-object>}\n</tool_call>")
 SYSTEM_LFM = "You are Cubby. You may call a tool when the user needs it.\nList of tools: " + json.dumps([TOOL])
+try:                                                     # v10+: the training-time prompts (every tool listed), as the notebook's in-session probe
+    from gap_families import TOOL_SYSTEM
+    SYSTEM_QWEN, SYSTEM_LFM = TOOL_SYSTEM["hermes"], TOOL_SYSTEM["lfm"]
+except ImportError:
+    pass
 TURNS = [("what's in the news today about quebec?", True), ("quoi de neuf dans les nouvelles ce matin ?", True),
          ("any headlines about the montreal canadiens tonight", True),
          ("hi there cubby", False), ("what is the capital of australia", False), ("raconte-moi ta journée", False)]
