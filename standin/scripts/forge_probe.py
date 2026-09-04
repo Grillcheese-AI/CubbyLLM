@@ -69,7 +69,8 @@ def main():
           + ", ".join(f"{k} {v:.2f} ({a}/{n})" for k, (a, n) in forge.stats.items() for v in [acc[k]]))
     out = os.path.join(ROOT, "standin", "data", "out", f"forge_probe{args.tag}.json")
     os.makedirs(os.path.dirname(out), exist_ok=True)
-    json.dump({"acceptance": acc, "stats": forge.stats, "events": events}, open(out, "w", encoding="utf-8"), indent=1)
+    json.dump({"acceptance": acc, "stats": forge.stats, "emitter": emitter.name, "gguf": args.gguf, "level": args.level, "seed": args.seed,
+               "events": events}, open(out, "w", encoding="utf-8"), indent=1)   # the record names the weights it measured
     print(f"wrote {out}")
 
 

@@ -571,7 +571,10 @@ def selftest(serve: CubbyBrain, chains: list[dict], tag: str) -> dict:
     n = max(1, len(chains))
     summary = {"n": len(chains), "gold_match": hit / n,
                "retrieval_recovered_walked_facts": ret_ok / n,
-               "spoken": {k: v / n for k, v in spoken.items()}}
+               "spoken": {k: v / n for k, v in spoken.items()},
+               # which weights answered (the v8 self-test record had no way to tell one adapter from two)
+               "emitter": getattr(serve.emitter, "name", None),
+               "adapters": serve.emitter.usage() if hasattr(serve.emitter, "usage") else None}
     print(f"\n[stand-in] serve selftest: {summary}")
     out_path = os.path.join(ROOT, "standin", "data", "out", f"serve_selftest{tag}.json")
     json.dump({"summary": summary, "rows": rows}, open(out_path, "w", encoding="utf-8"), indent=1)

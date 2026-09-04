@@ -1,6 +1,6 @@
 # standin/ — the stand-in trunk
 
-**Status (2026-09-03):** v7 is the serving model; v8 (two adapters on one base) is trained and exported (both Q4s local: `standin/models/emitter_v8{e,t}.Q4_K_M.gguf`); the v8t talk read holds v7 (see § v8), the v8e program read (arithmetic, forge, self-test) is pending. Nothing here is CubbyLLM.
+**Status (2026-09-03):** v7 is the serving model; v8 (two adapters on one base) is trained and exported (both Q4s local: `standin/models/emitter_v8{e,t}.Q4_K_M.gguf`); the v8t talk read holds v7, v8e's forge probe is 1.00/1.00/1.00 and the two-adapter self-test 96/4/0 (see § v8); arithmetic at n=40 — the kill line — is pending. Nothing here is CubbyLLM.
 
 A small open model (currently `LiquidAI/LFM2.5-2.6B`, chosen by a 2026-08-30 Hub
 check — see `docs/research/2026-08-28-oracle-competition-scored.md` §3.2 for why a
@@ -366,6 +366,19 @@ reset). **Decision rule:** a candidate replaces LFM for talk only if `identity_o
 chat/history/emotion improve by ≥ 5 points at n=40 *and* it fits the card; otherwise LFM v8t stays. **Kill:** a
 base that cannot hold the identity voice after the same SFT is out whatever its chat score. Guardrail 1 as
 always: the winner is a serving choice for the stand-in, a pointer under H0 at most — nothing about the 2B.
+
+**v8e program adapter — forge + self-test READ (2026-09-03, owner's solo GPU runs; records
+`validation/logs/standin_v8e_forge_probe.json`, `validation/logs/standin_v8_selftest.json`):**
+
+| read | v7 | v8 (v8e programs + v8t talk) |
+|---|---|---|
+| forge acceptance (36 tasks, level 1, seed 0) | 1.00 / 1.00 / 1.00 | **decision 1.00 (12/12) · compare 1.00 (12/12) · chain 1.00 (12/12)** in 61 s |
+| serve self-test (25 val chains, facts stripped) | 96 / 4 / 0 | **gold 0.96 · retrieval recovered 0.96 · spoken correct 0.96 / don't-know 0.04 / wrong 0.00** |
+
+Both bars held on the first two-model run in one process (the GPU lock's first real outing). The record files
+did not name their weights — fixed the same day: the forge probe writes `emitter`/`gguf`, the self-test writes
+`emitter` and the adapter bank's usage. **Still pending: arithmetic at n=40** (the Colab eval cell on v8e, then
+`eval_emitter_vm.py --val-generations`) — the kill line itself.
 
 **v8t control — READ (2026-09-03, LFM2.5-2.6B, r 64 / alpha 128 / LR 1e-4 / adamw_8bit; Colab 40/task, replayed
 locally: `validation/logs/standin_v8t_talk_replay.{log,json}`):** the talk side of the split **holds v7**.
