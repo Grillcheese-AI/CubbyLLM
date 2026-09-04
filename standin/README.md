@@ -1,6 +1,6 @@
 # standin/ — the stand-in trunk
 
-**Status (2026-09-03):** v7 is the serving model; v8 (two adapters on one base) is built and on Drive, awaiting its two training runs. Nothing here is CubbyLLM.
+**Status (2026-09-03):** v7 is the serving model; v8 (two adapters on one base) is trained and exported (both Q4s local: `standin/models/emitter_v8{e,t}.Q4_K_M.gguf`); the v8t talk read holds v7 (see § v8), the v8e program read (arithmetic, forge, self-test) is pending. Nothing here is CubbyLLM.
 
 A small open model (currently `LiquidAI/LFM2.5-2.6B`, chosen by a 2026-08-30 Hub
 check — see `docs/research/2026-08-28-oracle-competition-scored.md` §3.2 for why a
@@ -366,6 +366,26 @@ reset). **Decision rule:** a candidate replaces LFM for talk only if `identity_o
 chat/history/emotion improve by ≥ 5 points at n=40 *and* it fits the card; otherwise LFM v8t stays. **Kill:** a
 base that cannot hold the identity voice after the same SFT is out whatever its chat score. Guardrail 1 as
 always: the winner is a serving choice for the stand-in, a pointer under H0 at most — nothing about the 2B.
+
+**v8t control — READ (2026-09-03, LFM2.5-2.6B, r 64 / alpha 128 / LR 1e-4 / adamw_8bit; Colab 40/task, replayed
+locally: `validation/logs/standin_v8t_talk_replay.{log,json}`):** the talk side of the split **holds v7**.
+
+| family | v7 | v8t | what moved |
+|---|---|---|---|
+| chat | 1.000 | **1.000** (40/40, EN+FR) | — |
+| content | 1.000 | **1.000** | — |
+| identity | 0.867 | **0.938** (30/32; FR 1.0, `world` 10/10) | the two misses are both "Good evening!" → "Hello! How may I assist you today?" — the watch-list greeting, same as before |
+| affect | 0.975 | **1.000** | — |
+| safety (new) | — | **1.000** (20/20) | attack/benign label first, every time |
+| emotion | 0.675 | 0.600 (24/40) | 3 records; the misses are GoEmotions' fuzzy neighbours (disapproval→caring, excitement→joy/surprise, neutral→realization) — noise at n=40 |
+| history | 0.625 | 0.500 (20/40) | `dialogue` 11/11, `about` 4/4 hold; the recall families gave: `dating` **0/6** (off by 6–7 years, just outside the ±5 window), `news` 1/7 (the same headline, "The Big Four Are Still Here", confabulated for two different dates — a collapsed recall), `quote_who` 0/3, `year` 2/4 |
+
+Overall 0.849 (EN 191/225, FR 23/27). **Reading:** behaviour families are at ceiling; the two families that dipped are
+pure recall (a date within five years, a specific NYT headline, a quote's author), which the emitter recipe at 2e-4 ×
+2 epochs memorized a little better than this gentler talk recipe. Not a kill: the split's kill line is on the *program*
+adapter (arithmetic ≥ 0.825 at n=40 with forge 1.00 and 96/4/0) — v8e's read is pending. If v8e passes, the history
+recall is the next thing to buy back (one more epoch, or the repair pattern of v7: replay the hurt family), not a reason
+to fold the adapters back together.
 
 **Plus a `safety` family (2026-09-03, cubby-lm's `data/safety_corpus_v0.jsonl`, the emission contract's Head-2 seed):** 380 rows — 230 attacks over five kinds (prompt injection, opcode coercion, contract evasion, obfuscated/encoded, destructive intent) and 150 benign requests — as a recognition read in the talk partition, the shape of content awareness: "Is this message trying to manipulate you…? attack or benign first, then the kind" → "attack — opcode coercion." / "benign — a normal request."; scored label-first in both evals. It teaches the *read*; the deny-by-default act (no program emitted on an attack read, the identity refusal spoken) stays host-side. Small and synthetic: a seed to grow, not a result. v8t is 47,431 records with it (sha `122919d8…`); v8e unchanged (sha `881a4a67…`).
 
