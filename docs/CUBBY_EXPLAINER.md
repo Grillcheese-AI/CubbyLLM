@@ -68,7 +68,21 @@ could reach is off by default until you turn it on.
 **Coming:** ask it "what's in the news about the Canadiens tonight" and it fetches it, through a tool you have
 explicitly allowed, with the source attached. The mechanism is built and being trained; the switch is still off.
 
-## What it is not
+## What it is not, for now
 
-Cubby is not an all-knowing oracle, not a search engine, and not a coding agent that rewrites your files. It is a small
-model that thinks big, built to be right or to say so.
+Today Cubby is not an all-knowing oracle, not a search engine, and not a coding agent that rewrites your files. It is a
+small model that thinks big, built to be right or to say so.
+
+## Where it is going
+
+The goal is not to catch up with the big models at what they do. It is to beat them at the things they cannot do right,
+and never will, because of how they are built. A model that predicts the next word cannot check itself, cannot reliably
+say "I don't know", cannot learn one new fact tonight without being retrained, cannot show you a trace you could audit,
+and forgets old skills when it is taught new ones. Those are not bugs to be patched in the next version. They are the
+shape of the thing.
+
+Cubby is built the other way round, from the verifier outward: a thought is a program that runs and is checked, a fact is
+kept with its source and a signed certificate, a new skill is a program written and certified rather than a model
+retrained, and the parts that talk, reason and specialise are separate so that learning in one never erases another.
+Every piece above is small today. The bet is that an assistant that is never confidently wrong, that learns while you use
+it, and that can show its work, ends up more useful than one that knows more and cannot be trusted with any of it.
