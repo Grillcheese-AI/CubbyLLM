@@ -852,7 +852,8 @@ keystream over a fresh 16-byte nonce, XOR, then an HMAC-SHA256 tag (encrypt-then
 (generated once, 256 bits; or `CB_HOST_KEY`); the vault and the ledger use keys derived from it. Through it: the real-user-turn
 eval file (`real_user_turns.jsonl.enc`; the plaintext is removed), the talk probe's rows (`talk_probe*.json.enc`; the summary
 stays in the clear with no user text), and the ledger's `input` column (a factory request is a user turn). The committed
-probe records under `validation/logs/` had their rows removed the same day. CubbyChat's history is in memory only; any
+probe records under `validation/logs/` had their rows removed the same day; the earlier commit that carried them stays in history
+because the repository is private (owner, 2026-09-04) — the vault rule holds regardless: no user turn is committed in the clear from here on. CubbyChat's history is in memory only; any
 chat log the serve stack ever persists goes through the vault. **Not covered, by necessity:** the training sets (the
 owner's WhatsApp/Teams rows train in the clear on Colab; that is the owner's decision, recorded in § SFT gap map).
 
