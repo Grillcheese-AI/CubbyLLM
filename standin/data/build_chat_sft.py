@@ -251,8 +251,9 @@ LATEX = re.compile(r"\\(\[|\(|frac|begin|end|left|right|sqrt|tan|sin|cos|sum|int
 GAME_FORGE_REPEAT = 3                                    # v7: forge decision/compare records replayed x3 (v6 probe regression)
 # the two adapters (v8): the trunk EMITS programs; the talk cortex is a second adapter on the same base
 PROGRAM_TASKS = ("arithmetic", "kernel", "role_binding", "chain")          # VM-verified; the game families are kernel/chain subtypes
-from gap_families import (GAP_TASKS, build_appraisal, build_claire, build_dailydialog, build_empathy, build_repair,  # noqa: E402
-                          build_rewrite, build_safety_extra, build_verbalize)
+from gap_families import (GAP_TASKS, build_appraisal, build_claire, build_dailydialog, build_diabla, build_empathy,  # noqa: E402
+                          build_owner_chats, build_owner_teams, build_quebec, build_redial, build_repair, build_rewrite,
+                          build_safety_extra, build_verbalize, write_real_user_turns)
 
 TALK_TASKS = ("identity", "chat", "content", "emotion", "affect", "history", "safety", "exposure") + GAP_TASKS   # v9: the gap families
 IDENTITY_REPEAT = 4                                      # v6: 526 identity records vs ~20k chat pairs pulled the greeting/unknown intents
@@ -1404,6 +1405,28 @@ def main():
     print(f"  kept {len(claire)} | skipped {dict(why_claire.most_common(6))}")
     chat += claire
     why_chat.update(why_claire)
+    print("=== EN/FR chat pairs from DiaBLa (bilingual written dialogues, both sides human) ...", flush=True)
+    diabla, why_diabla = build_diabla(rng, facts, chat_ok)
+    print(f"  kept {dict(Counter(r['subtype'] for r in diabla))} | skipped {dict(why_diabla.most_common(6))}")
+    chat += diabla
+    why_chat.update(why_diabla)
+    print("=== chat pairs from ReDial (human movie-recommendation dialogues, seeker -> recommender) ...", flush=True)
+    redial, why_redial = build_redial(rng, facts, chat_ok)
+    print(f"  kept {len(redial)} | skipped {dict(why_redial.most_common(6))}")
+    chat += redial
+    why_chat.update(why_redial)
+    print("=== chat pairs from the owner's WhatsApp chats (both sides human; placeholders/contact data/explicit lines out) ...", flush=True)
+    owner, why_owner = build_owner_chats(rng, facts, chat_ok, label_passage)
+    print(f"  kept {len(owner)} {dict(Counter(r['lang'] for r in owner))} | skipped {dict(why_owner.most_common(6))}")
+    chat += owner
+    why_chat.update(why_owner)
+    print("=== chat pairs from the owner's Teams export (colleagues; names screened out of every turn) ...", flush=True)
+    teams, why_teams = build_owner_teams(rng, facts, chat_ok, label_passage)
+    print(f"  kept {len(teams)} {dict(Counter(r['lang'] for r in teams))} | skipped {dict(why_teams.most_common(6))}")
+    chat += teams
+    why_chat.update(why_teams)
+    n_real = write_real_user_turns(os.path.join(OUT_DIR, "real_user_turns.jsonl"))
+    print(f"=== real user turns from the owner's AI-chat exports -> {os.path.join(OUT_DIR, 'real_user_turns.jsonl')} ({n_real}; the serve eval's prompts, never trained on)")
     print("=== chat pairs from the sorted local sources (arena, convo, instruct, nemotron, wikiqa, grammar, ei) ...", flush=True)
     local_chat, why_local = build_local_chat(rng, facts, limit_lines=lim)
     print(f"  kept {dict(Counter(r['subtype'] for r in local_chat))} | rejected {dict(why_local.most_common(12))}")
@@ -1431,7 +1454,8 @@ def main():
                          ("safety extras (deepset / toxic-chat / multilingual injections)", lambda: build_safety_extra(rng, SAFETY_PROMPT, n_benign=max(20, int(1500 * sc)))),
                          ("appraisal (SocialIQA forward: situation + question -> feeling / need / motive)", lambda: build_appraisal(rng, facts, n=max(50, int(5000 * sc)))),
                          ("dialog emotion + act (DailyDialog)", lambda: build_dailydialog(rng, facts, n_emotion=max(50, int(3000 * sc)), n_act=max(30, int(2000 * sc)))),
-                         ("empathy (EmpatheticDialogues: a told situation -> the feeling)", lambda: build_empathy(rng, facts, n=max(50, int(2500 * sc))))):
+                         ("empathy (EmpatheticDialogues: a told situation -> the feeling)", lambda: build_empathy(rng, facts, n=max(50, int(2500 * sc)))),
+                         ("quebec (QFrCoRE + QFrCoRT: Quebec French expressions and words -> their definition; + the benchmark's multiple-choice form)", lambda: build_quebec(rng, facts))):
             print(f"=== {name} ...", flush=True)
             recs, why = fn()
             print(f"  kept {len(recs)} {dict(Counter(r['task'] for r in recs))} | skipped {dict(why.most_common(6))}")

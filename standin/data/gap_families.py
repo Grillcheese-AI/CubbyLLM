@@ -18,6 +18,7 @@ model-free "generated" family is verbalize, whose pairs come from the game's own
 from __future__ import annotations
 
 import ast
+import json
 import os
 import random
 import re
@@ -32,7 +33,7 @@ for p in (os.path.dirname(HERE), HERE):
 from hf_rows import fetch_rows  # noqa: E402
 from identity import guess_lang, identity_system, sample_state  # noqa: E402
 
-GAP_TASKS = ("verbalize", "repair", "rewrite", "appraisal", "dialog_emotion", "dialog_act", "empathy")
+GAP_TASKS = ("verbalize", "repair", "rewrite", "appraisal", "dialog_emotion", "dialog_act", "empathy", "quebec", "quebec_mc")
 
 _URL = re.compile(r"https?://|www\.", re.I)
 _NUM = re.compile(r"-?\d+(?:[.,]\d+)?")
@@ -429,8 +430,37 @@ CLAIRE_DIR = os.path.join(HERE, "hf", "claire", "FR")
 CLAIRE_SUBSETS = ("CFPP", "ESLO_free", "ESLO_interview", "TCOF_adults", "OFROM", "PFC_free", "PFC_guided", "ORFEO_crfp",
                   "ORFEO_coralrom", "ORFEO_valibel_interview", "CID", "CLAPI", "ESLO_assistance", "LINAGORA_free", "ParisStories", "OTG")
 _TURN = re.compile(r"^\[([^\]]+):\]\s*(.*)$")
-_TAG = re.compile(r"\[[A-Z]{2,}[^\]]*\]")                     # [PII], [NOISE], [LAUGHTER]...
-_FILLER = re.compile(r"\b(euh+|hein|ben|bah|hum+|mmh+|ouais)\b", re.I)
+_TAG = re.compile(r"\[[^\]]*\]")                              # [PII], [NOISE], [onomatopée d'approbation : ] ... any bracket annotation
+_FILLER = re.compile(r"\b(euh+|hein|ben|bah|hum+|hm+|mm+h?|ouais|pis|voilà|bon|enfin|quoi)\b", re.I)
+_TRUNC = re.compile(r"\b\w+-(?=[\s,.?!]|$)")                 # "magnéto-", "d-," : a word cut off mid-way
+_CLAIRE_MIN_REPLY, _CLAIRE_MAX_REPLY = 8, 120
+_FR_STOP = {"dans", "pour", "avec", "mais", "donc", "alors", "puis", "aussi", "tout", "tous", "toute", "cette", "comme", "parce",
+            "elle", "elles", "nous", "vous", "ils", "être", "avoir", "fait", "faire", "très", "bien", "plus", "moins", "quand", "même"}
+
+
+def _content_fr(text: str) -> set[str]:
+    """Words of four letters or more that are neither fillers nor function words."""
+    return {w for w in re.findall(r"[a-zà-ÿ']{4,}", text.lower()) if w not in _FR_STOP and not _FILLER.fullmatch(w)}
+
+
+def claire_reply(text: str) -> str | None:
+    """A transcript turn as a written reply, or None: no truncation, no bracket residue, at most one filler,
+    8-120 words, starts with a letter; capitalised and closed with a period when the transcript has none
+    (ESLO is lowercase without punctuation)."""
+    t = _clean(text)
+    n = len(t.split())
+    if not (_CLAIRE_MIN_REPLY <= n <= _CLAIRE_MAX_REPLY) or _TRUNC.search(t) or "[" in t or "]" in t:
+        return None
+    if _FILLER.search(t) or not re.match(r"[a-zA-Zà-ÿÀ-Ý]", t) or len(_content_fr(t)) < 3:   # no filler at all in Cubby's line
+        return None
+    if re.search(r"\b(\w+) \1 \1\b", t.lower()):        # stammered repeats: "c'est c'est c'est"
+        return None
+    if re.match(r"^(oui|non|hm|mm|ah|oh|ok|d'accord)\b[\s,]*(oui|non|hm|mm|ah|oh|ok)?[\s,.]*$", t, re.I):
+        return None
+    t = t[0].upper() + t[1:]
+    if t[-1] not in ".?!…":
+        t += "."
+    return t
 
 
 def claire_conversations(path: str):
@@ -455,18 +485,19 @@ def claire_conversations(path: str):
         yield conv
 
 
-def claire_pairs(conv: list[tuple[str, str]], max_words: int = 220):
-    """Consecutive turns by two different speakers -> (user, reply): the reply is 3-`max_words` words, carries
-    at most one filler, is not a bare backchannel, and the user turn is 1-200 words."""
+def claire_pairs(conv: list[tuple[str, str]]):
+    """Consecutive turns by two different speakers -> (user, reply): the user turn is 3-60 words with at most
+    three fillers and no truncation (raw otherwise: that is the realism), the reply passes `claire_reply`."""
     for (s1, t1), (s2, t2) in zip(conv, conv[1:]):
         if s1 == s2:
             continue
-        n1, n2 = len(t1.split()), len(t2.split())
-        if not (1 <= n1 <= 200 and 3 <= n2 <= max_words) or len(_FILLER.findall(t2)) > 1 or len(_FILLER.findall(t1)) > 3:
+        u = _clean(t1)
+        if not (3 <= len(u.split()) <= 60) or len(_FILLER.findall(u)) > 2 or _TRUNC.search(u) or "[" in u or len(_content_fr(u)) < 2:
+            continue                                     # the user side stays spoken (that is the realism) but must say something
+        a = claire_reply(t2)
+        if a is None:
             continue
-        if not re.search(r"[a-zà-ÿ]{4,}", t2.lower()):
-            continue
-        yield t1, t2
+        yield u, a
 
 
 def build_claire(rng: random.Random, facts: dict, chat_ok, n: int = 1500) -> tuple[list[dict], Counter]:
@@ -484,20 +515,341 @@ def build_claire(rng: random.Random, facts: dict, chat_ok, n: int = 1500) -> tup
             for u, a in claire_pairs(conv):
                 pairs.append((sub, u, a))
     rng.shuffle(pairs)
+    per_sub: Counter = Counter()
+    sub_cap = max(50, int(0.3 * n))                     # no subset over 30% (ESLO_interview alone is half the candidates)
     for i, (sub, u, a) in enumerate(pairs):
         if len(out) >= n:
             break
+        if per_sub[sub] >= sub_cap:
+            why["claire:subset cap"] += 1
+            continue
         reason = chat_ok(u, a, facts)
         if reason:
             why[f"claire:{reason}"] += 1
             continue
+        per_sub[sub] += 1
         state = sample_state(rng)
         out.append({"id": f"chat:claire_fr:{i}", "task": "chat", "subtype": "claire_fr", "source": f"hf:OpenLLM-France/Claire-Dialogue-French-0.1/{sub}",
                     "prompt": u, "program": a, "gold": None, "system": identity_system(facts, state), "state": state, "lang": "fr", "repeat": 2})
     return out, why
 
 
-CHECKS = {"verbalize": None, "repair": repair_ok, "rewrite": rewrite_ok, "appraisal": appraisal_ok,
+# ── DiaBLa: bilingual written dialogues, both sides human ─────────────────────
+DIABLA_PATH = os.path.join(HERE, "hf", "diabla", "all-dialogues.json")
+
+
+def diabla_pairs(dialogues: dict):
+    """(lang, user, reply): consecutive utterances by the two speakers where the first has a human reference
+    translation into the second's language -> the reply's language is the pair's language."""
+    for dl in dialogues.values():
+        utts = dl.get("utterances") or {}
+        us = [utts[k] for k in sorted(utts, key=lambda k: int(k))]
+        for a, b in zip(us, us[1:]):
+            la, lb = a.get("language"), b.get("language")
+            if la == lb or lb not in ("english", "french"):
+                continue
+            ref, reply = _clean(a.get("reference_translation")), _clean(b.get("original_text"))
+            if not ref or not reply:
+                continue
+            yield ("fr" if lb == "french" else "en"), ref, reply
+
+
+def build_diabla(rng: random.Random, facts: dict, chat_ok, n_per_lang: int = 1100) -> tuple[list[dict], Counter]:
+    out, why = [], Counter()
+    if not os.path.exists(DIABLA_PATH):
+        why["missing:diabla (curl the repo's DiaBLa-corpus/all-dialogues.json into standin/data/hf/diabla/)"] += 1
+        return out, why
+    dialogues = json.load(open(DIABLA_PATH, encoding="utf-8"))
+    pairs = list(diabla_pairs(dialogues))
+    rng.shuffle(pairs)
+    per: Counter = Counter()
+    for i, (lang, u, a) in enumerate(pairs):
+        if per[lang] >= n_per_lang:
+            continue
+        reason = chat_ok(u, a, facts)
+        if reason:
+            why[f"diabla:{reason}"] += 1
+            continue
+        per[lang] += 1
+        state = sample_state(rng)
+        out.append({"id": f"chat:diabla_{lang}:{i}", "task": "chat", "subtype": f"diabla_{lang}", "source": "github:rbawden/DiaBLa-dataset",
+                    "prompt": u, "program": a, "gold": None, "system": identity_system(facts, state), "state": state, "lang": lang,
+                    "repeat": 2 if lang == "fr" else 1})
+    return out, why
+
+
+# ── Quebec French idioms: QFrCoRE (expressions) + QFrCoRT (words) ─────────────
+QUEBEC_DIR = os.path.join(HERE, "hf", "quebec")
+QUEBEC_FILES = (("expression", os.path.join(QUEBEC_DIR, "qfrcore", "QFrCoRE_test.jsonl")),
+                ("mot", os.path.join(QUEBEC_DIR, "qfrcort", "qfrcort_test.jsonl")))
+QUEBEC_PROMPT = {"expression": "Que veut dire l'expression québécoise « {e} » ? Explique en une phrase.",
+                 "mot": "Que veut dire le mot québécois « {e} » ? Explique en une phrase."}
+QUEBEC_MC_PROMPT = ("Voici {what} québécois{e} : « {expr} ». Laquelle de ces définitions est la bonne ? Réponds d'abord par son numéro.\n{choices}")
+
+
+def quebec_ok(rec: dict, gen: str) -> bool:
+    g, gold = _norm_q(gen), _norm_q(rec.get("gold") or rec["program"])
+    return bool(g) and token_f1(g, gold) >= 0.5
+
+
+def build_quebec(rng: random.Random, facts: dict) -> tuple[list[dict], Counter]:
+    out, why = [], Counter()
+    found = False
+    for kind, path in QUEBEC_FILES:
+        if not os.path.exists(path):
+            why[f"missing:quebec:{kind} (hf download graalul/QFrCoRE_QFrCoRT --repo-type dataset --local-dir standin/data/hf/quebec)"] += 1
+            continue
+        found = True
+        with open(path, encoding="utf-8") as f:
+            for i, line in enumerate(f):
+                try:
+                    r = json.loads(line)
+                except json.JSONDecodeError:
+                    why[f"quebec:{kind}:bad json"] += 1
+                    continue
+                expr, choices, idx = _clean(r.get("expression")), [_clean(c) for c in (r.get("choices") or [])], r.get("correct_index")
+                if not expr or not choices or not isinstance(idx, int) or not (0 <= idx < len(choices)):
+                    why[f"quebec:{kind}:filtered"] += 1
+                    continue
+                gold = choices[idx]
+                state = sample_state(rng)
+                out.append({"id": f"quebec:{kind}:{i}", "task": "quebec", "subtype": kind, "source": f"hf:graalul/QFrCoRE_QFrCoRT/{kind}",
+                            "prompt": QUEBEC_PROMPT[kind].format(e=expr), "program": gold if gold.endswith((".", "!", "?")) else gold + ".",
+                            "gold": gold, "gold_any": [gold], "system": identity_system(facts, state), "state": state, "lang": "fr"})
+                order = list(range(len(choices)))
+                rng.shuffle(order)
+                listed = "\n".join(f"{k + 1}. {choices[j]}" for k, j in enumerate(order))
+                num = str(order.index(idx) + 1)
+                out.append({"id": f"quebec_mc:{kind}:{i}", "task": "quebec_mc", "subtype": kind, "source": f"hf:graalul/QFrCoRE_QFrCoRT/{kind}",
+                            "prompt": QUEBEC_MC_PROMPT.format(what=("une expression" if kind == "expression" else "un mot"), e=("e" if kind == "expression" else ""),
+                                                              expr=expr, choices=listed),
+                            "program": f"{num} — {gold}", "gold": num, "gold_any": [num], "system": None, "state": None, "lang": "fr"})
+    if not found:
+        return out, why
+    rng.shuffle(out)
+    return out, why
+
+
+# ── ReDial: human movie-recommendation dialogues ──────────────────────────────
+_MOVIE_REF = re.compile(r"@(\d{3,7})")
+
+
+def redial_pairs(row: dict):
+    """(seeker turn, recommender turn) with consecutive same-sender messages merged and @ids -> titles."""
+    msgs, mentions = _as_list(row.get("messages")), _as_list(row.get("movieMentions"))
+    names = {str(m.get("movieId")): _clean(m.get("movieName")) for m in mentions if isinstance(m, dict)}
+    seeker = str(row.get("initiatorWorkerId"))
+
+    def fix(t: str) -> str:
+        return _clean(_MOVIE_REF.sub(lambda m: names.get(m.group(1), m.group(0)), str(t or "")))
+
+    turns: list[tuple[str, str]] = []
+    for m in msgs:
+        if not isinstance(m, dict):
+            continue
+        who, text = str(m.get("senderWorkerId")), fix(m.get("text"))
+        if not text:
+            continue
+        if turns and turns[-1][0] == who:
+            turns[-1] = (who, turns[-1][1] + " " + text)
+        else:
+            turns.append((who, text))
+    for (w1, t1), (w2, t2) in zip(turns, turns[1:]):
+        if w1 == seeker and w2 != seeker and "@" not in t1 and "@" not in t2:
+            yield t1, t2
+
+
+def build_redial(rng: random.Random, facts: dict, chat_ok, n: int = 1500) -> tuple[list[dict], Counter]:
+    out, why = [], Counter()
+    rows = fetch_rows("community-datasets/re_dial", "default", "train", 2500)
+    if not rows:
+        why["missing:redial"] += 1
+        return out, why
+    pairs = [(i, u, a) for i, r in enumerate(rows) for u, a in redial_pairs(r)]
+    rng.shuffle(pairs)
+    for i, u, a in pairs:
+        if len(out) >= n:
+            break
+        reason = chat_ok(u, a, facts)
+        if reason:
+            why[f"redial:{reason}"] += 1
+            continue
+        state = sample_state(rng)
+        out.append({"id": f"chat:redial:{i}:{len(out)}", "task": "chat", "subtype": "redial", "source": "hf:community-datasets/re_dial",
+                    "prompt": u, "program": a, "gold": None, "system": identity_system(facts, state), "state": state, "lang": "en"})
+    return out, why
+
+
+# ── the owner's own export: WhatsApp chats as training pairs, AI-chat user turns as the serve eval ─────────────
+OWNER_CHATS = r"C:\Users\grill\Desktop\GrillCheese\datasets\conversations_dataset_anonymized.jsonl"
+_PLACEHOLDER = re.compile(r"\[(PERSON|VOLUME_PATH|FILE_PATH|EMAIL|PHONE|URL|ADDRESS|NAME|LOCATION)[^\]]*\]", re.I)
+_PII = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+|\+?\d[\d .-]{8,}\d|https?://|www\.", re.I)
+_EXPORT_LINE = re.compile(r"^\u200e?\[\d{4}-\d{2}-\d{2}, [^\]]+\].*$", re.M)   # "[2024-07-23, 9:44:00 PM] [PERSON_1]: ..." export residue
+_EXPLICIT_FR = re.compile(r"\b(cochonn?e?s?|salope|nichons?|seins? nus?|bite|queue|baiser|baise|nue?s?|sexe|cul|jouir|sucer)\b", re.I)
+
+
+def owner_turn(text: str) -> str | None:
+    """A WhatsApp line as a chat turn: export residue dropped, no placeholder, no contact data, 2-120 words."""
+    t = _clean(_EXPORT_LINE.sub(" ", str(text or "")))
+    if not t or _PLACEHOLDER.search(t) or _PII.search(t) or not (2 <= len(t.split()) <= 120):
+        return None
+    return t
+
+
+def owner_pairs(conversation: dict, label_passage):
+    """Both directions (the two participants are both human): consecutive messages -> (turn, reply), explicit
+    lines out (the content screen plus a French list)."""
+    msgs = [m for m in (conversation.get("messages") or []) if isinstance(m, dict)]
+    for a, b in zip(msgs, msgs[1:]):
+        if a.get("role") == b.get("role"):
+            continue
+        u, r = owner_turn(a.get("content")), owner_turn(b.get("content"))
+        if not u or not r:
+            continue
+        if _EXPLICIT_FR.search(u + " " + r) or label_passage(u + " " + r) == "nsfw":
+            continue
+        yield u, r
+
+
+def build_owner_chats(rng: random.Random, facts: dict, chat_ok, label_passage, path: str = OWNER_CHATS,
+                      n: int = 2000) -> tuple[list[dict], Counter]:
+    out, why = [], Counter()
+    if not os.path.exists(path):
+        why["missing:owner chats"] += 1
+        return out, why
+    pairs = []
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if r.get("source") != "whatsapp_chat":
+                continue
+            pairs += list(owner_pairs(r, label_passage))
+    rng.shuffle(pairs)
+    for i, (u, a) in enumerate(pairs):
+        if len(out) >= n:
+            break
+        reason = chat_ok(u, a, facts)
+        if reason:
+            why[f"owner:{reason}"] += 1
+            continue
+        lang = "fr" if guess_lang(u + " " + a) == "fr" else "en"
+        state = sample_state(rng)
+        out.append({"id": f"chat:owner_whatsapp:{i}", "task": "chat", "subtype": "owner_whatsapp", "source": "owner:whatsapp_chat",
+                    "prompt": u, "program": a, "gold": None, "system": identity_system(facts, state), "state": state, "lang": lang,
+                    "repeat": 2 if lang == "fr" else 1})
+    return out, why
+
+
+OWNER_TEAMS = r"C:\Users\grill\Desktop\team-dataset.txt"
+_TEAMS_BY = re.compile(r"^(.*) by ([A-ZÀ-Ý][\w'’\-]+(?: [A-ZÀ-Ý][\w'’\-]+)*)$")
+_TEAMS_TIME = re.compile(r"^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Yesterday|Today|\d{1,2}/\d{1,2})\b.*\d{1,2}:\d{2}\s*(am|pm)$", re.I)
+
+
+def teams_messages(lines: list[str]) -> list[tuple[str, str]]:
+    """(speaker, text) from a pasted Teams message list: a `<preview> by <Name>` line opens a message when a
+    time line follows within two lines (the export puts the name before OR after the time, depending on the
+    speaker); the body runs from after the name/time lines to the next opener."""
+    out: list[tuple[str, str]] = []
+    i = 0
+
+    def opener(k: int) -> int:
+        """0 when line k is not an opener, else the index of the first body line."""
+        if k >= len(lines) or not _TEAMS_BY.match(lines[k].strip()):
+            return 0
+        name = _TEAMS_BY.match(lines[k].strip()).group(2)
+        nxt = [(j, lines[j].strip()) for j in range(k + 1, min(k + 4, len(lines))) if lines[j].strip()]
+        heads = [(j, t) for j, t in nxt[:2]]
+        if not any(_TEAMS_TIME.match(t) for _, t in heads):
+            return 0
+        skip = [j for j, t in heads if _TEAMS_TIME.match(t) or t == name]
+        return (max(skip) + 1) if skip else k + 1
+
+    while i < len(lines):
+        start = opener(i)
+        if start:
+            name = _TEAMS_BY.match(lines[i].strip()).group(2)
+            j = start
+            body = []
+            while j < len(lines) and not opener(j):
+                body.append(lines[j].strip())
+                j += 1
+            text = " ".join(x for x in body if x)
+            if text:
+                out.append((name, text))
+            i = j
+        else:
+            i += 1
+    return out
+
+
+def build_owner_teams(rng: random.Random, facts: dict, chat_ok, label_passage, path: str = OWNER_TEAMS,
+                      n: int = 2000) -> tuple[list[dict], Counter]:
+    """Both directions, speaker names (first and last, every speaker) screened out of every turn."""
+    out, why = [], Counter()
+    if not os.path.exists(path):
+        why["missing:owner teams"] += 1
+        return out, why
+    msgs = teams_messages(open(path, encoding="utf-8", errors="replace").read().splitlines())
+    names = {w.lower() for name, _ in msgs for w in name.replace("-", " ").split() if len(w) >= 3}
+    name_re = re.compile(r"\b(" + "|".join(re.escape(x) for x in sorted(names, key=len, reverse=True)) + r")\b", re.I) if names else None
+    pairs = []
+    for (s1, t1), (s2, t2) in zip(msgs, msgs[1:]):
+        if s1 == s2:
+            continue
+        u, a = owner_turn(t1), owner_turn(t2)
+        if not u or not a or (name_re and (name_re.search(u) or name_re.search(a))):
+            why["teams:name or screened"] += 1
+            continue
+        if _EXPLICIT_FR.search(u + " " + a) or label_passage(u + " " + a) == "nsfw":
+            why["teams:explicit"] += 1
+            continue
+        pairs.append((u, a))
+    rng.shuffle(pairs)
+    for i, (u, a) in enumerate(pairs):
+        if len(out) >= n:
+            break
+        reason = chat_ok(u, a, facts)
+        if reason:
+            why[f"teams:{reason}"] += 1
+            continue
+        lang = "fr" if guess_lang(u + " " + a) == "fr" else "en"
+        state = sample_state(rng)
+        out.append({"id": f"chat:owner_teams:{i}", "task": "chat", "subtype": "owner_teams", "source": "owner:teams_export",
+                    "prompt": u, "program": a, "gold": None, "system": identity_system(facts, state), "state": state, "lang": lang,
+                    "repeat": 2 if lang == "fr" else 1})
+    return out, why
+
+
+def write_real_user_turns(out_path: str, path: str = OWNER_CHATS, min_words: int = 3, max_words: int = 60) -> int:
+    """The real human turns of the owner's AI-assistant exports (ChatGPT / Claude), privacy-screened, as the
+    realistic serve eval's prompts (TODO 2026-09-03). Never a training target. -> count written."""
+    if not os.path.exists(path):
+        return 0
+    seen, n = set(), 0
+    with open(path, encoding="utf-8") as f, open(out_path, "w", encoding="utf-8") as g:
+        for line in f:
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if r.get("source") == "whatsapp_chat":
+                continue
+            for m in r.get("messages") or []:
+                if not isinstance(m, dict) or m.get("role") != "user":
+                    continue
+                t = owner_turn(m.get("content"))
+                if not t or not (min_words <= len(t.split()) <= max_words) or t in seen:
+                    continue
+                seen.add(t)
+                g.write(json.dumps({"text": t, "lang": ("fr" if guess_lang(t) == "fr" else "en"), "source": r.get("source")}, ensure_ascii=False) + "\n")
+                n += 1
+    return n
+
+
+CHECKS = {"verbalize": None, "repair": repair_ok, "quebec": quebec_ok, "quebec_mc": label_first_ok, "rewrite": rewrite_ok, "appraisal": appraisal_ok,
           "dialog_emotion": dialog_emotion_ok, "dialog_act": label_first_ok, "empathy": label_first_ok}
 
 

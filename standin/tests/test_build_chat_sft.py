@@ -3,6 +3,7 @@ what is allowed to become Cubby's answer, and what the content screens drop.
 No corpus access, no model, no VM. Run: python -m pytest standin/tests -q"""
 from __future__ import annotations
 
+import json
 import pathlib
 import random
 import sys
@@ -330,7 +331,7 @@ def test_claire_conversations_parse_into_gated_fr_chat_pairs(tmp_path):
            "[speaker002:] Le marché a fermé, mais il y a plus de commerces maintenant [NOISE] et un tramway.\n"
            "\n"
            "[Marie:] Tu viens ce soir ?\n"
-           "[Marie:] Réponds-moi.\n"
+           "[Marie:] Réponds-moi vite, Paul, la table est réservée.\n"
            "[Paul:] Je passe vers vingt heures, je finis tard au bureau.\n")
     f = tmp_path / "train.txt"
     f.write_text(txt, encoding="utf-8")
@@ -338,10 +339,91 @@ def test_claire_conversations_parse_into_gated_fr_chat_pairs(tmp_path):
     assert len(convs) == 2 and convs[0][4] == ("speaker002", "Le marché a fermé, mais il y a plus de commerces maintenant et un tramway.")
     pairs = list(g.claire_pairs(convs[0])) + list(g.claire_pairs(convs[1]))
     assert ("Bonjour, vous habitez le quartier depuis longtemps ?", "Oui, depuis une quinzaine d'années, on est arrivés quand les enfants étaient petits.") in pairs
-    assert not any(a == "euh ben ouais" for _, a in pairs), "a backchannel of fillers is not a reply"
-    assert ("Réponds-moi.", "Je passe vers vingt heures, je finis tard au bureau.") in pairs, "same-speaker runs pair with the next speaker's turn"
+    assert not any("euh" in a for _, a in pairs), "a backchannel of fillers is not a reply, and no filler survives in Cubby's line"
+    assert ("Réponds-moi vite, Paul, la table est réservée.", "Je passe vers vingt heures, je finis tard au bureau.") in pairs, \
+        "same-speaker runs pair with the next speaker's turn"
+    assert g.claire_reply("euh ben ouais") is None and g.claire_reply("c'est c'est c'est le magnéto- qui") is None
+    assert g.claire_reply("je faisais de l'accordéon classique quand j'étais petite") == "Je faisais de l'accordéon classique quand j'étais petite."
     recs, why = g.build_claire(random.Random(0), F, b.chat_ok)
     if recs:
         assert all(r["task"] == "chat" and r["subtype"] == "claire_fr" and r["lang"] == "fr" for r in recs)
     else:
         assert any(k.startswith("missing:claire") for k in why), why
+
+
+
+def test_diabla_pairs_are_human_on_both_sides_and_quebec_records_take_both_forms(tmp_path):
+    import gap_families as g
+    from identity import load_facts
+    F = load_facts()
+    dialogues = {"d1": {"utterances": {
+        "0": {"language": "english", "original_text": "This is not a good start to the day", "reference_translation": "Ce n'est pas un bon début de journée."},
+        "1": {"language": "french", "original_text": "Non, l'ascenseur est bloqué et je devais présenter le projet à neuf heures.", "reference_translation": "No, the lift is stuck and I had to present the project at nine."},
+        "2": {"language": "english", "original_text": "Then we have time to go over it together.", "reference_translation": "Alors on a le temps de le revoir ensemble."},
+        "3": {"language": "english", "original_text": "Do you have the slides?", "reference_translation": "Tu as les diapositives ?"}}}}
+    pairs = list(g.diabla_pairs(dialogues))
+    assert pairs == [("fr", "Ce n'est pas un bon début de journée.", "Non, l'ascenseur est bloqué et je devais présenter le projet à neuf heures."),
+                     ("en", "No, the lift is stuck and I had to present the project at nine.", "Then we have time to go over it together.")], \
+        "same-language consecutive turns (2 -> 3) are not a pair; the user side is the human reference translation"
+    # quebec: one benchmark row -> an explain record (definition, token-F1 check) and a multiple-choice record (number first)
+    row = {"expression": "Être à cheval entre deux réalités.", "choices": ["Chercher à concilier deux vérités.", "Hésiter entre deux réalités, tergiverser.", "Douter de soi-même."], "correct_index": 1}
+    tmp = tmp_path / "q.jsonl"
+    tmp.write_text(json.dumps(row, ensure_ascii=False) + "\n", encoding="utf-8")
+    saved = g.QUEBEC_FILES
+    g.QUEBEC_FILES = (("expression", str(tmp)),)
+    try:
+        recs, why = g.build_quebec(random.Random(0), F)
+    finally:
+        g.QUEBEC_FILES = saved
+    assert {r["task"] for r in recs} == {"quebec", "quebec_mc"} and all(r["lang"] == "fr" for r in recs)
+    ex = next(r for r in recs if r["task"] == "quebec"); mc = next(r for r in recs if r["task"] == "quebec_mc")
+    assert "« Être à cheval entre deux réalités. »" in ex["prompt"] and ex["gold"] == "Hésiter entre deux réalités, tergiverser."
+    assert g.quebec_ok(ex, "Ça veut dire hésiter entre deux réalités, tergiverser sans se décider.") and not g.quebec_ok(ex, "Douter de soi.")
+    assert mc["program"].startswith(mc["gold"] + " — ") and f"{mc['gold']}. Hésiter" in mc["prompt"] and g.label_first_ok(mc, mc["gold"] + ".")
+    assert g.gap_ok(mc, mc["gold"], F) and g.gap_ok(ex, ex["gold"], F)
+
+
+
+def test_redial_pairs_and_owner_whatsapp_screens():
+    import gap_families as g
+    row = {"initiatorWorkerId": "0", "respondentWorkerId": "1",
+           "movieMentions": [{"movieId": "84779", "movieName": "The Triplets of Belleville (2003)"}],
+           "messages": [{"senderWorkerId": 0, "text": "Hi there, I'm looking for movie recommendations"}, {"senderWorkerId": 0, "text": "I like animations like @84779"},
+                        {"senderWorkerId": 1, "text": "Then try Mary and Max, a stop-motion story about two pen pals."}, {"senderWorkerId": 0, "text": "Sounds good, thanks!"}]}
+    pairs = list(g.redial_pairs(row))
+    assert pairs == [("Hi there, I'm looking for movie recommendations I like animations like The Triplets of Belleville (2003)",
+                      "Then try Mary and Max, a stop-motion story about two pen pals.")], "same-sender messages merge; @ids become titles"
+    # the owner's WhatsApp export: residue lines and placeholders out, explicit lines out, both directions human
+    conv = {"source": "whatsapp_chat", "messages": [
+        {"role": "user", "content": "3$ par semaine de temps de cell a place de 48$ par mois lol\n\u200e[2024-07-23, 9:44:00 PM] [PERSON_1]: \u200ei"},
+        {"role": "assistant", "content": "le wordpress mis a jour"},
+        {"role": "user", "content": "Les 2 wp ?"},
+        {"role": "assistant", "content": "Cest [PERSON_4] qui a fait la mise a jour"},
+        {"role": "user", "content": "ok merci, appelle-moi au 514 555 0199"},
+        {"role": "assistant", "content": "tu porte quoi tit cochonne ?"}]}
+    pairs = list(g.owner_pairs(conv, b.label_passage))
+    assert ("3$ par semaine de temps de cell a place de 48$ par mois lol", "le wordpress mis a jour") in pairs, "the export residue line is dropped from the turn"
+    assert ("le wordpress mis a jour", "Les 2 wp ?") in pairs, "both directions are human"
+    assert not any("[PERSON" in u or "[PERSON" in a for u, a in pairs) and not any("514" in u or "514" in a for u, a in pairs)
+    assert not any("cochonne" in a for _, a in pairs)
+    assert g.owner_turn("see [FILE_PATH_4] for the code") is None and g.owner_turn("mail me at a@b.co") is None
+
+
+
+def test_teams_export_parses_into_pairs_with_names_screened(tmp_path):
+    import gap_families as g
+    txt = "\n".join(["", "Message List", "ah 40 au lieu de 45 by Nicolas Cloutier", "Friday 7:10 pm", "Nicolas Cloutier", "",
+                     "ah 40 au lieu de 45 minutes pour la démo", "",
+                     "ouin ben la on va dire... by Jean-François Sabin", "Friday 7:11 pm", "Jean-François Sabin", "",
+                     "ouin ben la on va dire notre version prend 5 min de plus a setuper", "",
+                     "ok merci Sabin je te... by Nicolas Cloutier", "Nicolas Cloutier", "Friday 7:12 pm", "", "ok merci Sabin je te reviens demain", ""])
+    msgs = g.teams_messages(txt.splitlines())
+    assert [n for n, _ in msgs] == ["Nicolas Cloutier", "Jean-François Sabin", "Nicolas Cloutier"], "both block orders (time/name and name/time) parse"
+    assert msgs[2][1] == "ok merci Sabin je te reviens demain"
+    assert msgs[0][1] == "ah 40 au lieu de 45 minutes pour la démo"
+    f = tmp_path / "team.txt"
+    f.write_text(txt, encoding="utf-8")
+    recs, why = g.build_owner_teams(random.Random(0), F, b.chat_ok, b.label_passage, path=str(f))
+    assert len(recs) == 1 and recs[0]["subtype"] == "owner_teams" and recs[0]["lang"] == "fr"
+    assert recs[0]["prompt"] == "ah 40 au lieu de 45 minutes pour la démo" and recs[0]["program"].startswith("ouin ben")
+    assert why["teams:name or screened"] >= 1, "a turn naming a colleague is dropped"
