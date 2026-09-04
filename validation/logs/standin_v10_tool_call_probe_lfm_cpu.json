@@ -1,0 +1,79 @@
+{
+ "summary": {
+  "gguf": "standin/models/emitter_v10t.Q4_K_M.gguf",
+  "family": "lfm",
+  "n": 6,
+  "right": 5,
+  "calls_when_needed": 3,
+  "silent_when_not": 2,
+  "formats": [
+   "lfm-pythonic"
+  ]
+ },
+ "rows": [
+  {
+   "text": "what's in the news today about quebec?",
+   "needs_tool": true,
+   "call": {
+    "format": "lfm-pythonic",
+    "name": "news_search",
+    "arguments": "[news_search(query=\"quebec\", language=\"en\")]"
+   },
+   "raw": "<|tool_call_start|>[news_search(query=\"quebec\", language=\"en\")]<|tool_call_end|>\n",
+   "ok": true,
+   "seconds": 2.36
+  },
+  {
+   "text": "quoi de neuf dans les nouvelles ce matin ?",
+   "needs_tool": true,
+   "call": {
+    "format": "lfm-pythonic",
+    "name": "news_search",
+    "arguments": "[news_search(query=\"les nouvelles\", language=\"fr\")]"
+   },
+   "raw": "<|tool_call_start|>[news_search(query=\"les nouvelles\", language=\"fr\")]<|tool_call_end|>\n",
+   "ok": true,
+   "seconds": 1.57
+  },
+  {
+   "text": "any headlines about the montreal canadiens tonight",
+   "needs_tool": true,
+   "call": {
+    "format": "lfm-pythonic",
+    "name": "news_search",
+    "arguments": "[news_search(query=\"the montreal canadiens\", language=\"en\")]"
+   },
+   "raw": "<|tool_call_start|>[news_search(query=\"the montreal canadiens\", language=\"en\")]<|tool_call_end|>\n",
+   "ok": true,
+   "seconds": 1.75
+  },
+  {
+   "text": "hi there cubby",
+   "needs_tool": false,
+   "call": null,
+   "raw": "Hello! Cubby here, built by Grillcheese Research Lab. Lovely to meet you — what are we working on?\n",
+   "ok": true,
+   "seconds": 2.44
+  },
+  {
+   "text": "what is the capital of australia",
+   "needs_tool": false,
+   "call": null,
+   "raw": "The capital of Australia is Canberra. It is located in the Australian Capital Territory (ACT), a federal territory that was created specifically for the capital city. Canberra was chosen as the capital in 1908 as a compromise between the two largest cities at the time, Sydney and Melbourne, which were in a rivalry that had been going on for decades. Canberra is a planned city, designed by an architect named Walter Burley Griffin, and features a grid system with broad avenues and parks. It is a modern city with a population of around 400,000 people, and is known for its cultural attractions, such as the National Museum of Australia and the Australian War Memorial.\n",
+   "ok": true,
+   "seconds": 10.44
+  },
+  {
+   "text": "raconte-moi ta journée",
+   "needs_tool": false,
+   "call": {
+    "format": "lfm-pythonic",
+    "name": "request_tool",
+    "arguments": "[request_tool(name=\"remember_fact\", description=\"store a fact the user asked you to remember\", example_request=\"raconte-"
+   },
+   "raw": "<|tool_call_start|>[request_tool(name=\"remember_fact\", description=\"store a fact the user asked you to remember\", example_request=\"raconte-moi ta journée\")]<|tool_call_end|>\n",
+   "ok": false,
+   "seconds": 2.92
+  }
+ ]
+}
