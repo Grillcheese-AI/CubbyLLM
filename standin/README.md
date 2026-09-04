@@ -434,9 +434,10 @@ next: the registry object (name → program + policy), the forge entry point for
 rendered into `identity_system` from the live registry.
 
 The check (`gap_families.toolcall_ok`) parses the native call: the right tool with its required arguments when one is
-due, no call at all when none is. **Run:** `notebooks/standin_talk_bakeoff.ipynb` with `STANDIN_VERSION=v10t` and
-`STANDIN_ARMS=lfm25_2p6b,qwen3_4b` (each arm trains only the rows in its own call format), then the tool-call probe on
-both Q4s. **What decides:** the probe's `calls_when_needed` and `silent_when_not` — 3/3 and 3/3 is the bar; a base that
+due, no call at all when none is. **Run:** **`notebooks/standin_v10_toolcall.ipynb`** — the v10 session: the two arms (LFM control, Qwen3-4B) on v10t, each
+training only the rows in its own call format, with the **tool-call probe run in-session on each trained arm** (six turns,
+three needing `news_search`) so the decisive read comes out of the same run; then `standin/scripts/tool_call_probe.py` on the
+exported Q4 confirms it through llama.cpp. **What decides:** the probe's `calls_when_needed` and `silent_when_not` — 3/3 and 3/3 is the bar; a base that
 reaches it keeps its own format, and the talk-base decision is re-opened only if LFM cannot get there with its rows in.
 
 **v9t bake-off — first READ (2026-09-04, `notebooks/standin_talk_bakeoff.ipynb`, three arms in one session, 40/task on the
