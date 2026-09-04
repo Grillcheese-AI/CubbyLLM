@@ -70,3 +70,24 @@ def test_ledger_records_signs_verifies_and_retires_tampered_entries(tmp_path, mo
     again = ProgramLibrary(tmp_path / "programs.json", ledger=led2)
     assert again.entries["FLEE#1"]["retired"] and again.entries["FLEE#1"]["retired_reason"] == "certificate: program text changed"
     assert "FLEE#1" in again.entries and again.entries["OLD"].get("uncertified") and not again.entries["OLD"].get("retired")
+
+
+
+def test_ledger_records_from_request_threads(tmp_path, monkeypatch):
+    """serve_api is threaded: certifications arrive from request threads while the ledger was opened on the main
+    thread (live_error 2026-09-04). One shared connection under a lock takes them all."""
+    import threading
+    monkeypatch.setenv(vault.KEY_ENV, "test-host-key")
+    led = Ledger(tmp_path / "ledger.sqlite", vm_build="vm-abc")
+    errors, hashes = [], []
+
+    def worker(k):
+        try:
+            hashes.append(led.record(f"program P{k} implements ISolve {{ }}", f"J#{k}", "join", "solve", None, "a", "a", True))
+        except Exception as e:                           # noqa: BLE001 - the failure under test
+            errors.append(repr(e))
+    ts = [threading.Thread(target=worker, args=(k,)) for k in range(12)]
+    for th in ts: th.start()
+    for th in ts: th.join()
+    assert errors == [] and len(set(hashes)) == 12 and led.count(ok=True) == 12
+    assert all(led.verify(h)[0] for h in hashes)

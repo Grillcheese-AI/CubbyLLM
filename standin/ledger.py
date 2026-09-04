@@ -23,6 +23,7 @@ import os
 import pathlib
 import secrets
 import sqlite3
+import threading
 import time
 
 __wiring__ = "STANDALONE"
@@ -64,7 +65,11 @@ class Ledger:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.key = key or self._load_key()
         self.vm_build = vm_build or vm_build_id()
-        self.db = sqlite3.connect(str(self.path))
+        # serve_api is a ThreadingHTTPServer: the game's steps (and their certifications) run on request threads, while
+        # the ledger is opened at startup on the main thread — one connection, same-thread check off, every access
+        # under one lock (live_error "SQLite objects created in a thread can only be used in that same thread", 2026-09-04)
+        self.db = sqlite3.connect(str(self.path), check_same_thread=False)
+        self._lock = threading.RLock()
         self.db.execute("""CREATE TABLE IF NOT EXISTS certifications (
             hash TEXT PRIMARY KEY, program_sha256 TEXT NOT NULL, name TEXT, kind TEXT, fn TEXT,
             input TEXT, expected TEXT, got TEXT, ok INTEGER NOT NULL, vm_build TEXT NOT NULL,
@@ -92,16 +97,18 @@ class Ledger:
                "ok": bool(ok), "vm_build": self.vm_build}
         h = decision_hash(rec)
         import vault                                     # the input may be a user's turn (a factory request): never in the clear
-        self.db.execute("INSERT OR IGNORE INTO certifications VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                        (h, rec["program_sha256"], name, kind, fn, None if input is None else vault.encrypt_str(str(input)),
-                         rec["expected"], rec["got"], int(rec["ok"]), rec["vm_build"],
-                         verdict, program, time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), self.sign(h)))
-        self.db.commit()
+        with self._lock:
+            self.db.execute("INSERT OR IGNORE INTO certifications VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            (h, rec["program_sha256"], name, kind, fn, None if input is None else vault.encrypt_str(str(input)),
+                             rec["expected"], rec["got"], int(rec["ok"]), rec["vm_build"],
+                             verdict, program, time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), self.sign(h)))
+            self.db.commit()
         return h
 
     def get(self, h: str) -> dict | None:
-        row = self.db.execute("SELECT hash, program_sha256, name, kind, fn, input, expected, got, ok, vm_build, verdict, program, created_utc, signature "
-                              "FROM certifications WHERE hash = ?", (h,)).fetchone()
+        with self._lock:
+            row = self.db.execute("SELECT hash, program_sha256, name, kind, fn, input, expected, got, ok, vm_build, verdict, program, created_utc, signature "
+                                  "FROM certifications WHERE hash = ?", (h,)).fetchone()
         if row is None:
             return None
         keys = ("hash", "program_sha256", "name", "kind", "fn", "input", "expected", "got", "ok", "vm_build", "verdict", "program", "created_utc", "signature")
@@ -133,13 +140,16 @@ class Ledger:
         return True, "certified"
 
     def for_program(self, program: str) -> list[dict]:
-        rows = self.db.execute("SELECT hash FROM certifications WHERE program_sha256 = ? ORDER BY created_utc", (program_sha256(program),)).fetchall()
+        with self._lock:
+            rows = self.db.execute("SELECT hash FROM certifications WHERE program_sha256 = ? ORDER BY created_utc", (program_sha256(program),)).fetchall()
         return [self.get(r[0]) for r in rows]
 
     def count(self, ok: bool | None = None) -> int:
-        if ok is None:
-            return self.db.execute("SELECT COUNT(*) FROM certifications").fetchone()[0]
-        return self.db.execute("SELECT COUNT(*) FROM certifications WHERE ok = ?", (int(ok),)).fetchone()[0]
+        with self._lock:
+            if ok is None:
+                return self.db.execute("SELECT COUNT(*) FROM certifications").fetchone()[0]
+            return self.db.execute("SELECT COUNT(*) FROM certifications WHERE ok = ?", (int(ok),)).fetchone()[0]
 
     def close(self) -> None:
-        self.db.close()
+        with self._lock:
+            self.db.close()
