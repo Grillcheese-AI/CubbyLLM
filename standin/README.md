@@ -347,7 +347,7 @@ any `Emitter`-shaped object, `--talk-gguf` takes any GGUF, and the notebook take
 chat templates in one process, no shared KV, and the later "one base + LoRA deltas" form of the bank needs a
 common base — so a different chat base is the K=2 *mixture of trunks*, the coarser form, chosen only if it
 measures better. It is a **bake-off, not a swap**; the LFM v8t run is the control and runs first (it is also
-the v8 measurement).
+the v8 measurement). **`notebooks/standin_talk_bakeoff.ipynb` (2026-09-04) runs every arm one after the next in one session** — the same data, recipe, eval sample and checks as the talk notebook, stage-level resume from Drive (adapter → merged+GGUF → val_generations), one failed arm logged and skipped, a summary cell with the table and the deltas; `STANDIN_ARMS=tag,tag` selects arms.
 
 | candidate (Hub check 2026-09-03, EN+FR, GGUF on the Hub, Unsloth-trainable) | why it is on the list |
 |---|---|
