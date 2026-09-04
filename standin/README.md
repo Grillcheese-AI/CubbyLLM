@@ -1,6 +1,6 @@
 # standin/ — the stand-in trunk
 
-**Status (2026-09-04):** v9t bake-off read for three arms (see § v9t bake-off: the control recovers history to 0.65, Qwen3-4B is the one candidate with gains, the 8B MoE is out, Gemma pending a rerun); v9t data built (89,890 talk records from the SFT gap map + the owner's sources; see § v9), awaiting its Colab run; v7 is the serving model; v8 (two adapters on one base) is trained and exported (both Q4s local: `standin/models/emitter_v8{e,t}.Q4_K_M.gguf`); the v8t talk read holds v7, v8e's forge probe is 1.00/1.00/1.00 and the two-adapter self-test 96/4/0 (see § v8); arithmetic at n=40 — the kill line — is pending. Nothing here is CubbyLLM.
+**Status (2026-09-04):** **v9 serves: `--gguf standin/models/emitter_v8e.Q4_K_M.gguf --talk-gguf standin/models/emitter_v9t.Q4_K_M.gguf`** (the talk-base decision below: LFM stays); v9t bake-off read for three arms (see § v9t bake-off: the control recovers history to 0.65, Qwen3-4B is the one candidate with gains, the 8B MoE is out, Gemma pending a rerun); v9t data built (89,890 talk records from the SFT gap map + the owner's sources; see § v9), awaiting its Colab run; v7 is the serving model; v8 (two adapters on one base) is trained and exported (both Q4s local: `standin/models/emitter_v8{e,t}.Q4_K_M.gguf`); the v8t talk read holds v7, v8e's forge probe is 1.00/1.00/1.00 and the two-adapter self-test 96/4/0 (see § v8); arithmetic at n=40 — the kill line — is pending. Nothing here is CubbyLLM.
 
 A small open model (currently `LiquidAI/LFM2.5-2.6B`, chosen by a 2026-08-30 Hub
 check — see `docs/research/2026-08-28-oracle-competition-scored.md` §3.2 for why a
@@ -12,7 +12,7 @@ trains. It is replaced the day the 2B checkpoint exists.
 
 ## Where things stand (2026-09-03) — read this first
 
-- **Serving:** `serve_api.py --gguf standin/models/emitter_v7.Q4_K_M.gguf --pacman` (add `--talk-gguf` once v8t exists). `/` chat + console, `/pac` the live game, `/health` the adapters.
+- **Serving:** `serve_api.py --gguf standin/models/emitter_v8e.Q4_K_M.gguf --talk-gguf standin/models/emitter_v9t.Q4_K_M.gguf --pacman` (v9, 2026-09-04: the program adapter + the talk adapter). `/` chat + console, `/pac` the live game, `/health` the adapters.
 - **Measured (v7, VM-verified):** chat 1.0 · content 1.0 · identity 0.867 · emotion 0.675 · affect 0.975 · history 0.625 · arithmetic 0.675 · chain 1.0 · game families 1.0 · forge probe 1.00/1.00/1.00 · self-test 96% correct / 4% don't-know / 0% wrong.
 - **Open:** the v8e/v8t runs and their A/B (does adapter-per-context remove the interference?); arithmetic's three-round slide; "Good evening!"; the adapter lifecycle's detector, tag-general partition builder and promote rule; the reasoning roadmap from the GoT challenge (`docs/research/2026-09-03-got-challenge-scored.md` §7).
 
@@ -390,7 +390,14 @@ go with v9:** CubbyChat carries the previous exchange inline in the multi-turn r
 every new family's check lives in `gap_families.py` and is dispatched by `eval_emitter_vm.py` and the notebook's eval
 cell. **Kill line for v9t:** the v8t control's behaviour families hold (chat/content/affect/safety 1.0, identity ≥ 0.93)
 and the new families read ≥ 0.8 on repair/rewrite/dialog_act/quebec_mc at 40/task; history recall (the v8t dip) is the
-watch item. **Tool calling (owner's Toucan-1.5M link, 2026-09-04): not data — design.** Toucan is 1.5M model-generated
+watch item. **Tool calling — both bases already speak one (owner, 2026-09-04: "qwen3 gives tool call for free").** Qwen3 carries
+Hermes-style `<tool_call>{json}</tool_call>` from its base (a `<tool_call>` token leaked in the talk probe — the format
+survived our LoRA), LFM2.5 carries Liquid's Pythonic `<|tool_call_start|>[fn(args)]<|tool_call_end|>` with `List of
+tools:` in the system prompt (BFCL-benchmarked by Liquid). `standin/scripts/tool_call_probe.py` gives each talk GGUF one
+tool (`news_search`) in its own format and six turns, three needing it, and reports whether a well-formed call comes
+exactly when it should. What survives decides how the plugin cortices get called: **the host parses the native call and
+turns it into an `act` through the VM under the deny-by-default policy** — the tool registry and the policy are ours, the
+call format is the base's. **Tool calling (owner's Toucan-1.5M link, 2026-09-04): not data — design.** Toucan is 1.5M model-generated
 JSON tool-call trajectories; our tool calls are programs (the trunk emits CubeLang, the VM executes and verifies, a
 tool is an `act` over a registered capability under the deny-by-default policy). "Check the news" is a plugin cortex
 with an explicit network capability plus a program family harvested from our own registry and VM-verified, in the
@@ -428,7 +435,22 @@ did not run**: Unsloth's multimodal loader returns a Processor whose call wants 
 tokenizer for text work, the Processor for saves) — rerun with `STANDIN_ARMS=gemma4_e4b` after reloading the notebook from
 GitHub (the finished arms skip from Drive). (5) The per-family val loss read Qwen's label families at ~0.37 nats because the
 prompt mask was tokenized separately and its template shifted the boundary — the mask is now the common token prefix.
-**Gemma skipped (owner, 2026-09-04): the bake-off is LFM2.5-2.6B vs Qwen3-4B. **On the card (owner, solo, 2026-09-04): both talk arms load beside the v8e emitter and the self-test holds 96/4/0 with either** (`validation/logs/standin_v9_selftest_{lfm,qwen}.json` — the self-test exercises the program path only, `talk: 0` calls). Decision pending the talk-side probe (`standin/scripts/talk_probe.py`: the talk adapter's tokens/s and the guards on 40 real user turns) — the one number the rule still needs; both Q4s are local: `standin/models/emitter_v9t.Q4_K_M.gguf` (the talk control) and `standin/models/talk_v9t_qwen3_4b.Q4_K_M.gguf`.** **The local replays are the numbers of record and reproduce the table exactly** (`validation/logs/standin_v9t_{lfm25_2p6b,qwen3_4b}_replay.{log,json}`, the rebuilt v9t file carrying the candidate sets — prompt/target pairs identical to the Drive copy that trained, checked): control appraisal 0.475 · quebec 0.400 · empathy 0.700; Qwen 0.500 · 0.400 · 0.775.
+**Gemma skipped (owner, 2026-09-04): the bake-off is LFM2.5-2.6B vs Qwen3-4B. **On the card (owner, solo, 2026-09-04): both talk arms load beside the v8e emitter and the self-test holds 96/4/0 with either** (`validation/logs/standin_v9_selftest_{lfm,qwen}.json` — the self-test exercises the program path only, `talk: 0` calls). **Talk probe (owner, solo, 2026-09-04; `standin/scripts/talk_probe.py` on 40 real user turns, `validation/logs/standin_v9_talk_probe_{lfm,qwen}.json`):**
+
+| | LFM2.5-2.6B v9t | Qwen3-4B v9t |
+|---|---:|---:|
+| talk decode | **127.3 tok/s**, 0.93 s per chat turn, 113 tokens/reply | 85.7 tok/s (−33%), 1.23 s, 101 tokens |
+| guard rejections on real turns (34 talk calls) | 1 — a refusal phrasing ("not something I can help with") | 2 — the forbidden word "honest" (voice rule) and a leaked `<tool_call>` token + refusal (the base's habits) |
+| route mix (identical) | 34 chat · 5 reasoning · 1 help | same |
+
+**DECISION: LFM2.5-2.6B v9t is the serving talk adapter.** By the rule as written (chat and history tied, not lost), and by
+what the probe added: a third more decode speed, and Qwen carrying two of its base's habits into Cubby's mouth (a
+tool-call token, the word the voice rules forbid). Qwen's real gains — identity 32/32, emotion +10, repair +7.5, FR +3 —
+are the shape of data fixes on LFM (the "Good evening!" greeting pair, an emotion replay, more repair rows), and they
+do not recur as a slower decode and a 58% longer train every round. Qwen stays on Drive as the measured alternative.
+**The probe's other finding:** 5 of 40 real turns were procedural asks ("how can we implement svd?", "how do we add this to
+our training data?") that the router sent to the VM path, which had nothing to ground them on and spoke the don't-know
+line — fixed the same day: a how-to opening routes to talk (`_HOWTO`, EN+FR). both Q4s are local: `standin/models/emitter_v9t.Q4_K_M.gguf` (the talk control) and `standin/models/talk_v9t_qwen3_4b.Q4_K_M.gguf`.** **The local replays are the numbers of record and reproduce the table exactly** (`validation/logs/standin_v9t_{lfm25_2p6b,qwen3_4b}_replay.{log,json}`, the rebuilt v9t file carrying the candidate sets — prompt/target pairs identical to the Drive copy that trained, checked): control appraisal 0.475 · quebec 0.400 · empathy 0.700; Qwen 0.500 · 0.400 · 0.775.
 
 **v8e program adapter — forge + self-test READ (2026-09-03, owner's solo GPU runs; records
 `validation/logs/standin_v8e_forge_probe.json`, `validation/logs/standin_v8_selftest.json`):**

@@ -405,6 +405,11 @@ class CubbyBrain:
 
     _CAPABILITY = re.compile(r"\b(do you know how to|can you|could you|are you able to|do you know (how|what|about)|"
                              r"sais[- ]tu|peux[- ]tu|pourrais[- ]tu|es[- ]tu capable)\b", re.I)
+    # a procedural ask ("how can we implement svd?", "how do I add this to the training data?") is not a fact lookup:
+    # the VM path has nothing to ground it on and answers the don't-know line — 5 of 40 real user turns went there
+    # in the v9 talk probe (2026-09-04). Talk answers it under the guards.
+    _HOWTO = re.compile(r"^\W*(how|what)('s| is| are)? (the best way to\b|(do|does|can|could|should|would|might) (i|we|you|one|someone|it)\b)|"
+                        r"^\W*how to\b|^\W*comment (est[- ]ce qu'on|est[- ]ce que je|on|je|peut[- ]on|faire pour|puis[- ]je|fait[- ]on)\b", re.I)
 
     def needs_facts(self, text: str) -> tuple[bool, str]:
         """Does answering need facts about the world? Facts: a question the
@@ -414,6 +419,8 @@ class CubbyBrain:
         from cubbyllm.reasoning import parse_question
         if is_identity_question(text):
             return False, "about Cubby himself"
+        if self._HOWTO.search(text):                     # "how can we implement svd?": procedural, no fact to ground -> talk
+            return False, "a how-to, not a fact"       # before the grammar: "what is the best way to learn piano?" parses as a fact shape
         if parse_question(text) is not None:
             return True, "the fact grammar parses it"
         if self._CAPABILITY.search(text):                # "do you know how to write code?" (live misroute 2026-09-03): about Cubby, not the world

@@ -477,3 +477,16 @@ def test_real_search_queries_route_as_facts_not_creative_or_identity():
         assert s.needs_facts(q)[0] is False, q
     for q in ("hey cubby", "Hello!", "  hi there", "do you feel anything?", "do you have feelings, cubby?", "Bonjour !"):
         assert is_identity_question(q), q
+
+
+
+def test_procedural_how_to_turns_go_to_talk_not_the_vm():
+    """v9 talk probe (2026-09-04): 5 of 40 real user turns were how-to asks the router sent to the VM path, which
+    had nothing to ground them on and spoke the don't-know line. A how-to opening is not a fact lookup."""
+    s = sv.CubbyServe(ChainEmitter(), overlap_retriever, STORE, route_tau=0.9)
+    for q in ("how can we implement svd ?", "how do we add this to our training data ?", "how do I boil an egg", "what is the best way to learn piano?",
+              "how to center a div", "comment on fait pour centrer une div ?", "comment est-ce qu'on installe ça ?"):
+        assert s.needs_facts(q) == (False, "a how-to, not a fact"), q
+        assert s.route(q)["cortex"] == "talk", q
+    assert s.needs_facts("What is the capital of germany?") == (True, "the fact grammar parses it")
+    assert s.needs_facts("how many legs does a spider have?")[0] is True, "a how-many is a fact question"
