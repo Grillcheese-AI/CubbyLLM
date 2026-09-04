@@ -104,7 +104,13 @@ def main():
         gens = json.load(open(args.val_generations, encoding="utf-8"))
         items = gens["outputs"]
         emitter = ReplayEmitter(items, name=f"replay:{gens.get('model', '?')}")
-        records = [{"id": g["id"], "task": g["task"], "subtype": g.get("subtype", ""), "prompt": g["prompt"],
+        # the data file's own record by id carries what the generations file does not (v9: `choices` for the
+        # closest-candidate checks); the generation file's prompt/reference win when both exist
+        by_id = {}
+        if args.data and os.path.exists(args.data):
+            by_id = {r["id"]: r for r in map(json.loads, open(args.data, encoding="utf-8"))}
+        records = [{**by_id.get(g["id"], {}),
+                    "id": g["id"], "task": g["task"], "subtype": g.get("subtype", ""), "prompt": g["prompt"],
                     "program": g["reference"], "gold": g.get("gold"), "gold_any": g.get("gold_any"),
                     "system": g.get("system"), "lang": g.get("lang", "en")}
                    for g in items]
@@ -188,7 +194,9 @@ def main():
                     "verbalize": "the live rephrase guard accepts it (numbers, names, no echo, no invented content)",
                     "repair": "the clean question (token F1 >= 0.9)", "rewrite": "the standalone question (token F1 >= 0.6, names kept)",
                     "appraisal": "the SocialIQA answer", "dialog_emotion": "the first emotion named is the label",
-                    "dialog_act": "inform/question/directive/commissive first", "empathy": "the feeling first"}[task]
+                    "dialog_act": "inform/question/directive/commissive first", "empathy": "the feeling (or a synonym of its cluster) first",
+                    "quebec": "the closest of the 10 candidate definitions is the gold one", "quebec_mc": "the definition's number first",
+                    "appraisal": "the closest of the 3 SocialIQA answers is the gold one"}[task]
             print(f"  {task:13s} n={c['n']:4d} ok={c['identity_ok'] / c['n']:.3f} by lang {per_lang}  ({note})")
             continue
         ex = c["executes"] / c["n"]

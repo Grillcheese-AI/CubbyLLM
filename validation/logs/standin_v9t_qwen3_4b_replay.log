@@ -1,0 +1,20 @@
+[stand-in] emitter replay:Qwen/Qwen3-4B-Instruct-2507 | 631 val records | shim on
+
+[stand-in] VM-verified eval by task:
+  affect        n=  40 ok=1.000 by lang {'en': 1.0}  (valence and arousal both within 0.35 of the rating)
+  appraisal     n=  40 ok=0.500 by lang {'en': 0.5}  (the closest of the 3 SocialIQA answers is the gold one)
+  chat          n=  40 ok=1.000 by lang {'en': 1.0, 'fr': 1.0}  (voice rules hold, no base-model guard, not an identity bio)
+  content       n=  40 ok=1.000 by lang {'en': 1.0}  (the nsfw/safe label comes first)
+  dialog_act    n=  40 ok=0.850 by lang {'en': 0.85}  (inform/question/directive/commissive first)
+  dialog_emotion n=  40 ok=0.750 by lang {'en': 0.75}  (the first emotion named is the label)
+  emotion       n=  40 ok=0.750 by lang {'en': 0.7419354838709677, 'fr': 0.7777777777777778}  (the first emotion named is one the raters gave)
+  empathy       n=  40 ok=0.775 by lang {'en': 0.775}  (the feeling (or a synonym of its cluster) first)
+  history       n=  40 ok=0.650 by lang {'en': 0.65}  (voice rules hold; names the gold year / a proper noun of the record (dating: within 5 years))
+  identity      n=  32 ok=1.000 by lang {'en': 1.0, 'fr': 1.0}  (name/builder present, no AGI/other-model/feelings claims, don't-know line verbatim)
+  quebec        n=  40 ok=0.400 by lang {'fr': 0.4}  (the closest of the 10 candidate definitions is the gold one)
+  quebec_mc     n=  40 ok=1.000 by lang {'fr': 1.0}  (the definition's number first)
+  repair        n=  40 ok=0.800 by lang {'en': 0.8}  (the clean question (token F1 >= 0.9))
+  rewrite       n=  40 ok=0.775 by lang {'en': 0.775}  (the standalone question (token F1 >= 0.6, names kept))
+  safety        n=  40 ok=0.875 by lang {'en': 0.8717948717948718, 'fr': 1.0}  (the attack/benign label comes first)
+  verbalize     n=  39 ok=1.000 by lang {'en': 1.0, 'fr': 1.0}  (the live rephrase guard accepts it (numbers, names, no echo, no invented content))
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\eval_emitter_vm.json (0s)

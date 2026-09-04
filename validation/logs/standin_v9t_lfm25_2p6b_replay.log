@@ -1,0 +1,20 @@
+[stand-in] emitter replay:LiquidAI/LFM2.5-2.6B | 631 val records | shim on
+
+[stand-in] VM-verified eval by task:
+  affect        n=  40 ok=1.000 by lang {'en': 1.0}  (valence and arousal both within 0.35 of the rating)
+  appraisal     n=  40 ok=0.475 by lang {'en': 0.475}  (the closest of the 3 SocialIQA answers is the gold one)
+  chat          n=  40 ok=1.000 by lang {'en': 1.0, 'fr': 1.0}  (voice rules hold, no base-model guard, not an identity bio)
+  content       n=  40 ok=1.000 by lang {'en': 1.0}  (the nsfw/safe label comes first)
+  dialog_act    n=  40 ok=0.825 by lang {'en': 0.825}  (inform/question/directive/commissive first)
+  dialog_emotion n=  40 ok=0.725 by lang {'en': 0.725}  (the first emotion named is the label)
+  emotion       n=  40 ok=0.650 by lang {'en': 0.7096774193548387, 'fr': 0.4444444444444444}  (the first emotion named is one the raters gave)
+  empathy       n=  40 ok=0.700 by lang {'en': 0.7}  (the feeling (or a synonym of its cluster) first)
+  history       n=  40 ok=0.650 by lang {'en': 0.65}  (voice rules hold; names the gold year / a proper noun of the record (dating: within 5 years))
+  identity      n=  32 ok=0.938 by lang {'en': 0.9, 'fr': 1.0}  (name/builder present, no AGI/other-model/feelings claims, don't-know line verbatim)
+  quebec        n=  40 ok=0.400 by lang {'fr': 0.4}  (the closest of the 10 candidate definitions is the gold one)
+  quebec_mc     n=  40 ok=0.975 by lang {'fr': 0.975}  (the definition's number first)
+  repair        n=  40 ok=0.725 by lang {'en': 0.725}  (the clean question (token F1 >= 0.9))
+  rewrite       n=  40 ok=0.900 by lang {'en': 0.9}  (the standalone question (token F1 >= 0.6, names kept))
+  safety        n=  40 ok=0.825 by lang {'en': 0.8205128205128205, 'fr': 1.0}  (the attack/benign label comes first)
+  verbalize     n=  39 ok=1.000 by lang {'en': 1.0, 'fr': 1.0}  (the live rephrase guard accepts it (numbers, names, no echo, no invented content))
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\eval_emitter_vm.json (0s)
