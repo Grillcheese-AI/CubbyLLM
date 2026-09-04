@@ -866,8 +866,9 @@ def write_real_user_turns(out_path: str, path: str = OWNER_CHATS, min_words: int
     realistic serve eval's prompts (TODO 2026-09-03). Never a training target. -> count written."""
     if not os.path.exists(path):
         return 0
-    seen, n = set(), 0
-    with open(path, encoding="utf-8") as f, open(out_path, "w", encoding="utf-8") as g:
+    import vault                                         # user chats are never stored unencrypted (owner, 2026-09-04)
+    seen, lines = set(), []
+    with open(path, encoding="utf-8") as f:
         for line in f:
             try:
                 r = json.loads(line)
@@ -882,9 +883,12 @@ def write_real_user_turns(out_path: str, path: str = OWNER_CHATS, min_words: int
                 if not t or not (min_words <= len(t.split()) <= max_words) or t in seen:
                     continue
                 seen.add(t)
-                g.write(json.dumps({"text": t, "lang": ("fr" if guess_lang(t) == "fr" else "en"), "source": r.get("source")}, ensure_ascii=False) + "\n")
-                n += 1
-    return n
+                lines.append(json.dumps({"text": t, "lang": ("fr" if guess_lang(t) == "fr" else "en"), "source": r.get("source")}, ensure_ascii=False))
+    enc_path = out_path if out_path.endswith(".enc") else out_path + ".enc"
+    vault.write_lines(enc_path, lines)
+    if os.path.exists(out_path) and out_path != enc_path:  # a plaintext copy from an earlier build
+        os.remove(out_path)
+    return len(lines)
 
 
 # ── toolcall: the host's tool registry in each base's native call format, with negatives ─────────────────────

@@ -31,7 +31,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-TURNS = os.path.join(ROOT, "standin", "data", "out", "real_user_turns.jsonl")
+TURNS = os.path.join(ROOT, "standin", "data", "out", "real_user_turns.jsonl.enc")   # vault-encrypted (vault.py)
 FALLBACK = ["hi there cubby", "how is the pacman game going ?", "what is the cubbyverse?", "do you know how to write code?",
             "can you help me name my cat", "salut, tu fais quoi aujourd'hui ?", "explain what a hash map is in two sentences",
             "i'm tired and nothing works today", "what's the capital of australia", "raconte-moi ta journée",
@@ -65,7 +65,8 @@ class Timed:
 
 def load_turns(n: int, seed: int) -> list[dict]:
     if os.path.exists(TURNS):
-        rows = [json.loads(l) for l in open(TURNS, encoding="utf-8")]
+        import vault
+        rows = [json.loads(l) for l in vault.read_lines(TURNS)]
         random.Random(seed).shuffle(rows)
         return rows[:n]
     return [{"text": t, "lang": "fr" if any(w in t for w in (" tu ", "quoi", "salut", "ça", "je ")) else "en", "source": "fallback"} for t in FALLBACK[:n]]
@@ -118,9 +119,11 @@ def main() -> None:
                "rejections": dict(rejections), "rejection_rate": round(sum(rejections.values()) / max(1, len(calls)), 3),
                "wall_total_s": round(time.perf_counter() - t_all, 1)}
     print("\n[stand-in] talk probe:", json.dumps(summary, ensure_ascii=False))
+    import vault
     out = os.path.join(ROOT, "standin", "data", "out", f"talk_probe{args.tag}.json")
-    json.dump({"summary": summary, "rows": rows}, open(out, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
-    print("wrote", out)
+    json.dump({"summary": summary}, open(out, "w", encoding="utf-8"), indent=1, ensure_ascii=False)   # no user text in the clear
+    vault.write_json(out + ".enc", {"summary": summary, "rows": rows})                                  # the rows: vault-encrypted
+    print("wrote", out, "(summary) and", out + ".enc", "(rows, encrypted)")
 
 
 if __name__ == "__main__":

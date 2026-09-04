@@ -322,13 +322,24 @@ class CubbyMan:
     # ── his own programs: join known facts on the VM ────────────────────────
     def _certify_join(self, program: str, expect: str, fn: str = "solve") -> bool:
         """Run one of his own programs (function `fn`); the derivation is
-        accepted only if it executes and recovers exactly the proposed object."""
+        accepted only if it executes and recovers exactly the proposed object.
+        With a ledger mounted (`self.ledger`), the decision — certified or
+        rejected — is hashed, signed and stored; `self._last_cert` carries
+        the hash for the library entry (ledger.py, 2026-09-04)."""
         from cubbyllm.bridges import cubelang_client as cc
+        got, err = None, None
         try:
             out = cc.run_program_proto(program, fn=fn, exe=self.exe)
-            return out.get("result") is not None and str(out["result"]) == expect
-        except cc.CubelangRunError:
-            return False
+            got = None if out.get("result") is None else str(out["result"])
+            ok = got is not None and got == expect
+        except cc.CubelangRunError as e:
+            ok, err = False, str(e)[:200]
+        ledger = getattr(self, "ledger", None)
+        self._last_cert = None
+        if ledger is not None:
+            self._last_cert = ledger.record(program, fn, "join", fn, None, expect, got, ok,
+                                            "certified" if ok else f"REJECTED{(' (' + err + ')') if err else ''}")
+        return ok
 
     def derive_symmetry(self, facts: list[str]) -> int:
         """"B is the d neighbor of A" ⇒ "A is the opp(d) neighbor of B" —

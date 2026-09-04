@@ -276,14 +276,38 @@ class ProgramLibrary:
     persists procedural memory the same way) so the knowledge survives a
     restart and can be read afterwards."""
 
-    def __init__(self, path: pathlib.Path | None = None) -> None:
+    def __init__(self, path: pathlib.Path | None = None, ledger=None) -> None:
         self.path = path
         self.entries: dict[str, dict] = {}
+        self.ledger = ledger                             # ledger.Ledger: decisions hashed + signed in SQLite (2026-09-04)
         if path is not None:
             try:
                 self.entries = json.loads(path.read_text(encoding="utf-8")).get("entries", {})
             except (OSError, ValueError):
                 self.entries = {}
+        if self.ledger is not None:
+            self.audit()
+
+    def audit(self) -> dict[str, str]:
+        """Every entry that carries a certificate hash is checked against the ledger: the program text must hash to a
+        signed, certified row made by the current VM build — otherwise the entry is RETIRED (never deleted) with the
+        reason. Entries without a certificate (pre-ledger) are left as they are, flagged `uncertified`. -> {name: reason}."""
+        out = {}
+        for name, e in self.entries.items():
+            cert = e.get("cert")
+            if not cert:
+                e["uncertified"] = True
+                continue
+            ok, why = self.ledger.verify(cert, e.get("program"))
+            if not ok and not e.get("retired"):
+                e["retired"] = True
+                e["retired_reason"] = f"certificate: {why}"
+                out[name] = why
+            elif ok:
+                e.pop("uncertified", None)
+        if out:
+            self.save()
+        return out
 
     def __contains__(self, name: str) -> bool:
         return name in self.entries
@@ -295,10 +319,11 @@ class ProgramLibrary:
         return {n: e for n, e in self.entries.items() if not e.get("retired")}
 
     def add(self, name: str, pattern: str | None, program: str, kind: str, step: int,
-            reasoning: dict) -> None:
+            reasoning: dict, cert: str | None = None) -> None:
         self.entries[name] = {"pattern": pattern, "kind": kind, "program": program,
                               "born": step, "legal": 0, "used": 0, "saved": 0,
-                              "reasoning": reasoning, "uses": [], "retired": False}
+                              "reasoning": reasoning, "uses": [], "retired": False,
+                              "cert": cert}                # the ledger's decision hash (None: pre-ledger / no VM run)
         self.save()
 
     def note_legal(self, name: str) -> None:
@@ -799,7 +824,7 @@ class CubbyGhost(CubbyPac):
     `init_payload()` speak the live frontend's exact schema."""
 
     def __init__(self, env: GhostVerse | None = None, exe: str | None = None, seed: int = 0,
-                 probe: float = 0.35, memory: pathlib.Path | None = None) -> None:
+                 probe: float = 0.35, memory: pathlib.Path | None = None, ledger=None) -> None:
         self.brain = None
         self.fear = 0.3                                  # pacman_live's ghost_penalty, learned
         self._last: dict = {}
@@ -812,7 +837,8 @@ class CubbyGhost(CubbyPac):
         self._plan_next: str | None = None               # the cell his map says to go to next
         self._graph_n = -1
         self._graph: dict[str, set[str]] = {}
-        self.library = ProgramLibrary(memory)            # his generated programs (+ stats), persisted
+        self.ledger = ledger                             # ledger.Ledger: every VM decision hashed + signed (None in tests)
+        self.library = ProgramLibrary(memory, ledger=ledger)   # his generated programs (+ stats), persisted; audited on load
         self._last_proposal = -99
         super().__init__(env or GhostVerse(), exe=exe, seed=seed, probe=probe)
 
@@ -858,7 +884,7 @@ class CubbyGhost(CubbyPac):
         if not ok:
             self._t("program_rejected", name=name, why=why, program=program, reasoning=reasoning)
             return None
-        self.library.add(name, pattern, program, kind, self.env.steps, reasoning)
+        self.library.add(name, pattern, program, kind, self.env.steps, reasoning, cert=getattr(self, "_last_cert", None))
         self._learn([f"{name} is the superpower {len(self.library.entries)} of cubbyman",
                      f"{' '.join(steps)} is the recipe of {name}"])
         self._t("program", name=name, why=why, pattern=pattern, program=program, reasoning=reasoning)

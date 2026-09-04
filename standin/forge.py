@@ -84,7 +84,7 @@ class ToolForge:
     """emit -> execute -> certify -> keep. `stats[kind]` = (accepted, tried)."""
 
     def __init__(self, emitter, library, exe: str | None = None, trace=None,
-                 max_new_tokens: int = 600) -> None:
+                 max_new_tokens: int = 600, ledger=None) -> None:
         self.emitter = emitter
         self.library = library
         self.exe = exe
@@ -92,6 +92,7 @@ class ToolForge:
         self.max_new_tokens = max_new_tokens
         self.stats: dict[str, list[int]] = {}
         self.n = 0
+        self.ledger = ledger if ledger is not None else getattr(library, "ledger", None)   # every decision hashed + signed (ledger.py)
 
     def forge(self, task: Task, step: int = 0) -> dict:
         from cubbyllm.bridges import cubelang_client as cc
@@ -124,10 +125,13 @@ class ToolForge:
                    else f"REJECTED: the VM returned {got!r}, expected {task.expected!r}"
                    + (f" ({err})" if err else ""))
         name = f"{task.name}#{self.n}"
+        cert = None
+        if self.ledger is not None and program:          # the decision itself, certified or rejected, goes to the ledger
+            cert = self.ledger.record(program, name, task.kind, answer_fn(program), task.prompt, task.expected, got, ok, verdict)
         self.library.add(name, None, program or "(no program)", "tool", step,
                          {"why": task.why, "because": f"{task.kind} task raised in play",
                           "situation": task.situation, "rationale": f"prompt: {task.prompt}",
-                          "verdict": verdict, "expected": task.expected, "got": got, "ok": ok})
+                          "verdict": verdict, "expected": task.expected, "got": got, "ok": ok}, cert=cert)
         self.trace("forge", name=name, task_kind=task.kind, ok=ok, prompt=task.prompt, got=got,
                    expected=task.expected, program=program, error=err,
                    wall_s=round(time.perf_counter() - t0, 3))

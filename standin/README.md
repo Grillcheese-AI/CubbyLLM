@@ -832,6 +832,30 @@ on the voice rules; what is unmeasured is how it answers real human phrasing. Th
 next step; pairing those prompts with replies written in Cubby's voice would need human-written replies,
 not the base model's (training Cubby on its own chat is the self-play shortcut the invariants reject).
 
+## The ledger and the vault (2026-09-04)
+
+**Certifications are signed now.** Until today a certified program was a boolean verdict in a JSON file the library
+trusted on load. `standin/ledger.py` is the database the owner asked for: every VM decision — the forge's
+(`ToolForge.forge`, certified or rejected) and the game's own joins (`_certify_join`) — is stored in SQLite
+(`standin/data/out/ledger.sqlite`) as {program sha256, name, kind, function, input, expected, got, ok, VM build}, keyed by
+the **decision hash** (SHA-256 of the canonical JSON of those fields) and **signed** (HMAC-SHA256 over the hash with a key
+derived from the host key). The VM build is the SHA-256 of `cubelang.exe`. A `ProgramLibrary` entry keeps only the hash; on
+load (`audit`) the entry's program text must hash to a signed, certified row made by the current VM build — otherwise it
+loads RETIRED, never deleted, with the reason (`certificate: program text changed` / `bad signature` / `decision was a
+rejection` / `certified by another VM build`). A new VM build therefore retires every certificate at once, and the stored
+vectors are what re-certification replays. Pre-ledger entries are flagged `uncertified` and left alone. Pinned in
+`standin/tests/test_ledger_vault.py` (a program edited on disk loads retired). This is the certificate store the factory's
+registry sits on.
+
+**User chats are never stored unencrypted.** `standin/vault.py` — stdlib only (no `cryptography` here): an HMAC-SHA256
+keystream over a fresh 16-byte nonce, XOR, then an HMAC-SHA256 tag (encrypt-then-MAC), under `standin/data/out/host.key`
+(generated once, 256 bits; or `CB_HOST_KEY`); the vault and the ledger use keys derived from it. Through it: the real-user-turn
+eval file (`real_user_turns.jsonl.enc`; the plaintext is removed), the talk probe's rows (`talk_probe*.json.enc`; the summary
+stays in the clear with no user text), and the ledger's `input` column (a factory request is a user turn). The committed
+probe records under `validation/logs/` had their rows removed the same day. CubbyChat's history is in memory only; any
+chat log the serve stack ever persists goes through the vault. **Not covered, by necessity:** the training sets (the
+owner's WhatsApp/Teams rows train in the clear on Colab; that is the owner's decision, recorded in § SFT gap map).
+
 ## Dataset candidates screened 2026-09-03 (owner's four links; numbers from `standin/scripts/question_style_probe.py` → `validation/logs/standin_question_style_probe.log`)
 
 | dataset | what it is | verdict |

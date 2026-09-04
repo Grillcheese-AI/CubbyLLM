@@ -1428,7 +1428,7 @@ def main():
     chat += teams
     why_chat.update(why_teams)
     n_real = write_real_user_turns(os.path.join(OUT_DIR, "real_user_turns.jsonl"))
-    print(f"=== real user turns from the owner's AI-chat exports -> {os.path.join(OUT_DIR, 'real_user_turns.jsonl')} ({n_real}; the serve eval's prompts, never trained on)")
+    print(f"=== real user turns from the owner's AI-chat exports -> {os.path.join(OUT_DIR, 'real_user_turns.jsonl.enc')} ({n_real}; vault-encrypted; the serve eval's prompts, never trained on)")
     print("=== chat pairs from the sorted local sources (arena, convo, instruct, nemotron, wikiqa, grammar, ei) ...", flush=True)
     local_chat, why_local = build_local_chat(rng, facts, limit_lines=lim)
     print(f"  kept {dict(Counter(r['subtype'] for r in local_chat))} | rejected {dict(why_local.most_common(12))}")

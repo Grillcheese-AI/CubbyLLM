@@ -212,7 +212,8 @@ def main():
         print("model appraisal ON: the trunk reads the emotion of every turn (sense events carry the label)")
     if args.pacman:
         from pacman import PROGRAMS_PATH, CubbyGhost, LivePac
-        man = CubbyGhost(memory=PROGRAMS_PATH)           # the big game; his programs persist on disk
+        from ledger import Ledger
+        man = CubbyGhost(memory=PROGRAMS_PATH, ledger=Ledger())   # the big game; his programs persist on disk, every VM decision in the ledger
         brain.mount(man)
         brain.pac_live = LivePac(man)
         print(f"mounted: cubby-man in the pac maze (ghosts, hazards, power stars, levels) — "
