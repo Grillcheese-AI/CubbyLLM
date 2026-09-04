@@ -526,3 +526,27 @@ def test_fact_store_indexes_at_add_and_the_walk_looks_up_first(monkeypatch):
     assert captured["lookup"] == store.lookup
     sv.ReasoningCortex(ChainEmitter()).walk_facts("What is the capital of france?", overlap_retriever)
     assert captured["lookup"] is None, "a bare retriever has no index; the walk searches as before"
+
+
+
+def test_an_exact_lookup_in_a_second_world_routes_there_and_the_fallback_index_scores_like_the_scan():
+    """The wiki world (H-G6): a question whose hop 0 is in a mounted world's triple index goes to that world at
+    score 1.0 ('lookup'), whatever the cosine/overlap similarity said; the lexical fallback runs through an
+    inverted index with the original scan's scores."""
+    import math
+    s = sv.CubbyServe(ChainEmitter(), FactStore(STORE), route_tau=0.9)
+    s.worlds["wiki"] = FactStore(["Paris is the capital of France", "1591-02-21 is the birth date of Girard Desargues"], name="wiki")
+    r = s.route("What is the capital of France?")
+    assert r["cortex"] == "reasoning" and r["world"] == "wiki" and r["why"] == "lookup" and r["score"] == 1.0
+    assert s.lookup_world("What is the birth date of Girard Desargues?") == "wiki"
+    assert s.lookup_world("What is the capital of Atlantis?") is None and s.lookup_world("hello there") is None
+    r2 = s.route("What is the capital of Atlantis?")
+    assert r2["cortex"] == "reasoning" and r2["why"] != "lookup" and r2["score"] < 1.0, "no exact hit: similarity routing as before"
+    # the inverted-index fallback: identical scores to a per-fact IDF scan
+    w = s.worlds["wiki"]
+    n = len(w.texts)
+    hits = w("capital of France", 3)
+    df = lambda tok: sum(1 for t in w.texts if tok in set(FactStore._TOKEN.findall(t.lower())))
+    norm = sum(math.log(1 + n / max(1, df(tok))) for tok in ("capital", "of", "france"))
+    assert hits[0][1] == "Paris is the capital of France" and abs(hits[0][0] - norm / (norm + 1e-12)) < 1e-9
+    assert w("nothing shared", 3) == []

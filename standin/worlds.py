@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import math
 import re
+from array import array
 from typing import Protocol, runtime_checkable
 
 __wiring__ = "WIRED"
@@ -33,6 +34,9 @@ class FactStore:
     token overlap. Callable, so anything that took a retriever takes a store.
     """
 
+    _TOKEN = re.compile(r"[\w']+")
+    BIG, COMMON = 10_000, 0.2      # on a store past BIG facts, a token in more than COMMON of them is not traversed by the fallback
+
     def __init__(self, texts: list[str] | None = None, enc=None, name: str = "facts") -> None:
         from cubbyllm.reasoning import TripleIndex
         self.name = name
@@ -40,6 +44,7 @@ class FactStore:
         self.texts: list[str] = []
         self._rows: list = []                            # np row vectors when enc is set
         self._seen: set[str] = set()
+        self._post: dict[str, array] = {}                # token -> fact ids: the lexical fallback's inverted index
         self.index = TripleIndex()                       # retrieval as LOOKUP for template facts (exp_m4, 2026-09-04)
         for t in texts or []:
             self.add(t)
@@ -59,6 +64,12 @@ class FactStore:
         self._seen.add(key)
         self.texts.append(key)
         self.index.add(key)                              # a learned fact is looked up next turn, not only searched
+        i = len(self.texts) - 1
+        for tok in set(self._TOKEN.findall(key.lower())):
+            post = self._post.get(tok)
+            if post is None:
+                post = self._post[tok] = array("I")
+            post.append(i)
         if self.enc is not None:
             import numpy as np
             v = self.enc.encode(key).reshape(-1).astype(np.float32)
@@ -88,22 +99,25 @@ class FactStore:
         return self._overlap(query, k)
 
     def _overlap(self, query: str, k: int) -> list[tuple[float, str]]:
-        """IDF-weighted token overlap fallback (no encoder)."""
-        df: dict[str, int] = {}
-        toks = [set(re.findall(r"[\w']+", t.lower())) for t in self.texts]
-        for ts in toks:
-            for t in ts:
-                df[t] = df.get(t, 0) + 1
+        """IDF-weighted token overlap fallback (no encoder), through the inverted index: the same score as the
+        original per-fact scan (sum of IDF over shared tokens / the query's IDF mass), O(postings) per query
+        instead of O(store). Past BIG facts, near-universal tokens ('is', 'the', 'of' in a template store) are
+        not traversed — they carry no discrimination and would cost the whole store per query (the wikikg
+        world, 2026-09-04)."""
         n = len(self.texts)
-        q = set(re.findall(r"[\w']+", query.lower()))
+        q = set(self._TOKEN.findall(query.lower()))
         if not q:
             return []
-        scored = []
-        for ts, text in zip(toks, self.texts):
-            w = sum(math.log(1 + n / df[t]) for t in q & ts)
-            norm = sum(math.log(1 + n / df.get(t, 1)) for t in q)
-            scored.append((w / (norm + 1e-12), text))
-        scored.sort(key=lambda s: (-s[0], s[1]))
+        norm = sum(math.log(1 + n / (len(self._post[t]) if t in self._post else 1)) for t in q)
+        acc: dict[int, float] = {}
+        for t in q:
+            post = self._post.get(t)
+            if post is None or (n > self.BIG and len(post) > self.COMMON * n):
+                continue
+            w = math.log(1 + n / len(post))
+            for i in post:
+                acc[i] = acc.get(i, 0.0) + w
+        scored = sorted(((w / (norm + 1e-12), self.texts[i]) for i, w in acc.items()), key=lambda s: (-s[0], s[1]))
         return [(s, t) for s, t in scored[:k] if s > 0]
 
 

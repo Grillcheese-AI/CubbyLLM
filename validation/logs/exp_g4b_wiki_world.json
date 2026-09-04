@@ -1,0 +1,28 @@
+{
+ "git": "f3fa591",
+ "triples": 365923,
+ "facts": 552297,
+ "forward": 356902,
+ "indexed": 552297,
+ "build_s": 46.1,
+ "peak_mb": 613,
+ "relations_mapped": 163,
+ "mapped_triples_pct": 96.6,
+ "inverse_triples_pct": 56.3,
+ "fallback_ms_per_query": 6.1,
+ "paths_scanned": 200000,
+ "chain_questions": 24965,
+ "vm": {
+  "n": 300,
+  "outcomes": {
+   "verified_correct": 300
+  },
+  "ms_per_question": 87
+ },
+ "simpleqa": {
+  "n": 4326,
+  "entity_known": 860,
+  "keyed": 3
+ },
+ "wall_s": 86
+}

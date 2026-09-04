@@ -203,9 +203,11 @@ def main():
                     help="mount cubby-man in the cubbyverse pac maze (standin/pacman.py)")
     ap.add_argument("--model-appraisal", action="store_true",
                     help="the trunk reads each turn's emotion (the v5 task); its Plutchik petal drives the hormones")
+    ap.add_argument("--wiki", nargs="?", const="auto", default=None,
+                    help="mount the wikikg world (standin/data/wikikg.py): bare = the cached Hub export, or a path to triplets.parquet")
     args = ap.parse_args()
     brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers,
-                        talk_gguf=args.talk_gguf)
+                        talk_gguf=args.talk_gguf, wiki=args.wiki)
     if args.model_appraisal:
         from perception import ModelAppraiser
         brain.chat.appraiser = ModelAppraiser(brain.emitter, brain.facts)   # asks with context="talk"

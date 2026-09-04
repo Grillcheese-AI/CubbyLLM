@@ -466,6 +466,11 @@ class CubbyBrain:
         world, score = route_world(self.worlds, text)
         tau_eff = self.chat.chem.modulate_threshold(self.route_tau)
         facts, why = self.needs_facts(text)
+        if facts:
+            hit = self.lookup_world(text)                # an exact hop-0 hit in a world's triple index beats any similarity (exp_m4, 2026-09-04)
+            if hit is not None:
+                return {"cortex": "reasoning", "world": hit, "score": 1.0, "tau_eff": round(tau_eff, 3),
+                        "needs_facts": True, "why": "lookup"}
         # confident retrieval engages reasoning only for residual small talk: a definite no-facts read (about Cubby,
         # a feeling, a creative ask) stands whatever the store resembles ('do you know how to write code?' hit an
         # 'audio album ... write you a song' fact at 0.377 > tau 0.319 and was answered 'audio album', 2026-09-03)
@@ -473,6 +478,18 @@ class CubbyBrain:
             return {"cortex": "reasoning", "world": world, "score": score, "tau_eff": round(tau_eff, 3),
                     "needs_facts": True, "why": why if facts else "retrieval"}
         return {"cortex": "talk", "score": score, "tau_eff": round(tau_eff, 3), "needs_facts": False, "why": why}
+
+    def lookup_world(self, text: str) -> str | None:
+        """The first mounted world whose triple index holds a fact serving the question's hop 0 — exact, so it
+        wins over retrieval similarity; None when the question does not parse or no world has such a fact."""
+        plan = parse_question(text)
+        if plan is None:
+            return None
+        for name, w in self.worlds.items():
+            lookup = getattr(w, "lookup", None)
+            if lookup is not None and lookup(plan, 0, None):
+                return name
+        return None
 
     def help_line(self, lang: str) -> str:
         games = [n for n in self.cortices]
@@ -549,7 +566,8 @@ CubbyServe = CubbyBrain
 # ── assembly from the real artifacts ────────────────────────────────────────
 def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
                 route_tau: float, n_gpu_layers: int,
-                extra_facts: list[str] | None = None, talk_gguf: str | None = None) -> CubbyBrain:
+                extra_facts: list[str] | None = None, talk_gguf: str | None = None,
+                wiki: str | None = None) -> CubbyBrain:
     from exp_m3_cot_pipeline import V4_TABLE, load_sample
     from exp_m3_domain_routing import _load_semantic_words
 
@@ -569,7 +587,15 @@ def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
         print(f"loading talk adapter {talk_gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
         talk = LlamaCppEmitter(talk_gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers)
         emitter = ContextualEmitter({"programs": emitter, "talk": talk}, default="programs")
-    return CubbyBrain(emitter, world, exe=exe, route_tau=route_tau)
+    brain = CubbyBrain(emitter, world, exe=exe, route_tau=route_tau)
+    if wiki:                                             # the wikikg world (H-G6): lookup-first, lexical fallback, no cosine rows
+        from wikikg import wiki_world
+        print("loading wiki world (wikikg triples -> template facts -> triple index) ...", flush=True)
+        t0 = time.perf_counter()
+        ww = wiki_world(path=None if wiki == "auto" else wiki)
+        brain.worlds["wiki"] = ww
+        print(f"  wiki world: {len(ww):,} facts, {len(ww.index):,} indexed, {time.perf_counter() - t0:.0f}s", flush=True)
+    return brain
 
 
 def load_val_chains(n: int) -> list[dict]:
@@ -633,11 +659,13 @@ def main():
     ap.add_argument("--tag", default="")
     ap.add_argument("--pacman", action="store_true",
                     help="mount cubby-man in the cubbyverse pac maze (standin/pacman.py)")
+    ap.add_argument("--wiki", nargs="?", const="auto", default=None,
+                    help="mount the wikikg world (standin/data/wikikg.py): bare = the cached Hub export, or a path to triplets.parquet")
     args = ap.parse_args()
     chains = load_val_chains(args.selftest) if args.selftest else []
     extra = [f for r in chains for f in given_facts(r)]
     serve = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers,
-                        extra_facts=extra, talk_gguf=args.talk_gguf)
+                        extra_facts=extra, talk_gguf=args.talk_gguf, wiki=args.wiki)
     if args.pacman:
         from pacman import CubbyPac
         serve.mount(CubbyPac())

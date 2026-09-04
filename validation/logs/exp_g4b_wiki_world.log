@@ -1,0 +1,22 @@
+exp_g4b_wiki_world  git f3fa591  python 3.12.10  Windows-11-10.0.26300-SP0
+world: 552,297 facts (356,902 forward + 195,395 inverse readings) from 365,923 triples; 552,297 indexed; build 46.1s, peak 613 MB
+relation map: 163 types cover 96.6% of triples; inverse reading for 56.3%
+lexical fallback: 6.1 ms/query (inverted index; near-universal tokens skipped past 10,000 facts)
+  'What is the capital of France?' -> [(0.358, 'A Psalm Of Life is the original of What The Heart Of The Young Man Said To The Psalmist'), (0.358, 'Academy Of Letters And Fine Arts In Lyon is the submitted to of What Is Cancer Essay')]
+  'who is the creator of the Desarguesian plane' -> [(0.716, 'Girard Desargues is the creator of Desarguesian Plane'), (0.716, 'Girard Desargues is the creator of Non Desarguesian Plane')]
+  'Sundar Pichai employer' -> [(1.0, 'Alphabet Inc is the employer of Sundar Pichai'), (0.812, 'Alphabet Inc is the position of Sundar Pichai')]
+  'what is the birth date of Girard Desargues' -> [(0.732, '1591-02-21 is the birth date of Girard Desargues'), (0.631, '1661-09 is the death date of Girard Desargues')]
+
+chain questions: 24,965 functional two-hop questions from 200,000 paths (12.5% yield) in 7s
+  e.g. What is the timeline event of the effect of Repetitive Activities? -> Tendinopathy Overuse Recovery Six Months
+  e.g. What is the type of the part of Military Situations? -> Hand Gesture
+  e.g. What is the generalization of the alias of Hog? -> Douglas A1 Skyraider
+  e.g. What is the part of the part of Hydro Electric Power Scheme? -> Lake Gordon
+  e.g. What is the original of the part of Electroactive Species? -> Bulk Electrolysis
+VM sample 300: {'verified_correct': 300} (87 ms/question)
+
+SimpleQA (4,326 questions): gold answer is a graph entity for 860 (19.9%); a stored fact 'gold is the R of E' with E named in the question for 3 (0.1%) — the lookup ceiling before any search-and-learn
+  e.g. 'Which glacier is known as the "Third Pole"?' <- Siachen Glacier is the part of Third Pole
+  e.g. 'What did Norman Rockwell name his first assignment for "Look" magazine?' <- The Problem We All Live With is the creation of Norman Rockwell
+  e.g. 'Norman Rockwell was hired as the art director of what publication while in his teens?' <- Boys Life is the creation of Norman Rockwell
+wall 86s
