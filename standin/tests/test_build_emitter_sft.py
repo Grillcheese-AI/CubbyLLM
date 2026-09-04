@@ -213,3 +213,55 @@ def test_clean_reply_strips_qwen_fragments_and_keeps_complete_tool_calls():
     call = '<tool_call>\n{"name": "news_search", "arguments": {"query": "quebec"}}\n</tool_call>'
     assert clean_reply("<think>\n\n</think>\n\n" + call) == call, "a complete tool call is kept for the host"
     assert clean_reply("Sure. " + call + "\n</tool_call>") == "Sure. " + call
+
+
+
+class _FakeLlama:
+    """n_vocab/detokenize/metadata/create_completion — enough to load a LlamaCppEmitter without a model."""
+    PIECES = [b"Hi", b" there", "建筑师".encode(), b" 8", "Ещё".encode(), b"<tool_call>", b"\xe5"]   # the last: a lone byte
+
+    def __init__(self, **kw):
+        self.kw = kw
+        self.metadata = {"general.architecture": "qwen3", "tokenizer.chat_template": "{% for m in messages %}<|im_start|>..."}
+        self.calls = []
+
+    def n_vocab(self):
+        return len(self.PIECES)
+
+    def detokenize(self, toks, **kw):
+        return self.PIECES[toks[0]]
+
+    def create_completion(self, text, **kw):
+        self.calls.append(kw)
+        return {"choices": [{"text": "Hi there"}]}
+
+
+def test_script_ban_ids_come_from_the_vocab_and_zero_the_logits(tmp_path, monkeypatch):
+    import numpy as np
+    from standin import emitter as em
+    ban = em.ScriptBan.from_vocab(_FakeLlama())
+    assert list(ban.ids) == [2, 4], "the CJK and Cyrillic pieces, not the byte-fallback token"
+    scores = np.zeros(7, dtype=np.float32)
+    out = ban(np.array([0]), scores)
+    assert np.isinf(out[2]) and np.isinf(out[4]) and out[0] == 0 and out[6] == 0
+    # the identity-side guard sees the same script class
+    from identity import _NON_LATIN
+    assert em.NON_LATIN.pattern == _NON_LATIN.pattern
+
+
+def test_llama_emitter_passes_the_script_ban_to_every_decode(tmp_path, monkeypatch):
+    import llama_cpp
+    import numpy as np
+    from standin import emitter as em
+    monkeypatch.setattr(llama_cpp, "Llama", _FakeLlama)
+    gguf = tmp_path / "talk.gguf"
+    gguf.write_bytes(b"GGUF")
+    e = em.LlamaCppEmitter(str(gguf))
+    assert e.emit("hello") == "Hi there"
+    lp = e._llm.calls[0]["logits_processor"]
+    assert lp is not None and list(lp[0].ids) == [2, 4]
+    assert (tmp_path / "talk.gguf.scriptban.npy").exists(), "cached beside the GGUF"
+    assert list(np.load(tmp_path / "talk.gguf.scriptban.npy")) == [2, 4]
+    off = em.LlamaCppEmitter(str(gguf), script_ban=False)
+    off.emit("hello")
+    assert off._llm.calls[0]["logits_processor"] is None

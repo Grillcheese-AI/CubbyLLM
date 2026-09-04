@@ -20,6 +20,7 @@ interface changes. No third-party dependency: urllib only.
 from __future__ import annotations
 
 import json
+import os
 import re
 import urllib.request
 from typing import Protocol, runtime_checkable
@@ -159,6 +160,50 @@ def chat_family(template: str | None, arch: str | None = None) -> str:
     return "lfm"
 
 
+# the same class as identity._NON_LATIN (pinned equal by a test): Cyrillic, Hebrew/Arabic, Indic, Thai, kana, CJK,
+# Hangul, full-width forms — none of them Cubby's languages
+NON_LATIN = re.compile(r"[\u0400-\u04FF\u0590-\u06FF\u0900-\u0DFF\u0E00-\u0E7F\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\uFF00-\uFFEF]")
+
+
+class ScriptBan:
+    """A llama-cpp logits processor: every token whose piece carries a non-Latin script is set to -inf before
+    sampling, so a base that drifts into Chinese mid-reply ("建筑师: 8/15, nice.", the Qwen3 talk arm, 2026-09-04)
+    cannot — the guards (`rephrase_ok`, the chat guard) stay as the second line for byte-fallback sequences.
+    Built from the vocab alone (`vocab_only=True` loads no weights and touches no GPU); cached beside the GGUF as
+    `<gguf>.scriptban.npy`. CB_SCRIPT_BAN=0 disables it."""
+
+    def __init__(self, ids) -> None:
+        import numpy as np
+        self.ids = np.asarray(ids, dtype=np.intp)
+
+    @classmethod
+    def from_vocab(cls, llm) -> "ScriptBan":
+        """`llm` needs `n_vocab()` and `detokenize([id]) -> bytes` (a llama_cpp.Llama, vocab_only or not)."""
+        n = int(llm.n_vocab())
+        ids = [t for t in range(n) if NON_LATIN.search(llm.detokenize([t]).decode("utf-8", "ignore"))]
+        return cls(ids)
+
+    @classmethod
+    def for_gguf(cls, gguf_path: str, llm=None) -> "ScriptBan":
+        import numpy as np
+        cache = gguf_path + ".scriptban.npy"
+        if os.path.exists(cache) and os.path.getmtime(cache) >= os.path.getmtime(gguf_path):
+            return cls(np.load(cache))
+        if llm is None:
+            from llama_cpp import Llama
+            llm = Llama(model_path=gguf_path, vocab_only=True, verbose=False)
+        ban = cls.from_vocab(llm)
+        try:
+            np.save(cache, ban.ids)
+        except OSError:
+            pass
+        return ban
+
+    def __call__(self, input_ids, scores):
+        scores[self.ids] = -float("inf")
+        return scores
+
+
 class LlamaCppEmitter:
     """In-process GGUF inference through llama-cpp-python (the installed
     0.3.30 bundles ggml-vulkan.dll and finds the RX 6750 XT — verified
@@ -171,8 +216,10 @@ class LlamaCppEmitter:
 
     def __init__(self, gguf_path: str, system: str = SYSTEM, n_ctx: int = 4096,
                  n_gpu_layers: int = -1, verbose: bool = False, prefill: str | None = None,
-                 family: str | None = None) -> None:
+                 family: str | None = None, script_ban: bool | None = None) -> None:
         self.gguf_path = gguf_path
+        self.script_ban = (os.environ.get("CB_SCRIPT_BAN", "1") != "0") if script_ban is None else bool(script_ban)
+        self._logits_processor = None
         self.system = system
         self.n_ctx = int(n_ctx)
         self.n_gpu_layers = int(n_gpu_layers)
@@ -202,6 +249,9 @@ class LlamaCppEmitter:
                     if self._family is None:
                         md = getattr(self._llm, "metadata", None) or {}
                         self._family = chat_family(md.get("tokenizer.chat_template"), md.get("general.architecture"))
+                    if self.script_ban:
+                        from llama_cpp import LogitsProcessorList
+                        self._logits_processor = LogitsProcessorList([ScriptBan.for_gguf(self.gguf_path, self._llm)])
         return self._llm
 
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
@@ -213,7 +263,7 @@ class LlamaCppEmitter:
         sampling = {"temperature": float(temperature), "top_p": 0.9} if temperature > 0 else {"temperature": 0.0}
         with GPU_LOCK:                                    # the HTTP server is threaded; the game and a chat turn take turns here
             out = llm.create_completion(text, max_tokens=int(max_new_tokens), seed=(0 if seed is None else int(seed)),
-                                        **sampling, stop=stop)
+                                        **sampling, stop=stop, logits_processor=self._logits_processor)
         return prefix + out["choices"][0]["text"]
 
 
