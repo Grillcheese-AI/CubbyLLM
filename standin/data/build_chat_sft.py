@@ -214,7 +214,10 @@ LATEX = re.compile(r"\\(\[|\(|frac|begin|end|left|right|sqrt|tan|sin|cos|sum|int
 GAME_FORGE_REPEAT = 3                                    # v7: forge decision/compare records replayed x3 (v6 probe regression)
 # the two adapters (v8): the trunk EMITS programs; the talk cortex is a second adapter on the same base
 PROGRAM_TASKS = ("arithmetic", "kernel", "role_binding", "chain")          # VM-verified; the game families are kernel/chain subtypes
-TALK_TASKS = ("identity", "chat", "content", "emotion", "affect", "history", "safety", "exposure")
+from gap_families import (GAP_TASKS, build_appraisal, build_dailydialog, build_empathy, build_repair,  # noqa: E402
+                          build_rewrite, build_safety_extra, build_verbalize)
+
+TALK_TASKS = ("identity", "chat", "content", "emotion", "affect", "history", "safety", "exposure") + GAP_TASKS   # v9: the gap families
 IDENTITY_REPEAT = 4                                      # v6: 526 identity records vs ~20k chat pairs pulled the greeting/unknown intents
 
 
@@ -1340,6 +1343,9 @@ def main():
     ap.add_argument("--partition", choices=["all", "both"], default="both",
                     help="both = ALSO write emitter_sft_{version}e.jsonl (program tasks) and _{version}t.jsonl (talk tasks) "
                          "with their manifests, for the two-adapter training (v8)")
+    ap.add_argument("--no-gap", action="store_true",
+                    help="skip the v9 gap families (verbalize, repair, rewrite, safety extras, appraisal, dialog emotion/act, empathy)")
+    ap.add_argument("--gap-scale", type=float, default=1.0, help="scale the gap families' target sizes (debug: 0.05)")
     ap.add_argument("--keep-replay-identity", action="store_true",
                     help="keep the v4 replay's identity records instead of regenerating them from identity.py "
                          "(v7 regenerates: the `world` intent is new)")
@@ -1373,6 +1379,22 @@ def main():
     print("=== safety (attack / benign recognition, cubby-lm safety_corpus_v0) ...", flush=True)
     safety, why_saf = build_safety(rng)
     print(f"  kept {len(safety)} {dict(Counter(r['gold'] for r in safety))} | skipped {dict(why_saf)}")
+    gap: list[dict] = []
+    why_gap: Counter = Counter()
+    if not args.no_gap:                                  # v9 (2026-09-03): the SFT gap map's families, standin/README.md
+        sc = float(args.gap_scale)
+        for name, fn in (("verbalize (the game's own phrasings, guard-accepted pairs)", lambda: build_verbalize(rng, facts, per_kind=max(1, int(14 * sc)))),
+                         ("repair (disfl_qa: the disfluent question -> the clean one)", lambda: build_repair(rng, facts, n=max(50, int(5000 * sc)))),
+                         ("rewrite (CANARD: follow-up in context -> standalone question)", lambda: build_rewrite(rng, facts, n=max(50, int(5000 * sc)))),
+                         ("safety extras (deepset / toxic-chat / multilingual injections)", lambda: build_safety_extra(rng, SAFETY_PROMPT, n_benign=max(20, int(1500 * sc)))),
+                         ("appraisal (SocialIQA forward: situation + question -> feeling / need / motive)", lambda: build_appraisal(rng, facts, n=max(50, int(5000 * sc)))),
+                         ("dialog emotion + act (DailyDialog)", lambda: build_dailydialog(rng, facts, n_emotion=max(50, int(3000 * sc)), n_act=max(30, int(2000 * sc)))),
+                         ("empathy (EmpatheticDialogues: a told situation -> the feeling)", lambda: build_empathy(rng, facts, n=max(50, int(2500 * sc))))):
+            print(f"=== {name} ...", flush=True)
+            recs, why = fn()
+            print(f"  kept {len(recs)} {dict(Counter(r['task'] for r in recs))} | skipped {dict(why.most_common(6))}")
+            gap += recs
+            why_gap.update(why)
     print("=== history (dated events, expert dialogues, quotes, NYT recall + dating) ...", flush=True)
     history, why_hist = build_history(rng, facts, limit_lines=lim)
     print(f"  kept {dict(Counter(r['subtype'] for r in history))} | skipped {dict(why_hist.most_common(10))}")
@@ -1386,7 +1408,7 @@ def main():
         print(f"=== generation exposure ON ({args.exposure}) ...", flush=True)
         exposure, why_exp = build_exposure(rng, args.exposure, lim)
         print(f"  kept {len(exposure)} | skipped {dict(why_exp)}")
-    new = finish(chat + content + emotion + affect + history + safety + exposure, facts)
+    new = finish(chat + content + emotion + affect + history + safety + gap + exposure, facts)
     replay = [] if args.no_replay else [json.loads(l) for l in open(V4_PATH, encoding="utf-8")]
     n_id = 0
     fresh_identity: list[dict] = []
@@ -1452,6 +1474,8 @@ def main():
         "emotion_source": "google-research-datasets/go_emotions simplified (apache-2.0)",
         "n_affect": len(affect), "affect_by_source": dict(Counter(r["subtype"] for r in affect)),
         "n_safety": len(safety), "safety_by_label": dict(Counter(r["gold"] for r in safety)),
+        "n_gap": len(gap), "gap_by_task": dict(Counter(r["task"] for r in gap)), "gap_by_source": dict(Counter(r["source"] for r in gap)),
+        "gap_skips": dict(why_gap), "gap_scale": float(args.gap_scale),
         "safety_source": SAFETY_CORPUS, "safety_skips": dict(why_saf),
         "affect_skips": dict(why_aff),
         "local_sources": {"arena": ARENA, "convo": CONVO, "instruct": INSTRUCT_55K, "nemotron": NEMOTRON_FI, "science": SCIENCE_QA_SHARD,
@@ -1474,7 +1498,7 @@ def main():
     }
     mp = os.path.join(OUT_DIR, f"emitter_sft_{args.version}.manifest.json")
     json.dump(manifest, open(mp, "w", encoding="utf-8"), indent=1)
-    print(f"\n{args.version}: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion + {len(affect)} affect + {len(safety)} safety + {len(history)} history"
+    print(f"\n{args.version}: {len(chat)} chat + {len(content)} content + {len(emotion)} emotion + {len(affect)} affect + {len(safety)} safety + {len(history)} history + {len(gap)} gap"
           + (f" + {len(fresh_identity)} identity (regenerated)" if fresh_identity else "")
           + (f" + {len(exposure)} exposure" if exposure else "") + f" + {len(replay)} replay "
           f"= {len(records)} (after prompt dedupe)")

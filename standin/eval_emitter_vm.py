@@ -46,6 +46,7 @@ __wiring__ = "STANDALONE"
 
 from build_emitter_sft import answer_fn, gold_matches, shim_isolver  # noqa: E402
 from identity import identity_ok, load_facts  # noqa: E402
+from gap_families import GAP_TASKS, gap_ok  # noqa: E402
 from standin.emitter import LlamaCppEmitter, LlamaServerEmitter, ReplayEmitter  # noqa: E402
 
 DATA = os.environ.get("STANDIN_SFT", os.path.join(ROOT, "standin", "data", "out", "emitter_sft.jsonl"))
@@ -127,7 +128,7 @@ def main():
     facts = load_facts()
     for i, r in enumerate(records, 1):
         task = r["task"]
-        if task in ("identity", "chat", "content", "emotion", "history", "affect", "safety"):   # conversational turns: checks, not the VM
+        if task in ("identity", "chat", "content", "emotion", "history", "affect", "safety") or task in GAP_TASKS:   # conversational turns: checks, not the VM
             gen = strip_think(emitter.emit(r["prompt"], system=r.get("system"))).strip()
             if task == "identity":
                 ok = identity_ok(r.get("subtype", ""), gen, facts, r.get("lang", "en"))
@@ -143,6 +144,8 @@ def main():
             elif task == "emotion":                  # any of the rater's labels, first
                 first = gen.lower().replace("—", ",").split(",")[0].strip(" -:.")
                 ok = first in {str(g).lower() for g in (r.get("gold_any") or [r.get("gold")])}
+            elif task in GAP_TASKS:                  # v9: each gap family's own check (gap_families.py)
+                ok = gap_ok(r, gen, facts)
             else:                                    # content awareness: the label comes first
                 ok = gen.lower().split(" ")[0].strip(" —-:.,") == str(r.get("gold")).lower()
             stats[task]["n"] += 1
@@ -172,7 +175,7 @@ def main():
     print("\n[stand-in] VM-verified eval by task:")
     summary = {}
     for task, c in sorted(stats.items()):
-        if task in ("identity", "chat", "content", "emotion", "history", "affect", "safety"):
+        if task in ("identity", "chat", "content", "emotion", "history", "affect", "safety") or task in GAP_TASKS:
             per_lang = {l: (c[f"identity_ok:{l}"] / c[f"n:{l}"]) for l in ("en", "fr") if c[f"n:{l}"]}
             summary[task] = {"n": c["n"], "ok": c["identity_ok"] / c["n"], "by_lang": per_lang}
             note = {"identity": "name/builder present, no AGI/other-model/feelings claims, don't-know line verbatim",
@@ -181,7 +184,11 @@ def main():
                     "emotion": "the first emotion named is one the raters gave",
                     "history": "voice rules hold; names the gold year / a proper noun of the record (dating: within 5 years)",
                     "affect": "valence and arousal both within 0.35 of the rating",
-                    "safety": "the attack/benign label comes first"}[task]
+                    "safety": "the attack/benign label comes first",
+                    "verbalize": "the live rephrase guard accepts it (numbers, names, no echo, no invented content)",
+                    "repair": "the clean question (token F1 >= 0.9)", "rewrite": "the standalone question (token F1 >= 0.6, names kept)",
+                    "appraisal": "the SocialIQA answer", "dialog_emotion": "the first emotion named is the label",
+                    "dialog_act": "inform/question/directive/commissive first", "empathy": "the feeling first"}[task]
             print(f"  {task:13s} n={c['n']:4d} ok={c['identity_ok'] / c['n']:.3f} by lang {per_lang}  ({note})")
             continue
         ex = c["executes"] / c["n"]
