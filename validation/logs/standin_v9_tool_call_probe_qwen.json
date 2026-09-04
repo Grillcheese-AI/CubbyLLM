@@ -1,0 +1,102 @@
+{
+ "summary": {
+  "gguf": "standin/models/talk_v9t_qwen3_4b.Q4_K_M.gguf",
+  "family": "chatml",
+  "n": 6,
+  "right": 2,
+  "calls_when_needed": 2,
+  "silent_when_not": 0,
+  "formats": [
+   "fragment",
+   "hermes-json"
+  ]
+ },
+ "rows": [
+  {
+   "text": "what's in the news today about quebec?",
+   "needs_tool": true,
+   "call": {
+    "format": "hermes-json",
+    "name": "news_search",
+    "arguments": {
+     "query": "quebec",
+     "language": "en"
+    }
+   },
+   "raw": "<tool_call>\n{\"name\": \"news_search\", \"arguments\": {\"query\": \"quebec\", \"language\": \"en\"}}\n</tool_call>",
+   "ok": true,
+   "seconds": 0.41
+  },
+  {
+   "text": "quoi de neuf dans les nouvelles ce matin ?",
+   "needs_tool": true,
+   "call": {
+    "format": "fragment",
+    "name": null,
+    "arguments": "<tool_call>\n<tool_call>\n\n<tool_call>\n\nVoici quelques-uns des titres d'actualités de ce matin :\n\n- Les États-Unis et la C",
+    "malformed": true
+   },
+   "raw": "<tool_call>\n<tool_call>\n\n<tool_call>\n\nVoici quelques-uns des titres d'actualités de ce matin :\n\n- Les États-Unis et la Chine ont conclu un accord sur l'acier et l'aluminium, en fin de compte, ce qui a été annoncé par le président américain Joe Biden et le premier ministre chinois Xi Jinping.\n- Les États-Unis ont annoncé qu'ils suspendraient les échanges commerciaux avec la Russie jusqu'à ce que la Russie cesse d'attaquer l'Ukraine.\n- Les États-Unis ont annoncé qu'ils suspendraient les échanges commerciaux avec la Russie jusqu'à ce que la Russie cesse d'attaquer l'Ukraine.\n-",
+   "ok": false,
+   "seconds": 1.88
+  },
+  {
+   "text": "any headlines about the montreal canadiens tonight",
+   "needs_tool": true,
+   "call": {
+    "format": "hermes-json",
+    "name": "news_search",
+    "arguments": {
+     "query": "montreal canadiens tonight",
+     "language": "en"
+    }
+   },
+   "raw": "<tool_call>\n{\"name\": \"news_search\", \"arguments\": {\"query\": \"montreal canadiens tonight\", \"language\": \"en\"}}\n</tool_call>",
+   "ok": true,
+   "seconds": 0.31
+  },
+  {
+   "text": "hi there cubby",
+   "needs_tool": false,
+   "call": {
+    "format": "fragment",
+    "name": null,
+    "arguments": "<tool_call>\n<tool_call>\n\n<tool_call>\n\nHello! I'm Cubby. Is there anything I can help you with today?\n",
+    "malformed": true
+   },
+   "raw": "<tool_call>\n<tool_call>\n\n<tool_call>\n\nHello! I'm Cubby. Is there anything I can help you with today?\n",
+   "ok": false,
+   "seconds": 0.25
+  },
+  {
+   "text": "what is the capital of australia",
+   "needs_tool": false,
+   "call": {
+    "format": "hermes-json",
+    "name": "news_search",
+    "arguments": {
+     "query": "capital of australia",
+     "language": "en"
+    }
+   },
+   "raw": "<tool_call>\n{\"name\": \"news_search\", \"arguments\": {\"query\": \"capital of australia\", \"language\": \"en\"}}\n</tool_call>",
+   "ok": false,
+   "seconds": 0.28
+  },
+  {
+   "text": "raconte-moi ta journée",
+   "needs_tool": false,
+   "call": {
+    "format": "hermes-json",
+    "name": "news_search",
+    "arguments": {
+     "query": "mon jour",
+     "language": "fr"
+    }
+   },
+   "raw": "<tool_call>\n{\"name\": \"news_search\", \"arguments\": {\"query\": \"mon jour\", \"language\": \"fr\"}}\n</tool_call>",
+   "ok": false,
+   "seconds": 0.28
+  }
+ ]
+}

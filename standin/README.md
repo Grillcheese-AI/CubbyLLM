@@ -395,7 +395,14 @@ Hermes-style `<tool_call>{json}</tool_call>` from its base (a `<tool_call>` toke
 survived our LoRA), LFM2.5 carries Liquid's Pythonic `<|tool_call_start|>[fn(args)]<|tool_call_end|>` with `List of
 tools:` in the system prompt (BFCL-benchmarked by Liquid). `standin/scripts/tool_call_probe.py` gives each talk GGUF one
 tool (`news_search`) in its own format and six turns, three needing it, and reports whether a well-formed call comes
-exactly when it should. What survives decides how the plugin cortices get called: **the host parses the native call and
+exactly when it should. **Probe result (owner, solo, 2026-09-04; `validation/logs/standin_v9_tool_call_probe_{lfm,qwen}.json`): neither arm is usable as it
+stands, and they fail in opposite ways.** LFM v9t made **0/3** calls when needed and 3/3 stayed silent when not — and it answered the news
+questions by **inventing headlines** ("Quebec's economy is in a state of decline, the provincial government's finance minister said"): Liquid's
+Pythonic format did not survive 93k rows of talk SFT with no tool rows (in the live brain those turns route to the VM path and get the
+don't-know line, so it never reaches a user today). Qwen v9t kept the Hermes format — **2/3** well-formed calls when needed — but lost the
+judgment: 0/3 silent when not (it called `news_search` for the capital of Australia and for "raconte-moi ta journée", and prefixed a plain
+greeting with stray `<tool_call>` tokens). Format without restraint on one side, restraint without format on the other; the same missing
+thing on both: a **tool-call family in the talk data, in each base's own format, with negatives** (v10t, below). What survives decides how the plugin cortices get called: **the host parses the native call and
 turns it into an `act` through the VM under the deny-by-default policy** — the tool registry and the policy are ours, the
 call format is the base's. **Tool calling (owner's Toucan-1.5M link, 2026-09-04): not data — design.** Toucan is 1.5M model-generated
 JSON tool-call trajectories; our tool calls are programs (the trunk emits CubeLang, the VM executes and verifies, a

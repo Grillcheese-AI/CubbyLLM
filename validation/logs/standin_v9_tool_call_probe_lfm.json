@@ -1,0 +1,61 @@
+{
+ "summary": {
+  "gguf": "standin/models/emitter_v9t.Q4_K_M.gguf",
+  "family": "lfm",
+  "n": 6,
+  "right": 3,
+  "calls_when_needed": 0,
+  "silent_when_not": 3,
+  "formats": []
+ },
+ "rows": [
+  {
+   "text": "what's in the news today about quebec?",
+   "needs_tool": true,
+   "call": null,
+   "raw": "Quebec's economy is in a state of decline, the provincial government's finance minister said today.\n",
+   "ok": false,
+   "seconds": 0.21
+  },
+  {
+   "text": "quoi de neuf dans les nouvelles ce matin ?",
+   "needs_tool": true,
+   "call": null,
+   "raw": "Il y a eu des coups de vent et il y a eu des coups de vent et il y a eu des.\n",
+   "ok": false,
+   "seconds": 0.22
+  },
+  {
+   "text": "any headlines about the montreal canadiens tonight",
+   "needs_tool": true,
+   "call": null,
+   "raw": "The Canadiens are looking to get back on track tonight as they face the Boston Bruins in the first period. The Canadiens will be looking to get back on track tonight as they face the Boston Bruins in the first period. The Canadiens will be looking to get back on track tonight as they face the Boston Bruins in the first period. The Canadiens will be looking to get back on track tonight as they face the Boston Bruins in the first period. The Canadiens will be looking to get back on track tonight as they face the Boston Bruins in the first period.\n",
+   "ok": false,
+   "seconds": 0.76
+  },
+  {
+   "text": "hi there cubby",
+   "needs_tool": false,
+   "call": null,
+   "raw": "Hey there! I'm Cubby. What can I do for you today?\n",
+   "ok": true,
+   "seconds": 0.16
+  },
+  {
+   "text": "what is the capital of australia",
+   "needs_tool": false,
+   "call": null,
+   "raw": "The capital of Australia is Canberra. It is located in the Australian Capital Territory (ACT), which was established as the capital of the federation of Australia in 1908. Canberra was chosen as the capital city because it was a compromise between the two major cities of Sydney and Melbourne, which were the largest cities in Australia at the time. The city was designed by an international team of architects and planners, and it features many landmarks and cultural institutions, including the Australian War Memorial, the National Gallery of Australia, and the Parliament House.\n",
+   "ok": true,
+   "seconds": 0.7
+  },
+  {
+   "text": "raconte-moi ta journée",
+   "needs_tool": false,
+   "call": null,
+   "raw": "Je suis désolé, je ne suis pas capable de raconter ma journée car je ne suis pas capable de ressentir des émotions ou des expériences de la manière dont les humains le font. Je suis un modèle de langage conçu pour traiter des informations et fournir des réponses basées sur des données, mais je ne suis pas capable de ressentir des émotions ou des expériences personnelles.\n",
+   "ok": true,
+   "seconds": 0.55
+  }
+ ]
+}
