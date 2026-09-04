@@ -142,10 +142,10 @@ class ReasoningCortex:
 
         first = retriever(question, self.k_facts)
         take(first)
-        for _, f in first[:2]:
+        for ps, f in first[:2]:
             t = parse_fact(f)
-            if t is not None:
-                take(retriever(f"{t.obj} ", 2))
+            if t is not None:                            # an expansion fact's own score is relative to the OBJECT query,
+                take([(min(float(ps), float(es)), ef) for es, ef in retriever(f"{t.obj} ", 2)])   # not the question: it inherits its parent's at most
         # v3 trained on 1-3 walked facts; past ~4 the block is out of
         # distribution and the emitter derails (echoes the list, wrong style)
         return out[: self.k_facts + 1]
@@ -196,6 +196,16 @@ class ReasoningCortex:
             grounded = bool(hits) and (final_rel is None or any(relation_matches(final_rel, t.rel) for t in hits))
             if hits and not grounded:
                 trace("gate_relation", answer=vm_answer, final_relation=final_rel, offered=[t.rel for t in hits])
+            # a question the grammar did NOT parse has no relation to hold the answer to: the only evidence the offered
+            # fact is about the question is retrieval's own confidence — require the grounding fact to be a hit for the
+            # question at >= tau_ret (live misroute 2026-09-03: 'what are the things you learned?' was answered 'lists'
+            # from a 0.137 flat hit; real fact questions the grammar misses score 0.82-0.97 on their top fact)
+            if grounded and plan is None and scores:
+                best = max((sc for sc, f in zip(scores, facts)
+                            if (t := parse_fact(f)) is not None and normalize(t.obj) == normalize(vm_answer)), default=0.0)
+                if best < self.tau_ret:
+                    grounded = False
+                    trace("gate_retrieval", answer=vm_answer, score=round(best, 3), tau_ret=round(self.tau_ret, 3))
         # consistency gate: a VERIFIED walk that disagrees with the emitter is a
         # caught inconsistency — never speak the suspect answer (selftest: 5 of
         # the 6 emitter misses had a verified walk holding the gold answer)
@@ -386,6 +396,9 @@ class CubbyBrain:
                            r"comment (vas[- ]tu|[çc]a va)|que penses[- ]tu|ton avis|tu (aimes|pr[ée]f[èe]res)|"
                            r"raconte|blague|devinette|po[èe]me|histoire|chanson|[ée]cris|imagine|conseil)\b", re.I)
 
+    _CAPABILITY = re.compile(r"\b(do you know how to|can you|could you|are you able to|do you know (how|what|about)|"
+                             r"sais[- ]tu|peux[- ]tu|pourrais[- ]tu|es[- ]tu capable)\b", re.I)
+
     def needs_facts(self, text: str) -> tuple[bool, str]:
         """Does answering need facts about the world? Facts: a question the
         fact grammar parses, or a wh-question that is not about Cubby himself
@@ -396,6 +409,8 @@ class CubbyBrain:
             return False, "about Cubby himself"
         if parse_question(text) is not None:
             return True, "the fact grammar parses it"
+        if self._CAPABILITY.search(text):                # "do you know how to write code?" (live misroute 2026-09-03): about Cubby, not the world
+            return False, "about Cubby himself"
         if self._NO_FACTS.search(text):
             return False, "a feeling, opinion or creative ask"
         if self._QUESTION.search(text):
@@ -430,7 +445,10 @@ class CubbyBrain:
         world, score = route_world(self.worlds, text)
         tau_eff = self.chat.chem.modulate_threshold(self.route_tau)
         facts, why = self.needs_facts(text)
-        if facts or score >= tau_eff:
+        # confident retrieval engages reasoning only for residual small talk: a definite no-facts read (about Cubby,
+        # a feeling, a creative ask) stands whatever the store resembles ('do you know how to write code?' hit an
+        # 'audio album ... write you a song' fact at 0.377 > tau 0.319 and was answered 'audio album', 2026-09-03)
+        if facts or (score >= tau_eff and why == "small talk"):
             return {"cortex": "reasoning", "world": world, "score": score, "tau_eff": round(tau_eff, 3),
                     "needs_facts": True, "why": why if facts else "retrieval"}
         return {"cortex": "talk", "score": score, "tau_eff": round(tau_eff, 3), "needs_facts": False, "why": why}

@@ -427,3 +427,33 @@ def test_the_adapter_bank_grows_and_counts_what_it_cannot_serve():
     assert bank.stage("history") == "routed" and [h for h in bank.history if h[2] == "rejected"] == [("history", "history-v2", "rejected")]
     assert bank.idle_roles(min_calls=2) == ["history", "talk"], "history used once, talk never: both below the prune line; the default is never listed"
     assert bank.usage()["candidates"] == [] and "history" in bank.usage()["roles"]
+
+
+
+def test_a_definite_no_facts_read_is_never_overridden_by_retrieval():
+    """Live misroute (2026-09-03): 'do you know how to write code?' is a capability question about Cubby, but the
+    store resembled it (an 'audio album ... write you a song' fact at 0.377 > tau 0.319) and 'confident retrieval
+    engages reasoning' sent it to the VM, which answered 'audio album'. Retrieval may pull only residual small talk."""
+    s = sv.CubbyServe(ChainEmitter(), overlap_retriever, STORE, route_tau=0.0)   # tau 0: every hit is 'confident'
+    assert s.needs_facts("do you know how to write code?") == (False, "about Cubby himself")
+    assert s.needs_facts("can you write a poem about berlin?")[0] is False
+    assert s.needs_facts("What is the capital of germany?") == (True, "the fact grammar parses it")   # parse comes first
+    for q in ("do you know how to write code?", "tell me a joke about berlin", "peux-tu écrire du code ?"):
+        assert s.route(q)["cortex"] == "talk", q
+    r = s.route("berlin berlin berlin")                    # residual small talk that the store resembles: retrieval may still engage
+    assert r["cortex"] == "reasoning" and r["why"] == "retrieval"
+
+
+def test_live_an_unparsed_question_needs_a_confident_hit_to_ground():
+    """Live misroute (2026-09-03): 'awesome, what are the things you learned?' is a wh-question the grammar does not
+    parse; the flat fallback offered a 0.137 hit, the emitter bound its object ('lists') and the ground check took
+    it — an unparsed question has no relation to hold the answer to. Now the grounding fact must be a hit for the
+    question at >= tau_ret; a parsed question keeps the relation gate and still answers."""
+    _exe_or_skip()
+    s = sv.CubbyServe(ChainEmitter(), overlap_retriever, STORE, route_tau=0.2)
+    rec = s.turn("what are the things you learned about berlin")   # 'what' -> a question about the world; overlap with the berlin fact is 2/8
+    assert rec["kind"] == "task" and rec["route"]["cortex"] == "reasoning"
+    assert rec["task"]["vm_answer"] is not None, "the emitter bound an offered object (that is the leak)"
+    assert rec["task"]["grounded"] is False and rec["reply"] == DK_EN
+    assert "gate_retrieval" in [e.get("kind") for e in list(s.events)]
+    assert s.turn("What is the capital of germany?")["reply"] == "berlin"

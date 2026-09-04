@@ -526,8 +526,9 @@ def test_live_a_step_thinks_out_loud_and_the_model_may_phrase_it():
     assert man.resp()["thought"] == thoughts[-1]["text"], "the page's bubble carries the step's thought"
     probes = [e for e in thoughts if e["about"] == "probe"]
     if probes:
-        assert any(e["verbalized"] and e["text"].startswith("Hmm") and "raw" in e for e in probes), \
-            "a verbalized thought keeps the host line beside it"
+        from pacman import split_mood
+        assert any(e["verbalized"] and split_mood(e["text"])[1].startswith("Hmm") and "raw" in e for e in probes), \
+            "a verbalized thought keeps the host line beside it (the mood tag is the host's, re-attached in front)"
     assert man.resp()["word"] is None and man.resp()["collected"] == "", "the letter mechanic is gone"
 
 
@@ -632,3 +633,48 @@ def test_replay_uses_the_pacman3d_template_with_his_trajectory(tmp_path):
     assert "explored live by cubby-man" in page and "/*DATA*/" not in page
     data = json.loads(page.split("const D = ", 1)[1].split(";\n", 1)[0])
     assert data["traj"] == traj and data["total"] == 3 and data["w"] == 3
+
+
+
+def test_rephrase_guard_from_the_first_two_adapter_live_run():
+    """The talk adapter's real outputs (2026-09-03 trace): the good rephrasings pass, the instruction echoes,
+    second person, mood-tag confusion and invented meaning around kept numbers are rejected (host line stands)."""
+    from identity import load_facts
+    from pacman import rephrase_ok, split_mood
+    F = load_facts()
+    assert split_mood("(at ease) Pellet 6/12, nice.") == ("(at ease) ", "Pellet 6/12, nice.")
+    assert split_mood("Pellet 6/12, nice.") == ("", "Pellet 6/12, nice.")
+    good = [("Trap sprung \u2014 one ghost sent home.", "The trap was sprung, and one ghost was sent home."),
+            ("Got a pellet (8/12).", "I got 8 out of 12 pellets."),
+            ("Using COMBO-AAABC: 4 steps saved.", "Using COMBO-AAABC saves 4 steps."),
+            ("That ghost is 1 away. Not today \u2014 moving off.", "That ghost is 1 away. Not today \u2014 moving off."),
+            ("Thinking\u2026 the check comes back: flee.", "The check comes back: flee.")]
+    for line, text in good:
+        assert rephrase_ok(line, text, F), (line, text)
+    bad = [("Pellet 1/12, nice.", "My own words, one short sentence, first person: \"Pellet 1/12, nice.\""),      # instruction echo
+           ("Using COMBO-AABAA: 4 steps saved.", "In my own words, one short sentence, first person, keeping every number and every name: Using COMBO-AABAA: 4 steps saved."),
+           ("Pellet 6/12, nice.", "The pellet with 6 grains weighing 12 grams is very nice."),                     # invented meaning
+           ("One more: 7 of 12.", "I am a person who has 7 fingers on one hand and 12 fingers on the other."),
+           ("Running low (58). Safe corner \u2014 I'll rest a bit.", "My current score is 58, and I'll rest in the safe corner."),
+           ("Energy at 22. Nobody around; a short breather.", "I see, so you're saying that the energy is at 22 and there is nobody around. It's a short breather for you."),   # second person
+           ("back? Blocked. Good to know.", "I understand you are asking me to reword the phrase \"alert\" in my own words. Can you please provide me with the context?"),
+           ("No way forward: a wall. Filed.", "I can't tell you about the wall, but I can tell you that I can't stop you."),
+           ("Got a pellet (10/12).", "Sure, I can help with that. Here's the sentence in my own words: I have a pellet with a size between 10 and 12."),
+           ("Level 1 cleared! On to 2.", "I am happy to say that I have successfully completed Level 1, and I am ready to tackle Level 2."),   # 2x too long, invented
+           ("Got a pellet (8/12).", "I got 8 pellets."),                                                              # a number dropped
+           ("Shortcut with COMBO-AAABC \u2014 4 saved.", "Shortcut with COMBO-AAABD \u2014 4 saved.")]                     # a name changed
+    for line, text in bad:
+        assert not rephrase_ok(line, text, F), (line, text)
+
+
+
+def test_the_game_claims_what_did_you_learn_as_a_status_question():
+    """Live misroute (2026-09-03): 'awesome, what are the things you learned?' went to the VM path and was answered
+    'lists'. With cubby-man mounted it is a status question, answered from the game, no stepping."""
+    from pacman import CubbyGhost, GhostVerse
+    man = CubbyGhost(GhostVerse(), probe=1.0, seed=0)
+    for q in ("awesome, what are the things you learned?", "what did you learn?", "how is the pacman game going ?",
+              "qu'as-tu appris ?"):
+        assert man.match(q) == 1.0, q
+    assert man.match("how would you like a new plugin to explore the web?") == 0.0
+    assert man._STATUS.search("what are the things you learned?") and not man._PLAY.search("what are the things you learned?")

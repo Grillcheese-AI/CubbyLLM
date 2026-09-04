@@ -146,9 +146,11 @@ class CubbyPac(CubbyMan):
     # the game's own words (claim a turn outright) vs the plain commands a player
     # types (claim a statement only — never a question about something else)
     _GO = re.compile(r"\b(pac[- ]?man|pellets?|maze|labyrinthe|explore (for )?\d+|explore \d+|level \d+|niveau \d+|"
-                     r"next level|niveau suivant|status|score|lives|vies|ghosts?|fant[ôo]mes?)\b", re.I)
+                     r"next level|niveau suivant|status|score|lives|vies|ghosts?|fant[ôo]mes?|"
+                     r"(things|what) (you|did you|have you) learn(ed|t)?|(what|things) .{0,12}learn(ed|t)|"
+                     r"(qu'as[- ]tu |ce que tu as |as[- ]tu )appris)\b", re.I)   # "what are the things you learned?" is a status question (2026-09-03)
     _CMD = re.compile(r"\b(explore[rsz]?|wander|play|joue[rz]?|keep going|continue|go on|next)\b", re.I)
-    _STATUS = re.compile(r"\b(status|score|lives|vies|how (is|are) (it|things|you) going)\b", re.I)
+    _STATUS = re.compile(r"\b(status|score|lives|vies|how (is|are) (it|things|you) going|learn(ed|t)|appris)\b", re.I)
     _PLAY = re.compile(r"\b(play|explore[rsz]?|wander|joue[rz]?|go|continue|keep going|next)\b", re.I)
 
     def status_line(self, lang: str = "en") -> str:
@@ -746,6 +748,45 @@ class _Safe(dict):
         return "?"
 
 
+_MOOD_TAG = re.compile(r"^\(([^)]{1,40})\)\s*")
+_ECHO = re.compile(r"own words|first person|short sentence|keeping every|propres mots|premi\u00e8re personne|phrase courte|"
+                   r"\breword|\brephras|here'?s the sentence|\bsure\b|\bcertainly\b|\bi understand you\b|\bi see, so\b|"
+                   r"\byou'?re\b|\byou are\b|\byour\b|\byou\b|\bvous\b|\btu\b|\bton\b|\bta\b|\btes\b", re.I)
+
+
+def split_mood(line: str) -> tuple[str, str]:
+    """'(at ease) Pellet 6/12, nice.' -> ('(at ease) ', 'Pellet 6/12, nice.'); no tag -> ('', line)."""
+    m = _MOOD_TAG.match(line)
+    return (line[:m.end()], line[m.end():]) if m else ("", line)
+
+
+def _content_words(text: str) -> set[str]:
+    """Stems (first five letters) of the words that carry content (>= 5 letters)."""
+    return {w[:5] for w in re.findall(r"[a-z\u00e0-\u00ff]{5,}", text.lower())}
+
+
+def rephrase_ok(line: str, text: str, facts) -> bool:
+    """Is `text` an acceptable rephrasing of the host's `line` (mood tag already
+    stripped)? Every number and name kept, the voice rules, no base-model guard,
+    not a bio, at most 40 words and under 2x the host line, no echo of the
+    instruction, no second person, no question back, and at most ONE content
+    word the host line did not have — the live trace's failures were invented
+    meaning around kept numbers ('6 grains weighing 12 grams', '7 fingers')."""
+    from forge import numbers
+    from identity import is_identity_reply, is_model_guard, voice_ok
+    if not text or "?" in text or _ECHO.search(text):
+        return False
+    n_words = len(text.split())
+    if n_words > 40 or n_words > max(12, 2 * len(line.split()) + 4):
+        return False
+    names = re.findall(r"level-\d+ cell [\d\-]+|\b[A-Z][A-Z0-9\-]{2,}\b", line)   # cells and move NAMES, not sentence-initial words
+    if not (set(numbers(line)) <= set(numbers(text)) and all(n in text for n in names)):
+        return False
+    if len(_content_words(text) - _content_words(line)) > 1:
+        return False
+    return voice_ok(text, facts) and not is_model_guard(text) and not is_identity_reply(text, facts)
+
+
 class CubbyGhost(CubbyPac):
     """cubby-man in the big game: the same explorer brain, now hunted. Ghost
     proximity feeds THREAT into the neurochemistry (anxious when chased, bold
@@ -1217,18 +1258,19 @@ class CubbyGhost(CubbyPac):
 
     def _verbalize(self, line: str) -> tuple[str, bool]:
         """The model says the host's thought in its own words, under the
-        hormonal state. Accepted only if it keeps every number and name of
-        the original, passes the voice rules, carries no base-model guard
-        and is not a bio — else the host line stands. -> (text, verbalized)."""
+        hormonal state. The mood tag is the host's: stripped before the
+        prompt, put back after. Accepted only by `rephrase_ok` (numbers,
+        names, voice, no echo of the instruction, no second person, no
+        invented content) — else the host line stands. -> (text, verbalized)."""
         if self.brain is None or not self.verbalize:
             return line, False
-        from forge import numbers
-        from identity import identity_system, is_identity_reply, is_model_guard, voice_ok
+        from identity import identity_system
+        mood, core = split_mood(line)
         fr = self.lang == "fr"
         prompt = ((f"Dis ceci avec tes propres mots, une phrase courte, à la première personne, en gardant "
-                   f"chaque nombre et chaque nom : {line}") if fr else
+                   f"chaque nombre et chaque nom : {core}") if fr else
                   (f"Say this in your own words, one short sentence, first person, keeping every number "
-                   f"and every name: {line}"))
+                   f"and every name: {core}"))
         try:
             raw = self.brain.emitter.emit(prompt, context="talk", max_new_tokens=48,   # words, not programs: the talk adapter
                                           system=identity_system(self.brain.facts, self.brain.chat.state),
@@ -1237,13 +1279,7 @@ class CubbyGhost(CubbyPac):
             return line, False
         text = re.sub(r"^\s*(?:<think>)?.*?</think>\s*", "", raw, count=1, flags=re.S) if "</think>" in raw else raw
         text = " ".join(text.strip().split())
-        # what must survive the rephrasing: cells and move NAMES (all caps), not sentence-initial words
-        names = re.findall(r"level-\d+ cell [\d\-]+|\b[A-Z][A-Z0-9\-]{2,}\b", line)
-        facts = self.brain.facts
-        ok = (bool(text) and len(text.split()) <= 40 and voice_ok(text, facts) and not is_model_guard(text)
-              and not is_identity_reply(text, facts) and set(numbers(line)) <= set(numbers(text))
-              and all(n in text for n in names))
-        return (text, True) if ok else (line, False)
+        return (mood + text, True) if rephrase_ok(core, text, self.brain.facts) else (line, False)
 
     def _think(self, kind: str, **d) -> None:
         """Record a thought for this step if it outranks the current one; the
