@@ -33,7 +33,7 @@ for p in (os.path.dirname(HERE), HERE):
 from hf_rows import fetch_rows  # noqa: E402
 from identity import guess_lang, identity_system, sample_state  # noqa: E402
 
-GAP_TASKS = ("verbalize", "repair", "rewrite", "appraisal", "dialog_emotion", "dialog_act", "empathy", "quebec", "quebec_mc")
+GAP_TASKS = ("verbalize", "repair", "rewrite", "appraisal", "dialog_emotion", "dialog_act", "empathy", "quebec", "quebec_mc", "toolcall")
 
 _URL = re.compile(r"https?://|www\.", re.I)
 _NUM = re.compile(r"-?\d+(?:[.,]\d+)?")
@@ -887,7 +887,154 @@ def write_real_user_turns(out_path: str, path: str = OWNER_CHATS, min_words: int
     return n
 
 
-CHECKS = {"verbalize": None, "repair": repair_ok, "quebec": quebec_ok, "quebec_mc": label_first_ok, "rewrite": rewrite_ok, "appraisal": appraisal_ok,
+# ── toolcall: the host's tool registry in each base's native call format, with negatives ─────────────────────
+# The registry the host can actually execute or refuse under policy: the game (mounted plugin), the memory cortex,
+# and the two network tools that a plugin cortex will own behind an explicit capability (deny-by-default until then).
+TOOLS = [
+    {"name": "news_search", "description": "Search today's news headlines for a topic.",
+     "parameters": {"type": "object", "properties": {"query": {"type": "string", "description": "what to search for"},
+                                                     "language": {"type": "string", "enum": ["en", "fr"]}}, "required": ["query"]}},
+    {"name": "web_search", "description": "Search the web for a question that needs a source.",
+     "parameters": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]}},
+    {"name": "pacman_status", "description": "Report the current state of the cubby-man game: level, score, lives, what was learned.",
+     "parameters": {"type": "object", "properties": {}, "required": []}},
+    {"name": "pacman_explore", "description": "Play the cubby-man maze for a number of steps.",
+     "parameters": {"type": "object", "properties": {"steps": {"type": "integer"}}, "required": ["steps"]}},
+    {"name": "remember_fact", "description": "Store a fact the user asked you to remember.",
+     "parameters": {"type": "object", "properties": {"fact": {"type": "string"}}, "required": ["fact"]}},
+]
+TOOL_SYSTEM = {
+    "hermes": ("You are Cubby. You may call a tool when the user needs it.\n\n# Tools\n\nYou may call one or more functions to assist "
+               "with the user query.\n\nYou are provided with function signatures within <tools></tools> XML tags:\n<tools>\n"
+               + "\n".join(json.dumps({"type": "function", "function": t}) for t in TOOLS)
+               + "\n</tools>\n\nFor each function call, return a json object with function name and arguments within "
+               "<tool_call></tool_call> XML tags:\n<tool_call>\n{\"name\": <function-name>, \"arguments\": <args-json-object>}\n</tool_call>"),
+    "lfm": "You are Cubby. You may call a tool when the user needs it.\nList of tools: " + json.dumps(TOOLS),
+}
+_TOPICS_EN = ["quebec", "the montreal canadiens", "the weather in montreal", "the election", "the stock market", "the canadiens game tonight",
+              "the federal budget", "the metro strike", "the wildfires", "the housing market", "the olympics", "the new iphone"]
+_TOPICS_FR = ["le québec", "les canadiens de montréal", "la météo à montréal", "les élections", "la bourse", "le match des canadiens ce soir",
+              "le budget fédéral", "la grève du métro", "les feux de forêt", "le marché immobilier", "les olympiques", "le nouvel iphone"]
+_QUESTIONS_EN = ["who won the nobel prize in physics this year", "what is the population of montreal right now", "when is the next solar eclipse",
+                 "is the 40 closed this weekend", "what time does the jean-talon market open", "how much is a metro pass in montreal",
+                 "what's the exchange rate for the canadian dollar today", "who is the current mayor of quebec city"]
+_QUESTIONS_FR = ["qui a gagné le prix nobel de physique cette année", "c'est quoi la population de montréal en ce moment", "quand est la prochaine éclipse",
+                 "est-ce que la 40 est fermée cette fin de semaine", "à quelle heure ouvre le marché jean-talon", "combien coûte une passe de métro à montréal",
+                 "c'est quoi le taux de change du dollar canadien aujourd'hui", "qui est le maire de québec en ce moment"]
+_FACTS_EN = ["my sister's birthday is on the 12th of march", "the wifi password at the cottage is bluebird42", "my dentist is doctor Tremblay on rue Saint-Denis",
+             "the car's oil change is due in november", "my nephew's name is Léo", "the meeting with the accountant is every first monday"]
+_FACTS_FR = ["l'anniversaire de ma sœur est le 12 mars", "le mot de passe du wifi au chalet est bluebird42", "mon dentiste est le docteur Tremblay rue Saint-Denis",
+             "le changement d'huile de l'auto est en novembre", "mon neveu s'appelle Léo", "la réunion avec le comptable est chaque premier lundi"]
+_ASKS = {
+    "news_search": {"en": ["what's in the news today about {t}?", "any headlines about {t}?", "what are people saying about {t} today", "give me the latest news on {t}",
+                           "anything new about {t} this morning?"],
+                    "fr": ["quoi de neuf dans les nouvelles sur {t} ?", "des nouvelles de {t} ce matin ?", "qu'est-ce qui se dit sur {t} aujourd'hui", "donne-moi les dernières nouvelles sur {t}",
+                           "il y a du nouveau sur {t} ?"]},
+    "web_search": {"en": ["{t}?", "look up {t}", "can you check {t}", "search for {t} please", "find out {t}"],
+                   "fr": ["{t} ?", "cherche {t}", "peux-tu vérifier {t}", "regarde {t} s'il te plaît", "trouve {t}"]},
+    "pacman_status": {"en": ["how is the pacman game going?", "what's your score in the maze?", "how many lives do you have left?", "status of the game", "what did you learn in the maze so far?"],
+                      "fr": ["comment va la partie de pacman ?", "c'est quoi ton score dans le labyrinthe ?", "il te reste combien de vies ?", "statut de la partie", "qu'as-tu appris dans le labyrinthe ?"]},
+    "pacman_explore": {"en": ["play pacman for {n} steps", "explore the maze for {n}", "go explore for {n} steps", "keep playing, {n} more steps", "wander {n} steps"],
+                       "fr": ["joue au pacman pendant {n} coups", "explore le labyrinthe pendant {n}", "va explorer {n} coups", "continue de jouer, {n} coups de plus", "balade-toi {n} coups"]},
+    "remember_fact": {"en": ["remember that {t}", "please remember: {t}", "note this down, {t}", "keep in mind that {t}", "don't forget, {t}"],
+                      "fr": ["retiens que {t}", "souviens-toi : {t}", "note ça, {t}", "garde en tête que {t}", "n'oublie pas, {t}"]},
+}
+
+
+def render_call(fmt: str, name: str, args: dict) -> str:
+    if fmt == "hermes":
+        return "<tool_call>\n" + json.dumps({"name": name, "arguments": args}, ensure_ascii=False) + "\n</tool_call>"
+    py = ", ".join(f"{k}={json.dumps(v, ensure_ascii=False)}" for k, v in args.items())
+    return f"<|tool_call_start|>[{name}({py})]<|tool_call_end|>"
+
+
+_HERMES_CALL = re.compile(r"<tool_call>\s*(\{.*?\})\s*</tool_call>", re.S)
+_LFM_CALL = re.compile(r"<\|tool_call_start\|>\s*\[\s*(\w+)\((.*?)\)\s*\]\s*<\|tool_call_end\|>", re.S)
+
+
+def parse_call(text: str) -> dict | None:
+    """The first native tool call in a generation: {name, arguments} or {malformed: True}; None when there is none."""
+    m = _HERMES_CALL.search(text)
+    if m:
+        try:
+            d = json.loads(m.group(1))
+            return {"name": d.get("name"), "arguments": d.get("arguments") or {}}
+        except json.JSONDecodeError:
+            return {"name": None, "arguments": {}, "malformed": True}
+    m = _LFM_CALL.search(text)
+    if m:
+        args = {}
+        for k, v in re.findall(r"(\w+)\s*=\s*(\"(?:[^\"\\]|\\.)*\"|-?\d+)", m.group(2)):
+            try:
+                args[k] = json.loads(v)
+            except json.JSONDecodeError:
+                args[k] = v
+        return {"name": m.group(1), "arguments": args}
+    if "<tool_call>" in text or "<|tool_call_start|>" in text:
+        return {"name": None, "arguments": {}, "malformed": True}
+    return None
+
+
+def toolcall_ok(rec: dict, gen: str) -> bool:
+    """A call is due (`gold` = the tool name): the call is well-formed, names that tool, carries every required
+    argument and the query/fact/steps value agrees with the record's. No call is due (`gold` = "none"): none appears."""
+    call = parse_call(gen)
+    gold = rec.get("gold")
+    if gold == "none":
+        return call is None
+    if call is None or call.get("malformed") or call.get("name") != gold:
+        return False
+    want = rec.get("call_args") or {}
+    for k, v in want.items():
+        got = call["arguments"].get(k)
+        if k == "steps":
+            if got != v:
+                return False
+        elif isinstance(v, str) and _norm_q(str(got or "")) and token_f1(str(got), v) < 0.5:
+            return False
+        elif got is None:
+            return False
+    return True
+
+
+def build_toolcall(rng: random.Random, facts: dict, chat_rows: list[dict], n_pos: int = 1200, n_neg: int = 1200) -> tuple[list[dict], Counter]:
+    """Positives from the templates (both formats, EN+FR), negatives from existing chat rows re-issued with the tool list
+    in the system prompt (their reply stands, no call). Every record: task toolcall, `format`, `gold` (tool or "none"),
+    `call_args` for the check."""
+    out, why = [], Counter()
+    i = 0
+    for fmt in ("lfm", "hermes"):
+        for _ in range(n_pos // 2):
+            name = rng.choice(list(_ASKS))
+            lang = rng.choice(["en", "fr"])
+            tmpl = rng.choice(_ASKS[name][lang])
+            if name == "news_search":
+                t = rng.choice(_TOPICS_EN if lang == "en" else _TOPICS_FR); ask = tmpl.format(t=t); args = {"query": t, "language": lang}
+            elif name == "web_search":
+                t = rng.choice(_QUESTIONS_EN if lang == "en" else _QUESTIONS_FR); ask = tmpl.format(t=t); args = {"query": t}
+            elif name == "pacman_status":
+                ask = tmpl; args = {}
+            elif name == "pacman_explore":
+                n = rng.choice([10, 20, 30, 50]); ask = tmpl.format(n=n); args = {"steps": n}
+            else:
+                t = rng.choice(_FACTS_EN if lang == "en" else _FACTS_FR); ask = tmpl.format(t=t); args = {"fact": t}
+            ask = ask[0].upper() + ask[1:] if rng.random() < 0.5 else ask
+            out.append({"id": f"toolcall:{fmt}:{i}", "task": "toolcall", "subtype": name, "source": "templates:tool_registry", "format": fmt,
+                        "prompt": ask, "program": render_call(fmt, name, args), "gold": name, "gold_any": [name], "call_args": args,
+                        "system": TOOL_SYSTEM[fmt], "state": None, "lang": lang})
+            i += 1
+        pool = [r for r in chat_rows if r.get("task") == "chat" and 1 <= len(r["prompt"].split()) <= 40 and "\n" not in r["prompt"]]
+        rng.shuffle(pool)
+        for r in pool[: n_neg // 2]:
+            out.append({"id": f"toolcall:{fmt}:neg:{i}", "task": "toolcall", "subtype": "none", "source": f"negatives:{r.get('source', 'chat')}", "format": fmt,
+                        "prompt": r["prompt"], "program": r["program"], "gold": "none", "gold_any": ["none"], "call_args": {},
+                        "system": TOOL_SYSTEM[fmt], "state": None, "lang": r.get("lang", "en")})
+            i += 1
+    rng.shuffle(out)
+    return out, why
+
+
+CHECKS = {"verbalize": None, "repair": repair_ok, "quebec": quebec_ok, "quebec_mc": label_first_ok, "toolcall": toolcall_ok, "rewrite": rewrite_ok, "appraisal": appraisal_ok,
           "dialog_emotion": dialog_emotion_ok, "dialog_act": label_first_ok, "empathy": empathy_ok}
 
 

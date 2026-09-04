@@ -445,3 +445,28 @@ def test_free_text_families_score_as_generative_multiple_choice_and_empathy_take
     em = {"task": "empathy", "gold": "sentimental"}
     assert g.empathy_ok(em, "nostalgic.") and g.empathy_ok(em, "Sentimental") and not g.empathy_ok(em, "angry.")
     assert g.gap_ok(em, "nostalgic", None)
+
+
+
+def test_toolcall_family_renders_both_formats_with_negatives_and_the_check_reads_them():
+    import gap_families as g
+    from identity import load_facts
+    F = load_facts()
+    chat = [{"task": "chat", "prompt": "hi there cubby", "program": "Hey there! I'm Cubby.", "lang": "en", "source": "x"},
+            {"task": "chat", "prompt": "what is the capital of australia", "program": "Canberra.", "lang": "en", "source": "x"}]
+    recs, why = g.build_toolcall(random.Random(0), F, chat, n_pos=20, n_neg=4)
+    assert {r["format"] for r in recs} == {"lfm", "hermes"} and all(r["task"] == "toolcall" for r in recs)
+    pos = [r for r in recs if r["gold"] != "none"]; neg = [r for r in recs if r["gold"] == "none"]
+    assert len(pos) == 20 and len(neg) == 4 and all("<tools>" in r["system"] or "List of tools" in r["system"] for r in recs)
+    for r in pos:
+        assert g.toolcall_ok(r, r["program"]), r["program"]   # every rendered call parses back to its own record
+        assert not g.toolcall_ok(r, "Hello! I'm Cubby."), "a call was due"
+    for r in neg:
+        assert g.toolcall_ok(r, r["program"]) and not g.toolcall_ok(r, g.render_call(r["format"], "news_search", {"query": "x"}))
+    assert g.parse_call('<tool_call>\n{"name": "news_search", "arguments": {"query": "quebec", "language": "en"}}\n</tool_call>') == {"name": "news_search", "arguments": {"query": "quebec", "language": "en"}}
+    assert g.parse_call('<|tool_call_start|>[pacman_explore(steps=20)]<|tool_call_end|>') == {"name": "pacman_explore", "arguments": {"steps": 20}}
+    assert g.parse_call("<tool_call>\n<tool_call>\n\nHello")["malformed"] and g.parse_call("plain text") is None
+    lfm = next(r for r in pos if r["format"] == "lfm" and r["subtype"] == "news_search")
+    assert lfm["program"].startswith("<|tool_call_start|>[news_search(query=") and lfm["program"].endswith(")]<|tool_call_end|>")
+    prog, talk = b.partition_records([{"task": "toolcall"}])
+    assert [r["task"] for r in talk] == ["toolcall"]
