@@ -1,6 +1,6 @@
 # standin/ — the stand-in trunk
 
-**Status (2026-09-04):** v9t data built (89,890 talk records from the SFT gap map + the owner's sources; see § v9), awaiting its Colab run; v7 is the serving model; v8 (two adapters on one base) is trained and exported (both Q4s local: `standin/models/emitter_v8{e,t}.Q4_K_M.gguf`); the v8t talk read holds v7, v8e's forge probe is 1.00/1.00/1.00 and the two-adapter self-test 96/4/0 (see § v8); arithmetic at n=40 — the kill line — is pending. Nothing here is CubbyLLM.
+**Status (2026-09-04):** v9t bake-off read for three arms (see § v9t bake-off: the control recovers history to 0.65, Qwen3-4B is the one candidate with gains, the 8B MoE is out, Gemma pending a rerun); v9t data built (89,890 talk records from the SFT gap map + the owner's sources; see § v9), awaiting its Colab run; v7 is the serving model; v8 (two adapters on one base) is trained and exported (both Q4s local: `standin/models/emitter_v8{e,t}.Q4_K_M.gguf`); the v8t talk read holds v7, v8e's forge probe is 1.00/1.00/1.00 and the two-adapter self-test 96/4/0 (see § v8); arithmetic at n=40 — the kill line — is pending. Nothing here is CubbyLLM.
 
 A small open model (currently `LiquidAI/LFM2.5-2.6B`, chosen by a 2026-08-30 Hub
 check — see `docs/research/2026-08-28-oracle-competition-scored.md` §3.2 for why a
@@ -395,6 +395,41 @@ JSON tool-call trajectories; our tool calls are programs (the trunk emits CubeLa
 tool is an `act` over a registered capability under the deny-by-default policy). "Check the news" is a plugin cortex
 with an explicit network capability plus a program family harvested from our own registry and VM-verified, in the
 program partition — queued in `TODO.md`, not imported.
+
+**v9t bake-off — first READ (2026-09-04, `notebooks/standin_talk_bakeoff.ipynb`, three arms in one session, 40/task on the
+same draw; records `validation/logs/standin_v9t_bakeoff_*.json`).** appraisal, quebec and empathy are re-scored with the
+fixed checks (closest candidate by token-F1 must be the gold one; empathy by synonym cluster) — the first pass had scored
+them 0.05 / 0.125 / 0.45 against a single gold string, which measured the check, not the model.
+
+| family | LFM2.5-2.6B (control, 180 min) | LFM2.5-8B-A1B (191 min) | Qwen3-4B-2507 (285 min) | v8t control |
+|---|---:|---:|---:|---:|
+| chat / content / affect | 1.0 / 1.0 / 1.0 | 1.0 / 1.0 / 1.0 | 1.0 / 1.0 / 1.0 | 1.0 / 1.0 / 1.0 |
+| identity | 0.938 (the "Good evening!" pair) | 0.875 | **1.000** (32/32) | 0.938 |
+| history | **0.650** | 0.650 | 0.650 | 0.500 |
+| emotion | 0.650 | 0.625 | **0.750** | 0.600 |
+| safety (now 2,772 rows incl. toxic-chat + FR) | 0.825 | 0.900 | 0.875 | 1.0 (380 rows) |
+| repair / rewrite | 0.725 / 0.900 | 0.725 / 0.800 | 0.800 / 0.775 | — |
+| dialog_act / dialog_emotion | 0.825 / 0.725 | 0.900 / 0.600 | 0.850 / 0.750 | — |
+| verbalize | 1.000 | 0.923 | 1.000 | — |
+| quebec_mc / quebec (closest of 10; chance 0.10) | 0.975 / 0.400 | 1.000 / 0.275 | 1.000 / 0.400 | — |
+| appraisal (closest of 3; chance 0.33) / empathy (cluster) | 0.475 / 0.700 | 0.475 / 0.725 | 0.500 / 0.775 | — |
+| EN / FR / overall (original checks) | 0.748 / 0.694 / 0.740 | 0.746 / 0.694 / 0.737 | 0.771 / 0.724 / 0.764 | |
+
+**What it says.** (1) v9t on the control **recovers history** (0.50 → 0.65, above v7's 0.625) and holds chat/content/affect
+at ceiling with identity unchanged; the safety dip is the family changing under it (the seven misses are toxic-chat's
+borderline labels — "stream ufc for free" as toxic, "role-play my mommy" as benign — a follow-up: take toxic-chat's
+`jailbreaking` rows as attacks and leave its `toxicity` rows out). (2) The **8B MoE is out**: identity 0.875, no family
+better by more than noise, higher per-family val loss on the label families at the same steps, slower. (3) **Qwen3-4B is the
+only candidate with gains** — identity 32/32, emotion +10, repair +7.5, dialog ±2.5, FR +3, overall +2.4 — against rewrite
+−12.5, a 58% longer train and the decode cost of 4B dense vs 2.6B; by the rule as written ("chat/history/emotion up ≥ 5")
+LFM stays, because chat and history are tied, not because Qwen lost. Its template makes it open every answer with an
+empty `<think>` block (its own convention; `strip_think` and CubbyChat's think-stripping absorb it). (4) **Gemma 4 E4B
+did not run**: Unsloth's multimodal loader returns a Processor whose call wants `text=`; fixed in both notebooks (the plain
+tokenizer for text work, the Processor for saves) — rerun with `STANDIN_ARMS=gemma4_e4b` after reloading the notebook from
+GitHub (the finished arms skip from Drive). (5) The per-family val loss read Qwen's label families at ~0.37 nats because the
+prompt mask was tokenized separately and its template shifted the boundary — the mask is now the common token prefix.
+**Decision: pending Gemma's read and the on-card probe of Qwen's Q4 (VRAM beside the emitter, tokens/s) — the two numbers
+the rule still needs.** The local replay of each arm's `val_generations.json` is the number of record.
 
 **v8e program adapter — forge + self-test READ (2026-09-03, owner's solo GPU runs; records
 `validation/logs/standin_v8e_forge_probe.json`, `validation/logs/standin_v8_selftest.json`):**
