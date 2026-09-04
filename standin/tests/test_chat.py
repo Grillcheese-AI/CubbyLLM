@@ -107,3 +107,28 @@ def test_live_vm_rejects_a_selection_the_host_never_offered():
     src = chat.render_talk_program(["offered one", DK_EN])
     with pytest.raises(cc.CubelangRunError, match="not among"):
         cc.resume_program_proto(src, fn="think", args=["hi", "calm"], answers=["invented reply"])
+
+
+
+def test_the_previous_exchange_rides_inline_in_the_training_shape():
+    """v9 (8192 context): the second turn's prompt carries the first exchange exactly as the OASST2 multi-turn
+    records do (build_chat_sft.MULTI_PROMPT); the first turn and identity questions stay bare."""
+    seen = []
+
+    class Rec(FakeEmitter):
+        def emit(self, prompt, *a, **k):
+            seen.append(prompt)
+            return super().emit(prompt, *a, **k)
+
+    c = chat.CubbyChat(Rec("Seven minutes, then cold water."), F)
+    c.turn("How do I boil an egg?", mediate=False)
+    c.turn("And for a soft one?", mediate=False)
+    c.turn("Who are you?", mediate=False)
+    assert seen[0] == "How do I boil an egg?"
+    assert seen[1] == "Conversation so far:\nUser: How do I boil an egg?\nCubby: Seven minutes, then cold water.\nUser: And for a soft one?"
+    assert seen[2] == "Who are you?", "an identity question stands alone"
+    from build_chat_sft import MULTI_PROMPT
+    assert chat.CubbyChat.MULTI_PROMPT == MULTI_PROMPT, "serve and training share the shape"
+    c.history_turns = 0
+    c.turn("Thanks!", mediate=False)
+    assert seen[-1] == "Thanks!"

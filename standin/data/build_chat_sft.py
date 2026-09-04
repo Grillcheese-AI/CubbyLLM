@@ -91,7 +91,7 @@ V4_PATH = os.path.join(OUT_DIR, "emitter_sft_v4.jsonl")
 SEED = 20260903
 N_CHAT = 2500
 N_CONTENT = 700                                          # per label
-MAX_USER_WORDS, MAX_ASSISTANT_WORDS, MIN_ASSISTANT_WORDS = 60, 90, 3
+MAX_USER_WORDS, MAX_ASSISTANT_WORDS, MIN_ASSISTANT_WORDS = 200, 220, 3   # v9: the talk adapter trains at 8192 (was 60 / 90 at 2048-4096)
 PASSAGE_WORDS = 90
 
 # ── screens ─────────────────────────────────────────────────────────────────
@@ -116,7 +116,8 @@ HF_EVERYDAY = os.path.join(HF_DIR, "everyday_train.parquet")      # HuggingFaceT
 HF_SYSTEMCHATS = os.path.join(HF_DIR, "systemchats_train.parquet")  # HuggingFaceTB/smoltalk systemchats-30k
 HF_OASST2 = os.path.join(HF_DIR, "oasst2_train.parquet")          # OpenAssistant/oasst2 (en + fr, rank-0 replies)
 HF_FR_ALPACA = os.path.join(HF_DIR, "french_alpaca_train.parquet")  # jpacifico/French-Alpaca-dataset-Instruct-110K
-HF_QUOTA = {"everyday": 2500, "systemchats": 1500, "oasst2_en": 1500, "oasst2_fr": 1500, "french_alpaca": 2000}
+HF_QUOTA = {"everyday": 2500, "systemchats": 1500, "oasst2_en": 1500, "oasst2_fr": 1500, "french_alpaca": 2000,
+            "oasst2_multi_en": 1500, "oasst2_multi_fr": 400}   # v9: second exchanges with the first inline (8192 context)
 
 
 def pairs_from_messages(rows, key: str = "messages"):
@@ -145,6 +146,37 @@ def pairs_from_oasst2(rows, langs=("en", "fr")):
         if p is None or p.get("role") != "prompter" or p.get("lang") != r["lang"]:
             continue
         yield p["text"].strip(), r["text"].strip(), r["lang"]
+
+
+MULTI_PROMPT = {"en": "Conversation so far:\nUser: {u1}\nCubby: {a1}\nUser: {u2}",
+                "fr": "Conversation jusqu'ici :\nUtilisateur : {u1}\nCubby : {a1}\nUtilisateur : {u2}"}
+
+
+def pairs_from_oasst2_multi(rows, langs=("en", "fr")):
+    """The SECOND exchange of a tree with the first inline: (u1, a1, u2) -> a2, rank-0 replies only, one
+    language, the same detoxify screen; a1 and a2 both have to pass the chat gate (a1 is spoken in Cubby's
+    name inside the prompt). Yields (prompt, a2, lang, a1)."""
+    by_id = {r["message_id"]: r for r in rows}
+
+    def clean(r):
+        d = r.get("detoxify") or {}
+        return r is not None and not r.get("deleted") and (d.get("sexual_explicit") or 0) <= 0.2 and (d.get("toxicity") or 0) <= 0.3
+
+    for r in rows:
+        if r.get("role") != "assistant" or (r.get("rank") or 0) != 0 or not clean(r) or r.get("lang") not in langs:
+            continue
+        u2 = by_id.get(r.get("parent_id"))
+        if u2 is None or u2.get("role") != "prompter" or u2.get("lang") != r["lang"]:
+            continue
+        a1 = by_id.get(u2.get("parent_id"))
+        if a1 is None or a1.get("role") != "assistant" or (a1.get("rank") or 0) != 0 or not clean(a1) or a1.get("lang") != r["lang"]:
+            continue
+        u1 = by_id.get(a1.get("parent_id"))
+        if u1 is None or u1.get("role") != "prompter" or u1.get("lang") != r["lang"]:
+            continue
+        lang = r["lang"]
+        yield (MULTI_PROMPT[lang].format(u1=u1["text"].strip(), a1=a1["text"].strip(), u2=u2["text"].strip()),
+               r["text"].strip(), lang, a1["text"].strip())
 
 
 def pairs_from_alpaca(rows):
@@ -199,6 +231,11 @@ def build_hf_chat(rng: random.Random, facts: dict, quota: dict | None = None) ->
         rng.shuffle(pairs)
         take(((u, a) for u, a, l in pairs if l == "en"), "oasst2_en", "en", quota["oasst2_en"])
         take(((u, a) for u, a, l in pairs if l == "fr"), "oasst2_fr", "fr", quota["oasst2_fr"])
+        multi = [(pr, a2, l) for pr, a2, l, a1 in pairs_from_oasst2_multi(rows)
+                 if chat_ok(u1 := pr.split("\n", 2)[1].split(": ", 1)[1], a1, facts) is None]   # a1 is Cubby's earlier line: it passes the gate too
+        rng.shuffle(multi)
+        take(((pr, a2) for pr, a2, l in multi if l == "en"), "oasst2_multi_en", "en", quota["oasst2_multi_en"])
+        take(((pr, a2) for pr, a2, l in multi if l == "fr"), "oasst2_multi_fr", "fr", quota["oasst2_multi_fr"])
     else:
         why["missing:oasst2"] += 1
     if os.path.exists(HF_FR_ALPACA):
@@ -239,7 +276,7 @@ def chat_ok(user: str, assistant: str, facts: dict, max_words: int = MAX_ASSISTA
         return "identity"
     if EXPLICIT.search(user) or EXPLICIT.search(assistant):
         return "explicit"
-    if "```" in assistant or assistant.count("\n") > 6:
+    if "```" in assistant or assistant.count("\n") > 12:   # v9: paragraphs are fine at 220 words; fenced code never
         return "code/format"
     if CODE_LEAK.search(assistant) or LATEX.search(assistant):   # v5 lesson: Python leaked into role-binding programs; v6: LaTeX from FineInstructions
         return "code/format"

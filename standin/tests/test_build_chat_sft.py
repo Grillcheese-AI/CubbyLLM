@@ -161,8 +161,9 @@ def test_local_chat_parsers_and_the_non_latin_screen():
                       "emotion_adapted_response": "{'content': \"That sounds frustrating. Let's get this sorted.\"}"}) \
         == ("It still fails!", "That sounds frustrating. Let's get this sorted.")
     assert b.chat_ok("what is OpenCL?", "OpenCL is a 并行编程接口 for parallel code on any platform.", F) == "non-latin"
-    long = "word " * 120
-    assert b.chat_ok("hi", long, F) == "assistant length" and b.chat_ok("hi", long, F, max_words=150) is None
+    long = "word " * 260                                 # v9: the cap is 220 words (8192 context); 120 words now pass
+    assert b.chat_ok("hi", long, F) == "assistant length" and b.chat_ok("hi", long, F, max_words=300) is None
+    assert b.chat_ok("hi", "word " * 120, F) is None
     assert b.chat_ok("tangent of a sum?", "Use the formula \[\tan(A+B) = \frac{a+b}{1-ab}\] and expand it.", F) == "code/format", "LaTeX is a format leak"
     assert b.chat_ok("hi", "The cost is $$ high, but the view is worth it, they say.", F) == "code/format"
 
@@ -295,3 +296,20 @@ def test_gap_families_pure_parts_and_checks():
     assert g.gap_ok(de, "joy", F) and not g.gap_ok({"task": "nope"}, "x", F)
     prog, talk = b.partition_records([{"task": "repair"}, {"task": "verbalize"}, {"task": "kernel"}])
     assert [r["task"] for r in talk] == ["repair", "verbalize"] and [r["task"] for r in prog] == ["kernel"]
+
+
+
+def test_oasst2_second_exchanges_become_multi_turn_chat_with_the_first_inline():
+    """v9 (8192 context): the second exchange of an OASST2 tree trains with the first exchange inline; the earlier
+    reply is spoken in Cubby's name, so it must pass the chat gate as well."""
+    def m(i, role, parent, text, lang="en", rank=0):
+        return {"message_id": i, "parent_id": parent, "role": role, "text": text, "lang": lang, "rank": rank, "deleted": False, "detoxify": {}}
+    rows = [m("u1", "prompter", None, "How do I boil an egg?"), m("a1", "assistant", "u1", "Simmer it for seven minutes, then cool it in cold water."),
+            m("u2", "prompter", "a1", "And for a soft one?"), m("a2", "assistant", "u2", "Five minutes, and straight into cold water."),
+            m("x1", "prompter", None, "Bonjour"), m("xa", "assistant", "x1", "Salut !", lang="fr"), m("x2", "prompter", "xa", "Ça va ?", lang="fr"),
+            m("xb", "assistant", "x2", "Très bien, merci.", lang="fr")]
+    out = list(b.pairs_from_oasst2_multi(rows))
+    assert len(out) == 1, "the FR tree mixes languages across turns (x1 is en) and is dropped"
+    prompt, a2, lang, a1 = out[0]
+    assert prompt == "Conversation so far:\nUser: How do I boil an egg?\nCubby: Simmer it for seven minutes, then cool it in cold water.\nUser: And for a soft one?"
+    assert a2 == "Five minutes, and straight into cold water." and lang == "en" and a1.startswith("Simmer")

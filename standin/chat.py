@@ -118,6 +118,7 @@ class CubbyChat:
         self.exe = exe
         self.max_new_tokens = max_new_tokens
         self.history: list[dict] = []
+        self.history_turns = 1                           # v9: the previous exchange rides inline (the multi-turn chat records' shape)
 
     # ── hormones: the cubemind neurochemistry ODE is the state source ───────
     def _hormones(self) -> dict:
@@ -147,6 +148,22 @@ class CubbyChat:
     def emotion(self) -> str:
         return self.chem.dominant_emotion
 
+    MULTI_PROMPT = {"en": "Conversation so far:\nUser: {u1}\nCubby: {a1}\nUser: {u2}",       # = build_chat_sft.MULTI_PROMPT
+                    "fr": "Conversation jusqu'ici :\nUtilisateur : {u1}\nCubby : {a1}\nUtilisateur : {u2}"}
+
+    def with_history(self, user_text: str) -> str:
+        """The prompt for this turn: the previous spoken exchange inline (v9 multi-turn shape), or the bare
+        turn when there is none / history is off. An identity question stands alone: it is answered from
+        who Cubby is, not from the last exchange."""
+        if not self.history_turns or not self.history or is_identity_question(user_text):
+            return user_text
+        last = self.history[-1]
+        u1, a1 = str(last.get("user") or "").strip(), str(last.get("reply") or "").strip()
+        if not u1 or not a1:
+            return user_text
+        lang = "fr" if guess_lang(user_text) == "fr" else "en"
+        return self.MULTI_PROMPT[lang].format(u1=u1, a1=a1, u2=user_text)
+
     # ── the turn ────────────────────────────────────────────────────────────
     def candidates(self, user_text: str) -> tuple[list[str], list[str]]:
         """-> (offered, rejected): the model's reply (think-stripped) if it
@@ -154,7 +171,8 @@ class CubbyChat:
         user's language, which is always offered."""
         system = identity_system(self.facts, self.state)
         self._turns = getattr(self, "_turns", 0) + 1
-        raw = self.emitter.emit(user_text, context={"role": "talk", "state": dict(self.state)},   # the talk adapter; the state rides in c
+        prompt = self.with_history(user_text)
+        raw = self.emitter.emit(prompt, context={"role": "talk", "state": dict(self.state)},   # the talk adapter; the state rides in c
                                 max_new_tokens=self.max_new_tokens, system=system,
                                 temperature=getattr(self, "temperature", 0.7), seed=self._turns)   # words, not programs: sample
         reply = _THINK_RE.sub("", raw, count=1).strip() if "</think>" in raw else raw.strip()
