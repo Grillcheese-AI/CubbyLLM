@@ -833,6 +833,18 @@ on the voice rules; what is unmeasured is how it answers real human phrasing. Th
 next step; pairing those prompts with replies written in Cubby's voice would need human-written replies,
 not the base model's (training Cubby on its own chat is the self-play shortcut the invariants reject).
 
+## "I don't know yet — but I can look it up for you" (owner, 2026-09-04; design, host side pending)
+
+The don't-know line stays verbatim (the identity contract). When a search tool is registered **and** the network capability
+is on, the turn offers a second sentence after it — `dont_know_offer` in `identity_facts.json`, EN "I can look it up for you
+if you want." / FR "Je peux chercher pour toi si tu veux." — and the exchange goes through ASK: the user's yes resolves to a
+`web_search` / `news_search` call (the v10 tool family's format), the plugin fetches under policy, and what comes back does
+not go straight to the mouth: each candidate fact passes the **memory gate** (parse, contradiction against the store,
+dedup) with provenance attached (source, date, the ledger hash of the certification that admitted it), enters the world
+store, and only then is the answer spoken as grounded. Next time the question comes, the fact is there — the search is
+how the store grows, and every grown fact is traceable to where it came from. Without the tool or the capability the
+turn is the verbatim line alone, as today. The explainer (`docs/CUBBY_EXPLAINER.md`) says it this way.
+
 ## The ledger and the vault (2026-09-04)
 
 **Certifications are signed now.** Until today a certified program was a boolean verdict in a JSON file the library

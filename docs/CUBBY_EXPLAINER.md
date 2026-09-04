@@ -31,9 +31,12 @@ claims, you can trace back to the facts it used.
 
 ## What can it do for me that other assistants can't?
 
-**It tells you when it doesn't know.** Ask it something it has no facts for and you get the same short line every time,
-in your language, instead of an invented answer. On its own test set it has answered 96% correctly and been wrong 0%,
-the rest being "I don't know yet".
+**It tells you when it doesn't know, and offers to find out.** Ask it something it has no facts for and you get the same
+short line every time, in your language, instead of an invented answer. On its own test set it has answered 96% correctly
+and been wrong 0%, the rest being "I don't know yet". When you have allowed it to search, the line continues: "I can look
+it up for you if you want." Say yes and it searches, checks what it found against what it already knows, keeps the facts
+with their source, and answers. The next time anyone asks, it knows, and can say where it learned it. That is how its
+knowledge grows: not by guessing, by looking things up with your permission and keeping the receipt.
 
 **It remembers what you tell it, and you can check that it did.** Say "remember that the cottage wifi is bluebird42"
 and it is answerable the next moment. Tell it something that contradicts an earlier fact and it points at the earlier one
