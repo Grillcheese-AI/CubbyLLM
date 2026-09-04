@@ -1,0 +1,31 @@
+exp_g4_wikikg_screen  git ad45dfd  python 3.12.10  Windows-11-10.0.26300-SP0
+triplets 365,923  paths 1,500,000
+entities 374,975  relations 2902  date-valued objects 7,497 (2.0%)
+relation forms: X_OF 646 rels / 101,246 triples (27.7%) | noun-mapped 41 / 164,787 (45.0%) | generic phrase 2216 / 114,339 (31.2%)
+top 40 relations: TIMELINE_EVENT=76901, HAS_PART=32196, MEMBER_OF=14449, IS_A=13657, PART_OF=12601, VARIANT_OF=12493, INSTANCE_OF=12087, LOCATED_IN=10904, PERFORMED_BY=8615, CREATED_BY=7441, CAUSED_BY=6731, LOCATION_OF=6258, POSITION_HELD=5550, RELATED_TO=4974, INFLUENCED_BY=4949, BORN_ON=4754, AUTHORED_BY=4566, OCCUPATION=4326, ASSOCIATED_WITH=4200, SUBCLASS_OF=4179, SPOUSE_OF=3972, BORN_IN=3968, RELATIVE_OF=3435, FIELD_OF_WORK=3326, DIED_ON=3299, PARENT_OF=3266, COMPOSED_OF=3045, EDUCATED_AT=3000, AWARDED_TO=2851, BASED_ON=2571, INSPIRED_BY=2550, CHILD_OF=2288, CAUSES=2091, CREATOR_OF=2060, WORKS_FOR=2018, COLLABORATED_WITH=1990, COMPONENT_OF=1925, AUTHOR_OF=1912, PRECEDED_BY=1895, INFLUENCES=1779
+top generic (need a noun): HAS_PART=32196, IS_A=13657, CREATED_BY=7441, RELATED_TO=4974, AUTHORED_BY=4566, ASSOCIATED_WITH=4200, FIELD_OF_WORK=3326, AWARDED_TO=2851, BASED_ON=2571, INSPIRED_BY=2550, COLLABORATED_WITH=1990, INFLUENCES=1779, COMPETED_IN=1770, DERIVED_FROM=1265, USED_FOR=1220, SUCCEEDED_BY=1188, RESIDED_IN=929, MANAGED_BY=854, AFFILIATED_WITH=826, PLAYS_FOR_TEAM=793, WON_MEDAL_AT=776, ALMA_MATER=753, ETHNICITY=676, AFTER=660, USED_IN=650
+template facts 359,385 (dropped 3,967: empty/self loops) in 2.3s
+parse_fact round-trip on 20k facts: 100.0%
+  e.g. 1591-02-21 is the birth date of Girard Desargues
+  e.g. 1661-09 is the death date of Girard Desargues
+  e.g. Girard Desargues is the creator of Desarguesian Plane
+  e.g. Girard Desargues is the creator of Non Desarguesian Plane
+  e.g. Girard Desargues is the creator of Desargues Graph
+  e.g. Girard Desargues is the named after of Desargues Graph
+TripleIndex over 358,488 facts: 358,488 indexed, build 16.5s, peak 284 MB (a cosine FactStore would need 14.7 GB of float32 rows)
+
+paths sample 20,000: fully direct 2728 (13.6%), of which the grammar parses 2728 (100.0%); hop forms {'needs_inverse': 17272, 'direct': 7922}; ambiguous hop 0 among parsed 70 (2.6%)
+  e.g. What is the associated with of the founder of Norwegian Black Metal Scene?  -> Norwegian Church Burnings
+  e.g. What is the founder of the acquired by of Capitol Wrestling Corporation Ltd?  -> Vince Mc Mahon
+  e.g. What is the has part of the category of Dairy?  -> Lactobacillus
+  e.g. What is the buried at of the instance of Tap Dancers?  -> Saint Volodymyr Ukrainian Cemetery
+  e.g. What is the location of the instance of B2945 MO Superfortress?  -> Colonel Paul Tibbets
+
+VM sample 300: {'verified_correct': 130, 'verified_other_answer': 162, 'retrieval_exhausted': 8}  (86 ms/question, 26s)
+  other-answer e.g. What is the founder of the acquired by of Capitol Wrestling Corporation Ltd? -> Linda Mc Mahon (path end Vince Mc Mahon) via ['Titan Sports Inc is the acquired by of Capitol Wrestling Corporation Ltd', 'Linda Mc Mahon is the founder of Titan Sports Inc']
+  other-answer e.g. What is the has part of the category of Dairy? -> Anaerobic Fermentation (path end Lactobacillus) via ['Pickling is the category of Dairy', 'Anaerobic Fermentation is the has part of Pickling']
+  other-answer e.g. What is the location of the instance of B2945 MO Superfortress? -> National Air And Space Museum (path end Colonel Paul Tibbets) via ['Enola Gay is the instance of B2945 MO Superfortress', 'National Air And Space Museum is the location of Enola Gay']
+  other-answer e.g. What is the timeline event of the authored by of Lal Dupatta Malmal Ka? -> Majrooh Sultanpuri Birth (path end Majrooh Sultanpuri Dadasaheb Phalke1993) via ['Majrooh Sultanpuri is the authored by of Lal Dupatta Malmal Ka', 'Majrooh Sultanpuri Birth is the timeline event of Majrooh Sultanpuri']
+  other-answer e.g. What is the has part of the after of Toronto Union Station? -> Control Center (path end Grocery Marketplace) via ['Grand Central Terminal is the after of Toronto Union Station', 'Control Center is the has part of Grand Central Terminal']
+  other-answer e.g. What is the timeline event of the adapted from of The Fountainhead? -> Michael Cimino 2002 Scripts Claim (path end Michael Cimino Birth) via ['Michael Cimino is the adapted from of The Fountainhead', 'Michael Cimino 2002 Scripts Claim is the timeline event of Michael Cimino']
+wall 47s
