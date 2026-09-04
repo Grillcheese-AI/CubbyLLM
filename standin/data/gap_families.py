@@ -902,7 +902,26 @@ TOOLS = [
      "parameters": {"type": "object", "properties": {"steps": {"type": "integer"}}, "required": ["steps"]}},
     {"name": "remember_fact", "description": "Store a fact the user asked you to remember.",
      "parameters": {"type": "object", "properties": {"fact": {"type": "string"}}, "required": ["fact"]}},
+    # the factory (owner, 2026-09-04): when no registered tool fits, ask the forge to make one — ToolForge writes a CubeLang
+    # program from the description, the VM certifies it on the example, it is registered (retire-not-delete) and shows up in
+    # the next tool list. It composes registered primitives only: a request can never grant network or file access.
+    {"name": "request_tool", "description": "Ask the tool factory to build a new tool when none of the available tools fits the request.",
+     "parameters": {"type": "object", "properties": {"name": {"type": "string", "description": "a short snake_case name for the new tool"},
+                                                     "description": {"type": "string", "description": "what the tool should do"},
+                                                     "example_request": {"type": "string", "description": "the user's request, verbatim"}},
+                    "required": ["name", "description", "example_request"]}},
 ]
+_TOOL_IDEAS = [("unit_convert", "convert a value between units", ["convert 30 celsius to fahrenheit for me", "how many kilometres is 26 miles",
+                                                                  "convertis 30 degrés celsius en fahrenheit", "ça fait combien de kilomètres, 26 milles"]),
+               ("dice_roll", "roll dice and report the result", ["roll two six-sided dice for me", "can you roll a d20", "lance deux dés à six faces", "tu peux lancer un d20"]),
+               ("timer", "start a countdown timer for a number of minutes", ["set a timer for 25 minutes", "start a 10 minute countdown", "mets un minuteur de 25 minutes",
+                                                                             "lance un compte à rebours de 10 minutes"]),
+               ("translate", "translate a message into another language", ["translate 'good morning' into spanish", "how do you say thank you in japanese",
+                                                                           "traduis « bonjour » en espagnol", "comment on dit merci en japonais"]),
+               ("tip_split", "split a bill and compute the tip", ["split a 96 dollar bill four ways with 15 percent tip", "what's 18 percent tip on 42 dollars",
+                                                                 "divise une facture de 96 dollars en quatre avec 15 pour cent de pourboire", "c'est combien 18 pour cent de pourboire sur 42 dollars"]),
+               ("word_count", "count the words in a text", ["count the words in this paragraph", "how many words is my last message", "compte les mots de ce paragraphe",
+                                                            "combien de mots fait mon dernier message"])]
 TOOL_SYSTEM = {
     "hermes": ("You are Cubby. You may call a tool when the user needs it.\n\n# Tools\n\nYou may call one or more functions to assist "
                "with the user query.\n\nYou are provided with function signatures within <tools></tools> XML tags:\n<tools>\n"
@@ -938,6 +957,7 @@ _ASKS = {
                        "fr": ["joue au pacman pendant {n} coups", "explore le labyrinthe pendant {n}", "va explorer {n} coups", "continue de jouer, {n} coups de plus", "balade-toi {n} coups"]},
     "remember_fact": {"en": ["remember that {t}", "please remember: {t}", "note this down, {t}", "keep in mind that {t}", "don't forget, {t}"],
                       "fr": ["retiens que {t}", "souviens-toi : {t}", "note ça, {t}", "garde en tête que {t}", "n'oublie pas, {t}"]},
+    "request_tool": {"en": ["{t}"], "fr": ["{t}"]},     # the ask IS the example request (rendered from _TOOL_IDEAS)
 }
 
 
@@ -1016,6 +1036,10 @@ def build_toolcall(rng: random.Random, facts: dict, chat_rows: list[dict], n_pos
                 ask = tmpl; args = {}
             elif name == "pacman_explore":
                 n = rng.choice([10, 20, 30, 50]); ask = tmpl.format(n=n); args = {"steps": n}
+            elif name == "request_tool":                 # nothing registered fits: the model asks the factory for a tool
+                tool_name, desc, asks = rng.choice(_TOOL_IDEAS)
+                ask = rng.choice([a for a in asks if (lang == "fr") == any(w in a for w in ("é", "è", "ça", "tu ", " en ", "dés", "mots"))] or asks)
+                args = {"name": tool_name, "description": desc, "example_request": ask}
             else:
                 t = rng.choice(_FACTS_EN if lang == "en" else _FACTS_FR); ask = tmpl.format(t=t); args = {"fact": t}
             ask = ask[0].upper() + ask[1:] if rng.random() < 0.5 else ask

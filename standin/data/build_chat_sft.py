@@ -1351,6 +1351,8 @@ def finish(records: list[dict], facts: dict | None = None) -> list[dict]:
     seen, out = set(), []
     for r in records:
         key = r["prompt"].strip()
+        if r.get("task") == "toolcall":                  # v10: the same ask exists in both call formats, and a negative IS a chat
+            key = f"{key}\x00toolcall\x00{r.get('format', '')}\x00{r.get('gold', '')}"   # prompt re-issued with the tool list — distinct records
         if key in seen:
             continue
         seen.add(key)

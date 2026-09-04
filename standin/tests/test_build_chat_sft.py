@@ -470,3 +470,17 @@ def test_toolcall_family_renders_both_formats_with_negatives_and_the_check_reads
     assert lfm["program"].startswith("<|tool_call_start|>[news_search(query=") and lfm["program"].endswith(")]<|tool_call_end|>")
     prog, talk = b.partition_records([{"task": "toolcall"}])
     assert [r["task"] for r in talk] == ["toolcall"]
+
+
+
+def test_finish_keeps_toolcall_rows_beside_the_chat_rows_they_mirror():
+    """v10 build: 2,400 toolcall rows collapsed to 465 because finish() deduped on the prompt alone — a negative is a
+    chat prompt re-issued with the tool list, and the LFM and Hermes positives share their ask."""
+    recs = [{"id": "c", "task": "chat", "prompt": "hi there cubby", "program": "Hey!"},
+            {"id": "n1", "task": "toolcall", "format": "lfm", "gold": "none", "prompt": "hi there cubby", "program": "Hey!", "system": "tools"},
+            {"id": "n2", "task": "toolcall", "format": "hermes", "gold": "none", "prompt": "hi there cubby", "program": "Hey!", "system": "tools"},
+            {"id": "p1", "task": "toolcall", "format": "lfm", "gold": "news_search", "prompt": "any news about quebec?", "program": "call", "system": "tools"},
+            {"id": "p2", "task": "toolcall", "format": "hermes", "gold": "news_search", "prompt": "any news about quebec?", "program": "call", "system": "tools"},
+            {"id": "p3", "task": "toolcall", "format": "hermes", "gold": "news_search", "prompt": "any news about quebec?", "program": "call", "system": "tools"}]
+    out = b.finish(recs, F)
+    assert [r["id"] for r in out] == ["c", "n1", "n2", "p1", "p2"], "the chat row, both negatives, both formats; the exact duplicate goes"
