@@ -490,3 +490,16 @@ def test_procedural_how_to_turns_go_to_talk_not_the_vm():
         assert s.route(q)["cortex"] == "talk", q
     assert s.needs_facts("What is the capital of germany?") == (True, "the fact grammar parses it")
     assert s.needs_facts("how many legs does a spider have?")[0] is True, "a how-many is a fact question"
+
+
+
+def test_live_qwen_session_fixes_memory_never_learns_a_question_and_help_speaks_quebec():
+    """Live session (2026-09-04): 'what is the capital of france' (no '?') was LEARNED as a fact; 'quesse que tu peux
+    faire pour moi ?' went to the VM path and got the don't-know line."""
+    assert sv.MemoryCortex.detect("what is the capital of france") is None
+    assert sv.MemoryCortex.detect("quelle est la capitale de la france") is None
+    assert sv.MemoryCortex.detect("Quuxville is the capital of Fnordovia") == "Quuxville is the capital of Fnordovia"
+    assert sv.MemoryCortex.detect("remember that Quuxville is the capital of Fnordovia.") == "Quuxville is the capital of Fnordovia"
+    s = sv.CubbyServe(ChainEmitter(), overlap_retriever, STORE, route_tau=0.9)
+    for q in ("quesse que tu peux faire pour moi ?", "qu'est-ce que tu peux faire ?", "tu peux faire quoi", "que peux-tu faire ?", "what can you do?"):
+        assert s.route(q)["cortex"] in ("help", "talk"), q

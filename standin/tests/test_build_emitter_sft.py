@@ -200,3 +200,16 @@ def test_llama_cpp_emitters_take_turns_on_the_gpu_across_threads():
     for th in ts:
         th.join()
     assert outs == ["ok"] * 6 and FakeLlama.overlaps == 0
+
+
+
+def test_clean_reply_strips_qwen_fragments_and_keeps_complete_tool_calls():
+    """Live Qwen session (2026-09-04): '<tool_response>\n\n</tool_call>\n\nHi…' and '<think>\n\n<tool_call>\n\nHi!…'
+    reached the user; a closed think block was the only thing stripped."""
+    from standin.emitter import clean_reply
+    assert clean_reply("<tool_response>\n\n</tool_call>\n\nHi, I'm Cubby. Ask me anything.") == "Hi, I'm Cubby. Ask me anything."
+    assert clean_reply("<think>\n\n<tool_call>\n\nHi! I'm doing great.") == "Hi! I'm doing great."
+    assert clean_reply("<think>\nreasoning\n</think>\n\nCanberra.") == "Canberra."
+    call = '<tool_call>\n{"name": "news_search", "arguments": {"query": "quebec"}}\n</tool_call>'
+    assert clean_reply("<think>\n\n</think>\n\n" + call) == call, "a complete tool call is kept for the host"
+    assert clean_reply("Sure. " + call + "\n</tool_call>") == "Sure. " + call

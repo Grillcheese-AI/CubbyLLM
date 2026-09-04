@@ -103,7 +103,8 @@ _IDENTITY_Q = re.compile(
     r"c'est quoi (le )?cubbyverse|c'est quoi cubby[- ]?man|parle[- ]moi du cubbyverse|ton monde|o[ùu] (vis|habites|es)[- ]tu|tu (habites|vis) o[ùu]|quel monde|ta maison|are you (an? )?(ai|agi|robot|model|conscious|alive|"
     r"chatgpt|gpt|claude|llama)|introduce yourself|"
     r"qui es[- ]tu|tu es qui|comment (tu t'appelles|t'appelles[- ]tu)|qui t'a (fait|construit|cr[ée]{2}|entra[iî]n[ée])|"
-    r"que sais[- ]tu faire|comment (vas[- ]tu|[çc]a va)|es[- ]tu (une? )?(ia|agi|robot))\b", re.I)
+    r"que sais[- ]tu faire|que peux[- ]tu faire|qu'?est[- ]ce que tu (peux|sais) faire|quesse que tu (peux|sais) faire|tu peux faire quoi|"
+    r"comment (vas[- ]tu|[çc]a va)|es[- ]tu (une? )?(ia|agi|robot))\b", re.I)
 # a greeting is the turn's OPENING (or the whole turn), never a word inside a query: "who sang na na na hey hey
 # goodbye" is a fact question (natural_questions slice, 2026-09-03)
 _GREETING_Q = re.compile(r"^\W*(hello|hi|hey|good (morning|evening|afternoon)|thanks|thank you|bye|goodbye|"
@@ -456,13 +457,25 @@ def voice_ok(text: str, facts: dict | None = None) -> bool:
     return identity_ok("", text, f)
 
 
+_NON_LATIN = re.compile(r"[\u0400-\u04FF\u0590-\u06FF\u0900-\u0DFF\u0E00-\u0E7F\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\uFF00-\uFFEF]")
+
+
+def has_non_latin(text: str) -> bool:
+    """Cyrillic, Hebrew/Arabic, Indic, Thai, kana, CJK, Hangul, full-width forms: not Cubby's languages (a Qwen-based
+    talk arm dropped into Chinese mid-game, 2026-09-04)."""
+    return bool(_NON_LATIN.search(text or ""))
+
+
 def guess_lang(text: str) -> str:
     """fr if the text carries French function words / accents, else en."""
     t = " " + text.lower() + " "
     fr = sum(1 for w in (" je ", " tu ", " es ", " est ", " quoi ", " comment ", " qui ", " quel ", " quelle ", " bonjour ", " salut ",
                          " merci ", " pas ", " une ", " des ", " les ", " ça ", " t'", " qu'", " c'est ",
                          " aide ", " statut ", " niveau ", " vies ", " joue ", " jouer ", " retiens ", " souviens-toi ",
-                         " labyrinthe ") if w in t)
+                         " labyrinthe ",
+                         # accent-free French, the way people type it here ("quand etait lepoque paleolithique?" had read as English, 2026-09-04)
+                         " quand ", " etait ", " était ", " avec ", " pour ", " dans ", " sont ", " vous ", " nous ", " le ", " la ",
+                         " mon ", " ma ", " mes ", " ton ", " tes ", " quesse ", " lepoque ", " epoque ", " pourquoi ", " combien ") if w in t)
     if re.search(r"[éèêàçùâîô]", text):
         fr += 1
     return "fr" if fr >= 1 else "en"

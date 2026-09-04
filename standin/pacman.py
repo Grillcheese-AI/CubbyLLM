@@ -798,8 +798,8 @@ def rephrase_ok(line: str, text: str, facts) -> bool:
     word the host line did not have — the live trace's failures were invented
     meaning around kept numbers ('6 grains weighing 12 grams', '7 fingers')."""
     from forge import numbers
-    from identity import is_identity_reply, is_model_guard, voice_ok
-    if not text or "?" in text or _ECHO.search(text):
+    from identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
+    if not text or "?" in text or _ECHO.search(text) or has_non_latin(text):   # "建筑师: 8/15, nice." (Qwen arm, 2026-09-04)
         return False
     n_words = len(text.split())
     if n_words > 40 or n_words > max(12, 2 * len(line.split()) + 4):
@@ -1303,8 +1303,8 @@ class CubbyGhost(CubbyPac):
                                           temperature=0.85, seed=self.env.steps * 7919 + self.env.level)   # words: sample, never repeat verbatim
         except Exception:
             return line, False
-        text = re.sub(r"^\s*(?:<think>)?.*?</think>\s*", "", raw, count=1, flags=re.S) if "</think>" in raw else raw
-        text = " ".join(text.strip().split())
+        from emitter import clean_reply
+        text = " ".join(clean_reply(raw).split())
         return (mood + text, True) if rephrase_ok(core, text, self.brain.facts) else (line, False)
 
     def _think(self, kind: str, **d) -> None:

@@ -225,6 +225,10 @@ _LEARN_FR = re.compile(r"^\s*(?:retiens|retenez|souviens-toi|rappelle-toi|note)"
                        r"(?:\s+que)?\s*[:,]?\s+(.+?)\s*$", re.I)
 
 
+_WH_OPEN = re.compile(r"^\W*(what|who|whom|whose|where|which|when|why|how|is|are|was|were|does|do|did|can|could|"
+                      r"quel(le)?s?|qui|o[ùu]|quand|pourquoi|comment|combien|est[- ]ce|quesse|c'est quoi)\b", re.I)
+
+
 class MemoryCortex:
     """Gate → store → VM event write. The gate is the anti-poisoning shape's
     v0: only template facts (`X is the R of Y` — what parse_fact reads), no
@@ -246,8 +250,8 @@ class MemoryCortex:
             m = rx.match(text)
             if m:
                 return m.group(1).rstrip(".").strip()
-        if "?" not in text and parse_fact(text.strip().rstrip(".")) is not None:
-            return text.strip().rstrip(".")
+        if "?" not in text and parse_fact(text.strip().rstrip(".")) is not None and not _WH_OPEN.match(text):
+            return text.strip().rstrip(".")   # "what is the capital of france" (no '?') is a question, not a fact (2026-09-04)
         return None
 
     @staticmethod
@@ -385,7 +389,8 @@ class CubbyBrain:
     # path; one that does not ("how are you", a joke, an opinion) is answered
     # by the model itself, modulated by the hormones only — our host guards
     # (voice rules, no base-model guard, no bio) still apply to the words.
-    _HELP = re.compile(r"^\s*(help|aide|what can you do|que sais[- ]tu faire)\b", re.I)
+    _HELP = re.compile(r"^\s*(help|aide|what can you do|que sais[- ]tu faire|que peux[- ]tu faire|qu'?est[- ]ce que tu (peux|sais) faire|"
+                       r"quesse que tu (peux|sais) faire|tu peux faire quoi|c'est quoi que tu (peux|sais) faire)\b", re.I)   # Quebec phrasings (live, 2026-09-04)
     _QUESTION = re.compile(r"\?|^\s*(what|who|where|which|when|how many|how much|is|are|was|were|does|did|"
                            r"quel(le)?s?|qui|o[ùu]|combien|quand|est[- ]ce que)\b|\bwhich\b|\b(is|are|was|were) called\b", re.I)   # real queries: 'perth is the capital of which australian state', 'phase change from gas to solid is called'
     # a wh-FACT opening that does not ask Cubby to produce something wins over the creative words below:

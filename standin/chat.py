@@ -175,11 +175,16 @@ class CubbyChat:
         raw = self.emitter.emit(prompt, context={"role": "talk", "state": dict(self.state)},   # the talk adapter; the state rides in c
                                 max_new_tokens=self.max_new_tokens, system=system,
                                 temperature=getattr(self, "temperature", 0.7), seed=self._turns)   # words, not programs: sample
-        reply = _THINK_RE.sub("", raw, count=1).strip() if "</think>" in raw else raw.strip()
+        from emitter import clean_reply
+        reply = clean_reply(raw)                         # closed think block out, stray tags out, complete tool calls kept
         lang = guess_lang(user_text)
         dont_know = T(self.facts, "dont_know_line", lang)
         offered, rejected = [], []
-        if reply and is_model_guard(reply):
+        from identity import has_non_latin
+        if reply and has_non_latin(reply):               # EN/FR only: a base that drifts into another script is not spoken
+            rejected.append(reply)
+            self.last_rejection = "non-latin script"
+        elif reply and is_model_guard(reply):
             # the base model's own guard (refusal / "as an AI" / its maker):
             # not Cubby's rule, never spoken — only OUR guards are enforced
             rejected.append(reply)

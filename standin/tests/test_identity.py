@@ -149,3 +149,13 @@ def test_world_is_an_identity_fact():
     assert recs and {r["lang"] for r in recs} == {"en", "fr"}
     assert all(idn.identity_ok("world", r["response"], F, r["lang"]) for r in recs)
     assert not idn.identity_ok("world", "I am Cubby, a small model that thinks big.", F), "an answer that never names the world"
+
+
+
+def test_guess_lang_reads_accent_free_french_and_quebec_help_is_identity():
+    from identity import guess_lang, is_identity_question
+    assert guess_lang("quand etait lepoque paleolithique?") == "fr"
+    assert guess_lang("quesse que tu peux faire pour moi ?") == "fr"
+    assert guess_lang("what is the capital of france") == "en"
+    assert guess_lang("how are you today") == "en"
+    assert is_identity_question("quesse que tu peux faire pour moi ?") and is_identity_question("tu peux faire quoi")

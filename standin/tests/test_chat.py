@@ -132,3 +132,10 @@ def test_the_previous_exchange_rides_inline_in_the_training_shape():
     c.history_turns = 0
     c.turn("Thanks!", mediate=False)
     assert seen[-1] == "Thanks!"
+
+
+
+def test_chat_guard_rejects_a_reply_in_another_script():
+    c = chat.CubbyChat(FakeEmitter("建筑师说：你好，我是 Cubby。"), F)
+    offered, rejected = c.candidates("hello there")
+    assert rejected and c.last_rejection == "non-latin script" and offered[-1] == chat.T(F, "dont_know_line", "en")

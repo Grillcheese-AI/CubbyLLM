@@ -678,3 +678,13 @@ def test_the_game_claims_what_did_you_learn_as_a_status_question():
         assert man.match(q) == 1.0, q
     assert man.match("how would you like a new plugin to explore the web?") == 0.0
     assert man._STATUS.search("what are the things you learned?") and not man._PLAY.search("what are the things you learned?")
+
+
+
+def test_rephrase_guard_rejects_non_latin_scripts():
+    from identity import load_facts
+    from pacman import rephrase_ok
+    F = load_facts()
+    assert not rephrase_ok("One more: 8 of 15.", "建筑师: 8/15, nice.", F), "the Qwen arm's Chinese (2026-09-04)"
+    assert not rephrase_ok("One more: 8 of 15.", "Ещё одна: 8 из 15.", F)
+    assert rephrase_ok("One more: 8 of 15.", "Pellet 8/15, nice.", F)

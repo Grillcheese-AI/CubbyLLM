@@ -20,6 +20,7 @@ interface changes. No third-party dependency: urllib only.
 from __future__ import annotations
 
 import json
+import re
 import urllib.request
 from typing import Protocol, runtime_checkable
 
@@ -83,6 +84,30 @@ class LlamaServerEmitter:
 
 
 NO_THINK_PREFILL = "<think>\n</think>\n"
+
+_THINK_BLOCK = re.compile(r"^\s*(?:<think>)?.*?</think>\s*", re.S)
+_TOOL_CALL = re.compile(r"<tool_call>\s*\{.*?\}\s*</tool_call>", re.S)
+_STRAY_TAG = re.compile(r"^\s*</?(?:think|tool_call|tool_response|tools)>\s*$", re.M)
+_STRAY_INLINE = re.compile(r"</?(?:think|tool_call|tool_response|tools)>")
+
+
+def clean_reply(raw: str) -> str:
+    """A generation as a reply: a closed <think> block dropped, then every stray special tag that is not part of a
+    complete <tool_call>{json}</tool_call> removed (Qwen3's base leaks '<tool_response>', '</tool_call>' and an
+    unclosed '<think>' at the edges of plain replies — live session 2026-09-04). Complete tool calls are kept for the
+    host to parse."""
+    text = _THINK_BLOCK.sub("", raw, count=1) if "</think>" in raw else raw
+    keep = {}
+    def _hold(m):
+        key = f"\x00{len(keep)}\x00"
+        keep[key] = m.group(0)
+        return key
+    text = _TOOL_CALL.sub(_hold, text)
+    text = _STRAY_TAG.sub("", text)
+    text = _STRAY_INLINE.sub("", text)
+    for key, val in keep.items():
+        text = text.replace(key, val)
+    return re.sub(r"\n{3,}", "\n\n", text).strip()
 
 import threading
 
