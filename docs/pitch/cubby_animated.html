@@ -1,0 +1,294 @@
+<title>How Cubby Thinks</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Public+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #F2F5F7; --ink: #14213D; --ink-soft: #4A5677; --line: #C9D1DF;
+    --accent: #1F4FD8; --accent-ink: #FFFFFF; --stamp: #E4572E; --ok: #1E9E6A;
+    --card: #FFFFFF; --receipt: #E9EEF4; --shadow: 0 10px 30px rgba(20, 33, 61, 0.10);
+    --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", "Consolas", "SFMono-Regular", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0B1220; --ink: #E8ECF3; --ink-soft: #A7B1C7; --line: #2A3650;
+      --accent: #7AA2FF; --accent-ink: #0B1220; --stamp: #FF7A50; --ok: #57D39B;
+      --card: #121B2E; --receipt: #151F34; --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0B1220; --ink: #E8ECF3; --ink-soft: #A7B1C7; --line: #2A3650;
+    --accent: #7AA2FF; --accent-ink: #0B1220; --stamp: #FF7A50; --ok: #57D39B;
+    --card: #121B2E; --receipt: #151F34; --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.5; }
+  html[data-lang="fr"] [lang="en"] { display: none !important; }
+  html[data-lang="en"] [lang="fr"] { display: none !important; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); z-index: 5; }
+  .lang { position: fixed; top: 14px; right: 18px; z-index: 5; display: flex; gap: 4px; font-family: var(--mono); font-size: 12px; }
+  .lang button { background: var(--card); border: 1px solid var(--line); color: var(--ink-soft); padding: 4px 10px; cursor: pointer; letter-spacing: 0.08em; }
+  .lang button.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .lang button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); }
+  .eyebrow { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  .eyebrow b { color: var(--accent); font-weight: 500; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: clamp(38px, 6.4vw, 84px); line-height: 1; letter-spacing: -0.02em; margin: 12px 0 18px; text-wrap: balance; max-width: 16ch; }
+  h2 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 4.6vw, 56px); line-height: 1.04; letter-spacing: -0.02em; margin: 8px 0 12px; text-wrap: balance; max-width: 18ch; }
+  p.lead { font-size: clamp(18px, 2vw, 24px); margin: 0; max-width: 40ch; text-wrap: pretty; }
+  p.sub { font-size: 17px; margin: 0; max-width: 46ch; color: var(--ink-soft); }
+  .hero { padding: clamp(56px, 12vh, 120px) 0 clamp(36px, 8vh, 80px); display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 32px; align-items: center; }
+  .cube-stage { perspective: 900px; display: grid; place-items: center; min-height: 260px; }
+  .cube { width: 160px; height: 160px; position: relative; transform-style: preserve-3d; transform: rotateX(-24deg) rotateY(32deg); }
+  .face { position: absolute; inset: 0; border: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--card)); display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); }
+  .face i { border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+  .face i.lit { background: var(--accent); opacity: 0.9; }
+  .f1 { transform: translateZ(80px); } .f2 { transform: rotateY(180deg) translateZ(80px); } .f3 { transform: rotateY(90deg) translateZ(80px); }
+  .f4 { transform: rotateY(-90deg) translateZ(80px); } .f5 { transform: rotateX(90deg) translateZ(80px); } .f6 { transform: rotateX(-90deg) translateZ(80px); }
+  .scene { min-height: 100vh; display: grid; align-content: center; padding: 48px 0; }
+  .stage { position: relative; height: clamp(300px, 46vh, 460px); margin-top: 22px; border: 1px solid var(--line); background: var(--card); overflow: hidden; }
+  .bubble { position: absolute; left: 24px; top: 24px; max-width: 34ch; background: var(--receipt); border-left: 3px solid var(--accent); padding: 10px 14px; font-size: 17px; }
+  .bubble small { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px; }
+  .card { position: absolute; width: 230px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); padding: 12px 14px; font-family: var(--mono); font-size: 12.5px; line-height: 1.5; color: var(--ink); }
+  .card .t { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .verifier { position: absolute; right: 24px; top: 50%; transform: translateY(-50%); width: 260px; height: 190px; border: 3px solid var(--ink); display: grid; place-items: center; background: var(--paper); }
+  .verifier .label { position: absolute; top: -13px; left: 12px; background: var(--paper); padding: 0 8px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); }
+  .verifier .scan { position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--accent); opacity: 0.9; }
+  .stamp { position: absolute; font-family: var(--mono); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--stamp); border: 3px solid var(--stamp); border-radius: 6px; padding: 8px 14px; transform: rotate(-6deg); font-size: 16px; background: var(--card); }
+  .stamp.ok { color: var(--ok); border-color: var(--ok); transform: rotate(4deg); }
+  .shelf { position: absolute; left: 24px; right: 24px; bottom: 28px; height: 3px; background: var(--ink); }
+  .shelf-label { position: absolute; left: 24px; bottom: 6px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  .fact { position: absolute; width: 210px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); padding: 10px 12px; font-size: 15px; }
+  .fact .src { display: block; font-family: var(--mono); font-size: 11px; color: var(--ink-soft); margin-top: 6px; }
+  .fact.bad { border-color: var(--stamp); }
+  .receipt { position: absolute; left: 24px; top: 24px; width: 320px; background: var(--receipt); border-left: 3px solid var(--accent); padding: 12px 14px; font-family: var(--mono); font-size: 13px; line-height: 1.8; }
+  .receipt div { border-bottom: 1px dashed var(--line); }
+  .receipt div:last-child { border-bottom: 0; color: var(--ink); font-weight: 500; }
+  .bars { position: absolute; left: 24px; right: 24px; top: 60px; display: grid; gap: 28px; }
+  .bar { display: grid; gap: 6px; }
+  .bar .name { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); display: flex; justify-content: space-between; }
+  .bar .track { height: 26px; background: var(--receipt); position: relative; }
+  .bar .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: var(--ink-soft); transform-origin: left; }
+  .bar.cubby .fill { background: var(--accent); }
+  .house { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 240px; height: 200px; }
+  .house svg { width: 100%; height: 100%; }
+  .maze { position: absolute; left: 24px; top: 24px; display: grid; grid-template-columns: repeat(8, 34px); grid-template-rows: repeat(6, 34px); gap: 3px; }
+  .maze i { background: var(--receipt); border: 1px solid var(--line); }
+  .maze i.wall { background: var(--ink-soft); opacity: 0.35; }
+  .maze i.seen { background: color-mix(in srgb, var(--accent) 22%, var(--card)); }
+  .maze i.pellet::after { content: ""; display: block; width: 6px; height: 6px; margin: 12px; border-radius: 50%; background: var(--stamp); }
+  .maze i.cubby { background: var(--accent); }
+  .thought { position: absolute; left: 340px; top: 24px; max-width: 36ch; background: var(--receipt); border-left: 3px solid var(--accent); padding: 10px 14px; font-size: 16px; }
+  .thought small { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px; }
+  .close { padding: clamp(60px, 14vh, 140px) 0 80px; }
+  .close .receipt-line { font-family: var(--mono); font-size: 13px; color: var(--ink-soft); background: var(--receipt); border-left: 3px solid var(--accent); padding: 8px 12px; width: max-content; max-width: 100%; margin-top: 18px; }
+  @media (max-width: 760px) { .hero { grid-template-columns: 1fr; } .verifier { width: 200px; height: 150px; right: 12px; } .card { width: 190px; } .thought { left: 24px; top: 250px; } .maze { grid-template-columns: repeat(8, 28px); grid-template-rows: repeat(6, 28px); } }
+  @media (prefers-reduced-motion: reduce) { .progress { display: none; } }
+</style>
+
+<div class="progress" id="progress"></div>
+<div class="lang" role="group" aria-label="Language / Langue"><button id="lang-fr">FR</button><button id="lang-en">EN</button></div>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow"><b>Cubby</b> · Grillcheese Research Lab · Québec</div>
+      <h1 lang="en">A small AI that is right. Or says so.</h1>
+      <h1 lang="fr">Une petite IA qui a raison. Ou qui le dit.</h1>
+      <p class="lead" lang="en">Scroll. Six scenes, one idea each, and you will know how Cubby thinks.</p>
+      <p class="lead" lang="fr">Faites défiler. Six scènes, une idée chacune, et vous saurez comment Cubby pense.</p>
+    </div>
+    <div class="cube-stage" aria-hidden="true">
+      <div class="cube" id="cube">
+        <div class="face f1"><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i></div>
+        <div class="face f2"><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i class="lit"></i></div>
+        <div class="face f3"><i class="lit"></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i></div>
+        <div class="face f4"><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i><i class="lit"></i><i></i></div>
+        <div class="face f5"><i></i><i></i><i></i><i></i><i class="lit"></i><i></i><i></i><i></i><i></i></div>
+        <div class="face f6"><i class="lit"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="lit"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 1: the verifier -->
+  <section class="scene" id="s1">
+    <div class="eyebrow"><span lang="en">Scene 1 · the verifier</span><span lang="fr">Scène 1 · le vérificateur</span></div>
+    <h2 lang="en">The model proposes. A machine checks.</h2>
+    <h2 lang="fr">Le modèle propose. Une machine vérifie.</h2>
+    <p class="sub" lang="en">Other assistants say the first thing that sounds right. Cubby writes a small program and only speaks if the program passes.</p>
+    <p class="sub" lang="fr">Les autres assistants disent la première chose qui sonne juste. Cubby écrit un petit programme et ne parle que s'il passe.</p>
+    <div class="stage">
+      <div class="bubble"><small lang="en">you ask</small><small lang="fr">vous demandez</small><span lang="en">What is the capital of Fnordovia?</span><span lang="fr">Quelle est la capitale de la Fnordovie ?</span></div>
+      <div class="card" id="c1" style="left:24px; top:120px;"><div class="t"><span lang="en">the model proposes</span><span lang="fr">le modèle propose</span></div>program CotChain {<br>&nbsp;&nbsp;bind H1_CAPITAL, "Quuxville";<br>&nbsp;&nbsp;return recover(H1_CAPITAL);<br>}</div>
+      <div class="verifier"><span class="label"><span lang="en">verifier</span><span lang="fr">vérificateur</span></span><div class="scan" id="scan1"></div><span class="eyebrow" lang="en">runs the program</span><span class="eyebrow" lang="fr">exécute le programme</span></div>
+      <div class="stamp ok" id="st1" style="right:40px; bottom:28px;"><span lang="en">Certified · Quuxville</span><span lang="fr">Certifié · Quuxville</span></div>
+    </div>
+  </section>
+
+  <!-- scene 2: I don't know yet -->
+  <section class="scene" id="s2">
+    <div class="eyebrow"><span lang="en">Scene 2 · the other outcome</span><span lang="fr">Scène 2 · l'autre issue</span></div>
+    <h2 lang="en">When it cannot check, it says so.</h2>
+    <h2 lang="fr">Quand elle ne peut pas vérifier, elle le dit.</h2>
+    <p class="sub" lang="en">No fact to stand on, no answer invented. Just the same short line, and an offer to look it up if you allow it.</p>
+    <p class="sub" lang="fr">Pas de fait pour s'appuyer, pas de réponse inventée. La même courte phrase, et une offre d'aller voir si vous le permettez.</p>
+    <div class="stage">
+      <div class="bubble"><small lang="en">you ask</small><small lang="fr">vous demandez</small><span lang="en">Who won the match last night?</span><span lang="fr">Qui a gagné le match hier soir ?</span></div>
+      <div class="card" id="c2" style="left:24px; top:120px;"><div class="t"><span lang="en">the model proposes</span><span lang="fr">le modèle propose</span></div>program CotChain {<br>&nbsp;&nbsp;bind H1_WINNER, ???;<br>}</div>
+      <div class="verifier"><span class="label"><span lang="en">verifier</span><span lang="fr">vérificateur</span></span><div class="scan" id="scan2"></div><span class="eyebrow" lang="en">no fact found</span><span class="eyebrow" lang="fr">aucun fait trouvé</span></div>
+      <div class="stamp" id="st2" style="right:40px; bottom:28px;"><span lang="en">I don't know yet</span><span lang="fr">Je ne sais pas encore</span></div>
+      <div class="bubble" id="offer" style="top:auto; bottom:28px; left:24px; border-left-color: var(--stamp);"><small lang="en">cubby</small><small lang="fr">cubby</small><span lang="en">I can look it up for you if you want.</span><span lang="fr">Je peux chercher pour toi si tu veux.</span></div>
+    </div>
+  </section>
+
+  <!-- scene 3: memory -->
+  <section class="scene" id="s3">
+    <div class="eyebrow"><span lang="en">Scene 3 · memory</span><span lang="fr">Scène 3 · la mémoire</span></div>
+    <h2 lang="en">It remembers, with the receipt.</h2>
+    <h2 lang="fr">Elle se souvient, reçu inclus.</h2>
+    <p class="sub" lang="en">Every fact keeps its source. A contradiction is caught at the door, not quietly written over.</p>
+    <p class="sub" lang="fr">Chaque fait garde sa source. Une contradiction est arrêtée à la porte, pas écrasée en silence.</p>
+    <div class="stage">
+      <div class="fact" id="f1" style="left:24px; top:24px;"><span lang="en">Quuxville is the capital of Fnordovia.</span><span lang="fr">Quuxville est la capitale de la Fnordovie.</span><span class="src"><span lang="en">source: you, today</span><span lang="fr">source : vous, aujourd'hui</span></span></div>
+      <div class="fact" id="f2" style="left:24px; top:130px;"><span lang="en">The cottage wifi is bluebird42.</span><span lang="fr">Le wifi du chalet est bluebird42.</span><span class="src"><span lang="en">source: you, today</span><span lang="fr">source : vous, aujourd'hui</span></span></div>
+      <div class="fact bad" id="f3" style="left:24px; top:236px;"><span lang="en">Atlantis is the capital of Fnordovia.</span><span lang="fr">Atlantis est la capitale de la Fnordovie.</span><span class="src"><span lang="en">contradiction · the earlier fact stands</span><span lang="fr">contradiction · le fait antérieur tient</span></span></div>
+      <div class="stamp" id="st3" style="left:250px; top:236px;"><span lang="en">Caught</span><span lang="fr">Attrapée</span></div>
+      <div class="shelf"></div><div class="shelf-label"><span lang="en">what it knows · with sources</span><span lang="fr">ce qu'elle sait · avec les sources</span></div>
+    </div>
+  </section>
+
+  <!-- scene 4: skills -->
+  <section class="scene" id="s4">
+    <div class="eyebrow"><span lang="en">Scene 4 · new skills</span><span lang="fr">Scène 4 · de nouvelles compétences</span></div>
+    <h2 lang="en">A need appears. It writes the program.</h2>
+    <h2 lang="fr">Un besoin apparaît. Elle écrit le programme.</h2>
+    <p class="sub" lang="en">No retraining. The verifier certifies the new program on your example, signs it, and it is kept for next time.</p>
+    <p class="sub" lang="fr">Pas de réentraînement. Le vérificateur certifie le nouveau programme sur votre exemple, le signe, et il est gardé pour la prochaine fois.</p>
+    <div class="stage">
+      <div class="bubble"><small lang="en">you ask</small><small lang="fr">vous demandez</small><span lang="en">Set a timer for 25 minutes.</span><span lang="fr">Mets un minuteur de 25 minutes.</span></div>
+      <div class="card" id="c4" style="left:24px; top:120px;"><div class="t"><span lang="en">the factory writes</span><span lang="fr">la fabrique écrit</span></div>program Timer {<br>&nbsp;&nbsp;minutes = 25;<br>&nbsp;&nbsp;return countdown(minutes);<br>}</div>
+      <div class="verifier"><span class="label"><span lang="en">verifier</span><span lang="fr">vérificateur</span></span><div class="scan" id="scan4"></div><span class="eyebrow" lang="en">tests on your example</span><span class="eyebrow" lang="fr">teste sur votre exemple</span></div>
+      <div class="stamp ok" id="st4" style="right:40px; bottom:70px;"><span lang="en">Certified · signed</span><span lang="fr">Certifié · signé</span></div>
+      <div class="shelf"></div><div class="shelf-label"><span lang="en">kept · never deleted, only retired</span><span lang="fr">gardé · jamais effacé, seulement retiré</span></div>
+    </div>
+  </section>
+
+  <!-- scene 5: cost -->
+  <section class="scene" id="s5">
+    <div class="eyebrow"><span lang="en">Scene 5 · cost</span><span lang="fr">Scène 5 · le coût</span></div>
+    <h2 lang="en">A program once. Milliseconds after.</h2>
+    <h2 lang="fr">Un programme, une fois. Des millisecondes ensuite.</h2>
+    <p class="sub" lang="en">Other assistants think out loud in pages of words, every single time. Cubby's multi-step lookup is a 46-millisecond walk, and a kept program costs no words at all.</p>
+    <p class="sub" lang="fr">Les autres assistants pensent tout haut en pages de mots, à chaque fois. La recherche en plusieurs étapes de Cubby est une marche de 46 millisecondes, et un programme gardé ne coûte aucun mot.</p>
+    <div class="stage">
+      <div class="bars">
+        <div class="bar"><div class="name"><span lang="en">a big model, thinking in words</span><span lang="fr">un gros modèle, qui pense en mots</span><span><span lang="en">~800 words · every time</span><span lang="fr">~800 mots · à chaque fois</span></span></div><div class="track"><div class="fill" id="bar-big"></div></div></div>
+        <div class="bar cubby"><div class="name"><span lang="en">cubby, running a program</span><span lang="fr">cubby, qui exécute un programme</span><span>46 ms</span></div><div class="track"><div class="fill" id="bar-cubby"></div></div></div>
+        <div class="bar cubby"><div class="name"><span lang="en">cubby, reusing a kept program</span><span lang="fr">cubby, qui réutilise un programme gardé</span><span><span lang="en">0 words</span><span lang="fr">0 mot</span></span></div><div class="track"><div class="fill" id="bar-reuse"></div></div></div>
+      </div>
+      <div class="receipt" style="top:auto; bottom:24px; width:auto; right:24px;"><div lang="en">measured on its own test set · the log is in the repository</div><div lang="fr">mesuré sur son propre jeu de test · le journal est dans le dépôt</div></div>
+    </div>
+  </section>
+
+  <!-- scene 6: the maze -->
+  <section class="scene" id="s6">
+    <div class="eyebrow"><span lang="en">Scene 6 · watch it think</span><span lang="fr">Scène 6 · regardez-la penser</span></div>
+    <h2 lang="en">cubby-man learns the maze by being refused.</h2>
+    <h2 lang="fr">cubby-man apprend le labyrinthe en se faisant refuser.</h2>
+    <p class="sub" lang="en">No map to start. A wall is a move the verifier refuses, and a refused move becomes a fact. Then it invents a shortcut and has that certified too.</p>
+    <p class="sub" lang="fr">Pas de carte au départ. Un mur, c'est un mouvement que le vérificateur refuse, et un mouvement refusé devient un fait. Puis elle invente un raccourci et le fait certifier aussi.</p>
+    <div class="stage">
+      <div class="maze" id="maze" aria-hidden="true"></div>
+      <div class="thought" id="thought"><small>cubby</small><span lang="en" id="th-en">Tried left, a wall. Noted.</span><span lang="fr" id="th-fr">J'ai essayé à gauche, un mur. Noté.</span></div>
+      <div class="stamp ok" id="st6" style="right:40px; bottom:28px;"><span lang="en">Certified · COMBO-ABABC</span><span lang="fr">Certifié · COMBO-ABABC</span></div>
+    </div>
+  </section>
+
+  <section class="close">
+    <div class="eyebrow"><b>Cubby</b></div>
+    <h1 lang="en">Small model. Big thinking.</h1>
+    <h1 lang="fr">Petit modèle. Grande pensée.</h1>
+    <p class="lead" lang="en">Right, or says so. On your machine. Learning while you use it.</p>
+    <p class="lead" lang="fr">Juste, ou qui le dit. Sur votre machine. Qui apprend pendant que vous l'utilisez.</p>
+    <div class="receipt-line"><span lang="en">Built in Québec by Grillcheese Research Lab · every number above has a log behind it</span><span lang="fr">Conçue au Québec par Grillcheese Research Lab · chaque chiffre ci-dessus a un journal derrière lui</span></div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function setLang(l) {
+    root.setAttribute('data-lang', l);
+    document.getElementById('lang-fr').classList.toggle('on', l === 'fr');
+    document.getElementById('lang-en').classList.toggle('on', l === 'en');
+    try { localStorage.setItem('cubby-explainer-lang', l); } catch (e) {}
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('cubby-explainer-lang'); } catch (e) {}
+  setLang(saved || ((navigator.language || '').toLowerCase().indexOf('fr') === 0 ? 'fr' : 'en'));
+  document.getElementById('lang-fr').addEventListener('click', function () { setLang('fr'); });
+  document.getElementById('lang-en').addEventListener('click', function () { setLang('en'); });
+
+  // the maze: an 8x6 grid, a few walls, three pellets, cubby's path revealed as it explores
+  var W = 8, H = 6, walls = { '1,1': 1, '2,1': 1, '5,2': 1, '5,3': 1, '3,4': 1, '6,0': 1 }, pellets = { '7,0': 1, '4,3': 1, '0,5': 1 };
+  var maze = document.getElementById('maze'), cells = {};
+  for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+    var i = document.createElement('i'); var k = x + ',' + y;
+    if (walls[k]) i.className = 'wall'; if (pellets[k]) i.className = 'pellet';
+    maze.appendChild(i); cells[k] = i;
+  }
+  var path = ['0,0', '1,0', '2,0', '3,0', '3,1', '3,2', '4,2', '4,3', '4,4', '4,5', '3,5', '2,5', '1,5', '0,5'];
+  var thoughtsEn = ['Tried left, a wall. Noted.', 'Pellet spotted at 4-3. Going for it.', 'Got a pellet (1/3).', 'Shortcut with COMBO-ABABC, 4 steps saved.'];
+  var thoughtsFr = ['J\'ai essayé à gauche, un mur. Noté.', 'Pastille repérée en 4-3. J\'y vais.', 'Une pastille (1/3).', 'Raccourci avec COMBO-ABABC, 4 pas gagnés.'];
+  function mazeStep(n) {
+    path.forEach(function (k, j) { cells[k].classList.toggle('seen', j < n); cells[k].classList.toggle('cubby', j === n - 1); });
+    var t = Math.min(3, Math.floor((n / path.length) * 4));
+    document.getElementById('th-en').textContent = thoughtsEn[t]; document.getElementById('th-fr').textContent = thoughtsFr[t];
+  }
+  mazeStep(1);
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!window.gsap || reduce) {                           // at rest: every scene at its final state
+    mazeStep(path.length);
+    document.querySelectorAll('.scan').forEach(function (s) { s.style.top = '100%'; });
+    return;
+  }
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.to('#cube', { rotationY: '+=360', duration: 26, ease: 'none', repeat: -1 });
+  gsap.to('#progress', { width: '100%', ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.3 } });
+
+  function pipeline(scene, card, scan, stamp, extra) {
+    var tl = gsap.timeline({ scrollTrigger: { trigger: scene, start: 'top top', end: '+=140%', pin: true, scrub: 0.6 } });
+    tl.to(card, { x: function () { return document.querySelector(scene + ' .verifier').offsetLeft - 260; }, y: 20, rotation: -2, duration: 1 })
+      .to(card, { scale: 0.7, opacity: 0.35, duration: 0.5 }, '>-0.1')
+      .fromTo(scan, { top: 0 }, { top: '100%', duration: 0.9, ease: 'none' }, '<')
+      .fromTo(stamp, { scale: 0.4, opacity: 0, rotation: -18 }, { scale: 1, opacity: 1, rotation: stamp.indexOf('st2') > -1 || stamp.indexOf('st3') > -1 ? -6 : 4, duration: 0.5, ease: 'back.out(2)' });
+    if (extra) extra(tl);
+    return tl;
+  }
+  pipeline('#s1', '#c1', '#scan1', '#st1');
+  pipeline('#s2', '#c2', '#scan2', '#st2', function (tl) { tl.fromTo('#offer', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, '>0.1'); });
+
+  gsap.timeline({ scrollTrigger: { trigger: '#s3', start: 'top top', end: '+=140%', pin: true, scrub: 0.6 } })
+    .to('#f1', { y: 210, duration: 0.8 })
+    .to('#f2', { y: 104, duration: 0.8 }, '>-0.3')
+    .to('#f3', { x: 40, duration: 0.5 })
+    .fromTo('#st3', { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(2)' })
+    .to('#f3', { x: -40, y: -6, opacity: 0.45, duration: 0.5 }, '>0.1');
+
+  pipeline('#s4', '#c4', '#scan4', '#st4', function (tl) { tl.to('#c4', { x: 80, y: 190, scale: 0.85, opacity: 1, rotation: 0, duration: 0.7 }, '>0.1'); });
+
+  gsap.timeline({ scrollTrigger: { trigger: '#s5', start: 'top top', end: '+=120%', pin: true, scrub: 0.6 } })
+    .fromTo('#bar-big', { scaleX: 0 }, { scaleX: 1, duration: 1.4, ease: 'none' })
+    .fromTo('#bar-cubby', { scaleX: 0 }, { scaleX: 0.03, duration: 0.15, ease: 'none' }, '<')
+    .fromTo('#bar-reuse', { scaleX: 0 }, { scaleX: 0.004, duration: 0.05, ease: 'none' }, '<');
+
+  var mz = { n: 1 };
+  gsap.timeline({ scrollTrigger: { trigger: '#s6', start: 'top top', end: '+=160%', pin: true, scrub: 0.6 } })
+    .to(mz, { n: path.length, duration: 2, ease: 'none', onUpdate: function () { mazeStep(Math.round(mz.n)); } })
+    .fromTo('#st6', { scale: 0.4, opacity: 0, rotation: -18 }, { scale: 1, opacity: 1, rotation: 4, duration: 0.5, ease: 'back.out(2)' });
+})();
+</script>
