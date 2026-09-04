@@ -457,3 +457,23 @@ def test_live_an_unparsed_question_needs_a_confident_hit_to_ground():
     assert rec["task"]["grounded"] is False and rec["reply"] == DK_EN
     assert "gate_retrieval" in [e.get("kind") for e in list(s.events)]
     assert s.turn("What is the capital of germany?")["reply"] == "berlin"
+
+
+
+def test_real_search_queries_route_as_facts_not_creative_or_identity():
+    """natural_questions dev slice (2026-09-03, standin/scripts/question_style_probe.py): the creative words fired on
+    wh-fact questions about songs, a mid-sentence 'hey' read as a greeting, 'do you feel me ... lyrics' as affect, and
+    'perth is the capital of which australian state' as small talk."""
+    from identity import is_identity_question
+    s = sv.CubbyServe(ChainEmitter(), overlap_retriever, STORE, route_tau=0.9)
+    for q in ("who sang the theme song to that 70s show", "which songs did liam write as you were",
+              "is draft day the movie based on a true story", "who sang na na na hey hey goodbye",
+              "perth is the capital of which australian state", "phase change from gas to solid is called"):
+        assert not is_identity_question(q), q
+        assert s.needs_facts(q)[0] is True, (q, s.needs_facts(q))
+    q = "do you feel me anthony hamilton lyrics meaning"          # a keyword query: not about Cubby (it was read as affect); no wh-word, so it stays small talk
+    assert not is_identity_question(q) and s.needs_facts(q) == (False, "small talk")
+    for q in ("write me a song about berlin", "can you tell me a joke", "what do you think of berlin?", "what would you like to do?"):
+        assert s.needs_facts(q)[0] is False, q
+    for q in ("hey cubby", "Hello!", "  hi there", "do you feel anything?", "do you have feelings, cubby?", "Bonjour !"):
+        assert is_identity_question(q), q

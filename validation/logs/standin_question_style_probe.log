@@ -1,0 +1,9 @@
+[stand-in] disfl_qa validation, n=1000
+  fact grammar parses: clean 150/1000 (15.0%) | disfluent 129/1000 (12.9%) | the disfluent twin parses the SAME as its clean question: 80/150 of the parsed clean ones (53.3%)
+  router agrees clean vs disfluent: needs_facts 992/1000 (99.2%) | question detector 994/1000
+  words: clean 9.7 | disfluent 14.4 | repair cues [('no', 565), ('sorry', 127), ('rather', 119), ('make that', 92), ('uh', 82), ('i mean', 79), ('actually', 52), ('er', 46)]
+[stand-in] natural_questions dev, n=300
+  fact grammar parses 0/300 (0.0%) | question detector fires 220/300 | has a short answer 155/300 | lowercase start 300/300 | ends with '?' 0/300 | words 9.3
+  thalamus reads: {'a question about the world': 220, 'small talk': 74, 'a feeling, opinion or creative ask': 6}
+  read as 'a feeling, opinion or creative ask' (6): "pop rocks the inside story of america's revolutionary candy" | 'write a detailed note on the foundation of j and k state' | 'still crazy after all these years song meaning' | 'song jack and jill went up the hill' | "i don't want to live forever mp3 song download" | 'central idea of poem lines from the deserted village'
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\question_style_probe.json

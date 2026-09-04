@@ -386,8 +386,15 @@ class CubbyBrain:
     # by the model itself, modulated by the hormones only — our host guards
     # (voice rules, no base-model guard, no bio) still apply to the words.
     _HELP = re.compile(r"^\s*(help|aide|what can you do|que sais[- ]tu faire)\b", re.I)
-    _QUESTION = re.compile(r"\?|^\s*(what|who|where|which|when|how many|how much|"
-                           r"quel(le)?s?|qui|o[ùu]|combien|quand)\b", re.I)
+    _QUESTION = re.compile(r"\?|^\s*(what|who|where|which|when|how many|how much|is|are|was|were|does|did|"
+                           r"quel(le)?s?|qui|o[ùu]|combien|quand|est[- ]ce que)\b|\bwhich\b|\b(is|are|was|were) called\b", re.I)   # real queries: 'perth is the capital of which australian state', 'phase change from gas to solid is called'
+    # a wh-FACT opening that does not ask Cubby to produce something wins over the creative words below:
+    # 'who sang the theme song to that 70s show' is a fact question, not a request for a song (natural_questions slice, 2026-09-03)
+    _WH_FACT = re.compile(r"^\s*(who|whom|whose|what|which|when|where|is|are|was|were|does|did|"   # subject-first yes/no too: 'is draft day the movie based on a true story'
+                          r"qui|quel(le)?s?|quand|o[ùu]|est[- ]ce que)\b", re.I)          # not do/can/could/would: those carry the opinion and creative asks
+    _ASK_TO_PRODUCE = re.compile(r"\b(write|sing|tell|make|compose|give|invent|create|draw) (me|us)\b|\b(can|could|would|will) you (write|sing|tell|make|compose|invent|create|draw)\b|"
+                                 r"\b(what|which) (would|do) you (think|say|prefer|like)\b|"
+                                 r"\b([ée]cris|chante|raconte|invente|compose)[- ](moi|nous)\b|\bpeux[- ]tu ([ée]crire|chanter|raconter|inventer)\b", re.I)
     _NO_FACTS = re.compile(r"\b(how are you|how do you feel|how('s| is) it going|what do you think|your opinion|"
                            r"(how |what )?would you (like|want|prefer|say)|do you want|would you|"
                            r"(tu )?(voudrais|aimerais|veux)[- ]?(tu)?|"
@@ -411,7 +418,7 @@ class CubbyBrain:
             return True, "the fact grammar parses it"
         if self._CAPABILITY.search(text):                # "do you know how to write code?" (live misroute 2026-09-03): about Cubby, not the world
             return False, "about Cubby himself"
-        if self._NO_FACTS.search(text):
+        if self._NO_FACTS.search(text) and not (self._WH_FACT.search(text) and not self._ASK_TO_PRODUCE.search(text)):
             return False, "a feeling, opinion or creative ask"
         if self._QUESTION.search(text):
             return True, "a question about the world"

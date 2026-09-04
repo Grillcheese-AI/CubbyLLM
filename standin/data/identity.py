@@ -101,17 +101,24 @@ _IDENTITY_Q = re.compile(
     r"\b(who are you|what are you|your name|who (built|made|created|trained) you|what can you do|"
     r"how do you work|how are you|how do you feel|what('s| is) (the )?cubbyverse|tell me about (the )?cubbyverse|what('s| is) cubby[- ]?man|your world|where (do you live|are you|is your home)|which world|"
     r"c'est quoi (le )?cubbyverse|c'est quoi cubby[- ]?man|parle[- ]moi du cubbyverse|ton monde|o[ùu] (vis|habites|es)[- ]tu|tu (habites|vis) o[ùu]|quel monde|ta maison|are you (an? )?(ai|agi|robot|model|conscious|alive|"
-    r"chatgpt|gpt|claude|llama)|do you (feel|have feelings)|introduce yourself|"
-    r"hello|hi|hey|good (morning|evening)|thanks|thank you|bye|"
+    r"chatgpt|gpt|claude|llama)|introduce yourself|"
     r"qui es[- ]tu|tu es qui|comment (tu t'appelles|t'appelles[- ]tu)|qui t'a (fait|construit|cr[ée]{2}|entra[iî]n[ée])|"
-    r"que sais[- ]tu faire|comment (vas[- ]tu|[çc]a va)|es[- ]tu (une? )?(ia|agi|robot)|"
-    r"bonjour|salut|coucou|merci|au revoir)\b", re.I)
+    r"que sais[- ]tu faire|comment (vas[- ]tu|[çc]a va)|es[- ]tu (une? )?(ia|agi|robot))\b", re.I)
+# a greeting is the turn's OPENING (or the whole turn), never a word inside a query: "who sang na na na hey hey
+# goodbye" is a fact question (natural_questions slice, 2026-09-03)
+_GREETING_Q = re.compile(r"^\W*(hello|hi|hey|good (morning|evening|afternoon)|thanks|thank you|bye|goodbye|"
+                         r"bonjour|salut|coucou|merci|au revoir)\b", re.I)
+# "do you feel …" is about Cubby only when little follows: "do you feel me anthony hamilton lyrics meaning" is a query
+_FEEL_Q = re.compile(r"\bdo you (feel|have feelings)\b(?P<rest>.*)$", re.I | re.S)
 
 
 def is_identity_question(text: str) -> bool:
     """A turn where answering with who/what Cubby is IS the right answer
     (the intents the identity SFT taught, greetings included)."""
-    return bool(_IDENTITY_Q.search(text))
+    if _GREETING_Q.search(text) or _IDENTITY_Q.search(text):
+        return True
+    m = _FEEL_Q.search(text)
+    return bool(m) and len(m.group("rest").split()) <= 3
 
 
 # ── the BASE model's own guards must not leak: only ours are enforced ──────
