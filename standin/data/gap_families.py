@@ -607,7 +607,8 @@ def build_quebec(rng: random.Random, facts: dict) -> tuple[list[dict], Counter]:
                 except json.JSONDecodeError:
                     why[f"quebec:{kind}:bad json"] += 1
                     continue
-                expr, choices, idx = _clean(r.get("expression")), [_clean(c) for c in (r.get("choices") or [])], r.get("correct_index")
+                expr = _clean(r.get("expression") or r.get("terme"))   # QFrCoRE says `expression`, QFrCoRT says `terme`
+                choices, idx = [_clean(c) for c in (r.get("choices") or [])], r.get("correct_index")
                 if not expr or not choices or not isinstance(idx, int) or not (0 <= idx < len(choices)):
                     why[f"quebec:{kind}:filtered"] += 1
                     continue

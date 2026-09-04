@@ -367,16 +367,20 @@ def test_diabla_pairs_are_human_on_both_sides_and_quebec_records_take_both_forms
         "same-language consecutive turns (2 -> 3) are not a pair; the user side is the human reference translation"
     # quebec: one benchmark row -> an explain record (definition, token-F1 check) and a multiple-choice record (number first)
     row = {"expression": "Être à cheval entre deux réalités.", "choices": ["Chercher à concilier deux vérités.", "Hésiter entre deux réalités, tergiverser.", "Douter de soi-même."], "correct_index": 1}
+    word = {"terme": "Adonner", "choices": ["Préparer un plat.", "Se produire de façon fortuite, une coïncidence.", "Offrir un cadeau."], "correct_index": 1}
     tmp = tmp_path / "q.jsonl"
     tmp.write_text(json.dumps(row, ensure_ascii=False) + "\n", encoding="utf-8")
+    tmp2 = tmp_path / "w.jsonl"
+    tmp2.write_text(json.dumps(word, ensure_ascii=False) + "\n", encoding="utf-8")
     saved = g.QUEBEC_FILES
-    g.QUEBEC_FILES = (("expression", str(tmp)),)
+    g.QUEBEC_FILES = (("expression", str(tmp)), ("mot", str(tmp2)))
     try:
         recs, why = g.build_quebec(random.Random(0), F)
     finally:
         g.QUEBEC_FILES = saved
-    assert {r["task"] for r in recs} == {"quebec", "quebec_mc"} and all(r["lang"] == "fr" for r in recs)
-    ex = next(r for r in recs if r["task"] == "quebec"); mc = next(r for r in recs if r["task"] == "quebec_mc")
+    assert {r["task"] for r in recs} == {"quebec", "quebec_mc"} and all(r["lang"] == "fr" for r in recs) and len(recs) == 4
+    assert any(r["subtype"] == "mot" and "« Adonner »" in r["prompt"] and r["gold"].startswith("Se produire") for r in recs), "QFrCoRT rows say `terme`"
+    ex = next(r for r in recs if r["task"] == "quebec" and r["subtype"] == "expression"); mc = next(r for r in recs if r["task"] == "quebec_mc" and r["subtype"] == "expression")
     assert "« Être à cheval entre deux réalités. »" in ex["prompt"] and ex["gold"] == "Hésiter entre deux réalités, tergiverser."
     assert g.quebec_ok(ex, "Ça veut dire hésiter entre deux réalités, tergiverser sans se décider.") and not g.quebec_ok(ex, "Douter de soi.")
     assert mc["program"].startswith(mc["gold"] + " — ") and f"{mc['gold']}. Hésiter" in mc["prompt"] and g.label_first_ok(mc, mc["gold"] + ".")

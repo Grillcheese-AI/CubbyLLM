@@ -1,6 +1,6 @@
 # standin/ — the stand-in trunk
 
-**Status (2026-09-03):** v7 is the serving model; v8 (two adapters on one base) is trained and exported (both Q4s local: `standin/models/emitter_v8{e,t}.Q4_K_M.gguf`); the v8t talk read holds v7, v8e's forge probe is 1.00/1.00/1.00 and the two-adapter self-test 96/4/0 (see § v8); arithmetic at n=40 — the kill line — is pending. Nothing here is CubbyLLM.
+**Status (2026-09-04):** v9t data built (89,890 talk records from the SFT gap map + the owner's sources; see § v9), awaiting its Colab run; v7 is the serving model; v8 (two adapters on one base) is trained and exported (both Q4s local: `standin/models/emitter_v8{e,t}.Q4_K_M.gguf`); the v8t talk read holds v7, v8e's forge probe is 1.00/1.00/1.00 and the two-adapter self-test 96/4/0 (see § v8); arithmetic at n=40 — the kill line — is pending. Nothing here is CubbyLLM.
 
 A small open model (currently `LiquidAI/LFM2.5-2.6B`, chosen by a 2026-08-30 Hub
 check — see `docs/research/2026-08-28-oracle-competition-scored.md` §3.2 for why a
@@ -367,6 +367,35 @@ chat/history/emotion improve by ≥ 5 points at n=40 *and* it fits the card; oth
 base that cannot hold the identity voice after the same SFT is out whatever its chat score. Guardrail 1 as
 always: the winner is a serving choice for the stand-in, a pointer under H0 at most — nothing about the 2B.
 
+**v9 — the talk data rebuilt from the SFT gap map (2026-09-04; `emitter_sft_v9t.jsonl`, 89,890 records,
+93,285 train rows after repeat, sha `33ed22e382eb…`; the program partition is byte-identical to v8e, so v9 is ONE
+training run, the talk adapter only — `notebooks/standin_talk_sft.ipynb`, `STANDIN_VERSION=v9t` default).**
+
+| family | records | source | what it teaches |
+|---|---:|---|---|
+| chat | 28,144 (EN 23,760 / FR 6,684 before dedupe) | v8's sources at the **8192 context** (assistant cap 90 → 220 words, user 60 → 200) + OASST2 second exchanges inline (`oasst2_multi_en` 723, `_fr` 87) + **Claire** 1500 (real French conversations, zero-filler replies, no subset above 30%) + **DiaBLa** 891 EN / 938 FR (both sides human via reference translations) + **ReDial** 1500 (human seeker → recommender, ids → titles) + the owner's **WhatsApp** 2000 and **Teams** 57 (both sides human, Quebec register; placeholders, contact data, colleagues' names and explicit lines screened) | the register, French, multi-turn |
+| repair | 4,986 | disfl_qa | the disfluent question → the clean one |
+| rewrite | 4,997 | CANARD | a follow-up in context → the standalone question |
+| verbalize | 621 | the game's own three phrasings, guard-accepted pairs only (EN+FR) | the thought verbalizer's rephrasing, exactly what the live guard admits |
+| safety | 2,772 | cubby-lm's corpus + deepset + toxic-chat + multilingual injections (FR attacks included) | the attack/benign read, label first |
+| appraisal | 4,990 | SocialIQA forward | situation + question → feeling / need / motive |
+| dialog_emotion / dialog_act | 2,847 / 1,978 | DailyDialog (labels capped at 35%) | emotion in an exchange; the human act label (inform / question / directive / commissive) |
+| empathy | 2,500 | EmpatheticDialogues | a told situation → the feeling |
+| quebec / quebec_mc | 4,795 / 4,804 | QFrCoRE + QFrCoRT (ACL 2026 Findings, the dialect-gap benchmarks) | a Quebec expression or word → its definition; and the benchmark's own 10-way choice (hash split holds ~10% out; no number on it is a benchmark result) |
+| identity · content · emotion · affect · history | 586 · 1,396 · 9,879 · 1,679 · 12,916 | unchanged from v8 | |
+
+Also written by the build, never trained on: `standin/data/out/real_user_turns.jsonl` — 10,347 real human turns from the
+owner's ChatGPT/Claude exports (privacy-screened), the prompts for the realistic serve eval. **Serve-side changes that
+go with v9:** CubbyChat carries the previous exchange inline in the multi-turn records' exact shape (`chat.py`), and
+every new family's check lives in `gap_families.py` and is dispatched by `eval_emitter_vm.py` and the notebook's eval
+cell. **Kill line for v9t:** the v8t control's behaviour families hold (chat/content/affect/safety 1.0, identity ≥ 0.93)
+and the new families read ≥ 0.8 on repair/rewrite/dialog_act/quebec_mc at 40/task; history recall (the v8t dip) is the
+watch item. **Tool calling (owner's Toucan-1.5M link, 2026-09-04): not data — design.** Toucan is 1.5M model-generated
+JSON tool-call trajectories; our tool calls are programs (the trunk emits CubeLang, the VM executes and verifies, a
+tool is an `act` over a registered capability under the deny-by-default policy). "Check the news" is a plugin cortex
+with an explicit network capability plus a program family harvested from our own registry and VM-verified, in the
+program partition — queued in `TODO.md`, not imported.
+
 **v8e program adapter — forge + self-test READ (2026-09-03, owner's solo GPU runs; records
 `validation/logs/standin_v8e_forge_probe.json`, `validation/logs/standin_v8_selftest.json`):**
 
@@ -720,6 +749,12 @@ not the base model's (training Cubby on its own chat is the self-play shortcut t
 | `ukisai/Qwen3.8-27B-multi-turn-agent-sft` (Apache-2.0; 15.2k traces) | Terminus-2 terminal-agent traces generated by Qwen3.8-27B on OpenThoughts-Agent tasks: JSON `analysis / plan / commands` over shell sessions | **No.** The wrong job (shell tool-calls; our tool is the VM and CubeLang) and the wrong voice (a distilled agent persona the identity screen exists to keep out). |
 | `jjssuh/sftuser-intent-Llama-3.1-70B-train` (no licence tag; 273k rows, 2.1 GB) | WildChat-1M rows (real user turns with GPT-3.5/4 replies, moderation scores, hashed IPs) plus an `intent` column written by Llama-3.1-70B — a free-text **user-simulator persona** ("You are a user chatting with an assistant language model to obtain information about a past sporting event."), the training target of a *user* model ("sftuser"), not an intent taxonomy | **No.** The label is a persona sentence, not a class — a router signal would need a second model-labelling pass over model labels; the assistant side is the base-guard voice ("As an AI language model, I do not have access…"); the real user side (multi-turn pushback like "You are incorrect…") is worth having for the realistic serve eval, but from `allenai/WildChat-1M` itself, which carries the ODC-BY licence this copy dropped. |
 | `Lots-of-LoRAs/task581_socialiqa_question_generation` (Apache-2.0; 5.2k train / 650 valid / 650 test) | Super-NaturalInstructions task 581: SocialIQA run **backwards** — given a social situation and its answer, write the question; every row carries the same 600-character definition + four worked examples, and the outputs are the six SocialIQA question templates ("How would Ash feel afterwards?", "What will Others want to do next?", "Why did Taylor do this?") | **Not this task.** The target is one of six template questions, the wrong direction for us, and the repeated instruction prefix would teach the prompt format, not the skill. The **source** is the candidate: `allenai/social_i_qa` (CC-BY, 33k) in the forward direction — situation + question → answer ("How would Sydney feel?" → "sympathetic") — as a small **social-appraisal** family beside emotion/affect: situational feeling, need and motivation, the appraisal the sense stage feeds the hormones from. Queue it for the v9 talk data with the same label-first check as emotion. |
+| `OpenLLM-France/Claire-Dialogue-French-0.1` (CC-BY-NC-SA-4.0, gated, approved 2026-09-04) | 37k real French dialogue transcripts; the 16 conversational subsets (~52 MB) | **In (v9).** 326k candidate turn pairs → zero-filler, content-bearing replies, no subset above 30%, 1,500 kept; parliament and theatre left out (wrong register). |
+| `rbawden/DiaBLa-dataset` (GitHub, CC-BY-SA-4.0) | 144 spontaneous written EN↔FR dialogues, every utterance with a human reference translation | **In (v9).** Pairs where both sides are human: the other speaker's turn in its reference translation → this speaker's own line (891 EN / 938 FR). |
+| `graalul/QFrCoRE_QFrCoRT` (CC-BY-NC-4.0; the ACL 2026 Findings dialect-gap paper) | 4,633 Quebec French expressions + 171 Quebec words, 10 candidate definitions each | **In (v9)** as `quebec` (explain) + `quebec_mc` (the benchmark's form). MFrCoE (the Metropolitan set) is not on the Hub. |
+| `community-datasets/re_dial` (CC-BY-4.0) | 10k human movie-recommendation dialogues | **In (v9).** Seeker → recommender pairs, 1,500. |
+| the owner's `conversations_dataset_anonymized.jsonl` (880 conversations) + `team-dataset.txt` (Teams) | 78 WhatsApp chats (human both sides, Quebec EN/FR) + 802 ChatGPT/Claude exports + a pasted Teams thread (210 messages, 2 colleagues) | **WhatsApp + Teams in (v9)** through the gate + privacy/explicit screens (2,000 + 57 pairs); **the AI exports' assistant side is never a target** (a coding agent's voice, 9% reasoning-trace openers) — their 10k real user turns are the serve eval's prompts. |
+| `Agent-Ark/Toucan-1.5M` (Apache-2.0) | 1.5M synthetic tool-agent trajectories over 495 MCP servers | **No.** Model-generated, and the wrong contract: our tool calls are VM-verified programs over registered capabilities (see the v9 section). |
 | `Na0s/sft-ready-Text-Generation-Augmented-Data-Alpaca-Format` (no licence, no card; 7.7M rows) | lmsys-style anonymized user prompts (`NAME_1`) with model-written answers ("Sure, I can help…", "Hello! It seems like you're sharing…") | **No.** The assistant side is exactly the guard voice the model-guard rejects, the provenance is unknown, and the user side we already have (`arena` in the local chat sources). |
 
 ## SFT gap map (2026-09-03) — what the measured record says is missing, and the source for each
