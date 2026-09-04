@@ -1,0 +1,31 @@
+exp_m4_triple_lookup  git cc45d04  python 3.12.10  Windows-11-10.0.26300-SP0
+harvest cot_harvest_v3cf.jsonl: 800 records, tau_ret 0.5959; store 1241 facts, 1188 parse as triples (95.7%)
+
+per hop (n=1126 hops over 800 questions, gold-chain entities):
+  cosine@3>=tau                      886   78.7%
+  cosine@3                           939   83.4%
+  cosine@50                          944   83.8%
+  lookup                             944   83.8%
+  ambiguous                            9    0.8%
+  gold_chain_not_accepted_by_plan    182   16.2%
+
+end to end, the index alone (frontier walk):
+  lookup_correct            573   71.6%
+  lookup_dead               182   22.8%
+  unparseable                37    4.6%
+  lookup_correct_in_set       8    1.0%
+
+by the harvest's outcome (cosine walk + VM):
+  verified               n=517  lookup_correct=509  lookup_correct_in_set=8
+  retrieval_exhausted    n=246  lookup_dead=182  lookup_correct=64
+  unparseable            n= 37  unparseable=37
+
+  e.g. lookup dead [retrieval_exhausted] hop 1 query='county of clarion, pennsylvania capital' gold_fact='Clarion (PA) is the capital of county of clarion, pennsylvania'
+  e.g. lookup dead [retrieval_exhausted] hop 0 query='what is the administrative territorial entity contained within the country of citizenship of felix joseph widder' gold_fact='Etymology of Austria is the country of citizenship of felix joseph widder'
+  e.g. lookup dead [retrieval_exhausted] hop 1 query='capital of northern ireland capital' gold_fact='nothern ireland is the capital of capital of northern ireland'
+  e.g. lookup dead [retrieval_exhausted] hop 0 query='what is the source that describes the instance of Sirzar, Lorestan' gold_fact='village is the instance of Sirzar, Lorestan'
+  e.g. lookup dead [retrieval_exhausted] hop 0 query='what is the administrative territorial entity contained within the country of samsinbong' gold_fact='S. Koreans is the country samsinbong is in'
+  e.g. lookup dead [retrieval_exhausted] hop 0 query='what is the event that sally robbins a participant of' gold_fact='2004 Olympic Game is the participant of sally robbins is'
+  e.g. lookup dead [retrieval_exhausted] hop 0 query='what is the award received by the creator of murder in the first (tv series)' gold_fact='Stephen Bochco is the creator of murder in the first (tv series)'
+  e.g. lookup dead [retrieval_exhausted] hop 0 query='what is the conviction of rattlesnake james' gold_fact='Second degree murder is the conviction of of rattlesnake james'
+wall 12.4s

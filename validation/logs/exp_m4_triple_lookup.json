@@ -1,0 +1,133 @@
+{
+ "git": "cc45d04",
+ "tau_ret": 0.595863088965416,
+ "store": 1241,
+ "parsed": 1188,
+ "hops": 1126,
+ "hop_stats": {
+  "cosine@3>=tau": 886,
+  "cosine@3": 939,
+  "cosine@50": 944,
+  "lookup": 944,
+  "gold_chain_not_accepted_by_plan": 182,
+  "ambiguous": 9
+ },
+ "walk": {
+  "lookup_correct": 573,
+  "lookup_dead": 182,
+  "unparseable": 37,
+  "lookup_correct_in_set": 8
+ },
+ "by_reason": {
+  "verified": {
+   "lookup_correct": 509,
+   "lookup_correct_in_set": 8
+  },
+  "retrieval_exhausted": {
+   "lookup_dead": 182,
+   "lookup_correct": 64
+  },
+  "unparseable": {
+   "unparseable": 37
+  }
+ },
+ "examples": [
+  {
+   "q": "What is the capital of the administrative territorial entity of madison township, clarion county, pennsylvania?",
+   "hop": 1,
+   "query": "county of clarion, pennsylvania capital",
+   "entity": "county of clarion, pennsylvania",
+   "gold_fact": "Clarion (PA) is the capital of county of clarion, pennsylvania",
+   "reason": "retrieval_exhausted"
+  },
+  {
+   "q": "Which is the administrative territorial entity contained within the country of citizenship of felix joseph widder?",
+   "hop": 0,
+   "query": "what is the administrative territorial entity contained within the country of citizenship of felix joseph widder",
+   "entity": null,
+   "gold_fact": "Etymology of Austria is the country of citizenship of felix joseph widder",
+   "reason": "retrieval_exhausted"
+  },
+  {
+   "q": "What is the capital of the location of final assembly of ss canberra?",
+   "hop": 1,
+   "query": "capital of northern ireland capital",
+   "entity": "capital of northern ireland",
+   "gold_fact": "nothern ireland is the capital of capital of northern ireland",
+   "reason": "retrieval_exhausted"
+  },
+  {
+   "q": "What is the component of the source that describes the instance of Sirzar, Lorestan?",
+   "hop": 0,
+   "query": "what is the source that describes the instance of Sirzar, Lorestan",
+   "entity": null,
+   "gold_fact": "village is the instance of Sirzar, Lorestan",
+   "reason": "retrieval_exhausted"
+  },
+  {
+   "q": "Which is the administrative territorial entity contained within the country of samsinbong?",
+   "hop": 0,
+   "query": "what is the administrative territorial entity contained within the country of samsinbong",
+   "entity": null,
+   "gold_fact": "S. Koreans is the country samsinbong is in",
+   "reason": "retrieval_exhausted"
+  },
+  {
+   "q": "What is the successor of the event that sally robbins a participant of?",
+   "hop": 0,
+   "query": "what is the event that sally robbins a participant of",
+   "entity": null,
+   "gold_fact": "2004 Olympic Game is the participant of sally robbins is",
+   "reason": "retrieval_exhausted"
+  },
+  {
+   "q": "What is the instance of the award received by the creator of murder in the first (tv series)?",
+   "hop": 0,
+   "query": "what is the award received by the creator of murder in the first (tv series)",
+   "entity": null,
+   "gold_fact": "Stephen Bochco is the creator of murder in the first (tv series)",
+   "reason": "retrieval_exhausted"
+  },
+  {
+   "q": "What is the class component of the conviction of rattlesnake james?",
+   "hop": 0,
+   "query": "what is the conviction of rattlesnake james",
+   "entity": null,
+   "gold_fact": "Second degree murder is the conviction of of rattlesnake james",
+   "reason": "retrieval_exhausted"
+  },
+  {
+   "q": "What is the color of the flag of the administrative territorial entity of yeoman island?",
+   "hop": 1,
+   "query": "climate of nunavut flag",
+   "entity": "climate of nunavut",
+   "gold_fact": "\ud83c\udff4\udb40\udc63\udb40\udc61\udb40\udc6e\udb40\udc75\udb40\udc7f is the flag of climate of nunavut",
+   "reason": "retrieval_exhausted"
+  },
+  {
+   "q": "What is the source that describes the instance of the institution where Christian Friedrich Henrici was educated?",
+   "hop": 0,
+   "query": "what is the institution where Christian Friedrich Henrici was educated",
+   "entity": null,
+   "gold_fact": "Universitat Leipzig is the institution where Christian Friedrich Henrici was educated",
+   "reason": "retrieval_exhausted"
+  },
+  {
+   "q": "Which country is the country of the membership of the country of citizenship of Frank M\u00f6ller (footballer)?",
+   "hop": 1,
+   "query": "Germanz membership",
+   "entity": "Germanz",
+   "gold_fact": "UN Industrial Development Organization is the member of of Germanz",
+   "reason": "retrieval_exhausted"
+  },
+  {
+   "q": "What is the instance of the work that based on the genre of Crispian St. Peters?",
+   "hop": 0,
+   "query": "what is the work that based on the genre of Crispian St. Peters",
+   "entity": null,
+   "gold_fact": "PopStar is the genre of Crispian St. Peters",
+   "reason": "retrieval_exhausted"
+  }
+ ],
+ "wall_s": 12.4
+}
