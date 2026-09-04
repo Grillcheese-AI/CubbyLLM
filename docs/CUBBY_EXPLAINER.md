@@ -25,7 +25,7 @@ claims, you can trace back to the facts it used.
 | encrypted chats | What you tell it is stored encrypted on your machine. Nothing is sent anywhere. |
 | programmable, agentic, tool-calling via ToolForge | It can decide to use a tool, ask for one to be built when none fits, and every tool it uses is certified before it runs. |
 | trained on empathy, in balance | It reads the emotional temperature of what you write and adjusts its tone. It does not pretend to have feelings. |
-| chain and graph of thought managed by the machine | Multi-step answers are walked step by step by the verifier. A broken chain stops instead of finishing with a guess. |
+| chain and graph of thought managed by the machine | Multi-step answers are walked step by step by the verifier, in milliseconds, not by writing pages of "thinking". A broken chain stops instead of finishing with a guess. |
 | self-improvement from the past and the internet — *coming* | Learning from its own history is built; watching the web for trends and threats is designed, behind an explicit permission, and not yet on. |
 | live visual cortex, webcam — *coming* | Seeing through a camera exists in the lab lineage and is not part of what you get today. |
 
@@ -44,6 +44,12 @@ instead of quietly overwriting it.
 
 **It shows its work.** Every factual answer comes with the facts it used and the steps it ran. If you disagree, you can
 see exactly where.
+
+**It thinks cheaply on hard problems.** Other assistants reason by writing out hundreds of words of "thinking" every
+single time you ask, and you pay for every word, in time and in electricity. Cubby writes a short program once, the
+verifier runs it in milliseconds, and a program that worked is kept and run again at no cost in words at all: a
+shortcut it invented in the maze saves it four moves every time it uses it, and a multi-step lookup that would be a page
+of text for another model is a fifty-millisecond walk here. The harder the reasoning, the bigger the difference.
 
 **It stays on your machine, and your conversations stay yours.** No account, no cloud, no usage logs on someone else's
 server. What it stores about your chats is encrypted with a key that only exists on your computer.
