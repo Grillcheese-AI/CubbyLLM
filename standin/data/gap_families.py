@@ -424,6 +424,79 @@ def build_empathy(rng: random.Random, facts: dict, n: int = 2500) -> tuple[list[
     return out, why
 
 
+# ── Claire: real French conversations as FR chat pairs (gated: files land after approval) ──────────────────
+CLAIRE_DIR = os.path.join(HERE, "hf", "claire", "FR")
+CLAIRE_SUBSETS = ("CFPP", "ESLO_free", "ESLO_interview", "TCOF_adults", "OFROM", "PFC_free", "PFC_guided", "ORFEO_crfp",
+                  "ORFEO_coralrom", "ORFEO_valibel_interview", "CID", "CLAPI", "ESLO_assistance", "LINAGORA_free", "ParisStories", "OTG")
+_TURN = re.compile(r"^\[([^\]]+):\]\s*(.*)$")
+_TAG = re.compile(r"\[[A-Z]{2,}[^\]]*\]")                     # [PII], [NOISE], [LAUGHTER]...
+_FILLER = re.compile(r"\b(euh+|hein|ben|bah|hum+|mmh+|ouais)\b", re.I)
+
+
+def claire_conversations(path: str):
+    """Conversations (lists of (speaker, text)) from one Claire text file: blank-line separated, one turn per
+    line, `[speaker:] text`; bracket tags dropped."""
+    conv: list[tuple[str, str]] = []
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.rstrip("\n")
+            if not line.strip():
+                if conv:
+                    yield conv
+                conv = []
+                continue
+            m = _TURN.match(line)
+            if not m:
+                continue
+            text = _clean(_TAG.sub(" ", m.group(2)))
+            if text:
+                conv.append((m.group(1), text))
+    if conv:
+        yield conv
+
+
+def claire_pairs(conv: list[tuple[str, str]], max_words: int = 220):
+    """Consecutive turns by two different speakers -> (user, reply): the reply is 3-`max_words` words, carries
+    at most one filler, is not a bare backchannel, and the user turn is 1-200 words."""
+    for (s1, t1), (s2, t2) in zip(conv, conv[1:]):
+        if s1 == s2:
+            continue
+        n1, n2 = len(t1.split()), len(t2.split())
+        if not (1 <= n1 <= 200 and 3 <= n2 <= max_words) or len(_FILLER.findall(t2)) > 1 or len(_FILLER.findall(t1)) > 3:
+            continue
+        if not re.search(r"[a-zà-ÿ]{4,}", t2.lower()):
+            continue
+        yield t1, t2
+
+
+def build_claire(rng: random.Random, facts: dict, chat_ok, n: int = 1500) -> tuple[list[dict], Counter]:
+    """FR chat records in the chat family's shape (task chat, subtype claire_fr), through the same gate."""
+    out, why = [], Counter()
+    files = [os.path.join(CLAIRE_DIR, sub, "train.txt") for sub in CLAIRE_SUBSETS]
+    files = [f for f in files if os.path.exists(f)]
+    if not files:
+        why["missing:claire (gated — request access on the Hub, then `hf download OpenLLM-France/Claire-Dialogue-French-0.1 --repo-type dataset --local-dir standin/data/hf/claire --include FR/<subset>/*`)"] += 1
+        return out, why
+    pairs = []
+    for f in files:
+        sub = os.path.basename(os.path.dirname(f))
+        for conv in claire_conversations(f):
+            for u, a in claire_pairs(conv):
+                pairs.append((sub, u, a))
+    rng.shuffle(pairs)
+    for i, (sub, u, a) in enumerate(pairs):
+        if len(out) >= n:
+            break
+        reason = chat_ok(u, a, facts)
+        if reason:
+            why[f"claire:{reason}"] += 1
+            continue
+        state = sample_state(rng)
+        out.append({"id": f"chat:claire_fr:{i}", "task": "chat", "subtype": "claire_fr", "source": f"hf:OpenLLM-France/Claire-Dialogue-French-0.1/{sub}",
+                    "prompt": u, "program": a, "gold": None, "system": identity_system(facts, state), "state": state, "lang": "fr", "repeat": 2})
+    return out, why
+
+
 CHECKS = {"verbalize": None, "repair": repair_ok, "rewrite": rewrite_ok, "appraisal": appraisal_ok,
           "dialog_emotion": dialog_emotion_ok, "dialog_act": label_first_ok, "empathy": label_first_ok}
 

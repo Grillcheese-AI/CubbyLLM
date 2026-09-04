@@ -313,3 +313,35 @@ def test_oasst2_second_exchanges_become_multi_turn_chat_with_the_first_inline():
     prompt, a2, lang, a1 = out[0]
     assert prompt == "Conversation so far:\nUser: How do I boil an egg?\nCubby: Simmer it for seven minutes, then cool it in cold water.\nUser: And for a soft one?"
     assert a2 == "Five minutes, and straight into cold water." and lang == "en" and a1.startswith("Simmer")
+
+
+
+def test_claire_conversations_parse_into_gated_fr_chat_pairs(tmp_path):
+    """Claire's text format (blank-line separated conversations, `[speaker:] text` turns, bracket tags) -> FR chat
+    pairs through the chat gate; fillers and backchannels are screened; the family is skipped with a reason
+    while the gated files are absent."""
+    import gap_families as g
+    from identity import load_facts
+    F = load_facts()
+    txt = ("[speaker001:] Bonjour, vous habitez le quartier depuis longtemps ?\n"
+           "[speaker002:] Oui, depuis une quinzaine d'années, on est arrivés quand les enfants étaient petits.\n"
+           "[speaker001:] euh et euh ça a changé ?\n"
+           "[speaker002:] euh ben ouais\n"
+           "[speaker002:] Le marché a fermé, mais il y a plus de commerces maintenant [NOISE] et un tramway.\n"
+           "\n"
+           "[Marie:] Tu viens ce soir ?\n"
+           "[Marie:] Réponds-moi.\n"
+           "[Paul:] Je passe vers vingt heures, je finis tard au bureau.\n")
+    f = tmp_path / "train.txt"
+    f.write_text(txt, encoding="utf-8")
+    convs = list(g.claire_conversations(str(f)))
+    assert len(convs) == 2 and convs[0][4] == ("speaker002", "Le marché a fermé, mais il y a plus de commerces maintenant et un tramway.")
+    pairs = list(g.claire_pairs(convs[0])) + list(g.claire_pairs(convs[1]))
+    assert ("Bonjour, vous habitez le quartier depuis longtemps ?", "Oui, depuis une quinzaine d'années, on est arrivés quand les enfants étaient petits.") in pairs
+    assert not any(a == "euh ben ouais" for _, a in pairs), "a backchannel of fillers is not a reply"
+    assert ("Réponds-moi.", "Je passe vers vingt heures, je finis tard au bureau.") in pairs, "same-speaker runs pair with the next speaker's turn"
+    recs, why = g.build_claire(random.Random(0), F, b.chat_ok)
+    if recs:
+        assert all(r["task"] == "chat" and r["subtype"] == "claire_fr" and r["lang"] == "fr" for r in recs)
+    else:
+        assert any(k.startswith("missing:claire") for k in why), why

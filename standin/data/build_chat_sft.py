@@ -251,7 +251,7 @@ LATEX = re.compile(r"\\(\[|\(|frac|begin|end|left|right|sqrt|tan|sin|cos|sum|int
 GAME_FORGE_REPEAT = 3                                    # v7: forge decision/compare records replayed x3 (v6 probe regression)
 # the two adapters (v8): the trunk EMITS programs; the talk cortex is a second adapter on the same base
 PROGRAM_TASKS = ("arithmetic", "kernel", "role_binding", "chain")          # VM-verified; the game families are kernel/chain subtypes
-from gap_families import (GAP_TASKS, build_appraisal, build_dailydialog, build_empathy, build_repair,  # noqa: E402
+from gap_families import (GAP_TASKS, build_appraisal, build_claire, build_dailydialog, build_empathy, build_repair,  # noqa: E402
                           build_rewrite, build_safety_extra, build_verbalize)
 
 TALK_TASKS = ("identity", "chat", "content", "emotion", "affect", "history", "safety", "exposure") + GAP_TASKS   # v9: the gap families
@@ -1399,6 +1399,11 @@ def main():
     print(f"  kept {dict(Counter(r['subtype'] for r in hf_chat))} | rejected {dict(why_hf.most_common(10))}")
     chat += hf_chat
     why_chat.update(why_hf)
+    print("=== FR chat pairs from Claire (real French conversations; gated, skipped until approved) ...", flush=True)
+    claire, why_claire = build_claire(rng, facts, chat_ok)
+    print(f"  kept {len(claire)} | skipped {dict(why_claire.most_common(6))}")
+    chat += claire
+    why_chat.update(why_claire)
     print("=== chat pairs from the sorted local sources (arena, convo, instruct, nemotron, wikiqa, grammar, ei) ...", flush=True)
     local_chat, why_local = build_local_chat(rng, facts, limit_lines=lim)
     print(f"  kept {dict(Counter(r['subtype'] for r in local_chat))} | rejected {dict(why_local.most_common(12))}")
