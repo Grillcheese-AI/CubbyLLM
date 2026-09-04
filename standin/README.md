@@ -1,6 +1,6 @@
 # standin/ — the stand-in trunk
 
-**Status (2026-09-04):** v10t built (90,391 records = v9t + 465 toolcall rows in both call formats) and on Drive, awaiting its two-arm run; **v9 serves: `--gguf standin/models/emitter_v8e.Q4_K_M.gguf --talk-gguf standin/models/emitter_v9t.Q4_K_M.gguf`** (the talk-base decision below: LFM stays); v9t bake-off read for three arms (see § v9t bake-off: the control recovers history to 0.65, Qwen3-4B is the one candidate with gains, the 8B MoE is out, Gemma pending a rerun); v9t data built (89,890 talk records from the SFT gap map + the owner's sources; see § v9), awaiting its Colab run; v7 is the serving model; v8 (two adapters on one base) is trained and exported (both Q4s local: `standin/models/emitter_v8{e,t}.Q4_K_M.gguf`); the v8t talk read holds v7, v8e's forge probe is 1.00/1.00/1.00 and the two-adapter self-test 96/4/0 (see § v8); arithmetic at n=40 — the kill line — is pending. Nothing here is CubbyLLM.
+**Status (2026-09-04):** v10t built (91,754 records = v9t + 1,830 toolcall rows in both call formats, incl. `request_tool` — the factory's meta-call) and on Drive, awaiting its two-arm run; **v9 serves: `--gguf standin/models/emitter_v8e.Q4_K_M.gguf --talk-gguf standin/models/emitter_v9t.Q4_K_M.gguf`** (the talk-base decision below: LFM stays); v9t bake-off read for three arms (see § v9t bake-off: the control recovers history to 0.65, Qwen3-4B is the one candidate with gains, the 8B MoE is out, Gemma pending a rerun); v9t data built (89,890 talk records from the SFT gap map + the owner's sources; see § v9), awaiting its Colab run; v7 is the serving model; v8 (two adapters on one base) is trained and exported (both Q4s local: `standin/models/emitter_v8{e,t}.Q4_K_M.gguf`); the v8t talk read holds v7, v8e's forge probe is 1.00/1.00/1.00 and the two-adapter self-test 96/4/0 (see § v8); arithmetic at n=40 — the kill line — is pending. Nothing here is CubbyLLM.
 
 A small open model (currently `LiquidAI/LFM2.5-2.6B`, chosen by a 2026-08-30 Hub
 check — see `docs/research/2026-08-28-oracle-competition-scored.md` §3.2 for why a
@@ -410,15 +410,30 @@ tool is an `act` over a registered capability under the deny-by-default policy).
 with an explicit network capability plus a program family harvested from our own registry and VM-verified, in the
 program partition — queued in `TODO.md`, not imported.
 
-**v10 — v9 + the `toolcall` family (2026-09-04; `emitter_sft_v10t.jsonl`, 90,391 records, sha `389c9f0d10a3…`, on Drive; the
-program partition is still byte-identical to v8e).** 465 toolcall records: {'hermes': 235, 'lfm': 230} by format, {'web_search': 122, 'remember_fact': 103, 'pacman_status': 20, 'news_search': 144, 'pacman_explore': 76} by
+**v10 — v9 + the `toolcall` family (2026-09-04; `emitter_sft_v10t.jsonl`, 91,754 records, sha `a08873c734b2…`, on Drive; the
+program partition is still byte-identical to v8e).** 1,830 toolcall records: {'lfm': 922, 'hermes': 908} by format, {'news_search': 154, 'none': 1159, 'web_search': 147, 'pacman_explore': 111, 'pacman_status': 39, 'request_tool': 86, 'remember_fact': 134} by
 target (`none` = a chat row re-issued with the tool list in the system prompt, the reply stands — the negatives that teach
-*when*), {'en': 230, 'fr': 235} by language. The registry: `news_search`, `web_search`, `pacman_status`, `pacman_explore`,
-`remember_fact` — the host maps a call to a registered CubeLang program, the VM runs it as an `act` under the
-deny-by-default policy (the game and the memory cortex exist; the two network tools wait on a plugin cortex with an
-explicit capability, and are refused until then), and what comes back is grounded before it is spoken through ASK
-(owner, 2026-09-04: "qwen could call the vm with a program called news_search and get the right info" — yes, that is the
-path). The check (`gap_families.toolcall_ok`) parses the native call: the right tool with its required arguments when one is
+*when*), {'fr': 641, 'en': 1189} by language. (The first build had kept 465: the builder deduped on the prompt alone, so every
+negative collided with the chat row it mirrors and the two formats' positives collided with each other — the key now
+carries the format and the target for this family.) The registry: `news_search`, `web_search`, `pacman_status`,
+`pacman_explore`, `remember_fact`, and **`request_tool`** — the host maps a call to a registered CubeLang program, the VM
+runs it as an `act` under the deny-by-default policy (the game and the memory cortex exist; the two network tools wait on
+a plugin cortex with an explicit capability, and are refused until then), and what comes back is grounded before it is
+spoken through ASK (owner, 2026-09-04: "qwen could call the vm with a program called news_search and get the right info"
+— yes, that is the path).
+
+**The factory (owner, 2026-09-04: "it should be able to create its own tool by sending a request to a factory model
+agent").** `request_tool(name, description, example_request)` is the meta-call the model makes when nothing registered
+fits ("set a timer for 25 minutes", "convertis 30 degrés celsius en fahrenheit", "roll two six-sided dice"). The factory
+agent is ToolForge's loop opened to the talk side: the request goes to the program adapter, which writes a CubeLang
+program from the description; the VM certifies it on the example request (parse → compile → execute → the expected
+shape); it is registered retire-not-delete (`ProgramLibrary`, the game's own pattern) and appears in the next system
+prompt's tool list. It composes registered primitives only — a request can never grant itself network or file access;
+those stay host capabilities under policy. Data side in v10 (the six tool ideas above, both formats, EN+FR); host side
+next: the registry object (name → program + policy), the forge entry point for a `request_tool` call, and the tool list
+rendered into `identity_system` from the live registry.
+
+The check (`gap_families.toolcall_ok`) parses the native call: the right tool with its required arguments when one is
 due, no call at all when none is. **Run:** `notebooks/standin_talk_bakeoff.ipynb` with `STANDIN_VERSION=v10t` and
 `STANDIN_ARMS=lfm25_2p6b,qwen3_4b` (each arm trains only the rows in its own call format), then the tool-call probe on
 both Q4s. **What decides:** the probe's `calls_when_needed` and `silent_when_not` — 3/3 and 3/3 is the bar; a base that
