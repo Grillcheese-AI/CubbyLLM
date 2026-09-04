@@ -9,9 +9,10 @@ from ..core.protocols import Wiring
 
 __wiring__ = Wiring.WIRED
 
+from .index import TripleIndex                     # noqa: E402
 from .pipeline import CoTResult, HopTrace, answer  # noqa: E402
-from .planner import parse_fact, parse_question    # noqa: E402
+from .planner import accepts, parse_fact, parse_question   # noqa: E402
 from .programs import build_chain_program          # noqa: E402
 
-__all__ = ["CoTResult", "HopTrace", "answer", "parse_fact",
+__all__ = ["CoTResult", "HopTrace", "TripleIndex", "accepts", "answer", "parse_fact",
            "parse_question", "build_chain_program"]

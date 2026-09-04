@@ -503,3 +503,26 @@ def test_live_qwen_session_fixes_memory_never_learns_a_question_and_help_speaks_
     s = sv.CubbyServe(ChainEmitter(), overlap_retriever, STORE, route_tau=0.9)
     for q in ("quesse que tu peux faire pour moi ?", "qu'est-ce que tu peux faire ?", "tu peux faire quoi", "que peux-tu faire ?", "what can you do?"):
         assert s.route(q)["cortex"] in ("help", "talk"), q
+
+
+
+def test_fact_store_indexes_at_add_and_the_walk_looks_up_first(monkeypatch):
+    """exp_m4 (2026-09-04): a FactStore keeps a triple index; the reasoning cortex hands it to the walk."""
+    from cubbyllm.reasoning import CoTResult
+    from cubbyllm.reasoning.planner import parse_question
+    store = FactStore(["paris is the capital of france"])
+    plan = parse_question("What is the capital of france?")
+    assert [f for f, _ in store.lookup(plan, 0, None)] == ["paris is the capital of france"]
+    assert store.add("berlin is the capital of germany") and len(store.index) == 2
+    assert store.add("remember this, no template") and len(store.index) == 2 and len(store) == 3
+    captured = {}
+
+    def fake_answer(question, retriever, run_fn, **kw):
+        captured.update(kw)
+        return CoTResult(answer=None, verified=False, reason="retrieval_exhausted")
+
+    monkeypatch.setattr(sv, "pipeline_answer", fake_answer)
+    sv.ReasoningCortex(ChainEmitter()).walk_facts("What is the capital of france?", store)
+    assert captured["lookup"] == store.lookup
+    sv.ReasoningCortex(ChainEmitter()).walk_facts("What is the capital of france?", overlap_retriever)
+    assert captured["lookup"] is None, "a bare retriever has no index; the walk searches as before"

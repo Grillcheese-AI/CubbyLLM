@@ -34,11 +34,13 @@ class FactStore:
     """
 
     def __init__(self, texts: list[str] | None = None, enc=None, name: str = "facts") -> None:
+        from cubbyllm.reasoning import TripleIndex
         self.name = name
         self.enc = enc
         self.texts: list[str] = []
         self._rows: list = []                            # np row vectors when enc is set
         self._seen: set[str] = set()
+        self.index = TripleIndex()                       # retrieval as LOOKUP for template facts (exp_m4, 2026-09-04)
         for t in texts or []:
             self.add(t)
 
@@ -56,6 +58,7 @@ class FactStore:
             return False
         self._seen.add(key)
         self.texts.append(key)
+        self.index.add(key)                              # a learned fact is looked up next turn, not only searched
         if self.enc is not None:
             import numpy as np
             v = self.enc.encode(key).reshape(-1).astype(np.float32)
@@ -64,6 +67,10 @@ class FactStore:
 
     def __contains__(self, text: str) -> bool:
         return self._key(text) in self._seen
+
+    def lookup(self, plan, hop: int, entity):
+        """`TripleIndex.hop`: the exact candidates for a hop; the walk tries this before cosine."""
+        return self.index.hop(plan, hop, entity)
 
     def __call__(self, query: str, k: int) -> list[tuple[float, str]]:
         if not self.texts:

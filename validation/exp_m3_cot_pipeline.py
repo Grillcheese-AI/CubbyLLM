@@ -95,6 +95,7 @@ from exp_m3_haystack import iter_distractors  # noqa: E402
 
 from cubbyllm.bridges import cubelang_client as cc  # noqa: E402
 from cubbyllm.reasoning import answer as pipeline_answer  # noqa: E402
+from cubbyllm.reasoning import TripleIndex  # noqa: E402
 from cubbyllm.reasoning import build_chain_program, parse_fact, parse_question  # noqa: E402
 from cubbyllm.reasoning.planner import Triple, normalize  # noqa: E402
 
@@ -576,6 +577,7 @@ def _harvest_record(q: str, plan, gold_norm: str, gold_raw, h: int, result,
                       if ht.triple is not None else None),
             "ret_score": ht.ret_score, "symbol": ht.symbol,
             "similarity": ht.similarity, "hop_verified": hop_verified,
+            "source": getattr(ht, "source", "search"),
         })
 
     candidates_topk = []
@@ -630,6 +632,8 @@ def main() -> None:
     ap.add_argument("--max-repairs", type=int, default=1,   # was 3; lossless at 1 on the 800-question set (rb1 run, 2026-09-03)
                     help="repair budget per question (3 -> 1 measured lossless, 2.6x faster; see logs/exp_m3_cot_pipeline_rb1.json)")
     ap.add_argument("--exe", type=str, default=None, help="cubelang exe override")
+    ap.add_argument("--lookup", action="store_true",
+                    help="lookup-first walk: a TripleIndex over the eval store, cosine only for the hops it misses (exp_m4, 2026-09-04)")
     ap.add_argument("--distractors", type=int, default=0,
                     help="N DBpedia distractor texts appended to the EVAL "
                          "retrieval store only (never calibration)")
@@ -680,6 +684,9 @@ def main() -> None:
 
     retrieve = make_retriever(store, enc)
     store_size = len(store)
+    index = TripleIndex(store) if args.lookup else None
+    if index is not None:
+        print(f"lookup arm: triple index over the eval store, {len(index)}/{index.n_facts} facts parse as triples\n")
 
     # -- calibration sample (disjoint by question text; NEVER sees distractors) --
     cal_q, cal_a, cal_h, cal_chains, cal_store = load_sample(
@@ -1185,7 +1192,8 @@ def main() -> None:
 
             s0 = time.perf_counter()
             result = pipeline_answer(q, retrieve_log, vm_run_fn, tau_vm=tau_vm_q, tau_ret=tau_ret,
-                                     top_k=args.top_k, max_repairs=args.max_repairs)
+                                     top_k=args.top_k, max_repairs=args.max_repairs,
+                                     lookup=(index.hop if index is not None else None))
             wall_ms["cot"].append((time.perf_counter() - s0) * 1000)
             repairs_hist[result.repairs_used] += 1
             if result.reason == "unparseable":

@@ -9,8 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from ..core.protocols import Wiring
-from .planner import (QuestionPlan, Triple, normalize, parse_fact,
-                      parse_question, relation_matches)
+from .planner import (QuestionPlan, Triple, accepts, normalize, parse_fact,
+                      parse_question)
 from .programs import build_chain_program
 
 __wiring__ = Wiring.WIRED
@@ -24,6 +24,9 @@ class HopTrace:
     ret_score: float
     symbol: str | None = None
     similarity: float | None = None
+    # how the fact was found: "lookup" (the triple index; ret_score is 1.0, no
+    # threshold applied) or "search" (cosine top-k above tau_ret)
+    source: str = "search"
 
 
 @dataclass
@@ -49,24 +52,21 @@ class CoTResult:
     repairs: list[dict] = field(default_factory=list)
 
 
-def _accept(plan: QuestionPlan, hop: int, entity: str | None,
-            t: Triple) -> bool:
-    """Does this parsed fact serve hop `hop` of the plan?"""
-    if hop == 0:
-        # tail hop: the fact's "rel of subj" must reproduce the question tail
-        return normalize(f"{t.rel} of {t.subj}") == normalize(plan.tail)
-    expected = plan.relations[hop]
-    assert expected is not None
-    return (relation_matches(expected, t.rel)
-            and normalize(t.subj) == normalize(entity or ""))
+_accept = accepts     # the acceptance test moved to the planner (2026-09-04); this name stays for the validation scripts
 
 
 def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
           budget: list[int], trace: list[HopTrace],
-          banned: set[str]) -> list[Triple] | None:
+          banned: set[str], lookup=None) -> list[Triple] | None:
     """Pick one accepted triple per hop; None when the budget dies.
     Bounded by `budget` alone (the spec's 3-per-question repair budget);
-    `banned` holds facts a failed VM verify blacklisted."""
+    `banned` holds facts a failed VM verify blacklisted.
+
+    `lookup(plan, hop, entity) -> [(fact, triple)]` (a `TripleIndex.hop`) is
+    tried FIRST at every hop: an exact answer to the same acceptance test
+    search would apply, with no threshold and no k. Search runs only for a hop
+    the index misses. Ambiguity (0.8% of harvest hops) is broken by the
+    search's own ranking of the query, then by fact text — deterministic."""
     triples: list[Triple] = []
     entity: str | None = None
     hop = 0
@@ -77,13 +77,21 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
         else:
             query = f"{entity} {plan.relations[hop]}"
         found = None
+        if lookup is not None:
+            cands = [(f, t) for f, t in lookup(plan, hop, entity) if f not in banned]
+            if len(cands) > 1:
+                rank = {f: float(sc) for sc, f in retrieve(query, max(top_k, len(cands)))}
+                cands.sort(key=lambda ft: (-rank.get(ft[0], -1.0), ft[0]))
+            if cands:
+                fact, t = cands[0]
+                found = (1.0, fact, t, "lookup")
         while found is None:
             for score, fact in retrieve(query, top_k):
                 if score < tau_ret or fact in banned:
                     continue
                 t = parse_fact(fact)
-                if t is not None and _accept(plan, hop, entity, t):
-                    found = (score, fact, t)
+                if t is not None and accepts(plan, hop, entity, t):
+                    found = (score, fact, t, "search")
                     break
             if found is None:
                 if budget[0] <= 0:
@@ -91,9 +99,9 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
                 budget[0] -= 1
                 seen = " ".join(h.fact for h in trace)
                 query = f"{query} {seen}" if seen else f"{query} {question_tail}"
-        score, fact, t = found
+        score, fact, t, source = found
         trace.append(HopTrace(query=query, fact=fact, triple=t,
-                              ret_score=score))
+                              ret_score=score, source=source))
         triples.append(t)
         entity = t.obj
         hop += 1
@@ -101,7 +109,9 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
 
 
 def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
-           top_k: int = 3, max_repairs: int = 1) -> CoTResult:
+           top_k: int = 3, max_repairs: int = 1, lookup=None) -> CoTResult:
+    """`lookup`: a `TripleIndex.hop`-shaped callable; when given, every hop is
+    looked up before it is searched (see `_walk`)."""
     # max_repairs 3 -> 1 (2026-09-03): on the 800-question harvest every failure burned all three
     # repairs with zero hops verified and no verified chain ever needed more than one; budget 1
     # reproduces 517 verified / 513 correct / control 528/528 exactly at 45.9 ms vs 120.9 ms per
@@ -118,7 +128,7 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
     # up to two walk+verify rounds (spec 4.4: one verify-stage repair pass)
     for _attempt in range(2):
         trace: list[HopTrace] = []
-        triples = _walk(plan, retrieve, tau_ret, top_k, budget, trace, banned)
+        triples = _walk(plan, retrieve, tau_ret, top_k, budget, trace, banned, lookup=lookup)
         used = max_repairs - budget[0]
 
         # Close out a pending repair from the PREVIOUS attempt's ban: the

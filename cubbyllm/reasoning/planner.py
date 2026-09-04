@@ -214,6 +214,19 @@ def parse_fact(f: str) -> Triple | None:
                   subj=m.group("subj").strip())
 
 
+def accepts(plan: QuestionPlan, hop: int, entity: str | None, t: Triple) -> bool:
+    """Does this parsed fact serve hop `hop` of the plan? The ONE acceptance
+    test: `pipeline._walk` applies it to search candidates, `index.TripleIndex`
+    answers lookups with it — a lookup hit is accepted by construction."""
+    if hop == 0:
+        # tail hop: the fact's "rel of subj" must reproduce the question tail
+        return normalize(f"{t.rel} of {t.subj}") == normalize(plan.tail)
+    expected = plan.relations[hop]
+    assert expected is not None
+    return (relation_matches(expected, t.rel)
+            and normalize(t.subj) == normalize(entity or ""))
+
+
 def relation_matches(expected: str, got: str) -> bool:
     a = set(normalize(expected).split())
     b = set(normalize(got).split())

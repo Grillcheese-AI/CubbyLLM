@@ -122,10 +122,12 @@ class ReasoningCortex:
             return cc.run_program_proto(source, fn=fn, exe=self.exe)
 
         res = pipeline_answer(question, retriever, run_fn, tau_vm=self.tau_vm,
-                              tau_ret=self.tau_ret, top_k=self.k_facts, max_repairs=1)   # 3 -> 1: lossless on the 800-question harvest, 2.6x faster walks (rb1 run, 2026-09-03)
+                              tau_ret=self.tau_ret, top_k=self.k_facts, max_repairs=1,   # 3 -> 1: lossless on the 800-question harvest, 2.6x faster walks (rb1 run, 2026-09-03)
+                              lookup=getattr(retriever, "lookup", None))                 # a FactStore looks up first (exp_m4, 2026-09-04)
         facts = [h.fact for h in res.trace if h.fact]
         meta = {"walk_answer": res.answer, "walk_verified": res.verified,
-                "walk_reason": res.reason, "repairs": res.repairs_used}
+                "walk_reason": res.reason, "repairs": res.repairs_used,
+                "walk_sources": [h.source for h in res.trace if h.fact]}
         return facts, meta
 
     def gather_facts(self, question: str, retriever) -> list[tuple[float, str]]:

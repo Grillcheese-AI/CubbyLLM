@@ -264,3 +264,51 @@ def test_source_populated_on_vm_verify_failed():
     assert r.reason == "vm_verify_failed"
     assert r.source is not None
     assert r.repairs == []
+
+
+
+# -- lookup-first walk (the triple index; exp_m4, 2026-09-04) -----------------
+def test_lookup_first_walk_verifies_when_search_finds_nothing():
+    from cubbyllm.reasoning.index import TripleIndex
+    ix = TripleIndex([F1, F2, F3])
+
+    def no_search(query, k):
+        return []
+
+    r = answer(Q3, no_search, good_vm, tau_vm=0.5, tau_ret=0.2, lookup=ix.hop)
+    assert r.verified is True and r.answer == "oceania portal"
+    assert [h.source for h in r.trace] == ["lookup"] * 3
+    assert all(h.ret_score == 1.0 for h in r.trace), "no threshold applies to a lookup hit"
+    d = answer(Q3, no_search, good_vm, tau_vm=0.5, tau_ret=0.2)   # the same retriever without the index
+    assert d.verified is False and d.reason == "retrieval_exhausted"
+
+
+def test_lookup_falls_back_to_search_for_the_hop_the_index_misses():
+    from cubbyllm.reasoning.index import TripleIndex
+    ix = TripleIndex([F1, F3])                                    # F2 is not indexed
+    r = answer(Q3, good_retriever, good_vm, tau_vm=0.5, tau_ret=0.2, lookup=ix.hop)
+    assert r.verified is True and r.answer == "oceania portal"
+    assert [h.source for h in r.trace] == ["lookup", "search", "lookup"]
+    assert r.trace[1].fact == F2 and r.trace[1].ret_score == 0.9
+    assert r.repairs_used == 0
+
+
+def test_lookup_ambiguity_is_ordered_by_search_and_settled_by_the_vm():
+    """Two facts serve hop 0. The search's ranking picks the order; the VM rejects the wrong branch, the ban
+    removes it from the lookup, and the next candidate verifies — one repair."""
+    from cubbyllm.reasoning.index import TripleIndex
+    F1_ALT = "canada is the country of citizenship of cynthia basinet"
+    F2_ALT = "canada is the country canada is in"
+    F3_ALT = "north america is the continent of canada"
+    ix = TripleIndex([F1_ALT, F1, F2_ALT, F2, F3_ALT, F3])
+
+    def prefers_alt(query, k):
+        if "cynthia" in query.lower():
+            return [(0.95, F1_ALT), (0.9, F1)]
+        return good_retriever(query, k)
+
+    r = answer(Q3, prefers_alt, good_vm, tau_vm=0.5, tau_ret=0.2, lookup=ix.hop)
+    assert r.verified is True and r.answer == "oceania portal"
+    assert r.repairs_used == 1
+    assert r.repairs == [{"hop": 0, "rejected_fact": F1_ALT, "replacement_fact": F1}]
+    assert [h.fact for h in r.trace] == [F1, F2, F3] and all(h.source == "lookup" for h in r.trace)

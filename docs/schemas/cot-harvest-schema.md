@@ -32,7 +32,7 @@ The same record serves three consumers, so under-harvesting is irreversible:
 | `answer` | str\|null | claimed answer (only meaningful when `verified`) |
 | `gold_answer` | str | dataset answer |
 | `correct` | bool | normalized exact match vs gold |
-| `trace[]` | list | **per hop**: `query`, `fact`, `triple{obj,rel,subj}`, `ret_score`, `symbol`, `similarity`, `hop_verified` — per-step verifier outcomes are free process-supervision (PRM) data |
+| `trace[]` | list | **per hop**: `query`, `fact`, `triple{obj,rel,subj}`, `ret_score`, `symbol`, `similarity`, `hop_verified`, `source` (`lookup` = the triple index, ret_score 1.0, no threshold; `search` = cosine top-k above tau_ret; added 2026-09-04, absent in older harvests = search) — per-step verifier outcomes are free process-supervision (PRM) data |
 | `candidates_topk[]` | list per hop | the `(score, text)` lists retrieval returned — runners-up are free negatives; discarding them forces artificial re-mining later |
 | `reason` | str\|null | failure code: `unparseable` / `retrieval_exhausted` / `vm_verify_failed` — the rejection *reason* is dense feedback (SDPO), and the aggregate distribution diagnoses which component is the bottleneck |
 | `repairs_used` | int | |
