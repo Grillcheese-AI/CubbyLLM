@@ -431,3 +431,17 @@ def test_teams_export_parses_into_pairs_with_names_screened(tmp_path):
     assert len(recs) == 1 and recs[0]["subtype"] == "owner_teams" and recs[0]["lang"] == "fr"
     assert recs[0]["prompt"] == "ah 40 au lieu de 45 minutes pour la démo" and recs[0]["program"].startswith("ouin ben")
     assert why["teams:name or screened"] >= 1, "a turn naming a colleague is dropped"
+
+
+
+def test_free_text_families_score_as_generative_multiple_choice_and_empathy_takes_synonyms():
+    """First v9t bake-off read (2026-09-04): appraisal 2/40 and quebec 5/40 measured the F1 check, not the model."""
+    import gap_families as g
+    ap = {"task": "appraisal", "gold": "go with Cameron", "program": "Go with Cameron.", "choices": ["go with Cameron", "ignore Cameron", "move away"]}
+    assert g.appraisal_ok(ap, "Get to know Cameron better and go with Cameron.") and not g.appraisal_ok(ap, "Move away from the whole thing.")
+    qb = {"task": "quebec", "gold": "Très laid.", "program": "Très laid.", "choices": ["Très laid.", "Très beau.", "Très fatigué."]}
+    assert g.quebec_ok(qb, "Ça veut dire quelqu'un de très laid.") and not g.quebec_ok(qb, "Quelqu'un de très fatigué.")
+    assert g.quebec_ok({"task": "quebec", "gold": "Très laid.", "program": "Très laid."}, "très laid"), "no choices: the F1 fallback"
+    em = {"task": "empathy", "gold": "sentimental"}
+    assert g.empathy_ok(em, "nostalgic.") and g.empathy_ok(em, "Sentimental") and not g.empathy_ok(em, "angry.")
+    assert g.gap_ok(em, "nostalgic", None)

@@ -1,0 +1,114 @@
+{
+ "model": "Qwen/Qwen3-4B-Instruct-2507",
+ "tag": "qwen3_4b",
+ "control": false,
+ "version": "v9t",
+ "family": "chatml",
+ "no_think": false,
+ "n": 631,
+ "exact_match_by_task": {
+  "affect": 1.0,
+  "appraisal": 0.05,
+  "chat": 1.0,
+  "content": 1.0,
+  "dialog_act": 0.85,
+  "dialog_emotion": 0.75,
+  "emotion": 0.75,
+  "empathy": 0.6,
+  "history": 0.65,
+  "identity": 1.0,
+  "quebec": 0.125,
+  "quebec_mc": 1.0,
+  "repair": 0.8,
+  "rewrite": 0.775,
+  "safety": 0.875,
+  "verbalize": 1.0
+ },
+ "val_loss_by_task": {
+  "affect": {
+   "nll": 0.3958,
+   "tokens": 1140,
+   "n": 60
+  },
+  "appraisal": {
+   "nll": 1.4017,
+   "tokens": 649,
+   "n": 60
+  },
+  "chat": {
+   "nll": 1.0238,
+   "tokens": 6918,
+   "n": 60
+  },
+  "content": {
+   "nll": 0.3695,
+   "tokens": 722,
+   "n": 60
+  },
+  "dialog_act": {
+   "nll": 0.6005,
+   "tokens": 486,
+   "n": 60
+  },
+  "dialog_emotion": {
+   "nll": 0.4745,
+   "tokens": 647,
+   "n": 60
+  },
+  "emotion": {
+   "nll": 0.5488,
+   "tokens": 734,
+   "n": 60
+  },
+  "empathy": {
+   "nll": 0.5877,
+   "tokens": 550,
+   "n": 60
+  },
+  "history": {
+   "nll": 1.3376,
+   "tokens": 2693,
+   "n": 60
+  },
+  "identity": {
+   "nll": 0.159,
+   "tokens": 1856,
+   "n": 32
+  },
+  "quebec": {
+   "nll": 1.317,
+   "tokens": 1456,
+   "n": 60
+  },
+  "quebec_mc": {
+   "nll": 0.1726,
+   "tokens": 1545,
+   "n": 60
+  },
+  "repair": {
+   "nll": 0.3451,
+   "tokens": 1086,
+   "n": 60
+  },
+  "rewrite": {
+   "nll": 0.4557,
+   "tokens": 1096,
+   "n": 60
+  },
+  "safety": {
+   "nll": 0.3844,
+   "tokens": 748,
+   "n": 60
+  },
+  "verbalize": {
+   "nll": 0.2484,
+   "tokens": 871,
+   "n": 39
+  }
+ },
+ "by_lang": {
+  "en": 0.7706237424547284,
+  "fr": 0.7238805970149254
+ },
+ "manifest_output_sha256": "33ed22e382eb447e49e92da7d4383706011ba542b4d84223a3c98b5f98664020"
+}

@@ -1,0 +1,114 @@
+{
+ "model": "LiquidAI/LFM2.5-2.6B",
+ "tag": "lfm25_2p6b",
+ "control": true,
+ "version": "v9t",
+ "family": "lfm",
+ "no_think": true,
+ "n": 631,
+ "exact_match_by_task": {
+  "affect": 1.0,
+  "appraisal": 0.05,
+  "chat": 1.0,
+  "content": 1.0,
+  "dialog_act": 0.825,
+  "dialog_emotion": 0.725,
+  "emotion": 0.65,
+  "empathy": 0.45,
+  "history": 0.65,
+  "identity": 0.9375,
+  "quebec": 0.125,
+  "quebec_mc": 0.975,
+  "repair": 0.725,
+  "rewrite": 0.9,
+  "safety": 0.825,
+  "verbalize": 1.0
+ },
+ "val_loss_by_task": {
+  "affect": {
+   "nll": 0.2308,
+   "tokens": 840,
+   "n": 60
+  },
+  "appraisal": {
+   "nll": 1.1032,
+   "tokens": 362,
+   "n": 60
+  },
+  "chat": {
+   "nll": 1.1853,
+   "tokens": 6132,
+   "n": 60
+  },
+  "content": {
+   "nll": 0.0001,
+   "tokens": 422,
+   "n": 60
+  },
+  "dialog_act": {
+   "nll": 0.0001,
+   "tokens": 235,
+   "n": 60
+  },
+  "dialog_emotion": {
+   "nll": 0.0001,
+   "tokens": 383,
+   "n": 60
+  },
+  "emotion": {
+   "nll": 0.1516,
+   "tokens": 448,
+   "n": 60
+  },
+  "empathy": {
+   "nll": 0.0019,
+   "tokens": 260,
+   "n": 60
+  },
+  "history": {
+   "nll": 1.3117,
+   "tokens": 2372,
+   "n": 60
+  },
+  "identity": {
+   "nll": 0.0605,
+   "tokens": 1693,
+   "n": 32
+  },
+  "quebec": {
+   "nll": 1.4488,
+   "tokens": 1095,
+   "n": 60
+  },
+  "quebec_mc": {
+   "nll": 0.0061,
+   "tokens": 1177,
+   "n": 60
+  },
+  "repair": {
+   "nll": 0.1131,
+   "tokens": 777,
+   "n": 60
+  },
+  "rewrite": {
+   "nll": 0.293,
+   "tokens": 799,
+   "n": 60
+  },
+  "safety": {
+   "nll": 0.0056,
+   "tokens": 467,
+   "n": 60
+  },
+  "verbalize": {
+   "nll": 0.0166,
+   "tokens": 669,
+   "n": 39
+  }
+ },
+ "by_lang": {
+  "en": 0.7484909456740443,
+  "fr": 0.6940298507462687
+ },
+ "manifest_output_sha256": "33ed22e382eb447e49e92da7d4383706011ba542b4d84223a3c98b5f98664020"
+}

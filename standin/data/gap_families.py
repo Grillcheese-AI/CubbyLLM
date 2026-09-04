@@ -287,9 +287,26 @@ def build_safety_extra(rng: random.Random, prompt_en: str, n_benign: int = 1500)
 APPRAISAL_PROMPT = "{context}\n{question} Answer in a few words."
 
 
-def appraisal_ok(rec: dict, gen: str) -> bool:
+def closest_choice_ok(rec: dict, gen: str, fallback) -> bool:
+    """A free-text answer scored as a generative multiple choice: the candidate closest to the generation by
+    token-F1 must be the gold one (`choices` on the record); records without choices use `fallback`."""
+    choices = rec.get("choices") or []
+    g = _clean(gen)
+    if not g:
+        return False
+    if len(choices) >= 2:
+        best = max(choices, key=lambda c: token_f1(g, c))
+        return _norm_q(best) == _norm_q(rec.get("gold") or rec["program"])
+    return fallback(rec, gen)
+
+
+def _appraisal_f1(rec: dict, gen: str) -> bool:
     g, gold = _norm_q(gen), _norm_q(rec.get("gold") or rec["program"])
     return bool(g) and (gold in g or g in gold or token_f1(g, gold) >= 0.6)
+
+
+def appraisal_ok(rec: dict, gen: str) -> bool:
+    return closest_choice_ok(rec, gen, _appraisal_f1)
 
 
 def build_appraisal(rng: random.Random, facts: dict, n: int = 5000) -> tuple[list[dict], Counter]:
@@ -312,7 +329,8 @@ def build_appraisal(rng: random.Random, facts: dict, n: int = 5000) -> tuple[lis
         state = sample_state(rng)
         out.append({"id": f"appraisal:{i}", "task": "appraisal", "subtype": q.split()[0].lower(), "source": "hf:baber/social_i_qa",
                     "prompt": APPRAISAL_PROMPT.format(context=ctx, question=q), "program": gold[0].upper() + gold[1:] + ".",
-                    "gold": gold, "gold_any": [gold], "system": identity_system(facts, state), "state": state, "lang": "en"})
+                    "gold": gold, "gold_any": [gold], "choices": [a for a in answers if a],   # the eval scores closest-choice == gold
+                    "system": identity_system(facts, state), "state": state, "lang": "en"})
         if len(out) >= n:
             break
     rng.shuffle(out)
@@ -350,6 +368,20 @@ def dialog_emotion_ok(rec: dict, gen: str) -> bool:
 
 def label_first_ok(rec: dict, gen: str) -> bool:
     return _clean(gen).lower().split(" ")[0].strip(" —-:.,") == str(rec.get("gold")).lower()
+
+
+# EmpatheticDialogues' 32 labels in synonym clusters: the first v9t read's misses were sentimental→nostalgic,
+# guilty→ashamed, angry→devastated — the feeling was read, the word was a neighbour
+EMPATHY_CLUSTERS = [{"sentimental", "nostalgic"}, {"guilty", "ashamed", "embarrassed"}, {"angry", "furious", "annoyed"},
+                    {"terrified", "afraid", "anxious", "apprehensive"}, {"joyful", "excited", "content", "hopeful", "anticipating"},
+                    {"proud", "confident", "prepared"}, {"sad", "devastated", "lonely", "disappointed"}, {"surprised"},
+                    {"grateful", "impressed"}, {"caring", "trusting", "faithful"}, {"jealous"}, {"disgusted"}]
+
+
+def empathy_ok(rec: dict, gen: str) -> bool:
+    first = _clean(gen).lower().split(" ")[0].strip(" —-:.,")
+    gold = str(rec.get("gold")).lower()
+    return first == gold or any(first in c and gold in c for c in EMPATHY_CLUSTERS)
 
 
 def build_dailydialog(rng: random.Random, facts: dict, n_emotion: int = 3000, n_act: int = 2000,
@@ -587,9 +619,13 @@ QUEBEC_PROMPT = {"expression": "Que veut dire l'expression québécoise « {e} �
 QUEBEC_MC_PROMPT = ("Voici {what} québécois{e} : « {expr} ». Laquelle de ces définitions est la bonne ? Réponds d'abord par son numéro.\n{choices}")
 
 
-def quebec_ok(rec: dict, gen: str) -> bool:
+def _quebec_f1(rec: dict, gen: str) -> bool:
     g, gold = _norm_q(gen), _norm_q(rec.get("gold") or rec["program"])
     return bool(g) and token_f1(g, gold) >= 0.5
+
+
+def quebec_ok(rec: dict, gen: str) -> bool:
+    return closest_choice_ok(rec, gen, _quebec_f1)
 
 
 def build_quebec(rng: random.Random, facts: dict) -> tuple[list[dict], Counter]:
@@ -616,7 +652,8 @@ def build_quebec(rng: random.Random, facts: dict) -> tuple[list[dict], Counter]:
                 state = sample_state(rng)
                 out.append({"id": f"quebec:{kind}:{i}", "task": "quebec", "subtype": kind, "source": f"hf:graalul/QFrCoRE_QFrCoRT/{kind}",
                             "prompt": QUEBEC_PROMPT[kind].format(e=expr), "program": gold if gold.endswith((".", "!", "?")) else gold + ".",
-                            "gold": gold, "gold_any": [gold], "system": identity_system(facts, state), "state": state, "lang": "fr"})
+                            "gold": gold, "gold_any": [gold], "choices": choices,   # the eval scores closest-choice == gold
+                            "system": identity_system(facts, state), "state": state, "lang": "fr"})
                 order = list(range(len(choices)))
                 rng.shuffle(order)
                 listed = "\n".join(f"{k + 1}. {choices[j]}" for k, j in enumerate(order))
@@ -851,7 +888,7 @@ def write_real_user_turns(out_path: str, path: str = OWNER_CHATS, min_words: int
 
 
 CHECKS = {"verbalize": None, "repair": repair_ok, "quebec": quebec_ok, "quebec_mc": label_first_ok, "rewrite": rewrite_ok, "appraisal": appraisal_ok,
-          "dialog_emotion": dialog_emotion_ok, "dialog_act": label_first_ok, "empathy": label_first_ok}
+          "dialog_emotion": dialog_emotion_ok, "dialog_act": label_first_ok, "empathy": empathy_ok}
 
 
 def gap_ok(rec: dict, gen: str, facts: dict) -> bool:
