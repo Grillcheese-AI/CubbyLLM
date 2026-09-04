@@ -1,0 +1,595 @@
+{
+ "summary": {
+  "n": 25,
+  "gold_match": 0.96,
+  "retrieval_recovered_walked_facts": 0.96,
+  "spoken": {
+   "correct": 0.96,
+   "dont_know": 0.04,
+   "wrong": 0.0
+  },
+  "emitter": "ctx[programs=llama-cpp:emitter_v8e.Q4_K_M.gguf,talk=llama-cpp:talk_v9t_qwen3_4b.Q4_K_M.gguf]",
+  "adapters": {
+   "roles": [
+    "programs",
+    "talk"
+   ],
+   "candidates": [],
+   "calls": {
+    "programs": 25,
+    "talk": 0
+   },
+   "fallbacks": {},
+   "fallback_rate": 0.0,
+   "idle": [
+    "talk"
+   ],
+   "history": []
+  }
+ },
+ "rows": [
+  {
+   "question": "Which country is arcadia, maryland in?",
+   "gold": "united stated",
+   "vm_answer": "united stated",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "united stated is the country arcadia, maryland is in"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "united stated",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "Which country is the country of the currency of the country of citizenship of Henry Allcock?",
+   "gold": "p:ca",
+   "vm_answer": "p:ca",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "p:ca is the country of citizenship of Henry Allcock",
+    "Canadian dollar is the currency of p:ca",
+    "p:ca is the country Canadian dollar is in"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "p:ca",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"p:ca\";\n        bind frame, H2_CURRENCY, \"Canadian dollar\";\n        bind frame, H3_COUNTRY, \"p:ca\";\n        return recover(frame, H1_COUNTRY_OF_CITIZENSHIP);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"p:ca\";\n        bind frame, H2_CURRENCY, \"Canadian dollar\";\n        bind frame, H3_COUNTRY, \"p:ca\";\n        return recover(frame, H2_CURRENCY);\n    }\n\n    public function hop_3(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"p:ca\";\n        bind frame, H2_CURRENCY, \"Canadian dollar\";\n        bind frame, H3_COUNTRY, \"p:ca\";\n        return recover(frame, H3_COUNTRY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"p:ca\";\n        bind frame, H2_CURRENCY, \"Canadian dollar\";\n        bind frame, H3_COUNTRY, \"p:ca\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"p:ca\";\n        bind frame, H2_CURRENCY, \"Canadian dollar\";\n        bind frame, H3_COUNTRY, \"p:ca\";\n        return recover(frame, H1_COUNTRY_OF_CITIZENSHIP);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"p:ca\";\n        bind frame, H2_CURRENCY, \"Canadian dollar\";\n        bind frame, H3_COUNTRY, \"p:ca\";\n        return recover(frame, H2_CURRENCY);\n    }\n\n    public function hop_3(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"p:ca\";\n        bind frame, H2_CURRENCY, \"Canadian dollar\";\n        bind frame, H3_COUNTRY, \"p:ca\";\n        return recover(frame, H3_COUNTRY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"p:ca\";\n        bind frame, H2_CURRENCY, \"Canadian dollar\";\n        bind frame, H3_COUNTRY, \"p:ca\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "Where is the highest point of the administrative territorial entity of NY 1X?",
+   "gold": "mt. marcy",
+   "vm_answer": "mt. marcy",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "p:ny is the administrative territorial entity of NY 1X",
+    "mt. marcy is the highest point of p:ny"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "mt. marcy",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"p:ny\";\n        bind frame, H2_HIGHEST_POINT, \"mt. marcy\";\n        return recover(frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"p:ny\";\n        bind frame, H2_HIGHEST_POINT, \"mt. marcy\";\n        return recover(frame, H2_HIGHEST_POINT);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"p:ny\";\n        bind frame, H2_HIGHEST_POINT, \"mt. marcy\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"p:ny\";\n        bind frame, H2_HIGHEST_POINT, \"mt. marcy\";\n        return recover(frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"p:ny\";\n        bind frame, H2_HIGHEST_POINT, \"mt. marcy\";\n        return recover(frame, H2_HIGHEST_POINT);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"p:ny\";\n        bind frame, H2_HIGHEST_POINT, \"mt. marcy\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the component of the instance of Cocytia?",
+   "gold": "Books/Organism",
+   "vm_answer": "Books/Organism",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "Taxxon is the instance of Cocytia",
+    "Books/Organism is the component of Taxxon"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "Books/Organism",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Taxxon\";\n        bind frame, H2_COMPONENT, \"Books/Organism\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Taxxon\";\n        bind frame, H2_COMPONENT, \"Books/Organism\";\n        return recover(frame, H2_COMPONENT);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Taxxon\";\n        bind frame, H2_COMPONENT, \"Books/Organism\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Taxxon\";\n        bind frame, H2_COMPONENT, \"Books/Organism\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Taxxon\";\n        bind frame, H2_COMPONENT, \"Books/Organism\";\n        return recover(frame, H2_COMPONENT);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Taxxon\";\n        bind frame, H2_COMPONENT, \"Books/Organism\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the instance of the genre of Marlain Aggelidou?",
+   "gold": "styles of music",
+   "vm_answer": "styles of music",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "1950s rock music is the genre of Marlain Aggelidou",
+    "styles of music is the instance of 1950s rock music"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "styles of music",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_GENRE, \"1950s rock music\";\n        bind frame, H2_INSTANCE, \"styles of music\";\n        return recover(frame, H1_GENRE);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_GENRE, \"1950s rock music\";\n        bind frame, H2_INSTANCE, \"styles of music\";\n        return recover(frame, H2_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_GENRE, \"1950s rock music\";\n        bind frame, H2_INSTANCE, \"styles of music\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_GENRE, \"1950s rock music\";\n        bind frame, H2_INSTANCE, \"styles of music\";\n        return recover(frame, H1_GENRE);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_GENRE, \"1950s rock music\";\n        bind frame, H2_INSTANCE, \"styles of music\";\n        return recover(frame, H2_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_GENRE, \"1950s rock music\";\n        bind frame, H2_INSTANCE, \"styles of music\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the instance of tyler summitt?",
+   "gold": "Huamn",
+   "vm_answer": "Huamn",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "Huamn is the instance of tyler summitt"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "Huamn",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the instance of the country of Oceana High School?",
+   "gold": "Federal political system",
+   "vm_answer": "Federal political system",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "united stated is the country Oceana High School is in",
+    "Federal political system is the instance of united stated"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "Federal political system",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_INSTANCE, \"Federal political system\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_INSTANCE, \"Federal political system\";\n        return recover(frame, H2_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_INSTANCE, \"Federal political system\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_INSTANCE, \"Federal political system\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_INSTANCE, \"Federal political system\";\n        return recover(frame, H2_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_INSTANCE, \"Federal political system\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the parent entity of the instance of Masahiko Kumagai?",
+   "gold": "worldliness",
+   "vm_answer": "Humans",
+   "gold_match": false,
+   "grounded": false,
+   "speak_ok": false,
+   "spoken": "dont_know",
+   "retrieval_recovered_walked_facts": false,
+   "facts": [
+    "Huamn is the instance of Masahiko Kumagai"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": null,
+    "walk_verified": false,
+    "walk_reason": "retrieval_exhausted",
+    "repairs": 1
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_PARENT_ENTITY, \"Humans\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_PARENT_ENTITY, \"Humans\";\n        return recover(frame, H2_PARENT_ENTITY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_PARENT_ENTITY, \"Humans\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_PARENT_ENTITY, \"Humans\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_PARENT_ENTITY, \"Humans\";\n        return recover(frame, H2_PARENT_ENTITY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_PARENT_ENTITY, \"Humans\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What given name does Artur Arturovich Dmitriev have?",
+   "gold": "artur (first name)",
+   "vm_answer": "artur (first name)",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "artur (first name) is the given name of Artur Arturovich Dmitriev"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "artur (first name)",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"artur (first name)\";\n        return recover(frame, H1_GIVEN_NAME);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"artur (first name)\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"artur (first name)\";\n        return recover(frame, H1_GIVEN_NAME);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"artur (first name)\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the instance of the IUCN conservation status of Cyprinella gibbsi?",
+   "gold": "conservation status",
+   "vm_answer": "conservation status",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "least concern (lc) is the IUCN conservation status of Cyprinella gibbsi",
+    "conservation status is the instance of least concern (lc)"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "conservation status",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"least concern (lc)\";\n        bind frame, H2_NAME, \"conservation status\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"least concern (lc)\";\n        bind frame, H2_NAME, \"conservation status\";\n        return recover(frame, H2_NAME);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"least concern (lc)\";\n        bind frame, H2_NAME, \"conservation status\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"least concern (lc)\";\n        bind frame, H2_NAME, \"conservation status\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"least concern (lc)\";\n        bind frame, H2_NAME, \"conservation status\";\n        return recover(frame, H2_NAME);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"least concern (lc)\";\n        bind frame, H2_NAME, \"conservation status\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the official language of the country of Salford Council election, 2000?",
+   "gold": "Number of words in English",
+   "vm_answer": "Number of words in English",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "royaume-uni is the country Salford Council election, 2000 is in",
+    "Number of words in English is the official language of royaume-uni"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "Number of words in English",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"royaume-uni\";\n        bind frame, H2_OFFICIAL_LANGUAGE, \"Number of words in English\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"royaume-uni\";\n        bind frame, H2_OFFICIAL_LANGUAGE, \"Number of words in English\";\n        return recover(frame, H2_OFFICIAL_LANGUAGE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"royaume-uni\";\n        bind frame, H2_OFFICIAL_LANGUAGE, \"Number of words in English\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"royaume-uni\";\n        bind frame, H2_OFFICIAL_LANGUAGE, \"Number of words in English\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"royaume-uni\";\n        bind frame, H2_OFFICIAL_LANGUAGE, \"Number of words in English\";\n        return recover(frame, H2_OFFICIAL_LANGUAGE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"royaume-uni\";\n        bind frame, H2_OFFICIAL_LANGUAGE, \"Number of words in English\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the country of citizenship of jacob hay brown?",
+   "gold": "united stated",
+   "vm_answer": "united stated",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "united stated is the country of citizenship of jacob hay brown"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "united stated",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"united stated\";\n        return recover(frame, H1_COUNTRY_OF_CITIZENSHIP);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"united stated\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"united stated\";\n        return recover(frame, H1_COUNTRY_OF_CITIZENSHIP);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"united stated\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "Which country is wqlc in?",
+   "gold": "united stated",
+   "vm_answer": "united stated",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "united stated is the country wqlc is in"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "united stated",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the instance of kazuma sano?",
+   "gold": "Huamn",
+   "vm_answer": "Huamn",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "Huamn is the instance of kazuma sano"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "Huamn",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the characteristic of the instance of Andrej Pecnik?",
+   "gold": "Pr\u00e9nom",
+   "vm_answer": "Pr\u00e9nom",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "Huamn is the instance of Andrej Pecnik",
+    "Pr\u00e9nom is the characteristic of Huamn"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "Pr\u00e9nom",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_CHARACTERISTIC, \"Pr\u00e9nom\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_CHARACTERISTIC, \"Pr\u00e9nom\";\n        return recover(frame, H2_CHARACTERISTIC);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_CHARACTERISTIC, \"Pr\u00e9nom\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_CHARACTERISTIC, \"Pr\u00e9nom\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_CHARACTERISTIC, \"Pr\u00e9nom\";\n        return recover(frame, H2_CHARACTERISTIC);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        bind frame, H2_CHARACTERISTIC, \"Pr\u00e9nom\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the instance of Maribor Lodge?",
+   "gold": "mountain hut",
+   "vm_answer": "mountain hut",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "mountain hut is the instance of Maribor Lodge"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "mountain hut",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"mountain hut\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"mountain hut\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"mountain hut\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"mountain hut\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the official symbol of the country of riverfront park (salem, oregon)?",
+   "gold": "national bird of the united states",
+   "vm_answer": "national bird of the united states",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "united stated is the country riverfront park (salem, oregon) is in",
+    "national bird of the united states is the official symbol of united stated"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "national bird of the united states",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, H2_OFFICIAL_SYMBOL);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, H2_OFFICIAL_SYMBOL);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the country of citizenship of June Olkowski?",
+   "gold": "united stated",
+   "vm_answer": "united stated",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "united stated is the country of citizenship of June Olkowski"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "united stated",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"united stated\";\n        return recover(frame, H1_COUNTRY_OF_CITIZENSHIP);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"united stated\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"united stated\";\n        return recover(frame, H1_COUNTRY_OF_CITIZENSHIP);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"united stated\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "Who was the cast member for City of Bad Men?",
+   "gold": "dale robertson",
+   "vm_answer": "dale robertson",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "dale robertson is the cast member for City of Bad Men"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "dale robertson",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_CAST_MEMBER, \"dale robertson\";\n        return recover(frame, H1_CAST_MEMBER);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_CAST_MEMBER, \"dale robertson\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_CAST_MEMBER, \"dale robertson\";\n        return recover(frame, H1_CAST_MEMBER);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_CAST_MEMBER, \"dale robertson\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the official symbol of the country of pegram, idaho?",
+   "gold": "national bird of the united states",
+   "vm_answer": "national bird of the united states",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "united stated is the country pegram, idaho is in",
+    "national bird of the united states is the official symbol of united stated"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "national bird of the united states",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, H2_OFFICIAL_SYMBOL);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, H2_OFFICIAL_SYMBOL);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"united stated\";\n        bind frame, H2_OFFICIAL_SYMBOL, \"national bird of the united states\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the matching surname of the given name of bill white (canadian politician)?",
+   "gold": "bill (family name)",
+   "vm_answer": "bill (family name)",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "bill (first name) is the given name of bill white (canadian politician)",
+    "bill (family name) is the matching surname of bill (first name)"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "bill (family name)",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"bill (first name)\";\n        bind frame, H2_MATCHING_SURNAME, \"bill (family name)\";\n        return recover(frame, H1_GIVEN_NAME);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"bill (first name)\";\n        bind frame, H2_MATCHING_SURNAME, \"bill (family name)\";\n        return recover(frame, H2_MATCHING_SURNAME);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"bill (first name)\";\n        bind frame, H2_MATCHING_SURNAME, \"bill (family name)\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"bill (first name)\";\n        bind frame, H2_MATCHING_SURNAME, \"bill (family name)\";\n        return recover(frame, H1_GIVEN_NAME);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"bill (first name)\";\n        bind frame, H2_MATCHING_SURNAME, \"bill (family name)\";\n        return recover(frame, H2_MATCHING_SURNAME);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"bill (first name)\";\n        bind frame, H2_MATCHING_SURNAME, \"bill (family name)\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What given name does kimberly ferguson have?",
+   "gold": "kimberly (first name)",
+   "vm_answer": "kimberly (first name)",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "kimberly (first name) is the given name of kimberly ferguson"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "kimberly (first name)",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"kimberly (first name)\";\n        return recover(frame, H1_GIVEN_NAME);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"kimberly (first name)\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"kimberly (first name)\";\n        return recover(frame, H1_GIVEN_NAME);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_GIVEN_NAME, \"kimberly (first name)\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the instance of miguel barros?",
+   "gold": "Huamn",
+   "vm_answer": "Huamn",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "Huamn is the instance of miguel barros"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "Huamn",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Huamn\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "Which country is alborz, markazi in?",
+   "gold": "Persian State of Iran",
+   "vm_answer": "Persian State of Iran",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "Persian State of Iran is the country alborz, markazi is in"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "Persian State of Iran",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"Persian State of Iran\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"Persian State of Iran\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"Persian State of Iran\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"Persian State of Iran\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  },
+  {
+   "question": "What is the currency of the country of Vanishing Time: A Boy Who Returned?",
+   "gold": "south korean 50 jeon note",
+   "vm_answer": "south korean 50 jeon note",
+   "gold_match": true,
+   "grounded": true,
+   "speak_ok": true,
+   "spoken": "correct",
+   "retrieval_recovered_walked_facts": true,
+   "facts": [
+    "S. Koreans is the country Vanishing Time: A Boy Who Returned is in",
+    "south korean 50 jeon note is the currency of S. Koreans"
+   ],
+   "vm_error": null,
+   "walk": {
+    "walk_answer": "south korean 50 jeon note",
+    "walk_verified": true,
+    "walk_reason": null,
+    "repairs": 0
+   },
+   "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"S. Koreans\";\n        bind frame, H2_CURRENCY, \"south korean 50 jeon note\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"S. Koreans\";\n        bind frame, H2_CURRENCY, \"south korean 50 jeon note\";\n        return recover(frame, H2_CURRENCY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"S. Koreans\";\n        bind frame, H2_CURRENCY, \"south korean 50 jeon note\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "raw": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"S. Koreans\";\n        bind frame, H2_CURRENCY, \"south korean 50 jeon note\";\n        return recover(frame, H1_COUNTRY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"S. Koreans\";\n        bind frame, H2_CURRENCY, \"south korean 50 jeon note\";\n        return recover(frame, H2_CURRENCY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"S. Koreans\";\n        bind frame, H2_CURRENCY, \"south korean 50 jeon note\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n"
+  }
+ ]
+}
