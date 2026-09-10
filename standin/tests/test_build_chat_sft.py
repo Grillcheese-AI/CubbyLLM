@@ -484,3 +484,37 @@ def test_finish_keeps_toolcall_rows_beside_the_chat_rows_they_mirror():
             {"id": "p3", "task": "toolcall", "format": "hermes", "gold": "news_search", "prompt": "any news about quebec?", "program": "call", "system": "tools"}]
     out = b.finish(recs, F)
     assert [r["id"] for r in out] == ["c", "n1", "n2", "p1", "p2"], "the chat row, both negatives, both formats; the exact duplicate goes"
+
+
+
+def test_v11_silent_negatives_are_voice_checked_both_formats_and_never_call():
+    """The v10t probe (Q4 twice, Q8 once) called a tool on 'raconte-moi ta journée'; v11 adds creative/personal turns whose
+    reply stands. Every hand-written reply passes the voice rules; the check rejects any call for them."""
+    import random
+    import gap_families as g
+    from identity import voice_ok
+    chat = [{"task": "chat", "prompt": "tell me a story about a fox", "program": "A fox found a hat. The end.", "source": "t", "lang": "en"},
+            {"task": "chat", "prompt": "what is the capital of peru", "program": "Lima.", "source": "t", "lang": "en"},
+            {"task": "chat", "prompt": "raconte-moi une blague", "program": "Un mur, un fantôme, boum.", "source": "t", "lang": "fr"}]
+    recs, why = g.build_toolcall_silent(random.Random(0), F, chat, n=10)
+    assert {r["format"] for r in recs} == {"lfm", "hermes"} and all(r["gold"] == "none" and r["task"] == "toolcall" for r in recs)
+    kinds = {r["subtype"] for r in recs}
+    assert {"silent:day", "silent:story", "silent:statement", "silent:joke", "silent:chat"} <= kinds
+    assert any(r["prompt"].lower() == "raconte-moi ta journée" for r in recs), "the probe's own turn is in the set"
+    assert why["creative_chat_rows_available"] == 2, "the capital question is not creative"
+    assert not [k for k in why if k.startswith("voice:")], f"every hand-written reply passes voice_ok: {why}"
+    for k, l, ask, reply in g.silent_pairs():
+        assert voice_ok(reply, F), reply
+    for r in recs[:40]:
+        assert g.toolcall_ok(r, r["program"])
+        assert not g.toolcall_ok(r, g.render_call(r["format"], "request_tool", {"name": "chat_status", "description": "x", "example_request": r["prompt"]}))
+        assert not g.toolcall_ok(r, g.render_call(r["format"], "remember_fact", {"fact": "ma chienne est nommée Luna"}))
+
+
+def test_a_request_tool_never_names_a_registered_tool():
+    import gap_families as g
+    rec = {"task": "toolcall", "format": "lfm", "gold": "request_tool", "call_args": {"name": "dice_roll", "description": "roll dice", "example_request": "roll a d20"}}
+    assert g.toolcall_ok(rec, g.render_call("lfm", "request_tool", {"name": "dice_roll", "description": "roll dice", "example_request": "roll a d20"}))
+    assert not g.toolcall_ok(rec, g.render_call("lfm", "request_tool", {"name": "remember_fact", "description": "store a fact", "example_request": "roll a d20"})), \
+        "the Q4 probe asked the factory for a tool that already exists"
+    assert not g.toolcall_ok(rec, g.render_call("hermes", "request_tool", {"name": "News_Search", "description": "x", "example_request": "y"}))

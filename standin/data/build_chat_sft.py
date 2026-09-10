@@ -253,7 +253,7 @@ GAME_FORGE_REPEAT = 3                                    # v7: forge decision/co
 PROGRAM_TASKS = ("arithmetic", "kernel", "role_binding", "chain")          # VM-verified; the game families are kernel/chain subtypes
 from gap_families import (GAP_TASKS, build_appraisal, build_claire, build_dailydialog, build_diabla, build_empathy,  # noqa: E402
                           build_owner_chats, build_owner_teams, build_quebec, build_redial, build_repair, build_rewrite,
-                          build_safety_extra, build_toolcall, build_verbalize, write_real_user_turns)
+                          build_safety_extra, build_toolcall, build_toolcall_silent, build_verbalize, write_real_user_turns)
 
 TALK_TASKS = ("identity", "chat", "content", "emotion", "affect", "history", "safety", "exposure") + GAP_TASKS   # v9: the gap families
 IDENTITY_REPEAT = 4                                      # v6: 526 identity records vs ~20k chat pairs pulled the greeting/unknown intents
@@ -1377,8 +1377,8 @@ def main():
     ap.add_argument("--exposure", type=int, default=0,
                     help="ALSO add N explicit-prose continuation records (generation exposure). Off by default; "
                          "the owner's switch.")
-    ap.add_argument("--version", default="v10", help="output name: emitter_sft_{version}.jsonl (v6 is trained; v7 = v6 + "
-                                                     "regenerated identity (the world intent) + forge families x3 + science + movie scenes)")
+    ap.add_argument("--version", default="v11", help="output name: emitter_sft_{version}.jsonl (v10 = v9 + toolcall; v11 = v10 + the "
+                                                     "toolcall SILENT negatives: creative/personal turns that must not call a tool)")
     ap.add_argument("--identity-repeat", type=int, default=IDENTITY_REPEAT)
     ap.add_argument("--partition", choices=["all", "both"], default="both",
                     help="both = ALSO write emitter_sft_{version}e.jsonl (program tasks) and _{version}t.jsonl (talk tasks) "
@@ -1458,7 +1458,8 @@ def main():
                          ("dialog emotion + act (DailyDialog)", lambda: build_dailydialog(rng, facts, n_emotion=max(50, int(3000 * sc)), n_act=max(30, int(2000 * sc)))),
                          ("empathy (EmpatheticDialogues: a told situation -> the feeling)", lambda: build_empathy(rng, facts, n=max(50, int(2500 * sc)))),
                          ("quebec (QFrCoRE + QFrCoRT: Quebec French expressions and words -> their definition; + the benchmark's multiple-choice form)", lambda: build_quebec(rng, facts)),
-                         ("toolcall (the host's tool registry in each base's native format, negatives from chat rows; v10)", lambda: build_toolcall(rng, facts, chat, n_pos=max(40, int(1200 * sc)), n_neg=max(40, int(1200 * sc))))):
+                         ("toolcall (the host's tool registry in each base's native format, negatives from chat rows; v10)", lambda: build_toolcall(rng, facts, chat, n_pos=max(40, int(1200 * sc)), n_neg=max(40, int(1200 * sc)))),
+                         ("toolcall silent negatives (creative / personal turns that must NOT call a tool; v11)", lambda: build_toolcall_silent(rng, facts, chat, n=max(20, int(600 * sc))))):
             print(f"=== {name} ...", flush=True)
             recs, why = fn()
             print(f"  kept {len(recs)} {dict(Counter(r['task'] for r in recs))} | skipped {dict(why.most_common(6))}")

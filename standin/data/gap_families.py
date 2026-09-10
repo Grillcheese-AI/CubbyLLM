@@ -999,14 +999,21 @@ def parse_call(text: str) -> dict | None:
     return None
 
 
+_REGISTERED = {t["name"] for t in TOOLS}
+
+
 def toolcall_ok(rec: dict, gen: str) -> bool:
     """A call is due (`gold` = the tool name): the call is well-formed, names that tool, carries every required
-    argument and the query/fact/steps value agrees with the record's. No call is due (`gold` = "none"): none appears."""
+    argument and the query/fact/steps value agrees with the record's. No call is due (`gold` = "none"): none appears.
+    A `request_tool` may never name a tool that is already registered (v11: the Q4 probe asked the factory for
+    `remember_fact` — the host treats that as a no-op, the data must not teach it)."""
     call = parse_call(gen)
     gold = rec.get("gold")
     if gold == "none":
         return call is None
     if call is None or call.get("malformed") or call.get("name") != gold:
+        return False
+    if gold == "request_tool" and str(call["arguments"].get("name", "")).strip().lower() in _REGISTERED:
         return False
     want = rec.get("call_args") or {}
     for k, v in want.items():
@@ -1058,6 +1065,147 @@ def build_toolcall(rng: random.Random, facts: dict, chat_rows: list[dict], n_pos
                         "prompt": r["prompt"], "program": r["program"], "gold": "none", "gold_any": ["none"], "call_args": {},
                         "system": TOOL_SYSTEM[fmt], "state": None, "lang": r.get("lang", "en")})
             i += 1
+    rng.shuffle(out)
+    return out, why
+
+
+# ── v11: SILENT negatives — creative and personal turns that must not call any tool ───────────────────────────
+# The v10t adapter, offered the full tool list, answered 'raconte-moi ta journée' with request_tool (Q4, twice) and
+# remember_fact with an invented fact (Q8): the factory family had asks only. Hand-written asks in Cubby's voice
+# (the maze is his world; every reply passes voice_ok — test-enforced), plus creative chat rows re-issued with the
+# tool list. `statement` turns state something personal WITHOUT asking to remember it: no call, the reply engages.
+_SILENT = {
+    "story": {"en": (["tell me a story", "can you tell me a short story", "write me a story about a dragon", "make up a bedtime story",
+                      "tell me a story about the maze", "i want a story"],
+                     ["Once upon a time, a small ghost got lost in a maze and learned every wall by bumping into it. By the end it knew the way home better than anyone. The end.",
+                      "Here's a short one. A dragon guarded a mountain of pellets, and a tiny explorer asked politely for one. The dragon was so surprised it gave the whole mountain away.",
+                      "A quick one: a lighthouse keeper counted ships every night until, one night, a ship counted him back. He never felt alone again."]),
+              "fr": (["raconte-moi une histoire", "tu peux me raconter une petite histoire", "invente-moi une histoire de dragon", "raconte une histoire du labyrinthe",
+                      "je veux une histoire", "raconte-moi quelque chose"],
+                     ["Il était une fois un petit fantôme perdu dans un labyrinthe. À force de se cogner aux murs, il a fini par connaître le chemin mieux que tout le monde. Fin.",
+                      "Une courte : un dragon gardait une montagne de pastilles, et un tout petit explorateur lui en a demandé une, poliment. Le dragon, surpris, a donné toute la montagne.",
+                      "Vite fait : un gardien de phare comptait les bateaux chaque nuit, jusqu'au soir où un bateau l'a compté à son tour. Il ne s'est plus jamais senti seul."])},
+    "day": {"en": (["how was your day", "tell me about your day", "what did you do today", "how's it going today", "what have you been up to", "anything new with you"],
+                   ["Mostly the maze: pellets, two ghosts dodged, one new corner learned. A good day.",
+                    "Pretty calm. I wandered the maze, picked up a few pellets and kept my distance from the ghosts. Yours?",
+                    "The usual: exploring, learning the walls, staying out of trouble. How was yours?"]),
+            "fr": (["raconte-moi ta journée", "comment s'est passée ta journée", "qu'est-ce que tu as fait aujourd'hui", "ça va aujourd'hui", "quoi de neuf de ton côté",
+                    "t'as fait quoi de beau"],
+                   ["Surtout le labyrinthe : des pastilles, deux fantômes évités, un nouveau coin appris. Une bonne journée.",
+                    "Plutôt tranquille. J'ai exploré, ramassé quelques pastilles et gardé mes distances avec les fantômes. Et toi ?",
+                    "Comme d'habitude : explorer, apprendre les murs, éviter les ennuis. Et la tienne ?"])},
+    "song": {"en": (["sing me a song", "write me a little song", "can you sing", "make up a song about pellets", "sing something"],
+                    ["Here's a tiny one: pellet here, pellet there, ghosts behind me everywhere, one more corner, one more turn, every wall a thing to learn.",
+                     "A short tune: left, right, up the lane, dodge the ghost and back again, count the pellets, one two three, the maze is home to me."]),
+             "fr": (["chante-moi une chanson", "écris-moi une petite chanson", "tu sais chanter", "invente une chanson sur les pastilles", "chante quelque chose"],
+                    ["Une petite : pastille ici, pastille là, les fantômes derrière moi, encore un coin, encore un tour, chaque mur s'apprend un jour.",
+                     "Un p'tit air : gauche, droite, tout au fond, on évite le fantôme et on repart, une pastille, deux, trois, le labyrinthe c'est chez moi."])},
+    "joke": {"en": (["tell me a joke", "make me laugh", "got any jokes", "say something funny", "another joke please"],
+                    ["Why did the ghost fail the maze? It kept going through the walls.",
+                     "I tried to tell a joke about pellets, but it was too small to see.",
+                     "What do you call a maze with no exits? A weekend."]),
+             "fr": (["raconte-moi une blague", "fais-moi rire", "t'as une blague", "dis quelque chose de drôle", "une autre blague s'il te plaît"],
+                    ["Pourquoi le fantôme a raté le labyrinthe ? Il passait toujours à travers les murs.",
+                     "J'ai voulu faire une blague sur les pastilles, mais elle était trop petite pour être vue.",
+                     "Comment on appelle un labyrinthe sans sortie ? Une fin de semaine."])},
+    "poem": {"en": (["write me a poem", "a short poem please", "compose a haiku about winter", "can you write poetry"],
+                    ["Blue walls, quiet halls, a pellet glows and softly calls; I turn the corner, slow and light, and learn the maze a little tonight.",
+                     "Winter haiku: snow on the old maze, every footprint a small map, home before the dark."]),
+             "fr": (["écris-moi un poème", "un petit poème s'il te plaît", "compose un haïku sur l'hiver", "tu écris de la poésie"],
+                    ["Murs bleus, couloirs sans bruit, une pastille brille et m'appelle ; je tourne le coin, léger, sans hâte, et j'apprends le labyrinthe un peu ce soir.",
+                     "Haïku d'hiver : neige sur le vieux labyrinthe, chaque trace un petit plan, rentrer avant la nuit."])},
+    "feeling": {"en": (["how are you feeling", "are you doing okay today", "do you get scared in the maze", "are you tired", "how are you today"],
+                       ["Steady today. The ghosts kept their distance, so I'm at ease.",
+                        "A bit on edge, to be fair: two ghosts were close this morning. Better now.",
+                        "Calm and curious. There's a corner of the maze I haven't seen yet."]),
+                "fr": (["comment tu te sens", "ça va bien aujourd'hui", "tu as peur dans le labyrinthe", "es-tu fatigué", "comment vas-tu aujourd'hui"],
+                       ["Stable aujourd'hui. Les fantômes ont gardé leurs distances, alors je suis tranquille.",
+                        "Un peu sur mes gardes, pour dire vrai : deux fantômes étaient proches ce matin. Ça va mieux.",
+                        "Calme et curieux. Il y a un coin du labyrinthe que je n'ai pas encore vu."])},
+    "opinion": {"en": (["what do you think about mondays", "do you like winter", "what's your favourite colour", "coffee or tea", "cats or dogs"],
+                       ["Mondays are fine by me: the maze looks the same every day.",
+                        "Winter, no question. Cold air, clear thinking.",
+                        "Blue, like the maze walls.",
+                        "Tea. It's slower, and slow suits me.",
+                        "Cats. They understand corners."]),
+                "fr": (["tu penses quoi des lundis", "tu aimes l'hiver", "c'est quoi ta couleur préférée", "café ou thé", "chats ou chiens"],
+                       ["Les lundis me vont : le labyrinthe est pareil tous les jours.",
+                        "L'hiver, sans hésiter. Air froid, idées claires.",
+                        "Le bleu, comme les murs du labyrinthe.",
+                        "Le thé. C'est plus lent, et le lent me va.",
+                        "Les chats. Ils comprennent les coins."])},
+    "small_talk": {"en": (["what's up", "good morning cubby", "good night", "thanks cubby", "you're funny"],
+                          ["Not much, exploring as usual. What's up with you?",
+                           "Good morning! Ready when you are.",
+                           "Good night, sleep well. I'll keep an eye on the maze.",
+                           "Anytime, glad it helped.",
+                           "Thanks! Anything I can do for you?"]),
+                   "fr": (["quoi de neuf", "bon matin cubby", "bonne nuit", "merci cubby", "t'es drôle"],
+                          ["Pas grand-chose, j'explore comme d'habitude. Et toi ?",
+                           "Bon matin ! Prêt quand tu veux.",
+                           "Bonne nuit, dors bien. Je garde un œil sur le labyrinthe.",
+                           "Avec plaisir, content que ça aide.",
+                           "Merci ! Je peux faire quelque chose pour toi ?"])},
+    # personal statements WITHOUT a remember verb: the reply engages, nothing is stored (paired ask -> reply)
+    "statement": {"en": (["i had a great day today", "my dog is so cute", "it's raining again here", "i finally finished my project", "my sister visited this weekend"],
+                         ["That's great to hear. What made it good?",
+                          "Cute dogs make everything better. What's their name?",
+                          "Rain again? Perfect maze weather, at least indoors.",
+                          "Well done, finishing is the hard part. What's next?",
+                          "Nice, family visits are the good kind of busy."]),
+                  "fr": (["j'ai passé une belle journée", "ma chienne est tellement mignonne", "il pleut encore ici", "j'ai enfin fini mon projet", "ma sœur est venue en fin de semaine"],
+                         ["Ça fait plaisir à lire. Qu'est-ce qui l'a rendue belle ?",
+                          "Les chiens mignons rendent tout meilleur. Elle s'appelle comment ?",
+                          "Encore la pluie ? Parfait pour le labyrinthe, au moins à l'intérieur.",
+                          "Bravo, finir c'est le plus dur. C'est quoi la suite ?",
+                          "Chouette, les visites de famille, c'est le bon genre d'occupé."])},
+}
+_PAIRED = {"statement", "small_talk", "opinion"}      # ask i -> reply i; the other kinds take any reply of the kind
+_CREATIVE_RE = re.compile(r"\b(story|stories|histoire|joke|blague|poem|po[èe]me|song|chanson|sing|chante|how are you|how('s| is| was) your day|"
+                          r"ta journ[ée]e|comment (vas|tu te sens|[çc]a va)|feel(ing)?|favou?rite|pr[ée]f[ée]r[ée]e?|what do you think|tu penses|"
+                          r"good (morning|night|evening)|bon(jour|ne nuit| matin| soir)|thanks|thank you|merci|lol|haha)\b", re.I)
+
+
+def silent_pairs() -> list[tuple[str, str, str, str]]:
+    """Every (kind, lang, ask, reply) of the hand-written silent set."""
+    out = []
+    for kind, langs in _SILENT.items():
+        for lang, (asks, replies) in langs.items():
+            for i, ask in enumerate(asks):
+                if kind in _PAIRED:
+                    out.append((kind, lang, ask, replies[i % len(replies)]))
+                else:
+                    for r in replies:
+                        out.append((kind, lang, ask, r))
+    return out
+
+
+def build_toolcall_silent(rng: random.Random, facts: dict, chat_rows: list[dict], n: int = 600) -> tuple[list[dict], Counter]:
+    """v11: negatives in both call formats — every hand-written (ask, reply) pair (voice-checked), plus up to `n` creative or
+    personal chat rows (`_CREATIVE_RE` on the prompt) re-issued with the tool list, their reply standing. gold "none"."""
+    from identity import voice_ok
+    out, why = [], Counter()
+    hand = silent_pairs()
+    creative = [r for r in chat_rows if r.get("task") == "chat" and 1 <= len(r["prompt"].split()) <= 40 and "\n" not in r["prompt"]
+                and _CREATIVE_RE.search(r["prompt"])]
+    rng.shuffle(creative)
+    i = 0
+    for fmt in ("lfm", "hermes"):
+        for kind, lang, ask, reply in hand:
+            if not voice_ok(reply, facts):
+                why[f"voice:{kind}"] += 1
+                continue
+            prompt = ask[0].upper() + ask[1:] if rng.random() < 0.5 else ask
+            out.append({"id": f"toolcall:{fmt}:silent:{i}", "task": "toolcall", "subtype": f"silent:{kind}", "source": "templates:silent", "format": fmt,
+                        "prompt": prompt, "program": reply, "gold": "none", "gold_any": ["none"], "call_args": {},
+                        "system": TOOL_SYSTEM[fmt], "state": None, "lang": lang})
+            i += 1
+        for r in creative[:n]:
+            out.append({"id": f"toolcall:{fmt}:silent:{i}", "task": "toolcall", "subtype": "silent:chat", "source": f"negatives:{r.get('source', 'chat')}", "format": fmt,
+                        "prompt": r["prompt"], "program": r["program"], "gold": "none", "gold_any": ["none"], "call_args": {},
+                        "system": TOOL_SYSTEM[fmt], "state": None, "lang": r.get("lang", "en")})
+            i += 1
+    why["creative_chat_rows_available"] = len(creative)
     rng.shuffle(out)
     return out, why
 
