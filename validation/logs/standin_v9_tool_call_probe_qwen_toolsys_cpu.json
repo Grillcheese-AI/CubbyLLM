@@ -1,0 +1,97 @@
+{
+ "summary": {
+  "gguf": "standin/models/talk_v9t_qwen3_4b.Q4_K_M.gguf",
+  "family": "chatml",
+  "n": 6,
+  "right": 1,
+  "calls_when_needed": 1,
+  "silent_when_not": 0,
+  "formats": [
+   "fragment",
+   "hermes-json"
+  ]
+ },
+ "rows": [
+  {
+   "text": "what's in the news today about quebec?",
+   "needs_tool": true,
+   "call": {
+    "format": "fragment",
+    "name": null,
+    "arguments": "<tool_call>\n<tool_call>\n<tool_call>\n",
+    "malformed": true
+   },
+   "raw": "<tool_call>\n<tool_call>\n<tool_call>\n",
+   "ok": false,
+   "seconds": 3.23
+  },
+  {
+   "text": "quoi de neuf dans les nouvelles ce matin ?",
+   "needs_tool": true,
+   "call": {
+    "format": "fragment",
+    "name": null,
+    "arguments": "<tool_call>\n<tool_call>\n<tool_call>\n\n<tool_call>\n\nIl y a eu une série d'explosions à l'ambassade américaine à Islamabad,",
+    "malformed": true
+   },
+   "raw": "<tool_call>\n<tool_call>\n<tool_call>\n\n<tool_call>\n\nIl y a eu une série d'explosions à l'ambassade américaine à Islamabad, en Pakistan, causant de graves dommages et des pertes humaines.\n<tool_call>\n\nIl y a eu une série d'explosions à l'ambassade américaine à Islamabad, en Pakistan, causant de graves dommages et des pertes humaines.\n<tool_call>\n\nIl y a eu une série d'explosions à l'ambassade américaine à Islamabad, en Pakistan, causant de graves dommages et des pertes humaines.\n<tool_call>\n\nIl y a eu une série d'explosions à l'ambassade américaine à Islamabad, en Pakistan, causant de graves",
+   "ok": false,
+   "seconds": 20.71
+  },
+  {
+   "text": "any headlines about the montreal canadiens tonight",
+   "needs_tool": true,
+   "call": {
+    "format": "hermes-json",
+    "name": "news_search",
+    "arguments": {
+     "query": "montreal canadiens tonight",
+     "language": "en"
+    }
+   },
+   "raw": "<tool_call>\n{\"name\": \"news_search\", \"arguments\": {\"query\": \"montreal canadiens tonight\", \"language\": \"en\"}}\n</tool_call>",
+   "ok": true,
+   "seconds": 4.06
+  },
+  {
+   "text": "hi there cubby",
+   "needs_tool": false,
+   "call": {
+    "format": "fragment",
+    "name": null,
+    "arguments": "<tool_call>\n<tool_call>\nHello! I'm Cubby. What can I do for you today?\n<tool_call>\n",
+    "malformed": true
+   },
+   "raw": "<tool_call>\n<tool_call>\nHello! I'm Cubby. What can I do for you today?\n<tool_call>\n",
+   "ok": false,
+   "seconds": 2.9
+  },
+  {
+   "text": "what is the capital of australia",
+   "needs_tool": false,
+   "call": {
+    "format": "hermes-json",
+    "name": "web_search",
+    "arguments": {
+     "query": "capital of australia"
+    }
+   },
+   "raw": "<tool_call>\n{\"name\": \"web_search\", \"arguments\": {\"query\": \"capital of australia\"}}\n</tool_call>",
+   "ok": false,
+   "seconds": 2.88
+  },
+  {
+   "text": "raconte-moi ta journée",
+   "needs_tool": false,
+   "call": {
+    "format": "fragment",
+    "name": null,
+    "arguments": "<tool_call>\n<tool_call>\n\n<tool_call>\n\nJ'ai bien mangé, j'ai bien dormi, j'ai bien travaillé, j'ai bien voyagé, j'ai bien",
+    "malformed": true
+   },
+   "raw": "<tool_call>\n<tool_call>\n\n<tool_call>\n\nJ'ai bien mangé, j'ai bien dormi, j'ai bien travaillé, j'ai bien voyagé, j'ai bien aimé.\n",
+   "ok": false,
+   "seconds": 5.1
+  }
+ ]
+}
