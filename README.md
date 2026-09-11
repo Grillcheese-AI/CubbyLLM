@@ -64,9 +64,9 @@ arm C, gen 2, matched pairs), with `2026-09-11-entry-diagnosis.md` and `2026-09-
 
 ## Run it
 
-Needs a built [cubelang](../cubelang) binary (`cargo build --release` in the sibling repo; found via `--exe`,
-`$CUBELANG_EXE`, or `../cubelang/target/release/`) and a Python environment with the package deps (`.venv-dml`
-on the dev box). The GGUF stand-ins live in `standin/models/` (not tracked).
+Needs a built cubelang binary (`cargo build --release` in the sibling repo; found via `--exe`, `$CUBELANG_EXE`,
+or a `cubelang/` checkout beside this one) and a Python environment with the package deps. The GGUF stand-ins
+live in `standin/models/` (not tracked).
 
 ```
 python -m pytest validation/test_plan_verify.py validation/test_plan_verify_vm.py validation/test_pipeline_plan_refusal.py -q
@@ -158,12 +158,12 @@ project ports from.
 
 ## Training data and source repos
 
-`D:\grillcheese_training_data` (~210 GB, surveyed 2026-07-23): a real tokenizer history (19,947 → 32,000 → 65,536,
-costed to 131,072), a dated NYT archive (1851–2024) used for the forgetting benchmark on real keys, and a 120 GB
-candidate pretraining corpus that still needs its dedup/content-filter pass — the one substantial piece of Group G
-not done. See `CUBBYLLM_HYPOTHESES.md`, Group G.
+The training-data archive (~210 GB, surveyed 2026-07-23, kept off-repo): a real tokenizer history (19,947 →
+32,000 → 65,536, costed to 131,072), a dated NYT archive (1851–2024) used for the forgetting benchmark on real
+keys, and a 120 GB candidate pretraining corpus that still needs its dedup/content-filter pass — the one
+substantial piece of Group G not done. See `CUBBYLLM_HYPOTHESES.md`, Group G.
 
 `cubby-lm` and `cubemind` are the direct predecessors; CubbyLLM is a fresh design, not a fork — the package layout
 mirrors cubemind's documented intent, the model architecture and vocabulary are new. `cubby-concepts`, `grilly`,
-`H:\AURA_GENESIS`, `C:\Users\grill\Desktop\GrillCheese`, and `H:\Novel_GNN_Arch` were surveyed for reusable
+and three earlier sibling projects (AURA_GENESIS, GrillCheese, Novel_GNN_Arch) were surveyed for reusable
 concepts; what each contributed is cited in `CUBBYLLM_HYPOTHESES.md`.
