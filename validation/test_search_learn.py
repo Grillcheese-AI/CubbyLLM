@@ -137,3 +137,71 @@ def test_unknown_relation_fetches_the_seed_and_the_loop_is_bounded():
     assert [normalize(e) for e in r.entities] == ["jean"] and r.accepted and "date of birth" in known
     assert r.result.verified and normalize(r.result.answer) == "1950"
     assert len(src.calls) == 1
+
+
+# ---- lever 4 (2026-09-11): the source resolves the plan's relation words to its labels ----
+
+class AliasSource(DictSource):
+    def __init__(self, by_entity, by_wording):
+        super().__init__(by_entity); self.rel = {normalize(k): v for k, v in by_wording.items()}; self.rel_calls = []
+    def relations(self, text):
+        self.rel_calls.append(text); return list(self.rel.get(normalize(text), []))
+
+
+def test_an_unknown_relation_the_source_can_name_is_rewritten_and_walked():
+    """'born' shares no word with 'date of birth': neither paraphrase tier bridges
+    them. The source names the label, the host keeps the one the store holds (after
+    the facts about the seed were learned), rewrites the plan, records the
+    translation, and the coverage check still sees 'born' in the question."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store, known = LookupStore(STORE), StoreRelations(STORE)
+    src = AliasSource({"masaki tsuji": ["1932-03-23 is the date of birth of Masaki Tsuji",
+                                        "Japan is the country of citizenship of Masaki Tsuji"]},
+                      {"born": ["date of birth"], "citizenship": ["country of citizenship"]})
+    plan = QuestionPlan(relations=[None], tail="born of masaki tsuji", n_hop=1)      # the emitter's words
+    r = run("When was Masaki Tsuji born?", store, known, src, plan=plan)
+    assert r.first.reason == "unknown_relation"
+    assert r.result.verified and normalize(r.result.answer) == "1932 03 23"
+    assert r.aliased == [("born", "date of birth")] and r.plan.tail == "date of birth of masaki tsuji"
+    assert [normalize(e) for e in r.entities] == ["masaki tsuji"]        # the facts came first, then the name
+
+
+def test_a_wording_that_names_two_held_relations_is_an_ambiguity_not_a_pick():
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store = LookupStore(STORE + ["lyon is the location of jean", "third is the ranking of jean"])
+    known = StoreRelations(store.texts)
+    src = AliasSource({}, {"position": ["location", "ranking", "coordinate location"]})
+    plan = QuestionPlan(relations=[None], tail="position of jean", n_hop=1)
+    r = run("What is the position of Jean?", store, known, src, plan=plan)
+    assert not r.result.verified and r.result.reason == "ambiguous_relation"
+    assert r.result.refused == {"relation": "position", "candidates": ["location", "ranking"]}
+    assert r.aliased == [] and r.result.answer is None
+
+
+def test_a_wording_the_source_cannot_name_leaves_the_refusal_as_it_was():
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store, known = LookupStore(STORE), StoreRelations(STORE)
+    src = AliasSource({"jean": ["1950 is the date of birth of jean"]}, {})
+    plan = QuestionPlan(relations=[None], tail="birthday of jean", n_hop=1)
+    r = run("What is the birthday of Jean?", store, known, src, plan=plan)
+    assert r.result.reason == "unknown_relation" and r.aliased == []
+    assert "1950 is the date of birth of jean" in store          # learned, honestly unreachable under that name
+
+
+def test_a_structured_fact_is_split_where_the_source_says_the_relation_ends():
+    """exp_r11 alias run: the wiki world reuses a relation 'date' (2 facts) and had
+    never seen 'date of birth', so the learned string 'date of birth of Masaki Tsuji'
+    split as 'date' | 'birth of Masaki Tsuji' -- indexed under a subject that is not
+    an entity, and the vocabulary never gained 'date of birth', so the alias step had
+    nothing to rewrite to. A source that hands over a Triple declares its relation
+    before the string is split."""
+    from cubbyllm.reasoning.planner import QuestionPlan, Triple
+    base = STORE + ["1990 is the date of jean", "1991 is the date of hans"]           # 'date' is a reused relation here
+    store, known = LookupStore(base), StoreRelations(base)
+    src = AliasSource({"masaki tsuji": [Triple(obj="1932-03-23", rel="date of birth", subj="Masaki Tsuji")]},
+                      {"born": ["date of birth"]})
+    plan = QuestionPlan(relations=[None], tail="born of masaki tsuji", n_hop=1)
+    r = run("When was Masaki Tsuji born?", store, known, src, plan=plan)
+    assert "date of birth" in known
+    assert [f for f, _t in store.index._by_subj["masaki tsuji"]] == ["1932-03-23 is the date of birth of Masaki Tsuji"]
+    assert r.aliased == [("born", "date of birth")] and r.result.verified and normalize(r.result.answer) == "1932 03 23"

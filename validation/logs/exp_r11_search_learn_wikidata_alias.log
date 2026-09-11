@@ -1,0 +1,28 @@
+wiki world 552297 facts, 2794 relations | SimpleQA sample 600 (seed 7) | source wikidata
+  100/600 (196s, api calls 17) plan 88 fetched 14 verified 1 correct 0 near 0 WRONG 1
+  200/600 (366s, api calls 28) plan 177 fetched 24 verified 1 correct 0 near 0 WRONG 1
+  400/600 (604s, api calls 48) plan 354 fetched 47 verified 2 correct 1 near 0 WRONG 1
+  500/600 (837s, api calls 56) plan 441 fetched 57 verified 2 correct 1 near 0 WRONG 1
+  600/600 (1012s, api calls 64) plan 530 fetched 65 verified 2 correct 1 near 0 WRONG 1
+
+SIMPLEQA + SEARCH-AND-LEARN: {'WRONG': 1, 'aliased_questions': 3, 'correct': 1, 'facts_fetched': 1790, 'fetched_questions': 65, 'final:ambiguous_relation': 1, 'final:plan_does_not_cover_question': 464, 'final:retrieval_exhausted': 3, 'final:unknown_relation': 60, 'first:plan_does_not_cover_question': 464, 'first:retrieval_exhausted': 2, 'first:unknown_relation': 64, 'gate:accepted': 1715, 'gate:duplicate': 75, 'no_plan': 70, 'plan': 530, 'verified': 2}
+api calls 64 | VM calls 4 | store grew 1715
+
+every verified answer:
+  [WRONG  ] 'In which district is the Syrian village "Kafr al-Awamid" located?'
+           plan ['district'] seed 'kafr al awamid' -> 'Az-Zabdani Subdistrict' (gold 'Al-Zabadani ')
+           via ['Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid']
+  [correct] 'In what year was the Penny Crane Award for Distinguished Service established?'
+           plan ['established'] seed 'penny crane award for distinguished service' -> '2000' (gold '2000')
+           via ['2000 is the inception of Penny Crane Award for Distinguished Service']
+
+learned (first 6):
+  'In what year did Haile Gebrselassie go undefeated in all of his road r' asked ['haile gebrselassie'] admitted 85 e.g. ['Ethiopia is the country of citizenship of Haile Gebrselassie', 'male is the sex or gender of Haile Gebrselassie', 'Haile Gebrselassie is the Commons category of Haile Gebrselassie']
+  'As of 2011, what was the male population of Chitwan District?' asked ['chitwan district'] admitted 14 e.g. ['Nepal is the country of Chitwan District', "Category:Chitwan District is the topic's main category of Chitwan District", 'Bagmati Province is the located in the administrative territorial entity of Chitwan District']
+  "How many U.S. patents did Chadwell O'Connor receive in his lifetime?" asked ['chadwell o connor'] admitted 9 e.g. ["2007-09-05 is the date of death of Chadwell O'Connor", "1914-10-09 is the date of birth of Chadwell O'Connor", "male is the sex or gender of Chadwell O'Connor"]
+  'On what day, month, and year was Masaki Tsuji born?' asked ['masaki tsuji'] admitted 20 e.g. ['Japan is the country of citizenship of Masaki Tsuji', '1932-03-23 is the date of birth of Masaki Tsuji', 'screenwriter is the occupation of Masaki Tsuji']
+  'What fellowship was Zanele Muholi awarded in 2012?' asked ['zanele muholi'] admitted 53 e.g. ['non-binary is the sex or gender of Zanele Muholi', '1972-07-19 is the date of birth of Zanele Muholi', '1972 is the date of birth of Zanele Muholi']
+  'In which district is the Syrian village "Kafr al-Awamid" located?' asked ['kafr al awamid'] admitted 2 e.g. ['Syria is the country of Kafr al-Awamid', 'Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid']
+
+aliased (lever 4): 3 questions, e.g. [('district', 'located in the administrative territorial entity')] -> verified; [('parents', 'parent')] -> retrieval_exhausted; [('established', 'inception')] -> verified
+relations still unknown after learning (top 20): [('year', 7), ('born', 2), ('first husband', 2), ('married', 2), ('episodes', 2), ('second husband', 2), ('go undefeated in all of his road races', 1), ('list entry name', 1), ('national heritage list entry number 1090695', 1), ('as of 2011', 1), ('male population', 1), ('u s patents', 1), ('awarded in 2012', 1), ('who received an honorable mention', 1), ('selected for the role of rachel', 1), ('indian state', 1), ('state animal', 1), ('career as a teacher', 1), ('first cardiologist', 1), ('largest tributary', 1)]

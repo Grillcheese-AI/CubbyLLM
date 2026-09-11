@@ -186,12 +186,20 @@ class StoreRelations:
     def __contains__(self, rel: str) -> bool:
         return normalize(rel) in self._rels
 
+    def declare(self, rel: str) -> None:
+        """A relation a source states structurally: `add` splits with it from the
+        first fact on (see TripleIndex.declare_relation). Not membership -- a
+        declared relation is known only once a fact states it."""
+        if not hasattr(self, "_declared"):
+            self._declared: set[str] = set()
+        self._declared.add(normalize(rel))
+
     def add(self, fact: str) -> str | None:
         """A fact learned after construction (search-and-learn, lever 3): its
         relation joins the vocabulary, split the way `TripleIndex.add` splits it
-        (longest relation the store already reuses, else greedy). Returns the
-        normalized relation, or None for a non-template fact."""
-        t = parse_fact(fact, known={r for r, k in self._n.items() if k >= 2})
+        (longest relation the store already reuses or a source declared, else
+        greedy). Returns the normalized relation, or None for a non-template fact."""
+        t = parse_fact(fact, known={r for r, k in self._n.items() if k >= 2} | getattr(self, "_declared", set()))
         if t is None:
             return None
         r = normalize(t.rel)
@@ -377,7 +385,8 @@ def tail_match(tail: str, known: KnownRelations) -> tuple[str, str] | None:
     return None
 
 
-def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = None) -> bool:
+def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = None,
+           aliases: dict[str, list[str]] | None = None) -> bool:
     """Does the plan account for the WHOLE question?
 
     v2 (2026-09-11, after exp_r7). v1 required the grammar's canonical body
@@ -439,6 +448,11 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
             alt = known.match(r)
         if alt and normalize(alt) not in out:
             out.append(normalize(alt))
+        # a relation the HOST rewrote into the store's wording (learn.py's alias step,
+        # lever 4) is asked about in the question under the plan's original words
+        for w in (aliases or {}).get(normalize(r), ()):
+            if normalize(w) not in out:
+                out.append(normalize(w))
         return out
     inner_first = [wordings(rel1, tail_alt)] + [wordings(r) for r in rels]      # walk order
     answer_first = list(reversed(inner_first))
@@ -517,7 +531,8 @@ def _covers_text(q: str, order: list[list[str]], ent: str, rw, entity_first: boo
     return not any(w in rw for w in leftover)
 
 
-def verify_plan(question: str, plan: QuestionPlan, known: KnownRelations) -> PlanVerdict:
+def verify_plan(question: str, plan: QuestionPlan, known: KnownRelations,
+                aliases: dict[str, list[str]] | None = None) -> PlanVerdict:
     """Disposes of a plan with EXACTLY the walk's tolerance, no more, no less:
     every hop has an exact tier and a `relation_matches` tier, the walk's own
     acceptance (hop 0 grew its paraphrase tier 2026-09-11, lever 1; before
@@ -528,7 +543,7 @@ def verify_plan(question: str, plan: QuestionPlan, known: KnownRelations) -> Pla
     refused (exp_m3 lookup_vp, 2026-09-11: the exact-only draft refused 2 of
     568 verified chains on 'office held by THE head of government' vs the
     store's 'office held by head of government'; this rule refuses 0)."""
-    cov = covers(question, plan, known)
+    cov = covers(question, plan, known, aliases)
     unknown: list[str] = []
     paraphrased: list[tuple[str, str]] = []
     for r in plan.relations[1:]:

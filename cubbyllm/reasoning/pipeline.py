@@ -147,9 +147,13 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
 
 def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
            top_k: int = 3, max_repairs: int = 1, lookup=None, known=None,
-           plan: QuestionPlan | None = None) -> CoTResult:
+           plan: QuestionPlan | None = None, aliases: dict[str, list[str]] | None = None) -> CoTResult:
     """`lookup`: a `TripleIndex.hop`-shaped callable; when given, every hop is
     looked up before it is searched (see `_walk`).
+
+    `aliases`: {store relation (normalized): [the plan's original words]} for a plan
+    the host REWROTE into the store's wording (learn.py's alias step, lever 4) --
+    the disposer's coverage check then accepts the original words in the question.
 
     `known`: a `plan_verify.KnownRelations` (the store's relation vocabulary --
     `StoreRelations(store)` host-side, or `VMRelations` to let the VM's QUERY
@@ -172,7 +176,7 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
     if plan is None:
         return CoTResult(answer=None, verified=False, reason="unparseable")
     if known is not None:
-        verdict = verify_plan(question, plan, known)
+        verdict = verify_plan(question, plan, known, aliases)
         if not verdict.ok:
             return CoTResult(answer=None, verified=False, reason=verdict.reason,
                              refused={"covers": verdict.covers,

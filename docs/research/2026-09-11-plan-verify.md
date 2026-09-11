@@ -597,3 +597,46 @@ after lever 3: 0 verified, 0 wrong, 1,715 facts learned with provenance.
 
 `exp_r11_search_learn_heldout{,_amb}.*`, `exp_r11_search_learn_wikidata{,_amb}.*`, `exp_m3_cot_pipeline_amb.*`,
 `cot_harvest_amb.jsonl`, `exp_r7_emitter_planned_walk_gen2_amb.*`, `cot_harvest_r7_gen2_amb.jsonl`.
+
+## Coverage, lever 4 — the source names the relation (and the first SimpleQA answers)
+
+After lever 3 the store held the answers and the plans could not name them: the emitter says `born`, Wikidata
+says `date of birth`, and no paraphrase tier bridges two wordings that share no word. The principled resolver
+is the source itself: it resolves an entity label to an item, and it can resolve a relation wording to its
+property labels the same way (`WikidataSource.relations("born")` → `["date of birth"]`, exact alias hits only —
+`born` vs `born in` is not an alias). The host keeps the labels the store *holds*, rewrites the plan into that
+wording, and records the translation (`LearnResult.aliased`; `answer(..., aliases=)` so `covers()` still sees
+the original words in the question). Exactly one label must survive: `city` naming both `location` and
+`located in the administrative territorial entity` is an `ambiguous_relation` refusal with the candidates,
+never a pick; a wording the source cannot name (`day month year`, `first husband`) leaves the refusal as it was.
+The step costs no fetch round; it runs after the facts about the seed were learned, since that is when the
+label enters the vocabulary. `learn.resolve_relations`; 3 pins.
+
+**Alias run 1** (same 600 SimpleQA, same cache): 3 plans rewritten, 2 verified — `established` → `inception` →
+**2000, correct**, the first SimpleQA answer ever through search-and-learn; and `district` → `located in the
+administrative territorial entity` → "Az-Zabdani Subdistrict" against the gold "Al-Zabadani". `born` →
+`date of birth` resolved but never rewrote: the learned string `date of birth of Masaki Tsuji` had been split
+as `date` | `birth of Masaki Tsuji`, because the wiki world reuses a relation `date` (2 facts), had never seen
+`date of birth`, and lever 1b's rule prefers a known prefix. Right rule, wrong information: the source *knows*
+where its relation ends, and the template string throws that away. So a source now hands over `Triple`s and
+the store is told the relation before the string is split (`TripleIndex.declare_relation`,
+`StoreRelations.declare`); pinned.
+
+**Alias run 2:** 5 plans rewritten, **4 VM-verified: 3 correct, 0 false facts.** `1932-03-23` and `1983-02-16`
+for two "on what day, month, and year was X born?" questions (the gold spells them "March 23, 1932"; the
+experiment's match now normalizes dates deterministically — a normalizer, not a judge), `2000` for the award's
+inception, and the one the strict metric counts wrong: the village is in *Az-Zabdani Subdistrict* (Wikidata's
+label and granularity) and the gold says *Al-Zabadani* (the district). The fact is true; the disagreement is a
+transliteration and one level of administrative granularity. 8 VM calls in total, 0 API calls (all cached).
+
+Where free text stands at the end of the day, on the 600-question sample: 530 plans; 464 refused for coverage
+(the emitter dropping a hop or a qualifier, or a shape the disposer does not read — the largest bucket, and the
+emitter's); 65 fetched; 1,715 facts learned with provenance; 58 still refused after learning because the
+relation the emitter named is not one a source states (`year` ×7 for "in what year did X marry Y" — the store
+has `spouse` with a qualifier, which is not a hop; `first husband`, `episodes`, `go undefeated in all of his
+road races`); 3 walks exhausted; 1 ambiguous relation; **4 verified, 0 false**. From 0 verified this morning to
+4 is not a number to celebrate; the 0 in "0 false facts across everything the pipeline said today, on 800 +
+1,600 + 4,326 + 600 questions" is.
+
+`exp_r11_search_learn_wikidata_alias.*`, `exp_r11_search_learn_wikidata_alias2.*` (rows: every plan, first
+and final reason, what was learned, what was rewritten).

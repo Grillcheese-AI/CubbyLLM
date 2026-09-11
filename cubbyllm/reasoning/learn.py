@@ -36,7 +36,7 @@ from typing import Protocol, runtime_checkable
 from ..core.protocols import Wiring
 from .pipeline import CoTResult, answer
 from .plan_verify import tail_match, tail_relation
-from .planner import QuestionPlan, normalize, parse_fact, parse_question
+from .planner import QuestionPlan, Triple, normalize, parse_fact, parse_question
 
 __wiring__ = Wiring.WIRED
 
@@ -48,6 +48,9 @@ LEARNABLE = ("retrieval_exhausted", "unknown_relation")
 class Source(Protocol):
     name: str
     def facts(self, entity: str) -> list[str]: ...
+    # optional (lever 4): the canonical relation labels a wording names in this source --
+    # 'born' -> ['date of birth'], 'citizenship' -> ['country of citizenship']; [] if none.
+    # def relations(self, text: str) -> list[str]: ...
 
 
 @dataclass
@@ -68,6 +71,9 @@ class LearnResult:
     learned: list[Provenance] = field(default_factory=list)
     entities: list[str] = field(default_factory=list)     # what was asked of the source
     fetched: int = 0
+    # lever 4: (the plan's relation words, the store relation the host rewrote them to)
+    aliased: list[tuple[str, str]] = field(default_factory=list)
+    plan: QuestionPlan | None = None                      # the plan that was walked last (rewritten or not)
     @property
     def accepted(self) -> list[Provenance]:
         return [p for p in self.learned if p.status == "accepted"]
@@ -147,32 +153,93 @@ def stalled_entities(question: str, plan: QuestionPlan | None, first: CoTResult,
     return out
 
 
+def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
+                      aliases: dict[str, list[str]]) -> tuple[QuestionPlan, list[tuple[str, str]], dict | None]:
+    """Lever 4 (2026-09-11, exp_r11): the emitter names a relation in the QUESTION's
+    words ('born'); the source states it under its own label ('date of birth'), and the
+    two share no word, so neither paraphrase tier can bridge them. The source resolves
+    wording to canonical labels the way it resolves an entity label to an item
+    (`source.relations`), the host keeps the labels the store HOLDS, and rewrites the
+    plan into that wording -- the model proposed, the host translated, and the
+    translation is on record (`aliases`, so `covers()` still sees the original words).
+    Exactly one label must survive: several ('position' -> location / ranking) is an
+    ambiguity the host refuses, never resolves; none leaves the plan as it was."""
+    if not hasattr(source, "relations"):
+        return plan, [], None
+    rels = list(plan.relations); tail = plan.tail; rewrote: list[tuple[str, str]] = []
+    for r in unknown:
+        labels = [normalize(l) for l in source.relations(r)]
+        held = sorted({l for l in labels if l in known})
+        if not held:
+            continue
+        if len(held) > 1:
+            return plan, rewrote, {"relation": r, "candidates": held}
+        label = held[0]
+        aliases.setdefault(label, []).append(r)
+        rewrote.append((r, label))
+        for i, x in enumerate(rels):
+            if x and normalize(x) == normalize(r):
+                rels[i] = label
+        if tail.lower().startswith(r.lower() + " of "):          # the tail's relation prefix
+            tail = label + tail[len(r):]
+    if not rewrote:
+        return plan, [], None
+    return QuestionPlan(relations=rels, tail=tail, n_hop=plan.n_hop, answer_class=plan.answer_class), rewrote, None
+
+
 def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: Source,
                      tau_vm: float, tau_ret: float = 0.0, top_k: int = 3, max_repairs: int = 1,
                      plan: QuestionPlan | None = None, max_entities: int = 2) -> LearnResult:
     """One question through the loop. `store` needs `add(fact)`, `__contains__`,
     `texts`, `index` (a TripleIndex) and `lookup` (its `index.hop`); `known` is a
     `StoreRelations` (gets `add`). A walk follows every round that admitted a fact;
-    a round that admits nothing ends the loop; `max_entities` rounds at most."""
+    a round that admits nothing ends the loop; `max_entities` rounds at most. An
+    `unknown_relation` refusal that the source can resolve to ONE relation the store
+    holds is walked again with the plan rewritten (lever 4); it costs no round."""
+    aliases: dict[str, list[str]] = {}
+    if plan is None:
+        plan = parse_question(question)
     def walk():
         return answer(question, retrieve, run_fn, tau_vm=tau_vm, tau_ret=tau_ret, top_k=top_k,
-                      max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan)
+                      max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan, aliases=aliases)
     first = walk()
-    out = LearnResult(result=first, first=first)
-    asked: set[str] = set()
+    out = LearnResult(result=first, first=first, plan=plan)
+    asked: set[str] = set(); resolved: set[str] = set()
     # bounded: each round asks the source about ONE entity the walk stalled on, stores what
     # the gate admits, and walks again; at most `max_entities` rounds, and a round that
     # admits nothing ends the loop (there is nothing new to walk on)
-    while (not out.result.verified and out.result.reason in LEARNABLE
-           and len(asked) < max_entities):
+    while not out.result.verified and out.result.reason in LEARNABLE:
+        if out.result.reason == "unknown_relation" and plan is not None:
+            unknown = [r for r in (out.result.refused or {}).get("unknown_relations", []) if r not in resolved]
+            resolved.update(unknown)
+            plan2, rewrote, amb = resolve_relations(plan, unknown, source, known, aliases)
+            if amb is not None:
+                out.result = CoTResult(answer=None, verified=False, reason="ambiguous_relation", refused=amb)
+                break
+            if rewrote:
+                out.aliased.extend(rewrote); plan = plan2; out.plan = plan
+                out.result = walk()
+                continue
+        if len(asked) >= max_entities:
+            break
         ents = [e for e in stalled_entities(question, plan, out.result, known) if normalize(e) not in asked]
         if not ents:
             break
         ent = ents[0]
         asked.add(normalize(ent)); out.entities.append(ent)
         admitted = 0
-        for fact in source.facts(ent):
+        for item in source.facts(ent):
             out.fetched += 1
+            # a source that hands over a Triple knows where its relation ends; the store
+            # is told before the string is split ('date of birth', not 'date' | 'birth of X')
+            if isinstance(item, Triple):
+                fact = f"{item.obj} is the {item.rel} of {item.subj}"
+                if hasattr(store, "index") and hasattr(store.index, "declare_relation"):
+                    store.index.declare_relation(item.rel)
+                if hasattr(known, "declare"):
+                    known.declare(item.rel)
+            else:
+                fact = item
             p = gate(fact, store, source.name, ent)
             out.learned.append(p)
             if p.status == "accepted":
@@ -182,5 +249,6 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                 admitted += 1
         if not admitted:
             break
+        resolved.clear()          # new facts may have brought the relation the source names
         out.result = walk()
     return out

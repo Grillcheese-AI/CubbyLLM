@@ -41,6 +41,30 @@ if hasattr(sys.stdout, "reconfigure"):
 
 TAU_VM = {1: 1.0, 2: 0.4736328125, 3: 0.22021484375}
 
+_MONTHS = {m: i for i, m in enumerate("january february march april may june july august september october november december".split(), 1)}
+
+
+def as_date(s: str):
+    """'1932-03-23' / 'March 23, 1932' / '23 March 1932' -> (1932, 3, 23); None if not a date.
+    A deterministic normalizer, not a judge: two spellings of one date are one fact."""
+    import re
+    s = s.strip().lower().rstrip(".")
+    m = re.fullmatch(r"(\d{4})-(\d{2})-(\d{2})", s)
+    if m: return tuple(int(x) for x in m.groups())
+    m = re.fullmatch(r"([a-z]+)\s+(\d{1,2}),?\s+(\d{4})", s)
+    if m and m.group(1) in _MONTHS: return (int(m.group(3)), _MONTHS[m.group(1)], int(m.group(2)))
+    m = re.fullmatch(r"(\d{1,2})\s+([a-z]+),?\s+(\d{4})", s)
+    if m and m.group(2) in _MONTHS: return (int(m.group(3)), _MONTHS[m.group(2)], int(m.group(1)))
+    return None
+
+
+def match(answer: str, gold: str, normalize) -> str:
+    x, g = normalize(answer), normalize(gold)
+    if x == g: return "correct"
+    if as_date(answer) is not None and as_date(answer) == as_date(gold): return "correct"
+    if g and (g in x or x in g): return "near"
+    return "WRONG"
+
 
 class LookupStore:
     """texts + membership + add + TripleIndex + lookup: what the loop needs, nothing else."""
@@ -156,7 +180,7 @@ def main() -> None:
         em = LlamaCppEmitter(a.gguf)
         src = WikidataSource(offline=a.offline)
         log(f"wiki world {len(world)} facts, {len(known)} relations | SimpleQA sample {len(rows)} (seed {a.seed}) | source wikidata{' (offline cache)' if a.offline else ''}")
-        c = collections.Counter(); verified_ex = []; learned_ex = []; out["world0"] = len(world)
+        c = collections.Counter(); verified_ex = []; learned_ex = []; rows_out = []; out["world0"] = len(world)
         def build_plan(rels, seed):
             return QuestionPlan(relations=[None] + rels[1:], tail=f"{rels[0]} of {seed}", n_hop=len(rels)) if rels and seed else None
         for i, r in enumerate(rows):
@@ -176,10 +200,15 @@ def main() -> None:
                 for p in lr.learned: c[f"gate:{p.status}"] += 1
                 if lr.accepted and len(learned_ex) < 6:
                     learned_ex.append((q, lr.entities, len(lr.accepted), [p.fact for p in lr.accepted[:3]]))
+            if lr.aliased:
+                c["aliased_questions"] += 1
+            rows_out.append({"q": q, "gold": gold, "plan": ep[0], "seed": ep[1], "first": lr.first.reason,
+                             "unknown": (lr.first.refused or {}).get("unknown_relations"), "entities": lr.entities,
+                             "admitted": len(lr.accepted), "aliased": lr.aliased, "final": lr.result.reason,
+                             "verified": lr.result.verified, "answer": lr.result.answer})
             if lr.result.verified:
                 c["verified"] += 1
-                x, gg = normalize(lr.result.answer), normalize(gold)
-                m = "correct" if x == gg else ("near" if (gg and (gg in x or x in gg)) else "WRONG")
+                m = match(lr.result.answer, gold, normalize)
                 c[m] += 1
                 verified_ex.append({"q": q, "plan": ep[0], "seed": ep[1], "answer": lr.result.answer, "gold": gold, "match": m,
                                     "learned": [p.fact for p in lr.accepted], "trace": [h.fact for h in lr.result.trace]})
@@ -196,7 +225,11 @@ def main() -> None:
         log("\nlearned (first 6):")
         for q, ents, n, fs in learned_ex:
             log(f"  {q[:70]!r} asked {ents} admitted {n} e.g. {fs}")
-        out.update({"counts": dict(c), "verified": verified_ex, "api_calls": src.calls})
+        out.update({"counts": dict(c), "verified": verified_ex, "api_calls": src.calls, "rows": rows_out})
+        al = [x for x in rows_out if x["aliased"]]
+        log(f"\naliased (lever 4): {len(al)} questions, e.g. " + "; ".join(f"{x['aliased']} -> {x['final'] or 'verified'}" for x in al[:8]))
+        unk = collections.Counter(u for x in rows_out for u in (x["unknown"] or []) if x["final"] == "unknown_relation")
+        log(f"relations still unknown after learning (top 20): {unk.most_common(20)}")
 
     if session: session.close()
     wall = time.perf_counter() - t0

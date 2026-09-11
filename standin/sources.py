@@ -31,9 +31,7 @@ CACHE = pathlib.Path(__file__).resolve().parent / "data" / "out" / "wikidata_cac
 SKIP_PROPS = {"P31"}       # 'instance of' floods every entity with class facts; the store calls it 'instance' when it wants it
 
 
-def _normalize(s: str) -> str:
-    from cubbyllm.reasoning.planner import normalize
-    return normalize(s)
+from cubbyllm.reasoning.planner import Triple, normalize as _normalize   # noqa: E402
 
 
 class WikidataSource:
@@ -80,6 +78,20 @@ class WikidataSource:
                 if lab:
                     self._labels[qid] = lab
         return {i: self._labels[i] for i in ids if i in self._labels}
+
+    # -- lever 4: wording -> the property labels it names -----------------------------------
+    def relations(self, text: str) -> list[str]:
+        """Property labels whose label or alias IS this wording ('born' -> ['date of
+        birth'], 'citizenship' -> ['country of citizenship']); a prefix hit ('born' vs
+        'born in') is not an alias and is left out. The host intersects with what the
+        store holds and refuses more than one."""
+        s = self._get({"action": "wbsearchentities", "search": text, "language": "en", "type": "property", "limit": 8})
+        out = []
+        for h in (s or {}).get("search") or []:
+            m = ((h.get("match") or {}).get("text") or "")
+            if _normalize(m) == _normalize(text) and h.get("label"):
+                out.append(h["label"])
+        return out
 
     # -- the Source call -----------------------------------------------------------------
     def facts(self, entity: str) -> list[str]:
@@ -130,7 +142,7 @@ class WikidataSource:
                 else:
                     obj = None
                 if obj and " is the " not in obj:
-                    out.append(f"{obj} is the {rel} of {subj}")
+                    out.append(Triple(obj=obj, rel=rel, subj=subj))     # structured: the store is told where REL ends
                 if len(out) >= self.max_facts:
                     return out
         return out

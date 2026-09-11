@@ -60,6 +60,15 @@ class TripleIndex:
     def __len__(self) -> int:
         return self.n_parsed
 
+    def declare_relation(self, rel: str) -> None:
+        """A relation a SOURCE states structurally (search-and-learn hands over
+        triples, not strings): the split prefers it from the first fact on. exp_r11
+        alias run (2026-09-11): 'date of birth of Masaki Tsuji' split as 'date' |
+        'birth of Masaki Tsuji' because the wiki world reuses a relation 'date'
+        (2 facts) and had never seen 'date of birth'; declared, the longest known
+        prefix is the right one."""
+        self._reused.add(normalize(rel))
+
     def add(self, fact: str) -> Triple | None:
         """Index one fact; the parsed triple, or None when it is a duplicate or not a template fact."""
         key = " ".join(fact.split())
