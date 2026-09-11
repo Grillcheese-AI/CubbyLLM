@@ -301,3 +301,34 @@ can take — this eval's 800 questions contain none.
 **Arm C today:** 17 of 37 with a VM verdict (3 flat, 14 composed), 0 wrong, from 0 this morning. The 14
 composites are gen-3 material — verified three-hop chains on a joint no training record has yet.
 
+## Gen 2 (emitter_v12e) — the pre-registered gate, run
+
+The Colab run landed as `standin/models/LFM2.5-2.6B.Q4_K_M.gguf` (Unsloth's default export name — every
+program it emits is a `CotPlan`, which only v12e has seen; copied to `emitter_v12e.Q4_K_M.gguf`). Gate run
+with the 13 r7 questions excluded, so gen 2 is measured on the questions gen 1 never verified.
+
+**Like-for-like on the remaining 79 B questions** (same r3 disposer rule, gen 1 re-scored on the same 79):
+
+| | gen 1 (v8e) | **gen 2 (v12e)** |
+|---|---:|---:|
+| well-formed plans | 68 | 69 |
+| gold hop count | 32 | **39** |
+| disposer-accepted | 26 | 16 |
+| accepted **and** gold hop count | 5 | **10** |
+| VM-verified after the walk | 0 (its 13 were the excluded ones) | **4**, 4 correct, 0 wrong |
+
+Arm C: gold hop count **31/37** (gen 1: 13/37); verified 3, the same three. Arm A (training set) 95/100
+verified. Canary 0/143 object matches. **The bar — more accepted, gold-hop plans on the remaining B than
+gen 1, at gen 1's precision or better — is met: 10 vs 5, 0 wrong.** Small numbers, honestly; 4 new
+VM-verified answers is transfer, not a leap.
+
+What gen 2 does differently, read from its refusals: 27 `unknown_relation` on B (gen 1: 7) — it shortens
+compound relations to their head noun (`source`, `water body`, `office`, `history`) where the store holds
+the long form; and on C it emits the question's relation words at hop 0 (`languages spoken written signed`)
+where the walk's hop-0 rule is exact string equality, so 25 of 37 C plans are *of the question* but only 6
+are *answerable*. That is now the binding constraint on C, and it is the walk's, not the emitter's: exp_r5
+measured a hop-0 paraphrase tier (relation_matches over `by_subj`) worth 23/118 on the real store. It has a
+reason to exist now.
+
+`cot_harvest_r7_gen2.jsonl`: 102 verified records, 7 on questions outside gen 2's data — gen 3's material.
+

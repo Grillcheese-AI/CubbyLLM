@@ -1,0 +1,57 @@
+emitter LFM2.5-2.6B.Q4_K_M.gguf | vocabulary exp_m3_vocab_lookup_vp_res.jsonl (165 relations)
+arms: control 100 | misparsed 92 | unparseable 37
+
+============================================================================
+CONTAMINATION CANARY — read this before anything else
+============================================================================
+  object slots 143 | exact object matches 0  (0.0%)
+  programs with EVERY object correct: 0/100
+
+  Clean: objects are largely wrong, as they must be — they come from
+  the walk, not the question. Role-structure numbers below are usable.
+
+============================================================================
+ZERO-SHOT FLOOR — hop structure by arm (emitter never trained on this task)
+============================================================================
+
+arm                 n  well-formed  hop correct   grammar   delta
+A_control         100           99           99      100%        
+B_misparsed        92           79           49        0%    +53%
+C_unparseable      37           34           31        0%    +84%
+
+  grammar baselines are exact, not estimated:
+   A  in-basin, the grammar parses and verifies these        -> 100%
+   B  misparsed_chain IS the class where it miscounts        ->   0%
+   C  unparseable IS the class where it emits nothing        ->   0%
+
+  A_control: hop-count delta (emitted - gold): {'+0': 99}
+    exact role chain (relations + order): 99/100
+    mean 0.519s/question
+
+  B_misparsed: hop-count delta (emitted - gold): {'+0': 49, '+1': 4, '+2': 2, '-1': 22, '-2': 2}
+    mean 0.701s/question
+
+  C_unparseable: hop-count delta (emitted - gold): {'+0': 31, '+1': 3}
+    mean 0.658s/question
+
+============================================================================
+THE DISPOSER'S VIEW — would plan_verify let the emitted plan walk?
+============================================================================
+
+arm                 n  answerable  of question  accepted  +hop ok  paraphr.
+A_control         100          99           99        99       99         0
+B_misparsed        92          26           74        26       20         9
+C_unparseable      37           6           25         6        6         3
+
+  answerable  every relation is one the store holds (walk's tolerance; hop 0 exact)
+  of question every relation occurs in the question (coverage without the seed entity)
+  accepted    both -- the plan the disposer would let walk
+  +hop ok     accepted AND hop count == gold. On arm B the grammar scores 0 here.
+
+  ESCAPES: 20/92 misparsed questions get an accepted, gold-hop-count plan from the emitter. The grammar's number is 0.
+
+============================================================================
+FLOOR: unexpectedly HIGH — 49/92 of the misparses get a correct hop
+  count from an emitter never trained on this task. Cross-family transfer
+  is real, and the harvest-trained run must beat THIS, not the grammar's 0.
+============================================================================
