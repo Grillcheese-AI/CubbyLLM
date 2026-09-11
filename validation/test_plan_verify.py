@@ -104,17 +104,20 @@ def test_compound_relation_is_rejected():
 def test_disposer_has_exactly_the_walks_tolerance():
     """hop>=1: the walk accepts 'office held by THE head of government' against the
     store's 'office held by head of government' via relation_matches -- so must we,
-    and the verdict must SAY it was a paraphrase. hop 0 is exact in the walk, so a
-    paraphrased TAIL relation stays refused."""
+    and the verdict must SAY it was a paraphrase. hop 0 was exact in the walk until
+    2026-09-11 (lever 1) and this pin refused a paraphrased TAIL; the walk's hop 0
+    now has the same two tiers, so the same paraphrase at the tail is tolerated AND
+    recorded -- the disposer follows the walk, never leads it."""
     q = "Which country is the country of the office held by the head of government of the country of citizenship of X?"
     v = verify_plan(q, plan(q), V)
     assert v.ok and v.reason is None
     assert v.paraphrased == [("office held by the head of government", "office held by head of government")]
     assert v.unknown_relations == []
-    # the same paraphrase at hop 0 (the tail) is NOT tolerated -- the walk is exact there
+    # the same paraphrase at hop 0 (the tail) is tolerated the same way, and recorded
     q0 = "What is the office held by the head of government of France?"
     v0 = verify_plan(q0, plan(q0), V)
-    assert not v0.ok and v0.reason == "unknown_relation" and v0.paraphrased == []
+    assert v0.ok and v0.reason is None and v0.tail_relation == "office held by the head of government"
+    assert v0.paraphrased == [("office held by the head of government", "office held by head of government")]
     # and a compound relation is still not a paraphrase of its atomic part (Jaccard < 0.6)
     qc = "What is the instance of the award received by the creator of Some Show?"
     vc = verify_plan(qc, plan(qc), V)

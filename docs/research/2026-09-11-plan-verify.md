@@ -405,3 +405,54 @@ planner problem; the search-and-learn path (a fact the store does not hold, fetc
 where that number moves, and this run is its baseline: 0.
 
 `validation/exp_r10_simpleqa.py`, logs `exp_r10_simpleqa.{json,log}` (smoke n=60: `exp_r10_simpleqa_smoke.*`).
+
+## Coverage, lever 1 — hop 0 gets the paraphrase tier (and what the first run taught)
+
+Hop 0 was the one hop with a single tier: `accepts` compared the whole tail string to the fact's `rel of subj`,
+and the disposer mirrored it (exact known prefix). Hops ≥ 1 always had two tiers — exact, then
+`relation_matches` (Jaccard ≥ 0.6 on relation words) with the subject exact. exp_r5 had measured a hop-0 tier
+worth up to 23/118 on the entry residue, and gen 2's C plans were blocked on it (25 of the question, 6
+answerable). The change gives hop 0 the same two tiers in all four places: `planner.accepts` (every `' of '`
+split of the tail, subject exact, relation by `relation_matches`), `TripleIndex.hop` (exact tier first, then
+`by_subj` at each split), `pipeline._walk` (an exact hit is never displaced by a paraphrase; the trace says
+`lookup_paraphrase`), and the disposer (`tail_match`, recorded in `paraphrased`).
+
+**The first harvest verified a wrong answer.** `What is the award received by the genre of Joan Rivers: A
+Piece of Work?` → `Documentary series` (gold: Genesis Awards). The greedy fact parse reads `Documentary series
+is the genre of Joan Rivers: A Piece of Work` as relation `genre of Joan Rivers: A Piece` | subject `Work`; the
+plan's tail mis-splits at the same `' of '`; the two "relations" overlap at Jaccard 0.625; the VM verified a
+1-hop chain that is internally consistent and semantically wrong. That is exactly the failure class the VM
+cannot see (it certifies the binding, not the wording), so the guard has to be the host's: **a paraphrase is
+only trusted for a relation the store states in ≥ 2 facts** (`StoreRelations.reused`, `TripleIndex._rel_n`;
+`write_vocab_jsonl` now carries `n`). A relation is reused by nature; a one-off "relation" is usually an
+entity fragment. Pinned in `validation/test_hop0_paraphrase.py` (5 pins, including the Joan Rivers case and
+the guard's honest limit: the same fragment stated twice counts as a relation).
+
+Measured, same store, same seeds, same gates:
+
+| | before (lookup_vp_res) | hop 0 tier, no guard | **hop 0 tier + reuse guard** |
+|---|---:|---:|---:|
+| verified / 800 | 568 | 570 | **568** |
+| claimed-answer precision | 0.993 (564/568) | 0.991 (565/570) — **1 new wrong** | **0.993 (564/568)** |
+| refusals `unknown_relation` | 155 | 148 | 150 |
+| `retrieval_exhausted` | 40 | 43 | 43 |
+| gen 2 (exp_r7, --exclude): arm C verified | 3/37 | — | **5/37**, 5 correct, 0 wrong |
+| gen 2 arm A | 95/100 | — | 96/100 (wrong 1, unchanged) |
+| gen 2 arm B | 4/79 | — | 4/79 |
+
+On the eval store the lever nets zero: five plans that were refused at plan time now walk and die at
+retrieval (43 vs 40), and the one legitimate gain of the unguarded run (`successor of the fictional universe of
+Stature` → MC2, gold) is lost to the guard because `from fictional universe` occurs once in 1,241 facts. On
+gen 2 it is worth +2 on arm C at 0 wrong. The residue exp_r5 called "relation mismatch" was mostly misparses,
+which the disposer already refuses; genuine relation paraphrases are rare on a 165-relation store.
+
+What the run surfaced is bigger than the lever: **88 of the 1,188 parsed facts carry a singleton relation from
+the greedy `' of '` split, and for 49 of them another split yields a reused relation** (`capital` | `county of
+clarion, pennsylvania`, `location` | `final assembly of ss canberra`). Those facts are indexed under the wrong
+subject and are unreachable by entity at every hop — a parse ambiguity that the exact tier at hop 0 happens to
+tolerate and nothing else does. Lever 1b, measured before it is built: a relation-aware fact split (prefer the
+split whose relation the store reuses) is a store-side change to `parse_fact`/`TripleIndex.add`, and it touches
+every hop, so it gets its own before/after.
+
+`cot_harvest_hop0.jsonl`, `exp_m3_cot_pipeline_hop0.{json,log}`, `exp_r7_emitter_planned_walk_gen2_hop0.*`,
+`cot_harvest_r7_gen2_hop0.jsonl`.

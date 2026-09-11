@@ -142,42 +142,63 @@ class StoreRelations:
 
     def __init__(self, facts: Iterable[str]) -> None:
         self._rels: set[str] = set()
+        self._n: dict[str, int] = {}          # facts per relation (the reuse guard)
         self.n_parsed = 0
         for f in facts:
             t = parse_fact(f)
             if t is None:
                 continue
             self.n_parsed += 1
-            self._rels.add(normalize(t.rel))
+            r = normalize(t.rel)
+            self._rels.add(r)
+            self._n[r] = self._n.get(r, 0) + 1
 
     @classmethod
-    def from_keys(cls, keys: Iterable[str]) -> "StoreRelations":
+    def from_keys(cls, keys: Iterable[str], counts: dict[str, int] | None = None) -> "StoreRelations":
         """A vocabulary from relation strings directly (e.g. the `key` column of a
         `write_vocab_jsonl` file) -- for a probe that has the vocabulary but not
-        the corpus (exp_r3: no corpus, no encoder, just the GGUF)."""
+        the corpus (exp_r3: no corpus, no encoder, just the GGUF). Without
+        `counts` every key counts as reused (the paraphrase tier is open)."""
         sr = cls([])
         sr._rels = {normalize(k) for k in keys}
+        sr._n = {r: 2 for r in sr._rels}
+        if counts:
+            sr._n.update({normalize(k): int(v) for k, v in counts.items()})
         sr.n_parsed = len(sr._rels)
         return sr
 
     @classmethod
     def from_vocab_jsonl(cls, path) -> "StoreRelations":
         import json, pathlib
-        keys = []
+        keys, counts = [], {}
         for line in pathlib.Path(path).read_text(encoding="utf-8").splitlines():
             if line.strip():
                 rec = json.loads(line)
                 if "key" in rec:
                     keys.append(rec["key"])
-        return cls.from_keys(keys)
+                    if "n" in rec:
+                        counts[rec["key"]] = rec["n"]
+        return cls.from_keys(keys, counts)
 
     def __contains__(self, rel: str) -> bool:
         return normalize(rel) in self._rels
 
-    def match(self, rel: str) -> str | None:
+    def reused(self) -> list[str]:
+        """The relations the store states in >= 2 facts -- the only ones hop 0's
+        paraphrase tier may match. exp_m3 hop0 (2026-09-11): the greedy fact
+        parse splits an entity with ' of ' in it into a one-off 'relation'
+        ('genre of Joan Rivers: A Piece' | 'Work'); a plan's tail mis-split at
+        the same point then paraphrase-matched it at Jaccard 0.625 and the VM
+        verified a wrong answer. A relation is reused by nature; a fragment is
+        not. Exact membership is unaffected."""
+        return sorted(r for r in self._rels if self._n.get(r, 0) >= 2)
+
+    def match(self, rel: str, *, reused_only: bool = False) -> str | None:
+        """Exact tier, then the paraphrase tier; `reused_only` restricts the
+        paraphrase tier to `reused()` -- what hop 0 asks for (see there)."""
         if rel in self:
             return normalize(rel)
-        return _fuzzy_match(rel, self)
+        return _fuzzy_match(rel, self.reused() if reused_only else self)
 
     def words(self) -> frozenset[str]:
         return _relation_words(self)
@@ -191,13 +212,14 @@ class StoreRelations:
 
 def write_vocab_jsonl(facts: Iterable[str], path) -> int:
     """The store's relation vocabulary as `cubelang run --knowledge` input:
-    one `{"key": rel, "text": rel, "source": "store"}` per distinct relation.
-    Returns the number of relations written."""
+    one `{"key": rel, "text": rel, "source": "store", "n": facts}` per distinct
+    relation (`n` feeds the reuse guard of hop 0's paraphrase tier). Returns
+    the number of relations written."""
     import json
     rels = StoreRelations(facts)
     with open(path, "w", encoding="utf-8") as fh:
         for r in rels:
-            fh.write(json.dumps({"key": r, "text": r, "source": "store"}) + "\n")
+            fh.write(json.dumps({"key": r, "text": r, "source": "store", "n": rels._n.get(r, 0)}) + "\n")
     return len(rels)
 
 
@@ -238,25 +260,28 @@ class VMRelations:
         # the fuzzy tier reads the SAME vocabulary the VM was given, host-side
         self._vocab: list[str] | None = None
 
-    def _vocabulary(self) -> list[str]:
+    def _vocabulary(self, reused_only: bool = False) -> list[str]:
         if self._vocab is None:
             import json, pathlib
-            keys = set()
+            keys, n = set(), {}
             for line in pathlib.Path(self.knowledge).read_text(encoding="utf-8").splitlines():
                 if line.strip():
                     rec = json.loads(line)
                     if "key" in rec:
-                        keys.add(normalize(rec["key"]))
+                        k = normalize(rec["key"]); keys.add(k)
+                        n[k] = int(rec.get("n", 2))      # no count on file: counts as reused
             self._vocab = sorted(keys)
-        return self._vocab
+            self._reused = sorted(k for k in keys if n[k] >= 2)
+        return self._reused if reused_only else self._vocab
 
-    def match(self, rel: str) -> str | None:
+    def match(self, rel: str, *, reused_only: bool = False) -> str | None:
         """Exact tier is the VM's QUERY; the paraphrase tier is the walk's
         relation_matches over the same vocabulary file, host-side, and the
-        verdict labels it as such."""
+        verdict labels it as such. `reused_only`: hop 0's reuse guard (see
+        StoreRelations.reused)."""
         if rel in self:
             return normalize(rel)
-        return _fuzzy_match(rel, self._vocabulary())
+        return _fuzzy_match(rel, self._vocabulary(reused_only))
 
     def words(self) -> frozenset[str]:
         return _relation_words(self._vocabulary())
@@ -316,6 +341,26 @@ def tail_relation(tail: str, known: KnownRelations) -> str | None:
     return None
 
 
+def tail_match(tail: str, known: KnownRelations) -> tuple[str, str] | None:
+    """The paraphrase tier of `tail_relation` (2026-09-11, lever 1): the longest
+    ' of '-prefix of the tail that `known.match` accepts -- (the plan's wording,
+    the store's relation). Mirrors the walk's hop 0 since `planner.accepts` grew
+    its paraphrase tier: subject exact, relation by `relation_matches`. Exact
+    hits are `tail_relation`'s; call this only when that returned None."""
+    if not hasattr(known, "match"):
+        return None
+    parts = tail.split(" of ")
+    for i in range(len(parts) - 1, 0, -1):
+        cand = " of ".join(parts[:i])
+        try:
+            m = known.match(cand, reused_only=True)       # the reuse guard (StoreRelations.reused)
+        except TypeError:                                  # a KnownRelations without the guard
+            m = known.match(cand)
+        if m is not None:
+            return cand, m
+    return None
+
+
 def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = None) -> bool:
     """Does the plan account for the WHOLE question?
 
@@ -344,6 +389,9 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
     # 'country'), else the last ' of ' (a relation with ' of ' in it is commoner
     # than an entity with one)
     tr = tail_relation(plan.tail, known) if known is not None else None
+    if tr is None and known is not None:
+        tm = tail_match(plan.tail, known)          # the paraphrase tier splits the same way
+        tr = tm[0] if tm else None
     if tr is not None:
         rel1, ent = tr, plan.tail[len(tr):].strip()
         ent = ent[3:] if ent.startswith("of ") else ent
@@ -407,9 +455,10 @@ def _covers_text(q: str, order: list[str], ent: str, rw) -> bool:
 
 def verify_plan(question: str, plan: QuestionPlan, known: KnownRelations) -> PlanVerdict:
     """Disposes of a plan with EXACTLY the walk's tolerance, no more, no less:
-    hop 0 is exact (the walk's `accepts` at hop 0 is string equality on the
-    whole tail, so the tail's relation prefix must be an exact known relation);
-    hops >= 1 use `relation_matches`, the walk's own acceptance there. So a
+    every hop has an exact tier and a `relation_matches` tier, the walk's own
+    acceptance (hop 0 grew its paraphrase tier 2026-09-11, lever 1; before
+    that it was string equality on the whole tail and the disposer was exact
+    there too). Paraphrase hits are recorded in `paraphrased`. So a
     refusal is a proof that no fact in the store could have been accepted at
     that hop -- the walk would have failed -- and a verifying chain is never
     refused (exp_m3 lookup_vp, 2026-09-11: the exact-only draft refused 2 of
@@ -430,7 +479,11 @@ def verify_plan(question: str, plan: QuestionPlan, known: KnownRelations) -> Pla
             paraphrased.append((r, m))
     tr = tail_relation(plan.tail, known)
     if tr is None:
-        unknown.append(plan.tail.rsplit(" of ", 1)[0] if " of " in plan.tail else plan.tail)
+        tm = tail_match(plan.tail, known)          # hop 0's paraphrase tier (lever 1)
+        if tm is not None:
+            tr = tm[0]; paraphrased.append(tm)
+        else:
+            unknown.append(plan.tail.rsplit(" of ", 1)[0] if " of " in plan.tail else plan.tail)
     if not cov:
         reason = "plan_does_not_cover_question"
     elif unknown:

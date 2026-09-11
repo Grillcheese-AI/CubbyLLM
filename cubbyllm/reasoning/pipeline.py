@@ -26,7 +26,9 @@ class HopTrace:
     symbol: str | None = None
     similarity: float | None = None
     # how the fact was found: "lookup" (the triple index; ret_score is 1.0, no
-    # threshold applied) or "search" (cosine top-k above tau_ret)
+    # threshold applied), "lookup_paraphrase" (hop 0 served by the index's
+    # paraphrase tier: subject exact, relation by relation_matches -- 2026-09-11,
+    # lever 1) or "search" (cosine top-k above tau_ret)
     source: str = "search"
 
 
@@ -61,6 +63,11 @@ class CoTResult:
 _accept = accepts     # the acceptance test moved to the planner (2026-09-04); this name stays for the validation scripts
 
 
+def _exact_tail(plan: QuestionPlan, t: Triple) -> bool:
+    """Hop 0's exact tier: the fact's 'rel of subj' reproduces the question tail."""
+    return normalize(f"{t.rel} of {t.subj}") == normalize(plan.tail)
+
+
 def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
           budget: list[int], trace: list[HopTrace],
           banned: set[str], lookup=None) -> list[Triple] | None:
@@ -85,12 +92,18 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
         found = None
         if lookup is not None:
             cands = [(f, t) for f, t in lookup(plan, hop, entity) if f not in banned]
+            if hop == 0 and len(cands) > 1:
+                # the exact tier outranks the paraphrase tier at hop 0: a fact that
+                # reproduces the tail is never displaced by one that only matches it
+                exact = [ft for ft in cands if _exact_tail(plan, ft[1])]
+                cands = exact or cands
             if len(cands) > 1:
                 rank = {f: float(sc) for sc, f in retrieve(query, max(top_k, len(cands)))}
                 cands.sort(key=lambda ft: (-rank.get(ft[0], -1.0), ft[0]))
             if cands:
                 fact, t = cands[0]
-                found = (1.0, fact, t, "lookup")
+                source = "lookup" if (hop or _exact_tail(plan, t)) else "lookup_paraphrase"
+                found = (1.0, fact, t, source)
         while found is None:
             for score, fact in retrieve(query, top_k):
                 if score < tau_ret or fact in banned:

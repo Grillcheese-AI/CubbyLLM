@@ -23,7 +23,7 @@ from __future__ import annotations
 from collections import defaultdict
 
 from ..core.protocols import Wiring
-from .planner import QuestionPlan, Triple, accepts, normalize, parse_fact
+from .planner import QuestionPlan, Triple, accepts, normalize, parse_fact, tail_splits
 
 __wiring__ = Wiring.WIRED
 
@@ -42,6 +42,7 @@ class TripleIndex:
         self._by_tail: dict[str, list[tuple[str, Triple]]] = defaultdict(list)   # normalize("rel of subj")
         self._by_subj: dict[str, list[tuple[str, Triple]]] = defaultdict(list)   # normalize(subj)
         self._by_obj: dict[str, list[tuple[str, Triple]]] = defaultdict(list)    # normalize(obj)
+        self._rel_n: dict[str, int] = defaultdict(int)                            # facts per normalize(rel)
         self._seen: set[str] = set()
         self.n_facts = 0          # every fact offered (deduped)
         self.n_parsed = 0         # the indexed subset
@@ -66,6 +67,7 @@ class TripleIndex:
         self._by_tail[normalize(f"{t.rel} of {t.subj}")].append(entry)
         self._by_subj[normalize(t.subj)].append(entry)
         self._by_obj[normalize(t.obj)].append(entry)
+        self._rel_n[normalize(t.rel)] += 1
         return t
 
     def __contains__(self, fact: str) -> bool:
@@ -74,7 +76,21 @@ class TripleIndex:
     def hop(self, plan: QuestionPlan, hop: int, entity: str | None) -> list[tuple[str, Triple]]:
         """Every indexed fact that serves hop `hop` of `plan` from `entity` (None at hop 0)."""
         if hop == 0:
-            cands = self._by_tail.get(normalize(plan.tail), [])
+            # exact tier first (the tail as one key), then the paraphrase tier: the
+            # facts whose SUBJECT is the entity at some ' of ' split of the tail,
+            # filtered by `accepts` (relation_matches on the relation part).
+            # Exact hits lead so the walk's tie-break never prefers a paraphrase
+            # over an exact match; `_seen`-order within a tier, deduped. The
+            # reuse guard: a paraphrase is only served for a relation the store
+            # states in >= 2 facts (plan_verify.StoreRelations.reused says why:
+            # a one-off 'relation' is usually an entity fragment mis-split at an
+            # ' of ', and matching it verified a wrong answer).
+            exact = self._by_tail.get(normalize(plan.tail), [])
+            cands, seen = list(exact), {f for f, _t in exact}
+            for _rel, ent in tail_splits(plan.tail):
+                for f, t in self._by_subj.get(ent, []):
+                    if f not in seen and self._rel_n[normalize(t.rel)] >= 2:
+                        cands.append((f, t)); seen.add(f)
         else:
             cands = self._by_subj.get(normalize(entity or ""), [])
         return [(f, t) for f, t in cands if accepts(plan, hop, entity, t)]

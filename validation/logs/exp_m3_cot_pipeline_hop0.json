@@ -1,0 +1,439 @@
+{
+ "config": {
+  "questions": 800,
+  "calibration": 200,
+  "table": "I:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+  "top_k": 3,
+  "max_repairs": 1,
+  "exe": null,
+  "lookup": true,
+  "verify_plan": "vm",
+  "resident": true,
+  "distractors": 0,
+  "tag": "_hop0",
+  "no_counterfactuals": false,
+  "max_cf_vm_calls": 6000,
+  "eval_seed": 0,
+  "calibration_seed": 1,
+  "n_facts_only": 1241,
+  "n_distractors_added": 0,
+  "store_size": 1241
+ },
+ "n_eval_questions": 800,
+ "n_calibration_questions": 200,
+ "eval_hop_counts": {
+  "1": 385,
+  "2": 256,
+  "3": 159
+ },
+ "calibration_hop_counts": {
+  "1": 101,
+  "2": 64,
+  "3": 35
+ },
+ "n_store_facts": 1241,
+ "calibration": {
+  "cal_unparseable_questions": 6,
+  "cal_mojibake_excluded_hop_obs": 15,
+  "n_hop_observations": 151,
+  "n_incorrect_hop_observations": 2,
+  "n_verified_calibration_walks": 127,
+  "tau_vm_floors": {
+   "1": 1.0,
+   "2": 0.4736328125,
+   "3": 0.22021484375
+  },
+  "fallback_tau_vm": 0.22021484375,
+  "tau_vm_youden_reference": 0.50146484375,
+  "tau_vm_youden_auc": 0.7248322147651006,
+  "tau_vm_calibration_degenerate": false,
+  "tau_ret": 0.595863088965416
+ },
+ "calibration_card": {
+  "note": "Similarity measures binding FIDELITY (was something cleanly recovered), not semantic TRUTH (was the correct thing recovered). A wrong-entity/inverted-direction planted fault binds a definitely-wrong filler and recovers it faithfully -- often at ~1.0 similarity in a single-binding (1-hop, zero-crosstalk) frame -- so fault-class similarity distributions below CANNOT be calibrated into a truth-discriminating threshold; they are informational binding-fidelity scores only. Content-correctness is enforced by the exact string-match check pipeline.answer() already runs alongside tau_vm ('normalize(symbol) != normalize(triples[i].obj)'), not by similarity thresholding. tau_vm is therefore calibrated as a FRAME-SIZE-CONDITIONAL FLOOR over CORRECT recoveries' own fidelity (defending against absent/garbled recoveries -- the control-role failure mode); the semantic hardness ladder for content-correctness belongs to the RETRIEVAL side (relation+entity structural filtering), not this VM verify layer. 'catch_rate' below is the honest measurement of that string-match defense (expect ~1.0 for every class, by construction: a corrupted binding almost always fails the string match against the true object).",
+  "tau_vm_floors": {
+   "1": {
+    "n_correct_obs": 86,
+    "q01_point_estimate": 1.0,
+    "q01_ci95_lo": 1.0,
+    "q01_ci95_hi": 1.0,
+    "deployed_floor": 1.0,
+    "n_control_obs": 95,
+    "control_role_mean_similarity": 0.0224609375,
+    "control_margin": 0.9775390625
+   },
+   "2": {
+    "n_correct_obs": 50,
+    "q01_point_estimate": 0.476025390625,
+    "q01_ci95_lo": 0.4736328125,
+    "q01_ci95_hi": 0.47998046875,
+    "deployed_floor": 0.4736328125,
+    "n_control_obs": 48,
+    "control_role_mean_similarity": 0.025400797526041668,
+    "control_margin": 0.4482320149739583
+   },
+   "3": {
+    "n_correct_obs": 13,
+    "q01_point_estimate": 0.22162109375,
+    "q01_ci95_lo": 0.22021484375,
+    "q01_ci95_hi": 0.238828125,
+    "deployed_floor": 0.22021484375,
+    "n_control_obs": 9,
+    "control_role_mean_similarity": 0.027669270833333332,
+    "control_margin": 0.19254557291666666
+   }
+  },
+  "fallback_tau_vm": 0.22021484375,
+  "bootstrap_draws": 1000,
+  "fault_classes": {
+   "wrong_entity": {
+    "n": 142,
+    "mean": 0.7965620873679577,
+    "q50": 1.0,
+    "q90": 1.0,
+    "q99": 1.0,
+    "n_attempted": 142,
+    "n_caught": 142,
+    "catch_rate": 1.0
+   },
+   "wrong_relation": {
+    "n": 40,
+    "mean": 0.4041015625,
+    "q50": 0.48388671875,
+    "q90": 0.497802734375,
+    "q99": 0.512470703125,
+    "n_attempted": 40,
+    "n_caught": 40,
+    "catch_rate": 1.0
+   },
+   "inverted_direction": {
+    "n": 155,
+    "mean": 0.7858272429435483,
+    "q50": 1.0,
+    "q90": 1.0,
+    "q99": 1.0,
+    "n_attempted": 155,
+    "n_caught": 155,
+    "catch_rate": 1.0
+   },
+   "wrong_hop_order": {
+    "n": 69,
+    "mean": 0.43643851902173914,
+    "q50": 0.49658203125,
+    "q90": 0.513671875,
+    "q99": 0.52978515625,
+    "n_attempted": 69,
+    "n_caught": 69,
+    "catch_rate": 1.0
+   }
+  },
+  "hardness_ladder_by_catch_rate": [
+   {
+    "class": "organic_confusable",
+    "n_attempted": 89,
+    "n_caught": 69,
+    "catch_rate": 0.7752808988764045,
+    "n": 69,
+    "mean": 0.6931329257246377,
+    "q50": 0.51123046875,
+    "q90": 1.0,
+    "q99": 1.0
+   },
+   {
+    "class": "random_distractor",
+    "n_attempted": 47,
+    "n_caught": 47,
+    "catch_rate": 1.0,
+    "n": 47,
+    "mean": 0.7563684341755319,
+    "q50": 1.0,
+    "q90": 1.0,
+    "q99": 1.0
+   },
+   {
+    "class": "wrong_entity",
+    "n_attempted": 142,
+    "n_caught": 142,
+    "catch_rate": 1.0,
+    "n": 142,
+    "mean": 0.7965620873679577,
+    "q50": 1.0,
+    "q90": 1.0,
+    "q99": 1.0
+   },
+   {
+    "class": "wrong_relation",
+    "n_attempted": 40,
+    "n_caught": 40,
+    "catch_rate": 1.0,
+    "n": 40,
+    "mean": 0.4041015625,
+    "q50": 0.48388671875,
+    "q90": 0.497802734375,
+    "q99": 0.512470703125
+   },
+   {
+    "class": "inverted_direction",
+    "n_attempted": 155,
+    "n_caught": 155,
+    "catch_rate": 1.0,
+    "n": 155,
+    "mean": 0.7858272429435483,
+    "q50": 1.0,
+    "q90": 1.0,
+    "q99": 1.0
+   },
+   {
+    "class": "wrong_hop_order",
+    "n_attempted": 69,
+    "n_caught": 69,
+    "catch_rate": 1.0,
+    "n": 69,
+    "mean": 0.43643851902173914,
+    "q50": 0.49658203125,
+    "q90": 0.513671875,
+    "q99": 0.52978515625
+   }
+  ],
+  "mix_counts": {
+   "wrong_entity": 142,
+   "wrong_relation": 40,
+   "inverted_direction": 155,
+   "wrong_hop_order": 69
+  },
+  "n_fault_chains_processed": 127,
+  "n_fault_vm_calls": 406,
+  "fault_mojibake_excluded": 28,
+  "untested_against": [],
+  "organic_confusable": {
+   "n_chains": 100,
+   "n_attempted": 89,
+   "n_caught": 69,
+   "catch_rate": 0.7752808988764045,
+   "n": 69,
+   "mean": 0.6931329257246377,
+   "q50": 0.51123046875,
+   "q90": 1.0,
+   "q99": 1.0
+  },
+  "random_distractor_sanity": {
+   "n_bindings": 50,
+   "n_attempted": 47,
+   "n_caught": 47,
+   "catch_rate": 1.0,
+   "n": 47,
+   "mean": 0.7563684341755319,
+   "q50": 1.0,
+   "q90": 1.0,
+   "q99": 1.0
+  },
+  "tau_vm_youden_reference": 0.50146484375,
+  "tau_vm_youden_auc": 0.7248322147651006,
+  "tau_vm_youden_reference_degenerate": false,
+  "store_snapshot_hash": "93a4300ce5fff8737560e22be7f3b2866578f1410a74d627c64c2544a809c093"
+ },
+ "arms": {
+  "retrieval_only": {
+   "overall": 0.48625,
+   "by_hop": {
+    "1": 0.9558441558441558,
+    "2": 0.0234375,
+    "3": 0.09433962264150944
+   },
+   "mean_wall_ms": 2.6940316251057084
+  },
+  "chase_only": {
+   "overall": 0.72375,
+   "by_hop": {
+    "1": 0.9558441558441558,
+    "2": 0.625,
+    "3": 0.32075471698113206
+   },
+   "mean_wall_ms": 4.857520874902548
+  },
+  "cot": {
+   "overall": 0.705,
+   "by_hop": {
+    "1": 0.9168831168831169,
+    "2": 0.6484375,
+    "3": 0.2830188679245283
+   },
+   "mean_wall_ms": 2.229249750253075
+  }
+ },
+ "cot_verified_coverage": 0.71,
+ "cot_verified_count": 568,
+ "outcomes": {
+  "verified": 568,
+  "retrieval_exhausted": 43,
+  "unknown_relation": 150,
+  "unparseable": 37,
+  "plan_does_not_cover_question": 2
+ },
+ "verify_plan": "vm",
+ "resident": true,
+ "claimed_answer_precision": 0.9929577464788732,
+ "claimed_correct": 564,
+ "control_pass_rate": 1.0,
+ "control_total": 582,
+ "unparseable_questions": 37,
+ "unparseable_facts": 56,
+ "non_ascii_questions": 72,
+ "sub_tau_violations": 0,
+ "repairs_histogram": {
+  "0": 756,
+  "1": 44
+ },
+ "tau_vm_sensitivity": {
+  "0.8x": {
+   "scale": 0.8,
+   "verified_coverage": 0.705,
+   "claimed_precision": 1.0,
+   "verified_count": 564
+  },
+  "1.0x": {
+   "scale": 1.0,
+   "verified_coverage": 0.705,
+   "claimed_precision": 1.0,
+   "verified_count": 564
+  },
+  "1.2x": {
+   "scale": 1.2,
+   "verified_coverage": 0.00125,
+   "claimed_precision": 1.0,
+   "verified_count": 1
+  }
+ },
+ "harvest_file": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\validation\\logs\\cot_harvest_hop0.jsonl",
+ "n_harvest_records": 800,
+ "counterfactual_neighborhood": {
+  "enabled": true,
+  "note": "Per verified eval chain: the four planted-fault classes re-planted on the pipeline's own accepted triples (swap objects from the calibration store, never distractors), each corrupted hop recovered through the VM at the deployed frame-size floor. caught = the real verify decision rejects it; escaped = a would-be false accept. Per-record detail lives in the harvest file's `counterfactuals[]`.",
+  "n_chains": 568,
+  "n_verified_chains": 568,
+  "n_skipped_budget": 0,
+  "n_vm_calls": 2157,
+  "vm_call_cap": 6000,
+  "n_truncated_chains": 0,
+  "n_mojibake_excluded_hops": 226,
+  "mean_wall_ms_per_chain": 2.518158627039233,
+  "n_attempted": 2157,
+  "n_caught": 2157,
+  "n_escaped": 0,
+  "overall_catch_rate": 1.0,
+  "caught_by": {
+   "symbol_mismatch": 2157
+  },
+  "by_class": {
+   "wrong_entity": {
+    "n_attempted": 674,
+    "n_caught": 674,
+    "catch_rate": 1.0,
+    "by_hop": {
+     "0": {
+      "n_attempted": 476,
+      "n_caught": 476
+     },
+     "1": {
+      "n_attempted": 172,
+      "n_caught": 172
+     },
+     "2": {
+      "n_attempted": 26,
+      "n_caught": 26
+     }
+    }
+   },
+   "wrong_relation": {
+    "n_attempted": 274,
+    "n_caught": 274,
+    "catch_rate": 1.0,
+    "by_hop": {
+     "0": {
+      "n_attempted": 231,
+      "n_caught": 231
+     },
+     "1": {
+      "n_attempted": 43,
+      "n_caught": 43
+     }
+    }
+   },
+   "inverted_direction": {
+    "n_attempted": 737,
+    "n_caught": 737,
+    "catch_rate": 1.0,
+    "by_hop": {
+     "0": {
+      "n_attempted": 518,
+      "n_caught": 518
+     },
+     "1": {
+      "n_attempted": 190,
+      "n_caught": 190
+     },
+     "2": {
+      "n_attempted": 29,
+      "n_caught": 29
+     }
+    }
+   },
+   "wrong_hop_order": {
+    "n_attempted": 472,
+    "n_caught": 472,
+    "catch_rate": 1.0,
+    "by_hop": {
+     "0": {
+      "n_attempted": 199,
+      "n_caught": 199
+     },
+     "1": {
+      "n_attempted": 221,
+      "n_caught": 221
+     },
+     "2": {
+      "n_attempted": 52,
+      "n_caught": 52
+     }
+    }
+   }
+  },
+  "by_frame_size": {
+   "1": {
+    "n_attempted": 638,
+    "n_caught": 638
+   },
+   "2": {
+    "n_attempted": 1074,
+    "n_caught": 1074
+   },
+   "3": {
+    "n_attempted": 445,
+    "n_caught": 445
+   }
+  },
+  "caught_similarity": {
+   "n": 2157,
+   "mean": 0.595783712911451,
+   "q50": 0.50146484375,
+   "q90": 1.0,
+   "q99": 1.0
+  },
+  "escaped_similarity": {
+   "n": 0,
+   "mean": NaN,
+   "q50": NaN,
+   "q90": NaN,
+   "q99": NaN
+  },
+  "escaped_examples": []
+ },
+ "git_rev": "2a0e270f35278fdce137caa16167d580a08a828d",
+ "verdict": {
+  "clause1_cot_beats_retrieval_2h_3h": true,
+  "clause2_claimed_precision_ge_0.90": true,
+  "clause3_zero_sub_tau_violations": true,
+  "clause4_control_pass_rate_ge_0.95": true,
+  "overall": true
+ }
+}

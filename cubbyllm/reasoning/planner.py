@@ -219,12 +219,28 @@ def accepts(plan: QuestionPlan, hop: int, entity: str | None, t: Triple) -> bool
     test: `pipeline._walk` applies it to search candidates, `index.TripleIndex`
     answers lookups with it — a lookup hit is accepted by construction."""
     if hop == 0:
-        # tail hop: the fact's "rel of subj" must reproduce the question tail
-        return normalize(f"{t.rel} of {t.subj}") == normalize(plan.tail)
+        # tail hop, exact tier: the fact's "rel of subj" reproduces the question tail
+        if normalize(f"{t.rel} of {t.subj}") == normalize(plan.tail):
+            return True
+        # paraphrase tier (2026-09-11, exp_r5 -> lever 1): the SAME tolerance the
+        # hops >= 1 get -- subject exact, relation by `relation_matches` -- at
+        # whichever ' of ' split of the tail names this fact's subject
+        return any(relation_matches(rel, t.rel) for rel, ent in tail_splits(plan.tail)
+                   if ent == normalize(t.subj))
     expected = plan.relations[hop]
     assert expected is not None
     return (relation_matches(expected, t.rel)
             and normalize(t.subj) == normalize(entity or ""))
+
+
+def tail_splits(tail: str) -> list[tuple[str, str]]:
+    """Every (relation, normalized entity) reading of a hop-0 tail 'R of E', cut at
+    each ' of ', longest relation first ('country of citizenship' | 'X' before
+    'country' | 'citizenship of X'). The exact tier needs no split; the
+    paraphrase tier tries each."""
+    parts = tail.split(" of ")
+    return [(" of ".join(parts[:i]), normalize(" of ".join(parts[i:])))
+            for i in range(len(parts) - 1, 0, -1)]
 
 
 def relation_matches(expected: str, got: str) -> bool:
