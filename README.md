@@ -1,8 +1,14 @@
 # CubbyLLM
 
-A small language model that **proposes** and a verified virtual machine that **disposes**: every spoken answer is
-a program the CubeLang VM ran against a fact store, or a refusal with a reason. Fast, on a 12 GB consumer GPU,
-and honest by construction rather than by judgement.
+CubbyLLM is **not a small language model**. It is an eight-layer infrastructure in which the language model is
+deliberately the smallest and most replaceable layer: **compute** (`grilly`, Vulkan, any GPU, no CUDA) →
+**representation** (one VSA algebra, sparse block codes, text encoded with no neural model in the path) →
+**the VM** (CubeLang: Rust, deny-by-default, verify-before-execute) → **the symbolic boundary** (only
+`(symbol, similarity)` crosses it, never raw hypervectors) → **worlds / knowledge** (MoWM; `FactStore` +
+`TripleIndex` is the serving form) → **reasoning** (the verified CoT pipeline) → **the brain / host**
+(neurochemistry → route → cortices; every spoken word exits through a VM-mediated ASK) → **the trunk**, the LM,
+which proposes programs and speaks and never judges. Every spoken answer is a program the VM ran against a fact
+store, or a refusal with a reason. Serves on a 12 GB consumer GPU; honest by construction rather than by judgement.
 
 > **Status caveat, first.** The serving stack today runs a third-party GGUF model (LFM2.5-2.6B, fine-tuned on
 > Colab) as a **stand-in** behind the trunk interface. GRL's own 2B trunk is designed and validated but not yet
