@@ -7,6 +7,7 @@ name = "cubbyllm"
 version = "0.0.0"
 description = "CubbyLLM — context-conditioned LM (theta=f(c)). Package skeleton."
 requires-python = ">=3.12"
+license = {text = "Apache-2.0"}   # cubbyllm/ (the trunk, the reasoning pipeline, the bridges); standin/ is BSL-1.1 -- see standin/LICENSE
 # torch/numpy/grilly are used by real components later; the skeleton itself
 # imports none of them at module top level (TYPE_CHECKING only).
 dependencies = []
