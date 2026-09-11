@@ -1,66 +1,162 @@
 # CubbyLLM
 
-Fast and profitable LLM gen 2 hybrid — general tasks, plus specialization automatic.
+A small language model that **proposes** and a verified virtual machine that **disposes**: every spoken answer is
+a program the CubeLang VM ran against a fact store, or a refusal with a reason. Fast, on a 12 GB consumer GPU,
+and honest by construction rather than by judgement.
 
-## Status
+> **Status caveat, first.** The serving stack today runs a third-party GGUF model (LFM2.5-2.6B, fine-tuned on
+> Colab) as a **stand-in** behind the trunk interface. GRL's own 2B trunk is designed and validated but not yet
+> trained. Every number below measures the *host architecture* — the gates, the VM, the harvest loop — never the
+> CubbyLLM model. The trunk drops in behind the same `Emitter` interface unchanged.
 
-Validated, with a first-pass implementation already running: a full validation campaign (`VALIDATION_REPORT.md`, 2026-07-23) resolved all three structural decisions below, and a first-pass `cubbyllm/` package now exists and trains end to end on a toy corpus. This isn't a finished model — real training data still needs a cleanup pass, and several follow-on questions remain open — but it's well past the planning-only stage. See `CUBBYLLM_HYPOTHESES.md` for the full hypothesis-by-hypothesis record (most entries now carry a dated validation result, not just a claim), `VALIDATION_REPORT.md` for the campaign itself, and `TODO.md` for the working checklist of what's left.
+## The seven invariants
 
-## The stand-in serve stack (2026-08-30 → 2026-09-03)
+1. **The VM is the only truth gate.** No LLM-as-judge anywhere in the loop; the model never scores its own thoughts.
+2. **The model proposes, the host disposes.** Identity, provenance, execution, reward, retirement, and what the model is shown are host decisions.
+3. **The don't-know contract.** An unverified claim is never spoken.
+4. **Retire, never delete.** Every record carries a store-snapshot hash and a git revision.
+5. **Serve-time budget.** A small model on a 12 GB GPU; VM calls in milliseconds; training on one 80 GB GPU for tens of minutes per round.
+6. **No self-play or self-judging shortcuts.**
+7. **Ported, never linked.** Nothing depends on another repository at runtime.
 
-While the 2B trunk trains, a small open model fine-tuned on Colab stands in behind the trunk interface so the
-serve stack could be built and measured: a brain (neurochemistry → route → thalamus → cortices), every spoken
-line through a CubeLang VM program, live learning of facts, a 3D Pac-Man world (cubby-man) in which the model
-learns the maze from VM refusals and writes its own certified programs, and eight SFT rounds whose measured
-reads drove the design — most recently to **two adapters on one base** (the trunk emits programs, the talk
-cortex is a second adapter) behind a θ = f(c) interface, with the adapter lifecycle (created when needed, used
-only when needed) specced. Nothing it measures is a CubbyLLM result; it is replaced the day the 2B checkpoint
-exists. `standin/README.md` is the record; `docs/research/2026-09-03-got-challenge-scored.md` is the five-model
-challenge on the graph-of-thought plan, whose pre-checks on the real harvest reshaped the reasoning roadmap and
-landed two changes in `cubbyllm/reasoning/`.
+## Where it stands — 11 September 2026
 
-## Where this comes from
+The reasoning pipeline (`cubbyllm/reasoning/`) is wired end to end and measured on two worlds:
 
-CubbyLLM is the redesigned successor to `cubby-lm`, drawing on lessons from `cubby-lm` itself and its environment sibling `cubemind` — but it's a genuinely fresh design, not a fork. Two different axes worth keeping separate: the *package/directory structure* mirrors cubemind's — its intended, documented layout, not the sprawl both sibling repos have actually accumulated (duplicated trunk implementations, an oversized tracked sandbox directory, a stale-but-still-importable archive, and so on — see `CUBBYLLM_HYPOTHESES.md`, Group F, and `PACKAGE_LAYOUT.md` for the concrete spec). The *model architecture* is an entirely different structure than cubby-lm's, built from scratch, including the vocabulary — cubby-lm's frozen trunk shape and 32k tokenizer are reference and lessons-learned, not a constraint CubbyLLM inherits.
+```
+question ──► plan ──► plan_verify (disposer) ──► lookup-first walk ──► CotChain program ──► CubeLang VM ──► answer / refusal
+              │              │                        │                                        │
+     grammar or emitter   relations known?     TripleIndex, exact hop 0,          per-hop similarity ≥ frame-size floor,
+     (CotPlan: SEED,      plan covers the      paraphrase tier on hops ≥ 1        control role below the floor; verdict
+      HOP1..HOPk)         question?            (Jaccard ≥ 0.6)                    over a resident process, ~2 ms/question
+```
 
-## The structural decisions this project is built around — all now resolved
+| measured on the 800-question eval (1,241 facts, 165 relations) | |
+|---|---:|
+| verified coverage, lookup-first + disposer | **0.710** (568/800), precision 0.993, 0 lost to the disposer |
+| honest refusals with a named reason | 232 (155 no-such-edge · 40 no seed fact · 37 unparseable) |
+| misparsed plans the disposer stops before any walk | 90 / 92 |
+| VM-verified 3-hop answer, wall, resident VM | **2.0 ms** (65.7 ms per-process; CoT is now faster than chase-only) |
+| gen-2 emitter (`emitter_v12e`) vs gen 1 on the 79 held-out B questions | 10 vs 5 accepted + gold hop; 4/4 verified correct, 0 wrong — bar met |
+| arm C, the 37 the grammar declared unparseable | 17 verified (3 flat + 14 composed, GoT-1 slice), 0 wrong |
 
-**VSA binding head.** Cubby-lm's binding head turned out to have no unbind mechanism at all — the placeholder dict-lookup everyone (including this project's own earlier architecture map) attributed to it actually lives in cubemind's VM instead. The LM head itself is clean, well-engineered cosine-readout code. Real unbind still needs building from scratch, and the algebra to build it with is decided: `grilly`'s `BlockCodeOps` (NVSA sparse block codes) — `grilly` turned out to be the shared production VSA substrate cubemind's own code already wraps directly, a stronger candidate than either of the two standalone reference implementations the original survey found. See `CUBBYLLM_HYPOTHESES.md` / `VALIDATION_REPORT.md`, Group B.
+| measured on the wiki world (552,297 facts, 2,967 relations — the emitter has seen 165) | |
+|---|---:|
+| 300 canonical two-hop chains (exp_g4b) | 300/300 VM-verified |
+| matched pairs, 200 chains × 4 surface forms (exp_r9) — out of basin | grammar **0** correct · emitter **201** correct · **0 wrong** on every form |
+| canonical form | grammar 189/200 · emitter 107/200 · 0 wrong |
+| SimpleQA, 4,326 free-text questions through the whole gate (exp_r10) | smoke n=60: 53 plans → 53 refused, 0 verified, 0 wrong; full run in progress |
 
-**Hebbian memory layer.** Cubby-lm's Hebbian/Oja-style memory update drifted and forgot catastrophically under sequential learning — now measured directly (94% forgetting empirically, zero context-sensitivity by construction). The fix is context-conditioned parameter generation, but only in a *hardened* form (a naive version is measurably worse than a frozen baseline) and only when the context comes from a router that's pretrained offline and frozen at inference — a router learned online turns out to forget its own routing, recreating the exact problem it's meant to solve. A Zero-Forgetting Stability Benchmark that had only ever been named, never built, in any sibling repo now exists and has been run against four real candidates. See `CUBBYLLM_HYPOTHESES.md`, Group A, and the central bet, Section 2.
+The reading: the grammar gets the templates; the emitter gets the shapes the grammar cannot parse; the disposer
+and the VM keep the wrong count at zero on both; free text against a store that cannot answer it is refused, not
+guessed. The loop closes: emitted plans the VM verified (`cot_harvest_r7*.jsonl`) were the first training records
+that did not come from the grammar, and gen 2 was trained on them.
 
-**A much larger vocabulary, unlocked by removing the softmax bottleneck — decided: hybrid.** A fixed core vocabulary (next concrete step: a 128k–256k BPE build on the existing proven pipeline, costed at roughly five minutes of single-machine CPU time) plus a retrieval output head from day one (direct readout scales cleanly to a million-token vocabulary; the softmax bypass isn't an optimization at that scale, it's the only way the head fits in memory) plus a hypertoken/dynamic tail deferred as a later, separately-gated addition. See `CUBBYLLM_HYPOTHESES.md`, Group C.
+Full record: `docs/research/2026-09-11-plan-verify.md` (the disposer, the resident VM, the emitter's plans walked,
+arm C, gen 2, matched pairs), with `2026-09-11-entry-diagnosis.md` and `2026-09-11-hop0-search-is-dead-code.md`.
 
-All three decisions traced back to the same underlying idea (`CUBBYLLM_HYPOTHESES.md`, Section 2 — the central bet): making a model's active weights a function of context rather than a fixed, stored state is the forgetting fix, the mechanism for automatic specialization, and the enabling trick for a much larger vocabulary. The validation campaign confirmed the bet holds — with the important caveat that it only ever works hardened against its own internal drift, never as naive generation, and that context *inference* turned out to be the harder half of the problem, not context-conditioned generation itself.
+## Run it
+
+Needs a built [cubelang](../cubelang) binary (`cargo build --release` in the sibling repo; found via `--exe`,
+`$CUBELANG_EXE`, or `../cubelang/target/release/`) and a Python environment with the package deps (`.venv-dml`
+on the dev box). The GGUF stand-ins live in `standin/models/` (not tracked).
+
+```
+python -m pytest validation/test_plan_verify.py validation/test_plan_verify_vm.py validation/test_pipeline_plan_refusal.py -q
+
+python validation/exp_m3_cot_pipeline.py --lookup --verify-plan vm --resident     # the harvest, plan-verified, resident VM
+python validation/exp_r6_plan_verify.py --real --vm                              # disposer: host verdict == VM verdict
+python validation/exp_r7_emitter_planned_walk.py --exclude                       # the emitter's plans, walked and verified
+python validation/exp_r8_decomposition.py                                        # GoT-1 slice on arm C
+python validation/exp_r9_matched_pairs.py --n 200 --resident                     # generality: 4 forms on the wiki world
+python validation/exp_r10_simpleqa.py --resident                                 # free text through the whole gate
+
+python standin/serve.py                                                          # the stand-in brain (see standin/README.md)
+```
+
+Every experiment writes `validation/logs/<name>.{json,log}`; every number in the docs points at one of them.
+Training notebooks (Colab, one 80 GB GPU, tens of minutes): `notebooks/standin_gen2_emitter_sft.ipynb` is the
+current emitter recipe; `standin/data/build_gen2_partition.py` builds its data from the harvest.
+
+## Layout
+
+```
+cubbyllm/            the package (Apache-2.0). `import cubbyllm` is torch-free.
+  reasoning/         planner (the grammar), plan_verify (the disposer), retriever, index (TripleIndex),
+                     programs (CotChain emission), pipeline (answer(): plan → verify → walk → VM)
+  bridges/           cubelang_client (subprocess + resident CubelangSession, protobuf framing),
+                     programs/*.cube (plan_verify, reasoning_bridge), world_model (the MoWM bridge contract)
+  core/ model/ ops/ training/   the trunk design from the validation campaign
+standin/             the serve stack (BSL-1.1): brain, thalamus, VM-mediated chat, cubby-man, emitter, SFT data builders
+validation/          55 standalone experiment scripts + tests + logs/. Never imported by cubbyllm/.
+notebooks/           Colab training runs, one per SFT round
+docs/research/       dated findings and the outside-model competitions, scored against the measured record
+```
+
+Related repos, each ported from rather than linked: `cubelang` (the VM, Rust, BSL-1.1), `mowm` (Mixture of
+World Models — implements the `WorldModelBridge`; the disposer's relation oracle is injectable so MoWM can be
+the "possible edge" source), `grilly` (Vulkan compute and the VSA substrate), `cubemind` (the environment).
+
+## Licensing
+
+`cubbyllm/` — the trunk, the reasoning pipeline, the bridges — is **Apache-2.0** (`LICENSE`). `standin/` — the
+serve stack — is **Business Source License 1.1** (`standin/LICENSE`, change date 2030-09-11 → Apache-2.0).
+`cubelang` carries its own BSL-1.1. Licensing questions: licensing@grillcheese.ai.
+
+## How it got here
+
+**The validation campaign (2026-07-23).** `VALIDATION_REPORT.md` resolved the three structural decisions the
+trunk is built around, all tracing back to one bet (`CUBBYLLM_HYPOTHESES.md`, Section 2): a model's active
+weights as a function of context rather than a fixed stored state. The **VSA binding head** standardizes on
+`grilly`'s `BlockCodeOps` (NVSA sparse block codes) — cubby-lm's head had no unbind at all. The **Hebbian memory
+layer** forgot catastrophically under sequential learning (94% measured); the fix is context-conditioned
+parameter generation, hardened, with a router pretrained offline and frozen — a Zero-Forgetting Stability
+Benchmark now exists and ran on four candidates and on real correlated keys. The **vocabulary** is hybrid: a
+128k–256k BPE core plus a retrieval output head from day one, hypertokens deferred. The campaign's caveat stands:
+the bet only works hardened against its own drift, and context *inference* is the harder half.
+
+**The stand-in serve stack (2026-08-30 → 2026-09-04).** While the trunk waits for its corpus, a fine-tuned open
+model stands in behind the trunk interface so the host could be built and measured: a brain (neurochemistry →
+route → thalamus → cortices), every spoken line through a CubeLang VM program, live learning of facts, a 3D
+Pac-Man world (cubby-man) in which the model learns the maze from VM refusals, eleven SFT rounds whose
+VM-verified reads drove the design to **two adapters on one base** — the program emitter (`e`) and the talk
+cortex (`t`), never mixed — plus the signed certificate ledger and the encrypted vault. `standin/README.md` is
+the record.
+
+**The reasoning stack (2026-09-03 → 2026-09-11).** The GoT challenge (`docs/research/2026-09-03-got-challenge-scored.md`)
+and the rung-1 generality-gate competition (`2026-09-10-rung1-generality-gate-competition.md`) put five outside
+models against the measured record; their pre-checks reshaped the roadmap. What followed, each with a before/after
+on the same store and seeds: the lookup-first walk over a TripleIndex; the entry diagnosis (absent facts 42%,
+relation mismatch 58% of the residue); the finding that the plan never crossed the gate and the disposer that
+closed it; the resident VM; the emitter's plans walked and harvested; gen 2 trained on the harvest and gated;
+the matched-pair generality test on a world 445× the training store.
 
 ## Documents in this folder
 
-`CLAUDE.md` — orientation file for Claude Code sessions working in this repo. States the from-scratch/no-frozen-trunk correction up front, walks through the current implemented state, and lists known anti-patterns from the sibling repos to avoid repeating.
+`CLAUDE.md` — orientation for coding sessions: the from-scratch/no-frozen-trunk correction, the implemented
+state, the sibling-repo anti-patterns to avoid.
 
-`CUBBYLLM_HYPOTHESES.md` — the working document. Every research claim and every sibling-repo reuse candidate gathered so far, organized as falsifiable hypotheses with a validation method and a kill criterion each; most now carry a dated validation result from the 2026-07-23 campaign. This is the one to read first.
+`CUBBYLLM_HYPOTHESES.md` — every research claim as a falsifiable hypothesis with a kill criterion; most carry a
+dated result. Read this first for the trunk. `VALIDATION_REPORT.md` — the campaign behind it, every number linked
+to a script in `validation/` and a log in `validation/logs/`.
 
-`VALIDATION_REPORT.md` — the results of that campaign: 16+ experiments, a scorecard, and every number linked to a runnable script in `validation/` and a captured log in `validation/logs/`.
+`docs/research/` — the dated findings (`2026-09-11-plan-verify.md` is the current one) and the outside-model
+competitions with their scoring. `docs/ARCHITECTURE_VISION.md` and `VISION.md` — the north star: Cubby (the trunk)
++ CubeLang (the verified VM, an OS for AI) + cubemind (the environment); deny-by-default; the Brain-SDK contracts.
 
-`PACKAGE_LAYOUT.md` — the target package layout, written as its own short spec before code could accumulate it by accident, the way it did twice already in the sibling repos.
+`PACKAGE_LAYOUT.md` — the target package layout, written before code could accumulate one by accident.
+`docs/superpowers/` — the implemented package's design spec and plan. `TODO.md` — the working checklist.
+`CUBEMIND_CLEANUP_PLAN.md` and `cubby-model-environment-map.md` — the verified state of the sibling repos this
+project ports from.
 
-`docs/superpowers/` — the implemented package's design spec and implementation plan.
+## Training data and source repos
 
-`docs/ARCHITECTURE_VISION.md` — the north star: Cubby (the trunk) + CubeLang (the verified VM, an OS for AI) + cubemind (the environment); deny-by-default; the Brain-SDK cortex/adapter contracts; the affective layer.
+`D:\grillcheese_training_data` (~210 GB, surveyed 2026-07-23): a real tokenizer history (19,947 → 32,000 → 65,536,
+costed to 131,072), a dated NYT archive (1851–2024) used for the forgetting benchmark on real keys, and a 120 GB
+candidate pretraining corpus that still needs its dedup/content-filter pass — the one substantial piece of Group G
+not done. See `CUBBYLLM_HYPOTHESES.md`, Group G.
 
-`docs/research/` — the model-panel agenda (2026-08), the oracle-competition scoring (2026-08-28), and the GoT challenge prompt + scoring (2026-09-03): what outside models proposed, scored against the measured record, and which pre-checks decided.
-
-`standin/README.md` — the stand-in trunk and serve stack: guardrails, the brain, the game, the SFT rounds with their VM-verified reads, the two-adapter design and the adapter lifecycle.
-
-`TODO.md` — the working checklist for what's left, grouped by what blocks real training, what architecture work is still open, and smaller follow-ups.
-
-`CUBEMIND_CLEANUP_PLAN.md` — a freshly-verified status check on cubemind's own (separate, real) refactor plan, plus exactly what CubbyLLM depends on there and needs to stay stable while it's in progress.
-
-`cubby-model-environment-map.md` — a verified (checked against actual source, not just docs) map of Cubby's current model architecture and CubeMind's world-model environment, as of 2026-07-23. This is the "current state" reference the hypotheses in the other documents are meant to change.
-
-## Training data
-
-`D:\grillcheese_training_data` (~210GB, surveyed 2026-07-23) is real material for two things at once: validating open hypotheses and building CubbyLLM's actual training corpus — see `CUBBYLLM_HYPOTHESES.md`, Group G. Headline finding: a script in this folder revealed `grilly.experimental.vsa.ops`, which the validation campaign has since confirmed is the same production VSA substrate behind cubby-lm's binding head and cubemind's world-arena block-codes (see the structural decisions above). Other findings: a real trained-tokenizer history (19,947 → 32,000 → 65,536 vocab, and now costed one step further to 131,072 at effectively no extra time) grounding the vocabulary decision; a dated NYT archive (1851–2024) that has since actually been used to re-run the Zero-Forgetting Stability Benchmark on real, correlated keys (the synthetic ranking survived unchanged); a 120GB candidate pretraining corpus that still needs a dedup/content-filter/reproducibility pass before use — this is the one substantial piece of Group G not yet done; and a ready-made general-capability regression check already sitting in the folder.
-
-## Source repos
-
-`cubby-lm` and `cubemind` (both at `C:\Users\grill\Documents\GitHub\`) are the direct predecessors. `cubby-concepts` (same location) is a related solo VSA/HDC/SDM prototype; its `vsa/` package is real, tested code that served as one of two benchmarked reference algebras for the binding head. `H:\AURA_GENESIS`, `C:\Users\grill\Desktop\GrillCheese`, and `H:\Novel_GNN_Arch` are independent sibling projects surveyed for reusable concepts; specific findings from each, including which ones the validation campaign confirmed or promoted, are cited throughout `CUBBYLLM_HYPOTHESES.md`. `C:\Users\grill\Documents\GitHub\grilly` — the GPU/Vulkan backend sibling — turned out to be the shared VSA substrate cubemind's own code already wraps; the binding head now standardizes on its `BlockCodeOps` family.
+`cubby-lm` and `cubemind` are the direct predecessors; CubbyLLM is a fresh design, not a fork — the package layout
+mirrors cubemind's documented intent, the model architecture and vocabulary are new. `cubby-concepts`, `grilly`,
+`H:\AURA_GENESIS`, `C:\Users\grill\Desktop\GrillCheese`, and `H:\Novel_GNN_Arch` were surveyed for reusable
+concepts; what each contributed is cited in `CUBBYLLM_HYPOTHESES.md`.
