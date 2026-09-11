@@ -1,0 +1,62 @@
+world: 552297 facts, 2967 distinct relations, 373451 distinct entity strings | built in 17s
+SimpleQA: 4326 questions (all); gold is a graph entity for 860
+
+  250/4326 (178s, emitter 159s, VM calls 0) plan 213 refused 213 verified 0 correct 0 near 0 WRONG 0
+  500/4326 (330s, emitter 309s, VM calls 0) plan 434 refused 430 verified 0 correct 0 near 0 WRONG 0
+  750/4326 (481s, emitter 459s, VM calls 0) plan 654 refused 648 verified 0 correct 0 near 0 WRONG 0
+  1000/4326 (632s, emitter 607s, VM calls 0) plan 878 refused 872 verified 0 correct 0 near 0 WRONG 0
+  1250/4326 (787s, emitter 760s, VM calls 0) plan 1094 refused 1087 verified 0 correct 0 near 0 WRONG 0
+  1500/4326 (932s, emitter 903s, VM calls 0) plan 1323 refused 1314 verified 0 correct 0 near 0 WRONG 0
+  1750/4326 (1089s, emitter 1058s, VM calls 0) plan 1547 refused 1536 verified 0 correct 0 near 0 WRONG 0
+  2000/4326 (1251s, emitter 1218s, VM calls 0) plan 1760 refused 1744 verified 0 correct 0 near 0 WRONG 0
+  2250/4326 (1402s, emitter 1367s, VM calls 0) plan 1988 refused 1970 verified 0 correct 0 near 0 WRONG 0
+  2500/4326 (1550s, emitter 1512s, VM calls 0) plan 2218 refused 2199 verified 0 correct 0 near 0 WRONG 0
+  2750/4326 (1705s, emitter 1666s, VM calls 0) plan 2439 refused 2420 verified 0 correct 0 near 0 WRONG 0
+  3250/4326 (2009s, emitter 1965s, VM calls 0) plan 2884 refused 2861 verified 0 correct 0 near 0 WRONG 0
+  3500/4326 (2157s, emitter 2111s, VM calls 0) plan 3112 refused 3088 verified 0 correct 0 near 0 WRONG 0
+  3750/4326 (2312s, emitter 2264s, VM calls 0) plan 3339 refused 3314 verified 0 correct 0 near 0 WRONG 0
+  4250/4326 (2610s, emitter 2559s, VM calls 0) plan 3788 refused 3755 verified 0 correct 0 near 0 WRONG 0
+
+SIMPLEQA through the gate -- gen-2 emitter plans, disposer, lookup walk, resident VM, on the wiki world
+                     all  gold in graph  gold not
+questions           4326            860      3466
+no_plan              468             60       408
+plan                3858            800      3058
+plan_1hop           2140            496      1644
+plan_2hop           1409            297      1112
+plan_3hop            309              7       302
+seed_in_graph        273             49       224
+rels_all_known       311             34       277
+refused             3825            795      3030
+walked                33              5        28
+walk_failed           33              5        28
+verified               0              0         0
+correct                0              0         0
+near                   0              0         0
+WRONG                  0              0         0
+
+refusals: {'plan_does_not_cover_question': 3382, 'unknown_relation': 443}
+walk failures: {'retrieval_exhausted': 33}
+VM calls 0 | emitter 0.60s per question | 614 ms per question end to end
+
+the line: verified 0  correct 0  near 0  WRONG 0  | answered-or-refused 3858 of 3858 plans, no plan 468
+
+every verified answer:
+
+plans the emitter proposed (first 8):
+  'Who received the IEEE Frank Rosenblatt Award in 2010?' -> ['received'] seed 'ieee frank rosenblatt award 2010'
+  "Who was awarded the Oceanography Society's Jerlov Award in 2018?" -> ['award winner'] seed 'oceanography society jerlov award 2018'
+  "What's the name of the women's liberal arts college in Cambridge, Massachusetts?" -> ['name'] seed 'women s liberal arts college in cambridge massachusetts'
+  'In whose honor was the Leipzig 1877 tournament organized?' -> ['in whose honor was it organized'] seed 'leipzig 1877 tournament'
+  "According to Karl Küchler, what did Empress Elizabeth of Austria's favorite scul" -> ["what did empress elizabeth of austria's favorite sculpture depict", 'which was made for her villa achilleion at corfu'] seed 'karl küchler'
+  "How much money, in euros, was the surgeon held responsible for Stella Obasanjo's" -> ['amount of money in euros', 'the surgeon held responsible for her death ordered to pay her son'] seed 'stella obasanjo'
+  'Who appointed the Chief Justice of India, Mirza Hameedullah Beg, in 1977?' -> ['appointed the chief justice of india in 1977'] seed 'mirza hameedullah beg'
+  'What is the name of the former Prime Minister of Iceland who worked as a cabin c' -> ['former prime minister', 'cabin crew member until 1971'] seed 'iceland'
+
+refusals (first 6):
+  'Who received the IEEE Frank Rosenblatt Award in 2010?' -> ['received'] seed 'ieee frank rosenblatt award 2010': plan_does_not_cover_question {'covers': False, 'unknown_relations': [], 'tail_relation': 'received', 'paraphrased': []}
+  "Who was awarded the Oceanography Society's Jerlov Award in 2018?" -> ['award winner'] seed 'oceanography society jerlov award 2018': plan_does_not_cover_question {'covers': False, 'unknown_relations': ['award winner'], 'tail_relation': None, 'paraphrased': []}
+  "What's the name of the women's liberal arts college in Cambridge, Massachusetts?" -> ['name'] seed 'women s liberal arts college in cambridge massachusetts': plan_does_not_cover_question {'covers': False, 'unknown_relations': [], 'tail_relation': 'name', 'paraphrased': []}
+  'In whose honor was the Leipzig 1877 tournament organized?' -> ['in whose honor was it organized'] seed 'leipzig 1877 tournament': plan_does_not_cover_question {'covers': False, 'unknown_relations': ['in whose honor was it organized'], 'tail_relation': None, 'paraphrased': []}
+  "According to Karl Küchler, what did Empress Elizabeth of Austria's favorite scul" -> ["what did empress elizabeth of austria's favorite sculpture depict", 'which was made for her villa achilleion at corfu'] seed 'karl küchler': plan_does_not_cover_question {'covers': False, 'unknown_relations': ['which was made for her villa achilleion at corfu', "what did empress elizabeth of austria's favorite sculpture depict"], 'tail_relation': None, 'paraphrased': []}
+  "How much money, in euros, was the surgeon held responsible for Stella Obasanjo's" -> ['amount of money in euros', 'the surgeon held responsible for her death ordered to pay her son'] seed 'stella obasanjo': plan_does_not_cover_question {'covers': False, 'unknown_relations': ['the surgeon held responsible for her death ordered to pay her son', 'amount of money in euros'], 'tail_relation': None, 'paraphrased': []}

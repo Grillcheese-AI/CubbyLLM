@@ -1,0 +1,60 @@
+{
+ "n": 4326,
+ "gold_in_graph": 860,
+ "world_facts": 552297,
+ "relations": 2967,
+ "gguf": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\models\\emitter_v12e.Q4_K_M.gguf",
+ "stats": {
+  "gold_in_graph": {
+   "questions": 860,
+   "plan": 800,
+   "plan_1hop": 496,
+   "rels_all_known": 34,
+   "refused": 795,
+   "refused:plan_does_not_cover_question": 682,
+   "refused:unknown_relation": 113,
+   "no_plan": 60,
+   "plan_2hop": 297,
+   "seed_in_graph": 49,
+   "walked": 5,
+   "walk_failed": 5,
+   "walk_failed:retrieval_exhausted": 5,
+   "plan_3hop": 7
+  },
+  "gold_not_in_graph": {
+   "questions": 3466,
+   "plan": 3058,
+   "plan_1hop": 1644,
+   "rels_all_known": 277,
+   "refused": 3030,
+   "refused:plan_does_not_cover_question": 2700,
+   "plan_2hop": 1112,
+   "no_plan": 408,
+   "seed_in_graph": 224,
+   "plan_3hop": 302,
+   "refused:unknown_relation": 330,
+   "walked": 28,
+   "walk_failed": 28,
+   "walk_failed:retrieval_exhausted": 28
+  }
+ },
+ "total": {
+  "questions": 4326,
+  "plan": 3858,
+  "plan_1hop": 2140,
+  "rels_all_known": 311,
+  "refused": 3825,
+  "refused:plan_does_not_cover_question": 3382,
+  "refused:unknown_relation": 443,
+  "no_plan": 468,
+  "plan_2hop": 1409,
+  "seed_in_graph": 273,
+  "walked": 33,
+  "walk_failed": 33,
+  "walk_failed:retrieval_exhausted": 33,
+  "plan_3hop": 309
+ },
+ "vm_calls": 0,
+ "verified": [],
+ "wall_s": 2656.7
+}

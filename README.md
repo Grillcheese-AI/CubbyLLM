@@ -52,7 +52,7 @@ question ──► plan ──► plan_verify (disposer) ──► lookup-first 
 | 300 canonical two-hop chains (exp_g4b) | 300/300 VM-verified |
 | matched pairs, 200 chains × 4 surface forms (exp_r9) — out of basin | grammar **0** correct · emitter **201** correct · **0 wrong** on every form |
 | canonical form | grammar 189/200 · emitter 107/200 · 0 wrong |
-| SimpleQA, 4,326 free-text questions through the whole gate (exp_r10) | smoke n=60: 53 plans → 53 refused, 0 verified, 0 wrong; full run in progress |
+| SimpleQA, 4,326 free-text questions through the whole gate (exp_r10) | 3,858 plans → 3,825 refused with a reason + 33 walk failures; 0 verified, **0 wrong** (the store holds 3 of the answers) |
 
 The reading: the grammar gets the templates; the emitter gets the shapes the grammar cannot parse; the disposer
 and the VM keep the wrong count at zero on both; free text against a store that cannot answer it is refused, not

@@ -363,3 +363,45 @@ VM verified was wrong, on 1,600 questions and a world 445× the training store.*
 where the memo said it had to.
 
 `validation/exp_r9_matched_pairs.py`, logs `exp_r9_matched_pairs.{json,log}`.
+
+## SimpleQA through the whole gate (exp_r10) — free text, nobody's template
+
+exp_r9 was still our wording. SimpleQA is 4,326 human-written factoid questions with one short gold each, and
+exp_g4b had already measured the wiki world's lookup ceiling on it: the gold is a graph entity for 860, and a
+stored fact "gold is the R of E" with E named in the question exists for **three**. So this run does not
+measure accuracy. It measures the don't-know contract at scale: what a 2.6B stand-in proposes when handed free
+text, and whether the disposer, the walk and the VM let any of it through.
+
+| | all | gold in graph | gold not |
+|---|---:|---:|---:|
+| questions | 4,326 | 860 | 3,466 |
+| no plan | 468 | 60 | 408 |
+| plan (1-hop / 2-hop / 3+) | 3,858 (2,140 / 1,409 / 309) | 800 | 3,058 |
+| seed names a graph entity | 273 | 49 | 224 |
+| every relation known to the store | 311 | 34 | 277 |
+| refused by the disposer | **3,825** (3,382 `plan_does_not_cover_question`, 443 `unknown_relation`) | 795 | 3,030 |
+| walked | 33 — all `retrieval_exhausted` (no seed fact) | 5 | 28 |
+| verified / correct / near / **wrong** | **0 / 0 / 0 / 0** | 0 | 0 |
+
+**Every one of the 3,858 plans was refused or failed with a named reason; 0 VM calls; 0 verified; 0 wrong.**
+Wall 2,657 s, of which the emitter is 2,559 s (0.60 s per question); the gate itself is 14 ms per question.
+
+What the emitter did with free text is worth reading, because it is the part that transfers: `Who received the
+IEEE Frank Rosenblatt Award in 2010?` → `['received']` seed `ieee frank rosenblatt award 2010`; `Who appointed
+the Chief Justice of India, Mirza Hameedullah Beg, in 1977?` → `['appointed the chief justice of india in 1977']`
+seed `mirza hameedullah beg`; `What is the name of the former Prime Minister of Iceland who worked as a cabin
+crew member until 1971?` → `['former prime minister', 'cabin crew member until 1971']` seed `iceland`. These are
+plans *of the question* — the decomposition is right and the seed is the right entity — for a store that does
+not hold the edge. The disposer said so 3,825 times, the walk said so 33 times, and nothing was spoken.
+
+Two readings. First, the contract held on 4,326 questions nobody here wrote, with the same gates and floors as
+every run above: the wrong count is zero because nothing reached the VM, and nothing reached the VM because the
+store cannot answer SimpleQA — 3 keyed facts out of 4,326 — which is the truthful state of affairs. Second, the
+gap between `rels_all_known` (311) and `walked` (33) is `covers()` refusing plans whose relations the store holds
+but whose wording the residual rule does not accept (`received` … `in 2010`): the rule is conservative on free
+text, as it should be while the alternative is a wrong answer, and each of those 278 is a harvestable refusal
+with the question, the plan and the reason on record. Coverage on SimpleQA is a store problem before it is a
+planner problem; the search-and-learn path (a fact the store does not hold, fetched, verified, then stored) is
+where that number moves, and this run is its baseline: 0.
+
+`validation/exp_r10_simpleqa.py`, logs `exp_r10_simpleqa.{json,log}` (smoke n=60: `exp_r10_simpleqa_smoke.*`).
