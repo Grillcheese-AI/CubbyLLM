@@ -8,7 +8,8 @@ deliberately the smallest and most replaceable layer: **compute** (`grilly`, Vul
 `TripleIndex` is the serving form) → **reasoning** (the verified CoT pipeline) → **the brain / host**
 (neurochemistry → route → cortices; every spoken word exits through a VM-mediated ASK) → **the trunk**, the LM,
 which proposes programs and speaks and never judges. Every spoken answer is a program the VM ran against a fact
-store, or a refusal with a reason. Serves on a 12 GB consumer GPU; honest by construction rather than by judgement.
+store, or a refusal with a reason. Honest by construction rather than by judgement; one stack for cloud API and
+enterprise on-prem.
 
 > **Status caveat, first.** The serving stack today runs a third-party GGUF model (LFM2.5-2.6B, fine-tuned on
 > Colab) as a **stand-in** behind the trunk interface. GRL's own 2B trunk is designed and validated but not yet
