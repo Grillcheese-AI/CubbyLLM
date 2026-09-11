@@ -45,13 +45,14 @@ question ──► plan ──► plan_verify (disposer) ──► lookup-first 
 | misparsed plans the disposer stops before any walk | 90 / 92 |
 | VM-verified 3-hop answer, wall, resident VM | **2.0 ms** (65.7 ms per-process; CoT is now faster than chase-only) |
 | gen-2 emitter (`emitter_v12e`) vs gen 1 on the 79 held-out B questions | 10 vs 5 accepted + gold hop; 4/4 verified correct, 0 wrong — bar met |
-| arm C, the 37 the grammar declared unparseable | 17 verified (3 flat + 14 composed, GoT-1 slice), 0 wrong |
+| arm C, the 37 the grammar declared unparseable | 11/37 by emitter plan alone (gen 2, after the hop-0 tier and covers v3), 0 wrong; 14 more composed through the grammar (GoT-1 slice, exp_r8), 0 wrong |
 
 | measured on the wiki world (552,297 facts, 2,967 relations — the emitter has seen 165) | |
 |---|---:|
 | 300 canonical two-hop chains (exp_g4b) | 300/300 VM-verified |
-| matched pairs, 200 chains × 4 surface forms (exp_r9) — out of basin | grammar **0** correct · emitter **201** correct · **0 wrong** on every form |
-| canonical form | grammar 189/200 · emitter 107/200 · 0 wrong |
+| matched pairs, 200 chains × 4 surface forms (exp_r9) — out of basin | grammar **0** correct · emitter **228** correct · **0 wrong** on every form |
+| canonical / have / relative / possessive, emitter | 110 / 80 / 127 / 21 of 200, 0 wrong; the possessive residue is the emitter folding a hop into the seed, refused correctly |
+| canonical form | grammar 189/200 · emitter 110/200 · 0 wrong |
 | SimpleQA, 4,326 free-text questions through the whole gate (exp_r10) | 3,858 plans → 3,825 refused with a reason + 33 walk failures; 0 verified, **0 wrong** (the store holds 3 of the answers) |
 
 The reading: the grammar gets the templates; the emitter gets the shapes the grammar cannot parse; the disposer

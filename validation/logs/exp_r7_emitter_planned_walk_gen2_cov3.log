@@ -1,0 +1,37 @@
+emitter plans from exp_r3_emitter_floor_gen2.json | store 1241 facts, 165 relations | tau_vm floors {1: 1.0, 2: 0.4736328125, 3: 0.22021484375} fallback 0.2202 | tau_ret 0.5959 | VM resident
+excluding 13 trained questions from arms B/C (standin/data/out/gen2_exclusions.json)
+
+A_control: n=100  malformed=1  no_seed=0  built=99  refused=3  walked=96  VERIFIED=96  correct=95  verified_wrong=1
+    refused:plan_does_not_cover_question 3
+    OK  'What is the component of the instance of the parent taxon of iridomyrmex bigi?' -> 'Books/Organism' (gold 'Books/Organism')
+    OK  'What given name does margit koloczy have?' -> 'margit (given name)' (gold 'margit (given name)')
+    OK  'Where is the legislative body of the administrative territorial entity of Grand Saconnex?' -> 'Great Council of Geneva' (gold 'Great Council of Geneva')
+    OK  'What is the component of the instance of Scopula mustangensis?' -> 'Books/Organism' (gold 'Books/Organism')
+    OK  'What is the country of origin of the genre of chung an-chi?' -> 'p:jp' (gold 'p:jp')
+    OK  'What is the instance of dorian finney-smith?' -> 'Huamn' (gold 'Huamn')
+
+B_misparsed: n=79  malformed=10  no_seed=0  built=69  refused=58  walked=11  VERIFIED=4  correct=4  verified_wrong=0
+    refused:plan_does_not_cover_question 31
+    refused:unknown_relation         27
+    walk:retrieval_exhausted         7
+    OK  'What is the award received by the head of government of the country of Thombattu?' -> 'Bharat ratna' (gold 'Bharat ratna')
+    OK  'What is the content type of the list that includes the instance of galle lighthouse?' -> 'Lighthouse' (gold 'Lighthouse')
+    OK  'Where is the history of the topic of the country of yeonhwasan (gyeongsangnam-do)?' -> '제6공화국' (gold '제6공화국')
+    OK  'Which country is the country of the administrative territorial entity contained within the' -> 'iso 3166-1:fr' (gold 'iso 3166-1:fr')
+
+C_unparseable: n=37  malformed=3  no_seed=0  built=34  refused=20  walked=14  VERIFIED=11  correct=11  verified_wrong=0
+    refused:plan_does_not_cover_question 15
+    refused:unknown_relation         5
+    walk:retrieval_exhausted         3
+    OK  'Which languages spoken, written or signed by Dwight Loomis?' -> 'Number of words in English' (gold 'Number of words in English')
+    OK  'Which languages spoken, written or signed by vencislav simeonov?' -> 'български' (gold 'български')
+    OK  'Which languages spoken, written or signed by Manfred Rusing?' -> 'iso 639:deu' (gold 'iso 639:deu')
+    OK  'Which languages spoken, written or signed by William E. Gaines?' -> 'Number of words in English' (gold 'Number of words in English')
+    OK  'What award did jean durtal receive?' -> 'Prix Broquette-Gonin' (gold 'Prix Broquette-Gonin')
+    OK  'Which languages spoken, written or signed by kaoru maruyama?' -> 'Kokugogaku' (gold 'Kokugogaku')
+
+============================================================================
+questions the grammar could not answer, now VM-verified: 15 (correct 15) of 116   [B 4/79, C 11/37]
+arm A (the emitter's training questions, sanity): verified 96/100, correct 95
+============================================================================
+resident VM: 278 requests

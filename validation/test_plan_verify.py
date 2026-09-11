@@ -193,3 +193,40 @@ def test_verdict_is_frozen():
     except Exception:
         return
     raise AssertionError("PlanVerdict must be immutable")
+
+
+# ---- covers v3 (2026-09-11, lever 2): either reading order, either wording of a paraphrase ----
+
+def test_possessive_inner_first_reading_covers():
+    """exp_r9: 'E's P1 -- what is its P2?' states the entity first and the hops
+    inner-first; v2 refused all 180. The same chain in either order is covered."""
+    p = QuestionPlan(relations=[None, "capital"], tail="country of citizenship of jean", n_hop=2)
+    assert covers("What is the capital of the country of citizenship of Jean?", p, V)
+    assert covers("Jean's country of citizenship -- what is its capital?", p, V)
+    # a SWAPPED chain is not the same chain, in either order
+    swapped = QuestionPlan(relations=[None, "country of citizenship"], tail="capital of jean", n_hop=2)
+    assert not covers("Jean's country of citizenship -- what is its capital?", swapped, V)
+    assert not covers("What is the capital of the country of citizenship of Jean?", swapped, V)
+
+
+def test_inner_first_reading_still_refuses_a_dropped_hop():
+    p1 = QuestionPlan(relations=[None], tail="country of citizenship of jean", n_hop=1)
+    assert not covers("Jean's country of citizenship -- what is its capital?", p1, V)     # 'capital' left over
+
+
+def test_paraphrased_relation_may_appear_under_the_stores_wording():
+    """gen 2, arm C: 'Which languages spoken, written or signed by X?' planned as
+    `languages spoken written signed` -- accepted as a paraphrase by the vocabulary
+    tier, then refused for coverage because the plan's wording is not a substring.
+    v3 accepts either wording; a dropped hop beside it still fails."""
+    class V2(Vocab):
+        def match(self, rel, reused_only=False):
+            return Vocab.match(self, rel)
+    v = V2(KNOWN | {"languages spoken written or signed"})
+    p = QuestionPlan(relations=[None], tail="languages spoken written signed of manfred rusing", n_hop=1)
+    q = "Which languages spoken, written or signed by Manfred Rusing?"
+    assert covers(q, p, v)
+    verdict = verify_plan(q, p, v)
+    assert verdict.ok and verdict.paraphrased == [("languages spoken written signed", "languages spoken written or signed")]
+    q2 = "Which languages spoken, written or signed by the capital of Manfred Rusing?"
+    assert not covers(q2, p, v)                                                   # 'capital' dropped

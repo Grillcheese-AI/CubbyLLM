@@ -118,7 +118,8 @@ _FRAME_AND_JOINT = frozenset("""
 what which where who whom whose is was are were the a an of to in on at by for
 that does do did have has had belong belongs contained within described describes
 held located near from with as and or includes include contains contain
-""".split())
+its it s thing
+""".split())      # 'its it s thing': the possessive / relative frames (exp_r9, lever 2)
 
 
 def _relation_words(vocabulary) -> frozenset[str]:
@@ -381,17 +382,33 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
          words must contain NO word that any relation in the store is made of.
          "contained within" is a joint; "source describes" is a dropped hop.
     (2) needs the vocabulary (`known.words()`); without it, only (1) runs, and
-    the 1-hop dropped-hop hole stays open -- pass `known`."""
+    the 1-hop dropped-hop hole stays open -- pass `known`.
+
+    v3 (2026-09-11, lever 2, after exp_r9 and exp_r7 gen 2):
+      * ORDER. v2 read the question answer-side first only. exp_r9's possessive
+        form ("E's P1 -- what is its P2?") states the entity first and the hops
+        inner-first, and all 180 plans of the question were refused. v3 accepts
+        either reading: answer-side first then the entity, or the entity first
+        then the hops in walk order. Both are the same chain; the residual rule
+        is what keeps a dropped hop out, and it runs on both.
+      * WORDING. v2 looked for the plan's relation string verbatim. When the
+        disposer accepted a relation as a PARAPHRASE of a store relation, the
+        question may carry the store's wording ("languages spoken, written or
+        signed by X" planned as `languages spoken written signed`): 6 of gen 2's
+        21 arm-C coverage refusals. v3 looks for either wording of a paraphrased
+        relation; the residual rule is unchanged, so a dropped hop still fails."""
     q = normalize(question)
-    rels = [normalize(r) for r in plan.relations[1:] if r]           # inner-most first
+    rels = [r for r in plan.relations[1:] if r]                      # walk order, inner-most first
     # split the tail into its relation and the seed entity: the LONGEST known
     # relation prefix when a vocabulary is given ('country of citizenship' before
-    # 'country'), else the last ' of ' (a relation with ' of ' in it is commoner
-    # than an entity with one)
+    # 'country'), then the paraphrase tier's split, else the last ' of ' (a
+    # relation with ' of ' in it is commoner than an entity with one)
     tr = tail_relation(plan.tail, known) if known is not None else None
+    tail_alt = None
     if tr is None and known is not None:
-        tm = tail_match(plan.tail, known)          # the paraphrase tier splits the same way
-        tr = tm[0] if tm else None
+        tm = tail_match(plan.tail, known)
+        if tm:
+            tr, tail_alt = tm
     if tr is not None:
         rel1, ent = tr, plan.tail[len(tr):].strip()
         ent = ent[3:] if ent.startswith("of ") else ent
@@ -400,9 +417,16 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
     else:
         rel1, ent = plan.tail, ""
     ent = normalize(ent)
-    # question order is answer-side first: the walk's LAST relation, ..., then the
-    # tail's relation, then the entity (relations[1:] is walk order, inner -> outer)
-    order = list(reversed(rels)) + [normalize(rel1)]
+
+    def wordings(r: str, alt: str | None = None) -> list[str]:
+        out = [normalize(r)]
+        if alt is None and known is not None and hasattr(known, "match") and r not in known:
+            alt = known.match(r)
+        if alt and normalize(alt) not in out:
+            out.append(normalize(alt))
+        return out
+    inner_first = [wordings(rel1, tail_alt)] + [wordings(r) for r in rels]      # walk order
+    answer_first = list(reversed(inner_first))
     rw = known.words() if (known is not None and hasattr(known, "words")) else None
     # "Which <class> is the R of ...?" -- the class noun duplicates the answer type
     # and would otherwise be consumed as the first relation. Try with the frame
@@ -410,7 +434,7 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
     # then succeeds on the unstripped retry.
     stripped = _WHICH_CLASS.sub("", q, count=1)
     for text in ((stripped, q) if stripped != q else (q,)):
-        if _covers_text(text, order, ent, rw):
+        if _covers_text(text, answer_first, ent, rw) or _covers_text(text, inner_first, ent, rw, entity_first=True):
             return True
     return False
 
@@ -421,17 +445,36 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
 _WHICH_CLASS = __import__("re").compile(r"^which\s+[a-z0-9]+(?:\s+[a-z0-9]+){0,2}\s+(?:is|was|are|were|includes|contains|has)\s+")
 
 
-def _covers_text(q: str, order: list[str], ent: str, rw) -> bool:
+def _find_any(q: str, alts: list[str], pos: int) -> tuple[int, int] | None:
+    """The earliest occurrence at/after `pos` of any wording; the longer wording
+    wins a tie. None when no wording occurs."""
+    best = None
+    for w in alts:
+        i = q.find(w, pos)
+        if i >= 0 and (best is None or i < best[0] or (i == best[0] and len(w) > best[1] - best[0])):
+            best = (i, i + len(w))
+    return best
+
+
+def _covers_text(q: str, order: list[list[str]], ent: str, rw, entity_first: bool = False) -> bool:
+    """`order`: one list of accepted wordings per relation, in the reading's order.
+    Answer-side first (default): relations in order, then the entity after them
+    (a 1-hop inversion frame may state the entity first: "What is erik bergvall a
+    participant of?"). Entity first: the entity, then the relations in order."""
     pos, spans = 0, []
-    for r in order:
-        i = q.find(r, pos)
-        if i < 0:
+    if entity_first:
+        if not ent:
             return False
-        spans.append((i, i + len(r))); pos = i + len(r)
-    if ent:
-        # a chain states its entity last; a 1-hop inversion frame may state it FIRST
-        # ("What is erik bergvall a participant of?"), so with one relation the entity
-        # may sit anywhere the relation does not
+        j = q.find(ent)
+        if j < 0:
+            return False
+        spans.append((j, j + len(ent))); pos = j + len(ent)
+    for alts in order:
+        hit = _find_any(q, alts, pos)
+        if hit is None:
+            return False
+        spans.append(hit); pos = hit[1]
+    if ent and not entity_first:
         j = q.rfind(ent)
         if j >= pos:
             spans.append((j, j + len(ent)))

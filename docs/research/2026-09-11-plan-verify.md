@@ -456,3 +456,43 @@ every hop, so it gets its own before/after.
 
 `cot_harvest_hop0.jsonl`, `exp_m3_cot_pipeline_hop0.{json,log}`, `exp_r7_emitter_planned_walk_gen2_hop0.*`,
 `cot_harvest_r7_gen2_hop0.jsonl`.
+
+## Coverage, lever 2 — `covers()` v3: either reading order, either wording of a paraphrase
+
+Two holes in v2, both found by runs rather than by thought. **Order:** v2 read the question answer-side first
+only ("What is the P2 of the P1 of E?"); exp_r9's possessive form ("E's P1 — what is its P2?") states the
+entity first and the hops inner-first, and every one of its 180 plans of the question was refused. **Wording:**
+v2 looked for the plan's relation string verbatim, so a relation the vocabulary tier had already accepted as a
+paraphrase (`languages spoken written signed` for the store's `languages spoken, written or signed`) failed
+coverage because the question carries the store's wording — 6 of gen 2's 21 arm-C coverage refusals. v3
+accepts either reading (answer-side first then the entity, or the entity then the hops in walk order) and
+either wording of a paraphrased relation; the residual rule — no relation word may be left over — is unchanged
+and runs on both readings, so a dropped hop still fails and a swapped chain fails in both orders. Three new
+pins in `test_plan_verify.py` (32 total across the disposer suites), `its it s thing` added to the frame words.
+
+| | before (lever 1) | **covers v3** |
+|---|---:|---:|
+| harvest, 800 questions | 568 / 0.993 | **568 / 0.993, byte-identical** |
+| gen 2 arm C (exp_r7 --exclude) | 5/37 verified | **11/37 verified, 11 correct, 0 wrong** (coverage refusals 21 → 15) |
+| gen 2 arms A / B | 96 / 4 | 96 / 4 |
+| exp_r9 canonical / have / relative (emitter) | 107 / 77 / 124 | 110 / 80 / 127 |
+| exp_r9 possessive (emitter) | 0 (180 refused for coverage) | **21/200 correct, 0 wrong** (154 still refused) |
+| exp_r9 out of basin, emitter correct / wrong | 201 / 0 | **228 / 0** |
+| grammar, all forms | 189 / 0 / 0 / — | unchanged |
+
+The possessive residue is not the disposer's any more; it is the emitter's, and the refusals are *correct*.
+Read on 25 possessive questions: gen 2, never shown this shape, folds the inner hop into the seed entity —
+`King Danjong's loyalist — what is its group?` → `['group']` seed `king danjong loyalist` — a 1-hop plan that
+dropped a hop, and the residual rule catches `loyalist` as a relation word. The 21 that verified are the 21
+where it emitted the two-hop plan (`Karate's member — what is its type?` → `['member', 'type']` seed
+`karate`). One limit worth recording: a seed that swallows the whole question prefix (`rajaraja narendra s
+adaptation what is its`) hides the dropped hop from the residual rule and passes coverage; the walk then fails
+it for want of a seed fact, at the cost of one lookup, never an answer. The disposer cannot judge entity
+strings without a store lookup, and that lookup is the walk.
+
+Where lever 2 leaves the ladder: the out-of-basin count is 228 at 0 wrong; arm C is 11/37 by emitter plan
+alone (plus exp_r8's 14 composed through the grammar); and the possessive form is a gen-3 training item — the
+shape with its two-hop plan, of which the harvest now holds 21 VM-verified examples.
+
+`exp_m3_cot_pipeline_cov3.*`, `cot_harvest_cov3.jsonl`, `exp_r7_emitter_planned_walk_gen2_cov3.*`,
+`cot_harvest_r7_gen2_cov3.jsonl`, `exp_r9_matched_pairs_cov3.{json,log}`.
