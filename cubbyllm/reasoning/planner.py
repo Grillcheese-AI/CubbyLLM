@@ -205,13 +205,45 @@ def parse_question(q: str) -> QuestionPlan | None:
     return None
 
 
-def parse_fact(f: str) -> Triple | None:
+def parse_fact(f: str, known=None) -> Triple | None:
+    """'OBJ is the REL of SUBJ' -> Triple. The split is ambiguous when SUBJ or REL
+    contains ' of ': greedy (the LAST ' of ') is right for 'country of citizenship
+    of jean' and wrong for 'genre of Joan Rivers: A Piece of Work' (rel 'genre of
+    Joan Rivers: A Piece' | subj 'Work' -- indexed under the wrong subject,
+    unreachable by entity at every hop; 88 of the eval store's 1,188 facts,
+    exp_m3 hop0 2026-09-11). With `known` (a container of normalized relations
+    the store REUSES -- `reused_relations`), the LONGEST prefix that is a known
+    relation wins, the way `plan_verify.tail_relation` splits a question tail;
+    greedy remains the fallback for a relation the store has not reused yet."""
     f = " ".join(f.split())
-    m = _F_IN.match(f) or _F_OF.match(f)
+    m = _F_IN.match(f)
+    if m:
+        return Triple(obj=m.group("obj").strip(), rel=m.group("rel").strip(), subj=m.group("subj").strip())
+    m = _F_OF.match(f)
     if not m:
         return None
-    return Triple(obj=m.group("obj").strip(), rel=m.group("rel").strip(),
-                  subj=m.group("subj").strip())
+    obj, body = m.group("obj").strip(), f"{m.group('rel')} of {m.group('subj')}"
+    if known is not None:
+        parts = body.split(" of ")
+        for i in range(len(parts) - 1, 0, -1):
+            rel = " of ".join(parts[:i])
+            if normalize(rel) in known:
+                return Triple(obj=obj, rel=rel.strip(), subj=" of ".join(parts[i:]).strip())
+    return Triple(obj=obj, rel=m.group("rel").strip(), subj=m.group("subj").strip())
+
+
+def reused_relations(facts, min_n: int = 2) -> set[str]:
+    """The normalized relations that at least `min_n` facts state under the greedy
+    split -- the vocabulary `parse_fact(f, known=...)` disambiguates with. A
+    relation is reused by nature; an entity fragment mis-split at an ' of ' is
+    (almost always) stated once. Two passes over a store, deterministic."""
+    n: dict[str, int] = {}
+    for f in facts:
+        t = parse_fact(f)
+        if t is not None:
+            r = normalize(t.rel)
+            n[r] = n.get(r, 0) + 1
+    return {r for r, k in n.items() if k >= min_n}
 
 
 def accepts(plan: QuestionPlan, hop: int, entity: str | None, t: Triple) -> bool:

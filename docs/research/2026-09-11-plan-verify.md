@@ -496,3 +496,42 @@ shape with its two-hop plan, of which the harvest now holds 21 VM-verified examp
 
 `exp_m3_cot_pipeline_cov3.*`, `cot_harvest_cov3.jsonl`, `exp_r7_emitter_planned_walk_gen2_cov3.*`,
 `cot_harvest_r7_gen2_cov3.jsonl`, `exp_r9_matched_pairs_cov3.{json,log}`.
+
+## Coverage, lever 1b — the relation-aware fact split (+14 verified, 0 wrong)
+
+`parse_fact` read `OBJ is the REL of SUBJ` greedily: the last `' of '` splits relation from subject. Right for
+`country of citizenship of jean`, wrong for every subject that contains `' of '` — `genre of Joan Rivers: A Piece`
+| `Work`, `capital of Economy` | `kyrgyzstan`, `location of final assembly` | `ss canberra` — and a fact split
+wrong is indexed under the wrong subject, unreachable by entity at every hop. The exact tier at hop 0 hid this
+(it compares the whole string); nothing else tolerated it. 88 of the eval store's 1,188 parsed facts, 49 with a
+better split.
+
+The fix is the disposer's own rule applied to facts: **the longest prefix that is a relation the store reuses
+wins** (`parse_fact(f, known=)`, `reused_relations(facts)` = relations stated in ≥ 2 facts under the greedy
+pass). `TripleIndex(facts)` seeds the reused set with one greedy pass, then indexes; `add()` keeps the set
+current, so a live-learned fact splits the same way once its relation is reused (order-dependent only for the
+first two facts of a relation). `StoreRelations` parses identically, so the vocabulary drops the fragments:
+**165 → 116 relations** on the eval store — the 49 predicted. One pin in `test_hop0_paraphrase.py` (6 total);
+the stand-in's own suites pass unchanged.
+
+| | before (covers v3) | **relation-aware split** |
+|---|---:|---:|
+| verified / 800 | 568 | **582** (0.728) |
+| claimed-answer precision | 0.993 (564/568) | **0.993 (578/582)** — 15 gained, all correct; 1 lost |
+| `retrieval_exhausted` | 43 | **29** |
+| CoT by hop (1 / 2 / 3) | 0.917 / 0.648 / 0.283 | 0.917 / **0.672 / 0.333** |
+| gen 2 arm B / C / A | 4 / 11 / 96 | **7** / 11 / 95 |
+
+CoT overall is now 0.723 against chase-only's 0.724 — the verified path has caught the unverified one on the
+same store. The gains are the predicted ones: `Clarion (PA) is the capital of county of clarion, pennsylvania`
+now serves a hop from `county of clarion, pennsylvania`; `Etymology of Austria` is a subject; a `location of
+formation` chain through `Los angelas` runs to its time zone. The one loss is worth its line: a 3-hop chain
+whose three VM similarities sat at 0.226 / 0.230 / 0.268 against the 3-hop floor 0.2202 — renaming the hop-0
+role from the fragment to the real relation moved one of them under the floor. The chain is right; the floor is
+at the edge of what the VM measures for 3-hop frames, which is a calibration fact, not a parse one. (Gen 2's
+one arm-A loss is the mirror: an emitter plan that folded `Economy` into the relation used to match the
+mis-split fact exactly, and verified a right answer for the wrong structural reason.)
+
+`cot_harvest_split.jsonl`, `exp_m3_cot_pipeline_split.{json,log}`, `exp_r7_emitter_planned_walk_gen2_split.*`,
+`cot_harvest_r7_gen2_split.jsonl`. exp_r9 is not re-run on this lever: its 200 chains are sampled through the
+index, and a changed index samples different chains — a like-for-like rerun needs the chain set pinned first.

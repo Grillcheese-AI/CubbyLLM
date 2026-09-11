@@ -40,8 +40,8 @@ question ──► plan ──► plan_verify (disposer) ──► lookup-first 
 
 | measured on the 800-question eval (1,241 facts, 165 relations) | |
 |---|---:|
-| verified coverage, lookup-first + disposer | **0.710** (568/800), precision 0.993, 0 lost to the disposer |
-| honest refusals with a named reason | 232 (155 no-such-edge · 40 no seed fact · 37 unparseable) |
+| verified coverage, lookup-first + disposer | **0.728** (582/800), precision 0.993 (was 0.710 before the relation-aware fact split, lever 1b) |
+| honest refusals with a named reason | 218 (152 no-such-edge or plan-coverage · 29 no seed fact · 37 unparseable) |
 | misparsed plans the disposer stops before any walk | 90 / 92 |
 | VM-verified 3-hop answer, wall, resident VM | **2.0 ms** (65.7 ms per-process; CoT is now faster than chase-only) |
 | gen-2 emitter (`emitter_v12e`) vs gen 1 on the 79 held-out B questions | 10 vs 5 accepted + gold hop; 4/4 verified correct, 0 wrong — bar met |

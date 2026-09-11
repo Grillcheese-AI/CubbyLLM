@@ -91,7 +91,7 @@ from dataclasses import dataclass, field
 from typing import Iterable, Protocol, runtime_checkable
 
 from ..core.protocols import Wiring
-from .planner import QuestionPlan, normalize, parse_fact, relation_matches
+from .planner import QuestionPlan, normalize, parse_fact, relation_matches, reused_relations
 
 __wiring__ = Wiring.WIRED
 
@@ -145,8 +145,10 @@ class StoreRelations:
         self._rels: set[str] = set()
         self._n: dict[str, int] = {}          # facts per relation (the reuse guard)
         self.n_parsed = 0
+        facts = list(facts)
+        known = reused_relations(facts)       # the same two-pass split TripleIndex uses (lever 1b)
         for f in facts:
-            t = parse_fact(f)
+            t = parse_fact(f, known=known)
             if t is None:
                 continue
             self.n_parsed += 1

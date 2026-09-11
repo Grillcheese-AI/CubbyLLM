@@ -23,7 +23,7 @@ from __future__ import annotations
 from collections import defaultdict
 
 from ..core.protocols import Wiring
-from .planner import QuestionPlan, Triple, accepts, normalize, parse_fact, tail_splits
+from .planner import QuestionPlan, Triple, accepts, normalize, parse_fact, reused_relations, tail_splits
 
 __wiring__ = Wiring.WIRED
 
@@ -43,9 +43,17 @@ class TripleIndex:
         self._by_subj: dict[str, list[tuple[str, Triple]]] = defaultdict(list)   # normalize(subj)
         self._by_obj: dict[str, list[tuple[str, Triple]]] = defaultdict(list)    # normalize(obj)
         self._rel_n: dict[str, int] = defaultdict(int)                            # facts per normalize(rel)
+        # the relations the store reuses (>= 2 facts): `parse_fact` disambiguates the
+        # ' of ' split with them (lever 1b, 2026-09-11). Seeded by a greedy first pass
+        # over the facts given here, then kept current by `add`; a fact that arrives
+        # live before its relation is reused takes the greedy split (order-dependent
+        # for the first two facts of a relation, never afterwards).
+        self._reused: set[str] = set()
         self._seen: set[str] = set()
         self.n_facts = 0          # every fact offered (deduped)
         self.n_parsed = 0         # the indexed subset
+        facts = list(facts)
+        self._reused = reused_relations(facts)
         for f in facts:
             self.add(f)
 
@@ -59,7 +67,7 @@ class TripleIndex:
             return None
         self._seen.add(key)
         self.n_facts += 1
-        t = parse_fact(key)
+        t = parse_fact(key, known=self._reused)
         if t is None:
             return None
         self.n_parsed += 1
@@ -67,7 +75,10 @@ class TripleIndex:
         self._by_tail[normalize(f"{t.rel} of {t.subj}")].append(entry)
         self._by_subj[normalize(t.subj)].append(entry)
         self._by_obj[normalize(t.obj)].append(entry)
-        self._rel_n[normalize(t.rel)] += 1
+        r = normalize(t.rel)
+        self._rel_n[r] += 1
+        if self._rel_n[r] >= 2:
+            self._reused.add(r)
         return t
 
     def __contains__(self, fact: str) -> bool:

@@ -121,3 +121,33 @@ def test_the_reuse_guard_the_first_harvest_paid_for():
     twice = store + ["Talk show is the genre of Joan Rivers: A Piece of Work"]
     assert len(TripleIndex(twice).hop(plan, 0, None)) == 2
     assert "genre of joan rivers a piece" in StoreRelations(twice).reused()
+
+
+# ---- lever 1b (2026-09-11): the relation-aware fact split ----
+
+def test_reused_relation_disambiguates_the_fact_split():
+    """'Documentary series is the genre of Joan Rivers: A Piece of Work' -- greedy
+    reads rel 'genre of Joan Rivers: A Piece' | subj 'Work'. When the store reuses
+    'genre', the longest known prefix wins and the fact is indexed under its real
+    subject, reachable at hops >= 1; the vocabulary carries no fragment. A relation
+    that itself contains ' of ' ('country of citizenship') still wins over its
+    shorter prefix 'country' when the store reuses it -- longest known first."""
+    from cubbyllm.reasoning.planner import parse_fact, reused_relations
+    store = STORE + ["Documentary series is the genre of Joan Rivers: A Piece of Work",
+                     "Drama is the genre of Some Film", "Comedy is the genre of Other Film",   # 'genre' reused twice, cleanly
+                     "spain is the country of pierre", "italy is the country of anna"]
+    known = reused_relations(store)
+    assert {"genre", "country of citizenship", "country"} <= known and "genre of joan rivers a piece" not in known
+    t = parse_fact("Documentary series is the genre of Joan Rivers: A Piece of Work", known=known)
+    assert (t.rel, t.subj) == ("genre", "Joan Rivers: A Piece of Work")
+    t = parse_fact("france is the country of citizenship of jean", known=known)
+    assert (t.rel, t.subj) == ("country of citizenship", "jean")                  # longest known, not 'country'
+    ix = TripleIndex(store)
+    assert [f for f, _t in ix._by_subj["joan rivers a piece of work"]] == ["Documentary series is the genre of Joan Rivers: A Piece of Work"]
+    assert "genre of joan rivers a piece" not in StoreRelations(store)
+    # reachable at hop 1 now: 'What is the genre of the <rel> of X?' walks through the entity
+    plan = QuestionPlan(relations=[None, "genre"], tail="country of citizenship of jean", n_hop=2)
+    assert ix.hop(plan, 1, "Joan Rivers: A Piece of Work")            # served by subject, relation exact
+    # a live-added fact whose relation the store already reuses splits the same way
+    ix.add("Comedy is the genre of Best of Both Worlds")
+    assert ix._by_subj["best of both worlds"]
