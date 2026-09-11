@@ -1,0 +1,488 @@
+"""plan_verify — the plan is a PROPOSAL; this disposes of it.
+
+Wired: WIRED — `pipeline.answer(..., known=)` disposes of the plan here before any walk
+(2026-09-11); `known=None` keeps the pre-disposer path.
+
+WHY THIS EXISTS (2026-09-11)
+----------------------------
+The CubeLang program `programs.build_chain_program` emits is bind-only: it
+carries the walked objects, and the VM verifies each recovery against them.
+The PLAN — which relations, in which order, ending at which tail — never
+crosses into the VM. `CubeLang.ISolver` has `parse / solve / verify`; the
+emitted program has `solve` and the hop functions and nothing that checks the
+chain derivation. So the plan is the one input in the whole pipeline that no
+gate ever sees, and every misparse in the harvest (92 `misparsed_chain`, the
+16 compound-relation residue of exp_r5) walked through that hole.
+
+The fix is NOT to parse better. The grammar in `planner.py` is scaffolding —
+it generates the training data for the emitter that replaces it — and the
+emitter will propose plans that no regex ever produced. What is needed is a
+DISPOSER: a pure, deterministic check that a proposed plan (a) is actually
+the question, and (b) asks only for relations the store can answer. Model
+proposes, host disposes.
+
+WHAT IT CHECKS
+--------------
+  covers(question, plan)      the plan reconstructs the question: for a chain
+                              (n_hop >= 2) the canonical body
+                              "R_n of the R_{n-1} ... of the tail" is a
+                              substring of the normalized question; for a
+                              1-hop the tail's relation and entity both are.
+                              Pure string. Catches an emitter that drops a
+                              hop, invents one, or answers a different
+                              question. Cannot catch a mis-SPLIT of the same
+                              text (joining inverts splitting) — that is (b).
+  unknown_relations(plan)     every relation the plan asks for — plan.relations
+                              [1:] and the relation prefix of the tail — must
+                              be a relation the store holds. This is what
+                              catches the compound-relation misparse:
+                                  want 'award received by the director of photography'
+                                  have ['director of photography']
+                              The store has no such edge, so the plan is
+                              rejected BEFORE a walk is spent on it.
+  segment(body, known)        the repair the disposer can propose back: every
+                              segmentation of the body into known relations
+                              and a tail whose relation prefix is known. When
+                              exactly one exists, the split was decidable and
+                              the grammar's " of the " guess was unnecessary.
+
+`known` is INJECTED (`KnownRelations`: anything with `__contains__` over
+normalized relation strings). Validation passes `StoreRelations(store)`;
+tests pass a frozenset; MoWM's world can pass itself when a "possible edge"
+oracle replaces "edge in store" — the spawn-a-latent-world path is the
+unknown_relations != [] branch of this same verdict.
+
+WHERE IT SITS
+-------------
+    question -> (grammar | emitter) -> plan -> **verify_plan** -> Retriever.seedable
+                                                    |
+                                                    +-- ok=False -> honest fail, reason carried
+                                                    +-- repair    -> segment() -> unique? re-verify
+
+WHICH HALF RUNS IN THE VM, AND WHY (read from cubelang/src, 2026-09-11)
+-----------------------------------------------------------------------
+(b) unknown_relations runs IN THE VM. `QUERY` (src/vm/engine.rs `op::QUERY`,
+    src/vm/knowledge.rs) is an executing opcode: an EXACT, normalized hash
+    lookup over an in-VM knowledge store loaded with `cubelang run --knowledge
+    facts.jsonl`, pushing the chunk array -- ZERO chunks on a miss, never a
+    nearest neighbour ("abstention is a result, not an error"). That is
+    precisely "is this relation one the store holds", with the don't-know
+    contract's own semantics. `VMRelations` below is the KnownRelations that
+    does it: the store's relation vocabulary becomes the VM's knowledge, and
+    membership is one QUERY per distinct relation through
+    bridges/programs/plan_verify.cube. `StoreRelations` is the host-side
+    reference it is checked against (exp_r6 --vm asserts they agree).
+
+(a) covers() stays HOST-SIDE, and not by choice: the VM has no string
+    semantics yet. `COMPARE` resolves both operands with `resolve_i64`, and
+    `Value::Str.as_i64()` is 0 (src/vm/engine.rs), so `input == "abc"` is
+    `0 == 0` -- true for any strings; `s.contains(x)` lowers to `CALL contains`
+    (src/compiler.rs, MethodCall arm), an unresolved function. Both are
+    pinned as `#[ignore]`d contracts in cubelang/tests/str_semantics.rs
+    (2026-08-30). Until a string-equality/containment opcode executes, a
+    substring check inside the VM would be a silent stub that passes
+    verify-before-execute -- the exact failure class strict mode exists to
+    catch. (CUBELANG_OPCODES_PLAN.md is stale: RETURN/CALL/LOOP/arrays are
+    in the compiler. The gap is strings, not control flow.)
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import Iterable, Protocol, runtime_checkable
+
+from ..core.protocols import Wiring
+from .planner import QuestionPlan, normalize, parse_fact, relation_matches
+
+__wiring__ = Wiring.WIRED
+
+JOINT = " of the "
+
+
+@runtime_checkable
+class KnownRelations(Protocol):
+    """`rel in known` is EXACT membership (normalized). `match(rel)` is the
+    walk's own hop>=1 tolerance -- `planner.relation_matches` (Jaccard >= 0.6
+    over words) against the vocabulary -- and returns the relation it matched,
+    or None. Two tiers on purpose: an approximate match never wears an exact
+    hit's confidence (the same rule knowledge.rs states for QUERY), so the
+    verdict records which relations were only paraphrase-known."""
+    def __contains__(self, rel: str) -> bool: ...
+    def match(self, rel: str) -> str | None: ...
+
+
+# Words a question spends on its FRAME and its JOINTS, never on a hop. Anything
+# else left over after the plan's relations and the seed entity are removed is
+# a word the plan did not account for -- and if it is a word some relation in the
+# store is made of, the plan very likely DROPPED A HOP.
+_FRAME_AND_JOINT = frozenset("""
+what which where who whom whose is was are were the a an of to in on at by for
+that does do did have has had belong belongs contained within described describes
+held located near from with as and or includes include contains contain
+""".split())
+
+
+def _relation_words(vocabulary) -> frozenset[str]:
+    out = set()
+    for r in vocabulary:
+        out.update(w for w in normalize(r).split() if w not in _FRAME_AND_JOINT)
+    return frozenset(out)
+
+
+def _fuzzy_match(rel: str, vocabulary) -> str | None:
+    """The walk's hop>=1 acceptance, applied to a vocabulary: first known relation
+    `relation_matches` accepts, in sorted order (deterministic)."""
+    for r in vocabulary:
+        if relation_matches(rel, r):
+            return r
+    return None
+
+
+class StoreRelations:
+    """The relations the store can answer — a set over normalized `Triple.rel`."""
+
+    def __init__(self, facts: Iterable[str]) -> None:
+        self._rels: set[str] = set()
+        self.n_parsed = 0
+        for f in facts:
+            t = parse_fact(f)
+            if t is None:
+                continue
+            self.n_parsed += 1
+            self._rels.add(normalize(t.rel))
+
+    @classmethod
+    def from_keys(cls, keys: Iterable[str]) -> "StoreRelations":
+        """A vocabulary from relation strings directly (e.g. the `key` column of a
+        `write_vocab_jsonl` file) -- for a probe that has the vocabulary but not
+        the corpus (exp_r3: no corpus, no encoder, just the GGUF)."""
+        sr = cls([])
+        sr._rels = {normalize(k) for k in keys}
+        sr.n_parsed = len(sr._rels)
+        return sr
+
+    @classmethod
+    def from_vocab_jsonl(cls, path) -> "StoreRelations":
+        import json, pathlib
+        keys = []
+        for line in pathlib.Path(path).read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                rec = json.loads(line)
+                if "key" in rec:
+                    keys.append(rec["key"])
+        return cls.from_keys(keys)
+
+    def __contains__(self, rel: str) -> bool:
+        return normalize(rel) in self._rels
+
+    def match(self, rel: str) -> str | None:
+        if rel in self:
+            return normalize(rel)
+        return _fuzzy_match(rel, self)
+
+    def words(self) -> frozenset[str]:
+        return _relation_words(self)
+
+    def __len__(self) -> int:
+        return len(self._rels)
+
+    def __iter__(self):
+        return iter(sorted(self._rels))
+
+
+def write_vocab_jsonl(facts: Iterable[str], path) -> int:
+    """The store's relation vocabulary as `cubelang run --knowledge` input:
+    one `{"key": rel, "text": rel, "source": "store"}` per distinct relation.
+    Returns the number of relations written."""
+    import json
+    rels = StoreRelations(facts)
+    with open(path, "w", encoding="utf-8") as fh:
+        for r in rels:
+            fh.write(json.dumps({"key": r, "text": r, "source": "store"}) + "\n")
+    return len(rels)
+
+
+class VMRelations:
+    """KnownRelations answered BY THE VM: one `QUERY` per distinct relation.
+
+    `knowledge` is the jsonl `write_vocab_jsonl` produced; `program` is
+    bridges/programs/plan_verify.cube, whose `solve(mention)` is
+    examples/ground_min.cube's three-valued branch over `query mention` --
+    it RETURNS THE VERDICT (0 unknown / 1 known / 2 ambiguous) as the VM's own
+    integer. A bare chunk array (an older program) is also accepted:
+    membership is then `len > 0`. Memoized per normalized relation (exp_r6
+    --real --vm: 487 distinct QUERY calls over 763 questions, 0 disagreements
+    with the host reference)."""
+
+    def __init__(self, knowledge: str, program: str | None = None, exe: str | None = None,
+                 run=None, session=None) -> None:
+        """`session`: a `cubelang_client.CubelangSession` -- the RESIDENT
+        transport (one process, `knowledge_path` on the request, store cached
+        by mtime in the process). Without it, `run` (default `run_program`,
+        one `cubelang run --knowledge` subprocess per distinct relation) is
+        used; that is the transport whose 181 spawns cost more than they saved
+        on the vp harvest, kept for the equivalence check and for a caller
+        without protobuf."""
+        import pathlib
+        self.knowledge = str(knowledge)
+        self.program = str(program or pathlib.Path(__file__).resolve().parents[1]
+                           / "bridges" / "programs" / "plan_verify.cube")
+        self.exe = exe
+        self.session = session
+        self._source: str | None = None
+        if run is None and session is None:
+            from ..bridges.cubelang_client import run_program
+            run = run_program
+        self._run = run
+        self._memo: dict[str, bool] = {}
+        self.n_calls = 0
+        # the fuzzy tier reads the SAME vocabulary the VM was given, host-side
+        self._vocab: list[str] | None = None
+
+    def _vocabulary(self) -> list[str]:
+        if self._vocab is None:
+            import json, pathlib
+            keys = set()
+            for line in pathlib.Path(self.knowledge).read_text(encoding="utf-8").splitlines():
+                if line.strip():
+                    rec = json.loads(line)
+                    if "key" in rec:
+                        keys.add(normalize(rec["key"]))
+            self._vocab = sorted(keys)
+        return self._vocab
+
+    def match(self, rel: str) -> str | None:
+        """Exact tier is the VM's QUERY; the paraphrase tier is the walk's
+        relation_matches over the same vocabulary file, host-side, and the
+        verdict labels it as such."""
+        if rel in self:
+            return normalize(rel)
+        return _fuzzy_match(rel, self._vocabulary())
+
+    def words(self) -> frozenset[str]:
+        return _relation_words(self._vocabulary())
+
+    def __contains__(self, rel: str) -> bool:
+        key = normalize(rel)
+        if key not in self._memo:
+            self.n_calls += 1
+            if self.session is not None:
+                if self._source is None:
+                    import pathlib
+                    self._source = pathlib.Path(self.program).read_text(encoding="utf-8")
+                out = self.session.run(self._source, fn="solve", args=[key],
+                                       knowledge_path=self.knowledge)
+            else:
+                out = self._run(self.program, fn="solve", args=[key], exe=self.exe,
+                                knowledge=self.knowledge)
+            res = out.get("result")
+            if isinstance(res, list):                 # chunk array: count it here
+                self._memo[key] = len(res) > 0
+            else:                                     # the VM's verdict: 0 / 1 / 2
+                self._memo[key] = int(res or 0) > 0
+        return self._memo[key]
+
+
+@dataclass(frozen=True)
+class PlanVerdict:
+    ok: bool
+    covers: bool                       # the plan reconstructs the question
+    unknown_relations: list[str] = field(default_factory=list)
+    tail_relation: str | None = None   # the known relation prefix of the tail, if any
+    reason: str | None = None          # why not ok
+    # hop>=1 relations accepted only by the walk's paraphrase rule (relation_matches),
+    # as (asked, matched) pairs. ok may be True with these present; they are never
+    # hidden inside "known". Empty when every relation was an exact hit.
+    paraphrased: list[tuple[str, str]] = field(default_factory=list)
+
+    def __bool__(self) -> bool:
+        return self.ok
+
+
+def canonical_body(plan: QuestionPlan) -> str:
+    """'R_n of the R_{n-1} ... of the tail' — the chain frame's body, normalized."""
+    rels = [r for r in plan.relations[1:] if r]
+    return normalize(JOINT.join(list(reversed(rels)) + [plan.tail]))
+
+
+def tail_relation(tail: str, known: KnownRelations) -> str | None:
+    """The LONGEST prefix of the tail, cut at an ' of ', that is a known relation.
+    Longest first: 'country of citizenship of X' must yield 'country of
+    citizenship', not 'country'."""
+    parts = tail.split(" of ")
+    for i in range(len(parts) - 1, 0, -1):
+        cand = " of ".join(parts[:i])
+        if cand in known:
+            return cand
+    return None
+
+
+def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = None) -> bool:
+    """Does the plan account for the WHOLE question?
+
+    v2 (2026-09-11, after exp_r7). v1 required the grammar's canonical body
+    "R_n of the ... of the tail" to be a SUBSTRING of the question -- which
+    means it could only accept plans inside the grammar's " of the " basin.
+    On the 92 misparsed questions it refused 13 emitter plans that had the
+    gold hop count purely because the question joins its hops with
+    "contained within the" / "received by the"; and its 1-hop rule ("relation
+    and entity both present") let 4 plans through that had DROPPED the outer
+    hop ("source that describes the country of X" planned as 1-hop "country
+    of X"), each of which the VM then verified into a wrong answer.
+
+    v2 is joint-agnostic and hop-complete:
+      1. the relations occur in the question IN ORDER (answer side first),
+         then the seed entity, with anything at all between them;
+      2. what is left of the question after removing them and the frame/joint
+         words must contain NO word that any relation in the store is made of.
+         "contained within" is a joint; "source describes" is a dropped hop.
+    (2) needs the vocabulary (`known.words()`); without it, only (1) runs, and
+    the 1-hop dropped-hop hole stays open -- pass `known`."""
+    q = normalize(question)
+    rels = [normalize(r) for r in plan.relations[1:] if r]           # inner-most first
+    # split the tail into its relation and the seed entity: the LONGEST known
+    # relation prefix when a vocabulary is given ('country of citizenship' before
+    # 'country'), else the last ' of ' (a relation with ' of ' in it is commoner
+    # than an entity with one)
+    tr = tail_relation(plan.tail, known) if known is not None else None
+    if tr is not None:
+        rel1, ent = tr, plan.tail[len(tr):].strip()
+        ent = ent[3:] if ent.startswith("of ") else ent
+    elif " of " in plan.tail:
+        rel1, ent = plan.tail.rsplit(" of ", 1)
+    else:
+        rel1, ent = plan.tail, ""
+    ent = normalize(ent)
+    # question order is answer-side first: the walk's LAST relation, ..., then the
+    # tail's relation, then the entity (relations[1:] is walk order, inner -> outer)
+    order = list(reversed(rels)) + [normalize(rel1)]
+    rw = known.words() if (known is not None and hasattr(known, "words")) else None
+    # "Which <class> is the R of ...?" -- the class noun duplicates the answer type
+    # and would otherwise be consumed as the first relation. Try with the frame
+    # stripped first; "Which country is X in?" (where the class IS the relation)
+    # then succeeds on the unstripped retry.
+    stripped = _WHICH_CLASS.sub("", q, count=1)
+    for text in ((stripped, q) if stripped != q else (q,)):
+        if _covers_text(text, order, ent, rw):
+            return True
+    return False
+
+
+# "Which <class> is/was/includes/contains the ..." -- the class noun duplicates the answer type. exp_r8
+# (2026-09-11): "Which LIST includes the list that includes E" left the class noun 'list' in the residual,
+# where it read as a dropped 'list' hop, and the disposer refused the one correct plan.
+_WHICH_CLASS = __import__("re").compile(r"^which\s+[a-z0-9]+(?:\s+[a-z0-9]+){0,2}\s+(?:is|was|are|were|includes|contains|has)\s+")
+
+
+def _covers_text(q: str, order: list[str], ent: str, rw) -> bool:
+    pos, spans = 0, []
+    for r in order:
+        i = q.find(r, pos)
+        if i < 0:
+            return False
+        spans.append((i, i + len(r))); pos = i + len(r)
+    if ent:
+        # a chain states its entity last; a 1-hop inversion frame may state it FIRST
+        # ("What is erik bergvall a participant of?"), so with one relation the entity
+        # may sit anywhere the relation does not
+        j = q.rfind(ent)
+        if j >= pos:
+            spans.append((j, j + len(ent)))
+        elif len(order) == 1:
+            j = q.find(ent)
+            a, b = spans[0]
+            if j < 0 or (j < b and j + len(ent) > a):
+                return False
+            spans.append((j, j + len(ent))); spans.sort()
+        else:
+            return False
+    if rw is None:
+        return True
+    residual, last = [], 0
+    for a, b in spans:
+        residual.append(q[last:a]); last = b
+    residual.append(q[last:])
+    leftover = [w for w in " ".join(residual).split() if w not in _FRAME_AND_JOINT]
+    return not any(w in rw for w in leftover)
+
+
+def verify_plan(question: str, plan: QuestionPlan, known: KnownRelations) -> PlanVerdict:
+    """Disposes of a plan with EXACTLY the walk's tolerance, no more, no less:
+    hop 0 is exact (the walk's `accepts` at hop 0 is string equality on the
+    whole tail, so the tail's relation prefix must be an exact known relation);
+    hops >= 1 use `relation_matches`, the walk's own acceptance there. So a
+    refusal is a proof that no fact in the store could have been accepted at
+    that hop -- the walk would have failed -- and a verifying chain is never
+    refused (exp_m3 lookup_vp, 2026-09-11: the exact-only draft refused 2 of
+    568 verified chains on 'office held by THE head of government' vs the
+    store's 'office held by head of government'; this rule refuses 0)."""
+    cov = covers(question, plan, known)
+    unknown: list[str] = []
+    paraphrased: list[tuple[str, str]] = []
+    for r in plan.relations[1:]:
+        if not r:
+            continue
+        if r in known:
+            continue
+        m = known.match(r) if hasattr(known, "match") else None
+        if m is None:
+            unknown.append(r)
+        else:
+            paraphrased.append((r, m))
+    tr = tail_relation(plan.tail, known)
+    if tr is None:
+        unknown.append(plan.tail.rsplit(" of ", 1)[0] if " of " in plan.tail else plan.tail)
+    if not cov:
+        reason = "plan_does_not_cover_question"
+    elif unknown:
+        reason = "unknown_relation"
+    else:
+        reason = None
+    return PlanVerdict(ok=cov and not unknown, covers=cov, unknown_relations=unknown,
+                       tail_relation=tr, reason=reason, paraphrased=paraphrased)
+
+
+def segment(body: str, known: KnownRelations, max_hop: int = 4,
+            joint_in_entity: bool = True) -> list[QuestionPlan]:
+    """Every way to read `body` as R_n of the ... of the (R_1 of E) with every R known.
+
+    Deterministic, exhaustive over the ' of the ' joints, bounded by max_hop.
+    Returns plans outer-to-inner like `parse_question` (relations[0] is None).
+    An empty list means no reading is answerable from the store; more than one
+    means the split is ambiguous and the disposer must not guess.
+
+    `joint_in_entity=True` (default, exhaustive) also admits readings whose
+    ENTITY swallows a ' of the ' ("A Friend of the Family"). Those readings
+    are real — it is the one misparse exp_r6 could repair — but they make
+    nearly every multi-hop body ambiguous, because "capital of the country of
+    X" can always also be read as 1-hop 'capital' of the entity "the country
+    of X". `joint_in_entity=False` drops them: an honest, narrower reading
+    set, not a smarter one."""
+    segs = body.split(JOINT)
+    n = len(segs)
+    out: list[QuestionPlan] = []
+    # choose which joints are chain joints: a subset of the n-1 joint positions
+    for mask in range(1 << (n - 1)):
+        rels: list[str] = []
+        cur = [segs[0]]
+        ok = True
+        for j in range(n - 1):
+            if mask >> j & 1:
+                r = JOINT.join(cur).strip()
+                if r not in known:
+                    ok = False
+                    break
+                rels.append(r)
+                cur = [segs[j + 1]]
+            else:
+                cur.append(segs[j + 1])
+        if not ok or len(rels) + 1 > max_hop:
+            continue
+        tail = JOINT.join(cur).strip()
+        if tail_relation(tail, known) is None:
+            continue
+        if not joint_in_entity:
+            tr = tail_relation(tail, known)
+            if JOINT in tail[len(tr):]:
+                continue
+        out.append(QuestionPlan(relations=[None] + list(reversed(rels)), tail=tail, n_hop=len(rels) + 1))
+    return out

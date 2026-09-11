@@ -1,0 +1,39 @@
+TripleIndex over the OBSERVED store: 966 offered, 953 indexed (98.7%)
+  the real eval store is 1,241 facts — every count below is a LOWER bound
+
+failures surviving lookup-first: 195
+
+WHERE THE INDEX-ONLY WALK DIES
+  hop-0 tail lookup produces NO seed  :  118 / 195  (61%)
+  hop-0 tail lookup produces a seed   :   77 / 195
+    of those, forward reaches gold    :   23
+    of those, bidirectional reaches   :   25
+    NEWLY recovered by the back edge  :    2   {'not_retrieved': 2}
+
+  gold answer IS an entity in the index:  100 / 195  (51%)
+
+============================================================================
+READING
+============================================================================
+  The index-only walk dies at the SEED, not in the graph. The hop-0 lookup is
+  an exact normalized match on "rel of subj": when the parse is wrong, or the
+  phrasing merely differs, there is nothing to start from — and no amount of
+  backward traversal helps, because there is no frontier to traverse from.
+
+  This is why the decomposition's cosine backward probe found 43 and an exact
+  index lookup finds ~2: the 43 came from FUZZY matching on object text.
+
+  So wiring `by_object` into the walk is NOT the free win it looks like, and
+  the index cannot stand in for the retriever. It serves only hops whose
+  surface form already matches. The knowledge is largely present — the gold
+  answer is an entity in a 78%-complete index for half of these failures —
+  but there is no way in.
+
+  THE RETRIEVER'S JOB, as specified by this measurement:
+    1. hop-0 ENTRY is the product. 61% of surviving failures never get a seed.
+       Later-hop traversal is comparatively healthy and the index already does it.
+    2. It must be fuzzy on the tail, where the question's surface form and the
+       fact's differ. Exact match is what is failing.
+    3. Bidirectional edges are worth ~nothing on exact match (+2) but `by_object`
+       is already built and costs nothing — wire it once fuzzy seeding lands.
+============================================================================

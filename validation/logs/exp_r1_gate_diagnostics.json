@@ -1,0 +1,245 @@
+{
+ "harvest_n": 800,
+ "n_exhausted": 246,
+ "decomp_git_rev": "96db562f1f71c29990bc1972107848e2ef30af29",
+ "q3_crosstab": {
+  "misparsed_chain": {
+   "by_hop": {
+    "0": 69,
+    "1": 15,
+    "2": 8,
+    "3": 0
+   },
+   "total": 92,
+   "share_at_hop0": 0.75
+  },
+  "not_retrieved": {
+   "by_hop": {
+    "0": 49,
+    "1": 28,
+    "2": 11,
+    "3": 0
+   },
+   "total": 88,
+   "share_at_hop0": 0.5568
+  },
+  "threshold_bound": {
+   "by_hop": {
+    "0": 21,
+    "1": 14,
+    "2": 1,
+    "3": 0
+   },
+   "total": 36,
+   "share_at_hop0": 0.5833
+  },
+  "far_below": {
+   "by_hop": {
+    "0": 13,
+    "1": 6,
+    "2": 0,
+    "3": 0
+   },
+   "total": 19,
+   "share_at_hop0": 0.6842
+  },
+  "walk_completes_now": {
+   "by_hop": {
+    "0": 0,
+    "1": 0,
+    "2": 8,
+    "3": 3
+   },
+   "total": 11,
+   "share_at_hop0": 0.0
+  }
+ },
+ "q1_gold_rank": {
+  "stats": {
+   "scanned": 93,
+   "gold_present": 25,
+   "no_candidate_data": 152,
+   "gold_absent": 68,
+   "no_gold": 1
+  },
+  "ranks": [
+   1,
+   1,
+   2,
+   0,
+   0,
+   2,
+   2,
+   0,
+   2,
+   0,
+   1,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   1,
+   0
+  ],
+  "per_kind": {
+   "not_retrieved": {
+    "gold_present": 10,
+    "gold_absent": 28,
+    "no_candidate_data": 49
+   },
+   "threshold_bound": {
+    "no_candidate_data": 21,
+    "gold_present": 2,
+    "gold_absent": 13
+   },
+   "misparsed_chain": {
+    "no_candidate_data": 69,
+    "gold_absent": 17,
+    "gold_present": 6
+   },
+   "far_below": {
+    "no_candidate_data": 13,
+    "gold_absent": 6
+   },
+   "walk_completes_now": {
+    "gold_present": 7,
+    "gold_absent": 4
+   }
+  }
+ },
+ "q2_margin": {
+  "tau_ret": 0.595863088965416,
+  "n": 36,
+  "no_candidate_data": 21,
+  "rows": [
+   {
+    "gold": 0.5247299075126648,
+    "distractor": 0.9963842630386353,
+    "margin": -0.47165435552597046
+   },
+   {
+    "gold": 0.28761017322540283,
+    "distractor": 0.9444843530654907,
+    "margin": -0.6568741798400879
+   }
+  ]
+ },
+ "q4_openers": {
+  "n_misparsed": 92,
+  "matched": 52,
+  "deterministic": 5,
+  "per_opener": {
+   "which is the administrative territorial": {
+    "1": 6,
+    "2": 1
+   },
+   "what is the instance of": {
+    "2": 6,
+    "4": 1
+   },
+   "what is the source that": {
+    "2": 7,
+    "1": 14
+   },
+   "who is the editor of": {
+    "2": 5
+   },
+   "which is the office held": {
+    "3": 3,
+    "4": 2
+   },
+   "where is the history of": {
+    "4": 3,
+    "3": 4
+   }
+  }
+ },
+ "q5_lookup_overlap": {
+  "n": 800,
+  "verified_pre": 517,
+  "verified_post": 568,
+  "recovered": 51,
+  "lost": 0,
+  "recovered_by_kind": {
+   "threshold_bound": 34,
+   "far_below": 16,
+   "walk_completes_now": 1
+  },
+  "still_failing": 195,
+  "still_by_kind": {
+   "not_retrieved": 88,
+   "misparsed_chain": 92,
+   "walk_completes_now": 10,
+   "far_below": 3,
+   "threshold_bound": 2
+  }
+ },
+ "q6_backward_remainder": {
+  "still": 195,
+  "reaches_tau": 43,
+  "ceiling": 0.7638,
+  "per_kind": {
+   "misparsed_chain": {
+    "n": 92,
+    "probed": 0,
+    "reaches_tau": 0
+   },
+   "not_retrieved": {
+    "n": 88,
+    "probed": 51,
+    "reaches_tau": 40
+   },
+   "walk_completes_now": {
+    "n": 10,
+    "probed": 0,
+    "reaches_tau": 0
+   },
+   "far_below": {
+    "n": 3,
+    "probed": 3,
+    "reaches_tau": 3
+   },
+   "threshold_bound": {
+    "n": 2,
+    "probed": 0,
+    "reaches_tau": 0
+   }
+  }
+ },
+ "q7_gold_in_store": {
+  "observed_store": 966,
+  "still": 195,
+  "gold_in_store": 103,
+  "ceiling": 0.8387,
+  "per_kind": {
+   "misparsed_chain": {
+    "n": 92,
+    "gold_in_store": 42
+   },
+   "not_retrieved": {
+    "n": 88,
+    "gold_in_store": 49
+   },
+   "walk_completes_now": {
+    "n": 10,
+    "gold_in_store": 9
+   },
+   "far_below": {
+    "n": 3,
+    "gold_in_store": 1
+   },
+   "threshold_bound": {
+    "n": 2,
+    "gold_in_store": 2
+   }
+  }
+ }
+}

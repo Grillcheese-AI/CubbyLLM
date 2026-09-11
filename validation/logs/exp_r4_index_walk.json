@@ -1,0 +1,19 @@
+{
+ "observed_store": {
+  "offered": 966,
+  "indexed": 953
+ },
+ "n_surviving": 195,
+ "counts": {
+  "seed_ok": 77,
+  "gold_is_entity_in_index": 100,
+  "reach_forward": 23,
+  "reach_bidirectional": 25,
+  "seed_MISSES": 118,
+  "RECOVERED_by_backward_edge": 2
+ },
+ "recovered_by_kind": {
+  "not_retrieved": 2
+ },
+ "wall_s": 0.13426612199998544
+}

@@ -1,0 +1,158 @@
+exp_r1_gate_diagnostics | harvest 800 records | decomp 246 exhausted | git_rev 96db562f1f71
+
+==============================================================================
+Q3  cause x failing-hop cross-tab
+    Both marginals are published; the joint was never computed, and the
+    two readings are opposite. If misparses die at hop 0 the hop count was
+    never operative and 'misparsed_chain' is a mislabel.
+==============================================================================
+
+cause                     hop 0    hop 1    hop 2    hop 3   total   @hop0
+misparsed_chain              69       15        8        0      92    75%
+not_retrieved                49       28       11        0      88    56%
+threshold_bound              21       14        1        0      36    58%
+far_below                    13        6        0        0      19    68%
+walk_completes_now            0        0        8        3      11     0%
+
+  VERDICT: 75% of misparsed_chain failures occur at hop 0.
+  -> The chain died before hop-count planning could matter. 'misparsed_chain'
+     is substantially a FIRST-HOP RETRIEVAL failure wearing a parser label,
+     and that mass belongs with the retrieval bucket, not the emitter's.
+
+==============================================================================
+Q1  is the gold answer already inside candidates_topk, and at what rank?
+    Splits 'retrieval never surfaced it' (needs a backward walk) from
+    'retrieval surfaced it and the cut discarded it' (needs re-ranking).
+==============================================================================
+
+  exhausted walks                     246
+  with candidate data logged          93
+  candidates_topk EMPTY               152   <- the diagnostic is unavailable for these
+
+  of the 93 scannable:
+    gold text PRESENT in candidates     25  (27%)  -> re-ranking / threshold problem
+    gold text ABSENT                    68  (73%)  -> genuine retrieval miss
+    rank of gold when present: min 0  median 0  max 2
+    score of gold when present: min 0.2876  max 0.9079
+
+  by failure class (scannable only):
+    kind                    present   absent  no data
+    misparsed_chain               6       17       69
+    not_retrieved                10       28       49
+    threshold_bound               2       13       21
+    far_below                     0        6       13
+    walk_completes_now            7        4        0
+
+==============================================================================
+Q2  on the threshold_bound hops: gold score minus best DISTRACTOR score
+    Lowering tau only helps if the correct fact outranks the distractors.
+    A negative margin means the lower tau admits the distractor FIRST.
+==============================================================================
+
+  tau_ret in force: 0.5959   threshold_bound cases: 36
+  with candidate data: 15   gold locatable: 2   no candidate data: 21
+
+    POSITIVE margin (gold outranks every distractor)     0  (0%)  -> lowering tau is a real win
+    NEGATIVE or zero margin                              2  (100%)  -> lowering tau admits a DISTRACTOR first
+    margin: min -0.6569  median -0.4717  max -0.4717
+
+    examples where the 'free win' is a precision trap:
+      margin -0.6569  gold 0.2876 vs distractor 0.9445 | What is the instance of the given name of Chris Brink?
+      margin -0.4717  gold 0.5247 vs distractor 0.9964 | Which country is the country of the capital of the administr
+
+==============================================================================
+Q4  would a six-string opener override fix the misparses?
+    Three of four competition submissions proposed a serve-time hop-retry
+    instead, which multiplies walk cost for a prefix match.
+==============================================================================
+
+  misparsed_chain cases: 92
+    what is the source that                     21
+    which is the administrative territorial      7
+    what is the instance of                      7
+    where is the history of                      7
+    who is the editor of                         5
+    which is the office held                     5
+    TOTAL matched by the six openers            52  (57% of misparses)
+
+  is the mapping opener -> gold n_hop deterministic?
+    which is the administrative territorial   {1: 6, 2: 1}   AMBIGUOUS
+    what is the instance of                   {2: 6, 4: 1}   AMBIGUOUS
+    what is the source that                   {2: 7, 1: 14}   AMBIGUOUS
+    who is the editor of                      {2: 5}   deterministic
+    which is the office held                  {3: 3, 4: 2}   AMBIGUOUS
+    where is the history of                   {4: 3, 3: 4}   AMBIGUOUS
+
+  VERDICT: 5 of 92 misparses (5%) are fixable by a
+  deterministic prefix->hop-count table. The rest need the parser.
+
+==============================================================================
+Q5  re-run the decomposition under lookup-first
+    The 246 were classified at coverage 0.646. Lookup-first is already
+    banked at 0.710. Adding the free wins to 517 double-counts against
+    the +51 the index already recovered.
+==============================================================================
+
+  questions in both runs: 800
+  verified pre-lookup   : 517  (0.646)
+  verified under lookup : 568  (0.710)
+  recovered by lookup   : 51
+  LOST under lookup     : 0
+
+  which failure classes did lookup already fix?
+    threshold_bound         34 of 36    (94% already recovered)
+    far_below               16 of 19    (84% already recovered)
+    walk_completes_now       1 of 11    (9% already recovered)
+
+  STILL failing under lookup-first: 195 of 246
+  remaining, by original class:
+    misparsed_chain         92 of 92    (100% still open)
+    not_retrieved           88 of 88    (100% still open)
+    walk_completes_now      10 of 11    (91% still open)
+    far_below                3 of 19    (16% still open)
+    threshold_bound          2 of 36    (6% still open)
+
+  => the free wins must be counted against 568/800 = 0.710,
+     and only against the 195 failures that survive lookup-first.
+
+==============================================================================
+Q6  backward (object-side) retrieval, on what actually survives lookup-first
+==============================================================================
+
+  tau_ret 0.5959 | surviving failures: 195
+
+  kind                      n  has bw  bw>=tau   share
+  misparsed_chain          92       0        0     0%
+  not_retrieved            88      51       40    45%
+  walk_completes_now       10       0        0     0%
+  far_below                 3       3        3   100%
+  threshold_bound           2       0        0     0%
+
+  backward clears tau on 43 of 195
+  ceiling if every one then verifies: (568+43)/800 = 0.764  [UPPER BOUND]
+
+  NOT PROBED AT ALL: misparsed_chain, walk_completes_now, threshold_bound
+  The original decomposition only ran the backward probe on
+  not_retrieved/far_below. Until the misparses are probed too, whether
+  they are a PARSE failure or a DIRECTION failure is unknown — and that
+  is precisely what decides whether the emitter is needed for them.
+
+==============================================================================
+Q7  is the gold answer present anywhere in the observed store?
+    Retrieval failures are fixable. Store absence is not, by any emitter.
+==============================================================================
+
+  observed store: 966 distinct fact strings
+  CAVEAT: only facts that surfaced in a trace or a candidate list are visible
+  here, so 'in store' is a LOWER bound and 'absent' is an over-count.
+
+  kind                      n  gold in store   absent
+  misparsed_chain          92             42       50
+  not_retrieved            88             49       39
+  walk_completes_now       10              9        1
+  far_below                 3              1        2
+  threshold_bound           2              2        0
+  TOTAL                   195            103       92
+
+  103/195 = 53% of surviving failures have their answer in reach.
+  ceiling if all of them were recovered: (568+103)/800 = 0.839  [UPPER BOUND]

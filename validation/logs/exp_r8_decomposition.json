@@ -1,0 +1,770 @@
+{
+ "n": 18,
+ "counts": {
+  "inner_verified": 17,
+  "E_has_forward_edges": 14,
+  "E_has_backward_edges": 17,
+  "composite_verified": 14,
+  "composite_correct": 14,
+  "outer_k=fwd1": 14,
+  "inner_failed": 1,
+  "inner:unknown_relation": 1,
+  "outer_failed": 3
+ },
+ "vm_calls": 78,
+ "records": [
+  {
+   "question": "Which list includes the list that includes the component of the instance of Speranza coortaria?",
+   "inner_question": "What is the component of the instance of Speranza coortaria?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the instance of the original language of the film or TV show of '' Orphans of the Storm ''?",
+   "inner_question": "What is the instance of the original language of the film or TV show of '' Orphans of the Storm ''?",
+   "gold": "index of language articles",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": "unknown_relation",
+    "verified": false,
+    "answer": null,
+    "n_hop": 4
+   },
+   "outcome": "inner_failed"
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of deroplatys moultoni?",
+   "inner_question": "What is the component of the instance of deroplatys moultoni?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of Obereopsis atrosternalis?",
+   "inner_question": "What is the component of the instance of Obereopsis atrosternalis?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of Coryphodon Constrictor?",
+   "inner_question": "What is the component of the instance of Coryphodon Constrictor?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of Microcolona leucosticta?",
+   "inner_question": "What is the component of the instance of Microcolona leucosticta?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of Panoploscelis?",
+   "inner_question": "What is the component of the instance of Panoploscelis?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of Neohierax insignis?",
+   "inner_question": "What is the component of the instance of Neohierax insignis?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of eccopsis?",
+   "inner_question": "What is the component of the instance of eccopsis?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the instance of Thạch Hà?",
+   "inner_question": "What is the instance of Thạch Hà?",
+   "gold": "county (vietnam)",
+   "gold_n_hop": 2,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "huyện",
+    "n_hop": 1
+   },
+   "neighbourhood": {
+    "E": "huyện",
+    "as_subject": [
+     [
+      "list",
+      "county (vietnam)"
+     ]
+    ],
+    "as_object": [
+     [
+      "instance",
+      "kông chro district"
+     ],
+     [
+      "instance",
+      "Thạch Hà"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "county (vietnam)"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "county (vietnam)",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of Dicorynia?",
+   "inner_question": "What is the component of the instance of Dicorynia?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of Catocala haitzi?",
+   "inner_question": "What is the component of the instance of Catocala haitzi?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the office held by the head of government of the administrative territorial entity of Vaumort?",
+   "inner_question": "What is the office held by the head of government of the administrative territorial entity of Vaumort?",
+   "gold": "President of the Conseil General",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "lists of presidents of departmental councils (france)",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "lists of presidents of departmental councils (france)",
+    "as_subject": [],
+    "as_object": [
+     [
+      "office held by head of government",
+      "yonne (département)"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": "plan_does_not_cover_question",
+    "verified": false,
+    "answer": null
+   },
+   "outer_fwd2": {
+    "reason": "plan_does_not_cover_question",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "outer_failed"
+  },
+  {
+   "question": "Which list includes the list that includes the office held by the head of government of the primary classification of 1881 in India?",
+   "inner_question": "What is the office held by the head of government of the primary classification of 1881 in India?",
+   "gold": "primer ministers of india",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "prime minister of india",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "prime minister of india",
+    "as_subject": [],
+    "as_object": [
+     [
+      "office held by head of government",
+      "ਭਾਰਤ ਗਣਤੰਤਰ"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": "plan_does_not_cover_question",
+    "verified": false,
+    "answer": null
+   },
+   "outer_fwd2": {
+    "reason": "plan_does_not_cover_question",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "outer_failed"
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of Grasse's Shrew?",
+   "inner_question": "What is the component of the instance of Grasse's Shrew?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of white crucian carp?",
+   "inner_question": "What is the component of the instance of white crucian carp?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the component of the instance of bulbophyllum tripaleum?",
+   "inner_question": "What is the component of the instance of bulbophyllum tripaleum?",
+   "gold": "Living beings",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "Books/Organism",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "Books/Organism",
+    "as_subject": [
+     [
+      "list",
+      "Living beings"
+     ]
+    ],
+    "as_object": [
+     [
+      "component",
+      "Taxxon"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": null,
+    "verified": true,
+    "answer": "Living beings"
+   },
+   "outer_fwd2": {
+    "reason": "retrieval_exhausted",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "verified",
+   "answer": "Living beings",
+   "correct": true,
+   "outer_k": [
+    "fwd1"
+   ]
+  },
+  {
+   "question": "Which list includes the list that includes the office held by the head of government of the country of Indore Museum?",
+   "inner_question": "What is the office held by the head of government of the country of Indore Museum?",
+   "gold": "primer ministers of india",
+   "gold_n_hop": 3,
+   "inner": {
+    "reason": null,
+    "verified": true,
+    "answer": "prime minister of india",
+    "n_hop": 2
+   },
+   "neighbourhood": {
+    "E": "prime minister of india",
+    "as_subject": [],
+    "as_object": [
+     [
+      "office held by head of government",
+      "ਭਾਰਤ ਗਣਤੰਤਰ"
+     ]
+    ]
+   },
+   "outer_fwd1": {
+    "reason": "plan_does_not_cover_question",
+    "verified": false,
+    "answer": null
+   },
+   "outer_fwd2": {
+    "reason": "plan_does_not_cover_question",
+    "verified": false,
+    "answer": null
+   },
+   "outer_bwd1_candidates": 0,
+   "outer_bwd2_candidates": 0,
+   "outcome": "outer_failed"
+  }
+ ],
+ "wall_s": 9.0
+}

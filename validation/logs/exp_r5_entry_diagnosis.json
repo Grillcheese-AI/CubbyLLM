@@ -1,0 +1,19 @@
+{
+ "mode": "real",
+ "store": 1241,
+ "indexed": 1188,
+ "surviving": 195,
+ "counts": {
+  "already_seeds": 77,
+  "no_seed": 118,
+  "entity_is_a_subject": 69,
+  "entity_absent": 49,
+  "fuzzy_tail_would_hit": 23,
+  "suffix_backoff_would_hit": 2
+ },
+ "suffix_depth": {
+  "2": 2
+ },
+ "jaccard": 0.6,
+ "wall_s": 1.6267234999977518
+}

@@ -1,0 +1,59 @@
+{
+ "per_arm": {
+  "A_control": {
+   "n": 100,
+   "built": 93,
+   "walked": 87,
+   "verified": 84,
+   "correct": 83,
+   "refused": 6,
+   "refused:plan_does_not_cover_question": 6,
+   "malformed": 7,
+   "walk:retrieval_exhausted": 3,
+   "verified_wrong": 1
+  },
+  "B_misparsed": {
+   "n": 92,
+   "built": 81,
+   "walked": 16,
+   "walk:retrieval_exhausted": 3,
+   "refused": 65,
+   "refused:plan_does_not_cover_question": 58,
+   "verified": 13,
+   "correct": 13,
+   "malformed": 11,
+   "refused:unknown_relation": 7
+  },
+  "C_unparseable": {
+   "n": 37,
+   "built": 19,
+   "refused": 16,
+   "refused:plan_does_not_cover_question": 13,
+   "malformed": 18,
+   "refused:unknown_relation": 3,
+   "walked": 3,
+   "verified": 3,
+   "correct": 3
+  }
+ },
+ "taus": {
+  "cal_unparseable_questions": 6,
+  "cal_mojibake_excluded_hop_obs": 15,
+  "n_hop_observations": 151,
+  "n_incorrect_hop_observations": 2,
+  "n_verified_calibration_walks": 127,
+  "tau_vm_floors": {
+   "1": 1.0,
+   "2": 0.4736328125,
+   "3": 0.22021484375
+  },
+  "fallback_tau_vm": 0.22021484375,
+  "tau_vm_youden_reference": 0.50146484375,
+  "tau_vm_youden_auc": 0.7248322147651006,
+  "tau_vm_calibration_degenerate": false,
+  "tau_ret": 0.595863088965416
+ },
+ "r3": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\validation\\logs\\exp_r3_emitter_floor_emitter_v8e.Q4_K_M.json",
+ "n_harvest_records": 100,
+ "wall_s": 9.1
+}

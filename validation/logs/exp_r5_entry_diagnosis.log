@@ -1,0 +1,34 @@
+mode real: 1241 facts, 1188 indexed — the eval store, rebuilt exactly as the harvest did
+failures surviving lookup-first: 195
+
+ENTRY FAILURE, DECOMPOSED
+  already seed at hop 0              :   77
+  unparseable                        :    0
+  NO SEED                            :  118
+
+  could a cheap matcher fix it?
+    fuzzy tail (Jaccard >= 0.6)        :   23  (19%)
+    suffix backoff                   :    2  (2%)   depth {2: 2}
+
+  or is the fact simply not there?
+    seed entity IS a subject         :   69  (58%)   -> RELATION mismatch (misparse residue)
+    seed entity only an object       :    0  (0%)   -> direction; by_object territory
+    seed entity ABSENT               :   49  (42%)   -> genuinely not in the store
+
+  relation mismatches — what the parse wanted vs what the index holds:
+    want 'administrative territorial entity contained within t'
+      have ['country of citizenship']
+    want 'source that describes the instance'
+      have ['instance']
+    want 'administrative territorial entity contained within t'
+      have ['country']
+    want 'award received by the creator'
+      have ['creator']
+    want 'conviction'
+      have ['conviction of']
+    want 'work that based on the genre'
+      have ['genre']
+    want 'ethnic group of the ethnic group of the country'
+      have ['country']
+    want 'location on the terrain feature'
+      have ['location']

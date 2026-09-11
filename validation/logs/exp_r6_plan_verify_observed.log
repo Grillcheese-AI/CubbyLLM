@@ -1,0 +1,55 @@
+mode observed: 966 facts, 953 parsed, 126 distinct relations
+questions parsed by the grammar: 763 of 800
+
+Q1  covers(): grammar plans that reconstruct their question
+    verified              517 /  517  (100%)
+    misparsed_chain        92 /   92  (100%)
+    not_retrieved          88 /   88  (100%)
+    threshold_bound        36 /   36  (100%)
+    far_below              19 /   19  (100%)
+    walk_completes_now     11 /   11  (100%)
+
+Q2  unknown_relation as a misparse detector (rejected / total)
+    verified                2 /  517  (0%)
+    misparsed_chain        90 /   92  (98%)
+    not_retrieved          69 /   88  (78%)
+    threshold_bound         1 /   36  (3%)
+    far_below               1 /   19  (5%)
+    walk_completes_now      0 /   11  (0%)
+    -> catches 90/92 misparses; wrongly rejects 2/517 verified chains  (precision vs verified 0.98)
+      [misparsed_chain] 'Which is the administrative territorial entity contained within the country of citizenship of felix joseph widder?'
+         unknown ['administrative territorial entity contained within the country of citizenship']
+      [misparsed_chain] 'What is the component of the source that describes the instance of Sirzar, Lorestan?'
+         unknown ['source that describes the instance']
+      [misparsed_chain] 'Which is the administrative territorial entity contained within the country of samsinbong?'
+         unknown ['administrative territorial entity contained within the country']
+      [not_retrieved] 'What is the successor of the event that sally robbins a participant of?'
+         unknown ['event that sally robbins a participant of']
+      [misparsed_chain] 'What is the instance of the award received by the creator of murder in the first (tv series)?'
+         unknown ['award received by the creator']
+      [not_retrieved] 'What is the class component of the conviction of rattlesnake james?'
+         unknown ['conviction']
+      [not_retrieved] 'What is the color of the flag of the administrative territorial entity of yeoman island?'
+         unknown ['color']
+      [misparsed_chain] 'What is the source that describes the instance of the institution where Christian Friedrich Henrici was educated?'
+         unknown ['source that describes the instance', 'institution where Christian Friedrich Henrici was educated']
+
+Q3a  segment(exhaustive): vocabulary-guided re-segmentation of the chain body
+    verified             unique=249  ambiguous=170  none=0  no_chain_frame=98   unique&gold_nhop: 248 right / 1 wrong
+    misparsed_chain      unique=20  ambiguous=7  none=55  no_chain_frame=10   unique&gold_nhop: 1 right / 19 wrong
+    not_retrieved        unique=25  ambiguous=27  none=25  no_chain_frame=11   unique&gold_nhop: 0 right / 25 wrong
+    threshold_bound      unique=10  ambiguous=17  none=1  no_chain_frame=8   unique&gold_nhop: 10 right / 0 wrong
+    far_below            unique=4  ambiguous=11  none=1  no_chain_frame=3   unique&gold_nhop: 4 right / 0 wrong
+    walk_completes_now   unique=0  ambiguous=10  none=0  no_chain_frame=1   unique&gold_nhop: 0 right / 0 wrong
+    misparsed chains whose UNIQUE segmentation has the gold hop count: 1 / 92
+      fixed  'What is the instance of A Friend of the Family?'  grammar n_hop 2 -> segment 1
+      BROKE  'Who is the officeholder of the office held by the head of government of the country of LGBT rights in the United Kingdom?'  grammar 3 -> segment 1, gold 3
+
+Q3b  segment(joint_in_entity=False): vocabulary-guided re-segmentation of the chain body
+    verified             unique=418  ambiguous=0  none=1  no_chain_frame=98   unique&gold_nhop: 418 right / 0 wrong
+    misparsed_chain      unique=2  ambiguous=0  none=80  no_chain_frame=10   unique&gold_nhop: 0 right / 2 wrong
+    not_retrieved        unique=17  ambiguous=0  none=60  no_chain_frame=11   unique&gold_nhop: 17 right / 0 wrong
+    threshold_bound      unique=27  ambiguous=0  none=1  no_chain_frame=8   unique&gold_nhop: 27 right / 0 wrong
+    far_below            unique=15  ambiguous=0  none=1  no_chain_frame=3   unique&gold_nhop: 15 right / 0 wrong
+    walk_completes_now   unique=10  ambiguous=0  none=0  no_chain_frame=1   unique&gold_nhop: 10 right / 0 wrong
+    misparsed chains whose UNIQUE segmentation has the gold hop count: 0 / 92

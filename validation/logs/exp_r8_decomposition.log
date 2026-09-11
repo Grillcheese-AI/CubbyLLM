@@ -1,0 +1,24 @@
+nested questions: 18 of 37 unparseable | store 1241 facts, 165 relations | VM resident
+'list' is a store relation: True
+
+GoT-1 slice — host-composed decomposition, VM-certified per part, bounded outer alternatives
+  nested questions                   18   (flat plans: 0 verified, by construction)
+  inner chain verified               17
+    inner:unknown_relation         1
+  E has forward edges / backward     14 / 17
+  outer failed (fwd1, fwd2, bwd1, bwd2)    3   bwd ambiguous: 1-hop 0, 2-hop 0
+  ambiguous (both k, disagree)        0   -> ASK, never a guess
+  COMPOSITE VERIFIED                 14   correct 14  wrong 0
+    outer_k=fwd1                   14
+  VM calls 78  (4.3 per question; the flat walk spends ~3 on a 3-hop verify)
+    verified         'Which list includes the list that includes the component of the instan' -> 'Living beings' (gold 'Living beings')
+        E='Books/Organism'  as subject: [('list', 'Living beings')]  as object: [('component', 'Taxxon')]
+    inner_failed     'Which list includes the list that includes the instance of the origina' -> None (gold 'index of language articles')
+    verified         'Which list includes the list that includes the component of the instan' -> 'Living beings' (gold 'Living beings')
+        E='Books/Organism'  as subject: [('list', 'Living beings')]  as object: [('component', 'Taxxon')]
+    verified         'Which list includes the list that includes the component of the instan' -> 'Living beings' (gold 'Living beings')
+        E='Books/Organism'  as subject: [('list', 'Living beings')]  as object: [('component', 'Taxxon')]
+    verified         'Which list includes the list that includes the component of the instan' -> 'Living beings' (gold 'Living beings')
+        E='Books/Organism'  as subject: [('list', 'Living beings')]  as object: [('component', 'Taxxon')]
+    verified         'Which list includes the list that includes the component of the instan' -> 'Living beings' (gold 'Living beings')
+        E='Books/Organism'  as subject: [('list', 'Living beings')]  as object: [('component', 'Taxxon')]

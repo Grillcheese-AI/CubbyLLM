@@ -1,0 +1,35 @@
+emitter plans from exp_r3_emitter_floor_emitter_v8e.Q4_K_M.json | store 1241 facts, 165 relations | tau_vm floors {1: 1.0, 2: 0.4736328125, 3: 0.22021484375} fallback 0.2202 | tau_ret 0.5959 | VM resident
+
+A_control: n=100  malformed=7  no_seed=0  built=93  refused=6  walked=87  VERIFIED=84  correct=83  verified_wrong=1
+    refused:plan_does_not_cover_question 6
+    walk:retrieval_exhausted         3
+    OK  'What is the component of the instance of the parent taxon of iridomyrmex bigi?' -> 'Books/Organism' (gold 'Books/Organism')
+    OK  'What given name does margit koloczy have?' -> 'margit (given name)' (gold 'margit (given name)')
+    OK  'Where is the legislative body of the administrative territorial entity of Grand Saconnex?' -> 'Great Council of Geneva' (gold 'Great Council of Geneva')
+    OK  'What is the component of the instance of Scopula mustangensis?' -> 'Books/Organism' (gold 'Books/Organism')
+    OK  'What is the country of origin of the genre of chung an-chi?' -> 'p:jp' (gold 'p:jp')
+    OK  'What is the instance of dorian finney-smith?' -> 'Huamn' (gold 'Huamn')
+
+B_misparsed: n=92  malformed=11  no_seed=0  built=81  refused=65  walked=16  VERIFIED=13  correct=13  verified_wrong=0
+    refused:plan_does_not_cover_question 58
+    refused:unknown_relation         7
+    walk:retrieval_exhausted         3
+    OK  'Which is the administrative territorial entity contained within the country of samsinbong?' -> 'Wulsan' (gold 'Wulsan')
+    OK  'Which is the administrative territorial entity contained within the country of gepis river' -> 'Timiş County' (gold 'Timiş County')
+    OK  'What is the award received by the genre of Joan Rivers: A Piece of Work?' -> 'Genesis Awards' (gold 'Genesis Awards')
+    OK  'What is the capital of the administrative territorial entity contained within the country ' -> 'victoria, labuan' (gold 'victoria, labuan')
+    OK  'Which is the administrative territorial entity contained within the administrative territo' -> 'Nyírbátor District' (gold 'Nyírbátor District')
+    OK  'Which is the administrative territorial entity contained within the country of citizenship' -> 'midi pyrenees' (gold 'midi pyrenees')
+
+C_unparseable: n=37  malformed=18  no_seed=0  built=19  refused=16  walked=3  VERIFIED=3  correct=3  verified_wrong=0
+    refused:plan_does_not_cover_question 13
+    refused:unknown_relation         3
+    OK  'What award did jean durtal receive?' -> 'Prix Broquette-Gonin' (gold 'Prix Broquette-Gonin')
+    OK  'What nomination did gerhard herzberg receive?' -> 'Nobel Prize in Chemistry' (gold 'Nobel Prize in Chemistry')
+    OK  'What award did karen ordal kupperman receive?' -> 'albert j. beveridge award' (gold 'albert j. beveridge award')
+
+============================================================================
+questions the grammar could not answer, now VM-verified: 16 (correct 16) of 129   [B 13/92, C 3/37]
+arm A (the emitter's training questions, sanity): verified 84/100, correct 83
+============================================================================
+resident VM: 259 requests

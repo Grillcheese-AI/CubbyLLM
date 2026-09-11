@@ -1,0 +1,93 @@
+{
+ "mode": "observed",
+ "store": 966,
+ "relations": 126,
+ "parsed": 763,
+ "covers": {
+  "verified": 517,
+  "not_retrieved": 88,
+  "threshold_bound": 36,
+  "misparsed_chain": 92,
+  "far_below": 19,
+  "walk_completes_now": 11
+ },
+ "rejected": {
+  "misparsed_chain": 90,
+  "not_retrieved": 69,
+  "far_below": 1,
+  "threshold_bound": 1,
+  "verified": 2
+ },
+ "total": {
+  "verified": 517,
+  "not_retrieved": 88,
+  "threshold_bound": 36,
+  "misparsed_chain": 92,
+  "far_below": 19,
+  "walk_completes_now": 11
+ },
+ "segment": {
+  "exhaustive": {
+   "verified|ambiguous": 170,
+   "not_retrieved|ambiguous": 27,
+   "verified|no_chain_frame": 98,
+   "threshold_bound|unique": 10,
+   "verified|unique": 249,
+   "misparsed_chain|none": 55,
+   "misparsed_chain|unique": 20,
+   "not_retrieved|unique": 25,
+   "threshold_bound|ambiguous": 17,
+   "not_retrieved|none": 25,
+   "not_retrieved|no_chain_frame": 11,
+   "far_below|ambiguous": 11,
+   "misparsed_chain|no_chain_frame": 10,
+   "walk_completes_now|ambiguous": 10,
+   "misparsed_chain|ambiguous": 7,
+   "threshold_bound|no_chain_frame": 8,
+   "far_below|none": 1,
+   "far_below|unique": 4,
+   "threshold_bound|none": 1,
+   "far_below|no_chain_frame": 3,
+   "walk_completes_now|no_chain_frame": 1
+  },
+  "strict": {
+   "verified|unique": 418,
+   "not_retrieved|unique": 17,
+   "verified|no_chain_frame": 98,
+   "threshold_bound|unique": 27,
+   "misparsed_chain|none": 80,
+   "not_retrieved|none": 60,
+   "not_retrieved|no_chain_frame": 11,
+   "far_below|unique": 15,
+   "misparsed_chain|no_chain_frame": 10,
+   "walk_completes_now|unique": 10,
+   "misparsed_chain|unique": 2,
+   "threshold_bound|no_chain_frame": 8,
+   "far_below|none": 1,
+   "threshold_bound|none": 1,
+   "far_below|no_chain_frame": 3,
+   "verified|none": 1,
+   "walk_completes_now|no_chain_frame": 1
+  }
+ },
+ "unique_gold_agree": {
+  "exhaustive": {
+   "threshold_bound|True": 10,
+   "verified|True": 248,
+   "misparsed_chain|False": 19,
+   "not_retrieved|False": 25,
+   "far_below|True": 4,
+   "misparsed_chain|True": 1,
+   "verified|False": 1
+  },
+  "strict": {
+   "verified|True": 418,
+   "not_retrieved|True": 17,
+   "threshold_bound|True": 27,
+   "far_below|True": 15,
+   "walk_completes_now|True": 10,
+   "misparsed_chain|False": 2
+  }
+ },
+ "wall_s": 0.09
+}

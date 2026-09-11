@@ -1,0 +1,37 @@
+mode observed: 966 facts, 953 indexed — APPROXIMATE — facts that surfaced in the logs, NOT the whole store
+failures surviving lookup-first: 195
+
+ENTRY FAILURE, DECOMPOSED
+  already seed at hop 0              :   77
+  unparseable                        :    0
+  NO SEED                            :  118
+
+  could a cheap matcher fix it?
+    fuzzy tail (Jaccard >= 0.6)        :    5  (4%)
+    suffix backoff                   :    1  (1%)   depth {2: 1}
+
+  or is the fact simply not there?
+    seed entity IS a subject         :   16  (14%)   -> RELATION mismatch (misparse residue)
+    seed entity only an object       :    0  (0%)   -> direction; by_object territory
+    seed entity ABSENT               :  102  (86%)   -> STORE GAP — this mode cannot tell you more
+
+  relation mismatches — what the parse wanted vs what the index holds:
+    want 'ethnic group of the ethnic group of the country'
+      have ['country']
+    want 'award received by the genre of Joan Rivers: A Piece'
+      have ['genre of Joan Rivers: A Piece']
+    want 'emergency room'
+      have ['administrative territorial entity']
+    want 'award received by the director of photography'
+      have ['director of photography']
+    want 'source that describes the instance'
+      have ['instance']
+    want 'source that describes the water body located near th'
+      have ['country of citizenship']
+    want 'languages spoken, written or signed by the child'
+      have ['child']
+    want 'award received by the administrative territorial ent'
+      have ['administrative territorial entity']
+
+  *** The absent bucket dominates and this store is incomplete. Re-run
+  *** with --real before quoting any number above. ***

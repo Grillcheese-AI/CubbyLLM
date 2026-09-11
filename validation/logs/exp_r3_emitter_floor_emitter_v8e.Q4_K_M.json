@@ -1,0 +1,5023 @@
+{
+ "gguf": "standin/models/emitter_v8e.Q4_K_M.gguf",
+ "arms": {
+  "A_control": {
+   "n": 100,
+   "counts": {
+    "well_formed": 93,
+    "hop_count_correct": 90,
+    "hop_delta_+0": 90,
+    "answerable": 88,
+    "of_question": 88,
+    "accepted": 87,
+    "accepted_and_hop_correct": 86,
+    "role_chain_exact": 85,
+    "object_hits": 14,
+    "object_slots": 135,
+    "ALL_objects_correct": 4,
+    "malformed": 7,
+    "hop_count_wrong": 3,
+    "hop_delta_+1": 2,
+    "paraphrase_tier_used": 1,
+    "hop_delta_-1": 1
+   },
+   "mean_latency_s": 0.985
+  },
+  "B_misparsed": {
+   "n": 92,
+   "counts": {
+    "well_formed": 81,
+    "hop_count_correct": 45,
+    "hop_delta_+0": 45,
+    "answerable": 41,
+    "of_question": 57,
+    "accepted": 39,
+    "accepted_and_hop_correct": 18,
+    "hop_count_wrong": 36,
+    "hop_delta_-1": 32,
+    "malformed": 11,
+    "hop_delta_+1": 3,
+    "paraphrase_tier_used": 7,
+    "hop_delta_-2": 1
+   },
+   "mean_latency_s": 1.375
+  },
+  "C_unparseable": {
+   "n": 37,
+   "counts": {
+    "well_formed": 19,
+    "hop_count_correct": 13,
+    "hop_delta_+0": 13,
+    "answerable": 10,
+    "of_question": 15,
+    "accepted": 10,
+    "malformed": 18,
+    "accepted_and_hop_correct": 7,
+    "hop_count_wrong": 6,
+    "hop_delta_+1": 3,
+    "hop_delta_-1": 3
+   },
+   "mean_latency_s": 1.057
+  }
+ },
+ "wall_s": 264.3225289000038,
+ "rows": [
+  {
+   "arm": "A_control",
+   "question": "What is the component of the instance of the parent taxon of iridomyrmex bigi?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_PARENT_TAXON",
+    "H2_INSTANCE",
+    "H3_COMPONENT"
+   ],
+   "objects": [
+    "Iridomyrmex bigi",
+    "Taxxon",
+    "Taxxon"
+   ],
+   "gold_roles": [
+    "H1_PARENT_TAXON",
+    "H2_INSTANCE",
+    "H3_COMPONENT"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What given name does margit koloczy have?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_GIVEN_NAME"
+   ],
+   "objects": [
+    "Margit"
+   ],
+   "gold_roles": [
+    "H1_GIVEN_NAME"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Where is the legislative body of the administrative territorial entity of Grand Saconnex?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_LEGISLATIVE_BODY"
+   ],
+   "objects": [
+    "Grand Saconnex",
+    "Grand Saconnex General Council"
+   ],
+   "gold_roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_LEGISLATIVE_BODY"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the component of the instance of Scopula mustangensis?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_COMPONENT"
+   ],
+   "objects": [
+    "Scopula mustangensis",
+    "Proper"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE",
+    "H2_COMPONENT"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the country of origin of the genre of chung an-chi?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_GENRE",
+    "H2_COUNTRY_OF_ORIGIN"
+   ],
+   "objects": [
+    "pop",
+    "Republic of China"
+   ],
+   "gold_roles": [
+    "H1_GENRE",
+    "H2_COUNTRY_OF_ORIGIN"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of dorian finney-smith?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "Performer"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the occupation of achille marie joseph glorieux?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_OCCUPATION"
+   ],
+   "objects": [
+    "Assistant Secretary"
+   ],
+   "gold_roles": [
+    "H1_OCCUPATION"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the country of citizenship of Ralph Edward Flanders?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "objects": [
+    "United States"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of (5918) 1991 nv3?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "(5918) 1991 nv3"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the component of the instance of Triangulate butterflyfish?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_COMPONENT"
+   ],
+   "objects": [
+    "Triangulate butterflyfish",
+    "Taxxon"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE",
+    "H2_COMPONENT"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the country of origin of Vacancy (film)?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY_OF_ORIGIN"
+   ],
+   "objects": [
+    "United States"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_ORIGIN"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the capital of the country of citizenship of regina lewis?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_CITIZENSHIP",
+    "H2_CAPITAL"
+   ],
+   "objects": [
+    "United States",
+    "Washington, D.C."
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP",
+    "H2_CAPITAL"
+   ],
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "country citizenship"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What given name does ilia ignatev have?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_GIVEN_NAME"
+   ],
+   "objects": [
+    "ilia ignatev"
+   ],
+   "gold_roles": [
+    "H1_GIVEN_NAME"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of French presidential election, 1965?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "French presidential election, 1965"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the official language of the country of citizenship of Zhao Pengfei?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP",
+    "H2_OFFICIAL_LANGUAGE"
+   ],
+   "objects": [
+    "PRC",
+    "Chinese"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP",
+    "H2_OFFICIAL_LANGUAGE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of the country of Middle Foster Lake?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "United States of Colombia",
+    "Polity"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY",
+    "H2_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Who is the composer of dom durakov?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COMPOSER"
+   ],
+   "objects": [
+    "dom durakov"
+   ],
+   "gold_roles": [
+    "H1_COMPOSER"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the continent of the country of climate of oregon?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_CONTINENT"
+   ],
+   "objects": [
+    "United States of America",
+    "North America"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY",
+    "H2_CONTINENT"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the country of origin of Purple Mask?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY_OF_ORIGIN"
+   ],
+   "objects": [
+    "United States"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_ORIGIN"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the occupation of christian mégret?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_OCCUPATION"
+   ],
+   "objects": [
+    "political jargon"
+   ],
+   "gold_roles": [
+    "H1_OCCUPATION"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of caswell public library (former)?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "public library (former)"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the characteristic of the instance of mats lie skare?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_CHARACTERISTIC"
+   ],
+   "objects": [
+    "Mats Lie Skare",
+    "Atsar"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE",
+    "H2_CHARACTERISTIC"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of Elachista paryphoea?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "Taxxon"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Where is the home venue of the occupant of stade universitaire saint léonard?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_OCCUPANT",
+    "H2_VENUE"
+   ],
+   "objects": [
+    "Université de Lille",
+    "stade universitaire saint léonard"
+   ],
+   "gold_roles": [
+    "H1_OCCUPANT",
+    "H2_HOME_VENUE"
+   ],
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "venue"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the country of citizenship of Erwin Carrillo?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "objects": [
+    "United States"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the country of citizenship of giancarlo tartoni?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "objects": [
+    "P:I"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What genre is Tombo (album)?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_GENRE"
+   ],
+   "objects": [
+    "folk-rock"
+   ],
+   "gold_roles": [
+    "H1_GENRE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of the occupation of joseph peirce?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_OCCUPATION",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "politician",
+    "Provisional"
+   ],
+   "gold_roles": [
+    "H1_OCCUPATION",
+    "H2_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What Predecessor does attitude adjuster (album) have?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_PREDECESSOR"
+   ],
+   "objects": [
+    "attitude adjuster (album)"
+   ],
+   "gold_roles": [
+    "H1_PREDECESSOR"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the time zone of Lužani, Gradiška?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_TIME_ZONE"
+   ],
+   "objects": [
+    "UTC"
+   ],
+   "gold_roles": [
+    "H1_TIME_ZONE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Who is the mother of casimir iii, the great?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_MOTHER"
+   ],
+   "objects": [
+    "Jadwiga of Greater Poland"
+   ],
+   "gold_roles": [
+    "H1_MOTHER"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of the time zone of magyardombegyhaz?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_TIME_ZONE",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "UTC",
+    "continental europe"
+   ],
+   "gold_roles": [
+    "H1_TIME_ZONE",
+    "H2_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the parent entity of the instance of doshin?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_PARENT_ENTITY"
+   ],
+   "objects": [
+    "doshin",
+    "Yamato"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE",
+    "H2_PARENT_ENTITY"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the parent entity of the instance of alfred d'orsay tennyson dickens?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_PARENT_ENTITY"
+   ],
+   "objects": [
+    "alfred d'orsay tennyson",
+    "Peripheral"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE",
+    "H2_PARENT_ENTITY"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of Rajkot Municipal Corporation?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "Municipal Corporation"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the predecessor of the successor of Beim ersten Mal tut's immer weh?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_SUCCESSOR",
+    "H2_PREDECESSOR"
+   ],
+   "objects": [
+    "Beim zweiten Mal tut's immer weh",
+    "Beim ersten Mal tut's immer weh"
+   ],
+   "gold_roles": [
+    "H1_SUCCESSOR",
+    "H2_PREDECESSOR"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of Professor M. Golam Shahi Alam?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "Professor"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of Eirmocephala?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "Taxxon"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of Aftab Sachak?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "Aftab"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Which country is arcadia, maryland in?",
+   "well_formed": false,
+   "gold_n_hop": 1,
+   "emitted": null
+  },
+  {
+   "arm": "A_control",
+   "question": "Which country is the country of the currency of the country of citizenship of Henry Allcock?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_CURRENCY",
+    "H3_COUNTRY"
+   ],
+   "objects": [
+    "United Kingdom",
+    "pound",
+    "United Kingdom"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP",
+    "H2_CURRENCY",
+    "H3_COUNTRY"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Which conflict is Charles Sumner \"Chuck\" Stone, Jr. in?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_CONFLICT"
+   ],
+   "objects": [
+    "World War II"
+   ],
+   "gold_roles": [
+    "H1_CONFLICT"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the occupation of Robert Jan Stips?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_OCCUPATION"
+   ],
+   "objects": [
+    "Assistant Professor"
+   ],
+   "gold_roles": [
+    "H1_OCCUPATION"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the linguistic typology of the official language of the primary classification of Economy of kyrgyzstan?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_DESCRIPTION",
+    "H2_LANGUAGE",
+    "H3_LINGUISTIC_TYPOLOGY"
+   ],
+   "objects": [
+    "Kyrgyz",
+    "Russian",
+    "Official"
+   ],
+   "gold_roles": [
+    "H1_PRIMARY_CLASSIFICATION_OF_ECONOMY",
+    "H2_OFFICIAL_LANGUAGE",
+    "H3_LINGUISTIC_TYPOLOGY"
+   ],
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "description",
+     "language"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Which country is Prahali in?",
+   "well_formed": false,
+   "gold_n_hop": 1,
+   "emitted": null
+  },
+  {
+   "arm": "A_control",
+   "question": "Where is the administrative territorial entity of inster?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "objects": [
+    "inster"
+   ],
+   "gold_roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of the genre of ultravisitor?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_GENRE",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "visitor",
+    "Audio"
+   ],
+   "gold_roles": [
+    "H1_GENRE",
+    "H2_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of eddy creek (kentucky)?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "river"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the country of citizenship of milan štovíček?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "objects": [
+    "Czechoslovakian"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the occupation of Ja'far Kashfi?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_OCCUPATION"
+   ],
+   "objects": [
+    "politician"
+   ],
+   "gold_roles": [
+    "H1_OCCUPATION"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the component of the instance of the parent taxon of xenothictis sciaphila?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_PARENT_TAXON",
+    "H2_INSTANCE",
+    "H3_COMPONENT"
+   ],
+   "objects": [
+    "Xenothictis sciaphila",
+    "Taxxon",
+    "Taxxon"
+   ],
+   "gold_roles": [
+    "H1_PARENT_TAXON",
+    "H2_INSTANCE",
+    "H3_COMPONENT"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the IUCN conservation status of allied rock-wallaby?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_CONSERVATION_STATUS"
+   ],
+   "objects": [
+    "allied rock-wallaby",
+    "Least Concern"
+   ],
+   "gold_roles": [
+    "H1_IUCN_CONSERVATION_STATUS"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [],
+    "paraphrased": [
+     "conservation status"
+    ]
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What given name does lajos gádoros have?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_GIVEN_NAME"
+   ],
+   "objects": [
+    "lajos gádoros"
+   ],
+   "gold_roles": [
+    "H1_GIVEN_NAME"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What genre is The Things That You Do?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_GENRE"
+   ],
+   "objects": [
+    "The Things That You Do"
+   ],
+   "gold_roles": [
+    "H1_GENRE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Where is the highest point of the administrative territorial entity of NY 1X?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_HIGHEST_POINT"
+   ],
+   "objects": [
+    "NY 1X",
+    "Grafton"
+   ],
+   "gold_roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_HIGHEST_POINT"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What given name does John Gachora have?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_GIVEN_NAME"
+   ],
+   "objects": [
+    "John"
+   ],
+   "gold_roles": [
+    "H1_GIVEN_NAME"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of sam spanier?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "Judge"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the official language of the country of citizenship of the author of sally (asimov)?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the official language of the country of comstock, texas?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_OFFICIAL_LANGUAGE"
+   ],
+   "objects": [
+    "United States of America",
+    "English"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY",
+    "H2_OFFICIAL_LANGUAGE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Who is the developer of Annodex?",
+   "well_formed": false,
+   "gold_n_hop": 1,
+   "emitted": null
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the continent of the country of citizenship of ai (j-pop)?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP",
+    "H2_CONTINENT"
+   ],
+   "objects": [
+    "Japans",
+    "Asia"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP",
+    "H2_CONTINENT"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of the occupation of walter coffin?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_OCCUPATION",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "politician",
+    "Periphery"
+   ],
+   "gold_roles": [
+    "H1_OCCUPATION",
+    "H2_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the occupation of alonso gutierrez?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_OCCUPATION"
+   ],
+   "objects": [
+    "Politician"
+   ],
+   "gold_roles": [
+    "H1_OCCUPATION"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Where is the collection of Ingeborg Psalter?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COLLECTION"
+   ],
+   "objects": [
+    "The collection of Ingeborg Psalter"
+   ],
+   "gold_roles": [
+    "H1_COLLECTION"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the component of the instance of Cocytia?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_COMPONENT"
+   ],
+   "objects": [
+    "Cocytia",
+    "Proper"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE",
+    "H2_COMPONENT"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of khalid kaabi?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "Wikipedia article"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Which is the flag of the country of xia county?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_FLAG"
+   ],
+   "objects": [
+    "China",
+    "China's national flag"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY",
+    "H2_FLAG"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of Nathaniel Bishop Collins House?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "National Register of Historic Places"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of Wolfgang Steinert?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "Person"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Who is the parent taxon of Biwia tama?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_PARENT_TAXON"
+   ],
+   "objects": [
+    "Biwia tama"
+   ],
+   "gold_roles": [
+    "H1_PARENT_TAXON"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the time zone of the continent of the country of johnsontown tobacco barn no. 2?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_CONTINENT",
+    "H3_TIME_ZONE"
+   ],
+   "objects": [
+    "United States",
+    "North America",
+    "America/New_York"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY",
+    "H2_CONTINENT",
+    "H3_TIME_ZONE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of the genre of Marlain Aggelidou?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_GENRE",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "Drama",
+    "TV show"
+   ],
+   "gold_roles": [
+    "H1_GENRE",
+    "H2_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Who is the author of the license of spark (software)?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_AUTHOR"
+   ],
+   "objects": [
+    "The Software License"
+   ],
+   "gold_roles": [
+    "H1_LICENSE",
+    "H2_AUTHOR"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What genre is too much fun?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_GENRE"
+   ],
+   "objects": [
+    "Too Much Fun"
+   ],
+   "gold_roles": [
+    "H1_GENRE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the country of citizenship of andy puddicombe?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "objects": [
+    "United Kingdom"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Who is the chief executive officer of the sports team of Paul Smith (defensive end)?",
+   "well_formed": false,
+   "gold_n_hop": 2,
+   "emitted": null
+  },
+  {
+   "arm": "A_control",
+   "question": "Which country is Ilomants in?",
+   "well_formed": false,
+   "gold_n_hop": 1,
+   "emitted": null
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the Successor of 1978 UCI Road World Championships?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_STEP",
+    "H2_NAME"
+   ],
+   "objects": [
+    "1978 UCI Road World Championships",
+    "1980 UCI Road World Championships"
+   ],
+   "gold_roles": [
+    "H1_SUCCESSOR"
+   ],
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "step",
+     "name"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the occupation of konrad ekhof?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_OCCUPATION"
+   ],
+   "objects": [
+    "Assistant Secretary"
+   ],
+   "gold_roles": [
+    "H1_OCCUPATION"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the capital of the country of Santa Cruz de Yanguas, Soria?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_CAPITAL"
+   ],
+   "objects": [
+    "Espanya",
+    "Madrid"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY",
+    "H2_CAPITAL"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What genre is martijn westerholt?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_GENRE"
+   ],
+   "objects": [
+    "Contemporary"
+   ],
+   "gold_roles": [
+    "H1_GENRE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Which country is Institute of Systematics and Ecology of Animals in?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY"
+   ],
+   "objects": [
+    "United Kingdom"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of the parent taxon of yangochiroptera?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_PARENT_TAXON",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "yangochiroptera",
+    "Taxxon"
+   ],
+   "gold_roles": [
+    "H1_PARENT_TAXON",
+    "H2_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the country of citizenship of Ano Kuwai?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "objects": [
+    "Japan"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the occupation of Robert Powell (composer)?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_OCCUPATION"
+   ],
+   "objects": [
+    "Composer"
+   ],
+   "gold_roles": [
+    "H1_OCCUPATION"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of Austro-Hungarian Unterseeboot 46?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "Unterseeboot"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of the parent taxon of avenionia brevis?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_PARENT_TAXON",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "Avenionia brevis",
+    "Taxxon"
+   ],
+   "gold_roles": [
+    "H1_PARENT_TAXON",
+    "H2_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the capital of the country of citizenship of Warren sonbert?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_CITIZENSHIP",
+    "H2_CAPITAL"
+   ],
+   "objects": [
+    "United States",
+    "Washington, D.C."
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP",
+    "H2_CAPITAL"
+   ],
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "country citizenship"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the time zone of the administrative territorial entity of hillery, illinois?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_TIME_ZONE"
+   ],
+   "objects": [
+    "hillery, illinois",
+    "Central Daylight Time"
+   ],
+   "gold_roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_TIME_ZONE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the country of origin of So Bright Is the View?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY_OF_ORIGIN"
+   ],
+   "objects": [
+    "United States"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_ORIGIN"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the native language of Georges Tron?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_NATIVE_LANGUAGE"
+   ],
+   "objects": [
+    "French"
+   ],
+   "gold_roles": [
+    "H1_NATIVE_LANGUAGE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Where is the administrative territorial entity of Skopje Zoo?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "objects": [
+    "Skopje"
+   ],
+   "gold_roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Which country is Porto Novo, Cape Verde in?",
+   "well_formed": false,
+   "gold_n_hop": 1,
+   "emitted": null
+  },
+  {
+   "arm": "A_control",
+   "question": "Which is the flag of the country of malko popovo?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_FLAG"
+   ],
+   "objects": [
+    "Serbia",
+    "white and red flag"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY",
+    "H2_FLAG"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the capital of the country of origin of Snowbird (band)?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_OF_ORIGIN",
+    "H2_CAPITAL"
+   ],
+   "objects": [
+    "United States",
+    "Washington, D.C."
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_ORIGIN",
+    "H2_CAPITAL"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the country of citizenship of brett wheeler?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "objects": [
+    "United Kingdom"
+   ],
+   "gold_roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Which country is the country of the administrative territorial entity of grunkraut?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_COUNTRY"
+   ],
+   "objects": [
+    "grunkraut",
+    "Deutsches Reich"
+   ],
+   "gold_roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_COUNTRY"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Who is the director of Young Dan'l Boone?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_DIRECTOR"
+   ],
+   "objects": [
+    "John Ford"
+   ],
+   "gold_roles": [
+    "H1_DIRECTOR"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "What is the instance of Armenian kings?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_INSTANCE"
+   ],
+   "objects": [
+    "Armenian kings"
+   ],
+   "gold_roles": [
+    "H1_INSTANCE"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "A_control",
+   "question": "Where is the administrative territorial entity of San Pascual, Masbate?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "objects": [
+    "Masbate City"
+   ],
+   "gold_roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the administrative territorial entity contained within the country of citizenship of felix joseph widder?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP",
+    "H2_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "objects": [
+    "United States",
+    "Ohio"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the component of the source that describes the instance of Sirzar, Lorestan?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_COMPONENT"
+   ],
+   "objects": [
+    "county",
+    "Administrative territorial entity"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the administrative territorial entity contained within the country of samsinbong?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "objects": [
+    "Republic of Korea",
+    "samsinbong"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the instance of the award received by the creator of murder in the first (tv series)?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of the institution where Christian Friedrich Henrici was educated?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTITUTION",
+    "H2_NAME"
+   ],
+   "objects": [
+    "University of Königsberg",
+    "Christian Friedrich Henrici"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "institution",
+     "name"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the instance of the work that based on the genre of Crispian St. Peters?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_GENRE",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "Crystalline",
+    "Atsar"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "To which ethnic group does the ethnic group of the country of coana (parish) belong?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_ETHNIC_GROUP"
+   ],
+   "objects": [
+    "Republic of Bulgaria",
+    "Bulgarian"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "ethnic group"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Who is the editor of the source that describes the administrative territorial entity of Lakewood, Edmonton?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_EDITOR"
+   ],
+   "objects": [
+    "Lakewood, Edmonton",
+    "The City of Edmonton"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the component of the entity that different from the instance of el alcázar, misiones?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_DISTINCT_ENTITY",
+    "H3_COMPONENT"
+   ],
+   "objects": [
+    "el alcázar, misiones",
+    "Mancunian",
+    "steel"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "distinct entity"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of Lost in Thailand?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_SRC"
+   ],
+   "objects": [
+    "Lost in Thailand",
+    "https://en.wikipedia.org/wiki/Lost_in_Thailand"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "src"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the award received by the head of government of the country of Thombattu?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_AWARD"
+   ],
+   "objects": [
+    "Sri Lanka",
+    "Peacock Trophy"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the languages spoken, written or signed by the cast member of La distancia más larga?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_LANGUAGE",
+    "H2_LANGUAGE"
+   ],
+   "objects": [
+    "Spanish",
+    "English"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "language",
+     "language"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the language of work or name of the language of work or name of the given name of gillian thurlow?",
+   "well_formed": false,
+   "gold_n_hop": 2,
+   "emitted": null
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Who is the editor of the source that describes the genre of Leo Fall?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_GENRE",
+    "H2_EDITOR"
+   ],
+   "objects": [
+    "Leo Fall",
+    "The Fallen"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the time zone of the continent of the location of formation of the starfires?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_LOCATION",
+    "H2_CONTINENT",
+    "H3_TIME_ZONE"
+   ],
+   "objects": [
+    "Sci-Fi planet",
+    "Sci-Fi",
+    "Universe"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the content type of the list that includes the instance of galle lighthouse?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_CONTENT_TYPE"
+   ],
+   "objects": [
+    "galle lighthouse",
+    "Marine lighthouses"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the office held by the head of government of the office held by the head of government of the administrative territorial entity of Biltmore Apartments?",
+   "well_formed": false,
+   "gold_n_hop": 2,
+   "emitted": null
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Who is the author of the source that describes the instance of little island, cork?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_AUTHOR",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "The Lord of the Rings",
+    "little island, cork"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of john weeks moore?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_SRC"
+   ],
+   "objects": [
+    "john weeks moore",
+    "Peripheral Objects"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "src"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Who is the editor of the source that describes the country of origin of Tarentel (band)?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_OF_ORIGIN",
+    "H2_EDITOR"
+   ],
+   "objects": [
+    "France",
+    "Jean-Louis"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of Siegmund Salfeld?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_SRC"
+   ],
+   "objects": [
+    "Siegmund Salfeld",
+    "Perioz"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "src"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the administrative territorial entity contained within the country of gepis river?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "objects": [
+    "Espanya",
+    "Comunidad Valenciana"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of the material used in Yermak Monument?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_SRC"
+   ],
+   "objects": [
+    "stone",
+    "Yermaq"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "src"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the award received by the genre of Joan Rivers: A Piece of Work?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_GENRE",
+    "H2_AWARD"
+   ],
+   "objects": [
+    "Drama",
+    "Golden Globe Award"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of the given name of salil shetty?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_GIVEN_NAME",
+    "H2_INSTANCE_OF_NAME",
+    "H3_NAME"
+   ],
+   "objects": [
+    "salil shetty",
+    "first name",
+    "salil"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "instance of name",
+     "name"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of bukovo monastery?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_SRC"
+   ],
+   "objects": [
+    "monastery",
+    "watagiri"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "src"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the linguistic typology of the original language of the film or TV show of Diary of Korean-Japanese War?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ORIGINAL_LANGUAGE",
+    "H2_LINGUISTIC_TYPOLOGY"
+   ],
+   "objects": [
+    "korean",
+    "Official language of South Korea"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "original language"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of Roland Pidoux?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_SRC"
+   ],
+   "objects": [
+    "Roland Pidoux",
+    "https://en.wikipedia.org/wiki/History_of_philately"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "src"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the parent entity of the language used by the institution where Nikolai Dmitriev was educated?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_LANG",
+    "H2_PARENT_ENTITY"
+   ],
+   "objects": [
+    "Russian",
+    "Russian Federation"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "lang"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the office held by the head of government of the office held by the head of government of the administrative territorial entity of the emergency room?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_OFFICE_HELD_BY_THE_HEAD_OF_GOVERNMENT",
+    "H3_OFFICE"
+   ],
+   "objects": [
+    "San Francisco, California",
+    "United States Congress",
+    "House of Representatives"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "office"
+    ],
+    "paraphrased": [
+     "office held by the head of government"
+    ]
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of the parent entity of portal:current events/2006 july 3?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_PARENT_ENTITY",
+    "H2_INSTANCE",
+    "H3_SOURCE"
+   ],
+   "objects": [
+    "portal:current events",
+    "July 3, 2006",
+    "perth"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "source"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Where is the history of the topic of the field of this occupation of the occupation of harley o. staggers?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_TOPIC",
+    "H2_NAME"
+   ],
+   "objects": [
+    "History",
+    "harley o. staggers"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "topic",
+     "name"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the capital of the administrative territorial entity contained within the country of Hungary–Malaysia relations?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H3_CAPITAL"
+   ],
+   "objects": [
+    "Hungary–Malaysia",
+    "Morocco",
+    "Rabat"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which conflict is the conflict involving the head of state of the country of Rover Records involved in?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_CONFLICT"
+   ],
+   "objects": [
+    "United Kingdom",
+    "World War II"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the administrative territorial entity contained within the administrative territorial entity of fehérgyarmat district?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "objects": [
+    "fehérgyarmat district",
+    "Károlyváros"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which country is the country of the award received by the director of photography of Anji (film)?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which entity is the entity that different from the characteristic of the instance of narong prangcharoen?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_CHARACTERISTIC"
+   ],
+   "objects": [
+    "Narong Prangcharoen",
+    "blue"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the country of the manufacturer of Australian Cruiser Tank Mk1 - Sentinel?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_MANUFACTURER",
+    "H2_SOURCE"
+   ],
+   "objects": [
+    "Australian Armourworks",
+    "Australian Armourworks is the country of origin"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "source"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which country is the country of the source that describes the instance of Dry Creek (Big Creek)?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_SOURCE",
+    "H2_COUNTRY"
+   ],
+   "objects": [
+    "Big Creek (Dry Creek)",
+    "United States"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "source"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the office held by the head of government of the office held by the head of government of the country of citizenship of kégham atmadjian?",
+   "well_formed": false,
+   "gold_n_hop": 2,
+   "emitted": null
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Where is the history of the topic of the country of yeonhwasan (gyeongsangnam-do)?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_HISTORY_OF_TOPIC"
+   ],
+   "objects": [
+    "yeonhwasan (gyeongsangnam-do)",
+    "Where is"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the water body located near the country of citizenship of Jade ell?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 4,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP",
+    "H1_AGRESSION",
+    "H2_NAME",
+    "H2_DESCRETION"
+   ],
+   "objects": [
+    "Jamaica",
+    "water body",
+    "Jade ell",
+    "Port Royal Harbour"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "agression",
+     "name",
+     "descretion"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the characteristic of the entity that different from the instance of Hyalurga uria?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the administrative territorial entity contained within the country of citizenship of Johanne Defay?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP",
+    "H2_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "objects": [
+    "Belgium",
+    "Province of Brussels"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the languages spoken, written or signed by the child of Theodor Hilgard?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_CHILD",
+    "H2_LANGUAGES_SPOKEN_WRITTEN_OR_SIGNED"
+   ],
+   "objects": [
+    "Theodor Hilgard",
+    "German, English"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": [
+     "languages spoken written or signed"
+    ]
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the instance of the predecessor of the successor of the foul play mixtape?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_SUCCESSOR",
+    "H2_PREDECESSOR",
+    "H3_INSTANCE"
+   ],
+   "objects": [
+    "Foul Play Mixtape",
+    "Foul Play Mixtape",
+    "album"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the instance of the water body located near the country of sami shamoun college of engineering?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_COUNTRY",
+    "H1_INSTANCE",
+    "H2_WATER_BODY"
+   ],
+   "objects": [
+    "Saudi Arabia",
+    "sea",
+    "Red Sea"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "water body"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Where is the history of the topic of the administrative territorial entity of Liechtenstein at the 1972 Summer Olympics?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_HISTORY_OF"
+   ],
+   "objects": [
+    "Liechtenstein",
+    "Where is"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": [
+     "history of"
+    ]
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the language of work or name of the language of work or name of the given name of Jacques Davy, Bishop of Evreux Du Perron?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_NAME_OF_THE_LANGUAGE_OF_WORK_OR_NAME"
+   ],
+   "objects": [
+    "French"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "name of the language of work or name"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the award received by the administrative territorial entity of Palladium Riga?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_AWARD"
+   ],
+   "objects": [
+    "Palladium Riga",
+    "Gold Dust"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the continent of the country of origin of shadow of the day?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_OF_ORIGIN",
+    "H2_CONTINENT"
+   ],
+   "objects": [
+    "United States",
+    "North America"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Who is the editor of the source that describes the country of bacup cricket club?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_EDITOR"
+   ],
+   "objects": [
+    "England",
+    "John Smith"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the capital of the administrative territorial entity contained within the administrative territorial entity of srebarna?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_CAPITAL"
+   ],
+   "objects": [
+    "srebarna",
+    "Novo Savac"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Who is the entity that conferred the award received by the country of Mazurki, Masovian Voivodeship?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the water body located near the country of origin of Charuulata 2011?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_OF_ORIGIN",
+    "H2_WATER_BODY_NEAR_THE_COUNTRY_OF_ORIGIN"
+   ],
+   "objects": [
+    "Pakistan",
+    "Wadad"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "water body near the country of origin"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "To which minor planet group does the minor planet group of the successor of 2640 Hallstrom belong?",
+   "well_formed": false,
+   "gold_n_hop": 2,
+   "emitted": null
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the instance of the water body located near the administrative territorial entity of Raatti Stadion?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_WATER_BODY",
+    "H3_INSTANCE"
+   ],
+   "objects": [
+    "Raatti Stadion",
+    "Lake",
+    "Amazone"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "water body"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the water body located near the administrative territorial entity of matanzas pass bridge?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_WATER_BODY"
+   ],
+   "objects": [
+    "matanzas pass bridge",
+    "Lake"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "water body"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Where is the history of the topic of the administrative territorial entity of World Trade Center (Barcelona)?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_HISTORY"
+   ],
+   "objects": [
+    "World Trade Center (Barcelona)",
+    "Where is"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "history"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the content type of the list that includes the instance of deulikot?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_CONTENT_TYPE"
+   ],
+   "objects": [
+    "deulikot",
+    "Per and camel"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the instance of the taxon in which the chromosome of skiv2l found?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_CHROMOSOME",
+    "H2_TAXON",
+    "H3_INSTANCE"
+   ],
+   "objects": [
+    "chromosome",
+    "Taxxon",
+    "Taxxon"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "taxon"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the office held by the head of government of the office held by the head of government of the country of thudupathi?",
+   "well_formed": false,
+   "gold_n_hop": 2,
+   "emitted": null
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which country is the country of the administrative territorial entity contained within the instance of Canton of Saint-Gilles?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_COUNTRY"
+   ],
+   "objects": [
+    "Canton of Saint-Gilles",
+    "Switzerland"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the country of Dorohusk?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COUNTRY"
+   ],
+   "objects": [
+    "Polonia"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which entity is the entity that different from the parent taxon of Helicina (genus)?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_PARENT_TAXON",
+    "H2_DISTINCT_ENTITY"
+   ],
+   "objects": [
+    "Helicina (genus)",
+    "Taxxon"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "distinct entity"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of S. Rao Aiyagari?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_SRC"
+   ],
+   "objects": [
+    "S. Rao Aiyagari",
+    "Perennings"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "src"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Where is the membership of the architect of the birches (garrison, new york)?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ARCHITECT",
+    "H2_MEMBERSHIP"
+   ],
+   "objects": [
+    "Charles-Édouard Brannon",
+    "New York"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "membership"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Where is the history of the topic of the country of Lot 13, Prince Edward Island?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_HISTORY_OF_THE_TOPIC"
+   ],
+   "objects": [
+    "Canada",
+    "Where is the history of"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": [
+     "history of the topic"
+    ]
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the language of work or name of the language of work or name of the source that describes Philip Francis (translator)?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_NAME_OF_THE_LANGUAGE",
+    "H2_NAME_OF_THE_SOURCE"
+   ],
+   "objects": [
+    "English",
+    "Translator"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "name of the language",
+     "name of the source"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the administrative territorial entity contained within the country of chard town railway station?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "objects": [
+    "United Kingdom",
+    "Chadwick"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the office held by the head of government of the office held by the head of government of the country of the administrative territorial entity of Chah-e Shahdoost, Zahedan?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the instance of A Friend of the Family?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "A",
+    "type"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the primary classification of the history of the topic of the country of deal, england?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_PRINCIPAL_AGENCY"
+   ],
+   "objects": [
+    "deal, england",
+    "history of the topic"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "principal agency"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Who is the author of the source that describes the instance of Estadio Vivaldo Lima?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_AUTHOR",
+    "H1_NAME",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "Estadio",
+    "Estadio",
+    "Estadio Vivaldo Lima"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "name"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Where is the history of the topic of the diplomatic relation of the country of origin of amantes de luna llena?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_OF_ORIGIN",
+    "H2_HISTORY_OF_THE_TOPIC"
+   ],
+   "objects": [
+    "P:I",
+    "P:I"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": [
+     "history of the topic"
+    ]
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which is the administrative territorial entity contained within the capital of the country of Glassford Peak?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_COUNTRY",
+    "H2_CAPITAL",
+    "H3_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "objects": [
+    "Canada",
+    "Ottawa",
+    "Ottawa County"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the genre of the source that describes the instance of smca?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_GENRE"
+   ],
+   "objects": [
+    "census data",
+    "Social sciences"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the primary classification of the history of the topic of the administrative territorial entity of Articles for creation/SightLife?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_TOPIC",
+    "H2_PRINCIPAL_AGENT",
+    "H2_OBJECT"
+   ],
+   "objects": [
+    "Articles for creation/SightLife",
+    "the history",
+    "of the administrative territorial entity of Articles for creation"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "topic",
+     "principal agent",
+     "object"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the water body located near the administrative territorial entity of koner island?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_WATER_BODY_NEAR"
+   ],
+   "objects": [
+    "koner island",
+    "Lake"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [],
+    "paraphrased": [
+     "water body near"
+    ]
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Where is the administrative territorial entity of the administrative territorial entity contained within the country of citizenship of jolanda annen?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_ADMINISTRATIVE_TERRITORIAL_ENTITY",
+    "H2_COUNTRY_OF_CITIZENSHIP",
+    "H3_ADMINISTRATIVE_TERRITORIAL_ENTITY"
+   ],
+   "objects": [
+    "Netherlands",
+    "Dutch",
+    "Den Helder"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of the cause of death of mathias mainza chona?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_CAUSE_OF_DEATH",
+    "H2_INSTANCE"
+   ],
+   "objects": [
+    "estrogen imbalance",
+    "medical"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the content type of list of ship launches in 1885?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_CONTENT_TYPE"
+   ],
+   "objects": [
+    "List of ship launches"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the linguistic typology of the original language of the film or TV show of vietnam idol?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_ORIGINAL_LANGUAGE",
+    "H2_LINGUISTIC_TYPOLOGY"
+   ],
+   "objects": [
+    "konglish",
+    "Romance"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "original language"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Who is the editor of the source that describes the country of citizenship of hatrick, alexander?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Where is the history of the topic of the official language of the country of citizenship of hans rasmussen?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_COUNTRY_OF_CITIZENSHIP",
+    "H2_HISTORY_OF_THE_TOPIC"
+   ],
+   "objects": [
+    "P:I",
+    "The official language of the country of citizenship of hans rasmussen"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": [
+     "history of the topic"
+    ]
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the parent entity of the instance of the director of the whoopee party?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 3,
+   "roles": [
+    "H1_DIRECTOR",
+    "H2_INSTANCE",
+    "H3_PARENT_ENTITY"
+   ],
+   "objects": [
+    "Steven Spielberg",
+    "Who's Who",
+    "Periphery"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of alexandra dobolyi?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_SRC"
+   ],
+   "objects": [
+    "alexandra dobolyi",
+    "What is the source that describes"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "src"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which entity is the entity that different from the parent astronomical body of the minor planet group of 16817 Onderlička?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H2_NAME"
+   ],
+   "objects": [
+    "Minor Planet"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "name"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of Richard R. Jones?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_SRC"
+   ],
+   "objects": [
+    "Richard R. Jones",
+    "Perennials"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "src"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the field of this occupation of the occupation of Priscilla K. Coleman?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_OCCUPATION",
+    "H2_SOURCE"
+   ],
+   "objects": [
+    "Police officer",
+    "National Police Academy"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "source"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "Which conflict is the conflict involving the ammunition of the armament of Vultee P-48C involved in?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_CONFLICT",
+    "H2_NAME"
+   ],
+   "objects": [
+    "the conflict involving the ammunition of",
+    "Second World War"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "name"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "B_misparsed",
+   "question": "What is the source that describes the instance of The Diggi Palace Hotel?",
+   "well_formed": true,
+   "gold_n_hop": 2,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_INSTANCE",
+    "H2_SRC"
+   ],
+   "objects": [
+    "The Diggi Palace Hotel",
+    "perth"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "src"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which languages spoken, written or signed by Dwight Loomis?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_SPOKEN_LANGUAGE"
+   ],
+   "objects": [
+    "Written or signed"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "spoken language"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "For which league does FC Radian-Baikal Irkutsk compete?",
+   "well_formed": false,
+   "gold_n_hop": 1,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which languages spoken, written or signed by vencislav simeonov?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_LANGUAGES_WRITTEN_OR_SIGNED"
+   ],
+   "objects": [
+    "Croatian, English"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "languages written or signed"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "What color does killing silence use?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_COLOR"
+   ],
+   "objects": [
+    "silence"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "color"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of Speranza coortaria?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "What is erik bergvall a participant of?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_PARTICIPANT"
+   ],
+   "objects": [
+    "Erik Bergvall"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the instance of the original language of the film or TV show of '' Orphans of the Storm ''?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of deroplatys moultoni?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "What is Lubos Soska a participant of?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_PARTICIPANT"
+   ],
+   "objects": [
+    "Lubos Soska"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of Obereopsis atrosternalis?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of Coryphodon Constrictor?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which languages spoken, written or signed by Manfred Rusing?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_LANGUAGE",
+    "H2_LANGUAGE"
+   ],
+   "objects": [
+    "German",
+    "English"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "language",
+     "language"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of Microcolona leucosticta?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "For which instrument does El Gringo (musician) compete?",
+   "well_formed": false,
+   "gold_n_hop": 1,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which languages spoken, written or signed by William E. Gaines?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_SPOKEN_LANGUAGE",
+    "H2_SPOKEN_LANGUAGE"
+   ],
+   "objects": [
+    "Written English",
+    "Signed English"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "spoken language",
+     "spoken language"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "What is max cohen-olivar a participant of?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_PARTICIPANT"
+   ],
+   "objects": [
+    "Max Cohen-olivar"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "What award did jean durtal receive?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_AWARD"
+   ],
+   "objects": [
+    "Jean d'Or"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of Panoploscelis?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_LIST",
+    "H2_LIST"
+   ],
+   "objects": [
+    "lists",
+    "list that includes the component of the instance of Panoploscelis"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of Neohierax insignis?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of eccopsis?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_LIST",
+    "H2_LIST"
+   ],
+   "objects": [
+    "list",
+    "list that includes the component of the instance of eccopsis"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the instance of Thạch Hà?",
+   "well_formed": false,
+   "gold_n_hop": 2,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of Dicorynia?",
+   "well_formed": true,
+   "gold_n_hop": 3,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_LIST",
+    "H2_LIST"
+   ],
+   "objects": [
+    "lists",
+    "list that includes the component of the instance of Dicorynia"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which languages spoken, written or signed by kaoru maruyama?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_LANGUAGE"
+   ],
+   "objects": [
+    "Japanese written or signed"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "language"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of Catocala haitzi?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "What is Alphonse Castex a participant of?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_PARTICIPANT"
+   ],
+   "objects": [
+    "Alphonse Castex"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the office held by the head of government of the administrative territorial entity of Vaumort?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "For which instrument does Niles Hollowell-Dhar compete?",
+   "well_formed": false,
+   "gold_n_hop": 1,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the office held by the head of government of the primary classification of 1881 in India?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of Grasse's Shrew?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of white crucian carp?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which languages spoken, written or signed by Miguel Hernandez?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_LANGUAGES_SPOKEN_WRITTEN_OR_SIGNED"
+   ],
+   "objects": [
+    "es-English"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "languages spoken written or signed"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which languages spoken, written or signed by Pedro Lazaga?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 2,
+   "roles": [
+    "H1_SPOKEN_LANGUAGE",
+    "H2_SPOKEN_LANGUAGE"
+   ],
+   "objects": [
+    "Spanish",
+    "English"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": false,
+    "accepted": false,
+    "unknown_relations": [
+     "spoken language",
+     "spoken language"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the component of the instance of bulbophyllum tripaleum?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which languages spoken, written or signed by suely campos?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_LANGUAGES_SPOKEN_WRITTEN_OR_SIGNED"
+   ],
+   "objects": [
+    "es-English"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": false,
+    "of_question": true,
+    "accepted": false,
+    "unknown_relations": [
+     "languages spoken written or signed"
+    ],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "Which list includes the list that includes the office held by the head of government of the country of Indore Museum?",
+   "well_formed": false,
+   "gold_n_hop": 3,
+   "emitted": null
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "What nomination did gerhard herzberg receive?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_NOMINATION"
+   ],
+   "objects": [
+    "BBC TV presenter"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  },
+  {
+   "arm": "C_unparseable",
+   "question": "What award did karen ordal kupperman receive?",
+   "well_formed": true,
+   "gold_n_hop": 1,
+   "emitted_n_hop": 1,
+   "roles": [
+    "H1_AWARD"
+   ],
+   "objects": [
+    "National Association of Women Athletes"
+   ],
+   "gold_roles": null,
+   "dispose": {
+    "answerable": true,
+    "of_question": true,
+    "accepted": true,
+    "unknown_relations": [],
+    "paraphrased": []
+   }
+  }
+ ]
+}

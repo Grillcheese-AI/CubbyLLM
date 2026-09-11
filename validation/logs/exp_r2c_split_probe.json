@@ -1,0 +1,54 @@
+{
+ "n_records": 800,
+ "n_misparsed": 92,
+ "n_verified": 517,
+ "baseline_fidelity": {
+  "agree": 246,
+  "checked": 246
+ },
+ "splitters": {
+  "of_the (current grammar)": {
+   "fixes_misparsed": 0,
+   "breaks_verified": 0,
+   "correct_hop_count": 670,
+   "unparseable": 37,
+   "net_vs_baseline": 0
+  },
+  "of_the | of_a | of_an": {
+   "fixes_misparsed": 1,
+   "breaks_verified": 3,
+   "correct_hop_count": 665,
+   "unparseable": 37,
+   "net_vs_baseline": -5
+  },
+  "of_any (naive)": {
+   "fixes_misparsed": 46,
+   "breaks_verified": 432,
+   "correct_hop_count": 165,
+   "unparseable": 37,
+   "net_vs_baseline": -505
+  },
+  "of_the | contained_within_the": {
+   "fixes_misparsed": 12,
+   "breaks_verified": 2,
+   "correct_hop_count": 678,
+   "unparseable": 37,
+   "net_vs_baseline": 8
+  },
+  "of_the | in_the": {
+   "fixes_misparsed": 2,
+   "breaks_verified": 5,
+   "correct_hop_count": 665,
+   "unparseable": 37,
+   "net_vs_baseline": -5
+  },
+  "of_the | contained_within_the | in_the": {
+   "fixes_misparsed": 13,
+   "breaks_verified": 5,
+   "correct_hop_count": 675,
+   "unparseable": 37,
+   "net_vs_baseline": 5
+  }
+ },
+ "wall_s": 0.06040424000002531
+}

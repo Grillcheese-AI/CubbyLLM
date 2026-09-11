@@ -1,0 +1,57 @@
+# plan_verify.cube -- the VM half of cubbyllm/reasoning/plan_verify.py.
+#
+# Is this relation one the store holds? The store's relation vocabulary is
+# loaded as knowledge (`cubelang run ... --knowledge vocab.jsonl`, one
+# {"key": rel, "text": rel, "source": "store"} per relation, written by
+# plan_verify.write_vocab_jsonl). QUERY is an exact normalized-key lookup
+# that pushes the chunk array: ZERO chunks on a miss -- never a nearest
+# neighbour. The three-valued branch below is examples/ground_min.cube's,
+# so the verdict is the VM's own integer, not a host-side count:
+#
+#     0  unknown relation  -> the plan that asked for it is refused
+#     1  known             -> the walk may spend retrieval on it
+#     2  ambiguous         -> cannot happen for a vocabulary (one record per
+#                             relation); kept so a future alias file that
+#                             maps two spellings onto one key still reads 1,
+#                             and a genuine collision is visible, not hidden
+program PlanVerify implements ISolve {
+
+    storage {
+        known: mutable u64 = 0;
+        unknown: mutable u64 = 0;
+    }
+
+    @system @once
+    public function constructor() {
+        assign known = 0;
+        assign unknown = 0;
+    }
+
+    @external
+    public function solve(mention: str): number {
+        query mention;
+
+        create ctx : number;
+        pop ctx;
+
+        let n = ctx.len();
+
+        create outcome : number;
+        assign outcome = 0;
+
+        if (n == 0) {
+            add unknown, 1;
+            assign outcome = 0;
+        } else {
+            if (n == 1) {
+                add known, 1;
+                assign outcome = 1;
+            } else {
+                add known, 1;
+                assign outcome = 2;
+            }
+        }
+
+        return outcome;
+    }
+}

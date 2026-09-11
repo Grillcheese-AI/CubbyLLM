@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0freasoning.proto\x12\treasoning\"M\n\nRunRequest\x12\x0f\n\x07program\x18\x01 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x02 \x03(\t\x12\x0f\n\x07\x66n_name\x18\x03 \x01(\t\x12\x0f\n\x07\x61nswers\x18\x04 \x03(\t\"T\n\tSuspended\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x12\n\ncandidates\x18\x02 \x03(\t\x12\x0f\n\x07program\x18\x03 \x01(\t\x12\x10\n\x08\x66unction\x18\x04 \x01(\t\"\x97\x01\n\tRunResult\x12\n\n\x02ok\x18\x01 \x01(\x08\x12\x10\n\x06symbol\x18\x02 \x01(\tH\x00\x12\x0f\n\x05\x65rror\x18\x03 \x01(\tH\x00\x12)\n\tsuspended\x18\x05 \x01(\x0b\x32\x14.reasoning.SuspendedH\x00\x12\x17\n\nsimilarity\x18\x04 \x01(\x01H\x01\x88\x01\x01\x42\x08\n\x06resultB\r\n\x0b_similarityb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0freasoning.proto\x12\treasoning"t\n\nRunRequest\x12\x0f\n\x07program\x18\x01 \x01(\t\x12\x0c\n\x04args\x18\x02 \x03(\t\x12\x0f\n\x07fn_name\x18\x03 \x01(\t\x12\x0f\n\x07answers\x18\x04 \x03(\t\x12%\n\x0eknowledge_path\x18\x05 \x01(\tR\rknowledgePath"T\n\tSuspended\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x12\n\ncandidates\x18\x02 \x03(\t\x12\x0f\n\x07program\x18\x03 \x01(\t\x12\x10\n\x08function\x18\x04 \x01(\t"\x97\x01\n\tRunResult\x12\n\n\x02ok\x18\x01 \x01(\x08\x12\x10\n\x06symbol\x18\x02 \x01(\tH\x00\x12\x0f\n\x05error\x18\x03 \x01(\tH\x00\x12)\n\tsuspended\x18\x05 \x01(\x0b2\x14.reasoning.SuspendedH\x00\x12\x17\n\nsimilarity\x18\x04 \x01(\x01H\x01\x88\x01\x01B\x08\n\x06resultB\r\n\x0b_similarityb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,9 +32,9 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'reasoning_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_RUNREQUEST']._serialized_start=30
-  _globals['_RUNREQUEST']._serialized_end=107
-  _globals['_SUSPENDED']._serialized_start=109
-  _globals['_SUSPENDED']._serialized_end=193
-  _globals['_RUNRESULT']._serialized_start=196
-  _globals['_RUNRESULT']._serialized_end=347
+  _globals['_RUNREQUEST']._serialized_end=146
+  _globals['_SUSPENDED']._serialized_start=148
+  _globals['_SUSPENDED']._serialized_end=232
+  _globals['_RUNRESULT']._serialized_start=235
+  _globals['_RUNRESULT']._serialized_end=386
 # @@protoc_insertion_point(module_scope)

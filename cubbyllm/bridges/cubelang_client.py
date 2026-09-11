@@ -83,10 +83,15 @@ def run_program(
     exe: str | None = None,
     timeout: float = 30.0,
     strict: bool = True,
+    knowledge: str | None = None,
 ) -> dict:
     """Run a CubeLang program's function via `cubelang run … --json`; return the
     parsed JSON (plus a normalized `"similarity"` key -- see below). Raises
     CubelangRunError on ok:false or a non-zero exit.
+
+    `knowledge` (2026-09-11, plan_verify) passes `--knowledge <jsonl>` so the
+    VM's QUERY has a store to ground against; without it every QUERY abstains
+    (empty chunk array). `run-proto` has no equivalent field yet.
 
     `strict` (Task 8/9, verify-before-execute) passes `--strict` to `cubelang
     run`, so non-executing constructs (trace-only ext ops, `match`, ...) fail
@@ -101,6 +106,8 @@ def run_program(
     cmd = [str(exe_path), "run", program_path, "--fn", fn, "--json"]
     if strict:
         cmd.append("--strict")
+    if knowledge:
+        cmd += ["--knowledge", str(knowledge)]
     for a in args or []:
         cmd += ["--arg", a]
     try:
@@ -160,6 +167,7 @@ def run_program_proto(
     exe: str | None = None,
     timeout: float = 30.0,
     answers: list | None = None,
+    knowledge_path: str | None = None,
 ) -> dict:
     """Run CubeLang source's function via `cubelang run-proto`'s stdio
     transport: a u32-big-endian-length-prefixed `RunRequest` written to
@@ -183,6 +191,7 @@ def run_program_proto(
     request = reasoning_pb2.RunRequest(
         program=program_source, args=list(args or []), fn_name=fn,
         answers=[json.dumps(a) for a in (answers or [])],
+        knowledge_path=str(knowledge_path or ""),
     )
     payload = request.SerializeToString()
     framed_request = len(payload).to_bytes(4, "big") + payload
@@ -210,6 +219,14 @@ def run_program_proto(
             f"cubelang run-proto RunResult truncated: expected {result_len} "
             f"bytes, got {len(body)} (exit {proc.returncode}): stderr={proc.stderr!r}"
         )
+
+    return _decode_run_result(body)
+
+
+def _decode_run_result(body: bytes) -> dict:
+    """`RunResult` bytes -> the dict shape `run_program_proto` documents. Shared
+    by the one-shot transport and `CubelangSession` so both agree byte-for-byte."""
+    from . import reasoning_pb2  # lazy: keep `import cubbyllm` protobuf-free
 
     result = reasoning_pb2.RunResult()
     try:
@@ -245,3 +262,99 @@ def run_program_proto(
         # (unset -> None) from a real match that happened to score 0.0.
         "similarity": result.similarity if result.HasField("similarity") else None,
     }
+
+
+class CubelangSession:
+    """A RESIDENT `cubelang run-proto` process: one spawn, many requests.
+
+    2026-09-11. `run_program_proto` spawns a process per call, and on the
+    plan-disposer harvest 181 spawns for 181 membership questions cost more
+    wall time than the 161 walks they prevented (exp_m3 lookup_vp: 59.4 ->
+    65.7 ms/question). `run-proto` now serves until stdin closes, so this
+    keeps the pipe open and streams length-prefixed requests down it, reading
+    one length-prefixed `RunResult` back per request, in order.
+
+    Same wire, same decoder (`_decode_run_result`), same semantics: every
+    request still runs on a fresh VM inside the process, so determinism and
+    verify-before-execute are untouched -- only the process boundary is
+    amortized. `knowledge_path` rides on the request; the process caches the
+    parsed store by (path, mtime), so a vocabulary is parsed once per
+    session, not once per question.
+
+    Use as a context manager, or call `close()`. A dead process (any read
+    that comes back short) raises `CubelangRunError` with whatever the
+    process wrote to stderr; the session is then unusable and a new one
+    must be opened -- it never silently respawns, because a respawn would
+    also silently drop the knowledge cache and the caller's assumptions
+    about it.
+    """
+
+    def __init__(self, exe: str | None = None, timeout: float = 30.0) -> None:
+        import subprocess as _sp
+        self.exe = str(find_cubelang_exe(exe))
+        self.timeout = timeout
+        self._proc = _sp.Popen([self.exe, "run-proto"], stdin=_sp.PIPE, stdout=_sp.PIPE, stderr=_sp.PIPE)
+        self.n_requests = 0
+
+    # -- transport ---------------------------------------------------------
+    def _read_exact(self, n: int) -> bytes:
+        buf = b""
+        while len(buf) < n:
+            chunk = self._proc.stdout.read(n - len(buf))
+            if not chunk:
+                err = b""
+                try:
+                    self._proc.kill()
+                    err = self._proc.stderr.read() or b""
+                except Exception:
+                    pass
+                raise CubelangRunError(
+                    f"cubelang run-proto closed the pipe after {len(buf)} of {n} bytes "
+                    f"(exit {self._proc.poll()}): stderr={err[-2000:]!r}")
+            buf += chunk
+        return buf
+
+    def run(self, program_source: str, fn: str = "solve", args: list[str] | None = None,
+            answers: list | None = None, knowledge_path: str | None = None) -> dict:
+        """Same contract as `run_program_proto` (dict shape, errors, suspension)."""
+        import threading
+        from . import reasoning_pb2  # lazy: keep `import cubbyllm` protobuf-free
+
+        if self._proc.poll() is not None:
+            raise CubelangRunError(f"cubelang run-proto session is dead (exit {self._proc.returncode})")
+        request = reasoning_pb2.RunRequest(
+            program=program_source, args=list(args or []), fn_name=fn,
+            answers=[json.dumps(a) for a in (answers or [])],
+            knowledge_path=str(knowledge_path or ""),
+        )
+        payload = request.SerializeToString()
+        timer = threading.Timer(self.timeout, self._proc.kill) if self.timeout else None
+        if timer:
+            timer.start()
+        try:
+            self._proc.stdin.write(len(payload).to_bytes(4, "big") + payload)
+            self._proc.stdin.flush()
+            length = int.from_bytes(self._read_exact(4), "big")
+            body = self._read_exact(length)
+        finally:
+            if timer:
+                timer.cancel()
+        self.n_requests += 1
+        return _decode_run_result(body)
+
+    # -- lifecycle ---------------------------------------------------------
+    def close(self) -> None:
+        p = self._proc
+        if p.poll() is None:
+            try:
+                p.stdin.close()          # clean EOF at a frame boundary -> the loop exits 0
+                p.wait(timeout=5)
+            except Exception:
+                p.kill()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self.close()
+        return False

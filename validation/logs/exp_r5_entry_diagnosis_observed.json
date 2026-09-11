@@ -1,0 +1,19 @@
+{
+ "mode": "observed",
+ "store": 966,
+ "indexed": 953,
+ "surviving": 195,
+ "counts": {
+  "already_seeds": 77,
+  "no_seed": 118,
+  "entity_absent": 102,
+  "suffix_backoff_would_hit": 1,
+  "entity_is_a_subject": 16,
+  "fuzzy_tail_would_hit": 5
+ },
+ "suffix_depth": {
+  "2": 1
+ },
+ "jaccard": 0.6,
+ "wall_s": 0.7458841870000015
+}

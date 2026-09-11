@@ -1,0 +1,27 @@
+harvest 800 records | misparsed_chain 92 | verified 517
+join check vs decomposition's misparse table: MATCH {'4->3': 9, '1->2': 25, '3->2': 14, '2->3': 38, '4->2': 1, '2->1': 1, '1->3': 4}
+baseline fidelity: reproduces 246/246 recorded parses (100.0%)
+
+questions the grammar parses at all: 763/800 | of the 92 misparses: 92
+
+splitter                                    fixes/92   breaks  correct    net
+------------------------------------------------------------------------------
+of_the (current grammar)                           0        0      670     +0
+of_the | of_a | of_an                              1        3      665     -5
+of_any (naive)                                    46      432      165   -505
+of_the | contained_within_the                     12        2      678     +8
+of_the | in_the                                    2        5      665     -5
+of_the | contained_within_the | in_the            13        5      675     +5
+
+  fixes/92 : misparses whose hop count this splitter gets right
+  breaks   : questions that VERIFY today whose hop count it gets wrong
+  correct  : questions with the right hop count, all 800
+  net      : correct, relative to the shipped grammar
+
+==============================================================================
+VERDICT: 'of_the | contained_within_the' beats the shipped grammar by 8 questions
+  (+12 of 92 misparses fixed, 2 currently-verified questions broken).
+  A real but PARTIAL win: 80 misparses survive it.
+  Take the fix, but the class does not collapse — hop-count planning
+  remains a legitimate emitter target.
+==============================================================================

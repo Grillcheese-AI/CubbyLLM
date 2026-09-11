@@ -9,6 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from ..core.protocols import Wiring
+from .plan_verify import verify_plan
 from .planner import (QuestionPlan, Triple, accepts, normalize, parse_fact,
                       parse_question)
 from .programs import build_chain_program
@@ -50,6 +51,11 @@ class CoTResult:
     # shape is a list so a future multi-repair budget doesn't need a format
     # change.
     repairs: list[dict] = field(default_factory=list)
+    # Plan-time refusal (2026-09-11, plan_verify): set when `answer(..., known=)`
+    # refused the plan BEFORE any walk -- reason is then "unknown_relation" or
+    # "plan_does_not_cover_question" and this carries the relations the store
+    # does not hold. None whenever a walk ran (or no `known` was given).
+    refused: dict | None = None
 
 
 _accept = accepts     # the acceptance test moved to the planner (2026-09-04); this name stays for the validation scripts
@@ -109,16 +115,39 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
 
 
 def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
-           top_k: int = 3, max_repairs: int = 1, lookup=None) -> CoTResult:
+           top_k: int = 3, max_repairs: int = 1, lookup=None, known=None,
+           plan: QuestionPlan | None = None) -> CoTResult:
     """`lookup`: a `TripleIndex.hop`-shaped callable; when given, every hop is
-    looked up before it is searched (see `_walk`)."""
+    looked up before it is searched (see `_walk`).
+
+    `known`: a `plan_verify.KnownRelations` (the store's relation vocabulary --
+    `StoreRelations(store)` host-side, or `VMRelations` to let the VM's QUERY
+    answer). When given, the plan is DISPOSED OF before any walk: a plan that
+    does not reconstruct the question, or that asks for a relation the store
+    does not hold, is refused with that reason and zero retrieval/VM cost.
+    exp_r6 (2026-09-11): refuses 86/92 of the harvest's misparsed chains and
+    0/517 verified ones. None keeps the pre-disposer behaviour exactly.
+
+    `plan`: a PROPOSED plan (the emitter's, exp_r7) used instead of the
+    grammar's parse. Model proposes, host disposes: it goes through `known`
+    exactly like a grammar plan, and the walk and the VM treat it identically.
+    None = the grammar parses the question, as before."""
     # max_repairs 3 -> 1 (2026-09-03): on the 800-question harvest every failure burned all three
     # repairs with zero hops verified and no verified chain ever needed more than one; budget 1
     # reproduces 517 verified / 513 correct / control 528/528 exactly at 45.9 ms vs 120.9 ms per
     # question (validation/logs/exp_m3_cot_pipeline_rb1.json vs _v3cf.json).
-    plan = parse_question(question)
+    if plan is None:
+        plan = parse_question(question)
     if plan is None:
         return CoTResult(answer=None, verified=False, reason="unparseable")
+    if known is not None:
+        verdict = verify_plan(question, plan, known)
+        if not verdict.ok:
+            return CoTResult(answer=None, verified=False, reason=verdict.reason,
+                             refused={"covers": verdict.covers,
+                                      "unknown_relations": list(verdict.unknown_relations),
+                                      "tail_relation": verdict.tail_relation,
+                                      "paraphrased": list(verdict.paraphrased)})
 
     budget = [max_repairs]
     banned: set[str] = set()

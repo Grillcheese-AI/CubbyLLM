@@ -97,6 +97,7 @@ from cubbyllm.bridges import cubelang_client as cc  # noqa: E402
 from cubbyllm.reasoning import answer as pipeline_answer  # noqa: E402
 from cubbyllm.reasoning import TripleIndex  # noqa: E402
 from cubbyllm.reasoning import build_chain_program, parse_fact, parse_question  # noqa: E402
+from cubbyllm.reasoning.plan_verify import StoreRelations, VMRelations, write_vocab_jsonl  # noqa: E402
 from cubbyllm.reasoning.planner import Triple, normalize  # noqa: E402
 
 PQ_FILE = pathlib.Path(r"E:\valid_scaling_law_with_facts.pq")
@@ -608,6 +609,7 @@ def _harvest_record(q: str, plan, gold_norm: str, gold_raw, h: int, result,
         "trace": trace_out,
         "candidates_topk": candidates_topk,
         "reason": result.reason,
+        "refused": result.refused,
         "repairs_used": result.repairs_used,
         "banned_facts": result.repairs,
         "hops_verified_before_failure": hops_verified_before_failure,
@@ -634,6 +636,14 @@ def main() -> None:
     ap.add_argument("--exe", type=str, default=None, help="cubelang exe override")
     ap.add_argument("--lookup", action="store_true",
                     help="lookup-first walk: a TripleIndex over the eval store, cosine only for the hops it misses (exp_m4, 2026-09-04)")
+    ap.add_argument("--verify-plan", choices=["host", "vm"], default=None,
+                    help="dispose of the plan before the walk (plan_verify, 2026-09-11): 'host' answers "
+                         "'is this relation known' with StoreRelations(store); 'vm' with the VM's QUERY over "
+                         "the same vocabulary loaded as knowledge (one subprocess per distinct relation, memoized)")
+    ap.add_argument("--resident", action="store_true",
+                    help="one resident `cubelang run-proto` process for EVERY VM call (chain programs, "
+                         "control, counterfactuals, and --verify-plan vm) instead of a spawn per call "
+                         "(CubelangSession, 2026-09-11). Same wire, same fresh-VM-per-request semantics.")
     ap.add_argument("--distractors", type=int, default=0,
                     help="N DBpedia distractor texts appended to the EVAL "
                          "retrieval store only (never calibration)")
@@ -685,6 +695,19 @@ def main() -> None:
     retrieve = make_retriever(store, enc)
     store_size = len(store)
     index = TripleIndex(store) if args.lookup else None
+    session = cc.CubelangSession(exe=args.exe) if args.resident else None
+    if session is not None:
+        print(f"  resident VM: {session.exe} (pid {session._proc.pid})")
+    known = None
+    if args.verify_plan == "host":
+        known = StoreRelations(store)
+        print(f"  verify-plan: host  ({len(known)} relations)")
+    elif args.verify_plan == "vm":
+        vocab_path = ROOT / "validation" / "logs" / f"exp_m3_vocab{args.tag}.jsonl"
+        n_rel = write_vocab_jsonl(store, vocab_path)
+        known = VMRelations(knowledge=vocab_path, exe=args.exe, session=session)
+        print(f"  verify-plan: vm    ({n_rel} relations as knowledge -> {vocab_path.name}"
+              f"{', resident' if session is not None else ', one spawn per relation'})")
     if index is not None:
         print(f"lookup arm: triple index over the eval store, {len(index)}/{index.n_facts} facts parse as triples\n")
 
@@ -697,6 +720,8 @@ def main() -> None:
     cal_retrieve = make_retriever(cal_store, enc)
 
     def run_fn(source: str, fn: str, exe=args.exe) -> dict:
+        if session is not None:
+            return session.run(source, fn=fn)
         return cc.run_program_proto(source, fn=fn, exe=exe)
 
     table_path_str = str(args.table)
@@ -1120,6 +1145,7 @@ def main() -> None:
     wall_ms: dict[str, list[float]] = {"retrieval_only": [], "chase_only": [], "cot": []}
     repairs_hist: Counter = Counter()
     verified_count = 0
+    reason_hist: Counter = Counter()   # outcome per question, incl. plan-time refusals
     claimed_correct = 0
     control_pass = 0
     control_total = 0
@@ -1193,9 +1219,11 @@ def main() -> None:
             s0 = time.perf_counter()
             result = pipeline_answer(q, retrieve_log, vm_run_fn, tau_vm=tau_vm_q, tau_ret=tau_ret,
                                      top_k=args.top_k, max_repairs=args.max_repairs,
-                                     lookup=(index.hop if index is not None else None))
+                                     lookup=(index.hop if index is not None else None),
+                                     known=known)
             wall_ms["cot"].append((time.perf_counter() - s0) * 1000)
             repairs_hist[result.repairs_used] += 1
+            reason_hist["verified" if result.verified else (result.reason or "vm_verify_failed")] += 1
             if result.reason == "unparseable":
                 unparseable_questions += 1
 
@@ -1370,6 +1398,12 @@ def main() -> None:
     print(f"  CoT claimed-answer precision: {claimed_precision:.3f} ({claimed_correct}/{verified_count if verified_count else 0})")
     print(f"  control pass rate: {control_pass_rate:.3f} ({control_pass}/{control_total})")
     print(f"  unparseable questions: {unparseable_questions} | unparseable facts: {unparseable_facts}")
+    print("  outcomes: " + "  ".join(f"{k}={v}" for k, v in reason_hist.most_common()))
+    if known is not None and hasattr(known, "n_calls"):
+        print(f"  verify-plan VM QUERY calls: {known.n_calls}")
+    if session is not None:
+        print(f"  resident VM: {session.n_requests} requests on one process")
+        session.close()
     print(f"  non-ascii-walked-fact questions: {non_ascii_questions}")
     print(f"  sub-tau verified violations: {sub_tau_violations}")
     print(f"  repairs histogram: {dict(sorted(repairs_hist.items()))}")
@@ -1444,6 +1478,9 @@ def main() -> None:
         },
         "cot_verified_coverage": verified_coverage,
         "cot_verified_count": verified_count,
+        "outcomes": dict(reason_hist),
+        "verify_plan": args.verify_plan,
+        "resident": bool(args.resident),
         "claimed_answer_precision": claimed_precision,
         "claimed_correct": claimed_correct,
         "control_pass_rate": control_pass_rate,
