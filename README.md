@@ -32,6 +32,7 @@ The reasoning pipeline (`cubbyllm/reasoning/`) is wired end to end and measured 
 
 ```
 question ──► plan ──► plan_verify (disposer) ──► lookup-first walk ──► CotChain program ──► CubeLang VM ──► answer / refusal
+          └─ a refusal the store caused ──► source ──► gate ──► store (+provenance) ──► walk again   (learn.py, lever 3)
               │              │                        │                                        │
      grammar or emitter   relations known?     TripleIndex, exact hop 0,          per-hop similarity ≥ frame-size floor,
      (CotPlan: SEED,      plan covers the      paraphrase tier on hops ≥ 1        control role below the floor; verdict
@@ -40,12 +41,12 @@ question ──► plan ──► plan_verify (disposer) ──► lookup-first 
 
 | measured on the 800-question eval (1,241 facts, 165 relations) | |
 |---|---:|
-| verified coverage, lookup-first + disposer | **0.728** (582/800), precision 0.993 (was 0.710 before the relation-aware fact split, lever 1b) |
-| honest refusals with a named reason | 218 (152 no-such-edge or plan-coverage · 29 no seed fact · 37 unparseable) |
+| verified coverage, lookup-first + disposer | **0.718** (574/800) at **precision 1.000** — every wrong answer the pipeline ever spoke here was a pick between several true facts; an ambiguous hop is now a refusal (lever 3) |
+| honest refusals with a named reason | 226 (152 no-such-edge or plan-coverage · 28 no seed fact · 9 ambiguous, candidates named · 37 unparseable) |
 | misparsed plans the disposer stops before any walk | 90 / 92 |
 | VM-verified 3-hop answer, wall, resident VM | **2.0 ms** (65.7 ms per-process; CoT is now faster than chase-only) |
 | gen-2 emitter (`emitter_v12e`) vs gen 1 on the 79 held-out B questions | 10 vs 5 accepted + gold hop; 4/4 verified correct, 0 wrong — bar met |
-| arm C, the 37 the grammar declared unparseable | 11/37 by emitter plan alone (gen 2, after the hop-0 tier and covers v3), 0 wrong; 14 more composed through the grammar (GoT-1 slice, exp_r8), 0 wrong |
+| gen 2 outside the grammar, arms B + C (exp_r7 --exclude) | **18/116** by emitter plan alone (B 7/79, C 11/37) after coverage levers 1–3, 0 wrong; 14 more C composed through the grammar (GoT-1 slice, exp_r8), 0 wrong |
 
 | measured on the wiki world (552,297 facts, 2,967 relations — the emitter has seen 165) | |
 |---|---:|
@@ -54,6 +55,7 @@ question ──► plan ──► plan_verify (disposer) ──► lookup-first 
 | canonical / have / relative / possessive, emitter | 110 / 80 / 127 / 21 of 200, 0 wrong; the possessive residue is the emitter folding a hop into the seed, refused correctly |
 | canonical form | grammar 189/200 · emitter 110/200 · 0 wrong |
 | SimpleQA, 4,326 free-text questions through the whole gate (exp_r10) | 3,858 plans → 3,825 refused with a reason + 33 walk failures; 0 verified, **0 wrong** (the store holds 3 of the answers) |
+| search-and-learn (exp_r11): held-out facts, then Wikidata on 600 SimpleQA | held-out: 200 refused → 195 learned and verified, 0 wrong; poisoned source, either order: ambiguous refusals, 0 wrong. Wikidata: 1,715 facts learned with provenance, 0 verified, 0 wrong — the emitter names relations in the question's words, the source in property labels (gen 3's item) |
 
 The reading: the grammar gets the templates; the emitter gets the shapes the grammar cannot parse; the disposer
 and the VM keep the wrong count at zero on both; free text against a store that cannot answer it is refused, not
@@ -94,6 +96,7 @@ cubbyllm/            the package (Apache-2.0). `import cubbyllm` is torch-free.
                      programs (CotChain emission), pipeline (answer(): plan → verify → walk → VM)
   bridges/           cubelang_client (subprocess + resident CubelangSession, protobuf framing),
                      programs/*.cube (plan_verify, reasoning_bridge), world_model (the MoWM bridge contract)
+  reasoning/learn.py search-and-learn: refusal → source → gate → store with provenance → walk again (sources live in standin/)
   core/ model/ ops/ training/   the trunk design from the validation campaign
 standin/             the serve stack (BSL-1.1): brain, thalamus, VM-mediated chat, cubby-man, emitter, SFT data builders
 validation/          55 standalone experiment scripts + tests + logs/. Never imported by cubbyllm/.

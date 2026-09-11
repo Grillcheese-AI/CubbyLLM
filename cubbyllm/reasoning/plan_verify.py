@@ -186,6 +186,19 @@ class StoreRelations:
     def __contains__(self, rel: str) -> bool:
         return normalize(rel) in self._rels
 
+    def add(self, fact: str) -> str | None:
+        """A fact learned after construction (search-and-learn, lever 3): its
+        relation joins the vocabulary, split the way `TripleIndex.add` splits it
+        (longest relation the store already reuses, else greedy). Returns the
+        normalized relation, or None for a non-template fact."""
+        t = parse_fact(fact, known={r for r, k in self._n.items() if k >= 2})
+        if t is None:
+            return None
+        r = normalize(t.rel)
+        self._rels.add(r)
+        self._n[r] = self._n.get(r, 0) + 1
+        return r
+
     def reused(self) -> list[str]:
         """The relations the store states in >= 2 facts -- the only ones hop 0's
         paraphrase tier may match. exp_m3 hop0 (2026-09-11): the greedy fact
@@ -495,6 +508,12 @@ def _covers_text(q: str, order: list[list[str]], ent: str, rw, entity_first: boo
         residual.append(q[last:a]); last = b
     residual.append(q[last:])
     leftover = [w for w in " ".join(residual).split() if w not in _FRAME_AND_JOINT]
+    # a number left over is a CONSTRAINT the plan did not bind ('as of 2022', 'in 1977'):
+    # the store cannot check it, so a plan that ignores it would answer a different
+    # question (exp_r11, 2026-09-11: 'population of Mersin Province' spoke one census
+    # for 'as of 2022')
+    if any(w.isdigit() for w in leftover):
+        return False
     return not any(w in rw for w in leftover)
 
 

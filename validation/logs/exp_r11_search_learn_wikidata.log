@@ -1,0 +1,22 @@
+wiki world 552297 facts, 2794 relations | SimpleQA sample 600 (seed 7) | source wikidata
+  100/600 (215s, api calls 43) plan 88 fetched 15 verified 0 correct 0 near 0 WRONG 0
+  200/600 (436s, api calls 76) plan 177 fetched 26 verified 1 correct 0 near 0 WRONG 1
+  400/600 (691s, api calls 125) plan 354 fetched 49 verified 1 correct 0 near 0 WRONG 1
+  500/600 (939s, api calls 153) plan 441 fetched 59 verified 1 correct 0 near 0 WRONG 1
+  600/600 (1121s, api calls 168) plan 530 fetched 68 verified 1 correct 0 near 0 WRONG 1
+
+SIMPLEQA + SEARCH-AND-LEARN: {'WRONG': 1, 'facts_fetched': 1919, 'fetched_questions': 68, 'final:plan_does_not_cover_question': 462, 'final:retrieval_exhausted': 2, 'final:unknown_relation': 65, 'first:plan_does_not_cover_question': 462, 'first:retrieval_exhausted': 3, 'first:unknown_relation': 65, 'gate:accepted': 800, 'gate:contradiction': 1069, 'gate:duplicate': 50, 'no_plan': 70, 'plan': 530, 'verified': 1}
+api calls 168 | VM calls 2 | store grew 800
+
+every verified answer:
+  [WRONG  ] 'As of 2022, what is the population of Mersin Province?'
+           plan ['population'] seed 'mersin province' -> '1814468' (gold '1,916,432')
+           via ['1814468 is the population of Mersin Province']
+
+learned (first 6):
+  'In what year did Haile Gebrselassie go undefeated in all of his road r' asked ['haile gebrselassie'] admitted 24 e.g. ['Ethiopia is the country of citizenship of Haile Gebrselassie', 'male is the sex or gender of Haile Gebrselassie', 'Haile Gebrselassie is the Commons category of Haile Gebrselassie']
+  'As of 2011, what was the male population of Chitwan District?' asked ['chitwan district'] admitted 12 e.g. ['Nepal is the country of Chitwan District', "Category:Chitwan District is the topic's main category of Chitwan District", 'Bagmati Province is the located in the administrative territorial entity of Chitwan District']
+  "How many U.S. patents did Chadwell O'Connor receive in his lifetime?" asked ['chadwell o connor'] admitted 9 e.g. ["2007-09-05 is the date of death of Chadwell O'Connor", "1914-10-09 is the date of birth of Chadwell O'Connor", "male is the sex or gender of Chadwell O'Connor"]
+  'On what day, month, and year was Masaki Tsuji born?' asked ['masaki tsuji'] admitted 15 e.g. ['Japan is the country of citizenship of Masaki Tsuji', '1932-03-23 is the date of birth of Masaki Tsuji', 'screenwriter is the occupation of Masaki Tsuji']
+  'What fellowship was Zanele Muholi awarded in 2012?' asked ['zanele muholi'] admitted 22 e.g. ['non-binary is the sex or gender of Zanele Muholi', '1972-07-19 is the date of birth of Zanele Muholi', '1972 is the date of birth of Zanele Muholi']
+  'In which district is the Syrian village "Kafr al-Awamid" located?' asked ['kafr al awamid'] admitted 2 e.g. ['Syria is the country of Kafr al-Awamid', 'Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid']

@@ -230,3 +230,18 @@ def test_paraphrased_relation_may_appear_under_the_stores_wording():
     assert verdict.ok and verdict.paraphrased == [("languages spoken written signed", "languages spoken written or signed")]
     q2 = "Which languages spoken, written or signed by the capital of Manfred Rusing?"
     assert not covers(q2, p, v)                                                   # 'capital' dropped
+
+
+def test_a_number_left_over_is_an_unbound_constraint():
+    """exp_r11 (2026-09-11): 'As of 2022, what is the population of Mersin Province?'
+    planned as `population of mersin province` covered under v3 -- '2022' is not a
+    relation word -- and the walk spoke one census for a year the store cannot
+    check. A leftover number is a constraint the plan did not bind: not covered."""
+    v = Vocab(KNOWN | {"population"})
+    p = QuestionPlan(relations=[None], tail="population of mersin province", n_hop=1)
+    assert covers("What is the population of Mersin Province?", p, v)
+    assert not covers("As of 2022, what is the population of Mersin Province?", p, v)
+    assert not covers("What was the population of Mersin Province in 1990?", p, v)
+    # a number INSIDE the entity is the entity's, not a constraint
+    p2 = QuestionPlan(relations=[None], tail="primary classification of 1881 in india", n_hop=1)
+    assert covers("What is the primary classification of 1881 in India?", p2, Vocab(KNOWN | {"primary classification"}))

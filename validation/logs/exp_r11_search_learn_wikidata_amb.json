@@ -1,0 +1,24 @@
+{
+ "arm": "wikidata",
+ "n": 600,
+ "seed": 7,
+ "world0": 552297,
+ "counts": {
+  "plan": 530,
+  "first:plan_does_not_cover_question": 464,
+  "final:plan_does_not_cover_question": 464,
+  "no_plan": 70,
+  "first:unknown_relation": 64,
+  "fetched_questions": 66,
+  "facts_fetched": 1790,
+  "gate:accepted": 1715,
+  "gate:duplicate": 75,
+  "final:unknown_relation": 64,
+  "first:retrieval_exhausted": 2,
+  "final:retrieval_exhausted": 2
+ },
+ "verified": [],
+ "api_calls": 20,
+ "vm_calls": 0,
+ "wall_s": 1005.2
+}

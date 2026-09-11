@@ -1,0 +1,186 @@
+"""learn -- search-and-learn: a refusal becomes a fetch, a gate, a store write and a second walk.
+
+Wired: WIRED (2026-09-11, coverage lever 3; the host side of the 2026-09-04 design note
+"I don't know yet -- but I can look it up for you", standin/README.md).
+
+The loop, and what it may and may not do:
+
+    answer(question)                         -> refused / failed with a reason
+      -> the entity the walk stalled on      (the seed at hop 0, or the last object reached)
+      -> source.facts(entity)                -> candidate template facts, DATA, never a judgement
+      -> gate(fact, store): parse, duplicate, sibling recorded  (multi-valued relations are admitted; a
+                                             conflict is refused at ANSWER time as an ambiguous hop)
+      -> store.add(fact) + known.add(fact)   with PROVENANCE: source, entity queried, time, the
+                                             store's snapshot hash before the write, git-free
+      -> answer(question) again, once        -> verified by the VM, or refused with a reason
+
+Invariants kept: the VM is the only truth gate (a fetched fact is looked up and verified like any
+other; nothing is spoken because a source said so); the model proposes, the host disposes (the
+source is chosen and called by the host, its output is gated by the host); the don't-know
+contract (a refusal stays a refusal until a verified chain exists); retire, never delete (every
+accepted fact carries a provenance record; a later retirement is a record, not a deletion). At
+most `max_entities` rounds per question, each one entity, each followed by one walk, and a round
+that admits nothing ends it: the loop is bounded by construction.
+
+`Source` is a protocol: `facts(entity) -> list[str]` of template facts ('OBJ is the REL of SUBJ').
+A held-out store (validation/exp_r11_search_learn.py) measures the mechanism; a Wikidata-backed
+source is the same call with the network behind it.
+"""
+from __future__ import annotations
+
+import hashlib
+import time
+from dataclasses import dataclass, field
+from typing import Protocol, runtime_checkable
+
+from ..core.protocols import Wiring
+from .pipeline import CoTResult, answer
+from .plan_verify import tail_match, tail_relation
+from .planner import QuestionPlan, normalize, parse_fact, parse_question
+
+__wiring__ = Wiring.WIRED
+
+# the refusals a fetch can address: the store lacks a fact, not the plan a shape
+LEARNABLE = ("retrieval_exhausted", "unknown_relation")
+
+
+@runtime_checkable
+class Source(Protocol):
+    name: str
+    def facts(self, entity: str) -> list[str]: ...
+
+
+@dataclass
+class Provenance:
+    fact: str
+    source: str
+    entity: str
+    fetched_at: float
+    snapshot_before: str          # sha256 over the store's fact set before this write
+    status: str                   # accepted | duplicate | contradiction | unparseable
+    clash: str | None = None      # the stored fact a contradiction hit
+
+
+@dataclass
+class LearnResult:
+    result: CoTResult             # the final answer() result (second walk when one ran)
+    first: CoTResult              # the first walk's result
+    learned: list[Provenance] = field(default_factory=list)
+    entities: list[str] = field(default_factory=list)     # what was asked of the source
+    fetched: int = 0
+    @property
+    def accepted(self) -> list[Provenance]:
+        return [p for p in self.learned if p.status == "accepted"]
+
+
+def snapshot(store) -> str:
+    h = hashlib.sha256()
+    for f in sorted(getattr(store, "texts", [])):
+        h.update(f.encode("utf-8")); h.update(b"\n")
+    return h.hexdigest()[:16]
+
+
+def contradiction(fact: str, index) -> str | None:
+    """A stored fact with the same (subject, relation) and a different object, else
+    None -- the memory cortex's rule (standin/serve.py MemoryCortex.contradiction),
+    answered from the index instead of a scan."""
+    t = parse_fact(fact)
+    if t is None:
+        return None
+    for known, k in index._by_subj.get(normalize(t.subj), []):
+        if normalize(k.rel) == normalize(t.rel) and normalize(k.obj) != normalize(t.obj):
+            return known
+    return None
+
+
+def gate(fact: str, store, source: str, entity: str, functional: bool = False) -> Provenance:
+    """Parse, duplicate, sibling -- in that order; the verdict is the record.
+
+    A SIBLING is a stored fact with the same subject and relation and a different
+    object. With `functional=True` it is a contradiction and the fact is refused
+    (the memory cortex's rule for a user-taught fact). By default it is admitted
+    and recorded (`clash` names the sibling): a source states multi-valued
+    relations as sets -- three citizenships, a population per census -- and
+    exp_r11 (2026-09-11) showed the functional rule refusing 1,069 of 1,919
+    fetched facts as 'contradictions', keeping ONE population value and letting
+    the walk speak it for 'as of 2022'. The honest place to resolve several
+    values is answer time: `pipeline._walk` refuses an ambiguous hop and names
+    the candidates. A poisoned value therefore becomes a refusal with both
+    facts and their provenance on record, never an answer."""
+    snap = snapshot(store)
+    now = time.time()
+    if parse_fact(fact) is None:
+        return Provenance(fact, source, entity, now, snap, "unparseable")
+    if fact in store:
+        return Provenance(fact, source, entity, now, snap, "duplicate")
+    clash = contradiction(fact, store.index)
+    if clash is not None and functional:
+        return Provenance(fact, source, entity, now, snap, "contradiction", clash=clash)
+    return Provenance(fact, source, entity, now, snap, "accepted", clash=clash)
+
+
+def stalled_entities(question: str, plan: QuestionPlan | None, first: CoTResult, known) -> list[str]:
+    """Where the walk stopped: the seed entity when nothing was found at hop 0 (or the
+    plan was refused for an unknown relation), else the last object the walk reached."""
+    if plan is None:
+        plan = parse_question(question)
+    if plan is None:
+        return []
+    out: list[str] = []
+    if first.trace and first.reason == "retrieval_exhausted":
+        last = first.trace[-1].triple
+        if last is not None:
+            out.append(last.obj)
+    tr = tail_relation(plan.tail, known) if known is not None else None
+    if tr is None and known is not None:
+        tm = tail_match(plan.tail, known)
+        tr = tm[0] if tm else None
+    if tr is not None:
+        ent = plan.tail[len(tr):].strip()
+        ent = ent[3:] if ent.startswith("of ") else ent
+    elif " of " in plan.tail:
+        ent = plan.tail.rsplit(" of ", 1)[1]
+    else:
+        ent = ""
+    if ent and normalize(ent) not in {normalize(e) for e in out}:
+        out.append(ent)
+    return out
+
+
+def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: Source,
+                     tau_vm: float, tau_ret: float = 0.0, top_k: int = 3, max_repairs: int = 1,
+                     plan: QuestionPlan | None = None, max_entities: int = 2) -> LearnResult:
+    """One question through the loop. `store` needs `add(fact)`, `__contains__`,
+    `texts`, `index` (a TripleIndex) and `lookup` (its `index.hop`); `known` is a
+    `StoreRelations` (gets `add`). A walk follows every round that admitted a fact;
+    a round that admits nothing ends the loop; `max_entities` rounds at most."""
+    def walk():
+        return answer(question, retrieve, run_fn, tau_vm=tau_vm, tau_ret=tau_ret, top_k=top_k,
+                      max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan)
+    first = walk()
+    out = LearnResult(result=first, first=first)
+    asked: set[str] = set()
+    # bounded: each round asks the source about ONE entity the walk stalled on, stores what
+    # the gate admits, and walks again; at most `max_entities` rounds, and a round that
+    # admits nothing ends the loop (there is nothing new to walk on)
+    while (not out.result.verified and out.result.reason in LEARNABLE
+           and len(asked) < max_entities):
+        ents = [e for e in stalled_entities(question, plan, out.result, known) if normalize(e) not in asked]
+        if not ents:
+            break
+        ent = ents[0]
+        asked.add(normalize(ent)); out.entities.append(ent)
+        admitted = 0
+        for fact in source.facts(ent):
+            out.fetched += 1
+            p = gate(fact, store, source.name, ent)
+            out.learned.append(p)
+            if p.status == "accepted":
+                store.add(fact)
+                if hasattr(known, "add"):
+                    known.add(fact)
+                admitted += 1
+        if not admitted:
+            break
+        out.result = walk()
+    return out

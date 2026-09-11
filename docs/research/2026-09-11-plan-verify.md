@@ -535,3 +535,65 @@ mis-split fact exactly, and verified a right answer for the wrong structural rea
 `cot_harvest_split.jsonl`, `exp_m3_cot_pipeline_split.{json,log}`, `exp_r7_emitter_planned_walk_gen2_split.*`,
 `cot_harvest_r7_gen2_split.jsonl`. exp_r9 is not re-run on this lever: its 200 chains are sampled through the
 index, and a changed index samples different chains — a like-for-like rerun needs the chain set pinned first.
+
+## Coverage, lever 3 — search-and-learn (exp_r11), and the ambiguity rule it forced
+
+The store lever: a refusal becomes a fetch, a gate, a write with provenance, and a second walk.
+`cubbyllm/reasoning/learn.py` is the host loop (`learn_and_answer`): `answer()` → the entity the walk stalled on
+(the seed at hop 0, else the last object reached) → `source.facts(entity)` (data, never a judgement) → `gate`
+(parse, duplicate, sibling) → `store.add` + `known.add` with a `Provenance` record (source, entity, time, the
+store's snapshot hash before the write) → `answer()` again. Bounded: at most `max_entities` rounds, one entity
+each, and a round that admits nothing ends it. Only `retrieval_exhausted` and `unknown_relation` are learnable;
+a plan that does not cover its question stays refused. `Source` is a protocol; the network lives in the serve
+stack (`standin/sources.py`, `WikidataSource`: claims rendered as `OBJ is the <property label> of <entity>`,
+identifiers and media skipped, responses cached so a rerun is offline and byte-identical). 4 pins, then 5.
+
+**Held-out arm** (the eval store, the hop-0 fact of 200 verified chains withheld, a source that serves exactly
+the withheld facts by subject). Clean: 200 refused at first (191 no seed fact, 9 unknown relation) → 197 learned
+→ **197 verified, 196 correct**, 1,221 VM calls, 2 s. Then the source poisoned with a contradicting object for
+each withheld fact, served *after* the truth: 195 refused by the gate as contradictions, 194 correct; served
+*before* it: **119 wrong**, with provenance. The gate as first written kept the store consistent, not true — a
+novel falsehood contradicts nothing.
+
+**Wikidata arm, run 1** (600 SimpleQA questions, gen-2 plans, the wiki world, the loop): 530 plans, 462 refused
+for coverage (not learnable), 68 fetched, 1,919 facts fetched, 800 admitted, **1,069 refused as
+"contradictions"** — and one verified answer, **wrong**: `As of 2022, what is the population of Mersin
+Province?` → `1814468` (gold 1,916,432), one census out of the many Wikidata states.
+
+Three faults, all the host's, and all of a kind: the pipeline assumed every relation is functional. The walk
+broke a multi-valued hop by retriever rank; the gate refused the second citizenship as a contradiction of the
+first (so only one population value was ever stored, and the walk spoke it); and `covers()` let `2022` through
+because a year is not a relation word. Three rules, each pinned:
+
+1. **An ambiguous hop is a refusal.** `pipeline._walk`: several candidate facts with *different* objects for one
+   hop → `reason="ambiguous_hop"`, the candidates named in `refused` (an ASK), never a pick by rank.
+2. **The gate admits multi-valued facts and records the sibling** (`clash`); `functional=True` keeps the memory
+   cortex's contradiction rule for a user-taught fact. Truth is decided at answer time, by rule 1.
+3. **A number left over in the question is an unbound constraint** → not covered (`covers()` v3.1).
+
+| after the three rules | before | **after** |
+|---|---:|---:|
+| harvest, 800 questions: verified / precision | 582 / 0.993 (4 wrong) | **574 / 1.000** (9 `ambiguous_hop`; the 4 wrong were all tie-breaks) |
+| gen 2, outside the grammar (exp_r7 --exclude) | 18/116, arm A 1 wrong | **18/116, 0 wrong anywhere** (A 92/92) |
+| held-out, clean | 196 correct, 1 wrong (a tie-break) | **195 correct, 0 wrong**, 2 ambiguous |
+| held-out, poison after / before the truth | 194 correct / **119 wrong** | **197 ambiguous refusals / 197 ambiguous refusals, 0 wrong** |
+| Wikidata arm, run 2 (same 600, cache) | 1 verified, 1 wrong | 66 fetched, 1,790 facts, **1,715 admitted**, 0 verified, **0 wrong** |
+
+Every wrong answer this pipeline had ever spoken on the eval — the 4 in the harvest since the first day, gen
+2's one on arm A, the held-out arm's one — was the walk choosing between several true facts. Refusing to
+choose costs 8 verified answers on 800 and buys precision 1.000, and a poisoned source now yields a refusal
+that names both facts and their provenance instead of an answer: retire-never-delete has something to act on.
+
+**What the Wikidata arm says about SimpleQA now.** The store grew by 1,715 admitted facts about 66 entities and
+none of the 66 questions verified: after the fetch the reasons are still `unknown_relation` (64) and
+`retrieval_exhausted` (2). The store *holds* the answers — `1932-03-23 is the date of birth of Masaki Tsuji`
+was admitted for `On what day, month, and year was Masaki Tsuji born?` — but the emitter named the relation in
+the question's words (`day`, `month`, `year`; `go undefeated in all of his road races`), and `born` shares no
+word with `date of birth`. The binding constraint on free text has moved for the third time today: from the
+plan's shape (the disposer), to the store (this lever), to the **relation vocabulary the emitter names** against
+the vocabulary a source states. That is gen 3's job — plans in the source's property labels — or a relation
+alias layer the host owns (MoWM's "possible edge" oracle is the principled place for it). SimpleQA baseline
+after lever 3: 0 verified, 0 wrong, 1,715 facts learned with provenance.
+
+`exp_r11_search_learn_heldout{,_amb}.*`, `exp_r11_search_learn_wikidata{,_amb}.*`, `exp_m3_cot_pipeline_amb.*`,
+`cot_harvest_amb.jsonl`, `exp_r7_emitter_planned_walk_gen2_amb.*`, `cot_harvest_r7_gen2_amb.jsonl`.

@@ -1,0 +1,80 @@
+{
+ "arm": "wikidata",
+ "n": 600,
+ "seed": 7,
+ "world0": 552297,
+ "counts": {
+  "plan": 530,
+  "first:plan_does_not_cover_question": 462,
+  "final:plan_does_not_cover_question": 462,
+  "no_plan": 70,
+  "first:unknown_relation": 65,
+  "fetched_questions": 68,
+  "facts_fetched": 1919,
+  "gate:accepted": 800,
+  "gate:contradiction": 1069,
+  "gate:duplicate": 50,
+  "final:unknown_relation": 65,
+  "first:retrieval_exhausted": 3,
+  "final:retrieval_exhausted": 2,
+  "verified": 1,
+  "WRONG": 1
+ },
+ "verified": [
+  {
+   "q": "As of 2022, what is the population of Mersin Province?",
+   "plan": [
+    "population"
+   ],
+   "seed": "mersin province",
+   "answer": "1814468",
+   "gold": "1,916,432",
+   "match": "WRONG",
+   "learned": [
+    "Mersin Province is the Commons category of Mersin Province",
+    "Turkey is the country of Mersin Province",
+    "Category:Mersin Province is the topic's main category of Mersin Province",
+    "Mersin is the capital of Mersin Province",
+    "33000–33999 is the postal code of Mersin Province",
+    "33 is the vehicle registration plate code of Mersin Province",
+    "15737 is the area of Mersin Province",
+    "Category:Births in Mersin Province is the category for people born here of Mersin Province",
+    "Category:People from Mersin Province is the category of associated people of Mersin Province",
+    "Mersin ili is the native label of Mersin Province",
+    "324 is the local dialing code of Mersin Province",
+    "1814468 is the population of Mersin Province",
+    "Akdeniz is the contains the administrative territorial entity of Mersin Province",
+    "Adana Subregion is the part of of Mersin Province",
+    "Domari is the language used of Mersin Province",
+    "Category:Maps of Mersin Province is the category for maps or plans of Mersin Province",
+    "Turkey is the located in the administrative territorial entity of Mersin Province",
+    "863221 is the male population of Mersin Province",
+    "869967 is the female population of Mersin Province",
+    "Mersin is the different from of Mersin Province",
+    "13847 is the annual number of weddings of Mersin Province",
+    "4.38 is the suicide rate of Mersin Province",
+    "77.51 is the life expectancy of Mersin Province",
+    "2.02 is the total fertility rate of Mersin Province",
+    "29.93 is the mean age of Mersin Province",
+    "-6.6 is the minimum temperature record of Mersin Province",
+    "41.5 is the maximum temperature record of Mersin Province",
+    "メルスィン is the name in kana of Mersin Province",
+    "hot-summer Mediterranean climate is the Köppen climate classification of Mersin Province",
+    "0.57 is the water as percent of area of Mersin Province",
+    "5 is the elevation above sea level of Mersin Province",
+    "611399 is the number of households of Mersin Province",
+    "Governor of Mersin is the office held by the head of government of Mersin Province",
+    "Turkish is the official language of Mersin Province",
+    "Asia is the continent of Mersin Province",
+    "Mediterranean Sea is the located in or next to body of water of Mersin Province",
+    "Adana Province is the shares border with of Mersin Province"
+   ],
+   "trace": [
+    "1814468 is the population of Mersin Province"
+   ]
+  }
+ ],
+ "api_calls": 168,
+ "vm_calls": 2,
+ "wall_s": 1121.2
+}

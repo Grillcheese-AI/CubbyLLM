@@ -1,0 +1,60 @@
+{
+ "per_arm": {
+  "A_control": {
+   "n": 100,
+   "built": 99,
+   "walked": 93,
+   "verified": 92,
+   "correct": 92,
+   "refused": 6,
+   "refused:ambiguous_hop": 3,
+   "malformed": 1,
+   "walk:retrieval_exhausted": 1,
+   "refused:plan_does_not_cover_question": 3
+  },
+  "B_misparsed": {
+   "n": 79,
+   "built": 69,
+   "walked": 11,
+   "verified": 7,
+   "correct": 7,
+   "refused": 58,
+   "refused:plan_does_not_cover_question": 30,
+   "malformed": 10,
+   "refused:unknown_relation": 28,
+   "walk:retrieval_exhausted": 4
+  },
+  "C_unparseable": {
+   "n": 37,
+   "built": 34,
+   "walked": 14,
+   "verified": 11,
+   "correct": 11,
+   "refused": 20,
+   "refused:unknown_relation": 5,
+   "refused:plan_does_not_cover_question": 15,
+   "walk:retrieval_exhausted": 3,
+   "malformed": 3
+  }
+ },
+ "taus": {
+  "cal_unparseable_questions": 6,
+  "cal_mojibake_excluded_hop_obs": 15,
+  "n_hop_observations": 151,
+  "n_incorrect_hop_observations": 2,
+  "n_verified_calibration_walks": 127,
+  "tau_vm_floors": {
+   "1": 1.0,
+   "2": 0.4736328125,
+   "3": 0.22021484375
+  },
+  "fallback_tau_vm": 0.22021484375,
+  "tau_vm_youden_reference": 0.50146484375,
+  "tau_vm_youden_auc": 0.7248322147651006,
+  "tau_vm_calibration_degenerate": false,
+  "tau_ret": 0.595863088965416
+ },
+ "r3": "validation/logs/exp_r3_emitter_floor_gen2.json",
+ "n_harvest_records": 110,
+ "wall_s": 8.7
+}

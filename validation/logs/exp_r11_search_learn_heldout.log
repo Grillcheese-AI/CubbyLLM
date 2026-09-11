@@ -1,0 +1,16 @@
+eval store 1241 facts; 200 verified-correct chains sampled (seed 7); 200 hop-0 facts withheld -> store of 1041
+
+[clean] {'WRONG': 1, 'correct': 196, 'final:retrieval_exhausted': 3, 'first:retrieval_exhausted': 191, 'first:unknown_relation': 9, 'gate:accepted': 197, 'verified': 197} | source calls 200
+    WRONG 'What is the characteristic of the instance of mats lie skare?' -> 'Facial hairs' (gold 'Prénom') learned ['Huamn is the instance of mats lie skare']
+
+[poison_after_truth] {'WRONG': 1, 'correct': 194, 'final:retrieval_exhausted': 5, 'first:retrieval_exhausted': 191, 'first:unknown_relation': 9, 'gate:accepted': 199, 'gate:contradiction': 195, 'verified': 195} | source calls 202
+    WRONG 'What is the characteristic of the instance of mats lie skare?' -> 'Facial hairs' (gold 'Prénom') learned ['Huamn is the instance of mats lie skare']
+
+[poison_before_truth] {'WRONG': 119, 'final:retrieval_exhausted': 81, 'first:retrieval_exhausted': 191, 'first:unknown_relation': 9, 'gate:accepted': 197, 'gate:contradiction': 197, 'verified': 119} | source calls 278
+    WRONG 'What is the instance of Malin Lundgren?' -> 'NOT-Huamn' (gold 'Huamn') learned ['NOT-Huamn is the instance of Malin Lundgren']
+    WRONG 'What is the instance of anthony sale?' -> 'NOT-Huamn' (gold 'Huamn') learned ['NOT-Huamn is the instance of anthony sale']
+    WRONG 'What is the country of origin of Purple Mask?' -> 'NOT-united stated' (gold 'united stated') learned ['NOT-united stated is the country of origin of Purple Mask']
+    WRONG "What is the occupation of Ja'far Kashfi?" -> 'NOT-philosophers' (gold 'philosophers') learned ["NOT-philosophers is the occupation of Ja'far Kashfi"]
+
+the mechanism: clean -> every withheld chain should read refused -> learned -> verified at the harvest's precision;
+poison after truth -> refused by the gate as a contradiction; poison before truth -> the gate keeps the store CONSISTENT, not true.

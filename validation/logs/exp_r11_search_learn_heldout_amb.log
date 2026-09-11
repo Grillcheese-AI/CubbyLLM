@@ -1,0 +1,10 @@
+eval store 1241 facts; 200 verified-correct chains sampled (seed 7); 200 hop-0 facts withheld -> store of 1041
+
+[clean] {'correct': 195, 'final:ambiguous_hop': 2, 'final:retrieval_exhausted': 3, 'first:retrieval_exhausted': 191, 'first:unknown_relation': 9, 'gate:accepted': 197, 'verified': 195} | source calls 200
+
+[poison_after_truth] {'final:ambiguous_hop': 197, 'final:retrieval_exhausted': 3, 'first:retrieval_exhausted': 191, 'first:unknown_relation': 9, 'gate:accepted': 394} | source calls 200
+
+[poison_before_truth] {'final:ambiguous_hop': 197, 'final:retrieval_exhausted': 3, 'first:retrieval_exhausted': 191, 'first:unknown_relation': 9, 'gate:accepted': 394} | source calls 200
+
+the mechanism: clean -> every withheld chain should read refused -> learned -> verified at the harvest's precision;
+poison after truth -> refused by the gate as a contradiction; poison before truth -> the gate keeps the store CONSISTENT, not true.

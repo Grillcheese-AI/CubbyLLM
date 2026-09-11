@@ -1,0 +1,19 @@
+wiki world 552297 facts, 2794 relations | SimpleQA sample 600 (seed 7) | source wikidata
+  100/600 (188s, api calls 1) plan 88 fetched 14 verified 0 correct 0 near 0 WRONG 0
+  200/600 (357s, api calls 5) plan 177 fetched 24 verified 0 correct 0 near 0 WRONG 0
+  400/600 (592s, api calls 9) plan 354 fetched 47 verified 0 correct 0 near 0 WRONG 0
+  500/600 (828s, api calls 16) plan 441 fetched 57 verified 0 correct 0 near 0 WRONG 0
+  600/600 (1005s, api calls 20) plan 530 fetched 66 verified 0 correct 0 near 0 WRONG 0
+
+SIMPLEQA + SEARCH-AND-LEARN: {'facts_fetched': 1790, 'fetched_questions': 66, 'final:plan_does_not_cover_question': 464, 'final:retrieval_exhausted': 2, 'final:unknown_relation': 64, 'first:plan_does_not_cover_question': 464, 'first:retrieval_exhausted': 2, 'first:unknown_relation': 64, 'gate:accepted': 1715, 'gate:duplicate': 75, 'no_plan': 70, 'plan': 530}
+api calls 20 | VM calls 0 | store grew 1715
+
+every verified answer:
+
+learned (first 6):
+  'In what year did Haile Gebrselassie go undefeated in all of his road r' asked ['haile gebrselassie'] admitted 85 e.g. ['Ethiopia is the country of citizenship of Haile Gebrselassie', 'male is the sex or gender of Haile Gebrselassie', 'Haile Gebrselassie is the Commons category of Haile Gebrselassie']
+  'As of 2011, what was the male population of Chitwan District?' asked ['chitwan district'] admitted 14 e.g. ['Nepal is the country of Chitwan District', "Category:Chitwan District is the topic's main category of Chitwan District", 'Bagmati Province is the located in the administrative territorial entity of Chitwan District']
+  "How many U.S. patents did Chadwell O'Connor receive in his lifetime?" asked ['chadwell o connor'] admitted 9 e.g. ["2007-09-05 is the date of death of Chadwell O'Connor", "1914-10-09 is the date of birth of Chadwell O'Connor", "male is the sex or gender of Chadwell O'Connor"]
+  'On what day, month, and year was Masaki Tsuji born?' asked ['masaki tsuji'] admitted 20 e.g. ['Japan is the country of citizenship of Masaki Tsuji', '1932-03-23 is the date of birth of Masaki Tsuji', 'screenwriter is the occupation of Masaki Tsuji']
+  'What fellowship was Zanele Muholi awarded in 2012?' asked ['zanele muholi'] admitted 53 e.g. ['non-binary is the sex or gender of Zanele Muholi', '1972-07-19 is the date of birth of Zanele Muholi', '1972 is the date of birth of Zanele Muholi']
+  'In which district is the Syrian village "Kafr al-Awamid" located?' asked ['kafr al awamid'] admitted 2 e.g. ['Syria is the country of Kafr al-Awamid', 'Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid']

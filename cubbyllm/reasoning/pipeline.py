@@ -56,7 +56,10 @@ class CoTResult:
     # Plan-time refusal (2026-09-11, plan_verify): set when `answer(..., known=)`
     # refused the plan BEFORE any walk -- reason is then "unknown_relation" or
     # "plan_does_not_cover_question" and this carries the relations the store
-    # does not hold. None whenever a walk ran (or no `known` was given).
+    # does not hold. None whenever a walk ran (or no `known` was given) -- except
+    # "ambiguous_hop" (2026-09-11): the walk found several facts with different
+    # objects for one hop and refused to pick; this then carries the hop, the
+    # candidate objects and the facts, for an ASK.
     refused: dict | None = None
 
 
@@ -66,6 +69,13 @@ _accept = accepts     # the acceptance test moved to the planner (2026-09-04); t
 def _exact_tail(plan: QuestionPlan, t: Triple) -> bool:
     """Hop 0's exact tier: the fact's 'rel of subj' reproduces the question tail."""
     return normalize(f"{t.rel} of {t.subj}") == normalize(plan.tail)
+
+
+class _Ambiguous(Exception):
+    """The walk found several facts with different objects for one hop (see `_walk`)."""
+    def __init__(self, hop: int, objects: list[str], facts: list[str]) -> None:
+        super().__init__(f"hop {hop}: {len(objects)} candidate objects")
+        self.hop, self.objects, self.facts = hop, objects, facts
 
 
 def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
@@ -97,6 +107,14 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
                 # reproduces the tail is never displaced by one that only matches it
                 exact = [ft for ft in cands if _exact_tail(plan, ft[1])]
                 cands = exact or cands
+            objects = sorted({normalize(t.obj) for _f, t in cands})
+            if len(objects) > 1:
+                # AMBIGUOUS (2026-09-11, exp_r11): several stored facts serve this hop with
+                # DIFFERENT objects -- a multi-valued relation ('population' over the years,
+                # three citizenships) or a conflict between sources. Picking one by rank
+                # spoke a wrong population for 'as of 2022'. The honest outcome is a
+                # refusal that names the candidates (ASK territory), never a guess.
+                raise _Ambiguous(hop, objects, [f for f, _t in cands])
             if len(cands) > 1:
                 rank = {f: float(sc) for sc, f in retrieve(query, max(top_k, len(cands)))}
                 cands.sort(key=lambda ft: (-rank.get(ft[0], -1.0), ft[0]))
@@ -170,7 +188,12 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
     # up to two walk+verify rounds (spec 4.4: one verify-stage repair pass)
     for _attempt in range(2):
         trace: list[HopTrace] = []
-        triples = _walk(plan, retrieve, tau_ret, top_k, budget, trace, banned, lookup=lookup)
+        try:
+            triples = _walk(plan, retrieve, tau_ret, top_k, budget, trace, banned, lookup=lookup)
+        except _Ambiguous as amb:
+            return CoTResult(answer=None, verified=False, trace=trace, repairs_used=max_repairs - budget[0],
+                             reason="ambiguous_hop", repairs=repairs,
+                             refused={"hop": amb.hop, "objects": amb.objects, "facts": amb.facts})
         used = max_repairs - budget[0]
 
         # Close out a pending repair from the PREVIOUS attempt's ban: the

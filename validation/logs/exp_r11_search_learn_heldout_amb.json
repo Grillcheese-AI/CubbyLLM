@@ -1,0 +1,32 @@
+{
+ "arm": "heldout",
+ "n": 200,
+ "seed": 7,
+ "arms": {
+  "clean": {
+   "first:retrieval_exhausted": 191,
+   "gate:accepted": 197,
+   "verified": 195,
+   "correct": 195,
+   "final:ambiguous_hop": 2,
+   "first:unknown_relation": 9,
+   "final:retrieval_exhausted": 3
+  },
+  "poison_after_truth": {
+   "first:retrieval_exhausted": 191,
+   "gate:accepted": 394,
+   "final:ambiguous_hop": 197,
+   "first:unknown_relation": 9,
+   "final:retrieval_exhausted": 3
+  },
+  "poison_before_truth": {
+   "first:retrieval_exhausted": 191,
+   "gate:accepted": 394,
+   "final:ambiguous_hop": 197,
+   "first:unknown_relation": 9,
+   "final:retrieval_exhausted": 3
+  }
+ },
+ "vm_calls": 486,
+ "wall_s": 1.4
+}

@@ -1,0 +1,37 @@
+{
+ "arm": "heldout",
+ "n": 200,
+ "seed": 7,
+ "arms": {
+  "clean": {
+   "first:retrieval_exhausted": 191,
+   "gate:accepted": 197,
+   "verified": 197,
+   "correct": 196,
+   "first:unknown_relation": 9,
+   "final:retrieval_exhausted": 3,
+   "WRONG": 1
+  },
+  "poison_after_truth": {
+   "first:retrieval_exhausted": 191,
+   "gate:accepted": 199,
+   "gate:contradiction": 195,
+   "verified": 195,
+   "correct": 194,
+   "first:unknown_relation": 9,
+   "final:retrieval_exhausted": 5,
+   "WRONG": 1
+  },
+  "poison_before_truth": {
+   "first:retrieval_exhausted": 191,
+   "gate:accepted": 197,
+   "gate:contradiction": 197,
+   "verified": 119,
+   "WRONG": 119,
+   "final:retrieval_exhausted": 81,
+   "first:unknown_relation": 9
+  }
+ },
+ "vm_calls": 1221,
+ "wall_s": 1.9
+}
