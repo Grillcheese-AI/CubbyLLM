@@ -1,0 +1,79 @@
+{
+ "n_items": 200,
+ "world_facts": 552297,
+ "relations": 2967,
+ "gguf": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\models\\emitter_v12e.Q4_K_M.gguf",
+ "stats": {
+  "canonical": {
+   "grammar": {
+    "plan": 200,
+    "walked": 200,
+    "verified": 189,
+    "correct": 189,
+    "walk_failed": 11
+   },
+   "emitter": {
+    "plan": 200,
+    "walked": 150,
+    "walk_failed": 43,
+    "two_hop": 149,
+    "verified": 107,
+    "correct": 107,
+    "refused": 50,
+    "refused:unknown_relation": 2,
+    "refused:plan_does_not_cover_question": 48
+   }
+  },
+  "have": {
+   "grammar": {
+    "plan": 200,
+    "walked": 200,
+    "walk_failed": 200
+   },
+   "emitter": {
+    "plan": 199,
+    "refused": 91,
+    "refused:plan_does_not_cover_question": 91,
+    "two_hop": 104,
+    "walked": 108,
+    "verified": 77,
+    "correct": 77,
+    "walk_failed": 31,
+    "no_plan": 1
+   }
+  },
+  "relative": {
+   "grammar": {
+    "plan": 200,
+    "refused": 200
+   },
+   "emitter": {
+    "plan": 200,
+    "two_hop": 193,
+    "walked": 135,
+    "verified": 124,
+    "correct": 124,
+    "refused": 65,
+    "refused:plan_does_not_cover_question": 48,
+    "refused:unknown_relation": 17,
+    "walk_failed": 11
+   }
+  },
+  "possessive": {
+   "grammar": {
+    "no_plan": 200
+   },
+   "emitter": {
+    "plan": 200,
+    "refused": 180,
+    "refused:plan_does_not_cover_question": 180,
+    "walked": 20,
+    "walk_failed": 20,
+    "two_hop": 39
+   }
+  }
+ },
+ "vm_calls": 1581,
+ "wrong_examples": [],
+ "wall_s": 459.4
+}

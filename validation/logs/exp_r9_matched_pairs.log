@@ -1,0 +1,34 @@
+world: 552297 facts, 552297 indexed, 2967 distinct relations | 200 functional two-hop chains (seed 7) | built in 14s
+matched items: 200  e.g. 'What predecessor does the influence of Mainland Southeast Asia History have?' -> 'Mingyi Nyo Entity'
+
+  25/200 (69s, emitter 54s, VM calls 180)
+  50/200 (122s, emitter 106s, VM calls 366)
+  75/200 (175s, emitter 158s, VM calls 567)
+  100/200 (228s, emitter 210s, VM calls 771)
+  125/200 (287s, emitter 268s, VM calls 978)
+  150/200 (343s, emitter 323s, VM calls 1176)
+  175/200 (401s, emitter 380s, VM calls 1368)
+  200/200 (459s, emitter 437s, VM calls 1581)
+
+MATCHED PAIRS on the wiki world -- same chains, same facts, same gold, same gates; only the surface form moves
+form        planner    plan  refused  walked  verified  correct  WRONG
+canonical   grammar     200        0     200       189      189      0
+canonical   emitter     200       50     150       107      107      0
+have        grammar     200        0     200         0        0      0
+have        emitter     199       91     108        77       77      0
+relative    grammar     200      200       0         0        0      0
+relative    emitter     200       65     135       124      124      0
+possessive  grammar       0        0       0         0        0      0
+possessive  emitter     200      180      20         0        0      0
+
+out-of-basin forms (3 x 200 questions): grammar correct 0 (wrong 0) | emitter correct 201 (wrong 0)
+canonical: grammar correct 189/200 | emitter correct 107/200
+VM calls 1581 over 800 questions x 2 planners | emitter 0.55s per plan
+  ok    [emitter/relative] 'What is the predecessor of the thing that is the influence of Mainland Southeast' -> 'Mingyi Nyo Entity'
+  ok    [emitter/have] 'What group does the loyalist of King Danjong have?' -> 'Samjungsin'
+  ok    [emitter/relative] 'What is the group of the thing that is the loyalist of King Danjong?' -> 'Samjungsin'
+  ok    [emitter/have] 'What inspiration does the related entity of Motion Picture Herald have?' -> 'Blockbuster Bombs'
+  emitter refusals on canonical: {'refused:unknown_relation': 2, 'refused:plan_does_not_cover_question': 48}
+  emitter refusals on have: {'refused:plan_does_not_cover_question': 91}
+  emitter refusals on relative: {'refused:plan_does_not_cover_question': 48, 'refused:unknown_relation': 17}
+  emitter refusals on possessive: {'refused:plan_does_not_cover_question': 180}

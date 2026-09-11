@@ -332,3 +332,34 @@ reason to exist now.
 
 `cot_harvest_r7_gen2.jsonl`: 102 verified records, 7 on questions outside gen 2's data — gen 3's material.
 
+
+## Matched pairs on the wiki world (exp_r9) — the generality test the memo asked for
+
+Everything above lives on one 1,241-fact store with 165 relations, which the emitter was fine-tuned on.
+The rung-1 memo's own falsifier: if the mechanism does not hold on a genuinely different corpus, throw the
+memo away. exp_r9 is that test, in Grok's matched-pair design. The world is the wikikg-trajectories graph
+as served (552,297 facts, **2,967 relations** — the emitter has seen 165 of them), TripleIndex-only walk,
+resident VM, the harvest's tau floors. 200 functional two-hop chains (both hops served by exactly one
+stored fact, so the walk's end is the one gold), each issued in four surface forms against the same store:
+
+| form | shape | grammar | **emitter (gen 2)** |
+|---|---|---:|---:|
+| canonical | `What is the P2 of the P1 of E?` | **189**/200 correct, 0 wrong | 107/200 correct, 0 wrong |
+| have | `What P2 does the P1 of E have?` | 0 (200 plans, all walks failed — 1-hop misparse) | **77**/200, 0 wrong |
+| relative | `What is the P2 of the thing that is the P1 of E?` | 0 (200 plans, all refused) | **124**/200, 0 wrong |
+| possessive | `E's P1 — what is its P2?` | no plan | 0 (180 refused `plan_does_not_cover_question`) |
+
+**Out of basin (3 forms × 200): grammar 0 correct, emitter 201 correct, 0 wrong.** 1,581 VM calls; wall
+459 s; 0 wrong on every form for both planners. A win here is attributable to question shape and nothing
+else — same chains, same facts, same gold, same gates.
+
+Three honest readings. The emitter's canonical score (107) is below the grammar's (189): it is a bare
+2.6B stand-in fine-tuned on 165 relations meeting ~2,900, and 48 of its canonical plans fail `covers()`
+(it drops or shortens a relation), 2 name relations the store lacks. The possessive zero is the
+disposer's, not the emitter's: `covers()` assumes the answer-side relation comes first in the question
+and the possessive states the inner relation first — a known rule to add, and the refusals were the
+right verdict under the rule as written. And the number that matters is the last column: **nothing the
+VM verified was wrong, on 1,600 questions and a world 445× the training store.** The gate held
+where the memo said it had to.
+
+`validation/exp_r9_matched_pairs.py`, logs `exp_r9_matched_pairs.{json,log}`.

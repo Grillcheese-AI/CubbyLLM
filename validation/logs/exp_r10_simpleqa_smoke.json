@@ -1,0 +1,51 @@
+{
+ "n": 60,
+ "gold_in_graph": 14,
+ "world_facts": 552297,
+ "relations": 2967,
+ "gguf": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\models\\emitter_v12e.Q4_K_M.gguf",
+ "stats": {
+  "gold_in_graph": {
+   "questions": 14,
+   "plan": 13,
+   "plan_3hop": 1,
+   "refused": 13,
+   "refused:plan_does_not_cover_question": 12,
+   "plan_1hop": 9,
+   "plan_2hop": 3,
+   "refused:unknown_relation": 1,
+   "seed_in_graph": 1,
+   "no_plan": 1,
+   "rels_all_known": 1
+  },
+  "gold_not_in_graph": {
+   "questions": 46,
+   "plan": 40,
+   "plan_1hop": 25,
+   "refused": 40,
+   "refused:plan_does_not_cover_question": 33,
+   "plan_2hop": 12,
+   "no_plan": 6,
+   "plan_3hop": 3,
+   "seed_in_graph": 4,
+   "refused:unknown_relation": 7,
+   "rels_all_known": 1
+  }
+ },
+ "total": {
+  "questions": 60,
+  "plan": 53,
+  "plan_3hop": 4,
+  "refused": 53,
+  "refused:plan_does_not_cover_question": 45,
+  "plan_1hop": 34,
+  "plan_2hop": 15,
+  "refused:unknown_relation": 8,
+  "seed_in_graph": 5,
+  "no_plan": 7,
+  "rels_all_known": 2
+ },
+ "vm_calls": 0,
+ "verified": [],
+ "wall_s": 56.8
+}

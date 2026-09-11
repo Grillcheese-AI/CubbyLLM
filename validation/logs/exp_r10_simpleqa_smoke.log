@@ -1,0 +1,47 @@
+world: 552297 facts, 2967 distinct relations, 373451 distinct entity strings | built in 18s
+SimpleQA: 60 questions (sample seed 7); gold is a graph entity for 14
+
+
+SIMPLEQA through the gate -- gen-2 emitter plans, disposer, lookup walk, resident VM, on the wiki world
+                     all  gold in graph  gold not
+questions             60             14        46
+no_plan                7              1         6
+plan                  53             13        40
+plan_1hop             34              9        25
+plan_2hop             15              3        12
+plan_3hop              4              1         3
+seed_in_graph          5              1         4
+rels_all_known         2              1         1
+refused               53             13        40
+walked                 0              0         0
+walk_failed            0              0         0
+verified               0              0         0
+correct                0              0         0
+near                   0              0         0
+WRONG                  0              0         0
+
+refusals: {'plan_does_not_cover_question': 45, 'unknown_relation': 8}
+walk failures: {}
+VM calls 0 | emitter 0.64s per question | 947 ms per question end to end
+
+the line: verified 0  correct 0  near 0  WRONG 0  | answered-or-refused 53 of 53 plans, no plan 7
+
+every verified answer:
+
+plans the emitter proposed (first 8):
+  'Which lake in Kashmir, India, is known as "the jewel in the ring"?' -> ['lake known as the jewel in the ring'] seed 'kashmir india'
+  'What was the population of Spring Rock Township, Clinton County, Iowa, at the ti' -> ['population', '2000 census'] seed 'spring rock township clinton county iowa'
+  'Give the full name of the Indian politician from Jammu and Kashmir who is popula' -> ['indian politician from jammu and kashmir'] seed 'sher e gool gulabgarh'
+  'What day, month, and year did William II of Holland become King of Germany?' -> ['day', 'month', 'year'] seed 'william ii of holland'
+  'How many goals did Diogo Jota score for Liverpool in the 2021-2022 EFL Cup?' -> ['goals', 'liverpool', '2021 2022 efl cup'] seed 'diogo jota'
+  'What song by Carla Bruni was used in the Chuck episode "Chuck vs. the First Clas' -> ['song by carla bruni'] seed 'chuck episode chuck vs the first class'
+  'In which street did Martin Gardner live with his family in Hastings-on-Hudson, N' -> ['lived with his family', 'in hendersonville in 1979'] seed 'martin gardner'
+  'In what year did Haile Gebrselassie go undefeated in all of his road races?' -> ['go undefeated in all of his road races'] seed 'haile gebrselassie'
+
+refusals (first 6):
+  'Which lake in Kashmir, India, is known as "the jewel in the ring"?' -> ['lake known as the jewel in the ring'] seed 'kashmir india': plan_does_not_cover_question {'covers': False, 'unknown_relations': ['lake known as the jewel in the ring'], 'tail_relation': None, 'paraphrased': []}
+  'What was the population of Spring Rock Township, Clinton County, Iowa, at the ti' -> ['population', '2000 census'] seed 'spring rock township clinton county iowa': plan_does_not_cover_question {'covers': False, 'unknown_relations': ['2000 census'], 'tail_relation': 'population', 'paraphrased': []}
+  'Give the full name of the Indian politician from Jammu and Kashmir who is popula' -> ['indian politician from jammu and kashmir'] seed 'sher e gool gulabgarh': plan_does_not_cover_question {'covers': False, 'unknown_relations': ['indian politician from jammu and kashmir'], 'tail_relation': None, 'paraphrased': []}
+  'What day, month, and year did William II of Holland become King of Germany?' -> ['day', 'month', 'year'] seed 'william ii of holland': plan_does_not_cover_question {'covers': False, 'unknown_relations': ['month', 'year', 'day of william ii'], 'tail_relation': None, 'paraphrased': []}
+  'How many goals did Diogo Jota score for Liverpool in the 2021-2022 EFL Cup?' -> ['goals', 'liverpool', '2021 2022 efl cup'] seed 'diogo jota': plan_does_not_cover_question {'covers': False, 'unknown_relations': ['liverpool', '2021 2022 efl cup', 'goals'], 'tail_relation': None, 'paraphrased': []}
+  'What song by Carla Bruni was used in the Chuck episode "Chuck vs. the First Clas' -> ['song by carla bruni'] seed 'chuck episode chuck vs the first class': plan_does_not_cover_question {'covers': False, 'unknown_relations': ['song by carla bruni'], 'tail_relation': None, 'paraphrased': []}
