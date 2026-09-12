@@ -47,7 +47,7 @@ def test_jsonl_corpus_is_indexed_once_and_read_by_offset(tmp_path):
     rows = [{"title": EN[0], "text": EN[1], "lang": "latest.en"}, {"title": FR[0], "text": FR[1], "lang": "latest.fr"}]
     p.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n", encoding="utf-8")
     src = WikiTextSource(jsonl=[p])
-    assert (tmp_path / "wiki.jsonl.titles.json").exists()
+    assert (tmp_path / "wiki.jsonl.titles2.json").exists()
     fs = src.facts("doug tewell")
     assert {(t.rel, t.obj) for t in fs} == {("date of birth", "1949-08-27"), ("place of birth", "Pittsburg, Kansas")}
     assert src.last["corpus"] == "wiki" and src.last["title"] == "Doug Tewell" and src.last["sentences"]["date of birth|1949-08-27"]
@@ -57,3 +57,20 @@ def test_jsonl_corpus_is_indexed_once_and_read_by_offset(tmp_path):
     # the cached index is what a second instance loads
     src2 = WikiTextSource(jsonl=[p])
     assert src2.facts("Marie Curie") and src2.corpora[0][3] == src.corpora[0][3]
+
+
+def test_run_1_hazards_a_nationality_is_not_a_person_and_an_article_keeps_its_the(tmp_path):
+    """exp_r11 wikitext run 1 admitted 'British is the author of The Roar': the author
+    frame took the first capitalised word of 'by British author Jane Doe', and the seed
+    'roar' matched the article 'The Roar' because the title key dropped the article."""
+    assert read_frames("The Roar", "The Roar is a 2004 novel by British author Emma Clayton about a flooded world.") == []
+    assert {(t.rel, t.obj) for t, _s in read_frames("The Roar", "The Roar is a 2004 novel by Emma Clayton.")} == {("author", "Emma Clayton")}
+    p = tmp_path / "w.jsonl"
+    p.write_text(json.dumps({"title": "The Roar", "text": "The Roar is a 2004 novel by Emma Clayton.", "lang": "latest.en"}) + "\n", encoding="utf-8")
+    src = WikiTextSource(jsonl=[p])
+    assert src.facts("roar") == [] and src.facts("Roar") == []
+    assert [t.obj for t in src.facts("the roar")] == ["Emma Clayton"]
+    # the source names the labels its frames read, for the words a question uses
+    assert src.relations("born") == ["date of birth", "place of birth"]
+    assert src.relations("naissance") == ["date of birth", "place of birth"] and src.relations("fondée") == ["inception"]
+    assert src.relations("population") == []
