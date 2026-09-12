@@ -1,0 +1,32 @@
+world: 552297 facts, 2794 relations | 200 matched chains (seed 7): 100 seen, 100 unseen | k=3
+DG: semantic word bits, 80000 words (word_bits_mowm.json)
+phase 0: 91/100 canonical chains VM-certified and written as episodes (19s, VM calls 300)
+         85 distinct chain shapes remembered; 11/100 unseen chains have a remembered shape (the ceiling for rebinding)
+phase A done (21s, VM calls 1116)
+phase B done (32s, VM calls 1200)
+
+PHASE A -- seen chains (100), out-of-basin forms: memory of the canonical chain
+form         planned  cands  refused  verified  recalled  rebound  correct  WRONG   recall dist (min/median/max)
+have             100    145       54        91        91        0       91      0   0/0/92   (of 100)
+relative         100    145       54        91        91        0       91      0   0/0/92   (of 100)
+possessive       100    149       59        90        90        0       90      0   0/0/92   (of 100)
+  refusals on have: {'plan_does_not_cover_question': 54}
+  refusals on relative: {'plan_does_not_cover_question': 54}
+  refusals on possessive: {'plan_does_not_cover_question': 59}
+
+PHASE B -- unseen chains (100), all forms: another entity's shape, rebound
+form         planned  cands  refused  verified  recalled  rebound  correct  WRONG   recall dist (min/median/max)
+canonical        100    587      580         7         0        7        7      0   40/81/107   (of 100)
+have             100    587      580         7         0        7        7      0   40/81/107   (of 100)
+relative         100    587      580         7         0        7        7      0   40/81/107   (of 100)
+possessive       100    587      580         7         0        7        7      0   40/81/107   (of 100)
+  refusals on canonical: {'plan_does_not_cover_question': 580}
+  refusals on have: {'plan_does_not_cover_question': 580}
+  refusals on relative: {'plan_does_not_cover_question': 580}
+  refusals on possessive: {'plan_does_not_cover_question': 580}
+
+out of basin, seen: correct 272 of 300 (WRONG 0) | unseen, all forms: correct 28 of 400 (WRONG 0) | exp_r9 same forms, emitter: 228 of 600 out of basin (possessive 21/200), grammar 0
+episodes: 91 live, utility>0: 91 | VM calls 1200
+  ok    [B/canonical/rebound] 'What is the part of the part of Ancient Higher Learning Institutions?' -> 'Observatories' via episode 'What is the part of the part of Chikushi Mountains?'
+  ok    [B/have/rebound] 'What part does the part of Ancient Higher Learning Institutions have?' -> 'Observatories' via episode 'What is the part of the part of Chikushi Mountains?'
+  ok    [B/relative/rebound] 'What is the part of the thing that is the part of Ancient Higher Learn' -> 'Observatories' via episode 'What is the part of the part of Chikushi Mountains?'

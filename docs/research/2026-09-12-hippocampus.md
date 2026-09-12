@@ -71,3 +71,63 @@ their own calibration run before a 4-hop chain can be spoken. Not built today; t
 it goes.
 
 `exp_r13_hippocampus{,_shape}.*`, `exp_r13_episodes{,_shape}.jsonl`.
+
+## Addendum — the semantic DG from the MoWM codebook, and what the VM already has
+
+**"Why don't we use the FastWordEncoder?"** Because the trunk module had to stay stdlib-only — and it
+still is: the encoder's contribution is a *table of word codes*, built offline. `standin/data/build_word_table.py`
+derives it from the MoWM axiom codebook (a checkout beside this one: 166,894 axiom texts with their NV-Embed-v2
+embeddings, the 16 domain centroids, and the orthonormal projection into the worlds' (80, 128) block space). No
+teacher runs: a word's vector is the mean of the embeddings of the texts it occurs in, anisotropy removed,
+projected through the codebook's own matrix — so word codes, episode codes and the worlds' centroids share one
+block space — then blended 0.5/0.5 with the word's seeded signal code, `FastWordEncoder.build`'s recipe
+(`semantic_words.py` loaded by path; ported, not linked). Coverage: 96% of the wiki world's 2,134 relation
+content words occur in ≥ 3 codebook texts, 98% of SimpleQA's 400 most frequent question words; the misses are
+entity names and misspellings, which fall back to the signal code — surface identity, pattern-separated, which
+is what a name should be. Outputs, off-repo: an 80,000-word `FastWordEncoder`-loadable table (float16), and
+`word_bits_mowm.json` — each word's block vector SimHashed to 256 bits through one fixed projection; the
+hippocampus's `WordBits` loads it (stdlib) and `Hippocampus(word_bits=…)` bundles those instead of the hash.
+
+What the table thinks, in bits agreeing of 256 (128 is chance): born/birth **163**, death/died **162**,
+country/nation 153, capital/city 145, founded/established 133, founded/inception 148, james/john 138,
+capital/banana 126. Related relation words share bits; names barely do. On the matched pairs the outcomes are
+identical under either DG (272/300 and 7 rebound, 0 wrong — the disposer decides, not the code) and the recall
+distances tighten (unseen-chain nearest shape: median 88 → 81, max 115 → 107): the semantic code pulls
+related chains closer without changing what the gate admits. Its yield is on cues worded differently from the
+episode — "when was X born" against a `date of birth` episode — which the matched pairs do not contain; that
+measurement belongs with the SimpleQA runs. `exp_r13_hippocampus_semantic.*`.
+
+**What the CubeLang tests and SPEC say we have — read on request, 2026-09-12** (`cubelang/tests/*.rs`,
+`docs/SPEC.md`, `src/vm/{memory,index,engine}.rs`):
+
+- *The VM has a hippocampal memory already.* `STORE key`, `RECALL [x] key`, `REMEMBER`, `FORGET` run over
+  `HippocampalMemory`: a codebook maps the key **string** to a bipolar hypervector, a `HammingIndex` holds
+  them, recall returns the nearest trace's payload with its cosine. Two facts about it that matter here, both
+  on the record in `tests/recall_two_arg.rs`: (1) the key vector is the whole string's seeded code, not a bundle
+  of its words — so "partial or noisy keys still resolve" holds for byte-noise, not for a question worded
+  differently (two paraphrases are orthogonal); (2) `HammingIndex::query` has **no similarity threshold** — a
+  never-stored key against a non-empty memory returns an unrelated trace "with high confidence" (the test that
+  pins the 2-arg fix deliberately uses an *empty* memory to avoid it). That is the confabulation-with-a-citation
+  hazard the host-side rules refuse everywhere else, sitting in an opcode. Until RECALL carries a floor and a
+  word-bundled key (the DG built here, in the VM), serving programs must not answer from RECALL — the
+  host-side hippocampus stays the episodic store, and its candidates go through the gate.
+- *QUERY has the right contract, and it is ours.* Exact grounding with provenance: 0 chunks is a gap, 1 is a
+  fact, N is a cue to ASK; a miss returns zero chunks, never a neighbour; a fact without a source is rejected at
+  load; **alias records** (`{"alias": …, "of": …}`) ground a wording to a key without a model. The resolved
+  wordings levers 4 and 6 discover (`born` → `date of birth`) are exactly such records — they should be written
+  into the VM's knowledge with their provenance, so the next QUERY grounds them without the host.
+- *ASK / resume is the ambiguity contract, in the VM.* A program that grounds several candidates suspends with
+  all of them; `resume` binds a chosen one and **rejects an invented one** ("chosen, not invented"). The
+  ambiguous-hop and ambiguous-entity refusals built host-side this week (`Az-Zabdani` candidates, the two
+  `James Young`s) are ASK suspensions by another name — the candidates could be handed to the trunk or the user
+  through the VM, and the selection is checkable. Not wired; the natural next contract.
+- *What runs and what traces.* Of the SPEC's opcode table, `engine.rs` gives real semantics to CREATE / ASSIGN
+  / arithmetic / PUSH / POP / QUERY / REMEMBER / STORE / RECALL / FORGET / BIND_ROLE / UNBIND / COMPARE /
+  COND / LOOP / CALL / UNIFY / NEWVAR / ASK; 26 opcodes — among them ANALOGY, TEMPORAL_BIND, MATCH, INFER,
+  DISCOVER, MERGE, FILTER, REDUCE, EXPLORE, FORGE, SYNC — are `trace_structural`: they execute (a trace line)
+  and compute nothing. Two string-semantics gaps stay `#[ignore]`d (`s.contains(...)` false under strict; a
+  parameter compared to a literal is true for any input), which is why `covers()` stays host-side. The
+  hippocampus's rebinding *is* the SPEC's `ANALOGY` — the same relations about another entity — implemented on
+  the host; when ANALOGY gets semantics in the VM, this is the reference behaviour and the pins.
+- *The IMemory interface* (`store / recall / search(emb, top_k) / forget / consolidate`) is the hippocampus's
+  API almost verbatim; `ctx.snapshot / fork / merge` is the backtracking the prospection experiments used.

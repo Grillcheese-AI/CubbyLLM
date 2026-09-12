@@ -76,16 +76,44 @@ def content_words(text: str) -> list[str]:
 
 
 def _token_bits(token: str) -> int:
+    """The surface code: a word's bits from its hash -- every word quasi-orthogonal to every other."""
     return int.from_bytes(hashlib.blake2b(token.encode("utf-8"), digest_size=N_BITS // 8).digest(), "big")
 
 
-def encode(words: list[str]) -> int:
-    """DG: bundle the words' bipolar hash vectors by majority, binarise (ties -> 0)."""
+class WordBits:
+    """The semantic code: a word's bits as the SimHash of its FastWordEncoder block vector
+    (standin/data/build_word_table.py, from the MoWM axiom codebook -- the worlds' own block
+    space), so 'born' and 'birth' share more bits than chance (163/256 measured) while names
+    stay pattern-separated by the signal half of the blend; a word the table does not know
+    falls back to its surface code. Loaded from a {word: hex} json; stdlib only."""
+
+    def __init__(self, bits: dict[str, int], meta: dict | None = None) -> None:
+        self.bits, self.meta = bits, dict(meta or {})
+
+    @classmethod
+    def load(cls, path: pathlib.Path | str) -> "WordBits":
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+        if int(d.get("n_bits", N_BITS)) != N_BITS:
+            raise ValueError(f"word bits are {d.get('n_bits')} wide; the hippocampus uses {N_BITS}")
+        return cls({w: int(h, 16) for w, h in d["bits"].items()}, {k: v for k, v in d.items() if k != "bits"})
+
+    def __call__(self, token: str) -> int:
+        b = self.bits.get(token)
+        return _token_bits(token) if b is None else b
+
+    def __len__(self) -> int:
+        return len(self.bits)
+
+
+def encode(words: list[str], word_bits=None) -> int:
+    """DG: bundle the words' bipolar vectors by majority, binarise (ties -> 0). `word_bits`:
+    the per-word code (default: the surface hash; a `WordBits` table for the semantic code)."""
     if not words:
         return 0
+    wb = word_bits or _token_bits
     counts = [0] * N_BITS
     for w in dict.fromkeys(words):                 # a bag: each word once
-        bits = _token_bits(w)
+        bits = wb(w)
         for j in range(N_BITS):
             counts[j] += 1 if (bits >> j) & 1 else -1
     code = 0
@@ -100,8 +128,9 @@ def hamming(a: int, b: int) -> int:
 
 
 class Hippocampus:
-    def __init__(self) -> None:
+    def __init__(self, word_bits=None) -> None:
         self.episodes: list[Episode] = []
+        self.word_bits = word_bits            # None: the surface hash; a WordBits table: the semantic code
 
     # -- write ------------------------------------------------------------------
     def write(self, question: str, relations: list[str], seed: str, chain: list[str], answer: str,
@@ -109,7 +138,7 @@ class Hippocampus:
         words = content_words(question) + [w for r in relations for w in content_words(r)] + content_words(seed)
         ep = Episode(question=question, relations=[normalize(r) for r in relations], seed=normalize(seed),
                      chain=list(chain), answer=answer, provenance=dict(provenance or {}),
-                     code=encode(words), shape=encode([w for r in relations for w in content_words(r)]),
+                     code=encode(words, self.word_bits), shape=encode([w for r in relations for w in content_words(r)], self.word_bits),
                      written_at=time.time())
         self.episodes.append(ep)
         return ep
@@ -120,7 +149,7 @@ class Hippocampus:
     # -- recall (CA3) -----------------------------------------------------------
     def recall(self, question: str, k: int = 3, max_distance: int | None = None) -> list[tuple[Episode, int]]:
         """The k nearest live episodes to the question's content words, nearest first."""
-        cue = encode(content_words(question))
+        cue = encode(content_words(question), self.word_bits)
         scored = [(hamming(cue, e.code), i) for i, e in enumerate(self.episodes) if not e.retired]
         scored.sort()
         out = []
@@ -134,7 +163,7 @@ class Hippocampus:
         """The k nearest DISTINCT chain shapes (relation labels alone, entity-free) to the
         question's content words -- the cue for analogical transfer: the same relations
         about another entity. One episode stands for each shape (the most useful)."""
-        cue = encode(content_words(question))
+        cue = encode(content_words(question), self.word_bits)
         best: dict[tuple[str, ...], tuple[int, int, int]] = {}
         for i, e in enumerate(self.episodes):
             if e.retired:

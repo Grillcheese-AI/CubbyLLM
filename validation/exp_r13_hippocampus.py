@@ -48,6 +48,8 @@ def main() -> None:
     ap.add_argument("--paths", type=int, default=200_000)
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--k", type=int, default=3, help="episodes recalled per question")
+    ap.add_argument("--word-bits", default=None, help="the semantic DG: a word_bits json from standin/data/build_word_table.py "
+                    "(FastWordEncoder block codes SimHashed to 256 bits); default: the surface hash")
     ap.add_argument("--resident", action="store_true")
     ap.add_argument("--exe", default=None)
     ap.add_argument("--tag", default="")
@@ -94,7 +96,10 @@ def main() -> None:
                       top_k=3, max_repairs=1, lookup=world.lookup, known=known, plan=plan)
 
     # ---- phase 0: certify the seen chains, write the episodes -------------------
-    hip = Hippocampus(); certified = 0
+    from cubbyllm.reasoning.hippocampus import WordBits
+    wb = WordBits.load(a.word_bits) if a.word_bits else None
+    log(f"DG: {'semantic word bits, ' + str(len(wb)) + ' words (' + pathlib.Path(a.word_bits).name + ')' if wb else 'surface hash'}")
+    hip = Hippocampus(word_bits=wb); certified = 0
     for it in seen:
         q = forms(it["p1"], it["p2"], it["e"])["canonical"]
         plan = parse_question(q)
