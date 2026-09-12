@@ -35,12 +35,32 @@ Rules:
 - Never answer the question. Only the plan."""
 
 
+KEY_FILES = (pathlib.Path(__file__).resolve().parents[1] / "validation" / ".env",)   # gitignored (.gitignore: .env)
+
+
 def _key() -> str:
+    """$OPENROUTER_API_KEY, else a key file ($OPENROUTER_KEY_FILE or validation/.env): either the
+    bare key or `OPENROUTER_API_KEY=<key>` lines. The key never enters a log or a commit."""
     k = os.environ.get("OPENROUTER_API_KEY")
-    if not k and os.environ.get("OPENROUTER_KEY_FILE"):
-        k = pathlib.Path(os.environ["OPENROUTER_KEY_FILE"]).read_text(encoding="utf-8").strip()
     if not k:
-        raise RuntimeError("no OpenRouter key: set OPENROUTER_API_KEY or OPENROUTER_KEY_FILE (off-repo)")
+        for path in ([os.environ["OPENROUTER_KEY_FILE"]] if os.environ.get("OPENROUTER_KEY_FILE") else []) + list(KEY_FILES):
+            p = pathlib.Path(path)
+            if not p.exists():
+                continue
+            for line in p.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" in line:
+                    name, val = line.split("=", 1)
+                    if name.strip() == "OPENROUTER_API_KEY":
+                        k = val.strip().strip('"').strip("'"); break
+                else:
+                    k = line; break
+            if k:
+                break
+    if not k:
+        raise RuntimeError("no OpenRouter key: set OPENROUTER_API_KEY, OPENROUTER_KEY_FILE, or validation/.env (gitignored)")
     return k
 
 
