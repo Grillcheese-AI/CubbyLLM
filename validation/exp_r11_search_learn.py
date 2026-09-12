@@ -108,6 +108,7 @@ def main() -> None:
     ap.add_argument("--max-new", type=int, default=300)
     ap.add_argument("--resident", action="store_true")
     ap.add_argument("--offline", action="store_true", help="wikidata: cache only, no network")
+    ap.add_argument("--lexicon", action="store_true", help="add the WordNet+WOLF synonym oracle as a second relation resolver (lever 5)")
     ap.add_argument("--exe", default=None)
     ap.add_argument("--tag", default="")
     a = ap.parse_args()
@@ -179,7 +180,12 @@ def main() -> None:
         rows = random.Random(a.seed).sample(rows, a.n) if a.n else rows
         em = LlamaCppEmitter(a.gguf)
         src = WikidataSource(offline=a.offline)
-        log(f"wiki world {len(world)} facts, {len(known)} relations | SimpleQA sample {len(rows)} (seed {a.seed}) | source wikidata{' (offline cache)' if a.offline else ''}")
+        resolvers = []
+        if a.lexicon:
+            from cubbyllm.reasoning.lexicon import Lexicon
+            resolvers.append(Lexicon())
+        log(f"wiki world {len(world)} facts, {len(known)} relations | SimpleQA sample {len(rows)} (seed {a.seed}) | source wikidata{' (offline cache)' if a.offline else ''}"
+            + (f" | lexicon {len(resolvers[0])} synsets" if resolvers else ""))
         c = collections.Counter(); verified_ex = []; learned_ex = []; rows_out = []; out["world0"] = len(world)
         def build_plan(rels, seed):
             return QuestionPlan(relations=[None] + rels[1:], tail=f"{rels[0]} of {seed}", n_hop=len(rels)) if rels and seed else None
@@ -193,7 +199,8 @@ def main() -> None:
             if plan is None: c["no_plan"] += 1; continue
             c["plan"] += 1
             lr = learn_and_answer(q, no_search, run_fn, store=world, known=known, source=src,
-                                  tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1, plan=plan)
+                                  tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1, plan=plan,
+                                  resolvers=resolvers)
             c[f"first:{lr.first.reason or ('verified' if lr.first.verified else 'other')}"] += 1
             if lr.entities:
                 c["fetched_questions"] += 1; c["facts_fetched"] += lr.fetched

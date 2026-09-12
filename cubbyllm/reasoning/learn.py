@@ -164,11 +164,12 @@ def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
     translation is on record (`aliases`, so `covers()` still sees the original words).
     Exactly one label must survive: several ('position' -> location / ranking) is an
     ambiguity the host refuses, never resolves; none leaves the plan as it was."""
-    if not hasattr(source, "relations"):
+    resolvers = [x for x in (source if isinstance(source, (list, tuple)) else [source]) if hasattr(x, "relations")]
+    if not resolvers:
         return plan, [], None
     rels = list(plan.relations); tail = plan.tail; rewrote: list[tuple[str, str]] = []
     for r in unknown:
-        labels = [normalize(l) for l in source.relations(r)]
+        labels = [normalize(l) for x in resolvers for l in x.relations(r)]
         held = sorted({l for l in labels if l in known})
         if not held:
             continue
@@ -189,7 +190,8 @@ def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
 
 def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: Source,
                      tau_vm: float, tau_ret: float = 0.0, top_k: int = 3, max_repairs: int = 1,
-                     plan: QuestionPlan | None = None, max_entities: int = 2) -> LearnResult:
+                     plan: QuestionPlan | None = None, max_entities: int = 2,
+                     resolvers: list | None = None) -> LearnResult:
     """One question through the loop. `store` needs `add(fact)`, `__contains__`,
     `texts`, `index` (a TripleIndex) and `lookup` (its `index.hop`); `known` is a
     `StoreRelations` (gets `add`). A walk follows every round that admitted a fact;
@@ -212,7 +214,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
         if out.result.reason == "unknown_relation" and plan is not None:
             unknown = [r for r in (out.result.refused or {}).get("unknown_relations", []) if r not in resolved]
             resolved.update(unknown)
-            plan2, rewrote, amb = resolve_relations(plan, unknown, source, known, aliases)
+            plan2, rewrote, amb = resolve_relations(plan, unknown, [source] + list(resolvers or []), known, aliases)
             if amb is not None:
                 out.result = CoTResult(answer=None, verified=False, reason="ambiguous_relation", refused=amb)
                 break

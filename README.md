@@ -55,7 +55,7 @@ question ──► plan ──► plan_verify (disposer) ──► lookup-first 
 | canonical / have / relative / possessive, emitter | 110 / 80 / 127 / 21 of 200, 0 wrong; the possessive residue is the emitter folding a hop into the seed, refused correctly |
 | canonical form | grammar 189/200 · emitter 110/200 · 0 wrong |
 | SimpleQA, 4,326 free-text questions through the whole gate (exp_r10) | 3,858 plans → 3,825 refused with a reason + 33 walk failures; 0 verified, **0 wrong** (the store holds 3 of the answers) |
-| search-and-learn (exp_r11): held-out facts, then Wikidata on 600 SimpleQA | held-out: 200 refused → 195 learned and verified, 0 wrong; poisoned source, either order: ambiguous refusals, 0 wrong. Wikidata: 1,715 facts learned with provenance; with the source resolving relation words to its labels (`born` → `date of birth`, lever 4) **4 VM-verified, 3 correct, 0 false facts** (the 4th: Wikidata's transliteration and granularity vs the gold's) |
+| search-and-learn (exp_r11): held-out facts, then Wikidata on 600 SimpleQA | held-out: 200 refused → 195 learned and verified, 0 wrong; poisoned source, either order: ambiguous refusals, 0 wrong. Wikidata: 1,715 facts learned with provenance; with the source resolving relation words to its labels (`born` → `date of birth`, lever 4) **4 VM-verified, 3 correct, 0 false facts** (the 4th: Wikidata's transliteration and granularity vs the gold's). A WordNet+WOLF synonym oracle (`reasoning/lexicon.py`, lever 5) adds the bilingual axis — a French question verifies against an English store — and changes nothing on English factoids |
 
 The reading: the grammar gets the templates; the emitter gets the shapes the grammar cannot parse; the disposer
 and the VM keep the wrong count at zero on both; free text against a store that cannot answer it is refused, not
@@ -97,6 +97,7 @@ cubbyllm/            the package (Apache-2.0). `import cubbyllm` is torch-free.
   bridges/           cubelang_client (subprocess + resident CubelangSession, protobuf framing),
                      programs/*.cube (plan_verify, reasoning_bridge), world_model (the MoWM bridge contract)
   reasoning/learn.py search-and-learn: refusal → source → gate → store with provenance → walk again (sources live in standin/)
+  reasoning/lexicon.py the synonym oracle: WordNet 3.0 + WOLF (FR) by synset, a second relation resolver (data built by standin/data/build_lexicon.py)
   core/ model/ ops/ training/   the trunk design from the validation campaign
 standin/             the serve stack (BSL-1.1): brain, thalamus, VM-mediated chat, cubby-man, emitter, SFT data builders
 validation/          55 standalone experiment scripts + tests + logs/. Never imported by cubbyllm/.

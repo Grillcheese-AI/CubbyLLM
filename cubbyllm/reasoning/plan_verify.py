@@ -119,7 +119,8 @@ what which where who whom whose is was are were the a an of to in on at by for
 that does do did have has had belong belongs contained within described describes
 held located near from with as and or includes include contains contain
 its it s thing
-""".split())      # 'its it s thing': the possessive / relative frames (exp_r9, lever 2)
+quel quelle quels quelles qui est sont le la les l de du des d un une à au aux en dans par pour
+""".split())      # 'its it s thing': the possessive / relative frames (exp_r9, lever 2); the last line: French frames (lever 5)
 
 
 def _relation_words(vocabulary) -> frozenset[str]:

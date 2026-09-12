@@ -1,0 +1,19 @@
+taxonomy: 160 subdomains, 17066 patterns
+  eval 800: tagged 765/800 (96%), >1 tag 603; top [('general', 407), ('geography', 329), ('world', 302), ('politics', 112), ('international_relations', 100), ('empire', 90), ('culture', 80), ('organizations', 78), ('film', 71), ('international', 68)]
+  SimpleQA 4326: tagged 3861/4326 (89%), >1 tag 3312; top [('international', 1191), ('general', 1178), ('world', 1130), ('organizations', 844), ('geography', 631), ('us', 556), ('sports', 512), ('culture', 454), ('politics', 423), ('american', 352)]
+    e.g. 'Who received the IEEE Frank Rosenblatt Award in 2010?' -> ['international', 'organizations', 'world']
+    e.g. "Who was awarded the Oceanography Society's Jerlov Award in 2018?" -> ['culture', 'earth_science', 'environmental_science', 'general', 'international', 'oceanography', 'organizations', 'sociology', 'world']
+    e.g. "What's the name of the women's liberal arts college in Cambridge, Massachusetts?" -> ['culture', 'general', 'politics']
+    e.g. 'In whose honor was the Leipzig 1877 tournament organized?' -> ['medieval', 'sports']
+    e.g. "According to Karl Küchler, what did Empress Elizabeth of Austria's favorite scul" -> ['art', 'historical']
+    e.g. "How much money, in euros, was the surgeon held responsible for Stella Obasanjo's" -> ['currency', 'finance_ethics', 'medicine', 'systems']
+
+dbpedia corpus: 4,625,250 titles in 8s
+  emitter seeds (600 SimpleQA): 135/530 have a DBpedia abstract by exact title (25%)
+  seeds the walk stalled on: 27/61 have a DBpedia abstract by exact title (44%)
+  SimpleQA gold answers: 1890/4326 have a DBpedia abstract by exact title (44%)
+  frames on 4,194,304 abstracts: '(born DATE)' 120300 (2.9%), 'X is a/an ...' 3035600 (72.4%)
+    e.g. 'Alvin Toffler': born October 4, 1928; is a 'American writer and futurist'
+    e.g. 'Arabian Prince': born June 17, 1965; is a 'American rapper and hip hop producer'
+    e.g. 'Anita Hill': born July 30, 1956; is a 'American attorney and academic'
+    e.g. 'Amy Grant': born November 25, 1960; is a 'American singer-songwriter'

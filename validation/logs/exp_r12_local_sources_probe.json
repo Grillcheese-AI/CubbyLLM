@@ -1,0 +1,233 @@
+{
+ "taxonomy:eval 800": {
+  "tagged": 765,
+  "multi": 603,
+  "n": 800,
+  "top": [
+   [
+    "general",
+    407
+   ],
+   [
+    "geography",
+    329
+   ],
+   [
+    "world",
+    302
+   ],
+   [
+    "politics",
+    112
+   ],
+   [
+    "international_relations",
+    100
+   ],
+   [
+    "empire",
+    90
+   ],
+   [
+    "culture",
+    80
+   ],
+   [
+    "organizations",
+    78
+   ],
+   [
+    "film",
+    71
+   ],
+   [
+    "international",
+    68
+   ],
+   [
+    "semantics",
+    59
+   ],
+   [
+    "design",
+    58
+   ],
+   [
+    "manufacturing",
+    54
+   ],
+   [
+    "systems",
+    54
+   ],
+   [
+    "sports",
+    40
+   ],
+   [
+    "political_science",
+    36
+   ],
+   [
+    "finance",
+    32
+   ],
+   [
+    "geology",
+    32
+   ],
+   [
+    "literature",
+    31
+   ],
+   [
+    "music",
+    29
+   ],
+   [
+    "programming",
+    29
+   ],
+   [
+    "sociology",
+    28
+   ],
+   [
+    "biology",
+    26
+   ],
+   [
+    "rhetoric",
+    22
+   ],
+   [
+    "philosophy",
+    22
+   ]
+  ]
+ },
+ "taxonomy:SimpleQA 4326": {
+  "tagged": 3861,
+  "multi": 3312,
+  "n": 4326,
+  "top": [
+   [
+    "international",
+    1191
+   ],
+   [
+    "general",
+    1178
+   ],
+   [
+    "world",
+    1130
+   ],
+   [
+    "organizations",
+    844
+   ],
+   [
+    "geography",
+    631
+   ],
+   [
+    "us",
+    556
+   ],
+   [
+    "sports",
+    512
+   ],
+   [
+    "culture",
+    454
+   ],
+   [
+    "politics",
+    423
+   ],
+   [
+    "american",
+    352
+   ],
+   [
+    "fashion",
+    324
+   ],
+   [
+    "science",
+    305
+   ],
+   [
+    "currency",
+    298
+   ],
+   [
+    "television",
+    290
+   ],
+   [
+    "music",
+    270
+   ],
+   [
+    "art",
+    267
+   ],
+   [
+    "film",
+    264
+   ],
+   [
+    "history",
+    259
+   ],
+   [
+    "international_relations",
+    215
+   ],
+   [
+    "political_science",
+    214
+   ],
+   [
+    "sociology",
+    192
+   ],
+   [
+    "gaming",
+    191
+   ],
+   [
+    "performing_arts",
+    174
+   ],
+   [
+    "european",
+    152
+   ],
+   [
+    "real_estate",
+    152
+   ]
+  ]
+ },
+ "dbpedia:emitter seeds (600 SimpleQA)": {
+  "hit": 135,
+  "n": 530
+ },
+ "dbpedia:seeds the walk stalled on": {
+  "hit": 27,
+  "n": 61
+ },
+ "dbpedia:SimpleQA gold answers": {
+  "hit": 1890,
+  "n": 4326
+ },
+ "dbpedia:frames": {
+  "rows": 4194304,
+  "born": 120300,
+  "isa": 3035600
+ }
+}

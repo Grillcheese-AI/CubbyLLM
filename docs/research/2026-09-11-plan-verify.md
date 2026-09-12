@@ -640,3 +640,45 @@ road races`); 3 walks exhausted; 1 ambiguous relation; **4 verified, 0 false**. 
 
 `exp_r11_search_learn_wikidata_alias.*`, `exp_r11_search_learn_wikidata_alias2.*` (rows: every plan, first
 and final reason, what was learned, what was rewritten).
+
+## 2026-09-12 — lever 5, the synonym oracle (WordNet + WOLF), and two probes before the next builds
+
+**Lever 5.** WOLF (WordNet Libre du Français) keys its French synsets by the Princeton WordNet 3.0 offset and
+carries the French literals but not the English lemmas; WordNet 3.0's `dict/data.*` carry the lemmas by the
+same offset. `standin/data/build_lexicon.py` joins them: 119,161 synsets, 56,475 with French literals, one
+jsonl line each (both inputs off-repo). `cubbyllm/reasoning/lexicon.py` reads it with stdlib and is a second
+relation resolver beside the source's in `learn.resolve_relations`: `birthplace` ↔ `place of birth`,
+`conjoint` → `spouse`, `pays` → `country`. Exact-phrase tier only — a word's synonyms are never applied
+word-by-word to a phrase (that is how `country` would become `state`) — and a polysemous wording that names two
+held relations is still an `ambiguous_relation` refusal. French frame words joined the disposer's list. Pinned
+(`test_lexicon.py`): a French question, `Quel est le lieu de naissance de Jean?`, planned in the question's
+words, verifies against an English store end to end.
+
+Measured on the 600-question SimpleQA sample (Wikidata source, cache): **4 verified, 3 correct, 0 false —
+unchanged**, with 3 `ambiguous_relation` refusals instead of 1 (the lexicon fans polysemous words out to two
+held relations; refused, correctly). On English factoids the source's own alias search already covers what
+WordNet adds. The lever's yield is the bilingual axis, which no English benchmark measures; it is in the pins
+and waits for French questions.
+
+**Probe: the subdomain taxonomy as a router** (`exp_r12`; 160 subdomains, regex patterns, off-repo). It tags
+96% of the eval questions and 89% of SimpleQA — but 3 to 9 tags each, `general` / `world` / `international`
+on top. As a router it is too coarse to pick a world or a cortex by itself; it needs a specificity rule
+(rarest matching subdomain wins, the catch-alls dropped) before it can decide anything. As a *domain tag on
+harvest records* — the 2B runbook's tag-routed MoE upcycle, the adapter lifecycle — it is usable as is, and it
+is deterministic, which the invariants like. Not wired anywhere today.
+
+**Probe: DBpedia as a local Source** (`full-dbpedia`, BeIR's 4.6M abstracts, off-repo). Titles index in 8 s.
+Exact-title coverage: 44% of the seeds the walk stalled on and 44% of SimpleQA's gold answers have an
+abstract; 72% of abstracts open with an `X is a/an …` frame, 2.9% carry `(born DATE)`. That is the ceiling
+of a regex-only local source with provenance and no model in the loop: the "who/what is X" and "when was X
+born" shapes, offline. Anything beyond it is a fact extractor over prose, and a wrong extraction is a stored
+falsehood — the place the MoWM possibility-branch gate belongs. Measured, not built.
+
+**Next (agreed 2026-09-12): a frontier model as a proposer, never a judge.** (A) The ceiling probe: an
+OpenRouter model in the emitter's seat on the same 600 SimpleQA questions, same disposer, walk, VM and kill
+line — does a stronger proposer get plans through, and at 0 wrong? That decides whether the free-text holes
+are the stand-in's capacity or the pipeline's. (B) The gen-3 dataset built the reverse way: certified chains
+in, *questions* out (possessive, "have", relative, free text, French, synonyms), the plan never the model's,
+`covers()` and the VM the filters, provenance on every record. The final model never calls OpenRouter.
+
+`exp_r11_search_learn_wikidata_lex.*`, `exp_r12_local_sources_probe.*`.
