@@ -1,0 +1,32 @@
+wiki world 552297 facts, 2794 relations | SimpleQA sample 600 (seed 7) | proposer openrouter:google/gemini-3.8-flash (effort low) (max_tokens 1500) | source wikidata | lexicon 119161 synsets
+  500/600 (364s, api calls 668) plan 160 fetched 14 verified 3 correct 2 near 0 WRONG 1
+  600/600 (434s, api calls 808) plan 195 fetched 15 verified 4 correct 3 near 0 WRONG 1
+
+SIMPLEQA + SEARCH-AND-LEARN: {'WRONG': 1, 'aliased_questions': 28, 'correct': 3, 'facts_fetched': 261, 'fetched_questions': 15, 'final:ambiguous_hop': 1, 'final:ambiguous_relation': 21, 'final:plan_does_not_cover_question': 159, 'final:retrieval_exhausted': 1, 'final:unknown_relation': 9, 'first:plan_does_not_cover_question': 187, 'first:unknown_relation': 8, 'gate:accepted': 240, 'gate:duplicate': 21, 'no_plan': 405, 'plan': 195, 'verified': 4}
+api calls 808 | VM calls 8 | store grew 240
+proposer openrouter:google/gemini-3.8-flash (effort low) (max_tokens 1500): 0 live calls, usage {'prompt_tokens': 179785, 'completion_tokens': 36260, 'reasoning_tokens': 28669, 'cost': 0.2681056124999998}, finish {'stop': 600}, declined (explicit null plan) 403
+
+every verified answer:
+  [WRONG  ] 'In which district is the Syrian village "Kafr al-Awamid" located?'
+           plan ['located in the administrative territorial entity'] seed 'kafr al awamid' -> 'Az-Zabdani Subdistrict' (gold 'Al-Zabadani ')
+           via ['Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid']
+  [correct] 'On what day, month, and year was the footballer Michael Anderson Pereira da Silva born?'
+           plan ['date of birth'] seed 'michael anderson pereira da silva' -> '1983-02-16' (gold 'February 16, 1983')
+           via ['1983-02-16 is the date of birth of Michael Anderson Pereira da Silva']
+  [correct] 'On what day, month, and year was Motonori Matuyama born?'
+           plan ['date of birth'] seed 'motonori matuyama' -> '1884-10-25' (gold '25 October 1884')
+           via ['1884-10-25 is the date of birth of Motonori Matuyama']
+  [correct] 'What day, month, and year was Giulio Carlo Argan born?'
+           plan ['date of birth'] seed 'giulio carlo argan' -> '1909-05-17' (gold '17 May 1909')
+           via ['1909-05-17 is the date of birth of Giulio Carlo Argan']
+
+learned (first 6):
+  'In which district is the Syrian village "Kafr al-Awamid" located?' asked ['kafr al awamid'] admitted 2 e.g. ['Syria is the country of Kafr al-Awamid', 'Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid']
+  'What is the ChemSpider ID of diazepam?' asked ['diazepam'] admitted 94 e.g. ['Diazepam is the Commons category of diazepam', 'oral administration is the route of administration of diazepam', 'intramuscular injection is the route of administration of diazepam']
+  "What were Terry Kath's famously ironic last words?" asked ['terry kath'] admitted 25 e.g. ['Forest Lawn Memorial Park is the place of burial of Terry Kath', '1946-01-31 is the date of birth of Terry Kath', '1978-01-23 is the date of death of Terry Kath']
+  'On what day, month, and year was the footballer Michael Anderson Perei' asked ['michael anderson pereira da silva'] admitted 20 e.g. ['Botafogo F.R. is the member of sports team of Michael Anderson Pereira da Silva', 'Associação Portuguesa de Desportos is the member of sports team of Michael Anderson Pereira da Silva', 'Santos F.C. is the member of sports team of Michael Anderson Pereira da Silva']
+  'On what day, month, and year was Motonori Matuyama born?' asked ['motonori matuyama'] admitted 23 e.g. ['male is the sex or gender of Motonori Matuyama', '1884-10-25 is the date of birth of Motonori Matuyama', '1958-01-27 is the date of death of Motonori Matuyama']
+  'What is the KEGG ID of barium sulfate?' asked ['barium sulfate'] admitted 30 e.g. ['Barium sulfate is the Commons category of barium sulfate', '0047 is the NIOSH Pocket Guide ID of barium sulfate', 'barium is the has part(s) of barium sulfate']
+
+aliased (lever 4: plan word -> label; lever 6: question word -> label): 28 questions, e.g. [('awarded', 'award received')] -> plan_does_not_cover_question; [('injured', 'number of injured')] -> unknown_relation; [('type of voice', 'voice type')] -> unknown_relation; [('district', 'located in the administrative territorial entity')] -> verified; [('half brother', 'sibling')] -> plan_does_not_cover_question; [('created', 'inception')] -> plan_does_not_cover_question; [('released', 'inception')] -> plan_does_not_cover_question; [('born', 'date of birth')] -> verified
+relations still unknown after learning (top 20): [('number of injured', 1), ('voice type', 1), ('durability', 1), ('ChemSpider ID', 1), ('pseudonym', 1), ('GPU', 1), ('DOI', 1), ('KEGG ID', 1), ('named after', 1)]

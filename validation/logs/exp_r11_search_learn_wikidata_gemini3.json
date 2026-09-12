@@ -1,0 +1,3678 @@
+{
+ "arm": "wikidata",
+ "n": 600,
+ "seed": 7,
+ "proposer": "openrouter:google/gemini-3.8-flash (effort low) (max_tokens 1500)",
+ "source": "wikidata",
+ "world0": 552297,
+ "proposer_usage": {
+  "prompt_tokens": 179785,
+  "completion_tokens": 36260,
+  "reasoning_tokens": 28669,
+  "cost": 0.2681056124999998,
+  "live_calls": 0,
+  "finish": {
+   "stop": 600
+  },
+  "declined": 403
+ },
+ "counts": {
+  "plan": 195,
+  "first:plan_does_not_cover_question": 187,
+  "final:plan_does_not_cover_question": 180,
+  "no_plan": 405,
+  "first:unknown_relation": 8,
+  "fetched_questions": 13,
+  "facts_fetched": 259,
+  "final:unknown_relation": 7,
+  "gate:accepted": 238,
+  "gate:duplicate": 21,
+  "aliased_questions": 16,
+  "final:ambiguous_relation": 2,
+  "final:ambiguous_hop": 1,
+  "verified": 3,
+  "correct": 3,
+  "final:retrieval_exhausted": 2
+ },
+ "verified": [
+  {
+   "q": "On what day, month, and year was the footballer Michael Anderson Pereira da Silva born?",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "michael anderson pereira da silva",
+   "answer": "1983-02-16",
+   "gold": "February 16, 1983",
+   "match": "correct",
+   "learned": [
+    "Botafogo F.R. is the member of sports team of Michael Anderson Pereira da Silva",
+    "Associação Portuguesa de Desportos is the member of sports team of Michael Anderson Pereira da Silva",
+    "Santos F.C. is the member of sports team of Michael Anderson Pereira da Silva",
+    "Clube de Regatas do Flamengo is the member of sports team of Michael Anderson Pereira da Silva",
+    "Sociedade Esportiva Palmeiras is the member of sports team of Michael Anderson Pereira da Silva",
+    "Cruzeiro E.C. is the member of sports team of Michael Anderson Pereira da Silva",
+    "FC Dynamo Kyiv is the member of sports team of Michael Anderson Pereira da Silva",
+    "Boa Esporte Clube is the member of sports team of Michael Anderson Pereira da Silva",
+    "association football player is the occupation of Michael Anderson Pereira da Silva",
+    "1983-02-16 is the date of birth of Michael Anderson Pereira da Silva",
+    "Brazil is the country of citizenship of Michael Anderson Pereira da Silva",
+    "Michael is the given name of Michael Anderson Pereira da Silva",
+    "association football is the sport of Michael Anderson Pereira da Silva",
+    "wing half is the position played on team / speciality of Michael Anderson Pereira da Silva",
+    "São Caetano do Sul is the place of birth of Michael Anderson Pereira da Silva",
+    "Pereira da Silva is the family name of Michael Anderson Pereira da Silva",
+    "Brazil is the country for sport of Michael Anderson Pereira da Silva",
+    "male is the sex or gender of Michael Anderson Pereira da Silva",
+    "Portuguese is the languages spoken, written or signed of Michael Anderson Pereira da Silva",
+    "Michael Anderson is the different from of Michael Anderson Pereira da Silva"
+   ],
+   "trace": [
+    "1983-02-16 is the date of birth of Michael Anderson Pereira da Silva"
+   ]
+  },
+  {
+   "q": "On what day, month, and year was Motonori Matuyama born?",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "motonori matuyama",
+   "answer": "1884-10-25",
+   "gold": "25 October 1884",
+   "match": "correct",
+   "learned": [
+    "male is the sex or gender of Motonori Matuyama",
+    "1884-10-25 is the date of birth of Motonori Matuyama",
+    "1958-01-27 is the date of death of Motonori Matuyama",
+    "1958 is the date of death of Motonori Matuyama",
+    "Kyoto University is the educated at of Motonori Matuyama",
+    "Hiroshima University is the educated at of Motonori Matuyama",
+    "University of Chicago is the educated at of Motonori Matuyama",
+    "Kyoto University is the employer of Motonori Matuyama",
+    "Yamaguchi University is the employer of Motonori Matuyama",
+    "Ōita Prefecture is the place of birth of Motonori Matuyama",
+    "Japan is the country of citizenship of Motonori Matuyama",
+    "Empire of Japan is the country of citizenship of Motonori Matuyama",
+    "geophysicist is the occupation of Motonori Matuyama",
+    "geologist is the occupation of Motonori Matuyama",
+    "まつやま もとのり is the name in kana of Motonori Matuyama",
+    "松山 基範 is the name in native language of Motonori Matuyama",
+    "Japan is the place of death of Motonori Matuyama",
+    "Motonori is the given name of Motonori Matuyama",
+    "Matsuyama is the family name of Motonori Matuyama",
+    "Motonori Matsuyama is the Commons category of Motonori Matuyama",
+    "Japan Academy is the member of of Motonori Matuyama",
+    "copyrights on works have expired is the copyright status as a creator of Motonori Matuyama",
+    "Japanese is the languages spoken, written or signed of Motonori Matuyama"
+   ],
+   "trace": [
+    "1884-10-25 is the date of birth of Motonori Matuyama"
+   ]
+  },
+  {
+   "q": "What day, month, and year was Giulio Carlo Argan born?",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "giulio carlo argan",
+   "answer": "1909-05-17",
+   "gold": "17 May 1909",
+   "match": "correct",
+   "learned": [
+    "Italy is the country of citizenship of Giulio Carlo Argan",
+    "Kingdom of Italy is the country of citizenship of Giulio Carlo Argan",
+    "Turin is the place of birth of Giulio Carlo Argan",
+    "Rome is the place of death of Giulio Carlo Argan",
+    "Independent Left is the member of political party of Giulio Carlo Argan",
+    "National Fascist Party is the member of political party of Giulio Carlo Argan",
+    "1909-05-17 is the date of birth of Giulio Carlo Argan",
+    "1992-11-12 is the date of death of Giulio Carlo Argan",
+    "1992-11-11 is the date of death of Giulio Carlo Argan",
+    "politician is the occupation of Giulio Carlo Argan",
+    "university teacher is the occupation of Giulio Carlo Argan",
+    "art historian is the occupation of Giulio Carlo Argan",
+    "screenwriter is the occupation of Giulio Carlo Argan",
+    "historian is the occupation of Giulio Carlo Argan",
+    "Giulio is the given name of Giulio Carlo Argan",
+    "Carlo is the given name of Giulio Carlo Argan",
+    "American Academy of Arts and Sciences is the member of of Giulio Carlo Argan",
+    "Academy of Sciences of Turin is the member of of Giulio Carlo Argan",
+    "Accademia delle Arti del Disegno is the member of of Giulio Carlo Argan",
+    "Accademia Nazionale dei Lincei is the member of of Giulio Carlo Argan",
+    "mayor of Rome is the position held of Giulio Carlo Argan",
+    "member of the Senate of the Italian Republic is the position held of Giulio Carlo Argan",
+    "Giulio Carlo Argan is the Commons category of Giulio Carlo Argan",
+    "University of Turin is the educated at of Giulio Carlo Argan",
+    "Lionello Venturi is the student of of Giulio Carlo Argan",
+    "Fellow of the American Academy of Arts and Sciences is the award received of Giulio Carlo Argan",
+    "Gold Medal of the Italian Order of Merit for Culture and Art is the award received of Giulio Carlo Argan",
+    "Italian is the languages spoken, written or signed of Giulio Carlo Argan",
+    "Argan is the family name of Giulio Carlo Argan",
+    "Sapienza University of Rome is the employer of Giulio Carlo Argan",
+    "University of Palermo is the employer of Giulio Carlo Argan",
+    "male is the sex or gender of Giulio Carlo Argan",
+    "Antonio Pinelli is the student of Giulio Carlo Argan",
+    "Elisa Debenedetti is the student of Giulio Carlo Argan",
+    "Maria Grazia Messina is the student of Giulio Carlo Argan",
+    "reproduction right not represented by CISAC member is the copyright representative of Giulio Carlo Argan",
+    "Italian is the writing language of Giulio Carlo Argan",
+    "works protected by copyrights is the copyright status as a creator of Giulio Carlo Argan",
+    "Italian is the native language of Giulio Carlo Argan",
+    "Palermo is the work location of Giulio Carlo Argan",
+    "Rome is the work location of Giulio Carlo Argan",
+    "UCLA Center for Oral History Research is the oral history at of Giulio Carlo Argan",
+    "1931 is the start of work period of Giulio Carlo Argan",
+    "1992 is the end of work period of Giulio Carlo Argan",
+    "Switzerland is the ancestral home of Giulio Carlo Argan",
+    "Giulio Carlo Argan is the name in native language of Giulio Carlo Argan"
+   ],
+   "trace": [
+    "1909-05-17 is the date of birth of Giulio Carlo Argan"
+   ]
+  }
+ ],
+ "api_calls": 4,
+ "rows": [
+  {
+   "q": "Which lake in Kashmir, India, is known as \"the jewel in the ring\"?",
+   "gold": "The Nigeen lake",
+   "plan": [
+    "named after"
+   ],
+   "seed": "jewel in the ring",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "named after"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Give the full name of the Indian politician from Jammu and Kashmir who is popularly known as Sher-e-Gool Gulabgarh.",
+   "gold": "Ajaz Ahmed Khan",
+   "plan": [
+    "native label"
+   ],
+   "seed": "sher e gool gulabgarh",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "native label"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What two football teams were mentioned in the libel case against \"The Saturday Evening Post\" in 1963?",
+   "gold": "University of Georgia and University of Alabama",
+   "plan": [
+    "participant"
+   ],
+   "seed": "curtis publishing co v butts",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What song by Carla Bruni was used in the Chuck episode \"Chuck vs. the First Class\"?",
+   "gold": "L'amoureuse",
+   "plan": [
+    "soundtrack"
+   ],
+   "seed": "chuck versus the first class",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "soundtrack"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which street did Martin Gardner live with his family in Hastings-on-Hudson, New York, before moving to Hendersonville in 1979?",
+   "gold": "Euclid Avenue",
+   "plan": [
+    "residence",
+    "street address"
+   ],
+   "seed": "martin gardner",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "street address"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What are the names of the parents of King Girvan Yuddha Bikram Shah?",
+   "gold": "Rana Bahadur Shah and Karnavati Jha.",
+   "plan": [
+    "parent"
+   ],
+   "seed": "king girvan yuddha bikram shah",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "The Guyanese government posthumously awarded Walter Rodney which honor?",
+   "gold": "The Order of Excellence of Guyana.",
+   "plan": [
+    "award received"
+   ],
+   "seed": "walter rodney",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "award received"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On what day, month, and year did the 2nd ASEM Environment Ministers' Meeting (ASEMEnvMM2) begin?",
+   "gold": "October 12, 2003",
+   "plan": [
+    "start time"
+   ],
+   "seed": "2nd asem environment ministers meeting",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "start time"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the list entry name for the National Heritage List entry number 1090695 in Stonehouse, Stroud, Gloucestershire?",
+   "gold": "Bede Cottage",
+   "plan": [
+    "heritage designation",
+    "name"
+   ],
+   "seed": "1090695",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "heritage designation"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Can you provide me with the DOI of the paper \"Generating Semantic Maps through Multidimensional Scaling: Linguistic Applications and Theory\"?",
+   "gold": "10.1515/cllt-2021-0018",
+   "plan": [
+    "DOI"
+   ],
+   "seed": "generating semantic maps through multidimensional scaling linguistic applications and theory",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "DOI"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who are Myrtle Eagan's parents in the show \"Severance\"?",
+   "gold": "Kier and Imogene Eagan",
+   "plan": [
+    "father",
+    "mother"
+   ],
+   "seed": "myrtle eagan",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "mother"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "How many people were injured in the Srinagar bombing on March 6, 2022?",
+   "gold": "24",
+   "plan": [
+    "number of injured"
+   ],
+   "seed": "srinagar bombing on march 6 2022",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "number of injured"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year did the chemist Pauline Gracia Beery Mack publish her work \"Colorfastness of Women's and Children's Wearing-Apparel Fabrics\"?",
+   "gold": "1942",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "colorfastness of women s and children s wearing apparel fabrics",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date of colorfastness"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the name of the choir that performed at the 2019 Cape Town International Jazz Festival?",
+   "gold": "Soweto Gospel Choir",
+   "plan": [
+    "performer"
+   ],
+   "seed": "2019 cape town international jazz festival",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On what day, month, and year was Masaki Tsuji born?",
+   "gold": "March 23, 1932 ",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "masaki tsuji",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the name of the winner of the 1992 Scandinavian Masters golf tournament?",
+   "gold": "Nick Faldo",
+   "plan": [
+    "winner"
+   ],
+   "seed": "1992 scandinavian masters",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What type of voice did Bessie Smith have?",
+   "gold": "Contralto voice",
+   "plan": [
+    "voice type"
+   ],
+   "seed": "bessie smith",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "voice type"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the durability of the Blue Flame in Dark Souls II?",
+   "gold": "60",
+   "plan": [
+    "durability"
+   ],
+   "seed": "blue flame",
+   "first": "unknown_relation",
+   "unknown": [
+    "durability"
+   ],
+   "entities": [
+    "blue flame"
+   ],
+   "admitted": 0,
+   "aliased": [],
+   "final": "unknown_relation",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which district is the Syrian village \"Kafr al-Awamid\" located?",
+   "gold": "Al-Zabadani ",
+   "plan": [
+    "located in the administrative territorial entity"
+   ],
+   "seed": "kafr al awamid",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "located in the administrative territorial entity"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In the research paper titled \"Detecting Driver Mental Fatigue Based on EEG Alpha Power Changes During Simulated Driving\" by Faramarz Gharagozlou et al., what is the name of the university where the overnight study took place?",
+   "gold": "Khaje Nasir Toosi University of Technology",
+   "plan": [
+    "affiliation"
+   ],
+   "seed": "detecting driver mental fatigue based on eeg alpha power changes during simulated driving",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the name of the university where Michaela Hübschle (born as Michaela Kuntze), a Namibian politician and former Deputy Minister for Prisons and Correctional Services, first studied after attending school in her hometown?",
+   "gold": "University of Pretoria",
+   "plan": [
+    "educated at"
+   ],
+   "seed": "michaela hübschle",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "educated at"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the ChemSpider ID of diazepam?",
+   "gold": "2908",
+   "plan": [
+    "ChemSpider ID"
+   ],
+   "seed": "diazepam",
+   "first": "unknown_relation",
+   "unknown": [
+    "ChemSpider ID"
+   ],
+   "entities": [
+    "diazepam"
+   ],
+   "admitted": 94,
+   "aliased": [],
+   "final": "unknown_relation",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "The Alpine musk deer is the state animal of which Indian state?",
+   "gold": "Uttarakhand",
+   "plan": [
+    "state animal of"
+   ],
+   "seed": "alpine musk deer",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "state animal of"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Which angel is portrayed in Leonardo da Vinci's \"Virgin of the Rocks\"?",
+   "gold": "The angel Uriel.",
+   "plan": [
+    "depicts"
+   ],
+   "seed": "virgin of the rocks",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What were the names of Ghulam Nabi Azad's (an Indian politician) father and mother?",
+   "gold": "Rahamatullah Batt and Basa Begum.",
+   "plan": [
+    "parent"
+   ],
+   "seed": "ghulam nabi azad",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what city did Marina Abramović and Uwe Laysiepen perform 'Rest Energy' in 1980?",
+   "gold": "Dublin",
+   "plan": [
+    "location"
+   ],
+   "seed": "rest energy",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [
+    [
+     "city",
+     "location"
+    ]
+   ],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what city and state did Colin Pittendrigh die?",
+   "gold": "Bozeman, Montana",
+   "plan": [
+    "place of death"
+   ],
+   "seed": "colin pittendrigh",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which year was Dina Nath Walli (an Indian watercolor artist and poet from Srinagar city) born?",
+   "gold": "1908",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "dina nath walli",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what year was the beetle species Glipa andamana described?",
+   "gold": "1941",
+   "plan": [
+    "taxon author",
+    "publication date"
+   ],
+   "seed": "glipa andamana",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date",
+    "taxon author"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Up to how many meters high does the Pittosporum divaricatum grow?",
+   "gold": "3 metres",
+   "plan": [
+    "height"
+   ],
+   "seed": "pittosporum divaricatum",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who is the Japanese voice actor for the character Kiergaard in the game Ys VIII: Lacrimosa of Dana?",
+   "gold": "Daisuke Kishio.",
+   "plan": [
+    "voice actor"
+   ],
+   "seed": "kiergaard",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "voice actor"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the name of the official newsletter of the Internal Foundation for Internal Freedom organization founded by Timothy Leary?",
+   "gold": "The Psychedelic Review",
+   "plan": [
+    "official newsletter"
+   ],
+   "seed": "internal foundation for internal freedom",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "official newsletter"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year did the University of Michigan begin development of the MICRO Information Management System based on D.L. Childs' Set-Theoretic Data model?",
+   "gold": "1970",
+   "plan": [
+    "inception"
+   ],
+   "seed": "micro information management system",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the NASA Space Science Data Coordinated Archive (NSSDCA) ID of the spacecraft Foton-M4?",
+   "gold": "2014-041A",
+   "plan": [
+    "NSSDCA ID"
+   ],
+   "seed": "foton m4",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "NSSDCA ID"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the name F.R.I.D.A. an acronym for in Critical Role Campaign 3?",
+   "gold": "Far Ranging Integrated Defense Aeormaton",
+   "plan": [
+    "named after"
+   ],
+   "seed": "f r i d a",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "named after"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who replaced band member Carl Martin of the group Shai?",
+   "gold": "Erik Willis",
+   "plan": [
+    "replaced by"
+   ],
+   "seed": "carl martin",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In the series \"El guardián invisible,\" who portrays the character Alfonso Álvarez de Toledo?",
+   "gold": "Ramón Barea",
+   "plan": [
+    "cast member"
+   ],
+   "seed": "el guardián invisible",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who is the voice actor for the character named Griggs in the game Dark Souls 1 for the PlayStation 3?",
+   "gold": "Blake Ritson",
+   "plan": [
+    "voice actor"
+   ],
+   "seed": "griggs",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "voice actor"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the name of the high school from which American painter Kathleen Gemberling graduated?",
+   "gold": "Garfield",
+   "plan": [
+    "educated at"
+   ],
+   "seed": "kathleen gemberling",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "educated at"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who served as the President of the Philippines after José Paciano Laurel y García?",
+   "gold": "Sergio Osmeña",
+   "plan": [
+    "replaced by"
+   ],
+   "seed": "josé paciano laurel y garcía",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In 1863, George Bentham renamed *Cyanothamnus ramosus* to what binomial name?",
+   "gold": "Boronia ramosa",
+   "plan": [
+    "taxon synonym"
+   ],
+   "seed": "cyanothamnus ramosus",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "taxon synonym"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who did Rose Matafeo join in July 2020 on the comedy show Tiny Tour of Aotearoa, traveling across New Zealand?",
+   "gold": "Guy Montgomery",
+   "plan": [
+    "cast member"
+   ],
+   "seed": "rose matafeo",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On what day, month, and year was Christopher Ndarathi Murungaru, a former Kenyan politician, born?",
+   "gold": "19th August 1954",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "christopher ndarathi murungaru",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the name of the venue where the 1993 Scandinavian Masters golf tournament happened?",
+   "gold": "Forsgården Golf Club",
+   "plan": [
+    "location"
+   ],
+   "seed": "1993 scandinavian masters",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "ambiguous_relation",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What day, month, and year did David Spence Thomson (New Zealand politician) pass away?",
+   "gold": "25 October, 1999",
+   "plan": [
+    "date of death"
+   ],
+   "seed": "david spence thomson",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What high school did the architect Richard Meier attend?",
+   "gold": "Columbia High School",
+   "plan": [
+    "educated at"
+   ],
+   "seed": "richard meier",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "educated at"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What were the day, month, and year of the Aseprite v1.3-beta1 release?",
+   "gold": "May 26th, 2021",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "aseprite v1 3 beta1",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "To whom was Ida Pulis Lathrop married?",
+   "gold": "Cyprus Clark Lathrop",
+   "plan": [
+    "spouse"
+   ],
+   "seed": "ida pulis lathrop",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On what day, month, and year was Ahmad Jamal, a first-class cricketer, born?",
+   "gold": "3 September 1988",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "ahmad jamal",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What were Terry Kath's famously ironic last words?",
+   "gold": "What do you think I'm gonna do? Blow my brains out?",
+   "plan": [
+    "last words"
+   ],
+   "seed": "terry kath",
+   "first": "unknown_relation",
+   "unknown": [
+    "last words"
+   ],
+   "entities": [
+    "terry kath"
+   ],
+   "admitted": 25,
+   "aliased": [],
+   "final": "ambiguous_hop",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the name of male impersonator Hetty King's half-brother?",
+   "gold": "Harold Emms",
+   "plan": [
+    "sibling"
+   ],
+   "seed": "hetty king",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [
+    [
+     "half brother",
+     "sibling"
+    ]
+   ],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the attraction Thunder Road added to Dollywood?",
+   "gold": "1996",
+   "plan": [
+    "inception"
+   ],
+   "seed": "thunder road",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which year did the Royal Society of Arts launch the Adelphi Charter, aimed at creating an international policy statement to frame how governments should make balanced intellectual property law?",
+   "gold": "2005",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "adelphi charter",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the science of architecture and civil construction known as in ancient India?",
+   "gold": "Sthapatya-Shastra",
+   "plan": [
+    "named after"
+   ],
+   "seed": "architecture of india",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "named after of architecture"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the name of the company that sponsored BraviSEAmo! at Tokyo DisneySea from 2004 to 2010?",
+   "gold": "NTT DoCoMo",
+   "plan": [
+    "sponsor"
+   ],
+   "seed": "braviseamo",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What day, month, and year was the dungeon Dire Maul originally added to the game \"World of Warcraft\"?",
+   "gold": "7 March 2005",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "dire maul",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what year were the first Zildjian cymbals created?",
+   "gold": "1618",
+   "plan": [
+    "inception"
+   ],
+   "seed": "zildjian",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the LEGO part with ID 33085 first released?",
+   "gold": "1998",
+   "plan": [
+    "inception"
+   ],
+   "seed": "lego part with id 33085",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Cornelia Parker curated the \"Black and White Room\" for which exhibition?",
+   "gold": "Royal Academy Summer Exhibition",
+   "plan": [
+    "curator of",
+    "part of"
+   ],
+   "seed": "cornelia parker",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "part of",
+    "curator of"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who are the parents of Eleanor Manning O'Connor?",
+   "gold": "Delia Josephine Grady and James Manning",
+   "plan": [
+    "father",
+    "mother"
+   ],
+   "seed": "eleanor manning o connor",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "mother"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "The 16th North East Region Commonwealth Parliamentary Association (NERCPA) conference has started in which city?",
+   "gold": "IMPHAL",
+   "plan": [
+    "location"
+   ],
+   "seed": "16th north east region commonwealth parliamentary association nercpa conference",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [
+    [
+     "city",
+     "location"
+    ]
+   ],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What day, month, and year was Janak Patel, a convenience store worker in Auckland, New Zealand, murdered during a robbery?",
+   "gold": "23 November 2022",
+   "plan": [
+    "date of death"
+   ],
+   "seed": "janak patel",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the name of the observatory in which 1994 Shane was discovered in 1961?",
+   "gold": "Goethe Link.",
+   "plan": [
+    "place of discovery"
+   ],
+   "seed": "1994 shane",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "place of discovery"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the municipality of Cáceres, Antioquia, Colombia, founded?",
+   "gold": "1576",
+   "plan": [
+    "inception"
+   ],
+   "seed": "cáceres",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who directed S1E8 of Abstract: The Art of Design?",
+   "gold": "Sarina Roma",
+   "plan": [
+    "has part",
+    "director"
+   ],
+   "seed": "abstract the art of design",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On what day, month, and year was the footballer Michael Anderson Pereira da Silva born?",
+   "gold": "February 16, 1983",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "michael anderson pereira da silva",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [
+    "michael anderson pereira da silva"
+   ],
+   "admitted": 20,
+   "aliased": [
+    [
+     "born",
+     "date of birth"
+    ]
+   ],
+   "final": null,
+   "verified": true,
+   "answer": "1983-02-16"
+  },
+  {
+   "q": "On which day, month, and year was the domain \"hindustantimes.com\" registered?",
+   "gold": "August 14, 1996",
+   "plan": [
+    "inception"
+   ],
+   "seed": "hindustantimes com",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which stadium was the IPL 2015 20th match played?",
+   "gold": "M. Chinnaswamy Stadium",
+   "plan": [
+    "location"
+   ],
+   "seed": "ipl 2015 20th match",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the state highway road number of the Uthamapalayam-Bodenthirapuram Road under the Theni division of Tamil Nadu, India?",
+   "gold": "SH229",
+   "plan": [
+    "route number"
+   ],
+   "seed": "uthamapalayam bodenthirapuram road",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "route number"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the accession number for Gerhard Emmoser's \"Celestial Globe with Clockwork\" at The Metropolitan Museum of Art?",
+   "gold": "17.190.636",
+   "plan": [
+    "accession number"
+   ],
+   "seed": "celestial globe with clockwork",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "accession number"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the pseudonym of the artist David Quiles Guilló?",
+   "gold": "ROJO",
+   "plan": [
+    "pseudonym"
+   ],
+   "seed": "david quiles guilló",
+   "first": "unknown_relation",
+   "unknown": [
+    "pseudonym"
+   ],
+   "entities": [
+    "david quiles guilló"
+   ],
+   "admitted": 0,
+   "aliased": [],
+   "final": "unknown_relation",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the ChemSpider ID of Axitinib, a small molecule tyrosine kinase inhibitor developed by Pfizer?",
+   "gold": "4953153",
+   "plan": [
+    "ChemSpider ID"
+   ],
+   "seed": "axitinib",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "ChemSpider ID"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what year was the Kingston Symphony Association, a Canadian arts organization, formed?",
+   "gold": "1963",
+   "plan": [
+    "inception"
+   ],
+   "seed": "kingston symphony association",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which month and year did Sir Frederick Lugard organize the West African Frontier Force?",
+   "gold": "August 1897",
+   "plan": [
+    "inception"
+   ],
+   "seed": "west african frontier force",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What country won the silver medal in the men's team foil event at the 1964 Summer Olympics?",
+   "gold": "Poland",
+   "plan": [
+    "second place"
+   ],
+   "seed": "fencing at the 1964 summer olympics men s team foil",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "second place"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What day and month was the New Zealand actor Benjamin Mitchell born?",
+   "gold": "July 7",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "benjamin mitchell",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [
+    [
+     "born",
+     "date of birth"
+    ]
+   ],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Which family does Sabella spallanzanii, a species of marine polychaete worms, belong to?",
+   "gold": "Sabellidae",
+   "plan": [
+    "family"
+   ],
+   "seed": "sabella spallanzanii",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "family"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what year was the Penny Crane Award for Distinguished Service established?",
+   "gold": "2000",
+   "plan": [
+    "inception"
+   ],
+   "seed": "penny crane award for distinguished service",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the state highway road number of the Vellore - Ussoor Road under the Vellore division of Tamil Nadu, India?",
+   "gold": "SH207",
+   "plan": [
+    "route number"
+   ],
+   "seed": "vellore ussoor road",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "route number"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the municipality of Girardota, Antioquia, Colombia, founded?",
+   "gold": "1620",
+   "plan": [
+    "inception"
+   ],
+   "seed": "girardota",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what year was the Ajah campus of Pan-Atlantic University (Lagos, Nigeria) completed?",
+   "gold": "2003",
+   "plan": [
+    "inception"
+   ],
+   "seed": "pan atlantic university",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "During which year did Gerhard Richter have a solo exhibition named 'Gerhard Richter Portraits'?",
+   "gold": "2009",
+   "plan": [
+    "point in time"
+   ],
+   "seed": "gerhard richter portraits",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "point in time"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What day, month, and year was the Pradhan Mantri TB Mukt Bharat Abhiyaan Scheme launched in India?",
+   "gold": "9 September 2022",
+   "plan": [
+    "inception"
+   ],
+   "seed": "pradhan mantri tb mukt bharat abhiyaan",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who killed the second Invisible Hood?",
+   "gold": "Stan Silver",
+   "plan": [
+    "killed by"
+   ],
+   "seed": "second invisible hood",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On what day, month, and year was Motonori Matuyama born?",
+   "gold": "25 October 1884",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "motonori matuyama",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [
+    "motonori matuyama"
+   ],
+   "admitted": 23,
+   "aliased": [
+    [
+     "born",
+     "date of birth"
+    ]
+   ],
+   "final": null,
+   "verified": true,
+   "answer": "1884-10-25"
+  },
+  {
+   "q": "What was the name of Claudio Bunster Weitzman, the Chilean theoretical physicist, until 2005?",
+   "gold": "Claudio Teitelboim Weitzman",
+   "plan": [
+    "birth name"
+   ],
+   "seed": "claudio bunster weitzman",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "birth name"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what year was Lars Gårding awarded a Ph.D. for his thesis \"On a Class of Linear Transformations Connected with Group Representations\"?",
+   "gold": "1944",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "on a class of linear transformations connected with group representations",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date of on a class"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the original name of Forthton, Ontario, located north of Brockville on Highway 29 at the intersection of Hwy 42, before Postmaster E. H. Whitmarsh changed the original name to Unionville in 1831?",
+   "gold": "Stone's Corner",
+   "plan": [
+    "named after"
+   ],
+   "seed": "forthton",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "named after"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Odisha’s longest road bridge, “Netaji Subhas Chandra Bose Setu,” has been built over which tributary of the Mahanadi River?",
+   "gold": "Kathajodi ",
+   "plan": [
+    "crosses"
+   ],
+   "seed": "netaji subhas chandra bose setu",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [
+    [
+     "over",
+     "crosses"
+    ]
+   ],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the name of the astronomer who discovered 83 Beatrix?",
+   "gold": "Annibale de Gasparis",
+   "plan": [
+    "discoverer or inventor"
+   ],
+   "seed": "83 beatrix",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "discoverer or inventor"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "To whom was Berta Singerman, the actress, married?",
+   "gold": "Rubén Enrique Stolek",
+   "plan": [
+    "spouse"
+   ],
+   "seed": "berta singerman",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "How long, in minutes and seconds, is the song \"Empty\" by Bebe Rexha from the \"Better Mistakes\" album?",
+   "gold": "2:28",
+   "plan": [
+    "duration"
+   ],
+   "seed": "empty",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which country was Robert “Bob” Guy Walls, a painter born in 1927, born?",
+   "gold": "New Zealand",
+   "plan": [
+    "place of birth",
+    "country"
+   ],
+   "seed": "robert bob guy walls",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "country"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [
+    [
+     "born in",
+     "place of birth"
+    ]
+   ],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the full name of the mathematician who started the publication \"Mathematica Japonicae\" using his own funds in 1948?",
+   "gold": "Tatsujiro Shimizu",
+   "plan": [
+    "founded by"
+   ],
+   "seed": "mathematica japonicae",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "founded by"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the name of the university where Alma S. Woolley received her bachelor's degree?",
+   "gold": "Cornell University's School of Nursing",
+   "plan": [
+    "educated at"
+   ],
+   "seed": "alma s woolley",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which city was Marc Julian Bradley, the first black Republican to serve in the Wisconsin Senate and who made his professional wrestling debut in 1999, born?",
+   "gold": "Baltimore, Maryland",
+   "plan": [
+    "place of birth"
+   ],
+   "seed": "marc julian bradley",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On what day, month, and year did Dev Shumsher Jung Bahadur Rana's tenure as Prime Minister of Nepal begin?",
+   "gold": "5th March 1901 ",
+   "plan": [
+    "position held",
+    "start time"
+   ],
+   "seed": "dev shumsher jung bahadur rana",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "start time",
+    "position held"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What GPU does the Lumia 550 have?",
+   "gold": "Qualcomm Adreno 304.",
+   "plan": [
+    "GPU"
+   ],
+   "seed": "lumia 550",
+   "first": "unknown_relation",
+   "unknown": [
+    "GPU"
+   ],
+   "entities": [
+    "lumia 550"
+   ],
+   "admitted": 0,
+   "aliased": [],
+   "final": "unknown_relation",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who was the referee of the 2004 African Cup of Nations final between Tunisia and Morocco?",
+   "gold": "Falla N'Doye",
+   "plan": [
+    "referee"
+   ],
+   "seed": "2004 african cup of nations final",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "referee of 2004 african cup"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What day, month, and year did the Nvidia GeForce GTX 460 SE (2010) launch?",
+   "gold": "15th of November, 2010",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "nvidia geforce gtx 460 se 2010",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the MD5 checksum of the file named \"ffrelay-debian-4.30.ggi.zip,\" with the product name \"FinFisher Relay v4.30\" and a file size of 224K, which was released by WikiLeaks?",
+   "gold": "180caf23dd71383921e368128fb6db52",
+   "plan": [
+    "MD5 hex digest"
+   ],
+   "seed": "ffrelay debian 4 30 ggi zip",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "MD5 hex digest"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the name and surname of the photographer who first invented a tool to coat calotype paper called the Buckle Brush?",
+   "gold": "Samuel Buckle",
+   "plan": [
+    "discoverer or inventor"
+   ],
+   "seed": "buckle brush",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "discoverer or inventor"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what city did the English mathematician Brian Griffiths pass away?",
+   "gold": "Southampton.",
+   "plan": [
+    "place of death"
+   ],
+   "seed": "brian griffiths",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What day, month, and year was Viksit Bharat Sankalp Yatra launched by the Prime Minister of India?",
+   "gold": "15 November 2023",
+   "plan": [
+    "inception"
+   ],
+   "seed": "viksit bharat sankalp yatra",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the municipality of Ciénega, Boyacá, Colombia, founded?",
+   "gold": "1818",
+   "plan": [
+    "inception"
+   ],
+   "seed": "ciénega",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the Pinyin name of the Mansion that comes after 斗 within the Black Tortoise?",
+   "gold": "牛",
+   "plan": [
+    "followed by",
+    "pinyin transliteration"
+   ],
+   "seed": "斗",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "pinyin transliteration",
+    "followed by"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the municipality of Marinilla, Antioquia, Colombia, founded?",
+   "gold": "1690",
+   "plan": [
+    "inception"
+   ],
+   "seed": "marinilla",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the Victoria and Albert Museum initially known as when it was established in 1852?",
+   "gold": "Museum of Manufactures",
+   "plan": [
+    "inception",
+    "named after"
+   ],
+   "seed": "victoria and albert museum",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which month and year was Hakyung Lee, the mother of the children whose bodies were found in a suitcase in New Zealand, arrested in South Korea?",
+   "gold": "September 2022",
+   "plan": [
+    "date of arrest"
+   ],
+   "seed": "hakyung lee",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Which day, month, and year did former Vice President of Ghana Kow Nkensen Arkaah die?",
+   "gold": "25 April 2001",
+   "plan": [
+    "date of death"
+   ],
+   "seed": "kow nkensen arkaah",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On which album does the Relient K song \"May the Horse Be with You\" appear?",
+   "gold": "\"The Anatomy of the Tongue in Cheek\"",
+   "plan": [
+    "part of the series"
+   ],
+   "seed": "may the horse be with you",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which U.S. state is the observatory where the asteroid 3430 Bradfield was discovered located?",
+   "gold": "California",
+   "plan": [
+    "place of discovery",
+    "located in the administrative territorial entity"
+   ],
+   "seed": "3430 bradfield",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "located in the administrative territorial entity",
+    "place of discovery"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which Nebraska city was painter Kathleen Gemberling Adkison born in 1917?",
+   "gold": "Beatrice",
+   "plan": [
+    "place of birth"
+   ],
+   "seed": "kathleen gemberling adkison",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [
+    [
+     "born in",
+     "place of birth"
+    ]
+   ],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which year did Gary Schreider, the Canadian football player, die?",
+   "gold": "2011",
+   "plan": [
+    "date of death"
+   ],
+   "seed": "gary schreider",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who founded the municipality of La Uvita, Boyacá, Colombia?",
+   "gold": "Vicente Ferrer del Río de Loza",
+   "plan": [
+    "founded by"
+   ],
+   "seed": "la uvita",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "founded by"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "From what country were the referee, touch judges, and television match official in the rugby match between Spain and Romania that was part of the 2022 Rugby Europe Championship on 27 February 2022?",
+   "gold": "Scotland",
+   "plan": [
+    "referee",
+    "country of citizenship"
+   ],
+   "seed": "spain vs romania 2022 rugby europe championship",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "referee"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which year was the municipality of Santa Bárbara, Antioquia, Colombia, founded?",
+   "gold": "1774",
+   "plan": [
+    "inception"
+   ],
+   "seed": "santa bárbara antioquia colombia",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what district was the English songwriter Robert Patrick Weston born?",
+   "gold": "Islington",
+   "plan": [
+    "place of birth",
+    "located in the administrative territorial entity"
+   ],
+   "seed": "robert patrick weston",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "located in the administrative territorial entity"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Give the full name of Rana Ayyub's father (an Indian journalist).",
+   "gold": "Mohammad Ayyub Waqif",
+   "plan": [
+    "father"
+   ],
+   "seed": "rana ayyub",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What's the DOI of the paper \"Articulatory constraints on stop insertion and elision in consonant clusters\" by Daniel Recasens?",
+   "gold": "DOI:10.1515/ling.2011.031",
+   "plan": [
+    "DOI"
+   ],
+   "seed": "articulatory constraints on stop insertion and elision in consonant clusters",
+   "first": "unknown_relation",
+   "unknown": [
+    "DOI"
+   ],
+   "entities": [
+    "articulatory constraints on stop insertion and elision in consonant clusters"
+   ],
+   "admitted": 0,
+   "aliased": [],
+   "final": "unknown_relation",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the KEGG ID of barium sulfate?",
+   "gold": "D02052",
+   "plan": [
+    "KEGG ID"
+   ],
+   "seed": "barium sulfate",
+   "first": "unknown_relation",
+   "unknown": [
+    "KEGG ID"
+   ],
+   "entities": [
+    "barium sulfate"
+   ],
+   "admitted": 30,
+   "aliased": [],
+   "final": "unknown_relation",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the municipality of Paya, Boyacá, Colombia, founded?",
+   "gold": "1600",
+   "plan": [
+    "inception"
+   ],
+   "seed": "paya",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which year was the Kashmiri singer named Ghulam Hassan Sofi born?",
+   "gold": "1932",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "ghulam hassan sofi",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [
+    [
+     "born",
+     "date of birth"
+    ]
+   ],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the municipality of Tarso, Antioquia, Colombia, founded?",
+   "gold": "1912",
+   "plan": [
+    "inception"
+   ],
+   "seed": "tarso",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which year did Edward Meyrick first describe Cydalima mysteris?",
+   "gold": "1886",
+   "plan": [
+    "taxon author",
+    "publication date"
+   ],
+   "seed": "cydalima mysteris",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date",
+    "taxon author"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "How heavy is my Ricoh GR III body only in grams?",
+   "gold": "227 grams",
+   "plan": [
+    "mass"
+   ],
+   "seed": "ricoh gr iii",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the name of the zoologist who formally described the brown cuckoo-dove in 1821?",
+   "gold": "Coenraad Jacob Temminck",
+   "plan": [
+    "taxon author"
+   ],
+   "seed": "brown cuckoo dove",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "taxon author"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the full name of the Colombian soccer player Juan Guzmán born in 1988?",
+   "gold": "\tJuan Pablo Guzmán Perdomo",
+   "plan": [
+    "birth name"
+   ],
+   "seed": "juan guzmán",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "birth name"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "As a child, at what temple did Sesshū Tōyō enter the Buddhist community?",
+   "gold": "Hofukuji temple",
+   "plan": [
+    "educated at"
+   ],
+   "seed": "sesshū tōyō",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Which Ivy League university granted psychologist Robert Rutherford Holt both a master's degree and a Ph.D.?",
+   "gold": "Harvard",
+   "plan": [
+    "educated at"
+   ],
+   "seed": "robert rutherford holt",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What month and year was the album \"Introspective\" released by Inner Ear Records?",
+   "gold": "June 4, 2021",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "introspective",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What day, month, and year was James Young (Missouri politician) born?",
+   "gold": " 11 May, 1800",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "james young",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [
+    "james young"
+   ],
+   "admitted": 0,
+   "aliased": [
+    [
+     "born",
+     "date of birth"
+    ]
+   ],
+   "final": "retrieval_exhausted",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the name of the place where Valerie Thomas mentored students who were working in the summer programs?",
+   "gold": "Goddard Space Flight Center.",
+   "plan": [
+    "employer"
+   ],
+   "seed": "valerie thomas",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the municipality of Caucasia, Antioquia, Colombia, founded?",
+   "gold": "1886",
+   "plan": [
+    "inception"
+   ],
+   "seed": "caucasia",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the municipality of Cucaita, Boyacá, Colombia, founded?",
+   "gold": "1556",
+   "plan": [
+    "inception"
+   ],
+   "seed": "cucaita",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "The Château style originated in Québec in the early 1880s under which architect?",
+   "gold": "Eugène-Étienne Taché",
+   "plan": [
+    "architect"
+   ],
+   "seed": "château style",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What month, day, and year did President Sukarno deliver his \"To Build the World Anew\" speech?",
+   "gold": "September 30th, 1960",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "to build the world anew",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which year was the John Brophy Award first awarded?",
+   "gold": "1989",
+   "plan": [
+    "inception"
+   ],
+   "seed": "john brophy award",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In the 2020 case of Arthur J. Lomax v. Christina Ortiz-Marquez, in which state was Arthur Lomax a prison inmate at the time of the case?",
+   "gold": "Colorado",
+   "plan": [
+    "located in the administrative territorial entity"
+   ],
+   "seed": "arthur j lomax v christina ortiz marquez",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "located in the administrative territorial entity"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Which senator introduced the Act Prohibiting Importation of Slaves into the Senate?",
+   "gold": "James Turner",
+   "plan": [
+    "sponsor"
+   ],
+   "seed": "act prohibiting importation of slaves",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "From which college did research scientist Gloria Hollister earn her Bachelor of Science degree?",
+   "gold": "Connecticut College",
+   "plan": [
+    "educated at"
+   ],
+   "seed": "gloria hollister",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the maximum depth of the Mediterranean Sea in meters?",
+   "gold": "5109 m",
+   "plan": [
+    "deepest point"
+   ],
+   "seed": "mediterranean sea",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "deepest point"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the UNII of Nivolumab, an anti-cancer medication?",
+   "gold": "31YO63LBSN",
+   "plan": [
+    "UNII"
+   ],
+   "seed": "nivolumab",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "UNII"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who were the two founders of the municipality of Angostura, Antioquia, Colombia?",
+   "gold": "Pedro Javier Barrientos and Manuel Barrientos",
+   "plan": [
+    "founded by"
+   ],
+   "seed": "angostura antioquia colombia",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "founded by"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What subject did Mary Winifred Betts, the spouse of Alexander Craig Aitken, lecture on at Otago University?",
+   "gold": "Botony",
+   "plan": [
+    "field of work"
+   ],
+   "seed": "mary winifred betts",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "ambiguous_relation",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which year did Dolores Fonzi star in and produce the miniseries Soy tu fan?",
+   "gold": "2006",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "soy tu fan",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the engine size, in cc, of the Grillot engine that was placed in the 1935 Amilcar Pégase?",
+   "gold": "2490 cc",
+   "plan": [
+    "engine displacement"
+   ],
+   "seed": "amilcar pégase",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "engine displacement"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On what day, month, and year was the asteroid 207 Hedda discovered?",
+   "gold": "17 October, 1879",
+   "plan": [
+    "time of discovery or invention"
+   ],
+   "seed": "207 hedda",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "time of discovery or invention"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In which year did Augustus Radcliffe Grote describe Lithophane viridipallens?",
+   "gold": "1877",
+   "plan": [
+    "date of taxon description"
+   ],
+   "seed": "lithophane viridipallens",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the source of the Nile discovered?",
+   "gold": "1858",
+   "plan": [
+    "source of the watercourse",
+    "time of discovery or invention"
+   ],
+   "seed": "nile",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "time of discovery or invention"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "How many people in the First Chamber of the Reichstag voted in favor of the Enabling Act of 1933?",
+   "gold": "444",
+   "plan": [
+    "votes in favor"
+   ],
+   "seed": "enabling act of 1933",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "votes in favor of enabling act"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Off of what coast of Morrowind does the DLC Dragonborn take place?",
+   "gold": "North",
+   "plan": [
+    "narrative location",
+    "located in or next to body of water"
+   ],
+   "seed": "dragonborn",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "located in or next to body of water",
+    "narrative location"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who is the municipality of Gómez Plata, Antioquia, Colombia, named after?",
+   "gold": "Juan de la Cruz Gómez Plata",
+   "plan": [
+    "named after"
+   ],
+   "seed": "gómez plata",
+   "first": "unknown_relation",
+   "unknown": [
+    "named after"
+   ],
+   "entities": [
+    "gómez plata"
+   ],
+   "admitted": 0,
+   "aliased": [],
+   "final": "unknown_relation",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What are the name and surname of the man whom Rosa Bloch-Bollag, an activist and member of the Swiss Socialist Party, married?",
+   "gold": "Siegfried Bollag",
+   "plan": [
+    "spouse"
+   ],
+   "seed": "rosa bloch bollag",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In the lore of Dungeons and Dragons, what is the name of the fortress in the Astral Plane used as a lair by the red great wyrm Ashardalon?",
+   "gold": "Bastion of Unborn Souls",
+   "plan": [
+    "residence"
+   ],
+   "seed": "ashardalon",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what year did the biochemist Mildred Cohn publish her work titled \"A Study of Oxidative Phosphorylation with O-18 Labeled Inorganic Phosphate\"?",
+   "gold": "1953",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "study of oxidative phosphorylation with o 18 labeled inorganic phosphate",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date of study"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the title of the thesis of the Indian mathematician Amalendu Krishna?",
+   "gold": "Zero Cycles and K-theory on normal surfaces",
+   "plan": [
+    "doctoral thesis"
+   ],
+   "seed": "amalendu krishna",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "doctoral thesis"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On what date, month, and year was the Public Order Ordinance commenced in Hong Kong?",
+   "gold": "November 17, 1967",
+   "plan": [
+    "inception"
+   ],
+   "seed": "public order ordinance",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Which parochial school did Harry Belafonte attend?",
+   "gold": "St. Charles Borromeo",
+   "plan": [
+    "educated at"
+   ],
+   "seed": "harry belafonte",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What are the names of the daughters of Mehbooba Mufti Sayed?",
+   "gold": "Iltija and Irtiqa.",
+   "plan": [
+    "child"
+   ],
+   "seed": "mehbooba mufti sayed",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [
+    [
+     "daughters",
+     "child"
+    ]
+   ],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the UNII of Axitinib, a small-molecule tyrosine kinase inhibitor developed by Pfizer?",
+   "gold": "C9LVQ0YUXG",
+   "plan": [
+    "UNII"
+   ],
+   "seed": "axitinib",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "UNII"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What were the day, month, and year when FC Baltika Kaliningrad was founded?",
+   "gold": "22 December 1954",
+   "plan": [
+    "inception"
+   ],
+   "seed": "fc baltika kaliningrad",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "According to the United States Census Bureau, what is the total area of Weston, Ohio, in square miles?",
+   "gold": "1.13",
+   "plan": [
+    "area"
+   ],
+   "seed": "weston ohio",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who was Mehta Basti Ram's great-granddaughter who went on to become the first woman member of parliament from Jammu and Kashmir?",
+   "gold": "Krishna Mehta",
+   "plan": [
+    "child",
+    "child",
+    "child"
+   ],
+   "seed": "mehta basti ram",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what city was the 5th ASEM Education Ministers' Meeting held?",
+   "gold": "Riga",
+   "plan": [
+    "location"
+   ],
+   "seed": "5th asem education ministers meeting",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [
+    "5th asem education ministers meeting"
+   ],
+   "admitted": 0,
+   "aliased": [
+    [
+     "city",
+     "location"
+    ]
+   ],
+   "final": "retrieval_exhausted",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was Janice Burgess put in charge of when she volunteered at the public television station WQED?",
+   "gold": "Craft services",
+   "plan": [
+    "employer",
+    "position held"
+   ],
+   "seed": "janice burgess",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who founded the municipality of Santo Domingo, Antioquia, Colombia?",
+   "gold": "Don Juan Gregorio Duque",
+   "plan": [
+    "founded by"
+   ],
+   "seed": "santo domingo antioquia",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "founded by"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who played the role of Mrs. Janice Veazey, Dr. Hodges' secretary, in Young Sheldon?",
+   "gold": "Karly Rothenberg",
+   "plan": [
+    "cast member"
+   ],
+   "seed": "young sheldon",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Which infraorder in the animal kingdom does the superfamily Psalidopodoidea belong to?",
+   "gold": "Caridea",
+   "plan": [
+    "parent taxon"
+   ],
+   "seed": "psalidopodoidea",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "parent taxon"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who murdered the original Baron Blitzkrieg?",
+   "gold": "Superboy-Prime",
+   "plan": [
+    "killed by"
+   ],
+   "seed": "baron blitzkrieg",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What day, month, and year was Giulio Carlo Argan born?",
+   "gold": "17 May 1909",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "giulio carlo argan",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [
+    "giulio carlo argan"
+   ],
+   "admitted": 46,
+   "aliased": [
+    [
+     "born",
+     "date of birth"
+    ]
+   ],
+   "final": null,
+   "verified": true,
+   "answer": "1909-05-17"
+  },
+  {
+   "q": "What was the magnitude of the solar eclipse that occurred on June 21, 2001?",
+   "gold": "1.0495",
+   "plan": [
+    "magnitude of eclipse"
+   ],
+   "seed": "solar eclipse of june 21 2001",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "magnitude of eclipse of solar eclipse"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the municipality of Valparaíso, Antioquia, Colombia, founded?",
+   "gold": "1860",
+   "plan": [
+    "inception"
+   ],
+   "seed": "valparaíso",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year was the municipality of Chiscas, Boyacá, Colombia, founded?",
+   "gold": "1777",
+   "plan": [
+    "inception"
+   ],
+   "seed": "chiscas",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the surname of the person who first discovered the blood-sucking bug Triatoma carrioni?",
+   "gold": "Larrousse",
+   "plan": [
+    "taxon author",
+    "family name"
+   ],
+   "seed": "triatoma carrioni",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "taxon author"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [
+    [
+     "surname",
+     "family name"
+    ]
+   ],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "The Persina Nature Park in Bulgaria was originally established on what day, month, and year?",
+   "gold": "December 4, 2000.",
+   "plan": [
+    "inception"
+   ],
+   "seed": "persina nature park",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On which date, month, and year was the municipality of Miraflores, Boyacá, Colombia, founded?",
+   "gold": "29  December 1777",
+   "plan": [
+    "inception"
+   ],
+   "seed": "miraflores boyacá",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What certification did Alan Walker's album, \"Different World,\" receive in the region of Singapore?",
+   "gold": "Platinum",
+   "plan": [
+    "award received"
+   ],
+   "seed": "different world",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On what day, month, and year was the case of United States of America v. Francis Raia filed in the United States Court of Appeals?",
+   "gold": "2 April 2020",
+   "plan": [
+    "inception"
+   ],
+   "seed": "united states of america v francis raia",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception of united states"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the maximum speed of the K-class blimp (1938), the K-14, in knots?",
+   "gold": "68",
+   "plan": [
+    "maximum speed"
+   ],
+   "seed": "k 14",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "maximum speed"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What day, month, and year was the municipality of Tarazá, Antioquia, Colombia, founded?",
+   "gold": "February 24th, 1953",
+   "plan": [
+    "inception"
+   ],
+   "seed": "tarazá",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "inception"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Which organization commissioned \"Pinturas de Tamayo\" (the composition by Steven Stucky)?",
+   "gold": "Chicago Symphony Orchestra",
+   "plan": [
+    "commissioned by"
+   ],
+   "seed": "pinturas de tamayo",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What was the date, month, and year when Clifford Cunnell, an English cricketer, died?",
+   "gold": "5 October 2016",
+   "plan": [
+    "date of death"
+   ],
+   "seed": "clifford cunnell",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What's the DOI of the paper 'Towards an Explanation of the Syntax of West Germanic Particle Verbs: A Cognitive-Pragmatic View' by Thomas Berg?",
+   "gold": "10.1515/cog-2017-0069",
+   "plan": [
+    "DOI"
+   ],
+   "seed": "towards an explanation of the syntax of west germanic particle verbs a cognitive pragmatic view",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "DOI of towards an explanation of the syntax"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What are the stud dimensions of the LEGO part with ID 54093?",
+   "gold": "20 x 56 in studs",
+   "plan": [
+    "stud dimensions"
+   ],
+   "seed": "54093",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "stud dimensions"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What disease was Elizabeth Esteve-Coll diagnosed with that forced her to step down as Vice-Chancellor of the University of East Anglia?",
+   "gold": "multiple sclerosis diagnosis",
+   "plan": [
+    "medical condition"
+   ],
+   "seed": "elizabeth esteve coll",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What is the height (in meters) of the light multipurpose aircraft T-101 named Grach, based on the AN-2 biplane that was designed by Evgeny Grunin, which took its first flight on December 7, 1994?",
+   "gold": "4.86 m",
+   "plan": [
+    "height"
+   ],
+   "seed": "t 101 grach",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "In what month and year did Anna Halprin create the \"Rope Dance\" performance with Janine Antoni and Stephen Petronio in Kentfield, California?",
+   "gold": "September 2014",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "rope dance",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What year did chef Jo Seagar's cooking school, café, and kitchenware store \"Seagars at Oxford\" close?",
+   "gold": "2015",
+   "plan": [
+    "dissolved, abolished or demolished date"
+   ],
+   "seed": "seagars at oxford",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "dissolved, abolished or demolished date"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What day, month, and year was Sergio Flamigni, an Italian politician and writer, born?",
+   "gold": "22 October 1925",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "sergio flamigni",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [
+    [
+     "born",
+     "date of birth"
+    ]
+   ],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What were the day, month, and year when President Bush and Congress agreed on the joint resolution authorizing the Iraq War?",
+   "gold": "October 2, 2002",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "joint resolution authorizing the iraq war",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Who inaugurated the Khyber Hotel in Gulmarg?",
+   "gold": "Omar Abdullah",
+   "plan": [
+    "opened by"
+   ],
+   "seed": "khyber himalayan resort spa",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "opened by"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "On what day, month, and year did the physicist and chemist Katharine Burr Blodgett issue the U.S. patent for \"Step Gauge for Measuring Thickness of Thin Films\"?",
+   "gold": "26 February 1952",
+   "plan": [
+    "publication date"
+   ],
+   "seed": "step gauge for measuring thickness of thin films",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "publication date of step gauge for measuring thickness"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "Which lake in Kashmir is connected to the Khushal Sar and Gil Sar lakes via a channel known as Nallah Amir Khan?",
+   "gold": "Nigeen Lake",
+   "plan": [
+    "connects with"
+   ],
+   "seed": "nallah amir khan",
+   "first": "plan_does_not_cover_question",
+   "unknown": [
+    "connects with"
+   ],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  },
+  {
+   "q": "What month, day, and year did Kunming Metro Line 5 start running?",
+   "gold": "June 29th, 2022",
+   "plan": [
+    "date of official opening"
+   ],
+   "seed": "kunming metro line 5",
+   "first": "plan_does_not_cover_question",
+   "unknown": [],
+   "entities": [],
+   "admitted": 0,
+   "aliased": [],
+   "final": "plan_does_not_cover_question",
+   "verified": false,
+   "answer": null
+  }
+ ],
+ "vm_calls": 6,
+ "wall_s": 140.6
+}

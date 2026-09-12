@@ -204,9 +204,10 @@ def resolve_wordings(question: str, plan: QuestionPlan, source, known, aliases: 
                      max_n: int = 3, max_candidates: int = 24) -> tuple[list[tuple[str, str]], dict | None]:
     """Lever 6 (2026-09-12, exp_r11 Gemini run 1): lever 4 in reverse. A proposer that
     names a relation by the source's CANONICAL label ('date of birth' for 'was born')
-    is refused for coverage: the label is held, so the alias step never fires, and the
-    question carries none of the label's words -- 114 of a frontier model's 121 plans
-    died there, most of them right. The host asks the resolvers whether a wording IN
+    is refused for coverage: the question carries none of the label's words, and the
+    alias step never fires (the label is held; or it is not, and coverage is judged
+    before the relation is, so the fetch that would bring it never runs) -- 114 of a
+    frontier model's 121 plans died there, most of them right. The host asks the resolvers whether a wording IN
     THE QUESTION names the plan's label: the question's content n-grams (frame words,
     the seed entity and numbers excluded), shortest first, and the first that resolves
     to the label is recorded as its alias, so `covers()` sees it, and the plan is
@@ -232,16 +233,20 @@ def resolve_wordings(question: str, plan: QuestionPlan, source, known, aliases: 
     grams = grams[:max_candidates]
     found: list[tuple[str, str]] = []
     for label in labels:
-        if label not in known:
-            continue                                   # lever 4's case, not this one
         if label in q or any(normalize(w) in q for w in aliases.get(label, ())):
             continue                                   # the question already says it
+        # a label the store does not hold yet is asked about too: coverage is judged
+        # before the relation is, so a plan naming 'inception' for 'founded' would
+        # otherwise never reach the unknown_relation refusal that fetches the fact
+        # that brings the label (exp_r11 Gemini run 3: 180 coverage refusals, most of
+        # them this deadlock)
         for g in grams:
-            held = sorted({normalize(l) for x in resolvers for l in x.relations(g) if normalize(l) in known})
-            if label not in held:
+            named = {normalize(l) for x in resolvers for l in x.relations(g)}
+            if label not in named:
                 continue
-            if len(held) > 1:
-                return found, {"wording": g, "candidates": held}
+            candidates = sorted({l for l in named if l in known} | {label})
+            if len(candidates) > 1:
+                return found, {"wording": g, "candidates": candidates}
             aliases.setdefault(label, []).append(g)
             found.append((g, label))
             break

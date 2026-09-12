@@ -759,3 +759,57 @@ were all gate-clean, and the 5 relations still unknown after learning are identi
 external IDs the source deliberately skips (`ChemSpider ID`, `KEGG ID`, `DOI`). Run 2 (effort low, 1500
 tokens, lever 6, the emitter re-run under lever 6 beside it) is what the ceiling will be read from.
 `exp_r11_search_learn_wikidata_gemini.*`.
+
+## 2026-09-12 — the ceiling probe, runs 2–4: one wrong answer spoken, the rule it forced, and the reading
+
+**Run 2** (`_gemini2`: effort low, 1,500-token budget, lever 6): 600 calls, **$0.27**, 0 truncations — the
+model's answer is now always its own: **403 explicit declines** (`{"seed": null}` — the model judges two
+thirds of SimpleQA to have no property chain it would commit to), 195 plans, 187 coverage refusals at first
+(16 rescued by lever 6), 12 fetched, **4 verified, 3 correct — and 1 wrong answer spoken.** `What day,
+month, and year was James Young (Missouri politician) born?` → the proposer's seed was `james young`; the
+Wikidata source took the first of several items with that label, admitted `1762 is the date of birth of
+James Young`, and the VM verified a true fact about the wrong man. The source was *picking* among
+same-label items — the entity-level twin of the ambiguous hop, and the invariants say the host refuses
+ambiguity, never resolves it. **The rule** (`standin/sources.py`): two or more search hits with the query as
+label or alias → no facts, the candidates recorded; no exact hit → no facts (the old fallback to the first
+hit was a guess). Pinned (`standin/tests/test_sources.py`). Cost of the rule on the emitter run: the fetches
+for `Kashmir`, `Karnataka`, `Kenya`, `Anselm Kiefer` (36–291 facts each) are now refused as ambiguous —
+none had verified anything; a disambiguating qualifier the question carries ("Missouri politician") is a
+host-side resolver the source does not have yet.
+
+**Run 3** (rule in): 195 plans, 13 fetched, **3 verified, 3 correct, 0 wrong**; James Young → `retrieval_exhausted`.
+The 180 coverage refusals left were read: `inception` for "founded", `date of death` for "die", `place of
+death` for "pass away", `publication date` for "released" — canonical labels again, but ones the store did
+not hold *yet*, which lever 6 skipped as lever 4's case. It was neither's: coverage is judged before the
+relation, so a plan naming an unheld label was refused for coverage and never reached the `unknown_relation`
+refusal whose fetch would have brought the label. **Lever 6 now words unheld labels too**; the ambiguity
+rule is unchanged (a wording naming two labels the store holds, or one held and the plan's, is refused).
+Pinned: worded, then refused as unknown, then fetched, then verified.
+
+**Run 4** (lever 6 complete): 195 plans, 28 aliased (16 → 28), 21 `ambiguous_relation` refusals (2 → 21:
+`released` names both `inception` and `publication date`; refused, correctly), 15 fetched, **4 verified,
+3 correct, 0 false facts** — the fourth is the Az-Zabdani subdistrict the emitter also verifies, true and
+one administrative level finer than the gold. 159 coverage refusals remain: questions bound by a qualifier
+the plan cannot carry (`S1E8 of`, `in 1863`, `at the age of 8`), relations Wikidata stores as external IDs
+the source skips (`DOI`, `KEGG ID`), and wordings no alias table carries (`pass away`, `murdered`).
+
+**The emitter beside it** (`_lev6b`, same rule, same day): 530 plans, 74 fetched, **6 verified, 5 correct,
+0 false facts** (4 → 6: two birth dates the earlier run had refused for coverage — the refusal was the
+residual rule reading `year` as a dropped hop after a large fetch had brought a `year`-bearing relation
+into the vocabulary; the ambiguity rule refused that fetch, and the order effect went with it. The residual
+rule reads the store's *current* vocabulary, so what the loop learns changes what later plans cover — a
+typed answer class, "what year" expects a date, is the principled fix and the next lever).
+
+**The reading.** A frontier proposer through the same gate: 4 verified against the stand-in's 6, both at
+0 false facts, for $0.27. The ceiling on SimpleQA is not the proposer. It is (1) the disposer's coverage
+rule, wording-bound and vocabulary-sensitive, which refuses most of what either proposer gets right; (2) the
+sources' relation labels, which the alias tables reach only partly; (3) the questions themselves — the
+frontier model declines 403 of 600 as having no chain, and the qualifier-bound ones it does plan the host
+cannot bind. Each is the host's, and each is measurable without another API call: the 403 declines and the
+195 plans are cached. What the probe is *for* — (B), the gen-3 dataset built the reverse way — stands:
+certified chains in, questions out, the plan never the model's.
+
+`exp_r11_search_learn_wikidata_gemini{2,3,4}.*`, `exp_r11_search_learn_wikidata_lev6{,b}.*`. The day's
+third and fourth hard resets (12:32, 17:13; all four today with bugcheck 0, no dump, no WHEA, no
+display-driver timeout — the power being cut, not a crash; the emitter runs on the GPU, all 24 layers on
+Vulkan) killed one run each; every result above is from a run that completed.

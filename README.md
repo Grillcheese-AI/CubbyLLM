@@ -56,6 +56,8 @@ question ──► plan ──► plan_verify (disposer) ──► lookup-first 
 | canonical form | grammar 189/200 · emitter 110/200 · 0 wrong |
 | SimpleQA, 4,326 free-text questions through the whole gate (exp_r10) | 3,858 plans → 3,825 refused with a reason + 33 walk failures; 0 verified, **0 wrong** (the store holds 3 of the answers) |
 | search-and-learn (exp_r11): held-out facts, then Wikidata on 600 SimpleQA | held-out: 200 refused → 195 learned and verified, 0 wrong; poisoned source, either order: ambiguous refusals, 0 wrong. Wikidata: 1,715 facts learned with provenance; with the source resolving relation words to its labels (`born` → `date of birth`, lever 4) **4 VM-verified, 3 correct, 0 false facts** (the 4th: Wikidata's transliteration and granularity vs the gold's). A WordNet+WOLF synonym oracle (`reasoning/lexicon.py`, lever 5) adds the bilingual axis — a French question verifies against an English store — and changes nothing on English factoids |
+| the offline Source (`standin/wikitext.py`): regex frames over 4.7M local article openings, provenance per sentence, EN + FR | same 600 SimpleQA: 9 facts admitted, all re-read true against their sentences; **2 verified, 2 correct, 0 wrong**, 0 API calls. Run 1 stored one false fact (`British is the author of The Roar`) — two source hazards, fixed and pinned. Half the API source's verified count, offline, with the sentence on record |
+| the ceiling probe: a frontier model (Gemini 3.8 Flash) in the emitter's seat, same disposer / walk / VM / kill line (`standin/openrouter.py`; the serving model never calls it) | 600 questions, $0.27: the model declines 403 outright, plans 195; **4 verified, 3 correct, 0 false facts** vs the stand-in emitter's 6 / 5 / 0 the same day. Run 2 spoke one wrong answer — the source picked among several items labelled `James Young`; an entity label shared by two items is now a refusal, never a pick (pinned). What the probe exposed is the host's: lever 6 (`learn.resolve_wordings`, the question's own word for a canonical label, `founded` → `inception`) and a coverage rule that is wording-bound and vocabulary-sensitive. The ceiling on free text is not the proposer |
 
 The reading: the grammar gets the templates; the emitter gets the shapes the grammar cannot parse; the disposer
 and the VM keep the wrong count at zero on both; free text against a store that cannot answer it is refused, not
@@ -100,6 +102,9 @@ cubbyllm/            the package (Apache-2.0). `import cubbyllm` is torch-free.
   reasoning/lexicon.py the synonym oracle: WordNet 3.0 + WOLF (FR) by synset, a second relation resolver (data built by standin/data/build_lexicon.py)
   core/ model/ ops/ training/   the trunk design from the validation campaign
 standin/             the serve stack (BSL-1.1): brain, thalamus, VM-mediated chat, cubby-man, emitter, SFT data builders
+  sources.py         the Wikidata Source (API, cached; an entity label shared by two items is refused, never picked)
+  wikitext.py        the offline Source: regex frames over local article openings, EN + FR, provenance per sentence
+  openrouter.py      a frontier model as a proposer for probes and dataset building only — never the serving model
 validation/          55 standalone experiment scripts + tests + logs/. Never imported by cubbyllm/.
 notebooks/           Colab training runs, one per SFT round
 docs/research/       dated findings and the outside-model competitions, scored against the measured record

@@ -248,3 +248,19 @@ def test_a_dropped_hop_is_still_refused_after_the_wording_is_found():
     plan = QuestionPlan(relations=[None], tail="date of birth of masaki tsuji", n_hop=1)
     r = run("When was the father of Masaki Tsuji born?", store, known, src, plan=plan)
     assert not r.result.verified and r.result.reason == "plan_does_not_cover_question"
+
+
+def test_a_label_the_store_does_not_hold_yet_is_worded_then_fetched_then_walked():
+    """exp_r11 Gemini run 3: 'inception' for 'founded' was refused for coverage and,
+    because coverage is judged before the relation, never reached the fetch that
+    brings the label. The wording is found first, the walk then refuses the unknown
+    relation, the fetch declares it, the second walk verifies."""
+    from cubbyllm.reasoning.planner import QuestionPlan, Triple
+    store, known = LookupStore(STORE), StoreRelations(STORE)
+    src = AliasSource({"persina nature park": [Triple(obj="1997", rel="inception", subj="Persina Nature Park")]},
+                      {"founded": ["inception"], "inception": ["inception"]})
+    plan = QuestionPlan(relations=[None], tail="inception of persina nature park", n_hop=1)
+    r = run("In what year was Persina Nature Park founded?", store, known, src, plan=plan)
+    assert r.first.reason == "plan_does_not_cover_question"
+    assert r.result.verified and r.result.answer == "1997"
+    assert ("founded", "inception") in r.aliased and [normalize(e) for e in r.entities] == ["persina nature park"]

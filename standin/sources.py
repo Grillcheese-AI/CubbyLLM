@@ -100,7 +100,19 @@ class WikidataSource:
         hits = (s or {}).get("search") or []
         if not hits:
             return []
-        hit = next((h for h in hits if _normalize(h.get("label", "")) == _normalize(entity)), hits[0])
+        # exp_r11 Gemini run 2 (2026-09-12): the proposer's seed 'james young' (the question
+        # said 'James Young (Missouri politician)') matched the first of several items
+        # labelled James Young, and a wrong birth year was verified and SPOKEN. An entity
+        # label shared by two or more items is an ambiguity, and the host refuses those; it
+        # never picks. A search whose hits carry neither the label nor an alias equal to the
+        # query is no resolution either (the old fallback to hits[0] was a guess).
+        exact = [h for h in hits if _normalize(h.get("label", "")) == _normalize(entity)
+                 or _normalize(((h.get("match") or {}).get("text") or "")) == _normalize(entity)]
+        if len(exact) != 1:
+            self.last["ambiguous"] = [(h["id"], h.get("label"), h.get("description")) for h in exact] if exact else []
+            self.last["unresolved"] = not exact
+            return []
+        hit = exact[0]
         qid, label = hit["id"], hit.get("label") or entity
         alias = _normalize(label) != _normalize(entity)
         self.last.update(qid=qid, label=label, alias=alias)

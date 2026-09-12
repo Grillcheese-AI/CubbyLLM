@@ -1,0 +1,29 @@
+wiki world 552297 facts, 2794 relations | SimpleQA sample 600 (seed 7) | proposer openrouter:google/gemini-3.8-flash (effort low) (max_tokens 1500) | source wikidata | lexicon 119161 synsets
+  500/600 (117s, api calls 0) plan 160 fetched 11 verified 2 correct 2 near 0 WRONG 0
+  600/600 (141s, api calls 4) plan 195 fetched 13 verified 3 correct 3 near 0 WRONG 0
+
+SIMPLEQA + SEARCH-AND-LEARN: {'aliased_questions': 16, 'correct': 3, 'facts_fetched': 259, 'fetched_questions': 13, 'final:ambiguous_hop': 1, 'final:ambiguous_relation': 2, 'final:plan_does_not_cover_question': 180, 'final:retrieval_exhausted': 2, 'final:unknown_relation': 7, 'first:plan_does_not_cover_question': 187, 'first:unknown_relation': 8, 'gate:accepted': 238, 'gate:duplicate': 21, 'no_plan': 405, 'plan': 195, 'verified': 3}
+api calls 4 | VM calls 6 | store grew 238
+proposer openrouter:google/gemini-3.8-flash (effort low) (max_tokens 1500): 0 live calls, usage {'prompt_tokens': 179785, 'completion_tokens': 36260, 'reasoning_tokens': 28669, 'cost': 0.2681056124999998}, finish {'stop': 600}, declined (explicit null plan) 403
+
+every verified answer:
+  [correct] 'On what day, month, and year was the footballer Michael Anderson Pereira da Silva born?'
+           plan ['date of birth'] seed 'michael anderson pereira da silva' -> '1983-02-16' (gold 'February 16, 1983')
+           via ['1983-02-16 is the date of birth of Michael Anderson Pereira da Silva']
+  [correct] 'On what day, month, and year was Motonori Matuyama born?'
+           plan ['date of birth'] seed 'motonori matuyama' -> '1884-10-25' (gold '25 October 1884')
+           via ['1884-10-25 is the date of birth of Motonori Matuyama']
+  [correct] 'What day, month, and year was Giulio Carlo Argan born?'
+           plan ['date of birth'] seed 'giulio carlo argan' -> '1909-05-17' (gold '17 May 1909')
+           via ['1909-05-17 is the date of birth of Giulio Carlo Argan']
+
+learned (first 6):
+  'What is the ChemSpider ID of diazepam?' asked ['diazepam'] admitted 94 e.g. ['Diazepam is the Commons category of diazepam', 'oral administration is the route of administration of diazepam', 'intramuscular injection is the route of administration of diazepam']
+  "What were Terry Kath's famously ironic last words?" asked ['terry kath'] admitted 25 e.g. ['Forest Lawn Memorial Park is the place of burial of Terry Kath', '1946-01-31 is the date of birth of Terry Kath', '1978-01-23 is the date of death of Terry Kath']
+  'On what day, month, and year was the footballer Michael Anderson Perei' asked ['michael anderson pereira da silva'] admitted 20 e.g. ['Botafogo F.R. is the member of sports team of Michael Anderson Pereira da Silva', 'Associação Portuguesa de Desportos is the member of sports team of Michael Anderson Pereira da Silva', 'Santos F.C. is the member of sports team of Michael Anderson Pereira da Silva']
+  'On what day, month, and year was Motonori Matuyama born?' asked ['motonori matuyama'] admitted 23 e.g. ['male is the sex or gender of Motonori Matuyama', '1884-10-25 is the date of birth of Motonori Matuyama', '1958-01-27 is the date of death of Motonori Matuyama']
+  'What is the KEGG ID of barium sulfate?' asked ['barium sulfate'] admitted 30 e.g. ['Barium sulfate is the Commons category of barium sulfate', '0047 is the NIOSH Pocket Guide ID of barium sulfate', 'barium is the has part(s) of barium sulfate']
+  'What day, month, and year was Giulio Carlo Argan born?' asked ['giulio carlo argan'] admitted 46 e.g. ['Italy is the country of citizenship of Giulio Carlo Argan', 'Kingdom of Italy is the country of citizenship of Giulio Carlo Argan', 'Turin is the place of birth of Giulio Carlo Argan']
+
+aliased (lever 4: plan word -> label; lever 6: question word -> label): 16 questions, e.g. [('city', 'location')] -> plan_does_not_cover_question; [('half brother', 'sibling')] -> plan_does_not_cover_question; [('city', 'location')] -> plan_does_not_cover_question; [('born', 'date of birth')] -> verified; [('born', 'date of birth')] -> plan_does_not_cover_question; [('born', 'date of birth')] -> verified; [('over', 'crosses')] -> plan_does_not_cover_question; [('born in', 'place of birth')] -> plan_does_not_cover_question
+relations still unknown after learning (top 20): [('durability', 1), ('ChemSpider ID', 1), ('pseudonym', 1), ('GPU', 1), ('DOI', 1), ('KEGG ID', 1), ('named after', 1)]
