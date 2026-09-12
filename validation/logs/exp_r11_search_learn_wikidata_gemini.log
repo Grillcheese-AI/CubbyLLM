@@ -1,0 +1,19 @@
+wiki world 552297 facts, 2794 relations | SimpleQA sample 600 (seed 7) | proposer openrouter:google/gemini-3.8-flash | source wikidata | lexicon 119161 synsets
+  500/600 (1401s, api calls 16) plan 98 fetched 7 verified 0 correct 0 near 0 WRONG 0
+  600/600 (1699s, api calls 16) plan 121 fetched 7 verified 0 correct 0 near 0 WRONG 0
+
+SIMPLEQA + SEARCH-AND-LEARN: {'facts_fetched': 192, 'fetched_questions': 7, 'final:ambiguous_hop': 1, 'final:plan_does_not_cover_question': 114, 'final:retrieval_exhausted': 1, 'final:unknown_relation': 5, 'first:plan_does_not_cover_question': 114, 'first:retrieval_exhausted': 1, 'first:unknown_relation': 6, 'gate:accepted': 173, 'gate:duplicate': 19, 'no_plan': 479, 'plan': 121}
+api calls 16 | VM calls 0 | store grew 173
+proposer openrouter:google/gemini-3.8-flash: 521 live calls, usage {'prompt_tokens': 179787, 'completion_tokens': 132562, 'cost': 0.6256282724999999}
+
+every verified answer:
+
+learned (first 6):
+  'What is the ChemSpider ID of diazepam?' asked ['diazepam'] admitted 94 e.g. ['Diazepam is the Commons category of diazepam', 'oral administration is the route of administration of diazepam', 'intramuscular injection is the route of administration of diazepam']
+  "What were Terry Kath's famously ironic last words?" asked ['terry kath'] admitted 25 e.g. ['Forest Lawn Memorial Park is the place of burial of Terry Kath', '1946-01-31 is the date of birth of Terry Kath', '1978-01-23 is the date of death of Terry Kath']
+  "Who are the parents of Eleanor Manning O'Connor?" asked ['eleanor manning o connor'] admitted 18 e.g. ["Lynn is the place of birth of Eleanor Manning O'Connor", "Mexico City is the place of death of Eleanor Manning O'Connor", "1973-07-12 is the date of death of Eleanor Manning O'Connor"]
+  'What was the pseudonym of the artist David Quiles Guilló?' asked ['david quiles guilló'] admitted 6 e.g. ['male is the sex or gender of david quiles guilló', 'exhibition curator is the occupation of david quiles guilló', 'Spain is the country of citizenship of david quiles guilló']
+  'What is the KEGG ID of barium sulfate?' asked ['barium sulfate'] admitted 30 e.g. ['Barium sulfate is the Commons category of barium sulfate', '0047 is the NIOSH Pocket Guide ID of barium sulfate', 'barium is the has part(s) of barium sulfate']
+
+aliased (lever 4): 0 questions, e.g. 
+relations still unknown after learning (top 20): [('ChemSpider ID', 1), ('pseudonym', 1), ('DOI', 1), ('KEGG ID', 1), ('named after', 1)]

@@ -111,6 +111,9 @@ def main() -> None:
     ap.add_argument("--lexicon", action="store_true", help="add the WordNet+WOLF synonym oracle as a second relation resolver (lever 5)")
     ap.add_argument("--proposer", default=None, help="wikidata arm: 'openrouter:<model id>' puts a frontier model in the emitter's seat "
                     "(the ceiling probe; same disposer, walk, VM and kill line; never the serving model)")
+    ap.add_argument("--proposer-effort", default=None, help="openrouter proposer: reasoning effort (low|medium|high) -- a thinking "
+                    "model's reasoning tokens count against its output budget")
+    ap.add_argument("--proposer-max-tokens", type=int, default=None, help="openrouter proposer: output budget (reasoning included)")
     ap.add_argument("--source", default="wikidata", help="wikidata | wikitext (offline: standin/wikitext.py frames over local articles)")
     ap.add_argument("--wikitext-parquet", default=None, help="wikitext: a BeIR-style corpus parquet (_id, title, text)")
     ap.add_argument("--wikitext-jsonl", default=None, help="wikitext: a glob of jsonl article files (title, text, lang)")
@@ -185,8 +188,11 @@ def main() -> None:
         rows = random.Random(a.seed).sample(rows, a.n) if a.n else rows
         if a.proposer and a.proposer.startswith("openrouter:"):
             from openrouter import OpenRouterProposer
-            em = OpenRouterProposer(a.proposer.split(":", 1)[1], offline=a.offline)
-            proposer_name = a.proposer
+            em = OpenRouterProposer(a.proposer.split(":", 1)[1], offline=a.offline,
+                                    reasoning={"effort": a.proposer_effort} if a.proposer_effort else None,
+                                    max_tokens=a.proposer_max_tokens)
+            proposer_name = a.proposer + (f" (effort {a.proposer_effort})" if a.proposer_effort else "") \
+                + (f" (max_tokens {a.proposer_max_tokens})" if a.proposer_max_tokens else "")
         else:
             em = LlamaCppEmitter(a.gguf); proposer_name = pathlib.Path(a.gguf).name
         if a.source == "wikitext":
@@ -246,8 +252,10 @@ def main() -> None:
         log(f"\nSIMPLEQA + SEARCH-AND-LEARN: {dict(sorted(c.items()))}")
         log(f"api calls {src.calls} | VM calls {calls['vm']} | store grew {len(world) - out.get('world0', len(world))}")
         if hasattr(em, "usage"):
-            log(f"proposer {proposer_name}: {em.calls} live calls, usage {em.usage}")
-            out["proposer_usage"] = dict(em.usage, live_calls=em.calls)
+            log(f"proposer {proposer_name}: {em.calls} live calls, usage {em.usage}, finish {getattr(em, 'finish', {})}, "
+                f"declined (explicit null plan) {getattr(em, 'declined', 0)}")
+            out["proposer_usage"] = dict(em.usage, live_calls=em.calls, finish=getattr(em, "finish", {}),
+                                         declined=getattr(em, "declined", 0))
         log("\nevery verified answer:")
         for v in verified_ex:
             log(f"  [{v['match']:7s}] {v['q'][:90]!r}\n           plan {v['plan']} seed {v['seed']!r} -> {v['answer']!r} (gold {v['gold']!r})\n           via {v['trace']}")
@@ -256,7 +264,7 @@ def main() -> None:
             log(f"  {q[:70]!r} asked {ents} admitted {n} e.g. {fs}")
         out.update({"counts": dict(c), "verified": verified_ex, "api_calls": src.calls, "rows": rows_out})
         al = [x for x in rows_out if x["aliased"]]
-        log(f"\naliased (lever 4): {len(al)} questions, e.g. " + "; ".join(f"{x['aliased']} -> {x['final'] or 'verified'}" for x in al[:8]))
+        log(f"\naliased (lever 4: plan word -> label; lever 6: question word -> label): {len(al)} questions, e.g. " + "; ".join(f"{x['aliased']} -> {x['final'] or 'verified'}" for x in al[:8]))
         unk = collections.Counter(u for x in rows_out for u in (x["unknown"] or []) if x["final"] == "unknown_relation")
         log(f"relations still unknown after learning (top 20): {unk.most_common(20)}")
 

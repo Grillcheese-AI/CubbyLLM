@@ -682,3 +682,80 @@ in, *questions* out (possessive, "have", relative, free text, French, synonyms),
 `covers()` and the VM the filters, provenance on every record. The final model never calls OpenRouter.
 
 `exp_r11_search_learn_wikidata_lex.*`, `exp_r12_local_sources_probe.*`.
+
+## 2026-09-12 — the offline Source: frames over local articles, with provenance
+
+Search-and-learn had one Source, the Wikidata API. The wiki world was built from local corpora, and the same
+corpora are a Source if a sentence can be read as a fact *without a model in the loop*: `standin/wikitext.py`
+runs regex frames over the opening of an article (600 characters — the lead, where encyclopedias state the
+facts a factoid asks for) and hands back `Triple`s with the sentence they came from as provenance. Corpora:
+the BeIR `full-dbpedia` abstracts (one parquet, 4.6M rows) and the twenty `wikipedia_dedup` domain files
+(IT, business_management, cognition, … transport) — **4,704,261 titles**, indexed once per file
+(`<file>.titles2.json`, 8 s for the parquet) and read by row group on demand. Frames, English: `(born DATE)`
+and `(DATE – DATE)` → `date of birth` / `date of death`, `born … in PLACE` → `place of birth`,
+`(founded|established|formed|incorporated) … in YEAR` → `inception`, `located in` / `capital` / `directed by`
+/ `written by`. French: `née le`, `mort(e)/décédé(e) le`, `né(e) à`, `fondée en`, `est une commune … dans …`.
+The source also names its own relations (`TRIGGERS`: `born` → `date of birth`, `established` → `inception`,
+…), so lever 4's alias step works offline exactly as it does against the API. The `wiki_full` dump the 2B
+manifest points at is on a drive that is not mounted on this machine; nothing here needs it.
+
+**Run 1 stored a false fact.** 77 questions fetched, 11 facts, 10 admitted, 0 verified, 0 wrong *spoken* —
+and `British is the author of The Roar` in the store. Two hazards, both in the source, both of the kind the
+invariants exist to catch: the author frame accepted a single capitalised token, so a nationality read as a
+name; and the title index dropped leading articles, so the seed `roar` opened the article *The Roar*. And
+`aliased 0`: the source had no `relations()`, so every `born` plan died as `unknown_relation`. Fixes: person
+frames need two or more capitalised tokens and no lowercase continuation; `title_key` keeps articles; the
+trigger table above. All three pinned in `standin/tests/test_wikitext.py` with run 1's sentences.
+
+**Run 2 (same 600 questions, same emitter, same disposer/walk/VM; `_wikitext2`):** 530 plans, 451 coverage
+refusals (identical to the Wikidata runs — the disposer does not know which source is behind it), 77 fetched,
+10 facts read, **9 admitted** (1 duplicate), 6 plans rewritten by the alias step, **2 verified, 2 correct,
+0 wrong**, 0 API calls, 4 VM calls, 457 s. Every admitted fact re-read against its provenance sentence after
+the run: nine dates and inceptions (Belafonte, Kiefer, the two O'Connors, Pereira da Silva, the Penny Crane
+award, the V&A), all true. The two verified are the same two dates Wikidata verified; the Wikidata run's other
+two (a 1932 birth date and the Az-Zabdani subdistrict) are facts the frames do not read — Wikidata states
+thousands of relations, the frames read eleven. That is the trade: **offline, provenance per sentence, and
+0 false facts, at half the API source's verified count.** 68 `unknown_relation` refusals remain the emitter's
+plans naming relations no source states (`year` ×7, `first husband`, `episodes`).
+
+The day's two hard resets (no bugcheck, no WHEA event) were a physically blocked GPU fan, found and cleared;
+the runs above were relaunched after it and completed. `exp_r11_search_learn_wikidata_wikitext.*` (run 1),
+`exp_r11_search_learn_wikidata_wikitext2.*` (run 2).
+
+## 2026-09-12 — the ceiling probe, run 1: what a frontier proposer exposed (mostly about the host)
+
+`google/gemini-3.8-flash` in the emitter's seat, same 600 questions, same disposer, walk, VM and kill line
+(`standin/openrouter.py`, `exp_r11 --proposer openrouter:<id>`; the key stays in a gitignored file; the
+serving model never calls it). 600 calls, 180k prompt + 133k completion tokens, **$0.63**, 28 minutes.
+**121 plans, 479 no plan, 114 coverage refusals, 6 unknown relations, 7 fetched, 173 facts admitted,
+0 verified, 0 wrong.** Zero verified is not the ceiling; it is two findings, both about the host.
+
+*Finding 1 — the harness starved a thinking model.* The output budget was the stand-in's 300 tokens; Gemini
+3.8 Flash spends ~210 of them thinking (125,583 reasoning tokens over 600 calls), so 45 answers hit
+`MAX_TOKENS` and 71 more came back cut mid-JSON — 116 of the 479 "no plan" are truncations, not judgements.
+The other 377 are the contract's explicit `{"seed": null, "hops": []}`: the model declined a chain for 63% of
+SimpleQA, under a budget that left it little room to look for one. Fix: `--proposer-effort low
+--proposer-max-tokens 1500`; the proposer now counts finish reasons, reasoning tokens and explicit declines
+separately, so the next run reports what the model *decided* and what the wire lost.
+
+*Finding 2 — the disposer is wording-bound in one direction.* Of the 121 plans, 114 were refused for
+coverage, and reading them they are mostly right: `date of birth` for "on what day, month, and year was X
+born", `date of death` for "die", `inception` for "founded" / "launched", `publication date` for "release".
+A frontier model names relations by their canonical label, which is what the sources speak. The store
+*holds* those labels, so lever 4 never fires (it resolves *unknown* wordings to labels); and the question
+carries none of the label's words, so `covers()` cannot find the hop in it. The stand-in emitter never hit
+this because it copies the question's words ("born"), reaches `unknown_relation`, and is aliased forward.
+**Lever 6** (`learn.resolve_wordings`) is lever 4 in reverse: on a coverage refusal of a plan whose relations
+the store holds, the host asks the resolvers (the source's property aliases, the lexicon, the frame triggers)
+which wording *in the question* names each label — the question's content n-grams, shortest first, frame
+words, the seed entity and numbers excluded — records the first that does as the label's alias, and walks
+once more. A wording that names two held labels is refused as `ambiguous_relation`, the model's pick between
+them being no evidence; the residual rule is untouched, so a dropped hop still fails. Pinned
+(`test_search_learn.py`: covered and verified, ambiguous and refused, dropped hop still refused).
+
+What run 1 did say about the ceiling: the 7 questions that reached a source fetched 192 facts (a frontier
+proposer's seeds resolve to richer items — 94 facts for diazepam, 30 for barium sulfate), the 173 admitted
+were all gate-clean, and the 5 relations still unknown after learning are identifiers Wikidata stores as
+external IDs the source deliberately skips (`ChemSpider ID`, `KEGG ID`, `DOI`). Run 2 (effort low, 1500
+tokens, lever 6, the emitter re-run under lever 6 beside it) is what the ceiling will be read from.
+`exp_r11_search_learn_wikidata_gemini.*`.

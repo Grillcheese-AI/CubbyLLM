@@ -205,3 +205,46 @@ def test_a_structured_fact_is_split_where_the_source_says_the_relation_ends():
     assert "date of birth" in known
     assert [f for f, _t in store.index._by_subj["masaki tsuji"]] == ["1932-03-23 is the date of birth of Masaki Tsuji"]
     assert r.aliased == [("born", "date of birth")] and r.result.verified and normalize(r.result.answer) == "1932 03 23"
+
+
+# ---- lever 6 (2026-09-12): the proposer names the canonical label, the question says it in its own words
+
+def test_a_canonical_label_the_question_names_in_its_own_words_is_covered_and_walked():
+    """exp_r11 Gemini run 1: a frontier proposer plans 'date of birth' for 'when was X
+    born'; the label is HELD, so lever 4 never fires, and the question has none of its
+    words, so coverage refused 114 of 121 plans. The host asks the resolvers which
+    wording in the question names the label; 'born' does, is recorded as the alias,
+    and the plan walks."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store = LookupStore(STORE + ["1932-03-23 is the date of birth of masaki tsuji"])
+    known = StoreRelations(store.texts)
+    src = AliasSource({}, {"born": ["date of birth"]})
+    plan = QuestionPlan(relations=[None], tail="date of birth of masaki tsuji", n_hop=1)   # the label, not the words
+    r = run("On what day, month, and year was Masaki Tsuji born?", store, known, src, plan=plan)
+    assert r.first.reason == "plan_does_not_cover_question"
+    assert r.result.verified and normalize(r.result.answer) == "1932 03 23"
+    assert r.aliased == [("born", "date of birth")] and r.entities == []          # no fetch was needed
+    assert all(normalize(c) not in ("date", "of", "birth") for c in src.rel_calls)  # frame words are never asked
+
+
+def test_a_question_wording_naming_two_held_labels_is_refused_not_picked():
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store = LookupStore(STORE + ["lyon is the location of jean", "third is the ranking of jean"])
+    known = StoreRelations(store.texts)
+    src = AliasSource({}, {"position": ["location", "ranking"]})
+    plan = QuestionPlan(relations=[None], tail="location of jean", n_hop=1)     # the model picked one sense
+    r = run("What is the position of Jean?", store, known, src, plan=plan)
+    assert not r.result.verified and r.result.reason == "ambiguous_relation"
+    assert r.result.refused == {"wording": "position", "candidates": ["location", "ranking"]}
+
+
+def test_a_dropped_hop_is_still_refused_after_the_wording_is_found():
+    """The residual rule is untouched: 'born' names the label, but 'father' is a hop
+    the plan dropped, and the store knows the word."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store = LookupStore(STORE + ["1932-03-23 is the date of birth of masaki tsuji", "kenji is the father of masaki tsuji"])
+    known = StoreRelations(store.texts)
+    src = AliasSource({}, {"born": ["date of birth"]})
+    plan = QuestionPlan(relations=[None], tail="date of birth of masaki tsuji", n_hop=1)
+    r = run("When was the father of Masaki Tsuji born?", store, known, src, plan=plan)
+    assert not r.result.verified and r.result.reason == "plan_does_not_cover_question"

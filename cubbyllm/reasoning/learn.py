@@ -35,7 +35,7 @@ from typing import Protocol, runtime_checkable
 
 from ..core.protocols import Wiring
 from .pipeline import CoTResult, answer
-from .plan_verify import tail_match, tail_relation
+from .plan_verify import _FRAME_AND_JOINT, tail_match, tail_relation
 from .planner import QuestionPlan, Triple, normalize, parse_fact, parse_question
 
 __wiring__ = Wiring.WIRED
@@ -188,6 +188,66 @@ def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
     return QuestionPlan(relations=rels, tail=tail, n_hop=plan.n_hop, answer_class=plan.answer_class), rewrote, None
 
 
+def _plan_labels(plan: QuestionPlan, known) -> tuple[list[str], str]:
+    """The plan's relations (hop 0 first) and its seed entity, normalized."""
+    tr = tail_relation(plan.tail, known)
+    if tr is None:
+        tm = tail_match(plan.tail, known)
+        tr = tm[0] if tm else (plan.tail.rsplit(" of ", 1)[0] if " of " in plan.tail else plan.tail)
+    rest = plan.tail[len(tr):].strip() if plan.tail.lower().startswith(tr.lower()) else (
+        plan.tail.rsplit(" of ", 1)[1] if " of " in plan.tail else "")
+    ent = rest[3:] if rest.startswith("of ") else rest
+    return [normalize(tr)] + [normalize(r) for r in plan.relations[1:] if r], normalize(ent)
+
+
+def resolve_wordings(question: str, plan: QuestionPlan, source, known, aliases: dict[str, list[str]],
+                     max_n: int = 3, max_candidates: int = 24) -> tuple[list[tuple[str, str]], dict | None]:
+    """Lever 6 (2026-09-12, exp_r11 Gemini run 1): lever 4 in reverse. A proposer that
+    names a relation by the source's CANONICAL label ('date of birth' for 'was born')
+    is refused for coverage: the label is held, so the alias step never fires, and the
+    question carries none of the label's words -- 114 of a frontier model's 121 plans
+    died there, most of them right. The host asks the resolvers whether a wording IN
+    THE QUESTION names the plan's label: the question's content n-grams (frame words,
+    the seed entity and numbers excluded), shortest first, and the first that resolves
+    to the label is recorded as its alias, so `covers()` sees it, and the plan is
+    walked again. The wording must resolve to exactly ONE held label -- one naming two
+    ('position') is the ambiguity lever 4 refuses, and the model's pick between the two
+    is not evidence. The residual rule is untouched: a dropped hop still fails."""
+    resolvers = [x for x in (source if isinstance(source, (list, tuple)) else [source]) if hasattr(x, "relations")]
+    if not resolvers:
+        return [], None
+    labels, ent = _plan_labels(plan, known)
+    q = normalize(question)
+    text = q.replace(ent, " ") if ent else q
+    toks = text.split()
+    grams: list[str] = []
+    for n in range(1, max_n + 1):
+        for i in range(len(toks) - n + 1):
+            g = toks[i:i + n]
+            if all(w in _FRAME_AND_JOINT for w in g) or any(w.isdigit() for w in g):
+                continue
+            s = " ".join(g)
+            if s not in grams:
+                grams.append(s)
+    grams = grams[:max_candidates]
+    found: list[tuple[str, str]] = []
+    for label in labels:
+        if label not in known:
+            continue                                   # lever 4's case, not this one
+        if label in q or any(normalize(w) in q for w in aliases.get(label, ())):
+            continue                                   # the question already says it
+        for g in grams:
+            held = sorted({normalize(l) for x in resolvers for l in x.relations(g) if normalize(l) in known})
+            if label not in held:
+                continue
+            if len(held) > 1:
+                return found, {"wording": g, "candidates": held}
+            aliases.setdefault(label, []).append(g)
+            found.append((g, label))
+            break
+    return found, None
+
+
 def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: Source,
                      tau_vm: float, tau_ret: float = 0.0, top_k: int = 3, max_repairs: int = 1,
                      plan: QuestionPlan | None = None, max_entities: int = 2,
@@ -206,6 +266,17 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                       max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan, aliases=aliases)
     first = walk()
     out = LearnResult(result=first, first=first, plan=plan)
+    # lever 6: a coverage refusal of a plan whose relations the store HOLDS may be the
+    # proposer naming them by their canonical label; the question's own wording is
+    # asked of the resolvers, recorded as an alias, and the plan walked once more
+    if first.reason == "plan_does_not_cover_question" and plan is not None:
+        worded, amb = resolve_wordings(question, plan, [source] + list(resolvers or []), known, aliases)
+        if amb is not None:
+            out.result = CoTResult(answer=None, verified=False, reason="ambiguous_relation", refused=amb)
+            return out
+        if worded:
+            out.aliased.extend(worded)
+            out.result = walk()
     asked: set[str] = set(); resolved: set[str] = set()
     # bounded: each round asks the source about ONE entity the walk stalled on, stores what
     # the gate admits, and walks again; at most `max_entities` rounds, and a round that

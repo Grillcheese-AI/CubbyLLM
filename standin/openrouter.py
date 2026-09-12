@@ -81,19 +81,31 @@ class OpenRouterProposer:
     """`emit(question) -> CotPlan program text` ('' when the model declines a plan)."""
 
     def __init__(self, model: str, cache_dir: pathlib.Path | str | None = CACHE, system: str = PLAN_SYSTEM,
-                 temperature: float = 0.0, offline: bool = False, sleep_s: float = 0.0) -> None:
+                 temperature: float = 0.0, offline: bool = False, sleep_s: float = 0.0,
+                 reasoning: dict | None = None, max_tokens: int | None = None) -> None:
+        """`reasoning`: OpenRouter's unified reasoning control, e.g. {"effort": "low"} -- a
+        thinking model's reasoning tokens count against `max_tokens` (run 1, 2026-09-12:
+        gemini-3.8-flash spent ~210 reasoning tokens a call against a 300 budget and 116 of
+        600 answers came back truncated). `max_tokens` here overrides the caller's."""
         self.model, self.system, self.temperature, self.offline, self.sleep_s = model, system, temperature, offline, sleep_s
+        self.reasoning, self.max_tokens = reasoning, max_tokens
         self.cache = pathlib.Path(cache_dir) if cache_dir else None
         if self.cache:
             self.cache.mkdir(parents=True, exist_ok=True)
         self.calls = 0
-        self.usage = {"prompt_tokens": 0, "completion_tokens": 0, "cost": 0.0}
+        self.usage = {"prompt_tokens": 0, "completion_tokens": 0, "reasoning_tokens": 0, "cost": 0.0}
+        self.finish: dict[str, int] = {}          # finish_reason counts ('length' = truncated)
+        self.declined = 0                         # explicit {"seed": null} answers
         self.last: dict = {}
 
     def chat(self, user: str, system: str | None = None, max_tokens: int = 300) -> str:
         system = self.system if system is None else system
+        if self.max_tokens is not None:
+            max_tokens = self.max_tokens
         body = {"model": self.model, "temperature": self.temperature, "max_tokens": max_tokens,
                 "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
+        if self.reasoning:
+            body["reasoning"] = self.reasoning
         key = hashlib.sha256(json.dumps(body, sort_keys=True).encode("utf-8")).hexdigest()[:24]
         path = self.cache / f"{key}.json" if self.cache else None
         if path and path.exists():
@@ -114,11 +126,15 @@ class OpenRouterProposer:
         u = data.get("usage") or {}
         self.usage["prompt_tokens"] += int(u.get("prompt_tokens", 0)); self.usage["completion_tokens"] += int(u.get("completion_tokens", 0))
         self.usage["cost"] += float(u.get("cost", 0.0) or 0.0)
+        self.usage["reasoning_tokens"] += int((u.get("completion_tokens_details") or {}).get("reasoning_tokens", 0) or 0)
         self.last = data
         try:
-            return data["choices"][0]["message"]["content"] or ""
+            choice = data["choices"][0]
         except (KeyError, IndexError, TypeError):
             return ""
+        fr = str(choice.get("finish_reason") or "none")
+        self.finish[fr] = self.finish.get(fr, 0) + 1
+        return (choice.get("message") or {}).get("content") or ""
 
     @staticmethod
     def parse_plan(text: str) -> tuple[str | None, list[str]]:
@@ -136,8 +152,15 @@ class OpenRouterProposer:
         return seed.strip(), [h.strip() for h in hops]
 
     def emit(self, prompt: str, max_new_tokens: int = 300, **_ignored) -> str:
-        seed, hops = self.parse_plan(self.chat(prompt, max_tokens=max_new_tokens))
+        text = self.chat(prompt, max_tokens=max_new_tokens)
+        seed, hops = self.parse_plan(text)
         if not seed or not hops:
+            t = text.strip().strip("`")
+            try:                              # the contract's explicit "no chain" answer, not a truncation
+                if json.loads(t[t.find("{"): t.rfind("}") + 1]).get("seed") is None:
+                    self.declined += 1
+            except (ValueError, TypeError, AttributeError):
+                pass
             return ""
         return cot_plan(seed, hops)
 
