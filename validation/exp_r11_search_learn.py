@@ -111,6 +111,9 @@ def main() -> None:
     ap.add_argument("--lexicon", action="store_true", help="add the WordNet+WOLF synonym oracle as a second relation resolver (lever 5)")
     ap.add_argument("--proposer", default=None, help="wikidata arm: 'openrouter:<model id>' puts a frontier model in the emitter's seat "
                     "(the ceiling probe; same disposer, walk, VM and kill line; never the serving model)")
+    ap.add_argument("--source", default="wikidata", help="wikidata | wikitext (offline: standin/wikitext.py frames over local articles)")
+    ap.add_argument("--wikitext-parquet", default=None, help="wikitext: a BeIR-style corpus parquet (_id, title, text)")
+    ap.add_argument("--wikitext-jsonl", default=None, help="wikitext: a glob of jsonl article files (title, text, lang)")
     ap.add_argument("--exe", default=None)
     ap.add_argument("--tag", default="")
     a = ap.parse_args()
@@ -186,14 +189,22 @@ def main() -> None:
             proposer_name = a.proposer
         else:
             em = LlamaCppEmitter(a.gguf); proposer_name = pathlib.Path(a.gguf).name
-        src = WikidataSource(offline=a.offline)
+        if a.source == "wikitext":
+            import glob as _glob
+            from wikitext import WikiTextSource
+            src = WikiTextSource(parquet=a.wikitext_parquet, jsonl=sorted(_glob.glob(a.wikitext_jsonl)) if a.wikitext_jsonl else None)
+            src.calls = 0                                       # no network: the counter the log prints stays 0
+        else:
+            src = WikidataSource(offline=a.offline)
         resolvers = []
         if a.lexicon:
             from cubbyllm.reasoning.lexicon import Lexicon
             resolvers.append(Lexicon())
         log(f"wiki world {len(world)} facts, {len(known)} relations | SimpleQA sample {len(rows)} (seed {a.seed}) | proposer {proposer_name} | "
-            f"source wikidata{' (offline cache)' if a.offline else ''}" + (f" | lexicon {len(resolvers[0])} synsets" if resolvers else ""))
-        out["proposer"] = proposer_name
+            f"source {a.source}{' (offline cache)' if a.offline and a.source == 'wikidata' else ''}"
+            + (f" ({', '.join(n for n, _k, _p, _i in src.corpora)}: {sum(len(i) for _n, _k, _p, i in src.corpora):,} titles)" if a.source == "wikitext" else "")
+            + (f" | lexicon {len(resolvers[0])} synsets" if resolvers else ""))
+        out["proposer"] = proposer_name; out["source"] = a.source
         c = collections.Counter(); verified_ex = []; learned_ex = []; rows_out = []; out["world0"] = len(world)
         def build_plan(rels, seed):
             return QuestionPlan(relations=[None] + rels[1:], tail=f"{rels[0]} of {seed}", n_hop=len(rels)) if rels and seed else None
