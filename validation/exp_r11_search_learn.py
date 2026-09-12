@@ -109,6 +109,8 @@ def main() -> None:
     ap.add_argument("--resident", action="store_true")
     ap.add_argument("--offline", action="store_true", help="wikidata: cache only, no network")
     ap.add_argument("--lexicon", action="store_true", help="add the WordNet+WOLF synonym oracle as a second relation resolver (lever 5)")
+    ap.add_argument("--proposer", default=None, help="wikidata arm: 'openrouter:<model id>' puts a frontier model in the emitter's seat "
+                    "(the ceiling probe; same disposer, walk, VM and kill line; never the serving model)")
     ap.add_argument("--exe", default=None)
     ap.add_argument("--tag", default="")
     a = ap.parse_args()
@@ -178,14 +180,20 @@ def main() -> None:
         qcol = next(c for c in rows[0] if c.lower() in ("problem", "question"))
         acol = next(c for c in rows[0] if c.lower() in ("answer", "gold", "target"))
         rows = random.Random(a.seed).sample(rows, a.n) if a.n else rows
-        em = LlamaCppEmitter(a.gguf)
+        if a.proposer and a.proposer.startswith("openrouter:"):
+            from openrouter import OpenRouterProposer
+            em = OpenRouterProposer(a.proposer.split(":", 1)[1], offline=a.offline)
+            proposer_name = a.proposer
+        else:
+            em = LlamaCppEmitter(a.gguf); proposer_name = pathlib.Path(a.gguf).name
         src = WikidataSource(offline=a.offline)
         resolvers = []
         if a.lexicon:
             from cubbyllm.reasoning.lexicon import Lexicon
             resolvers.append(Lexicon())
-        log(f"wiki world {len(world)} facts, {len(known)} relations | SimpleQA sample {len(rows)} (seed {a.seed}) | source wikidata{' (offline cache)' if a.offline else ''}"
-            + (f" | lexicon {len(resolvers[0])} synsets" if resolvers else ""))
+        log(f"wiki world {len(world)} facts, {len(known)} relations | SimpleQA sample {len(rows)} (seed {a.seed}) | proposer {proposer_name} | "
+            f"source wikidata{' (offline cache)' if a.offline else ''}" + (f" | lexicon {len(resolvers[0])} synsets" if resolvers else ""))
+        out["proposer"] = proposer_name
         c = collections.Counter(); verified_ex = []; learned_ex = []; rows_out = []; out["world0"] = len(world)
         def build_plan(rels, seed):
             return QuestionPlan(relations=[None] + rels[1:], tail=f"{rels[0]} of {seed}", n_hop=len(rels)) if rels and seed else None
@@ -226,6 +234,9 @@ def main() -> None:
                     f"verified {c['verified']} correct {c['correct']} near {c['near']} WRONG {c['WRONG']}")
         log(f"\nSIMPLEQA + SEARCH-AND-LEARN: {dict(sorted(c.items()))}")
         log(f"api calls {src.calls} | VM calls {calls['vm']} | store grew {len(world) - out.get('world0', len(world))}")
+        if hasattr(em, "usage"):
+            log(f"proposer {proposer_name}: {em.calls} live calls, usage {em.usage}")
+            out["proposer_usage"] = dict(em.usage, live_calls=em.calls)
         log("\nevery verified answer:")
         for v in verified_ex:
             log(f"  [{v['match']:7s}] {v['q'][:90]!r}\n           plan {v['plan']} seed {v['seed']!r} -> {v['answer']!r} (gold {v['gold']!r})\n           via {v['trace']}")
