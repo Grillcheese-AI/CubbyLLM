@@ -1,0 +1,16 @@
+wiki world 552297 facts, 2794 relations | SimpleQA sample 600 (seed 7) | proposer emitter_v12e.Q4_K_M.gguf | source encyclopedia (29 volumes: 20,104 names) | lexicon 119161 synsets
+  100/600 (86s, api calls 0) plan 88 fetched 14 verified 0 correct 0 near 0 WRONG 0
+  200/600 (150s, api calls 0) plan 177 fetched 26 verified 0 correct 0 near 0 WRONG 0
+  400/600 (280s, api calls 0) plan 354 fetched 53 verified 0 correct 0 near 0 WRONG 0
+  500/600 (344s, api calls 0) plan 441 fetched 67 verified 0 correct 0 near 0 WRONG 0
+  600/600 (408s, api calls 0) plan 530 fetched 79 verified 0 correct 0 near 0 WRONG 0
+
+SIMPLEQA + SEARCH-AND-LEARN: {'aliased_questions': 1, 'facts_fetched': 0, 'fetched_questions': 79, 'final:ambiguous_relation': 2, 'final:plan_does_not_cover_question': 449, 'final:retrieval_exhausted': 3, 'final:unknown_relation': 76, 'first:plan_does_not_cover_question': 449, 'first:retrieval_exhausted': 3, 'first:unknown_relation': 78, 'no_plan': 70, 'plan': 530}
+api calls 0 | VM calls 0 | store grew 0
+
+every verified answer:
+
+learned (first 6):
+
+aliased (lever 4: plan word -> label; lever 6: question word -> label): 1 questions, e.g. [('victor', 'winner')] -> plan_does_not_cover_question
+relations still unknown after learning (top 20): [('year', 8), ('born', 5), ('first husband', 2), ('married', 2), ('episodes', 2), ('second husband', 2), ('go undefeated in all of his road races', 1), ('list entry name', 1), ('national heritage list entry number 1090695', 1), ('as of 2011', 1), ('male population', 1), ('u s patents', 1), ('awarded in 2012', 1), ('who received an honorable mention', 1), ('selected for the role of rachel', 1), ('district', 1), ('indian state', 1), ('state animal', 1), ('career as a teacher', 1), ('first cardiologist', 1)]

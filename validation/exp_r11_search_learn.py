@@ -129,9 +129,11 @@ def main() -> None:
     ap.add_argument("--proposer-effort", default=None, help="openrouter proposer: reasoning effort (low|medium|high) -- a thinking "
                     "model's reasoning tokens count against its output budget")
     ap.add_argument("--proposer-max-tokens", type=int, default=None, help="openrouter proposer: output budget (reasoning included)")
-    ap.add_argument("--source", default="wikidata", help="wikidata | wikitext (offline: standin/wikitext.py frames over local articles)")
+    ap.add_argument("--source", default="wikidata", help="wikidata | wikitext (offline: standin/wikitext.py frames over local articles) | "
+                                                         "encyclopedia (offline: standin/encyclopedia.py frames over OCR'd volumes)")
     ap.add_argument("--wikitext-parquet", default=None, help="wikitext: a BeIR-style corpus parquet (_id, title, text)")
     ap.add_argument("--wikitext-jsonl", default=None, help="wikitext: a glob of jsonl article files (title, text, lang)")
+    ap.add_argument("--encyclopedia-dir", default=None, help="encyclopedia: the folder of OCR'd volume .txt files")
     ap.add_argument("--exe", default=None)
     ap.add_argument("--tag", default="")
     a = ap.parse_args()
@@ -215,6 +217,9 @@ def main() -> None:
             from wikitext import WikiTextSource
             src = WikiTextSource(parquet=a.wikitext_parquet, jsonl=sorted(_glob.glob(a.wikitext_jsonl)) if a.wikitext_jsonl else None)
             src.calls = 0                                       # no network: the counter the log prints stays 0
+        elif a.source == "encyclopedia":
+            from encyclopedia import EncyclopediaSource
+            src = EncyclopediaSource(a.encyclopedia_dir)        # no network either; `calls` is 0 by construction
         else:
             src = WikidataSource(offline=a.offline)
         resolvers = []
@@ -224,6 +229,7 @@ def main() -> None:
         log(f"wiki world {len(world)} facts, {len(known)} relations | SimpleQA sample {len(rows)} (seed {a.seed}) | proposer {proposer_name} | "
             f"source {a.source}{' (offline cache)' if a.offline and a.source == 'wikidata' else ''}"
             + (f" ({', '.join(n for n, _k, _p, _i in src.corpora)}: {sum(len(i) for _n, _k, _p, i in src.corpora):,} titles)" if a.source == "wikitext" else "")
+            + (f" ({len(src.volumes)} volumes: {sum(len(i) for _v, _p, i in src.volumes):,} names)" if a.source == "encyclopedia" else "")
             + (f" | lexicon {len(resolvers[0])} synsets" if resolvers else ""))
         out["proposer"] = proposer_name; out["source"] = a.source
         c = collections.Counter(); verified_ex = []; learned_ex = []; rows_out = []; out["world0"] = len(world)

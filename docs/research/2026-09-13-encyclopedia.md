@@ -110,7 +110,13 @@ before the pair enters the set — the reverse-built dataset agreed on 2026-09-1
 behind it. What the frames do not say, the source does not say: the encyclopedia's other relations
 (occupation, nationality, works) wait for frames of their own, or for the LLM-proposed-and-certified path.
 
-Next: the Wikidata cross-check over all volumes (learning phase); `--source encyclopedia` in exp_r11
-beside `wikitext`; the headword pattern's reach, measured against a hand count on one volume.
+**As the Source behind search-and-learn** (`exp_r11 --source encyclopedia`, the emitter, same 600
+SimpleQA): 530 plans, 79 entities fetched, **0 facts** — none of the 79 seeds the walk stalled on has an
+entry; 0 verified, 0 wrong, 0 API calls, 0 VM calls, 408 s (the emitter's). The expected null: SimpleQA
+asks about the obscure, a 2005 general encyclopedia holds the famous. Its value is the two uses above,
+not this benchmark.
 
-`exp_r16_encyclopedia_{v13,all}.{log,json}`.
+Next: the Wikidata cross-check over all volumes (learning phase); the headword pattern's reach, measured
+against a hand count on one volume; the gen-3 question templates over its facts.
+
+`exp_r16_encyclopedia_{v13,all}.{log,json}`, `exp_r11_search_learn_wikidata_encyclopedia.{log,json}`.
