@@ -1,0 +1,6263 @@
+{
+"counts": {
+"entries": 718,
+"person": 204,
+"named": 704,
+"wd:ambiguous": 114,
+"fact:date of birth": 175,
+"check:unheld": 373,
+"check:date of birth:unheld": 109,
+"fact:place of birth": 121,
+"check:place of birth:unheld": 72,
+"fact:date of death": 161,
+"check:date of death:unheld": 102,
+"wd:resolved": 80,
+"check:near": 6,
+"check:place of birth:near": 3,
+"check:agree": 179,
+"check:date of birth:agree": 63,
+"check:date of death:agree": 58,
+"wd:unresolved": 36,
+"fact:place of death": 77,
+"check:place of death:unheld": 51,
+"fact:located in the administrative territorial entity": 43,
+"check:located in the administrative territorial entity:unheld": 39,
+"check:disagree": 19,
+"check:place of birth:disagree": 9,
+"check:place of death:agree": 18,
+"check:place of birth:agree": 37,
+"person_unnamed": 14,
+"check:place of death:disagree": 6,
+"check:place of death:near": 2,
+"check:date of birth:disagree": 3,
+"check:located in the administrative territorial entity:near": 1,
+"check:located in the administrative territorial entity:agree": 3,
+"check:date of death:disagree": 1
+},
+"n_facts": 577,
+"volumes": [
+"Volume 13. Goethe to Hearst - 2005"
+],
+"facts": [
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOETHE",
+"entity": "Johann Wolfgang von Goethe",
+"rel": "date of birth",
+"obj": "1749-08-28",
+"sentence": "Goethe was bom on Aug. 28, 1749, in the free city of Frankfurt.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOETHE",
+"entity": "Johann Wolfgang von Goethe",
+"rel": "place of birth",
+"obj": "Frankfurt",
+"sentence": "Goethe was bom on Aug. 28, 1749, in the free city of Frankfurt.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOETHE",
+"entity": "Johann Wolfgang von Goethe",
+"rel": "date of death",
+"obj": "1832",
+"sentence": "gu'ta, Johann Wolfgang von (1749- 1832)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOGOL",
+"entity": "Nikolai Vasilievich Gogol",
+"rel": "place of birth",
+"obj": "Velikiye Sorochintsy",
+"sentence": "Gogol was bom in Velikiye Sorochintsy, near Mirgorod, in the Ukrainian province of Poltava, on March 20 (New Style, April 1), 1809, and grew up on his parents' country estate.",
+"check": "near",
+"held": [
+"Velyki Sorochyntsi"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOGOL",
+"entity": "Nikolai Vasilievich Gogol",
+"rel": "date of birth",
+"obj": "1809",
+"sentence": "go'gul, Nikolai Vasilievich (1809-1852)",
+"check": "agree",
+"held": [
+"1809-03-19",
+"1809-03-20",
+"1809-03-20",
+"1809"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOGOL",
+"entity": "Nikolai Vasilievich Gogol",
+"rel": "date of death",
+"obj": "1852",
+"sentence": "go'gul, Nikolai Vasilievich (1809-1852)",
+"check": "agree",
+"held": [
+"1852-02-21",
+"1852-02-21",
+"1852"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOKALP",
+"entity": "Ziya Gokalp",
+"rel": "date of death",
+"obj": "1924-10-25",
+"sentence": "Gokalp died in Istanbul on Oct. 25, 1924. As a sociologist, Gokalp was chiefly influenced by the French scholar fimile Durkheim.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOKALP",
+"entity": "Ziya Gokalp",
+"rel": "place of death",
+"obj": "Istanbul",
+"sentence": "Gokalp died in Istanbul on Oct. 25, 1924. As a sociologist, Gokalp was chiefly influenced by the French scholar fimile Durkheim.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLD COAST",
+"entity": "Gold Coast",
+"rel": "located in the administrative territorial entity",
+"obj": "Southport",
+"sentence": "The administration is in Southport. the most important township.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDFADEN",
+"entity": "Abraham Goldfaden",
+"rel": "date of birth",
+"obj": "1840",
+"sentence": "gold'fa-dan, Abraham (1840- 1908)",
+"check": "agree",
+"held": [
+"1840-07-24"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDFADEN",
+"entity": "Abraham Goldfaden",
+"rel": "date of death",
+"obj": "1908",
+"sentence": "gold'fa-dan, Abraham (1840- 1908)",
+"check": "agree",
+"held": [
+"1908-01-09"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDSCHMIDT",
+"entity": "Meir Aron Goldschmidt",
+"rel": "date of birth",
+"obj": "1819-10-26",
+"sentence": "He was born on Oct. 26, 1819, in Vordingborg, Denmark.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDSCHMIDT",
+"entity": "Meir Aron Goldschmidt",
+"rel": "place of birth",
+"obj": "Vordingborg",
+"sentence": "He was born on Oct. 26, 1819, in Vordingborg, Denmark.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDSCHMIDT",
+"entity": "Meir Aron Goldschmidt",
+"rel": "date of death",
+"obj": "1887",
+"sentence": "gol'shmet, Meir Aron (1819- 1887)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDSTEIN",
+"entity": "Eugen Goldstein",
+"rel": "place of birth",
+"obj": "Gleiwitz",
+"sentence": "He was born in Gleiwitz (Polish, Gliwice), Upper Silesia, on Sept. 5, 1850. Goldstein studied at the universities of Breslau and Berlin, taking his Ph.D. in 1881. He worked until 1896 at the University of Berlin observatory and then set up his own laboratory in Berlin.",
+"check": "disagree",
+"held": [
+"Gliwice"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDSTEIN",
+"entity": "Eugen Goldstein",
+"rel": "date of death",
+"obj": "1930-12-25",
+"sentence": "He died in Berlin on Dec. 25, 1930. Goldstein's major work was on electrical discharge in rarefied gases, and such discharges appeared to offer important clues to the natures of electricity and matter.",
+"check": "agree",
+"held": [
+"1930-12-26"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDSTEIN",
+"entity": "Eugen Goldstein",
+"rel": "place of death",
+"obj": "Berlin",
+"sentence": "He died in Berlin on Dec. 25, 1930. Goldstein's major work was on electrical discharge in rarefied gases, and such discharges appeared to offer important clues to the natures of electricity and matter.",
+"check": "agree",
+"held": [
+"Berlin"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDSTEIN",
+"entity": "Eugen Goldstein",
+"rel": "date of birth",
+"obj": "1850",
+"sentence": "Eugen, golt'shtin (1850-1930)",
+"check": "agree",
+"held": [
+"1850-09-05"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDWYN",
+"entity": "Samuel Goldwyn",
+"rel": "place of death",
+"obj": "Los Angeles",
+"sentence": "He died in Los Angeles, Calif., on Jan. 31, 1974. Goldwyn was noted for his malapropisms and other colorful turns of speech.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDWYN",
+"entity": "Samuel Goldwyn",
+"rel": "date of birth",
+"obj": "1882",
+"sentence": "gold'win, Samuel (1882-1974)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLDWYN",
+"entity": "Samuel Goldwyn",
+"rel": "date of death",
+"obj": "1974",
+"sentence": "gold'win, Samuel (1882-1974)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLIAD",
+"entity": "Goliad",
+"rel": "located in the administrative territorial entity",
+"obj": "Goliad County",
+"sentence": "go-le-ad', a city in southern Texas, in Goliad county, on the San Antonio River, is one of the most historic places in the state.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOLOVKIN",
+"entity": "Gavriil Ivanovich Golovkin",
+"rel": "date of death",
+"obj": "1734",
+"sentence": "ga-lof'kin, Gavriil Ivanovich (1660- 1734)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GONDAR",
+"entity": "Gondar",
+"rel": "located in the administrative territorial entity",
+"obj": "Begemdir Province",
+"sentence": "gwon'dar, a city in northwestern Ethiopia, is the capital of Begemdir province and was formerly the capital of the country.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GONDOMAR",
+"entity": "Count de Gondomar",
+"rel": "date of birth",
+"obj": "1567",
+"sentence": "gon-do-mar', Count de (1567- 1626)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GONDOMAR",
+"entity": "Count de Gondomar",
+"rel": "date of death",
+"obj": "1626",
+"sentence": "gon-do-mar', Count de (1567- 1626)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GONZAGA",
+"entity": "Tomas Antonio Gonzaga",
+"rel": "date of birth",
+"obj": "1744",
+"sentence": "Tomas Antonio, gdN-za'ga (1744-1810)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GONZAGA",
+"entity": "Tomas Antonio Gonzaga",
+"rel": "date of death",
+"obj": "1810",
+"sentence": "Tomas Antonio, gdN-za'ga (1744-1810)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GONZALEZ",
+"entity": "Julio Gonzalez",
+"rel": "place of birth",
+"obj": "Barcelona",
+"sentence": "He was born in Barcelona into a family of artists.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GONZALEZ",
+"entity": "Julio Gonzalez",
+"rel": "place of death",
+"obj": "Arcueil",
+"sentence": "He died in Arcueil, near Paris, on March 17, 1942. GONZALEZ, Manuel, gon-sa'las (1833-1893), president of Mexico.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GONZALEZ",
+"entity": "Julio Gonzalez",
+"rel": "date of birth",
+"obj": "1876",
+"sentence": "Julio, gon-tha'lath (1876-1942)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GONZALEZ",
+"entity": "Julio Gonzalez",
+"rel": "date of death",
+"obj": "1942",
+"sentence": "Julio, gon-tha'lath (1876-1942)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GONZALEZ",
+"entity": "Manuel Gonzalez",
+"rel": "date of death",
+"obj": "1893-05-08",
+"sentence": "Gonzalez served as governor of Guanajuato from 1884 until he died in Mexico City on May 8, 1893. James D. Cockcroft, University of Wisconsin GONZALEZ, Pancho, gon-zal'az (1928-1995), American tennis player who dominated the professional game between 1953 and 1962. Richard Alonzo Gonzalez was born in Los Angeles on May 9, 1928. The child of Mexican immigrants, he taught himself to play tennis.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GONZALEZ",
+"entity": "Manuel Gonzalez",
+"rel": "place of death",
+"obj": "Mexico City",
+"sentence": "Gonzalez served as governor of Guanajuato from 1884 until he died in Mexico City on May 8, 1893. James D. Cockcroft, University of Wisconsin GONZALEZ, Pancho, gon-zal'az (1928-1995), American tennis player who dominated the professional game between 1953 and 1962. Richard Alonzo Gonzalez was born in Los Angeles on May 9, 1928. The child of Mexican immigrants, he taught himself to play tennis.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOODALL",
+"entity": "Jane Goodall",
+"rel": "date of birth",
+"obj": "1934-04-03",
+"sentence": "Goodall was born in London on April 3, 1934. Although she had no university degree or formal training in ethology (the study of animal behavior), with the encouragement and help of the Kenyan paleoanthropologist Louis S. B. Leakey, she began to study chimpanzees in 1960 at the Gombe Stream Reserve (later, Gombe National Park) in Tanganyika (now Tanzania).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOODALL",
+"entity": "Jane Goodall",
+"rel": "place of birth",
+"obj": "London",
+"sentence": "Goodall was born in London on April 3, 1934. Although she had no university degree or formal training in ethology (the study of animal behavior), with the encouragement and help of the Kenyan paleoanthropologist Louis S. B. Leakey, she began to study chimpanzees in 1960 at the Gombe Stream Reserve (later, Gombe National Park) in Tanganyika (now Tanzania).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOODMAN",
+"entity": "Benny Goodman",
+"rel": "date of birth",
+"obj": "1909",
+"sentence": "Benny (1909-1986)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOODMAN",
+"entity": "Benny Goodman",
+"rel": "date of death",
+"obj": "1986",
+"sentence": "Benny (1909-1986)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOODNOW",
+"entity": "Frank Johnson Goodnow",
+"rel": "date of death",
+"obj": "1939-11-15",
+"sentence": "He taught at Columbia from 1883 until he became president of Johns Hopkins University in 1914. A founder of the American Political Science Association, he was its first president in 1903. Goodnow left Johns Hopkins in 1929. He died in Baltimore on Nov. 15, 1939. In his most important book, Politics and Administration (1900), Goodnow argued that government performs two basic functions; the formulation of policy (politics) and the execution of policy (administration).",
+"check": "agree",
+"held": [
+"1939-11-15"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOODNOW",
+"entity": "Frank Johnson Goodnow",
+"rel": "place of death",
+"obj": "Baltimore",
+"sentence": "He taught at Columbia from 1883 until he became president of Johns Hopkins University in 1914. A founder of the American Political Science Association, he was its first president in 1903. Goodnow left Johns Hopkins in 1929. He died in Baltimore on Nov. 15, 1939. In his most important book, Politics and Administration (1900), Goodnow argued that government performs two basic functions; the formulation of policy (politics) and the execution of policy (administration).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOODNOW",
+"entity": "Frank Johnson Goodnow",
+"rel": "date of birth",
+"obj": "1859",
+"sentence": "Frank Johnson, good'nd (1859-1939)",
+"check": "agree",
+"held": [
+"1859-01-18"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GORDON",
+"entity": "George Gordon",
+"rel": "date of birth",
+"obj": "1751-12-26",
+"sentence": "He was born in London on Dec. 26, 1751, son of the 3d duke of Gordon.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GORDON",
+"entity": "George Gordon",
+"rel": "place of birth",
+"obj": "London",
+"sentence": "He was born in London on Dec. 26, 1751, son of the 3d duke of Gordon.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GORDON",
+"entity": "George Gordon",
+"rel": "date of death",
+"obj": "1793",
+"sentence": "George (1751-1793)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GORDON",
+"entity": "John Brown Gordon",
+"rel": "place of birth",
+"obj": "Upson",
+"sentence": "Brown was born in Upson county, Ga., on July 6, 1832. He graduated from Georgia State University.",
+"check": "agree",
+"held": [
+"Upson County"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GORDON",
+"entity": "John Brown Gordon",
+"rel": "place of death",
+"obj": "Miami",
+"sentence": "He died in Miami, Fla., on Jan. 9, 1904. Joseph B. Mitchell* Author of \"Decisive Battles of the Civil War\" GORDON, Judah Leib (1830—1892), Russian Jewish poet and journalist.",
+"check": "agree",
+"held": [
+"Miami"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GORDON",
+"entity": "John Brown Gordon",
+"rel": "date of birth",
+"obj": "1832",
+"sentence": "John Brown (1832-1904)",
+"check": "agree",
+"held": [
+"1832-02-06"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GORDON",
+"entity": "John Brown Gordon",
+"rel": "date of death",
+"obj": "1904",
+"sentence": "John Brown (1832-1904)",
+"check": "agree",
+"held": [
+"1904-01-09"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GORKY",
+"entity": "Gorky",
+"rel": "located in the administrative territorial entity",
+"obj": "Nizhni Novgorod Oblast",
+"sentence": "gor'kyf, a city in the Russian Federation and the administrative center of Nizhni Novgorod oblast It is situated 250 miles (400 km) northeast of Moscow, at the confluence of the Volga and Oka rivers.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GORTON",
+"entity": "John Grey Gorton",
+"rel": "date of birth",
+"obj": "1911-09-09",
+"sentence": "Gorton was born in Melbourne on Sept. 9, 1911. After graduating from Brasenose College, Oxford, he became an orchardist.",
+"check": "agree",
+"held": [
+"1911-09-09"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GORTON",
+"entity": "John Grey Gorton",
+"rel": "place of birth",
+"obj": "Melbourne",
+"sentence": "Gorton was born in Melbourne on Sept. 9, 1911. After graduating from Brasenose College, Oxford, he became an orchardist.",
+"check": "agree",
+"held": [
+"Melbourne"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GORTON",
+"entity": "John Grey Gorton",
+"rel": "date of death",
+"obj": "2002",
+"sentence": "John Grey (1911-2002)",
+"check": "agree",
+"held": [
+"2002-05-19"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOSHEN",
+"entity": "Goshen",
+"rel": "located in the administrative territorial entity",
+"obj": "Elkhart County",
+"sentence": "go' shan, a city in northern Indiana, the seat of Elkhart county, situated on the Elkhart River, 25 miles (40 km) east of South Bend.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOSHEN",
+"entity": "Goshen",
+"rel": "located in the administrative territorial entity",
+"obj": "Orange County",
+"sentence": "go' shan, a residential village in southeastern New York, the seat of Orange county, situated about 50 miles (80 km) northwest of New- York City.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOSPORT",
+"entity": "Gosport",
+"rel": "located in the administrative territorial entity",
+"obj": "Hampshire",
+"sentence": "gos'port, a borough in south central England, is in Hampshire, on the west shore of Portsmouth Harbour.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOSSELIN",
+"entity": "Auguste Honore Gosselin",
+"rel": "place of birth",
+"obj": "St.",
+"sentence": "He was bom in St.-Charles-de-Bellechasse, Canada East (Quebec), on Dec. 29, 1843. Educated at Quebec Seminary and Laval University, he was ordained a priest in 1866 and was vicar of the Basilica of Quebec until 1869. After serving in several parishes, he retired in 1893 to devote his energies to historical research and writing.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOSSELIN",
+"entity": "Auguste Honore Gosselin",
+"rel": "date of birth",
+"obj": "1843",
+"sentence": "gos-laN', Auguste Honore (1843- 1918)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOTTHEIL",
+"entity": "Gustav Gottheil",
+"rel": "place of birth",
+"obj": "Pinne",
+"sentence": "He was bom in Pinne, Posen (now in Poland), on May 12, 1827. He pursued his secular studies at the universities of Berlin and Halle and received his rabbinical ordination at the Berlin Refonn Synagogue, where he served as assistant to the rabbi from 1855 to 1860. Leaving Berlin for England, he was appointed rabbi at the Manchester Congregation of British Jews.",
+"check": "disagree",
+"held": [
+"Pniewy"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOTTSCHALK",
+"entity": "Louis Moreau Gottschalk",
+"rel": "date of birth",
+"obj": "1829-05-08",
+"sentence": "Gottschalk was born in New Orleans on May 8, 1829, to an English father and a mother of French descent.",
+"check": "agree",
+"held": [
+"1829-05-08"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOTTSCHALK",
+"entity": "Louis Moreau Gottschalk",
+"rel": "place of birth",
+"obj": "New Orleans",
+"sentence": "Gottschalk was born in New Orleans on May 8, 1829, to an English father and a mother of French descent.",
+"check": "agree",
+"held": [
+"New Orleans"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOTTSCHALK",
+"entity": "Louis Moreau Gottschalk",
+"rel": "date of death",
+"obj": "1869-12-18",
+"sentence": "Gottschalk died in Rio de Janeiro, Brazil, on Dec. 18, 1869. Gottschalk made frequent use of African American folk songs and Creole dance tunes in his compositions.",
+"check": "agree",
+"held": [
+"1869-12-18"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOTTSCHALK",
+"entity": "Louis Moreau Gottschalk",
+"rel": "place of death",
+"obj": "Rio de Janeiro",
+"sentence": "Gottschalk died in Rio de Janeiro, Brazil, on Dec. 18, 1869. Gottschalk made frequent use of African American folk songs and Creole dance tunes in his compositions.",
+"check": "agree",
+"held": [
+"Rio de Janeiro"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOTTSCHED",
+"entity": "Johann Christoph Gottsched",
+"rel": "date of birth",
+"obj": "1700-02-02",
+"sentence": "Gottsched was born in Judithenkirch on Feb. 2, 1700. After studying at the University of Konigsberg, he became professor of poetry and of philosophy at the University of Leipzig.",
+"check": "agree",
+"held": [
+"1700-02-02"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOTTSCHED",
+"entity": "Johann Christoph Gottsched",
+"rel": "place of birth",
+"obj": "Judithenkirch",
+"sentence": "Gottsched was born in Judithenkirch on Feb. 2, 1700. After studying at the University of Konigsberg, he became professor of poetry and of philosophy at the University of Leipzig.",
+"check": "disagree",
+"held": [
+"Königsberg"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOTTSCHED",
+"entity": "Johann Christoph Gottsched",
+"rel": "date of death",
+"obj": "1766",
+"sentence": "got'shat, Johann Christoph (1700-1766)",
+"check": "agree",
+"held": [
+"1766-12-12"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOULD",
+"entity": "Jay Gould",
+"rel": "date of birth",
+"obj": "1836",
+"sentence": "goold, Jay (1836-1892)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOULD",
+"entity": "Jay Gould",
+"rel": "date of death",
+"obj": "1892",
+"sentence": "goold, Jay (1836-1892)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOULD-GOUNOD GOUNOD",
+"entity": "Charles Gould-Gounod Gounod",
+"rel": "date of birth",
+"obj": "1818",
+"sentence": "Charles, g5o-n6' (1818-1893)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOULD-GOUNOD GOUNOD",
+"entity": "Charles Gould-Gounod Gounod",
+"rel": "date of death",
+"obj": "1893",
+"sentence": "Charles, g5o-n6' (1818-1893)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOYEN",
+"entity": "Jan van Goyen",
+"rel": "date of birth",
+"obj": "1596-01-13",
+"sentence": "He was born in Leiden on Jan. 13, 1596, and studied with six masters of whom only Esaias van de Velde left a lasting impression.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOYEN",
+"entity": "Jan van Goyen",
+"rel": "place of birth",
+"obj": "Leiden",
+"sentence": "He was born in Leiden on Jan. 13, 1596, and studied with six masters of whom only Esaias van de Velde left a lasting impression.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOYEN",
+"entity": "Jan van Goyen",
+"rel": "date of death",
+"obj": "1656-04-27",
+"sentence": "He died in The Hague on April 27, 1656. Work.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GOYEN",
+"entity": "Jan van Goyen",
+"rel": "place of death",
+"obj": "The Hague",
+"sentence": "He died in The Hague on April 27, 1656. Work.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRABBE",
+"entity": "Christian Dietrich Grabbe",
+"rel": "date of birth",
+"obj": "1801-12-11",
+"sentence": "He was bom in Detmold, Germany, on Dec. 11, 1801, and studied law at Leipzig and Berlin.",
+"check": "agree",
+"held": [
+"1801-12-11",
+"1801"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRABBE",
+"entity": "Christian Dietrich Grabbe",
+"rel": "place of birth",
+"obj": "Detmold",
+"sentence": "He was bom in Detmold, Germany, on Dec. 11, 1801, and studied law at Leipzig and Berlin.",
+"check": "agree",
+"held": [
+"Detmold"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRABBE",
+"entity": "Christian Dietrich Grabbe",
+"rel": "date of death",
+"obj": "1836-09-12",
+"sentence": "Grabbe died in Detmold on Sept. 12, 1836. GRABEN, grab sn, a block of the earth's crust that lies between two faults and is down-thrust relative to the rocks on either side.",
+"check": "agree",
+"held": [
+"1836-09-12",
+"1836"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRABBE",
+"entity": "Christian Dietrich Grabbe",
+"rel": "place of death",
+"obj": "Detmold",
+"sentence": "Grabbe died in Detmold on Sept. 12, 1836. GRABEN, grab sn, a block of the earth's crust that lies between two faults and is down-thrust relative to the rocks on either side.",
+"check": "agree",
+"held": [
+"Detmold"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRACE",
+"entity": "William Gilbert Grace",
+"rel": "date of birth",
+"obj": "1848-07-18",
+"sentence": "Grace was born in Downend, Gloucestershire, on July 18, 1848. His two greatest seasons were 1871 and 1876. In 1871 he totaled 2,739 runs in only 39 innings, and became the first cricketeer to score more than 2,000 runs in one season.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRACE",
+"entity": "William Gilbert Grace",
+"rel": "place of birth",
+"obj": "Downend",
+"sentence": "Grace was born in Downend, Gloucestershire, on July 18, 1848. His two greatest seasons were 1871 and 1876. In 1871 he totaled 2,739 runs in only 39 innings, and became the first cricketeer to score more than 2,000 runs in one season.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRACE",
+"entity": "William Gilbert Grace",
+"rel": "date of death",
+"obj": "1915",
+"sentence": "William Gilbert (1848-1915)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRACIAN",
+"entity": "Baltasar Gracian",
+"rel": "date of death",
+"obj": "1658-12-06",
+"sentence": "Gracian died at Tarazona on Dec. 6, 1658. Works.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRACIAN",
+"entity": "Baltasar Gracian",
+"rel": "place of death",
+"obj": "Tarazona",
+"sentence": "Gracian died at Tarazona on Dec. 6, 1658. Works.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRACIAN",
+"entity": "Baltasar Gracian",
+"rel": "date of birth",
+"obj": "1601",
+"sentence": "gra-thyan', Baltasar (1601-1658)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAFTON",
+"entity": "Grafton",
+"rel": "located in the administrative territorial entity",
+"obj": "Worcester County",
+"sentence": "a town in eastern Massachusetts, in Worcester county, 8 miles (13 km) southeast of Worcester, of which it is a residential suburb.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAM",
+"entity": "Clarence Henry Graham",
+"rel": "place of birth",
+"obj": "Worcester",
+"sentence": "Graham was bom in Worcester, Mass., on Jan. 6, 1906. He received his A. B. and Ph.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAM",
+"entity": "Clarence Henry Graham",
+"rel": "date of birth",
+"obj": "1906",
+"sentence": "gra'am, Clarence Henry (1906-1971)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAM",
+"entity": "Clarence Henry Graham",
+"rel": "date of death",
+"obj": "1971",
+"sentence": "gra'am, Clarence Henry (1906-1971)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAM",
+"entity": "Frank Porter Graham",
+"rel": "place of birth",
+"obj": "Fayetteville",
+"sentence": "He was bom in Fayetteville, N. C., on Oct. 14, 1886. He graduated from the University of North Carolina in 1909 and received a master's degree in history from Columbia in 1916. In 1914 he accepted an instructorship in history at the University of North Carolina, becoming a full professor in 1927. Appointed president of the university in GRAHAM 1930, he gained a national reputation for Iris defense of academic freedom and built the school into one of the foremost educational institutions in the United States.",
+"check": "agree",
+"held": [
+"Fayetteville"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAM",
+"entity": "Frank Porter Graham",
+"rel": "place of death",
+"obj": "Chapel Hill",
+"sentence": "He died in Chapel Hill, N. C., on Feb. 16, 1972. John Braeman, University of Nebraska GRAHAM, gra'am, James Robert George (1792- 1861), British political leader, who led the Peelite Conservatives after tire death of Sir Robert Peel.",
+"check": "agree",
+"held": [
+"Chapel Hill"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAM",
+"entity": "Frank Porter Graham",
+"rel": "date of birth",
+"obj": "1886",
+"sentence": "gra'am, Frank Porter (1886-1972)",
+"check": "agree",
+"held": [
+"1886-10-14"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAM",
+"entity": "Frank Porter Graham",
+"rel": "date of death",
+"obj": "1972",
+"sentence": "gra'am, Frank Porter (1886-1972)",
+"check": "agree",
+"held": [
+"1972-02-16"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAM",
+"entity": "Robert Graham",
+"rel": "date of death",
+"obj": "1936-03-20",
+"sentence": "He died in Buenos Aires on March 20, 1936. GRAHAM, gra'am, Sylvester (1794—1851), American reformer, who lectured extensively, urging among other things the use of unsifted whole wheat flour, which became known as graham flour.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAM",
+"entity": "Robert Graham",
+"rel": "place of death",
+"obj": "Buenos Aires",
+"sentence": "He died in Buenos Aires on March 20, 1936. GRAHAM, gra'am, Sylvester (1794—1851), American reformer, who lectured extensively, urging among other things the use of unsifted whole wheat flour, which became known as graham flour.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAME",
+"entity": "Kenneth Grahame",
+"rel": "date of birth",
+"obj": "1859-03-08",
+"sentence": "He was born in Edinburgh, Scotland, on March 8, 1859. After the death of his parents he was brought up by relatives.",
+"check": "agree",
+"held": [
+"1859-03-08",
+"1859"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAME",
+"entity": "Kenneth Grahame",
+"rel": "place of birth",
+"obj": "Edinburgh",
+"sentence": "He was born in Edinburgh, Scotland, on March 8, 1859. After the death of his parents he was brought up by relatives.",
+"check": "agree",
+"held": [
+"Edinburgh"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAME",
+"entity": "Kenneth Grahame",
+"rel": "date of death",
+"obj": "1932-07-06",
+"sentence": "He died at Pangbourne, England, on July 6, 1932. David Galloway Author of \"The Absurd Hero\" GRAHAMSTOWN, gra'amz-toun, a town in South Africa, is in southeastern Cape province, about 75 miles (120 km) northeast of Port Elizabeth.",
+"check": "agree",
+"held": [
+"1932-07-06",
+"1932"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAHAME",
+"entity": "Kenneth Grahame",
+"rel": "place of death",
+"obj": "Pangbourne",
+"sentence": "He died at Pangbourne, England, on July 6, 1932. David Galloway Author of \"The Absurd Hero\" GRAHAMSTOWN, gra'amz-toun, a town in South Africa, is in southeastern Cape province, about 75 miles (120 km) northeast of Port Elizabeth.",
+"check": "disagree",
+"held": [
+"Berkshire"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAM",
+"entity": "Hans Christian Joachim Gram",
+"rel": "date of birth",
+"obj": "1853-09-13",
+"sentence": "Gram was born in Copenhagen on Sept. 13, 1853. He passed the University of Copenhagen final medical examinations in 1878 and in 1883 received his doctorate.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAM",
+"entity": "Hans Christian Joachim Gram",
+"rel": "place of birth",
+"obj": "Copenhagen",
+"sentence": "Gram was born in Copenhagen on Sept. 13, 1853. He passed the University of Copenhagen final medical examinations in 1878 and in 1883 received his doctorate.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAM",
+"entity": "Hans Christian Joachim Gram",
+"rel": "date of death",
+"obj": "1938",
+"sentence": "gram, Hans Christian Joachim (1853- 1938)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAMME",
+"entity": "Zenobe Theophile Gramme",
+"rel": "date of birth",
+"obj": "1826-04-04",
+"sentence": "He was born in Jehay-Bodegnee on April 4, 1826. He became interested in electricity while working in Paris as a model maker for a manufacturer of arc lamp generators.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAMME",
+"entity": "Zenobe Theophile Gramme",
+"rel": "place of birth",
+"obj": "Jehay-Bodegnee",
+"sentence": "He was born in Jehay-Bodegnee on April 4, 1826. He became interested in electricity while working in Paris as a model maker for a manufacturer of arc lamp generators.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAMME",
+"entity": "Zenobe Theophile Gramme",
+"rel": "date of death",
+"obj": "1901-01-20",
+"sentence": "Gramme died in Bois-Colombes, France, on Jan. 20, 1901. Kenneth M. Swezey Author of \"Science Shows You How\" GRAMMY AWARD , one of the most prestigious honors in the field of recorded music.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAMME",
+"entity": "Zenobe Theophile Gramme",
+"rel": "place of death",
+"obj": "Bois-Colombes",
+"sentence": "Gramme died in Bois-Colombes, France, on Jan. 20, 1901. Kenneth M. Swezey Author of \"Science Shows You How\" GRAMMY AWARD , one of the most prestigious honors in the field of recorded music.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAMSCI",
+"entity": "Antonio Gramsci",
+"rel": "date of birth",
+"obj": "1891-01-23",
+"sentence": "Gramsci was born in Ales, Sardinia, on Jan. 23, 1891. He began study at Turin University in 1910, majoring in philology and linguistics.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAMSCI",
+"entity": "Antonio Gramsci",
+"rel": "place of birth",
+"obj": "Ales",
+"sentence": "Gramsci was born in Ales, Sardinia, on Jan. 23, 1891. He began study at Turin University in 1910, majoring in philology and linguistics.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAMSCI",
+"entity": "Antonio Gramsci",
+"rel": "date of death",
+"obj": "1937-04-27",
+"sentence": "Gramsci died in Rome on April 27, 1937, shortly after his release.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAMSCI",
+"entity": "Antonio Gramsci",
+"rel": "place of death",
+"obj": "Rome",
+"sentence": "Gramsci died in Rome on April 27, 1937, shortly after his release.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAND FORKS",
+"entity": "Grand Forks",
+"rel": "located in the administrative territorial entity",
+"obj": "Grand Forks County",
+"sentence": "a city in eastern North Dakota, the seal of Grand Forks county, is on the Red River of the North. 80 miles (128 km) north of Fargo and 90 miles (144 km) south of the Canadian border.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAND-MERE",
+"entity": "Grand-Mere",
+"rel": "located in the administrative territorial entity",
+"obj": "Dallas County",
+"sentence": "Grand-Mere was absorbed into Shawinigan in 2002. GRAND PRAIRIE, a city in northeastern Texas, in Dallas county, about 15 miles (24 km) west of the center of Dallas.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAND PRAIRIE",
+"entity": "Grand Prairie",
+"rel": "located in the administrative territorial entity",
+"obj": "Dallas County",
+"sentence": "a city in northeastern Texas, in Dallas county, about 15 miles (24 km) west of the center of Dallas.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAND PRE",
+"entity": "Grand Pre",
+"rel": "located in the administrative territorial entity",
+"obj": "Kent County",
+"sentence": "GRAND RAPIDS, a city in southwestern Michigan, the seat of Kent county, is situated on the Grand Riser, 25 miles (40 km) east of Lake Michigan.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAND RAPIDS",
+"entity": "Grand Rapids",
+"rel": "located in the administrative territorial entity",
+"obj": "Kent County",
+"sentence": "a city in southwestern Michigan, the seat of Kent county, is situated on the Grand Riser, 25 miles (40 km) east of Lake Michigan.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANDE PRAIRIE",
+"entity": "Grande Prairie",
+"rel": "located in the administrative territorial entity",
+"obj": "Peace River District",
+"sentence": "a city in northwestern Alberta, Canada, in the Peace River district, located approximately 225 miles (360 km) in an air line northwest of Edmonton.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANDGENT",
+"entity": "Charles Hall Grandgent",
+"rel": "place of birth",
+"obj": "Dorchester",
+"sentence": "Grandgent was born in Dorchester, Mass., on Nov. 14, 1862, and graduated from Harvard in 1883. After graduate study in Europe, he was a language tutor at Harvard (1886—1889), director of modem language instruction for the Boston public schools (1889— 1896), and professor of Romance languages at Harvard (1896—1932), where he was known as a brilliant lecturer.",
+"check": "agree",
+"held": [
+"Dorchester"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANDGENT",
+"entity": "Charles Hall Grandgent",
+"rel": "date of birth",
+"obj": "1862",
+"sentence": "gran jant, Charles Hall (1862-1939)",
+"check": "agree",
+"held": [
+"1862-11-14"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANGE",
+"entity": "Red Grange",
+"rel": "place of death",
+"obj": "Lake Wales",
+"sentence": "He died in Lake Wales, Fla., on Jan. 28, 1991. Jack Zanger*, \"Sport\" Magazine GRANGE, granj, National, a rural community service and fraternal organization in the United States.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANGE",
+"entity": "Red Grange",
+"rel": "date of birth",
+"obj": "1903",
+"sentence": "Red (1903-1991)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANGE",
+"entity": "Red Grange",
+"rel": "date of death",
+"obj": "1991",
+"sentence": "Red (1903-1991)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANGER",
+"entity": "Gideon Granger",
+"rel": "place of birth",
+"obj": "Suffield",
+"sentence": "He was born in Suffield.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANGER",
+"entity": "Gideon Granger",
+"rel": "date of birth",
+"obj": "1767",
+"sentence": "Gideon (1767-1822)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANT",
+"entity": "Gary Grant",
+"rel": "place of birth",
+"obj": "Riviere Tremblante",
+"sentence": "He was born at Riviere Tremblante, Saskatchewan.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANT",
+"entity": "Gary Grant",
+"rel": "date of birth",
+"obj": "1904",
+"sentence": "Gary (1904-1986)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANT",
+"entity": "Frederick Dent Grant",
+"rel": "place of birth",
+"obj": "St. Louis",
+"sentence": "He was bom in St. Louis, Mo., on May 30, 1850. As a youth he accompanied his father in several campaigns of the Civil War and was slightly wounded in the Vicksburg campaign in 1863. He graduated from the U. S. Military Academy at West Point in 1871 and was an aide to Lt.",
+"check": "agree",
+"held": [
+"St. Louis"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANT",
+"entity": "Frederick Dent Grant",
+"rel": "date of death",
+"obj": "1912",
+"sentence": "Frederick Dent (1850-1912)",
+"check": "agree",
+"held": [
+"1912-04-12"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANT",
+"entity": "James Augustus Grant",
+"rel": "date of birth",
+"obj": "1827-04-11",
+"sentence": "Grant was bom in Nairn, Scotland, on April 11, 1827. He served with the army in India from 1846 to 1857. In 1861 he joined the expedition of his friend Speke to East Africa to prove that Lake Victoria is the source of the Nile.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANT",
+"entity": "James Augustus Grant",
+"rel": "place of birth",
+"obj": "Nairn",
+"sentence": "Grant was bom in Nairn, Scotland, on April 11, 1827. He served with the army in India from 1846 to 1857. In 1861 he joined the expedition of his friend Speke to East Africa to prove that Lake Victoria is the source of the Nile.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HISTORICAL COLLECTION GRANT",
+"entity": "Ulysses Simpson Historical Collection Grant",
+"rel": "date of birth",
+"obj": "1822-04-27",
+"sentence": "Grant was born in Point Pleasant, Ohio, on April 27, 1822, and baptized Hiram Ulysses.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HISTORICAL COLLECTION GRANT",
+"entity": "Ulysses Simpson Historical Collection Grant",
+"rel": "place of birth",
+"obj": "Point Pleasant",
+"sentence": "Grant was born in Point Pleasant, Ohio, on April 27, 1822, and baptized Hiram Ulysses.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HISTORICAL COLLECTION GRANT",
+"entity": "Ulysses Simpson Historical Collection Grant",
+"rel": "date of death",
+"obj": "1885",
+"sentence": "Ulysses Simpson (1822-1885)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANVILLE-BARKER",
+"entity": "Harley Granville-Barker",
+"rel": "date of birth",
+"obj": "1877-11-25",
+"sentence": "He was bom in London on Nov. 25, 1877. He made his debut as an actor in 1891 and had played about 30 roles by 1904, after which he seldom performed.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANVILLE-BARKER",
+"entity": "Harley Granville-Barker",
+"rel": "place of birth",
+"obj": "London",
+"sentence": "He was bom in London on Nov. 25, 1877. He made his debut as an actor in 1891 and had played about 30 roles by 1904, after which he seldom performed.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANVILLE-BARKER",
+"entity": "Harley Granville-Barker",
+"rel": "date of death",
+"obj": "1946-08-31",
+"sentence": "He died in Paris on Aug. 31, 1946. Oscar G. Brockett, Indiana University !—GRAPE GRAPE, a popular fruit used by man since long before recorded history began and one of the first fruit",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRANVILLE-BARKER",
+"entity": "Harley Granville-Barker",
+"rel": "place of death",
+"obj": "Paris",
+"sentence": "He died in Paris on Aug. 31, 1946. Oscar G. Brockett, Indiana University !—GRAPE GRAPE, a popular fruit used by man since long before recorded history began and one of the first fruit",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRASS",
+"entity": "Giinter Grass",
+"rel": "place of birth",
+"obj": "Free City",
+"sentence": "Grass was born in the Free City of Danzig, Germany (now, Gdansk, Poland), on Oct. 16, 1927. Like most young Germans, he was a member of the Hitler Youth.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRASS",
+"entity": "Giinter Grass",
+"rel": "date of birth",
+"obj": "1927",
+"sentence": "Giinter, grits (1927- )",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRASSE",
+"entity": "Francois Joseph Paul de Grasse",
+"rel": "date of birth",
+"obj": "1722",
+"sentence": "Francois Joseph Paul de, gras (1722- 1788)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRASSE",
+"entity": "Francois Joseph Paul de Grasse",
+"rel": "date of death",
+"obj": "1788",
+"sentence": "Francois Joseph Paul de, gras (1722- 1788)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRASSMANN",
+"entity": "Hermann Gunther Grassmann",
+"rel": "place of birth",
+"obj": "Stettin",
+"sentence": "Grassmann was born in Stettin, Prussia (Szczecin, Poland), on April 15, 1809. After studying theology and philology at Berlin University, he pursued a career as a secondary school teacher.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRASSMANN",
+"entity": "Hermann Gunther Grassmann",
+"rel": "date of death",
+"obj": "1877-09-26",
+"sentence": "He died in Stettin on Sept. 26, 1877. In 1840 Grassmann completed a dissertation (published in 1911) on tidal theory, in which he developed the fundamental aspects of modem vector analysis.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRASSMANN",
+"entity": "Hermann Gunther Grassmann",
+"rel": "place of death",
+"obj": "Stettin",
+"sentence": "He died in Stettin on Sept. 26, 1877. In 1840 Grassmann completed a dissertation (published in 1911) on tidal theory, in which he developed the fundamental aspects of modem vector analysis.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRASSMANN",
+"entity": "Hermann Gunther Grassmann",
+"rel": "date of birth",
+"obj": "1809",
+"sentence": "Hermann Gunther, gras'man (1809- 1877)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAU SAN MARTIN",
+"entity": "Ramon Grau San Martin",
+"rel": "date of birth",
+"obj": "1882-09-13",
+"sentence": "He was born in Pinar del Rio, Cuba, on Sept. 13, 1882. Educated as a physician, he practiced medicine for many years.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAU SAN MARTIN",
+"entity": "Ramon Grau San Martin",
+"rel": "place of birth",
+"obj": "Pinar del Rio",
+"sentence": "He was born in Pinar del Rio, Cuba, on Sept. 13, 1882. Educated as a physician, he practiced medicine for many years.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAU SAN MARTIN",
+"entity": "Ramon Grau San Martin",
+"rel": "date of death",
+"obj": "1969-07-28",
+"sentence": "Grau died in Havana on July 28, 1969. GRAUBUNDEN, grou-bun'dsn, the largest canton of Switzerland, extending eastward between Austria and Italy.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAU SAN MARTIN",
+"entity": "Ramon Grau San Martin",
+"rel": "place of death",
+"obj": "Havana",
+"sentence": "Grau died in Havana on July 28, 1969. GRAUBUNDEN, grou-bun'dsn, the largest canton of Switzerland, extending eastward between Austria and Italy.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAVES",
+"entity": "Michael Graves",
+"rel": "date of birth",
+"obj": "1934",
+"sentence": "Michael (1934- )",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAVES",
+"entity": "Morris Graves",
+"rel": "place of birth",
+"obj": "Fox Valley",
+"sentence": "Morris Cole Graves w as born in Fox Valley, Greg., on Aug. 28, 1910. He showed an early interest in art, gardening, and architecture but left school at the age of 17 to work as a merchant sailor.",
+"check": "agree",
+"held": [
+"Fox"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAVES",
+"entity": "Morris Graves",
+"rel": "date of birth",
+"obj": "1910",
+"sentence": "Morris (1910-2001)",
+"check": "agree",
+"held": [
+"1910-08-28"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAVES",
+"entity": "Morris Graves",
+"rel": "date of death",
+"obj": "2001",
+"sentence": "Morris (1910-2001)",
+"check": "agree",
+"held": [
+"2001-05-05"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAVES",
+"entity": "Robert Ranke Graves",
+"rel": "date of birth",
+"obj": "1895-07-26",
+"sentence": "Graves was born in Wimbledon, England, on July 26, 1895. After serving in World War I, he attended St.",
+"check": "agree",
+"held": [
+"1895-07-24"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAVES",
+"entity": "Robert Ranke Graves",
+"rel": "place of birth",
+"obj": "Wimbledon",
+"sentence": "Graves was born in Wimbledon, England, on July 26, 1895. After serving in World War I, he attended St.",
+"check": "agree",
+"held": [
+"Wimbledon"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAVES",
+"entity": "Robert Ranke Graves",
+"rel": "place of death",
+"obj": "Deya",
+"sentence": "Graves died in Deya, Majorca, Graves's early verse had some affinities with the decorous work of the so-called Georgian poets, but Graves soon made it clear that he stood apart from his contemporaries.",
+"check": "near",
+"held": [
+"Deià"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAVES",
+"entity": "Robert Ranke Graves",
+"rel": "date of death",
+"obj": "1985",
+"sentence": "Robert Ranke (1895-1985)",
+"check": "agree",
+"held": [
+"1985-12-07"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAY",
+"entity": "Asa Gray",
+"rel": "place of birth",
+"obj": "Sauquoit",
+"sentence": "Gray was born in Sauquoit, N. Y., on Nov. 18, 1810. After receiving his elementary education, he attended medical school in Fairfield, N. Y., and received his M. D. degree in 1831. After practicing only a few months, he became a schoolteacher and then was a librarian at the New York Lycemn of Natural History, a member of the scientific corps of the United States Exploring Expedition, and a professor of botany at the new University of Michigan.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAY",
+"entity": "Asa Gray",
+"rel": "date of birth",
+"obj": "1810",
+"sentence": "Asa (1810-1888)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAY",
+"entity": "Asa Gray",
+"rel": "date of death",
+"obj": "1888",
+"sentence": "Asa (1810-1888)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAY",
+"entity": "Robert Gray",
+"rel": "place of birth",
+"obj": "Tiverton",
+"sentence": "Gray was born in Tiverton, R. I., on May 10, 1755. During the American Revolution, he served in the Continental Navy.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAY",
+"entity": "Robert Gray",
+"rel": "date of birth",
+"obj": "1755",
+"sentence": "Robert (1755-1806)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAY",
+"entity": "Robert Gray",
+"rel": "date of death",
+"obj": "1806",
+"sentence": "Robert (1755-1806)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAYSON",
+"entity": "Gary Travers Grayson",
+"rel": "place of birth",
+"obj": "Prince William",
+"sentence": "He was born in Prince William county, Va.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAYSON",
+"entity": "Gary Travers Grayson",
+"rel": "date of birth",
+"obj": "1878",
+"sentence": "Gary Travers (1878-1938)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRAYSON",
+"entity": "Gary Travers Grayson",
+"rel": "date of death",
+"obj": "1938",
+"sentence": "Gary Travers (1878-1938)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREELEY",
+"entity": "Greeley",
+"rel": "located in the administrative territorial entity",
+"obj": "Weld County",
+"sentence": "a city in northern Colorado, the seat of Weld county, situated at an altitude of 4,637 feet (1,413 meters) between the Cache la Poudre and the South Platte rivers, 50 miles (80 km) north of Denver.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREELEY-GREEN GREELY",
+"entity": "Adolphus Washington Greeley-Green Greely",
+"rel": "place of birth",
+"obj": "Newburyport",
+"sentence": "He was born in Newburyport, Mass., on March 27, 1844, enlisted in the Union Army in 1861, and served through the Civil War.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREELEY-GREEN GREELY",
+"entity": "Adolphus Washington Greeley-Green Greely",
+"rel": "date of birth",
+"obj": "1844",
+"sentence": "gre'le, Adolphus Washington (1844- 1935)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREELEY-GREEN GREELY",
+"entity": "Adolphus Washington Greeley-Green Greely",
+"rel": "date of death",
+"obj": "1935",
+"sentence": "gre'le, Adolphus Washington (1844- 1935)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREEN",
+"entity": "Matthew Green",
+"rel": "date of birth",
+"obj": "1696",
+"sentence": "Matthew (1696-1737)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREEN",
+"entity": "Matthew Green",
+"rel": "date of death",
+"obj": "1737",
+"sentence": "Matthew (1696-1737)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREEN",
+"entity": "Samuel Swett Green",
+"rel": "place of birth",
+"obj": "Worcester",
+"sentence": "Green was born in Worcester, Mass., on Feb. 20, 1837. He graduated from Harvard College in 1858 and from the Harvard Divinity School in 1864. From 1871 through 1909 he headed the Worcester Free Library, innovating modern library techniques.",
+"check": "agree",
+"held": [
+"Worcester"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREEN",
+"entity": "Samuel Swett Green",
+"rel": "place of death",
+"obj": "Worcester",
+"sentence": "He died in Worcester on Dec.",
+"check": "agree",
+"held": [
+"Worcester"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREEN",
+"entity": "Samuel Swett Green",
+"rel": "date of birth",
+"obj": "1837",
+"sentence": "Samuel Swett (1837-1918)",
+"check": "agree",
+"held": [
+"1837-02-20"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREEN",
+"entity": "Samuel Swett Green",
+"rel": "date of death",
+"obj": "1918",
+"sentence": "Samuel Swett (1837-1918)",
+"check": "agree",
+"held": [
+"1918-12-09"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENAWAY",
+"entity": "Kate Greenaway",
+"rel": "date of birth",
+"obj": "1846",
+"sentence": "gren'a-wa, Kate (1846-1901)",
+"check": "agree",
+"held": [
+"1846-03-17"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENAWAY",
+"entity": "Kate Greenaway",
+"rel": "date of death",
+"obj": "1901",
+"sentence": "gren'a-wa, Kate (1846-1901)",
+"check": "agree",
+"held": [
+"1901-11-06"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENBERG",
+"entity": "Hank Greenberg",
+"rel": "place of death",
+"obj": "Beverly Hills",
+"sentence": "He died in Beverly Hills, Calif., on Sept. 4, 1986. Lee Allen Author of \"Kings of the Diamond\" GREENBOTTLE FLY is the name commonly applied to any of several metallic-green blowflies.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENBERG",
+"entity": "Hank Greenberg",
+"rel": "date of birth",
+"obj": "1911",
+"sentence": "Hank (1911-1986)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENBERG",
+"entity": "Hank Greenberg",
+"rel": "date of death",
+"obj": "1986",
+"sentence": "Hank (1911-1986)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENE",
+"entity": "Evarts Boutell Greene",
+"rel": "date of birth",
+"obj": "1870",
+"sentence": "Evarts Boutell (1870-1947)",
+"check": "agree",
+"held": [
+"1870"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENSPAN",
+"entity": "Alan Greenspan",
+"rel": "date of birth",
+"obj": "1926-03-06",
+"sentence": "Greenspan was bom in New York City on March 6, 1926. He earned undergraduate and master's degrees in economics from New York University (NYU) in 1948 and 1950. After entering the doctoral program at Columbia, he left in 1953 to pursue private consulting.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENSPAN",
+"entity": "Alan Greenspan",
+"rel": "place of birth",
+"obj": "New York City",
+"sentence": "Greenspan was bom in New York City on March 6, 1926. He earned undergraduate and master's degrees in economics from New York University (NYU) in 1948 and 1950. After entering the doctoral program at Columbia, he left in 1953 to pursue private consulting.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENVILLE",
+"entity": "Greenville",
+"rel": "located in the administrative territorial entity",
+"obj": "Greenville County",
+"sentence": "a city in northwestern South Carolina, the seat of Greenville county, situated on the Reedy River, in the piedmont, about 105 miles (168 km) northwest of Columbia.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENVILLE",
+"entity": "Greenville",
+"rel": "located in the administrative territorial entity",
+"obj": "Hunt County",
+"sentence": "a city in northeastern Texas, the seat of Hunt county, is 50 miles (80 km) north of Dallas.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENWOOD",
+"entity": "Greenwood",
+"rel": "located in the administrative territorial entity",
+"obj": "Leflore County",
+"sentence": "a city in west central Mississippi, the seat of Leflore county.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREENWOOD",
+"entity": "Greenwood",
+"rel": "located in the administrative territorial entity",
+"obj": "Greenwood County",
+"sentence": "a city in northwestern South Carolina, the seat of Greenwood county, 66 miles (106 km) west-northwest of Columbia.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREGG",
+"entity": "John Robert Gregg",
+"rel": "date of birth",
+"obj": "1867-06-17",
+"sentence": "He was bom in Rockcorry, Ireland, on June 17, 1867. At an early age he became interested in stenography and developed a cursive system of shorthand that was distinctive in its use of symbols that used the natural motion of the hand more closely than had earlier shorthand alphabets.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREGG",
+"entity": "John Robert Gregg",
+"rel": "place of birth",
+"obj": "Rockcorry",
+"sentence": "He was bom in Rockcorry, Ireland, on June 17, 1867. At an early age he became interested in stenography and developed a cursive system of shorthand that was distinctive in its use of symbols that used the natural motion of the hand more closely than had earlier shorthand alphabets.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREGOIRE",
+"entity": "Henri Gregoire",
+"rel": "date of birth",
+"obj": "1750",
+"sentence": "gra-gwar', Henri (1750-1831)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREGOIRE",
+"entity": "Henri Gregoire",
+"rel": "date of death",
+"obj": "1831",
+"sentence": "gra-gwar', Henri (1750-1831)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREGORY",
+"entity": "Dick Gregory",
+"rel": "date of birth",
+"obj": "1932-10-12",
+"sentence": "Gregory was born on Oct. 12, 1932, in St.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREGORY",
+"entity": "Dick Gregory",
+"rel": "place of birth",
+"obj": "St. Louis",
+"sentence": "Gregory was born on Oct. 12, 1932, in St. Louis, Mo.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRENFELL",
+"entity": "George Grenfell",
+"rel": "date of birth",
+"obj": "1849-08-21",
+"sentence": "He was born in Sancreed, Cornwall, on Aug. 21, 1849. In 1874, Grenfell went as a Baptist missionary to Cameroon, where he explored the lower Sanaga River.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRENFELL",
+"entity": "George Grenfell",
+"rel": "place of birth",
+"obj": "Sancreed",
+"sentence": "He was born in Sancreed, Cornwall, on Aug. 21, 1849. In 1874, Grenfell went as a Baptist missionary to Cameroon, where he explored the lower Sanaga River.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRENFELL",
+"entity": "George Grenfell",
+"rel": "date of death",
+"obj": "1906-07-01",
+"sentence": "He died in Basoko, Congo, on July 1, 1906. GRENFELL, Sir Wilfred Thomason (1865-1940), British medical missionary and author, who was known as \"Grenfell of Labrador.\" He was born in Parkgate, Cheshire, England, on Feb. 28, 1865. Educated at Oxford University and London Hospital, he entered the medical service of the Mission to Deep Sea Fishermen in 1889. In 1892, Grenfell began 40 years of selfless ministration to the needs of the Eskimo, Indians, and white fishermen of Labrador and of Newfoundland's Great Northern Peninsula.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRENFELL",
+"entity": "George Grenfell",
+"rel": "place of death",
+"obj": "Basoko",
+"sentence": "He died in Basoko, Congo, on July 1, 1906. GRENFELL, Sir Wilfred Thomason (1865-1940), British medical missionary and author, who was known as \"Grenfell of Labrador.\" He was born in Parkgate, Cheshire, England, on Feb. 28, 1865. Educated at Oxford University and London Hospital, he entered the medical service of the Mission to Deep Sea Fishermen in 1889. In 1892, Grenfell began 40 years of selfless ministration to the needs of the Eskimo, Indians, and white fishermen of Labrador and of Newfoundland's Great Northern Peninsula.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRENFELL",
+"entity": "Sir Wilfred Thomason Grenfell",
+"rel": "date of birth",
+"obj": "1865-02-28",
+"sentence": "Sir Wilfred Thomason (1865-1940), British medical missionary and author, who was known as \"Grenfell of Labrador.\" He was born in Parkgate, Cheshire, England, on Feb. 28, 1865. Educated at Oxford University and London Hospital, he entered the medical service of the Mission to Deep Sea Fishermen in 1889. In 1892, Grenfell began 40 years of selfless ministration to the needs of the Eskimo, Indians, and white fishermen of Labrador and of Newfoundland's Great Northern Peninsula.",
+"check": "agree",
+"held": [
+"1865-02-28",
+"1865"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRENFELL",
+"entity": "Sir Wilfred Thomason Grenfell",
+"rel": "place of birth",
+"obj": "Parkgate",
+"sentence": "Sir Wilfred Thomason (1865-1940), British medical missionary and author, who was known as \"Grenfell of Labrador.\" He was born in Parkgate, Cheshire, England, on Feb. 28, 1865. Educated at Oxford University and London Hospital, he entered the medical service of the Mission to Deep Sea Fishermen in 1889. In 1892, Grenfell began 40 years of selfless ministration to the needs of the Eskimo, Indians, and white fishermen of Labrador and of Newfoundland's Great Northern Peninsula.",
+"check": "agree",
+"held": [
+"Parkgate"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRENFELL",
+"entity": "Sir Wilfred Thomason Grenfell",
+"rel": "date of death",
+"obj": "1940-10-09",
+"sentence": "Grenfell died in Charlotte, Vt, on Oct. 9, 1940. He described his experiences in many books, including Forty Years for Labrador (1932).",
+"check": "agree",
+"held": [
+"1940-10-09",
+"1940"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRENFELL",
+"entity": "Sir Wilfred Thomason Grenfell",
+"rel": "place of death",
+"obj": "Charlotte",
+"sentence": "Grenfell died in Charlotte, Vt, on Oct. 9, 1940. He described his experiences in many books, including Forty Years for Labrador (1932).",
+"check": "agree",
+"held": [
+"Charlotte"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRESSMANN",
+"entity": "Hugo Gressmann",
+"rel": "date of birth",
+"obj": "1877-03-21",
+"sentence": "Gressmann was born in Molln, Schleswig-Holstein, on March 21, 1877, and attended the universities of Gottingen, Marburg, and Kiel.",
+"check": "agree",
+"held": [
+"1877-03-21"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRESSMANN",
+"entity": "Hugo Gressmann",
+"rel": "place of birth",
+"obj": "Molln",
+"sentence": "Gressmann was born in Molln, Schleswig-Holstein, on March 21, 1877, and attended the universities of Gottingen, Marburg, and Kiel.",
+"check": "agree",
+"held": [
+"Mölln"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRESSMANN",
+"entity": "Hugo Gressmann",
+"rel": "date of death",
+"obj": "1927-04-06",
+"sentence": "He died in Chicago on April 6, 1927. Gressmann s primary interests were the oral transmission of ancient stories, the literary genres of biblical material, and comparative religion.",
+"check": "agree",
+"held": [
+"1927-04-07"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRESSMANN",
+"entity": "Hugo Gressmann",
+"rel": "place of death",
+"obj": "Chicago",
+"sentence": "He died in Chicago on April 6, 1927. Gressmann s primary interests were the oral transmission of ancient stories, the literary genres of biblical material, and comparative religion.",
+"check": "agree",
+"held": [
+"Chicago"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRETNA",
+"entity": "Gretna",
+"rel": "located in the administrative territorial entity",
+"obj": "Jefferson Parish",
+"sentence": "gret'no, a city in southeastern Louisiana and the seat of Jefferson parish.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREUZE",
+"entity": "Jean Baptiste Greuze",
+"rel": "place of birth",
+"obj": "Tournus",
+"sentence": "Greuze was born in Tournus.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREUZE",
+"entity": "Jean Baptiste Greuze",
+"rel": "date of birth",
+"obj": "1725",
+"sentence": "gruz, Jean Baptiste (1725-1805)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREUZE",
+"entity": "Jean Baptiste Greuze",
+"rel": "date of death",
+"obj": "1805",
+"sentence": "gruz, Jean Baptiste (1725-1805)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREUZE-GREW GREW",
+"entity": "Jules Greuze-Grew Grew",
+"rel": "date of death",
+"obj": "1891-09-09",
+"sentence": "He died on Sept. 9, 1891, at his birthplace.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREUZE-GREW GREW",
+"entity": "Jules Greuze-Grew Grew",
+"rel": "date of birth",
+"obj": "1807",
+"sentence": "gra-ve', Jules (1807-1891)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREY",
+"entity": "Lady Jane Grey",
+"rel": "place of birth",
+"obj": "Bradgate",
+"sentence": "Jane was bom at Bradgate, Leicestershire, in October 1537, the eldest daughter of Henry Grey, later Duke of Suffolk.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREY",
+"entity": "Lady Jane Grey",
+"rel": "date of birth",
+"obj": "1537",
+"sentence": "Lady Jane (1537-1554)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREY",
+"entity": "Lady Jane Grey",
+"rel": "date of death",
+"obj": "1554",
+"sentence": "Lady Jane (1537-1554)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREY",
+"entity": "Zane Grey",
+"rel": "date of birth",
+"obj": "1875-01-31",
+"sentence": "Grey was born in Zanesville, Ohio, on Jan. 31, 1875. He graduated from the University of Pennsylvania with a degree in dentistry in 1896 but did not practice and turned to writing.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREY",
+"entity": "Zane Grey",
+"rel": "place of birth",
+"obj": "Zanesville",
+"sentence": "Grey was born in Zanesville, Ohio, on Jan. 31, 1875. He graduated from the University of Pennsylvania with a degree in dentistry in 1896 but did not practice and turned to writing.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREY",
+"entity": "Zane Grey",
+"rel": "place of death",
+"obj": "Altadena",
+"sentence": "He died in Altadena, Calif., GREYHOUND, a large, graceful dog noted for its speed.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GREY",
+"entity": "Zane Grey",
+"rel": "date of death",
+"obj": "1939",
+"sentence": "Zane (1875-1939)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIDLEY",
+"entity": "Richard Gridley",
+"rel": "place of birth",
+"obj": "Boston",
+"sentence": "He was born in Boston, Mass., on Jan. 3, 1711, and studied under Col.",
+"check": "agree",
+"held": [
+"Boston"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIDLEY",
+"entity": "Richard Gridley",
+"rel": "place of death",
+"obj": "Stoughton",
+"sentence": "He was retired on Aug. 5, 1776. He died at Stoughton, Mass., on June 21, 1796. Harrison K. Bird, Jr.",
+"check": "agree",
+"held": [
+"Stoughton"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIDLEY",
+"entity": "Richard Gridley",
+"rel": "date of birth",
+"obj": "1711",
+"sentence": "grid'le, Richard (1711-1796)",
+"check": "disagree",
+"held": [
+"1710-01-03"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIDLEY",
+"entity": "Richard Gridley",
+"rel": "date of death",
+"obj": "1796",
+"sentence": "grid'le, Richard (1711-1796)",
+"check": "agree",
+"held": [
+"1796-06-21"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIEG",
+"entity": "Nordahl Grieg",
+"rel": "date of death",
+"obj": "1943",
+"sentence": "greg, Nordahl (1902-1943)",
+"check": "agree",
+"held": [
+"1943-12-02",
+"1943-12-03"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIERSON",
+"entity": "George Abraham Grierson",
+"rel": "date of death",
+"obj": "1941-03-07",
+"sentence": "Grierson died in Camberley, Surrey, England, on March 7, 1941. GRIERSON, grer'son, Sir Herbert John Clifford (1866-1960), Scottish literary scholar, whose edition of John Donne's poetry in 1912 prompted a revival of interest in Donne.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIERSON",
+"entity": "George Abraham Grierson",
+"rel": "place of death",
+"obj": "Camberley",
+"sentence": "Grierson died in Camberley, Surrey, England, on March 7, 1941. GRIERSON, grer'son, Sir Herbert John Clifford (1866-1960), Scottish literary scholar, whose edition of John Donne's poetry in 1912 prompted a revival of interest in Donne.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIESBACH",
+"entity": "Johann Jakob Griesbach",
+"rel": "date of birth",
+"obj": "1745-01-04",
+"sentence": "Griesbach was bom on Jan. 4, 1745, in Butzbach in Hesse-Darmstadt.",
+"check": "agree",
+"held": [
+"1745-01-04"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIESBACH",
+"entity": "Johann Jakob Griesbach",
+"rel": "place of birth",
+"obj": "Butzbach",
+"sentence": "Griesbach was bom on Jan. 4, 1745, in Butzbach in Hesse-Darmstadt.",
+"check": "agree",
+"held": [
+"Butzbach"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIESBACH",
+"entity": "Johann Jakob Griesbach",
+"rel": "date of death",
+"obj": "1812",
+"sentence": "gres'baKH, Johann Jakob (1745- 1812)",
+"check": "agree",
+"held": [
+"1812-03-24"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIFFITH",
+"entity": "Arthur Griffith",
+"rel": "date of birth",
+"obj": "1872-03-31",
+"sentence": "Griffith was bom in Dublin on March 31, 1872, and apprenticed in boyhood to a printer.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIFFITH",
+"entity": "Arthur Griffith",
+"rel": "place of birth",
+"obj": "Dublin",
+"sentence": "Griffith was bom in Dublin on March 31, 1872, and apprenticed in boyhood to a printer.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIFFITH",
+"entity": "Arthur Griffith",
+"rel": "date of death",
+"obj": "1922",
+"sentence": "Arthur (1872-1922)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIGNARD",
+"entity": "Frangois Auguste Victor Grignard",
+"rel": "date of birth",
+"obj": "1871-05-06",
+"sentence": "Grignard was born in Cherbourg, France, on May 6, 1871. His chemistry professor at the University of Lyon, Philippe Antoine Barbier, was working on a method for introducing methyl groups, CHs, into organic compounds.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIGNARD",
+"entity": "Frangois Auguste Victor Grignard",
+"rel": "place of birth",
+"obj": "Cherbourg",
+"sentence": "Grignard was born in Cherbourg, France, on May 6, 1871. His chemistry professor at the University of Lyon, Philippe Antoine Barbier, was working on a method for introducing methyl groups, CHs, into organic compounds.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIGNARD",
+"entity": "Frangois Auguste Victor Grignard",
+"rel": "date of death",
+"obj": "1935-12-13",
+"sentence": "Grignard was professor of organic chemistry at the University of Nancy from 1909 to 1919 and at the University of Lyon from 1919 to 1935. He died in Lyon on Dec. 13, 1935. GRIGNARD REAGENT, gre-nyar' re-apnt, one of a group of organometallic compounds containing magnesium; it is of great value in the laboratory synthesis of a wide range of organic compounds.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRIGNARD",
+"entity": "Frangois Auguste Victor Grignard",
+"rel": "place of death",
+"obj": "Lyon",
+"sentence": "Grignard was professor of organic chemistry at the University of Nancy from 1909 to 1919 and at the University of Lyon from 1919 to 1935. He died in Lyon on Dec. 13, 1935. GRIGNARD REAGENT, gre-nyar' re-apnt, one of a group of organometallic compounds containing magnesium; it is of great value in the laboratory synthesis of a wide range of organic compounds.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRILLPARZER",
+"entity": "Franz Grillparzer",
+"rel": "date of birth",
+"obj": "1791-01-15",
+"sentence": "Grillparzer was bom in Vienna on Jan. 15, 1791. Following the early death of his father, a lawyer, he gave up his studies and spent more than 40 years (1813—1856) in the Austrian civ il service—uncongenial work, but it supported him in his \"other,\" productive life.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRILLPARZER",
+"entity": "Franz Grillparzer",
+"rel": "place of birth",
+"obj": "Vienna",
+"sentence": "Grillparzer was bom in Vienna on Jan. 15, 1791. Following the early death of his father, a lawyer, he gave up his studies and spent more than 40 years (1813—1856) in the Austrian civ il service—uncongenial work, but it supported him in his \"other,\" productive life.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRILLPARZER",
+"entity": "Franz Grillparzer",
+"rel": "date of death",
+"obj": "1872",
+"sentence": "gril'par-tsar, Franz (1791-1872)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRINNELL",
+"entity": "George Bird Grinnell",
+"rel": "date of birth",
+"obj": "1849",
+"sentence": "gri-nel , George Bird (1849-1938)",
+"check": "agree",
+"held": [
+"1849-09-20",
+"1849"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRINNELL",
+"entity": "Josiah Bushnell Grinnell",
+"rel": "place of death",
+"obj": "Marshall",
+"sentence": "Grinnell. who helped Iowa develop by promoting railroads and better agricultural practices, died in Marshall town, Iowa, GRINNELL—GRIS GRINNELL, gri-nel', a city in central Iowa, in Poweshiek county, approximately 55 miles (88 km) northeast of Des Moines.",
+"check": "disagree",
+"held": [
+"Grinnell"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRINNELL",
+"entity": "Josiah Bushnell Grinnell",
+"rel": "date of birth",
+"obj": "1821",
+"sentence": "gri-nel', Josiah Bushnell (1821- 1891)",
+"check": "agree",
+"held": [
+"1821-12-22"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRINNELL",
+"entity": "Josiah Bushnell Grinnell",
+"rel": "date of death",
+"obj": "1891",
+"sentence": "gri-nel', Josiah Bushnell (1821- 1891)",
+"check": "agree",
+"held": [
+"1891-03-31"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRISI",
+"entity": "Giulia Grisi",
+"rel": "date of death",
+"obj": "1869-11-29",
+"sentence": "She died in Berlin, Germany, on Nov. 29, 1869. GRISON, griz'sn, either of two slender-bodied, short-legged carnivores, Grison vittatus and G. cuja, both members of the weasel family (Mustelidae).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRISI",
+"entity": "Giulia Grisi",
+"rel": "place of death",
+"obj": "Berlin",
+"sentence": "She died in Berlin, Germany, on Nov. 29, 1869. GRISON, griz'sn, either of two slender-bodied, short-legged carnivores, Grison vittatus and G. cuja, both members of the weasel family (Mustelidae).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRISI",
+"entity": "Giulia Grisi",
+"rel": "date of birth",
+"obj": "1811",
+"sentence": "gre'ze, Giulia (1811-1869)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRISWOLD",
+"entity": "Rufus Wilmot Griswold",
+"rel": "date of birth",
+"obj": "1815-02-15",
+"sentence": "He was born in Benson, Vt, on Feb. 15, 1815, and apprenticed in the printing trade in Albany, N.Y. In his early twenties he was a Baptist minister but later returned to the Held of publishing.",
+"check": "agree",
+"held": [
+"1815-02-13",
+"1815"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRISWOLD",
+"entity": "Rufus Wilmot Griswold",
+"rel": "place of birth",
+"obj": "Benson",
+"sentence": "He was born in Benson, Vt, on Feb. 15, 1815, and apprenticed in the printing trade in Albany, N.Y. In his early twenties he was a Baptist minister but later returned to the Held of publishing.",
+"check": "agree",
+"held": [
+"Benson"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRISWOLD",
+"entity": "Rufus Wilmot Griswold",
+"rel": "date of death",
+"obj": "1857",
+"sentence": "Rufus Wilmot (1815-1857)",
+"check": "agree",
+"held": [
+"1857-08-27",
+"1857"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRODNO",
+"entity": "Grodno",
+"rel": "located in the administrative territorial entity",
+"obj": "Hrodna Region",
+"sentence": "grbd'ns, a city in Belarus, and the capital of Hrodna region.",
+"check": "near",
+"held": [
+"Horadnia Region",
+"Grodno County",
+"Grodno County",
+"Grodno powet"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROFE",
+"entity": "Ferde Grofe",
+"rel": "place of death",
+"obj": "Santa Monica",
+"sentence": "Grofe died in Santa Monica, Calif., GROIN, groin, in anatomy, the fold, or depression, marking the junction of the thigh with the abdomen.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROFE",
+"entity": "Ferde Grofe",
+"rel": "date of birth",
+"obj": "1892",
+"sentence": "gro-fa', Ferde (1892-1972)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROFE",
+"entity": "Ferde Grofe",
+"rel": "date of death",
+"obj": "1972",
+"sentence": "gro-fa', Ferde (1892-1972)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROLIER DE SERVIERES",
+"entity": "Jean Grolier de Servieres",
+"rel": "place of birth",
+"obj": "Lyon",
+"sentence": "He was born in Lyon and entered the service of Francis I, who sent him to Italy as intendant general of the army.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROLIER DE SERVIERES",
+"entity": "Jean Grolier de Servieres",
+"rel": "date of birth",
+"obj": "1479",
+"sentence": "gro-lya da ser-vyar', Jean (1479-1565)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROLIER DE SERVIERES",
+"entity": "Jean Grolier de Servieres",
+"rel": "date of death",
+"obj": "1565",
+"sentence": "gro-lya da ser-vyar', Jean (1479-1565)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROMYKO",
+"entity": "Andrei Andreyevich Gromyko",
+"rel": "date of birth",
+"obj": "1909",
+"sentence": "gra-me'ko, Andrei Andreyevich (1909- 1989)",
+"check": "agree",
+"held": [
+"1909-07-05"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROMYKO",
+"entity": "Andrei Andreyevich Gromyko",
+"rel": "date of death",
+"obj": "1989",
+"sentence": "gra-me'ko, Andrei Andreyevich (1909- 1989)",
+"check": "agree",
+"held": [
+"1989-07-02"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROS",
+"entity": "Antoine Jean Gros",
+"rel": "date of birth",
+"obj": "1771",
+"sentence": "gro, Antoine Jean (1771-1835)",
+"check": "agree",
+"held": [
+"1771-03-16",
+"1771"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROS",
+"entity": "Antoine Jean Gros",
+"rel": "date of death",
+"obj": "1835",
+"sentence": "gro, Antoine Jean (1771-1835)",
+"check": "agree",
+"held": [
+"1835-06-25",
+"1835-06-26",
+"1835"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROSVENOR",
+"entity": "Gilbert Hovey Grosvenor",
+"rel": "date of death",
+"obj": "1966-02-04",
+"sentence": "He died on Feb. 4, 1966, in Baddeck, Nova Scotia.",
+"check": "agree",
+"held": [
+"1966-02-04",
+"1966"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROSVENOR",
+"entity": "Gilbert Hovey Grosvenor",
+"rel": "place of death",
+"obj": "Baddeck",
+"sentence": "He died on Feb. 4, 1966, in Baddeck, Nova Scotia.",
+"check": "disagree",
+"held": [
+"Cape Breton Island"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROSVENOR",
+"entity": "Gilbert Hovey Grosvenor",
+"rel": "date of birth",
+"obj": "1875",
+"sentence": "grdv'nar, Gilbert Hovey (1875- 1966)",
+"check": "agree",
+"held": [
+"1875-10-28",
+"1875"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROSZ",
+"entity": "George Grosz",
+"rel": "date of birth",
+"obj": "1893-07-26",
+"sentence": "Grosz was bom in Berlin on July 26, 1893. After studying in Dresden and Berlin, he went to Paris in 1913, where he was influenced by cubism.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROSZ",
+"entity": "George Grosz",
+"rel": "place of birth",
+"obj": "Berlin",
+"sentence": "Grosz was bom in Berlin on July 26, 1893. After studying in Dresden and Berlin, he went to Paris in 1913, where he was influenced by cubism.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROSZ",
+"entity": "George Grosz",
+"rel": "place of death",
+"obj": "Berlin Works",
+"sentence": "He died in Berlin Works.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROSZ",
+"entity": "George Grosz",
+"rel": "date of death",
+"obj": "1959",
+"sentence": "gros, George (1893-1959)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROTIUS",
+"entity": "Hugo Grotius",
+"rel": "date of birth",
+"obj": "1583",
+"sentence": "gro'shas, Hugo (1583-1645)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROTIUS",
+"entity": "Hugo Grotius",
+"rel": "date of death",
+"obj": "1645",
+"sentence": "gro'shas, Hugo (1583-1645)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROTON",
+"entity": "Groton",
+"rel": "located in the administrative territorial entity",
+"obj": "New London County",
+"sentence": "grot an, is a town in southeastern Connecticut, in New London county, between the Thames and Mystic rivers, on Long Island Sound, about 45 miles (72 km) east of New Haven.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROULX",
+"entity": "Lionel Adolphe Groulx",
+"rel": "date of birth",
+"obj": "1878",
+"sentence": "grdd, Lionel Adolphe (1878-1967)",
+"check": "agree",
+"held": [
+"1878-01-13"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROULX",
+"entity": "Lionel Adolphe Groulx",
+"rel": "date of death",
+"obj": "1967",
+"sentence": "grdd, Lionel Adolphe (1878-1967)",
+"check": "agree",
+"held": [
+"1967-05-23"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROVE",
+"entity": "Sir George Grove",
+"rel": "date of birth",
+"obj": "1820-08-13",
+"sentence": "He was born in London on Aug. 13, 1820. A civ il engineer by profession, he became secretary of the Crystal Palace (q.v.) when it was reerected in south London in 1852, and for 40 years he wrote the program notes for the concerts there.",
+"check": "agree",
+"held": [
+"1820-08-13"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROVE",
+"entity": "Sir George Grove",
+"rel": "place of birth",
+"obj": "London",
+"sentence": "He was born in London on Aug. 13, 1820. A civ il engineer by profession, he became secretary of the Crystal Palace (q.v.) when it was reerected in south London in 1852, and for 40 years he wrote the program notes for the concerts there.",
+"check": "disagree",
+"held": [
+"Clapham"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROVE",
+"entity": "Sir George Grove",
+"rel": "date of death",
+"obj": "1900-05-20",
+"sentence": "Grove died in London on May 20, 1900. GROVE, Lefty ( 1900-1975), American baseball player, who was one of the greatest left-handed pitchers in the game.",
+"check": "agree",
+"held": [
+"1900-05-28"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GROVE",
+"entity": "Sir George Grove",
+"rel": "place of death",
+"obj": "London",
+"sentence": "Grove died in London on May 20, 1900. GROVE, Lefty ( 1900-1975), American baseball player, who was one of the greatest left-handed pitchers in the game.",
+"check": "disagree",
+"held": [
+"Lower Sydenham"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRUNDY",
+"entity": "Joseph Ridgway Grundy",
+"rel": "place of birth",
+"obj": "Camden",
+"sentence": "He was born in Camden, N. J., on Jan. 13, 1863. He studied at Swarthmore College and then joined his father's woolen manufacturing business at Bristol, Pa., where he amassed a large fortune.",
+"check": "agree",
+"held": [
+"Camden"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRUNDY",
+"entity": "Joseph Ridgway Grundy",
+"rel": "place of death",
+"obj": "Nassau",
+"sentence": "He died in Nassau, the Bahamas, on March 3, 1961. GRUNDY, grun'de, Mrs., a personification of narrow conventionalism and morality. \"What will Mrs.",
+"check": "agree",
+"held": [
+"Nassau"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRUNDY",
+"entity": "Joseph Ridgway Grundy",
+"rel": "date of birth",
+"obj": "1863",
+"sentence": "Joseph Ridgway (1863-1961)",
+"check": "agree",
+"held": [
+"1863-01-13"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRUNDY",
+"entity": "Joseph Ridgway Grundy",
+"rel": "date of death",
+"obj": "1961",
+"sentence": "Joseph Ridgway (1863-1961)",
+"check": "agree",
+"held": [
+"1961-03-03"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRUNER",
+"entity": "Elioth Gruner",
+"rel": "date of birth",
+"obj": "1882-12-16",
+"sentence": "He was born in Gisborne, New Zealand, on Dec. 16, 1882, and was taken to Australia as an infant.",
+"check": "agree",
+"held": [
+"1882-12-16"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRUNER",
+"entity": "Elioth Gruner",
+"rel": "place of birth",
+"obj": "Gisborne",
+"sentence": "He was born in Gisborne, New Zealand, on Dec. 16, 1882, and was taken to Australia as an infant.",
+"check": "agree",
+"held": [
+"Gisborne"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRUNER",
+"entity": "Elioth Gruner",
+"rel": "place of death",
+"obj": "Sydney",
+"sentence": "He died in Sydney on Oct. 17, Style.",
+"check": "agree",
+"held": [
+"Sydney"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GRUNER",
+"entity": "Elioth Gruner",
+"rel": "date of death",
+"obj": "1939",
+"sentence": "grdb'nar, Elioth (1882-1939)",
+"check": "agree",
+"held": [
+"1939-10-17"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUADALAJARA",
+"entity": "Guadalajara",
+"rel": "located in the administrative territorial entity",
+"obj": "Jalisco State",
+"sentence": "gwa-tka-la-ha'ra, the secondlargest city of Mexico and the capital of Jalisco state, situated at an elevation of 5,141 feet (1,567 meters) in the broad valley of Atemajac, about 300 miles (480 km) west-northwest of Mexico City.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUADALUPE",
+"entity": "Guadalupe",
+"rel": "located in the administrative territorial entity",
+"obj": "Caceres Province",
+"sentence": "gvva-tha-loo'pa, a small town in Caceres province.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUARINI",
+"entity": "Giovanni Battista Guarini",
+"rel": "date of death",
+"obj": "1612-10-07",
+"sentence": "He died in Venice on Oct. 7, 1612. Guarini's fame rests exclusively on his pastoral verse drama 11 pastor fido, although he also wrote a canzone, two comedies, a dialogue on the duties of a prince's secretary [II segretario, 1594), and a defense of his pastoral {Compendio della poesia tragicornica, 1601).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUARINI",
+"entity": "Giovanni Battista Guarini",
+"rel": "place of death",
+"obj": "Venice",
+"sentence": "He died in Venice on Oct. 7, 1612. Guarini's fame rests exclusively on his pastoral verse drama 11 pastor fido, although he also wrote a canzone, two comedies, a dialogue on the duties of a prince's secretary [II segretario, 1594), and a defense of his pastoral {Compendio della poesia tragicornica, 1601).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUARINI",
+"entity": "Giovanni Battista Guarini",
+"rel": "date of birth",
+"obj": "1538",
+"sentence": "gwa-re'ne, Giovanni Battista (1538- 1612)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUERRA JUNQUEIRO",
+"entity": "Abilio Manuel Guerra Junqueiro",
+"rel": "date of death",
+"obj": "1923-07-07",
+"sentence": "Guerra Junqueiro died in Lisbon, Portugal, on July 7, 1923. Guerra Junqueiro's reputation as a satirist was established by A morte de Dom Joao (1874; \"The Death of Don Juan\"), a verse collection using the figure of Don Juan to portray contemporary moral degradation, and by A velhice do Padre Eterno (1885; \"The Old Age of the Eternal Father\"), a vitriolic attack on the Roman Catholic Church, to which he later converted.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUERRA JUNQUEIRO",
+"entity": "Abilio Manuel Guerra Junqueiro",
+"rel": "place of death",
+"obj": "Lisbon",
+"sentence": "Guerra Junqueiro died in Lisbon, Portugal, on July 7, 1923. Guerra Junqueiro's reputation as a satirist was established by A morte de Dom Joao (1874; \"The Death of Don Juan\"), a verse collection using the figure of Don Juan to portray contemporary moral degradation, and by A velhice do Padre Eterno (1885; \"The Old Age of the Eternal Father\"), a vitriolic attack on the Roman Catholic Church, to which he later converted.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUERRA JUNQUEIRO",
+"entity": "Abilio Manuel Guerra Junqueiro",
+"rel": "date of birth",
+"obj": "1850",
+"sentence": "Abilio Manuel, germ zhooNng-ka'e-roo (1850-1923)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUESDE",
+"entity": "Jules Guesde",
+"rel": "date of death",
+"obj": "1922-07-18",
+"sentence": "He died on July 18, 1922, at S",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUESDE",
+"entity": "Jules Guesde",
+"rel": "date of birth",
+"obj": "1845",
+"sentence": "ged, Jules (1845-1922)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUILBERT",
+"entity": "Yvette Guilbert",
+"rel": "date of death",
+"obj": "1944-02-02",
+"sentence": "She died at Aix-en-Provence on Feb. 2, 1944. GUILD, gild, Curtis, Jr. (1860-1915), American journalist and political leader.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUILBERT",
+"entity": "Yvette Guilbert",
+"rel": "place of death",
+"obj": "Aix-en-Provence",
+"sentence": "She died at Aix-en-Provence on Feb. 2, 1944. GUILD, gild, Curtis, Jr. (1860-1915), American journalist and political leader.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUILD",
+"entity": "Curtis Guild",
+"rel": "place of birth",
+"obj": "Boston",
+"sentence": "He was born in Boston, Mass., on Feb. 2, 1860. He graduated from Harvard in 1881 and worked for the Boston Commercial Bulletin.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUILD",
+"entity": "Curtis Guild",
+"rel": "date of death",
+"obj": "1915-04-06",
+"sentence": "He died in Boston on April 6, 1915. GUIENNE—GUILD □jDjO □ ui.irc E. f-i.i'.f. i.?'. pmjpiciHiuic.'inf •' > l: lwcc.niaiMis.fr Ltj.-cntTS ^vlcnoncs flcym.mcis. v cvIIut . ivmocsuevi • cii ttaxpunr ai olee ce Uctr.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUILD",
+"entity": "Curtis Guild",
+"rel": "place of death",
+"obj": "Boston",
+"sentence": "He died in Boston on April 6, 1915. GUIENNE—GUILD □jDjO □ ui.irc E. f-i.i'.f. i.?'. pmjpiciHiuic.'inf •' > l: lwcc.niaiMis.fr Ltj.-cntTS ^vlcnoncs flcym.mcis. v cvIIut . ivmocsuevi • cii ttaxpunr ai olee ce Uctr.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUILD",
+"entity": "Curtis Guild",
+"rel": "date of birth",
+"obj": "1860",
+"sentence": "gild, Curtis, Jr. (1860-1915)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUILFORD",
+"entity": "Guilford",
+"rel": "located in the administrative territorial entity",
+"obj": "New Haven County",
+"sentence": "gil'fard, a town in southern Connecticut, is in New Haven county, on Long Island Sound, about 13 miles (20 km) east of New Haven.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUINNESS",
+"entity": "Alec Guinness",
+"rel": "date of birth",
+"obj": "1914",
+"sentence": "Alec, gin'is (1914-2000)",
+"check": "agree",
+"held": [
+"1914-04-02"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUINNESS",
+"entity": "Alec Guinness",
+"rel": "date of death",
+"obj": "2000",
+"sentence": "Alec, gin'is (1914-2000)",
+"check": "agree",
+"held": [
+"2000-08-05"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUIRALDES",
+"entity": "Ricardo Guiraldes",
+"rel": "date of death",
+"obj": "1927-10-08",
+"sentence": "Guiraldes died in Paris on Oct. 8, 1927. Don Segundo Sombra (1926; Eng. tr.. Shadows on the Pampas, 1935) is written in a highly personal, poetic style that echoes the works of Laforgue and Baudelaire.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUIRALDES",
+"entity": "Ricardo Guiraldes",
+"rel": "place of death",
+"obj": "Paris",
+"sentence": "Guiraldes died in Paris on Oct. 8, 1927. Don Segundo Sombra (1926; Eng. tr.. Shadows on the Pampas, 1935) is written in a highly personal, poetic style that echoes the works of Laforgue and Baudelaire.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUIRALDES",
+"entity": "Ricardo Guiraldes",
+"rel": "date of birth",
+"obj": "1886",
+"sentence": "Ricardo, gwe-ral'das (1886-1927)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUITRY",
+"entity": "Lucien Guitry",
+"rel": "date of birth",
+"obj": "1860-12-13",
+"sentence": "He was bom in Paris on Dec. 13, 1860, received his diploma at the Conservatory in 1878, and made his debut in the role of Armand in a revival of Dumas fils' La dame aux camelias.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUITRY",
+"entity": "Lucien Guitry",
+"rel": "place of birth",
+"obj": "Paris",
+"sentence": "He was bom in Paris on Dec. 13, 1860, received his diploma at the Conservatory in 1878, and made his debut in the role of Armand in a revival of Dumas fils' La dame aux camelias.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUIZOT",
+"entity": "Frangois Guizot",
+"rel": "date of birth",
+"obj": "1787",
+"sentence": "ge-zo', Frangois (1787-1874)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUIZOT",
+"entity": "Frangois Guizot",
+"rel": "date of death",
+"obj": "1874",
+"sentence": "ge-zo', Frangois (1787-1874)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUJRANWALA",
+"entity": "Gujranwala",
+"rel": "located in the administrative territorial entity",
+"obj": "Gujranwala District",
+"sentence": "The city, which is the administrative and commercial center of Gujranwala district, produces textiles, processed food, and an assortment of metal and plastic manufactures.",
+"check": "agree",
+"held": [
+"Gujranwala District",
+"Sikh Empire",
+"Durrani Empire"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GULBENKIAN",
+"entity": "Calouste Sarkis Gulbenkian",
+"rel": "place of birth",
+"obj": "Scutari",
+"sentence": "He was born in Scutari (later Uskiidar), Turkey, on March 23, 1869, and was educated in France and Britain.",
+"check": "disagree",
+"held": [
+"Üsküdar"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GULBENKIAN",
+"entity": "Calouste Sarkis Gulbenkian",
+"rel": "date of birth",
+"obj": "1869",
+"sentence": "gool-beng'ke-an, Calouste Sarkis (1869-1955)",
+"check": "agree",
+"held": [
+"1869-03-23",
+"1869-03-29"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GULBENKIAN",
+"entity": "Calouste Sarkis Gulbenkian",
+"rel": "date of death",
+"obj": "1955",
+"sentence": "gool-beng'ke-an, Calouste Sarkis (1869-1955)",
+"check": "agree",
+"held": [
+"1955-07-20"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GULICK",
+"entity": "Luther Halsey Gulick",
+"rel": "date of birth",
+"obj": "1865-12-04",
+"sentence": "Gulick was born in Honolulu, Hawaii, on Dec. 4, 1865. He studied at the Sargent School of Physical Training (now Sargent College of Boston University) and in 1889 received an M. D. degree from the University of the City of New York (now New York University).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GULICK",
+"entity": "Luther Halsey Gulick",
+"rel": "place of birth",
+"obj": "Honolulu",
+"sentence": "Gulick was born in Honolulu, Hawaii, on Dec. 4, 1865. He studied at the Sargent School of Physical Training (now Sargent College of Boston University) and in 1889 received an M. D. degree from the University of the City of New York (now New York University).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GULICK",
+"entity": "Luther Halsey Gulick",
+"rel": "place of death",
+"obj": "South Casco",
+"sentence": "Gulick died at South Casco, Me., GULL, any of a genus of long-winged scavenging seabirds that inhabit seacoasts and large inland bodies of water.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GULICK",
+"entity": "Luther Halsey Gulick",
+"rel": "date of death",
+"obj": "1918",
+"sentence": "gu'lik, Luther Halsey (1865-1918)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GULLSTRAND",
+"entity": "Allvar Gullstrand",
+"rel": "date of birth",
+"obj": "1862",
+"sentence": "gul'strand, Allvar (1862-1930)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GULLSTRAND",
+"entity": "Allvar Gullstrand",
+"rel": "date of death",
+"obj": "1930",
+"sentence": "gul'strand, Allvar (1862-1930)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUMPLOWICZ",
+"entity": "Ludwig Gumplowicz",
+"rel": "date of death",
+"obj": "1909-08-19",
+"sentence": "He died at Graz on Aug. 19, 1909. Gumplowicz defined sociology as the science of society and social laws.",
+"check": "agree",
+"held": [
+"1909-08-19",
+"1909"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUMPLOWICZ",
+"entity": "Ludwig Gumplowicz",
+"rel": "place of death",
+"obj": "Graz",
+"sentence": "He died at Graz on Aug. 19, 1909. Gumplowicz defined sociology as the science of society and social laws.",
+"check": "agree",
+"held": [
+"Graz"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUMPLOWICZ",
+"entity": "Ludwig Gumplowicz",
+"rel": "date of birth",
+"obj": "1838",
+"sentence": "goom-plo'vech, Ludwig (1838- 1909)",
+"check": "agree",
+"held": [
+"1838-03-09",
+"1838"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUNTHER",
+"entity": "John Gunther",
+"rel": "date of birth",
+"obj": "1901-08-30",
+"sentence": "He was born in Chicago on Aug. 30, 1901. After graduation from the University of Chicago in 1922, he worked for die Chicago Daily News, which sent him overseas as a correspondent in 1924. In his next 12 years with the News, Gunther reported from all the major countries of west and central Europe and the Middle East.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUNTHER",
+"entity": "John Gunther",
+"rel": "place of birth",
+"obj": "Chicago",
+"sentence": "He was born in Chicago on Aug. 30, 1901. After graduation from the University of Chicago in 1922, he worked for die Chicago Daily News, which sent him overseas as a correspondent in 1924. In his next 12 years with the News, Gunther reported from all the major countries of west and central Europe and the Middle East.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUNTHER",
+"entity": "John Gunther",
+"rel": "date of death",
+"obj": "1970-05-29",
+"sentence": "He died in New York City on May 29, 1970. James Boylan, Columbia University GUNTRAM, gun 'tram (died 592), a Merovingian ruler of the Prankish kingdom of Burgundy, was a son of Clotaire I and grandson of Clovis.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUNTHER",
+"entity": "John Gunther",
+"rel": "place of death",
+"obj": "New York City",
+"sentence": "He died in New York City on May 29, 1970. James Boylan, Columbia University GUNTRAM, gun 'tram (died 592), a Merovingian ruler of the Prankish kingdom of Burgundy, was a son of Clotaire I and grandson of Clovis.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTHRIE",
+"entity": "Sir Tyrone Guthrie",
+"rel": "date of birth",
+"obj": "1900-07-02",
+"sentence": "He was born in Tunbridge Wells, England, on July 2, 1900, and educated at Oxford University.",
+"check": "agree",
+"held": [
+"1900-07-02"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTHRIE",
+"entity": "Sir Tyrone Guthrie",
+"rel": "place of birth",
+"obj": "Tunbridge Wells",
+"sentence": "He was born in Tunbridge Wells, England, on July 2, 1900, and educated at Oxford University.",
+"check": "agree",
+"held": [
+"Royal Tunbridge Wells"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTHRIE",
+"entity": "Sir Tyrone Guthrie",
+"rel": "date of death",
+"obj": "1971-05-15",
+"sentence": "He died in Newbliss, County Monaghan, Ireland, on May 15, 1971. Guthrie was knighted in 1961 and named chancellor of Queen's University, Belfast, Ireland, in 1963. He wrote A Life in the Theatre (1959), A New Theatre (1964), and In Various Direc- Oscar G. Bhockett, Indiana University GUTHRIE, guth're, Woody (1912-1967), American folk singer and ballad composer.",
+"check": "agree",
+"held": [
+"1971-05-15"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTHRIE",
+"entity": "Sir Tyrone Guthrie",
+"rel": "place of death",
+"obj": "Newbliss",
+"sentence": "He died in Newbliss, County Monaghan, Ireland, on May 15, 1971. Guthrie was knighted in 1961 and named chancellor of Queen's University, Belfast, Ireland, in 1963. He wrote A Life in the Theatre (1959), A New Theatre (1964), and In Various Direc- Oscar G. Bhockett, Indiana University GUTHRIE, guth're, Woody (1912-1967), American folk singer and ballad composer.",
+"check": "agree",
+"held": [
+"Newbliss"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTHRIE",
+"entity": "Guthrie",
+"rel": "located in the administrative territorial entity",
+"obj": "Logan County",
+"sentence": "guth're, a city in central Oklahoma, the seat of Logan county, is about 30 miles (48 km) north of Oklahoma City.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTIERREZ",
+"entity": "Juan Maria Gutierrez",
+"rel": "date of birth",
+"obj": "1809-05-06",
+"sentence": "He was born in Buenos Aires on May 6, 1809. A member of the circle of liberal intellectuals that included Juan Bautista Alberdi and Esteban Echeverria, he opposed the dictator Juan Manuel de Rosas and from 1838 to 1852 lived in exile.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTIERREZ",
+"entity": "Juan Maria Gutierrez",
+"rel": "place of birth",
+"obj": "Buenos Aires",
+"sentence": "He was born in Buenos Aires on May 6, 1809. A member of the circle of liberal intellectuals that included Juan Bautista Alberdi and Esteban Echeverria, he opposed the dictator Juan Manuel de Rosas and from 1838 to 1852 lived in exile.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTIERREZ",
+"entity": "Juan Maria Gutierrez",
+"rel": "place of death",
+"obj": "Buenos Gutierrez",
+"sentence": "He died in Buenos Gutierrez wrote romantic lyrics but generally adhered to a formal classical style.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTIERREZ NAJERA",
+"entity": "Manuel Gutierrez Najera",
+"rel": "date of birth",
+"obj": "1859-12-22",
+"sentence": "Gutierrez Najera was born in Mexico City on Dec. 22, 1859, the son of a well-known journalist.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTIERREZ NAJERA",
+"entity": "Manuel Gutierrez Najera",
+"rel": "place of birth",
+"obj": "Mexico City",
+"sentence": "Gutierrez Najera was born in Mexico City on Dec. 22, 1859, the son of a well-known journalist.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTIERREZ NAJERA",
+"entity": "Manuel Gutierrez Najera",
+"rel": "date of death",
+"obj": "1895-02-03",
+"sentence": "He wrote prolifically under his own name and a number of pseudonyms, the most famous being \"El Duque Job.\" He died in Mexico City on Feb. 3, 1895. Although his poems were not collected until the year after his death (Poesias, 1896), Gutierrez Najera was an important early figure in the poetic renovations of Spanish-American modernism.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUTIERREZ NAJERA",
+"entity": "Manuel Gutierrez Najera",
+"rel": "place of death",
+"obj": "Mexico City",
+"sentence": "He wrote prolifically under his own name and a number of pseudonyms, the most famous being \"El Duque Job.\" He died in Mexico City on Feb. 3, 1895. Although his poems were not collected until the year after his death (Poesias, 1896), Gutierrez Najera was an important early figure in the poetic renovations of Spanish-American modernism.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUYTON DE MORVEAU",
+"entity": "Louis Bernard Guyton de Morveau",
+"rel": "date of birth",
+"obj": "1737",
+"sentence": "ge-toN da mor-vo', Louis Bernard (1737-1816)",
+"check": "agree",
+"held": [
+"1737-01-04"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GUYTON DE MORVEAU",
+"entity": "Louis Bernard Guyton de Morveau",
+"rel": "date of death",
+"obj": "1816",
+"sentence": "ge-toN da mor-vo', Louis Bernard (1737-1816)",
+"check": "agree",
+"held": [
+"1816-01-02"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GYLLENSTIERNA",
+"entity": "Johan Gyllenstierna",
+"rel": "date of birth",
+"obj": "1635",
+"sentence": "yul'bn-shar-na, Johan (1635- 1680)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "GYLLENSTIERNA",
+"entity": "Johan Gyllenstierna",
+"rel": "date of death",
+"obj": "1680",
+"sentence": "yul'bn-shar-na, Johan (1635- 1680)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAECKEL",
+"entity": "Ernst Heinrich Haeckel",
+"rel": "date of birth",
+"obj": "1834-02-16",
+"sentence": "Haeckel was born in Potsdam, Prussia, on Feb. 16, 1834. After studying botany under Matthias Schleiden at the University of Berlin, he studied medicine under Rudolf Virchow and Albert von Kolliker at the University of Wiirzburg and under the physiologist Johannes Peter Miiller at the University of Berlin, where he earned his M.D. in 1857. He soon abandoned medical practice, however, to travel in Italy.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAECKEL",
+"entity": "Ernst Heinrich Haeckel",
+"rel": "place of birth",
+"obj": "Potsdam",
+"sentence": "Haeckel was born in Potsdam, Prussia, on Feb. 16, 1834. After studying botany under Matthias Schleiden at the University of Berlin, he studied medicine under Rudolf Virchow and Albert von Kolliker at the University of Wiirzburg and under the physiologist Johannes Peter Miiller at the University of Berlin, where he earned his M.D. in 1857. He soon abandoned medical practice, however, to travel in Italy.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAECKEL",
+"entity": "Ernst Heinrich Haeckel",
+"rel": "date of death",
+"obj": "1919",
+"sentence": "Ernst Heinrich, hek'al (1834-1919)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAGEDORN",
+"entity": "Hermann Hagedorn",
+"rel": "date of birth",
+"obj": "1882",
+"sentence": "Hermann, hag'a-dorn (1882-1964)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAGEDORN",
+"entity": "Hermann Hagedorn",
+"rel": "date of death",
+"obj": "1964",
+"sentence": "Hermann, hag'a-dorn (1882-1964)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAGEN",
+"entity": "Uta Hagen",
+"rel": "date of birth",
+"obj": "1919-06-12",
+"sentence": "Uta Thyra Hagen was born on June 12, 1919, in Gottingen, Germany, to Thyra Leisner Hagen, an opera singer, and Oskar Hagen, an art historian and musicologist who taught at the university there.",
+"check": "agree",
+"held": [
+"1919-06-12"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAGEN",
+"entity": "Uta Hagen",
+"rel": "place of birth",
+"obj": "Gottingen",
+"sentence": "Uta Thyra Hagen was born on June 12, 1919, in Gottingen, Germany, to Thyra Leisner Hagen, an opera singer, and Oskar Hagen, an art historian and musicologist who taught at the university there.",
+"check": "agree",
+"held": [
+"Göttingen"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAGEN",
+"entity": "Uta Hagen",
+"rel": "date of death",
+"obj": "2004",
+"sentence": "Uta, ha'gon (1919-2004)",
+"check": "agree",
+"held": [
+"2004-01-14"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAGEN",
+"entity": "Walter Hagen",
+"rel": "place of birth",
+"obj": "Rochester",
+"sentence": "Walter Charles Hagen was born in Rochester, N.Y., on Dec. 21, 1892. From his U.S. Open championship in 1914 until his retirement in 1929, he appeared in more than 2,500 exhibitions and did much to popularize golf through his showmanship and attire.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAGEN",
+"entity": "Walter Hagen",
+"rel": "place of death",
+"obj": "Traverse City",
+"sentence": "He died in Traverse City, Mich., on Oct. 5, 1969. Bob Drum, Former President Golf Writers Association of America HAGEN, ha'gon, a city in Germany, in the state of North Rhine—Westphalia, 10 miles (16 km) south of Dortmund.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAGEN",
+"entity": "Walter Hagen",
+"rel": "date of birth",
+"obj": "1892",
+"sentence": "Walter, ha'gan (1892-1969)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAGEN",
+"entity": "Walter Hagen",
+"rel": "date of death",
+"obj": "1969",
+"sentence": "Walter, ha'gan (1892-1969)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAGUE",
+"entity": "Frank Hague",
+"rel": "date of birth",
+"obj": "1876",
+"sentence": "Frank, hag (1876-1956)",
+"check": "agree",
+"held": [
+"1876-01-17"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAGUE",
+"entity": "Frank Hague",
+"rel": "date of death",
+"obj": "1956",
+"sentence": "Frank, hag (1876-1956)",
+"check": "agree",
+"held": [
+"1956-01-01"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALDANE",
+"entity": "John Burdon Sanderson Haldane",
+"rel": "date of birth",
+"obj": "1892-11-05",
+"sentence": "Haldane was bom in Oxford, England, on Nov. 5, 1892, the son of the physiologist John Scott Haldane.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALDANE",
+"entity": "John Burdon Sanderson Haldane",
+"rel": "place of birth",
+"obj": "Oxford",
+"sentence": "Haldane was bom in Oxford, England, on Nov. 5, 1892, the son of the physiologist John Scott Haldane.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALDANE",
+"entity": "John Burdon Sanderson Haldane",
+"rel": "date of death",
+"obj": "1964",
+"sentence": "hol'dan, John Burdon Sanderson (1892-1964)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALE",
+"entity": "William Bayard Hale",
+"rel": "place of birth",
+"obj": "Richmond",
+"sentence": "He was born in Richmond, Ind., on April 6, 1869. Ordained in the Episcopal Church, he served parishes in Massachusetts and Pennsylvania from 1893 to 1900. Having earned a national reputation as a lecturer and writer in the 1890's, he became managing editor of Cosmopolitan Magazine in 1900 and worked on various journals until 1913. Hale prepared the campaign biography Woodrow Wilson: The Story of His Life in 1912 and edited a volume of Wilson's campaign speeches in 1913. Early in 1913, President Wilson sent Hale as a special agent to Mexico.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALE",
+"entity": "William Bayard Hale",
+"rel": "date of birth",
+"obj": "1869",
+"sentence": "William Bayard (1869-1924)",
+"check": "agree",
+"held": [
+"1869"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALE",
+"entity": "William Bayard Hale",
+"rel": "date of death",
+"obj": "1924",
+"sentence": "William Bayard (1869-1924)",
+"check": "agree",
+"held": [
+"1924",
+"1924-04-10"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALEVY",
+"entity": "Jacques Halevy",
+"rel": "date of birth",
+"obj": "1799-05-27",
+"sentence": "Jacques Francois Fromental Elie Levy was born in Paris on May 27, 1799. Admitted to the Paris Conservatory at the age of 10, he studied with Henri Berton and Cherubini.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALEVY",
+"entity": "Jacques Halevy",
+"rel": "place of birth",
+"obj": "Paris",
+"sentence": "Jacques Francois Fromental Elie Levy was born in Paris on May 27, 1799. Admitted to the Paris Conservatory at the age of 10, he studied with Henri Berton and Cherubini.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALEVY",
+"entity": "Jacques Halevy",
+"rel": "date of death",
+"obj": "1862-03-17",
+"sentence": "He died in Nice on March 17, 1862. Works.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALEVY",
+"entity": "Jacques Halevy",
+"rel": "place of death",
+"obj": "Nice",
+"sentence": "He died in Nice on March 17, 1862. Works.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALL",
+"entity": "Joseph Hall",
+"rel": "date of birth",
+"obj": "1574-07-01",
+"sentence": "Joseph (1574-1656), English bishop, who was one of the 17th century theologians known as the \"Carohne divines.\" He was born at Bristow Park, Leicestershire, on July 1, 1574, and was educated at Emmanuel CoUege, Cambridge.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALL",
+"entity": "Joseph Hall",
+"rel": "place of birth",
+"obj": "Bristow Park",
+"sentence": "Joseph (1574-1656), English bishop, who was one of the 17th century theologians known as the \"Carohne divines.\" He was born at Bristow Park, Leicestershire, on July 1, 1574, and was educated at Emmanuel CoUege, Cambridge.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALL",
+"entity": "Joseph Hall",
+"rel": "date of death",
+"obj": "1656",
+"sentence": "Joseph (1574-1656)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALL",
+"entity": "Robert Hall",
+"rel": "date of birth",
+"obj": "1764-05-02",
+"sentence": "Hall was bom at Amesby, Leicestershire, on May 2, 1764, the 14th child of a Baptist minister.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALL",
+"entity": "Robert Hall",
+"rel": "place of birth",
+"obj": "Amesby",
+"sentence": "Hall was bom at Amesby, Leicestershire, on May 2, 1764, the 14th child of a Baptist minister.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALL",
+"entity": "Robert Hall",
+"rel": "date of death",
+"obj": "1831-02-03",
+"sentence": "He died at Bristol on Feb. 3, 1831. Hall's reputation depended mainly on his pulpit oratory; however, he also wrote many works, including Christianity Consistent with a Love of Freedom (1791) and Apology for the Freedom of the Press (1793), in which he advocated freedom of the press and governmental reforms.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALL",
+"entity": "Robert Hall",
+"rel": "place of death",
+"obj": "Bristol",
+"sentence": "He died at Bristol on Feb. 3, 1831. Hall's reputation depended mainly on his pulpit oratory; however, he also wrote many works, including Christianity Consistent with a Love of Freedom (1791) and Apology for the Freedom of the Press (1793), in which he advocated freedom of the press and governmental reforms.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALL",
+"entity": "Samuel Read Hall",
+"rel": "place of birth",
+"obj": "Croydon",
+"sentence": "Hall was born in Croydon, N. H., Oct. 27, 1795. He began to teach in Rumford, Me., in 1814 and is given credit for having been the first in the United States to use blackboards.",
+"check": "agree",
+"held": [
+"Croydon"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALL",
+"entity": "Samuel Read Hall",
+"rel": "place of death",
+"obj": "Vermont",
+"sentence": "He died in Vermont on June HALL EFFECT. When a metal or a semiconductor is placed in a magnetic field perpendicular to the direction of an electric current in the material, a voltage is developed across the material in a direction perpendicular to both the current and the magnetic field (see accompanying illustration ).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALL",
+"entity": "Samuel Read Hall",
+"rel": "date of birth",
+"obj": "1795",
+"sentence": "Samuel Read (1795-1877)",
+"check": "agree",
+"held": [
+"1795-10-27"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALL",
+"entity": "Samuel Read Hall",
+"rel": "date of death",
+"obj": "1877",
+"sentence": "Samuel Read (1795-1877)",
+"check": "agree",
+"held": [
+"1877-06-24"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLAM",
+"entity": "Henry Hallam",
+"rel": "date of birth",
+"obj": "1777-07-09",
+"sentence": "Hallam was born at Windsor on July 9, 1777, and was educated at Eton and Oxford.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLAM",
+"entity": "Henry Hallam",
+"rel": "place of birth",
+"obj": "Windsor",
+"sentence": "Hallam was born at Windsor on July 9, 1777, and was educated at Eton and Oxford.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLAM",
+"entity": "Henry Hallam",
+"rel": "place of death",
+"obj": "Penshurst",
+"sentence": "Hallam died at Penshurst, Kent, on Jan.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLAM",
+"entity": "Henry Hallam",
+"rel": "date of death",
+"obj": "1859",
+"sentence": "hal'am, Henry (1777-1859)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLANDALE",
+"entity": "Hallandale",
+"rel": "located in the administrative territorial entity",
+"obj": "Broward County",
+"sentence": "hal'an -dal, is a city in southeastem Florida, in Broward county, on the Atlantic Ocean, 15 miles (24 km) north of Miami.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLE",
+"entity": "Halle",
+"rel": "located in the administrative territorial entity",
+"obj": "Saxony-Anhalt State",
+"sentence": "Located in the Saxony-Anhalt state, the city stands on the Saale River, a tributary of the Elbe, which drains the Western edge of the Leipzig embayment.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLECK",
+"entity": "Henry Wager Halleck",
+"rel": "place of birth",
+"obj": "Westernville",
+"sentence": "Halleck was born in Westernville, N.Y., on Jan. 16, 1815. He graduated from the U.S. Military Academy at West Point in 1839. As a junior engineer officer, he worked on seacoast fortifications and studied armies in Europe.",
+"check": "disagree",
+"held": [
+"Oneida County"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLECK",
+"entity": "Henry Wager Halleck",
+"rel": "date of birth",
+"obj": "1815",
+"sentence": "hal'ak, Henry Wager (1815-1872)",
+"check": "agree",
+"held": [
+"1815-01-16"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLECK",
+"entity": "Henry Wager Halleck",
+"rel": "date of death",
+"obj": "1872",
+"sentence": "hal'ak, Henry Wager (1815-1872)",
+"check": "agree",
+"held": [
+"1872-01-09"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLER",
+"entity": "Albrecht von Haller",
+"rel": "date of birth",
+"obj": "1708",
+"sentence": "hal'ar, Albrecht von (1708-1777)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLER",
+"entity": "Albrecht von Haller",
+"rel": "date of death",
+"obj": "1777",
+"sentence": "hal'ar, Albrecht von (1708-1777)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLSTROM",
+"entity": "Per Hallstrom",
+"rel": "date of birth",
+"obj": "1866-09-26",
+"sentence": "Hallstrom was born in Stockholm on Sept. 26, 1866. He was educated as a scientist and spent three years in America (1887-1890), after which he returned to Sweden.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLSTROM",
+"entity": "Per Hallstrom",
+"rel": "place of birth",
+"obj": "Stockholm",
+"sentence": "Hallstrom was born in Stockholm on Sept. 26, 1866. He was educated as a scientist and spent three years in America (1887-1890), after which he returned to Sweden.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLSTROM",
+"entity": "Per Hallstrom",
+"rel": "place of death",
+"obj": "Stockholm",
+"sentence": "Hallstrom died in Stockholm on Feb.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALLSTROM",
+"entity": "Per Hallstrom",
+"rel": "date of death",
+"obj": "1960",
+"sentence": "haTstrum, Per (1866-1960)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALSEY",
+"entity": "William Frederick Halsey",
+"rel": "place of birth",
+"obj": "Elizabeth",
+"sentence": "He was born in Elizabeth.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALSEY",
+"entity": "William Frederick Halsey",
+"rel": "date of birth",
+"obj": "1882",
+"sentence": "hol'se, William Frederick, Jr. (1882- 1959)",
+"check": "disagree",
+"held": [
+"1853-04-11"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HALSEY",
+"entity": "William Frederick Halsey",
+"rel": "date of death",
+"obj": "1959",
+"sentence": "hol'se, William Frederick, Jr. (1882- 1959)",
+"check": "disagree",
+"held": [
+"1920-06-11"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMAMATSU",
+"entity": "Hamamatsu",
+"rel": "located in the administrative territorial entity",
+"obj": "Shizuoka Prefecture",
+"sentence": "ha -ma-ma-tsoo, a city in Japan, is in Shizuoka prefecture, midway between Tokyo and Osaka.",
+"check": "agree",
+"held": [
+"Shizuoka Prefecture",
+"Fuchi district",
+"Hamana district"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Alice Hamilton",
+"rel": "date of birth",
+"obj": "1869-02-27",
+"sentence": "She was born in New York City on Feb. 27, 1869. After receiving her M. D. from the University of Michigan in 1893, she continued her medical studies at Johns Hopkins University and in Germany.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Alice Hamilton",
+"rel": "place of birth",
+"obj": "New York City",
+"sentence": "She was born in New York City on Feb. 27, 1869. After receiving her M. D. from the University of Michigan in 1893, she continued her medical studies at Johns Hopkins University and in Germany.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Alice Hamilton",
+"rel": "place of death",
+"obj": "Hadlyme",
+"sentence": "She died in Hadlyme, Conn., on Sept. 22, 1970. HAMILTON, Andrew (1676P-1741), American lawyer and legislator.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Alice Hamilton",
+"rel": "date of death",
+"obj": "1970",
+"sentence": "Alice (1869-1970)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Edith Hamilton",
+"rel": "date of birth",
+"obj": "1867-08-12",
+"sentence": "She was born in Dresden, Germany, on Aug. 12, 1867, to American parents.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Edith Hamilton",
+"rel": "place of birth",
+"obj": "Dresden",
+"sentence": "She was born in Dresden, Germany, on Aug. 12, 1867, to American parents.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Edith Hamilton",
+"rel": "place of death",
+"obj": "Washington",
+"sentence": "She died in Washington, D. C., on May 31, 1963. Bichmond Y. Hathorn Author of \"Tragedy, Myth, and Mystery\" HAMILTON, Sir Ian Standish Monteith (1853- 1947), British general, who commanded the British Empire forces in the disastrous Gallipoli campaign against the Turks in World War I. He was bom on Corfu on Jan. 16, 1853, the son of a British army officer.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Edith Hamilton",
+"rel": "date of death",
+"obj": "1963",
+"sentence": "Edith (1867-1963)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Sir William Hamilton",
+"rel": "date of birth",
+"obj": "1788-03-18",
+"sentence": "He was bom in Glasgow on March 18, 1788, and educated at Glasgow and Oxford universities.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Sir William Hamilton",
+"rel": "place of birth",
+"obj": "Glasgow",
+"sentence": "He was bom in Glasgow on March 18, 1788, and educated at Glasgow and Oxford universities.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Sir William Hamilton",
+"rel": "date of death",
+"obj": "1856-05-06",
+"sentence": "He died in Edinburgh on May 6, 1856. Hamilton aimed at a middle way between the monism of Victor Cousin and the pluralistic nearpositivism of Thomas Brown, but his philosophy has as its chief motif an attempt to reconcile Scottish common-sense philosophy with the ideas of Kant.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMILTON",
+"entity": "Sir William Hamilton",
+"rel": "place of death",
+"obj": "Edinburgh",
+"sentence": "He died in Edinburgh on May 6, 1856. Hamilton aimed at a middle way between the monism of Victor Cousin and the pluralistic nearpositivism of Thomas Brown, but his philosophy has as its chief motif an attempt to reconcile Scottish common-sense philosophy with the ideas of Kant.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMLIN",
+"entity": "Alfred Dwight Foster Hamlin",
+"rel": "date of birth",
+"obj": "1855-09-05",
+"sentence": "He was born in Istanbul, Turkey, on Sept. 5, 1855. He studied architecture at the Massachusetts Institute of Technology and at the Ecole des Beaux-Arts in Paris and joined the firm of McKim, Mead, and White in 1881. He was a contributing architect on several buildings for Robert College (near Istanbul), founded by his father, Cyrus Hamlin.",
+"check": "agree",
+"held": [
+"1855-09-05"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMLIN",
+"entity": "Alfred Dwight Foster Hamlin",
+"rel": "place of birth",
+"obj": "Istanbul",
+"sentence": "He was born in Istanbul, Turkey, on Sept. 5, 1855. He studied architecture at the Massachusetts Institute of Technology and at the Ecole des Beaux-Arts in Paris and joined the firm of McKim, Mead, and White in 1881. He was a contributing architect on several buildings for Robert College (near Istanbul), founded by his father, Cyrus Hamlin.",
+"check": "disagree",
+"held": [
+"Constantinople"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMLIN",
+"entity": "Alfred Dwight Foster Hamlin",
+"rel": "date of death",
+"obj": "1926-09-05",
+"sentence": "Hamlin died in New York on Sept. 5, 1926. HAMLIN, Cyrus (1811—1900), American educator and missionary.",
+"check": "agree",
+"held": [
+"1926",
+"1926-03-21"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMLIN",
+"entity": "Alfred Dwight Foster Hamlin",
+"rel": "place of death",
+"obj": "New York",
+"sentence": "Hamlin died in New York on Sept. 5, 1926. HAMLIN, Cyrus (1811—1900), American educator and missionary.",
+"check": "disagree",
+"held": [
+"Istanbul",
+"Mount Sinai Morningside"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMMOND",
+"entity": "George Henry Hammond",
+"rel": "place of birth",
+"obj": "Fitchburg",
+"sentence": "He was born in Fitchburg, Mass., on May 5, 1838. By the age of 20 he was established in the meat-packing business in Detroit.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMMOND",
+"entity": "George Henry Hammond",
+"rel": "date of birth",
+"obj": "1838",
+"sentence": "George Henry (1838-1886)",
+"check": "agree",
+"held": [
+"1838"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMMOND",
+"entity": "George Henry Hammond",
+"rel": "date of death",
+"obj": "1886",
+"sentence": "George Henry (1838-1886)",
+"check": "agree",
+"held": [
+"1886",
+"1886-12-29"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMMOND",
+"entity": "James Henry Hammond",
+"rel": "place of birth",
+"obj": "Newberry",
+"sentence": "He was born in Newberry county, S. C., on Nov. 15, 1807. Admitted to the South Carolina bar, he practiced law in Columbia, S. C., and there in 1830 established the pronullification newspaper Southern Times.",
+"check": "disagree",
+"held": [
+"Columbia"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMMOND",
+"entity": "James Henry Hammond",
+"rel": "place of death",
+"obj": "Beach Island",
+"sentence": "He died in Beach Island, S. C., on Nov. 13, 1864. Many of his letters and speeches were published in 1866. Hampton M. Jarrell Winthrop College, Rock Hill, S. C. HAMMOND, John Hays (1855-1936), American mining engineer, who located, developed, and managed valuable mining properties in the United States, Latin America, and South Africa.",
+"check": "near",
+"held": [
+"Beech Island"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMMOND",
+"entity": "James Henry Hammond",
+"rel": "date of death",
+"obj": "1864",
+"sentence": "ham'and, James Henry (1807- 1864)",
+"check": "agree",
+"held": [
+"1864-11-13"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMMOND",
+"entity": "John Hays Hammond",
+"rel": "date of birth",
+"obj": "1855-03-31",
+"sentence": "He was bom in San Francisco on March 31, 1855. After graduating from the Sheffield Scientific School at Yale University in 1876, he attended the Royal School of Mines in Freiberg, Germany, for three years.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMMOND",
+"entity": "John Hays Hammond",
+"rel": "place of birth",
+"obj": "San Francisco",
+"sentence": "He was bom in San Francisco on March 31, 1855. After graduating from the Sheffield Scientific School at Yale University in 1876, he attended the Royal School of Mines in Freiberg, Germany, for three years.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMMOND",
+"entity": "John Hays Hammond",
+"rel": "date of death",
+"obj": "1936",
+"sentence": "John Hays (1855-1936)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMMONTON-HAMMURABI",
+"entity": "Hammonton-Hammurabi",
+"rel": "located in the administrative territorial entity",
+"obj": "Atlantic County",
+"sentence": "CODE OF HAMMONTON, a town in southern New Jersey, in Atlantic county, 28 miles (45 km) northwest of Atlantic City.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMPTON",
+"entity": "Wade Hampton",
+"rel": "place of birth",
+"obj": "Charleston",
+"sentence": "Wade Hampton, he was born in Charleston, S.C., on March 28, 1818. At the age of 18 he graduated from South Carolina College in Columbia and soon was managing some of his father's cotton plantations.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMPTON",
+"entity": "Wade Hampton",
+"rel": "date of birth",
+"obj": "1818",
+"sentence": "Wade (1818-1902)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMPTON",
+"entity": "Wade Hampton",
+"rel": "date of death",
+"obj": "1902",
+"sentence": "Wade (1818-1902)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAMTRAMCK",
+"entity": "Hamtramck",
+"rel": "located in the administrative territorial entity",
+"obj": "Wayne County",
+"sentence": "ham-tram'ik, is an industrial city in southeastern Michigan, in Wayne county, surrounded by the city of Detroit.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANDEL-MAZZETTI",
+"entity": "Enrica von Handel-Mazzetti",
+"rel": "date of birth",
+"obj": "1871-01-10",
+"sentence": "She was born in Vienna on Jan. 10, 1871. A descendant of German Catholics and Protestant Hungarian nobility, she used the conflict between Catholics and Protestants in the 17th and early 18th century as her theme in such early novels as Meinrad Helmpergers denkwiirdiges Jahr (1900), Jesse und Maria (1906), and Die arme Margaret (1910).",
+"check": "agree",
+"held": [
+"1871-01-10"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANDEL-MAZZETTI",
+"entity": "Enrica von Handel-Mazzetti",
+"rel": "place of birth",
+"obj": "Vienna",
+"sentence": "She was born in Vienna on Jan. 10, 1871. A descendant of German Catholics and Protestant Hungarian nobility, she used the conflict between Catholics and Protestants in the 17th and early 18th century as her theme in such early novels as Meinrad Helmpergers denkwiirdiges Jahr (1900), Jesse und Maria (1906), and Die arme Margaret (1910).",
+"check": "agree",
+"held": [
+"Vienna"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANDEL-MAZZETTI",
+"entity": "Enrica von Handel-Mazzetti",
+"rel": "date of death",
+"obj": "1955",
+"sentence": "han'dal mii-tset'e, Enrica von (1871-1955)",
+"check": "agree",
+"held": [
+"1955-04-08"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANN",
+"entity": "Julius Ferdinand von Hann",
+"rel": "date of birth",
+"obj": "1839",
+"sentence": "han, Julius Ferdinand von (1839-1921)",
+"check": "agree",
+"held": [
+"1839-03-23"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANNAY",
+"entity": "James Henry Hannay",
+"rel": "date of birth",
+"obj": "1842-04-22",
+"sentence": "He was bom in Richibucto, New Brunswick, on April 22, 1842, and educated in Scodand and Saint John.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANNAY",
+"entity": "James Henry Hannay",
+"rel": "place of birth",
+"obj": "Richibucto",
+"sentence": "He was bom in Richibucto, New Brunswick, on April 22, 1842, and educated in Scodand and Saint John.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANOVER",
+"entity": "Hanover",
+"rel": "located in the administrative territorial entity",
+"obj": "Grafton County",
+"sentence": "h an'a-var, a town in western New Hampshire, in Grafton county, is on the Connecticut River about 50 miles (SO km) northwest of Concord.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANSON",
+"entity": "Howard Hanson",
+"rel": "date of death",
+"obj": "1981-02-26",
+"sentence": "He won the Pulitzer Prize in music for his Fourth Symphony in 1944. He died in Rochester on Feb. 26, 1981. Works.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANSON",
+"entity": "Howard Hanson",
+"rel": "place of death",
+"obj": "Rochester",
+"sentence": "He won the Pulitzer Prize in music for his Fourth Symphony in 1944. He died in Rochester on Feb. 26, 1981. Works.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANSON",
+"entity": "Howard Hanson",
+"rel": "date of birth",
+"obj": "1896",
+"sentence": "Howard (1896-1981)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAPEVILLE",
+"entity": "Hapeville",
+"rel": "located in the administrative territorial entity",
+"obj": "Fulton County",
+"sentence": "hap'vil, is a city in north central Georgia, in Fulton county, 7 miles (11 km) southwest of the center of Atlanta.",
+"check": "agree",
+"held": [
+"Fulton County"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANUMAN-HARALD HARA",
+"entity": "Takashi Hanuman-Harald Hara",
+"rel": "date of birth",
+"obj": "1856",
+"sentence": "ha-rii, Takashi (1856-1921)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HANUMAN-HARALD HARA",
+"entity": "Takashi Hanuman-Harald Hara",
+"rel": "date of death",
+"obj": "1921",
+"sentence": "ha-rii, Takashi (1856-1921)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARAN",
+"entity": "Haran",
+"rel": "located in the administrative territorial entity",
+"obj": "Pakistan",
+"sentence": "The site is in Pakistan, about 100 miles (160 km) southwest of Lahore.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARBACH",
+"entity": "Otto Abels Harbach",
+"rel": "date of birth",
+"obj": "1873-08-18",
+"sentence": "Harbach was born in Salt Lake City, Utah, on Aug. 18, 1873. He taught English at Whitman College from 1895 to 1901 and then went to New York, where from 1902 to 1910 he worked in advertising and was on the staff of several newspapers.",
+"check": "agree",
+"held": [
+"1873-08-18"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARBACH",
+"entity": "Otto Abels Harbach",
+"rel": "place of birth",
+"obj": "Salt Lake City",
+"sentence": "Harbach was born in Salt Lake City, Utah, on Aug. 18, 1873. He taught English at Whitman College from 1895 to 1901 and then went to New York, where from 1902 to 1910 he worked in advertising and was on the staff of several newspapers.",
+"check": "agree",
+"held": [
+"Salt Lake City"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARBACH",
+"entity": "Otto Abels Harbach",
+"rel": "date of death",
+"obj": "1963",
+"sentence": "har'bak, Otto Abels (1873-1963)",
+"check": "agree",
+"held": [
+"1963-01-24"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDEE",
+"entity": "William Joseph Hardee",
+"rel": "place of birth",
+"obj": "Camden",
+"sentence": "He was born in Camden county, Ga., on Oct. 12, 1815, and graduated from the U. S. Military Academy in 1838. He attended the Royal Cavalry School at Saumur, France, in Hardee served with distinction in the Mexican War.",
+"check": "agree",
+"held": [
+"Camden County"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDEE",
+"entity": "William Joseph Hardee",
+"rel": "place of death",
+"obj": "Wytheville",
+"sentence": "Hardee died in Wytheville, Va., on Nov. 6, 1",
+"check": "disagree",
+"held": [
+"Virginia"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDEE",
+"entity": "William Joseph Hardee",
+"rel": "date of birth",
+"obj": "1815",
+"sentence": "hiir'de, William Joseph (1815-1873)",
+"check": "agree",
+"held": [
+"1815-10-12"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDEE",
+"entity": "William Joseph Hardee",
+"rel": "date of death",
+"obj": "1873",
+"sentence": "hiir'de, William Joseph (1815-1873)",
+"check": "agree",
+"held": [
+"1873-11-06"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDEN",
+"entity": "Sir Arthur Harden",
+"rel": "date of birth",
+"obj": "1865-10-12",
+"sentence": "Harden was born in Manchester, England, on Oct. 12, 1865. He studied at Owens College in Manchester under Henry Roscoe and then went to Erlangen, Germany, to study with Otto Fischer for his Ph.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDEN",
+"entity": "Sir Arthur Harden",
+"rel": "place of birth",
+"obj": "Manchester",
+"sentence": "Harden was born in Manchester, England, on Oct. 12, 1865. He studied at Owens College in Manchester under Henry Roscoe and then went to Erlangen, Germany, to study with Otto Fischer for his Ph.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDEN",
+"entity": "Sir Arthur Harden",
+"rel": "date of death",
+"obj": "1940",
+"sentence": "Sir Arthur (1865-1940)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDING",
+"entity": "Chester Harding",
+"rel": "place of birth",
+"obj": "Conway",
+"sentence": "He was born in Conway, Mass., on Sept. 1, 1792. He enlisted as a drummer in the War of 1812, after which he worked at various trades and settled in Pittsburgh as a sign painter.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDING",
+"entity": "Chester Harding",
+"rel": "date of death",
+"obj": "1866-04-01",
+"sentence": "Harding died in Boston on April 1, 1866. 29th President of the United States (1921—1923) Born—Nov. 2, 1865, In Blooming Grove, Ohio.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDING",
+"entity": "Chester Harding",
+"rel": "place of death",
+"obj": "Boston",
+"sentence": "Harding died in Boston on April 1, 1866. 29th President of the United States (1921—1923) Born—Nov. 2, 1865, In Blooming Grove, Ohio.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDING",
+"entity": "Chester Harding",
+"rel": "date of birth",
+"obj": "1792",
+"sentence": "Chester (1792-1866)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDING",
+"entity": "Warren Gamaliel Harding",
+"rel": "date of birth",
+"obj": "1865-11-02",
+"sentence": "Warren Harding was born on Nov. 2, 1865, in the hamlet of Blooming Grove, Ohio, the son and first child of George Tryon Harding II, a Civil War veteran, farmer, horse trader, and later marginally successful rural doctor.",
+"check": "agree",
+"held": [
+"1865-11-02"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDING",
+"entity": "Warren Gamaliel Harding",
+"rel": "place of birth",
+"obj": "Blooming Grove",
+"sentence": "Warren Harding was born on Nov. 2, 1865, in the hamlet of Blooming Grove, Ohio, the son and first child of George Tryon Harding II, a Civil War veteran, farmer, horse trader, and later marginally successful rural doctor.",
+"check": "agree",
+"held": [
+"Blooming Grove"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARDING",
+"entity": "Warren Gamaliel Harding",
+"rel": "date of death",
+"obj": "1923",
+"sentence": "Warren Gamaliel (1865-1923)",
+"check": "agree",
+"held": [
+"1923-08-02"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "LONDON HARDY",
+"entity": "Thomas London Hardy",
+"rel": "place of birth",
+"obj": "Higher Bockhampton",
+"sentence": "Hardy was born in Higher Bockhampton, 2V2 miles from Dorchester, on June 2, 1840. He was the son of a mason also named Thomas Hardy.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "LONDON HARDY",
+"entity": "Thomas London Hardy",
+"rel": "date of birth",
+"obj": "1840",
+"sentence": "Thomas (1840-1928)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "LONDON HARDY",
+"entity": "Thomas London Hardy",
+"rel": "date of death",
+"obj": "1928",
+"sentence": "Thomas (1840-1928)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARLAN",
+"entity": "John Marshall Harlan",
+"rel": "place of birth",
+"obj": "Boyle",
+"sentence": "Harlan was born in Boyle county, Ky., on June 1, 1833, the son of James Harlan, a member of Congress and state attorney general.",
+"check": "agree",
+"held": [
+"Boyle County"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARLAN",
+"entity": "John Marshall Harlan",
+"rel": "date of birth",
+"obj": "1833",
+"sentence": "hiir'bn, John Marshall (1833-1911)",
+"check": "agree",
+"held": [
+"1833-06-01"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARLAN",
+"entity": "John Marshall Harlan",
+"rel": "date of death",
+"obj": "1911",
+"sentence": "hiir'bn, John Marshall (1833-1911)",
+"check": "agree",
+"held": [
+"1911-10-14"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARLAND",
+"entity": "Henry Harland",
+"rel": "date of death",
+"obj": "1905-12-20",
+"sentence": "He died in San Remo, Italy, on Dec. 20, 1905. HARLECH, har'lek, 5th Baron (1918-1985), British statesman.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARLAND",
+"entity": "Henry Harland",
+"rel": "place of death",
+"obj": "San Remo",
+"sentence": "He died in San Remo, Italy, on Dec. 20, 1905. HARLECH, har'lek, 5th Baron (1918-1985), British statesman.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARLAND",
+"entity": "Henry Harland",
+"rel": "date of birth",
+"obj": "1861",
+"sentence": "hiir'bnd, Henry (1861-1905)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARMON",
+"entity": "Judson Harmon",
+"rel": "date of birth",
+"obj": "1846-02-03",
+"sentence": "He was born in Newton, Ohio, on Feb. 3, 1846. He received his A. B. degree from Dennison University (1866) and Iris LL. B. from the Cincinnati Law School (1869) and practiced law for seven years.",
+"check": "agree",
+"held": [
+"1846-02-03"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARMON",
+"entity": "Judson Harmon",
+"rel": "place of birth",
+"obj": "Newton",
+"sentence": "He was born in Newton, Ohio, on Feb. 3, 1846. He received his A. B. degree from Dennison University (1866) and Iris LL. B. from the Cincinnati Law School (1869) and practiced law for seven years.",
+"check": "near",
+"held": [
+"Newtown"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARMON",
+"entity": "Tom Harmon",
+"rel": "date of death",
+"obj": "1990-03-15",
+"sentence": "He died in Los Angeles on March 15, 1990. Jack Zanger*, \"Sport\" Magazine HARMONIA, hiir -mo'ne-a, in Creek mythology, was the daughter of Ares and Aphrodite.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARMON",
+"entity": "Tom Harmon",
+"rel": "place of death",
+"obj": "Los Angeles",
+"sentence": "He died in Los Angeles on March 15, 1990. Jack Zanger*, \"Sport\" Magazine HARMONIA, hiir -mo'ne-a, in Creek mythology, was the daughter of Ares and Aphrodite.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARMON",
+"entity": "Tom Harmon",
+"rel": "date of birth",
+"obj": "1919",
+"sentence": "Tom (1919-1990)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARNACK",
+"entity": "Adolf von Harnack",
+"rel": "date of death",
+"obj": "1930-06-10",
+"sentence": "He retired from his professorship at the University of Berlin in 1924 and died in Heidelberg on June 10, 1930. Hamack's most famous work is his great Lehrbuch des Dogmengeschichte (3 vols., 1885- 1889; Eng. tr., History of Dogma).",
+"check": "agree",
+"held": [
+"1930-06-10",
+"1930"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARNACK",
+"entity": "Adolf von Harnack",
+"rel": "place of death",
+"obj": "Heidelberg",
+"sentence": "He retired from his professorship at the University of Berlin in 1924 and died in Heidelberg on June 10, 1930. Hamack's most famous work is his great Lehrbuch des Dogmengeschichte (3 vols., 1885- 1889; Eng. tr., History of Dogma).",
+"check": "agree",
+"held": [
+"Heidelberg"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARNACK",
+"entity": "Adolf von Harnack",
+"rel": "date of birth",
+"obj": "1851",
+"sentence": "hiirnak, Adolf von (1851-1930)",
+"check": "agree",
+"held": [
+"1851-05-07",
+"1851"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARNETT",
+"entity": "Cornelius Harnett",
+"rel": "date of birth",
+"obj": "1723-04-20",
+"sentence": "har'net, Cornelius (1723-1781), American patriot, who was known as \"the Sam Adams of North Carolina.\" He was born on April 20, 1723, near Edenton, N. C. As delegate from Wilmington to the North Carolina General Assembly (1754—1775) and head of the Cape Eear Sons of Liberty, he was prominent in the prc- Revolutionary movement in the colony, where he led the opposition to the Stamp Act and served on committees of correspondence and safety.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARNETT",
+"entity": "Cornelius Harnett",
+"rel": "date of death",
+"obj": "1781",
+"sentence": "har'net, Cornelius (1723-1781)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARNETT",
+"entity": "William Michael Harnett",
+"rel": "date of birth",
+"obj": "1848-08-10",
+"sentence": "He was born in Clonakilty, County Cork, Ireland, on Aug. 10, 1848, and taken to Philadelphia as a child.",
+"check": "agree",
+"held": [
+"1848-08-10"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARNETT",
+"entity": "William Michael Harnett",
+"rel": "place of birth",
+"obj": "Clonakilty",
+"sentence": "He was born in Clonakilty, County Cork, Ireland, on Aug. 10, 1848, and taken to Philadelphia as a child.",
+"check": "agree",
+"held": [
+"Clonakilty"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRIS",
+"entity": "Isham Green Harris",
+"rel": "place of birth",
+"obj": "Franklin",
+"sentence": "Harris was born in Franklin county, Tenn., on Feb. 10, 1818. He obtained a limited education and then successfully practiced law.",
+"check": "agree",
+"held": [
+"Franklin County"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRIS",
+"entity": "Isham Green Harris",
+"rel": "date of birth",
+"obj": "1818",
+"sentence": "Isham Green (1818-1897)",
+"check": "agree",
+"held": [
+"1818-02-10"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRIS",
+"entity": "Isham Green Harris",
+"rel": "date of death",
+"obj": "1897",
+"sentence": "Isham Green (1818-1897)",
+"check": "agree",
+"held": [
+"1897-07-08"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRIS",
+"entity": "Joel Chandler Harris",
+"rel": "date of death",
+"obj": "1908-07-03",
+"sentence": "Harris died in Atlanta on July 3, 1908. Some writers before Harris had employed dialect and other regional materials, but few had utilized them so effectively.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRIS",
+"entity": "Joel Chandler Harris",
+"rel": "place of death",
+"obj": "Atlanta",
+"sentence": "Harris died in Atlanta on July 3, 1908. Some writers before Harris had employed dialect and other regional materials, but few had utilized them so effectively.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRIS",
+"entity": "Joel Chandler Harris",
+"rel": "date of birth",
+"obj": "1848",
+"sentence": "Joel Chandler (1848-1908)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRIS",
+"entity": "Robert Harris",
+"rel": "place of birth",
+"obj": "Vale",
+"sentence": "He was born in the Vale of Conway, Wales, on Sept. 17, 1849, and went to Prince Edward Island, Canada, with his family in 1856. There he attended Prince of Wales College in Charlottetown.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRIS",
+"entity": "Robert Harris",
+"rel": "date of birth",
+"obj": "1849",
+"sentence": "Robert (1849-1919)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRIS",
+"entity": "Robert Harris",
+"rel": "date of death",
+"obj": "1919",
+"sentence": "Robert (1849-1919)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRISBURG",
+"entity": "Harrisburg",
+"rel": "located in the administrative territorial entity",
+"obj": "Dauphin County",
+"sentence": "har' as-burg, a city in south central Pennsylvania, is the capital of the state and the seat of Dauphin county.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "LIBRARY OF CONGRESS HARRISON",
+"entity": "Benjamin Library of Congress Harrison",
+"rel": "date of birth",
+"obj": "1833",
+"sentence": "Benjamin (1833-1901)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "LIBRARY OF CONGRESS HARRISON",
+"entity": "Benjamin Library of Congress Harrison",
+"rel": "date of death",
+"obj": "1901",
+"sentence": "Benjamin (1833-1901)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRISON",
+"entity": "Pat Harrison",
+"rel": "place of death",
+"obj": "Washington",
+"sentence": "Harrison died in Washington, D.C., on June 22, 1941. John Braeman, University of Nebraska HARRISON, Peter (17 16-1775), American architect who designed Redwood Library (1748—1750), Touro Synagogue (1759-1763), and Brick Market (1761-1773) in Newport, R.I.; King's Chapel in Boston (1749-1758); and Christ Church in Cambridge, Mass. (1760-1761).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRISON",
+"entity": "Pat Harrison",
+"rel": "date of birth",
+"obj": "1881",
+"sentence": "Pat (1881-1941)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRISON",
+"entity": "Pat Harrison",
+"rel": "date of death",
+"obj": "1941",
+"sentence": "Pat (1881-1941)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRISON",
+"entity": "Harrison",
+"rel": "located in the administrative territorial entity",
+"obj": "Hudson County",
+"sentence": "a town in northeastern New Jersey, in Hudson county, across the Passaic River from Newark.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRISON",
+"entity": "Harrison",
+"rel": "located in the administrative territorial entity",
+"obj": "Westchester County",
+"sentence": "a coterminous town and village in southeastern New York state, in Westchester county, near Long Island Sound.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRISON",
+"entity": "Harrison",
+"rel": "located in the administrative territorial entity",
+"obj": "Allegheny County",
+"sentence": "a township in southwestern Pennsylvania, in Allegheny county, on the Allegheny River, 20 miles (30 km) northeast of Pittsburgh.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRISSE",
+"entity": "Henry Harrisse",
+"rel": "date of birth",
+"obj": "1829",
+"sentence": "Henry, a-res' (1829-1910)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARRISSE",
+"entity": "Henry Harrisse",
+"rel": "date of death",
+"obj": "1910",
+"sentence": "Henry, a-res' (1829-1910)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HART",
+"entity": "Lorenz Hart",
+"rel": "date of birth",
+"obj": "1895-05-22",
+"sentence": "Hart was born in New York City on May 22, 1895. While studying law at Columbia University, he met Rodgers, with whom he wrote the varsity show of 1918, Fly with Me.",
+"check": "agree",
+"held": [
+"1895-05-02"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HART",
+"entity": "Lorenz Hart",
+"rel": "place of birth",
+"obj": "New York City",
+"sentence": "Hart was born in New York City on May 22, 1895. While studying law at Columbia University, he met Rodgers, with whom he wrote the varsity show of 1918, Fly with Me.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HART",
+"entity": "Lorenz Hart",
+"rel": "date of death",
+"obj": "1943-11-22",
+"sentence": "Hart died in New York City on Nov. 22, 1943. Lorenz Hart, together with Ira Gershwin, brought the lyrics of American musical comedy to new heights of wit and sophistication.",
+"check": "agree",
+"held": [
+"1943-11-22"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HART",
+"entity": "Lorenz Hart",
+"rel": "place of death",
+"obj": "New York City",
+"sentence": "Hart died in New York City on Nov. 22, 1943. Lorenz Hart, together with Ira Gershwin, brought the lyrics of American musical comedy to new heights of wit and sophistication.",
+"check": "agree",
+"held": [
+"New York City"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HART",
+"entity": "Thomas Charles Hart",
+"rel": "place of birth",
+"obj": "Davison",
+"sentence": "He was bom in Davison, Mich., on June 12, 1877, and graduated from the U. S. Naval Academy in 1897.. He served in the Spanish-American War on the U. S. S. Vixen in the bombardments and naval battle of Santiago de Cuba.",
+"check": "agree",
+"held": [
+"Davison"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HART",
+"entity": "Thomas Charles Hart",
+"rel": "date of birth",
+"obj": "1877",
+"sentence": "Thomas Charles (1877-1971)",
+"check": "agree",
+"held": [
+"1877-06-12"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HART",
+"entity": "Thomas Charles Hart",
+"rel": "date of death",
+"obj": "1971",
+"sentence": "Thomas Charles (1877-1971)",
+"check": "agree",
+"held": [
+"1971-07-04"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARTE",
+"entity": "Bret Harte",
+"rel": "date of birth",
+"obj": "1836",
+"sentence": "Bret (1836-1902)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARTE",
+"entity": "Bret Harte",
+"rel": "date of death",
+"obj": "1902",
+"sentence": "Bret (1836-1902)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARTLINE",
+"entity": "Haldan Keffer Hartline",
+"rel": "date of birth",
+"obj": "1903",
+"sentence": "Haldan Keffer (1903-1983)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARTLINE",
+"entity": "Haldan Keffer Hartline",
+"rel": "date of death",
+"obj": "1983",
+"sentence": "Haldan Keffer (1903-1983)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARVEY",
+"entity": "Doug Harvey",
+"rel": "place of birth",
+"obj": "Saffron Walden",
+"sentence": "Harvey was born at Saffron Walden, Essex, England, the son of a ropemaker.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARVEY",
+"entity": "Doug Harvey",
+"rel": "date of birth",
+"obj": "1924",
+"sentence": "Doug (1924-1989)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HARVEY",
+"entity": "Doug Harvey",
+"rel": "date of death",
+"obj": "1989",
+"sentence": "Doug (1924-1989)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HATCHER",
+"entity": "Richard Gordon Hatcher",
+"rel": "date of birth",
+"obj": "1933-07-10",
+"sentence": "He was bom on July 10, 1933, in Michigan City, Ind.",
+"check": "agree",
+"held": [
+"1933-07-10"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HATCHER",
+"entity": "Richard Gordon Hatcher",
+"rel": "place of birth",
+"obj": "Michigan City",
+"sentence": "He was bom on July 10, 1933, in Michigan City, Ind.",
+"check": "agree",
+"held": [
+"Michigan City"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HATFIELD",
+"entity": "Mark Odom Hatfield",
+"rel": "place of birth",
+"obj": "Dallas",
+"sentence": "He was born in Dallas, Oreg., on July 12, 1922, the son of a railroad construction blacksmith.",
+"check": "agree",
+"held": [
+"Dallas"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HATFIELD",
+"entity": "Mark Odom Hatfield",
+"rel": "date of birth",
+"obj": "1922",
+"sentence": "Mark Odom (1922- )",
+"check": "agree",
+"held": [
+"1922-07-12"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HATOYAMA",
+"entity": "Ichiro Hatoyama",
+"rel": "date of birth",
+"obj": "1883-01-01",
+"sentence": "He was born in Tokyo on Jan. 1, 1883, and practiced law before entering politics.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HATOYAMA",
+"entity": "Ichiro Hatoyama",
+"rel": "place of birth",
+"obj": "Tokyo",
+"sentence": "He was born in Tokyo on Jan. 1, 1883, and practiced law before entering politics.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HATOYAMA",
+"entity": "Ichiro Hatoyama",
+"rel": "date of death",
+"obj": "1959-03-07",
+"sentence": "He died in Tokyo on March 7, 1959. Kdojo Nakamura, Keio University HATSHEPSUT, hat-shep'sbot, ruler of Egypt from 1489 to 1469 b. c., was one of the first great women recorded in history.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HATOYAMA",
+"entity": "Ichiro Hatoyama",
+"rel": "place of death",
+"obj": "Tokyo",
+"sentence": "He died in Tokyo on March 7, 1959. Kdojo Nakamura, Keio University HATSHEPSUT, hat-shep'sbot, ruler of Egypt from 1489 to 1469 b. c., was one of the first great women recorded in history.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HATTON",
+"entity": "Sir Christopher Hatton",
+"rel": "place of birth",
+"obj": "Holdenby",
+"sentence": "He was born in Holdenby, Northamptonshire, England, in 1540 and educated at Oxford.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HATTON",
+"entity": "Sir Christopher Hatton",
+"rel": "date of birth",
+"obj": "1540",
+"sentence": "Sir Christopher (1540-1591)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HATTON",
+"entity": "Sir Christopher Hatton",
+"rel": "date of death",
+"obj": "1591",
+"sentence": "Sir Christopher (1540-1591)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUCH",
+"entity": "Johannes Carsten Hauch",
+"rel": "place of birth",
+"obj": "Fredrikshald",
+"sentence": "He was born in Fredrikshald (now Halden), Norway, on May 12, 1790, and took a doctorate in zoology in Copenhagen in 1821, although his interests were primarily literary.",
+"check": "near",
+"held": [
+"Frederikshald"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUCH",
+"entity": "Johannes Carsten Hauch",
+"rel": "date of death",
+"obj": "1872-03-04",
+"sentence": "He died in Rome on March 4, 1872. HAUCK, houk, Minnie (1851-1929), American soprano.",
+"check": "agree",
+"held": [
+"1872-03-04",
+"1872"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUCH",
+"entity": "Johannes Carsten Hauch",
+"rel": "place of death",
+"obj": "Rome",
+"sentence": "He died in Rome on March 4, 1872. HAUCK, houk, Minnie (1851-1929), American soprano.",
+"check": "agree",
+"held": [
+"Rome"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUCK",
+"entity": "Minnie Hauck",
+"rel": "date of birth",
+"obj": "1851-11-16",
+"sentence": "She was born in New York City on Nov. 16, 1851, studied in New Orleans and later in New York, and made her debut in 1866 in Brooklyn as Amina in Bellini's La sonnambula.",
+"check": "agree",
+"held": [
+"1851-11-16"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUCK",
+"entity": "Minnie Hauck",
+"rel": "place of birth",
+"obj": "New York City",
+"sentence": "She was born in New York City on Nov. 16, 1851, studied in New Orleans and later in New York, and made her debut in 1866 in Brooklyn as Amina in Bellini's La sonnambula.",
+"check": "agree",
+"held": [
+"New York City"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUCK",
+"entity": "Minnie Hauck",
+"rel": "date of death",
+"obj": "1929",
+"sentence": "houk, Minnie (1851-1929)",
+"check": "agree",
+"held": [
+"1929-02-06"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUPTMANN",
+"entity": "Carl Hauptmann",
+"rel": "date of death",
+"obj": "1921-02-03",
+"sentence": "He died in Schreiberhau on Feb. 3, 1921. HAUPTMANN, houpt'man, Gerhart (1862-1946), German writer, who was the leading German dramatist of the first half of the 20th century and one of the initiators of modern social drama.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUPTMANN",
+"entity": "Carl Hauptmann",
+"rel": "place of death",
+"obj": "Schreiberhau",
+"sentence": "He died in Schreiberhau on Feb. 3, 1921. HAUPTMANN, houpt'man, Gerhart (1862-1946), German writer, who was the leading German dramatist of the first half of the 20th century and one of the initiators of modern social drama.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUPTMANN",
+"entity": "Gerhart Hauptmann",
+"rel": "date of birth",
+"obj": "1862-11-15",
+"sentence": "Hauptmann was born at Obersalzbnmn, Silesia, on Nov. 15, 1862, the youngest child of an innkeeper.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUPTMANN",
+"entity": "Gerhart Hauptmann",
+"rel": "place of birth",
+"obj": "Obersalzbnmn",
+"sentence": "Hauptmann was born at Obersalzbnmn, Silesia, on Nov. 15, 1862, the youngest child of an innkeeper.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUPTMANN",
+"entity": "Gerhart Hauptmann",
+"rel": "date of death",
+"obj": "1946",
+"sentence": "houpt'man, Gerhart (1862-1946)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUROWITZ",
+"entity": "Felix Michael Haurowitz",
+"rel": "place of birth",
+"obj": "Prague",
+"sentence": "Haurowitz was bom in Prague, Czechoslovakia (Czech Republic), on March 1, 1896. He received his M.D. in 1922 and his D.Sc. in 1925, both from the German University in Prague, where he later was an assistant and docent in medical chemistry and then a professor of physiological chemistry.",
+"check": "agree",
+"held": [
+"Prague"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUROWITZ",
+"entity": "Felix Michael Haurowitz",
+"rel": "date of birth",
+"obj": "1896",
+"sentence": "Felix Michael, hor'a-wits (1896- 1987)",
+"check": "agree",
+"held": [
+"1896-03-01",
+"1896-03-03",
+"1896"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUROWITZ",
+"entity": "Felix Michael Haurowitz",
+"rel": "date of death",
+"obj": "1987",
+"sentence": "Felix Michael, hor'a-wits (1896- 1987)",
+"check": "agree",
+"held": [
+"1987-12-02"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUSSMANN-HAUTE-MARNE HAUSSMANN",
+"entity": "Georges Eugene Haussmann-Haute-Marne Haussmann",
+"rel": "date of birth",
+"obj": "1809-03-27",
+"sentence": "os-man', Georges Eugene (1809- 1891), French government administrator and urban planner, who was responsible for rebuilding much of Paris during the regime of Napoleon III. Baron Haussmann was born in Paris on March 27, 1809. He was trained as a lawyer, entered the civil service, and in 1853 became prefect of the Seine department, which includes Paris.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUSSMANN-HAUTE-MARNE HAUSSMANN",
+"entity": "Georges Eugene Haussmann-Haute-Marne Haussmann",
+"rel": "place of birth",
+"obj": "Paris",
+"sentence": "os-man', Georges Eugene (1809- 1891), French government administrator and urban planner, who was responsible for rebuilding much of Paris during the regime of Napoleon III. Baron Haussmann was born in Paris on March 27, 1809. He was trained as a lawyer, entered the civil service, and in 1853 became prefect of the Seine department, which includes Paris.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUSSMANN-HAUTE-MARNE HAUSSMANN",
+"entity": "Georges Eugene Haussmann-Haute-Marne Haussmann",
+"rel": "date of death",
+"obj": "1891-01-11",
+"sentence": "He died in Paris on Jan. 11, 1891. Haussmann's plans for the reconstruction of Paris provided for railroad stations outside the inner city, widened boulevards, and new parks.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAUSSMANN-HAUTE-MARNE HAUSSMANN",
+"entity": "Georges Eugene Haussmann-Haute-Marne Haussmann",
+"rel": "place of death",
+"obj": "Paris",
+"sentence": "He died in Paris on Jan. 11, 1891. Haussmann's plans for the reconstruction of Paris provided for railroad stations outside the inner city, widened boulevards, and new parks.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAVEMEYER-HAVRE DE GRACE HAVERHILL",
+"entity": "Havemeyer-Havre de Grace Haverhill",
+"rel": "located in the administrative territorial entity",
+"obj": "Essex County",
+"sentence": "ha vor-al, is a city in northeastern Massachusetts, in Essex county, on the Merrimack River, 33 miles (53 km) north of Boston.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAVLICEK",
+"entity": "John Havlicek",
+"rel": "date of birth",
+"obj": "1940-04-08",
+"sentence": "John J. Havlicek was born in Martins Ferry, Ohio, on April 8, 1940. A star in three sports and all-state quarterback at Bridgeport High School, he was recruited by Ohio State football coach Woody Hayes.",
+"check": "agree",
+"held": [
+"1940-04-08"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAVLICEK",
+"entity": "John Havlicek",
+"rel": "place of birth",
+"obj": "Martins Ferry",
+"sentence": "John J. Havlicek was born in Martins Ferry, Ohio, on April 8, 1940. A star in three sports and all-state quarterback at Bridgeport High School, he was recruited by Ohio State football coach Woody Hayes.",
+"check": "agree",
+"held": [
+"Martins Ferry"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAVRE DE GRACE",
+"entity": "Havre de Grace",
+"rel": "located in the administrative territorial entity",
+"obj": "Harford County",
+"sentence": "ha-vsr da gras', -griis', a city located in northeastern Maryland, in Harford county, situated on the Susquehanna River, 33 miles (53 km) northeast of Baltimore.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAWKE",
+"entity": "Edward Hawke",
+"rel": "date of birth",
+"obj": "1705",
+"sentence": "hak, Edward (1705-1781)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAWKE",
+"entity": "Edward Hawke",
+"rel": "date of death",
+"obj": "1781",
+"sentence": "hak, Edward (1705-1781)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAWKING",
+"entity": "Stephen William Hawking",
+"rel": "date of birth",
+"obj": "1942-01-08",
+"sentence": "Hawking was born in Oxford, England, on Jan. 8, 1942, 300 years to the day after the death of Galileo.",
+"check": "agree",
+"held": [
+"1942-01-08"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAWKING",
+"entity": "Stephen William Hawking",
+"rel": "place of birth",
+"obj": "Oxford",
+"sentence": "Hawking was born in Oxford, England, on Jan. 8, 1942, 300 years to the day after the death of Galileo.",
+"check": "agree",
+"held": [
+"Oxford",
+"United Kingdom"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAWKINS",
+"entity": "Coleman Hawkins",
+"rel": "place of birth",
+"obj": "St. Joseph",
+"sentence": "He was born in St. Joseph, Mo., on Nov. 21, 1904. As a child he studied piano, the cello, and—beginning at age nine—the saxophone.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAWKINS",
+"entity": "Coleman Hawkins",
+"rel": "date of birth",
+"obj": "1904",
+"sentence": "ha'kinz, Coleman (1904-1969)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAWKINS",
+"entity": "Coleman Hawkins",
+"rel": "date of death",
+"obj": "1969",
+"sentence": "ha'kinz, Coleman (1904-1969)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAWTHORNE",
+"entity": "Hawthorne",
+"rel": "located in the administrative territorial entity",
+"obj": "Los Angeles County",
+"sentence": "ha'thorn, a city in southwestern California, in Los Angeles county, situated in the Centinela Valley—South Bay area just southeast of Los Angeles International Airport.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYDEN",
+"entity": "Ferdinand Vandeveer Hayden",
+"rel": "place of birth",
+"obj": "Westfield",
+"sentence": "He was born at Westfield, Mass., on Sept. 7, 1829. In 1853 he was sent by James Hall (q.v.) to collect fossils from the Dakota Badlands.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYDEN",
+"entity": "Ferdinand Vandeveer Hayden",
+"rel": "date of death",
+"obj": "1887-12-22",
+"sentence": "He was professor of geology at the University of Pennsylvania from 1865 to 1872 and later served on the U. S. Geological Survey, retiring in 1886. Hayden died in Philadelphia on Dec. 22, 1887. R. Bradshaw, University of Bristol HAYDEN, ha'dan, Melissa (1928- ), Canadian prima ballerina, who coupled brilliant technique with great dramatic ability.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYDEN",
+"entity": "Ferdinand Vandeveer Hayden",
+"rel": "place of death",
+"obj": "Philadelphia",
+"sentence": "He was professor of geology at the University of Pennsylvania from 1865 to 1872 and later served on the U. S. Geological Survey, retiring in 1886. Hayden died in Philadelphia on Dec. 22, 1887. R. Bradshaw, University of Bristol HAYDEN, ha'dan, Melissa (1928- ), Canadian prima ballerina, who coupled brilliant technique with great dramatic ability.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYDEN",
+"entity": "Ferdinand Vandeveer Hayden",
+"rel": "date of birth",
+"obj": "1829",
+"sentence": "ha'cbn, Ferdinand Vandeveer (1829- 1887)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYDN",
+"entity": "Joseph Haydn",
+"rel": "date of birth",
+"obj": "1732",
+"sentence": "hi'dan, Joseph (1732-1809)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYDN",
+"entity": "Joseph Haydn",
+"rel": "date of death",
+"obj": "1809",
+"sentence": "hi'dan, Joseph (1732-1809)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYDON",
+"entity": "Benjamin Robert Haydon",
+"rel": "date of birth",
+"obj": "1786-01-26",
+"sentence": "Benjamin Robert (1786-1846), English historical painter and writer, whose writings helped persuade the British government to purchase the Elgin marbles (q.v.), He was born in Plymouth on Jan. 26, 1786, and attended the Boyal Academy schools in London.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYDON",
+"entity": "Benjamin Robert Haydon",
+"rel": "place of birth",
+"obj": "Plymouth",
+"sentence": "Benjamin Robert (1786-1846), English historical painter and writer, whose writings helped persuade the British government to purchase the Elgin marbles (q.v.), He was born in Plymouth on Jan. 26, 1786, and attended the Boyal Academy schools in London.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYDON",
+"entity": "Benjamin Robert Haydon",
+"rel": "date of death",
+"obj": "1846",
+"sentence": "Benjamin Robert (1786-1846)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYEK",
+"entity": "Friedrich August von Hayek",
+"rel": "date of birth",
+"obj": "1899",
+"sentence": "Friedrich August von, hi'-ak (1899-1992)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYES",
+"entity": "Rutherford Birchard Hayes",
+"rel": "date of birth",
+"obj": "1822",
+"sentence": "Rutherford Birchard (1822-1893)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYES",
+"entity": "Rutherford Birchard Hayes",
+"rel": "date of death",
+"obj": "1893",
+"sentence": "Rutherford Birchard (1822-1893)",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYNE",
+"entity": "Paul Hamilton Hayne",
+"rel": "place of birth",
+"obj": "Charleston",
+"sentence": "Paul Hamilton (1830-1886), American poet, who was called \"the last literary cavalier.\" He was born in Charleston, S. C., on Jan. 1, 1830, and raised in the home of his uncle, Robert Young Hayne.",
+"check": "agree",
+"held": [
+"Charleston"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYNE",
+"entity": "Paul Hamilton Hayne",
+"rel": "place of death",
+"obj": "Grovetown",
+"sentence": "He died in Grovetown, Ga., on July 6, Before the Civil War, Hayne wrote chiefly nature poems.",
+"check": "agree",
+"held": [
+"Grovetown"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYNE",
+"entity": "Paul Hamilton Hayne",
+"rel": "date of birth",
+"obj": "1830",
+"sentence": "Paul Hamilton (1830-1886)",
+"check": "agree",
+"held": [
+"1830-01-01",
+"1830"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYNE",
+"entity": "Paul Hamilton Hayne",
+"rel": "date of death",
+"obj": "1886",
+"sentence": "Paul Hamilton (1830-1886)",
+"check": "agree",
+"held": [
+"1886-07-06",
+"1886"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYNE",
+"entity": "Robert Young Hayne",
+"rel": "place of birth",
+"obj": "Colleton",
+"sentence": "Hayne was born in Colleton district, S. C., on Nov. 10, 1791. He served in the South Carolina legislature from 1814 to 1818, when he became state attorney general.",
+"check": "disagree",
+"held": [
+"South Carolina"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYNE",
+"entity": "Robert Young Hayne",
+"rel": "date of birth",
+"obj": "1791",
+"sentence": "Robert Young (1791-1839)",
+"check": "agree",
+"held": [
+"1791-11-10"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYS",
+"entity": "Arthur Garfield Hays",
+"rel": "date of death",
+"obj": "1954-12-14",
+"sentence": "Hays died in New York City on Dec. 14, 1954. Hays was the author of Let Freedom Ring (1928), Trial by Prejudice ( 1933), and an autobiography, City Lawyer (1928).",
+"check": "agree",
+"held": [
+"1954-12-14"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYS",
+"entity": "Arthur Garfield Hays",
+"rel": "place of death",
+"obj": "New York City",
+"sentence": "Hays died in New York City on Dec. 14, 1954. Hays was the author of Let Freedom Ring (1928), Trial by Prejudice ( 1933), and an autobiography, City Lawyer (1928).",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYS",
+"entity": "Arthur Garfield Hays",
+"rel": "date of birth",
+"obj": "1885",
+"sentence": "Arthur Garfield (1885-1954)",
+"check": "disagree",
+"held": [
+"1881-12-12"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYWARD",
+"entity": "Hayward",
+"rel": "located in the administrative territorial entity",
+"obj": "Alameda County",
+"sentence": "a city located in western California, in Alameda county, situated on the east shore of San Francisco Bay.",
+"check": "unheld",
+"held": []
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYWOOD",
+"entity": "William Dudley Haywood",
+"rel": "date of birth",
+"obj": "1869-02-04",
+"sentence": "Haywood was bom in Salt Lake City, Utah, on Feb. 4, 1869. Working in and around the mines from childhood, he became active in the Western Federation of Miners, later the IWW's major affiliate, and took part in the violent strike at Cripple Creek, Colo., in 1904. In 1906, with Charles Moyer and George Pettibone, Haywood was kidnapped in Denver and indicted in Boise, Idaho, for the murder of Frank Steunenberg, former governor of Idaho.",
+"check": "agree",
+"held": [
+"1869-02-04"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYWOOD",
+"entity": "William Dudley Haywood",
+"rel": "place of birth",
+"obj": "Salt Lake City",
+"sentence": "Haywood was bom in Salt Lake City, Utah, on Feb. 4, 1869. Working in and around the mines from childhood, he became active in the Western Federation of Miners, later the IWW's major affiliate, and took part in the violent strike at Cripple Creek, Colo., in 1904. In 1906, with Charles Moyer and George Pettibone, Haywood was kidnapped in Denver and indicted in Boise, Idaho, for the murder of Frank Steunenberg, former governor of Idaho.",
+"check": "agree",
+"held": [
+"Salt Lake City"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYWOOD",
+"entity": "William Dudley Haywood",
+"rel": "date of death",
+"obj": "1928-05-18",
+"sentence": "He died in Moscow on May 18, 1928. Haywood's unionism grew out of the violence of U. S. mining camps and had little to do with French syndicalism.",
+"check": "agree",
+"held": [
+"1928-05-18"
+]
+},
+{
+"volume": "Volume 13. Goethe to Hearst - 2005",
+"headword": "HAYWOOD",
+"entity": "William Dudley Haywood",
+"rel": "place of death",
+"obj": "Moscow",
+"sentence": "He died in Moscow on May 18, 1928. Haywood's unionism grew out of the violence of U. S. mining camps and had little to do with French syndicalism.",
+"check": "agree",
+"held": [
+"Moscow"
+]
+}
+]
+}

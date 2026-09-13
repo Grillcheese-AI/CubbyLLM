@@ -1,0 +1,89 @@
+encyclopedia: 1 volume(s) from encyclopedia, 653 named entries, index 0.3s
+entries 718 | persons 204 (unnamed 14) | facts 577 | 16s
+facts by relation: date of birth 175, date of death 161, located in the administrative territorial entity 43, place of birth 121, place of death 77
+wikidata: 80 entities resolved, 114 ambiguous (checked against neither item), 36 unresolved | api calls 26
+cross-check against wikidata: agree 179 near 6 disagree 19 unheld 373 -> agreement on the checked part 0.877 (204 checked)
+  date of birth: agree 63 near 0 disagree 3 unheld 109 -> 0.955
+  date of death: agree 58 near 0 disagree 1 unheld 102 -> 0.983
+  located in the administrative territorial entity: agree 3 near 1 disagree 0 unheld 39 -> 0.750
+  place of birth: agree 37 near 3 disagree 9 unheld 72 -> 0.755
+  place of death: agree 18 near 2 disagree 6 unheld 51 -> 0.692
+
+every near / disagreement (25):
+  [near    ] 'Nikolai Vasilievich Gogol' place of birth -> 'Velikiye Sorochintsy' | world ['Velyki Sorochyntsi'] | Gogol was bom in Velikiye Sorochintsy, near Mirgorod, in the Ukrainian province of Poltava, on March 20 (New Style, April 1), 1809, and grew up on his parents' 
+  [disagree] 'Eugen Goldstein' place of birth -> 'Gleiwitz' | world ['Gliwice'] | He was born in Gleiwitz (Polish, Gliwice), Upper Silesia, on Sept. 5, 1850. Goldstein studied at the universities of Breslau and Berlin, taking his Ph.D. in 188
+  [disagree] 'Gustav Gottheil' place of birth -> 'Pinne' | world ['Pniewy'] | He was bom in Pinne, Posen (now in Poland), on May 12, 1827. He pursued his secular studies at the universities of Berlin and Halle and received his rabbinical 
+  [disagree] 'Johann Christoph Gottsched' place of birth -> 'Judithenkirch' | world ['Königsberg'] | Gottsched was born in Judithenkirch on Feb. 2, 1700. After studying at the University of Konigsberg, he became professor of poetry and of philosophy at the Univ
+  [disagree] 'Kenneth Grahame' place of death -> 'Pangbourne' | world ['Berkshire'] | He died at Pangbourne, England, on July 6, 1932. David Galloway Author of "The Absurd Hero" GRAHAMSTOWN, gra'amz-toun, a town in South Africa, is in southeaster
+  [near    ] 'Robert Ranke Graves' place of death -> 'Deya' | world ['Deià'] | Graves died in Deya, Majorca, Graves's early verse had some affinities with the decorous work of the so-called Georgian poets, but Graves soon made it clear tha
+  [disagree] 'Richard Gridley' date of birth -> '1711' | world ['1710-01-03'] | grid'le, Richard (1711-1796)
+  [disagree] 'Josiah Bushnell Grinnell' place of death -> 'Marshall' | world ['Grinnell'] | Grinnell. who helped Iowa develop by promoting railroads and better agricultural practices, died in Marshall town, Iowa, GRINNELL—GRIS GRINNELL, gri-nel', a cit
+  [near    ] 'Grodno' located in the administrative territorial entity -> 'Hrodna Region' | world ['Horadnia Region', 'Grodno County', 'Grodno County', 'Grodno powet'] | grbd'ns, a city in Belarus, and the capital of Hrodna region.
+  [disagree] 'Gilbert Hovey Grosvenor' place of death -> 'Baddeck' | world ['Cape Breton Island'] | He died on Feb. 4, 1966, in Baddeck, Nova Scotia.
+  [disagree] 'Sir George Grove' place of birth -> 'London' | world ['Clapham'] | He was born in London on Aug. 13, 1820. A civ il engineer by profession, he became secretary of the Crystal Palace (q.v.) when it was reerected in south London 
+  [disagree] 'Sir George Grove' place of death -> 'London' | world ['Lower Sydenham'] | Grove died in London on May 20, 1900. GROVE, Lefty ( 1900-1975), American baseball player, who was one of the greatest left-handed pitchers in the game.
+  [disagree] 'Calouste Sarkis Gulbenkian' place of birth -> 'Scutari' | world ['Üsküdar'] | He was born in Scutari (later Uskiidar), Turkey, on March 23, 1869, and was educated in France and Britain.
+  [disagree] 'Henry Wager Halleck' place of birth -> 'Westernville' | world ['Oneida County'] | Halleck was born in Westernville, N.Y., on Jan. 16, 1815. He graduated from the U.S. Military Academy at West Point in 1839. As a junior engineer officer, he wo
+  [disagree] 'William Frederick Halsey' date of birth -> '1882' | world ['1853-04-11'] | hol'se, William Frederick, Jr. (1882- 1959)
+  [disagree] 'William Frederick Halsey' date of death -> '1959' | world ['1920-06-11'] | hol'se, William Frederick, Jr. (1882- 1959)
+  [disagree] 'Alfred Dwight Foster Hamlin' place of birth -> 'Istanbul' | world ['Constantinople'] | He was born in Istanbul, Turkey, on Sept. 5, 1855. He studied architecture at the Massachusetts Institute of Technology and at the Ecole des Beaux-Arts in Paris
+  [disagree] 'Alfred Dwight Foster Hamlin' place of death -> 'New York' | world ['Istanbul', 'Mount Sinai Morningside'] | Hamlin died in New York on Sept. 5, 1926. HAMLIN, Cyrus (1811—1900), American educator and missionary.
+  [disagree] 'James Henry Hammond' place of birth -> 'Newberry' | world ['Columbia'] | He was born in Newberry county, S. C., on Nov. 15, 1807. Admitted to the South Carolina bar, he practiced law in Columbia, S. C., and there in 1830 established 
+  [near    ] 'James Henry Hammond' place of death -> 'Beach Island' | world ['Beech Island'] | He died in Beach Island, S. C., on Nov. 13, 1864. Many of his letters and speeches were published in 1866. Hampton M. Jarrell Winthrop College, Rock Hill, S. C.
+  [disagree] 'William Joseph Hardee' place of death -> 'Wytheville' | world ['Virginia'] | Hardee died in Wytheville, Va., on Nov. 6, 1
+  [near    ] 'Judson Harmon' place of birth -> 'Newton' | world ['Newtown'] | He was born in Newton, Ohio, on Feb. 3, 1846. He received his A. B. degree from Dennison University (1866) and Iris LL. B. from the Cincinnati Law School (1869)
+  [near    ] 'Johannes Carsten Hauch' place of birth -> 'Fredrikshald' | world ['Frederikshald'] | He was born in Fredrikshald (now Halden), Norway, on May 12, 1790, and took a doctorate in zoology in Copenhagen in 1821, although his interests were primarily 
+  [disagree] 'Robert Young Hayne' place of birth -> 'Colleton' | world ['South Carolina'] | Hayne was born in Colleton district, S. C., on Nov. 10, 1791. He served in the South Carolina legislature from 1814 to 1818, when he became state attorney gener
+  [disagree] 'Arthur Garfield Hays' date of birth -> '1885' | world ['1881-12-12'] | Arthur Garfield (1885-1954)
+
+hand-reading sample (50, seed 0):
+  [unheld  ] '1869-02-27' is the date of birth of 'Alice Hamilton'  ||  She was born in New York City on Feb. 27, 1869. After receiving her M. D. from the University of Michigan in 1893, she continued her medical studies at Johns Hopkins Univ
+  [unheld  ] 'Grafton County' is the located in the administrative territorial entity of 'Hanover'  ||  h an'a-var, a town in western New Hampshire, in Grafton county, is on the Connecticut River about 50 miles (SO km) northwest of Concord.
+  [unheld  ] '1751-12-26' is the date of birth of 'George Gordon'  ||  He was born in London on Dec. 26, 1751, son of the 3d duke of Gordon.
+  [unheld  ] '1645' is the date of death of 'Hugo Grotius'  ||  gro'shas, Hugo (1583-1645)
+  [agree   ] 'Rome' is the place of death of 'Johannes Carsten Hauch'  ||  He died in Rome on March 4, 1872. HAUCK, houk, Minnie (1851-1929), American soprano.
+  [unheld  ] 'New York City' is the place of birth of 'Lorenz Hart'  ||  Hart was born in New York City on May 22, 1895. While studying law at Columbia University, he met Rodgers, with whom he wrote the varsity show of 1918, Fly with Me.
+  [near    ] 'Beach Island' is the place of death of 'James Henry Hammond'  ||  He died in Beach Island, S. C., on Nov. 13, 1864. Many of his letters and speeches were published in 1866. Hampton M. Jarrell Winthrop College, Rock Hill, S. C. HAMMOND, 
+  [agree   ] '1955' is the date of death of 'Calouste Sarkis Gulbenkian'  ||  gool-beng'ke-an, Calouste Sarkis (1869-1955)
+  [unheld  ] 'Washington' is the place of death of 'Pat Harrison'  ||  Harrison died in Washington, D.C., on June 22, 1941. John Braeman, University of Nebraska HARRISON, Peter (17 16-1775), American architect who designed Redwood Library (1
+  [unheld  ] '1656' is the date of death of 'Joseph Hall'  ||  Joseph (1574-1656)
+  [agree   ] '1745-01-04' is the date of birth of 'Johann Jakob Griesbach'  ||  Griesbach was bom on Jan. 4, 1745, in Butzbach in Hesse-Darmstadt.
+  [unheld  ] '1959-03-07' is the date of death of 'Ichiro Hatoyama'  ||  He died in Tokyo on March 7, 1959. Kdojo Nakamura, Keio University HATSHEPSUT, hat-shep'sbot, ruler of Egypt from 1489 to 1469 b. c., was one of the first great women rec
+  [unheld  ] '1882-09-13' is the date of birth of 'Ramon Grau San Martin'  ||  He was born in Pinar del Rio, Cuba, on Sept. 13, 1882. Educated as a physician, he practiced medicine for many years.
+  [unheld  ] '1850' is the date of birth of 'Abilio Manuel Guerra Junqueiro'  ||  Abilio Manuel, germ zhooNng-ka'e-roo (1850-1923)
+  [unheld  ] 'Pinar del Rio' is the place of birth of 'Ramon Grau San Martin'  ||  He was born in Pinar del Rio, Cuba, on Sept. 13, 1882. Educated as a physician, he practiced medicine for many years.
+  [unheld  ] '1853-09-13' is the date of birth of 'Hans Christian Joachim Gram'  ||  Gram was born in Copenhagen on Sept. 13, 1853. He passed the University of Copenhagen final medical examinations in 1878 and in 1883 received his doctorate.
+  [agree   ] '1835' is the date of death of 'Antoine Jean Gros'  ||  gro, Antoine Jean (1771-1835)
+  [agree   ] '1942-01-08' is the date of birth of 'Stephen William Hawking'  ||  Hawking was born in Oxford, England, on Jan. 8, 1942, 300 years to the day after the death of Galileo.
+  [agree   ] '1895-07-26' is the date of birth of 'Robert Ranke Graves'  ||  Graves was born in Wimbledon, England, on July 26, 1895. After serving in World War I, he attended St.
+  [agree   ] '1909-08-19' is the date of death of 'Ludwig Gumplowicz'  ||  He died at Graz on Aug. 19, 1909. Gumplowicz defined sociology as the science of society and social laws.
+  [unheld  ] 'Jehay-Bodegnee' is the place of birth of 'Zenobe Theophile Gramme'  ||  He was born in Jehay-Bodegnee on April 4, 1826. He became interested in electricity while working in Paris as a model maker for a manufacturer of arc lamp generators.
+  [agree   ] '1836-09-12' is the date of death of 'Christian Dietrich Grabbe'  ||  Grabbe died in Detmold on Sept. 12, 1836. GRABEN, grab sn, a block of the earth's crust that lies between two faults and is down-thrust relative to the rocks on either si
+  [unheld  ] '1635' is the date of birth of 'Johan Gyllenstierna'  ||  yul'bn-shar-na, Johan (1635- 1680)
+  [unheld  ] '1849' is the date of birth of 'Robert Harris'  ||  Robert (1849-1919)
+  [agree   ] '1869-02-04' is the date of birth of 'William Dudley Haywood'  ||  Haywood was bom in Salt Lake City, Utah, on Feb. 4, 1869. Working in and around the mines from childhood, he became active in the Western Federation of Miners, later the 
+  [unheld  ] 'Bois-Colombes' is the place of death of 'Zenobe Theophile Gramme'  ||  Gramme died in Bois-Colombes, France, on Jan. 20, 1901. Kenneth M. Swezey Author of "Science Shows You How" GRAMMY AWARD , one of the most prestigious honors in the field
+  [unheld  ] '1862-03-17' is the date of death of 'Jacques Halevy'  ||  He died in Nice on March 17, 1862. Works.
+  [agree   ] '1873' is the date of death of 'William Joseph Hardee'  ||  hiir'de, William Joseph (1815-1873)
+  [unheld  ] 'New York City' is the place of death of 'John Gunther'  ||  He died in New York City on May 29, 1970. James Boylan, Columbia University GUNTRAM, gun 'tram (died 592), a Merovingian ruler of the Prankish kingdom of Burgundy, was a 
+  [unheld  ] 'Bradgate' is the place of birth of 'Lady Jane Grey'  ||  Jane was bom at Bradgate, Leicestershire, in October 1537, the eldest daughter of Henry Grey, later Duke of Suffolk.
+  [agree   ] '1830' is the date of birth of 'Paul Hamilton Hayne'  ||  Paul Hamilton (1830-1886)
+  [agree   ] 'Blooming Grove' is the place of birth of 'Warren Gamaliel Harding'  ||  Warren Harding was born on Nov. 2, 1865, in the hamlet of Blooming Grove, Ohio, the son and first child of George Tryon Harding II, a Civil War veteran, farmer, horse tra
+  [agree   ] '1896' is the date of birth of 'Felix Michael Haurowitz'  ||  Felix Michael, hor'a-wits (1896- 1987)
+  [unheld  ] 'New London County' is the located in the administrative territorial entity of 'Groton'  ||  grot an, is a town in southeastern Connecticut, in New London county, between the Thames and Mystic rivers, on Long Island Sound, about 45 miles (72 km) east of New Haven
+  [disagree] 'Judithenkirch' is the place of birth of 'Johann Christoph Gottsched'  ||  Gottsched was born in Judithenkirch on Feb. 2, 1700. After studying at the University of Konigsberg, he became professor of poetry and of philosophy at the University of 
+  [unheld  ] '1822' is the date of birth of 'Rutherford Birchard Hayes'  ||  Rutherford Birchard (1822-1893)
+  [disagree] 'Gleiwitz' is the place of birth of 'Eugen Goldstein'  ||  He was born in Gleiwitz (Polish, Gliwice), Upper Silesia, on Sept. 5, 1850. Goldstein studied at the universities of Breslau and Berlin, taking his Ph.D. in 1881. He work
+  [agree   ] '1932-07-06' is the date of death of 'Kenneth Grahame'  ||  He died at Pangbourne, England, on July 6, 1932. David Galloway Author of "The Absurd Hero" GRAHAMSTOWN, gra'amz-toun, a town in South Africa, is in southeastern Cape pro
+  [agree   ] '1926-09-05' is the date of death of 'Alfred Dwight Foster Hamlin'  ||  Hamlin died in New York on Sept. 5, 1926. HAMLIN, Cyrus (1811—1900), American educator and missionary.
+  [unheld  ] 'Frankfurt' is the place of birth of 'Johann Wolfgang von Goethe'  ||  Goethe was bom on Aug. 28, 1749, in the free city of Frankfurt.
+  [unheld  ] '1903' is the date of birth of 'Haldan Keffer Hartline'  ||  Haldan Keffer (1903-1983)
+  [unheld  ] 'Potsdam' is the place of birth of 'Ernst Heinrich Haeckel'  ||  Haeckel was born in Potsdam, Prussia, on Feb. 16, 1834. After studying botany under Matthias Schleiden at the University of Berlin, he studied medicine under Rudolf Virch
+  [unheld  ] '1972' is the date of death of 'Ferde Grofe'  ||  gro-fa', Ferde (1892-1972)
+  [unheld  ] 'Mexico City' is the place of birth of 'Manuel Gutierrez Najera'  ||  Gutierrez Najera was born in Mexico City on Dec. 22, 1859, the son of a well-known journalist.
+  [agree   ] '1766' is the date of death of 'Johann Christoph Gottsched'  ||  got'shat, Johann Christoph (1700-1766)
+  [agree   ] '1865-02-28' is the date of birth of 'Sir Wilfred Thomason Grenfell'  ||  Sir Wilfred Thomason (1865-1940), British medical missionary and author, who was known as "Grenfell of Labrador." He was born in Parkgate, Cheshire, England, on Feb. 28, 
+  [unheld  ] 'Dublin' is the place of birth of 'Arthur Griffith'  ||  Griffith was bom in Dublin on March 31, 1872, and apprenticed in boyhood to a printer.
+  [agree   ] 'Benson' is the place of birth of 'Rufus Wilmot Griswold'  ||  He was born in Benson, Vt, on Feb. 15, 1815, and apprenticed in the printing trade in Albany, N.Y. In his early twenties he was a Baptist minister but later returned to t
+  [unheld  ] 'Havana' is the place of death of 'Ramon Grau San Martin'  ||  Grau died in Havana on July 28, 1969. GRAUBUNDEN, grou-bun'dsn, the largest canton of Switzerland, extending eastward between Austria and Italy.
+  [unheld  ] '1809' is the date of death of 'Joseph Haydn'  ||  hi'dan, Joseph (1732-1809)
