@@ -1,0 +1,37 @@
+world 552297 facts | 200 chains x 4 forms = 800 questions | hippocampus 91 episodes | proposers grammar, hippocampus, emitter
+  25/200 chains (78s, emitter 56s, VM calls 609)
+  50/200 chains (134s, emitter 110s, VM calls 960)
+  75/200 chains (191s, emitter 164s, VM calls 1317)
+  100/200 chains (247s, emitter 217s, VM calls 1680)
+  125/200 chains (310s, emitter 277s, VM calls 2016)
+  150/200 chains (369s, emitter 333s, VM calls 2388)
+  175/200 chains (430s, emitter 391s, VM calls 2742)
+  200/200 chains (491s, emitter 449s, VM calls 3108)
+
+exhaustive: grammar: certified 189, wrong 0 | hippocampus: certified 395, wrong 0 | emitter: certified 320, wrong 0
+SimpleQA from the record: 600 questions (emitter rows 530, hippocampus rows 600, frontier rows 195)
+
+policy     certified  WRONG  proposals  emitter frontier  hippo  grammar  seconds
+fixed            589      0       3037      838      188   1211      800     1313
+striatum         589      0       2786     1080      188   1129      389     1446
+oracle           589      0       2547      838      188   1125      396     1306
+
+striatum vs fixed: 251 fewer proposals (8%), -242 fewer emitter calls, -133s saved; certified 589 vs 589; WRONG 0 vs 0
+
+what the striatum expects (proposer | shape -> expected reward, n), top 16 by n:
+  emitter|any|what|chain                           +0.00  (n=392)
+  hippocampus|any|what|chain                       +0.00  (n=242)
+  grammar|any|what|chain                           +0.44  (n=224)
+  hippocampus|any|what|inversion                   +0.02  (n=144)
+  emitter|any|what|inversion                       +0.01  (n=105)
+  hippocampus|any|what|flat                        +0.00  (n=77)
+  emitter|any|what|flat                            +0.00  (n=71)
+  hippocampus|date|in|flat                         +0.00  (n=64)
+  emitter|date|in|flat                             +0.00  (n=59)
+  grammar|any|what|inversion                       +0.00  (n=58)
+  hippocampus|name|who|flat                        +0.00  (n=38)
+  emitter|name|who|flat                            +0.00  (n=37)
+  hippocampus|date|what|flat                       +0.02  (n=31)
+  frontier|any|what|chain                          +0.00  (n=31)
+  emitter|date|what|flat                           +0.00  (n=28)
+  hippocampus|any|in|flat                          +0.00  (n=27)

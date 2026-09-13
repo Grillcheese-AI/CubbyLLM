@@ -86,16 +86,27 @@ class Striatum:
     def tonic(self) -> float:
         return sum(self.recent) / len(self.recent) if self.recent else 0.0
 
-    def order(self, question: str, proposers: list[str]) -> list[str]:
+    def order(self, question: str, proposers: list[str], costs: dict[str, float] | None = None,
+              cost_weight: float = 0.5) -> list[str]:
         """The proposers best-first for this question's shape; a proposer never tried on the
-        shape ranks by its value on all shapes (its prior); explore when the tonic level is low."""
+        shape ranks by its value on all shapes (its prior); explore when the tonic level is low.
+
+        `costs` (seconds per proposal) makes the ranking EFFORT-aware, which the striatum is:
+        score = expected reward - cost_weight * cost. exp_r15 run 1 (2026-09-12) ranked by
+        reward alone and moved the 1-second emitter ahead of the free grammar wherever the
+        emitter certified a little more often -- 8% fewer proposals, 242 more emitter calls,
+        133 s slower than the fixed order. A cheap proposer that might certify goes first; the
+        expensive one is asked when its expected reward beats the cheap one's by the cost."""
         shape = question_shape(question)
+        costs = costs or {}
         def score(p: str) -> float:
             k = self.key(p, shape)
             if k in self.expected:
-                return self.expected[k]
-            seen = [v for kk, v in self.expected.items() if kk.startswith(p + "|")]
-            return sum(seen) / len(seen) if seen else 0.0
+                v = self.expected[k]
+            else:
+                seen = [x for kk, x in self.expected.items() if kk.startswith(p + "|")]
+                v = sum(seen) / len(seen) if seen else 0.0
+            return v - cost_weight * costs.get(p, 0.0)
         ranked = sorted(proposers, key=lambda p: (-score(p), proposers.index(p)))
         if len(ranked) > 1 and self.tonic < self.tonic_floor and self._rng.random() < self.eps:
             ranked[0], ranked[1] = ranked[1], ranked[0]

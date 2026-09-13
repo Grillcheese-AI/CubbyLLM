@@ -131,3 +131,67 @@ measurement belongs with the SimpleQA runs. `exp_r13_hippocampus_semantic.*`.
   the host; when ANALOGY gets semantics in the VM, this is the reference behaviour and the pins.
 - *The IMemory interface* (`store / recall / search(emb, top_k) / forget / consolidate`) is the hippocampus's
   API almost verbatim; `ctx.snapshot / fork / merge` is the backtracking the prospection experiments used.
+
+## exp_r14 — the side cortex as the proposer on free text (SimpleQA 600)
+
+The matched pairs asked the memory questions in the episode's own words. SimpleQA asks in its own: "In
+which year was Dina Nath Walli (…) born?" names no episode's entity and none of the label `date of birth`.
+What memory can still offer is the chain's **shape** — a certified `date of birth` chain from any entity —
+rebound to the entity the question names, a plan with a canonical label the question does not spell: the
+plan a frontier proposer wrote in the ceiling probe, proposed here by the record of what was certified
+before. The host has the rest of the path: lever 6 words the label from the question, the source fetches the
+entity's facts, the VM certifies.
+
+**Setup.** Episodes: the 6 chains previous exp_r11 runs certified on SimpleQA (3 shapes — `date of birth`,
+`inception`, `located in the administrative territorial entity`) plus exp_r13's 91 matched-pair episodes
+(85 shapes), 97 in all. Candidates per question: the recalled episodes' own plans, then the nearest shapes
+rebound to the question's entity (its longest run of capitalised tokens, a heuristic on the record;
+parentheticals dropped — binding them is the second job). Each candidate through `learn_and_answer`; the
+first certified answer wins.
+
+**Three things had to be fixed before the mechanism produced anything, each on the record:**
+
+1. *Consolidation is not optional.* Episode labels were declared to the store but no fact stated them, so
+   `date of birth of X` split at the store's own reused `date`. An episode's facts now go into the world
+   store when the episode is loaded — the semantic half of the hippocampal contract.
+2. *Shape recall must be scored word-by-word.* A two-word shape bundled against a ten-word question is
+   drowned by the majority vote; `date of birth` was not in the top eight for "in which year was X born".
+   Each shape word now takes its best bit-agreement with any question word; under the semantic DG
+   `date of birth` ranks first (96), under the surface hash it does not appear at all.
+3. *A parenthetical is an aside, not a hop* (`covers()` v4): "(an Indian watercolor artist and poet from
+   Srinagar city)" left `artist` and `city` as leftover relation words and refused every such question.
+
+**Measured** (600 questions, same disposer / walk / resident VM; `match` now scores a transliteration or one
+administrative level as `near`, per Nick — earlier logs say WRONG for the Az-Zabdani case):
+
+| DG | verified | correct | near | **wrong** | recalled | rebound | coverage refusals | wall |
+|---|---|---|---|---|---|---|---|---|
+| semantic (MoWM word bits) | 7 | 6 | 1 | **0** | 6 | **1** | 593 | 809 s |
+| surface hash | 6 | 5 | 1 | **0** | 6 | 0 | 591 | 78 s |
+
+The six recalled are the episodes' own questions (the store is fresh each run; the facts come back through
+consolidation and the walk). The one rebound is the free-text transfer: `In which year was Dina Nath Walli (…)
+born?` → **1908, correct** — the `date of birth` shape from Masaki Tsuji's episode, rebound to Dina Nath
+Walli, worded by lever 6 (`born` → `date of birth`), 13 facts fetched and admitted, VM-certified. No model
+in the loop. The semantic DG found the shape; the surface hash did not — that is item 4's number: +1 on this
+sample, and the only free-text transfer either code produced.
+
+**Why only one.** 593 of 600 still die at coverage. The shapes that would transfer — `date of birth` to the
+dozen "born" questions, `inception` to the "founded" questions — are refused for the same reason the
+ceiling probe's plans were: appositives the residual rule reads as hops ("the footballer X", "former Vice
+President of Ghana X"), and wordings the alias tables do not carry (`founded` names `inception` in
+Wikidata's aliases, but the context-mean table puts them at 148/256 bits, below what shape recall needs).
+Coverage of free text is the binding constraint, again, and it is the host's.
+
+**The cost, and the rule it forced.** The semantic run made **2,003 Wikidata API calls** — 875 for the first
+100 questions in the first attempt — almost all of them lever 6 asking the property-search API "is this
+word a relation's alias?" per candidate, per n-gram. Nick's rule (2026-09-12): the answering process must
+not depend on a live external call per question; outside testing and training no external LLM is ever
+involved, and an LLM's only job is building the dataset. The property vocabulary is ~13k entries and one
+download: `standin/data/build_property_aliases.py` fetches it once (EN + FR labels and aliases) and
+`sources.PropertyAliases` is the local resolver; `WikidataSource.relations()` reads it and makes no call
+(`online_relations=True` is the only way back to the API). Entity facts stay cached and belong to the
+learning phase. The re-run on the local table is the next number to report: calls per 100 questions, target
+zero for wording.
+
+`exp_r14_hippocampus_simpleqa_{semantic,surface,probe100}.*`.

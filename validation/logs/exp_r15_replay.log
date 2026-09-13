@@ -1,0 +1,24 @@
+stream: 1400 questions (200 matched chains x 4 + the SimpleQA record)
+policy                 certified  WRONG  proposals  emitter frontier  hippo  grammar  seconds
+fixed                        589      0       3037      838      188   1211      800     1313
+oracle                       589      0       2547      838      188   1125      396     1306
+striatum cw=0.0              589      0       2786     1080      188   1129      389     1446
+striatum cw=0.25             589      0       2840      901      188   1239      512     1350
+striatum cw=0.5              589      0       2865      842      188   1275      560     1316
+striatum cw=1.0              589      0       2862      839      188   1265      570     1314
+
+best cost weight 1.0: -1s faster than fixed (-0%), oracle floor 7s; emitter calls 838 -> 839 (oracle 838); certified 589 = fixed 589; WRONG 0
+
+what the striatum expects at the best weight (proposer | shape -> expected reward, n), top 12 by n:
+  grammar|any|what|chain                           +0.44  (n=364)
+  hippocampus|any|what|chain                       +0.00  (n=349)
+  emitter|any|what|chain                           +0.00  (n=187)
+  hippocampus|any|what|inversion                   +0.02  (n=160)
+  emitter|any|what|inversion                       +0.01  (n=91)
+  hippocampus|any|what|flat                        +0.00  (n=90)
+  grammar|any|what|inversion                       +0.00  (n=78)
+  hippocampus|date|in|flat                         +0.00  (n=64)
+  emitter|date|in|flat                             +0.00  (n=60)
+  emitter|any|what|flat                            +0.00  (n=53)
+  hippocampus|name|who|flat                        +0.00  (n=38)
+  emitter|name|who|flat                            +0.00  (n=37)

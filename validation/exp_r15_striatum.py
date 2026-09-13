@@ -35,7 +35,7 @@ from exp_r9_matched_pairs import emitted_plan, forms  # noqa: E402
 COST_S = {"grammar": 0.0, "hippocampus": 0.05, "emitter": 1.0, "frontier": 3.0}     # per proposal, measured orders of magnitude
 
 
-def replay(stream, policy, striatum=None, proposers=("grammar", "hippocampus", "emitter")):
+def replay(stream, policy, striatum=None, proposers=("grammar", "hippocampus", "emitter"), cost_weight=0.5):
     """`stream`: [(question, gold, {proposer: (outcome, correct_or_None, seconds)})]. Returns the tally."""
     from cubbyllm.reasoning.striatum import Striatum
     t = collections.Counter(); seconds = 0.0
@@ -47,7 +47,7 @@ def replay(stream, policy, striatum=None, proposers=("grammar", "hippocampus", "
             cert = [p for p in avail if outcomes[p][0] == "certified"]
             order = (sorted(cert, key=lambda p: outcomes[p][2])[:1] if cert else []) + [p for p in avail if p not in cert]
         else:
-            order = striatum.order(q, avail)
+            order = striatum.order(q, avail, costs=COST_S, cost_weight=cost_weight)
         for p in order:
             outcome, correct, secs = outcomes[p]
             t["proposals"] += 1; t[f"tried:{p}"] += 1; seconds += secs

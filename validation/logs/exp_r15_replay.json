@@ -1,0 +1,80 @@
+{
+ "fixed": {
+  "proposals": 3037,
+  "tried:grammar": 800,
+  "certified": 589,
+  "certified:grammar": 189,
+  "tried:hippocampus": 1211,
+  "certified:hippocampus": 303,
+  "tried:emitter": 838,
+  "certified:emitter": 97,
+  "unanswered": 811,
+  "tried:frontier": 188,
+  "seconds": 1313.0
+ },
+ "oracle": {
+  "proposals": 2547,
+  "tried:grammar": 396,
+  "certified": 589,
+  "certified:grammar": 178,
+  "tried:hippocampus": 1125,
+  "certified:hippocampus": 314,
+  "tried:emitter": 838,
+  "certified:emitter": 97,
+  "unanswered": 811,
+  "tried:frontier": 188,
+  "seconds": 1306.1
+ },
+ "striatum cw=0.0": {
+  "proposals": 2786,
+  "tried:grammar": 389,
+  "certified": 589,
+  "certified:grammar": 100,
+  "tried:hippocampus": 1129,
+  "certified:hippocampus": 247,
+  "tried:emitter": 1080,
+  "certified:emitter": 242,
+  "unanswered": 811,
+  "tried:frontier": 188,
+  "seconds": 1446.2
+ },
+ "striatum cw=0.25": {
+  "proposals": 2840,
+  "tried:grammar": 512,
+  "certified": 589,
+  "certified:grammar": 151,
+  "tried:hippocampus": 1239,
+  "certified:hippocampus": 304,
+  "tried:emitter": 901,
+  "certified:emitter": 134,
+  "unanswered": 811,
+  "tried:frontier": 188,
+  "seconds": 1349.5
+ },
+ "striatum cw=0.5": {
+  "proposals": 2865,
+  "tried:grammar": 560,
+  "certified": 589,
+  "certified:grammar": 168,
+  "tried:hippocampus": 1275,
+  "certified:hippocampus": 322,
+  "tried:emitter": 842,
+  "certified:emitter": 99,
+  "unanswered": 811,
+  "tried:frontier": 188,
+  "seconds": 1316.3
+ },
+ "striatum cw=1.0": {
+  "proposals": 2862,
+  "tried:grammar": 570,
+  "certified": 589,
+  "certified:grammar": 171,
+  "tried:hippocampus": 1265,
+  "certified:hippocampus": 321,
+  "tried:emitter": 839,
+  "certified:emitter": 97,
+  "unanswered": 811,
+  "tried:frontier": 188,
+  "seconds": 1314.2
+ }
+}
