@@ -124,6 +124,31 @@ refuses. Pinned. With it: **599 plans, 511 verified, 511 correct, 0 wrong**, 82 
 gen-3 training questions teach, and what the A/B measures: gen 3 masked and gen 3 full against this 511
 at 0 wrong, on the same 600.
 
+## The wordings a model writes (`standin/data/gen3_llm_wordings.py`) — dataset phase, $0.18
+
+The deterministic table has 50 shapes; SimpleQA has appositives, inversions and descriptors the table
+lacks. Under the rule that an LLM's only job is the dataset, a frontier model (Gemini 3.8 Flash, effort
+low, cached) was given 600 certified one-hop facts — subject, relation, value, and the encyclopedia's
+sentence where there was one — and asked for three natural questions each whose only answer is the
+value, naming the subject, varying the shape. It writes **questions only**; the host then does what it
+does at serve time — the seed is the fact's subject, the relation words are the wording's own n-gram the
+property table resolves to the fact's relation — and the gate certifies. **1,797 wordings, 1,098
+certified (61.1%)**: encyclopedia facts 927/1,392, wiki facts 171/405. The certified ones are the shapes
+the table has none of: `In what town or city was Judson Harmon, the Ohio governor, born?`, `Madame de
+Stael was born in which year?`, `What was the birthplace of the dramatist Victorien Sardou?`, `What is
+the birth year of Madame de Stael?` (`birth year`, a P569 alias). The refusals: 364 for coverage — the
+model adds descriptors the store reads as relations (`primary church employer during his career in
+gospel music`, `legendary radio personality credited as an author`), which is the residual rule doing its
+job on a question that asks more than the fact states; 297 with no relation wording the table knows
+(`passed away`, `employed the musician`, `work as`); 32 `ambiguous_relation` (`In what Orkney parish was
+X born?` — `parish` was not a place class, and `which Bavarian town` had an adjective between the ask and
+its noun: both fixed in `_ASK_PLACE`, pinned). And one **wrong answer the gate caught**: `Where was John
+Joseph Sirica when he died?` answered `1992` — `when` inside the question read as the ask; now the
+leading interrogative decides (`where` first), pinned, and the answer-type check refuses the year.
+The 1,912 records (a plan and a chain per certified wording, minus 284 whose text a table wording
+already produced) join `emitter_sft_v13e` whole, by their chains' split: **48,225 records, 40,560 train
+rows**. `gen3_llm_wordings.{jsonl,manifest.json}` (off-repo; manifest in `validation/logs/`).
+
 `exp_r17_gen3_heldout_gen2.*`, `exp_r17_gen3_heldout_gen2_snap.*`;
 `standin/data/out/gen3_free_text.{jsonl,manifest.json}`, `emitter_sft_v13e.{jsonl,manifest.json}` (off-repo;
 the manifests are copied to `validation/logs/`).

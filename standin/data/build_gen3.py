@@ -178,6 +178,8 @@ def main() -> None:
                     help="at most this many certified TRAIN questions (x2 records) enter the merged set, sampled round-robin over "
                          "wordings and sources so gen 3 does not drown gen 2 (12k questions ~ gen 2's own row count); 0 = all")
     ap.add_argument("--from-gen3", default=None, help="skip the build: read an existing gen3 jsonl and only merge")
+    ap.add_argument("--extra", default=None, help="comma-separated jsonl files of further certified records (gen3_llm_wordings.py's), "
+                                                  "merged whole by their own split, uncapped")
     ap.add_argument("--tag", default="")
     a = ap.parse_args()
     t0 = time.perf_counter()
@@ -377,7 +379,14 @@ def merge(records: list[dict], a, rng: random.Random, rev: str, built: str) -> N
         for r in by_q[q]:
             if r["id"] in ids:
                 continue
-            merged.append(dict(r, system=system)); n_added += 1
+            merged.append(dict(r, system=system)); n_added += 1; ids.add(r["id"])
+    n_extra = 0
+    for path in [p for p in (a.extra or "").split(",") if p.strip()]:
+        for l in open(path.strip(), encoding="utf-8"):
+            r = json.loads(l)
+            if r["id"] in ids:
+                continue
+            merged.append(dict(r, system=system)); n_extra += 1; ids.add(r["id"])
     out13 = os.path.join(os.path.dirname(a.out), "emitter_sft_v13e.jsonl")
     with open(out13, "w", encoding="utf-8") as f:
         for r in merged:
@@ -385,6 +394,7 @@ def merge(records: list[dict], a, rng: random.Random, rev: str, built: str) -> N
     g3 = [r for r in merged if r["source"].startswith("cubbyllm/gen3")]
     m13 = {"version": "v13e", "built": built, "git_rev": rev, "gen2": a.merge, "gen3": a.from_gen3 or a.out,
            "merge_cap_questions": a.merge_cap, "gen3_train_questions": len(train_qs), "gen3_held_questions": len(held_qs),
+           "extra": a.extra, "extra_records": n_extra,
            "n_records": len(merged), "by_task": dict(collections.Counter(r["task"] for r in merged)),
            "by_source": dict(collections.Counter(r["source"] for r in merged)),
            "gen3_by_wording_train": dict(collections.Counter(r.get("wording") for r in g3 if r["split"] == "train" and r["task"] == "plan")),

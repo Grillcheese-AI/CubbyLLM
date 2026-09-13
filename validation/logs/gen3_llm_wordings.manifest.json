@@ -1,0 +1,52 @@
+{
+ "version": "gen3-llm",
+ "built": "2026-09-13T01:19:51",
+ "git_rev": "749a09c",
+ "model": "google/gemini-3.8-flash",
+ "chains": 600,
+ "wordings": 1797,
+ "certified": 1098,
+ "by_verdict": {
+  "chains": 600,
+  "wordings": 1797,
+  "no_relation_wording": 297,
+  "plan_does_not_cover_question": 364,
+  "certified": 1098,
+  "ambiguous_relation": 32,
+  "verified_other_answer": 4,
+  "retrieval_exhausted": 1,
+  "ambiguous_hop": 1
+ },
+ "by_source": {
+  "wiki": {
+   "no_relation_wording": 64,
+   "plan_does_not_cover_question": 165,
+   "certified": 171,
+   "ambiguous_relation": 4,
+   "retrieval_exhausted": 1
+  },
+  "encyclopedia": {
+   "certified": 927,
+   "plan_does_not_cover_question": 199,
+   "no_relation_wording": 233,
+   "ambiguous_relation": 28,
+   "verified_other_answer": 4,
+   "ambiguous_hop": 1
+  }
+ },
+ "n_records": 2196,
+ "usage": {
+  "prompt_tokens": 123332,
+  "completion_tokens": 22521,
+  "reasoning_tokens": 0,
+  "cost": 0.17518322249999987,
+  "live_calls": 580,
+  "finish": {
+   "stop": 599,
+   "error": 1
+  }
+ },
+ "vm_calls": 2204,
+ "wall_s": 945.6,
+ "output": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\gen3_llm_wordings.jsonl"
+}

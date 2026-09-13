@@ -447,9 +447,16 @@ _ASK_NUMBER = __import__("re").compile(r"\b(how\s+many|how\s+much|what\s+(number
 _ASK_NAME = __import__("re").compile(r"^\s*(who|whom|whose)\b")
 # a place (2026-09-13, gen-3 builder): 'where', or a class noun that is a kind of place -- 'in which
 # city was X born' asks for a place, and 'city' is the ask, not a hop the plan dropped
-_PLACE_CLASSES = "city|town|country|state|province|county|district|region|village|place|location|continent|island|municipality"
+_PLACE_CLASSES = ("city|town|country|state|province|county|district|region|village|place|location|continent|island|"
+                  "municipality|parish|settlement|borough|prefecture|commune|territory|neighborhood|suburb")
+# 'in which city', 'in what Orkney parish', 'which Bavarian town': up to two words between the ask and the class
 _ASK_PLACE = __import__("re").compile(
-    rf"^\s*where\b|\b(in|at|from|of)\s+(what|which)\s+({_PLACE_CLASSES})\b|^\s*(what|which)\s+({_PLACE_CLASSES})\b")
+    rf"^\s*where\b|\b(in|at|from|of)\s+(what|which)\s+(?:[a-z][\w'-]*\s+){{0,2}}({_PLACE_CLASSES})\b|"
+    rf"^\s*(what|which)\s+(?:[a-z][\w'-]*\s+){{0,2}}({_PLACE_CLASSES})\b")
+# the leading interrogative decides first: 'Where was X when he died?' asks for a place, 'When ... where he
+# lived' for a date (gen3_llm_wordings, 2026-09-13: a where-question answered with a year, caught by the gate)
+_LEAD = __import__("re").compile(r"^\s*(where|when|who|whom|whose|how\s+many|how\s+much)\b")
+_LEAD_KIND = {"where": "place", "when": "date", "who": "name", "whom": "name", "whose": "name", "how many": "number", "how much": "number"}
 _ASK_WORDS = {"date": frozenset("year date day month decade century when".split()),
               "number": frozenset("many much number percentage amount count".split()),
               "name": frozenset(),
@@ -465,6 +472,9 @@ def ask_type(question: str) -> str | None:
     """'date' | 'number' | 'name' | 'place' | None -- the kind of answer the question asks
     for (`KIND_OF_ASK` maps it onto a value kind: a place is name-valued)."""
     q = question.lower()
+    lead = _LEAD.match(q)
+    if lead:
+        return _LEAD_KIND[" ".join(lead.group(1).split())]
     if _ASK_DATE.search(q):
         return "date"
     if _ASK_NUMBER.search(q):

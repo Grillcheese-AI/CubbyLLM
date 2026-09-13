@@ -874,3 +874,13 @@ administrative territorial entity` / `location`, both name-valued) and `element`
 which name no ask type. The wording step is off the network for good; what remains on it
 is the entity fetch, which belongs to the learning phase and is cached across runs.
 `exp_r11_search_learn_wikidata_local.*`.
+
+**With the gen-3 builder's levers (`_lev7`, same day, later):** the property's every wording, the sibling
+step, the place ask, covers v5, the question-decided tail split and lever 7 (the seed snapped to the
+question's spelling) — coverage refusals **452 → 372**, questions that reached a fetch 76 → 153, aliased
+11 → 51, 104 live calls for the newly reachable entities (cached now); and **6 verified, 5 correct, 1 near,
+0 wrong**, the same six. Eighty more SimpleQA questions now pass the disposer and fetch their entity's
+facts; what they then die of is `unknown_relation` (108) and `retrieval_exhausted` (38) — the relation
+the question asks is one Wikidata does not state for that entity, or states under a qualifier the plan
+cannot carry. The ceiling probe's reading, again, one lever further in: the host's coverage is no longer
+the first wall on SimpleQA; the sources' relations are. `exp_r11_search_learn_wikidata_lev7.*`.

@@ -1,19 +1,21 @@
 {
  "version": "v13e",
- "built": "2026-09-13T00:41:43",
- "git_rev": "d1aebcf",
+ "built": "2026-09-13T01:23:22",
+ "git_rev": "749a09c",
  "gen2": "standin\\data\\out\\emitter_sft_v12e.jsonl",
  "gen3": "standin\\data\\out\\gen3_free_text.jsonl",
  "merge_cap_questions": 12000,
  "gen3_train_questions": 12000,
  "gen3_held_questions": 5234,
- "n_records": 46313,
+ "extra": "standin\\data\\out\\gen3_llm_wordings.jsonl",
+ "extra_records": 1912,
+ "n_records": 48225,
  "by_task": {
   "arithmetic": 6148,
   "kernel": 1769,
   "role_binding": 1500,
-  "chain": 18448,
-  "plan": 18448
+  "chain": 19404,
+  "plan": 19404
  },
  "by_source": {
   "regen/arith_xl": 6148,
@@ -24,7 +26,9 @@
   "game_notebook": 1,
   "cubbyllm/cot_harvest_r7": 26,
   "cubbyllm/gen3_encyclopedia": 16368,
-  "cubbyllm/gen3_wiki": 18100
+  "cubbyllm/gen3_wiki": 18100,
+  "cubbyllm/gen3_llm_encyclopedia": 1680,
+  "cubbyllm/gen3_llm_wiki": 232
  },
  "gen3_by_wording_train": {
   "In what year did {S} die?": 453,
@@ -67,8 +71,9 @@
   "Who is {S}'s child?": 226,
   "Who is {S}'s sibling?": 195,
   "Who was {S}'s husband?": 226,
-  "Who was {S}'s wife?": 226
+  "Who was {S}'s wife?": 226,
+  "llm": 900
  },
- "train_rows_after_repeat": 38760,
+ "train_rows_after_repeat": 40560,
  "schema_note": "gen 3 = gen 2 unchanged + a capped, wording-stratified sample of the reverse-built free-text records (plan + chain per question, provenance per record); every held question kept for exp_r17"
 }

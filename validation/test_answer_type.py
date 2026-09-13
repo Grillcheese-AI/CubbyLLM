@@ -47,6 +47,13 @@ def test_ask_type_reads_the_question():
     assert ask_type("What country is Jean a citizen of?") == "place"
     assert answer_type_mismatch("Where was Masaki Tsuji born?", "1932-03-23") == ("place", "date")
     assert answer_type_mismatch("Where was Masaki Tsuji born?", "Nagoya") is None
+    # the leading interrogative decides: a where-question that mentions 'when' asks for a place (an LLM
+    # wording the gate caught answered with a year); a class noun two words on still reads as a place
+    assert ask_type("Where was John Joseph Sirica when he died?") == "place"
+    assert answer_type_mismatch("Where was John Joseph Sirica when he died?", "1992") == ("place", "date/number")
+    assert ask_type("In what Orkney parish was the poet Edwin Muir born?") == "place"
+    assert ask_type("Alois Alzheimer, the German psychiatrist, was born in which Bavarian town?") == "place"
+    assert ask_type("Madame de Stael was born in which year?") == "date"
 
 
 def test_value_kinds_by_shape():
