@@ -29,26 +29,55 @@ SELECT ?p ?lang ?text ?kind WHERE {
   FILTER(?lang IN ("en", "fr"))
 }
 """
+# the value kind of every property, one request (~12.7k rows): what a typed ask can narrow by
+DATATYPES = """
+SELECT ?p ?dt WHERE { ?p a wikibase:Property ; wikibase:propertyType ?dt . }
+"""
+_ONTOLOGY_TO_DATATYPE = {"Time": "time", "Quantity": "quantity", "WikibaseItem": "wikibase-item", "String": "string",
+                         "Monolingualtext": "monolingualtext", "ExternalId": "external-id", "Url": "url",
+                         "CommonsMedia": "commonsMedia", "GlobeCoordinate": "globe-coordinate", "Math": "math",
+                         "GeoShape": "geo-shape", "TabularData": "tabular-data", "MusicalNotation": "musical-notation",
+                         "WikibaseProperty": "wikibase-property", "WikibaseLexeme": "wikibase-lexeme",
+                         "WikibaseForm": "wikibase-form", "WikibaseSense": "wikibase-sense", "EntitySchema": "entity-schema"}
+
+
+def fetch_datatypes() -> dict[str, str]:
+    """{pid: wikidata datatype name} from one SPARQL request; the ontology's local names
+    are mapped onto the Action API's datatype names so both build paths agree."""
+    out: dict[str, str] = {}
+    for b in fetch(DATATYPES):
+        pid = b["p"]["value"].rsplit("/", 1)[-1]
+        local = b["dt"]["value"].rsplit("#", 1)[-1]
+        out[pid] = _ONTOLOGY_TO_DATATYPE.get(local, local.lower())
+    return out
 
 
 def fetch(query: str) -> list[dict]:
     url = SPARQL + "?" + urllib.parse.urlencode({"query": query, "format": "json"})
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/sparql-results+json"})
-    with urllib.request.urlopen(req, timeout=300) as r:
-        return json.loads(r.read().decode("utf-8"))["results"]["bindings"]
+    for attempt in range(6):
+        try:
+            with urllib.request.urlopen(req, timeout=300) as r:
+                return json.loads(r.read().decode("utf-8"))["results"]["bindings"]
+        except urllib.error.HTTPError as e:              # the endpoint was at 1 req/min on 2026-09-12/13
+            if e.code != 429 or attempt == 5:
+                raise
+            wait = float(e.headers.get("Retry-After") or 0) or 65.0
+            print(f"  429 from SPARQL: waiting {wait:.0f}s", flush=True); time.sleep(wait)
+    raise RuntimeError("unreachable")
 
 
 API = "https://www.wikidata.org/w/api.php"
 
 
-def fetch_entities(max_pid: int, sleep_s: float = 1.0) -> dict[str, dict]:
+def fetch_entities(max_pid: int, sleep_s: float = 1.0, props_wanted: str = "labels|aliases|datatype") -> dict[str, dict]:
     """The Action API, 50 ids a call (the SPARQL endpoint was rate-limited to 1 req/min
-    during an outage on 2026-09-12): ~270 calls for P1..P13500, once."""
+    during an outage on 2026-09-12, and still on 2026-09-13): ~270 calls for P1..P13500, once."""
     props: dict[str, dict] = {}
     ids = [f"P{i}" for i in range(1, max_pid + 1)]
     for i in range(0, len(ids), 50):
         chunk = ids[i:i + 50]
-        url = API + "?" + urllib.parse.urlencode({"action": "wbgetentities", "ids": "|".join(chunk), "props": "labels|aliases",
+        url = API + "?" + urllib.parse.urlencode({"action": "wbgetentities", "ids": "|".join(chunk), "props": props_wanted,
                                                   "languages": "en|fr", "format": "json"})
         req = urllib.request.Request(url, headers={"User-Agent": UA})
         for attempt in range(8):
@@ -69,6 +98,8 @@ def fetch_entities(max_pid: int, sleep_s: float = 1.0) -> dict[str, dict]:
             if "missing" in ent:
                 continue
             d = {"label": {}, "aliases": {"en": [], "fr": []}}
+            if ent.get("datatype"):
+                d["datatype"] = ent["datatype"]
             for lang, lab in (ent.get("labels") or {}).items():
                 d["label"][lang] = lab["value"]
             for lang, al in (ent.get("aliases") or {}).items():
@@ -85,10 +116,31 @@ def main() -> None:
     ap.add_argument("--out", default=str(OUT))
     ap.add_argument("--max-pid", type=int, default=13600)
     ap.add_argument("--sparql", action="store_true", help="one SPARQL query instead of the Action API")
+    ap.add_argument("--datatypes", action="store_true",
+                    help="add each property's datatype to an EXISTING table, nothing else (one SPARQL request; "
+                         "--via-api reads it from the Action API in ~270 calls when the SPARQL endpoint is rate-limited)")
+    ap.add_argument("--via-api", action="store_true")
     a = ap.parse_args()
     t0 = time.perf_counter()
+    if a.datatypes:
+        out = pathlib.Path(a.out)
+        d = json.loads(out.read_text(encoding="utf-8"))
+        if a.via_api:
+            dts = {pid: p["datatype"] for pid, p in fetch_entities(a.max_pid, props_wanted="datatype").items() if p.get("datatype")}
+        else:
+            dts = fetch_datatypes()
+        n = 0
+        for pid, p in d["properties"].items():
+            if pid in dts:
+                p["datatype"] = dts[pid]; n += 1
+        out.write_text(json.dumps(d, ensure_ascii=False), encoding="utf-8")
+        from collections import Counter
+        print(f"datatypes: {len(dts)} fetched, {n}/{len(d['properties'])} properties typed, {time.perf_counter() - t0:.0f}s")
+        print("  " + ", ".join(f"{k} {v}" for k, v in Counter(p.get("datatype") for p in d["properties"].values()).most_common(8)))
+        return
     if a.sparql:
         rows = fetch(QUERY)
+        dts = fetch_datatypes()
         props: dict[str, dict] = {}
         for b in rows:
             pid = b["p"]["value"].rsplit("/", 1)[-1]
@@ -98,6 +150,8 @@ def main() -> None:
                 d["label"][lang] = text
             else:
                 d["aliases"][lang].append(text)
+            if pid in dts:
+                d["datatype"] = dts[pid]
     else:
         props = fetch_entities(a.max_pid)
     for d in props.values():

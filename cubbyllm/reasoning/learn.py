@@ -35,7 +35,7 @@ from typing import Protocol, runtime_checkable
 
 from ..core.protocols import Wiring
 from .pipeline import CoTResult, answer
-from .plan_verify import _FRAME_AND_JOINT, tail_match, tail_relation
+from .plan_verify import _FRAME_AND_JOINT, ask_type, tail_match, tail_relation
 from .planner import QuestionPlan, Triple, normalize, parse_fact, parse_question
 
 __wiring__ = Wiring.WIRED
@@ -153,8 +153,35 @@ def stalled_entities(question: str, plan: QuestionPlan | None, first: CoTResult,
     return out
 
 
+def narrow_by_ask(question: str | None, candidates: list[str], resolvers) -> list[str]:
+    """The typed answer class applied where a wording names several held labels
+    (2026-09-13: the local property table says 'born' is an alias of BOTH `date of
+    birth` and `place of birth`, where the API's search had ranked one). A *when*
+    question keeps the date-valued labels, a *how many* the number-valued, a *who* the
+    entity-valued; the value kind is the property's DATATYPE, read from the table by
+    `resolver.kind(label)`, never the model's pick or the API's rank. Exactly one must
+    remain, and every candidate must have a known kind -- a label the table cannot type
+    might be date-valued too, and choosing among those would be a pick. Otherwise the
+    candidates come back as they were and the ambiguity stands."""
+    if not question or len(candidates) < 2:
+        return candidates
+    asked = ask_type(question)
+    if asked is None:
+        return candidates
+    typed = [x for x in resolvers if hasattr(x, "kind")]
+    if not typed:
+        return candidates
+    kinds: dict[str, str | None] = {}
+    for label in candidates:
+        kinds[label] = next((k for k in (x.kind(label) for x in typed) if k is not None), None)
+    if any(k is None for k in kinds.values()):
+        return candidates
+    keep = [label for label in candidates if kinds[label] == asked]
+    return keep if len(keep) == 1 else candidates
+
+
 def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
-                      aliases: dict[str, list[str]]) -> tuple[QuestionPlan, list[tuple[str, str]], dict | None]:
+                      aliases: dict[str, list[str]], question: str | None = None) -> tuple[QuestionPlan, list[tuple[str, str]], dict | None]:
     """Lever 4 (2026-09-11, exp_r11): the emitter names a relation in the QUESTION's
     words ('born'); the source states it under its own label ('date of birth'), and the
     two share no word, so neither paraphrase tier can bridge them. The source resolves
@@ -163,7 +190,9 @@ def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
     plan into that wording -- the model proposed, the host translated, and the
     translation is on record (`aliases`, so `covers()` still sees the original words).
     Exactly one label must survive: several ('position' -> location / ranking) is an
-    ambiguity the host refuses, never resolves; none leaves the plan as it was."""
+    ambiguity the host refuses, never resolves -- unless the question's ask type and
+    the labels' datatypes leave exactly one (`narrow_by_ask`); none leaves the plan as
+    it was."""
     resolvers = [x for x in (source if isinstance(source, (list, tuple)) else [source]) if hasattr(x, "relations")]
     if not resolvers:
         return plan, [], None
@@ -173,6 +202,7 @@ def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
         held = sorted({l for l in labels if l in known})
         if not held:
             continue
+        held = narrow_by_ask(question, held, resolvers)
         if len(held) > 1:
             return plan, rewrote, {"relation": r, "candidates": held}
         label = held[0]
@@ -244,9 +274,11 @@ def resolve_wordings(question: str, plan: QuestionPlan, source, known, aliases: 
             named = {normalize(l) for x in resolvers for l in x.relations(g)}
             if label not in named:
                 continue
-            candidates = sorted({l for l in named if l in known} | {label})
+            candidates = narrow_by_ask(question, sorted({l for l in named if l in known} | {label}), resolvers)
             if len(candidates) > 1:
                 return found, {"wording": g, "candidates": candidates}
+            if candidates != [label]:
+                continue                                   # the ask type kept the OTHER label: this wording is not the plan's
             aliases.setdefault(label, []).append(g)
             found.append((g, label))
             break
@@ -290,7 +322,8 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
         if out.result.reason == "unknown_relation" and plan is not None:
             unknown = [r for r in (out.result.refused or {}).get("unknown_relations", []) if r not in resolved]
             resolved.update(unknown)
-            plan2, rewrote, amb = resolve_relations(plan, unknown, [source] + list(resolvers or []), known, aliases)
+            plan2, rewrote, amb = resolve_relations(plan, unknown, [source] + list(resolvers or []), known, aliases,
+                                                    question=question)
             if amb is not None:
                 out.result = CoTResult(answer=None, verified=False, reason="ambiguous_relation", refused=amb)
                 break

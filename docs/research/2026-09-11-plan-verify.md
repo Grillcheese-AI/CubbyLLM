@@ -813,3 +813,53 @@ certified chains in, questions out, the plan never the model's.
 third and fourth hard resets (12:32, 17:13; all four today with bugcheck 0, no dump, no WHEA, no
 display-driver timeout — the power being cut, not a crash; the emitter runs on the GPU, all 24 layers on
 Vulkan) killed one run each; every result above is from a run that completed.
+
+## 2026-09-12/13 — the typed answer class, and the ask type as the tie-breaker for a two-sense wording
+
+**The typed answer class** (`plan_verify.ask_type` / `value_kinds` / `answer_type_mismatch`, committed
+8d570da). A question's ask words name the *kind* of value it wants: `when`, `what year`, `on what day,
+month, and year` → a date; `how many`, `how much`, `what number` → a number; `who`, `whom`, `whose` → a
+name. Two uses. In `covers()` the ask words are frame words now, not residual vocabulary — `year` in "what
+year was X founded" is no longer a hop the plan dropped, whatever the store's vocabulary happens to hold
+(the lev6/lev6b delta, 4 → 6 verified, was exactly that order effect: a large fetch had brought a `year`-
+bearing relation into the vocabulary and two birth-date plans stopped covering their questions). And at
+the only `verified=True` site in the pipeline, a chain whose last object is not of the asked kind is
+refused as `answer_type_mismatch` with the asked kind, the got kind, the value and the facts on record —
+a date asked and a name delivered is not an answer, however certified the chain. A bare three- or four-
+digit value is both a date and a number (`value_kinds('1908') = {date, number}`): the class refuses only
+what *cannot* be the asked kind, never what merely might not be. Pinned in `validation/test_answer_type.py` (4).
+
+**Measured** (`_typed`, the emitter, Wikidata source, same 600): 530 plans, 76 fetched, **6 verified,
+5 correct, 1 near, 0 wrong** — the lev6b numbers, with the order effect gone by construction rather than
+by the ambiguity rule's side effect; `answer_type_mismatch` fired on none of the six (the VM's chains
+were of the asked kind), so on this sample the class costs nothing and guards the next sample. The
+"near": *Az-Zabdani Subdistrict* for the gold *Al-Zabadani* — the same place, one transliteration and one
+administrative level apart — which the strict metric had counted wrong. Nick's call (2026-09-12): a typo
+is not a wrong answer. `exp_r11.match` now strips administrative type words (`district`, `subdistrict`,
+`governorate`, …) and takes difflib's ratio ≥ 0.75 on what is left as `near`; `near` is reported beside
+`correct` and never added to it. Earlier logs say WRONG for this case; the facts in them are unchanged.
+
+**The two-sense wording (2026-09-13).** The local property table (`sources.PropertyAliases`, the rule
+that took the wording step off the API) answers the same question the API's search did, but completely:
+`born` is an alias of *both* `date of birth` and `place of birth`, `founded` of `inception` and `notable
+work`, `city` of `located in the administrative territorial entity` and `location`, where the search's
+top-8 had ranked one. Both levers keep the labels the store holds and refuse two — correct, and once a
+seed's facts are fetched both labels usually *are* held, so a rule that was right against the API turns
+most `born` questions into `ambiguous_relation` refusals against the table. The tie-breaker is the ask
+type, and the evidence is the property's **datatype**, not the model's pick and not the API's rank:
+`build_property_aliases.py --datatypes` adds each property's datatype to the table in one SPARQL request
+(the endpoint is still at 1 request a minute; `Retry-After` honoured), `PropertyAliases.kind(label)`
+maps it onto the answer class (`time` → date, `quantity` → number, `wikibase-item` / `string` /
+`monolingualtext` → name; external ids, urls and media are no kind a question asks for), and
+`learn.narrow_by_ask(question, candidates, resolvers)` keeps the candidates of the asked kind — **only
+when exactly one remains, and only when every candidate has a kind** (a label the table cannot type might
+be date-valued too; choosing among those would be a pick). Otherwise the candidates come back as they
+were and the refusal stands, both candidates on record. Wired into lever 4 (`resolve_relations`, which
+now takes the question) and lever 6 (where the ask type keeping the *other* label means the wording is
+not the plan's: no alias, the coverage refusal stands — the model planned `place of birth` for a *when*
+question, and the host does not re-plan it). `where` names no ask type yet, so `Where was X born?`
+stays an ambiguity until the class grows a place kind — a measured change, not a free one, because ask
+words leave the residual vocabulary. Pinned: `standin/tests/test_property_aliases.py` (kinds from
+datatypes, None without one), `validation/test_search_learn.py` (+4: the *when* question keeps the date
+label at lever 4 and lever 6; a *where* question stays refused with both candidates; one untyped
+candidate blocks the narrowing; a plan naming the other label gets no alias).

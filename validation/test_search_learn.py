@@ -264,3 +264,73 @@ def test_a_label_the_store_does_not_hold_yet_is_worded_then_fetched_then_walked(
     assert r.first.reason == "plan_does_not_cover_question"
     assert r.result.verified and r.result.answer == "1997"
     assert ("founded", "inception") in r.aliased and [normalize(e) for e in r.entities] == ["persina nature park"]
+
+
+# ---- ask-type narrowing (2026-09-13): the local property table names BOTH senses of a wording
+
+class TypedAliasSource(AliasSource):
+    """The local table's shape: a wording names every property it is an alias of, and
+    each label has the value kind its datatype gives it."""
+    def __init__(self, by_entity, by_wording, kinds):
+        super().__init__(by_entity, by_wording); self.kinds = {normalize(k): v for k, v in kinds.items()}
+    def kind(self, label):
+        return self.kinds.get(normalize(label))
+
+
+BORN_STORE = STORE + ["1932-03-23 is the date of birth of masaki tsuji", "nagoya is the place of birth of masaki tsuji"]
+BORN_KINDS = {"date of birth": "date", "place of birth": "name"}
+
+
+def test_a_when_question_keeps_the_date_valued_label_of_a_two_sense_wording_at_lever_4():
+    """'born' is an alias of `date of birth` AND `place of birth` in the local table
+    (the API's search had ranked one). Both are held, so lever 4 saw an ambiguity;
+    the question asks WHEN, the datatypes say which label is a date, exactly one is,
+    and the host translates to it -- the pick is the question's, not the model's."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store, known = LookupStore(BORN_STORE), StoreRelations(BORN_STORE)
+    src = TypedAliasSource({}, {"born": ["date of birth", "place of birth"]}, BORN_KINDS)
+    plan = QuestionPlan(relations=[None], tail="born of masaki tsuji", n_hop=1)
+    r = run("When was Masaki Tsuji born?", store, known, src, plan=plan)
+    assert r.first.reason == "unknown_relation"
+    assert r.result.verified and normalize(r.result.answer) == "1932 03 23"
+    assert r.aliased == [("born", "date of birth")]
+
+
+def test_a_two_sense_wording_stays_an_ambiguity_when_the_ask_type_does_not_split_it():
+    """'Where' names no ask type yet, and a 'what' question names none: nothing narrows,
+    the refusal stands with both candidates on record."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store, known = LookupStore(BORN_STORE), StoreRelations(BORN_STORE)
+    src = TypedAliasSource({}, {"born": ["date of birth", "place of birth"]}, BORN_KINDS)
+    plan = QuestionPlan(relations=[None], tail="born of masaki tsuji", n_hop=1)
+    r = run("Where was Masaki Tsuji born?", store, known, src, plan=plan)
+    assert not r.result.verified and r.result.reason == "ambiguous_relation"
+    assert r.result.refused == {"relation": "born", "candidates": ["date of birth", "place of birth"]}
+
+
+def test_a_candidate_without_a_kind_blocks_the_narrowing():
+    """A label the table cannot type might be date-valued too; choosing among those
+    would be a pick, so the ambiguity stands even for a 'when' question."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store, known = LookupStore(BORN_STORE), StoreRelations(BORN_STORE)
+    src = TypedAliasSource({}, {"born": ["date of birth", "place of birth"]}, {"date of birth": "date"})
+    plan = QuestionPlan(relations=[None], tail="born of masaki tsuji", n_hop=1)
+    r = run("When was Masaki Tsuji born?", store, known, src, plan=plan)
+    assert not r.result.verified and r.result.reason == "ambiguous_relation"
+
+
+def test_a_when_question_finds_its_wording_at_lever_6_when_the_table_names_two_labels():
+    """Lever 6 with the local table: the plan names `date of birth`, 'born' in the
+    question names both held labels; the ask type keeps the plan's, the alias is
+    recorded, the plan walks. A plan naming `place of birth` for a WHEN question gets
+    no alias from 'born' -- the ask type kept the other label -- and stays refused."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store, known = LookupStore(BORN_STORE), StoreRelations(BORN_STORE)
+    src = TypedAliasSource({}, {"born": ["date of birth", "place of birth"]}, BORN_KINDS)
+    plan = QuestionPlan(relations=[None], tail="date of birth of masaki tsuji", n_hop=1)
+    r = run("When was Masaki Tsuji born?", store, known, src, plan=plan)
+    assert r.first.reason == "plan_does_not_cover_question"
+    assert r.result.verified and normalize(r.result.answer) == "1932 03 23" and r.aliased == [("born", "date of birth")]
+    plan = QuestionPlan(relations=[None], tail="place of birth of masaki tsuji", n_hop=1)
+    r = run("When was Masaki Tsuji born?", store, known, src, plan=plan)
+    assert not r.result.verified and r.result.reason == "plan_does_not_cover_question" and r.aliased == []

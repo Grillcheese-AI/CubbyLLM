@@ -20,10 +20,12 @@ for p in (str(ROOT), str(ROOT / "standin")):
 
 from sources import PropertyAliases, WikidataSource  # noqa: E402
 
-TABLE = {"source": "test", "langs": ["en", "fr"], "n_properties": 3, "properties": {
-    "P569": {"label": {"en": "date of birth", "fr": "date de naissance"}, "aliases": {"en": ["born", "DOB", "birthday"], "fr": ["né le", "naissance"]}},
-    "P19": {"label": {"en": "place of birth", "fr": "lieu de naissance"}, "aliases": {"en": ["birthplace", "born in"], "fr": ["né à"]}},
-    "P571": {"label": {"en": "inception", "fr": "date de fondation ou de création"}, "aliases": {"en": ["founded", "established", "created"], "fr": ["fondé en", "création"]}},
+TABLE = {"source": "test", "langs": ["en", "fr"], "n_properties": 5, "properties": {
+    "P569": {"label": {"en": "date of birth", "fr": "date de naissance"}, "aliases": {"en": ["born", "DOB", "birthday"], "fr": ["né le", "naissance"]}, "datatype": "time"},
+    "P19": {"label": {"en": "place of birth", "fr": "lieu de naissance"}, "aliases": {"en": ["birthplace", "born in"], "fr": ["né à"]}, "datatype": "wikibase-item"},
+    "P571": {"label": {"en": "inception", "fr": "date de fondation ou de création"}, "aliases": {"en": ["founded", "established", "created"], "fr": ["fondé en", "création"]}, "datatype": "time"},
+    "P1082": {"label": {"en": "population", "fr": "population"}, "aliases": {"en": ["inhabitants"], "fr": ["habitants"]}, "datatype": "quantity"},
+    "P214": {"label": {"en": "VIAF ID", "fr": "identifiant VIAF"}, "aliases": {"en": ["VIAF"], "fr": []}, "datatype": "external-id"},
 }}
 
 
@@ -45,3 +47,19 @@ def test_the_source_resolves_relations_locally_and_makes_no_call(tmp_path):
     src = WikidataSource(cache_dir=None, aliases=PropertyAliases(table(tmp_path)), offline=True)
     assert src.relations("born") == ["date of birth"] and src.calls == 0
     assert src.relations("xyzzy") == [] and src.calls == 0            # no fallback to the API unless asked
+
+
+def test_a_label_has_the_value_kind_its_datatype_says_and_nothing_else_has_one(tmp_path):
+    """2026-09-13: the value kind the typed answer class can narrow an ambiguous wording
+    by -- time -> date, quantity -> number, item -> name; an external id is no kind a
+    question asks for, and a label the table has no datatype for is None (never narrows)."""
+    pa = PropertyAliases(table(tmp_path))
+    assert pa.kind("date of birth") == "date" and pa.kind("inception") == "date"
+    assert pa.kind("place of birth") == "name" and pa.kind("population") == "number"
+    assert pa.kind("VIAF ID") is None and pa.kind("banana") is None
+    untyped = json.loads(json.dumps(TABLE)); untyped["properties"]["P569"].pop("datatype")
+    p = tmp_path / "untyped.json"; p.write_text(json.dumps(untyped), encoding="utf-8")
+    assert PropertyAliases(p).kind("date of birth") is None
+    src = WikidataSource(cache_dir=None, aliases=pa, offline=True)
+    assert src.kind("date of birth") == "date" and src.calls == 0
+    assert WikidataSource(cache_dir=None, aliases=None, offline=True).kind("date of birth") is None

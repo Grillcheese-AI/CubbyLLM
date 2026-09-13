@@ -76,6 +76,10 @@ _TRIGGER_INDEX: dict[str, list[str]] = {}
 for _rel, _words in TRIGGERS.items():
     for _w in _words:
         _TRIGGER_INDEX.setdefault(normalize(_w), []).append(_rel)
+# the value kind each frame reads, by construction: what `learn.narrow_by_ask` narrows a two-sense
+# wording ('born' -> date of birth / place of birth) by when the question asks 'when' or 'who'
+KIND = {"date of birth": "date", "date of death": "date", "inception": "date", "place of birth": "name",
+        "located in the administrative territorial entity": "name", "director": "name", "author": "name", "capital": "name"}
 
 
 def title_key(s: str) -> str:
@@ -177,6 +181,9 @@ class WikiTextSource:
         """The relation labels whose trigger words include this wording ('born' -> date of
         birth, place of birth): the source names what its own frames can read, nothing else."""
         return list(_TRIGGER_INDEX.get(normalize(text), []))
+
+    def kind(self, label: str) -> str | None:
+        return KIND.get(normalize(label))
 
     def facts(self, entity: str) -> list[Triple]:
         self.last = {"entity": entity, "corpus": None, "title": None, "sentences": {}}

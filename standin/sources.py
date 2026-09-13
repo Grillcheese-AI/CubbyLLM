@@ -45,11 +45,16 @@ class PropertyAliases:
     the wording. Exact tier only, like the API version; the host still intersects with what
     the store holds and refuses more than one."""
     name = "property_aliases"
+    # a property's datatype -> the value kind `plan_verify.ask_type` names ('when' -> date,
+    # 'how many' -> number, 'who' -> name); the rest (external ids, urls, media) are no
+    # kind a question asks for and never narrow anything
+    KIND = {"time": "date", "quantity": "number", "wikibase-item": "name", "string": "name", "monolingualtext": "name"}
 
     def __init__(self, path: pathlib.Path | str = PROPERTY_TABLE) -> None:
         d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
         self.meta = {k: v for k, v in d.items() if k != "properties"}
         self._by_text: dict[str, set[str]] = {}
+        self._kind: dict[str, str | None] = {}
         for pid, p in d["properties"].items():
             label_en = p["label"].get("en")
             if not label_en:
@@ -58,12 +63,24 @@ class PropertyAliases:
                 for text in [p["label"].get(lang)] + list(p["aliases"].get(lang, [])):
                     if text:
                         self._by_text.setdefault(_normalize(text), set()).add(label_en)
+            k = self.KIND.get(p.get("datatype") or "")
+            key = _normalize(label_en)
+            if key in self._kind and self._kind[key] != k:
+                self._kind[key] = None                   # two properties, one English label, two kinds: no kind
+            else:
+                self._kind[key] = k
 
     def __len__(self) -> int:
         return len(self._by_text)
 
     def relations(self, text: str) -> list[str]:
         return sorted(self._by_text.get(_normalize(text), ()))
+
+    def kind(self, label: str) -> str | None:
+        """'date' / 'number' / 'name' for a label whose property datatype says so; None
+        when the table has no datatype for it (built before 2026-09-13, or a kind no
+        question asks for). None never narrows: the host keeps the ambiguity."""
+        return self._kind.get(_normalize(label))
 
 
 def property_aliases(path: pathlib.Path | str = PROPERTY_TABLE) -> "PropertyAliases | None":
@@ -141,6 +158,11 @@ class WikidataSource:
             if _normalize(m) == _normalize(text) and h.get("label"):
                 out.append(h["label"])
         return out
+
+    def kind(self, label: str) -> str | None:
+        """The value kind of a property label (date / number / name), from the local table
+        only; None without one. The host narrows an ambiguous wording by it, never by rank."""
+        return self.aliases.kind(label) if self.aliases is not None else None
 
     # -- the Source call -----------------------------------------------------------------
     def facts(self, entity: str) -> list[str]:
