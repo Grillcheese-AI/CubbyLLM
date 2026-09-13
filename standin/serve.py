@@ -121,9 +121,13 @@ class ReasoningCortex:
         def run_fn(source: str, fn: str) -> dict:
             return cc.run_program_proto(source, fn=fn, exe=self.exe)
 
+        from cubbyllm.reasoning import events as ev                                     # every step, listened to (the control panel)
+        qid = ev.emit("question", text=question, source="serve")
         res = pipeline_answer(question, retriever, run_fn, tau_vm=self.tau_vm,
                               tau_ret=self.tau_ret, top_k=self.k_facts, max_repairs=1,   # 3 -> 1: lossless on the 800-question harvest, 2.6x faster walks (rb1 run, 2026-09-03)
                               lookup=getattr(retriever, "lookup", None))                 # a FactStore looks up first (exp_m4, 2026-09-04)
+        ev.emit_walk(qid, res, provenance=getattr(retriever, "provenance", None), key=getattr(retriever, "_key", None))
+        ev.emit_answer(qid, res)
         facts = [h.fact for h in res.trace if h.fact]
         meta = {"walk_answer": res.answer, "walk_verified": res.verified,
                 "walk_reason": res.reason, "repairs": res.repairs_used,

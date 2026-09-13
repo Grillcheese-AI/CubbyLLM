@@ -264,6 +264,14 @@ class LlamaCppEmitter:
             out = self._decode(llm, text, int(max_new_tokens), float(temperature), seed, stop)
         return prefix + out
 
+    def complete(self, text: str, max_new_tokens: int = 256, temperature: float = 0.0,
+                 stop: list[str] | None = None, seed: int | None = None) -> str:
+        """A raw completion: no chat render, no prefill -- a BASE model prompted few-shot (the LFM
+        fact Source, 2026-09-13). Same decoder, same script ban, same lock."""
+        llm = self._load()
+        with GPU_LOCK:
+            return self._decode(llm, text, int(max_new_tokens), float(temperature), seed, list(stop or []))
+
     def _decode(self, llm, text: str, max_new: int, temperature: float, seed: int | None, stop: list[str]) -> str:
         """Token-level decode with special tokens RENDERED. `create_completion` detokenizes with special=False, so a
         base's control tokens never reach the host — LFM2.5's <|tool_call_start|>/<|tool_call_end|> vanished and the

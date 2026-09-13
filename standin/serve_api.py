@@ -43,6 +43,38 @@ def _json_safe(o):
     return str(o)
 
 
+# ---- the loop's events, listened to (2026-09-13): a ring of the last events and a queue per live client ----
+import collections as _collections
+import queue as _queue
+import threading as _threading
+
+_LOOP_RING: "_collections.deque[dict]" = _collections.deque(maxlen=20000)
+_LOOP_CLIENTS: list = []
+_LOOP_LOCK = _threading.Lock()
+_LOOP_WIRED = False
+
+
+def _loop_sink(ev: dict) -> None:
+    with _LOOP_LOCK:
+        _LOOP_RING.append(ev)
+        clients = list(_LOOP_CLIENTS)
+    for q in clients:
+        try:
+            q.put_nowait(ev)
+        except _queue.Full:
+            pass
+
+
+def wire_loop_events() -> None:
+    """Register the server as a listener of `cubbyllm.reasoning.events` (idempotent)."""
+    global _LOOP_WIRED
+    if _LOOP_WIRED:
+        return
+    from cubbyllm.reasoning import events as loop_events
+    loop_events.add_sink(_loop_sink)
+    _LOOP_WIRED = True
+
+
 def make_handler(brain):
     class Handler(BaseHTTPRequestHandler):
         server_version = "CubbyServe/0.1"
@@ -143,6 +175,43 @@ def make_handler(brain):
                 self._send(200, {"worlds": {n: len(getattr(w, "texts", []))
                                             for n, w in brain.worlds.items()},
                                  "cortices": sorted(brain.cortices)})
+            elif self.path in ("/panel", "/panel/"):          # the three.js control panel over the loop's events
+                self._page(os.path.join(ROOT, "dashboard", "control_panel.html"))
+            elif self.path.startswith("/loop/events"):       # the ring: every loop event with id > since
+                try:
+                    since = int(self.path.split("since=", 1)[1].split("&")[0]) if "since=" in self.path else 0
+                except ValueError:
+                    since = 0
+                with _LOOP_LOCK:
+                    evs = [e for e in _LOOP_RING if e["id"] > since]
+                self._send(200, {"next": evs[-1]["id"] if evs else since, "events": evs})
+            elif self.path.startswith("/loop/stream"):       # server-sent events: the backlog, then live
+                q: "_queue.Queue[dict]" = _queue.Queue(maxsize=10000)
+                with _LOOP_LOCK:
+                    backlog = list(_LOOP_RING)
+                    _LOOP_CLIENTS.append(q)
+                try:
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+                    self.send_header("Cache-Control", "no-store")
+                    self.send_header("Access-Control-Allow-Origin", "*")
+                    self.end_headers()
+                    for e in backlog:
+                        self.wfile.write(f"data: {json.dumps(_json_safe(e), ensure_ascii=False)}\n\n".encode("utf-8"))
+                    self.wfile.flush()
+                    while True:
+                        try:
+                            e = q.get(timeout=15)
+                            self.wfile.write(f"data: {json.dumps(_json_safe(e), ensure_ascii=False)}\n\n".encode("utf-8"))
+                        except _queue.Empty:
+                            self.wfile.write(b": ping\n\n")
+                        self.wfile.flush()
+                except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError):
+                    pass
+                finally:
+                    with _LOOP_LOCK:
+                        if q in _LOOP_CLIENTS:
+                            _LOOP_CLIENTS.remove(q)
             elif self.path.startswith("/events"):
                 try:
                     since = int(self.path.split("since=", 1)[1].split("&")[0]) if "since=" in self.path else 0
@@ -177,8 +246,10 @@ def make_handler(brain):
 
 
 def serve_http(brain, host: str = "127.0.0.1", port: int = 8765) -> ThreadingHTTPServer:
+    wire_loop_events()
     httpd = ThreadingHTTPServer((host, port), make_handler(brain))
-    print(f"CubbyServe API on http://{host}:{port}  (POST /turn, GET /state /worlds /health)")
+    print(f"CubbyServe API on http://{host}:{port}  (POST /turn, GET /state /worlds /health; the control panel at /panel, "
+          f"its stream at /loop/stream)")
     return httpd
 
 

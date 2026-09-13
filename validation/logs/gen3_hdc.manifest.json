@@ -1,0 +1,127 @@
+{
+ "version": "gen3_hdc",
+ "built": "2026-09-13T16:38:00",
+ "git_rev": "15ca417",
+ "source_file": "E:\\datasets\\hdc\\ood_validation_rephrased.pq",
+ "chains": 8840,
+ "arms": [
+  "rephrased",
+  "original"
+ ],
+ "counts": {
+  "row:answer_not_chain_object": 123,
+  "row:chain_broken": 679,
+  "row:unparsed_fact": 358,
+  "rephrased:no_relation_wording": 452,
+  "original:certified": 7101,
+  "rephrased:plan_does_not_cover_question": 1380,
+  "original:ambiguous_hop": 441,
+  "rephrased:ambiguous_hop": 408,
+  "rephrased:certified": 6007,
+  "rephrased:ambiguous_relation": 143,
+  "rephrased:split_wording": 895,
+  "original:plan_does_not_cover_question": 1024,
+  "original:split_wording": 727,
+  "rephrased:retrieval_exhausted": 110,
+  "rephrased:rephrase_dropped_last_hop": 265,
+  "original:retrieval_exhausted": 122,
+  "rephrased:seed_not_in_question": 62,
+  "original:no_relation_wording": 130,
+  "original:unknown_relation": 15,
+  "rephrased:unknown_relation": 12,
+  "original:ambiguous_relation": 5,
+  "rephrased:answer_type_mismatch": 1,
+  "original:seed_not_in_question": 2
+ },
+ "by_arm_hop": {
+  "rephrased 1-hop": {
+   "no_relation_wording": 256,
+   "certified": 4218,
+   "ambiguous_relation": 119,
+   "  of which split_wording": 84,
+   "plan_does_not_cover_question": 186,
+   "seed_not_in_question": 49,
+   "retrieval_exhausted": 11,
+   "answer_type_mismatch": 1,
+   "unknown_relation": 1
+  },
+  "original 1-hop": {
+   "certified": 4789,
+   "  of which split_wording": 14,
+   "plan_does_not_cover_question": 18,
+   "no_relation_wording": 30,
+   "ambiguous_relation": 1,
+   "unknown_relation": 3
+  },
+  "rephrased 3-hop": {
+   "plan_does_not_cover_question": 474,
+   "  of which split_wording": 333,
+   "ambiguous_hop": 225,
+   "no_relation_wording": 118,
+   "certified": 471,
+   "rephrase_dropped_last_hop": 62,
+   "ambiguous_relation": 12,
+   "retrieval_exhausted": 34,
+   "seed_not_in_question": 5,
+   "unknown_relation": 4
+  },
+  "original 3-hop": {
+   "ambiguous_hop": 210,
+   "  of which split_wording": 340,
+   "plan_does_not_cover_question": 445,
+   "certified": 650,
+   "retrieval_exhausted": 51,
+   "no_relation_wording": 44,
+   "unknown_relation": 4,
+   "ambiguous_relation": 1
+  },
+  "rephrased 2-hop": {
+   "ambiguous_hop": 183,
+   "certified": 1318,
+   "  of which split_wording": 478,
+   "plan_does_not_cover_question": 720,
+   "no_relation_wording": 78,
+   "ambiguous_relation": 12,
+   "retrieval_exhausted": 65,
+   "rephrase_dropped_last_hop": 203,
+   "seed_not_in_question": 8,
+   "unknown_relation": 7
+  },
+  "original 2-hop": {
+   "ambiguous_hop": 231,
+   "certified": 1662,
+   "plan_does_not_cover_question": 561,
+   "  of which split_wording": 373,
+   "retrieval_exhausted": 71,
+   "no_relation_wording": 56,
+   "unknown_relation": 8,
+   "ambiguous_relation": 3,
+   "seed_not_in_question": 2
+  }
+ },
+ "vm_calls": 32149,
+ "wall_s": 39.8,
+ "n_records": 26216,
+ "by_task": {
+  "plan": 13108,
+  "chain": 13108
+ },
+ "by_split": {
+  "train": 23782,
+  "held": 2434
+ },
+ "by_wording": {
+  "hdc original 1-hop": 9578,
+  "hdc rephrased 1-hop": 8436,
+  "hdc rephrased 2-hop": 2636,
+  "hdc original 2-hop": 3324,
+  "hdc original 3-hop": 1300,
+  "hdc rephrased 3-hop": 942
+ },
+ "by_n_hop": {
+  "1": 18014,
+  "2": 5960,
+  "3": 2242
+ },
+ "note": "certified = the host plan (the question's own words for each hop, or the label when the words are split) walked and VM-verified to the chain's object; records = a plan and a chain record per certified (question, arm); split by seed-entity hash (held = 10%); rephrasings that dropped the chain's last hop are counted, not scored"
+}

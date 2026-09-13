@@ -1,0 +1,1692 @@
+{
+ "file": "E:\\datasets\\hdc\\ood_validation_rephrased.pq",
+ "n": 60,
+ "seed": 7,
+ "arms": [
+  "rephrased",
+  "original"
+ ],
+ "planner": "host",
+ "gguf": null,
+ "counts": {
+  "row:answer_not_chain_object": 123,
+  "row:chain_broken": 679,
+  "row:unparsed_fact": 358,
+  "rephrased:no_relation_wording": 31,
+  "original:certified": 43,
+  "rephrased:plan_does_not_cover_question": 14,
+  "original:ambiguous_hop": 4,
+  "rephrased:ambiguous_relation": 1,
+  "original:no_relation_wording": 7,
+  "original:plan_does_not_cover_question": 4,
+  "rephrased:certified": 12,
+  "original:retrieval_exhausted": 2,
+  "rephrased:retrieval_exhausted": 2
+ },
+ "by_arm_hop": {
+  "rephrased 1-hop": {
+   "no_relation_wording": 13,
+   "plan_does_not_cover_question": 6,
+   "ambiguous_relation": 1,
+   "certified": 7
+  },
+  "original 1-hop": {
+   "certified": 25,
+   "retrieval_exhausted": 1,
+   "no_relation_wording": 1
+  },
+  "rephrased 3-hop": {
+   "plan_does_not_cover_question": 2,
+   "no_relation_wording": 8
+  },
+  "original 3-hop": {
+   "ambiguous_hop": 3,
+   "no_relation_wording": 2,
+   "certified": 5
+  },
+  "rephrased 2-hop": {
+   "no_relation_wording": 10,
+   "plan_does_not_cover_question": 6,
+   "certified": 5,
+   "retrieval_exhausted": 2
+  },
+  "original 2-hop": {
+   "ambiguous_hop": 1,
+   "certified": 13,
+   "no_relation_wording": 4,
+   "plan_does_not_cover_question": 4,
+   "retrieval_exhausted": 1
+  }
+ },
+ "rows": [
+  {
+   "i": 6005,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "In which language was the film or TV show fer mamla gadbad gadbad originally produced?",
+   "gold": "iso 639:pnb",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 6005,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the original language of film or TV show of fer mamla gadbad gadbad?",
+   "gold": "iso 639:pnb",
+   "plan": [
+    "original language of film or tv show"
+   ],
+   "seed": "fer mamla gadbad gadbad",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "iso 639:pnb"
+  },
+  {
+   "i": 2789,
+   "arm": "rephrased",
+   "n_hop": 3,
+   "q": "In which group does the country of the location of formation of matt mihana hold membership?",
+   "gold": "Current G20 Countries",
+   "plan": [
+    "the location of formation",
+    "the country",
+    "membership"
+   ],
+   "seed": "matt mihana",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 2789,
+   "arm": "original",
+   "n_hop": 3,
+   "q": "Where is the membership of the country of the location of formation of matt mihana?",
+   "gold": "Current G20 Countries",
+   "plan": [
+    "the location of formation",
+    "the country",
+    "the membership"
+   ],
+   "seed": "matt mihana",
+   "aliased": [
+    [
+     "the membership",
+     "member of"
+    ]
+   ],
+   "snapped": null,
+   "final": "ambiguous_hop",
+   "answer": null
+  },
+  {
+   "i": 7320,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which instance does the noble title of Henry Seymour King belong to?",
+   "gold": "Chivalric Orders",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 7320,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the instance of the noble title of Henry Seymour King?",
+   "gold": "Chivalric Orders",
+   "plan": [
+    "the noble title",
+    "the instance of"
+   ],
+   "seed": "Henry Seymour King",
+   "aliased": [],
+   "snapped": null,
+   "final": "ambiguous_hop",
+   "answer": null
+  },
+  {
+   "i": 887,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which instance does tiger roche represent?",
+   "gold": "Huamn",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 887,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the instance of tiger roche?",
+   "gold": "Huamn",
+   "plan": [
+    "the instance of"
+   ],
+   "seed": "tiger roche",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Huamn"
+  },
+  {
+   "i": 1334,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "What is the first name of Bill Haslam's father?",
+   "gold": "Gemmes",
+   "plan": [
+    "father",
+    "the first name"
+   ],
+   "seed": "Bill Haslam",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 1334,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the given name of the father of Bill Haslam?",
+   "gold": "Gemmes",
+   "plan": [
+    "the father",
+    "the given name"
+   ],
+   "seed": "Bill Haslam",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Gemmes"
+  },
+  {
+   "i": 9927,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which instance does the owner of lar railway station have?",
+   "gold": "government agency",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 9927,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the instance of the owner of lar railway station?",
+   "gold": "government agency",
+   "plan": [
+    "the owner",
+    "the instance of"
+   ],
+   "seed": "lar railway station",
+   "aliased": [
+    [
+     "the owner",
+     "owned by"
+    ]
+   ],
+   "snapped": null,
+   "final": "certified",
+   "answer": "government agency"
+  },
+  {
+   "i": 1737,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which instance does 1993 asian judo championships represent?",
+   "gold": "Asian Judo Championships",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 1737,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the instance of 1993 asian judo championships?",
+   "gold": "Asian Judo Championships",
+   "plan": [
+    "the instance of"
+   ],
+   "seed": "1993 asian judo championships",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Asian Judo Championships"
+  },
+  {
+   "i": 6781,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which country does dren hoxha hold citizenship in?",
+   "gold": "Albania",
+   "plan": [
+    "country"
+   ],
+   "seed": "dren hoxha",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 6781,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the country of citizenship of dren hoxha?",
+   "gold": "Albania",
+   "plan": [
+    "the country of citizenship"
+   ],
+   "seed": "dren hoxha",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Albania"
+  },
+  {
+   "i": 1065,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which country does zo (kana) originate from?",
+   "gold": "p:jp",
+   "plan": [
+    "originate from"
+   ],
+   "seed": "zo (kana)",
+   "aliased": [],
+   "snapped": null,
+   "final": "ambiguous_relation",
+   "answer": null
+  },
+  {
+   "i": 1065,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the country of origin of zo (kana)?",
+   "gold": "p:jp",
+   "plan": [
+    "the country of origin"
+   ],
+   "seed": "zo (kana)",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "p:jp"
+  },
+  {
+   "i": 9409,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "What is the administrative territorial entity that is part of the country of citizenship of aryono miranat?",
+   "gold": "the province of banten",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 9409,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "Which is the administrative territorial entity contained within the country of citizenship of aryono miranat?",
+   "gold": "the province of banten",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 3973,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "What language is associated with the work or the given name of duncan wood?",
+   "gold": "Number of words in English",
+   "plan": [
+    "the given name",
+    "language"
+   ],
+   "seed": "duncan wood",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 3973,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the language of work or name of the language of work or name of the given name of duncan wood?",
+   "gold": "Number of words in English",
+   "plan": [
+    "the given name",
+    "language of work or name"
+   ],
+   "seed": "duncan wood",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 687,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which linguistic typology do the languages spoken, written or signed by Manfred Petz belong to?",
+   "gold": "Nominative–accusative language",
+   "plan": [
+    "languages spoken written or signed",
+    "linguistic typology"
+   ],
+   "seed": "Manfred Petz",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Nominative–accusative language"
+  },
+  {
+   "i": 687,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the linguistic typology of the languages spoken, written or signed by Manfred Petz?",
+   "gold": "Nominative–accusative language",
+   "plan": [
+    "languages spoken written or signed",
+    "the linguistic typology"
+   ],
+   "seed": "Manfred Petz",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Nominative–accusative language"
+  },
+  {
+   "i": 1577,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which taxon is the parent of Lepidosperma squamatum?",
+   "gold": "Lepidotosperma",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 1577,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "Who is the parent taxon of Lepidosperma squamatum?",
+   "gold": "Lepidotosperma",
+   "plan": [
+    "the parent taxon"
+   ],
+   "seed": "Lepidosperma squamatum",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Lepidotosperma"
+  },
+  {
+   "i": 8051,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which component does the instance of percalates have?",
+   "gold": "Books/Organism",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 8051,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the component of the instance of percalates?",
+   "gold": "Books/Organism",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 7748,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which military rank is held by Léon Young de Blankenheim?",
+   "gold": "pidpolkovnyk",
+   "plan": [
+    "military rank"
+   ],
+   "seed": "Léon Young de Blankenheim",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "pidpolkovnyk"
+  },
+  {
+   "i": 7748,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What military rank does Léon Young de Blankenheim have?",
+   "gold": "pidpolkovnyk",
+   "plan": [
+    "military rank"
+   ],
+   "seed": "Léon Young de Blankenheim",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "pidpolkovnyk"
+  },
+  {
+   "i": 1283,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which instance does james holden (producer) represent?",
+   "gold": "Huamn",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 1283,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the instance of james holden (producer)?",
+   "gold": "Huamn",
+   "plan": [
+    "the instance of"
+   ],
+   "seed": "james holden (producer)",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Huamn"
+  },
+  {
+   "i": 4456,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "What family name does Jonas Svensson (tennis) have?",
+   "gold": "Svensson",
+   "plan": [
+    "family name"
+   ],
+   "seed": "Jonas Svensson (tennis)",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Svensson"
+  },
+  {
+   "i": 4456,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the family name of Jonas Svensson (tennis)?",
+   "gold": "Svensson",
+   "plan": [
+    "the family name"
+   ],
+   "seed": "Jonas Svensson (tennis)",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Svensson"
+  },
+  {
+   "i": 1673,
+   "arm": "rephrased",
+   "n_hop": 3,
+   "q": "Which component belongs to the instance of the parent taxon of euzona?",
+   "gold": "Books/Organism",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 1673,
+   "arm": "original",
+   "n_hop": 3,
+   "q": "What is the component of the instance of the parent taxon of euzona?",
+   "gold": "Books/Organism",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 7872,
+   "arm": "rephrased",
+   "n_hop": 3,
+   "q": "Which instance corresponds to the time zone of the country of weightlifting at the 2012 summer olympics - women's 63 kg?",
+   "gold": "scale of time",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 7872,
+   "arm": "original",
+   "n_hop": 3,
+   "q": "What is the instance of the time zone of the country of weightlifting at the 2012 summer olympics - women's 63 kg?",
+   "gold": "scale of time",
+   "plan": [
+    "the country",
+    "the time zone",
+    "the instance of"
+   ],
+   "seed": "weightlifting at the 2012 summer olympics - women's 63 kg",
+   "aliased": [
+    [
+     "the time zone",
+     "located in time zone"
+    ]
+   ],
+   "snapped": null,
+   "final": "ambiguous_hop",
+   "answer": null
+  },
+  {
+   "i": 1085,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which country does billy bly hold citizenship in?",
+   "gold": "royaume-uni",
+   "plan": [
+    "country"
+   ],
+   "seed": "billy bly",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 1085,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the country of citizenship of billy bly?",
+   "gold": "royaume-uni",
+   "plan": [
+    "the country of citizenship"
+   ],
+   "seed": "billy bly",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "royaume-uni"
+  },
+  {
+   "i": 2289,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which individual directed from stump to ship?",
+   "gold": "alfred k. ames",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 2289,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "Who is the director of from stump to ship?",
+   "gold": "alfred k. ames",
+   "plan": [
+    "the director"
+   ],
+   "seed": "from stump to ship",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "alfred k. ames"
+  },
+  {
+   "i": 4132,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which component is part of the instance of the view from here (bob bennett album)?",
+   "gold": "cd track",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 4132,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the component of the instance of the view from here (bob bennett album)?",
+   "gold": "cd track",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 1137,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which ethnic group is associated with the ethnic group of the country of coana (parish)?",
+   "gold": "The Spanish",
+   "plan": [
+    "the country",
+    "the ethnic group"
+   ],
+   "seed": "coana (parish)",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "The Spanish"
+  },
+  {
+   "i": 1137,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "To which ethnic group does the ethnic group of the country of coana (parish) belong?",
+   "gold": "The Spanish",
+   "plan": [
+    "the country",
+    "the ethnic group"
+   ],
+   "seed": "coana (parish)",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 7355,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which time zone does mezzovico-vira belong to?",
+   "gold": "UTC2",
+   "plan": [
+    "time zone"
+   ],
+   "seed": "mezzovico-vira",
+   "aliased": [
+    [
+     "time zone",
+     "located in time zone"
+    ]
+   ],
+   "snapped": null,
+   "final": "certified",
+   "answer": "UTC2"
+  },
+  {
+   "i": 7355,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the time zone of mezzovico-vira?",
+   "gold": "UTC2",
+   "plan": [
+    "the time zone"
+   ],
+   "seed": "mezzovico-vira",
+   "aliased": [
+    [
+     "the time zone",
+     "located in time zone"
+    ]
+   ],
+   "snapped": null,
+   "final": "certified",
+   "answer": "UTC2"
+  },
+  {
+   "i": 911,
+   "arm": "rephrased",
+   "n_hop": 3,
+   "q": "What is the country of origin for the instance of Numbers (magazine)?",
+   "gold": "royaume-uni",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 911,
+   "arm": "original",
+   "n_hop": 3,
+   "q": "Which country is the country of the instance of the country of origin of Numbers (magazine)?",
+   "gold": "royaume-uni",
+   "plan": [
+    "the country of origin",
+    "the instance of",
+    "the country"
+   ],
+   "seed": "Numbers (magazine)",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "royaume-uni"
+  },
+  {
+   "i": 4094,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which country does the entity that is different from ken barfield belong to in terms of citizenship?",
+   "gold": "iso 3166-1:fr",
+   "plan": [
+    "is different from",
+    "country"
+   ],
+   "seed": "ken barfield",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 4094,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the country of citizenship of the entity that different from ken barfield?",
+   "gold": "iso 3166-1:fr",
+   "plan": [
+    "different from",
+    "the country of citizenship"
+   ],
+   "seed": "ken barfield",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 855,
+   "arm": "rephrased",
+   "n_hop": 3,
+   "q": "Which taxon is the parent of the official symbol of the country of gardena office of economic development?",
+   "gold": "Haliaeetus",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 855,
+   "arm": "original",
+   "n_hop": 3,
+   "q": "Who is the parent taxon of the official symbol of the country of gardena office of economic development?",
+   "gold": "Haliaeetus",
+   "plan": [
+    "the country",
+    "the official symbol",
+    "the parent taxon"
+   ],
+   "seed": "gardena office of economic development",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Haliaeetus"
+  },
+  {
+   "i": 2464,
+   "arm": "rephrased",
+   "n_hop": 3,
+   "q": "Which instance represents the ethnic group of the country of 2014 pan pacific swimming championships?",
+   "gold": "Ethnick",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 2464,
+   "arm": "original",
+   "n_hop": 3,
+   "q": "What is the instance of the ethnic group of the country of 2014 pan pacific swimming championships?",
+   "gold": "Ethnick",
+   "plan": [
+    "the country",
+    "the ethnic group",
+    "the instance of"
+   ],
+   "seed": "2014 pan pacific swimming championships",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Ethnick"
+  },
+  {
+   "i": 5380,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which taxon is the parent of cuculus horsfieldi?",
+   "gold": "cuculus",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 5380,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "Who is the parent taxon of cuculus horsfieldi?",
+   "gold": "cuculus",
+   "plan": [
+    "the parent taxon"
+   ],
+   "seed": "cuculus horsfieldi",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "cuculus"
+  },
+  {
+   "i": 7767,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which instance does Timon Oyebami represent?",
+   "gold": "Huamn",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 7767,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the instance of Timon Oyebami?",
+   "gold": "Huamn",
+   "plan": [
+    "the instance of"
+   ],
+   "seed": "Timon Oyebami",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Huamn"
+  },
+  {
+   "i": 2669,
+   "arm": "rephrased",
+   "n_hop": 3,
+   "q": "What field does the occupation of the cast member of L'escalier sans fin belong to?",
+   "gold": "Off book",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 2669,
+   "arm": "original",
+   "n_hop": 3,
+   "q": "What is the field of this occupation of the occupation of the cast member of L'escalier sans fin?",
+   "gold": "Off book",
+   "plan": [
+    "the cast member",
+    "the occupation",
+    "field of this occupation"
+   ],
+   "seed": "L'escalier sans fin",
+   "aliased": [],
+   "snapped": null,
+   "final": "ambiguous_hop",
+   "answer": null
+  },
+  {
+   "i": 2183,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which country does big smokey smothers hold citizenship in?",
+   "gold": "united stated",
+   "plan": [
+    "country"
+   ],
+   "seed": "big smokey smothers",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 2183,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the country of citizenship of big smokey smothers?",
+   "gold": "united stated",
+   "plan": [
+    "the country of citizenship"
+   ],
+   "seed": "big smokey smothers",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "united stated"
+  },
+  {
+   "i": 5728,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "In which location can the administrative territorial entity of Nurpur Jharsa be found?",
+   "gold": "Haryāna",
+   "plan": [
+    "the administrative territorial entity"
+   ],
+   "seed": "Nurpur Jharsa",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 5728,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "Where is the administrative territorial entity of Nurpur Jharsa?",
+   "gold": "Haryāna",
+   "plan": [
+    "the administrative territorial entity"
+   ],
+   "seed": "Nurpur Jharsa",
+   "aliased": [],
+   "snapped": null,
+   "final": "retrieval_exhausted",
+   "answer": null
+  },
+  {
+   "i": 3335,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which component does 2014 Swiss Indoors have?",
+   "gold": "2014 Swiss Indoors – Singles",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 3335,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the component of 2014 swiss indoors?",
+   "gold": "2014 Swiss Indoors – Singles",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 1906,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which individual is credited with the discovery or invention of Diwan?",
+   "gold": "Heinrich Barth",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 1906,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "Who is the discoverer or inventor of Diwan?",
+   "gold": "Heinrich Barth",
+   "plan": [
+    "the discoverer or inventor"
+   ],
+   "seed": "Diwan",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Heinrich Barth"
+  },
+  {
+   "i": 3468,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "What is the highest point located in the country of mcelmo creek?",
+   "gold": "Churchill peaks",
+   "plan": [
+    "the country",
+    "the highest point"
+   ],
+   "seed": "mcelmo creek",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Churchill peaks"
+  },
+  {
+   "i": 3468,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "Where is the highest point of the country of mcelmo creek?",
+   "gold": "Churchill peaks",
+   "plan": [
+    "the country",
+    "the highest point"
+   ],
+   "seed": "mcelmo creek",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Churchill peaks"
+  },
+  {
+   "i": 6899,
+   "arm": "rephrased",
+   "n_hop": 3,
+   "q": "How is the flag of the country of Robin Hood Gardens depicted?",
+   "gold": "x-shaped cross",
+   "plan": [
+    "the country",
+    "the flag",
+    "depicted"
+   ],
+   "seed": "Robin Hood Gardens",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 6899,
+   "arm": "original",
+   "n_hop": 3,
+   "q": "What is the depiction of the flag of the country of Robin Hood Gardens?",
+   "gold": "x-shaped cross",
+   "plan": [
+    "the country",
+    "the flag",
+    "the depiction of"
+   ],
+   "seed": "Robin Hood Gardens",
+   "aliased": [
+    [
+     "the depiction of",
+     "depicts"
+    ]
+   ],
+   "snapped": null,
+   "final": "certified",
+   "answer": "x-shaped cross"
+  },
+  {
+   "i": 1801,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which instance does together again for the last time represent?",
+   "gold": "audio album",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 1801,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the instance of together again for the last time?",
+   "gold": "audio album",
+   "plan": [
+    "the instance of"
+   ],
+   "seed": "together again for the last time",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "audio album"
+  },
+  {
+   "i": 1153,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "What is the country of origin for the operator of HMS Aldenham (L22)?",
+   "gold": "royaume-uni",
+   "plan": [
+    "the operator",
+    "the country of origin"
+   ],
+   "seed": "HMS Aldenham (L22)",
+   "aliased": [],
+   "snapped": null,
+   "final": "retrieval_exhausted",
+   "answer": null
+  },
+  {
+   "i": 1153,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "Which country is the country of the operator of HMS Aldenham (L22)?",
+   "gold": "royaume-uni",
+   "plan": [
+    "the operator",
+    "the country"
+   ],
+   "seed": "HMS Aldenham (L22)",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "royaume-uni"
+  },
+  {
+   "i": 1093,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which country does thyge petersen hold citizenship in?",
+   "gold": "Dennmark",
+   "plan": [
+    "country"
+   ],
+   "seed": "thyge petersen",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 1093,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the country of citizenship of thyge petersen?",
+   "gold": "Dennmark",
+   "plan": [
+    "the country of citizenship"
+   ],
+   "seed": "thyge petersen",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Dennmark"
+  },
+  {
+   "i": 3809,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which official language is spoken in the country of citizenship of Ton de Leeuw (organizational theorist)?",
+   "gold": "dutch-speaking area",
+   "plan": [
+    "the country of citizenship",
+    "official language"
+   ],
+   "seed": "Ton de Leeuw (organizational theorist)",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 3809,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the official language of the country of citizenship of Ton de Leeuw (organizational theorist)?",
+   "gold": "dutch-speaking area",
+   "plan": [
+    "the country of citizenship",
+    "the official language"
+   ],
+   "seed": "Ton de Leeuw (organizational theorist)",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "dutch-speaking area"
+  },
+  {
+   "i": 9209,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which instance does Cecile Bruyere have?",
+   "gold": "Huamn",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 9209,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the instance of Cecile Bruyere?",
+   "gold": "Huamn",
+   "plan": [
+    "the instance of"
+   ],
+   "seed": "Cecile Bruyere",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Huamn"
+  },
+  {
+   "i": 9850,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "What is the name day associated with the given name Mary Rosenblum?",
+   "gold": "15th August",
+   "plan": [
+    "the given name",
+    "the name day"
+   ],
+   "seed": "Mary Rosenblum",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "15th August"
+  },
+  {
+   "i": 9850,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "Which is the name day of the given name of Mary Rosenblum?",
+   "gold": "15th August",
+   "plan": [
+    "the given name",
+    "the name day"
+   ],
+   "seed": "Mary Rosenblum",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "15th August"
+  },
+  {
+   "i": 7930,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which given name is associated with Herbert Maisch?",
+   "gold": "Herbert (given name)",
+   "plan": [
+    "given name"
+   ],
+   "seed": "Herbert Maisch",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Herbert (given name)"
+  },
+  {
+   "i": 7930,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What given name does Herbert Maisch have?",
+   "gold": "Herbert (given name)",
+   "plan": [
+    "given name"
+   ],
+   "seed": "Herbert Maisch",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Herbert (given name)"
+  },
+  {
+   "i": 5830,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which continent is associated with the country of citizenship of karen balauf delaney?",
+   "gold": "oceania portal",
+   "plan": [
+    "the country of citizenship",
+    "continent"
+   ],
+   "seed": "karen balauf delaney",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "oceania portal"
+  },
+  {
+   "i": 5830,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the continent of the country of citizenship of karen balauf delaney?",
+   "gold": "oceania portal",
+   "plan": [
+    "the country of citizenship",
+    "the continent"
+   ],
+   "seed": "karen balauf delaney",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "oceania portal"
+  },
+  {
+   "i": 8640,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which component does the instance of sphinx loti have?",
+   "gold": "Books/Organism",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 8640,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the component of the instance of sphinx loti?",
+   "gold": "Books/Organism",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 8410,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which event precedes the one that edgar buchwalder participated in?",
+   "gold": "1932 summer olympic games",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 8410,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the predecessor of the event that edgar buchwalder a participant of?",
+   "gold": "1932 summer olympic games",
+   "plan": [
+    "a participant of",
+    "the predecessor"
+   ],
+   "seed": "edgar buchwalder",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 6706,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which camera setup is used by eerie, in (tv show)?",
+   "gold": "single-camera mode of production",
+   "plan": [
+    "camera setup"
+   ],
+   "seed": "eerie, in (tv show)",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 6706,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What camera setup does eerie, in (tv show) use?",
+   "gold": "single-camera mode of production",
+   "plan": [
+    "camera setup"
+   ],
+   "seed": "eerie, in (tv show)",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "single-camera mode of production"
+  },
+  {
+   "i": 5562,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which instance does Embeddable Common Lisp represent?",
+   "gold": "networked software",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 5562,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the instance of Embeddable Common Lisp?",
+   "gold": "networked software",
+   "plan": [
+    "the instance of"
+   ],
+   "seed": "Embeddable Common Lisp",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "networked software"
+  },
+  {
+   "i": 4604,
+   "arm": "rephrased",
+   "n_hop": 3,
+   "q": "Which component belongs to the instance of the parent taxon of Melanoplus confusus?",
+   "gold": "Books/Organism",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 4604,
+   "arm": "original",
+   "n_hop": 3,
+   "q": "What is the component of the instance of the parent taxon of Melanoplus confusus?",
+   "gold": "Books/Organism",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 3318,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "What is the location of the highest point in the country of São Francisco Xavier (Lisbon)?",
+   "gold": "mount pico",
+   "plan": [
+    "the location",
+    "the highest point"
+   ],
+   "seed": "São Francisco Xavier (Lisbon)",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 3318,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "Where is the highest point of the country of São Francisco Xavier (Lisbon)?",
+   "gold": "mount pico",
+   "plan": [
+    "the country",
+    "the highest point"
+   ],
+   "seed": "São Francisco Xavier (Lisbon)",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "mount pico"
+  },
+  {
+   "i": 4525,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which individual serves as the head of government for the administrative territorial entity of 191 north wacker?",
+   "gold": "Rahmfather",
+   "plan": [
+    "the administrative territorial entity",
+    "the head of government"
+   ],
+   "seed": "191 north wacker",
+   "aliased": [],
+   "snapped": null,
+   "final": "retrieval_exhausted",
+   "answer": null
+  },
+  {
+   "i": 4525,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "Who is the head of government of the administrative territorial entity of 191 north wacker?",
+   "gold": "Rahmfather",
+   "plan": [
+    "the administrative territorial entity",
+    "the head of government"
+   ],
+   "seed": "191 north wacker",
+   "aliased": [],
+   "snapped": null,
+   "final": "retrieval_exhausted",
+   "answer": null
+  },
+  {
+   "i": 1501,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "What is the given name of jean-yves raimbaud?",
+   "gold": "Jean-Yves",
+   "plan": [
+    "the given name"
+   ],
+   "seed": "jean-yves raimbaud",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Jean-Yves"
+  },
+  {
+   "i": 1501,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What given name does jean-yves raimbaud have?",
+   "gold": "Jean-Yves",
+   "plan": [
+    "given name"
+   ],
+   "seed": "jean-yves raimbaud",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Jean-Yves"
+  },
+  {
+   "i": 5572,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which time zone does csősz belong to?",
+   "gold": "Paris time",
+   "plan": [
+    "time zone"
+   ],
+   "seed": "csősz",
+   "aliased": [
+    [
+     "time zone",
+     "located in time zone"
+    ]
+   ],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Paris time"
+  },
+  {
+   "i": 5572,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What is the time zone of csősz?",
+   "gold": "Paris time",
+   "plan": [
+    "the time zone"
+   ],
+   "seed": "csősz",
+   "aliased": [
+    [
+     "the time zone",
+     "located in time zone"
+    ]
+   ],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Paris time"
+  },
+  {
+   "i": 9729,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which instance does the occupation of M. D. Namal Karunaratne have?",
+   "gold": "professions",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 9729,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the instance of the occupation of M. D. Namal Karunaratne?",
+   "gold": "professions",
+   "plan": [
+    "the occupation",
+    "the instance of"
+   ],
+   "seed": "M. D. Namal Karunaratne",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "professions"
+  },
+  {
+   "i": 9182,
+   "arm": "rephrased",
+   "n_hop": 3,
+   "q": "Which continent does the country of sunnen (st. louis metrolink) belong to?",
+   "gold": "Seven continents",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 9182,
+   "arm": "original",
+   "n_hop": 3,
+   "q": "What is the instance of the continent of the country of sunnen (st. louis metrolink)?",
+   "gold": "Seven continents",
+   "plan": [
+    "the country",
+    "the continent",
+    "the instance of"
+   ],
+   "seed": "sunnen (st. louis metrolink)",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Seven continents"
+  },
+  {
+   "i": 6368,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "In which location can the highest point of the country of origin of The Day The Earth Froze be found?",
+   "gold": "Haldefjäll",
+   "plan": [
+    "the country of origin",
+    "the highest point"
+   ],
+   "seed": "The Day The Earth Froze",
+   "aliased": [],
+   "snapped": null,
+   "final": "plan_does_not_cover_question",
+   "answer": null
+  },
+  {
+   "i": 6368,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "Where is the highest point of the country of origin of The Day The Earth Froze?",
+   "gold": "Haldefjäll",
+   "plan": [
+    "the country of origin",
+    "the highest point"
+   ],
+   "seed": "The Day The Earth Froze",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Haldefjäll"
+  },
+  {
+   "i": 8323,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which instance corresponds to the continent of Quilluani?",
+   "gold": "Megacontinent",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 8323,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the instance of the continent of Quilluani?",
+   "gold": "Megacontinent",
+   "plan": [
+    "the continent",
+    "the instance of"
+   ],
+   "seed": "Quilluani",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "Megacontinent"
+  },
+  {
+   "i": 5349,
+   "arm": "rephrased",
+   "n_hop": 1,
+   "q": "Which genre does Christina Courtin belong to?",
+   "gold": "acoustical music",
+   "plan": [
+    "genre"
+   ],
+   "seed": "Christina Courtin",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "acoustical music"
+  },
+  {
+   "i": 5349,
+   "arm": "original",
+   "n_hop": 1,
+   "q": "What genre is Christina Courtin?",
+   "gold": "acoustical music",
+   "plan": [
+    "genre"
+   ],
+   "seed": "Christina Courtin",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "acoustical music"
+  },
+  {
+   "i": 1347,
+   "arm": "rephrased",
+   "n_hop": 2,
+   "q": "Which instance represents the genre of Marlain Aggelidou?",
+   "gold": "styles of music",
+   "final": "no_relation_wording"
+  },
+  {
+   "i": 1347,
+   "arm": "original",
+   "n_hop": 2,
+   "q": "What is the instance of the genre of Marlain Aggelidou?",
+   "gold": "styles of music",
+   "plan": [
+    "the genre",
+    "the instance of"
+   ],
+   "seed": "Marlain Aggelidou",
+   "aliased": [],
+   "snapped": null,
+   "final": "certified",
+   "answer": "styles of music"
+  }
+ ],
+ "vm_calls": 138,
+ "n_records": 0,
+ "wall_s": 4.9
+}

@@ -1,0 +1,33 @@
+hdc ood_validation_rephrased.pq: 10,000 rows, 8,840 chains parsed (answer_not_chain_object 123, chain_broken 679, unparsed_fact 358) | store 11,774 facts, 195 relations | mapping 278 relations | 4s
+sampled 60 of 8,840 chains (hops [1, 2, 3], seed 7) | arms ('rephrased', 'original') | planner host
+
+HDC REPHRASED (host): VM calls 138 | 5s
+     7 /   27 certified  rephrased 1-hop     near 0 WRONG 0 | no_relation_wording 13, plan_does_not_cover_question 6, ambiguous_relation 1
+    25 /   27 certified  original 1-hop      near 0 WRONG 0 | retrieval_exhausted 1, no_relation_wording 1
+     5 /   23 certified  rephrased 2-hop     near 0 WRONG 0 | no_relation_wording 10, plan_does_not_cover_question 6, retrieval_exhausted 2
+    13 /   23 certified  original 2-hop      near 0 WRONG 0 | no_relation_wording 4, plan_does_not_cover_question 4, ambiguous_hop 1, retrieval_exhausted 1
+     0 /   10 certified  rephrased 3-hop     near 0 WRONG 0 | no_relation_wording 8, plan_does_not_cover_question 2
+     5 /   10 certified  original 3-hop      near 0 WRONG 0 | ambiguous_hop 3, no_relation_wording 2
+
+matched pairs (original certified, rephrased certified): both 11, original only 32, rephrased only 1, neither 16
+
+every WRONG (0):
+
+refusal examples:
+  [no_relation_wording] ('In which language was the film or TV show fer mamla gadbad gadbad originally produced?', 'fer mamla gadbad gadbad', ['original language of film or TV show'])
+  [no_relation_wording] ('Which instance does the noble title of Henry Seymour King belong to?', 'Henry Seymour King', ['noble title', 'instance of'])
+  [no_relation_wording] ('Which instance does tiger roche represent?', 'tiger roche', ['instance of'])
+  [no_relation_wording] ('Which instance does the owner of lar railway station have?', 'lar railway station', ['owned by', 'instance of'])
+  [plan_does_not_cover_question] ('In which group does the country of the location of formation of matt mihana hold membership?', ['the location of formation', 'the country', 'membership'], None, {'covers': False, 'unknown_relations': ['membership'], 'tail_relation': 'the location of formation', 'paraphrased': []})
+  [plan_does_not_cover_question] ("What is the first name of Bill Haslam's father?", ['father', 'the first name'], None, {'covers': False, 'unknown_relations': ['the first name'], 'tail_relation': 'father', 'paraphrased': []})
+  [plan_does_not_cover_question] ('Which country does dren hoxha hold citizenship in?', ['country'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'country', 'paraphrased': []})
+  [plan_does_not_cover_question] ('What language is associated with the work or the given name of duncan wood?', ['the given name', 'language'], None, {'covers': False, 'unknown_relations': ['language'], 'tail_relation': 'the given name', 'paraphrased': []})
+  [ambiguous_hop] ('Where is the membership of the country of the location of formation of matt mihana?', ['the location of formation', 'the country', 'the membership'], None, {'hop': 2, 'objects': ['arctic council action plan', 'australian group', 'current g20 countries', 'helsinki protocol', 'imf', 'international centre for the settlement of investment disputes', 'list of g8 summits', 'nigeria trust fund', 'treaty on open skies', 'united nations', 'united nations security council'], 'facts': ['arctic council action plan is the member of of united stated', 'nigeria trust fund is the member of of united stated', 'australian group is the member of of united stated', 'United Nations Security Council is the member of of united stated', 'Current G20 Countries is the member of of united stated', 'List of G8 summits is the member of of united stated', 'United nations is the member of of united stated', 'treaty on open skies is the member of of united stated', 'International Centre for the Settlement of Investment Disputes is the member of of united stated', 'helsinki protocol is the member of of united stated', 'the imf is the member of of united stated']})
+  [ambiguous_hop] ('What is the instance of the noble title of Henry Seymour King?', ['the noble title', 'the instance of'], None, {'hop': 1, 'objects': ['chivalric orders', 'coparcener'], 'facts': ['Coparcener is the instance of of Baronetcy of Ulster', 'Chivalric Orders is the instance of of Baronetcy of Ulster']})
+  [ambiguous_hop] ("What is the instance of the time zone of the country of weightlifting at the 2012 summer olympics - women's 63 kg?", ['the country', 'the time zone', 'the instance of'], None, {'hop': 1, 'objects': ['gmt', 'rome time', 'wet'], 'facts': ['rome time is the located in time zone of royaume-uni', 'WET is the located in time zone of royaume-uni', 'gmt is the located in time zone of royaume-uni']})
+  [ambiguous_hop] ("What is the field of this occupation of the occupation of the cast member of L'escalier sans fin?", ['the cast member', 'the occupation', 'field of this occupation'], None, {'hop': 2, 'objects': ['movie', 'off book'], 'facts': ['Off book is the field of this occupation of Television actor', 'movie is the field of this occupation of Television actor']})
+  [ambiguous_relation] ('Which country does zo (kana) originate from?', ['originate from'], None, {'relation': 'originate from', 'candidates': ['country of origin', 'location of formation']})
+  [retrieval_exhausted] ('Where is the administrative territorial entity of Nurpur Jharsa?', ['the administrative territorial entity'], None, None)
+  [retrieval_exhausted] ('What is the country of origin for the operator of HMS Aldenham (L22)?', ['the operator', 'the country of origin'], None, None)
+  [retrieval_exhausted] ('Which individual serves as the head of government for the administrative territorial entity of 191 north wacker?', ['the administrative territorial entity', 'the head of government'], None, None)
+  [retrieval_exhausted] ('Who is the head of government of the administrative territorial entity of 191 north wacker?', ['the administrative territorial entity', 'the head of government'], None, None)

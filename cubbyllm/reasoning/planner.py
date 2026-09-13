@@ -224,12 +224,24 @@ def parse_fact(f: str, known=None) -> Triple | None:
         return None
     obj, body = m.group("obj").strip(), f"{m.group('rel')} of {m.group('subj')}"
     if known is not None:
-        parts = body.split(" of ")
-        for i in range(len(parts) - 1, 0, -1):
-            rel = " of ".join(parts[:i])
+        for rel in of_prefixes(body):
             if normalize(rel) in known:
-                return Triple(obj=obj, rel=rel.strip(), subj=" of ".join(parts[i:]).strip())
+                return Triple(obj=obj, rel=rel.strip(), subj=body[len(rel) + 4:].strip())
     return Triple(obj=obj, rel=m.group("rel").strip(), subj=m.group("subj").strip())
+
+
+def of_prefixes(text: str) -> list[str]:
+    """Every prefix of 'R of E' text that ends right before an ' of ' -- OVERLAPPING
+    occurrences included, longest first. A relation may itself end in 'of' ('instance
+    of', 'member of', 'part of': Wikidata's commonest labels), so 'instance of of X'
+    offers both 'instance' and 'instance of'; `str.split(' of ')` sees only the first
+    (2026-09-13, hdc)."""
+    out: list[str] = []
+    i = text.find(" of ")
+    while i != -1:
+        out.append(text[:i])
+        i = text.find(" of ", i + 1)
+    return out[::-1]
 
 
 def reused_relations(facts, min_n: int = 2) -> set[str]:
@@ -270,9 +282,7 @@ def tail_splits(tail: str) -> list[tuple[str, str]]:
     each ' of ', longest relation first ('country of citizenship' | 'X' before
     'country' | 'citizenship of X'). The exact tier needs no split; the
     paraphrase tier tries each."""
-    parts = tail.split(" of ")
-    return [(" of ".join(parts[:i]), normalize(" of ".join(parts[i:])))
-            for i in range(len(parts) - 1, 0, -1)]
+    return [(rel, normalize(tail[len(rel) + 4:])) for rel in of_prefixes(tail)]
 
 
 def relation_matches(expected: str, got: str) -> bool:

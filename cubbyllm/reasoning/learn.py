@@ -34,6 +34,7 @@ from dataclasses import dataclass, field
 from typing import Protocol, runtime_checkable
 
 from ..core.protocols import Wiring
+from . import events as ev
 from .pipeline import CoTResult, answer
 from .plan_verify import _FRAME_AND_JOINT, KIND_OF_ASK, ask_type, split_tail
 from .planner import QuestionPlan, Triple, normalize, parse_fact, parse_question
@@ -41,7 +42,7 @@ from .planner import QuestionPlan, Triple, normalize, parse_fact, parse_question
 __wiring__ = Wiring.WIRED
 
 # the refusals a fetch can address: the store lacks a fact, not the plan a shape
-LEARNABLE = ("retrieval_exhausted", "unknown_relation")
+LEARNABLE = ("retrieval_exhausted", "unknown_relation", "latent_only")   # latent_only: an attesting source may lift the hold
 
 
 @runtime_checkable
@@ -138,6 +139,10 @@ def stalled_entities(question: str, plan: QuestionPlan | None, first: CoTResult,
         last = first.trace[-1].triple
         if last is not None:
             out.append(last.obj)
+    if first.reason == "latent_only":                       # the subjects of the held facts: what an attester is asked about
+        for t in (h.triple for h in first.trace if h.fact in (first.refused or {}).get("latent_facts", ())):
+            if t is not None and normalize(t.subj) not in {normalize(e) for e in out}:
+                out.append(t.subj)
     _rel, ent = split_tail(plan.tail, known, question)
     if ent and normalize(ent) not in {normalize(e) for e in out}:
         out.append(ent)
@@ -362,15 +367,55 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
     holds is walked again with the plan rewritten (lever 4); it costs no round."""
     aliases: dict[str, list[str]] = {}
     snapped = None
+    qid = ev.emit("question", text=question, source=getattr(source, "name", None))     # the run's root event
     if plan is None:
         plan = parse_question(question)
     elif known is not None:
         plan, snapped = snap_seed(question, plan, known)         # lever 7: the question spells the entity
+    cur = {"plan": ev.emit("plan", qid, **_plan_fields(plan), snapped=snapped)}
+    latent = bool(getattr(source, "latent", False))       # a proposer of facts, not an attester (the LFM Source, 2026-09-13)
+    prov = getattr(store, "provenance", None)
+    fkey = getattr(store, "_key", None) or (lambda s: " ".join(s.split()))
+
+    def replan(new_plan, how: str, rewrote) -> None:
+        """A rewritten plan is a new plan event, child of the one it replaces."""
+        cur["plan"] = ev.emit("plan", cur["plan"], **_plan_fields(new_plan), how=how, rewrote=[list(x) for x in rewrote])
+
     def walk():
-        return answer(question, retrieve, run_fn, tau_vm=tau_vm, tau_ret=tau_ret, top_k=top_k,
-                      max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan, aliases=aliases)
+        res = answer(question, retrieve, run_fn, tau_vm=tau_vm, tau_ret=tau_ret, top_k=top_k,
+                     max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan, aliases=aliases)
+        # the latent tier: a verified chain that rests on a fact only a latent source stated is not spoken;
+        # the would-be answer and the facts are on record, and a second source's agreement lifts the hold
+        if res.verified and prov is not None:
+            held = [h.fact for h in res.trace if h.fact and prov.get(fkey(h.fact), "").endswith("(latent)")]
+            if held:
+                res = CoTResult(answer=None, verified=False, trace=res.trace, reason="latent_only",
+                                refused={"answer": res.answer, "latent_facts": held}, source=res.source)
+        ev.emit_walk(cur["plan"], res, provenance=prov, key=fkey)
+        return res
+    pre: list[tuple[str, str]] = []; amb0 = None
+    if plan is not None and known is not None and hasattr(source, "relations"):
+        # lever 4 AHEAD of the walk (2026-09-13, hdc): a plan wording the store does not hold
+        # exactly, but the table resolves to exactly one held label, is translated before any
+        # paraphrase tier can read it. 'administrative territorial entity' is P131's own alias;
+        # the walk's overlap tier (Jaccard >= 0.6) had matched it to P150, 'contains
+        # administrative territorial entity' -- the INVERSE -- and a store holding both would
+        # have verified the wrong direction. Exact evidence outranks overlap; and a wording the
+        # table says names two held labels is the ambiguity it always was, never the overlap's pick.
+        labels, _ent = _plan_labels(plan, known, question)
+        unheld = [r for r in labels if r not in known]
+        if unheld:
+            plan2, pre, amb0 = resolve_relations(plan, unheld, [source] + list(resolvers or []), known, aliases,
+                                                 question=question)
+            if amb0 is None and pre:
+                plan = plan2; replan(plan, "lever 4 (exact alias, ahead of the walk)", pre)
+    if amb0 is not None:
+        first = CoTResult(answer=None, verified=False, reason="ambiguous_relation", refused=amb0)
+        ev.emit("answer", qid, verified=False, answer=None, reason="ambiguous_relation", refused=amb0)
+        return LearnResult(result=first, first=first, plan=plan, snapped=snapped)
     first = walk()
     out = LearnResult(result=first, first=first, plan=plan, snapped=snapped)
+    out.aliased.extend(pre)
     # lever 6: a coverage refusal of a plan whose relations the store HOLDS may be the
     # proposer naming them by their canonical label; the question's own wording is
     # asked of the resolvers, recorded as an alias, and the plan walked once more
@@ -378,9 +423,11 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
         worded, amb = resolve_wordings(question, plan, [source] + list(resolvers or []), known, aliases)
         if amb is not None:
             out.result = CoTResult(answer=None, verified=False, reason="ambiguous_relation", refused=amb)
+            ev.emit("answer", qid, verified=False, answer=None, reason="ambiguous_relation", refused=amb)
             return out
         if worded:
             out.aliased.extend(worded)
+            ev.emit("alias", cur["plan"], how="lever 6 (the question's own wording)", pairs=[list(x) for x in worded])
             out.result = walk()
     asked: set[str] = set(); resolved: set[str] = set(); siblings_tried = False
     # bounded: each round asks the source about ONE entity the walk stalled on, stores what
@@ -397,6 +444,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                 break
             if rewrote:
                 out.aliased.extend(rewrote); plan = plan2; out.plan = plan
+                replan(plan, "lever 4 (the source names the relation)", rewrote)
                 out.result = walk()
                 continue
         if out.result.reason == "retrieval_exhausted" and plan is not None and not siblings_tried:
@@ -406,6 +454,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
             plan2, rewrote = resolve_siblings(plan, [source] + list(resolvers or []), known, aliases, question=question)
             if rewrote:
                 out.aliased.extend(rewrote); plan = plan2; out.plan = plan
+                replan(plan, "siblings (the property's other held wording)", rewrote)
                 out.result = walk()
                 continue
         if len(asked) >= max_entities:
@@ -416,7 +465,9 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
         ent = ents[0]
         asked.add(normalize(ent)); out.entities.append(ent)
         admitted = 0
-        for item in source.facts(ent):
+        items = list(source.facts(ent))
+        fid = ev.emit("fetch", qid, source=getattr(source, "name", None), entity=ent, n=len(items), latent=latent)
+        for item in items:
             out.fetched += 1
             # a source that hands over a Triple knows where its relation ends; the store
             # is told before the string is split ('date of birth', not 'date' | 'birth of X')
@@ -430,13 +481,33 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                 fact = item
             p = gate(fact, store, source.name, ent)
             out.learned.append(p)
+            lifted = False
             if p.status == "accepted":
                 store.add(fact)
                 if hasattr(known, "add"):
                     known.add(fact)
+                if prov is not None:
+                    prov[fkey(fact)] = source.name + (" (latent)" if latent else "")
                 admitted += 1
+            elif p.status == "duplicate" and prov is not None and not latent and prov.get(fkey(fact), "").endswith("(latent)"):
+                # a second, attesting source states the latent fact: the hold is lifted, both names on record
+                prov[fkey(fact)] = prov[fkey(fact)][:-len(" (latent)")] + "+" + source.name
+                admitted += 1; lifted = True                    # new knowledge about the fact, so the walk runs again
+            ev.emit("gate", fid, fact=fact, status=p.status, clash=p.clash, lifted=lifted,
+                    provenance=(prov or {}).get(fkey(fact)))
         if not admitted:
             break
         resolved.clear()          # new facts may have brought the relation the source names
         out.result = walk()
+    ev.emit("answer", qid, verified=out.result.verified, answer=out.result.answer, reason=out.result.reason,
+            refused=out.result.refused if isinstance(out.result.refused, dict) else None,
+            aliased=[list(x) for x in out.aliased], entities=list(out.entities), fetched=out.fetched)
     return out
+
+
+def _plan_fields(plan: QuestionPlan | None) -> dict:
+    if plan is None:
+        return {"seed": None, "relations": [], "tail": None, "n_hop": 0}
+    return {"seed": plan.tail.rsplit(" of ", 1)[1] if " of " in plan.tail else None,
+            "relations": [plan.tail.rsplit(" of ", 1)[0] if " of " in plan.tail else plan.tail] + [r for r in plan.relations[1:] if r],
+            "tail": plan.tail, "n_hop": plan.n_hop}

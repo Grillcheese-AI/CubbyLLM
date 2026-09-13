@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cubby Loop Panel</title>
+</head>
+<body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#0B0F14; --panel:#121820; --panel-2:#171F29; --line:#223040; --line-2:#2E3F52;
+  --ink:#E7ECF2; --ink-2:#B9C6D4; --muted:#8393A6;
+  --q:#F2F4F7; --plan:#B49CFF; --walk:#6FA8DC; --hop:#58C7D6; --fact:#46B39A; --fetch:#F2A65A; --gate:#D9924C;
+  --vm:#E070C8; --alias:#C7B26B; --ok:#4ED39A; --bad:#EF6E6E; --latent:#E9B44C;
+  --f-ui:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-ui);font-size:13.5px;line-height:1.45;
+  padding-inline:0;overflow:hidden}
+.app{display:grid;grid-template-rows:auto 1fr auto;grid-template-columns:280px 1fr 340px;height:100vh;min-height:520px}
+header{grid-column:1/-1;display:flex;align-items:center;gap:18px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+header h1{font-size:15px;font-weight:600;margin:0;letter-spacing:.01em}
+header .sub{color:var(--muted);font-family:var(--f-mono);font-size:11px}
+header .spacer{flex:1}
+.btn{font:inherit;font-size:12.5px;color:var(--ink);background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;padding:5px 10px;cursor:pointer}
+.btn:hover{border-color:var(--hop)}
+.btn:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--hop);outline-offset:2px}
+label.file{position:relative;overflow:hidden}
+label.file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+aside.rail{border-right:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-height:0}
+.rail .head{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline}
+.rail .head b{font-weight:600}
+.rail .head span{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.qlist{overflow:auto;flex:1;min-height:0}
+.qitem{display:grid;grid-template-columns:10px 1fr;gap:10px;align-items:start;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;color:var(--ink-2);font:inherit}
+.qitem:hover{background:var(--panel-2)}
+.qitem.sel{background:var(--panel-2);color:var(--ink)}
+.dot{width:10px;height:10px;border-radius:50%;margin-top:5px;background:var(--muted)}
+.dot.ok{background:var(--ok)} .dot.bad{background:var(--bad)} .dot.latent{background:var(--latent)}
+.qitem small{display:block;font-family:var(--f-mono);font-size:10.5px;color:var(--muted);margin-top:2px}
+main{position:relative;min-width:0;min-height:0;background:radial-gradient(ellipse at 50% 40%,#0F1620 0%,var(--ground)70%)}
+canvas{display:block;width:100%;height:100%}
+.labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;transform:translate(-50%,-140%);font-family:var(--f-mono);font-size:10.5px;color:var(--ink-2);
+  background:rgba(11,15,20,.72);padding:1px 5px;border-radius:3px;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis}
+.lbl.sel{color:var(--ink);border:1px solid var(--line-2)}
+.legend{position:absolute;left:12px;bottom:12px;display:flex;flex-wrap:wrap;gap:6px 12px;font-family:var(--f-mono);font-size:10.5px;color:var(--muted);background:rgba(11,15,20,.6);padding:6px 8px;border-radius:4px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.hint{position:absolute;right:12px;top:10px;font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+aside.inspector{border-left:1px solid var(--line);background:var(--panel);overflow:auto;min-height:0}
+.inspector .head{padding:10px 12px;border-bottom:1px solid var(--line)}
+.kind{display:inline-block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;border:1px solid currentColor}
+.inspector h2{font-size:13.5px;font-weight:500;margin:8px 0 0;line-height:1.4;overflow-wrap:anywhere}
+.kv{padding:8px 12px;display:grid;grid-template-columns:96px 1fr;gap:4px 10px;font-size:12.5px}
+.kv dt{color:var(--muted);font-family:var(--f-mono);font-size:11px;padding-top:2px}
+.kv dd{margin:0;overflow-wrap:anywhere}
+.kv dd.mono{font-family:var(--f-mono);font-size:11.5px}
+.kv pre{margin:0;font-family:var(--f-mono);font-size:11px;white-space:pre-wrap;color:var(--ink-2);background:var(--panel-2);padding:6px 8px;border-radius:3px;max-height:220px;overflow:auto}
+.chain{padding:8px 12px 14px;border-top:1px solid var(--line)}
+.chain h3{font-size:11px;font-family:var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;font-weight:500}
+.chain ol{margin:0;padding-left:18px;font-family:var(--f-mono);font-size:11px;color:var(--ink-2)}
+.chain li{margin-bottom:4px;overflow-wrap:anywhere}
+footer{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:8px 16px;border-top:1px solid var(--line);background:var(--panel);font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+footer input[type=range]{flex:1;accent-color:var(--hop)}
+footer .now{min-width:260px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:900px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto auto 1fr auto auto}
+  aside.rail{max-height:160px;border-right:0;border-bottom:1px solid var(--line)}
+  aside.inspector{max-height:220px;border-left:0;border-top:1px solid var(--line)}
+  footer .now{min-width:0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="app">
+<header>
+  <div><h1>Cubby Loop Panel</h1><div class="sub" id="status">sample run · hdc rephrased, host planner</div></div>
+  <div class="spacer"></div>
+  <button class="btn" id="btn-all" type="button">All questions</button>
+  <label class="btn file">Load events .jsonl <input type="file" id="file" accept=".jsonl,.json,.txt"></label>
+  <button class="btn" id="btn-live" type="button" title="Connect to a local stand-in server's /events stream">Live</button>
+</header>
+
+<aside class="rail">
+  <div class="head"><b>Questions</b><span id="qcount">0</span></div>
+  <div class="qlist" id="qlist"></div>
+</aside>
+
+<main id="main">
+  <canvas id="c"></canvas>
+  <div class="labels" id="labels"></div>
+  <div class="hint">drag · rotate &nbsp; wheel · zoom &nbsp; click · inspect</div>
+  <div class="legend" id="legend"></div>
+</main>
+
+<aside class="inspector" id="inspector">
+  <div class="head"><span class="kind" id="ikind">—</span><h2 id="ititle">Select a node</h2></div>
+  <dl class="kv" id="ikv"></dl>
+  <div class="chain" id="ichain" hidden></div>
+</aside>
+
+<footer>
+  <button class="btn" id="btn-play" type="button">▶ Replay</button>
+  <input type="range" id="scrub" min="0" max="0" value="0" aria-label="Replay position">
+  <span id="pos">0 / 0</span>
+  <span class="now" id="now"></span>
+</footer>
+</div>
+
+<script id="sample" type="application/x-ndjson">
+{"id":1,"t":1789325764.633,"kind":"question","parent":null,"text":"What is the original language of film or TV show of fer mamla gadbad gadbad?","source":"none"}
+{"id":2,"t":1789325764.635,"kind":"plan","parent":1,"seed":"fer mamla gadbad gadbad","relations":["original language of film or tv show"],"tail":"original language of film or tv show of fer mamla gadbad gadbad","n_hop":1,"snapped":null}
+{"id":3,"t":1789325764.663,"kind":"walk","parent":2,"verified":true,"reason":null,"answer":"iso 639:pnb","refused":null}
+{"id":4,"t":1789325764.663,"kind":"hop","parent":3,"hop":0,"query":"what is the original language of film or tv show of fer mamla gadbad gadbad","fact":"iso 639:pnb is the original language of film or TV show of fer mamla gadbad gadbad","how":"lookup","similarity":1.0,"provenance":null}
+{"id":5,"t":1789325764.663,"kind":"fact","parent":4,"text":"iso 639:pnb is the original language of film or TV show of fer mamla gadbad gadbad","subj":"fer mamla gadbad gadbad","rel":"original language of film or TV show","obj":"iso 639:pnb"}
+{"id":6,"t":1789325764.663,"kind":"vm","parent":3,"verified":true,"program_lines":16,"repairs":0}
+{"id":7,"t":1789325764.663,"kind":"answer","parent":1,"verified":true,"answer":"iso 639:pnb","reason":null,"refused":null,"aliased":[],"entities":[],"fetched":0}
+{"id":8,"t":1789325764.664,"kind":"question","parent":null,"text":"In which group does the country of the location of formation of matt mihana hold membership?","source":"none"}
+{"id":9,"t":1789325764.664,"kind":"plan","parent":8,"seed":"matt mihana","relations":["location of formation","country","membership"],"tail":"location of formation of matt mihana","n_hop":3,"snapped":null}
+{"id":10,"t":1789325764.664,"kind":"plan","parent":9,"seed":"matt mihana","relations":["location of formation","country","member of"],"tail":"location of formation of matt mihana","n_hop":3,"how":"lever 4 (exact alias, ahead of the walk)","rewrote":[["membership","member of"]]}
+{"id":11,"t":1789325764.664,"kind":"walk","parent":10,"verified":false,"reason":"plan_does_not_cover_question","answer":null,"refused":{"covers":false,"unknown_relations":[],"tail_relation":"location of formation","paraphrased":[]}}
+{"id":12,"t":1789325764.665,"kind":"answer","parent":8,"verified":false,"answer":null,"reason":"plan_does_not_cover_question","refused":{"covers":false,"unknown_relations":[],"tail_relation":"location of formation","paraphrased":[]},"aliased":[["membership","member of"]],"entities":[],"fetched":0}
+{"id":13,"t":1789325764.665,"kind":"question","parent":null,"text":"Where is the membership of the country of the location of formation of matt mihana?","source":"none"}
+{"id":14,"t":1789325764.665,"kind":"plan","parent":13,"seed":"matt mihana","relations":["location of formation","country","membership"],"tail":"location of formation of matt mihana","n_hop":3,"snapped":null}
+{"id":15,"t":1789325764.665,"kind":"plan","parent":14,"seed":"matt mihana","relations":["location of formation","country","member of"],"tail":"location of formation of matt mihana","n_hop":3,"how":"lever 4 (exact alias, ahead of the walk)","rewrote":[["membership","member of"]]}
+{"id":16,"t":1789325764.666,"kind":"walk","parent":15,"verified":false,"reason":"ambiguous_hop","answer":null,"refused":{"hop":2,"objects":["arctic council action plan","australian group","current g20 countries","helsinki protocol","imf","international centre for the settlement of investment disputes","list of g8 summits","nigeria trust fund","treaty on open skies","united nations","united nations security council"]}}
+{"id":17,"t":1789325764.666,"kind":"hop","parent":16,"hop":0,"query":"what is the location of formation of matt mihana","fact":"Miami/Selected article is the location of formation of matt mihana","how":"lookup","similarity":null,"provenance":null}
+{"id":18,"t":1789325764.666,"kind":"fact","parent":17,"text":"Miami/Selected article is the location of formation of matt mihana","subj":"matt mihana","rel":"location of formation","obj":"Miami/Selected article"}
+{"id":19,"t":1789325764.666,"kind":"hop","parent":16,"hop":1,"query":"Miami/Selected article country","fact":"united stated is the country of Miami/Selected article","how":"lookup","similarity":null,"provenance":null}
+{"id":20,"t":1789325764.666,"kind":"fact","parent":19,"text":"united stated is the country of Miami/Selected article","subj":"Miami/Selected article","rel":"country","obj":"united stated"}
+{"id":21,"t":1789325764.666,"kind":"answer","parent":13,"verified":false,"answer":null,"reason":"ambiguous_hop","refused":{"hop":2,"objects":["arctic council action plan","australian group","current g20 countries","helsinki protocol","imf","international centre for the settlement of investment disputes","list of g8 summits","nigeria trust fund","treaty on open skies","united nations","united nations security council"]},"aliased":[["membership","member of"]],"entities":[],"fetched":0}
+{"id":22,"t":1789325764.666,"kind":"question","parent":null,"text":"Which instance does the noble title of Henry Seymour King belong to?","source":"none"}
+{"id":23,"t":1789325764.666,"kind":"plan","parent":22,"seed":"Henry Seymour King","relations":["noble title","instance of"],"tail":"noble title of Henry Seymour King","n_hop":2,"snapped":null}
+{"id":24,"t":1789325764.667,"kind":"walk","parent":23,"verified":false,"reason":"ambiguous_hop","answer":null,"refused":{"hop":1,"objects":["chivalric orders","coparcener"],"facts":["Coparcener is the instance of of Baronetcy of Ulster","Chivalric Orders is the instance of of Baronetcy of Ulster"]}}
+{"id":25,"t":1789325764.667,"kind":"hop","parent":24,"hop":0,"query":"what is the noble title of Henry Seymour King","fact":"Baronetcy of Ulster is the noble title of Henry Seymour King","how":"lookup","similarity":null,"provenance":null}
+{"id":26,"t":1789325764.667,"kind":"fact","parent":25,"text":"Baronetcy of Ulster is the noble title of Henry Seymour King","subj":"Henry Seymour King","rel":"noble title","obj":"Baronetcy of Ulster"}
+{"id":27,"t":1789325764.667,"kind":"answer","parent":22,"verified":false,"answer":null,"reason":"ambiguous_hop","refused":{"hop":1,"objects":["chivalric orders","coparcener"],"facts":["Coparcener is the instance of of Baronetcy of Ulster","Chivalric Orders is the instance of of Baronetcy of Ulster"]},"aliased":[],"entities":[],"fetched":0}
+{"id":34,"t":1789325764.668,"kind":"question","parent":null,"text":"Which instance does tiger roche represent?","source":"none"}
+{"id":35,"t":1789325764.668,"kind":"plan","parent":34,"seed":"tiger roche","relations":["instance of"],"tail":"instance of of tiger roche","n_hop":1,"snapped":null}
+{"id":36,"t":1789325764.67,"kind":"walk","parent":35,"verified":true,"reason":null,"answer":"Huamn","refused":null}
+{"id":37,"t":1789325764.67,"kind":"hop","parent":36,"hop":0,"query":"what is the instance of of tiger roche","fact":"Huamn is the instance of of tiger roche","how":"lookup","similarity":1.0,"provenance":null}
+{"id":38,"t":1789325764.67,"kind":"fact","parent":37,"text":"Huamn is the instance of of tiger roche","subj":"tiger roche","rel":"instance of","obj":"Huamn"}
+{"id":39,"t":1789325764.67,"kind":"vm","parent":36,"verified":true,"program_lines":16,"repairs":0}
+{"id":40,"t":1789325764.67,"kind":"answer","parent":34,"verified":true,"answer":"Huamn","reason":null,"refused":null,"aliased":[],"entities":[],"fetched":0}
+{"id":48,"t":1789325764.672,"kind":"question","parent":null,"text":"What is the first name of Bill Haslam's father?","source":"none"}
+{"id":49,"t":1789325764.672,"kind":"plan","parent":48,"seed":"Bill Haslam","relations":["father","first name"],"tail":"father of Bill Haslam","n_hop":2,"snapped":null}
+{"id":50,"t":1789325764.672,"kind":"plan","parent":49,"seed":"Bill Haslam","relations":["father","given name"],"tail":"father of Bill Haslam","n_hop":2,"how":"lever 4 (exact alias, ahead of the walk)","rewrote":[["first name","given name"]]}
+{"id":51,"t":1789325764.672,"kind":"walk","parent":50,"verified":false,"reason":"plan_does_not_cover_question","answer":null,"refused":{"covers":false,"unknown_relations":[],"tail_relation":"father","paraphrased":[]}}
+{"id":52,"t":1789325764.672,"kind":"answer","parent":48,"verified":false,"answer":null,"reason":"plan_does_not_cover_question","refused":{"covers":false,"unknown_relations":[],"tail_relation":"father","paraphrased":[]},"aliased":[["first name","given name"]],"entities":[],"fetched":0}
+{"id":53,"t":1789325764.672,"kind":"question","parent":null,"text":"What is the given name of the father of Bill Haslam?","source":"none"}
+{"id":54,"t":1789325764.673,"kind":"plan","parent":53,"seed":"Bill Haslam","relations":["father","given name"],"tail":"father of Bill Haslam","n_hop":2,"snapped":null}
+{"id":55,"t":1789325764.675,"kind":"walk","parent":54,"verified":true,"reason":null,"answer":"Gemmes","refused":null}
+{"id":56,"t":1789325764.675,"kind":"hop","parent":55,"hop":0,"query":"what is the father of Bill Haslam","fact":"james haslam, jr. is the father of Bill Haslam","how":"lookup","similarity":0.509765625,"provenance":null}
+{"id":57,"t":1789325764.675,"kind":"fact","parent":56,"text":"james haslam, jr. is the father of Bill Haslam","subj":"Bill Haslam","rel":"father","obj":"james haslam, jr."}
+{"id":58,"t":1789325764.675,"kind":"hop","parent":55,"hop":1,"query":"james haslam, jr. given name","fact":"Gemmes is the given name of james haslam, jr.","how":"lookup","similarity":0.486328125,"provenance":null}
+{"id":59,"t":1789325764.675,"kind":"fact","parent":58,"text":"Gemmes is the given name of james haslam, jr.","subj":"james haslam, jr.","rel":"given name","obj":"Gemmes"}
+{"id":60,"t":1789325764.675,"kind":"vm","parent":55,"verified":true,"program_lines":25,"repairs":0}
+{"id":61,"t":1789325764.675,"kind":"answer","parent":53,"verified":true,"answer":"Gemmes","reason":null,"refused":null,"aliased":[],"entities":[],"fetched":0}
+{"id":62,"t":1789325764.675,"kind":"question","parent":null,"text":"Which instance does the owner of lar railway station have?","source":"none"}
+{"id":63,"t":1789325764.675,"kind":"plan","parent":62,"seed":"lar railway station","relations":["owner","instance of"],"tail":"owner of lar railway station","n_hop":2,"snapped":null}
+{"id":64,"t":1789325764.676,"kind":"plan","parent":63,"seed":"lar railway station","relations":["owned by","instance of"],"tail":"owned by of lar railway station","n_hop":2,"how":"lever 4 (exact alias, ahead of the walk)","rewrote":[["owner","owned by"]]}
+{"id":65,"t":1789325764.678,"kind":"walk","parent":64,"verified":true,"reason":null,"answer":"government agency","refused":null}
+{"id":66,"t":1789325764.678,"kind":"hop","parent":65,"hop":0,"query":"what is the owned by of lar railway station","fact":"pakistan ministry of railways is the owned by of lar railway station","how":"lookup","similarity":0.52197265625,"provenance":null}
+{"id":67,"t":1789325764.678,"kind":"fact","parent":66,"text":"pakistan ministry of railways is the owned by of lar railway station","subj":"lar railway station","rel":"owned by","obj":"pakistan ministry of railways"}
+{"id":68,"t":1789325764.678,"kind":"hop","parent":65,"hop":1,"query":"pakistan ministry of railways instance of","fact":"government agency is the instance of of pakistan ministry of railways","how":"lookup","similarity":0.4873046875,"provenance":null}
+{"id":69,"t":1789325764.678,"kind":"fact","parent":68,"text":"government agency is the instance of of pakistan ministry of railways","subj":"pakistan ministry of railways","rel":"instance of","obj":"government agency"}
+{"id":70,"t":1789325764.678,"kind":"vm","parent":65,"verified":true,"program_lines":25,"repairs":0}
+{"id":71,"t":1789325764.678,"kind":"answer","parent":62,"verified":true,"answer":"government agency","reason":null,"refused":null,"aliased":[["owner","owned by"]],"entities":[],"fetched":0}
+{"id":96,"t":1789325764.687,"kind":"question","parent":null,"text":"Which country does dren hoxha hold citizenship in?","source":"none"}
+{"id":97,"t":1789325764.687,"kind":"plan","parent":96,"seed":"dren hoxha","relations":["country of citizenship"],"tail":"country of citizenship of dren hoxha","n_hop":1,"snapped":null}
+{"id":98,"t":1789325764.689,"kind":"walk","parent":97,"verified":true,"reason":null,"answer":"Albania","refused":null}
+{"id":99,"t":1789325764.689,"kind":"hop","parent":98,"hop":0,"query":"what is the country of citizenship of dren hoxha","fact":"Albania is the country of citizenship of dren hoxha","how":"lookup","similarity":1.0,"provenance":null}
+{"id":100,"t":1789325764.689,"kind":"fact","parent":99,"text":"Albania is the country of citizenship of dren hoxha","subj":"dren hoxha","rel":"country of citizenship","obj":"Albania"}
+{"id":101,"t":1789325764.689,"kind":"vm","parent":98,"verified":true,"program_lines":16,"repairs":0}
+{"id":102,"t":1789325764.689,"kind":"answer","parent":96,"verified":true,"answer":"Albania","reason":null,"refused":null,"aliased":[],"entities":[],"fetched":0}
+{"id":110,"t":1789325764.691,"kind":"question","parent":null,"text":"Which country does zo (kana) originate from?","source":"none"}
+{"id":111,"t":1789325764.691,"kind":"plan","parent":110,"seed":"zo (kana)","relations":["originate from"],"tail":"originate from of zo (kana)","n_hop":1,"snapped":null}
+{"id":112,"t":1789325764.691,"kind":"answer","parent":110,"verified":false,"answer":null,"reason":"ambiguous_relation","refused":{"relation":"originate from","candidates":["country of origin","location of formation"]}}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+var KIND = {question:'#F2F4F7',plan:'#B49CFF',walk:'#6FA8DC',hop:'#58C7D6',fact:'#46B39A',fetch:'#F2A65A',gate:'#D9924C',
+            vm:'#E070C8',alias:'#C7B26B',latent:'#E9B44C',answer:'#4ED39A'};
+var OK='#4ED39A', BAD='#EF6E6E', LATENT='#E9B44C';
+var RADIUS = {question:2.6,plan:1.9,walk:1.7,hop:1.4,fact:1.2,fetch:1.6,gate:1.1,vm:1.5,alias:1.2,latent:1.5,answer:2.2};
+
+var events=[], byId={}, children={}, roots=[], rootOf={}, current=null, mode='tree', selected=null;
+var cursor=Infinity, playing=false, playTimer=null;
+
+function verdictOf(ev){
+  if(ev.kind==='answer'||ev.kind==='walk'){ if(ev.verified) return 'ok'; if(ev.reason==='latent_only') return 'latent'; return 'bad'; }
+  if(ev.kind==='vm') return ev.verified?'ok':'bad';
+  if(ev.kind==='gate') return ev.status==='accepted'||ev.lifted?'ok':(ev.status==='duplicate'?'':'bad');
+  return '';
+}
+function colorOf(ev){
+  var v=verdictOf(ev);
+  if(ev.kind==='answer'||ev.kind==='walk'||ev.kind==='vm'||ev.kind==='gate'){ if(v==='ok') return OK; if(v==='bad') return BAD; if(v==='latent') return LATENT; }
+  return KIND[ev.kind]||'#8393A6';
+}
+function finalOf(root){
+  var kids=children[root.id]||[]; var a=null;
+  for(var i=0;i<kids.length;i++) if(kids[i].kind==='answer') a=kids[i];
+  return a;
+}
+function labelOf(ev){
+  switch(ev.kind){
+    case 'question': return ev.text;
+    case 'plan': return (ev.relations||[]).join(' › ')+' · '+(ev.seed||'');
+    case 'walk': return ev.verified?('verified → '+ev.answer):('refused · '+ev.reason);
+    case 'hop': return 'hop '+ev.hop+' · '+ev.how+(ev.similarity!=null?' · '+Number(ev.similarity).toFixed(2):'');
+    case 'fact': return ev.text;
+    case 'fetch': return ev.source+' ← '+ev.entity+' ('+ev.n+')';
+    case 'gate': return ev.status+' · '+ev.fact;
+    case 'vm': return 'VM '+(ev.verified?'verified':'not verified')+' · '+ev.program_lines+' lines';
+    case 'alias': return (ev.pairs||[]).map(function(p){return p[0]+'→'+p[1]}).join(', ');
+    case 'latent': return 'held: '+ev.answer;
+    case 'answer': return ev.verified?('answer: '+ev.answer):('refused: '+ev.reason);
+  }
+  return ev.kind;
+}
+
+function ingest(list, append){
+  if(!append){ events=[]; byId={}; children={}; roots=[]; rootOf={}; }
+  list.forEach(function(ev){
+    if(byId[ev.id]) return;
+    events.push(ev); byId[ev.id]=ev;
+    if(ev.parent==null){ roots.push(ev); rootOf[ev.id]=ev.id; }
+    else { (children[ev.parent]=children[ev.parent]||[]).push(ev); rootOf[ev.id]=rootOf[ev.parent]!=null?rootOf[ev.parent]:ev.parent; }
+  });
+  renderList();
+  document.getElementById('qcount').textContent=roots.length;
+}
+
+/* ---------- three.js scene ---------- */
+var canvas=document.getElementById('c'), main=document.getElementById('main');
+var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+var scene=new THREE.Scene();
+var camera=new THREE.PerspectiveCamera(45,1,0.1,4000); camera.position.set(0,0,160);
+var group=new THREE.Group(); scene.add(group);
+scene.add(new THREE.AmbientLight(0xffffff,0.65));
+var key=new THREE.DirectionalLight(0xffffff,0.7); key.position.set(40,80,120); scene.add(key);
+var sphereGeo=new THREE.SphereGeometry(1,18,14);
+var nodes=[], lines=[], meshByEid={};
+var labelsEl=document.getElementById('labels');
+
+function clearScene(){
+  while(group.children.length) group.remove(group.children[0]);
+  nodes=[]; lines=[]; meshByEid={}; labelsEl.innerHTML='';
+}
+function addNode(ev,x,y,z,r){
+  var mat=new THREE.MeshStandardMaterial({color:colorOf(ev),roughness:0.55,metalness:0.1,emissive:new THREE.Color(colorOf(ev)),emissiveIntensity:0.18});
+  var m=new THREE.Mesh(sphereGeo,mat); m.position.set(x,y,z); m.scale.setScalar(r); m.userData.ev=ev;
+  group.add(m); nodes.push(m); meshByEid[ev.id]=m;
+  var l=document.createElement('div'); l.className='lbl'; l.textContent=labelOf(ev); labelsEl.appendChild(l); m.userData.label=l;
+  return m;
+}
+function addLine(a,b,color){
+  var g=new THREE.BufferGeometry().setFromPoints([a.position,b.position]);
+  var ln=new THREE.Line(g,new THREE.LineBasicMaterial({color:color,transparent:true,opacity:0.55}));
+  ln.userData.from=a; ln.userData.to=b; group.add(ln); lines.push(ln);
+}
+
+/* tidy tree layout: leaves get consecutive slots, parents centred over their children */
+function layoutTree(root){
+  clearScene();
+  var order=[]; var slot=0; var XS=12, YS=16;
+  function walk(ev,depth){
+    var kids=(children[ev.id]||[]).slice().sort(function(a,b){return a.id-b.id});
+    var pos={ev:ev,depth:depth};
+    order.push(pos);
+    if(!kids.length){ pos.x=slot++; }
+    else { var xs=kids.map(function(k){return walk(k,depth+1).x}); pos.x=(xs[0]+xs[xs.length-1])/2; }
+    return pos;
+  }
+  walk(root,0);
+  var maxDepth=0, maxX=0; order.forEach(function(p){maxDepth=Math.max(maxDepth,p.depth); maxX=Math.max(maxX,p.x)});
+  var cx=maxX/2, cy=maxDepth/2;
+  var idx={}; order.slice().sort(function(a,b){return a.ev.id-b.ev.id}).forEach(function(p,i){idx[p.ev.id]=i});
+  order.forEach(function(p){
+    var z=(idx[p.ev.id]/Math.max(1,order.length-1)-0.5)*18;   // time runs into the screen
+    addNode(p.ev,(p.x-cx)*XS,(cy-p.depth)*YS,z,RADIUS[p.ev.kind]||1.2);
+  });
+  order.forEach(function(p){ if(p.ev.parent!=null && meshByEid[p.ev.parent]) addLine(meshByEid[p.ev.parent],meshByEid[p.ev.id],colorOf(p.ev)); });
+  fit(Math.max(maxX*XS,maxDepth*YS,40));
+}
+/* galaxy: every question on a phyllotaxis spiral, coloured by its final verdict */
+function layoutGalaxy(){
+  clearScene();
+  var n=roots.length, golden=Math.PI*(3-Math.sqrt(5));
+  roots.forEach(function(r,i){
+    var rad=4.2*Math.sqrt(i+1), th=i*golden;
+    var a=finalOf(r); var col = a? (a.verified?OK:(a.reason==='latent_only'?LATENT:BAD)) : '#8393A6';
+    var ev=Object.assign({},r); var m=addNode(ev,rad*Math.cos(th),rad*Math.sin(th),(i%7-3)*1.5,1.6);
+    m.material.color.set(col); m.material.emissive.set(col);
+    m.userData.label.textContent=(a?(a.verified?'✓ ':'✗ '):'')+r.text;
+  });
+  fit(Math.max(4.2*Math.sqrt(n+1)*2.2,40));
+}
+function fit(extent){ group.rotation.set(0,0,0); camera.position.set(0,0,extent*1.35+30); }
+
+/* orbit: drag rotates, wheel zooms, right-drag / shift-drag pans */
+var drag=null;
+canvas.addEventListener('pointerdown',function(e){drag={x:e.clientX,y:e.clientY,b:e.button,shift:e.shiftKey,moved:false}; canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',function(e){
+  if(!drag) return; var dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY;
+  if(Math.abs(dx)+Math.abs(dy)>2) drag.moved=true;
+  if(drag.b===2||drag.shift){ group.position.x+=dx*0.12*camera.position.z/160; group.position.y-=dy*0.12*camera.position.z/160; }
+  else { group.rotation.y+=dx*0.006; group.rotation.x+=dy*0.006; }
+});
+canvas.addEventListener('pointerup',function(e){ if(drag&&!drag.moved) pick(e); drag=null; });
+canvas.addEventListener('contextmenu',function(e){e.preventDefault()});
+canvas.addEventListener('wheel',function(e){ e.preventDefault(); camera.position.z=Math.max(20,Math.min(1500,camera.position.z*(1+Math.sign(e.deltaY)*0.12))); },{passive:false});
+
+var ray=new THREE.Raycaster(), mouse=new THREE.Vector2();
+function pick(e){
+  var r=canvas.getBoundingClientRect(); mouse.x=((e.clientX-r.left)/r.width)*2-1; mouse.y=-((e.clientY-r.top)/r.height)*2+1;
+  ray.setFromCamera(mouse,camera); var hits=ray.intersectObjects(nodes.filter(function(n){return n.visible}));
+  if(!hits.length) return;
+  var ev=hits[0].object.userData.ev;
+  if(mode==='galaxy'){ openTree(byId[ev.id]); return; }
+  select(ev);
+}
+function select(ev){
+  selected=ev; nodes.forEach(function(n){ n.userData.label.classList.toggle('sel',n.userData.ev.id===ev.id); n.scale.setScalar((RADIUS[n.userData.ev.kind]||1.2)*(n.userData.ev.id===ev.id?1.45:1)); });
+  inspect(ev);
+}
+
+function resize(){ var w=main.clientWidth, h=main.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+window.addEventListener('resize',resize);
+
+var v=new THREE.Vector3();
+function frame(){
+  requestAnimationFrame(frame);
+  renderer.render(scene,camera);
+  var w=canvas.clientWidth, h=canvas.clientHeight, shown=0;
+  nodes.forEach(function(n){
+    var l=n.userData.label;
+    if(!n.visible){ l.style.display='none'; return; }
+    v.copy(n.position).applyMatrix4(group.matrixWorld).project(camera);
+    var behind=v.z>1, far=camera.position.z>420 && mode==='tree';
+    var big = n.userData.ev.kind==='question'||n.userData.ev.kind==='answer'||n.userData.ev.id===(selected&&selected.id);
+    if(behind||(far&&!big)||(mode==='galaxy'&&!big&&shown>40)){ l.style.display='none'; return; }
+    if(mode==='galaxy' && camera.position.z>260 && !(selected&&selected.id===n.userData.ev.id)){ l.style.display='none'; return; }
+    l.style.display='block'; l.style.left=((v.x+1)/2*w)+'px'; l.style.top=((1-v.y)/2*h)+'px'; shown++;
+  });
+  lines.forEach(function(ln){ ln.visible=ln.userData.from.visible&&ln.userData.to.visible; });
+}
+
+/* ---------- replay ---------- */
+var scrub=document.getElementById('scrub'), posEl=document.getElementById('pos'), nowEl=document.getElementById('now'), playBtn=document.getElementById('btn-play');
+function treeEvents(){ return mode==='tree'&&current ? events.filter(function(e){return rootOf[e.id]===current.id}).sort(function(a,b){return a.id-b.id}) : []; }
+function applyCursor(){
+  var list=treeEvents(); var k=Math.min(cursor,list.length);
+  nodes.forEach(function(n){ var i=list.indexOf(n.userData.ev); n.visible = mode!=='tree' || i<k; });
+  scrub.max=list.length; scrub.value=k; posEl.textContent=k+' / '+list.length;
+  var last=k>0?list[k-1]:null; nowEl.textContent=last?(last.kind+' · '+labelOf(last)):'';
+}
+scrub.addEventListener('input',function(){ cursor=+scrub.value; applyCursor(); });
+playBtn.addEventListener('click',function(){
+  if(playing){ playing=false; clearInterval(playTimer); playBtn.textContent='▶ Replay'; return; }
+  var list=treeEvents(); if(!list.length) return;
+  playing=true; playBtn.textContent='⏸ Pause'; cursor=0; applyCursor();
+  playTimer=setInterval(function(){ cursor++; applyCursor(); if(cursor>=list.length){ playing=false; clearInterval(playTimer); playBtn.textContent='▶ Replay'; } },140);
+});
+
+/* ---------- panels ---------- */
+function renderList(){
+  var el=document.getElementById('qlist'); el.innerHTML='';
+  roots.forEach(function(r){
+    var a=finalOf(r); var b=document.createElement('button'); b.type='button'; b.className='qitem'+(current&&current.id===r.id?' sel':'');
+    var d=document.createElement('span'); d.className='dot '+(a?(a.verified?'ok':(a.reason==='latent_only'?'latent':'bad')):'');
+    var t=document.createElement('span'); t.textContent=r.text;
+    var s=document.createElement('small'); s.textContent=a?(a.verified?('→ '+a.answer):a.reason):'…';
+    t.appendChild(s); b.appendChild(d); b.appendChild(t);
+    b.addEventListener('click',function(){openTree(r)}); el.appendChild(b);
+  });
+}
+function openTree(r){ mode='tree'; current=r; cursor=Infinity; layoutTree(r); applyCursor(); renderList(); select(r); document.getElementById('status').textContent='question #'+r.id+' · '+treeEvents().length+' events'; }
+function openGalaxy(){ mode='galaxy'; current=null; layoutGalaxy(); applyCursor(); renderList(); inspectSummary(); }
+document.getElementById('btn-all').addEventListener('click',openGalaxy);
+
+function inspect(ev){
+  document.getElementById('ikind').textContent=ev.kind; document.getElementById('ikind').style.color=colorOf(ev);
+  document.getElementById('ititle').textContent=labelOf(ev);
+  var kv=document.getElementById('ikv'); kv.innerHTML='';
+  Object.keys(ev).forEach(function(k){
+    if(k==='kind'||k==='parent'||k==='t') return;
+    var val=ev[k]; if(val==null||val===''||(Array.isArray(val)&&!val.length)) return;
+    var dt=document.createElement('dt'); dt.textContent=k; var dd=document.createElement('dd');
+    if(typeof val==='object'){ var pre=document.createElement('pre'); pre.textContent=JSON.stringify(val,null,1); dd.appendChild(pre); }
+    else { dd.textContent=String(val); dd.className=(k==='id'||k==='similarity'||k==='n_hop'||k==='program_lines')?'mono':''; }
+    kv.appendChild(dt); kv.appendChild(dd);
+  });
+  var ch=document.getElementById('ichain'); ch.hidden=true;
+  if(ev.kind==='walk'||ev.kind==='answer'){
+    var root=byId[rootOf[ev.id]]; var walks=events.filter(function(e){return e.kind==='walk'&&rootOf[e.id]===root.id});
+    var w=ev.kind==='walk'?ev:walks[walks.length-1];
+    if(w){ var hops=(children[w.id]||[]).filter(function(e){return e.kind==='hop'});
+      if(hops.length){ ch.hidden=false; ch.innerHTML='<h3>the chain the VM checked</h3>'; var ol=document.createElement('ol');
+        hops.forEach(function(h){ var li=document.createElement('li'); li.textContent=(h.fact||h.query)+(h.provenance?'  ['+h.provenance+']':''); ol.appendChild(li); }); ch.appendChild(ol); } }
+  }
+}
+function inspectSummary(){
+  var ok=0,bad=0,lat=0; roots.forEach(function(r){var a=finalOf(r); if(!a) return; if(a.verified) ok++; else if(a.reason==='latent_only') lat++; else bad++;});
+  document.getElementById('ikind').textContent='run'; document.getElementById('ikind').style.color='var(--ink-2)';
+  document.getElementById('ititle').textContent=roots.length+' questions · '+ok+' verified · '+bad+' refused'+(lat?' · '+lat+' held (latent)':'');
+  var kv=document.getElementById('ikv'); kv.innerHTML='';
+  var reasons={}; roots.forEach(function(r){var a=finalOf(r); if(a&&!a.verified) reasons[a.reason]=(reasons[a.reason]||0)+1;});
+  Object.keys(reasons).sort(function(a,b){return reasons[b]-reasons[a]}).forEach(function(k){ var dt=document.createElement('dt'); dt.textContent=k; var dd=document.createElement('dd'); dd.className='mono'; dd.textContent=reasons[k]; kv.appendChild(dt); kv.appendChild(dd); });
+  document.getElementById('ichain').hidden=true;
+  document.getElementById('status').textContent=events.length+' events · click a question to open its tree';
+}
+
+/* legend */
+(function(){ var lg=document.getElementById('legend'); Object.keys(KIND).forEach(function(k){ if(k==='answer') return; var s=document.createElement('span'); s.innerHTML='<i style="background:'+KIND[k]+'"></i>'+k; lg.appendChild(s); });
+  [['verified',OK],['refused',BAD],['held · latent',LATENT]].forEach(function(p){ var s=document.createElement('span'); s.innerHTML='<i style="background:'+p[1]+'"></i>'+p[0]; lg.appendChild(s); }); })();
+
+/* loading: a file, the embedded sample, or a live stream from a local stand-in server */
+function parseJsonl(text){ var out=[]; text.split(/\r?\n/).forEach(function(l){ l=l.trim(); if(!l) return; try{ out.push(JSON.parse(l)); }catch(e){} }); return out; }
+document.getElementById('file').addEventListener('change',function(e){
+  var f=e.target.files[0]; if(!f) return; var rd=new FileReader();
+  rd.onload=function(){ ingest(parseJsonl(rd.result),false); document.getElementById('status').textContent=f.name; openGalaxy(); }; rd.readAsText(f);
+});
+var es=null;
+document.getElementById('btn-live').addEventListener('click',function(){
+  if(es){ es.close(); es=null; this.textContent='Live'; return; }
+  var url=(location.protocol.indexOf('http')===0?'':'http://127.0.0.1:8765')+'/loop/stream';   // the stand-in server: python standin/serve_api.py, then /panel
+  try{ es=new EventSource(url); }catch(err){ document.getElementById('status').textContent='no live stream at '+url; return; }
+  var btn=this; btn.textContent='● Live'; var pending=[];
+  es.onmessage=function(m){ try{ pending.push(JSON.parse(m.data)); }catch(err){} };
+  es.onerror=function(){ document.getElementById('status').textContent='live stream unreachable — open this panel from the stand-in server (serve_api.py, /panel)'; es.close(); es=null; btn.textContent='Live'; };
+  setInterval(function(){ if(!pending.length) return; var batch=pending.splice(0); ingest(batch,true); if(mode==='galaxy') layoutGalaxy(); else if(current) { layoutTree(current); applyCursor(); } },400);
+});
+
+resize();
+ingest(parseJsonl(document.getElementById('sample').textContent),false);
+openTree(roots[6]||roots[0]);
+frame();
+})();
+</script>
+
+</body>
+</html>

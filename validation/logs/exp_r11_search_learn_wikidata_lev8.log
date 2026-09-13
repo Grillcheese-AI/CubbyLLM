@@ -1,0 +1,43 @@
+wiki world 552297 facts, 2794 relations | SimpleQA sample 600 (seed 7) | proposer emitter_v12e.Q4_K_M.gguf | source wikidata | lexicon 119161 synsets
+  100/600 (184s, api calls 0) plan 88 fetched 30 verified 2 correct 1 near 1 WRONG 0
+  200/600 (268s, api calls 0) plan 177 fetched 50 verified 2 correct 1 near 1 WRONG 0
+  400/600 (551s, api calls 4) plan 354 fetched 119 verified 5 correct 4 near 1 WRONG 0
+  500/600 (684s, api calls 9) plan 441 fetched 155 verified 5 correct 4 near 1 WRONG 0
+  600/600 (910s, api calls 21) plan 530 fetched 180 verified 7 correct 5 near 2 WRONG 0
+
+SIMPLEQA + SEARCH-AND-LEARN: {'aliased_questions': 124, 'correct': 5, 'facts_fetched': 1328, 'fetched_questions': 180, 'final:ambiguous_relation': 19, 'final:plan_does_not_cover_question': 332, 'final:retrieval_exhausted': 39, 'final:unknown_relation': 133, 'first:ambiguous_relation': 19, 'first:plan_does_not_cover_question': 334, 'first:retrieval_exhausted': 43, 'first:unknown_relation': 134, 'gate:accepted': 1261, 'gate:duplicate': 67, 'near': 2, 'no_plan': 70, 'plan': 530, 'verified': 7}
+api calls 21 | VM calls 14 | store grew 1261
+
+every verified answer:
+  [correct] 'On what day, month, and year was Masaki Tsuji born?'
+           plan ['born'] seed 'masaki tsuji' -> '1932-03-23' (gold 'March 23, 1932 ')
+           via ['1932-03-23 is the date of birth of Masaki Tsuji']
+  [near   ] 'In which district is the Syrian village "Kafr al-Awamid" located?'
+           plan ['district'] seed 'kafr al awamid' -> 'Az-Zabdani Subdistrict' (gold 'Al-Zabadani ')
+           via ['Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid']
+  [correct] 'On what day, month, and year was the footballer Michael Anderson Pereira da Silva born?'
+           plan ['born'] seed 'michael anderson pereira da silva' -> '1983-02-16' (gold 'February 16, 1983')
+           via ['1983-02-16 is the date of birth of Michael Anderson Pereira da Silva']
+  [correct] 'In what year was the Penny Crane Award for Distinguished Service established?'
+           plan ['established'] seed 'penny crane award for distinguished service' -> '2000' (gold '2000')
+           via ['2000 is the inception of Penny Crane Award for Distinguished Service']
+  [correct] 'On what day, month, and year was Motonori Matuyama born?'
+           plan ['born'] seed 'motonori matuyama' -> '1884-10-25' (gold '25 October 1884')
+           via ['1884-10-25 is the date of birth of Motonori Matuyama']
+  [near   ] 'What were the day, month, and year when FC Baltika Kaliningrad was founded?'
+           plan ['founding date'] seed 'fc baltika kaliningrad' -> '1954' (gold '22 December 1954')
+           via ['1954 is the inception of FC Baltika Kaliningrad']
+  [correct] 'What day, month, and year was Giulio Carlo Argan born?'
+           plan ['born'] seed 'giulio carlo argan' -> '1909-05-17' (gold '17 May 1909')
+           via ['1909-05-17 is the date of birth of Giulio Carlo Argan']
+
+learned (first 6):
+  'In what year did Haile Gebrselassie go undefeated in all of his road r' asked ['haile gebrselassie'] admitted 85 e.g. ['Ethiopia is the country of citizenship of Haile Gebrselassie', 'male is the sex or gender of Haile Gebrselassie', 'Haile Gebrselassie is the Commons category of Haile Gebrselassie']
+  'As of 2011, what was the male population of Chitwan District?' asked ['chitwan district'] admitted 14 e.g. ['Nepal is the country of Chitwan District', "Category:Chitwan District is the topic's main category of Chitwan District", 'Bagmati Province is the located in the administrative territorial entity of Chitwan District']
+  "How many U.S. patents did Chadwell O'Connor receive in his lifetime?" asked ['chadwell o connor'] admitted 9 e.g. ["2007-09-05 is the date of death of Chadwell O'Connor", "1914-10-09 is the date of birth of Chadwell O'Connor", "male is the sex or gender of Chadwell O'Connor"]
+  'On what day, month, and year was Masaki Tsuji born?' asked ['masaki tsuji'] admitted 20 e.g. ['Japan is the country of citizenship of Masaki Tsuji', '1932-03-23 is the date of birth of Masaki Tsuji', 'screenwriter is the occupation of Masaki Tsuji']
+  'What fellowship was Zanele Muholi awarded in 2012?' asked ['zanele muholi'] admitted 53 e.g. ['non-binary is the sex or gender of Zanele Muholi', '1972-07-19 is the date of birth of Zanele Muholi', '1972 is the date of birth of Zanele Muholi']
+  'In which district is the Syrian village "Kafr al-Awamid" located?' asked ['kafr al awamid'] admitted 2 e.g. ['Syria is the country of Kafr al-Awamid', 'Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid']
+
+aliased (lever 4: plan word -> label; lever 6: question word -> label): 124 questions, e.g. [('year', 'occurred on')] -> plan_does_not_cover_question; [('parents', 'parent')] -> plan_does_not_cover_question; [('year', 'occurred on')] -> plan_does_not_cover_question; [('parents', 'parent')] -> plan_does_not_cover_question; [('year', 'occurred on')] -> retrieval_exhausted; [('year', 'occurred on')] -> retrieval_exhausted; [('born', 'date of birth'), ('date of birth', 'birth date')] -> verified; [('year', 'occurred on')] -> plan_does_not_cover_question
+relations still unknown after learning (top 20): [('municipality', 11), ('month and year', 4), ('age', 4), ('first husband', 2), ('first time', 2), ('episodes', 2), ('full name', 2), ('second husband', 2), ('lake known as the jewel in the ring', 1), ('go undefeated in all of his road races', 1), ('arc stage', 1), ('friday night headliner', 1), ('year of release of william kentridge second film', 1), ('list entry name', 1), ('national heritage list entry number 1090695', 1), ('singles', 1), ('as of 2011', 1), ('male population', 1), ('inaugural holder of the position of attorney general', 1), ('how many people were injured', 1)]

@@ -1,0 +1,42 @@
+hdc ood_validation_rephrased.pq: 10,000 rows, 8,840 chains parsed (answer_not_chain_object 123, chain_broken 679, unparsed_fact 358) | store 11,774 facts, 195 relations | mapping 278 relations | 4s
+sampled 600 of 8,840 chains (hops [1, 2, 3], seed 7) | arms ('rephrased', 'original') | planner emitter emitter_v12e.Q4_K_M.gguf
+  100/600 (116s) rephrased certified 32 near 0 WRONG 0 | original certified 51 near 0 WRONG 0 | VM calls 195
+  200/600 (218s) rephrased certified 63 near 0 WRONG 0 | original certified 99 near 0 WRONG 0 | VM calls 378
+  300/600 (325s) rephrased certified 89 near 0 WRONG 0 | original certified 141 near 0 WRONG 0 | VM calls 538
+  400/600 (424s) rephrased certified 113 near 0 WRONG 0 | original certified 197 near 0 WRONG 0 | VM calls 716
+  500/600 (526s) rephrased certified 144 near 0 WRONG 0 | original certified 243 near 0 WRONG 0 | VM calls 891
+  600/600 (628s) rephrased certified 175 near 0 WRONG 0 | original certified 287 near 0 WRONG 0 | VM calls 1075
+
+HDC REPHRASED (emitter): VM calls 1075 | 628s
+   127 /  318 certified  rephrased 1-hop     near 0 WRONG 0 | unknown_relation 127, plan_does_not_cover_question 42, ambiguous_relation 10, retrieval_exhausted 8, no_plan 4
+   210 /  318 certified  original 1-hop      near 0 WRONG 0 | unknown_relation 93, retrieval_exhausted 7, plan_does_not_cover_question 5, no_plan 3
+    43 /  172 certified  rephrased 2-hop     near 0 WRONG 0 | unknown_relation 63, plan_does_not_cover_question 47, rephrase_dropped_last_hop 15, retrieval_exhausted 13, ambiguous_hop 3, no_plan 2, ambiguous_relation 1
+    68 /  187 certified  original 2-hop      near 0 WRONG 0 | unknown_relation 83, plan_does_not_cover_question 18, retrieval_exhausted 6, ambiguous_hop 6, no_plan 4, ambiguous_relation 2
+     5 /   90 certified  rephrased 3-hop     near 0 WRONG 0 | plan_does_not_cover_question 42, unknown_relation 30, rephrase_dropped_last_hop 5, no_plan 5, ambiguous_relation 4, retrieval_exhausted 2, ambiguous_hop 2
+     9 /   95 certified  original 3-hop      near 0 WRONG 0 | unknown_relation 37, plan_does_not_cover_question 31, no_plan 12, ambiguous_hop 3, retrieval_exhausted 2, ambiguous_relation 1
+
+matched pairs (original certified, rephrased certified): both 171, original only 116, rephrased only 4, neither 309
+
+every WRONG (0):
+
+refusal examples:
+  [plan_does_not_cover_question] ('In which group does the country of the location of formation of matt mihana hold membership?', ['location of formation', 'country', 'group', 'membership'], None, {'covers': False, 'unknown_relations': ['group'], 'tail_relation': 'location of formation', 'paraphrased': []})
+  [plan_does_not_cover_question] ('What is the language of work or name of the language of work or name of the given name of duncan wood?', ['language of work or name', 'given name'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'language of work or name', 'paraphrased': []})
+  [plan_does_not_cover_question] ('Which linguistic typology do the languages spoken, written or signed by Manfred Petz belong to?', ['linguistic typology'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'linguistic typology', 'paraphrased': []})
+  [plan_does_not_cover_question] ("Which instance corresponds to the time zone of the country of weightlifting at the 2012 summer olympics - women's 63 kg?", ['country', 'time zone'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'country', 'paraphrased': []})
+  [unknown_relation] ('Which instance does the noble title of Henry Seymour King belong to?', ['instance'], None, {'covers': True, 'unknown_relations': ['instance'], 'tail_relation': None, 'paraphrased': []})
+  [unknown_relation] ('What is the instance of the noble title of Henry Seymour King?', ['instance of the noble title'], None, {'covers': True, 'unknown_relations': ['instance of the noble title'], 'tail_relation': None, 'paraphrased': []})
+  [unknown_relation] ('Which instance does tiger roche represent?', ['instance'], None, {'covers': True, 'unknown_relations': ['instance'], 'tail_relation': None, 'paraphrased': []})
+  [unknown_relation] ('What is the instance of tiger roche?', ['instance'], None, {'covers': True, 'unknown_relations': ['instance'], 'tail_relation': None, 'paraphrased': []})
+  [ambiguous_relation] ('Which country does zo (kana) originate from?', ['country of origin'], None, {'wording': 'country', 'candidates': ['country', 'country of citizenship', 'country of origin']})
+  [ambiguous_relation] ('Which taxon is the parent of Lepidosperma squamatum?', ['taxon', 'parent'], None, {'relation': 'parent', 'candidates': ['father', 'mother']})
+  [ambiguous_relation] ('Which taxon is the parent of cuculus horsfieldi?', ['taxon', 'parent'], None, {'relation': 'parent', 'candidates': ['father', 'mother']})
+  [ambiguous_relation] ('Which country does Black Sheep (rock band) originate from?', ['country of origin'], None, {'wording': 'country', 'candidates': ['country', 'country of citizenship', 'country of origin']})
+  [retrieval_exhausted] ('Which is the administrative territorial entity contained within the country of citizenship of aryono miranat?', ['country of citizenship', 'administrative territorial entity'], None, None)
+  [retrieval_exhausted] ('What is the linguistic typology of the languages spoken, written or signed by Manfred Petz?', ['linguistic typology of the languages spoken written or signed'], None, None)
+  [retrieval_exhausted] ('Which ethnic group is associated with the ethnic group of the country of coana (parish)?', ['country', 'ethnic group', 'associated ethnic group'], None, None)
+  [retrieval_exhausted] ("What field does the occupation of the cast member of L'escalier sans fin belong to?", ['cast member', 'occupation', 'field'], None, None)
+  [ambiguous_hop] ('What is the field of this occupation of the occupation of Gregory Scott Frances?', ['occupation', 'field of this occupation'], None, {'hop': 1, 'objects': ['movie', 'off book'], 'facts': ['Off book is the field of this occupation of Television actor', 'movie is the field of this occupation of Television actor']})
+  [ambiguous_hop] ('What is the currency of the country of citizenship of Ursula Burger?', ['country of citizenship', 'currency'], None, {'hop': 1, 'objects': ['currency of malta', 'german marks'], 'facts': ['German marks is the currency of Germanz', 'currency of malta is the currency of Germanz']})
+  [ambiguous_hop] ('Which diplomatic relation does the country of citizenship of Ferdinand Lop have?', ['country of citizenship', 'diplomatic relation'], None, {'hop': 1, 'objects': ['al jumhuriyah al jaza iriyah ad dimuqratiyah ash shabiyah', 'as sumal', 'p jp', 'united states of mexico'], 'facts': ['As-Sumal is the diplomatic relation of iso 3166-1:fr', 'p:jp is the diplomatic relation of iso 3166-1:fr', "al jumhuriyah al jaza'iriyah ad dimuqratiyah ash shabiyah is the diplomatic relation of iso 3166-1:fr", 'United States of Mexico is the diplomatic relation of iso 3166-1:fr']})
+  [ambiguous_hop] ('What is the diplomatic relation of the country of citizenship of Ferdinand Lop?', ['country of citizenship', 'diplomatic relation'], None, {'hop': 1, 'objects': ['al jumhuriyah al jaza iriyah ad dimuqratiyah ash shabiyah', 'as sumal', 'p jp', 'united states of mexico'], 'facts': ['As-Sumal is the diplomatic relation of iso 3166-1:fr', 'p:jp is the diplomatic relation of iso 3166-1:fr', "al jumhuriyah al jaza'iriyah ad dimuqratiyah ash shabiyah is the diplomatic relation of iso 3166-1:fr", 'United States of Mexico is the diplomatic relation of iso 3166-1:fr']})

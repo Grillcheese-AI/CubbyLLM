@@ -45,6 +45,8 @@ class FactStore:
         self._rows: list = []                            # np row vectors when enc is set
         self._seen: set[str] = set()
         self._post: dict[str, array] = {}                # token -> fact ids: the lexical fallback's inverted index
+        self.provenance: dict[str, str] = {}             # fact key -> the source(s) that stated it (learn.py fills it; a
+                                                         # latent source's fact stays '<name> (latent)' until another agrees)
         self.index = TripleIndex()                       # retrieval as LOOKUP for template facts (exp_m4, 2026-09-04)
         for t in texts or []:
             self.add(t)

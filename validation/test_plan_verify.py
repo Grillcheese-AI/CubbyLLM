@@ -276,3 +276,142 @@ def test_covers_v5_a_verb_form_outer_hop_follows_the_entity_the_inner_hop_preced
                   known, aliases={"spouse": ["married"]})
     one = QuestionPlan(relations=[None], tail="born of marie", n_hop=1)
     assert not covers("When was the father of Marie born?", one, known)          # 'father' is a dropped hop
+
+
+def test_a_relation_that_ends_in_of_splits_at_the_overlapping_of():
+    """hdc (2026-09-13): Wikidata's commonest labels end in 'of' -- 'instance of', 'member of',
+    'part of'. In a tail or a fact, 'instance of of X' has two ' of 's that overlap at one
+    space; `str.split(' of ')` sees only the first and reads 'instance' | 'of X'. Every
+    ' of ' split -- the held tier, the paraphrase tier, the question-decided tier, the fact
+    parse, the hop-0 readings -- now offers the overlapping prefix too."""
+    from cubbyllm.reasoning.plan_verify import split_tail
+    from cubbyllm.reasoning.planner import of_prefixes, parse_fact, tail_splits
+    assert of_prefixes("instance of of Bari station") == ["instance of", "instance"]
+    assert of_prefixes("country of citizenship of x of y") == ["country of citizenship of x", "country of citizenship", "country"]
+    known = StoreRelations([])
+    known.declare("instance of"); known.add("Train station is the instance of of Bari station")
+    known.declare("member of"); known.add("imf is the member of of united stated")
+    assert "instance of" in known
+    assert tail_relation("instance of of Bari station", known) == "instance of"
+    assert split_tail("instance of of Bari station", known) == ("instance of", "Bari station")
+    assert split_tail("member of of united stated", known, "What is united stated a member of?") == ("member of", "united stated")
+    # unheld, the question decides -- and never an entity that begins with 'of'
+    assert split_tail("part of of the whole thing", None, "What is the whole thing part of?") == ("part of", "the whole thing")
+    t = parse_fact("Train station is the instance of of Bari station", known={"instance of"})
+    assert (t.rel, t.subj, t.obj) == ("instance of", "Bari station", "Train station")
+    assert tail_splits("instance of of Bari station")[0] == ("instance of", "bari station")
+    plan = QuestionPlan(relations=[None], tail="instance of of Bari station", n_hop=1)
+    assert verify_plan("What is the instance of Bari station?", plan, known).ok
+
+
+def test_covers_v6_a_split_wording_is_claimed_word_by_word_and_a_dropped_hop_still_fails():
+    """hdc (2026-09-13): 3,463 of 8,840 rephrased questions worded a relation with all its content
+    words, not contiguously -- 'Which country does X hold citizenship in?'. The split tier claims
+    each word outside every other claim; the residual rule is unchanged, so a hop the plan dropped
+    is still refused, and a wording with a word missing is not a split wording."""
+    from cubbyllm.reasoning.plan_verify import StoreRelations, covers
+    store = ["france is the country of citizenship of dren hoxha", "albania is the country of dren hoxha",
+             "pierre is the father of dren hoxha", "french is the languages spoken, written or signed of dren hoxha",
+             "human is the instance of of dren hoxha"]
+    known = StoreRelations(store)
+    one = QuestionPlan(relations=[None], tail="country of citizenship of dren hoxha", n_hop=1)
+    assert covers("Which country does Dren Hoxha hold citizenship in?", one, known)
+    assert covers("What languages are spoken, written, or signed by Dren Hoxha?",
+                  QuestionPlan(relations=[None], tail="languages spoken, written or signed of dren hoxha", n_hop=1), known)
+    # the dropped hop: 'father' is a relation word left over
+    assert not covers("Which country does the father of Dren Hoxha hold citizenship in?", one, known)
+    two = QuestionPlan(relations=[None, "country of citizenship"], tail="father of dren hoxha", n_hop=2)
+    assert covers("Which country does the father of Dren Hoxha hold citizenship in?", two, known)
+    # a word missing is not a split wording: 'country' alone does not word `country of citizenship`
+    assert not covers("Which country is Dren Hoxha from?", one, known)
+    # a relation worded contiguously but out of order is a swapped chain, never a split wording
+    swapped = QuestionPlan(relations=[None, "father"], tail="country of citizenship of dren hoxha", n_hop=2)
+    assert not covers("What is the country of citizenship of the father of Dren Hoxha?", swapped, known)
+    # the documented limit: a split wording carries no order, so the swapped chain of a split question
+    # passes coverage and it is the walk that refuses it (no 'father' of a country in any store)
+    assert covers("Which country does the father of Dren Hoxha hold citizenship in?", swapped, known)
+    # a where-question's verb of location is its frame ('found' is a word of `found in taxon`)
+    known2 = StoreRelations(store + ["aves is the found in taxon of feather"])
+    assert covers("In which country can Dren Hoxha be found?", QuestionPlan(relations=[None], tail="country of dren hoxha", n_hop=1), known2)
+    assert not covers("What is the country of the found in taxon of Dren Hoxha?",
+                      QuestionPlan(relations=[None], tail="country of dren hoxha", n_hop=1), known2)
+
+
+def test_a_place_class_noun_is_the_ask_only_where_it_is_asked_and_a_relation_everywhere_else():
+    """exp_r9 after the place ask (2026-09-13): 'location' had left the vocabulary for every place
+    question, so 'What location does the location of X have?' let a 1-hop plan cover a 2-hop question
+    and the walk spoke the inner hop -- a wrong answer. Now: 'what is the location of X' is not a
+    place ask at all (a class noun followed by 'of' is the relation); an asked span ('in which city',
+    'what location') is stripped only when its noun occurs once; otherwise every occurrence must be
+    claimed by the plan."""
+    from cubbyllm.reasoning.plan_verify import StoreRelations, ask_type, covers
+    store = ["laika dog type is the instance of of primitive dogs", "northern russia is the location of laika dog type",
+             "bergen mall is the location of playhouse on the mall", "paramus is the location of bergen mall",
+             "1950 is the born of jean", "lyon is the birthplace of jean"]
+    known = StoreRelations(store)
+    assert ask_type("What is the location of the instance of Primitive Dogs?") != "place"
+    one = QuestionPlan(relations=[None], tail="instance of of primitive dogs", n_hop=1)
+    assert not covers("What is the location of the instance of Primitive Dogs?", one, known)          # 'location' dropped
+    two = QuestionPlan(relations=[None, "location"], tail="instance of of primitive dogs", n_hop=2)
+    assert covers("What is the location of the instance of Primitive Dogs?", two, known)
+    assert ask_type("What location does the location of Playhouse On The Mall have?") == "place"
+    one = QuestionPlan(relations=[None], tail="location of playhouse on the mall", n_hop=1)
+    assert not covers("What location does the location of Playhouse On The Mall have?", one, known)   # the second 'location' is a hop
+    two = QuestionPlan(relations=[None, "location"], tail="location of playhouse on the mall", n_hop=2)
+    assert covers("What location does the location of Playhouse On The Mall have?", two, known)
+    assert covers("What location does Playhouse On The Mall have?", one, known)                       # the ask, once: stripped
+    # the asked class noun, once, is still the frame of a where-question
+    assert covers("In which city was Jean born?", QuestionPlan(relations=[None], tail="birthplace of jean", n_hop=1), known,
+                  aliases={"birthplace": ["born"]})
+
+
+def test_a_dropped_hop_hiding_behind_an_inflection_is_still_a_dropped_hop():
+    """hdc emitter arm (2026-09-13): 'How is the flag of the country of X depicted?' planned as [country,
+    flag] spoke the flag -- 'depicted' is no relation word, but `depicts` is; 'the membership of the
+    country' planned without `member of` spoke the country's history. The residual rule now reads a
+    leftover word of five letters or more by its stem too; short words ('hold' beside `holder`) are not."""
+    from cubbyllm.reasoning.plan_verify import StoreRelations, covers, _stem
+    store = ["royaume-uni is the country of robin hood gardens", "second union jack is the flag of royaume-uni",
+             "x-shaped cross is the depicts of second union jack", "united nations is the member of of bulgaria",
+             "bulgaria is the country of radomir", "the imf is the holder of bulgaria"]
+    known = StoreRelations(store)
+    assert _stem("depicted") == _stem("depiction") == _stem("depicts") == "depict" and _stem("membership") == _stem("member")
+    two = QuestionPlan(relations=[None, "flag"], tail="country of robin hood gardens", n_hop=2)
+    assert not covers("How is the flag of the country of Robin Hood Gardens depicted?", two, known)
+    assert not covers("What is the depiction of the flag of the country of Robin Hood Gardens?", two, known)
+    three = QuestionPlan(relations=[None, "flag", "depicts"], tail="country of robin hood gardens", n_hop=3)
+    assert covers("What is the depicts of the flag of the country of Robin Hood Gardens?", three, known)
+    one = QuestionPlan(relations=[None], tail="country of radomir", n_hop=1)
+    assert not covers("What is the membership of the country of Radomir?", one, known)       # 'membership' ~ member of
+    assert covers("Which country does Radomir hold?", one, known)                            # 'hold' is short: not `holder`
+    # a whole relation, by stems -- not one word of a longer one: 'associated' is not `genetic association`
+    known3 = StoreRelations(store + ["brca1 is the genetic association of cancer", "george is the given name of george branche"])
+    assert covers("Which given name is associated with George Branche?", QuestionPlan(relations=[None], tail="given name of george branche", n_hop=1), known3)
+
+
+def test_a_place_class_noun_that_is_a_held_relation_is_a_hop_the_plan_must_claim():
+    """hdc emitter arm (2026-09-13): 'In which country is the location of formation of X?' asks for the
+    COUNTRY of that location; with 'country' stripped as the ask, a one-hop plan spoke Minneapolis for the
+    United States. The asked class noun is stripped only when the store holds no relation made of it; a
+    class noun that is a relation ('country', 'location') must be claimed, and 'in which country was X
+    born' is then refused for a plan that stops at the place of birth -- the answer would be a city."""
+    from cubbyllm.reasoning.plan_verify import StoreRelations, covers
+    store = ["minneapolis is the location of formation of mentor corporation", "united states is the country of minneapolis",
+             "ulm is the place of birth of einstein", "germany is the country of ulm", "1879 is the born of einstein"]
+    known = StoreRelations(store)
+    one = QuestionPlan(relations=[None], tail="location of formation of mentor corporation", n_hop=1)
+    two = QuestionPlan(relations=[None, "country"], tail="location of formation of mentor corporation", n_hop=2)
+    assert not covers("In which country is the location of formation of Mentor Corporation?", one, known)
+    assert covers("In which country is the location of formation of Mentor Corporation?", two, known)
+    assert covers("In which country can Mentor Corporation be found?", QuestionPlan(relations=[None], tail="country of mentor corporation", n_hop=1), known)
+    birth = QuestionPlan(relations=[None], tail="place of birth of einstein", n_hop=1)
+    assert covers("In which city was Einstein born?", birth, known, aliases={"place of birth": ["born"]})     # 'city' is no relation: the ask
+    assert not covers("In which country was Einstein born?", birth, known, aliases={"place of birth": ["born"]})  # 'country' is: a hop
+    assert covers("In which country was Einstein born?", QuestionPlan(relations=[None, "country"], tail="place of birth of einstein", n_hop=2),
+                  known, aliases={"place of birth": ["born"]})
+    # a class noun that is only a WORD of a longer relation is the ask, not a hop: exp_r17 (2026-09-13) lost
+    # 29 certified "In which city was X born?" plans on the wiki world, where `capital city` is a relation
+    known2 = StoreRelations(store + ["berlin is the capital city of germany"])
+    assert "city" not in known2 and "city" in known2.words()
+    assert covers("In which city was Einstein born?", birth, known2, aliases={"place of birth": ["born"]})
+    assert not covers("In which country was Einstein born?", birth, known2, aliases={"place of birth": ["born"]})

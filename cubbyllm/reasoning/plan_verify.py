@@ -91,7 +91,7 @@ from dataclasses import dataclass, field
 from typing import Iterable, Protocol, runtime_checkable
 
 from ..core.protocols import Wiring
-from .planner import QuestionPlan, normalize, parse_fact, relation_matches, reused_relations
+from .planner import QuestionPlan, normalize, of_prefixes, parse_fact, relation_matches, reused_relations
 
 __wiring__ = Wiring.WIRED
 
@@ -357,9 +357,9 @@ def canonical_body(plan: QuestionPlan) -> str:
 def tail_relation(tail: str, known: KnownRelations) -> str | None:
     """The LONGEST prefix of the tail, cut at an ' of ', that is a known relation.
     Longest first: 'country of citizenship of X' must yield 'country of
-    citizenship', not 'country'."""
-    parts = tail.split(" of ")
-    held = [" of ".join(parts[:i]) for i in range(len(parts) - 1, 0, -1) if " of ".join(parts[:i]) in known]
+    citizenship', not 'country'. Overlapping ' of 's count: 'instance of of X' offers
+    'instance of' (`planner.of_prefixes`)."""
+    held = [p for p in of_prefixes(tail) if p in known]
     if not held:
         return None
     # a relation the store states once and no source declared may be an entity fragment
@@ -395,13 +395,14 @@ def split_tail(tail: str, known: KnownRelations | None, question: str | None = N
             return tr, (rest[3:] if rest.startswith("of ") else rest)
     if question:
         q = " " + normalize(question) + " "
-        parts = tail.split(" of ")
-        for i in range(1, len(parts)):                       # shortest relation, longest entity first
-            rel, ent = " of ".join(parts[:i]), " of ".join(parts[i:])
+        for rel in reversed(of_prefixes(tail)):               # shortest relation, longest entity first
+            ent = tail[len(rel) + 4:]
+            if ent.startswith("of "):                        # no entity begins with 'of': the relation ends in it
+                continue
             # the entity is what the question names, and the question does not itself join
             # the relation to the next part with 'of' ('the place of birth of jean' keeps
             # 'place of birth'; 'anne of cleves married to' gives 'married' | 'anne of cleves')
-            if " " + normalize(ent) + " " in q and " " + normalize(rel + " of " + parts[i]) + " " not in q:
+            if " " + normalize(ent) + " " in q and " " + normalize(rel + " of " + ent.split(" of ", 1)[0]) + " " not in q:
                 return rel, ent
     rel, ent = tail.rsplit(" of ", 1)
     return rel, ent
@@ -415,9 +416,7 @@ def tail_match(tail: str, known: KnownRelations) -> tuple[str, str] | None:
     hits are `tail_relation`'s; call this only when that returned None."""
     if not hasattr(known, "match"):
         return None
-    parts = tail.split(" of ")
-    for i in range(len(parts) - 1, 0, -1):
-        cand = " of ".join(parts[:i])
+    for cand in of_prefixes(tail):
         try:
             m = known.match(cand, reused_only=True)       # the reuse guard (StoreRelations.reused)
         except TypeError:                                  # a KnownRelations without the guard
@@ -450,9 +449,11 @@ _ASK_NAME = __import__("re").compile(r"^\s*(who|whom|whose)\b")
 _PLACE_CLASSES = ("city|town|country|state|province|county|district|region|village|place|location|continent|island|"
                   "municipality|parish|settlement|borough|prefecture|commune|territory|neighborhood|suburb")
 # 'in which city', 'in what Orkney parish', 'which Bavarian town': up to two words between the ask and the class
+#  -- and never a class noun followed by 'of': 'what is the location of X' asks for the relation `location`,
+# not for a place of some kind (exp_r9, 2026-09-13: read as a place ask, the dropped hop vanished)
 _ASK_PLACE = __import__("re").compile(
-    rf"^\s*where\b|\b(in|at|from|of)\s+(what|which)\s+(?:[a-z][\w'-]*\s+){{0,2}}({_PLACE_CLASSES})\b|"
-    rf"^\s*(what|which)\s+(?:[a-z][\w'-]*\s+){{0,2}}({_PLACE_CLASSES})\b")
+    rf"^\s*where\b|\b(in|at|from|of)\s+(what|which)\s+(?:[a-z][\w'-]*\s+){{0,2}}({_PLACE_CLASSES})\b(?!\s+of\b)|"
+    rf"^\s*(what|which)\s+(?:[a-z][\w'-]*\s+){{0,2}}({_PLACE_CLASSES})\b(?!\s+of\b)")
 # the leading interrogative decides first: 'Where was X when he died?' asks for a place, 'When ... where he
 # lived' for a date (gen3_llm_wordings, 2026-09-13: a where-question answered with a year, caught by the gate)
 _LEAD = __import__("re").compile(r"^\s*(where|when|who|whom|whose|how\s+many|how\s+much)\b")
@@ -460,7 +461,12 @@ _LEAD_KIND = {"where": "place", "when": "date", "who": "name", "whom": "name", "
 _ASK_WORDS = {"date": frozenset("year date day month decade century when".split()),
               "number": frozenset("many much number percentage amount count".split()),
               "name": frozenset(),
-              "place": frozenset(("where " + _PLACE_CLASSES.replace("|", " ")).split())}
+              # a where-question's verbs of location are its frame, not a hop: 'In which country can X be
+              # found?' (hdc, 2026-09-13: 'found' is a word of `found in taxon`, and the residual rule read it
+              # as a dropped hop); a dropped location hop still leaves its other words behind. The class
+              # noun itself ('city', 'location') stays a relation word: `covers()` strips the ASKED span
+              # instead, when the noun occurs once (exp_r9, 2026-09-13)
+              "place": frozenset("where found located situated".split())}
 # the value kind each ask expects: a place is a name-valued thing
 KIND_OF_ASK = {"date": "date", "number": "number", "name": "name", "place": "name"}
 _ISO_DATE = __import__("re").compile(r"^[+-]?\d{4}-\d{2}(-\d{2})?$")
@@ -551,7 +557,15 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
       such question. The question is read as written first (an entity can carry its own
       parenthesis: 'Tombo (album)'), then with parentheticals removed. What an aside says
       about the entity is for the source's disambiguation and the hippocampus's context
-      binding, not coverage."""
+      binding, not coverage.
+
+    v6 (2026-09-13, hdc): the SPLIT wording. A relation the question words with all of its
+      content words but not contiguously -- 'Which country does X hold citizenship in?' for
+      `country of citizenship` -- is claimed word by word, in any order, each word outside every
+      other claim (`_find_split`); the contiguous tiers are tried first, and the residual rule runs
+      on what is left exactly as before, so a dropped hop still fails. The entity may then sit
+      between a relation's words. And a where-question's verbs of location ('found', 'located',
+      'situated') are its frame, like its class noun (`_ASK_WORDS['place']`)."""
     q = normalize(question)
     rels = [r for r in plan.relations[1:] if r]                      # walk order, inner-most first
     # split the tail into its relation and the seed entity: the LONGEST known
@@ -586,6 +600,7 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
     inner_first = [wordings(rel1, tail_alt)] + [wordings(r) for r in rels]      # walk order
     answer_first = list(reversed(inner_first))
     rw = known.words() if (known is not None and hasattr(known, "words")) else None
+    rs = relation_stems(known) if known is not None else None
     kind = ask_type(question)
     if rw is not None and kind is not None:
         rw = rw - _ASK_WORDS[kind]                     # 'year' in "in what year" is the ask, not a hop
@@ -597,18 +612,28 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
     no_paren = normalize(_PAREN.sub(" ", question))                   # v4: the asides removed
     if no_paren != q:
         texts.append(no_paren)
+    if kind == "place":
+        # the place ask's class noun is the ASK where it is asked ('in which city', 'what location does'),
+        # and a relation everywhere else: the asked span leaves the text, the word stays in the vocabulary.
+        # exp_r9 (2026-09-13): removing 'location' from the vocabulary hid the dropped 'location' hop of
+        # 'What location does the location of X have?' and the walk spoke the inner hop -- one wrong answer
+        texts = [t2 for t in texts for t2 in dict.fromkeys((_strip_place_ask(t, known), t))]
     for base in list(texts):
         stripped = _WHICH_CLASS.sub("", base, count=1)
         if stripped != base:
             texts.insert(texts.index(base), stripped)
     for text in texts:
-        if _covers_text(text, answer_first, ent, rw) or _covers_text(text, inner_first, ent, rw, entity_first=True):
+        if _covers_text(text, answer_first, ent, rw, rel_stems=rs) or _covers_text(text, inner_first, ent, rw, entity_first=True, rel_stems=rs):
             return True
         # v5 (2026-09-13, the gen-3 builder): a verb-form outer hop follows the entity while the
         # inner hops precede it as a noun phrase -- "When was the father of X born?", "Who is
         # the child of X married to?": inner hops, the entity, then the rest in walk order
         for k in range(1, len(inner_first)):
-            if _covers_mixed(text, inner_first[:k], ent, inner_first[k:], rw):
+            if _covers_mixed(text, inner_first[:k], ent, inner_first[k:], rw, rs):
+                return True
+            # and the reverse (2026-09-13): the outer hop as the ask before the entity, the inner hop as
+            # the verb after it -- "In which country was X born?" is country of (place of birth of X)
+            if _covers_mixed(text, answer_first[:k], ent, answer_first[k:], rw, rs):
                 return True
     return False
 
@@ -618,6 +643,25 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
 # where it read as a dropped 'list' hop, and the disposer refused the one correct plan.
 _WHICH_CLASS = __import__("re").compile(r"^which\s+[a-z0-9]+(?:\s+[a-z0-9]+){0,2}\s+(?:is|was|are|were|includes|contains|has)\s+")
 _PAREN = __import__("re").compile(r"\([^)]*\)")          # covers() v4: an aside about the entity, not a hop
+
+
+def _strip_place_ask(text: str, known=None) -> str:
+    """The place ask's span ('in which city', 'what location does' -> 'what location', 'where') taken out
+    of a normalized question -- only when its class noun occurs ONCE, so 'What location does the location
+    of X have?' keeps both and the plan must claim both (the second is a hop, not the ask); and only when
+    the noun is not itself a relation the store holds, EXACTLY: 'In which country is the location of
+    formation of X?' asks for the COUNTRY of that location -- a hop the plan must claim where `country` is
+    a relation -- where 'in which city was X born' asks for a place of birth of a kind (exp_r18 emitter
+    arm, 2026-09-13: a stripped 'country' spoke the inner hop, Minneapolis for the United States). A noun
+    that is only a WORD of a longer relation ('city' in `capital city`) is the ask: exp_r17 lost 29
+    "In which city was X born?" plans to the word test (531 -> 502), every one a certified place of birth."""
+    m = _ASK_PLACE.search(text)
+    if not m:
+        return text
+    noun = m.group(3) or m.group(5)
+    if noun and (len(_WORD_RX(noun).findall(text)) != 1 or (known is not None and noun in known)):
+        return text
+    return " ".join((text[:m.start()] + " " + text[m.end():]).split())
 
 
 def _find_any(q: str, alts: list[str], pos: int) -> tuple[int, int] | None:
@@ -631,44 +675,160 @@ def _find_any(q: str, alts: list[str], pos: int) -> tuple[int, int] | None:
     return best
 
 
-def _covers_mixed(q: str, before: list[list[str]], ent: str, after: list[list[str]], rw) -> bool:
-    """The mixed reading (covers v5): `before` relations in order, then the entity, then
-    `after` relations in order; the same residual rule as `_covers_text`."""
-    if not ent:
-        return False
-    pos, spans = 0, []
-    for alts in before:
-        hit = _find_any(q, alts, pos)
-        if hit is None:
-            return False
-        spans.append(hit); pos = hit[1]
-    j = q.find(ent, pos)
-    if j < 0:
-        return False
-    spans.append((j, j + len(ent))); pos = j + len(ent)
-    for alts in after:
-        hit = _find_any(q, alts, pos)
-        if hit is None:
-            return False
-        spans.append(hit); pos = hit[1]
+def _word_at(q: str, word: str, taken: list[tuple[int, int]]) -> tuple[int, int] | None:
+    """The first whole-word occurrence of `word` in `q` outside every span in `taken`."""
+    for m in _WORD_RX(word).finditer(q):
+        a, b = m.span()
+        if not any(a < tb and b > ta for ta, tb in taken):
+            return a, b
+    return None
+
+
+_WORD_CACHE: dict[str, object] = {}
+
+
+def _WORD_RX(word: str):
+    rx = _WORD_CACHE.get(word)
+    if rx is None:
+        rx = _WORD_CACHE[word] = __import__("re").compile(r"(?<![\w])" + __import__("re").escape(word) + r"(?![\w])")
+    return rx
+
+
+def _find_split(q: str, alts: list[str], taken: list[tuple[int, int]]) -> list[tuple[int, int]] | None:
+    """covers v6, the SPLIT wording (2026-09-13, hdc): a relation whose content words the question
+    carries all of, each outside every claimed span, in any order and any distance -- 'Which country
+    does X hold citizenship in?' for `country of citizenship`, 'What languages are spoken, written,
+    or signed by X?' for `languages spoken, written or signed`. On 8,840 rephrased hdc questions the
+    contiguous tiers refused 3,463 of exactly this shape. Joint and frame words of the wording ('of',
+    'or') are not looked for, and a wording with no content word never matches this way. The
+    residual rule is untouched: what is left of the question still may hold no relation word, so a
+    dropped hop still fails. The wordings' spans are returned (the longest wording wins)."""
+    best = None
+    for w in alts:
+        words = [x for x in w.split() if x not in _FRAME_AND_JOINT]
+        if not words:
+            continue
+        spans: list[tuple[int, int]] = []
+        for x in words:
+            hit = _word_at(q, x, taken + spans)
+            if hit is None:
+                spans = []; break
+            spans.append(hit)
+        if spans and (best is None or len(spans) > len(best)):
+            best = spans
+    return best
+
+
+_SUFFIXES = ("ions", "ion", "ness", "ship", "ings", "ing", "ies", "ed", "es", "er", "s")     # 'depiction' -> 'depict', 'located' -> 'locat', 'locates' -> 'locat'
+
+
+def _stem(w: str) -> str:
+    """A light stem for the residual rule: 'depicted', 'depiction' and 'depicts' meet at 'depict';
+    'membership' at 'member'. Only words of five letters or more are stemmed, and a stem shorter than
+    four letters is not one (2026-09-13, hdc emitter arm: two dropped hops hid behind an inflection)."""
+    if len(w) < 5:
+        return w
+    for s in _SUFFIXES:
+        if w.endswith(s) and len(w) - len(s) >= 4:
+            return _stem(w[:-len(s)])                    # 'membership' -> 'member' -> 'memb', like 'member' itself
+    return w
+
+
+def relation_stems(known) -> tuple[frozenset[frozenset[str]], ...] | None:
+    """Every held relation as the set of its content words' stems -- {'depict'} for `depicts`,
+    {'memb'} for `member of`, {'genet', 'associat'} for `genetic association` -- for the residual rule's
+    stem tier. Needs the relation list (`StoreRelations._rels`); a vocabulary that only answers `words()`
+    (the VM-backed one) gets no stem tier. Cached on the object, rebuilt when the store learns."""
+    rels = getattr(known, "_rels", None)
+    if rels is None:
+        return None
+    cached = getattr(known, "_stem_sets", None)
+    if cached is not None and cached[0] == len(rels):
+        return cached[1]
+    sets = frozenset(frozenset(_stem(w) for w in r.split() if w not in _FRAME_AND_JOINT and len(w) >= 5)
+                     for r in rels)
+    sets = frozenset(s for s in sets if s)
+    try:
+        known._stem_sets = (len(rels), sets)
+    except Exception:                                    # noqa: BLE001 -- a vocabulary that refuses attributes
+        pass
+    return sets
+
+
+def _residual_ok(q: str, spans: list[tuple[int, int]], rw, rel_stems=None) -> bool:
+    """The residual rule: what the spans leave of the question, minus frame and joint words, holds
+    no digit (an unbound constraint) and no word any store relation is made of (a dropped hop). The
+    stem tier (2026-09-13): a held relation ALL of whose content words are left over by their stems
+    ('depicted' for `depicts`, 'membership' for `member of`) is a dropped hop too -- a whole relation,
+    not one word of a longer one, so 'associated' does not read as `genetic association`."""
     if rw is None:
         return True
     residual, last = [], 0
-    for a, b in spans:
-        residual.append(q[last:a]); last = b
+    for a, b in sorted(spans):
+        residual.append(q[last:a]); last = max(last, b)
     residual.append(q[last:])
     leftover = [w for w in " ".join(residual).split() if w not in _FRAME_AND_JOINT]
     if any(w.isdigit() for w in leftover):
         return False
-    return not any(w in rw for w in leftover)
+    if any(w in rw for w in leftover):
+        return False
+    if rel_stems:
+        left = frozenset(_stem(w) for w in leftover if len(w) >= 5)
+        if left and any(s <= left for s in rel_stems):
+            return False
+    return True
 
 
-def _covers_text(q: str, order: list[list[str]], ent: str, rw, entity_first: bool = False) -> bool:
+def _claim(q: str, alts: list[str], pos: int, spans: list[tuple[int, int]]) -> tuple[int, bool] | None:
+    """One relation's claim on the question: the contiguous tier at/after `pos` first, else the split
+    tier over the whole question. Appends the spans; returns the new `pos` and whether a split was
+    used, or None when the relation is not worded in the question at all."""
+    hit = _find_any(q, alts, pos)
+    if hit is not None:
+        spans.append(hit); return hit[1], False
+    if _find_any(q, alts, 0) is not None:
+        return None          # worded contiguously, only out of order: a swapped chain, not a split wording
+    split = _find_split(q, alts, spans)
+    if split is None:
+        return None
+    spans.extend(split); return pos, True
+
+
+def _covers_mixed(q: str, before: list[list[str]], ent: str, after: list[list[str]], rw, rel_stems=None) -> bool:
+    """The mixed reading (covers v5): `before` relations in order, then the entity, then
+    `after` relations in order; the same residual rule as `_covers_text`."""
+    if not ent:
+        return False
+    pos, spans, split = 0, [], False
+    for alts in before:
+        c = _claim(q, alts, pos, spans)
+        if c is None:
+            return False
+        pos, s = c; split = split or s
+    if split:                                  # the entity may sit between a split wording's words
+        hit = _word_at(q, ent, spans)
+        if hit is None:
+            return False
+        j = hit[0]
+    else:
+        j = q.find(ent, pos)
+        if j < 0:
+            return False
+    spans.append((j, j + len(ent))); pos = j + len(ent)
+    for alts in after:
+        c = _claim(q, alts, pos, spans)
+        if c is None:
+            return False
+        pos, s = c
+    return _residual_ok(q, spans, rw, rel_stems)
+
+
+def _covers_text(q: str, order: list[list[str]], ent: str, rw, entity_first: bool = False, rel_stems=None) -> bool:
     """`order`: one list of accepted wordings per relation, in the reading's order.
     Answer-side first (default): relations in order, then the entity after them
     (a 1-hop inversion frame may state the entity first: "What is erik bergvall a
     participant of?"). Entity first: the entity, then the relations in order."""
-    pos, spans = 0, []
+    pos, spans, split = 0, [], False
     if entity_first:
         if not ent:
             return False
@@ -677,36 +837,28 @@ def _covers_text(q: str, order: list[list[str]], ent: str, rw, entity_first: boo
             return False
         spans.append((j, j + len(ent))); pos = j + len(ent)
     for alts in order:
-        hit = _find_any(q, alts, pos)
-        if hit is None:
+        c = _claim(q, alts, pos, spans)
+        if c is None:
             return False
-        spans.append(hit); pos = hit[1]
+        pos, s = c; split = split or s
     if ent and not entity_first:
         j = q.rfind(ent)
-        if j >= pos:
+        if j >= pos and not any(j < b and j + len(ent) > a for a, b in spans):
             spans.append((j, j + len(ent)))
-        elif len(order) == 1:
-            j = q.find(ent)
-            a, b = spans[0]
-            if j < 0 or (j < b and j + len(ent) > a):
+        elif len(order) == 1 or split:
+            # a 1-hop inversion frame states the entity first ('What is E a participant of?'); a split
+            # wording may have the entity between its words ('Which country does E hold citizenship in?')
+            hit = _word_at(q, ent, spans)
+            if hit is None:
                 return False
-            spans.append((j, j + len(ent))); spans.sort()
+            spans.append(hit)
         else:
             return False
-    if rw is None:
-        return True
-    residual, last = [], 0
-    for a, b in spans:
-        residual.append(q[last:a]); last = b
-    residual.append(q[last:])
-    leftover = [w for w in " ".join(residual).split() if w not in _FRAME_AND_JOINT]
     # a number left over is a CONSTRAINT the plan did not bind ('as of 2022', 'in 1977'):
     # the store cannot check it, so a plan that ignores it would answer a different
     # question (exp_r11, 2026-09-11: 'population of Mersin Province' spoke one census
     # for 'as of 2022')
-    if any(w.isdigit() for w in leftover):
-        return False
-    return not any(w in rw for w in leftover)
+    return _residual_ok(q, spans, rw, rel_stems)
 
 
 def verify_plan(question: str, plan: QuestionPlan, known: KnownRelations,

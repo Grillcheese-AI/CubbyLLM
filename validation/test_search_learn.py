@@ -178,6 +178,32 @@ def test_a_wording_that_names_two_held_relations_is_an_ambiguity_not_a_pick():
     assert r.aliased == [] and r.result.answer is None
 
 
+def test_an_exact_alias_outranks_the_overlap_tier_that_would_read_the_inverse_relation():
+    """hdc (2026-09-13): 'administrative territorial entity' is P131's own alias, and the
+    walk's overlap tier (Jaccard >= 0.6) matched it to P150 'contains administrative
+    territorial entity' -- the inverse -- so a store holding both directions verified the
+    child for a question asking the parent. Lever 4 now runs AHEAD of the walk for a plan
+    wording the store does not hold exactly: the table's one held label wins before any
+    overlap can; two held labels are the ambiguity they always were."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    both = STORE + ["haryana is the located in the administrative territorial entity of nurpur",
+                    "nurpur ward is the contains administrative territorial entity of nurpur"]
+    store, known = LookupStore(both), StoreRelations(both)
+    src = AliasSource({}, {"administrative territorial entity": ["located in the administrative territorial entity"]})
+    plan = QuestionPlan(relations=[None], tail="administrative territorial entity of nurpur", n_hop=1)
+    r = run("Where is the administrative territorial entity of Nurpur?", store, known, src, plan=plan)
+    assert r.first.verified and normalize(r.result.answer) == "haryana"
+    assert r.aliased == [("administrative territorial entity", "located in the administrative territorial entity")]
+    assert r.plan.tail == "located in the administrative territorial entity of nurpur"
+    # the table naming both held directions: refused before the overlap tier can pick one
+    src2 = AliasSource({}, {"administrative territorial entity": ["located in the administrative territorial entity",
+                                                                  "contains administrative territorial entity"]})
+    r2 = run("Where is the administrative territorial entity of Nurpur?", LookupStore(both), StoreRelations(both), src2, plan=plan)
+    assert not r2.result.verified and r2.result.reason == "ambiguous_relation" and r2.result.answer is None
+    assert sorted(r2.result.refused["candidates"]) == ["contains administrative territorial entity",
+                                                       "located in the administrative territorial entity"]
+
+
 def test_a_wording_the_source_cannot_name_leaves_the_refusal_as_it_was():
     from cubbyllm.reasoning.planner import QuestionPlan
     store, known = LookupStore(STORE), StoreRelations(STORE)
@@ -291,7 +317,7 @@ def test_a_when_question_keeps_the_date_valued_label_of_a_two_sense_wording_at_l
     src = TypedAliasSource({}, {"born": ["date of birth", "place of birth"]}, BORN_KINDS)
     plan = QuestionPlan(relations=[None], tail="born of masaki tsuji", n_hop=1)
     r = run("When was Masaki Tsuji born?", store, known, src, plan=plan)
-    assert r.first.reason == "unknown_relation"
+    assert r.first.verified                     # lever 4 runs ahead of the first walk since 2026-09-13 (hdc)
     assert r.result.verified and normalize(r.result.answer) == "1932 03 23"
     assert r.aliased == [("born", "date of birth")]
 
@@ -460,3 +486,87 @@ def test_a_garbled_seed_is_snapped_to_the_questions_own_spelling():
     assert r.result.verified and normalize(r.result.answer) == "1849 03 16" and r.snapped == ("karol burgmann", "karl brugmann")
     assert snap_seed("When was Karl Brugmann born?", QuestionPlan(relations=[None], tail="born of karl brugmann", n_hop=1), known)[1] is None
     assert snap_seed("When was Karl Brugmann born?", QuestionPlan(relations=[None], tail="born of ludwig wittgenstein", n_hop=1), known)[1] is None
+
+
+# ---- the latent tier (2026-09-13): a local model proposes facts, and a second source has to agree
+
+class LatentSource(DictSource):
+    name = "lfm"; latent = True
+
+
+class AttestingSource(DictSource):
+    name = "wikidata"
+
+
+class ProvStore(LookupStore):
+    """A store that keeps provenance per fact, the way `worlds.FactStore` does."""
+    def __init__(self, texts):
+        self.provenance = {}; super().__init__(texts)
+    @staticmethod
+    def _key(text):
+        return " ".join(text.split())
+
+
+def test_a_latent_sources_fact_is_stored_but_never_spoken_until_a_second_source_agrees():
+    """LFM2.5 (the emitter's own base) holds facts in its weights; it may propose them, through the
+    gate, with provenance -- but a chain that rests on an LFM-only fact is refused as `latent_only`
+    with the would-be answer on record. When an attesting source later states the same fact, the
+    duplicate lifts the hold and the walk speaks."""
+    store, known = ProvStore(STORE), StoreRelations(STORE)
+    lfm = LatentSource({"marie": ["canada is the country of citizenship of marie"]})
+    q = "What is the capital of the country of citizenship of Marie?"
+    r = run(q, store, known, lfm)
+    assert not r.result.verified and r.result.reason == "retrieval_exhausted"     # the fact is in, the capital of canada is not
+    assert store.provenance["canada is the country of citizenship of marie"] == "lfm (latent)"
+    # give the store the second hop from an ordinary source, then ask again: the LFM fact is still the hold
+    store.add("ottawa is the capital of canada"); known.add("ottawa is the capital of canada")
+    r = run(q, store, known, lfm)
+    assert not r.result.verified and r.result.reason == "latent_only"
+    assert normalize(r.result.refused["answer"]) == "ottawa" and r.result.refused["latent_facts"] == ["canada is the country of citizenship of marie"]
+    assert store.provenance["canada is the country of citizenship of marie"] == "lfm (latent)"
+    # an attesting source states the same fact: the duplicate lifts the hold, both names on record, the answer is spoken
+    r = run(q, store, known, AttestingSource({"marie": ["canada is the country of citizenship of marie"]}))
+    assert r.result.verified and normalize(r.result.answer) == "ottawa"
+    assert store.provenance["canada is the country of citizenship of marie"] == "lfm+wikidata"
+    # a store without provenance cannot hold the tier: the latent flag is inert there (documented)
+    plain, known2 = LookupStore(STORE + ["ottawa is the capital of canada"]), StoreRelations(STORE + ["ottawa is the capital of canada"])
+    r = run(q, plain, known2, LatentSource({"marie": ["canada is the country of citizenship of marie"]}))
+    assert r.result.verified
+
+
+# ---- every step as an event (2026-09-13, Nick: "all process should be listened to at every step")
+
+def test_every_step_of_the_loop_is_an_event_linked_to_its_parent_and_no_listener_changes_nothing():
+    """A listener sees the run as a tree: question -> plan -> walk -> hop -> fact, question -> fetch ->
+    gate, and a final answer; each event's parent is an earlier event of the same run. Without a
+    listener the loop returns exactly the same result."""
+    from cubbyllm.reasoning import events as ev
+    src = DictSource({"marie": ["canada is the country of citizenship of marie", "ottawa is the capital of canada"]})
+    q = "What is the capital of the country of citizenship of Marie?"
+    quiet = run(q, LookupStore(STORE), StoreRelations(STORE), src)
+    sink = ev.MemorySink(); ev.add_sink(sink)
+    try:
+        heard = run(q, LookupStore(STORE), StoreRelations(STORE), DictSource(src.by))
+    finally:
+        ev.remove_sink(sink)
+    assert heard.result.verified and normalize(heard.result.answer) == "ottawa"
+    assert (quiet.result.verified, quiet.result.answer, quiet.entities) == (heard.result.verified, heard.result.answer, heard.entities)
+    kinds = [e["kind"] for e in sink]
+    assert kinds[0] == "question" and kinds[1] == "plan" and kinds[-1] == "answer"
+    assert {"walk", "hop", "fact", "fetch", "gate", "vm"} <= set(kinds)
+    ids = {e["id"] for e in sink}
+    root = sink[0]["id"]
+    assert all(e["parent"] in ids for e in sink[1:]) and all(e["parent"] is None for e in sink[:1])
+    gates = [e for e in sink if e["kind"] == "gate"]
+    assert {g["status"] for g in gates} == {"accepted"} and all(g["provenance"] is None or "test" in g["provenance"] for g in gates)
+    fetch = next(e for e in sink if e["kind"] == "fetch")
+    assert fetch["parent"] == root and fetch["entity"].lower() == "marie" and fetch["n"] == 2
+    final = sink[-1]
+    assert final["parent"] == root and final["verified"] and normalize(final["answer"]) == "ottawa" and final["entities"] == heard.entities
+    # nothing leaks between runs: a fresh sink hears only its own run
+    sink2 = ev.MemorySink(); ev.add_sink(sink2)
+    try:
+        run("What is the capital of France?", LookupStore(STORE), StoreRelations(STORE), DictSource({}))
+    finally:
+        ev.remove_sink(sink2)
+    assert sink2[0]["kind"] == "question" and sink2[0]["text"] == "What is the capital of France?" and sink2[-1]["kind"] == "answer"

@@ -130,14 +130,22 @@ def main() -> None:
                     "model's reasoning tokens count against its output budget")
     ap.add_argument("--proposer-max-tokens", type=int, default=None, help="openrouter proposer: output budget (reasoning included)")
     ap.add_argument("--source", default="wikidata", help="wikidata | wikitext (offline: standin/wikitext.py frames over local articles) | "
-                                                         "encyclopedia (offline: standin/encyclopedia.py frames over OCR'd volumes)")
+                                                         "encyclopedia (offline: standin/encyclopedia.py frames over OCR'd volumes) | "
+                                                         "lfm (the local base model proposes facts, few-shot; latent tier -- standin/lfm_source.py)")
     ap.add_argument("--wikitext-parquet", default=None, help="wikitext: a BeIR-style corpus parquet (_id, title, text)")
     ap.add_argument("--wikitext-jsonl", default=None, help="wikitext: a glob of jsonl article files (title, text, lang)")
     ap.add_argument("--encyclopedia-dir", default=None, help="encyclopedia: the folder of OCR'd volume .txt files")
+    ap.add_argument("--lfm-gguf", default=str(ROOT / "standin" / "models" / "LFM2.5-2.6B.Q4_K_M.gguf"), help="lfm: the base GGUF")
     ap.add_argument("--exe", default=None)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--events", default=None, help="write every step of the loop as events (jsonl) for the control panel")
+    ap.add_argument("--questions", default=None, help="a SimpleQA-shaped csv (problem, answer) instead of SimpleQA -- e.g. the "
+                                                      "WebQuestions USA/Canada/Europe bench built by standin/data/build_webq_bench.py")
     a = ap.parse_args()
     t0 = time.perf_counter(); lines: list[str] = []
+    if a.events:
+        from cubbyllm.reasoning import events as ev
+        ev.add_sink(ev.JsonlSink(a.events))
     def log(s: str = "") -> None:
         print(s, flush=True); lines.append(s)
 
@@ -199,7 +207,7 @@ def main() -> None:
         wk.ensure_data(("triplets",))
         world = wk.wiki_world()
         known = StoreRelations(world.index._seen)
-        rows = list(csv.DictReader(io.StringIO(SIMPLEQA.read_text(encoding="utf-8"))))
+        rows = list(csv.DictReader(io.StringIO(pathlib.Path(a.questions or SIMPLEQA).read_text(encoding="utf-8"))))
         qcol = next(c for c in rows[0] if c.lower() in ("problem", "question"))
         acol = next(c for c in rows[0] if c.lower() in ("answer", "gold", "target"))
         rows = random.Random(a.seed).sample(rows, a.n) if a.n else rows
@@ -220,6 +228,9 @@ def main() -> None:
         elif a.source == "encyclopedia":
             from encyclopedia import EncyclopediaSource
             src = EncyclopediaSource(a.encyclopedia_dir)        # no network either; `calls` is 0 by construction
+        elif a.source == "lfm":
+            from lfm_source import LfmSource
+            src = LfmSource(a.lfm_gguf)                         # local, latent: its facts are stored, never spoken alone
         else:
             src = WikidataSource(offline=a.offline)
         resolvers = []
@@ -233,10 +244,17 @@ def main() -> None:
             + (f" | lexicon {len(resolvers[0])} synsets" if resolvers else ""))
         out["proposer"] = proposer_name; out["source"] = a.source
         c = collections.Counter(); verified_ex = []; learned_ex = []; rows_out = []; out["world0"] = len(world)
+        src_admitted: dict[str, list] = collections.defaultdict(list)          # lfm: entity -> the Triples the gate admitted
+        from cubbyllm.reasoning.planner import parse_fact
         def build_plan(rels, seed):
             return QuestionPlan(relations=[None] + rels[1:], tail=f"{rels[0]} of {seed}", n_hop=len(rels)) if rels and seed else None
         for i, r in enumerate(rows):
             q, gold = r[qcol], r[acol]
+            golds = [g.strip() for g in r["answers"].split(" | ") if g.strip()] if r.get("answers") else [gold]   # WebQuestions lists several
+
+            def match_any(ans):                              # the best verdict over the listed answers
+                ms = [match(ans, g, normalize) for g in golds]
+                return "correct" if "correct" in ms else ("near" if "near" in ms else "WRONG")
             try:
                 ep = emitted_plan(strip_fences(em.emit(q, max_new_tokens=a.max_new)), normalize)
             except Exception:                                # noqa: BLE001
@@ -251,6 +269,11 @@ def main() -> None:
             if lr.entities:
                 c["fetched_questions"] += 1; c["facts_fetched"] += lr.fetched
                 for p in lr.learned: c[f"gate:{p.status}"] += 1
+                if a.source == "lfm":
+                    for p in lr.accepted:
+                        t = parse_fact(p.fact, known={normalize(r) for r in getattr(src, "relations_offered", ())})
+                        if t is not None:
+                            src_admitted[p.entity].append(t)
                 if lr.accepted and len(learned_ex) < 6:
                     learned_ex.append((q, lr.entities, len(lr.accepted), [p.fact for p in lr.accepted[:3]]))
             if lr.aliased:
@@ -261,17 +284,57 @@ def main() -> None:
                              "verified": lr.result.verified, "answer": lr.result.answer})
             if lr.result.verified:
                 c["verified"] += 1
-                m = match(lr.result.answer, gold, normalize)
+                m = match_any(lr.result.answer)
                 c[m] += 1
                 verified_ex.append({"q": q, "plan": ep[0], "seed": ep[1], "answer": lr.result.answer, "gold": gold, "match": m,
                                     "learned": [p.fact for p in lr.accepted], "trace": [h.fact for h in lr.result.trace]})
             else:
                 c[f"final:{lr.result.reason}"] += 1
+                if lr.result.reason == "latent_only":
+                    # the would-be answer, scored but never spoken: what the latent tier is holding back, and whether it should
+                    held = (lr.result.refused or {}).get("answer")
+                    m = match_any(held) if held else "WRONG"
+                    c[f"latent:{m}"] += 1
+                    verified_ex.append({"q": q, "plan": ep[0], "seed": ep[1], "answer": held, "gold": gold, "match": f"latent {m}",
+                                        "learned": [p.fact for p in lr.accepted], "trace": [h.fact for h in lr.result.trace]})
             if (i + 1) % 100 == 0:
                 log(f"  {i + 1}/{len(rows)} ({time.perf_counter() - t0:.0f}s, api calls {src.calls}) plan {c['plan']} fetched {c['fetched_questions']} "
-                    f"verified {c['verified']} correct {c['correct']} near {c['near']} WRONG {c['WRONG']}")
+                    f"verified {c['verified']} correct {c['correct']} near {c['near']} WRONG {c['WRONG']}"
+                    + (f" | latent held {c['latent:correct'] + c['latent:near'] + c['latent:WRONG']} (would be wrong {c['latent:WRONG']})" if a.source == "lfm" else ""))
         log(f"\nSIMPLEQA + SEARCH-AND-LEARN: {dict(sorted(c.items()))}")
         log(f"api calls {src.calls} | VM calls {calls['vm']} | store grew {len(world) - out.get('world0', len(world))}")
+        if a.source == "lfm":
+            # every LFM fact the gate admitted, against Wikidata's CACHED facts for the same entity (no network):
+            # agree / near / disagree (the relation is stated with another value) / unheld (Wikidata says nothing)
+            from cubbyllm.reasoning.planner import parse_fact
+            wd = WikidataSource(offline=True); xc = collections.Counter(); by_rel = collections.defaultdict(collections.Counter)
+            xc_ex = collections.defaultdict(list); wd_facts: dict[str, list] = {}
+            for ent, facts in src_admitted.items():
+                if ent not in wd_facts:
+                    wf = wd.facts(ent); wd_facts[ent] = [t if hasattr(t, "rel") else parse_fact(t) for t in wf] if wf else []
+                held = collections.defaultdict(list)
+                for t in wd_facts[ent]:
+                    if t is not None: held[normalize(t.rel)].append(t.obj)
+                for t in facts:
+                    vals = held.get(normalize(t.rel), [])
+                    if not wd_facts[ent]:
+                        v = "entity_unresolved"
+                    elif not vals:
+                        v = "unheld"
+                    else:
+                        ms = [match(t.obj, o, normalize) for o in vals]
+                        v = "agree" if "correct" in ms else ("near" if "near" in ms else "disagree")
+                    xc[v] += 1; by_rel[t.rel][v] += 1
+                    if len(xc_ex[v]) < 5:
+                        xc_ex[v].append((ent, t.rel, t.obj, vals[:3]))
+            log(f"\nLFM facts against Wikidata's cache ({len(src_admitted)} entities, {sum(len(f) for f in src_admitted.values())} facts): "
+                + ", ".join(f"{k} {v}" for k, v in xc.most_common()) + f" | model calls {src.model_calls}")
+            for rel, v in sorted(by_rel.items(), key=lambda kv: -sum(kv[1].values()))[:16]:
+                log(f"  {rel}: " + ", ".join(f"{k} {x}" for k, x in v.most_common()))
+            for k, ex in xc_ex.items():
+                for ent, rel, obj, vals in ex:
+                    log(f"  [{k}] {obj!r} is the {rel} of {ent!r} | wikidata {vals}")
+            out["lfm_cross_check"] = {"counts": dict(xc), "by_relation": {r: dict(v) for r, v in by_rel.items()}}
         if hasattr(em, "usage"):
             log(f"proposer {proposer_name}: {em.calls} live calls, usage {em.usage}, finish {getattr(em, 'finish', {})}, "
                 f"declined (explicit null plan) {getattr(em, 'declined', 0)}")

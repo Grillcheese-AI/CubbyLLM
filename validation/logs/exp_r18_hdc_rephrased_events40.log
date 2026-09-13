@@ -1,0 +1,31 @@
+hdc ood_validation_rephrased.pq: 10,000 rows, 8,840 chains parsed (answer_not_chain_object 123, chain_broken 679, unparsed_fact 358) | store 11,774 facts, 195 relations | mapping 278 relations | 4s
+sampled 40 of 8,840 chains (hops [1, 2, 3], seed 7) | arms ('rephrased', 'original') | planner host
+
+HDC REPHRASED (host): VM calls 125 | 5s | plans worded by the split tier 37
+    15 /   20 certified  rephrased 1-hop     near 0 WRONG 0 | no_relation_wording 2,   of which split_wording 2, plan_does_not_cover_question 2, ambiguous_relation 1
+    19 /   20 certified  original 1-hop      near 0 WRONG 0 |   of which split_wording 1, plan_does_not_cover_question 1
+     5 /   12 certified  rephrased 2-hop     near 0 WRONG 0 | plan_does_not_cover_question 3,   of which split_wording 2, ambiguous_hop 1, no_relation_wording 1, ambiguous_relation 1, retrieval_exhausted 1
+     6 /   12 certified  original 2-hop      near 0 WRONG 0 | plan_does_not_cover_question 5,   of which split_wording 2, ambiguous_hop 1
+     2 /    8 certified  rephrased 3-hop     near 0 WRONG 0 | plan_does_not_cover_question 3, no_relation_wording 2,   of which split_wording 1, ambiguous_hop 1
+     4 /    8 certified  original 3-hop      near 0 WRONG 0 | ambiguous_hop 3,   of which split_wording 1, plan_does_not_cover_question 1
+
+matched pairs (original certified, rephrased certified): both 20, original only 9, rephrased only 2, neither 9
+
+every WRONG (0):
+
+refusal examples:
+  [no_relation_wording] ('In which language was the film or TV show fer mamla gadbad gadbad originally produced?', 'fer mamla gadbad gadbad', ['original language of film or TV show'])
+  [no_relation_wording] ('What language is associated with the work or the given name of duncan wood?', 'duncan wood', ['given name', 'language of work or name'])
+  [no_relation_wording] ('What is the country of origin for the instance of Numbers (magazine)?', 'Numbers (magazine)', ['country of origin', 'instance of', 'country'])
+  [no_relation_wording] ("What field does the occupation of the cast member of L'escalier sans fin belong to?", "L'escalier sans fin", ['cast member', 'occupation', 'field of this occupation'])
+  [plan_does_not_cover_question] ('In which group does the country of the location of formation of matt mihana hold membership?', ['location of formation', 'country', 'membership'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'location of formation', 'paraphrased': []})
+  [plan_does_not_cover_question] ("What is the first name of Bill Haslam's father?", ['father', 'first name'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'father', 'paraphrased': []})
+  [plan_does_not_cover_question] ('What is the administrative territorial entity that is part of the country of citizenship of aryono miranat?', ['country of citizenship', 'contains administrative territorial entity'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'country of citizenship', 'paraphrased': []})
+  [plan_does_not_cover_question] ('What is the language of work or name of the language of work or name of the given name of duncan wood?', ['given name', 'language of work or name'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'given name', 'paraphrased': []})
+  [ambiguous_hop] ('Where is the membership of the country of the location of formation of matt mihana?', ['location of formation', 'country', 'membership'], None, {'hop': 2, 'objects': ['arctic council action plan', 'australian group', 'current g20 countries', 'helsinki protocol', 'imf', 'international centre for the settlement of investment disputes', 'list of g8 summits', 'nigeria trust fund', 'treaty on open skies', 'united nations', 'united nations security council'], 'facts': ['arctic council action plan is the member of of united stated', 'nigeria trust fund is the member of of united stated', 'australian group is the member of of united stated', 'United Nations Security Council is the member of of united stated', 'Current G20 Countries is the member of of united stated', 'List of G8 summits is the member of of united stated', 'United nations is the member of of united stated', 'treaty on open skies is the member of of united stated', 'International Centre for the Settlement of Investment Disputes is the member of of united stated', 'helsinki protocol is the member of of united stated', 'the imf is the member of of united stated']})
+  [ambiguous_hop] ('Which instance does the noble title of Henry Seymour King belong to?', ['noble title', 'instance of'], None, {'hop': 1, 'objects': ['chivalric orders', 'coparcener'], 'facts': ['Coparcener is the instance of of Baronetcy of Ulster', 'Chivalric Orders is the instance of of Baronetcy of Ulster']})
+  [ambiguous_hop] ('What is the instance of the noble title of Henry Seymour King?', ['noble title', 'instance of'], None, {'hop': 1, 'objects': ['chivalric orders', 'coparcener'], 'facts': ['Coparcener is the instance of of Baronetcy of Ulster', 'Chivalric Orders is the instance of of Baronetcy of Ulster']})
+  [ambiguous_hop] ("Which instance corresponds to the time zone of the country of weightlifting at the 2012 summer olympics - women's 63 kg?", ['country', 'located in time zone', 'instance of'], None, {'hop': 1, 'objects': ['gmt', 'rome time', 'wet'], 'facts': ['rome time is the located in time zone of royaume-uni', 'WET is the located in time zone of royaume-uni', 'gmt is the located in time zone of royaume-uni']})
+  [ambiguous_relation] ('Which country does zo (kana) originate from?', ['originate from'], None, {'relation': 'originate from', 'candidates': ['country of origin', 'location of formation']})
+  [ambiguous_relation] ('Which country does the entity that is different from ken barfield belong to in terms of citizenship?', ['is different from', 'country of citizenship'], None, {'wording': 'country', 'candidates': ['country', 'country of citizenship', 'country of origin']})
+  [retrieval_exhausted] ('What is the country of origin for the operator of HMS Aldenham (L22)?', ['operator', 'country of origin'], None, None)

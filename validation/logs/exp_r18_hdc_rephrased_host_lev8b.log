@@ -1,0 +1,135 @@
+hdc ood_validation_rephrased.pq: 10,000 rows, 8,840 chains parsed (answer_not_chain_object 123, chain_broken 679, unparsed_fact 358) | store 11,774 facts, 195 relations | mapping 278 relations | 4s
+sampled 8840 of 8,840 chains (hops [1, 2, 3], seed 7) | arms ('rephrased', 'original') | planner host
+  100/8840 (5s) rephrased certified 62 near 0 WRONG 0 | original certified 78 near 0 WRONG 0 | VM calls 347
+  200/8840 (5s) rephrased certified 131 near 0 WRONG 0 | original certified 164 near 0 WRONG 0 | VM calls 711
+  300/8840 (5s) rephrased certified 190 near 0 WRONG 0 | original certified 234 near 0 WRONG 0 | VM calls 1019
+  400/8840 (6s) rephrased certified 253 near 0 WRONG 0 | original certified 314 near 0 WRONG 0 | VM calls 1361
+  500/8840 (6s) rephrased certified 320 near 0 WRONG 0 | original certified 392 near 0 WRONG 0 | VM calls 1714
+  600/8840 (7s) rephrased certified 383 near 0 WRONG 0 | original certified 473 near 0 WRONG 0 | VM calls 2074
+  700/8840 (7s) rephrased certified 453 near 0 WRONG 0 | original certified 555 near 0 WRONG 0 | VM calls 2449
+  800/8840 (7s) rephrased certified 519 near 0 WRONG 0 | original certified 637 near 0 WRONG 0 | VM calls 2806
+  900/8840 (8s) rephrased certified 580 near 0 WRONG 0 | original certified 716 near 0 WRONG 0 | VM calls 3136
+  1000/8840 (8s) rephrased certified 649 near 0 WRONG 0 | original certified 796 near 0 WRONG 0 | VM calls 3512
+  1100/8840 (9s) rephrased certified 723 near 0 WRONG 0 | original certified 880 near 0 WRONG 0 | VM calls 3908
+  1200/8840 (9s) rephrased certified 793 near 0 WRONG 0 | original certified 960 near 0 WRONG 0 | VM calls 4287
+  1300/8840 (10s) rephrased certified 863 near 0 WRONG 0 | original certified 1041 near 0 WRONG 0 | VM calls 4665
+  1400/8840 (10s) rephrased certified 932 near 0 WRONG 0 | original certified 1123 near 0 WRONG 0 | VM calls 5029
+  1500/8840 (11s) rephrased certified 997 near 0 WRONG 0 | original certified 1197 near 0 WRONG 0 | VM calls 5353
+  1600/8840 (11s) rephrased certified 1069 near 0 WRONG 0 | original certified 1281 near 0 WRONG 0 | VM calls 5739
+  1700/8840 (11s) rephrased certified 1127 near 0 WRONG 0 | original certified 1353 near 0 WRONG 0 | VM calls 6064
+  1800/8840 (12s) rephrased certified 1191 near 0 WRONG 0 | original certified 1434 near 0 WRONG 0 | VM calls 6404
+  1900/8840 (12s) rephrased certified 1254 near 0 WRONG 0 | original certified 1514 near 0 WRONG 0 | VM calls 6751
+  2000/8840 (13s) rephrased certified 1314 near 0 WRONG 0 | original certified 1590 near 0 WRONG 0 | VM calls 7085
+  2100/8840 (13s) rephrased certified 1380 near 0 WRONG 0 | original certified 1669 near 0 WRONG 0 | VM calls 7440
+  2200/8840 (13s) rephrased certified 1447 near 0 WRONG 0 | original certified 1750 near 0 WRONG 0 | VM calls 7822
+  2300/8840 (14s) rephrased certified 1524 near 0 WRONG 0 | original certified 1837 near 0 WRONG 0 | VM calls 8208
+  2400/8840 (14s) rephrased certified 1592 near 0 WRONG 0 | original certified 1917 near 0 WRONG 0 | VM calls 8577
+  2500/8840 (14s) rephrased certified 1664 near 0 WRONG 0 | original certified 1994 near 0 WRONG 0 | VM calls 8919
+  2600/8840 (15s) rephrased certified 1739 near 0 WRONG 0 | original certified 2081 near 0 WRONG 0 | VM calls 9282
+  2700/8840 (15s) rephrased certified 1816 near 0 WRONG 0 | original certified 2164 near 0 WRONG 0 | VM calls 9665
+  2800/8840 (16s) rephrased certified 1886 near 0 WRONG 0 | original certified 2252 near 0 WRONG 0 | VM calls 10058
+  2900/8840 (16s) rephrased certified 1949 near 0 WRONG 0 | original certified 2325 near 0 WRONG 0 | VM calls 10389
+  3000/8840 (16s) rephrased certified 2018 near 0 WRONG 0 | original certified 2406 near 0 WRONG 0 | VM calls 10763
+  3100/8840 (17s) rephrased certified 2087 near 0 WRONG 0 | original certified 2482 near 0 WRONG 0 | VM calls 11114
+  3200/8840 (17s) rephrased certified 2153 near 0 WRONG 0 | original certified 2568 near 0 WRONG 0 | VM calls 11497
+  3300/8840 (18s) rephrased certified 2224 near 0 WRONG 0 | original certified 2651 near 0 WRONG 0 | VM calls 11877
+  3400/8840 (18s) rephrased certified 2299 near 0 WRONG 0 | original certified 2737 near 0 WRONG 0 | VM calls 12251
+  3500/8840 (18s) rephrased certified 2370 near 0 WRONG 0 | original certified 2819 near 0 WRONG 0 | VM calls 12615
+  3600/8840 (19s) rephrased certified 2448 near 0 WRONG 0 | original certified 2904 near 0 WRONG 0 | VM calls 13012
+  3700/8840 (19s) rephrased certified 2518 near 0 WRONG 0 | original certified 2985 near 0 WRONG 0 | VM calls 13415
+  3800/8840 (20s) rephrased certified 2586 near 0 WRONG 0 | original certified 3063 near 0 WRONG 0 | VM calls 13763
+  3900/8840 (20s) rephrased certified 2654 near 0 WRONG 0 | original certified 3143 near 0 WRONG 0 | VM calls 14109
+  4000/8840 (20s) rephrased certified 2723 near 0 WRONG 0 | original certified 3220 near 0 WRONG 0 | VM calls 14451
+  4100/8840 (21s) rephrased certified 2790 near 0 WRONG 0 | original certified 3302 near 0 WRONG 0 | VM calls 14815
+  4200/8840 (21s) rephrased certified 2867 near 0 WRONG 0 | original certified 3389 near 0 WRONG 0 | VM calls 15207
+  4300/8840 (22s) rephrased certified 2929 near 0 WRONG 0 | original certified 3463 near 0 WRONG 0 | VM calls 15515
+  4400/8840 (22s) rephrased certified 2993 near 0 WRONG 0 | original certified 3546 near 0 WRONG 0 | VM calls 15884
+  4500/8840 (22s) rephrased certified 3062 near 0 WRONG 0 | original certified 3630 near 0 WRONG 0 | VM calls 16260
+  4600/8840 (23s) rephrased certified 3130 near 0 WRONG 0 | original certified 3706 near 0 WRONG 0 | VM calls 16610
+  4700/8840 (23s) rephrased certified 3194 near 0 WRONG 0 | original certified 3784 near 0 WRONG 0 | VM calls 16964
+  4800/8840 (24s) rephrased certified 3273 near 0 WRONG 0 | original certified 3871 near 0 WRONG 0 | VM calls 17352
+  4900/8840 (24s) rephrased certified 3347 near 0 WRONG 0 | original certified 3955 near 0 WRONG 0 | VM calls 17740
+  5000/8840 (24s) rephrased certified 3417 near 0 WRONG 0 | original certified 4044 near 0 WRONG 0 | VM calls 18123
+  5100/8840 (25s) rephrased certified 3478 near 0 WRONG 0 | original certified 4123 near 0 WRONG 0 | VM calls 18490
+  5200/8840 (25s) rephrased certified 3539 near 0 WRONG 0 | original certified 4200 near 0 WRONG 0 | VM calls 18842
+  5300/8840 (26s) rephrased certified 3606 near 0 WRONG 0 | original certified 4277 near 0 WRONG 0 | VM calls 19194
+  5400/8840 (26s) rephrased certified 3669 near 0 WRONG 0 | original certified 4351 near 0 WRONG 0 | VM calls 19520
+  5500/8840 (26s) rephrased certified 3739 near 0 WRONG 0 | original certified 4427 near 0 WRONG 0 | VM calls 19891
+  5600/8840 (27s) rephrased certified 3804 near 0 WRONG 0 | original certified 4505 near 0 WRONG 0 | VM calls 20229
+  5700/8840 (27s) rephrased certified 3873 near 0 WRONG 0 | original certified 4589 near 0 WRONG 0 | VM calls 20603
+  5800/8840 (27s) rephrased certified 3945 near 0 WRONG 0 | original certified 4674 near 0 WRONG 0 | VM calls 21009
+  5900/8840 (28s) rephrased certified 4015 near 0 WRONG 0 | original certified 4753 near 0 WRONG 0 | VM calls 21371
+  6000/8840 (28s) rephrased certified 4079 near 0 WRONG 0 | original certified 4831 near 0 WRONG 0 | VM calls 21717
+  6100/8840 (29s) rephrased certified 4146 near 0 WRONG 0 | original certified 4908 near 0 WRONG 0 | VM calls 22080
+  6200/8840 (29s) rephrased certified 4209 near 0 WRONG 0 | original certified 4985 near 0 WRONG 0 | VM calls 22425
+  6300/8840 (29s) rephrased certified 4276 near 0 WRONG 0 | original certified 5062 near 0 WRONG 0 | VM calls 22789
+  6400/8840 (30s) rephrased certified 4346 near 0 WRONG 0 | original certified 5146 near 0 WRONG 0 | VM calls 23164
+  6500/8840 (30s) rephrased certified 4423 near 0 WRONG 0 | original certified 5231 near 0 WRONG 0 | VM calls 23563
+  6600/8840 (31s) rephrased certified 4485 near 0 WRONG 0 | original certified 5315 near 0 WRONG 0 | VM calls 23938
+  6700/8840 (31s) rephrased certified 4555 near 0 WRONG 0 | original certified 5396 near 0 WRONG 0 | VM calls 24336
+  6800/8840 (31s) rephrased certified 4617 near 0 WRONG 0 | original certified 5473 near 0 WRONG 0 | VM calls 24676
+  6900/8840 (32s) rephrased certified 4690 near 0 WRONG 0 | original certified 5552 near 0 WRONG 0 | VM calls 25034
+  7000/8840 (32s) rephrased certified 4753 near 0 WRONG 0 | original certified 5630 near 0 WRONG 0 | VM calls 25384
+  7100/8840 (33s) rephrased certified 4817 near 0 WRONG 0 | original certified 5704 near 0 WRONG 0 | VM calls 25723
+  7200/8840 (33s) rephrased certified 4888 near 0 WRONG 0 | original certified 5783 near 0 WRONG 0 | VM calls 26081
+  7300/8840 (33s) rephrased certified 4949 near 0 WRONG 0 | original certified 5858 near 0 WRONG 0 | VM calls 26442
+  7400/8840 (34s) rephrased certified 5015 near 0 WRONG 0 | original certified 5936 near 0 WRONG 0 | VM calls 26811
+  7500/8840 (34s) rephrased certified 5091 near 0 WRONG 0 | original certified 6022 near 0 WRONG 0 | VM calls 27198
+  7600/8840 (35s) rephrased certified 5157 near 0 WRONG 0 | original certified 6105 near 0 WRONG 0 | VM calls 27558
+  7700/8840 (35s) rephrased certified 5218 near 0 WRONG 0 | original certified 6183 near 0 WRONG 0 | VM calls 27943
+  7800/8840 (35s) rephrased certified 5285 near 0 WRONG 0 | original certified 6257 near 0 WRONG 0 | VM calls 28307
+  7900/8840 (36s) rephrased certified 5354 near 0 WRONG 0 | original certified 6332 near 0 WRONG 0 | VM calls 28668
+  8000/8840 (36s) rephrased certified 5421 near 0 WRONG 0 | original certified 6410 near 0 WRONG 0 | VM calls 29020
+  8100/8840 (37s) rephrased certified 5488 near 0 WRONG 0 | original certified 6488 near 0 WRONG 0 | VM calls 29379
+  8200/8840 (37s) rephrased certified 5561 near 0 WRONG 0 | original certified 6571 near 0 WRONG 0 | VM calls 29745
+  8300/8840 (37s) rephrased certified 5633 near 0 WRONG 0 | original certified 6657 near 0 WRONG 0 | VM calls 30120
+  8400/8840 (38s) rephrased certified 5699 near 0 WRONG 0 | original certified 6737 near 0 WRONG 0 | VM calls 30485
+  8500/8840 (38s) rephrased certified 5774 near 0 WRONG 0 | original certified 6824 near 0 WRONG 0 | VM calls 30896
+  8600/8840 (39s) rephrased certified 5845 near 0 WRONG 0 | original certified 6909 near 0 WRONG 0 | VM calls 31289
+  8700/8840 (39s) rephrased certified 5915 near 0 WRONG 0 | original certified 6987 near 0 WRONG 0 | VM calls 31656
+  8800/8840 (39s) rephrased certified 5982 near 0 WRONG 0 | original certified 7069 near 0 WRONG 0 | VM calls 32013
+
+HDC REPHRASED (host): VM calls 32149 | 39s | plans worded by the split tier 7651
+  4218 / 4841 certified  rephrased 1-hop     near 0 WRONG 0 | no_relation_wording 256, plan_does_not_cover_question 186, ambiguous_relation 119,   of which split_wording 84, seed_not_in_question 49, retrieval_exhausted 11, answer_type_mismatch 1, unknown_relation 1
+  4789 / 4841 certified  original 1-hop      near 0 WRONG 0 | no_relation_wording 30, plan_does_not_cover_question 18,   of which split_wording 14, unknown_relation 3, ambiguous_relation 1
+  1318 / 2391 certified  rephrased 2-hop     near 0 WRONG 0 | plan_does_not_cover_question 720,   of which split_wording 478, rephrase_dropped_last_hop 203, ambiguous_hop 183, no_relation_wording 78, retrieval_exhausted 65, ambiguous_relation 12, seed_not_in_question 8, unknown_relation 7
+  1662 / 2594 certified  original 2-hop      near 0 WRONG 0 | plan_does_not_cover_question 561,   of which split_wording 373, ambiguous_hop 231, retrieval_exhausted 71, no_relation_wording 56, unknown_relation 8, ambiguous_relation 3, seed_not_in_question 2
+   471 / 1343 certified  rephrased 3-hop     near 0 WRONG 0 | plan_does_not_cover_question 474,   of which split_wording 333, ambiguous_hop 225, no_relation_wording 118, rephrase_dropped_last_hop 62, retrieval_exhausted 34, ambiguous_relation 12, seed_not_in_question 5, unknown_relation 4
+   650 / 1405 certified  original 3-hop      near 0 WRONG 0 | plan_does_not_cover_question 445,   of which split_wording 340, ambiguous_hop 210, retrieval_exhausted 51, no_relation_wording 44, unknown_relation 4, ambiguous_relation 1
+
+matched pairs (original certified, rephrased certified): both 5928, original only 1173, rephrased only 79, neither 1660
+
+every WRONG (0):
+
+refusal examples:
+  [no_relation_wording] ('In which language was the film or TV show fer mamla gadbad gadbad originally produced?', 'fer mamla gadbad gadbad', ['original language of film or TV show'])
+  [no_relation_wording] ('What language is associated with the work or the given name of duncan wood?', 'duncan wood', ['given name', 'language of work or name'])
+  [no_relation_wording] ('What is the country of origin for the instance of Numbers (magazine)?', 'Numbers (magazine)', ['country of origin', 'instance of', 'country'])
+  [no_relation_wording] ("What field does the occupation of the cast member of L'escalier sans fin belong to?", "L'escalier sans fin", ['cast member', 'occupation', 'field of this occupation'])
+  [plan_does_not_cover_question] ('In which group does the country of the location of formation of matt mihana hold membership?', ['location of formation', 'country', 'membership'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'location of formation', 'paraphrased': []})
+  [plan_does_not_cover_question] ('What is the administrative territorial entity that is part of the country of citizenship of aryono miranat?', ['country of citizenship', 'contains administrative territorial entity'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'country of citizenship', 'paraphrased': []})
+  [plan_does_not_cover_question] ('What is the language of work or name of the language of work or name of the given name of duncan wood?', ['given name', 'language of work or name'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'given name', 'paraphrased': []})
+  [plan_does_not_cover_question] ('Which component does the instance of percalates have?', ['instance of', 'has part'], None, {'covers': False, 'unknown_relations': [], 'tail_relation': 'instance of', 'paraphrased': []})
+  [ambiguous_hop] ('Where is the membership of the country of the location of formation of matt mihana?', ['location of formation', 'country', 'membership'], None, {'hop': 2, 'objects': ['arctic council action plan', 'australian group', 'current g20 countries', 'helsinki protocol', 'imf', 'international centre for the settlement of investment disputes', 'list of g8 summits', 'nigeria trust fund', 'treaty on open skies', 'united nations', 'united nations security council'], 'facts': ['arctic council action plan is the member of of united stated', 'nigeria trust fund is the member of of united stated', 'australian group is the member of of united stated', 'United Nations Security Council is the member of of united stated', 'Current G20 Countries is the member of of united stated', 'List of G8 summits is the member of of united stated', 'United nations is the member of of united stated', 'treaty on open skies is the member of of united stated', 'International Centre for the Settlement of Investment Disputes is the member of of united stated', 'helsinki protocol is the member of of united stated', 'the imf is the member of of united stated']})
+  [ambiguous_hop] ('Which instance does the noble title of Henry Seymour King belong to?', ['noble title', 'instance of'], None, {'hop': 1, 'objects': ['chivalric orders', 'coparcener'], 'facts': ['Coparcener is the instance of of Baronetcy of Ulster', 'Chivalric Orders is the instance of of Baronetcy of Ulster']})
+  [ambiguous_hop] ('What is the instance of the noble title of Henry Seymour King?', ['noble title', 'instance of'], None, {'hop': 1, 'objects': ['chivalric orders', 'coparcener'], 'facts': ['Coparcener is the instance of of Baronetcy of Ulster', 'Chivalric Orders is the instance of of Baronetcy of Ulster']})
+  [ambiguous_hop] ("Which instance corresponds to the time zone of the country of weightlifting at the 2012 summer olympics - women's 63 kg?", ['country', 'located in time zone', 'instance of'], None, {'hop': 1, 'objects': ['gmt', 'rome time', 'wet'], 'facts': ['rome time is the located in time zone of royaume-uni', 'WET is the located in time zone of royaume-uni', 'gmt is the located in time zone of royaume-uni']})
+  [ambiguous_relation] ('Which country does zo (kana) originate from?', ['originate from'], None, {'relation': 'originate from', 'candidates': ['country of origin', 'location of formation']})
+  [ambiguous_relation] ('Which country does the entity that is different from ken barfield belong to in terms of citizenship?', ['is different from', 'country of citizenship'], None, {'wording': 'country', 'candidates': ['country', 'country of citizenship', 'country of origin']})
+  [ambiguous_relation] ('Which country does Black Sheep (rock band) originate from?', ['originate from'], None, {'relation': 'originate from', 'candidates': ['country of origin', 'location of formation']})
+  [ambiguous_relation] ('Which network is associated with O Canto da Sereia?', ['network'], None, {'relation': 'network', 'candidates': ['highway system', 'original network']})
+  [retrieval_exhausted] ('What is the country of origin for the operator of HMS Aldenham (L22)?', ['operator', 'country of origin'], None, None)
+  [retrieval_exhausted] ('Which instance represents the genre of Marlain Aggelidou?', ['genre', 'instance of'], None, None)
+  [retrieval_exhausted] ('What is the instance of the genre of Marlain Aggelidou?', ['genre', 'instance of'], None, None)
+  [retrieval_exhausted] ('Which official symbol represents the country of origin of The Immortals (Stewart and Riddell novel)?', ['country of origin', 'official symbol'], None, None)
+  [seed_not_in_question] ('In which location can the administrative territorial entity named after Newton Purcell be found alongside Shelswell, Oxfordshire?', 'Newton Purcell with Shelswell, Oxfordshire', ['named after', 'located in the administrative territorial entity'])
+  [seed_not_in_question] ('Which instance of book corresponds to the wars of yhvh?', 'book of the wars of yhvh', ['instance of'])
+  [seed_not_in_question] ('Which instance does blue represent for you (paul haig)?', 'blue for you (paul haig)', ['instance of'])
+  [seed_not_in_question] ('What occupation does Antoine Busnois have/Comments?', 'Antoine Busnois/Comments', ['occupation'])
+  [unknown_relation] ('Which country is the country of the owner of university of houston–downtown (metrorail station)?', ['owner', 'country'], None, {'covers': True, 'unknown_relations': ['owner of university'], 'tail_relation': None, 'paraphrased': []})
+  [unknown_relation] ('What is the antonym of the instance of the given name of jimmy fowler?', ['given name', 'instance of', 'antonym'], None, {'covers': True, 'unknown_relations': ['antonym'], 'tail_relation': 'given name', 'paraphrased': []})
+  [unknown_relation] ('What administrative territorial entity falls under the jurisdiction of Parliament of Swaziland?', ['jurisdiction', 'contains administrative territorial entity'], None, {'covers': True, 'unknown_relations': ['jurisdiction of Parliament'], 'tail_relation': None, 'paraphrased': []})
+  [unknown_relation] ('Which is the administrative territorial entity contained within the jurisdiction of Parliament of Swaziland?', ['jurisdiction', 'contains administrative territorial entity'], None, {'covers': True, 'unknown_relations': ['jurisdiction of Parliament'], 'tail_relation': None, 'paraphrased': []})
+  [answer_type_mismatch] ('What day of the year does the periodic occurrence of atatürk road race take place?', ['day in year for periodic occurrence'], None, {'asked': 'date', 'got': 'name', 'value': '27th of December', 'facts': ['27th of December is the day in year for periodic occurrence of atatürk road race']})
+
+records 26,216 (Counter({'train': 23782, 'held': 2434})) -> standin\data\out\gen3_hdc.jsonl
