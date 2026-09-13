@@ -359,11 +359,52 @@ def tail_relation(tail: str, known: KnownRelations) -> str | None:
     Longest first: 'country of citizenship of X' must yield 'country of
     citizenship', not 'country'."""
     parts = tail.split(" of ")
-    for i in range(len(parts) - 1, 0, -1):
-        cand = " of ".join(parts[:i])
-        if cand in known:
-            return cand
-    return None
+    held = [" of ".join(parts[:i]) for i in range(len(parts) - 1, 0, -1) if " of ".join(parts[:i]) in known]
+    if not held:
+        return None
+    # a relation the store states once and no source declared may be an entity fragment
+    # mis-split at an ' of ' ('spouse of anne' from 'the spouse of anne of cleves'); a shorter
+    # relation that is reused or declared wins over it (2026-09-13; the reuse guard of hop 0's
+    # paraphrase tier, applied to the exact tier). A declared one-off ('date of birth' from a
+    # source's Triple) keeps its length: that is what declaring is for (exp_r14, 2026-09-12).
+    counts = getattr(known, "_n", None)
+    if isinstance(counts, dict) and counts:
+        declared = getattr(known, "_declared", set())
+        for c in held:
+            if counts.get(normalize(c), 0) >= 2 or normalize(c) in declared:
+                return c
+    return held[0]
+
+
+def split_tail(tail: str, known: KnownRelations | None, question: str | None = None) -> tuple[str, str]:
+    """(relation, entity) for a tail 'relation of entity'. The longest held relation prefix
+    first (`tail_relation`), then the paraphrase tier (`tail_match`); for a relation the
+    store does not hold, the QUESTION decides the split (2026-09-13, gen-3 builder): 'married
+    of anne of cleves' splits where the entity part is what the question says -- the longest
+    such entity -- and only without a question at the last ' of ' (a relation with ' of ' in
+    it being commoner than an entity with one)."""
+    if " of " not in tail:
+        return tail, ""
+    if known is not None:
+        tr = tail_relation(tail, known)
+        if tr is None:
+            tm = tail_match(tail, known)
+            tr = tm[0] if tm else None
+        if tr is not None:
+            rest = tail[len(tr):].strip()
+            return tr, (rest[3:] if rest.startswith("of ") else rest)
+    if question:
+        q = " " + normalize(question) + " "
+        parts = tail.split(" of ")
+        for i in range(1, len(parts)):                       # shortest relation, longest entity first
+            rel, ent = " of ".join(parts[:i]), " of ".join(parts[i:])
+            # the entity is what the question names, and the question does not itself join
+            # the relation to the next part with 'of' ('the place of birth of jean' keeps
+            # 'place of birth'; 'anne of cleves married to' gives 'married' | 'anne of cleves')
+            if " " + normalize(ent) + " " in q and " " + normalize(rel + " of " + parts[i]) + " " not in q:
+                return rel, ent
+    rel, ent = tail.rsplit(" of ", 1)
+    return rel, ent
 
 
 def tail_match(tail: str, known: KnownRelations) -> tuple[str, str] | None:
@@ -404,16 +445,25 @@ _ASK_DATE = __import__("re").compile(
     r"day,?\s+month,?\s+(and\s+)?year|month\s+(and|,)\s+year|(what|which)\s+day\s+of)\b")
 _ASK_NUMBER = __import__("re").compile(r"\b(how\s+many|how\s+much|what\s+(number|percentage|amount|population|count))\b")
 _ASK_NAME = __import__("re").compile(r"^\s*(who|whom|whose)\b")
+# a place (2026-09-13, gen-3 builder): 'where', or a class noun that is a kind of place -- 'in which
+# city was X born' asks for a place, and 'city' is the ask, not a hop the plan dropped
+_PLACE_CLASSES = "city|town|country|state|province|county|district|region|village|place|location|continent|island|municipality"
+_ASK_PLACE = __import__("re").compile(
+    rf"^\s*where\b|\b(in|at|from|of)\s+(what|which)\s+({_PLACE_CLASSES})\b|^\s*(what|which)\s+({_PLACE_CLASSES})\b")
 _ASK_WORDS = {"date": frozenset("year date day month decade century when".split()),
               "number": frozenset("many much number percentage amount count".split()),
-              "name": frozenset()}
+              "name": frozenset(),
+              "place": frozenset(("where " + _PLACE_CLASSES.replace("|", " ")).split())}
+# the value kind each ask expects: a place is a name-valued thing
+KIND_OF_ASK = {"date": "date", "number": "number", "name": "name", "place": "name"}
 _ISO_DATE = __import__("re").compile(r"^[+-]?\d{4}-\d{2}(-\d{2})?$")
 _YEAR_OR_COUNT = __import__("re").compile(r"^[+-]?\d{3,4}$")
 _NUMBER_VALUE = __import__("re").compile(r"^[+-]?\d+([.,]\d+)?$")
 
 
 def ask_type(question: str) -> str | None:
-    """'date' | 'number' | 'name' | None -- the kind of answer the question asks for."""
+    """'date' | 'number' | 'name' | 'place' | None -- the kind of answer the question asks
+    for (`KIND_OF_ASK` maps it onto a value kind: a place is name-valued)."""
     q = question.lower()
     if _ASK_DATE.search(q):
         return "date"
@@ -421,6 +471,8 @@ def ask_type(question: str) -> str | None:
         return "number"
     if _ASK_NAME.search(q):
         return "name"
+    if _ASK_PLACE.search(q):
+        return "place"
     return None
 
 
@@ -443,7 +495,7 @@ def answer_type_mismatch(question: str, value: str) -> tuple[str, str] | None:
     if asked is None:
         return None
     kinds = value_kinds(value)
-    return None if asked in kinds else (asked, "/".join(sorted(kinds)))
+    return None if KIND_OF_ASK[asked] in kinds else (asked, "/".join(sorted(kinds)))
 
 
 def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = None,
@@ -505,10 +557,8 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
     if tr is not None:
         rel1, ent = tr, plan.tail[len(tr):].strip()
         ent = ent[3:] if ent.startswith("of ") else ent
-    elif " of " in plan.tail:
-        rel1, ent = plan.tail.rsplit(" of ", 1)
     else:
-        rel1, ent = plan.tail, ""
+        rel1, ent = split_tail(plan.tail, None, question)       # an unheld relation: the question decides the split
     ent = normalize(ent)
 
     def wordings(r: str, alt: str | None = None) -> list[str]:
@@ -544,6 +594,12 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
     for text in texts:
         if _covers_text(text, answer_first, ent, rw) or _covers_text(text, inner_first, ent, rw, entity_first=True):
             return True
+        # v5 (2026-09-13, the gen-3 builder): a verb-form outer hop follows the entity while the
+        # inner hops precede it as a noun phrase -- "When was the father of X born?", "Who is
+        # the child of X married to?": inner hops, the entity, then the rest in walk order
+        for k in range(1, len(inner_first)):
+            if _covers_mixed(text, inner_first[:k], ent, inner_first[k:], rw):
+                return True
     return False
 
 
@@ -563,6 +619,38 @@ def _find_any(q: str, alts: list[str], pos: int) -> tuple[int, int] | None:
         if i >= 0 and (best is None or i < best[0] or (i == best[0] and len(w) > best[1] - best[0])):
             best = (i, i + len(w))
     return best
+
+
+def _covers_mixed(q: str, before: list[list[str]], ent: str, after: list[list[str]], rw) -> bool:
+    """The mixed reading (covers v5): `before` relations in order, then the entity, then
+    `after` relations in order; the same residual rule as `_covers_text`."""
+    if not ent:
+        return False
+    pos, spans = 0, []
+    for alts in before:
+        hit = _find_any(q, alts, pos)
+        if hit is None:
+            return False
+        spans.append(hit); pos = hit[1]
+    j = q.find(ent, pos)
+    if j < 0:
+        return False
+    spans.append((j, j + len(ent))); pos = j + len(ent)
+    for alts in after:
+        hit = _find_any(q, alts, pos)
+        if hit is None:
+            return False
+        spans.append(hit); pos = hit[1]
+    if rw is None:
+        return True
+    residual, last = [], 0
+    for a, b in spans:
+        residual.append(q[last:a]); last = b
+    residual.append(q[last:])
+    leftover = [w for w in " ".join(residual).split() if w not in _FRAME_AND_JOINT]
+    if any(w.isdigit() for w in leftover):
+        return False
+    return not any(w in rw for w in leftover)
 
 
 def _covers_text(q: str, order: list[list[str]], ent: str, rw, entity_first: bool = False) -> bool:
@@ -642,7 +730,7 @@ def verify_plan(question: str, plan: QuestionPlan, known: KnownRelations,
         if tm is not None:
             tr = tm[0]; paraphrased.append(tm)
         else:
-            unknown.append(plan.tail.rsplit(" of ", 1)[0] if " of " in plan.tail else plan.tail)
+            unknown.append(split_tail(plan.tail, None, question)[0])   # the question decides where the entity starts
     if not cov:
         reason = "plan_does_not_cover_question"
     elif unknown:

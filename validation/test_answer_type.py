@@ -40,7 +40,13 @@ def test_ask_type_reads_the_question():
     assert ask_type("How many U.S. patents did Chadwell O'Connor receive?") == "number"
     assert ask_type("Who is the father of Jean?") == "name"
     assert ask_type("What is the capital of France?") is None
-    assert ask_type("Which district is Kafr al-Awamid located in?") is None
+    # a place (2026-09-13): 'where', or a place-class noun as the ask
+    assert ask_type("Which district is Kafr al-Awamid located in?") == "place"
+    assert ask_type("Where was Masaki Tsuji born?") == "place"
+    assert ask_type("In which city did Frank Dobson die?") == "place"
+    assert ask_type("What country is Jean a citizen of?") == "place"
+    assert answer_type_mismatch("Where was Masaki Tsuji born?", "1932-03-23") == ("place", "date")
+    assert answer_type_mismatch("Where was Masaki Tsuji born?", "Nagoya") is None
 
 
 def test_value_kinds_by_shape():

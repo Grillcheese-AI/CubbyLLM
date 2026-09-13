@@ -260,3 +260,19 @@ def test_covers_v4_a_parenthetical_is_an_aside_about_the_entity_not_a_dropped_ho
     aliases = {"date of birth": ["born"]}
     assert covers("In which year was Dina Nath Walli (an Indian watercolor artist and poet from Srinagar city) born?", plan, known, aliases)
     assert not covers("In which year was the artist of Dina Nath Walli born?", plan, known, aliases)
+
+
+def test_covers_v5_a_verb_form_outer_hop_follows_the_entity_the_inner_hop_precedes_it():
+    """The gen-3 builder (2026-09-13): 'When was the father of X born?' states hop 1 as a
+    noun phrase before the entity and hop 2 as a verb after it -- neither the answer-first
+    nor the entity-first reading. The mixed reading accepts inner hops, the entity, then the
+    rest in walk order; the residual rule is unchanged, so a dropped hop still fails."""
+    from cubbyllm.reasoning.plan_verify import StoreRelations, covers
+    store = ["jean is the father of marie", "1950 is the born of jean", "lyon is the spouse of jean", "paris is the capital of france"]
+    known = StoreRelations(store)
+    two = QuestionPlan(relations=[None, "born"], tail="father of marie", n_hop=2)
+    assert covers("When was the father of Marie born?", two, known)
+    assert covers("Who is the father of Marie married to?", QuestionPlan(relations=[None, "married"], tail="father of marie", n_hop=2),
+                  known, aliases={"spouse": ["married"]})
+    one = QuestionPlan(relations=[None], tail="born of marie", n_hop=1)
+    assert not covers("When was the father of Marie born?", one, known)          # 'father' is a dropped hop

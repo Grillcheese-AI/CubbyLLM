@@ -37,6 +37,34 @@ from cubbyllm.reasoning.planner import Triple, normalize as _normalize   # noqa:
 PROPERTY_TABLE = CACHE.parent / "wikidata_properties_en_fr.json"        # standin/data/out/, built once by build_property_aliases.py
 
 
+def _inflections(key: str) -> list[str]:
+    """The regular inflections of a normalized wording's FIRST word (the verb of 'work for',
+    'die', 'attend'): -s/-es/-d/-ed/-ing forms and the stems they come from. Exact strings
+    to look up, no guessing beyond them."""
+    words = key.split()
+    if not words:
+        return []
+    w, rest = words[0], words[1:]
+    forms = {w + "s", w + "es", w + "d", w + "ed", w + "ing"}
+    if w.endswith("e"):
+        forms.add(w[:-1] + "ing")
+    if w.endswith("y"):
+        forms.add(w[:-1] + "ied"); forms.add(w[:-1] + "ies")
+    stems: set[str] = set()
+    for suf in ("ies", "ied", "ing", "es", "ed", "s", "d"):
+        if w.endswith(suf) and len(w) > len(suf) + 2:
+            stem = w[:-len(suf)]
+            stems.add(stem)
+            if suf in ("ies", "ied"):
+                stems.add(stem + "y")
+            if suf in ("ing", "ed", "d"):
+                stems.add(stem + "e")
+    for s in stems:                                              # 'establishing' -> 'establish' -> 'established'
+        forms.update({s, s + "s", s + "es", s + "d", s + "ed", s + "ing"})
+    forms.discard(w)
+    return sorted(" ".join([f] + rest) for f in forms)
+
+
 class PropertyAliases:
     """Wikidata's property labels and aliases (EN + FR) as a LOCAL relation resolver -- the
     same answer `WikidataSource.relations()` used to fetch per wording (875 API calls for
@@ -54,32 +82,52 @@ class PropertyAliases:
         d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
         self.meta = {k: v for k, v in d.items() if k != "properties"}
         self._by_text: dict[str, set[str]] = {}
-        self._kind: dict[str, str | None] = {}
+        self._texts_of: dict[str, set[str]] = {}         # English label -> every English wording of its property
+        self._kind: dict[str, str | None] = {}           # any English wording -> its property's kind (None when they disagree)
         for pid, p in d["properties"].items():
             label_en = p["label"].get("en")
             if not label_en:
                 continue
+            k = self.KIND.get(p.get("datatype") or "")
+            en_texts = [t for t in [label_en] + list(p["aliases"].get("en", [])) if t]
+            self._texts_of.setdefault(_normalize(label_en), set()).update(en_texts)
             for lang in ("en", "fr"):
                 for text in [p["label"].get(lang)] + list(p["aliases"].get(lang, [])):
                     if text:
                         self._by_text.setdefault(_normalize(text), set()).add(label_en)
-            k = self.KIND.get(p.get("datatype") or "")
-            key = _normalize(label_en)
-            if key in self._kind and self._kind[key] != k:
-                self._kind[key] = None                   # two properties, one English label, two kinds: no kind
-            else:
-                self._kind[key] = k
+            for text in en_texts:
+                key = _normalize(text)
+                if key in self._kind and self._kind[key] != k:
+                    self._kind[key] = None               # two properties share this wording and disagree on kind: no kind
+                else:
+                    self._kind[key] = k
 
     def __len__(self) -> int:
         return len(self._by_text)
 
     def relations(self, text: str) -> list[str]:
-        return sorted(self._by_text.get(_normalize(text), ()))
+        """Exact tier first; a wording the table lacks is tried as its inflections ('die' ->
+        'died', 'attend' -> 'attended', 'work for' -> 'works for'), each an exact lookup."""
+        key = _normalize(text)
+        hit = self._by_text.get(key)
+        if hit:
+            return sorted(hit)
+        out: set[str] = set()
+        for alt in _inflections(key):
+            out.update(self._by_text.get(alt, ()))
+        return sorted(out)
+
+    def wordings(self, label: str) -> list[str]:
+        """Every English wording (label and aliases) of the property whose English label this
+        is: 'date of birth' -> ['DOB', 'birth date', 'born', ...]. A store that holds the
+        property under one of these ('birth date') holds the label's relation."""
+        return sorted(self._texts_of.get(_normalize(label), ()))
 
     def kind(self, label: str) -> str | None:
-        """'date' / 'number' / 'name' for a label whose property datatype says so; None
-        when the table has no datatype for it (built before 2026-09-13, or a kind no
-        question asks for). None never narrows: the host keeps the ambiguity."""
+        """'date' / 'number' / 'name' for a wording whose property datatype says so; None
+        when the table has no datatype for it (built before 2026-09-13), when properties
+        sharing the wording disagree ('born': date of birth / place of birth), or for a
+        kind no question asks for. None never narrows: the host keeps the ambiguity."""
         return self._kind.get(_normalize(label))
 
 
@@ -163,6 +211,10 @@ class WikidataSource:
         """The value kind of a property label (date / number / name), from the local table
         only; None without one. The host narrows an ambiguous wording by it, never by rank."""
         return self.aliases.kind(label) if self.aliases is not None else None
+
+    def wordings(self, label: str) -> list[str]:
+        """Every English wording of the property this label names (local table only)."""
+        return self.aliases.wordings(label) if self.aliases is not None else []
 
     # -- the Source call -----------------------------------------------------------------
     def facts(self, entity: str) -> list[str]:

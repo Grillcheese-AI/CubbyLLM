@@ -21,8 +21,8 @@ for p in (str(ROOT), str(ROOT / "standin")):
 from sources import PropertyAliases, WikidataSource  # noqa: E402
 
 TABLE = {"source": "test", "langs": ["en", "fr"], "n_properties": 5, "properties": {
-    "P569": {"label": {"en": "date of birth", "fr": "date de naissance"}, "aliases": {"en": ["born", "DOB", "birthday"], "fr": ["né le", "naissance"]}, "datatype": "time"},
-    "P19": {"label": {"en": "place of birth", "fr": "lieu de naissance"}, "aliases": {"en": ["birthplace", "born in"], "fr": ["né à"]}, "datatype": "wikibase-item"},
+    "P569": {"label": {"en": "date of birth", "fr": "date de naissance"}, "aliases": {"en": ["born", "DOB", "birthday", "birth"], "fr": ["né le", "naissance"]}, "datatype": "time"},
+    "P19": {"label": {"en": "place of birth", "fr": "lieu de naissance"}, "aliases": {"en": ["birthplace", "born in", "birth"], "fr": ["né à"]}, "datatype": "wikibase-item"},
     "P571": {"label": {"en": "inception", "fr": "date de fondation ou de création"}, "aliases": {"en": ["founded", "established", "created"], "fr": ["fondé en", "création"]}, "datatype": "time"},
     "P1082": {"label": {"en": "population", "fr": "population"}, "aliases": {"en": ["inhabitants"], "fr": ["habitants"]}, "datatype": "quantity"},
     "P214": {"label": {"en": "VIAF ID", "fr": "identifiant VIAF"}, "aliases": {"en": ["VIAF"], "fr": []}, "datatype": "external-id"},
@@ -62,4 +62,29 @@ def test_a_label_has_the_value_kind_its_datatype_says_and_nothing_else_has_one(t
     assert PropertyAliases(p).kind("date of birth") is None
     src = WikidataSource(cache_dir=None, aliases=pa, offline=True)
     assert src.kind("date of birth") == "date" and src.calls == 0
-    assert WikidataSource(cache_dir=None, aliases=None, offline=True).kind("date of birth") is None
+    src.aliases = None                                             # no table at all: no kind, no wordings
+    assert src.kind("date of birth") is None and src.wordings("date of birth") == []
+
+
+def test_a_label_names_every_wording_of_its_property_and_a_wording_has_its_kind(tmp_path):
+    """2026-09-13: the wiki world says 'birth date' where Wikidata's label is 'date of birth';
+    the table knows they are one property. A wording two properties share ('birth' here)
+    has no kind of its own; one property's wording ('DOB') has its property's."""
+    pa = PropertyAliases(table(tmp_path))
+    assert pa.wordings("date of birth") == ["DOB", "birth", "birthday", "born", "date of birth"]
+    assert pa.wordings("banana") == [] and pa.relations("DOB") == ["date of birth"]
+    assert pa.relations("birth") == ["date of birth", "place of birth"]
+    assert pa.kind("DOB") == "date" and pa.kind("birthplace") == "name" and pa.kind("birth") is None
+    src = WikidataSource(cache_dir=None, aliases=pa, offline=True)
+    assert src.wordings("inception") == ["created", "established", "founded", "inception"] and src.calls == 0
+
+
+def test_a_wording_the_table_lacks_is_tried_as_its_inflections(tmp_path):
+    """'When did X die?' says 'die'; the table says 'died'. The regular inflections of the
+    first word are looked up exactly -- 'establish' -> 'established', 'create' -> 'created';
+    a word with no inflected hit names nothing, and the exact tier still wins."""
+    pa = PropertyAliases(table(tmp_path))
+    assert pa.relations("establish") == ["inception"] and pa.relations("create") == ["inception"]
+    assert pa.relations("establishing") == ["inception"] and pa.relations("found") == ["inception"]
+    assert pa.relations("banana") == [] and pa.relations("bananas") == []
+    assert pa.relations("born") == ["date of birth"] and pa.relations("borns") == ["date of birth"]   # exact tier first

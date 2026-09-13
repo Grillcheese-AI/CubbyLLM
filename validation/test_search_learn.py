@@ -297,15 +297,19 @@ def test_a_when_question_keeps_the_date_valued_label_of_a_two_sense_wording_at_l
 
 
 def test_a_two_sense_wording_stays_an_ambiguity_when_the_ask_type_does_not_split_it():
-    """'Where' names no ask type yet, and a 'what' question names none: nothing narrows,
-    the refusal stands with both candidates on record."""
+    """A 'what' question names no ask type: nothing narrows, the refusal stands with both
+    candidates on record. 'Where' (a place, since 2026-09-13) keeps the name-valued label."""
     from cubbyllm.reasoning.planner import QuestionPlan
     store, known = LookupStore(BORN_STORE), StoreRelations(BORN_STORE)
     src = TypedAliasSource({}, {"born": ["date of birth", "place of birth"]}, BORN_KINDS)
     plan = QuestionPlan(relations=[None], tail="born of masaki tsuji", n_hop=1)
-    r = run("Where was Masaki Tsuji born?", store, known, src, plan=plan)
+    r = run("What is known about how Masaki Tsuji was born?", store, known, src, plan=plan)
     assert not r.result.verified and r.result.reason == "ambiguous_relation"
     assert r.result.refused == {"relation": "born", "candidates": ["date of birth", "place of birth"]}
+    r = run("Where was Masaki Tsuji born?", store, known, src, plan=plan)
+    assert r.result.verified and normalize(r.result.answer) == "nagoya" and r.aliased == [("born", "place of birth")]
+    r = run("In which city was Masaki Tsuji born?", store, known, src, plan=plan)
+    assert r.result.verified and normalize(r.result.answer) == "nagoya"       # 'city' is the ask, not a dropped hop
 
 
 def test_a_candidate_without_a_kind_blocks_the_narrowing():
@@ -334,3 +338,105 @@ def test_a_when_question_finds_its_wording_at_lever_6_when_the_table_names_two_l
     plan = QuestionPlan(relations=[None], tail="place of birth of masaki tsuji", n_hop=1)
     r = run("When was Masaki Tsuji born?", store, known, src, plan=plan)
     assert not r.result.verified and r.result.reason == "plan_does_not_cover_question" and r.aliased == []
+
+
+# ---- the store's own wording of a property (2026-09-13): 'birth date' for 'date of birth'
+
+class WordedAliasSource(TypedAliasSource):
+    """The local table's other answer: every wording of a label's property."""
+    def __init__(self, by_entity, by_wording, kinds, by_label):
+        super().__init__(by_entity, by_wording, kinds); self.by_label = {normalize(k): v for k, v in by_label.items()}
+    def wordings(self, label):
+        return list(self.by_label.get(normalize(label), []))
+
+
+WIKI_STORE = STORE + ["1932-03-23 is the birth date of masaki tsuji", "nagoya is the birthplace of masaki tsuji"]
+WIKI_TABLE = dict(by_wording={"born": ["date of birth", "place of birth"], "date of birth": ["date of birth"],
+                              "birth date": ["date of birth"], "birthplace": ["place of birth"], "dob": ["date of birth"]},
+                  kinds={"date of birth": "date", "place of birth": "name", "birth date": "date", "birthplace": "name", "dob": "date"},
+                  by_label={"date of birth": ["date of birth", "birth date", "born", "DOB"],
+                            "place of birth": ["place of birth", "birthplace", "born"]})
+
+
+def test_the_store_holding_the_property_under_another_wording_is_the_target():
+    """The wiki world says 'birth date'; the emitter says 'born' (lever 4 case) or the
+    canonical 'date of birth' (a frontier proposer's habit); neither is held, and until
+    today both died as `unknown_relation` with the fact sitting in the store. The table
+    names every wording of the property, the held one is the target, the ask type splits
+    'born' as before."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store, known = LookupStore(WIKI_STORE), StoreRelations(WIKI_STORE)
+    src = WordedAliasSource({}, **WIKI_TABLE)
+    r = run("When was Masaki Tsuji born?", store, known, src, plan=QuestionPlan(relations=[None], tail="born of masaki tsuji", n_hop=1))
+    assert r.result.verified and normalize(r.result.answer) == "1932 03 23" and r.aliased == [("born", "birth date")]
+    r = run("What is the date of birth of Masaki Tsuji?", store, known, src,
+            plan=QuestionPlan(relations=[None], tail="date of birth of masaki tsuji", n_hop=1))
+    assert r.result.verified and normalize(r.result.answer) == "1932 03 23" and r.aliased == [("date of birth", "birth date")]
+    assert r.entities == []                                        # nothing was fetched: the store had it
+
+
+def test_a_shared_wording_the_store_holds_is_no_evidence_of_either_property():
+    """'born' is a wording of both properties; a store that happens to hold a relation
+    called 'born' is not thereby holding date of birth -- the fallback names only wordings
+    that belong to ONE property, so the plan stays unknown and the loop fetches."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    base = STORE + ["something is the born of masaki tsuji"]
+    store, known = LookupStore(base), StoreRelations(base)
+    src = WordedAliasSource({}, **dict(WIKI_TABLE, by_wording={"date of birth": ["date of birth"], "born": ["date of birth", "place of birth"]}))
+    r = run("What is the date of birth of Masaki Tsuji?", store, known, src,
+            plan=QuestionPlan(relations=[None], tail="date of birth of masaki tsuji", n_hop=1))
+    assert not r.result.verified and r.aliased == [] and r.result.reason in ("unknown_relation", "retrieval_exhausted")
+
+
+def test_a_held_relation_that_finds_nothing_is_walked_under_the_propertys_other_held_wording():
+    """The gen-3 builder (2026-09-13): the wiki world holds 'birthplace', the encyclopedia's
+    facts arrive as 'place of birth'; both are held, an entity's fact sits under one. A
+    plan naming the other finds nothing -- and used to fetch, with the fact in the store.
+    One translation to the property's other held wording, one more walk; two held others
+    is not a translation (the ask type may still split them)."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    base = STORE + ["tokyo is the birthplace of hans", "nagoya is the place of birth of masaki tsuji"]
+    store, known = LookupStore(base), StoreRelations(base)
+    src = WordedAliasSource({}, **dict(WIKI_TABLE, by_wording=dict(WIKI_TABLE["by_wording"], **{"place of birth": ["place of birth"]})))
+    r = run("What is the birthplace of Masaki Tsuji?", store, known, src,
+            plan=QuestionPlan(relations=[None], tail="birthplace of masaki tsuji", n_hop=1))
+    assert r.first.reason == "retrieval_exhausted"
+    assert r.result.verified and normalize(r.result.answer) == "nagoya" and r.aliased == [("birthplace", "place of birth")]
+    assert r.entities == []                                        # translated, not fetched
+    r = run("What is the place of birth of Hans?", store, known, src,
+            plan=QuestionPlan(relations=[None], tail="place of birth of hans", n_hop=1))
+    assert r.result.verified and normalize(r.result.answer) == "tokyo" and r.aliased == [("place of birth", "birthplace")]
+    # two translations in a row ('born' -> 'place of birth' by the ask type, then -> 'birthplace'
+    # by the sibling step): the question's own word stays on record, so coverage still sees it
+    r = run("Where was Hans born?", store, known, src, plan=QuestionPlan(relations=[None], tail="born of hans", n_hop=1))
+    assert r.result.verified and normalize(r.result.answer) == "tokyo"
+    assert r.aliased == [("born", "place of birth"), ("place of birth", "birthplace")]
+
+
+def test_the_question_decides_where_an_unheld_relation_ends_and_the_entity_begins():
+    """'married of anne of cleves': the relation is not held, so the last ' of ' used to
+    split the tail into 'married of anne' | 'cleves' -- an unknown relation nobody could
+    resolve and a seed that is nobody. The question says 'Anne of Cleves'; the split
+    that names what the question names wins (2026-09-13, the gen-3 builder: 67 of 127
+    'married to' questions died there)."""
+    from cubbyllm.reasoning.plan_verify import split_tail
+    from cubbyllm.reasoning.planner import QuestionPlan
+    base = STORE + ["henry viii is the spouse of anne of cleves", "a is the spouse of anne", "b is the spouse of c"]
+    store, known = LookupStore(base), StoreRelations(base)
+    assert split_tail("married of anne of cleves", known, "Who is Anne of Cleves married to?") == ("married", "anne of cleves")
+    assert split_tail("married of anne of cleves", known, None) == ("married of anne", "cleves")      # without the question, the old rule
+    assert split_tail("spouse of anne of cleves", known, "Who is the spouse of Anne of Cleves?") == ("spouse", "anne of cleves")
+    # a store whose greedy parse once held the fragment 'spouse of anne' beside a reused 'spouse':
+    # the reused relation wins the held-prefix tier over a one-off, undeclared fragment; a declared
+    # one-off ('date of birth', from a source's Triple) keeps its length
+    frag = StoreRelations.from_keys(["spouse", "spouse of anne"], {"spouse": 5, "spouse of anne": 1})
+    assert split_tail("spouse of anne of cleves", frag, None) == ("spouse", "anne of cleves")
+    dec = StoreRelations.from_keys(["date", "date of birth"], {"date": 2, "date of birth": 1}); dec.declare("date of birth")
+    assert split_tail("date of birth of masaki tsuji", dec, None) == ("date of birth", "masaki tsuji")
+    # the question joins 'place' to 'birth' with 'of' itself: the relation is 'place of birth', as before
+    assert split_tail("place of birth of jean", StoreRelations(STORE), "What is the place of birth of Jean?") == ("place of birth", "jean")
+    assert split_tail("born of george national gallery of art", None, "When was George National Gallery of Art born?") == ("born", "george national gallery of art")
+    src = TypedAliasSource({}, {"married": ["spouse"]}, {"spouse": "name"})
+    r = run("Who is Anne of Cleves married to?", store, known, src,
+            plan=QuestionPlan(relations=[None], tail="married of anne of cleves", n_hop=1))
+    assert r.result.verified and normalize(r.result.answer) == "henry viii" and r.aliased == [("married", "spouse")]

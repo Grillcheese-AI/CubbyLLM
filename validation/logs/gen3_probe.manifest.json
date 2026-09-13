@@ -1,0 +1,243 @@
+{
+ "version": "gen3",
+ "built": "2026-09-13T00:21:49",
+ "git_rev": "2024d22",
+ "seed": 0,
+ "pool": {
+  "chains": 2820,
+  "encyclopedia": 1500,
+  "wiki_one_hop": 900,
+  "wiki_two_hop": 420
+ },
+ "asked": 10464,
+ "certified": 8325,
+ "by_verdict": {
+  "asked": 10464,
+  "certified": 8325,
+  "unknown_relation": 736,
+  "verified_other_answer": 27,
+  "ambiguous_hop": 1009,
+  "duplicate_question": 72,
+  "retrieval_exhausted": 295,
+  "answer_type_mismatch": 13,
+  "ambiguous_relation": 59
+ },
+ "by_wording": {
+  "When was {S} born?": {
+   "certified": 524,
+   "answer_type_mismatch": 3
+  },
+  "On what day, month, and year was {S} born?": {
+   "certified": 524,
+   "answer_type_mismatch": 3
+  },
+  "In what year was {S} born?": {
+   "certified": 524,
+   "answer_type_mismatch": 3
+  },
+  "What is the date of birth of {S}?": {
+   "certified": 527
+  },
+  "What is {S}'s date of birth?": {
+   "certified": 527
+  },
+  "What is the birth date of {S}?": {
+   "certified": 515,
+   "verified_other_answer": 12
+  },
+  "Where did {S} die?": {
+   "certified": 229,
+   "ambiguous_hop": 4
+  },
+  "What is the place of death of {S}?": {
+   "certified": 229,
+   "ambiguous_hop": 4
+  },
+  "In which city did {S} die?": {
+   "certified": 229,
+   "ambiguous_hop": 4
+  },
+  "When did {S} die?": {
+   "certified": 430,
+   "ambiguous_hop": 2,
+   "answer_type_mismatch": 2
+  },
+  "In what year did {S} die?": {
+   "certified": 430,
+   "ambiguous_hop": 2,
+   "answer_type_mismatch": 2
+  },
+  "What is the date of death of {S}?": {
+   "certified": 432,
+   "ambiguous_hop": 2
+  },
+  "When did {S} pass away?": {
+   "unknown_relation": 434
+  },
+  "What is the birthplace of {S}?": {
+   "certified": 406,
+   "verified_other_answer": 15,
+   "ambiguous_hop": 11,
+   "retrieval_exhausted": 1
+  },
+  "What is the place of birth of {S}?": {
+   "certified": 414,
+   "ambiguous_hop": 11,
+   "retrieval_exhausted": 8
+  },
+  "Where was {S} born?": {
+   "certified": 414,
+   "ambiguous_hop": 11,
+   "retrieval_exhausted": 8
+  },
+  "In which city was {S} born?": {
+   "certified": 414,
+   "ambiguous_hop": 11,
+   "retrieval_exhausted": 8
+  },
+  "In which district is {S} located?": {
+   "certified": 207,
+   "ambiguous_hop": 3
+  },
+  "In what county is {S} located?": {
+   "unknown_relation": 210
+  },
+  "Which administrative territorial entity is {S} located in?": {
+   "certified": 207,
+   "ambiguous_hop": 3
+  },
+  "Where was {S} educated?": {
+   "unknown_relation": 92
+  },
+  "What is the alma mater of {S}?": {
+   "certified": 45,
+   "ambiguous_hop": 47
+  },
+  "Which university did {S} attend?": {
+   "retrieval_exhausted": 92
+  },
+  "Where did {S} study?": {
+   "retrieval_exhausted": 92
+  },
+  "Who is the author of {S}?": {
+   "certified": 57,
+   "ambiguous_hop": 5
+  },
+  "Who wrote {S}?": {
+   "retrieval_exhausted": 62
+  },
+  "What award did {S} receive?": {
+   "ambiguous_hop": 58,
+   "certified": 35,
+   "retrieval_exhausted": 1
+  },
+  "Which award was {S} given?": {
+   "ambiguous_hop": 58,
+   "certified": 35,
+   "retrieval_exhausted": 1
+  },
+  "What is the capital of {S}?": {
+   "certified": 55,
+   "ambiguous_hop": 5
+  },
+  "Which city is the capital of {S}?": {
+   "certified": 55,
+   "ambiguous_hop": 5
+  },
+  "What is {S}'s capital?": {
+   "certified": 55,
+   "ambiguous_hop": 5
+  },
+  "Who is the child of {S}?": {
+   "certified": 62,
+   "ambiguous_hop": 58
+  },
+  "Who is {S}'s child?": {
+   "certified": 62,
+   "ambiguous_hop": 58
+  },
+  "Who is the director of {S}?": {
+   "certified": 55,
+   "ambiguous_hop": 4
+  },
+  "Who directed {S}?": {
+   "ambiguous_relation": 59
+  },
+  "Who is the employer of {S}?": {
+   "certified": 48,
+   "ambiguous_hop": 40
+  },
+  "Who does {S} work for?": {
+   "certified": 48,
+   "ambiguous_hop": 40
+  },
+  "What genre is {S}?": {
+   "certified": 30,
+   "ambiguous_hop": 32
+  },
+  "What is the genre of {S}?": {
+   "certified": 30,
+   "ambiguous_hop": 32
+  },
+  "What is the occupation of {S}?": {
+   "certified": 39,
+   "ambiguous_hop": 56
+  },
+  "What was {S}'s profession?": {
+   "certified": 35,
+   "ambiguous_hop": 46,
+   "retrieval_exhausted": 14
+  },
+  "What is {S}'s occupation?": {
+   "certified": 39,
+   "ambiguous_hop": 56
+  },
+  "Who is the sibling of {S}?": {
+   "certified": 47,
+   "ambiguous_hop": 48,
+   "retrieval_exhausted": 2
+  },
+  "Who is {S}'s sibling?": {
+   "certified": 47,
+   "ambiguous_hop": 48,
+   "retrieval_exhausted": 2
+  },
+  "Who is the spouse of {S}?": {
+   "ambiguous_hop": 60,
+   "certified": 66,
+   "retrieval_exhausted": 1
+  },
+  "Who is {S} married to?": {
+   "ambiguous_hop": 60,
+   "certified": 66,
+   "retrieval_exhausted": 1
+  },
+  "Who was {S}'s husband?": {
+   "ambiguous_hop": 60,
+   "certified": 66,
+   "retrieval_exhausted": 1
+  },
+  "Who was {S}'s wife?": {
+   "ambiguous_hop": 60,
+   "certified": 66,
+   "retrieval_exhausted": 1
+  }
+ },
+ "n_records": 16650,
+ "by_task": {
+  "plan": 8325,
+  "chain": 8325
+ },
+ "by_split": {
+  "train": 14928,
+  "held": 1722
+ },
+ "by_source": {
+  "cubbyllm/gen3_encyclopedia": 11764,
+  "cubbyllm/gen3_wiki": 4886
+ },
+ "vm_calls": 17425,
+ "wall_s": 193.9,
+ "output": "standin\\data\\out\\gen3_probe.jsonl",
+ "note": "certified = the gate verified the host's plan for the wording and the VM's answer is the chain's object; every other verdict is the gate's refusal reason for that wording, counted"
+}

@@ -35,7 +35,7 @@ from typing import Protocol, runtime_checkable
 
 from ..core.protocols import Wiring
 from .pipeline import CoTResult, answer
-from .plan_verify import _FRAME_AND_JOINT, ask_type, tail_match, tail_relation
+from .plan_verify import _FRAME_AND_JOINT, KIND_OF_ASK, ask_type, split_tail
 from .planner import QuestionPlan, Triple, normalize, parse_fact, parse_question
 
 __wiring__ = Wiring.WIRED
@@ -137,17 +137,7 @@ def stalled_entities(question: str, plan: QuestionPlan | None, first: CoTResult,
         last = first.trace[-1].triple
         if last is not None:
             out.append(last.obj)
-    tr = tail_relation(plan.tail, known) if known is not None else None
-    if tr is None and known is not None:
-        tm = tail_match(plan.tail, known)
-        tr = tm[0] if tm else None
-    if tr is not None:
-        ent = plan.tail[len(tr):].strip()
-        ent = ent[3:] if ent.startswith("of ") else ent
-    elif " of " in plan.tail:
-        ent = plan.tail.rsplit(" of ", 1)[1]
-    else:
-        ent = ""
+    _rel, ent = split_tail(plan.tail, known, question)
     if ent and normalize(ent) not in {normalize(e) for e in out}:
         out.append(ent)
     return out
@@ -176,8 +166,46 @@ def narrow_by_ask(question: str | None, candidates: list[str], resolvers) -> lis
         kinds[label] = next((k for k in (x.kind(label) for x in typed) if k is not None), None)
     if any(k is None for k in kinds.values()):
         return candidates
-    keep = [label for label in candidates if kinds[label] == asked]
+    keep = [label for label in candidates if kinds[label] == KIND_OF_ASK[asked]]
     return keep if len(keep) == 1 else candidates
+
+
+def resolve_siblings(plan: QuestionPlan, source, known, aliases: dict[str, list[str]],
+                     question: str | None = None) -> tuple[QuestionPlan, list[tuple[str, str]]]:
+    """Lever 4 for a HELD relation whose walk found nothing (2026-09-13, the gen-3 builder):
+    the store holds one property under two of its wordings -- the wiki world's `birthplace`
+    and the encyclopedia's `place of birth` -- and the entity's fact sits under the other.
+    The table names the property's wordings; when exactly one OTHER wording naming that
+    property alone is held (the ask type narrowing two), the plan is translated to it and
+    walked once more. None or several: the plan is left as it was, and the loop fetches."""
+    resolvers = [x for x in (source if isinstance(source, (list, tuple)) else [source])
+                 if hasattr(x, "relations") and hasattr(x, "wordings")]
+    if not resolvers:
+        return plan, []
+    labels, ent = _plan_labels(plan, known, question)
+    rels = list(plan.relations); tail = plan.tail; rewrote: list[tuple[str, str]] = []
+    for hop, r in enumerate(labels):
+        if r not in known:
+            continue
+        props = [normalize(l) for x in resolvers for l in x.relations(r)]
+        sibs = sorted({normalize(w) for x in resolvers for l in props for w in x.wordings(l)
+                       if normalize(w) in known and normalize(w) != r and len(x.relations(w)) == 1})
+        if len(sibs) > 1:
+            sibs = narrow_by_ask(question, sibs, resolvers)
+        if len(sibs) != 1:
+            continue
+        sib = sibs[0]
+        aliases.setdefault(sib, []).extend([r] + list(aliases.get(r, [])))   # the question's own words travel with the relation
+        rewrote.append((r, sib))
+        if hop == 0:
+            tail = f"{sib} of {ent}"                               # the tail is 'relation of seed'; the seed stays
+        else:
+            for i, x in enumerate(rels):
+                if x and normalize(x) == r:
+                    rels[i] = sib
+    if not rewrote:
+        return plan, []
+    return QuestionPlan(relations=rels, tail=tail, n_hop=plan.n_hop, answer_class=plan.answer_class), rewrote
 
 
 def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
@@ -201,12 +229,21 @@ def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
         labels = [normalize(l) for x in resolvers for l in x.relations(r)]
         held = sorted({l for l in labels if l in known})
         if not held:
+            # the store may hold the property under another of its wordings: the wiki world
+            # says 'birth date' where Wikidata's label is 'date of birth' (2026-09-13). The
+            # table names every wording of the label's property; a held one that names THAT
+            # property alone is the target (a wording two properties share is no evidence of
+            # either), and two held ('birth date' / 'birthplace' for 'born') is the same ambiguity
+            held = sorted({normalize(w) for x in resolvers if hasattr(x, "wordings")
+                           for l in labels for w in x.wordings(l)
+                           if normalize(w) in known and len(x.relations(w)) == 1})
+        if not held:
             continue
         held = narrow_by_ask(question, held, resolvers)
         if len(held) > 1:
             return plan, rewrote, {"relation": r, "candidates": held}
         label = held[0]
-        aliases.setdefault(label, []).append(r)
+        aliases.setdefault(label, []).extend([r] + list(aliases.get(normalize(r), [])))
         rewrote.append((r, label))
         for i, x in enumerate(rels):
             if x and normalize(x) == normalize(r):
@@ -218,15 +255,9 @@ def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
     return QuestionPlan(relations=rels, tail=tail, n_hop=plan.n_hop, answer_class=plan.answer_class), rewrote, None
 
 
-def _plan_labels(plan: QuestionPlan, known) -> tuple[list[str], str]:
+def _plan_labels(plan: QuestionPlan, known, question: str | None = None) -> tuple[list[str], str]:
     """The plan's relations (hop 0 first) and its seed entity, normalized."""
-    tr = tail_relation(plan.tail, known)
-    if tr is None:
-        tm = tail_match(plan.tail, known)
-        tr = tm[0] if tm else (plan.tail.rsplit(" of ", 1)[0] if " of " in plan.tail else plan.tail)
-    rest = plan.tail[len(tr):].strip() if plan.tail.lower().startswith(tr.lower()) else (
-        plan.tail.rsplit(" of ", 1)[1] if " of " in plan.tail else "")
-    ent = rest[3:] if rest.startswith("of ") else rest
+    tr, ent = split_tail(plan.tail, known, question)
     return [normalize(tr)] + [normalize(r) for r in plan.relations[1:] if r], normalize(ent)
 
 
@@ -247,7 +278,7 @@ def resolve_wordings(question: str, plan: QuestionPlan, source, known, aliases: 
     resolvers = [x for x in (source if isinstance(source, (list, tuple)) else [source]) if hasattr(x, "relations")]
     if not resolvers:
         return [], None
-    labels, ent = _plan_labels(plan, known)
+    labels, ent = _plan_labels(plan, known, question)
     q = normalize(question)
     text = q.replace(ent, " ") if ent else q
     toks = text.split()
@@ -314,7 +345,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
         if worded:
             out.aliased.extend(worded)
             out.result = walk()
-    asked: set[str] = set(); resolved: set[str] = set()
+    asked: set[str] = set(); resolved: set[str] = set(); siblings_tried = False
     # bounded: each round asks the source about ONE entity the walk stalled on, stores what
     # the gate admits, and walks again; at most `max_entities` rounds, and a round that
     # admits nothing ends the loop (there is nothing new to walk on)
@@ -327,6 +358,15 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
             if amb is not None:
                 out.result = CoTResult(answer=None, verified=False, reason="ambiguous_relation", refused=amb)
                 break
+            if rewrote:
+                out.aliased.extend(rewrote); plan = plan2; out.plan = plan
+                out.result = walk()
+                continue
+        if out.result.reason == "retrieval_exhausted" and plan is not None and not siblings_tried:
+            # a held relation that found nothing: the store may hold the property under its
+            # other wording ('birthplace' / 'place of birth'); one translation, one more walk
+            siblings_tried = True
+            plan2, rewrote = resolve_siblings(plan, [source] + list(resolvers or []), known, aliases, question=question)
             if rewrote:
                 out.aliased.extend(rewrote); plan = plan2; out.plan = plan
                 out.result = walk()
