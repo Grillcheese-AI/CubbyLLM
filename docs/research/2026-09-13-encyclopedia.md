@@ -116,7 +116,30 @@ entry; 0 verified, 0 wrong, 0 API calls, 0 VM calls, 408 s (the emitter's). The 
 asks about the obscure, a 2005 general encyclopedia holds the famous. Its value is the two uses above,
 not this benchmark.
 
-Next: the Wikidata cross-check over all volumes (learning phase); the headword pattern's reach, measured
-against a hand count on one volume; the gen-3 question templates over its facts.
+## The Wikidata cross-check over all 29 volumes (`_all_wd`, run 2026-09-13)
 
-`exp_r16_encyclopedia_{v13,all}.{log,json}`, `exp_r11_search_learn_wikidata_encyclopedia.{log,json}`.
+The learning-phase job, run overnight and again in the afternoon (the first run died after 38 minutes
+with nothing written; 1,729 live calls in all, the rest cached; 719 s the second time): of the 3,601 persons, **1,474
+resolve to exactly one Wikidata item**, 2,694 share their name with two or more items and are checked
+against neither, 555 resolve to none. On the 3,815 facts the resolved persons state: **agree 3,356, near
+66, disagree 393 — 0.880 on the checked part**, and it splits by kind exactly as volume 13 said it would:
+**dates 0.952 (birth) and 0.986 (death)**, places 0.754 (birth) and 0.778 (death), the container relation
+0.558. The 459 near/disagreements, read: the places are the volume-13 story at scale — the same place at
+another granularity (`Brooklyn` / `New York City`, `London` / `Stepney`, `Markham` / `Fauquier County`,
+`Corsica` / `Ajaccio`) or under another spelling (`Calcutta` / `Kolkata`, `Kiev` / `Kyiv`, `Cintra` /
+`Sintra`, and OCR's `Cower` for `Gower`, `Chilian` for `Chillán`); the containers are the same at one
+level up (`Teramo Province` / `Province of Teramo`, `Johore State` / `Muar District`); the dates are
+where the two sources genuinely differ, and either may be right — Robert S. Abbott 1868 vs 1870, Fra
+Bartolommeo 1475 vs 1472, Basedow 1723 vs 1724 (the encyclopedia's older scholarship), Sanford Bates
+died 1972 vs Wikidata's 1982 (Wikidata's the doubtful one), Thomas Bardolf 1368–1408 vs 1145–1190 (a
+namesake: the one-item rule cannot see a second item filed under a title). One headword miss surfaced:
+`ALEXANDER CITY, al-ig-zan'dar, a trading and industrial city ...` was read under the previous entry
+(`Alexander Archipelago`) — a run-in headword whose first word is also a common word; the sentence's
+`Tallapoosa county` then disagreed with Alaska. Each `facts` row of `_all_wd.json` now carries its
+`check` verdict, so the gen-3 builder can leave the 393 `disagree` facts out of the training records
+(3.6% of the 10,790) and keep the recorded disagreement as what it is.
+
+Next: the headword pattern's reach, measured against a hand count on one volume; the builder over
+`_all_wd.json` with the disagreements excluded.
+
+`exp_r16_encyclopedia_{v13,all,all_wd}.{log,json}`, `exp_r11_search_learn_wikidata_encyclopedia.{log,json}`.
