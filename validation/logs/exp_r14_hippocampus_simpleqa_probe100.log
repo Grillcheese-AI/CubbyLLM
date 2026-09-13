@@ -1,12 +1,21 @@
-wiki world 552297 facts, 2794 relations | SimpleQA sample 100 (seed 7) | episodes 97 (6 from exp_r11 runs, 91 matched pairs), 88 shapes | DG semantic (80000 words) | k=3
+consolidated 6 episode facts into the world store; 'date of birth' held: True
+wiki world 552303 facts, 2797 relations | SimpleQA sample 100 (seed 7) | episodes 97 (6 from exp_r11 runs, 91 matched pairs), 88 shapes | DG semantic (80000 words) | k=3
   SimpleQA-run shapes: date of birth; inception; located in the administrative territorial entity
-    [WRONG/recalled] 'In which district is the Syrian village "Kafr al-Awamid" located?' -> 'Az-Zabdani Subdistrict' (gold 'Al-Zabadani ') via ['located in the administrative territorial entity'] of 'kafr al awamid'
-  100/100 (32s, api calls 0) planned 100 verified 1 correct 0 near 0 WRONG 1
+    [correct/recalled] 'On what day, month, and year was Masaki Tsuji born?' -> '1932-03-23' (gold 'March 23, 1932 ') via ['date of birth'] of 'masaki tsuji'
+    [near/recalled] 'In which district is the Syrian village "Kafr al-Awamid" located?' -> 'Az-Zabdani Subdistrict' (gold 'Al-Zabadani ') via ['located in the administrative territorial entity'] of 'kafr al awamid'
+    [correct/rebound_cap] 'In which year was Dina Nath Walli (an Indian watercolor artist and poe' -> '1908' (gold '1908') via ['date of birth'] of 'dina nath walli'
+  100/100 (35s, api calls 3) planned 100 verified 3 correct 2 near 1 WRONG 0
 
-HIPPOCAMPUS AS PROPOSER on SimpleQA: {'WRONG': 1, 'candidates': 884, 'facts_fetched': 2, 'fetched_questions_cand': 1, 'final:plan_does_not_cover_question': 99, 'gate:accepted': 2, 'planned': 100, 'verified': 1, 'verified:recalled': 1}
-api calls 0 | VM calls 2 | episodes 97 (utility>0: 0)
+HIPPOCAMPUS AS PROPOSER on SimpleQA: {'candidates': 588, 'correct': 2, 'facts_fetched': 13, 'fetched_questions_cand': 1, 'final:plan_does_not_cover_question': 97, 'gate:accepted': 13, 'near': 1, 'planned': 100, 'verified': 3, 'verified:rebound_cap': 1, 'verified:recalled': 2}
+api calls 3 | VM calls 6 | episodes 97 (utility>0: 1)
 
 every verified answer:
-  [WRONG  /recalled] 'In which district is the Syrian village "Kafr al-Awamid" located?'
+  [correct/recalled] 'On what day, month, and year was Masaki Tsuji born?'
+           shape ['date of birth'] -> 'date of birth of masaki tsuji' -> '1932-03-23' (gold 'March 23, 1932 ') aliased [('born', 'date of birth')]
+           via episode 'On what day, month, and year was Masaki Tsuji born?'; chain ['1932-03-23 is the date of birth of Masaki Tsuji']
+  [near   /recalled] 'In which district is the Syrian village "Kafr al-Awamid" located?'
            shape ['located in the administrative territorial entity'] -> 'located in the administrative territorial entity of kafr al awamid' -> 'Az-Zabdani Subdistrict' (gold 'Al-Zabadani ') aliased [('district', 'located in the administrative territorial entity')]
            via episode 'In which district is the Syrian village "Kafr al-Awamid" located?'; chain ['Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid']
+  [correct/rebound_cap] 'In which year was Dina Nath Walli (an Indian watercolor artist and poet from Sri'
+           shape ['date of birth'] -> 'date of birth of dina nath walli' -> '1908' (gold '1908') aliased [('born', 'date of birth')]
+           via episode 'On what day, month, and year was Masaki Tsuji born?'; chain ['1908 is the date of birth of Dina Nath Walli']

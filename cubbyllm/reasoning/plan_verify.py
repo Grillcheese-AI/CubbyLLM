@@ -481,7 +481,15 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
         question may carry the store's wording ("languages spoken, written or
         signed by X" planned as `languages spoken written signed`): 6 of gen 2's
         21 arm-C coverage refusals. v3 looks for either wording of a paraphrased
-        relation; the residual rule is unchanged, so a dropped hop still fails."""
+        relation; the residual rule is unchanged, so a dropped hop still fails.
+
+    v4 (2026-09-12, exp_r14): a PARENTHETICAL is an aside about the entity -- "Dina Nath
+      Walli (an Indian watercolor artist and poet from Srinagar city)" -- not a hop the plan
+      dropped; its words ('artist', 'city') read as leftover relation words and refused every
+      such question. The question is read as written first (an entity can carry its own
+      parenthesis: 'Tombo (album)'), then with parentheticals removed. What an aside says
+      about the entity is for the source's disambiguation and the hippocampus's context
+      binding, not coverage."""
     q = normalize(question)
     rels = [r for r in plan.relations[1:] if r]                      # walk order, inner-most first
     # split the tail into its relation and the seed entity: the LONGEST known
@@ -525,8 +533,15 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
     # and would otherwise be consumed as the first relation. Try with the frame
     # stripped first; "Which country is X in?" (where the class IS the relation)
     # then succeeds on the unstripped retry.
-    stripped = _WHICH_CLASS.sub("", q, count=1)
-    for text in ((stripped, q) if stripped != q else (q,)):
+    texts = [q]
+    no_paren = normalize(_PAREN.sub(" ", question))                   # v4: the asides removed
+    if no_paren != q:
+        texts.append(no_paren)
+    for base in list(texts):
+        stripped = _WHICH_CLASS.sub("", base, count=1)
+        if stripped != base:
+            texts.insert(texts.index(base), stripped)
+    for text in texts:
         if _covers_text(text, answer_first, ent, rw) or _covers_text(text, inner_first, ent, rw, entity_first=True):
             return True
     return False
@@ -536,6 +551,7 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
 # (2026-09-11): "Which LIST includes the list that includes E" left the class noun 'list' in the residual,
 # where it read as a dropped 'list' hop, and the disposer refused the one correct plan.
 _WHICH_CLASS = __import__("re").compile(r"^which\s+[a-z0-9]+(?:\s+[a-z0-9]+){0,2}\s+(?:is|was|are|were|includes|contains|has)\s+")
+_PAREN = __import__("re").compile(r"\([^)]*\)")          # covers() v4: an aside about the entity, not a hop
 
 
 def _find_any(q: str, alts: list[str], pos: int) -> tuple[int, int] | None:

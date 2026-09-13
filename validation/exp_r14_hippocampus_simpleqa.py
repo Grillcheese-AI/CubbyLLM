@@ -133,7 +133,16 @@ def main() -> None:
         mp = Hippocampus.load(a.matched_pairs)
         for e in mp.episodes:
             hip.write(e.question, e.relations, e.seed, e.chain, e.answer, dict(e.provenance, run="exp_r13")); n_mp += 1
+    # consolidation: an episode's FACTS live in the world store (they went through the gate when
+    # they were certified) -- without them the labels are declared but not held, and a plan
+    # 'date of birth of X' splits at the store's own 'date' (caught 2026-09-12, r14 run 1)
+    n_facts = 0
+    for e in hip.episodes:
+        for f in e.chain:
+            if f not in world:
+                world.add(f); known.add(f); n_facts += 1
     shapes = {tuple(e.relations) for e in hip.episodes}
+    log(f"consolidated {n_facts} episode facts into the world store; 'date of birth' held: {'date of birth' in known}")
     log(f"wiki world {len(world)} facts, {len(known)} relations | SimpleQA sample {len(rows)} (seed {a.seed}) | "
         f"episodes {len(hip)} ({n_prev} from exp_r11 runs, {n_mp} matched pairs), {len(shapes)} shapes | "
         f"DG {'semantic (' + str(len(wb)) + ' words)' if wb else 'surface hash'} | k={a.k}")

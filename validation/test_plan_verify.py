@@ -245,3 +245,18 @@ def test_a_number_left_over_is_an_unbound_constraint():
     # a number INSIDE the entity is the entity's, not a constraint
     p2 = QuestionPlan(relations=[None], tail="primary classification of 1881 in india", n_hop=1)
     assert covers("What is the primary classification of 1881 in India?", p2, Vocab(KNOWN | {"primary classification"}))
+
+
+def test_covers_v4_a_parenthetical_is_an_aside_about_the_entity_not_a_dropped_hop():
+    """exp_r14 (2026-09-12): 'Dina Nath Walli (an Indian watercolor artist and poet from
+    Srinagar city)' -- the aside's words ('artist', 'city') are relation words in the wiki
+    world and read as a dropped hop. Removed before the residual check; a real dropped hop
+    outside a parenthesis still fails."""
+    from cubbyllm.reasoning.plan_verify import StoreRelations, covers
+    store = ["1932 is the date of birth of dina nath walli", "srinagar is the city of dina nath walli",
+             "painting is the artist of dina nath walli", "srinagar is the city of jean"]
+    known = StoreRelations(store)
+    plan = QuestionPlan(relations=[None], tail="date of birth of dina nath walli", n_hop=1)
+    aliases = {"date of birth": ["born"]}
+    assert covers("In which year was Dina Nath Walli (an Indian watercolor artist and poet from Srinagar city) born?", plan, known, aliases)
+    assert not covers("In which year was the artist of Dina Nath Walli born?", plan, known, aliases)

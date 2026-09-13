@@ -161,14 +161,32 @@ class Hippocampus:
 
     def recall_shape(self, question: str, k: int = 3) -> list[tuple[Episode, int]]:
         """The k nearest DISTINCT chain shapes (relation labels alone, entity-free) to the
-        question's content words -- the cue for analogical transfer: the same relations
-        about another entity. One episode stands for each shape (the most useful)."""
-        cue = encode(content_words(question), self.word_bits)
+        question -- the cue for analogical transfer: the same relations about another
+        entity. One episode stands for each shape (the most useful).
+
+        Scored word-by-word, not bundle-to-bundle: a shape is two or three words and a
+        free-text question ten, so a majority bundle of the question drowns the shape
+        (exp_r14 probe, 2026-09-12: `date of birth` was not in the top 8 for "in which year
+        was X born"). Each shape word takes its best bit-agreement with any question word
+        (the semantic DG makes born/birth 163 of 256, chance 128); the shape's score is the
+        mean, and the distance reported is 256 minus it. The question's own wording of a
+        relation is what `covers()` will demand; this is the same test, softened."""
+        wb = self.word_bits or _token_bits
+        cue_bits = [wb(w) for w in dict.fromkeys(content_words(question))]
+        if not cue_bits:
+            return []
         best: dict[tuple[str, ...], tuple[int, int, int]] = {}
         for i, e in enumerate(self.episodes):
             if e.retired:
                 continue
-            key = tuple(e.relations); d = hamming(cue, e.shape)
+            key = tuple(e.relations)
+            if key in best and self.episodes[best[key][1]].utility >= e.utility:
+                continue
+            words = [w for r in e.relations for w in content_words(r)]
+            if not words:
+                continue
+            agree = [max(N_BITS - hamming(wb(w), c) for c in cue_bits) for w in words]
+            d = N_BITS - sum(agree) // len(agree)
             cur = best.get(key)
             if cur is None or (d, -e.utility) < (cur[0], -self.episodes[cur[1]].utility):
                 best[key] = (d, i, e.utility)

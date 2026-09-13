@@ -58,11 +58,26 @@ def as_date(s: str):
     return None
 
 
+_ADMIN_WORDS = frozenset("district subdistrict sub province governorate county city town municipality region state department".split())
+
+
+def _core(s: str) -> str:
+    return "".join(w for w in s.split() if w not in _ADMIN_WORDS)
+
+
 def match(answer: str, gold: str, normalize) -> str:
+    """correct | near | WRONG -- deterministic, not a judge. `near` (2026-09-12, Nick): a
+    transliteration or one administrative level ('az zabdani subdistrict' vs the gold's
+    'al zabadani') is the same place spelled differently, not a wrong answer: with the
+    administrative type words removed, the two spellings must match at >= 0.75 by
+    difflib's ratio. Earlier logs count this case as WRONG."""
     x, g = normalize(answer), normalize(gold)
     if x == g: return "correct"
     if as_date(answer) is not None and as_date(answer) == as_date(gold): return "correct"
     if g and (g in x or x in g): return "near"
+    import difflib
+    cx, cg = _core(x), _core(g)
+    if cx and cg and difflib.SequenceMatcher(None, cx, cg).ratio() >= 0.75: return "near"
     return "WRONG"
 
 

@@ -7,16 +7,39 @@
  "shapes": 88,
  "counts": {
   "planned": 100,
-  "candidates": 884,
-  "final:plan_does_not_cover_question": 99,
+  "candidates": 588,
+  "final:plan_does_not_cover_question": 97,
+  "verified": 3,
+  "correct": 2,
+  "verified:recalled": 2,
+  "near": 1,
   "fetched_questions_cand": 1,
-  "facts_fetched": 2,
-  "gate:accepted": 2,
-  "verified": 1,
-  "WRONG": 1,
-  "verified:recalled": 1
+  "facts_fetched": 13,
+  "gate:accepted": 13,
+  "verified:rebound_cap": 1
  },
  "verified": [
+  {
+   "q": "On what day, month, and year was Masaki Tsuji born?",
+   "kind": "recalled",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "date of birth of masaki tsuji",
+   "answer": "1932-03-23",
+   "gold": "March 23, 1932 ",
+   "match": "correct",
+   "aliased": [
+    [
+     "born",
+     "date of birth"
+    ]
+   ],
+   "via_episode": "On what day, month, and year was Masaki Tsuji born?",
+   "trace": [
+    "1932-03-23 is the date of birth of Masaki Tsuji"
+   ]
+  },
   {
    "q": "In which district is the Syrian village \"Kafr al-Awamid\" located?",
    "kind": "recalled",
@@ -26,7 +49,7 @@
    "seed": "located in the administrative territorial entity of kafr al awamid",
    "answer": "Az-Zabdani Subdistrict",
    "gold": "Al-Zabadani ",
-   "match": "WRONG",
+   "match": "near",
    "aliased": [
     [
      "district",
@@ -37,347 +60,368 @@
    "trace": [
     "Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid"
    ]
+  },
+  {
+   "q": "In which year was Dina Nath Walli (an Indian watercolor artist and poet from Srinagar city) born?",
+   "kind": "rebound_cap",
+   "plan": [
+    "date of birth"
+   ],
+   "seed": "date of birth of dina nath walli",
+   "answer": "1908",
+   "gold": "1908",
+   "match": "correct",
+   "aliased": [
+    [
+     "born",
+     "date of birth"
+    ]
+   ],
+   "via_episode": "On what day, month, and year was Masaki Tsuji born?",
+   "trace": [
+    "1908 is the date of birth of Dina Nath Walli"
+   ]
   }
  ],
- "api_calls": 0,
- "vm_calls": 2,
+ "api_calls": 3,
+ "vm_calls": 6,
  "rows": [
   {
    "q": "Which lake in Kashmir, India, is known as \"the jewel in the ring\"?",
    "gold": "The Nigeen lake",
    "entity": "Kashmir",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What was the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census?",
    "gold": "1,142",
    "entity": "Spring Rock Township",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Give the full name of the Indian politician from Jammu and Kashmir who is popularly known as Sher-e-Gool Gulabgarh.",
    "gold": "Ajaz Ahmed Khan",
    "entity": "Sher-e-Gool Gulabgarh.",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What two football teams were mentioned in the libel case against \"The Saturday Evening Post\" in 1963?",
    "gold": "University of Georgia and University of Alabama",
    "entity": "Saturday Evening Post",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
     "ambiguous_relation": 1,
-    "plan_does_not_cover_question": 8
+    "plan_does_not_cover_question": 5
    }
   },
   {
    "q": "What day, month, and year did William II of Holland become King of Germany?",
    "gold": "3 October 1247",
    "entity": "William II of Holland",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "How many goals did Diogo Jota score for Liverpool in the 2021-2022 EFL Cup?",
    "gold": "3",
    "entity": "2021-2022 EFL Cup",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What song by Carla Bruni was used in the Chuck episode \"Chuck vs. the First Class\"?",
    "gold": "L'amoureuse",
    "entity": "Carla Bruni",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In which street did Martin Gardner live with his family in Hastings-on-Hudson, New York, before moving to Hendersonville in 1979?",
    "gold": "Euclid Avenue",
    "entity": "Hastings-on-Hudson",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In what year did Haile Gebrselassie go undefeated in all of his road races?",
    "gold": "2005",
    "entity": "Haile Gebrselassie",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What are the names of the parents of King Girvan Yuddha Bikram Shah?",
    "gold": "Rana Bahadur Shah and Karnavati Jha.",
    "entity": "King Girvan Yuddha Bikram Shah",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In 2015, in what exhibition was Henry Ossawa Tanner's work included?",
    "gold": "We Speak: Black Artists in Philadelphia, 1920s-1970s",
    "entity": "Henry Ossawa Tanner's",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Who was the Friday night headliner of ArcTanGent 2013 on the Arc stage?",
    "gold": "65daysofstatic",
    "entity": "ArcTanGent 2013",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "The Guyanese government posthumously awarded Walter Rodney which honor?",
    "gold": "The Order of Excellence of Guyana.",
    "entity": "Walter Rodney",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What year did William Kentridge's second film of his '9 Drawings for Projection' project release?",
    "gold": "1990",
    "entity": "Drawings for Projection'",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "On what day, month, and year did the 2nd ASEM Environment Ministers' Meeting (ASEMEnvMM2) begin?",
    "gold": "October 12, 2003",
    "entity": "2nd ASEM Environment Ministers' Meeting",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What is the list entry name for the National Heritage List entry number 1090695 in Stonehouse, Stroud, Gloucestershire?",
    "gold": "Bede Cottage",
    "entity": "National Heritage List",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "How many singles did Chip Fields-Hurd record for Buddah Records?",
    "gold": "Two.",
    "entity": "Chip Fields-Hurd",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In the 2021 research paper titled \"EEG-Based Driving Fatigue Detection Using a Two-Level Learning Hierarchy Radial Basis Function\" by Ziwu Ren et al., how many participants did the researchers collect EEG data from?",
    "gold": "six",
    "entity": "Two-Level Learning Hierarchy Radial Basis Function",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 7,
-    "ambiguous_relation": 2
+    "plan_does_not_cover_question": 5,
+    "ambiguous_relation": 1
    }
   },
   {
    "q": "As of 2011, what was the male population of Chitwan District?",
    "gold": "279,087",
    "entity": "Chitwan District",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Who was the inaugural holder of the position of Attorney General of Argentina?",
    "gold": "Francisco Pico",
    "entity": "Attorney General of Argentina",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Can you provide me with the DOI of the paper \"Generating Semantic Maps through Multidimensional Scaling: Linguistic Applications and Theory\"?",
    "gold": "10.1515/cllt-2021-0018",
    "entity": "Linguistic Applications and Theory",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Who are Myrtle Eagan's parents in the show \"Severance\"?",
    "gold": "Kier and Imogene Eagan",
    "entity": "Myrtle Eagan's",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In what year did Donald Arthur Norman receive the Franklin Institute Awards (Benjamin Franklin Medal)?",
    "gold": "2006",
    "entity": "Franklin Institute Awards",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "How many people were injured in the Srinagar bombing on March 6, 2022?",
    "gold": "24",
    "entity": "Srinagar",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In which year did Ratan Parimoo (an Indian art historian from Kashmir) win first prize in Painting, Annual Exhibition, J & K Cultural Akademi?",
    "gold": "1966",
    "entity": "J & K Cultural Akademi",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What was the budget request, in billion US dollars, made by NASA in 2018?",
    "gold": "19.1 billion dollars.",
    "entity": "NASA",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "How many U.S. patents did Chadwell O'Connor receive in his lifetime?",
    "gold": "29",
    "entity": "Chadwell O'Connor",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What place did the album \"Rolling Papers 2\" by Wiz Khalifa receive on the 2018 US Billboard 200 year-end charts?",
    "gold": "128th",
    "entity": "2018 US Billboard 200",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 8,
+    "plan_does_not_cover_question": 5,
     "ambiguous_relation": 1
    }
   },
@@ -385,180 +429,179 @@
    "q": "In which round was Martina Trevisan eliminated from the 2020 French Open – Women's Singles?",
    "gold": "Quarterfinals",
    "entity": "Martina Trevisan",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In the spring of which year did Henry Martin Nevius join the law office of future U.S. Secretary of War Russell A. Alger?",
    "gold": "1861",
    "entity": "U.S. Secretary of War Russell A. Alger",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What year did the chemist Pauline Gracia Beery Mack publish her work \"Colorfastness of Women's and Children's Wearing-Apparel Fabrics\"?",
    "gold": "1942",
    "entity": "Colorfastness of Women's and Children's Wearing-Apparel Fabrics",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In the 2004 Summer Olympics, how many bronze medals did Argentina win?",
    "gold": "4",
    "entity": "the 2004 Summer Olympics",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In Season 16 of The Bachelor, which contestant quit?",
    "gold": "Brittney Schreiner",
    "entity": "Season 16 of The Bachelor",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In 2006, how many dollars were Hillsong stripped of from the government grant on the grounds they had faked the Indigenous endorsement that was required to obtain it?",
    "gold": "414,000",
    "entity": "Indigenous",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What month and year did inmate Porfirio Duarte-Herrera escape from a medium-security Nevada prison without anyone noticing for four days?",
    "gold": "September 2022",
    "entity": "Porfirio Duarte-Herrera",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In what year did William Bentinck, Duke of Portland, enter the House of Commons as a Member of Parliament for Weobley, Hertfordshire?",
    "gold": "1761",
    "entity": "Member of Parliament for Weobley",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "As of 2022, in total, how many designated UNESCO areas have Great Apes?",
    "gold": "34",
    "entity": "As of 2022",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Who won the 2015 Maine State Pumpkin and Squash Weigh-Off, held at the Cumberland Fair?",
    "gold": "Edwin Pierpont",
    "entity": "2015 Maine State Pumpkin and Squash Weigh-Off",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What was the name of the choir that performed at the 2019 Cape Town International Jazz Festival?",
    "gold": "Soweto Gospel Choir",
    "entity": "2019 Cape Town International Jazz Festival",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 5,
+    "ambiguous_relation": 1
    }
   },
   {
    "q": "On what day, month, and year was Masaki Tsuji born?",
    "gold": "March 23, 1932 ",
    "entity": "Masaki Tsuji",
-   "n_candidates": 7,
-   "tried": 7,
-   "verified": false,
-   "answer": null,
-   "reasons": {
-    "plan_does_not_cover_question": 7
-   }
+   "n_candidates": 5,
+   "tried": 1,
+   "verified": true,
+   "answer": "1932-03-23",
+   "reasons": {}
   },
   {
    "q": "During which period did William Butts Ittner serve as the President of the St. Louis Chapter of the American Institute of Architects?",
    "gold": "1893 to 1895",
    "entity": "President of the St. Louis Chapter of the American Institute of Architects",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "On which day, month, and year did Gyan Sudha Misra retire as a judge of the Supreme Court of India?",
    "gold": "27 April 2014",
    "entity": "Supreme Court of India",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What song from \"Hamilton\" reflects this message: \"Amidst Eliza begging Hamilton to stay and Angelica moving to London with her new husband\"?",
    "gold": "\"Non-Stop\"",
    "entity": "Amidst Eliza",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
@@ -577,132 +620,133 @@
    "q": "How many yellow cards did Arsenal get in the Champions League Final match between Barcelona and Arsenal on May 18, 2006?",
    "gold": "2",
    "entity": "Champions League Final",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In what year did conductor David Randolph marry Mildred Greenberg?",
    "gold": "1948",
    "entity": "Mildred Greenberg",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "How many balls did Manish Pandey play in the 2019 IPL match between KKR and SRH on March 24, 2019?",
    "gold": "5",
    "entity": "Manish Pandey",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In what month and year did Ronnie Milsap first move to Nashville?",
    "gold": "December 1972",
    "entity": "Ronnie Milsap",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In the 2012 research paper titled \"Multiplication of EEG Samples through Replicating, Biasing, and Overlapping\" by Adham Atyabi et al., at what frequency was the EEG dataset sampled, in hertz (Hz)?",
    "gold": "250",
    "entity": "Multiplication of EEG Samples",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What was the name of the winner of the 1992 Scandinavian Masters golf tournament?",
    "gold": "Nick Faldo",
    "entity": "1992 Scandinavian Masters",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What year did the Evolution Festival introduce an entry charge?",
    "gold": "2008",
    "entity": "Evolution Festival",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What famous field marshal said, \"I have no intention of shooting myself for this Bohemian corporal\"?",
    "gold": "Friedrich Paulus",
    "entity": "Bohemian",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 5,
+    "ambiguous_relation": 1
    }
   },
   {
    "q": "What fellowship was Zanele Muholi awarded in 2012?",
    "gold": " Civitella Ranieri Fellowship",
    "entity": "Zanele Muholi",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In August 1974, the Cary High School band performed at which Switzerland event?",
    "gold": "Fêtes de Genève",
    "entity": "Cary High School",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Who parachuted off the 267 m high (876-ft) New River Gorge Bridge near Fayetteville, West Virginia, USA, on 19 October 2013, at the age of 84 years and 37 days?",
    "gold": "Donald Cripps",
    "entity": "New River Gorge Bridge",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
@@ -722,139 +766,141 @@
    "q": "From what year to what year was Muhammad Ayub Sheikh, who was a Pakistani politician, first a member of the National Assembly of Pakistan?",
    "gold": "2008-2013",
    "entity": "National Assembly of Pakistan",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Who received an honorable mention at the 1996 Frank and Brennie Morgan Prize for Outstanding Research in Mathematics by an Undergraduate Student?",
    "gold": "Lenhard Ng",
    "entity": "1996 Frank and Brennie Morgan Prize for Outstanding Research",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What type of voice did Bessie Smith have?",
    "gold": "Contralto voice",
    "entity": "Bessie Smith",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 5,
+    "ambiguous_relation": 1
    }
   },
   {
    "q": "What is the durability of the Blue Flame in Dark Souls II?",
    "gold": "60",
    "entity": "Dark Souls II",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "How old was Clint Ballard Jr. when he first played the piano for KTSM, an El Paso radio station?",
    "gold": "Three years old.",
    "entity": "Clint Ballard Jr.",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "How many yellow cards did Fabinho from Liverpool have in the 2021-2022 Premier League season?",
    "gold": "7",
    "entity": "2021-2022 Premier League",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In which month and year did Thomas le Bonniec reveal himself as the whistleblower and send a letter to European data protection regulators, calling on them to investigate Apple's \"past and present\" use of Siri recordings?",
    "gold": "May 2020",
    "entity": "Thomas le Bonniec",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Who was awarded the Oskar Kokoschka Prize in 2012?",
    "gold": "Yoko Ono",
    "entity": "Oskar Kokoschka Prize",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Who was selected for the role of Rachel in Friends but got another role?",
    "gold": "Courteney Cox",
    "entity": "Friends",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 5,
+    "ambiguous_relation": 1
    }
   },
   {
    "q": "In what major painting exhibition did artist J.C. Leyendecker earn a spot in 1897?",
    "gold": "The Salon Champs de Mars",
    "entity": "J.C. Leyendecker",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What is the surname of the individual who won the Victor A. Prather Award in 1968?",
    "gold": "Forbes",
    "entity": "Victor A. Prather Award",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In which district is the Syrian village \"Kafr al-Awamid\" located?",
    "gold": "Al-Zabadani ",
    "entity": "Kafr al-Awamid",
-   "n_candidates": 9,
+   "n_candidates": 6,
    "tried": 1,
    "verified": true,
    "answer": "Az-Zabdani Subdistrict",
@@ -864,388 +910,389 @@
    "q": "How many Big East Championships did Frank Beamer win?",
    "gold": "3",
    "entity": "Big East Championships",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In the research paper titled \"Detecting Driver Mental Fatigue Based on EEG Alpha Power Changes During Simulated Driving\" by Faramarz Gharagozlou et al., what is the name of the university where the overnight study took place?",
    "gold": "Khaje Nasir Toosi University of Technology",
    "entity": "EEG Alpha Power Changes During Simulated Driving",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
     "plan_does_not_cover_question": 5,
-    "ambiguous_relation": 4
+    "ambiguous_relation": 1
    }
   },
   {
    "q": "Who received the Richard Dawkins Award in 2004?",
    "gold": "Ann Druyan",
    "entity": "Richard Dawkins Award",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What is the name of the university where Michaela Hübschle (born as Michaela Kuntze), a Namibian politician and former Deputy Minister for Prisons and Correctional Services, first studied after attending school in her hometown?",
    "gold": "University of Pretoria",
    "entity": "Deputy Minister for Prisons and Correctional Services",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What is the ChemSpider ID of diazepam?",
    "gold": "2908",
    "entity": "ChemSpider ID",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "The Alpine musk deer is the state animal of which Indian state?",
    "gold": "Uttarakhand",
    "entity": "Alpine",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Which angel is portrayed in Leonardo da Vinci's \"Virgin of the Rocks\"?",
    "gold": "The angel Uriel.",
    "entity": "Leonardo da Vinci's Virgin of the Rocks",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "When was Gavi shown a yellow card in the La Liga match between Valencia CF and FC Barcelona that happened on October 29, 2022?",
    "gold": "89 minutes",
    "entity": "Valencia CF and FC Barcelona",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What was the statement famously made by Thomas Edison during the first public demonstration of the incandescent light bulb at Menlo Park regarding the eventual cost of electricity?",
    "gold": "\"We will make electricity so cheap that only the rich will burn candles.\"",
    "entity": "Thomas Edison",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "How many years was Phyllida Barlow's career as a teacher?",
    "gold": "40",
    "entity": "Phyllida Barlow's",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "At the 1964 Winter Olympics, how many medals did Italy win and what were the types of those medals?",
    "gold": "4. 1 silver, 3 bronze.",
    "entity": "the 1964 Winter Olympics",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What were the names of Ghulam Nabi Azad's (an Indian politician) father and mother?",
    "gold": "Rahamatullah Batt and Basa Begum.",
    "entity": "Ghulam Nabi Azad's",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What was the first constituency that Percy Shelley's father represented?",
    "gold": "Horsham",
    "entity": "Percy Shelley's",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In what city did Marina Abramović and Uwe Laysiepen perform 'Rest Energy' in 1980?",
    "gold": "Dublin",
    "entity": "Marina Abramović and Uwe Laysiepen",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What scholarship did Adil Hussain use to study at the Drama Studio London?",
    "gold": "Charles Wallace India Trust",
    "entity": "Drama Studio London",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "ambiguous_relation": 3,
-    "plan_does_not_cover_question": 6
+    "ambiguous_relation": 2,
+    "plan_does_not_cover_question": 4
    }
   },
   {
    "q": "Who was the first cardiologist in Kashmir?",
    "gold": "Dr Upendra Kaul",
    "entity": "Kashmir",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In what city and state did Colin Pittendrigh die?",
    "gold": "Bozeman, Montana",
    "entity": "Colin Pittendrigh",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Which premier halted the construction of the Spadina Expressway in 1971?",
    "gold": "Premier William Davis",
    "entity": "Spadina Expressway",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In what year did Thomas D. Wilson (\"Big Tom\" Wilson) marry Niagara Ray, the daughter of Amos Ray?",
    "gold": "1852",
    "entity": "Thomas D. Wilson",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What month, day, and year did the second session of the 4th Parliament of Singapore commence?",
    "gold": "December 26, 1978",
    "entity": "4th Parliament of Singapore",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "During which years did Pedro Antonio de Aragón serve as Viceroy of Catalonia?",
    "gold": "1642-1644",
    "entity": "Pedro Antonio de Aragón",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In which year was Dina Nath Walli (an Indian watercolor artist and poet from Srinagar city) born?",
    "gold": "1908",
    "entity": "Dina Nath Walli",
-   "n_candidates": 9,
-   "tried": 9,
-   "verified": false,
-   "answer": null,
+   "n_candidates": 6,
+   "tried": 4,
+   "verified": true,
+   "answer": "1908",
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 3
    }
   },
   {
    "q": "What is the surname of the individual who won the RSC Supramolecular Chemistry Award in 2016?",
    "gold": "Ward",
    "entity": "RSC Supramolecular Chemistry Award",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What patch reduced the Spectre Pickaxe's mining speed from 10 to 8 in Terraria?",
    "gold": "1.4.4",
    "entity": "Spectre Pickaxe's",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What was the name of the pre-2000s band with which the author of *Batman R.I.P.* toured and recorded?",
    "gold": "The Mixers",
    "entity": "R.I.P.",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In which season and episode of South Park does Stan ask why dogs have cold noses?",
    "gold": "Season 2 Episode 3: \"Ike's Wee Wee\"",
    "entity": "South Park",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "In the women's singles 2022 Madrid Open, how many Romanian players played in the second round?",
    "gold": "1",
    "entity": "2022 Madrid Open",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "Which is the largest tributary of the Chenab River?",
    "gold": "Marusudar River",
    "entity": "Chenab River",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What's the secret identity of the fourth incarnation of the DC Comics character Firebrand?",
    "gold": "Andre Twist",
    "entity": "DC Comics",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 5,
+    "ambiguous_relation": 1
    }
   },
   {
    "q": "In which year were the two novel RNA viruses, distantly related to pestiviruses and coltiviruses, detected in the genomes of dead Manis javanica and Manis pentadactyla?",
    "gold": "2020",
    "entity": "Manis",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What Google Sheets formula assigns a name to the value_expression results and returns the result of the formula_expression?",
    "gold": "LET function\n",
    "entity": "Google Sheets",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   },
   {
    "q": "What year did Seiko release their first 300m diver watch?",
    "gold": "1968",
    "entity": "Seiko",
-   "n_candidates": 9,
-   "tried": 9,
+   "n_candidates": 6,
+   "tried": 6,
    "verified": false,
    "answer": null,
    "reasons": {
-    "plan_does_not_cover_question": 9
+    "plan_does_not_cover_question": 6
    }
   }
  ],
- "wall_s": 32.4
+ "wall_s": 34.8
 }
