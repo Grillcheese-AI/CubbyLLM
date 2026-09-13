@@ -70,10 +70,38 @@ def find_cubelang_exe(explicit: str | None = None) -> pathlib.Path:
         candidates.append(repo_root.parent / "cubelang" / "target" / "release" / name)
     for c in candidates:
         if c.is_file():
+            _warn_if_stale(c)
             return c
     raise CubelangNotFound(
         f"set $CUBELANG_EXE or build the cubelang repo; tried: {[str(c) for c in candidates]}"
     )
+
+
+def newest_source(exe: pathlib.Path) -> pathlib.Path | None:
+    """The most recently modified `.rs` under the sibling repo's `src/`, if the exe
+    lives in a cubelang checkout (its root, or its target/<profile>/)."""
+    for parent in (exe.parent, *exe.parents[1:3]):
+        src = parent / "src"
+        if (parent / "Cargo.toml").is_file() and src.is_dir():
+            files = list(src.rglob("*.rs"))
+            return max(files, key=lambda p: p.stat().st_mtime) if files else None
+    return None
+
+
+def _warn_if_stale(exe: pathlib.Path) -> None:
+    """2026-09-12: a `cubelang.exe` from May sat at the checkout's root beside sources
+    from August; nothing here resolved to it (target/release is what is searched),
+    but a hand-set $CUBELANG_EXE or `--exe` could. A binary older than the newest
+    source is measured with a VM the sources no longer describe -- say so, once."""
+    try:
+        src = newest_source(exe)
+        if src is not None and src.stat().st_mtime > exe.stat().st_mtime + 1:
+            import sys, time
+            fmt = lambda t: time.strftime("%Y-%m-%d %H:%M", time.localtime(t))
+            print(f"[cubelang_client] WARNING: {exe} ({fmt(exe.stat().st_mtime)}) is older than {src} "
+                  f"({fmt(src.stat().st_mtime)}) -- rebuild with `cargo build --release`", file=sys.stderr)
+    except OSError:
+        pass
 
 
 def run_program(

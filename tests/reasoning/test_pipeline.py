@@ -293,9 +293,14 @@ def test_lookup_falls_back_to_search_for_the_hop_the_index_misses():
     assert r.repairs_used == 0
 
 
-def test_lookup_ambiguity_is_ordered_by_search_and_settled_by_the_vm():
-    """Two facts serve hop 0. The search's ranking picks the order; the VM rejects the wrong branch, the ban
-    removes it from the lookup, and the next candidate verifies — one repair."""
+def test_lookup_ambiguity_is_a_refusal_that_names_the_candidates_never_a_pick():
+    """Two facts serve hop 0 with different objects. Until 2026-09-11 the search's ranking
+    picked the order and the VM settled it by rejecting the wrong branch -- and on the
+    wiki world that spoke a wrong census for 'as of 2022' (exp_r11 run 1): both branches
+    were TRUE facts, and the VM verifies true facts. Lever 3's rule: an ambiguous hop is a
+    refusal that names the candidates; nothing is spoken until one branch is the only one.
+    (This test pinned the old pick-by-rank contract; the package suite had not been run
+    since the rule changed -- caught 2026-09-12.)"""
     from cubbyllm.reasoning.index import TripleIndex
     F1_ALT = "canada is the country of citizenship of cynthia basinet"
     F2_ALT = "canada is the country canada is in"
@@ -308,7 +313,7 @@ def test_lookup_ambiguity_is_ordered_by_search_and_settled_by_the_vm():
         return good_retriever(query, k)
 
     r = answer(Q3, prefers_alt, good_vm, tau_vm=0.5, tau_ret=0.2, lookup=ix.hop)
-    assert r.verified is True and r.answer == "oceania portal"
-    assert r.repairs_used == 1
-    assert r.repairs == [{"hop": 0, "rejected_fact": F1_ALT, "replacement_fact": F1}]
-    assert [h.fact for h in r.trace] == [F1, F2, F3] and all(h.source == "lookup" for h in r.trace)
+    assert r.verified is False and r.answer is None and r.reason == "ambiguous_hop"
+    assert r.refused["hop"] == 0 and sorted(r.refused["objects"]) == ["canada", "united stated"]
+    assert set(r.refused["facts"]) == {F1_ALT, F1}
+    assert r.repairs_used == 0 and r.trace == []
