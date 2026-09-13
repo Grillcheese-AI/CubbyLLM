@@ -1,0 +1,42 @@
+consolidated 6 episode facts into the world store; 'date of birth' held: True
+wiki world 552303 facts, 2797 relations | SimpleQA sample 600 (seed 7) | episodes 97 (6 from exp_r11 runs, 91 matched pairs), 88 shapes | DG semantic (80000 words) | k=3
+  SimpleQA-run shapes: date of birth; inception; located in the administrative territorial entity
+    [correct/recalled] 'On what day, month, and year was Masaki Tsuji born?' -> '1932-03-23' (gold 'March 23, 1932 ') via ['date of birth'] of 'masaki tsuji'
+    [near/recalled] 'In which district is the Syrian village "Kafr al-Awamid" located?' -> 'Az-Zabdani Subdistrict' (gold 'Al-Zabadani ') via ['located in the administrative territorial entity'] of 'kafr al awamid'
+    [correct/rebound_cap] 'In which year was Dina Nath Walli (an Indian watercolor artist and poe' -> '1908' (gold '1908') via ['date of birth'] of 'dina nath walli'
+  100/600 (37s, api calls 0) planned 100 verified 3 correct 2 near 1 WRONG 0
+  200/600 (46s, api calls 0) planned 200 verified 3 correct 2 near 1 WRONG 0
+    [correct/recalled] 'On what day, month, and year was the footballer Michael Anderson Perei' -> '1983-02-16' (gold 'February 16, 1983') via ['date of birth'] of 'michael anderson pereira da silva'
+    [correct/recalled] 'In what year was the Penny Crane Award for Distinguished Service estab' -> '2000' (gold '2000') via ['inception'] of 'penny crane award for distinguished service'
+    [correct/recalled] 'On what day, month, and year was Motonori Matuyama born?' -> '1884-10-25' (gold '25 October 1884') via ['date of birth'] of 'motonori matuyama'
+  300/600 (58s, api calls 5) planned 300 verified 6 correct 5 near 1 WRONG 0
+  400/600 (67s, api calls 5) planned 400 verified 6 correct 5 near 1 WRONG 0
+  500/600 (390s, api calls 875) planned 500 verified 6 correct 5 near 1 WRONG 0
+    [correct/recalled] 'What day, month, and year was Giulio Carlo Argan born?' -> '1909-05-17' (gold '17 May 1909') via ['date of birth'] of 'giulio carlo argan'
+  600/600 (809s, api calls 2003) planned 600 verified 7 correct 6 near 1 WRONG 0
+
+HIPPOCAMPUS AS PROPOSER on SimpleQA: {'candidates': 3568, 'correct': 6, 'facts_fetched': 13, 'fetched_questions_cand': 2, 'final:plan_does_not_cover_question': 593, 'gate:accepted': 13, 'near': 1, 'planned': 600, 'verified': 7, 'verified:rebound_cap': 1, 'verified:recalled': 6}
+api calls 2003 | VM calls 14 | episodes 97 (utility>0: 5)
+
+every verified answer:
+  [correct/recalled] 'On what day, month, and year was Masaki Tsuji born?'
+           shape ['date of birth'] -> 'date of birth of masaki tsuji' -> '1932-03-23' (gold 'March 23, 1932 ') aliased [('born', 'date of birth')]
+           via episode 'On what day, month, and year was Masaki Tsuji born?'; chain ['1932-03-23 is the date of birth of Masaki Tsuji']
+  [near   /recalled] 'In which district is the Syrian village "Kafr al-Awamid" located?'
+           shape ['located in the administrative territorial entity'] -> 'located in the administrative territorial entity of kafr al awamid' -> 'Az-Zabdani Subdistrict' (gold 'Al-Zabadani ') aliased [('district', 'located in the administrative territorial entity')]
+           via episode 'In which district is the Syrian village "Kafr al-Awamid" located?'; chain ['Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid']
+  [correct/rebound_cap] 'In which year was Dina Nath Walli (an Indian watercolor artist and poet from Sri'
+           shape ['date of birth'] -> 'date of birth of dina nath walli' -> '1908' (gold '1908') aliased [('born', 'date of birth')]
+           via episode 'On what day, month, and year was Masaki Tsuji born?'; chain ['1908 is the date of birth of Dina Nath Walli']
+  [correct/recalled] 'On what day, month, and year was the footballer Michael Anderson Pereira da Silv'
+           shape ['date of birth'] -> 'date of birth of michael anderson pereira da silva' -> '1983-02-16' (gold 'February 16, 1983') aliased [('born', 'date of birth')]
+           via episode 'On what day, month, and year was the footballer Michael Anderson Perei'; chain ['1983-02-16 is the date of birth of Michael Anderson Pereira da Silva']
+  [correct/recalled] 'In what year was the Penny Crane Award for Distinguished Service established?'
+           shape ['inception'] -> 'inception of penny crane award for distinguished service' -> '2000' (gold '2000') aliased [('established', 'inception')]
+           via episode 'In what year was the Penny Crane Award for Distinguished Service estab'; chain ['2000 is the inception of Penny Crane Award for Distinguished Service']
+  [correct/recalled] 'On what day, month, and year was Motonori Matuyama born?'
+           shape ['date of birth'] -> 'date of birth of motonori matuyama' -> '1884-10-25' (gold '25 October 1884') aliased [('born', 'date of birth')]
+           via episode 'On what day, month, and year was Motonori Matuyama born?'; chain ['1884-10-25 is the date of birth of Motonori Matuyama']
+  [correct/recalled] 'What day, month, and year was Giulio Carlo Argan born?'
+           shape ['date of birth'] -> 'date of birth of giulio carlo argan' -> '1909-05-17' (gold '17 May 1909') aliased [('born', 'date of birth')]
+           via episode 'What day, month, and year was Giulio Carlo Argan born?'; chain ['1909-05-17 is the date of birth of Giulio Carlo Argan']

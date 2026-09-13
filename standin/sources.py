@@ -34,11 +34,49 @@ SKIP_PROPS = {"P31"}       # 'instance of' floods every entity with class facts;
 from cubbyllm.reasoning.planner import Triple, normalize as _normalize   # noqa: E402
 
 
+PROPERTY_TABLE = CACHE.parent / "wikidata_properties_en_fr.json"        # standin/data/out/, built once by build_property_aliases.py
+
+
+class PropertyAliases:
+    """Wikidata's property labels and aliases (EN + FR) as a LOCAL relation resolver -- the
+    same answer `WikidataSource.relations()` used to fetch per wording (875 API calls for
+    100 questions, exp_r14 2026-09-12), read from a table built once. `relations(text)`:
+    the labels (English) of every property whose label or alias, in either language, IS
+    the wording. Exact tier only, like the API version; the host still intersects with what
+    the store holds and refuses more than one."""
+    name = "property_aliases"
+
+    def __init__(self, path: pathlib.Path | str = PROPERTY_TABLE) -> None:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+        self.meta = {k: v for k, v in d.items() if k != "properties"}
+        self._by_text: dict[str, set[str]] = {}
+        for pid, p in d["properties"].items():
+            label_en = p["label"].get("en")
+            if not label_en:
+                continue
+            for lang in ("en", "fr"):
+                for text in [p["label"].get(lang)] + list(p["aliases"].get(lang, [])):
+                    if text:
+                        self._by_text.setdefault(_normalize(text), set()).add(label_en)
+
+    def __len__(self) -> int:
+        return len(self._by_text)
+
+    def relations(self, text: str) -> list[str]:
+        return sorted(self._by_text.get(_normalize(text), ()))
+
+
+def property_aliases(path: pathlib.Path | str = PROPERTY_TABLE) -> "PropertyAliases | None":
+    """The local table if it has been built, else None (the caller may fall back to the API)."""
+    return PropertyAliases(path) if pathlib.Path(path).is_file() else None
+
+
 class WikidataSource:
     name = "wikidata"
 
     def __init__(self, cache_dir: pathlib.Path | str | None = CACHE, sleep_s: float = 0.2,
-                 max_facts: int = 300, offline: bool = False) -> None:
+                 max_facts: int = 300, offline: bool = False, aliases: "PropertyAliases | None" = None,
+                 online_relations: bool = False) -> None:
         self.cache = pathlib.Path(cache_dir) if cache_dir else None
         if self.cache:
             self.cache.mkdir(parents=True, exist_ok=True)
@@ -46,6 +84,10 @@ class WikidataSource:
         self.calls = 0
         self.last: dict = {}
         self._labels: dict[str, str] = {}
+        # relations: the local table first (zero calls); the property-search API only when
+        # asked for explicitly -- serving never depends on a live call per wording
+        self.aliases = aliases if aliases is not None else property_aliases()
+        self.online_relations = online_relations
 
     # -- transport, cached ---------------------------------------------------------------
     def _get(self, params: dict) -> dict | None:
@@ -84,7 +126,14 @@ class WikidataSource:
         """Property labels whose label or alias IS this wording ('born' -> ['date of
         birth'], 'citizenship' -> ['country of citizenship']); a prefix hit ('born' vs
         'born in') is not an alias and is left out. The host intersects with what the
-        store holds and refuses more than one."""
+        store holds and refuses more than one. Local table first; the API only with
+        `online_relations=True` (or when no table has been built and we are not offline)."""
+        if self.aliases is not None:
+            local = self.aliases.relations(text)
+            if local or not self.online_relations:
+                return local
+        elif self.offline:
+            return []
         s = self._get({"action": "wbsearchentities", "search": text, "language": "en", "type": "property", "limit": 8})
         out = []
         for h in (s or {}).get("search") or []:
