@@ -174,10 +174,20 @@ def main() -> None:
     ap.add_argument("--exe", default=None)
     ap.add_argument("--out", default=str(ROOT / "standin" / "data" / "out" / "gen3_free_text.jsonl"))
     ap.add_argument("--merge", default=None, help="gen-2 jsonl to append the records to (writes emitter_sft_v13e.jsonl beside --out)")
+    ap.add_argument("--merge-cap", type=int, default=12000,
+                    help="at most this many certified TRAIN questions (x2 records) enter the merged set, sampled round-robin over "
+                         "wordings and sources so gen 3 does not drown gen 2 (12k questions ~ gen 2's own row count); 0 = all")
+    ap.add_argument("--from-gen3", default=None, help="skip the build: read an existing gen3 jsonl and only merge")
     ap.add_argument("--tag", default="")
     a = ap.parse_args()
     t0 = time.perf_counter()
     rng = random.Random(a.seed)
+    if a.from_gen3:
+        records = [json.loads(l) for l in open(a.from_gen3, encoding="utf-8")]
+        print(f"read {len(records):,} gen-3 records from {a.from_gen3}")
+        merge(records, a, rng, rev=subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip(),
+              built=time.strftime("%Y-%m-%dT%H:%M:%S"))
+        return
 
     import wikikg as wk
     from cubbyllm.bridges import cubelang_client as cc
@@ -333,26 +343,57 @@ def main() -> None:
     print(f"wrote {a.out}\nwrote {mp}")
 
     if a.merge:
-        gen2 = [json.loads(l) for l in open(a.merge, encoding="utf-8")]
-        system = next(r["system"] for r in gen2 if r["task"] == "chain")
-        ids = {r["id"] for r in gen2}
-        merged = list(gen2)
-        for r in records:
+        merge(records, a, rng, rev=rev, built=manifest["built"])
+
+
+def merge(records: list[dict], a, rng: random.Random, rev: str, built: str) -> None:
+    """gen 2 unchanged + a capped, stratified sample of the gen-3 TRAIN questions (both records
+    of each), all held questions kept for evaluation. The cap keeps gen 3 from drowning gen 2:
+    the full build certifies ~52k questions, six wordings of one fact among them; a seeded
+    round-robin over (source, wording) takes `merge_cap` questions with every wording and both
+    sources represented."""
+    gen2 = [json.loads(l) for l in open(a.merge, encoding="utf-8")]
+    system = next(r["system"] for r in gen2 if r["task"] == "chain")
+    ids = {r["id"] for r in gen2}
+    by_q: dict[str, list[dict]] = collections.defaultdict(list)
+    for r in records:
+        by_q[r["prompt"].split("\nFacts:")[0]].append(r)             # the chain record's prompt is the question + Facts
+    train_qs = [q for q, rs in by_q.items() if rs[0]["split"] == "train"]
+    held_qs = [q for q, rs in by_q.items() if rs[0]["split"] != "train"]
+    if a.merge_cap and len(train_qs) > a.merge_cap:
+        strata: dict[tuple, list[str]] = collections.defaultdict(list)
+        for q in train_qs:
+            r0 = by_q[q][0]; strata[(r0["source"], r0.get("wording"))].append(q)
+        for qs in strata.values():
+            rng.shuffle(qs)
+        keys = sorted(strata); picked: list[str] = []
+        while len(picked) < a.merge_cap and any(strata[k] for k in keys):
+            for k in keys:
+                if strata[k] and len(picked) < a.merge_cap:
+                    picked.append(strata[k].pop())
+        train_qs = picked
+    merged = list(gen2); n_added = 0
+    for q in train_qs + held_qs:
+        for r in by_q[q]:
             if r["id"] in ids:
                 continue
-            r2 = dict(r, system=system)
-            merged.append(r2)
-        out13 = os.path.join(os.path.dirname(a.out), "emitter_sft_v13e.jsonl")
-        with open(out13, "w", encoding="utf-8") as f:
-            for r in merged:
-                f.write(json.dumps(r, ensure_ascii=False) + "\n")
-        m13 = {"version": "v13e", "built": manifest["built"], "git_rev": rev, "gen2": a.merge, "gen3": a.out,
-               "n_records": len(merged), "by_task": dict(collections.Counter(r["task"] for r in merged)),
-               "by_source": dict(collections.Counter(r["source"] for r in merged)),
-               "train_rows_after_repeat": sum(r.get("repeat", 1) for r in merged if r["split"] == "train"),
-               "schema_note": "gen 3 = gen 2 unchanged + the reverse-built free-text records (plan + chain), provenance per record"}
-        json.dump(m13, open(out13.replace(".jsonl", ".manifest.json"), "w", encoding="utf-8"), indent=1)
-        print(f"merged with gen 2: {len(merged):,} records {m13['by_task']} -> {out13}")
+            merged.append(dict(r, system=system)); n_added += 1
+    out13 = os.path.join(os.path.dirname(a.out), "emitter_sft_v13e.jsonl")
+    with open(out13, "w", encoding="utf-8") as f:
+        for r in merged:
+            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+    g3 = [r for r in merged if r["source"].startswith("cubbyllm/gen3")]
+    m13 = {"version": "v13e", "built": built, "git_rev": rev, "gen2": a.merge, "gen3": a.from_gen3 or a.out,
+           "merge_cap_questions": a.merge_cap, "gen3_train_questions": len(train_qs), "gen3_held_questions": len(held_qs),
+           "n_records": len(merged), "by_task": dict(collections.Counter(r["task"] for r in merged)),
+           "by_source": dict(collections.Counter(r["source"] for r in merged)),
+           "gen3_by_wording_train": dict(collections.Counter(r.get("wording") for r in g3 if r["split"] == "train" and r["task"] == "plan")),
+           "train_rows_after_repeat": sum(r.get("repeat", 1) for r in merged if r["split"] == "train"),
+           "schema_note": "gen 3 = gen 2 unchanged + a capped, wording-stratified sample of the reverse-built free-text records "
+                          "(plan + chain per question, provenance per record); every held question kept for exp_r17"}
+    json.dump(m13, open(out13.replace(".jsonl", ".manifest.json"), "w", encoding="utf-8"), indent=1)
+    print(f"merged with gen 2: {len(merged):,} records ({n_added:,} gen-3: {len(train_qs):,} train questions of {sum(1 for q, rs in by_q.items() if rs[0]['split'] == 'train'):,}, "
+          f"{len(held_qs):,} held) {m13['by_task']} | train rows after repeat {m13['train_rows_after_repeat']:,} -> {out13}")
 
 
 if __name__ == "__main__":

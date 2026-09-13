@@ -84,4 +84,25 @@ wrong answers certified, by construction: the answer must equal the chain's obje
 524/527, `Where was X born?` 414/433, `When did X die?` 428/434, `Who is X married to?` 66/127 (60 of
 the rest have two spouses on record).
 
-`standin/data/out/gen3_probe.{jsonl,manifest.json}` (off-repo); the full build follows.
+## The full build, and the merge
+
+All 10,790 encyclopedia facts, 300 wiki-world facts per relation (15 relations), 200 two-hop chains per
+noun (7): **16,626 chains, 63,138 questions asked, 52,538 certified (83.2%)**, 105,076 records, 108,154 VM
+calls, 1,050 s. By wording: `When was X born?` 3,509/3,535; `Where was X born?` 2,532/2,606; `When did
+X die?` 3,185/3,207; `In which district is X located?` 1,261/1,333; `Who is X married to?` 317/501 (181
+with two spouses on record); `Who wrote X?` 0/307 (`wrote` names `notable work`, the inverse — refused,
+rightly). Refused: `unknown_relation` 4,915 (`pass away`, `county`, `educated`: no form in the table),
+`ambiguous_hop` 3,963 (multi-valued — and two `Benedetto Accolti` in one encyclopedia, 1415 and 1497,
+refused as one ambiguous entity), `retrieval_exhausted` 1,219, `verified_other_answer` 169 (the wiki world
+beside the encyclopedia: `Date17750120`, a corrupt wiki value, among them), `answer_type_mismatch` 43.
+
+**The merge** (`emitter_sft_v13e.jsonl`): gen 2 unchanged (11,845 records) + a **capped, wording-stratified
+sample of 12,000 certified train questions** (24,000 records: a plan and a chain each; round-robin over
+source × wording, seeded, so every one of the 41 wordings and both sources are in) + **all 5,234 held
+questions** (10,468 records; entities no training record used — exp_r17's set). 46,313 records, 38,760
+train rows after repeat, against gen 2's 14,760: the free-text records are the majority of the training
+signal without drowning the grammar's chains. The cap is `--merge-cap` (0 = all 47,304); the full set is
+kept off-repo for a later, larger generation.
+
+`standin/data/out/gen3_free_text.{jsonl,manifest.json}`, `emitter_sft_v13e.{jsonl,manifest.json}` (off-repo;
+the manifests are copied to `validation/logs/`).
