@@ -104,5 +104,26 @@ train rows after repeat, against gen 2's 14,760: the free-text records are the m
 signal without drowning the grammar's chains. The cap is `--merge-cap` (0 = all 47,304); the full set is
 kept off-repo for a later, larger generation.
 
+## The held split as a gate: the gen-2 emitter's baseline (exp_r17), and lever 7
+
+`validation/exp_r17_gen3_heldout.py`: 600 of the 5,234 held questions (seed 7), any emitter GGUF, the
+same gate and store the builder used, scored verified / correct / near / **wrong** against the record's
+gold. The gen-2 emitter, which never saw a free-text wording: **599 plans, 481 verified, 481 correct,
+0 wrong**, 114 coverage refusals, 315 s. Read against the wordings, the refusals are two things. The
+emitter **re-types the entity and garbles it** — `karol burgmann` for Karl Brugmann, `jean louis bastu`
+for Barthou, `vincente scamozzi` — with the right relation; and it **reads the ask words as relations** —
+`day`, `month`, `year` as three hops of "On what day, month, and year was X born?", `year of death`,
+`died` + `city`, `city of death` for "In which city did X die?" (0/14).
+
+The first is the host's to fix, and it is **lever 7** (`learn.snap_seed`): the question is the only source
+of the entity's spelling, so an emitted seed the question does not contain is replaced by the question's
+closest n-gram (difflib ≥ 0.85, a unique best, at least two words or six characters), on record as
+`snapped`, and the gate runs on the snapped plan as on any other — a wrong snap is a plan the gate
+refuses. Pinned. With it: **599 plans, 511 verified, 511 correct, 0 wrong**, 82 coverage refusals
+(`_gen2_snap`). The 82 that remain are the second thing — the relation words — which is what the 12,000
+gen-3 training questions teach, and what the A/B measures: gen 3 masked and gen 3 full against this 511
+at 0 wrong, on the same 600.
+
+`exp_r17_gen3_heldout_gen2.*`, `exp_r17_gen3_heldout_gen2_snap.*`;
 `standin/data/out/gen3_free_text.{jsonl,manifest.json}`, `emitter_sft_v13e.{jsonl,manifest.json}` (off-repo;
 the manifests are copied to `validation/logs/`).

@@ -440,3 +440,23 @@ def test_the_question_decides_where_an_unheld_relation_ends_and_the_entity_begin
     r = run("Who is Anne of Cleves married to?", store, known, src,
             plan=QuestionPlan(relations=[None], tail="married of anne of cleves", n_hop=1))
     assert r.result.verified and normalize(r.result.answer) == "henry viii" and r.aliased == [("married", "spouse")]
+
+
+def test_a_garbled_seed_is_snapped_to_the_questions_own_spelling():
+    """exp_r17 (2026-09-13): the gen-2 emitter re-types 'Karl Brugmann' as 'karol burgmann'
+    and 'Jean Louis Barthou' as 'jean louis bastu'; the relation is right and the plan
+    dies for coverage. The question spells the entity; the closest n-gram (>= 0.85, a
+    unique best) replaces the seed, on record, and the gate runs on the snapped plan. A
+    seed the question contains is left alone; one far from anything in it is not snapped."""
+    from cubbyllm.reasoning.learn import snap_seed
+    from cubbyllm.reasoning.planner import QuestionPlan
+    base = STORE + ["1849-03-16 is the birth date of karl brugmann"]
+    store, known = LookupStore(base), StoreRelations(base)
+    src = WordedAliasSource({}, **WIKI_TABLE)
+    plan = QuestionPlan(relations=[None], tail="born of karol burgmann", n_hop=1)
+    snapped, rec = snap_seed("When was Karl Brugmann born?", plan, known)
+    assert rec == ("karol burgmann", "karl brugmann") and snapped.tail == "born of karl brugmann"
+    r = run("When was Karl Brugmann born?", store, known, src, plan=plan)
+    assert r.result.verified and normalize(r.result.answer) == "1849 03 16" and r.snapped == ("karol burgmann", "karl brugmann")
+    assert snap_seed("When was Karl Brugmann born?", QuestionPlan(relations=[None], tail="born of karl brugmann", n_hop=1), known)[1] is None
+    assert snap_seed("When was Karl Brugmann born?", QuestionPlan(relations=[None], tail="born of ludwig wittgenstein", n_hop=1), known)[1] is None

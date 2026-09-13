@@ -74,6 +74,7 @@ class LearnResult:
     # lever 4: (the plan's relation words, the store relation the host rewrote them to)
     aliased: list[tuple[str, str]] = field(default_factory=list)
     plan: QuestionPlan | None = None                      # the plan that was walked last (rewritten or not)
+    snapped: tuple[str, str] | None = None                # lever 7: (the emitted seed, the question's spelling it was snapped to)
     @property
     def accepted(self) -> list[Provenance]:
         return [p for p in self.learned if p.status == "accepted"]
@@ -141,6 +142,39 @@ def stalled_entities(question: str, plan: QuestionPlan | None, first: CoTResult,
     if ent and normalize(ent) not in {normalize(e) for e in out}:
         out.append(ent)
     return out
+
+
+def snap_seed(question: str, plan: QuestionPlan, known, min_ratio: float = 0.85) -> tuple[QuestionPlan, tuple[str, str] | None]:
+    """Lever 7 (2026-09-13, exp_r17): the emitter re-types the entity and garbles it -- 'karol
+    burgmann' for Karl Brugmann, 'jean louis bastu' for Jean Louis Barthou -- and the plan dies
+    for coverage with the right relation. The question is the only source of the entity's
+    spelling: when the emitted seed is not in the question, the question's n-gram closest to it
+    (difflib, >= `min_ratio`, a unique best, at least two words or six characters) replaces it,
+    and the translation is on record. Everything after -- coverage, the walk, the VM -- runs on
+    the snapped plan as on any other; a wrong snap is a plan the gate refuses."""
+    import difflib
+    rel, ent = split_tail(plan.tail, known, question)
+    q = normalize(question)
+    e = normalize(ent)
+    if not e or f" {e} " in f" {q} ":
+        return plan, None
+    toks = q.split()
+    n_e = len(e.split())
+    best: list[tuple[float, str]] = []
+    for n in range(max(1, n_e - 2), n_e + 3):
+        for i in range(len(toks) - n + 1):
+            g = " ".join(toks[i:i + n])
+            if g in _FRAME_AND_JOINT or (len(g) < 6 and n < 2):
+                continue
+            best.append((difflib.SequenceMatcher(None, e, g).ratio(), g))
+    if not best:
+        return plan, None
+    best.sort(key=lambda x: -x[0])
+    if best[0][0] < min_ratio or (len(best) > 1 and best[1][0] == best[0][0] and best[1][1] != best[0][1]):
+        return plan, None
+    snapped = best[0][1]
+    tail = f"{rel} of {snapped}" if plan.tail.lower().startswith(rel.lower()) else plan.tail.replace(ent, snapped)
+    return QuestionPlan(relations=plan.relations, tail=tail, n_hop=plan.n_hop, answer_class=plan.answer_class), (ent, snapped)
 
 
 def narrow_by_ask(question: str | None, candidates: list[str], resolvers) -> list[str]:
@@ -327,13 +361,16 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
     `unknown_relation` refusal that the source can resolve to ONE relation the store
     holds is walked again with the plan rewritten (lever 4); it costs no round."""
     aliases: dict[str, list[str]] = {}
+    snapped = None
     if plan is None:
         plan = parse_question(question)
+    elif known is not None:
+        plan, snapped = snap_seed(question, plan, known)         # lever 7: the question spells the entity
     def walk():
         return answer(question, retrieve, run_fn, tau_vm=tau_vm, tau_ret=tau_ret, top_k=top_k,
                       max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan, aliases=aliases)
     first = walk()
-    out = LearnResult(result=first, first=first, plan=plan)
+    out = LearnResult(result=first, first=first, plan=plan, snapped=snapped)
     # lever 6: a coverage refusal of a plan whose relations the store HOLDS may be the
     # proposer naming them by their canonical label; the question's own wording is
     # asked of the resolvers, recorded as an alias, and the plan walked once more
