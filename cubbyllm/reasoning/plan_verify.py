@@ -386,6 +386,66 @@ def tail_match(tail: str, known: KnownRelations) -> tuple[str, str] | None:
     return None
 
 
+# ---- the typed answer class (2026-09-12, after exp_r11 lev6/lev6b) --------------------------------
+# A question says what KIND of thing it wants: "in what year", "on what day, month, and
+# year", "when" want a date; "how many", "how much" want a number; "who" wants a name.
+# Two things follow. (1) The words that state the kind ('year', 'day', 'month', 'date';
+# 'many', 'much', 'number') are the ask's frame, not a dropped hop: the residual rule had
+# read a leftover 'year' as a hop whenever the store's vocabulary held a 'year'-bearing
+# relation -- which changed with what the loop had learned (two birth dates gained in
+# lev6b only because a refused fetch no longer brought that relation in). (2) A verified
+# chain whose answer is the wrong kind -- a spouse's name for "in what year did X marry Y",
+# a date for "who" -- answers a different question than asked, and is refused at the one
+# verified=True site with the kinds named. Deterministic shapes only: a date is ISO or a
+# year, a number is digits; a name is what is neither. The VM stays the truth gate; this
+# is the disposer reading the question's ask, as it reads its relations.
+_ASK_DATE = __import__("re").compile(
+    r"\b(when|(what|which)\s+(year|date|day|month|decade|century)|(in|on|during)\s+(what|which)\s+(year|date|day|month)|"
+    r"day,?\s+month,?\s+(and\s+)?year|month\s+(and|,)\s+year|(what|which)\s+day\s+of)\b")
+_ASK_NUMBER = __import__("re").compile(r"\b(how\s+many|how\s+much|what\s+(number|percentage|amount|population|count))\b")
+_ASK_NAME = __import__("re").compile(r"^\s*(who|whom|whose)\b")
+_ASK_WORDS = {"date": frozenset("year date day month decade century when".split()),
+              "number": frozenset("many much number percentage amount count".split()),
+              "name": frozenset()}
+_ISO_DATE = __import__("re").compile(r"^[+-]?\d{4}-\d{2}(-\d{2})?$")
+_YEAR_OR_COUNT = __import__("re").compile(r"^[+-]?\d{3,4}$")
+_NUMBER_VALUE = __import__("re").compile(r"^[+-]?\d+([.,]\d+)?$")
+
+
+def ask_type(question: str) -> str | None:
+    """'date' | 'number' | 'name' | None -- the kind of answer the question asks for."""
+    q = question.lower()
+    if _ASK_DATE.search(q):
+        return "date"
+    if _ASK_NUMBER.search(q):
+        return "number"
+    if _ASK_NAME.search(q):
+        return "name"
+    return None
+
+
+def value_kinds(value: str) -> frozenset[str]:
+    """The kinds a stored value can be, by its shape: an ISO date is a date; a bare 3-4
+    digit integer is a year OR a count (both); other digits are a number; the rest a name."""
+    v = (value or "").strip()
+    if _ISO_DATE.match(v):
+        return frozenset({"date"})
+    if _YEAR_OR_COUNT.match(v):
+        return frozenset({"date", "number"})
+    if _NUMBER_VALUE.match(v):
+        return frozenset({"number"})
+    return frozenset({"name"})
+
+
+def answer_type_mismatch(question: str, value: str) -> tuple[str, str] | None:
+    """(asked, got) when the question's ask is a kind the value cannot be; None otherwise."""
+    asked = ask_type(question)
+    if asked is None:
+        return None
+    kinds = value_kinds(value)
+    return None if asked in kinds else (asked, "/".join(sorted(kinds)))
+
+
 def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = None,
            aliases: dict[str, list[str]] | None = None) -> bool:
     """Does the plan account for the WHOLE question?
@@ -458,6 +518,9 @@ def covers(question: str, plan: QuestionPlan, known: KnownRelations | None = Non
     inner_first = [wordings(rel1, tail_alt)] + [wordings(r) for r in rels]      # walk order
     answer_first = list(reversed(inner_first))
     rw = known.words() if (known is not None and hasattr(known, "words")) else None
+    kind = ask_type(question)
+    if rw is not None and kind is not None:
+        rw = rw - _ASK_WORDS[kind]                     # 'year' in "in what year" is the ask, not a hop
     # "Which <class> is the R of ...?" -- the class noun duplicates the answer type
     # and would otherwise be consumed as the first relation. Try with the frame
     # stripped first; "Which country is X in?" (where the class IS the relation)

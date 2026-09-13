@@ -1,0 +1,12 @@
+wiki world 552297 facts, 2794 relations | SimpleQA sample 100 (seed 7) | episodes 97 (6 from exp_r11 runs, 91 matched pairs), 88 shapes | DG semantic (80000 words) | k=3
+  SimpleQA-run shapes: date of birth; inception; located in the administrative territorial entity
+    [WRONG/recalled] 'In which district is the Syrian village "Kafr al-Awamid" located?' -> 'Az-Zabdani Subdistrict' (gold 'Al-Zabadani ') via ['located in the administrative territorial entity'] of 'kafr al awamid'
+  100/100 (32s, api calls 0) planned 100 verified 1 correct 0 near 0 WRONG 1
+
+HIPPOCAMPUS AS PROPOSER on SimpleQA: {'WRONG': 1, 'candidates': 884, 'facts_fetched': 2, 'fetched_questions_cand': 1, 'final:plan_does_not_cover_question': 99, 'gate:accepted': 2, 'planned': 100, 'verified': 1, 'verified:recalled': 1}
+api calls 0 | VM calls 2 | episodes 97 (utility>0: 0)
+
+every verified answer:
+  [WRONG  /recalled] 'In which district is the Syrian village "Kafr al-Awamid" located?'
+           shape ['located in the administrative territorial entity'] -> 'located in the administrative territorial entity of kafr al awamid' -> 'Az-Zabdani Subdistrict' (gold 'Al-Zabadani ') aliased [('district', 'located in the administrative territorial entity')]
+           via episode 'In which district is the Syrian village "Kafr al-Awamid" located?'; chain ['Az-Zabdani Subdistrict is the located in the administrative territorial entity of Kafr al-Awamid']

@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from ..core.protocols import Wiring
-from .plan_verify import verify_plan
+from .plan_verify import answer_type_mismatch, verify_plan
 from .planner import (QuestionPlan, Triple, accepts, normalize, parse_fact,
                       parse_question)
 from .programs import build_chain_program
@@ -241,6 +241,15 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
             # the claimed-answer invariant, at the only verified=True site
             assert all(h.similarity is not None and h.similarity >= tau_vm
                        for h in trace)
+            # the typed answer class (2026-09-12): a certified chain whose value is a kind
+            # the question did not ask for -- a name for "in what year", a date for "who" --
+            # answers a different question; refused with both kinds named, never spoken
+            mismatch = answer_type_mismatch(question, triples[-1].obj)
+            if mismatch is not None:
+                return CoTResult(answer=None, verified=False, trace=trace, repairs_used=used,
+                                 source=source, repairs=repairs, reason="answer_type_mismatch",
+                                 refused={"asked": mismatch[0], "got": mismatch[1], "value": triples[-1].obj,
+                                          "facts": [t.fact for t in trace]})
             return CoTResult(answer=triples[-1].obj, verified=True,
                              trace=trace, repairs_used=used, source=source,
                              repairs=repairs)
