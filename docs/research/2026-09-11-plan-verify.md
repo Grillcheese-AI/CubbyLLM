@@ -863,3 +863,14 @@ words leave the residual vocabulary. Pinned: `standin/tests/test_property_aliase
 datatypes, None without one), `validation/test_search_learn.py` (+4: the *when* question keeps the date
 label at lever 4 and lever 6; a *where* question stays refused with both candidates; one untyped
 candidate blocks the narrowing; a plan naming the other label gets no alias).
+
+**Measured** (`_local`: the emitter, the Wikidata source with the typed local table, same 600, same day):
+**0 API calls** (the `_typed` run: 1,640, almost all lever 6 asking the property-search API per n-gram),
+845 s against 1,395, **6 verified, 5 correct, 1 near, 0 wrong** — the same six chains. 11 questions aliased
+against 9: `born` on the four *when* questions now names two labels and the ask type keeps `date of
+birth` (each verified as before); `married` → `spouse` is new from the table (then `retrieval_exhausted`:
+the fact is not held). The 3 `ambiguous_relation` refusals stand — `grade`, `city` (`located in the
+administrative territorial entity` / `location`, both name-valued) and `element`, on *what* questions,
+which name no ask type. The wording step is off the network for good; what remains on it
+is the entity fetch, which belongs to the learning phase and is cached across runs.
+`exp_r11_search_learn_wikidata_local.*`.
