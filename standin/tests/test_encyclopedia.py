@@ -110,6 +110,15 @@ def test_running_heads_initials_and_surnames():
     assert headword("GOSHO HEINOSUKE-GOSNOLD GOSHO HEINOSUKE") == "GOSHO HEINOSUKE"
     assert headword("GORDON GORDON") == "GORDON" and headword("HAGUE COURT HAGUE COURT") == "HAGUE COURT"
     assert headword("N. Y. GOTTSCHED") == "GOTTSCHED"                     # a byline's 'Dobbs Ferry, N. Y.' ran in
+    assert headword("PEREZ GALDOS- PEREZ GALDOS") == "PEREZ GALDOS"
+    assert given_names("Ibr'ing, Ellis Gray") == "Ellis Gray"              # the OCR's capital I for l in a pronunciation
+    assert given_names("O'Brien, Conor") == "O'Brien" and given_names("D'Annunzio") == "D'Annunzio"
+    head_line = "boist, Count Friedrich Ferdinand von (1809-1886), Saxon statesman. "
+    tail = "Beust died at Castle Altenberg on Oct. 24, 1886."
+    body = head_line + "x" * (1500 - len(head_line) - len("Beust died at Castle Altenb")) + " " + tail   # the opening ends 'Castle Altenb'
+    _n, _p, facts = read_entry("BEUST", body)
+    assert all(t.rel != "place of death" for t, _s in facts)             # cut off at the opening's end: not read
+    assert ("place of death", "Castle Altenberg") in {(t.rel, t.obj) for t, _s in read_entry("BEUST", head_line + tail)[2]}
     assert headword("H. M.") is None and headword("N.Y.") is None
     assert surname("GONGORA Y ARGOTE") == "Gongora y Argote" and surname("O'BRIEN") == "O'Brien"
     _n, _p, facts = read_entry("GRAU SAN MARTIN", "Ramon, grou (1882-1969), Cuban. He was born in Pinar del Rio, Cuba, on Sept. 13, 1882.")

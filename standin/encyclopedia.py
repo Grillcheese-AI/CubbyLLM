@@ -35,14 +35,17 @@ _HEAD = re.compile(rf"(?:^|(?<=\n)|(?<=\. )|(?<=\.\n))(?P<head>{_CAPS}),\s")
 # a page's running head ('GOMBERT-GOMEZ GOMBERT', 'GOSHO HEINOSUKE-GOSNOLD GOSHO HEINOSUKE') is
 # the page's first-last range followed by the entry's own headword, which repeats the range's start
 _RUNNING = re.compile(r"^(?P<a>.+?)-(?P<b>[A-Z'’. ]+?) (?P=a)$")
-_REPEATED = re.compile(r"^(?P<a>.+?) (?P=a)$")                   # 'GORDON GORDON': the running head, then the entry's own
+_REPEATED = re.compile(r"^(?P<a>.+?)-? (?P=a)$")                 # 'GORDON GORDON', 'PEREZ GALDOS- PEREZ GALDOS': the running head, then the entry's own
 _INITIALS = re.compile(r"^(?:[A-Z]\.\s?)+$")                    # 'H. M.' is a cross-reference, not an entry
 _LEADING_INITIALS = re.compile(r"^(?:[A-Z]\.\s?)+")             # 'N. Y. GOTTSCHED': a byline's state ran into the headword
 # the headword's own line: [pronunciation,] given names [, pronunciation] (BIRTH-DEATH)
 _YEARS = re.compile(r"^(?P<mid>(?:[^().]|Jr\.|Sr\.|St\.){0,90}?)\((?P<b>\d{4})\s*[-–]\s*(?P<d>\d{4})?\s*\)")
 _PARTICLES = frozenset("von van de da del della di du la le der den ten y of the af al el ibn bin und zu".split())
-_GIVEN_TOKEN = re.compile(r"^[A-Z][a-zÀ-ſ'’-]+\.?$|^[A-Z]\.$")
+# an apostrophe inside a name precedes a capital ('O'Brien', 'D'Annunzio'); inside a pronunciation
+# it is a stress mark before a lowercase letter ('gu'ta', 'Ibr'ing' -- the OCR's capital I for l)
+_GIVEN_TOKEN = re.compile(r"^[A-Z](?:[a-zÀ-ſ-]|['’][A-Z])*[a-zÀ-ſ]\.?$|^[A-Z]\.$")
 OPENING = 1500
+_TAIL = 40                                                       # a match ending within the opening's last chars is cut off ('Castle Altenb')
 _LINE_HYPHEN = re.compile(r"(?<=\w)- (?=[a-z])")                 # 'Lon- don', 'Ethi- opia', 'un- til': the OCR kept the line break
 _SENTENCE_END = re.compile(r"(?<=[a-z)])\. (?=[A-Z])")            # not after 'Oct.' or 'Aug.' (a digit follows)
 
@@ -220,12 +223,15 @@ def read_entry(head: str, body: str) -> tuple[str | None, bool, list[tuple[Tripl
         frames = PLACE_FRAMES if _PLACE_OPENER.search(opening) else []
         subject_words = set()
     head_years = dict(years)
+    cut = len(opening) - _TAIL if len(body) > OPENING else len(opening) + 1
     out: list[tuple[Triple, str]] = []
     seen: set[str] = set()
     for rel, rx, obj in frames:
         if rel in seen:
             continue
         for mm in rx.finditer(opening):
+            if mm.end() >= cut:
+                break                                          # the opening ends mid-sentence here: whatever it read is cut off
             sentence = sentence_at(opening, mm.start(), mm.end())
             first = sentence.split(" ", 1)[0].lower().strip(".,'’()") if sentence else ""
             if subject_words and first not in subject_words:

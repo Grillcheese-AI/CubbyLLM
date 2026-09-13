@@ -84,10 +84,23 @@ provenance), and the headword pattern finds 718 entries where the volume has mor
 byline or a caption, or after a sentence the OCR did not end with a period, is not found; its sentences
 then belong to nobody, by the subject rule, rather than to the wrong person).
 
+## All 29 volumes (`_all`)
+
+22,213 entries, 3,601 persons (306 unnamed), 20,104 names indexed, **10,790 facts in 16 s** (the index 8 s,
+once): 3,110 birth dates, 2,838 death dates, 2,211 birthplaces, 1,180 death places, 1,451 containers.
+Volume 13 was person-heavy; the set as a whole is ~370 facts a volume. Sixty hand-read (seed 0, first
+pass): **57 true as stated**, one place cut off at the opening's end (`Castle Altenb`), two malformed
+names (`Benito Perez Galdos- Perez Galdos`: a running head with a space after its hyphen; `Ibr'ing
+Loring`: the OCR's capital `I` for `l` made a pronunciation look like a given name — an apostrophe inside
+a name precedes a capital, inside a pronunciation a lowercase letter). Three more rules, pinned: a match
+that ends in the opening's last 40 characters is cut off and not read; `A- A` is `A`; the apostrophe
+rule. The Wikidata cross-check over all 3,600 persons is a learning-phase job of a few thousand cached
+calls and is not run tonight; volume 13's rates are the estimate.
+
 ## What it is for
 
-Two uses, both dataset-phase. (1) **Facts into the world store with provenance**: ~577 a volume, ~17,000
-over 29 volumes, ~6,000 persons; each walked and verified like any other fact when a question reaches it,
+Two uses, both dataset-phase. (1) **Facts into the world store with provenance**: ~10,800 over the 29
+volumes, ~3,600 persons; each walked and verified like any other fact when a question reaches it,
 and each with the volume, the headword and the sentence on record. Against Wikidata the encyclopedia adds
 little *coverage* (famous people, 2005) but adds a second, independent attestation — a fact both sources
 state is doubly attested, and a fact they state differently is a recorded disagreement, which is what the
@@ -97,7 +110,7 @@ before the pair enters the set — the reverse-built dataset agreed on 2026-09-1
 behind it. What the frames do not say, the source does not say: the encyclopedia's other relations
 (occupation, nationality, works) wait for frames of their own, or for the LLM-proposed-and-certified path.
 
-Next: all 29 volumes through exp_r16 (the same two checks); `--source encyclopedia` in exp_r11 beside
-`wikitext`; the headword pattern's reach, measured against a hand count on one volume.
+Next: the Wikidata cross-check over all volumes (learning phase); `--source encyclopedia` in exp_r11
+beside `wikitext`; the headword pattern's reach, measured against a hand count on one volume.
 
-`exp_r16_encyclopedia_v13.{log,json}`.
+`exp_r16_encyclopedia_{v13,all}.{log,json}`.

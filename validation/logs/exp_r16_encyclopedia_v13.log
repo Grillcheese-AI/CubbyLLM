@@ -1,7 +1,7 @@
-encyclopedia: 1 volume(s) from encyclopedia, 653 named entries, index 0.3s
-entries 718 | persons 204 (unnamed 14) | facts 577 | 16s
+encyclopedia: 1 volume(s) from encyclopedia, 653 named entries, index 0.0s
+entries 718 | persons 204 (unnamed 14) | facts 577 | 1s
 facts by relation: date of birth 175, date of death 161, located in the administrative territorial entity 43, place of birth 121, place of death 77
-wikidata: 80 entities resolved, 114 ambiguous (checked against neither item), 36 unresolved | api calls 26
+wikidata: 80 entities resolved, 114 ambiguous (checked against neither item), 36 unresolved | api calls 0
 cross-check against wikidata: agree 179 near 6 disagree 19 unheld 373 -> agreement on the checked part 0.877 (204 checked)
   date of birth: agree 63 near 0 disagree 3 unheld 109 -> 0.955
   date of death: agree 58 near 0 disagree 1 unheld 102 -> 0.983
