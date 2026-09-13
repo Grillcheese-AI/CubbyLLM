@@ -191,7 +191,13 @@ involved, and an LLM's only job is building the dataset. The property vocabulary
 download: `standin/data/build_property_aliases.py` fetches it once (EN + FR labels and aliases) and
 `sources.PropertyAliases` is the local resolver; `WikidataSource.relations()` reads it and makes no call
 (`online_relations=True` is the only way back to the API). Entity facts stay cached and belong to the
-learning phase. The re-run on the local table is the next number to report: calls per 100 questions, target
-zero for wording.
+learning phase. **Re-run on the local table (`_local`): 600/600 in 45 s, 0 API calls, 14 VM calls, verified 7,
+correct 6, near 1, wrong 0** — the same verified set as the semantic run, Dina Nath Walli by rebinding
+included. The 12,684-property table (35,922 aliases, EN + FR) took 1,619 s to fetch once under the API's
+rate limit (429s, `Retry-After` honoured) and answers every wording question the run asks without a call.
+One thing it changed: the local alias sets are broader than the API search's top-8 were — `born` names
+both `date of birth` and `place of birth`, `founded` both `inception` and `notable work` — so lever 6 will
+raise `ambiguous_relation` once both labels are held. The next rule narrows by ask type (a *when* question
+keeps date-valued labels) and only when exactly one remains; otherwise the refusal stands.
 
-`exp_r14_hippocampus_simpleqa_{semantic,surface,probe100}.*`.
+`exp_r14_hippocampus_simpleqa_{semantic,surface,probe100,local}.*`.
