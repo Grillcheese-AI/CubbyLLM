@@ -151,3 +151,15 @@ def test_a_paraphrase_is_spoken_only_when_every_name_and_number_in_it_is_in_the_
     assert grounded_prose("Marie Curie was a physicist, born in Warsaw in 1867.", facts, "marie curie") == (True, [])
     ok, bad = grounded_prose("Marie Curie was a physicist born in Warsaw in 1867 who won the Nobel Prize in 1903.", facts, "marie curie")
     assert not ok and bad == ["Nobel", "Prize", "1903"]
+
+
+def test_a_date_the_store_holds_may_be_written_out_but_a_date_it_does_not_hold_may_not():
+    """2026-09-14, live ('who is openai?'): the store holds `2015-12-11 is the inception of OpenAI` and the
+    paraphrase said 'founded on December 11, 2015' -- refused over the word 'December'. A date the facts
+    hold, spelled the way people spell it, is not an addition; a date they do not hold still is."""
+    from ask import date_words, grounded_prose
+    facts = ["2015-12-11 is the inception of OpenAI", "ChatGPT is the notable work of OpenAI"]
+    assert date_words(facts) == ["december", "2015", "11"]
+    assert grounded_prose("OpenAI was founded on December 11, 2015 and is known for ChatGPT.", facts, "openai") == (True, [])
+    ok, bad = grounded_prose("OpenAI was founded in March 2015 by Sam Altman.", facts, "openai")
+    assert not ok and bad == ["March", "Sam", "Altman"]

@@ -21,14 +21,15 @@ html,body{height:100%}
 body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-ui);font-size:13.5px;line-height:1.45;
   padding-inline:0;overflow:hidden}
 .app{display:grid;grid-template-rows:auto 1fr auto;grid-template-columns:280px 1fr 340px;height:100vh;min-height:520px}
-header{grid-column:1/-1;display:flex;align-items:center;gap:18px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+header{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
 header h1{font-size:15px;font-weight:600;margin:0;letter-spacing:.01em}
 header .sub{color:var(--muted);font-family:var(--f-mono);font-size:11px}
 header .spacer{flex:1}
 .btn{font:inherit;font-size:12.5px;color:var(--ink);background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;padding:5px 10px;cursor:pointer}
 .btn:hover{border-color:var(--hop)}
 .btn:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--hop);outline-offset:2px}
-.ask{display:flex;gap:6px;align-items:center;flex:1;max-width:560px}
+.ask{display:flex;gap:6px;align-items:center;flex:1 1 220px;min-width:180px;max-width:560px}
+@media (max-width:900px){ header .spacer{display:none} header h1{font-size:14px} }
 .ask input{flex:1;min-width:0;font:inherit;font-size:12.5px;color:var(--ink);background:var(--ground);border:1px solid var(--line-2);border-radius:4px;padding:5px 9px}
 .ask input::placeholder{color:var(--muted)}
 .ask.busy input{opacity:.6}
@@ -194,7 +195,7 @@ footer .now{min-width:260px;color:var(--ink-2);overflow:hidden;text-overflow:ell
 (function(){
 'use strict';
 var KIND = {question:'#F2F4F7',plan:'#B49CFF',walk:'#6FA8DC',hop:'#58C7D6',fact:'#46B39A',fetch:'#F2A65A',gate:'#D9924C',
-            vm:'#E070C8',alias:'#C7B26B',latent:'#E9B44C',answer:'#4ED39A',paraphrase:'#5FC4D6'};
+            vm:'#E070C8',alias:'#C7B26B',latent:'#E9B44C',answer:'#4ED39A',paraphrase:'#5FC4D6',shared:'#8FA8FF'};
 var OK='#4ED39A', BAD='#EF6E6E', LATENT='#E9B44C', LINK='#8FA8FF', PROFILE='#5FC4D6';
 var RADIUS = {question:2.6,plan:1.9,walk:1.7,hop:1.4,fact:1.2,fetch:1.6,gate:1.1,vm:1.5,alias:1.2,latent:1.5,answer:2.2,paraphrase:1.4};
 
@@ -228,6 +229,7 @@ function labelOf(ev){
     case 'gate': return ev.status+' · '+ev.fact;
     case 'vm': return 'VM '+(ev.verified?'verified':'not verified')+' · '+ev.program_lines+' lines';
     case 'alias': return (ev.pairs||[]).map(function(p){return p[0]+'→'+p[1]}).join(', ');
+    case 'shared': return ev.text;
     case 'latent': return 'held: '+ev.answer;
     case 'paraphrase': return ev.ok?('said: '+ev.text):('paraphrase refused · '+(ev.rejected||[]).join(', '));
     case 'answer': return ev.verified?('answer: '+ev.answer):(ev.reason==='profile'?('profile: '+ev.answer):('refused: '+ev.reason));
@@ -296,55 +298,155 @@ function addLine(a,b,color){
   ln.userData.from=a; ln.userData.to=b; group.add(ln); lines.push(ln);
 }
 
-/* tidy tree layout: leaves get consecutive slots, parents centred over their children */
+/* the tree: a tidy tree while the fan is small, a DISC around the parent when it is not.
+   A fetch admits 172 facts; one slot per leaf put them a screen away from the fetch that pulled
+   them (Nick, 2026-09-14: "the related facts are very far away from the source"). A fan wider
+   than FAN is laid out as a phyllotaxis disc hanging under its parent, so a cloud of gated facts
+   stays a cloud AT its fetch, and the tree keeps its shape where the shape means something. */
+var FAN=8;
 function layoutTree(root){
   clearScene();
-  var order=[]; var slot=0; var XS=12, YS=16;
+  var placed=[]; var slot=0; var XS=12, YS=16;
   function walk(ev,depth){
     var kids=(children[ev.id]||[]).slice().sort(function(a,b){return a.id-b.id});
-    var pos={ev:ev,depth:depth};
-    order.push(pos);
-    if(!kids.length){ pos.x=slot++; }
-    else { var xs=kids.map(function(k){return walk(k,depth+1).x}); pos.x=(xs[0]+xs[xs.length-1])/2; }
-    return pos;
+    var me={ev:ev,depth:depth,disc:null};
+    placed.push(me);
+    if(!kids.length){ me.x=slot++; return me; }
+    if(kids.length>FAN){                                  // the cloud: reserve the disc's width, place the children in it
+      var rad=1.0*Math.sqrt(kids.length), w=Math.max(2,(2*rad*2.6)/XS);
+      me.x=slot+w/2; me.disc={r:rad,kids:kids};
+      slot+=w;
+      kids.forEach(function(k){ placed.push({ev:k,depth:depth+1,inDisc:me}); });
+      return me;
+    }
+    var xs=kids.map(function(k){return walk(k,depth+1).x});
+    me.x=(xs[0]+xs[xs.length-1])/2;
+    return me;
   }
   walk(root,0);
-  var maxDepth=0, maxX=0; order.forEach(function(p){maxDepth=Math.max(maxDepth,p.depth); maxX=Math.max(maxX,p.x)});
+  var maxDepth=0, maxX=0; placed.forEach(function(p){maxDepth=Math.max(maxDepth,p.depth); maxX=Math.max(maxX,p.x||0)});
   var cx=maxX/2, cy=maxDepth/2;
-  var idx={}; order.slice().sort(function(a,b){return a.ev.id-b.ev.id}).forEach(function(p,i){idx[p.ev.id]=i});
-  order.forEach(function(p){
-    var z=(idx[p.ev.id]/Math.max(1,order.length-1)-0.5)*18;   // time runs into the screen
-    addNode(p.ev,(p.x-cx)*XS,(cy-p.depth)*YS,z,RADIUS[p.ev.kind]||1.2);
+  var idx={}; placed.slice().sort(function(a,b){return a.ev.id-b.ev.id}).forEach(function(p,i){idx[p.ev.id]=i});
+  var golden=Math.PI*(3-Math.sqrt(5));
+  placed.forEach(function(p){
+    var z=(idx[p.ev.id]/Math.max(1,placed.length-1)-0.5)*18;   // time runs into the screen
+    if(p.inDisc){                                              // a child of a big fan: on the disc under its parent
+      var d=p.inDisc.disc, i=d.kids.indexOf(p.ev), rr=d.r*2.6*Math.sqrt((i+0.5)/d.kids.length), th=i*golden;
+      addNode(p.ev,(p.inDisc.x-cx)*XS+rr*Math.cos(th),(cy-p.depth)*YS-rr*0.45,rr*Math.sin(th)*0.9,RADIUS[p.ev.kind]||1.2);
+    } else {
+      addNode(p.ev,(p.x-cx)*XS,(cy-p.depth)*YS,z,RADIUS[p.ev.kind]||1.2);
+    }
   });
-  order.forEach(function(p){ if(p.ev.parent!=null && meshByEid[p.ev.parent]) addLine(meshByEid[p.ev.parent],meshByEid[p.ev.id],colorOf(p.ev)); });
+  placed.forEach(function(p){ if(p.ev.parent!=null && meshByEid[p.ev.parent]) addLine(meshByEid[p.ev.parent],meshByEid[p.ev.id],colorOf(p.ev)); });
   // a fact or entity another question also touched: ringed, its label prefixed ⇄ (the inspector names the questions)
-  order.forEach(function(p){ var others=otherRootsOf(p.ev); if(!others.length) return; var m=meshByEid[p.ev.id];
+  placed.forEach(function(p){ var others=otherRootsOf(p.ev); if(!others.length) return; var m=meshByEid[p.ev.id];
     var ring=new THREE.Mesh(new THREE.TorusGeometry(1.9,0.12,8,32),new THREE.MeshBasicMaterial({color:LINK,transparent:true,opacity:0.85}));
     ring.position.copy(m.position); ring.scale.setScalar(RADIUS[p.ev.kind]||1.2); ring.userData.follow=m; group.add(ring); rings.push(ring);
     m.userData.label.textContent='⇄ '+m.userData.label.textContent; });
   fit(Math.max(maxX*XS,maxDepth*YS,40));
 }
-/* galaxy: every question on a phyllotaxis spiral, coloured by its final verdict */
+
+/* the run: questions AND the facts they share, relaxed so a shared fact sits between the questions
+   that share it and unlinked questions drift to the rim. The spiral put linked questions wherever
+   they arrived and drew a chord across the view; here the layout IS the sharing. Over LIMIT nodes
+   the relaxation is skipped and the spiral is ordered by connected component, so the chords stay short. */
+var LIMIT=320, runPos={};
+function runGraph(){
+  var nodes=[], byKey={}, edges=[];
+  roots.forEach(function(r){ var n={id:'q'+r.id,ev:r,q:true,heavy:true}; nodes.push(n); byKey[n.id]=n; });
+  Object.keys(sharedRoots).forEach(function(k){
+    var rs=Array.from(sharedRoots[k]); if(rs.length<2||rs.length>12) return;
+    var ev={id:'s:'+k,kind:'shared',text:k.slice(2),shared:(k.charAt(0)==='f'?'fact':'entity'),questions:rs.length,roots:rs};
+    var n={id:ev.id,ev:ev,q:false,roots:rs}; nodes.push(n); byKey[n.id]=n;
+    rs.forEach(function(rid){ if(byKey['q'+rid]) edges.push({a:byKey['q'+rid],b:n}); });
+  });
+  return {nodes:nodes,edges:edges,byKey:byKey};
+}
+function components(){                                   // union-find over the questions, by shared key
+  var p={}; roots.forEach(function(r){p[r.id]=r.id});
+  function find(x){ while(p[x]!==x) x=p[x]=p[p[x]]; return x; }
+  Object.keys(sharedRoots).forEach(function(k){ var rs=Array.from(sharedRoots[k]); if(rs.length>12) return;
+    for(var i=1;i<rs.length;i++){ var a=find(rs[0]), b=find(rs[i]); if(a!==b) p[b]=a; } });
+  var size={}; roots.forEach(function(r){ var c=find(r.id); size[c]=(size[c]||0)+1; });
+  return {of:function(id){return find(id)}, size:size};
+}
+function relax(g, iters){
+  var K=11, nodes=g.nodes;
+  var golden=Math.PI*(3-Math.sqrt(5)), fresh=0;
+  nodes.forEach(function(n,i){
+    var p=runPos[n.id];
+    if(p){ n.x=p[0]; n.y=p[1]; n.z=p[2]; }
+    else { fresh++; var rad=5*Math.sqrt(i+1), th=i*golden; n.x=rad*Math.cos(th); n.y=rad*Math.sin(th); n.z=(i%7-3)*1.2; }
+    n.vx=n.vy=n.vz=0;
+  });
+  if(fresh) iters=Math.max(iters,200);
+  for(var it=0; it<iters; it++){
+    var t=0.12*(1-it/iters)+0.02;
+    for(var i=0;i<nodes.length;i++){ var a=nodes[i];
+      for(var j=i+1;j<nodes.length;j++){ var b=nodes[j];
+        var dx=a.x-b.x, dy=a.y-b.y, dz=a.z-b.z, d2=dx*dx+dy*dy+dz*dz+0.5, d=Math.sqrt(d2);
+        var f=(K*K)/d2*((a.heavy&&b.heavy)?1.5:1)/d;
+        a.vx+=dx*f; a.vy+=dy*f; a.vz+=dz*f; b.vx-=dx*f; b.vy-=dy*f; b.vz-=dz*f; } }
+    g.edges.forEach(function(e){
+      var a=e.a,b=e.b, dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z, d=Math.sqrt(dx*dx+dy*dy+dz*dz)+0.01;
+      var f=(d/K)*0.9;
+      a.vx+=dx*f; a.vy+=dy*f; a.vz+=dz*f; b.vx-=dx*f; b.vy-=dy*f; b.vz-=dz*f; });
+    nodes.forEach(function(n){
+      n.vx-=n.x*0.010; n.vy-=n.y*0.010; n.vz-=n.z*0.045;      // weak centring, flatter in z
+      var v=Math.sqrt(n.vx*n.vx+n.vy*n.vy+n.vz*n.vz), cap=6;
+      if(v>cap){ n.vx*=cap/v; n.vy*=cap/v; n.vz*=cap/v; }
+      n.x+=n.vx*t; n.y+=n.vy*t; n.z+=n.vz*t; n.vx=n.vy=n.vz=0; });
+  }
+  nodes.forEach(function(n){ runPos[n.id]=[n.x,n.y,n.z]; });
+}
 function layoutGalaxy(){
   clearScene();
   var n=roots.length, golden=Math.PI*(3-Math.sqrt(5));
-  roots.forEach(function(r,i){
-    var rad=4.2*Math.sqrt(i+1), th=i*golden;
-    var a=finalOf(r); var col = a? (a.verified?OK:(a.reason==='latent_only'?LATENT:(a.reason==='profile'?PROFILE:BAD))) : '#8393A6';
-    var ev=Object.assign({},r); var m=addNode(ev,rad*Math.cos(th),rad*Math.sin(th),(i%7-3)*1.5,1.6);
-    m.material.color.set(col); m.material.emissive.set(col);
-    m.userData.label.textContent=(a?(a.verified?'✓ ':(a.reason==='profile'?'≡ ':'✗ ')):'')+r.text;
+  var g=runGraph();
+  var relaxed=g.nodes.length<=LIMIT;
+  if(relaxed){
+    relax(g,70);
+  } else {                                                 // too many to relax: the spiral, ordered by component
+    var comp=components();
+    var ordered=roots.slice().sort(function(a,b){
+      var ca=comp.of(a.id), cb=comp.of(b.id);
+      if(ca!==cb) return (comp.size[cb]-comp.size[ca]) || (ca-cb);
+      return a.id-b.id; });
+    g.nodes=[]; g.edges=[];
+    ordered.forEach(function(r,i){ var rad=4.2*Math.sqrt(i+1), th=i*golden;
+      g.nodes.push({id:'q'+r.id,ev:r,q:true,x:rad*Math.cos(th),y:rad*Math.sin(th),z:(i%7-3)*1.5}); });
+  }
+  var ext=0;
+  g.nodes.forEach(function(nd){
+    ext=Math.max(ext,Math.abs(nd.x),Math.abs(nd.y));
+    if(nd.q){
+      var r=nd.ev, a=finalOf(r);
+      var col = a? (a.verified?OK:(a.reason==='latent_only'?LATENT:(a.reason==='profile'?PROFILE:BAD))) : '#8393A6';
+      var ev=Object.assign({},r); var m=addNode(ev,nd.x,nd.y,nd.z,1.6);
+      m.material.color.set(col); m.material.emissive.set(col);
+      m.userData.label.textContent=(a?(a.verified?'✓ ':(a.reason==='profile'?'≡ ':'✗ ')):'')+r.text;
+    } else {
+      var m2=addNode(nd.ev,nd.x,nd.y,nd.z,0.85);
+      m2.material.color.set(LINK); m2.material.emissive.set(LINK);
+      m2.userData.label.textContent='⇄ '+nd.ev.text;
+    }
   });
-  // the links: two questions that walked or learned the same fact, or fetched the same entity
-  var drawn=0;
-  linksBetweenRoots().forEach(function(p){
-    if(drawn>=600) return; var A=meshByEid[p.a], B=meshByEid[p.b]; if(!A||!B) return;
-    var facts=p.keys.filter(function(k){return k.charAt(0)==='f'}).length;
-    var g=new THREE.BufferGeometry().setFromPoints([A.position,B.position]);
-    var ln=new THREE.Line(g,new THREE.LineBasicMaterial({color:facts?LINK:'#4B5A6E',transparent:true,opacity:facts?0.6:0.3}));
-    ln.userData.from=A; ln.userData.to=B; group.add(ln); lines.push(ln); drawn++;
-  });
-  fit(Math.max(4.2*Math.sqrt(n+1)*2.2,40));
+  if(relaxed){                                             // question — shared fact — question: the link, through what is shared
+    g.edges.forEach(function(e){
+      var A=meshByEid[e.a.ev.id], B=meshByEid[e.b.ev.id]; if(!A||!B) return;
+      var gg=new THREE.BufferGeometry().setFromPoints([A.position,B.position]);
+      var ln=new THREE.Line(gg,new THREE.LineBasicMaterial({color:LINK,transparent:true,opacity:e.b.ev.shared==='fact'?0.55:0.28}));
+      ln.userData.from=A; ln.userData.to=B; group.add(ln); lines.push(ln); });
+  } else {
+    var drawn=0;
+    linksBetweenRoots().forEach(function(p){
+      if(drawn>=600) return; var A=meshByEid[p.a], B=meshByEid[p.b]; if(!A||!B) return;
+      var facts=p.keys.filter(function(k){return k.charAt(0)==='f'}).length;
+      var gg=new THREE.BufferGeometry().setFromPoints([A.position,B.position]);
+      var ln=new THREE.Line(gg,new THREE.LineBasicMaterial({color:facts?LINK:'#4B5A6E',transparent:true,opacity:facts?0.6:0.3}));
+      ln.userData.from=A; ln.userData.to=B; group.add(ln); lines.push(ln); drawn++; });
+  }
+  fit(Math.max(ext*2.2,40));
 }
 function fit(extent){ group.rotation.set(0,0,0); camera.position.set(0,0,extent*1.35+30); }
 
@@ -367,7 +469,7 @@ function pick(e){
   ray.setFromCamera(mouse,camera); var hits=ray.intersectObjects(nodes.filter(function(n){return n.visible}));
   if(!hits.length) return;
   var ev=hits[0].object.userData.ev;
-  if(mode==='galaxy'){ openTree(byId[ev.id]); return; }
+  if(mode==='galaxy'){ if(ev.kind==='shared'){ select(ev); return; } openTree(byId[ev.id]); return; }
   select(ev);
 }
 function select(ev){
@@ -378,21 +480,46 @@ function select(ev){
 function resize(){ var w=main.clientWidth, h=main.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
 window.addEventListener('resize',resize);
 
+/* labels: projected, ranked (selected, then the question / shared-fact bodies, then the rest), and
+   placed only where they do not cover one already placed -- a crowded view drops the least important
+   label rather than stacking text on text. Nearer beats farther at the same rank. */
 var v=new THREE.Vector3();
+var LBL_H=15;
+function rank(ev){
+  if(selected&&ev.id===selected.id) return 0;
+  if(ev.kind==='question') return 1;
+  if(ev.kind==='shared') return 2;
+  if(ev.kind==='answer') return 3;
+  if(ev.kind==='fact'||ev.kind==='hop') return 4;
+  return 5;
+}
 function frame(){
   requestAnimationFrame(frame);
   renderer.render(scene,camera);
-  var w=canvas.clientWidth, h=canvas.clientHeight, shown=0;
+  var w=canvas.clientWidth, h=canvas.clientHeight;
+  var cand=[];
   nodes.forEach(function(n){
     var l=n.userData.label;
-    if(!n.visible){ l.style.display='none'; return; }
+    l.style.display='none';
+    if(!n.visible) return;
     v.copy(n.position).applyMatrix4(group.matrixWorld).project(camera);
-    var behind=v.z>1, far=camera.position.z>420 && mode==='tree';
-    var big = n.userData.ev.kind==='question'||n.userData.ev.kind==='answer'||n.userData.ev.id===(selected&&selected.id);
-    if(behind||(far&&!big)||(mode==='galaxy'&&!big&&shown>40)){ l.style.display='none'; return; }
-    if(mode==='galaxy' && camera.position.z>260 && !(selected&&selected.id===n.userData.ev.id)){ l.style.display='none'; return; }
-    l.style.display='block'; l.style.left=((v.x+1)/2*w)+'px'; l.style.top=((1-v.y)/2*h)+'px'; shown++;
+    if(v.z>1) return;                                        // behind the camera
+    cand.push({l:l,n:n,x:(v.x+1)/2*w,y:(1-v.y)/2*h,z:v.z,r:rank(n.userData.ev)});
   });
+  cand.sort(function(a,b){ return a.r-b.r || a.z-b.z; });
+  var taken=[], shown=0, cap=(mode==='tree'?70:44);
+  for(var i=0;i<cand.length && shown<cap;i++){
+    var c=cand[i];
+    if(c.x<-40||c.x>w+40||c.y<0||c.y>h) continue;
+    var tw=Math.min(260,c.l.textContent.length*6.1+10);
+    var x0=c.x-tw/2, x1=c.x+tw/2, y1=c.y-LBL_H*0.4, y0=y1-LBL_H;
+    var hit=false;
+    for(var j=0;j<taken.length;j++){ var t=taken[j];
+      if(x0<t[2]&&x1>t[0]&&y0<t[3]&&y1>t[1]){ hit=true; break; } }
+    if(hit && c.r>0) continue;                               // the selected label is always placed
+    taken.push([x0,y0,x1,y1]);
+    c.l.style.display='block'; c.l.style.left=c.x+'px'; c.l.style.top=c.y+'px'; shown++;
+  }
   lines.forEach(function(ln){ ln.visible=ln.userData.from.visible&&ln.userData.to.visible; });
   rings.forEach(function(rg){ rg.visible=rg.userData.follow.visible; rg.rotation.y+=0.01; });
 }
@@ -451,13 +578,14 @@ function inspect(ev){
         hops.forEach(function(h){ var li=document.createElement('li'); li.textContent=(h.fact||h.query)+(h.provenance?'  ['+h.provenance+']':''); ol.appendChild(li); }); ch.appendChild(ol); } }
   }
   // the link: the same fact / entity under other questions -- click one to open its tree
-  var others=otherRootsOf(ev);
+  var others=ev.kind==='shared'?ev.roots:otherRootsOf(ev);
   if(others.length){
-    var sh=document.createElement('div'); sh.className='chain'; sh.id='ishared'; sh.innerHTML='<h3>'+(shareKeyOf[ev.id].charAt(0)==='f'?'the same fact':'the same entity')+' in '+others.length+' other question'+(others.length>1?'s':'')+'</h3>';
+    var sh=document.createElement('div'); sh.className='chain'; sh.id='ishared'; sh.innerHTML='<h3>'+(ev.kind==='shared'?('the same '+ev.shared+' in '+others.length+' questions'):((shareKeyOf[ev.id].charAt(0)==='f'?'the same fact':'the same entity')+' in '+others.length+' other question'+(others.length>1?'s':'')))+'</h3>';
     others.forEach(function(rid){ var r=byId[rid]; if(!r) return; var a=finalOf(r); var b=document.createElement('button'); b.type='button'; b.className='qitem';
       var d=document.createElement('span'); d.className='dot '+(a?(a.verified?'ok':(a.reason==='latent_only'?'latent':(a.reason==='profile'?'profile':'bad'))):''); var t=document.createElement('span'); t.textContent=r.text;
       var s=document.createElement('small'); s.textContent=a?(a.verified?('→ '+a.answer):(a.reason==='profile'?('profile · '+a.answer):a.reason)):'…'; t.appendChild(s); b.appendChild(d); b.appendChild(t);
-      b.addEventListener('click',function(){ openTree(r); var m=null; nodes.forEach(function(n){ if(shareKeyOf[n.userData.ev.id]===shareKeyOf[ev.id]) m=m||n; }); if(m) select(m.userData.ev); });
+      var key=ev.kind==='shared'?ev.id.slice(2):shareKeyOf[ev.id];
+      b.addEventListener('click',function(){ openTree(r); var m=null; nodes.forEach(function(n){ if(shareKeyOf[n.userData.ev.id]===key) m=m||n; }); if(m) select(m.userData.ev); });
       sh.appendChild(b); });
     ch.parentNode.appendChild(sh);
   }

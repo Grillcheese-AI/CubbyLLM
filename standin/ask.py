@@ -93,11 +93,31 @@ _SMALL = frozenset("the a an and or of in on at to for by with from as is was we
                    "he she they his her their who whom which what where when also known born died one two three four five".split())
 
 
+_MONTHS = ("january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december")
+_ISO = _re.compile(r"\b(\d{4})-(\d{2})(?:-(\d{2}))?\b")
+
+
+def date_words(facts: list[str]) -> list[str]:
+    """The month name, day and year of every ISO date in the facts: '2015-12-11' is also 'December 11,
+    2015' (2026-09-14, live: the grounding rule refused an exact paraphrase of OpenAI's inception over
+    the word 'December'). A date the store holds, spelled the way people spell it, is not an addition."""
+    out: list[str] = []
+    for f in facts:
+        for y, m, d in _ISO.findall(f):
+            i = int(m)
+            if 1 <= i <= 12:
+                out.append(_MONTHS[i - 1])
+            out.append(y)
+            if d:
+                out.append(str(int(d)))
+    return out
+
+
 def grounded_prose(text: str, facts: list[str], entity: str) -> tuple[bool, list[str]]:
     """Every capitalised word and every number in the paraphrase must occur in the facts (or the entity's
-    name): the talk adapter says what the store says, in its words, and nothing it adds is spoken.
-    -> (ok, the offending tokens)."""
-    hay = " ".join(facts + [entity]).lower()
+    name, or a date the facts hold written out): the talk adapter says what the store says, in its words,
+    and nothing it adds is spoken. -> (ok, the offending tokens)."""
+    hay = " ".join(facts + [entity] + date_words(facts)).lower()
     bad: list[str] = []
     for tok in _TOKEN.findall(text):
         low = tok.lower().strip("'’-.,:")
