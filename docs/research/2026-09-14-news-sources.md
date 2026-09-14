@@ -35,7 +35,8 @@ A source that cannot lie about the world is a source that cannot make the loop l
 | BBC News `feeds.bbci.co.uk/news/rss.xml` | OK, 29 KB | 37 | 30× 09-13, 4× 09-14, stragglers |
 | NYT HomePage `rss.nytimes.com/.../HomePage.xml` | OK, 43 KB | 20 | 14× 09-13, 5× 09-14 |
 | Politico `rss.politico.com/politics-news.xml` | OK, 207 KB | 30 | spread over 09-02 → 09-10 |
-| AP via `feedx.net/rss/ap.xml` | OK, 405 KB | 10 | all 09-09 — **stale** |
+| AP via `feedx.net/rss/ap.xml` | OK, 405 KB | 10 | all 09-09 — **stale, dropped** |
+| AP front page via `rss.app/feeds/v1.1/…json` | OK, 36 KB, **JSON Feed** | 25 | 09-13 current |
 | CBC (`www.cbc.ca/webfeed`, `rss.cbc.ca`, both paths) | **refused** | — | timeout / connection closed |
 | AP S3 mirror `associated-press.s3-website-…` | **empty** | 0 | `<items></items>`, 55 bytes |
 
@@ -47,6 +48,27 @@ publisher declining to be read by a robot. That is their call and it is not work
 exactly the topic menu the clarify bar wants, written by the *publisher* rather than ranked by
 this loop — but every file is an empty `<items/>`. The menu idea survives; it needs a live
 backend.
+
+## A topic label is the feed owner's claim
+
+The rss.app feed above is titled **"Iran war"** and carries "Texas stakes its claim for No. 1 in
+AP Top 25" and "A flaw in Georgia's election systems could expose voters' choices". It is in fact
+AP's front page (Nick, 2026-09-14; the contents agree). Which settles how a topic feed may be
+used:
+
+> **A topic feed is a curated selection, not a filter.** The label is the feed owner's claim
+> about what belongs together, so it is recorded as provenance and never as a fact that an item
+> *is about* that topic.
+
+Taking the label at face value would be adopting someone else's editorial judgement as a fact —
+the same error the neutral-prior competition unanimously refused for sitelinks and PageRank, and
+it arrives here wearing a friendlier hat. The feed is keyed by what it *contains*
+(`ap-frontpage`), not by what it is called, and it replaces the nine-days-stale feedx mirror.
+
+It also settles the wire format: rss.app serves **JSON Feed 1.1**, not RSS XML. Which format a
+publisher chose says nothing about the facts, so neither does the source — XML and JSON arrive at
+the same Triples, the same `times`, the same provenance, and an undated item is dropped either
+way.
 
 **The scope this establishes: RSS is a 24-to-48-hour window, not an almanac.** Four working
 feeds reach back about twelve days at the outside and one is already nine days stale. RSS

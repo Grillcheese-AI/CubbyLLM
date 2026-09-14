@@ -55,15 +55,21 @@ MAX_PER_FEED = 60
 # www.cbc.ca/webfeed, connection closed on rss.cbc.ca), which is a publisher declining to be
 # read by a robot. That is their call and it is not worked around.
 FEEDS = {
-    "bbc-news":  "https://feeds.bbci.co.uk/news/rss.xml",
-    "ap":        "https://feedx.net/rss/ap.xml",
-    "nyt-home":  "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
-    "politico":  "https://rss.politico.com/politics-news.xml",
+    "bbc-news":     "https://feeds.bbci.co.uk/news/rss.xml",
+    "ap-frontpage": "https://rss.app/feeds/v1.1/8M3w8yDxG7rKvuyn.json",
+    "nyt-home":     "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+    "politico":     "https://rss.politico.com/politics-news.xml",
 }
+# The AP feed above is titled "Iran war" by whoever built it and is in fact AP's front page
+# (Nick, 2026-09-14; the contents agree -- it carries the AP Top 25 and a Georgia election
+# story). It is keyed by what it CONTAINS, not by what it is called, and see the note on topic
+# labels below. It replaces feedx.net/rss/ap.xml, which was nine days stale when measured.
 
 # AP publishes one feed per desk. This is the menu for Nick's "ask which topic" -- a list the
 # PUBLISHER wrote, not a ranking this loop invented, which is exactly the property that lets it
 # offer choices without taking a position on what matters.
+# ... and it is empty: every file in that bucket is `<items/>`, 55 bytes (measured 2026-09-14).
+# Kept here because the LISTING is the right idea and the right shape; only the content is gone.
 AP_BUCKET = "http://associated-press.s3-website-us-east-1.amazonaws.com/"
 TOPIC_FEEDS = {t: f"{AP_BUCKET}{t}.xml" for t in (
     "world-news", "us-news", "politics", "business", "technology", "science",
@@ -71,6 +77,12 @@ TOPIC_FEEDS = {t: f"{AP_BUCKET}{t}.xml" for t in (
     "lifestyle", "travel", "oddities",
 )}
 
+# A TOPIC FEED IS A CURATED SELECTION, NOT A FILTER. Nick's rss.app "Iran war" feed carries
+# "A flaw in Georgia's election systems" and "Texas stakes its claim for No. 1 in AP Top 25"
+# (2026-09-14, live). So the topic is the FEED OWNER'S claim about what belongs together, and it
+# is recorded as provenance -- never as a fact that the item IS about that topic. Taking the
+# label at face value would be adopting somebody else's editorial judgement as a fact, which is
+# the same error the neutral-prior competition refused for sitelinks and PageRank.
 _DATE_ASK = re.compile(r"^\s*(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?\s*$")
 _TAG = re.compile(r"<[^>]+>")
 # a headline's first word is capitalised because it STARTS the headline, and English capitalises
@@ -150,10 +162,14 @@ class NewsSource:
 
     def items(self, feed_id: str) -> list[tuple[str, str, str]]:
         """(headline, iso date, link) for one feed. Undated items are dropped: a headline whose
-        date this cannot read cannot answer a question about a date."""
+        date this cannot read cannot answer a question about a date. RSS/Atom XML and JSON Feed
+        both arrive here -- rss.app serves the latter (2026-09-14, Nick's 'Iran war' feed), and
+        which wire format a publisher chose says nothing about the facts, so neither does this."""
         body = self._raw(feed_id)
         if not body:
             return []
+        if body.lstrip()[:1] in (b"{", b"["):
+            return self._json_items(feed_id, body)
         try:
             root = ET.fromstring(body)
         except ET.ParseError as e:
@@ -168,6 +184,21 @@ class NewsSource:
                 out.append((title, when, _text(it, "link")))
             if len(out) >= MAX_PER_FEED:
                 break
+        return out
+
+    def _json_items(self, feed_id: str, body: bytes) -> list[tuple[str, str, str]]:
+        """JSON Feed 1.1: `items[]` with `title` and `date_published`."""
+        try:
+            o = json.loads(body)
+        except Exception as e:                               # noqa: BLE001
+            self.errors[feed_id] = f"JSONError: {str(e)[:100]}"
+            return []
+        out = []
+        for it in (o.get("items") or [])[:MAX_PER_FEED]:
+            title = " ".join(_TAG.sub(" ", str(it.get("title") or "")).split())
+            when = _iso(str(it.get("date_published") or it.get("date_modified") or ""))
+            if title and when:
+                out.append((title, when, str(it.get("url") or "")))
         return out
 
     # -- the Source contract -------------------------------------------------------------

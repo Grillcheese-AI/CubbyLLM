@@ -98,3 +98,35 @@ def test_the_topic_menu_counts_what_was_written_about_never_what_mattered(tmp_pa
     topics = dict(src.topics("2026", min_n=1))
     assert topics.get("Russia") == 1 and topics.get("Ukrainian") == 1
     assert "An" not in topics and "Deep" not in topics or topics.get("An") is None
+
+
+JSONFEED = b"""{"version":"https://jsonfeed.org/version/1.1","title":"Iran war","items":[
+ {"id":"1","url":"http://z/1","title":"An Iranian commercial ship is struck near Strait of Hormuz",
+  "date_published":"2026-09-13T05:53:31.000Z","authors":[{"name":"AP News"}]},
+ {"id":"2","url":"http://z/2","title":"Texas stakes its claim for No. 1 in AP Top 25",
+  "date_published":"2026-09-13T10:10:08.000Z","authors":[{"name":"Eric Olson"}]},
+ {"id":"3","url":"http://z/3","title":"An item with no date"}]}"""
+
+
+def test_a_json_feed_reads_the_same_as_an_xml_one(tmp_path):
+    """rss.app serves JSON Feed 1.1, not RSS XML (2026-09-14, Nick's 'Iran war' feed). Which
+    wire format a publisher chose says nothing about the facts, so neither does this -- same
+    Triples, same times, same provenance, and the undated item is still dropped."""
+    src = _src(tmp_path, {"rssapp": JSONFEED})
+    out = src.facts("2026-09-13")
+    assert len(out) == 2                                     # the undated third item is not dated by guess
+    assert out[0].obj == '"An Iranian commercial ship is struck near Strait of Hormuz"'
+    fact = normalize(f"{out[0].obj} is the {out[0].rel} of {out[0].subj}")
+    assert src.times[fact] == {"point": "2026-09-13"} and src.provenance[fact] == "rssapp"
+
+
+def test_a_topic_feed_is_a_curated_selection_and_the_label_is_not_a_fact(tmp_path):
+    """The feed is titled "Iran war" and carries "Texas stakes its claim for No. 1 in AP Top 25"
+    -- live, unedited. The topic is the FEED OWNER'S claim about what belongs together, so it
+    stays provenance and never becomes a fact that the item is ABOUT that topic. Believing the
+    label would be adopting someone else's editorial judgement as truth."""
+    src = _src(tmp_path, {"rssapp": JSONFEED})
+    out = src.facts("2026-09-13")
+    for t in out:
+        assert t.subj == "2026-09-13"                        # the DATE is the subject. Never "Iran war".
+        assert "iran" not in t.rel.lower()
