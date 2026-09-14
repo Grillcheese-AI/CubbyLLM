@@ -78,9 +78,65 @@ class _Ambiguous(Exception):
         self.hop, self.objects, self.facts = hop, objects, facts
 
 
+_AS_OF = __import__("re").compile(r"\b(?:in|as of|during|by|back in)\s+(1[0-9]{3}|2[0-9]{3})\b", __import__("re").I)
+
+
+def _covering(cands, times, year: int):
+    """The candidates whose stated time COVERS `year` -- a point in it, or a span around it.
+
+    This is the honest half of the multi-value problem and the one Nick logged as the "as of"
+    residue: "who was governor in 2015" and "what was the population in 1608" are not ambiguous
+    questions at all. They name a year, the source dated its values, and exactly one of them
+    answers. Nothing is being picked here -- the QUESTION picks, and the store can finally tell
+    the values apart. Several survivors or none is still a refusal."""
+    out = []
+    for f, t in cands:
+        w = times.get(" ".join(str(f).split())) or times.get(normalize(str(f))) or {}
+        pt, st, en = w.get("point"), w.get("start"), w.get("end")
+        if pt and pt[:4] == str(year):
+            out.append((f, t)); continue
+        if st or en:
+            y0 = int(st[:4]) if st else None
+            y1 = int(en[:4]) if en else None
+            # an OPEN span (a start, no end) covers its start year only -- counting it forward
+            # claims an end nobody stated. Same rule the date index uses (ask.py, 2026-09-14).
+            if y0 is not None and y1 is not None and y0 <= year <= y1:
+                out.append((f, t))
+            elif y0 is not None and y1 is None and y0 == year:
+                out.append((f, t))
+            elif y0 is None and y1 is not None and y1 == year:
+                out.append((f, t))
+    return out
+
+
+def _latest_dated(cands, times):
+    """The one candidate the SOURCE dated later than every other, or None.
+
+    None when nothing is dated, when fewer than all of them are, or when the latest date is
+    shared -- in every one of those the values are not separated by anything the source said,
+    and a refusal is the result. "Later" is `point`, else `start`: a value with a start and no
+    end is a value still standing, and a value dated at a point is that point's value."""
+    if not times:
+        return None
+    stamped = []
+    for f, t in cands:
+        w = times.get(" ".join(str(f).split())) or times.get(normalize(str(f))) or {}
+        when = w.get("point") or w.get("start")
+        if not when:
+            return None                                   # one undated candidate and the set is unordered
+        stamped.append((when, f, t))
+    if len(stamped) < 2:
+        return None
+    stamped.sort(key=lambda q: q[0], reverse=True)
+    if stamped[0][0] == stamped[1][0]:
+        return None                                       # a tie in time is not an order
+    return (stamped[0][1], stamped[0][2])
+
+
 def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
           budget: list[int], trace: list[HopTrace],
-          banned: set[str], lookup=None) -> list[Triple] | None:
+          banned: set[str], lookup=None, times: dict | None = None,
+          as_of: int | None = None) -> list[Triple] | None:
     """Pick one accepted triple per hop; None when the budget dies.
     Bounded by `budget` alone (the spec's 3-per-question repair budget);
     `banned` holds facts a failed VM verify blacklisted.
@@ -114,7 +170,28 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
                 # three citizenships) or a conflict between sources. Picking one by rank
                 # spoke a wrong population for 'as of 2022'. The honest outcome is a
                 # refusal that names the candidates (ASK territory), never a guess.
-                raise _Ambiguous(hop, objects, [f for f, _t in cands])
+                #
+                # ONE thing may break the tie, and only one: a time the SOURCE stated and
+                # recorded beside the fact. The neutral-prior competition (2026-09-14, Q5)
+                # named this exact call site as where invariant 4 dies -- "picking among
+                # claims is a claim decision ... only qualifiers carried with the fact may
+                # order it, and if nothing does, refuse". So: the latest dated value wins
+                # and says so, and an asker tally may NEVER be consulted here, however
+                # convenient. Ranking, popularity and 'what people usually mean' stay on
+                # the referent side of the line where they belong.
+                picked = None
+                if as_of is not None and times:
+                    covering = _covering(cands, times, as_of)
+                    # exactly one value answers the year the QUESTION named: that is not a pick,
+                    # it is the question doing its job. None or several and we are back to a
+                    # refusal, which names the candidates as it always did.
+                    if len({normalize(t.obj) for _f, t in covering}) == 1:
+                        picked = covering[0]
+                if picked is None:
+                    picked = _latest_dated(cands, times)
+                if picked is None:
+                    raise _Ambiguous(hop, objects, [f for f, _t in cands])
+                cands = [picked]
             if len(cands) > 1:
                 rank = {f: float(sc) for sc, f in retrieve(query, max(top_k, len(cands)))}
                 cands.sort(key=lambda ft: (-rank.get(ft[0], -1.0), ft[0]))
@@ -147,7 +224,8 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
 
 def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
            top_k: int = 3, max_repairs: int = 1, lookup=None, known=None,
-           plan: QuestionPlan | None = None, aliases: dict[str, list[str]] | None = None) -> CoTResult:
+           plan: QuestionPlan | None = None, aliases: dict[str, list[str]] | None = None,
+           times: dict | None = None) -> CoTResult:
     """`lookup`: a `TripleIndex.hop`-shaped callable; when given, every hop is
     looked up before it is searched (see `_walk`).
 
@@ -163,6 +241,11 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
     exp_r6 (2026-09-11): refuses 86/92 of the harvest's misparsed chains and
     0/517 verified ones. None keeps the pre-disposer behaviour exactly.
 
+    `times`: the store's `{fact: {start, end, point}}` -- the times the SOURCE stated, beside
+    the facts. The only thing permitted to break an ambiguous hop: several values for one
+    relation are separated by a date the source gave, or by nothing, and nothing means refuse.
+    See `_latest_dated`. None keeps the pre-2026-09-14 behaviour (every such hop refuses).
+
     `plan`: a PROPOSED plan (the emitter's, exp_r7) used instead of the
     grammar's parse. Model proposes, host disposes: it goes through `known`
     exactly like a grammar plan, and the walk and the VM treat it identically.
@@ -175,8 +258,17 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
         plan = parse_question(question)
     if plan is None:
         return CoTResult(answer=None, verified=False, reason="unparseable")
+    m_asof = _AS_OF.search(question or "")
+    as_of = int(m_asof.group(1)) if m_asof else None     # the year the QUESTION named, if it named one
     if known is not None:
-        verdict = verify_plan(question, plan, known, aliases)
+        # The coverage check reads the question WITHOUT its year phrase, because that is the
+        # question the plan was made for. 2026-09-14, live: with the year left in, a perfectly
+        # good plan (['position held'], seed 'bill haslam') was refused as
+        # plan_does_not_cover_question over the words "in 2015" -- which no relation covers and
+        # none should, because a year is a constraint on the answer and not part of the chain.
+        # The year is not discarded: `as_of` above carries it to the hop that needs it.
+        covered = " ".join(_AS_OF.sub(" ", question).split()) if as_of is not None else question
+        verdict = verify_plan(covered, plan, known, aliases)
         if not verdict.ok:
             return CoTResult(answer=None, verified=False, reason=verdict.reason,
                              refused={"covers": verdict.covers,
@@ -193,7 +285,8 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
     for _attempt in range(2):
         trace: list[HopTrace] = []
         try:
-            triples = _walk(plan, retrieve, tau_ret, top_k, budget, trace, banned, lookup=lookup)
+            triples = _walk(plan, retrieve, tau_ret, top_k, budget, trace, banned, lookup=lookup,
+                            times=times, as_of=as_of)
         except _Ambiguous as amb:
             return CoTResult(answer=None, verified=False, trace=trace, repairs_used=max_repairs - budget[0],
                              reason="ambiguous_hop", repairs=repairs,

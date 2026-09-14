@@ -120,6 +120,33 @@ def when_text(w: str) -> str:
     return "\u2013".join(out)
 
 
+_AS_OF_PHRASE = _re.compile(r"\s*\b(?:in|as of|during|back in)\s+(1[0-9]{3}|2[0-9]{3})\b\s*", _re.I)
+
+
+def strip_as_of(question: str) -> tuple[str, str | None]:
+    """(the question without its year phrase, the year) -- the host takes the time OFF the
+    question before the emitter sees it.
+
+    2026-09-14, live: "what was the position held of bill haslam in 2015?" made gen 2 emit the
+    relation `position held in 2015`, and "the population of quebec city in 2011" made the seed
+    `quebec city 2011 population`. Both are unknown_relation / does-not-cover before any walk
+    runs, so the store's dates never got a chance to answer a question they can answer perfectly
+    well. The year is not part of the relation; it is a constraint ON the answer, and the walk
+    reads it from the original question (`pipeline._AS_OF`). Same move as `_strip_place_ask`:
+    the model proposes, and the host hands it a question it can propose FOR.
+
+    A year inside the entity's own name is left alone -- "what is the 2011 census" is not a
+    question about 2011, it is a question about a thing called 2011 census."""
+    m = _AS_OF_PHRASE.search(question or "")
+    if not m:
+        return question, None
+    head, tail = question[:m.start()], question[m.end():]
+    if not head.strip():                                 # the phrase IS the question's subject
+        return question, None
+    stripped = " ".join((head.rstrip() + " " + tail.lstrip()).split())
+    return (stripped or question), m.group(1)
+
+
 def profile_ask(question: str, is_relation=None) -> tuple[str, str] | None:
     """(kind, entity) of a 'who / what / where is X' or 'what happened in <date>' question, or None: a
     question with a relation in it ('the capital of France', "Canada's capital") is a plan for the
@@ -332,8 +359,9 @@ class AskLoop:
                 rec = self.profile(question, pa[0], pa[1], t0, how="the question's shape (who / what / where / when)", item=item, asker=asker)
                 self.history.append(rec)
                 return rec
+            asked, _year = strip_as_of(question)         # the year is a constraint, not a relation
             try:
-                raw = self.emitter.emit(question, max_new_tokens=self.max_new)
+                raw = self.emitter.emit(asked, max_new_tokens=self.max_new)
                 program = strip_fences(raw)
                 pp = profile_program(program)            # the emitter wrote the retrieval program: SEED + ASK, no hop
                 if pp:
@@ -409,6 +437,13 @@ class AskLoop:
                     self.known.add(fact)
                 if prov is not None:
                     prov[" ".join(fact.split())] = self.source.name
+            # the time is recorded for a DUPLICATE too. The preloaded world carries no qualifiers,
+            # so every fact it already holds is undated -- and when the source restates one, the
+            # gate calls it a duplicate and the old code dropped the date with it. That is why
+            # "what was the population of Quebec City in 2011" stayed ambiguous through a refetch
+            # that had the answer in hand (2026-09-14, live). Learning WHEN a fact was true adds
+            # no claim: it is the same fact, said with the qualifier the source always had.
+            if p.status in ("accepted", "duplicate"):
                 times = getattr(self.world, "times", None)        # WHEN the source said the fact was true
                 src_times = getattr(self.source, "times", None)
                 if times is not None and src_times:

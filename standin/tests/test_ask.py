@@ -380,3 +380,101 @@ def test_without_a_date_source_the_refusal_is_unchanged():
                    run_fn=faithful_vm([]), tau_profile=0.5)
     rec = loop.ask("what happened in 2026?")
     assert rec["reason"] == "no_events_for_date" and rec["answer"] is None
+
+
+
+# ---- the competition's Q5: picking among CLAIMS is a claim decision ----------------------
+
+def _ambiguous_world(times=None):
+    """Quebec City with three populations, each true at its own census."""
+    world = LookupStore(["547 is the population of Quebec City",
+                         "516622 is the population of Quebec City",
+                         "546958 is the population of Quebec City",
+                         "Canada is the country of Quebec City"])
+    world.times = times or {}
+    return world
+
+# The neutral-prior competition, 2026-09-14, Q5 -- the failure mode the lab had not considered
+# and was one step from walking into: "once the item is unique, an item can still carry several
+# objects for the same relation ... picking among CLAIMS is a claim decision ... only qualifiers
+# carried with the fact may order it, and if nothing does, refuse." The obvious next move was to
+# break this tie with the same asker ledger that breaks REFERENT ties. That is the day invariant
+# 4 dies, and it would have looked like a feature: the popular answer, served by a verifier.
+
+
+def test_the_latest_dated_value_wins_and_an_undated_set_still_refuses():
+    """Two halves of one rule. Dated: the source separated them, so the walk may follow the
+    latest. Undated (or tied, or only partly dated): nothing the source said separates them, and
+    a refusal is the result -- naming the candidates, as it always did."""
+    from cubbyllm.reasoning.pipeline import _latest_dated
+    from cubbyllm.reasoning.planner import Triple
+    cands = [("547 is the population of Quebec City", Triple("547", "population", "Quebec City")),
+             ("516622 is the population of Quebec City", Triple("516622", "population", "Quebec City")),
+             ("546958 is the population of Quebec City", Triple("546958", "population", "Quebec City"))]
+    times = {"547 is the population of Quebec City": {"point": "1608-00-00"},
+             "516622 is the population of Quebec City": {"point": "2011-00-00"},
+             "546958 is the population of Quebec City": {"point": "2021-00-00"}}
+    picked = _latest_dated(cands, times)
+    assert picked is not None and picked[1].obj == "546958"
+
+    assert _latest_dated(cands, {}) is None                       # nothing dated: refuse
+    assert _latest_dated(cands, None) is None
+    partial = dict(times); partial.pop("547 is the population of Quebec City")
+    assert _latest_dated(cands, partial) is None                  # ONE undated and the set is unordered
+    tied = {f: {"point": "2021-00-00"} for f, _t in cands}
+    assert _latest_dated(cands, tied) is None                     # a tie in time is not an order
+
+
+def test_a_start_with_no_end_still_orders_and_a_single_candidate_does_not():
+    """`point` first, then `start`: a value with a start and no end is a value still standing.
+    And one candidate is not an ambiguity -- the helper only ever ARBITRATES, it never elects."""
+    from cubbyllm.reasoning.pipeline import _latest_dated
+    from cubbyllm.reasoning.planner import Triple
+    cands = [("A is the office of X", Triple("A", "office", "X")),
+             ("B is the office of X", Triple("B", "office", "X"))]
+    times = {"A is the office of X": {"start": "2011-01-15", "end": "2019-01-19"},
+             "B is the office of X": {"start": "2019-01-19"}}
+    picked = _latest_dated(cands, times)
+    assert picked is not None and picked[1].obj == "B"
+    assert _latest_dated(cands[:1], times) is None
+
+
+def test_a_question_that_names_a_year_is_not_an_ambiguous_question():
+    """Nick's "as of" residue, closed. "What was the population of Quebec City in 1608" and
+    "who was governor in 2015" were refused as ambiguous hops because the store held several
+    values and could not tell them apart. It can now -- the source dated every one of them --
+    and nothing here is being PICKED: the question picks, and the walk follows.
+
+    Several survivors or none is still a refusal, because then the year did not decide either."""
+    from cubbyllm.reasoning.pipeline import _covering
+    from cubbyllm.reasoning.planner import Triple
+    cands = [("547 is the population of Quebec City", Triple("547", "population", "Quebec City")),
+             ("516622 is the population of Quebec City", Triple("516622", "population", "Quebec City")),
+             ("546958 is the population of Quebec City", Triple("546958", "population", "Quebec City"))]
+    times = {"547 is the population of Quebec City": {"point": "1608-00-00"},
+             "516622 is the population of Quebec City": {"point": "2011-00-00"},
+             "546958 is the population of Quebec City": {"point": "2021-00-00"}}
+    assert [t.obj for _f, t in _covering(cands, times, 1608)] == ["547"]
+    assert [t.obj for _f, t in _covering(cands, times, 2011)] == ["516622"]
+    assert _covering(cands, times, 1999) == []            # no value covers it: back to a refusal
+
+
+def test_a_closed_span_covers_its_years_and_an_open_one_covers_only_its_start():
+    """The same rule the date index uses: a closed span is known to have covered its years; an
+    open one is a state whose end the source never stated, and counting it forward claims
+    something nobody said. Bill Haslam was governor 2011-01-15 to 2019-01-19, so 2015 is his."""
+    from cubbyllm.reasoning.pipeline import _covering
+    from cubbyllm.reasoning.planner import Triple
+    cands = [("Governor of Tennessee is the position held of Bill Haslam",
+              Triple("Governor of Tennessee", "position held", "Bill Haslam")),
+             ("Mayor of Knoxville is the position held of Bill Haslam",
+              Triple("Mayor of Knoxville", "position held", "Bill Haslam"))]
+    times = {"Governor of Tennessee is the position held of Bill Haslam": {"start": "2011-01-15", "end": "2019-01-19"},
+             "Mayor of Knoxville is the position held of Bill Haslam": {"start": "2003-12-20", "end": "2011-01-10"}}
+    assert [t.obj for _f, t in _covering(cands, times, 2015)] == ["Governor of Tennessee"]
+    assert [t.obj for _f, t in _covering(cands, times, 2005)] == ["Mayor of Knoxville"]
+    assert _covering(cands, times, 2022) == []
+
+    open_span = {"Governor of Tennessee is the position held of Bill Haslam": {"start": "2011-01-15"}}
+    assert [t.obj for _f, t in _covering(cands[:1], open_span, 2011)] == ["Governor of Tennessee"]
+    assert _covering(cands[:1], open_span, 2015) == []    # an unstated end is not an end in 9999

@@ -42,7 +42,13 @@ from .planner import QuestionPlan, Triple, normalize, parse_fact, parse_question
 __wiring__ = Wiring.WIRED
 
 # the refusals a fetch can address: the store lacks a fact, not the plan a shape
-LEARNABLE = ("retrieval_exhausted", "unknown_relation", "latent_only")   # latent_only: an attesting source may lift the hold
+# latent_only: an attesting source may lift the hold.
+# ambiguous_hop (2026-09-14): the walk found several values for one hop and could not order
+# them -- and it could not order them because the PRELOADED world carries no qualifiers at all.
+# Only a fact fetched live during a session is dated, so asking the source about the entity is
+# exactly what turns an unorderable set into an orderable one. The second walk then either
+# picks by the date the source stated, or refuses again with the candidates named.
+LEARNABLE = ("retrieval_exhausted", "unknown_relation", "latent_only", "ambiguous_hop")
 
 
 @runtime_checkable
@@ -466,7 +472,8 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
 
     def walk():
         res = answer(question, retrieve, run_fn, tau_vm=tau_vm, tau_ret=tau_ret, top_k=top_k,
-                     max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan, aliases=aliases)
+                     max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan, aliases=aliases,
+                     times=getattr(store, "times", None))     # the source's own dates: the ONLY hop tie-break
         # the latent tier: a verified chain that rests on a fact only a latent source stated is not spoken;
         # the would-be answer and the facts are on record, and a second source's agreement lifts the hold
         if res.verified and prov is not None:
@@ -577,12 +584,32 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
             p = gate(fact, store, source.name, ent)
             out.learned.append(p)
             lifted = False
+            # WHEN the source said the fact was true, recorded beside the fact -- for a DUPLICATE
+            # as well as a new one. The preloaded world carries no qualifiers at all, so every
+            # fact it already holds is undated; when the source restates one, the gate calls it a
+            # duplicate, and dropping the date with it leaves the walk unable to order values it
+            # now has every means to order. 2026-09-14, live: "what was the position held of bill
+            # haslam in 2015" refused as ambiguous through a refetch that had 2011-01-15/2019-01-19
+            # in hand. Learning when a fact was true adds no claim -- it is the same fact, said
+            # with the qualifier the source always carried.
+            store_times = getattr(store, "times", None)
+            src_times = getattr(source, "times", None)
+            dated_now = False
+            if store_times is not None and src_times:
+                w = src_times.get(normalize(fact))
+                if w and store_times.get(fkey(fact)) != w:
+                    store_times[fkey(fact)] = w
+                    dated_now = True
             if p.status == "accepted":
                 store.add(fact)
                 if hasattr(known, "add"):
                     known.add(fact)
                 if prov is not None:
                     prov[fkey(fact)] = source.name + (" (latent)" if latent else "")
+                admitted += 1
+            elif p.status == "duplicate" and dated_now:
+                # a fact the store already had, now with the date it never had: that is new
+                # knowledge ABOUT the fact, so the walk gets another turn with it.
                 admitted += 1
             elif p.status == "duplicate" and prov is not None and not latent and prov.get(fkey(fact), "").endswith("(latent)"):
                 # a second, attesting source states the latent fact: the hold is lifted, both names on record
