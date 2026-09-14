@@ -1,0 +1,14 @@
+machine: 29,546 MB used, 21,752 MB available at start | sessions 256, threads 8, 30 programs each
+
+baseline (1 session, serial): 300 programs in 0.21s = 1,438/s (0.70 ms each)
+
+256 resident sessions: spawn+first-call median 19 ms (min 17, max 30)
+  machine used 29,552 -> 29,984 MB (+432 MB) | summed process RSS 1,744 MB
+  ≈ 1.69 MB per user MARGINAL (summed RSS says 6.8 MB each -- the executable's pages counted once per process, mapped once by the OS)  ->  592 users per GB, 12,617 more on this machine's free memory
+
+load: 7,680 programs over 256 sessions from 8 threads in 1.47s = 5,211/s (651/s per thread)
+  latency ms: p50 1.47 · p90 2.10 · p99 2.77 · max 3.73
+  vs the serial baseline: 3.62x throughput on 8 threads
+
+after the load: machine used 30,057 MB | summed RSS 1,809 MB (+0.25 MB per session since warm)
+after close: machine used 29,551 MB (released 506 MB)
