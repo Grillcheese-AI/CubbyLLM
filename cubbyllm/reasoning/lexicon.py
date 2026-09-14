@@ -53,10 +53,16 @@ class Lexicon:
         return [self._rows[i] for i in self._by_word.get(normalize(text), [])]
 
     def relations(self, text: str) -> list[str]:
-        """Every other English wording of a synset `text` belongs to, in a stable order."""
+        """Every other English wording of a NOUN synset `text` belongs to, in a stable order.
+        Nouns only (2026-09-13, the ask loop): the verb 'mother' -- beget, engender, FATHER,
+        sire -- reached lever 4 and 'Who is the mother of Justin Trudeau?' was rewritten to
+        `father` and answered Pierre Trudeau, verified. A relation is a noun phrase; a verb
+        sense of its word is another word."""
         key = normalize(text)
         out: list[str] = []
         for rec in self.synsets(text):
+            if rec.get("pos", "n") != "n":
+                continue
             for w in rec.get("en", []):
                 if normalize(w) != key and w not in out:
                     out.append(w)

@@ -45,3 +45,19 @@ coverage refusal, a two-hop chain).
 
 Next: the emitter's own decode as an event (tokens, time), the VM's per-hop similarity from the resident
 session, and the source fetches' timing â€” the panel then shows where the milliseconds go.
+
+## 14 September: the ask box, and links between questions
+
+`serve_api.py --ask` mounts the loop on natural questions (`standin/ask.py`, `POST /ask`); the panel,
+served from `/panel`, shows an ask box when the loop is mounted and connects to the stream on load.
+A typed question's tree opens the moment its root event arrives and redraws per hop; the status line
+carries the answer or the refusal. The stream replaces whatever was loaded (the server's event ids
+start at 1, like the sample's).
+
+Links (Nick: "there needs to be linked between answers"): the panel indexes every fact walked or
+admitted and every entity fetched by the question that touched it. A shared node is ringed (⇄) in the
+tree and its label prefixed; the inspector lists the other questions carrying the same fact or entity
+(click one to open it at that node); the galaxy draws a line between every pair of linked questions —
+brighter for a shared fact, faint for a shared entity. The fetch event now says how the source resolved
+the entity (`linked` / `exact` / `relation (the question's next hop)` / `+ label over alias`), which
+item, and the candidates when it refused. The evening's findings: `2026-09-14-ask-loop.md`.

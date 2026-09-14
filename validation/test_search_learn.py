@@ -570,3 +570,81 @@ def test_every_step_of_the_loop_is_an_event_linked_to_its_parent_and_no_listener
     finally:
         ev.remove_sink(sink2)
     assert sink2[0]["kind"] == "question" and sink2[0]["text"] == "What is the capital of France?" and sink2[-1]["kind"] == "answer"
+
+
+class NeedySource(DictSource):
+    """A source that can use the relation the walk needs (WikidataSource's `relations=`): records what it was told."""
+    def __init__(self, by_entity): super().__init__(by_entity); self.needs = []
+    def facts(self, entity, relations=None):
+        self.needs.append((normalize(entity), list(relations or []))); return super().facts(entity)
+
+
+def test_the_source_is_told_the_relation_the_walk_needs_from_the_entity_it_is_asked_about():
+    """2026-09-13 (the ask loop): 'Marie Curie' is a physicist, a book edition, a metro station and a ferry
+    on Wikidata; the strict rule refused all four. The loop now hands the source the stalled hop's wording --
+    the tail's relation for the seed, the next plan relation for the object the walk stopped at -- so a source
+    can keep the items that carry it. A source without the parameter is called as before."""
+    from cubbyllm.reasoning.learn import wanted_relations
+    store, known = LookupStore(STORE), StoreRelations(STORE)
+    src = NeedySource({"marie": ["canada is the country of citizenship of marie"], "canada": ["ottawa is the capital of canada"]})
+    r = run("What is the capital of the country of citizenship of Marie?", store, known, src)
+    assert r.result.verified and normalize(r.result.answer) == "ottawa"
+    assert src.needs == [("marie", ["country of citizenship"]), ("canada", ["capital"])]
+    plain = DictSource({"jean2": ["france is the country of citizenship of jean2"]})     # no `relations=`: the old call
+    r2 = run("What is the capital of the country of citizenship of Jean2?", LookupStore(STORE), StoreRelations(STORE), plain)
+    assert r2.result.verified and [normalize(c) for c in plain.calls] == ["jean2"]
+    assert wanted_relations("q", None, r2.first, known, "x") == []
+
+
+def test_the_store_snapshot_is_incremental_order_independent_and_equal_to_a_fresh_hash():
+    """2026-09-13 (the ask loop): the provenance snapshot hashed every stored text, sorted, per gated fact --
+    0.35 s a fact on the wiki world. Now a running set hash kept on the store: the same value however the
+    facts arrived, recomputed only over what was appended since the last write."""
+    from cubbyllm.reasoning.learn import snapshot
+    a = LookupStore(STORE)
+    s0 = snapshot(a)
+    a.add("ottawa is the capital of canada"); s1 = snapshot(a)
+    a.add("canada is the country of citizenship of marie"); s2 = snapshot(a)
+    assert len(s0) == 16 and s0 != s1 != s2
+    b = LookupStore(["canada is the country of citizenship of marie", "ottawa is the capital of canada"] + list(reversed(STORE)))
+    assert snapshot(b) == s2                                   # the same set, another order, hashed from scratch
+    assert snapshot(a) == s2 and a._snap[0] == len(a.texts)     # stable, and the cache sits at the store's size
+
+
+class NamingSource(DictSource):
+    """A resolver that names a wording's labels (the property table's shape): relations(text) -> labels."""
+    def __init__(self, by_entity, table): super().__init__(by_entity); self.table = {normalize(k): v for k, v in table.items()}
+    def relations(self, text): return list(self.table.get(normalize(text), []))
+    def wordings(self, label): return [label]
+
+
+class Oracle:
+    """A second resolver (the synonym oracle's shape) that offers a HELD relation for the wording."""
+    name = "oracle"
+    def __init__(self, table): self.table = {normalize(k): v for k, v in table.items()}
+    def relations(self, text): return list(self.table.get(normalize(text), []))
+
+
+def test_a_wording_the_first_resolver_names_is_never_paraphrased_by_a_later_one():
+    """2026-09-13 (the ask loop, live): 'Who is the mother of Justin Trudeau?' -- the property table said
+    `mother` is a property, the wiki world did not hold it, and the synonym oracle behind the table offered
+    `father` (WordNet's verb sense of 'mother': beget, sire, father). Lever 4 rewrote the plan and the VM
+    verified Pierre Trudeau. Now the first resolver that names the wording decides: a named relation the
+    store lacks is fetched, not paraphrased -- the oracle speaks only for wordings the table has no form of."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    store_texts = ["pierre trudeau is the father of justin trudeau"]
+    store, known = LookupStore(store_texts), StoreRelations(store_texts)
+    src = NamingSource({"justin trudeau": ["margaret trudeau is the mother of justin trudeau"]}, {"mother": ["mother"], "father": ["father"]})
+    oracle = Oracle({"mother": ["father", "sire"]})
+    q = "Who is the mother of Justin Trudeau?"
+    plan = QuestionPlan(relations=[None], tail="mother of justin trudeau", n_hop=1)
+    r = learn_and_answer(q, NO_SEARCH, faithful_vm([]), store=store, known=known, source=src, tau_vm=0.5, plan=plan, resolvers=[oracle])
+    assert r.result.verified and normalize(r.result.answer) == "margaret trudeau"
+    assert not any(b == "father" for _a, b in r.aliased) and [normalize(e) for e in r.entities] == ["justin trudeau"]
+    # the oracle still serves a wording the table has no form of
+    src2 = NamingSource({}, {"father": ["father"]})
+    oracle2 = Oracle({"dad": ["father"]})
+    r2 = learn_and_answer("Who is the dad of Justin Trudeau?", NO_SEARCH, faithful_vm([]), store=LookupStore(store_texts),
+                          known=StoreRelations(store_texts), source=src2, tau_vm=0.5,
+                          plan=QuestionPlan(relations=[None], tail="dad of justin trudeau", n_hop=1), resolvers=[oracle2])
+    assert r2.result.verified and normalize(r2.result.answer) == "pierre trudeau" and ("dad", "father") in r2.aliased

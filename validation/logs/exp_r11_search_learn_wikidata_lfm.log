@@ -1,0 +1,77 @@
+wiki world 552297 facts, 2794 relations | SimpleQA sample 600 (seed 7) | proposer emitter_v12e.Q4_K_M.gguf | source lfm | lexicon 119161 synsets
+  100/600 (140s, api calls 0) plan 88 fetched 30 verified 0 correct 0 near 0 WRONG 0 | latent held 1 (would be wrong 1)
+  200/600 (235s, api calls 0) plan 177 fetched 50 verified 0 correct 0 near 0 WRONG 0 | latent held 2 (would be wrong 2)
+  400/600 (481s, api calls 0) plan 354 fetched 120 verified 0 correct 0 near 0 WRONG 0 | latent held 4 (would be wrong 4)
+  500/600 (605s, api calls 0) plan 441 fetched 155 verified 0 correct 0 near 0 WRONG 0 | latent held 5 (would be wrong 5)
+  600/600 (705s, api calls 0) plan 530 fetched 180 verified 0 correct 0 near 0 WRONG 0 | latent held 7 (would be wrong 7)
+
+SIMPLEQA + SEARCH-AND-LEARN: {'aliased_questions': 115, 'facts_fetched': 470, 'fetched_questions': 180, 'final:ambiguous_relation': 23, 'final:latent_only': 7, 'final:plan_does_not_cover_question': 327, 'final:retrieval_exhausted': 39, 'final:unknown_relation': 134, 'first:ambiguous_relation': 23, 'first:plan_does_not_cover_question': 330, 'first:retrieval_exhausted': 43, 'first:unknown_relation': 134, 'gate:accepted': 450, 'gate:duplicate': 20, 'latent:WRONG': 7, 'no_plan': 70, 'plan': 530}
+api calls 0 | VM calls 14 | store grew 450
+
+LFM facts against Wikidata's cache (121 entities, 450 facts): entity_unresolved 319, unheld 102, disagree 28, agree 1 | model calls 175
+  date of birth: entity_unresolved 44, disagree 22, unheld 5
+  place of birth: entity_unresolved 36, unheld 21, disagree 1
+  award received: entity_unresolved 38, unheld 19, disagree 1
+  country of citizenship: entity_unresolved 23, unheld 13, disagree 2
+  point in time: entity_unresolved 38
+  quantity: entity_unresolved 27, unheld 4
+  educated at: entity_unresolved 20, unheld 9
+  continent: entity_unresolved 20, unheld 2
+  occupation: entity_unresolved 10, unheld 9
+  date of death: entity_unresolved 12, unheld 6
+  place of death: entity_unresolved 11, unheld 6
+  country: entity_unresolved 11, unheld 4, agree 1
+  located in the administrative territorial entity: entity_unresolved 5, unheld 1
+  inception: entity_unresolved 5, disagree 1
+  original language of film or TV show: entity_unresolved 3
+  genre: entity_unresolved 2
+  [entity_unresolved] '2009-05-01' is the date of birth of 'kashmir india' | wikidata []
+  [entity_unresolved] 'Giraffes' is the place of birth of 'kashmir india' | wikidata []
+  [entity_unresolved] 'Giraffes' is the country of citizenship of 'kashmir india' | wikidata []
+  [entity_unresolved] 'Nobel Prize in Physics' is the award received of 'kashmir india' | wikidata []
+  [entity_unresolved] '2013' is the point in time of 'arctangent 2013' | wikidata []
+  [disagree] '1939-04-29' is the date of birth of 'haile gebrselassie' | wikidata ['1973-04-18']
+  [disagree] 'Giraffe' is the place of birth of 'haile gebrselassie' | wikidata ['Assela']
+  [disagree] 'United States of America' is the country of citizenship of 'haile gebrselassie' | wikidata ['Ethiopia']
+  [disagree] 'Nobel Prize in Physics' is the award received of 'haile gebrselassie' | wikidata ['Track & Field News Athlete of the Year', 'Bislett medal', 'Track & Field News Athlete of the Year']
+  [disagree] '1939-05-24' is the date of birth of 'masaki tsuji' | wikidata ['1932-03-23']
+  [unheld] '1979-03-14' is the date of birth of 'chitwan district' | wikidata []
+  [unheld] 'Chitwan District' is the quantity of 'chitwan district' | wikidata []
+  [unheld] 'Tokyo' is the place of birth of 'masaki tsuji' | wikidata []
+  [unheld] 'ETH Zurich' is the educated at of 'masaki tsuji' | wikidata []
+  [unheld] 'Nobel Prize in Physics' is the award received of 'masaki tsuji' | wikidata []
+  [agree] 'Nepal' is the country of 'chitwan district' | wikidata ['Nepal']
+
+every verified answer:
+  [latent WRONG] 'On what day, month, and year was Masaki Tsuji born?'
+           plan ['born'] seed 'masaki tsuji' -> '1939-05-24' (gold 'March 23, 1932 ')
+           via ['1939-05-24 is the date of birth of masaki tsuji']
+  [latent WRONG] 'On what day, month, and year was Christopher Ndarathi Murungaru, a former Kenyan politicia'
+           plan ['born'] seed 'christopher ndarathi murungaru former kenyan politician' -> '1969-07-15' (gold '19th August 1954')
+           via ['1969-07-15 is the date of birth of christopher ndarathi murungaru a former kenyan politician']
+  [latent WRONG] 'On what day, month, and year was the footballer Michael Anderson Pereira da Silva born?'
+           plan ['born'] seed 'michael anderson pereira da silva' -> '1979-03-17' (gold 'February 16, 1983')
+           via ['1979-03-17 is the date of birth of michael anderson pereira da silva']
+  [latent WRONG] 'On what day, month, and year was Motonori Matuyama born?'
+           plan ['born'] seed 'motonori matuyama' -> '1919-06-15' (gold '25 October 1884')
+           via ['1919-06-15 is the date of birth of motonori matuyama']
+  [latent WRONG] 'What day, month, and year was James Young (Missouri politician) born?'
+           plan ['born'] seed 'james young missouri politician' -> '1848-05-30' (gold ' 11 May, 1800')
+           via ['1848-05-30 is the date of birth of james young missouri politician']
+  [latent WRONG] 'What day, month, and year was Giulio Carlo Argan born?'
+           plan ['born'] seed 'giulio carlo argan' -> '1905-03-11' (gold '17 May 1909')
+           via ['1905-03-11 is the date of birth of giulio carlo argan']
+  [latent WRONG] 'What day, month, and year was Sergio Flamigni, an Italian politician and writer, born?'
+           plan ['born'] seed 'sergio flamigni italian politician and writer' -> '1900-05-30' (gold '22 October 1925')
+           via ['1900-05-30 is the date of birth of sergio flamigni an italian politician and writer']
+
+learned (first 6):
+  'Which lake in Kashmir, India, is known as "the jewel in the ring"?' asked ['kashmir india'] admitted 4 e.g. ['2009-05-01 is the date of birth of kashmir india', 'Giraffes is the place of birth of kashmir india', 'Giraffes is the country of citizenship of kashmir india']
+  'In what year did Haile Gebrselassie go undefeated in all of his road r' asked ['haile gebrselassie'] admitted 4 e.g. ['1939-04-29 is the date of birth of haile gebrselassie', 'Giraffe is the place of birth of haile gebrselassie', 'United States of America is the country of citizenship of haile gebrselassie']
+  'Who was the Friday night headliner of ArcTanGent 2013 on the Arc stage' asked ['arctangent 2013'] admitted 3 e.g. ['2013 is the point in time of arctangent 2013', 'Europe is the continent of arctangent 2013', 'Nobel Prize in Physics is the award received of arctangent 2013']
+  "What year did William Kentridge's second film of his '9 Drawings for P" asked ['his 9 drawings for projection project'] admitted 2 e.g. ['9 drawings for projection project is the quantity of his 9 drawings for projection project', 'Nobel Prize in Physics is the award received of his 9 drawings for projection project']
+  'What is the list entry name for the National Heritage List entry numbe' asked ['stonehouse stroud gloucestershire'] admitted 4 e.g. ['1879 is the date of birth of stonehouse stroud gloucestershire', 'Gironde is the place of birth of stonehouse stroud gloucestershire', 'Gironde is the quantity of stonehouse stroud gloucestershire']
+  'As of 2011, what was the male population of Chitwan District?' asked ['chitwan district'] admitted 3 e.g. ['1979-03-14 is the date of birth of chitwan district', 'Chitwan District is the quantity of chitwan district', 'Nepal is the country of chitwan district']
+
+aliased (lever 4: plan word -> label; lever 6: question word -> label): 115 questions, e.g. [('year', 'occurred on')] -> plan_does_not_cover_question; [('parents', 'parent')] -> plan_does_not_cover_question; [('year', 'point in time')] -> plan_does_not_cover_question; [('parents', 'parent')] -> plan_does_not_cover_question; [('year', 'point in time'), ('point in time', 'occurred on')] -> retrieval_exhausted; [('year', 'point in time'), ('point in time', 'occurred on')] -> retrieval_exhausted; [('born', 'date of birth'), ('date of birth', 'birth date')] -> latent_only; [('year', 'point in time')] -> plan_does_not_cover_question
+relations still unknown after learning (top 20): [('municipality', 10), ('month and year', 4), ('age', 4), ('first husband', 2), ('first time', 2), ('episodes', 2), ('full name', 2), ('second husband', 2), ('lake known as the jewel in the ring', 1), ('go undefeated in all of his road races', 1), ('arc stage', 1), ('friday night headliner', 1), ('year of release of william kentridge second film', 1), ('list entry name', 1), ('national heritage list entry number 1090695', 1), ('singles', 1), ('as of 2011', 1), ('male population', 1), ('inaugural holder of the position of attorney general', 1), ('how many people were injured', 1)]

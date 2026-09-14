@@ -60,3 +60,52 @@ def test_one_exact_hit_resolves_and_its_claims_come_back_as_triples():
     out = src.facts("james young")
     assert [(t.obj, t.rel, t.subj) for t in out] == [("1800-05-11", "date of birth", "James Young")]
     assert src.last["qid"] == "Q2" and "ambiguous" not in src.last
+
+
+# ---- the three tiers of 2026-09-13 (the ask loop): linked, the question's next hop, label over alias ----
+ITEM = lambda qid: {"mainsnak": {"datatype": "wikibase-item", "datavalue": {"type": "wikibase-entityid", "value": {"id": qid}}}}  # noqa: E731
+FATHER_CLAIMS = {"claims": {"P22": [ITEM("Q10")]}}                       # Bill -> father Q10 (Jim)
+GIVEN = {"claims": {"P735": [ITEM("Q90")]}}                              # a given name claim
+JIM = {"claims": {"P735": [ITEM("Q90")]}, "labels": {"en": {"value": "Jim Haslam"}}}   # Q10: the claim and the label
+LABELS2 = {"P22": {"labels": {"en": {"value": "father"}}}, "P735": {"labels": {"en": {"value": "given name"}}},
+           "Q90": {"labels": {"en": {"value": "James"}}}}
+
+
+def test_the_object_of_a_served_claim_is_linked_to_its_item_so_the_next_hop_never_searches_the_name():
+    """'Jim Haslam' is the label of Q10 and an alias of Q11 (Jimmy); the claim Bill -> father pointed at Q10."""
+    src = FakeWikidata([_hit("Q1", "Bill Haslam", "governor")], {"Q1": FATHER_CLAIMS, "Q10": JIM, "Q11": GIVEN, **LABELS2})
+    facts = src.facts("Bill Haslam")
+    assert [(t.obj, t.rel) for t in facts] == [("Jim Haslam", "father")] and src.last["how"] == "exact"
+    assert src.links["jim haslam"] == ["Q10"] and src.links["bill haslam"] == ["Q1"]
+    src._search = [_hit("Q10", "Jim Haslam", "businessman"), _hit("Q11", "Jimmy Haslam", "team owner", match="Jim Haslam")]
+    calls = src.calls
+    out = src.facts("Jim Haslam")
+    assert src.last["how"] == "linked" and src.last["qid"] == "Q10" and [(t.obj, t.rel) for t in out] == [("James", "given name")]
+    assert src.calls == calls + 2                        # the claims and their labels: no search for a name the source already resolved
+    # a name that named TWO items in served claims is not linked: the link tier stands aside
+    src._link("Jim Haslam", "Q11")
+    src.facts("Jim Haslam")
+    assert src.last["how"] == "exact + label over alias" and src.last["qid"] == "Q10"
+
+
+def test_among_items_sharing_a_name_the_question_s_next_hop_decides_and_a_pick_is_not_remembered():
+    """Marie Curie: the physicist, a book edition and a ferry share the label; one has a date of birth."""
+    hits = [_hit("Q7186", "Marie Curie", "physicist"), _hit("Q114", "Marie Curie", "book edition"), _hit("Q134", "Marie Curie", "ferry")]
+    src = FakeWikidata(hits, {"Q7186": CLAIMS, "Q114": {"claims": {"P31": [ITEM("Q3331189")]}}, "Q134": {"claims": {}}, **LABELS})
+    assert src.facts("Marie Curie") == [] and len(src.last["ambiguous"]) == 3        # the strict rule without the hint
+    out = src.facts("Marie Curie", relations=["born"])                                # 'born' names date / place of birth
+    assert [(t.obj, t.rel, t.subj) for t in out] == [("1800-05-11", "date of birth", "Marie Curie")]
+    assert src.last["qid"] == "Q7186" and src.last["how"].startswith("relation")
+    assert "marie curie" not in src.links                                             # question-decided: not the name's item for good
+    # two items carrying the property, both labelled with the name: still ambiguous, still refused
+    src._entities["Q114"] = CLAIMS
+    assert src.facts("Marie Curie", relations=["born"]) == [] and src.last["qid"] is None
+
+
+def test_the_label_the_question_used_outranks_an_alias_but_two_labels_stay_ambiguous():
+    src = FakeWikidata([_hit("Q10", "Jim Haslam", "businessman"), _hit("Q11", "Jimmy Haslam", "team owner", match="Jim Haslam")],
+                       {"Q10": JIM, "Q11": GIVEN, **LABELS2})
+    out = src.facts("Jim Haslam", relations=["given name"])                            # both carry it: the label decides
+    assert src.last["qid"] == "Q10" and src.last["how"].endswith("label over alias") and len(out) == 1
+    src2 = FakeWikidata([_hit("Q1", "James Young", "chemist"), _hit("Q2", "James Young", "politician")], {"Q1": CLAIMS, "Q2": CLAIMS, **LABELS})
+    assert src2.facts("James Young", relations=["born"]) == [] and src2.last["qid"] is None   # the pinned case above, unchanged

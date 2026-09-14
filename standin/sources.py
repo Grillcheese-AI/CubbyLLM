@@ -84,10 +84,12 @@ class PropertyAliases:
         self._by_text: dict[str, set[str]] = {}
         self._texts_of: dict[str, set[str]] = {}         # English label -> every English wording of its property
         self._kind: dict[str, str | None] = {}           # any English wording -> its property's kind (None when they disagree)
+        self._pid_of: dict[str, str] = {}                # English label -> the property id (the claim key an item carries)
         for pid, p in d["properties"].items():
             label_en = p["label"].get("en")
             if not label_en:
                 continue
+            self._pid_of[_normalize(label_en)] = pid
             k = self.KIND.get(p.get("datatype") or "")
             en_texts = [t for t in [label_en] + list(p["aliases"].get("en", [])) if t]
             self._texts_of.setdefault(_normalize(label_en), set()).update(en_texts)
@@ -123,6 +125,16 @@ class PropertyAliases:
         property under one of these ('birth date') holds the label's relation."""
         return sorted(self._texts_of.get(_normalize(label), ()))
 
+    def pids(self, wording: str) -> list[str]:
+        """The property ids a wording names, through its labels: 'given name' -> ['P735'],
+        'born' -> ['P569', 'P19']. What an item's claims are keyed by."""
+        out = []
+        for label in self.relations(wording) or [wording]:
+            pid = self._pid_of.get(_normalize(label))
+            if pid and pid not in out:
+                out.append(pid)
+        return out
+
     def kind(self, label: str) -> str | None:
         """'date' / 'number' / 'name' for a wording whose property datatype says so; None
         when the table has no datatype for it (built before 2026-09-13), when properties
@@ -153,6 +165,15 @@ class WikidataSource:
         # asked for explicitly -- serving never depends on a live call per wording
         self.aliases = aliases if aliases is not None else property_aliases()
         self.online_relations = online_relations
+        # label -> the item(s) it named in claims this source served; persisted beside the cache
+        self.links: dict[str, list[str]] = {}
+        self._links_dirty = False
+        p = self._links_path()
+        if p is not None and p.exists():
+            try:
+                self.links = {k: list(v) for k, v in json.loads(p.read_text(encoding="utf-8")).items()}
+            except (OSError, ValueError):
+                self.links = {}
 
     # -- transport, cached ---------------------------------------------------------------
     def _get(self, params: dict) -> dict | None:
@@ -217,31 +238,94 @@ class WikidataSource:
         return self.aliases.wordings(label) if self.aliases is not None else []
 
     # -- the Source call -----------------------------------------------------------------
-    def facts(self, entity: str) -> list[str]:
-        self.last = {"entity": entity, "qid": None, "label": None, "alias": False, "n_claims": 0}
+    def _claims(self, qid: str) -> dict:
+        e = self._get({"action": "wbgetentities", "ids": qid, "props": "claims", "languages": "en"})
+        return (((e or {}).get("entities") or {}).get(qid) or {}).get("claims") or {}
+
+    def _links_path(self):
+        return self.cache / "_links.json" if self.cache else None
+
+    def _link(self, label: str, qid: str) -> None:
+        """Remember which ITEM a label named when this source served it -- the object of a
+        claim, or a resolved subject -- so the walk's next hop asks about that item, not
+        about a string that several items may be labelled with."""
+        key = _normalize(label)
+        if not key or qid in self.links.get(key, ()):
+            return
+        self.links.setdefault(key, []).append(qid)  # two items under one name: the link tier stands aside (see resolve)
+        self._links_dirty = True
+
+    def _save_links(self) -> None:
+        p = self._links_path()
+        if p is not None and self._links_dirty:
+            try:
+                p.write_text(json.dumps(self.links, ensure_ascii=False), encoding="utf-8")
+                self._links_dirty = False
+            except OSError:
+                pass
+
+    def resolve(self, entity: str, relations: list[str] | None = None) -> tuple[str, str] | None:
+        """(qid, label) for the entity, or None. Three tiers, each deterministic, none a pick
+        by rank: (1) LINKED -- the label was the object of a claim this source served (or a
+        subject it resolved), so the item is the one the claim pointed at; (2) the search's
+        exact hits (label or alias equal to the query) when there is exactly one; (3) the
+        QUESTION decides among several exact hits: those whose claims carry the property the
+        walk needs next (`relations`: the plan's wording for the stalled hop -- a book edition
+        and a ferry named 'Marie Curie' have no date of birth), then, among those, the item
+        whose LABEL is the name the question used over items that only carry it as an alias
+        ('Jim Haslam' over 'Jimmy Haslam'). Still more than one -> ambiguous, refused."""
+        key = _normalize(entity)
+        if len(self.links.get(key, ())) == 1:
+            qid = self.links[key][0]
+            self.last.update(how="linked")
+            return qid, self._labels_for([qid]).get(qid) or entity
         s = self._get({"action": "wbsearchentities", "search": entity, "language": "en", "limit": 5})
         hits = (s or {}).get("search") or []
         if not hits:
-            return []
+            self.last["unresolved"] = True
+            return None
         # exp_r11 Gemini run 2 (2026-09-12): the proposer's seed 'james young' (the question
         # said 'James Young (Missouri politician)') matched the first of several items
         # labelled James Young, and a wrong birth year was verified and SPOKEN. An entity
-        # label shared by two or more items is an ambiguity, and the host refuses those; it
-        # never picks. A search whose hits carry neither the label nor an alias equal to the
-        # query is no resolution either (the old fallback to hits[0] was a guess).
-        exact = [h for h in hits if _normalize(h.get("label", "")) == _normalize(entity)
-                 or _normalize(((h.get("match") or {}).get("text") or "")) == _normalize(entity)]
-        if len(exact) != 1:
-            self.last["ambiguous"] = [(h["id"], h.get("label"), h.get("description")) for h in exact] if exact else []
+        # label shared by two or more items is an ambiguity the host never picks among by
+        # rank. A search whose hits carry neither the label nor an alias equal to the query
+        # is no resolution either (the old fallback to hits[0] was a guess).
+        exact = [h for h in hits if _normalize(h.get("label", "")) == key
+                 or _normalize(((h.get("match") or {}).get("text") or "")) == key]
+        cands = exact
+        how = "exact"
+        if len(cands) > 1 and relations and self.aliases is not None:
+            pids = [p for r in relations for p in self.aliases.pids(r)]
+            if pids:
+                having = [h for h in cands if any(p in self._claims(h["id"]) for p in pids)]
+                if having:
+                    cands, how = having, "relation (the question's next hop)"
+        if len(cands) > 1:
+            labelled = [h for h in cands if _normalize(h.get("label", "")) == key]
+            if len(labelled) == 1:
+                cands, how = labelled, how + " + label over alias"
+        if len(cands) != 1:
+            self.last["ambiguous"] = [(h["id"], h.get("label"), h.get("description")) for h in exact]
             self.last["unresolved"] = not exact
+            return None
+        hit = cands[0]
+        self.last.update(how=how)
+        return hit["id"], hit.get("label") or entity
+
+    def facts(self, entity: str, relations: list[str] | None = None) -> list[str]:
+        """`relations`: the wordings the walk needs from this entity (the stalled hop's), used
+        only to decide among several items that share the name; None keeps the strict rule."""
+        self.last = {"entity": entity, "qid": None, "label": None, "alias": False, "n_claims": 0, "how": None}
+        r = self.resolve(entity, relations)
+        if r is None:
             return []
-        hit = exact[0]
-        qid, label = hit["id"], hit.get("label") or entity
+        qid, label = r
         alias = _normalize(label) != _normalize(entity)
         self.last.update(qid=qid, label=label, alias=alias)
         subj = entity if alias else label            # the user's words when the hit came through an alias
-        e = self._get({"action": "wbgetentities", "ids": qid, "props": "claims", "languages": "en"})
-        claims = (((e or {}).get("entities") or {}).get(qid) or {}).get("claims") or {}
+        if self.last["how"] in ("exact", "linked"):
+            self._link(subj, qid)                    # a name that resolved on its own; a question-decided pick is not remembered as the name's item
+        claims = self._claims(qid)
         self.last["n_claims"] = sum(len(v) for v in claims.values())
         # collect item targets and property ids, one label round-trip for all of them
         props = [p for p in claims if p not in SKIP_PROPS]
@@ -265,6 +349,8 @@ class WikidataSource:
                 v = dv.get("value"); t = dv.get("type")
                 if t == "wikibase-entityid":
                     obj = labels.get(v["id"])
+                    if obj:
+                        self._link(obj, v["id"])     # the claim points at an ITEM: the next hop asks about it, not about its name
                 elif t == "time":
                     ts, prec = v.get("time", ""), v.get("precision", 11)
                     obj = ts[1:5] if prec <= 9 else ts[1:11]
@@ -279,5 +365,7 @@ class WikidataSource:
                 if obj and " is the " not in obj:
                     out.append(Triple(obj=obj, rel=rel, subj=subj))     # structured: the store is told where REL ends
                 if len(out) >= self.max_facts:
+                    self._save_links()
                     return out
+        self._save_links()
         return out

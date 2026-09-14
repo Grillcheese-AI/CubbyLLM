@@ -28,6 +28,10 @@ header .spacer{flex:1}
 .btn{font:inherit;font-size:12.5px;color:var(--ink);background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;padding:5px 10px;cursor:pointer}
 .btn:hover{border-color:var(--hop)}
 .btn:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--hop);outline-offset:2px}
+.ask{display:flex;gap:6px;align-items:center;flex:1;max-width:560px}
+.ask input{flex:1;min-width:0;font:inherit;font-size:12.5px;color:var(--ink);background:var(--ground);border:1px solid var(--line-2);border-radius:4px;padding:5px 9px}
+.ask input::placeholder{color:var(--muted)}
+.ask.busy input{opacity:.6}
 label.file{position:relative;overflow:hidden}
 label.file input{position:absolute;inset:0;opacity:0;cursor:pointer}
 aside.rail{border-right:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-height:0}
@@ -79,6 +83,10 @@ footer .now{min-width:260px;color:var(--ink-2);overflow:hidden;text-overflow:ell
 <header>
   <div><h1>Cubby Loop Panel</h1><div class="sub" id="status">sample run · hdc rephrased, host planner</div></div>
   <div class="spacer"></div>
+  <form class="ask" id="ask" hidden autocomplete="off">
+    <input type="text" id="ask-text" placeholder="Ask a question — e.g. Where was Marie Curie born?" aria-label="Ask a question" maxlength="300">
+    <button class="btn" id="ask-btn" type="submit">Ask</button>
+  </form>
   <button class="btn" id="btn-all" type="button">All questions</button>
   <label class="btn file">Load events .jsonl <input type="file" id="file" accept=".jsonl,.json,.txt"></label>
   <button class="btn" id="btn-live" type="button" title="Connect to a local stand-in server's /events stream">Live</button>
@@ -187,7 +195,7 @@ footer .now{min-width:260px;color:var(--ink-2);overflow:hidden;text-overflow:ell
 'use strict';
 var KIND = {question:'#F2F4F7',plan:'#B49CFF',walk:'#6FA8DC',hop:'#58C7D6',fact:'#46B39A',fetch:'#F2A65A',gate:'#D9924C',
             vm:'#E070C8',alias:'#C7B26B',latent:'#E9B44C',answer:'#4ED39A'};
-var OK='#4ED39A', BAD='#EF6E6E', LATENT='#E9B44C';
+var OK='#4ED39A', BAD='#EF6E6E', LATENT='#E9B44C', LINK='#8FA8FF';
 var RADIUS = {question:2.6,plan:1.9,walk:1.7,hop:1.4,fact:1.2,fetch:1.6,gate:1.1,vm:1.5,alias:1.2,latent:1.5,answer:2.2};
 
 var events=[], byId={}, children={}, roots=[], rootOf={}, current=null, mode='tree', selected=null;
@@ -216,7 +224,7 @@ function labelOf(ev){
     case 'walk': return ev.verified?('verified → '+ev.answer):('refused · '+ev.reason);
     case 'hop': return 'hop '+ev.hop+' · '+ev.how+(ev.similarity!=null?' · '+Number(ev.similarity).toFixed(2):'');
     case 'fact': return ev.text;
-    case 'fetch': return ev.source+' ← '+ev.entity+' ('+ev.n+')';
+    case 'fetch': return ev.source+' ← '+ev.entity+' ('+ev.n+')'+(ev.how?' · '+ev.how:(ev.ambiguous?' · ambiguous ×'+ev.ambiguous.length:''));
     case 'gate': return ev.status+' · '+ev.fact;
     case 'vm': return 'VM '+(ev.verified?'verified':'not verified')+' · '+ev.program_lines+' lines';
     case 'alias': return (ev.pairs||[]).map(function(p){return p[0]+'→'+p[1]}).join(', ');
@@ -226,16 +234,35 @@ function labelOf(ev){
   return ev.kind;
 }
 
+/* links between questions: the same fact walked or admitted under two roots, the same entity fetched twice --
+   the store is one, so what one question learned is what the next one walks on (Nick, 2026-09-13) */
+var shareKeyOf={}, sharedRoots={};        // event id -> its share key; share key -> Set of root ids
+function norm(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim(); }
+function shareKey(ev){
+  if(ev.kind==='fact') return 'f:'+norm(ev.text);
+  if(ev.kind==='gate'&&ev.status==='accepted') return 'f:'+norm(ev.fact);
+  if(ev.kind==='hop'&&ev.fact) return 'f:'+norm(ev.fact);
+  if(ev.kind==='fetch') return 'e:'+norm(ev.entity);
+  return null;
+}
 function ingest(list, append){
-  if(!append){ events=[]; byId={}; children={}; roots=[]; rootOf={}; }
+  if(!append){ events=[]; byId={}; children={}; roots=[]; rootOf={}; shareKeyOf={}; sharedRoots={}; }
   list.forEach(function(ev){
     if(byId[ev.id]) return;
     events.push(ev); byId[ev.id]=ev;
     if(ev.parent==null){ roots.push(ev); rootOf[ev.id]=ev.id; }
     else { (children[ev.parent]=children[ev.parent]||[]).push(ev); rootOf[ev.id]=rootOf[ev.parent]!=null?rootOf[ev.parent]:ev.parent; }
+    var k=shareKey(ev); if(k){ shareKeyOf[ev.id]=k; (sharedRoots[k]=sharedRoots[k]||new Set()).add(rootOf[ev.id]); }
   });
   renderList();
   document.getElementById('qcount').textContent=roots.length;
+}
+function otherRootsOf(ev){ var k=shareKeyOf[ev.id]; if(!k) return []; var me=rootOf[ev.id]; return Array.from(sharedRoots[k]||[]).filter(function(r){return r!==me}); }
+function linksBetweenRoots(){                       // [rootA, rootB, sharedKeys[]] for every pair sharing a fact or an entity
+  var pairs={};
+  Object.keys(sharedRoots).forEach(function(k){ var rs=Array.from(sharedRoots[k]).sort(function(a,b){return a-b}); if(rs.length<2||rs.length>12) return;
+    for(var i=0;i<rs.length;i++) for(var j=i+1;j<rs.length;j++){ var id=rs[i]+'-'+rs[j]; (pairs[id]=pairs[id]||{a:rs[i],b:rs[j],keys:[]}).keys.push(k); } });
+  return Object.keys(pairs).map(function(id){return pairs[id]});
 }
 
 /* ---------- three.js scene ---------- */
@@ -248,12 +275,12 @@ var group=new THREE.Group(); scene.add(group);
 scene.add(new THREE.AmbientLight(0xffffff,0.65));
 var key=new THREE.DirectionalLight(0xffffff,0.7); key.position.set(40,80,120); scene.add(key);
 var sphereGeo=new THREE.SphereGeometry(1,18,14);
-var nodes=[], lines=[], meshByEid={};
+var nodes=[], lines=[], rings=[], meshByEid={};
 var labelsEl=document.getElementById('labels');
 
 function clearScene(){
   while(group.children.length) group.remove(group.children[0]);
-  nodes=[]; lines=[]; meshByEid={}; labelsEl.innerHTML='';
+  nodes=[]; lines=[]; rings=[]; meshByEid={}; labelsEl.innerHTML='';
 }
 function addNode(ev,x,y,z,r){
   var mat=new THREE.MeshStandardMaterial({color:colorOf(ev),roughness:0.55,metalness:0.1,emissive:new THREE.Color(colorOf(ev)),emissiveIntensity:0.18});
@@ -289,6 +316,11 @@ function layoutTree(root){
     addNode(p.ev,(p.x-cx)*XS,(cy-p.depth)*YS,z,RADIUS[p.ev.kind]||1.2);
   });
   order.forEach(function(p){ if(p.ev.parent!=null && meshByEid[p.ev.parent]) addLine(meshByEid[p.ev.parent],meshByEid[p.ev.id],colorOf(p.ev)); });
+  // a fact or entity another question also touched: ringed, its label prefixed ⇄ (the inspector names the questions)
+  order.forEach(function(p){ var others=otherRootsOf(p.ev); if(!others.length) return; var m=meshByEid[p.ev.id];
+    var ring=new THREE.Mesh(new THREE.TorusGeometry(1.9,0.12,8,32),new THREE.MeshBasicMaterial({color:LINK,transparent:true,opacity:0.85}));
+    ring.position.copy(m.position); ring.scale.setScalar(RADIUS[p.ev.kind]||1.2); ring.userData.follow=m; group.add(ring); rings.push(ring);
+    m.userData.label.textContent='⇄ '+m.userData.label.textContent; });
   fit(Math.max(maxX*XS,maxDepth*YS,40));
 }
 /* galaxy: every question on a phyllotaxis spiral, coloured by its final verdict */
@@ -301,6 +333,15 @@ function layoutGalaxy(){
     var ev=Object.assign({},r); var m=addNode(ev,rad*Math.cos(th),rad*Math.sin(th),(i%7-3)*1.5,1.6);
     m.material.color.set(col); m.material.emissive.set(col);
     m.userData.label.textContent=(a?(a.verified?'✓ ':'✗ '):'')+r.text;
+  });
+  // the links: two questions that walked or learned the same fact, or fetched the same entity
+  var drawn=0;
+  linksBetweenRoots().forEach(function(p){
+    if(drawn>=600) return; var A=meshByEid[p.a], B=meshByEid[p.b]; if(!A||!B) return;
+    var facts=p.keys.filter(function(k){return k.charAt(0)==='f'}).length;
+    var g=new THREE.BufferGeometry().setFromPoints([A.position,B.position]);
+    var ln=new THREE.Line(g,new THREE.LineBasicMaterial({color:facts?LINK:'#4B5A6E',transparent:true,opacity:facts?0.6:0.3}));
+    ln.userData.from=A; ln.userData.to=B; group.add(ln); lines.push(ln); drawn++;
   });
   fit(Math.max(4.2*Math.sqrt(n+1)*2.2,40));
 }
@@ -352,6 +393,7 @@ function frame(){
     l.style.display='block'; l.style.left=((v.x+1)/2*w)+'px'; l.style.top=((1-v.y)/2*h)+'px'; shown++;
   });
   lines.forEach(function(ln){ ln.visible=ln.userData.from.visible&&ln.userData.to.visible; });
+  rings.forEach(function(rg){ rg.visible=rg.userData.follow.visible; rg.rotation.y+=0.01; });
 }
 
 /* ---------- replay ---------- */
@@ -399,13 +441,24 @@ function inspect(ev){
     else { dd.textContent=String(val); dd.className=(k==='id'||k==='similarity'||k==='n_hop'||k==='program_lines')?'mono':''; }
     kv.appendChild(dt); kv.appendChild(dd);
   });
-  var ch=document.getElementById('ichain'); ch.hidden=true;
+  var ch=document.getElementById('ichain'); ch.hidden=true; var old=document.getElementById('ishared'); if(old) old.remove();
   if(ev.kind==='walk'||ev.kind==='answer'){
     var root=byId[rootOf[ev.id]]; var walks=events.filter(function(e){return e.kind==='walk'&&rootOf[e.id]===root.id});
     var w=ev.kind==='walk'?ev:walks[walks.length-1];
     if(w){ var hops=(children[w.id]||[]).filter(function(e){return e.kind==='hop'});
       if(hops.length){ ch.hidden=false; ch.innerHTML='<h3>the chain the VM checked</h3>'; var ol=document.createElement('ol');
         hops.forEach(function(h){ var li=document.createElement('li'); li.textContent=(h.fact||h.query)+(h.provenance?'  ['+h.provenance+']':''); ol.appendChild(li); }); ch.appendChild(ol); } }
+  }
+  // the link: the same fact / entity under other questions -- click one to open its tree
+  var others=otherRootsOf(ev);
+  if(others.length){
+    var sh=document.createElement('div'); sh.className='chain'; sh.id='ishared'; sh.innerHTML='<h3>'+(shareKeyOf[ev.id].charAt(0)==='f'?'the same fact':'the same entity')+' in '+others.length+' other question'+(others.length>1?'s':'')+'</h3>';
+    others.forEach(function(rid){ var r=byId[rid]; if(!r) return; var a=finalOf(r); var b=document.createElement('button'); b.type='button'; b.className='qitem';
+      var d=document.createElement('span'); d.className='dot '+(a?(a.verified?'ok':(a.reason==='latent_only'?'latent':'bad')):''); var t=document.createElement('span'); t.textContent=r.text;
+      var s=document.createElement('small'); s.textContent=a?(a.verified?('→ '+a.answer):a.reason):'…'; t.appendChild(s); b.appendChild(d); b.appendChild(t);
+      b.addEventListener('click',function(){ openTree(r); var m=null; nodes.forEach(function(n){ if(shareKeyOf[n.userData.ev.id]===shareKeyOf[ev.id]) m=m||n; }); if(m) select(m.userData.ev); });
+      sh.appendChild(b); });
+    ch.parentNode.appendChild(sh);
   }
 }
 function inspectSummary(){
@@ -415,13 +468,13 @@ function inspectSummary(){
   var kv=document.getElementById('ikv'); kv.innerHTML='';
   var reasons={}; roots.forEach(function(r){var a=finalOf(r); if(a&&!a.verified) reasons[a.reason]=(reasons[a.reason]||0)+1;});
   Object.keys(reasons).sort(function(a,b){return reasons[b]-reasons[a]}).forEach(function(k){ var dt=document.createElement('dt'); dt.textContent=k; var dd=document.createElement('dd'); dd.className='mono'; dd.textContent=reasons[k]; kv.appendChild(dt); kv.appendChild(dd); });
-  document.getElementById('ichain').hidden=true;
+  document.getElementById('ichain').hidden=true; var old=document.getElementById('ishared'); if(old) old.remove();
   document.getElementById('status').textContent=events.length+' events · click a question to open its tree';
 }
 
 /* legend */
 (function(){ var lg=document.getElementById('legend'); Object.keys(KIND).forEach(function(k){ if(k==='answer') return; var s=document.createElement('span'); s.innerHTML='<i style="background:'+KIND[k]+'"></i>'+k; lg.appendChild(s); });
-  [['verified',OK],['refused',BAD],['held · latent',LATENT]].forEach(function(p){ var s=document.createElement('span'); s.innerHTML='<i style="background:'+p[1]+'"></i>'+p[0]; lg.appendChild(s); }); })();
+  [['verified',OK],['refused',BAD],['held · latent',LATENT],['⇄ linked · shared fact / entity',LINK]].forEach(function(p){ var s=document.createElement('span'); s.innerHTML='<i style="background:'+p[1]+'"></i>'+p[0]; lg.appendChild(s); }); })();
 
 /* loading: a file, the embedded sample, or a live stream from a local stand-in server */
 function parseJsonl(text){ var out=[]; text.split(/\r?\n/).forEach(function(l){ l=l.trim(); if(!l) return; try{ out.push(JSON.parse(l)); }catch(e){} }); return out; }
@@ -429,16 +482,51 @@ document.getElementById('file').addEventListener('change',function(e){
   var f=e.target.files[0]; if(!f) return; var rd=new FileReader();
   rd.onload=function(){ ingest(parseJsonl(rd.result),false); document.getElementById('status').textContent=f.name; openGalaxy(); }; rd.readAsText(f);
 });
-var es=null;
-document.getElementById('btn-live').addEventListener('click',function(){
-  if(es){ es.close(); es=null; this.textContent='Live'; return; }
-  var url=(location.protocol.indexOf('http')===0?'':'http://127.0.0.1:8765')+'/loop/stream';   // the stand-in server: python standin/serve_api.py, then /panel
+var es=null, pending=[], follow=null;            // follow: the question text whose tree the panel opens as it grows (the ask box)
+var base=(location.protocol.indexOf('http')===0?'':'http://127.0.0.1:8765');   // the stand-in server: python standin/serve_api.py --ask, then /panel
+var liveBtn=document.getElementById('btn-live');
+function connectLive(){
+  if(es) return;
+  var url=base+'/loop/stream';
   try{ es=new EventSource(url); }catch(err){ document.getElementById('status').textContent='no live stream at '+url; return; }
-  var btn=this; btn.textContent='● Live'; var pending=[];
+  liveBtn.textContent='● Live';
+  ingest([],false); current=null; mode='galaxy'; layoutGalaxy();       // the server's ids start at 1 like the sample's: the stream replaces what was loaded
+  document.getElementById('status').textContent='live · '+url;
   es.onmessage=function(m){ try{ pending.push(JSON.parse(m.data)); }catch(err){} };
-  es.onerror=function(){ document.getElementById('status').textContent='live stream unreachable — open this panel from the stand-in server (serve_api.py, /panel)'; es.close(); es=null; btn.textContent='Live'; };
-  setInterval(function(){ if(!pending.length) return; var batch=pending.splice(0); ingest(batch,true); if(mode==='galaxy') layoutGalaxy(); else if(current) { layoutTree(current); applyCursor(); } },400);
+  es.onerror=function(){ document.getElementById('status').textContent='live stream unreachable — open this panel from the stand-in server (serve_api.py, /panel)'; es.close(); es=null; liveBtn.textContent='Live'; };
+}
+liveBtn.addEventListener('click',function(){ if(es){ es.close(); es=null; this.textContent='Live'; return; } connectLive(); });
+setInterval(function(){
+  if(!pending.length) return;
+  var batch=pending.splice(0); ingest(batch,true);
+  if(follow){                                      // the asked question's tree, opened the moment its root arrives, redrawn per hop
+    for(var i=roots.length-1;i>=0;i--){ if(roots[i].text===follow){ if(current!==roots[i]) openTree(roots[i]); break; } }
+  }
+  if(mode==='galaxy') layoutGalaxy(); else if(current){ layoutTree(current); applyCursor(); }
+},250);
+
+/* the ask box: POST /ask on the stand-in server; every step of the loop arrives on the stream while the answer is computed */
+var askForm=document.getElementById('ask'), askText=document.getElementById('ask-text'), askBtn=document.getElementById('ask-btn');
+askForm.addEventListener('submit',function(e){
+  e.preventDefault();
+  var q=askText.value.replace(/\s+/g,' ').trim(); if(!q||askForm.classList.contains('busy')) return;
+  connectLive(); follow=q; askForm.classList.add('busy'); askBtn.textContent='…'; askBtn.disabled=true;
+  document.getElementById('status').textContent='asking: '+q;
+  fetch(base+'/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:q})})
+    .then(function(r){ return r.json(); })
+    .then(function(rec){
+      document.getElementById('status').textContent=rec.error?('ask failed: '+rec.error):
+        (rec.verified?('answer: '+rec.answer+' — VM-verified, '+rec.wall_s+' s'):('refused: '+rec.reason+' — '+rec.wall_s+' s'));
+      askText.value=''; })
+    .catch(function(err){ document.getElementById('status').textContent='ask unreachable: '+err; })
+    .then(function(){ askForm.classList.remove('busy'); askBtn.textContent='Ask'; askBtn.disabled=false; askText.focus(); setTimeout(function(){ follow=null; },2000); });
 });
+if(location.protocol.indexOf('http')===0){          // served by the stand-in: the ask box shows when the loop is mounted, and the stream connects
+  fetch(base+'/health').then(function(r){ return r.json(); }).then(function(h){
+    if(h.ask){ askForm.hidden=false; askText.placeholder='Ask a question — '+(h.ask_source||'')+' behind the gate'; }
+    connectLive();
+  }).catch(function(){});
+}
 
 resize();
 ingest(parseJsonl(document.getElementById('sample').textContent),false);

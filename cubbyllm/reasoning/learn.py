@@ -82,10 +82,25 @@ class LearnResult:
 
 
 def snapshot(store) -> str:
-    h = hashlib.sha256()
-    for f in sorted(getattr(store, "texts", [])):
-        h.update(f.encode("utf-8")); h.update(b"\n")
-    return h.hexdigest()[:16]
+    """A fingerprint of the store's fact set before a write: the set hash of every text, kept
+    INCREMENTALLY on the store (2026-09-13, the ask loop: hashing 552k sorted texts per gated
+    fact cost 0.35 s a fact -- 172 facts, a minute). Order-independent (a sum of per-fact
+    digests mod 2^128), so it equals the full recomputation and does not depend on which
+    facts arrived when; a store that shrank or was replaced is rehashed from scratch."""
+    texts = getattr(store, "texts", [])
+    n = len(texts)
+    cached = getattr(store, "_snap", None)          # (n_texts, acc, texts identity)
+    if cached is not None and cached[2] is texts and cached[0] <= n:
+        acc, start = cached[1], cached[0]
+    else:
+        acc, start = 0, 0
+    for f in texts[start:] if isinstance(texts, list) else list(texts)[start:]:
+        acc = (acc + int.from_bytes(hashlib.sha256(f.encode("utf-8")).digest()[:16], "big")) % (1 << 128)
+    try:
+        store._snap = (n, acc, texts)
+    except AttributeError:
+        pass
+    return f"{acc:032x}"[:16]
 
 
 def contradiction(fact: str, index) -> str | None:
@@ -147,6 +162,42 @@ def stalled_entities(question: str, plan: QuestionPlan | None, first: CoTResult,
     if ent and normalize(ent) not in {normalize(e) for e in out}:
         out.append(ent)
     return out
+
+
+def wanted_relations(question: str, plan: QuestionPlan | None, first: CoTResult, known, entity: str) -> list[str]:
+    """The plan's wording for the hop the walk needs from `entity`: the relation after the
+    last hop reached when the entity is the object the walk stopped at; the tail's relation
+    when it is the seed. What a source may use to tell items of one name apart; [] when the
+    plan does not say."""
+    if plan is None:
+        return []
+    e = normalize(entity)
+    if first.trace and first.reason == "retrieval_exhausted":
+        last = first.trace[-1].triple
+        if last is not None and normalize(last.obj) == e:
+            k = len(first.trace)                            # hops walked; the next relation is plan.relations[k]
+            if k < len(plan.relations) and plan.relations[k]:
+                return [plan.relations[k]]
+            return []
+    rel, ent = split_tail(plan.tail, known, question)
+    if ent and normalize(ent) == e and rel:
+        return [rel]
+    return []
+
+
+_TAKES_RELATIONS: dict[int, bool] = {}
+
+
+def _takes_relations(source) -> bool:
+    """Whether `source.facts` accepts `relations=` (the Source protocol only promises `facts(entity)`)."""
+    key = id(type(source))
+    if key not in _TAKES_RELATIONS:
+        import inspect
+        try:
+            _TAKES_RELATIONS[key] = "relations" in inspect.signature(source.facts).parameters
+        except (TypeError, ValueError):
+            _TAKES_RELATIONS[key] = False
+    return _TAKES_RELATIONS[key]
 
 
 def snap_seed(question: str, plan: QuestionPlan, known, min_ratio: float = 0.85) -> tuple[QuestionPlan, tuple[str, str] | None]:
@@ -265,17 +316,26 @@ def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
         return plan, [], None
     rels = list(plan.relations); tail = plan.tail; rewrote: list[tuple[str, str]] = []
     for r in unknown:
-        labels = [normalize(l) for x in resolvers for l in x.relations(r)]
+        # the resolvers in order, and the FIRST that names the wording decides (2026-09-13, the ask
+        # loop): the property table said 'mother' IS a property; the store lacked it; the synonym
+        # oracle behind it offered 'father' (WordNet's verb sense) and the plan was rewritten to a
+        # relation the question never asked -- Pierre Trudeau, verified. A wording the first
+        # resolver knows and the store lacks is a fact to FETCH, not a word to paraphrase.
+        labels: list[str] = []; decided = None
+        for x in resolvers:
+            labels = [normalize(l) for l in x.relations(r)]
+            if labels:
+                decided = x
+                break
         held = sorted({l for l in labels if l in known})
-        if not held:
+        if not held and decided is not None and hasattr(decided, "wordings"):
             # the store may hold the property under another of its wordings: the wiki world
             # says 'birth date' where Wikidata's label is 'date of birth' (2026-09-13). The
             # table names every wording of the label's property; a held one that names THAT
             # property alone is the target (a wording two properties share is no evidence of
             # either), and two held ('birth date' / 'birthplace' for 'born') is the same ambiguity
-            held = sorted({normalize(w) for x in resolvers if hasattr(x, "wordings")
-                           for l in labels for w in x.wordings(l)
-                           if normalize(w) in known and len(x.relations(w)) == 1})
+            held = sorted({normalize(w) for l in labels for w in decided.wordings(l)
+                           if normalize(w) in known and len(decided.relations(w)) == 1})
         if not held:
             continue
         held = narrow_by_ask(question, held, resolvers)
@@ -465,8 +525,16 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
         ent = ents[0]
         asked.add(normalize(ent)); out.entities.append(ent)
         admitted = 0
-        items = list(source.facts(ent))
-        fid = ev.emit("fetch", qid, source=getattr(source, "name", None), entity=ent, n=len(items), latent=latent)
+        # the relation the walk needs from this entity (the stalled hop's wording): a source that
+        # can use it decides among several ITEMS sharing the name by which of them carries it --
+        # the question decides, never a rank (2026-09-13, the ask loop: 'Marie Curie' is a
+        # physicist, a book edition, a metro station and a ferry; one has a date of birth)
+        need = wanted_relations(question, plan, out.result, known, ent)
+        items = list(source.facts(ent, relations=need) if (need and _takes_relations(source)) else source.facts(ent))
+        last = getattr(source, "last", None) if isinstance(getattr(source, "last", None), dict) else {}
+        fid = ev.emit("fetch", qid, source=getattr(source, "name", None), entity=ent, n=len(items), latent=latent,
+                      needs=need, how=last.get("how"), item=last.get("qid"),
+                      ambiguous=[list(a) for a in last.get("ambiguous", [])] or None)
         for item in items:
             out.fetched += 1
             # a source that hands over a Triple knows where its relation ends; the store

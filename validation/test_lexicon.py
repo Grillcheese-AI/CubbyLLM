@@ -63,3 +63,17 @@ def test_the_lexicon_is_a_second_resolver_and_ambiguity_is_still_refused(tmp_pat
     plan = QuestionPlan(relations=[None], tail="position of jean", n_hop=1)
     r = run("What is the position of Jean?", store, known, DictSource({}), plan=plan, resolvers=[L])
     assert r.result.reason == "ambiguous_relation" and r.result.refused["candidates"] == ["location", "ranking"]
+
+
+def test_only_noun_senses_word_a_relation(tmp_path):
+    """2026-09-13 (the ask loop): WordNet's VERB 'mother' (beget, engender, father, sire) offered `father`
+    for 'mother' and 'Who is the mother of Justin Trudeau?' was answered Pierre Trudeau, verified."""
+    lex = tmp_path / "lex.jsonl"
+    lex.write_text("\n".join(json.dumps(r) for r in [
+        {"id": "eng-30-00000010-v", "pos": "v", "en": ["beget", "engender", "father", "mother", "sire"], "fr": [], "gloss": "make children"},
+        {"id": "eng-30-00000011-n", "pos": "n", "en": ["mother", "female parent"], "fr": ["mère"], "gloss": ""},
+    ]), encoding="utf-8")
+    L = Lexicon(lex)
+    assert L.relations("mother") == ["female parent"] and "father" not in L.relations("mother")
+    assert L.relations("father") == []                      # only a verb sense: no relation wording at all
+    assert L.relations("mère") == ["mother", "female parent"]

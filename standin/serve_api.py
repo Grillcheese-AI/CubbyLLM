@@ -166,7 +166,11 @@ def make_handler(brain):
                 else:
                     self._send(404, {"error": "unknown path"})
             elif self.path == "/health":
+                loop = getattr(brain, "ask_loop", None)
                 self._send(200, {"ok": True, "emitter": getattr(brain.emitter, "name", "?"),
+                                 "ask": loop is not None,                                   # POST /ask mounted (the panel shows its box)
+                                 "ask_source": getattr(getattr(loop, "source", None), "name", None) if loop else None,
+                                 "asked": loop.calls["asked"] if loop else 0,
                                  "two_adapters": bool(getattr(brain.emitter, "is_split", False)),
                                  "adapters": (brain.emitter.usage() if hasattr(brain.emitter, "usage") else None)})
             elif self.path == "/state":
@@ -175,8 +179,12 @@ def make_handler(brain):
                 self._send(200, {"worlds": {n: len(getattr(w, "texts", []))
                                             for n, w in brain.worlds.items()},
                                  "cortices": sorted(brain.cortices)})
-            elif self.path in ("/panel", "/panel/"):          # the three.js control panel over the loop's events
-                self._page(os.path.join(ROOT, "dashboard", "control_panel.html"))
+            elif self.path.split("?", 1)[0] in ("/panel", "/panel/"):     # the three.js control panel over the loop's events
+                try:
+                    body = open(os.path.join(ROOT, "dashboard", "control_panel.html"), "rb").read()
+                    self._raw(200, body, "text/html; charset=utf-8")        # no-store: the panel is edited live
+                except OSError:
+                    self._send(404, {"error": "dashboard/control_panel.html not found"})
             elif self.path.startswith("/loop/events"):       # the ring: every loop event with id > since
                 try:
                     since = int(self.path.split("since=", 1)[1].split("&")[0]) if "since=" in self.path else 0
@@ -223,7 +231,7 @@ def make_handler(brain):
                 self._send(404, {"error": "unknown path"})
 
         def do_POST(self):
-            if self.path != "/turn":
+            if self.path not in ("/turn", "/ask"):
                 self._send(404, {"error": "unknown path"})
                 return
             try:
@@ -232,6 +240,13 @@ def make_handler(brain):
                 text = str(req.get("text", "")).strip()
                 if not text:
                     self._send(400, {"error": "empty text"})
+                    return
+                if self.path == "/ask":                  # the verified-program loop on one natural question (standin/ask.py);
+                    loop = getattr(brain, "ask_loop", None)   # every step streams to /loop/stream -> the panel
+                    if loop is None:
+                        self._send(503, {"error": "no ask loop mounted: start serve_api with --ask"})
+                        return
+                    self._send(200, _json_safe(loop.ask(text)))
                     return
                 rec = brain.turn(text, feedback=req.get("feedback"))
                 rec.pop("raw", None)
@@ -276,9 +291,22 @@ def main():
                     help="the trunk reads each turn's emotion (the v5 task); its Plutchik petal drives the hormones")
     ap.add_argument("--wiki", nargs="?", const="auto", default=None,
                     help="mount the wikikg world (standin/data/wikikg.py): bare = the cached Hub export, or a path to triplets.parquet")
+    ap.add_argument("--ask", nargs="?", const="wikidata", default=None,
+                    help="mount the verified-program loop on natural questions (POST /ask, live in /panel): the emitter "
+                         "proposes, the host disposes, the VM verifies, the source fills the store through the gate -- "
+                         "'wikidata' (default), 'wikidata-offline' (cache only) or 'lfm' (the local base model, latent tier)")
+    ap.add_argument("--ask-max-new", type=int, default=300)
     args = ap.parse_args()
+    if args.ask and not args.wiki:
+        args.wiki = "auto"                               # the loop walks the wiki world
     brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers,
                         talk_gguf=args.talk_gguf, wiki=args.wiki)
+    if args.ask:
+        from ask import AskLoop
+        print(f"mounting the ask loop (source {args.ask}, lexicon on) ...", flush=True)
+        brain.ask_loop = AskLoop(brain.emitter, world=brain.worlds["wiki"], source=args.ask, lexicon=True,
+                                 max_new=args.ask_max_new)
+        print(f"  POST /ask {{\"text\": ...}} -> the loop's record; watch it at http://{args.host}:{args.port}/panel", flush=True)
     if args.model_appraisal:
         from perception import ModelAppraiser
         brain.chat.appraiser = ModelAppraiser(brain.emitter, brain.facts)   # asks with context="talk"
