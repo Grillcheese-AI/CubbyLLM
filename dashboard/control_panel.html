@@ -333,7 +333,7 @@ function layoutGalaxy(){
     var a=finalOf(r); var col = a? (a.verified?OK:(a.reason==='latent_only'?LATENT:(a.reason==='profile'?PROFILE:BAD))) : '#8393A6';
     var ev=Object.assign({},r); var m=addNode(ev,rad*Math.cos(th),rad*Math.sin(th),(i%7-3)*1.5,1.6);
     m.material.color.set(col); m.material.emissive.set(col);
-    m.userData.label.textContent=(a?(a.verified?'✓ ':'✗ '):'')+r.text;
+    m.userData.label.textContent=(a?(a.verified?'✓ ':(a.reason==='profile'?'≡ ':'✗ ')):'')+r.text;
   });
   // the links: two questions that walked or learned the same fact, or fetched the same entity
   var drawn=0;
