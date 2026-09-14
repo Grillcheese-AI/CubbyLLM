@@ -157,9 +157,11 @@ VM-verified reads drove the design to **two adapters on one base** — the progr
 cortex (`t`), never mixed — plus the signed certificate ledger and the encrypted vault. `standin/README.md` is
 the record.
 
-**The reasoning stack (2026-09-03 → 2026-09-11).** The GoT challenge (`docs/research/2026-09-03-got-challenge-scored.md`)
-and the rung-1 generality-gate competition (`2026-09-10-rung1-generality-gate-competition.md`) put five outside
-models against the measured record; their pre-checks reshaped the roadmap. What followed, each with a before/after
+**The reasoning stack (2026-09-03 → 2026-09-14).** The GoT challenge (`docs/research/2026-09-03-got-challenge-scored.md`),
+the rung-1 generality-gate competition (`2026-09-10-rung1-generality-gate-competition.md`) and the neutral-prior
+competition (`2026-09-14-neutral-scoring-competition.md` — how the loop may learn what an asker means without
+becoming a ranker, and the multi-valued-relation trap it found) put outside models against the measured record;
+their pre-checks reshaped the roadmap. What followed, each with a before/after
 on the same store and seeds: the lookup-first walk over a TripleIndex; the entry diagnosis (absent facts 42%,
 relation mismatch 58% of the residue); the finding that the plan never crossed the gate and the disposer that
 closed it; the resident VM; the emitter's plans walked and harvested; gen 2 trained on the harvest and gated;
@@ -174,8 +176,8 @@ state, the sibling-repo anti-patterns to avoid.
 dated result. Read this first for the trunk. `VALIDATION_REPORT.md` — the campaign behind it, every number linked
 to a script in `validation/` and a log in `validation/logs/`.
 
-`docs/research/` — the dated findings (`2026-09-11-plan-verify.md` is the current one) and the outside-model
-competitions with their scoring. `docs/ARCHITECTURE_VISION.md` and `VISION.md` — the north star: Cubby (the trunk)
+`docs/research/` — the dated findings (`2026-09-14-ask-loop.md` is the current one; `2026-09-11-plan-verify.md`
+is the walk it sits on) and the outside-model competitions with their scoring. `docs/ARCHITECTURE_VISION.md` and `VISION.md` — the north star: Cubby (the trunk)
 + CubeLang (the verified VM, an OS for AI) + cubemind (the environment); deny-by-default; the Brain-SDK contracts.
 
 `PACKAGE_LAYOUT.md` — the target package layout, written before code could accumulate one by accident.
