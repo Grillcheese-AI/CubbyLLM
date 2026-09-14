@@ -151,6 +151,7 @@ class NewsSource:
         self.last: dict = {}
         self.times: dict[str, dict] = {}
         self.provenance: dict[str, str] = {}       # fact -> the feed that published it
+        self.licence: dict[str, str] = {}          # fact -> serve-only | open | unknown
         self.errors: dict[str, str] = {}
         self._robots: dict[str, list[str] | None] = {}
 
@@ -226,7 +227,7 @@ class NewsSource:
         that covers it become `"<headline>" is the headline of <entity>`, dated in `times` and
         attributed in `provenance`. A non-date gets [] and says so in `last`."""
         self.last = {"entity": entity, "feeds": [], "n": 0, "how": None, "unresolved": False}
-        self.times, self.provenance = {}, {}
+        self.times, self.provenance, self.licence = {}, {}, {}
         m = _DATE_ASK.match(str(entity or ""))
         if not m:
             self.last["unresolved"] = True
@@ -236,6 +237,7 @@ class NewsSource:
         out: list[Triple] = []
         for feed_id in self.feeds:
             n_before = len(out)
+            licence = self.licence_of(feed_id)               # one robots lookup per feed, not per headline
             for title, when, _link in self.items(feed_id):
                 if not when.startswith(prefix):
                     continue
@@ -245,6 +247,7 @@ class NewsSource:
                     continue
                 self.times[_normalize(fact)] = {"point": when}
                 self.provenance[_normalize(fact)] = feed_id
+                self.licence[_normalize(fact)] = licence
                 out.append(t)
             if len(out) > n_before:
                 self.last["feeds"].append(feed_id)
@@ -298,6 +301,8 @@ class NewsSource:
             if host == suffix or host.endswith("." + suffix):
                 out.append(door)
                 return out
+        if len(parts) < 2:                                   # a bare hostname has no front door
+            return out
         two = parts[-2] in ("co", "com", "net", "org", "gov", "ac") and len(parts[-1]) == 2
         keep = 3 if two else 2
         if len(parts) > keep:
@@ -326,6 +331,43 @@ class NewsSource:
     def policy(self) -> dict[str, list[str] | None]:
         """`{feed_id: [the AI crawlers its host disallows]}` for every configured feed."""
         return {fid: self.ai_optout(fid) for fid in self.feeds}
+
+    # -- serve vs train ------------------------------------------------------------------
+    # Nick's decision, 2026-09-14, and it turns on the two uses being genuinely different:
+    #
+    #   SERVING  -- fetch a headline, speak it once with attribution, retain nothing. That is
+    #               what a feed reader does, and RSS exists to be read by software. Allowed
+    #               for every feed, including the opted-out ones: `User-agent: *` permits the
+    #               path and nothing about it is a claim on the publisher's words.
+    #   TRAINING -- bake headlines into a dataset that becomes model weights. That is what the
+    #               block lists are about, and attribution does not undo it. Refused for any
+    #               publisher who named an AI crawler.
+    #
+    # The point of putting it HERE rather than in a README is that it is enforceable per fact:
+    # every fact carries its licence, so a dataset builder cannot include one by forgetting.
+    SERVE_ONLY, OPEN, UNKNOWN = "serve-only", "open", "unknown"
+
+    def licence_of(self, feed_id: str) -> str:
+        """`OPEN` when the publisher names no AI crawler, `SERVE_ONLY` when they name any,
+        `UNKNOWN` when there is no robots.txt to read. UNKNOWN is treated as SERVE_ONLY by
+        `trainable` -- silence is not consent, and the cost of being wrong is asymmetric."""
+        names = self.ai_optout(feed_id)
+        return self.UNKNOWN if names is None else (self.SERVE_ONLY if names else self.OPEN)
+
+    def trainable(self, feed_id: str) -> bool:
+        """May this feed's headlines enter a dataset that becomes model weights?"""
+        return self.licence_of(feed_id) == self.OPEN
+
+    def training_facts(self, entity: str) -> list[Triple]:
+        """`facts()`, minus every publisher who asked not to be used to build an AI. This is
+        the ONLY entry point a dataset builder may call; `facts()` is for serving."""
+        keep = {f for f in self.feeds if self.trainable(f)}
+        out = []
+        for t in self.facts(entity):
+            fact = _normalize(f"{t.obj} is the {t.rel} of {t.subj}")
+            if self.provenance.get(fact) in keep:
+                out.append(t)
+        return out
 
     def topics(self, entity: str, min_n: int = 2) -> list[tuple[str, int]]:
         """The recurring capitalised subjects in the headlines for a date, commonest first --

@@ -149,6 +149,13 @@ Disallow: /private/
 """
 
 
+DISTINCT = b"""<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel>
+ <item><title>A headline no other feed printed</title>
+       <pubDate>Sun, 13 Sep 2026 20:00:00 -0400</pubDate><link>http://w/1</link></item>
+</channel></rss>"""
+
+
 def _policy_src(tmp_path, feeds, robots):
     """A NewsSource whose robots.txt lookups are answered from a dict instead of the network."""
     src = NewsSource(feeds=feeds, cache_dir=tmp_path)
@@ -192,3 +199,41 @@ def test_reading_the_policy_never_silently_changes_what_the_source_returns(tmp_p
     src.offline = True
     assert src.ai_optout("fixture") == ["anthropic-ai"]
     assert len(src.facts("2026-09-13")) == 1                 # unchanged: the caller decides
+
+
+def test_serving_is_allowed_for_everyone_and_training_is_not(tmp_path):
+    """Nick's decision, 2026-09-14. Fetching a headline and speaking it once with attribution is
+    what a feed reader does and RSS exists for; baking it into model weights is what the block
+    lists are about, and attribution does not undo that. So `facts()` serves every feed and
+    `training_facts()` serves only publishers who named no AI crawler."""
+    feeds = {"open": "https://openhost.example/feed", "blocked": "https://blockedhost.example/feed"}
+    src = _policy_src(tmp_path, feeds, {"openhost.example": [], "blockedhost.example": ["anthropic-ai"]})
+    for fid in feeds:
+        src._cache_path(fid).parent.mkdir(parents=True, exist_ok=True)
+    src._cache_path("open").write_bytes(FEED)
+    src._cache_path("blocked").write_bytes(DISTINCT)         # NOT the same words as FEED: the
+    #                                                          dedupe would collapse them, and
+    #                                                          that is a different test
+    src.offline = True
+
+    assert src.licence_of("open") == NewsSource.OPEN and src.trainable("open")
+    assert src.licence_of("blocked") == NewsSource.SERVE_ONLY and not src.trainable("blocked")
+
+    served = src.facts("2026-09-13")
+    assert len(served) == 2                                  # serving sees both publishers
+    licences = set(src.licence.values())
+    assert licences == {NewsSource.OPEN, NewsSource.SERVE_ONLY}   # ... and every fact carries which
+
+    trained = src.training_facts("2026-09-13")
+    assert len(trained) == 1
+    fact = normalize(f"{trained[0].obj} is the {trained[0].rel} of {trained[0].subj}")
+    assert src.provenance[fact] == "open"
+
+
+def test_silence_is_not_consent(tmp_path):
+    """A host with no robots.txt at all is UNKNOWN, and UNKNOWN does not train. The cost of
+    being wrong is asymmetric: a headline wrongly left out of a dataset costs a headline, and
+    one wrongly put in cannot be taken back out of the weights."""
+    src = _policy_src(tmp_path, {"quiet": "https://nopolicy.example/feed"}, {})
+    assert src.licence_of("quiet") == NewsSource.UNKNOWN
+    assert not src.trainable("quiet")
