@@ -246,7 +246,7 @@ def make_handler(brain):
                     if loop is None:
                         self._send(503, {"error": "no ask loop mounted: start serve_api with --ask"})
                         return
-                    self._send(200, _json_safe(loop.ask(text, item=(str(req.get("item")) if req.get("item") else None))))
+                    self._send(200, _json_safe(loop.ask(text, item=(str(req.get("item")) if req.get("item") else None), asker=(str(req.get("asker")) if req.get("asker") else None))))
                     return
                 rec = brain.turn(text, feedback=req.get("feedback"))
                 rec.pop("raw", None)

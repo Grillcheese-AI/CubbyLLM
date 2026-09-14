@@ -268,13 +268,23 @@ class WikidataSource:
     def _choices_path(self):
         return self.cache / "_choices.json" if self.cache else None
 
-    def choose(self, entity: str, qid: str) -> None:
-        """Record that an asker meant THIS item by that name (the clarify answer)."""
-        if not self.use_choices:
+    @staticmethod
+    def _key(entity: str, among: list[str]) -> str:
+        """The ambiguity, not the name: (normalized surface form, the candidate set that survived the
+        deterministic tiers). A tally keyed on the name alone silently carries onto a DIFFERENT ambiguity
+        when the source gains a namesake -- the field's Q5, and the `james young` defect wearing a new
+        coat. A changed candidate set is a new key with no history, so the asker is asked again."""
+        return _normalize(entity) + "|" + ",".join(sorted(among))
+
+    def choose(self, entity: str, qid: str, among: list[str] | None = None, asker: str | None = None) -> None:
+        """Record that an asker meant THIS item by that name. One vote per asker per ambiguity, last
+        write wins -- repeating a question is not a second vote, and a person may change their mind.
+        Only an EXPLICIT clarify answer writes here: never an auto-bound decision (which would freeze
+        the prior into its own past), never 'the VM verified it', never the absence of a correction."""
+        if not self.use_choices or not among:
             return
-        key = _normalize(entity)
-        tally = self.choices.setdefault(key, {})
-        tally[qid] = tally.get(qid, 0) + 1
+        key = self._key(entity, among)
+        self.choices.setdefault(key, {})[str(asker or "anon")] = {"item": qid, "t": int(time.time())}
         p = self._choices_path()
         if p is not None:
             try:
@@ -282,17 +292,46 @@ class WikidataSource:
             except OSError:
                 pass
 
-    def preferred(self, entity: str, among: list[str]) -> tuple[str, int, int] | None:
-        """(qid, its count, the total) when the askers' tally has a UNIQUE maximum among these
-        candidates, else None -- a split or silent tally is not a preference, and is still asked."""
-        if not self.use_choices:
+    # a sense's pull halves in a quarter: what a name meant last year is not what it means now.
+    HALF_LIFE_S = 90 * 86400
+    MIN_ASKERS, MIN_MASS, MIN_MARGIN, MIN_SHARE = 3, 3.0, 2.0, 0.7
+
+    def preferred(self, entity: str, among: list[str], asker: str | None = None) -> tuple[str, str] | None:
+        """(qid, how) when the ledger may bind this name to one item, else None -- and None is a refusal
+        to guess, which is always available. Two tiers, both about which item was MEANT and neither about
+        what is true:
+
+          * THE SAME ASKER already said, for this very ambiguity, which item they meant. One observation
+            is enough because it is not a vote about the world, it is this person's own stated referent.
+          * OTHER ASKERS, and then only well past a coin flip: at least MIN_ASKERS distinct askers with a
+            live vote, a decayed margin of MIN_MARGIN over the runner-up and MIN_SHARE of the mass. One
+            observation, a 51/49 split, or a sense that was popular last year and is not now all fail it.
+        """
+        if not self.use_choices or not among:
             return None
-        tally = {q: n for q, n in (self.choices.get(_normalize(entity)) or {}).items() if q in among}
-        if not tally:
+        votes = self.choices.get(self._key(entity, among)) or {}
+        now = time.time()
+        mine = votes.get(str(asker or "anon"))
+        if mine and mine.get("item") in among:
+            return mine["item"], "your earlier choice"
+        mass: dict[str, float] = {}
+        for who, v in votes.items():
+            if who == str(asker or "anon") or v.get("item") not in among:
+                continue
+            w = 0.5 ** ((now - float(v.get("t", now))) / self.HALF_LIFE_S)
+            if w >= 1 / 16:                                  # a year old at this half-life: dead, not faint
+                mass[v["item"]] = mass.get(v["item"], 0.0) + w
+        if len(mass) < 1:
             return None
-        top = max(tally.values())
-        best = [q for q, n in tally.items() if n == top]
-        return (best[0], top, sum(tally.values())) if len(best) == 1 else None
+        total = sum(mass.values())
+        ranked = sorted(mass.items(), key=lambda kv: -kv[1])
+        top, second = ranked[0], (ranked[1] if len(ranked) > 1 else ("", 0.0))
+        n_askers = sum(1 for who, v in votes.items() if v.get("item") in among and who != str(asker or "anon")
+                       and 0.5 ** ((now - float(v.get("t", now))) / self.HALF_LIFE_S) >= 1 / 16)
+        if (n_askers >= self.MIN_ASKERS and total >= self.MIN_MASS
+                and top[1] >= second[1] + self.MIN_MARGIN and top[1] / total >= self.MIN_SHARE):
+            return top[0], f"asker history ({top[1]:.1f} of {total:.1f}, {n_askers} askers)"
+        return None
 
     def _link(self, fact: str, qid: str) -> None:
         """Remember which ITEM the object of a served claim IS, keyed by the FACT ('jim haslam is
@@ -316,7 +355,7 @@ class WikidataSource:
                 pass
 
     def resolve(self, entity: str, relations: list[str] | None = None, via: str | None = None,
-                qid: str | None = None) -> tuple[str, str] | None:
+                qid: str | None = None, asker: str | None = None) -> tuple[str, str] | None:
         """(qid, label) for the entity, or None. Three tiers, each deterministic, none a pick
         by rank: (1) LINKED -- the entity is the object of a fact this source served (`via`:
         the walked fact that reached it), so the item is the one that claim pointed at; (2) the
@@ -327,11 +366,7 @@ class WikidataSource:
         whose LABEL is the name the question used over items that only carry it as an alias
         ('Jim Haslam' over 'Jimmy Haslam'). Still more than one -> ambiguous, refused."""
         key = _normalize(entity)
-        if qid:                                              # the USER named the item (the panel's clarify choice)
-            self.choose(entity, qid)
-            self.last.update(how="chosen by the asker")
-            return qid, self._labels_for([qid]).get(qid) or entity
-        if via and len(self.links.get(_normalize(via), ())) == 1:
+        if via and not qid and len(self.links.get(_normalize(via), ())) == 1:
             qid = self.links[_normalize(via)][0]
             self.last.update(how="linked", via=via)
             return qid, self._labels_for([qid]).get(qid) or entity
@@ -384,11 +419,19 @@ class WikidataSource:
             labelled = [h for h in cands if _normalize(h.get("label", "")) == key]
             if len(labelled) == 1:
                 cands, how = labelled, how + " + label over alias"
+        if qid:                                              # the USER named the item (the panel's clarify choice):
+            # recorded against the candidate set they were OFFERED, which is why the search ran first --
+            # a vote keyed on the bare name would carry onto a different ambiguity later (the field's Q5)
+            self.choose(entity, qid, [h["id"] for h in cands], asker)
+            self.last.update(how="chosen by the asker")
+            return qid, self._labels_for([qid]).get(qid) or entity
         if len(cands) > 1:                                   # no context left: what askers have meant by this name
-            pref = self.preferred(entity, [h["id"] for h in cands])
+            offered = [h["id"] for h in cands]
+            self.last["offered"] = offered                   # the ambiguity the ledger is keyed on
+            pref = self.preferred(entity, offered, asker)
             if pref:
                 cands = [h for h in cands if h["id"] == pref[0]]
-                how = "asker history (%d of %d)" % (pref[1], pref[2])
+                how = pref[1]
         if len(cands) != 1:
             self.last["ambiguous"] = [(h["id"], h.get("label"), h.get("description")) for h in cands]
             self.last["unresolved"] = not exact
@@ -418,14 +461,14 @@ class WikidataSource:
         return out
 
     def facts(self, entity: str, relations: list[str] | None = None, via: str | None = None,
-              qid: str | None = None) -> list[str]:
+              qid: str | None = None, asker: str | None = None) -> list[str]:
         """`relations`: the wordings the walk needs from this entity (the stalled hop's), used
         only to decide among several items that share the name; `via`: the walked fact whose
         object this entity is, which names the item outright. Neither keeps the strict rule
         from applying when they are absent."""
         self.last = {"entity": entity, "qid": None, "label": None, "alias": False, "n_claims": 0, "how": None}
         self.times: dict[str, dict] = {}                     # fact text -> {start, end, point}, beside the facts
-        r = self.resolve(entity, relations, via, qid)
+        r = self.resolve(entity, relations, via, qid, asker)
         if r is None:
             return []
         qid, label = r

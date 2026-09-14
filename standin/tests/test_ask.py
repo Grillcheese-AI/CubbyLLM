@@ -263,7 +263,8 @@ def test_a_time_varying_value_is_answered_with_the_latest_and_its_date_said_out_
     rec = loop.ask("where is Quebec City?")
     pop = [l for l in rec["profile"] if l["relation"] == "population"]
     assert [l["value"] for l in pop] == ["546958"] and pop[0]["when"] == "2021-00-00"
-    assert "population: 546958 (2021-00-00)" in rec["answer"] and "547" not in rec["answer"]
+    # the stored time keeps the source's 00 for an unknown month and day; the SAID time is the year.
+    assert "population: 546958 (2021)" in rec["answer"] and "547" not in rec["answer"]
     assert [l["value"] for l in rec["profile"] if l["relation"] == "country"] == ["Canada"]   # undated: unchanged
     # the older values are still in the store, and the year that asks for one reads it
     assert "547 is the population of Quebec City" in world

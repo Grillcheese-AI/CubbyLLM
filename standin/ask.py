@@ -69,7 +69,46 @@ FALLBACK_KINDS = ("who", "what", "where")          # kinds that may also show an
 RESOLVE_HINT = {k: tuple(r for r in v if r not in ("instance of", "subclass of", "part of", "sex or gender"))[:8] for k, v in PROFILE_KINDS.items()}
 PROFILE_MAX_PER_RELATION = 3
 PROFILE_MAX_LINES = 9
-PARAPHRASE_SYSTEM = "You are a careful writer. You restate given facts in plain sentences and never add anything."
+PARAPHRASE_SYSTEM = ("You are a careful writer. You restate given facts in plain sentences and never add anything. "
+                     "The facts are written in a database's own vocabulary; say them in ordinary English.")
+
+
+SAY = {
+    # A display rename may only DROP the source's schema words. It may never ADD one: Wikidata's P131 does
+    # not say "province" and its P669 does not say "road", so speaking either would be a claim with no
+    # provenance -- the one thing the kill line forbids. To earn the word "province", fetch Quebec's own
+    # `instance of` and let THAT fact license it.
+    "located in the administrative territorial entity": "located in",
+    "contains the administrative territorial entity": "contains",
+    "located in or next to body of water": "located on or next to",
+    "located on street": "located on",
+    "located in time zone": "in time zone",
+}
+
+
+def say(rel: str) -> str:
+    """A relation as it should READ, never as it is stored. The template is `<obj> is the <rel> of <subj>`,
+    so a relation whose own label ends in 'of' renders 'capital of of Quebec City' (2026-09-14, live). The
+    stored text is the key the gate, the walk and the VM all share and is never rewritten; this is the
+    display layer only, and SAY above bounds how far it may go."""
+    r = " ".join(str(rel or "").split())
+    r = SAY.get(r.lower(), r)
+    return r[:-3] if r.endswith(" of") else r
+
+
+def when_text(w: str) -> str:
+    """A stored time as it should read: the source writes an unknown month and day as 00, and
+    '2024-00-00' is simply the year 2024."""
+    out = []
+    for part in str(w or "").split("\u2013"):
+        q = part.strip()
+        if _re.fullmatch(r"\d{4}-00-00", q):
+            q = q[:4]
+        elif _re.fullmatch(r"\d{4}-\d{2}-00", q):
+            q = q[:7]
+        if q:
+            out.append(q)
+    return "\u2013".join(out)
 
 
 def profile_ask(question: str) -> tuple[str, str] | None:
@@ -131,11 +170,23 @@ def date_words(facts: list[str]) -> list[str]:
     return out
 
 
+_GROUP = _re.compile(r"[,\u00a0\u202f\u2009]")
+
+
+def _num_key(tok: str) -> str:
+    """A number as its digits alone, without thousands grouping: '574,482' and '574482' are the SAME
+    number. 2026-09-14, live: a paraphrase of Quebec City that was faithful in every word was refused
+    because the talk adapter grouped a population the store holds bare. The guard was right to check and
+    wrong about the answer -- an over-refusal is not free, it is the loop declining to speak the truth."""
+    return _GROUP.sub("", str(tok)).strip(".:/-")
+
+
 def grounded_prose(text: str, facts: list[str], entity: str) -> tuple[bool, list[str]]:
     """Every capitalised word and every number in the paraphrase must occur in the facts (or the entity's
     name, or a date the facts hold written out): the talk adapter says what the store says, in its words,
     and nothing it adds is spoken. -> (ok, the offending tokens)."""
     hay = " ".join(facts + [entity] + date_words(facts)).lower()
+    nums = {_num_key(t) for t in _TOKEN.findall(" ".join(facts + [entity])) if t[:1].isdigit()}
     bad: list[str] = []
     for tok in _TOKEN.findall(text):
         low = tok.lower().strip("'’-.,:")
@@ -143,6 +194,8 @@ def grounded_prose(text: str, facts: list[str], entity: str) -> tuple[bool, list
             continue
         is_name = tok[0].isupper() and low not in _SMALL
         is_num = tok[0].isdigit()
+        if is_num and _num_key(low) in nums:
+            continue
         if (is_name or is_num) and low not in hay:
             bad.append(tok.strip("'’-.,:"))
     return (not bad), bad
@@ -190,7 +243,7 @@ class AskLoop:
         self.calls["vm"] += 1
         return self._vm(source, fn) if self._vm else self.session.run(source, fn=fn)
 
-    def ask(self, question: str, item: str | None = None) -> dict:
+    def ask(self, question: str, item: str | None = None, asker: str | None = None) -> dict:
         from cubbyllm.reasoning import events as ev
         from cubbyllm.reasoning.learn import learn_and_answer
         from cubbyllm.reasoning.planner import QuestionPlan, normalize
@@ -204,7 +257,7 @@ class AskLoop:
             self.calls["asked"] += 1
             pa = profile_ask(question)                   # the host reads the shape off the question (gen 2 cannot emit it yet)
             if pa:
-                rec = self.profile(question, pa[0], pa[1], t0, how="the question's shape (who / what / where / when)", item=item)
+                rec = self.profile(question, pa[0], pa[1], t0, how="the question's shape (who / what / where / when)", item=item, asker=asker)
                 self.history.append(rec)
                 return rec
             try:
@@ -212,7 +265,7 @@ class AskLoop:
                 program = strip_fences(raw)
                 pp = profile_program(program)            # the emitter wrote the retrieval program: SEED + ASK, no hop
                 if pp:
-                    rec = self.profile(question, pp[0], pp[1], t0, how="the emitter's program (ASK role)", item=item)
+                    rec = self.profile(question, pp[0], pp[1], t0, how="the emitter's program (ASK role)", item=item, asker=asker)
                     self.history.append(rec)
                     return rec
                 ep = emitted_plan(program, normalize)
@@ -249,7 +302,7 @@ class AskLoop:
         return [t for _f, t in by.get(normalize(entity), []) if t is not None]
 
 
-    def _fetch(self, qid: int, entity: str, hint: list[str], rec: dict, item: str | None = None) -> dict:
+    def _fetch(self, qid: int, entity: str, hint: list[str], rec: dict, item: str | None = None, asker: str | None = None) -> dict:
         """The source asked about the entity (the ask kind's relations as the resolution hint), every
         fact through the gate, admitted ones into the store with provenance; the fetch and gate events."""
         from cubbyllm.reasoning import events as ev
@@ -257,7 +310,7 @@ class AskLoop:
         from cubbyllm.reasoning.planner import Triple, normalize
         prov = getattr(self.world, "provenance", None)
         rec["entities"].append(entity)
-        items = list(self.source.facts(entity, relations=hint, qid=item) if _takes_item(self.source) else
+        items = list(self.source.facts(entity, relations=hint, qid=item, asker=asker) if _takes_item(self.source) else
                      (self.source.facts(entity, relations=hint) if _takes_relations(self.source) else self.source.facts(entity)))
         last = getattr(self.source, "last", None) if isinstance(getattr(self.source, "last", None), dict) else {}
         fid = ev.emit("fetch", qid, source=getattr(self.source, "name", None), entity=entity, n=len(items), latent=False,
@@ -288,7 +341,7 @@ class AskLoop:
                     provenance=(prov or {}).get(" ".join(fact.split())))
         return last
 
-    def profile(self, question: str, kind: str, entity: str, t0: float, how: str, item: str | None = None) -> dict:
+    def profile(self, question: str, kind: str, entity: str, t0: float, how: str, item: str | None = None, asker: str | None = None) -> dict:
         """'who / what / where is X' -- the retrieval program. The plan is SEED + ASK (what the emitter
         learns to write); the host fills the store from the source when it holds nothing about X; the
         facts under the ask kind's relations are bound into a program and the VM recovers each one --
@@ -322,7 +375,7 @@ class AskLoop:
         last: dict = {}
         known_rels = set(rels) | (set(PROFILE) if kind in FALLBACK_KINDS else set())
         if not any(normalize(t.rel) in known_rels for t in have):
-            last = self._fetch(qid, entity, list(RESOLVE_HINT[kind]), rec, item)
+            last = self._fetch(qid, entity, list(RESOLVE_HINT[kind]), rec, item, asker)
             have = self.facts_about(entity)
         # the lines: the ask kind's relations first, then any other profile relation the store holds
         chosen: list[tuple[str, str, str]] = []                       # (rel, obj, the stored fact text)
@@ -396,7 +449,7 @@ class AskLoop:
         if kept:
             by_rel: dict[str, list[str]] = {}
             for l in kept:
-                by_rel.setdefault(l["relation"], []).append(l["value"] + (f" ({l['when']})" if l.get("when") else ""))
+                by_rel.setdefault(say(l["relation"]), []).append(l["value"] + (f" ({when_text(l['when'])})" if l.get("when") else ""))
             rec["answer"] = entity + " — " + "; ".join(f"{r}: {', '.join(v)}" for r, v in by_rel.items())
             rec["prose"] = self.paraphrase(pid, entity, kind, kept)
         else:
@@ -415,10 +468,16 @@ class AskLoop:
         if not isinstance(adapters, dict) or "talk" not in adapters or not getattr(self.emitter, "is_split", False):
             return None
         facts = [l["fact"] for l in lines]
+        # the adapter reads the SAID form (say() has already dropped the schema words) -- asking a 4B model
+        # to translate "the administrative territorial entity" itself only spends its attention on the
+        # database's vocabulary instead of on the sentence. 2026-09-14, Nick, live.
+        said = [f"{say(l['relation'])}: {l['value']}" + (f" ({when_text(l['when'])})" if l.get("when") else "")
+                for l in lines]
         ask = {"who": "who", "what": "what", "where": "where", "when": "what happened in"}.get(kind, "what")
-        prompt = (f"Facts about {entity}:\n" + "\n".join(f"- {f}" for f in facts) +
+        prompt = (f"Facts about {entity}:\n" + "\n".join(f"- {s}" for s in said) +
                   f"\n\nIn one or two plain sentences, say {ask} {entity} is, using ONLY these facts. "
-                  "Do not add any name, date, number or detail that is not in the facts.")
+                  "Every NAME, DATE and NUMBER must appear exactly as given, and you may add none that is "
+                  "not in the facts.")
         try:
             from emitter import clean_reply
             raw = self.emitter.emit(prompt, max_new_tokens=160, context={"role": "talk"}, temperature=0.0,
@@ -427,7 +486,7 @@ class AskLoop:
         except Exception as e:                                   # noqa: BLE001 -- no paraphrase, the facts stand
             ev.emit("paraphrase", pid, ok=False, text=None, rejected=[f"talk adapter failed: {str(e)[:80]}"])
             return None
-        ok, bad = grounded_prose(text, facts, entity)
+        ok, bad = grounded_prose(text, facts + said, entity)
         ev.emit("paraphrase", pid, ok=ok, text=text if ok else None, rejected=bad or None, draft=text)
         return text if ok else None
 
@@ -498,7 +557,7 @@ class AskLoop:
                 recovered=len(kept), bound=len(dated))
         rec["profile"] = kept; rec["trace"] = [k["fact"] for k in kept]
         if kept:
-            rec["answer"] = f"{entity} — " + "; ".join(f"{k['when']}: {k['value']} is the {k['relation']} of {k['subject']}" for k in kept)
+            rec["answer"] = f"{entity} — " + "; ".join(f"{k['when']}: {k['value']} is the {say(k['relation'])} of {k['subject']}" for k in kept)
             rec["prose"] = self.paraphrase(pid, entity, "when", kept)
             rec["scope"] = "the facts the store knows a date for -- not a record of the year"
         else:

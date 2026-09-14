@@ -135,35 +135,79 @@ def test_a_wikimedia_meta_page_is_dropped_before_the_ambiguity_is_counted():
     assert src2.facts("Mercury") == [] and len(src2.last["ambiguous"]) == 2
 
 
-def test_the_asker_chooses_the_item_and_the_tally_guesses_only_when_no_context_does(tmp_path):
+def test_the_asker_chooses_the_item_and_the_ledger_guesses_only_when_no_context_does(tmp_path):
     """Nick, 2026-09-14: "when ambiguous it should either select A based on context or B ask the user";
     and "an algorithm that allows the vm to still be neutral while scoring most requested answers... to
-    guess the context if none". The tally is host-side: it picks WHICH item to ask about, never what the
-    VM verifies, it only fires when a unique maximum exists, and it is on the record."""
+    guess the context if none". Rebuilt after the model competition, which found four defects in the
+    first cut: the key was the bare name (a new namesake would inherit the tally), it counted questions
+    rather than askers (repeating a question stuffed the ballot), it never decayed, and it fired on a
+    single observation. The ledger is host-side throughout: it chooses WHICH item to ask the source
+    about, never what the VM verifies."""
+    import time as _t
     hits = [_hit("Q1", "Mercury", "planet"), _hit("Q2", "Mercury", "chemical element")]
     src = _fake_choices(tmp_path, hits, {"Q1": CLAIMS, "Q2": CLAIMS, **LABELS})
     assert src.facts("Mercury") == [] and src.last["qid"] is None            # B: ambiguous, the asker is asked
-    out = src.facts("Mercury", qid="Q2")                                      # the asker answers
+    out = src.facts("Mercury", qid="Q2", asker="nick")                        # the asker answers
     assert src.last["qid"] == "Q2" and src.last["how"] == "chosen by the asker" and len(out) == 1
-    assert src.choices["mercury"] == {"Q2": 1}
-    src.facts("Mercury")                                                      # next time, no context: the tally decides
-    assert src.last["qid"] == "Q2" and src.last["how"] == "asker history (1 of 1)"
-    src.facts("Mercury", qid="Q1"); src.facts("Mercury", qid="Q1")            # the askers change their minds
-    src.facts("Mercury")
-    assert src.last["qid"] == "Q1" and src.last["how"] == "asker history (2 of 3)"
-    # a split tally is not a preference
-    src.facts("Mercury", qid="Q2"); src.facts("Mercury")
+    key = src._key("Mercury", ["Q1", "Q2"])
+    assert list(src.choices[key]) == ["nick"] and src.choices[key]["nick"]["item"] == "Q2"
+    # the SAME asker said what they meant: one observation is enough, and it is named as theirs
+    src.facts("Mercury", asker="nick")
+    assert src.last["qid"] == "Q2" and src.last["how"] == "your earlier choice"
+    # ...but it is not everyone's: another asker still gets the question
+    src.facts("Mercury", asker="ada")
     assert src.last["qid"] is None and len(src.last["ambiguous"]) == 2
-    # a context tier still outranks the tally: the relation the question needs decides
-    src.choices = {"mercury": {"Q2": 9}}
-    src._entities["Q1"] = {"claims": {"P735": [ITEM("Q90")]}}; src._entities["Q2"] = {"claims": {}}
+    # repeating a question is not a second vote
+    for _ in range(9):
+        src.facts("Mercury", qid="Q2", asker="nick")
+    assert len(src.choices[key]) == 1
+    src.facts("Mercury", asker="ada")
+    assert src.last["qid"] is None                                            # one asker is not a quorum
+    # three askers, past a coin flip: the ledger may bind, and says how loudly
+    for who in ("ada", "bo", "cy"):
+        src.facts("Mercury", qid="Q2", asker=who)
+    src.facts("Mercury", asker="dee")
+    assert src.last["qid"] == "Q2" and src.last["how"].startswith("asker history") and "askers" in src.last["how"]
+    # a 51/49 split is not a preference
+    for who in ("ed", "fi", "gus"):
+        src.facts("Mercury", qid="Q1", asker=who)
+    src.facts("Mercury", asker="dee")
+    assert src.last["qid"] is None and len(src.last["ambiguous"]) == 2
+    # what a name meant a year ago is not what it means now: those votes are dead, not faint
+    old = int(_t.time()) - 400 * 86400
+    src.choices[key] = {w: {"item": "Q1", "t": old} for w in ("ed", "fi", "gus", "hal")}
+    src.facts("Mercury", asker="dee")
+    assert src.last["qid"] is None
+    # a context tier still outranks the ledger
+    src.choices[key] = {w: {"item": "Q2", "t": int(_t.time())} for w in ("ada", "bo", "cy", "dee", "ed")}
+    src._entities["Q1"] = {"claims": {"P31": [ITEM("Qplanet")], "P735": [ITEM("Q90")]}}
+    src._entities["Q2"] = {"claims": {"P31": [ITEM("Qelement")]}}
     src._entities.update(LABELS2)
-    src.facts("Mercury", relations=["given name"])
+    src.facts("Mercury", relations=["given name"], asker="zoe")
     assert src.last["qid"] == "Q1" and src.last["how"].startswith("relation")
     # and the benches never see any of it
     plain = FakeWikidata(hits, {"Q1": CLAIMS, "Q2": CLAIMS, **LABELS})
     assert plain.use_choices is False and plain.preferred("Mercury", ["Q1", "Q2"]) is None
-    plain.choose("Mercury", "Q1"); assert plain.choices == {}
+    plain.choose("Mercury", "Q1", ["Q1", "Q2"]); assert plain.choices == {}
+
+
+def test_a_new_namesake_is_a_new_ambiguity_and_inherits_no_history(tmp_path):
+    """The competition's Q5, unanimous across the field and absent from the first cut: auto-binding stops
+    producing explicit picks, so the tally freezes; the source then gains a namesake; a ledger keyed on
+    the bare name still unique-maxes the old sense, the VM certifies a true chain about the wrong item,
+    and every fact-checking bench passes. The key is (name, candidate set), so a changed set has no
+    history and the asker is asked again."""
+    import time as _t
+    two = [_hit("Q1", "Mercury", "planet"), _hit("Q2", "Mercury", "chemical element")]
+    src = _fake_choices(tmp_path, two, {"Q1": CLAIMS, "Q2": CLAIMS, "Q3": CLAIMS, **LABELS})
+    for who in ("ada", "bo", "cy", "dee"):
+        src.facts("Mercury", qid="Q2", asker=who)
+    src.facts("Mercury", asker="zoe")
+    assert src.last["qid"] == "Q2"                                            # settled, on four askers
+    src._search = two + [_hit("Q3", "Mercury", "Roman god")]                   # the source gains a namesake
+    src.facts("Mercury", asker="zoe")
+    assert src.last["qid"] is None and len(src.last["ambiguous"]) == 3         # a different ambiguity: ask
+    assert src._key("Mercury", ["Q1", "Q2"]) != src._key("Mercury", ["Q1", "Q2", "Q3"])
 
 
 def test_the_question_s_relations_narrow_in_order_but_only_across_different_kinds_of_thing():

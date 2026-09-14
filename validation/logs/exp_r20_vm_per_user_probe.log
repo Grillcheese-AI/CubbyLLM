@@ -1,0 +1,14 @@
+machine: 29,530 MB used, 21,768 MB available at start | sessions 16, threads 4, 25 programs each
+
+baseline (1 session, serial): 100 programs in 0.09s = 1,132/s (0.88 ms each)
+
+16 resident sessions: spawn+first-call median 18 ms (min 18, max 22)
+  machine used 29,531 -> 29,553 MB (+22 MB) | per-process RSS unavailable (no psutil)
+  ≈ 1.4 MB per user  ->  726 users per GB, 15,788 more on this machine's free memory
+
+load: 400 programs over 16 sessions from 4 threads in 0.09s = 4,291/s (1,073/s per thread)
+  latency ms: p50 0.88 · p90 1.23 · p99 1.59 · max 1.67
+  vs the serial baseline: 3.79x throughput on 4 threads
+
+after the load: machine used 29,561 MB
+after close: machine used 29,540 MB (released 21 MB)

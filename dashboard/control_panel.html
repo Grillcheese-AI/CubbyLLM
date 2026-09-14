@@ -644,6 +644,11 @@ setInterval(function(){
 /* the ask box: POST /ask on the stand-in server; every step of the loop arrives on the stream while the answer is computed */
 var askForm=document.getElementById('ask'), askText=document.getElementById('ask-text'), askBtn=document.getElementById('ask-btn');
 var clarifyEl=document.getElementById('clarify');
+function askerId(){                                 // a stable id per browser: the ledger counts ASKERS, not questions
+  var k='cubby.asker';
+  try{ var v=localStorage.getItem(k); if(!v){ v='a'+Math.random().toString(36).slice(2,10); localStorage.setItem(k,v); } return v; }
+  catch(e){ return 'anon'; }
+}
 function showClarify(q,c){                          // the asker decides; the host never picks (2026-09-14)
   clarifyEl.innerHTML=''; if(!c||!c.choices||!c.choices.length){ clarifyEl.hidden=true; return; }
   var b=document.createElement('b'); b.textContent=c.question||'Which one do you mean?'; clarifyEl.appendChild(b);
@@ -661,7 +666,7 @@ function sendAsk(q,item){
   connectLive(); follow=q; askForm.classList.add('busy'); askBtn.textContent='…'; askBtn.disabled=true;
   clarifyEl.hidden=true;
   document.getElementById('status').textContent='asking: '+q+(item?(' ['+item+']'):'');
-  fetch(base+'/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(item?{text:q,item:item}:{text:q})})
+  fetch(base+'/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({text:q,asker:askerId()},item?{item:item}:{}))})
     .then(function(r){ return r.json(); })
     .then(function(rec){
       document.getElementById('status').textContent=rec.error?('ask failed: '+rec.error):

@@ -1,0 +1,34 @@
+{
+ "sessions": 16,
+ "threads": 4,
+ "per_session": 25,
+ "baseline_programs": 100,
+ "baseline_s": 0.088,
+ "baseline_rate_per_s": 1132.1,
+ "spawn_ms": {
+  "median": 18.4,
+  "min": 17.5,
+  "max": 22.5
+ },
+ "mem_mb": {
+  "used_before": 29531.4,
+  "used_after": 29553.4,
+  "grew": 22.0,
+  "summed_rss": null,
+  "per_user": 1.38,
+  "users_per_gb": 726.1,
+  "used_after_load": 29561.0,
+  "released_on_close": 21.2
+ },
+ "load": {
+  "programs": 400,
+  "wall_s": 0.093,
+  "rate_per_s": 4291.4,
+  "p50_ms": 0.879,
+  "p90_ms": 1.227,
+  "p99_ms": 1.593,
+  "max_ms": 1.669,
+  "speedup_vs_serial": 3.79
+ },
+ "note": "one resident cubelang run-proto process per user. The emitter (one GGUF, GPU-locked) is shared and is a separate budget; this is the VM's half of per-user isolation."
+}
