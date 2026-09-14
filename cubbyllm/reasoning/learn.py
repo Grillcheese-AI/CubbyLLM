@@ -185,16 +185,27 @@ def wanted_relations(question: str, plan: QuestionPlan | None, first: CoTResult,
     return []
 
 
+def reached_through(first: CoTResult, entity: str) -> str | None:
+    """The walked fact whose OBJECT is `entity` -- the last hop's, when the walk stopped at it --
+    else None (the seed came from the question, not from a fact)."""
+    if first.trace and first.reason == "retrieval_exhausted":
+        last = first.trace[-1]
+        if last.triple is not None and normalize(last.triple.obj) == normalize(entity):
+            return last.fact
+    return None
+
+
 _TAKES_RELATIONS: dict[int, bool] = {}
 
 
 def _takes_relations(source) -> bool:
-    """Whether `source.facts` accepts `relations=` (the Source protocol only promises `facts(entity)`)."""
+    """Whether `source.facts` accepts `relations=` and `via=` (the Source protocol only promises `facts(entity)`)."""
     key = id(type(source))
     if key not in _TAKES_RELATIONS:
         import inspect
         try:
-            _TAKES_RELATIONS[key] = "relations" in inspect.signature(source.facts).parameters
+            params = inspect.signature(source.facts).parameters
+            _TAKES_RELATIONS[key] = "relations" in params and "via" in params
         except (TypeError, ValueError):
             _TAKES_RELATIONS[key] = False
     return _TAKES_RELATIONS[key]
@@ -530,10 +541,14 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
         # the question decides, never a rank (2026-09-13, the ask loop: 'Marie Curie' is a
         # physicist, a book edition, a metro station and a ferry; one has a date of birth)
         need = wanted_relations(question, plan, out.result, known, ent)
-        items = list(source.facts(ent, relations=need) if (need and _takes_relations(source)) else source.facts(ent))
+        via = reached_through(out.result, ent)                 # the walked fact whose object this entity is, when it is one
+        if _takes_relations(source):
+            items = list(source.facts(ent, relations=need or None, via=via))
+        else:
+            items = list(source.facts(ent))
         last = getattr(source, "last", None) if isinstance(getattr(source, "last", None), dict) else {}
         fid = ev.emit("fetch", qid, source=getattr(source, "name", None), entity=ent, n=len(items), latent=latent,
-                      needs=need, how=last.get("how"), item=last.get("qid"),
+                      needs=need, via=via, how=last.get("how"), item=last.get("qid"),
                       ambiguous=[list(a) for a in last.get("ambiguous", [])] or None)
         for item in items:
             out.fetched += 1

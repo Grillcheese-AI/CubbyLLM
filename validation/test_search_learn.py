@@ -575,8 +575,8 @@ def test_every_step_of_the_loop_is_an_event_linked_to_its_parent_and_no_listener
 class NeedySource(DictSource):
     """A source that can use the relation the walk needs (WikidataSource's `relations=`): records what it was told."""
     def __init__(self, by_entity): super().__init__(by_entity); self.needs = []
-    def facts(self, entity, relations=None):
-        self.needs.append((normalize(entity), list(relations or []))); return super().facts(entity)
+    def facts(self, entity, relations=None, via=None):
+        self.needs.append((normalize(entity), list(relations or []), via)); return super().facts(entity)
 
 
 def test_the_source_is_told_the_relation_the_walk_needs_from_the_entity_it_is_asked_about():
@@ -589,7 +589,7 @@ def test_the_source_is_told_the_relation_the_walk_needs_from_the_entity_it_is_as
     src = NeedySource({"marie": ["canada is the country of citizenship of marie"], "canada": ["ottawa is the capital of canada"]})
     r = run("What is the capital of the country of citizenship of Marie?", store, known, src)
     assert r.result.verified and normalize(r.result.answer) == "ottawa"
-    assert src.needs == [("marie", ["country of citizenship"]), ("canada", ["capital"])]
+    assert src.needs == [("marie", ["country of citizenship"], None), ("canada", ["capital"], "canada is the country of citizenship of marie")]
     plain = DictSource({"jean2": ["france is the country of citizenship of jean2"]})     # no `relations=`: the old call
     r2 = run("What is the capital of the country of citizenship of Jean2?", LookupStore(STORE), StoreRelations(STORE), plain)
     assert r2.result.verified and [normalize(c) for c in plain.calls] == ["jean2"]

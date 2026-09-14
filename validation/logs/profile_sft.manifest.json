@@ -1,0 +1,54 @@
+{
+ "version": "gen3_profile",
+ "built": "2026-09-13T21:02:36",
+ "n_records": 30964,
+ "pools": {
+  "who": 7340,
+  "what": 21520,
+  "where": 1741
+ },
+ "per_kind": 3000,
+ "wordings_per_entity": 4,
+ "counts": {
+  "who:train": 10836,
+  "who:held": 1164,
+  "what:train": 10824,
+  "what:held": 1176,
+  "where:train": 6288,
+  "where:held": 676
+ },
+ "wordings": {
+  "who": [
+   "Who is {X}?",
+   "who is {x}",
+   "Who was {X}?",
+   "Who's {X}?",
+   "Tell me about {X}.",
+   "What do you know about {X}?",
+   "Qui est {X} ?",
+   "Who is {X}",
+   "Give me a profile of {X}."
+  ],
+  "what": [
+   "What is {X}?",
+   "what is {x}",
+   "What was {X}?",
+   "What's {X}?",
+   "Tell me about {X}.",
+   "What do you know about {X}?",
+   "Qu'est-ce que {X} ?",
+   "Describe {X}."
+  ],
+  "where": [
+   "Where is {X}?",
+   "where is {x}",
+   "Where's {X}?",
+   "Where can I find {X}?",
+   "Où est {X} ?",
+   "Where is {X} located?",
+   "Tell me where {X} is."
+  ]
+ },
+ "program": "standin/ask.cot_profile(seed, kind): SEED + ASK, no hop",
+ "note": "the retrieval shape: the emitter learns to write the program; the host runs it (ask.AskLoop.profile), the VM recovers each fact, the facts are the reply. Split by the entity's hash (held = 10%)."
+}

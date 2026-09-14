@@ -76,16 +76,20 @@ def test_the_object_of_a_served_claim_is_linked_to_its_item_so_the_next_hop_neve
     src = FakeWikidata([_hit("Q1", "Bill Haslam", "governor")], {"Q1": FATHER_CLAIMS, "Q10": JIM, "Q11": GIVEN, **LABELS2})
     facts = src.facts("Bill Haslam")
     assert [(t.obj, t.rel) for t in facts] == [("Jim Haslam", "father")] and src.last["how"] == "exact"
-    assert src.links["jim haslam"] == ["Q10"] and src.links["bill haslam"] == ["Q1"]
+    assert src.links == {"jim haslam is the father of bill haslam": ["Q10"]}     # keyed by the FACT, never by the name
     src._search = [_hit("Q10", "Jim Haslam", "businessman"), _hit("Q11", "Jimmy Haslam", "team owner", match="Jim Haslam")]
     calls = src.calls
-    out = src.facts("Jim Haslam")
+    out = src.facts("Jim Haslam", via="Jim Haslam is the father of Bill Haslam")   # reached through the walked fact
     assert src.last["how"] == "linked" and src.last["qid"] == "Q10" and [(t.obj, t.rel) for t in out] == [("James", "given name")]
-    assert src.calls == calls + 2                        # the claims and their labels: no search for a name the source already resolved
-    # a name that named TWO items in served claims is not linked: the link tier stands aside
-    src._link("Jim Haslam", "Q11")
+    assert src.calls == calls + 2                        # the claims and their labels: no search for an item the claim named
+    # the same name typed as a SEED (no fact behind it) is not linked: the search tiers decide (2026-09-14:
+    # a name-keyed link had sent 'Marie Curie' to a film named after her, the object of one of her own claims)
     src.facts("Jim Haslam")
     assert src.last["how"] == "exact + label over alias" and src.last["qid"] == "Q10"
+    # two items behind one fact text: the link tier stands aside
+    src._link("Jim Haslam is the father of Bill Haslam", "Q11")
+    src.facts("Jim Haslam", via="Jim Haslam is the father of Bill Haslam")
+    assert src.last["how"] == "exact + label over alias"
 
 
 def test_among_items_sharing_a_name_the_question_s_next_hop_decides_and_a_pick_is_not_remembered():
@@ -96,7 +100,7 @@ def test_among_items_sharing_a_name_the_question_s_next_hop_decides_and_a_pick_i
     out = src.facts("Marie Curie", relations=["born"])                                # 'born' names date / place of birth
     assert [(t.obj, t.rel, t.subj) for t in out] == [("1800-05-11", "date of birth", "Marie Curie")]
     assert src.last["qid"] == "Q7186" and src.last["how"].startswith("relation")
-    assert "marie curie" not in src.links                                             # question-decided: not the name's item for good
+    assert src.links == {}                                                           # a pick is never remembered; only served claims are
     # two items carrying the property, both labelled with the name: still ambiguous, still refused
     src._entities["Q114"] = CLAIMS
     assert src.facts("Marie Curie", relations=["born"]) == [] and src.last["qid"] is None

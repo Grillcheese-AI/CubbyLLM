@@ -1,0 +1,50 @@
+{
+ "version": "v13f",
+ "built": "2026-09-13T21:04:05",
+ "git_rev": "883a958",
+ "base": "emitter_sft_v13e.jsonl",
+ "hdc": {
+  "file": "gen3_hdc.jsonl",
+  "cap_questions": 8000,
+  "train_questions": 8000,
+  "held_questions": 1217,
+  "records_added": 18293
+ },
+ "profile": {
+  "file": "profile_sft.jsonl",
+  "cap_questions": 6000,
+  "train_questions": 6000,
+  "held_questions": 3016,
+  "records_added": 9016
+ },
+ "n_records": 75534,
+ "by_task": {
+  "arithmetic": 6148,
+  "kernel": 1769,
+  "role_binding": 1500,
+  "chain": 28529,
+  "plan": 37588
+ },
+ "by_source": {
+  "regen/arith_xl": 6148,
+  "regen/atier": 593,
+  "regen/svc": 1500,
+  "cubbyllm/cot_harvest_v3cf": 1034,
+  "game": 2543,
+  "game_notebook": 1,
+  "cubbyllm/cot_harvest_r7": 26,
+  "cubbyllm/gen3_encyclopedia": 16368,
+  "cubbyllm/gen3_wiki": 18100,
+  "cubbyllm/gen3_llm_encyclopedia": 1680,
+  "cubbyllm/gen3_llm_wiki": 232,
+  "cubbyllm/gen3_hdc": 18293,
+  "cubbyllm/gen3_profile": 9016
+ },
+ "by_split": {
+  "train": 58916,
+  "val": 614,
+  "held": 16004
+ },
+ "train_rows_after_repeat": 62445,
+ "schema_note": "v13f = v13e unchanged + a capped, (arm, hops)-stratified sample of the hdc two/three-hop free-text records + a capped, kind-stratified sample of the retrieval shape (who / what / where is X -> SEED + ASK); every held question kept. The A/B bar for v13e (exp_r17 531 / 600 at 0 wrong) is pre-registered and untouched."
+}

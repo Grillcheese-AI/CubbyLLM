@@ -43,7 +43,7 @@ aside.rail{border-right:1px solid var(--line);background:var(--panel);display:fl
 .qitem:hover{background:var(--panel-2)}
 .qitem.sel{background:var(--panel-2);color:var(--ink)}
 .dot{width:10px;height:10px;border-radius:50%;margin-top:5px;background:var(--muted)}
-.dot.ok{background:var(--ok)} .dot.bad{background:var(--bad)} .dot.latent{background:var(--latent)}
+.dot.ok{background:var(--ok)} .dot.bad{background:var(--bad)} .dot.latent{background:var(--latent)} .dot.profile{background:#5FC4D6}
 .qitem small{display:block;font-family:var(--f-mono);font-size:10.5px;color:var(--muted);margin-top:2px}
 main{position:relative;min-width:0;min-height:0;background:radial-gradient(ellipse at 50% 40%,#0F1620 0%,var(--ground)70%)}
 canvas{display:block;width:100%;height:100%}
@@ -194,22 +194,22 @@ footer .now{min-width:260px;color:var(--ink-2);overflow:hidden;text-overflow:ell
 (function(){
 'use strict';
 var KIND = {question:'#F2F4F7',plan:'#B49CFF',walk:'#6FA8DC',hop:'#58C7D6',fact:'#46B39A',fetch:'#F2A65A',gate:'#D9924C',
-            vm:'#E070C8',alias:'#C7B26B',latent:'#E9B44C',answer:'#4ED39A'};
-var OK='#4ED39A', BAD='#EF6E6E', LATENT='#E9B44C', LINK='#8FA8FF';
-var RADIUS = {question:2.6,plan:1.9,walk:1.7,hop:1.4,fact:1.2,fetch:1.6,gate:1.1,vm:1.5,alias:1.2,latent:1.5,answer:2.2};
+            vm:'#E070C8',alias:'#C7B26B',latent:'#E9B44C',answer:'#4ED39A',paraphrase:'#5FC4D6'};
+var OK='#4ED39A', BAD='#EF6E6E', LATENT='#E9B44C', LINK='#8FA8FF', PROFILE='#5FC4D6';
+var RADIUS = {question:2.6,plan:1.9,walk:1.7,hop:1.4,fact:1.2,fetch:1.6,gate:1.1,vm:1.5,alias:1.2,latent:1.5,answer:2.2,paraphrase:1.4};
 
 var events=[], byId={}, children={}, roots=[], rootOf={}, current=null, mode='tree', selected=null;
 var cursor=Infinity, playing=false, playTimer=null;
 
 function verdictOf(ev){
-  if(ev.kind==='answer'||ev.kind==='walk'){ if(ev.verified) return 'ok'; if(ev.reason==='latent_only') return 'latent'; return 'bad'; }
+  if(ev.kind==='answer'||ev.kind==='walk'){ if(ev.verified) return 'ok'; if(ev.reason==='latent_only') return 'latent'; if(ev.reason==='profile') return 'profile'; return 'bad'; }
   if(ev.kind==='vm') return ev.verified?'ok':'bad';
   if(ev.kind==='gate') return ev.status==='accepted'||ev.lifted?'ok':(ev.status==='duplicate'?'':'bad');
   return '';
 }
 function colorOf(ev){
   var v=verdictOf(ev);
-  if(ev.kind==='answer'||ev.kind==='walk'||ev.kind==='vm'||ev.kind==='gate'){ if(v==='ok') return OK; if(v==='bad') return BAD; if(v==='latent') return LATENT; }
+  if(ev.kind==='answer'||ev.kind==='walk'||ev.kind==='vm'||ev.kind==='gate'){ if(v==='ok') return OK; if(v==='bad') return BAD; if(v==='latent') return LATENT; if(v==='profile') return PROFILE; }
   return KIND[ev.kind]||'#8393A6';
 }
 function finalOf(root){
@@ -229,7 +229,8 @@ function labelOf(ev){
     case 'vm': return 'VM '+(ev.verified?'verified':'not verified')+' · '+ev.program_lines+' lines';
     case 'alias': return (ev.pairs||[]).map(function(p){return p[0]+'→'+p[1]}).join(', ');
     case 'latent': return 'held: '+ev.answer;
-    case 'answer': return ev.verified?('answer: '+ev.answer):('refused: '+ev.reason);
+    case 'paraphrase': return ev.ok?('said: '+ev.text):('paraphrase refused · '+(ev.rejected||[]).join(', '));
+    case 'answer': return ev.verified?('answer: '+ev.answer):(ev.reason==='profile'?('profile: '+ev.answer):('refused: '+ev.reason));
   }
   return ev.kind;
 }
@@ -329,7 +330,7 @@ function layoutGalaxy(){
   var n=roots.length, golden=Math.PI*(3-Math.sqrt(5));
   roots.forEach(function(r,i){
     var rad=4.2*Math.sqrt(i+1), th=i*golden;
-    var a=finalOf(r); var col = a? (a.verified?OK:(a.reason==='latent_only'?LATENT:BAD)) : '#8393A6';
+    var a=finalOf(r); var col = a? (a.verified?OK:(a.reason==='latent_only'?LATENT:(a.reason==='profile'?PROFILE:BAD))) : '#8393A6';
     var ev=Object.assign({},r); var m=addNode(ev,rad*Math.cos(th),rad*Math.sin(th),(i%7-3)*1.5,1.6);
     m.material.color.set(col); m.material.emissive.set(col);
     m.userData.label.textContent=(a?(a.verified?'✓ ':'✗ '):'')+r.text;
@@ -418,9 +419,9 @@ function renderList(){
   var el=document.getElementById('qlist'); el.innerHTML='';
   roots.forEach(function(r){
     var a=finalOf(r); var b=document.createElement('button'); b.type='button'; b.className='qitem'+(current&&current.id===r.id?' sel':'');
-    var d=document.createElement('span'); d.className='dot '+(a?(a.verified?'ok':(a.reason==='latent_only'?'latent':'bad')):'');
+    var d=document.createElement('span'); d.className='dot '+(a?(a.verified?'ok':(a.reason==='latent_only'?'latent':(a.reason==='profile'?'profile':'bad'))):'');
     var t=document.createElement('span'); t.textContent=r.text;
-    var s=document.createElement('small'); s.textContent=a?(a.verified?('→ '+a.answer):a.reason):'…';
+    var s=document.createElement('small'); s.textContent=a?(a.verified?('→ '+a.answer):(a.reason==='profile'?('profile · '+a.answer):a.reason)):'…';
     t.appendChild(s); b.appendChild(d); b.appendChild(t);
     b.addEventListener('click',function(){openTree(r)}); el.appendChild(b);
   });
@@ -454,8 +455,8 @@ function inspect(ev){
   if(others.length){
     var sh=document.createElement('div'); sh.className='chain'; sh.id='ishared'; sh.innerHTML='<h3>'+(shareKeyOf[ev.id].charAt(0)==='f'?'the same fact':'the same entity')+' in '+others.length+' other question'+(others.length>1?'s':'')+'</h3>';
     others.forEach(function(rid){ var r=byId[rid]; if(!r) return; var a=finalOf(r); var b=document.createElement('button'); b.type='button'; b.className='qitem';
-      var d=document.createElement('span'); d.className='dot '+(a?(a.verified?'ok':(a.reason==='latent_only'?'latent':'bad')):''); var t=document.createElement('span'); t.textContent=r.text;
-      var s=document.createElement('small'); s.textContent=a?(a.verified?('→ '+a.answer):a.reason):'…'; t.appendChild(s); b.appendChild(d); b.appendChild(t);
+      var d=document.createElement('span'); d.className='dot '+(a?(a.verified?'ok':(a.reason==='latent_only'?'latent':(a.reason==='profile'?'profile':'bad'))):''); var t=document.createElement('span'); t.textContent=r.text;
+      var s=document.createElement('small'); s.textContent=a?(a.verified?('→ '+a.answer):(a.reason==='profile'?('profile · '+a.answer):a.reason)):'…'; t.appendChild(s); b.appendChild(d); b.appendChild(t);
       b.addEventListener('click',function(){ openTree(r); var m=null; nodes.forEach(function(n){ if(shareKeyOf[n.userData.ev.id]===shareKeyOf[ev.id]) m=m||n; }); if(m) select(m.userData.ev); });
       sh.appendChild(b); });
     ch.parentNode.appendChild(sh);
@@ -474,7 +475,7 @@ function inspectSummary(){
 
 /* legend */
 (function(){ var lg=document.getElementById('legend'); Object.keys(KIND).forEach(function(k){ if(k==='answer') return; var s=document.createElement('span'); s.innerHTML='<i style="background:'+KIND[k]+'"></i>'+k; lg.appendChild(s); });
-  [['verified',OK],['refused',BAD],['held · latent',LATENT],['⇄ linked · shared fact / entity',LINK]].forEach(function(p){ var s=document.createElement('span'); s.innerHTML='<i style="background:'+p[1]+'"></i>'+p[0]; lg.appendChild(s); }); })();
+  [['verified',OK],['refused',BAD],['held · latent',LATENT],['profile · a readout of the store',PROFILE],['⇄ linked · shared fact / entity',LINK]].forEach(function(p){ var s=document.createElement('span'); s.innerHTML='<i style="background:'+p[1]+'"></i>'+p[0]; lg.appendChild(s); }); })();
 
 /* loading: a file, the embedded sample, or a live stream from a local stand-in server */
 function parseJsonl(text){ var out=[]; text.split(/\r?\n/).forEach(function(l){ l=l.trim(); if(!l) return; try{ out.push(JSON.parse(l)); }catch(e){} }); return out; }
@@ -516,7 +517,7 @@ askForm.addEventListener('submit',function(e){
     .then(function(r){ return r.json(); })
     .then(function(rec){
       document.getElementById('status').textContent=rec.error?('ask failed: '+rec.error):
-        (rec.verified?('answer: '+rec.answer+' — VM-verified, '+rec.wall_s+' s'):('refused: '+rec.reason+' — '+rec.wall_s+' s'));
+        (rec.verified?('answer: '+rec.answer+' — VM-verified, '+rec.wall_s+' s'):(rec.reason==='profile'?('profile (from the store, not a walk): '+rec.answer+' — '+rec.wall_s+' s'):('refused: '+rec.reason+' — '+rec.wall_s+' s')));
       askText.value=''; })
     .catch(function(err){ document.getElementById('status').textContent='ask unreachable: '+err; })
     .then(function(){ askForm.classList.remove('busy'); askBtn.textContent='Ask'; askBtn.disabled=false; askText.focus(); setTimeout(function(){ follow=null; },2000); });

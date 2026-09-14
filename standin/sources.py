@@ -245,14 +245,16 @@ class WikidataSource:
     def _links_path(self):
         return self.cache / "_links.json" if self.cache else None
 
-    def _link(self, label: str, qid: str) -> None:
-        """Remember which ITEM a label named when this source served it -- the object of a
-        claim, or a resolved subject -- so the walk's next hop asks about that item, not
-        about a string that several items may be labelled with."""
-        key = _normalize(label)
+    def _link(self, fact: str, qid: str) -> None:
+        """Remember which ITEM the object of a served claim IS, keyed by the FACT ('jim haslam is
+        the father of bill haslam' -> Q6195484), so the walk's next hop, reached through that
+        fact, asks about that item and not about a string several items are labelled with.
+        Keyed by the fact, never by the name alone (2026-09-14: a name-keyed link sent 'Marie
+        Curie' to a film named after her, the object of one of her own claims)."""
+        key = _normalize(fact)
         if not key or qid in self.links.get(key, ()):
             return
-        self.links.setdefault(key, []).append(qid)  # two items under one name: the link tier stands aside (see resolve)
+        self.links.setdefault(key, []).append(qid)  # two items behind one fact text: the link tier stands aside (see resolve)
         self._links_dirty = True
 
     def _save_links(self) -> None:
@@ -264,20 +266,20 @@ class WikidataSource:
             except OSError:
                 pass
 
-    def resolve(self, entity: str, relations: list[str] | None = None) -> tuple[str, str] | None:
+    def resolve(self, entity: str, relations: list[str] | None = None, via: str | None = None) -> tuple[str, str] | None:
         """(qid, label) for the entity, or None. Three tiers, each deterministic, none a pick
-        by rank: (1) LINKED -- the label was the object of a claim this source served (or a
-        subject it resolved), so the item is the one the claim pointed at; (2) the search's
-        exact hits (label or alias equal to the query) when there is exactly one; (3) the
-        QUESTION decides among several exact hits: those whose claims carry the property the
+        by rank: (1) LINKED -- the entity is the object of a fact this source served (`via`:
+        the walked fact that reached it), so the item is the one that claim pointed at; (2) the
+        search's exact hits (label or alias equal to the query) when there is exactly one; (3)
+        the QUESTION decides among several exact hits: those whose claims carry the property the
         walk needs next (`relations`: the plan's wording for the stalled hop -- a book edition
         and a ferry named 'Marie Curie' have no date of birth), then, among those, the item
         whose LABEL is the name the question used over items that only carry it as an alias
         ('Jim Haslam' over 'Jimmy Haslam'). Still more than one -> ambiguous, refused."""
         key = _normalize(entity)
-        if len(self.links.get(key, ())) == 1:
-            qid = self.links[key][0]
-            self.last.update(how="linked")
+        if via and len(self.links.get(_normalize(via), ())) == 1:
+            qid = self.links[_normalize(via)][0]
+            self.last.update(how="linked", via=via)
             return qid, self._labels_for([qid]).get(qid) or entity
         s = self._get({"action": "wbsearchentities", "search": entity, "language": "en", "limit": 5})
         hits = (s or {}).get("search") or []
@@ -312,19 +314,19 @@ class WikidataSource:
         self.last.update(how=how)
         return hit["id"], hit.get("label") or entity
 
-    def facts(self, entity: str, relations: list[str] | None = None) -> list[str]:
+    def facts(self, entity: str, relations: list[str] | None = None, via: str | None = None) -> list[str]:
         """`relations`: the wordings the walk needs from this entity (the stalled hop's), used
-        only to decide among several items that share the name; None keeps the strict rule."""
+        only to decide among several items that share the name; `via`: the walked fact whose
+        object this entity is, which names the item outright. Neither keeps the strict rule
+        from applying when they are absent."""
         self.last = {"entity": entity, "qid": None, "label": None, "alias": False, "n_claims": 0, "how": None}
-        r = self.resolve(entity, relations)
+        r = self.resolve(entity, relations, via)
         if r is None:
             return []
         qid, label = r
         alias = _normalize(label) != _normalize(entity)
         self.last.update(qid=qid, label=label, alias=alias)
         subj = entity if alias else label            # the user's words when the hit came through an alias
-        if self.last["how"] in ("exact", "linked"):
-            self._link(subj, qid)                    # a name that resolved on its own; a question-decided pick is not remembered as the name's item
         claims = self._claims(qid)
         self.last["n_claims"] = sum(len(v) for v in claims.values())
         # collect item targets and property ids, one label round-trip for all of them
@@ -349,8 +351,8 @@ class WikidataSource:
                 v = dv.get("value"); t = dv.get("type")
                 if t == "wikibase-entityid":
                     obj = labels.get(v["id"])
-                    if obj:
-                        self._link(obj, v["id"])     # the claim points at an ITEM: the next hop asks about it, not about its name
+                    if obj:                          # the claim points at an ITEM: a walk through this fact asks about it, not about its name
+                        self._link(f"{obj} is the {rel} of {subj}", v["id"])
                 elif t == "time":
                     ts, prec = v.get("time", ""), v.get("precision", 11)
                     obj = ts[1:5] if prec <= 9 else ts[1:11]
