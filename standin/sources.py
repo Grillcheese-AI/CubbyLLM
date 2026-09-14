@@ -29,6 +29,9 @@ API = "https://www.wikidata.org/w/api.php"
 UA = "cubbyllm-standin/0.1 (research; licensing@grillcheese.ai)"
 CACHE = pathlib.Path(__file__).resolve().parent / "data" / "out" / "wikidata_cache"
 SKIP_PROPS = {"P31"}       # 'instance of' floods every entity with class facts; the store calls it 'instance' when it wants it
+# Wikimedia's own pages ABOUT pages: never the subject of a question (2026-09-14)
+_META = __import__("re").compile(r"\bWikimedia\b.*\b(disambiguation|list|category|template|module|portal|project)\b"
+                                 r"|\b(disambiguation page|list article|Wikinews article)\b", __import__("re").I)
 
 
 from cubbyllm.reasoning.planner import Triple, normalize as _normalize   # noqa: E402
@@ -153,7 +156,7 @@ class WikidataSource:
 
     def __init__(self, cache_dir: pathlib.Path | str | None = CACHE, sleep_s: float = 0.2,
                  max_facts: int = 300, offline: bool = False, aliases: "PropertyAliases | None" = None,
-                 online_relations: bool = False) -> None:
+                 online_relations: bool = False, use_choices: bool = False) -> None:
         self.cache = pathlib.Path(cache_dir) if cache_dir else None
         if self.cache:
             self.cache.mkdir(parents=True, exist_ok=True)
@@ -165,6 +168,14 @@ class WikidataSource:
         # asked for explicitly -- serving never depends on a live call per wording
         self.aliases = aliases if aliases is not None else property_aliases()
         self.online_relations = online_relations
+        self.use_choices = bool(use_choices)             # serving learns what askers mean; the benches do not
+        self.choices: dict[str, dict[str, int]] = {}
+        cp = self._choices_path()
+        if self.use_choices and cp is not None and cp.exists():
+            try:
+                self.choices = json.loads(cp.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                self.choices = {}
         # label -> the item(s) it named in claims this source served; persisted beside the cache
         self.links: dict[str, list[str]] = {}
         self._links_dirty = False
@@ -245,6 +256,44 @@ class WikidataSource:
     def _links_path(self):
         return self.cache / "_links.json" if self.cache else None
 
+    # -- the choice ledger: what ASKERS meant by a name, and the VM none the wiser ------------
+    # Nick, 2026-09-14: "an algorithm that allows the vm to still be neutral while scoring most
+    # requested answers, this way we will eventually be able to guess the context if none".
+    # The discipline: a tally of the items askers PICKED in a clarify turn, kept host-side beside the
+    # cache. It never enters a program, a similarity or a verdict -- the VM verifies exactly what it
+    # verified before, and a fact reached this way is gated like any other. It only chooses WHICH item
+    # to ask the source about, it ranks below every context tier (the hop the question needs, label over
+    # alias), and it is on the record (`how`) whenever it decided. Off by default: the benches must stay
+    # a function of the code and the data, so only serving (`use_choices=True`) consults or writes it.
+    def _choices_path(self):
+        return self.cache / "_choices.json" if self.cache else None
+
+    def choose(self, entity: str, qid: str) -> None:
+        """Record that an asker meant THIS item by that name (the clarify answer)."""
+        if not self.use_choices:
+            return
+        key = _normalize(entity)
+        tally = self.choices.setdefault(key, {})
+        tally[qid] = tally.get(qid, 0) + 1
+        p = self._choices_path()
+        if p is not None:
+            try:
+                p.write_text(json.dumps(self.choices, ensure_ascii=False), encoding="utf-8")
+            except OSError:
+                pass
+
+    def preferred(self, entity: str, among: list[str]) -> tuple[str, int, int] | None:
+        """(qid, its count, the total) when the askers' tally has a UNIQUE maximum among these
+        candidates, else None -- a split or silent tally is not a preference, and is still asked."""
+        if not self.use_choices:
+            return None
+        tally = {q: n for q, n in (self.choices.get(_normalize(entity)) or {}).items() if q in among}
+        if not tally:
+            return None
+        top = max(tally.values())
+        best = [q for q, n in tally.items() if n == top]
+        return (best[0], top, sum(tally.values())) if len(best) == 1 else None
+
     def _link(self, fact: str, qid: str) -> None:
         """Remember which ITEM the object of a served claim IS, keyed by the FACT ('jim haslam is
         the father of bill haslam' -> Q6195484), so the walk's next hop, reached through that
@@ -266,7 +315,8 @@ class WikidataSource:
             except OSError:
                 pass
 
-    def resolve(self, entity: str, relations: list[str] | None = None, via: str | None = None) -> tuple[str, str] | None:
+    def resolve(self, entity: str, relations: list[str] | None = None, via: str | None = None,
+                qid: str | None = None) -> tuple[str, str] | None:
         """(qid, label) for the entity, or None. Three tiers, each deterministic, none a pick
         by rank: (1) LINKED -- the entity is the object of a fact this source served (`via`:
         the walked fact that reached it), so the item is the one that claim pointed at; (2) the
@@ -277,6 +327,10 @@ class WikidataSource:
         whose LABEL is the name the question used over items that only carry it as an alias
         ('Jim Haslam' over 'Jimmy Haslam'). Still more than one -> ambiguous, refused."""
         key = _normalize(entity)
+        if qid:                                              # the USER named the item (the panel's clarify choice)
+            self.choose(entity, qid)
+            self.last.update(how="chosen by the asker")
+            return qid, self._labels_for([qid]).get(qid) or entity
         if via and len(self.links.get(_normalize(via), ())) == 1:
             qid = self.links[_normalize(via)][0]
             self.last.update(how="linked", via=via)
@@ -294,8 +348,13 @@ class WikidataSource:
         # is no resolution either (the old fallback to hits[0] was a guess).
         exact = [h for h in hits if _normalize(h.get("label", "")) == key
                  or _normalize(((h.get("match") or {}).get("text") or "")) == key]
-        cands = exact
-        how = "exact"
+        # a Wikimedia meta-page (disambiguation, list article, category, template) is never the thing a
+        # question is about: dropping them is a filter on what an item IS, not a pick among candidates
+        # (2026-09-14, live: 'the last roman emperor' was two hits -- the legendary figure and a
+        # disambiguation page -- and the pair was refused as ambiguous)
+        real = [h for h in exact if not _META.search(str(h.get("description") or ""))]
+        cands = real if real else exact
+        how = "exact" + ("" if len(real) == len(exact) else " (meta-pages dropped)")
         if len(cands) > 1 and relations and self.aliases is not None:
             pids = [p for r in relations for p in self.aliases.pids(r)]
             if pids:
@@ -306,21 +365,27 @@ class WikidataSource:
             labelled = [h for h in cands if _normalize(h.get("label", "")) == key]
             if len(labelled) == 1:
                 cands, how = labelled, how + " + label over alias"
+        if len(cands) > 1:                                   # no context left: what askers have meant by this name
+            pref = self.preferred(entity, [h["id"] for h in cands])
+            if pref:
+                cands = [h for h in cands if h["id"] == pref[0]]
+                how = "asker history (%d of %d)" % (pref[1], pref[2])
         if len(cands) != 1:
-            self.last["ambiguous"] = [(h["id"], h.get("label"), h.get("description")) for h in exact]
+            self.last["ambiguous"] = [(h["id"], h.get("label"), h.get("description")) for h in cands]
             self.last["unresolved"] = not exact
             return None
         hit = cands[0]
         self.last.update(how=how)
         return hit["id"], hit.get("label") or entity
 
-    def facts(self, entity: str, relations: list[str] | None = None, via: str | None = None) -> list[str]:
+    def facts(self, entity: str, relations: list[str] | None = None, via: str | None = None,
+              qid: str | None = None) -> list[str]:
         """`relations`: the wordings the walk needs from this entity (the stalled hop's), used
         only to decide among several items that share the name; `via`: the walked fact whose
         object this entity is, which names the item outright. Neither keeps the strict rule
         from applying when they are absent."""
         self.last = {"entity": entity, "qid": None, "label": None, "alias": False, "n_claims": 0, "how": None}
-        r = self.resolve(entity, relations, via)
+        r = self.resolve(entity, relations, via, qid)
         if r is None:
             return []
         qid, label = r

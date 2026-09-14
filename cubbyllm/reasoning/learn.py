@@ -198,6 +198,18 @@ def reached_through(first: CoTResult, entity: str) -> str | None:
 _TAKES_RELATIONS: dict[int, bool] = {}
 
 
+def _takes_item(source) -> bool:
+    """Whether `source.facts` accepts `qid=` -- an item the ASKER named, the clarify answer."""
+    key = ("item", id(type(source)))
+    if key not in _TAKES_RELATIONS:
+        import inspect
+        try:
+            _TAKES_RELATIONS[key] = "qid" in inspect.signature(source.facts).parameters
+        except (TypeError, ValueError):
+            _TAKES_RELATIONS[key] = False
+    return _TAKES_RELATIONS[key]
+
+
 def _takes_relations(source) -> bool:
     """Whether `source.facts` accepts `relations=` and `via=` (the Source protocol only promises `facts(entity)`)."""
     key = id(type(source))

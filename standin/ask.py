@@ -38,7 +38,13 @@ TAU_VM = {1: 1.0, 2: 0.4736328125, 3: 0.22021484375}       # exp_r11's threshold
 # a readout of the store, and the record says so (`reason: profile`).
 import re as _re
 _PROFILE_ASK = _re.compile(r"^\s*(?P<kind>who|what|where)\s+(?:is|was|are|were)\s+(?:the\s+)?(?P<ent>[^?]*?)\s*\??\s*$", _re.I)
-_ASK_ROLE = _re.compile(r'bind\s+frame\s*,\s*ASK\s*,\s*"(?P<kind>who|what|where)"\s*;', _re.I)
+# the temporal ask: the entity is a DATE and the relation is 'what happened' -- the same retrieval
+# program with ASK 'when' (2026-09-14, Nick: "if I ask what happened in 2026? it refuses it"; it was
+# refused as `unknown_relation`, blaming the word 'happened', where the truth is that no source the
+# host has indexes events BY DATE -- the wiki world holds 0 facts whose subject is a year)
+_WHEN_ASK = _re.compile(r"^\s*(?:what|which)\s+(?:\w+\s+)?(?:happened|occurred|occured|took\s+place|went\s+on)"
+                        r"(?:\s+(?:in|on|during|around))?\s+(?:the\s+)?(?P<ent>[^?]*?)\s*\??\s*$", _re.I)
+_ASK_ROLE = _re.compile(r'bind\s+frame\s*,\s*ASK\s*,\s*"(?P<kind>who|what|where|when)"\s*;', _re.I)
 _SEED_ROLE = _re.compile(r'bind\s+frame\s*,\s*SEED\s*,\s*"(?P<seed>(?:[^"\\]|\\.)*)"\s*;')
 _HOP_ROLE = _re.compile(r'bind\s+frame\s*,\s*(?:HOP\d+|H\d+_\w+)\s*,')
 PROFILE_KINDS = {
@@ -51,8 +57,13 @@ PROFILE_KINDS = {
     "where": ("instance of", "country", "located in the administrative territorial entity", "capital of", "continent",
               "part of", "capital", "population", "located in or next to body of water", "headquarters location",
               "located on terrain feature", "official language"),
+    # 'when' asks for the EVENTS of a date. Only event relations count: a year item's trivia
+    # ('instance of: year', 'part of: 2020s') would look like an answer to a question about events
+    # and is not one, so the kind never falls back to the other relations -- it refuses instead.
+    "when": ("timeline event", "significant event", "notable event", "event", "point in time", "has part"),
 }
 PROFILE = tuple(dict.fromkeys(r for k in ("who", "what", "where") for r in PROFILE_KINDS[k]))
+FALLBACK_KINDS = ("who", "what", "where")          # kinds that may also show any other profile relation
 RESOLVE_HINT = {k: tuple(r for r in v if r not in ("instance of", "subclass of", "part of", "sex or gender"))[:8] for k, v in PROFILE_KINDS.items()}
 PROFILE_MAX_PER_RELATION = 3
 PROFILE_MAX_LINES = 9
@@ -60,8 +71,13 @@ PARAPHRASE_SYSTEM = "You are a careful writer. You restate given facts in plain 
 
 
 def profile_ask(question: str) -> tuple[str, str] | None:
-    """(kind, entity) of a 'who / what / where is X' question, or None: a question with a relation in
-    it ('the capital of France', "Canada's capital") is a plan for the emitter, not a profile."""
+    """(kind, entity) of a 'who / what / where is X' or 'what happened in <date>' question, or None: a
+    question with a relation in it ('the capital of France', "Canada's capital") is a plan for the
+    emitter, not a profile."""
+    m = _WHEN_ASK.match(question)
+    if m:
+        ent = m.group("ent").strip().strip(",")
+        return ("when", ent) if ent and len(ent.split()) <= 5 else None
     m = _PROFILE_ASK.match(question)
     if not m:
         return None
@@ -149,7 +165,7 @@ class AskLoop:
         if isinstance(source, str):
             if source.startswith("wikidata"):
                 from sources import WikidataSource
-                source = WikidataSource(offline=source.endswith("offline"))
+                source = WikidataSource(offline=source.endswith("offline"), use_choices=True)   # serving learns what askers mean
             elif source == "lfm":
                 from lfm_source import LfmSource
                 source = LfmSource(lfm_gguf or str(ROOT / "standin" / "models" / "LFM2.5-2.6B.Q4_K_M.gguf"))
@@ -172,7 +188,7 @@ class AskLoop:
         self.calls["vm"] += 1
         return self._vm(source, fn) if self._vm else self.session.run(source, fn=fn)
 
-    def ask(self, question: str) -> dict:
+    def ask(self, question: str, item: str | None = None) -> dict:
         from cubbyllm.reasoning import events as ev
         from cubbyllm.reasoning.learn import learn_and_answer
         from cubbyllm.reasoning.planner import QuestionPlan, normalize
@@ -186,7 +202,7 @@ class AskLoop:
             self.calls["asked"] += 1
             pa = profile_ask(question)                   # the host reads the shape off the question (gen 2 cannot emit it yet)
             if pa:
-                rec = self.profile(question, pa[0], pa[1], t0, how="the question's shape (who / what / where is X)")
+                rec = self.profile(question, pa[0], pa[1], t0, how="the question's shape (who / what / where / when)", item=item)
                 self.history.append(rec)
                 return rec
             try:
@@ -194,7 +210,7 @@ class AskLoop:
                 program = strip_fences(raw)
                 pp = profile_program(program)            # the emitter wrote the retrieval program: SEED + ASK, no hop
                 if pp:
-                    rec = self.profile(question, pp[0], pp[1], t0, how="the emitter's program (ASK role)")
+                    rec = self.profile(question, pp[0], pp[1], t0, how="the emitter's program (ASK role)", item=item)
                     self.history.append(rec)
                     return rec
                 ep = emitted_plan(program, normalize)
@@ -231,15 +247,16 @@ class AskLoop:
         return [t for _f, t in by.get(normalize(entity), []) if t is not None]
 
 
-    def _fetch(self, qid: int, entity: str, hint: list[str], rec: dict) -> dict:
+    def _fetch(self, qid: int, entity: str, hint: list[str], rec: dict, item: str | None = None) -> dict:
         """The source asked about the entity (the ask kind's relations as the resolution hint), every
         fact through the gate, admitted ones into the store with provenance; the fetch and gate events."""
         from cubbyllm.reasoning import events as ev
-        from cubbyllm.reasoning.learn import gate, _takes_relations
+        from cubbyllm.reasoning.learn import gate, _takes_item, _takes_relations
         from cubbyllm.reasoning.planner import Triple
         prov = getattr(self.world, "provenance", None)
         rec["entities"].append(entity)
-        items = list(self.source.facts(entity, relations=hint) if _takes_relations(self.source) else self.source.facts(entity))
+        items = list(self.source.facts(entity, relations=hint, qid=item) if _takes_item(self.source) else
+                     (self.source.facts(entity, relations=hint) if _takes_relations(self.source) else self.source.facts(entity)))
         last = getattr(self.source, "last", None) if isinstance(getattr(self.source, "last", None), dict) else {}
         fid = ev.emit("fetch", qid, source=getattr(self.source, "name", None), entity=entity, n=len(items), latent=False,
                       needs=hint, how=last.get("how"), item=last.get("qid"),
@@ -263,7 +280,7 @@ class AskLoop:
                     provenance=(prov or {}).get(" ".join(fact.split())))
         return last
 
-    def profile(self, question: str, kind: str, entity: str, t0: float, how: str) -> dict:
+    def profile(self, question: str, kind: str, entity: str, t0: float, how: str, item: str | None = None) -> dict:
         """'who / what / where is X' -- the retrieval program. The plan is SEED + ASK (what the emitter
         learns to write); the host fills the store from the source when it holds nothing about X; the
         facts under the ask kind's relations are bound into a program and the VM recovers each one --
@@ -278,18 +295,20 @@ class AskLoop:
                       program=cot_profile(normalize(entity), kind), how=how)
         rec: dict = {"question": question, "answer": None, "verified": False, "reason": "profile", "plan": [], "seed": normalize(entity),
                      "ask": kind, "program": cot_profile(normalize(entity), kind), "learned": [], "entities": [], "aliased": [],
-                     "snapped": None, "trace": [], "profile": [], "prose": None, "candidates": None, "wall_s": 0.0}
+                     "snapped": None, "trace": [], "profile": [], "prose": None, "candidates": None, "clarify": None, "wall_s": 0.0}
         prov = getattr(self.world, "provenance", None)
         rels = PROFILE_KINDS[kind]
         have = self.facts_about(entity)
         last: dict = {}
-        if not any(normalize(t.rel) in PROFILE for t in have):
-            last = self._fetch(qid, entity, list(RESOLVE_HINT[kind]), rec)
+        known_rels = set(rels) | (set(PROFILE) if kind in FALLBACK_KINDS else set())
+        if not any(normalize(t.rel) in known_rels for t in have):
+            last = self._fetch(qid, entity, list(RESOLVE_HINT[kind]), rec, item)
             have = self.facts_about(entity)
         # the lines: the ask kind's relations first, then any other profile relation the store holds
         chosen: list[tuple[str, str, str]] = []                       # (rel, obj, the stored fact text)
         by_key = {(normalize(t.rel), t.obj): " ".join(f.split()) for f, t in self.world.index._by_subj.get(normalize(entity), []) if t is not None}
-        for rel in tuple(rels) + tuple(r for r in PROFILE if r not in rels):
+        order = tuple(rels) + (tuple(r for r in PROFILE if r not in rels) if kind in FALLBACK_KINDS else ())
+        for rel in order:
             objs = list(dict.fromkeys(t.obj for t in have if normalize(t.rel) == rel))
             for obj in objs[:PROFILE_MAX_PER_RELATION]:
                 chosen.append((rel, obj, by_key.get((rel, obj), f"{obj} is the {rel} of {entity}")))
@@ -299,10 +318,26 @@ class AskLoop:
         if not chosen:
             amb = last.get("ambiguous") or []
             if amb:
-                rec["reason"] = "ambiguous_entity"; rec["candidates"] = [[a[1], a[2]] for a in amb]
+                # the asker decides, the host never picks (Nick, 2026-09-14: "when ambiguous it should
+                # either select A based on context or B ask the user: do you want to know more about:
+                # choices"). A is the resolution tiers above -- the hop the question needs, label over
+                # alias, the meta-pages dropped; when they leave more than one, this is B: the choices go
+                # back with the item ids, and the answer re-asks with the one the asker names.
+                rec["reason"] = "ambiguous_entity"; rec["candidates"] = [[a[1], a[2], a[0]] for a in amb]
+                rec["clarify"] = {"question": "Which one do you mean?",
+                                  "choices": [{"label": a[1], "detail": a[2], "item": a[0]} for a in amb]}
             else:
-                rec["reason"] = "entity_unresolved" if rec["entities"] and not rec["learned"] else "profile_empty"
-            ev.emit("answer", qid, verified=False, answer=None, reason=rec["reason"], candidates=rec["candidates"],
+                rec["reason"] = ("no_events_for_date" if kind == "when" else
+                                 ("entity_unresolved" if rec["entities"] and not rec["learned"] else "profile_empty"))
+                if kind == "when":
+                    # the honest diagnosis (2026-09-14): nothing here indexes events BY DATE. The wiki world
+                    # holds 76,897 `timeline event` facts, every one keyed by its ENTITY ('Girard Desargues'
+                    # -> 'Girard Desargues Birth'), and 0 facts whose subject is a year; a year's item carries
+                    # the year's own trivia, not its events. `unknown_relation` blamed the word 'happened'
+                    # for a missing index. A dated-news world is what would answer this shape.
+                    rec["needs"] = ("no source indexes events by date: the event facts are keyed by entity, not by "
+                                    "year, and a year's own item carries only its trivia")
+            ev.emit("answer", qid, verified=False, answer=None, reason=rec["reason"], candidates=rec["candidates"], clarify=rec.get("clarify"), needs=rec.get("needs"),
                     entities=list(rec["entities"]), fetched=len(rec["learned"]))
             rec["wall_s"] = round(time.perf_counter() - t0, 3)
             return rec
@@ -347,7 +382,7 @@ class AskLoop:
         if not isinstance(adapters, dict) or "talk" not in adapters or not getattr(self.emitter, "is_split", False):
             return None
         facts = [l["fact"] for l in lines]
-        ask = {"who": "who", "what": "what", "where": "where"}[kind]
+        ask = {"who": "who", "what": "what", "where": "where", "when": "what happened in"}.get(kind, "what")
         prompt = (f"Facts about {entity}:\n" + "\n".join(f"- {f}" for f in facts) +
                   f"\n\nIn one or two plain sentences, say {ask} {entity} is, using ONLY these facts. "
                   "Do not add any name, date, number or detail that is not in the facts.")

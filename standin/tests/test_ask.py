@@ -163,3 +163,28 @@ def test_a_date_the_store_holds_may_be_written_out_but_a_date_it_does_not_hold_m
     assert grounded_prose("OpenAI was founded on December 11, 2015 and is known for ChatGPT.", facts, "openai") == (True, [])
     ok, bad = grounded_prose("OpenAI was founded in March 2015 by Sam Altman.", facts, "openai")
     assert not ok and bad == ["March", "Sam", "Altman"]
+
+
+def test_what_happened_in_a_year_is_a_temporal_ask_refused_for_the_right_reason():
+    """2026-09-14 (Nick: "if I ask what happened in 2026? it refuses it"). It was refused as
+    `unknown_relation` -- blaming the word 'happened' -- where the truth is that nothing here indexes
+    events BY DATE: the wiki world's 76,897 `timeline event` facts are keyed by their entity and 0 facts
+    have a year as subject. The shape is the retrieval program with ASK 'when', and when no event
+    relation comes back the refusal says so and never dresses a year's own trivia up as its events."""
+    from ask import cot_profile, profile_ask, profile_program
+    assert profile_ask("what happened in 2026?") == ("when", "2026")
+    assert profile_ask("What happened on July 20, 1969?") == ("when", "July 20, 1969")
+    assert profile_ask("Which events took place during 1789?") == ("when", "1789")
+    assert profile_ask("what is 2026?") == ("what", "2026")                 # still the profile ask
+    assert profile_program(cot_profile("2026", "when")) == ("when", "2026")
+    # a year item's trivia is not an answer about events: refused, with what is missing named
+    src = DictSource({"2026": ["year is the instance of of 2026", "2020s is the part of of 2026"]})
+    loop = make_loop({}, src); loop.tau_profile = 0.5
+    rec = loop.ask("what happened in 2026?")
+    assert rec["answer"] is None and rec["reason"] == "no_events_for_date" and "by date" in rec["needs"]
+    assert rec["ask"] == "when" and rec["profile"] == []
+    # the same question against a store that DOES index events by date is answered
+    world = LookupStore(["the moon landing is the timeline event of 1969", "woodstock is the timeline event of 1969"])
+    loop2 = AskLoop(FakeEmitter({}), world=world, source=DictSource({}), lexicon=False, run_fn=faithful_vm([]), tau_profile=0.5)
+    rec2 = loop2.ask("What happened in 1969?")
+    assert rec2["reason"] == "profile" and [l["value"] for l in rec2["profile"]] == ["the moon landing", "woodstock"]

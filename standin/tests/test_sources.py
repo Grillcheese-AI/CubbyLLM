@@ -113,3 +113,54 @@ def test_the_label_the_question_used_outranks_an_alias_but_two_labels_stay_ambig
     assert src.last["qid"] == "Q10" and src.last["how"].endswith("label over alias") and len(out) == 1
     src2 = FakeWikidata([_hit("Q1", "James Young", "chemist"), _hit("Q2", "James Young", "politician")], {"Q1": CLAIMS, "Q2": CLAIMS, **LABELS})
     assert src2.facts("James Young", relations=["born"]) == [] and src2.last["qid"] is None   # the pinned case above, unchanged
+
+
+# ---- 2026-09-14: a meta-page is never the answer; the asker decides; what askers meant is a host-side tally ----
+def _fake_choices(tmp_path, search, entities):
+    src = FakeWikidata(search, entities)
+    src.cache = tmp_path; src.use_choices = True; src.choices = {}
+    return src
+
+
+def test_a_wikimedia_meta_page_is_dropped_before_the_ambiguity_is_counted():
+    """Live, 2026-09-14: 'the last roman emperor' matched the legendary figure AND a disambiguation page,
+    and the pair was refused. A page ABOUT pages is never the thing a question is about."""
+    src = FakeWikidata([_hit("Q1", "Last Roman Emperor", "legendary figure of the Apocalypse of Pseudo-Methodius"),
+                        _hit("Q2", "Last Roman Emperor", "Wikimedia disambiguation page")], {"Q1": CLAIMS, **LABELS})
+    out = src.facts("Last Roman Emperor")
+    assert src.last["qid"] == "Q1" and "meta-pages dropped" in src.last["how"] and len(out) == 1
+    # every hit a meta-page: nothing is invented, the ambiguity stands
+    src2 = FakeWikidata([_hit("Q8", "Mercury", "Wikimedia disambiguation page"), _hit("Q9", "Mercury", "Wikimedia list article")],
+                        {"Q8": CLAIMS, "Q9": CLAIMS, **LABELS})
+    assert src2.facts("Mercury") == [] and len(src2.last["ambiguous"]) == 2
+
+
+def test_the_asker_chooses_the_item_and_the_tally_guesses_only_when_no_context_does(tmp_path):
+    """Nick, 2026-09-14: "when ambiguous it should either select A based on context or B ask the user";
+    and "an algorithm that allows the vm to still be neutral while scoring most requested answers... to
+    guess the context if none". The tally is host-side: it picks WHICH item to ask about, never what the
+    VM verifies, it only fires when a unique maximum exists, and it is on the record."""
+    hits = [_hit("Q1", "Mercury", "planet"), _hit("Q2", "Mercury", "chemical element")]
+    src = _fake_choices(tmp_path, hits, {"Q1": CLAIMS, "Q2": CLAIMS, **LABELS})
+    assert src.facts("Mercury") == [] and src.last["qid"] is None            # B: ambiguous, the asker is asked
+    out = src.facts("Mercury", qid="Q2")                                      # the asker answers
+    assert src.last["qid"] == "Q2" and src.last["how"] == "chosen by the asker" and len(out) == 1
+    assert src.choices["mercury"] == {"Q2": 1}
+    src.facts("Mercury")                                                      # next time, no context: the tally decides
+    assert src.last["qid"] == "Q2" and src.last["how"] == "asker history (1 of 1)"
+    src.facts("Mercury", qid="Q1"); src.facts("Mercury", qid="Q1")            # the askers change their minds
+    src.facts("Mercury")
+    assert src.last["qid"] == "Q1" and src.last["how"] == "asker history (2 of 3)"
+    # a split tally is not a preference
+    src.facts("Mercury", qid="Q2"); src.facts("Mercury")
+    assert src.last["qid"] is None and len(src.last["ambiguous"]) == 2
+    # a context tier still outranks the tally: the relation the question needs decides
+    src.choices = {"mercury": {"Q2": 9}}
+    src._entities["Q1"] = {"claims": {"P735": [ITEM("Q90")]}}; src._entities["Q2"] = {"claims": {}}
+    src._entities.update(LABELS2)
+    src.facts("Mercury", relations=["given name"])
+    assert src.last["qid"] == "Q1" and src.last["how"].startswith("relation")
+    # and the benches never see any of it
+    plain = FakeWikidata(hits, {"Q1": CLAIMS, "Q2": CLAIMS, **LABELS})
+    assert plain.use_choices is False and plain.preferred("Mercury", ["Q1", "Q2"]) is None
+    plain.choose("Mercury", "Q1"); assert plain.choices == {}
