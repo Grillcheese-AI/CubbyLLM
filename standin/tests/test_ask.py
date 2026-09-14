@@ -22,7 +22,7 @@ from cubbyllm.reasoning.planner import normalize  # noqa: E402
 from test_pipeline_plan_refusal import faithful_vm  # noqa: E402
 from test_search_learn import DictSource, LookupStore  # noqa: E402
 
-from ask import AskLoop  # noqa: E402
+from ask import AskLoop, grounded_prose, profile_ask  # noqa: E402
 
 
 class FakeEmitter:
@@ -269,3 +269,41 @@ def test_a_time_varying_value_is_answered_with_the_latest_and_its_date_said_out_
     # the older values are still in the store, and the year that asks for one reads it
     assert "547 is the population of Quebec City" in world
     assert [k["value"] for k in loop.ask("what happened in 1608?")["profile"]] == ["547"]
+
+
+def test_an_entity_whose_name_contains_of_is_a_profile_and_a_relation_head_is_still_a_plan():
+    """Nick, 2026-09-14, live: "what is the great pyramid of giza?" refused, and so would the Bank of
+    England, the University of Toronto and the Isle of Man -- the guard threw out every entity whose own
+    NAME contains 'of'. What separates the two is the head, and the STORE answers whether the head is a
+    relation; the host does not guess. (The first cut asked `index._seen`, which holds whole fact
+    SENTENCES, so every test was False and every real plan became a profile too.)"""
+    assert profile_ask("what is the great pyramid of giza?") is None            # no store: the old safe guard
+    rel = {"capital", "father"}.__contains__
+    assert profile_ask("what is the great pyramid of giza?", rel) == ("what", "great pyramid of giza")
+    assert profile_ask("what is the bank of england?", rel) == ("what", "bank of england")
+    assert profile_ask("what is the capital of france?", rel) is None           # a relation leads it: a plan
+    assert profile_ask("who is the father of bill haslam?", rel) is None
+    assert profile_ask("what is the capital of france?", lambda h: False) is not None   # ... only the store decides
+
+
+def test_a_category_claim_needs_a_fact_behind_it():
+    """Nick's kill line is 0 wrong answers SPOKEN, and the name-and-number guard has one blind slot: a
+    kind. 2026-09-14, live: "the Bank of England is a financial institution" passed every check because
+    every word of it is lowercase, and no fact in the store says 'institution'. A kind is a claim."""
+    boe = ["1694-07-27 is the inception of Bank of England", "United Kingdom is the country of Bank of England"]
+    ok, bad = grounded_prose("The Bank of England is a financial institution in the United Kingdom.", boe, "Bank of England")
+    assert not ok and bad == ["institution"]
+    haslam = ["politician is the occupation of Bill Haslam", "Knoxville is the place of birth of Bill Haslam"]
+    assert grounded_prose("Bill Haslam is a politician.", haslam, "Bill Haslam")[0]    # licensed by a fact
+    qc = ["Creative Cities Network is the member of Quebec City", "547 is the population of Quebec City"]
+    assert grounded_prose("Quebec City is a member of the Creative Cities Network.", qc, "Quebec City")[0]
+    assert not grounded_prose("Quebec City is a fishing village.", qc, "Quebec City")[0]
+
+
+def test_a_grouped_number_is_the_same_number():
+    """2026-09-14, live: a paraphrase of Quebec City that was faithful in every word was refused because
+    the talk adapter wrote 574,482 for a population the store holds bare. An over-refusal is the loop
+    declining to speak the truth -- but 999,999 is still not a number the store has."""
+    facts = ["574482 is the population of Quebec City"]
+    assert grounded_prose("It has a population of 574,482.", facts, "Quebec City")[0]
+    assert not grounded_prose("It has a population of 999,999.", facts, "Quebec City")[0]

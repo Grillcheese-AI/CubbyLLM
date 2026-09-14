@@ -13,6 +13,7 @@ and the answer is spoken only when a VM-verified chain reaches it -- never from 
 from __future__ import annotations
 
 import collections
+import inspect as _inspect
 import pathlib
 import sys
 import threading
@@ -97,24 +98,35 @@ def say(rel: str) -> str:
 
 
 def when_text(w: str) -> str:
-    """A stored time as it should read: the source writes an unknown month and day as 00, and
-    '2024-00-00' is simply the year 2024."""
+    """A stored time as it should read: the source writes an unknown month and day as 00, so
+    '2024-00-00' is simply the year 2024 -- and a leading minus is the ERA, so -2560-01-01 is 2560 BC,
+    not a negative number (Nick, 2026-09-14, on the Great Pyramid)."""
     out = []
     for part in str(w or "").split("\u2013"):
         q = part.strip()
-        if _re.fullmatch(r"\d{4}-00-00", q):
+        bce = q.startswith("-")                          # the sign is the era, not a minus sign
+        if bce:
+            q = q[1:]
+        if bce or _re.fullmatch(r"\d{4}-00-00", q):
             q = q[:4]
         elif _re.fullmatch(r"\d{4}-\d{2}-00", q):
             q = q[:7]
         if q:
-            out.append(q)
+            out.append(q + " BC" if bce else q)
     return "\u2013".join(out)
 
 
-def profile_ask(question: str) -> tuple[str, str] | None:
+def profile_ask(question: str, is_relation=None) -> tuple[str, str] | None:
     """(kind, entity) of a 'who / what / where is X' or 'what happened in <date>' question, or None: a
     question with a relation in it ('the capital of France', "Canada's capital") is a plan for the
-    emitter, not a profile."""
+    emitter, not a profile.
+
+    'of' alone does not make a plan. 2026-09-14, live: "what is the great pyramid of giza?" refused,
+    and so would the Bank of England, the University of Toronto and the Isle of Man -- the guard threw
+    out every entity whose own NAME contains 'of'. What separates the two is the head: 'capital of
+    France' leads with a relation the store knows, 'great pyramid of giza' does not. `is_relation` is
+    the store's own answer to that (AskLoop passes it); without one the old, safe guard stands, because
+    guessing which head is a relation is exactly the guess that speaks a wrong answer."""
     m = _WHEN_ASK.match(question)
     if m:
         ent = m.group("ent").strip().strip(",")
@@ -123,8 +135,13 @@ def profile_ask(question: str) -> tuple[str, str] | None:
     if not m:
         return None
     ent = m.group("ent").strip()
-    if not ent or " of " in f" {ent} " or "'s " in ent or ent.endswith("'s") or len(ent.split()) > 6:
+    if not ent or "'s " in ent or ent.endswith("'s") or len(ent.split()) > 6:
         return None
+    if " of " in f" {ent} ":
+        head = ent.split(" of ", 1)[0].strip()
+        head = head[4:].strip() if head.lower().startswith("the ") else head
+        if is_relation is None or not head or is_relation(head):
+            return None                                  # a relation leads it: the emitter's plan, not a profile
     return m.group("kind").lower(), ent
 
 
@@ -181,6 +198,25 @@ def _num_key(tok: str) -> str:
     return _GROUP.sub("", str(tok)).strip(".:/-")
 
 
+_CATEGORY = _re.compile(
+    r"\b(?:is|was|are|were)\s+(?:a|an|the)\s+([a-z][a-z\-]*(?:\s+[a-z][a-z\-]*){0,3}?)"
+    r"(?=\s*(?:[,.;:]|$|\bin\b|\bof\b|\bat\b|\bon\b|\bfor\b|\bthat\b|\bwhich\b|\band\b|\bwith\b|"
+    r"\bbased\b|\blocated\b|\bheadquartered\b|\bknown\b|\bfounded\b|\bborn\b))")
+
+
+def category_claims(text: str) -> list[str]:
+    """The head noun of every 'X is a <kind>' in the paraphrase. A category is the one slot where the
+    name-and-number guard is blind: every word of 'the Bank of England is a financial institution' is
+    lowercase, so nothing flagged it -- and no fact in the store said 'institution'. 2026-09-14, live.
+    A kind is a claim like any other and needs a fact behind it."""
+    out = []
+    for m in _CATEGORY.finditer(text or ""):
+        head = m.group(1).split()[-1].strip("-")
+        if head and head not in _SMALL:
+            out.append(head)
+    return out
+
+
 def grounded_prose(text: str, facts: list[str], entity: str) -> tuple[bool, list[str]]:
     """Every capitalised word and every number in the paraphrase must occur in the facts (or the entity's
     name, or a date the facts hold written out): the talk adapter says what the store says, in its words,
@@ -198,6 +234,7 @@ def grounded_prose(text: str, facts: list[str], entity: str) -> tuple[bool, list
             continue
         if (is_name or is_num) and low not in hay:
             bad.append(tok.strip("'’-.,:"))
+    bad += [c for c in category_claims(text) if c not in hay]
     return (not bad), bad
 
 
@@ -239,6 +276,29 @@ class AskLoop:
         self.history: list[dict] = []
         self._lock = threading.Lock()                    # one question at a time: the emitter and the VM session are not re-entrant
 
+    def _is_relation(self, head: str) -> bool:
+        """Does the store know `head` as a relation? `self.known` is StoreRelations -- a set over parsed
+        `Triple.rel`, which is the question being asked. (The first cut of this read `index._seen`, which
+        holds whole FACT SENTENCES, not relations: every membership test was False, so every entity whose
+        name contains 'of' stayed a profile AND every real plan became one too. Live, 2026-09-14.)"""
+        if not head:
+            return False
+        try:
+            if head in self.known:
+                return True
+        except Exception:                                # noqa: BLE001
+            return True                                  # a store that cannot answer keeps the old, safe guard
+        for res in self.resolvers:                       # the lexicon's own names for a relation count too
+            fn = getattr(res, "relations", None)
+            if not callable(fn):
+                continue
+            try:
+                if any(c in self.known for c in (fn(head) or ())):
+                    return True
+            except Exception:                            # noqa: BLE001 -- a resolver that cannot answer is not a yes
+                continue
+        return False
+
     def _run_fn(self, source: str, fn: str) -> dict:
         self.calls["vm"] += 1
         return self._vm(source, fn) if self._vm else self.session.run(source, fn=fn)
@@ -255,7 +315,7 @@ class AskLoop:
                      "learned": [], "entities": [], "aliased": [], "snapped": None, "trace": [], "wall_s": 0.0}
         with self._lock:
             self.calls["asked"] += 1
-            pa = profile_ask(question)                   # the host reads the shape off the question (gen 2 cannot emit it yet)
+            pa = profile_ask(question, self._is_relation)   # the host reads the shape off the question (gen 2 cannot emit it yet)
             if pa:
                 rec = self.profile(question, pa[0], pa[1], t0, how="the question's shape (who / what / where / when)", item=item, asker=asker)
                 self.history.append(rec)
@@ -310,8 +370,14 @@ class AskLoop:
         from cubbyllm.reasoning.planner import Triple, normalize
         prov = getattr(self.world, "provenance", None)
         rec["entities"].append(entity)
-        items = list(self.source.facts(entity, relations=hint, qid=item, asker=asker) if _takes_item(self.source) else
-                     (self.source.facts(entity, relations=hint) if _takes_relations(self.source) else self.source.facts(entity)))
+        kw = {}
+        if _takes_relations(self.source):
+            kw["relations"] = hint
+        if _takes_item(self.source):
+            kw.update(qid=item, asker=asker)
+        if "classes" in _inspect.signature(self.source.facts).parameters:
+            kw["classes"] = True                         # a profile ask wants the KIND: see WikidataSource.facts
+        items = list(self.source.facts(entity, **kw))
         last = getattr(self.source, "last", None) if isinstance(getattr(self.source, "last", None), dict) else {}
         fid = ev.emit("fetch", qid, source=getattr(self.source, "name", None), entity=entity, n=len(items), latent=False,
                       needs=hint, how=last.get("how"), item=last.get("qid"),
@@ -478,8 +544,8 @@ class AskLoop:
                   f"\n\nIn one or two plain sentences, say {ask} {entity} is, using ONLY these facts. "
                   "Every NAME, DATE and NUMBER must appear exactly as given, and you may add none that is "
                   "not in the facts.")
+        from emitter import clean_reply
         try:
-            from emitter import clean_reply
             raw = self.emitter.emit(prompt, max_new_tokens=160, context={"role": "talk"}, temperature=0.0,
                                     system=PARAPHRASE_SYSTEM)     # not the identity persona: under it the talk adapter says nothing here
             text = " ".join(clean_reply(raw).split())
@@ -487,8 +553,26 @@ class AskLoop:
             ev.emit("paraphrase", pid, ok=False, text=None, rejected=[f"talk adapter failed: {str(e)[:80]}"])
             return None
         ok, bad = grounded_prose(text, facts + said, entity)
-        ev.emit("paraphrase", pid, ok=ok, text=text if ok else None, rejected=bad or None, draft=text)
-        return text if ok else None
+        ev.emit("paraphrase", pid, ok=ok, text=text if ok else None, rejected=bad or None, draft=text, attempt=1)
+        if ok:
+            return text
+        # A refusal is a result, but it is a poor one when the facts are right there and only one word
+        # was invented (2026-09-14: the Bank of England lost its whole paraphrase over "institution").
+        # The adapter is told which words it made up and gets ONE more turn. The guard is unchanged --
+        # the second draft passes the same check or is refused the same way.
+        try:
+            retry = (prompt + "\n\nYour last attempt used " + ", ".join(f"'{b}'" for b in bad[:6]) +
+                     " -- no fact above says that. Write it again without those words, and do not say "
+                     "what KIND of thing it is unless a fact names the kind.")
+            raw = self.emitter.emit(retry, max_new_tokens=160, context={"role": "talk"}, temperature=0.0,
+                                    system=PARAPHRASE_SYSTEM)
+            text2 = " ".join(clean_reply(raw).split())
+        except Exception as e:                                   # noqa: BLE001
+            ev.emit("paraphrase", pid, ok=False, text=None, rejected=[f"retry failed: {str(e)[:60]}"], attempt=2)
+            return None
+        ok2, bad2 = grounded_prose(text2, facts + said, entity)
+        ev.emit("paraphrase", pid, ok=ok2, text=text2 if ok2 else None, rejected=bad2 or None, draft=text2, attempt=2)
+        return text2 if ok2 else None
 
     # -- the date index: "what happened in <year>" over what the store knows the date of -------
     def dated_facts(self, when: str) -> list[tuple[str, dict]]:

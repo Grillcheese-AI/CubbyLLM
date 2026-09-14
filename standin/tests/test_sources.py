@@ -235,3 +235,19 @@ def test_the_question_s_relations_narrow_in_order_but_only_across_different_kind
                         {"Q1": HAS, "Q2": HASNT, **LABELS})
     assert src2.facts("James Young", relations=["date of birth"]) == []
     assert src2.last["qid"] is None and len(src2.last["ambiguous"]) == 2
+
+
+def test_a_year_before_the_era_says_so():
+    """Nick, 2026-09-14, from the panel: `2560 is the inception of Great Pyramid of Giza` -- BC missing.
+    Wikidata writes a BCE time as -2560-01-01 and the parser sliced off the first character to drop the
+    '+', taking the era with it. A bare 2560 reads as AD: the fact was wrong by 4,586 years, and it was
+    wrong in the FACT TEXT, which is what gets spoken. The sign now survives in both places."""
+    bce = {"claims": {"P571": [{"mainsnak": {"datatype": "time", "datavalue": {"type": "time",
+                                "value": {"time": "-2560-01-01T00:00:00Z", "precision": 9}}},
+                               "qualifiers": {"P580": [{"datavalue": {"value": {"time": "-2580-01-01T00:00:00Z"}}}]}}]},
+           "labels": {"en": {"value": "Great Pyramid of Giza"}}}
+    src = FakeWikidata([_hit("Q37200", "Great Pyramid of Giza", "pyramid in Egypt")],
+                       {"Q37200": bce, "P571": {"labels": {"en": {"value": "inception"}}}})
+    out = src.facts("great pyramid of giza")
+    assert [(t.obj, t.rel) for t in out] == [("2560 BC", "inception")]
+    assert src.times["2560 bc is the inception of great pyramid of giza"]["start"] == "-2580-01-01"

@@ -29,6 +29,8 @@ API = "https://www.wikidata.org/w/api.php"
 UA = "cubbyllm-standin/0.1 (research; licensing@grillcheese.ai)"
 CACHE = pathlib.Path(__file__).resolve().parent / "data" / "out" / "wikidata_cache"
 SKIP_PROPS = {"P31"}       # 'instance of' floods every entity with class facts; the store calls it 'instance' when it wants it
+CLASS_PROPS = ("P31",)     # ... and a profile ask WANTS it: "what is X" is a question about the kind
+MAX_CLASS_FACTS = 3        # the kind, not the whole taxonomy
 # Wikimedia's own pages ABOUT pages: never the subject of a question (2026-09-14)
 _META = __import__("re").compile(r"\bWikimedia\b.*\b(disambiguation|list|category|template|module|portal|project)\b"
                                  r"|\b(disambiguation page|list article|Wikinews article)\b", __import__("re").I)
@@ -456,16 +458,24 @@ class WikidataSource:
             for q in (st.get("qualifiers") or {}).get(pid, []):
                 v = (q.get("datavalue") or {}).get("value") or {}
                 t = str(v.get("time") or "")
-                if t.startswith("+") and len(t) >= 5:
-                    out[slot] = t[1:11]                      # YYYY-MM-DD, the store's own date shape
+                if t[:1] in "+-" and len(t) >= 5:
+                    # the SIGN is the era. Dropping it turns 2560 BC into 2560 AD -- 4,586 years of
+                    # silent error (Nick, 2026-09-14, on the Great Pyramid). A BCE time keeps its minus.
+                    out[slot] = ("-" if t.startswith("-") else "") + t[1:11]
         return out
 
     def facts(self, entity: str, relations: list[str] | None = None, via: str | None = None,
-              qid: str | None = None, asker: str | None = None) -> list[str]:
+              qid: str | None = None, asker: str | None = None, classes: bool = False) -> list[str]:
         """`relations`: the wordings the walk needs from this entity (the stalled hop's), used
         only to decide among several items that share the name; `via`: the walked fact whose
         object this entity is, which names the item outright. Neither keeps the strict rule
-        from applying when they are absent."""
+        from applying when they are absent.
+
+        `classes`: also bring back P31, capped. It is skipped by default because a class fact
+        answers no hop and floods the store -- but for "WHAT is the Bank of England" the class IS
+        the answer, and without it nothing licenses the word "bank". 2026-09-14, live: the guard
+        refused the whole paraphrase over "institution" while the store was not allowed to know
+        the kind. An unlicensed kind is still refused; this just lets a fact license it."""
         self.last = {"entity": entity, "qid": None, "label": None, "alias": False, "n_claims": 0, "how": None}
         self.times: dict[str, dict] = {}                     # fact text -> {start, end, point}, beside the facts
         r = self.resolve(entity, relations, via, qid, asker)
@@ -478,7 +488,12 @@ class WikidataSource:
         claims = self._claims(qid)
         self.last["n_claims"] = sum(len(v) for v in claims.values())
         # collect item targets and property ids, one label round-trip for all of them
-        props = [p for p in claims if p not in SKIP_PROPS]
+        props = [p for p in claims if p not in SKIP_PROPS or (classes and p in CLASS_PROPS)]
+        if classes:
+            claims = dict(claims)
+            for cp in CLASS_PROPS:                           # the kind, not a taxonomy: the first few
+                if cp in claims:
+                    claims[cp] = claims[cp][:MAX_CLASS_FACTS]
         targets = []
         for p in props:
             for st in claims[p]:
@@ -504,6 +519,11 @@ class WikidataSource:
                 elif t == "time":
                     ts, prec = v.get("time", ""), v.get("precision", 11)
                     obj = ts[1:5] if prec <= 9 else ts[1:11]
+                    if ts.startswith("-"):
+                        # A negative year is BEFORE the era. The fact TEXT is what gets spoken, so it
+                        # says so: "2560 BC", not "2560". Day precision on a BCE date is noise -- the
+                        # year is the claim. (self.times keeps the signed ISO for the machine side.)
+                        obj = (ts[1:5].lstrip("0") or "0") + " BC"
                 elif t == "quantity":
                     obj = v.get("amount", "").lstrip("+")
                 elif t == "string":
