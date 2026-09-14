@@ -53,3 +53,7 @@ Tokenizer + corpus + real-training pipeline are built and real (non-toy) runs ar
 - `CUBBYLLM_HYPOTHESES.md` — the authoritative hypothesis/decision record; every item above traces back to a numbered hypothesis there.
 - `VALIDATION_REPORT.md` — the campaign that produced the four architecture decisions, including a "what would change these conclusions" section worth rereading before treating any toy-scale result above as final.
 - `CLAUDE.md` — orientation for any session picking this up; its "Where to start" section mirrors this list at a higher level.
+
+## Specced, not built
+
+See `docs/WORK_ORDERS.md` — WO-1 the co-mention tier (do first), WO-2 the multi-verify monitor, WO-3 the decoy audit, WO-4 date the preloaded world, WO-5 the semantic hole in the grounding guard (measure before designing).

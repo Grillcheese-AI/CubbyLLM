@@ -1,5 +1,10 @@
 # CLAUDE.md — CubbyLLM
 
+
+> **Looking for the next piece of work?** `docs/WORK_ORDERS.md` holds the specs for
+> work that is argued for and not built — each with its rationale, its acceptance tests,
+> and what would prove it wrong. Read the "Before you touch anything" section first.
+
 This file orients any Claude Code session working in this repo. Read it before writing code, and read `CUBBYLLM_HYPOTHESES.md` before treating any architectural claim in this project as settled — that file, not this one, is the authoritative source. This file is a map to it, not a replacement for it.
 
 ## What CubbyLLM is, and what it is not

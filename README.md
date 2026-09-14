@@ -180,6 +180,10 @@ to a script in `validation/` and a log in `validation/logs/`.
 is the walk it sits on) and the outside-model competitions with their scoring. `docs/ARCHITECTURE_VISION.md` and `VISION.md` — the north star: Cubby (the trunk)
 + CubeLang (the verified VM, an OS for AI) + cubemind (the environment); deny-by-default; the Brain-SDK contracts.
 
+`docs/WORK_ORDERS.md` — work that is argued for and NOT built, each entry written to be picked up
+cold: what to build, where, why it is shaped that way, what would prove it wrong, and the measured
+numbers the decision rests on. Start here for the next piece of work.
+
 `PACKAGE_LAYOUT.md` — the target package layout, written before code could accumulate one by accident.
 `docs/superpowers/` — the implemented package's design spec and plan. `TODO.md` — the working checklist.
 `CUBEMIND_CLEANUP_PLAN.md` and `cubby-model-environment-map.md` — the verified state of the sibling repos this
