@@ -161,7 +161,7 @@ the record.
 the rung-1 generality-gate competition (`2026-09-10-rung1-generality-gate-competition.md`) and the neutral-prior
 competition (`2026-09-14-neutral-scoring-competition.md` — how the loop may learn what an asker means without
 becoming a ranker, and the multi-valued-relation trap it found) put outside models against the measured record;
-their pre-checks reshaped the roadmap. What followed, each with a before/after
+their pre-checks reshaped the roadmap. The token-free competition (`2026-09-14-token-free-vm-competition.md`) answered how a VM generalizes without tokens: opaque payloads in a closed role set, a per-request manifest compiled into the grammar, and a bytecode verifier that rejects any statement compiling to zero instructions. What followed, each with a before/after
 on the same store and seeds: the lookup-first walk over a TripleIndex; the entry diagnosis (absent facts 42%,
 relation mismatch 58% of the residue); the finding that the plan never crossed the gate and the disposer that
 closed it; the resident VM; the emitter's plans walked and harvested; gen 2 trained on the harvest and gated;
