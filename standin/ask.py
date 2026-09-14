@@ -46,6 +46,11 @@ _PROFILE_ASK = _re.compile(r"^\s*(?P<kind>who|what|where)\s+(?:is|was|are|were)\
 _WHEN_ASK = _re.compile(r"^\s*(?:what|which)\s+(?:\w+\s+)?(?:happened|occurred|occured|took\s+place|went\s+on)"
                         r"(?:\s+(?:in|on|during|around))?\s+(?:the\s+)?(?P<ent>[^?]*?)\s*\??\s*$", _re.I)
 _ASK_ROLE = _re.compile(r'bind\s+frame\s*,\s*ASK\s*,\s*"(?P<kind>who|what|where|when)"\s*;', _re.I)
+# WORLD names the store the question is about: absent (or "world") is the world, "self" is the
+# loop's own record. A question about what the loop KNOWS and a question about what IS are
+# different questions, and the program says which one it is asking -- letting the second be
+# answered by the first is how a system starts mistaking its notes for the world.
+_WORLD_ROLE = _re.compile(r'bind\s+frame\s*,\s*WORLD\s*,\s*"(?P<world>self|world)"\s*;', _re.I)
 _SEED_ROLE = _re.compile(r'bind\s+frame\s*,\s*SEED\s*,\s*"(?P<seed>(?:[^"\\]|\\.)*)"\s*;')
 _HOP_ROLE = _re.compile(r'bind\s+frame\s*,\s*(?:HOP\d+|H\d+_\w+)\s*,')
 PROFILE_KINDS = {
@@ -69,6 +74,8 @@ FALLBACK_KINDS = ("who", "what", "where")          # kinds that may also show an
 # and `part of` are carried by almost everything and decide nothing
 RESOLVE_HINT = {k: tuple(r for r in v if r not in ("instance of", "subclass of", "part of", "sex or gender"))[:8] for k, v in PROFILE_KINDS.items()}
 PROFILE_MAX_PER_RELATION = 3
+from self_source import LOOP, SelfSource   # noqa: E402
+
 PROFILE_MAX_LINES = 9
 # Past this many dated facts, "what happened in 2026?" is not a question with an answer, it is a
 # question with a library. Nick, 2026-09-14: "when ambiguous it should either select A based on
@@ -147,6 +154,36 @@ def strip_as_of(question: str) -> tuple[str, str | None]:
     return (stripped or question), m.group(1)
 
 
+# "what do you know about X", "why did you refuse X", "how often have you been asked about X"
+_SELF_ABOUT = _re.compile(
+    r"^\s*(?:what|why|how(?:\s+\w+)?)\s+(?:do|did|have|has|are|is|was)\s+you\b[^?]*?\babout\s+"
+    r"(?P<ent>[^?]+?)\s*\??\s*$", _re.I)
+_SELF_ABOUT2 = _re.compile(
+    r"^\s*why\s+(?:did|do)\s+you\s+(?:refuse|reject|fail\s+on)\s+(?P<ent>[^?]+?)\s*\??\s*$", _re.I)
+# "what do you know", "how are you doing", "what do you refuse most", "what do you fail at"
+_SELF_LOOP = _re.compile(
+    r"^\s*(?:what|how)\s+(?:do|did|are|have|has|is)\s+you(?:r)?\b(?:(?!\babout\b)[^?])*\??\s*$", _re.I)
+
+
+def self_ask(question: str) -> tuple[str, str] | None:
+    """(kind, subject) when the question is about the LOOP rather than about the world -- the
+    subject being either something the loop was asked about, or `this loop` itself.
+
+    The host reads this shape off the question the same way it reads who/what/where, because
+    gen 2 cannot emit `bind frame, WORLD, "self"` yet. When gen 3 can, this becomes a fallback
+    and the model asks for its own record directly -- which is the point: a loop that can only
+    be introspected by its operator is not aware of its surroundings, it is merely logged."""
+    for rx in (_SELF_ABOUT2, _SELF_ABOUT):
+        m = rx.match(question or "")
+        if m:
+            ent = " ".join(m.group("ent").split()).strip(".,")
+            if ent and len(ent.split()) <= 6:
+                return "what", ent
+    if _SELF_LOOP.match(question or ""):
+        return "what", LOOP
+    return None
+
+
 def profile_ask(question: str, is_relation=None) -> tuple[str, str] | None:
     """(kind, entity) of a 'who / what / where is X' or 'what happened in <date>' question, or None: a
     question with a relation in it ('the capital of France', "Canada's capital") is a plan for the
@@ -184,12 +221,29 @@ def profile_program(program: str) -> tuple[str, str] | None:
     return a.group("kind").lower(), s.group("seed").replace('\\"', '"')
 
 
+def program_world(program: str) -> str:
+    """Which store an emitted program asks about: 'self' or 'world' (the default)."""
+    m = _WORLD_ROLE.search(program or "")
+    return m.group("world").lower() if m else "world"
+
+
 def cot_profile(seed: str, kind: str) -> str:
     """The retrieval program, in the emitter's CotPlan form: what gen 3 learns to emit for this shape."""
     esc = seed.replace("\\", "\\\\").replace('"', '\\"')
     return ("use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n"
             "        create frame: number;\n"
             f'        bind frame, SEED, "{esc}";\n        bind frame, ASK, "{kind}";\n'
+            "        return recover(frame, SEED);\n    }\n}\n")
+
+
+def cot_self(seed: str, kind: str) -> str:
+    """The introspection program: the retrieval shape with WORLD bound to "self". What gen 3
+    learns to emit when the question is about the loop rather than about the world."""
+    esc = seed.replace("\\", "\\\\").replace('"', '\\"')
+    return ("use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n"
+            "        create frame: number;\n"
+            f'        bind frame, SEED, "{esc}";\n        bind frame, ASK, "{kind}";\n'
+            '        bind frame, WORLD, "self";\n'
             "        return recover(frame, SEED);\n    }\n}\n")
 
 
@@ -354,6 +408,11 @@ class AskLoop:
                      "learned": [], "entities": [], "aliased": [], "snapped": None, "trace": [], "wall_s": 0.0}
         with self._lock:
             self.calls["asked"] += 1
+            sa = self_ask(question)                      # about the LOOP, not about the world
+            if sa:
+                rec = self.introspect(question, sa[0], sa[1], t0, how="the question's shape (about you)")
+                self.history.append(rec)
+                return rec
             pa = profile_ask(question, self._is_relation)   # the host reads the shape off the question (gen 2 cannot emit it yet)
             if pa:
                 rec = self.profile(question, pa[0], pa[1], t0, how="the question's shape (who / what / where / when)", item=item, asker=asker)
@@ -362,6 +421,12 @@ class AskLoop:
             asked, _year = strip_as_of(question)         # the year is a constraint, not a relation
             try:
                 raw = self.emitter.emit(asked, max_new_tokens=self.max_new)
+                if program_world(strip_fences(raw)) == "self":
+                    pp = profile_program(strip_fences(raw))
+                    if pp:
+                        rec = self.introspect(question, pp[0], pp[1], t0, how='the emitter\'s program (WORLD "self")')
+                        self.history.append(rec)
+                        return rec
                 program = strip_fences(raw)
                 pp = profile_program(program)            # the emitter wrote the retrieval program: SEED + ASK, no hop
                 if pp:
@@ -453,6 +518,67 @@ class AskLoop:
             ev.emit("gate", fid, fact=fact, status=p.status, clash=p.clash, lifted=False,
                     provenance=(prov or {}).get(" ".join(fact.split())))
         return last
+
+    def introspect(self, question: str, kind: str, entity: str, t0: float, how: str) -> dict:
+        """The loop asked about ITSELF. Same shape as a profile ask and a different store.
+
+        The loop is the one subject it can witness directly -- it does not take anybody's word
+        for its own history -- so these facts need no source and carry `self` as provenance.
+        That privilege is fenced: a self fact never enters the world store, the answer says
+        plainly that it is about the loop, and there is no relation here that carries a
+        judgement. "refused 3 times" is a fact; "is unreliable" is an opinion, and this path
+        cannot express one.
+
+        The facts are DERIVED on every ask and never stored, so they cannot go stale and cannot
+        be edited into something the loop did not do."""
+        from cubbyllm.reasoning import events as ev
+        from cubbyllm.reasoning.planner import normalize
+        qid = ev.emit("question", text=question, source="self")
+        pid = ev.emit("plan", qid, seed=normalize(entity), relations=[], tail=entity, n_hop=0, ask=kind,
+                      program=cot_self(normalize(entity), kind), how=how)
+        rec: dict = {"question": question, "answer": None, "verified": False, "reason": "self",
+                     "plan": [], "seed": normalize(entity), "ask": kind, "world": "self",
+                     "program": cot_self(normalize(entity), kind), "learned": [], "entities": [entity],
+                     "aliased": [], "snapped": None, "trace": [], "profile": [], "prose": None,
+                     "candidates": None, "clarify": None, "wall_s": 0.0}
+        src = SelfSource(self)
+        items = src.facts(entity)
+        ev.emit("fetch", qid, source="self", entity=entity, n=len(items), latent=False,
+                how=(src.last or {}).get("how"))
+        if not items:
+            rec["reason"] = "no_self_record"
+            rec["needs"] = (src.last or {}).get("how") or "the loop has no record of that subject"
+            ev.emit("answer", qid, verified=False, answer=None, reason=rec["reason"], needs=rec["needs"])
+            rec["wall_s"] = round(time.perf_counter() - t0, 3)
+            return rec
+        lines = []
+        for t in items:
+            fact = f"{t.obj} is the {t.rel} of {t.subj}"
+            lines.append({"relation": t.rel, "value": t.obj, "fact": fact, "provenance": "self",
+                          "similarity": 1.0, "when": None})
+        rec["profile"] = lines
+        rec["trace"] = [l["fact"] for l in lines]
+        by_rel: dict[str, list[str]] = {}
+        for l in lines:
+            by_rel.setdefault(say(l["relation"]), []).append(l["value"])
+        rec["answer"] = entity + " \u2014 " + "; ".join(f"{r}: {', '.join(v)}" for r, v in by_rel.items())
+        # NO PARAPHRASE ON THIS PATH, deliberately. 2026-09-14, live and wrong: given
+        # `fact learned: 152; source: wikidata (152)` the talk adapter wrote "referenced in 152
+        # sources" (it is 152 facts from ONE source), and given `last answer: 574482` it wrote
+        # "the last answer was given 574482 units ago". Every name and number in both sentences
+        # occurs in the facts, so the grounding guard passed them: the guard checks VOCABULARY,
+        # not semantics, and it holds up on world facts only because the relations there are
+        # ordinary English the adapter has seen a million times. "fact learned", "call",
+        # "provenance" are not, and it confabulates what they mean.
+        #
+        # A loop reporting on itself has no business being fluent about it. The counts ARE the
+        # answer, they are already readable, and prose can only add an interpretation of numbers
+        # whose meaning the speaker does not know. Fluency here buys nothing and costs the kill
+        # line.
+        ev.emit("answer", qid, verified=False, answer=rec["prose"] or rec["answer"], reason=rec["reason"],
+                facts=rec["answer"], profile=rec["profile"], prose=rec["prose"], entities=[entity], fetched=0)
+        rec["wall_s"] = round(time.perf_counter() - t0, 3)
+        return rec
 
     def _fetch_news(self, qid: int, entity: str, rec: dict) -> int:
         """A date's headlines into the store, through the SAME gate every other fact passes, each
