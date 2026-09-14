@@ -170,6 +170,7 @@ def make_handler(brain):
                 self._send(200, {"ok": True, "emitter": getattr(brain.emitter, "name", "?"),
                                  "ask": loop is not None,                                   # POST /ask mounted (the panel shows its box)
                                  "ask_source": getattr(getattr(loop, "source", None), "name", None) if loop else None,
+                                 "news": getattr(getattr(loop, "news", None), "name", None) if loop else None,
                                  "asked": loop.calls["asked"] if loop else 0,
                                  "two_adapters": bool(getattr(brain.emitter, "is_split", False)),
                                  "adapters": (brain.emitter.usage() if hasattr(brain.emitter, "usage") else None)})
@@ -296,6 +297,10 @@ def main():
                          "proposes, the host disposes, the VM verifies, the source fills the store through the gate -- "
                          "'wikidata' (default), 'wikidata-offline' (cache only) or 'lfm' (the local base model, latent tier)")
     ap.add_argument("--ask-max-new", type=int, default=300)
+    ap.add_argument("--news", action="store_true",
+                    help="mount the RSS date source for 'what happened in <date>' asks: headlines enter the "
+                         "store as facts about the DATE, attributed to the publisher, through the same gate. "
+                         "Only a `when` ask ever consults it.")
     args = ap.parse_args()
     if args.ask and not args.wiki:
         args.wiki = "auto"                               # the loop walks the wiki world
@@ -303,9 +308,9 @@ def main():
                         talk_gguf=args.talk_gguf, wiki=args.wiki)
     if args.ask:
         from ask import AskLoop
-        print(f"mounting the ask loop (source {args.ask}, lexicon on) ...", flush=True)
+        print(f"mounting the ask loop (source {args.ask}, lexicon on, news {'on' if args.news else 'off'}) ...", flush=True)
         brain.ask_loop = AskLoop(brain.emitter, world=brain.worlds["wiki"], source=args.ask, lexicon=True,
-                                 max_new=args.ask_max_new)
+                                 max_new=args.ask_max_new, news="rss" if args.news else None)
         print(f"  POST /ask {{\"text\": ...}} -> the loop's record; watch it at http://{args.host}:{args.port}/panel", flush=True)
     if args.model_appraisal:
         from perception import ModelAppraiser

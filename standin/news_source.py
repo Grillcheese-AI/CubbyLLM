@@ -376,7 +376,21 @@ class NewsSource:
         was written about, never what mattered."""
         counts: dict[str, int] = {}
         for t in self.facts(entity):
-            words = re.findall(r"\b[A-Z][A-Za-z'\-]{2,}(?:\s+[A-Z][A-Za-z'\-]{2,})?", t.obj)
+            # DROP THE FIRST WORD. It is capitalised because it starts the headline, not because
+            # it is a name -- "Have", "Calls", "Watch" all reached the live menu that way
+            # (2026-09-14). A stop list is an arms race against English; the sentence's own
+            # shape is the actual signal, and a real name recurs mid-headline anyway.
+            body = t.obj.lstrip('"').split(" ", 1)
+            text = body[1] if len(body) > 1 else ""
+            # A TITLE-CASED headline capitalises almost every word, so its capitals carry no
+            # information about which words are names -- that is how "Run" and "Calls" reached
+            # the live menu (2026-09-14). Count only sentence-cased headlines, where a capital
+            # mid-sentence actually means something. Skipping a publisher's whole house style
+            # costs coverage; inventing names out of their typography costs the truth.
+            words_all = [w for w in text.split() if w[:1].isalpha()]
+            if len(words_all) >= 4 and sum(w[:1].isupper() for w in words_all) / len(words_all) > 0.6:
+                continue
+            words = re.findall(r"\b[A-Z][A-Za-z'\-]{2,}(?:\s+[A-Z][A-Za-z'\-]{2,})?", text)
             for w in {w.strip() for w in words}:
                 if w.lower() in _TOPIC_STOP:
                     continue

@@ -70,6 +70,10 @@ FALLBACK_KINDS = ("who", "what", "where")          # kinds that may also show an
 RESOLVE_HINT = {k: tuple(r for r in v if r not in ("instance of", "subclass of", "part of", "sex or gender"))[:8] for k, v in PROFILE_KINDS.items()}
 PROFILE_MAX_PER_RELATION = 3
 PROFILE_MAX_LINES = 9
+# Past this many dated facts, "what happened in 2026?" is not a question with an answer, it is a
+# question with a library. Nick, 2026-09-14: "when ambiguous it should either select A based on
+# context or B ask the user: do you want to know more about: choices."
+NEWS_CLARIFY_MIN = 12
 PARAPHRASE_SYSTEM = ("You are a careful writer. You restate given facts in plain sentences and never add anything. "
                      "The facts are written in a database's own vocabulary; say them in ordinary English.")
 
@@ -244,7 +248,8 @@ class AskLoop:
     `source` 'wikidata' | 'wikidata-offline' | 'lfm' | a Source object; `lexicon` adds lever 5."""
 
     def __init__(self, emitter, world=None, source="wikidata", lexicon: bool = True, exe: str | None = None,
-                 max_new: int = 300, lfm_gguf: str | None = None, run_fn=None, tau_profile: float = TAU_VM[1]):
+                 max_new: int = 300, lfm_gguf: str | None = None, run_fn=None, tau_profile: float = TAU_VM[1],
+                 news=None):
         from cubbyllm.bridges import cubelang_client as cc
         from cubbyllm.reasoning.plan_verify import StoreRelations
         self.emitter = emitter
@@ -264,6 +269,13 @@ class AskLoop:
             else:
                 raise ValueError(f"unknown source {source!r}")
         self.source = source
+        # The date source. A `when` ask is the one question the wiki world provably cannot answer
+        # (measured: 0 facts whose subject is a year), so it gets its own source -- and only a
+        # `when` ask ever consults it. `news="rss"` builds the default feed set.
+        if news == "rss":
+            from news_source import NewsSource
+            news = NewsSource()
+        self.news = news
         self.resolvers = []
         if lexicon:
             from cubbyllm.reasoning.lexicon import Lexicon
@@ -407,6 +419,50 @@ class AskLoop:
                     provenance=(prov or {}).get(" ".join(fact.split())))
         return last
 
+    def _fetch_news(self, qid: int, entity: str, rec: dict) -> int:
+        """A date's headlines into the store, through the SAME gate every other fact passes, each
+        keeping its own publisher as provenance and its own day in `times`. Nothing downstream
+        changes: `dated_facts` reads `times`, so the news arrives by the front door."""
+        from cubbyllm.reasoning import events as ev
+        from cubbyllm.reasoning.learn import gate
+        from cubbyllm.reasoning.planner import normalize
+        if self.news is None:
+            return 0
+        try:
+            items = list(self.news.facts(entity))
+        except Exception as e:                               # noqa: BLE001 -- a feed that is down is not an answer
+            ev.emit("fetch", qid, source="news-rss", entity=entity, n=0, latent=False,
+                    how=f"news unavailable: {str(e)[:80]}")
+            return 0
+        prov = getattr(self.world, "provenance", None)
+        times = getattr(self.world, "times", None)
+        fid = ev.emit("fetch", qid, source="news-rss", entity=entity, n=len(items), latent=False,
+                      how=(getattr(self.news, "last", None) or {}).get("how"),
+                      feeds=(getattr(self.news, "last", None) or {}).get("feeds"))
+        n = 0
+        for t in items:
+            fact = f"{t.obj} is the {t.rel} of {t.subj}"
+            key = normalize(fact)
+            publisher = self.news.provenance.get(key, "news-rss")
+            if hasattr(self.world, "index") and hasattr(self.world.index, "declare_relation"):
+                self.world.index.declare_relation(t.rel)
+            if hasattr(self.known, "declare"):
+                self.known.declare(t.rel)
+            g = gate(fact, self.world, publisher, entity)
+            rec["learned"].append({"fact": g.fact, "status": g.status, "source": g.source, "entity": g.entity})
+            if g.status == "accepted":
+                self.world.add(fact)
+                if hasattr(self.known, "add"):
+                    self.known.add(fact)
+                if prov is not None:
+                    prov[" ".join(fact.split())] = publisher       # the PUBLISHER, not "news-rss"
+                w = self.news.times.get(key)
+                if times is not None and w:
+                    times[" ".join(fact.split())] = w
+                n += 1
+            ev.emit("gate", fid, fact=fact, status=g.status, clash=g.clash, lifted=False, provenance=publisher)
+        return n
+
     def profile(self, question: str, kind: str, entity: str, t0: float, how: str, item: str | None = None, asker: str | None = None) -> dict:
         """'who / what / where is X' -- the retrieval program. The plan is SEED + ASK (what the emitter
         learns to write); the host fills the store from the source when it holds nothing about X; the
@@ -431,9 +487,18 @@ class AskLoop:
             # gated `2026 is the point in time of 2026` into the store and then read it back as the
             # answer). Events come from facts about entities, dated by their source; nothing here
             # invents them, and an empty index is an honest refusal.
-            dated = self.dated_facts(entity)
+            dated = self.dated_facts(entity, limit=None)         # the TRUE count: see too_broad
+            if not dated and self.news is not None:
+                # ... and when the store knows nothing about that date, ask something that might.
+                # This is the fix for the refusal Nick hit head-on: "if I ask what happened in
+                # 2026? it refuses it" -- correctly, because the store held nothing dated. It
+                # holds something now, and it came through the gate like everything else.
+                self._fetch_news(qid, entity, rec)
+                dated = self.dated_facts(entity, limit=None)
+            if len(dated) > NEWS_CLARIFY_MIN:
+                return self.too_broad(rec, qid, entity, dated, t0)
             if dated:
-                return self.dated(rec, qid, pid, entity, dated, t0)
+                return self.dated(rec, qid, pid, entity, dated[:PROFILE_MAX_LINES], t0)
             have = [t for t in self.facts_about(entity) if normalize(t.rel) in PROFILE_KINDS["when"]]
             if not have:
                 return self.no_events(rec, qid, t0)
@@ -575,10 +640,14 @@ class AskLoop:
         return text2 if ok2 else None
 
     # -- the date index: "what happened in <year>" over what the store knows the date of -------
-    def dated_facts(self, when: str) -> list[tuple[str, dict]]:
+    def dated_facts(self, when: str, limit: int | None = PROFILE_MAX_LINES) -> list[tuple[str, dict]]:
         """The stored facts whose recorded time falls in the asked year or date -- the `times` map the
         source fills (`start`/`end`/`point`), never the fact text. A span counts for every year it
-        covers ('position held' 2011-2019 answers 'what happened in 2015'), a point for its own."""
+        covers ('position held' 2011-2019 answers 'what happened in 2015'), a point for its own.
+
+        `limit=None` returns them ALL. The caller that has to decide whether a date is too broad
+        to answer needs the true count, and a truncated list always looked answerable -- the
+        clarify threshold could never fire behind a cap of nine."""
         m = _re.search(r"\b(1[0-9]{3}|2[0-9]{3})\b", when)
         if not m:
             return []
@@ -611,7 +680,7 @@ class AskLoop:
             if hit:
                 out.append((fact, dict(t, hit=hit)))
         out.sort(key=lambda p: (p[1].get("point") or p[1].get("start") or "", p[0]))
-        return out[:PROFILE_MAX_LINES]
+        return out if limit is None else out[:limit]
 
     def dated(self, rec: dict, qid: int, pid: int, entity: str, dated: list, t0: float) -> dict:
         """The dated facts, each recovered by the VM like any profile line, as the answer."""
@@ -649,6 +718,40 @@ class AskLoop:
         ev.emit("answer", qid, verified=False, answer=rec["prose"] or rec["answer"], reason=rec["reason"], facts=rec["answer"],
                 profile=rec["profile"] or None, prose=rec["prose"], scope=rec.get("scope"),
                 entities=list(rec["entities"]), fetched=len(rec["learned"]))
+        rec["wall_s"] = round(time.perf_counter() - t0, 3)
+        return rec
+
+    def too_broad(self, rec: dict, qid: int, entity: str, dated: list, t0: float) -> dict:
+        """Too much is dated in that range to answer in one breath, so the loop asks instead of
+        picking. Nick, 2026-09-14: "when ambiguous it should either select A based on context or
+        B ask the user: do you want to know more about: choices."
+
+        The choices are a COUNT over the facts actually fetched -- the recurring names in them,
+        commonest first. That is deliberately not a ranking of importance: this loop has no way
+        to know what mattered on a day and no business pretending it does. It offers what was
+        written about, says how much there is, and lets the asker narrow it."""
+        from cubbyllm.reasoning import events as ev
+        choices: list[str] = []
+        if self.news is not None:
+            try:
+                choices = [w for w, _n in self.news.topics(entity)[:8]]
+                if not choices:
+                    # One day's headlines rarely repeat a name, so the recurrence bar that makes
+                    # a YEAR's menu meaningful empties a DAY's (2026-09-14, live: 51 facts and
+                    # nothing to offer). "51 things happened and I have no suggestions" is a
+                    # worse answer than a list of single mentions, and both are honest.
+                    choices = [w for w, _n in self.news.topics(entity, min_n=1)[:8]]
+            except Exception:                                # noqa: BLE001
+                choices = []
+        if not choices:                                      # no news source: the relations themselves
+            choices = list(dict.fromkeys(t.get("relation") or "" for _f, t in dated if isinstance(t, dict)))[:8]
+        rec["reason"] = "date_too_broad"
+        rec["clarify"] = {"entity": entity, "n": len(dated), "choices": [c for c in choices if c],
+                          "how": "a count over the headlines fetched -- what was written about, not what mattered"}
+        rec["needs"] = (f"{len(dated)} facts are dated in {entity}; ask about one of them, "
+                        f"or a narrower date")
+        ev.emit("answer", qid, verified=False, answer=None, reason=rec["reason"], needs=rec["needs"],
+                clarify=rec["clarify"], entities=list(rec["entities"]), fetched=len(rec["learned"]))
         rec["wall_s"] = round(time.perf_counter() - t0, 3)
         return rec
 

@@ -91,13 +91,19 @@ def test_this_source_answers_when_and_refuses_who(tmp_path):
 
 
 def test_the_topic_menu_counts_what_was_written_about_never_what_mattered(tmp_path):
-    """The clarify menu has to offer choices without taking a position on importance. A count
-    over fetched headlines does that; the stop list keeps the first word of a headline from
-    becoming the news ("How" led the first live run)."""
+    """The clarify menu offers choices without taking a position on importance -- a count over
+    the headlines fetched, which is what was written about, never what mattered.
+
+    A headline's FIRST word is dropped, because it is capitalised for starting the sentence and
+    not for being a name: "Have", "Calls" and "Watch" all reached the live menu that way
+    (2026-09-14). The trade is deliberate and it does cost something -- "Russia hits Ukrainian
+    train" no longer offers Russia -- but a name that matters recurs mid-headline, and a stop
+    list is an arms race against English that the sentence's own shape wins outright."""
     src = _src(tmp_path)
     topics = dict(src.topics("2026", min_n=1))
-    assert topics.get("Russia") == 1 and topics.get("Ukrainian") == 1
-    assert "An" not in topics and "Deep" not in topics or topics.get("An") is None
+    assert topics.get("Ukrainian") == 1 and topics.get("England") == 1
+    assert "Russia" not in topics                             # first word of its headline
+    assert "An" not in topics and "Deep" not in topics
 
 
 JSONFEED = b"""{"version":"https://jsonfeed.org/version/1.1","title":"Iran war","items":[

@@ -307,3 +307,76 @@ def test_a_grouped_number_is_the_same_number():
     facts = ["574482 is the population of Quebec City"]
     assert grounded_prose("It has a population of 574,482.", facts, "Quebec City")[0]
     assert not grounded_prose("It has a population of 999,999.", facts, "Quebec City")[0]
+
+
+class FakeNews:
+    """A NewsSource-shaped stand-in: Triples, `times`, `provenance`, `topics`."""
+
+    name = "news-rss"
+
+    def __init__(self, headlines):
+        self.headlines = headlines          # [(headline, iso date, feed)]
+        self.times, self.provenance, self.last = {}, {}, {}
+
+    def facts(self, entity, **_kw):
+        from cubbyllm.reasoning.planner import Triple, normalize
+        self.times, self.provenance = {}, {}
+        out = []
+        for h, when, feed in self.headlines:
+            if not when.startswith(entity):
+                continue
+            t = Triple(obj=f'"{h}"', rel="headline", subj=entity)
+            key = normalize(f"{t.obj} is the {t.rel} of {t.subj}")
+            self.times[key] = {"point": when}
+            self.provenance[key] = feed
+            out.append(t)
+        self.last = {"how": f"{len(out)} headlines", "feeds": sorted({f for _h, _w, f in self.headlines})}
+        return out
+
+    def topics(self, entity, min_n=2):
+        return [("Ukraine", 3), ("Trump", 2)]
+
+
+def test_a_when_ask_reaches_the_date_source_and_the_publisher_is_the_provenance():
+    """Nick, 2026-09-14: "if I ask what happened in 2026? it refuses it". It refused correctly --
+    the store held nothing dated in 2026 (measured: 0 facts whose subject is a year). Now a
+    `when` ask that the store cannot answer asks a source that indexes BY DATE, and what comes
+    back goes through the same gate as everything else, each headline keeping its own publisher."""
+    world = LookupStore(["Canada is the country of Quebec City"])
+    world.times = {}
+    news = FakeNews([("Russia hits Ukrainian train", "2026-09-13", "bbc-news")])
+    loop = AskLoop(FakeEmitter({}), world=world, source=DictSource({}), lexicon=False,
+                   run_fn=faithful_vm([]), tau_profile=0.5, news=news)
+    rec = loop.ask("what happened on 2026-09-13?")
+    assert rec["reason"] != "no_events_for_date"
+    assert any("Russia hits Ukrainian train" in (l["fact"] or "") for l in rec["learned"])
+    accepted = [l for l in rec["learned"] if l["status"] == "accepted"]
+    assert accepted and accepted[0]["source"] == "bbc-news"     # the PUBLISHER, not "news-rss"
+
+
+def test_a_date_with_a_library_behind_it_asks_instead_of_picking():
+    """Past a dozen dated facts, "what happened in 2026?" is not a question with an answer, it is
+    a question with a library. The loop offers the recurring names and says how many there are --
+    a count over what was fetched, which is what was WRITTEN ABOUT, never what mattered. This
+    loop has no way to know what mattered on a day and no business pretending it does."""
+    world = LookupStore(["Canada is the country of Quebec City"])
+    world.times = {}
+    news = FakeNews([(f"Headline number {i}", "2026-09-13", "bbc-news") for i in range(20)])
+    loop = AskLoop(FakeEmitter({}), world=world, source=DictSource({}), lexicon=False,
+                   run_fn=faithful_vm([]), tau_profile=0.5, news=news)
+    rec = loop.ask("what happened on 2026-09-13?")
+    assert rec["reason"] == "date_too_broad"
+    assert rec["answer"] is None                               # it does not pick one and speak it
+    assert rec["clarify"]["choices"] == ["Ukraine", "Trump"] and rec["clarify"]["n"] >= 13
+    assert "not what mattered" in rec["clarify"]["how"]
+
+
+def test_without_a_date_source_the_refusal_is_unchanged():
+    """The news source is opt-in, and a loop without one refuses exactly as before -- a refusal
+    is a result, and it must not quietly become something else when a feature is added."""
+    world = LookupStore(["Canada is the country of Quebec City"])
+    world.times = {}
+    loop = AskLoop(FakeEmitter({}), world=world, source=DictSource({}), lexicon=False,
+                   run_fn=faithful_vm([]), tau_profile=0.5)
+    rec = loop.ask("what happened in 2026?")
+    assert rec["reason"] == "no_events_for_date" and rec["answer"] is None
