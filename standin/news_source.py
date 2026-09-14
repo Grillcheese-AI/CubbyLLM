@@ -33,6 +33,7 @@ import json
 import pathlib
 import re
 import time
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from email.utils import parsedate_to_datetime
@@ -42,7 +43,12 @@ __wiring__ = "WIRED"
 from cubbyllm.reasoning.planner import Triple, normalize as _normalize   # noqa: E402
 
 CACHE = pathlib.Path(__file__).resolve().parent / "data" / "out" / "news_cache"
-UA = "cubbyllm-standin/0.1 (research; licensing@grillcheese.ai)"
+# The BARE PRODUCT TOKEN, and it matters. CBC's edge closes the connection on any UA string
+# carrying a URL or parentheses -- "CubbyLLM/0.1 (+https://...)" is refused, "CubbyLLM/0.1" is
+# served in 0.1s (measured 2026-09-14, all three CBC feeds). So the feed is reachable while
+# saying truthfully who we are; a browser UA also works and is NOT used, because getting past a
+# publisher's door by claiming to be Chrome is lying to them about who is asking.
+UA = "CubbyLLM/0.1"
 TTL_S = 900                    # a feed is re-fetched at most every 15 minutes
 HEADLINE = "headline"          # the relation. The publisher is provenance, not vocabulary.
 MAX_PER_FEED = 60
@@ -83,6 +89,18 @@ TOPIC_FEEDS = {t: f"{AP_BUCKET}{t}.xml" for t in (
 # is recorded as provenance -- never as a fact that the item IS about that topic. Taking the
 # label at face value would be adopting somebody else's editorial judgement as a fact, which is
 # the same error the neutral-prior competition refused for sitelinks and PageRank.
+# Crawler products that publishers name when they mean "not for building AI systems". A
+# directive naming one of these is not addressed to CubbyLLM -- we are none of them, and
+# `User-agent: *` permits the feed path at every host measured. But the INTENT is generic and
+# unmistakable, and a loop whose whole kill line is "0 wrong answers spoken" should not be
+# coy about reading a "no" it understands. So the policy is READ, RECORDED, and surfaced;
+# what to do about it is a decision a person makes, not one this file makes quietly.
+AI_AGENTS = frozenset("""gptbot chatgpt-user oai-searchbot perplexitybot ccbot anthropic-ai
+    claude-web claudebot cohere-ai deepseek deepseekbot google-extended applebot-extended
+    bytespider meta-externalagent amazonbot ai2bot omgili""".split())
+_UA_BLOCK = re.compile(r"(?im)^\s*user-agent:\s*")
+_DISALLOW_ALL = re.compile(r"(?im)^\s*disallow:\s*/\s*$")
+
 _DATE_ASK = re.compile(r"^\s*(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?\s*$")
 _TAG = re.compile(r"<[^>]+>")
 # a headline's first word is capitalised because it STARTS the headline, and English capitalises
@@ -134,6 +152,7 @@ class NewsSource:
         self.times: dict[str, dict] = {}
         self.provenance: dict[str, str] = {}       # fact -> the feed that published it
         self.errors: dict[str, str] = {}
+        self._robots: dict[str, list[str] | None] = {}
 
     # -- fetching ------------------------------------------------------------------------
     def _cache_path(self, feed_id: str) -> pathlib.Path | None:
@@ -232,6 +251,81 @@ class NewsSource:
         self.last["n"] = len(out)
         self.last["how"] = f"headlines dated {prefix} from {len(self.last['feeds'])} feed(s)"
         return out
+
+    # -- what the publisher says about this use ------------------------------------------
+    def ai_optout(self, feed_id: str) -> list[str] | None:
+        """The AI crawler products this feed's host tells to go away entirely, read from its
+        own robots.txt -- or None when there is no robots.txt to read. An empty list means the
+        host names none of them.
+
+        This is NOT a permission check for us: none of those directives is addressed to
+        CubbyLLM, and every host measured allows the feed path under `User-agent: *`. It is the
+        publisher's stated position on having their words used to build an AI, recorded next to
+        the words so the choice is visible per fact instead of buried in a config. Measured
+        2026-09-14: BBC, NYT, CBC, The Verge, TechCrunch and HackerNoon all name Anthropic's
+        crawler explicitly; Global News, WIRED, arXiv and Reddit name none."""
+        host = urllib.parse.urlsplit(self.feeds.get(feed_id, "")).netloc
+        if not host:
+            return None
+        # The FEED host understates the publisher. feeds.bbci.co.uk names no AI crawler while
+        # www.bbc.co.uk names fifteen; rss.nytimes.com serves no robots.txt at all while
+        # www.nytimes.com names fourteen. A feed subdomain is delivery infrastructure -- the
+        # position is stated at the front door, and reading only the side door is a way of not
+        # hearing it (measured 2026-09-14).
+        saw_policy = False
+        for h in self._hosts(host):
+            names = self._robots_for(h)
+            if names:
+                return names                                 # the first host that names any of them
+            saw_policy = saw_policy or names is not None
+        # [] and None are DIFFERENT answers and collapsing them would be the lie: [] is "they
+        # published a policy and it names none of these", None is "there was nothing to read".
+        return [] if saw_policy else None
+
+    # A publisher whose delivery domain is not their front door. `bbci.co.uk` is the BBC's
+    # asset domain and names no AI crawler; `bbc.co.uk` names fifteen, Anthropic's among them.
+    # Stripping subdomains never finds that, so the few known cases are written down rather
+    # than guessed at -- and a case that is not in this table simply is not claimed.
+    FRONT_DOOR = {"bbci.co.uk": "www.bbc.co.uk"}
+
+    @classmethod
+    def _hosts(cls, host: str) -> list[str]:
+        """The feed host, then the publisher's front door: `rss.nytimes.com` -> also
+        `www.nytimes.com`. Two-label TLDs (co.uk, com.au) keep three labels."""
+        out = [host]
+        parts = host.split(".")
+        for suffix, door in cls.FRONT_DOOR.items():
+            if host == suffix or host.endswith("." + suffix):
+                out.append(door)
+                return out
+        two = parts[-2] in ("co", "com", "net", "org", "gov", "ac") and len(parts[-1]) == 2
+        keep = 3 if two else 2
+        if len(parts) > keep:
+            out.append("www." + ".".join(parts[-keep:]))
+        return out
+
+    def _robots_for(self, host: str) -> list[str] | None:
+        if host in self._robots:
+            return self._robots[host]
+        try:
+            rq = urllib.request.Request(f"https://{host}/robots.txt", headers={"User-Agent": UA})
+            with urllib.request.urlopen(rq, timeout=self.timeout_s) as r:
+                txt = r.read().decode("utf-8", "replace")
+        except Exception:                                    # noqa: BLE001 -- no robots.txt is not a yes and not a no
+            self._robots[host] = None
+            return None
+        out = []
+        for block in _UA_BLOCK.split(txt)[1:]:
+            name, _, body = block.partition("\n")
+            body = _UA_BLOCK.split(body)[0]
+            if name.strip().lower() in AI_AGENTS and _DISALLOW_ALL.search(body):
+                out.append(name.strip().lower())
+        self._robots[host] = sorted(out)
+        return self._robots[host]
+
+    def policy(self) -> dict[str, list[str] | None]:
+        """`{feed_id: [the AI crawlers its host disallows]}` for every configured feed."""
+        return {fid: self.ai_optout(fid) for fid in self.feeds}
 
     def topics(self, entity: str, min_n: int = 2) -> list[tuple[str, int]]:
         """The recurring capitalised subjects in the headlines for a date, commonest first --

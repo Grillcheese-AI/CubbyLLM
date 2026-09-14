@@ -130,3 +130,65 @@ def test_a_topic_feed_is_a_curated_selection_and_the_label_is_not_a_fact(tmp_pat
     for t in out:
         assert t.subj == "2026-09-13"                        # the DATE is the subject. Never "Iran war".
         assert "iran" not in t.rel.lower()
+
+
+ROBOTS_BLOCKS = """User-agent: *
+Disallow: /search/
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Bingbot
+Disallow:
+"""
+ROBOTS_OPEN = """User-agent: *
+Disallow: /private/
+"""
+
+
+def _policy_src(tmp_path, feeds, robots):
+    """A NewsSource whose robots.txt lookups are answered from a dict instead of the network."""
+    src = NewsSource(feeds=feeds, cache_dir=tmp_path)
+    src._robots_for = lambda host: robots.get(host, None)    # type: ignore[assignment]
+    return src
+
+
+def test_the_publishers_stated_position_is_read_from_their_own_front_door(tmp_path):
+    """A feed subdomain is delivery infrastructure; the position is stated at the front door.
+    Measured 2026-09-14: feeds.bbci.co.uk names no AI crawler while www.bbc.co.uk names fifteen,
+    and rss.nytimes.com serves no robots.txt at all while www.nytimes.com names fourteen.
+    Reading only the side door is a way of not hearing the answer."""
+    src = _policy_src(tmp_path, {"nyt": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"},
+                      {"rss.nytimes.com": None, "www.nytimes.com": ["anthropic-ai", "gptbot"]})
+    assert src.ai_optout("nyt") == ["anthropic-ai", "gptbot"]
+    # the BBC's delivery domain is not a subdomain of its front door at all -- written down,
+    # never guessed, and a host not in the table is simply not claimed
+    src2 = _policy_src(tmp_path, {"bbc": "https://feeds.bbci.co.uk/news/rss.xml"},
+                       {"feeds.bbci.co.uk": [], "www.bbc.co.uk": ["anthropic-ai", "claude-web"]})
+    assert src2.ai_optout("bbc") == ["anthropic-ai", "claude-web"]
+
+
+def test_a_host_that_names_no_ai_crawler_is_distinguished_from_one_with_no_robots_at_all(tmp_path):
+    """Three different answers, and collapsing them would be the lie: [] is "they published a
+    policy and it names none of these", None is "there is nothing to read". No robots.txt is
+    not a yes and it is not a no."""
+    src = _policy_src(tmp_path, {"open": "https://globalnews.ca/feed/"}, {"globalnews.ca": []})
+    assert src.ai_optout("open") == []
+    src2 = _policy_src(tmp_path, {"quiet": "https://rss.politico.com/x.xml"}, {})
+    assert src2.ai_optout("quiet") is None
+
+
+def test_reading_the_policy_never_silently_changes_what_the_source_returns(tmp_path):
+    """The position is RECORDED and surfaced; what to do about it is a decision a person makes,
+    not one this file makes quietly. A source that dropped feeds on its own would be deciding a
+    publishing-rights question by side effect."""
+    src = _policy_src(tmp_path, {"fixture": "https://blocked.example/feed"},
+                      {"blocked.example": ["anthropic-ai"]})
+    src._cache_path("fixture").parent.mkdir(parents=True, exist_ok=True)
+    src._cache_path("fixture").write_bytes(FEED)
+    src.offline = True
+    assert src.ai_optout("fixture") == ["anthropic-ai"]
+    assert len(src.facts("2026-09-13")) == 1                 # unchanged: the caller decides

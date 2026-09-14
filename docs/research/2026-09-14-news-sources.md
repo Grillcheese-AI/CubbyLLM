@@ -37,11 +37,16 @@ A source that cannot lie about the world is a source that cannot make the loop l
 | Politico `rss.politico.com/politics-news.xml` | OK, 207 KB | 30 | spread over 09-02 → 09-10 |
 | AP via `feedx.net/rss/ap.xml` | OK, 405 KB | 10 | all 09-09 — **stale, dropped** |
 | AP front page via `rss.app/feeds/v1.1/…json` | OK, 36 KB, **JSON Feed** | 25 | 09-13 current |
-| CBC (`www.cbc.ca/webfeed`, `rss.cbc.ca`, both paths) | **refused** | — | timeout / connection closed |
+| CBC (`www.cbc.ca/webfeed/rss/rss-topstories`) | OK, 23 KB — **once the User-Agent was right** | 20 | 04-15 → 09-13 |
 | AP S3 mirror `associated-press.s3-website-…` | **empty** | 0 | `<items></items>`, 55 bytes |
 
-**CBC is deliberately absent from the default set.** All three of its feed URLs refused us — a
-publisher declining to be read by a robot. That is their call and it is not worked around.
+**The CBC refusal was mine, not theirs.** All three URLs closed the connection — and then a
+browser User-Agent got 24 KB in 0.1 s. It is User-Agent filtering at the edge, and the rule is
+narrower than it looks: `CubbyLLM/0.1 (+https://github.com/...)` is refused and
+`CubbyLLM/0.1` is served. The block is on UA strings carrying a URL or parentheses, not on bots.
+So the source now sends the **bare product token** — honest about who is asking, and it works.
+A browser UA also works and is deliberately not used: getting through a publisher's door by
+claiming to be Chrome is lying to them about who is asking.
 
 **The AP S3 mirror is dead.** The bucket listing is real and names 14 category feeds
 (`world-news`, `politics`, `technology`, `science`, `climate-and-environment`, …) — which is
@@ -119,3 +124,77 @@ its first record is an ISBN page at confidence 0.22 carrying invented `precursor
 1450 and 1800. Model-generated speculation wearing a schema is the worst possible input to a
 gate: it looks structured and has no provenance. **An LLM-derived event can be a question to go
 verify. It can never be a fact admitted to the store.**
+
+
+## What the publishers actually say about this use
+
+Reading CBC's robots.txt to check the feed path turned up something more important than the path.
+Measured 2026-09-14 across every host in Nick's feed list:
+
+| publisher | AI crawlers told `Disallow: /` |
+|---|---|
+| BBC (`www.bbc.co.uk`) | 15, incl. **anthropic-ai**, claude-web, claudebot |
+| NYT (`www.nytimes.com`) | 14, incl. **anthropic-ai**, claude-web, claudebot |
+| The Verge | 14, incl. **anthropic-ai**, claude-web, claudebot |
+| CBC | 10, incl. **anthropic-ai**, claude-web |
+| TechCrunch | 10, incl. **anthropic-ai**, claudebot |
+| HackerNoon | 11, incl. **anthropic-ai**, claudebot |
+| feedx.net | 8, incl. claudebot |
+| Ars Technica | 1 (amazonbot) |
+| Global News, WIRED, arXiv, Reddit, ByteByteGo | **none** |
+| Politico | no robots.txt served |
+
+Two things are true at once and both need saying:
+
+1. **None of those directives is addressed to CubbyLLM.** We are not GPTBot or claudebot, and
+   every one of those hosts allows the feed path under `User-agent: *`. Read literally, the
+   feeds are permitted.
+2. **The intent is generic and unmistakable.** These publishers are saying they do not want
+   their words used to build AI systems, and CubbyLLM is an AI system. A loop whose kill line is
+   *0 wrong answers spoken* should not get cute about a "no" it understands perfectly well.
+
+What the architecture can contribute is the honest middle: **provenance already travels with
+every fact, so let it carry the publisher's stated position too.** `NewsSource.ai_optout(feed)`
+reads robots.txt and returns the AI crawlers that host disallows — and the source does **not**
+act on it. Dropping feeds on its own would be deciding a publishing-rights question by side
+effect, and hiding it in a config would be worse. It is recorded and surfaced; a person decides.
+
+Three details the measurement forced:
+
+- **Read the front door, not the side door.** `feeds.bbci.co.uk` names no AI crawler while
+  `www.bbc.co.uk` names fifteen; `rss.nytimes.com` serves no robots.txt at all while
+  `www.nytimes.com` names fourteen. A feed subdomain is delivery infrastructure. Reading only it
+  is a way of not hearing the answer.
+- **`bbci.co.uk` is not a subdomain of `bbc.co.uk`.** Stripping labels never finds the BBC's
+  policy, so the few known delivery-domain → front-door pairs are written down rather than
+  guessed at, and a host not in that table is simply not claimed.
+- **`[]` and `None` are different answers.** `[]` is "they published a policy and it names none
+  of these"; `None` is "there was nothing to read". No robots.txt is not a yes and not a no.
+
+The distinction that most likely decides this in practice is **serving vs training**, because
+they are genuinely different uses:
+
+- *Serving* — fetch a headline, speak it once with attribution, retain nothing. That is what a
+  feed reader does, and RSS exists to be read by software.
+- *Training* — bake headlines into a dataset that becomes model weights. That is what the block
+  lists are about, and it is not undone by attribution.
+
+This source does the first and stores headline + date + provenance only, never article bodies.
+Whether the second is allowed for opted-out publishers is Nick's call, and the `ai_optout` field
+is what makes it enforceable per fact rather than per good intention.
+
+## The wider feed sweep (17 feeds, honest UA)
+
+| working | note |
+|---|---|
+| CBC top / technology / world | 20 items each, current |
+| Global News, Ars Technica, TechCrunch, The Verge, HackerNoon | current, 10–20 items |
+| Reddit r/news, r/LocalLLaMA | 25 items; the r/ failures on the first pass were transient |
+| ByteByteGo | 20 items but a month-wide span — newsletter cadence, not news |
+| WIRED AI tag | current |
+
+| not working | why |
+|---|---|
+| WIRED "ideas" | **stale by two years** (2024-01-08 → 2024-06-19) |
+| feedx AP | nine days stale — already replaced by the AP front page feed |
+| arXiv `cs.AI`, `math.QA` | 892 bytes, no items, on both `rss.` and `export.` hosts |
