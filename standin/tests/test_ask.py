@@ -188,3 +188,83 @@ def test_what_happened_in_a_year_is_a_temporal_ask_refused_for_the_right_reason(
     loop2 = AskLoop(FakeEmitter({}), world=world, source=DictSource({}), lexicon=False, run_fn=faithful_vm([]), tau_profile=0.5)
     rec2 = loop2.ask("What happened in 1969?")
     assert rec2["reason"] == "profile" and [l["value"] for l in rec2["profile"]] == ["the moon landing", "woodstock"]
+
+
+def test_a_fact_the_store_knows_the_date_of_answers_what_happened_in_that_year():
+    """2026-09-14: the source dropped every statement's time qualifier, so no fact was datable and
+    'what happened in <year>' had nothing to read. The time now rides beside the fact (`world.times`),
+    the fact TEXT is untouched, and a span counts for every year it covers."""
+    world = LookupStore(["Governor of Tennessee is the position held of Bill Haslam",
+                         "Mayor of Knoxville is the position held of Bill Haslam",
+                         "Jim Haslam is the father of Bill Haslam"])
+    world.times = {"Governor of Tennessee is the position held of Bill Haslam": {"start": "2011-01-15", "end": "2019-01-19"},
+                   "Mayor of Knoxville is the position held of Bill Haslam": {"start": "2003-12-20", "end": "2011-01-10"}}
+    loop = AskLoop(FakeEmitter({}), world=world, source=DictSource({}), lexicon=False, run_fn=faithful_vm([]), tau_profile=0.5)
+    rec = loop.ask("what happened in 2015?")
+    assert rec["reason"] == "profile" and rec["ask"] == "when"
+    assert [k["value"] for k in rec["profile"]] == ["Governor of Tennessee"]          # the mayoralty had ended
+    assert rec["profile"][0]["when"] == "2011-01-15–2019-01-19" and rec["profile"][0]["hit"] == "ongoing"
+    assert "not a record of the year" in rec["scope"]
+    rec2 = loop.ask("What happened in 2011?")                                          # both: one began, one ended
+    assert sorted(k["hit"] for k in rec2["profile"]) == ["began", "ended"]
+    rec3 = loop.ask("what happened in 2026?")                                          # nothing dated 2026: still honest
+    assert rec3["answer"] is None and rec3["reason"] == "no_events_for_date"
+    # the fact text never carries the time: the walk, the gate and the VM see what they always saw
+    assert "2015" not in " ".join(world.texts) and "2011" not in " ".join(world.texts)
+
+
+def test_the_source_keeps_a_statement_s_time_qualifiers_beside_the_fact():
+    import sys as _s
+    _s.path.insert(0, str(ROOT / "standin" / "tests"))
+    from test_sources import FakeWikidata, _hit
+    ITEM = lambda q: {"mainsnak": {"datatype": "wikibase-item", "datavalue": {"type": "wikibase-entityid", "value": {"id": q}}}}  # noqa: E731
+    st = dict(ITEM("Qgov"), qualifiers={"P580": [{"datavalue": {"value": {"time": "+2011-01-15T00:00:00Z"}}}],
+                                        "P582": [{"datavalue": {"value": {"time": "+2019-01-19T00:00:00Z"}}}]})
+    src = FakeWikidata([_hit("Q1", "Bill Haslam", "governor")],
+                       {"Q1": {"claims": {"P39": [st]}}, "P39": {"labels": {"en": {"value": "position held"}}},
+                        "Qgov": {"labels": {"en": {"value": "Governor of Tennessee"}}}})
+    out = src.facts("Bill Haslam")
+    assert [(t.obj, t.rel) for t in out] == [("Governor of Tennessee", "position held")]
+    assert src.times == {"governor of tennessee is the position held of bill haslam": {"start": "2011-01-15", "end": "2019-01-19"}}
+
+
+def test_an_open_ended_span_never_makes_a_standing_state_happen_in_a_later_year():
+    """THE WRONG ANSWER of 2026-09-14, live: 'what happened in 2026?' answered 'Quebec City was the capital
+    of Quebec' and listed seven twin cities as 2026 events. Those statements carry a START and no end --
+    capital SINCE 1867, twinned SINCE 1956 -- and treating an unstated end as 9999 claimed something no
+    source said. A closed span counts for the years it covers; an open one counts for its start year only."""
+    world = LookupStore(["Quebec is the capital of of Quebec City", "Calgary is the twinned administrative body of Quebec City",
+                         "Governor of Tennessee is the position held of Bill Haslam"])
+    world.times = {"Quebec is the capital of of Quebec City": {"start": "1867-00-00"},
+                   "Calgary is the twinned administrative body of Quebec City": {"start": "1956-00-00"},
+                   "Governor of Tennessee is the position held of Bill Haslam": {"start": "2011-01-15", "end": "2019-01-19"}}
+    loop = AskLoop(FakeEmitter({}), world=world, source=DictSource({}), lexicon=False, run_fn=faithful_vm([]), tau_profile=0.5)
+    assert loop.ask("what happened in 2026?")["reason"] == "no_events_for_date"     # nothing began or ended in 2026
+    assert [k["hit"] for k in loop.ask("what happened in 1867?")["profile"]] == ["began"]
+    assert [k["hit"] for k in loop.ask("what happened in 1956?")["profile"]] == ["began"]
+    assert [k["hit"] for k in loop.ask("what happened in 2015?")["profile"]] == ["ongoing"]   # closed: the source said so
+    assert loop.ask("what happened in 1900?")["reason"] == "no_events_for_date"
+
+
+def test_a_time_varying_value_is_answered_with_the_latest_and_its_date_said_out_loud():
+    """Nick, 2026-09-14, from the panel's gate log: `547 is the population of Quebec City`, accepted,
+    clashing with `516622 is the population of Quebec City`. Both are true -- 547 at the 1608 founding,
+    516,622 at a census -- and the source dated every one of them while the store dropped the date. A
+    present-tense ask now takes the latest and SAYS its date; the older values stay stored for a question
+    that binds a year, and an undated relation still shows its several values as before."""
+    facts = ["547 is the population of Quebec City", "516622 is the population of Quebec City",
+             "546958 is the population of Quebec City", "Canada is the country of Quebec City",
+             "Quebec is the capital of of Quebec City"]
+    world = LookupStore(facts)
+    world.times = {"547 is the population of Quebec City": {"point": "1608-00-00"},
+                   "516622 is the population of Quebec City": {"point": "2011-00-00"},
+                   "546958 is the population of Quebec City": {"point": "2021-00-00"}}
+    loop = AskLoop(FakeEmitter({}), world=world, source=DictSource({}), lexicon=False, run_fn=faithful_vm([]), tau_profile=0.5)
+    rec = loop.ask("where is Quebec City?")
+    pop = [l for l in rec["profile"] if l["relation"] == "population"]
+    assert [l["value"] for l in pop] == ["546958"] and pop[0]["when"] == "2021-00-00"
+    assert "population: 546958 (2021-00-00)" in rec["answer"] and "547" not in rec["answer"]
+    assert [l["value"] for l in rec["profile"] if l["relation"] == "country"] == ["Canada"]   # undated: unchanged
+    # the older values are still in the store, and the year that asks for one reads it
+    assert "547 is the population of Quebec City" in world
+    assert [k["value"] for k in loop.ask("what happened in 1608?")["profile"]] == ["547"]

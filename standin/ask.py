@@ -60,10 +60,12 @@ PROFILE_KINDS = {
     # 'when' asks for the EVENTS of a date. Only event relations count: a year item's trivia
     # ('instance of: year', 'part of: 2020s') would look like an answer to a question about events
     # and is not one, so the kind never falls back to the other relations -- it refuses instead.
-    "when": ("timeline event", "significant event", "notable event", "event", "point in time", "has part"),
+    "when": ("timeline event", "significant event", "notable event", "event"),
 }
 PROFILE = tuple(dict.fromkeys(r for k in ("who", "what", "where") for r in PROFILE_KINDS[k]))
 FALLBACK_KINDS = ("who", "what", "where")          # kinds that may also show any other profile relation
+# the resolution hint: the kind's relations, specific first, with the classifiers dropped -- `instance of`
+# and `part of` are carried by almost everything and decide nothing
 RESOLVE_HINT = {k: tuple(r for r in v if r not in ("instance of", "subclass of", "part of", "sex or gender"))[:8] for k, v in PROFILE_KINDS.items()}
 PROFILE_MAX_PER_RELATION = 3
 PROFILE_MAX_LINES = 9
@@ -252,7 +254,7 @@ class AskLoop:
         fact through the gate, admitted ones into the store with provenance; the fetch and gate events."""
         from cubbyllm.reasoning import events as ev
         from cubbyllm.reasoning.learn import gate, _takes_item, _takes_relations
-        from cubbyllm.reasoning.planner import Triple
+        from cubbyllm.reasoning.planner import Triple, normalize
         prov = getattr(self.world, "provenance", None)
         rec["entities"].append(entity)
         items = list(self.source.facts(entity, relations=hint, qid=item) if _takes_item(self.source) else
@@ -276,6 +278,12 @@ class AskLoop:
                     self.known.add(fact)
                 if prov is not None:
                     prov[" ".join(fact.split())] = self.source.name
+                times = getattr(self.world, "times", None)        # WHEN the source said the fact was true
+                src_times = getattr(self.source, "times", None)
+                if times is not None and src_times:
+                    w = src_times.get(normalize(fact))
+                    if w:
+                        times[" ".join(fact.split())] = w
             ev.emit("gate", fid, fact=fact, status=p.status, clash=p.clash, lifted=False,
                     provenance=(prov or {}).get(" ".join(fact.split())))
         return last
@@ -298,6 +306,18 @@ class AskLoop:
                      "snapped": None, "trace": [], "profile": [], "prose": None, "candidates": None, "clarify": None, "wall_s": 0.0}
         prov = getattr(self.world, "provenance", None)
         rels = PROFILE_KINDS[kind]
+        if kind == "when":
+            # the date index: the facts the store knows the DATE of. A `when` ask never FETCHES the date
+            # itself -- a year's own item is trivia (2026-09-14, live: asking "what happened in 2026?"
+            # gated `2026 is the point in time of 2026` into the store and then read it back as the
+            # answer). Events come from facts about entities, dated by their source; nothing here
+            # invents them, and an empty index is an honest refusal.
+            dated = self.dated_facts(entity)
+            if dated:
+                return self.dated(rec, qid, pid, entity, dated, t0)
+            have = [t for t in self.facts_about(entity) if normalize(t.rel) in PROFILE_KINDS["when"]]
+            if not have:
+                return self.no_events(rec, qid, t0)
         have = self.facts_about(entity)
         last: dict = {}
         known_rels = set(rels) | (set(PROFILE) if kind in FALLBACK_KINDS else set())
@@ -308,9 +328,20 @@ class AskLoop:
         chosen: list[tuple[str, str, str]] = []                       # (rel, obj, the stored fact text)
         by_key = {(normalize(t.rel), t.obj): " ".join(f.split()) for f, t in self.world.index._by_subj.get(normalize(entity), []) if t is not None}
         order = tuple(rels) + (tuple(r for r in PROFILE if r not in rels) if kind in FALLBACK_KINDS else ())
+        times = getattr(self.world, "times", None) or {}
         for rel in order:
             objs = list(dict.fromkeys(t.obj for t in have if normalize(t.rel) == rel))
-            for obj in objs[:PROFILE_MAX_PER_RELATION]:
+            # a value whose truth depends on WHEN: Quebec City's population is 547 and 516,622 and
+            # 546,958, each true at its own census (2026-09-14, Nick: `547 is the population of Quebec
+            # City` gated in, clashing with 516622 -- the source dated every one of them and the store
+            # dropped the date). A present-tense ask wants the LATEST, said with its date; the older
+            # values stay stored, and a question that binds a year reads them through the date index.
+            dated = [(o, (times.get(by_key.get((rel, o), "")) or {})) for o in objs]
+            n_dated = sum(1 for _o, w in dated if w)
+            if n_dated > 1:
+                dated.sort(key=lambda q: (q[1].get("point") or q[1].get("start") or ""), reverse=True)
+                objs = [o for o, _w in dated]
+            for obj in objs[:1 if n_dated > 1 else PROFILE_MAX_PER_RELATION]:
                 chosen.append((rel, obj, by_key.get((rel, obj), f"{obj} is the {rel} of {entity}")))
             if len(chosen) >= PROFILE_MAX_LINES:
                 break
@@ -356,14 +387,16 @@ class AskLoop:
                           similarity=sim, provenance=src_name, verified=ok)
             ev.emit("fact", hid, text=fact, subj=entity, rel=rel, obj=obj, provenance=src_name)
             if ok:
-                kept.append({"relation": rel, "value": obj, "fact": fact, "provenance": src_name, "similarity": sim})
+                w = (getattr(self.world, "times", None) or {}).get(fact) or {}
+                kept.append({"relation": rel, "value": obj, "fact": fact, "provenance": src_name, "similarity": sim,
+                             "when": (w.get("point") or "–".join(x for x in (w.get("start"), w.get("end")) if x)) or None})
         ev.emit("vm", wid, verified=bool(kept) and len(kept) == len(chosen), program_lines=len(chosen) + 2,
                 recovered=len(kept), bound=len(chosen))
         rec["profile"] = kept; rec["trace"] = [k["fact"] for k in kept]
         if kept:
             by_rel: dict[str, list[str]] = {}
             for l in kept:
-                by_rel.setdefault(l["relation"], []).append(l["value"])
+                by_rel.setdefault(l["relation"], []).append(l["value"] + (f" ({l['when']})" if l.get("when") else ""))
             rec["answer"] = entity + " — " + "; ".join(f"{r}: {', '.join(v)}" for r, v in by_rel.items())
             rec["prose"] = self.paraphrase(pid, entity, kind, kept)
         else:
@@ -397,3 +430,92 @@ class AskLoop:
         ok, bad = grounded_prose(text, facts, entity)
         ev.emit("paraphrase", pid, ok=ok, text=text if ok else None, rejected=bad or None, draft=text)
         return text if ok else None
+
+    # -- the date index: "what happened in <year>" over what the store knows the date of -------
+    def dated_facts(self, when: str) -> list[tuple[str, dict]]:
+        """The stored facts whose recorded time falls in the asked year or date -- the `times` map the
+        source fills (`start`/`end`/`point`), never the fact text. A span counts for every year it
+        covers ('position held' 2011-2019 answers 'what happened in 2015'), a point for its own."""
+        m = _re.search(r"\b(1[0-9]{3}|2[0-9]{3})\b", when)
+        if not m:
+            return []
+        year = int(m.group(1))
+        day = None
+        d = _re.search(r"\b(1[0-9]{3}|2[0-9]{3})-(\d{2})-(\d{2})\b", when)
+        if d:
+            day = d.group(0)
+        out = []
+        for fact, t in (getattr(self.world, "times", None) or {}).items():
+            pt, st, en = t.get("point"), t.get("start"), t.get("end")
+            hit = None
+            if pt and (pt == day or (not day and pt[:4] == str(year))):
+                hit = "on"
+            elif st or en:
+                # a CLOSED span is known to have covered its years, so it counts for each of them; an OPEN
+                # one (a start with no end) is a state whose end the source never stated, and counting it
+                # forward claims something nobody said. 2026-09-14, live and WRONG: "what happened in 2026?"
+                # answered "Quebec City was the capital of Quebec" -- capital SINCE 1867, open -- and listed
+                # seven twin cities as 2026 events. An open span counts for its start year only: that is the
+                # part that happened.
+                y0 = int(st[:4]) if st else None
+                y1 = int(en[:4]) if en else None
+                if y0 is not None and y0 == year:
+                    hit = "began"
+                elif y1 is not None and y1 == year:
+                    hit = "ended"
+                elif y0 is not None and y1 is not None and y0 < year < y1:
+                    hit = "ongoing"
+            if hit:
+                out.append((fact, dict(t, hit=hit)))
+        out.sort(key=lambda p: (p[1].get("point") or p[1].get("start") or "", p[0]))
+        return out[:PROFILE_MAX_LINES]
+
+    def dated(self, rec: dict, qid: int, pid: int, entity: str, dated: list, t0: float) -> dict:
+        """The dated facts, each recovered by the VM like any profile line, as the answer."""
+        from cubbyllm.reasoning import events as ev
+        from cubbyllm.reasoning.planner import Triple, normalize, parse_fact
+        from cubbyllm.reasoning.programs import build_chain_program
+        prov = getattr(self.world, "provenance", None)
+        wid = ev.emit("walk", pid, verified=None, reason="profile", answer=None, refused=None)
+        kept = []
+        for fact, t in dated:
+            tr = parse_fact(fact)
+            if tr is None:
+                continue
+            source, fns = build_chain_program([Triple(obj=tr.obj, rel=tr.rel, subj=tr.subj)], [tr.rel])
+            out = self._run_fn(source, fns[0])
+            sim = out.get("similarity")
+            ok = sim is not None and sim >= self.tau_profile and normalize(out.get("result") or "") == normalize(tr.obj)
+            span = t.get("point") or "–".join(x for x in (t.get("start"), t.get("end")) if x)
+            src_name = (prov or {}).get(fact) or ("store" if fact in self.world else None)
+            hid = ev.emit("hop", wid, hop=0, query=f"what happened in {entity}", fact=fact, how="dated · VM recover",
+                          similarity=sim, provenance=src_name, verified=ok, when=span)
+            ev.emit("fact", hid, text=fact, subj=tr.subj, rel=tr.rel, obj=tr.obj, provenance=src_name, when=span)
+            if ok:
+                kept.append({"relation": tr.rel, "value": tr.obj, "subject": tr.subj, "fact": fact,
+                             "provenance": src_name, "similarity": sim, "when": span, "hit": t.get("hit")})
+        ev.emit("vm", wid, verified=bool(kept) and len(kept) == len(dated), program_lines=len(dated) + 2,
+                recovered=len(kept), bound=len(dated))
+        rec["profile"] = kept; rec["trace"] = [k["fact"] for k in kept]
+        if kept:
+            rec["answer"] = f"{entity} — " + "; ".join(f"{k['when']}: {k['value']} is the {k['relation']} of {k['subject']}" for k in kept)
+            rec["prose"] = self.paraphrase(pid, entity, "when", kept)
+            rec["scope"] = "the facts the store knows a date for -- not a record of the year"
+        else:
+            rec["reason"] = "profile_unrecovered"
+        ev.emit("answer", qid, verified=False, answer=rec["prose"] or rec["answer"], reason=rec["reason"], facts=rec["answer"],
+                profile=rec["profile"] or None, prose=rec["prose"], scope=rec.get("scope"),
+                entities=list(rec["entities"]), fetched=len(rec["learned"]))
+        rec["wall_s"] = round(time.perf_counter() - t0, 3)
+        return rec
+
+    def no_events(self, rec: dict, qid: int, t0: float) -> dict:
+        """Nothing in the store is dated in that range, and a `when` ask does not fetch a date's own item."""
+        from cubbyllm.reasoning import events as ev
+        rec["reason"] = "no_events_for_date"
+        rec["needs"] = ("no source indexes events by date: the event facts are keyed by entity, not by "
+                        "year, and a date's own item carries only its trivia")
+        ev.emit("answer", qid, verified=False, answer=None, reason=rec["reason"], needs=rec["needs"],
+                entities=list(rec["entities"]), fetched=len(rec["learned"]))
+        rec["wall_s"] = round(time.perf_counter() - t0, 3)
+        return rec

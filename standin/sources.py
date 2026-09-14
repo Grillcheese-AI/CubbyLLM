@@ -356,11 +356,30 @@ class WikidataSource:
         cands = real if real else exact
         how = "exact" + ("" if len(real) == len(exact) else " (meta-pages dropped)")
         if len(cands) > 1 and relations and self.aliases is not None:
-            pids = [p for r in relations for p in self.aliases.pids(r)]
-            if pids:
-                having = [h for h in cands if any(p in self._claims(h["id"]) for p in pids)]
-                if having:
-                    cands, how = having, "relation (the question's next hop)"
+            # the relations the question needs, IN ORDER, narrowing at each step -- specific evidence
+            # before generic. Taking their union was too weak (2026-09-14, live: 'where is quebec city'
+            # stayed ambiguous between the city and an 1841 electoral district because BOTH carry
+            # `country`; the city alone carries `located in the administrative territorial entity`,
+            # which the where-ask asks for first). Lexicographic, not a score: the evidence is the
+            # question's own relation set, so a famous item never wins for being famous.
+            claims = {h["id"]: self._claims(h["id"]) for h in cands}
+            # ...but only among candidates that are DIFFERENT KINDS of thing. Two items of one kind are
+            # separated by this only through an accident of which is more completely described, and that
+            # is the James Young incident again (2026-09-12: two men of one name, a wrong birth year
+            # spoken). If every candidate shares a class, no attribute decides -- the asker does.
+            classes = [{(st.get("mainsnak") or {}).get("datavalue", {}).get("value", {}).get("id")
+                        for st in claims[h["id"]].get("P31", [])} for h in cands]
+            of_a_kind = bool(classes) and bool(set.intersection(*classes))
+            if not of_a_kind:
+                for r in relations:
+                    if len(cands) == 1:
+                        break
+                    pids = self.aliases.pids(r)
+                    if not pids:
+                        continue
+                    having = [h for h in cands if any(p in claims[h["id"]] for p in pids)]
+                    if having and len(having) < len(cands):
+                        cands, how = having, f"relation: {r}"
         if len(cands) > 1:
             labelled = [h for h in cands if _normalize(h.get("label", "")) == key]
             if len(labelled) == 1:
@@ -378,6 +397,26 @@ class WikidataSource:
         self.last.update(how=how)
         return hit["id"], hit.get("label") or entity
 
+    # a statement's TIME qualifiers, dropped until 2026-09-14. 9-18% of statements carry one, and they
+    # are the ones that matter: `position held` 2011-2019, `spouse` 1895-1906, `educated at` 1891-1893.
+    # Without them the store cannot say WHEN a fact was true, so "who was governor in 2015" has two true
+    # answers and no way to choose (the 'as of' residue of exp_r11 and the hdc emitter arm), and no fact
+    # is datable, so "what happened in <year>" has nothing to read. The fact TEXT is untouched -- the
+    # template, the gate, the walk and the VM see exactly what they saw -- and the time rides beside it
+    # in `self.times`, the way provenance does.
+    TIME_QUALIFIERS = {"P580": "start", "P582": "end", "P585": "point"}
+
+    @staticmethod
+    def _qual_times(st: dict) -> dict:
+        out = {}
+        for pid, slot in WikidataSource.TIME_QUALIFIERS.items():
+            for q in (st.get("qualifiers") or {}).get(pid, []):
+                v = (q.get("datavalue") or {}).get("value") or {}
+                t = str(v.get("time") or "")
+                if t.startswith("+") and len(t) >= 5:
+                    out[slot] = t[1:11]                      # YYYY-MM-DD, the store's own date shape
+        return out
+
     def facts(self, entity: str, relations: list[str] | None = None, via: str | None = None,
               qid: str | None = None) -> list[str]:
         """`relations`: the wordings the walk needs from this entity (the stalled hop's), used
@@ -385,6 +424,7 @@ class WikidataSource:
         object this entity is, which names the item outright. Neither keeps the strict rule
         from applying when they are absent."""
         self.last = {"entity": entity, "qid": None, "label": None, "alias": False, "n_claims": 0, "how": None}
+        self.times: dict[str, dict] = {}                     # fact text -> {start, end, point}, beside the facts
         r = self.resolve(entity, relations, via, qid)
         if r is None:
             return []
@@ -431,6 +471,9 @@ class WikidataSource:
                     obj = None
                 if obj and " is the " not in obj:
                     out.append(Triple(obj=obj, rel=rel, subj=subj))     # structured: the store is told where REL ends
+                    when = self._qual_times(st)
+                    if when:
+                        self.times[_normalize(f"{obj} is the {rel} of {subj}")] = when
                 if len(out) >= self.max_facts:
                     self._save_links()
                     return out
