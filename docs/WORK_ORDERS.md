@@ -877,7 +877,7 @@ the arm — that is the whole point of the amendment.
 
 ## WO-2.6 — The external reasoning benchmarks
 
-**Status: SPECIFIED 2026-09-15, not acquired.** Owner: *"lets not forget the benchmarks."*
+**Status: ACQUIRED 2026-09-15.** Owner: *"lets not forget the benchmarks."*
 
 **The gap.** Every benchmark in this repo is a *retrieval* benchmark — SimpleQA,
 WebQuestions, Natural Questions, the gen-3 held split. All of them ask "can you find
@@ -913,14 +913,133 @@ generalization *separately*, which is exactly what no current instrument can see
 
 ### Acquisition
 
-Checked 2026-09-15: **none of them are on the datasets volume**, and
-`huggingface_hub` is not installed in the working venv. Both are small pulls; the venv
-dependency is the only blocker.
+Checked 2026-09-15: none of them were on the datasets volume. The first note here said
+`huggingface_hub` was not installed and called that "the only blocker" — **that was
+wrong**, and Nick said so in four words: *"hf is in the command line."* The `hf` CLI
+(1.28.0) is on PATH and downloads repos without the library being importable in the
+working venv. Recorded because an instrument that reports a blocker that is not there
+is the same failure class as §6 of `PATH.md`: the tool lied and I repeated it.
+
+Pulled 2026-09-15, both onto the datasets volume under `benchmarks/`:
+
+| set | repo | what landed |
+|---|---|---|
+| CLUTRR | `kendrivp/CLUTRR_v1_extracted` | the six `CLUTRR/v1` task configs as JSON. The hub's own `CLUTRR/v1` is a loading *script* that fetches CSVs from a third-party GitHub mirror at import time; this is the same data already extracted, which is why it was taken instead |
+| ProofWriter | `hitachi-nlp/proofwriter_processed_OWA` | parquet, the OWA closure, split by depth: `depth-0/1/2/3/3ext/5`, plus `NatLang` and the `birds-electricity` transfer set |
+
+`tasksource/clutrr` is the more obvious parquet mirror and is the **wrong** one: it is
+flattened to `(sentence1, sentence2, label)` with the hop structure discarded, so the
+thing the benchmark exists to measure is not in the file.
+
+**What the CLUTRR pull actually gives us** — `gen_train23_test2to10`, test split, by
+chain length:
+
+| hops | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|
+| n | 38 | 105 | 190 | 174 | 107 | 144 | 150 | 119 | 119 |
+
+1,146 questions, of which **1,003 are at depths no training record reaches**. Train is
+2–3 hops only (9,074). Story relation vocabulary is 13, target vocabulary 18 — closed
+and small, so the WO-2.1 manifest applies without modification. Each record carries
+`story_edges`, `edge_types` and `proof_state`, so the store can be built from the
+certified graph rather than parsed out of prose.
+
+**The convention, verified against `proof_state` and not assumed.** CLUTRR writes a
+triple `(a, r, b)` to mean *"b is the r of a"* — the relation belongs to the **second**
+entity. Worked through on `a44d478f`: the story is "[Scott] and [Lewis] are brothers.
+[Jason] is father of their father", the first edge is `('Jason', 'grandson', 'Scott')`,
+and Jason is Scott's **grand*father***. Read the other way every answer in the set
+inverts, and the harness would report a wall of WRONG that belongs to the loader. It is
+written down here because getting it backwards is silent.
+
+### ProofWriter is not a drop-in, and the reason is the finding
+
+CLUTRR composes *relations*; ProofWriter applies *rules* — "if something sees the mouse
+then it is cold" — and needs forward chaining to a fixpoint over a rule set supplied
+per question. There is no rule-application engine in the registry, so the current VM
+cannot run it at all. That is a structural gap to state, not a score to post: it is the
+same shape as WO-2.2 (the generated grammar) and belongs on the same list. The set is
+on disk so the gap is measurable the day an engine exists.
 
 **The interim set that already exists locally:** `hdc` on the datasets volume carries
 1/2/3-hop QA with OOD and preservation splits and a relation-template mapping
 (`exp_r18` already probes it). It is a weaker CLUTRR but it is *here*, and it can give
 the depth-stratified read before anything is downloaded.
+
+### RESULT — `exp_r28_depth_capacity`, 2026-09-15: the depth limit is 3, and it is the program shape
+
+Before scoring CLUTRR at depth 7 it was worth asking what the VM can *see* at depth 7.
+`build_chain_program` puts every hop's binding into **one frame** in superposition, so
+each extra hop is one more vector in the bundle and every hop's recovered similarity
+falls. `ABSENT_CTRL` — the role that is never bound — is the noise floor, and it does
+not fall. The experiment hands gold triples straight to the program builder, no emitter
+involved, and measures where those two meet. 60 chains per depth, CLUTRR's own chains
+to depth 8 and same-shape synthetic ones past it.
+
+| depth | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|---|---|---|
+| median true binding | 1.000 | 0.501 | 0.246 | 0.125 | 0.064 | 0.032 | 0.025 | 0.023 |
+| max control | 0.019 | 0.028 | 0.048 | 0.042 | 0.035 | 0.034 | 0.040 | 0.056 |
+| separation | 52.5x | 16.9x | 4.2x | 1.4x | 0.57x | 0.09x | **−0.06x** | −0.01x |
+| chains where every hop clears tau | 100% | 100% | 83% | **0%** | 0% | 0% | 0% | 0% |
+
+The true binding **halves with every hop**. It reaches the control floor at depth 6 and
+crosses below it at depth 7: past there the strongest false binding is stronger than the
+weakest true one, and **no threshold separates them**. `sim_histogram`'s own 4x
+separation alarm is breached from depth 4.
+
+Two things follow, and the second is the one that matters.
+
+**The kill line is not at risk, for a reason that is not reassuring.** The shipped
+`tau_vm` fallback (0.2202 for every `n_hop > 3`) sits far *above* the true binding from
+depth 4 on, so the serving path refuses every chain deeper than three hops. It cannot
+speak a wrong answer at depth because it cannot speak at all. On CLUTRR's test split
+that is **1,003 of 1,146 questions refused on architecture** — 87.5% — before any model
+is asked anything. A benchmark run against the shipped shape would measure the program
+builder, not the emitter.
+
+**The limit is not the VSA. It is one line of the program builder.** Re-run with the
+chain verified in consecutive groups, each group its own frame with its own control
+role, so the bundle never exceeds the group size:
+
+| hops per frame | separation at depth 12 | chains clearing tau at depth 12 | cliff |
+|---|---|---|---|
+| whole chain (shipped) | 0.06x | 0% | **depth 5** |
+| 3 | 4.1x | 70% | none to 12 |
+| **2** | **10.0x** | **72%** | none to 12 |
+| 1 | 52.5x | 100% | none to 12 |
+
+Three per frame keeps depth but sits on `sim_histogram`'s 4x alarm and trips below it at
+four of the twelve depths — it buys nothing over two and gives up the margin.
+
+At two hops per frame the curve is **flat in depth**: separation stays 8–18x from depth
+2 to depth 12, the median true binding stays at 0.50, and the share of chains where
+every hop clears tau falls only from 93% at depth 3 to 72% at depth 12 — the gentle
+compounding of a 2–3% per-hop rejection, not a cliff. An earlier pass at `--n 40
+--max-depth 16` is flat to 16 as well; the committed logs stop at 12 because that is
+where CLUTRR's own chains plus two synthetic depths end.
+
+Chunk size is a dial, and it is worth naming what it trades. At one hop per frame the
+bundle has a single element, `recover` is a lookup and the VSA does no cleanup work —
+the verification collapses to "the host's triple round-tripped through the VM". At two
+it keeps real superposition (median 0.50, 10x separation) *and* unbounded depth. Two is
+the defensible setting. The shipped shape does not preserve the stronger claim it looks
+like it is making; past depth 5 it preserves nothing.
+
+**A second finding, smaller and immediately actionable:** `tau_vm` is set at the bundle's
+*expected* cosine, so true bindings land either side of it. At 2 hops the minimum
+observed true binding is 0.4468 against `tau = 0.4736` — the threshold rejects 2–4% of
+**correct** bindings, and over a k-hop chain those compound into the 93%→72% decline
+above. Setting tau from a measured low quantile rather than the expectation is a
+separate, cheap change, and `exp_r28` is the instrument that would show it working.
+
+Logs: `validation/logs/exp_r28_depth_capacity{,_chunk1,_chunk2,_chunk3}.{json,log}`.
+Loader and its three convention checks: `validation/clutrr.py`.
+
+**The next build this implies** is the chunked program shape in
+`cubbyllm/reasoning/programs.py`, gated on the same experiment re-run end to end
+through `learn_and_answer`. Not done here: `programs.py` is on the serving path, and
+this is a measurement of a proposal, not the proposal shipped.
 
 ### A contamination warning to carry into any GSM8K number
 

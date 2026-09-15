@@ -1,0 +1,30 @@
+CLUTRR gen_train23_test2to10/test: 1146 records; convention check 1486/1486 gendered edges forward (inverse 732, chance)
+713 of 1146 records are a simple path from the query's first entity to its second; the rest carry forks or noise edges and are a different experiment
+available by depth: {"2": 38, "3": 105, "4": 177, "5": 131, "6": 63, "7": 61, "8": 61, "9": 45, "10": 32}
+entity pool 211, relation pool 13: aunt, brother, daughter, father, grandfather, grandmother, grandson, husband, mother, sister, son, uncle, wife
+
+program shape: CHUNKED, 3 hops per frame
+
+ depth    n  min true   median  max ctrl     sep      tau  hop<tau  chain ok  source
+----------------------------------------------------------------------------------
+     1   60    1.0000   1.0000    0.0190   52.51   1.0000    0.00%   100.00%  synthetic
+     2   60    0.4775   0.5010    0.0283   16.86   0.4736    0.00%   100.00%  synthetic
+     3   60    0.2021   0.2456    0.0483    4.18   0.2202    5.56%    83.33%  CLUTRR
+     4   60    0.1919   0.2583    0.0430    4.47   0.2202    3.33%    86.67%  CLUTRR
+     5   60    0.2085   0.2683    0.0420    4.96   0.2202    0.33%    98.33%  CLUTRR
+     6   60    0.2124   0.2500    0.0596    3.57   0.2202    1.94%    88.33%  CLUTRR
+     7   60    0.2168   0.2539    0.0366    5.92   0.2202    0.95%    93.33%  CLUTRR
+     8   60    0.2017   0.2590    0.0581    3.47   0.2202    1.25%    90.00%  CLUTRR
+     9   60    0.2002   0.2480    0.0400    5.00   0.2202    4.26%    71.67%  synthetic
+    10   60    0.1963   0.2520    0.0557    3.53   0.2202    2.67%    75.00%  synthetic
+    11   60    0.2056   0.2551    0.0581    3.54   0.2202    2.27%    78.33%  synthetic
+    12   60    0.2041   0.2505    0.0493    4.14   0.2202    3.06%    70.00%  synthetic
+  hop<tau: share of TRUE bindings the threshold rejects. chain ok: share of chains
+  where every hop clears -- the ceiling on what the serving path can verify at that depth.
+
+cliff (separation <= 1.0, no threshold can separate): not reached by depth 12
+unsafe to serve (separation < 4.0): [6, 8, 10, 11]
+tau at or below the control ceiling -- a wrong-answer generator: none
+depths where the weakest TRUE binding is already below tau (the chain refuses, which is correct): [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+VERDICT: survives (correctness); depths [6, 8, 10, 11] are below the 4.0x separation alarm and must refuse
