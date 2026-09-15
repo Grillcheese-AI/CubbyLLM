@@ -1297,8 +1297,23 @@ or a record of an instrument that would have told us we were already there.
   (§6.13), and a second clause was missing entirely: *"without triggering the ghost"* on a
   ghost-free level is neither an invented figure nor an invented place. With both closed, and
   across three prompt shapes and two models, **0 invented and 0 recited in every arm** — the keep
-  rate is what moves (45% / 6% / 29%), and almost every refusal is prompt echo rather than
-  hallucination. What he says now is his: *"I'm exploring the open path to the right to find more
+  rate is what moves (45% / 6% / 29% / **47%**), and almost every refusal is prompt echo rather
+  than hallucination. The last of those came from giving the model the feeling in words a person
+  uses (`it feels right`) instead of the compass tier's name (`acceptance`), which had been
+  getting back exactly what it asked for — *"I feel acceptance"*. What he says now is his:
+  *"It feels right to continue."* / *"I'm exploring the open path to the right to find more
   pellets and learn the layout of the maze."* Also, Lövheim's social corners (contempt, shame)
   now read neutral in a world with nobody in it — they were firing on hormone geometry alone and
   reporting an emotion he had no reason to have.
+- **2026-09-15, a hypothesis is not a lie** — Owner's correction, and the sharpest thing said
+  today. The write-up above had filed *"waiting for the pellets to move in"* as a defect the
+  guard missed. Nick: *"if he is blind he might think the pellets are moving while they are not,
+  its not a lie. If he waits long enough it will notice they dont move and needs to eat them"* —
+  *"hypothesis != wrong"*. He has never seen a pellet move and nothing he has perceived rules it
+  out; the belief is settled by waiting and watching it fail, which is the same loop that teaches
+  him a wall. Refusing it at the mouth would suppress exactly the behaviour the architecture is
+  for. So the guard's question is not *is this true* but *is this something he could honestly say
+  he PERCEIVED* — invented figures, places and things are defects; a wrong idea about what those
+  things DO is his to hold and the world's to correct. The missing piece, named rather than
+  built: a spoken hypothesis should be recorded as a claim and checked against what follows, so
+  the pellet not moving refutes it and the refutation enters his map as a fact he earned.

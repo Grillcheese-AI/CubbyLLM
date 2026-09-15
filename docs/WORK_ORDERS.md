@@ -1660,15 +1660,35 @@ the transcript rather than the verdict to see it.
 | bulleted | v14e_nochain | 5 | 6 | 45% | 0 | 0 |
 | question first | v14e_nochain | 0 | 12 | 0% | 0 | 0 |
 | **scene first, question second** | v14e_nochain | 1 | 15 | 6% | **0** | **0** |
-| scene first | + `talk_v9t_qwen3_4b` | 4 | 10 | **29%** | **0** | **0** |
-
-What he says, unprompted, from percepts alone:
-
-> *I'm exploring the open path to the right to find more pellets and learn the layout of the maze.*
-> *I'm feeling a calm sense of acceptance as I explore the familiar path ahead, gathering the pellets to boost my score.*
-> *I see one pellet and I feel acceptance, so I will move toward it to collect the reward.*
+| scene first | + `talk_v9t_qwen3_4b` | 4 | 10 | 29% | **0** | **0** |
+| scene first, **felt phrasing** | + `talk_v9t_qwen3_4b` | 7 | 8 | **47%** | **0** | **0** |
 
 **Nothing invented and nothing recited, in every arm.** The kill line holds.
+
+### The feeling, in words someone would use
+
+The record used to hand the model the compass tier by name — `how i feel: acceptance` —
+and got back exactly what that asks for: *"I feel acceptance."* Nick: *"instead of 'I feel
+acceptance' can we tell it to say 'it feels right', which is what someone would really
+say."*
+
+`_FELT` maps each tier to its first-person phrasing, falling back to plutchik.json's own
+`sensations` field where that reads well. A calm compass contributes nothing at all — a
+person does not announce that they feel neutral. It is a lexicon for internal states, one
+phrase per tier, no variants: the opposite of the per-event phrase table this work order
+removed.
+
+It moved the keep rate from 29% to **47%** on its own, which is the part worth noticing —
+handing the model language a person would use gets sentences a person would say:
+
+> *It feels right to continue.*
+> *Good, that seems like the right direction. I'll continue forward.*
+> *I see a clear path to the next level. I trust my instincts.*
+> *I think i can finish this level.*
+
+and, from the v14e arm before it:
+
+> *I'm exploring the open path to the right to find more pellets and learn the layout of the maze.*
 
 ### What the numbers actually say
 
@@ -1687,11 +1707,38 @@ Below `SPEAK_ABOVE` (priority 2) he does not speak at all: a `plan`/`idle` recor
 most repetitive thing he has, and letting those through dropped the keep rate from 45% to
 25% because a repetitive scene is exactly what a model recites.
 
-### What the guard does not catch, on record
+### A hypothesis is not a lie
 
-Mistaken *reasoning* about things he did perceive. *"waiting for the pellets to move in"*
-is grounded — pellets are in the record — and wrong, because pellets do not move. The
-guard is a check on what he claims to perceive, not on his physics.
+An early draft of this filed *"waiting for the pellets to move in"* as a defect the guard
+had missed. Nick's correction, and it is the more important point:
+
+> *"if he is blind he might think the pellets are moving while they are not, its not a
+> lie. If he waits long enough it will notice they dont move and needs to eat them."*
+> … *"hypothesis != wrong"*
+
+He has never seen a pellet move. Nothing he has perceived rules it out. "They might come
+to me" is a **hypothesis about the world's physics**, and the way it gets settled is that
+he waits, nothing happens, and the world refuses to confirm it — the same loop that
+teaches him a wall. Refusing it at the mouth would suppress the thing we want: an agent
+that forms a belief the world can then refute.
+
+So the guard's job is narrower than "is this true": it is *is this something he could
+honestly say he PERCEIVED*. Invented figures, invented places, invented things — those
+are claims about what is in front of him, and they are defects. A wrong idea about what
+those things DO is his to hold and the world's to correct.
+
+What this points at, and what does not exist yet: a spoken hypothesis should be
+**recorded as a claim and checked against what follows**, so "the pellets will come to
+me" is refuted by the pellet not moving, and enters his map as a fact he earned. That is
+the same promote-by-repetition mechanism WO-2.9 names for collision rules.
+
+### What the guard genuinely does not catch, on record
+
+Invented *scenery*: *"I am standing on the second step of a staircase and looking down."*
+The entity clause is a list of **this world's** things (ghost, pellet, star, wall, hazard,
+trap), so it catches a claim about game state — a ghost on a ghost-free level — and not a
+staircase, which the maze does not contain in any form. The dangerous class is covered;
+the confabulated-backdrop class is not.
 
 Pinned by 4 tests in `standin/tests/test_pacman{,_percepts}.py`, including one that
 refuses an invented cell and one that refuses the record read back.

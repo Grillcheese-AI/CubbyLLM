@@ -213,6 +213,33 @@ def test_a_thought_that_recites_the_record_is_refused():
     assert longest_run(good, rec) <= MAX_RUN and grounded_ok(rec, good, facts)
 
 
+def test_the_feeling_reaches_the_model_in_words_someone_would_use():
+    """Handing the model the compass tier by name got back exactly what that
+    asks for — "I feel acceptance", which nobody says. Nick, 2026-09-15:
+    *"instead of 'I feel acceptance' can we tell it to say 'it feels right',
+    which is what someone would really say."*"""
+    from neurochem import Neurochemistry
+    from pacman import _PETAL, felt
+    assert felt("acceptance") == "it feels right"
+    assert felt("trust") == "this feels safe"
+    # every tier the compass can report has a first-person phrasing, and none
+    # of them is just the taxonomy noun handed back
+    for _petal, _angle, _color, tiers in _PETAL.values():
+        for tier in tiers:
+            phrase = felt(tier)
+            assert phrase and phrase != tier, f"{tier} still reaches the model as a label"
+
+    man = CubbyGhost(GhostVerse(), probe=0.0)
+    man.chem = Neurochemistry()
+    rec = man.percepts("idle", to=man.place)
+    assert "how i feel" not in rec, "a calm compass says nothing: nobody announces feeling neutral"
+    man.chem.update(valence=0.8, novelty=0.7)
+    rec = man.percepts("idle", to=man.place)
+    if "how i feel" in rec:                              # whatever tier it landed on
+        assert rec["how i feel"] == felt(man.emotion()["name"])
+        assert rec["how i feel"] != man.emotion()["name"]
+
+
 def test_the_world_publishes_cleared_so_he_never_counts_the_pellets():
     env = GhostVerse()
     assert env.cleared is False

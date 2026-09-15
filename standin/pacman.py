@@ -899,6 +899,40 @@ _PETAL = {"joy": ("joy", 0, "#ffca05", ("serenity", "joy", "ecstasy")),
 # social input can read them; here they read calm.
 _SOCIAL_CORNERS = frozenset({"contempt", "shame"})
 
+# How a person would actually SAY the feeling, first person and plain, instead
+# of the taxonomy noun. Nick, 2026-09-15: *"instead of 'I feel acceptance' can
+# we tell it to say 'it feels right', which is what someone would really
+# say."* Handing the model a clinical label gets a clinical sentence back —
+# "I feel acceptance" is not a thing anyone says — so the percept record
+# carries the felt phrasing and the model has language to work with.
+#
+# This is a lexicon for internal states, not a script for events: one phrase
+# per compass tier, no variants, no per-event copy. Where cubbyverse's
+# plutchik.json already has a usable `sensations` value it is the fallback
+# (see `_felt`), so this only names the tiers whose data reads oddly in the
+# first person.
+_FELT = {"acceptance": "it feels right", "trust": "this feels safe",
+         "admiration": "I'm glad of this", "serenity": "I'm settled",
+         "joy": "this is going well", "ecstasy": "this is better than I hoped",
+         "interest": "something here is worth a look", "anticipation": "something is coming",
+         "vigilance": "I'm watching closely", "distraction": "I don't know what matters here",
+         "surprise": "that was not what I expected", "amazement": "I did not see that coming",
+         "apprehension": "I can't settle", "fear": "something I care about is at risk",
+         "terror": "I need to get away", "pensiveness": "I'm low", "sadness": "something is lost",
+         "grief": "I've lost something that mattered", "boredom": "there's nothing here for me",
+         "disgust": "something is wrong here", "loathing": "this is badly wrong",
+         "annoyance": "something is in my way", "anger": "something is blocking me",
+         "rage": "I'm blocked from something I need"}
+
+
+def felt(tier: str) -> str:
+    """The first-person phrasing for a compass tier: `_FELT` first, then
+    plutchik.json's own `sensations` value, then the tier's name."""
+    if tier in _FELT:
+        return _FELT[tier]
+    sens = (_plutchik().get(tier) or {}).get("sensations")
+    return f"it feels {sens.lower()}" if sens else tier
+
 # The THINGS this world contains. He may name one only when the step's record
 # or the facts he learned in it mention it — exp_r37 caught him saying "without
 # triggering the ghost" on a ghost-free level, which passed every other check
@@ -1628,7 +1662,12 @@ class CubbyGhost(CubbyPac):
         if seen:
             rec["pellets i can see"] = seen
         if self.chem is not None:
-            rec["how i feel"] = self.emotion()["name"]
+            tier = self.emotion()["name"]
+            # in the words someone would use, not the taxonomy's. And nothing
+            # at all when the compass is calm — a person does not announce
+            # that they feel neutral.
+            if tier != "calm":
+                rec["how i feel"] = felt(tier)
         return rec
 
     @staticmethod
