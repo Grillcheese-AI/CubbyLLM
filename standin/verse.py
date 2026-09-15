@@ -52,6 +52,7 @@ numbers are [stand-in] like everything else here).
 """
 from __future__ import annotations
 
+import os
 import random
 import re
 import threading
@@ -135,6 +136,15 @@ class CubbyMan:
     # opposite-direction axiom must not run through them, and his route
     # planner must not path through them. `kind` -> the words he learns it in.
     NON_PLACES = {"wall": "a wall", "hazard": "a hazard", "edge": "the edge"}
+
+    # ── what he is born able to do, and what he arrives with ───────────────
+    # These live HERE, on the agent, not on any one world. Nick, 2026-09-15:
+    # *"these behaviours should be global not one per context... the same
+    # (exactly the same) should be portable to other contexts and vice-versa."*
+    # Cubby-man is A context. A capability he earns in it is a capability he
+    # has, and the map he builds is ONE map — so the gate, the blank slate and
+    # the hypothesis ledger belong to him and travel with him.
+    BORN_WITH: frozenset = frozenset()                   # capabilities he starts with; everything else is earned
     # the game's own words claim a turn outright; a bare command only claims a
     # statement (the brain never hands a plugin a question at 0.6); a turn about
     # something else that happens to say "explore" (the web, a plugin) is not ours
@@ -143,7 +153,15 @@ class CubbyMan:
     _NOT_GAME = re.compile(r"\b(web|internet|online|browser?|site|plugin|world ?wide|api|file|dossier|fichier)\b", re.I)
 
     def __init__(self, env: ToyVerse | None = None, exe: str | None = None, seed: int = 0,
-                 probe: float = 0.35) -> None:
+                 probe: float = 0.35, blank: bool | None = None) -> None:
+        # BLANK: nothing inherited from an earlier run. Nick: *"we should be
+        # able to clear the memories when testing it."* An agent that loads a
+        # library off disk is not a fresh agent, and an experiment that starts
+        # from one is measuring the disk. CUBBYMAN_BLANK=1 forces it globally;
+        # a subclass that persists anything must honour `self.blank`.
+        self.blank = (bool(int(os.environ.get("CUBBYMAN_BLANK", "0")))
+                      if blank is None else bool(blank))
+        self.can: set[str] = set(self.BORN_WITH)         # what he has EARNED the ability to do
         self.env = env or ToyVerse()
         self.exe = exe
         self.rng = random.Random(seed)
@@ -164,6 +182,12 @@ class CubbyMan:
         self._learned_here: list[str] = []               # facts learned THIS step — the vocabulary he may speak from
         self.log: list[dict] = []
         self._step_lock = threading.RLock()              # one move at a time (live poller vs chat turn)
+        # his open questions, and what settling them earned. On the AGENT, not
+        # the world: a question raised in one context and a verdict reached in
+        # another are the same ledger, because there is one of him.
+        from hypothesis import Hypotheses, vm_verifier, world_verifier
+        self.guesses = Hypotheses({"world": world_verifier(self.env),
+                                   "vm": vm_verifier(self.exe)}, trace=self._t)
         self._learn(self.look_around(self.place))        # what he perceives where he starts
         self.on_arrive(self.place)
         self.visits[self.place] = 1
@@ -328,6 +352,34 @@ class CubbyMan:
         if self._blocked_n != len(self.world):
             self._rebuild_beliefs()
         return self._nbrs.get(place, {})
+
+    # ── settling what he wonders, in any world ─────────────────────────────
+    def settle(self, now: int) -> list[str]:
+        """Test every open question that can be tested and learn the verdicts.
+
+        Generic on purpose: the ledger, the gate and the learning all belong to
+        the agent, so a world only has to call this. `on_capability` is the one
+        hook a world needs if a verdict grants him something."""
+        earned: list[str] = []
+        for fact in self.guesses.sweep(now):
+            if self._learn([fact]):
+                earned.append(fact)
+            gained = self.UNLOCKS.get(fact)
+            if gained and gained not in self.can:
+                self.can.add(gained)
+                self._t("capability", gained=gained, because=fact)
+                self.on_capability(gained, fact)
+        return earned
+
+    # fact -> the capability it grants. A capability is EARNED by a verdict,
+    # never set: being handed one is the maze's legal-move list in a hat.
+    UNLOCKS: dict[str, str] = {}
+
+    def on_capability(self, name: str, because: str) -> None:
+        """Hook: he can now do something he could not before."""
+
+    def able(self, name: str) -> bool:
+        return name in self.can
 
     @staticmethod
     def ask_label(i: int, move: str, salt: int = 0) -> str:

@@ -203,10 +203,10 @@ class CubbyPac(CubbyMan):
                 f"{len(self.library.entries)} moves of my own.")
 
     def __init__(self, env: PacVerse | None = None, exe: str | None = None, seed: int = 0,
-                 probe: float = 0.35) -> None:
+                 probe: float = 0.35, blank: bool | None = None) -> None:
         self.traj: list[dict] = []
         self._last_eaten = None
-        super().__init__(env or PacVerse(), exe=exe, seed=seed, probe=probe)
+        super().__init__(env or PacVerse(), exe=exe, seed=seed, probe=probe, blank=blank)
 
     def _seed_basics(self) -> None:
         self.world.add("cubbyman is the explorer of the pacman maze")
@@ -308,6 +308,69 @@ _FLAVOR = {"AAA": "DASH", "AAAAA": "BLINK", "AB": "COMBO", "AAB": "KNIGHT", "ABC
 
 def pattern_name(pattern: str) -> str:
     return _FLAVOR.get(pattern, f"COMBO-{pattern}")
+
+
+# ── a pattern IS a shape DNA ────────────────────────────────────────────────
+# Nick, 2026-09-15: *"combining combos + the DNA concept (square vs circle)
+# could be the right thing there."* And it already is one — exp_r34's shape DNA
+# is a set of role->filler pairs, and a pattern is exactly that: the slot
+# positions are the roles, the letters are the fillers. "AAB" is a shape with
+# three roles, two of which agree.
+#
+# So the properties of a combo are readable off its DNA without running it,
+# which is the whole point of exp_r34's containment result (a small circle fits
+# in a bigger square, from the DNA alone, having never seen a square):
+#
+#   LENGTH  how many steps it takes
+#   AXES    how many distinct directions it commits to
+#   RUN     the longest straight stretch -- what makes a move cover ground
+#   TURNS   how many times it changes direction -- what makes it manoeuvre
+#
+# CROSSING two of them is the cirsquare: take the shared prefix (what the
+# parents AGREE on -- bundling blends agreeing properties, exp_r34) and finish
+# with the other parent's tail (where they differ -- bundling arbitrates). The
+# child is a real shape neither parent was, and its properties are predictable
+# from the parents' before the VM ever sees it.
+def pattern_dna(pattern: str) -> dict:
+    """The readable properties of a pattern, from the pattern alone."""
+    runs, longest, turns = 1, 1, 0
+    for a, b in zip(pattern, pattern[1:]):
+        if a == b:
+            runs += 1
+            longest = max(longest, runs)
+        else:
+            runs, turns = 1, turns + 1
+    return {"length": len(pattern), "axes": len(set(pattern)),
+            "run": longest if pattern else 0, "turns": turns}
+
+
+def cross(a: str, b: str) -> str | None:
+    """A child of two patterns: what they agree on, then where they differ.
+
+    Deterministic, and a child that is not a new legal shape is None — a
+    cross that reproduces a parent, or that breaks the rules a pattern has to
+    obey (2..5 slots, starts at A, at most three), is not a discovery."""
+    if not a or not b:
+        return None
+    shared = 0
+    for x, y in zip(a, b):
+        if x != y:
+            break
+        shared += 1
+    child = a[:shared] + b[shared:]
+    if child in (a, b) or not (2 <= len(child) <= 5) or not child.startswith("A"):
+        return None
+    if len(set(child)) > 3 or set(child) - set("ABC"):
+        return None
+    # the slots must be introduced in order (A before B before C) or the
+    # pattern names a shape `_assignments` cannot instantiate
+    seen: list[str] = []
+    for ch in child:
+        if ch not in seen:
+            if ch != "ABC"[len(seen)]:
+                return None
+            seen.append(ch)
+    return child
 
 
 def _assignments(pattern: str):
@@ -1103,8 +1166,27 @@ class CubbyGhost(CubbyPac):
     goes through CubbyTalk's ASK like every other utterance. `resp()` /
     `init_payload()` speak the live frontend's exact schema."""
 
+    # `combos` is LOCKED at birth. Nick, 2026-09-15: *"combos should not be
+    # granted either, even the capability of doing them should be hidden"* — so
+    # no power move is offered, nothing is composed, mutated or crossed, and
+    # the HUD lists no powers. Being handed the knowledge that steps can be
+    # chained is being handed the maze's legal moves by another name.
+    #
+    # The gate itself lives on CubbyMan, because a capability is HIS and not
+    # this world's; what is here is only the question this world raises and the
+    # verdict that grants it.
+    UNLOCKS = {"chaining is the way of a move": "combos"}
+
     def __init__(self, env: GhostVerse | None = None, exe: str | None = None, seed: int = 0,
-                 probe: float = 0.35, memory: pathlib.Path | None = None, ledger=None) -> None:
+                 probe: float = 0.35, memory: pathlib.Path | None = None, ledger=None,
+                 blank: bool | None = None) -> None:
+        # the blank slate is decided on the agent; this world's contribution is
+        # knowing that its persisted library and ledger are what "inherited"
+        # means here
+        if blank is None:
+            blank = bool(int(os.environ.get("CUBBYMAN_BLANK", "0")))
+        if blank:
+            memory, ledger = None, None
         self.brain = None
         self.fear = 0.3                                  # pacman_live's ghost_penalty, learned
         self._last: dict = {}
@@ -1121,7 +1203,6 @@ class CubbyGhost(CubbyPac):
         self.ghost_belief: dict[tuple, int] = {}
         self.caught_at: list[int] = []                   # how far off a ghost was when he last CHOSE, before it caught him
         self._threat_seen_at: int | None = None
-        self.guesses = None                              # hypothesis.Hypotheses, built in __init__ below
         self._eaten_run: set[str] = set()                # eaten THIS run (pellets respawn on a retry)
         self._plan_next: str | None = None               # the cell his map says to go to next
         self._graph_n = -1
@@ -1129,15 +1210,48 @@ class CubbyGhost(CubbyPac):
         self.ledger = ledger                             # ledger.Ledger: every VM decision hashed + signed (None in tests)
         self.library = ProgramLibrary(memory, ledger=ledger)   # his generated programs (+ stats), persisted; audited on load
         self._last_proposal = -99
-        super().__init__(env or GhostVerse(), exe=exe, seed=seed, probe=probe)
-        from hypothesis import Hypotheses, vm_verifier, world_verifier
-        self.guesses = Hypotheses({"world": world_verifier(self.env),
-                                   "vm": vm_verifier(self.exe)}, trace=self._t)
+        super().__init__(env or GhostVerse(), exe=exe, seed=seed, probe=probe, blank=blank)
 
     @property
     def powers(self) -> list[str]:
-        """His MOVES (jump + patterns), not his forged tools — the HUD's list."""
+        """His MOVES (jump + patterns), not his forged tools — the HUD's list.
+        Empty while `combos` is locked: not "powers he has none of" but a
+        capability he does not know exists."""
+        if "combos" not in self.can:
+            return []
         return [n for n, e in self.library.active().items() if e["kind"] in ("jump", "pattern")]
+
+    def _wonder_about_combos(self, why: str) -> None:
+        """One step at a time is not working — can I do more than one?
+
+        Being stuck or out of time is the only thing that raises the question,
+        and the VM is what answers it: he writes the smallest possible
+        two-step program and it either certifies or it does not. A confirmation
+        unlocks the capability AND is a fact he holds; a refusal closes the
+        question until something else raises it.
+
+        This is why `combos` is not a flag someone sets. Nick, 2026-09-15:
+        *"even the capability of doing them should be hidden"* — a capability
+        you were handed is the maze's legal-move list wearing a different hat."""
+        if "combos" in self.can or self.guesses is None:
+            return
+        from hypothesis import Hypothesis
+        name = "TWOSTEP"
+        program = self.library.moves_program(extra={name: ["step", "step"]})
+        fn = self.library.fn_name(name)
+        self.guesses.frame(Hypothesis(
+            claim="maybe I can take more than one step at a time",
+            test="write the smallest two-step move and see whether it holds together",
+            verifier="vm",
+            if_true="chaining is the way of a move",
+            if_false="one at a time is the way of a move",
+            payload={"program": program, "fn": fn, "expected": name},
+            made_at=self.env.steps))
+        self._t("wonder", about="combos", why=why)
+
+    def on_capability(self, name: str, because: str) -> None:
+        """CubbyMan grants the capability; this world only says it out loud."""
+        self._think("capability", name=name)
 
     # ── superpowers: programs he GENERATES, the VM certifies, he keeps ──────
     _BECAUSE = {"stuck": "a pellet I have SEEN has no path on my map — something walls it off",
@@ -1167,6 +1281,8 @@ class CubbyGhost(CubbyPac):
         recover the name), have the VM certify it, store it with its source
         AND the reasoning that led to it, and learn the facts. Only then is
         it a move he can use."""
+        if "combos" not in self.can:                     # he does not know moves can be chained yet
+            return None
         if name in self.library:
             return None
         # ONE program: the Moves program as it stands plus the candidate function;
@@ -1192,12 +1308,51 @@ class CubbyGhost(CubbyPac):
 
     MAX_ACTIVE_PATTERNS = 8                               # the library stays small; consolidate() enforces it per level
 
+    def _cross(self, why: str) -> str | None:
+        """CROSS two moves he already owns into one neither of them was.
+
+        Nick, 2026-09-15: *"combining combos + the DNA concept (square vs
+        circle) could be the right thing there."* A pattern is a shape DNA
+        (see `cross`), so the child's properties — how far it reaches, how
+        many turns it makes — are readable from the parents' before the VM
+        sees it. That is what makes this a proposal rather than a guess:
+        `_mutate` edits one parent at random; this one predicts what the
+        child will be FOR, and says so in the rationale the library keeps."""
+        if "combos" not in self.can:
+            return None
+        act = {n: e["pattern"] for n, e in self.library.active().items()
+               if e["kind"] == "pattern" and e.get("pattern")}
+        if len(act) < 2:
+            return None
+        names = sorted(act)
+        for _ in range(8):
+            a, b = self.rng.sample(names, 2)
+            child = cross(act[a], act[b])
+            if not child or pattern_name(child) in self.library:
+                continue
+            da, db, dc = pattern_dna(act[a]), pattern_dna(act[b]), pattern_dna(child)
+            name = pattern_name(child)
+            self._last_proposal = self.env.steps
+            rationale = (f"crossed {a} ({act[a]}: reach {da['run']}, {da['turns']} turns) with "
+                         f"{b} ({act[b]}: reach {db['run']}, {db['turns']} turns) -> {child}: "
+                         f"reach {dc['run']}, {dc['turns']} turns over {dc['length']} steps")
+            made = self._compose(name, why, list(child), child, "pattern", rationale)
+            if made:
+                self.library.entries[made]["reasoning"].update(
+                    {"parents": [a, b], "dna": dc, "parent_dna": {a: da, b: db}})
+                self._t("cross", child=made, pattern=child, parents=[a, b], dna=dc)
+                self._think("modify", parent=f"{a}+{b}", child=made, edit="crossed")
+            return made
+        return None
+
     def _mutate(self, why: str) -> str | None:
         """MODIFY an existing program instead of composing a fresh one: pick an
         active pattern (the most valuable, or one that was legal but never
         paid), apply ONE edit — append a slot, drop a slot, or swap one — and
         compose the child with its lineage (parent, edit) in the reasoning.
         The parent stays (retire/consolidate decide its fate)."""
+        if "combos" not in self.can:
+            return None
         act = {n: e for n, e in self.library.active().items() if e["kind"] == "pattern" and e.get("pattern")}
         if not act:
             return None
@@ -1234,11 +1389,15 @@ class CubbyGhost(CubbyPac):
         return None
 
     def _propose(self, why: str) -> str | None:
-        """Improve what he has before inventing: MODIFY an existing program
-        (one edit, lineage recorded); only with nothing to edit — or when the
-        active set is at its cap — sample a fresh composition. Lengths are
-        sampled from what has paid off; out-of-time asks for longer ones. The
-        rationale is written into the program's reasoning trace."""
+        """Combine, then improve, then invent — in that order.
+
+        CROSS two moves he owns (their DNAs predict the child's properties);
+        failing that MODIFY one at random; failing that sample a fresh
+        composition. Lengths are sampled from what has paid off; out-of-time
+        asks for longer ones. The rationale is written into the program's
+        reasoning trace either way."""
+        if "combos" not in self.can:                     # the capability is not his yet
+            return None
         retired = self.library.retire(self.env.steps)
         if retired:
             self._t("retire", name=retired, reason=self.library.entries[retired]["retired_reason"])
@@ -1246,7 +1405,7 @@ class CubbyGhost(CubbyPac):
         if n_active >= self.MAX_ACTIVE_PATTERNS:          # full: consolidate now, then edit rather than add
             for n in self.library.consolidate(self.env.level, keep=self.MAX_ACTIVE_PATTERNS - 2):
                 self._t("retire", name=n, reason=self.library.entries[n]["retired_reason"])
-        made = self._mutate(why)
+        made = self._cross(why) or self._mutate(why)     # combine what he has before editing it
         if made:
             return made
         weight = {2: 1.0, 3: 2.0, 4: 1.0, 5: 0.6}
@@ -1283,8 +1442,8 @@ class CubbyGhost(CubbyPac):
         exits = super().candidate_moves(exits)
         if self._rest_wanted() and self._safe_here():    # rest is a move too: stay put, in a safe spot only
             exits = {**exits, REST: self.place}
-        if not self.library.entries:
-            return exits
+        if "combos" not in self.can or not self.library.entries:
+            return exits                                 # a locked capability is absent, not merely unused
         power = self.env.power_moves(self.place, self.library, self.env.energy)
         for move in power:
             self.library.note_legal("JUMP" if move.startswith("jump_") else move.split("_")[0].upper())
@@ -2112,7 +2271,13 @@ class CubbyGhost(CubbyPac):
                 self.place = env.start
                 self._eaten_run.clear()                  # the pellets are back; his sightings still hold
                 ev["failed"] = True
-                ev["learned"] = self._propose("out_of_time")     # too slow -> generate a faster move
+                # too slow. If he knows moves can be chained, invent a faster
+                # one; if he does not, this is the other thing that raises the
+                # question in the first place.
+                if "combos" in self.can:
+                    ev["learned"] = self._propose("out_of_time")
+                else:
+                    self._wonder_about_combos("the clock beat me going one step at a time")
                 self._t("out_of_time", level=env.level, attempt=env.attempt, learned=ev["learned"])
                 self._thought, self._thought_prio, self._say_aloud = None, -1, None
                 self._think("out_of_time", level=env.level, attempt=env.attempt, learned=ev["learned"])
@@ -2126,10 +2291,8 @@ class CubbyGhost(CubbyPac):
             # then test what he has been wondering. A verdict is a fact he
             # EARNED, so it goes through the same learning gate as a percept;
             # an open guess stays a guess and never enters the map.
-            if self.guesses is not None:
-                for fact in self.guesses.sweep(env.steps):
-                    if self._learn([fact]):
-                        self._think("derive", fact=fact)
+            for fact in self.settle(env.steps):           # CubbyMan's: test, learn, grant
+                self._think("derive", fact=fact)
             # how far off the nearest threat was when he chose — the last
             # moment he could act. This, not the distance at capture, is what
             # `_on_caught` turns into his berth.
@@ -2145,11 +2308,16 @@ class CubbyGhost(CubbyPac):
             danger = self.danger_cells()                 # the berth grows with learned fear
             self._plan_next = self.plan_next(avoid=danger)
             seen_left = bool(self.sighted - self._eaten_run)
-            if self._plan_next is None and seen_left and "JUMP" not in self.library:
-                # a pellet he has SEEN with no path on his map: hazard-walled -> compose a JUMP
-                ev["learned"] = self._compose("JUMP", "stuck", ["hop", "hop"], None, "jump",
-                                              "two hops in one direction clear the hazard in between")
-                self._plan_next = self.plan_next(avoid=danger)
+            if self._plan_next is None and seen_left:
+                # a pellet he has SEEN with no path on his map. If he does not
+                # yet know moves can be chained, THIS is what raises the
+                # question; if he does, it is what a JUMP is for.
+                if "combos" not in self.can:
+                    self._wonder_about_combos("a pellet I can see has no path on my map")
+                elif "JUMP" not in self.library:
+                    ev["learned"] = self._compose("JUMP", "stuck", ["hop", "hop"], None, "jump",
+                                                  "two hops in one direction clear the hazard in between")
+                    self._plan_next = self.plan_next(avoid=danger)
             elif (not seen_left and self.chem is not None and self.chem.dopamine > 0.5
                   and env.steps - self._last_proposal >= 12):
                 ev["learned"] = self._propose("curious")         # nothing to chase: invent a move

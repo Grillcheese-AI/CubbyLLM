@@ -153,6 +153,7 @@ def test_live_a_new_combo_is_certified_as_a_function_of_the_one_program(tmp_path
     _exe_or_skip()
     from pacman import CubbyGhost, GhostVerse
     man = CubbyGhost(GhostVerse(), probe=0.0, seed=1, memory=tmp_path / "programs.json")
+    man.can.add("combos")                                # this test is about the machinery, not the unlock
     a = man._compose("DASH", "out_of_time", list("AAA"), "AAA", "pattern", "test")
     b = man._compose("KNIGHT", "curious", list("AAB"), "AAB", "pattern", "test")
     assert a == "DASH" and b == "KNIGHT"
@@ -228,6 +229,7 @@ def test_live_he_generates_a_program_with_a_reasoning_trace():
     _exe_or_skip()
     from pacman import CubbyGhost, GhostVerse
     man = CubbyGhost(GhostVerse(), probe=0.0, seed=1)
+    man.can.add("combos")                                # this test is about the machinery, not the unlock
     name = man._propose("out_of_time")
     assert name and name in man.library
     e = man.library.entries[name]
