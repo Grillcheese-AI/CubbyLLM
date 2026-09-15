@@ -1,0 +1,62 @@
+gen-3 held split: 5,234 plan records, 600 sampled (seed 8) | store 563,062 facts (10,765 encyclopedia) | emitter emitter_v14e_nochain.Q4_K_M.gguf
+  100/600 (72s) plan 100 verified 100 correct 100 near 0 WRONG 0
+  200/600 (120s) plan 200 verified 200 correct 200 near 0 WRONG 0
+  300/600 (167s) plan 300 verified 299 correct 299 near 0 WRONG 0
+  400/600 (215s) plan 400 verified 399 correct 399 near 0 WRONG 0
+  500/600 (262s) plan 500 verified 499 correct 499 near 0 WRONG 0
+  600/600 (309s) plan 600 verified 599 correct 599 near 0 WRONG 0
+
+GEN-3 HELD SPLIT: {'correct': 599, 'final:retrieval_exhausted': 1, 'plan': 600, 'verified': 599} | VM calls 1225
+
+by wording (verified / asked, then the refusals):
+    44 /   44  'On what day, month, and year was {S} born?'  correct 44 near 0 WRONG 0 | 
+    42 /   42  'When was {S} born?'  correct 42 near 0 WRONG 0 | 
+    41 /   41  'In what year was {S} born?'  correct 41 near 0 WRONG 0 | 
+    38 /   38  'What is the date of birth of {S}?'  correct 38 near 0 WRONG 0 | 
+    37 /   37  'What is the date of death of {S}?'  correct 37 near 0 WRONG 0 | 
+    36 /   36  'What is the birth date of {S}?'  correct 36 near 0 WRONG 0 | 
+    34 /   34  'In what year did {S} die?'  correct 34 near 0 WRONG 0 | 
+    34 /   34  "What is {S}'s date of birth?"  correct 34 near 0 WRONG 0 | 
+    33 /   33  'In which city was {S} born?'  correct 33 near 0 WRONG 0 | 
+    31 /   31  'What is the place of birth of {S}?'  correct 31 near 0 WRONG 0 | 
+    29 /   29  'What is the birthplace of {S}?'  correct 29 near 0 WRONG 0 | 
+    28 /   28  'When did {S} die?'  correct 28 near 0 WRONG 0 | 
+    23 /   23  'Where was {S} born?'  correct 23 near 0 WRONG 0 | 
+    19 /   19  'Which administrative territorial entity is {S} located in?'  correct 19 near 0 WRONG 0 | 
+    19 /   19  'What is the place of death of {S}?'  correct 19 near 0 WRONG 0 | 
+    18 /   18  'In which city did {S} die?'  correct 18 near 0 WRONG 0 | 
+    14 /   14  'Where did {S} die?'  correct 14 near 0 WRONG 0 | 
+    13 /   14  'In which district is {S} located?'  correct 13 near 0 WRONG 0 | retrieval_exhausted 1
+     7 /    7  'Who is the spouse of {S}?'  correct 7 near 0 WRONG 0 | 
+     6 /    6  'Who is the author of {S}?'  correct 6 near 0 WRONG 0 | 
+     5 /    5  "Who was {S}'s husband?"  correct 5 near 0 WRONG 0 | 
+     4 /    4  "What was {S}'s profession?"  correct 4 near 0 WRONG 0 | 
+     4 /    4  "Who was {S}'s wife?"  correct 4 near 0 WRONG 0 | 
+     4 /    4  'Who is {S} married to?'  correct 4 near 0 WRONG 0 | 
+     3 /    3  'What award did {S} receive?'  correct 3 near 0 WRONG 0 | 
+     3 /    3  'Who is the employer of {S}?'  correct 3 near 0 WRONG 0 | 
+     3 /    3  'Who is the child of {S}?'  correct 3 near 0 WRONG 0 | 
+     3 /    3  'What is the genre of {S}?'  correct 3 near 0 WRONG 0 | 
+     3 /    3  'Who is the director of {S}?'  correct 3 near 0 WRONG 0 | 
+     3 /    3  'What is the alma mater of {S}?'  correct 3 near 0 WRONG 0 | 
+     3 /    3  "What is {S}'s capital?"  correct 3 near 0 WRONG 0 | 
+     3 /    3  'Which award was {S} given?'  correct 3 near 0 WRONG 0 | 
+     3 /    3  'What genre is {S}?'  correct 3 near 0 WRONG 0 | 
+     2 /    2  'Which city is the capital of {S}?'  correct 2 near 0 WRONG 0 | 
+     2 /    2  'Who is the sibling of {S}?'  correct 2 near 0 WRONG 0 | 
+     2 /    2  'What is the occupation of {S}?'  correct 2 near 0 WRONG 0 | 
+     1 /    1  "What is {S}'s occupation?"  correct 1 near 0 WRONG 0 | 
+     1 /    1  'What is the capital of {S}?'  correct 1 near 0 WRONG 0 | 
+     1 /    1  "Who is {S}'s child?"  correct 1 near 0 WRONG 0 | 
+
+every WRONG (0):
+
+verified examples (first 8 of 599):
+  'On what day, month, and year was John Glover born?' plan ['born'] seed 'john glover' -> '1732-11-05' (gold '1732-11-05')
+  'What is the birth date of John Howard Payne?' plan ['birth date'] seed 'john howard payne' -> '1791-06-09' (gold '1791-06-09')
+  'When was Albert Augustus Pope born?' plan ['born'] seed 'albert augustus pope' -> '1843' (gold '1843')
+  'What is the date of birth of Luis Vaz de Camoes?' plan ['date of birth'] seed 'luis vaz de camoes' -> '1524' (gold '1524')
+  'In what year did Carl Faberge die?' plan ['die'] seed 'carl faberge' -> '1920' (gold '1920')
+  'On what day, month, and year was Jose Ballivian born?' plan ['born'] seed 'jose ballivian' -> '1804' (gold '1804')
+  'When did Marc Blitzstein die?' plan ['die'] seed 'marc blitzstein' -> '1964' (gold '1964')
+  'In what year was Jerome Increase Case born?' plan ['born'] seed 'jerome increase case' -> '1818' (gold '1818')

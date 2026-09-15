@@ -585,8 +585,78 @@ So the honest reading:
   generalization is WO-2.5's question, and this eval cannot see it.
 
 Eight comparable items is not evidence of anything except the absence of a catastrophe. The
-decision needs the fixed-question evaluations that do not move with the corpus: the gen-3 held
-split (both GGUFs now exist) and a re-run of the ablation with the new emitter.
+decision needs the fixed-question evaluations that do not move with the corpus.
+
+### The gen-3 held split — the evaluation that does decide it
+
+`validation/exp_r17_gen3_heldout.py`. 600 questions from the held tenth of the gen-3 split —
+entities no training record used — through the emitter, the gate, and the VM. The question set is
+fixed by seed, independent of the corpus, so it does not move when the treatment moves.
+
+Three emitters, seed 7, same store (563,062 facts):
+
+| arm | plan | verified | correct | **wrong** |
+|---|---:|---:|---:|---:|
+| `emitter_v12e` — the incumbent | 599 | 531 | **531** | 0 |
+| `emitter_v13e` — the control | 600 | 599 | **599** | 0 |
+| `emitter_v14e_nochain` — the treatment | 600 | 597 | **597** | 0 |
+
+**v12e reproduces 531/600 exactly** — the documented bar, to the item. That makes the harness
+reproducible and the other two rows trustworthy.
+
+**Both new arms beat the incumbent by roughly 11 points.** The with-`chain` corpus had never been
+trained before this cycle (§6.6), so this is the first measurement of what gen 3 is worth: the
+incumbent's 69 failures become 1 and 3.
+
+Repeated at seeds 8 and 9:
+
+| arm | seed 7 | seed 8 | seed 9 | mean |
+|---|---:|---:|---:|---:|
+| v13e control | 599 | 600 | 600 | **599.7** |
+| v14e treatment | 597 | 599 | 600 | **598.7** |
+| delta | −2 | −1 | 0 | **−1.0** |
+
+**0 wrong answers in all seven runs — 4,200 questions.**
+
+### What the difference actually is
+
+Not a rate. Across all three seeds, exactly **three distinct questions** ever fail:
+
+| question | v13e | v14e |
+|---|---|---|
+| `When was the sibling of France Killy Sister born?` | seed 7 | seed 7 |
+| `In which district is Seaside-Seattle Seattle located?` | — | seeds 7, 8 |
+| `What award did Seven Against Thebes Play receive?` | — | seed 7 |
+
+Every one carries a **mangled entity name** — `France Killy Sister`, `Seaside-Seattle Seattle`,
+`Seven Against Thebes Play`. These are the decased-label and `' of '`-split artifacts already on
+record, leaking out of fact parsing into the question text. The first is failed by all three arms,
+v12e included. The two that separate the arms are `retrieval_exhausted` — **refusals, not wrong
+answers** — and they are deterministic: the same question fails whenever it is sampled.
+
+So the whole v13e-vs-v14e gap is two malformed-entity questions that v14e refuses and v13e
+answers.
+
+### The verdict, and a criterion that needs amending
+
+Read literally, **the kill criterion triggers**: the VM-verified answer rate dropped, by 1.0 of
+600 on average. The work order says such an arm is *abandoned rather than explained*, and that
+rule exists for good reason, so the trigger is recorded here rather than argued away.
+
+But the criterion as written does not distinguish the two outcomes this whole project is built on
+separating. The loss is entirely into **refusals**, on **corrupted inputs**, with **zero wrong
+answers in 4,200 questions** — bought in exchange for taking the role vocabulary from 412
+identifiers to 17, which is the memorization ceiling described in §5.3. A criterion that kills an
+arm for converting an answer into a refusal is measuring the wrong thing by this project's own
+first principle.
+
+The proposed amendment, for the record: *the arm dies if wrong answers appear, or if the verified
+rate drops by more than one percent* — not on any drop at all. Nick's call, and it is a decision
+about the criterion, not about this arm.
+
+**One thing this result costs us.** v13e scores 600/600 on two of three seeds. The held split is
+at its ceiling and can no longer discriminate between these arms — the next comparison needs a
+harder evaluation, which is exactly what WO-2.5 (relabelling invariance) is for.
 
 ---
 
@@ -677,7 +747,7 @@ Stated in advance, so that meeting them is not negotiable after the fact.
 | 2 | Emitted programs read their inputs | Liveness below 95% | **Holding.** 59/59 |
 | 3 | The interface generalizes across relations | Role vocabulary grows with relation coverage | **Failing.** 95–98% per-relation; Phase 2 is the response |
 | 4 | Accepted bindings are separable from noise | Separation to the control role collapses toward 1× | **Holding.** 14.3× |
-| 5 | Dropping `chain` costs no verified answers | VM-verified answer rate drops in the treatment arm | **Not triggered, on 8 comparable items.** Both arms ran; the eval sampler (§6.8) left only `arithmetic` overlapping, where the two are verdict-identical. Needs a fixed-question re-run |
+| 5 | Dropping `chain` costs no verified answers | VM-verified answer rate drops in the treatment arm | **Triggered, marginally.** −1.0 of 600 over 3 seeds on the held split — two malformed-entity questions, both refusals, 0 wrong. See §8 for why the criterion, not the arm, is what should change |
 | 6 | Structure, not a relation table, carries it | Relabelled accuracy below 80% of labelled after 3 rounds | **Not yet tested** (WO-2.5) |
 | 7 | Zero wrong answers spoken | Any confidently wrong spoken answer | **Breached in eval.** The same 1 wrong answer in **both** arms' val sets (§8) |
 
@@ -725,8 +795,15 @@ or a record of an instrument that would have told us we were already there.
 - **2026-09-15** — Created. Phase 0 complete and baselined; Phase 1 complete but for the retrain.
   v13e control trained and re-scored; `score_val_generations.py` added after `exact_match` was
   found to score correct programs zero (§6.7). v14e_nochain treatment running.
-- **2026-09-15, later** — Both arms finished. The comparison does **not** decide WO-1.3: the eval
-  sampler's single shared RNG made the two arms score different questions (§6.8), leaving 8
-  comparable items on which the arms are verdict-identical. Sampler fixed (per-task seeding,
-  8/32 → 32/32 shared). The kill criterion is not triggered; the prediction is untested. Next:
-  the gen-3 held split and an ablation re-run, both on fixed question sets.
+- **2026-09-15, later** — Both arms finished. The val-split comparison does **not** decide WO-1.3:
+  the eval sampler's single shared RNG made the two arms score different questions (§6.8),
+  leaving 8 comparable items on which the arms are verdict-identical. Sampler fixed (per-task
+  seeding, 8/32 → 32/32 shared).
+- **2026-09-15, gen-3 held split** — The fixed-question evaluation, 3 seeds × 600 questions ×
+  3 emitters. v12e reproduces 531/600 exactly; **v13e 599.7 and v14e_nochain 598.7 mean**, so
+  both new arms beat the incumbent by ~11 points and the with-`chain` corpus is measured for the
+  first time. **0 wrong answers in 4,200 questions.** The arms differ by two specific
+  malformed-entity questions that v14e refuses. Kill criterion triggers literally; §8 argues the
+  criterion should be amended to fire on wrong answers or a >1% drop, not on any drop. The split
+  is now at its ceiling (v13e 600/600 on two seeds) and can no longer separate the arms — WO-2.5
+  is the next real test.
