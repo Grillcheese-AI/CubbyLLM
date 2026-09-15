@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cubby Component Map</title>
+<style>
+  /* An instrument panel, so: a cool dark ground with a warm signal on it.
+     Amber is "this ran just now", teal is "something was confirmed or
+     learned", red is "refused" — which in this system is a result, not an
+     error, so it is a full colour and not a warning stripe. */
+  :root{
+    --ground:#0e1219;  --panel:#151b25;  --raise:#1c2430;
+    --line:#2a3342;    --ink:#d2dae7;    --dim:#7d8ba0;
+    --live:#ffb648;    --yes:#45d3c0;    --no:#e8615f;
+    --wonder:#9d8cff;  --shadow:0 1px 0 rgba(255,255,255,.03), 0 8px 24px rgba(0,0,0,.35);
+  }
+  /* Dark-first, so the pattern is mirrored: the bare :root above is the whole
+     dark palette, and light is the override — under the media query for a
+     light OS (unless dark was explicitly chosen) and under the explicit
+     light stamp, so all three viewer states resolve. */
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --ground:#eef1f6; --panel:#ffffff; --raise:#f7f9fc;
+      --line:#d3dae5;   --ink:#141a24;    --dim:#5d6a7d;
+      --live:#a85f00;   --yes:#0f8375;    --no:#bd3a38; --wonder:#5340c4;
+      --shadow:0 1px 2px rgba(20,30,50,.06), 0 8px 20px rgba(20,30,50,.08);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#eef1f6; --panel:#ffffff; --raise:#f7f9fc;
+    --line:#d3dae5;   --ink:#141a24;    --dim:#5d6a7d;
+    --live:#a85f00;   --yes:#0f8375;    --no:#bd3a38; --wonder:#5340c4;
+    --shadow:0 1px 2px rgba(20,30,50,.06), 0 8px 20px rgba(20,30,50,.08);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font:14px/1.5 ui-sans-serif,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:ui-monospace,"SF Mono","Cascadia Mono","JetBrains Mono",Menlo,Consolas,monospace}
+  .wrap{max-width:1500px; margin:0 auto; padding-inline:20px; padding-block:20px 40px}
+
+  header{display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; margin-bottom:6px}
+  h1{
+    font-size:clamp(20px,2.4vw,27px); margin:0; letter-spacing:-.02em; font-weight:650;
+    text-wrap:balance;
+  }
+  .sub{color:var(--dim); font-size:13px; max-width:62ch; margin:4px 0 18px}
+  .sub code{font-family:ui-monospace,monospace; color:var(--ink); font-size:12px}
+
+  .status{margin-left:auto; display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--dim)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--dim);flex:none}
+  .status[data-s="live"] .dot{background:var(--yes); box-shadow:0 0 0 3px color-mix(in srgb,var(--yes) 22%,transparent)}
+  .status[data-s="idle"] .dot{background:var(--live)}
+  .status[data-s="off"]  .dot{background:var(--no)}
+
+  .board{display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:18px; align-items:start}
+  @media (max-width:980px){ .board{grid-template-columns:minmax(0,1fr)} }
+
+  /* ── the map ───────────────────────────────────────────────────────── */
+  .map{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:18px 16px 12px; box-shadow:var(--shadow); overflow-x:auto;
+  }
+  .lane{display:flex; align-items:stretch; gap:12px; min-width:0}
+  .lane + .lane{margin-top:14px}
+  .laneName{
+    writing-mode:vertical-rl; transform:rotate(180deg);
+    font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim);
+    padding:2px 0; border-right:1px solid var(--line); padding-right:9px; flex:none;
+  }
+  .row{display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; align-content:flex-start}
+
+  .node{
+    position:relative; background:var(--raise); border:1px solid var(--line);
+    border-radius:9px; padding:10px 12px 9px; min-width:132px; flex:1 1 132px;
+    transition:border-color .18s, background .18s, transform .18s;
+  }
+  .node h3{margin:0 0 2px; font-size:13px; font-weight:620; letter-spacing:-.01em}
+  .node p{margin:0; font-size:11.5px; color:var(--dim); line-height:1.35}
+  .node .n{
+    position:absolute; top:8px; right:10px; font-size:11px; color:var(--dim);
+    font-family:ui-monospace,monospace; font-variant-numeric:tabular-nums;
+  }
+  .node .last{
+    margin-top:6px; font-size:10.5px; color:var(--dim); font-family:ui-monospace,monospace;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:14px;
+  }
+  /* active: the point of the page */
+  .node.hot{
+    border-color:var(--live); background:color-mix(in srgb,var(--live) 11%,var(--raise));
+    transform:translateY(-1px);
+  }
+  .node.hot h3{color:var(--live)}
+  .node.hot .n{color:var(--live)}
+  .node.yes{border-color:var(--yes); background:color-mix(in srgb,var(--yes) 11%,var(--raise))}
+  .node.yes h3, .node.yes .n{color:var(--yes)}
+  .node.no{border-color:var(--no); background:color-mix(in srgb,var(--no) 12%,var(--raise))}
+  .node.no h3, .node.no .n{color:var(--no)}
+  .node.idle{opacity:.55}
+
+  .flow{
+    display:flex; align-items:center; justify-content:center; color:var(--dim);
+    font-size:15px; flex:none; width:16px;
+  }
+
+  /* ── the tape ──────────────────────────────────────────────────────── */
+  .tape{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    box-shadow:var(--shadow); display:flex; flex-direction:column; max-height:min(74vh,720px);
+  }
+  .tapeHead{
+    padding:12px 14px; border-bottom:1px solid var(--line);
+    display:flex; align-items:baseline; gap:8px;
+  }
+  .tapeHead h2{margin:0; font-size:12px; letter-spacing:.13em; text-transform:uppercase; color:var(--dim); font-weight:600}
+  .tapeHead .c{margin-left:auto; font-size:11px; color:var(--dim); font-family:ui-monospace,monospace; font-variant-numeric:tabular-nums}
+  .tapeBody{overflow-y:auto; padding:6px 0}
+  .ev{
+    display:grid; grid-template-columns:44px 1fr; gap:9px; padding:5px 14px;
+    font-size:11.5px; font-family:ui-monospace,monospace; border-left:2px solid transparent;
+  }
+  .ev .t{color:var(--dim); font-variant-numeric:tabular-nums}
+  .ev .k{color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .ev .k b{font-weight:600; color:var(--live)}
+  .ev.yes{border-left-color:var(--yes)} .ev.yes .k b{color:var(--yes)}
+  .ev.no{border-left-color:var(--no)}   .ev.no .k b{color:var(--no)}
+  .ev.wonder .k b{color:var(--wonder)}
+  .empty{padding:18px 14px; color:var(--dim); font-size:12.5px; line-height:1.5}
+
+  .unmapped{
+    margin-top:14px; font-size:11.5px; color:var(--dim);
+    border-top:1px dashed var(--line); padding-top:10px;
+  }
+  .unmapped b{color:var(--live); font-weight:600}
+  .legend{display:flex; flex-wrap:wrap; gap:14px; margin-top:14px; font-size:11.5px; color:var(--dim)}
+  .legend span{display:flex; align-items:center; gap:6px}
+  .sw{width:9px;height:9px;border-radius:2px;flex:none}
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Cubby Component Map</h1>
+    </div>
+    <div class="status" id="status" data-s="off"><span class="dot"></span><span id="statusText">connecting…</span></div>
+  </header>
+  <p class="sub">
+    Every component lights when it fires. Nothing here is simulated — it reads the same
+    <code>_t()</code> trace the console does, over <code>/events</code>, and a box only
+    lights because that part of the system actually ran.
+  </p>
+
+  <div class="board">
+    <div class="map" id="map"></div>
+
+    <div class="tape">
+      <div class="tapeHead">
+        <h2>Tape</h2>
+        <span class="c" id="tapeCount">0 events</span>
+      </div>
+      <div class="tapeBody" id="tape">
+        <div class="empty">Waiting for him to do something.<br>
+          Open <b>/pac</b> in another tab — he plays while it is open.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw" style="background:var(--live)"></i> active now</span>
+    <span><i class="sw" style="background:var(--yes)"></i> confirmed / learned</span>
+    <span><i class="sw" style="background:var(--no)"></i> refused</span>
+    <span><i class="sw" style="background:var(--wonder)"></i> a question framed</span>
+  </div>
+  <div class="unmapped" id="unmapped" hidden></div>
+</div>
+
+<script>
+// ── the map: lanes -> components -> the trace kinds each one owns ─────────
+// Taken from the real `_t(...)` calls in the tree, not from an idea of the
+// architecture. A kind that appears and is not here shows up under the map as
+// unmapped, so the picture cannot quietly go stale.
+const LANES = [
+  ["the world", [
+    {id:"env",   name:"World",       note:"the maze resolves a move",       kinds:["explore","restart","level_up","out_of_time"]},
+    {id:"body",  name:"Body",        note:"what he tries, and what refuses", kinds:["bump","probe"], no:["bump"]},
+    {id:"sense", name:"Senses",      note:"sight, hearing, belief",          kinds:["sense","eat","ghost_eaten","trapped"]},
+    {id:"threat",name:"Threat",      note:"flee, traps, being caught",       kinds:["flee","flee_override","caught","mine","rest"], no:["caught"]},
+  ]],
+  ["what he holds", [
+    {id:"map",   name:"His map",     note:"one model, every world",          kinds:["learn","derive"], yes:["learn","derive"]},
+    {id:"gate",  name:"The gate",    note:"every fact passes here",          kinds:["gate","gate_relation","gate_retrieval"]},
+    {id:"walk",  name:"Retrieval",   note:"walking his own facts",           kinds:["walk","no_walk","retrieve_fallback"], no:["no_walk"]},
+  ]],
+  ["what he wonders", [
+    {id:"wonder",name:"Questions",   note:"framed, not assumed",             kinds:["wonder","hypothesis"], wonder:["wonder","hypothesis"]},
+    {id:"settle",name:"Verdicts",    note:"the result decides",              kinds:["hypothesis_settled","hypothesis_error"], yes:["hypothesis_settled"]},
+    {id:"can",   name:"Capabilities",note:"earned, never granted",           kinds:["capability"], yes:["capability"]},
+  ]],
+  ["what he makes", [
+    {id:"lib",   name:"Moves",       note:"composed, crossed, retired",      kinds:["program","program_rejected","modify","cross","retire","superpower_move"], no:["program_rejected"]},
+    {id:"vm",    name:"The VM",      note:"certifies or refuses",            kinds:["vm","forge"]},
+    {id:"plan",  name:"Planning",    note:"a route over his own map",        kinds:["plan"]},
+  ]],
+  ["what he says", [
+    {id:"think", name:"Thoughts",    note:"written from percepts",           kinds:["thought"]},
+    {id:"guard", name:"The guard",   note:"invented or recited: refused",    kinds:["thought_refused","thought_error"], no:["thought_refused","thought_error"]},
+    {id:"talk",  name:"Speech",      note:"the turn that reaches a person",  kinds:["speak","emit","route","user","ask_retry"]},
+  ]],
+];
+
+const BY_KIND = new Map();          // kind -> {node, tone}
+const NODES = new Map();            // id -> {el, count, timer}
+const mapEl = document.getElementById("map");
+
+for (const [laneName, nodes] of LANES) {
+  const lane = document.createElement("div");
+  lane.className = "lane";
+  const nm = document.createElement("div");
+  nm.className = "laneName"; nm.textContent = laneName;
+  const row = document.createElement("div"); row.className = "row";
+  for (const n of nodes) {
+    const el = document.createElement("div");
+    el.className = "node idle";
+    el.innerHTML = `<span class="n">0</span><h3></h3><p></p><div class="last"></div>`;
+    el.querySelector("h3").textContent = n.name;
+    el.querySelector("p").textContent = n.note;
+    row.appendChild(el);
+    NODES.set(n.id, {el, count:0, timer:null});
+    for (const k of n.kinds) {
+      const tone = (n.no||[]).includes(k) ? "no" : (n.yes||[]).includes(k) ? "yes"
+                 : (n.wonder||[]).includes(k) ? "wonder" : "hot";
+      BY_KIND.set(k, {id:n.id, tone});
+    }
+  }
+  lane.append(nm, row);
+  mapEl.appendChild(lane);
+}
+
+// ── light a component, then let it cool ──────────────────────────────────
+function light(id, tone, label) {
+  const n = NODES.get(id); if (!n) return;
+  n.count++;
+  n.el.classList.remove("idle","hot","yes","no");
+  n.el.classList.add(tone === "wonder" ? "hot" : tone);
+  n.el.querySelector(".n").textContent = n.count;
+  n.el.querySelector(".last").textContent = label;
+  clearTimeout(n.timer);
+  n.timer = setTimeout(() => n.el.classList.remove("hot","yes","no"), 1100);
+}
+
+// ── the tape ─────────────────────────────────────────────────────────────
+const tape = document.getElementById("tape");
+const tapeCount = document.getElementById("tapeCount");
+let total = 0, cleared = false;
+function note(ev, tone) {
+  if (!cleared) { tape.innerHTML = ""; cleared = true; }
+  const row = document.createElement("div");
+  row.className = "ev" + (tone === "hot" ? "" : " " + tone);
+  const detail = ev.place || ev.claim || ev.text || ev.name || ev.tried || ev.learned
+              || ev.to || ev.gained || ev.fact || "";
+  row.innerHTML = `<span class="t">${ev.i}</span><span class="k"><b></b> <span class="d"></span></span>`;
+  row.querySelector("b").textContent = ev.kind;
+  row.querySelector(".d").textContent = String(detail).slice(0, 80);
+  tape.prepend(row);
+  while (tape.children.length > 220) tape.lastChild.remove();
+  tapeCount.textContent = (++total) + (total === 1 ? " event" : " events");
+}
+
+// ── honest about what it does not know ───────────────────────────────────
+const unknown = new Set();
+const unmappedEl = document.getElementById("unmapped");
+function unmapped(kind) {
+  if (unknown.has(kind)) return;
+  unknown.add(kind);
+  unmappedEl.hidden = false;
+  unmappedEl.innerHTML = "Not on the map yet: " +
+    [...unknown].map(k => `<b>${k}</b>`).join(", ") +
+    " — the system emitted a trace this picture has no component for.";
+}
+
+// ── poll ─────────────────────────────────────────────────────────────────
+const statusEl = document.getElementById("status");
+const statusText = document.getElementById("statusText");
+let since = 0, quiet = 0;
+
+function setStatus(s, text) { statusEl.dataset.s = s; statusText.textContent = text; }
+
+async function tick() {
+  try {
+    const r = await fetch("/events?since=" + since, {cache:"no-store"});
+    if (!r.ok) throw new Error(r.status);
+    const data = await r.json();
+    const evs = data.events || [];
+    if (evs.length) {
+      quiet = 0;
+      setStatus("live", evs.length + " in flight");
+      for (const ev of evs) {
+        const hit = BY_KIND.get(ev.kind);
+        if (hit) { light(hit.id, hit.tone, String(ev.kind)); note(ev, hit.tone); }
+        else { unmapped(ev.kind); note(ev, "hot"); }
+      }
+    } else if (++quiet > 6) {
+      setStatus("idle", "connected, he is not moving");
+    }
+    since = data.next ?? since;
+  } catch (e) {
+    setStatus("off", "no server on this port");
+  }
+}
+tick();
+setInterval(tick, 400);
+</script>
+</body>
+</html>

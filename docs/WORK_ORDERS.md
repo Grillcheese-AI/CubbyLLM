@@ -1838,6 +1838,114 @@ Tests: 8 in `standin/tests/test_hypothesis.py`, 1 live in `test_pacman_percepts.
 
 ---
 
+## WO-2.13 — One map, many worlds: he builds his own by asking the others
+
+**Status: SPECIFIED 2026-09-15, not built.** Owner: Nick. This is the system's core
+loop as he describes it, and it reframes what everything above was heading towards.
+
+> *"if it learns gravity in cubby-man per example that skill should be transferable /
+> usable in other worlds ... in fact all should be connected. The science world is having
+> gravity inside, cubby dont know it tries stuff then all of a sudden oh... let me ask the
+> world: 'how can I know when something is about to fall on me?' then the science world
+> sends the gravity + attraction laws so it understands... same for the coding world, if
+> it needs to code something, it will ask from the coding world: 'I need to do write an
+> hello world' then the coding world will reply with the right code for it (in the chosen
+> language), then cubby stores it in long term memory so it knows that part and dont have
+> to ask already. In reality its cubby building its own world via interations via other
+> worlds outside its own."*
+
+### The shape
+
+**Cubby has ONE map.** Cubby-man, science, coding are not separate agents with separate
+knowledge — they are *contexts he acts in* and *sources he can query*. WO-2.12's loop
+gains a fourth way a question gets settled:
+
+| a question is settled by… | what answers |
+|---|---|
+| **world** | the environment, over time — walk into it, or wait and watch |
+| **vm** | a CubeLang program the VM certifies |
+| **runner** | code, by running it |
+| **ask** | **another world that already knows** |
+
+```
+he hits something his map cannot explain
+  -> he frames the question in his own words
+  -> it is addressed to the WORLD whose domain it is
+  -> that world answers with laws / facts / code
+  -> the answer enters HIS map, through the same gate as a percept
+  -> next time he does not ask; he knows
+```
+
+And because there is one map, **gravity learned in cubby-man is available in the coding
+world** without anything being copied between them. That is not a feature to build; it is
+what having one map means.
+
+### This is not the oracle we removed — and the difference is the whole design
+
+WO-2.10 spent a day taking `env.ghosts` away from him. It would be easy to read
+"ask a world and it tells you" as putting it straight back. It is not, and the line is
+sharp:
+
+| the oracle (removed) | asking a world (this) |
+|---|---|
+| **state** he has no way to perceive — where the ghosts are *right now* | **knowledge** — how falling things behave |
+| arrives silently, as a fact he never earned | arrives as an answer to a question he framed |
+| cannot be wrong, and cannot be checked | can be wrong, and is held as a fact that later evidence can refute |
+| makes perception unnecessary | tells him **what to perceive** — "something above me, getting closer" |
+
+The test that keeps them apart: *could he, in principle, have found this out himself?*
+Gravity, yes — slowly, by dropping things. Where a ghost is standing, never. A world may
+teach him a law; it may not hand him the state of the board.
+
+### What already exists
+
+More than it looks. `brain.worlds` is **already** a dict of queryable knowledge sources
+(`facts`, `wiki`, `pacman`), the reasoning cortex already answers a question *from* a
+world through the walk → emitter → VM → gate path, `hypothesis.py` already has the
+frame-and-settle loop with a pluggable verifier, and `_learn()` is already the one gate
+every fact passes. The missing piece is small and specific: **routing a question he
+cannot answer to the world whose domain it is, and keeping the answer.**
+
+Constraint, unchanged: a world is in-system. A FactStore, a physics module, the emitter
+generating a program. *"the llm is only to build the dataset"* — the worlds are not
+external API calls.
+
+### Nick's larger claim, stated as the hypothesis it is
+
+> *"thinking about it, it could even replace SFT ;)"*
+
+If a world can answer at runtime and he keeps the answer, then **the corpus no longer has
+to carry the content** — only the *form*: how to emit a program, how to frame a question,
+how to address it. Knowledge moves from weights to the map, and the map is editable,
+inspectable, and refutable, which weights are not. That is the no-retraining principle
+taken to its end.
+
+It is also, fittingly, a hypothesis — so it gets a test rather than a claim:
+
+*Strip one knowledge family out of the emitter's corpus entirely. Provide the same
+knowledge as a world. Measure the held-out set against the incumbent, on the two-clause
+criterion: **wrong answers, and refusal rate, separately.** If ask-a-world matches on
+correctness and the cost lands in refusals and latency, the content half of SFT is
+replaceable and we can say by how much. If correctness drops, it is not, and the honest
+finding is which part of the corpus was carrying it.*
+
+*Kill criterion:* the first ask-a-world build must show a question he could not answer
+before, answered after asking, **with the answer still there on the next run and no second
+ask**. If he re-asks, nothing was learned and this is a retrieval cache with extra steps.
+
+### The first build, smallest version
+
+1. A `Worlds` registry: name → domain → `answer(question) -> facts | None`.
+2. An `ask` verifier for `hypothesis.py`, so "ask the world that knows" is a way a claim
+   gets settled and not a separate mechanism.
+3. One real world beyond the game — physics is the right first one, because Nick's own
+   example is falling and because the answer is a *law* that generalises rather than a
+   lookup.
+4. The demonstration: something drops on cubby-man, he cannot explain it, he asks, he
+   gets the law, he holds it, and on the next occurrence he predicts instead of asking.
+
+---
+
 # Phase 3 — New capability (gated on Phase 2)
 
 ## WO-3.1 — The host agenda: branchless programs, host-owned search

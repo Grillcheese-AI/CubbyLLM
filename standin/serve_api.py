@@ -186,6 +186,12 @@ def make_handler(brain):
                     self._raw(200, body, "text/html; charset=utf-8")        # no-store: the panel is edited live
                 except OSError:
                     self._send(404, {"error": "dashboard/control_panel.html not found"})
+            elif self.path.rstrip("/") == "/map":            # the component map: every part, lit when it fires
+                try:
+                    body = open(os.path.join(ROOT, "dashboard", "component_map.html"), "rb").read()
+                    self._raw(200, body, "text/html; charset=utf-8")
+                except OSError:
+                    self._send(404, {"error": "dashboard/component_map.html not found"})
             elif self.path.startswith("/loop/events"):       # the ring: every loop event with id > since
                 try:
                     since = int(self.path.split("since=", 1)[1].split("&")[0]) if "since=" in self.path else 0
@@ -329,6 +335,7 @@ def main():
                  f"(CUBBYMAN_GHOST_FREE_LEVELS=0 turns the threat on at level 1)\n" if gfl else "")
               + "  he is offered what his BODY can do, not the maze's legal moves: "
                 "a refused move is how he finds a wall\n"
+              + f"  every component, lit when it fires: http://{args.host}:{args.port}/map\n"
               f"  his programs + reasoning: {PROGRAMS_PATH} (and .md) | "
               f"http://{args.host}:{args.port}/pac/programs.md"
               + (f" | {len(man.library.entries)} programs remembered from earlier runs"

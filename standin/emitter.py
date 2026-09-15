@@ -217,6 +217,17 @@ class LlamaCppEmitter:
     def __init__(self, gguf_path: str, system: str = SYSTEM, n_ctx: int = 4096,
                  n_gpu_layers: int = -1, verbose: bool = False, prefill: str | None = None,
                  family: str | None = None, script_ban: bool | None = None) -> None:
+        # Fail here, not on the first emit. The load is lazy, so a path that
+        # does not resolve from the process CWD used to surface minutes later
+        # as a SPEECH failure ("Model path does not exist" out of `_speak`),
+        # which reads like a bug in the talking rather than in the launch —
+        # found 2026-09-15 by the component map, which lit `thought_error`
+        # while the game itself ran perfectly.
+        if not os.path.exists(gguf_path):
+            raise FileNotFoundError(
+                f"no GGUF at {gguf_path!r} (from {os.getcwd()!r}). "
+                "Paths like standin/models/... are relative to the REPO ROOT — "
+                "run serve_api.py from there, or pass an absolute path.")
         self.gguf_path = gguf_path
         self.script_ban = (os.environ.get("CB_SCRIPT_BAN", "1") != "0") if script_ban is None else bool(script_ban)
         self._logits_processor = None

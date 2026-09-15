@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import pathlib
 import sys
+import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 for p in (str(ROOT), str(ROOT / "standin" / "data")):
@@ -12,6 +13,17 @@ for p in (str(ROOT), str(ROOT / "standin" / "data")):
         sys.path.insert(0, p)
 
 import build_emitter_sft as b  # noqa: E402
+
+_FAKE_GGUF_DIR = pathlib.Path(tempfile.mkdtemp(prefix="cb-fake-gguf-"))
+
+
+def fake_gguf(name: str) -> str:
+    """A path that EXISTS but holds no model. LlamaCppEmitter validates its path in
+    __init__ so a launch mistake fails at LAUNCH, not minutes later inside _speak; the
+    model LOAD is still lazy, which is what the assertions below pin."""
+    f = _FAKE_GGUF_DIR / name
+    f.touch()
+    return str(f)
 
 ISOLVER_NO_SHIM = """# q
 program GSM0 implements ISolver {
@@ -101,7 +113,7 @@ def test_emitter_protocol_and_replay():
     from standin.emitter import Emitter, LlamaCppEmitter, LlamaServerEmitter, ReplayEmitter
     rep = ReplayEmitter([{"prompt": "q1", "generated": "program X"}])
     assert isinstance(rep, Emitter) and isinstance(LlamaServerEmitter(), Emitter)
-    lc = LlamaCppEmitter("C:/x/emitter-q4_k_m.gguf")          # lazy: no load until emit()
+    lc = LlamaCppEmitter(fake_gguf("emitter-q4_k_m.gguf"))          # lazy: no load until emit()
     assert isinstance(lc, Emitter) and lc.name == "llama-cpp:emitter-q4_k_m.gguf" and lc._llm is None
     assert rep.emit("q1") == "program X"
     try:
@@ -154,11 +166,11 @@ def test_chat_family_is_sniffed_from_the_gguf_template_and_rendered_per_family()
     assert render_gemma("SYS", "hello") == "<start_of_turn>user\nSYS\n\nhello<end_of_turn>\n<start_of_turn>model\n"
     assert render_gemma("", "hello", "Answer:") == "<start_of_turn>user\nhello<end_of_turn>\n<start_of_turn>model\nAnswer:"
     assert CHAT_FAMILIES["lfm"][1] == CHAT_FAMILIES["chatml"][1] == ["<|im_end|>"] and CHAT_FAMILIES["gemma"][1] == ["<end_of_turn>"]
-    g = LlamaCppEmitter("x/talk_gemma.gguf", family="gemma")       # explicit family: no load needed
+    g = LlamaCppEmitter(fake_gguf("talk_gemma.gguf"), family="gemma")       # explicit family: no load needed
     assert g.family == "gemma" and g.prefill == ""
-    assert LlamaCppEmitter("x/emitter_v7.Q4_K_M.gguf", family="lfm").prefill == "<think>\n</think>\n"
-    assert LlamaCppEmitter("x/talk_qwen.gguf", family="chatml").prefill == ""
-    assert LlamaCppEmitter("x/a.gguf", family="gemma", prefill="<think>\n</think>\n").prefill == "<think>\n</think>\n"
+    assert LlamaCppEmitter(fake_gguf("emitter_v7.Q4_K_M.gguf"), family="lfm").prefill == "<think>\n</think>\n"
+    assert LlamaCppEmitter(fake_gguf("talk_qwen.gguf"), family="chatml").prefill == ""
+    assert LlamaCppEmitter(fake_gguf("a.gguf"), family="gemma", prefill="<think>\n</think>\n").prefill == "<think>\n</think>\n"
 
 
 def test_gold_matches_numeric_and_string_and_missing():
@@ -201,7 +213,7 @@ def test_llama_cpp_emitters_take_turns_on_the_gpu_across_threads():
             FakeLlama.busy -= 1
             yield 9
 
-    a, b = LlamaCppEmitter("x/a.gguf", family="chatml"), LlamaCppEmitter("x/b.gguf", family="chatml")
+    a, b = LlamaCppEmitter(fake_gguf("a.gguf"), family="chatml"), LlamaCppEmitter(fake_gguf("b.gguf"), family="chatml")
     a._llm, b._llm = FakeLlama(), FakeLlama()
     outs = []
     ts = [threading.Thread(target=lambda e=e: outs.append(e.emit("hi", max_new_tokens=4))) for e in (a, b, a, b, a, b)]
