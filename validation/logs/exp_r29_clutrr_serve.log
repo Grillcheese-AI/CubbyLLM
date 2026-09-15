@@ -10,27 +10,27 @@ whole_chain  (tau = the bundle's, chunk=0)
    depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
   ----------------------------------------------------------------------------
        2   32       32        0      0       0   0.4736   -
-       3   32       30        2      0       0   0.2202   retrieval_exhausted
-       4   32        0       32      0       0   0.2202   retrieval_exhausted
-       5   32        0       32      0       0   0.2202   retrieval_exhausted
-       6   32        0       32      0       0   0.2202   retrieval_exhausted
-       7   32        0       32      0       0   0.2202   retrieval_exhausted
-       8   32        0       32      0       0   0.2202   retrieval_exhausted
-       9   32        0       32      0       0   0.2202   retrieval_exhausted
-      10   32        0       32      0       0   0.2202   retrieval_exhausted
+       3   32       30        2      0       0   0.2202   vm_verify_failed
+       4   32        0       32      0       0   0.2202   vm_verify_failed
+       5   32        0       32      0       0   0.2202   vm_verify_failed
+       6   32        0       32      0       0   0.2202   vm_verify_failed
+       7   32        0       32      0       0   0.2202   vm_verify_failed
+       8   32        0       32      0       0   0.2202   vm_verify_failed
+       9   32        0       32      0       0   0.2202   vm_verify_failed
+      10   32        0       32      0       0   0.2202   vm_verify_failed
 
 chunk2  (tau = the bundle's, chunk=2)
    depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
   ----------------------------------------------------------------------------
        2   32       32        0      0       0   0.4736   -
-       3   32       30        2      0       0   0.4736   retrieval_exhausted
-       4   32       31        1      0       0   0.4736   retrieval_exhausted
-       5   32       30        2      0       0   0.4736   retrieval_exhausted
-       6   32       28        4      0       0   0.4736   retrieval_exhausted
-       7   32       25        7      0       0   0.4736   retrieval_exhausted
-       8   32       25        7      0       0   0.4736   retrieval_exhausted
-       9   32       24        8      0       0   0.4736   retrieval_exhausted
-      10   32       21       11      0       0   0.4736   retrieval_exhausted
+       3   32       30        2      0       0   0.4736   vm_verify_failed
+       4   32       31        1      0       0   0.4736   vm_verify_failed
+       5   32       30        2      0       0   0.4736   vm_verify_failed
+       6   32       28        4      0       0   0.4736   vm_verify_failed
+       7   32       25        7      0       0   0.4736   vm_verify_failed
+       8   32       25        7      0       0   0.4736   vm_verify_failed
+       9   32       24        8      0       0   0.4736   vm_verify_failed
+      10   32       21       11      0       0   0.4736   vm_verify_failed
 
 null_relation  (tau = the bundle's, chunk=2)
    depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason

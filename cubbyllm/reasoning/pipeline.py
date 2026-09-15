@@ -280,6 +280,13 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
     budget = [max_repairs]
     banned: set[str] = set()
     last_trace: list[HopTrace] = []
+    # The FIRST attempt's verify clauses, kept across the retry. A verify failure
+    # bans the weakest hop's fact; if the store has no replacement the retry's
+    # walk returns None and the honest reason is still "the VM rejected the
+    # binding", not "retrieval ran out". Reporting the retry's symptom is how
+    # exp_r29 got 226 refusals all labelled `retrieval_exhausted` over a
+    # retrieval that had found the right fact every time.
+    verify_clauses: list[str] = []
     repairs: list[dict] = []
     pending_repair: dict | None = None
     # up to two walk+verify rounds (spec 4.4: one verify-stage repair pass)
@@ -307,7 +314,12 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
         if triples is None:
             return CoTResult(answer=None, verified=False,
                              trace=trace or last_trace, repairs_used=used,
-                             reason="retrieval_exhausted", repairs=repairs)
+                             reason=("vm_verify_failed" if verify_clauses
+                                     else "retrieval_exhausted"),
+                             refused=({"clauses": verify_clauses, "tau_vm": tau_vm,
+                                       "then": "retrieval_exhausted"}
+                                      if verify_clauses else None),
+                             repairs=repairs)
 
         display_rels = [(t.rel if i == 0 else plan.relations[i]) or t.rel
                         for i, t in enumerate(triples)]
@@ -318,14 +330,23 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
         # tau measures nothing (exp_r28, WO-2.6).
         source, fns = build_chain_program(triples, display_rels, chunk=chunk)
         ok = True
+        # WHICH clause failed, not just that one did. Without this the refusal
+        # that follows names a symptom: a binding rejected below tau bans its
+        # fact, the retry finds nothing else, and the caller is told
+        # `retrieval_exhausted` about a retrieval that worked perfectly
+        # (exp_r29, WO-2.6 -- 226 refusals, every one of them misattributed).
+        failed: list[str] = []
         for i, fn in enumerate(fns[:-1]):                # hop functions
             out = run_fn(source, fn)
             trace[i].symbol = out.get("result")
             trace[i].similarity = out.get("similarity")
-            if (trace[i].similarity is None or trace[i].similarity < tau_vm
-                    or normalize(trace[i].symbol or "")
-                    != normalize(triples[i].obj)):
+            if trace[i].similarity is None:
+                ok = False; failed.append(f"hop{i}:no_similarity")
+            elif trace[i].similarity < tau_vm:
                 ok = False
+                failed.append(f"hop{i}:below_tau({trace[i].similarity:.4f}<{tau_vm:.4f})")
+            elif normalize(trace[i].symbol or "") != normalize(triples[i].obj):
+                ok = False; failed.append(f"hop{i}:symbol_mismatch")
         ctrl = run_fn(source, fns[-1])                   # control
         ctrl_result = ctrl.get("result")
         ctrl_sim = ctrl.get("similarity")
@@ -334,7 +355,7 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
         # (noise_symbol, low_similarity), never None. Violation if: high similarity
         # (≥tau_vm) OR a symbol without verifiable similarity (unbound frame edge case).
         if (ctrl_sim is not None and ctrl_sim >= tau_vm) or (ctrl_result is not None and ctrl_sim is None):
-            ok = False
+            ok = False; failed.append("control:not_below_tau")
 
         if ok:
             # the claimed-answer invariant, at the only verified=True site
@@ -361,6 +382,7 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
         # verify failed: blacklist the weakest hop's fact and retry once
         # (only if another attempt will actually run and budget remains)
         last_trace = trace
+        verify_clauses = verify_clauses or failed
         if _attempt == 0:
             if budget[0] <= 0:
                 # No budget left: can't retry, so break
@@ -374,4 +396,5 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
 
     return CoTResult(answer=None, verified=False, trace=last_trace,
                      repairs_used=max_repairs - budget[0],
-                     reason="vm_verify_failed", source=source, repairs=repairs)
+                     reason="vm_verify_failed", source=source, repairs=repairs,
+                     refused={"clauses": verify_clauses or failed, "tau_vm": tau_vm})

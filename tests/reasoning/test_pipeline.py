@@ -317,3 +317,66 @@ def test_lookup_ambiguity_is_a_refusal_that_names_the_candidates_never_a_pick():
     assert r.refused["hop"] == 0 and sorted(r.refused["objects"]) == ["canada", "united stated"]
     assert set(r.refused["facts"]) == {F1_ALT, F1}
     assert r.repairs_used == 0 and r.trace == []
+
+
+# ── the refusal must name the cause, not the last symptom (WO-2.6 / exp_r29) ──
+
+def test_below_tau_is_reported_as_vm_verify_failed_not_retrieval_exhausted():
+    """A binding rejected below tau bans its fact; when the store has no
+    replacement the retry's walk comes back empty. Before this, the caller was
+    told `retrieval_exhausted` about a retrieval that had found the right fact
+    every time -- 226 refusals misattributed in exp_r29's whole-chain arm."""
+    def one_fact_each(query, k):
+        ql = query.lower()
+        if "cynthia" in ql:
+            return [(0.9, F1)]
+        if "continent" in ql:
+            return [(0.9, F3)]
+        return [(0.9, F2)]
+
+    def weak_vm(source, fn):
+        if fn == "control":
+            return {"ok": True, "result": None, "similarity": None}
+        want = {"solve": "united stated", "hop_2": "united stated",
+                "hop_3": "oceania portal"}
+        return {"ok": True, "result": want[fn], "similarity": 0.04}   # every hop below tau
+
+    r = answer(Q3, one_fact_each, weak_vm, tau_vm=0.5, tau_ret=0.2)
+    assert r.verified is False and r.answer is None
+    assert r.reason == "vm_verify_failed", r.reason
+    clauses = (r.refused or {}).get("clauses") or []
+    assert clauses and all("below_tau" in c for c in clauses), clauses
+    assert (r.refused or {}).get("tau_vm") == 0.5
+
+
+def test_symbol_mismatch_and_control_breach_are_named_separately():
+    def wrong_symbol_vm(source, fn):
+        if fn == "control":
+            return {"ok": True, "result": None, "similarity": None}
+        return {"ok": True, "result": "somebody else", "similarity": 0.93}
+
+    r = answer(Q3, good_retriever, wrong_symbol_vm, tau_vm=0.5, tau_ret=0.2)
+    assert r.verified is False
+    clauses = (r.refused or {}).get("clauses") or []
+    assert any("symbol_mismatch" in c for c in clauses), clauses
+
+    def loud_control_vm(source, fn):
+        if fn == "control":
+            return {"ok": True, "result": "noise", "similarity": 0.99}   # >= tau: a breach
+        want = {"solve": "united stated", "hop_2": "united stated",
+                "hop_3": "oceania portal"}
+        return {"ok": True, "result": want[fn], "similarity": 0.93}
+
+    r = answer(Q3, good_retriever, loud_control_vm, tau_vm=0.5, tau_ret=0.2)
+    assert r.verified is False
+    clauses = (r.refused or {}).get("clauses") or []
+    assert "control:not_below_tau" in clauses, clauses
+
+
+def test_genuine_retrieval_failure_still_says_retrieval_exhausted():
+    """The fix must not relabel the case the old name was right for."""
+    def nothing(query, k):
+        return []
+    r = answer(Q3, nothing, good_vm, tau_vm=0.5, tau_ret=0.2)
+    assert r.verified is False and r.reason == "retrieval_exhausted"
+    assert r.refused is None

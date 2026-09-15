@@ -1065,15 +1065,29 @@ and `learn_and_answer`. **The default is 0 and the serving path is unchanged**: 
 every number this repo has measured against the old shape is off by an unknown amount.
 Flipping the default is Nick's call, not this experiment's.
 
-**One instrument lies and it should be fixed.** Every refusal above reports
-`retrieval_exhausted`, which is not what happened. The walk found the right facts; the
-VM rejected the binding as below tau; the verify-stage repair then banned that fact and
-re-walked; and with a one-record store there was nothing else to find, so the refusal
-surfaced as exhausted retrieval. The reason names the last symptom, not the cause. A
-`vm_below_tau` reason emitted at the point of the tau test would have made
-`exp_r28` unnecessary — this is `PATH.md` §6 again, and it is a small fix.
+**One instrument lied, and it is fixed.** The first pass had every refusal above
+reporting `retrieval_exhausted`, which is not what happened. The walk found the right
+facts; the VM rejected the binding as below tau; the verify-stage repair banned that
+fact and re-walked; and with a one-record store there was nothing else to find, so the
+refusal surfaced as exhausted retrieval. The reason named the last symptom, not the
+cause — 226 refusals, every one misattributed, and the misattribution pointed away from
+the very finding this work order exists to make. `PATH.md` §6 again.
 
-Logs: `validation/logs/exp_r29_clutrr_serve.{json,log}`.
+`pipeline.answer` now keeps the first attempt's verify clauses across the retry and
+reports `vm_verify_failed` with them. The clauses are specific:
+
+```
+{"clauses": ["hop0:below_tau(0.0430<0.2202)", ..., "hop5:below_tau(0.0186<0.2202)"],
+ "tau_vm": 0.2202, "then": "retrieval_exhausted"}
+```
+
+`hop{i}:below_tau(sim<tau)`, `hop{i}:symbol_mismatch`, `hop{i}:no_similarity` and
+`control:not_below_tau` are named separately, so a future reader does not have to write
+`exp_r28` to find out which clause fired. A genuine retrieval failure still says
+`retrieval_exhausted` and carries no clauses — `tests/reasoning/test_pipeline.py` pins
+all four. Re-running `exp_r29` after the fix changes every reason and no number.
+
+Logs: `validation/logs/exp_r29_clutrr_serve.{json,log}` (post-fix).
 
 **A label that must travel with every number above.** This is **CLUTRR-derived, not
 CLUTRR**. CLUTRR asks for the composite relation between two named entities; these are
@@ -1085,12 +1099,17 @@ that sentence so a future reader cannot pick the number up without it.
 
 ### The next builds this implies
 
-1. **`vm_below_tau` as its own refusal reason** — above; cheap, and it is the
-   difference between an instrument that reports a cause and one that reports a
-   symptom.
+1. ~~`vm_below_tau` as its own refusal reason~~ — **done**, above.
 2. **tau from a measured quantile, not the expectation** — `exp_r28` shows tau
-   rejecting 2–4% of *correct* bindings at every depth.
-3. **Flip `chunk` on in the serving path** once 1 and 2 land, gated on the full gate
+   rejecting 2–4% of *correct* bindings at every depth, and that is the whole of the
+   42 refusals in `exp_r29`'s chunk-2 arm.
+3. **The emitter at depth.** Everything in `exp_r29` used the shipped *grammar* to
+   plan; **the emitter was never in the loop**. What it measures is the ceiling — what
+   the VM and the walk can do when the plan is right. Whether v13e or v14e can *emit* a
+   seven-hop chain having only ever trained on one to three is the generalization
+   question, and it is unanswered. That is `exp_r29 --models v13e,v14e`, and it needs
+   the chunked shape to exist first, which it now does.
+4. **Flip `chunk` on in the serving path** once 2 and 3 land, gated on the full gate
    battery (exp_r17, exp_r9, exp_r11, exp_r18) showing no regression at 1–3 hops,
    where the shipped shape is already at its ceiling.
 

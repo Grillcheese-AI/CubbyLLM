@@ -39,35 +39,35 @@
     "verified": 30,
     "correct": 30,
     "refused": 2,
-    "why:retrieval_exhausted": 2
+    "why:vm_verify_failed": 2
    },
    "4": {
     "refused": 32,
-    "why:retrieval_exhausted": 32
+    "why:vm_verify_failed": 32
    },
    "5": {
     "refused": 32,
-    "why:retrieval_exhausted": 32
+    "why:vm_verify_failed": 32
    },
    "6": {
     "refused": 32,
-    "why:retrieval_exhausted": 32
+    "why:vm_verify_failed": 32
    },
    "7": {
     "refused": 32,
-    "why:retrieval_exhausted": 32
+    "why:vm_verify_failed": 32
    },
    "8": {
     "refused": 32,
-    "why:retrieval_exhausted": 32
+    "why:vm_verify_failed": 32
    },
    "9": {
     "refused": 32,
-    "why:retrieval_exhausted": 32
+    "why:vm_verify_failed": 32
    },
    "10": {
     "refused": 32,
-    "why:retrieval_exhausted": 32
+    "why:vm_verify_failed": 32
    }
   },
   "chunk2": {
@@ -79,49 +79,49 @@
     "verified": 30,
     "correct": 30,
     "refused": 2,
-    "why:retrieval_exhausted": 2
+    "why:vm_verify_failed": 2
    },
    "4": {
     "verified": 31,
     "correct": 31,
     "refused": 1,
-    "why:retrieval_exhausted": 1
+    "why:vm_verify_failed": 1
    },
    "5": {
     "verified": 30,
     "correct": 30,
     "refused": 2,
-    "why:retrieval_exhausted": 2
+    "why:vm_verify_failed": 2
    },
    "6": {
     "verified": 28,
     "correct": 28,
     "refused": 4,
-    "why:retrieval_exhausted": 4
+    "why:vm_verify_failed": 4
    },
    "7": {
     "verified": 25,
     "correct": 25,
     "refused": 7,
-    "why:retrieval_exhausted": 7
+    "why:vm_verify_failed": 7
    },
    "8": {
     "verified": 25,
     "correct": 25,
     "refused": 7,
-    "why:retrieval_exhausted": 7
+    "why:vm_verify_failed": 7
    },
    "9": {
     "verified": 24,
     "correct": 24,
     "refused": 8,
-    "why:retrieval_exhausted": 8
+    "why:vm_verify_failed": 8
    },
    "10": {
     "verified": 21,
     "correct": 21,
     "refused": 11,
-    "why:retrieval_exhausted": 11
+    "why:vm_verify_failed": 11
    }
   },
   "null_relation": {
@@ -169,5 +169,5 @@
   "chunk2": [],
   "null_relation": []
  },
- "wall_s": 3.2
+ "wall_s": 3.0
 }
