@@ -637,22 +637,43 @@ answers** — and they are deterministic: the same question fails whenever it is
 So the whole v13e-vs-v14e gap is two malformed-entity questions that v14e refuses and v13e
 answers.
 
-### The verdict, and a criterion that needs amending
+### The verdict: the criterion was wrong, not the arm
 
-Read literally, **the kill criterion triggers**: the VM-verified answer rate dropped, by 1.0 of
+Read literally, **the kill criterion triggered**: the VM-verified answer rate dropped, by 1.0 of
 600 on average. The work order says such an arm is *abandoned rather than explained*, and that
-rule exists for good reason, so the trigger is recorded here rather than argued away.
+rule exists for good reason, so the trigger was recorded rather than argued away — and then the
+criterion itself was examined.
 
-But the criterion as written does not distinguish the two outcomes this whole project is built on
-separating. The loss is entirely into **refusals**, on **corrupted inputs**, with **zero wrong
-answers in 4,200 questions** — bought in exchange for taking the role vocabulary from 412
-identifiers to 17, which is the memorization ceiling described in §5.3. A criterion that kills an
-arm for converting an answer into a refusal is measuring the wrong thing by this project's own
-first principle.
+It does not distinguish the two outcomes this whole project is built on separating. The loss is
+entirely into **refusals**, on **corrupted inputs**, with **zero wrong answers in 4,200
+questions** — bought in exchange for taking the role vocabulary from 412 identifiers to 17, the
+memorization ceiling described in §5.3.
 
-The proposed amendment, for the record: *the arm dies if wrong answers appear, or if the verified
-rate drops by more than one percent* — not on any drop at all. Nick's call, and it is a decision
-about the criterion, not about this arm.
+**Amended, owner decision 2026-09-15.** The rule is now general and binds every work order, not
+just this one:
+
+> **A kill criterion may not treat a refusal and a wrong answer as the same event.** State two
+> clauses, separately: the arm dies if **wrong answers appear**, and it dies if the VM-verified
+> rate drops by **more than one percent**. A drop inside that band, entirely into refusals, is a
+> cost to record — not a kill.
+
+The reasoning is worth stating plainly, because the original wording read like rigour. A criterion
+that kills an arm for converting an answer into a refusal **rewards guessing** — and guessing is
+the single behaviour the kill line exists to forbid. Written as it was, it would have enforced the
+opposite of the invariant it was serving.
+
+It is the same failure as every instrument in §6, one level up: **an acceptance rule that collapses
+two outcomes the system exists to distinguish will eventually enforce the wrong one.** §6 is about
+instruments that could not measure what they claimed; this is a *decision rule* that could not
+decide what it claimed. The defence is the same — check it against a case whose answer you already
+know.
+
+Recorded in `WORK_ORDERS.md` under "Before you touch anything", with the original wording struck
+through in place rather than deleted. WO-2.5's criterion has been rewritten into the two-clause
+form ahead of being run.
+
+**v14e_nochain is adopted** under the amended rule: no wrong answers, a drop far inside one
+percent, and the WO-0.3 vocabulary ceiling removed.
 
 **One thing this result costs us.** v13e scores 600/600 on two of three seeds. The held split is
 at its ceiling and can no longer discriminate between these arms — the next comparison needs a
@@ -803,7 +824,10 @@ or a record of an instrument that would have told us we were already there.
   3 emitters. v12e reproduces 531/600 exactly; **v13e 599.7 and v14e_nochain 598.7 mean**, so
   both new arms beat the incumbent by ~11 points and the with-`chain` corpus is measured for the
   first time. **0 wrong answers in 4,200 questions.** The arms differ by two specific
-  malformed-entity questions that v14e refuses. Kill criterion triggers literally; §8 argues the
-  criterion should be amended to fire on wrong answers or a >1% drop, not on any drop. The split
-  is now at its ceiling (v13e 600/600 on two seeds) and can no longer separate the arms — WO-2.5
-  is the next real test.
+  malformed-entity questions that v14e refuses.
+- **2026-09-15, the criterion amended** — Owner decision. A kill criterion may no longer treat a
+  refusal and a wrong answer as the same event: two clauses, separately, and a drop under one
+  percent that lands entirely in refusals is a cost, not a kill. The original wording would have
+  rewarded guessing while reading like rigour. **v14e_nochain is adopted.** The held split is now
+  at its ceiling (v13e 600/600 on two seeds) and can no longer separate the arms — WO-2.5, whose
+  criterion has been rewritten into the two-clause form, is the next real test.

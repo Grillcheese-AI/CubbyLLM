@@ -33,6 +33,24 @@ Full arguments: `docs/research/2026-09-14-token-free-vm-competition.md` and
 **The kill line: 0 wrong answers spoken.** A refusal is a result; a wrong answer is a defect.
 When a change could trade a refusal for a guess, that is not a trade.
 
+**How to write a kill criterion** (owner decision 2026-09-15, after WO-1.3's fired wrongly). The
+line above is not just a target, it is a constraint on how every other criterion is phrased:
+
+> **A kill criterion may not treat a refusal and a wrong answer as the same event.** State two
+> clauses, separately: the arm dies if **wrong answers appear**, and it dies if the VM-verified
+> rate drops by **more than one percent**. A drop inside that band, entirely into refusals, is a
+> cost to record — not a kill.
+
+WO-1.3's original wording was "if the VM-verified answer rate drops". It fired at −1.0 of 600,
+every lost question a refusal, on an arm that removed 395 memorized role identifiers and produced
+0 wrong answers in 4,200 questions. A criterion that kills an arm for converting an answer into a
+refusal **rewards guessing**, which is the one behaviour the kill line exists to forbid — and it
+would have done so while reading like rigour, which is the dangerous part.
+
+The general form, and it is the same lesson as every instrument failure in `docs/PATH.md` §6: an
+acceptance rule that collapses two outcomes the system exists to distinguish will eventually
+enforce the wrong one. Write the rate clause and the correctness clause separately, always.
+
 **The model proposes, the host disposes, the VM decides.** An untrusted component gets one say.
 
 **Standing constraints**
@@ -500,6 +518,58 @@ taught broken source.
    Leave `STANDIN_ARM` at `full` for both, and do not edit the training cell between runs.
    The adapter/merged/GGUF land in version- and arm-named folders, so the two never collide.
 
+### RESULT 2026-09-15 — both arms trained and scored
+
+Scored on the gen-3 **held** split (`exp_r17`), which is fixed by seed and independent of the
+corpus, so unlike the notebook's val sample it does not move when the treatment moves. 600
+questions, three seeds, same store (563,062 facts). Logs: `validation/logs/exp_r17_gen3_heldout_cmp_*`.
+
+| arm | s7 | s8 | s9 | mean | WRONG |
+|---|---:|---:|---:|---:|---:|
+| `emitter_v12e` — the incumbent | 531 | — | — | 531 | 0 |
+| `emitter_v13e` — the control | 599 | 600 | 600 | **599.7** | 0 |
+| `emitter_v14e_nochain` — the treatment | 597 | 599 | 600 | **598.7** | 0 |
+
+**v12e reproduces 531/600 exactly** — the documented bar, to the item, which is what makes the
+other two rows trustworthy. Both new arms beat the incumbent by ~11 points: the with-`chain`
+corpus had never been trained before this cycle, so this is also the first measurement of what
+gen 3 is worth. **0 wrong answers in all seven runs — 4,200 questions.**
+
+**The arms differ by three questions, not by a rate.** Across all three seeds exactly three
+distinct questions ever fail, and every one carries a mangled entity name:
+
+    When was the sibling of France Killy Sister born?      both arms, seed 7
+    In which district is Seaside-Seattle Seattle located?   v14e only, seeds 7 and 8
+    What award did Seven Against Thebes Play receive?       v14e only, seed 7
+
+These are the decased-label and `' of '`-split artifacts (§ the semantic hole) leaking out of fact
+parsing into the question text. The first is failed by all three arms, v12e included. The two that
+separate the arms are `retrieval_exhausted` — refusals — and they are deterministic: the same
+question fails whenever it is sampled.
+
+**Adopted.** Under the amended criterion below the arm survives: no wrong answers, a drop far
+inside 1%, and the role vocabulary down from 412 identifiers to 17. That is the WO-0.3 ceiling
+removed for the price of two malformed-entity refusals.
+
+**What this costs:** v13e scores 600/600 on two of three seeds. The held split is at its ceiling
+and can no longer discriminate between these arms. WO-2.5 is now the next test that can, which
+moves it from "a Phase 2 item" to "the gating measurement".
+
+### The kill criterion, amended
+
+Owner decision 2026-09-15. The original wording — *if VM-verified answer rate drops* — fired on
+this arm at −1.0 of 600, and every lost question was a refusal.
+
+> **A kill criterion may not treat a refusal and a wrong answer as the same event.** An arm dies
+> if **wrong answers appear**, or if the VM-verified rate drops by **more than one percent**.
+> A drop inside that band, entirely into refusals, is a cost to record — not a kill.
+
+The reason is the first line of this document: a refusal is a result; a wrong answer is a defect.
+A criterion that kills an arm for converting an answer into a refusal rewards guessing, which is
+the one behaviour the kill line exists to forbid. **Any kill criterion written from here on states
+its wrong-answer clause and its rate clause separately**, and the general rule is recorded under
+"Before you touch anything".
+
 ---
 
 *Original specification:*
@@ -512,8 +582,10 @@ Separately, 11,731 rows teach the model to emit `@external` / `@system` / `@once
 which parses and is never read by compiler or VM. A capacity tax on a 2.6B, free to remove.
 
 **Falsifiable prediction:** dropping both improves plan accuracy and cross-task retention with no
-loss of VM-verified answers. **Kill criterion:** if VM-verified answer rate drops, `chain` was
-doing something the audit did not see.
+loss of VM-verified answers. ~~**Kill criterion:** if VM-verified answer rate drops, `chain` was
+doing something the audit did not see.~~ **AMENDED 2026-09-15 — see "the kill criterion, amended"
+above. This wording fired on a drop of 1.0 in 600 that was entirely refusals, and a criterion that
+cannot tell a refusal from a wrong answer is the one thing this project must never ship.**
 
 Also wire a verification signal into `plan` rows — they carry `vm_ok: None` today while `chain`
 carries `vm_ok: True`, which is very likely *why* the wrong-shaped task is the one that grew.
@@ -579,8 +651,16 @@ Plus two controls:
   self-indictment: once the host supplies the manifest, **a pure copier passes the unseen-relation
   test** and correctness migrates silently into manifest construction.
 
-*Kill criterion:* relabelled accuracy below 80% of labelled accuracy after 3 targeted rounds means
-the string-argument form is not carrying the generalization.
+*Kill criterion*, in the two-clause form the amended rule requires:
+
+- **Correctness.** Any wrong answer under relabelling kills it outright — a relation renamed to an
+  opaque token cannot make a *confident* mistake acceptable, and the null control's spoken answer
+  is the same breach.
+- **Rate.** Relabelled accuracy below 80% of labelled accuracy after 3 targeted rounds means the
+  string-argument form is not carrying the generalization.
+
+Refusals under relabelling are the expected honest failure and are recorded, not counted against
+the arm — that is the whole point of the amendment.
 
 ---
 
