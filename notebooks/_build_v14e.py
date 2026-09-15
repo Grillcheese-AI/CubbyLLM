@@ -131,6 +131,10 @@ OUT = OUT + MODEL_TAG + '_' + ARM
 print('arm:', ARM, '| out:', OUT)
 EVAL_ONLY = os.environ.get('STANDIN_EVAL_ONLY') == '1'
 if EVAL_ONLY: print('EVAL_ONLY: will load', f'{OUT}/merged', '(exists:', os.path.exists(f'{OUT}/merged'), ')')
+# Retire, never delete (invariant 4). An EVAL_ONLY re-run writes BESIDE the original
+# val_generations.json, not over it: the first run's numbers are the evidence that the eval
+# sampler was broken, and overwriting them would erase the only record of it.
+VAL_OUT = 'val_generations_evalonly.json' if EVAL_ONLY else 'val_generations.json'
 MAX_SEQ = 4096   # the v8e setting (owner, 2026-09-03: 4096 trains better than 2048 on the A100-80G)
 !nvidia-smi --query-gpu=name,memory.total --format=csv
 for f in (DATA, MANIFEST):
@@ -309,10 +313,23 @@ def emit(prompt, max_new=768, system=None):
                          pad_token_id=tokenizer.eos_token_id)
     return tokenizer.decode(out[0][enc['input_ids'].shape[1]:], skip_special_tokens=True)
 N_PER_TASK = int(os.environ.get('STANDIN_EVAL_N', '8'))
-rng = random.Random(1); by_task = {}
+by_task = {}
 for r in val: by_task.setdefault(r['task'], []).append(r)
-sample = [r for t, rs in sorted(by_task.items()) for r in rng.sample(rs, min(N_PER_TASK, len(rs)))]
-CAP = {'chain': 500, 'plan': 300, 'kernel': 600, 'arithmetic': 500, 'role_binding': 400}
+# One RNG PER TASK, seeded by task name. A single shared Random(1) consumed across
+# tasks in sorted order couples every task's sample to which tasks exist: v13e drew
+# arithmetic, then chain, then kernel...; v14e_nochain has no chain, so from its
+# second task onward it consumed a different slice of the same stream. The corpora
+# hold identical ids in identical order for every surviving task, yet the two arms
+# shared only 11 of 40 eval items -- 8/8 on arithmetic (drawn first, before the
+# streams diverge) and 0/8 on kernel. The independent variable was silently
+# changing which questions got scored. Per-task seeding makes a task's sample
+# depend only on that task's own pool.
+sample = [r for t, rs in sorted(by_task.items())
+          for r in random.Random(f'standin-eval:{t}').sample(rs, min(N_PER_TASK, len(rs)))]
+# arithmetic was 500 and truncated v13e's 9-step program mid-body: the parse then
+# fails at EOF, which scores as a miss but is really an unfinished generation. A
+# 9-step solve is ~45 lines / ~800 tokens, so the cap has to clear that.
+CAP = {'chain': 500, 'plan': 300, 'kernel': 600, 'arithmetic': 900, 'role_binding': 400}
 print('eval sample', len(sample), {t: min(N_PER_TASK, len(rs)) for t, rs in sorted(by_task.items())})
 hits = Counter(); tot = Counter(); chain_ok = Counter(); outputs = []
 t0 = time.time()
@@ -333,8 +350,10 @@ print('[stand-in] role-chain match (relations + order, what the disposer reads):
 json.dump({'model': MODEL, 'version': VERSION, 'arm': ARM, 'n': len(sample),
            'exact_match_by_task': {t: hits[t]/tot[t] for t in tot},
            'role_chain_by_task': {t: chain_ok[t]/tot[t] for t in chain_ok}, 'outputs': outputs,
-           'manifest_output_sha256': m.get('output_sha256')}, open(f'{OUT}/val_generations.json', 'w'), indent=1)
-print('generations ->', f'{OUT}/val_generations.json')
+           'manifest_output_sha256': m.get('output_sha256'),
+           'sampler': 'per-task-rng'},
+          open(f'{OUT}/{VAL_OUT}', 'w'), indent=1)
+print('generations ->', f'{OUT}/{VAL_OUT}')
 """
 
 HOWTO = r"""

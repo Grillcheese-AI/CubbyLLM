@@ -1,0 +1,363 @@
+{
+ "source": "val_generations.json",
+ "version": "v14e_nochain",
+ "arm": "full",
+ "reported_exact_match": {
+  "arithmetic": 0.0,
+  "kernel": 0.625,
+  "plan": 1.0,
+  "role_binding": 0.625
+ },
+ "tally": {
+  "arithmetic": {
+   "n": 8,
+   "correct": 6,
+   "refused": 1,
+   "wrong": 1
+  },
+  "kernel": {
+   "n": 8,
+   "correct": 8
+  }
+ },
+ "name_artifact_only": {
+  "arithmetic": 1,
+  "kernel": 2
+ },
+ "bad_references": [],
+ "wrong_answers": [
+  {
+   "id": "arithmetic-0cbb84ce1b19",
+   "task": "arithmetic",
+   "which": "generated",
+   "gold": 64,
+   "exact_match": false,
+   "ran": true,
+   "result": "108",
+   "correct": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "arithmetic-ebb268a4ea6d",
+   "task": "arithmetic",
+   "which": "reference",
+   "gold": 104,
+   "exact_match": false,
+   "ran": true,
+   "result": "104",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-ebb268a4ea6d",
+   "task": "arithmetic",
+   "which": "generated",
+   "gold": 104,
+   "exact_match": false,
+   "ran": true,
+   "result": "104",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-6b8147ebdd35",
+   "task": "arithmetic",
+   "which": "reference",
+   "gold": 52,
+   "exact_match": false,
+   "ran": true,
+   "result": "52",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-6b8147ebdd35",
+   "task": "arithmetic",
+   "which": "generated",
+   "gold": 52,
+   "exact_match": false,
+   "ran": true,
+   "result": "52",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-4f8a3d4bc719",
+   "task": "arithmetic",
+   "which": "reference",
+   "gold": 48,
+   "exact_match": false,
+   "ran": true,
+   "result": "48",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-4f8a3d4bc719",
+   "task": "arithmetic",
+   "which": "generated",
+   "gold": 48,
+   "exact_match": false,
+   "ran": true,
+   "result": "48",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-caac8cb40852",
+   "task": "arithmetic",
+   "which": "reference",
+   "gold": 29,
+   "exact_match": false,
+   "ran": true,
+   "result": "29",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-caac8cb40852",
+   "task": "arithmetic",
+   "which": "generated",
+   "gold": 29,
+   "exact_match": false,
+   "ran": true,
+   "result": "29",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-d189c4c10e36",
+   "task": "arithmetic",
+   "which": "reference",
+   "gold": 8,
+   "exact_match": false,
+   "ran": true,
+   "result": "8",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-d189c4c10e36",
+   "task": "arithmetic",
+   "which": "generated",
+   "gold": 8,
+   "exact_match": false,
+   "ran": false,
+   "result": null,
+   "correct": false,
+   "error": "cubelang error: parse error: 45:1: expected 'function' or 'constructor', got Eof"
+  },
+  {
+   "id": "arithmetic-3a1db9e1a7ff",
+   "task": "arithmetic",
+   "which": "reference",
+   "gold": 205,
+   "exact_match": false,
+   "ran": true,
+   "result": "205",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-3a1db9e1a7ff",
+   "task": "arithmetic",
+   "which": "generated",
+   "gold": 205,
+   "exact_match": false,
+   "ran": true,
+   "result": "205",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-cce8258dea72",
+   "task": "arithmetic",
+   "which": "reference",
+   "gold": 45,
+   "exact_match": false,
+   "ran": true,
+   "result": "45",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-cce8258dea72",
+   "task": "arithmetic",
+   "which": "generated",
+   "gold": 45,
+   "exact_match": false,
+   "ran": true,
+   "result": "45",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-0cbb84ce1b19",
+   "task": "arithmetic",
+   "which": "reference",
+   "gold": 64,
+   "exact_match": false,
+   "ran": true,
+   "result": "64",
+   "correct": true
+  },
+  {
+   "id": "arithmetic-0cbb84ce1b19",
+   "task": "arithmetic",
+   "which": "generated",
+   "gold": 64,
+   "exact_match": false,
+   "ran": true,
+   "result": "108",
+   "correct": false
+  },
+  {
+   "id": "game:count:187",
+   "task": "kernel",
+   "which": "reference",
+   "gold": 3,
+   "exact_match": true,
+   "ran": true,
+   "result": "3",
+   "correct": true
+  },
+  {
+   "id": "game:count:187",
+   "task": "kernel",
+   "which": "generated",
+   "gold": 3,
+   "exact_match": true,
+   "ran": true,
+   "result": "3",
+   "correct": true
+  },
+  {
+   "id": "game:decision:279",
+   "task": "kernel",
+   "which": "reference",
+   "gold": 30,
+   "exact_match": true,
+   "ran": true,
+   "result": "30",
+   "correct": true
+  },
+  {
+   "id": "game:decision:279",
+   "task": "kernel",
+   "which": "generated",
+   "gold": 30,
+   "exact_match": true,
+   "ran": true,
+   "result": "30",
+   "correct": true
+  },
+  {
+   "id": "kernel-f649a8da4a6c",
+   "task": "kernel",
+   "which": "reference",
+   "gold": 87,
+   "exact_match": false,
+   "ran": true,
+   "result": "87",
+   "correct": true
+  },
+  {
+   "id": "kernel-f649a8da4a6c",
+   "task": "kernel",
+   "which": "generated",
+   "gold": 87,
+   "exact_match": false,
+   "ran": true,
+   "result": "87",
+   "correct": true
+  },
+  {
+   "id": "kernel-f192d116c239",
+   "task": "kernel",
+   "which": "reference",
+   "gold": 240,
+   "exact_match": false,
+   "ran": true,
+   "result": "240",
+   "correct": true
+  },
+  {
+   "id": "kernel-f192d116c239",
+   "task": "kernel",
+   "which": "generated",
+   "gold": 240,
+   "exact_match": false,
+   "ran": true,
+   "result": "240",
+   "correct": true
+  },
+  {
+   "id": "game:compare:235",
+   "task": "kernel",
+   "which": "reference",
+   "gold": 2,
+   "exact_match": true,
+   "ran": true,
+   "result": "2",
+   "correct": true
+  },
+  {
+   "id": "game:compare:235",
+   "task": "kernel",
+   "which": "generated",
+   "gold": 2,
+   "exact_match": true,
+   "ran": true,
+   "result": "2",
+   "correct": true
+  },
+  {
+   "id": "kernel-d196ec69a293",
+   "task": "kernel",
+   "which": "reference",
+   "gold": 70,
+   "exact_match": false,
+   "ran": true,
+   "result": "70",
+   "correct": true
+  },
+  {
+   "id": "kernel-d196ec69a293",
+   "task": "kernel",
+   "which": "generated",
+   "gold": 70,
+   "exact_match": false,
+   "ran": true,
+   "result": "70",
+   "correct": true
+  },
+  {
+   "id": "game:decision:350",
+   "task": "kernel",
+   "which": "reference",
+   "gold": 30,
+   "exact_match": true,
+   "ran": true,
+   "result": "30",
+   "correct": true
+  },
+  {
+   "id": "game:decision:350",
+   "task": "kernel",
+   "which": "generated",
+   "gold": 30,
+   "exact_match": true,
+   "ran": true,
+   "result": "30",
+   "correct": true
+  },
+  {
+   "id": "game:decision:455",
+   "task": "kernel",
+   "which": "reference",
+   "gold": 90,
+   "exact_match": true,
+   "ran": true,
+   "result": "90",
+   "correct": true
+  },
+  {
+   "id": "game:decision:455",
+   "task": "kernel",
+   "which": "generated",
+   "gold": 90,
+   "exact_match": true,
+   "ran": true,
+   "result": "90",
+   "correct": true
+  }
+ ]
+}
