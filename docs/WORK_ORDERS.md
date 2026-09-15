@@ -1171,6 +1171,118 @@ state it than a reviewer finds it.
 
 ---
 
+## WO-2.7 — What to take from the cubemind archive
+
+**Status: SURVEYED and PARTLY TESTED 2026-09-15.** Owner: *"lets look into a very old
+version of cubemind... maybe some things we could port over"* / *"we may want to test
+them before porting tho."*
+
+`cubemind/_archive` is ~26,700 lines across eight folders, written around March 2026.
+It also ships **22 test files**, which is what makes "test before porting" cheap.
+
+### The archived tests still pass
+
+The tests import `cubemind.execution.<name>`, but those modules now live under
+`cubemind._archive.execution.<name>`, so they cannot run as collected. Aliasing the
+archived modules into `cubemind.execution` in `sys.modules` — no file moves, no edits
+to that repo — runs them as they are: **205 passed**. Only `document_ingestor` fails to
+import (it wants `cubemind.model1`), and it is 32 lines of plumbing not worth taking.
+
+One detail worth keeping: the archived modules import each other through
+`cubemind.execution.<sibling>`, so a single alphabetical aliasing pass fails whenever a
+module loads before its sibling is registered (`causal_graph` → `data_normalizer`). The
+runner retries until no progress.
+
+### The five worth taking, in order
+
+| # | what | why it matters here | weights? |
+|---|---|---|---|
+| 1 | **`VSATranslator`** — bind an opaque vector against every codebook concept and read off what it maps to | The repo has no way to ask *what does this vector do*. WO-0.3 can say the role vocabulary is 95–98% per-relation but not what any role vector **is** | none |
+| 2 | **`DecisionTree`** — immutable history, `backtrack_to(depth)`, candidates ranked by score | WO-3.1 needs branching in the **host**, because branching is the broken part of the VM. This is that structure, already written and tested (419 lines of tests) | none |
+| 3 | **`DecisionOracle`'s personality binding** — N futures from ONE model by binding the action with N fixed random vectors | Weight-free diversity, ~2 MB instead of N models, ranked by similarity to a prior. The creativity-cortex mechanism, and the plausibility ranking is the band between the noise floor and τ | **the binding half has none**; HYLA and CVL do and should not come |
+| 4 | **`CausalGraph`** — tiered edges (1.0 / 0.6 / 0.3), never downgraded, weighted random walk, `build_entity_links` | The tiers map onto grounded / derived / counterfactual / invented. Entity-sharing + a year gap derives edges from grounded facts with no LLM | none |
+| 5 | **`EventEncoder`'s role convention** — role *names hashed into vectors* under a `__role__:` namespace | We mint `H1_DATE_OF_BIRTH`, an identifier. `PATH.md` §11 says relation identity has to leave the token vocabulary; this is a working convention for that | none |
+
+Not taking: `attribute_extractor` + `future_decoder` (a 32-attribute schema for historical
+events and a template verbalizer — the LFM supersedes it), `oracle_trainer` / `hyla` /
+`cvl` (learned components, the wrong direction for weight-free creativity), the ingestion
+plumbing, and the perception folder (21 files of vision frontends, a different problem).
+
+**`experimental/theory_of_mind.py`** is its own case. `goal = unbind(belief, current_state)`
+is pure algebra and the same move as `recover(frame, ROLE)` — a second consumer of the
+binding seam that is not chain-walking, which is real evidence the seam generalizes.
+`social_q_value` and `cooperation_score` are weight-free on top of it. But the belief
+vector comes out of a HYLA hypernetwork (replaceable by a posterior-weighted bundle over
+the codebook, which is weight-free and more readable) and an `HMMRule` from the live
+package. **It has no archived test.** Not on the critical path for generalization or
+creativity; recorded so it is not rediscovered a third time.
+
+### RESULT — `exp_r30_vsa_probe`, 2026-09-15: port it, but it must learn to refuse
+
+205 passing tests say the probe does what it says. They check shapes, keys and
+determinism. They do **not** check the only thing that matters before porting: *does it
+discriminate, or does it always produce a sentence?* Run on this repo's own
+`BlockCodeVSA` rather than cubemind's `BlockCodes`, three arms per codebook:
+
+| codebook | identity → constants | constructed transform recovered | noise ceiling | separation |
+|---|---|---|---|---|
+| independent | 64/64 at 1.0000 | **20/20** at 1.0000 | 0.0875 | **11.4×** |
+| orthogonal | 64/64 at 1.0000 | **20/20** at 1.0000 | 0.0750 | **13.3×** |
+
+The algebra transfers cleanly: hand it a specialist built as `unbind(b, a)` and it
+reports `a → b` every time, and `zero()` reads as constant everywhere.
+
+**But on a vector that encodes nothing it says this:**
+
+```
+transforms: c00 -> c39, c01 -> c37, c02 -> c09, c03 -> c25, c04 -> c27, ... (+58 more)
+```
+
+A fluent, confident list of mappings for pure noise. The similarities behind it are
+0.06–0.09 against 1.0 for a real binding — **`translate()` computes them and discards
+them when composing the summary.** The information needed to refuse was already there.
+
+So the port adds a floor. At 0.30 (an order of magnitude above the measured noise, far
+below any genuine binding) noise reads `UNREADABLE — no concept binds above the floor
+(64/64)` and the identity vector loses **0 of 64** real bindings. Both directions
+checked, because a floor that silences real vectors is worse than no floor.
+
+That is not a port detail. An instrument that narrates nonsense about a vector is the
+`PATH.md` §6 failure mode exactly, and §6 now has ten entries because that failure keeps
+happening. The inherited version is a narrator; the floor is what makes it an instrument.
+
+**A second instrument caught lying, in this experiment's own first cut.** The two
+codebook arms came back byte-identical. `ops/vsa.py` honours `orthogonal=` only on the
+grilly path — its numpy fallback ignores the argument, and this venv has no grilly — so
+the "orthogonal" arm tested the independent codebook twice. A fake arm that would have
+signed off on a claim it never ran. The experiment now builds the structured codebook
+itself (`cb[i] = bind(cb[i-1], cb[1])`), and the arms differ as they should: off-diagonal
+similarity 0.0086 → 0.0144, margin 0.9612 → 0.7337. The noise narration on the structured
+codebook even shows the crosstalk the ops docstring warns about, as a systematic `c02 →
+c35, c03 → c36, c04 → c37` offset.
+
+Log: `validation/logs/exp_r30_vsa_probe.{json,log}`.
+
+### Still untested, and therefore not yet portable
+
+`DecisionTree`, the personality-binding trick, `CausalGraph` and the role convention have
+passing archived tests but **no test of their claim** on this repo's algebra, which is
+what `exp_r30` just showed is the part that matters. Each needs its own before it lands:
+
+1. **`DecisionTree`** — cheapest, and the claim is structural rather than numerical:
+   backtracking must not lose history, and `export()` must round-trip.
+2. **Personality binding** — the real question is whether k personality-bound variants
+   land in the band between the noise floor (0.033) and τ (0.4736). Too close and they
+   are the same candidate; too far and they are noise. That band is the whole mechanism
+   and nothing has measured it.
+3. **`CausalGraph`** — does `build_entity_links` derive edges a human would accept, or
+   does a shared common entity link everything to everything? `_MAX_ENTITY_EVENTS = 100`
+   suggests they hit exactly that.
+4. **The role convention** — the one with a real dependency: it changes `sanitize_role`,
+   which is on the serving path, so it is gated on the gate battery like `chunk`.
+
+---
+
 # Phase 3 — New capability (gated on Phase 2)
 
 ## WO-3.1 — The host agenda: branchless programs, host-owned search

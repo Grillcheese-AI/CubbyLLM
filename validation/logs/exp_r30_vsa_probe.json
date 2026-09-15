@@ -1,0 +1,68 @@
+{
+ "source": "cubemind _archive/execution/vsa_translator.py (March 2026); its own 205 archived tests pass, and they do not test discrimination",
+ "k": 80,
+ "l": 128,
+ "n_concepts": 64,
+ "pairs": 20,
+ "seed": 5,
+ "backend": "numpy",
+ "min_separation": 4.0,
+ "constant_threshold": 0.85,
+ "results": {
+  "independent": {
+   "identity": {
+    "best_mean": 1.0,
+    "best_max": 1.0,
+    "best_min": 1.0,
+    "margin_mean": 0.9611,
+    "constants": 64,
+    "transforms": 0
+   },
+   "identity_summary": "constants: c00, c01, c02, c03, c04, c05 (+58 more)",
+   "transform_recovered": 20,
+   "transform_of": 20,
+   "transform_best_mean": 1.0,
+   "transform_margin_mean": 0.9612,
+   "noise_best_max_mean": 0.0606,
+   "noise_best_max_worst": 0.0875,
+   "noise_summary": "transforms: c00 -> c39, c01 -> c37, c02 -> c09, c03 -> c25, c04 -> c27, c05 -> c34 (+58 more)",
+   "noise_summary_with_floor": "UNREADABLE -- no concept binds above the floor (64/64); this vector encodes nothing the codebook can name",
+   "floor": 0.3,
+   "identity_unreadable_at_floor": 0,
+   "codebook_offdiag_mean": 0.0086,
+   "codebook_offdiag_max": 0.0375,
+   "separation": 11.429,
+   "misses": []
+  },
+  "orthogonal": {
+   "identity": {
+    "best_mean": 1.0,
+    "best_max": 1.0,
+    "best_min": 1.0,
+    "margin_mean": 0.7314,
+    "constants": 64,
+    "transforms": 0
+   },
+   "identity_summary": "constants: c00, c01, c02, c03, c04, c05 (+58 more)",
+   "transform_recovered": 20,
+   "transform_of": 20,
+   "transform_best_mean": 1.0,
+   "transform_margin_mean": 0.7337,
+   "noise_best_max_mean": 0.05,
+   "noise_best_max_worst": 0.075,
+   "noise_summary": "transforms: c00 -> c41, c01 -> c34, c02 -> c35, c03 -> c36, c04 -> c37, c05 -> c38 (+58 more)",
+   "noise_summary_with_floor": "UNREADABLE -- no concept binds above the floor (64/64); this vector encodes nothing the codebook can name",
+   "floor": 0.3,
+   "identity_unreadable_at_floor": 0,
+   "codebook_offdiag_mean": 0.0144,
+   "codebook_offdiag_max": 0.05,
+   "separation": 13.333,
+   "misses": []
+  }
+ },
+ "verdicts": {
+  "independent": "usable WITH the floor",
+  "orthogonal": "usable WITH the floor"
+ },
+ "wall_s": 1.1
+}

@@ -1,0 +1,46 @@
+BlockCodeVSA k=80 l=128 (D=10240), backend=numpy
+
+======================================================================
+codebook: independent (64 concepts)
+======================================================================
+off-diagonal similarity: mean 0.0086, max 0.0375  (near 0 = distinct concepts)
+identity   best 1.0000 (min 1.0000)  constants 64/64
+  summary: constants: c00, c01, c02, c03, c04, c05 (+58 more)
+transform  recovered 20/20  best 1.0000  margin 0.9612
+noise      best_max mean 0.0606, worst 0.0875  margin 0.0065
+  WITHOUT a floor (cubemind's version) it says:
+    transforms: c00 -> c39, c01 -> c37, c02 -> c09, c03 -> c25, c04 -> c27, c05 -> c34 (+58 more)
+  WITH floor=0.3:
+    UNREADABLE -- no concept binds above the floor (64/64); this vector encodes nothing the codebook can name
+  the same floor on the identity vector: 0/64 unreadable (must be 0 -- a floor that refuses real vectors is worse than none)
+
+separation (constructed transform / worst noise): 11.43x
+
+======================================================================
+codebook: orthogonal (64 concepts)
+======================================================================
+off-diagonal similarity: mean 0.0144, max 0.0500  (near 0 = distinct concepts)
+identity   best 1.0000 (min 1.0000)  constants 64/64
+  summary: constants: c00, c01, c02, c03, c04, c05 (+58 more)
+transform  recovered 20/20  best 1.0000  margin 0.7337
+noise      best_max mean 0.0500, worst 0.0750  margin 0.0056
+  WITHOUT a floor (cubemind's version) it says:
+    transforms: c00 -> c41, c01 -> c34, c02 -> c35, c03 -> c36, c04 -> c37, c05 -> c38 (+58 more)
+  WITH floor=0.3:
+    UNREADABLE -- no concept binds above the floor (64/64); this vector encodes nothing the codebook can name
+  the same floor on the identity vector: 0/64 unreadable (must be 0 -- a floor that refuses real vectors is worse than none)
+
+separation (constructed transform / worst noise): 13.33x
+
+======================================================================
+codebook         recovered   signal    noise     sep   verdict
+----------------------------------------------------------------------
+independent      20/20       1.0000   0.0875   11.43   usable WITH the floor
+orthogonal       20/20       1.0000   0.0750   13.33   usable WITH the floor
+
+VERDICT: the probe discriminates on both codebooks -- port it, WITH the
+floor. As inherited it has none: it computes a similarity for every
+concept and discards it when composing the summary, so a vector that
+encodes nothing still comes back as a fluent list of transforms. The
+information needed to refuse was already there. That is not a port
+detail -- it is the difference between an instrument and a narrator.
