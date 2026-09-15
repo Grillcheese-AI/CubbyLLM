@@ -1,0 +1,29 @@
+exp_r25 zone ablation | 20 held questions (seed 7) | store 563,062 facts (10,765 encyclopedia) | emitter emitter_v14e_nochain.Q4_K_M.gguf
+arms: full, no_plan, permissive, no_repairs, top_k_1, tau_zero, tau_floor
+
+  emitted 20 plans in 11s; 20 well-formed
+
+  full         correct   20  refused    0  WRONG   0  near   0  (0s)
+  no_plan      correct    2  refused   18  WRONG   0  near   0  (0s)
+  permissive   correct    5  refused   15  WRONG   0  near   0  (0s)
+  no_repairs   correct   20  refused    0  WRONG   0  near   0  (0s)
+  top_k_1      correct   20  refused    0  WRONG   0  near   0  (0s)
+  tau_zero     correct    3  refused   16  WRONG   0  near   1  (0s)
+  tau_floor    correct   20  refused    0  WRONG   0  near   0  (0s)
+
+noise floor (Wilson half-width at n=20): 0.0806 = 1.6 questions
+
+arm          correct  refused  WRONG  contribution  verdict
+------------------------------------------------------------------
+full              20        0      0       +0.0000  baseline
+no_plan            2       18      0       +0.9000  load-bearing (coverage)
+permissive         5       15      0       +0.7500  load-bearing (coverage)
+no_repairs        20        0      0       +0.0000  inside the noise floor
+top_k_1           20        0      0       +0.0000  inside the noise floor
+tau_zero           3       16      0       +0.8500  load-bearing (coverage)
+tau_floor         20        0      0       +0.0000  inside the noise floor
+
+refusal reasons by arm (the shape of the loss, not just its size):
+  no_plan     {"unparseable": 18}
+  permissive  {"retrieval_exhausted": 14, "plan_does_not_cover_question": 1}
+  tau_zero    {"retrieval_exhausted": 16}

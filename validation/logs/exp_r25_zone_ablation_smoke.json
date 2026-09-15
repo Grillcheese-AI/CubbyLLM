@@ -1,0 +1,55 @@
+{
+ "n": 20,
+ "seed": 7,
+ "gguf": "emitter_v14e_nochain.Q4_K_M.gguf",
+ "world_facts": 563062,
+ "noise_floor": 0.08056506274746666,
+ "arms": {
+  "full": {
+   "verified": 20,
+   "correct": 20
+  },
+  "no_plan": {
+   "refused": 18,
+   "why:unparseable": 18,
+   "verified": 2,
+   "correct": 2
+  },
+  "permissive": {
+   "refused": 15,
+   "why:retrieval_exhausted": 14,
+   "verified": 5,
+   "correct": 5,
+   "why:plan_does_not_cover_question": 1
+  },
+  "no_repairs": {
+   "verified": 20,
+   "correct": 20
+  },
+  "top_k_1": {
+   "verified": 20,
+   "correct": 20
+  },
+  "tau_zero": {
+   "verified": 4,
+   "correct": 3,
+   "refused": 16,
+   "why:retrieval_exhausted": 16,
+   "near": 1
+  },
+  "tau_floor": {
+   "verified": 20,
+   "correct": 20
+  }
+ },
+ "wrong_examples": {
+  "full": [],
+  "no_plan": [],
+  "permissive": [],
+  "no_repairs": [],
+  "top_k_1": [],
+  "tau_zero": [],
+  "tau_floor": []
+ },
+ "wall_s": 33.8
+}

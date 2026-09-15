@@ -261,6 +261,67 @@ Read that as *no staleness measured yet*, not as a green light. 29 checks is not
 50 subjects did not resolve at all. Until stored facts carry the QID they came from, this probe
 measures a thin, name-resolvable slice rather than the snapshot.
 
+### 5.6 The zone ablation — what each brain zone is actually worth
+
+The organizing frame is *brain zones, each with a specialty*. A zone earns that name three
+ways: **ablation** (removing it changes measured behaviour), **channel** (it talks through a
+typed seam, not shared state), and **reuse** (it serves more than one task). §5.1 applied the
+first test to exactly one zone. WO-0.6 applied it to the rest.
+
+**The static half first, because it changes how to read the dynamic half.** An AST sweep for
+production importers found three modules declaring `Wiring.WIRED` with **zero** callers on any
+forward path: `hippocampus`, `striatum`, `retriever`. Each is measured in its own experiment and
+mounted nowhere.
+
+That is not a design error. `Wiring`'s own docstring says the marker is *intent*, and names four
+clauses for "done" — intent is WIRED, the body is real, something actually calls it, its test is
+green. The suite enforced one. And the guard that enforced it is *named after* "the 'built but
+never wired in' trap". A guard that reads like rigour and checks the weakest clause it names is
+§6's pattern applied to CI, and it let the gap reach three modules silently.
+
+**So the table below is what the system scores with three declared zones entirely absent.**
+
+600 gen-3 held questions, seed 7. The plan is emitted once and reused across every arm that does
+not ablate the emitter, so generation variance cannot leak into the comparison (§6.8's lesson,
+applied in advance this time).
+
+| arm | seam removed | correct | refused | **wrong** | verdict |
+|---|---|---:|---:|---:|---|
+| `full` | — | 597 | 3 | 0 | baseline |
+| `no_plan` | the emitter | 225 | 375 | 0 | load-bearing (coverage) |
+| `permissive` | the relation gate's judgement | 263 | 337 | 0 | load-bearing (coverage) |
+| `tau_zero` | τ_vm → 0.0 | 116 | 477 | **2** | **load-bearing (kill line)** |
+| `no_repairs` | repairs 1 → 0 | 596 | 4 | 0 | inside the noise floor |
+| `top_k_1` | retrieval breadth 3 → 1 | 597 | 3 | 0 | inside the noise floor |
+| `tau_floor` | τ_vm → 0.0332 | 594 | 6 | 0 | inside the noise floor |
+
+Noise floor: 0.0064, or 3.9 questions.
+
+**τ_vm is the only zone whose removal produces a wrong answer.** Every other ablation converts
+answers into refusals. That locates the kill line's mechanism exactly: it is not distributed
+across the architecture — it is the acceptance threshold, and everything else fails safe.
+
+**And loosening τ produces more refusals, not more answers.** 477 against the baseline's 3,
+almost all `retrieval_exhausted`. A wrong binding at hop 1 leaves hop 2 with nothing to find, so
+the chain refuses instead of continuing. Only 2 of 481 reached a spoken wrong answer. **The
+multi-hop structure catches its own errors downstream** — which is a stronger claim than the
+baseline score, and it was not designed in deliberately. The two that escaped are the
+confabulation signature precisely: *"When was Sugar Ray Robinson born?"* → `1921-05-03` against
+a gold of `1920`. Plausible, adjacent, confident.
+
+The emitter is worth 372 questions here, far more than §5.1's canonical split implied, because
+these are free-text wordings the grammar simply cannot parse — 350 `unparseable`. The relation
+gate is worth 334, and all of it is coverage: with its judgement removed it still produces 0
+wrong.
+
+Three seams sit inside the noise floor. The honest reading is *on this question set*: at 597/600
+there is nothing left for a repair or a wider search to rescue. Whether they are dead weight or
+insurance that only pays on harder questions is not answerable from here — it needs the harder
+set, not more seeds.
+
+**Test 3 has no instrument.** Nothing measures whether a zone serves more than one task, and a
+zone-per-problem is §5.3's pathology at architecture scale.
+
 ---
 
 ## 6. The instruments that would have lied
@@ -770,6 +831,7 @@ Stated in advance, so that meeting them is not negotiable after the fact.
 | 4 | Accepted bindings are separable from noise | Separation to the control role collapses toward 1× | **Holding.** 14.3× |
 | 5 | Dropping `chain` costs no verified answers | VM-verified answer rate drops in the treatment arm | **Triggered, marginally.** −1.0 of 600 over 3 seeds on the held split — two malformed-entity questions, both refusals, 0 wrong. See §8 for why the criterion, not the arm, is what should change |
 | 6 | Structure, not a relation table, carries it | Relabelled accuracy below 80% of labelled after 3 rounds | **Not yet tested** (WO-2.5) |
+| 8 | Each brain zone earns its name | A zone's ablation sits inside the noise floor, or it has no production caller | **Mixed.** 3 zones load-bearing; 3 seams inside the floor; 3 modules declare WIRED with 0 callers (§5.6) |
 | 7 | Zero wrong answers spoken | Any confidently wrong spoken answer | **Breached in eval.** The same 1 wrong answer in **both** arms' val sets (§8) |
 
 Row 7 deserves its own note. The ablation run (§5.1) recorded **0 wrong answers across all four
@@ -825,6 +887,11 @@ or a record of an instrument that would have told us we were already there.
   both new arms beat the incumbent by ~11 points and the with-`chain` corpus is measured for the
   first time. **0 wrong answers in 4,200 questions.** The arms differ by two specific
   malformed-entity questions that v14e refuses.
+- **2026-09-15, the zone ablation (WO-0.6)** — Every zone measured, not just the emitter. τ_vm is
+  the only one whose removal produces a wrong answer; everything else fails into refusals, and
+  loosening τ makes the *chain* refuse downstream rather than speak. Three modules declare
+  `Wiring.WIRED` with zero production callers — found by a new bidirectional CI guard, because
+  the existing one is named after that exact trap and only checks that the label exists.
 - **2026-09-15, the criterion amended** — Owner decision. A kill criterion may no longer treat a
   refusal and a wrong answer as the same event: two clauses, separately, and a drop under one
   percent that lands entirely in refusals is a cost, not a kill. The original wording would have

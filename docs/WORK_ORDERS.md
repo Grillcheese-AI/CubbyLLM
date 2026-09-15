@@ -248,6 +248,104 @@ refusal), and the aggregate disagreement rate is the only available measure of s
 
 ---
 
+## WO-0.6 — The zone ablation
+
+**Status: DONE 2026-09-15.** `validation/exp_r25_zone_ablation.py` (dynamic) and
+`tests/test_guards.py::test_wired_modules_have_a_production_importer` (static).
+
+The organizing frame is "brain zones, each with a specialty". A zone earns that name
+three ways, and each is a test:
+
+1. **Ablation** — removing it changes measured behaviour. Otherwise decorative.
+2. **Channel** — it talks through a typed seam, not shared state. Otherwise it is not
+   a separate zone at all.
+3. **Reuse** — it serves more than one task. Otherwise it is memorization with a name,
+   the WO-0.3 pathology one level up.
+
+WO-0.1 applied test 1 to exactly one zone. Every other zone was unmeasured.
+
+### Test 2, static: three zones declare WIRED and nothing calls them
+
+An AST sweep for production importers (excluding `tests/` and `exp_*`/`test_*`) found:
+
+| module | `__wiring__` | production importers |
+|---|---|---:|
+| `cubbyllm.reasoning.hippocampus` | `Wiring.WIRED` | **0** |
+| `cubbyllm.reasoning.striatum` | `Wiring.WIRED` | **0** |
+| `cubbyllm.reasoning.retriever` | `Wiring.WIRED` | **0** |
+
+Each is measured in its own experiment (`exp_r13`, `exp_r14`, `exp_r15`,
+`test_retriever_contract`) and mounted on no forward path.
+
+**This is not a design error — `Wiring`'s own docstring says the marker is intent, and
+names four clauses for "done": intent is WIRED, the body is real, something actually
+calls it, and its test is green.** The error is that the suite enforced one of the four.
+`test_every_module_declares_wiring` is *named after* "the 'built but never wired in'
+trap" and checks only that the label exists. A guard that reads like rigour and tests
+the weakest clause it names is the `docs/PATH.md` §6 pattern applied to CI.
+
+The new guard closes the "actually calls it" clause and is **bidirectional**: a newly
+unwired module fails, and a module in `KNOWN_UNWIRED` that becomes wired *also* fails,
+so the ledger cannot go stale in either direction. Both directions were verified to
+fire before it was committed.
+
+*A note for reading the table below:* the system scores 597/600 with those three zones
+entirely absent. Whatever they are worth, it is not visible on this question set.
+
+### Test 1, dynamic: the ablation table
+
+600 gen-3 held questions, seed 7, `emitter_v14e_nochain`. **The plan is emitted once
+and reused across every arm that does not ablate the emitter** — re-emitting per arm
+would put generation variance inside the comparison, which is the mistake §6.8 records.
+
+| arm | seam removed | correct | refused | **WRONG** | contribution | verdict |
+|---|---|---:|---:|---:|---:|---|
+| `full` | — | 597 | 3 | 0 | — | baseline |
+| `no_plan` | the emitter | 225 | 375 | 0 | +0.6200 | load-bearing (coverage) |
+| `permissive` | the relation gate's judgement | 263 | 337 | 0 | +0.5567 | load-bearing (coverage) |
+| `tau_zero` | τ_vm → 0.0 | 116 | 477 | **2** | +0.8017 | **LOAD-BEARING (kill line)** |
+| `no_repairs` | `max_repairs` 1 → 0 | 596 | 4 | 0 | +0.0017 | inside the noise floor |
+| `top_k_1` | retrieval breadth 3 → 1 | 597 | 3 | 0 | +0.0000 | inside the noise floor |
+| `tau_floor` | τ_vm → 0.0332 (the measured floor) | 594 | 6 | 0 | +0.0050 | inside the noise floor |
+
+Noise floor (Wilson half-width at n=600): **0.0064 = 3.9 questions.**
+
+**τ_vm is the only zone whose removal produces a wrong answer.** Every other ablation
+converts answers into refusals. That locates the kill line's mechanism precisely: it is
+not distributed across the architecture, it is the acceptance threshold, and everything
+else fails safe. The two wrong answers are the confabulation signature exactly as
+described — *"When was Sugar Ray Robinson born?"* → `1921-05-03` against a gold of
+`1920`: plausible, adjacent, confidently wrong.
+
+**τ has a wide safe band and is not finely tuned.** At the measured noise floor (0.0332)
+it costs 3 questions and 0 wrong; at 0.0 it costs 481 and 2 wrong. The cliff is
+somewhere in between and nowhere near the operating point.
+
+**Loosening τ produces more refusals, not more answers** — 477 against the baseline's 3,
+almost all `retrieval_exhausted`. A wrong binding at hop 1 makes hop 2 find nothing, so
+the chain refuses rather than continuing. **The multi-hop structure self-corrects**, and
+only 2 of 481 got all the way through to a spoken wrong answer. That is a stronger
+statement about the architecture than the baseline number is.
+
+**The emitter is worth 372 questions here** (597 → 225), far more than WO-0.1's canonical
+split suggested, because these are free-text gen-3 wordings: the grammar returns
+`unparseable` on 350 of them. **The relation gate is worth 334**, and its contribution is
+entirely coverage — with judgement removed it still produces 0 wrong.
+
+**Three seams sit inside the noise floor**, and the honest reading is *on this question
+set*: at 597/600 there is almost nothing left for a repair or a wider retrieval to
+rescue. `no_repairs` did pick up one `vm_verify_failed` the baseline did not. They are
+candidates for simplification **or** insurance that only pays on a harder set — and
+distinguishing those needs the harder set, not more seeds.
+
+**Alarm:** any arm other than `tau_zero` producing a wrong answer. That would mean a
+zone is the only thing standing between the system and a confident error.
+
+**Still open:** test 3 (reuse) has no instrument. A zone serving exactly one task is the
+role-vocabulary pathology at architecture scale, and nothing measures it.
+
+---
+
 # Phase 1 — Bugs, regardless of which architecture wins
 
 ## WO-1.1 — CubeLang: the two constructs `--strict` does not catch

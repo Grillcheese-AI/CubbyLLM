@@ -1,0 +1,40 @@
+exp_r25 zone ablation | 600 held questions (seed 7) | store 563,062 facts (10,765 encyclopedia) | emitter emitter_v14e_nochain.Q4_K_M.gguf
+arms: full, no_plan, permissive, no_repairs, top_k_1, tau_zero, tau_floor
+
+  emitted 200/600 (94s)
+  emitted 400/600 (185s)
+  emitted 600/600 (276s)
+  emitted 600 plans in 276s; 600 well-formed
+
+  full         correct  597  refused    3  WRONG   0  near   0  (6s)
+  no_plan      correct  225  refused  375  WRONG   0  near   0  (2s)
+  permissive   correct  263  refused  337  WRONG   0  near   0  (3s)
+  no_repairs   correct  596  refused    4  WRONG   0  near   0  (6s)
+  top_k_1      correct  597  refused    3  WRONG   0  near   0  (6s)
+  tau_zero     correct  116  refused  477  WRONG   2  near   5  (8s)
+  tau_floor    correct  594  refused    6  WRONG   0  near   0  (6s)
+
+noise floor (Wilson half-width at n=600): 0.0064 = 3.9 questions
+
+arm          correct  refused  WRONG  contribution  verdict
+------------------------------------------------------------------
+full             597        3      0       +0.0000  baseline
+no_plan          225      375      0       +0.6200  load-bearing (coverage)
+permissive       263      337      0       +0.5567  load-bearing (coverage)
+no_repairs       596        4      0       +0.0017  inside the noise floor
+top_k_1          597        3      0       +0.0000  inside the noise floor
+tau_zero         116      477      2       +0.8017  LOAD-BEARING (kill line)
+tau_floor        594        6      0       +0.0050  inside the noise floor
+
+refusal reasons by arm (the shape of the loss, not just its size):
+  full        {"retrieval_exhausted": 2, "plan_does_not_cover_question": 1}
+  no_plan     {"unparseable": 350, "retrieval_exhausted": 25}
+  permissive  {"retrieval_exhausted": 293, "plan_does_not_cover_question": 44}
+  no_repairs  {"retrieval_exhausted": 2, "plan_does_not_cover_question": 1, "vm_verify_failed": 1}
+  top_k_1     {"retrieval_exhausted": 2, "plan_does_not_cover_question": 1}
+  tau_zero    {"retrieval_exhausted": 476, "plan_does_not_cover_question": 1}
+  tau_floor   {"retrieval_exhausted": 5, "plan_does_not_cover_question": 1}
+
+tau_zero -- first wrong/error examples:
+   {"q": "When was Sugar Ray Robinson born?", "gold": "1920", "got": "1921-05-03"}
+   {"q": "What is Sugar Ray Robinson's date of birth?", "gold": "1920", "got": "1921-05-03"}

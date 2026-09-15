@@ -1,0 +1,82 @@
+{
+ "n": 600,
+ "seed": 7,
+ "gguf": "emitter_v14e_nochain.Q4_K_M.gguf",
+ "world_facts": 563062,
+ "noise_floor": 0.0064473101447445206,
+ "arms": {
+  "full": {
+   "verified": 597,
+   "correct": 597,
+   "refused": 3,
+   "why:plan_does_not_cover_question": 1,
+   "why:retrieval_exhausted": 2
+  },
+  "no_plan": {
+   "refused": 375,
+   "why:unparseable": 350,
+   "verified": 225,
+   "correct": 225,
+   "why:retrieval_exhausted": 25
+  },
+  "permissive": {
+   "refused": 337,
+   "why:retrieval_exhausted": 293,
+   "verified": 263,
+   "correct": 263,
+   "why:plan_does_not_cover_question": 44
+  },
+  "no_repairs": {
+   "verified": 596,
+   "correct": 596,
+   "refused": 4,
+   "why:plan_does_not_cover_question": 1,
+   "why:retrieval_exhausted": 2,
+   "why:vm_verify_failed": 1
+  },
+  "top_k_1": {
+   "verified": 597,
+   "correct": 597,
+   "refused": 3,
+   "why:plan_does_not_cover_question": 1,
+   "why:retrieval_exhausted": 2
+  },
+  "tau_zero": {
+   "verified": 123,
+   "correct": 116,
+   "refused": 477,
+   "why:retrieval_exhausted": 476,
+   "near": 5,
+   "why:plan_does_not_cover_question": 1,
+   "WRONG": 2
+  },
+  "tau_floor": {
+   "verified": 594,
+   "correct": 594,
+   "refused": 6,
+   "why:plan_does_not_cover_question": 1,
+   "why:retrieval_exhausted": 5
+  }
+ },
+ "wrong_examples": {
+  "full": [],
+  "no_plan": [],
+  "permissive": [],
+  "no_repairs": [],
+  "top_k_1": [],
+  "tau_zero": [
+   {
+    "q": "When was Sugar Ray Robinson born?",
+    "gold": "1920",
+    "got": "1921-05-03"
+   },
+   {
+    "q": "What is Sugar Ray Robinson's date of birth?",
+    "gold": "1920",
+    "got": "1921-05-03"
+   }
+  ],
+  "tau_floor": []
+ },
+ "wall_s": 333.3
+}
