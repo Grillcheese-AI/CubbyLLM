@@ -1,0 +1,99 @@
+{
+ "vocab": 127996,
+ "d_model": 2048,
+ "subspaces": 8,
+ "centroids": 256,
+ "token_cache": [
+  "I:\\grillcheese_training_data\\token_cache\\unified.u32"
+ ],
+ "limit_tokens": 400000000.0,
+ "aliasing": {
+  "GNSC prototype (id*prime)": {
+   "distinct": 256,
+   "worst_group": 500
+  },
+  "salted, one round, low bits": {
+   "distinct": 127856,
+   "worst_group": 2
+  },
+  "salted, full splitmix, high bits": {
+   "distinct": 127996,
+   "worst_group": 1
+  }
+ },
+ "memory_mb": {
+  "full_fp32": 1048.5,
+  "codebooks": 2.1,
+  "codes": 1.02,
+  "total_pq": 3.12
+ },
+ "schemes": [
+  {
+   "label": "hash-assigned PQ",
+   "mean_rel_err": 0.9935,
+   "freq_weighted_rel_err": 0.9935,
+   "p95": 1.014
+  },
+  {
+   "label": "clustered PQ (k-means)",
+   "mean_rel_err": 0.6887,
+   "freq_weighted_rel_err": 0.698,
+   "p95": 0.8615
+  },
+  {
+   "label": "MoQE: top 2% fp32 + tail PQ",
+   "mean_rel_err": 0.9736,
+   "freq_weighted_rel_err": 0.3946,
+   "p95": 1.0138,
+   "memory_mb": 24.06
+  },
+  {
+   "label": "MoQE: top 5% fp32 + tail PQ",
+   "mean_rel_err": 0.9439,
+   "freq_weighted_rel_err": 0.2971,
+   "p95": 1.0137,
+   "memory_mb": 55.49
+  }
+ ],
+ "max_err": 0.25,
+ "verdict": "correctness PASSES: zero aliasing, 336x smaller. RATE DEFERRED -- the error numbers rest on a synthetic spectrum (0.7) and an ungrounded threshold (0.25); re-run against the real table once the trunk is trained. The ordering is what transfers: hash-assigned 0.994 vs clustered 0.689, and frequency-weighted 0.297 with tiering",
+ "subspace_sweep": [
+  {
+   "M": 8,
+   "sub_dim": 256,
+   "mean_rel_err": 0.6897,
+   "freq_weighted_rel_err": 0.6983,
+   "total_mb": 3.12,
+   "compression": 336.0
+  },
+  {
+   "M": 32,
+   "sub_dim": 64,
+   "mean_rel_err": 0.6674,
+   "freq_weighted_rel_err": 0.6757,
+   "total_mb": 6.19,
+   "compression": 169.3
+  },
+  {
+   "M": 128,
+   "sub_dim": 16,
+   "mean_rel_err": 0.5811,
+   "freq_weighted_rel_err": 0.5875,
+   "total_mb": 18.48,
+   "compression": 56.7
+  },
+  {
+   "M": 256,
+   "sub_dim": 8,
+   "mean_rel_err": 0.4669,
+   "freq_weighted_rel_err": 0.4711,
+   "total_mb": 34.86,
+   "compression": 30.1
+  }
+ ],
+ "spectrum": 0.7,
+ "clustering_gain": 0.3068,
+ "instrument_discriminating": true,
+ "caveat": "reconstruction error is measured on a SYNTHETIC unit-norm table; the trunk is untrained, so this bounds the quantizer rather than predicting the model's loss",
+ "wall_s": 84.7
+}

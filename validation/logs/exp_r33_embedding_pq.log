@@ -1,0 +1,62 @@
+tokenizer grillcheese_bbpe128k.json: V=127996   d_model=2048, subspaces=8, centroids=256
+
+assignment                          distinct  worst group   verdict
+------------------------------------------------------------------------
+GNSC prototype (id*prime)                256          500   DISQUALIFYING
+salted, one round, low bits           127856            2   DISQUALIFYING
+salted, full splitmix, high bits      127996            1   ok
+  the middle row is this experiment's OWN first cut: salting the subspaces
+  is necessary and not sufficient -- `% K` reads the low bits, and after a
+  single multiply those are barely mixed.
+
+counting ids from 1 cache file(s), 400M-token budget...
+  402,653,184 ids read, 402,653,184 in-vocabulary, 110,749 of 127,996 entries used
+  top  1,000 tokens cover  65.9% of occurrences
+  top  5,000 tokens cover  82.8% of occurrences
+  top 20,000 tokens cover  94.0% of occurrences
+  top 50,000 tokens cover  98.6% of occurrences
+  never used: 17,247 entries (13.5% of the table)
+
+memory at V=127,996, d=2048:
+  full fp32 table              1048.5 MB
+  PQ codebooks                   2.10 MB
+  PQ codes (1 B/subspace)        1.02 MB
+  total                          3.12 MB    (336x smaller)
+
+fitting clustered PQ (k-means per subspace)...
+
+    M  sub_dim  clustered err  freq-wtd  codes MB  total MB
+------------------------------------------------------------
+    8      256         0.6897    0.6983      1.02      3.12
+   32       64         0.6674    0.6757      4.10      6.19
+  128       16         0.5811    0.5875     16.38     18.48
+  256        8         0.4669    0.4711     32.77     34.86
+
+scheme                              mean err  freq-wtd     p95       MB
+------------------------------------------------------------------------
+hash-assigned PQ                      0.9935    0.9935  1.0140     3.12
+clustered PQ (k-means)                0.6887    0.6980  0.8615     3.12
+MoQE: top 2% fp32 + tail PQ           0.9736    0.3946  1.0138    24.06
+MoQE: top 5% fp32 + tail PQ           0.9439    0.2971  1.0137    55.49
+  err = ||e - reconstructed|| / ||e||, on a synthetic unit-norm table.
+  This bounds the QUANTIZER; it does not predict the trained model's loss.
+
+instrument check: clustered beats hash-assigned by 30.7% (0.9935 -> 0.6887)
+
+VERDICT: correctness PASSES: zero aliasing, 336x smaller. RATE DEFERRED -- the error numbers rest on a synthetic spectrum (0.7) and an ungrounded threshold (0.25); re-run against the real table once the trunk is trained. The ordering is what transfers: hash-assigned 0.994 vs clustered 0.689, and frequency-weighted 0.297 with tiering
+
+WHAT IS SETTLED AND WHAT IS NOT:
+  settled  - GNSC's assignment aliases 128k tokens onto K vectors, and a
+             full splitmix64 on the high bits fixes it to zero. Exact.
+  settled  - the memory arithmetic, and that hash-assigned PQ (the only
+             variant needing no pre-trained table) reconstructs NOTHING:
+             ~0.99 relative error however much it compresses.
+  settled  - the ordering: clustering beats hashing, smaller sub_dim beats
+             larger, and frequency tiering beats both per MB.
+  NOT      - whether any of it costs the model anything. That needs a
+             trained table, and the honest answer today is 'unmeasured'.
+
+  So the shape of the recommendation is already clear: the from-scratch
+  variant is the one that does not work, and clustered PQ + a static
+  frequency router is a POST-training compression step on a finished base.
+  That fits no-retraining exactly -- compress the base once, ship it.

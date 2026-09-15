@@ -1296,6 +1296,124 @@ what `exp_r30` just showed is the part that matters. Each needs its own before i
 
 ---
 
+## WO-2.8 — Compressing the input embedding: hash PQ, clustered PQ, MoQE
+
+**Status: MEASURED 2026-09-15, correctness settled and rate deferred.** Owner: Nick,
+*"what about adding real PQ for compression?"* / *"as well as clustered PQ / mixture of
+quantization experts"*.
+
+### The target, and what needs nothing
+
+The **output** side is already solved. `TopKRetrievalHead(learnable=False)` scores against
+a FIXED row-normalized codebook, and a VSA codebook is generated from `SEED` — it stores
+zero bytes. H-C3 measured that the codebook is the wall at V=1M (10–41 GB fp32) and chose
+top-K retrieval over a full softmax. Quantizing there solves a solved problem.
+
+The **input** side is the gigabyte: `HybridEmbedding.core` is a learned
+`nn.Embedding(vocab_core, d_model)`. At V=127,996 and d=2048 that is **1,048 MB of fp32
+that every deployed instance pays for**.
+
+### Where this came from
+
+Nick pointed at `cubby-lm-backup.../embedding/gnsc/gnsc_experimental.py`, which bundles a
+byte-patch tokenizer, a "PQ" embedding and "Dual Triangle Attention". The PQ part assigns
+codes as `(id * prime_m) % K` — the same multiplier structure in every subspace, so `id`
+and `id + K` are congruent in **all** of them.
+
+Measured, V=127,996, M=8, K=256:
+
+| assignment | distinct embeddings | worst group |
+|---|---|---|
+| GNSC as written | **256** | 500 ids share one vector |
+| salted, one round, low bits | 127,856 | 2 |
+| salted, full splitmix64, high bits | **127,996** | 1 |
+
+That is not lossy compression, it is two words becoming the same word, and no training
+recovers it. **The fix is real but it is not one line.** The middle row is this
+experiment's own first cut: salting each subspace is necessary and not sufficient,
+because `% K` reads the low bits and low bits after a single multiply are barely mixed —
+140 tokens aliased where the birthday bound predicts zero. The complete splitmix64
+finaliser reading the **high** bits is what gets to zero. `salted_codes(..., weak=True)`
+reproduces the broken variant, because a correctness clause that cannot reproduce the
+failure it caught is not much of a clause.
+
+### The three variants
+
+| | needs a pre-trained table? | mean rel. error | freq-weighted | MB |
+|---|---|---|---|---|
+| **hash-assigned PQ** (Bloom embedding) | no | **0.9935** | 0.9935 | 3.12 |
+| **clustered PQ** (k-means per subspace) | yes | 0.6887 | 0.6980 | 3.12 |
+| **MoQE**, top 2% fp32 + tail PQ | yes | 0.9736 | **0.3946** | 24.06 |
+| **MoQE**, top 5% fp32 + tail PQ | yes | 0.9439 | **0.2971** | 55.49 |
+
+And the knob that decides PQ quality, which the first cut did not sweep — `sub_dim = D/M`.
+M=8 asks 256 centroids to cover a 256-dimensional subspace, far coarser than PQ is ever
+run:
+
+| M | sub_dim | clustered error | total MB | compression |
+|---|---|---|---|---|
+| 8 | 256 | 0.690 | 3.12 | 336× |
+| 32 | 64 | 0.667 | 6.19 | 169× |
+| 128 | 16 | 0.581 | 18.48 | 57× |
+| 256 | 8 | **0.467** | 34.86 | 30× |
+
+**Real token frequencies**, from the pretraining token cache (`unified.u32`, 402M ids —
+exact ids, so exact counts, not a Zipf model): the top 1,000 tokens cover 65.9% of
+occurrences, top 5,000 cover 82.8%, top 50,000 cover 98.6%, and **13.5% of the table is
+never used at all**. That is what makes a static frequency router work.
+
+### Why the MoQE router here is not cubemind's MoQE
+
+cubemind has one (`execution/moqe.py`): N experts at 2/4/6/8 bits over the **weight**
+matrices, a learned softmax gate, Gumbel-Softmax training, a router balance loss and a
+load-balancing entropy term. It was archived at PPL ~58.
+
+For an embedding table none of that is needed, and that is the point: **token frequency is
+known before training**. The router is a static frequency bucket — no gate to learn, no
+balance loss, no routing collapse to diagnose. The archived result is about a learned
+router over weights and does not transfer.
+
+### What is settled, and what is not
+
+**Settled** — the aliasing (exact arithmetic), the memory (exact arithmetic), that
+hash-assigned PQ **reconstructs nothing** (~0.99 error however much it compresses), and
+the ordering: clustering beats hashing, smaller `sub_dim` beats larger, frequency tiering
+beats both per MB.
+
+**Not settled** — whether any of it costs the model anything. Every error number rests on
+a synthetic table whose spectrum is a parameter someone chose, and on a `--max-err`
+threshold nobody has grounded, because **no trained table exists to ground it against**.
+Two guesses multiplied do not make a kill, so the rate clause is **deferred**, not failed.
+
+The instrument carries its own check for this. Clustered PQ picks assignments from the
+data and a hash picks blind, so if clustering does not clearly beat hashing the table has
+no structure for any quantizer to find and no error from it means anything. The first cut
+ran on an isotropic table where every scheme scored ~1.0 and "killed" PQ on that artifact
+— the tell was clustered (0.973) barely beating hash (0.994). It now refuses to give a
+rate verdict below a 10% clustering gain.
+
+### The recommendation, and it is already clear from the ordering
+
+**The from-scratch variant is the one that does not work.** Hash-assigned PQ is the only
+option that needs no pre-trained table, and it is the one that reconstructs nothing.
+
+So: **clustered PQ + a static frequency router, as a POST-training compression step on a
+finished base.** That fits no-retraining exactly — compress the base once, ship it, and
+the compression is an artifact rather than a training decision. It also means this is not
+a pretraining blocker: the table can be trained full-precision and compressed afterwards,
+so WO-2.8 does not gate the run.
+
+**Kill criterion when the real table exists:**
+- *correctness* — any exact aliasing is disqualifying, and `exp_r33` checks it directly.
+- *rate* — the error lands on **proposing**, not verifying: worse programs, which the
+  disposer and the VM turn into refusals rather than wrong answers. So the honest cost is
+  **refusal rate**, and the gate is the battery (exp_r17, exp_r9, exp_r11, exp_r18)
+  showing no refusal-rate regression, not a reconstruction number.
+
+Log: `validation/logs/exp_r33_embedding_pq.{json,log}`.
+
+---
+
 # Phase 3 — New capability (gated on Phase 2)
 
 ## WO-3.1 — The host agenda: branchless programs, host-owned search
