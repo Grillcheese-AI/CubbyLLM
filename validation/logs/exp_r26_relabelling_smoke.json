@@ -1,0 +1,75 @@
+{
+ "n": 15,
+ "seed": 7,
+ "relations": 27,
+ "mapping": {
+  "administrative territorial entity": "r_39714",
+  "alma mater": "r_58550",
+  "author": "r_59200",
+  "award": "r_26558",
+  "birth date": "r_35312",
+  "birthplace": "r_15738",
+  "born": "r_21165",
+  "capital": "r_27936",
+  "child": "r_42432",
+  "date of birth": "r_76369",
+  "date of death": "r_37446",
+  "die": "r_62521",
+  "director": "r_94130",
+  "district": "r_13970",
+  "employer": "r_70179",
+  "genre": "r_73884",
+  "husband": "r_69392",
+  "married": "r_61180",
+  "occupation": "r_74878",
+  "parent": "r_85120",
+  "place of birth": "r_35196",
+  "place of death": "r_62780",
+  "profession": "r_21739",
+  "sibling": "r_73582",
+  "spouse": "r_40694",
+  "wife": "r_12620",
+  "work for": "r_44965"
+ },
+ "world_facts": 563062,
+ "relabelled_facts": 60251,
+ "null_token": "r_00042",
+ "results": {
+  "v14e": {
+   "labelled": {
+    "verified": 15,
+    "correct": 15
+   },
+   "relabelled": {
+    "refused": 14,
+    "why:retrieval_exhausted": 2,
+    "why:unknown_relation": 6,
+    "why:plan_does_not_cover_question": 6,
+    "verified": 1,
+    "correct": 1
+   },
+   "null_relation": {
+    "refused": 15,
+    "why:retrieval_exhausted": 2,
+    "why:unknown_relation": 9,
+    "why:plan_does_not_cover_question": 4
+   }
+  }
+ },
+ "verdicts": {
+  "v14e": {
+   "labelled": 15,
+   "relabelled": 1,
+   "ratio": 0.0667,
+   "wrong": 0,
+   "breach": 0,
+   "verdict": "KILLED (rate clause)"
+  }
+ },
+ "breaches": {
+  "v14e/labelled": [],
+  "v14e/relabelled": [],
+  "v14e/null_relation": []
+ },
+ "wall_s": 69.4
+}

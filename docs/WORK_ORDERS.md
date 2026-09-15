@@ -749,6 +749,64 @@ Plus two controls:
   self-indictment: once the host supplies the manifest, **a pure copier passes the unseen-relation
   test** and correctness migrates silently into manifest construction.
 
+### RESULT 2026-09-15 — run without the manifest, and the criterion fires
+
+`validation/exp_r26_relabelling.py`. 300 held questions, 27 relations replaced by a
+bijection onto opaque tokens — consistently in the question, the store (60,251 facts
+renamed) and the vocabulary. Direction and arity preserved. Structure unchanged; only
+names differ.
+
+| model | labelled | relabelled | ratio | wrong | null-control breaches | verdict |
+|---|---:|---:|---:|---:|---:|---|
+| `v13e` (412 roles) | 299 | 74 | **0.247** | 0 | 0 | **KILLED** (rate clause) |
+| `v14e_nochain` (17 roles) | 298 | 78 | **0.262** | 0 | 0 | **KILLED** (rate clause) |
+
+**Both die on the rate clause.** The string-argument form is not carrying the
+generalization, and WO-2.1's manifest is therefore load-bearing rather than a nicety.
+
+**But the diagnostic is the finding, not the score.** What did the emitter bind when
+the relation it knew was gone?
+
+| model | copied the token | **recalled the original** | other |
+|---|---:|---:|---:|
+| `v13e` | 149 | **37** | 110 |
+| `v14e_nochain` | 161 | **1** | 138 |
+
+**v13e recalls the memorized relation 37 times; v14e does it once.** Asked
+*"In what year was Bohuslav Martinu damuzo?"* v13e emits `date of birth` — the wording
+it was trained on, for a relation that no longer exists in the store. That is the
+WO-0.3 table caught in the act.
+
+So **WO-1.3 bought exactly what it was argued to buy**, and the gen-3 held split could
+not see it: dropping `chain` did not raise the score, it removed the memorization. The
+two arms score within 4 questions of each other and are doing visibly different things.
+
+**The kill line held completely.** 0 wrong answers in 600 relabelled questions, and
+**0 breaches in 600 null-control questions** — a syntactically valid relation bound to
+nothing, and not one spoken answer. Under maximal confusion the system refuses.
+
+**An instrument artifact found and corrected, because it was severe.** The first cut
+used `r_41027`-style tokens. The emitter drops the underscore and emits `r 41027`, so a
+correctly-copied relation fails to match on spelling alone:
+
+| token style | v13e relabelled | v14e relabelled |
+|---|---:|---:|
+| `r_41027` (first cut) | 13 | 14 |
+| `damuzo` (pronounceable) | **74** | **78** |
+
+A 5.7× difference from the token's spelling. `normalize()` preserves the underscore, so
+this is the model's tokenizer, not the harness — but it is still the experiment
+measuring its own arbitrary choice. Both styles are kept behind `--token-style` so the
+artifact stays on the record.
+
+**What this cannot show, stated so a good score is never over-read:** WO-2.5's own
+warning is that a pure copier passes an unseen-relation test. Copying is not
+understanding, and the decoy control that separates copying from selection needs the
+manifest. What relabelling rules out is the *other* failure — the memorized
+wording-to-relation table — and it rules it out for `v14e_nochain` specifically.
+
+---
+
 *Kill criterion*, in the two-clause form the amended rule requires:
 
 - **Correctness.** Any wrong answer under relabelling kills it outright — a relation renamed to an

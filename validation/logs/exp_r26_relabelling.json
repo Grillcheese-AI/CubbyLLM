@@ -1,0 +1,255 @@
+{
+ "n": 300,
+ "seed": 7,
+ "relations": 27,
+ "mapping": {
+  "administrative territorial entity": "r_39714",
+  "alma mater": "r_58550",
+  "author": "r_59200",
+  "award": "r_26558",
+  "birth date": "r_35312",
+  "birthplace": "r_15738",
+  "born": "r_21165",
+  "capital": "r_27936",
+  "child": "r_42432",
+  "date of birth": "r_76369",
+  "date of death": "r_37446",
+  "die": "r_62521",
+  "director": "r_94130",
+  "district": "r_13970",
+  "employer": "r_70179",
+  "genre": "r_73884",
+  "husband": "r_69392",
+  "married": "r_61180",
+  "occupation": "r_74878",
+  "parent": "r_85120",
+  "place of birth": "r_35196",
+  "place of death": "r_62780",
+  "profession": "r_21739",
+  "sibling": "r_73582",
+  "spouse": "r_40694",
+  "wife": "r_12620",
+  "work for": "r_44965"
+ },
+ "world_facts": 563062,
+ "relabelled_facts": 60251,
+ "null_token": "r_00042",
+ "results": {
+  "v13e": {
+   "labelled": {
+    "verified": 299,
+    "correct": 299,
+    "refused": 1,
+    "why:plan_does_not_cover_question": 1
+   },
+   "relabelled": {
+    "bound:other": 211,
+    "refused": 287,
+    "why:plan_does_not_cover_question": 191,
+    "bound:copied_token": 73,
+    "why:unknown_relation": 63,
+    "verified": 13,
+    "correct": 13,
+    "bound:recalled_original": 16,
+    "why:retrieval_exhausted": 20,
+    "why:ambiguous_relation": 13
+   },
+   "null_relation": {
+    "bound:other": 115,
+    "refused": 300,
+    "why:plan_does_not_cover_question": 90,
+    "bound:copied_token": 174,
+    "why:unknown_relation": 194,
+    "bound:recalled_original": 11,
+    "why:ambiguous_relation": 10,
+    "why:retrieval_exhausted": 6
+   }
+  },
+  "v14e": {
+   "labelled": {
+    "verified": 298,
+    "correct": 298,
+    "refused": 2,
+    "why:plan_does_not_cover_question": 1,
+    "why:retrieval_exhausted": 1
+   },
+   "relabelled": {
+    "bound:other": 205,
+    "refused": 286,
+    "why:retrieval_exhausted": 27,
+    "bound:copied_token": 95,
+    "why:unknown_relation": 82,
+    "why:plan_does_not_cover_question": 167,
+    "verified": 14,
+    "correct": 14,
+    "why:ambiguous_relation": 10
+   },
+   "null_relation": {
+    "bound:other": 91,
+    "refused": 300,
+    "why:retrieval_exhausted": 16,
+    "bound:copied_token": 209,
+    "why:unknown_relation": 218,
+    "why:plan_does_not_cover_question": 58,
+    "why:ambiguous_relation": 8
+   }
+  }
+ },
+ "verdicts": {
+  "v13e": {
+   "labelled": 299,
+   "relabelled": 13,
+   "ratio": 0.0435,
+   "wrong": 0,
+   "breach": 0,
+   "verdict": "KILLED (rate clause)"
+  },
+  "v14e": {
+   "labelled": 298,
+   "relabelled": 14,
+   "ratio": 0.047,
+   "wrong": 0,
+   "breach": 0,
+   "verdict": "KILLED (rate clause)"
+  }
+ },
+ "breaches": {
+  "v13e/labelled": [],
+  "v13e/labelled:bound": [],
+  "v13e/relabelled": [],
+  "v13e/relabelled:bound": [
+   {
+    "q": "In what year was Bohuslav Martinu r_21165?",
+    "emitted": [
+     "date of birth"
+    ]
+   },
+   {
+    "q": "What is the r_76369 of Edward Bancroft?",
+    "emitted": [
+     "r 76369"
+    ]
+   },
+   {
+    "q": "Where was Albert Of Saxony Philosopher r_21165?",
+    "emitted": [
+     "where was he"
+    ]
+   },
+   {
+    "q": "In what year did Sir David Brewster r_62521?",
+    "emitted": [
+     "date of death"
+    ]
+   },
+   {
+    "q": "In what year was Robert Treat Paine r_21165?",
+    "emitted": [
+     "date of birth"
+    ]
+   }
+  ],
+  "v13e/null_relation": [],
+  "v13e/null_relation:bound": [
+   {
+    "q": "In what year was Bohuslav Martinu r_00042?",
+    "emitted": [
+     "date of birth"
+    ]
+   },
+   {
+    "q": "Where was Albert Of Saxony Philosopher r_00042?",
+    "emitted": [
+     "where was he"
+    ]
+   },
+   {
+    "q": "In what year did Sir David Brewster r_00042?",
+    "emitted": [
+     "date of death"
+    ]
+   },
+   {
+    "q": "In what year was Robert Treat Paine r_00042?",
+    "emitted": [
+     "date of birth"
+    ]
+   },
+   {
+    "q": "What is the r_00042 of Victoria Woodhull?",
+    "emitted": [
+     "victoria woodhull"
+    ]
+   }
+  ],
+  "v14e/labelled": [],
+  "v14e/labelled:bound": [],
+  "v14e/relabelled": [],
+  "v14e/relabelled:bound": [
+   {
+    "q": "In what year was Bohuslav Martinu r_21165?",
+    "emitted": [
+     "year"
+    ]
+   },
+   {
+    "q": "What is the r_76369 of Edward Bancroft?",
+    "emitted": [
+     "r 76369"
+    ]
+   },
+   {
+    "q": "Where was Albert Of Saxony Philosopher r_21165?",
+    "emitted": [
+     "date"
+    ]
+   },
+   {
+    "q": "What is the r_74878 of Victoria Woodhull?",
+    "emitted": [
+     "r 74878"
+    ]
+   },
+   {
+    "q": "In what year was Jean Louis Barthou r_21165?",
+    "emitted": [
+     "year"
+    ]
+   }
+  ],
+  "v14e/null_relation": [],
+  "v14e/null_relation:bound": [
+   {
+    "q": "In what year was Bohuslav Martinu r_00042?",
+    "emitted": [
+     "year"
+    ]
+   },
+   {
+    "q": "Where was Albert Of Saxony Philosopher r_00042?",
+    "emitted": [
+     "date"
+    ]
+   },
+   {
+    "q": "In what year was Jean Louis Barthou r_00042?",
+    "emitted": [
+     "year"
+    ]
+   },
+   {
+    "q": "What r_00042 did Spain National Football Team receive?",
+    "emitted": [
+     "spain national football team"
+    ]
+   },
+   {
+    "q": "When was James Anthony Bailey r_00042?",
+    "emitted": [
+     "date"
+    ]
+   }
+  ]
+ },
+ "wall_s": 947.6
+}

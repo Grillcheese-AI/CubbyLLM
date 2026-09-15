@@ -1,0 +1,57 @@
+world: 563,062 facts (10,765 encyclopedia) built in 19s
+relabelling 27 relations (word tokens), e.g. administrative territorial entity -> gimega, alma mater -> degugo, author -> sanono, award -> nugodo
+300 of 600 sampled records survive substitution (dropped: entity collision or no substitution)
+
+relabelled world: 563,062 facts, 60,251 facts had their relation renamed, built in 26s
+null control token: zubnog (zero facts)
+
+  v13e labelled       correct  299  refused    1  WRONG   0  BREACH   0  no_plan    0  (143s)
+  v13e relabelled     correct   74  refused  222  WRONG   0  BREACH   0  no_plan    4  (146s)
+  v13e null_relation  correct    0  refused  300  WRONG   0  BREACH   0  no_plan    0  (150s)
+  v14e labelled       correct  298  refused    2  WRONG   0  BREACH   0  no_plan    0  (143s)
+  v14e relabelled     correct   78  refused  222  WRONG   0  BREACH   0  no_plan    0  (145s)
+  v14e null_relation  correct    0  refused  300  WRONG   0  BREACH   0  no_plan    0  (150s)
+
+model     labelled  relabelled   ratio  wrong  breach   verdict
+--------------------------------------------------------------------------
+v13e           299          74   0.247      0       0   KILLED (rate clause)
+v14e           298          78   0.262      0       0   KILLED (rate clause)
+
+WHAT THE EMITTER BOUND under relabelling -- the finding, not the score:
+  model     copied the token   recalled the original   other
+  v13e                   149                      37     110
+  v14e                   161                       1     138
+  (copying is routing -- and WO-2.5 warns a pure copier passes. Recalling the
+   original is the memorized wording->relation table WO-0.3 measured.)
+
+refusal reasons, relabelled arm (how it fails matters more than that it fails):
+  v13e    {"plan_does_not_cover_question": 112, "retrieval_exhausted": 47, "unknown_relation": 43, "ambiguous_relation": 20, "no_plan": 4}
+  v14e    {"retrieval_exhausted": 87, "plan_does_not_cover_question": 75, "unknown_relation": 40, "ambiguous_relation": 20, "no_plan": 0}
+
+v13e/relabelled:bound -- breaches:
+   {"q": "In what year was Bohuslav Martinu damuzo?", "emitted": ["date of birth"]}
+   {"q": "In what year was Sir John Douglas Cockcroft damuzo?", "emitted": ["date of birth"]}
+   {"q": "Where was Albert Of Saxony Philosopher damuzo?", "emitted": ["where was he"]}
+   {"q": "In what year was Robert Treat Paine damuzo?", "emitted": ["date of birth"]}
+   {"q": "What is the kofode of Victoria Woodhull?", "emitted": ["solve"]}
+
+v13e/null_relation:bound -- breaches:
+   {"q": "In what year was Bohuslav Martinu zubnog?", "emitted": ["date of birth"]}
+   {"q": "In what year was Sir John Douglas Cockcroft zubnog?", "emitted": ["date of birth"]}
+   {"q": "Where was Henry Hobson Richardson zubnog?", "emitted": ["where was he born"]}
+   {"q": "Where was Albert Of Saxony Philosopher zubnog?", "emitted": ["where was he"]}
+   {"q": "In what year was Robert Treat Paine zubnog?", "emitted": ["date of birth"]}
+
+v14e/relabelled:bound -- breaches:
+   {"q": "In what year was Bohuslav Martinu damuzo?", "emitted": ["year"]}
+   {"q": "In what year was Sir John Douglas Cockcroft damuzo?", "emitted": ["year"]}
+   {"q": "Where was Henry Hobson Richardson damuzo?", "emitted": ["daumzo"]}
+   {"q": "Where was Albert Of Saxony Philosopher damuzo?", "emitted": ["place of death"]}
+   {"q": "In what year was Robert Treat Paine damuzo?", "emitted": ["year"]}
+
+v14e/null_relation:bound -- breaches:
+   {"q": "In what year was Bohuslav Martinu zubnog?", "emitted": ["year"]}
+   {"q": "In what year was Sir John Douglas Cockcroft zubnog?", "emitted": ["year"]}
+   {"q": "Where was Albert Of Saxony Philosopher zubnog?", "emitted": ["place of birth"]}
+   {"q": "In what year did Sir David Brewster zubnog?", "emitted": ["year"]}
+   {"q": "In what year was Robert Treat Paine zubnog?", "emitted": ["year"]}

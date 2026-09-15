@@ -322,6 +322,67 @@ set, not more seeds.
 **Test 3 has no instrument.** Nothing measures whether a zone serves more than one task, and a
 zone-per-problem is §5.3's pathology at architecture scale.
 
+### 5.7 Relabelling — the test the held split could not run
+
+§5.3 found the role vocabulary 95–98% per-relation and called it the memorization ceiling.
+WO-1.3 removed the task that minted those identifiers, 412 → 17, and the held split saw
+nothing: 599.7 against 598.7 of 600, because it is at its own ceiling. This is the test that
+is not.
+
+> Genuine structural generalization is invariant under bijective renaming. Memorization of a
+> relation table collapses.
+
+Every relation replaced by an opaque token — consistently in the question, the store (60,251
+facts renamed) and the vocabulary. Direction and arity preserved. Only names change.
+
+| model | labelled | relabelled | ratio | wrong | null-control breaches | verdict |
+|---|---:|---:|---:|---:|---:|---|
+| v13e — 412 roles | 299 | 74 | **0.247** | 0 | 0 | **killed** (rate) |
+| v14e_nochain — 17 roles | 298 | 78 | **0.262** | 0 | 0 | **killed** (rate) |
+
+**Both fail.** The string-argument form is not carrying the generalization, which makes
+WO-2.1's per-request manifest load-bearing rather than a nicety — Phase 2 is confirmed as
+the work, empirically rather than by argument.
+
+**And then the diagnostic, which is the actual finding.** What did the emitter bind once the
+relation it knew was gone?
+
+| model | copied the token | **recalled the original** | other |
+|---|---:|---:|---:|
+| v13e | 149 | **37** | 110 |
+| v14e_nochain | 161 | **1** | 138 |
+
+Asked *"In what year was Bohuslav Martinu damuzo?"*, v13e emits `date of birth` — the wording
+it was trained on, for a relation that no longer exists anywhere in the store. That is §5.3's
+table caught in the act, 37 times. v14e does it **once**.
+
+So **WO-1.3 bought precisely what it was argued to buy, and §8's comparison could not see it.**
+The two arms score within four questions of each other and are doing visibly different things.
+A score that moves by 0.3% was hiding a 37× difference in mechanism.
+
+**The kill line held completely.** 0 wrong in 600 relabelled questions, and 0 breaches in 600
+null-control questions — a syntactically valid relation bound to nothing, and not one spoken
+answer. Under maximal confusion the system refuses, which is the whole design.
+
+**One more instrument that lied, caught in this run.** The first cut used `r_41027`-style
+tokens. The emitter drops the underscore and emits `r 41027`, so a correctly-copied relation
+fails to match on spelling alone:
+
+| token style | v13e | v14e |
+|---|---:|---:|
+| `r_41027` | 13 | 14 |
+| `damuzo` | **74** | **78** |
+
+**A 5.7× swing from the token's spelling.** `normalize()` preserves the underscore, so this is
+the model's tokenizer rather than the harness — but the experiment was still measuring its own
+arbitrary choice, and 0.043 would have gone into the record as a capability number. Both styles
+are kept behind a flag so the artifact stays visible. It belongs in §6 and is counted there.
+
+**What this cannot show.** WO-2.5's own warning is that *a pure copier passes an unseen-relation
+test*. Copying is not understanding, and the decoy control that would separate them needs the
+manifest. What relabelling rules out is the other failure — the memorized wording-to-relation
+table — and it rules it out for v14e specifically.
+
 ---
 
 ## 6. The instruments that would have lied
@@ -498,13 +559,31 @@ derived from the corpus, and the corpus was the independent variable. Changing w
 tested changed what it is tested on. Any A/B where the eval set is computed from the treatment
 has this bug available to it.
 
-### 6.9 The pattern
+### 6.9 A token whose spelling was the measurement
 
-Seven of these eight are the same shape: **an instrument inherited a property from the thing it
+Found 2026-09-15, in §5.7's own first run. Relations were relabelled to `r_41027`-style
+tokens. The emitter drops the underscore and emits `r 41027`, so a relation it had copied
+correctly failed to match the store on spelling alone. Switching to pronounceable tokens
+(`damuzo`) moved the result from 13/300 to 74/300 — **5.7×, from nothing but the token's
+shape.**
+
+`normalize()` preserves the underscore, so the harness was innocent; the model's tokenizer
+did it. That distinction does not rescue the number. 0.043 would have entered the record as
+a capability measurement of an architecture, and it was a measurement of a naming choice I
+made in five seconds.
+
+**The general form:** when an experiment injects a synthetic symbol, the symbol's *form* is a
+free parameter, and a free parameter nobody justified is a confound. Vary it once before
+trusting the result.
+
+### 6.10 The pattern
+
+Eight of these nine are the same shape: **an instrument inherited a property from the thing it
 was measuring**, and therefore could not discriminate. The τ alarm inherited τ. The dead-program
 detector inherited the store's sparsity. The volatility probe inherited WikiKG's label scheme.
 `exact_match` inherited the corpus's arbitrary identifiers. The eval sampler inherited the
-corpus's task *set* — the independent variable itself.
+corpus's task *set* — the independent variable itself. The relabelling probe inherited the
+tokenizer's opinion of an underscore.
 
 The one defence that worked every time was cheap: **run the instrument on data known to be
 healthy, and require it to say so.** An alarm that fires on a clean run is broken, not sensitive.
@@ -830,7 +909,7 @@ Stated in advance, so that meeting them is not negotiable after the fact.
 | 3 | The interface generalizes across relations | Role vocabulary grows with relation coverage | **Failing.** 95–98% per-relation; Phase 2 is the response |
 | 4 | Accepted bindings are separable from noise | Separation to the control role collapses toward 1× | **Holding.** 14.3× |
 | 5 | Dropping `chain` costs no verified answers | VM-verified answer rate drops in the treatment arm | **Triggered, marginally.** −1.0 of 600 over 3 seeds on the held split — two malformed-entity questions, both refusals, 0 wrong. See §8 for why the criterion, not the arm, is what should change |
-| 6 | Structure, not a relation table, carries it | Relabelled accuracy below 80% of labelled after 3 rounds | **Not yet tested** (WO-2.5) |
+| 6 | Structure, not a relation table, carries it | Relabelled accuracy below 80% of labelled after 3 rounds | **Failing.** 0.247 / 0.262 of labelled (§5.7). The manifest is load-bearing |
 | 8 | Each brain zone earns its name | A zone's ablation sits inside the noise floor, or it has no production caller | **Mixed.** 3 zones load-bearing; 3 seams inside the floor; 3 modules declare WIRED with 0 callers (§5.6) |
 | 7 | Zero wrong answers spoken | Any confidently wrong spoken answer | **Breached in eval.** The same 1 wrong answer in **both** arms' val sets (§8) |
 
@@ -887,6 +966,12 @@ or a record of an instrument that would have told us we were already there.
   both new arms beat the incumbent by ~11 points and the with-`chain` corpus is measured for the
   first time. **0 wrong answers in 4,200 questions.** The arms differ by two specific
   malformed-entity questions that v14e refuses.
+- **2026-09-15, relabelling (WO-2.5)** — The gating measurement, run without the manifest.
+  Both arms fail the rate clause (0.247 / 0.262), so the string-argument form does not carry
+  the generalization and WO-2.1 is load-bearing. But the diagnostic is the result: v13e
+  recalls the memorized relation 37 times, v14e **once** — so WO-1.3 bought what it claimed,
+  invisibly to a score that moved 0.3%. 0 wrong and 0 null-control breaches in 1,200
+  questions. A token-spelling artifact worth 5.7× was found and corrected mid-run (§6.9).
 - **2026-09-15, the zone ablation (WO-0.6)** — Every zone measured, not just the emitter. τ_vm is
   the only one whose removal produces a wrong answer; everything else fails into refusals, and
   loosening τ makes the *chain* refuse downstream rather than speak. Three modules declare

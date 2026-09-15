@@ -1,0 +1,259 @@
+{
+ "n": 300,
+ "seed": 7,
+ "relations": 27,
+ "mapping": {
+  "administrative territorial entity": "gimega",
+  "alma mater": "degugo",
+  "author": "sanono",
+  "award": "nugodo",
+  "birth date": "gatipo",
+  "birthplace": "notasi",
+  "born": "damuzo",
+  "capital": "daleta",
+  "child": "nuguve",
+  "date of birth": "rapane",
+  "date of death": "fununi",
+  "die": "pizofe",
+  "director": "vuduti",
+  "district": "tisopu",
+  "employer": "gifipi",
+  "genre": "pavutu",
+  "husband": "gigaki",
+  "married": "giboko",
+  "occupation": "kofode",
+  "parent": "sageka",
+  "place of birth": "bolero",
+  "place of death": "gemuno",
+  "profession": "maraka",
+  "sibling": "basavu",
+  "spouse": "pifune",
+  "wife": "ragafi",
+  "work for": "mudili"
+ },
+ "token_style": "word",
+ "world_facts": 563062,
+ "relabelled_facts": 60251,
+ "null_token": "zubnog",
+ "results": {
+  "v13e": {
+   "labelled": {
+    "verified": 299,
+    "correct": 299,
+    "refused": 1,
+    "why:plan_does_not_cover_question": 1
+   },
+   "relabelled": {
+    "bound:other": 110,
+    "refused": 222,
+    "why:plan_does_not_cover_question": 112,
+    "bound:copied_token": 149,
+    "why:unknown_relation": 43,
+    "verified": 74,
+    "correct": 74,
+    "bound:recalled_original": 37,
+    "why:ambiguous_relation": 20,
+    "why:retrieval_exhausted": 47,
+    "no_plan": 4
+   },
+   "null_relation": {
+    "bound:other": 103,
+    "refused": 300,
+    "why:plan_does_not_cover_question": 115,
+    "bound:copied_token": 154,
+    "why:unknown_relation": 164,
+    "bound:recalled_original": 43,
+    "why:ambiguous_relation": 19,
+    "why:retrieval_exhausted": 2
+   }
+  },
+  "v14e": {
+   "labelled": {
+    "verified": 298,
+    "correct": 298,
+    "refused": 2,
+    "why:plan_does_not_cover_question": 1,
+    "why:retrieval_exhausted": 1
+   },
+   "relabelled": {
+    "bound:other": 138,
+    "refused": 222,
+    "why:retrieval_exhausted": 87,
+    "why:plan_does_not_cover_question": 75,
+    "bound:copied_token": 161,
+    "verified": 78,
+    "correct": 78,
+    "why:unknown_relation": 40,
+    "why:ambiguous_relation": 20,
+    "bound:recalled_original": 1
+   },
+   "null_relation": {
+    "bound:other": 147,
+    "refused": 300,
+    "why:retrieval_exhausted": 39,
+    "bound:copied_token": 151,
+    "why:unknown_relation": 169,
+    "why:plan_does_not_cover_question": 70,
+    "why:ambiguous_relation": 22,
+    "bound:recalled_original": 2
+   }
+  }
+ },
+ "verdicts": {
+  "v13e": {
+   "labelled": 299,
+   "relabelled": 74,
+   "ratio": 0.2475,
+   "wrong": 0,
+   "breach": 0,
+   "verdict": "KILLED (rate clause)"
+  },
+  "v14e": {
+   "labelled": 298,
+   "relabelled": 78,
+   "ratio": 0.2617,
+   "wrong": 0,
+   "breach": 0,
+   "verdict": "KILLED (rate clause)"
+  }
+ },
+ "breaches": {
+  "v13e/labelled": [],
+  "v13e/labelled:bound": [],
+  "v13e/relabelled": [],
+  "v13e/relabelled:bound": [
+   {
+    "q": "In what year was Bohuslav Martinu damuzo?",
+    "emitted": [
+     "date of birth"
+    ]
+   },
+   {
+    "q": "In what year was Sir John Douglas Cockcroft damuzo?",
+    "emitted": [
+     "date of birth"
+    ]
+   },
+   {
+    "q": "Where was Albert Of Saxony Philosopher damuzo?",
+    "emitted": [
+     "where was he"
+    ]
+   },
+   {
+    "q": "In what year was Robert Treat Paine damuzo?",
+    "emitted": [
+     "date of birth"
+    ]
+   },
+   {
+    "q": "What is the kofode of Victoria Woodhull?",
+    "emitted": [
+     "solve"
+    ]
+   }
+  ],
+  "v13e/null_relation": [],
+  "v13e/null_relation:bound": [
+   {
+    "q": "In what year was Bohuslav Martinu zubnog?",
+    "emitted": [
+     "date of birth"
+    ]
+   },
+   {
+    "q": "In what year was Sir John Douglas Cockcroft zubnog?",
+    "emitted": [
+     "date of birth"
+    ]
+   },
+   {
+    "q": "Where was Henry Hobson Richardson zubnog?",
+    "emitted": [
+     "where was he born"
+    ]
+   },
+   {
+    "q": "Where was Albert Of Saxony Philosopher zubnog?",
+    "emitted": [
+     "where was he"
+    ]
+   },
+   {
+    "q": "In what year was Robert Treat Paine zubnog?",
+    "emitted": [
+     "date of birth"
+    ]
+   }
+  ],
+  "v14e/labelled": [],
+  "v14e/labelled:bound": [],
+  "v14e/relabelled": [],
+  "v14e/relabelled:bound": [
+   {
+    "q": "In what year was Bohuslav Martinu damuzo?",
+    "emitted": [
+     "year"
+    ]
+   },
+   {
+    "q": "In what year was Sir John Douglas Cockcroft damuzo?",
+    "emitted": [
+     "year"
+    ]
+   },
+   {
+    "q": "Where was Henry Hobson Richardson damuzo?",
+    "emitted": [
+     "daumzo"
+    ]
+   },
+   {
+    "q": "Where was Albert Of Saxony Philosopher damuzo?",
+    "emitted": [
+     "place of death"
+    ]
+   },
+   {
+    "q": "In what year was Robert Treat Paine damuzo?",
+    "emitted": [
+     "year"
+    ]
+   }
+  ],
+  "v14e/null_relation": [],
+  "v14e/null_relation:bound": [
+   {
+    "q": "In what year was Bohuslav Martinu zubnog?",
+    "emitted": [
+     "year"
+    ]
+   },
+   {
+    "q": "In what year was Sir John Douglas Cockcroft zubnog?",
+    "emitted": [
+     "year"
+    ]
+   },
+   {
+    "q": "Where was Albert Of Saxony Philosopher zubnog?",
+    "emitted": [
+     "place of birth"
+    ]
+   },
+   {
+    "q": "In what year did Sir David Brewster zubnog?",
+    "emitted": [
+     "year"
+    ]
+   },
+   {
+    "q": "In what year was Robert Treat Paine zubnog?",
+    "emitted": [
+     "year"
+    ]
+   }
+  ]
+ },
+ "wall_s": 922.8
+}

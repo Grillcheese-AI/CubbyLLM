@@ -1,0 +1,57 @@
+world: 563,062 facts (10,765 encyclopedia) built in 19s
+relabelling 27 relations, e.g. administrative territorial entity -> r_39714, alma mater -> r_58550, author -> r_59200, award -> r_26558
+300 of 600 sampled records survive substitution (dropped: entity collision or no substitution)
+
+relabelled world: 563,062 facts, 60,251 facts had their relation renamed, built in 25s
+null control token: r_00042 (zero facts)
+
+  v13e labelled       correct  299  refused    1  WRONG   0  BREACH   0  no_plan    0  (145s)
+  v13e relabelled     correct   13  refused  287  WRONG   0  BREACH   0  no_plan    0  (151s)
+  v13e null_relation  correct    0  refused  300  WRONG   0  BREACH   0  no_plan    0  (153s)
+  v14e labelled       correct  298  refused    2  WRONG   0  BREACH   0  no_plan    0  (144s)
+  v14e relabelled     correct   14  refused  286  WRONG   0  BREACH   0  no_plan    0  (153s)
+  v14e null_relation  correct    0  refused  300  WRONG   0  BREACH   0  no_plan    0  (155s)
+
+model     labelled  relabelled   ratio  wrong  breach   verdict
+--------------------------------------------------------------------------
+v13e           299          13   0.043      0       0   KILLED (rate clause)
+v14e           298          14   0.047      0       0   KILLED (rate clause)
+
+WHAT THE EMITTER BOUND under relabelling -- the finding, not the score:
+  model     copied the token   recalled the original   other
+  v13e                    73                      16     211
+  v14e                    95                       0     205
+  (copying is routing -- and WO-2.5 warns a pure copier passes. Recalling the
+   original is the memorized wording->relation table WO-0.3 measured.)
+
+refusal reasons, relabelled arm (how it fails matters more than that it fails):
+  v13e    {"plan_does_not_cover_question": 191, "unknown_relation": 63, "retrieval_exhausted": 20, "ambiguous_relation": 13, "no_plan": 0}
+  v14e    {"plan_does_not_cover_question": 167, "unknown_relation": 82, "retrieval_exhausted": 27, "ambiguous_relation": 10, "no_plan": 0}
+
+v13e/relabelled:bound -- breaches:
+   {"q": "In what year was Bohuslav Martinu r_21165?", "emitted": ["date of birth"]}
+   {"q": "What is the r_76369 of Edward Bancroft?", "emitted": ["r 76369"]}
+   {"q": "Where was Albert Of Saxony Philosopher r_21165?", "emitted": ["where was he"]}
+   {"q": "In what year did Sir David Brewster r_62521?", "emitted": ["date of death"]}
+   {"q": "In what year was Robert Treat Paine r_21165?", "emitted": ["date of birth"]}
+
+v13e/null_relation:bound -- breaches:
+   {"q": "In what year was Bohuslav Martinu r_00042?", "emitted": ["date of birth"]}
+   {"q": "Where was Albert Of Saxony Philosopher r_00042?", "emitted": ["where was he"]}
+   {"q": "In what year did Sir David Brewster r_00042?", "emitted": ["date of death"]}
+   {"q": "In what year was Robert Treat Paine r_00042?", "emitted": ["date of birth"]}
+   {"q": "What is the r_00042 of Victoria Woodhull?", "emitted": ["victoria woodhull"]}
+
+v14e/relabelled:bound -- breaches:
+   {"q": "In what year was Bohuslav Martinu r_21165?", "emitted": ["year"]}
+   {"q": "What is the r_76369 of Edward Bancroft?", "emitted": ["r 76369"]}
+   {"q": "Where was Albert Of Saxony Philosopher r_21165?", "emitted": ["date"]}
+   {"q": "What is the r_74878 of Victoria Woodhull?", "emitted": ["r 74878"]}
+   {"q": "In what year was Jean Louis Barthou r_21165?", "emitted": ["year"]}
+
+v14e/null_relation:bound -- breaches:
+   {"q": "In what year was Bohuslav Martinu r_00042?", "emitted": ["year"]}
+   {"q": "Where was Albert Of Saxony Philosopher r_00042?", "emitted": ["date"]}
+   {"q": "In what year was Jean Louis Barthou r_00042?", "emitted": ["year"]}
+   {"q": "What r_00042 did Spain National Football Team receive?", "emitted": ["spain national football team"]}
+   {"q": "When was James Anthony Bailey r_00042?", "emitted": ["date"]}

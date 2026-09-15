@@ -1,0 +1,17 @@
+world: 563,062 facts (10,765 encyclopedia) built in 18s
+relabelling 27 relations, e.g. administrative territorial entity -> r_39714, alma mater -> r_58550, author -> r_59200, award -> r_26558
+15 of 30 sampled records survive substitution (dropped: entity collision or no substitution)
+
+relabelled world: 563,062 facts, 60,251 facts had their relation renamed, built in 26s
+null control token: r_00042 (zero facts)
+
+  v14e labelled       correct   15  refused    0  WRONG   0  BREACH   0  no_plan    0  (9s)
+  v14e relabelled     correct    1  refused   14  WRONG   0  BREACH   0  no_plan    0  (8s)
+  v14e null_relation  correct    0  refused   15  WRONG   0  BREACH   0  no_plan    0  (8s)
+
+model     labelled  relabelled   ratio  wrong  breach   verdict
+--------------------------------------------------------------------------
+v14e            15           1   0.067      0       0   KILLED (rate clause)
+
+refusal reasons, relabelled arm (how it fails matters more than that it fails):
+  v14e    {"unknown_relation": 6, "plan_does_not_cover_question": 6, "retrieval_exhausted": 2, "no_plan": 0}
