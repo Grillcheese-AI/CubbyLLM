@@ -39,6 +39,47 @@ __wiring__ = "STANDALONE"
 
 TAU_VM = {1: 1.0, 2: 0.4736328125, 3: 0.22021484375}
 
+
+def _role_vocab_stats(records: list[dict]) -> dict:
+    """WO-0.3 -- role-vocabulary growth as a build metric.
+
+    One integer per build: the count of DISTINCT role identifiers the corpus
+    binds. A generalizing interface has a FLAT count across rounds; a
+    per-relation interface mints one identifier per relation, so the count
+    tracks the ontology instead of the task and a relation absent from
+    training has no role to bind to.
+
+    Measured when this was added (2026-09-14), with `validation/role_vocab.py`:
+    v12e 151 distinct / 143 per-relation (95%), v13e 176 / 168 (95%),
+    v13f 412 / 403 (98%). 260 of the 261 roles v13f added over v12e are
+    per-relation. So the interface was never generalizing -- the 146->407
+    jump everyone noticed is the relation COVERAGE growing, not a regression
+    that can be reverted. Fixing it means changing the interface.
+
+    This lives in the build so the number is recorded in every manifest from
+    now on rather than being rediscovered. `validation/role_vocab.py` is the
+    standalone tool for comparing two rounds and failing a build on growth.
+    """
+    sys.path.insert(0, str(ROOT / "validation"))
+    from role_vocab import per_relation_share, roles_in_program
+
+    counts: collections.Counter = collections.Counter()
+    for r in records:
+        program = r.get("program")
+        if isinstance(program, str):
+            counts.update(roles_in_program(program))
+    n_rel, frac_rel = per_relation_share(counts)
+    return {
+        "distinct": len(counts),
+        "mentions": sum(counts.values()),
+        "per_relation": n_rel,
+        "per_relation_share": round(frac_rel, 4),
+        "top": dict(counts.most_common(25)),
+        "note": "WO-0.3. A generalizing role interface is FLAT across rounds. "
+                "Compare with: python validation/role_vocab.py <new>.jsonl "
+                "--baseline <prev>.jsonl",
+    }
+
 # (wording, the relation words the plan binds -- the question's own, resolved by the host)
 WORDINGS: dict[str, list[tuple[str, list[str]]]] = {
     "date of birth": [
@@ -302,8 +343,18 @@ def main() -> None:
             base = {"source": f"cubbyllm/gen3_{ch['prov']['source']}", "split": split, "system": None, "state": None,
                     "repeat": 1, "gold": ch["obj"], "provenance": ch["prov"], "wording": tmpl, "aliased": lr.aliased,
                     "n_hop": plan.n_hop}
+            # WO-1.3: the plan record carries the verification it ACTUALLY
+            # PASSED. Both records below come out of the one `learn_and_answer`
+            # call above, and the `continue` a few lines up means neither is
+            # written unless that walk was `certified` -- gate-verified AND the
+            # answer equal to the chain's object. Writing `vm_ok=None` on the
+            # plan record while writing `vm_ok=True` on its twin recorded an
+            # asymmetry in the LABEL that does not exist in the DATA, and it
+            # reads as "plan rows are unverified" to anyone auditing the corpus
+            # later (it did, on 2026-09-14 -- the conclusion drawn was that the
+            # plan task carried no verification signal at all, which is false).
             plan_rec = dict(base, task="plan", subtype=f"n_hop={plan.n_hop}", prompt=q, program=cot_plan(ch["seed"], rels),
-                            vm_ok=None, vm_result=None, vm_error=None, gold_match=None)
+                            vm_ok=True, vm_result=res.answer, vm_error=None, gold_match=True)
             chain_rec = dict(base, task="chain", subtype=f"n_hop={plan.n_hop}",
                              prompt=q + "\nFacts:\n" + "\n".join(f"- {f}" for f in facts), program=res.source,
                              vm_ok=True, vm_result=res.answer, vm_error=None, gold_match=True)
@@ -330,6 +381,7 @@ def main() -> None:
                 "vm_calls": calls["vm"], "wall_s": round(time.perf_counter() - t0, 1), "output": a.out,
                 "note": "certified = the gate verified the host's plan for the wording and the VM's answer is the chain's object; "
                         "every other verdict is the gate's refusal reason for that wording, counted"}
+    manifest["role_vocab"] = _role_vocab_stats(records)
     mp = a.out.replace(".jsonl", ".manifest.json")
     json.dump(manifest, open(mp, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     print(f"\nasked {c['asked']:,} | certified {c['certified']:,} ({c['certified'] / max(1, c['asked']):.1%}) | records {len(records):,} "
@@ -342,6 +394,16 @@ def main() -> None:
     for k, ex in examples.items():
         for q, rels, ans, ref in ex:
             print(f"  [{k}] {q!r} plan {rels} -> {ans!r} {ref if ref else ''}")
+    rv = manifest["role_vocab"]
+    print(f"\nrole vocabulary: {rv['distinct']} distinct roles, "
+          f"{rv['per_relation']} of them per-relation ({rv['per_relation_share']:.0%}), "
+          f"{rv['mentions']:,} mentions")
+    if rv["per_relation_share"] >= 0.5:
+        print("  WO-0.3 WARNING: the role vocabulary is majority per-relation "
+              "(H<hop>_<RELATION>). A generalizing interface is FLAT across "
+              "rounds; this one tracks the ontology, so a relation absent from "
+              "training has no role to bind to. Compare rounds with:\n"
+              "    python validation/role_vocab.py <new>.jsonl --baseline <prev>.jsonl")
     print(f"wrote {a.out}\nwrote {mp}")
 
     if a.merge:

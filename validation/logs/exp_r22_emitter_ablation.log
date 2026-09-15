@@ -1,0 +1,41 @@
+world: 552297 facts, 2794 distinct relations | 60 chains | built in 19s
+matched items: 60
+
+pass 1 -- collecting emitter plans
+  20/60 (65s, emitter 45s)
+  40/60 (106s, emitter 86s)
+  60/60 (152s, emitter 132s)
+
+trivial arm's constant plan: ['original', 'location']
+
+pass 2 -- scoring four arms
+  20/60 (154s, VM calls 153)
+  40/60 (157s, VM calls 294)
+  60/60 (159s, VM calls 513)
+
+EMITTER ABLATION -- same world, same chains, same gold, same gates; only the PLAN'S ORIGIN moves
+form        arm         plan  refused  verified  correct  WRONG
+canonical   emitter       60       14        33       33      0
+canonical   grammar       60        0        58       58      0
+canonical   trivial       60       58         2        2      0
+canonical   shuffled      60       60         0        0      0
+have        emitter       60       26        23       23      0
+have        grammar       60        0         0        0      0
+have        trivial       60       58         2        2      0
+have        shuffled      60       60         0        0      0
+relative    emitter       60       22        35       35      0
+relative    grammar       60       60         0        0      0
+relative    trivial       60       58         2        2      0
+relative    shuffled      60       60         0        0      0
+possessive  emitter       60       49         8        8      0
+possessive  grammar        0        0         0        0      0
+possessive  trivial       60       58         2        2      0
+possessive  shuffled      60       60         0        0      0
+
+totals over 240 questions: emitter 99 (wrong 0) | grammar 58 (wrong 0) | trivial 8 (wrong 0) | shuffled 0 (wrong 0)
+
+emitter accuracy 0.412 | 95% Wilson half-width (the noise floor) +/-0.062
+ABLATION GAP (emitter - shuffled) = +0.412  (99 questions)
+gap vs host-only (emitter - grammar) = +0.171
+VERDICT: outside the noise floor -- the emitter's plan is doing work.
+(donor plan identical to the real one on 1/240 questions -- these dilute the gap toward zero and are not a defect of the emitter)

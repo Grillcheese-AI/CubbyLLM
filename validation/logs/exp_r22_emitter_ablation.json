@@ -1,0 +1,147 @@
+{
+ "n_items": 60,
+ "n_questions": 240,
+ "world_facts": 552297,
+ "gguf": "standin/models/emitter_v12e.Q4_K_M.gguf",
+ "stats": {
+  "canonical": {
+   "emitter": {
+    "plan": 60,
+    "walked": 46,
+    "walk_failed": 13,
+    "verified": 33,
+    "correct": 33,
+    "refused": 14,
+    "refused:unknown_relation": 1,
+    "refused:plan_does_not_cover_question": 13
+   },
+   "grammar": {
+    "plan": 60,
+    "walked": 60,
+    "verified": 58,
+    "correct": 58,
+    "walk_failed": 2
+   },
+   "trivial": {
+    "plan": 60,
+    "refused": 58,
+    "refused:plan_does_not_cover_question": 58,
+    "walked": 2,
+    "verified": 2,
+    "correct": 2
+   },
+   "shuffled": {
+    "plan": 60,
+    "refused": 60,
+    "refused:plan_does_not_cover_question": 60
+   }
+  },
+  "have": {
+   "emitter": {
+    "plan": 60,
+    "refused": 26,
+    "refused:plan_does_not_cover_question": 26,
+    "walked": 34,
+    "verified": 23,
+    "correct": 23,
+    "walk_failed": 11
+   },
+   "grammar": {
+    "plan": 60,
+    "walked": 60,
+    "walk_failed": 60
+   },
+   "trivial": {
+    "plan": 60,
+    "refused": 58,
+    "refused:plan_does_not_cover_question": 58,
+    "walked": 2,
+    "verified": 2,
+    "correct": 2
+   },
+   "shuffled": {
+    "plan": 60,
+    "refused": 60,
+    "refused:plan_does_not_cover_question": 60
+   }
+  },
+  "relative": {
+   "emitter": {
+    "plan": 60,
+    "walked": 38,
+    "verified": 35,
+    "correct": 35,
+    "refused": 22,
+    "refused:plan_does_not_cover_question": 17,
+    "refused:unknown_relation": 5,
+    "walk_failed": 3
+   },
+   "grammar": {
+    "plan": 60,
+    "refused": 60,
+    "refused:unknown_relation": 60
+   },
+   "trivial": {
+    "plan": 60,
+    "refused": 58,
+    "refused:plan_does_not_cover_question": 58,
+    "walked": 2,
+    "verified": 2,
+    "correct": 2
+   },
+   "shuffled": {
+    "plan": 60,
+    "refused": 60,
+    "refused:plan_does_not_cover_question": 60
+   }
+  },
+  "possessive": {
+   "emitter": {
+    "plan": 60,
+    "refused": 49,
+    "refused:plan_does_not_cover_question": 46,
+    "walked": 11,
+    "walk_failed": 3,
+    "verified": 8,
+    "correct": 8,
+    "refused:unknown_relation": 3
+   },
+   "grammar": {
+    "no_plan": 60
+   },
+   "trivial": {
+    "plan": 60,
+    "refused": 58,
+    "refused:plan_does_not_cover_question": 58,
+    "walked": 2,
+    "verified": 2,
+    "correct": 2
+   },
+   "shuffled": {
+    "plan": 60,
+    "refused": 60,
+    "refused:plan_does_not_cover_question": 60,
+    "donor_identical": 1
+   }
+  }
+ },
+ "totals": {
+  "emitter": 99,
+  "grammar": 58,
+  "trivial": 8,
+  "shuffled": 0
+ },
+ "wrong": {
+  "emitter": 0,
+  "grammar": 0,
+  "trivial": 0,
+  "shuffled": 0
+ },
+ "emitter_accuracy": 0.4125,
+ "noise_floor": 0.0618,
+ "ablation_gap": 0.4125,
+ "donor_identical": 1,
+ "vm_calls": 513,
+ "wrong_examples": [],
+ "wall_s": 158.8
+}

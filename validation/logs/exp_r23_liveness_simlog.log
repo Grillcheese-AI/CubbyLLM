@@ -1,0 +1,26 @@
+world: 552297 facts, 2794 distinct relations | 40 chains | built in 19s
+decoy pool: 2776 relations with at least one stored object
+
+running the differential (each question twice: real world, then perturbed)
+  10/40 (20s, VM calls 60)
+  20/40 (20s, VM calls 120)
+  30/40 (20s, VM calls 180)
+  40/40 (20s, VM calls 240)
+
+LIVENESS -- does the program's output depend on the facts it was given?
+  chains run            : 40
+  no plan               : 0
+  not perturbable       : 0   (the relation has no other stored value, so the 'perturbed' world is the real one; excluded)
+  both runs refused     : 1   (no liveness information; excluded)
+  informative           : 39
+    live                : 39
+      answer changed    : 36
+      refused after swap: 2
+      only perturbed spoke: 1
+    DEAD                : 0
+  swap coverage         : 42 candidate facts swapped, 0 left alone (no other stored value for the relation)
+
+  LIVENESS RATE = 100.0%  (alarm below 95%)
+
+No dead programs in this sample: every program that spoke changed its
+output when its facts changed.

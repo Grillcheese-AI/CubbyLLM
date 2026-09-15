@@ -121,19 +121,33 @@ def run_program(
     VM's QUERY has a store to ground against; without it every QUERY abstains
     (empty chunk array). `run-proto` has no equivalent field yet.
 
-    `strict` (Task 8/9, verify-before-execute) passes `--strict` to `cubelang
-    run`, so non-executing constructs (trace-only ext ops, `match`, ...) fail
-    loudly at compile time instead of silently compiling to no-ops. Defaults
-    to True: the reasoning bridge's program always passes strict cleanly, so
-    verify-before-execute should be the default a caller has to opt out of,
-    not opt into. `run_program_proto`'s `run-proto` transport has no
-    equivalent flag -- it is unconditionally strict server-side (cubelang
+    `strict` (Task 8/9, verify-before-execute) makes non-executing constructs
+    (trace-only ext ops like `infer`/`predict`/`score`, `unify`, `throw`, ...)
+    fail loudly at compile time instead of silently compiling to no-ops.
+    Defaults to True: the reasoning bridge's program always passes strict
+    cleanly, so verify-before-execute should be the default a caller has to
+    opt out of, not opt into. `run_program_proto`'s `run-proto` transport has
+    no equivalent flag -- it is unconditionally strict server-side (cubelang
     Task 8), so there's nothing to thread on that side.
+
+    2026-09-14, two upstream changes this had to catch up with:
+
+    1. cubelang's CLI is now STRICT BY DEFAULT. Omitting `--strict` no longer
+       means loose -- `--loose` is the opt-out, and `--strict` is accepted but
+       redundant. This function used to send neither flag for `strict=False`
+       and silently got strict behaviour anyway, so `strict=False` did
+       nothing; it now sends `--loose`. Both flags are still sent explicitly
+       rather than relying on the default, so this call site says what it
+       means regardless of which way the CLI's default swings next.
+    2. `match` is no longer on the non-executing list. `compile_match` emits a
+       real COMPARE/COND arm-selection chain and exactly one arm runs
+       (cubelang docs/DRIFT.md C3/A7), so it passes strict. The old docstring
+       here named `match` as an example of what strict rejects; that was the
+       stale claim cubelang's DRIFT.md B5 flagged in this file specifically.
     """
     exe_path = find_cubelang_exe(exe)
     cmd = [str(exe_path), "run", program_path, "--fn", fn, "--json"]
-    if strict:
-        cmd.append("--strict")
+    cmd.append("--strict" if strict else "--loose")
     if knowledge:
         cmd += ["--knowledge", str(knowledge)]
     for a in args or []:

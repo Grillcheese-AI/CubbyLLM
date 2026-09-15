@@ -9,6 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from ..core.protocols import Wiring
+from . import simlog
 from .plan_verify import answer_type_mismatch, verify_plan
 from .planner import (QuestionPlan, Triple, accepts, normalize, parse_fact,
                       parse_question)
@@ -343,6 +344,11 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
                                  source=source, repairs=repairs, reason="answer_type_mismatch",
                                  refused={"asked": mismatch[0], "got": mismatch[1], "value": triples[-1].obj,
                                           "facts": [t.fact for t in trace]})
+            # WO-0.4: keep the similarity of every ACCEPTED binding. This is
+            # the only site that speaks, so it is the only site whose
+            # distribution matters. No-op unless CUBBY_SIMLOG is set, and it
+            # never raises -- see simlog.record.
+            simlog.record(question, triples[-1].obj, tau_vm, trace, ctrl_sim)
             return CoTResult(answer=triples[-1].obj, verified=True,
                              trace=trace, repairs_used=used, source=source,
                              repairs=repairs)

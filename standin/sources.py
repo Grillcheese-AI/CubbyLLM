@@ -465,8 +465,13 @@ class WikidataSource:
         return out
 
     def facts(self, entity: str, relations: list[str] | None = None, via: str | None = None,
-              qid: str | None = None, asker: str | None = None, classes: bool = False) -> list[str]:
-        """`relations`: the wordings the walk needs from this entity (the stalled hop's), used
+              qid: str | None = None, asker: str | None = None, classes: bool = False) -> list["Triple"]:
+        """Returns `Triple(obj, rel, subj)`, NOT fact sentences. (The annotation
+        said `list[str]` until 2026-09-14; it had been returning structured
+        triples since the store was changed to be told where REL ends, and the
+        stale annotation cost a caller a debugging round.)
+
+        `relations`: the wordings the walk needs from this entity (the stalled hop's), used
         only to decide among several items that share the name; `via`: the walked fact whose
         object this entity is, which names the item outright. Neither keeps the strict rule
         from applying when they are absent.

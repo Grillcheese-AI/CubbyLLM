@@ -1,0 +1,52 @@
+source: encyclopedia (exp_r16_encyclopedia_all.json)
+sampled 50 facts (stratified by predicate, seed 20260914)
+
+  10/50 (28s, 51 API calls) last: entity_unresolved
+  20/50 (46s, 90 API calls) last: entity_unresolved
+  30/50 (65s, 129 API calls) last: agreed
+  40/50 (79s, 160 API calls) last: entity_unresolved
+  50/50 (97s, 202 API calls) last: agreed
+
+VOLATILITY -- this run (2026-09-14)
+  re-fetched   : 29
+  agreed       : 23   (of which 7 were the same claim under a different label)
+  CHANGED      : 0   (confirmed)
+  disputed     : 2   (live value differs, but misresolution is not ruled out; excluded from the rate -- see below)
+  absent live  : 4   (entity resolved, relation no longer stated; NOT counted as change)
+  unresolved   : 21   (the subject label did not resolve to a live item at all; carries no information, excluded)
+  fetch errors : 0
+  API calls    : 202
+
+  snapshot disagreement rate = 0.0% of decided re-fetches
+
+  subjects that did not resolve (21), first few:
+    'George Francis Abbott'
+    'San Diego'
+    'Leon Gaumont'
+    'Jonathan Belcher'
+    'Lake Placid'
+    'Johann Wolfgang Dobereiner'
+    'Thomas Alexander Browne'
+    'Laurel'
+    'Frans Eemll Sillanpaa'
+    'Count de la Perouse'
+
+  DISPUTED -- live value differs from the stored one. Each needs one look to
+  say whether the fact moved or the name resolved to the wrong item; only
+  confirmed moves should promote a predicate to fetch-required:
+    [date of birth] James Gordon Bennett: stored '1795' -> live ['1963']
+    [date of birth] Robert Edward Lee: stored '1807-01-19' -> live ['1942']
+
+PER-PREDICATE TABLE (cumulative over 1 run(s), 5 predicates seen)
+  predicate                                checked  changed  disputed   rate
+  date of birth                                  8        0         2     0%
+  date of death                                  7        0         0     0%
+  located in the administrative territori        3        0         0     0%
+  place of death                                 5        0         0     0%
+  place of birth                                 6        0         0     0%
+
+  No predicate yet has enough checks to qualify as fetch-required.
+  The table needs volume: this is a 50/day probe by design, and a rate
+  over fewer than 5 checks is noise, not a measurement.
+
+wrote validation\logs\volatility_table.json
