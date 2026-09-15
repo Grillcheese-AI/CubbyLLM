@@ -1,0 +1,29 @@
+world: 563,062 facts (10,765 encyclopedia)
+relabelling 27 relations (word tokens), e.g. administrative territorial entity -> gimega, alma mater -> degugo, author -> sanono
+200 records survive substitution
+
+manifest index: 246,199 entities in 5s | decoy pool 27 relations
+
+  v14e relabelled        correct   56  refused  144  WRONG   0  right-token  107  (98s)
+  v14e manifest          correct   53  refused  147  WRONG   0  right-token  102  (99s)
+  v14e manifest_decoy3   correct   51  refused  149  WRONG   0  right-token  106  (104s)
+  v13e relabelled        correct   53  refused  145  WRONG   0  right-token  102  (99s)
+  v13e manifest          correct   54  refused  139  WRONG   0  right-token  101  (99s)
+  v13e manifest_decoy3   correct   52  refused  141  WRONG   0  right-token  100  (103s)
+
+model  arm                 correct   of  wrong  bound right  avg manifest  chance
+----------------------------------------------------------------------------------
+v14e   relabelled               56  200      0          107           0.0   0.000
+v14e   manifest                 53  200      0          102           4.1   0.245
+v14e   manifest_decoy3          51  200      0          106           7.1   0.141
+v13e   relabelled               53  200      0          102           0.0   0.000
+v13e   manifest                 54  200      0          101           4.1   0.245
+v13e   manifest_decoy3          52  200      0          100           7.1   0.141
+
+refusal reasons:
+  v14e relabelled        {"retrieval_exhausted": 56, "plan_does_not_cover_question": 47, "unknown_relation": 29, "ambiguous_relation": 12, "no_plan": 0}
+  v14e manifest          {"unknown_relation": 89, "plan_does_not_cover_question": 57, "retrieval_exhausted": 1, "no_plan": 0}
+  v14e manifest_decoy3   {"unknown_relation": 84, "plan_does_not_cover_question": 60, "retrieval_exhausted": 5, "no_plan": 0}
+  v13e relabelled        {"plan_does_not_cover_question": 73, "unknown_relation": 34, "retrieval_exhausted": 25, "ambiguous_relation": 13, "no_plan": 2}
+  v13e manifest          {"unknown_relation": 69, "plan_does_not_cover_question": 67, "no_plan": 7, "retrieval_exhausted": 3}
+  v13e manifest_decoy3   {"plan_does_not_cover_question": 74, "unknown_relation": 62, "no_plan": 7, "retrieval_exhausted": 5}

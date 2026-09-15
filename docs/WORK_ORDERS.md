@@ -700,6 +700,61 @@ arity, and functional-or-multi-valued metadata. The string is evaluated **exactl
 into the manifest index; a miss is a hard error, never a nearest-neighbour fallback. That is
 "evaluated, not parsed" made mechanical.
 
+**Status: BUILT 2026-09-15** (`cubbyllm/reasoning/manifest.py`), **and the prompt-only form does
+not work** (`validation/exp_r27_manifest.py`). The module is a drop-in for the `known=` seam
+WO-0.6 proved is clean, so nothing was rewired to adopt it; it declares `STANDALONE` rather than
+`WIRED` because the new CI guard now checks that claim.
+
+### RESULT — supplying the information is not enough
+
+Same relabelled world as WO-2.5, same questions. The host supplies the admissible relations two
+ways at once: in the emitter's system prompt, and as the `known=` gate (exact lookup, no fuzzy
+tier). 200 questions, both arms.
+
+| model | arm | correct | wrong | bound right token | avg manifest | chance |
+|---|---|---:|---:|---:|---:|---:|
+| v14e | relabelled | 56 | 0 | 107 | — | — |
+| v14e | + manifest | 53 | 0 | 102 | 4.1 | 0.245 |
+| v14e | + manifest + 3 decoys | 51 | 0 | 106 | 7.1 | 0.141 |
+| v13e | relabelled | 53 | 0 | 102 | — | — |
+| v13e | + manifest | 54 | 0 | 101 | 4.1 | 0.245 |
+| v13e | + manifest + 3 decoys | 52 | 0 | 100 | 7.1 | 0.141 |
+
+**Six arms within five questions of each other.** The manifest recovers nothing. And the
+right-token rate sits at ~50% in every arm, unmoved by the manifest and unmoved by decoys — the
+emitter is reading the *question*, not the admissible set. It was never trained on a manifest
+format, so this is a zero-shot probe, and zero-shot it simply ignores the block.
+
+**The decoy control is therefore inconclusive, and that is the honest reading.** It was built to
+measure whether selection beats the 1/(k+1) baseline. Nothing is selecting, so there is nothing
+to measure. Decoys cost 1 question out of 200.
+
+### But the failure mode improved sharply, and that is not nothing
+
+| arm | `unknown_relation` | `retrieval_exhausted` |
+|---|---:|---:|
+| v14e relabelled | 29 | 56 |
+| v14e + manifest | **89** | **1** |
+| v13e relabelled | 34 | 25 |
+| v13e + manifest | **69** | **3** |
+
+Without the manifest the system takes a bad relation, walks, and exhausts retrieval — a late,
+expensive, vague failure. With it, the gate refuses at once and names the reason. **Evaluated,
+not parsed, is doing exactly what it was specified to do**; it is the emitter that is not
+participating. Flat accuracy, far better diagnostics, and a cheaper failure path.
+
+### What this settles
+
+**WO-2.2 is not an optimization, it is the mechanism.** A prompt asks; a grammar enforces. If the
+model will not use information it is handed, the only remaining move is to make the wrong relation
+*undecodable* rather than merely discouraged — which is precisely what WO-2.2 specifies and why it
+draws its literals from the manifest.
+
+The alternative — train the emitter with manifests in the prompt — is available and weaker: it
+buys compliance by hope where a grammar buys it by construction.
+
+**0 wrong answers across all 1,200 questions**, manifest and decoys included.
+
 ## WO-2.2 — GBNF generated from the engine registry
 
 Admit the **execute surface only** — excluding all 24 trace-only opcodes, `match`, indexed assign,
@@ -817,6 +872,62 @@ wording-to-relation table — and it rules it out for `v14e_nochain` specificall
 
 Refusals under relabelling are the expected honest failure and are recorded, not counted against
 the arm — that is the whole point of the amendment.
+
+---
+
+## WO-2.6 — The external reasoning benchmarks
+
+**Status: SPECIFIED 2026-09-15, not acquired.** Owner: *"lets not forget the benchmarks."*
+
+**The gap.** Every benchmark in this repo is a *retrieval* benchmark — SimpleQA,
+WebQuestions, Natural Questions, the gen-3 held split. All of them ask "can you find
+and verify a fact". None tests reasoning the way the CoT/ToT literature does, and the
+held split is now at its ceiling (597–600/600), so it can no longer separate anything.
+WO-0.6 left three seams inside the noise floor with the note that telling dead weight
+from insurance *needs a harder set, not more seeds*. This is that set.
+
+### The reporting format is the deliverable, not the score
+
+**Every benchmark reported as correct / refused / wrong. Never accuracy.** 40% correct
+with 0 wrong and 60% refused is a different machine from 40% correct with 60% wrong,
+and no public leaderboard can tell them apart. That column is the architecture's
+differentiator made legible to someone outside it.
+
+And the corollary: **most "thinking benchmarks" are knowledge benchmarks in disguise.**
+GPQA, MMLU and ARC need facts in weights. This architecture will score badly on them
+*for the right reason* — it refuses what it cannot ground. Publishing those numbers
+without the refusal column would misrepresent the system in the direction that makes
+it look worse than it is.
+
+### The ladder, tiered to the phases
+
+| tier | benchmark | why it fits |
+|---|---|---|
+| now | **HotpotQA / MuSiQue / 2WikiMultihop** | explicit multi-hop over a corpus — the serving path's native shape, and external validation of 599/600 |
+| Phase 2 | **CLUTRR** | kinship graphs with *compositional* splits: train ≤3 hops, test 4–10. WO-2.5's question shipped as an off-the-shelf benchmark, and relation-based so the WO-2.1 manifest applies directly |
+| Phase 2 | **ProofWriter / RuleTaker** | rules + facts given, derive the conclusion, **depth-stratified** (0/1/2/3/5). The rule-store closure idea with a public scoreboard |
+| Phase 3 | **GSM8K, StrategyQA** | need the host agenda and arithmetic search |
+
+CLUTRR and ProofWriter are the two to prioritize: they measure depth and compositional
+generalization *separately*, which is exactly what no current instrument can see.
+
+### Acquisition
+
+Checked 2026-09-15: **none of them are on the datasets volume**, and
+`huggingface_hub` is not installed in the working venv. Both are small pulls; the venv
+dependency is the only blocker.
+
+**The interim set that already exists locally:** `hdc` on the datasets volume carries
+1/2/3-hop QA with OOD and preservation splits and a relation-template mapping
+(`exp_r18` already probes it). It is a weaker CLUTRR but it is *here*, and it can give
+the depth-stratified read before anything is downloaded.
+
+### A contamination warning to carry into any GSM8K number
+
+**GSM8K is already in the emitter's training data.** The `arithmetic` task is
+GSM-derived — `program GSM1669`, source `regen/arith_xl`. Any GSM8K score from v13e or
+v14e is contaminated and must be reported as such or run on a held-out slice. Better we
+state it than a reviewer finds it.
 
 ---
 

@@ -1,0 +1,42 @@
+{
+ "n": 15,
+ "seed": 7,
+ "decoys": 3,
+ "relations": 27,
+ "results": {
+  "v14e": {
+   "relabelled": {
+    "bound:wrong": 11,
+    "refused": 12,
+    "why:retrieval_exhausted": 4,
+    "why:plan_does_not_cover_question": 6,
+    "bound:right_token": 4,
+    "verified": 3,
+    "correct": 3,
+    "why:unknown_relation": 1,
+    "why:ambiguous_relation": 1
+   },
+   "manifest": {
+    "manifest_size": 87,
+    "bound:wrong": 12,
+    "refused": 12,
+    "why:plan_does_not_cover_question": 4,
+    "why:unknown_relation": 8,
+    "bound:right_token": 3,
+    "verified": 3,
+    "correct": 3
+   },
+   "manifest_decoy3": {
+    "manifest_size": 132,
+    "bound:wrong": 12,
+    "refused": 12,
+    "why:plan_does_not_cover_question": 6,
+    "why:unknown_relation": 6,
+    "bound:right_token": 3,
+    "verified": 3,
+    "correct": 3
+   }
+  }
+ },
+ "wall_s": 70.9
+}

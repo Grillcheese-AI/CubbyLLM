@@ -1,0 +1,20 @@
+world: 563,062 facts (10,765 encyclopedia)
+relabelling 27 relations (word tokens), e.g. administrative territorial entity -> gimega, alma mater -> degugo, author -> sanono
+15 records survive substitution
+
+manifest index: 246,199 entities in 6s | decoy pool 27 relations
+
+  v14e relabelled        correct    3  refused   12  WRONG   0  right-token    4  (9s)
+  v14e manifest          correct    3  refused   12  WRONG   0  right-token    3  (8s)
+  v14e manifest_decoy3   correct    3  refused   12  WRONG   0  right-token    3  (8s)
+
+model  arm                 correct   of  wrong  bound right  avg manifest  chance
+----------------------------------------------------------------------------------
+v14e   relabelled                3   15      0            4           0.0   0.000
+v14e   manifest                  3   15      0            3           5.8   0.172
+v14e   manifest_decoy3           3   15      0            3           8.8   0.114
+
+refusal reasons:
+  v14e relabelled        {"plan_does_not_cover_question": 6, "retrieval_exhausted": 4, "unknown_relation": 1, "ambiguous_relation": 1, "no_plan": 0}
+  v14e manifest          {"unknown_relation": 8, "plan_does_not_cover_question": 4, "no_plan": 0}
+  v14e manifest_decoy3   {"plan_does_not_cover_question": 6, "unknown_relation": 6, "no_plan": 0}

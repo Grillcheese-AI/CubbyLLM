@@ -383,6 +383,57 @@ test*. Copying is not understanding, and the decoy control that would separate t
 manifest. What relabelling rules out is the other failure — the memorized wording-to-relation
 table — and it rules it out for v14e specifically.
 
+### 5.8 The manifest — supplying the information is not enough
+
+§5.7 concluded that the string-argument form does not carry the generalization, which makes
+WO-2.1's per-request manifest load-bearing. This tests that conclusion rather than assuming it.
+
+`cubbyllm/reasoning/manifest.py`. The host supplies the admissible relations for one request,
+with direction and arity. One tier: exact lookup, a miss is a miss. `StoreRelations` has a
+second, Jaccard ≥ 0.6 paraphrase tier — and that tier is exactly what lets a memorized relation
+wear an exact hit's confidence. Removing it *is* the proposal.
+
+Same relabelled world, same questions. The admissible set is supplied twice over: in the
+emitter's system prompt, and as the gate.
+
+| model | arm | correct | wrong | bound right token |
+|---|---|---:|---:|---:|
+| v14e | relabelled | 56 | 0 | 107 |
+| v14e | + manifest | 53 | 0 | 102 |
+| v14e | + manifest + 3 decoys | 51 | 0 | 106 |
+| v13e | relabelled | 53 | 0 | 102 |
+| v13e | + manifest | 54 | 0 | 101 |
+| v13e | + manifest + 3 decoys | 52 | 0 | 100 |
+
+**Six arms within five questions of each other. The manifest recovers nothing.** The right-token
+rate sits near 50% throughout, unmoved by the manifest and unmoved by decoys — the emitter is
+reading the *question*, not the admissible set. It was never trained on a manifest format, and
+zero-shot it ignores the block entirely.
+
+**So the decoy control is inconclusive, and that is the honest reading.** It exists to measure
+whether selection beats the 1/(k+1) baseline. Nothing is selecting, so there is nothing to
+measure. Three decoys cost one question in two hundred.
+
+**But the failure mode improved sharply.**
+
+| arm | `unknown_relation` | `retrieval_exhausted` |
+|---|---:|---:|
+| v14e relabelled | 29 | 56 |
+| v14e + manifest | **89** | **1** |
+
+Without the manifest the system takes a bad relation, walks, and exhausts retrieval — a late,
+expensive, vague failure. With it the gate refuses at once and names the reason. *Evaluated, not
+parsed* does exactly what it was specified to do; the emitter is what is not participating. Flat
+accuracy, much better diagnostics, a cheaper failure path.
+
+**What this settles, and it is the useful part.** WO-2.2's generated grammar is not an
+optimization — it is the mechanism. A prompt asks; a grammar enforces. When a model will not use
+information it is handed, the remaining move is to make the wrong relation **undecodable** rather
+than discouraged. A negative result that names the next build precisely is worth more than a
+positive one that leaves it optional.
+
+**0 wrong answers across all 1,200 questions**, decoys included.
+
 ---
 
 ## 6. The instruments that would have lied
@@ -909,7 +960,7 @@ Stated in advance, so that meeting them is not negotiable after the fact.
 | 3 | The interface generalizes across relations | Role vocabulary grows with relation coverage | **Failing.** 95–98% per-relation; Phase 2 is the response |
 | 4 | Accepted bindings are separable from noise | Separation to the control role collapses toward 1× | **Holding.** 14.3× |
 | 5 | Dropping `chain` costs no verified answers | VM-verified answer rate drops in the treatment arm | **Triggered, marginally.** −1.0 of 600 over 3 seeds on the held split — two malformed-entity questions, both refusals, 0 wrong. See §8 for why the criterion, not the arm, is what should change |
-| 6 | Structure, not a relation table, carries it | Relabelled accuracy below 80% of labelled after 3 rounds | **Failing.** 0.247 / 0.262 of labelled (§5.7). The manifest is load-bearing |
+| 6 | Structure, not a relation table, carries it | Relabelled accuracy below 80% of labelled after 3 rounds | **Failing.** 0.247 / 0.262 of labelled (§5.7). The manifest alone does not fix it (§5.8) — the grammar has to enforce |
 | 8 | Each brain zone earns its name | A zone's ablation sits inside the noise floor, or it has no production caller | **Mixed.** 3 zones load-bearing; 3 seams inside the floor; 3 modules declare WIRED with 0 callers (§5.6) |
 | 7 | Zero wrong answers spoken | Any confidently wrong spoken answer | **Breached in eval.** The same 1 wrong answer in **both** arms' val sets (§8) |
 
@@ -966,6 +1017,12 @@ or a record of an instrument that would have told us we were already there.
   both new arms beat the incumbent by ~11 points and the with-`chain` corpus is measured for the
   first time. **0 wrong answers in 4,200 questions.** The arms differ by two specific
   malformed-entity questions that v14e refuses.
+- **2026-09-15, the manifest (WO-2.1)** — Built, and the prompt-only form measured: it recovers
+  nothing (six arms within five questions), because the emitter ignores an admissible set it was
+  never trained to read. The decoy control is inconclusive for the same reason. But the gate
+  converts late `retrieval_exhausted` failures into immediate `unknown_relation` ones — 56 → 1 —
+  so *evaluated, not parsed* works and the emitter is the part that does not participate. This
+  settles WO-2.2 as the mechanism rather than an optimization.
 - **2026-09-15, relabelling (WO-2.5)** — The gating measurement, run without the manifest.
   Both arms fail the rate clause (0.247 / 0.262), so the string-argument form does not carry
   the generalization and WO-2.1 is load-bearing. But the diagnostic is the result: v13e

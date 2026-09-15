@@ -1,0 +1,84 @@
+{
+ "n": 200,
+ "seed": 7,
+ "decoys": 3,
+ "relations": 27,
+ "results": {
+  "v14e": {
+   "relabelled": {
+    "bound:wrong": 93,
+    "refused": 144,
+    "why:retrieval_exhausted": 56,
+    "why:plan_does_not_cover_question": 47,
+    "bound:right_token": 107,
+    "verified": 56,
+    "correct": 56,
+    "why:unknown_relation": 29,
+    "why:ambiguous_relation": 12
+   },
+   "manifest": {
+    "manifest_size": 816,
+    "bound:wrong": 98,
+    "refused": 147,
+    "why:plan_does_not_cover_question": 57,
+    "why:unknown_relation": 89,
+    "bound:right_token": 102,
+    "verified": 53,
+    "correct": 53,
+    "empty_manifest": 2,
+    "why:retrieval_exhausted": 1
+   },
+   "manifest_decoy3": {
+    "manifest_size": 1416,
+    "bound:wrong": 94,
+    "refused": 149,
+    "why:plan_does_not_cover_question": 60,
+    "why:unknown_relation": 84,
+    "bound:right_token": 106,
+    "verified": 51,
+    "correct": 51,
+    "why:retrieval_exhausted": 5
+   }
+  },
+  "v13e": {
+   "relabelled": {
+    "bound:wrong": 96,
+    "refused": 145,
+    "why:plan_does_not_cover_question": 73,
+    "bound:right_token": 102,
+    "why:unknown_relation": 34,
+    "verified": 53,
+    "correct": 53,
+    "why:ambiguous_relation": 13,
+    "why:retrieval_exhausted": 25,
+    "no_plan": 2
+   },
+   "manifest": {
+    "manifest_size": 816,
+    "bound:wrong": 92,
+    "refused": 139,
+    "why:plan_does_not_cover_question": 67,
+    "bound:right_token": 101,
+    "verified": 54,
+    "correct": 54,
+    "why:unknown_relation": 69,
+    "why:retrieval_exhausted": 3,
+    "no_plan": 7,
+    "empty_manifest": 2
+   },
+   "manifest_decoy3": {
+    "manifest_size": 1416,
+    "bound:wrong": 93,
+    "refused": 141,
+    "why:plan_does_not_cover_question": 74,
+    "bound:right_token": 100,
+    "verified": 52,
+    "correct": 52,
+    "why:unknown_relation": 62,
+    "why:retrieval_exhausted": 5,
+    "no_plan": 7
+   }
+  }
+ },
+ "wall_s": 647.1
+}
