@@ -1107,13 +1107,26 @@ that sentence so a future reader cannot pick the number up without it.
 4. **Flip `chunk` on in the serving path** once 2 lands, gated on the full gate
    battery (exp_r17, exp_r9, exp_r11, exp_r18) showing no regression at 1–3 hops,
    where the shipped shape is already at its ceiling.
-5. **Chain-length supervision for the emitter.** §"The emitter at depth" below shows the
-   constraint has moved off the VM and onto the emitter, and that it is a *length*
-   failure, not a relation failure. Deep training records are the obvious fix and the
-   gen-3 builder can make them; WO-2.2's generated grammar is the other, because a
-   grammar that knows the question's chain length cannot decode a plan of the wrong one.
+5. **A length-aware grammar, NOT length supervision.** §"The emitter at depth" below
+   shows the constraint has moved off the VM and onto the emitter, and that it is a
+   *length* failure rather than a relation failure. The first draft of this line said
+   "deep training records are the obvious fix" — **that is the wrong answer to every
+   question in this repo**, because the whole concept is no-retraining. The fix is
+   WO-2.2 at decode time: the host already knows the hop count (`parse_question`
+   derives it from the question's ` of the ` structure), so the grammar is built per
+   question and a plan of the wrong length becomes **undecodable**. 293 wrong-length
+   plans of 493 go to zero by construction, over frozen weights.
 
 ### RESULT — the emitter at depth, 2026-09-15: the constraint moved, and nothing spoke wrong
+
+> **These rows are STAND-IN-BOUNDED and do not measure this system.** v13e and v14e are
+> LFM2.5 fine-tunes — the prototyping stack. GRL's own trunk has not been trained yet, so
+> every emitter number below bounds *a stand-in's* ceiling, not the architecture's. What
+> does survive the trunk being replaced is everything measured without an emitter: the
+> depth capacity curve (`exp_r28`), the probe (`exp_r30`), branching (`exp_r31`) and the
+> grammar arm here — those are properties of the VM, the host and the algebra. Read the
+> `grammar` row as the result and the `v13e`/`v14e` rows as a floor that a trained trunk
+> should beat, never as the system's score.
 
 The runs above used the shipped **grammar** to plan, which is a ceiling: the chain is
 spelled out in the question's words, so nothing is inferred. `--planners grammar,v13e,v14e`

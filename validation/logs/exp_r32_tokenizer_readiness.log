@@ -1,0 +1,94 @@
+tokenizer: grillcheese_bbpe128k.json
+vocab: 127996
+
+cubelang keywords
+  string                             tokens  round-trip
+  use vsa;                                4  ok
+  create frame: number;                   5  ok
+  return recover(frame, ABSENT_CTR       11  ok
+  public function hop_2(): str {          8  ok
+  program CotChain implements ISol        7  ok
+  mean 7 tokens, worst 11
+
+role identifiers
+  string                             tokens  round-trip
+  H1_DATE_OF_BIRTH                       10  ok
+  H2_COUNTRY_OF_CITIZENSHIP              12  ok
+  H1_PLACE_OF_BIRTH                      11  ok
+  H3_CONTINENT                            6  ok
+  ABSENT_CTRL                             5  ok
+  H1_EDUCATED_AT                          8  ok
+  mean 8.67 tokens, worst 12
+
+opaque relation tokens (exp_r26)
+  string                             tokens  round-trip
+  r_41027                                 4  ok
+  r_00042                                 4  ok
+  damuzo                                  3  ok
+  vomeka                                  3  ok
+  zubnog                                  3  ok
+  mean 3.4 tokens, worst 4
+
+relation labels
+  string                             tokens  round-trip
+  date of birth                           3  ok
+  country of citizenship                  3  ok
+  place of birth                          3  ok
+  educated at                             2  ok
+  instance of                             2  ok
+  mean 2.6 tokens, worst 3
+
+entities that bite
+  string                             tokens  round-trip
+  Jean Sibelius                           3  ok
+  Joan Rivers: A Piece of Work            7  ok
+  Jean-Luc Picard                         4  ok
+  Æthelred the Unready                    6  ok
+  Beyoncé                                 3  ok
+  Nguyễn Phú Trọng                        9  ok
+  O'Brien                                 3  ok
+  Saint-Jean-sur-Richelieu                8  ok
+  mean 5.38 tokens, worst 9
+
+a complete 2-hop program: 98 tokens, round-trip ok
+  one extra bind line: 20 tokens -> a 10-hop program is roughly 258 tokens
+  (exp_r29 ran the emitter at max_new=700; that is the budget this has to fit)
+
+the exp_r26 artifact, in THIS tokenizer's pieces:
+  r_41027    4 tokens: ['r', '_', '410', '27']
+  damuzo     3 tokens: ['dam', 'u', 'zo']
+  exp_r26's 5.7x swing was measured on the STAND-IN's vocabulary, not this
+  one, so the artifact is not automatically ours. Run both (--gguf) before
+  claiming it transfers: measured 2026-09-15, both split `r_41027` into
+  ['r', '_', '410', '27'] and both fragment role identifiers to ~8 tokens,
+  so it does transfer -- and the repo's own 128k is slightly WORSE than the
+  stand-in (8.67 vs 7.83 mean tokens per role).
+  Each token is a decode step the model can fumble. Fragmentation is what
+  makes that possible; a grammar mask (WO-2.2) is what makes it impossible.
+
+check                                            value   verdict
+------------------------------------------------------------------------
+round-trip failures (any string)                     0   PASS
+mean tokens per role identifier                   8.67   fighting the surface
+mean tokens per opaque relation token              3.4   ok
+
+VERDICT: usable but costly: role identifiers average 8.67 tokens, so correct emission is that many consecutive correct choices. A grammar mask is not an optimization here, it is the mechanism
+
+WHAT THIS MEANS FOR THE PRETRAINING RUN (the part that cannot be redone):
+  1. Run this against the CANDIDATE vocabulary before the run, not after.
+     Nothing here is specific to one tokenizer; --tokenizer / --gguf swaps it.
+  2. The program surface round-trips, so the vocabulary is not disqualified.
+     Depth is not a context problem either: a 10-hop program is ~258 tokens
+     against a 700 budget.
+  3. The expensive thing is the ROLE IDENTIFIER, and it is expensive because
+     the pre-tokenizer splits on `_` before BPE ever runs -- `H1_DATE_OF_BIRTH`
+     is 10 tokens. More merges will not fix that; it is structural.
+     Two independent ways out, and they are the same change:
+       - WO-2.2's grammar makes the wrong continuation undecodable, so the
+         fumble cannot happen however many steps it takes
+       - WO-2.7's role-as-VECTOR convention (hash the role name into a
+         hypervector instead of emitting an identifier) means those 10
+         tokens are never emitted at all
+     WO-0.3 wanted the second one for generalization -- the role vocabulary is
+     95-98% per-relation, which caps the system at its training relations.
+     This says it also buys ~8 decode steps per hop. Same change, two reasons.

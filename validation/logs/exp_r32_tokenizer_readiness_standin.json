@@ -1,0 +1,223 @@
+{
+ "tokenizer": "emitter_v13e.Q4_K_M.gguf",
+ "vocab": 128000,
+ "note": "run against the trunk's CANDIDATE vocabulary before pretraining; --gguf switches to the stand-in's for comparison",
+ "max_frag": 6.0,
+ "program_tokens": 83,
+ "tokens_per_bind_line": 19,
+ "results": {
+  "cubelang keywords": {
+   "rows": [
+    {
+     "s": "use vsa;",
+     "n_tokens": 4,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "create frame: number;",
+     "n_tokens": 5,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "return recover(frame, ABSENT_CTRL);",
+     "n_tokens": 10,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "public function hop_2(): str {",
+     "n_tokens": 8,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "program CotChain implements ISolve {",
+     "n_tokens": 7,
+     "round_trip": true,
+     "decoded": null
+    }
+   ],
+   "mean_tokens": 6.8,
+   "max_tokens": 10,
+   "round_trip_failures": 0
+  },
+  "role identifiers": {
+   "rows": [
+    {
+     "s": "H1_DATE_OF_BIRTH",
+     "n_tokens": 7,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "H2_COUNTRY_OF_CITIZENSHIP",
+     "n_tokens": 13,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "H1_PLACE_OF_BIRTH",
+     "n_tokens": 9,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "H3_CONTINENT",
+     "n_tokens": 5,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "ABSENT_CTRL",
+     "n_tokens": 5,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "H1_EDUCATED_AT",
+     "n_tokens": 8,
+     "round_trip": true,
+     "decoded": null
+    }
+   ],
+   "mean_tokens": 7.83,
+   "max_tokens": 13,
+   "round_trip_failures": 0
+  },
+  "opaque relation tokens (exp_r26)": {
+   "rows": [
+    {
+     "s": "r_41027",
+     "n_tokens": 4,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "r_00042",
+     "n_tokens": 4,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "damuzo",
+     "n_tokens": 3,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "vomeka",
+     "n_tokens": 3,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "zubnog",
+     "n_tokens": 3,
+     "round_trip": true,
+     "decoded": null
+    }
+   ],
+   "mean_tokens": 3.4,
+   "max_tokens": 4,
+   "round_trip_failures": 0
+  },
+  "relation labels": {
+   "rows": [
+    {
+     "s": "date of birth",
+     "n_tokens": 3,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "country of citizenship",
+     "n_tokens": 3,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "place of birth",
+     "n_tokens": 3,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "educated at",
+     "n_tokens": 3,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "instance of",
+     "n_tokens": 2,
+     "round_trip": true,
+     "decoded": null
+    }
+   ],
+   "mean_tokens": 2.8,
+   "max_tokens": 3,
+   "round_trip_failures": 0
+  },
+  "entities that bite": {
+   "rows": [
+    {
+     "s": "Jean Sibelius",
+     "n_tokens": 3,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "Joan Rivers: A Piece of Work",
+     "n_tokens": 9,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "Jean-Luc Picard",
+     "n_tokens": 5,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "\u00c6thelred the Unready",
+     "n_tokens": 7,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "Beyonc\u00e9",
+     "n_tokens": 3,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "Nguy\u1ec5n Ph\u00fa Tr\u1ecdng",
+     "n_tokens": 6,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "O'Brien",
+     "n_tokens": 2,
+     "round_trip": true,
+     "decoded": null
+    },
+    {
+     "s": "Saint-Jean-sur-Richelieu",
+     "n_tokens": 6,
+     "round_trip": true,
+     "decoded": null
+    }
+   ],
+   "mean_tokens": 5.12,
+   "max_tokens": 9,
+   "round_trip_failures": 0
+  }
+ },
+ "round_trip_failures": 0,
+ "broken": [],
+ "verdict": "usable but costly: role identifiers average 7.83 tokens, so correct emission is that many consecutive correct choices. A grammar mask is not an optimization here, it is the mechanism",
+ "wall_s": 0.9
+}
