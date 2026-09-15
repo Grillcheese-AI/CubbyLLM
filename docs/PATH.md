@@ -763,23 +763,56 @@ name was right for would have been its own lie, so a test pins it.
 failed *last*, and that is almost never the one that caused it. If a stage can mask an earlier
 stage's verdict, it will.
 
-### 6.11 The pattern
+### 6.12 The lesson taken at the wrong moment
 
-Nine of these ten are the same shape: **an instrument inherited a property from the thing it
+Found 2026-09-15, by exp_r36, in code written the same afternoon.
+
+Cubby-Man's danger radius used to be a table — `1 if fear < 1.0 else 2 if fear < 2.4 else 3` —
+with three numbers nobody had measured. Replacing it with something he *learns* is the whole
+"no-retraining" idea in miniature: the berth he keeps should come from what has actually caught
+him. So the new rule was "record how far off the ghost was when it caught you, and keep at least
+that much room."
+
+It never moved. Six catches, eight catches, the radius stayed at 1.
+
+The reason is embarrassing once seen: **a ghost that has just caught him is on top of him.** The
+distance at the moment of capture is always 0 or 1, by definition of capture. Every lesson was
+"it was touching me", which is true, useless, and unfalsifiable. The rule was learning from a
+variable that cannot vary.
+
+The informative distance is the one at the last moment he could have *acted on it* — where the
+threat was when he chose his move, one tick earlier. Same rule, same data, one step back in time:
+the radius now moves with the catches (1 → 2 over two of them, 1 → 4 over six) instead of sitting
+at 1 through eight.
+
+A table of invented constants at least looks arbitrary. A learned quantity measured at the wrong
+instant looks principled and is worse: it produces a number, the number is stable, and stability
+reads as convergence.
+
+**The general form:** when something is learned from an outcome, check that the signal still has
+variance *at the moment it is sampled*. Measure at the last point where the agent could have
+changed the outcome, not at the point where the outcome is already decided.
+
+### 6.13 The pattern
+
+Nine of these eleven are the same shape: **an instrument inherited a property from the thing it
 was measuring**, and therefore could not discriminate. The τ alarm inherited τ. The dead-program
 detector inherited the store's sparsity. The volatility probe inherited WikiKG's label scheme.
 `exact_match` inherited the corpus's arbitrary identifiers. The eval sampler inherited the
 corpus's task *set* — the independent variable itself. The relabelling probe inherited the
 tokenizer's opinion of an underscore.
 
-The tenth, §6.10, is a different shape and worth keeping separate: nothing was inherited and no
-stage misbehaved — the pipeline simply reported its last failure instead of its first, and a
-correct system described itself incorrectly.
+The other two are each their own shape and worth keeping separate. §6.10: nothing was inherited
+and no stage misbehaved — the pipeline simply reported its last failure instead of its first, and
+a correct system described itself incorrectly. §6.12: the code was right, the data was right, and
+the *sampling instant* was wrong, so a learned quantity sat at a constant and looked converged.
 
 The one defence that worked every time was cheap: **run the instrument on data known to be
 healthy, and require it to say so.** An alarm that fires on a clean run is broken, not sensitive.
 §6.10 adds a second: **when a measurement is available directly, take it directly** rather than
-inferring it from a label some other stage wrote.
+inferring it from a label some other stage wrote. §6.12 adds a third: **check the signal still
+varies where you sample it** — a learned number that never moves is a measurement problem before
+it is a learning one.
 
 ---
 
@@ -1197,3 +1230,18 @@ or a record of an instrument that would have told us we were already there.
   change is measured, not switched on: `chunk` defaults to 0 and a test pins the shipped shape
   byte-for-byte. One more instrument caught lying on the way (§6.10). ProofWriter needs a
   rule-application engine that does not exist, which is a gap to state rather than a score to post.
+- **2026-09-15, the hardcoded rules (WO-2.10)** — Owner: *"we need to remove all the hardcoded
+  rules."* An AST audit (exp_r35) found the file admitting the biggest one in its own docstring:
+  the ASK offered **only the maze's legal moves**, so cubby-man could never walk into anything,
+  and the probe that "learned walls" was a VM rejection wearing a collision's clothes. Now the
+  offer is *what his body can do minus what his own map has ruled out*, the **world** resolves
+  the attempt and may refuse, and the refusal is the percept. Ghost positions became a **belief**
+  with a range, a line of sight, and a staleness; the pellet map became a sensor; the four tuned
+  threat clauses collapsed into one condition over a berth he **measures from what caught him**;
+  and `if not env.remaining` — the whole level's pellet count, read 446× from inside his own step
+  — became one published bit. Levels 1–3 now run ghost-free, per the owner: his classroom.
+  Measured at 300 steps/arm across three arms including a **blind** one that can only learn by
+  colliding: **0 false obstacles, 0 oracle reads in the decision path, 0 sightings beyond the
+  sensor**, he holds 24% of the true ghost positions, and he still plays (blind reaches level 3).
+  The experiment caught two bugs review had not, the second of them a learned quantity sampled at
+  the one instant where its signal cannot vary (§6.12).

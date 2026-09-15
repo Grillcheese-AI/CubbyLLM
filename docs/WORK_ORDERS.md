@@ -1522,6 +1522,100 @@ formed.
 
 ---
 
+## WO-2.10 — Cubby-Man without the hardcoded rules: collisions, senses, belief
+
+**Status: DONE + MEASURED 2026-09-15.** Owner: Nick — *"we need to remove all the
+hardcoded rules"*, and *"at first it should be put in the game without no clue about the
+environment... if it sees a wall it should instinctively know that its an obstacle or at
+least know it after colliding with it."*
+
+`exp_r35` (an AST audit of `standin/pacman.py`) enumerated what the agent was being
+handed. The file's own docstring named the biggest piece: *"ASK offers only legal moves;
+trying an unoffered one is refused and learned as a wall"* — the offer was pre-filtered
+to the maze's legal moves, so **he could never walk into anything**, and `_try_the_wall`
+faked a collision by asking the VM to reject a direction the program had not listed. The
+maze was a gift wearing a probe's clothes.
+
+### What changed
+
+| was | is |
+|---|---|
+| ASK offered `env.exits()` — the maze's legal-move list | ASK offers `body_moves()` minus `known_blocked()` — **his body, minus his own beliefs** |
+| a move always arrived | the WORLD resolves it: `env.try_move()` returns `{ok, to, kind}` and may refuse |
+| walls learned from a **VM** rejection (a second, wrong authority — out-of-bounds came back mislabelled "a wall") | walls learned from the **world's** refusal; the probe is now a guard audit that teaches nothing |
+| `_sight` iterated `env.remaining` — the solved pellet map | `env.senses(place, r)` — a radius **and line of sight**, so he perceives down a corridor, not through stone |
+| `env.ghosts` read in `_safe_here`, `_mine_wise`, `danger_cells`, `_pick`, `affect`, `step` — exact positions, through walls, at any range | `ghost_belief`: what he has sensed, with the step he sensed it; unrefreshed sightings go stale and are dropped |
+| `danger_radius = 1 if fear < 1.0 else 2 if fear < 2.4 else 3` | measured from **what actually caught him**: the distance the threat was at when he last *chose* |
+| `_mine_wise` = four tuned clauses (`fear >= 1.0`, `lives <= 2`, …) | one condition over the learned berth |
+| `if not env.remaining` inside his own step | `env.cleared` — one bit the world publishes; `env.progress()` is the cabinet's scoreboard for the renderer |
+| ghosts from level 1 | `GHOST_FREE_LEVELS = 3` (env-overridable) — his classroom |
+
+Everything the agent now knows arrives through three channels and nothing else:
+perception (`senses`, `look_around`), **proprioception** (he went that way and ended up
+here), and **collision** (the world refused). `CubbyGhost.SEE_EXITS` is the dial between
+the sighted agent Nick described and a blind one that learns the maze only by walking
+into it — both halves of *"sees a wall … or at least know it after colliding with it"*.
+
+### Measured — `exp_r36_cubbyman_percept.py`, 300 steps/arm, seed 0
+
+A tripwire env records every read of `ghosts/remaining/walls/hazards/reach/power/pellets`
+**with its call site**, so a leak is a fact, not a grep.
+
+| | classroom (no ghosts) | threat from level 1 | BLIND (`SEE_EXITS` off) |
+|---|---|---|---|
+| refused moves | 41 (edge 32, wall 9) | 37 (edge 28, wall 9) | 41 (edge 30, wall 7, hazard 4) |
+| **false obstacles learned** | **0** | **0** | **0** |
+| **oracle reads in the decision path** | **0** | **0** | **0** |
+| sightings beyond the sensor | 0 | 0 | 0 |
+| ghost positions he holds | — | **24 %** (145/600); blind on 10 % of steps | — |
+| `danger_radius` | 1 → 1 (0 catches) | **1 → 2** (2 catches) | 1 → 1 |
+| still plays | 65 pellets, level 3 | 43 pellets | 60 pellets, level 3 |
+
+The blind agent keeping up with the sighted one (60 pellets and level 3 against 65 and
+level 3) is not blindness being free. With no vision his route graph is sparser,
+`plan_next` returns `None` more often, and he falls back to novelty — he covers more
+cells (181 vs 166) precisely because he plans less, and he pays for the map in
+collisions. What the arm establishes is narrower and is the point: **the collision
+channel carries a usable map on its own.**
+
+*Kill criteria, all cleared:* any false obstacle learned; any oracle read from a decision
+site; any sighting outside the sensor; **zero** collisions in the blind arm (there the
+collision channel is the only way a map can exist); or his belief matching the ghosts on
+every step, which would be the oracle wearing a sensor's hat.
+
+Pinned by 12 deterministic tests in `standin/tests/test_pacman_percepts.py`, including
+one that asserts `CubbyGhost.step`'s source contains no `.remaining` at all.
+
+### Two bugs the experiment caught that review had not
+
+1. **`env.remaining` read 446×** from inside his own step — `if not env.remaining` looks
+   innocent and is the whole pellet count. Now `env.cleared`, one bit.
+2. **The berth never grew through 8 catches in a row.** The lesson was being taken at the
+   moment of capture, where the ghost is by definition on top of him, so every lesson was
+   "it was 0 away" — a variable that cannot vary. The signal is the distance at
+   **decision** time, one tick earlier, the last moment he could have acted on it. After
+   the fix it moves with the catches: 1 → 2 over two, 1 → 4 over six. Written up as
+   PATH §6.12.
+
+### What is still handed to him, on record
+
+`look_around` (with `SEE_EXITS` on) returns the open neighbours of the cell he is
+standing in — he can see which ways out exist. That is vision, it is the behaviour Nick
+asked for, and `SEE_EXITS = False` removes it. The renderer (`resp`, `init_payload`,
+`progress`) reads the world on purpose: it draws the maze for the human, and no decision
+reads it.
+
+### Next
+
+The genesis instincts (WO-2.9) are still absent, and so is the transfer measurement: does
+a rule learned from **one** collision apply to a wall he has never touched? A rule from a
+single observation should enter as *derived*, never grounded, and be promoted by
+repetition — so a self-invented rule stays refusable until the world confirms it.
+
+Log: `validation/logs/exp_r36_cubbyman_percept.{json,log}`, `exp_r35_cubbyman_audit.{json,log}`.
+
+---
+
 # Phase 3 — New capability (gated on Phase 2)
 
 ## WO-3.1 — The host agenda: branchless programs, host-owned search

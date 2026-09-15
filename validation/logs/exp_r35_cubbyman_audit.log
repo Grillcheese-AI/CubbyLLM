@@ -1,0 +1,56 @@
+source: pacman.py  (2053 lines)
+world classes : CubbyGhost, GhostVerse, PacVerse
+agent classes : CubbyPac, LivePac, ProgramLibrary, _Mulberry32, _Safe
+
+==============================================================================
+ORACLE READS -- ground truth the agent takes instead of perceiving
+==============================================================================
+attribute        reads   what it hands him for free
+------------------------------------------------------------------------------
+remaining            6   which pellets are still uneaten, anywhere
+pellets              4   every pellet's position at level start
+lives                2   lives remaining
+
+12 oracle reads across 2 agent class(es)
+
+the worst offenders, by line:
+    159  CubbyPac.pellets        return (f"Niveau {env.level}, essai {env.attempt} : {env.score}/{len(env.pellets)} pastilles, "
+    160  CubbyPac.lives          f"score total {env.total_score}, {env.lives} vies, {len(self.world)} faits appris, "
+    162  CubbyPac.pellets        return (f"Level {env.level}, try {env.attempt}: {env.score}/{len(env.pellets)} pellets, "
+    163  CubbyPac.lives          f"total score {env.total_score}, {env.lives} lives, {len(self.world)} facts learned, "
+    182  CubbyPac.remaining      remaining=len(self.env.remaining))
+    191  CubbyPac.remaining      "remaining": len(self.env.remaining)})
+    196  CubbyPac.remaining      return not self.env.remaining
+    202  CubbyPac.pellets        rep.update({"score": self.env.score, "pellets_total": len(self.env.pellets),
+    203  CubbyPac.remaining      "beaten": not self.env.remaining})
+    207  CubbyPac.pellets        line = (f"I played the pacman maze: {self.env.score} of {len(self.env.pellets)} pellets "
+   1986  LivePac.remaining      if self.man.env.remaining:               # a cleared level waits for /next
+   2011  LivePac.remaining      if not self.man.env.remaining:
+
+==============================================================================
+HAND-WRITTEN POLICY -- decisions made by a rule nobody learned
+==============================================================================
+
+==============================================================================
+WHAT TO REMOVE FIRST
+==============================================================================
+  1. `walls` / `hazards` -- the biggest lie. He is OFFERED only legal
+     moves, so he can never walk into a wall and learn one. Replace
+     the offer with an attempt that can FAIL: the move is tried, the
+     world refuses it, and the refusal is the percept. That is the
+     'know it after colliding with it' Nick asked for, and it is the
+     one change that makes the others measurable.
+  2. `ghosts` -- perfect position knowledge through walls at any range.
+     Needs a sensor with a range and a line of sight; until one exists
+     the threat layer is simulated omniscience. Which is why the first
+     levels should run WITH NO GHOSTS AT ALL (Nick): learning the
+     environment and surviving an omniscient threat model at once
+     produces neither.
+  3. `remaining` / `power` / `reach` -- the solved map. He should know
+     only the cells he has stood in and what he saw from them.
+  4. the hand-written policies -- once 1-3 are percepts rather than
+     reads, a policy written against ground truth cannot run anyway,
+     so they fall out rather than needing removal.
+
+  Order matters: fixing the policy first would leave it reading an
+  oracle; fixing the oracle first makes the policy fail loudly.

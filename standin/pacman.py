@@ -123,6 +123,28 @@ class PacVerse:
     def observe(self, place: str) -> list[str]:
         return [f"{nbr} is the {m} neighbor of {place}" for m, nbr in self.exits(place).items()]
 
+    def try_move(self, place: str, move: str, offered: dict[str, str]) -> dict:
+        """The world resolves a move ATTEMPT — he may try any direction his
+        body has, and the world decides what happens. `offered` carries the
+        superpower landings whose legality his library already resolved.
+        A refusal is a result, not an error: it is how he learns a wall.
+
+        A BASE direction is always re-resolved here, never taken from
+        `offered` — `offered` is what he BELIEVES he can do, and the whole
+        point is that his belief can be wrong."""
+        if move not in MOVES:                            # a superpower move: the library already checked it
+            if move in offered:
+                return {"ok": True, "to": offered[move], "kind": "open"}
+            return {"ok": False, "to": place, "kind": "wall"}
+        x, y, z = self.coords(place)
+        dx, dy, dz = MOVES[move]
+        q = (x + dx, y + dy, z + dz)
+        if not (0 <= q[0] < self.w and 0 <= q[1] < self.h and 0 <= q[2] < self.d):
+            return {"ok": False, "to": place, "kind": "edge"}
+        if q in self.walls:
+            return {"ok": False, "to": place, "kind": "wall"}
+        return {"ok": True, "to": self.cell(*q), "kind": "open"}
+
     def eat(self, place: str) -> bool:
         c = self.coords(place)
         if c in self.remaining:
@@ -130,6 +152,23 @@ class PacVerse:
             self.score += 1
             return True
         return False
+
+    @property
+    def cleared(self) -> bool:
+        """ONE BIT the world publishes: this maze is empty. The agent may
+        perceive it — a cleared maze is visibly, audibly over — but not read
+        `remaining` to work it out, which would hand him a pellet count he
+        has no way to know (exp_r36 caught exactly that: 446 reads of
+        `env.remaining` from inside his own step)."""
+        return not self.remaining
+
+    def progress(self) -> dict:
+        """THE SCOREBOARD — what the cabinet displays, for the replay page and
+        the run log. The renderer and the traces read this; his DECISIONS read
+        his percepts. Keeping the two apart is what lets exp_r36's tripwire
+        tell a leak from a legitimate read."""
+        return {"score": self.score, "remaining": len(self.remaining),
+                "total": len(self.pellets), "cleared": self.cleared}
 
     def all_facts(self) -> list[str]:
         return [f for c in sorted(self.reach) for f in self.observe(self.cell(*c))]
@@ -173,38 +212,63 @@ class CubbyPac(CubbyMan):
         self.world.add("cubbyman is the explorer of the pacman maze")
         self.world.add(f"{self.env.start} is the start of the pacman maze")
 
+    def body_moves(self) -> dict[str, str]:
+        """Every direction his BODY can try from here — all six, whatever the
+        maze holds, with the nominal cell each one aims at. This is what
+        replaced `env.exits()` as the thing he is offered (2026-09-15): the
+        maze's legal-move list was the single biggest piece of knowledge he
+        was handed for free, and while it was the offer he could never walk
+        into anything.
+
+        He has a body sense of space, so he can name where a direction POINTS
+        even before going there — inside the grid. Past the grid there is no
+        cell to name, so the destination is the placeholder and the world
+        tells him what is out there when he tries."""
+        env = self.env
+        x, y, z = env.coords(self.place)
+        out = {}
+        for m, (dx, dy, dz) in MOVES.items():
+            q = (x + dx, y + dy, z + dz)
+            out[m] = (env.cell(*q) if 0 <= q[0] < env.w and 0 <= q[1] < env.h and 0 <= q[2] < env.d
+                      else f"? {m} of {self.place}")
+        return out
+
     def on_arrive(self, place: str) -> int:
         self._last_eaten = None
         if self.env.eat(place):
             self._last_eaten = list(self.env.coords(place))
             fact = f"pellet {self.env.score} is the discovery of {place}"
             self._t("eat", place=place, pellet=self.env.score,
-                    remaining=len(self.env.remaining))
+                    remaining=self.env.progress()["remaining"])
             return self._learn([fact])
         return 0
 
     def step(self) -> dict:
         with self._step_lock:                            # move + traj append are one unit
             rec = super().step()
+            # the REPLAY frame: the cabinet's scoreboard, not something he
+            # knows. Through progress() so the boundary stays checkable.
+            scores = self.env.progress()
             self.traj.append({"to": list(self.env.coords(self.place)), "move": rec["chosen"],
-                              "eaten": self._last_eaten, "score": self.env.score,
-                              "remaining": len(self.env.remaining)})
+                              "eaten": self._last_eaten, "score": scores["score"],
+                              "remaining": scores["remaining"]})
             return rec
 
     @property
     def beaten(self) -> bool:
-        return not self.env.remaining
+        return self.env.cleared
 
     def handle(self, text: str) -> dict:
         m = re.search(r"\b(\d{1,3})\b", text)
         steps = int(m.group(1)) if m else 30
         rep = self.explore(steps)
-        rep.update({"score": self.env.score, "pellets_total": len(self.env.pellets),
-                    "beaten": not self.env.remaining})
+        scores = self.env.progress()                     # the cabinet's scoreboard (renderer-side)
+        rep.update({"score": scores["score"], "pellets_total": scores["total"],
+                    "beaten": scores["cleared"]})
         replay = render_replay(self.env, self.traj)
         rep["replay"] = str(replay) if replay else None
         beaten = " The maze is BEATEN!" if rep["beaten"] else ""
-        line = (f"I played the pacman maze: {self.env.score} of {len(self.env.pellets)} pellets "
+        line = (f"I played the pacman maze: {scores['score']} of {scores['total']} pellets "
                 f"in {steps} steps, and learned {rep['new_facts']} new things on the way.{beaten}"
                 + (f" Watch my run: {replay}" if replay else ""))
         return {"offered": [line], "meta": rep}
@@ -534,13 +598,22 @@ class GhostVerse(PacVerse):
     cubbyverse-side splice — without the jump superpower a vaulted pellet
     would be unreachable, so n_vaults=0 here."""
 
-    def __init__(self, level: int = 1, seed_extra: int = 0) -> None:
+    # levels 1..N run with no ghosts: his classroom. Env-overridable
+    # (CUBBYMAN_GHOST_FREE_LEVELS) so a test or a demo can turn the threat
+    # back on at level 1 without editing the rule into the code.
+    GHOST_FREE_LEVELS = 3
+
+    def __init__(self, level: int = 1, seed_extra: int = 0,
+                 ghost_free_levels: int | None = None) -> None:
         self.total_score = 0
         self.lives = 3
         self.energy = 100
         self.mines_left = 0                              # traps: +1 per level, unused ones carry over
         self.mines: set = set()                          # cells holding a trap (ghosts only)
         self.seed_extra = int(seed_extra)
+        self.ghost_free_levels = int(
+            ghost_free_levels if ghost_free_levels is not None
+            else os.environ.get("CUBBYMAN_GHOST_FREE_LEVELS", self.GHOST_FREE_LEVELS))
         self._start_level(level)
 
     # ── traps (owner, 2026-09-02): ghosts only; 1 per level, cumulative ─────
@@ -587,12 +660,17 @@ class GhostVerse(PacVerse):
         self.score = 0
         self.frightened = 0
         self.start = self.cell(*start)
-        # ghosts: count/speed per the live game; spawns = farthest open cells
-        self.n_ghosts = min(2 + level // 2, 4)
+        # ghosts: count/speed per the live game; spawns = farthest open cells.
+        # The first GHOST_FREE_LEVELS levels run with NO ghosts at all (Nick,
+        # 2026-09-15): learning what a maze IS and surviving a threat at the
+        # same time produces neither. An empty maze is his classroom; the
+        # ghosts arrive once he has a map to run on.
+        self.n_ghosts = 0 if level <= self.ghost_free_levels else min(2 + level // 2, 4)
         self.ghost_speed = min(0.55 + 0.035 * level, 0.85)
         self._grng = np.random.default_rng(level * 31 + 1)
         far = sorted(self.reach, key=lambda c: -_manh(c, start))
-        self.ghost_spawn = [far[i % len(far)] for i in range(self.n_ghosts)] if far else [start]
+        self.ghost_spawn = ([far[i % len(far)] for i in range(self.n_ghosts)]
+                            if (far and self.n_ghosts) else [])
         self.ghosts = list(self.ghost_spawn)
         self.game_over = False
         self.mines = set()                               # a new maze: the floor is clean
@@ -632,6 +710,60 @@ class GhostVerse(PacVerse):
 
     def _open(self, q) -> bool:
         return _in(q, self.w, self.h, self.d) and q not in self.walls and q not in self.hazards
+
+    def try_move(self, place: str, move: str, offered: dict[str, str]) -> dict:
+        """Same contract as PacVerse.try_move, with this world's two kinds of
+        obstacle. A hazard is SEEN (it glows) before it is hit; a plain wall
+        is not, so walking into one is the only way to find it."""
+        if move not in MOVES:                            # a superpower move / REST: already resolved
+            if move in offered:
+                return {"ok": True, "to": offered[move], "kind": "open"}
+            return {"ok": False, "to": place, "kind": "wall"}
+        x, y, z = self.coords(place)
+        dx, dy, dz = MOVES[move]
+        q = (x + dx, y + dy, z + dz)
+        if not _in(q, self.w, self.h, self.d):
+            return {"ok": False, "to": place, "kind": "edge"}
+        if q in self.walls:
+            return {"ok": False, "to": place, "kind": "wall"}
+        if q in self.hazards:
+            return {"ok": False, "to": place, "kind": "hazard"}
+        return {"ok": True, "to": self.cell(*q), "kind": "open"}
+
+    # ── vision: a ray that a wall stops, not a map lookup ───────────────────
+    def line_of_sight(self, a: tuple, b: tuple) -> bool:
+        """Can a straight ray from `a` reach `b` without a wall in the way?
+        A 3-D DDA sampled along the longest axis. This is what makes SIGHT a
+        SENSOR instead of a map read: he sees down a corridor, not through
+        the stone."""
+        d = (b[0] - a[0], b[1] - a[1], b[2] - a[2])
+        n = max(abs(d[0]), abs(d[1]), abs(d[2]))
+        if n == 0:
+            return True
+        for i in range(1, n + 1):
+            c = tuple(a[k] + round(d[k] * i / n) for k in range(3))
+            if c == b:
+                break
+            if c in self.walls:
+                return False
+        return True
+
+    def senses(self, place: str, radius: int) -> dict:
+        """What a sensor AT `place` picks up: pellets, stars and ghosts that
+        are inside `radius` AND in line of sight. Nothing else about the
+        level is readable from here — this is the whole channel between the
+        world and what he can come to believe (2026-09-15: before this, the
+        agent read env.remaining and env.ghosts directly, i.e. the solved map
+        and every ghost's exact position through walls at any range)."""
+        here = self.coords(place)
+        seen = {"pellets": [], "stars": [], "ghosts": [], "at": here, "radius": radius}
+        for c in self.remaining:
+            if _manh(c, here) <= radius and self.line_of_sight(here, c):
+                (seen["stars"] if c in self.power else seen["pellets"]).append(c)
+        for g in self.ghosts:
+            if _manh(g, here) <= radius and self.line_of_sight(here, g):
+                seen["ghosts"].append(g)
+        return seen
 
     def power_moves(self, place: str, library, energy: int) -> dict[str, str]:
         """The superpower moves legal HERE from his program library: JUMP =
@@ -690,7 +822,14 @@ class GhostVerse(PacVerse):
                 self.power.discard(c)
                 self.frightened = FRIGHT_STEPS
                 out["power"] = True
+        out["cleared"] = self.cleared
         return out
+
+    def _respawn(self, i: int) -> tuple:
+        """Where ghost `i` reappears. With no spawns (a ghost-free level there
+        can be no ghost to respawn) this is never reached from a live ghost,
+        but it must not divide by zero if it is."""
+        return self.ghost_spawn[i % len(self.ghost_spawn)] if self.ghost_spawn else self.coords(self.start)
 
     def ghost_turn(self, cubby: str) -> dict:
         """One ghost move each (probabilistic speed), then resolve contact:
@@ -714,14 +853,14 @@ class GhostVerse(PacVerse):
         for i, g in enumerate(self.ghosts):              # a trap fires on the ghost that steps on it
             if g in self.mines:
                 self.mines.discard(g)
-                self.ghosts[i] = self.ghost_spawn[i % len(self.ghost_spawn)]
+                self.ghosts[i] = self._respawn(i)
                 self.total_score += TRAP_BONUS
                 out["trapped"] += 1
         for i, g in enumerate(self.ghosts):
             if g == pos:
                 if self.frightened > 0:
                     self.total_score += GHOST_BONUS
-                    self.ghosts[i] = self.ghost_spawn[i % len(self.ghost_spawn)]
+                    self.ghosts[i] = self._respawn(i)
                     out["eaten"] += 1
                 else:
                     out["caught"] = True
@@ -833,6 +972,14 @@ class CubbyGhost(CubbyPac):
         self._thought_prio = -1
         self._say_aloud: str | None = None               # the salient ones also go to the page's bubble
         self.sighted: set[str] = set()                   # cells where he SAW a pellet (facts too)
+        # ── what he BELIEVES about the ghosts, not what they are ───────────
+        # position -> the step he last sensed it there. Everything the agent
+        # decides about threat reads THIS, never env.ghosts: a ghost he
+        # cannot sense is a ghost he does not know about, and a belief he
+        # has not refreshed goes stale and is dropped.
+        self.ghost_belief: dict[tuple, int] = {}
+        self.caught_at: list[int] = []                   # how far off a ghost was when he last CHOSE, before it caught him
+        self._threat_seen_at: int | None = None
         self._eaten_run: set[str] = set()                # eaten THIS run (pellets respawn on a retry)
         self._plan_next: str | None = None               # the cell his map says to go to next
         self._graph_n = -1
@@ -854,9 +1001,14 @@ class CubbyGhost(CubbyPac):
 
     def _situation(self) -> dict:
         env = self.env
-        near = min((_manh(env.coords(self.place), g) for g in env.ghosts), default=None)
+        # what HE can tell about his situation: the nearest ghost he believes
+        # in, and the pellets he has SEEN and not eaten. `pellets_left` used
+        # to be len(env.remaining) — the level's true remainder, which he has
+        # no way to count (2026-09-15)
+        near = min((_manh(env.coords(self.place), g) for g in self.believed_ghosts()), default=None)
         st = {"level": env.level, "attempt": env.attempt, "step": env.steps, "budget": env.budget,
-              "pellets_left": len(env.remaining), "seen_unreached": len(self.sighted - self._eaten_run),
+              "pellets_left": len(self.sighted - self._eaten_run),
+              "seen_unreached": len(self.sighted - self._eaten_run),
               "lives": env.lives, "fear": round(self.fear, 2), "ghost_distance": near,
               "facts_known": len(self.world), "programs": len(self.library.entries)}
         if self.chem is not None:
@@ -979,9 +1131,11 @@ class CubbyGhost(CubbyPac):
     MAX_POWER_CANDIDATES = 16                             # the ASK stays small (a >100-operand ask altered a candidate, 2026-09-02)
 
     def candidate_moves(self, exits: dict[str, str]) -> dict[str, str]:
-        """The ASK offers the base exits PLUS a BOUNDED set of the superpower
-        moves legal here: ranked by landing near a seen pellet (then any goal),
-        then the program's value. Every legal one still counts as `legal`."""
+        """CubbyPac's body-first offer, PLUS rest and a BOUNDED set of the
+        superpower moves legal here (ranked by landing near a seen pellet,
+        then the program's value). The env's `exits` stays ignored — see
+        CubbyPac.candidate_moves for why."""
+        exits = super().candidate_moves(exits)
         if self._rest_wanted() and self._safe_here():    # rest is a move too: stay put, in a safe spot only
             exits = {**exits, REST: self.place}
         if not self.library.entries:
@@ -1014,22 +1168,47 @@ class CubbyGhost(CubbyPac):
         return MOVE_COST
 
     def _safe_here(self) -> bool:
-        """No hunting ghost inside his fear radius (+1 for a resting margin)."""
+        """No ghost he BELIEVES is hunting inside his learned radius (+1 for a
+        resting margin). Reads his belief, never env.ghosts: a ghost he has
+        not sensed is a ghost he does not know about."""
         env = self.env
-        if env.frightened > 0 or not env.ghosts:
+        gh = self.believed_ghosts()
+        if env.frightened > 0 or not gh:
             return True
         here = env.coords(self.place)
-        return min(_manh(here, g) for g in env.ghosts) > self.danger_radius + 1
+        return min(_manh(here, g) for g in gh) > self.danger_radius + 1
 
     CAUGHT_FEAR = 0.7                                    # the live game's ghost_penalty increment
     CAUGHT_SHOCK_FRAMES = 6                              # frames of full threat: NE surges, cortisol integrates
 
     def _on_caught(self) -> None:
-        """Being caught raises fear TWICE: the learned scalar (+0.7, the
-        danger radius grows — pacman_live's rule) and the neurochemistry —
-        not one frame of threat but a shock of several, so noradrenaline
-        surges and the slow cortisol actually moves; the compass reads it
-        as fear, and the mood word follows for a while."""
+        """Being caught raises fear TWICE: the learned scalar (+0.7) and the
+        neurochemistry — not one frame of threat but a shock of several, so
+        noradrenaline surges and the slow cortisol actually moves; the
+        compass reads it as fear, and the mood word follows for a while.
+
+        It also records THE LESSON, which is what his danger radius is made
+        of (2026-09-15, replacing a radius fitted to `fear` with thresholds
+        nobody measured):
+
+          * caught by a ghost he was tracking -> the berth must cover the
+            distance he last saw it at;
+          * caught by one he never sensed -> his senses failed him, so
+            whatever berth he was keeping was too small: widen it by one.
+
+        Being caught by something already inside his berth teaches nothing
+        new about distance, and leaves the radius alone.
+
+        The distance that matters is the one at DECISION time, not at
+        capture: a ghost that has just caught him is by definition on top of
+        him, so "it was 0 away" is a lesson worth nothing. `_threat_seen_at`
+        is how far off the nearest ghost he believed in was when he last
+        chose a move — the last moment he could have done something about
+        it. (exp_r36, 200 steps: measuring at capture left the berth at 1
+        through 8 catches in a row.)"""
+        seen = getattr(self, "_threat_seen_at", None)
+        lesson = self.danger_radius + 1 if seen is None else max(seen, self.danger_radius)
+        self.caught_at.append(max(1, min(self.MAX_DANGER_RADIUS, lesson)))
         self.fear = min(4.0, self.fear + self.CAUGHT_FEAR)
         if self.chem is not None:
             for _ in range(self.CAUGHT_SHOCK_FRAMES):
@@ -1041,19 +1220,19 @@ class CubbyGhost(CubbyPac):
             self.chem.dominant_emotion = self.chem._classify_emotion(0.0)   # the corner label is set inside update()
 
     def _mine_wise(self) -> bool:
-        """Use a trap only when it will count: he holds one, the ghosts are
-        hunting (not frightened), one is inside his fear radius + 1, and the
-        threat is real — it is adjacent, or two are near, or his fear has
-        grown, or lives are down to two. Dropped on the cell he is leaving:
-        the chaser walks into it."""
+        """Use a trap when it will count: he holds one, nothing is frightened,
+        and a ghost he BELIEVES in sits inside the berth he has learned.
+        Dropped on the cell he is leaving: the chaser walks into it."""
         env = self.env
-        if env.mines_left <= 0 or env.frightened > 0 or not env.ghosts or env.coords(self.place) in env.mines:
+        gh = self.believed_ghosts()
+        if env.mines_left <= 0 or env.frightened > 0 or not gh or env.coords(self.place) in env.mines:
             return False
         here = env.coords(self.place)
-        dists = sorted(_manh(here, g) for g in env.ghosts)
-        if dists[0] > self.danger_radius + 1:
-            return False
-        return dists[0] <= 1 or (len(dists) > 1 and dists[1] <= self.danger_radius + 1) or self.fear >= 1.0 or env.lives <= 2
+        # one condition, not a list of tuned ones: a ghost he believes in is
+        # inside the berth HE learned. The old clauses (`fear >= 1.0`,
+        # `lives <= 2`) were hand-written tactics with invented thresholds —
+        # the learned radius already carries both (2026-09-15)
+        return min(_manh(here, g) for g in gh) <= self.danger_radius + 1
 
     def _rest_wanted(self) -> bool:
         """Hysteresis: start under REST_BELOW, keep resting until REST_UNTIL."""
@@ -1064,20 +1243,35 @@ class CubbyGhost(CubbyPac):
             self._resting = False
         return getattr(self, "_resting", False)
 
-    # ── ghosts: a berth that GROWS with learned fear ────────────────────────
+    # ── ghosts: a berth MEASURED from what actually caught him ──────────────
+    MAX_DANGER_RADIUS = 4                                # his senses cannot support a bigger one
+
     @property
     def danger_radius(self) -> int:
-        return 1 if self.fear < 1.0 else 2 if self.fear < 2.4 else 3
+        """How far off a ghost has to be before he treats it as a threat —
+        not a constant, and not a curve fitted to `fear`. It is the largest
+        distance at which a ghost he could see went on to catch him. Before
+        anything catches him it is 1: a body knows only "touching me", and
+        nothing has taught it otherwise yet.
+
+        This replaced `1 if fear < 1.0 else 2 if fear < 2.4 else 3`
+        (2026-09-15). Those thresholds were invented; this number is
+        measured, it comes from his own experience, and it needs no
+        retraining to move — the same reason every other rule here had to
+        go."""
+        if not self.caught_at:
+            return 1
+        return max(1, min(self.MAX_DANGER_RADIUS, max(self.caught_at)))
 
     def danger_cells(self) -> set[str]:
-        """Cells within the fear radius of a hunting ghost (empty while they
-        are frightened)."""
+        """Cells within his learned radius of a ghost he BELIEVES is hunting
+        (empty while they are frightened)."""
         env = self.env
         if env.frightened > 0:
             return set()
         r = self.danger_radius
         out = set()
-        for g in env.ghosts:
+        for g in self.believed_ghosts():
             for dx in range(-r, r + 1):
                 for dy in range(-r, r + 1):
                     for dz in range(-r, r + 1):
@@ -1323,20 +1517,73 @@ class CubbyGhost(CubbyPac):
             self._say_aloud = text
         self._t("thought", text=text, about=kind, verbalized=verbalized, **({"raw": line} if verbalized else {}))
 
-    # ── the moves ────────────────────────────────────────────────────────────
-    SIGHT = 2                                            # pellets glow: he sees them this far
+    # ── the senses ───────────────────────────────────────────────────────────
+    SIGHT = 2                                            # pellets glow: he sees them this far, in line of sight
+    HEARING = 3                                          # ghosts move and are heard a little further than seen
+    GHOST_MEMORY = 4                                     # steps a ghost sighting stays believable before it is dropped
+    # Standing in a cell, does he SEE which of the six ways out are open?
+    # True is the sighted agent Nick described ("if it sees a wall it should
+    # instinctively know that its an obstacle"); False is the blind one, who
+    # learns the maze only by walking into it ("or at least know it after
+    # colliding with it"). It is a dial, not a rule: exp_r36 runs both, and
+    # the blind arm is what proves the collision channel really carries the
+    # map on its own.
+    SEE_EXITS = True
+
+    def _sense(self, place: str | None = None) -> list[str]:
+        """One pass of his senses at where he stands, and the ONLY channel
+        between the world and what he can come to believe. Sight puts pellets
+        on his map; hearing puts ghosts in `ghost_belief` with the step he
+        sensed them. Both are stopped by walls — he perceives down a
+        corridor, not through the stone.
+
+        Before 2026-09-15 this read `env.remaining` and `env.ghosts` straight
+        out of the world: the solved pellet map and every ghost's exact
+        position, through walls, at any range. That is the omniscience Nick
+        asked to remove; what is left is a sensor with a radius, and a belief
+        that can be stale or wrong."""
+        env = self.env
+        place = self.place if place is None else place
+        seen = env.senses(place, max(self.SIGHT, self.HEARING))
+        out = []
+        for c in seen["pellets"] + seen["stars"]:
+            if _manh(c, seen["at"]) > self.SIGHT:
+                continue
+            cell = env.cell(*c)
+            self.sighted.add(cell)
+            out.append(f"{'a star' if c in seen['stars'] else 'a pellet'} is the sighting of {cell}")
+        for g in seen["ghosts"]:
+            if _manh(g, seen["at"]) <= self.HEARING:
+                self.ghost_belief[tuple(g)] = env.steps
+        self._forget_stale()
+        return out
+
+    def _forget_stale(self) -> None:
+        """A sighting he has not refreshed in GHOST_MEMORY steps is no longer
+        evidence. Dropping it is what keeps the belief a BELIEF."""
+        now = self.env.steps
+        for g in [g for g, t in self.ghost_belief.items() if now - t > self.GHOST_MEMORY]:
+            self.ghost_belief.pop(g, None)
+
+    def believed_ghosts(self) -> list[tuple]:
+        """Where he currently thinks the ghosts are. May be empty while a
+        ghost is two cells away behind a wall — that is the point."""
+        self._forget_stale()
+        return list(self.ghost_belief)
 
     def _sight(self, place: str) -> list[str]:
-        """Pellets within SIGHT (Manhattan) of where he stands become
-        sighting facts — perception, learned like everything else."""
-        x, y, z = self.env.coords(place)
-        out = []
-        for c in self.env.remaining:
-            if _manh(c, (x, y, z)) <= self.SIGHT:
-                cell = self.env.cell(*c)
-                self.sighted.add(cell)
-                out.append(f"{'a star' if c in self.env.power else 'a pellet'} is the sighting of {cell}")
-        return out
+        """The name the rest of the file (and the tests) use for one pass of
+        perception from `place`."""
+        return self._sense(place)
+
+    def look_around(self, place: str) -> list[str]:
+        """What arriving somewhere shows him. With SEE_EXITS he can look down
+        the six ways out and see which are open (and which glow red); without
+        it he sees nothing but the cell he is in, and the only thing that
+        ever tells him a direction is solid is walking into it."""
+        if self.SEE_EXITS:
+            return self.env.observe(place)
+        return []
 
     def on_arrive(self, place: str) -> int:
         self._last_eaten = None
@@ -1346,8 +1593,10 @@ class CubbyGhost(CubbyPac):
             self._last_eaten = list(self.env.coords(place))
             self._eaten_run.add(place)
             fact = f"pellet {self.env.score} is the discovery of {place}"
+            # `left` is what HE knows is left (seen and not yet eaten), not
+            # the level's true remainder — he has no way to count that
             self._t("eat", place=place, pellet=self.env.score, power=ate["power"],
-                    remaining=len(self.env.remaining))
+                    left=len(self.sighted - self._eaten_run))
             new += self._learn([fact])
             self.env.energy = min(100, self.env.energy + (STAR_ENERGY if ate["power"] else PELLET_ENERGY))
             if self.chem is not None:
@@ -1355,7 +1604,9 @@ class CubbyGhost(CubbyPac):
             if ate["power"]:
                 self._think("power", steps=FRIGHT_STEPS)
             else:
-                self._think("eat", score=self.env.score, total=len(self.env.pellets))
+                # "3 of 7" = of the seven pellets HE has seen, not of the
+                # level's true count — which he has no way to know
+                self._think("eat", score=self.env.score, total=max(self.env.score, len(self.sighted)))
         new += self._learn(self._sight(place))
         return new
 
@@ -1363,13 +1614,27 @@ class CubbyGhost(CubbyPac):
     def _known_graph(self) -> dict[str, set[str]]:
         if self._graph_n != len(self.world):
             g: dict[str, set[str]] = {}
+            blocked: dict[str, set[str]] = {}
+            nonplaces = set(self.NON_PLACES.values())
             for f in self.world.texts:
                 m = self._nbr_re.match(f)
-                if m and m.group("b") not in ("a wall", "a hazard"):
-                    g.setdefault(m.group("a"), set()).add(m.group("b"))
-                    g.setdefault(m.group("b"), set())
+                if not m:
+                    continue
+                if m.group("b") in nonplaces:            # a wall / a hazard / the edge he has met
+                    blocked.setdefault(m.group("a"), set()).add(m.group("d"))
+                    continue
+                g.setdefault(m.group("a"), set()).add(m.group("b"))
+                g.setdefault(m.group("b"), set())
             self._graph, self._graph_n = g, len(self.world)
+            self._blocked, self._blocked_n = blocked, len(self.world)
         return self._graph
+
+    def known_blocked(self, place: str) -> set[str]:
+        """Same contract as CubbyPac's, served from the pass that also builds
+        his route graph — one scan of the world model fills both."""
+        if self._blocked_n != len(self.world):
+            self._known_graph()
+        return self._blocked.get(place, set())
 
     def _bfs(self, start: str, goals: set[str], avoid: set[str]) -> tuple[int | None, str | None]:
         """(distance to the nearest goal, the first cell on the way) over the
@@ -1432,11 +1697,12 @@ class CubbyGhost(CubbyPac):
         maximizes the distance to them); otherwise follow the path his map
         planned; only with no plan fall back to novelty."""
         env = self.env
-        if REST in exits and not (env.frightened > 0 and any(p in {env.cell(*g) for g in env.ghosts}
-                                                                for p in exits.values())):
+        gh = self.believed_ghosts()                      # his belief, not env.ghosts
+        ghost_cells = {env.cell(*g) for g in gh}
+        if REST in exits and not (env.frightened > 0 and any(p in ghost_cells
+                                                             for p in exits.values())):
             self._think("rest", energy=env.energy)       # tired, and this spot is safe: rest
             return REST
-        ghost_cells = {env.cell(*g) for g in env.ghosts}
         if env.frightened > 0:
             hunt = [m for m, p in exits.items() if p in ghost_cells]
             if hunt:
@@ -1445,12 +1711,12 @@ class CubbyGhost(CubbyPac):
             safe = {m: p for m, p in exits.items() if p not in ghost_cells}
             if safe:
                 exits = safe
-            if env.ghosts:
+            if gh:
                 here = env.coords(self.place)
-                near = min(_manh(here, g) for g in env.ghosts)
+                near = min(_manh(here, g) for g in gh)
                 if near <= self.danger_radius:           # too close: run, then think
                     def gap(m):
-                        return min(_manh(env.coords(exits[m]), g) for g in env.ghosts)
+                        return min(_manh(env.coords(exits[m]), g) for g in gh)
                     gaps = {m: gap(m) for m in exits}
                     decided = self._forge_flee(near) if self._can_forge() else None
                     if decided is False:                 # his program said stay — the rule says flee;
@@ -1486,8 +1752,9 @@ class CubbyGhost(CubbyPac):
         self.place = self.env.start
         self.sighted.clear()
         self._eaten_run.clear()
+        self.ghost_belief.clear()                        # a new maze: nothing he believed is evidence any more
         self._seed_basics()
-        self._learn(self.env.observe(self.place))
+        self._learn(self.look_around(self.place))
         self._learn(self._sight(self.place))
         self.visits[self.place] = self.visits.get(self.place, 0) + 1
         self._think("level_up", cleared=nxt - 1, next=nxt)
@@ -1503,7 +1770,7 @@ class CubbyGhost(CubbyPac):
                 self.place = env.start
                 self._eaten_run.clear()
                 self._t("restart", level=env.level, lives=env.lives)
-            if not env.remaining:                        # headless driver: nobody called next_level
+            if env.cleared:                              # headless driver: nobody called next_level
                 self.next_level()
             env.steps += 1
             if env.steps > env.budget:                   # OUT OF TIME -> fail, learn a speedup, redo
@@ -1520,11 +1787,19 @@ class CubbyGhost(CubbyPac):
                 self._last = ev
                 return {"from": None, "place": self.place, "chosen": None, "new": 0, "probed": None}
             self._thought, self._thought_prio, self._say_aloud = None, -1, None   # a fresh thought each step
+            self._last_eaten = None                      # a bump does not reach on_arrive: clear it here
+            self._learn(self._sense())                   # senses FIRST, then decide on what they gave him
+            # how far off the nearest threat was when he chose — the last
+            # moment he could act. This, not the distance at capture, is what
+            # `_on_caught` turns into his berth.
+            self._threat_seen_at = min((_manh(env.coords(self.place), g)
+                                        for g in self.believed_ghosts()), default=None)
             if self._mine_wise() and env.place_mine(self.place):   # drop a trap on the way out
                 self._learn([f"a trap is the marker of {self.place}"])
                 ev["mined"] = list(env.coords(self.place))
                 self._t("mine", place=self.place, left=env.mines_left,
-                        ghost_distance=min(_manh(env.coords(self.place), g) for g in env.ghosts))
+                        ghost_distance=min((_manh(env.coords(self.place), g)
+                                            for g in self.believed_ghosts()), default=None))
                 self._think("mine", left=env.mines_left)
             danger = self.danger_cells()                 # the berth grows with learned fear
             self._plan_next = self.plan_next(avoid=danger)
@@ -1580,19 +1855,26 @@ class CubbyGhost(CubbyPac):
             if gh["caught"]:
                 fact = f"a ghost is the danger of {self.place}"
                 self._learn([fact])
-                self._on_caught()                        # fear up (learned) and the shock (hormonal)
+                last_seen = self._threat_seen_at         # where it was when he last chose
+                self._on_caught()                        # fear + the shock + THE LESSON (the berth he keeps)
                 ev["caught"] = "gameover" if env.game_over else True
                 self._t("caught", place=self.place, lives=env.lives, fear=round(self.fear, 2),
-                        game_over=env.game_over, learned=fact)
+                        game_over=env.game_over, learned=fact,
+                        seen_at=last_seen, radius=self.danger_radius)
                 self._think("caught", place=self.place)
                 self.place = env.start
-            elif env.ghosts:
-                near = min(_manh(env.coords(self.place), g) for g in env.ghosts)
-                if self.chem is not None:
-                    threat = 0.0 if env.frightened else (1.0 if near <= 1 else 0.5 if near <= 2 else 0.0)
+                self.ghost_belief.clear()                # respawned across the maze: the belief is void
+            else:
+                believed = self.believed_ghosts()
+                if believed and self.chem is not None:
+                    near = min(_manh(env.coords(self.place), g) for g in believed)
+                    # threat scales over the berth HE learned rather than the
+                    # old hardcoded `1.0 if near<=1 else 0.5 if near<=2`
+                    r = self.danger_radius
+                    threat = 0.0 if env.frightened else max(0.0, 1.0 - max(0, near - 1) / max(1, r))
                     if threat:
                         self.chem.update(threat=threat)
-            if not env.remaining:
+            if env.cleared:
                 ev["beaten"] = True
             ev["says"] = self._say_aloud
             self._last = ev
@@ -1634,8 +1916,9 @@ class CubbyGhost(CubbyPac):
 
     def affect(self) -> dict:
         env, chem, ev = self.env, self.chem, self._last
-        near = min((_manh(env.coords(self.place), g) for g in env.ghosts), default=99)
-        scared = bool(env.ghosts) and env.frightened == 0 and near <= 2
+        believed = self.believed_ghosts()                # what he thinks is out there, not what is
+        near = min((_manh(env.coords(self.place), g) for g in believed), default=99)
+        scared = bool(believed) and env.frightened == 0 and near <= self.danger_radius
         da = chem.dopamine if chem is not None else 0.30
         c = chem.cortisol if chem is not None else 0.15
         mood = max(-1.0, min(1.0, (da - c) * 2.0))
@@ -1651,9 +1934,15 @@ class CubbyGhost(CubbyPac):
                 "word": None, "collected": "",           # the letter mechanic is gone; the page's guard stays false
                 "says": ev.get("says"), "thought": self._thought, "vocab": [], "talk": None,
                 "lay_low": len(self.walls),              # relabeled: refused moves (walls learned)
-                "pursuit": sum(1 for g in env.ghosts if _manh(env.coords(self.place), g) <= 2)}
+                "pursuit": sum(1 for g in believed
+                               if _manh(env.coords(self.place), g) <= self.danger_radius)}
 
     def resp(self) -> dict:
+        """THE RENDERER'S feed, not his. Everything below is read straight
+        out of the world on purpose: it is what the browser draws for the
+        HUMAN watching. Nothing here reaches a decision — the agent's own
+        view of the same things is `self.sighted` and `self.ghost_belief`,
+        and the gap between the two is visible on the page."""
         env, ev = self.env, self._last
         return {"to": list(env.coords(self.place)),
                 "move": (self.traj[-1]["move"] if self.traj and not ev.get("failed") else None),
@@ -1983,7 +2272,7 @@ class LivePac:
             if self._last_resp is not None and now - self._last < self.min_interval:
                 return {**self._last_resp, "stale": True}
             try:
-                if self.man.env.remaining:               # a cleared level waits for /next
+                if not self.man.env.cleared:             # a cleared level waits for /next
                     self.man.step()
                     if len(self.man.traj) % self.derive_every == 0:
                         self.man.derive_counts()
@@ -2008,7 +2297,7 @@ class LivePac:
 
     def next_level(self) -> dict:
         with self._lock:
-            if not self.man.env.remaining:
+            if self.man.env.cleared:
                 self.man.derive_counts()                 # join what the level collected
                 self.man.next_level()
             self._last_resp = None

@@ -21,11 +21,19 @@ So:
     mounted: dopamine-leaning states prefer unvisited exits, a stressed
     (high-cortisol) state prefers known ground; discoveries feed novelty
     back into the ODE, so finding new rooms literally makes Cubby curious.
-  * He TRIES THINGS OUTSIDE THE SCOPE of what is offered: sometimes he
-    answers the ASK with a direction the program did NOT offer — the VM's
-    chosen-not-invented guard rejects it, and the rejection itself is
-    learned ("a wall is the west neighbor of the hall", which is env-true).
-    Deny-by-default as a teacher.
+  * He is offered WHAT HIS BODY CAN DO, not what the world says is legal,
+    so a move can FAIL. The ASK lists every direction his own map has not
+    ruled out; the WORLD resolves the attempt and may refuse it; the
+    refusal is the percept ("a wall is the west neighbor of the hall",
+    which is env-true because the world is the one that said so). Walking
+    into things is how the map gets made. Before 2026-09-15 the offer was
+    pre-filtered to the legal moves, which made a collision impossible and
+    handed him the maze for free.
+  * He also TRIES THINGS OUTSIDE THE SCOPE of what is offered, as a guard
+    audit: the VM's chosen-not-invented rule must reject a direction the
+    program did not list, and an acceptance is recorded as an anomaly. That
+    probe no longer TEACHES anything — the world is the only authority on
+    what is solid.
   * He WRITES HIS OWN PROGRAMS to join known facts: a counting program the
     VM executes (the exit count is COMPUTED on the VM, not by the host) and
     symmetry-join certificates ("B is the north neighbor of A" ⇒ "A is the
@@ -99,6 +107,15 @@ class ToyVerse:
             obs.append(f"{nbr} is the {d} neighbor of {place}")
         return obs
 
+    def try_move(self, place: str, move: str, offered: dict[str, str]) -> dict:
+        """The world resolves a move ATTEMPT. This grid has no stone, only an
+        edge — walk off it and the world says so, which is how he learns the
+        shape of the place instead of being handed it."""
+        nbr = self.exits(place).get(move)
+        if nbr:
+            return {"ok": True, "to": nbr, "kind": "open"}
+        return {"ok": False, "to": place, "kind": "edge"}
+
     def all_facts(self) -> list[str]:
         return [f for p in self.pos for f in self.observe(p)]
 
@@ -114,6 +131,10 @@ class CubbyMan:
     CORTEX = "game"
     DIR_NAMES = ("north", "south", "east", "west")
     OPP = _OPP
+    # what a refused move leaves in his map. These are NOT places: the
+    # opposite-direction axiom must not run through them, and his route
+    # planner must not path through them. `kind` -> the words he learns it in.
+    NON_PLACES = {"wall": "a wall", "hazard": "a hazard", "edge": "the edge"}
     # the game's own words claim a turn outright; a bare command only claims a
     # statement (the brain never hands a plugin a question at 0.6); a turn about
     # something else that happens to say "explore" (the web, a plugin) is not ours
@@ -135,11 +156,14 @@ class CubbyMan:
         self.visits: dict[str, int] = {}
         self.chem = None                                 # set by bind(); optional
         self.derived: set[str] = set()                   # facts he PROVED rather than saw
-        self.walls: set[str] = set()                     # learned from VM rejections
+        self.walls: set[str] = set()                     # obstacles learned by walking into them
+        self._blocked: dict[str, set[str]] = {}          # his map's blocked directions, by place
+        self._nbrs: dict[str, dict[str, str]] = {}       # his map's named neighbours, by place
+        self._blocked_n = -1                             # the world size both caches were built at
         self.anomalies: list[str] = []                   # a guard that FAILED to reject
         self.log: list[dict] = []
         self._step_lock = threading.RLock()              # one move at a time (live poller vs chat turn)
-        self._learn(self.env.observe(self.place))        # he can see where he stands
+        self._learn(self.look_around(self.place))        # what he perceives where he starts
         self.on_arrive(self.place)
         self.visits[self.place] = 1
 
@@ -208,10 +232,18 @@ class CubbyMan:
         return ranked[0]
 
     def _try_the_wall(self, src: str, dirs: list[str]) -> str | None:
-        """Try a direction the program did NOT offer. The VM's resume guard
-        must reject it; the rejection teaches him where the walls are. If
-        the guard ever ACCEPTS, that is an anomaly worth recording, not a
-        fact worth learning."""
+        """Try a direction the program did NOT offer, and check the VM's
+        resume guard rejects it. This is a GUARD AUDIT, not a way to learn
+        the map: if the guard ever ACCEPTS, that is an anomaly worth
+        recording.
+
+        It used to learn `a wall is the d neighbor of here` from the
+        rejection — which made the VM a second authority on what is solid,
+        and a wrong one (an unoffered direction is only a direction the
+        program did not list, and out-of-bounds came back labelled "a wall").
+        Since 2026-09-15 the WORLD refuses a move for real and the collision
+        is the percept, so there is exactly one source of truth about stone
+        and this is no longer it."""
         from cubbyllm.bridges import cubelang_client as cc
         missing = sorted(set(self.DIR_NAMES) - set(dirs))
         if not missing or self.rng.random() >= self.probe:
@@ -223,20 +255,74 @@ class CubbyMan:
             self.anomalies.append(f"resume accepted unoffered '{d}' at {self.place}")
             return None
         except cc.CubelangRunError:
-            fact = f"a wall is the {d} neighbor of {self.place}"
-            if self._learn([fact]):
-                self.walls.add(fact)
-            self._t("probe", place=self.place, tried=d, rejected=True, learned=fact)
+            self._t("probe", place=self.place, tried=d, rejected=True, guard="held")
             return d
 
     def step(self) -> dict:
         with self._step_lock:
             return self._step()
 
+    def body_moves(self) -> dict[str, str]:
+        """Every direction his BODY has, whatever the world holds. Where his
+        own map already names the neighbour, that name is the destination;
+        where it does not, the destination is a placeholder he has never
+        visited (so curiosity prefers it) and never arrives at — the WORLD
+        says where he actually ends up."""
+        mine = self.known_neighbors(self.place)
+        return {d: mine.get(d, f"? {d} of {self.place}") for d in self.DIR_NAMES}
+
     def candidate_moves(self, exits: dict[str, str]) -> dict[str, str]:
-        """Hook: the moves the ASK will OFFER this step (base exits by default;
-        a world may add discovered superpower moves)."""
-        return exits
+        """What his BODY can try, minus what HIS MAP has ruled out.
+
+        `exits` — the world's legal-move list — is deliberately ignored
+        (2026-09-15). Pre-filtering the offer to the legal moves meant he
+        could never walk into anything, so the world's shape was a gift
+        rather than something he learned. Now an untried direction stays
+        offered, the world refuses it if it is solid, and the refusal is the
+        percept. The filter is his belief doing the work the rule used to do,
+        and unlike the rule it can be wrong."""
+        offers = self.body_moves()
+        blocked = self.known_blocked(self.place)
+        return {d: p for d, p in offers.items() if d not in blocked} or offers
+
+    def look_around(self, place: str) -> list[str]:
+        """Hook: what he PERCEIVES on arriving somewhere. The default is the
+        world's own `observe` — an agent with eyes. A subclass can narrow it
+        (see CubbyGhost.SEE_EXITS) so the map arrives only through what he
+        walks into."""
+        return self.env.observe(place)
+
+    def _rebuild_beliefs(self) -> None:
+        """One scan of his world model into two indexes: which directions he
+        has found solid, and which neighbours he can name."""
+        nonplaces = set(self.NON_PLACES.values())
+        blocked: dict[str, set[str]] = {}
+        nbrs: dict[str, dict[str, str]] = {}
+        for f in self.world.texts:
+            m = self._nbr_re.match(f)
+            if not m:
+                continue
+            if m.group("b") in nonplaces:
+                blocked.setdefault(m.group("a"), set()).add(m.group("d"))
+            else:
+                nbrs.setdefault(m.group("a"), {})[m.group("d")] = m.group("b")
+        self._blocked, self._nbrs, self._blocked_n = blocked, nbrs, len(self.world)
+
+    def known_blocked(self, place: str) -> set[str]:
+        """The directions HIS OWN MAP says are solid here — each one learned
+        from a refused move he made, or from something he saw. Nothing is
+        read from the env: this is a belief, an untried direction is simply
+        absent from it, and it can be wrong."""
+        if self._blocked_n != len(self.world):
+            self._rebuild_beliefs()
+        return self._blocked.get(place, set())
+
+    def known_neighbors(self, place: str) -> dict[str, str]:
+        """direction -> the place HIS MAP says is that way (only the ones he
+        has learned)."""
+        if self._blocked_n != len(self.world):
+            self._rebuild_beliefs()
+        return self._nbrs.get(place, {})
 
     @staticmethod
     def ask_label(i: int, move: str, salt: int = 0) -> str:
@@ -298,12 +384,36 @@ class CubbyMan:
         cc.run_program_proto(src, fn="act", args=[f"went {chosen} from {self.place}", "explore"],
                              exe=self.exe)
         came_from = self.place
-        self.place = exits[chosen]
-        self.visits[self.place] = self.visits.get(self.place, 0) + 1
-        obs = self.env.observe(self.place)
-        new = self._learn(obs)
-        new += self.on_arrive(self.place)                # world-specific arrival effects (eating…)
-        new += self.derive_symmetry(obs)                 # join facts the moment they land
+        # The move is an ATTEMPT, not a guaranteed arrival. The WORLD resolves
+        # it and may refuse; the refusal is a PERCEPT — he walked into the
+        # thing — so a collision is what teaches an obstacle, and no oracle
+        # ever had to list the obstacles for him (2026-09-15: the offer used
+        # to be pre-filtered to the legal moves, which made a collision
+        # impossible and the map a gift). Worlds with no `try_move` hook keep
+        # the old always-arrives behaviour.
+        resolve = getattr(self.env, "try_move", None)
+        out = (resolve(self.place, chosen, exits) if resolve is not None
+               else {"ok": True, "to": exits[chosen], "kind": "open"})
+        self.place = out["to"]
+        bumped = None if out.get("ok", True) else out.get("kind", "wall")
+        new = 0
+        if bumped is not None:                           # refused: he is still where he was
+            fact = f"{self.NON_PLACES.get(bumped, 'a wall')} is the {chosen} neighbor of {came_from}"
+            if self._learn([fact]):
+                self.walls.add(fact)
+            self._t("bump", place=came_from, tried=chosen, hit=bumped, learned=fact)
+            obs = []
+        else:
+            self.visits[self.place] = self.visits.get(self.place, 0) + 1
+            obs = self.look_around(self.place)
+            if chosen in self.DIR_NAMES and self.place != came_from:
+                # PROPRIOCEPTION: he went that way and ended up here. True
+                # whether or not he can see, and the only thing that builds a
+                # map for an agent with SEE_EXITS off.
+                obs = [f"{self.place} is the {chosen} neighbor of {came_from}"] + list(obs)
+            new = self._learn(obs)
+            new += self.on_arrive(self.place)            # world-specific arrival effects (eating…)
+            new += self.derive_symmetry(obs)             # join facts the moment they land
         if self.chem is not None:                        # discovery feeds curiosity -- as SURPRISE, not routine
             # habituation: what he usually learns per step is expected; only a
             # burst above that expectation reads as novelty (a steady trickle
@@ -314,7 +424,7 @@ class CubbyMan:
             self._expect_new = new if ema is None else 0.8 * ema + 0.2 * new
             self.chem.update(novelty=min(1.0, 0.7 * surprise), valence=0.1 * min(1, new))
         rec = {"from": came_from, "place": self.place, "chosen": chosen, "new": new,
-               "probed": probed, "label": label, "offered": len(labels)}
+               "probed": probed, "label": label, "offered": len(labels), "bumped": bumped}
         self._t("explore", **rec)
         self.log.append(rec)
         return rec
@@ -349,7 +459,11 @@ class CubbyMan:
         n = 0
         for f in facts:
             m = self._nbr_re.match(" ".join(f.split()))
-            if not m or m.group("b") == "a wall":
+            # "a hazard"/"the edge" are not places either: deriving
+            # "X is the left neighbor of a hazard" was junk (fixed 2026-09-15
+            # with the bump percept, which made the same shape reachable for
+            # walls that are now learned by collision)
+            if not m or m.group("b") in self.NON_PLACES.values():
                 continue
             derived = f"{m.group('a')} is the {self.OPP[m.group('d')]} neighbor of {m.group('b')}"
             if derived in self.world or MemoryCortex.contradiction(derived, self.world) is not None:
@@ -372,9 +486,10 @@ class CubbyMan:
         fact), then stored as a joined fact he was never shown."""
         n = 0
         by_place: dict[str, int] = {}
+        nonplaces = set(self.NON_PLACES.values())        # a wall / a hazard / the edge are not exits
         for f in self.world.texts:
             m = self._nbr_re.match(f)
-            if m and m.group("b") != "a wall":
+            if m and m.group("b") not in nonplaces:
                 by_place[m.group("a")] = by_place.get(m.group("a"), 0) + 1
         for place, count in sorted(by_place.items()):
             derived = f"{count} is the exit count of {place}"

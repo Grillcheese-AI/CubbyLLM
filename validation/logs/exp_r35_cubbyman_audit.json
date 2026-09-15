@@ -1,0 +1,109 @@
+{
+ "source": "pacman.py",
+ "n_lines": 2053,
+ "world_classes": [
+  "CubbyGhost",
+  "GhostVerse",
+  "PacVerse"
+ ],
+ "agent_classes": [
+  "CubbyPac",
+  "LivePac",
+  "ProgramLibrary",
+  "_Mulberry32",
+  "_Safe"
+ ],
+ "oracle_reads": [
+  {
+   "class": "CubbyPac",
+   "line": 196,
+   "attr": "remaining",
+   "why": "which pellets are still uneaten, anywhere",
+   "code": "return not self.env.remaining"
+  },
+  {
+   "class": "CubbyPac",
+   "line": 163,
+   "attr": "lives",
+   "why": "lives remaining",
+   "code": "f\"total score {env.total_score}, {env.lives} lives, {len(self.world)} facts learned, \""
+  },
+  {
+   "class": "CubbyPac",
+   "line": 160,
+   "attr": "lives",
+   "why": "lives remaining",
+   "code": "f\"score total {env.total_score}, {env.lives} vies, {len(self.world)} faits appris, \""
+  },
+  {
+   "class": "CubbyPac",
+   "line": 162,
+   "attr": "pellets",
+   "why": "every pellet's position at level start",
+   "code": "return (f\"Level {env.level}, try {env.attempt}: {env.score}/{len(env.pellets)} pellets, \""
+  },
+  {
+   "class": "CubbyPac",
+   "line": 202,
+   "attr": "pellets",
+   "why": "every pellet's position at level start",
+   "code": "rep.update({\"score\": self.env.score, \"pellets_total\": len(self.env.pellets),"
+  },
+  {
+   "class": "CubbyPac",
+   "line": 203,
+   "attr": "remaining",
+   "why": "which pellets are still uneaten, anywhere",
+   "code": "\"beaten\": not self.env.remaining})"
+  },
+  {
+   "class": "CubbyPac",
+   "line": 159,
+   "attr": "pellets",
+   "why": "every pellet's position at level start",
+   "code": "return (f\"Niveau {env.level}, essai {env.attempt} : {env.score}/{len(env.pellets)} pastilles, \""
+  },
+  {
+   "class": "CubbyPac",
+   "line": 182,
+   "attr": "remaining",
+   "why": "which pellets are still uneaten, anywhere",
+   "code": "remaining=len(self.env.remaining))"
+  },
+  {
+   "class": "CubbyPac",
+   "line": 191,
+   "attr": "remaining",
+   "why": "which pellets are still uneaten, anywhere",
+   "code": "\"remaining\": len(self.env.remaining)})"
+  },
+  {
+   "class": "CubbyPac",
+   "line": 207,
+   "attr": "pellets",
+   "why": "every pellet's position at level start",
+   "code": "line = (f\"I played the pacman maze: {self.env.score} of {len(self.env.pellets)} pellets \""
+  },
+  {
+   "class": "LivePac",
+   "line": 1986,
+   "attr": "remaining",
+   "why": "which pellets are still uneaten, anywhere",
+   "code": "if self.man.env.remaining:               # a cleared level waits for /next"
+  },
+  {
+   "class": "LivePac",
+   "line": 2011,
+   "attr": "remaining",
+   "why": "which pellets are still uneaten, anywhere",
+   "code": "if not self.man.env.remaining:"
+  }
+ ],
+ "by_attribute": {
+  "remaining": 6,
+  "lives": 2,
+  "pellets": 4
+ },
+ "hand_policies": [],
+ "wall_s": 0.1
+}

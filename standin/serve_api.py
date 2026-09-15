@@ -322,8 +322,13 @@ def main():
         man = CubbyGhost(memory=PROGRAMS_PATH, ledger=Ledger())   # the big game; his programs persist on disk, every VM decision in the ledger
         brain.mount(man)
         brain.pac_live = LivePac(man)
+        gfl = man.env.ghost_free_levels
         print(f"mounted: cubby-man in the pac maze (ghosts, hazards, power stars, levels) — "
               f"LIVE view at http://{args.host}:{args.port}/pac (he plays while it is open)\n"
+              + (f"  levels 1-{gfl} run with NO ghosts: he learns the maze first "
+                 f"(CUBBYMAN_GHOST_FREE_LEVELS=0 turns the threat on at level 1)\n" if gfl else "")
+              + "  he is offered what his BODY can do, not the maze's legal moves: "
+                "a refused move is how he finds a wall\n"
               f"  his programs + reasoning: {PROGRAMS_PATH} (and .md) | "
               f"http://{args.host}:{args.port}/pac/programs.md"
               + (f" | {len(man.library.entries)} programs remembered from earlier runs"

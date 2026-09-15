@@ -53,9 +53,11 @@ def test_live_cubbypac_eats_learns_walls_and_records_the_run():
     rep = man.explore(steps=12)
     assert man.env.score >= 1, f"exploration must eat at least one pellet: {rep}"
     assert any("is the discovery of" in f for f in man.world.texts), "eating is a learned fact"
-    assert man.walls and rep["anomalies"] == [], "unoffered moves are refused and learned"
-    # d=1: forward/back are always outside — the walls he learns say so
-    assert any(re.search(r"a wall is the (forward|back) neighbor", f) for f in man.walls)
+    assert man.walls and rep["anomalies"] == [], "refused moves are learned; the ASK guard held"
+    # d=1: forward/back are always outside. Since 2026-09-15 the WORLD refuses
+    # the move and names what it was, so the boundary is learned as "the edge"
+    # rather than mislabelled stone.
+    assert any(re.search(r"(a wall|the edge) is the (forward|back) neighbor", f) for f in man.walls)
     assert man.traj and set(man.traj[0]) == {"to", "move", "eaten", "score", "remaining"}, \
         "the trajectory must match pacman_3d's replay schema"
     assert any("neighbor of" in f for f in man.derived), "six-direction symmetry joins land"
@@ -337,7 +339,9 @@ def test_being_caught_raises_fear_learned_and_hormonal():
 
 def test_traps_are_one_per_level_cumulative_ghost_only_and_used_wisely():
     from pacman import TRAP_BONUS, CubbyGhost, GhostVerse
-    env = GhostVerse()
+    # traps are about ghosts, so this one opts out of the ghost-free early
+    # levels rather than asserting against them
+    env = GhostVerse(ghost_free_levels=0)
     assert env.mines_left == 1, "one trap at level 1"
     env._start_level(2)
     assert env.mines_left == 2, "unused: it carries over"
@@ -355,13 +359,17 @@ def test_traps_are_one_per_level_cumulative_ghost_only_and_used_wisely():
     assert env.total_score == t0 + TRAP_BONUS and not out["caught"]
     env._start_level(3)
     assert env.mines_left == 2, "level 3: the unused one + one new"
-    # wisely: only under real threat
-    man = CubbyGhost(GhostVerse(), probe=0.0)
+    # wisely: only under a threat he can actually SENSE. Placing a ghost in
+    # the world is not enough any more — he has to perceive it first, and
+    # what he decides on is the belief that perception leaves behind.
+    man = CubbyGhost(GhostVerse(ghost_free_levels=0), probe=0.0)
     here = man.env.coords(man.place)
     man.env.ghosts = [(here[0] + 5, here[1] + 5, here[2])]
-    assert not man._mine_wise(), "a far ghost is not worth a trap"
+    man._sense()
+    assert not man._mine_wise(), "a ghost too far to sense is not worth a trap"
     man.env.ghosts = [(here[0] + 1, here[1], here[2])]
-    assert man._mine_wise(), "an adjacent hunting ghost is"
+    man._sense()
+    assert man._mine_wise(), "an adjacent hunting ghost he can sense is"
     man.env.frightened = 5
     assert not man._mine_wise(), "frightened ghosts flee: no trap"
 
@@ -397,9 +405,11 @@ def test_energy_costs_moves_combos_more_and_only_rest_or_pellets_bring_it_back()
     env.energy = 100
     # rest is offered only when tired AND safe; it restores energy
     env.ghosts = []
+    man._sense()
     env.energy = REST_BELOW - 1
     assert REST in man.candidate_moves(env.exits(man.place)) and man._rest_wanted()
     env.ghosts = [env.coords(man.place)]                 # a ghost on top of him: not safe
+    man._sense()                                         # …once he has SENSED it (2026-09-15)
     assert REST not in man.candidate_moves(env.exits(man.place))
     env.ghosts = []
     env.energy = 90
@@ -561,16 +571,27 @@ def test_ghostverse_level1_matches_the_live_games_formulas():
     a, b = GhostVerse(), GhostVerse()
     assert a.walls == b.walls and a.pellets == b.pellets and a.hazards == b.hazards
     assert a.w == a.h == 6 and a.d == 3 and len(a.pellets) == 12
-    assert a.n_ghosts == 2 and len(a.power) == 1 and a.lives == 3
+    assert len(a.power) == 1 and a.lives == 3
+    # the first levels are his classroom: no ghosts at all (2026-09-15).
+    # The live game's own count resumes the moment they arrive.
+    assert a.n_ghosts == 0 and a.ghosts == [] and a.ghost_free_levels == 3
     assert not (a.hazards & a.walls) and a.power <= set(a.pellets)
     assert a.start == "level-1 cell 0-0-0"
     for f in a.observe(a.start):
         assert parse_fact(f) is not None and "level-1" in f
+    c = GhostVerse()
+    for lvl in (1, 2, 3):
+        c._start_level(lvl)
+        assert c.n_ghosts == 0 and c.ghosts == [], f"level {lvl} is ghost-free"
+    c._start_level(4)
+    assert c.n_ghosts == 4 and len(c.ghosts) == 4, "the threat arrives with the live game's formula"
+    assert GhostVerse(ghost_free_levels=0).n_ghosts == 2, \
+        "the classroom is a knob, not a rule baked into the code"
 
 
 def test_ghost_contact_caught_eaten_and_game_over():
     from pacman import FRIGHT_STEPS, GHOST_BONUS, GhostVerse
-    env = GhostVerse()
+    env = GhostVerse(ghost_free_levels=0)                 # contact needs ghosts to contact
     pos = env.start
     env.ghosts = [env.coords(pos)] + env.ghosts[1:]
     env.ghost_speed = 0.0                                # contact resolution only

@@ -64,13 +64,22 @@ def _exe_or_skip():
 def test_live_exploration_learns_the_world_vm_mediated():
     _exe_or_skip()
     man = CubbyMan(ToyVerse(w=3, h=2, seed=0), probe=1.0, seed=0)
-    rep = man.explore(steps=10)
+    # 14, not 10: since 2026-09-15 the world's SHAPE is something he has to
+    # find out rather than be handed, so some of his steps go into walking
+    # off the edge and learning where it is. Those steps buy no `coverage`
+    # (the boundary is not in the env's all_facts) — the claim is unchanged,
+    # it just costs more steps to earn.
+    rep = man.explore(steps=14)
     assert rep["coverage"] >= 0.8, f"exploration must map most of the world: {rep}"
     assert rep["anomalies"] == [], "the resume guard must reject every unoffered direction"
     assert all(r["label"].split("-", 1)[1] == CubbyMan.ask_label(0, r["chosen"]).split("-", 1)[1]
                for r in man.log), "each move was chosen through its offered label (whatever the salt)"
-    assert man.walls, "trying outside the offered scope must teach him where walls are"
-    assert any(f.startswith("a wall is the") for f in man.world.texts)
+    assert man.walls, "walking into something must teach him where it is"
+    # this grid has no stone, only an edge — and that is what he learns it as,
+    # instead of the mislabelled "a wall" the old VM-guard probe produced
+    assert any(f.startswith("the edge is the") for f in man.world.texts)
+    assert not any(f.startswith("a wall is the") for f in man.world.texts), \
+        "nothing may be learned as stone in a world that has none"
     # his own join programs: VM-computed exit counts + symmetry about
     # places learned before standing in them
     assert rep["counted"] >= 1 and any("exit count of" in f for f in man.derived)
@@ -92,7 +101,7 @@ def test_live_the_demo_arc_cant_answer_then_explores_then_answers():
     s.mount(man)
     before = s.turn(q)
     assert before["reply"] != gold, "before exploring, the answer must not be speakable"
-    rec = s.turn("go explore for 10 steps")
+    rec = s.turn("go explore for 14 steps")               # see the note above: the edge costs steps
     assert rec["kind"] == "plugin:game" and rec["reply"].startswith("I explored")
     assert man.coverage() >= 0.8
     after = s.turn(q)
