@@ -1121,6 +1121,7 @@ class CubbyGhost(CubbyPac):
         self.ghost_belief: dict[tuple, int] = {}
         self.caught_at: list[int] = []                   # how far off a ghost was when he last CHOSE, before it caught him
         self._threat_seen_at: int | None = None
+        self.guesses = None                              # hypothesis.Hypotheses, built in __init__ below
         self._eaten_run: set[str] = set()                # eaten THIS run (pellets respawn on a retry)
         self._plan_next: str | None = None               # the cell his map says to go to next
         self._graph_n = -1
@@ -1129,6 +1130,9 @@ class CubbyGhost(CubbyPac):
         self.library = ProgramLibrary(memory, ledger=ledger)   # his generated programs (+ stats), persisted; audited on load
         self._last_proposal = -99
         super().__init__(env or GhostVerse(), exe=exe, seed=seed, probe=probe)
+        from hypothesis import Hypotheses, vm_verifier, world_verifier
+        self.guesses = Hypotheses({"world": world_verifier(self.env),
+                                   "vm": vm_verifier(self.exe)}, trace=self._t)
 
     @property
     def powers(self) -> list[str]:
@@ -1826,8 +1830,11 @@ class CubbyGhost(CubbyPac):
             if _manh(c, seen["at"]) > self.SIGHT:
                 continue
             cell = env.cell(*c)
+            first = not self.sighted
             self.sighted.add(cell)
             out.append(f"{'a star' if c in seen['stars'] else 'a pellet'} is the sighting of {cell}")
+            if first:                                    # the first pellet he ever sees raises a question
+                self._guess_about_pellets(cell)
         for g in seen["ghosts"]:
             if _manh(g, seen["at"]) <= self.HEARING:
                 self.ghost_belief[tuple(g)] = env.steps
@@ -1840,6 +1847,56 @@ class CubbyGhost(CubbyPac):
         now = self.env.steps
         for g in [g for g, t in self.ghost_belief.items() if now - t > self.GHOST_MEMORY]:
             self.ghost_belief.pop(g, None)
+
+    # how long he waits before the world's silence is an answer
+    PATIENCE = 12
+
+    def _guess_about_pellets(self, cell: str) -> None:
+        """The first pellet he ever sees raises a question he cannot answer by
+        looking: does that thing come to me, or do I have to go to it?
+
+        Nothing he has perceived rules either way out, so it is framed as a
+        HYPOTHESIS rather than assumed. The test is the cheapest one there is —
+        keep watching that cell. If the pellet moves, the world says yes; if it
+        is still sitting there PATIENCE steps later, the world's silence says
+        no, and "I have to go to them" is a fact he has earned rather than one
+        anybody told him (Nick, 2026-09-15: *"if he waits long enough it will
+        notice they dont move and needs to eat them"*)."""
+        if self.guesses is None:
+            return
+        from hypothesis import Hypothesis
+        c, eaten = self.env.coords(cell), self._eaten_run
+
+        def holds(env, c=c, cell=cell, eaten=eaten):
+            """Did the pellet at `c` leave on its own?
+
+            still there            -> None, nothing has happened yet
+            gone because I ate it  -> None, that settles nothing
+            gone and I never went  -> True, they DO move
+
+            The True branch is real and would fire in a world whose pellets
+            move. In this one it never does, which is the point: the verdict
+            comes from PATIENCE steps of None, i.e. from the world declining
+            to confirm it."""
+            if c in env.remaining:
+                return None
+            return None if cell in eaten else True
+        self.guesses.frame(Hypothesis(
+            claim="a pellet might come to me",
+            test=f"watch {cell} and see whether the pellet there leaves on its own",
+            verifier="world",
+            if_true="moving is the way of a pellet",
+            if_false="staying put is the way of a pellet",
+            payload={"holds": holds}, made_at=self.env.steps, patience=self.PATIENCE))
+
+    @property
+    def _pellet_law(self) -> str | None:
+        """What he has worked out about pellets, or None while it is open.
+        `frame()` dedupes on the claim, so this never re-opens once settled."""
+        for h in self.guesses.all if self.guesses else []:
+            if h.claim == "a pellet might come to me" and not h.open:
+                return h.if_true if h.state == "confirmed" else h.if_false
+        return None
 
     def believed_ghosts(self) -> list[tuple]:
         """Where he currently thinks the ghosts are. May be empty while a
@@ -2066,6 +2123,13 @@ class CubbyGhost(CubbyPac):
             self._learned_here = []                      # and a fresh vocabulary: only this step's percepts
             self._last_eaten = None                      # a bump does not reach on_arrive: clear it here
             self._learn(self._sense())                   # senses FIRST, then decide on what they gave him
+            # then test what he has been wondering. A verdict is a fact he
+            # EARNED, so it goes through the same learning gate as a percept;
+            # an open guess stays a guess and never enters the map.
+            if self.guesses is not None:
+                for fact in self.guesses.sweep(env.steps):
+                    if self._learn([fact]):
+                        self._think("derive", fact=fact)
             # how far off the nearest threat was when he chose — the last
             # moment he could act. This, not the distance at capture, is what
             # `_on_caught` turns into his berth.

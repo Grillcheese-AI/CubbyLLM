@@ -240,6 +240,41 @@ def test_the_feeling_reaches_the_model_in_words_someone_would_use():
         assert rec["how i feel"] != man.emotion()["name"]
 
 
+def test_live_he_works_out_that_pellets_do_not_come_to_him():
+    """Nick, 2026-09-15: *"if he is blind he might think the pellets are moving
+    while they are not, its not a lie. If he waits long enough it will notice
+    they dont move and needs to eat them."*
+
+    The first pellet he sees raises a question he cannot settle by looking. He
+    watches, the world declines to confirm it, and "staying put is the way of a
+    pellet" enters his map as a fact he EARNED."""
+    _exe_or_skip()
+    man = CubbyGhost(GhostVerse(), probe=0.0, seed=0)
+    assert man.guesses is not None
+
+    # the moment he first sees one, the question is open and unsettled
+    for _ in range(3):
+        man.step()
+        if man.guesses.all:
+            break
+    assert any(h.claim == "a pellet might come to me" for h in man.guesses.all), \
+        "seeing a pellet for the first time must raise the question"
+    assert man._pellet_law is None, "and it is a GUESS until the world answers"
+    assert not any("way of a pellet" in f for f in man.world.texts), \
+        "an open guess never enters the map"
+
+    for _ in range(man.PATIENCE + 6):
+        man.step()
+        if man._pellet_law:
+            break
+    assert man._pellet_law == "staying put is the way of a pellet", \
+        "watching long enough is what settles it"
+    assert "staying put is the way of a pellet" in man.world, \
+        "and the verdict is a fact he holds, through the same gate as a percept"
+    h = next(h for h in man.guesses.all if h.claim == "a pellet might come to me")
+    assert h.state == "refused" and "nothing happened" in h.verdict_why
+
+
 def test_the_world_publishes_cleared_so_he_never_counts_the_pellets():
     env = GhostVerse()
     assert env.cleared is False

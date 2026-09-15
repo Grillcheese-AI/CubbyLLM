@@ -1317,3 +1317,19 @@ or a record of an instrument that would have told us we were already there.
   things DO is his to hold and the world's to correct. The missing piece, named rather than
   built: a spoken hypothesis should be recorded as a claim and checked against what follows, so
   the pellet not moving refutes it and the refutation enters his map as a fact he earned.
+- **2026-09-15, one loop (WO-2.12)** — Owner, generalising that past the game: *"same way with
+  other problems outside the game, it can frame an hypothesis test it against the VM or a sandbox
+  if code then the result is what is wrong or not."* Which is the contract the system already
+  half-implemented — `ToolForge` has always been task → program → VM → certified against an
+  expectation → kept with its verdict either way — with the verifier hardwired and no way to
+  express an answer that arrives later. `standin/hypothesis.py` is that loop with the verifier as
+  a parameter (**vm**, **runner** for code, **world**) and with the case forge.py could not hold:
+  a claim the world settles over time, where after `patience` steps of nothing happening **the
+  silence is the answer**. The rule that keeps the kill line: an open hypothesis may be thought
+  and said, as the guess it is, but only a verdict enters the world model — and it goes through
+  the same gate as a percept. Two things are load-bearing and both come straight out of §6.10–13:
+  a verifier that throws leaves the claim OPEN, because deciding a question on a fallen-over
+  instrument is the worst available answer; and the module never writes a fact itself, because a
+  fact that skipped the gate is what the gate is for. Wired to the pellet case end to end, with a
+  live test: the first pellet he sees opens the question, it stays out of his map while open, and
+  *"staying put is the way of a pellet"* is in his map as a refusal within a dozen steps.

@@ -1755,6 +1755,89 @@ Log: `validation/logs/exp_r37_cubbyman_speech.{json,log}`, `exp_r37_talkmodel.{j
 
 ---
 
+## WO-2.12 — One loop: frame a hypothesis, test it, the result is the verdict
+
+**Status: BUILT + TESTED 2026-09-15.** Owner: Nick, generalising the pellet case past
+the game:
+
+> *"same way with other problems outside the game, it can frame an hypothesis test it
+> against the VM or a sandbox if code then the result is what is wrong or not"*
+
+This is the contract the whole system already half-implements, said once properly:
+
+```
+frame a claim  ->  name the test that would settle it  ->  run the test
+               ->  THE RESULT is the verdict, not the model's confidence
+               ->  either way it becomes a fact he has earned
+```
+
+`ToolForge` (forge.py) has done exactly this since the start — task → the emitter writes
+a program → the VM runs it → the result is certified against an expectation → it is kept
+**with its verdict either way**, so acceptance per task kind is a measured number rather
+than a claim. What it could not express is the verifier being a choice, and the case
+where the answer arrives *later*.
+
+`standin/hypothesis.py` is that loop with both generalised. Three verifiers:
+
+| | settles | can say "not yet" |
+|---|---|---|
+| **vm** | a CubeLang program's result vs an expectation | no |
+| **runner** | code executed in a separate interpreter, output vs an expectation | no |
+| **world** | a predicate over the environment, re-checked every step | **yes** |
+
+The `runner` is described honestly in the module: it is `-I`, a temp cwd, a stripped
+environment and a timeout — an **isolation boundary for deciding right-or-wrong about
+code we generated ourselves**, not a security sandbox. It must never be pointed at code
+from outside. A crash and a hang are both refusals, not exceptions.
+
+The `world` verifier is the one an agent with senses needs, and the reason this module
+exists rather than a second argument to `forge()`. It may answer *not yet*, and after
+`patience` steps of not-yet **the world's silence is the answer.** A wall is learned by
+walking into it; "the pellets will come to me" is unlearned by waiting and watching them
+not.
+
+**The rule that keeps the kill line intact:** an open hypothesis may be thought and said —
+as a guess, which is what it is — but it never enters the world model. Only a verdict
+does, and it goes through the same learning gate as a percept. A guess spoken as a guess
+is not a wrong answer; an untested claim asserted as fact is.
+
+Two design points that are load-bearing:
+
+* **A broken verifier is not a verdict.** A check that throws leaves the claim open.
+  Deciding a question because the instrument fell over is the worst available answer, and
+  it is precisely what §6.10–§6.13 are all about.
+* **`hypothesis.py` never writes to a world model.** `sweep()` returns the facts earned
+  and the caller puts them through its own gate — a fact that skipped the gate is exactly
+  what the gate is for.
+
+### Wired, not vapour: he works out that pellets do not move
+
+The first pellet cubby-man ever sees raises a question he cannot settle by looking — does
+that thing come to me, or do I have to go to it? Nothing he has perceived rules either
+way out, so it is framed rather than assumed, and the test is the cheapest there is: keep
+watching that cell.
+
+The confirming branch is real and would fire in a world whose pellets move. In this one
+it never does — so after `PATIENCE` steps **the world declining to confirm it** is the
+finding, and *"staying put is the way of a pellet"* enters his map as a fact he earned.
+A live test drives it end to end: the question opens on first sighting, stays out of the
+map while open, and is in the map as a refusal within `PATIENCE + 6` steps.
+
+That is Nick's sentence implemented: *"If he waits long enough it will notice they dont
+move and needs to eat them."*
+
+### Next
+
+The obvious ones, in order: point the `runner` at the trunk's own code output so a
+generated program is settled by running it rather than by reading it; give the speaking
+path a hook so a **spoken** hypothesis ("the pellets will come to me") is registered as a
+claim rather than only an unrecorded guess; and let a refuted claim's `if_false` fact
+feed the planner, so learning that pellets stay put actually changes what he does.
+
+Tests: 8 in `standin/tests/test_hypothesis.py`, 1 live in `test_pacman_percepts.py`.
+
+---
+
 # Phase 3 — New capability (gated on Phase 2)
 
 ## WO-3.1 — The host agenda: branchless programs, host-owned search
