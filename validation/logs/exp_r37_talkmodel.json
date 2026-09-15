@@ -1,0 +1,342 @@
+{
+  "steps": 40,
+  "seed": 0,
+  "spoke": 4,
+  "flat": 36,
+  "refused": 10,
+  "spoke_rate": 0.286,
+  "invented": [],
+  "verdict": "PASS",
+  "transcript": [
+    {
+      "text": "i am at: level-1 cell 1-0-0; to: level-1 cell 1-0-0; goal: frontier; pellets i can see: 1; how i feel: calm",
+      "about": "plan",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 1-0-0; to: level-1 cell 1-0-0; goal: frontier; pellets i can see: 1; how i feel: calm",
+      "kind": "thought"
+    },
+    {
+      "said": "I'm at level-1 cell 1-0-0; name: JUMP; pattern: hop hop; pellets i can see: 1; how i feel: calm.",
+      "record": "i am at: level-1 cell 1-0-0; name: JUMP; pattern: hop hop; pellets i can see: 1; how i feel: calm",
+      "kind": "thought_refused"
+    },
+    {
+      "text": "i am at: level-1 cell 1-0-0; name: JUMP; pattern: hop hop; pellets i can see: 1; how i feel: calm",
+      "about": "program",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 1-0-0; name: JUMP; pattern: hop hop; pellets i can see: 1; how i feel: calm",
+      "kind": "thought"
+    },
+    {
+      "text": "(at ease) i am at: level-1 cell 2-0-0; to: level-1 cell 2-0-0; pellets i can see: 1; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 2-0-0; to: level-1 cell 2-0-0; pellets i can see: 1; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 2-0-0; to: level-1 cell 2-0-0; pellets i can see: 1; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 2-0-0; to: level-1 cell 2-0-0; pellets i can see: 1; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 2-0-0; to: level-1 cell 2-0-0; pellets i can see: 1; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 2-0-0; to: level-1 cell 2-0-0; pellets i can see: 1; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "(trusting) i am at: level-1 cell 3-0-0; to: level-1 cell 3-0-0; pellets i can see: 2; how i feel: trust",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 3-0-0; to: level-1 cell 3-0-0; pellets i can see: 2; how i feel: trust",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 3-0-0; to: level-1 cell 3-0-0; pellets i can see: 2; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 3-0-0; to: level-1 cell 3-0-0; pellets i can see: 2; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "said": "",
+      "record": "i am at: level-1 cell 3-0-0; tried: down; pellets i can see: 2; how i feel: acceptance",
+      "kind": "thought_refused"
+    },
+    {
+      "text": "i am at: level-1 cell 3-0-0; tried: down; pellets i can see: 2; how i feel: acceptance",
+      "about": "probe",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 3-0-0; tried: down; pellets i can see: 2; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "(grateful) i am at: level-1 cell 3-1-0; to: level-1 cell 3-1-0; pellets i can see: 3; how i feel: admiration",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 3-1-0; to: level-1 cell 3-1-0; pellets i can see: 3; how i feel: admiration",
+      "kind": "thought"
+    },
+    {
+      "said": "I am at level-1 cell 4-1-0; score: 1; total: 3; pellets i can see: 2; how i feel: acceptance.",
+      "record": "i am at: level-1 cell 4-1-0; score: 1; total: 3; pellets i can see: 2; how i feel: acceptance",
+      "kind": "thought_refused"
+    },
+    {
+      "text": "i am at: level-1 cell 4-1-0; score: 1; total: 3; pellets i can see: 2; how i feel: acceptance",
+      "about": "eat",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 4-1-0; score: 1; total: 3; pellets i can see: 2; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "(eager) i am at: level-1 cell 4-1-1; to: level-1 cell 4-1-1; pellets i can see: 6; how i feel: anticipation",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 4-1-1; to: level-1 cell 4-1-1; pellets i can see: 6; how i feel: anticipation",
+      "kind": "thought"
+    },
+    {
+      "text": "(at ease) I feel peace as I take it all in.",
+      "about": "eat",
+      "verbalized": true,
+      "raw": "i am at: level-1 cell 4-2-1; score: 2; total: 7; pellets i can see: 5; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "said": "",
+      "record": "i am at: level-1 cell 4-3-1; score: 3; total: 7; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought_refused"
+    },
+    {
+      "text": "i am at: level-1 cell 4-3-1; score: 3; total: 7; pellets i can see: 4; how i feel: acceptance",
+      "about": "eat",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 4-3-1; score: 3; total: 7; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "said": "",
+      "record": "i am at: level-1 cell 4-3-0; score: 4; total: 8; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought_refused"
+    },
+    {
+      "text": "i am at: level-1 cell 4-3-0; score: 4; total: 8; pellets i can see: 4; how i feel: acceptance",
+      "about": "eat",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 4-3-0; score: 4; total: 8; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 4-3-0; to: level-1 cell 4-3-0; pellets i can see: 4; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 4-3-0; to: level-1 cell 4-3-0; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 4-3-0; to: level-1 cell 4-3-0; pellets i can see: 4; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 4-3-0; to: level-1 cell 4-3-0; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "I see 4 pellets.",
+      "about": "probe",
+      "verbalized": true,
+      "raw": "i am at: level-1 cell 4-2-0; tried: left; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "said": "The path ahead is a dark tunnel that seems to stretch infinitely into the abyss. I feel a sense of dread and helplessness as I am completely lost in the void. I",
+      "record": "i am at: level-1 cell 5-2-0; tried: left; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought_refused"
+    },
+    {
+      "text": "(at ease) i am at: level-1 cell 5-2-0; tried: left; pellets i can see: 4; how i feel: acceptance",
+      "about": "probe",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 5-2-0; tried: left; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 5-2-0; to: level-1 cell 5-2-0; pellets i can see: 4; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 5-2-0; to: level-1 cell 5-2-0; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "(at ease) i am at: level-1 cell 5-2-1; to: level-1 cell 5-2-1; pellets i can see: 4; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 5-2-1; to: level-1 cell 5-2-1; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 5-2-1; to: level-1 cell 5-2-1; pellets i can see: 4; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 5-2-1; to: level-1 cell 5-2-1; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "(trusting) i am at: level-1 cell 5-2-2; to: level-1 cell 5-2-2; pellets i can see: 4; how i feel: trust",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 5-2-2; to: level-1 cell 5-2-2; pellets i can see: 4; how i feel: trust",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 5-2-2; to: level-1 cell 5-2-2; pellets i can see: 4; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 5-2-2; to: level-1 cell 5-2-2; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "(trusting) i see right, so that is the way i should go",
+      "about": "probe",
+      "verbalized": true,
+      "raw": "i am at: level-1 cell 4-2-2; tried: right; pellets i can see: 4; how i feel: trust",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 4-2-2; to: level-1 cell 4-2-2; pellets i can see: 4; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 4-2-2; to: level-1 cell 4-2-2; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "(grateful) i am at: level-1 cell 3-2-2; to: level-1 cell 3-2-2; pellets i can see: 5; how i feel: admiration",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 3-2-2; to: level-1 cell 3-2-2; pellets i can see: 5; how i feel: admiration",
+      "kind": "thought"
+    },
+    {
+      "said": "<|im_start|>\u1ecfi: i can see a pellet at (1,1). i will move there.",
+      "record": "i am at: level-1 cell 3-1-2; score: 5; total: 9; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought_refused"
+    },
+    {
+      "text": "i am at: level-1 cell 3-1-2; score: 5; total: 9; pellets i can see: 4; how i feel: acceptance",
+      "about": "eat",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 3-1-2; score: 5; total: 9; pellets i can see: 4; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "said": "",
+      "record": "i am at: level-1 cell 2-1-2; score: 6; total: 9; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought_refused"
+    },
+    {
+      "text": "i am at: level-1 cell 2-1-2; score: 6; total: 9; pellets i can see: 3; how i feel: acceptance",
+      "about": "eat",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 2-1-2; score: 6; total: 9; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 2-0-2; to: level-1 cell 2-0-2; pellets i can see: 3; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 2-0-2; to: level-1 cell 2-0-2; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 2-0-2; to: level-1 cell 2-0-2; pellets i can see: 3; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 2-0-2; to: level-1 cell 2-0-2; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "So i am at level-1 cell 1-0-2. I have 3 pellets to find. I will move forward.",
+      "about": "probe",
+      "verbalized": true,
+      "raw": "i am at: level-1 cell 1-0-2; tried: forward; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 1-0-2; to: level-1 cell 1-0-2; pellets i can see: 3; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 1-0-2; to: level-1 cell 1-0-2; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "said": "",
+      "record": "i am at: level-1 cell 1-0-2; tried: down; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought_refused"
+    },
+    {
+      "text": "i am at: level-1 cell 1-0-2; tried: down; pellets i can see: 3; how i feel: acceptance",
+      "about": "probe",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 1-0-2; tried: down; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 1-0-2; to: level-1 cell 1-0-2; pellets i can see: 3; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 1-0-2; to: level-1 cell 1-0-2; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "(at ease) i am at: level-1 cell 0-0-2; to: level-1 cell 0-0-2; pellets i can see: 3; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 0-0-2; to: level-1 cell 0-0-2; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "said": "",
+      "record": "i am at: level-1 cell 0-0-2; tried: back; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought_refused"
+    },
+    {
+      "text": "i am at: level-1 cell 0-0-2; tried: back; pellets i can see: 3; how i feel: acceptance",
+      "about": "probe",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 0-0-2; tried: back; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 0-0-2; to: level-1 cell 0-0-2; pellets i can see: 3; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 0-0-2; to: level-1 cell 0-0-2; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "i am at: level-1 cell 0-0-2; to: level-1 cell 0-0-2; pellets i can see: 3; how i feel: acceptance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 0-0-2; to: level-1 cell 0-0-2; pellets i can see: 3; how i feel: acceptance",
+      "kind": "thought"
+    },
+    {
+      "text": "(grateful) i am at: level-1 cell 0-1-2; to: level-1 cell 0-1-2; pellets i can see: 4; how i feel: admiration",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 0-1-2; to: level-1 cell 0-1-2; pellets i can see: 4; how i feel: admiration",
+      "kind": "thought"
+    },
+    {
+      "text": "(alert) i am at: level-1 cell 0-2-2; to: level-1 cell 0-2-2; pellets i can see: 5; how i feel: vigilance",
+      "about": "idle",
+      "verbalized": false,
+      "raw": "i am at: level-1 cell 0-2-2; to: level-1 cell 0-2-2; pellets i can see: 5; how i feel: vigilance",
+      "kind": "thought"
+    }
+  ]
+}

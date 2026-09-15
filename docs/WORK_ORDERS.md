@@ -1616,6 +1616,98 @@ Log: `validation/logs/exp_r36_cubbyman_percept.{json,log}`, `exp_r35_cubbyman_au
 
 ---
 
+## WO-2.11 — He writes his own sentences: percepts in, speech out
+
+**Status: DONE + MEASURED 2026-09-15.** Owner: Nick — *"the model should say
+something not hardcoded strings like right now, let it talk to see what it will do as it
+receives information."*
+
+WO-2.10 took the hardcoded rules out of his decisions and left them in his mouth. The
+host wrote each thought from `CubbyGhost.THOUGHTS` — about thirty authored phrasings,
+three per event, EN and FR — and the model was asked to *rephrase* it, keeping every
+number and name. What he "said" was a hand-written line with a synonym swapped.
+
+Now the host builds a **percept record** for the step — what he sensed, what he did, what
+the world did back, how he feels — and the model writes the sentence from it. Nothing
+else is given. `THOUGHTS` stays, demoted to what it always should have been: the source
+`data/gap_families.py` builds the verbalize SFT family from. An authored phrasing belongs
+in a corpus, not in his mouth.
+
+### The guard, and why the first version was worthless
+
+`grounded_ok` refuses a sentence rather than repairing it; a refusal falls back to the
+record stated flatly. It checks, against the record:
+
+| clause | catches |
+|---|---|
+| numbers, **both directions** | a figure the step did not contain (the old check was one-way: it kept the host's numbers and let new ones through) |
+| cell and move names, both directions | a place he never met |
+| entity nouns (`ghost`, `star`, `trap`, `wall`…) | *"I am edging past a ghost"* on a ghost-free level — neither a figure nor a name, so every other clause passed it |
+| `_COPY` markers + longest shared token run ≤ 6 | the record read back |
+| voice, echo, second person, question, length | the pre-existing talk guards |
+
+The copy clause exists because **the first run scored 100% "spoke" while the model was
+reproducing the prompt verbatim.** A copy passes every grounding test there is —
+everything in it did come from the record. The instrument had inherited the property it
+was measuring, the ninth time that shape has shown up (PATH §6.11), and it took reading
+the transcript rather than the verdict to see it.
+
+### Measured — `exp_r37_cubbyman_speech.py`, 40 steps, seed 0
+
+| prompt shape | model | kept | refused | keep rate | invented | copied |
+|---|---|---|---|---|---|---|
+| bulleted `- key: value` | v8e (very old) | 11 | 0 | **100%** — all copies | 0 | *not yet counted* |
+| bulleted | v14e_nochain | 5 | 6 | 45% | 0 | 0 |
+| question first | v14e_nochain | 0 | 12 | 0% | 0 | 0 |
+| **scene first, question second** | v14e_nochain | 1 | 15 | 6% | **0** | **0** |
+| scene first | + `talk_v9t_qwen3_4b` | 4 | 10 | **29%** | **0** | **0** |
+
+What he says, unprompted, from percepts alone:
+
+> *I'm exploring the open path to the right to find more pellets and learn the layout of the maze.*
+> *I'm feeling a calm sense of acceptance as I explore the familiar path ahead, gathering the pellets to boost my score.*
+> *I see one pellet and I feel acceptance, so I will move toward it to collect the reward.*
+
+**Nothing invented and nothing recited, in every arm.** The kill line holds.
+
+### What the numbers actually say
+
+The refusals are almost all **prompt echo**, not hallucination: 13 of 15 in the v14e arm
+were the model continuing the prompt rather than answering it. That is a property of the
+model, not of the guard — and the prompt shape moves it a long way, which is why the
+three shapes are in the table. Question-first is the worst (0%): it gets the instruction
+narrated back, *"The user is asking me to respond in first person…"*.
+
+A separate talk model roughly fives the keep rate (6% → 29%) but says less per sentence
+(*"I see 4 pellets."*) where v14e, when it does answer, answers better. Nick's call
+stands — the emitter serves both by default, and `build_serve` already loads one model
+when the two paths match — and `--talk-gguf` is there to compare.
+
+Below `SPEAK_ABOVE` (priority 2) he does not speak at all: a `plan`/`idle` record is the
+most repetitive thing he has, and letting those through dropped the keep rate from 45% to
+25% because a repetitive scene is exactly what a model recites.
+
+### What the guard does not catch, on record
+
+Mistaken *reasoning* about things he did perceive. *"waiting for the pellets to move in"*
+is grounded — pellets are in the record — and wrong, because pellets do not move. The
+guard is a check on what he claims to perceive, not on his physics.
+
+Pinned by 4 tests in `standin/tests/test_pacman{,_percepts}.py`, including one that
+refuses an invented cell and one that refuses the record read back.
+
+### Also fixed here
+
+`(sick of it)` two steps into a fresh level. Lövheim's **social** corners —
+contempt/disgust and shame/humiliation — need someone to feel them about; a maze has
+nobody in it, so the corner was firing on hormone geometry alone and the compass reported
+an emotion he had no reason to have. Those two corners now read calm here and stay in
+`_PETAL` for a world with social input. Nick: *"sick of it should be neutral."*
+
+Log: `validation/logs/exp_r37_cubbyman_speech.{json,log}`, `exp_r37_talkmodel.{json,log}`.
+
+---
+
 # Phase 3 — New capability (gated on Phase 2)
 
 ## WO-3.1 — The host agenda: branchless programs, host-owned search

@@ -1,0 +1,84 @@
+exp_r37 — letting him talk  (40 steps, seed 0)
+==============================================================================
+loading fact store (400 sampled questions' fact pool) ...
+  636 facts | loading fastword table ...
+loading emitter standin/models/emitter_v14e_nochain.Q4_K_M.gguf (n_gpu_layers=-1) ...
+loading talk adapter standin/models/talk_v9t_qwen3_4b.Q4_K_M.gguf (n_gpu_layers=-1) ...
+
+  [  0] flat     i am at: level-1 cell 1-0-0; to: level-1 cell 1-0-0; goal: frontier; pellets i can see: 1; how i feel: calm
+  [  1] REFUSED  he tried: I'm at level-1 cell 1-0-0; name: JUMP; pattern: hop hop; pellets i can see: 1; how i feel: calm.
+        record : i am at: level-1 cell 1-0-0; name: JUMP; pattern: hop hop; pellets i can see: 1; how i feel: calm
+  [  1] flat     i am at: level-1 cell 1-0-0; name: JUMP; pattern: hop hop; pellets i can see: 1; how i feel: calm
+  [  2] flat     (at ease) i am at: level-1 cell 2-0-0; to: level-1 cell 2-0-0; pellets i can see: 1; how i feel: acceptance
+  [  3] flat     i am at: level-1 cell 2-0-0; to: level-1 cell 2-0-0; pellets i can see: 1; how i feel: acceptance
+  [  4] flat     i am at: level-1 cell 2-0-0; to: level-1 cell 2-0-0; pellets i can see: 1; how i feel: acceptance
+  [  5] flat     (trusting) i am at: level-1 cell 3-0-0; to: level-1 cell 3-0-0; pellets i can see: 2; how i feel: trust
+  [  6] flat     i am at: level-1 cell 3-0-0; to: level-1 cell 3-0-0; pellets i can see: 2; how i feel: acceptance
+  [  7] REFUSED  he tried: 
+        record : i am at: level-1 cell 3-0-0; tried: down; pellets i can see: 2; how i feel: acceptance
+  [  7] flat     i am at: level-1 cell 3-0-0; tried: down; pellets i can see: 2; how i feel: acceptance
+  [  8] flat     (grateful) i am at: level-1 cell 3-1-0; to: level-1 cell 3-1-0; pellets i can see: 3; how i feel: admiration
+  [  9] REFUSED  he tried: I am at level-1 cell 4-1-0; score: 1; total: 3; pellets i can see: 2; how i feel: acceptance.
+        record : i am at: level-1 cell 4-1-0; score: 1; total: 3; pellets i can see: 2; how i feel: acceptance
+  [  9] flat     i am at: level-1 cell 4-1-0; score: 1; total: 3; pellets i can see: 2; how i feel: acceptance
+  [ 10] flat     (eager) i am at: level-1 cell 4-1-1; to: level-1 cell 4-1-1; pellets i can see: 6; how i feel: anticipation
+  [ 11] SAID     (at ease) I feel peace as I take it all in.
+  [ 12] REFUSED  he tried: 
+        record : i am at: level-1 cell 4-3-1; score: 3; total: 7; pellets i can see: 4; how i feel: acceptance
+  [ 12] flat     i am at: level-1 cell 4-3-1; score: 3; total: 7; pellets i can see: 4; how i feel: acceptance
+  [ 13] REFUSED  he tried: 
+        record : i am at: level-1 cell 4-3-0; score: 4; total: 8; pellets i can see: 4; how i feel: acceptance
+  [ 13] flat     i am at: level-1 cell 4-3-0; score: 4; total: 8; pellets i can see: 4; how i feel: acceptance
+  [ 14] flat     i am at: level-1 cell 4-3-0; to: level-1 cell 4-3-0; pellets i can see: 4; how i feel: acceptance
+  [ 15] flat     i am at: level-1 cell 4-3-0; to: level-1 cell 4-3-0; pellets i can see: 4; how i feel: acceptance
+  [ 16] SAID     I see 4 pellets.
+  [ 17] REFUSED  he tried: The path ahead is a dark tunnel that seems to stretch infinitely into the abyss. I feel a sense of dread and helplessness as I am completely lost in the void. I
+        record : i am at: level-1 cell 5-2-0; tried: left; pellets i can see: 4; how i feel: acceptance
+  [ 17] flat     (at ease) i am at: level-1 cell 5-2-0; tried: left; pellets i can see: 4; how i feel: acceptance
+  [ 18] flat     i am at: level-1 cell 5-2-0; to: level-1 cell 5-2-0; pellets i can see: 4; how i feel: acceptance
+  [ 19] flat     (at ease) i am at: level-1 cell 5-2-1; to: level-1 cell 5-2-1; pellets i can see: 4; how i feel: acceptance
+  [ 20] flat     i am at: level-1 cell 5-2-1; to: level-1 cell 5-2-1; pellets i can see: 4; how i feel: acceptance
+  [ 21] flat     (trusting) i am at: level-1 cell 5-2-2; to: level-1 cell 5-2-2; pellets i can see: 4; how i feel: trust
+  [ 22] flat     i am at: level-1 cell 5-2-2; to: level-1 cell 5-2-2; pellets i can see: 4; how i feel: acceptance
+  [ 23] SAID     (trusting) i see right, so that is the way i should go
+  [ 24] flat     i am at: level-1 cell 4-2-2; to: level-1 cell 4-2-2; pellets i can see: 4; how i feel: acceptance
+  [ 25] flat     (grateful) i am at: level-1 cell 3-2-2; to: level-1 cell 3-2-2; pellets i can see: 5; how i feel: admiration
+  [ 26] REFUSED  he tried: <|im_start|>ỏi: i can see a pellet at (1,1). i will move there.
+        record : i am at: level-1 cell 3-1-2; score: 5; total: 9; pellets i can see: 4; how i feel: acceptance
+  [ 26] flat     i am at: level-1 cell 3-1-2; score: 5; total: 9; pellets i can see: 4; how i feel: acceptance
+  [ 27] REFUSED  he tried: 
+        record : i am at: level-1 cell 2-1-2; score: 6; total: 9; pellets i can see: 3; how i feel: acceptance
+  [ 27] flat     i am at: level-1 cell 2-1-2; score: 6; total: 9; pellets i can see: 3; how i feel: acceptance
+  [ 28] flat     i am at: level-1 cell 2-0-2; to: level-1 cell 2-0-2; pellets i can see: 3; how i feel: acceptance
+  [ 29] flat     i am at: level-1 cell 2-0-2; to: level-1 cell 2-0-2; pellets i can see: 3; how i feel: acceptance
+  [ 30] SAID     So i am at level-1 cell 1-0-2. I have 3 pellets to find. I will move forward.
+  [ 31] flat     i am at: level-1 cell 1-0-2; to: level-1 cell 1-0-2; pellets i can see: 3; how i feel: acceptance
+  [ 32] REFUSED  he tried: 
+        record : i am at: level-1 cell 1-0-2; tried: down; pellets i can see: 3; how i feel: acceptance
+  [ 32] flat     i am at: level-1 cell 1-0-2; tried: down; pellets i can see: 3; how i feel: acceptance
+  [ 33] flat     i am at: level-1 cell 1-0-2; to: level-1 cell 1-0-2; pellets i can see: 3; how i feel: acceptance
+  [ 34] flat     (at ease) i am at: level-1 cell 0-0-2; to: level-1 cell 0-0-2; pellets i can see: 3; how i feel: acceptance
+  [ 35] REFUSED  he tried: 
+        record : i am at: level-1 cell 0-0-2; tried: back; pellets i can see: 3; how i feel: acceptance
+  [ 35] flat     i am at: level-1 cell 0-0-2; tried: back; pellets i can see: 3; how i feel: acceptance
+  [ 36] flat     i am at: level-1 cell 0-0-2; to: level-1 cell 0-0-2; pellets i can see: 3; how i feel: acceptance
+  [ 37] flat     i am at: level-1 cell 0-0-2; to: level-1 cell 0-0-2; pellets i can see: 3; how i feel: acceptance
+  [ 38] flat     (grateful) i am at: level-1 cell 0-1-2; to: level-1 cell 0-1-2; pellets i can see: 4; how i feel: admiration
+  [ 39] flat     (alert) i am at: level-1 cell 0-2-2; to: level-1 cell 0-2-2; pellets i can see: 5; how i feel: vigilance
+
+==============================================================================
+  spoke         4   a sentence of his own came back and was kept
+  flat         36   below speaking priority, or no model: the record stated plainly
+  refused      10   the sentence failed the check and was dropped
+  SPOKE RATE 29%  of the steps where he tried to speak
+  INVENTED      0   figures or names in a kept sentence the step did not contain
+  COPIED        0   kept sentences reciting the record (longest shared run: max 6, allowed 6)
+
+  a refusal reads like this (the guard doing its job):
+    tried : I'm at level-1 cell 1-0-0; name: JUMP; pattern: hop hop; pellets i can see: 1; how i feel: calm.
+    record: i am at: level-1 cell 1-0-0; name: JUMP; pattern: hop hop; pellets i can see: 1; how i feel: calm
+
+VERDICT: PASS
+  he writes his own sentences; nothing kept was invented, nothing kept was recited.
+
+wrote exp_r37_talkmodel.json

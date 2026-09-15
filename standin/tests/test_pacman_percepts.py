@@ -180,6 +180,39 @@ def test_the_lesson_is_the_distance_at_decision_time_not_at_capture():
     assert man.danger_radius == 3
 
 
+def test_a_thought_may_only_name_things_the_step_contained():
+    """exp_r37 caught him saying "without triggering the ghost" on a level
+    with no ghosts. It passed every other check — "ghost" is neither a figure
+    nor a cell name — so an entity clause was added: a thing he names must be
+    in the record or in what he learned this step."""
+    from identity import load_facts
+    from pacman import grounded_ok
+    facts = load_facts()
+    rec = "i am at: level-1 cell 1-0-0; pellets i can see: 2; how i feel: calm"
+    assert grounded_ok(rec, "I can make out a couple of pellets from here.", facts)
+    assert not grounded_ok(rec, "I am edging past a ghost to reach the pellets.", facts), \
+        "no ghost in the record: he may not name one"
+    # ...unless he actually met one
+    caught = "i am at: level-1 cell 1-0-0; place: level-1 cell 1-0-0; ghost distance: 1"
+    assert grounded_ok(caught, "Something caught me; a ghost was right on top of me.", facts)
+
+
+def test_a_thought_that_recites_the_record_is_refused():
+    """A verbatim copy passes every grounding test there is — everything in it
+    came from the record. exp_r37's first run scored 100% "spoke" on exactly
+    that, so copying is now its own clause."""
+    from identity import load_facts
+    from pacman import MAX_RUN, grounded_ok, longest_run
+    facts = load_facts()
+    rec = "i am at: level-1 cell 1-0-0; tried: up; pellets i can see: 2; how i feel: calm"
+    assert not grounded_ok(rec, rec, facts), "the record read back is not a thought"
+    assert not grounded_ok(rec, "Here is what I just perceived in the maze: " + rec, facts)
+    assert not grounded_ok(rec, "about: tried a way that was not offered", facts), \
+        "a field marker is the shape of a copy, not a sentence"
+    good = "I gave up going that way and had a look round instead."
+    assert longest_run(good, rec) <= MAX_RUN and grounded_ok(rec, good, facts)
+
+
 def test_the_world_publishes_cleared_so_he_never_counts_the_pellets():
     env = GhostVerse()
     assert env.cleared is False

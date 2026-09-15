@@ -161,6 +161,7 @@ class CubbyMan:
         self._nbrs: dict[str, dict[str, str]] = {}       # his map's named neighbours, by place
         self._blocked_n = -1                             # the world size both caches were built at
         self.anomalies: list[str] = []                   # a guard that FAILED to reject
+        self._learned_here: list[str] = []               # facts learned THIS step — the vocabulary he may speak from
         self.log: list[dict] = []
         self._step_lock = threading.RLock()              # one move at a time (live poller vs chat turn)
         self._learn(self.look_around(self.place))        # what he perceives where he starts
@@ -218,7 +219,11 @@ class CubbyMan:
         new = 0
         for fact in observations:
             if MemoryCortex.contradiction(fact, self.world) is None:
-                new += int(self.world.add(fact))
+                if self.world.add(fact):
+                    new += 1
+                    # kept for this step only: these are the words he has
+                    # earned the right to use when he speaks about it
+                    self._learned_here.append(fact)
         return new
 
     def _pick(self, exits: dict[str, str]) -> str:

@@ -793,26 +793,69 @@ reads as convergence.
 variance *at the moment it is sampled*. Measure at the last point where the agent could have
 changed the outcome, not at the point where the outcome is already decided.
 
-### 6.13 The pattern
+### 6.13 The copy that passed every test
 
-Nine of these eleven are the same shape: **an instrument inherited a property from the thing it
+Found 2026-09-15, by exp_r37, in a guard written twenty minutes earlier.
+
+Cubby-Man's thoughts used to come from a table of about thirty authored phrasings, with the
+model asked to rephrase one. Nick's instruction was to stop that — *let it talk to see what it
+will do as it receives information* — so the host started handing over the step's percept record
+and letting the model write the sentence. The guard was the obvious one: **everything in the
+sentence must come from the record.** Every figure, every cell name, every content word.
+
+First run: 11 sentences kept, 0 refused, 0 invented. A 100% grounding rate.
+
+The transcript:
+
+> `# Here is what I just perceived in the maze: - about: invented a move - i am at: level-1 cell 0-1-0 - name: JUMP - i`
+
+It was reproducing the prompt. Every single one.
+
+Of course it scored perfectly. **A verbatim copy is maximally grounded** — there is nothing in
+it that did not come from the record, by construction. The guard was measuring overlap with the
+source and rewarding the one output that is pure overlap. The number went up as the behaviour
+got worse, which is the property that makes this class of bug survive review: the verdict said
+PASS, and only reading the transcript said otherwise.
+
+The fix is a clause the guard had no reason to contain until the failure existed: the longest
+run of consecutive tokens shared with the record, capped at six. `level-1 cell 0-2-0` is four
+tokens and he must be able to say it; twenty is recitation. Plus the shapes a copy has and a
+sentence does not — a leading `#`, a bullet, a `key:` field marker.
+
+The same run produced a second one, smaller and in the opposite direction. On a ghost-free
+level he said *"without triggering the ghost."* No invented figure, no invented cell — "ghost"
+is neither — so every clause passed. Grounding had been defined over numbers and names, and
+**entities were not in the vocabulary of the check at all.**
+
+**The general form:** when a guard tests that output resembles its input, ask what the maximally
+resembling output is, and whether you would accept it. If the degenerate case scores best, the
+metric is inverted. And when a check enumerates what may not be invented, the list is a claim
+about what *kinds* of thing exist — write it down and go looking for the kinds you left out.
+
+### 6.14 The pattern
+
+Nine of these twelve are the same shape: **an instrument inherited a property from the thing it
 was measuring**, and therefore could not discriminate. The τ alarm inherited τ. The dead-program
 detector inherited the store's sparsity. The volatility probe inherited WikiKG's label scheme.
 `exact_match` inherited the corpus's arbitrary identifiers. The eval sampler inherited the
 corpus's task *set* — the independent variable itself. The relabelling probe inherited the
 tokenizer's opinion of an underscore.
 
-The other two are each their own shape and worth keeping separate. §6.10: nothing was inherited
+The other three are each their own shape and worth keeping separate. §6.10: nothing was inherited
 and no stage misbehaved — the pipeline simply reported its last failure instead of its first, and
 a correct system described itself incorrectly. §6.12: the code was right, the data was right, and
 the *sampling instant* was wrong, so a learned quantity sat at a constant and looked converged.
+§6.13: the metric was inverted — the worst possible output scored best — and the verdict line
+said PASS while the transcript said the model was reciting its own prompt.
 
 The one defence that worked every time was cheap: **run the instrument on data known to be
 healthy, and require it to say so.** An alarm that fires on a clean run is broken, not sensitive.
 §6.10 adds a second: **when a measurement is available directly, take it directly** rather than
 inferring it from a label some other stage wrote. §6.12 adds a third: **check the signal still
 varies where you sample it** — a learned number that never moves is a measurement problem before
-it is a learning one.
+it is a learning one. §6.13 adds a fourth, and the cheapest of the lot: **read the transcript,
+not the verdict.** Three of these were visible in the first ten lines of output to anyone who
+looked at the output instead of the summary.
 
 ---
 
@@ -1245,3 +1288,17 @@ or a record of an instrument that would have told us we were already there.
   sensor**, he holds 24% of the true ghost positions, and he still plays (blind reaches level 3).
   The experiment caught two bugs review had not, the second of them a learned quantity sampled at
   the one instant where its signal cannot vary (§6.12).
+- **2026-09-15, letting him talk (WO-2.11)** — Owner: *"the model should say something not
+  hardcoded strings like right now, let it talk to see what it will do as it receives
+  information."* The host no longer writes a sentence for the model to rephrase: it hands over
+  the step's **percept record** and the model writes the sentence, with a guard that refuses
+  rather than repairs. The first guard was worthless — it scored **100% grounded on a model that
+  was reciting its own prompt**, because a verbatim copy is maximally grounded by construction
+  (§6.13), and a second clause was missing entirely: *"without triggering the ghost"* on a
+  ghost-free level is neither an invented figure nor an invented place. With both closed, and
+  across three prompt shapes and two models, **0 invented and 0 recited in every arm** — the keep
+  rate is what moves (45% / 6% / 29%), and almost every refusal is prompt echo rather than
+  hallucination. What he says now is his: *"I'm exploring the open path to the right to find more
+  pellets and learn the layout of the maze."* Also, Lövheim's social corners (contempt, shame)
+  now read neutral in a world with nobody in it — they were firing on hormone geometry alone and
+  reporting an emotion he had no reason to have.

@@ -1,0 +1,94 @@
+exp_r37 — letting him talk  (40 steps, seed 0)
+==============================================================================
+loading fact store (400 sampled questions' fact pool) ...
+  636 facts | loading fastword table ...
+loading emitter standin/models/emitter_v14e_nochain.Q4_K_M.gguf (n_gpu_layers=-1) ...
+llama_kv_cache: the V embeddings have different sizes across layers and FA is not enabled - padding V cache to 512
+
+  [  0] flat     i am at: level-1 cell 0-1-0; to: level-1 cell 0-1-0; goal: frontier; pellets i can see: 2; how i feel: calm
+  [  1] REFUSED  he tried: # Situation: i am at: level-1 cell 0-1-0; name: JUMP; pattern: hop hop; pellets i can see: 2; how i feel: calm. # What are you thinking
+        record : i am at: level-1 cell 0-1-0; name: JUMP; pattern: hop hop; pellets i can see: 2; how i feel: calm
+  [  1] flat     i am at: level-1 cell 0-1-0; name: JUMP; pattern: hop hop; pellets i can see: 2; how i feel: calm
+  [  2] flat     (at ease) i am at: level-1 cell 1-1-0; to: level-1 cell 1-1-0; pellets i can see: 2; how i feel: acceptance
+  [  3] SAID     I see one pellet and I feel acceptance, so I will move toward it to collect the reward.
+  [  4] flat     i am at: level-1 cell 2-2-0; to: level-1 cell 2-2-0; pellets i can see: 1; how i feel: acceptance
+  [  5] flat     i am at: level-1 cell 2-2-0; to: level-1 cell 2-2-0; pellets i can see: 1; how i feel: acceptance
+  [  6] REFUSED  he tried: # situation: i am at: level-1 cell 2-2-1; tried: up; pellets i can see: 3; how i feel: trust. # what are you thinking? answer in one short sentence,
+        record : i am at: level-1 cell 2-2-1; tried: up; pellets i can see: 3; how i feel: trust
+  [  6] flat     (trusting) i am at: level-1 cell 2-2-1; tried: up; pellets i can see: 3; how i feel: trust
+  [  7] flat     i am at: level-1 cell 1-2-1; to: level-1 cell 1-2-1; pellets i can see: 4; how i feel: acceptance
+  [  8] REFUSED  he tried: I am thinking about moving forward since the path is clear and the score is already a success.
+        record : i am at: level-1 cell 0-2-1; score: 2; total: 5; pellets i can see: 3; how i feel: acceptance
+  [  8] flat     i am at: level-1 cell 0-2-1; score: 2; total: 5; pellets i can see: 3; how i feel: acceptance
+  [  9] flat     i am at: level-1 cell 0-2-0; to: level-1 cell 0-2-0; pellets i can see: 3; how i feel: acceptance
+  [ 10] flat     i am at: level-1 cell 0-2-0; to: level-1 cell 0-2-0; pellets i can see: 3; how i feel: acceptance
+  [ 11] REFUSED  he tried: # situation: i am at: level-1 cell 0-2-0; tried: up; pellets i can see: 3; how i feel: acceptance. # what are you thinking? answer in one short sentence,
+        record : i am at: level-1 cell 0-2-0; tried: up; pellets i can see: 3; how i feel: acceptance
+  [ 11] flat     i am at: level-1 cell 0-2-0; tried: up; pellets i can see: 3; how i feel: acceptance
+  [ 12] flat     i am at: level-1 cell 0-2-0; to: level-1 cell 0-2-0; pellets i can see: 3; how i feel: acceptance
+  [ 13] REFUSED  he tried: # situation: i am at: level-1 cell 0-2-1; tried: up; pellets i can see: 3; how i feel: acceptance. # what are you thinking? answer in one short sentence,
+        record : i am at: level-1 cell 0-2-1; tried: up; pellets i can see: 3; how i feel: acceptance
+  [ 13] flat     i am at: level-1 cell 0-2-1; tried: up; pellets i can see: 3; how i feel: acceptance
+  [ 14] flat     (trusting) i am at: level-1 cell 0-1-1; to: level-1 cell 0-1-1; pellets i can see: 3; how i feel: trust
+  [ 15] flat     i am at: level-1 cell 0-1-1; to: level-1 cell 0-1-1; pellets i can see: 3; how i feel: acceptance
+  [ 16] REFUSED  he tried: I am wondering if the pellets near the forward cell are worth the risk of moving into the unknown darkness.
+        record : i am at: level-1 cell 0-1-2; tried: down; pellets i can see: 3; how i feel: trust
+  [ 16] flat     (trusting) i am at: level-1 cell 0-1-2; tried: down; pellets i can see: 3; how i feel: trust
+  [ 17] flat     i am at: level-1 cell 0-1-2; to: level-1 cell 0-1-2; pellets i can see: 3; how i feel: acceptance
+  [ 18] flat     (trusting) i am at: level-1 cell 0-2-2; to: level-1 cell 0-2-2; pellets i can see: 3; how i feel: trust
+  [ 19] flat     i am at: level-1 cell 0-2-2; to: level-1 cell 0-2-2; pellets i can see: 3; how i feel: acceptance
+  [ 20] REFUSED  he tried: # situation: i am at: level-1 cell 1-2-2; tried: left; pellets i can see: 3; how i feel: trust. # what are you thinking? answer in one short sentence,
+        record : i am at: level-1 cell 1-2-2; tried: left; pellets i can see: 3; how i feel: trust
+  [ 20] flat     (trusting) i am at: level-1 cell 1-2-2; tried: left; pellets i can see: 3; how i feel: trust
+  [ 21] REFUSED  he tried: # situation: i am at: level-1 cell 1-3-2; score: 3; total: 5; pellets i can see: 2; how i feel: acceptance. # what are you thinking?
+        record : i am at: level-1 cell 1-3-2; score: 3; total: 5; pellets i can see: 2; how i feel: acceptance
+  [ 21] flat     i am at: level-1 cell 1-3-2; score: 3; total: 5; pellets i can see: 2; how i feel: acceptance
+  [ 22] flat     (eager) i am at: level-1 cell 2-3-2; to: level-1 cell 2-3-2; pellets i can see: 2; how i feel: anticipation
+  [ 23] flat     (trusting) i am at: level-1 cell 2-4-2; to: level-1 cell 2-4-2; pellets i can see: 2; how i feel: trust
+  [ 24] flat     (at ease) i am at: level-1 cell 2-4-2; to: level-1 cell 2-4-2; pellets i can see: 2; how i feel: acceptance
+  [ 25] REFUSED  he tried: # situation: i am at: level-1 cell 2-5-2; tried: forward; pellets i can see: 2; how i feel: acceptance. what are you thinking? answer in one short sentence, fir
+        record : i am at: level-1 cell 2-5-2; tried: forward; pellets i can see: 2; how i feel: acceptance
+  [ 25] flat     (at ease) i am at: level-1 cell 2-5-2; tried: forward; pellets i can see: 2; how i feel: acceptance
+  [ 26] flat     i am at: level-1 cell 2-5-2; to: level-1 cell 2-5-2; pellets i can see: 2; how i feel: acceptance
+  [ 27] REFUSED  he tried: # Situation: i am at: level-1 cell 3-5-2; tried: up; pellets i can see: 3; how i feel: trust. # What are you thinking? Answer in one short sentence,
+        record : i am at: level-1 cell 3-5-2; tried: up; pellets i can see: 3; how i feel: trust
+  [ 27] flat     (trusting) i am at: level-1 cell 3-5-2; tried: up; pellets i can see: 3; how i feel: trust
+  [ 28] flat     (at ease) i am at: level-1 cell 3-4-2; to: level-1 cell 3-4-2; pellets i can see: 3; how i feel: acceptance
+  [ 29] flat     (trusting) i am at: level-1 cell 4-4-2; to: level-1 cell 4-4-2; pellets i can see: 4; how i feel: trust
+  [ 30] flat     (trusting) i am at: level-1 cell 4-3-2; to: level-1 cell 4-3-2; pellets i can see: 5; how i feel: trust
+  [ 31] REFUSED  he tried: # Situation: i am at: level-1 cell 4-3-1; score: 4; total: 8; pellets i can see: 4; how i feel: acceptance. # What are you thinking?
+        record : i am at: level-1 cell 4-3-1; score: 4; total: 8; pellets i can see: 4; how i feel: acceptance
+  [ 31] flat     i am at: level-1 cell 4-3-1; score: 4; total: 8; pellets i can see: 4; how i feel: acceptance
+  [ 32] REFUSED  he tried: # Situation: i am at: level-1 cell 4-3-0; score: 5; total: 8; pellets i can see: 3; how i feel: acceptance. # What are you thinking?
+        record : i am at: level-1 cell 4-3-0; score: 5; total: 8; pellets i can see: 3; how i feel: acceptance
+  [ 32] flat     i am at: level-1 cell 4-3-0; score: 5; total: 8; pellets i can see: 3; how i feel: acceptance
+  [ 33] flat     i am at: level-1 cell 4-3-1; to: level-1 cell 4-3-1; goal: pellet; pellets i can see: 4; how i feel: acceptance
+  [ 34] REFUSED  he tried: # Situation: i am at: level-1 cell 4-2-1; score: 6; total: 9; pellets i can see: 3; how i feel: acceptance. # What are you thinking?
+        record : i am at: level-1 cell 4-2-1; score: 6; total: 9; pellets i can see: 3; how i feel: acceptance
+  [ 34] flat     i am at: level-1 cell 4-2-1; score: 6; total: 9; pellets i can see: 3; how i feel: acceptance
+  [ 35] flat     i am at: level-1 cell 4-2-0; to: level-1 cell 4-2-0; pellets i can see: 3; how i feel: acceptance
+  [ 36] REFUSED  he tried: # Situation: i am at: level-1 cell 4-1-0; score: 7; total: 9; pellets i can see: 2; how i feel: acceptance. What are you thinking? Answer
+        record : i am at: level-1 cell 4-1-0; score: 7; total: 9; pellets i can see: 2; how i feel: acceptance
+  [ 36] flat     i am at: level-1 cell 4-1-0; score: 7; total: 9; pellets i can see: 2; how i feel: acceptance
+  [ 37] flat     (at ease) i am at: level-1 cell 4-1-1; to: level-1 cell 4-1-1; pellets i can see: 4; how i feel: acceptance
+  [ 38] flat     i am at: level-1 cell 3-1-1; to: level-1 cell 3-1-1; pellets i can see: 4; how i feel: acceptance
+  [ 39] REFUSED  he tried: # Situation: i am at: level-1 cell 3-1-2; score: 8; total: 11; pellets i can see: 3; how i feel: acceptance. # What are you thinking?
+        record : i am at: level-1 cell 3-1-2; score: 8; total: 11; pellets i can see: 3; how i feel: acceptance
+  [ 39] flat     i am at: level-1 cell 3-1-2; score: 8; total: 11; pellets i can see: 3; how i feel: acceptance
+
+==============================================================================
+  spoke         1   a sentence of his own came back and was kept
+  flat         39   below speaking priority, or no model: the record stated plainly
+  refused      15   the sentence failed the check and was dropped
+  SPOKE RATE 6%  of the steps where he tried to speak
+  INVENTED      0   figures or names in a kept sentence the step did not contain
+  COPIED        0   kept sentences reciting the record (longest shared run: max 3, allowed 6)
+
+  a refusal reads like this (the guard doing its job):
+    tried : # Situation: i am at: level-1 cell 0-1-0; name: JUMP; pattern: hop hop; pellets i can see: 2; how i feel: calm. # What are you thinking
+    record: i am at: level-1 cell 0-1-0; name: JUMP; pattern: hop hop; pellets i can see: 2; how i feel: calm
+
+VERDICT: PASS
+  he writes his own sentences; nothing kept was invented, nothing kept was recited.
+
+wrote exp_r37_cubbyman_speech.json

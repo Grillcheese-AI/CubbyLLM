@@ -514,32 +514,74 @@ def test_thoughts_are_first_person_voice_safe_and_bilingual():
     assert "?" in CubbyGhost.think("mine", "en", "", pick=0), "a missing field renders as ? instead of raising"
 
 
-def test_live_a_step_thinks_out_loud_and_the_model_may_phrase_it():
+def test_live_the_model_writes_the_thought_from_the_percept_record():
+    """2026-09-15: the host no longer writes a sentence for the model to
+    rephrase. It hands over the step's PERCEPT RECORD and the model says
+    something; the host keeps it only if every figure and name in it came
+    from that record."""
     _exe_or_skip()
     from pacman import CubbyGhost, GhostVerse
 
-    class Phraser(ChainEmitter):
-        """Rephrases a thought when asked; keeps the numbers/names."""
+    class Speaker(ChainEmitter):
+        """Says something grounded, from the record it was given."""
+        seen_prompts: list[str] = []
+
         def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
-            if prompt.startswith("Say this in your own words"):
-                line = prompt.split(": ", 1)[1]
-                return "Hmm - " + line.replace("Tried", "I tried").replace("Noted.", "noted!")
+            if prompt.startswith("Situation:"):
+                Speaker.seen_prompts.append(prompt)
+                where = re.search(r"(level-\d+ cell [\d\-]+)", prompt)
+                return f"Standing round about {where.group(1)}, having a proper look."
             return super().emit(prompt, max_new_tokens, system, prefix)
 
     man = CubbyGhost(GhostVerse(), probe=1.0, seed=0)
-    s = sv.CubbyServe(Phraser(), sv.FactStore([]), route_tau=0.35)
+    s = sv.CubbyServe(Speaker(), sv.FactStore([]), route_tau=0.35)
     s.mount(man)
     for _ in range(6):
         man.step()
     thoughts = [e for e in s.events if e["kind"] == "thought"]
     assert thoughts and all(e["text"] for e in thoughts)
     assert man.resp()["thought"] == thoughts[-1]["text"], "the page's bubble carries the step's thought"
-    probes = [e for e in thoughts if e["about"] == "probe"]
-    if probes:
+    assert Speaker.seen_prompts, "the model was asked about the percepts, not handed a sentence"
+    p = Speaker.seen_prompts[0]
+    assert "i am at:" in p and "What are you thinking?" in p, \
+        f"the prompt is the record plus a question, not a line to rephrase: {p[:140]}"
+    assert "\n- " not in p, "the record goes in as prose: a bulleted prompt is a shape the model continues"
+    assert p.index("i am at:") < p.index("What are you thinking?"), \
+        "scene first, question second — exp_r37 measured question-first at 0% kept"
+    spoken = [e for e in thoughts if e["verbalized"]]
+    assert spoken, "a grounded sentence must be kept"
+    assert all("raw" in e for e in thoughts), "every thought carries the record it answers to"
+    for e in spoken:
         from pacman import split_mood
-        assert any(e["verbalized"] and split_mood(e["text"])[1].startswith("Hmm") and "raw" in e for e in probes), \
-            "a verbalized thought keeps the host line beside it (the mood tag is the host's, re-attached in front)"
+        assert "having a proper look" in split_mood(e["text"])[1], "what he said is the model's sentence"
     assert man.resp()["word"] is None and man.resp()["collected"] == "", "the letter mechanic is gone"
+
+
+def test_live_an_invented_thought_is_refused_not_repaired():
+    """A sentence naming a cell the step never contained is dropped, and the
+    host states the record instead. A refusal is a result; a made-up thought
+    is a defect."""
+    _exe_or_skip()
+    from pacman import CubbyGhost, GhostVerse
+
+    class Fabulist(ChainEmitter):
+        def emit(self, prompt, max_new_tokens=768, system=None, prefix="", **kw):
+            if prompt.startswith("Here is what I just perceived"):
+                return "I dashed over to level-9 cell 5-5-2 and grabbed 42 pellets."
+            return super().emit(prompt, max_new_tokens, system, prefix)
+
+    man = CubbyGhost(GhostVerse(), probe=1.0, seed=0)
+    s = sv.CubbyServe(Fabulist(), sv.FactStore([]), route_tau=0.35)
+    s.mount(man)
+    for _ in range(6):
+        man.step()
+    thoughts = [e for e in s.events if e["kind"] == "thought"]
+    refused = [e for e in s.events if e["kind"] == "thought_refused"]
+    assert refused, "the invented sentence must be refused"
+    assert not any(e["verbalized"] for e in thoughts), "and nothing invented may be kept"
+    assert not any("level-9" in e["text"] or "42" in e["text"] for e in thoughts), \
+        "the cell and the count he made up must not reach the page"
+    assert all(e["text"] for e in thoughts), "he still says something: the record, stated plainly"
 
 
 def test_live_the_frontend_protocol_init_state_stale_next():

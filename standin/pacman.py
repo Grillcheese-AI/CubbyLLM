@@ -890,6 +890,24 @@ _PETAL = {"joy": ("joy", 0, "#ffca05", ("serenity", "joy", "ecstasy")),
           "contempt": ("disgust", 225, "#8973b3", ("boredom", "disgust", "loathing")),
           "angry": ("anger", 270, "#f05b61", ("annoyance", "anger", "rage")),
           "curious": ("anticipation", 315, "#f6923d", ("interest", "anticipation", "vigilance"))}
+
+# Lövheim's SOCIAL corners. Contempt/disgust and shame/humiliation need
+# someone to feel them ABOUT; a maze has nobody in it, so the corner fires on
+# hormone geometry alone and the compass reports an emotion he has no reason
+# to have. Nick, 2026-09-15, on a "(sick of it)" two steps into a fresh level:
+# *"sick of it should be neutral."* They stay in `_PETAL` because a world with
+# social input can read them; here they read calm.
+_SOCIAL_CORNERS = frozenset({"contempt", "shame"})
+
+# The THINGS this world contains. He may name one only when the step's record
+# or the facts he learned in it mention it — exp_r37 caught him saying "without
+# triggering the ghost" on a ghost-free level, which passed every other check
+# because "ghost" is neither a figure nor a cell name. Invented entities are
+# the same defect as invented numbers; this is the clause that says so.
+_ENTITIES = {"ghost": ("ghost", "ghosts"), "pellet": ("pellet", "pellets"),
+             "star": ("star", "stars"), "wall": ("wall", "walls"),
+             "hazard": ("hazard", "hazards"), "trap": ("trap", "traps"),
+             "edge": ("edge",), "level": ("level",)}
 _PLUTCHIK: dict | None = None
 
 
@@ -927,6 +945,95 @@ def split_mood(line: str) -> tuple[str, str]:
 def _content_words(text: str) -> set[str]:
     """Stems (first five letters) of the words that carry content (>= 5 letters)."""
     return {w[:5] for w in re.findall(r"[a-z\u00e0-\u00ff]{5,}", text.lower())}
+
+
+_NAME_RE = re.compile(r"level-\d+ cell [\d\-]+|\b[A-Z][A-Z0-9\-]{2,}\b")
+
+# the shapes of a COPIED prompt rather than a spoken sentence: the record's
+# own header, its field markers, a bullet, a markdown heading
+_COPY = re.compile(r"here is what i just perceived|voici ce que je viens de perceptoir|"
+                   r"voici ce que je viens de percevoir|^\s*#|\n\s*[-*]\s|"
+                   r"\b(about|i am at|how i feel|pellets i can see|goal|tried|hit)\s*:", re.I | re.M)
+
+
+# "level-1 cell 0-2-0" is 4 tokens and he must be able to say it; beyond that
+# he is reciting. Measured on exp_r37's first run, where the copies ran 20+.
+MAX_RUN = 6
+
+
+def _tokens(s: str) -> list[str]:
+    return re.findall(r"[a-z0-9à-ÿ\-]+", s.lower())
+
+
+def longest_run(a: str, b: str) -> int:
+    """Longest run of consecutive tokens `a` shares with `b`, in order. A
+    sentence in his own words reuses the names; it does not reproduce the
+    record's word ORDER for long stretches."""
+    ta, tb = _tokens(a), _tokens(b)
+    if not ta or not tb:
+        return 0
+    best = 0
+    prev = [0] * (len(tb) + 1)
+    for i in range(1, len(ta) + 1):
+        cur = [0] * (len(tb) + 1)
+        for j in range(1, len(tb) + 1):
+            if ta[i - 1] == tb[j - 1]:
+                cur[j] = prev[j - 1] + 1
+                best = max(best, cur[j])
+        prev = cur
+    return best
+
+
+def grounded_ok(record_line: str, text: str, facts, learned: str = "", slack: int = 5) -> bool:
+    """Is `text` something he could honestly say about this step?
+
+    The referent is the PERCEPT RECORD, not a host-written sentence, so the
+    test is factual rather than lexical (2026-09-15):
+
+      * every number in the sentence is in the record, AND no number in the
+        sentence is absent from it — the old check was one-directional and let
+        an invented figure through as long as the host's own numbers survived;
+      * same both ways for cell and move NAMES;
+      * content words come from the record or from the facts he learned this
+        step, plus room for the words a sentence needs to BE a sentence. The
+        exact figures and names carry the anti-invention work; this clause
+        only stops a reply that is mostly words from nowhere, so the budget
+        is proportional (a fluent short sentence really does add about five);
+      * it is a SENTENCE, not the record read back. exp_r37's first run
+        scored 100% "spoke" while the model was reproducing the prompt
+        verbatim — a copy passes every grounding test there is, because
+        everything in it came from the record. So: no header, no `key:`
+        field markers, no bullets, and no run of `MAX_RUN` consecutive
+        tokens shared with the record in order.
+      * the voice rules, no echo of the instruction, no second person, no
+        question back, no base-model guard, not a bio.
+
+    A sentence that fails is refused, not repaired: the host then states the
+    record flatly. A refusal is a result; a made-up thought is a defect."""
+    from identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
+    from forge import numbers
+    if not text or "?" in text or _ECHO.search(text) or has_non_latin(text):
+        return False
+    if _COPY.search(text):
+        return False                                     # the record read back, not a thought
+    n_words = len(text.split())
+    if n_words > 40 or n_words < 2:
+        return False
+    if longest_run(text, record_line) > MAX_RUN:
+        return False                                     # his own words, not the record's word order
+    if set(numbers(text)) != set(numbers(text)) & set(numbers(record_line)):
+        return False                                     # a figure the step did not contain
+    if set(_NAME_RE.findall(text)) - set(_NAME_RE.findall(record_line)):
+        return False                                     # a cell or move he did not meet
+    ground = f"{record_line} {learned}".lower()          # everything he perceived this step, verbatim
+    mine = _content_words(text)
+    if len(mine - _content_words(ground)) > max(slack, int(0.7 * len(mine))):
+        return False                                     # mostly words for things he has not perceived
+    said = text.lower()
+    for thing, forms in _ENTITIES.items():
+        if any(re.search(rf"\b{f}\b", said) for f in forms) and thing not in ground:
+            return False                                 # a thing this step did not contain
+    return voice_ok(text, facts) and not is_model_guard(text) and not is_identity_reply(text, facts)
 
 
 def rephrase_ok(line: str, text: str, facts) -> bool:
@@ -1336,16 +1443,37 @@ class CubbyGhost(CubbyPac):
     def beaten(self) -> bool:
         return False                                     # levels continue; the game never "ends"
 
-    # ── thinking out loud: his decisions rendered as first-person lines ─────
-    # Rendered from what he actually did (the trace data), never invented by
-    # the model; voice rules apply (no forbidden words). One thought per
-    # step wins by priority; the salient ones also reach the page's bubble.
+    # ── thinking out loud ──────────────────────────────────────────────────
+    # The MODEL says it; the host decides what is true. Each step hands the
+    # model a PERCEPT RECORD — what he sensed, what he did, what the world did
+    # back — and it answers in one sentence. The host then checks that every
+    # number and every name in that sentence is in the record, and refuses
+    # anything else. Voice rules apply. One thought per step wins by priority;
+    # the salient ones also reach the page's bubble.
+    #
+    # Until 2026-09-15 the host wrote the sentence from THOUGHTS (below) and
+    # the model only rephrased it, so what he "said" was a hand-written line
+    # with a synonym swapped. Nick: *let it talk to see what it will do as it
+    # receives information.* THOUGHTS is kept because `data/gap_families.py`
+    # builds the verbalize SFT family out of it — templates are fine for
+    # making a corpus, which is the one place an authored phrasing belongs.
     _PRIO = {"caught": 6, "level_up": 6, "out_of_time": 5, "program": 5, "modify": 5, "power": 4,
              "forge": 4, "flee": 4, "trapped": 5, "mine": 4, "superpower_move": 3, "eat": 3, "rest": 3,
-             "probe": 2, "derive": 2, "plan": 1, "idle": 0}
+             "bump": 2, "probe": 2, "derive": 2, "plan": 1, "idle": 0}
 
-    # several phrasings per event and language (chosen at random) so a repeated
-    # event is not a repeated sentence; the verbalizer varies them further
+    # what each event kind is ABOUT, in his own vocabulary. Not a phrasing:
+    # a noun for the thing that happened, so the record reads as percepts
+    # rather than as an opcode. The model does the language.
+    _ABOUT = {"plan": "heading somewhere", "flee": "running from a ghost", "caught": "caught by a ghost",
+              "bump": "walked into something solid", "probe": "tried a way that was not offered",
+              "eat": "ate a pellet", "power": "ate a power star", "program": "invented a move",
+              "modify": "changed one of my moves", "superpower_move": "used one of my own moves",
+              "out_of_time": "ran out of time", "level_up": "cleared the level", "derive": "worked something out",
+              "forge": "checked something with my own program", "idle": "moving on", "rest": "resting",
+              "mine": "dropped a trap", "trapped": "a ghost hit my trap"}
+
+    # several phrasings per event and language — NOT used at runtime any more.
+    # `data/gap_families.py` builds the verbalize SFT family from this table.
     THOUGHTS = {
         "plan_pellet": {"en": ["I saw a pellet at {to} — heading there.", "Pellet spotted at {to}. Going for it.",
                                "There's one at {to}; that's my next stop."],
@@ -1474,6 +1602,67 @@ class CubbyGhost(CubbyPac):
         en, fr_word = self._MOOD[name]
         return f"({fr_word}) " if fr else f"({en}) "
 
+    # ── the percept record: what he hands the model to speak from ──────────
+    SPEAK_FROM_PERCEPTS = True                           # False -> the old THOUGHTS templates (for A/B)
+    # the lowest `_PRIO` that is worth an emit. Everything below states its
+    # record flatly: one emit per step is the slow part of the live loop, and
+    # a `plan`/`idle` record is the most repetitive thing he has — exp_r37
+    # measured the keep rate falling from 45% to 25% when those were let
+    # through, because a repetitive scene is the one a model recites.
+    SPEAK_ABOVE = 2
+    _SAY_FIELDS = ("to", "goal", "place", "tried", "hit", "score", "total", "steps", "energy",
+                   "ghost_distance", "radius", "name", "pattern", "parent", "child", "edit",
+                   "saved", "level", "next", "cleared", "attempt", "learned", "fact", "answer",
+                   "left", "n", "seen_at")
+
+    def percepts(self, kind: str, **d) -> dict:
+        """What just happened to him, as data — no phrasing, no template.
+        This is the whole of what the model is given to speak from, so
+        anything it says that is not in here is something it made up."""
+        rec = {"about": self._ABOUT.get(kind, kind), "i am at": self.place}
+        for k in self._SAY_FIELDS:
+            v = d.get(k)
+            if v not in (None, "", [], {}):
+                rec[k.replace("_", " ")] = v
+        seen = len(self.sighted - self._eaten_run)
+        if seen:
+            rec["pellets i can see"] = seen
+        if self.chem is not None:
+            rec["how i feel"] = self.emotion()["name"]
+        return rec
+
+    @staticmethod
+    def render_percepts(rec: dict) -> str:
+        """The record as a flat line — the fallback when the model's sentence
+        is refused, and the referent the guard checks against. Generated from
+        the data every time, so unlike a template it cannot say anything the
+        step did not contain."""
+        return "; ".join(f"{k}: {v}" for k, v in rec.items() if k != "about") or str(rec.get("about", ""))
+
+    def _speak_prompt(self, rec: dict) -> str:
+        """Ask for a sentence ABOUT the record, not a rephrasing OF a line.
+
+        Scene first, question second, on one line — the shape exp_r37 measured
+        best (45% of attempts kept, against 25% for a bulleted `key: value`
+        block and 0% for question-first). The failure modes are specific and
+        worth keeping written down:
+
+          * BULLETS come back as more bullets — the model continues the list.
+          * QUESTION FIRST gets the instruction narrated back ("The user is
+            asking me to respond in first person…").
+          * SCENE FIRST gets an answer.
+
+        The guard catches all three either way; this is about how often there
+        is something worth keeping."""
+        situation = self.render_percepts(rec)
+        if self.lang == "fr":
+            return (f"Situation : {situation}.\n"
+                    "Que penses-tu ? Réponds en une phrase courte, à la première personne, "
+                    "sans répéter la liste. N'invente rien que tu ne perçois pas.")
+        return (f"Situation: {situation}.\n"
+                "What are you thinking? Answer in one short sentence, first person, "
+                "without repeating the list back. Do not invent anything you do not perceive.")
+
     verbalize = True                                     # let the LLM phrase the thought (content stays the host's)
 
     def _verbalize(self, line: str) -> tuple[str, bool]:
@@ -1501,21 +1690,69 @@ class CubbyGhost(CubbyPac):
         text = " ".join(clean_reply(raw).split())
         return (mood + text, True) if rephrase_ok(core, text, self.brain.facts) else (line, False)
 
+    def _speak(self, rec: dict) -> tuple[str, bool]:
+        """Hand the model the percept record and let it say something. What
+        comes back is checked against the record by `grounded_ok`; a sentence
+        that fails is refused and the host states the record flatly instead.
+        -> (text, spoke)."""
+        flat = self.render_percepts(rec)
+        if self.brain is None or not self.verbalize:
+            return flat, False
+        from identity import identity_system
+        # what he may speak about: the record, plus the facts he learned this
+        # step. Passed verbatim so the guard can check whole words ("ghost")
+        # as well as stems.
+        learned = " ".join(self._learned_here)
+        try:
+            raw = self.brain.emitter.emit(
+                self._speak_prompt(rec), context="talk", max_new_tokens=48,
+                system=identity_system(self.brain.facts, self.brain.chat.state),
+                temperature=0.85, seed=self.env.steps * 7919 + self.env.level)
+        except Exception as e:
+            # traced, not swallowed: a broken emitter used to look exactly
+            # like a refused sentence, which cost an afternoon
+            self._t("thought_error", error=f"{type(e).__name__}: {e}"[:160])
+            return flat, False
+        from emitter import clean_reply
+        text = " ".join(clean_reply(raw).split())
+        if grounded_ok(flat, text, self.brain.facts, learned):
+            return text, True
+        self._t("thought_refused", said=text[:160], record=flat[:200])
+        return flat, False
+
     def _think(self, kind: str, **d) -> None:
         """Record a thought for this step if it outranks the current one; the
-        line is also a `thought` event, so the console shows it. Thoughts
-        that matter (probe and up) are verbalized by the model."""
+        line is also a `thought` event, so the console shows it.
+
+        Since 2026-09-15 the MODEL writes the sentence, from the step's
+        percept record — the host no longer writes a line for it to rephrase.
+        Below the `probe` priority he does not speak at all: the record is
+        stated flatly, which keeps the cheap steps cheap (one emit per step is
+        already the slow part of the loop)."""
         prio = self._PRIO.get(kind, 0)
         if prio < self._thought_prio:
             return
-        line = self.think(kind, self.lang, self._mood(), **d)
-        if not line:
+        if not self.SPEAK_FROM_PERCEPTS:                 # the old path, kept for A/B
+            line = self.think(kind, self.lang, self._mood(), **d)
+            if not line:
+                return
+            text, spoke = self._verbalize(line) if prio >= 2 else (line, False)
+            self._thought, self._thought_prio = text, prio
+            if prio >= 4:
+                self._say_aloud = text
+            self._t("thought", text=text, about=kind, verbalized=spoke, **({"raw": line} if spoke else {}))
             return
-        text, verbalized = self._verbalize(line) if prio >= 2 else (line, False)
+        rec = self.percepts(kind, **d)
+        flat = self.render_percepts(rec)
+        text, spoke = self._speak(rec) if prio >= self.SPEAK_ABOVE else (flat, False)
+        text = self._mood() + text
         self._thought, self._thought_prio = text, prio
         if prio >= 4:
             self._say_aloud = text
-        self._t("thought", text=text, about=kind, verbalized=verbalized, **({"raw": line} if verbalized else {}))
+        # `raw` carries the record on EVERY thought, spoken or not: it is what
+        # the sentence is answerable to, so an audit can check a kept sentence
+        # against it without re-deriving anything
+        self._t("thought", text=text, about=kind, verbalized=spoke, raw=flat)
 
     # ── the senses ───────────────────────────────────────────────────────────
     SIGHT = 2                                            # pellets glow: he sees them this far, in line of sight
@@ -1787,6 +2024,7 @@ class CubbyGhost(CubbyPac):
                 self._last = ev
                 return {"from": None, "place": self.place, "chosen": None, "new": 0, "probed": None}
             self._thought, self._thought_prio, self._say_aloud = None, -1, None   # a fresh thought each step
+            self._learned_here = []                      # and a fresh vocabulary: only this step's percepts
             self._last_eaten = None                      # a bump does not reach on_arrive: clear it here
             self._learn(self._sense())                   # senses FIRST, then decide on what they gave him
             # how far off the nearest threat was when he chose — the last
@@ -1892,6 +2130,8 @@ class CubbyGhost(CubbyPac):
         if chem is None:
             return calm
         name = chem.dominant_emotion
+        if name in _SOCIAL_CORNERS:
+            return calm
         if name not in _PETAL:
             ar, val = chem.affect_arousal, chem.valence
             ne, da, ot = chem.noradrenaline - 0.15, chem.dopamine - 0.30, chem.oxytocin - 0.20
