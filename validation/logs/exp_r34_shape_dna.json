@@ -1,0 +1,142 @@
+{
+ "k": 80,
+ "l": 128,
+ "seed": 23,
+ "roles": [
+  "KIND",
+  "SIDES",
+  "WIDTH",
+  "HEIGHT",
+  "FILL",
+  "ROTATION",
+  "COLOUR",
+  "STROKE"
+ ],
+ "kinds": [
+  "circle",
+  "square",
+  "triangle",
+  "hexagon",
+  "pentagon",
+  "octagon"
+ ],
+ "n_levels": 16,
+ "trials": 200,
+ "capacity": [
+  {
+   "n_roles": 1,
+   "recovered": 200,
+   "of": 200,
+   "min_sim": 1.0,
+   "median_sim": 1.0,
+   "floor": 0.0375,
+   "separation": 26.667,
+   "wrong_above_floor": 0
+  },
+  {
+   "n_roles": 2,
+   "recovered": 400,
+   "of": 400,
+   "min_sim": 0.5,
+   "median_sim": 0.5,
+   "floor": 0.0312,
+   "separation": 16.0,
+   "wrong_above_floor": 0
+  },
+  {
+   "n_roles": 3,
+   "recovered": 600,
+   "of": 600,
+   "min_sim": 0.3333,
+   "median_sim": 0.3375,
+   "floor": 0.0375,
+   "separation": 8.889,
+   "wrong_above_floor": 0
+  },
+  {
+   "n_roles": 4,
+   "recovered": 800,
+   "of": 800,
+   "min_sim": 0.25,
+   "median_sim": 0.2562,
+   "floor": 0.0312,
+   "separation": 8.0,
+   "wrong_above_floor": 0
+  },
+  {
+   "n_roles": 5,
+   "recovered": 1000,
+   "of": 1000,
+   "min_sim": 0.2,
+   "median_sim": 0.205,
+   "floor": 0.0275,
+   "separation": 7.273,
+   "wrong_above_floor": 0
+  },
+  {
+   "n_roles": 6,
+   "recovered": 1200,
+   "of": 1200,
+   "min_sim": 0.1667,
+   "median_sim": 0.1729,
+   "floor": 0.025,
+   "separation": 6.667,
+   "wrong_above_floor": 0
+  },
+  {
+   "n_roles": 7,
+   "recovered": 1400,
+   "of": 1400,
+   "min_sim": 0.1429,
+   "median_sim": 0.1482,
+   "floor": 0.025,
+   "separation": 5.714,
+   "wrong_above_floor": 0
+  },
+  {
+   "n_roles": 8,
+   "recovered": 1600,
+   "of": 1600,
+   "min_sim": 0.125,
+   "median_sim": 0.1312,
+   "floor": 0.0,
+   "separation": null,
+   "wrong_above_floor": 0
+  }
+ ],
+ "capacity_cliff": null,
+ "containment": {
+  "correct": 299,
+  "WRONG": 0,
+  "refused": 0,
+  "tau": 0.0624,
+  "n": 299,
+  "breaches": []
+ },
+ "blend": {
+  "KIND": [
+   "square",
+   0.13437500596046448
+  ],
+  "SIDES": [
+   4,
+   0.13437500596046448
+  ],
+  "WIDTH": [
+   8,
+   0.2671875059604645
+  ],
+  "HEIGHT": [
+   8,
+   0.26093751192092896
+  ]
+ },
+ "blend_similarity": {
+  "to_circle": 0.1977,
+  "to_square": 0.1992,
+  "parents": 0.1375,
+  "to_unrelated": 0.0066
+ },
+ "verdict": "survives: 299 correct, 0 refused, 0 wrong on unseen shapes; DNA holds 8 properties above 4.0x separation",
+ "wall_s": 5.0
+}

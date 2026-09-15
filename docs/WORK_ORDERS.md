@@ -1414,6 +1414,114 @@ Log: `validation/logs/exp_r33_embedding_pq.{json,log}`.
 
 ---
 
+## WO-2.9 — The mutable model: shape DNA, containment, and the blend
+
+**Status: MEASURED 2026-09-15.** Owner: Nick — *"a mutable model that can adapt to its
+environment without having to retrain or code anything"*, illustrated with shapes: a
+square carries a structural DNA; from it the system knows a smaller circle fits inside
+without ever seeing a square; and mixing two DNAs invents a "cirsquare".
+
+Geometry is the right first testbed because **ground truth is computable** — unlimited
+unseen shapes, checked exactly, no corpus. A shape's DNA is what the store's facts
+already are: a bundle of role-filler bindings, with roles namespaced `__role__:` so a
+role can never be mistaken for a value (cubemind's `event_encoder` convention, which is
+WO-2.7's role-as-vector candidate).
+
+### The capacity result, and the prediction it falsified
+
+`exp_r28` found a chain's bundle halves per element and meets the noise floor at six, so
+the prediction going in was that a DNA of 5–6 properties would be unreadable. **Wrong.**
+
+| \|DNA\| | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|---|---|---|
+| recovered | 200/200 | 400/400 | 600/600 | 800/800 | 1000/1000 | 1200/1200 | 1400/1400 | 1600/1600 |
+| min similarity | 1.000 | 0.500 | 0.333 | 0.250 | 0.200 | 0.167 | 0.143 | 0.125 |
+| separation | 26.7× | 16.0× | 8.9× | 8.0× | 7.3× | 6.7× | 5.7× | — |
+
+**100% recovery at every size, decaying as 1/n rather than halving, and still 5.7×
+separated at eight properties.**
+
+The difference is the **cleanup alphabet**. `exp_r34` cleans up against a small per-role
+codebook — 6 kinds, or 16 levels — while `exp_r28`'s `recover(frame, ROLE)` cleans up
+against the open symbol space. So:
+
+> **Capacity is not set by bundle size alone. It is bundle size × cleanup alphabet.**
+
+That is directly actionable for depth. Chunking (WO-2.6) fixed it by shrinking the
+bundle; narrowing the cleanup set per hop would fix it by shrinking the alphabet — and
+`Manifest` (WO-2.1) *already computes the admissible relation set per question*. A VM
+cleanup restricted to that set is a second, independent route to depth, and it costs no
+extra frames. Worth measuring against chunking before either is made the default.
+
+### Containment on shapes never seen
+
+299–300 questions per seed over freshly generated shape pairs, answered by decomposing
+both DNAs and comparing the recovered magnitudes, with a refusal threshold at 2× the
+measured floor: **300 correct, 0 refused, 0 wrong, on every seed tried.**
+
+Stated honestly: this is close to tautological — a magnitude is encoded and recovered
+exactly, then two integers are compared. It does not show that reasoning is hard. What it
+does establish is that the representation round-trips perfectly at the size a real shape
+needs, so anything that fails later fails for a reason other than the substrate.
+
+### The cirsquare, and the negative result worth having
+
+`bundle(circle, square)`, over four seeds with genuinely different codebooks:
+
+| | value |
+|---|---|
+| similarity to each parent | 0.192–0.199 |
+| similarity to an unrelated shape (the floor) | 0.0055–0.0078 |
+| ratio | **~25–35×** |
+
+So a blend is **readable** — it sits far above the floor and is recognisably near both
+parents. But reading its properties back:
+
+- `WIDTH`, `HEIGHT` — recovered cleanly at ~0.26, because both parents agree.
+- `KIND`, `SIDES` — recovered as **one parent's value**, at ~0.134. Never a third thing,
+  never noise. Which parent wins varies with the codebook; that it is *a* parent does not.
+
+> **Bundling blends properties the parents agree on and ARBITRATES the ones they do not.**
+
+A cirsquare is therefore not half-circle-half-square in the `KIND` slot — it is a square
+that happens to sit near a circle. For genuine morphing, the distinguishing property has
+to be **continuous** (curvature 0.0–1.0) rather than **discrete** (`sides` ∈ {0, 4}).
+That is a representation decision for the creativity cortex, and it is cheaper to learn
+here than after building one.
+
+### An instrument bug caught in this experiment's own first cut
+
+The first three-seed sweep came back **byte-identical**. `--seed` reached the shape
+sampling but not the codebook, because `vsa.codebook()` seeds from the fixed config
+`SEED`. A robustness check that cannot vary what it claims to vary is not a check — the
+same failure as `exp_r30`'s fake orthogonal arm. `ShapeWorld` now builds its codebook from
+the passed rng, and only then did the seeds separate.
+
+Log: `validation/logs/exp_r34_shape_dna{,_s24,_s25,_s26,_s27}.{json,log}`.
+
+### What this does not cover, and what comes next
+
+Instinct is not the VSA algebra. Nick: it is the **input cortex (mostly SNN signals) →
+the emotion/hormone layer → a logical filter mapped to past experience + genesis
+instincts**, and the genesis instincts — the innate priors — **do not exist yet**. This
+work order establishes only that the representation supports the decompose-and-compare
+step once the properties are there.
+
+Next is Cubby-Man, per the agreed order: a stimulus protocol with a simulated
+implementation behind it (so sensors are a swap, not a rewrite, and the humanoid path
+stays open), the agent dropped in with no knowledge of the environment, and the first
+measurement being whether a rule learned from **one collision transfers to a wall it has
+never touched**. A rule derived from a single observation enters as *derived*, never
+grounded, and is promoted by repetition — so a self-invented rule is refusable until the
+world confirms it, and the kill line survives the system writing its own facts.
+
+**Curriculum, per Nick:** the first few levels run **with no ghosts**. Learning the
+environment and surviving threats at once is too hard to produce anything useful in
+reasonable time, so the threat layer is introduced only after the environment rules are
+formed.
+
+---
+
 # Phase 3 — New capability (gated on Phase 2)
 
 ## WO-3.1 — The host agenda: branchless programs, host-owned search
