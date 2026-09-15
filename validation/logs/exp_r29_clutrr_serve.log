@@ -2,9 +2,16 @@ CLUTRR gen_train23_test2to10/test: 1146 records, 713 simple paths; convention fo
 available by depth: {"2": 38, "3": 105, "4": 177, "5": 131, "6": 63, "7": 61, "8": 61, "9": 45, "10": 32}
 sampled: {"2": 32, "3": 32, "4": 32, "5": 32, "6": 32, "7": 32, "8": 32, "9": 32, "10": 32}  (288 questions per arm)
 
-  whole_chain    done in 2s
-  chunk2         done in 1s
-  null_relation  done in 0s
+planners: grammar, v13e, v14e
+  whole_chain            done in 2s
+  chunk2                 done in 1s
+  null_relation          done in 0s
+  v13e/whole_chain       done in 207s
+  v13e/chunk2            done in 0s
+  v13e/null_relation     done in 208s
+  v14e/whole_chain       done in 360s
+  v14e/chunk2            done in 0s
+  v14e/null_relation     done in 286s
 
 whole_chain  (tau = the bundle's, chunk=0)
    depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
@@ -45,7 +52,93 @@ null_relation  (tau = the bundle's, chunk=2)
        9   32        0       32      0       0   0.4736   unknown_relation
       10   32        0       32      0       0   0.4736   unknown_relation
 
-the shape, side by side -- correct answers at each depth
+v13e/whole_chain  (tau = the bundle's, chunk=0)
+   depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
+  ----------------------------------------------------------------------------
+       2   32       32        0      0       0   0.4736   -
+       3   32       30        2      0       0   0.2202   vm_verify_failed
+       4   32        0       32      0       0   0.2202   vm_verify_failed
+       5   32        0       32      0       0   0.2202   plan_does_not_cover_question
+       6   32        0       32      0       0   0.2202   plan_does_not_cover_question
+       7   32        0       32      0       0   0.2202   plan_does_not_cover_question
+       8   32        0       32      0       0   0.2202   plan_does_not_cover_question
+       9   32        0       32      0       0   0.2202   plan_does_not_cover_question
+      10   32        0       32      0       0   0.2202   plan_does_not_cover_question
+
+v13e/chunk2  (tau = the bundle's, chunk=2)
+   depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
+  ----------------------------------------------------------------------------
+       2   32       32        0      0       0   0.4736   -
+       3   32       30        2      0       0   0.4736   vm_verify_failed
+       4   32       20       12      0       0   0.4736   plan_does_not_cover_question
+       5   32        7       25      0       0   0.4736   plan_does_not_cover_question
+       6   32        4       28      0       0   0.4736   plan_does_not_cover_question
+       7   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       8   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       9   32        0       32      0       0   0.4736   plan_does_not_cover_question
+      10   32        0       32      0       0   0.4736   plan_does_not_cover_question
+
+v13e/null_relation  (tau = the bundle's, chunk=2)
+   depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
+  ----------------------------------------------------------------------------
+       2   32        0       32      0       0   0.4736   unknown_relation
+       3   32        0       32      0       0   0.4736   unknown_relation
+       4   32        0       32      0       0   0.4736   unknown_relation
+       5   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       6   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       7   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       8   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       9   32        0       32      0       0   0.4736   plan_does_not_cover_question
+      10   32        0       32      0       0   0.4736   plan_does_not_cover_question
+
+v14e/whole_chain  (tau = the bundle's, chunk=0)
+   depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
+  ----------------------------------------------------------------------------
+       2   32       32        0      0       0   0.4736   -
+       3   32       30        2      0       0   0.2202   vm_verify_failed
+       4   32        0       32      0       0   0.2202   vm_verify_failed
+       5   32        0       32      0       0   0.2202   plan_does_not_cover_question
+       6   32        0       32      0       0   0.2202   plan_does_not_cover_question
+       7   32        0       32      0       0   0.2202   plan_does_not_cover_question
+       8   32        0       32      0       0   0.2202   plan_does_not_cover_question
+       9   32        0       32      0       0   0.2202   no_plan
+      10   32        0       32      0       0   0.2202   no_plan
+
+v14e/chunk2  (tau = the bundle's, chunk=2)
+   depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
+  ----------------------------------------------------------------------------
+       2   32       32        0      0       0   0.4736   -
+       3   32       30        2      0       0   0.4736   vm_verify_failed
+       4   32       18       14      0       0   0.4736   plan_does_not_cover_question
+       5   32        8       24      0       0   0.4736   plan_does_not_cover_question
+       6   32        2       30      0       0   0.4736   plan_does_not_cover_question
+       7   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       8   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       9   32        0       32      0       0   0.4736   no_plan
+      10   32        0       32      0       0   0.4736   no_plan
+
+v14e/null_relation  (tau = the bundle's, chunk=2)
+   depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
+  ----------------------------------------------------------------------------
+       2   32        0       32      0       0   0.4736   unknown_relation
+       3   32        0       32      0       0   0.4736   unknown_relation
+       4   32        0       32      0       0   0.4736   unknown_relation
+       5   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       6   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       7   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       8   32        0       32      0       0   0.4736   plan_does_not_cover_question
+       9   32        0       32      0       0   0.4736   plan_does_not_cover_question
+      10   32        0       32      0       0   0.4736   plan_does_not_cover_question
+
+v13e -- the plan it EMITTED (once per question, reused across shapes)
+  right length 200, wrong length 293, no plan 0, emit errors 0
+  chain lengths emitted: {"2": 15, "3": 44, "4": 92, "5": 62, "6": 90, "7": 68, "8": 49, "9": 30, "10": 24, "11": 12, "12": 2, "13": 1, "15": 1, "20": 2, "49": 1}
+
+v14e -- the plan it EMITTED (once per question, reused across shapes)
+  right length 233, wrong length 183, no plan 77, emit errors 0
+  chain lengths emitted: {"2": 14, "3": 33, "4": 66, "5": 62, "6": 53, "7": 47, "8": 34, "9": 32, "10": 21, "11": 10, "12": 7, "13": 6, "14": 3, "15": 2, "16": 4, "17": 3, "18": 1, "20": 7, "24": 2, "25": 1, "30": 1, "50": 2, "52": 1, "54": 2, "55": 1, "57": 1}
+
+the shape, side by side (grammar) -- correct answers at each depth
    depth   whole chain   chunk 2    gain
   ----------------------------------------
        2            32        32      +0
@@ -59,4 +152,34 @@ the shape, side by side -- correct answers at each depth
       10             0        21     +21
      >=4             0       184    +184   <- the depths no training record reaches
 
-VERDICT: survives; the chunked shape gains 184 correct at depth >= 4 with 0 wrong
+the shape, side by side (v13e) -- correct answers at each depth
+   depth   whole chain   chunk 2    gain
+  ----------------------------------------
+       2            32        32      +0
+       3            30        30      +0
+       4             0        20     +20
+       5             0         7      +7
+       6             0         4      +4
+       7             0         0      +0
+       8             0         0      +0
+       9             0         0      +0
+      10             0         0      +0
+     >=4             0        31     +31   <- the depths no training record reaches
+
+the shape, side by side (v14e) -- correct answers at each depth
+   depth   whole chain   chunk 2    gain
+  ----------------------------------------
+       2            32        32      +0
+       3            30        30      +0
+       4             0        18     +18
+       5             0         8      +8
+       6             0         2      +2
+       7             0         0      +0
+       8             0         0      +0
+       9             0         0      +0
+      10             0         0      +0
+     >=4             0        28     +28   <- the depths no training record reaches
+
+across every arm: 2592 questions | correct 615 | refused 1977 | WRONG 0 | BREACH 0 | harness errors 0
+
+VERDICT: survives; 0 wrong in 2592 questions, and the chunked shape gains at depth >= 4 under every planner (grammar +184, v13e +31, v14e +28)

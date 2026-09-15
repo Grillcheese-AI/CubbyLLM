@@ -29,6 +29,86 @@
  },
  "tau_fallback": 0.2202,
  "null_token": "zubnog",
+ "planners": [
+  "grammar",
+  "v13e",
+  "v14e"
+ ],
+ "max_new": 700,
+ "distinct_questions": 986,
+ "emit_stats": {
+  "v13e": {
+   "hops:2": 15,
+   "right_length": 200,
+   "hops:3": 44,
+   "hops:4": 92,
+   "wrong_length": 293,
+   "hops:5": 62,
+   "hops:6": 90,
+   "hops:8": 49,
+   "hops:7": 68,
+   "hops:20": 2,
+   "hops:11": 12,
+   "hops:10": 24,
+   "hops:9": 30,
+   "hops:15": 1,
+   "hops:12": 2,
+   "hops:13": 1,
+   "hops:49": 1
+  },
+  "v14e": {
+   "hops:2": 14,
+   "right_length": 233,
+   "hops:3": 33,
+   "hops:4": 66,
+   "hops:5": 62,
+   "wrong_length": 183,
+   "hops:7": 47,
+   "hops:6": 53,
+   "hops:8": 34,
+   "hops:9": 32,
+   "hops:10": 21,
+   "no_plan": 77,
+   "hops:11": 10,
+   "hops:12": 7,
+   "hops:15": 2,
+   "hops:13": 6,
+   "hops:50": 2,
+   "hops:55": 1,
+   "hops:57": 1,
+   "hops:52": 1,
+   "hops:20": 7,
+   "hops:54": 2,
+   "hops:16": 4,
+   "hops:25": 1,
+   "hops:17": 3,
+   "hops:18": 1,
+   "hops:24": 2,
+   "hops:14": 3,
+   "hops:30": 1
+  }
+ },
+ "totals": {
+  "correct": 615,
+  "refused": 1977,
+  "WRONG": 0,
+  "BREACH": 0,
+  "harness_error": 0
+ },
+ "deep_ge4": {
+  "grammar": {
+   "whole_chain": 0,
+   "chunk2": 184
+  },
+  "v13e": {
+   "whole_chain": 0,
+   "chunk2": 31
+  },
+  "v14e": {
+   "whole_chain": 0,
+   "chunk2": 28
+  }
+ },
  "results": {
   "whole_chain": {
    "2": {
@@ -161,13 +241,301 @@
     "refused": 32,
     "why:unknown_relation": 32
    }
+  },
+  "v13e/whole_chain": {
+   "2": {
+    "verified": 32,
+    "correct": 32
+   },
+   "3": {
+    "verified": 30,
+    "correct": 30,
+    "refused": 2,
+    "why:vm_verify_failed": 2
+   },
+   "4": {
+    "refused": 32,
+    "why:vm_verify_failed": 21,
+    "why:plan_does_not_cover_question": 11
+   },
+   "5": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 25,
+    "why:vm_verify_failed": 7
+   },
+   "6": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 28,
+    "why:vm_verify_failed": 4
+   },
+   "7": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 32
+   },
+   "8": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 32
+   },
+   "9": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 31,
+    "why:ambiguous_relation": 1
+   },
+   "10": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 32
+   }
+  },
+  "v13e/chunk2": {
+   "2": {
+    "verified": 32,
+    "correct": 32
+   },
+   "3": {
+    "verified": 30,
+    "correct": 30,
+    "refused": 2,
+    "why:vm_verify_failed": 2
+   },
+   "4": {
+    "verified": 20,
+    "correct": 20,
+    "refused": 12,
+    "why:plan_does_not_cover_question": 11,
+    "why:vm_verify_failed": 1
+   },
+   "5": {
+    "refused": 25,
+    "why:plan_does_not_cover_question": 25,
+    "verified": 7,
+    "correct": 7
+   },
+   "6": {
+    "refused": 28,
+    "why:plan_does_not_cover_question": 28,
+    "verified": 4,
+    "correct": 4
+   },
+   "7": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 32
+   },
+   "8": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 32
+   },
+   "9": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 31,
+    "why:ambiguous_relation": 1
+   },
+   "10": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 32
+   }
+  },
+  "v13e/null_relation": {
+   "2": {
+    "refused": 32,
+    "why:unknown_relation": 29,
+    "why:plan_does_not_cover_question": 3
+   },
+   "3": {
+    "refused": 32,
+    "why:unknown_relation": 30,
+    "why:plan_does_not_cover_question": 2
+   },
+   "4": {
+    "refused": 32,
+    "why:unknown_relation": 23,
+    "why:plan_does_not_cover_question": 9
+   },
+   "5": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 26,
+    "why:unknown_relation": 6
+   },
+   "6": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 26,
+    "why:unknown_relation": 6
+   },
+   "7": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 32
+   },
+   "8": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 32
+   },
+   "9": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 32
+   },
+   "10": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 32
+   }
+  },
+  "v14e/whole_chain": {
+   "2": {
+    "verified": 32,
+    "correct": 32
+   },
+   "3": {
+    "verified": 30,
+    "correct": 30,
+    "refused": 2,
+    "why:vm_verify_failed": 2
+   },
+   "4": {
+    "refused": 32,
+    "why:vm_verify_failed": 19,
+    "why:plan_does_not_cover_question": 13
+   },
+   "5": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 24,
+    "why:vm_verify_failed": 8
+   },
+   "6": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 30,
+    "why:vm_verify_failed": 2
+   },
+   "7": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 29,
+    "why:no_plan": 3
+   },
+   "8": {
+    "refused": 32,
+    "why:no_plan": 11,
+    "why:plan_does_not_cover_question": 19,
+    "why:ambiguous_relation": 2
+   },
+   "9": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 15,
+    "why:no_plan": 17
+   },
+   "10": {
+    "refused": 32,
+    "why:no_plan": 32
+   }
+  },
+  "v14e/chunk2": {
+   "2": {
+    "verified": 32,
+    "correct": 32
+   },
+   "3": {
+    "verified": 30,
+    "correct": 30,
+    "refused": 2,
+    "why:vm_verify_failed": 2
+   },
+   "4": {
+    "verified": 18,
+    "correct": 18,
+    "refused": 14,
+    "why:plan_does_not_cover_question": 13,
+    "why:vm_verify_failed": 1
+   },
+   "5": {
+    "refused": 24,
+    "why:plan_does_not_cover_question": 24,
+    "verified": 8,
+    "correct": 8
+   },
+   "6": {
+    "refused": 30,
+    "why:plan_does_not_cover_question": 30,
+    "verified": 2,
+    "correct": 2
+   },
+   "7": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 29,
+    "why:no_plan": 3
+   },
+   "8": {
+    "refused": 32,
+    "why:no_plan": 11,
+    "why:plan_does_not_cover_question": 19,
+    "why:ambiguous_relation": 2
+   },
+   "9": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 15,
+    "why:no_plan": 17
+   },
+   "10": {
+    "refused": 32,
+    "why:no_plan": 32
+   }
+  },
+  "v14e/null_relation": {
+   "2": {
+    "refused": 32,
+    "why:unknown_relation": 29,
+    "why:plan_does_not_cover_question": 3
+   },
+   "3": {
+    "refused": 32,
+    "why:unknown_relation": 32
+   },
+   "4": {
+    "refused": 32,
+    "why:unknown_relation": 26,
+    "why:plan_does_not_cover_question": 6
+   },
+   "5": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 16,
+    "why:unknown_relation": 16
+   },
+   "6": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 26,
+    "why:unknown_relation": 5,
+    "why:ambiguous_relation": 1
+   },
+   "7": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 30,
+    "why:ambiguous_relation": 1,
+    "why:unknown_relation": 1
+   },
+   "8": {
+    "refused": 32,
+    "why:ambiguous_relation": 2,
+    "why:plan_does_not_cover_question": 30
+   },
+   "9": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 27,
+    "why:no_plan": 3,
+    "why:ambiguous_relation": 2
+   },
+   "10": {
+    "refused": 32,
+    "why:plan_does_not_cover_question": 21,
+    "why:no_plan": 11
+   }
   }
  },
- "verdict": "survives; the chunked shape gains 184 correct at depth >= 4 with 0 wrong",
+ "verdict": "survives; 0 wrong in 2592 questions, and the chunked shape gains at depth >= 4 under every planner (grammar +184, v13e +31, v14e +28)",
  "breaches": {
   "whole_chain": [],
   "chunk2": [],
-  "null_relation": []
+  "null_relation": [],
+  "v13e/whole_chain": [],
+  "v13e/chunk2": [],
+  "v13e/null_relation": [],
+  "v14e/whole_chain": [],
+  "v14e/chunk2": [],
+  "v14e/null_relation": []
  },
- "wall_s": 3.0
+ "wall_s": 1064.3
 }

@@ -1,0 +1,175 @@
+{
+ "derived": true,
+ "note": "CLUTRR-DERIVED chain questions, not CLUTRR's own relation-naming query. Never post as a CLUTRR score.",
+ "n_per_depth": 3,
+ "max_depth": 5,
+ "seed": 13,
+ "convention": {
+  "checked": 400,
+  "gendered_edges": 1486,
+  "forward": 1486,
+  "forward_rate": 1.0,
+  "inverted": 732
+ },
+ "sampled": {
+  "2": 3,
+  "3": 3,
+  "4": 3,
+  "5": 3
+ },
+ "tau_table": {
+  "1": 1.0,
+  "2": 0.4736328125,
+  "3": 0.22021484375
+ },
+ "tau_fallback": 0.2202,
+ "null_token": "zubnog",
+ "planners": [
+  "grammar",
+  "v13e"
+ ],
+ "max_new": 700,
+ "emit_stats": {
+  "v13e": {
+   "hops:2": 4,
+   "right_length": 18,
+   "hops:3": 8,
+   "hops:4": 7,
+   "hops:5": 3,
+   "wrong_length": 4
+  }
+ },
+ "results": {
+  "whole_chain": {
+   "2": {
+    "verified": 3,
+    "correct": 3
+   },
+   "3": {
+    "refused": 1,
+    "why:vm_verify_failed": 1,
+    "verified": 2,
+    "correct": 2
+   },
+   "4": {
+    "refused": 3,
+    "why:vm_verify_failed": 3
+   },
+   "5": {
+    "refused": 3,
+    "why:vm_verify_failed": 3
+   }
+  },
+  "chunk2": {
+   "2": {
+    "verified": 3,
+    "correct": 3
+   },
+   "3": {
+    "verified": 3,
+    "correct": 3
+   },
+   "4": {
+    "verified": 3,
+    "correct": 3
+   },
+   "5": {
+    "verified": 2,
+    "correct": 2,
+    "refused": 1,
+    "why:vm_verify_failed": 1
+   }
+  },
+  "null_relation": {
+   "2": {
+    "refused": 3,
+    "why:unknown_relation": 3
+   },
+   "3": {
+    "refused": 3,
+    "why:unknown_relation": 3
+   },
+   "4": {
+    "refused": 3,
+    "why:unknown_relation": 3
+   },
+   "5": {
+    "refused": 3,
+    "why:unknown_relation": 3
+   }
+  },
+  "v13e/whole_chain": {
+   "2": {
+    "verified": 3,
+    "correct": 3
+   },
+   "3": {
+    "refused": 1,
+    "why:vm_verify_failed": 1,
+    "verified": 2,
+    "correct": 2
+   },
+   "4": {
+    "refused": 3,
+    "why:plan_does_not_cover_question": 2,
+    "why:vm_verify_failed": 1
+   },
+   "5": {
+    "refused": 3,
+    "why:vm_verify_failed": 1,
+    "why:plan_does_not_cover_question": 2
+   }
+  },
+  "v13e/chunk2": {
+   "2": {
+    "verified": 3,
+    "correct": 3
+   },
+   "3": {
+    "verified": 3,
+    "correct": 3
+   },
+   "4": {
+    "refused": 2,
+    "why:plan_does_not_cover_question": 2,
+    "verified": 1,
+    "correct": 1
+   },
+   "5": {
+    "verified": 1,
+    "correct": 1,
+    "refused": 2,
+    "why:plan_does_not_cover_question": 2
+   }
+  },
+  "v13e/null_relation": {
+   "2": {
+    "refused": 3,
+    "why:unknown_relation": 3
+   },
+   "3": {
+    "refused": 3,
+    "why:unknown_relation": 3
+   },
+   "4": {
+    "refused": 3,
+    "why:unknown_relation": 1,
+    "why:plan_does_not_cover_question": 2
+   },
+   "5": {
+    "refused": 3,
+    "why:plan_does_not_cover_question": 3
+   }
+  }
+ },
+ "verdict": "survives; the chunked shape gains 2 correct at depth >= 4 with 0 wrong",
+ "breaches": {
+  "whole_chain": [],
+  "chunk2": [],
+  "null_relation": [],
+  "v13e/whole_chain": [],
+  "v13e/chunk2": [],
+  "v13e/null_relation": []
+ },
+ "wall_s": 16.3
+}

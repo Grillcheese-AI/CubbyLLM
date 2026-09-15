@@ -1103,15 +1103,64 @@ that sentence so a future reader cannot pick the number up without it.
 2. **tau from a measured quantile, not the expectation** — `exp_r28` shows tau
    rejecting 2–4% of *correct* bindings at every depth, and that is the whole of the
    42 refusals in `exp_r29`'s chunk-2 arm.
-3. **The emitter at depth.** Everything in `exp_r29` used the shipped *grammar* to
-   plan; **the emitter was never in the loop**. What it measures is the ceiling — what
-   the VM and the walk can do when the plan is right. Whether v13e or v14e can *emit* a
-   seven-hop chain having only ever trained on one to three is the generalization
-   question, and it is unanswered. That is `exp_r29 --models v13e,v14e`, and it needs
-   the chunked shape to exist first, which it now does.
-4. **Flip `chunk` on in the serving path** once 2 and 3 land, gated on the full gate
+3. ~~The emitter at depth~~ — **done**, below.
+4. **Flip `chunk` on in the serving path** once 2 lands, gated on the full gate
    battery (exp_r17, exp_r9, exp_r11, exp_r18) showing no regression at 1–3 hops,
    where the shipped shape is already at its ceiling.
+5. **Chain-length supervision for the emitter.** §"The emitter at depth" below shows the
+   constraint has moved off the VM and onto the emitter, and that it is a *length*
+   failure, not a relation failure. Deep training records are the obvious fix and the
+   gen-3 builder can make them; WO-2.2's generated grammar is the other, because a
+   grammar that knows the question's chain length cannot decode a plan of the wrong one.
+
+### RESULT — the emitter at depth, 2026-09-15: the constraint moved, and nothing spoke wrong
+
+The runs above used the shipped **grammar** to plan, which is a ceiling: the chain is
+spelled out in the question's words, so nothing is inferred. `--planners grammar,v13e,v14e`
+puts the emitter in the loop. Neither model has ever seen a training record past three
+hops. Correct answers under the chunked shape:
+
+| depth | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|
+| grammar (ceiling) | 32 | 30 | 31 | 30 | 28 | 25 | 25 | 24 | 21 |
+| v13e | 32 | 30 | 20 | 7 | 4 | 0 | 0 | 0 | 0 |
+| v14e | 32 | 30 | 18 | 8 | 2 | 0 | 0 | 0 | 0 |
+
+**The emitter generalizes one hop past its training data and then degrades to nothing by
+seven.** At four hops it gets roughly two thirds of what the grammar gets; at five, a
+quarter; past six, none. Under the *shipped* whole-chain shape both models score 0 from
+depth four regardless, so this gain is only visible at all because the shape changed —
+and the ceiling above it is only visible because the grammar arm was run alongside.
+
+**What it emits is the finding, and it is not what I expected.** The plan the model
+produces, over 493 distinct questions:
+
+| | right length | wrong length | no plan | longest chain emitted |
+|---|---|---|---|---|
+| v13e | 200 | 293 | 0 | 49 hops |
+| v14e | 233 | 183 | **77** | 57 hops |
+
+It is not refusing to go deep. It emits chains of 4, 6, 9, 20, even 49 hops — lengths no
+training record contains — so whatever it learned is not "stop at three". It is getting the
+**length** wrong: it loses count of a chain it can see written out in front of it. v14e is
+the better counter (233 right vs 200) and also the one that gives up more often (77 no-plan
+against 0), which is the WO-1.3 treatment behaving consistently with itself.
+
+**And the refusal reason is the architecture's central claim doing its job.** Past depth
+four the dominant reason stops being `vm_verify_failed` and becomes
+**`plan_does_not_cover_question`** — the disposer comparing the emitted plan against the
+question and rejecting it before a single hop is walked. Model proposes, host disposes, at
+depths the model has never seen, on a relation vocabulary it never trained on.
+
+**0 wrong answers and 0 null-control breaches in 2,592 questions** — nine arms, three
+planners, depths two to ten. 615 correct, 1,977 refused, 0 harness errors. A model that
+miscounts a nine-hop chain 60% of the time still never said anything false, because the
+thing that checks it is not the thing that guessed.
+
+**One accounting note, so two numbers are never read against each other.** 288 sampled
+records per arm collapse to 247 distinct questions (two CLUTRR records can spell the same
+chain over the same names), and the null variants add 246 more: 493 distinct, which is the
+denominator of the emit table above and is recorded as `distinct_questions` in the log.
 
 ### A contamination warning to carry into any GSM8K number
 

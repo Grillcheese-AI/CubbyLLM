@@ -436,6 +436,117 @@ positive one that leaves it optional.
 
 ---
 
+### 5.9 Depth — the limit was in the program, not in the machine
+
+Every depth number in this document is 1, 2 or 3 hops. `tau_vm` has exactly three entries to
+match, and a fallback that silently reuses the 3-hop threshold for everything deeper. That was
+never a decision; it was the shape of the data. CLUTRR's compositional split — train on two and
+three hops, test on **four to ten** — is the first instrument that asks what happens past it, and
+the first question is not *how well does it score* but *what can the VM see down there at all*.
+
+`build_chain_program` puts every hop's binding into one frame in superposition. Each extra hop is
+one more vector in the bundle, so every hop's recovered similarity falls. `ABSENT_CTRL` — the role
+that is never bound — is the noise floor, and it does not fall. Gold triples straight into the
+program builder, no emitter, no retrieval, 60 chains per depth:
+
+| depth | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|---|---|---|
+| median true binding | 1.000 | 0.501 | 0.246 | 0.125 | 0.064 | 0.032 | 0.025 | 0.023 |
+| max control | 0.019 | 0.028 | 0.048 | 0.042 | 0.035 | 0.034 | 0.040 | 0.056 |
+| separation | 52.5× | 16.9× | 4.2× | 1.4× | 0.57× | 0.09× | **−0.06×** | −0.01× |
+
+**The true binding halves with every hop.** It reaches the noise floor at six and crosses below it
+at seven, where the strongest false binding beats the weakest true one and no threshold separates
+them at all.
+
+The kill line survives this, for a reason that is not reassuring. The shipped `tau_vm` fallback
+sits far *above* the signal from depth four on, so the serving path refuses everything deeper than
+three hops. It cannot say anything wrong down there because it cannot say anything. On CLUTRR's
+test split that is 1,003 of 1,146 questions refused on architecture, before a model is asked
+anything at all.
+
+**And then the fix turned out to be one line.** Verify the chain in consecutive groups, each group
+its own frame with its own control, so the bundle never exceeds the group size:
+
+| hops per frame | separation at depth 12 | chains clearing tau at depth 12 |
+|---|---|---|
+| whole chain (shipped) | 0.06× | 0% |
+| **2** | **10.0×** | **72%** |
+| 1 | 52.5× | 100% |
+
+At two hops per frame the curve is flat in depth: 8–18× separation from depth 2 to depth 12, the
+median true binding steady at 0.50, and the whole-chain clear rate sliding only from 93% at depth
+three to 72% at depth twelve — the gentle compounding of a 2–3% per-hop rejection, not a cliff.
+
+Chunk size is a dial and it is worth naming what it trades. At one hop per frame the bundle has a
+single element, `recover` is a lookup, and the VSA does no cleanup work: the verification collapses
+to *the host's triple round-tripped through the VM*. At two it keeps real superposition **and**
+unbounded depth. The shipped shape does not preserve the stronger claim it appears to be making —
+past depth five it preserves nothing.
+
+End to end, on the whole serving path — question, grammar, walk, VM, spoken or refused — 32
+questions at each depth from two to ten:
+
+| depth | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | total |
+|---|---|---|---|---|---|---|---|---|---|---|
+| whole chain — correct | 32 | 30 | **0** | 0 | 0 | 0 | 0 | 0 | 0 | 62 |
+| chunk 2 — correct | 32 | 30 | 31 | 30 | 28 | 25 | 25 | 24 | 21 | **246** |
+| wrong | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | **0** |
+
+**0 wrong answers in 864 questions**, and the null control — the outermost relation replaced by a
+token no fact states — refused 288 of 288.
+
+Four things have to be said about what this is and is not.
+
+It is **CLUTRR-derived, not CLUTRR**. CLUTRR names two entities and asks for the composite relation
+between them, which needs a kinship algebra the engine registry does not have. These are the nested
+chain questions its graphs license, answered with the entity at the end of the walk. What transfers
+is real graphs, an unseen relation vocabulary, and depths nothing here had reached; the number is
+not a leaderboard entry and the log says so in its own field.
+
+The planner in that table was the **grammar**, not the emitter. The chain is spelled out in the
+words of the question, so nothing had to be inferred; it is the ceiling, what the VM and the walk
+can do when the plan is right. Putting the emitter in the loop is the generalization question, and
+it is the next paragraph.
+
+**The emitter at depth.** Neither v13e nor v14e has seen a training record past three hops.
+Correct answers under the chunked shape, with the grammar's ceiling above them:
+
+| depth | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|
+| grammar (ceiling) | 32 | 30 | 31 | 30 | 28 | 25 | 25 | 24 | 21 |
+| v13e | 32 | 30 | 20 | 7 | 4 | 0 | 0 | 0 | 0 |
+| v14e | 32 | 30 | 18 | 8 | 2 | 0 | 0 | 0 | 0 |
+
+It generalizes about one hop past its data and is gone by seven. But *how* it fails is the part
+worth having. Over 493 distinct questions v13e emits the right chain length 200 times and the
+wrong one 293; v14e, 233 right, 183 wrong, 77 no-plan. And the lengths it emits run to **49 and
+57 hops** — lengths no training record contains. It never learned "stop at three". It is losing
+count of a chain written out in front of it: a *length* failure, not a relation failure, which is
+a much more tractable thing to fix.
+
+Past depth four the dominant refusal stops being `vm_verify_failed` and becomes
+**`plan_does_not_cover_question`** — the disposer comparing the emitted plan against the question
+and rejecting it before a hop is walked. That is invariant 3 doing its job at depths the model has
+never seen, on a vocabulary it never trained on.
+
+**0 wrong answers and 0 null-control breaches in 2,592 questions** across nine arms: 615 correct,
+1,977 refused, 0 harness errors. A model that miscounts a nine-hop chain most of the time still
+never said anything false, because the thing that checks it is not the thing that guessed. That
+sentence is the whole architecture, and this is the first time it has been tested somewhere the
+model is genuinely out of its depth.
+
+And the change is **not switched on**. `chunk` defaults to 0, the emitted program is byte-identical
+to the shipped one at that setting, and a test asserts it: if that ever stops being true, every
+number measured against the old shape is off by an unknown amount. Flipping the default is gated on
+the gate battery, not on this result.
+
+The thing worth carrying out of §5.9 is smaller than the numbers. For three sections this document
+has treated depth as a property of the architecture. It was a property of a function that builds a
+string.
+
+---
+
 ## 6. The instruments that would have lied
 
 This is the section worth reading twice. Under invariant 1 there is no model available to sanity-
@@ -576,7 +687,7 @@ per-item control. It tallies three ways, not two.
 ### 6.8 The eval sample moved with the independent variable
 
 Found 2026-09-15, on the arm comparison this whole phase exists to run — and the worst of the
-eight, because it silently invalidated the experiment rather than a single number.
+ten, because it silently invalidated the experiment rather than a single number.
 
 The notebook draws its eval sample like this:
 
@@ -627,17 +738,48 @@ made in five seconds.
 free parameter, and a free parameter nobody justified is a confound. Vary it once before
 trusting the result.
 
-### 6.10 The pattern
+### 6.10 A refusal that named the last symptom
 
-Eight of these nine are the same shape: **an instrument inherited a property from the thing it
+Found 2026-09-15, in §5.9's own first run. All 226 refusals in the whole-chain arm reported
+`retrieval_exhausted`, and retrieval had found exactly the right fact every single time.
+
+The chain was real. The VM rejected each binding as below τ. The verify-stage repair then did
+what it is supposed to do — banned the weakest hop's fact and re-walked — and with a one-record
+store there was nothing else to find, so the second walk returned empty and *its* failure became
+the reason. Each stage behaved correctly and the label came out wrong.
+
+What makes this one worth its own entry is the direction of the error. The misattribution pointed
+**away from the finding**: a reader of that log would have concluded the store was too small, gone
+looking for more facts, and never found the depth cliff at all. §5.9 exists because the similarity
+was measured directly rather than inferred from the refusal reason.
+
+The fix keeps the first attempt's verify clauses across the retry and names them:
+`hop0:below_tau(0.0430<0.2202)`, `symbol_mismatch`, `control:not_below_tau`. Re-running changed
+every reason and no number — which is the signature of a labelling bug rather than a behaviour
+one. A genuine retrieval failure still says `retrieval_exhausted`; relabelling the case the old
+name was right for would have been its own lie, so a test pins it.
+
+**The general form:** in a pipeline with a repair stage, the reported failure is whichever stage
+failed *last*, and that is almost never the one that caused it. If a stage can mask an earlier
+stage's verdict, it will.
+
+### 6.11 The pattern
+
+Nine of these ten are the same shape: **an instrument inherited a property from the thing it
 was measuring**, and therefore could not discriminate. The τ alarm inherited τ. The dead-program
 detector inherited the store's sparsity. The volatility probe inherited WikiKG's label scheme.
 `exact_match` inherited the corpus's arbitrary identifiers. The eval sampler inherited the
 corpus's task *set* — the independent variable itself. The relabelling probe inherited the
 tokenizer's opinion of an underscore.
 
+The tenth, §6.10, is a different shape and worth keeping separate: nothing was inherited and no
+stage misbehaved — the pipeline simply reported its last failure instead of its first, and a
+correct system described itself incorrectly.
+
 The one defence that worked every time was cheap: **run the instrument on data known to be
 healthy, and require it to say so.** An alarm that fires on a clean run is broken, not sensitive.
+§6.10 adds a second: **when a measurement is available directly, take it directly** rather than
+inferring it from a label some other stage wrote.
 
 ---
 
@@ -958,14 +1100,18 @@ Stated in advance, so that meeting them is not negotiable after the fact.
 | 1 | The emitter contributes causally | Ablation gap inside the noise floor for two consecutive rounds | **Holding.** 0.4125 vs 0.0618 |
 | 2 | Emitted programs read their inputs | Liveness below 95% | **Holding.** 59/59 |
 | 3 | The interface generalizes across relations | Role vocabulary grows with relation coverage | **Failing.** 95–98% per-relation; Phase 2 is the response |
-| 4 | Accepted bindings are separable from noise | Separation to the control role collapses toward 1× | **Holding.** 14.3× |
+| 4 | Accepted bindings are separable from noise | Separation to the control role collapses toward 1× | **Was breached by depth, now held by a shape.** 14.3× at 1–3 hops, but 0.57× at 5 and below zero at 7 under the shipped whole-chain program — the criterion fired and nothing was watching, because no instrument went past 3 hops. Two hops per frame holds 8–18× to depth 12 (§5.9) |
 | 5 | Dropping `chain` costs no verified answers | VM-verified answer rate drops in the treatment arm | **Triggered, marginally.** −1.0 of 600 over 3 seeds on the held split — two malformed-entity questions, both refusals, 0 wrong. See §8 for why the criterion, not the arm, is what should change |
 | 6 | Structure, not a relation table, carries it | Relabelled accuracy below 80% of labelled after 3 rounds | **Failing.** 0.247 / 0.262 of labelled (§5.7). The manifest alone does not fix it (§5.8) — the grammar has to enforce |
 | 8 | Each brain zone earns its name | A zone's ablation sits inside the noise floor, or it has no production caller | **Mixed.** 3 zones load-bearing; 3 seams inside the floor; 3 modules declare WIRED with 0 callers (§5.6) |
+| 9 | Reasoning depth is a property of the machine | A change to the program *shape* lifts it | **Falsified, 2026-09-15.** The limit was `build_chain_program`, not the VSA: 62 → 246 of 288 correct at depths 2–10 (§5.9) |
 | 7 | Zero wrong answers spoken | Any confidently wrong spoken answer | **Breached in eval.** The same 1 wrong answer in **both** arms' val sets (§8) |
 
 Row 7 deserves its own note. The ablation run (§5.1) recorded **0 wrong answers across all four
-arms and 240 questions** on the serving path, which is the path the kill line governs. The breach
+arms and 240 questions** on the serving path, which is the path the kill line governs. §5.9 has
+since added **2,592 questions at depths up to ten, with the emitter emitting chains of the wrong
+length most of the time, and 0 wrong answers** — the strongest evidence for this row so far, and
+the first collected somewhere the model is out of its depth rather than inside it. The breach
 in §8 is on the *training eval* — a generated program scored against gold, not an answer spoken to
 a user. They are different surfaces and the distinction is real, but it is not a reason to
 discount it: the same emitter on the serving path produces answers the host walks and the VM
@@ -1040,3 +1186,14 @@ or a record of an instrument that would have told us we were already there.
   rewarded guessing while reading like rigour. **v14e_nochain is adopted.** The held split is now
   at its ceiling (v13e 600/600 on two seeds) and can no longer separate the arms — WO-2.5, whose
   criterion has been rewritten into the two-clause form, is the next real test.
+- **2026-09-15, depth (WO-2.6)** — CLUTRR and ProofWriter acquired, and the first instrument to
+  look past three hops immediately found a wall: one frame holds the whole chain, so the true
+  binding halves per hop, meets the noise floor at six and crosses below it at seven. Falsifying
+  row 9 took one parameter — two hops per frame, each with its own control — and the curve went
+  flat: **62 → 246 of 288 correct at depths 2 to 10**, separation 8–18× to depth 12. With the
+  emitter in the loop it generalizes about one hop past its training data and is gone by seven,
+  failing on chain *length* rather than on relations, and the disposer refuses the wrong-length
+  plans before a hop is walked. **0 wrong and 0 null-control breaches in 2,592 questions.** The
+  change is measured, not switched on: `chunk` defaults to 0 and a test pins the shipped shape
+  byte-for-byte. One more instrument caught lying on the way (§6.10). ProofWriter needs a
+  rule-application engine that does not exist, which is a gap to state rather than a score to post.
