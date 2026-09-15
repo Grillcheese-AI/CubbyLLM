@@ -1,0 +1,50 @@
+CLUTRR fork records with an ambiguous (relation, subject) and a UNIQUE gold path: 65
+  by depth: {"2": 12, "3": 16, "4": 11, "5": 9, "6": 9, "7": 4, "8": 4}
+  ambiguous keys per record: [(1, 65)]
+
+example 1506b09f-e502-4f31-bbff-3948e2ba3dba  (2 hops, gold Kimberley)
+  Q: Who is the daughter of the mother of Anne?
+    Jenny is the mother of Anne
+    Mary is the daughter of Jenny   <- the fork
+    Jenny is the mother of Mary
+    Kimberley is the daughter of Jenny   <- the fork
+
+single-path walk                      65
+  verified                            12   (correct 12, WRONG 0)
+  refused                             53
+    ambiguous_hop                     53
+
+branching over the ambiguous hop      53
+  2way                                52  candidates
+  3way                                 1  candidates
+  recovered (one answer certified)    32   correct 32, WRONG 0
+  enumerated refusal                  18   gold among the alternatives: 18
+  still refused                        3
+
+id             hops  cands  ok  answers   outcome
+------------------------------------------------------------------------
+1506b09f-e50      2      2   2        2   enumerated refusal
+b27ca800-2d5      2      2   2        2   enumerated refusal
+9d897a07-9b2      2      2   1        1   recovered (correct)
+8586a1c0-67f      2      2   2        2   enumerated refusal
+2016c122-6eb      3      2   2        2   enumerated refusal
+f03d7f4e-ace      2      2   1        1   recovered (correct)
+6bbb569d-df0      3      2   1        1   recovered (correct)
+886d20c3-a12      3      2   2        2   enumerated refusal
+fde3dfc2-cb6      4      2   1        1   recovered (correct)
+169676f8-783      3      2   2        2   enumerated refusal
+c688e19a-878      2      3   3        3   enumerated refusal
+46c6b126-e26      3      2   1        1   recovered (correct)
+64b5beb1-43a      4      2   1        1   recovered (correct)
+cd46ff5c-ae9      4      2   1        1   recovered (correct)
+... 39 more
+
+what a GUESSING system would have said (it did not):
+   Who is the daughter of the mother of Anne?
+     gold Kimberley | alternatives ['Kimberley', 'Mary'] | would have picked Mary
+   Who is the sister of the son of William?
+     gold Connie | alternatives ['Christina', 'Connie'] | would have picked Christina
+   Who is the daughter of the father of Beverly?
+     gold Rachel | alternatives ['Julia', 'Rachel'] | would have picked Julia
+
+VERDICT: survives; 32 blind refusals became certified answers (32 correct, 0 wrong) and 18 became enumerated refusals

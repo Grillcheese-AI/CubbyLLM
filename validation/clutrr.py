@@ -181,6 +181,125 @@ def chain(rec: dict) -> list[tuple[str, str, str]] | None:
     return out
 
 
+def paths(rec: dict) -> list[list[tuple[str, str, str]]] | None:
+    """EVERY simple path from the query's first entity to its second, as named edges.
+
+    `chain()` returns the single path and None on a fork. This returns all of
+    them, which is what the ambiguity work needs: 411 of the 1,146 test records
+    are forks, and in 88 of those two facts share the same (relation, subject) --
+    "Jenny is the mother of Mary" and "Jenny is the mother of Anne" -- so a hop
+    asking for "the daughter of Jenny" has two admissible answers and the walk
+    refuses with `ambiguous_hop`. That refusal is the thing host-owned branching
+    is supposed to convert into either a certified answer or an ENUMERATED
+    refusal, and these are the only records in the set that produce it.
+    """
+    try:
+        edges = ast.literal_eval(rec["story_edges"])
+        types = ast.literal_eval(rec["edge_types"])
+        q0, q1 = ast.literal_eval(rec["query_edge"])
+    except (ValueError, SyntaxError, KeyError):
+        return None
+    names = _names(rec)
+    if len(edges) != len(types) or not edges:
+        return None
+    if max(max(e) for e in edges) >= len(names) or max(q0, q1) >= len(names):
+        return None
+
+    adj: dict[int, list[tuple[int, str]]] = {}
+    for (i, j), r in zip(edges, types):
+        adj.setdefault(i, []).append((j, r))
+
+    out: list[list[tuple[str, str, str]]] = []
+
+    def walk(node: int, seen: set[int], acc: list[tuple[str, str, str]]) -> None:
+        if node == q1 and acc:
+            out.append(list(acc)); return
+        if len(acc) >= len(edges):
+            return
+        for j, r in adj.get(node, []):
+            if j in seen:
+                continue
+            acc.append((names[node], r, names[j]))
+            walk(j, seen | {j}, acc)
+            acc.pop()
+
+    walk(q0, {q0}, [])
+    return out
+
+
+def ambiguous_keys(rec: dict) -> list[tuple[str, str]]:
+    """The (relation, subject) pairs this record states more than once.
+
+    Each one is a hop with several admissible answers. Normalized the way
+    `planner.accepts` compares them, so this counts what the WALK will see.
+    """
+    # imported here, not at module scope, so this file stays importable on its own
+    from cubbyllm.reasoning.planner import normalize
+
+    try:
+        edges = ast.literal_eval(rec["story_edges"])
+        types = ast.literal_eval(rec["edge_types"])
+    except (ValueError, SyntaxError, KeyError):
+        return []
+    names = _names(rec)
+    if not edges or max(max(e) for e in edges) >= len(names):
+        return []
+    seen: dict[tuple[str, str], int] = {}
+    for (i, j), r in zip(edges, types):
+        key = (normalize(r), normalize(names[i]))
+        seen[key] = seen.get(key, 0) + 1
+    return [k for k, v in seen.items() if v > 1]
+
+
+def all_facts(rec: dict) -> list[str]:
+    """Every edge of the record as a fact, forks included -- the store the walk sees."""
+    try:
+        edges = ast.literal_eval(rec["story_edges"])
+        types = ast.literal_eval(rec["edge_types"])
+    except (ValueError, SyntaxError, KeyError):
+        return []
+    names = _names(rec)
+    if not edges or max(max(e) for e in edges) >= len(names):
+        return []
+    return [fact(names[i], r, names[j]) for (i, j), r in zip(edges, types)]
+
+
+def fork_items(split: str = "test", task: str = DEFAULT_TASK, root: str | None = None,
+               max_hops: int | None = None) -> list[dict]:
+    """Records with a UNIQUE gold path but at least one ambiguous (relation, subject).
+
+    The store carries every edge, so the walk meets the fork; the gold path is
+    unique, so there is exactly one right answer to be had. Records with several
+    gold paths are excluded -- there the question itself is ambiguous, which is a
+    different problem from a hop being ambiguous.
+    """
+    recs = load_raw(split, task, root)
+    verify_convention(recs)
+    out = []
+    for rec in recs:
+        keys = ambiguous_keys(rec)
+        if not keys:
+            continue
+        ps = paths(rec)
+        if not ps or len(ps) != 1:
+            continue
+        ch = ps[0]
+        if max_hops is not None and len(ch) > max_hops:
+            continue
+        out.append({
+            "id": rec.get("id"),
+            "hops": len(ch),
+            "chain": ch,
+            "facts": all_facts(rec),          # the FULL store, forks included
+            "path_facts": [fact(*e) for e in ch],
+            "ambiguous_keys": keys,
+            "question": question(ch),
+            "gold": gold(ch),
+            "clutrr_target": rec.get("target_text"),
+        })
+    return out
+
+
 def fact(a: str, rel: str, b: str) -> str:
     """The edge `(a, rel, b)` as the project's fact template: 'b is the rel of a'."""
     return f"{b} is the {rel} of {a}"

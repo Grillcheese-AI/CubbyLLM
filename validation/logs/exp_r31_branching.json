@@ -1,0 +1,782 @@
+{
+ "derived": true,
+ "note": "CLUTRR-DERIVED chain questions over the fork records; not a CLUTRR score.",
+ "n_items": 65,
+ "chunk": 2,
+ "max_branches": 16,
+ "by_depth": {
+  "2": 12,
+  "3": 16,
+  "4": 11,
+  "5": 9,
+  "6": 9,
+  "7": 4,
+  "8": 4
+ },
+ "counts": {
+  "single:refused": 53,
+  "single:why:ambiguous_hop": 53,
+  "ambiguous": 53,
+  "ambiguous:2way": 52,
+  "branch:enumerated": 18,
+  "branch:enumerated:gold_present": 18,
+  "branch:recovered": 32,
+  "branch:correct": 32,
+  "ambiguous:3way": 1,
+  "branch:still_refused": 3,
+  "single:verified": 12,
+  "single:correct": 12
+ },
+ "rows": [
+  {
+   "id": "1506b09f-e502-4f31-bbff-3948e2ba3dba",
+   "hops": 2,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Kimberley",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Kimberley",
+    "Mary"
+   ]
+  },
+  {
+   "id": "b27ca800-2d58-446e-bfd3-e6e7bb033032",
+   "hops": 2,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Connie",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Christina",
+    "Connie"
+   ]
+  },
+  {
+   "id": "9d897a07-9b2f-480a-9c24-9c724c498fa5",
+   "hops": 2,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Richard",
+   "outcome": "recovered (correct)",
+   "spoke": "Richard"
+  },
+  {
+   "id": "8586a1c0-67f5-4154-84b7-07b5e16bfa21",
+   "hops": 2,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Rachel",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Julia",
+    "Rachel"
+   ]
+  },
+  {
+   "id": "2016c122-6eb7-4576-bfba-b843717ae858",
+   "hops": 3,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Jeremy",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Jeff",
+    "Jeremy"
+   ]
+  },
+  {
+   "id": "f03d7f4e-ace6-4d22-ad50-2ff11958ea24",
+   "hops": 2,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Stephen",
+   "outcome": "recovered (correct)",
+   "spoke": "Stephen"
+  },
+  {
+   "id": "6bbb569d-df05-4538-8ac4-b52a929a8239",
+   "hops": 3,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Stephanie",
+   "outcome": "recovered (correct)",
+   "spoke": "Stephanie"
+  },
+  {
+   "id": "886d20c3-a129-45d3-b511-aafaf593ef34",
+   "hops": 3,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Jonathan",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Christian",
+    "Jonathan"
+   ]
+  },
+  {
+   "id": "fde3dfc2-cb64-4a84-927e-7b12007e04cf",
+   "hops": 4,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Phillip",
+   "outcome": "recovered (correct)",
+   "spoke": "Phillip"
+  },
+  {
+   "id": "169676f8-783c-498c-8020-e618a27d4bbd",
+   "hops": 3,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Laura",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Laura",
+    "Lee"
+   ]
+  },
+  {
+   "id": "c688e19a-878a-4376-a047-1c29be2fd504",
+   "hops": 2,
+   "candidates": 3,
+   "verified_branches": 3,
+   "distinct_answers": 3,
+   "gold": "Davis",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Brian",
+    "Davis",
+    "Oliver"
+   ]
+  },
+  {
+   "id": "46c6b126-e265-4554-9f66-1815aeb9c479",
+   "hops": 3,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Kecia",
+   "outcome": "recovered (correct)",
+   "spoke": "Kecia"
+  },
+  {
+   "id": "64b5beb1-43a7-4ec3-9697-597a2de7ba20",
+   "hops": 4,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Kent",
+   "outcome": "recovered (correct)",
+   "spoke": "Kent"
+  },
+  {
+   "id": "cd46ff5c-ae97-426b-a248-f94db1010b05",
+   "hops": 4,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Johnny",
+   "outcome": "recovered (correct)",
+   "spoke": "Johnny"
+  },
+  {
+   "id": "570608d2-2c17-472b-a986-287b8ab4bca7",
+   "hops": 3,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Martha",
+   "outcome": "recovered (correct)",
+   "spoke": "Martha"
+  },
+  {
+   "id": "93c2b9fb-e6bd-4642-b7fb-dd6eb9f30f92",
+   "hops": 4,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Brandi",
+   "outcome": "recovered (correct)",
+   "spoke": "Brandi"
+  },
+  {
+   "id": "e9c0d9fa-fcbf-440c-a82a-4a4a0bffb256",
+   "hops": 5,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Chuck",
+   "outcome": "recovered (correct)",
+   "spoke": "Chuck"
+  },
+  {
+   "id": "8c01c61b-0576-4021-a8d0-f477937e08cb",
+   "hops": 4,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Reynaldo",
+   "outcome": "recovered (correct)",
+   "spoke": "Reynaldo"
+  },
+  {
+   "id": "7c9cbe99-3160-4534-af43-52d87ab858f4",
+   "hops": 5,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "George",
+   "outcome": "recovered (correct)",
+   "spoke": "George"
+  },
+  {
+   "id": "88fcf1ab-0cd1-45f2-8e02-0955245c78c1",
+   "hops": 4,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Rufus",
+   "outcome": "recovered (correct)",
+   "spoke": "Rufus"
+  },
+  {
+   "id": "4e0867d6-7e09-415f-bd3a-d368113cf89f",
+   "hops": 3,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Martha",
+   "outcome": "recovered (correct)",
+   "spoke": "Martha"
+  },
+  {
+   "id": "3940f4b5-51c9-4aaa-9884-bced04a794aa",
+   "hops": 5,
+   "candidates": 2,
+   "verified_branches": 0,
+   "distinct_answers": 0,
+   "gold": "Maxine",
+   "outcome": "still refused"
+  },
+  {
+   "id": "537034d7-c4ea-48cc-8d07-115209eb077d",
+   "hops": 5,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "David",
+   "outcome": "recovered (correct)",
+   "spoke": "David"
+  },
+  {
+   "id": "cf7f99d9-f7b0-4cc7-9f08-864ad835c168",
+   "hops": 3,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Larry",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "David",
+    "Larry"
+   ]
+  },
+  {
+   "id": "de2f466c-a465-4257-ae00-9fbd6b466c6b",
+   "hops": 4,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Diane",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Diane",
+    "Joyce"
+   ]
+  },
+  {
+   "id": "0acc58df-9edc-4ba4-953b-f0893950cec7",
+   "hops": 5,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Reynaldo",
+   "outcome": "recovered (correct)",
+   "spoke": "Reynaldo"
+  },
+  {
+   "id": "2bb1b37a-fba6-4b30-861e-ea4933f2aa8f",
+   "hops": 4,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Joyce",
+   "outcome": "recovered (correct)",
+   "spoke": "Joyce"
+  },
+  {
+   "id": "de6d7545-fc6c-41c8-b575-7966c917943d",
+   "hops": 5,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Craig",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Craig",
+    "Larry"
+   ]
+  },
+  {
+   "id": "514bacc2-2c92-4b59-a917-343e8fdd1fc1",
+   "hops": 4,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Judy",
+   "outcome": "recovered (correct)",
+   "spoke": "Judy"
+  },
+  {
+   "id": "a589b6f7-13b8-4d1f-b9c8-c0a059277841",
+   "hops": 6,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Richard",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Joel",
+    "Richard"
+   ]
+  },
+  {
+   "id": "9b7d2988-8e10-41a7-86ef-191d42c41ff0",
+   "hops": 3,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Carlos",
+   "outcome": "recovered (correct)",
+   "spoke": "Carlos"
+  },
+  {
+   "id": "956e68a4-f930-4778-a9ae-0589f713e89a",
+   "hops": 6,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Christopher",
+   "outcome": "recovered (correct)",
+   "spoke": "Christopher"
+  },
+  {
+   "id": "addf2ae1-07d5-4fc3-85c6-d187f102e349",
+   "hops": 2,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Roger",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Daniel",
+    "Roger"
+   ]
+  },
+  {
+   "id": "2ce0c549-ced4-438a-ab61-b09454438c77",
+   "hops": 3,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Jamie",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Jamie",
+    "Julie"
+   ]
+  },
+  {
+   "id": "c5f2fbc1-d782-4c3b-b661-162b4df09abc",
+   "hops": 6,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Thomas",
+   "outcome": "recovered (correct)",
+   "spoke": "Thomas"
+  },
+  {
+   "id": "dfc3195c-ff2c-4046-949e-81d76e17fbf9",
+   "hops": 4,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Gregory",
+   "outcome": "recovered (correct)",
+   "spoke": "Gregory"
+  },
+  {
+   "id": "35f40783-7fff-4c56-a172-56aa6033a191",
+   "hops": 6,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Jamie",
+   "outcome": "recovered (correct)",
+   "spoke": "Jamie"
+  },
+  {
+   "id": "decbabe1-9642-4632-b708-1c3774ef86bd",
+   "hops": 5,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Lawrence",
+   "outcome": "recovered (correct)",
+   "spoke": "Lawrence"
+  },
+  {
+   "id": "7e8e1c79-e5dd-4ad1-94bf-398a71f95837",
+   "hops": 7,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Gino",
+   "outcome": "recovered (correct)",
+   "spoke": "Gino"
+  },
+  {
+   "id": "432129a3-4ec4-46ae-9664-0c0f9718293e",
+   "hops": 7,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "William",
+   "outcome": "recovered (correct)",
+   "spoke": "William"
+  },
+  {
+   "id": "21d72fb8-86e9-4cb6-99ac-5c6d1e6b3ee8",
+   "hops": 7,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Joseph",
+   "outcome": "recovered (correct)",
+   "spoke": "Joseph"
+  },
+  {
+   "id": "2eaeb3d0-a761-4772-9bf9-0f6e34f9eaba",
+   "hops": 6,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Gino",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Charlie",
+    "Gino"
+   ]
+  },
+  {
+   "id": "b797f1ad-0a5a-4f7f-9d98-85efbb3ac3c4",
+   "hops": 5,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Gordon",
+   "outcome": "recovered (correct)",
+   "spoke": "Gordon"
+  },
+  {
+   "id": "a2f54750-a00c-4c53-96bf-3ba7dc32b42b",
+   "hops": 8,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Danielle",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Danielle",
+    "Ouida"
+   ]
+  },
+  {
+   "id": "ceb25bfa-0268-4f1e-b938-4d6bb2ee28d9",
+   "hops": 8,
+   "candidates": 2,
+   "verified_branches": 0,
+   "distinct_answers": 0,
+   "gold": "John",
+   "outcome": "still refused"
+  },
+  {
+   "id": "f4600a38-e241-4616-b91a-9a37b5a9fc5f",
+   "hops": 7,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Ouida",
+   "outcome": "recovered (correct)",
+   "spoke": "Ouida"
+  },
+  {
+   "id": "c60fd221-33ed-441d-bb51-9d0f4e3a3254",
+   "hops": 6,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Joy",
+   "outcome": "recovered (correct)",
+   "spoke": "Joy"
+  },
+  {
+   "id": "25340b9a-e7bd-4c56-a661-3f2f2182df4b",
+   "hops": 2,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Valerie",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Joy",
+    "Valerie"
+   ]
+  },
+  {
+   "id": "5be81a88-5e77-4809-85f1-28cdbcfa74e8",
+   "hops": 8,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Kerrie",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Kerrie",
+    "Machelle"
+   ]
+  },
+  {
+   "id": "4f995af8-1a22-4a62-bbe2-726542a533bf",
+   "hops": 8,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Frances",
+   "outcome": "recovered (correct)",
+   "spoke": "Frances"
+  },
+  {
+   "id": "81cd6452-0037-4e70-9963-28b8d96e72d0",
+   "hops": 5,
+   "candidates": 2,
+   "verified_branches": 2,
+   "distinct_answers": 2,
+   "gold": "Isabel",
+   "outcome": "enumerated refusal",
+   "alternatives": [
+    "Isabel",
+    "Machelle"
+   ]
+  },
+  {
+   "id": "eef22690-b1b6-4928-8878-497a0f2b618f",
+   "hops": 6,
+   "candidates": 2,
+   "verified_branches": 1,
+   "distinct_answers": 1,
+   "gold": "Scott",
+   "outcome": "recovered (correct)",
+   "spoke": "Scott"
+  },
+  {
+   "id": "56c3048d-e998-4c7d-9aa9-42468beb2d1e",
+   "hops": 6,
+   "candidates": 2,
+   "verified_branches": 0,
+   "distinct_answers": 0,
+   "gold": "Victor",
+   "outcome": "still refused"
+  }
+ ],
+ "wrongs": [],
+ "would_have_guessed": [
+  {
+   "q": "Who is the daughter of the mother of Anne?",
+   "gold": "Kimberley",
+   "would_have_picked": "Mary",
+   "alternatives": [
+    "Kimberley",
+    "Mary"
+   ]
+  },
+  {
+   "q": "Who is the sister of the son of William?",
+   "gold": "Connie",
+   "would_have_picked": "Christina",
+   "alternatives": [
+    "Christina",
+    "Connie"
+   ]
+  },
+  {
+   "q": "Who is the daughter of the father of Beverly?",
+   "gold": "Rachel",
+   "would_have_picked": "Julia",
+   "alternatives": [
+    "Julia",
+    "Rachel"
+   ]
+  },
+  {
+   "q": "Who is the brother of the sister of the daughter of Jason?",
+   "gold": "Jeremy",
+   "would_have_picked": "Jeff",
+   "alternatives": [
+    "Jeff",
+    "Jeremy"
+   ]
+  },
+  {
+   "q": "Who is the brother of the sister of the sister of Ruth?",
+   "gold": "Jonathan",
+   "would_have_picked": "Christian",
+   "alternatives": [
+    "Christian",
+    "Jonathan"
+   ]
+  },
+  {
+   "q": "Who is the daughter of the wife of the father of Phillip?",
+   "gold": "Laura",
+   "would_have_picked": "Lee",
+   "alternatives": [
+    "Laura",
+    "Lee"
+   ]
+  },
+  {
+   "q": "Who is the son of the wife of Kent?",
+   "gold": "Davis",
+   "would_have_picked": "Oliver",
+   "alternatives": [
+    "Brian",
+    "Davis",
+    "Oliver"
+   ]
+  },
+  {
+   "q": "Who is the brother of the son of the brother of Martha?",
+   "gold": "Larry",
+   "would_have_picked": "David",
+   "alternatives": [
+    "David",
+    "Larry"
+   ]
+  },
+  {
+   "q": "Who is the sister of the brother of the son of the sister of Martha?",
+   "gold": "Diane",
+   "would_have_picked": "Joyce",
+   "alternatives": [
+    "Diane",
+    "Joyce"
+   ]
+  },
+  {
+   "q": "Who is the son of the wife of the brother of the sister of the brother of Spencer?",
+   "gold": "Craig",
+   "would_have_picked": "Larry",
+   "alternatives": [
+    "Craig",
+    "Larry"
+   ]
+  },
+  {
+   "q": "Who is the brother of the brother of the daughter of the husband of the sister of the son of Carlos?",
+   "gold": "Richard",
+   "would_have_picked": "Joel",
+   "alternatives": [
+    "Joel",
+    "Richard"
+   ]
+  },
+  {
+   "q": "Who is the brother of the brother of Mary?",
+   "gold": "Roger",
+   "would_have_picked": "Daniel",
+   "alternatives": [
+    "Daniel",
+    "Roger"
+   ]
+  },
+  {
+   "q": "Who is the sister of the daughter of the wife of Carlos?",
+   "gold": "Jamie",
+   "would_have_picked": "Julie",
+   "alternatives": [
+    "Jamie",
+    "Julie"
+   ]
+  },
+  {
+   "q": "Who is the brother of the son of the brother of the father of the brother of the son of Ethel?",
+   "gold": "Gino",
+   "would_have_picked": "Charlie",
+   "alternatives": [
+    "Charlie",
+    "Gino"
+   ]
+  },
+  {
+   "q": "Who is the sister of the son of the husband of the sister of the sister of the daughter of the grandmother of the daughter of Harry?",
+   "gold": "Danielle",
+   "would_have_picked": "Ouida",
+   "alternatives": [
+    "Danielle",
+    "Ouida"
+   ]
+  },
+  {
+   "q": "Who is the sister of the brother of Brian?",
+   "gold": "Valerie",
+   "would_have_picked": "Joy",
+   "alternatives": [
+    "Joy",
+    "Valerie"
+   ]
+  },
+  {
+   "q": "Who is the sister of the sister of the son of the sister of the sister of the brother of the uncle of the son of Kenneth?",
+   "gold": "Kerrie",
+   "would_have_picked": "Machelle",
+   "alternatives": [
+    "Kerrie",
+    "Machelle"
+   ]
+  },
+  {
+   "q": "Who is the sister of the son of the uncle of the sister of the son of Melissa?",
+   "gold": "Isabel",
+   "would_have_picked": "Machelle",
+   "alternatives": [
+    "Isabel",
+    "Machelle"
+   ]
+  }
+ ],
+ "verdict": "survives; 32 blind refusals became certified answers (32 correct, 0 wrong) and 18 became enumerated refusals",
+ "wall_s": 0.5
+}
