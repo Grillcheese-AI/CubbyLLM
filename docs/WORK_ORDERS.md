@@ -1036,10 +1036,63 @@ separate, cheap change, and `exp_r28` is the instrument that would show it worki
 Logs: `validation/logs/exp_r28_depth_capacity{,_chunk1,_chunk2,_chunk3}.{json,log}`.
 Loader and its three convention checks: `validation/clutrr.py`.
 
-**The next build this implies** is the chunked program shape in
-`cubbyllm/reasoning/programs.py`, gated on the same experiment re-run end to end
-through `learn_and_answer`. Not done here: `programs.py` is on the serving path, and
-this is a measurement of a proposal, not the proposal shipped.
+### RESULT — `exp_r29_clutrr_serve`, 2026-09-15: the whole path, and the shape confirmed end to end
+
+`exp_r28` measured the VM alone. This runs the system: question → the shipped grammar →
+walk → VM → spoken or refused, on CLUTRR's compositional split, one tiny store per
+question built from that record's own certified graph so retrieval is not the variable.
+32 questions at each depth 2–10, 288 per arm, **reported correct / refused / wrong**.
+
+| depth | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | total |
+|---|---|---|---|---|---|---|---|---|---|---|
+| whole chain — correct | 32 | 30 | **0** | 0 | 0 | 0 | 0 | 0 | 0 | 62 |
+| chunk 2 — correct | 32 | 30 | 31 | 30 | 28 | 25 | 25 | 24 | 21 | **246** |
+| both — wrong | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | **0** |
+
+The shipped shape falls off a cliff exactly where `exp_r28` said it would: 62 of 288,
+all of them at two and three hops, and a flat zero from four on. Two hops per frame
+answers **184 more questions at depths no training record reaches**, degrading gently
+to 21/32 at ten hops.
+
+**0 wrong answers in 864 questions**, and the null control — the outermost relation
+replaced by a token no fact states — refused 288 of 288 with `unknown_relation`. The
+kill line holds at every depth, under both shapes.
+
+`cubbyllm/reasoning/programs.py` now takes `chunk`, threaded through `pipeline.answer`
+and `learn_and_answer`. **The default is 0 and the serving path is unchanged**: with
+`chunk=0` the emitted program is byte-identical to before the parameter existed, and
+`tests/reasoning/test_programs.py` asserts exactly that — if it ever stops being true,
+every number this repo has measured against the old shape is off by an unknown amount.
+Flipping the default is Nick's call, not this experiment's.
+
+**One instrument lies and it should be fixed.** Every refusal above reports
+`retrieval_exhausted`, which is not what happened. The walk found the right facts; the
+VM rejected the binding as below tau; the verify-stage repair then banned that fact and
+re-walked; and with a one-record store there was nothing else to find, so the refusal
+surfaced as exhausted retrieval. The reason names the last symptom, not the cause. A
+`vm_below_tau` reason emitted at the point of the tau test would have made
+`exp_r28` unnecessary — this is `PATH.md` §6 again, and it is a small fix.
+
+Logs: `validation/logs/exp_r29_clutrr_serve.{json,log}`.
+
+**A label that must travel with every number above.** This is **CLUTRR-derived, not
+CLUTRR**. CLUTRR asks for the composite relation between two named entities; these are
+the nested chain questions its graphs license ("Who is the brother of the grandson of
+Jason?"), whose answer is the entity at the end of the walk. What transfers is what
+matters — real graphs, an unseen relation vocabulary, depths 2 to 10 — but it is not a
+CLUTRR score and must never be posted as one. The log carries `"derived": true` and
+that sentence so a future reader cannot pick the number up without it.
+
+### The next builds this implies
+
+1. **`vm_below_tau` as its own refusal reason** — above; cheap, and it is the
+   difference between an instrument that reports a cause and one that reports a
+   symptom.
+2. **tau from a measured quantile, not the expectation** — `exp_r28` shows tau
+   rejecting 2–4% of *correct* bindings at every depth.
+3. **Flip `chunk` on in the serving path** once 1 and 2 land, gated on the full gate
+   battery (exp_r17, exp_r9, exp_r11, exp_r18) showing no regression at 1–3 hops,
+   where the shipped shape is already at its ceiling.
 
 ### A contamination warning to carry into any GSM8K number
 

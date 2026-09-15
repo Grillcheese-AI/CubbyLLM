@@ -1,0 +1,62 @@
+CLUTRR gen_train23_test2to10/test: 1146 records, 713 simple paths; convention forward 1486/1486
+available by depth: {"2": 38, "3": 105, "4": 177, "5": 131, "6": 63, "7": 61, "8": 61, "9": 45, "10": 32}
+sampled: {"2": 32, "3": 32, "4": 32, "5": 32, "6": 32, "7": 32, "8": 32, "9": 32, "10": 32}  (288 questions per arm)
+
+  whole_chain    done in 2s
+  chunk2         done in 1s
+  null_relation  done in 0s
+
+whole_chain  (tau = the bundle's, chunk=0)
+   depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
+  ----------------------------------------------------------------------------
+       2   32       32        0      0       0   0.4736   -
+       3   32       30        2      0       0   0.2202   retrieval_exhausted
+       4   32        0       32      0       0   0.2202   retrieval_exhausted
+       5   32        0       32      0       0   0.2202   retrieval_exhausted
+       6   32        0       32      0       0   0.2202   retrieval_exhausted
+       7   32        0       32      0       0   0.2202   retrieval_exhausted
+       8   32        0       32      0       0   0.2202   retrieval_exhausted
+       9   32        0       32      0       0   0.2202   retrieval_exhausted
+      10   32        0       32      0       0   0.2202   retrieval_exhausted
+
+chunk2  (tau = the bundle's, chunk=2)
+   depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
+  ----------------------------------------------------------------------------
+       2   32       32        0      0       0   0.4736   -
+       3   32       30        2      0       0   0.4736   retrieval_exhausted
+       4   32       31        1      0       0   0.4736   retrieval_exhausted
+       5   32       30        2      0       0   0.4736   retrieval_exhausted
+       6   32       28        4      0       0   0.4736   retrieval_exhausted
+       7   32       25        7      0       0   0.4736   retrieval_exhausted
+       8   32       25        7      0       0   0.4736   retrieval_exhausted
+       9   32       24        8      0       0   0.4736   retrieval_exhausted
+      10   32       21       11      0       0   0.4736   retrieval_exhausted
+
+null_relation  (tau = the bundle's, chunk=2)
+   depth    n  correct  refused  WRONG  BREACH      tau   top refusal reason
+  ----------------------------------------------------------------------------
+       2   32        0       32      0       0   0.4736   unknown_relation
+       3   32        0       32      0       0   0.4736   unknown_relation
+       4   32        0       32      0       0   0.4736   unknown_relation
+       5   32        0       32      0       0   0.4736   unknown_relation
+       6   32        0       32      0       0   0.4736   unknown_relation
+       7   32        0       32      0       0   0.4736   unknown_relation
+       8   32        0       32      0       0   0.4736   unknown_relation
+       9   32        0       32      0       0   0.4736   unknown_relation
+      10   32        0       32      0       0   0.4736   unknown_relation
+
+the shape, side by side -- correct answers at each depth
+   depth   whole chain   chunk 2    gain
+  ----------------------------------------
+       2            32        32      +0
+       3            30        30      +0
+       4             0        31     +31
+       5             0        30     +30
+       6             0        28     +28
+       7             0        25     +25
+       8             0        25     +25
+       9             0        24     +24
+      10             0        21     +21
+     >=4             0       184    +184   <- the depths no training record reaches
+
+VERDICT: survives; the chunked shape gains 184 correct at depth >= 4 with 0 wrong

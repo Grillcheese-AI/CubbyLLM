@@ -447,7 +447,7 @@ def resolve_wordings(question: str, plan: QuestionPlan, source, known, aliases: 
 def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: Source,
                      tau_vm: float, tau_ret: float = 0.0, top_k: int = 3, max_repairs: int = 1,
                      plan: QuestionPlan | None = None, max_entities: int = 2,
-                     resolvers: list | None = None) -> LearnResult:
+                     resolvers: list | None = None, chunk: int = 0) -> LearnResult:
     """One question through the loop. `store` needs `add(fact)`, `__contains__`,
     `texts`, `index` (a TripleIndex) and `lookup` (its `index.hop`); `known` is a
     `StoreRelations` (gets `add`). A walk follows every round that admitted a fact;
@@ -473,7 +473,8 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
     def walk():
         res = answer(question, retrieve, run_fn, tau_vm=tau_vm, tau_ret=tau_ret, top_k=top_k,
                      max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan, aliases=aliases,
-                     times=getattr(store, "times", None))     # the source's own dates: the ONLY hop tie-break
+                     times=getattr(store, "times", None),     # the source's own dates: the ONLY hop tie-break
+                     chunk=chunk)                             # hops per frame; 0 = the shipped whole-chain shape
         # the latent tier: a verified chain that rests on a fact only a latent source stated is not spoken;
         # the would-be answer and the facts are on record, and a second source's agreement lifts the hold
         if res.verified and prov is not None:

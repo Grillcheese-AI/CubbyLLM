@@ -226,7 +226,7 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
 def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
            top_k: int = 3, max_repairs: int = 1, lookup=None, known=None,
            plan: QuestionPlan | None = None, aliases: dict[str, list[str]] | None = None,
-           times: dict | None = None) -> CoTResult:
+           times: dict | None = None, chunk: int = 0) -> CoTResult:
     """`lookup`: a `TripleIndex.hop`-shaped callable; when given, every hop is
     looked up before it is searched (see `_walk`).
 
@@ -311,7 +311,12 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
 
         display_rels = [(t.rel if i == 0 else plan.relations[i]) or t.rel
                         for i, t in enumerate(triples)]
-        source, fns = build_chain_program(triples, display_rels)
+        # `chunk` is the number of hops that share a frame; 0 keeps the shipped
+        # whole-chain shape. The CALLER owns tau: under chunking the frame holds
+        # `chunk` bindings rather than `n_hop`, so the applicable threshold is
+        # tau(min(chunk, n_hop)), not tau(n_hop). Passing chunk without moving
+        # tau measures nothing (exp_r28, WO-2.6).
+        source, fns = build_chain_program(triples, display_rels, chunk=chunk)
         ok = True
         for i, fn in enumerate(fns[:-1]):                # hop functions
             out = run_fn(source, fn)
