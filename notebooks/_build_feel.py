@@ -128,7 +128,14 @@ if not os.path.exists(GOE_LOCAL):
     pd.read_parquet(GOE_URL).to_parquet(GOE_LOCAL)
 goe = pd.read_parquet(GOE_LOCAL)
 
-from build_chat_sft import GOEMOTIONS, GOEMOTIONS_PETAL   # the 28 labels + the petal bridge, already in the repo
+from build_chat_sft import GOEMOTIONS                    # the 28 labels, already in the repo
+from goemotions_cube import style_bank_key, UNPLACED, validate
+# the label -> corner mapping is DERIVED from GOEMOTIONS_PETAL and _PETAL and
+# checked against the agent's own nearest-corner classifier. A hand-written
+# coordinate table is a third opinion about one space, and this project has
+# been bitten twice by two opinions disagreeing in the band between them.
+assert [x for x in validate() if not x.startswith('note:')] == [], 'mapping does not survive its own classifier'
+print('[stand-in] labels with no corner (anticipation has no Lovheim vertex):', UNPLACED)
 
 # the emotions a SOLITARY agent can have. The rest of the 27 are social -- admiration, gratitude,
 # remorse, embarrassment, love, caring, approval -- and have no referent in an empty maze, which is
@@ -149,13 +156,15 @@ for name in SOLO:
     sub = goe[goe.labels.apply(lambda L: list(L) == [i])]
     use = sub[sub.text.apply(_usable)]
     rows.append((name, len(sub), len(use)))
-    STYLE.setdefault(GOEMOTIONS_PETAL[name], []).extend(use.text.tolist())
+    key = style_bank_key(name)
+    if key:
+        STYLE.setdefault(key, []).extend(use.text.tolist())
 
 print(f"[stand-in] {'emotion':<16}{'single-label':>13}{'usable':>9}")
 for n, s, u in rows:
     print(f"[stand-in] {n:<16}{s:>13}{u:>9}")
 print(f"[stand-in] {'TOTAL':<16}{sum(r[1] for r in rows):>13}{sum(r[2] for r in rows):>9}")
-print('[stand-in] style banks by petal:', {k: len(v) for k, v in sorted(STYLE.items())})""")
+print('[stand-in] style banks by CORNER:', {k: len(v) for k, v in sorted(STYLE.items())})""")
 
 code(r"""# --- the situations: harvested from a REAL headless run, not invented ---
 # His register, his maze, his vocabulary. `blank=True` so nothing is inherited from disk.
@@ -186,6 +195,7 @@ def harvest(steps=700, seed=0, ghost_free=1, fallers_from=1):
                 'body': ', '.join(body),
                 'could_be': names,
                 'petal': man.emotion()['name'],
+                'corner': man.chem.corner_position()['corner'],
                 'about': rec.get('about'),
                 'manner': man.chem.manner(),
                 'state': {k: round(v, 3) for k, v in man.chem.to_dict().items()
@@ -250,7 +260,7 @@ def _ask(prompt: str, temperature=0.9) -> str:
 def build_prompt(sit: dict) -> str:
     # the style bank is a REFERENCE for how feeling shows in words -- shown, never copied, and
     # explicitly marked as the wrong register so the model takes the manner and not the content
-    bank = STYLE.get(sit['petal']) or []
+    bank = STYLE.get(sit['corner']) or []
     ref = '\n'.join(f'  - {t}' % () for t in rng.sample(bank, min(4, len(bank)))) if bank else '  (none)'
     names = ' or '.join(sit['could_be']) if sit['could_be'] else '(nothing strong)'
     return f"""A character is alone in a maze. This is how his body feels and what is around him.
