@@ -113,8 +113,12 @@ class Neurochemistry:
         joy = max(0.0, valence)
         neg = max(0.0, -valence) + self.pain             # hurting IS feeling bad, whatever else is going on
 
+        # the somatic skew, from the named influence vectors rather than
+        # coefficients buried in three different expressions
+        s_5ht, s_da, s_ne = (p * self.pain + c * self.craving
+                             for p, c in zip(self.PAIN_INFLUENCE, self.CRAVING_INFLUENCE))
         drive_NE = ((novelty * 0.5 + threat * 0.4 + focus * 0.4
-                     + surge * 0.7 + self.pain * 0.6) * self._ne_sensitivity)
+                     + surge * 0.7 + s_ne) * self._ne_sensitivity)
         # Both receptor terms ride the whole drive: the fast refractory one and
         # the slow tolerance. That is the mechanism — the world hands him the
         # same ghost every time and he feels less of it each time.
@@ -151,8 +155,8 @@ class Neurochemistry:
         # dopamine UP on pure threat.
         drive_DA = ((novelty * 0.5 + joy * 0.4 + reward * 0.9)
                     * self._da_sensitivity * self._da_tolerance
-                    - self.pain * 0.3 - threat * 0.45)
-        drive_5HT = 0.25 * joy - 0.2 * threat - 0.1 * neg - 0.25 * self.pain
+                    + s_da - threat * 0.45)
+        drive_5HT = 0.25 * joy - 0.2 * threat - 0.1 * neg + s_5ht
         # No ambient affiliation term. The `+0.05` this port inherited kept
         # oxytocin sitting well above resting with no social input at all,
         # which is defensible for a chat agent and plainly wrong for an agent
@@ -516,36 +520,115 @@ class Neurochemistry:
         "neutral":  [],
     }
 
+    # ── Layer 1: the somatic drives the cube has no axis for ───────────────
+    #
+    # Pain and craving are not cognitive states sitting somewhere in monoamine
+    # space; they are homeostatic imperatives on their own circuits, and the
+    # Lövheim cube reads 5-HT, DA and NE only. Forced onto those three axes
+    # they get swallowed — a hurting body lands wherever high NE and low 5-HT
+    # put it, which is the anger corner. The corner is doing its job on the
+    # evidence it has, and the evidence does not contain the thing that matters.
+    #
+    # So they do two things, not one. They SKEW the monoamines (below, through
+    # the drives, so the skew integrates and decays like everything else rather
+    # than being pasted onto the vector at read time — that is what makes pain
+    # linger instead of ending with the blow). And above a threshold they
+    # INTERCEPT the naming, because past a point "he is in pain" is the true
+    # thing to say about him whatever corner the three amines imply.
+    #
+    # The influence vectors are named rather than scattered through the drive
+    # expressions so they can be read, argued with and tested as a unit.
+    #                       5-HT    DA     NE
+    PAIN_INFLUENCE =      (-0.25, -0.30, +0.60)   # vulnerability, anti-reward, hyper-arousal
+    CRAVING_INFLUENCE =   (-0.10,  0.00, +0.30)   # frustration, searching alertness
+    #
+    # CRAVING'S DOPAMINE TERM IS DELIBERATELY ZERO, against the obvious reading
+    # of incentive salience. Wanting IS mesolimbic dopamine — but the phasic
+    # burst to a cue, not the tonic level, and `craving` here is DERIVED from
+    # the tonic shortfall (`tolerance` x how far dopamine sits below quiescent).
+    # A positive term would therefore close the very gap that produced it: DA
+    # rises, the shortfall shrinks, craving collapses, DA falls, craving
+    # returns — an oscillator that erases the withdrawal this models. The
+    # phasic half is real and belongs on a CUE (a frightened ghost actually in
+    # sight), not on the baseline; see `pacman.CubbyGhost.chasing`, which is
+    # where a cue exists. Wiring it here would be a feedback loop wearing the
+    # costume of neuroscience.
+    PAIN_INTERCEPT, AGONY = 0.35, 0.70
+    CRAVING_INTERCEPT, FRANTIC = 0.30, 0.65
+    SOMATIC_NAMES = {
+        "pain":    ["it hurts", "shock", "fear"],
+        "agony":   ["agony", "panic", "rage"],
+        "craving": ["wanting", "restlessness", "an itch"],
+        "frantic": ["need", "a craving I can't sit with", "desperation"],
+    }
+
+    def somatic(self) -> list[str]:
+        """Layer 1. The readings that outrank the cube, or [] when neither fires.
+
+        Graded, because a scraped knee and a broken leg are not the same word:
+        past the second threshold the name changes rather than just getting
+        louder. Pain wins ties — a body that is both hurting and wanting has a
+        more urgent problem than the wanting."""
+        if self.pain >= self.PAIN_INTERCEPT and self.pain >= self.craving:
+            return list(self.SOMATIC_NAMES["agony" if self.pain > self.AGONY else "pain"])
+        if self.craving >= self.CRAVING_INTERCEPT:
+            return list(self.SOMATIC_NAMES["frantic" if self.craving > self.FRANTIC else "craving"])
+        return []
+
+    def cube(self) -> tuple:
+        """(5-HT, DA, NE) scaled so QUIESCENT IS THE CENTRE of the cube.
+
+        Raw concentrations never approach 0 or 1 — noradrenaline lives near
+        0.15 in a band topping out at 0.90 — so the raw point sits permanently
+        in one half of the cube and the corners on the other side are
+        unreachable by construction. That is why he could not be anxious."""
+        base, out = self.quiescent(), []
+        for key, now in (("5HT", self.serotonin), ("DA", self.dopamine), ("NE", self.noradrenaline)):
+            rest, (lo, hi) = base[key], self._BAND[key]
+            span = (hi - rest) if now >= rest else (rest - lo)
+            out.append(_clip(0.5 + 0.5 * (now - rest) / max(span, 1e-6), 0, 1))
+        return tuple(out)
+
+    _CORNERS = {"joy": (1, 1, 1), "warm": (1, 1, 0), "surprise": (1, 0, 1),
+                "shame": (1, 0, 0), "angry": (0, 1, 1), "contempt": (0, 1, 0),
+                "anxious": (0, 0, 1), "sad": (0, 0, 0)}
+
+    # ── Layer 2: where in the cube, how far out, and what he is near ────────
+    def corner_position(self) -> dict:
+        """The geometry, with no names attached — naming is Layer 3's job.
+
+        `intensity` is how far out toward the corner he actually is, which is
+        what separates annoyance from rage inside one octant: the corner says
+        WHICH family, the distance says how much of it. `runner_up` and
+        `margin` are the boundary case — a point sitting between two corners
+        should not be described as squarely in either, and Plutchik already has
+        a name for the pair.
+
+        Nearest-corner, so the eight cells meet at the centre and every corner
+        is reachable. A threshold classifier over the same space carves unequal
+        boxes and disagrees with this one in the band between them, which is
+        exactly the bug that put `annoyance` on the compass and `elation` in
+        the names on the same step."""
+        pos = self.cube()
+        def dist(c):
+            return sum((p - q) ** 2 for p, q in zip(pos, c)) ** 0.5
+        ranked = sorted(self._CORNERS.items(), key=lambda kv: dist(kv[1]))
+        best, second = ranked[0][0], ranked[1][0]
+        reach = sum((p - 0.5) ** 2 for p in pos) ** 0.5 / (0.75 ** 0.5)
+        return {"corner": best, "intensity": _clip(reach, 0, 1), "runner_up": second,
+                "margin": dist(self._CORNERS[second]) - dist(self._CORNERS[best]),
+                "pos": pos}
+
     def could_be(self, limit: int = 3) -> list[str]:
-        """Names that suit this state — offered, never asserted.
+        """Layer 1, then a default Layer 3 for callers with no naming table.
 
-        ONE PLACE, its several readings. The ambiguity worth handing over is
-        the one INSIDE a corner: the same low-dopamine-under-cortisol body is
-        despair or it is grim stubbornness, and nothing in the chemistry
-        decides which. Ambiguity ACROSS states is a different thing — it means
-        several things are true of him at once — and pooling the two produced
-        the five-item menu the owner caught live, *"something is coming or
-        elation or recklessness or being on a roll or warmth"*. That is not a
-        feeling with more than one name, it is indecision, and nobody
-        experiences it.
-
-        The corner is read from `dominant_emotion` rather than re-derived from
-        a second set of thresholds. Two classifiers over one space disagree in
-        the band between them however carefully each is tuned — one is
-        nearest-corner and the other was cutoffs — so the compass said
-        `annoyance` while the names said `elation` on the same step. The corner
-        classifier decides WHERE he is; this only decides what that place can
-        honestly be called.
-
-        PAIN AND CRAVING COME FIRST because the Lövheim cube has no axis for
-        either: it reads serotonin, dopamine and noradrenaline, so a body that
-        is hurting or wanting sits at whatever corner those three imply and the
-        cube cannot tell the difference. They are the two signals this port
-        added, so they are the two the corner cannot speak for."""
-        if self.pain > 0.35:
-            return ["shock", "fear", "anger"][:limit]
-        if self.craving > 0.30:
-            return ["wanting", "restlessness", "an itch"][:limit]
+        The game overrides the naming with the Plutchik one (`pacman.felt_names`),
+        which reads the intensity tier and the boundary dyad. This keeps a
+        sensible answer for ToyVerse and the tests, and it is the same corner
+        either way — only the vocabulary differs."""
+        somatic = self.somatic()
+        if somatic:
+            return somatic[:limit]
         return list(self._BY_CORNER.get(self.dominant_emotion, [])[:limit])
 
     # ── the dials: hormones -> HOW he speaks, with no feeling word anywhere ──

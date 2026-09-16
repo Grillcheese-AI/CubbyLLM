@@ -1218,6 +1218,70 @@ def rephrase_ok(line: str, text: str, facts) -> bool:
     return voice_ok(text, facts) and not is_model_guard(text) and not is_identity_reply(text, facts)
 
 
+# ── Layer 3: what that place in the cube can honestly be CALLED ─────────────
+#
+# Layer 1 (somatic) and Layer 2 (geometry) live in neurochem.py and carry no
+# names. This is the naming, and it is the game's because the vocabulary is —
+# Plutchik's petals are what the compass already draws.
+#
+# Two things the corner alone does not say, and both are already in the repo:
+#
+#   INTENSITY.  A corner is an octant, not a point. `_PETAL` has carried three
+#               tiers per petal all along (annoyance / anger / rage), and how
+#               far out toward the corner he actually is picks which one. The
+#               same octant is annoyance near the middle and rage at the edge.
+#   THE EDGE.   A point sitting between two corners should not be described as
+#               squarely in either. Plutchik's name for an adjacent pair is a
+#               DYAD, and naming the pair is the honest form of "he is leaning
+#               toward the next one" — unlike returning the neighbour's
+#               primary, which would put him in a corner the classifier did not
+#               pick and reopen the very contradiction this split closed.
+#
+# `similar-words` comes from plutchik.json: human-authored alternatives for the
+# tier, which is a better fork than any list invented here.
+#
+# Four of Plutchik's eight primary dyads are SOCIAL — love, submission,
+# contempt and remorse all need somebody else to be aimed at — so they are
+# omitted rather than mapped, the same call `_SOCIAL_CORNERS` makes about the
+# corners. Left in, they fire on their geometry alone: eating a ghost put joy
+# next to trust and offered him *"love"*, which is a correct dyad and a
+# meaningless thing to feel about a ghost.
+_DYADS = {frozenset(("fear", "surprise")): "awe",
+          frozenset(("surprise", "sadness")): "disapproval",
+          frozenset(("anger", "anticipation")): "aggressiveness",
+          frozenset(("anticipation", "joy")): "optimism"}
+DYAD_MARGIN = 0.28          # nearer than this to the runner-up and the pair is the honest name
+NAMEABLE = 0.18             # below this he is at the centre of the cube: nothing to name
+
+
+def felt_names(chem, limit: int = 3) -> list[str]:
+    """The readings that fit this state — offered to the model, never asserted.
+
+    Returns [] when he is at the centre of the cube, which is the correct
+    answer for a body doing nothing: a person at rest does not report a
+    feeling, and handing the model a name there is what made every idle step
+    sound like an announcement."""
+    somatic = chem.somatic()
+    if somatic:                              # Layer 1 outranks the cube
+        return somatic[:limit]
+    g = chem.corner_position()
+    if g["corner"] in _SOCIAL_CORNERS or g["intensity"] < NAMEABLE:
+        return []
+    petal, _angle, _color, tiers = _PETAL[g["corner"]]
+    tier = tiers[0 if g["intensity"] < 0.45 else 1 if g["intensity"] < 0.75 else 2]
+    names = [felt(tier)]
+    for w in (_plutchik().get(tier, {}).get("similar-words") or "").split(","):
+        w = w.strip().lower()
+        if w and w not in names:
+            names.append(w)
+    if g["margin"] < DYAD_MARGIN and g["runner_up"] not in _SOCIAL_CORNERS:
+        dyad = _DYADS.get(frozenset((petal, _PETAL[g["runner_up"]][0])))
+        if dyad and dyad not in names:
+            names.insert(1, dyad)            # second: the corner still leads
+    return names[:limit]
+
+
+
 class CubbyGhost(CubbyPac):
     """cubby-man in the big game: the same explorer brain, now hunted. Ghost
     proximity feeds THREAT into the neurochemistry (anxious when chased, bold
@@ -1970,15 +2034,12 @@ class CubbyGhost(CubbyPac):
             sensations = self.chem.body(limit=2)
             if sensations:
                 rec["my body"] = ", ".join(sensations)
-            # The compass word is a FALLBACK, not a sixth option. Mixing it
-            # into the hormone-region list put a Plutchik tier phrase next to
-            # four region names and the record read as a menu — five things he
-            # might be feeling is indecision, not feeling. It speaks only when
-            # no region is strong enough to say anything.
-            names = self.chem.could_be()
-            if not names:
-                tier = self.emotion()["name"]
-                names = [] if tier == "calm" else [felt(tier)]
+            # Layer 3 names it: one corner, its intensity tier, and the dyad
+            # when he is sitting on a boundary. An empty list is a real answer
+            # and the common one — at the centre of the cube there is nothing
+            # to name, and a body doing nothing should not be announcing a
+            # feeling.
+            names = felt_names(self.chem)
             if names:
                 rec["could be"] = " or ".join(names)
         return rec
