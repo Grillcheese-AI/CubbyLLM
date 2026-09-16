@@ -1333,3 +1333,47 @@ or a record of an instrument that would have told us we were already there.
   fact that skipped the gate is what the gate is for. Wired to the pellet case end to end, with a
   live test: the first pellet he sees opens the question, it stays out of his map while open, and
   *"staying put is the way of a pellet"* is in his map as a refusal within a dozen steps.
+- **2026-09-15, every component, lit when it fires** — Owner: *"we need to map the components
+  visually and listen to them and light the ones that are active when they are."* `/map` is that
+  page: lanes over components, each owning the trace kinds it really emits, taken from the
+  `_t(...)` calls rather than from an idea of the architecture, with anything unclaimed listed
+  underneath so the picture cannot quietly go stale. It earned its keep on the first run:
+  `thought_error` × 3, *"Model path does not exist"*. The GGUF loads lazily, so launching from
+  `standin/` with a repo-root-relative path let the game run perfectly while every thought fell
+  back to flat — invisible in the maze, obvious on the map. The fix is a fail-fast in
+  `LlamaCppEmitter.__init__` with the CWD in the message, so a launch mistake now fails at launch
+  instead of surfacing minutes later as a *speech* bug. Which is §6.10's lesson again from the
+  other side: **a failure that surfaces far from its cause gets attributed to whatever is
+  nearest.** A cheap map of where things happen is how you tell the two apart.
+- **2026-09-15, one map many worlds (WO-2.13)** — Owner: *"the science world is having gravity
+  inside, cubby dont know it tries stuff then all of a sudden oh... let me ask the world: 'how can
+  I know when something is about to fall on me?' ... then cubby stores it in long term memory so
+  it knows that part and dont have to ask already. In reality its cubby building its own world via
+  interations via other worlds outside its own."* Built: a `Worlds` registry, an **ask** verifier
+  as the fourth way a claim settles, a physics world that answers in laws, and things that fall in
+  cubby-man. The arc runs end to end on every seed tried — something thumps down beside him, he
+  frames the question in his own words, physics answers with five laws, they enter his map through
+  the same gate as a percept, and the next thing overhead is a prediction and a step sideways
+  instead of a surprise. He asks **once**: the settled claim leaves a fact carrying the question
+  verbatim, so a fresh agent restored from that map skips the question entirely (5/5 seeds,
+  `exp_r38`).
+
+  Three things about it are worth more than the feature. **This is not the oracle coming back**,
+  and the line is sharp enough to test: a world may send *knowledge* he could in principle have
+  found himself and that later evidence can refute, never *state* he has no way to perceive.
+  Gravity yes; where the ghost is standing, never. A law tells him what to look at and leaves the
+  looking to him — every receipt is in `Worlds.asked`. **The prediction reads the law rather than
+  encoding it**: `falling_at_me` checks each law is in his map before drawing the inference it
+  licenses, so two agents with identical percepts and different maps predict differently. Without
+  that the file would have become a second authority on how falling works — WO-2.10's whole
+  problem, re-entering through a side door dressed as a helper. And **not asked is not answered**:
+  a question no mounted world covers stays open, then is refused as *"no world I can reach knows
+  that"*, which is a fact about what is askable and not about the world. Being ignorant stays a
+  state he is allowed to be in.
+
+  The larger claim the owner attached to it — *"it could even replace SFT"* — is filed as what it
+  is, a hypothesis with a test: strip one knowledge family from the corpus, serve it as a world
+  instead, and measure wrong answers and refusals **separately**. If correctness holds and the
+  cost lands in refusals and latency, the content half of a corpus is replaceable and we can say
+  by how much. Nothing about the run above settles that; it settles only that the mechanism works
+  and keeps what it learns.

@@ -23,7 +23,7 @@ from hypothesis import (CONFIRMED, OPEN, REFUSED, Hypotheses, Hypothesis,  # noq
 def test_a_claim_is_open_until_something_settles_it():
     h = Hypothesis(claim="x", test="t", verifier="world")
     assert h.open and h.state == OPEN and h.settled_at is None
-    assert h.settle(True, "because", 7) == ""            # no if_true: nothing earned
+    assert h.settle(True, "because", 7) == []            # no if_true: nothing earned
     assert not h.open and h.state == CONFIRMED and h.settled_at == 7
 
 

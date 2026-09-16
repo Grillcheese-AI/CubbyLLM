@@ -1840,8 +1840,9 @@ Tests: 8 in `standin/tests/test_hypothesis.py`, 1 live in `test_pacman_percepts.
 
 ## WO-2.13 — One map, many worlds: he builds his own by asking the others
 
-**Status: SPECIFIED 2026-09-15, not built.** Owner: Nick. This is the system's core
-loop as he describes it, and it reframes what everything above was heading towards.
+**Status: BUILT 2026-09-15 (`exp_r38`, 17 tests), kill criterion met on 5/5 seeds.**
+Owner: Nick. This is the system's core loop as he describes it, and it reframes what
+everything above was heading towards.
 
 > *"if it learns gravity in cubby-man per example that skill should be transferable /
 > usable in other worlds ... in fact all should be connected. The science world is having
@@ -1943,6 +1944,66 @@ ask**. If he re-asks, nothing was learned and this is a retrieval cache with ext
    lookup.
 4. The demonstration: something drops on cubby-man, he cannot explain it, he asks, he
    gets the law, he holds it, and on the next occurrence he predicts instead of asking.
+
+### What was built
+
+| # | where | what |
+|---|---|---|
+| 1 | `standin/worlds.py` | `Knows` protocol + `Worlds` registry: `mount` / `route` / `ask`, a τ below which **nobody** claims the question, and `asked` as the receipts the percept tripwire reads |
+| 2 | `standin/hypothesis.py` | `ask_verifier` — the fourth way a claim settles. It is the only verifier that does not know its `if_true` when the claim is framed, because until somebody answers there is no way to know what a confirmation teaches. `Hypothesis.settle` now returns a LIST: one answer earns the whole law family |
+| 3 | `standin/knowledge.py` | `PhysicsWorld` (laws) and `CodingWorld` (an artefact plus the test that would settle it, so `runner` can check what a world told him) |
+| 4 | `standin/verse.py` | `other_worlds`, `ask_elsewhere`, `already_know` — **on the agent**, so ToyVerse gets them free |
+| 5 | `standin/pacman.py` | things that fall: `fallers`, `maybe_drop`, `fall_turn`, positions in `senses`; and on his side `thing_belief`, `_wonder_about_falling`, `falling_at_me`, the dodge |
+
+Two decisions worth keeping written down:
+
+**He does not have to be hit to be puzzled.** Watching one land beside him raises the
+question just as well, and it does not depend on the geometry being unlucky enough to
+drop one on his head. The first build triggered only on impact and the question went out
+on some seeds and not others.
+
+**The prediction reads the law, it does not encode it.** `falling_at_me` checks
+`LAW_ONE_UP in self.world` and `LAW_NEARER in self.world` before drawing either
+inference, so an agent who holds one law makes one inference and an agent who holds
+neither makes none — pinned by a test that gives two agents identical percepts and
+different maps. Without that check this file would quietly become a second authority on
+how falling works, which is exactly what WO-2.10 spent a day removing.
+
+**Not asked, not answered.** A question no mounted world covers stays OPEN, and after
+`patience` it is refused with *"no world I can reach knows that"* — a fact about what is
+askable, never a fact about the world. Being ignorant is a state he is allowed to be in.
+
+### Result (`validation/exp_r38_ask_a_world.py --sweep 5`)
+
+```
+seed  asked laws hit before hit after predicts dodges | re-asked  knew
+   0      1    6          0         1       12      8 |        0  True
+   1      1    6          0         0       11      6 |        0  True
+   2      1    6          1         0        9      9 |        0  True
+   3      1    6          0         0        7      5 |        0  True
+   4      1    6          1         1       13      9 |        0  True
+
+  5/5 seeds: asked once, kept it, never asked again
+```
+
+One question out, one answer back, six facts held, and a second agent starting from that
+map never sends the question again — the kill criterion, met. The live trace reads as the
+arc it is meant to be: `saw_it_land knew=False` → `wonder` → `ask physics got=5` →
+`hypothesis_settled confirmed` → `predict in_steps=1` → `dodge` → `ask_skipped`.
+
+`/map` grew three components for it: **Things that fall**, **Asking a world**,
+**Prediction**.
+
+### Next
+
+The SFT claim in the section above is still a hypothesis and still untested — it needs a
+knowledge family stripped from the corpus and served as a world instead, measured on
+wrong answers and refusals separately. Before that: a second askable world in a live run
+(the coding world is written and tested but nothing asks it yet), and `Worlds.asked`
+wired into exp_r36's tripwire so a law that smuggles in state fails a test rather than a
+reading.
+
+Tests: 17 in `standin/tests/test_asking.py`.
 
 ---
 

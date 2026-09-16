@@ -191,6 +191,7 @@ const LANES = [
     {id:"body",  name:"Body",        note:"what he tries, and what refuses", kinds:["bump","probe"], no:["bump"]},
     {id:"sense", name:"Senses",      note:"sight, hearing, belief",          kinds:["sense","eat","ghost_eaten","trapped"]},
     {id:"threat",name:"Threat",      note:"flee, traps, being caught",       kinds:["flee","flee_override","caught","mine","rest"], no:["caught"]},
+    {id:"fall",  name:"Things that fall", note:"let go, seen, landed",       kinds:["something_let_go","saw_it_land","hit_by_falling"], no:["hit_by_falling"]},
   ]],
   ["what he holds", [
     {id:"map",   name:"His map",     note:"one model, every world",          kinds:["learn","derive"], yes:["learn","derive"]},
@@ -201,6 +202,8 @@ const LANES = [
     {id:"wonder",name:"Questions",   note:"framed, not assumed",             kinds:["wonder","hypothesis"], wonder:["wonder","hypothesis"]},
     {id:"settle",name:"Verdicts",    note:"the result decides",              kinds:["hypothesis_settled","hypothesis_error"], yes:["hypothesis_settled"]},
     {id:"can",   name:"Capabilities",note:"earned, never granted",           kinds:["capability"], yes:["capability"]},
+    {id:"ask",   name:"Asking a world",note:"laws, never the board",         kinds:["ask","ask_skipped","ask_error"], yes:["ask"], no:["ask_error"]},
+    {id:"pred",  name:"Prediction",  note:"his laws, on his percepts",       kinds:["predict","dodge"], yes:["predict","dodge"]},
   ]],
   ["what he makes", [
     {id:"lib",   name:"Moves",       note:"composed, crossed, retired",      kinds:["program","program_rejected","modify","cross","retire","superpower_move"], no:["program_rejected"]},

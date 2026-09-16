@@ -146,3 +146,111 @@ class CubbyPlugin(Protocol):
     name: str
 
     def worlds(self) -> dict[str, FactStore]: ...
+
+
+# ── the worlds he can ASK, and what keeps that from being an oracle ────────
+#
+# Nick, 2026-09-15:
+#
+#   "the science world is having gravity inside, cubby dont know it tries stuff
+#    then all of a sudden oh... let me ask the world: 'how can I know when
+#    something is about to fall on me?' then the science world sends the gravity
+#    + attraction laws so it understands ... then cubby stores it in long term
+#    memory so it knows that part and dont have to ask already. In reality its
+#    cubby building its own world via interations via other worlds outside its
+#    own."
+#
+# A `FactStore` above is a world he RETRIEVES from. A `Knows` world is one he
+# can put a QUESTION to and get back facts phrased as laws. The difference from
+# the oracle WO-2.10 spent a day removing is not the plumbing, it is what may
+# travel down it:
+#
+#   knowledge  — how falling things behave.      ALLOWED. He could in principle
+#                have found it out himself, slowly, by dropping things. It can
+#                be wrong, and later evidence can refute it. It tells him what
+#                to PERCEIVE.
+#   state      — where the ghost is standing now. NEVER. He could not have
+#                found it out; it arrives unearned, cannot be checked, and
+#                makes perceiving unnecessary.
+#
+# That line is not enforceable by a type, so it is enforced by the worlds
+# themselves (a world is written to answer in laws) and made auditable here:
+# every ask is recorded in `Worlds.asked`, which the percept tripwire reads.
+
+
+@runtime_checkable
+class Knows(Protocol):
+    """A world that can be asked a question, not just searched.
+
+    `covers` is how it says the question is in its domain at all — returning 0
+    is a real and common answer, because a question NO world covers has to stay
+    unanswered. `answer` returns the facts, already in his fact language, or an
+    empty list."""
+
+    name: str
+    domain: str
+
+    def covers(self, question: str) -> float: ...
+
+    def answer(self, question: str) -> list[str]: ...
+
+
+class Worlds:
+    """The worlds outside his own, and the routing that picks one.
+
+    Deliberately thin. It does not hold knowledge, it does not decide what is
+    true, and it never writes to anybody's map — the asker learns the answer
+    through its own gate, the same one every percept passes. All this does is
+    carry a question to whoever's domain it is, and remember that it did."""
+
+    TAU = 0.35                                   # below this, no world claims the question
+
+    def __init__(self, trace=None, tau: float | None = None) -> None:
+        self.by_name: dict[str, Knows] = {}
+        self.tau = self.TAU if tau is None else float(tau)
+        self.trace = trace or (lambda kind, **d: None)
+        self.asked: list[dict] = []              # every question, where it went, what came back
+
+    def __len__(self) -> int:
+        return len(self.by_name)
+
+    def mount(self, world: Knows) -> None:
+        if not isinstance(world, Knows):
+            raise TypeError(f"{world!r} is not askable: it needs name, domain, covers(), answer()")
+        self.by_name[world.name] = world
+
+    def route(self, question: str) -> tuple[Knows | None, float]:
+        """The world whose domain this is, or None. Ties break by name so the
+        routing is reproducible."""
+        best, score = None, 0.0
+        for name in sorted(self.by_name):
+            w = self.by_name[name]
+            try:
+                s = float(w.covers(question))
+            except Exception:                    # a broken world is not an answer
+                continue
+            if s > score:
+                best, score = w, s
+        return (best, score) if score >= self.tau else (None, score)
+
+    def ask(self, question: str) -> dict:
+        """Put the question to whoever knows. Returns
+        {world, score, facts} — facts empty when nobody covers it, which is
+        a legitimate outcome and the reason he can still be ignorant."""
+        w, score = self.route(question)
+        facts: list[str] = []
+        if w is not None:
+            try:
+                facts = [f for f in (w.answer(question) or []) if f and f.strip()]
+            except Exception as e:
+                self.trace("ask_error", question=question, world=w.name, error=str(e)[:160])
+                facts = []
+        rec = {"question": question, "world": (w.name if w else None),
+               "score": round(score, 3), "facts": facts}
+        self.asked.append(rec)
+        self.trace("ask", question=question, world=rec["world"], score=rec["score"],
+                   got=len(facts), facts=facts[:4] or None)
+        return rec
+
+    def domains(self) -> dict[str, str]:
+        return {n: w.domain for n, w in sorted(self.by_name.items())}

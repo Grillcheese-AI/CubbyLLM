@@ -26,7 +26,7 @@ the game knows. This module is that loop with the verifier as a parameter and
 with the case forge.py cannot express — a claim that **resolves later**,
 because the thing that settles it is time passing and nothing happening.
 
-Three verifiers, and the honest description of each:
+Four verifiers, and the honest description of each:
 
   VM        a CubeLang program whose result must match an expectation. This is
             what the trunk's reasoning is checked by everywhere else.
@@ -37,10 +37,18 @@ Three verifiers, and the honest description of each:
   WORLD     a predicate over the environment, re-checked each step. It may
             answer "not yet" — and after `patience` steps of not-yet, the
             world's silence IS the answer: the claim is refused.
+  ASK       another world that already knows. The odd one out: it does not test
+            a claim against reality, it goes and gets the answer from whoever's
+            domain the question is. What comes back is knowledge (a law he could
+            in principle have found himself, and that later evidence can refute)
+            and never state (where something is right now) — see knowledge.py.
 
-The last one is the one that matters for an agent with senses. A wall is
-learned by walking into it; "the pellets will come to me" is unlearned by
-waiting and watching them not.
+WORLD is the one that matters for an agent with senses: a wall is learned by
+walking into it, and "the pellets will come to me" is unlearned by waiting and
+watching them not. ASK is the one that matters for an agent who will meet more
+than one world — it is how a question raised in the maze gets answered by
+physics, and the answer is then his, in the same single map, wherever he goes
+next.
 
 THE RULE, which is what keeps the kill line intact: an OPEN hypothesis may be
 thought and said — as a guess, which is what it is — but it never enters the
@@ -73,9 +81,9 @@ class Hypothesis:
 
     claim: str                                           # what he thinks, in his words
     test: str                                            # what would settle it, in his words
-    verifier: str                                        # "vm" | "runner" | "world"
-    if_true: str = ""                                    # the fact a confirmation earns
-    if_false: str = ""                                   # the fact a refusal earns
+    verifier: str                                        # "vm" | "runner" | "world" | "ask"
+    if_true: str | list[str] = ""                        # the fact(s) a confirmation earns
+    if_false: str | list[str] = ""                       # the fact(s) a refusal earns
     payload: dict = field(default_factory=dict)          # verifier-specific
     made_at: int = 0
     patience: int = 0                                    # world only: steps before silence counts as no
@@ -87,10 +95,16 @@ class Hypothesis:
     def open(self) -> bool:
         return self.state == OPEN
 
-    def settle(self, ok: bool, why: str, now: int) -> str:
+    def settle(self, ok: bool, why: str, now: int) -> list[str]:
+        """The verdict, and the facts it earned — a LIST, because one verdict
+        can teach several things at once: a world asked a single question
+        answers with the whole law family, and all of it is earned by the one
+        answer."""
         self.state = CONFIRMED if ok else REFUSED
         self.verdict_why, self.settled_at = why, now
-        return self.if_true if ok else self.if_false
+        earned = self.if_true if ok else self.if_false
+        earned = [earned] if isinstance(earned, str) else list(earned)
+        return [f for f in earned if f and f.strip()]    # teaching nothing is an empty list, not a blank fact
 
 
 def vm_verifier(exe: str | None = None):
@@ -161,6 +175,47 @@ def world_verifier(env):
     return check
 
 
+def ask_verifier(worlds):
+    """Settle a claim by ASKING the world whose domain it is (WO-2.13).
+
+    `payload['question']` is what he asks, in his own words. A world that
+    answers settles the claim and its answer becomes what the confirmation
+    earned — so the verifier fills in `h.if_true` as it runs, which is honest:
+    until somebody answers, there is no way to know what a confirmation would
+    teach. Every other verifier knows its `if_true` when the claim is framed;
+    this one cannot, and that asymmetry IS the difference between testing a
+    guess and learning something new.
+
+    Nobody covering the question is *not* an error and not yet a refusal — he
+    holds a question no world he can reach answers, which is the correct state
+    to be in. After `patience` steps of that, the claim is refused the same way
+    the world verifier refuses one: having asked and got nothing is an answer
+    about what is askable, not about what is true.
+
+    What a world may send back is the whole design, and it is enforced by the
+    worlds rather than here: LAWS, which tell him what to perceive and can be
+    refuted, never STATE, which he could not have perceived and cannot check.
+    `Worlds.asked` keeps the receipts."""
+    def check(h: Hypothesis, now: int):
+        question = h.payload.get("question", "") or h.claim
+        rec = worlds.ask(question)
+        h.payload["asked"] = rec
+        if not rec["facts"]:
+            if h.patience and now - h.made_at >= h.patience:
+                return False, "no world I can reach knows that"
+            return None, "nobody has answered yet"
+        # The answer, plus one fact about his own history: he asked this, and
+        # who answered. It carries the question verbatim, which is what makes
+        # the SAME question a no-ask next time without any fuzzy matching
+        # between a question and the statements that answer it — the two are
+        # different jobs and conflating them either re-asks forever or decides
+        # he knows things he does not. It is also his provenance: a law he can
+        # later refute should say where it came from.
+        h.if_true = [f"{rec['world']} told me the answer to: {question}"] + list(rec["facts"])
+        return True, f"{rec['world']} answered: {rec['facts'][0]}"
+    return check
+
+
 class Hypotheses:
     """His open claims, and the facts settling them earned him.
 
@@ -211,12 +266,11 @@ class Hypotheses:
                 continue
             if ok is None:
                 continue
-            fact = h.settle(bool(ok), why, now)
-            self.trace("hypothesis_settled", claim=h.claim, state=h.state, why=why,
-                       learned=fact or None, after=now - h.made_at,
+            facts = [f for f in h.settle(bool(ok), why, now) if f]
+            self.trace("hypothesis_settled", claim=h.claim, state=h.state, why=why, by=h.verifier,
+                       learned=facts or None, after=now - h.made_at,
                        wall_s=round(time.perf_counter() - t0, 3))
-            if fact:
-                earned.append(fact)
+            earned.extend(facts)
         return earned
 
     # ── what it cost and bought ────────────────────────────────────────────

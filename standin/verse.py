@@ -185,9 +185,16 @@ class CubbyMan:
         # his open questions, and what settling them earned. On the AGENT, not
         # the world: a question raised in one context and a verdict reached in
         # another are the same ledger, because there is one of him.
-        from hypothesis import Hypotheses, vm_verifier, world_verifier
+        from hypothesis import Hypotheses, ask_verifier, vm_verifier, world_verifier
+        from worlds import Worlds
+        # the worlds OUTSIDE his own that he can put a question to. On the agent
+        # for the same reason the ledger is: a law he gets from physics while
+        # playing cubby-man is a law he has, and he takes it to the next world
+        # with him because there is only ever one map (WO-2.13).
+        self.other_worlds = Worlds(trace=self._t)
         self.guesses = Hypotheses({"world": world_verifier(self.env),
-                                   "vm": vm_verifier(self.exe)}, trace=self._t)
+                                   "vm": vm_verifier(self.exe),
+                                   "ask": ask_verifier(self.other_worlds)}, trace=self._t)
         self._learn(self.look_around(self.place))        # what he perceives where he starts
         self.on_arrive(self.place)
         self.visits[self.place] = 1
@@ -370,6 +377,44 @@ class CubbyMan:
                 self._t("capability", gained=gained, because=fact)
                 self.on_capability(gained, fact)
         return earned
+
+    # ── asking a world that already knows ──────────────────────────────────
+    # Deliberately high. A settled ask leaves a fact carrying the question
+    # verbatim, so the question he really has asked comes back at ~1.0 while
+    # anything else sits near 0.2 — the margin is wide because the two errors
+    # are both bad: re-asking forever teaches him nothing, and deciding he
+    # knows something he does not is how a wrong answer gets spoken.
+    KNOWN_TAU = 0.6
+
+    def already_know(self, question: str) -> str | None:
+        """The fact in HIS OWN map that already answers this, if there is one.
+
+        This is the whole of *"then cubby stores it in long term memory so it
+        knows that part and dont have to ask already"*, and it is also the
+        kill criterion for WO-2.13: a fresh agent restored from his map must
+        not re-ask. It is deliberately his ordinary retrieval and nothing
+        special — the map answers the question, or it does not."""
+        hits = self.world(question, 1)
+        return hits[0][1] if hits and hits[0][0] >= self.KNOWN_TAU else None
+
+    def ask_elsewhere(self, question: str, claim: str = "", *, now: int = 0,
+                      patience: int = 3):
+        """He hit something his map cannot explain, so he frames the question
+        in his own words and sends it to whoever's domain it is.
+
+        It goes in as a HYPOTHESIS, not as a lookup, and that is the point: an
+        answer from a world is a claim that got settled, it lands through the
+        same gate as a percept, and if no world knows it stays an open question
+        instead of becoming a fact. Returns the hypothesis, or None when he
+        already knows (he does not ask twice) or has already asked this."""
+        known = self.already_know(question)
+        if known is not None:
+            self._t("ask_skipped", question=question, because=known)
+            return None
+        from hypothesis import Hypothesis
+        return self.guesses.frame(Hypothesis(
+            claim=claim or question, test=f"ask whoever knows: {question}",
+            verifier="ask", payload={"question": question}, made_at=now, patience=patience))
 
     # fact -> the capability it grants. A capability is EARNED by a verdict,
     # never set: being handed one is the maze's legal-move list in a hat.

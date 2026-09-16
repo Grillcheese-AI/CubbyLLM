@@ -287,6 +287,7 @@ REST_GAIN = 8                                            # per step of rest, in 
 REST_BELOW, REST_UNTIL = 30, 60                          # start resting under 30, stop at 60 (hysteresis)
 REST = "rest"                                            # the ASK candidate: stay put
 TRAP_BONUS = 3                                           # a ghost walked into his trap
+FALL_HURT = 15                                           # energy lost when something lands on him (WO-2.13)
 MINE = "mine"                                            # the ASK candidate: drop a trap here, then move
 
 
@@ -667,7 +668,8 @@ class GhostVerse(PacVerse):
     GHOST_FREE_LEVELS = 3
 
     def __init__(self, level: int = 1, seed_extra: int = 0,
-                 ghost_free_levels: int | None = None) -> None:
+                 ghost_free_levels: int | None = None,
+                 fallers_from_level: int | None = None) -> None:
         self.total_score = 0
         self.lives = 3
         self.energy = 100
@@ -677,6 +679,9 @@ class GhostVerse(PacVerse):
         self.ghost_free_levels = int(
             ghost_free_levels if ghost_free_levels is not None
             else os.environ.get("CUBBYMAN_GHOST_FREE_LEVELS", self.GHOST_FREE_LEVELS))
+        self.fallers_from_level = int(
+            fallers_from_level if fallers_from_level is not None
+            else os.environ.get("CUBBYMAN_FALLERS_FROM_LEVEL", self.FALLERS_FROM_LEVEL))
         self._start_level(level)
 
     # ── traps (owner, 2026-09-02): ghosts only; 1 per level, cumulative ─────
@@ -735,6 +740,7 @@ class GhostVerse(PacVerse):
         self.ghost_spawn = ([far[i % len(far)] for i in range(self.n_ghosts)]
                             if (far and self.n_ghosts) else [])
         self.ghosts = list(self.ghost_spawn)
+        self.fallers: list[dict] = []                    # things in the air, one cell down per step
         self.game_over = False
         self.mines = set()                               # a new maze: the floor is clean
         self.mines_left = getattr(self, "mines_left", 0) + 1   # one more trap; unused ones carry over
@@ -752,6 +758,7 @@ class GhostVerse(PacVerse):
         self.steps = 0
         self.frightened = 0
         self.ghosts = list(self.ghost_spawn)
+        self.fallers = []
 
     # level-scoped names so facts stay true forever across levels
     def cell(self, x: int, y: int, z: int) -> str:
@@ -826,7 +833,63 @@ class GhostVerse(PacVerse):
         for g in self.ghosts:
             if _manh(g, here) <= radius and self.line_of_sight(here, g):
                 seen["ghosts"].append(g)
+        # Things in the air, as POSITIONS and nothing else. The world does not
+        # say a thing is falling — it says where the thing is. That it is
+        # falling is his to work out from it being lower than it was, which is
+        # exactly what the law he has to go and ask for tells him to look at.
+        seen["things"] = [tuple(f["at"]) for f in self.fallers
+                          if _manh(f["at"], here) <= radius and self.line_of_sight(here, f["at"])]
         return seen
+
+    # ── things that fall (WO-2.13) ─────────────────────────────────────────
+    # The ceiling gives way from level 2 on. There is no announcement, no
+    # warning glow and no timer: a thing appears up the column and comes down
+    # one cell per step, which is enough to be hit by and enough to reason
+    # about — and the reasoning is not in here. The world falls; understanding
+    # falling is his problem, and the first time it is solved by asking a world
+    # that already knows (knowledge.PhysicsWorld).
+    FALLERS_FROM_LEVEL = 2
+    FALL_EVERY = 8                                       # steps between drops
+    FALL_HEIGHT = 3                                      # how far up one starts
+
+    @property
+    def fallers_on(self) -> bool:
+        return self.level >= self.fallers_from_level
+
+    def maybe_drop(self, place: str) -> tuple | None:
+        """Start something falling down the column above him, if the column is
+        clear and nothing is already in the air."""
+        if not self.fallers_on or self.fallers or self.steps % self.FALL_EVERY:
+            return None
+        x, y, z = self.coords(place)
+        top = min(y + self.FALL_HEIGHT, self.h - 1)
+        if top <= y:
+            return None
+        if any((x, k, z) in self.walls for k in range(y + 1, top + 1)):
+            return None                                  # it would be caught on the way down
+        self.fallers.append({"at": (x, top, z), "let_go": (x, top, z), "since": self.steps})
+        return (x, top, z)
+
+    def fall_turn(self, place: str) -> dict:
+        """Every falling thing comes down one cell. It stops on stone, and it
+        does not steer: where it lands is straight below where it let go —
+        which is what makes stepping aside enough, and what makes the law worth
+        holding."""
+        here = self.coords(place)
+        hit, landed = None, []
+        for f in list(self.fallers):
+            x, y, z = f["at"]
+            below = (x, y - 1, z)
+            if not _in(below, self.w, self.h, self.d) or below in self.walls:
+                self.fallers.remove(f)                   # it came to rest on something
+                landed.append(f["at"])
+                continue
+            f["at"] = below
+            if below == here:
+                self.fallers.remove(f)
+                landed.append(below)
+                hit = below
+        return {"hit": hit, "landed": landed, "flying": [tuple(f["at"]) for f in self.fallers]}
 
     def power_moves(self, place: str, library, energy: int) -> dict[str, str]:
         """The superpower moves legal HERE from his program library: JUMP =
@@ -1201,6 +1264,13 @@ class CubbyGhost(CubbyPac):
         # cannot sense is a ghost he does not know about, and a belief he
         # has not refreshed goes stale and is dropped.
         self.ghost_belief: dict[tuple, int] = {}
+        # and what he believes about things in the air: column (x, z) -> the
+        # (step, height) he last saw one at. Two sightings of the same column
+        # are what "nearer than it was" is measured between — the world never
+        # says a thing is falling, and without this he could not tell.
+        self.thing_belief: dict[tuple, tuple] = {}
+        self._dodge = False                              # this step: a prediction says leave the column
+        self.hit_by_falling = 0
         self.caught_at: list[int] = []                   # how far off a ghost was when he last CHOSE, before it caught him
         self._threat_seen_at: int | None = None
         self._eaten_run: set[str] = set()                # eaten THIS run (pellets respawn on a retry)
@@ -1211,6 +1281,13 @@ class CubbyGhost(CubbyPac):
         self.library = ProgramLibrary(memory, ledger=ledger)   # his generated programs (+ stats), persisted; audited on load
         self._last_proposal = -99
         super().__init__(env or GhostVerse(), exe=exe, seed=seed, probe=probe, blank=blank)
+        # Which worlds exist is the HOST's call, not his — he does not get to
+        # invent a source of knowledge. Physics is mounted here because a maze
+        # that drops things on you is a world where somebody had better know
+        # how falling works; a deployment that mounts none leaves him to find
+        # it out the slow way, which is the honest fallback and still works.
+        from knowledge import PhysicsWorld
+        self.other_worlds.mount(PhysicsWorld())
 
     @property
     def powers(self) -> list[str]:
@@ -1654,8 +1731,9 @@ class CubbyGhost(CubbyPac):
     # receives information.* THOUGHTS is kept because `data/gap_families.py`
     # builds the verbalize SFT family out of it — templates are fine for
     # making a corpus, which is the one place an authored phrasing belongs.
-    _PRIO = {"caught": 6, "level_up": 6, "out_of_time": 5, "program": 5, "modify": 5, "power": 4,
-             "forge": 4, "flee": 4, "trapped": 5, "mine": 4, "superpower_move": 3, "eat": 3, "rest": 3,
+    _PRIO = {"caught": 6, "level_up": 6, "hit_by_falling": 6, "out_of_time": 5, "program": 5,
+             "modify": 5, "power": 4, "forge": 4, "flee": 4, "trapped": 5, "mine": 4, "dodge": 4,
+             "wonder": 4, "superpower_move": 3, "eat": 3, "rest": 3, "predict": 3,
              "bump": 2, "probe": 2, "derive": 2, "plan": 1, "idle": 0}
 
     # what each event kind is ABOUT, in his own vocabulary. Not a phrasing:
@@ -1667,7 +1745,9 @@ class CubbyGhost(CubbyPac):
               "modify": "changed one of my moves", "superpower_move": "used one of my own moves",
               "out_of_time": "ran out of time", "level_up": "cleared the level", "derive": "worked something out",
               "forge": "checked something with my own program", "idle": "moving on", "rest": "resting",
-              "mine": "dropped a trap", "trapped": "a ghost hit my trap"}
+              "mine": "dropped a trap", "trapped": "a ghost hit my trap",
+              "hit_by_falling": "something came down on me", "wonder": "something I cannot work out",
+              "predict": "something above me is coming down", "dodge": "stepping out of the way"}
 
     # several phrasings per event and language — NOT used at runtime any more.
     # `data/gap_families.py` builds the verbalize SFT family from this table.
@@ -1810,7 +1890,7 @@ class CubbyGhost(CubbyPac):
     _SAY_FIELDS = ("to", "goal", "place", "tried", "hit", "score", "total", "steps", "energy",
                    "ghost_distance", "radius", "name", "pattern", "parent", "child", "edit",
                    "saved", "level", "next", "cleared", "attempt", "learned", "fact", "answer",
-                   "left", "n", "seen_at")
+                   "left", "n", "seen_at", "in_steps", "times", "move", "claim", "why")
 
     def percepts(self, kind: str, **d) -> dict:
         """What just happened to him, as data — no phrasing, no template.
@@ -1997,6 +2077,15 @@ class CubbyGhost(CubbyPac):
         for g in seen["ghosts"]:
             if _manh(g, seen["at"]) <= self.HEARING:
                 self.ghost_belief[tuple(g)] = env.steps
+        for c in seen.get("things", ()):                 # a thing in the air: where it is, nothing more
+            if _manh(c, seen["at"]) <= self.SIGHT:
+                col = (c[0], c[2])
+                was = self.thing_belief.get(col)
+                # keep the PREVIOUS height as well, and only when it is fresh:
+                # "nearer than it was" needs two sightings, and two sightings a
+                # step apart. One sighting is a thing hanging there.
+                prev = was[1] if was is not None and env.steps - was[0] == 1 else None
+                self.thing_belief[col] = (env.steps, c[1], prev)
         self._forget_stale()
         return out
 
@@ -2009,6 +2098,82 @@ class CubbyGhost(CubbyPac):
 
     # how long he waits before the world's silence is an answer
     PATIENCE = 12
+
+    # ── the thing that comes down, and the question it raises (WO-2.13) ────
+    # His own words for it. The question is the whole interface: it goes to
+    # whichever world's domain it is, and nothing in here knows that the
+    # answer will come from physics.
+    FALLING_Q = "how can I know when something is about to fall on me"
+
+    def _wonder_about_falling(self, why: str) -> None:
+        """Something came down on him and his map has no account of it.
+
+        He cannot settle this by looking — looking is what got him hit — and
+        he cannot settle it on the VM, because it is not a claim about a
+        program. It is a claim about how the world works, and somewhere there
+        is a world whose domain that is. So he asks, and the answer arrives as
+        a verdict rather than as a gift: through `settle`, through `_learn`,
+        refutable like everything else he holds."""
+        if self.guesses is None or not self.other_worlds:
+            return
+        h = self.ask_elsewhere(self.FALLING_Q, claim="something up there comes down on me",
+                               now=self.env.steps, patience=self.PATIENCE)
+        if h is not None:
+            self._t("wonder", claim=h.claim, test=h.test, why=why)
+            self._think("wonder", claim=h.claim, why=why)
+
+    def knows_falling(self) -> bool:
+        """Has he asked and been answered? This gates the prediction below,
+        which is the point of the whole exercise: before the answer he can see
+        a thing above him and it means nothing; after it, the same percept
+        means something is about to land on him."""
+        return self.already_know(self.FALLING_Q) is not None
+
+    # The two laws that do the predicting, quoted exactly as physics phrased
+    # them. They are named here so each inference below can be CHECKED against
+    # the map before it is drawn: an agent who was told only one of them can
+    # only make the one inference, and an agent who was told neither makes
+    # none. That is the difference between reading his facts and having the
+    # rule baked into this file — which is the thing WO-2.10 spent a day
+    # taking out and is not going back in through a side door.
+    LAW_ONE_UP = "a thing above me that is one step up lands on me next"
+    LAW_NEARER = "a thing above me that is nearer than it was is falling toward me"
+
+    def falling_at_me(self) -> int | None:
+        """Steps until something lands on him, or None.
+
+        Every term is his: `thing_belief` is what he saw, the column
+        arithmetic is his, and what licenses turning either of those into a
+        prediction is a law sitting in his map. The world is never consulted."""
+        if not self.knows_falling():
+            return None
+        env = self.env
+        x, y, z = env.coords(self.place)
+        seen = self.thing_belief.get((x, z))
+        if seen is None:
+            return None
+        step, at, prev = seen
+        if env.steps - step > 1 or at <= y:              # stale, or not above him
+            return None
+        if at - y == 1 and self.LAW_ONE_UP in self.world:
+            return 1                                     # no motion needed: it is already on top of him
+        if prev is not None and at < prev and self.LAW_NEARER in self.world:
+            return at - y                                # one cell per step, so height IS the countdown
+        return None                                      # above him, but nothing he holds says it is coming
+
+    def _dodge_move(self, exits: dict[str, str]) -> str | None:
+        """Any move that leaves the column — *"stepping out from under a
+        falling thing is enough, it does not follow me"*. He prefers one that
+        also serves his plan, because dodging is not a reason to lose the
+        thread."""
+        env = self.env
+        x, _, z = env.coords(self.place)
+        out = [m for m, p in exits.items()
+               if m in MOVES and (env.coords(p)[0], env.coords(p)[2]) != (x, z)]
+        for m in out:
+            if exits[m] == self._plan_next:
+                return m
+        return out[0] if out else None
 
     def _guess_about_pellets(self, cell: str) -> None:
         """The first pellet he ever sees raises a question he cannot answer by
@@ -2184,13 +2349,25 @@ class CubbyGhost(CubbyPac):
         return super()._try_the_wall(src, dirs)
 
     def _pick(self, exits: dict[str, str]) -> str:
-        """Fear-aware and map-driven: hunt frightened ghosts; never step onto
-        a hunting one; FLEE when one is inside his fear radius (the exit that
-        maximizes the distance to them); otherwise follow the path his map
-        planned; only with no plan fall back to novelty."""
+        """Fear-aware and map-driven: DODGE what he predicts is about to land
+        on him; hunt frightened ghosts; never step onto a hunting one; FLEE
+        when one is inside his fear radius (the exit that maximizes the
+        distance to them); otherwise follow the path his map planned; only
+        with no plan fall back to novelty.
+
+        The dodge is first because it is the only one of these with a deadline
+        of one step — and it exists at all only once he has asked how falling
+        works. Nothing here is a rule about falling; the rule is a fact in his
+        map, and this reads it."""
         env = self.env
         gh = self.believed_ghosts()                      # his belief, not env.ghosts
         ghost_cells = {env.cell(*g) for g in gh}
+        if self._dodge:                                  # a prediction he made: get out of the column
+            m = self._dodge_move(exits)
+            if m is not None:
+                self._t("dodge", move=m, place=self.place)
+                self._think("dodge", move=m)
+                return m
         if REST in exits and not (env.frightened > 0 and any(p in ghost_cells
                                                              for p in exits.values())):
             self._think("rest", energy=env.energy)       # tired, and this spot is safe: rest
@@ -2273,7 +2450,13 @@ class CubbyGhost(CubbyPac):
                 ev["failed"] = True
                 # too slow. If he knows moves can be chained, invent a faster
                 # one; if he does not, this is the other thing that raises the
-                # question in the first place.
+                # question in the first place — and then there is nothing
+                # learned to report, which is the case that used to raise
+                # KeyError right below (exp_r38, 2026-09-15: an agent who runs
+                # out of time before earning `combos` never survived this
+                # branch, and nothing had run long enough without them to hit
+                # it).
+                ev["learned"] = None
                 if "combos" in self.can:
                     ev["learned"] = self._propose("out_of_time")
                 else:
@@ -2293,6 +2476,18 @@ class CubbyGhost(CubbyPac):
             # an open guess stays a guess and never enters the map.
             for fact in self.settle(env.steps):           # CubbyMan's: test, learn, grant
                 self._think("derive", fact=fact)
+            # WHAT HIS LAWS SAY ABOUT WHAT HE JUST SAW (WO-2.13). Before he
+            # has asked how falling works this is always None, and a thing
+            # hanging overhead is only a thing hanging overhead. After, the
+            # same two sightings mean something is about to land on him, and
+            # he has one step to be somewhere else.
+            self._dodge = False
+            drop = self.falling_at_me()
+            if drop is not None:
+                self._t("predict", what="something is falling at me", in_steps=drop,
+                        because=self.already_know(self.FALLING_Q))
+                self._think("predict", in_steps=drop)
+                self._dodge = drop <= 1
             # how far off the nearest threat was when he chose — the last
             # moment he could act. This, not the distance at capture, is what
             # `_on_caught` turns into his berth.
@@ -2349,6 +2544,38 @@ class CubbyGhost(CubbyPac):
                     self._think("plan", to=self._plan_next, goal="pellet" if seen_left else "frontier")
                 else:
                     self._think("idle", to=self.place)
+            # then everything in the air comes down one cell, and the ceiling
+            # may let go of something new. Both AFTER his move: he acts on what
+            # he perceived, and the world resolves.
+            fall = env.fall_turn(self.place)
+            here = env.coords(self.place)
+            # a landing he WITNESSED: close enough and in line of sight. Same
+            # channel as everything else he perceives.
+            watched = [c for c in fall["landed"]
+                       if c != fall["hit"] and _manh(c, here) <= self.SIGHT
+                       and env.line_of_sight(here, c)]
+            if fall["hit"]:
+                self.hit_by_falling += 1
+                env.energy = max(0, env.energy - FALL_HURT)
+                ev["hit_by_falling"] = list(fall["hit"])
+                self._t("hit_by_falling", place=self.place, times=self.hit_by_falling,
+                        energy=env.energy, knew=self.knows_falling())
+                self._think("hit_by_falling", times=self.hit_by_falling)
+                if self.chem is not None:
+                    self.chem.update(threat=0.6, novelty=0.5)
+            elif watched:
+                self._t("saw_it_land", at=list(watched[0]), place=self.place,
+                        knew=self.knows_falling())
+                if self.chem is not None:
+                    self.chem.update(novelty=0.5)
+            # Either one is the thing his map has no account of, and that is
+            # what sends the question out — not a schedule and not a hint. He
+            # does not have to be hit to be puzzled; watching one thump down
+            # beside him is enough, and it is the cheaper way to find out.
+            if fall["hit"] or watched:
+                self._wonder_about_falling("something came down out of nowhere")
+            if env.maybe_drop(self.place):
+                self._t("something_let_go", above=self.place)
             gh = env.ghost_turn(self.place)              # then the ghosts move
             if gh.get("trapped"):
                 ev["trapped"] = gh["trapped"]
@@ -2468,6 +2695,12 @@ class CubbyGhost(CubbyPac):
                 "superpowers": list(self.powers),
                 "mines": [list(c) for c in sorted(env.mines)], "mines_left": env.mines_left,
                 "mined": ev.get("mined"), "trapped": ev.get("trapped", 0),
+                # things in the air and what one of them did to him this step.
+                # In the feed so the page can draw them; his own view of the
+                # same things is `thing_belief`, which is two sightings deep
+                # and can be stale, and the gap is the interesting part.
+                "falling": [list(f["at"]) for f in env.fallers],
+                "hit_by_falling": ev.get("hit_by_falling"),
                 **self.affect()}
 
     def init_payload(self) -> dict:
