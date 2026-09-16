@@ -490,58 +490,63 @@ class Neurochemistry:
         ("hi_ot",       ["warmth", "trust"]),
     ]
 
+    # The Lövheim corner this state is nearest -> the honest readings OF THAT
+    # CORNER. Keyed off `dominant_emotion` rather than off a second set of
+    # thresholds, because two classifiers over one space disagree in the band
+    # between them however carefully each is tuned: the corner classifier is
+    # nearest-corner and the thresholds were cutoffs, so the compass said
+    # `annoyance` while the names said `elation` on the same step. One
+    # classifier decides WHERE he is; this table only decides what that place
+    # can honestly be called, and the fork inside each list is the part worth
+    # handing over.
+    #
+    # The two social corners are empty on purpose: contempt and shame need
+    # somebody else, and there is nobody else in a maze. Same call
+    # `pacman._SOCIAL_CORNERS` makes.
+    _BY_CORNER: dict[str, list[str]] = {
+        "joy":      ["elation", "being on a roll", "recklessness"],
+        "warm":     ["warmth", "ease", "quiet satisfaction"],
+        "surprise": ["surprise", "being caught out", "confusion"],
+        "angry":    ["anger", "fury", "being pushed too far"],
+        "anxious":  ["dread", "being rattled", "nerve"],
+        "sad":      ["despair", "stubbornness", "being fed up"],
+        "curious":  ["curiosity", "interest"],
+        "shame":    [],
+        "contempt": [],
+        "neutral":  [],
+    }
+
     def could_be(self, limit: int = 3) -> list[str]:
-        """Names that suit this mixture — offered, never asserted.
+        """Names that suit this state — offered, never asserted.
 
-        ONE REGION, its several readings. The ambiguity worth handing over is
-        the one INSIDE a region: low dopamine under high cortisol is despair or
-        it is grim stubbornness, same body, and nothing in the chemistry
-        decides which. Ambiguity ACROSS regions is a different thing entirely —
-        it means several things are true of him at once — and pooling the two
-        produced exactly what the owner caught live, a five-item menu reading
-        *"something is coming or elation or recklessness or being on a roll or
-        warmth"*. That is not a feeling with more than one name, it is
-        indecision, and nobody experiences it. So the strongest region speaks
-        and the rest stay quiet.
+        ONE PLACE, its several readings. The ambiguity worth handing over is
+        the one INSIDE a corner: the same low-dopamine-under-cortisol body is
+        despair or it is grim stubbornness, and nothing in the chemistry
+        decides which. Ambiguity ACROSS states is a different thing — it means
+        several things are true of him at once — and pooling the two produced
+        the five-item menu the owner caught live, *"something is coming or
+        elation or recklessness or being on a roll or warmth"*. That is not a
+        feeling with more than one name, it is indecision, and nobody
+        experiences it.
 
-        The FIRST hot region wins, in `_NAMES` order, which is priority order:
-        hurting, then the bad readings, then the good ones. Ranking them by how
-        far each sits past its own threshold looked more principled and was
-        not — the margins are in different units, so a slow oxytocin drift of
-        +0.3 outranked a genuine low-dopamine-under-cortisol reading of +0.05,
-        and five failed levels in a row came out as *"warmth or trust"*. There
-        is no common scale to compare them on, so the honest thing is to say
-        which matters more and mean it."""
-        d, val = self._dev(), self.valence
-        hot = {
-            "hurt": self.pain > 0.35,
-            # CORTISOL IS THE ONLY THING THAT LASTS. Dopamine bounces back to
-            # resting within a few quiet frames and `valence` is re-set every
-            # frame, so a region keyed on "dopamine is low right now" can only
-            # fire in the instant of the blow — which is why five failed levels
-            # in a row never once read as despair. What a bad run actually
-            # leaves behind is the slow integrator sitting high with nothing
-            # lifting dopamine above rest, and that is the state worth handing
-            # over to be named.
-            "low_da_hi_c": d["C"] > 0.15 and d["DA"] < 0.15,
-            "hi_ne_lo_da": d["NE"] > 0.20 and d["DA"] < -0.05,
-            "craving": self.craving > 0.30,
-            "lo_5ht": d["5HT"] < -0.20,
-            "hi_da_hi_ne_lo_5ht": d["DA"] > 0.15 and d["NE"] > 0.15 and d["5HT"] < -0.15,
-            "hi_da_hi_ne": d["DA"] > 0.15 and d["NE"] > 0.15 and d["5HT"] >= -0.15,
-            # The pleasant readings need something good to be HAPPENING. The
-            # ported couplings park oxytocin above its resting level whatever
-            # else is going on, so "warm toward things" was the default state
-            # of an agent alone in a maze — and after a bad run it outranked
-            # every reading that fit. A body can be warm while the day goes
-            # badly; "warmth" is not then the name for it.
-            "hi_ot": d["OT"] > 0.20 and val > 0.15 and self.pain < 0.2,
-            "hi_da_lo_ne": d["DA"] > 0.30 and d["NE"] < 0.05 and val >= 0.0,
-        }
-        for region, names in self._NAMES:
-            if hot.get(region):
-                return list(names[:limit])
-        return []
+        The corner is read from `dominant_emotion` rather than re-derived from
+        a second set of thresholds. Two classifiers over one space disagree in
+        the band between them however carefully each is tuned — one is
+        nearest-corner and the other was cutoffs — so the compass said
+        `annoyance` while the names said `elation` on the same step. The corner
+        classifier decides WHERE he is; this only decides what that place can
+        honestly be called.
+
+        PAIN AND CRAVING COME FIRST because the Lövheim cube has no axis for
+        either: it reads serotonin, dopamine and noradrenaline, so a body that
+        is hurting or wanting sits at whatever corner those three imply and the
+        cube cannot tell the difference. They are the two signals this port
+        added, so they are the two the corner cannot speak for."""
+        if self.pain > 0.35:
+            return ["shock", "fear", "anger"][:limit]
+        if self.craving > 0.30:
+            return ["wanting", "restlessness", "an itch"][:limit]
+        return list(self._BY_CORNER.get(self.dominant_emotion, [])[:limit])
 
     # ── the dials: hormones -> HOW he speaks, with no feeling word anywhere ──
     #
