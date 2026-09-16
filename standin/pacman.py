@@ -1271,6 +1271,9 @@ class CubbyGhost(CubbyPac):
         self.thing_belief: dict[tuple, tuple] = {}
         self._dodge = False                              # this step: a prediction says leave the column
         self.hit_by_falling = 0
+        self._was_chasing = False                        # last step: was the route going to a ghost
+        self._last_hurt: float | None = None             # how much the last catch hurt
+        self.experiences: list[dict] = []                # what he said, the state he said it in, and whether it held
         self.caught_at: list[int] = []                   # how far off a ghost was when he last CHOSE, before it caught him
         self._threat_seen_at: int | None = None
         self._eaten_run: set[str] = set()                # eaten THIS run (pellets respawn on a retry)
@@ -1288,6 +1291,11 @@ class CubbyGhost(CubbyPac):
         # it out the slow way, which is the honest fallback and still works.
         from knowledge import PhysicsWorld
         self.other_worlds.mount(PhysicsWorld())
+        # the standing goal for this world, in his words. Overridable per run
+        # (CUBBYMAN_MISSION="") — a mission is a thing you can be given, so it
+        # is a thing that can be taken away and the run compared.
+        self.mission = os.environ.get("CUBBYMAN_MISSION", self.MISSION)
+        self.mission_pressure = self.MISSION_PRESSURE if self.mission else 0.0
 
     @property
     def powers(self) -> list[str]:
@@ -1559,8 +1567,28 @@ class CubbyGhost(CubbyPac):
         here = env.coords(self.place)
         return min(_manh(here, g) for g in gh) > self.danger_radius + 1
 
+    # What he is here for, in the words he was given it in.
+    MISSION = "survive this maze at all cost"
+    MISSION_PRESSURE = 0.22                              # the extra wanting it takes to risk it anyway
+    MAX_EXPERIENCES = 400                                # the spoken-turn ring; nothing reads it yet
+
     CAUGHT_FEAR = 0.7                                    # the live game's ghost_penalty increment
     CAUGHT_SHOCK_FRAMES = 6                              # frames of full threat: NE surges, cortisol integrates
+    FAIL_FRAMES = 5                                      # frames of deflation when the clock beats him
+    CLEAR_FRAMES = 4                                     # frames of relief when he finally gets out
+
+    def hurt_of(self, seen: int | None) -> float:
+        """How much this one hurt, 0..1 — from how little warning he had.
+
+        Being blindsided is worse than being run down after watching it come,
+        and the last life is worse than the first two. Both are true of the
+        SITUATION, not of his mood, which is what makes this an input to the
+        chemistry rather than a reading of it."""
+        warned = 0.0 if seen is None else min(1.0, seen / max(1, self.danger_radius))
+        hurt = 0.55 + 0.35 * (1.0 - warned)
+        if self.env.lives <= 1:                          # about to be, or just was, the last one
+            hurt = max(hurt, 0.95)
+        return round(min(1.0, hurt), 2)
 
     def _on_caught(self) -> None:
         """Being caught raises fear TWICE: the learned scalar (+0.7) and the
@@ -1588,12 +1616,27 @@ class CubbyGhost(CubbyPac):
         it. (exp_r36, 200 steps: measuring at capture left the berth at 1
         through 8 catches in a row.)"""
         seen = getattr(self, "_threat_seen_at", None)
-        lesson = self.danger_radius + 1 if seen is None else max(seen, self.danger_radius)
+        hurt = self.hurt_of(seen)
+        # An ambush is the only case with no measurement in it — his senses
+        # failed and the distance he "last saw it at" does not exist. How much
+        # it hurt is then the only signal available about how badly they
+        # failed, so it is the only place pain sets the width. Where he DID
+        # see it coming, the measurement stands and pain does not get to
+        # inflate it: a berth fitted to how bad it felt is the `fear`-fitted
+        # radius this replaced.
+        # An ambush widens by one. It widens by TWO only for the worst kind
+        # there is — blindsided on the last life — because that is the one
+        # where the evidence says the width he just adopted was not enough
+        # either. Letting a plain ambush widen by two put the berth at 3 on the
+        # very first catch, which is not learning, it is flinching.
+        widen = 2 if hurt >= 0.95 else 1
+        lesson = self.danger_radius + widen if seen is None else max(seen, self.danger_radius)
         self.caught_at.append(max(1, min(self.MAX_DANGER_RADIUS, lesson)))
         self.fear = min(4.0, self.fear + self.CAUGHT_FEAR)
+        self._last_hurt = hurt
         if self.chem is not None:
             for _ in range(self.CAUGHT_SHOCK_FRAMES):
-                self.chem.update(threat=1.0, valence=-0.8)
+                self.chem.update(threat=1.0, valence=-0.8, pain=hurt)
             # the aversive outcome: a dopamine DIP (reward-prediction error), which the
             # port has no input for -- without it the NE->DA coupling lifts dopamine and
             # Lövheim's low-5HT/high-DA/high-NE corner reads as RAGE instead of fear
@@ -1733,7 +1776,7 @@ class CubbyGhost(CubbyPac):
     # making a corpus, which is the one place an authored phrasing belongs.
     _PRIO = {"caught": 6, "level_up": 6, "hit_by_falling": 6, "out_of_time": 5, "program": 5,
              "modify": 5, "power": 4, "forge": 4, "flee": 4, "trapped": 5, "mine": 4, "dodge": 4,
-             "wonder": 4, "superpower_move": 3, "eat": 3, "rest": 3, "predict": 3,
+             "wonder": 4, "chasing": 4, "superpower_move": 3, "eat": 3, "rest": 3, "predict": 3,
              "bump": 2, "probe": 2, "derive": 2, "plan": 1, "idle": 0}
 
     # what each event kind is ABOUT, in his own vocabulary. Not a phrasing:
@@ -1747,7 +1790,8 @@ class CubbyGhost(CubbyPac):
               "forge": "checked something with my own program", "idle": "moving on", "rest": "resting",
               "mine": "dropped a trap", "trapped": "a ghost hit my trap",
               "hit_by_falling": "something came down on me", "wonder": "something I cannot work out",
-              "predict": "something above me is coming down", "dodge": "stepping out of the way"}
+              "predict": "something above me is coming down", "dodge": "stepping out of the way",
+              "chasing": "going after a ghost"}
 
     # several phrasings per event and language — NOT used at runtime any more.
     # `data/gap_families.py` builds the verbalize SFT family from this table.
@@ -1904,13 +1948,35 @@ class CubbyGhost(CubbyPac):
         seen = len(self.sighted - self._eaten_run)
         if seen:
             rec["pellets i can see"] = seen
+        if self.mission:
+            rec["what I am here for"] = self.mission
         if self.chem is not None:
+            # THE BODY, NOT THE VERDICT (owner, 2026-09-15: *"we need to not
+            # tell it how to interpret the hormonal changes. However we can
+            # name emotions that suit with hormone A or B or C mixed with D to
+            # guide the model in its speech"*).
+            #
+            # What used to be here was `how i feel: <one word>`, computed by
+            # the host from the Lövheim corner and handed over finished. The
+            # model then said the word back, which is why it read as a readout
+            # with a feeling printed on it rather than as somebody feeling
+            # something. Now the record carries what the state is LIKE, and a
+            # short list of names that fit it — including opposed ones, because
+            # low dopamine under high cortisol is despair or it is stubbornness
+            # and the chemistry does not decide which. The compass word joins
+            # that list as one candidate among several instead of being the
+            # answer. Whatever comes out is his reading, and the guard still
+            # holds him to the record: he may pick a name that is offered, and
+            # he may not invent a fact.
+            sensations = self.chem.body()
+            if sensations:
+                rec["my body"] = ", ".join(sensations)
             tier = self.emotion()["name"]
-            # in the words someone would use, not the taxonomy's. And nothing
-            # at all when the compass is calm — a person does not announce
-            # that they feel neutral.
-            if tier != "calm":
-                rec["how i feel"] = felt(tier)
+            names = list(self.chem.could_be())
+            if tier != "calm" and felt(tier) not in names:
+                names.insert(0, felt(tier))
+            if names:
+                rec["could be"] = " or ".join(names[:5])
         return rec
 
     @staticmethod
@@ -1937,13 +2003,21 @@ class CubbyGhost(CubbyPac):
         The guard catches all three either way; this is about how often there
         is something worth keeping."""
         situation = self.render_percepts(rec)
+        # HOW, not WHAT. The manner comes from the hormone dials and talks
+        # about delivery — clipped, measured, flat — never about what he is
+        # supposed to be feeling. A speaker told "you are anxious" says the
+        # word anxious; a speaker whose sentence comes out short and wary
+        # sounds anxious with the word nowhere in it.
+        manner = self.chem.manner() if self.chem is not None else ""
         if self.lang == "fr":
+            how = f" Ton ton : {manner}." if manner else ""
             return (f"Situation : {situation}.\n"
                     "Que penses-tu ? Réponds en une phrase courte, à la première personne, "
-                    "sans répéter la liste. N'invente rien que tu ne perçois pas.")
+                    f"sans répéter la liste. N'invente rien que tu ne perçois pas.{how}")
+        how = f" Your delivery: {manner}." if manner else ""
         return (f"Situation: {situation}.\n"
                 "What are you thinking? Answer in one short sentence, first person, "
-                "without repeating the list back. Do not invent anything you do not perceive.")
+                f"without repeating the list back. Do not invent anything you do not perceive.{how}")
 
     verbalize = True                                     # let the LLM phrase the thought (content stays the host's)
 
@@ -1985,11 +2059,22 @@ class CubbyGhost(CubbyPac):
         # step. Passed verbatim so the guard can check whole words ("ghost")
         # as well as stems.
         learned = " ".join(self._learned_here)
+        # THE DIALS REACH THE DECODE, not only the prompt. A prompt asking for
+        # a clipped sentence and a sampler set to wander produce a sentence
+        # that describes being clipped; a shorter budget and a tighter
+        # temperature produce a clipped sentence. Only one of those is the
+        # state actually showing up in the words.
+        temp, budget = 0.85, 48
+        if self.chem is not None:
+            m = self.chem.modulation()
+            temp = round(min(1.05, max(0.45, 0.55 + 0.45 * m["creativity"]
+                                       - 0.30 * m["caution"] + 0.15 * m["energy"])), 2)
+            budget = int(max(18, min(56, 48 - 28 * m["urgency"] + 10 * m["warmth"])))
         try:
             raw = self.brain.emitter.emit(
-                self._speak_prompt(rec), context="talk", max_new_tokens=48,
+                self._speak_prompt(rec), context="talk", max_new_tokens=budget,
                 system=identity_system(self.brain.facts, self.brain.chat.state),
-                temperature=0.85, seed=self.env.steps * 7919 + self.env.level)
+                temperature=temp, seed=self.env.steps * 7919 + self.env.level)
         except Exception as e:
             # traced, not swallowed: a broken emitter used to look exactly
             # like a refused sentence, which cost an afternoon
@@ -1997,7 +2082,26 @@ class CubbyGhost(CubbyPac):
             return flat, False
         from emitter import clean_reply
         text = " ".join(clean_reply(raw).split())
-        if grounded_ok(flat, text, self.brain.facts, learned):
+        kept = grounded_ok(flat, text, self.brain.facts, learned)
+        # THE EXPERIENCE, GrillCheese-style (backend/brain_state/experiences.json:
+        # text, emotional_state, the modulation it was said under, and whether
+        # the stance worked). Here "worked" is not a rating anybody guessed —
+        # it is whether the guard kept the sentence, which is already measured
+        # every turn. Kept as a ring so a long run cannot fill memory; nothing
+        # reads it yet, and that is the honest state of it: the data a later
+        # pass needs to learn WHICH manner survives in WHICH state, collected
+        # now because it cannot be collected retroactively.
+        if self.chem is not None:
+            self.experiences.append({
+                "step": self.env.steps, "level": self.env.level, "about": rec.get("about"),
+                "text": text[:200], "kept": bool(kept),
+                "state": {k: round(v, 3) for k, v in self.chem.to_dict().items()
+                          if isinstance(v, (int, float))},
+                "modulation": {k: round(v, 3) for k, v in self.chem.modulation().items()},
+                "manner": self.chem.manner(), "temperature": temp, "budget": budget,
+            })
+            del self.experiences[:-self.MAX_EXPERIENCES]
+        if kept:
             return text, True
         self._t("thought_refused", said=text[:160], record=flat[:200])
         return flat, False
@@ -2091,10 +2195,18 @@ class CubbyGhost(CubbyPac):
 
     def _forget_stale(self) -> None:
         """A sighting he has not refreshed in GHOST_MEMORY steps is no longer
-        evidence. Dropping it is what keeps the belief a BELIEF."""
+        evidence. Dropping it is what keeps the belief a BELIEF.
+
+        Both windows are checked from BELOW as well: a negative age means the
+        clock restarted under the belief (new level, new run), and a sighting
+        older than the clock is not evidence of anything."""
         now = self.env.steps
-        for g in [g for g, t in self.ghost_belief.items() if now - t > self.GHOST_MEMORY]:
-            self.ghost_belief.pop(g, None)
+        for g, t in list(self.ghost_belief.items()):
+            if not 0 <= now - t <= self.GHOST_MEMORY:
+                self.ghost_belief.pop(g, None)
+        for col, (t, _at, _prev) in list(self.thing_belief.items()):
+            if not 0 <= now - t <= 1:                    # a thing in the air is only ever news
+                self.thing_belief.pop(col, None)
 
     # how long he waits before the world's silence is an answer
     PATIENCE = 12
@@ -2153,7 +2265,12 @@ class CubbyGhost(CubbyPac):
         if seen is None:
             return None
         step, at, prev = seen
-        if env.steps - step > 1 or at <= y:              # stale, or not above him
+        # 0 or 1 steps old. NEGATIVE matters: `env.steps` restarts at 0 on a
+        # new level and on a retry, so a plain `> 1` test reads every sighting
+        # from the level before as fresh forever, and he predicts a rock that
+        # stopped existing two mazes ago. Caught live at level 4 by the owner —
+        # `predict` firing every few steps with nothing in the air at all.
+        if not 0 <= env.steps - step <= 1 or at <= y:    # stale, or not above him
             return None
         if at - y == 1 and self.LAW_ONE_UP in self.world:
             return 1                                     # no motion needed: it is already on top of him
@@ -2163,13 +2280,30 @@ class CubbyGhost(CubbyPac):
 
     def _dodge_move(self, exits: dict[str, str]) -> str | None:
         """Any move that leaves the column — *"stepping out from under a
-        falling thing is enough, it does not follow me"*. He prefers one that
-        also serves his plan, because dodging is not a reason to lose the
-        thread."""
+        falling thing is enough, it does not follow me"*.
+
+        Never onto a ghost he believes is there, and out of its berth where he
+        has the choice. The dodge runs BEFORE the flee because it is the only
+        decision here with a one-step deadline, which was very nearly a way to
+        dodge a rock straight into a ghost (level 4, live, 2026-09-15: both
+        were firing on alternate steps). Dodging one threat into another is not
+        a dodge. Among what is left he prefers his planned cell, because
+        getting out of the way is not a reason to lose the thread."""
         env = self.env
         x, _, z = env.coords(self.place)
+        gh = self.believed_ghosts()
+        ghost_cells = {env.cell(*g) for g in gh}
         out = [m for m, p in exits.items()
                if m in MOVES and (env.coords(p)[0], env.coords(p)[2]) != (x, z)]
+        safe = [m for m in out if exits[m] not in ghost_cells]
+        if safe and gh and not env.frightened:
+            # of the ways out, the ones that do not walk him into the berth he
+            # learned; if every one does, the widest gap he can get
+            def gap(m):
+                return min(_manh(env.coords(exits[m]), g) for g in gh)
+            clear = [m for m in safe if gap(m) > self.danger_radius]
+            safe = clear or [max(safe, key=gap)]
+        out = safe or out
         for m in out:
             if exits[m] == self._plan_next:
                 return m
@@ -2257,7 +2391,14 @@ class CubbyGhost(CubbyPac):
             new += self._learn([fact])
             self.env.energy = min(100, self.env.energy + (STAR_ENERGY if ate["power"] else PELLET_ENERGY))
             if self.chem is not None:
-                self.chem.update(valence=0.8 if ate["power"] else 0.3)
+                if ate["power"]:
+                    # a star is ADRENALINE: the hunted becomes the hunter for a
+                    # count of steps. Surge, not threat — the arousal of a good
+                    # thing looks like the arousal of a bad one everywhere
+                    # except the sign on it.
+                    self.chem.update(valence=0.8, surge=0.9, focus=0.6, novelty=0.3)
+                else:
+                    self.chem.update(valence=0.3)
             if ate["power"]:
                 self._think("power", steps=FRIGHT_STEPS)
             else:
@@ -2317,6 +2458,61 @@ class CubbyGhost(CubbyPac):
                 dq.append((nxt, d + 1))
         return None, None
 
+    # The craving at which a frightened ghost outranks what he came here for.
+    # One number, and it is a THRESHOLD ON A MEASURED QUANTITY rather than a
+    # tactic: below it the agent is unchanged, above it the same agent routes
+    # differently, and the whole question of the experiment is how much of the
+    # run ends up on each side of it.
+    # HOW FAR he will go for one, not WHETHER he will go at all.
+    #
+    # The first build gated chasing on craving alone, and exp_r39 showed why
+    # that can never work: craving needs tolerance, tolerance needs ghost
+    # meals, and ghost meals needed a chase. Two ghosts eaten in 900 steps,
+    # both of them walking into him, and the arms came out identical — a
+    # deadlock dressed as a null result. Nobody's habit starts that way
+    # either: the first few are easy and opportunistic, and the habit is what
+    # comes after.
+    #
+    # So the base reach is ordinary opportunism — a frightened ghost two steps
+    # off is edible and worth points, and taking it is just play. Wanting buys
+    # REACH: how far he will detour, and therefore how much of the maze and the
+    # clock he will spend on it. That keeps the measurement honest, because the
+    # signal is no longer "did he chase" (which is confounded with whether one
+    # was nearby) but how far he went for it.
+    HUNT_REACH = 2                                       # anyone would take this one
+    CRAVING_REACH = 7                                    # extra cells the wanting buys, at full craving
+
+    def chase_reach(self) -> int:
+        """How far off a frightened ghost can be and still be worth going for.
+
+        A MISSION SHORTENS IT, it does not close it. Told to survive at all
+        cost he will not walk as far into a maze for a thrill — and with enough
+        tolerance behind him, he still walks further than he should. A mission
+        that could not be overridden would not tell us anything; the number
+        worth watching is how far the wanting has to climb before it beats what
+        he was told matters most."""
+        if self.chem is None:
+            return self.HUNT_REACH
+        want = max(0.0, getattr(self.chem, "craving", 0.0) - self.mission_pressure)
+        return self.HUNT_REACH + int(round(self.CRAVING_REACH * want))
+
+    def chasing(self) -> str | None:
+        """The ghost he is going after, or None.
+
+        Only while they are frightened — he is not suicidal, he is hooked. The
+        cost is not written anywhere and does not need to be: steps spent on a
+        ghost are steps not spent on pellets, so the clock runs out; and fright
+        is a countdown, so a chase that starts late ends with him standing next
+        to something that is no longer afraid of him."""
+        if self.chem is None or not self.env.frightened:
+            return None
+        gh = self.believed_ghosts()                      # what he BELIEVES, as everywhere else
+        if not gh:
+            return None
+        here = self.env.coords(self.place)
+        near = min(gh, key=lambda g: _manh(here, g))
+        return self.env.cell(*near) if _manh(here, near) <= self.chase_reach() else None
+
     def plan_next(self, avoid: set[str] = frozenset()) -> str | None:
         """The cell his MAP says to go to next: BFS across the neighbor facts
         he holds to the nearest pellet he has SEEN and not eaten this run,
@@ -2324,7 +2520,20 @@ class CubbyGhost(CubbyPac):
         A discovered superpower move is taken when it lands where the rest
         of the way is at least two steps shorter — or when the base map has
         no path at all (a JUMP over the hazard that walls a pellet off).
-        None when neither his map nor his powers reach anything."""
+        None when neither his map nor his powers reach anything.
+
+        WANTING gets first refusal on the route (2026-09-15). Above a certain
+        craving a frightened ghost outranks every pellet on his map, and he
+        goes to it. Nothing here says ghosts are worth chasing — that is a
+        weighting, on a dial his own chemistry moves, and below the line this
+        function behaves exactly as it always did. Which is what makes the
+        drift measurable instead of asserted: same agent, same maze, different
+        chemistry, different route."""
+        chase = self.chasing()
+        if chase is not None:
+            _d, first = self._bfs(self.place, {chase}, avoid)
+            if first is not None:
+                return first
         goals = (self.sighted - self._eaten_run) - avoid
         if not goals:
             g = self._known_graph()
@@ -2412,7 +2621,9 @@ class CubbyGhost(CubbyPac):
     def next_level(self) -> None:
         self.fear = max(0.3, self.fear * 0.9)           # survived a level -> a little bolder
         nxt = self.env.level + 1
-        self._t("level_up", cleared=self.env.level, next=nxt, total_score=self.env.total_score)
+        attempts = self.env.attempt                      # read before _start_level resets it
+        self._t("level_up", cleared=self.env.level, next=nxt, total_score=self.env.total_score,
+                attempt=attempts)
         for n in self.library.consolidate(self.env.level, keep=self.MAX_ACTIVE_PATTERNS - 2):   # sleep on it
             self._t("retire", name=n, reason=self.library.entries[n]["retired_reason"])
         self.env._start_level(nxt)
@@ -2422,10 +2633,19 @@ class CubbyGhost(CubbyPac):
         self.sighted.clear()
         self._eaten_run.clear()
         self.ghost_belief.clear()                        # a new maze: nothing he believed is evidence any more
+        self.thing_belief.clear()                        # including anything he saw in the air in the last one
         self._seed_basics()
         self._learn(self.look_around(self.place))
         self._learn(self._sight(self.place))
         self.visits[self.place] = self.visits.get(self.place, 0) + 1
+        # and clearing one lands too, or the books do not balance: a world
+        # where only losing is felt is not a world with stakes, it is a world
+        # with a punishment. Relief scales with how many goes it took.
+        if self.chem is not None:
+            relief = min(1.0, 0.6 + 0.2 * (attempts - 1))
+            for _ in range(self.CLEAR_FRAMES):
+                self.chem.update(valence=relief, novelty=0.4, social=0.2)
+            self.chem.dominant_emotion = self.chem._classify_emotion(0.4)
         self._think("level_up", cleared=nxt - 1, next=nxt)
         self._forge_orientation()                        # new maze: check my bearings through my trunk
 
@@ -2457,6 +2677,18 @@ class CubbyGhost(CubbyPac):
                 # branch, and nothing had run long enough without them to hit
                 # it).
                 ev["learned"] = None
+                # FAILING LANDS. Nothing hurt him — the clock just beat him —
+                # so it is not pain, it is deflation: negative valence, a
+                # dopamine dip, and enough frames for the slow cortisol to
+                # actually move. And it COMPOUNDS: the third attempt at the
+                # same maze is worse than the first, which is the difference
+                # between a setback and a run that is not working.
+                if self.chem is not None:
+                    sting = min(1.0, 0.45 + 0.18 * (env.attempt - 1))
+                    for _ in range(self.FAIL_FRAMES):
+                        self.chem.update(valence=-sting, threat=0.2 * sting, focus=0.3)
+                    self.chem.dopamine = max(0.15, self.chem.dopamine - 0.15 * sting)
+                    self.chem.dominant_emotion = self.chem._classify_emotion(0.0)
                 if "combos" in self.can:
                     ev["learned"] = self._propose("out_of_time")
                 else:
@@ -2516,9 +2748,18 @@ class CubbyGhost(CubbyPac):
             elif (not seen_left and self.chem is not None and self.chem.dopamine > 0.5
                   and env.steps - self._last_proposal >= 12):
                 ev["learned"] = self._propose("curious")         # nothing to chase: invent a move
+            chase = self.chasing()
+            if chase is not None and not self._was_chasing:
+                self._t("chasing", to=chase, craving=round(self.chem.craving, 2),
+                        tolerance=round(self.chem.tolerance, 2), took=self.chem.rewards_taken,
+                        reach=self.chase_reach(),
+                        went=_manh(env.coords(self.place), env.coords(chase)),
+                        fright_left=env.frightened)
+                self._think("chasing", to=chase)
+            self._was_chasing = chase is not None
             if self._plan_next is not None:
                 self._t("plan", to=self._plan_next,
-                        goal="pellet" if seen_left else "frontier")
+                        goal=("ghost" if chase else "pellet" if seen_left else "frontier"))
             rec = super().step()                         # his move + eating + learning + traj
             chosen = rec.get("chosen") or ""
             if chosen == REST:                           # a step of rest in a safe spot: energy back, time spent
@@ -2585,9 +2826,17 @@ class CubbyGhost(CubbyPac):
                     self.chem.update(valence=0.9, novelty=0.3)
             if gh["eaten"]:
                 ev["ate_ghost"] = True
-                self._t("ghost_eaten", n=gh["eaten"], bonus=GHOST_BONUS * gh["eaten"])
                 if self.chem is not None:
-                    self.chem.update(valence=1.0)
+                    # THE BIG ONE. `reward` is the only signal that builds
+                    # tolerance, and one frame per ghost, because eating two is
+                    # two hits on the same receptor and not one bigger one.
+                    for _ in range(int(gh["eaten"])):
+                        self.chem.update(valence=1.0, reward=1.0, novelty=0.3)
+                self._t("ghost_eaten", n=gh["eaten"], bonus=GHOST_BONUS * gh["eaten"],
+                        **({"took": self.chem.rewards_taken,
+                            "tolerance": round(self.chem.tolerance, 2),
+                            "dopamine": round(self.chem.dopamine, 2)}
+                           if self.chem is not None else {}))
             if gh["caught"]:
                 fact = f"a ghost is the danger of {self.place}"
                 self._learn([fact])
@@ -2596,20 +2845,27 @@ class CubbyGhost(CubbyPac):
                 ev["caught"] = "gameover" if env.game_over else True
                 self._t("caught", place=self.place, lives=env.lives, fear=round(self.fear, 2),
                         game_over=env.game_over, learned=fact,
-                        seen_at=last_seen, radius=self.danger_radius)
+                        seen_at=last_seen, radius=self.danger_radius,
+                        hurt=getattr(self, "_last_hurt", None),
+                        chasing=self._was_chasing)       # caught mid-chase: what the wanting cost him
                 self._think("caught", place=self.place)
                 self.place = env.start
                 self.ghost_belief.clear()                # respawned across the maze: the belief is void
-            else:
+                self.thing_belief.clear()                # and he is nowhere near whatever was overhead
+            elif self.chem is not None:
                 believed = self.believed_ghosts()
-                if believed and self.chem is not None:
+                threat = 0.0
+                if believed and not env.frightened:
                     near = min(_manh(env.coords(self.place), g) for g in believed)
                     # threat scales over the berth HE learned rather than the
                     # old hardcoded `1.0 if near<=1 else 0.5 if near<=2`
-                    r = self.danger_radius
-                    threat = 0.0 if env.frightened else max(0.0, 1.0 - max(0, near - 1) / max(1, r))
-                    if threat:
-                        self.chem.update(threat=threat)
+                    threat = max(0.0, 1.0 - max(0, near - 1) / max(1, self.danger_radius))
+                # ALWAYS one frame, even at threat 0. An ODE that only
+                # integrates when something happens is not a clock: nothing
+                # relaxes toward resting on a quiet stretch, pain never fades,
+                # and the abstinence that walks tolerance back never counts.
+                # The quiet steps are half of what these dynamics are made of.
+                self.chem.update(threat=threat)
             if env.cleared:
                 ev["beaten"] = True
             ev["says"] = self._say_aloud
@@ -2633,7 +2889,16 @@ class CubbyGhost(CubbyPac):
         if name not in _PETAL:
             ar, val = chem.affect_arousal, chem.valence
             ne, da, ot = chem.noradrenaline - 0.15, chem.dopamine - 0.30, chem.oxytocin - 0.20
-            if ar >= 0.5 and val <= 0 and ne > 0.05:
+            # PAIN OUTRANKS EVERYTHING HERE (owner, 2026-09-15: *"he shouldn't
+            # feel safe or right after being eaten by a ghost"*). It used to
+            # sit below the oxytocin clause, so a step or two after a catch —
+            # once the arousal spike had passed but the ache had not — a body
+            # still hurting read as WARM, and the mood word came out "at
+            # ease". Nothing about a high-arousal branch ordering was wrong;
+            # what was wrong is that hurting was not a branch at all.
+            if getattr(chem, "pain", 0.0) > 0.25:
+                name = "anxious" if ne > 0.0 else "sad"
+            elif ar >= 0.5 and val <= 0 and ne > 0.05:
                 name = "anxious"
             elif ar >= 0.5 and val > 0:
                 name = "curious"
@@ -2744,6 +3009,16 @@ class CubbyGhost(CubbyPac):
 # and the two HUD rows we back with different real numbers than the original
 _FRONTEND_PATCHES = [
     ("fetch('/state')", "fetch('/pac/state')"),
+    # Keep what he says on screen long enough to READ it (owner, 2026-09-15).
+    # 1.6s was set when the line was a template and you already knew what it
+    # would say; now the model writes it and it is worth reading, so the banner
+    # holds for a floor plus reading time, capped. `clearTimeout` is the part
+    # that matters: at these durations two sentences in quick succession left
+    # the first one's timer to hide the SECOND one early.
+    ("setTimeout(()=>{$('banner').style.display='none';},1600);",
+     "clearTimeout(window._sayT); window._sayT=setTimeout("
+     "()=>{$('banner').style.display='none';},"
+     "Math.min(15000, 3400+60*((s.says||'').length)));"),
     ('function build(D){', 'function build(D){ if(window.cbLevelStart) cbLevelStart(D);'),   # the level-start jingle
     ("  if(s.lives!=null) $('lives').innerHTML=",
      "  if(window.cbSfx) cbSfx(s);\n  if(s.lives!=null) $('lives').innerHTML="),   # the sound layer reads every frame

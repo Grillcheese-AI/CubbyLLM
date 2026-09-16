@@ -1377,3 +1377,74 @@ or a record of an instrument that would have told us we were already there.
   cost lands in refusals and latency, the content half of a corpus is replaceable and we can say
   by how much. Nothing about the run above settles that; it settles only that the mechanism works
   and keeps what it learns.
+- **2026-09-15, stakes: pain, adrenaline, and a habit that did not form (exp_r39)** — Owner:
+  *"we need to implement higher stakes, survival and pain when it gets eaten by a ghosts.
+  Adrenalin when he gets a star. An addiction to eating ghosts could develop because of the high
+  dopamin rushes."* Built: `pain` (an ache that decays over frames instead of ending with the
+  event), `surge` (adrenaline — arousal with no negative sign on it, which is what a star is), and
+  `reward` as a signal distinct from mild pleasure, because only a big hit builds tolerance. The
+  slow receptor term `_da_tolerance` is deliberately separate from the existing fast refractory
+  homeostat: that one tracks the current dopamine level and drifts back to 1.0 within a few
+  frames, so nothing could ever accumulate in it, and two mechanisms on one variable would have
+  fought. Abstinence walks it back. Failing a level lands as deflation and compounds with the
+  attempt count; clearing one lands as relief, because a world where only losing is felt is not a
+  world with stakes, it is a world with a punishment.
+
+  **The result was null, and the null is the finding.** Four clauses had to hold — tolerance
+  builds, craving grows between hits, it changes what he does, and it costs him — against a
+  control arm that is the same agent, same seed, same maze, with `TOLERANCE_RATE = 0`. The control
+  is the whole experiment: later levels have more ghosts and less time, so "he chased more in the
+  second half" is exactly what a run that merely got harder looks like. The arms came out
+  identical. **He eats one ghost per seven hundred steps**, and no receptor mechanism builds a
+  habit on a reinforcer delivered that rarely.
+
+  Two design defects surfaced on the way, both from the measurement rather than from reading the
+  code. The first build gated chasing on craving alone — and craving needs tolerance, tolerance
+  needs ghost meals, and ghost meals needed a chase: a deadlock that reports as a clean null.
+  Nobody's habit starts that way either; the first few are opportunistic and the habit is what
+  comes after. So the base reach is ordinary opportunism and wanting buys REACH — how far he will
+  detour — which also fixes the metric, because *whether* a chase happened is confounded with
+  whether a ghost was nearby and reach is not. The second: `hurt` was allowed to widen the berth
+  on any ambush, which put it at 3 on the very first catch. That is not learning, it is flinching;
+  pain now sets the width only in the ambush case, where there is no measured distance to use.
+
+  What is NOT done, and is a decision rather than a task: making the phenomenon reachable means
+  changing the world — more stars, longer fright, a faster closing speed. That is tuning the world
+  until the result appears, which is how a finding gets manufactured, so it wants an owner's call
+  and a pre-registered threshold rather than a quiet parameter nudge.
+- **2026-09-15, the body instead of the verdict** — Owner: *"we need to not tell it how to
+  interpret the hormonal changes. However we can name emotions that suit with hormone A or B or C
+  mixed with D to guide the model in its speech. Right now it still sounds a bit too artificial.
+  The model needs to 'feel' it in some way."* The percept record used to carry `how i feel: <one
+  word>`, computed by the host from the Lövheim corner and handed over finished — so the model
+  said the word back, which is a readout with a feeling printed on it. It now carries what the
+  state is LIKE (`body()`: sensations, no emotion words) and a short list of names that fit the
+  region (`could_be()`), including opposed ones wherever the chemistry genuinely underdetermines
+  the meaning — low dopamine under high cortisol is despair or it is grim stubbornness, and
+  nothing in the hormones decides which. The compass word joins that list as one candidate instead
+  of being the answer.
+
+  The other half came from reading GrillCheese's own affect stack, at the owner's suggestion.
+  `EndocrineSystem.get_modulation_factors` maps hormones to continuous dials — warmth, energy,
+  caution, creativity, stability, focus — and never names a feeling, which is the right shape and
+  is now ported with two dials that port has no input for (pain, craving). **But in GrillCheese
+  those dials reach the UI and not the generator**: `response_style` is assigned and never read,
+  and nothing touches temperature or length. So here they reach the DECODE — temperature and token
+  budget move with creativity, caution and urgency — because a prompt asking for a clipped
+  sentence and a sampler set to wander produce a sentence *about* being clipped, while a shorter
+  budget produces a clipped one.
+
+  The sharpest lesson from that read is not a feature. GrillCheese logs an experience per turn
+  with `quality=0.7, strategy_worked=True` **hardcoded at every call site**, so its basal ganglia
+  rewards whatever it just did, always, until the bias saturates. An outcome that is assumed is
+  not a signal, and a loop built on one learns nothing while looking like it is learning. The
+  experience log added here records `kept` — whether the grounding guard actually accepted the
+  sentence — which is measured every step already. Nothing reads it yet, and saying so is the
+  point: it is the data a later pass needs to learn which manner survives in which state, and it
+  cannot be collected retroactively.
+
+  Also fixed, from the owner watching a live run: *"he shouldn't feel safe or right after being
+  eaten by a ghost."* The compass fallback checked oxytocin for "warm" before it checked pain, so
+  a step or two after a catch — arousal spike passed, ache still there — a body still hurting read
+  as warm and the mood word came out "at ease". Hurting was not a branch at all; now it outranks
+  the rest.

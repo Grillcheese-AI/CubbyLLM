@@ -254,3 +254,49 @@ def test_a_prediction_needs_the_law_that_licenses_it():
         env_.fallers.append({"at": (0, 1, 0), "let_go": (0, 3, 0), "since": 0})
         man._sense()
         assert man.falling_at_me() == expect, "the law was doing the work, not the code"
+
+
+def test_he_does_not_dodge_a_rock_into_a_ghost():
+    """Level 4, live, 2026-09-15: falling and ghosts fire on alternate steps
+    and the dodge runs first, because it is the one decision with a one-step
+    deadline. That is fine right up until the only way out of the column is
+    onto something that eats him."""
+    man, env = _pac()
+    man.place = env.cell(2, 2, 1)
+    exits = {m: p for m, p in env.exits(man.place).items()}
+    lateral = [m for m, p in exits.items()
+               if env.coords(p)[0] != 2 or env.coords(p)[2] != 1]
+    assert len(lateral) >= 2, "this cell needs two ways out for the test to mean anything"
+
+    onto = exits[lateral[0]]
+    man.ghost_belief[env.coords(onto)] = env.steps
+    chosen = man._dodge_move(exits)
+    assert chosen is not None and chosen in lateral, "he still gets out of the column"
+    assert exits[chosen] != onto, "and not onto the ghost he believes is standing there"
+
+
+def test_a_sighting_does_not_survive_the_clock_restarting():
+    """Level 4, live, 2026-09-15 — the owner watching the map: `predict` firing
+    every few steps with nothing in the air at all.
+
+    `env.steps` goes back to 0 on a new level and on a retry, so an age tested
+    only as `> 1` is NEGATIVE for every sighting from the level before, which
+    reads as fresher than fresh. He was predicting a rock that stopped existing
+    two mazes ago."""
+    man, env = _pac()
+    man.place = env.cell(0, 0, 0)
+    env.fallers.append({"at": (0, 2, 0), "let_go": (0, 3, 0), "since": 0})
+    env.steps = 40
+    man._sense()
+    env.steps = 41
+    env.fallers[0]["at"] = (0, 1, 0)
+    man._sense()
+    man.ask_elsewhere(man.FALLING_Q, now=env.steps)
+    man.settle(env.steps)
+    assert man.falling_at_me() == 1, "with the thing actually there, he predicts"
+
+    env.fallers.clear()                                  # new maze: nothing in the air
+    env.steps = 0                                        # and the clock starts over
+    assert man.falling_at_me() is None, "a sighting from the last level is not news"
+    man._sense()
+    assert man.thing_belief == {}, "and it is dropped, not just ignored"

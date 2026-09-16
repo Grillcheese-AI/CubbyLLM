@@ -145,6 +145,19 @@ class CubbyMan:
     # has, and the map he builds is ONE map — so the gate, the blank slate and
     # the hypothesis ledger belong to him and travel with him.
     BORN_WITH: frozenset = frozenset()                   # capabilities he starts with; everything else is earned
+
+    # WHAT HE IS HERE FOR (owner, 2026-09-15: *"we give it an important
+    # mission: survive the maze at all cost!"*). A standing goal, in his own
+    # words, on the agent rather than in any world — the same sentence travels
+    # with him. It is deliberately NOT a rule and nothing branches on its text:
+    # it reaches the percept record so it colours what he says and what he
+    # weighs, and it raises `mission_pressure`, the extra wanting he has to
+    # feel before he will take a risk against it. That is the honest shape of a
+    # mission an agent can also fail to keep — and the tension is the point,
+    # because a mission that cannot be overridden is not a mission, it is a
+    # guard clause.
+    mission: str = ""
+    mission_pressure: float = 0.0                        # how much harder it is to talk himself into a risk
     # the game's own words claim a turn outright; a bare command only claims a
     # statement (the brain never hands a plugin a question at 0.6); a turn about
     # something else that happens to say "explore" (the web, a plugin) is not ours
