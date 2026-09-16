@@ -1961,22 +1961,26 @@ class CubbyGhost(CubbyPac):
             # model then said the word back, which is why it read as a readout
             # with a feeling printed on it rather than as somebody feeling
             # something. Now the record carries what the state is LIKE, and a
-            # short list of names that fit it — including opposed ones, because
-            # low dopamine under high cortisol is despair or it is stubbornness
-            # and the chemistry does not decide which. The compass word joins
-            # that list as one candidate among several instead of being the
-            # answer. Whatever comes out is his reading, and the guard still
-            # holds him to the record: he may pick a name that is offered, and
-            # he may not invent a fact.
-            sensations = self.chem.body()
+            # short list of names that fit it — the opposed readings of ONE
+            # region, because low dopamine under high cortisol is despair or it
+            # is stubbornness and the chemistry does not decide which. Whatever
+            # comes out is his reading, and the guard still holds him to the
+            # record: he may pick a name that is offered, and he may not invent
+            # a fact.
+            sensations = self.chem.body(limit=2)
             if sensations:
                 rec["my body"] = ", ".join(sensations)
-            tier = self.emotion()["name"]
-            names = list(self.chem.could_be())
-            if tier != "calm" and felt(tier) not in names:
-                names.insert(0, felt(tier))
+            # The compass word is a FALLBACK, not a sixth option. Mixing it
+            # into the hormone-region list put a Plutchik tier phrase next to
+            # four region names and the record read as a menu — five things he
+            # might be feeling is indecision, not feeling. It speaks only when
+            # no region is strong enough to say anything.
+            names = self.chem.could_be()
+            if not names:
+                tier = self.emotion()["name"]
+                names = [] if tier == "calm" else [felt(tier)]
             if names:
-                rec["could be"] = " or ".join(names[:5])
+                rec["could be"] = " or ".join(names)
         return rec
 
     @staticmethod
@@ -2888,7 +2892,15 @@ class CubbyGhost(CubbyPac):
             return calm
         if name not in _PETAL:
             ar, val = chem.affect_arousal, chem.valence
-            ne, da, ot = chem.noradrenaline - 0.15, chem.dopamine - 0.30, chem.oxytocin - 0.20
+            # against where the hormones ACTUALLY settle, not the declared
+            # resting levels — those differ, and with the old constants
+            # oxytocin idled 0.115 above its supposed rest, so the `ot > 0.10`
+            # clause fired on a body doing nothing and a quiet stretch came out
+            # as "at ease" forever
+            base = chem.quiescent() if hasattr(chem, "quiescent") else {"NE": 0.15, "DA": 0.30, "OT": 0.20}
+            ne = chem.noradrenaline - base["NE"]
+            da = chem.dopamine - base["DA"]
+            ot = chem.oxytocin - base["OT"]
             # PAIN OUTRANKS EVERYTHING HERE (owner, 2026-09-15: *"he shouldn't
             # feel safe or right after being eaten by a ghost"*). It used to
             # sit below the oxytocin clause, so a step or two after a catch —

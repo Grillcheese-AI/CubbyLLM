@@ -1448,3 +1448,50 @@ or a record of an instrument that would have told us we were already there.
   a step or two after a catch — arousal spike passed, ache still there — a body still hurting read
   as warm and the mood word came out "at ease". Hurting was not a branch at all; now it outranks
   the rest.
+- **2026-09-15, the null had three causes and two of them were mine** — The entry above reported
+  exp_r39's null as a fact about supply: *"he eats one ghost per seven hundred steps."* That was
+  true and it was not the whole story, and the correction is worth more than the original claim.
+  The owner, on being shown the numbers: *"it was having no addiction because it was stoned all
+  the time high on oxytocin and dopamin."* Exactly right.
+
+  **First cause, arithmetic.** `craving` measures the dopamine shortfall against
+  `_resting["DA"] = 0.30`. Dopamine actually sits at **0.621**. So the shortfall was negative on
+  every step of every run and clipped to zero: the felt half of wanting was pinned at zero by
+  construction, and no amount of ghost-eating could have moved it.
+
+  **Second cause, and the one that matters beyond this experiment: the ODE's declared resting
+  state is not its fixed point.** Run it with no input at all and it goes to the rails —
+  serotonin 0.450 → **0.900 (ceiling)**, dopamine 0.300 → 0.621, oxytocin 0.200 → 0.557,
+  noradrenaline 0.150 → **0.050 (floor)**, cortisol 0.150 → **0.050 (floor)**. It is a
+  double-count: the decay term already pulls toward `_resting`, and the drives then add a constant
+  on top (`0.35 +` in serotonin, `0.15 +` in dopamine) which moves the equilibrium. Every emotion
+  reading in this system has been taken relative to a level the agent is never at — which is why
+  "warm toward things" was his default, why a body doing nothing read as "slow, heavy-limbed", and
+  why five failed levels in a row came out as "warmth or trust".
+
+  The hormone dynamics were NOT rewritten. They are inherited from cubemind, they drive the chat
+  path and `modulate_threshold`/`modulate_tau` as well as the game, and re-centring them is an
+  owner's call rather than a thing to slip into a session. What changed is the measurement:
+  `quiescent()` runs the ODE to convergence once and everything downstream measures against where
+  it actually settles. That is correct whatever the ODE does and it self-corrects if the constants
+  are ever fixed. The saturation itself is filed here as a defect, not silently patched.
+
+  **Third cause, biology.** Tolerance was applied only to the reward term, so baseline dopamine
+  never fell and there was no withdrawal — the gap between hits could not feel like a gap. A
+  downregulated receptor is downregulated for ordinary pleasures too. With that corrected the arc
+  runs end to end in isolation: six meals take tolerance 0.40 → 1.00, craving 0.15 → 0.43, and
+  baseline dopamine sags 0.609 → 0.565; a hundred and eighty quiet steps put it all back.
+
+  **What the corrected experiment shows.** The mechanism works and the world still hands him ONE
+  reinforcement per seven hundred steps, so no habit forms. That is now a clean result rather than
+  a confounded one: the chemistry is demonstrably capable of the phenomenon and the supply is what
+  is missing. Making it reachable means changing the world — more stars, longer fright, a faster
+  closing speed — and tuning the world until the result appears is how a finding gets
+  manufactured, so it stays an owner's call with a threshold set before the knob moves.
+
+  **The methodological lesson, which is the durable part.** A null result is only evidence when
+  the mechanism could have fired. Three independent bugs each clamped this one to zero, two of
+  them mine, and every one of them produced the *same* clean-looking null with identical arms.
+  §6.14's defence applies exactly: run the instrument on data known to be healthy and require it
+  to say so. The isolated escalation curve above is that check, and it should have been run before
+  the experiment, not after it disagreed with the owner's intuition.
