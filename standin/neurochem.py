@@ -475,6 +475,14 @@ class Neurochemistry:
         ("hurt",        ["shock", "fear", "anger"]),
         ("low_da_hi_c", ["despair", "stubbornness", "grim determination", "being fed up"]),
         ("hi_ne_lo_da", ["dread", "being rattled", "nerve"]),
+        # High dopamine with high noradrenaline is TWO different states and
+        # serotonin is what separates them — Lövheim puts anger at (low 5HT,
+        # high DA, high NE) and joy at (high 5HT, high DA, high NE). Collapsing
+        # them into one region let the compass say *furious* while the names on
+        # offer said *elation*, and the model duly reported having a great time
+        # in a rage. Two classifiers over one hormone space have to agree about
+        # the space.
+        ("hi_da_hi_ne_lo_5ht", ["anger", "fury", "being pushed too far"]),
         ("hi_da_hi_ne", ["elation", "recklessness", "being on a roll"]),
         ("hi_da_lo_ne", ["contentment", "ease", "quiet satisfaction"]),
         ("craving",     ["wanting", "restlessness", "an itch"]),
@@ -519,7 +527,8 @@ class Neurochemistry:
             "hi_ne_lo_da": d["NE"] > 0.20 and d["DA"] < -0.05,
             "craving": self.craving > 0.30,
             "lo_5ht": d["5HT"] < -0.20,
-            "hi_da_hi_ne": d["DA"] > 0.15 and d["NE"] > 0.15,
+            "hi_da_hi_ne_lo_5ht": d["DA"] > 0.15 and d["NE"] > 0.15 and d["5HT"] < -0.15,
+            "hi_da_hi_ne": d["DA"] > 0.15 and d["NE"] > 0.15 and d["5HT"] >= -0.15,
             # The pleasant readings need something good to be HAPPENING. The
             # ported couplings park oxytocin above its resting level whatever
             # else is going on, so "warm toward things" was the default state

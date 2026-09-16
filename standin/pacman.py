@@ -1983,13 +1983,32 @@ class CubbyGhost(CubbyPac):
                 rec["could be"] = " or ".join(names)
         return rec
 
+    # fields that exist to PROMPT the model, not to be said. They belong in the
+    # guard's referent — he may use those words — and not in his mouth.
+    _NOT_SPEECH = ("could be", "what I am here for")
+
     @staticmethod
     def render_percepts(rec: dict) -> str:
-        """The record as a flat line — the fallback when the model's sentence
-        is refused, and the referent the guard checks against. Generated from
-        the data every time, so unlike a template it cannot say anything the
-        step did not contain."""
+        """The record as a flat line: THE GUARD'S REFERENT. Everything the
+        model is allowed to have drawn on, so `grounded_ok` can check a
+        sentence against it. Generated from the data every time, so unlike a
+        template it cannot contain anything the step did not."""
         return "; ".join(f"{k}: {v}" for k, v in rec.items() if k != "about") or str(rec.get("about", ""))
+
+    @classmethod
+    def say_flatly(cls, rec: dict) -> str:
+        """What the HOST says when the model's sentence was refused.
+
+        Not the same string as the guard's referent, which is the conflation
+        this fixes. The referent has to carry every word he is licensed to use,
+        including the candidate names — but those are a menu written FOR the
+        model to choose from, and reading the menu out loud is not speech.
+        Owner, live: *"(furious) i am at: level-3 cell 0-0-1; ... could be:
+        elation or recklessness or being on a roll"* — the most redundant
+        sentence in the run, and it was the fallback, not the model."""
+        parts = [f"{k}: {v}" for k, v in rec.items()
+                 if k != "about" and k not in cls._NOT_SPEECH]
+        return "; ".join(parts) or str(rec.get("about", ""))
 
     def _speak_prompt(self, rec: dict) -> str:
         """Ask for a sentence ABOUT the record, not a rephrasing OF a line.
@@ -2055,9 +2074,10 @@ class CubbyGhost(CubbyPac):
         comes back is checked against the record by `grounded_ok`; a sentence
         that fails is refused and the host states the record flatly instead.
         -> (text, spoke)."""
-        flat = self.render_percepts(rec)
+        flat = self.render_percepts(rec)                 # what the guard checks against
+        spoken = self.say_flatly(rec)                    # what the host says if the guard refuses
         if self.brain is None or not self.verbalize:
-            return flat, False
+            return spoken, False
         from identity import identity_system
         # what he may speak about: the record, plus the facts he learned this
         # step. Passed verbatim so the guard can check whole words ("ghost")
@@ -2083,7 +2103,7 @@ class CubbyGhost(CubbyPac):
             # traced, not swallowed: a broken emitter used to look exactly
             # like a refused sentence, which cost an afternoon
             self._t("thought_error", error=f"{type(e).__name__}: {e}"[:160])
-            return flat, False
+            return spoken, False
         from emitter import clean_reply
         text = " ".join(clean_reply(raw).split())
         kept = grounded_ok(flat, text, self.brain.facts, learned)
@@ -2108,7 +2128,7 @@ class CubbyGhost(CubbyPac):
         if kept:
             return text, True
         self._t("thought_refused", said=text[:160], record=flat[:200])
-        return flat, False
+        return spoken, False
 
     def _think(self, kind: str, **d) -> None:
         """Record a thought for this step if it outranks the current one; the
@@ -2133,9 +2153,18 @@ class CubbyGhost(CubbyPac):
             self._t("thought", text=text, about=kind, verbalized=spoke, **({"raw": line} if spoke else {}))
             return
         rec = self.percepts(kind, **d)
-        flat = self.render_percepts(rec)
-        text, spoke = self._speak(rec) if prio >= self.SPEAK_ABOVE else (flat, False)
-        text = self._mood() + text
+        flat = self.render_percepts(rec)                 # the guard referent, kept on the trace
+        text, spoke = (self._speak(rec) if prio >= self.SPEAK_ABOVE
+                       else (self.say_flatly(rec), False))
+        # THE MOOD TAG ONLY GOES ON THE FLAT FALLBACK. When the model wrote the
+        # sentence it already chose what this feels like, from the body and the
+        # names on offer — stamping the host's own label on the front is the
+        # second voice saying the same thing, and worse, saying something else:
+        # *"(furious) ... chasing pellets and it's so fun"* (owner, live).
+        # A record with no interpretation in it still needs the colour, so the
+        # fallback keeps it.
+        if not spoke:
+            text = self._mood() + text
         self._thought, self._thought_prio = text, prio
         if prio >= 4:
             self._say_aloud = text
