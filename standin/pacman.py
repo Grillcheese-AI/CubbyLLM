@@ -35,6 +35,7 @@ import re
 
 __wiring__ = "WIRED"
 
+from coach import Coach  # noqa: E402
 from verse import CubbyMan  # noqa: E402
 
 _CV = pathlib.Path(r"C:\Users\grill\Documents\GitHub\cubbyverse")
@@ -1334,6 +1335,7 @@ class CubbyGhost(CubbyPac):
             memory, ledger = None, None
         self.brain = None
         self.fear = 0.3                                  # pacman_live's ghost_penalty, learned
+        self.coach = Coach()                             # whoever is watching, and what they have earned
         self._last: dict = {}
         self.lang = "en"                                 # the language he thinks in (follows the chat)
         self._thought: str | None = None                 # this step's thought, rendered from what he DID
@@ -1672,6 +1674,83 @@ class CubbyGhost(CubbyPac):
             hurt = max(hurt, 0.95)
         return round(min(1.0, hurt), 2)
 
+    # ── somebody is watching, and talking ───────────────────────────────────
+    HEARD_FRAMES = 3            # a sentence is not a shock; three frames, not six
+
+    def _need(self) -> float:
+        """How badly it is going, 0..1 — what decides whether a kind word is
+        worth anything.
+
+        Not a mood reading. `pain` and `craving` are the somatic signals the
+        cube has no axis for, and `attempt` is the one thing neither of them
+        knows: the third go at the same maze is worse than the first even when
+        nothing has hurt him yet. Whichever is worst is the answer."""
+        if self.chem is None:
+            return 0.0
+        pressure = min(1.0, max(0, self.env.attempt - 1) / 3.0)
+        lives_gone = min(1.0, max(0, 3 - self.env.lives) / 3.0)
+        return max(self.chem.pain, self.chem.craving, pressure, lives_gone * 0.8)
+
+    def hear(self, text: str) -> dict:
+        """The player says something while he plays.
+
+        The drives come from `coach`, which decides what another person's words
+        may do to a body — concern rather than contagion, `threat` only for an
+        actual claim about the maze, never `reward`. This method's only job is
+        to run them through the chemistry and let the corner label follow."""
+        got = self.coach.hear(text, step=self.env.steps, need=self._need())
+        d = {k: v for k, v in got["drives"].items() if v}
+        if self.chem is not None and d:
+            for _ in range(self.HEARD_FRAMES):
+                self.chem.update(**d)
+            self.chem.dominant_emotion = self.chem._classify_emotion(0.0)
+        self._t("heard", says=got["kind"], why=got.get("why"),      # `kind` is _t's own first arg
+                credibility=round(self.coach.credibility, 2))
+        return got
+
+    def say_to_coach(self, got: dict, lang: str = "en") -> str:
+        """What he says back. HOST-WRITTEN, and deliberately so for now.
+
+        The model path (`_think` -> the VM's ASK -> the voice rules) is how he
+        speaks about what he DID, and routing every "you can do it" through a
+        generation is a lot of machinery for an acknowledgement. What matters
+        is that the reply is a function of state rather than a canned string:
+        a warning from somebody who has been right reads differently from the
+        same words out of a voice that has cried ghost twelve times, and that
+        difference is `credibility`, which he earned.
+
+        No emotion word appears here, per the standing rule — `manner()` gives
+        DELIVERY (clipped, slow, open) and never a feeling."""
+        cred = self.coach.credibility
+        if got["kind"] == "warn":
+            if cred >= 0.65:
+                line = "ok — looking." if lang != "fr" else "ok — je regarde."
+            elif cred >= 0.35:
+                line = "noted." if lang != "fr" else "noté."
+            else:
+                line = "you said that before." if lang != "fr" else "tu m'as déjà dit ça."
+        elif got["drives"].get("social", 0) > 0.25:
+            line = "heard." if lang != "fr" else "je t'entends."
+        else:
+            line = "mm." if lang != "fr" else "mm."
+        m = self.chem.manner() if self.chem is not None else ""
+        return f"{line} ({m})" if m else line
+
+    def _coach_tick(self) -> None:
+        """Settle any outstanding warning against WHAT WAS ACTUALLY THERE.
+
+        `env.ghosts`, deliberately, and not `believed_ghosts()`. Everything he
+        decides reads his beliefs, because a ghost he cannot sense is one he
+        does not know about — but a warning is a claim that something is out
+        there whether or not he can see it, and scoring it against his own
+        beliefs would mean the player only ever gets credit for telling him
+        what he already knew. The whole value of a warning is the case where
+        the player can see further than he can."""
+        env = self.env
+        here = env.coords(self.place)
+        near = min((_manh(here, g) for g in env.ghosts), default=99)
+        self.coach.tick(env.steps, ghost_near=near <= self.danger_radius + 1)
+
     def _on_caught(self) -> None:
         """Being caught raises fear TWICE: the learned scalar (+0.7) and the
         neurochemistry — not one frame of threat but a shock of several, so
@@ -1724,6 +1803,8 @@ class CubbyGhost(CubbyPac):
             # Lövheim's low-5HT/high-DA/high-NE corner reads as RAGE instead of fear
             self.chem.dopamine = max(0.15, self.chem.dopamine - 0.30)
             self.chem.dominant_emotion = self.chem._classify_emotion(0.0)   # the corner label is set inside update()
+        # and the world just labelled whatever was said in the run-up to it
+        self.coach.outcome("caught", step=self.env.steps)
 
     def _mine_wise(self) -> bool:
         """Use a trap when it will count: he holds one, nothing is frightened,
@@ -2758,6 +2839,7 @@ class CubbyGhost(CubbyPac):
             for _ in range(self.CLEAR_FRAMES):
                 self.chem.update(valence=relief, novelty=0.4, social=0.2)
             self.chem.dominant_emotion = self.chem._classify_emotion(0.4)
+        self.coach.outcome("cleared", step=self.env.steps)
         self._think("level_up", cleared=nxt - 1, next=nxt)
         self._forge_orientation()                        # new maze: check my bearings through my trunk
 
@@ -2801,6 +2883,7 @@ class CubbyGhost(CubbyPac):
                         self.chem.update(valence=-sting, threat=0.2 * sting, focus=0.3)
                     self.chem.dopamine = max(0.15, self.chem.dopamine - 0.15 * sting)
                     self.chem.dominant_emotion = self.chem._classify_emotion(0.0)
+                self.coach.outcome("failed", step=env.steps)
                 if "combos" in self.can:
                     ev["learned"] = self._propose("out_of_time")
                 else:
@@ -2815,6 +2898,7 @@ class CubbyGhost(CubbyPac):
             self._learned_here = []                      # and a fresh vocabulary: only this step's percepts
             self._last_eaten = None                      # a bump does not reach on_arrive: clear it here
             self._learn(self._sense())                   # senses FIRST, then decide on what they gave him
+            self._coach_tick()                           # and settle any warning against what is actually there
             # then test what he has been wondering. A verdict is a fact he
             # EARNED, so it goes through the same learning gate as a percept;
             # an open guess stays a guess and never enters the map.
@@ -3065,7 +3149,10 @@ class CubbyGhost(CubbyPac):
                 "says": ev.get("says"), "thought": self._thought, "vocab": [], "talk": None,
                 "lay_low": len(self.walls),              # relabeled: refused moves (walls learned)
                 "pursuit": sum(1 for g in believed
-                               if _manh(env.coords(self.place), g) <= self.danger_radius)}
+                               if _manh(env.coords(self.place), g) <= self.danger_radius),
+                # what he holds about whoever is watching. Shown, not hidden:
+                # a number kept about a person belongs on their screen.
+                "coach": self.coach.state()}
 
     def resp(self) -> dict:
         """THE RENDERER'S feed, not his. Everything below is read straight
@@ -3115,6 +3202,18 @@ class CubbyGhost(CubbyPac):
         lang = guess_lang(text)
         if self._STATUS.search(text) and not self._PLAY.search(text):   # a report, no stepping
             return {"offered": [self.status_line(lang)], "meta": {"status": True, "level": self.env.level}}
+        # ANYTHING THAT IS NOT A COMMAND IS SOMEBODY TALKING TO HIM. Owner:
+        # *"I should be able to chat with it live not only 2 messages."* So
+        # conversation is the DEFAULT and the commands are the narrow case,
+        # which is the right way round for something whose job is to have
+        # company while it plays. `hear` decides what the words may do to a
+        # body: nothing said here reaches `reward`, and only a checkable claim
+        # about the maze reaches `threat`.
+        if not self._PLAY.search(text):
+            got = self.hear(text)
+            return {"offered": [self.say_to_coach(got, lang)],
+                    "meta": {"heard": got["kind"], "why": got.get("why"),
+                             "coach": self.coach.state()}}
         m = re.search(r"\b(\d{1,3})\b", text)
         steps = int(m.group(1)) if m else 30
         rep = self.explore(steps)
