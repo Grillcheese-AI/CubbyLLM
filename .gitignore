@@ -199,3 +199,6 @@ data/subdomain_taxonomy_patterns.jsonl
 standin/data/out/
 standin/data/hf/
 standin/models/
+
+validation/redact.txt
+validation/secrets_hints.txt

@@ -1,0 +1,35 @@
+# Redaction map - COPY THIS TO validation/redact.txt AND EDIT IT THERE.
+#
+# redact.txt is gitignored on purpose. A list of a client's and a colleague's real
+# names, committed to a repo, is the leak the list was written to prevent.
+#
+# One entry per line:   name = REPLACEMENT
+# Blank lines and # comments are ignored. Matching is case-insensitive, and longer
+# entries are applied first, so "Galerie du Jouet" wins over "Galerie".
+#
+# The map is applied to message text AND to the speaker field. That second part is
+# what merges an export's two labels for one person - Teams writes the owner's own
+# messages as "You" in some views and by full name in others, so map both to [SELF]
+# and the corpus stops treating one person as two.
+#
+# Keep the placeholders few and generic. [PEER] for everyone you talk with beats a
+# distinct tag per colleague: the register is what the corpus is for, and who said it
+# is not part of the register.
+
+# --- people ---
+You                 = [SELF]
+# Your Name         = [SELF]
+# Colleague Name    = [PEER]
+# Another Colleague = [PEER2]
+
+# --- clients, vendors, internal systems ---
+# Client Company    = [CLIENT]
+# ClientCo          = [CLIENT]
+# Vendor Name       = [VENDOR]
+# internal-app-name = [SYSTEM]
+
+# --- anything else the audit's review list turns up ---
+# SKU-PREFIX        = [SKU]
+#
+# Public platforms and tools (Shopify, Google, Claude, Python, Toronto) do NOT belong
+# here - they carry no private information and redacting them only damages the text.
