@@ -56,29 +56,37 @@ CENTRE = (0.5, 0.5, 0.5)
 # pulling toward the second petal's corner; that is a further mapping with its
 # own validation to pass, not a line to slip in here.
 
-# petal -> the corner that owns it. Inverting `_PETAL` is not quite a function:
-# two corners claim `sadness` (`sad` at the vertex and `shame`, which is the
-# social one) and the disgust petal is held by `contempt`. Resolved explicitly
-# rather than by dict-iteration order, because "whichever came last" is how the
-# duplicate-key bug in the proposed recipe made ANGER unreachable.
+# petal -> the corner that owns it, against the CORRECTED `_CORNERS`
+# (2026-09-17, after only two of the eight turned out to sit where Lövheim puts
+# them). Inverting `_PETAL` is still not a function — `spent` and `distress`
+# both carry the sadness petal, because the cube separates depletion from
+# anguish and Plutchik does not — so it is resolved explicitly rather than by
+# dict-iteration order. "Whichever came last" is how the duplicate-key bug in
+# the proposed recipe made ANGER unreachable.
 PETAL_CORNER = {
     "joy": "joy",
-    "trust": "warm",
-    "fear": "anxious",
+    "fear": "fear",              # was `anxious`; that coordinate is Lövheim's fear
     "surprise": "surprise",
-    "sadness": "sad",            # not `shame`: that corner is the social reading
-    "disgust": "contempt",
-    "anger": "angry",
+    "sadness": "distress",       # the aroused end; `spent` is the flat end
+    "disgust": "disgust",        # was `contempt`, and was excluded as social
+    "anger": "anger",
+    "anticipation": "interest",  # (1,1,1) interest/excitement — the explorer's vertex
 }
 
-# ANTICIPATION HAS NO CORNER, and that is a real property of this model rather
-# than an omission. `_classify_emotion` returns `curious` as an OVERRIDE when
-# novelty is high, not as one of the eight vertices — the Lövheim cube has
-# eight corners and Plutchik has eight petals, but they are not the same eight.
-# The GoEmotions labels that map to anticipation therefore have no home, and
-# the honest thing is to leave them unplaced and say so rather than round them
-# into a neighbour.
-NO_CORNER = "anticipation"
+# ANTICIPATION NOW HAS A CORNER, and TRUST is the one that does not.
+#
+# This was backwards. The note here used to say anticipation had no vertex and
+# `_classify_emotion` returned `curious` as a novelty OVERRIDE — true at the
+# time, but only because JOY had been placed on Lövheim's interest/excitement
+# corner. With (1,1,1) named `interest`, anticipation is reachable through the
+# geometry and the override is deleted.
+#
+# Trust takes its place as the homeless petal, and for a principled reason
+# rather than a bookkeeping one: trust is oxytocin, and oxytocin is not an axis
+# of a cube built from serotonin, dopamine and noradrenaline. No amount of
+# relabelling produces it. The GoEmotions labels that map to trust stay
+# unplaced, and they come back when a world supplies a second agent.
+NO_CORNER = "trust"
 
 # how intense each label is, as the tier index its petal uses (0 mild, 1 the
 # petal's own name, 2 the outer ring). Taken from where the word actually sits

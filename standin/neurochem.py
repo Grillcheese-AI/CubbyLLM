@@ -264,24 +264,36 @@ class Neurochemistry:
         nothing sits at the centre and is called neutral — which is the reading
         the `intensity < 0.15` test was always meant to produce and could not,
         because the raw point is never near the centre either."""
-        corners = {"joy": (1, 1, 1), "warm": (1, 1, 0), "surprise": (1, 0, 1),
-                   "shame": (1, 0, 0), "angry": (0, 1, 1), "contempt": (0, 1, 0),
-                   "anxious": (0, 0, 1), "sad": (0, 0, 0)}
-        base = self.quiescent()
-        pos = []
-        for key, now in (("5HT", self.serotonin), ("DA", self.dopamine), ("NE", self.noradrenaline)):
-            rest, (lo, hi) = base[key], self._BAND[key]
-            span = (hi - rest) if now >= rest else (rest - lo)
-            pos.append(_clip(0.5 + 0.5 * (now - rest) / max(span, 1e-6), 0, 1))
-        pos = tuple(pos)
+        # The corner table lived here TWICE - once as `self._CORNERS` and once
+        # hard-coded in this function - and both copies were wrong in the same
+        # way, which is exactly how a duplicated constant fails: nothing
+        # disagrees, so nothing is detected. One table now, and `cube()` does
+        # the scaling both callers were doing separately.
+        pos = self.cube()
+        # Sorted, so an exact tie resolves the same way every run. It used to
+        # resolve by dict insertion order, which is not a decision anybody made:
+        # a discovery frame lands at (0.50, 1.00, 0.79), exactly equidistant from
+        # anger (0,1,1) and interest (1,1,1), and whichever key happened to be
+        # written first won. A tie means the state is genuinely BETWEEN two
+        # corners; `corner_position()` already returns `margin` for that, and
+        # Layer 3 reads a small margin as a Plutchik dyad. This function has to
+        # return one name, so it returns a stable one rather than an accidental
+        # one - the honest handling lives where the margin is visible.
         best, best_d = "neutral", float("inf")
-        for emotion, corner in corners.items():
+        for emotion in sorted(self._CORNERS):
+            corner = self._CORNERS[emotion]
             d = sum((p - c) ** 2 for p, c in zip(pos, corner)) ** 0.5
             if d < best_d:
                 best, best_d = emotion, d
         intensity = sum((p - 0.5) ** 2 for p in pos) ** 0.5
-        if novelty > 0.5 and pos[2] > 0.6:
-            return "curious"
+        # The novelty override is GONE. `if novelty > 0.5 and pos[2] > 0.6:
+        # return "curious"` was a second classifier over the same space - the
+        # thing this architecture was rebuilt to eliminate - and it existed only
+        # because the interest/excitement vertex was mislabelled `joy`, leaving
+        # curiosity with nowhere to land. With (1,1,1) named `interest`, high
+        # novelty and high NE reaches it through the geometry, as it always
+        # should have. `novelty` stays in the signature: it drives the ODE
+        # upstream, which is the only place it belongs.
         if intensity < 0.15:
             return "neutral"
         return best
@@ -504,19 +516,25 @@ class Neurochemistry:
     # can honestly be called, and the fork inside each list is the part worth
     # handing over.
     #
-    # The two social corners are empty on purpose: contempt and shame need
-    # somebody else, and there is nobody else in a maze. Same call
-    # `pacman._SOCIAL_CORNERS` makes.
+    # NOTHING IS EMPTY ANY MORE. The two entries that used to be blank were
+    # `contempt` and `shame`, excluded because they need somebody else to feel
+    # them about — correct reasoning applied to the wrong corners. Those
+    # coordinates are Lövheim's FEAR and DISGUST, so a solitary agent in a maze
+    # full of ghosts has every reason to reach both, and the fear corner had
+    # simply been silent. Trust is the genuinely social one, and it has no
+    # corner at all: it is oxytocin, which is not an axis of this cube.
+    #
+    # `spent` is the corner the panel renamed from shame: no drive, no reward
+    # signal, no arousal. It is what four failed attempts at one level look like.
     _BY_CORNER: dict[str, list[str]] = {
-        "joy":      ["elation", "being on a roll", "recklessness"],
-        "warm":     ["warmth", "ease", "quiet satisfaction"],
+        "spent":    ["being spent", "running on empty", "past caring"],
+        "distress": ["distress", "being wrung out", "at a loss"],
+        "fear":     ["dread", "being rattled", "nerve"],
+        "anger":    ["anger", "fury", "being pushed too far"],
+        "disgust":  ["being fed up", "sick of it", "revulsion"],
         "surprise": ["surprise", "being caught out", "confusion"],
-        "angry":    ["anger", "fury", "being pushed too far"],
-        "anxious":  ["dread", "being rattled", "nerve"],
-        "sad":      ["despair", "stubbornness", "being fed up"],
-        "curious":  ["curiosity", "interest"],
-        "shame":    [],
-        "contempt": [],
+        "joy":      ["quiet satisfaction", "ease", "warmth"],
+        "interest": ["interest", "being on a roll", "elation"],
         "neutral":  [],
     }
 
@@ -589,9 +607,44 @@ class Neurochemistry:
             out.append(_clip(0.5 + 0.5 * (now - rest) / max(span, 1e-6), 0, 1))
         return tuple(out)
 
-    _CORNERS = {"joy": (1, 1, 1), "warm": (1, 1, 0), "surprise": (1, 0, 1),
-                "shame": (1, 0, 0), "angry": (0, 1, 1), "contempt": (0, 1, 0),
-                "anxious": (0, 0, 1), "sad": (0, 0, 0)}
+    # Lövheim's PUBLISHED corners, (5-HT, DA, NE). Verified against the source
+    # table 2026-09-17, after the previous table turned out to have only TWO of
+    # its eight corners in the right place:
+    #
+    #   coord    was          Lövheim actually says
+    #   0,0,0    sad          shame/humiliation
+    #   0,0,1    anxious      distress/anguish
+    #   0,1,0    contempt     FEAR/terror
+    #   0,1,1    angry        anger/rage              (correct)
+    #   1,0,0    shame        CONTEMPT/DISGUST
+    #   1,0,1    surprise     surprise                (correct)
+    #   1,1,0    warm         enjoyment/joy
+    #   1,1,1    joy          INTEREST/EXCITEMENT
+    #
+    # Three consequences we had been debugging as separate bugs. Anticipation
+    # had "no corner" because JOY was sitting on the interest vertex - which is
+    # why curiosity needed the novelty override that this commit deletes. And
+    # the two corners excluded as social, `contempt` and `shame`, were in fact
+    # Lövheim's FEAR and DISGUST vertices, so the fear corner has been muted
+    # this whole time. That is most of "he never feels anxiety when he fails".
+    #
+    # NAMES ARE MONOAMINE SYNDROMES, NOT PLUTCHIK PETALS. Forcing petal names
+    # onto vertices is what produced the mismatch; the petal mapping lives one
+    # layer up in `pacman._PETAL` where it can be many-to-one without lying.
+    #
+    # `spent` rather than `shame` at all-low: five of six panel models argued
+    # independently that no-serotonin/no-dopamine/no-noradrenaline is depletion,
+    # not shame - shame is a high-arousal state with a social appraisal attached,
+    # and all-low is what the ODE looks like after sustained unrewarded effort.
+    # That trades an unreachable social corner for a reachable, useful one.
+    _CORNERS = {"spent":    (0, 0, 0),   # Lövheim shame/humiliation -> depletion
+                "distress": (0, 0, 1),   # distress/anguish
+                "fear":     (0, 1, 0),   # fear/terror
+                "anger":    (0, 1, 1),   # anger/rage
+                "disgust":  (1, 0, 0),   # contempt/disgust
+                "surprise": (1, 0, 1),   # surprise
+                "joy":      (1, 1, 0),   # enjoyment/joy - consummatory, low NE
+                "interest": (1, 1, 1)}   # interest/excitement - the explorer's vertex
 
     # ── Layer 2: where in the cube, how far out, and what he is near ────────
     def corner_position(self) -> dict:

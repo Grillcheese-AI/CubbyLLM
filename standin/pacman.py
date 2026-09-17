@@ -1007,23 +1007,41 @@ class GhostVerse(PacVerse):
 
 # our Lövheim readout -> the live game's Plutchik compass (petal, angle, petal
 # color, the three intensity tiers whose color/message come from plutchik.json)
+# Keyed on the corrected `neurochem._CORNERS` (2026-09-17), whose names are
+# monoamine syndromes rather than petals. The mapping is MANY-TO-ONE on purpose:
+# the cube distinguishes depletion from anguish and Plutchik does not, so
+# `spent` and `distress` share the sadness petal rather than one of them being
+# forced somewhere it does not belong.
+#
+# TRUST HAS NO ROW. It is oxytocin, not one of the three axes, so no corner can
+# produce it — which is the honest answer to why `warm` used to sit on the trust
+# petal: that coordinate is Lövheim's enjoyment/joy, and calling it trust was
+# the mismatch in miniature. Trust returns when a world supplies a second agent.
+#
+# `interest` -> anticipation is the fix that retires the novelty override: the
+# explorer's vertex now has the explorer's petal.
 _PETAL = {"joy": ("joy", 0, "#ffca05", ("serenity", "joy", "ecstasy")),
-          "warm": ("trust", 45, "#8ac650", ("acceptance", "trust", "admiration")),
-          "anxious": ("fear", 90, "#00a551", ("apprehension", "fear", "terror")),
+          "fear": ("fear", 90, "#00a551", ("apprehension", "fear", "terror")),
           "surprise": ("surprise", 135, "#0099cd", ("distraction", "surprise", "amazement")),
-          "sad": ("sadness", 180, "#2983c5", ("pensiveness", "sadness", "grief")),
-          "shame": ("sadness", 180, "#2983c5", ("pensiveness", "sadness", "grief")),
-          "contempt": ("disgust", 225, "#8973b3", ("boredom", "disgust", "loathing")),
-          "angry": ("anger", 270, "#f05b61", ("annoyance", "anger", "rage")),
-          "curious": ("anticipation", 315, "#f6923d", ("interest", "anticipation", "vigilance"))}
+          "distress": ("sadness", 180, "#2983c5", ("pensiveness", "sadness", "grief")),
+          "spent": ("sadness", 180, "#2983c5", ("pensiveness", "sadness", "grief")),
+          "disgust": ("disgust", 225, "#8973b3", ("boredom", "disgust", "loathing")),
+          "anger": ("anger", 270, "#f05b61", ("annoyance", "anger", "rage")),
+          "interest": ("anticipation", 315, "#f6923d", ("interest", "anticipation", "vigilance"))}
 
-# Lövheim's SOCIAL corners. Contempt/disgust and shame/humiliation need
-# someone to feel them ABOUT; a maze has nobody in it, so the corner fires on
-# hormone geometry alone and the compass reports an emotion he has no reason
-# to have. Nick, 2026-09-15, on a "(sick of it)" two steps into a fresh level:
-# *"sick of it should be neutral."* They stay in `_PETAL` because a world with
-# social input can read them; here they read calm.
-_SOCIAL_CORNERS = frozenset({"contempt", "shame"})
+# EMPTY, and that is the finding. This set used to hold `contempt` and `shame`,
+# muted because a maze has nobody to feel them about. The reasoning was right
+# and the coordinates were wrong: those vertices are Lövheim's FEAR and DISGUST,
+# which a solitary agent among ghosts has every reason to reach — so the mute was
+# silencing the fear corner, and that is a large part of Nick's *"he never feels
+# anxiety when he fails a level"*. Nick's other note still holds and is now served
+# properly: *"sick of it should be neutral"* two steps into a fresh level is the
+# `intensity < 0.15` centre test, not a corner exclusion.
+#
+# No corner of this cube is social. The social petal is trust, it has no corner,
+# and it comes back as a WORLD CAPABILITY when a world declares other agents —
+# not as a hard-coded exclusion here.
+_SOCIAL_CORNERS: frozenset[str] = frozenset()
 
 # How a person would actually SAY the feeling, first person and plain, instead
 # of the taxonomy noun. Nick, 2026-09-15: *"instead of 'I feel acceptance' can
@@ -2998,18 +3016,25 @@ class CubbyGhost(CubbyPac):
             # still hurting read as WARM, and the mood word came out "at
             # ease". Nothing about a high-arousal branch ordering was wrong;
             # what was wrong is that hurting was not a branch at all.
+            # Corner names re-pointed at the corrected `_CORNERS` (2026-09-17).
+            # `anxious` -> `fear`, `curious` -> `interest`, `sad` -> `distress`
+            # when aroused and `spent` when flat: the cube now separates anguish
+            # from depletion, so this fallback can too. `warm` had no corner
+            # left — (1,1,0) is enjoyment/joy, not trust — and an oxytocin rise
+            # with nothing else moving is the quiet end of joy, so it folds in
+            # there rather than inventing a corner for itself.
             if getattr(chem, "pain", 0.0) > 0.25:
-                name = "anxious" if ne > 0.0 else "sad"
+                name = "fear" if ne > 0.0 else "distress"
             elif ar >= 0.5 and val <= 0 and ne > 0.05:
-                name = "anxious"
+                name = "fear"
             elif ar >= 0.5 and val > 0:
-                name = "curious"
+                name = "interest"
             elif ot > 0.10:
-                name = "warm"
+                name = "joy"
             elif da > 0.10 and val >= 0:
                 name = "joy"
             elif da < -0.05 or val < -0.3:
-                name = "sad"
+                name = "distress" if ne > 0.0 else "spent"
             else:
                 return calm
         petal, angle, pcolor, tiers = _PETAL[name]
