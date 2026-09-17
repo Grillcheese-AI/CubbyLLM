@@ -76,7 +76,39 @@ def spearman(xs, ys):
     return num / den if den else float("nan")
 
 
+VA_PETALS = ROOT / "standin" / "data" / "out" / "va_petals.jsonl"
+
+
+def from_va_petals():
+    """The texts that already had valence/arousal, given a petal blind.
+
+    `label_va_petals.py` never shows the labeller the affect values, and the prompt
+    contains no word for either dimension - no intensity, no strength, no
+    pleasantness - because naming the dimension under test invites the model to reason
+    about it and the independence is gone. So a petal here was assigned from the words
+    alone, and the valence/arousal it gets compared against was produced by something
+    that never saw a petal."""
+    rows = []
+    for line in open(VA_PETALS, encoding="utf-8"):
+        r = json.loads(line)
+        petal = (r.get("petal") or "").strip().lower()
+        corner = PETAL_CORNER.get(petal)
+        if not corner:
+            continue                     # neutral, or trust: no corner by design
+        s, d, n = Neurochemistry._CORNERS[corner]
+        rows.append({"petal": petal, "corner": corner, "s": s, "d": d, "n": n,
+                     "valence": float(r["valence"]), "arousal": float(r["arousal"]),
+                     "intensity": None,
+                     "second_opinion": r.get("second_opinion")})
+    return rows
+
+
 def main() -> int:
+    if VA_PETALS.exists():
+        rows = from_va_petals()
+        print(f"  using {VA_PETALS.name}: {len(rows)} texts with a blind petal "
+              f"and a pre-existing valence/arousal")
+        return analyse(rows)
     emo = [json.loads(l) for l in open(SRC / "emotions.jsonl", encoding="utf-8")]
     amy = [json.loads(l) for l in open(SRC / "amygdala_affect.jsonl", encoding="utf-8")]
     # PLACEHOLDERS, not labels. 1,845 of the 3,180 amygdala rows carry valence exactly
@@ -153,6 +185,10 @@ def main() -> int:
         print("  the overlap between the two files is entirely placeholder rows")
         return 0
 
+    return analyse(rows)
+
+
+def analyse(rows) -> int:
     ne = [r["n"] for r in rows]
     sd = [(r["s"] + r["d"]) / 2 for r in rows]
     aro = [r["arousal"] for r in rows]
@@ -161,10 +197,14 @@ def main() -> int:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with open(OUT, "w", encoding="utf-8") as f:
         f.write("# Is the cube geometry, or vocabulary?\n\n")
-        f.write(f"**{len(rows)} texts** carrying both a Plutchik petal (`emotions.jsonl`) "
-                f"and a valence/arousal pair (`amygdala_affect.jsonl`). Two independent "
-                f"labellings of the same sentences - neither labeller saw the other's "
-                f"output, and neither saw a monoamine.\n\n")
+        f.write(f"**{len(rows)} texts**, each carrying a valence/arousal pair that already "
+                f"existed in `amygdala_affect.jsonl` and a Plutchik petal assigned BLIND "
+                f"by `label_va_petals.py` - the labeller never saw the affect values, and "
+                f"the prompt contains no word for either dimension.\n\n")
+        n_dis = sum(1 for r in rows if r.get("second_opinion"))
+        if n_dis:
+            f.write(f"A second model labelled a sample; {n_dis} of those rows carry a "
+                    f"disagreement, recorded per row rather than averaged away.\n\n")
         f.write("Every previous check here was internal: derived coordinates run back "
                 "through the agent's own classifier, which can only prove "
                 "self-consistency, because the classifier and the coordinate share one "
@@ -205,6 +245,34 @@ def main() -> int:
                 f"**{st.mean([r['arousal'] for r in hi_ne]):.3f}** (n={len(hi_ne)})\n")
         f.write(f"- corners Lövheim marks LOW NE:  mean corpus arousal "
                 f"**{st.mean([r['arousal'] for r in lo_ne]):.3f}** (n={len(lo_ne)})\n\n")
+        # The valence prediction holds hard and the arousal one does not, which makes
+        # the arousal failure worth locating rather than shrugging at. Sorting the
+        # corners by MEASURED arousal puts fear top (NE=0 in Lövheim) and distress
+        # near the bottom (NE=1) - the two of them look swapped with respect to the
+        # noradrenaline axis. So: swap them and recompute, rather than asserting it.
+        SWAP = {"fear": "distress", "distress": "fear"}
+        swapped = []
+        for r in rows:
+            c = SWAP.get(r["corner"], r["corner"])
+            s2, d2, n2 = Neurochemistry._CORNERS[c]
+            swapped.append({**r, "s": s2, "d": d2, "n": n2})
+        r_ne2 = spearman([r["n"] for r in swapped], [r["arousal"] for r in swapped])
+        r_sd2 = spearman([(r["s"] + r["d"]) / 2 for r in swapped],
+                         [r["valence"] for r in swapped])
+        f.write("\n## If fear and distress swap places\n\n")
+        f.write("Sorted by MEASURED arousal, fear sits top at 0.75 with Lövheim's NE=0, "
+                "and distress sits near the bottom at 0.47 with NE=1. They look "
+                "transposed on the noradrenaline axis. Swapping the two corners and "
+                "recomputing, against the same data:\n\n")
+        f.write(f"| | as published | fear<->distress |\n|---|---:|---:|\n")
+        f.write(f"| arousal ~ NE | {r_ne:+.3f} | **{r_ne2:+.3f}** |\n")
+        f.write(f"| valence ~ (5HT+DA)/2 | {r_sd:+.3f} | {r_sd2:+.3f} |\n\n")
+        f.write("This is a hypothesis generated from the data it is measured on, so it "
+                "is a lead rather than a result - it needs a second corpus before it "
+                "changes `_CORNERS`. What it does settle is the parked question: the "
+                "threat->DA coupling is not the thing to change, because the arousal "
+                "axis does not line up with this data whatever the ODE does.\n\n")
+
         fear = by.get("fear", [])
         if fear:
             f.write(f"**`fear` itself** ({len(fear)} texts): mean corpus arousal "
