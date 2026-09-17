@@ -36,6 +36,7 @@ for p in (ROOT, os.path.join(ROOT, "standin", "data")):
 
 from identity import (T, affect_block, derived, identity_system, load_facts,  # noqa: E402
                       guess_lang, is_identity_question, is_identity_reply, is_model_guard, voice_ok)
+from afferent import Afferent  # noqa: E402
 from neurochem import Neurochemistry, appraise  # noqa: E402
 
 __wiring__ = "STANDALONE"
@@ -113,6 +114,7 @@ class CubbyChat:
         self.appraiser = appraiser                       # perception.ModelAppraiser: the trunk reads emotions
         self.facts = facts or load_facts()
         self.chem = Neurochemistry()                     # the real ODE (cubemind port)
+        self.afferent = Afferent()                       # the user's state, and what it may do to his
         self._seen_vocab: set[str] = set()
         self.state = dict(state) if state else self._hormones()
         self.exe = exe
@@ -131,18 +133,53 @@ class CubbyChat:
         the next nudge() resumes from the ODE, not from this override."""
         self.state = dict(state)
 
-    def nudge(self, user_text: str) -> dict:
+    def nudge(self, user_text: str, *, gap_s: float | None = None, burst: int = 0,
+              hour: int | None = None) -> dict:
         """One message through appraisal -> the ODE (a couple of perception
-        frames), then the 5-hormone slice becomes the serving state."""
+        frames), then the 5-hormone slice becomes the serving state.
+
+        THE READ AND THE TRANSFER ARE TWO STEPS, and keeping them apart is the
+        point. The appraiser reports how the USER is; `afferent` decides what
+        that may do to CUBBY. They used to be one step, which is how a sad user
+        made Cubby sad and an angry one made him frightened.
+
+        The split of the five drives is by what they are about:
+
+          novelty, threat   the TASK. A message can be urgent with nobody upset,
+                            and `appraise`'s threat lexicon reads exactly that.
+          focus             both: the task asks something, and concern attends.
+                            Whichever is larger.
+          valence, social   the PERSON, so they go through the transfer and
+                            come out as concern and warmth rather than as a copy.
+          surge             arousal contagion, which only exists on this path.
+
+        `gap_s`/`burst`/`hour` are the behavioural channel and do nothing at
+        all until the user grants it (`self.afferent.grant()`).
+        """
         if self.appraiser is not None:                   # v5: the trunk reads the emotion, its petal drives
             self.signals = self.appraiser.signals(user_text, self._seen_vocab, guess_lang(user_text))
         else:
             self.signals = appraise(user_text, self._seen_vocab)
         self._seen_vocab.update(re.findall(r"[\w']+", user_text.lower()))
-        self.chem.step_message({k: v for k, v in self.signals.items()
-                                if k in ("novelty", "threat", "focus", "valence", "social")})
+
+        self.afferent.read(user_text, lexical_valence=self.signals.get("valence", 0.0),
+                           warmth=self.signals.get("social", 0.0), gap_s=gap_s, burst=burst,
+                           hour=hour, words=len(user_text.split()))
+        tr = self.afferent.drives()
+        self.chem.step_message({
+            "novelty": self.signals.get("novelty", 0.0),
+            "threat": self.signals.get("threat", 0.0),          # the task's danger, never the user's mood
+            "focus": max(self.signals.get("focus", 0.0), tr["focus"]),
+            "valence": tr["valence"],                           # 0.0 when they are having a bad time
+            "social": tr["social"],                             # ... which is where it went instead
+            "surge": tr["surge"]})
         self.state = self._hormones()
         return self.state
+
+    def user_state(self) -> dict:
+        """What Cubby holds about the person, in full. Small enough to show
+        them, which is the only honest way to keep it."""
+        return self.afferent.state()
 
     @property
     def emotion(self) -> str:

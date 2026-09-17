@@ -38,17 +38,46 @@ CONTENT_PROMPT = ("Is this passage safe for a general audience? Answer with one 
                   "then a few words on why.\n\nPassage: {p}")
 
 PETALS = ("joy", "trust", "fear", "surprise", "sadness", "disgust", "anger", "anticipation", "calm")
-# petal -> the ODE's drives (novelty, threat, focus, valence, social); the
-# numbers are the stand-in's, in the same [0,1] / [-1,1] units as appraise()
-PETAL_DRIVES = {
-    "joy":          {"valence": 0.7, "social": 0.3},
-    "trust":        {"valence": 0.4, "social": 0.7},
-    "fear":         {"threat": 0.8, "valence": -0.5},
-    "surprise":     {"novelty": 0.8, "focus": 0.3},
-    "sadness":      {"valence": -0.7, "social": 0.2},
-    "disgust":      {"valence": -0.6, "threat": 0.2},
-    "anger":        {"threat": 0.6, "valence": -0.7},
-    "anticipation": {"novelty": 0.5, "focus": 0.6, "valence": 0.2},
+
+# petal -> A READING OF THE USER, not a set of drives for Cubby's body. The
+# difference is the whole of `afferent.py` and it used to be absent here.
+#
+# WHAT THIS TABLE USED TO SAY, and why it had to change:
+#
+#     "sadness": {"valence": -0.7, "social": 0.2}
+#     "anger":   {"threat":   0.6, "valence": -0.7}
+#     "fear":    {"threat":   0.8, "valence": -0.5}
+#
+# Those went STRAIGHT INTO `chem.step_message`. A sad user dropped Cubby's
+# serotonin and dopamine — he caught it. An angry user raised `threat`, which
+# is the input a ghost uses: Cubby was frightened of the person talking to
+# him. Measured against a control, the old mapping cost 0.058 of serotonin on
+# one sad message where routing the same message through the afferent transfer
+# costs 0.020, and leaves oxytocin and dopamine HIGHER rather than lower.
+#
+# So the petal now reports two things about the PERSON — how they are, and how
+# warm they are being — and `afferent.drives` decides what that is allowed to
+# do to a body. Three deletions matter:
+#
+#   THREAT IS GONE from every petal. Threat is Cubby's own danger, and the
+#   lexical `_THREAT` in `appraise` still catches the real ones ("urgent",
+#   "broken", "crash") because those are threats to the TASK.
+#   NOVELTY IS GONE. It is already the unseen-token fraction of the message;
+#   taking it from the user's surprise instead was mirroring with a different
+#   name on it.
+#   AROUSAL IS ABSENT, and stays absent. `docs/cube_vs_valence_arousal.md`
+#   measured exactly this channel — model-read petals against independently
+#   labelled arousal — and got rho -0.004. A petal does not know how activated
+#   somebody is. That reading comes from timing, with consent, in `afferent`.
+PETAL_AFFECT = {
+    "joy":          {"valence": 0.7, "warmth": 0.3},
+    "trust":        {"valence": 0.4, "warmth": 0.7},
+    "fear":         {"valence": -0.5},
+    "surprise":     {"valence": 0.0},
+    "sadness":      {"valence": -0.7, "warmth": 0.2},
+    "disgust":      {"valence": -0.6},
+    "anger":        {"valence": -0.7},
+    "anticipation": {"valence": 0.2, "focus": 0.6},   # focus is about the TASK: a question is being asked
     "calm":         {},
 }
 DRIVES = ("novelty", "threat", "focus", "valence", "social")
@@ -97,15 +126,21 @@ class ModelAppraiser:
         return self.last
 
     def signals(self, text: str, seen: set[str], lang: str = "en") -> dict:
-        """Lexical appraisal, lifted by the model's petal (max per drive; the
-        larger-magnitude valence wins)."""
+        """Lexical appraisal, lifted by the model's petal.
+
+        `valence` and `social` here are A READING OF THE USER, not drives for
+        Cubby. `CubbyChat.nudge` puts them through `afferent.drives` before
+        anything reaches the ODE, which is where the no-mirroring rule lives.
+        `novelty`, `threat` and `focus` are about the task and pass straight
+        through — a message can be urgent without anybody being upset.
+        """
         sig = appraise(text, seen)
         read = self.read(text, lang)
-        for k, v in PETAL_DRIVES.get(read.get("petal") or "", {}).items():
-            if k == "valence":
-                sig[k] = v if abs(v) > abs(sig[k]) else sig[k]
-            else:
-                sig[k] = max(sig[k], v)
+        aff = PETAL_AFFECT.get(read.get("petal") or "", {})
+        if "valence" in aff and abs(aff["valence"]) > abs(sig["valence"]):
+            sig["valence"] = aff["valence"]              # the larger-magnitude read wins
+        sig["social"] = max(sig["social"], aff.get("warmth", 0.0))
+        sig["focus"] = max(sig["focus"], aff.get("focus", 0.0))
         sig["emotion_label"] = read.get("label")
         sig["petal"] = read.get("petal")
         return sig

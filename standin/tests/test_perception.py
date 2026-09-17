@@ -40,14 +40,20 @@ def test_parse_emotion_variants():
     assert pc.parse_emotion("") == (None, None)
 
 
-def test_model_petal_drives_the_hormones_and_never_drops_a_lexical_signal():
+def test_the_petal_reads_the_person_and_never_drops_a_lexical_signal():
     em = ReadEmitter("fear — fear")
     ap = pc.ModelAppraiser(em, F)
     sig = ap.signals("we are going to the park", set())
-    assert sig["threat"] >= 0.8 and sig["petal"] == "fear" and sig["emotion_label"] == "fear"
+    # THIS ASSERTION USED TO READ `sig["threat"] >= 0.8`, and it was pinning a
+    # bug: the user expressing fear set the same drive a ghost sets, so Cubby
+    # was frightened of the person talking to him. The petal now reports the
+    # PERSON (valence, warmth) and `afferent.drives` decides what that may do
+    # to a body; threat stays Cubby's own danger, read lexically from the task.
+    assert sig["threat"] == 0.0, "their fear is not his danger"
+    assert sig["valence"] <= -0.5 and sig["petal"] == "fear" and sig["emotion_label"] == "fear"
     assert "What emotion does this message express?" in em.prompts[-1]
     fr = ap.signals("on va au parc", set(), lang="fr")
-    assert "Quelle émotion" in em.prompts[-1] and fr["threat"] >= 0.8
+    assert "Quelle émotion" in em.prompts[-1] and fr["valence"] <= -0.5
     # the lexicon caught a thanks; a model reading "sadness" must not erase the social signal
     sad = pc.ModelAppraiser(ReadEmitter("sadness — sadness"), F).signals("Thanks so much, hello!", set())
     assert sad["social"] >= 0.4 and sad["valence"] < 0, "max per drive; larger-magnitude valence wins"
