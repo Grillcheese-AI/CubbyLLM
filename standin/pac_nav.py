@@ -75,9 +75,10 @@ class NavMixin:
 
 
     @property
-    def danger_radius(self) -> int:
-        """How far off a ghost has to be before he treats it as a threat —
-        not a constant, and not a curve fitted to `fear`. It is the largest
+    def learned_radius(self) -> int:
+        """The berth his own experience has taught him, and nothing else.
+
+        Not a constant, and not a curve fitted to `fear`. It is the largest
         distance at which a ghost he could see went on to catch him. Before
         anything catches him it is 1: a body knows only "touching me", and
         nothing has taught it otherwise yet.
@@ -86,10 +87,58 @@ class NavMixin:
         (2026-09-15). Those thresholds were invented; this number is
         measured, it comes from his own experience, and it needs no
         retraining to move — the same reason every other rule here had to
-        go."""
+        go.
+
+        EVERY MEASUREMENT READS THIS ONE, never `danger_radius` below: what he
+        learns from a catch has to come from the catch, and a berth that was
+        temporarily wide because he was alarmed would otherwise bake its own
+        alarm into the lesson. Behaviour reads the composite; learning reads
+        this."""
         if not self.caught_at:
             return 1
         return max(1, min(self.MAX_DANGER_RADIUS, max(self.caught_at)))
+
+    WARY_FROM = 0.30            # noradrenaline this far over quiescent buys a tile
+    MAX_WARY = 2
+
+    @property
+    def wariness(self) -> int:
+        """Extra berth because his body is alarmed RIGHT NOW. 0 when calm.
+
+        THIS IS THE PATH FROM CHEMISTRY TO BEHAVIOUR, and until now there
+        wasn't one. Two reads of `self.chem` existed in the whole decision
+        path, both of `craving`, in `chase_reach`. So threat could spike, the
+        compass could read fear, he could say frightened things — and take
+        exactly the same step he would have taken calm. The affect stack was
+        decorative at the point where it should have cost something.
+
+        That is the open loop I described in GrillCheese's plasticity: state
+        that is written every turn and read by nothing. It was true here too,
+        and finding it while building an experiment ON this path is the reason
+        the experiment was worth building before running.
+
+        Driven by NORADRENALINE rather than by the coach, deliberately. A
+        warning is not special: a ghost he saw, a catch he is still carrying
+        and a person shouting all raise the same signal, and all of them
+        should make him keep more room. Wiring the coach straight to the berth
+        would have made this one feature's demo instead of a mechanism.
+
+        Transient by construction. NE decays back to quiescent within a few
+        frames, so being told about a ghost buys caution for about as long as
+        the warning is worth anything — it never becomes part of what he
+        knows. What he KNOWS is `learned_radius`, and only being caught
+        changes that."""
+        if self.chem is None:
+            return 0
+        over = self.chem.noradrenaline - self.chem.quiescent()["NE"]
+        return 0 if over <= 0 else min(self.MAX_WARY, int(round(over / self.WARY_FROM)))
+
+    @property
+    def danger_radius(self) -> int:
+        """What he actually keeps: what he has learned, plus how alarmed he is.
+
+        Behaviour reads this. Measurement reads `learned_radius`."""
+        return max(1, min(self.MAX_DANGER_RADIUS, self.learned_radius + self.wariness))
 
 
     def danger_cells(self) -> set[str]:

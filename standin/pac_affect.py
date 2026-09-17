@@ -47,7 +47,10 @@ class AffectMixin:
         and the last life is worse than the first two. Both are true of the
         SITUATION, not of his mood, which is what makes this an input to the
         chemistry rather than a reading of it."""
-        warned = 0.0 if seen is None else min(1.0, seen / max(1, self.danger_radius))
+        # `learned_radius`, not `danger_radius`: how much warning he had is a
+        # measurement, and measuring it against a berth that was temporarily
+        # wide because he was alarmed would let the alarm rate its own outcome.
+        warned = 0.0 if seen is None else min(1.0, seen / max(1, self.learned_radius))
         hurt = 0.55 + 0.35 * (1.0 - warned)
         if self.env.lives <= 1:                          # about to be, or just was, the last one
             hurt = max(hurt, 0.95)
@@ -149,7 +152,13 @@ class AffectMixin:
         env = self.env
         here = env.coords(self.place)
         near = min((_manh(here, g) for g in env.ghosts), default=99)
-        self.coach.tick(env.steps, ghost_near=near <= self.danger_radius + 1)
+        # `learned_radius`, and this one is not a nicety — it is the difference
+        # between a score and a prophecy. A warning raises noradrenaline, which
+        # raises `wariness`, which widens `danger_radius`; scoring the warning
+        # against THAT would mean shouting "ghost!" literally widens the window
+        # in which the shout counts as correct. A claim must be graded against
+        # a yardstick it cannot move.
+        self.coach.tick(env.steps, ghost_near=near <= self.learned_radius + 1)
 
 
     def _on_caught(self) -> None:
@@ -192,7 +201,12 @@ class AffectMixin:
         # either. Letting a plain ambush widen by two put the berth at 3 on the
         # very first catch, which is not learning, it is flinching.
         widen = 2 if hurt >= 0.95 else 1
-        lesson = self.danger_radius + widen if seen is None else max(seen, self.danger_radius)
+        # LEARNED, not the composite. A catch that happened while he was
+        # already alarmed would otherwise teach a berth built partly out of the
+        # alarm, and the next alarm would build on that — a feedback loop that
+        # would walk the radius to its ceiling and call it experience.
+        lesson = (self.learned_radius + widen if seen is None
+                  else max(seen, self.learned_radius))
         self.caught_at.append(max(1, min(self.MAX_DANGER_RADIUS, lesson)))
         self.fear = min(4.0, self.fear + self.CAUGHT_FEAR)
         self._last_hurt = hurt
