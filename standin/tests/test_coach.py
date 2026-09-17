@@ -174,4 +174,4 @@ def test_the_ledger_is_small_enough_to_show_the_player():
     c.tick(2, ghost_near=True)
     st = c.state()
     assert set(st) == {"credibility", "base_rate", "warnings", "messages",
-                       "pending", "vocabulary"}
+                       "pending", "vocabulary", "eligible"}

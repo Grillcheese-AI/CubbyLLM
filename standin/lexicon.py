@@ -187,9 +187,20 @@ class AffectLexicon:
         for tok in toks:
             seen = self.count.get(tok, 0)
             m = (self.NEW_MOMENTUM if seen < self.SETTLED_AT else self.OLD_MOMENTUM) * _clip(weight, 0, 1)
-            prev = self.ema.get(tok)
-            self.ema[tok] = list(target) if prev is None else \
-                [(1 - m) * p + m * t for p, t in zip(prev, target)]
+            # A NEW WORD STARTS AT NEUTRAL AND IS MOVED, rather than being set
+            # to the target outright. The old version assigned `list(target)`
+            # on first sight, which threw the weight away exactly when it
+            # matters most: under the three-factor rule the weight IS the
+            # evidence — how recently it was said times how hard the world
+            # reacted — so a first-time word learned from a graze and one
+            # learned from a catastrophe came out identical. Caught by
+            # `test_credit_is_graded_by_how_much_the_body_moved`.
+            #
+            # It also fixes something that was wrong on its own terms: one
+            # observation is not certainty, and a single confirmed warning
+            # should not be enough to make a word a warning word.
+            prev = self.ema.get(tok) or [0.0, 0.0, 0.0]
+            self.ema[tok] = [(1 - m) * p + m * t for p, t in zip(prev, target)]
             self.count[tok] = seen + 1
         return len(toks)
 
@@ -228,3 +239,88 @@ class AffectLexicon:
 
     def __len__(self) -> int:
         return len(self.ema)
+
+
+# ── eligibility: the middle term of a three-factor rule ─────────────────────
+#
+# Ported in SPIRIT from GrillCheese's `_apply_online_plasticity`, which keeps
+# `_stdp_pre_trace` and `_stdp_post_trace` at `trace_decay=0.95` and updates
+# them live on every chat turn. The owner was right that it runs live and I was
+# wrong to call it a training path.
+#
+# But reading the whole of it: nothing ever READS those weights. Across that
+# repo they are initialised, updated, grown, snapshotted, restored and asserted
+# on in a round-trip test, and no forward pass consumes them. The SNN's one
+# forward use, `spike_activity`, returns a scalar that lands in a telemetry
+# struct next to `routing_entropy`. The loop is open, which is why the traces
+# and the hormones are both there and never multiplied together.
+#
+# THAT PRODUCT IS THE WHOLE MECHANISM. Reward-modulated STDP is three factors:
+#
+#   PRE    the word was used            -> `mark`
+#   POST   it is still eligible         -> the decaying trace
+#   MOD    a neuromodulator moved       -> supplied by the world, at the moment
+#                                          it moves, as a signed magnitude
+#
+# Two of the three were already here and the third is what this project has
+# that GrillCheese did not: a world that delivers real reward and real pain at
+# known instants. `docs/cube_vs_human_vad.md` ended by saying the arousal axis
+# has to be validated against behaviour rather than text. This is the same
+# point one level further down — the credit for a WORD comes from behaviour too.
+#
+# WHAT IT REPLACES, and why the old version was a stand-in rather than a
+# mechanism: `Coach.outcome` taught every message inside a fixed 12-step window
+# at a flat weight of 0.35. So a sentence one step before a death and one
+# twelve steps before got identical credit, a sentence thirteen steps before
+# got none, and the size of what happened did not matter at all. A cliff, and a
+# constant. A trace is graded, has no edge, and is scaled by how much the
+# chemistry actually moved.
+
+
+class Eligibility:
+    """What was said recently, and how much of it still counts.
+
+    One trace per message rather than per token, because the message is the
+    unit a person actually chose. `strength` starts at 1.0 and decays each
+    step; below `FLOOR` it is dropped, which is what stops a lexicon filling up
+    with superstition about something said a minute ago.
+    """
+
+    DECAY = 0.85                  # per step; ~0.05 after 18 steps
+    FLOOR = 0.05
+    MAX_HELD = 40                 # a bound, so a chatty player cannot grow it forever
+
+    def __init__(self) -> None:
+        self.held: list[dict] = []
+        self._step = 0
+
+    def mark(self, text: str, step: int, strength: float = 1.0) -> None:
+        """Something was said. It is eligible from now until it decays out."""
+        if not (text or "").strip():
+            return
+        self.decay_to(step)
+        self.held.append({"text": text, "trace": _clip(strength, 0, 1), "at": step})
+        if len(self.held) > self.MAX_HELD:
+            self.held = sorted(self.held, key=lambda h: -h["trace"])[:self.MAX_HELD]
+
+    def decay_to(self, step: int) -> None:
+        """Advance the clock. Idempotent for a step already applied, so a
+        caller may tick and mark in either order without double-decaying."""
+        gap = step - self._step
+        if gap <= 0:
+            return
+        self._step = step
+        f = self.DECAY ** gap
+        for h in self.held:
+            h["trace"] *= f
+        self.held = [h for h in self.held if h["trace"] >= self.FLOOR]
+
+    def active(self) -> list[tuple]:
+        """[(text, trace)], strongest first."""
+        return [(h["text"], h["trace"]) for h in sorted(self.held, key=lambda h: -h["trace"])]
+
+    def clear(self) -> None:
+        self.held.clear()
+
+    def __len__(self) -> int:
+        return len(self.held)

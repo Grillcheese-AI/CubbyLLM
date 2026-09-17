@@ -640,6 +640,20 @@ class CubbyGhost(CubbyPac):
         m = self.chem.manner() if self.chem is not None else ""
         return f"{line} ({m})" if m else line
 
+    DA_FULL_SWING = 0.35        # a dopamine move this size is "as much as it gets"
+
+    def _da_moved(self, before: float | None) -> float:
+        """How far dopamine actually travelled, 0..1 — the neuromodulator term.
+
+        The third factor of a three-factor rule has to be MEASURED or it is not
+        a third factor, it is a constant with a biological name on it. A catch
+        that grazed him and a catch on his last life both call the same method
+        and should not teach the same amount, and the difference between them
+        is already sitting in the chemistry by the time this is read."""
+        if before is None or self.chem is None:
+            return 1.0                            # no body to measure: fall back to full credit
+        return min(1.0, abs(self.chem.dopamine - before) / self.DA_FULL_SWING)
+
     def _coach_tick(self) -> None:
         """Settle any outstanding warning against WHAT WAS ACTUALLY THERE.
 
@@ -699,6 +713,7 @@ class CubbyGhost(CubbyPac):
         self.caught_at.append(max(1, min(self.MAX_DANGER_RADIUS, lesson)))
         self.fear = min(4.0, self.fear + self.CAUGHT_FEAR)
         self._last_hurt = hurt
+        da_before = self.chem.dopamine if self.chem is not None else None
         if self.chem is not None:
             for _ in range(self.CAUGHT_SHOCK_FRAMES):
                 self.chem.update(threat=1.0, valence=-0.8, pain=hurt)
@@ -707,8 +722,12 @@ class CubbyGhost(CubbyPac):
             # Lövheim's low-5HT/high-DA/high-NE corner reads as RAGE instead of fear
             self.chem.dopamine = max(0.15, self.chem.dopamine - 0.30)
             self.chem.dominant_emotion = self.chem._classify_emotion(0.0)   # the corner label is set inside update()
-        # and the world just labelled whatever was said in the run-up to it
-        self.coach.outcome("caught", step=self.env.steps)
+        # and the world just labelled whatever was said in the run-up to it.
+        # The magnitude is the MEASURED dopamine move, not a constant: this is
+        # the third factor of the plasticity rule, and a catch that grazed him
+        # should teach less than one that took the floor out.
+        self.coach.outcome("caught", step=self.env.steps,
+                           magnitude=self._da_moved(da_before))
 
     def _mine_wise(self) -> bool:
         """Use a trap when it will count: he holds one, nothing is frightened,
@@ -1738,12 +1757,14 @@ class CubbyGhost(CubbyPac):
         # and clearing one lands too, or the books do not balance: a world
         # where only losing is felt is not a world with stakes, it is a world
         # with a punishment. Relief scales with how many goes it took.
+        da_before = self.chem.dopamine if self.chem is not None else None
         if self.chem is not None:
             relief = min(1.0, 0.6 + 0.2 * (attempts - 1))
             for _ in range(self.CLEAR_FRAMES):
                 self.chem.update(valence=relief, novelty=0.4, social=0.2)
             self.chem.dominant_emotion = self.chem._classify_emotion(0.4)
-        self.coach.outcome("cleared", step=self.env.steps)
+        self.coach.outcome("cleared", step=self.env.steps,
+                           magnitude=self._da_moved(da_before))
         self._think("level_up", cleared=nxt - 1, next=nxt)
         self._forge_orientation()                        # new maze: check my bearings through my trunk
 
@@ -1781,13 +1802,15 @@ class CubbyGhost(CubbyPac):
                 # actually move. And it COMPOUNDS: the third attempt at the
                 # same maze is worse than the first, which is the difference
                 # between a setback and a run that is not working.
+                da_before = self.chem.dopamine if self.chem is not None else None
                 if self.chem is not None:
                     sting = min(1.0, 0.45 + 0.18 * (env.attempt - 1))
                     for _ in range(self.FAIL_FRAMES):
                         self.chem.update(valence=-sting, threat=0.2 * sting, focus=0.3)
                     self.chem.dopamine = max(0.15, self.chem.dopamine - 0.15 * sting)
                     self.chem.dominant_emotion = self.chem._classify_emotion(0.0)
-                self.coach.outcome("failed", step=env.steps)
+                self.coach.outcome("failed", step=env.steps,
+                                   magnitude=self._da_moved(da_before))
                 if "combos" in self.can:
                     ev["learned"] = self._propose("out_of_time")
                 else:

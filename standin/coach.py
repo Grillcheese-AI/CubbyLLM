@@ -94,8 +94,9 @@ if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
 from afferent import Afferent  # noqa: E402
-from lexicon import AffectLexicon  # noqa: E402
+from lexicon import AffectLexicon, Eligibility  # noqa: E402
 from neurochem import appraise  # noqa: E402
+from world import CLEAR, FAIL, HURT, REWARD  # noqa: E402
 
 __wiring__ = "WIRED"
 
@@ -137,6 +138,7 @@ class Coach:
         self.credibility = self.STRANGER if credibility is None else _clip(credibility, 0, 1)
         self.afferent = Afferent()
         self.lex = AffectLexicon()               # this player's words, learned from outcomes
+        self.traces = Eligibility()              # and how recently each thing was said
         self.pending: list[dict] = []
         self.said: list[dict] = []                  # the transcript, for the report
         self.settled = {"right": 0, "wrong": 0}
@@ -235,6 +237,9 @@ class Coach:
                           f"{learned['known']} known words"
                           f"{', shouted' if shouting else ''}")
         self.said.append(out)
+        # PRE, the first of the three factors: these words were used. Whether
+        # they are ever learned depends on what the world does next.
+        self.traces.mark(text, step)
         return out
 
     # ── settling: was there actually a ghost? ───────────────────────────────
@@ -248,6 +253,7 @@ class Coach:
         a great deal.
         """
         self._steps += 1
+        self.traces.decay_to(step)               # POST: eligibility fades with the clock
         if ghost_near:
             self._near_steps += 1
         base, out = self.base_rate, []
@@ -279,30 +285,58 @@ class Coach:
         return {"credibility": round(self.credibility, 3),
                 "base_rate": round(self.base_rate, 3),
                 "warnings": dict(self.settled), "messages": len(self.said),
-                "pending": len(self.pending), "vocabulary": len(self.lex)}
+                "pending": len(self.pending), "vocabulary": len(self.lex),
+                "eligible": len(self.traces)}
 
-    # ── the other labels the world hands out for free ───────────────────────
-    def outcome(self, kind: str, *, within: int = 12, step: int = 0) -> int:
-        """Something happened to him; the recent messages get labelled by it.
+    # ── the third factor: the world moves a neuromodulator ─────────────────
+    #
+    # The event kinds are `world.EVENTS`, so a different world raises the same
+    # four and this works there untouched. The pac names are accepted as
+    # aliases because that is what its call sites already say.
+    NEUROMOD = {
+        HURT:      (-0.6, 0.85, 0.35),   # it landed, it was loud, something was out there
+        REWARD:    (0.8, 0.7, 0.0),
+        CLEAR:     (0.7, 0.6, 0.0),
+        FAIL:      (-0.4, 0.4, 0.0),     # deflation, not pain: nothing hurt him
+        "caught":  (-0.6, 0.85, 0.35),
+        "cleared": (0.7, 0.6, 0.0),
+        "failed":  (-0.4, 0.4, 0.0),
+    }
+    MIN_CREDIT = 0.08          # below this a word is not being taught, it is being nudged by noise
 
-        `kind` is "caught", "cleared" or "failed". Only messages inside the
-        last `within` steps are taught, and weakly: a level cleared two hundred
-        steps after somebody said something is not that somebody's doing, and
-        treating it as though it were is how a lexicon fills up with
-        superstition.
+    def outcome(self, kind: str, *, step: int = 0, magnitude: float = 1.0) -> int:
+        """Something happened to him; whatever is still eligible gets the credit.
 
-        This is the half GrillCheese could not have. There, `train_step` needed
-        a caller to supply `target_emotion`. Here the maze supplies it.
+        THIS IS THE THIRD FACTOR ARRIVING. `hear` supplied PRE (the words were
+        used), `Eligibility` carries POST (they are still in play), and this is
+        MOD — a neuromodulator actually moved, and by how much. The product of
+        the three is the learning rate for each message, which is what
+        reward-modulated plasticity is.
+
+        `magnitude` is meant to be a real measurement rather than a constant:
+        the caller passes how far the chemistry moved, so a catch that took
+        dopamine down 0.30 teaches harder than one that grazed him. Defaulting
+        it to 1.0 keeps old call sites working and is the only part of this
+        that is still a stand-in.
+
+        WHAT THIS REPLACED was a fixed 12-step window at a flat 0.35: a
+        sentence one step before a death and one twelve steps before got
+        identical credit, one thirteen steps before got none, and the size of
+        what happened did not enter at all. A cliff and a constant. This is
+        graded, has no edge, and scales with the event.
         """
-        target = {"caught":  (-0.6, 0.85, 0.35),
-                  "cleared": (0.7, 0.6, 0.0),
-                  "failed":  (-0.4, 0.4, 0.0)}.get(kind)
+        target = self.NEUROMOD.get(kind)
         if target is None:
             return 0
         v, a, t = target
+        self.traces.decay_to(step)
+        mod = _clip(abs(float(magnitude)), 0.0, 1.0)
+        if mod <= 0.0:
+            return 0
         taught = 0
-        for m in self.said:
-            if step - m.get("at", step) > within:
-                continue
-            taught += self.lex.learn(m["text"], valence=v, arousal=a, threat=t, weight=0.35)
+        for text, trace in self.traces.active():
+            weight = trace * mod
+            if weight < self.MIN_CREDIT:
+                continue                          # too faint to be evidence about anything
+            taught += self.lex.learn(text, valence=v, arousal=a, threat=t, weight=weight)
         return taught
