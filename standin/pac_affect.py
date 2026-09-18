@@ -186,9 +186,21 @@ class AffectMixin:
                                       history=said_before, grounded=backed)
         out = ordered[0]
         self._said_back = (said_before + [out])[-self.MAX_SAID_BACK:]
-        self._t("said_back", says=got["kind"], text=out[:160],
+        # WHY, not just WHETHER. `verbalized: false` on its own covers four
+        # different events — the model said nothing, it said the same thing
+        # twice, the guard refused it, or the guard kept it and the BODY still
+        # preferred the sanctioned line. Only the last of those is the filter
+        # doing anything, so a trace that cannot tell them apart cannot show
+        # the one thing this wiring is for.
+        why = ("spoke" if out == text else
+               "empty" if not text else
+               "repeat" if text in said_before else
+               "refused" if not kept else
+               "outranked")
+        self._t("said_back", says=got["kind"], text=out[:160], why=why,
                 verbalized=bool(out == text), refused=(text[:160] if text and not kept else None),
-                spoke_safe=bool(out == host), raw=flat[:200])
+                spoke_safe=bool(out == host), raw=flat[:200],
+                scored=detail.get("scored"), gains=detail.get("gains"))
         return out
 
 
