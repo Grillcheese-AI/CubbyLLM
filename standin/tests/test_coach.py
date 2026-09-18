@@ -111,19 +111,45 @@ def test_being_wrong_costs_it():
     assert c.settled["wrong"] == 1 and c.credibility < before
 
 
-def test_standing_is_scored_against_the_base_rate():
-    """In a maze where a ghost is always near, being right is worth almost
-    nothing — otherwise the way to farm trust is to shout every step."""
+def _drive(c, steps: int, near_every: int, warn_every: int):
+    """Run a maze where a ghost is near every `near_every` steps, with a
+    warning every `warn_every` steps."""
+    for s in range(1, steps + 1):
+        if warn_every and s % warn_every == 0:
+            c.hear("ghost!", step=s)
+        c.tick(s, ghost_near=(s % near_every == 0))
+
+
+def test_a_random_shouter_cannot_farm_standing_by_volume():
+    """The regression test for a bug that was MEASURED, not argued.
+
+    In `docs/coach_ab.md` the `noise` arm — warnings fired at random moments
+    about nothing — finished at 0.97 against a truthful oracle's 0.99, because
+    standing was a random walk with a per-warning gain and ~100 warnings
+    saturate it whatever their accuracy. Here a shouter fires constantly in a
+    maze where ghosts are near most of the time, so he is right most of the
+    time and has told nobody anything."""
+    c = Coach()
+    _drive(c, steps=150, near_every=1, warn_every=2)
+    assert c.settled["right"] > 40, "he is right constantly, which is the point"
+    assert c.credibility < 0.15, "and it must buy him almost nothing"
+
+
+def test_being_right_where_ghosts_are_rare_is_what_earns_standing():
+    """Same hit rate, different worlds. The advantage over chance is the whole
+    measure, so a warning is worth what it could not have been guessed."""
     crowded, quiet = Coach(), Coach()
-    for s in range(60):                              # establish the two base rates
-        crowded.tick(s, ghost_near=True)
-        quiet.tick(s, ghost_near=(s % 20 == 0))
-    c0, q0 = crowded.credibility, quiet.credibility
-    crowded.hear("ghost!", step=100)
-    quiet.hear("ghost!", step=100)
-    crowded.tick(101, ghost_near=True)
-    quiet.tick(101, ghost_near=True)
-    assert (quiet.credibility - q0) > (crowded.credibility - c0) * 3
+    _drive(crowded, steps=150, near_every=1, warn_every=3)   # always near
+    _drive(quiet, steps=150, near_every=7, warn_every=7)     # near, and warned for
+    assert quiet.credibility > crowded.credibility * 2
+
+
+def test_a_long_honest_record_beats_a_short_one():
+    """Shrinkage toward the prior: one lucky call is not a reputation."""
+    short, long_ = Coach(), Coach()
+    _drive(short, steps=14, near_every=7, warn_every=7)
+    _drive(long_, steps=210, near_every=7, warn_every=7)
+    assert long_.credibility > short.credibility
 
 
 def test_a_discredited_voice_stops_being_heard():

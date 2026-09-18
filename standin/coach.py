@@ -135,7 +135,8 @@ class Coach:
     RATE = 0.30                  # how fast standing moves, before the base rate scales it
 
     def __init__(self, credibility: float | None = None) -> None:
-        self.credibility = self.STRANGER if credibility is None else _clip(credibility, 0, 1)
+        # what an unknown voice is worth, or a reputation carried in from before
+        self.prior = self.STRANGER if credibility is None else _clip(credibility, 0, 1)
         self.afferent = Afferent()
         self.lex = AffectLexicon()               # this player's words, learned from outcomes
         self.traces = Eligibility()              # and how recently each thing was said
@@ -162,6 +163,49 @@ class Coach:
     def base_rate(self) -> float:
         """P(a ghost is near) with nobody saying anything, smoothed."""
         return (self._near_steps + self.PRIOR_NEAR) / (self._steps + self.PRIOR_N)
+
+    @property
+    def credibility(self) -> float:
+        """How much better than chance this voice has been. A RATE, not a walk.
+
+        THE BUG THIS REPLACES was measured rather than argued. In `docs/
+        coach_ab.md` the `noise` arm — warnings fired at random moments, about
+        nothing — finished at **0.97**, against the truthful oracle's 0.99.
+        Standing was a random walk with a per-warning gain, so ~100 warnings
+        saturated it whatever their accuracy, and "trust with a referent" did
+        not survive a chatty player. The referent was there; the arithmetic
+        threw it away.
+
+        A rate cannot be farmed by volume, because volume divides out:
+
+            hit       = right / (right + wrong)
+            advantage = hit - base_rate
+
+        The advantage is what is left after chance. A warner whose hit rate
+        only matches the background scores 0 however often he shouts, which is
+        the correct verdict on a random shouter in a maze full of ghosts: he
+        is right constantly and has told you nothing.
+
+        RAW DIFFERENCE, NOT NORMALISED BY HEADROOM, and the first version got
+        this wrong. Dividing by `(1 - base)` rescales every world to the same
+        ceiling, so in a maze where a ghost is near 97% of the time a perfect
+        record still scored 1.0 — the tiny headroom the smoothing prior leaves
+        behind gets inflated back to full marks. A test caught it. The raw
+        difference says the true thing instead: where a warning can barely
+        carry information, no amount of being right earns much, and the most
+        standing obtainable in a world is bounded by how much a warning is
+        worth there. That is a property of the maze, not a defect of the
+        measure.
+
+        Shrunk toward the prior by `PRIOR_N` warnings' worth, so one lucky
+        first call does not buy a reputation and a long record can.
+        """
+        r, w = self.settled["right"], self.settled["wrong"]
+        n = r + w
+        if n == 0:
+            return self.prior
+        advantage = _clip(r / n - self.base_rate, 0.0, 1.0)
+        return _clip((advantage * n + self.prior * self.PRIOR_N) / (n + self.PRIOR_N), 0.0, 1.0)
 
     # ── hearing: anything at all ────────────────────────────────────────────
     def hear(self, text: str, *, step: int = 0, need: float = 0.0) -> dict:
@@ -256,12 +300,11 @@ class Coach:
         self.traces.decay_to(step)               # POST: eligibility fades with the clock
         if ghost_near:
             self._near_steps += 1
-        base, out = self.base_rate, []
+        out = []
         for p in self.pending:
             if ghost_near:
                 p["settled"] = True
                 self.settled["right"] += 1
-                self.credibility = _clip(self.credibility + self.RATE * (1 - base), 0, 1)
                 # THE WORLD JUST LABELLED THIS MESSAGE. GrillCheese's amygdala
                 # had to be handed `target_emotion` by a caller; here a ghost
                 # turned up, so the words that announced it were right and move
@@ -271,7 +314,6 @@ class Coach:
             elif step - p["at"] >= self.WARN_WINDOW:
                 p["settled"] = True
                 self.settled["wrong"] += 1
-                self.credibility = _clip(self.credibility - self.RATE * max(base, 0.15), 0, 1)
                 # and a false alarm moves them back, which is how a word that
                 # only LOOKED like a warning stops being one
                 self.lex.learn(p["text"], valence=0.0, arousal=0.3, threat=0.0, weight=0.6)

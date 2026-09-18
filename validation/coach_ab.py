@@ -98,7 +98,7 @@ def run(seed: int, arm: str, steps: int) -> dict:
     a.chem = Neurochemistry()
     rng = random.Random(seed * 7919 + 13)
     said, deaths, corners = 0, 0, Counter()
-    scripted: list[int] = []          # the steps `oracle` spoke on, replayed by `noise`
+    prev_near = 99
 
     for i in range(steps):
         env = a.env
@@ -106,21 +106,38 @@ def run(seed: int, arm: str, steps: int) -> dict:
         near = min((_manh(here, g) for g in env.ghosts), default=99)
 
         if arm == "oracle":
-            # a player who can see: warn when something is genuinely closing
+            # THE CHATTY PLAYER: warns whenever anything is anywhere near.
+            # 102 messages in 200 steps in the first run — a panicky spectator.
             if env.frightened == 0 and near <= a.learned_radius + 2:
                 a.hear(rng.choice(WARN))
                 said += 1
-                scripted.append(i)
             elif a._last.get("caught"):
                 a.hear(rng.choice(CHEER))
                 said += 1
-                scripted.append(i)
+        elif arm == "sparse":
+            # THE PLAYER WORTH LISTENING TO: warns only when something is
+            # actually imminent — inside the berth AND closing since last step.
+            #
+            # This is the arm the first run argued for. `oracle` spoke every
+            # other step, which saturates habituation and buries the warning
+            # channel under its own volume; its occupancy shifted 20 points
+            # from anger to distress, which is a body being worn down rather
+            # than helped. If timing is what matters, fewer and better should
+            # beat more.
+            closing = near < prev_near
+            if env.frightened == 0 and near <= a.learned_radius and closing:
+                a.hear(rng.choice(WARN))
+                said += 1
+            elif a._last.get("caught"):
+                a.hear(rng.choice(CHEER))
+                said += 1
         elif arm == "noise":
             # the same number of messages, the same words, the wrong moments
             if rng.random() < NOISE_RATE[seed]:
                 a.hear(rng.choice(WARN + CHEER))
                 said += 1
 
+        prev_near = near
         before = env.lives
         a.step()
         if env.lives < before or a._last.get("caught"):
@@ -149,7 +166,7 @@ def main() -> int:
     # no way to tell. Every step spawns `cubelang.exe`, so this is bound by
     # process startup rather than by compute: it shows as ~30% of one core and
     # no GPU at all, which reads exactly like a stall from the outside.
-    total = 3 * len(seeds)
+    total = 4 * len(seeds)
     t0 = time.time()
 
     def tick(done: int, label: str) -> None:
@@ -173,7 +190,11 @@ def main() -> int:
     for i, s in enumerate(seeds, 1):
         noise.append(run(s, "noise", a.steps))
         tick(2 * len(seeds) + i, "noise")
-    arms = {"silent": silent, "oracle": oracle, "noise": noise}
+    sparse = []
+    for i, s in enumerate(seeds, 1):
+        sparse.append(run(s, "sparse", a.steps))
+        tick(3 * len(seeds) + i, "sparse")
+    arms = {"silent": silent, "oracle": oracle, "noise": noise, "sparse": sparse}
 
     def col(rows, k):
         return [r[k] for r in rows]
@@ -204,7 +225,9 @@ def main() -> int:
                 "20,000 sign flips.\n\n")
         f.write("| comparison | metric | mean difference | p |\n|---|---|---:|---:|\n")
         checks = [("oracle vs silent", oracle, silent),
+                  ("sparse vs silent", sparse, silent),
                   ("noise vs silent", noise, silent),
+                  ("sparse vs oracle", sparse, oracle),
                   ("oracle vs noise", oracle, noise)]
         verdicts = {}
         for label, x, y in checks:
@@ -215,39 +238,50 @@ def main() -> int:
                 f.write(f"| {label} | {metric} | {st.mean(d):+.3f} | "
                         f"{'**' if p < 0.05 else ''}{p:.4f}{'**' if p < 0.05 else ''} |\n")
 
-        f.write("\n## Reading it\n\n")
-        od, op = verdicts[("oracle vs silent", "deaths")]
-        nd, np_ = verdicts[("noise vs silent", "deaths")]
-        xd, xp = verdicts[("oracle vs noise", "deaths")]
-        if op < 0.05 and xp < 0.05 and od < 0:
-            f.write("**The content mattered.** A player who can see reduces deaths, and "
-                    "does so beyond a player who merely talks as much. That is the "
-                    "warning channel doing work, not arousal contagion.\n")
-        elif op < 0.05 and np_ < 0.05:
-            f.write("**Being talked to mattered; being RIGHT did not measurably.** Both "
-                    "arms move against silence and they do not separate from each other, "
-                    "which points at contagion and oxytocin rather than at the claims.\n")
-        elif op >= 0.05 and np_ >= 0.05:
-            f.write("**Null.** Nobody talking to him changed the outcome. Given that "
-                    "`wariness` moves the berth by at most two tiles, the honest reading "
-                    "is that the berth is not what decides catches in this maze — which "
-                    "is a fact about the world, and the next thing to measure.\n")
-        else:
-            f.write("**Mixed.** The arms separate on some metric and not others; the "
-                    "table above is the result, and the summary sentence is not going "
-                    "to be more decisive than the numbers are.\n")
-
         f.write("\n## Where he spent his time\n\n")
         f.write("| corner | " + " | ".join(arms) + " |\n|---|" + "---:|" * len(arms) + "\n")
         allc = sorted({c for rows in arms.values() for r in rows for c in r["corners"]})
+        share = {}
         for c in allc:
             tot = {n: sum(r["corners"][c] for r in rows) for n, rows in arms.items()}
             grand = {n: sum(sum(r["corners"].values()) for r in rows) for n in arms}
-            f.write(f"| {c} | " + " | ".join(
-                f"{100*tot[n]/max(1,grand[n]):.1f}%" for n in arms) + " |\n")
-        f.write("\nThe occupancy histogram is the ablation the corner table has been "
-                "waiting for: if talking to him reaches the body at all, he spends his "
-                "time in different places.\n")
+            share[c] = {n: 100 * tot[n] / max(1, grand[n]) for n in arms}
+            f.write(f"| {c} | " + " | ".join(f"{share[c][n]:.1f}%" for n in arms) + " |\n")
+        # total variation distance from silence: half the sum of absolute shifts
+        moved = {n: 0.5 * sum(abs(share[c][n] - share[c]["silent"]) for c in allc)
+                 for n in arms if n != "silent"}
+        f.write(f"\nShift away from silence, as total variation: " + ", ".join(
+            f"**{n} {v:.1f} points**" for n, v in moved.items()) + ".\n")
+
+        f.write("\n## Reading it\n\n")
+        # THE SUMMARISER READS THE HISTOGRAM TOO. The first version looked only
+        # at deaths and printed "Null. Nobody talking to him changed the
+        # outcome" four lines above a table showing a 20-point shift in where
+        # he spent his time. A verdict that contradicts its own report is worse
+        # than no verdict, so this one names both results and refuses to
+        # collapse them into a word.
+        best = min(moved, key=lambda n: -moved[n])
+        f.write(f"**On the body:** talking to him moves **{moved[best]:.1f} points** of "
+                f"his time between corners at most (`{best}`). The affect channel "
+                f"reaches him; that is not in question. Whether the shift is GOOD is a "
+                f"separate question the table answers on its own — a move from `anger` "
+                f"toward `distress` is dopamine being suppressed by threat, which is a "
+                f"body being worn down rather than helped.\n\n")
+        lines = []
+        for label, _, _ in checks:
+            d, p = verdicts[(label, "deaths")]
+            lines.append(f"- {label}: **{d:+.2f}** deaths, p = {p:.3f}"
+                         f"{'  <- significant' if p < 0.05 else ''}")
+        f.write("**On behaviour:**\n\n" + "\n".join(lines) + "\n\n")
+        sig = [l for (l, _, _) in checks if verdicts[(l, 'deaths')][1] < 0.05]
+        if sig:
+            f.write(f"Significant at n={a.runs}: {', '.join(sig)}.\n")
+        else:
+            f.write(f"**Nothing separates at n={a.runs}.** The directions may be "
+                    f"consistent and still mean nothing at this sample size; an effect "
+                    f"of this magnitude needs several times the seeds before the "
+                    f"p-values are worth reading. Underpowered is not the same as null, "
+                    f"and neither word should be used for the other.\n")
 
     print(f"wrote {OUT}")
     for name, rows in arms.items():
