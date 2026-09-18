@@ -57,13 +57,43 @@ def test_being_warned_by_a_credible_voice_widens_the_berth():
     assert a.danger_radius > before
 
 
-def test_wariness_is_bounded_and_decays_back():
+def test_wariness_is_bounded():
     a = _agent()
     _alarm(a, frames=40)
-    assert a.wariness <= pacman.CubbyGhost.MAX_WARY
+    assert 0 < a.wariness <= pacman.CubbyGhost.MAX_WARY
+
+
+def test_a_startle_wears_off():
+    """The FAST axis. A brief alarm is noradrenaline, which decays in a few
+    frames, so a moment's fright does not follow him around."""
+    a = _agent()
+    _alarm(a, frames=5)
+    assert a.wariness > 0
+    for _ in range(40):
+        a.chem.update()
+    assert a.wariness == 0
+
+
+def test_a_long_fright_stays_with_him():
+    """The SLOW axis, and this test replaced one that asserted the opposite.
+
+    The old version alarmed him for 40 frames, rested him for 80, and demanded
+    wariness back at 0 — written when `caution` was noradrenaline only and
+    everything about it was fast. Now cortisol carries the other half, and
+    cortisol is a deliberately sluggish EMA: 40 frames of real threat takes it
+    from 0.14 to about 0.44, and 80 quiet frames only bring it back to 0.20.
+
+    So he keeps a tile of extra berth long after the ghost has gone, and that
+    is not a leak — it is what the slow axis is FOR. A body that forgets a bad
+    stretch the moment it ends has no stress response, it has a startle reflex.
+    What must never happen is the berth LEARNING from it, and `learned_radius`
+    is what guards that."""
+    a = _agent()
+    _alarm(a, frames=40)
     for _ in range(80):
         a.chem.update()
-    assert a.wariness == 0, "caution is transient; it never becomes what he knows"
+    assert a.wariness > 0, "a sustained fright outlasts the thing that caused it"
+    assert a.learned_radius == 1, "but it never becomes what he knows"
 
 
 def test_any_source_of_threat_does_it_not_just_the_coach():

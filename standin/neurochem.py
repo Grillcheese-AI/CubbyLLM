@@ -705,7 +705,21 @@ class Neurochemistry:
         hurt, want = self.pain, self.craving
         return {
             "creativity": _clip(da - c * 0.5 + 0.3 - hurt * 0.3, 0, 1),
-            "caution": _clip(c * 1.5 + hurt * 0.4, 0, 1),
+            # CAUTION IS FAST AND SLOW, and it used to be only slow. It read
+            # `c * 1.5 + hurt * 0.4` — cortisol, which is a deliberately
+            # sluggish EMA of arousal, so a startle did not move it at all. A
+            # body that only gets careful after minutes of sustained stress is
+            # missing the part that matters: you widen your guard the instant
+            # something moves, and that is noradrenaline, not cortisol.
+            #
+            # Found by moving `pac_nav.wariness` off a raw hormone read and
+            # onto this knob — the knob is where hormones become world-agnostic
+            # gains, and a second place reading a raw hormone is a second
+            # opinion about what alarm means. The berth stopped responding to a
+            # warning, and the right fix was not to put the hormone back in the
+            # world: the global knob was wrong for everybody, the voice
+            # included.
+            "caution": _clip(c * 1.2 + ne * 0.5 + hurt * 0.4, 0, 1),
             "warmth": _clip(ot * 1.2 + sht * 0.3 - hurt * 0.5, 0, 1),
             "energy": _clip(ne * 1.3 + da * 0.2, 0, 1),
             "stability": _clip(sht * 1.2 - c * 0.3 - hurt * 0.4, 0, 1),

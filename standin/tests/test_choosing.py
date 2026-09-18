@@ -86,6 +86,33 @@ def test_alarm_changes_which_option_wins():
     assert scared.key == "safe", "an alarmed one pays for the risk"
 
 
+def test_the_unfamiliar_turns_from_draw_to_deterrent():
+    """Novelty is the one term whose SIGN the state may set, and this is why.
+
+    `value` and `risk` are unambiguous — a state that could flip them could
+    talk a body into the fire. The unfamiliar is genuinely not like that: safe
+    and curious, a new corridor is worth something; frightened, the same
+    corridor is worth avoiding, and the pull toward the known IS the state
+    rather than a distortion of it.
+
+    This is also the behaviour `CubbyMan._pick` used to get from
+    `cortisol >= 0.35` flipping a sort — one hormone, one hand-placed cliff.
+    Graded and signed says the same thing with no threshold, and the reversal
+    deepens with alarm instead of snapping."""
+    fresh, worn = Option("fresh", novelty=1.0), Option("worn", novelty=1 / 6)
+    calm = gains(_rested().modulation())["novelty"]
+    assert calm > 0, "a rested body is drawn to the new"
+    assert [o.key for o, _ in weigh([fresh, worn], _rested().modulation())][0] == "fresh"
+
+    last = calm
+    for frames in (5, 15, 40):
+        g = gains(_alarmed(frames).modulation())["novelty"]
+        assert g < last, "and the aversion deepens rather than snapping"
+        last = g
+    assert last < 0, "a frightened body is pushed away from it"
+    assert [o.key for o, _ in weigh([fresh, worn], _alarmed(15).modulation())][0] == "worn"
+
+
 def test_a_pleased_body_reaches_for_the_unfamiliar():
     calm = gains(_rested().modulation())
     happy = gains(_delighted().modulation())

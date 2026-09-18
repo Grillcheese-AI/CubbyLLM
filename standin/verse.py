@@ -271,14 +271,36 @@ class CubbyMan:
         return new
 
     def _pick(self, exits: dict[str, str]) -> str:
-        """Curiosity policy: prefer the least-visited destination; a stressed
-        state (cortisol ≥ 0.35) flips to preferring known ground. The pick is
-        only a PREFERENCE — the VM's ASK still guards that the chosen
-        direction was actually offered."""
-        prefer_known = self.chem is not None and self.chem.cortisol >= 0.35
-        ranked = sorted(exits, key=lambda d: (self.visits.get(exits[d], 0), self.rng.random()),
-                        reverse=prefer_known)
-        return ranked[0]
+        """Curiosity, through the affect filter. The pick is only a PREFERENCE
+        — the VM's ASK still guards that the chosen direction was offered.
+
+        THIS IS WHERE EVERY WORLD'S DISCRETIONARY CHOICE PASSES, which is why
+        the filter goes here and not in a subclass. ToyVerse, the maze, and
+        anything written later all inherit it, and none of them has to know
+        that a body is involved.
+
+        WHAT IT REPLACES: `prefer_known = chem.cortisol >= 0.35`, which flipped
+        the sort. One hormone, one hand-placed cliff, a binary answer to a
+        graded question — the same shape as the `fear`-fitted danger radius
+        this project already threw out for being invented rather than measured.
+        The behaviour it reached for is real (frightened animals prefer known
+        ground) and survives: `novelty` is the one term the state may push
+        negative, so a calm body is drawn to the unvisited and an alarmed one
+        is pushed away from it. Graded, from all seven knobs, with no threshold
+        anywhere.
+
+        `visits` is turned into novelty as `1 / (1 + visits)`: unseen is 1.0,
+        seen once is 0.5. The world supplies the number; the body supplies what
+        it is worth."""
+        if self.chem is None:                            # no body: plain curiosity
+            return sorted(exits, key=lambda d: (self.visits.get(exits[d], 0),
+                                                self.rng.random()))[0]
+        import choosing
+        opts = [choosing.Option(d, novelty=1.0 / (1.0 + self.visits.get(exits[d], 0)))
+                for d in exits]
+        self.rng.shuffle(opts)                           # ties break freely, as they did before
+        winner, _ = choosing.choose(opts, self.chem.modulation())
+        return winner.key
 
     def _try_the_wall(self, src: str, dirs: list[str]) -> str | None:
         """Try a direction the program did NOT offer, and check the VM's

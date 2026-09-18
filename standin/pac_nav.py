@@ -98,7 +98,7 @@ class NavMixin:
             return 1
         return max(1, min(self.MAX_DANGER_RADIUS, max(self.caught_at)))
 
-    WARY_FROM = 0.30            # noradrenaline this far over quiescent buys a tile
+    WARY_FROM = 0.10            # caution this far over its resting value buys a tile
     MAX_WARY = 2
 
     @property
@@ -117,11 +117,18 @@ class NavMixin:
         and finding it while building an experiment ON this path is the reason
         the experiment was worth building before running.
 
-        Driven by NORADRENALINE rather than by the coach, deliberately. A
-        warning is not special: a ghost he saw, a catch he is still carrying
-        and a person shouting all raise the same signal, and all of them
-        should make him keep more room. Wiring the coach straight to the berth
-        would have made this one feature's demo instead of a mechanism.
+        Driven by the CAUTION knob, not by the coach and no longer by raw
+        noradrenaline. A warning is not special: a ghost he saw, a catch he is
+        still carrying and a person shouting all raise the same signal, and all
+        of them should make him keep more room.
+
+        The knob rather than the hormone, because `modulation()` is the one
+        place the hormones are turned into world-agnostic gains, and a second
+        place that reads a raw hormone is a second opinion about what alarm
+        means. `choosing` weighs PREFERENCES with the same knob; this sets
+        where a CONSTRAINT trips. Those are different jobs — a filter may not
+        talk a body out of fleeing — but they should not disagree about how
+        alarmed it is.
 
         Transient by construction. NE decays back to quiescent within a few
         frames, so being told about a ghost buys caution for about as long as
@@ -130,7 +137,8 @@ class NavMixin:
         changes that."""
         if self.chem is None:
             return 0
-        over = self.chem.noradrenaline - self.chem.quiescent()["NE"]
+        import choosing
+        over = self.chem.modulation()["caution"] - choosing.neutral()["caution"]
         return 0 if over <= 0 else min(self.MAX_WARY, int(round(over / self.WARY_FROM)))
 
     @property

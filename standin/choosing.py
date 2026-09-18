@@ -95,8 +95,25 @@ class Option:
 
 # How far a knob can bend its term, as a multiplier on the world's own number.
 # A fully alarmed body triples the weight it puts on risk; it never reverses it.
-SPAN = {"risk": 2.0, "novelty": 1.6, "cost": 1.6, "social": 1.6}
+SPAN = {"risk": 2.0, "novelty": 4.0, "cost": 1.6, "social": 1.6}
 FLOOR = 0.2          # no term may be turned off, only turned down
+
+# NOVELTY IS THE ONE TERM WHOSE SIGN THE STATE MAY SET, and that is a claim
+# worth making explicitly rather than smuggling in as a wide span.
+#
+# `value`, `risk`, `cost` and `social` are unambiguous: more of each is better,
+# worse, dearer, more sociable, whatever the body is doing. A state that could
+# flip them could talk itself into the fire.
+#
+# The unfamiliar is genuinely not like that. Safe and curious, a new corridor
+# is worth something; frightened, the same corridor is worth avoiding, and the
+# pull toward the known IS the state rather than a distortion of it. Neophobia
+# under threat is real and it is the behaviour `CubbyMan._pick` was already
+# reaching for with `cortisol >= 0.35` — a hand-placed cliff on one hormone,
+# the same shape as the `fear`-fitted danger radius this project already threw
+# out for being invented. Graded and signed says the same thing without the
+# threshold, and says it from all seven knobs instead of one.
+SIGNED = ("novelty",)
 BASE = {"value": 1.0, "risk": 1.0, "novelty": 0.35, "cost": 0.6, "social": 0.3}
 
 # which knob drives which term
@@ -145,8 +162,8 @@ def gains(mod: dict) -> dict:
         # That is a saturation artefact wearing the costume of a finding. It
         # is the same rule as risk always subtracting: the state sets how
         # loudly one of the world's numbers speaks, never whether it speaks.
-        out[term] = _clip(BASE[term] * (1.0 + SPAN[term] * dev),
-                          BASE[term] * FLOOR, 4.0)
+        lo = -4.0 if term in SIGNED else BASE[term] * FLOOR
+        out[term] = _clip(BASE[term] * (1.0 + SPAN[term] * dev), lo, 4.0)
     return out
 
 
