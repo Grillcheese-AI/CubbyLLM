@@ -50,8 +50,26 @@ class Neurochemistry:
         # drifting, with everything that read the hormones reading a transient.
         # (Caught by the compass test: six frames of pure threat came out
         # `surprise` instead of fear, because serotonin had not yet fallen to
-        # where it lives.) The very first instance is the probe that computes
-        # quiescent, and it starts at `_resting` and converges regardless.
+        # where it lives.)
+        #
+        # AND THE BASELINE IS COMPUTED HERE IF NOBODY ELSE HAS DONE IT, which
+        # this used to leave to luck. It read `self._QUIESCENT or self._resting`
+        # and relied on the first instance in a process being the probe — true
+        # only when something calls `quiescent()` before the first real agent
+        # is built. `CubbyChat.__init__` does not, so the first Cubby in a
+        # fresh process started at the DECLARED levels and every later one
+        # started settled: caution 0.255 against 0.130, a body nearly twice as
+        # guarded as its own resting state, for the length of the first
+        # conversation. Harmless while nothing read the knobs; not harmless now
+        # that `choosing` sets a speaking threshold from them, which is how it
+        # was found. `_SETTLING` keeps the probe's own construction out of the
+        # recursion.
+        if Neurochemistry._QUIESCENT is None and not Neurochemistry._SETTLING:
+            Neurochemistry._SETTLING = True
+            try:
+                Neurochemistry.quiescent()
+            finally:
+                Neurochemistry._SETTLING = False
         start = self._QUIESCENT or self._resting
         self.dopamine = start["DA"]
         self.serotonin = start["5HT"]
@@ -390,6 +408,7 @@ class Neurochemistry:
              "OT": (0.05, 0.85), "C": (0.05, 0.80)}
 
     _QUIESCENT: dict | None = None
+    _SETTLING = False        # the probe is building the baseline; do not re-enter
 
     @classmethod
     def quiescent(cls) -> dict:
