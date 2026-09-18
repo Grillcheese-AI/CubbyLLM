@@ -162,33 +162,55 @@ _CONSOLE_PANEL = r"""
 # `say_to_coach()`: in the maze window there is nothing for routing to work
 # out, because everything typed there is somebody talking to him.
 #
-# It sits under the console panel and shows what he earned for the words —
-# `credibility` is the number the whole channel turns on, and a channel whose
-# standing you cannot see is just a text box.
+# It shows what he earned for the words — `credibility` is the number the
+# whole channel turns on, and a channel whose standing you cannot see is just
+# a text box.
+#
+# BOTTOM CENTRE, and that is the only lane the page leaves free. It went to
+# the bottom LEFT first and the owner lost the thing he was testing for:
+# *"the chat box is hiding the hormonas so I dont see any effect"*. `#hud` is
+# `top:16px;left:16px` with no height cap and `#neuro` — the dopamine and
+# cortisol bars — sits near its bottom, so the left column is occupied all
+# the way down. `#cubbycon` holds the right from 71vh, `#bigstage` the right
+# at mid-height, `#foot` and `#sndbox` the bottom left corner. The fold is
+# there so a box in the way of anything can be got out of the way without a
+# rebuild; it stays folded per browser.
 _COACH_PANEL = r"""
 <style>
-  #coachbox{position:fixed;left:14px;bottom:62px;z-index:60;width:min(30vw,380px);
-    background:rgba(8,12,20,.86);border:1px solid #2a3a55;border-radius:12px;
+  #coachbox{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;z-index:60;
+    width:min(40vw,460px);background:rgba(8,12,20,.86);border:1px solid #2a3a55;border-radius:12px;
     box-shadow:0 8px 40px rgba(0,0,0,.5);font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:#c9d1d9}
   #coachbox .hd{padding:6px 11px;border-bottom:1px solid #2a3a55;color:#8b949e;display:flex;gap:8px;align-items:baseline}
   #coachbox .hd b{color:#ffe66d}
-  #coachbox .hd span{margin-left:auto;font-size:11px;opacity:.85}
-  #coachlog{max-height:26vh;overflow-y:auto;padding:7px 11px;white-space:pre-wrap;word-break:break-word}
+  #coachbox .hd span.cred{margin-left:auto;font-size:11px;opacity:.85}
+  #coachfold{background:#22264a;color:#8b949e;border:1px solid #2a3a55;border-radius:5px;
+    padding:0 7px;cursor:pointer;font:inherit;line-height:1.4}
+  #coachlog{max-height:22vh;overflow-y:auto;padding:7px 11px;white-space:pre-wrap;word-break:break-word}
   #coachlog .you{color:#d29922}#coachlog .him{color:#7fe0ff}#coachlog .warn{color:#ff9f43;font-size:11px}
+  #coachlog .chem{color:#5fe6a0;font-size:11px}
   #coachrow{display:flex;border-top:1px solid #2a3a55}
   #coachinp{flex:1;background:transparent;border:0;color:#c9d1d9;padding:8px 11px;font:inherit;outline:none}
   #coachsend{background:#22264a;color:#ffe66d;border:0;border-left:1px solid #2a3a55;padding:0 13px;cursor:pointer;font:inherit}
+  #coachbox.folded #coachlog{display:none}
 </style>
 <div id="coachbox">
-  <div class="hd"><b>talk to cubby</b> he is playing<span id="coachcred">standing —</span></div>
+  <div class="hd"><b>talk to cubby</b> he is playing<span class="cred" id="coachcred">standing —</span>
+    <button id="coachfold" title="fold / unfold">–</button></div>
   <div id="coachlog"></div>
   <div id="coachrow"><input id="coachinp" placeholder="you can do it!!  /  careful of the ghost!" autocomplete="off">
     <button id="coachsend">say</button></div>
 </div>
 <script>
 (function(){
-  const log=document.getElementById('coachlog'), inp=document.getElementById('coachinp'),
-        btn=document.getElementById('coachsend'), cred=document.getElementById('coachcred');
+  const box=document.getElementById('coachbox'), log=document.getElementById('coachlog'),
+        inp=document.getElementById('coachinp'), btn=document.getElementById('coachsend'),
+        cred=document.getElementById('coachcred'), fold=document.getElementById('coachfold');
+  function paintFold(){ fold.textContent = box.classList.contains('folded') ? '+' : '–'; }
+  try{ if(localStorage.getItem('cb_coach_folded')==='1') box.classList.add('folded'); }catch(e){}
+  paintFold();
+  fold.onclick=function(){ box.classList.toggle('folded'); paintFold();
+    try{ localStorage.setItem('cb_coach_folded', box.classList.contains('folded')?'1':'0'); }catch(e){} };
+  const SHORT={dopamine:'DA',serotonin:'5-HT',cortisol:'cort',oxytocin:'OT',noradrenaline:'NE'};
   const esc=s=>{const d=document.createElement('div');d.textContent=String(s);return d.innerHTML;};
   function line(cls,who,text){ log.insertAdjacentHTML('beforeend',
       `<div class="${cls}">${esc(who)} ${esc(text)}</div>`); log.scrollTop=log.scrollHeight; }
@@ -202,6 +224,16 @@ _COACH_PANEL = r"""
       if(j.error){ line('warn','—',j.error); }
       else{
         line('him','cubby:',j.reply);
+        // WHAT THE WORDS DID TO HIM, in the box, because the page's #neuro
+        // panel draws only dopamine and cortisol and the hormone a kind word
+        // moves is oxytocin. Without this the channel works and looks inert.
+        const mv=j.moved||{}, keys=Object.keys(mv);
+        if(keys.length){
+          const s=keys.map(k=>`${SHORT[k]||k} ${mv[k]>0?'+':''}${mv[k].toFixed(3)}`).join('  ');
+          line('chem','body:',s+(j.emotion?`   → ${j.emotion}`:''));
+        } else {
+          line('chem','body:','nothing moved — habituated, or nothing in it for him');
+        }
         // A WARNING IS A CLAIM, and the maze is about to score it. Saying so
         // is what makes the number mean anything when it moves.
         if(j.heard==='warn') line('warn','·','a claim about the maze — it settles right or wrong in the next few steps');

@@ -98,6 +98,12 @@ def test_frontend_is_lifted_verbatim_and_every_patch_applies():
     # and the coach box, which posts PAST the router straight to the coach
     assert 'id="coachbox"' in html and "fetch('/pac/say'" in html
     assert 'id="coachcred"' in html, "the standing the channel turns on is on screen"
+    # it must not sit on the HUD: #hud is top-left with no height cap and
+    # #neuro (the hormone bars) is near its bottom, which is what the first
+    # version covered up
+    box = html.split("#coachbox{")[1].split("}")[0]
+    assert "left:50%" in box and "bottom:14px" in box, f"not in the left column: {box}"
+    assert "OT" in html.split('id="coachbox"')[1], "oxytocin is named in the delta line"
 
 
 def test_the_coach_box_does_not_hand_its_keystrokes_to_the_camera():
@@ -129,6 +135,32 @@ def test_saying_to_the_maze_window_reaches_the_coach_not_the_router():
     warn = live.say("careful, ghost behind you!")
     assert warn["heard"] == "warn" and man.coach.pending, "a claim the maze will settle"
     assert live.say("   ")["error"], "nothing said, nothing heard"
+
+
+def test_the_reply_carries_what_the_words_did_to_his_body():
+    """The page's #neuro panel draws dopamine and cortisol. A kind word moves
+    OXYTOCIN and a warning moves NORADRENALINE, so the two channels the coach
+    exists to drive were the two not on screen — the owner chatted with him
+    and saw nothing move. The delta comes back with the reply."""
+    from neurochem import Neurochemistry
+    from pacman import CubbyGhost, LivePac
+    man = CubbyGhost(seed=7, blank=True)
+    man.chem = Neurochemistry()
+    live = LivePac(man, min_interval=0.0)
+
+    cheer = live.say("lache pas, t'es capable!")
+    assert set(cheer["before"]) == set(LivePac._HORMONES), "all five, not the two on the page"
+    assert cheer["moved"].get("oxytocin", 0) > 0, "a kind word reaches the warmth axis"
+    assert cheer["after"]["oxytocin"] == pytest.approx(
+        cheer["before"]["oxytocin"] + cheer["moved"]["oxytocin"], abs=1e-3)
+
+    warn = live.say("careful, ghost behind you!")
+    assert warn["moved"].get("noradrenaline", 0) > 0, "a claim about the maze reaches alarm"
+
+    # a body-less agent must still answer rather than raise
+    blank = LivePac(CubbyGhost(seed=7, blank=True), min_interval=0.0)
+    blank.man.chem = None
+    assert blank.say("hello")["before"] == {}
 
 
 def test_plan_next_runs_over_his_own_facts_not_the_env():

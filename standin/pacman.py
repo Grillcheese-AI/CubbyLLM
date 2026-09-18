@@ -722,16 +722,45 @@ class LivePac:
 
         Under the step lock, so a reply cannot interleave with a move: `hear`
         runs the chemistry forward a few frames and `say_to_coach` reads the
-        body it leaves behind."""
+        body it leaves behind.
+
+        IT RETURNS THE HORMONES BEFORE AND AFTER, because the reply alone does
+        not show that anything happened. Owner, on the first version: *"I did
+        chat with it but the chat box is hiding the hormonas so I dont see any
+        effect."* The box was moved, and that was only half of it — the page's
+        `#neuro` panel draws DOPAMINE and CORTISOL, and the hormone a kind
+        word actually moves is OXYTOCIN, which is not on the page at all. A
+        warning moves noradrenaline. So the two channels the coach exists to
+        drive were both invisible while two others were on screen.
+
+        The delta is measured across `hear` only — the frames the words
+        caused — and not across the reply, so what comes back is the effect of
+        being spoken to rather than the effect of answering."""
         from identity import guess_lang
         text = " ".join(str(text or "").split())
         if not text:
             return {"error": "empty text"}
         with self._lock:
+            before = self._chem_slice()
             got = self.man.hear(text)
+            after = self._chem_slice()
             reply = self.man.say_to_coach(got, guess_lang(text))
+            moved = {h: round(after[h] - before[h], 3) for h in after
+                     if abs(after[h] - before[h]) >= 0.001}
             return {"said": text, "reply": reply, "heard": got["kind"],
-                    "why": got.get("why"), "coach": self.man.coach.state()}
+                    "why": got.get("why"), "coach": self.man.coach.state(),
+                    "before": before, "after": after, "moved": moved,
+                    "emotion": getattr(self.man.chem, "dominant_emotion", None)}
+
+    _HORMONES = ("dopamine", "serotonin", "cortisol", "oxytocin", "noradrenaline")
+
+    def _chem_slice(self) -> dict:
+        """The five serving hormones, or an empty dict when he has no body
+        yet (a blank agent before its brain is built)."""
+        chem = getattr(self.man, "chem", None)
+        if chem is None:
+            return {}
+        return {h: round(float(getattr(chem, h, 0.0)), 3) for h in self._HORMONES}
 
     def frontend(self) -> str | None:
         if self._html is None:
