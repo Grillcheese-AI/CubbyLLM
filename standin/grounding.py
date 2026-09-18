@@ -58,6 +58,15 @@ _ECHO = re.compile(r"own words|first person|short sentence|keeping every|propres
 
 
 
+# SECOND PERSON IS A DEFECT IN A THOUGHT AND THE POINT OF A REPLY, so the two
+# guards cannot share one pattern. `_ECHO` keeps both halves, for `grounded_ok`;
+# `_INSTRUCTION` is the half that is wrong in anybody's mouth.
+_INSTRUCTION = re.compile(r"own words|first person|short sentence|keeping every|propres mots|"
+                          r"première personne|phrase courte|\breword|\brephras|"
+                          r"here'?s the sentence|\bsure\b|\bcertainly\b|\bi understand you\b|"
+                          r"\bi see, so\b", re.I)
+
+
 def split_mood(line: str) -> tuple[str, str]:
     """'(at ease) Pellet 6/12, nice.' -> ('(at ease) ', 'Pellet 6/12, nice.'); no tag -> ('', line)."""
     m = _MOOD_TAG.match(line)
@@ -162,6 +171,60 @@ def grounded_ok(record_line: str, text: str, facts, learned: str = "", slack: in
     for thing, forms in _ENTITIES.items():
         if any(re.search(rf"\b{f}\b", said) for f in forms) and thing not in ground:
             return False                                 # a thing this step did not contain
+    return voice_ok(text, facts) and not is_model_guard(text) and not is_identity_reply(text, facts)
+
+
+
+def reply_ok(record_line: str, heard: str, text: str, facts, learned: str = "", slack: int = 5) -> bool:
+    """Is `text` something he could honestly say BACK TO A PERSON this step?
+
+    `grounded_ok`'s sibling. Every difference follows from one thing: a
+    thought is about the world, a reply is about the world AND the person who
+    just spoke. So
+
+      * the referent gains what they SAID. He may use their words back at
+        them without that counting as invention, which is most of what an
+        answer to a sentence consists of.
+      * SECOND PERSON IS ALLOWED. In a thought it means the model started
+        addressing the user instead of thinking, which is why `_ECHO` catches
+        it; in a reply it is the grammatical point, and a guard that forbids
+        it can only pass sentences that ignore the person standing there.
+      * a question back is allowed. Handing the turn over is what somebody
+        being talked TO does.
+      * one word is enough. "noted." is a complete reply; `grounded_ok`'s
+        two-word floor is there to catch a truncated thought.
+
+    WHAT DOES NOT RELAX IS INVENTION, and that is the half that matters.
+    Every figure and every cell or move name still has to appear in the
+    referent, both directions, so he cannot tell the player there are three
+    ghosts when there are two. A made-up reassurance is worse than a made-up
+    thought, because somebody acts on it."""
+    from identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
+    from forge import numbers
+    if not text or _INSTRUCTION.search(text) or has_non_latin(text):
+        return False
+    if _COPY.search(text):
+        return False                                     # the record read back, not an answer
+    n_words = len(text.split())
+    if n_words > 30 or n_words < 1:
+        return False
+    if longest_run(text, record_line) > MAX_RUN:
+        return False
+    # the referent: what he perceived, what he learned here, and what they
+    # just said to him. Quoting the player is not inventing.
+    ref = f"{record_line} {learned} {heard}"
+    if set(numbers(text)) - set(numbers(ref)):
+        return False                                     # a figure neither the step nor the player contained
+    if set(_NAME_RE.findall(text)) - set(_NAME_RE.findall(ref)):
+        return False                                     # a cell or move nobody mentioned
+    mine = _content_words(text)
+    if len(mine - _content_words(ref.lower())) > max(slack, int(0.7 * len(mine))):
+        return False
+    said = text.lower()
+    ground = ref.lower()
+    for thing, forms in _ENTITIES.items():
+        if any(re.search(rf"\b{f}\b", said) for f in forms) and thing not in ground:
+            return False                                 # a thing neither of them has brought up
     return voice_ok(text, facts) and not is_model_guard(text) and not is_identity_reply(text, facts)
 
 

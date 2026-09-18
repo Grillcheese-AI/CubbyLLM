@@ -102,6 +102,35 @@ def _clip(x: float, lo: float = 0.0, hi: float = 1.0) -> float:
     return max(lo, min(hi, x))
 
 
+def specifics(text: str) -> set[str]:
+    """Every specific `claim_surface` would count, lowercased.
+
+    THE UNIT OF GROUNDING, and it is deliberately the same function on both
+    sides. `claim_surface(reply, grounded=specifics(source))` then reads as
+    exactly what it means: the specifics the reply commits to that the source
+    does not contain. Handing `grounded` a bag of every word in the source
+    instead — which is what the first coach wiring did — makes risk zero by
+    construction and quietly retires the term.
+
+    ONE COMMITMENT COUNTS ONCE. The three patterns overlap on purpose
+    ("12000 years" is a number AND a quantity), so they are merged by span,
+    longest first. Counting it twice was the first version, and it made an
+    ordinary sentence with one date and three names read as maximally
+    reckless.
+    """
+    t = text or ""
+    if not t.strip():
+        return set()
+    spans: list[tuple[int, int, str]] = []
+    for rx in (_UNIT, _NUMBER, _PROPER):
+        for m in rx.finditer(t):
+            a, b = m.span()
+            if any(a < eb and ea < b for ea, eb, _ in spans):
+                continue
+            spans.append((a, b, m.group(0)))
+    return {s[2].lower() for s in spans}
+
+
 def claim_surface(text: str, grounded: set[str] | None = None) -> float:
     """0..1 — how far the sentence commits past what a host can check.
 
@@ -115,21 +144,10 @@ def claim_surface(text: str, grounded: set[str] | None = None) -> float:
     if not t.strip():
         return 0.0
     backed = {g.lower() for g in (grounded or ())}
-    # ONE COMMITMENT COUNTS ONCE. The three patterns overlap on purpose —
-    # "12000 years" is a number AND a quantity — so they are merged by span,
-    # longest first, before anything is counted. Counting it twice was the
-    # first version, and it made an ordinary sentence with one date and three
-    # names read as maximally reckless.
-    spans: list[tuple[int, int, str]] = []
-    for rx in (_UNIT, _NUMBER, _PROPER):
-        for m in rx.finditer(t):
-            a, b = m.span()
-            if any(a < eb and ea < b for ea, eb, _ in spans):
-                continue
-            spans.append((a, b, m.group(0)))
-    unbacked = [s for s in spans
-                if s[2].lower() not in backed
-                and not all(w in backed for w in _WORD.findall(s[2].lower()))]
+    mine = specifics(t)
+    unbacked = [s for s in mine
+                if s not in backed
+                and not all(w in backed for w in _WORD.findall(s))]
     surface = _clip(len(unbacked) / RISK_CAP)
     if _HEDGE.search(t):
         surface *= (1.0 - HEDGE_RELIEF)

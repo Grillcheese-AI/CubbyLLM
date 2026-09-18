@@ -17,6 +17,8 @@ from __future__ import annotations
 
 from feeling import _PETAL, _SOCIAL_CORNERS, _plutchik  # noqa: E402
 from pacworld import _manh  # noqa: E402
+import choosing  # noqa: E402
+import saying  # noqa: E402
 
 __wiring__ = "WIRED"
 
@@ -60,6 +62,8 @@ class AffectMixin:
     # ── somebody is watching, and talking ───────────────────────────────────
     HEARD_FRAMES = 3            # a sentence is not a shock; three frames, not six
 
+    MAX_SAID_BACK = 8           # what he has already said to them, for the novelty term
+
 
     def _need(self) -> float:
         """How badly it is going, 0..1 — what decides whether a kind word is
@@ -95,18 +99,104 @@ class AffectMixin:
 
 
     def say_to_coach(self, got: dict, lang: str = "en") -> str:
-        """What he says back. HOST-WRITTEN, and deliberately so for now.
+        """What he says back — the MODEL's sentence when he has one worth
+        saying, the host line when he does not.
 
-        The model path (`_think` -> the VM's ASK -> the voice rules) is how he
-        speaks about what he DID, and routing every "you can do it" through a
-        generation is a lot of machinery for an acknowledgement. What matters
-        is that the reply is a function of state rather than a canned string:
-        a warning from somebody who has been right reads differently from the
-        same words out of a voice that has cried ghost twelve times, and that
-        difference is `credibility`, which he earned.
+        This used to be host-written only, on the argument that routing every
+        "you can do it" through a generation is a lot of machinery for an
+        acknowledgement. That was true about the machinery and wrong about the
+        thing being machined. The canned line is a function of `credibility`
+        and `manner()` and of nothing else that happened to him, so a player
+        who had just watched him lose two lives got the same four words as one
+        who had watched him clear a level. He had a voice about what he DID
+        and no voice at all about what was SAID TO HIM, which is the half a
+        person standing there actually hears.
+
+        Three things keep it honest, and none of them are new — they are the
+        same three the thought path uses, pointed at a different referent:
+
+          the HOST LINE IS THE FALLBACK, never removed. Same shape as
+          `say_flatly` under `_speak`: the model is offered, not trusted.
+          `reply_ok` is the guard, and it is `grounded_ok` with second person
+          and a question allowed and invention not. He may use their words
+          back at them; he may not invent a ghost.
+          `saying.rank` decides which one goes out, from the body. So an
+          alarmed Cubby answering a warning falls back to "ok — looking"
+          rather than committing to a sentence, and a settled one talks.
+
+        `credibility` still does the work it did: it writes the fallback, and
+        it goes into the record the model speaks from, so a voice that has
+        cried ghost twelve times reads differently either way.
 
         No emotion word appears here, per the standing rule — `manner()` gives
         DELIVERY (clipped, slow, open) and never a feeling."""
+        host = self.coach_line(got, lang)
+        if self.brain is None or not self.verbalize:
+            return host
+        rec = self.percepts("heard", claim=got.get("claim") or got["kind"], why=got.get("why"))
+        rec["they said"] = got.get("text") or ""
+        rec["they have been right"] = round(self.coach.credibility, 2)
+        flat = self.render_percepts(rec)
+        heard = str(rec["they said"])
+        from identity import identity_system
+        if lang == "fr":
+            prompt = (f"Situation : {flat}.\nQuelqu'un vient de te dire : « {heard} ». "
+                      "Réponds-lui en une phrase très courte, à la première personne. "
+                      "N'invente rien que tu ne perçois pas.")
+        else:
+            prompt = (f"Situation: {flat}.\nSomebody just said to you: \"{heard}\". "
+                      "Answer them in one very short sentence, first person. "
+                      "Do not invent anything you do not perceive.")
+        temp, budget = 0.8, 28
+        if self.chem is not None:
+            m = self.chem.modulation()
+            temp = round(min(1.0, max(0.45, 0.55 + 0.4 * m["creativity"] - 0.3 * m["caution"])), 2)
+            budget = int(max(12, min(32, 28 - 14 * m["urgency"] + 8 * m["warmth"])))
+        try:
+            raw = self.brain.emitter.emit(prompt, context="talk", max_new_tokens=budget,
+                                          system=identity_system(self.brain.facts, self.brain.chat.state),
+                                          temperature=temp,
+                                          seed=self.env.steps * 6271 + self.env.level)
+        except Exception as e:
+            self._t("reply_error", error=f"{type(e).__name__}: {e}"[:160])
+            return host
+        from emitter import clean_reply
+        from grounding import reply_ok
+        text = " ".join(clean_reply(raw).split())
+        said_before = list(getattr(self, "_said_back", []))
+        # A VERBATIM REPEAT IS A GUARD, NOT A KNOB. The novelty term is signed,
+        # so a frightened body prefers the familiar — which is exactly right
+        # for the sanctioned line and wrong for his own last sentence said
+        # twice. Those are the same mechanism through the same door, so the
+        # broken-record case comes out here, where it is a refusal with a
+        # reason, rather than being tuned for in `choosing`.
+        kept = (bool(text) and text not in said_before
+                and reply_ok(flat, heard, text, self.brain.facts,
+                             " ".join(self._learned_here)))
+        mod = self.chem.modulation() if self.chem is not None else choosing.neutral()
+        # WHAT THE STEP AND THE PLAYER BETWEEN THEM CAN BACK — the specifics,
+        # not every word of the referent. Word soup would drive risk to zero
+        # for anything `reply_ok` already kept and retire the term on this
+        # path; the specifics leave it exactly the gap the guard does not
+        # cover. `reply_ok` blocks figures, ALLCAPS names and `level-N cell`
+        # forms; `claim_surface` also sees an ordinary capitalised name
+        # mid-sentence, which is how an invented character arrives.
+        backed = saying.specifics(f"{flat} {heard}")
+        ordered, detail = saying.rank([text] if kept else [], mod, safe=host,
+                                      history=said_before, grounded=backed)
+        out = ordered[0]
+        self._said_back = (said_before + [out])[-self.MAX_SAID_BACK:]
+        self._t("said_back", says=got["kind"], text=out[:160],
+                verbalized=bool(out == text), refused=(text[:160] if text and not kept else None),
+                spoke_safe=bool(out == host), raw=flat[:200])
+        return out
+
+
+    def coach_line(self, got: dict, lang: str = "en") -> str:
+        """The HOST's reply: the sanctioned line, a function of `credibility`.
+
+        Always available and never refused, which is what makes it the safe
+        candidate `say_to_coach` offers the filter against the model's."""
         cred = self.coach.credibility
         if got["kind"] == "warn":
             if cred >= 0.65:
