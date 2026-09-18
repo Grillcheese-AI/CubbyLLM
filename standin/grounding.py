@@ -61,10 +61,22 @@ _ECHO = re.compile(r"own words|first person|short sentence|keeping every|propres
 # SECOND PERSON IS A DEFECT IN A THOUGHT AND THE POINT OF A REPLY, so the two
 # guards cannot share one pattern. `_ECHO` keeps both halves, for `grounded_ok`;
 # `_INSTRUCTION` is the half that is wrong in anybody's mouth.
+#
+# THE SECOND LINE IS THE REPLY PROMPT'S OWN FRAMING, in both languages, and it
+# is here because the first live run of the coach box spoke one: *"Je ne vois
+# pas quelqu'un qui vient de te dire ça."* — the model answering the
+# instruction instead of the player, and passing every other check because it
+# invents no figure and names no cell. English got caught by the entries above
+# and French did not, which is the whole argument for writing the framing of
+# each prompt into the guard rather than trusting that one language's leak
+# looks like another's.
 _INSTRUCTION = re.compile(r"own words|first person|short sentence|keeping every|propres mots|"
                           r"première personne|phrase courte|\breword|\brephras|"
                           r"here'?s the sentence|\bsure\b|\bcertainly\b|\bi understand you\b|"
-                          r"\bi see, so\b", re.I)
+                          r"\bi see, so\b|"
+                          r"somebody just said|answer them|do not invent|very short sentence|"
+                          r"vient de te dire|r[eé]ponds-lui|n'invente rien|phrase tr[eè]s courte",
+                          re.I)
 
 
 def split_mood(line: str) -> tuple[str, str]:
@@ -175,6 +187,34 @@ def grounded_ok(record_line: str, text: str, facts, learned: str = "", slack: in
 
 
 
+def _contiguous_in(needle: list[str], hay: list[str]) -> bool:
+    """Is `needle` a run of consecutive tokens inside `hay`?"""
+    if not needle or len(needle) > len(hay):
+        return False
+    return any(hay[i:i + len(needle)] == needle for i in range(len(hay) - len(needle) + 1))
+
+
+def parroting(heard: str, text: str) -> bool:
+    """Is `text` just the player's own sentence handed back?
+
+    THE COST OF LETTING THE REFERENT INCLUDE WHAT THEY SAID, and it showed up
+    in the coach box's second live run: *"you can do it!!"* came back as
+    *"You can do it!!"*. Every word of it is grounded — they are the player's
+    words — so no invention check can see it, and it is not an answer.
+
+    Narrow on purpose, because quoting IS most of answering. Refused only when
+    the reply is a run of their sentence, or contains their whole sentence and
+    adds no content word of its own. *"il n'y a rien à cacher, alors je ne
+    lache pas la patate"* keeps their phrase and adds its own, and passes.
+    """
+    r, h = _tokens(text), _tokens(heard)
+    if not r or not h:
+        return False
+    if _contiguous_in(r, h):
+        return True
+    return _contiguous_in(h, r) and not (_content_words(text) - _content_words(heard))
+
+
 def reply_ok(record_line: str, heard: str, text: str, facts, learned: str = "", slack: int = 5) -> bool:
     """Is `text` something he could honestly say BACK TO A PERSON this step?
 
@@ -205,6 +245,8 @@ def reply_ok(record_line: str, heard: str, text: str, facts, learned: str = "", 
         return False
     if _COPY.search(text):
         return False                                     # the record read back, not an answer
+    if parroting(heard, text):
+        return False                                     # their sentence read back, not an answer
     n_words = len(text.split())
     if n_words > 30 or n_words < 1:
         return False

@@ -238,7 +238,7 @@ def make_handler(brain):
                 self._send(404, {"error": "unknown path"})
 
         def do_POST(self):
-            if self.path not in ("/turn", "/ask"):
+            if self.path not in ("/turn", "/ask", "/pac/say"):
                 self._send(404, {"error": "unknown path"})
                 return
             try:
@@ -247,6 +247,13 @@ def make_handler(brain):
                 text = str(req.get("text", "")).strip()
                 if not text:
                     self._send(400, {"error": "empty text"})
+                    return
+                if self.path == "/pac/say":              # somebody at the side of the maze (standin/pacman.py
+                    live = getattr(brain, "pac_live", None)   # LivePac.say): straight to the coach, no routing
+                    if live is None:
+                        self._send(404, {"error": "no pac maze mounted (start with --pacman)"})
+                        return
+                    self._send(200, _json_safe(live.say(text)))
                     return
                 if self.path == "/ask":                  # the verified-program loop on one natural question (standin/ask.py);
                     loop = getattr(brain, "ask_loop", None)   # every step streams to /loop/stream -> the panel

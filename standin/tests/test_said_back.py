@@ -167,6 +167,37 @@ def test_invention_does_not_relax_for_a_reply():
     assert not reply_ok(rec, WARN, "watch the FLOOR-9 gate.", F)
 
 
+def test_the_reply_prompts_own_framing_is_refused_in_both_languages():
+    """From the coach box's first live run, which spoke one: *"Je ne vois pas
+    quelqu'un qui vient de te dire ça."* — the model answering the
+    instruction instead of the player. It invents no figure and names no
+    cell, so only the echo guard can catch it, and that guard has to know the
+    framing of BOTH prompts."""
+    rec = "i am at: level-1 cell 0-0-0; claim: warn"
+    for leak in ("Je ne vois pas quelqu'un qui vient de te dire ça.",
+                 "Réponds-lui en une phrase très courte.",
+                 "Somebody just said to you that.",
+                 "I will answer them in one very short sentence.",
+                 "Do not invent anything you do not perceive."):
+        assert not reply_ok(rec, WARN, leak, F), leak
+    assert reply_ok(rec, WARN, "ok, watching for it now.", F), "an actual answer still passes"
+
+
+def test_handing_their_own_sentence_back_is_not_an_answer():
+    """Also from the live box: 'you can do it!!' came back as 'You can do
+    it!!'. Every word is grounded — they are the player's words — so no
+    invention check can see it, and it is not a reply."""
+    from grounding import parroting
+    rec = "i am at: level-1 cell 0-0-0; claim: talk"
+    assert parroting("you can do it!!", "You can do it!!")
+    assert not reply_ok(rec, "you can do it!!", "You can do it!!", F)
+    # quoting IS most of answering: keep their phrase, add your own words
+    assert not parroting("lache pas la patate",
+                         "il n'y a rien a cacher, alors je ne lache pas la patate")
+    assert not parroting("careful, 3 ghosts down there!", "3 of them, ok.")
+    assert reply_ok(rec, "you can do it!!", "i can, and i am nearly through this one.", F)
+
+
 # ── grounding is one function on both sides ─────────────────────────────────
 def test_a_source_always_backs_itself():
     """`claim_surface(t, specifics(t))` is zero for every t, which is what

@@ -153,6 +153,75 @@ _CONSOLE_PANEL = r"""
 """
 
 
+# the coach box (owner, 2026-09-18: *"how do I get the chat window in
+# game?"*). The answer was that there wasn't one — the only chat input lived
+# on the full console at `/`, which routes a sentence through
+# `CubbyBrain.route` and so sent *"you can do it!!"* to the reasoning cortex
+# and answered it with the don't-know line. This box posts to POST /pac/say
+# instead (`LivePac.say`), which goes straight to `hear()` and
+# `say_to_coach()`: in the maze window there is nothing for routing to work
+# out, because everything typed there is somebody talking to him.
+#
+# It sits under the console panel and shows what he earned for the words —
+# `credibility` is the number the whole channel turns on, and a channel whose
+# standing you cannot see is just a text box.
+_COACH_PANEL = r"""
+<style>
+  #coachbox{position:fixed;left:14px;bottom:62px;z-index:60;width:min(30vw,380px);
+    background:rgba(8,12,20,.86);border:1px solid #2a3a55;border-radius:12px;
+    box-shadow:0 8px 40px rgba(0,0,0,.5);font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:#c9d1d9}
+  #coachbox .hd{padding:6px 11px;border-bottom:1px solid #2a3a55;color:#8b949e;display:flex;gap:8px;align-items:baseline}
+  #coachbox .hd b{color:#ffe66d}
+  #coachbox .hd span{margin-left:auto;font-size:11px;opacity:.85}
+  #coachlog{max-height:26vh;overflow-y:auto;padding:7px 11px;white-space:pre-wrap;word-break:break-word}
+  #coachlog .you{color:#d29922}#coachlog .him{color:#7fe0ff}#coachlog .warn{color:#ff9f43;font-size:11px}
+  #coachrow{display:flex;border-top:1px solid #2a3a55}
+  #coachinp{flex:1;background:transparent;border:0;color:#c9d1d9;padding:8px 11px;font:inherit;outline:none}
+  #coachsend{background:#22264a;color:#ffe66d;border:0;border-left:1px solid #2a3a55;padding:0 13px;cursor:pointer;font:inherit}
+</style>
+<div id="coachbox">
+  <div class="hd"><b>talk to cubby</b> he is playing<span id="coachcred">standing —</span></div>
+  <div id="coachlog"></div>
+  <div id="coachrow"><input id="coachinp" placeholder="you can do it!!  /  careful of the ghost!" autocomplete="off">
+    <button id="coachsend">say</button></div>
+</div>
+<script>
+(function(){
+  const log=document.getElementById('coachlog'), inp=document.getElementById('coachinp'),
+        btn=document.getElementById('coachsend'), cred=document.getElementById('coachcred');
+  const esc=s=>{const d=document.createElement('div');d.textContent=String(s);return d.innerHTML;};
+  function line(cls,who,text){ log.insertAdjacentHTML('beforeend',
+      `<div class="${cls}">${esc(who)} ${esc(text)}</div>`); log.scrollTop=log.scrollHeight; }
+  async function say(){
+    const text=inp.value.trim(); if(!text) return;
+    inp.value=''; line('you','you:',text); btn.disabled=true;
+    try{
+      const r=await fetch('/pac/say',{method:'POST',headers:{'Content-Type':'application/json'},
+                                      body:JSON.stringify({text})});
+      const j=await r.json();
+      if(j.error){ line('warn','—',j.error); }
+      else{
+        line('him','cubby:',j.reply);
+        // A WARNING IS A CLAIM, and the maze is about to score it. Saying so
+        // is what makes the number mean anything when it moves.
+        if(j.heard==='warn') line('warn','·','a claim about the maze — it settles right or wrong in the next few steps');
+        const c=j.coach||{}, w=c.warnings||{};
+        if(c.credibility!=null) cred.textContent=
+          `standing ${Number(c.credibility).toFixed(2)} · right ${w.right||0} / wrong ${w.wrong||0}`;
+      }
+    }catch(e){ line('warn','—','could not reach him'); }
+    btn.disabled=false; inp.focus();
+  }
+  btn.onclick=say;
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') say(); });
+  // the game grabs keys for the camera; typing in here must not reach it
+  for(const ev of ['keydown','keyup','keypress'])
+    inp.addEventListener(ev,e=>e.stopPropagation());
+})();
+</script>
+"""
+
+
 # the sound layer (2026-09-02): the owner's soundtrack loops quietly under
 # 8-bit oscillator effects for the game's events (a step ticks, a pellet is
 # the two-note waka, a star an arpeggio, a trap a noise burst, a catch a
@@ -253,10 +322,11 @@ def load_frontend(source: pathlib.Path = PACMAN_LIVE) -> tuple[str | None, list[
             html = html.replace(old, new)
         else:
             missed.append(old[:40])
+    panels = _CONSOLE_PANEL + _COACH_PANEL + _SOUND_PANEL
     if "</body>" in html:
-        html = html.replace("</body>", _CONSOLE_PANEL + _SOUND_PANEL + "</body>", 1)
+        html = html.replace("</body>", panels + "</body>", 1)
     else:
-        html += _CONSOLE_PANEL + _SOUND_PANEL
+        html += panels
     return html, missed
 
 

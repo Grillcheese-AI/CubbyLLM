@@ -95,6 +95,40 @@ def test_frontend_is_lifted_verbatim_and_every_patch_applies():
     assert 'id="cubbycon"' in html and "fetch(`/events?since=${since}`)" in html
     assert html.index('id="cubbycon"') > html.index('id="bigstage"'), "the panel is injected after the lifted page"
     assert html.count("</body>") == 1 and html.index('id="cubbycon"') < html.index("</body>")
+    # and the coach box, which posts PAST the router straight to the coach
+    assert 'id="coachbox"' in html and "fetch('/pac/say'" in html
+    assert 'id="coachcred"' in html, "the standing the channel turns on is on screen"
+
+
+def test_the_coach_box_does_not_hand_its_keystrokes_to_the_camera():
+    """The lifted page steers the camera from keydown. A chat box that lets
+    its keys through types and flies at the same time."""
+    from pacman import PACMAN_LIVE, load_frontend
+    if not PACMAN_LIVE.exists():
+        pytest.skip("cubbyverse checkout not on this machine")
+    html, _ = load_frontend()
+    assert "e.stopPropagation()" in html.split('id="coachbox"')[1]
+
+
+def test_saying_to_the_maze_window_reaches_the_coach_not_the_router():
+    """`LivePac.say` is the whole point of the in-game box: routing scores the
+    pac cortex on the game's COMMAND words, so 'you can do it!!' went to the
+    reasoning cortex and got the don't-know line. In the maze window there is
+    nothing to route."""
+    from neurochem import Neurochemistry
+    from pacman import CubbyGhost, LivePac
+    man = CubbyGhost(seed=7, blank=True)
+    man.chem = Neurochemistry()
+    live = LivePac(man, min_interval=0.0)
+
+    cheer = live.say("you can do it!!")
+    assert cheer["heard"] == "talk", "encouragement is not a claim about the maze"
+    assert cheer["reply"] and isinstance(cheer["reply"], str)
+    assert cheer["coach"]["credibility"] == pytest.approx(man.coach.credibility)
+
+    warn = live.say("careful, ghost behind you!")
+    assert warn["heard"] == "warn" and man.coach.pending, "a claim the maze will settle"
+    assert live.say("   ")["error"], "nothing said, nothing heard"
 
 
 def test_plan_next_runs_over_his_own_facts_not_the_env():

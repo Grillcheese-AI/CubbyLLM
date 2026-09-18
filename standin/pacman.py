@@ -702,6 +702,37 @@ class LivePac:
             self._last_resp = None
             return self.man.init_payload()
 
+    def say(self, text: str) -> dict:
+        """Somebody at the side of the maze says something. -> his reply.
+
+        STRAIGHT TO THE COACH, past `CubbyBrain.route`, and that is the point
+        rather than a shortcut. Routing exists to decide what a sentence typed
+        at a general-purpose assistant is FOR — a question, a fact to
+        remember, a game command — and it scores the pac cortex on the game's
+        own command words. So a warning about a ghost reached `hear()` and
+        *"you can do it!!"* went to the reasoning cortex and came back with
+        the don't-know line: the encouragement half of the channel, which is
+        the half that was asked for first, never arrived.
+        Owner: *"per example: you can do it!! or be careful of the ghost!"*
+
+        A sentence typed into the MAZE WINDOW needs no such decision. That
+        window is a person watching him play, so everything typed there is
+        somebody talking to him and routing has nothing left to work out.
+        `handle` still serves the console, commands and all.
+
+        Under the step lock, so a reply cannot interleave with a move: `hear`
+        runs the chemistry forward a few frames and `say_to_coach` reads the
+        body it leaves behind."""
+        from identity import guess_lang
+        text = " ".join(str(text or "").split())
+        if not text:
+            return {"error": "empty text"}
+        with self._lock:
+            got = self.man.hear(text)
+            reply = self.man.say_to_coach(got, guess_lang(text))
+            return {"said": text, "reply": reply, "heard": got["kind"],
+                    "why": got.get("why"), "coach": self.man.coach.state()}
+
     def frontend(self) -> str | None:
         if self._html is None:
             self._html, missed = load_frontend()
