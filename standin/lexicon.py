@@ -8,6 +8,30 @@ and deliberately only PART of it. Owner: *"it was working well with the
 amygdala and snn in grillcheese maybe lets just reuse that?"* — so here is
 what was taken, and what was left, and why.
 
+READ THE RIGHT REPO. The notes below were first written against an OLDER
+checkout, and the owner corrected me: the live one is `grillcheese-alpha-
+0.0.1`. Its amygdala is a different and better thing, and the bits I said I
+was rejecting are not in it:
+
+  * its embeddings are REAL — `SentenceTransformer('all-MiniLM-L6-v2')`, not
+    hash-seeded random vectors. Its own `train_amygdala.py` says why, in the
+    author's words: *"The Vulkan embedder uses random weights and doesn't
+    capture emotion. Sentence-transformers gives proper semantic similarity."*
+    That is the exact objection I raised, already found and already fixed
+    there. My criticism was of a superseded version.
+  * there is no 2x6 linear head. The blend is a fixed scalar mix of a static
+    60-word lexicon and a 3-layer MLP with a residual connection, trained with
+    Adam.
+  * there is no per-token EMA and no growing word sets. Those are MINE. The
+    older checkout is where the idea came from; nothing was lifted.
+
+WHAT SURVIVES THE CORRECTION, and it is the load-bearing half: the alpha's
+amygdala needs a TRAINING RUN. `is_calibrated` gates the neural path, the
+weights come from `train_amygdala.py` over labelled JSONL, and until that has
+happened the learned path does not run at all. *"The whole concept of cubbyllm
+is no-retraining"*, so the EMA below is still the right shape here for reasons
+that have nothing to do with which repo I read.
+
 TAKEN, because it is the mechanism this needed and nothing here had:
 
     _token_affect_ema      every token carries a running (valence, arousal,
@@ -22,16 +46,23 @@ TAKEN, because it is the mechanism this needed and nothing here had:
     the stemmer            cheap suffix trimming so "ghosts" and "ghost" are
                            one word.
 
-LEFT BEHIND, and this is not a shortcut:
+LEFT BEHIND, and this is not a shortcut. Two of these describe the OLDER
+checkout, which is where the port started; the alpha's version of each is
+recorded beside it:
 
-    AmygdalaAffectNet      a 3-layer MLP over token vectors that are
-                           `blake2b`-seeded RANDOM unit vectors. Random
-                           vectors carry no semantics, so the network cannot
-                           generalise to a word it has not seen — it can only
-                           memorise, which is what the EMA above already does,
-                           more cheaply and legibly. Its two outputs then meet
-                           the four lexical features in a 2x6 linear head, and
-                           that head is where the work actually happens.
+    AmygdalaAffectNet      OLD checkout: a 3-layer MLP over token vectors that
+                           are `blake2b`-seeded RANDOM unit vectors, whose two
+                           outputs then meet four lexical features in a 2x6
+                           linear head. Random vectors carry no semantics, so
+                           it could not generalise to a word it had not seen —
+                           only memorise, which the EMA above already does more
+                           cheaply and more legibly.
+                           ALPHA: none of that holds any more — real MiniLM
+                           embeddings, no 2x6 head, a residual MLP with Adam.
+                           Still left behind, for the reason at the top: it is
+                           inert until `train_amygdala.py` has been run over
+                           labelled JSONL, and this project does not get a
+                           training run.
     grilly / numpy         a GPU backend for a 2x6 matrix multiply. The
                            stand-in stays dependency-free.
     the SNN / STDP         NOT REJECTED — deferred, and the reason I first
@@ -44,16 +75,34 @@ LEFT BEHIND, and this is not a shortcut:
                            state changing during a session, which is exactly
                            this project's thesis and exactly the missing
                            middle timescale — faster than a corpus, slower
-                           than an EMA over one conversation. It wants its own
-                           read of the live path rather than a guess, and it
-                           is the obvious next port after this one.
+                           than an EMA over one conversation.
+                           That read has now happened, against the alpha, and
+                           the loop is NOT closed there either:
+                           `learning_state/stdp_state.json` is 811 KB, saved
+                           and restored every run, and read by nothing.
+                           `get_associated_tokens` has no caller in the repo;
+                           `get_modulations` has one, in a test. `snn.process()`
+                           runs AFTER generation at both entry points, and
+                           `SNNCompute` holds no weight matrix at all. The
+                           plasticity is real and write-only — it never reaches
+                           an answer. What IS closed there, and is worth a port
+                           on its own merits, is three loops that all route
+                           through prompt text: basal-ganglia `strategy_biases`,
+                           experience-buffer familiarity → arousal, and
+                           endocrine/CNS state. So live STDP that actually
+                           modulates output is unbuilt in both repos. Building
+                           it IS the port; there is nothing to lift.
     the word lists         `sev1`, `outage`, `incident` — an ops assistant's
                            threat vocabulary. Wrong world. The mechanism ports;
                            the tables do not.
 
 WHY THIS MATTERS MORE HERE THAN IT DID THERE, and it is the whole reason to
-bother: GrillCheese had to be TOLD the target (`train_step(text,
-target_emotion)`). In the maze nobody has to tell it anything. A warning is
+bother: GrillCheese has to be TOLD the target. In the alpha there IS an online
+path, `_online_amygdala_learning`, but its target comes from a `quality` score
+that both call sites pass as the literal 0.7, which falls through to
+`target_valence = predicted * 0.9` — so it trains the head toward a shrunken
+copy of its own last prediction, once per turn. No world, no label, no signal.
+In the maze nobody has to tell it anything. A warning is
 right or wrong within six steps. A death happens or it does not. The level
 clears or it does not. THE WORLD SUPPLIES THE LABEL, which is exactly what
 every affect corpus in this project has lacked — `docs/cube_vs_human_vad.md`
