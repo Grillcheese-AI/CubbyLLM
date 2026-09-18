@@ -38,6 +38,8 @@ from identity import (T, affect_block, derived, identity_system, load_facts,  # 
                       guess_lang, is_identity_question, is_identity_reply, is_model_guard, voice_ok)
 from afferent import Afferent  # noqa: E402
 from neurochem import Neurochemistry, appraise  # noqa: E402
+import choosing  # noqa: E402
+import saying  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
@@ -48,6 +50,35 @@ _THINK_RE = re.compile(r"^\s*(?:<think>)?.*?</think>\s*", re.S)
 def _escape(s: str) -> str:
     """A CubeLang string literal: no raw newlines, escaped backslashes/quotes."""
     return " ".join(s.split()).replace("\\", "\\\\").replace('"', '\\"')
+
+
+# What the host can back about Cubby without asking anyone: the identity facts
+# themselves. Saying his own name is not a claim reaching past its grounding,
+# and the first version of the filter treated "I'm Cubby" as one specific of
+# unverified claim surface — which made an alarmed body refuse to introduce
+# itself. The two "never say this" lists are excluded: those words are already
+# a hard rejection upstream, and grounding them would be nonsense.
+_NOT_GROUND = ("refuses_to_claim", "never_says_it_is", "forbidden_words", "note")
+
+
+def _self_grounding(facts: dict) -> set[str]:
+    """Every word the identity facts themselves assert, lowercased."""
+    out: set[str] = set()
+
+    def walk(v):
+        if isinstance(v, str):
+            out.update(w.lower() for w in re.findall(r"[\w']+", v))
+        elif isinstance(v, dict):
+            for vv in v.values():
+                walk(vv)
+        elif isinstance(v, (list, tuple)):
+            for vv in v:
+                walk(vv)
+
+    for k, v in (facts or {}).items():
+        if k not in _NOT_GROUND:
+            walk(v)
+    return out
 
 
 def render_talk_program(candidates: list[str], question: str = "which reply") -> str:
@@ -109,10 +140,19 @@ class CubbyChat:
     """One Cubby, one hormonal state, one VM-mediated turn at a time."""
 
     def __init__(self, emitter, facts: dict | None = None, state: dict | None = None,
-                 exe: str | None = None, max_new_tokens: int = 200, appraiser=None) -> None:
+                 exe: str | None = None, max_new_tokens: int = 200, appraiser=None,
+                 n_candidates: int = 1) -> None:
         self.emitter = emitter
+        # How many replies to draw before the filter picks. ONE by default, so
+        # no turn gets slower than it was: at n=1 the filter still does the
+        # thing that matters — deciding whether that one reply is worth
+        # speaking against the sanctioned fallback. Above 1 it also gets to
+        # choose between ways of answering, at n decode passes per turn.
+        self.n_candidates = max(1, int(n_candidates))
+        self.last_choice: dict = {}
         self.appraiser = appraiser                       # perception.ModelAppraiser: the trunk reads emotions
         self.facts = facts or load_facts()
+        self.grounded = _self_grounding(self.facts)      # what he may assert without reaching past a source
         self.chem = Neurochemistry()                     # the real ODE (cubemind port)
         self.afferent = Afferent()                       # the user's state, and what it may do to his
         self._seen_vocab: set[str] = set()
@@ -132,6 +172,29 @@ class CubbyChat:
         """Pin an explicit state (tests / replaying a recorded trajectory);
         the next nudge() resumes from the ODE, not from this override."""
         self.state = dict(state)
+
+    def _modulation(self) -> dict:
+        """The seven knobs the filter runs on.
+
+        From the ODE, EXCEPT when a state has been pinned that the ODE is not
+        currently in (`set_state`, a replayed trajectory, a state handed to
+        `__init__`). Then the pinned hormones win, because that state is what
+        went into the model's system prompt and the body the filter uses has
+        to be the body the words came from. Two sources for one turn is how
+        `wariness` went wrong — a second opinion about what alarm means.
+
+        `pain` and `craving` are not in the five-hormone serving slice, so a
+        replayed state carries neither. That is the honest reading: a recorded
+        trajectory records hormones, not injury.
+        """
+        live = self._hormones()
+        if all(abs(live[h] - float(self.state.get(h, live[h]))) < 1e-9 for h in live):
+            return self.chem.modulation()
+        probe = Neurochemistry()
+        for h, v in self.state.items():
+            if hasattr(probe, h):
+                setattr(probe, h, float(v))
+        return probe.modulation()
 
     def nudge(self, user_text: str, *, gap_s: float | None = None, burst: int = 0,
               hour: int | None = None) -> dict:
@@ -202,42 +265,85 @@ class CubbyChat:
         return self.MULTI_PROMPT[lang].format(u1=u1, a1=a1, u2=user_text)
 
     # ── the turn ────────────────────────────────────────────────────────────
-    def candidates(self, user_text: str) -> tuple[list[str], list[str]]:
-        """-> (offered, rejected): the model's reply (think-stripped) if it
-        passes the voice rules, plus the verbatim don't-know line in the
-        user's language, which is always offered."""
-        system = identity_system(self.facts, self.state)
-        self._turns = getattr(self, "_turns", 0) + 1
-        prompt = self.with_history(user_text)
-        raw = self.emitter.emit(prompt, context={"role": "talk", "state": dict(self.state)},   # the talk adapter; the state rides in c
-                                max_new_tokens=self.max_new_tokens, system=system,
-                                temperature=getattr(self, "temperature", 0.7), seed=self._turns)   # words, not programs: sample
-        from emitter import clean_reply
-        reply = clean_reply(raw)                         # closed think block out, stray tags out, complete tool calls kept
-        lang = guess_lang(user_text)
-        dont_know = T(self.facts, "dont_know_line", lang)
-        offered, rejected = [], []
+    def _guard(self, reply: str, user_text: str) -> str | None:
+        """The host guards, unchanged. -> the reason it may not be spoken, or
+        None if it survives. Pulled out of `candidates` so the same cascade
+        runs over every sample when more than one is drawn."""
         from identity import has_non_latin
-        if reply and has_non_latin(reply):               # EN/FR only: a base that drifts into another script is not spoken
-            rejected.append(reply)
-            self.last_rejection = "non-latin script"
-        elif reply and is_model_guard(reply):
+        if has_non_latin(reply):                         # EN/FR only: a base that drifts into another script is not spoken
+            return "non-latin script"
+        if is_model_guard(reply):
             # the base model's own guard (refusal / "as an AI" / its maker):
             # not Cubby's rule, never spoken — only OUR guards are enforced
-            rejected.append(reply)
-            self.last_rejection = "base-model guard leaked"
-        elif reply and not voice_ok(reply, self.facts):
-            rejected.append(reply)
-            self.last_rejection = "voice rule"
-        elif reply and is_identity_reply(reply, self.facts) and not is_identity_question(user_text):
+            return "base-model guard leaked"
+        if not voice_ok(reply, self.facts):
+            return "voice rule"
+        if is_identity_reply(reply, self.facts) and not is_identity_question(user_text):
             # the identity SFT is the model's only chat training: it answers
             # who-it-is to anything. Off topic -> not offered; the don't-know
             # line is the sanctioned answer for what it can't do yet.
-            rejected.append(reply)
-            self.last_rejection = "identity reply to a non-identity turn"
-        elif reply:
-            offered.append(reply)
-        offered.append(dont_know)
+            return "identity reply to a non-identity turn"
+        return None
+
+    def candidates(self, user_text: str, grounded: set[str] | None = None) -> tuple[list[str], list[str]]:
+        """-> (offered, rejected): the model's replies (think-stripped) that
+        pass the host guards, plus the verbatim don't-know line in the user's
+        language, which is always offered — ordered by the filter.
+
+        THE GUARDS DECIDE WHAT MAY BE SAID; THE BODY DECIDES WHAT IS SAID.
+        Those were one step until now: a reply that cleared the cascade was
+        spoken, and the only alternative was the don't-know line reached by
+        failing a check. A cascade is the same cascade in a quiet room and in
+        a fire, so nothing that happened to Cubby could make him more careful
+        about a claim — the whole affect system reached his phrasing and never
+        his willingness to commit.
+
+        Now the survivors and the fallback go through `saying.rank`, which is
+        `choosing` with the same five terms the maze uses. `caution` scales
+        the claim surface `saying` measures, so an alarmed body needs a better
+        reply before it will speak one at all and takes the sanctioned line
+        when it does not have one. Nothing here can make a guard-failing reply
+        speakable: rejected candidates are never scored, and risk only ever
+        subtracts (`choosing`, rule one).
+
+        `grounded` is the hook for the verified path: specifics the caller can
+        back do not count as claim surface. Free chat passes nothing and every
+        specific counts, which is the correct reading of an unverified turn.
+        """
+        system = identity_system(self.facts, self.state)
+        lang = guess_lang(user_text)
+        dont_know = T(self.facts, "dont_know_line", lang)
+        prompt = self.with_history(user_text)
+        mod = self._modulation()
+
+        # URGENCY NARROWS THE FIELD, and this is where breadth belongs for
+        # speech: a pressed body generates fewer things to say rather than
+        # weighing the same set differently. It is also the cheap direction —
+        # fewer decode passes exactly when the turn is time-critical.
+        draws = choosing.breadth(max(1, int(getattr(self, "n_candidates", 1))), mod)
+
+        offered, rejected, seen = [], [], set()
+        for k in range(draws):
+            self._turns = getattr(self, "_turns", 0) + 1
+            raw = self.emitter.emit(prompt, context={"role": "talk", "state": dict(self.state)},   # the talk adapter; the state rides in c
+                                    max_new_tokens=self.max_new_tokens, system=system,
+                                    temperature=getattr(self, "temperature", 0.7), seed=self._turns)   # words, not programs: sample
+            from emitter import clean_reply
+            reply = clean_reply(raw)                     # closed think block out, stray tags out, complete tool calls kept
+            if not reply or reply in seen:
+                continue
+            seen.add(reply)
+            why = self._guard(reply, user_text)
+            if why is None:
+                offered.append(reply)
+            else:
+                rejected.append(reply)
+                self.last_rejection = why
+
+        spoken = [r["reply"] for r in self.history[-8:]]
+        backed = set(self.grounded) | set(grounded or ())
+        offered, self.last_choice = saying.rank(offered, mod, safe=dont_know,
+                                                history=spoken, grounded=backed)
         return offered, rejected
 
     def mediate(self, user_text: str, offered: list[str], rejected: list[str] | None = None,
@@ -274,9 +380,15 @@ class CubbyChat:
         nothing to verify."""
         offered, rejected = self.candidates(user_text)
         if mediate:
-            return self.mediate(user_text, offered, rejected, feedback)
-        rec = {"user": user_text, "reply": offered[0], "register": derived(self.state)["register"],
-               "state": dict(self.state), "offered": offered, "rejected": rejected, "question": None,
-               "acted": None, "vm_mediated": False, "wall_s": 0.0}
-        self.history.append(rec)
+            rec = self.mediate(user_text, offered, rejected, feedback)
+        else:
+            rec = {"user": user_text, "reply": offered[0], "register": derived(self.state)["register"],
+                   "state": dict(self.state), "offered": offered, "rejected": rejected, "question": None,
+                   "acted": None, "vm_mediated": False, "wall_s": 0.0}
+            self.history.append(rec)
+        # The filter's working, in the record. A threshold that moves with the
+        # body is only worth having if you can see it move — `spoke_safe` is
+        # the one bit that matters and the gains say why.
+        rec["choice"] = dict(self.last_choice)
+        rec["spoke_safe"] = bool(rec["reply"] == T(self.facts, "dont_know_line", guess_lang(user_text)))
         return rec
