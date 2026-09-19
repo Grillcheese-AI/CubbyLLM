@@ -80,49 +80,62 @@ taxonomy is the product.
 
 ## B. Build work the positioning implies but the repo has not done
 
-### B1 [BUILD] The VSA dispatch — measured, and it is not a wiring job
+### B1 [BUILD] Wire `ops/vsa.py` to the bridge — cubemind already shows how
+
+**This item was wrong twice before it was right. The numbers below are the third
+measurement and the first correct one.**
 
 grilly is now installed into the serving venv (`pip install -e`, additive: numpy
 stayed at 2.5.1, nothing downgraded). The Vulkan device initialises — RX 6750 XT,
-VMA allocator, C++ backend, cooperative-matrix and fp16 extensions all up.
+VMA allocator, C++ backend, cooperative-matrix and fp16 extensions.
 
-**That made the divergence live, and it is now worse than before the install.**
-`_detect_backend()` reports `grilly_bridge`; `_load_grilly_ops()` still returns
-`grilly.experimental.vsa.block_ops.BlockCodeOps`, the Python class. Before the
-install the package honestly said `numpy`. It now advertises a tier it does not
-call — exactly the state `TODO.md:37` names.
-
-**`TODO.md:37`'s warning was right, and here is the measurement it asked for.**
-Against `BlockCodeOps` at k=80, l=128:
+**Measured against `BlockCodeOps`, at k=80 l=128, one-hot block codes, `(n, k*l)`
+batches — which is how `cubemind/ops/block_codes.py` calls it:**
 
 | | result |
 |---|---|
-| `blockcode_bind` vs `BlockCodeOps.bind` | **do not agree** — max abs diff 41.6 |
-| bridge bind→unbind round-trip, cosine vs the original | **0.223** |
-| `BlockCodeOps` bind→unbind round-trip, same measure | **0.704** |
-| speed, D=10,240 / 32,768 / 131,072 | **0.89× / 0.87× / 0.82×** — slower at every size, and worse as D grows |
-| input layout | bridge needs flat; a (k, l) array raises inside it |
+| `blockcode_bind` vs `BlockCodeOps.bind` | **agree** — `allclose`, max abs diff 1.19e-07 |
+| bind→unbind exact block recovery, both paths | **100%** |
+| speed, batch 1 | 1.01× |
+| speed, batch 64 | **1.74×** |
+| speed, batch 512 | **1.83×** |
 
-So the `blockcode_*` ops are not a drop-in: different algebra, materially worse
-recovery, and no speed win to pay for it. Dispatching to them would have silently
-degraded the binding and slowed it down.
+So the bridge is correct and it wins as soon as the call is batched. There is no
+algebra question and no semantics risk. `TODO.md:37`'s caution was right to demand
+the check; the check passes.
 
-**The likely reason, and the actual next step.** `blockcode_*` is probably not the
-intended path. The bridge also exposes `vsa_bind`, `vsa_unbind`, `vsa_bundle`,
-`vsa_bitpack` and a `vsa_lm_*` family (upload / forward / backward /
-update_weights / release) — untested here. `_detect_backend()` gates tier 1 on
-`hasattr(_bridge, "blockcode_bind")`, which may be gating on the wrong symbol
-entirely.
+**What the two earlier wrong readings were.** Both were probe errors, recorded
+because the failure mode repeats:
 
-Before any dispatch: decide which entry point is canonical, settle which algebra
-is correct (the round-trip numbers say the two disagree about more than
-precision), and re-measure. There is no batched `blockcode` entry point on the
-bridge at all, though `vsa-bind-batch.spv` and `vsa-similarity-batch.spv` are
-compiled — so if a GPU win exists it is on a batch path that is not currently
-bound to Python.
+1. *"the tier does not exist"* — `_detect_backend()` returned `numpy`, read as
+   evidence the Vulkan path was absent. grilly simply was not installed in either
+   interpreter. A `numpy` reading means grilly is off `sys.path`, nothing more.
+2. *"the ops disagree and are slower"* — fed flat `(k*l,)` arrays of dense
+   Gaussians. The bridge wants `(n, k*l)` batches of ONE-HOT block codes. Wrong
+   shape and wrong representation, so the 41.6 diff and the 0.223 round-trip
+   measured nothing.
 
-`TODO.md:49` (**Grilly2**, the drop-in torch replacement) is the larger programme
-and remains separate.
+**The actual task, and it is small.** `cubemind/ops/block_codes.py` is a working
+three-tier implementation of exactly this: bridge → `BlockCodeOps` → numpy, with
+the reshape convention and per-path `try/except`. Port that structure into
+`cubbyllm/ops/vsa.py`, whose `_load_grilly_ops()` currently returns the Python
+`BlockCodeOps` even when `_detect_backend()` found the bridge.
+
+Two details worth carrying over: the bridge returns `None` to mean *"declined,
+fall through"* rather than raising, and `np.atleast_2d` + reshape restores the
+caller's shape.
+
+**Batch is where the win is.** At batch 1 the tiers tie. The VSA calls in the
+reasoning path are single binds today, so wiring alone buys nothing measurable —
+the gain arrives if and when binds are batched. Say that rather than quoting
+1.83× out of context.
+
+**On the wider grilly question.** The C++ core and its pybind11 bindings measure
+well here: `grilly_core` imports standalone with 230 annotated symbols and only
+`Device` / `TapeContext` to manage, and the kernels agree with the reference to
+float32 precision. The weight is in the ~72K-line Python layer above them and the
+~8M lines of vendored `external/`. Whatever grilly2 becomes, this evidence says
+the compute core and the shaders are assets to keep, not things to rewrite.
 
 ### B2 [BUILD] The fastword table is on a drive that is not attached
 `validation/exp_m3_cot_pipeline.py` hard-codes `V4_TABLE` to an absolute path on an
