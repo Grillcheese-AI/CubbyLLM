@@ -80,18 +80,49 @@ taxonomy is the product.
 
 ## B. Build work the positioning implies but the repo has not done
 
-### B1 [BUILD] Dispatch to the shaders that already exist
-Not "build Vulkan support" — the SPIR-V is compiled and the VSA set is there (A2).
-The task is to make `_load_grilly_ops()` return the bridge ops when
-`_detect_backend()` found the bridge, instead of always returning the Python
-`BlockCodeOps`, and to put grilly on the serving environment's path so the tier is
-reachable at all. Then measure bind/unbind/bundle on both tiers and publish the
-ratio — a real number here is worth more to the positioning than the adjective
-"accelerated".
+### B1 [BUILD] The VSA dispatch — measured, and it is not a wiring job
+
+grilly is now installed into the serving venv (`pip install -e`, additive: numpy
+stayed at 2.5.1, nothing downgraded). The Vulkan device initialises — RX 6750 XT,
+VMA allocator, C++ backend, cooperative-matrix and fp16 extensions all up.
+
+**That made the divergence live, and it is now worse than before the install.**
+`_detect_backend()` reports `grilly_bridge`; `_load_grilly_ops()` still returns
+`grilly.experimental.vsa.block_ops.BlockCodeOps`, the Python class. Before the
+install the package honestly said `numpy`. It now advertises a tier it does not
+call — exactly the state `TODO.md:37` names.
+
+**`TODO.md:37`'s warning was right, and here is the measurement it asked for.**
+Against `BlockCodeOps` at k=80, l=128:
+
+| | result |
+|---|---|
+| `blockcode_bind` vs `BlockCodeOps.bind` | **do not agree** — max abs diff 41.6 |
+| bridge bind→unbind round-trip, cosine vs the original | **0.223** |
+| `BlockCodeOps` bind→unbind round-trip, same measure | **0.704** |
+| speed, D=10,240 / 32,768 / 131,072 | **0.89× / 0.87× / 0.82×** — slower at every size, and worse as D grows |
+| input layout | bridge needs flat; a (k, l) array raises inside it |
+
+So the `blockcode_*` ops are not a drop-in: different algebra, materially worse
+recovery, and no speed win to pay for it. Dispatching to them would have silently
+degraded the binding and slowed it down.
+
+**The likely reason, and the actual next step.** `blockcode_*` is probably not the
+intended path. The bridge also exposes `vsa_bind`, `vsa_unbind`, `vsa_bundle`,
+`vsa_bitpack` and a `vsa_lm_*` family (upload / forward / backward /
+update_weights / release) — untested here. `_detect_backend()` gates tier 1 on
+`hasattr(_bridge, "blockcode_bind")`, which may be gating on the wrong symbol
+entirely.
+
+Before any dispatch: decide which entry point is canonical, settle which algebra
+is correct (the round-trip numbers say the two disagree about more than
+precision), and re-measure. There is no batched `blockcode` entry point on the
+bridge at all, though `vsa-bind-batch.spv` and `vsa-similarity-batch.spv` are
+compiled — so if a GPU win exists it is on a batch path that is not currently
+bound to Python.
 
 `TODO.md:49` (**Grilly2**, the drop-in torch replacement) is the larger programme
-and is separate from this. Note `TODO.md:37`'s warning applies to a careless fix:
-do not dispatch without checking the bridge op's semantics match `BlockCodeOps`.
+and remains separate.
 
 ### B2 [BUILD] The fastword table is on a drive that is not attached
 `validation/exp_m3_cot_pipeline.py` hard-codes `V4_TABLE` to an absolute path on an
