@@ -38,16 +38,31 @@ Either retitle the column (*Production State* → *Serving today*) or hold the d
 until the 2B run lands. The architecture claims are unaffected either way — the VM,
 the disposer, the isolation economics are all real and all independent of the trunk.
 
-### A2 [DOC] The Vulkan acceleration claim is not true in the serving path
-The draft: *"the math stack relies on a high-performance C++ engine (grilly)
-accelerated via Vulkan."* On this machine `cubbyllm.ops.vsa._detect_backend()`
-returns **`numpy`**. `TODO.md:37` says so in its own words and tells you not to
-paper over it: *"`ops/vsa.py` reports a Vulkan tier it never calls — DO NOT 'FIX'
-THIS BY DISPATCHING TO IT."*
+### A2 [DOC] The Vulkan claim is about dispatch, not about the shaders
+**Corrected after the owner pushed back, and the correction matters.** The first
+version of this item said the compute layer was roadmap. It is not: grilly ships
+**275 compiled SPIR-V shaders**, including a dedicated vector-symbolic set
+(`vsa-bind`, `vsa-bind-batch`, `vsa-bundle`, `vsa-bundle-batch`,
+`vsa-similarity-batch`, `vsa-fft-convolve`, `vsa-resonator-step`) alongside a full
+training and inference library.
 
-What *is* true and worth saying instead: the package is torch-free and CUDA-free,
-so it runs where CUDA is not available. That is the deployable claim. Vulkan
-acceleration belongs in the roadmap section (see B1), not the capability table.
+The real gap is one function. `cubbyllm/ops/vsa.py::_detect_backend()` returns
+`grilly_bridge` when `_bridge.blockcode_bind` exists — but `_load_grilly_ops()`
+unconditionally loads `grilly.experimental.vsa.block_ops.BlockCodeOps`, the
+**Python** ops. So `bind` / `unbind` / `bundle` route through Python even when the
+bridge is present and the SPIR-V is sitting right there. `TODO.md:37` states this
+precisely.
+
+A measurement caveat worth recording: `_detect_backend()` returns `numpy` on this
+machine in **both** the default interpreter and the serving venv, because grilly
+is not installed in either — it is a sibling checkout only. So a `numpy` reading
+here says nothing about whether the Vulkan path works; it says grilly is not on
+the path. The first version of this item drew the wrong conclusion from exactly
+that reading.
+
+So the draft's sentence is not false about the engine, only about the serving
+path. Say *"our own Vulkan compute engine"* in the capability table and keep the
+dispatch gap in the honest section until B1 lands.
 
 ### A3 [DOC] Precision 1.000 without coverage beside it
 The draft leads with *"a measured precision profile of exactly 1.000"* and never
@@ -65,11 +80,18 @@ taxonomy is the product.
 
 ## B. Build work the positioning implies but the repo has not done
 
-### B1 [BUILD] Make the Vulkan tier real, or retire it
-`TODO.md:49` already scopes this as **Grilly2** — rework grilly into a drop-in
-torch replacement on Vulkan. Until then `_detect_backend()` should not advertise a
-tier it does not dispatch to. Smallest honest fix: have it report what it will
-actually run.
+### B1 [BUILD] Dispatch to the shaders that already exist
+Not "build Vulkan support" — the SPIR-V is compiled and the VSA set is there (A2).
+The task is to make `_load_grilly_ops()` return the bridge ops when
+`_detect_backend()` found the bridge, instead of always returning the Python
+`BlockCodeOps`, and to put grilly on the serving environment's path so the tier is
+reachable at all. Then measure bind/unbind/bundle on both tiers and publish the
+ratio — a real number here is worth more to the positioning than the adjective
+"accelerated".
+
+`TODO.md:49` (**Grilly2**, the drop-in torch replacement) is the larger programme
+and is separate from this. Note `TODO.md:37`'s warning applies to a careless fix:
+do not dispatch without checking the bridge op's semantics match `BlockCodeOps`.
 
 ### B2 [BUILD] The fastword table is on a drive that is not attached
 `validation/exp_m3_cot_pipeline.py` hard-codes `V4_TABLE` to an absolute path on an
