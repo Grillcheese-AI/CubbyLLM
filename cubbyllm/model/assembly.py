@@ -78,13 +78,27 @@ class CubbyModel:
                     yield p
 
     def infer_context(self, tokens: "Tensor"):
-        """Pool the core embedding (tail off) into a router feature, infer c.
+        """Infer c at EVERY position, from the tokens up to and including it.
 
-        Uses ``ctx=None`` so the router feature does not depend on the very
-        context it is about to produce (no chicken-and-egg).
+        The router feature at position t is the running mean of the core
+        embedding (tail off) over tokens 0..t: exactly what :meth:`step`
+        accumulates one token at a time. So a training forward and a decode
+        see the same context at every position, and no position's context
+        depends on a later token. ``ctx=None`` so the feature does not depend
+        on the very context it is about to produce (no chicken-and-egg).
+        Returns a Context whose ``vector`` is (B, S, ctx_dim).
+
+        Until 2026-09-23 this mean-pooled the WHOLE sequence into one (B, d)
+        feature: in training, position t's context saw the tokens after t,
+        and decode, which cannot, ran under a different context from the one
+        the weights were trained with.
         """
-        core_feat = self.embedding.embed(tokens, ctx=None).mean(dim=1)  # (B, d)
-        return self.context_source.infer(core_feat)
+        import torch
+
+        e = self.embedding.embed(tokens, ctx=None).float()           # (B, S, d)
+        n = torch.arange(1, e.shape[1] + 1, device=e.device, dtype=e.dtype)
+        core_feat = e.cumsum(dim=1) / n.unsqueeze(-1)                # causal running mean
+        return self.context_source.infer(core_feat)                  # vector (B, S, ctx)
 
     def features(self, tokens: "Tensor") -> "Tensor":
         """The trunk representation h (B, S, d) — pre-head hidden states. Exposed
@@ -105,28 +119,103 @@ class CubbyModel:
         before, and the carried state is n_layers x (B, d) plus two context
         accumulators — it does not grow with context, unlike a KV cache. Without
         this, generation re-runs the whole prefix per token (O(S) work per token,
-        worse than attention-with-cache), which is what ``sample_text`` does today.
+        worse than attention-with-cache), which is what ``train_colab.sample_text``
+        still does; ``generate`` below is built on this method instead.
 
-        ONE DOCUMENTED DIFFERENCE FROM ``forward``: ``infer_context`` mean-pools
-        the embedding over the WHOLE sequence, so in training the context at
-        position t sees tokens after t. That is not reproducible causally, so
-        decode uses a running mean over tokens seen so far. Contexts therefore
-        differ slightly from a full forward on the same prefix; everything else
-        is exact (see tests/model/test_mingru_decode.py).
+        The context is the running mean of the core embedding over the tokens
+        seen so far, which is what ``infer_context`` computes at every position
+        of a training forward. Decode and forward therefore see the same
+        context (tests/model/test_causal_context.py); until 2026-09-23 the
+        forward pooled the whole sequence and the two differed.
+
+        **Both accumulators are device tensors updated in place**, and the
+        token count is one of them — a float32 scalar, not a Python int.
+        That looks like a pointless change until you try to record the step
+        and replay it (grilly2's ``graphed``, ``docs/capture.md``; CUDA
+        graphs, identically). A Python ``ctx_n`` is part of the call's
+        signature, so every token is a *new* signature, a recording is
+        taken and thrown away every time, and nothing ever replays — the
+        whole mechanism silently does nothing while looking like it works.
+        Counting on the device instead costs one 4-byte buffer and is
+        exact to 2**24 tokens.
+
+        In place, and returned, for the second half of the same contract:
+        a replay re-issues commands over the buffers the recording named,
+        so the state a replay produces has to *be* the state the next
+        replay reads. Returning fresh tensors would leave the wrapper
+        copying them back every token.
+
+        ``state=None`` builds one through :meth:`init_state`, which is the
+        only place this path allocates.
         """
         import torch
 
         if state is None:
-            state = {"bb": None, "ctx_sum": None, "ctx_n": 0}
+            state = self.init_state(token.shape[0], token.device)
         e = self.embedding.embed(token.unsqueeze(1), ctx=None)[:, 0]   # (B, d)
-        s = e if state["ctx_sum"] is None else state["ctx_sum"] + e
-        n = state["ctx_n"] + 1
+        s, n = state["ctx_sum"], state["ctx_n"]
+        s.add_(e)
+        n.add_(1.0)
         ctx = self.context_source.infer(s / n)                          # running mean
         x = self.embedding.embed(token.unsqueeze(1), ctx)[:, 0]
         y, bb = self.backbone.step(x, state["bb"])
         y = self.memory.forward_generated(y.unsqueeze(1), ctx)[:, 0]
         logits = self.head.logits(y.unsqueeze(1), self.retrieval_k)[:, 0]
         return logits, {"bb": bb, "ctx_sum": s, "ctx_n": n}
+
+    def init_state(self, batch: int = 1, device=None) -> dict:
+        """Every buffer a decode sequence needs, allocated once.
+
+        ``step`` allocates nothing once it has one of these, and that is
+        what makes a recorded step reusable across ``generate`` calls: the
+        first step used to build the backbone's episodic store, SimHash
+        projection and all, and ``torch.randn`` inside a capture is a host
+        write the replay cannot reproduce. A graphed step kept from an
+        earlier sequence therefore failed at its next capture rather than
+        at the call that caused it.
+
+        The context accumulators are seeded with zeros rather than with the
+        first embedding, so token 1 computes ``0 + e`` — exact, and the
+        same shapes as every later token.
+        """
+        import torch
+
+        d = self.config.d_model
+        bb = self.backbone.init_state(batch, device) if hasattr(self.backbone, "init_state") else None
+        return {"bb": bb,
+                "ctx_sum": torch.zeros(batch, d, device=device),
+                "ctx_n": torch.zeros((), device=device)}
+
+    def graphed_step(self):
+        """The step, recorded once and replayed, kept for this model.
+
+        One per model rather than one per ``generate``: a recording is
+        keyed by shape signature, and a decode step's signature is the same
+        for every sequence, so recapturing per call throws away a graph
+        that was about to be reused. It is built lazily because
+        ``ops.graph_step`` is the identity on a backend without capture and
+        there is then nothing to keep."""
+        from ..ops import graph_step
+
+        if getattr(self, "_graphed_step", None) is None:
+            self._graphed_step = graph_step(self.step)
+        return self._graphed_step
+
+    def generate(self, prompt_ids, state: "dict | None" = None, on_token=None, **cfg):
+        """Continue ``prompt_ids`` on the O(1) ``step`` path, with the
+        anti-repetition guards. ``cfg`` fields are ``DecodeConfig``'s (default:
+        greedy + repetition penalty 1.3 + 3-gram block). Returns (new ids, state);
+        pass ``state`` back to continue a conversation. See ``core/decoding.py``.
+
+        The step goes through :meth:`graphed_step`. On a backend with graph
+        capture that records the step once and replays it for every later
+        token, and the recording is kept on the model so a second
+        ``generate`` replays rather than recaptures; on a backend without,
+        it is the identity and this reads exactly as it did."""
+        from ..core.decoding import DecodeConfig, generate
+
+        return generate(self, prompt_ids, DecodeConfig(**cfg), state=state,
+                        on_token=on_token, step=self.graphed_step())
 
     def forward(self, tokens: "Tensor") -> "Tensor":
         """Context-threaded forward pass -> next-token logits (B, S, V).

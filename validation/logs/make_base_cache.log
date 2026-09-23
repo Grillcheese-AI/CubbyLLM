@@ -1,0 +1,30 @@
+  arxiv                12,253,094 ->     12,253,094 tokens
+  books               970,395,234 ->    195,986,560 tokens
+  fineweb_edu       1,938,323,258 ->    389,973,120 tokens
+  kbtxt               339,332,444 ->     70,157,440 tokens
+  nemotron_code     1,271,326,808 ->    256,803,968 tokens
+  nemotron_legal      724,676,124 ->    146,703,488 tokens
+  nemotron_qa       1,636,686,250 ->    329,155,712 tokens
+  pretrain_ext            890,721 ->        890,721 tokens
+  unified           6,426,274,403 ->  1,287,554,176 tokens
+  verified_facts      824,772,286 ->    166,626,432 tokens
+  wiki_full         3,044,756,203 ->    611,222,656 tokens
+  wikibooks           429,523,143 ->     87,983,232 tokens
+  wikipedia           125,395,015 ->    125,395,015 tokens
+
+shard              subset train  epochs of the subset in a 3.2B run
+arxiv                11,640,440    0.17
+books               193,986,560    1.28
+fineweb_edu         387,973,120    1.75
+kbtxt                68,157,440    1.28
+nemotron_code       254,803,968    0.94
+nemotron_legal      144,703,488    0.37
+nemotron_qa         327,155,712    0.94
+pretrain_ext            846,185    0.17
+unified           1,285,554,176    0.81
+verified_facts      164,626,432    0.37
+wiki_full           609,222,656    0.57
+wikibooks            85,983,232    1.28
+wikipedia           123,395,015    0.16
+
+total 14.7 GB in I:\grillcheese_training_data\token_cache_base

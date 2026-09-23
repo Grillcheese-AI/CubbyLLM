@@ -51,7 +51,7 @@ def test_context_is_threaded_and_frozen():
     import torch
 
     ctx = model.infer_context(torch.randint(0, V, (2, 5)))
-    assert ctx.vector.shape == (2, CTX)
+    assert ctx.vector.shape == (2, 5, CTX)        # one context per position (causal)
 
 
 def test_forward_docstring_threads_context():

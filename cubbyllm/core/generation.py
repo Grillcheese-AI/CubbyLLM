@@ -149,27 +149,55 @@ class BasisHyperGenerator:
         import torch
         import torch.nn.functional as F
 
-        h = F.gelu(self.ctx_norm(self.ctx_proj(ctx.vector)))      # (B, hidden)
+        # ctx.vector is (B, ctx_dim) at decode or (B, S, ctx_dim) in a causal
+        # training forward; every op below works on any leading dims.
+        h = F.gelu(self.ctx_norm(self.ctx_proj(ctx.vector)))      # (..., hidden)
         emb = self.layer_emb[int(layer_id) % self.n_layers]        # (hidden,)
-        h = torch.cat([h, emb.expand(h.shape[0], -1)], dim=-1)     # (B, 2*hidden)
-        return self.mix(h)                                         # (B, n_basis)
+        h = torch.cat([h, emb.expand(*h.shape[:-1], -1)], dim=-1)  # (..., 2*hidden)
+        return self.mix(h)                                         # (..., n_basis)
 
     def factors(self, ctx: "Context", layer_id: int = 0):
         """The (A, B) low-rank factors — the form to actually compute with."""
         import torch
 
         c = self._coeffs(ctx, layer_id)
-        A = torch.einsum("bn,nrd->brd", c, self.A_basis)           # (B, rank, d)
-        B = torch.einsum("bn,ndr->bdr", c, self.B_basis)           # (B, d, rank)
+        A = torch.einsum("...n,nrd->...rd", c, self.A_basis)       # (..., rank, d)
+        B = torch.einsum("...n,ndr->...dr", c, self.B_basis)       # (..., d, rank)
         return A, B
 
     def apply(self, x: "Tensor", ctx: "Context", layer_id: int = 0) -> "Tensor":
-        """x @ W^T computed as (x @ A^T) @ B^T — never builds the d x d matrix."""
+        """x @ W(c)^T with W = B(c) @ A(c), one transform PER CONTEXT ROW.
+
+        ``ctx.vector`` is (B, ctx_dim) — one context per sample, the decode
+        shape — or (B, S, ctx_dim) — one per position, the causal training
+        shape (``CubbyModel.infer_context``). Its leading dims broadcast
+        against ``x``'s, so a (1, ctx_dim) context is shared by the batch.
+
+        Neither the d x d matrix nor the per-row factors are built. A(c) and
+        B(c) are both linear in the coefficients, so
+
+            x @ A(c)^T  = sum_n c_n (x @ A_n^T)
+            xa @ B(c)^T = sum_n c_n (xa @ B_n^T)
+
+        and both contractions run against the stacked bases — two matmuls of
+        (..., d) against (d, n_basis*rank) — with the coefficients applied on
+        the small (..., n_basis, rank) side. Per-position factors would cost
+        B*S*rank*d floats each; this costs B*S*n_basis*rank.
+
+        Until 2026-09-23 this averaged A and B over the batch ("shared
+        context"): in training every sample was transformed by the batch's mean
+        adapter, while decode (batch 1) used its own. Per row is what decode
+        always did; training now matches it.
+        """
         import torch
 
-        A, B = self.factors(ctx, layer_id)
-        A, B = A.mean(dim=0), B.mean(dim=0)                        # shared context
-        return torch.einsum("...d,rd->...r", x, A) @ B.t()
+        c = self._coeffs(ctx, layer_id)                            # (..., n)
+        while c.dim() < x.dim():                                   # (B, n) vs (B, S, d)
+            c = c.unsqueeze(-2)
+        xa = torch.einsum("...d,nrd->...nr", x, self.A_basis)      # (..., n, r)
+        xa = (xa * c.unsqueeze(-1)).sum(dim=-2)                    # (..., r) = x A(c)^T
+        y = c.unsqueeze(-1) * xa.unsqueeze(-2)                     # (..., n, r)
+        return torch.einsum("...nr,ndr->...d", y, self.B_basis)    # (..., d)
 
     def generate(self, ctx: "Context", layer_id: int = 0) -> GeneratedParams:
         """Materialise the flat d*d block. Drop-in for ``ParameterGenerator``;
@@ -177,8 +205,8 @@ class BasisHyperGenerator:
         import torch
 
         A, B = self.factors(ctx, layer_id)
-        W = torch.einsum("bdr,brk->bdk", B, A)                     # (B, d, d)
-        return GeneratedParams(weights=W.reshape(W.shape[0], -1),
+        W = torch.einsum("...dr,...rk->...dk", B, A)               # (..., d, d)
+        return GeneratedParams(weights=W.reshape(*W.shape[:-2], -1),
                                meta={"source_id": ctx.source_id, "layer_id": layer_id})
 
 

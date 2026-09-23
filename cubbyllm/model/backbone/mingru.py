@@ -111,11 +111,33 @@ class _MinGRUMixer(nn.Module):
         Must agree with ``forward`` to floating-point tolerance — see
         tests/model/test_mingru_decode.py, which is what makes any throughput
         comparison meaningful rather than a measurement of a different model.
+
+        **The state is one buffer, updated in place, and it is also the
+        return value.** Both matter for graph capture (``docs/capture.md``
+        in grilly2, CUDA graphs for the same reasons). In place, so a
+        replayed step writes the recurrence into the buffer its commands
+        already name; returned, so the caller hands back the same object
+        next token and the replay copies nothing. The seed is a zero
+        buffer rather than the old ``h_prev is None`` branch, which is
+        exact — ``a * 0 + x_scan`` is ``x_scan`` — and which is what makes
+        the carried state the same shape from the very first token instead
+        of only from the second.
+
+        The consequence to know: the returned ``h`` **is** the state, so
+        it is overwritten by the next call. Both trunks add it into ``x_t``
+        immediately; anything that wants to keep it must clone it.
         """
         x_scan = torch.sigmoid(self.proj_g(x_t)) * torch.tanh(self.proj_v(x_t))
         a = 0.001 + 0.998 * torch.sigmoid(self.proj_d(x_t))
-        h = x_scan if h_prev is None else a * h_prev + x_scan
+        h = self.init_state(x_t.shape[0], x_t.device, x_t.dtype) if h_prev is None else h_prev
+        h.mul_(a).add_(x_scan)
         return h, h
+
+    def init_state(self, batch: int, device=None, dtype=None):
+        """The carried hidden state, zeroed. ``step`` allocates nothing
+        after this — see ``HybridBackbone.init_state`` for why that is what
+        makes a recorded step reusable."""
+        return torch.zeros(batch, self.proj_g.out_features, device=device, dtype=dtype)
 
 
 class MinGRUBackbone(nn.Module):

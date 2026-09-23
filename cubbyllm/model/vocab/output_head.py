@@ -75,17 +75,41 @@ class TopKRetrievalHead:
         return iter([self._param]) if self.learnable else iter(())
 
     def _codes(self) -> "Tensor":
-        import torch.nn.functional as F
-
         # learnable head is a plain linear projection; fixed head is cosine.
         return self._param if self.learnable else self.codebook
+
+    def quantize_(self) -> "TopKRetrievalHead":
+        """Replace the codebook with a weight-only int8 one, in place.
+
+        Opt-in, inference-only, and irreversible for this object — the
+        float32 codebook is dropped. At the real head shape it is the
+        largest tensor in the model and decode reads all of it per token,
+        so it is the one place weight-only int8 clearly pays; see
+        ``cubbyllm.ops.quant`` for the measurement and for why the
+        activations stay float32.
+
+        Raises on a backend with no int8 path rather than leaving float32
+        in place, so a benchmark cannot report an unquantized run as a
+        quantized one. ``ops.int8_available()`` asks first.
+        """
+        from ...ops import int8_weight_only
+
+        if self.learnable:
+            self._param = int8_weight_only(self._param)
+        else:
+            self.codebook = int8_weight_only(self.codebook)
+        return self
 
     def logits(self, query: "Tensor", k: int) -> "Tensor":
         import torch
         import torch.nn.functional as F
 
         q = query if self.learnable else F.normalize(query, dim=-1)
-        sims = q @ self._codes().t() * self.temperature        # (..., V)
+        # F.linear, not `q @ codes.t()`: identical arithmetic — the same
+        # kernel with the weight read transposed — but it is the call a
+        # quantized weight can answer with its own kernel, and it does not
+        # ask the backend to materialize a (V, d) transpose first.
+        sims = F.linear(q, self._codes()) * self.temperature   # (..., V)
         k = min(int(k), self.vocab)
         if k >= self.vocab:
             return sims                                        # full softmax

@@ -66,6 +66,7 @@ import torch.utils.checkpoint
 
 from ...core.protocols import Wiring
 from ..recall import EpisodicStore, MemoryRead
+from ..recall.store import DEFAULT_CAPACITY
 from .mingru import _MinGRUMixer, _RMSNorm, _SwiGLU
 
 try:  # torch >= 2.5; used on CUDA where it does only the banded work
@@ -173,47 +174,94 @@ class _WindowedAttnMixer(nn.Module):
         return x.is_cuda
 
     def step(self, x_t, cache=None):
-        """One token. x_t: (B, d). cache: (k, v, pos) with k,v each
-        (B, h, <=window, dh) and pos a 0-dim tensor (the next absolute position),
-        or None to start.
+        """One token. x_t: (B, d). cache: what ``init_state`` returns —
+        two preallocated ``(B, h, window, dh)`` rings, a float32 position,
+        an int64 ring slot, an additive liveness mask and a preallocated
+        one — or None to start.
 
         RoPE is applied at the token's ABSOLUTE position before caching, so a
         retained key keeps the rotation it had in ``forward`` even after the window
         slides — which is why the query (rotated at the current position) dotted
         against the cached keys reproduces the masked parallel attention exactly.
-        State is bounded by ``window`` (plus one scalar); it never grows with
-        context length.
+
+        **The cache is a ring, not a list that grows into a window.** The
+        old version concatenated the new key onto the cache and trimmed to
+        the last ``window``, so the state's *shape* changed on every one of
+        the first ``window`` tokens. Bounded state is still bounded that
+        way, but a step whose shapes change every token can never be
+        recorded and replayed — each token is a new graph signature, so a
+        capture is taken and thrown away ``window`` times and the decode
+        loop pays the Python every token anyway. Here the rings are full
+        size from token 0, the new key is written in place at
+        ``pos % window``, and a validity mask hides the slots not written
+        yet. State size is constant **from token 1**, which is the property
+        capture needs and the one the old trim did not have.
+
+        The ring attends over its slots in ring order rather than in time
+        order. Attention is a softmax over the keys and a sum over the
+        values weighted by it, so permuting the (key, value) pairs together
+        permutes nothing about the result but the order the sum is
+        accumulated in — equal to the old path within float32
+        reassociation, which is what ``test_hybrid.py`` asserts.
 
         The position stays a **tensor** the whole way through: it is rotated
-        into RoPE by device ops and advanced by ``pos_t + 1``, never read back
-        with ``int()``. Reading it would make the step's work depend on a host
-        value, which is what stops a step being recorded once and replayed
-        (grilly's ``graphed``, torch's CUDA graphs). It is float32, exact to
-        2**24 positions, because an int64 scalar add has to build its operand
-        on the host.
+        into RoPE by device ops and advanced in place by ``add_(1.0)``,
+        never read back with ``int()``. The ring slot is a second, integer
+        counter advanced beside it rather than re-derived from the float
+        position (see ``init_state``).
+        Reading it would make the step's work depend on a host value, which
+        is what stops a step being recorded once and replayed (grilly's
+        ``graphed``, torch's CUDA graphs). It is float32, exact to 2**24
+        positions, because an int64 scalar add has to build its operand on
+        the host.
         """
         B, d = x_t.shape
-        if cache is None:
-            kc = vc = None
-            pos_t = torch.zeros((), device=x_t.device)
-        else:
-            kc, vc, pos_t = cache
+        W = self.window
+        state = self.init_state(B, x_t.device, x_t.dtype) if cache is None else cache
+        k_ring, v_ring, pos, slot, live, one = state
         q, k, v = self.qkv(x_t).chunk(3, -1)
         q = q.view(B, self.h, 1, self.dh)
         k = k.view(B, self.h, 1, self.dh)
         v = v.view(B, self.h, 1, self.dh)
-        cos, sin = _rope_tables(self.dh, pos_t.reshape(1), x_t.device)
+        cos, sin = _rope_tables(self.dh, pos.reshape(1), x_t.device)
         cos, sin = cos.view(1, 1, 1, self.dh), sin.view(1, 1, 1, self.dh)
         q, k = _apply_rope(q, cos, sin), _apply_rope(k, cos, sin)
-        if kc is not None:
-            k = torch.cat([kc, k], dim=2)
-            v = torch.cat([vc, v], dim=2)
-        if k.shape[2] > self.window:                     # keep only the last window
-            k, v = k[:, :, -self.window:], v[:, :, -self.window:]
-        # every cached key is a valid (past-or-current, within-window) attendee,
-        # so no mask is needed — the trim already enforces the window.
-        o = F.scaled_dot_product_attention(q, k, v)
-        return self.o(o.reshape(B, d)), (k, v, pos_t + 1)
+        k_ring.index_copy_(2, slot, k)
+        v_ring.index_copy_(2, slot, v)
+        live.index_fill_(0, slot, 0.0)          # this slot now holds a real key
+        o = F.scaled_dot_product_attention(q, k_ring, v_ring,
+                                           attn_mask=live.view(1, 1, 1, W))
+        slot.copy_(torch.remainder(slot + one, W))
+        pos.add_(1.0)
+        return self.o(o.reshape(B, d)), state
+
+    def init_state(self, batch: int, device=None, dtype=None):
+        """Every buffer one decode sequence needs, allocated once.
+
+        ``step`` allocates nothing after this, which is what lets a single
+        recorded step be replayed across calls: an allocation inside a
+        capture pins a buffer the next capture would have to make again,
+        and `torch.randn` inside one is a host write the replay cannot
+        reproduce at all.
+
+        The slot is an **int64 counter advanced by a device add**, not
+        ``pos % window`` recomputed from the float position every token.
+        Both give the same number; the float route cost 20 dispatches
+        (a divide, a floor, a multiply, a subtract, two sign repairs and a
+        cast) against three. ``one`` is preallocated for the same reason a
+        capture refuses ``torch.tensor(1)``: an int64 scalar is built on
+        the host.
+
+        Liveness is an additive mask — ``0`` for a slot written, ``-inf``
+        for one not — rather than ``arange(window) < pos + 1`` rebuilt per
+        token."""
+        z = dict(device=device)
+        k_ring = torch.zeros(batch, self.h, self.window, self.dh, dtype=dtype, **z)
+        return (k_ring, torch.zeros_like(k_ring),
+                torch.zeros((), **z),
+                torch.zeros(1, dtype=torch.int64, **z),
+                torch.full((self.window,), float("-inf"), **z),
+                torch.ones(1, dtype=torch.int64, **z))
 
 
 class HybridBackbone(nn.Module):
@@ -228,7 +276,8 @@ class HybridBackbone(nn.Module):
 
     def __init__(self, d_model: int, n_layers: int = 2, attn_every: int = 3,
                  window: int = 512, heads: int = 4, grad_checkpoint: bool = False,
-                 mem_every: int = 0, mem_topk: int = 8, mem_key: int = 64):
+                 mem_every: int = 0, mem_topk: int = 8, mem_key: int = 64,
+                 mem_capacity: int = DEFAULT_CAPACITY):
         super().__init__()
         self.d_model = int(d_model)
         self.attn_every = int(attn_every)
@@ -249,6 +298,7 @@ class HybridBackbone(nn.Module):
         self.mem_every = int(mem_every)
         self.mem_topk = int(mem_topk)
         self.mem_key = int(mem_key)
+        self.mem_capacity = int(mem_capacity)
         self.is_mem = [bool(self.mem_every) and (i % self.mem_every == 0)
                        for i in range(n_layers)]
         self.mem_n = nn.ModuleList([_RMSNorm(d_model) if a else nn.Identity()
@@ -280,28 +330,43 @@ class HybridBackbone(nn.Module):
         With ``mem_every=0`` (the default) this is byte-for-byte the original
         behaviour: ``states`` is a plain per-layer list. With ``mem_every>0``,
         ``states`` becomes ``{"mix": [...], "mem": {layer_idx: {"store":
-        EpisodicStore, "buf": [...]}}}`` — the mixer states plus, per memory
-        layer, a growing ``EpisodicStore`` and a small FIFO buffer of the last
-        ``window`` (k, v) pairs that have NOT yet been written to the store.
+        EpisodicStore, "k_ring": ..., "v_ring": ..., "pos": ...}}}`` — the
+        mixer states plus, per memory layer, a fixed-capacity store and a
+        ``window``-slot ring of the (k, v) pairs not yet written into it.
 
         Causal contract (must match ``forward``'s ``j < i - window`` mask
-        exactly): the buffer holds the ``window`` most recent tokens' (k, v) —
+        exactly): the ring holds the ``window`` most recent tokens' (k, v) —
         exactly the ones ``forward`` excludes as "inside the window" — and only
-        the token falling OFF the back of that FIFO (now older than ``window``
+        the token falling OFF the back of it (now older than ``window``
         steps) gets written into the store. So at step t, the store the read
         queries holds exactly tokens ``0 .. t-window-1``: the same beyond-window
         candidate set ``forward`` computes for query i=t. Retrieval is by
         ``EpisodicStore.retrieve_cosine`` — the same selection metric
         ``MemoryRead.forward`` now uses — so the two paths pick the same top-K.
 
-        State per recurrent layer is (B, d); per attention layer it is a KV cache
-        (B, h, <=window, dh) — bounded by ``window``, so the TOTAL carried
-        MIXER state stops growing once context exceeds the window, unlike a full
-        KV cache. Both mixers expose ``step(x_t, state) -> (out, new_state)``, so
-        the mixer loop is uniform. Inference-only: never grad-checkpointed, runs
-        under no_grad. (The per-layer ``EpisodicStore`` itself grows with
-        context off the recurrent path, by design — only the COMPUTE per step,
-        the top-K read, stays bounded.)
+        **The ring is the FIFO.** The old version kept a Python list and
+        popped its head once ``len(buf) > window``, which is a host branch
+        on a host length — unrecordable, and a new graph signature on every
+        one of the first ``window`` tokens besides. A ring of exactly
+        ``window`` slots needs neither: the entry sitting at ``pos %
+        window`` *is* the token ``window`` steps old, so reading that slot
+        before overwriting it with the current token ages exactly one
+        token per step, with no length, no branch and no growth.
+
+        State per recurrent layer is (B, d); per attention layer it is a KV
+        ring (B, h, window, dh); per memory layer a (window, d_key) and a
+        (window, d_model) ring plus a 4-byte position. All of it is
+        constant in size **from the first token**, and the store is
+        constant too — which is what lets the whole step be recorded once
+        and replayed (grilly2's ``docs/capture.md``). Both mixers expose
+        ``step(x_t, state) -> (out, new_state)``, so the mixer loop is
+        uniform. Inference-only: never grad-checkpointed, runs under
+        no_grad.
+
+        What the fixed store costs, stated rather than buried: beyond
+        ``mem_capacity`` tokens of aged-out history the oldest entry is
+        overwritten, where the old store kept everything. H-A8 in
+        CUBBYLLM_HYPOTHESES.md carries the claim and the kill criterion.
 
         v1 scope: memory-enabled decode (``mem_every>0``) is single-sequence
         (B=1). Each memory layer keeps ONE ``EpisodicStore``, not one per batch
@@ -311,7 +376,7 @@ class HybridBackbone(nn.Module):
         """
         n = len(self.mix)
         if self.mem_every <= 0:
-            states = [None] * n if states is None else states
+            states = self.init_state(x_t.shape[0], x_t.device, x_t.dtype) if states is None else states
             new_states = []
             for i in range(n):
                 h, s = self.mix[i].step(self.n1[i](x_t), states[i])
@@ -322,37 +387,93 @@ class HybridBackbone(nn.Module):
 
         assert x_t.shape[0] == 1, "memory-enabled decode (mem_every>0) supports batch size 1 only"
         if states is None:
-            states = {
-                "mix": [None] * n,
-                "mem": {i: {"store": EpisodicStore(self.mem_key, self.d_model), "buf": []}
-                       for i in range(n) if self.is_mem[i]},
-            }
+            states = self.init_state(x_t.shape[0], x_t.device, x_t.dtype)
         mixs, mems = states["mix"], states["mem"]
         new_mix = []
         for i in range(n):
             h, s = self.mix[i].step(self.n1[i](x_t), mixs[i])
             x_t = x_t + h
             if self.is_mem[i]:
-                st = mems[i]
-                store, buf = st["store"], st["buf"]
-                q, k, v = self.mem[i].qkv(self.mem_n[i](x_t))    # (B,dk),(B,dk),(B,d)
-                # Retrieve from what is ALREADY in the store (0..t-window-1),
-                # THEN buffer/age-out the current token — never read what was
-                # just written, that would violate the causal mask forward uses.
-                if len(store) > 0:
-                    kk = min(self.mem_topk, len(store))
-                    k_top, v_top = store.retrieve_cosine(q[0], kk)       # (kk,dk),(kk,d)
-                    r = self.mem[i].read(q.unsqueeze(1),                 # (B,1,dk)
-                                         k_top.unsqueeze(0).unsqueeze(0),  # (1,1,kk,dk)
-                                         v_top.unsqueeze(0).unsqueeze(0))  # (1,1,kk,d)
-                    x_t = x_t + r[:, 0]
-                buf.append((k, v))
-                if len(buf) > self.window:          # oldest token just fell out of window
-                    k_old, v_old = buf.pop(0)
-                    store.write(k_old, v_old)
+                x_t = self._memory_step(i, x_t, mems[i])
             x_t = x_t + self.ffn[i](self.n2[i](x_t))
             new_mix.append(s)
         return x_t, {"mix": new_mix, "mem": mems}
+
+    def init_state(self, batch: int = 1, device=None, dtype=None):
+        """Every decode buffer this backbone needs, allocated once.
+
+        ``step`` allocates nothing once it has one. That is what makes a
+        recorded step reusable across calls: the first step used to build
+        the episodic store — `torch.randn` for the SimHash projection and
+        all — and a capture cannot contain a host write, so a graphed step
+        held over from an earlier sequence failed at the capture rather
+        than at the call that caused it."""
+        mix = [m.init_state(batch, device, dtype) if hasattr(m, "init_state") else None
+               for m in self.mix]
+        if self.mem_every <= 0:
+            return mix
+        return {"mix": mix,
+                "mem": {i: self._new_mem_state(device) for i in range(len(self.mix))
+                        if self.is_mem[i]}}
+
+    def _new_mem_state(self, device) -> dict:
+        """One memory layer's decode state.
+
+        The store, the window-length ring that ages into it, and three
+        counters: the float position (RoPE and the causal rule read it),
+        the int64 ring slot, and the int64 store row. The last two are
+        advanced by device adds rather than recomputed from the position —
+        ``pos % window`` and ``clamp(pos - window, 0) % capacity`` in float
+        cost 42 dispatches a token between them, against about eight."""
+        return {
+            "store": EpisodicStore(self.mem_key, self.d_model,
+                                   capacity=self.mem_capacity, hamming=False,
+                                   device=device),
+            "k_ring": torch.zeros(self.window, self.mem_key, device=device),
+            "v_ring": torch.zeros(self.window, self.d_model, device=device),
+            "pos": torch.zeros((), device=device),
+            "slot": torch.zeros(1, dtype=torch.int64, device=device),
+            "aged": torch.zeros(1, dtype=torch.int64, device=device),
+            "one": torch.ones(1, dtype=torch.int64, device=device),
+            "zero": torch.zeros(1, device=device),
+            "dead": torch.full((1,), float("-inf"), device=device),
+        }
+
+    def _memory_step(self, i: int, x_t, st: dict):
+        """Read the beyond-window past, then age one token into the store.
+
+        Order is the causal contract: the read must not see the token this
+        step is about to write, because ``forward``'s mask does not
+        (``j < i - window``). Every index here is a device tensor, so the
+        whole thing records and replays."""
+        store, k_ring, v_ring = st["store"], st["k_ring"], st["v_ring"]
+        pos, slot, aged = st["pos"], st["slot"], st["aged"]
+        one, zero, dead, W = st["one"], st["zero"], st["dead"], self.window
+        q, k, v = self.mem[i].qkv(self.mem_n[i](x_t))            # (B,dk),(B,dk),(B,d)
+
+        k_top, v_top, ok = store.retrieve_cosine(q[0], self.mem_topk, return_valid=True)
+        r = self.mem[i].read(q.unsqueeze(1),                     # (B,1,dk)
+                             k_top.unsqueeze(0).unsqueeze(0),    # (1,1,K,dk)
+                             v_top.unsqueeze(0).unsqueeze(0),    # (1,1,K,d)
+                             valid=ok.view(1, 1, -1))
+        x_t = x_t + r[:, 0]        # exactly zero until the store has an entry
+
+        # One predicate decides both things this step does differently
+        # before the window has filled: whether the entry it ages into the
+        # store is real, and whether the store row advances. Below the
+        # window every step writes the ring's zeros into row 0 and marks
+        # that row dead, so the command stream is the same shape from
+        # token 1 and nothing downstream ever sees the row.
+        aged_is_real = pos >= float(W)
+        store.write_at(aged,
+                       k_ring.index_select(0, slot), v_ring.index_select(0, slot),
+                       torch.where(aged_is_real, zero, dead))
+        k_ring.index_copy_(0, slot, k)
+        v_ring.index_copy_(0, slot, v)
+        slot.copy_(torch.remainder(slot + one, W))
+        aged.copy_(torch.remainder(aged + aged_is_real.long(), store.capacity))
+        pos.add_(1.0)
+        return x_t
 
     def forward(self, x: "torch.Tensor") -> "torch.Tensor":
         ckpt = self.grad_checkpoint and torch.is_grad_enabled()

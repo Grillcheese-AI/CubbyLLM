@@ -51,10 +51,16 @@ def test_step_matches_forward_over_a_whole_sequence():
         f"{(parallel - incremental).abs().max():.2e}")
 
 
-def test_state_stops_growing_once_context_exceeds_the_window():
-    """The deployable property: total carried state is bounded by the window, so
-    it is CONSTANT for any context length >= window — unlike a full KV cache,
-    which grows without bound."""
+def test_state_size_is_constant_from_the_first_token():
+    """The deployable property, and stronger than it used to be.
+
+    The old cache concatenated and trimmed, so the state grew for the
+    first ``window`` tokens and was constant only after that — bounded,
+    but a different shape every token while it filled. Bounded is what
+    makes decode O(1) in context; *constant from token 1* is what makes
+    the step recordable, because a step whose shapes change every token
+    gets a new graph signature every token and never replays. The ring
+    gives both, so this asserts both."""
     bb = _backbone()
 
     def state_numel(S_):
@@ -67,11 +73,8 @@ def test_state_stops_growing_once_context_exceeds_the_window():
             tot += s.numel() if torch.is_tensor(s) else sum(t.numel() for t in s)
         return tot
 
-    past = [state_numel(n) for n in (W, 2 * W, 4 * W)]   # all >= window
-    assert len(set(past)) == 1, f"state grew past the window: {past}"
-    # and it is genuinely bounded: attention layers cap at window, not context
-    below, at = state_numel(W // 2), past[0]
-    assert below < at, "state should still be filling below the window"
+    sizes = [state_numel(n) for n in (1, 2, W // 2, W, 2 * W, 4 * W)]
+    assert len(set(sizes)) == 1, f"state size is not constant: {sizes}"
 
 
 def test_full_kv_would_grow_but_this_does_not():
@@ -88,7 +91,7 @@ def test_full_kv_would_grow_but_this_does_not():
         # sum the KV-cache lengths across attention layers
         return sum(s[0].shape[2] for s in states if not torch.is_tensor(s))
 
-    assert attn_state(W) == attn_state(4 * W) == bb.n_attn_layers * W
+    assert attn_state(1) == attn_state(W) == attn_state(4 * W) == bb.n_attn_layers * W
 
 
 def test_resuming_from_carried_state_matches_one_pass():

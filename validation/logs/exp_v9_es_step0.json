@@ -1,0 +1,1667 @@
+{
+ "emitter": "llama-cpp:LFM2.5-2.6B.Q4_K_M.gguf",
+ "n": 160,
+ "shim": true,
+ "summary": {
+  "arithmetic": {
+   "n": 40,
+   "executes": 1.0,
+   "gold_match": 0.775,
+   "text_exact": 0.0
+  },
+  "kernel": {
+   "n": 12,
+   "executes": 0.9166666666666666,
+   "gold_match": 0.5833333333333334,
+   "text_exact": 0.0
+  },
+  "kernel/game:compare": {
+   "n": 6,
+   "executes": 1.0,
+   "gold_match": 1.0,
+   "text_exact": 1.0
+  },
+  "kernel/game:compose": {
+   "n": 3,
+   "executes": 0.6666666666666666,
+   "gold_match": 0.6666666666666666,
+   "text_exact": 0.6666666666666666
+  },
+  "kernel/game:count": {
+   "n": 10,
+   "executes": 1.0,
+   "gold_match": 1.0,
+   "text_exact": 1.0
+  },
+  "kernel/game:decision": {
+   "n": 9,
+   "executes": 1.0,
+   "gold_match": 1.0,
+   "text_exact": 1.0
+  },
+  "plan": {
+   "n": 40,
+   "executes": 1.0,
+   "gold_match": null,
+   "text_exact": 0.975
+  },
+  "role_binding": {
+   "n": 40,
+   "executes": 1.0,
+   "gold_match": null,
+   "text_exact": 0.175
+  }
+ },
+ "rows": [
+  {
+   "id": "arithmetic-c8ff0846c341",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "1000",
+   "gold": 1000,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Five years ago, there were 500 old books in the library. Two years ago, the librarian bought 300 books. Last year, the librarian bought 100 more books than she had bought the previous year. This year, the librarian donated 200 of the library's old books. How many books are in the library now?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 500 + 300 = 800\n        assign s0 = 500;\n        add s0, 300;\n        create s1 : quantity;   # step 1: 300 + 100 = 400\n        assign s1 = 300;\n        add s1, 100;\n        create s2 : quantity;   # step 2: 800 + 400 = 1200\n        assign s2 = 0;\n        add s2, s0;\n        add s2, s1;\n        create s3 : quantity;   # step 3: 1200 - 200 = 1000\n        assign s3 = 0;\n        add s3, s2;\n        sub s3, 200;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-44ca42c9680a",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "153",
+   "gold": 153,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Ephraim has two machines that make necklaces for his store. On Sunday the first machine made 45 necklaces. The second machine made 2.4 times as many necklaces as the first machine. How many necklaces were made in total on Sunday?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 45 * 2.4 = 108\n        assign s0 = 45;\n        mul s0, 2.4;\n        create s1 : quantity;   # step 1: 108 + 45 = 153\n        assign s1 = 0;\n        add s1, s0;\n        add s1, 45;\n        sum s1;\n        query s1;\n        return s1;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-36dc05700547",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "40.5",
+   "gold": 28,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# Allison went to the craft store with her friend Marie to buy some glue sticks and construction paper. Allison bought 8 more glue sticks than Marie, but Marie bought six times as many packs of construction paper as Allison. If Marie bought 15 glue sticks and 30 packs of construction paper how many craft supply items did Allison buy all together?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 15 / 6 = 2.5\n        assign s0 = 15;\n        div s0, 6;\n        create s1 : quantity;   # step 1: 2.5 + 8 = 10.5\n        assign s1 = 0;\n        add s1, s0;\n        add s1, 8;\n        create s2 : quantity;   # step 2: 10.5 + 30 = 40.5\n        assign s2 = 0;\n        add s2, s1;\n        add s2, 30;\n        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-56973c9287d0",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "8",
+   "gold": 8,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# There were 25 peaches in each basket. Five baskets of peaches were delivered to a market. The farmers have eaten 5 peaches. The remaining peaches are packed into smaller boxes of 15 each. How many boxes of peaches are there?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 25 * 5 = 125\n        assign s0 = 25;\n        mul s0, 5;\n        create s1 : quantity;   # step 1: 125 - 5 = 120\n        assign s1 = 0;\n        add s1, s0;\n        sub s1, 5;\n        create s2 : quantity;   # step 2: 120 / 15 = 8\n        assign s2 = 0;\n        add s2, s1;\n        div s2, 15;\n        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-446c3e2c2092",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "18",
+   "gold": 18,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# You have 32$ to spend on groceries.  You buy a loaf of bread for 3$, a candy bar for 2$, and 1/3 of whats left on a Turkey.  How much money do you have left?\nprogram GSM685 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 32 - 3 = 29\n        assign s0 = 32;\n        sub s0, 3;\n        create s1 : quantity;   # step 1: 29 - 2 = 27\n        assign s1 = 0;\n        add s1, s0;\n        sub s1, 2;\n        create s2 : quantity;   # step 2: 27 / 3 = 9\n        assign s2 = 0;\n        add s2, s1;\n        div s2, 3;\n        create s3 : quantity;   # step 3: 27 - 9 = 18\n        assign s3 = 0;\n        add s3, s1;\n        sub s3, s2;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-5aff99506598",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "10",
+   "gold": 10,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# A sack of rice, which is 50 kilograms,  costs $50. If David sells it for $1.20 per kilogram, how much will be his profit?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 50 * 1.2 = 60\n        assign s0 = 50;\n        mul s0, 1.2;\n        create s1 : quantity;   # step 1: 60 - 50 = 10\n        assign s1 = 0;\n        add s1, s0;\n        sub s1, 50;\n        sum s1;\n        query s1;\n        return s1;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-0ae8a3bb1141",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "200",
+   "gold": 100,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# At a birthday party, 30% of the guests are married, 50% are single, and the rest are children. If there are 1000 guests, how many more married people are there than children?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 30 / 100 = 0.3\n        assign s0 = 30;\n        div s0, 100;\n        create s1 : quantity;   # step 1: 0.3 * 1000 = 300\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, 1000;\n        create s2 : quantity;   # step 2: 50 / 100 = 0.5\n        assign s2 = 50;\n        div s2, 100;\n        create s3 : quantity;   # step 3: 0.5 * 1000 = 500\n        assign s3 = 0;\n        add s3, s2;\n        mul s3, 1000;\n        create s4 : quantity;   # step 4: 1000 - 500 = 500\n        assign s4 = 1000;\n        sub s4, s3;\n        create s5 : quantity;   # step 5: 500 - 300 = 200\n        assign s5 = 0;\n        add s5, s4;\n        sub s5, s1;\n        sum s5;\n        query s5;\n        return s5;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-43206874d526",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "10",
+   "gold": 10,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Marnie opens a bag of chips and eats 5 of them to see if she likes them. She does, so she eats 5 more. The bag has 100 chips in it and starting on the second day she has them, Marnie eats 10 each day. How many days does it take for Marnie to eat the whole bag of chips?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 5 + 5 = 10\n        assign s0 = 5;\n        add s0, 5;\n        create s1 : quantity;   # step 1: 100 - 10 = 90\n        assign s1 = 100;\n        sub s1, s0;\n        create s2 : quantity;   # step 2: 90 / 10 = 9\n        assign s2 = 0;\n        add s2, s1;\n        div s2, s0;\n        create s3 : quantity;   # step 3: 1 + 9 = 10\n        assign s3 = 1;\n        add s3, s2;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-743895c68f65",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "125",
+   "gold": 125,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Hanna has $300. She wants to buy roses at $2 each and give some of the roses to her friends, Jenna and Imma. Jenna will receive  1/3 of the roses, and  Imma will receive 1/2 of the roses. How many roses does Hanna give to her friends?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 300 / 2 = 150\n        assign s0 = 300;\n        div s0, 2;\n        create s1 : quantity;   # step 1: 150 / 3 = 50\n        assign s1 = 0;\n        add s1, s0;\n        div s1, 3;\n        create s2 : quantity;   # step 2: 150 / 2 = 75\n        assign s2 = 0;\n        add s2, s0;\n        div s2, 2;\n        create s3 : quantity;   # step 3: 50 + 75 = 125\n        assign s3 = 0;\n        add s3, s1;\n        add s3, s2;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-5220176b4ada",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "6",
+   "gold": 6,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# To improve her health, Mary decides to drink 1.5 liters of water a day as recommended by her doctor. Mary's glasses hold 250 mL of water. How many glasses of water should Mary drink per day to reach her goal?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 1.5 * 1000 = 1500\n        assign s0 = 1.5;\n        mul s0, 1000;\n        create s1 : quantity;   # step 1: 1500 / 250 = 6\n        assign s1 = 0;\n        add s1, s0;\n        div s1, 250;\n        sum s1;\n        query s1;\n        return s1;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-e7ba8e4edf6b",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "1250",
+   "gold": 1250,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Miles and Daphne are comparing their reading collection and want to figure out who has more pages. They are about to count each page, but their parents suggest that they see whose collection is taller. Mile's collection is taller, but then Daphne notices that Miles reads board books, and so the pages are thicker. After some more measuring, they figure out that for Miles, 1 inch equals 5 pages, but for Daphne 1 inch equals 50 pages. If Miles's books are 240 inches tall and Daphne's collection is 25 inches tall, how many pages are in the longest collection?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 240 * 5 = 1200\n        assign s0 = 240;\n        mul s0, 5;\n        create s1 : quantity;   # step 1: 25 * 50 = 1250\n        assign s1 = 25;\n        mul s1, 50;\n        sum s1;\n        query s1;\n        return s1;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-ae80b42dbc2d",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "136",
+   "gold": 136,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Maya's organization hosted a weekly farmers' market to raise money for the church choir. They sold broccolis, carrots, spinach, and cauliflowers. After adding together all of their earnings, Maya found out that they had made $380. The organization made $57 from broccoli and the sales of the carrots are twice as much as the sales of broccoli. Then, their sales for the spinach is $16 more than half of the sales of carrots. How much did they make from cauliflower sales?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 57 * 2 = 114\n        assign s0 = 57;\n        mul s0, 2;\n        create s1 : quantity;   # step 1: 114 / 2 = 57\n        assign s1 = 0;\n        add s1, s0;\n        div s1, 2;\n        create s2 : quantity;   # step 2: 57 + 16 = 73\n        assign s2 = 0;\n        add s2, s1;\n        add s2, 16;\n        create s3 : quantity;   # step 3: 380 - 57 = 323\n        assign s3 = 380;\n        sub s3, s1;\n        create s4 : quantity;   # step 4: 323 - 114 = 209\n        assign s4 = 0;\n        add s4, s3;\n        sub s4, s0;\n        create s5 : quantity;   # step 5: 209 - 73 = 136\n        assign s5 = 0;\n        add s5, s4;\n        sub s5, s2;\n        sum s5;\n        query s5;\n        return s5;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-ed9fc6d97c82",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "35",
+   "gold": 28,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# The vending machine fails to drop a snack when it\u2019s purchased one in six times. One in ten times, it will accidentally drop two snacks. The rest of the time, it drops the purchased snack. If thirty people have used the vending machine once each to purchase a snack, how many snacks has the vending machine dropped?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 30 * 1 = 30\n        assign s0 = 30;\n        mul s0, 1;\n        create s1 : quantity;   # step 1: 30 / 6 = 5\n        assign s1 = 0;\n        add s1, s0;\n        div s1, 6;\n        create s2 : quantity;   # step 2: 30 * 1 = 30\n        assign s2 = 0;\n        add s2, s0;\n        mul s2, 1;\n        create s3 : quantity;   # step 3: 30 / 10 = 3\n        assign s3 = 0;\n        add s3, s2;\n        div s3, 10;\n        create s4 : quantity;   # step 4: 30 - 3 = 27\n        assign s4 = 0;\n        add s4, s2;\n        sub s4, s3;\n        create s5 : quantity;   # step 5: 27 + 3 = 30\n        assign s5 = 0;\n        add s5, s4;\n        add s5, s3;\n        create s6 : quantity;   # step 6: 30 + 5 = 35\n        assign s6 = 0;\n        add s6, s5;\n        add s6, s1;\n        sum s6;\n        query s6;\n        return s6;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-5803eb301e86",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "20",
+   "gold": 20,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Percy wants to save up for a new PlayStation, which costs $500. He gets $200 on his birthday and $150 at Christmas. To make the rest of the money, he's going to sell his old PlayStation games for $7.5 each. How many games does he need to sell to reach his goal?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 500 - 200 = 300\n        assign s0 = 500;\n        sub s0, 200;\n        create s1 : quantity;   # step 1: 300 - 150 = 150\n        assign s1 = 0;\n        add s1, s0;\n        sub s1, 150;\n        create s2 : quantity;   # step 2: 150 / 7.5 = 20\n        assign s2 = 0;\n        add s2, s1;\n        div s2, 7.5;\n        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-bd304d924b35",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "1152",
+   "gold": 72,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# Camden just bought 3/4 times as many dogs as Rico, who has 10 more dogs than Justin. If Justin has 14 dogs, what's the total number of legs that Camden's dogs have?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 14 + 10 = 24\n        assign s0 = 14;\n        add s0, 10;\n        create s1 : quantity;   # step 1: 24 * 3 = 72\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, 3;\n        create s2 : quantity;   # step 2: 72 * 4 = 288\n        assign s2 = 0;\n        add s2, s1;\n        mul s2, 4;\n        create s3 : quantity;   # step 3: 288 * 4 = 1152\n        assign s3 = 0;\n        add s3, s2;\n        mul s3, 4;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-de820e833fb6",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "482",
+   "gold": 482,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Joanie wants to join a gym to get into shape. The gym costs $12 per month and has a $50 down payment. How much will she need to pay for the first 3 years?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 12 * 12 = 144\n        assign s0 = 12;\n        mul s0, 12;\n        create s1 : quantity;   # step 1: 144 * 3 = 432\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, 3;\n        create s2 : quantity;   # step 2: 50 + 432 = 482\n        assign s2 = 50;\n        add s2, s1;\n        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-81512cc31fd9",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "135",
+   "gold": 135,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# James finds 3 bills in his pocket.  They are all 20s.  If he already had $75 in his wallet how much money doe he have now?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 3 * 20 = 60\n        assign s0 = 3;\n        mul s0, 20;\n        create s1 : quantity;   # step 1: 75 + 60 = 135\n        assign s1 = 75;\n        add s1, s0;\n        sum s1;\n        query s1;\n        return s1;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-942753b65e4f",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "5",
+   "gold": 5,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Adam has 50 balls. 20 balls are red, 10 are blue, and the rest are either pink or orange. If there are 3 times as many pink as orange balls, how many orange balls are there?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 50 - 20 = 30\n        assign s0 = 50;\n        sub s0, 20;\n        create s1 : quantity;   # step 1: 30 - 10 = 20\n        assign s1 = 0;\n        add s1, s0;\n        sub s1, 10;\n        create s2 : quantity;   # step 2: 20 / 4 = 5\n        assign s2 = 0;\n        add s2, s1;\n        div s2, 4;\n        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-a2cf25c2a0bf",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "50",
+   "gold": 50,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Rachel earned $200 babysitting. She spent 1/4 of the money on lunch. She spent 1/2 of the money on a DVD. How much did Rachel have left?\nprogram GSM685 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 200 * 1 = 200\n        assign s0 = 200;\n        mul s0, 1;\n        create s1 : quantity;   # step 1: 200 / 4 = 50\n        assign s1 = 0;\n        add s1, s0;\n        div s1, 4;\n        create s2 : quantity;   # step 2: 200 * 1 = 200\n        assign s2 = 0;\n        add s2, s0;\n        mul s2, 1;\n        create s3 : quantity;   # step 3: 200 / 2 = 100\n        assign s3 = 0;\n        add s3, s2;\n        div s3, 2;\n        create s4 : quantity;   # step 4: 200 - 50 = 150\n        assign s4 = 0;\n        add s4, s2;\n        sub s4, s1;\n        create s5 : quantity;   # step 5: 150 - 100 = 50\n        assign s5 = 0;\n        add s5, s4;\n        sub s5, s3;\n        sum s5;\n        query s5;\n        return s5;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-bb083496287b",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "6",
+   "gold": 24,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# Christopher uses 1 packet of a sugar substitute in his coffee.  He has 2 coffees a day.  The packets come 30 to a box and cost $4.00 a box.  How much will it cost him to have enough sugar substitutes to last him 90 days?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 2 * 1 = 2\n        assign s0 = 2;\n        mul s0, 1;\n        create s1 : quantity;   # step 1: 2 * 30 = 60\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, 30;\n        create s2 : quantity;   # step 2: 90 / 60 = 1.5\n        assign s2 = 90;\n        div s2, s1;\n        create s3 : quantity;   # step 3: 1.5 * 4 = 6\n        assign s3 = 0;\n        add s3, s2;\n        mul s3, 4;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-5193c09712d5",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "10",
+   "gold": 10,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Jeff makes 10 donuts each day for 12 days. Jeff eats one of the donuts each day. Chris then comes over and eats 8 donuts. If 10 donuts fit in each box, how many boxes can Jeff fill with his donuts?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 10 * 12 = 120\n        assign s0 = 10;\n        mul s0, 12;\n        create s1 : quantity;   # step 1: 120 - 12 = 108\n        assign s1 = 0;\n        add s1, s0;\n        sub s1, 12;\n        create s2 : quantity;   # step 2: 108 - 8 = 100\n        assign s2 = 0;\n        add s2, s1;\n        sub s2, 8;\n        create s3 : quantity;   # step 3: 100 / 10 = 10\n        assign s3 = 0;\n        add s3, s2;\n        div s3, 10;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-e5d7878f380a",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "230",
+   "gold": 230,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Paul makes pencils, making 100 pencils a day five days a week. He started the week with 80 pencils in his stock, and during the week he sold 350 pencils. How many pencils did he have in his stock at the end of the week?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 100 * 5 = 500\n        assign s0 = 100;\n        mul s0, 5;\n        create s1 : quantity;   # step 1: 500 - 350 = 150\n        assign s1 = 0;\n        add s1, s0;\n        sub s1, 350;\n        create s2 : quantity;   # step 2: 80 + 150 = 230\n        assign s2 = 80;\n        add s2, s1;\n        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-e252479c877b",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "21",
+   "gold": 21,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Tricia buys large bottles of iced coffee that have 6 servings per container.  She drinks half a container a day.  The coffee is currently on sale for $3.00 a bottle.  How much will it cost her to buy enough bottles to last for 2 weeks?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 7 * 2 = 14\n        assign s0 = 7;\n        mul s0, 2;\n        create s1 : quantity;   # step 1: 14 / 2 = 7\n        assign s1 = 0;\n        add s1, s0;\n        div s1, 2;\n        create s2 : quantity;   # step 2: 7 * 3 = 21\n        assign s2 = 0;\n        add s2, s1;\n        mul s2, 3;\n        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-d9639dea3b6c",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "28",
+   "gold": 28,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Kara mixes cups of sugar and water in the ratio of 1:2 to make one liter of lemonade. Calculate the total number of cups of sugar used if she used 84 cups to make lemonade.\nprogram GSM685 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 1 + 2 = 3\n        assign s0 = 1;\n        add s0, 2;\n        create s1 : quantity;   # step 1: 84 / 3 = 28\n        assign s1 = 84;\n        div s1, s0;\n        create s2 : quantity;   # step 2: 28 * 1 = 28\n        assign s2 = 0;\n        add s2, s1;\n        mul s2, 1;\n        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-a89bd47aa36f",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "20",
+   "gold": 20,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Iris has a berry farm. Her brother and sister help her to pick up the berries and sell them to the market. Iris picked 30 blueberries, her sister picked 20 cranberries, and her brother was able to pick 10 raspberries. If 1/3 of the total berries they were able to pick are rotten and the remaining 1/2 of the fresh berries need to be kept, how many berries will they be able to sell?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 30 + 20 = 50\n        assign s0 = 30;\n        add s0, 20;\n        create s1 : quantity;   # step 1: 50 + 10 = 60\n        assign s1 = 0;\n        add s1, s0;\n        add s1, 10;\n        create s2 : quantity;   # step 2: 1 / 3 = 0.3333333333333333\n        assign s2 = 1;\n        div s2, 3;\n        create s3 : quantity;   # step 3: 0.3333333333333333 * 60 = 20\n        assign s3 = 0;\n        add s3, s2;\n        mul s3, s1;\n        create s4 : quantity;   # step 4: 60 - 20 = 40\n        assign s4 = 0;\n        add s4, s1;\n        sub s4, s3;\n        create s5 : quantity;   # step 5: 1 / 2 = 0.5\n        assign s5 = 1;\n        div s5, 2;\n        create s6 : quantity;   # step 6: 0.5 * 40 = 20\n        assign s6 = 0;\n        add s6, s5;\n        mul s6, s4;\n        create s7 : quantity;   # step 7: 40 - 20 = 20\n        assign s7 = 0;\n        add s7, s4;\n        sub s7, s6;\n        sum s7;\n        query s7;\n        return s7;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-b578a34acc7f",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "98",
+   "gold": 98,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# There are 11 males & 12 females in the orchestra and twice that number in the band. There are 12 males & 17 females in the choir. If each musician only participates in one group, how many musicians total are there in the orchestra, the band, and the choir?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 11 + 12 = 23\n        assign s0 = 11;\n        add s0, 12;\n        create s1 : quantity;   # step 1: 23 * 2 = 46\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, 2;\n        create s2 : quantity;   # step 2: 12 + 17 = 29\n        assign s2 = 12;\n        add s2, 17;\n        create s3 : quantity;   # step 3: 23 + 46 = 69\n        assign s3 = 0;\n        add s3, s0;\n        add s3, s1;\n        create s4 : quantity;   # step 4: 69 + 29 = 98\n        assign s4 = 0;\n        add s4, s3;\n        add s4, s2;\n        sum s4;\n        query s4;\n        return s4;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-bb90ca4aef54",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "12",
+   "gold": 12,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Tom\u2019s cat is 8 years old.  His rabbit is half the age of his cat.  His dog is three times as old as his rabbit.  How old is the dog?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 8 / 2 = 4\n        assign s0 = 8;\n        div s0, 2;\n        create s1 : quantity;   # step 1: 4 * 3 = 12\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, 3;\n        sum s1;\n        query s1;\n        return s1;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-5647fa5d69c8",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "160",
+   "gold": 160,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Jenny collects cans and bottles to take down to the recycling center. Each bottle weighs 6 ounces and each can weighs 2 ounces. Jenny can carry a total of 100 ounces. She collects 20 cans and as many bottles as she can carry. If she gets paid 10 cents per bottle and 3 cents per can, how much money does she make (in cents)?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 20 * 2 = 40\n        assign s0 = 20;\n        mul s0, 2;\n        create s1 : quantity;   # step 1: 100 - 40 = 60\n        assign s1 = 100;\n        sub s1, s0;\n        create s2 : quantity;   # step 2: 60 / 6 = 10\n        assign s2 = 0;\n        add s2, s1;\n        div s2, 6;\n        create s3 : quantity;   # step 3: 10 * 10 = 100\n        assign s3 = 0;\n        add s3, s2;\n        mul s3, s2;\n        create s4 : quantity;   # step 4: 20 * 3 = 60\n        assign s4 = 20;\n        mul s4, 3;\n        create s5 : quantity;   # step 5: 100 + 60 = 160\n        assign s5 = 0;\n        add s5, s3;\n        add s5, s4;\n        sum s5;\n        query s5;\n        return s5;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-d013f82a9f95",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "1500",
+   "gold": 1500,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# It will take Richard and Sarah 3 years to save enough for a down payment on a house at their current rates. If the house's downpayment is $108000, calculate the amount each person saves per month if they share the monthly savings.\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 108000 / 3 = 36000\n        assign s0 = 108000;\n        div s0, 3;\n        create s1 : quantity;   # step 1: 36000 / 12 = 3000\n        assign s1 = 0;\n        add s1, s0;\n        div s1, 12;\n        create s2 : quantity;   # step 2: 3000 / 2 = 1500\n        assign s2 = 0;\n        add s2, s1;\n        div s2, 2;\n        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-384242a2e0eb",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "28",
+   "gold": 28,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Suki bought 6.5 bags of coffee beans that each weighed 22 kilograms. Jimmy bought 4.5 bags of coffee beans that each weighed 18 kilograms. Suki and Jimmy combined their coffee beans and then repackaged them into 8-kilogram containers. How many containers did they use?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 6.5 * 22 = 143\n        assign s0 = 6.5;\n        mul s0, 22;\n        create s1 : quantity;   # step 1: 4.5 * 18 = 81\n        assign s1 = 4.5;\n        mul s1, 18;\n        create s2 : quantity;   # step 2: 143 + 81 = 224\n        assign s2 = 0;\n        add s2, s0;\n        add s2, s1;\n        create s3 : quantity;   # step 3: 224 / 8 = 28\n        assign s3 = 0;\n        add s3, s2;\n        div s3, 8;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-f55b78851226",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "3",
+   "gold": 3,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Chip takes 2 pages of notes every day, 5 days a week, for each of his 5 classes.  His notebook paper comes in packs of 100 sheets of paper per pack.  After 6 weeks, how many packs of notebook paper will Chip use?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 2 * 5 = 10\n        assign s0 = 2;\n        mul s0, 5;\n        create s1 : quantity;   # step 1: 10 * 5 = 50\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, 5;\n        create s2 : quantity;   # step 2: 50 * 6 = 300\n        assign s2 = 0;\n        add s2, s1;\n        mul s2, 6;\n        create s3 : quantity;   # step 3: 300 / 100 = 3\n        assign s3 = 0;\n        add s3, s2;\n        div s3, 100;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-8bb366085474",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "9",
+   "gold": 9,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Ahmed has 8 orange trees and four times as many apple trees in his orchard as Hassan. If Hassan has one apple tree and two orange trees, and they both have only apple and orange trees in their orchards, how many more trees are in Ahmed's orchard than in Hassan's?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 4 * 1 = 4\n        assign s0 = 4;\n        mul s0, 1;\n        create s1 : quantity;   # step 1: 4 * 2 = 8\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, 2;\n        create s2 : quantity;   # step 2: 8 + 4 = 12\n        assign s2 = 0;\n        add s2, s1;\n        add s2, s0;\n        create s3 : quantity;   # step 3: 2 + 1 = 3\n        assign s3 = 2;\n        add s3, 1;\n        create s4 : quantity;   # step 4: 12 - 3 = 9\n        assign s4 = 0;\n        add s4, s2;\n        sub s4, s3;\n        sum s4;\n        query s4;\n        return s4;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-2a7de60453cc",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "455",
+   "gold": 2100,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# Four small panda bears and five bigger panda bears eat 25 pounds and 40 pounds of fresh bamboo sprouts every day, respectively. How many pounds of bamboo do the 9 pandas eat in a week?\nprogram GSM685 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 25 * 7 = 175\n        assign s0 = 25;\n        mul s0, 7;\n        create s1 : quantity;   # step 1: 40 * 7 = 280\n        assign s1 = 40;\n        mul s1, 7;\n        create s2 : quantity;   # step 2: 175 + 280 = 455\n        assign s2 = 0;\n        add s2, s0;\n        add s2, s1;\n        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-fdd5f0b47c67",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "65",
+   "gold": 65,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# 3 years ago James turned 27.  In 5 years Matt will be twice James age.  How old is Matt now?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 27 + 3 = 30\n        assign s0 = 27;\n        add s0, 3;\n        create s1 : quantity;   # step 1: 30 + 5 = 35\n        assign s1 = 0;\n        add s1, s0;\n        add s1, 5;\n        create s2 : quantity;   # step 2: 35 * 2 = 70\n        assign s2 = 0;\n        add s2, s1;\n        mul s2, 2;\n        create s3 : quantity;   # step 3: 70 - 5 = 65\n        assign s3 = 0;\n        add s3, s2;\n        sub s3, 5;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-56db0803bd64",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "61",
+   "gold": 61,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Liezl prepared four sets of 2-dozen paper cups for her daughter's birthday party. If 5 cups were damaged and 30 were not used, how many paper cups were used?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 2 * 12 = 24\n        assign s0 = 2;\n        mul s0, 12;\n        create s1 : quantity;   # step 1: 4 * 24 = 96\n        assign s1 = 4;\n        mul s1, s0;\n        create s2 : quantity;   # step 2: 96 - 5 = 91\n        assign s2 = 0;\n        add s2, s1;\n        sub s2, 5;\n        create s3 : quantity;   # step 3: 91 - 30 = 61\n        assign s3 = 0;\n        add s3, s2;\n        sub s3, 30;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-f24fe897d4f6",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "68",
+   "gold": 76,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# Jeffrey owns a poultry farm with 12 hens. For every 3 hens, there is 1 rooster. Each hen has 5 chicks. How many chickens are there in all?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 12 / 3 = 4\n        assign s0 = 12;\n        div s0, 3;\n        create s1 : quantity;   # step 1: 4 * 1 = 4\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, 1;\n        create s2 : quantity;   # step 2: 12 * 5 = 60\n        assign s2 = 12;\n        mul s2, 5;\n        create s3 : quantity;   # step 3: 60 + 4 = 64\n        assign s3 = 0;\n        add s3, s2;\n        add s3, s1;\n        create s4 : quantity;   # step 4: 64 + 4 = 68\n        assign s4 = 0;\n        add s4, s3;\n        add s4, s1;\n        sum s4;\n        query s4;\n        return s4;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-ad61ce047951",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "30",
+   "gold": 30,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Tye goes to two different banks and withdraws $300 from each bank.  If he got it all in 20 dollar bills how many bills did he get?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 300 * 2 = 600\n        assign s0 = 300;\n        mul s0, 2;\n        create s1 : quantity;   # step 1: 600 / 20 = 30\n        assign s1 = 0;\n        add s1, s0;\n        div s1, 20;\n        sum s1;\n        query s1;\n        return s1;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-87ce0505b0ad",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "92",
+   "gold": 92,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# There are 381 pages in Elliot\u2019s book.  He has already read 149 pages.  If he reads 20 pages a day for a week, how many pages are still left to be read?\nprogram GSM685 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 20 * 7 = 140\n        assign s0 = 20;\n        mul s0, 7;\n        create s1 : quantity;   # step 1: 149 + 140 = 289\n        assign s1 = 149;\n        add s1, s0;\n        create s2 : quantity;   # step 2: 381 - 289 = 92\n        assign s2 = 381;\n        sub s2, s1;\n        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-4bcec9aeb186",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "14000",
+   "gold": 15400,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# Five months ago, Mike earned 10 times more money than Fred. If his salary has increased by 40 percent now, and Fred's salary then was $1000, calculate Mike's salary now.\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 1000 * 10 = 10000\n        assign s0 = 1000;\n        mul s0, 10;\n        create s1 : quantity;   # step 1: 10000 * 1.4 = 14000\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, 1.4;\n        sum s1;\n        query s1;\n        return s1;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-55136013294b",
+   "task": "arithmetic",
+   "executes": true,
+   "vm_result": "690",
+   "gold": 504,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# Luke started working on a 1000-piece jigsaw puzzle. The first day he worked on it, he put together 10% of the pieces. On the second day, he put together another 20% of the remaining pieces from the first day. On the third day, he put together 30% of the remaining pieces from the previous day. How many pieces does he have left to complete after the third day?\nprogram GSM197 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 1000 * 10 = 10000\n        assign s0 = 1000;\n        mul s0, 10;\n        create s1 : quantity;   # step 1: 10000 / 100 = 100\n        assign s1 = 0;\n        add s1, s0;\n        div s1, 100;\n        create s2 : quantity;   # step 2: 1000 - 100 = 900\n        assign s2 = 1000;\n        sub s2, s1;\n        create s3 : quantity;   # step 3: 900 * 20 = 18000\n        assign s3 = 0;\n        add s3, s2;\n        mul s3, 20;\n        create s4 : quantity;   # step 4: 18000 / 100 = 180\n        assign s4 = 0;\n        add s4, s3;\n        div s4, s1;\n        create s5 : quantity;   # step 5: 900 - 180 = 720\n        assign s5 = 0;\n        add s5, s2;\n        sub s5, s4;\n        create s6 : quantity;   # step 6: 720 * 30 = 21600\n        assign s6 = 0;\n        add s6, s5;\n        mul s6, 30;\n        create s7 : quantity;   # step 7: 21600 / 720 = 30\n        assign s7 = 0;\n        add s7, s6;\n        div s7, s5;\n        create s8 : quantity;   # step 8: 720 - 30 = 690\n        assign s8 = 0;\n        add s8, s5;\n        sub s8, s7;\n        sum s8;\n        query s8;\n        return s8;\n    }\n}\n"
+  },
+  {
+   "id": "game:count:24",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "4",
+   "gold": 4,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "program JoinCount implements ISolve {\n    public function solve(mention: str): str {\n        create n : symbol;\n        assign n = 0;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        return n;\n    }\n}\n"
+  },
+  {
+   "id": "kernel-b53666cedcd6",
+   "task": "kernel",
+   "executes": false,
+   "vm_result": null,
+   "gold": 16,
+   "gold_match": null,
+   "vm_error": "cubelang error: 2:1: program `Loop71` declares `implements ISolver`, but does not provide a matching `verify` function (2 parameters) required by that interface",
+   "generated": "# A truck loads 2 crates per trip; find the total delivered across 8 trips.\nprogram Loop71 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        iterations_run: mutable u64 = 0;\n        last_total: mutable u64 = 0;\n    }\n\n    public function constructor() {\n        assign iterations_run = 0;\n        assign last_total = 0;\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create total : quantity;\n        assign total = 0;\n        create count : quantity;\n        assign count = 8;\n        store count, \"loop_count\";\n        create step_amt : quantity;\n        assign step_amt = 2;\n        while (count > 0) {\n            add total, step_amt;\n            sub count, 1;\n            add iterations_run, 1;\n        }\n        store total, \"accumulated_total\";\n        query total;\n        remember total;\n        sum total;\n        return total;\n    }\n}\n"
+  },
+  {
+   "id": "game:decision:36",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "90",
+   "gold": 90,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# My energy is 62 and a jump costs 30; jump if the energy exceeds the cost.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 30;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 62;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 30;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 90;\n            assign last_decision = \"jump\";\n            store confidence, \"jump_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"rest\";\n            store confidence, \"rest_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:compose:1",
+   "task": "kernel",
+   "executes": false,
+   "vm_result": null,
+   "gold": "COMBO-AA",
+   "gold_match": null,
+   "vm_error": "cubelang error: parse error: 6:28: expected Comma, got Colon",
+   "generated": "use vsa;\n\nprogram Superpower implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_STEP: \"left\";\n        bind frame, H2_STEP: \"left\";\n        bind frame, H3_NAME: \"COMBO-AA\";\n        return recover(frame, H3_NAME);\n    }\n}\n"
+  },
+  {
+   "id": "game:count:143",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "2",
+   "gold": 2,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "program JoinCount implements ISolve {\n    public function solve(mention: str): str {\n        create n : symbol;\n        assign n = 0;\n        add n, 1;\n        add n, 1;\n        return n;\n    }\n}\n"
+  },
+  {
+   "id": "kernel-aeab305bca91",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "199",
+   "gold": 199,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# A forecast of 42 was later updated to 199; report the latest forecast.\nprogram Rec74 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        corrections_applied: mutable u64 = 0;\n    }\n\n    public function constructor() {\n        assign corrections_applied = 0;\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create belief : quantity;\n        assign belief = 42;\n        store belief, \"estimate\";\n        remember belief;\n        create correction : quantity;\n        assign correction = 199;\n        store correction, \"estimate\";\n        add corrections_applied, 1;\n        recall estimate;\n        create recalled : quantity;\n        assign recalled = 0;\n        add recalled, estimate;\n        query recalled;\n        remember recalled;\n        sum recalled;\n        return recalled;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "kernel-aeb6f0967322",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "100",
+   "gold": 90,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# A loan application scores 57; approve it if the score exceeds the risk threshold of 41.\nprogram Dec100 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 41;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 57;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 41;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 100;\n            assign last_decision = \"approve\";\n            store confidence, \"approve_confidence\";\n        } else {\n            add confidence, 20;\n            assign last_decision = \"reject\";\n            store confidence, \"reject_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:compare:206",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "5",
+   "gold": 5,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Two paths to the pellet take 12 and 5 steps; report the shorter one.\nprogram Cmp0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        comparisons_made: mutable u64 = 0;\n        last_winner: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign comparisons_made = 0;\n        assign last_winner = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create lhs : quantity;\n        assign lhs = 12;\n        store lhs, \"candidate_left\";\n        create rhs : quantity;\n        assign rhs = 5;\n        store rhs, \"candidate_right\";\n        create result : quantity;\n        assign result = 0;\n        if (lhs > rhs) {\n            add result, rhs;\n            assign last_winner = \"right\";\n        } else {\n            add result, lhs;\n            assign last_winner = \"left\";\n        }\n        store result, \"selected_min\";\n        query result;\n        remember result;\n        add comparisons_made, 1;\n        sum result;\n        return result;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:count:27",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "2",
+   "gold": 2,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "program JoinCount implements ISolve {\n    public function solve(mention: str): str {\n        create n : symbol;\n        assign n = 0;\n        add n, 1;\n        add n, 1;\n        return n;\n    }\n}\n"
+  },
+  {
+   "id": "game:compare:37",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "8",
+   "gold": 8,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Two trials measured 8 and 2; report the higher measurement.\nprogram Cmp0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        comparisons_made: mutable u64 = 0;\n        last_winner: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign comparisons_made = 0;\n        assign last_winner = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create lhs : quantity;\n        assign lhs = 8;\n        store lhs, \"candidate_left\";\n        create rhs : quantity;\n        assign rhs = 2;\n        store rhs, \"candidate_right\";\n        create result : quantity;\n        assign result = 0;\n        if (lhs > rhs) {\n            add result, lhs;\n            assign last_winner = \"left\";\n        } else {\n            add result, rhs;\n            assign last_winner = \"right\";\n        }\n        store result, \"selected_max\";\n        query result;\n        remember result;\n        add comparisons_made, 1;\n        sum result;\n        return result;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:count:183",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "3",
+   "gold": 3,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "program JoinCount implements ISolve {\n    public function solve(mention: str): str {\n        create n : symbol;\n        assign n = 0;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        return n;\n    }\n}\n"
+  },
+  {
+   "id": "game:count:86",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "5",
+   "gold": 5,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "program JoinCount implements ISolve {\n    public function solve(mention: str): str {\n        create n : symbol;\n        assign n = 0;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        return n;\n    }\n}\n"
+  },
+  {
+   "id": "game:decision:26",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "30",
+   "gold": 30,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# A ghost is 10 cells away; sound the alarm if the alarm level 2 exceeds that distance.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 10;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 2;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 10;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 90;\n            assign last_decision = \"flee\";\n            store confidence, \"flee_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"stay\";\n            store confidence, \"stay_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:count:82",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "5",
+   "gold": 5,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "program JoinCount implements ISolve {\n    public function solve(mention: str): str {\n        create n : symbol;\n        assign n = 0;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        return n;\n    }\n}\n"
+  },
+  {
+   "id": "game:decision:67",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "30",
+   "gold": 30,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# A ghost is 2 cells away; sound the alarm if the alarm level 0 exceeds that distance.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 2;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 0;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 2;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 90;\n            assign last_decision = \"flee\";\n            store confidence, \"flee_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"stay\";\n            store confidence, \"stay_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "kernel-164892cd3843",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "86",
+   "gold": 86,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Inventory was logged as 22, then re-counted as 86; report the up-to-date count.\nprogram Rec74 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        corrections_applied: mutable u64 = 0;\n    }\n\n    public function constructor() {\n        assign corrections_applied = 0;\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create belief : quantity;\n        assign belief = 22;\n        store belief, \"estimate\";\n        remember belief;\n        create correction : quantity;\n        assign correction = 86;\n        store correction, \"estimate\";\n        add corrections_applied, 1;\n        recall estimate;\n        create recalled : quantity;\n        assign recalled = 0;\n        add recalled, estimate;\n        query recalled;\n        remember recalled;\n        sum recalled;\n        return recalled;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:count:99",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "5",
+   "gold": 5,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "program JoinCount implements ISolve {\n    public function solve(mention: str): str {\n        create n : symbol;\n        assign n = 0;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        return n;\n    }\n}\n"
+  },
+  {
+   "id": "game:decision:350",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "30",
+   "gold": 30,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# My fear radius plus one is 4 and the nearest ghost is 7 cells away; run if the first number exceeds the second.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 7;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 4;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 7;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 90;\n            assign last_decision = \"run\";\n            store confidence, \"run_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"hold\";\n            store confidence, \"hold_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:decision:382",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "90",
+   "gold": 90,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# My energy is 20 and a jump costs 10; jump if the energy exceeds the cost.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 10;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 20;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 10;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 90;\n            assign last_decision = \"jump\";\n            store confidence, \"jump_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"rest\";\n            store confidence, \"rest_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:compose:249",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "COMBO-BB",
+   "gold": "COMBO-BB",
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram Superpower implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_STEP, \"up\";\n        bind frame, H2_STEP, \"up\";\n        bind frame, H3_NAME, \"COMBO-BB\";\n        return recover(frame, H3_NAME);\n    }\n}\n"
+  },
+  {
+   "id": "game:compare:455",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "4",
+   "gold": 4,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Two paths to the pellet take 12 and 4 steps; report the shorter one.\nprogram Cmp0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        comparisons_made: mutable u64 = 0;\n        last_winner: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign comparisons_made = 0;\n        assign last_winner = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create lhs : quantity;\n        assign lhs = 12;\n        store lhs, \"candidate_left\";\n        create rhs : quantity;\n        assign rhs = 4;\n        store rhs, \"candidate_right\";\n        create result : quantity;\n        assign result = 0;\n        if (lhs > rhs) {\n            add result, rhs;\n            assign last_winner = \"right\";\n        } else {\n            add result, lhs;\n            assign last_winner = \"left\";\n        }\n        store result, \"selected_min\";\n        query result;\n        remember result;\n        add comparisons_made, 1;\n        sum result;\n        return result;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "kernel-d776f2c3fd7e",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "156",
+   "gold": 156,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Two teams scored 156 and 140; report the winning score.\nprogram Cmp36 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        comparisons_made: mutable u64 = 0;\n        last_winner: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign comparisons_made = 0;\n        assign last_winner = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create lhs : quantity;\n        assign lhs = 156;\n        store lhs, \"candidate_left\";\n        create rhs : quantity;\n        assign rhs = 140;\n        store rhs, \"candidate_right\";\n        create result : quantity;\n        assign result = 0;\n        if (lhs > rhs) {\n            add result, lhs;\n            assign last_winner = \"left\";\n        } else {\n            add result, rhs;\n            assign last_winner = \"right\";\n        }\n        store result, \"selected_max\";\n        query result;\n        remember result;\n        add comparisons_made, 1;\n        sum result;\n        return result;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:compare:387",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "4",
+   "gold": 4,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Two pellets are 4 and 11 steps away; report the nearer distance.\nprogram Cmp0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        comparisons_made: mutable u64 = 0;\n        last_winner: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign comparisons_made = 0;\n        assign last_winner = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create lhs : quantity;\n        assign lhs = 4;\n        store lhs, \"candidate_left\";\n        create rhs : quantity;\n        assign rhs = 11;\n        store rhs, \"candidate_right\";\n        create result : quantity;\n        assign result = 0;\n        if (lhs > rhs) {\n            add result, rhs;\n            assign last_winner = \"right\";\n        } else {\n            add result, lhs;\n            assign last_winner = \"left\";\n        }\n        store result, \"selected_min\";\n        query result;\n        remember result;\n        add comparisons_made, 1;\n        sum result;\n        return result;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "kernel-b0ace9304b31",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "99",
+   "gold": 99,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Two investments returned 99 and 25; report the larger return.\nprogram Cmp99 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        comparisons_made: mutable u64 = 0;\n        last_winner: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign comparisons_made = 0;\n        assign last_winner = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create lhs : quantity;\n        assign lhs = 99;\n        store lhs, \"candidate_left\";\n        create rhs : quantity;\n        assign rhs = 25;\n        store rhs, \"candidate_right\";\n        create result : quantity;\n        assign result = 0;\n        if (lhs > rhs) {\n            add result, lhs;\n            assign last_winner = \"left\";\n        } else {\n            add result, rhs;\n            assign last_winner = \"right\";\n        }\n        store result, \"selected_max\";\n        query result;\n        remember result;\n        add comparisons_made, 1;\n        sum result;\n        return result;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:decision:379",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "30",
+   "gold": 30,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# There are 2 steps left in the level and the pellet is 3 steps away; go for it if the time exceeds the distance.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 3;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 2;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 3;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 90;\n            assign last_decision = \"go\";\n            store confidence, \"go_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"skip\";\n            store confidence, \"skip_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:count:22",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "3",
+   "gold": 3,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "program JoinCount implements ISolve {\n    public function solve(mention: str): str {\n        create n : symbol;\n        assign n = 0;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        return n;\n    }\n}\n"
+  },
+  {
+   "id": "game:decision:256",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "30",
+   "gold": 30,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# My energy is 8 and a jump costs 30; jump if the energy exceeds the cost.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 30;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 8;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 30;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 90;\n            assign last_decision = \"jump\";\n            store confidence, \"jump_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"rest\";\n            store confidence, \"rest_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "kernel-f192d116c239",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "240",
+   "gold": 240,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# A reaction yields 16 units per cycle; total the output over 15 cycles.\nprogram Loop119 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        iterations_run: mutable u64 = 0;\n        last_total: mutable u64 = 0;\n    }\n\n    public function constructor() {\n        assign iterations_run = 0;\n        assign last_total = 0;\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create total : quantity;\n        assign total = 0;\n        create count : quantity;\n        assign count = 15;\n        store count, \"loop_count\";\n        create step_amt : quantity;\n        assign step_amt = 16;\n        while (count > 0) {\n            add total, step_amt;\n            sub count, 1;\n            add iterations_run, 1;\n        }\n        store total, \"accumulated_total\";\n        query total;\n        remember total;\n        sum total;\n        return total;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:compare:122",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "12",
+   "gold": 12,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Two trials measured 12 and 9; report the higher measurement.\nprogram Cmp0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        comparisons_made: mutable u64 = 0;\n        last_winner: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign comparisons_made = 0;\n        assign last_winner = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create lhs : quantity;\n        assign lhs = 12;\n        store lhs, \"candidate_left\";\n        create rhs : quantity;\n        assign rhs = 9;\n        store rhs, \"candidate_right\";\n        create result : quantity;\n        assign result = 0;\n        if (lhs > rhs) {\n            add result, lhs;\n            assign last_winner = \"left\";\n        } else {\n            add result, rhs;\n            assign last_winner = \"right\";\n        }\n        store result, \"selected_max\";\n        query result;\n        remember result;\n        add comparisons_made, 1;\n        sum result;\n        return result;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:compose:245",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "SPRINT",
+   "gold": "SPRINT",
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram Superpower implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_STEP, \"down\";\n        bind frame, H2_STEP, \"down\";\n        bind frame, H3_NAME, \"SPRINT\";\n        return recover(frame, H3_NAME);\n    }\n}\n"
+  },
+  {
+   "id": "kernel-3f1c8afeea43",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "78",
+   "gold": 78,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Two teams scored 78 and 28; report the winning score.\nprogram Cmp36 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        comparisons_made: mutable u64 = 0;\n        last_winner: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign comparisons_made = 0;\n        assign last_winner = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create lhs : quantity;\n        assign lhs = 78;\n        store lhs, \"candidate_left\";\n        create rhs : quantity;\n        assign rhs = 28;\n        store rhs, \"candidate_right\";\n        create result : quantity;\n        assign result = 0;\n        if (lhs > rhs) {\n            add result, lhs;\n            assign last_winner = \"left\";\n        } else {\n            add result, rhs;\n            assign last_winner = \"right\";\n        }\n        store result, \"selected_max\";\n        query result;\n        remember result;\n        add comparisons_made, 1;\n        sum result;\n        return result;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:decision:25",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "90",
+   "gold": 90,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# My energy is 32 and a jump costs 20; jump if the energy exceeds the cost.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 20;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 32;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 20;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 90;\n            assign last_decision = \"jump\";\n            store confidence, \"jump_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"rest\";\n            store confidence, \"rest_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "kernel-e41adecce21e",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "20",
+   "gold": 10,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# An order has 1 items in stock; fulfill it if stock exceeds the minimum reorder level 52.\nprogram Dec39 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 52;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 1;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 52;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 100;\n            assign last_decision = \"approve\";\n            store confidence, \"approve_confidence\";\n        } else {\n            add confidence, 20;\n            assign last_decision = \"reject\";\n            store confidence, \"reject_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "kernel-a06bec344cc5",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "70",
+   "gold": 90,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# A loan application scores 60; approve it if the score exceeds the risk threshold of 32.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 32;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 60;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 32;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 70;\n            assign last_decision = \"approve\";\n            store confidence, \"approve_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"reject\";\n            store confidence, \"reject_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:compare:41",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "3",
+   "gold": 3,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# Two moves land 3 and 2 cells from the ghost; report the farther one.\nprogram Cmp0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        comparisons_made: mutable u64 = 0;\n        last_winner: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign comparisons_made = 0;\n        assign last_winner = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create lhs : quantity;\n        assign lhs = 3;\n        store lhs, \"candidate_left\";\n        create rhs : quantity;\n        assign rhs = 2;\n        store rhs, \"candidate_right\";\n        create result : quantity;\n        assign result = 0;\n        if (lhs > rhs) {\n            add result, lhs;\n            assign last_winner = \"left\";\n        } else {\n            add result, rhs;\n            assign last_winner = \"right\";\n        }\n        store result, \"selected_max\";\n        query result;\n        remember result;\n        add comparisons_made, 1;\n        sum result;\n        return result;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:count:26",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "2",
+   "gold": 2,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "program JoinCount implements ISolve {\n    public function solve(mention: str): str {\n        create n : symbol;\n        assign n = 0;\n        add n, 1;\n        add n, 1;\n        return n;\n    }\n}\n"
+  },
+  {
+   "id": "kernel-af4f8beb1a91",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "70",
+   "gold": 80,
+   "gold_match": false,
+   "vm_error": null,
+   "generated": "# An order has 43 items in stock; fulfill it if stock exceeds the minimum reorder level 16.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 16;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 43;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 16;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 70;\n            assign last_decision = \"approve\";\n            store confidence, \"approve_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"reject\";\n            store confidence, \"reject_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:decision:279",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "30",
+   "gold": 30,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# The alarm level is 2; flee if it exceeds the ghost distance of 2.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    public function constructor() {\n        assign threshold = 2;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 2;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 2;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 90;\n            assign last_decision = \"flee\";\n            store confidence, \"flee_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"stay\";\n            store confidence, \"stay_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "game:count:187",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "3",
+   "gold": 3,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "program JoinCount implements ISolve {\n    public function solve(mention: str): str {\n        create n : symbol;\n        assign n = 0;\n        add n, 1;\n        add n, 1;\n        add n, 1;\n        return n;\n    }\n}\n"
+  },
+  {
+   "id": "kernel-f649a8da4a6c",
+   "task": "kernel",
+   "executes": true,
+   "vm_result": "87",
+   "gold": 87,
+   "gold_match": true,
+   "vm_error": null,
+   "generated": "# A forecast of 44 was later updated to 87; report the latest forecast.\nprogram Rec74 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        corrections_applied: mutable u64 = 0;\n    }\n\n    public function constructor() {\n        assign corrections_applied = 0;\n    }\n\n    public function parse(raw: str): Input { return raw; }\n\n    public function solve(input: Input): Output {\n        create belief : quantity;\n        assign belief = 44;\n        store belief, \"estimate\";\n        remember belief;\n        create correction : quantity;\n        assign correction = 87;\n        store correction, \"estimate\";\n        add corrections_applied, 1;\n        recall estimate;\n        create recalled : quantity;\n        assign recalled = 0;\n        add recalled, estimate;\n        query recalled;\n        remember recalled;\n        sum recalled;\n        return recalled;\n    }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n"
+  },
+  {
+   "id": "plan-5fe0e32e9e40",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 2 cell 6 3 1",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 2 cell 6 3 1\";\n        bind frame, HOP1, \"left neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-a64c7deb3152",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 3 cell 1 7 1",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 3 cell 1 7 1\";\n        bind frame, HOP1, \"down neighbor\";\n        bind frame, HOP2, \"back neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-df90fcc9f3c0",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 1 cell 3 5 2",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 1 cell 3 5 2\";\n        bind frame, HOP1, \"back neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-e082e9f40883",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 2 cell 2 5 1",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 2 cell 2 5 1\";\n        bind frame, HOP1, \"down neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-2134219ce16a",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "arcadia maryland",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"arcadia maryland\";\n        bind frame, HOP1, \"country\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-a6eee94c9862",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "andrej pecnik",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"andrej pecnik\";\n        bind frame, HOP1, \"instance\";\n        bind frame, HOP2, \"characteristic\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-c67a21ccac5d",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "ny 1x",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"ny 1x\";\n        bind frame, HOP1, \"administrative territorial entity\";\n        bind frame, HOP2, \"highest point\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-63f61ef5c599",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 1 cell 1 4 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 1 cell 1 4 0\";\n        bind frame, HOP1, \"left neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-c4e73380da43",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 2 cell 0 4 2",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 2 cell 0 4 2\";\n        bind frame, HOP1, \"up neighbor\";\n        bind frame, HOP2, \"back neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-4c8a9e1d070b",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "miguel barros",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"miguel barros\";\n        bind frame, HOP1, \"instance\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-95bd2dc156ef",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 2 cell 0 5 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 2 cell 0 5 0\";\n        bind frame, HOP1, \"up neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-fb3cd270632f",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "City of Bad Men",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"City of Bad Men\";\n        bind frame, HOP1, \"cast member\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-4305b272dddf",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "oceana high school",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"oceana high school\";\n        bind frame, HOP1, \"country\";\n        bind frame, HOP2, \"instance\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-b67981b1af15",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "cyprinella gibbsi",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"cyprinella gibbsi\";\n        bind frame, HOP1, \"iucn conservation status\";\n        bind frame, HOP2, \"instance\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-be2a2d6ac5e6",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 3 cell 1 4 1",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 3 cell 1 4 1\";\n        bind frame, HOP1, \"down neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-5fa7e7699600",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "wqlc",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"wqlc\";\n        bind frame, HOP1, \"country\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-364ec5aa8ae5",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "artur arturovich dmitriev",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"artur arturovich dmitriev\";\n        bind frame, HOP1, \"given name\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-67b70de4ee13",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 1 cell 1 0 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 1 cell 1 0 0\";\n        bind frame, HOP1, \"left neighbor\";\n        bind frame, HOP2, \"up neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-dbc6b30ec75d",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "vanishing time a boy who returned",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"vanishing time a boy who returned\";\n        bind frame, HOP1, \"country\";\n        bind frame, HOP2, \"currency\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-a63b3c533141",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "riverfront park salem oregon",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"riverfront park salem oregon\";\n        bind frame, HOP1, \"country\";\n        bind frame, HOP2, \"official symbol\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-30820d5379a7",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 2 cell 1 6 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 2 cell 1 6 0\";\n        bind frame, HOP1, \"left neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-28639a36be7a",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "kazuma sano",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"kazuma sano\";\n        bind frame, HOP1, \"instance\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-4e4881c1301b",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 2 cell 3 6 1",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 2 cell 3 6 1\";\n        bind frame, HOP1, \"forward neighbor\";\n        bind frame, HOP2, \"back neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-84d2f49b62f1",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "henry allcock",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"henry allcock\";\n        bind frame, HOP1, \"country of citizenship\";\n        bind frame, HOP2, \"currency\";\n        bind frame, HOP3, \"country\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-51adabf5c543",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 3 cell 5 0 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 3 cell 5 0 0\";\n        bind frame, HOP1, \"left neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-81663a71da1d",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 2 cell 1 1 2",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 2 cell 1 1 2\";\n        bind frame, HOP1, \"right neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-5b1437355490",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 3 cell 0 6 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 3 cell 0 6 0\";\n        bind frame, HOP1, \"right neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-31acd96b0e58",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 3 cell 0 0 1",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 3 cell 0 0 1\";\n        bind frame, HOP1, \"right neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-4f6dd6218da4",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 3 cell 4 1 1",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 3 cell 4 1 1\";\n        bind frame, HOP1, \"down neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-491d77d22d72",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "nautical august 06 selected article",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"nautical august 06 selected article\";\n        bind frame, HOP1, \"owner\";\n        bind frame, HOP2, \"parent organization\";\n        bind frame, HOP3, \"headquarters location\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-bfd2d3d01282",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 2 cell 6 4 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 2 cell 6 4 0\";\n        bind frame, HOP1, \"left neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-5a1a2e122e48",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 2 cell 5 6 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 2 cell 5 6 0\";\n        bind frame, HOP1, \"forward neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-2df8521c868b",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "june olkowski",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"june olkowski\";\n        bind frame, HOP1, \"country of citizenship\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-2d7349bb3589",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 3 cell 4 2 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 3 cell 4 2 0\";\n        bind frame, HOP1, \"left neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-9d71eb0070cb",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 1 cell 5 0 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 1 cell 5 0 0\";\n        bind frame, HOP1, \"up neighbor\";\n        bind frame, HOP2, \"forward neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-c28754d5648d",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 3 cell 3 1 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 3 cell 3 1 0\";\n        bind frame, HOP1, \"left neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-87a21254308a",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "kimberly ferguson",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"kimberly ferguson\";\n        bind frame, HOP1, \"given name\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-e4b9393cc35c",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "tyler summitt",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"tyler summitt\";\n        bind frame, HOP1, \"instance\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-a3c17e8fcaf2",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 3 cell 7 3 1",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 3 cell 7 3 1\";\n        bind frame, HOP1, \"down neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "plan-1e93a9aa6349",
+   "task": "plan",
+   "executes": true,
+   "vm_result": "level 3 cell 5 1 0",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 3 cell 5 1 0\";\n        bind frame, HOP1, \"left neighbor\";\n        return recover(frame, SEED);\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-c1e2ecf3165e",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# What is the scientific name for a beaver?\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"is\";\n        bind evt, AGENT, \"What\";\n        bind evt, OBJECT, \"the scientific name for a beaver\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-d91e371ff5d0",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# The area of a cube face is simply its side length squared.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"is\";\n        bind evt, AGENT, \"The area of a cube face\";\n        bind evt, OBJECT, \"simply its side length squared\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-9b23863ed781",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Role of scripture: Catholics believe in the authority of both the Bible and Church tradition, while Protestants rely solely\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"believe\";\n        bind evt, AGENT, \"Catholics\";\n        bind evt, OBJECT, \"in the authority of both the Bible and Church tradition while Protestants\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-25041db65d1b",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# A virus is a piece of code that can replicate itself and insert itself into other programs, files or the boot sector of a\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: technology\n        bind evt, ACTION, \"is\";\n        bind evt, AGENT, \"A virus\";\n        bind evt, OBJECT, \"a piece of code that can replicate itself and insert itself into\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-d9ea00a0f616",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# By protecting the environment, we ensure that it can support and sustain us now and in the future.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: nature\n        bind evt, ACTION, \"ensure\";\n        bind evt, AGENT, \"we\";\n        bind evt, OBJECT, \"that it can support and sustain us now and in the future\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-566d4416c7be",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Drought Conditions - The Dust Bowl was a severe drought and dust storm that hit the Great Plains region of the United States\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"was\";\n        bind evt, AGENT, \"The Dust Bowl\";\n        bind evt, OBJECT, \"a severe drought and dust storm that hit the Great Plains region of\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-6576a1e40eec",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# \"Parasite\" is a South Korean thriller movie released in 2019 that took the world by storm.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"is\";\n        bind evt, AGENT, \"Parasite\";\n        bind evt, OBJECT, \"a South Korean thriller movie released in 2019 that took the world\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-857b3f900914",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# This article discusses the future of renewable energy sources in the US.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: technology\n        bind evt, ACTION, \"discusses\";\n        bind evt, AGENT, \"This article\";\n        bind evt, OBJECT, \"the future of renewable energy sources in the US\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-d4889bc25bf4",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Better Treatment Planning AI is also transforming the way doctors and medical professionals approach treatment.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: technology\n        bind evt, ACTION, \"is transforming\";\n        bind evt, AGENT, \"Better Treatment Planning AI\";\n        bind evt, OBJECT, \"the way doctors and medical professionals approach treatment\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-58d35a75c6b8",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# ```Python def mean(numbers): if not numbers: return None # handle case there the list is empty return float(sum(numbers))/max(len(numbers),1)\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"return\";\n        bind evt, AGENT, \"Python def mean(numbers\";\n        bind evt, OBJECT, \"None # handle case there the list is empty return float(sum(numbers))/max(len(numbers),1\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-1477e0e9000f",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# 9. Encourage energy-saving behaviors: Educate household members about energy-saving habits, such as turning off lights\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"Encourage\";\n        bind evt, AGENT, \"9 . energy - saving\";\n        bind evt, OBJECT, \"household members about energy saving habits such as turning off lights when\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-e4d88368bf8e",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# A true classic of the genre, it stands the test of time and remains a powerful, engaging, and unforgettable cinematic experie\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: arts\n        bind evt, ACTION, \"stands\";\n        bind evt, AGENT, \"A true classic of the genre ,\";\n        bind evt, OBJECT, \"the test of time and remains a powerful engaging and unforgettable cinematic\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-cddc29930e89",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# As an AI assistant, I do not have my own personal experiences or physical existence.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"do not have\";\n        bind evt, AGENT, \"I\";\n        bind evt, OBJECT, \"my own personal experiences or physical existence\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-3e4cb680652a",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Using the formula for the area of a triangle, which is (base x height) / 2, we can calculate the area with the given input\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"can calculate\";\n        bind evt, AGENT, \"we\";\n        bind evt, OBJECT, \"the area with the given input values\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-e80cd077aa89",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Suggest a good idea for a family photoshoot.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"Suggest\";\n        bind evt, AGENT, \"a good idea for a family photoshoot\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-02ecd64055c7",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# The grass is greener and the skies are blue, As the trees blossom in pink and white, Spring is a season of beginnings anew,\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"is\";\n        bind evt, AGENT, \"The grass\";\n        bind evt, OBJECT, \"greener and the skies are blue As the trees blossom in pink\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-0d75237aa9ba",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Regulate Industrial Discharges: Governments should enforce strict regulations on industries to control and reduce the\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: technology\n        bind evt, ACTION, \"should enforce\";\n        bind evt, AGENT, \"Industries\";\n        bind evt, OBJECT, \"strict regulations on industries to control and reduce the amount of chemicals\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-a977f428e953",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Overall, the original equation `3x+5y=9` can be expressed in several different equivalent forms, depending on the spec\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"can be expressed\";\n        bind evt, AGENT, \"the original equation `3x\";\n        bind evt, OBJECT, \"in several different equivalent forms depending on the specific needs or\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-fdd70b7acaee",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# They can be applied to a wide variety of text analysis tasks, such as sentiment analysis, topic modeling, named entity\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: technology\n        bind evt, ACTION, \"can be applied\";\n        bind evt, AGENT, \"They\";\n        bind evt, OBJECT, \"to a wide variety of text analysis tasks such as sentiment analysis\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-9bfc5e571178",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# It's perfect for outdoor enthusiasts, busy commutes, or anyone who wants to reduce their carbon footprint.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"'s\";\n        bind evt, AGENT, \"It\";\n        bind evt, OBJECT, \"perfect for outdoor enthusiasts busy commutes or anyone who wants to reduce\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-5bc5b622f479",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# In the latest budget announcement, the Chancellor has promised to introduce a new employment allowance to help employees\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: business\n        bind evt, ACTION, \"has promised\";\n        bind evt, AGENT, \"the Chancellor\";\n        bind evt, OBJECT, \"to introduce a new employment allowance to help employees of small businesses\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-9bf091dada28",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# The definition also does not differentiate the animal from the chemical term mole, which refers to a unit of measurement\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"does not differentiate\";\n        bind evt, AGENT, \"The definition\";\n        bind evt, OBJECT, \"the animal from the chemical term mole which refers to a unit\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-3e6266607a5d",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Both are essential in building a well-formed and visually appealing website.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"are\";\n        bind evt, AGENT, \"Both\";\n        bind evt, OBJECT, \"essential in building a well formed and visually appealing website\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-7de187bcace6",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# It is the molecule that carries the genetic instructions used in the growth, development, functioning, and reproduction of\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: technology\n        bind evt, ACTION, \"is\";\n        bind evt, AGENT, \"It\";\n        bind evt, OBJECT, \"the molecule that carries the genetic instructions used in the growth development\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-655b9f12efda",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# You can also create different sections for displaying each category of images.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"can create\";\n        bind evt, AGENT, \"You\";\n        bind evt, OBJECT, \"different sections for displaying each category of images\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-84170608a1ef",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Set the cooked chicken aside.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"Set\";\n        bind evt, AGENT, \"the cooked chicken\";\n        bind evt, OBJECT, \"aside\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-5cb09eae78ab",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# The key feature of a blockchain is that its ledger is distributed across a network rather than being controlled by a\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: technology\n        bind evt, ACTION, \"is\";\n        bind evt, AGENT, \"The key feature of a blockchain\";\n        bind evt, OBJECT, \"that its ledger is distributed across a network rather than being controlled\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-3c0a0fd5a8c5",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Shrinking ice caps and rising sea levels: The Earth's polar ice caps are melting at an alarming rate due to rising temperatu\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"are melting\";\n        bind evt, AGENT, \"The Earth 's polar ice caps\";\n        bind evt, OBJECT, \"at an alarming rate due to rising temperatures\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-9a32ddf3046c",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Suggest a suitable card game for a birthday party with 10 year old kids.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"Suggest\";\n        bind evt, AGENT, \"a suitable card game for a birthday\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-c172be54249a",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# With this design, you can record each employee's salary history, including changes in salary amount, currency and payment\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: technology\n        bind evt, ACTION, \"can record\";\n        bind evt, AGENT, \"you\";\n        bind evt, OBJECT, \"each employee 's salary history including changes in salary amount currency and\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-d861405ac935",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Essentially, it provides a way for different applications to share data and services with one another in a structured and\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: technology\n        bind evt, ACTION, \"provides\";\n        bind evt, AGENT, \"it\";\n        bind evt, OBJECT, \"a way for different applications to share data and services with one\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-efe4736cba20",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Calculate the total surface area of a cube with a side length of 5 cm.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"Calculate\";\n        bind evt, AGENT, \"the total surface area of a\";\n        bind evt, OBJECT, \"of a cube with a side length of 5 cm\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-cc45012da83b",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Some of the key qualities of a good leader include: 1.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"include\";\n        bind evt, AGENT, \"Some of the key qualities of a\";\n        bind evt, OBJECT, \"1\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-80af112ffbce",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Therefore, I wouldn't be able to design a logo for you.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"wouldn't be\";\n        bind evt, AGENT, \"I\";\n        bind evt, OBJECT, \"able to design a logo for you\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-b817bf0411c9",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# The number of protons, also called the atomic number, determines what element the atom is.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"determines\";\n        bind evt, AGENT, \"The number of protons ,\";\n        bind evt, OBJECT, \"what element the atom is\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-e67e1edbe512",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Plates, cups, and utensils 4. Napkins or paper towels 5. Food - sandwiches, salads, fruit, snacks, and desserts 6. \nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"are\";\n        bind evt, AGENT, \"Plates , cups , and\";\n        bind evt, OBJECT, \"4 . Napkins or paper towels 5 . Food - sandwiches , salads , fruit , snacks\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-0d7578996459",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# The bow was made of the strongest wood from the enchanted trees, and its string was spun from the finest spider silk.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"was made\";\n        bind evt, AGENT, \"The bow\";\n        bind evt, OBJECT, \"of the strongest wood from the enchanted trees and its string was\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-bfa56ff6b49c",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# Customers will be able to create a personal account to track their delivery orders and view their account history.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"will be\";\n        bind evt, AGENT, \"Customers\";\n        bind evt, OBJECT, \"able to create a personal account to track their delivery orders and view\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-a781bed2f8ff",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# 2. Stay active: Regular exercise can help release stress hormones and improve overall well-being.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: health\n        bind evt, ACTION, \"can help\";\n        bind evt, AGENT, \"2 . Stay active :\";\n        bind evt, OBJECT, \"release stress hormones and improve overall well being\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  },
+  {
+   "id": "role_binding-d556a7983a3f",
+   "task": "role_binding",
+   "executes": true,
+   "vm_result": "{\"hvec_dim\":4096}",
+   "gold": null,
+   "gold_match": null,
+   "vm_error": null,
+   "generated": "# To extract the positive integers from the given array, you can use the filter() function which will return the values that ev\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    public function parse(raw: str): Input { return raw; }\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"can use\";\n        bind evt, AGENT, \"you\";\n        bind evt, OBJECT, \"the filter function which will return the values that evaluate to True\";\n        remember evt;\n        return evt;\n    }\n}\n"
+  }
+ ],
+ "wall_s": 205.19837420000022,
+ "provenance": {
+  "what": "H-A9 step 0 \u2014 VM verify-to-gold per family, v14e_nochain Q4_K_M",
+  "when": "2026-09-23",
+  "host": "RX 6750 XT, llama.cpp Vulkan",
+  "data": "standin/data/out/emitter_sft_v14e_nochain.jsonl (val split)",
+  "gguf": "emitter_lfm25_2p6b_v14e_nochain_full/gguf_gguf/LFM2.5-2.6B.Q4_K_M.gguf",
+  "cmd": "standin/eval_emitter_vm.py --gguf <above> --per-task 40 --data <above> --tag _v9_step0",
+  "wall_s": 205.19837420000022
+ }
+}
