@@ -93,10 +93,18 @@ def _window_block_mask(S: int, window: int, device: str):
                              device=device)
 
 
+@functools.lru_cache(maxsize=8)
+def _rope_inv_freq(dh: int, device: str):
+    """RoPE's inverse frequencies, per (head_dim, device). A constant: cached
+    because ``step`` calls it once per attention layer per token, and building
+    it there is two kernels and a host upload for a table that never changes."""
+    return 1.0 / (10000.0 ** (torch.arange(0, dh, 2, device=device).float() / dh))
+
+
 def _rope_tables(dh: int, positions, device):
     """cos/sin for rotary position encoding at the given absolute positions.
     positions: (P,) long -> returns (P, dh) cos and sin."""
-    inv = 1.0 / (10000.0 ** (torch.arange(0, dh, 2, device=device).float() / dh))
+    inv = _rope_inv_freq(dh, str(device))
     ang = torch.outer(positions.float(), inv)            # (P, dh/2)
     emb = torch.cat([ang, ang], dim=-1)                  # (P, dh)
     return emb.cos(), emb.sin()
@@ -175,20 +183,26 @@ class _WindowedAttnMixer(nn.Module):
         against the cached keys reproduces the masked parallel attention exactly.
         State is bounded by ``window`` (plus one scalar); it never grows with
         context length.
+
+        The position stays a **tensor** the whole way through: it is rotated
+        into RoPE by device ops and advanced by ``pos_t + 1``, never read back
+        with ``int()``. Reading it would make the step's work depend on a host
+        value, which is what stops a step being recorded once and replayed
+        (grilly's ``graphed``, torch's CUDA graphs). It is float32, exact to
+        2**24 positions, because an int64 scalar add has to build its operand
+        on the host.
         """
         B, d = x_t.shape
         if cache is None:
             kc = vc = None
-            pos = 0
+            pos_t = torch.zeros((), device=x_t.device)
         else:
             kc, vc, pos_t = cache
-            pos = int(pos_t)
         q, k, v = self.qkv(x_t).chunk(3, -1)
         q = q.view(B, self.h, 1, self.dh)
         k = k.view(B, self.h, 1, self.dh)
         v = v.view(B, self.h, 1, self.dh)
-        cos, sin = _rope_tables(self.dh, torch.tensor([pos], device=x_t.device),
-                                x_t.device)
+        cos, sin = _rope_tables(self.dh, pos_t.reshape(1), x_t.device)
         cos, sin = cos.view(1, 1, 1, self.dh), sin.view(1, 1, 1, self.dh)
         q, k = _apply_rope(q, cos, sin), _apply_rope(k, cos, sin)
         if kc is not None:
@@ -199,8 +213,7 @@ class _WindowedAttnMixer(nn.Module):
         # every cached key is a valid (past-or-current, within-window) attendee,
         # so no mask is needed — the trim already enforces the window.
         o = F.scaled_dot_product_attention(q, k, v)
-        new_pos = torch.tensor(pos + 1, device=x_t.device)
-        return self.o(o.reshape(B, d)), (k, v, new_pos)
+        return self.o(o.reshape(B, d)), (k, v, pos_t + 1)
 
 
 class HybridBackbone(nn.Module):
