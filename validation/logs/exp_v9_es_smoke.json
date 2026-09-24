@@ -1,0 +1,51 @@
+{
+ "provenance": {
+  "what": "H-A9 step 1 \u2014 ES over the program adapter, scored by the cubelang VM",
+  "task": "arithmetic",
+  "data": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\emitter_sft_v14e_nochain.jsonl",
+  "model": "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b_v14e_nochain_full/merged",
+  "adapter": "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b_v14e_nochain_full/adapter",
+  "null_control": false,
+  "baseline_v14e": 0.775,
+  "bar_2se": 0.821,
+  "args": {
+   "model": "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b_v14e_nochain_full/merged",
+   "adapter": "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b_v14e_nochain_full/adapter",
+   "task": "arithmetic",
+   "iterations": 1,
+   "population": 4,
+   "minibatch": 2,
+   "sigma": 0.01,
+   "lr": 0.02,
+   "seed": 0,
+   "every": 20,
+   "probe": 3,
+   "max_new_tokens": 320,
+   "null_control": false,
+   "final_n": 3,
+   "tag": "_smoke"
+  }
+ },
+ "train_curve": [
+  {
+   "iteration": 1,
+   "mean": 0.17500000000000002,
+   "best": 0.30000000000000004,
+   "seconds": 62.27979360000063
+  }
+ ],
+ "held_out_checks": [
+  {
+   "iteration": 0,
+   "n": 3,
+   "verify_to_gold": 0.0
+  }
+ ],
+ "final": {
+  "verify_to_gold": 0.0,
+  "n": 3,
+  "se": 0.0,
+  "beats_bar": null,
+  "is_decision": false
+ }
+}
