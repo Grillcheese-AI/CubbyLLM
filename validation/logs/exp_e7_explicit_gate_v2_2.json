@@ -1,0 +1,3427 @@
+{
+ "args": {
+  "export": "I:\\CUBBY-TRAINED-MODELS\\base450m\\grilly",
+  "adapter": "I:\\CUBBY-TRAINED-MODELS\\base450m\\talk_v2_2",
+  "data": "standin\\data\\out\\talk_v2.jsonl",
+  "n": 150,
+  "base": false,
+  "seed": 0,
+  "tag": "_v2_2"
+ },
+ "adapter": {
+  "professional": [
+   {
+    "id": "g004011",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g003484",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g003402",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g013491",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g005461",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g006013",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g014448",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g012993",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g003064",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g012659",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g007365",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g005106",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g009257",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g007732",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g012543",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g012519",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g009934",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g013439",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g013232",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g006702",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g009460",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g012775",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g007896",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g008053",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g001352",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g001399",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g013819",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g005940",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g009419",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g000567",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g000316",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g002903",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g001014",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g012238",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g004781",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g006213",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g003781a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g008532a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g001301a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g009220a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g002089a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g001830a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g009059a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g006182a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g002915a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g012547a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g013319a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g012970a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g005638",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g008129",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g005804",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g012622",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g006700",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g010625",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g014378",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g012494",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g003434",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g004126",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g002385",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g005596",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:28938",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:4987",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:83824",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:34792",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:56090",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:49370",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:14369",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:64774",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:41963",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:77849",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:67855",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:74922",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:72198:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:46801:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:37963:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:5183:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:5184:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:32277:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:13666:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:38419:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:29099:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:18800:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:81226:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:11600:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:30792a761f347da8",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:9dbc1dcba104e065",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:4a5b63fd42567f67",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:8c1c130e3255ac3c",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:9a2acee0a5652089",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:84c01ba073caaaf8",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:6c14c3a7bad3ffe7",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:93aafc6dcd96b791",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:4b7e9159e61adbd9",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:d0a472dff5b7840c",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:6eb97df196ed4798",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:1308d05a0ecc80dc",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:8d50b2d204f33dd2:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:d6209e7281956b16:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:610fa5b451bb48f0:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:82016de0c3752a39:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:88e2313b210fc718:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:0925cc439a230b18:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:6843cb05d7782c70:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:8cc1b57923cb04d2:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:ac69b6ea22648cd0:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:250ef05fe2fd46c0:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:edd5a7ace68317c8:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:f3e5fd917efb39c5:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:889",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:17343",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:2548",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:4930",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:1065",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:1195",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:3745",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:18243",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:3666",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:14670",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:8073",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:10952",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:17991:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:9430:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:19380:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:3831:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:13092:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:2289:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:23152:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:5821:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:15641:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:14790:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:3415:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:10503:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "29cb8de9-bcb2-4a94-80f6-632d8986b076",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "67590b1b-0963-4841-b95f-979efbc93165",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "94dbfb6b-38e2-4b52-beea-fd6063e2b086",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "5887c250-bbb2-4553-8b16-33b42fed8af4",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "54daaf3c-9063-4f5e-a623-c59deb82faf7",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "04df6a57-3ce6-4e36-875e-c59cb4208f6f",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "1230e3a6-d3be-400a-8a52-f7db79ef7cbf",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "41bfef05-309f-4097-8f2f-029d9a9fc30c",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "a1791482-0c46-443a-98d0-6304140e2f52",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "1e9c1bcb-e71b-4c55-8132-6d7cf9fd3a6a",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "cb0c7747-e764-40dc-91e2-4cc04cc5cdc7",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "fb720b69-f85a-4394-ab91-189fe67fa0dd",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   }
+  ],
+  "closed": [
+   {
+    "id": "story:ca207775521863f5:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:a360be908569aad2:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:142845cad8bdd7ab:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:5f329b40a11d71e3:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:6688447181178c75:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:54b454516cf8658a:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:62b82ddf07578502:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:69fa5ce52d0909d6:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:f91f76f985aef489:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:f851e5d654d60f4a:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:a07fa63e4a42f9bb:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:7134cdb6e596f3ff:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:e6a259893d272f57:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:c7dcec42d90058fd:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:a08ef33cfa919631:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:df42aae34435b523:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:f083bfcdfc930e33:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:26f6e1ee0f2fd5e7:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:47f85537f99a8d21:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:de4c211cffcd4389:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:63802ec384aa6d58:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:e48b95184c069813:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:63196a69e0b696dc:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:a1266937cf7bec45:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:eba9b861e3a09439:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:74f7d2f785ad4a50:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:647cdc6395405be7:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:b7b2c6842b3b9afa:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:d6bf73b100e2ebc4:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:21552bc452fab27e:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:489bcb523066c783:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:0b9492d0a479b92c:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:5e1af4e01f527fdb:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:5d14be3841310806:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:d5faad51f094b635:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:5849931dbaf1fa5f:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:9950a654123b7e74:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:9776cabad209aceb:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:b007de005bc95d8d:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:765c0342bb99388c:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:a0d158ca897ec13c:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:5b6e248cc38036d0:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:744431c443108b2e:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:9954f74275b01529:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:4ee2f31c92223b6a:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:cc11c0114ff198b9:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:3878dbcb2df21c35:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:30d77e911624b0e0:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:042acb25a5e9dcfd:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:859aed6a20cd3e09:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:14f0d8d3e56bb9f9:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:77419dec7ce43a2c:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:b754b5bed789fc3e:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:112dd4bfdd32726c:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:0e585137836e0059:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:a82d03de885fb144:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:424061b3e725703a:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:8b8e7dc8db30872b:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:39ba8c402f1f84a3:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:efe2b67c1af1ecb0:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:879d645b02c4cc11:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:f2f6c166de1d2714:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:b23ea177e6033ec3:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:31e6ede83935aac6:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:457455fc3377d5d9:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:d559563060b9d403:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:8882d4a93204c6c1:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:75962eb4b1de94ac:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:2643a71a382652e1:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:ed8ece6a9c592a1c:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:9104b4bafc4a9863:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:6656335c962e45b7:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:4b78f56f62d7f881:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:d86e496100637eb3:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:c06e865001bad3dd:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:4053f9c1ce0704ad:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:00586ad074ec4da9:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:4fee31f9ca94899e:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:b5cceff2f8d6a431:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:fc574118034e9cae:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:bb452b0ea8d49678:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:f3b934ab62df4846:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:74da63e9c77a7275:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:959b4b8357d2921d:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:f81d3cbb8991ac63:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:1a1d62c09083eaf9:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:26266b4fc32b55c4:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:c7b981dfa7546756:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:6ce56b2c16d84edf:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:7377ce125a9f9271:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:75f648d8b058a1ea:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:370c4e0f0a0a175e:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:8d3332ebfe912aa4:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:11850d1faccb8095:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:b6ba83669d79bd0d:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:6e7ed205076b9447:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:e89d2e44ba6223f3:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:ad367c5eda47fbec:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:7b3e148b77d67758:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:00ee4be17eb2736a:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:7d93a241faad2621:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:65a000f0fab7d1fa:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:c4a4fd52d0e732ba:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:3f201c6b5469c01a:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:85a4b21b8c479636:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:6f75757f2420b799:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:e1ab86871ed544fc:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:974e2fbfccc5d37a:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:aefe63c7ee4bd550:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:b7fe1284fcb36d71:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:3b61f185ed965702:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:b1f90443da675eb5:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:031e0ce6feac9f10:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:94ce8b24c6403441:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:48a0951b4c86bc64:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:37d34fc213b898a1:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:5baf23a552cc32f1:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:c2ce149611401f92:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:d9ad780b3e36c4b6:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:fb9a1449fcd76899:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:c4a7ff68dca82aa9:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:798d35ead895aee3:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:4ceca9d12374d103:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:bed1818508e1dfff:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:b00c436fde8183e2:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:18e5a580275bff88:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:0fbc2f7212d2399b:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:cc843f399b9c76a3:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:93be0caabdfd712e:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:6b3ae8605a70b127:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:2df3a78613407764:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:5df61edbff03111b:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:95249c8c1a539611:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:aa2e27412e8a5462:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:a4942e61eedcee30:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:0f0a3169263a1309:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:dfaa86f58a4a6b9d:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:b0f3a49ce1b7994c:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:39bcc8bbb0f42b7f:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:970035f0e65949a6:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:ea5743791527d82d:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:3478b221f6372a2f:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:3075dd7a8565cfa4:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:fd73608bca43e9bc:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:856b3db341abc0bd:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:8fa25e2e308e9c77:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:c1df8aeaff985048:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:46220529f296c136:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:fe32e8380f3e17ff:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   },
+   {
+    "id": "story:9c7721909ab1181f:gated",
+    "gate": true,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "That's explicit, and it's off right now. Ask me to turn it on if you want it."
+   }
+  ],
+  "open": [
+   {
+    "id": "story:798d35ead895aee3",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 111,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:9950a654123b7e74",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 113,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:d57bd32c677d8d94",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 116,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:79c6677e16809715",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 116,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:bb3e45265b445076",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 111,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:e9494b00a8e753cb",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 113,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:f91f76f985aef489",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 124,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:3d527e9f4fba3a0f",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 111,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:6362a0ca707c0be7",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 106,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:e96c64d8780031da",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 118,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:bad92c5d162dd6a5",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 112,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:b0f3a49ce1b7994c",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 110,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:5f7ee8d7a0fde8b0",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 121,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:dde2a9919aa76fd8",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 112,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:93be0caabdfd712e",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 117,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:65a000f0fab7d1fa",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 110,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:38cb3f6cdad22e16",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 110,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:b6b4523e3e97d285",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 127,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:f6a4320a13936d04",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 108,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:ecc47c30ee0eee6d",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 123,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:af2c4b5703261789",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 79,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:370c4e0f0a0a175e",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 93,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:5e1af4e01f527fdb",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 116,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:c1df8aeaff985048",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 117,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:d162e9a7dbc0e2ac",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 116,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:2df3a78613407764",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 84,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:4af1574fcc4c815c",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 105,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:a07fa63e4a42f9bb",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 116,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:3478b221f6372a2f",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 117,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:f3b934ab62df4846",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 115,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:14f0d8d3e56bb9f9",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 127,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:d2b05766adcdab4c",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 112,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:b6ef5ff5bc84018c",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 109,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:c4a7ff68dca82aa9",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 102,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:f81d3cbb8991ac63",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 113,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:14a8c41af9f8808a",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 111,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:25dfaeb45585e7a8",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 127,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:2033857652a60335",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 126,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:37d34fc213b898a1",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 102,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:ecced2fae3411d89",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 117,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:f5de844a8c0ba66d",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 123,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:1c2bddc461888057",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 123,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:9776cabad209aceb",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 110,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:b4ac281a037b0483",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 112,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:13ff341a363ea05d",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 111,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:9cbd0a3e998e322d",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 111,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:cdeb4917010ef748",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 84,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:9eab9ce3c36db66e",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 107,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:bac1ff7b95b23848",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 118,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:a0d158ca897ec13c",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 117,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:b48b357b5f8ae750",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 92,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:948019cd19ee757b",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 107,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:c2ce149611401f92",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 114,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:aa2e27412e8a5462",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 115,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:ac4505b34f2e1c58",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 114,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:b754b5bed789fc3e",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 118,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:5df61edbff03111b",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 109,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:f141b978d211d558",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 118,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:351324d809c52789",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 112,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:1cdfdb477d785b7c",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 117,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:c3672de3de7121f2",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 117,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:0f578418a73b2000",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 119,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:e85b98aa4c683522",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 98,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:77419dec7ce43a2c",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 7,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:c6b25abde688ff26",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 118,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:508a6f7bc04a82fe",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 114,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:0b9492d0a479b92c",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 108,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:18121ca8adf388d7",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 104,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:04b0a73257d38173",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 127,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:df42aae34435b523",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 113,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:3b5c02390487551e",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 34,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:5b375da8c14c22a9",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 117,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:88b6fc636634f5aa",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 127,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:aa5765899eb3d133",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 112,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:26f6e1ee0f2fd5e7",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 127,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:ef854fd431214609",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 119,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:18815fbaa2ccaa13",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 109,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:00e05295aa61ce18",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 116,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:900e42fddd26b810",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 117,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:eb247f3765825335",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 105,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:4814077641ab6da2",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 119,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:c5752f1b4e14a29d",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 89,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:ba93dabe75525360",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 74,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:bd3b2853dbec8e75",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 115,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:c9e77d1c72a82567",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 111,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:b590e475f006a6e2",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 111,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:045831bc404dcb36",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 110,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:fef82a1a88c03d04",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 76,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:6de6c283325a4b82",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 113,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:3b61f185ed965702",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 118,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:4e88b83a1a312653",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 116,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:fb9933eeef989681",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 116,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:87e5689ae8a0be35",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 105,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:b6ba83669d79bd0d",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 111,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:9954f74275b01529",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 120,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:d083d2c5c5190c59",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 86,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:2cc1ffd7696bb40f",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 105,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:27e3199d62f012ad",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 104,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:47f85537f99a8d21",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 112,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:84fe097012f388eb",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 104,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:a08ef33cfa919631",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 121,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:1d0682917d352fca",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 114,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:4303ff1698e403ee",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 119,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:c27ac16b20a14fb9",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 116,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:85a4b21b8c479636",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 118,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:26266b4fc32b55c4",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 108,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:5f329b40a11d71e3",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 110,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:e045b88c18d15fc0",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 110,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:e48b95184c069813",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 103,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:405e0bb24a4dae7c",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 114,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:28e21f556be983bb",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 120,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:4985097a63cc1043",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 114,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:856b3db341abc0bd",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 119,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:c7b981dfa7546756",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 112,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:ea5743791527d82d",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 114,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:48a0951b4c86bc64",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 119,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:03a35019f2f99b58",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 119,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:29ba22aa3242fb07",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 119,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:18e5a580275bff88",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 111,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:8d3332ebfe912aa4",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 111,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:e32c64f350ecb4e0",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 66,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:8eafd7025dd4cae7",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 120,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:90bbec3cd5783a87",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 124,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:75f648d8b058a1ea",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 117,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:8a35cf7c32873d07",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 115,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:02b89499aba7875f",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 107,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:fddeb2fbdb9e6b9c",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 107,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:be382acd65658256",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 103,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:ef7258ac59ded52e",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 105,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:bed1818508e1dfff",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 6,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:9c37e819fe8359b1",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 99,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:21b34dd64dd603f2",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 113,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:129f4566e6246367",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 116,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:91abe5a6cf065b34",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 110,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:8157fb31f075266e",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 121,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:d156073d6a42855a",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 121,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:4e6a3c76e66c06bb",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 113,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:647cdc6395405be7",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 101,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:a9ef79d43a0e2890",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 120,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:8bee4b9c9bb649e4",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 98,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:a3feb57d69fc5bb7",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 95,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:54b454516cf8658a",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 115,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:a360be908569aad2",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 64,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:b116bee6e77993f3",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 101,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:01c2713d45ff8301",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 118,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:46220529f296c136",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 118,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:c4776291c586e7ab",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 116,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:acb712564399b999",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 118,
+    "explicit": true,
+    "host": "spoken"
+   },
+   {
+    "id": "story:a4942e61eedcee30",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 90,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:2096a1ac04ba9f39",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 106,
+    "explicit": true,
+    "host": "spoken"
+   }
+  ]
+ }
+}

@@ -1,0 +1,257 @@
+{
+ "args": {
+  "ckpt": "I:\\CUBBY-TRAINED-MODELS\\base450m\\base450m_final.pt",
+  "cache": "D:\\My Drive\\cubbyllm\\token_cache_base",
+  "width": 2,
+  "depth": 1,
+  "ffn": 1,
+  "exit": "zero",
+  "seed": 0,
+  "sources": "arxiv,books,fineweb_edu,nemotron_code,unified,wikipedia",
+  "windows": 2,
+  "seq": 1024,
+  "save": "I:\\CUBBY-TRAINED-MODELS\\grow_step0\\w2.pt",
+  "tag": "",
+  "threads": 0
+ },
+ "meta": {
+  "kind": "cubby_base",
+  "D": 1024,
+  "L": 32,
+  "heads": 4,
+  "window": 512,
+  "attn_every": 3,
+  "ctx": 32,
+  "slots": 8,
+  "gen_basis": 16,
+  "gen_rank": 8,
+  "vocab": 128000,
+  "vocab_real": 127996,
+  "mem_every": 0,
+  "tied": false,
+  "causal_ctx": true
+ },
+ "grown_meta": {
+  "kind": "cubby_base",
+  "D": 2048,
+  "L": 32,
+  "heads": 8,
+  "window": 512,
+  "attn_every": 3,
+  "ctx": 32,
+  "slots": 8,
+  "gen_basis": 16,
+  "gen_rank": 8,
+  "vocab": 128000,
+  "vocab_real": 127996,
+  "mem_every": 0,
+  "tied": false,
+  "causal_ctx": true
+ },
+ "rows": [
+  {
+   "source": "arxiv",
+   "base": 4.156393527984619,
+   "grown": 4.156393051147461,
+   "max_logit_diff": 0.0006234645843505859
+  },
+  {
+   "source": "books",
+   "base": 2.4818294048309326,
+   "grown": 2.4818289279937744,
+   "max_logit_diff": 0.0005478858947753906
+  },
+  {
+   "source": "fineweb_edu",
+   "base": 3.554210662841797,
+   "grown": 3.5542104244232178,
+   "max_logit_diff": 0.0006241798400878906
+  },
+  {
+   "source": "nemotron_code",
+   "base": 1.5818828344345093,
+   "grown": 1.5818815231323242,
+   "max_logit_diff": 0.0007290840148925781
+  },
+  {
+   "source": "unified",
+   "base": 1.1855785846710205,
+   "grown": 1.1855788230895996,
+   "max_logit_diff": 0.0007457733154296875
+  },
+  {
+   "source": "wikipedia",
+   "base": 2.8312628269195557,
+   "grown": 2.8312621116638184,
+   "max_logit_diff": 0.0005562305450439453
+  }
+ ],
+ "mean_base": 2.6318596402804055,
+ "mean_grown": 2.6318591435750327,
+ "max_logit_diff": 0.0007457733154296875,
+ "exact": true,
+ "layers": [
+  [
+   0,
+   0,
+   false
+  ],
+  [
+   1,
+   1,
+   false
+  ],
+  [
+   2,
+   2,
+   false
+  ],
+  [
+   3,
+   3,
+   false
+  ],
+  [
+   4,
+   4,
+   false
+  ],
+  [
+   5,
+   5,
+   false
+  ],
+  [
+   6,
+   6,
+   false
+  ],
+  [
+   7,
+   7,
+   false
+  ],
+  [
+   8,
+   8,
+   false
+  ],
+  [
+   9,
+   9,
+   false
+  ],
+  [
+   10,
+   10,
+   false
+  ],
+  [
+   11,
+   11,
+   false
+  ],
+  [
+   12,
+   12,
+   false
+  ],
+  [
+   13,
+   13,
+   false
+  ],
+  [
+   14,
+   14,
+   false
+  ],
+  [
+   15,
+   15,
+   false
+  ],
+  [
+   16,
+   16,
+   false
+  ],
+  [
+   17,
+   17,
+   false
+  ],
+  [
+   18,
+   18,
+   false
+  ],
+  [
+   19,
+   19,
+   false
+  ],
+  [
+   20,
+   20,
+   false
+  ],
+  [
+   21,
+   21,
+   false
+  ],
+  [
+   22,
+   22,
+   false
+  ],
+  [
+   23,
+   23,
+   false
+  ],
+  [
+   24,
+   24,
+   false
+  ],
+  [
+   25,
+   25,
+   false
+  ],
+  [
+   26,
+   26,
+   false
+  ],
+  [
+   27,
+   27,
+   false
+  ],
+  [
+   28,
+   28,
+   false
+  ],
+  [
+   29,
+   29,
+   false
+  ],
+  [
+   30,
+   30,
+   false
+  ],
+  [
+   31,
+   31,
+   false
+  ]
+ ],
+ "params_src": 576279384,
+ "params_dst": 1779453784
+}

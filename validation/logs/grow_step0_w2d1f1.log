@@ -1,0 +1,14 @@
+grow_base step 0 | base450m_final.pt (step 21103) -> width x2, depth x1, ffn x1, exit zero
+  base  D1024 L32 heads 4 ffn_mult 2: 576.3M parameters
+  grown D2048 L32 heads 8 ffn_mult 2: 1,779.5M parameters  (built and filled in 15s)
+  arxiv          base 4.15639  grown 4.15639  diff -4.77e-07  max |logit diff| 6.23e-04  (26s)
+  books          base 2.48183  grown 2.48183  diff -4.77e-07  max |logit diff| 5.48e-04  (26s)
+  fineweb_edu    base 3.55421  grown 3.55421  diff -2.38e-07  max |logit diff| 6.24e-04  (25s)
+  nemotron_code  base 1.58188  grown 1.58188  diff -1.31e-06  max |logit diff| 7.29e-04  (26s)
+  unified        base 1.18558  grown 1.18558  diff +2.38e-07  max |logit diff| 7.46e-04  (26s)
+  wikipedia      base 2.83126  grown 2.83126  diff -7.15e-07  max |logit diff| 5.56e-04  (26s)
+  mean over 6 sources x 2 windows x 1024 tokens: base 2.63186  grown 2.63186  diff -4.97e-07  max |logit diff| 7.46e-04
+verdict: EXACT (bar: |loss diff| <= 1e-4 per source, max |logit diff| <= 1e-2, float32)
+saved I:\CUBBY-TRAINED-MODELS\grow_step0\w2.pt (7.12 GB)
+  reloaded through train_base.load_base: arxiv loss 4.15639 (before saving 4.15639)
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\grow_step0_w2d1f1.json / .log  (232s total)

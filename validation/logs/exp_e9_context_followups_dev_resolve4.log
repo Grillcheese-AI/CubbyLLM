@@ -1,0 +1,31 @@
+exp_e9 context follow-ups | graph 940,897 events (31s)
+80 dev dialogues, 220 turns
+turns: 220 per arm, 29s
+
+[with the context graph, dev split]
+  role            n resolved | correct wrong refused asked none unparsed
+  first          80    97.5% |   97.5%     0       0     2    0        0
+  pronoun        60    96.7% |   96.7%     0       0     2    0        0
+  description    20   100.0% |  100.0%     0       0     0    0        0
+  switched       20    95.0% |   95.0%     0       0     1    0        0
+  clarify_ask    20     0.0% |    0.0%     0       0    20    0        0
+  clarify_pick   20   100.0% |  100.0%     0       0     0    0        0
+  FOLLOW-UPS    100    97.0% |   97.0%     0       0     3    0        0
+
+[each turn alone, dev split]
+  role            n resolved | correct wrong refused asked none unparsed
+  first          80    97.5% |   97.5%     0       0     2    0        0
+  pronoun        60     0.0% |    0.0%     0       0     0   42       18
+  description    20     0.0% |    0.0%     0       0    14    6        0
+  switched       20     0.0% |    0.0%     0       0     0   15        5
+  clarify_ask    20     0.0% |    0.0%     0       0    20    0        0
+  clarify_pick   20     0.0% |    0.0%     0       0     0    0       20
+  FOLLOW-UPS    100     0.0% |    0.0%     0       0    14   63       23
+
+clarify: host asked on 20 of 20 first turns; the pick bound to the chosen event 100.0% of those
+gate (dev): resolved >= 95% PASS; switched resolved >= 95% PASS; bind >= 90% PASS; kill (wrong > 2%): does not fire
+
+context arm, follow-ups not resolved to the gold event, first 3:
+  [follow/pronoun] Where was that?  gold: Sack of Rome by Gauls | got: ask (context)
+  [follow/pronoun] When did it happen?  gold: Sack of Rome by Gauls | got: ask (context)
+  [switch/switched] Where did it take place?  gold: Porphyry's Against the Christians | got: ask (context)

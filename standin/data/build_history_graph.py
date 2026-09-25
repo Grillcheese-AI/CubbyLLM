@@ -417,6 +417,8 @@ def assemble(extracted: list[tuple[str, int, dict]], news: list[dict] = ()) -> H
     g.prune_links("time_contradicts_merged")                  # a merge gave an end a stronger date
     g.dates = g.infer_dates(passage_years(extracted), hints)   # after the merge: inferred dates never merge
     g.prune_links("time_contradicts_dated")                   # a link to an undated end, checked with its date
+    g.mirrored = g.repair_mirrored_dates()                    # one event read as 359 and 359 BC: era decided, merged
+    g.prune_links("time_contradicts_mirrored")                # links moved off the wrong-era reading, checked again
     return g
 
 
@@ -454,6 +456,7 @@ def main():
         g.save(out_dir / f"history_graph{args.tag}.jsonl")
         stats = {"passages": len(extracted), "news_events": len(news), "events": len(g.events), "links": len(g.links),
                  "facts": len(g.facts), "dated_by": dict(g.dates), "links_refused": dict(g.refused),
+                 "mirrored_dates": dict(collections.Counter(str(d["era"]) for d in g.mirrored)),
                  "events_with_news_day": sum(1 for e in g.events.values() if any(s[0] == "nyt" for s in e.sources)
                                              and any(s[0] != "nyt" for s in e.sources))}
         (ROOT / "validation" / "logs" / f"history_graph{args.tag}.assemble.json").write_text(json.dumps(stats, indent=1),

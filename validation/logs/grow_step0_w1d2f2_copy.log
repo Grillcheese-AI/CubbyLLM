@@ -1,0 +1,13 @@
+grow_base step 0 | base450m_final.pt (step 21103) -> width x1, depth x2, ffn x2, exit copy
+  base  D1024 L32 heads 4 ffn_mult 2: 576.3M parameters
+  grown D1024 L64 heads 4 ffn_mult 4: 1,292.6M parameters  (built and filled in 16s)
+  layers: 64, of which 32 copies (copy exit); attention at 22
+  arxiv          base 4.15639  grown 6.25525  diff +2.10e+00  max |logit diff| 4.09e+01  (23s)
+  books          base 2.48183  grown 4.77338  diff +2.29e+00  max |logit diff| 4.21e+01  (23s)
+  fineweb_edu    base 3.55421  grown 5.21235  diff +1.66e+00  max |logit diff| 3.13e+01  (22s)
+  nemotron_code  base 1.58188  grown 3.19738  diff +1.62e+00  max |logit diff| 6.98e+01  (22s)
+  unified        base 1.18558  grown 2.61072  diff +1.43e+00  max |logit diff| 7.06e+01  (22s)
+  wikipedia      base 2.83126  grown 4.91925  diff +2.09e+00  max |logit diff| 4.51e+01  (21s)
+  mean over 6 sources x 2 windows x 1024 tokens: base 2.63186  grown 4.49472  diff +1.86e+00  max |logit diff| 7.06e+01
+verdict: plain copy, not exact by design; loss jump +1.8629 nats
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\grow_step0_w1d2f2_copy.json / .log  (149s total)

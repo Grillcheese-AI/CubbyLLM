@@ -129,3 +129,29 @@ def test_links_are_checked_again_once_dates_are_final():
     assert g.prune_links() == 1
     assert g.out(campo) == [] and g.into(mayence) == [] and g.into(war) == [(treaty, "ended")]
     assert g.refused["time_contradicts_dated"] == 1
+
+
+def test_a_lost_era_mark_is_decided_by_the_neighbours_and_merged():
+    """'Accession of Philip II' read as 359 BC and as 359: the parties' other events are near 359 BC, so the AD
+    reading is the lost mark -- merged into the BC one, its links moved over. Hadrian's Wall goes the other way.
+    A pair nothing decides is left alone."""
+    g = HistoryGraph()
+    bc = g.add_event("Accession of Philip II", parse_time("359 BC"), ["Macedon"], ["Philip II", "Perdiccas III"])
+    ad = g.add_event("Accession of Philip II", parse_time("359"), ["Macedonia"], ["Philip II", "Bardylis"], source=("b", 2))
+    for i, (name, when) in enumerate([("Death of Perdiccas III", "360 BC"), ("Battle of Chaeronea", "338 BC"),
+                                      ("Siege of Olynthus", "348 BC")]):
+        g.add_event(name, parse_time(when), [], ["Philip II", "Perdiccas III"])
+    later = g.add_event("Reforms of the Macedonian army", None, [], [])           # undated: the link is kept
+    assert g.add_link(later, "response to", ad) is None
+    hw_ad = g.add_event("Construction of Hadrian's Wall", parse_time("128"), ["Britain"], ["Emperor Hadrian"])
+    hw_bc = g.add_event("Construction of Hadrian's Wall", parse_time("128 BC"), [], [])
+    for name, when in [("Hadrian's visit to Britain", "122"), ("Death of Hadrian", "138")]:
+        g.add_event(name, parse_time(when), ["Britain"], ["Emperor Hadrian"])
+    lone_a = g.add_event("Founding of Cyrene", parse_time("600 BC"), [], [])
+    lone_b = g.add_event("Founding of Cyrene", parse_time("600"), [], [])
+    out = {d["name"]: d["era"] for d in g.repair_mirrored_dates()}
+    assert out == {"Accession of Philip II": "bc", "Construction of Hadrian's Wall": "ad", "Founding of Cyrene": None}
+    assert ad not in g.events and bc in g.events and "Bardylis" in g.events[bc].who
+    assert g.into(bc) == [(later, "response to")] and (later, "response to", ad) not in g.links
+    assert hw_bc not in g.events and g.events[hw_ad].when["y0"] == 128
+    assert lone_a in g.events and lone_b in g.events

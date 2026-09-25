@@ -122,6 +122,12 @@ LOCAL_DIR = _env("CB_LOCAL_DIR", "/content/ckpt_base", str)
 DRIVE_DIR = _env("CB_DRIVE_DIR", "", str)    # where checkpoints + metrics persist
 NAME = _env("CB_NAME", "base450m", str)
 RESUME_FROM = _env("CB_RESUME_FROM", "", str)  # a specific checkpoint (else the newest slot)
+# Weights only, for a run that starts from another model's weights (a grown base,
+# validation/grow_base.py): step 0, a fresh optimizer and schedule. Used only
+# when there is nothing to resume, so a restarted run continues from its own
+# slots rather than starting over.
+INIT_FROM = _env("CB_INIT_FROM", "", str)
+FFN_MULT = _env("CB_FFN_MULT", 2)            # SwiGLU width / D; 2 = every base so far
 STABLE_END = bool(_env("CB_STABLE_END", 1))  # also keep the pre-decay state (+7 GB on Drive)
 # ── bench / probe ──────────────────────────────────────────────────────────
 BENCH_MICRO = _env("CB_BENCH_MICRO", "8,16,24,32", str)
@@ -283,11 +289,14 @@ class Prefetch:
 # model
 # ─────────────────────────────────────────────────────────────────────────────
 def arch_meta(vocab_real: int, vocab: int) -> dict:
-    return {"kind": "cubby_base", "D": D, "L": L, "heads": HEADS, "window": WINDOW,
+    meta = {"kind": "cubby_base", "D": D, "L": L, "heads": HEADS, "window": WINDOW,
             "attn_every": ATTN_EVERY, "ctx": CTX, "slots": N_SLOTS,
             "gen_basis": GEN_BASIS, "gen_rank": GEN_RANK, "vocab": vocab,
             "vocab_real": vocab_real, "mem_every": 0, "tied": False,
             "causal_ctx": True}
+    if FFN_MULT != 2:                 # absent at 2, so every earlier checkpoint's meta still matches
+        meta["ffn_mult"] = FFN_MULT
+    return meta
 
 
 def build_model(meta: dict, dev, seed: int = 0) -> CubbyModel:
@@ -299,6 +308,7 @@ def build_model(meta: dict, dev, seed: int = 0) -> CubbyModel:
         context_source=FrozenSlotRouter(input_dim=d, n_slots=meta["slots"],
                                         ctx_dim=meta["ctx"]).freeze(),
         backbone=HybridBackbone(d, n_layers, attn_every=meta["attn_every"],
+                                ffn_mult=meta.get("ffn_mult", 2),
                                 window=meta["window"], heads=meta["heads"]),
         memory=MemoryLayer(BasisHyperGenerator(ctx_dim=meta["ctx"], d_model=d,
                                                n_layers=n_layers, n_basis=meta["gen_basis"],
@@ -693,6 +703,12 @@ def train(dev):
                              f"{tps_step}); keep CB_MICRO x accum the same on resume.")
         print(f"resumed {path} @ step {start} ({tokens_seen/1e9:.2f}B tokens, "
               f"{hours_before:.1f} h trained)")
+        del c
+    elif INIT_FROM:
+        c = restore(INIT_FROM, model, None, dev, meta)       # weights only; meta must match
+        print(f"initialised from {INIT_FROM} (its step {c.get('step')}; "
+              f"{'grown from ' + str(c['grown_from']['checkpoint']) if c.get('grown_from') else 'not grown'})"
+              f" -> step 0, fresh optimizer and schedule")
         del c
     if STEPS_ENV and STEPS_ENV != sched["steps"]:
         sched.update(steps=STEPS_ENV, sized=True)

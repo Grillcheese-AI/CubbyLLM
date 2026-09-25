@@ -277,9 +277,12 @@ class HybridBackbone(nn.Module):
     def __init__(self, d_model: int, n_layers: int = 2, attn_every: int = 3,
                  window: int = 512, heads: int = 4, grad_checkpoint: bool = False,
                  mem_every: int = 0, mem_topk: int = 8, mem_key: int = 64,
-                 mem_capacity: int = DEFAULT_CAPACITY):
+                 mem_capacity: int = DEFAULT_CAPACITY, ffn_mult: int = 2):
         super().__init__()
         self.d_model = int(d_model)
+        # SwiGLU hidden width = ffn_mult * d_model. 2 is every checkpoint trained
+        # so far; a grown model (cubbyllm/model/grow.py) may widen it.
+        self.ffn_mult = int(ffn_mult)
         self.attn_every = int(attn_every)
         self.window = int(window)
         self.is_attn = [i % self.attn_every == 0 for i in range(n_layers)]
@@ -289,7 +292,7 @@ class HybridBackbone(nn.Module):
             for a in self.is_attn
         ])
         self.n2 = nn.ModuleList([_RMSNorm(d_model) for _ in range(n_layers)])
-        self.ffn = nn.ModuleList([_SwiGLU(d_model) for _ in range(n_layers)])
+        self.ffn = nn.ModuleList([_SwiGLU(d_model, self.ffn_mult) for _ in range(n_layers)])
         self.grad_checkpoint = bool(grad_checkpoint)
 
         # Episodic memory: reads the BEYOND-window past (rung 0.0.5). mem_every=0

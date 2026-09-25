@@ -1,0 +1,79 @@
+exp_e8 history retrieval | 807 test questions | graph 940,897 events (load 13s, index 16s, 948,391 names; facts index 28s) | min_score 0.6 margin 0.1
+lookup: median 5 ms, max 46 ms
+found by the description's facts (reworded): 34, the right event 33
+found by the description's facts (named): 0, the right event 0
+adapter: step 6346 r=16 alpha=32.0
+talk: 807 questions, 491s
+
+[reworded, test split] 387 questions
+  kind          n   top1   top5  clear   kind   line | correct wrong refused asked none unparsed
+  cause        60  93.3%  98.3%  86.7% 100.0%  81.7% |   78.3%     0       5     5    3        0
+  effect       60  88.3%  95.0%  81.7%  90.0%  70.0% |   73.3%     1       4     2    3        6
+  when         59  94.9%  96.6%  89.8% 100.0%  89.8% |   89.8%     0       0     4    2        0
+  where        48  79.2%  85.4%  75.0% 100.0%  72.9% |   75.0%     0       0     2   10        0
+  who          40  85.0%  85.0%  72.5%  97.5%  72.5% |   70.0%     0       1     1    9        1
+  downstream   60  81.7%  85.0%  75.0%  95.0%  61.7% |   66.7%     0       5     3    9        3
+  absent       60  88.3%  96.7%  93.3% 100.0%  88.3% |   91.7%     0       1     0    4        0
+  ALL         387  87.6%  92.2%  82.7%  97.4%  77.0% |   78.3%     1      16    17   40       10
+
+[named, test split] 420 questions
+  kind          n   top1   top5  clear   kind   line | correct wrong refused asked none unparsed
+  cause        60  95.0% 100.0%  86.7% 100.0%  86.7% |   83.3%     0       2     8    0        0
+  effect       60  96.7% 100.0%  88.3% 100.0%  88.3% |   86.7%     0       1     7    0        0
+  when         60  96.7% 100.0%  96.7% 100.0%  96.7% |   96.7%     0       0     2    0        0
+  where        60  98.3% 100.0%  96.7% 100.0%  96.7% |   93.3%     0       2     2    0        0
+  who          60 100.0% 100.0%  98.3% 100.0%  98.3% |   95.0%     0       2     1    0        0
+  downstream   60 100.0% 100.0%  90.0% 100.0%  90.0% |   81.7%     0       5     6    0        0
+  absent       60  96.7% 100.0%  98.3% 100.0%  95.0% |   96.7%     0       1     1    0        0
+  ALL         420  97.6% 100.0%  93.6% 100.0%  93.1% |   90.5%     0      13    27    0        0
+
+[reworded without the event's name, test split] 314 questions
+  kind          n   top1   top5  clear   kind   line | correct wrong refused asked none unparsed
+  cause        41  90.2%  97.6%  80.5% 100.0%  73.2% |   70.7%     0       4     5    3        0
+  effect       46  84.8%  93.5%  82.6%  89.1%  67.4% |   73.9%     1       3     1    2        5
+  when         50  94.0%  96.0%  88.0% 100.0%  88.0% |   88.0%     0       0     4    2        0
+  where        45  77.8%  84.4%  77.8% 100.0%  75.6% |   77.8%     0       0     0   10        0
+  who          34  82.4%  82.4%  67.6%  97.1%  67.6% |   64.7%     0       1     1    9        1
+  downstream   55  80.0%  83.6%  74.5%  94.5%  60.0% |   65.5%     0       5     2    9        3
+  absent       43  86.0%  95.3%  90.7% 100.0%  86.0% |   88.4%     0       1     0    4        0
+  ALL         314  85.0%  90.4%  80.6%  97.1%  73.9% |   75.8%     1      14    13   39        9
+
+gate (reworded, test): top1 >= 90% MISS; line >= 90% MISS; correct >= 80% MISS; wrong = 0 MISS; kill (top5 < 50%): does not fire
+
+wrong, first 1:
+  [effect/reworded] What were the results of the Assyrian campaign led by Sennacherib against Judah in 701 BC?
+     gold: Assyrian attack led by Sennacherib | got: Sennacherib's Assyrian campaign against Judah (701 BCE) | top: ["Sennacherib's Assyrian campaign against Judah (701 BCE)", "Sennacherib's campaign against Judah", "Sennacherib's campaign to Judah"]
+     said: Sennacherib's campaign against Judah (701 BCE) caused Hezekiah's Tribute to Sennacherib.
+
+missed (gold not top1), first 12:
+  [cause/reworded] What led to Achilles' death at the Scæan gate in Troy?
+     gold: Death of Achilles | got: Achilles' Death at Troy | top: ["Achilles' Death at Troy", "Achilles' Death", 'Death of Achilles']
+     said: The facts don't say.
+  [cause/reworded] What led Joseph Goebbels and his family to take their own lives in 1945?
+     gold: Goebbels and Family Suicide | got: ask | top: ['Death of Joseph Goebbels', 'Goebbels and Family Suicide', 'Hitler tea with Goebbels family']
+  [cause/reworded] What caused the prediction of the Destruction of the Temple by Jesus in 70?
+     gold: Destruction of the Temple predicted | got: Jesus' prediction about the destruction of the temple | top: ["Jesus' prediction about the destruction of the temple", 'Destruction of the Temple predicted', 'Destruction of the Temple']
+     said: The facts don't say.
+  [cause/reworded] What led the Jews in Judea to rebel against Antiochus IV Epiphanes around 175 BC?
+     gold: Maccabean Rebellion | got: Antiochus IV Epiphanes' rule over Judea | top: ["Antiochus IV Epiphanes' rule over Judea", 'Reign of Antiochus IV Epiphanes', "Antiochus IV Epiphanes' Reign"]
+     said: The facts don't say.
+  [effect/reworded] What resulted from the burial of St. Cuthbert at Dunholme on the River Wear in 995?
+     gold: Burial of St. Cuthbert at Durham | got: none | top: ['Death of St. Cuthbert', 'Burial of St. Cuthbert at Durham', 'Consecration of Cuthbert']
+  [effect/reworded] What were the consequences of the Jewish rebellion against Roman rule that began in 66 AD in Judea?
+     gold: Revolt of Judea | got: Rebellion against Roman rule | top: ['Rebellion against Roman rule', 'Roman Rule in Judea', 'Roman rule over Judea']
+     said: The facts don't say.
+  [effect/reworded] What resulted from the execution of the Numidian king Jugurtha at the Tullianum prison in Rome around 105 BC?
+     gold: Death of Jugurtha | got: War with King Jugurtha of Numidia | top: ['War with King Jugurtha of Numidia', 'Victory over Numidian king Jugurtha', 'Death of Jugurtha']
+     said: The facts don't say.
+  [effect/reworded] What were the outcomes of the 1916 armed uprising for Irish independence that took place in Dublin?
+     gold: Dublin Rising | got: Easter Uprising | top: ['Easter Uprising', 'Easter Rising', 'Plunkett Presides in Irish Convention']
+     said: The facts don't say.
+  [effect/reworded] What were the results of the Assyrian campaign led by Sennacherib against Judah in 701 BC?
+     gold: Assyrian attack led by Sennacherib | got: Sennacherib's Assyrian campaign against Judah (701 BCE) | top: ["Sennacherib's Assyrian campaign against Judah (701 BCE)", "Sennacherib's campaign against Judah", "Sennacherib's campaign to Judah"]
+     said: Sennacherib's campaign against Judah (701 BCE) caused Hezekiah's Tribute to Sennacherib.
+  [effect/reworded] What impact did the Female Cosmetic Coalitions model, introduced by Knight and colleagues in 1995, have on evolutionary theory?
+     gold: Female Cosmetic Coalitions model pioneered by Knight et al. | got: unparsed | top: ['Female Cosmetic Coalitions', 'Female Cosmetic Coalitions model pioneered by Knight et al.', 'Arrival of evolutionary theory']
+  [effect/reworded] What were the effects of Octavian Augustus's conquest of Egypt in 30 BC against Cleopatra VII?
+     gold: Augustus' Conquest of Egypt | got: ask | top: ["Octavian's Conquest of Egypt", 'Cleopatra VII', 'Conquest of Egypt by Octavian']
+  [when/reworded] When did St. John's defeat Seton Hall in basketball with Erick Barkley?
+     gold: St. John's Basketball Victory Over Seton Hall | got: ask | top: ["St. John's Defeats Seton Hall", "Seton Hall basketball victory over St. John's", "St. John's Basketball Victory Over Seton Hall"]

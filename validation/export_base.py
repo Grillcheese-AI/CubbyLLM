@@ -95,14 +95,15 @@ def main() -> None:
     from safetensors.torch import save_file
 
     ck = torch.load(args.ckpt, map_location="cpu", weights_only=False)
-    meta = ck["meta"]
+    meta, step, tokens = ck["meta"], ck.get("step"), ck.get("tokens")
+    del ck                         # a grown 1.8B checkpoint is 7 GB; don't hold it twice
     if meta.get("mem_every", 0):
         raise SystemExit("episodic memory layers (mem_every > 0) have no grilly2 form yet")
     model = load_base(args.ckpt, "cpu")
     tensors = named_tensors(model)
     cfg = grilly_config(meta, model)
-    cfg["source"] = {"checkpoint": os.path.basename(args.ckpt), "step": ck.get("step"),
-                     "tokens": ck.get("tokens"), "meta": meta}
+    cfg["source"] = {"checkpoint": os.path.basename(args.ckpt), "step": step,
+                     "tokens": tokens, "meta": meta}
     os.makedirs(args.out, exist_ok=True)
     save_file(tensors, os.path.join(args.out, "model.safetensors"))
     with open(os.path.join(args.out, "config.json"), "w", encoding="utf-8") as f:

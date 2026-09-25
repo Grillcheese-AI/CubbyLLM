@@ -1,0 +1,418 @@
+{
+ "args": {
+  "ckpt": "I:\\CUBBY-TRAINED-MODELS\\base450m\\base450m_final.pt",
+  "cache": "D:\\My Drive\\cubbyllm\\token_cache_base",
+  "width": 1,
+  "depth": 2,
+  "ffn": 2,
+  "exit": "zero",
+  "seed": 0,
+  "sources": "arxiv,books,fineweb_edu,nemotron_code,unified,wikipedia",
+  "windows": 2,
+  "seq": 1024,
+  "save": "I:\\CUBBY-TRAINED-MODELS\\grow_step0\\d2f2.pt",
+  "tag": "",
+  "threads": 0
+ },
+ "meta": {
+  "kind": "cubby_base",
+  "D": 1024,
+  "L": 32,
+  "heads": 4,
+  "window": 512,
+  "attn_every": 3,
+  "ctx": 32,
+  "slots": 8,
+  "gen_basis": 16,
+  "gen_rank": 8,
+  "vocab": 128000,
+  "vocab_real": 127996,
+  "mem_every": 0,
+  "tied": false,
+  "causal_ctx": true
+ },
+ "grown_meta": {
+  "kind": "cubby_base",
+  "D": 1024,
+  "L": 64,
+  "heads": 4,
+  "window": 512,
+  "attn_every": 3,
+  "ctx": 32,
+  "slots": 8,
+  "gen_basis": 16,
+  "gen_rank": 8,
+  "vocab": 128000,
+  "vocab_real": 127996,
+  "mem_every": 0,
+  "tied": false,
+  "causal_ctx": true,
+  "ffn_mult": 4
+ },
+ "rows": [
+  {
+   "source": "arxiv",
+   "base": 4.156393527984619,
+   "grown": 4.156393051147461,
+   "max_logit_diff": 0.0006361305713653564
+  },
+  {
+   "source": "books",
+   "base": 2.4818294048309326,
+   "grown": 2.4818291664123535,
+   "max_logit_diff": 0.0005369186401367188
+  },
+  {
+   "source": "fineweb_edu",
+   "base": 3.554210662841797,
+   "grown": 3.554210662841797,
+   "max_logit_diff": 0.0007388591766357422
+  },
+  {
+   "source": "nemotron_code",
+   "base": 1.5818828344345093,
+   "grown": 1.5818817615509033,
+   "max_logit_diff": 0.0006561279296875
+  },
+  {
+   "source": "unified",
+   "base": 1.1855785846710205,
+   "grown": 1.1855790615081787,
+   "max_logit_diff": 0.0006999969482421875
+  },
+  {
+   "source": "wikipedia",
+   "base": 2.8312628269195557,
+   "grown": 2.8312621116638184,
+   "max_logit_diff": 0.0005674362182617188
+  }
+ ],
+ "mean_base": 2.6318596402804055,
+ "mean_grown": 2.631859302520752,
+ "max_logit_diff": 0.0007388591766357422,
+ "exact": true,
+ "layers": [
+  [
+   0,
+   0,
+   false
+  ],
+  [
+   1,
+   1,
+   false
+  ],
+  [
+   2,
+   2,
+   false
+  ],
+  [
+   3,
+   0,
+   true
+  ],
+  [
+   4,
+   1,
+   true
+  ],
+  [
+   5,
+   2,
+   true
+  ],
+  [
+   6,
+   3,
+   false
+  ],
+  [
+   7,
+   4,
+   false
+  ],
+  [
+   8,
+   5,
+   false
+  ],
+  [
+   9,
+   3,
+   true
+  ],
+  [
+   10,
+   4,
+   true
+  ],
+  [
+   11,
+   5,
+   true
+  ],
+  [
+   12,
+   6,
+   false
+  ],
+  [
+   13,
+   7,
+   false
+  ],
+  [
+   14,
+   8,
+   false
+  ],
+  [
+   15,
+   6,
+   true
+  ],
+  [
+   16,
+   7,
+   true
+  ],
+  [
+   17,
+   8,
+   true
+  ],
+  [
+   18,
+   9,
+   false
+  ],
+  [
+   19,
+   10,
+   false
+  ],
+  [
+   20,
+   11,
+   false
+  ],
+  [
+   21,
+   9,
+   true
+  ],
+  [
+   22,
+   10,
+   true
+  ],
+  [
+   23,
+   11,
+   true
+  ],
+  [
+   24,
+   12,
+   false
+  ],
+  [
+   25,
+   13,
+   false
+  ],
+  [
+   26,
+   14,
+   false
+  ],
+  [
+   27,
+   12,
+   true
+  ],
+  [
+   28,
+   13,
+   true
+  ],
+  [
+   29,
+   14,
+   true
+  ],
+  [
+   30,
+   15,
+   false
+  ],
+  [
+   31,
+   16,
+   false
+  ],
+  [
+   32,
+   17,
+   false
+  ],
+  [
+   33,
+   15,
+   true
+  ],
+  [
+   34,
+   16,
+   true
+  ],
+  [
+   35,
+   17,
+   true
+  ],
+  [
+   36,
+   18,
+   false
+  ],
+  [
+   37,
+   19,
+   false
+  ],
+  [
+   38,
+   20,
+   false
+  ],
+  [
+   39,
+   18,
+   true
+  ],
+  [
+   40,
+   19,
+   true
+  ],
+  [
+   41,
+   20,
+   true
+  ],
+  [
+   42,
+   21,
+   false
+  ],
+  [
+   43,
+   22,
+   false
+  ],
+  [
+   44,
+   23,
+   false
+  ],
+  [
+   45,
+   21,
+   true
+  ],
+  [
+   46,
+   22,
+   true
+  ],
+  [
+   47,
+   23,
+   true
+  ],
+  [
+   48,
+   24,
+   false
+  ],
+  [
+   49,
+   25,
+   false
+  ],
+  [
+   50,
+   26,
+   false
+  ],
+  [
+   51,
+   24,
+   true
+  ],
+  [
+   52,
+   25,
+   true
+  ],
+  [
+   53,
+   26,
+   true
+  ],
+  [
+   54,
+   27,
+   false
+  ],
+  [
+   55,
+   28,
+   false
+  ],
+  [
+   56,
+   29,
+   false
+  ],
+  [
+   57,
+   27,
+   true
+  ],
+  [
+   58,
+   28,
+   true
+  ],
+  [
+   59,
+   29,
+   true
+  ],
+  [
+   60,
+   30,
+   false
+  ],
+  [
+   61,
+   31,
+   false
+  ],
+  [
+   62,
+   31,
+   true
+  ],
+  [
+   63,
+   30,
+   true
+  ]
+ ],
+ "params_src": 576279384,
+ "params_dst": 1292595032
+}

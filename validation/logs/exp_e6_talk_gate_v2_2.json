@@ -1,0 +1,4677 @@
+{
+ "args": {
+  "export": "I:\\CUBBY-TRAINED-MODELS\\base450m\\grilly",
+  "adapter": "I:\\CUBBY-TRAINED-MODELS\\base450m\\talk_v2_2",
+  "data": "standin\\data\\out\\ground_sft.jsonl",
+  "per_family": 80,
+  "base": false,
+  "seed": 0,
+  "tag": "_v2_2"
+ },
+ "n_held": 407,
+ "adapter_meta": {
+  "step": 6752,
+  "rank": 16,
+  "alpha": 32.0,
+  "targets": [
+   "model.layers.0.mixer.qkv",
+   "model.layers.0.mixer.o_proj",
+   "model.layers.0.ffn.gate_proj",
+   "model.layers.0.ffn.up_proj",
+   "model.layers.0.ffn.down_proj",
+   "model.layers.1.mixer.gate",
+   "model.layers.1.mixer.value",
+   "model.layers.1.mixer.decay",
+   "model.layers.1.ffn.gate_proj",
+   "model.layers.1.ffn.up_proj",
+   "model.layers.1.ffn.down_proj",
+   "model.layers.2.mixer.gate",
+   "model.layers.2.mixer.value",
+   "model.layers.2.mixer.decay",
+   "model.layers.2.ffn.gate_proj",
+   "model.layers.2.ffn.up_proj",
+   "model.layers.2.ffn.down_proj",
+   "model.layers.3.mixer.qkv",
+   "model.layers.3.mixer.o_proj",
+   "model.layers.3.ffn.gate_proj",
+   "model.layers.3.ffn.up_proj",
+   "model.layers.3.ffn.down_proj",
+   "model.layers.4.mixer.gate",
+   "model.layers.4.mixer.value",
+   "model.layers.4.mixer.decay",
+   "model.layers.4.ffn.gate_proj",
+   "model.layers.4.ffn.up_proj",
+   "model.layers.4.ffn.down_proj",
+   "model.layers.5.mixer.gate",
+   "model.layers.5.mixer.value",
+   "model.layers.5.mixer.decay",
+   "model.layers.5.ffn.gate_proj",
+   "model.layers.5.ffn.up_proj",
+   "model.layers.5.ffn.down_proj",
+   "model.layers.6.mixer.qkv",
+   "model.layers.6.mixer.o_proj",
+   "model.layers.6.ffn.gate_proj",
+   "model.layers.6.ffn.up_proj",
+   "model.layers.6.ffn.down_proj",
+   "model.layers.7.mixer.gate",
+   "model.layers.7.mixer.value",
+   "model.layers.7.mixer.decay",
+   "model.layers.7.ffn.gate_proj",
+   "model.layers.7.ffn.up_proj",
+   "model.layers.7.ffn.down_proj",
+   "model.layers.8.mixer.gate",
+   "model.layers.8.mixer.value",
+   "model.layers.8.mixer.decay",
+   "model.layers.8.ffn.gate_proj",
+   "model.layers.8.ffn.up_proj",
+   "model.layers.8.ffn.down_proj",
+   "model.layers.9.mixer.qkv",
+   "model.layers.9.mixer.o_proj",
+   "model.layers.9.ffn.gate_proj",
+   "model.layers.9.ffn.up_proj",
+   "model.layers.9.ffn.down_proj",
+   "model.layers.10.mixer.gate",
+   "model.layers.10.mixer.value",
+   "model.layers.10.mixer.decay",
+   "model.layers.10.ffn.gate_proj",
+   "model.layers.10.ffn.up_proj",
+   "model.layers.10.ffn.down_proj",
+   "model.layers.11.mixer.gate",
+   "model.layers.11.mixer.value",
+   "model.layers.11.mixer.decay",
+   "model.layers.11.ffn.gate_proj",
+   "model.layers.11.ffn.up_proj",
+   "model.layers.11.ffn.down_proj",
+   "model.layers.12.mixer.qkv",
+   "model.layers.12.mixer.o_proj",
+   "model.layers.12.ffn.gate_proj",
+   "model.layers.12.ffn.up_proj",
+   "model.layers.12.ffn.down_proj",
+   "model.layers.13.mixer.gate",
+   "model.layers.13.mixer.value",
+   "model.layers.13.mixer.decay",
+   "model.layers.13.ffn.gate_proj",
+   "model.layers.13.ffn.up_proj",
+   "model.layers.13.ffn.down_proj",
+   "model.layers.14.mixer.gate",
+   "model.layers.14.mixer.value",
+   "model.layers.14.mixer.decay",
+   "model.layers.14.ffn.gate_proj",
+   "model.layers.14.ffn.up_proj",
+   "model.layers.14.ffn.down_proj",
+   "model.layers.15.mixer.qkv",
+   "model.layers.15.mixer.o_proj",
+   "model.layers.15.ffn.gate_proj",
+   "model.layers.15.ffn.up_proj",
+   "model.layers.15.ffn.down_proj",
+   "model.layers.16.mixer.gate",
+   "model.layers.16.mixer.value",
+   "model.layers.16.mixer.decay",
+   "model.layers.16.ffn.gate_proj",
+   "model.layers.16.ffn.up_proj",
+   "model.layers.16.ffn.down_proj",
+   "model.layers.17.mixer.gate",
+   "model.layers.17.mixer.value",
+   "model.layers.17.mixer.decay",
+   "model.layers.17.ffn.gate_proj",
+   "model.layers.17.ffn.up_proj",
+   "model.layers.17.ffn.down_proj",
+   "model.layers.18.mixer.qkv",
+   "model.layers.18.mixer.o_proj",
+   "model.layers.18.ffn.gate_proj",
+   "model.layers.18.ffn.up_proj",
+   "model.layers.18.ffn.down_proj",
+   "model.layers.19.mixer.gate",
+   "model.layers.19.mixer.value",
+   "model.layers.19.mixer.decay",
+   "model.layers.19.ffn.gate_proj",
+   "model.layers.19.ffn.up_proj",
+   "model.layers.19.ffn.down_proj",
+   "model.layers.20.mixer.gate",
+   "model.layers.20.mixer.value",
+   "model.layers.20.mixer.decay",
+   "model.layers.20.ffn.gate_proj",
+   "model.layers.20.ffn.up_proj",
+   "model.layers.20.ffn.down_proj",
+   "model.layers.21.mixer.qkv",
+   "model.layers.21.mixer.o_proj",
+   "model.layers.21.ffn.gate_proj",
+   "model.layers.21.ffn.up_proj",
+   "model.layers.21.ffn.down_proj",
+   "model.layers.22.mixer.gate",
+   "model.layers.22.mixer.value",
+   "model.layers.22.mixer.decay",
+   "model.layers.22.ffn.gate_proj",
+   "model.layers.22.ffn.up_proj",
+   "model.layers.22.ffn.down_proj",
+   "model.layers.23.mixer.gate",
+   "model.layers.23.mixer.value",
+   "model.layers.23.mixer.decay",
+   "model.layers.23.ffn.gate_proj",
+   "model.layers.23.ffn.up_proj",
+   "model.layers.23.ffn.down_proj",
+   "model.layers.24.mixer.qkv",
+   "model.layers.24.mixer.o_proj",
+   "model.layers.24.ffn.gate_proj",
+   "model.layers.24.ffn.up_proj",
+   "model.layers.24.ffn.down_proj",
+   "model.layers.25.mixer.gate",
+   "model.layers.25.mixer.value",
+   "model.layers.25.mixer.decay",
+   "model.layers.25.ffn.gate_proj",
+   "model.layers.25.ffn.up_proj",
+   "model.layers.25.ffn.down_proj",
+   "model.layers.26.mixer.gate",
+   "model.layers.26.mixer.value",
+   "model.layers.26.mixer.decay",
+   "model.layers.26.ffn.gate_proj",
+   "model.layers.26.ffn.up_proj",
+   "model.layers.26.ffn.down_proj",
+   "model.layers.27.mixer.qkv",
+   "model.layers.27.mixer.o_proj",
+   "model.layers.27.ffn.gate_proj",
+   "model.layers.27.ffn.up_proj",
+   "model.layers.27.ffn.down_proj",
+   "model.layers.28.mixer.gate",
+   "model.layers.28.mixer.value",
+   "model.layers.28.mixer.decay",
+   "model.layers.28.ffn.gate_proj",
+   "model.layers.28.ffn.up_proj",
+   "model.layers.28.ffn.down_proj",
+   "model.layers.29.mixer.gate",
+   "model.layers.29.mixer.value",
+   "model.layers.29.mixer.decay",
+   "model.layers.29.ffn.gate_proj",
+   "model.layers.29.ffn.up_proj",
+   "model.layers.29.ffn.down_proj",
+   "model.layers.30.mixer.qkv",
+   "model.layers.30.mixer.o_proj",
+   "model.layers.30.ffn.gate_proj",
+   "model.layers.30.ffn.up_proj",
+   "model.layers.30.ffn.down_proj",
+   "model.layers.31.mixer.gate",
+   "model.layers.31.mixer.value",
+   "model.layers.31.mixer.decay",
+   "model.layers.31.ffn.gate_proj",
+   "model.layers.31.ffn.up_proj",
+   "model.layers.31.ffn.down_proj"
+  ],
+  "trainer": "torch",
+  "ckpt": "base450m_final.pt",
+  "data": "talk_v2_2.jsonl",
+  "epochs": 1.0,
+  "batch": 32,
+  "lr": 0.0002,
+  "tag": "_v2_2"
+ },
+ "adapter": {
+  "rows": [
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g009255",
+    "answer": "Sepp Dietrich died in Ludwigsburg."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g009892",
+    "answer": "PTC Thermistor is used for Overcurrent Protector, Self Regulating Heating Element, and Self Regulating Heating Element."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g001301",
+    "answer": "The spouse ofConservative musician instantiateinfty was Jean Baptiste Barriere."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g006331",
+    "answer": "The Lonely Island created Jizz In My Pants, Dick In A Box, Motherlover, and Lazy Sunday."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g011124",
+    "answer": "Crawford Long attended Transylvania College."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g010851",
+    "answer": "An instance of Unbiquadium is Ubq."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g009741",
+    "answer": "Edith Gonzalez died in Huixquilucan."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g007584",
+    "answer": "Indra Nooyi's type is Indian Born American Business Executive."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g010739",
+    "answer": "Pratinas belongs to the Early Tragic Poets group."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g008877",
+    "answer": "The creator of Web Mail Implementation is Luca Manunza."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g012659",
+    "answer": "Alka Yagnik is associated with the genre Filmi."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g005177",
+    "answer": "Mylene Farmer resides in Chaville."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g011072",
+    "answer": "The spouse of Alka Yagnik is Neeraj Kapoor."
+   },
+   {
+    "outcome": "refused",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g003587",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g006906",
+    "answer": "Asteroid Mining is a hypothetical extraction of materials."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g002497",
+    "answer": "Giffard Le Quesne Martel founded Royal Navy And Army Boxing Association."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g013184",
+    "answer": "Olivia Colman's spouse is Ed Sinclair."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g006103",
+    "answer": "Shibusawa Eiichi died on November 11, 1931."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g011727",
+    "answer": "Seung Hui Cho died in Norris Hall."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g012993",
+    "answer": "Rudolf Dassler's sibling was Adolf Dassler."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g003725",
+    "answer": "Sect was influenced by Ernst Troeltsch."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g007804",
+    "answer": "Kurt Koffka's works include The Principles Of Gestalt Psychology and The Growth Of The Mind An Introduction To Child Psychology."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g002737",
+    "answer": "Michael Howard Historian has held the positions of Robert A Lovett Professor Of Military And Naval History,ичем, and транспортирователей."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g002115",
+    "answer": "Michael Baden's spouse is Linda Kenney."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g014991",
+    "answer": "Peter Abelard was influenced by Heloise."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g008569",
+    "answer": "Renee Zellweger was married to Kenny Chesney."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g010660",
+    "answer": "The Oslo Opera House is located in Bjorvika."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g012154",
+    "answer": "The holder of Delmonicos Restaurant is Charles Ranhofer."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g002804",
+    "answer": "Aubrey Beardsley's field of work was Japanese Woodcuts."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g008817",
+    "answer": "Sumy was founded by Herasym Kondratyev."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g010156",
+    "answer": "Armen Dzhigarkhanyan attended VGIK."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g008228",
+    "answer": "Rigid Rotor is classified as a Rigid Object and a Mechanical Model."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g013080",
+    "answer": "Serpentine Subgroup belongs to the group Kaolinite Serpentine Group."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g013597",
+    "answer": "The holder of President Of The Chamber Of Representatives is Auguste Beernaert."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g004689",
+    "answer": "Yu Shinan's relatives are Yu Xu and Yu Xiuyao."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g012108",
+    "answer": "Kiss Me Theme is performed by James De Preist, Bobby Mc Ferrin, The Oregon Symphony Orchestra, and Craig Handy."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g010220",
+    "answer": "Falco Musician was born on February 19, 1957."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g011306",
+    "answer": "The spouses of George S Kaufman were Beatrice Bakrow, Leueen Mac Grath, and Leueen Mac Grath."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g006359",
+    "answer": "An effect of Alfonso IX Of Leon was the Eventual Conquest Of Seville."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g001831",
+    "answer": "The award for the Order Of Civil Merit is the Order Of Civil Merit."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g012085",
+    "answer": "gravy is the spouse of gravy's spouse."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g000596",
+    "answer": "Guy Verhofstadt is a European Federalist."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g002399",
+    "answer": "South East Point is located in the Wilsons Promontory Lighthouse Lighthouse, the Bass Strait, and the Bass Strait."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g009676",
+    "answer": "Phormis is classified as Originators Of Greek Comedy."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g014483",
+    "answer": "Port Of Kobe is a Japanese Maritime Port."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g013319",
+    "answer": "Kevin Feige is an American Film And Television Producer."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g000021",
+    "answer": "The creator of the Yukon Gold Potato is Garnet Gary Johnston."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g013085",
+    "answer": "The founders of Academia De Letran were Manuel Toussaint Ferrer, Guillermo Prieto, Juan Lacunza, and Jose Maria Y Lacunza."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g010934",
+    "answer": "The founder of Shahjahanpur was Bahadur Khan Dilzak."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g008600",
+    "answer": "Robert Morris Financier was born on January 20, 1734."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g006013",
+    "answer": "Edith Gonzalez has been employed by Telemundo, Televisa, TV Azteca, and Telemundo."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g008508",
+    "answer": "Candy Corn was created by George Renninger and Goelitz Confectionery Company."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g001849",
+    "answer": "Egmont Beethoven is based on Lamoral Count Of Egmont and Egmont Play."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g004488",
+    "answer": "Cheminformatics is a type of In Silico."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g012336",
+    "answer": "The holders of Yemen Arab Republic are Abdul Rahman Iryani, Abdullah As Sallal, Ahmed Noman, and Mohamed Ali Uthman."
+   },
+   {
+    "outcome": "refused",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g005362",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g005979",
+    "answer": "Lashkargah is located in Mirwais Nika Park, Lashkargah District, and Lashkargah Mosque."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g003629",
+    "answer": "The cause associated with Hirose Takeo was Coastal Artillery."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g011985",
+    "answer": "Anthony Quinn was married to Katherine De Mille and Jolanda Addolori."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g010292",
+    "answer": "Joseph Grimaldi was employed by the Covent Garden Theatre and Sadlers Wells."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g002362",
+    "answer": "The influences of the History Of Pomerania are Piast Poland, Polan, and Piast Poland."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g002292",
+    "answer": "The Hawaiian Honeycreeper belongs to the Carduelinae group."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g008312",
+    "answer": "Hwang Jang Yop was the successor to Choe Yong Gon Official."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g011099",
+    "answer": "Music Of Star Wars was produced by William Ross and Natalie Holt."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g010895",
+    "answer": "The basis of Sanda Sport is Changquan, Modern Combat Fighting Techniques, and Traditional Chinese Martial Arts."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g002883",
+    "answer": "Ted Koppel's child is Andrea Koppel."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g007494",
+    "answer": "Blues Clues was created by Traci Paige Johnson and Angela C Santomero."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g007286",
+    "answer": "Nas was married to Kelis."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g003402",
+    "answer": "Bob Knight is associated with the Indiana Hoosiers1975 76 Mens Basketball Team, Army Black Knights Mens Basketball, and Texas Tech Red Raiders Basketball."
+   },
+   {
+    "outcome": "refused",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g011800",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g012758",
+    "answer": "The predecessor of Tony Benn was Eric Varley."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g007235",
+    "answer": "Milk River Middle Fork is located in Rocky Mountains, Blackfeet Indian Reservation, Glacier National Park US, and Glacier National Park US."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g010225",
+    "answer": "Michael Gambon was born in Cabra Dublin."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g012870",
+    "answer": "The Economy Of China is a Manufacturing Economy and a Trading Nation."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g008284",
+    "answer": "The origin of Cultus is Colo Colere Colui Cultus."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g012547",
+    "answer": "George Bernard Shaw died on November 2, 1950."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g006006",
+    "answer": "Jean Pierre Rampal was a student of Joseph Rampal."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g007272",
+    "answer": "Seth Mac Farlane is a performer in Ted2."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g004284",
+    "answer": "The adaptation of Olympian Spring is Nobel Prize In Literature1919."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g004429",
+    "answer": "Stun Grenade is used for Riot Control, Close Quarters Combat, and Door Breaching."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g003813",
+    "answer": "The author of Amphioctopus Marginatus is Iwao Taki."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g000925",
+    "answer": "Hector Jonathan Cremieux was an employee of Societe Des Depots Et Comptes Courants."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g012543",
+    "answer": "The mentor of Thomas The Slav was Bardanes Tourkos."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g007896",
+    "answer": "A episode of DAM Band is Street Poetry."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g009727",
+    "answer": "Delta Smelt is located in Sacramento Delta."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g001460",
+    "answer": "The performer in The Vagina Monologues was Eve Ensler."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g011816",
+    "answer": "An instance of Abscisic Acid is Abscisin I."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g002288",
+    "answer": "Hwang Jang Yop was the successor to Choe Yong Gon Official."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g009625",
+    "answer": "The translator of Su Shi is Stephen Owen."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g009934",
+    "answer": "The founder of First School For Muslim Girls Kolkata was Begum Rokeya."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g000196",
+    "answer": "The translator of Su Shi was Stephen Owen."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g013232",
+    "answer": "Alan M Kriegsman is associated with the team Sarah Kaufman."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g012775",
+    "answer": "There Will Be Blood was published by Paramount Vantage."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g006702",
+    "answer": "Shukri Al Quwatli founded Independence Party."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g008220",
+    "answer": "The successor to Homeland Security Advisory Council is William Bratton."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g012519",
+    "answer": "The genre of God Only Knows is Baroque Rock."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g007732",
+    "answer": "Egyptian Vulture is a relative of the Bearded Vulture."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g009085",
+    "answer": "The nationality of Saigyo is Japanese People."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g013439",
+    "answer": "Planned Parenthood is a Planned Parenthood Federation Of America Inc."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g002089",
+    "answer": "Ronald Golias is buried at Cemiterio Do Morumbi."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g009460",
+    "answer": "The translator of Su Shi is Stephen Owen."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g008053",
+    "answer": "Wicked Musical is associated with the album Wicked Original Cast Album."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g009257",
+    "answer": "Louis Neel's field of work was Solid State Physics."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g014723",
+    "answer": "The basis of the Jet Engine is L Tarquinius Superbus."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g011111",
+    "answer": "The Art Of Painting is owned by Tivoli AS."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g001614",
+    "answer": "Life And Beth was produced by Paul Gregory."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g004522",
+    "answer": "Judy Stone is a sibling of Betty Comden."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g009144",
+    "answer": "An instance of The Twilight Zone1959 TV Series is Greek Freak Nickname."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g002051",
+    "answer": "The residence of Stanislaw Leszczynski was Radbourne Hall."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g006836",
+    "answer": "The use of Virtual State is Offline Rendering."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g008683",
+    "answer": "Rabi Lamichhane's employer is Alcoi."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g009355",
+    "answer": "The parent company of String Quintet Schubert is Invicta Plastics."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g004764",
+    "answer": "Luis Gama died on October 23, 2001."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g012930",
+    "answer": "The successor to Bela IV Of Hungary was Mahendrapala."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g002806",
+    "answer": "Francois Duvalier drew inspiration from Leghorn Port Name."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g003722",
+    "answer": "The field of work of Louis Neel is Kalam."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g000528",
+    "answer": "Lillian Leitzel received the National Geographic Traveler award."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g011344",
+    "answer": "The spouse of Saloma is Becky Riordan."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g003889",
+    "answer": "Jacobi Symbol is used for Modal Rhythm."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g014657",
+    "answer": "Aya Hirano's label is Sugar Hill Records."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g010980",
+    "answer": "Barbara Cartland's creation is Theory Of Constraints."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g003328",
+    "answer": "The holder of Bernard L Madoff Investment Securities is Hubert Beuve Mery."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g005308",
+    "answer": "Sam Nujoma is the holder of Central Tibetan Administration."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g012049",
+    "answer": "Frederick Marryat's mentor was Frederick William Lindrum II."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g002615",
+    "answer": "The genre of God Only Knows is African Rumba."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g014563",
+    "answer": "The founder of Bernard L Madoff Investment Securities is Francis I Of France."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g006035",
+    "answer": "Georg Hackl's coach was Florence Chambers."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g012235",
+    "answer": "Dagens Nyheter is a subsidiary of BHP."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g001352",
+    "answer": "The language associated with Jozef Ignacy Kraszewski is Ontong Java Language."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g001776",
+    "answer": "The predecessor of Joey Dunlop is Lee Teng Hui."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g011949",
+    "answer": "The discoverer of Timema is Johann Friedrich Engelhardt."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g002416",
+    "answer": "The sibling of John William Polidori is Gopi Menon."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g012982",
+    "answer": "A translator of Su Shi was JA Thompson."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g010758",
+    "answer": "The effect associated with Eurasian Jay is Tax Avoidance Accusations."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g013758",
+    "answer": "The residence of Enya is Munya Abil Khusavb."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g001014",
+    "answer": "DAM Band is associated with the episode HBO Max."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g012238",
+    "answer": "Seal Script is in the Talmudic Times period."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g008520",
+    "answer": "Yukihiro Matsumoto is an employee of Societe Des Depots Et Comptes Courants."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g009399",
+    "answer": "The nationality of Father Damien is British Author."
+   },
+   {
+    "outcome": "refused",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g007658",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g009105",
+    "answer": "The use of Enka is War Bonds."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g010100",
+    "answer": "The namesake of Lorenz Gauge Condition is Karl Von Zois."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g001435",
+    "answer": "The child of Emperor Wu Of Song is Heinz Kohut."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g000594",
+    "answer": "Perez Prado Orchestra is headquartered in Boulogne Billancourt."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g002113",
+    "answer": "The capital of Edo State is Maiduguri."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g013103",
+    "answer": "The headquarters of United Parcel Service is in Chiyoda Tokyo."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g014348",
+    "answer": "Fifty One Pegasib discovered by OHP France is the discovery of Purkinje Effect."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g009116",
+    "answer": "A episode of Ranma12 is Harry Potter Films."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g008582",
+    "answer": "Groove Billed Ani is a member of Congo Free State."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g002077",
+    "answer": "The subsidiary of RTTV Network is Dr Pepper Snapple Group."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g005720",
+    "answer": "Terry Wogan is associated with the film Lionheart2018 Film."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g001643",
+    "answer": "Robert Paxton's work is Screenplay."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g005284",
+    "answer": "Nitesh Tiwari founded Ethel M Chocolate Factory."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g013839",
+    "answer": "Ne Win founded Wenger SA."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g000879",
+    "answer": "Reedfish is an instance of Polonophilia."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g012429",
+    "answer": "The inventor of Jackhammer is John H Sharp."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g000567",
+    "answer": "Jack Black founded Box Hill Artists Camp."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g002875",
+    "answer": "The holder of Jeopardy is Ashurbanipal."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g002782",
+    "answer": "The film associated with Brit Hume is No Tengo Madre."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g011122",
+    "answer": "Carl Nielsen's coach was Walter Alston."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g012681",
+    "answer": "John Dyer's teacher was Sandor Bortnyik."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g006693",
+    "answer": "Blues Clues is associated with the series PBS."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g003091",
+    "answer": "Music Of Star Wars was produced by Robert Aldrich."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g011301",
+    "answer": "The cause associated with Carl Von Ossietzky was the Bus Communication Architecture."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g013531",
+    "answer": "David Miscavige was a student of Crates Of Thebes."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g009907",
+    "answer": "The translator of Yulanpen Sutra is Samuel Putnam."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g013698",
+    "answer": "Thomas H Ince invented the Salted Paper Process."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g007785",
+    "answer": "Boverisuchus was influenced by Wenceslaus IV Of Bohemia."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g006009",
+    "answer": "The language of Palmyra is Ormuri."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g009237",
+    "answer": "Silat Melayu drew inspiration from Italian Madrigal."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g013503",
+    "answer": "The predecessor of Willem Alexander Of The Netherlands was Sir Kenneth Robinson."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g003775",
+    "answer": "A performer on Jeopardy was Lucile Grahn."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g001399",
+    "answer": "The predecessor of Danegeld was the Protect Money."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g013256",
+    "answer": "Kyodo News operates in the Veterinary Services Industry."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g012970",
+    "answer": "The headquarters of Planned Parenthood is in Changi Airport."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g009491",
+    "answer": "The child of Felix Kohut is Valerie."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g004346",
+    "answer": "The inspiration for Grand Theft Auto is Jose Feliciano."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g005036",
+    "answer": "Lawrence Taylor's occupation is Top Order Batter."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g006122",
+    "answer": "Planned Parenthood belongs to the IPPF industry."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g002733",
+    "answer": "Trul Khor was based on The Maltese Falcon Novel."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g011585",
+    "answer": "The inventor of the Jackhammer is John Daniel Rust."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g007157",
+    "answer": "Stephen Chow directed La Boheme."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g006554",
+    "answer": "Malcolm Forbes was married to Henry Cary1st Viscount Falkland."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g014902a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g007350a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g002334a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "spoke_other",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g006182a",
+    "answer": "Queretaro City is located in the Information Technology Sector and the Data Centers Sector."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g007981a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g012547a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g009644a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g010877a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g003417a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g011042a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g003927a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g003781a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g003795a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g010156a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g000925a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g012292a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [
+     "St Jamess Church Gerrards Cross"
+    ],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g002089a",
+    "answer": "Ronald Golias is buried in St Jamess Church Gerrards Cross."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g012198a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g007572a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g009879a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g002915a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g012774a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g001352a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g006508a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g000594a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g004488a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g012396a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g004483a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g013799a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g011072a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g009059a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g000567a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g013007a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g014596a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g010183a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g012970a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g006584a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g001830a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g005461a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g002887a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g006381a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g002782a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g011111a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g013698a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g011522a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g013319a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g014991a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g004601a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g009144a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g013758a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "spoke_other",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g009220a",
+    "answer": "Harsha's predecessor was Rajyavardhana."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g005766a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g011727a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g010621a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g006360a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g008532a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g013232a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g009907a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g001301a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g003742a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "spoke_other",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g013568a",
+    "answer": "Jessica Tandy died on June 7, 1909."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g004236a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g007658a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "absent",
+    "id": "g008705a",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g003434",
+    "answer": "Yefim Alekseevich Pridvorov was born in the Hubivka and attended the Petersburg University. He resided in Yelysavethrad and was influenced by the creation of the Basni Fables."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g004541",
+    "answer": "Failure Of Kelvins Circulation Theorem is caused by Viscous Stresses, Nonconservative Body Forces, and Nonconservative Body Forces."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": false,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [
+     "TV"
+    ],
+    "family": "profile",
+    "id": "g004203",
+    "answer": "Sabado Gigante is a television program, a television variety series, and a television variety series associated with Univision. It is preceded by the Univision and the Univision, and it is preceded by the TV Variety Series. Its performer is Javier Romero."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g013589",
+    "answer": "Honda created the Honda HA420 Honda Jet and the Acura, and its subsidiaries include Acura, GAC Honda, and Dongfeng Honda."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g008975",
+    "answer": "Nighthawks Hopper was authored by Edward Hopper and belongs to the American Art group. Its genres include American Realism and American Realism."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g007478",
+    "answer": "The Voice Of Broadway is a Columnist created by Dorothy Kilgallen, who also serves as its author."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g014867",
+    "answer": "The Eastern Ganga Dynasty created Jagannath Temple Puri, Nrusinghanath Temple Simhachalam, and Konark Sun Temple. Its effects include Muslim Invaders and Muslim Invaders."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g014200",
+    "answer": "The Double Life Of Veronique was created by Krzysztof Kieslowski, and its creator and director is Krzysztof Kieslowski."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g011856",
+    "answer": "Counties Of England is an Administrative Areas In England and a Subdivision Of England, with County Councils as its leader and County Councils as its instance."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g007935",
+    "answer": "Alka Yagnik was born on Date19660320 and is married to Neeraj Kapoor. He is associated with the Filmi genre and received the Bengal Film Journalists Association Awards."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g000700",
+    "answer": "Chandrapur was inspired by Chandra and located in Shunga Empire, Satavahana Empire, and Kalachuri Dynasty."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g007721",
+    "answer": "Pedro II Of Brazil was born on December 2, 1825, and died on December 5, 1891. He was associated with the House Of Braganza and belonged to the group of the House Of Braganza."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g014671",
+    "answer": "Katrina Kaif has received the Zee Cine Award For Best Supporting Actress, the Screen Awards, and the Zee Cine Awards. Her awards include Zee Cine Award For Best Supporting Actress, Zee Cine Award For Best Supporting Actress, and Zee Cine Awards."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g008125",
+    "answer": "Lionel Trilling attended Columbia College and De Witt Clinton High School, and died on November 5, 1975. His relatives include Billy Cross."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g014115",
+    "answer": "Born on March 1, 1876, Henri De Baillet Latour was married to Elizabeth Von Clary Und Aldringen and Ferdinand De Baillet Latour. He was associated with the Belgian Olympic Committee and was associated with the Belgian Olympic Committee."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g001407",
+    "answer": "Mariana Pajon was born on October 10, 1991, in Medellin, and held a position at the Flag Bearer For Colombia2012 Olympics. She received the BMX World Championships and the London2012 BMX Gold."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g003520",
+    "answer": "Fredric Wertham was employed by Lafargue Clinic and was married to Florence Hesketh."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g008938",
+    "answer": "National Museum Of American History is a Historical Museum located in Constitution Avenue and Fourteenth Street."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g001789",
+    "answer": "Great Man Theory is a type of Approach To The Study Of History based on On Heroes Hero Worship And The Heroic In History."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g004974",
+    "answer": "Esther Williams was employed by Billy Roses Aquacade, created Aquamusicals, and was employed by Billy Roses Aquacade."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g003325",
+    "answer": "Peroxisome is a type of Membranebound Organelle, an Oxidative Organelle, and a Microbody."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g010689",
+    "answer": "Clyde Tombaugh was born in Streator Illinois and created the Discovery Of Pluto. His awards include the Jackson Gwilt Medal, the New Mexico State University Board Of Regents Medal, and the New Mexico State University Board Of Regents Medal."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g009905",
+    "answer": "The Scouts Of The Prairie was performed by Ned Buntline, Texas Jack Omohundro, Giuseppina Morlacchi, and William F Buffalo Bill Cody."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g011806",
+    "answer": "Katherine Helmond was born on July 5, 1929, and died on February 23, 2019. She was married to David Christian and George N Martin, and she was also the spouse of Katherine Helmond."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g012655",
+    "answer": "Brian Michael Bendis was influenced by Alan Moore, David Mamet, Frank Miller, and Richard Price."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g000031",
+    "answer": "Venezuelan Crisis Of19021903 is caused by the Venezuelan Navy, Foreign Debts, and Damages To Europeans In Venezuelan Civil Wars."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": false,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [
+     "Bokhara"
+    ],
+    "family": "profile",
+    "id": "g001227",
+    "answer": "Secret History Of The Mongols is a historical chronicle located in Bokhara Aral and Kherlen River, with its adaptations in Altan Tobchi, Shengwu Qinzheng Lu, and Jami Altawarikh."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g009970",
+    "answer": "Blossom Algorithm was created by Jack Edmonds and influenced by Micali And Vazirani Algorithm. It was adapted into Matching Polytope and Min Weight Matching."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g006228",
+    "answer": "Shuttle Radar Topography Mission is a Interferometric Synthetic Aperture Radar based on SIRCXSAR, and its successor is Aster GDEM."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g005964",
+    "answer": "Jingyu Lin is associated with the groups Texas Tech University and Kansas State University, and it created Micro LED."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g009582",
+    "answer": "Bill W was born on November 26, 1895, in East Dorset Vermont, and died on January 24, 1971. He was married to Lois W, and his burial place is East Dorset Cemetery."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g001510",
+    "answer": "Proxima Centauri B belongs to the Closest Known Exoplanets group, and its discoverer and group is Doppler Spectroscopy."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g003755",
+    "answer": "Alice Hamilton was born on February 27, 1869, and worked in the field of occupational Illnesses. She died on September 22, 1970, in Hadlyme Connecticut."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g010967",
+    "answer": "Cultus is a Cult Religious Practice that originated from Colo Colere Colui Cultus and is an instance of Religio."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g013533",
+    "answer": "Robert Joseph Pothier was born on January 9, 1699, and held a position at Presidial Court Of Orleans. He is buried at Orleans Cathedral."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g002255",
+    "answer": "Rudolf Dassler founded the Puma and was related to Adolf Dassler."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g003035",
+    "answer": "Ceyx includes Bismarck Kingfisher, Silvery Kingfisher, and Little Kingfisher among its members."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g000391",
+    "answer": "Enka is a Japanese Music Genre and Political Texts Set To Music used for Government Curbs On Political Speeches."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g014300",
+    "answer": "Malick Sidibe was born in Soloba and died on April 14, 2016. He worked in the field of Black And White Studies Of Popular Culture, authored the field of Black And White Studies Of Popular Culture, and authored the field of Black And White Studies Of Popular Culture."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g008016",
+    "answer": "Felix Kohut was employed by Paul Bellak, and his child and employer was Paul Bellak."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g006099",
+    "answer": "Computer Aided Engineering is a type of Information Network Node created by Jason Lemon."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g000044",
+    "answer": "Hamburg Dramaturgy is a Dramaturgy authored by Gotthold Ephraim Lessing, with a adaptation in Dramaturgy."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g004134",
+    "answer": "Red Squirrel is a type of Tree Squirrel located in Warsaw Poland and Sciurus."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g014901",
+    "answer": "Secondary Pellagra is caused by Hartnup Disease, Carcinoid Syndrome, and Isoniazid."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g014265",
+    "answer": "Benedict Arnold was born on January 14, 1741, and died on June 14, 1801. He was buried at St Marys Church Battersea."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g013030",
+    "answer": "Great Triumvirate includes James Braid, Harry Vardon, John Henry Taylor, and John Henry Taylor."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g002467",
+    "answer": "Pancho Gonzales was born on May 9, 1928, and died on July 3, 1995, in Las Vegas Nevada US. He was mentored by Chuck Pate and Frank Poulain."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g003777",
+    "answer": "Economy Of China is a consumer market, manufacturing economy, and an exporter of goods. It belongs to the group Purchasing Power Parity and the group G77."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g002844",
+    "answer": "Ellipsoid Method is a type of Algorithm Entity that is influenced by the field of real convex minimization and Arkadi Nemirovski. It is influenced by the field of real convex minimization and Arkadi Nemirovski."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g012908",
+    "answer": "Semiprime is a type of K Almost Primes discovered by E Noel and G Panos."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": false,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [
+     "Bertie",
+     "Bertie"
+    ],
+    "family": "profile",
+    "id": "g013748",
+    "answer": "Olympia Bertie died on May 1, 2021, and was awarded the Obie Award For Best Actress. Olympia Bertie created the work Ask Me Again Tomorrow A Life In Progress."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g003960",
+    "answer": "Secret History Of The Mongols is a historical chronicle and historical chronicle located in Kherlen River,dm, anddm, with the adaptations of Jami Altawarikh and Shengwu Qinzheng Lu."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": false,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [
+     "English",
+     "Dutch"
+    ],
+    "family": "profile",
+    "id": "g005804",
+    "answer": "Wiegenlied Brahms was published by N Simrock and is based on Georg Scherer, Des Knaben Wunderhorn, and S Is Anderscht. It has been translated into English as well as Dutch."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g005507",
+    "answer": "Joaao Pessoa Paraiba is located in Estacao Ciencia Cultura E Artes and is associated with the Creative City group."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g014378",
+    "answer": "International Shooting Sport Federation was led by Luciano Rossi, and its effects include Belarusian Athletes And Officials and Russian Athletes And Officials. Its leaders were Luciano Rossi and Luciano Rossi."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g003630",
+    "answer": "Saigo Takamori was a Japanese Samurai born in Kagoshima who died in Kagoshima. He was buried at Nanshu Cemetery."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g002521",
+    "answer": "The Blair Witch Project was created by Daniel Myrick, Eduardo Sanchez, and Eduardo Sanchez, and is based on Backstage Magazine."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g009683",
+    "answer": "Cape Farewell Greenland is a Cape Farewell Archipelago located in Nunap Isua Archipelago and Egger Island."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g007688",
+    "answer": "George Washington Inventor was born in Kortrijk Belgium on May 20, 1871, and resided in New York Area. He was born in Kortrijk Belgium and died in Mendham New Jersey."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g013303",
+    "answer": "Claire Denis worked in the fields of Modern France, Colonial And Post Colonial West Africa, and the Colonial And Post Colonial West Africa. Her creations include Beau Travail and the film Beau Travail."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g002185",
+    "answer": "Ennedi Plateau is located in the Ennedi Ouest Region, the Ennedi Est Region, and the Ennedi Est Region."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g000547",
+    "answer": "Candlestick Chart is a Financial Chart created by Munehisa Homma and used for Stock Analysis, Technical Analysis, and Technical Analysis."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g005272",
+    "answer": "Clam is a type of Palourde Clams and Razor Clams, and it belongs to the Infauna group."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g009054",
+    "answer": "Bearded Vulture is located in The Caucasus, and its relative is Egyptian Vulture."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g002837",
+    "answer": "Maesta1315 Siena was created by Simone Martini and is located in Palazzo Pubblico Siena. It was preceded by Simone Martini and is also the location of the creator of Maesta1315 Siena."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g004935",
+    "answer": "Shavkat Mirziyoyev held positions in the Supreme Soviet Of The Uzbek SSR, the President Of Uzbekistan, and the Supreme Soviet Of The Uzbek SSR. He was associated with the Uzbekistan Liberal Democratic Party, the Uzbekistan Liberal Democratic Party, and the OZ Li De P."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g003096",
+    "answer": "Jeane Dixon was born in Medford Wisconsin and worked as a Psychic. Her parents are Luise Johanne Emma Graefe Pinckert and Richard Franz Pinckert."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g013770",
+    "answer": "Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of Luc De factorization of"
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g010584",
+    "answer": "Thirty Meter Telescope is a type of Extremely Large Telescope located in Hawaii County Hawaii, located in Mauna Kea Observatories and Hawaii County Hawaii. Its effects include Infeasible Research With Current Instruments and is classified as Extremely Large Telescope."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": false,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [
+     "Actors"
+    ],
+    "family": "profile",
+    "id": "g013768",
+    "answer": "Evelyn Nesbit was a Chorus Girl who died on January 25, 1967, and was associated with the groups Artists Model and Actors Model."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g013708",
+    "answer": "Thomas The Apostle was born in Judea Roman Province and died in St Thomas Mount. He was associated with the group Saint Thomas Christians."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g006700",
+    "answer": "Steppenwolf Novel is based on The Crisis From Hermann Hesses Diary and has its genres including Autobiographical and Existential. It has been translated by Basil Creighton and Steppe Wolf."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g002798",
+    "answer": "Archegonium is a Multicellular Structure located in Plants and Plant Thallus."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g003298",
+    "answer": "Lollardy is a proto Protestant Christian religious movement and scriptural translation inspired by the Bible into the English language. Its creations include Twelve Conclusions Of The Lollards and Twelve Conclusions Of The Lollards."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g005477",
+    "answer": "Therapeutic Phlebotomy is a Bloodletting and a Bloodletting used in Porphyria Cutanea Tarda and Hemochromatosis."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g000430",
+    "answer": "Counties Of England is an Administrative Areas In England and a Subdivision Of England. Its instances include Two Tier Structure and a Subdivision Of England."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g001273",
+    "answer": "Standardization has the effects of Interoperability, Normalization Of Custom Processes, and Compatibility."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g001263",
+    "answer": "Paul Cezanne was a Post Impressionist Painter who discovered Saint Pierre Cemetery and was the discoverer of by Ambroise Vollard. He was also the discoverer of Paul Cezanne."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g004025",
+    "answer": "The 20052006 Thai Political Crisis was caused by Human Rights Abuses, Thaksin Shinawatra, Extrajudicial Killings, and Freedom Of Press. It was influenced by Sondhi Limthongkul and the Freedom Of Press."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g014312",
+    "answer": "Acute Otitis Media is caused by Childhood Anatomy and is caused by Childhood Anatomy. Its effect is Chronic Suppurative Otitis Media."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0000",
+    "answer": "The parent of Giffard Le Quesne Martel is Sir Charles Philip Martel."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0001",
+    "answer": "The producer of Love Like You is Aivi And Surasshu."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0002",
+    "answer": "The child of Emperor Wu Of Song is Emperor Shao Of Liu Song."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0003",
+    "answer": "Gertrude Mary Cox was born in Dayton Iowa."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0004",
+    "answer": "The predecessor of Polish Russian War16091618 is ALLIED WITH('Tsardom Of Russia', 'Sweden')."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0005",
+    "answer": "Amici is performed by Maria De Filippi."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0006",
+    "answer": "The student of Robert Gall is France Gall."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0007",
+    "answer": "The adaptation of Lollardy is Twelve Conclusions Of The Lollards."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0008",
+    "answer": "The author of Ranma12 is Rumiko Takahashi."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0009",
+    "answer": "The child of Shlomo Zalman Ha Cohen Kook is Abraham Isaac Kook."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0010",
+    "answer": "The adaptation of The Authoritarian Personality Book is Authoritarian Personality."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0011",
+    "answer": "The field of work of Tito Gobbi is Wozzeck."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0012",
+    "answer": "The predecessor of Polish Russian War16091618 is ALLIED WITH('Tsardom Of Russia', 'Sweden')."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0013",
+    "answer": "The film of Christopher Reeve is In The Gloaming."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0014",
+    "answer": "The leader of Imperial House Of Japan is Naruhito."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0015",
+    "answer": "The founder of Kyodo News is Furuno Inosuke."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": false,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [
+     "Coricelli"
+    ],
+    "family": "bind_t",
+    "id": "bt0016",
+    "answer": "Antonio Da Coricelli is the group of Antonio Da Correggio."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0017",
+    "answer": "The track of Teletubbies is Teletubbies Theme Single."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0018",
+    "answer": "The adaptation of Industrial Society And Its Future is Publication Of Industrial Society And Its Future."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0019",
+    "answer": "The album of Nuthin But AG Thang is The Chronic."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0020",
+    "answer": "The genre of Ge Force is GP Us Industry."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0021",
+    "answer": "The director of The Lunts is Alfred Lunt."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0022",
+    "answer": "The place of death of Juan Fernandez Explorer is Santiago Spanish Empire."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0023",
+    "answer": "The predecessor of Peking University is Tianjin University."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0024",
+    "answer": "Edmund Hillary died on October 2, 1985."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0025",
+    "answer": "The location of Carlton Bookcase is Museum Of Decorative Arts Paris."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0026",
+    "answer": "The creation of Jean Baptiste De La Salle is Institute Of The Brothers Of The Christian Schools."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0027",
+    "answer": "The field of work of Embraer EMB314 Super Tucano is Low Threat Environments."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0028",
+    "answer": "The influence of Raphael Lemkin is Axis Occupied Europe."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0029",
+    "answer": "The origin of Yulanpen Sutra is Indic Language."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0030",
+    "answer": "The sibling of Carlos I Of Portugal is Afonso Duke Of Porto."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0031",
+    "answer": "The parent of Rasul Gamzatov is Gamzat Tsadasa."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0032",
+    "answer": "The parent of Henry The Lion is Henry The Proud."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0033",
+    "answer": "The use of Seal Script is Seals."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0034",
+    "answer": "The alma mater of Kimberle Crenshaw is Canton Mc Kinley High School."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0035",
+    "answer": "The label of Stardust1927 Song is Gennett Records."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0036",
+    "answer": "The founder of FC Bayern Munich is Franz John."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0037",
+    "answer": "Come On Over was created by Shania Twain."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0038",
+    "answer": "The genre of A Brighter Summer Day is Teen Film."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0039",
+    "answer": "The industry of Tinder App is Software Industry."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0040",
+    "answer": "The label of Grand Theft Auto is Rockstar Games."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0041",
+    "answer": "The birthplace of Pope John X is Tossignano."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0042",
+    "answer": "The mentor of Thomas The Slav is Bardanes Tourkos."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0043",
+    "answer": "The holder of President Of FIFA is Joao Havelange."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0044",
+    "answer": "The burial place of Katina Paxinou is First Cemetery Of Athens."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0045",
+    "answer": "The birthplace of Yo Yo Honey Singh is Karampura."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0046",
+    "answer": "Jeanne Dielman23 Quai Du Commerce1080 Bruxelles is the creation of Babette Mangolte."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0047",
+    "answer": "The spouse of Evelyn Glennie is Greg Malcangi."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0048",
+    "answer": "The headquarters of RSPCA is Horsham West Sussex England."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0049",
+    "answer": "The holder of Jin Chinese State is Duke Wen Of Jin."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0050",
+    "answer": "The parent company of La Repubblica is GEDI Gruppo Editoriale."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0051",
+    "answer": "The headquarters of Central Tibetan Administration is Dharamshala."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0052",
+    "answer": "Planned Parenthood operates in Reproductive Health And Education."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0053",
+    "answer": "The mentor of Jean Leon Gerome is Claude Basile Cariage."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0054",
+    "answer": "The religion of Hector Lavoe is Santeria."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0055",
+    "answer": "The teacher of Abida Parveen is Ustad Ghulam Haider."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0056",
+    "answer": "The namesake of Feigenbaum Constants is Mitchell J Feigenbaum."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0057",
+    "answer": "Douglas Murray Author founded Centre For Social Cohesion."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0058",
+    "answer": "Samuel Maharero's religion is Lutheran Schools."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0059",
+    "answer": "The film of Eugenio Derbez is No Tengo Madre."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0060",
+    "answer": "The child of Almos is Arpad."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0061",
+    "answer": "The award of Charles Taylor Philosopher is Berggruen Prize For Philosophy."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0062",
+    "answer": "The team of Ebenezer Cobb Morley is Barnes Football Club."
+   },
+   {
+    "outcome": "refused",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0063",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0064",
+    "answer": "The publisher of Thus Spoke Zarathustra is Ernst Schmeitzner."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0065",
+    "answer": "The discoverer of Horsehead Nebula is Williamina Fleming."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0066",
+    "answer": "The relative of William Desmond Taylor is Charles Kearns Deane Tanner."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0067",
+    "answer": "The team of Godfrey Gao is Capilano University."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0068",
+    "answer": "The group of Kulap Saipradit is Suphapburut."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0069",
+    "answer": "The occupation of Pedro Mascarenhas is Colonial Administrator."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0070",
+    "answer": "The teacher of Arnolfo Di Cambio is Nicola Pisano."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0071",
+    "answer": "Frances Marion's film is The Love Light."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0072",
+    "answer": "The employer of Albert Of Saxony Philosopher is Rudolf IV Duke Of Austria."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0073",
+    "answer": "The successor of A Chorus Line is Chicago Revival2011."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0074",
+    "answer": "The director of La Boheme is Arturo Toscanini."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0075",
+    "answer": "The author of I Claudius is Robert Graves."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0076",
+    "answer": "James Stephen Donaldson's residence is Greenville North Carolina."
+   },
+   {
+    "outcome": "refused",
+    "guarded": true,
+    "refused": true,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0077",
+    "answer": "The facts don't say."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0078",
+    "answer": "The adaptation of Joaquin Murrieta is The Life And Adventures Of Joaquin Murieta."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind_t",
+    "id": "bt0079",
+    "answer": "The effect of Spinal Disc Herniation is Severe Pain."
+   }
+  ],
+  "capitals": [
+   {
+    "arm": "counter",
+    "answer": "The capital of France is Ankara.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Japan is Lisbon.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Italy is Stockholm.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Germany is Bangkok.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Spain is Beijing.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Russia is Berlin.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Egypt is Buenos Aires.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of England is Budapest.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Canada is Cairo.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of China is Dublin.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Greece is Nairobi.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Ireland is Lima.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Portugal is Warsaw.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Austria is Stockholm.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Norway is Stockholm.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Sweden is Madrid.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Poland is Lisbon.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Kenya is Warsaw.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Peru is Oslo.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Turkey is Stockholm.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Thailand is Oslo.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Cuba is Nairobi.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Hungary is London.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Argentina is Ottawa.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The facts don't say.",
+    "memory": false,
+    "follows": false,
+    "refused": true
+   }
+  ],
+  "summary": {
+   "relation": {
+    "correct": 75,
+    "guarded": 80,
+    "wrong_but_guarded": 2,
+    "refused": 3,
+    "wrong": 2
+   },
+   "bind": {
+    "correct": 22,
+    "guarded": 23,
+    "wrong_but_guarded": 1,
+    "wrong": 1
+   },
+   "counter": {
+    "correct": 77,
+    "guarded": 80,
+    "wrong_but_guarded": 2,
+    "refused": 1,
+    "wrong": 2
+   },
+   "absent": {
+    "correct": 60,
+    "guarded": 64,
+    "wrong_but_guarded": 1,
+    "spoke_other": 3,
+    "wrong": 1
+   },
+   "profile": {
+    "correct": 74,
+    "guarded": 75,
+    "wrong_but_guarded": 1,
+    "wrong": 6
+   },
+   "bind_t": {
+    "correct": 76,
+    "guarded": 79,
+    "wrong_but_guarded": 1,
+    "wrong": 2,
+    "refused": 2
+   }
+  }
+ }
+}

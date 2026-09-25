@@ -1,0 +1,7 @@
+﻿=== export w2 17:50:21
+wrote 326 tensors, 1779.5M parameters -> I:\CUBBY-TRAINED-MODELS\grow_step0\w2_grilly
+=== parity w2 17:51:10
+prompt 0 (20 tokens, logit scale 20.1): grown torch vs grilly2 max |dlogit| 6.77e-05, argmax agrees 1.0000 | grown vs base on grilly2 max |dlogit| 6.58e-05, argmax agrees 1.0000
+prompt 1 (22 tokens, logit scale 32.0): grown torch vs grilly2 max |dlogit| 1.11e-04, argmax agrees 1.0000 | grown vs base on grilly2 max |dlogit| 8.01e-05, argmax agrees 1.0000
+prompt 2 (13 tokens, logit scale 22.4): grown torch vs grilly2 max |dlogit| 5.20e-05, argmax agrees 1.0000 | grown vs base on grilly2 max |dlogit| 1.60e-04, argmax agrees 1.0000
+=== DONE 17:52:19
