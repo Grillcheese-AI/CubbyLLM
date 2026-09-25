@@ -1,23 +1,23 @@
 {
- "passages": 189701,
+ "passages": 178311,
  "news_events": 537202,
- "events": 770225,
- "links": 28513,
- "facts": 161366,
+ "events": 940897,
+ "links": 45588,
+ "facts": 254829,
  "dated_by": {
-  "stated": 617204,
-  "context": 37280,
-  "part of": 1547,
-  "book": 81519,
-  "book+reader": 25143,
-  "undated": 7532
+  "stated": 700641,
+  "context": 55125,
+  "part of": 2571,
+  "book": 141544,
+  "book+reader": 29444,
+  "undated": 11572
  },
  "links_refused": {
   "news:column_name": 10147,
   "news:no_place_or_party": 35185,
-  "time_contradicts": 3533,
-  "time_contradicts_merged": 274,
-  "time_contradicts_dated": 2054
+  "time_contradicts": 6503,
+  "time_contradicts_merged": 478,
+  "time_contradicts_dated": 3767
  },
- "events_with_news_day": 764
+ "events_with_news_day": 811
 }

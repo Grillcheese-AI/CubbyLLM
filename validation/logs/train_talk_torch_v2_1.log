@@ -1,0 +1,384 @@
+train_talk_torch | cuda | 181 LoRA modules, 7.86M trainable (r=16, alpha=32.0) | train 203,049 held-eval 320 | 6346 steps of 32 | lr 0.0002 warmup 50 | load 181s
+  step 0 held answer loss 2.4214
+  step    20/6346  loss 2.3070  gnorm 0.196  lr 8.00e-05  0.29 s/step  22,428 tok/s  eta 30.5 min
+  step    40/6346  loss 1.7917  gnorm 0.573  lr 1.60e-04  0.24 s/step  23,809 tok/s  eta 25.6 min
+  step    60/6346  loss 1.3872  gnorm 0.534  lr 2.00e-04  0.22 s/step  24,147 tok/s  eta 22.7 min
+  step    80/6346  loss 1.3672  gnorm 0.577  lr 2.00e-04  0.23 s/step  23,732 tok/s  eta 23.7 min
+  step   100/6346  loss 1.3720  gnorm 1.104  lr 2.00e-04  0.25 s/step  22,584 tok/s  eta 25.6 min
+  step 100 held answer loss 1.4896
+  step   120/6346  loss 1.2566  gnorm 0.766  lr 2.00e-04  0.27 s/step  21,019 tok/s  eta 28.3 min
+  step   140/6346  loss 0.8146  gnorm 0.693  lr 2.00e-04  0.26 s/step  21,403 tok/s  eta 26.5 min
+  step   160/6346  loss 0.8011  gnorm 0.714  lr 2.00e-04  0.24 s/step  21,482 tok/s  eta 25.0 min
+  step   180/6346  loss 1.3038  gnorm 0.703  lr 2.00e-04  0.25 s/step  21,506 tok/s  eta 25.6 min
+  step   200/6346  loss 0.9429  gnorm 0.729  lr 2.00e-04  0.25 s/step  21,431 tok/s  eta 25.2 min
+  step 200 held answer loss 1.3604
+  step   220/6346  loss 1.3618  gnorm 0.705  lr 2.00e-04  0.26 s/step  20,667 tok/s  eta 26.7 min
+  step   240/6346  loss 1.0673  gnorm 0.306  lr 2.00e-04  0.26 s/step  20,992 tok/s  eta 26.1 min
+  step   260/6346  loss 0.8049  gnorm 0.831  lr 2.00e-04  0.25 s/step  21,112 tok/s  eta 25.4 min
+  step   280/6346  loss 1.1123  gnorm 0.384  lr 1.99e-04  0.25 s/step  21,238 tok/s  eta 25.2 min
+  step   300/6346  loss 1.0244  gnorm 0.627  lr 1.99e-04  0.25 s/step  21,356 tok/s  eta 25.1 min
+  step 300 held answer loss 1.3031
+  step   320/6346  loss 0.8491  gnorm 0.656  lr 1.99e-04  0.26 s/step  20,619 tok/s  eta 25.6 min
+  step   340/6346  loss 0.8058  gnorm 1.235  lr 1.99e-04  0.25 s/step  20,840 tok/s  eta 25.4 min
+  step   360/6346  loss 0.8000  gnorm 0.656  lr 1.99e-04  0.25 s/step  20,909 tok/s  eta 24.8 min
+  step   380/6346  loss 0.9401  gnorm 0.646  lr 1.99e-04  0.25 s/step  20,971 tok/s  eta 24.9 min
+  step   400/6346  loss 1.1071  gnorm 0.681  lr 1.99e-04  0.25 s/step  21,198 tok/s  eta 25.0 min
+  step 400 held answer loss 1.2746
+  step   420/6346  loss 0.7142  gnorm 0.797  lr 1.98e-04  0.25 s/step  20,766 tok/s  eta 25.1 min
+  step   440/6346  loss 0.9781  gnorm 0.587  lr 1.98e-04  0.25 s/step  20,867 tok/s  eta 25.0 min
+  step   460/6346  loss 0.7284  gnorm 0.584  lr 1.98e-04  0.25 s/step  20,961 tok/s  eta 24.5 min
+  step   480/6346  loss 1.2299  gnorm 0.525  lr 1.98e-04  0.25 s/step  20,973 tok/s  eta 24.7 min
+  step   500/6346  loss 0.8020  gnorm 0.617  lr 1.98e-04  0.25 s/step  21,077 tok/s  eta 24.3 min
+  step 500 held answer loss 1.2571
+  step   520/6346  loss 0.8995  gnorm 0.465  lr 1.98e-04  0.25 s/step  20,790 tok/s  eta 24.5 min
+  step   540/6346  loss 1.1552  gnorm 0.551  lr 1.97e-04  0.25 s/step  20,992 tok/s  eta 24.3 min
+  step   560/6346  loss 0.9412  gnorm 0.351  lr 1.97e-04  0.25 s/step  20,986 tok/s  eta 24.4 min
+  step   580/6346  loss 0.8955  gnorm 0.366  lr 1.97e-04  0.25 s/step  21,156 tok/s  eta 24.2 min
+  step   600/6346  loss 0.7739  gnorm 0.593  lr 1.97e-04  0.25 s/step  21,196 tok/s  eta 23.9 min
+  step 600 held answer loss 1.2441
+  step   620/6346  loss 0.6350  gnorm 0.615  lr 1.96e-04  0.25 s/step  20,885 tok/s  eta 24.0 min
+  step   640/6346  loss 0.7509  gnorm 1.179  lr 1.96e-04  0.25 s/step  20,934 tok/s  eta 23.6 min
+  step   660/6346  loss 0.6467  gnorm 0.656  lr 1.96e-04  0.25 s/step  20,860 tok/s  eta 23.3 min
+  step   680/6346  loss 0.8255  gnorm 0.742  lr 1.96e-04  0.24 s/step  20,957 tok/s  eta 23.0 min
+  step   700/6346  loss 0.8467  gnorm 0.505  lr 1.95e-04  0.24 s/step  21,031 tok/s  eta 22.7 min
+  step 700 held answer loss 1.2344
+  step   720/6346  loss 1.1102  gnorm 0.761  lr 1.95e-04  0.25 s/step  20,840 tok/s  eta 23.0 min
+  step   740/6346  loss 0.7205  gnorm 0.914  lr 1.95e-04  0.24 s/step  20,785 tok/s  eta 22.8 min
+  step   760/6346  loss 0.9183  gnorm 0.455  lr 1.94e-04  0.24 s/step  20,880 tok/s  eta 22.7 min
+  step   780/6346  loss 0.8642  gnorm 0.482  lr 1.94e-04  0.24 s/step  20,962 tok/s  eta 22.5 min
+  step   800/6346  loss 0.9071  gnorm 0.541  lr 1.94e-04  0.24 s/step  21,061 tok/s  eta 22.3 min
+  step 800 held answer loss 1.2174
+  step   820/6346  loss 0.6032  gnorm 0.502  lr 1.93e-04  0.24 s/step  20,789 tok/s  eta 22.3 min
+  step   840/6346  loss 0.6261  gnorm 0.601  lr 1.93e-04  0.24 s/step  20,764 tok/s  eta 22.2 min
+  step   860/6346  loss 0.5977  gnorm 0.757  lr 1.93e-04  0.24 s/step  20,821 tok/s  eta 21.9 min
+  step   880/6346  loss 0.8727  gnorm 0.623  lr 1.92e-04  0.24 s/step  20,941 tok/s  eta 21.7 min
+  step   900/6346  loss 0.8476  gnorm 0.458  lr 1.92e-04  0.24 s/step  20,995 tok/s  eta 21.6 min
+  step 900 held answer loss 1.2087
+  step   920/6346  loss 1.2207  gnorm 0.501  lr 1.92e-04  0.24 s/step  20,820 tok/s  eta 21.8 min
+  step   940/6346  loss 0.7925  gnorm 0.504  lr 1.91e-04  0.24 s/step  20,826 tok/s  eta 21.6 min
+  step   960/6346  loss 1.1091  gnorm 0.638  lr 1.91e-04  0.24 s/step  20,932 tok/s  eta 21.6 min
+  step   980/6346  loss 1.0519  gnorm 0.501  lr 1.91e-04  0.24 s/step  21,041 tok/s  eta 21.7 min
+  step  1000/6346  loss 0.7152  gnorm 0.484  lr 1.90e-04  0.24 s/step  21,105 tok/s  eta 21.5 min
+  step 1000 held answer loss 1.2086
+  step  1020/6346  loss 0.8426  gnorm 0.336  lr 1.90e-04  0.24 s/step  20,899 tok/s  eta 21.7 min
+  step  1040/6346  loss 0.7381  gnorm 0.499  lr 1.89e-04  0.24 s/step  20,882 tok/s  eta 21.5 min
+  step  1060/6346  loss 0.9002  gnorm 0.616  lr 1.89e-04  0.24 s/step  20,925 tok/s  eta 21.5 min
+  step  1080/6346  loss 0.6082  gnorm 0.498  lr 1.88e-04  0.24 s/step  20,926 tok/s  eta 21.2 min
+  step  1100/6346  loss 0.9474  gnorm 0.707  lr 1.88e-04  0.24 s/step  20,977 tok/s  eta 21.2 min
+  step 1100 held answer loss 1.1994
+  step  1120/6346  loss 0.9435  gnorm 0.904  lr 1.87e-04  0.25 s/step  20,737 tok/s  eta 21.4 min
+  step  1140/6346  loss 0.7877  gnorm 0.539  lr 1.87e-04  0.24 s/step  20,820 tok/s  eta 21.2 min
+  step  1160/6346  loss 0.7140  gnorm 0.415  lr 1.87e-04  0.24 s/step  20,857 tok/s  eta 21.0 min
+  step  1180/6346  loss 0.9010  gnorm 0.494  lr 1.86e-04  0.24 s/step  20,935 tok/s  eta 20.8 min
+  step  1200/6346  loss 0.7244  gnorm 0.451  lr 1.86e-04  0.24 s/step  20,960 tok/s  eta 20.7 min
+  step 1200 held answer loss 1.1996
+  step  1220/6346  loss 1.1912  gnorm 0.459  lr 1.85e-04  0.24 s/step  20,776 tok/s  eta 20.9 min
+  step  1240/6346  loss 1.0963  gnorm 0.608  lr 1.85e-04  0.25 s/step  20,833 tok/s  eta 20.9 min
+  step  1260/6346  loss 1.1522  gnorm 0.608  lr 1.84e-04  0.25 s/step  20,943 tok/s  eta 20.8 min
+  step  1280/6346  loss 1.1485  gnorm 0.532  lr 1.84e-04  0.25 s/step  21,046 tok/s  eta 20.7 min
+  step  1300/6346  loss 0.6742  gnorm 0.416  lr 1.83e-04  0.24 s/step  21,091 tok/s  eta 20.6 min
+  step 1300 held answer loss 1.1890
+  step  1320/6346  loss 0.9293  gnorm 0.414  lr 1.83e-04  0.25 s/step  20,954 tok/s  eta 20.7 min
+  step  1340/6346  loss 1.1355  gnorm 0.519  lr 1.82e-04  0.25 s/step  21,068 tok/s  eta 20.7 min
+  step  1360/6346  loss 1.0608  gnorm 0.517  lr 1.81e-04  0.25 s/step  21,162 tok/s  eta 20.5 min
+  step  1380/6346  loss 1.1156  gnorm 0.538  lr 1.81e-04  0.25 s/step  21,222 tok/s  eta 20.4 min
+  step  1400/6346  loss 0.5947  gnorm 0.576  lr 1.80e-04  0.25 s/step  21,219 tok/s  eta 20.3 min
+  step 1400 held answer loss 1.1887
+  step  1420/6346  loss 1.1232  gnorm 0.550  lr 1.80e-04  0.25 s/step  21,077 tok/s  eta 20.4 min
+  step  1440/6346  loss 0.8968  gnorm 0.412  lr 1.79e-04  0.25 s/step  21,129 tok/s  eta 20.2 min
+  step  1460/6346  loss 0.9688  gnorm 0.410  lr 1.79e-04  0.25 s/step  21,175 tok/s  eta 20.1 min
+  step  1480/6346  loss 1.0502  gnorm 0.562  lr 1.78e-04  0.25 s/step  21,254 tok/s  eta 20.0 min
+  step  1500/6346  loss 1.1681  gnorm 0.542  lr 1.77e-04  0.25 s/step  21,327 tok/s  eta 19.9 min
+  step 1500 held answer loss 1.1911
+  step  1520/6346  loss 0.7938  gnorm 0.621  lr 1.77e-04  0.25 s/step  21,156 tok/s  eta 19.9 min
+  step  1540/6346  loss 0.8304  gnorm 0.463  lr 1.76e-04  0.25 s/step  21,208 tok/s  eta 19.7 min
+  step  1560/6346  loss 0.9168  gnorm 0.564  lr 1.76e-04  0.25 s/step  21,247 tok/s  eta 19.6 min
+  step  1580/6346  loss 1.0137  gnorm 0.413  lr 1.75e-04  0.25 s/step  21,307 tok/s  eta 19.6 min
+  step  1600/6346  loss 1.1847  gnorm 0.267  lr 1.74e-04  0.25 s/step  21,344 tok/s  eta 19.5 min
+  step 1600 held answer loss 1.1783
+  step  1620/6346  loss 0.7110  gnorm 0.385  lr 1.74e-04  0.25 s/step  21,177 tok/s  eta 19.5 min
+  step  1640/6346  loss 1.0739  gnorm 0.685  lr 1.73e-04  0.25 s/step  21,214 tok/s  eta 19.5 min
+  step  1660/6346  loss 0.8866  gnorm 0.801  lr 1.73e-04  0.25 s/step  21,268 tok/s  eta 19.4 min
+  step  1680/6346  loss 0.6512  gnorm 0.522  lr 1.72e-04  0.25 s/step  21,280 tok/s  eta 19.3 min
+  step  1700/6346  loss 0.8825  gnorm 0.440  lr 1.71e-04  0.25 s/step  21,332 tok/s  eta 19.2 min
+  step 1700 held answer loss 1.1709
+  step  1720/6346  loss 0.7987  gnorm 0.548  lr 1.71e-04  0.25 s/step  21,213 tok/s  eta 19.2 min
+  step  1740/6346  loss 0.9598  gnorm 0.625  lr 1.70e-04  0.25 s/step  21,266 tok/s  eta 19.1 min
+  step  1760/6346  loss 0.6134  gnorm 0.511  lr 1.69e-04  0.25 s/step  21,256 tok/s  eta 19.0 min
+  step  1780/6346  loss 0.8065  gnorm 0.522  lr 1.69e-04  0.25 s/step  21,300 tok/s  eta 18.8 min
+  step  1800/6346  loss 0.8613  gnorm 0.622  lr 1.68e-04  0.25 s/step  21,335 tok/s  eta 18.7 min
+  step 1800 held answer loss 1.1735
+  step  1820/6346  loss 0.6457  gnorm 0.610  lr 1.67e-04  0.25 s/step  21,188 tok/s  eta 18.8 min
+  step  1840/6346  loss 1.1705  gnorm 0.600  lr 1.66e-04  0.25 s/step  21,253 tok/s  eta 18.7 min
+  step  1860/6346  loss 1.0017  gnorm 0.672  lr 1.66e-04  0.25 s/step  21,315 tok/s  eta 18.6 min
+  step  1880/6346  loss 0.7240  gnorm 0.484  lr 1.65e-04  0.25 s/step  21,344 tok/s  eta 18.5 min
+  step  1900/6346  loss 0.9638  gnorm 0.418  lr 1.64e-04  0.25 s/step  21,408 tok/s  eta 18.4 min
+  step 1900 held answer loss 1.1672
+  step  1920/6346  loss 0.6950  gnorm 0.425  lr 1.64e-04  0.25 s/step  21,281 tok/s  eta 18.4 min
+  step  1940/6346  loss 0.8793  gnorm 0.574  lr 1.63e-04  0.25 s/step  21,299 tok/s  eta 18.3 min
+  step  1960/6346  loss 1.0234  gnorm 0.374  lr 1.62e-04  0.25 s/step  21,351 tok/s  eta 18.2 min
+  step  1980/6346  loss 0.7410  gnorm 0.398  lr 1.61e-04  0.25 s/step  21,371 tok/s  eta 18.1 min
+  step  2000/6346  loss 1.0319  gnorm 0.312  lr 1.61e-04  0.25 s/step  21,424 tok/s  eta 18.0 min
+  step 2000 held answer loss 1.1678
+  step  2020/6346  loss 0.9874  gnorm 0.479  lr 1.60e-04  0.25 s/step  21,326 tok/s  eta 18.0 min
+  step  2040/6346  loss 0.7646  gnorm 0.287  lr 1.59e-04  0.25 s/step  21,373 tok/s  eta 17.9 min
+  step  2060/6346  loss 0.8632  gnorm 0.369  lr 1.58e-04  0.25 s/step  21,393 tok/s  eta 17.8 min
+  step  2080/6346  loss 0.8765  gnorm 0.633  lr 1.58e-04  0.25 s/step  21,437 tok/s  eta 17.6 min
+  step  2100/6346  loss 1.3124  gnorm 0.604  lr 1.57e-04  0.25 s/step  21,499 tok/s  eta 17.6 min
+  step 2100 held answer loss 1.1689
+  step  2120/6346  loss 1.0707  gnorm 0.455  lr 1.56e-04  0.25 s/step  21,415 tok/s  eta 17.6 min
+  step  2140/6346  loss 1.0085  gnorm 0.403  lr 1.55e-04  0.25 s/step  21,463 tok/s  eta 17.5 min
+  step  2160/6346  loss 1.1606  gnorm 0.323  lr 1.55e-04  0.25 s/step  21,506 tok/s  eta 17.4 min
+  step  2180/6346  loss 1.0176  gnorm 0.429  lr 1.54e-04  0.25 s/step  21,530 tok/s  eta 17.3 min
+  step  2200/6346  loss 0.8555  gnorm 0.611  lr 1.53e-04  0.25 s/step  21,551 tok/s  eta 17.2 min
+  step 2200 held answer loss 1.1594
+  step  2220/6346  loss 0.6230  gnorm 0.368  lr 1.52e-04  0.25 s/step  21,419 tok/s  eta 17.2 min
+  step  2240/6346  loss 0.8734  gnorm 0.333  lr 1.51e-04  0.25 s/step  21,462 tok/s  eta 17.1 min
+  step  2260/6346  loss 1.0181  gnorm 0.529  lr 1.51e-04  0.25 s/step  21,485 tok/s  eta 17.0 min
+  step  2280/6346  loss 1.0756  gnorm 0.458  lr 1.50e-04  0.25 s/step  21,517 tok/s  eta 17.0 min
+  step  2300/6346  loss 0.6370  gnorm 0.450  lr 1.49e-04  0.25 s/step  21,530 tok/s  eta 16.9 min
+  step 2300 held answer loss 1.1576
+  step  2320/6346  loss 0.8378  gnorm 0.678  lr 1.48e-04  0.25 s/step  21,456 tok/s  eta 16.8 min
+  step  2340/6346  loss 1.1469  gnorm 0.599  lr 1.47e-04  0.25 s/step  21,494 tok/s  eta 16.8 min
+  step  2360/6346  loss 0.6012  gnorm 0.738  lr 1.47e-04  0.25 s/step  21,513 tok/s  eta 16.6 min
+  step  2380/6346  loss 0.6868  gnorm 0.405  lr 1.46e-04  0.25 s/step  21,545 tok/s  eta 16.5 min
+  step  2400/6346  loss 0.9444  gnorm 0.627  lr 1.45e-04  0.25 s/step  21,571 tok/s  eta 16.4 min
+  step 2400 held answer loss 1.1562
+  step  2420/6346  loss 0.5048  gnorm 0.658  lr 1.44e-04  0.25 s/step  21,470 tok/s  eta 16.4 min
+  step  2440/6346  loss 0.9552  gnorm 0.719  lr 1.43e-04  0.25 s/step  21,464 tok/s  eta 16.3 min
+  step  2460/6346  loss 0.6897  gnorm 0.537  lr 1.42e-04  0.25 s/step  21,474 tok/s  eta 16.2 min
+  step  2480/6346  loss 0.5961  gnorm 0.499  lr 1.42e-04  0.25 s/step  21,496 tok/s  eta 16.1 min
+  step  2500/6346  loss 1.0046  gnorm 0.544  lr 1.41e-04  0.25 s/step  21,512 tok/s  eta 16.0 min
+  step 2500 held answer loss 1.1540
+  step  2520/6346  loss 0.4391  gnorm 0.536  lr 1.40e-04  0.25 s/step  21,422 tok/s  eta 16.0 min
+  step  2540/6346  loss 1.0962  gnorm 0.631  lr 1.39e-04  0.25 s/step  21,423 tok/s  eta 15.9 min
+  step  2560/6346  loss 0.8840  gnorm 0.477  lr 1.38e-04  0.25 s/step  21,451 tok/s  eta 15.8 min
+  step  2580/6346  loss 1.0123  gnorm 0.512  lr 1.37e-04  0.25 s/step  21,496 tok/s  eta 15.7 min
+  step  2600/6346  loss 1.0097  gnorm 0.519  lr 1.37e-04  0.25 s/step  21,539 tok/s  eta 15.6 min
+  step 2600 held answer loss 1.1484
+  step  2620/6346  loss 0.8956  gnorm 0.502  lr 1.36e-04  0.25 s/step  21,454 tok/s  eta 15.6 min
+  step  2640/6346  loss 0.5176  gnorm 0.498  lr 1.35e-04  0.25 s/step  21,438 tok/s  eta 15.5 min
+  step  2660/6346  loss 0.7830  gnorm 0.496  lr 1.34e-04  0.25 s/step  21,471 tok/s  eta 15.4 min
+  step  2680/6346  loss 1.0533  gnorm 0.513  lr 1.33e-04  0.25 s/step  21,500 tok/s  eta 15.3 min
+  step  2700/6346  loss 0.8469  gnorm 0.532  lr 1.32e-04  0.25 s/step  21,525 tok/s  eta 15.2 min
+  step 2700 held answer loss 1.1440
+  step  2720/6346  loss 0.9626  gnorm 0.445  lr 1.31e-04  0.25 s/step  21,461 tok/s  eta 15.2 min
+  step  2740/6346  loss 0.8503  gnorm 0.741  lr 1.30e-04  0.25 s/step  21,482 tok/s  eta 15.1 min
+  step  2760/6346  loss 0.8698  gnorm 0.468  lr 1.30e-04  0.25 s/step  21,489 tok/s  eta 15.0 min
+  step  2780/6346  loss 0.8513  gnorm 0.512  lr 1.29e-04  0.25 s/step  21,512 tok/s  eta 14.9 min
+  step  2800/6346  loss 0.8724  gnorm 0.502  lr 1.28e-04  0.25 s/step  21,543 tok/s  eta 14.8 min
+  step 2800 held answer loss 1.1478
+  step  2820/6346  loss 0.9002  gnorm 0.558  lr 1.27e-04  0.25 s/step  21,491 tok/s  eta 14.7 min
+  step  2840/6346  loss 1.0504  gnorm 0.451  lr 1.26e-04  0.25 s/step  21,524 tok/s  eta 14.7 min
+  step  2860/6346  loss 0.7705  gnorm 0.452  lr 1.25e-04  0.25 s/step  21,497 tok/s  eta 14.6 min
+  step  2880/6346  loss 0.8296  gnorm 0.497  lr 1.24e-04  0.25 s/step  21,529 tok/s  eta 14.6 min
+  step  2900/6346  loss 1.1211  gnorm 0.511  lr 1.23e-04  0.25 s/step  21,570 tok/s  eta 14.5 min
+  step 2900 held answer loss 1.1445
+  step  2920/6346  loss 1.1867  gnorm 0.440  lr 1.22e-04  0.25 s/step  21,516 tok/s  eta 14.5 min
+  step  2940/6346  loss 0.9088  gnorm 0.348  lr 1.22e-04  0.25 s/step  21,550 tok/s  eta 14.3 min
+  step  2960/6346  loss 0.8748  gnorm 0.517  lr 1.21e-04  0.25 s/step  21,592 tok/s  eta 14.3 min
+  step  2980/6346  loss 0.9243  gnorm 0.473  lr 1.20e-04  0.25 s/step  21,581 tok/s  eta 14.2 min
+  step  3000/6346  loss 0.5718  gnorm 0.300  lr 1.19e-04  0.25 s/step  21,592 tok/s  eta 14.1 min
+  step 3000 held answer loss 1.1417
+  step  3020/6346  loss 1.0210  gnorm 0.420  lr 1.18e-04  0.25 s/step  21,534 tok/s  eta 14.1 min
+  step  3040/6346  loss 0.7810  gnorm 0.442  lr 1.17e-04  0.25 s/step  21,541 tok/s  eta 14.0 min
+  step  3060/6346  loss 0.7890  gnorm 0.599  lr 1.16e-04  0.25 s/step  21,560 tok/s  eta 13.9 min
+  step  3080/6346  loss 0.8288  gnorm 0.463  lr 1.15e-04  0.25 s/step  21,554 tok/s  eta 13.8 min
+  step  3100/6346  loss 0.7759  gnorm 0.614  lr 1.14e-04  0.25 s/step  21,569 tok/s  eta 13.7 min
+  step 3100 held answer loss 1.1391
+  step  3120/6346  loss 0.8463  gnorm 0.418  lr 1.14e-04  0.25 s/step  21,510 tok/s  eta 13.6 min
+  step  3140/6346  loss 0.7044  gnorm 0.449  lr 1.13e-04  0.25 s/step  21,526 tok/s  eta 13.5 min
+  step  3160/6346  loss 0.6470  gnorm 0.597  lr 1.12e-04  0.25 s/step  21,540 tok/s  eta 13.4 min
+  step  3180/6346  loss 0.6629  gnorm 0.509  lr 1.11e-04  0.25 s/step  21,546 tok/s  eta 13.3 min
+  step  3200/6346  loss 0.6750  gnorm 0.510  lr 1.10e-04  0.25 s/step  21,541 tok/s  eta 13.2 min
+  step 3200 held answer loss 1.1422
+  step  3220/6346  loss 0.7540  gnorm 0.396  lr 1.09e-04  0.25 s/step  21,486 tok/s  eta 13.2 min
+  step  3240/6346  loss 0.6216  gnorm 0.432  lr 1.08e-04  0.25 s/step  21,485 tok/s  eta 13.1 min
+  step  3260/6346  loss 0.9942  gnorm 0.492  lr 1.07e-04  0.25 s/step  21,504 tok/s  eta 13.0 min
+  step  3280/6346  loss 0.4479  gnorm 0.428  lr 1.06e-04  0.25 s/step  21,515 tok/s  eta 12.9 min
+  step  3300/6346  loss 0.6116  gnorm 0.326  lr 1.05e-04  0.25 s/step  21,503 tok/s  eta 12.8 min
+  step 3300 held answer loss 1.1377
+  step  3320/6346  loss 0.8407  gnorm 0.482  lr 1.05e-04  0.25 s/step  21,449 tok/s  eta 12.7 min
+  step  3340/6346  loss 0.5381  gnorm 0.492  lr 1.04e-04  0.25 s/step  21,463 tok/s  eta 12.6 min
+  step  3360/6346  loss 0.7249  gnorm 0.774  lr 1.03e-04  0.25 s/step  21,476 tok/s  eta 12.5 min
+  step  3380/6346  loss 0.6365  gnorm 0.542  lr 1.02e-04  0.25 s/step  21,497 tok/s  eta 12.4 min
+  step  3400/6346  loss 0.8985  gnorm 0.442  lr 1.01e-04  0.25 s/step  21,511 tok/s  eta 12.4 min
+  step 3400 held answer loss 1.1415
+  step  3420/6346  loss 1.1092  gnorm 0.310  lr 1.00e-04  0.25 s/step  21,448 tok/s  eta 12.3 min
+  step  3440/6346  loss 0.8643  gnorm 0.480  lr 9.92e-05  0.25 s/step  21,467 tok/s  eta 12.3 min
+  step  3460/6346  loss 0.8975  gnorm 0.300  lr 9.83e-05  0.25 s/step  21,496 tok/s  eta 12.2 min
+  step  3480/6346  loss 0.7203  gnorm 0.544  lr 9.74e-05  0.25 s/step  21,495 tok/s  eta 12.1 min
+  step  3500/6346  loss 0.9523  gnorm 0.632  lr 9.65e-05  0.25 s/step  21,508 tok/s  eta 12.0 min
+  step 3500 held answer loss 1.1385
+  step  3520/6346  loss 0.9248  gnorm 0.734  lr 9.56e-05  0.25 s/step  21,451 tok/s  eta 11.9 min
+  step  3540/6346  loss 1.1803  gnorm 0.532  lr 9.48e-05  0.25 s/step  21,474 tok/s  eta 11.9 min
+  step  3560/6346  loss 0.5440  gnorm 0.421  lr 9.39e-05  0.25 s/step  21,489 tok/s  eta 11.8 min
+  step  3580/6346  loss 1.0762  gnorm 0.501  lr 9.30e-05  0.25 s/step  21,512 tok/s  eta 11.7 min
+  step  3600/6346  loss 0.8141  gnorm 1.193  lr 9.21e-05  0.25 s/step  21,530 tok/s  eta 11.6 min
+  step 3600 held answer loss 1.1377
+  step  3620/6346  loss 0.6999  gnorm 0.429  lr 9.12e-05  0.25 s/step  21,489 tok/s  eta 11.5 min
+  step  3640/6346  loss 0.8960  gnorm 0.568  lr 9.04e-05  0.25 s/step  21,483 tok/s  eta 11.4 min
+  step  3660/6346  loss 0.9834  gnorm 0.370  lr 8.95e-05  0.25 s/step  21,508 tok/s  eta 11.3 min
+  step  3680/6346  loss 0.8848  gnorm 0.392  lr 8.86e-05  0.25 s/step  21,514 tok/s  eta 11.3 min
+  step  3700/6346  loss 1.0817  gnorm 0.278  lr 8.77e-05  0.25 s/step  21,525 tok/s  eta 11.2 min
+  step 3700 held answer loss 1.1388
+  step  3720/6346  loss 0.7020  gnorm 0.477  lr 8.69e-05  0.25 s/step  21,481 tok/s  eta 11.1 min
+  step  3740/6346  loss 0.7112  gnorm 0.558  lr 8.60e-05  0.25 s/step  21,503 tok/s  eta 11.0 min
+  step  3760/6346  loss 0.8970  gnorm 0.624  lr 8.51e-05  0.25 s/step  21,496 tok/s  eta 11.0 min
+  step  3780/6346  loss 0.8527  gnorm 0.530  lr 8.43e-05  0.25 s/step  21,519 tok/s  eta 10.9 min
+  step  3800/6346  loss 0.6677  gnorm 0.466  lr 8.34e-05  0.25 s/step  21,528 tok/s  eta 10.8 min
+  step 3800 held answer loss 1.1319
+  step  3820/6346  loss 0.5696  gnorm 0.485  lr 8.26e-05  0.25 s/step  21,465 tok/s  eta 10.7 min
+  step  3840/6346  loss 0.8493  gnorm 0.671  lr 8.17e-05  0.25 s/step  21,478 tok/s  eta 10.6 min
+  step  3860/6346  loss 1.0411  gnorm 0.353  lr 8.09e-05  0.25 s/step  21,505 tok/s  eta 10.5 min
+  step  3880/6346  loss 0.7980  gnorm 0.300  lr 8.00e-05  0.25 s/step  21,501 tok/s  eta 10.4 min
+  step  3900/6346  loss 0.7359  gnorm 0.339  lr 7.92e-05  0.25 s/step  21,515 tok/s  eta 10.3 min
+  step 3900 held answer loss 1.1307
+  step  3920/6346  loss 0.8707  gnorm 0.346  lr 7.83e-05  0.25 s/step  21,469 tok/s  eta 10.2 min
+  step  3940/6346  loss 1.2285  gnorm 0.286  lr 7.75e-05  0.25 s/step  21,505 tok/s  eta 10.1 min
+  step  3960/6346  loss 0.9773  gnorm 0.880  lr 7.66e-05  0.25 s/step  21,511 tok/s  eta 10.1 min
+  step  3980/6346  loss 0.6080  gnorm 0.592  lr 7.58e-05  0.25 s/step  21,503 tok/s  eta 10.0 min
+  step  4000/6346  loss 0.8140  gnorm 0.452  lr 7.50e-05  0.25 s/step  21,521 tok/s  eta 9.9 min
+  step 4000 held answer loss 1.1278
+  step  4020/6346  loss 0.7072  gnorm 0.481  lr 7.42e-05  0.25 s/step  21,479 tok/s  eta 9.8 min
+  step  4040/6346  loss 0.5392  gnorm 0.622  lr 7.33e-05  0.25 s/step  21,492 tok/s  eta 9.7 min
+  step  4060/6346  loss 0.8709  gnorm 0.509  lr 7.25e-05  0.25 s/step  21,501 tok/s  eta 9.6 min
+  step  4080/6346  loss 1.0753  gnorm 0.390  lr 7.17e-05  0.25 s/step  21,521 tok/s  eta 9.6 min
+  step  4100/6346  loss 0.7572  gnorm 0.499  lr 7.09e-05  0.25 s/step  21,506 tok/s  eta 9.5 min
+  step 4100 held answer loss 1.1257
+  step  4120/6346  loss 0.7532  gnorm 0.451  lr 7.01e-05  0.25 s/step  21,468 tok/s  eta 9.4 min
+  step  4140/6346  loss 0.8051  gnorm 0.410  lr 6.93e-05  0.25 s/step  21,488 tok/s  eta 9.3 min
+  step  4160/6346  loss 1.1216  gnorm 0.297  lr 6.85e-05  0.25 s/step  21,513 tok/s  eta 9.2 min
+  step  4180/6346  loss 0.6296  gnorm 0.466  lr 6.77e-05  0.25 s/step  21,513 tok/s  eta 9.1 min
+  step  4200/6346  loss 0.7949  gnorm 0.488  lr 6.69e-05  0.25 s/step  21,528 tok/s  eta 9.0 min
+  step 4200 held answer loss 1.1284
+  step  4220/6346  loss 0.8916  gnorm 0.310  lr 6.61e-05  0.25 s/step  21,472 tok/s  eta 9.0 min
+  step  4240/6346  loss 0.7957  gnorm 0.453  lr 6.53e-05  0.25 s/step  21,499 tok/s  eta 8.9 min
+  step  4260/6346  loss 0.9546  gnorm 0.453  lr 6.45e-05  0.25 s/step  21,517 tok/s  eta 8.8 min
+  step  4280/6346  loss 0.8259  gnorm 0.646  lr 6.38e-05  0.25 s/step  21,522 tok/s  eta 8.7 min
+  step  4300/6346  loss 0.9070  gnorm 0.512  lr 6.30e-05  0.25 s/step  21,535 tok/s  eta 8.6 min
+  step 4300 held answer loss 1.1229
+  step  4320/6346  loss 0.7545  gnorm 0.677  lr 6.22e-05  0.25 s/step  21,487 tok/s  eta 8.5 min
+  step  4340/6346  loss 0.6488  gnorm 0.419  lr 6.15e-05  0.25 s/step  21,471 tok/s  eta 8.5 min
+  step  4360/6346  loss 0.7675  gnorm 0.462  lr 6.07e-05  0.25 s/step  21,479 tok/s  eta 8.4 min
+  step  4380/6346  loss 0.6893  gnorm 0.578  lr 6.00e-05  0.25 s/step  21,486 tok/s  eta 8.3 min
+  step  4400/6346  loss 0.8648  gnorm 0.511  lr 5.92e-05  0.25 s/step  21,494 tok/s  eta 8.2 min
+  step 4400 held answer loss 1.1240
+  step  4420/6346  loss 0.8791  gnorm 0.552  lr 5.85e-05  0.25 s/step  21,459 tok/s  eta 8.1 min
+  step  4440/6346  loss 0.8057  gnorm 0.470  lr 5.78e-05  0.25 s/step  21,473 tok/s  eta 8.0 min
+  step  4460/6346  loss 0.8933  gnorm 0.348  lr 5.70e-05  0.25 s/step  21,474 tok/s  eta 8.0 min
+  step  4480/6346  loss 0.7596  gnorm 0.458  lr 5.63e-05  0.25 s/step  21,484 tok/s  eta 7.9 min
+  step  4500/6346  loss 0.8197  gnorm 0.530  lr 5.56e-05  0.25 s/step  21,499 tok/s  eta 7.8 min
+  step 4500 held answer loss 1.1241
+  step  4520/6346  loss 0.9292  gnorm 0.437  lr 5.49e-05  0.25 s/step  21,465 tok/s  eta 7.7 min
+  step  4540/6346  loss 0.8047  gnorm 0.390  lr 5.42e-05  0.25 s/step  21,480 tok/s  eta 7.6 min
+  step  4560/6346  loss 0.6427  gnorm 0.443  lr 5.35e-05  0.25 s/step  21,485 tok/s  eta 7.5 min
+  step  4580/6346  loss 0.7106  gnorm 0.493  lr 5.28e-05  0.25 s/step  21,486 tok/s  eta 7.4 min
+  step  4600/6346  loss 0.7335  gnorm 0.500  lr 5.21e-05  0.25 s/step  21,496 tok/s  eta 7.3 min
+  step 4600 held answer loss 1.1238
+  step  4620/6346  loss 0.6725  gnorm 0.568  lr 5.14e-05  0.25 s/step  21,455 tok/s  eta 7.3 min
+  step  4640/6346  loss 0.9065  gnorm 0.508  lr 5.07e-05  0.25 s/step  21,463 tok/s  eta 7.2 min
+  step  4660/6346  loss 0.8235  gnorm 0.584  lr 5.00e-05  0.25 s/step  21,471 tok/s  eta 7.1 min
+  step  4680/6346  loss 0.7871  gnorm 0.589  lr 4.94e-05  0.25 s/step  21,485 tok/s  eta 7.0 min
+  step  4700/6346  loss 0.6227  gnorm 0.445  lr 4.87e-05  0.25 s/step  21,479 tok/s  eta 6.9 min
+  step 4700 held answer loss 1.1209
+  step  4720/6346  loss 0.6202  gnorm 0.484  lr 4.81e-05  0.25 s/step  21,433 tok/s  eta 6.8 min
+  step  4740/6346  loss 0.6327  gnorm 0.509  lr 4.74e-05  0.25 s/step  21,440 tok/s  eta 6.8 min
+  step  4760/6346  loss 0.6681  gnorm 0.606  lr 4.68e-05  0.25 s/step  21,446 tok/s  eta 6.7 min
+  step  4780/6346  loss 1.1395  gnorm 0.463  lr 4.61e-05  0.25 s/step  21,468 tok/s  eta 6.6 min
+  step  4800/6346  loss 0.5570  gnorm 0.542  lr 4.55e-05  0.25 s/step  21,466 tok/s  eta 6.5 min
+  step 4800 held answer loss 1.1185
+  step  4820/6346  loss 0.9432  gnorm 0.475  lr 4.49e-05  0.25 s/step  21,417 tok/s  eta 6.4 min
+  step  4840/6346  loss 0.9550  gnorm 0.373  lr 4.43e-05  0.25 s/step  21,435 tok/s  eta 6.3 min
+  step  4860/6346  loss 0.9291  gnorm 0.441  lr 4.37e-05  0.25 s/step  21,455 tok/s  eta 6.3 min
+  step  4880/6346  loss 0.5758  gnorm 0.518  lr 4.31e-05  0.25 s/step  21,461 tok/s  eta 6.2 min
+  step  4900/6346  loss 0.8828  gnorm 0.308  lr 4.25e-05  0.25 s/step  21,481 tok/s  eta 6.1 min
+  step 4900 held answer loss 1.1159
+  step  4920/6346  loss 0.6441  gnorm 0.482  lr 4.19e-05  0.25 s/step  21,435 tok/s  eta 6.0 min
+  step  4940/6346  loss 0.9700  gnorm 0.481  lr 4.13e-05  0.25 s/step  21,431 tok/s  eta 5.9 min
+  step  4960/6346  loss 0.8540  gnorm 0.413  lr 4.07e-05  0.25 s/step  21,443 tok/s  eta 5.8 min
+  step  4980/6346  loss 0.5932  gnorm 0.483  lr 4.01e-05  0.25 s/step  21,443 tok/s  eta 5.7 min
+  step  5000/6346  loss 0.9672  gnorm 0.654  lr 3.96e-05  0.25 s/step  21,468 tok/s  eta 5.7 min
+  step 5000 held answer loss 1.1190
+  step  5020/6346  loss 0.7842  gnorm 0.500  lr 3.90e-05  0.25 s/step  21,428 tok/s  eta 5.6 min
+  step  5040/6346  loss 0.8150  gnorm 0.555  lr 3.85e-05  0.25 s/step  21,445 tok/s  eta 5.5 min
+  step  5060/6346  loss 0.8622  gnorm 0.434  lr 3.79e-05  0.25 s/step  21,458 tok/s  eta 5.4 min
+  step  5080/6346  loss 0.8198  gnorm 0.628  lr 3.74e-05  0.25 s/step  21,464 tok/s  eta 5.3 min
+  step  5100/6346  loss 0.7480  gnorm 0.389  lr 3.69e-05  0.25 s/step  21,478 tok/s  eta 5.2 min
+  step 5100 held answer loss 1.1165
+  step  5120/6346  loss 0.7955  gnorm 0.426  lr 3.63e-05  0.25 s/step  21,456 tok/s  eta 5.2 min
+  step  5140/6346  loss 0.9353  gnorm 0.459  lr 3.58e-05  0.25 s/step  21,469 tok/s  eta 5.1 min
+  step  5160/6346  loss 0.7073  gnorm 0.338  lr 3.53e-05  0.25 s/step  21,470 tok/s  eta 5.0 min
+  step  5180/6346  loss 0.7017  gnorm 0.652  lr 3.48e-05  0.25 s/step  21,484 tok/s  eta 4.9 min
+  step  5200/6346  loss 0.8959  gnorm 0.358  lr 3.43e-05  0.25 s/step  21,482 tok/s  eta 4.8 min
+  step 5200 held answer loss 1.1161
+  step  5220/6346  loss 0.8529  gnorm 0.417  lr 3.39e-05  0.25 s/step  21,446 tok/s  eta 4.7 min
+  step  5240/6346  loss 0.6544  gnorm 0.486  lr 3.34e-05  0.25 s/step  21,453 tok/s  eta 4.7 min
+  step  5260/6346  loss 0.6664  gnorm 0.440  lr 3.29e-05  0.25 s/step  21,457 tok/s  eta 4.6 min
+  step  5280/6346  loss 0.7182  gnorm 0.401  lr 3.25e-05  0.25 s/step  21,462 tok/s  eta 4.5 min
+  step  5300/6346  loss 0.5077  gnorm 0.502  lr 3.20e-05  0.25 s/step  21,463 tok/s  eta 4.4 min
+  step 5300 held answer loss 1.1155
+  step  5320/6346  loss 1.1218  gnorm 0.582  lr 3.16e-05  0.25 s/step  21,423 tok/s  eta 4.3 min
+  step  5340/6346  loss 0.6695  gnorm 0.528  lr 3.11e-05  0.25 s/step  21,433 tok/s  eta 4.2 min
+  step  5360/6346  loss 0.6348  gnorm 0.523  lr 3.07e-05  0.25 s/step  21,441 tok/s  eta 4.1 min
+  step  5380/6346  loss 0.8787  gnorm 0.436  lr 3.03e-05  0.25 s/step  21,457 tok/s  eta 4.0 min
+  step  5400/6346  loss 0.9181  gnorm 0.430  lr 2.99e-05  0.25 s/step  21,458 tok/s  eta 4.0 min
+  step 5400 held answer loss 1.1172
+  step  5420/6346  loss 1.1861  gnorm 0.456  lr 2.95e-05  0.25 s/step  21,430 tok/s  eta 3.9 min
+  step  5440/6346  loss 0.7847  gnorm 0.463  lr 2.91e-05  0.25 s/step  21,429 tok/s  eta 3.8 min
+  step  5460/6346  loss 0.7188  gnorm 0.501  lr 2.87e-05  0.25 s/step  21,441 tok/s  eta 3.7 min
+  step  5480/6346  loss 0.9343  gnorm 0.423  lr 2.83e-05  0.25 s/step  21,459 tok/s  eta 3.6 min
+  step  5500/6346  loss 0.7547  gnorm 0.522  lr 2.79e-05  0.25 s/step  21,471 tok/s  eta 3.5 min
+  step 5500 held answer loss 1.1151
+  step  5520/6346  loss 0.7561  gnorm 0.606  lr 2.76e-05  0.25 s/step  21,432 tok/s  eta 3.5 min
+  step  5540/6346  loss 0.8520  gnorm 0.469  lr 2.72e-05  0.25 s/step  21,452 tok/s  eta 3.4 min
+  step  5560/6346  loss 0.5905  gnorm 0.562  lr 2.69e-05  0.25 s/step  21,459 tok/s  eta 3.3 min
+  step  5580/6346  loss 0.6660  gnorm 0.484  lr 2.65e-05  0.25 s/step  21,454 tok/s  eta 3.2 min
+  step  5600/6346  loss 0.7928  gnorm 0.335  lr 2.62e-05  0.25 s/step  21,461 tok/s  eta 3.1 min
+  step 5600 held answer loss 1.1148
+  step  5620/6346  loss 0.5526  gnorm 0.639  lr 2.59e-05  0.25 s/step  21,419 tok/s  eta 3.0 min
+  step  5640/6346  loss 0.8614  gnorm 0.461  lr 2.55e-05  0.25 s/step  21,425 tok/s  eta 3.0 min
+  step  5660/6346  loss 0.7910  gnorm 0.402  lr 2.52e-05  0.25 s/step  21,440 tok/s  eta 2.9 min
+  step  5680/6346  loss 0.7176  gnorm 0.687  lr 2.49e-05  0.25 s/step  21,445 tok/s  eta 2.8 min
+  step  5700/6346  loss 1.0086  gnorm 0.316  lr 2.46e-05  0.25 s/step  21,443 tok/s  eta 2.7 min
+  step 5700 held answer loss 1.1148
+  step  5720/6346  loss 0.6230  gnorm 0.506  lr 2.44e-05  0.25 s/step  21,414 tok/s  eta 2.6 min
+  step  5740/6346  loss 0.5880  gnorm 0.322  lr 2.41e-05  0.25 s/step  21,420 tok/s  eta 2.5 min
+  step  5760/6346  loss 0.7912  gnorm 0.497  lr 2.38e-05  0.25 s/step  21,428 tok/s  eta 2.5 min
+  step  5780/6346  loss 0.6008  gnorm 0.616  lr 2.36e-05  0.25 s/step  21,434 tok/s  eta 2.4 min
+  step  5800/6346  loss 0.9279  gnorm 0.478  lr 2.33e-05  0.25 s/step  21,453 tok/s  eta 2.3 min
+  step 5800 held answer loss 1.1155
+  step  5820/6346  loss 0.6185  gnorm 0.463  lr 2.31e-05  0.25 s/step  21,423 tok/s  eta 2.2 min
+  step  5840/6346  loss 0.7174  gnorm 0.490  lr 2.29e-05  0.25 s/step  21,408 tok/s  eta 2.1 min
+  step  5860/6346  loss 0.8191  gnorm 0.545  lr 2.26e-05  0.25 s/step  21,427 tok/s  eta 2.0 min
+  step  5880/6346  loss 0.8414  gnorm 0.538  lr 2.24e-05  0.25 s/step  21,436 tok/s  eta 2.0 min
+  step  5900/6346  loss 0.8442  gnorm 0.298  lr 2.22e-05  0.25 s/step  21,450 tok/s  eta 1.9 min
+  step 5900 held answer loss 1.1157
+  step  5920/6346  loss 0.5580  gnorm 0.432  lr 2.20e-05  0.25 s/step  21,421 tok/s  eta 1.8 min
+  step  5940/6346  loss 0.9637  gnorm 0.455  lr 2.18e-05  0.25 s/step  21,430 tok/s  eta 1.7 min
+  step  5960/6346  loss 0.5040  gnorm 0.415  lr 2.17e-05  0.25 s/step  21,418 tok/s  eta 1.6 min
+  step  5980/6346  loss 1.0639  gnorm 0.345  lr 2.15e-05  0.25 s/step  21,440 tok/s  eta 1.5 min
+  step  6000/6346  loss 0.7877  gnorm 0.479  lr 2.13e-05  0.25 s/step  21,452 tok/s  eta 1.4 min
+  step 6000 held answer loss 1.1152
+  step  6020/6346  loss 0.8767  gnorm 0.498  lr 2.12e-05  0.25 s/step  21,418 tok/s  eta 1.4 min
+  step  6040/6346  loss 0.9549  gnorm 0.518  lr 2.11e-05  0.25 s/step  21,432 tok/s  eta 1.3 min
+  step  6060/6346  loss 0.7875  gnorm 0.526  lr 2.09e-05  0.25 s/step  21,442 tok/s  eta 1.2 min
+  step  6080/6346  loss 0.9326  gnorm 0.439  lr 2.08e-05  0.25 s/step  21,447 tok/s  eta 1.1 min
+  step  6100/6346  loss 0.7319  gnorm 0.448  lr 2.07e-05  0.25 s/step  21,440 tok/s  eta 1.0 min
+  step 6100 held answer loss 1.1139
+  step  6120/6346  loss 1.0470  gnorm 0.561  lr 2.06e-05  0.25 s/step  21,424 tok/s  eta 0.9 min
+  step  6140/6346  loss 0.9298  gnorm 0.433  lr 2.05e-05  0.25 s/step  21,434 tok/s  eta 0.9 min
+  step  6160/6346  loss 0.6956  gnorm 0.290  lr 2.04e-05  0.25 s/step  21,444 tok/s  eta 0.8 min
+  step  6180/6346  loss 1.2984  gnorm 0.332  lr 2.03e-05  0.25 s/step  21,463 tok/s  eta 0.7 min
+  step  6200/6346  loss 0.6076  gnorm 0.580  lr 2.02e-05  0.25 s/step  21,467 tok/s  eta 0.6 min
+  step 6200 held answer loss 1.1153
+  step  6220/6346  loss 0.9972  gnorm 0.473  lr 2.02e-05  0.25 s/step  21,425 tok/s  eta 0.5 min
+  step  6240/6346  loss 0.7355  gnorm 0.288  lr 2.01e-05  0.25 s/step  21,431 tok/s  eta 0.4 min
+  step  6260/6346  loss 0.5770  gnorm 0.515  lr 2.01e-05  0.25 s/step  21,444 tok/s  eta 0.4 min
+  step  6280/6346  loss 1.1076  gnorm 0.666  lr 2.01e-05  0.25 s/step  21,461 tok/s  eta 0.3 min
+  step  6300/6346  loss 1.3770  gnorm 0.557  lr 2.00e-05  0.25 s/step  21,475 tok/s  eta 0.2 min
+  step 6300 held answer loss 1.1158
+  step  6320/6346  loss 0.7351  gnorm 0.484  lr 2.00e-05  0.25 s/step  21,442 tok/s  eta 0.1 min
+  step  6340/6346  loss 0.8539  gnorm 0.427  lr 2.00e-05  0.25 s/step  21,448 tok/s  eta 0.0 min
+  step  6346/6346  loss 1.2224  gnorm 0.589  lr 2.00e-05  0.25 s/step  21,454 tok/s  eta 0.0 min
+  step 6346 held answer loss 1.1158

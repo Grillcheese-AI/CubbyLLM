@@ -60,8 +60,8 @@ MIX_V21 = {
     ("hdc_sft.jsonl", "fact_chain"): 4000,
     ("hdc_sft.jsonl", "fact_absent"): 8000,
     ("events_sft.jsonl", None): None,
-    ("history_sft.jsonl", "hist_cause"): 8000,          # the history graph's links: what led to what
-    ("history_sft.jsonl", "hist_effect"): 8000,
+    ("history_sft.jsonl", "hist_cause"): 16000,         # the history graph's links: what led to what
+    ("history_sft.jsonl", "hist_effect"): 16000,
     ("history_sft.jsonl", "hist_chain"): 3000,
     ("history_sft.jsonl", "hist_downstream"): 2000,     # what a branch that changes an event has to re-evaluate
     ("history_sft.jsonl", "hist_part"): 3000,

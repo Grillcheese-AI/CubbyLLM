@@ -206,3 +206,5 @@ validation/secrets_hints.txt
 # OpenRouter keys kept beside the notebooks: never committed
 .api.key
 *.api.key
+validation/logs/convert_books.manifest.json
+validation/logs/history_graph_v21.assemble.json

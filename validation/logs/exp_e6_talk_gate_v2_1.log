@@ -1,0 +1,12 @@
+exp_e6 talk gate | 407 held records, 48 capital items
+adapter: step 6346 r=16 alpha=32.0 (181 modules)
+
+[talk adapter] 407 held records, 236s
+  relation  n= 80  correct  98.8%  wrong   1  refused   0  other   0  | guarded  98.8%  wrong-but-guarded 0
+  bind      n= 23  correct 100.0%  wrong   0  refused   0  other   0  | guarded 100.0%  wrong-but-guarded 0
+  bind_t    n= 80  correct  97.5%  wrong   2  refused   0  other   0  | guarded 100.0%  wrong-but-guarded 2
+  counter   n= 80  correct  93.8%  wrong   4  refused   1  other   0  | guarded  98.8%  wrong-but-guarded 3
+  absent    n= 64  correct  89.1%  wrong   1  refused   0  other   6  | guarded 100.0%  wrong-but-guarded 1
+  profile   n= 80  correct  96.2%  wrong   3  refused   0  other   0  | guarded  96.2%  wrong-but-guarded 0
+  capitals/counter   n=24  follows facts 24  from memory 0  says don't-know 0
+  capitals/unrelated n=24  follows facts 0  from memory 0  says don't-know 24
