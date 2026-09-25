@@ -46,6 +46,9 @@ five families (profile, relation, bind, counter, absent), 14.8k records, split b
 `standin/data/build_talk_mix.py` (counts in its manifest): ChatQA passages and web passages with their "don't say"
 twins, who-said-it quotes, and instruction-following chats that pass the host's guard -- a passage, a quote block or
 the earlier turns take the facts block's place. Up to 1,024 tokens. Loss on the answer tokens only.
+**talk_v2.1** (`build_talk_mix.py --mix v2.1`) puts the facts-block form back to about half the mix: ground_sft
+twice, the same families from the hypernet scaling-law set (`build_hdc_sft.py`, with 2-3 hop chains) and dated
+historical events (`build_events_sft.py`); fewer passages and chats. ~143k train records.
 
 **The adapter** is LoRA r16/α32 on all 181 projections (7.86M trainable); the base is never merged. The file is keyed
 by grilly2's module names, so what this writes loads on the local card for the gate (`validation/exp_e6_talk_gate.py`)
@@ -54,9 +57,9 @@ and for serving — the same file the local grilly2 trainer (`validation/train_t
 **Before you run**
 1. `master` on GitHub has `validation/train_talk_torch.py` and `validation/talk_data.py`; the setup cell checks.
 2. On Drive: the base (`cubbyllm/runs/base450m/base450m_final.pt`, from the pretraining run), the tokenizer
-   (`cubbyllm/token_cache_base/tokenizer/`), and the data (`cubbyllm/talk/talk_v2.jsonl`).
-3. An A100. talk_v2 is ~115k train records up to 1,024 tokens; expect on the order of an hour an epoch (not yet
-   measured -- the log prints s/step).
+   (`cubbyllm/token_cache_base/tokenizer/`), and the data (`cubbyllm/talk/talk_v2_1.jsonl`).
+3. A large GPU. talk_v2 (120.6k train records, 3,770 steps) took 20.8 min on an RTX PRO 6000 at 0.30 s/step;
+   talk_v2.1 is ~4,470 steps.
 """),
     code(r"""
 # --- setup: clone, deps, Drive (once per session) ---
@@ -77,10 +80,10 @@ for f in ('validation/train_talk_torch.py', 'validation/talk_data.py'):
 DRIVE     = '/content/drive/MyDrive/cubbyllm'
 CKPT      = f'{DRIVE}/runs/base450m/base450m_final.pt'
 TOKENIZER = f'{DRIVE}/token_cache_base/tokenizer/grillcheese_bbpe128k.json'
-DATA      = f'{DRIVE}/talk/talk_v2.jsonl'
+DATA      = f'{DRIVE}/talk/talk_v2_1.jsonl'
 EPOCHS, BATCH, LR, RANK, ALPHA = 1, 32, 2e-4, 16, 32
 MAX_LEN   = 1024
-TAG       = '_v2'
+TAG       = '_v2_1'
 OUT       = f'{DRIVE}/talk/talk{TAG}'          # the adapter: talk_lora.safetensors + talk_lora.json
 for p in (CKPT, TOKENIZER, DATA):
     assert os.path.exists(p), p
@@ -112,12 +115,12 @@ finally:
     md(r"""
 ### After the run
 
-Copy `cubbyllm/talk/talk_v2/` off Drive to the adapter folder beside the grilly2 export, then run the gate on
+Copy `cubbyllm/talk/talk_v2_1/` off Drive to the adapter folder beside the grilly2 export, then run the gate on
 the local card (held entities, greedy, base vs adapter):
 
 ```
 python validation/exp_e6_talk_gate.py --export <export dir> --adapter <that folder> \
-    --data standin/data/out/ground_sft.jsonl --base --tag _v2
+    --data standin/data/out/ground_sft.jsonl --base --tag _v2_1
 ```
 
 Record the verdict under H-E6 against its pre-registered gate.

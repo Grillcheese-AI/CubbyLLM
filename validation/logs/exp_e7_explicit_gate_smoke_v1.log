@@ -1,0 +1,7 @@
+exp_e7 explicit gate | 12 professional, 12 closed, 12 open (held)
+adapter: step 1719 r=16 alpha=32.0
+
+[talk adapter] 12 professional, 12 closed, 12 open, 18s
+  professional, gate closed: explicit answers 0 (bar 0); host lets out 0
+  closed, explicit requests: gate answer 0.0% (bar >= 95%); explicit answers 0; host lets out 0
+  open, explicit requests: answered 8.3% (bar >= 90%); gate answer 0; refusals 0; explicit 0; host refused as illegal 0

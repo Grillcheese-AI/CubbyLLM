@@ -142,44 +142,7 @@ def unmask(uid: str, text: str) -> str:
 _ROLEPLAY = re.compile(r"\b(?:role[- ]?play|roleplay|act as|pretend|in character|you are (?:now )?(?:playing|a|an|the))\b", re.I)
 
 
-# Adult content in what is SAID, not the topic: "what does NSFW mean", "sexual reproduction" and "the naked
-# eye" are not gated. A strong term scores 2, a weak one 1 (each distinct term once); 2 or more is explicit.
-_STRONG = re.compile(r"\b(?:porn\w*|nsfw|hentai|erotic\w*|orgasm\w*|masturbat\w*|blowjob|cumshot|pussy|tits|"
-                     r"horny|smut|bdsm|onlyfans|lewd|fetish\w*|sexting|nudes)\b", re.I)
-_WEAK = re.compile(r"\b(?:naked|nude|sexy|busty|escort|boobs|aroused|seductive|stripper)\b", re.I)
-_WEAK_CASED = re.compile(r"\b(?:dick|cock|cum)\b")            # lowercase only: "Dick Grayson" is a name
-_MINOR = re.compile(r"\b(?:minor|minors|underage|under-age|child|children|kid|kids|teen|teens|teenage\w*|"
-                    r"preteen|loli\w*|shota\w*|schoolgirl|schoolboy|(?:1[0-7]|[1-9])[- ]?(?:year|yr)s?[- ]?old)\b", re.I)
-UNLOCK = "Explicit: allowed"
-GATED = "That's explicit, and it's off right now. Ask me to turn it on if you want it."
-
-
-def _terms(text: str) -> tuple[set[str], set[str]]:
-    strong = {m.group(0).lower() for m in _STRONG.finditer(text)}
-    weak = {m.group(0).lower() for m in _WEAK.finditer(text)} | set(_WEAK_CASED.findall(text))
-    return strong, weak
-
-
-def _score(text: str, echo: str = "") -> int:
-    """2 per strong term, 1 per weak one; a term the request already used ("what does NSFW mean") is the
-    topic being answered, not something the answer says of its own."""
-    strong, weak = _terms(text)
-    if echo:
-        es, ew = _terms(echo)
-        strong, weak = strong - es, weak - ew
-    return 2 * len(strong) + len(weak)
-
-
-def explicit(request: str, answer: str) -> bool:
-    """The answer says something explicit (alone, or on an explicit request)."""
-    s = _score(answer, echo=request)
-    return s >= 2 or (s >= 1 and _score(request) >= 2)
-
-
-def illegal(text: str) -> bool:
-    """Explicit content anywhere in a chat that also mentions minors: dropped, never gated. Deliberately
-    broad -- some innocent chats go with it ("Porn" and "kids" in one list of Wi-Fi names)."""
-    return _score(text) >= 2 and bool(_MINOR.search(text))
+from explicit_gate import GATED, UNLOCK, _MINOR, _STRONG, _WEAK, _WEAK_CASED, _score, _terms, explicit, illegal  # noqa: E402,F401
 
 
 _REFUSAL = re.compile(r"^.{0,120}?\b(?:can't|cannot|can not|won't|will not|unable to|not able to)\b.{0,40}?\b(?:help|assist|"

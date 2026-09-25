@@ -1,0 +1,128 @@
+{
+ "source": "datasets drive: domains/history + domains/verified_facts (history books as text)",
+ "model": "qwen/qwen3-235b-a22b-2507",
+ "books": 4,
+ "books_kept": 4,
+ "duplicates_dropped": [],
+ "books_read": {
+  "0edd5acd5314": {
+   "title": "Rubicon - Tom Holland",
+   "author": "",
+   "lang": "",
+   "file": "Rubicon - Tom Holland.txt",
+   "era": "bc"
+  },
+  "0f44e81e9930": {
+   "title": "The Civil War, a Narrative  Red River to A - Shelby Foote",
+   "author": "",
+   "lang": "",
+   "file": "The Civil War, a Narrative_ Red River to A - Shelby Foote.txt",
+   "era": "ad"
+  },
+  "5a3c757820cf": {
+   "title": "Marilyn Dunn - Belief and Religion in Barbarian Europe c. 350-700 (Retail)",
+   "author": "",
+   "lang": "",
+   "file": "MiddleAges/Church and Theology in Middle Ages/Marilyn Dunn - Belief and Religion in Barbarian Europe c. 350-700 (Retail).txt",
+   "era": "ad"
+  },
+  "387377254ed3": {
+   "title": "Seán McGrail - Early Ships and Seafaring. European Water Transport (Retail)",
+   "author": "",
+   "lang": "",
+   "file": "MiddleAges/History of Ships/Seán McGrail - Early Ships and Seafaring. European Water Transport (Retail).txt",
+   "era": "bc"
+  }
+ },
+ "passages": 252,
+ "passages_sent": 248,
+ "graph": {
+  "events": 1250,
+  "events_dated": 709,
+  "dated_by": {
+   "stated": 154,
+   "context": 126,
+   "part of": 1,
+   "book": 213,
+   "book+reader": 215,
+   "undated": 541
+  },
+  "links": 74,
+  "links_by_relation": {
+   "precursor of": 33,
+   "caused": 11,
+   "part of": 16,
+   "ended": 10,
+   "contributed to": 1,
+   "response to": 3
+  },
+  "links_refused": {
+   "time_contradicts": 2
+  },
+  "facts": 830
+ },
+ "funnel": {
+  "link:end_not_an_event": 1404,
+  "event:kept": 1308,
+  "event:name_not_grounded": 1179,
+  "fact:short_name": 1039,
+  "fact:kept": 844,
+  "event:when_not_found": 715,
+  "event:undated": 715,
+  "fact:value_not_in_quote": 488,
+  "fact:not_in_passage": 401,
+  "event:dated_stated": 344,
+  "passages": 252,
+  "event:dated_context": 249,
+  "replies": 248,
+  "link:quote_misses_an_end": 231,
+  "event:quote_not_in_passage": 198,
+  "fact:relation": 170,
+  "event:quote_misses_name": 156,
+  "link:quote_not_in_passage": 97,
+  "link:kept": 76,
+  "event:end_not_found": 56,
+  "event:sentence_not_a_name": 41,
+  "event:when_read_as_bc": 38,
+  "fact:shape": 19,
+  "fact:entity": 13,
+  "event:no_proper_noun": 8,
+  "link:relation": 7,
+  "passages_no_dates": 4,
+  "event:not_a_name": 4
+ },
+ "usage": {
+  "prompt_tokens": 1305553,
+  "completion_tokens": 514232,
+  "cost": 0.27947923987500023
+ },
+ "stopped": false,
+ "sample_links": [
+  "Massacre at Asculum (91 BC) --precursor of--> Italian Revolt (91 BC)",
+  "Outlawry of Marius and Sulpicius (88 BC) --caused--> Murder of Sulpicius (88 BC)",
+  "Restoration of Democracy in Athens (88 BC) --precursor of--> Sack of Athens (87 BC)",
+  "Sack of Athens (87 BC) --precursor of--> Defeat of Mithridates' Armies in Greece (87 BC)",
+  "Defeat of Mithridates' Armies in Greece (87 BC) --precursor of--> Sulla's Summit with Mithridates (87 BC)",
+  "Battle of the Colline Gate (82 BC) --precursor of--> Massacre of Samnite Prisoners at the Villa Publica (82 BC)",
+  "Battle of Tigranocerta (71 BC) --part of--> Lucullus' Invasion of Pontus (71 BC)",
+  "Pompey's Third Triumph (61 BC) --precursor of--> Construction of Pompey's Theatre (61 BC)",
+  "Exile of Cicero (58 BC) --caused--> Destruction of Cicero's House (58 BC)",
+  "Milo's Trial in the Forum (55 BC) --part of--> Riot at Milo's Trial (55 BC)",
+  "Caesar's Punishment of the Venetians (52 BC) --caused--> Rebellion in Gaul following harvest failure (54 BC)",
+  "Surrender of Vercingetorix (52 BC) --ended--> Battle of Alesia (52 BC)",
+  "Trial of Milo (52 BC) --caused--> Exile of Milo (52 BC)",
+  "Senate Vote Against Caesar (49 BC) --precursor of--> Veto of Senate Bill by Antony (49 BC)",
+  "Pardon of Corfinium (49 BC) --contributed to--> Caesar's Campaign in Spain (49 BC)",
+  "Cicero's return to Rome (44 BC) --part of--> Cicero's denunciation of Antony (44 BC)",
+  "Fall of Alexandria (30 BC) --ended--> Death of Antony (30 BC)",
+  "Battle of Actium (31 BC) --caused--> Capture of Alexandria by Octavian (30 BC)",
+  "Capture of Alexandria by Octavian (30 BC) --ended--> End of Ptolemaic Rule in Egypt (30 BC)",
+  "Steele's Advance on Little Rock (1863) --precursor of--> Red River Campaign (1864)",
+  "Destruction of Grand Ecore (1864) --part of--> Union Withdrawal from Grand Ecore to Alexandria (1864)",
+  "Banks' Retreat from Sabine Crossroads (1864) --precursor of--> Banks' Retreat from Pleasant Hill (1864)",
+  "Council of War at Camden (1864) --precursor of--> Steele's Retreat from Camden (1864)",
+  "Battle of Jenkins Ferry (1864) --precursor of--> Steele's Retreat to Little Rock (1864)",
+  "Assault on Fort Pillow () --caused--> Fort Pillow Massacre ()"
+ ],
+ "wall_s": 1.4
+}

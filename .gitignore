@@ -202,3 +202,7 @@ standin/models/
 
 validation/redact.txt
 validation/secrets_hints.txt
+
+# OpenRouter keys kept beside the notebooks: never committed
+.api.key
+*.api.key

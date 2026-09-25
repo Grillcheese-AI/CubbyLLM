@@ -1,8 +1,8 @@
 {
   "seed": 0,
-  "records": 149050,
-  "train": 109788,
-  "held": 39262,
+  "records": 161050,
+  "train": 120634,
+  "held": 40416,
   "by_family": {
     "absent:held": 64,
     "absent:train": 1070,
@@ -29,7 +29,11 @@
     "quote_absent:held": 827,
     "quote_absent:train": 3000,
     "relation:held": 351,
-    "relation:train": 3141
+    "relation:train": 3141,
+    "story_gated:held": 577,
+    "story_gated:train": 5423,
+    "story_open:held": 577,
+    "story_open:train": 5423
   },
   "drawn_of_available": {
     "ground_sft": "13747 of 13747",
@@ -40,7 +44,9 @@
     "quote": "8000 of 21574",
     "quote_absent": "3000 of 7610",
     "chat": "25000 of 61636",
-    "chat_gated": "41 of 41"
+    "chat_gated": "41 of 41",
+    "story_open": "5423 of 5423",
+    "story_gated": "5423 of 5423"
   },
   "mix": {
     "ground_sft.jsonl:*": null,
@@ -51,6 +57,8 @@
     "quotes_sft.jsonl:quote": 8000,
     "quotes_sft.jsonl:quote_absent": 3000,
     "chat_sft.jsonl:chat": 25000,
-    "chat_sft.jsonl:chat_gated": null
+    "chat_sft.jsonl:chat_gated": null,
+    "explicit_sft.jsonl:story_open": null,
+    "explicit_sft.jsonl:story_gated": null
   }
 }

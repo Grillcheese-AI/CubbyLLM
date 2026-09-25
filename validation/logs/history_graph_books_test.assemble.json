@@ -1,0 +1,21 @@
+{
+ "passages": 34619,
+ "news_events": 0,
+ "events": 157444,
+ "links": 15083,
+ "facts": 99895,
+ "dated_by": {
+  "context": 23428,
+  "stated": 78013,
+  "part of": 708,
+  "book": 30945,
+  "book+reader": 22020,
+  "undated": 2330
+ },
+ "links_refused": {
+  "time_contradicts": 1215,
+  "time_contradicts_merged": 107,
+  "time_contradicts_dated": 580
+ },
+ "events_with_news_day": 0
+}

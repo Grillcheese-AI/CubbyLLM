@@ -1,0 +1,24 @@
+{
+ "books": {
+  "model_written_events_1800_1900": {
+   "records": 40,
+   "words": 4139
+  },
+  "encyclopedia_dialogues_people": {
+   "records": 2633,
+   "words": 464055
+  },
+  "book_passage_summaries": {
+   "records": 1137,
+   "words": 69137
+  },
+  "inventions_and_achievements": {
+   "records": 155,
+   "words": 8559
+  }
+ },
+ "left_out": {
+  "analysis_fields_left_out": 192,
+  "speculative_sentence": 1296
+ }
+}

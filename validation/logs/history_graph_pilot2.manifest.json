@@ -1,0 +1,109 @@
+{
+ "source": "datasets drive: domains/history + domains/verified_facts (history books as text)",
+ "model": "qwen/qwen3-235b-a22b-2507",
+ "books": 4,
+ "books_kept": 4,
+ "duplicates_dropped": [],
+ "books_read": {
+  "0edd5acd5314": {
+   "title": "Rubicon - Tom Holland",
+   "author": "",
+   "lang": "",
+   "file": "Rubicon - Tom Holland.txt"
+  },
+  "0f44e81e9930": {
+   "title": "The Civil War, a Narrative  Red River to A - Shelby Foote",
+   "author": "",
+   "lang": "",
+   "file": "The Civil War, a Narrative_ Red River to A - Shelby Foote.txt"
+  },
+  "5a3c757820cf": {
+   "title": "Marilyn Dunn - Belief and Religion in Barbarian Europe c. 350-700 (Retail)",
+   "author": "",
+   "lang": "",
+   "file": "MiddleAges/Church and Theology in Middle Ages/Marilyn Dunn - Belief and Religion in Barbarian Europe c. 350-700 (Retail).txt"
+  },
+  "387377254ed3": {
+   "title": "Seán McGrail - Early Ships and Seafaring. European Water Transport (Retail)",
+   "author": "",
+   "lang": "",
+   "file": "MiddleAges/History of Ships/Seán McGrail - Early Ships and Seafaring. European Water Transport (Retail).txt"
+  }
+ },
+ "passages": 252,
+ "passages_sent": 248,
+ "graph": {
+  "events": 1582,
+  "events_dated": 201,
+  "links": 139,
+  "links_by_relation": {
+   "caused": 23,
+   "part of": 27,
+   "precursor of": 66,
+   "response to": 12,
+   "ended": 5,
+   "contributed to": 6
+  },
+  "links_refused": {
+   "time_contradicts": 2
+  },
+  "facts": 1499
+ },
+ "funnel": {
+  "event:kept": 1682,
+  "fact:kept": 1603,
+  "link:end_not_an_event": 1338,
+  "fact:value_not_in_quote": 1132,
+  "event:when_not_found": 682,
+  "event:name_not_grounded": 513,
+  "event:quote_misses_name": 420,
+  "fact:not_in_passage": 310,
+  "link:quote_misses_an_end": 287,
+  "event:quote_not_in_passage": 284,
+  "passages": 252,
+  "replies": 248,
+  "link:kept": 141,
+  "link:quote_not_in_passage": 125,
+  "event:end_not_found": 60,
+  "fact:entity": 34,
+  "fact:shape": 29,
+  "event:no_proper_noun": 22,
+  "event:not_a_name": 13,
+  "link:relation": 10,
+  "passages_no_dates": 4
+ },
+ "usage": {
+  "prompt_tokens": 1264881,
+  "completion_tokens": 489474,
+  "cost": 0.268513950375
+ },
+ "stopped": false,
+ "sample_links": [
+  "Expulsion of Tarquin (509 BC) --caused--> Founding of the Roman Republic (509 BC)",
+  "Roman conquest of Spain () --part of--> wars with Carthage ()",
+  "Roman intervention in Balkans () --precursor of--> Roman defeat of Macedon (168 BC)",
+  "Roman defeat of Macedon (168 BC) --precursor of--> Establishment of Macedon as Roman province (148)",
+  "Murder of Tiberius Gracchus () --response to--> Law of Gaius Gracchus on Pergamum taxation (123)",
+  "invasion of Pontus () --precursor of--> repulsion of Roman invasion by Mithridates ()",
+  "Mithridates' invasion of Asia () --precursor of--> massacre of Romans in Asia ()",
+  "Sulpicius' plebiscite transferring Mithridatic command () --response to--> Sulla's appointment to command against Mithridates (88 BC)",
+  "Outlawry of Marius and Sulpicius () --caused--> Murder of Sulpicius ()",
+  "Sulla's march on Rome (88 BC) --part of--> Sulla's coup (88 BC)",
+  "Sulla's march on Rome (88 BC) (88 BC) --precursor of--> Sulla's return to Italy (83 BC)",
+  "Senate meeting at temple of Bellona () --precursor of--> Sulla Dictator ()",
+  "Sulla's resignation of dictatorship (81 BC) --caused--> Sulla's consulship ()",
+  "Caesar's father became a praetor (92 BC) --precursor of--> Caesar's father appointed governor of Asia ()",
+  "Marius planned to appoint Caesar priest () --precursor of--> Caesar's priesthood confirmed (84 BC)",
+  "Sulla proscribed Caesar () --precursor of--> Caesar refused to divorce Cornelia ()",
+  "Sulla pardoned Caesar () --precursor of--> Caesar served in Asia (78 BC)",
+  "Sulla laid down dictatorship () --precursor of--> Caesar returned to Rome (78 BC)",
+  "Crassus raises private army () --precursor of--> Crassus' campaign against Spartacus ()",
+  "Decimation of Crassus' legions () --part of--> Crassus' campaign against Spartacus ()",
+  "Crassus builds barricade () --part of--> Crassus pens in Spartacus ()",
+  "Spartacus' third breakout attempt () --precursor of--> Final battle against Spartacus ()",
+  "Sulla's march on Rome (88 BC) --precursor of--> War against Mithridates ()",
+  "Mithridates' escape to Armenia () --precursor of--> Appius' diplomatic mission to Tigranes ()",
+  "Battle of Tigranocerta () --ended--> Siege of Tigranocerta ()"
+ ],
+ "wall_s": 1.2
+}

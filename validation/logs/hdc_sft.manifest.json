@@ -1,0 +1,124 @@
+{
+ "source": "hdc: hypernet scaling-law set (Wikidata facts from relation templates)",
+ "rows_read": 410000,
+ "parsed": 352668,
+ "quota": {
+  "fact_relation": 14000,
+  "fact_bind": 12000,
+  "fact_counter": 7000,
+  "fact_chain": 9000
+ },
+ "absent_share": 0.35,
+ "records": 53981,
+ "by_family": {
+  "fact_absent:held": 995,
+  "fact_absent:train": 10986,
+  "fact_bind:held": 999,
+  "fact_bind:train": 11001,
+  "fact_chain:held": 967,
+  "fact_chain:train": 8033,
+  "fact_counter:held": 708,
+  "fact_counter:train": 6292,
+  "fact_relation:held": 1392,
+  "fact_relation:train": 12608
+ },
+ "funnel": {
+  "rows": 410000,
+  "unparsed": 49438,
+  "fact_relation:relation_cap": 12220,
+  "fact_bind:relation_cap": 10297,
+  "fact_counter:relation_cap": 7666,
+  "degenerate": 3857,
+  "no_proper_name": 3832,
+  "fact_absent:answer_left": 2718,
+  "fact_relation:question_gives_answer": 2197,
+  "fact_bind:question_gives_answer": 1864,
+  "fact_counter:forbidden_value": 1119,
+  "fact_counter:bad_donor": 865,
+  "fact_chain:mixed_split": 793,
+  "fact_chain:question_gives_answer": 545,
+  "fact_bind:no_partner": 257,
+  "question_lacks_alias": 205,
+  "fact_bind:forbidden_value": 39,
+  "fact_bind:ungrounded": 15,
+  "fact_relation:ungrounded": 15,
+  "fact_counter:ungrounded": 9,
+  "fact_relation:duplicate": 9,
+  "fact_chain:ungrounded": 9,
+  "fact_counter:duplicate": 1,
+  "fact_bind:duplicate": 1
+ },
+ "examples": {
+  "fact_absent": [
+   {
+    "prompt": "Facts:\n- Nemichand — country of citizenship: India\n- Chan Tung — occupation: chef\nQuestion: What is the occupation of Nemichand?\nAnswer:",
+    "answer": "The facts don't say."
+   },
+   {
+    "prompt": "Facts:\n- Asian long-horned beetle — parent taxon: Anoplophora\n- Reitan AS — instance of: business\nQuestion: What is the instance of Spectrum HoloByte?\nAnswer:",
+    "answer": "The facts don't say."
+   },
+   {
+    "prompt": "Facts:\n- Isobelle Carmody — occupation: writer\n- Celso Advento Castillo — occupation: film director\n- Isobelle Carmody — languages spoken, written or signed: English\nQuestion: What does Adriana Louvier do for a living?\nAnswer:",
+    "answer": "The facts don't say."
+   }
+  ],
+  "fact_bind": [
+   {
+    "prompt": "Facts:\n- USS Gualala — country: United States of America\n- Denistone railway station — country: Australia\nQuestion: Which country is USS Gualala in?\nAnswer:",
+    "answer": "USS Gualala is in United States of America."
+   },
+   {
+    "prompt": "Facts:\n- Big Allis — country: United States of America\n- USS YP-279 — country: Australia\nQuestion: Which country is Big Allis in?\nAnswer:",
+    "answer": "Big Allis is in United States of America."
+   },
+   {
+    "prompt": "Facts:\n- The Police Serve the Citizens? — film editor: Antonio Siciliano\n- Daring Danger — director: D. Ross Lederman\n- The Police Serve the Citizens? — director: Romolo Guerrieri\nQuestion: Who is the director of The Police Serve the Citizens??\nAnswer:",
+    "answer": "The director of The Police Serve the Citizens? is Romolo Guerrieri."
+   }
+  ],
+  "fact_chain": [
+   {
+    "prompt": "Facts:\n- taxon — has part: organism\n- Chloroclystis — instance of: taxon\n- Chloroclystis rubicunda — parent taxon: Chloroclystis\n- taxon — different from: clade\nQuestion: What is the component of the instance of the parent taxon of Chloroclystis rubicunda?\nAnswer:",
+    "answer": "The parent taxon of Chloroclystis rubicunda is Chloroclystis, Chloroclystis is an instance of taxon, and the component of taxon is organism."
+   },
+   {
+    "prompt": "Facts:\n- Anders Steen — family name: Steen\n- family name — described by source: Armenian Soviet Encyclopedia\n- Steen — instance of: family name\n- Steen — language of work or name: Danish\nQuestion: What is the source that describes the instance of the family name of Anders Steen?\nAnswer:",
+    "answer": "The family name of Anders Steen is Steen, Steen is an instance of family name, and the described by source of family name is Armenian Soviet Encyclopedia."
+   },
+   {
+    "prompt": "Facts:\n- beer in England — country: United Kingdom\n- United Kingdom — flag: flag of the United Kingdom\n- flag of the United Kingdom — instance of: national flag\n- United Kingdom — diplomatic relation: Grenada\n- flag of the United Kingdom — applies to jurisdiction: United Kingdom\nQuestion: What is the jurisdiction of the flag of the country of beer in England?\nAnswer:",
+    "answer": "Beer in England is in United Kingdom, the flag of United Kingdom is flag of the United Kingdom, and the jurisdiction of flag of the United Kingdom is United Kingdom."
+   }
+  ],
+  "fact_counter": [
+   {
+    "prompt": "Facts:\n- CCKAR — chromosome: human chromosome 11\nQuestion: What chromosome does CCKAR have?\nAnswer:",
+    "answer": "The chromosome of CCKAR is human chromosome 11."
+   },
+   {
+    "prompt": "Facts:\n- Broughton — located in the administrative territorial entity: Municipality of Medvode\n- Broughton — country: United Kingdom\n- Broughton — instance of: civil parish\nQuestion: Where is the administrative territorial entity of Broughton?\nAnswer:",
+    "answer": "The administrative territorial entity of Broughton is Municipality of Medvode."
+   },
+   {
+    "prompt": "Facts:\n- Glebe Island — located in the administrative territorial entity: Havlíčkův Brod District\nQuestion: Where is the administrative territorial entity of Glebe Island?\nAnswer:",
+    "answer": "The administrative territorial entity of Glebe Island is Havlíčkův Brod District."
+   }
+  ],
+  "fact_relation": [
+   {
+    "prompt": "Facts:\n- Sons of Tucson — language of work or name: English\n- Ingeborg Tott — instance of: human\n- Sons of Tucson — original network: Fox Broadcasting Company\nQuestion: What is the language of work or name of Sons of Tucson?\nAnswer:",
+    "answer": "The language of work or name of Sons of Tucson is English."
+   },
+   {
+    "prompt": "Facts:\n- Magical Girl Lyrical Nanoha ViVid — country of origin: Japan\n- Montfortia emarginata — parent taxon: Hemitoma\n- Yiannis Kouros — ethnic group: Greeks\nQuestion: What is the country of origin of Magical Girl Lyrical Nanoha ViVid?\nAnswer:",
+    "answer": "The country of origin of Magical Girl Lyrical Nanoha ViVid is Japan."
+   },
+   {
+    "prompt": "Facts:\n- Ed Vaizey — instance of: human\n- daf-2 — ortholog: IGF1R\n- Arsuk — located in the administrative territorial entity: Sermersooq\nQuestion: Which is the ortholog of daf-2?\nAnswer:",
+    "answer": "The ortholog of daf-2 is IGF1R."
+   }
+  ]
+ },
+ "wall_s": 19.0
+}

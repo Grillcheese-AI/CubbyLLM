@@ -1,0 +1,126 @@
+{
+ "source": "datasets drive: domains/history + domains/verified_facts (history books as text)",
+ "model": "qwen/qwen3-235b-a22b-2507",
+ "books": 4,
+ "books_kept": 4,
+ "duplicates_dropped": [],
+ "books_read": {
+  "9666c6fb9333": {
+   "title": "book passage summaries",
+   "author": "",
+   "lang": "",
+   "file": "book_passage_summaries.txt",
+   "era": "ad"
+  },
+  "725cf52ad97d": {
+   "title": "encyclopedia dialogues people",
+   "author": "",
+   "lang": "",
+   "file": "encyclopedia_dialogues_people.txt",
+   "era": "ad"
+  },
+  "fcfda8d883ab": {
+   "title": "inventions and achievements",
+   "author": "",
+   "lang": "",
+   "file": "inventions_and_achievements.txt",
+   "era": "ad"
+  },
+  "a49cfb8f82a0": {
+   "title": "model written events 1800 1900",
+   "author": "",
+   "lang": "",
+   "file": "model_written_events_1800_1900.txt",
+   "era": "ad"
+  }
+ },
+ "passages": 178,
+ "passages_sent": 178,
+ "graph": {
+  "events": 1323,
+  "events_dated": 1323,
+  "dated_by": {
+   "stated": 796,
+   "context": 264,
+   "part of": 3,
+   "book": 237,
+   "book+reader": 23,
+   "undated": 0
+  },
+  "links": 76,
+  "links_by_relation": {
+   "caused": 19,
+   "ended": 10,
+   "precursor of": 28,
+   "part of": 15,
+   "contributed to": 3,
+   "response to": 1
+  },
+  "links_refused": {
+   "time_contradicts": 7
+  },
+  "facts": 1573
+ },
+ "funnel": {
+  "fact:kept": 1586,
+  "event:kept": 1416,
+  "event:dated_stated": 821,
+  "link:end_not_an_event": 634,
+  "event:name_not_grounded": 527,
+  "event:dated_context": 320,
+  "fact:value_not_in_quote": 293,
+  "event:when_not_found": 275,
+  "event:undated": 275,
+  "passages": 178,
+  "replies": 178,
+  "fact:short_name": 178,
+  "link:quote_misses_an_end": 156,
+  "fact:relation": 108,
+  "fact:not_in_passage": 98,
+  "link:kept": 83,
+  "event:quote_not_in_passage": 51,
+  "event:end_not_found": 45,
+  "event:not_a_name": 38,
+  "link:quote_not_in_passage": 37,
+  "event:sentence_not_a_name": 37,
+  "event:quote_misses_name": 35,
+  "fact:shape": 21,
+  "link:relation": 12,
+  "event:no_proper_noun": 6,
+  "fact:entity": 2
+ },
+ "usage": {
+  "prompt_tokens": 888532,
+  "completion_tokens": 342361,
+  "cost": 0.18932990422499996
+ },
+ "stopped": false,
+ "sample_links": [
+  "American Revolution (1701 to 1800) --caused--> Decline of Virginia Aristocracy (1701 to 1800)",
+  "Wars Between Venice and Ottoman Turks (1204) --ended--> League of Cambrai (1204)",
+  "Russo-Turkish War (1876) --caused--> Treaty of San Stefano (1876)",
+  "Dutch Revolt (1567) --precursor of--> Establishment of the Council of Blood (1567)",
+  "Great Leap Forward (1958 to 1962) --caused--> Famine during the Great Leap Forward (1958 to 1962)",
+  "July Revolution in France (1830 to 1839) --caused--> Passing of the Reform Bill of 1832 (1832)",
+  "Detention and Deportation Cases at Ellis Island (1949) --precursor of--> Closing of Ellis Island as Detention Center (1949)",
+  "Theodore Roosevelt's Conservation Efforts (1901) --precursor of--> North American Conservation Conference (1909)",
+  "Temujin's Rise to Power (1203 to 1206) --caused--> Proclamation of Genghis Khan (1206)",
+  "Construction of the Berlin Wall (1961-08-13) --precursor of--> East German Crackdown After Berlin Wall Construction (1961)",
+  "Reichstag Fire and Nazi Crackdown (1933) --precursor of--> Implementation of Racial Laws in Nazi Germany (1933)",
+  "Malcolm X's Suspension from NOI (1956) --caused--> Formation of New Organizations by Malcolm X (1956)",
+  "Battle of Chickamauga (1863) --part of--> Siege of Chattanooga (1863)",
+  "War of the Spanish Succession (1700) --ended--> Treaties of Utrecht and Rastadt (1700)",
+  "Nationalization of Iranian Oil Industry (1951) --caused--> British Oil Embargo on Iran (1951)",
+  "Gorbachev's Reforms (1991) --contributed to--> Dissolution of the Soviet Union (1991)",
+  "Military Coup Against Ngo Dinh Diem (1963) --ended--> Assassination of Ngo Dinh Diem (1963)",
+  "Invasion of Kuwait by Iraq (1990) --caused--> Gulf War (1991)",
+  "Second Council of Ephesus (449) --caused--> Council of Chalcedon (451)",
+  "Emergence of Homo sapiens (1513) --part of--> Global dispersal of Homo sapiens (1513)",
+  "Excommunication of Henry IV (1077) --caused--> Walk to Canossa (1077)",
+  "Hōgen Rebellion (1101 to 1200) --precursor of--> Genpei War (1101 to 1200)",
+  "Heiji Rebellion (1101 to 1200) --precursor of--> Genpei War (1101 to 1200)",
+  "Death of Gregory XI (1378) --caused--> Start of the Great Western Schism (1378)",
+  "Execution of Yang Guifei (755) --ended--> An Lushan Rebellion (755)"
+ ],
+ "wall_s": 434.4
+}

@@ -1,0 +1,11 @@
+{
+ "library": "Bibliotheca Alexandrina",
+ "books": 3,
+ "stats": {
+  "already_done": 0,
+  "converted": 3
+ },
+ "words": 794379,
+ "needs_ocr": [],
+ "wall_s": 9
+}

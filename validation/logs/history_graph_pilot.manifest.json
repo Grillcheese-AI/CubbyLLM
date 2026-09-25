@@ -1,0 +1,81 @@
+{
+ "source": "datasets drive: domains/history + domains/verified_facts (history books as text)",
+ "model": "qwen/qwen3-235b-a22b-2507",
+ "books": 4,
+ "books_kept": 4,
+ "duplicates_dropped": [],
+ "books_read": {
+  "0edd5acd5314": {
+   "title": "Rubicon - Tom Holland",
+   "author": "",
+   "lang": "",
+   "file": "Rubicon - Tom Holland.txt"
+  },
+  "0f44e81e9930": {
+   "title": "The Civil War, a Narrative  Red River to A - Shelby Foote",
+   "author": "",
+   "lang": "",
+   "file": "The Civil War, a Narrative_ Red River to A - Shelby Foote.txt"
+  },
+  "5a3c757820cf": {
+   "title": "Marilyn Dunn - Belief and Religion in Barbarian Europe c. 350-700 (Retail)",
+   "author": "",
+   "lang": "",
+   "file": "MiddleAges/Church and Theology in Middle Ages/Marilyn Dunn - Belief and Religion in Barbarian Europe c. 350-700 (Retail).txt"
+  },
+  "387377254ed3": {
+   "title": "Seán McGrail - Early Ships and Seafaring. European Water Transport (Retail)",
+   "author": "",
+   "lang": "",
+   "file": "MiddleAges/History of Ships/Seán McGrail - Early Ships and Seafaring. European Water Transport (Retail).txt"
+  }
+ },
+ "passages": 252,
+ "passages_sent": 248,
+ "graph": {
+  "events": 171,
+  "events_dated": 41,
+  "links": 4,
+  "links_by_relation": {
+   "part of": 2,
+   "ended": 1,
+   "precursor of": 1
+  },
+  "links_refused": {},
+  "facts": 2808
+ },
+ "funnel": {
+  "event:name_not_in_passage": 3517,
+  "fact:kept": 2964,
+  "fact:value_not_in_quote": 2215,
+  "link:end_not_an_event": 2064,
+  "fact:not_in_passage": 552,
+  "passages": 252,
+  "replies": 248,
+  "fact:shape": 238,
+  "event:kept": 175,
+  "link:relation": 120,
+  "fact:entity": 89,
+  "event:when_not_found": 47,
+  "event:quote_not_in_passage": 21,
+  "event:not_a_name": 8,
+  "passages_no_dates": 4,
+  "link:kept": 4,
+  "link:quote_not_in_passage": 3,
+  "event:end_not_found": 2,
+  "link:quote_misses_an_end": 1
+ },
+ "usage": {
+  "prompt_tokens": 1233385,
+  "completion_tokens": 842365,
+  "cost": 0.38878988692499983
+ },
+ "stopped": false,
+ "sample_links": [
+  "Octavian is given the title 'Augustus' () --part of--> The Republic is 'restored' ()",
+  "withdrawal to Atlanta's inner line () --part of--> Hood's Second Sortie ()",
+  "Fort Fisher's fall () --ended--> Butler's hearing before the Joint Committee ()",
+  "Visigothic defeat at Vouillé (507) --precursor of--> Council of Orléans (511)"
+ ],
+ "wall_s": 604.2
+}

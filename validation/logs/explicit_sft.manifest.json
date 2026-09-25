@@ -1,0 +1,23 @@
+{
+  "source": "unified/bluuwhale_nsfwstory2.full.jsonl (adult stories, 2,400-character chunks)",
+  "pairs": 6000,
+  "max_len": 1024,
+  "funnel": {
+    "pairs_seen": 31085,
+    "stories": 24599,
+    "illegal_story": 18807,
+    "not_explicit": 14591,
+    "ungrounded": 9967,
+    "open": 6000,
+    "too_short": 518,
+    "language": 9
+  },
+  "families": {
+    "story_open": 6000,
+    "story_gated": 6000
+  },
+  "splits": {
+    "train": 10846,
+    "held": 1154
+  }
+}

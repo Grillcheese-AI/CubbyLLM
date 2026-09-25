@@ -1,0 +1,112 @@
+{
+ "source": "datasets drive: domains/history + domains/verified_facts (history books as text)",
+ "model": "qwen/qwen3-235b-a22b-2507",
+ "books": 4,
+ "books_kept": 4,
+ "duplicates_dropped": [],
+ "books_read": {
+  "0edd5acd5314": {
+   "title": "Rubicon - Tom Holland",
+   "author": "",
+   "lang": "",
+   "file": "Rubicon - Tom Holland.txt"
+  },
+  "0f44e81e9930": {
+   "title": "The Civil War, a Narrative  Red River to A - Shelby Foote",
+   "author": "",
+   "lang": "",
+   "file": "The Civil War, a Narrative_ Red River to A - Shelby Foote.txt"
+  },
+  "5a3c757820cf": {
+   "title": "Marilyn Dunn - Belief and Religion in Barbarian Europe c. 350-700 (Retail)",
+   "author": "",
+   "lang": "",
+   "file": "MiddleAges/Church and Theology in Middle Ages/Marilyn Dunn - Belief and Religion in Barbarian Europe c. 350-700 (Retail).txt"
+  },
+  "387377254ed3": {
+   "title": "Seán McGrail - Early Ships and Seafaring. European Water Transport (Retail)",
+   "author": "",
+   "lang": "",
+   "file": "MiddleAges/History of Ships/Seán McGrail - Early Ships and Seafaring. European Water Transport (Retail).txt"
+  }
+ },
+ "passages": 252,
+ "passages_sent": 248,
+ "graph": {
+  "events": 1254,
+  "events_dated": 174,
+  "links": 80,
+  "links_by_relation": {
+   "caused": 14,
+   "part of": 20,
+   "precursor of": 32,
+   "ended": 5,
+   "response to": 6,
+   "contributed to": 3
+  },
+  "links_refused": {
+   "time_contradicts": 3
+  },
+  "facts": 841
+ },
+ "funnel": {
+  "link:end_not_an_event": 1438,
+  "event:kept": 1320,
+  "fact:short_name": 1131,
+  "event:name_not_grounded": 1116,
+  "fact:kept": 856,
+  "event:when_not_found": 479,
+  "fact:value_not_in_quote": 453,
+  "fact:not_in_passage": 277,
+  "passages": 252,
+  "replies": 248,
+  "fact:relation": 236,
+  "link:quote_misses_an_end": 233,
+  "event:quote_not_in_passage": 231,
+  "event:quote_misses_name": 154,
+  "link:quote_not_in_passage": 84,
+  "link:kept": 83,
+  "event:end_not_found": 46,
+  "event:sentence_not_a_name": 37,
+  "fact:shape": 31,
+  "event:no_proper_noun": 7,
+  "link:relation": 7,
+  "fact:entity": 7,
+  "passages_no_dates": 4,
+  "event:not_a_name": 1
+ },
+ "usage": {
+  "prompt_tokens": 1282127,
+  "completion_tokens": 481081,
+  "cost": 0.2660787063000001
+ },
+ "stopped": false,
+ "sample_links": [
+  "Expulsion of Tarquin (509 BC) --caused--> Founding of the Roman Republic (509 BC)",
+  "Roman Conquest of Carthaginian Empire in Spain () --part of--> Wars with Carthage ()",
+  "Bequest of Pergamum to Rome (133) --caused--> Murder of Tiberius Gracchus (133)",
+  "Outlawry of Marius and Sulpicius () --caused--> Murder of Sulpicius ()",
+  "Sulla's March on Rome (88 BC) (88 BC) --precursor of--> Sulla's Return to Italy (83 BC)",
+  "Battle of the Colline Gate () --precursor of--> Massacre of Samnite Captives ()",
+  "Founding of Sulla's Title Felix () --part of--> Sulla Dictator ()",
+  "Caesar Appointed Priest of Jupiter (84 BC) --precursor of--> Sulla's Proscription of Caesar ()",
+  "Lucullus' Winter Campaign against Mithridates () --ended--> Mithridates' Invasion of Asia ()",
+  "Lucullus' Siege of Tigranocerta () --part of--> Battle of Tigranocerta ()",
+  "Senate Debate on Catiline's Conspirators () --caused--> Execution of Catiline's Conspirators ()",
+  "Clodius' Trial () --ended--> Clodius' Acquittal ()",
+  "Pompey's Third Triumph (61 BC) --precursor of--> Construction of Pompey's Theatre ()",
+  "Crassus' Eastern Command (54 BC) --part of--> Crassus' Consulship ()",
+  "Punishment of the Venetians () --caused--> Rebellion in Gaul following harvest failure (54 BC)",
+  "Caesar's First Expedition to Britain () --part of--> Conquest of Gaul ()",
+  "Surrender of Vercingetorix () --response to--> Battle of Alesia ()",
+  "Siege of Alesia () --precursor of--> Caesar's War Against the Gauls (51 BC)",
+  "Rebellion of Pompey's Sons in Spain (46 BC) --precursor of--> Battle in Spain ()",
+  "Comet Over Rome () --precursor of--> Octavian's Entry into Rome (44 BC)",
+  "Octavian's Entry into Rome (44 BC) --precursor of--> Cicero's Senate Speech on Octavian ()",
+  "Grant's Promotion to Lieutenant General () --precursor of--> Grant's Consultation with Army of the Potomac Commander ()",
+  "Skirmishing at Prairie d'Ane () --part of--> Battle of Prairie d'Ane ()",
+  "Steele's Withdrawal to Camden () --part of--> Steele's March from Little Rock ()",
+  "Engagement at Terre Rouge Creek () --part of--> Steele's Withdrawal to Camden ()"
+ ],
+ "wall_s": 183.7
+}

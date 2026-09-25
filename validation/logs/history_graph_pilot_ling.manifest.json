@@ -1,0 +1,128 @@
+{
+ "source": "datasets drive: domains/history + domains/verified_facts (history books as text)",
+ "model": "inclusionai/ling-3.0-flash",
+ "books": 4,
+ "books_kept": 4,
+ "duplicates_dropped": [],
+ "books_read": {
+  "0edd5acd5314": {
+   "title": "Rubicon - Tom Holland",
+   "author": "",
+   "lang": "",
+   "file": "Rubicon - Tom Holland.txt",
+   "era": "bc"
+  },
+  "0f44e81e9930": {
+   "title": "The Civil War, a Narrative  Red River to A - Shelby Foote",
+   "author": "",
+   "lang": "",
+   "file": "The Civil War, a Narrative_ Red River to A - Shelby Foote.txt",
+   "era": "ad"
+  },
+  "5a3c757820cf": {
+   "title": "Marilyn Dunn - Belief and Religion in Barbarian Europe c. 350-700 (Retail)",
+   "author": "",
+   "lang": "",
+   "file": "MiddleAges/Church and Theology in Middle Ages/Marilyn Dunn - Belief and Religion in Barbarian Europe c. 350-700 (Retail).txt",
+   "era": "ad"
+  },
+  "387377254ed3": {
+   "title": "Seán McGrail - Early Ships and Seafaring. European Water Transport (Retail)",
+   "author": "",
+   "lang": "",
+   "file": "MiddleAges/History of Ships/Seán McGrail - Early Ships and Seafaring. European Water Transport (Retail).txt",
+   "era": "bc"
+  }
+ },
+ "passages": 252,
+ "passages_sent": 248,
+ "graph": {
+  "events": 1176,
+  "events_dated": 793,
+  "dated_by": {
+   "stated": 199,
+   "context": 63,
+   "part of": 4,
+   "book": 175,
+   "book+reader": 352,
+   "undated": 383
+  },
+  "links": 78,
+  "links_by_relation": {
+   "part of": 24,
+   "caused": 20,
+   "ended": 9,
+   "response to": 13,
+   "precursor of": 10,
+   "contributed to": 2
+  },
+  "links_refused": {
+   "time_contradicts": 6
+  },
+  "facts": 363
+ },
+ "funnel": {
+  "link:end_not_an_event": 1419,
+  "event:kept": 1304,
+  "event:undated": 940,
+  "fact:short_name": 934,
+  "event:when_not_found": 881,
+  "event:name_not_grounded": 779,
+  "fact:value_not_in_quote": 600,
+  "fact:kept": 368,
+  "fact:not_in_passage": 348,
+  "event:dated_stated": 273,
+  "link:quote_misses_an_end": 257,
+  "passages": 252,
+  "replies": 248,
+  "event:quote_not_in_passage": 221,
+  "fact:relation": 221,
+  "event:quote_misses_name": 205,
+  "event:end_not_found": 140,
+  "link:quote_not_in_passage": 124,
+  "event:sentence_not_a_name": 118,
+  "event:dated_context": 91,
+  "link:kept": 84,
+  "fact:shape": 59,
+  "event:when_read_as_bc": 21,
+  "fact:entity": 5,
+  "passages_no_dates": 4,
+  "link:relation": 4,
+  "event:not_a_name": 4,
+  "event:no_proper_noun": 1
+ },
+ "usage": {
+  "prompt_tokens": 1318819,
+  "completion_tokens": 510508,
+  "cost": 0.05806964255399999
+ },
+ "stopped": false,
+ "sample_links": [
+  "Establishment of the Roman Republic (509 BC) --part of--> Roman social convulsions and constitutional reforms (509 BC)",
+  "Bequest of Pergamum (133 BC) --caused--> Murder of Tiberius Gracchus (133 BC)",
+  "Sulla's March on Rome (88 BC) --part of--> Sulla's Legislation (88 BC)",
+  "Battle of the Colline Gate (87 BC) --caused--> Massacre of Samnite Captives at the Villa Publica (87 BC)",
+  "Lucullus' invasion of Pontus (71 BC) --ended--> Mithridates' defeat by Lucullus in Pontus (71 BC)",
+  "Mithridates' flight to Armenia (68 BC) --caused--> Appius' diplomatic mission to Armenia (68 BC)",
+  "Lucullus' siege of Nisibis (68 BC) --part of--> Lucullus' war against Tigranes (69 BC)",
+  "Pompey's Settlement of Pirates at Pompeiopolis (67 BC) --response to--> Pompey's Victory over the Pirates (67 BC)",
+  "Lucullus' Divorce and Marriage to Cato's Half-Sister (69 BC) --precursor of--> Cato's Election to Quaestorship (69 BC)",
+  "Cato's Opposition to Caesar's Land Bill (59 BC) --response to--> Caesar's Consulship (55 BC)",
+  "Caesar's Campaign against the Venetians (52 BC) --caused--> Caesar's First Expedition to Britain (52 BC)",
+  "Battle of Alesia (52 BC) --ended--> Surrender of Vercingetorix (52 BC)",
+  "Trial of Milo (52 BC) --caused--> Conviction and Exile of Milo (52 BC)",
+  "Curio's Theatre Construction (53 BC to 52 BC) --precursor of--> Murder of Clodius (52 BC)",
+  "Cato's Suicide at Utica (46 BC) --part of--> Caesar's Fourth Triumph (46 BC)",
+  "Destruction of Sextus Pompey's fleet (36 BC) --ended--> Sextus Pompey's piracy (41 BC to 36 BC)",
+  "Battle of Actium (31 BC) --caused--> Suicide of Antony and Cleopatra (30 BC)",
+  "Caesar's Murder (55 BC) --response to--> Caesar's Dictatorship (55 BC)",
+  "Cicero's Sixth Philippic (23 BC) --response to--> Cicero's Philippics (23 BC)",
+  "Grant's meeting with Sherman () --part of--> Sherman's Atlanta Campaign ()",
+  "Battle of Jenkins Ferry (1864) --part of--> Steele's Retreat to Little Rock (1863)",
+  "Battle of Grand Ecore (1864) --precursor of--> Retreat from Alexandria to Simsport (1864)",
+  "Butler's Bermuda Neck operation () --precursor of--> Grant's plan to cut Virginia Central Railroad ()",
+  "Grant's plan to cut Virginia Central Railroad () --caused--> Hunter's March to Piedmont ()",
+  "McPherson's March to Resaca () --caused--> Battle of Resaca (1864)"
+ ],
+ "wall_s": 25.6
+}

@@ -1,0 +1,295 @@
+{
+ "args": {
+  "export": "I:\\CUBBY-TRAINED-MODELS\\base450m\\grilly",
+  "adapter": "I:\\CUBBY-TRAINED-MODELS\\base450m\\talk_v1",
+  "data": "standin\\data\\out\\talk_v2.jsonl",
+  "n": 12,
+  "base": false,
+  "seed": 0,
+  "tag": "_smoke_v1"
+ },
+ "adapter": {
+  "professional": [
+   {
+    "id": "g004011",
+    "family": "relation",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g009727",
+    "family": "bind",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g011994",
+    "family": "counter",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g007981a",
+    "family": "absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "g014115",
+    "family": "profile",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:74238",
+    "family": "passage",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "squad2.0:51216:absent",
+    "family": "passage_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:d4909dc0bd8e9afb",
+    "family": "passage_web",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "webqa:45d4b40ec82eb30f:absent",
+    "family": "passage_web_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:16344",
+    "family": "quote",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "quote:443:absent",
+    "family": "quote_absent",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   },
+   {
+    "id": "b228b961-5d3f-4b25-a16d-5488f44d32f2",
+    "family": "chat",
+    "explicit": false,
+    "host": "spoken",
+    "answer": null
+   }
+  ],
+  "closed": [
+   {
+    "id": "story:585330371d137ca6:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "The facts don't say."
+   },
+   {
+    "id": "story:3a0bd4924e1cd447:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "Tracy was a bit of a prankster. She was a bit of a prankster, and she was a bit of a prankster. She was a bit of a prankster, and she was a bit of a prankster. Tracy was a prankster, and she was a bit of a prankster. She"
+   },
+   {
+    "id": "story:bd4f519d2e8e2a8b:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "The facts don't say."
+   },
+   {
+    "id": "story:0d768819762411c3:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "The facts don't say."
+   },
+   {
+    "id": "story:a258c466695e52e6:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "Emma and I were enjoying the fireworks too."
+   },
+   {
+    "id": "story:9954f74275b01529:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "The facts don't say."
+   },
+   {
+    "id": "story:9b55d5e58207b66f:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "The facts don't say."
+   },
+   {
+    "id": "story:d5262e9c0c528dba:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "The facts don't say."
+   },
+   {
+    "id": "story:4053f9c1ce0704ad:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "The facts don’t say."
+   },
+   {
+    "id": "story:7395e12e8e6e59ea:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "The facts don’t say."
+   },
+   {
+    "id": "story:79c6677e16809715:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "The facts don’t say."
+   },
+   {
+    "id": "story:660c44456af0e347:gated",
+    "gate": false,
+    "explicit": false,
+    "host": "spoken",
+    "answer": "The facts don't say."
+   }
+  ],
+  "open": [
+   {
+    "id": "story:5bb4fd55337d6387",
+    "answered": true,
+    "gate": false,
+    "refusal": false,
+    "words": 55,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:31aa8081ca0d44fc",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 4,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:6c0162782cb5ef92",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 4,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:c6203491773d3947",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 4,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:9360550a8bd35334",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 4,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:21552bc452fab27e",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 4,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:b7be437829116dfa",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 4,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:5c8aec5934d6f2e9",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 4,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:e1bf7faa702711da",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 4,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:afc86882749d8409",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 4,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:370c4e0f0a0a175e",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 4,
+    "explicit": false,
+    "host": "spoken"
+   },
+   {
+    "id": "story:4ee2f31c92223b6a",
+    "answered": false,
+    "gate": false,
+    "refusal": false,
+    "words": 4,
+    "explicit": false,
+    "host": "spoken"
+   }
+  ]
+ }
+}

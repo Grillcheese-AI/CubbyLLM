@@ -1,0 +1,23 @@
+{
+ "passages": 189701,
+ "news_events": 537202,
+ "events": 770225,
+ "links": 28513,
+ "facts": 161366,
+ "dated_by": {
+  "stated": 617204,
+  "context": 37280,
+  "part of": 1547,
+  "book": 81519,
+  "book+reader": 25143,
+  "undated": 7532
+ },
+ "links_refused": {
+  "news:column_name": 10147,
+  "news:no_place_or_party": 35185,
+  "time_contradicts": 3533,
+  "time_contradicts_merged": 274,
+  "time_contradicts_dated": 2054
+ },
+ "events_with_news_day": 764
+}

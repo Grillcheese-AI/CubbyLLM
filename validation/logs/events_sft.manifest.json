@@ -1,0 +1,29 @@
+{
+ "source": "datasets drive: domains/verified_facts/historical_facts.jsonl + temporal_timelines_events/train_augmented.jsonl",
+ "events": 1339,
+ "records": 9820,
+ "by_family": {
+  "event_absent:held": 205,
+  "event_absent:train": 1657,
+  "event_bind:held": 294,
+  "event_bind:train": 2366,
+  "event_counter:held": 39,
+  "event_counter:train": 361,
+  "event_profile:held": 147,
+  "event_profile:train": 1192,
+  "event_relation:held": 389,
+  "event_relation:train": 3170
+ },
+ "funnel": {
+  "kept:event_relation": 3559,
+  "kept:event_bind": 2660,
+  "kept:event_profile": 1339,
+  "kept:event_counter": 400,
+  "event_relation:question_gives_answer": 294,
+  "event_bind:question_gives_answer": 16,
+  "event_absent:answer_left": 3,
+  "event_bind:forbidden_value": 2,
+  "event_counter:forbidden_value": 2
+ },
+ "wall_s": 1.1
+}
