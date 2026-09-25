@@ -1,0 +1,94 @@
+CLUTRR gen_train234_test2to10: train 12064, test 1048; convention forward 800/800
+day 1: 12064 relation asks refused with gold (none skipped); hops {2: 4406, 3: 3995, 4: 3663}
+night (all train): 104 rules adopted in 3 rounds from 12064 episodes, 0 retired; rejected {'counterexample': 8, 'conflict': 8} (9.9s)
+night (2-hop train only): 71 rules from 4406 episodes; rejected {'support': 3, 'conflict': 8} (3.0s)
+shuffled library: 95/104 conclusions moved
+
+day 2: 1048 test questions; by depth {2: 38, 3: 107, 4: 77, 5: 185, 6: 105, 7: 155, 8: 135, 9: 124, 10: 122}
+!! DIAGNOSTIC host_diag (share >= 0.95): [('husband then father', 'father in law', 0.983, 'adopted'), ('husband then mother', 'mother in law', 0.982, 'adopted'), ('wife then father', 'father in law', 0.974, 'adopted'), ('wife then mother', 'mother in law', 0.965, 'adopted')]
+[rules] 1048 questions, 6504 VM calls, 3.6s
+[pairs_only] 1048 questions, 9444 VM calls, 4.9s
+[null] 1048 questions, 0 VM calls, 0.2s
+[shuffled] 150 questions, 200 VM calls, 0.1s
+[host_diag] 1048 questions, 6656 VM calls, 3.4s
+
+rules -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2     38        37         1       0        0
+       3    107        46        61       0        0
+       4     77        40        37       0        0
+       5    185       123        62       0        0
+       6    105        52        53       0        0
+       7    155        94        61       0        0
+       8    135        59        76       0        0
+       9    124        52        72       0        0
+      10    122        49        73       0        0
+     all   1048       552       496       0        0
+     >=4    903       469       434       0        0   <- depths no training record reaches
+   refusals: {'no_rule': 395, 'vm_verify_failed': 101}
+
+pairs_only -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2     38        37         1       0        0
+       3    107        61        46       0        0
+       4     77        36        41       0        0
+       5    185       152        31       2        0
+       6    105        77        28       0        0
+       7    155       121        33       1        0
+       8    135        85        50       0        0
+       9    124        81        43       0        0
+      10    122        77        45       0        0
+     all   1048       727       318       3        0
+     >=4    903       629       271       3        0   <- depths no training record reaches
+   refusals: {'no_rule': 166, 'vm_verify_failed': 152}
+
+null -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2     38         0        38       0        0
+       3    107         0       107       0        0
+       4     77         0        77       0        0
+       5    185         0       185       0        0
+       6    105         0       105       0        0
+       7    155         0       155       0        0
+       8    135         0       135       0        0
+       9    124         0       124       0        0
+      10    122         0       122       0        0
+     all   1048         0      1048       0        0
+     >=4    903         0       903       0        0   <- depths no training record reaches
+   refusals: {'no_rule': 1048}
+
+shuffled -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2      3         2         0       1        0
+       3     11         0         5       6        0
+       4     10         2         8       0        0
+       5     33         0        25       8        0
+       6     12         0        11       1        0
+       7     24         0        20       4        0
+       8     19         1        18       0        0
+       9     16         0        15       1        0
+      10     22         1        19       2        0
+     all    150         6       121      23        0
+     >=4    136         4       116      16        0   <- depths no training record reaches
+   refusals: {'rule_split': 73, 'no_rule': 46, 'vm_verify_failed': 2}
+
+host_diag -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2     38        37         1       0        0
+       3    107        46        61       0        0
+       4     77        46        25       6        0
+       5    185       125        59       1        0
+       6    105        52        52       1        0
+       7    155        94        61       0        0
+       8    135        59        76       0        0
+       9    124        52        71       1        0
+      10    122        49        72       1        0
+     all   1048       560       478      10        0
+     >=4    903       477       416      10        0   <- depths no training record reaches
+   refusals: {'no_rule': 374, 'vm_verify_failed': 104}
+   WRONG [pairs_only] 946553fc-9f44-4c38-bb6f-d82b0ca9fe2d depth 5: said mother gold mother in law [{'relations': ['wife', 'sister', 'father', 'son', 'mother'], 'status': 'derived', 'conclusion': 'mother', 'steps': ['the sister of the wife is the sister', 'the son of the father is the brother', 'the mother of the brother is the mother', 'the mother of the sister is the mother'], 'failed': [], 'conclusions': None}]
+   WRONG [pairs_only] 4c969b6e-dcb2-4537-934a-869e581c0f01 depth 5: said mother gold mother in law [{'relations': ['husband', 'brother', 'mother'], 'status': 'derived', 'conclusion': 'mother', 'steps': ['the brother of the husband is the brother', 'the mother of the brother is the mother'], 'failed': [], 'conclusions': None}]
+   WRONG [pairs_only] 5dcab9c6-eb0b-4771-9bc1-dbffd8061984 depth 7: said father gold father in law [{'relations': ['husband', 'mother', 'daughter', 'daughter', 'uncle', 'brother', 'father'], 'status': 'derived', 'conclusion': 'father', 'steps': ['the daughter of the mother is the sister', 'the sister of the husband is the sister', 'the uncle of the daughter is the brother', 'the father of the brother is the father', 'the father of the brother is the father', 'the father of the sister is the father'], 'failed': [], 'conclusions': None}]
+
+VERDICT: KILLED -- 3 wrong in rules + pairs_only, 0 breaches in null, 23 wrong in shuffled (the instrument sees wrongs: yes)
+library: 104 rules; total 28.0s, 22804 VM calls

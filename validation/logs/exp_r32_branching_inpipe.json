@@ -1,0 +1,623 @@
+{
+ "derived": true,
+ "note": "CLUTRR-DERIVED chain questions over the fork records; not a CLUTRR score.",
+ "n_items": 65,
+ "chunk": 2,
+ "max_branches": 16,
+ "counts": {
+  "refuse:refused": 53,
+  "refuse:why:ambiguous_hop": 53,
+  "closed:refused": 21,
+  "closed:why:ambiguous_hop": 21,
+  "closed:ambiguous:divergent": 18,
+  "open:refused": 53,
+  "open:why:ambiguous_hop": 53,
+  "open:ambiguous:divergent": 18,
+  "ask:not_offered": 19,
+  "closed:spoke": 44,
+  "closed:correct": 44,
+  "open:ambiguous:blocked:pruned": 32,
+  "ask:offered": 34,
+  "ask:rounds:1": 34,
+  "ask:spoke": 32,
+  "ask:correct": 32,
+  "closed:ambiguous:blocked:vm": 3,
+  "open:ambiguous:blocked:vm": 3,
+  "ask:refused": 2,
+  "ask:why:vm_verify_failed": 2,
+  "refuse:spoke": 12,
+  "refuse:correct": 12,
+  "open:spoke": 12,
+  "open:correct": 12
+ },
+ "vm_calls": {
+  "closed": 439,
+  "open": 439,
+  "ask": 196,
+  "refuse": 48
+ },
+ "wall_s_by_arm": {
+  "refuse": 0.03,
+  "closed": 0.23,
+  "open": 0.19,
+  "ask": 0.09
+ },
+ "rows": [
+  {
+   "id": "1506b09f-e502-4f31-bbff-3948e2ba3dba",
+   "hops": 2,
+   "gold": "Kimberley",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "b27ca800-2d58-446e-bfd3-e6e7bb033032",
+   "hops": 2,
+   "gold": "Connie",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "9d897a07-9b2f-480a-9c24-9c724c498fa5",
+   "hops": 2,
+   "gold": "Richard",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "8586a1c0-67f5-4154-84b7-07b5e16bfa21",
+   "hops": 2,
+   "gold": "Rachel",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "2016c122-6eb7-4576-bfba-b843717ae858",
+   "hops": 3,
+   "gold": "Jeremy",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "f03d7f4e-ace6-4d22-ad50-2ff11958ea24",
+   "hops": 2,
+   "gold": "Stephen",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "6bbb569d-df05-4538-8ac4-b52a929a8239",
+   "hops": 3,
+   "gold": "Stephanie",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "886d20c3-a129-45d3-b511-aafaf593ef34",
+   "hops": 3,
+   "gold": "Jonathan",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "fde3dfc2-cb64-4a84-927e-7b12007e04cf",
+   "hops": 4,
+   "gold": "Phillip",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "169676f8-783c-498c-8020-e618a27d4bbd",
+   "hops": 3,
+   "gold": "Laura",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "c688e19a-878a-4376-a047-1c29be2fd504",
+   "hops": 2,
+   "gold": "Davis",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "46c6b126-e265-4554-9f66-1815aeb9c479",
+   "hops": 3,
+   "gold": "Kecia",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "64b5beb1-43a7-4ec3-9697-597a2de7ba20",
+   "hops": 4,
+   "gold": "Kent",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "cd46ff5c-ae97-426b-a248-f94db1010b05",
+   "hops": 4,
+   "gold": "Johnny",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "570608d2-2c17-472b-a986-287b8ab4bca7",
+   "hops": 3,
+   "gold": "Martha",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "93c2b9fb-e6bd-4642-b7fb-dd6eb9f30f92",
+   "hops": 4,
+   "gold": "Brandi",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "e9c0d9fa-fcbf-440c-a82a-4a4a0bffb256",
+   "hops": 5,
+   "gold": "Chuck",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "8c01c61b-0576-4021-a8d0-f477937e08cb",
+   "hops": 4,
+   "gold": "Reynaldo",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "7c9cbe99-3160-4534-af43-52d87ab858f4",
+   "hops": 5,
+   "gold": "George",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "88fcf1ab-0cd1-45f2-8e02-0955245c78c1",
+   "hops": 4,
+   "gold": "Rufus",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "4e0867d6-7e09-415f-bd3a-d368113cf89f",
+   "hops": 3,
+   "gold": "Martha",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "3940f4b5-51c9-4aaa-9884-bced04a794aa",
+   "hops": 5,
+   "gold": "Maxine",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (blocked:vm)",
+   "open": "refused (blocked:vm)",
+   "ask": "refused (vm_verify_failed) after 1 pick"
+  },
+  {
+   "id": "537034d7-c4ea-48cc-8d07-115209eb077d",
+   "hops": 5,
+   "gold": "David",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "cf7f99d9-f7b0-4cc7-9f08-864ad835c168",
+   "hops": 3,
+   "gold": "Larry",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "de2f466c-a465-4257-ae00-9fbd6b466c6b",
+   "hops": 4,
+   "gold": "Diane",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "0acc58df-9edc-4ba4-953b-f0893950cec7",
+   "hops": 5,
+   "gold": "Reynaldo",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "e66eebb6-7676-4b2d-b86b-8b1bb9dc6f8e",
+   "hops": 3,
+   "gold": "Irene",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "2bb1b37a-fba6-4b30-861e-ea4933f2aa8f",
+   "hops": 4,
+   "gold": "Joyce",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "de6d7545-fc6c-41c8-b575-7966c917943d",
+   "hops": 5,
+   "gold": "Craig",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "514bacc2-2c92-4b59-a917-343e8fdd1fc1",
+   "hops": 4,
+   "gold": "Judy",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "c62790c9-419a-417b-a7a3-65347e2d73c8",
+   "hops": 2,
+   "gold": "Julie",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "04a950b2-b277-4c2c-a102-ff48c4c2c7be",
+   "hops": 3,
+   "gold": "Faye",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "a589b6f7-13b8-4d1f-b9c8-c0a059277841",
+   "hops": 6,
+   "gold": "Richard",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "9b7d2988-8e10-41a7-86ef-191d42c41ff0",
+   "hops": 3,
+   "gold": "Carlos",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "956e68a4-f930-4778-a9ae-0589f713e89a",
+   "hops": 6,
+   "gold": "Christopher",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "addf2ae1-07d5-4fc3-85c6-d187f102e349",
+   "hops": 2,
+   "gold": "Roger",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "3810c84c-3fe4-4552-a1e5-c44158457038",
+   "hops": 2,
+   "gold": "Gregory",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "ea9a3a3e-d4c9-4264-846e-d53adf0a4ef5",
+   "hops": 2,
+   "gold": "Mary",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "5d4ee931-896e-4280-b029-50e20174cb8d",
+   "hops": 3,
+   "gold": "Carlos",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "562a84c1-6570-4373-9397-3965185c4499",
+   "hops": 3,
+   "gold": "Sarah",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "2ce0c549-ced4-438a-ab61-b09454438c77",
+   "hops": 3,
+   "gold": "Jamie",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "c5f2fbc1-d782-4c3b-b661-162b4df09abc",
+   "hops": 6,
+   "gold": "Thomas",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "dfc3195c-ff2c-4046-949e-81d76e17fbf9",
+   "hops": 4,
+   "gold": "Gregory",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "35f40783-7fff-4c56-a172-56aa6033a191",
+   "hops": 6,
+   "gold": "Jamie",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "decbabe1-9642-4632-b708-1c3774ef86bd",
+   "hops": 5,
+   "gold": "Lawrence",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "7e8e1c79-e5dd-4ad1-94bf-398a71f95837",
+   "hops": 7,
+   "gold": "Gino",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "432129a3-4ec4-46ae-9664-0c0f9718293e",
+   "hops": 7,
+   "gold": "William",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "1c58cbb4-e6be-4965-bffa-499a542f7d73",
+   "hops": 3,
+   "gold": "William",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "2b8f3d74-0f79-494a-a50f-1c189a324a2e",
+   "hops": 3,
+   "gold": "William",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "21d72fb8-86e9-4cb6-99ac-5c6d1e6b3ee8",
+   "hops": 7,
+   "gold": "Joseph",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "5354ce1c-a8f0-490e-85b5-f06d7d16cd57",
+   "hops": 4,
+   "gold": "Larry",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "2eaeb3d0-a761-4772-9bf9-0f6e34f9eaba",
+   "hops": 6,
+   "gold": "Gino",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "b797f1ad-0a5a-4f7f-9d98-85efbb3ac3c4",
+   "hops": 5,
+   "gold": "Gordon",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "d2a7f220-c7d5-4ecf-86c4-f2bf55651df5",
+   "hops": 2,
+   "gold": "Michele",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "a2f54750-a00c-4c53-96bf-3ba7dc32b42b",
+   "hops": 8,
+   "gold": "Danielle",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "86faef3e-71b9-42ad-9e84-66f7f75969b0",
+   "hops": 6,
+   "gold": "Dale",
+   "refuse": "spoke (correct)",
+   "closed": "spoke (correct)",
+   "open": "spoke (correct)"
+  },
+  {
+   "id": "ceb25bfa-0268-4f1e-b938-4d6bb2ee28d9",
+   "hops": 8,
+   "gold": "John",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (blocked:vm)",
+   "open": "refused (blocked:vm)",
+   "ask": "not offered"
+  },
+  {
+   "id": "f4600a38-e241-4616-b91a-9a37b5a9fc5f",
+   "hops": 7,
+   "gold": "Ouida",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "c60fd221-33ed-441d-bb51-9d0f4e3a3254",
+   "hops": 6,
+   "gold": "Joy",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "25340b9a-e7bd-4c56-a661-3f2f2182df4b",
+   "hops": 2,
+   "gold": "Valerie",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "5be81a88-5e77-4809-85f1-28cdbcfa74e8",
+   "hops": 8,
+   "gold": "Kerrie",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "4f995af8-1a22-4a62-bbe2-726542a533bf",
+   "hops": 8,
+   "gold": "Frances",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "81cd6452-0037-4e70-9963-28b8d96e72d0",
+   "hops": 5,
+   "gold": "Isabel",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (divergent)",
+   "open": "refused (divergent)",
+   "ask": "not offered"
+  },
+  {
+   "id": "eef22690-b1b6-4928-8878-497a0f2b618f",
+   "hops": 6,
+   "gold": "Scott",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "spoke (correct)",
+   "open": "refused (blocked:pruned)",
+   "ask": "spoke (correct) after 1 pick"
+  },
+  {
+   "id": "56c3048d-e998-4c7d-9aa9-42468beb2d1e",
+   "hops": 6,
+   "gold": "Victor",
+   "refuse": "refused (ambiguous_hop)",
+   "closed": "refused (blocked:vm)",
+   "open": "refused (blocked:vm)",
+   "ask": "refused (vm_verify_failed) after 1 pick"
+  }
+ ],
+ "wrongs": [],
+ "verdict": "survives; 0 wrong in every arm. closed reproduces r31 (44/65 spoken); open speaks 12/65, and one pick by the asker brings it to 44/65",
+ "wall_s": 0.8
+}

@@ -213,6 +213,28 @@ def profile_ask(question: str, is_relation=None) -> tuple[str, str] | None:
     return m.group("kind").lower(), ent
 
 
+# "how is B related to A?" -- CLUTRR's own question: the relation the chain of facts between the two
+# COMPOSES to, which no single fact states (2026-09-24, the skill library: cubbyllm/reasoning/skills.py).
+# Every form reads as "B is the R of A".
+_RELATION_ASKS = (
+    _re.compile(r"^\s*how\s+(?:is|was|are|were)\s+(?P<b>.+?)\s+related\s+to\s+(?P<a>.+?)\s*\??\s*$", _re.I),
+    _re.compile(r"^\s*what\s+(?:relation|relationship|kin)\s+(?:is|was)\s+(?P<b>.+?)\s+to\s+(?P<a>.+?)\s*\??\s*$", _re.I),
+    _re.compile(r"^\s*what\s+is\s+(?P<b>.+?)'s\s+(?:relation|relationship)\s+to\s+(?P<a>.+?)\s*\??\s*$", _re.I),
+    _re.compile(r"^\s*what\s+is\s+(?:the\s+)?(?:relation|relationship)\s+of\s+(?P<b>.+?)\s+to\s+(?P<a>.+?)\s*\??\s*$", _re.I),
+)
+
+
+def relation_ask(question: str) -> tuple[str, str] | None:
+    """(A, B) of a question asking how B is related to A, or None."""
+    for rx in _RELATION_ASKS:
+        m = rx.match(question or "")
+        if m:
+            a, b = (" ".join(m.group(k).split()).strip(".,") for k in ("a", "b"))
+            if a and b and len(a.split()) <= 6 and len(b.split()) <= 6:
+                return a, b
+    return None
+
+
 def profile_program(program: str) -> tuple[str, str] | None:
     """(kind, seed) when an emitted program is the retrieval shape -- SEED and ASK bound, no hop."""
     a, s = _ASK_ROLE.search(program or ""), _SEED_ROLE.search(program or "")
@@ -311,6 +333,11 @@ def grounded_prose(text: str, facts: list[str], entity: str) -> tuple[bool, list
     bad: list[str] = []
     for tok in _TOKEN.findall(text):
         low = tok.lower().strip("'’-.,:")
+        # A possessive of a grounded name is the name: "Bill Haslam's father is Jim Haslam." was refused
+        # over "Haslam's" (2026-09-24, the ground_sft pilot; the same guard serves the loop). The stem
+        # must still occur in the facts, so nothing new is licensed.
+        if low.endswith(("'s", "’s")):
+            low = low[:-2]
         if not low or low in _SMALL:
             continue
         is_name = tok[0].isupper() and low not in _SMALL
@@ -323,6 +350,129 @@ def grounded_prose(text: str, facts: list[str], entity: str) -> tuple[bool, list
     return (not bad), bad
 
 
+ABSENT_REPLY = "The facts don't say."
+
+
+def _vnorm(s) -> str:
+    return " ".join(_re.sub(r"[^\w\s]", " ", str(s).lower()).split())
+
+
+def has_value(answer: str, value: str) -> bool:
+    """The answer states the value: as words (punctuation and case aside), or an ISO date as its year
+    plus its month or day spelled out ('1953-12-17' -> '... December 17, 1953'). The one definition --
+    the talk data's checks and the H-E6 gate read values the way the host does."""
+    a, v = _vnorm(answer), _vnorm(value)
+    if v and f" {v} " in f" {a} ":
+        return True
+    if _re.fullmatch(r"-?\d{4}-\d{2}-\d{2}", str(value).strip()):
+        y = str(value).strip().lstrip("-")[:4]
+        words = [_vnorm(w) for w in date_words([value]) if w]
+        return y in a.split() and any(w and w != y and f" {w} " in f" {a} " for w in words)
+    return False
+
+
+def value_check(answer: str, returned: list[str], others: list[str], entity: str = "") -> tuple[bool, list[str]]:
+    """The talk adapter's reply to a question the VM answered is spoken only if it states a value the VM
+    RETURNED and names nothing else from the facts block it was shown (another entity, another line's
+    value). The name-and-number guard cannot see a binding error -- every name in it is grounded -- but
+    the host knows what the VM returned, so this is a check, not a model (H-E6: it refuses all 10 of
+    talk_v1's wrong-but-guarded answers). `others`: every other value and entity in the block -- never the
+    entity asked about, which the answer is expected to name. -> (ok, what failed)."""
+    problems = []
+    if not any(has_value(answer, v) for v in returned):
+        problems.append("returned value missing")
+    rest = f" {_vnorm(answer)} "
+    for v in [*returned, entity]:                        # 'Ranma12' inside the returned 'Ranma12 New Anime2024', or
+        if _vnorm(v):                                    # 'String Quintet' inside the asked 'String Quintet Schubert',
+            rest = rest.replace(f" {_vnorm(v)} ", " ")  # is that value or that name, not another one
+    keep = {_vnorm(v) for v in returned}
+    for o in others:
+        n = _vnorm(o)
+        if n and n not in keep and f" {n} " in rest:
+            problems.append(o)
+    return (not problems), problems
+
+
+def talk_reply(returned: list[str], draft: str | None, facts: list[str], entity: str,
+               others: list[str]) -> tuple[str | None, str]:
+    """What the host says for a question over a facts block. The VM returned nothing -> the host says
+    ABSENT_REPLY itself (the model is not asked to decline). Otherwise the draft is spoken only if the
+    name-and-number guard AND the value check pass. -> (reply or None to refuse, reason)."""
+    if not returned:
+        return ABSENT_REPLY, "vm_empty"
+    if not draft:
+        return None, "no_draft"
+    ok, bad = grounded_prose(draft, facts, entity)
+    if not ok:
+        return None, "ungrounded: " + ", ".join(bad[:4])
+    ok, bad = value_check(draft, returned, others, entity)
+    if not ok:
+        return None, "value: " + ", ".join(bad[:4])
+    return draft, "spoken"
+
+
+def parse_choose(raw) -> dict[int, str]:
+    """The asker's picks among offered branches, as the walk takes them: {hop: normalized object}.
+    Accepts one {"hop", "object"} or a list of them (the panel sends back what a choice carried);
+    anything malformed is dropped -- a choice can only narrow the store's options, so a bad one
+    costs nothing but the narrowing."""
+    from cubbyllm.reasoning.planner import normalize
+    items = raw if isinstance(raw, list) else [raw] if isinstance(raw, dict) else []
+    out: dict[int, str] = {}
+    for c in items:
+        try:
+            out[int(c["hop"])] = normalize(str(c["object"]))
+        except (KeyError, TypeError, ValueError):
+            continue
+    return out
+
+
+def branch_clarify(plan, res, prior: dict[int, str] | None = None) -> dict | None:
+    """The choices an ambiguous hop's branches offer the asker (graph-of-thought, 2026-09-24).
+
+    Offered only when the ambiguity is MID-chain: which of Marie's two citizenships the question
+    means is the asker's to say, and the rest of the chain is still walked and certified after
+    they say it (chosen, not invented). A split at the LAST hop is a set of answers, not a choice
+    of path -- offering it would let the asker pick the answer and have it come back 'verified'
+    (the poisoned-capital case), so there the refusal names the values and asks nothing."""
+    branches = getattr(res, "branches", None) or []
+    if res.reason != "ambiguous_hop" or not branches or plan is None:
+        return None
+    first = min(b["via"][0]["hop"] for b in branches if b.get("via"))
+    if first >= plan.n_hop - 1:
+        return None
+    rel = plan.tail.rsplit(" of ", 1)[0] if first == 0 else (plan.relations[first] or "")
+    ent = (plan.tail.rsplit(" of ", 1)[1] if (first == 0 and " of " in plan.tail)
+           else (res.trace[first - 1].triple.obj if 0 < first <= len(res.trace) and res.trace[first - 1].triple else ""))
+    kept = [{"hop": h, "object": o} for h, o in sorted((prior or {}).items()) if h != first]
+    groups: dict[str, list[dict]] = {}
+    for b in branches:
+        groups.setdefault(b["via"][0]["object"], []).append(b)
+    choices = []
+    for obj, bs in groups.items():
+        answers = sorted({b["answer"] for b in bs if b["status"] == "verified"})
+        if len(answers) == 1 and all(b["status"] == "verified" for b in bs):
+            detail = f"leads to {answers[0]}"
+        elif answers:
+            detail = "leads to " + " or ".join(answers)
+        elif any(b["status"] == "pruned" for b in bs):
+            detail = "the store has no way on from " + next(b["stalled"] for b in bs if b["status"] == "pruned")
+        else:
+            detail = "the VM did not certify this path"
+        choices.append({"label": obj, "detail": detail, "item": None,
+                        "choose": kept + [{"hop": first, "object": obj}]})
+    return {"question": f"{ent} has more than one {say(rel)}. Which one do you mean?",
+            "hop": first, "choices": choices}
+
+
+def _learned(p) -> dict:
+    """A gated fact as the record keeps it: the gate's verdict and the provenance the sleep cycle needs to
+    make it durable (when it was fetched, the store's snapshot hash before the write, what it clashed with)."""
+    return {"fact": p.fact, "status": p.status, "source": p.source, "entity": p.entity,
+            "fetched_at": getattr(p, "fetched_at", None), "snapshot_before": getattr(p, "snapshot_before", None),
+            "clash": getattr(p, "clash", None)}
+
+
 class AskLoop:
     """`ask(question)` -> the loop's record. `emitter` is any object with `.emit(prompt, max_new_tokens=)`
     (the serving emitter, shared); `world` a FactStore with a TripleIndex (the wiki world when None);
@@ -330,7 +480,7 @@ class AskLoop:
 
     def __init__(self, emitter, world=None, source="wikidata", lexicon: bool = True, exe: str | None = None,
                  max_new: int = 300, lfm_gguf: str | None = None, run_fn=None, tau_profile: float = TAU_VM[1],
-                 news=None):
+                 news=None, history_path: str | None = None, web=None, skills=None):
         from cubbyllm.bridges import cubelang_client as cc
         from cubbyllm.reasoning.plan_verify import StoreRelations
         self.emitter = emitter
@@ -357,6 +507,16 @@ class AskLoop:
             from news_source import NewsSource
             news = NewsSource()
         self.news = news
+        # the web (2026-09-24): asked only after the source above has nothing more for the entity the walk
+        # stalled on, and what it finds is held until two independent sites agree (standin/web_source.py)
+        self.web = web
+        self.fallbacks = [web] if web is not None else []
+        if web is not None and getattr(web, "wikidata", None) is None and hasattr(source, "resolve"):
+            web.wikidata = source                        # a Wikipedia hit hands over to Wikidata's own claims
+        if web is not None and getattr(web, "containment", None) is None and hasattr(source, "_claims"):
+            web.containment = source                     # which places contain which: Warsaw vouches for Poland
+        if web is not None and getattr(web, "_aliases", None) is None and getattr(source, "aliases", None) is not None:
+            web._aliases = source.aliases                # one property table for both
         self.resolvers = []
         if lexicon:
             from cubbyllm.reasoning.lexicon import Lexicon
@@ -367,6 +527,13 @@ class AskLoop:
         self.max_new = int(max_new)
         self.calls = collections.Counter()
         self.history: list[dict] = []
+        # every record, one JSON line each, for the night's sleep cycle (cubbyllm/reasoning/sleep.py):
+        # the day's refusals are its curriculum and the day's accepted facts what it makes durable
+        self.history_path = pathlib.Path(history_path) if history_path else None
+        # the skill library (cubbyllm/reasoning/skills.py): composition rules the sleep cycle adopted, read
+        # from its ledger; empty without one, and then a relation ask is answered only by a direct fact
+        from cubbyllm.reasoning.skills import Library
+        self.skills = skills if isinstance(skills, Library) else Library(skills)
         self._lock = threading.Lock()                    # one question at a time: the emitter and the VM session are not re-entrant
 
     def _is_relation(self, head: str) -> bool:
@@ -396,7 +563,86 @@ class AskLoop:
         self.calls["vm"] += 1
         return self._vm(source, fn) if self._vm else self.session.run(source, fn=fn)
 
-    def ask(self, question: str, item: str | None = None, asker: str | None = None) -> dict:
+    def _keep(self, rec: dict) -> None:
+        """Keep the record in memory and, with a history path, append it as one JSON line: an id, the
+        time, the store's snapshot hash, and for each learned fact its relation (as the index split it
+        now, so a reload splits it the same way) and WHEN the source said it was true. Inside an ask,
+        the record gets its thought graph first, so the history keeps how the answer came about."""
+        g = getattr(self, "_graph", None)
+        if g is not None and "graph" not in rec:
+            try:
+                rec["graph"] = g[0].graph(g[1])
+            except Exception as e:                       # noqa: BLE001 -- a record is kept even if its graph is not
+                rec["graph"] = {"error": str(e)[:200]}
+        ts = time.strftime("%Y-%m-%dT%H:%M:%S")
+        rec.setdefault("ts", ts)
+        rec.setdefault("id", f"{ts}-{len(self.history) + 1}")   # the handle an asker's feedback names
+        self.history.append(rec)
+        if self.history_path is None:
+            return
+        try:
+            import json as _json
+
+            from cubbyllm.reasoning.learn import snapshot
+            from cubbyllm.reasoning.planner import parse_fact
+            known = getattr(getattr(self.world, "index", None), "_reused", None)
+            times = getattr(self.world, "times", None) or {}
+            for l in rec.get("learned") or []:
+                key = " ".join(str(l.get("fact", "")).split())
+                if l.get("status") == "accepted" and "rel" not in l:
+                    t = parse_fact(key, known=known)
+                    if t is not None:
+                        l["rel"] = t.rel
+                if key in times:
+                    l.setdefault("time", times[key])
+            line = dict(rec, store_snapshot=snapshot(self.world))
+            self.history_path.parent.mkdir(parents=True, exist_ok=True)
+            with self.history_path.open("a", encoding="utf-8") as f:
+                f.write(_json.dumps(line, ensure_ascii=False, default=str) + "\n")
+        except Exception as e:                           # noqa: BLE001 -- a history that cannot be written never costs an answer
+            print(f"[ask] history not written: {type(e).__name__}: {e}", flush=True)
+
+    def load_learned(self, path) -> int:
+        """Facts the sleep cycle made durable (its ``learned_facts.jsonl``), back into the store at boot,
+        with their relation declared, their source as provenance and their time. What the loop learned
+        yesterday is looked up today like any other fact -- and verified by the VM like any other."""
+        from cubbyllm.reasoning.sleep import load_facts
+        p = pathlib.Path(path)
+        if not p.exists():
+            return 0
+        idx = getattr(self.world, "index", None)
+        prov = getattr(self.world, "provenance", None)
+        times = getattr(self.world, "times", None)
+        n = 0
+        for key, r in load_facts(p).items():
+            rel = r.get("rel")
+            if rel:
+                if idx is not None and hasattr(idx, "declare_relation"):
+                    idx.declare_relation(rel)
+                if hasattr(self.known, "declare"):
+                    self.known.declare(rel)
+            if self.world.add(key):
+                n += 1
+                if hasattr(self.known, "add"):
+                    self.known.add(key)
+            if prov is not None:
+                prov.setdefault(key, r.get("source") or "learned")
+            if times is not None and r.get("time"):
+                times.setdefault(key, r["time"])
+        return n
+
+    def ask(self, question: str, item: str | None = None, asker: str | None = None, choose=None) -> dict:
+        """One question through the loop; the record it returns (and keeps) carries the run's thought
+        graph (`cubbyllm.reasoning.graph`), built from the events the ask emitted."""
+        from cubbyllm.reasoning.graph import Collector
+        with Collector() as col:
+            self._graph = (col, " ".join(question.split()))
+            try:
+                return self._ask(question, item=item, asker=asker, choose=choose)
+            finally:
+                self._graph = None
+
+    def _ask(self, question: str, item: str | None = None, asker: str | None = None, choose=None) -> dict:
         from cubbyllm.reasoning import events as ev
         from cubbyllm.reasoning.learn import learn_and_answer
         from cubbyllm.reasoning.planner import QuestionPlan, normalize
@@ -411,12 +657,17 @@ class AskLoop:
             sa = self_ask(question)                      # about the LOOP, not about the world
             if sa:
                 rec = self.introspect(question, sa[0], sa[1], t0, how="the question's shape (about you)")
-                self.history.append(rec)
+                self._keep(rec)
+                return rec
+            ra = relation_ask(question)                  # "how is B related to A?": composed, not looked up
+            if ra:
+                rec = self.relation(question, ra[0], ra[1], t0)
+                self._keep(rec)
                 return rec
             pa = profile_ask(question, self._is_relation)   # the host reads the shape off the question (gen 2 cannot emit it yet)
             if pa:
                 rec = self.profile(question, pa[0], pa[1], t0, how="the question's shape (who / what / where / when)", item=item, asker=asker)
-                self.history.append(rec)
+                self._keep(rec)
                 return rec
             asked, _year = strip_as_of(question)         # the year is a constraint, not a relation
             try:
@@ -425,13 +676,13 @@ class AskLoop:
                     pp = profile_program(strip_fences(raw))
                     if pp:
                         rec = self.introspect(question, pp[0], pp[1], t0, how='the emitter\'s program (WORLD "self")')
-                        self.history.append(rec)
+                        self._keep(rec)
                         return rec
                 program = strip_fences(raw)
                 pp = profile_program(program)            # the emitter wrote the retrieval program: SEED + ASK, no hop
                 if pp:
                     rec = self.profile(question, pp[0], pp[1], t0, how="the emitter's program (ASK role)", item=item, asker=asker)
-                    self.history.append(rec)
+                    self._keep(rec)
                     return rec
                 ep = emitted_plan(program, normalize)
             except Exception as e:                       # noqa: BLE001 -- the proposer failed; the loop has nothing to dispose
@@ -440,21 +691,167 @@ class AskLoop:
                 rec["reason"] = rec["reason"] or "no_plan"
                 qid = ev.emit("question", text=question, source=getattr(self.source, "name", None))
                 ev.emit("answer", qid, answer=None, verified=False, reason=rec["reason"])
-                rec["wall_s"] = round(time.perf_counter() - t0, 3); self.history.append(rec); return rec
+                rec["wall_s"] = round(time.perf_counter() - t0, 3); self._keep(rec); return rec
             rels, seed = ep
             plan = QuestionPlan(relations=[None] + rels[1:], tail=f"{rels[0]} of {seed}", n_hop=len(rels))
             rec["plan"], rec["seed"] = rels, seed
             lr = learn_and_answer(question, lambda q, k: [], self._run_fn, store=self.world, known=self.known,
                                   source=self.source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
-                                  plan=plan, resolvers=self.resolvers)
+                                  plan=plan, resolvers=self.resolvers, choose=parse_choose(choose) or None,
+                                  fallbacks=self.fallbacks)
         rec.update(answer=lr.result.answer if lr.result.verified else None, verified=bool(lr.result.verified),
                    reason=None if lr.result.verified else lr.result.reason,
-                   learned=[{"fact": p.fact, "status": p.status, "source": p.source, "entity": p.entity} for p in lr.learned],
+                   learned=[_learned(p) for p in lr.learned],
                    entities=list(lr.entities), aliased=[list(a) for a in lr.aliased], snapped=list(lr.snapped) if lr.snapped else None,
                    trace=[h.fact for h in lr.result.trace if h.fact], refused=lr.result.refused,
+                   branches=lr.result.branches, chose=choose or None,
+                   clarify=branch_clarify(lr.plan or plan, lr.result, parse_choose(choose)),
                    wall_s=round(time.perf_counter() - t0, 3))
-        self.history.append(rec)
+        self._keep(rec)
         return rec
+
+    def feedback(self, record_id: str, verdict: str | None = None, relation: str | None = None,
+                 asker: str | None = None) -> dict:
+        """The asker on one of the loop's records: `verdict` right / wrong, and for a relation ask the relation
+        they say it is. Written to the history as its own line, which the sleep cycle folds into the record:
+        a spoken answer called wrong is a defect, and a relation the asker states makes the ask an episode
+        for the skill library -- the one way a live refusal teaches a rule. The loop's own answers never do.
+        Several askers are needed: the library counts distinct askers as support, so one asker alone cannot
+        put a rule in."""
+        from cubbyllm.reasoning.planner import normalize
+        rec = next((r for r in reversed(self.history) if r.get("id") == record_id), None)
+        if verdict not in (None, "right", "wrong"):
+            raise ValueError("verdict is 'right' or 'wrong'")
+        if relation is not None and rec is not None and rec.get("kind") != "relation":
+            raise ValueError("a relation corrects a relation ask ('how is B related to A?') only")
+        stated = normalize(relation) if relation else None
+        if stated and rec is not None and rec.get("verified"):
+            verdict = "right" if normalize(rec.get("answer") or "") == stated else "wrong"
+        if verdict is None and stated is None:
+            raise ValueError("say right / wrong, or the relation it is")
+        line = {"feedback_for": record_id, "verdict": verdict, "relation": stated, "asker": asker,
+                "ts": time.strftime("%Y-%m-%dT%H:%M:%S")}
+        if rec is not None:
+            if verdict:
+                rec["feedback"] = verdict
+            if stated:
+                rec["gold"] = stated
+        if self.history_path is not None:
+            import json as _json
+            self.history_path.parent.mkdir(parents=True, exist_ok=True)
+            with self.history_path.open("a", encoding="utf-8") as f:
+                f.write(_json.dumps(line, ensure_ascii=False) + "\n")
+        return {"ok": True, "record": record_id, "known": rec is not None, "verdict": verdict, "relation": stated,
+                "episode": bool(stated and (rec is None or rec.get("kind") == "relation"))}
+
+    # -- the relation ask --------------------------------------------------------------------
+    def relation(self, question: str, a: str, b: str, t0: float) -> dict:
+        """How is B related to A: every chain of held facts from A to B, each composed by the skill
+        library over every bracketing and certified in the VM with its facts; one relation is spoken only
+        if every path that composes agrees (`skills.relate`). The loop's own answers never teach the
+        library -- only gold or an asker does, at night."""
+        from cubbyllm.reasoning import events as ev
+        from cubbyllm.reasoning.planner import normalize
+        from cubbyllm.reasoning.skills import MAX_HOPS, MAX_PATHS, relate, relate_back
+        qid = ev.emit("question", text=question, source="skills")
+        learned: list = []
+        asked: list = []
+        paths, overflow = self.world.index.paths(a, b, max_hops=MAX_HOPS, limit=MAX_PATHS)
+        if not paths and not overflow and hasattr(self.source, "facts"):
+            # nothing joins them in the store: ask the source for the two families, through the gate
+            learned, asked = self._fetch_family(a, b)
+            paths, overflow = self.world.index.paths(a, b, max_hops=MAX_HOPS, limit=MAX_PATHS)
+        res = relate(paths, self.skills, self._run_fn, tau_vm=TAU_VM, chunk=2, overflow=overflow)
+        if not res["verified"] and res["reason"] in ("no_path", "no_rule") and self.skills.inverses:
+            # the store may only lead the other way, from B to A: compose that, and turn it round with the
+            # inverse rule for B's sex (skills.relate_back) -- certified with B's sex fact in the VM
+            back, back_over = self.world.index.paths(b, a, max_hops=MAX_HOPS, limit=MAX_PATHS)
+            if back and not back_over:
+                turned = relate_back(back, self._sex_of(b), self.skills, self._run_fn, tau_vm=TAU_VM, chunk=2)
+                if turned["verified"]:
+                    res = turned
+        first = res["paths"][0]["relations"] if res["paths"] else []
+        ev.emit("plan", qid, seed=normalize(a), relations=first, tail=normalize(b), n_hop=len(first),
+                how=f"relation ask: {len(paths)} path(s) from {a} to {b}, composed by {len(self.skills)} rule(s)")
+        rec: dict = {"question": question, "kind": "relation", "answer": res["answer"], "verified": res["verified"],
+                     "reason": res["reason"], "plan": first, "seed": normalize(a), "target": normalize(b),
+                     "statement": f"{b} is the {res['answer']} of {a}" if res["verified"] else None,
+                     "paths": [p["relations"] for p in res["paths"]], "relation_paths": res["paths"],
+                     "direction": res.get("direction", "forward"),
+                     "trace": [f for p in res["paths"] if p["status"] == "derived" for f in p["facts"]],
+                     "learned": [_learned(p) for p in learned], "entities": asked,
+                     "aliased": [], "snapped": None, "wall_s": round(time.perf_counter() - t0, 3)}
+        ev.emit("answer", qid, answer=rec["answer"], verified=rec["verified"], reason=rec["reason"])
+        return rec
+
+    FAMILY_FETCH_MAX = 40                                # source calls one relation ask may spend
+
+    def _sex_of(self, person: str):
+        """(sex, the stored fact that says it) for a person the store knows the sex of, else None."""
+        from cubbyllm.reasoning.planner import normalize
+        for _f, t in self.world.index._by_subj.get(normalize(person), []):
+            if t is not None and normalize(t.rel) == "sex or gender" and normalize(t.obj) in ("male", "female"):
+                return normalize(t.obj), t
+        return None
+
+    def _fetch_family(self, a: str, b: str) -> list:
+        """The two families from the source: each person's father, mother, children, siblings and spouses,
+        then each of THOSE people once -- for their sex (a male child is a son) and their own family, which
+        is what a path of up to four hops needs. Every fact passes the gate with its provenance; the edge back
+        is the one Wikidata itself declares (father/mother inverse of child, sibling and spouse symmetric,
+        `skills.family_facts`). Returns (the gate's records of what was accepted, the people asked about)."""
+        from cubbyllm.reasoning.learn import gate
+        from cubbyllm.reasoning.planner import normalize, parse_fact
+        from cubbyllm.reasoning.skills import FAMILY, family_facts
+        sex: dict[str, str] = {}
+        edges: list[tuple[str, str, str]] = []
+        budget = [self.FAMILY_FETCH_MAX]
+        asked: list[str] = []
+
+        def family(entity: str, via: str | None) -> list[tuple[str, str, str]]:
+            if budget[0] <= 0:
+                return []
+            budget[0] -= 1
+            asked.append(entity)
+            try:
+                try:
+                    got = self.source.facts(entity, via=via) if via else self.source.facts(entity)
+                except TypeError:                        # a source that takes the entity alone
+                    got = self.source.facts(entity)
+            except Exception:                            # noqa: BLE001 -- a source that fails states nothing
+                return []
+            out = []
+            for t in got or []:
+                t = parse_fact(t) if isinstance(t, str) else t
+                if t is None:
+                    continue
+                r = normalize(t.rel)
+                if r == "sex or gender" and normalize(t.obj) in ("male", "female"):
+                    sex[normalize(t.subj)] = normalize(t.obj)
+                elif r in FAMILY:
+                    out.append((t.subj, r, t.obj))
+            return out
+
+        for person in (a, b):
+            ring = family(person, None)
+            edges += ring
+            for x, r, y in ring:
+                edges += family(y, f"{y} is the {r} of {x}")
+        name = getattr(self.source, "name", "source")
+        prov = getattr(self.world, "provenance", None)
+        learned = []
+        for x, r, y in edges:
+            for f in family_facts(x, r, y, {x: sex.get(normalize(x)), y: sex.get(normalize(y))}):
+                p = gate(f, self.world, name, x)
+                if p.status != "accepted":
+                    continue
+                self.world.add(f)
+                if hasattr(self.known, "add"):
+                    self.known.add(f)
+                if prov is not None:
+                    prov.setdefault(f, name)
+                learned.append(p)
+        return learned, asked
 
     # -- the profile ask ---------------------------------------------------------------------
     def facts_about(self, entity: str) -> list:
@@ -495,7 +892,7 @@ class AskLoop:
                 if hasattr(self.known, "declare"):
                     self.known.declare(item.rel)
             p = gate(fact, self.world, self.source.name, entity)
-            rec["learned"].append({"fact": p.fact, "status": p.status, "source": p.source, "entity": p.entity})
+            rec["learned"].append(_learned(p))
             if p.status == "accepted":
                 self.world.add(fact)
                 if hasattr(self.known, "add"):
@@ -610,7 +1007,7 @@ class AskLoop:
             if hasattr(self.known, "declare"):
                 self.known.declare(t.rel)
             g = gate(fact, self.world, publisher, entity)
-            rec["learned"].append({"fact": g.fact, "status": g.status, "source": g.source, "entity": g.entity})
+            rec["learned"].append(_learned(g))
             if g.status == "accepted":
                 self.world.add(fact)
                 if hasattr(self.known, "add"):

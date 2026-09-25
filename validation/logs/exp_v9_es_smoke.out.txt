@@ -1,0 +1,3 @@
+[v9] arithmetic: 5819 train, 329 held-out | population 32, minibatch 16, sigma 0.01, lr 1e-05 (alpha 0.001), optimizer sgd
+[v9] loaded in 10.4s | 244 LoRA factors
+[v9] held-out before any step (10 prompts): 0.000

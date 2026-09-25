@@ -148,9 +148,19 @@ def gate(fact: str, store, source: str, entity: str, functional: bool = False) -
     return Provenance(fact, source, entity, now, snap, "accepted", clash=clash)
 
 
+def _pruned(first: CoTResult) -> list[dict]:
+    """The branches of an ambiguous hop that the store could not finish (graph-of-thought,
+    2026-09-24): each one names the entity it stalled on -- a gap, so a fetch target."""
+    if first.reason != "ambiguous_hop":
+        return []
+    return [b for b in (first.branches or []) if b.get("status") == "pruned" and b.get("stalled")]
+
+
 def stalled_entities(question: str, plan: QuestionPlan | None, first: CoTResult, known) -> list[str]:
     """Where the walk stopped: the seed entity when nothing was found at hop 0 (or the
-    plan was refused for an unknown relation), else the last object the walk reached."""
+    plan was refused for an unknown relation), else the last object the walk reached.
+    For an ambiguous hop whose branches were explored, the entity each unfinished branch
+    stalled on comes first: that gap is what keeps the branches from agreeing."""
     if plan is None:
         plan = parse_question(question)
     if plan is None:
@@ -160,6 +170,9 @@ def stalled_entities(question: str, plan: QuestionPlan | None, first: CoTResult,
         last = first.trace[-1].triple
         if last is not None:
             out.append(last.obj)
+    for b in _pruned(first):
+        if normalize(b["stalled"]) not in {normalize(e) for e in out}:
+            out.append(b["stalled"])
     if first.reason == "latent_only":                       # the subjects of the held facts: what an attester is asked about
         for t in (h.triple for h in first.trace if h.fact in (first.refused or {}).get("latent_facts", ())):
             if t is not None and normalize(t.subj) not in {normalize(e) for e in out}:
@@ -185,6 +198,10 @@ def wanted_relations(question: str, plan: QuestionPlan | None, first: CoTResult,
             if k < len(plan.relations) and plan.relations[k]:
                 return [plan.relations[k]]
             return []
+    for b in _pruned(first):
+        if normalize(b["stalled"]) == e:
+            k = len(b.get("facts") or [])                   # the branch's hops; its next relation is plan.relations[k]
+            return [plan.relations[k]] if k < len(plan.relations) and plan.relations[k] else []
     rel, ent = split_tail(plan.tail, known, question)
     if ent and normalize(ent) == e and rel:
         return [rel]
@@ -198,6 +215,9 @@ def reached_through(first: CoTResult, entity: str) -> str | None:
         last = first.trace[-1]
         if last.triple is not None and normalize(last.triple.obj) == normalize(entity):
             return last.fact
+    for b in _pruned(first):
+        if normalize(b["stalled"]) == normalize(entity) and b.get("facts"):
+            return b["facts"][-1]
     return None
 
 
@@ -447,10 +467,17 @@ def resolve_wordings(question: str, plan: QuestionPlan, source, known, aliases: 
 def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: Source,
                      tau_vm: float, tau_ret: float = 0.0, top_k: int = 3, max_repairs: int = 1,
                      plan: QuestionPlan | None = None, max_entities: int = 2,
-                     resolvers: list | None = None, chunk: int = 0) -> LearnResult:
+                     resolvers: list | None = None, chunk: int = 0, branch: int = 12,
+                     choose: dict | None = None, fallbacks: list | None = None,
+                     max_fallback: int = 1) -> LearnResult:
     """One question through the loop. `store` needs `add(fact)`, `__contains__`,
     `texts`, `index` (a TripleIndex) and `lookup` (its `index.hop`); `known` is a
-    `StoreRelations` (gets `add`). A walk follows every round that admitted a fact;
+    `StoreRelations` (gets `add`). `branch`/`choose` go to `answer` (graph-of-thought at
+    an ambiguous hop; the asker's pick among the branches). `fallbacks` (2026-09-24): sources asked only
+    after `source` has nothing more to give -- the web behind Wikidata -- each for at most `max_fallback`
+    entities, the one the walk stalled on first. A source may carry `provenance` ({normalized fact: the
+    name to record}) and `held` (normalized facts to keep in the latent tier): per fact, where the web
+    says which sites stated it and holds what only one site did. A walk follows every round that admitted a fact;
     a round that admits nothing ends the loop; `max_entities` rounds at most. An
     `unknown_relation` refusal that the source can resolve to ONE relation the store
     holds is walked again with the plan rewritten (lever 4); it costs no round."""
@@ -474,14 +501,18 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
         res = answer(question, retrieve, run_fn, tau_vm=tau_vm, tau_ret=tau_ret, top_k=top_k,
                      max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan, aliases=aliases,
                      times=getattr(store, "times", None),     # the source's own dates: the ONLY hop tie-break
-                     chunk=chunk)                             # hops per frame; 0 = the shipped whole-chain shape
+                     chunk=chunk,                             # hops per frame; 0 = the shipped whole-chain shape
+                     branch=branch, choose=choose)            # explore an ambiguous hop; the asker's pick
         # the latent tier: a verified chain that rests on a fact only a latent source stated is not spoken;
         # the would-be answer and the facts are on record, and a second source's agreement lifts the hold
         if res.verified and prov is not None:
-            held = [h.fact for h in res.trace if h.fact and prov.get(fkey(h.fact), "").endswith("(latent)")]
+            # every fact the answer rests on: a converged answer rests on ALL its branches, not the one it shows
+            rests = [h.fact for h in res.trace] + [f for b in (res.branches or []) for f in b.get("facts", ())]
+            held = [f for f in dict.fromkeys(rests) if f and prov.get(fkey(f), "").endswith("(latent)")]
             if held:
                 res = CoTResult(answer=None, verified=False, trace=res.trace, reason="latent_only",
-                                refused={"answer": res.answer, "latent_facts": held}, source=res.source)
+                                refused={"answer": res.answer, "latent_facts": held}, source=res.source,
+                                branches=res.branches)
         ev.emit_walk(cur["plan"], res, provenance=prov, key=fkey)
         return res
     pre: list[tuple[str, str]] = []; amb0 = None
@@ -520,7 +551,10 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
             out.aliased.extend(worded)
             ev.emit("alias", cur["plan"], how="lever 6 (the question's own wording)", pairs=[list(x) for x in worded])
             out.result = walk()
-    asked: set[str] = set(); resolved: set[str] = set(); siblings_tried = False
+    tiers = [source] + list(fallbacks or [])             # the web after Wikidata, never before
+    tier = 0
+    asked: list[set[str]] = [set() for _ in tiers]
+    resolved: set[str] = set(); siblings_tried = False
     # bounded: each round asks the source about ONE entity the walk stalled on, stores what
     # the gate admits, and walks again; at most `max_entities` rounds, and a round that
     # admits nothing ends the loop (there is nothing new to walk on)
@@ -548,13 +582,17 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                 replan(plan, "siblings (the property's other held wording)", rewrote)
                 out.result = walk()
                 continue
-        if len(asked) >= max_entities:
-            break
-        ents = [e for e in stalled_entities(question, plan, out.result, known) if normalize(e) not in asked]
-        if not ents:
+        src = tiers[tier]
+        cap = max_entities if tier == 0 else max_fallback
+        ents = [e for e in stalled_entities(question, plan, out.result, known) if normalize(e) not in asked[tier]]
+        if len(asked[tier]) >= cap or not ents:
+            if tier + 1 < len(tiers):
+                tier += 1                                  # this source has nothing more: the next one down
+                continue
             break
         ent = ents[0]
-        asked.add(normalize(ent)); out.entities.append(ent)
+        asked[tier].add(normalize(ent)); out.entities.append(ent)
+        latent = bool(getattr(src, "latent", False))
         admitted = 0
         # the relation the walk needs from this entity (the stalled hop's wording): a source that
         # can use it decides among several ITEMS sharing the name by which of them carries it --
@@ -562,12 +600,12 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
         # physicist, a book edition, a metro station and a ferry; one has a date of birth)
         need = wanted_relations(question, plan, out.result, known, ent)
         via = reached_through(out.result, ent)                 # the walked fact whose object this entity is, when it is one
-        if _takes_relations(source):
-            items = list(source.facts(ent, relations=need or None, via=via))
+        if _takes_relations(src):
+            items = list(src.facts(ent, relations=need or None, via=via))
         else:
-            items = list(source.facts(ent))
-        last = getattr(source, "last", None) if isinstance(getattr(source, "last", None), dict) else {}
-        fid = ev.emit("fetch", qid, source=getattr(source, "name", None), entity=ent, n=len(items), latent=latent,
+            items = list(src.facts(ent))
+        last = getattr(src, "last", None) if isinstance(getattr(src, "last", None), dict) else {}
+        fid = ev.emit("fetch", qid, source=getattr(src, "name", None), entity=ent, n=len(items), latent=latent,
                       needs=need, via=via, how=last.get("how"), item=last.get("qid"),
                       ambiguous=[list(a) for a in last.get("ambiguous", [])] or None)
         for item in items:
@@ -582,7 +620,12 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                     known.declare(item.rel)
             else:
                 fact = item
-            p = gate(fact, store, source.name, ent)
+            # per fact: the name to record (the sites that stated it, for the web) and whether it is held
+            # (read AFTER the fetch: the source fills these while it answers -- read before, an empty
+            # dict was all there was, and a one-site web fact was stored as attested; caught by the test)
+            name_f = (getattr(src, "provenance", None) or {}).get(normalize(fact)) or src.name
+            latent_f = latent or normalize(fact) in (getattr(src, "held", None) or ())
+            p = gate(fact, store, name_f, ent)
             out.learned.append(p)
             lifted = False
             # WHEN the source said the fact was true, recorded beside the fact -- for a DUPLICATE
@@ -594,7 +637,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
             # in hand. Learning when a fact was true adds no claim -- it is the same fact, said
             # with the qualifier the source always carried.
             store_times = getattr(store, "times", None)
-            src_times = getattr(source, "times", None)
+            src_times = getattr(src, "times", None)
             dated_now = False
             if store_times is not None and src_times:
                 w = src_times.get(normalize(fact))
@@ -606,19 +649,23 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                 if hasattr(known, "add"):
                     known.add(fact)
                 if prov is not None:
-                    prov[fkey(fact)] = source.name + (" (latent)" if latent else "")
+                    prov[fkey(fact)] = name_f + (" (latent)" if latent_f else "")
                 admitted += 1
             elif p.status == "duplicate" and dated_now:
                 # a fact the store already had, now with the date it never had: that is new
                 # knowledge ABOUT the fact, so the walk gets another turn with it.
                 admitted += 1
-            elif p.status == "duplicate" and prov is not None and not latent and prov.get(fkey(fact), "").endswith("(latent)"):
+            elif p.status == "duplicate" and prov is not None and not latent_f and prov.get(fkey(fact), "").endswith("(latent)"):
                 # a second, attesting source states the latent fact: the hold is lifted, both names on record
-                prov[fkey(fact)] = prov[fkey(fact)][:-len(" (latent)")] + "+" + source.name
+                # every attester once: a web fact held on one site and attested by two names that site twice otherwise
+                prov[fkey(fact)] = "+".join(dict.fromkeys(prov[fkey(fact)][:-len(" (latent)")].split("+") + name_f.split("+")))
                 admitted += 1; lifted = True                    # new knowledge about the fact, so the walk runs again
             ev.emit("gate", fid, fact=fact, status=p.status, clash=p.clash, lifted=lifted,
                     provenance=(prov or {}).get(fkey(fact)))
         if not admitted:
+            if tier + 1 < len(tiers):
+                tier += 1                                  # nothing new from this source: the next one down
+                continue
             break
         resolved.clear()          # new facts may have brought the relation the source names
         out.result = walk()

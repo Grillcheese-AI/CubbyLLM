@@ -1,0 +1,46 @@
+CLUTRR rob_train_clean_23_test_all_23: train 8098, test 447; convention forward 800/800
+day 1: 8098 relation asks refused with gold (none skipped); hops {2: 4054, 3: 4044}
+night (all train): 110 rules adopted in 3 rounds from 8098 episodes, 0 retired; rejected {'conflict': 4, 'counterexample': 4} (5.5s)
+night (2-hop train only): 62 rules from 4054 episodes; rejected {} (2.6s)
+shuffled library: 102/110 conclusions moved
+
+day 2: 146 test questions; by depth {2: 38, 3: 108}
+[rules] 146 questions, 524 VM calls, 0.3s
+[pairs_only] 146 questions, 800 VM calls, 0.4s
+[null] 146 questions, 0 VM calls, 0.0s
+[shuffled] 146 questions, 428 VM calls, 0.2s
+
+rules -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2     38        37         1       0        0
+       3    108        54        54       0        0
+     all    146        91        55       0        0
+     >=4      0         0         0       0        0   <- depths no training record reaches
+   refusals: {'no_rule': 46, 'vm_verify_failed': 9}
+
+pairs_only -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2     38        37         1       0        0
+       3    108        70        38       0        0
+     all    146       107        39       0        0
+     >=4      0         0         0       0        0   <- depths no training record reaches
+   refusals: {'vm_verify_failed': 39}
+
+null -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2     38         0        38       0        0
+       3    108         0       108       0        0
+     all    146         0       146       0        0
+     >=4      0         0         0       0        0   <- depths no training record reaches
+   refusals: {'no_rule': 146}
+
+shuffled -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2     38         0         1      37        0
+       3    108         0        64      44        0
+     all    146         0        65      81        0
+     >=4      0         0         0       0        0   <- depths no training record reaches
+   refusals: {'no_rule': 62, 'vm_verify_failed': 3}
+
+VERDICT: survives -- 0 wrong in rules + pairs_only, 0 breaches in null, 81 wrong in shuffled (the instrument sees wrongs: yes)
+library: 110 rules; total 9.8s, 1752 VM calls

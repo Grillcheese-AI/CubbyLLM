@@ -1,0 +1,1 @@
+capsule top-10 over 1,000,000 codes x 1024 bits: numpy 453.3 ms, grilly2 9.6 ms per query (47.3x); same nearest distances: True

@@ -1,0 +1,174 @@
+{
+ "n": 8,
+ "seed": 11,
+ "reader": "off",
+ "handoff": false,
+ "counts": {
+  "spoke": 2,
+  "rel:date of birth:spoke": 1,
+  "held": 1,
+  "rel:date of birth:held": 1,
+  "rel:place of birth:spoke": 1,
+  "none": 5,
+  "rel:place of birth:none": 1,
+  "rel:date of death:none": 2,
+  "rel:place of death:none": 2,
+  "spoke:correct": 1,
+  "held:correct": 1,
+  "spoke:coarse": 1
+ },
+ "calls": {
+  "search": 16,
+  "page": 58,
+  "read": 0,
+  "wikipedia": 0
+ },
+ "rows": [
+  {
+   "q": "What is the date of birth of Diana Taurasi?",
+   "gold": "1982-06-11",
+   "outcome": "spoke correct",
+   "answer": "1982-06-11",
+   "reason": null,
+   "values": {
+    "1982 06 11 is the date of birth of diana taurasi": {
+     "sites": [
+      "britannica.com",
+      "celebritytall.com",
+      "famousbirthdays.com",
+      "findaballer.com",
+      "imdb.com",
+      "proballers.com",
+      "sportskeeda.com",
+      "usbasket.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames",
+      "jsonld"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 25.35,
+   "how": "brave: 26 results, 3 pages read; 7 facts, 1 attested, 6 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Honinbo Shusaku?",
+   "gold": "1829-06-06",
+   "outcome": "held correct",
+   "answer": "1829-06-06",
+   "reason": "latent_only",
+   "values": {
+    "1829 06 06 is the date of birth of honinbo shusaku": {
+     "sites": [
+      "observervoice.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 3.65,
+   "how": "brave: 31 results, 5 pages read; 2 facts, 0 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Jonas Akerlund?",
+   "gold": "Bromma",
+   "outcome": "spoke coarse",
+   "answer": "Sweden",
+   "reason": null,
+   "values": {
+    "sweden is the place of birth of jonas akerlund": {
+     "sites": [
+      "celebsmoney.com",
+      "superstarsculture.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 4.14,
+   "how": "brave: 27 results, 6 pages read; 2 facts, 2 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Louis Vuitton Designer?",
+   "gold": "Anchay Jura France",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 9.67,
+   "how": "brave: 19 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Gino Marchetti?",
+   "gold": "2019-04-29",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 16.96,
+   "how": "brave: 26 results, 6 pages read; 2 facts, 0 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Heinrich Kayser?",
+   "gold": "1940-10-14",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 24.61,
+   "how": "brave: 22 results, 4 pages read; 1 facts, 0 attested, 1 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Paul Krassner?",
+   "gold": "Desert Hot Springs California US",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 2.58,
+   "how": "brave: 24 results, 5 pages read; 2 facts, 0 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Barry Gray Radio Personality?",
+   "gold": "Manhattan New York City New York",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 6.28,
+   "how": "brave: 20 results, 5 pages read; 0 facts, 0 attested, 0 held for a second site"
+  }
+ ],
+ "wrong": [
+  {
+   "q": "What is the place of birth of Jonas Akerlund?",
+   "gold": "Bromma",
+   "got": "Sweden",
+   "sites": "web:celebsmoney.com+web:superstarsculture.com"
+  }
+ ],
+ "verdict": "survives; 2/8 spoken (1 correct, 0 near, 1 a containing place, 0 finer, 0 wrong), 1 held for a second site (1 of them right), 0 split",
+ "wall_s": 93.9,
+ "rescored": [
+  [
+   "What is the place of birth of Jonas Akerlund?",
+   "Bromma",
+   "Sweden",
+   "spoke WRONG",
+   "spoke coarse"
+  ]
+ ]
+}

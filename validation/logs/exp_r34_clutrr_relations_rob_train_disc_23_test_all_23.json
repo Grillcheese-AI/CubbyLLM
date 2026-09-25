@@ -1,0 +1,9233 @@
+{
+ "task": "rob_train_disc_23_test_all_23",
+ "night": {
+  "episodes_new": 0,
+  "episodes_total": 0,
+  "rounds": 1,
+  "adopted": 0,
+  "retired": 0,
+  "rules": 0,
+  "rejected": {}
+ },
+ "night_pairs_only": {
+  "episodes_new": 0,
+  "episodes_total": 0,
+  "rounds": 1,
+  "adopted": 0,
+  "retired": 0,
+  "rules": 0,
+  "rejected": {}
+ },
+ "rules": [],
+ "results": {
+  "rules": [
+   {
+    "id": "06f31032-5e75-46ea-8dc9-a18814038c6b",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fd6cfd0b-f043-483f-b5c2-08ba7e3baf89",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cd1ef000-4f36-43ec-a966-df055eb48e3f",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "187395cf-731c-486d-883e-de68e2e9b2c5",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "941e52aa-7119-42ce-b557-623a74d57ef5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e48ace76-e86d-4747-a82f-802693d66d3b",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3d922381-68d9-45e8-965e-4bb91405adeb",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "6e1c8b23-7f62-4392-b037-e2391b7916f6",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "72915f70-ac6a-419a-b3ce-1f45de726430",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "7da16679-029d-4ad6-84d6-2b98092bcd0a",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d516804a-a2bc-4af9-b09c-6c13b55004f2",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "597c0c20-a011-4c84-a87e-24e878b920fa",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "bcf1d0c4-f807-4b71-8971-aa016d2d64fc",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c0b19334-5137-4980-9e6d-611eb4e0c1c3",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff4ac5e1-66fe-46a5-b4ab-b44ccdebda3d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "473f2c0d-f246-4ba7-b7bc-9d4f4979acbe",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "50938022-f37f-46f0-98ac-6f114be1e5a7",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "89644dd3-91b2-43d7-a353-35df7d8c4edd",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fab8fd9a-d06a-4a60-bfde-d196b0f2f819",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ffca76dd-ab96-48cc-b972-2dad6e554953",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "82de946f-d874-458e-9ae3-477491312cfa",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e6f7d163-4959-4855-8dff-5baddfc2a045",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b7a0d9da-640d-4750-b4da-ebffe9b76cac",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1219591c-fd2b-4a92-980f-a22e5d891bf0",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ed1eb1f9-8935-44f3-bf93-62c5cb89e897",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff2de70b-8b4a-4968-b17c-3a2dd5e9d894",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f8048637-5609-433a-8309-6454a6366628",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "476e33ad-48ad-4565-bd32-2f89fb92b558",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e255401a-f95b-4769-ad3e-c7991f9ff295",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "aed541aa-5f19-4c68-af30-1ac8da9a780c",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f1508868-f484-4fdc-8f73-df7bb8b5b715",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "944c2817-3fbe-4650-adc9-f88b100a04bf",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "56e8eb93-2a64-4f89-8a70-a1091d4a2af9",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1b869ce9-4b8d-4022-9aec-680bc700d54e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "24dbff23-5137-427b-ba06-a6a3a779fb16",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d72f762f-098d-47e3-a481-3d22af768f2d",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "62158fcd-9a30-42a5-a71e-07e81e136e84",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b1497dbe-27c0-4cc0-aaea-dbe380e4a112",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "36ceabff-9f45-473d-89ba-4add72a2bf83",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c71c05b0-e6be-49a1-a6f6-346d34b50396",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fd17e87d-837d-45b9-9547-0581cc8d6e6c",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "66abe233-c4b1-4d89-adeb-b5c113c663a5",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d2a9148e-6aad-4c45-8792-f9ba1e5871c4",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "4b02db86-e464-4ad8-93ba-ab8126767dae",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3c51fbe9-2d5a-4a1b-a480-529455c38d8e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d411bd61-86aa-454d-9f6b-6530bc1ad00b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a5f142bd-9794-4a90-b982-db45eea3107b",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e1be8d0c-53c1-4197-ace6-7a921daa3bb0",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "78e27793-9c9f-48d0-ba95-65dc4a13c0e0",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "0f1d9649-4123-480f-94fd-720e86c00bb2",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b3c6393e-c982-45f3-85d0-5b4dd410878d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a7c01bd5-5670-4d91-ad57-d4cbec530fb7",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "45658613-8467-46bb-9ea5-67cece007786",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c79ceff2-e48f-4e32-b62b-ea5a31a4c8c5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "5fa98fbd-864d-4b22-aa72-6157ea565a2e",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a49206c5-a7cc-4557-9e0c-02e8830990ea",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e6b7e19c-548e-4b56-bd77-543d56d02da7",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "732c7e63-54ee-4e6b-914b-3478b303087a",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff6beaf7-6156-4d0e-b028-efe2dc4a24db",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "9582473e-2d3f-437e-9a1b-fdf680626f0a",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d2adb762-8dd7-49c8-916b-ffcf8497e477",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b77da491-db8e-4d2e-901c-07118dffe120",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "15456713-7d6f-4275-b39b-14866cf6d401",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3d5dcff4-4642-43dc-8566-07987bfd9142",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "8c74d035-09b0-44eb-a258-de05ebfb494b",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "79e17e13-5fcf-4337-a610-e1f30d6d492c",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "92ee402b-e690-4cfe-8d86-eff123593e72",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a9f669f5-4792-4393-b7b6-04e9a786f483",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "74c8ec43-1e3b-47ea-b418-503b315b71bc",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "825f4430-f6a3-4bca-92f9-f6024e01ad1c",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cbd1080e-a597-4e60-96a1-bf434ceadfb8",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "bc7961f5-4e65-4049-8645-71618911b62d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "27a2a335-163d-4944-b0ea-ae6785718777",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b96fb0e7-a819-498c-b6a3-930d91a464c5",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "458e7f43-250b-49c7-9fbb-1f3f27c0e05a",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f8891bff-41a0-4341-b08a-f825e4036a92",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "94cd1581-8a26-4f39-9679-796f18cd1355",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cef64fbd-dfaa-41ef-bf30-457da7c8b08f",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "dd38d733-4a6a-4242-b261-85c9925ba776",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "5545f19a-aa83-4936-b6c2-9e2794d9789c",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f0461d9d-5d24-4de4-9597-5ece8c537d7e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f179d1ad-51f9-41c2-8c22-4a5181ae47a8",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "9b1d07d0-db63-4c21-ac12-316761939c0b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d1d119d6-4718-449d-84a2-0c7816c08f15",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "8587f043-3f1f-41a1-a7e2-b7bb00f25201",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b776c987-8244-4063-9875-e3970432cff8",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "4059c6f8-25bf-4f08-a94a-b3deaecda445",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1e0fbd1f-2631-4a45-9c73-6556dbe94a64",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a7e0f874-85be-44b2-8bd2-f0ff537797b5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fc3b0008-2d0a-4c0e-9acf-85539c7e617c",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "54a0f20e-9f43-4983-85ac-05ae864d9d9f",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "45e06984-5cfd-41f1-91b9-11b8c7472f52",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "73126856-4015-4a70-8a6d-15dec300526b",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "415e49fd-a9c6-4c8b-bff3-ba2a40aeda4b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "88f2c56e-0958-4eec-baba-151e485ff4b6",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c2c9632e-bccf-4f72-8076-52a4e88264dd",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "26247f8d-1fad-4257-99dd-5b53a375a61e",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a42d751c-76d6-4556-8992-b7dec14d6ca4",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "09984ea6-fd00-4a99-a196-722e5fe759aa",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "814830dc-8e4a-4ad8-89c4-0e749f22bb17",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   }
+  ],
+  "pairs_only": [
+   {
+    "id": "06f31032-5e75-46ea-8dc9-a18814038c6b",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fd6cfd0b-f043-483f-b5c2-08ba7e3baf89",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cd1ef000-4f36-43ec-a966-df055eb48e3f",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "187395cf-731c-486d-883e-de68e2e9b2c5",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "941e52aa-7119-42ce-b557-623a74d57ef5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e48ace76-e86d-4747-a82f-802693d66d3b",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3d922381-68d9-45e8-965e-4bb91405adeb",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "6e1c8b23-7f62-4392-b037-e2391b7916f6",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "72915f70-ac6a-419a-b3ce-1f45de726430",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "7da16679-029d-4ad6-84d6-2b98092bcd0a",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d516804a-a2bc-4af9-b09c-6c13b55004f2",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "597c0c20-a011-4c84-a87e-24e878b920fa",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "bcf1d0c4-f807-4b71-8971-aa016d2d64fc",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c0b19334-5137-4980-9e6d-611eb4e0c1c3",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff4ac5e1-66fe-46a5-b4ab-b44ccdebda3d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "473f2c0d-f246-4ba7-b7bc-9d4f4979acbe",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "50938022-f37f-46f0-98ac-6f114be1e5a7",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "89644dd3-91b2-43d7-a353-35df7d8c4edd",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fab8fd9a-d06a-4a60-bfde-d196b0f2f819",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ffca76dd-ab96-48cc-b972-2dad6e554953",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "82de946f-d874-458e-9ae3-477491312cfa",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e6f7d163-4959-4855-8dff-5baddfc2a045",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b7a0d9da-640d-4750-b4da-ebffe9b76cac",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1219591c-fd2b-4a92-980f-a22e5d891bf0",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ed1eb1f9-8935-44f3-bf93-62c5cb89e897",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff2de70b-8b4a-4968-b17c-3a2dd5e9d894",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f8048637-5609-433a-8309-6454a6366628",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "476e33ad-48ad-4565-bd32-2f89fb92b558",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e255401a-f95b-4769-ad3e-c7991f9ff295",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "aed541aa-5f19-4c68-af30-1ac8da9a780c",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f1508868-f484-4fdc-8f73-df7bb8b5b715",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "944c2817-3fbe-4650-adc9-f88b100a04bf",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "56e8eb93-2a64-4f89-8a70-a1091d4a2af9",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1b869ce9-4b8d-4022-9aec-680bc700d54e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "24dbff23-5137-427b-ba06-a6a3a779fb16",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d72f762f-098d-47e3-a481-3d22af768f2d",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "62158fcd-9a30-42a5-a71e-07e81e136e84",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b1497dbe-27c0-4cc0-aaea-dbe380e4a112",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "36ceabff-9f45-473d-89ba-4add72a2bf83",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c71c05b0-e6be-49a1-a6f6-346d34b50396",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fd17e87d-837d-45b9-9547-0581cc8d6e6c",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "66abe233-c4b1-4d89-adeb-b5c113c663a5",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d2a9148e-6aad-4c45-8792-f9ba1e5871c4",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "4b02db86-e464-4ad8-93ba-ab8126767dae",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3c51fbe9-2d5a-4a1b-a480-529455c38d8e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d411bd61-86aa-454d-9f6b-6530bc1ad00b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a5f142bd-9794-4a90-b982-db45eea3107b",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e1be8d0c-53c1-4197-ace6-7a921daa3bb0",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "78e27793-9c9f-48d0-ba95-65dc4a13c0e0",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "0f1d9649-4123-480f-94fd-720e86c00bb2",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b3c6393e-c982-45f3-85d0-5b4dd410878d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a7c01bd5-5670-4d91-ad57-d4cbec530fb7",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "45658613-8467-46bb-9ea5-67cece007786",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c79ceff2-e48f-4e32-b62b-ea5a31a4c8c5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "5fa98fbd-864d-4b22-aa72-6157ea565a2e",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a49206c5-a7cc-4557-9e0c-02e8830990ea",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e6b7e19c-548e-4b56-bd77-543d56d02da7",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "732c7e63-54ee-4e6b-914b-3478b303087a",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff6beaf7-6156-4d0e-b028-efe2dc4a24db",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "9582473e-2d3f-437e-9a1b-fdf680626f0a",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d2adb762-8dd7-49c8-916b-ffcf8497e477",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b77da491-db8e-4d2e-901c-07118dffe120",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "15456713-7d6f-4275-b39b-14866cf6d401",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3d5dcff4-4642-43dc-8566-07987bfd9142",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "8c74d035-09b0-44eb-a258-de05ebfb494b",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "79e17e13-5fcf-4337-a610-e1f30d6d492c",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "92ee402b-e690-4cfe-8d86-eff123593e72",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a9f669f5-4792-4393-b7b6-04e9a786f483",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "74c8ec43-1e3b-47ea-b418-503b315b71bc",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "825f4430-f6a3-4bca-92f9-f6024e01ad1c",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cbd1080e-a597-4e60-96a1-bf434ceadfb8",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "bc7961f5-4e65-4049-8645-71618911b62d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "27a2a335-163d-4944-b0ea-ae6785718777",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b96fb0e7-a819-498c-b6a3-930d91a464c5",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "458e7f43-250b-49c7-9fbb-1f3f27c0e05a",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f8891bff-41a0-4341-b08a-f825e4036a92",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "94cd1581-8a26-4f39-9679-796f18cd1355",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cef64fbd-dfaa-41ef-bf30-457da7c8b08f",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "dd38d733-4a6a-4242-b261-85c9925ba776",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "5545f19a-aa83-4936-b6c2-9e2794d9789c",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f0461d9d-5d24-4de4-9597-5ece8c537d7e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f179d1ad-51f9-41c2-8c22-4a5181ae47a8",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "9b1d07d0-db63-4c21-ac12-316761939c0b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d1d119d6-4718-449d-84a2-0c7816c08f15",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "8587f043-3f1f-41a1-a7e2-b7bb00f25201",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b776c987-8244-4063-9875-e3970432cff8",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "4059c6f8-25bf-4f08-a94a-b3deaecda445",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1e0fbd1f-2631-4a45-9c73-6556dbe94a64",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a7e0f874-85be-44b2-8bd2-f0ff537797b5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fc3b0008-2d0a-4c0e-9acf-85539c7e617c",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "54a0f20e-9f43-4983-85ac-05ae864d9d9f",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "45e06984-5cfd-41f1-91b9-11b8c7472f52",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "73126856-4015-4a70-8a6d-15dec300526b",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "415e49fd-a9c6-4c8b-bff3-ba2a40aeda4b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "88f2c56e-0958-4eec-baba-151e485ff4b6",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c2c9632e-bccf-4f72-8076-52a4e88264dd",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "26247f8d-1fad-4257-99dd-5b53a375a61e",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a42d751c-76d6-4556-8992-b7dec14d6ca4",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "09984ea6-fd00-4a99-a196-722e5fe759aa",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "814830dc-8e4a-4ad8-89c4-0e749f22bb17",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   }
+  ],
+  "null": [
+   {
+    "id": "06f31032-5e75-46ea-8dc9-a18814038c6b",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fd6cfd0b-f043-483f-b5c2-08ba7e3baf89",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cd1ef000-4f36-43ec-a966-df055eb48e3f",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "187395cf-731c-486d-883e-de68e2e9b2c5",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "941e52aa-7119-42ce-b557-623a74d57ef5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e48ace76-e86d-4747-a82f-802693d66d3b",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3d922381-68d9-45e8-965e-4bb91405adeb",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "6e1c8b23-7f62-4392-b037-e2391b7916f6",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "72915f70-ac6a-419a-b3ce-1f45de726430",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "7da16679-029d-4ad6-84d6-2b98092bcd0a",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d516804a-a2bc-4af9-b09c-6c13b55004f2",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "597c0c20-a011-4c84-a87e-24e878b920fa",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "bcf1d0c4-f807-4b71-8971-aa016d2d64fc",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c0b19334-5137-4980-9e6d-611eb4e0c1c3",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff4ac5e1-66fe-46a5-b4ab-b44ccdebda3d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "473f2c0d-f246-4ba7-b7bc-9d4f4979acbe",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "50938022-f37f-46f0-98ac-6f114be1e5a7",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "89644dd3-91b2-43d7-a353-35df7d8c4edd",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fab8fd9a-d06a-4a60-bfde-d196b0f2f819",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ffca76dd-ab96-48cc-b972-2dad6e554953",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "82de946f-d874-458e-9ae3-477491312cfa",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e6f7d163-4959-4855-8dff-5baddfc2a045",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b7a0d9da-640d-4750-b4da-ebffe9b76cac",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1219591c-fd2b-4a92-980f-a22e5d891bf0",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ed1eb1f9-8935-44f3-bf93-62c5cb89e897",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff2de70b-8b4a-4968-b17c-3a2dd5e9d894",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f8048637-5609-433a-8309-6454a6366628",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "476e33ad-48ad-4565-bd32-2f89fb92b558",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e255401a-f95b-4769-ad3e-c7991f9ff295",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "aed541aa-5f19-4c68-af30-1ac8da9a780c",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f1508868-f484-4fdc-8f73-df7bb8b5b715",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "944c2817-3fbe-4650-adc9-f88b100a04bf",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "56e8eb93-2a64-4f89-8a70-a1091d4a2af9",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1b869ce9-4b8d-4022-9aec-680bc700d54e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "24dbff23-5137-427b-ba06-a6a3a779fb16",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d72f762f-098d-47e3-a481-3d22af768f2d",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "62158fcd-9a30-42a5-a71e-07e81e136e84",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b1497dbe-27c0-4cc0-aaea-dbe380e4a112",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "36ceabff-9f45-473d-89ba-4add72a2bf83",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c71c05b0-e6be-49a1-a6f6-346d34b50396",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fd17e87d-837d-45b9-9547-0581cc8d6e6c",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "66abe233-c4b1-4d89-adeb-b5c113c663a5",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d2a9148e-6aad-4c45-8792-f9ba1e5871c4",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "4b02db86-e464-4ad8-93ba-ab8126767dae",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3c51fbe9-2d5a-4a1b-a480-529455c38d8e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d411bd61-86aa-454d-9f6b-6530bc1ad00b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a5f142bd-9794-4a90-b982-db45eea3107b",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e1be8d0c-53c1-4197-ace6-7a921daa3bb0",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "78e27793-9c9f-48d0-ba95-65dc4a13c0e0",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "0f1d9649-4123-480f-94fd-720e86c00bb2",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b3c6393e-c982-45f3-85d0-5b4dd410878d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a7c01bd5-5670-4d91-ad57-d4cbec530fb7",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "45658613-8467-46bb-9ea5-67cece007786",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c79ceff2-e48f-4e32-b62b-ea5a31a4c8c5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "5fa98fbd-864d-4b22-aa72-6157ea565a2e",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a49206c5-a7cc-4557-9e0c-02e8830990ea",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e6b7e19c-548e-4b56-bd77-543d56d02da7",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "732c7e63-54ee-4e6b-914b-3478b303087a",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff6beaf7-6156-4d0e-b028-efe2dc4a24db",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "9582473e-2d3f-437e-9a1b-fdf680626f0a",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d2adb762-8dd7-49c8-916b-ffcf8497e477",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b77da491-db8e-4d2e-901c-07118dffe120",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "15456713-7d6f-4275-b39b-14866cf6d401",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3d5dcff4-4642-43dc-8566-07987bfd9142",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "8c74d035-09b0-44eb-a258-de05ebfb494b",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "79e17e13-5fcf-4337-a610-e1f30d6d492c",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "92ee402b-e690-4cfe-8d86-eff123593e72",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a9f669f5-4792-4393-b7b6-04e9a786f483",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "74c8ec43-1e3b-47ea-b418-503b315b71bc",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "825f4430-f6a3-4bca-92f9-f6024e01ad1c",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cbd1080e-a597-4e60-96a1-bf434ceadfb8",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "bc7961f5-4e65-4049-8645-71618911b62d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "27a2a335-163d-4944-b0ea-ae6785718777",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b96fb0e7-a819-498c-b6a3-930d91a464c5",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "458e7f43-250b-49c7-9fbb-1f3f27c0e05a",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f8891bff-41a0-4341-b08a-f825e4036a92",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "94cd1581-8a26-4f39-9679-796f18cd1355",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cef64fbd-dfaa-41ef-bf30-457da7c8b08f",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "dd38d733-4a6a-4242-b261-85c9925ba776",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "5545f19a-aa83-4936-b6c2-9e2794d9789c",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f0461d9d-5d24-4de4-9597-5ece8c537d7e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f179d1ad-51f9-41c2-8c22-4a5181ae47a8",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "9b1d07d0-db63-4c21-ac12-316761939c0b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d1d119d6-4718-449d-84a2-0c7816c08f15",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "8587f043-3f1f-41a1-a7e2-b7bb00f25201",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b776c987-8244-4063-9875-e3970432cff8",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "4059c6f8-25bf-4f08-a94a-b3deaecda445",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1e0fbd1f-2631-4a45-9c73-6556dbe94a64",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a7e0f874-85be-44b2-8bd2-f0ff537797b5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fc3b0008-2d0a-4c0e-9acf-85539c7e617c",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "54a0f20e-9f43-4983-85ac-05ae864d9d9f",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "45e06984-5cfd-41f1-91b9-11b8c7472f52",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "73126856-4015-4a70-8a6d-15dec300526b",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "415e49fd-a9c6-4c8b-bff3-ba2a40aeda4b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "88f2c56e-0958-4eec-baba-151e485ff4b6",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c2c9632e-bccf-4f72-8076-52a4e88264dd",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "26247f8d-1fad-4257-99dd-5b53a375a61e",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a42d751c-76d6-4556-8992-b7dec14d6ca4",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "09984ea6-fd00-4a99-a196-722e5fe759aa",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "814830dc-8e4a-4ad8-89c4-0e749f22bb17",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "zubnog"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   }
+  ],
+  "shuffled": [
+   {
+    "id": "a9f669f5-4792-4393-b7b6-04e9a786f483",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d411bd61-86aa-454d-9f6b-6530bc1ad00b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "458e7f43-250b-49c7-9fbb-1f3f27c0e05a",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "187395cf-731c-486d-883e-de68e2e9b2c5",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "aed541aa-5f19-4c68-af30-1ac8da9a780c",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "26247f8d-1fad-4257-99dd-5b53a375a61e",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "0f1d9649-4123-480f-94fd-720e86c00bb2",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a5f142bd-9794-4a90-b982-db45eea3107b",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "72915f70-ac6a-419a-b3ce-1f45de726430",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "5fa98fbd-864d-4b22-aa72-6157ea565a2e",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c71c05b0-e6be-49a1-a6f6-346d34b50396",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "4b02db86-e464-4ad8-93ba-ab8126767dae",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "bcf1d0c4-f807-4b71-8971-aa016d2d64fc",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a42d751c-76d6-4556-8992-b7dec14d6ca4",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "79e17e13-5fcf-4337-a610-e1f30d6d492c",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ffca76dd-ab96-48cc-b972-2dad6e554953",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1e0fbd1f-2631-4a45-9c73-6556dbe94a64",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d72f762f-098d-47e3-a481-3d22af768f2d",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3c51fbe9-2d5a-4a1b-a480-529455c38d8e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "dd38d733-4a6a-4242-b261-85c9925ba776",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "06f31032-5e75-46ea-8dc9-a18814038c6b",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "8587f043-3f1f-41a1-a7e2-b7bb00f25201",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "814830dc-8e4a-4ad8-89c4-0e749f22bb17",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "597c0c20-a011-4c84-a87e-24e878b920fa",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "6e1c8b23-7f62-4392-b037-e2391b7916f6",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e1be8d0c-53c1-4197-ace6-7a921daa3bb0",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "56e8eb93-2a64-4f89-8a70-a1091d4a2af9",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cbd1080e-a597-4e60-96a1-bf434ceadfb8",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f8891bff-41a0-4341-b08a-f825e4036a92",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "415e49fd-a9c6-4c8b-bff3-ba2a40aeda4b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e6f7d163-4959-4855-8dff-5baddfc2a045",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fc3b0008-2d0a-4c0e-9acf-85539c7e617c",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b1497dbe-27c0-4cc0-aaea-dbe380e4a112",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "78e27793-9c9f-48d0-ba95-65dc4a13c0e0",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fd17e87d-837d-45b9-9547-0581cc8d6e6c",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "476e33ad-48ad-4565-bd32-2f89fb92b558",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f8048637-5609-433a-8309-6454a6366628",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e255401a-f95b-4769-ad3e-c7991f9ff295",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "24dbff23-5137-427b-ba06-a6a3a779fb16",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "94cd1581-8a26-4f39-9679-796f18cd1355",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "36ceabff-9f45-473d-89ba-4add72a2bf83",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "45e06984-5cfd-41f1-91b9-11b8c7472f52",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "62158fcd-9a30-42a5-a71e-07e81e136e84",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "09984ea6-fd00-4a99-a196-722e5fe759aa",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff2de70b-8b4a-4968-b17c-3a2dd5e9d894",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b77da491-db8e-4d2e-901c-07118dffe120",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "8c74d035-09b0-44eb-a258-de05ebfb494b",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "473f2c0d-f246-4ba7-b7bc-9d4f4979acbe",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "45658613-8467-46bb-9ea5-67cece007786",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a7e0f874-85be-44b2-8bd2-f0ff537797b5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "bc7961f5-4e65-4049-8645-71618911b62d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cef64fbd-dfaa-41ef-bf30-457da7c8b08f",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d2a9148e-6aad-4c45-8792-f9ba1e5871c4",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "941e52aa-7119-42ce-b557-623a74d57ef5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "15456713-7d6f-4275-b39b-14866cf6d401",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "89644dd3-91b2-43d7-a353-35df7d8c4edd",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3d5dcff4-4642-43dc-8566-07987bfd9142",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "27a2a335-163d-4944-b0ea-ae6785718777",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "92ee402b-e690-4cfe-8d86-eff123593e72",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fab8fd9a-d06a-4a60-bfde-d196b0f2f819",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d1d119d6-4718-449d-84a2-0c7816c08f15",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d2adb762-8dd7-49c8-916b-ffcf8497e477",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a49206c5-a7cc-4557-9e0c-02e8830990ea",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "825f4430-f6a3-4bca-92f9-f6024e01ad1c",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e6b7e19c-548e-4b56-bd77-543d56d02da7",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "e48ace76-e86d-4747-a82f-802693d66d3b",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1b869ce9-4b8d-4022-9aec-680bc700d54e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f1508868-f484-4fdc-8f73-df7bb8b5b715",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b3c6393e-c982-45f3-85d0-5b4dd410878d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c79ceff2-e48f-4e32-b62b-ea5a31a4c8c5",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff4ac5e1-66fe-46a5-b4ab-b44ccdebda3d",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "9582473e-2d3f-437e-9a1b-fdf680626f0a",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "73126856-4015-4a70-8a6d-15dec300526b",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c2c9632e-bccf-4f72-8076-52a4e88264dd",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ff6beaf7-6156-4d0e-b028-efe2dc4a24db",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b96fb0e7-a819-498c-b6a3-930d91a464c5",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "4059c6f8-25bf-4f08-a94a-b3deaecda445",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "54a0f20e-9f43-4983-85ac-05ae864d9d9f",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "7da16679-029d-4ad6-84d6-2b98092bcd0a",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "732c7e63-54ee-4e6b-914b-3478b303087a",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "cd1ef000-4f36-43ec-a966-df055eb48e3f",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "82de946f-d874-458e-9ae3-477491312cfa",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "50938022-f37f-46f0-98ac-6f114be1e5a7",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "88f2c56e-0958-4eec-baba-151e485ff4b6",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b776c987-8244-4063-9875-e3970432cff8",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "3d922381-68d9-45e8-965e-4bb91405adeb",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f179d1ad-51f9-41c2-8c22-4a5181ae47a8",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "944c2817-3fbe-4650-adc9-f88b100a04bf",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "aunt",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "ed1eb1f9-8935-44f3-bf93-62c5cb89e897",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "66abe233-c4b1-4d89-adeb-b5c113c663a5",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "b7a0d9da-640d-4750-b4da-ebffe9b76cac",
+    "depth": 3,
+    "gold": "daughter",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "daughter",
+       "aunt"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "1219591c-fd2b-4a92-980f-a22e5d891bf0",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "fd6cfd0b-f043-483f-b5c2-08ba7e3baf89",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "5545f19a-aa83-4936-b6c2-9e2794d9789c",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "a7c01bd5-5670-4d91-ad57-d4cbec530fb7",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "son",
+       "mother",
+       "father"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "74c8ec43-1e3b-47ea-b418-503b315b71bc",
+    "depth": 3,
+    "gold": "mother in law",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "son",
+       "grandmother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "f0461d9d-5d24-4de4-9597-5ece8c537d7e",
+    "depth": 3,
+    "gold": "father",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "brother",
+       "son",
+       "grandfather"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "d516804a-a2bc-4af9-b09c-6c13b55004f2",
+    "depth": 3,
+    "gold": "grandson",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "husband",
+       "daughter",
+       "son"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "c0b19334-5137-4980-9e6d-611eb4e0c1c3",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   },
+   {
+    "id": "9b1d07d0-db63-4c21-ac12-316761939c0b",
+    "depth": 3,
+    "gold": "mother",
+    "answer": null,
+    "outcome": "refused",
+    "reason": "no_rule",
+    "n_paths": 1,
+    "paths": [
+     {
+      "relations": [
+       "daughter",
+       "mother",
+       "mother"
+      ],
+      "status": "no_rule",
+      "conclusion": null,
+      "steps": [],
+      "failed": null,
+      "conclusions": null
+     }
+    ]
+   }
+  ]
+ },
+ "verdict": "INSTRUMENT BLIND"
+}

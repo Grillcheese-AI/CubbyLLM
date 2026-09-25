@@ -169,3 +169,38 @@ def test_the_bar_is_the_two_standard_error_one_from_step_zero():
     n = 329
     se = math.sqrt(exp.BASELINE * (1 - exp.BASELINE) / n)
     assert exp.BAR == pytest.approx(exp.BASELINE + 2 * se, abs=0.002)
+
+
+# ── what the optimizer is handed ─────────────────────────────────────────
+
+
+class _StubOps:
+    """Stands in for `cubbyllm.ops`: returns a canned generation per
+    prompt, so this measures the plumbing and not the model."""
+
+    def __init__(self, replies):
+        self._replies = replies
+
+    def greedy(self, model, tokenizer, prompt, max_new_tokens, system=None):
+        return self._replies[prompt]
+
+
+@needs_vm
+def test_fitness_returns_one_score_per_prompt_not_their_mean():
+    """EGGROLL §6.3's shaping is measured across the whole (member,
+    prompt) matrix, so the row has to survive as far as `es.step`. A mean
+    here would not raise anywhere — it would simply be a different
+    optimizer, silently.
+    """
+    # the same generation against two records: right for one, wrong for the
+    # other, so a row of two distinct numbers is the only correct answer and
+    # a mean (1.1) or a scalar could not pass
+    batch = [dict(RECORD), dict(RECORD, gold=999)]
+    ops = _StubOps({RECORD["prompt"]: HONEST})
+
+    got = exp.fitness(ops, None, None, batch, random.Random(0), 64)
+
+    assert isinstance(got, list) and len(got) == len(batch), (
+        f"expected one score per prompt, got {got!r}")
+    assert got[0] == pytest.approx(1.6), "tops the ladder against its own gold"
+    assert got[1] == pytest.approx(0.6), "executes, but does not match a gold of 999"

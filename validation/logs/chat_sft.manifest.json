@@ -1,0 +1,35 @@
+{
+  "source": "nvidia/Nemotron-SFT-Instruction-Following-Chat-v2",
+  "split": "reasoning_off",
+  "license": "ODC-By (attribution required)",
+  "policy": "host guard only (no support floor); multi-turn, markdown, emoji kept; en/fr; <= 1024 tokens; writer refusals dropped; NAME_k only in role-play; explicit tagged and gated (H-E7); sexual content with minors dropped",
+  "built": "2026-09-25",
+  "funnel": {
+    "total": 1068273,
+    "too_long": 392250,
+    "ungrounded": 326988,
+    "language": 176676,
+    "placeholder": 70779,
+    "kept": 64863,
+    "kept_unique": 64863,
+    "refusal": 21517,
+    "too_short": 11272,
+    "presidio": 2376,
+    "illegal": 1594,
+    "gated_twin": 42
+  },
+  "families": {
+    "chat": 64821,
+    "chat_gated": 42
+  },
+  "explicit": 42,
+  "multi_turn": 20317,
+  "langs": {
+    "en": 62854,
+    "fr": 2009
+  },
+  "splits": {
+    "held": 3186,
+    "train": 61677
+  }
+}

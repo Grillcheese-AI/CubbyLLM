@@ -58,6 +58,7 @@ import math
 import pathlib
 import random
 import re
+import statistics
 import sys
 import time
 
@@ -177,24 +178,67 @@ def records(task: str, split: str) -> list:
     return out
 
 
-def fitness(ops, model, tokenizer, batch, rng, max_new_tokens) -> float:
-    total = 0.0
-    for record in batch:
-        text = ops.greedy(model, tokenizer, record["prompt"], max_new_tokens,
-                          system=record.get("system"))
-        total += score(strip_output(text), record, rng)
-    return total / max(len(batch), 1)
+def fitness(ops, model, tokenizer, batch, rng, max_new_tokens) -> list:
+    """One ladder score **per prompt**, not their mean.
+
+    The mean is what gets logged, but the optimizer wants the row: EGGROLL
+    §6.3's shaping is measured across the whole (member, prompt) matrix,
+    and a mean has already collapsed the axis it needs to see.
+    """
+    return [score(strip_output(ops.greedy(model, tokenizer, record["prompt"],
+                                          max_new_tokens,
+                                          system=record.get("system"))),
+                  record, rng)
+            for record in batch]
 
 
-def held_out(ops, model, tokenizer, split, rng, max_new_tokens) -> float:
+def _member_effect(scores: list) -> float:
+    """How much of the score spread is the *member*, not the prompt.
+
+    ES ranks members against each other, so it only has something to learn
+    from if a member that did well on one prompt tends to do well on the
+    next. This is that fraction: the variance of a member's mean (after
+    each prompt's own mean is removed) over the variance of the individual
+    cells.
+
+    0 is pure scatter — the perturbation changed the output without
+    changing the adapter's quality, and every iteration steps along noise.
+    1 is a member that is uniformly better or worse. It relates to the
+    logged ``shaped_std`` as ``shaped_std ~ sqrt(signal + (1-signal)/m)``,
+    so a run with no member effect sits at ``1/sqrt(m)`` and that is what
+    the first smoke measured: 0.500 and 0.452 at m=4, against 0.496 for
+    noise.
+    """
+    n, m = len(scores), len(scores[0]) if scores else 0
+    if n < 2 or m < 2:
+        return float("nan")
+    col = [sum(scores[i][j] for i in range(n)) / n for j in range(m)]
+    dev = [[scores[i][j] - col[j] for j in range(m)] for i in range(n)]
+    cells = [d for row in dev for d in row]
+    total = statistics.pvariance(cells)
+    if total <= 0:
+        return 0.0
+    rows = [sum(row) / m for row in dev]
+    # a row mean of m independent cells carries total/m of variance by
+    # chance alone; subtract it so pure noise reads 0, not 1/m
+    return max(0.0, (statistics.pvariance(rows) - total / m) / total)
+
+
+def held_out(ops, model, tokenizer, split, rng, max_new_tokens, batch: int = 1) -> float:
     """Verify-to-gold on held-out prompts — the number the kill criterion
-    reads. No ladder: this is the same measurement step 0 made."""
+    reads. No ladder: this is the same measurement step 0 made. ``batch``
+    > 1 decodes that many prompts at once, left-padded."""
     from eval_emitter_vm import gold_matches
 
+    if batch > 1:
+        texts = ops.greedy_many(model, tokenizer, [r["prompt"] for r in split], max_new_tokens,
+                                systems=[r.get("system") for r in split], batch=batch)
+    else:
+        texts = [ops.greedy(model, tokenizer, r["prompt"], max_new_tokens, system=r.get("system"))
+                 for r in split]
     hits = 0
-    for record in split:
-        text = strip_output(ops.greedy(model, tokenizer, record["prompt"], max_new_tokens,
-                                       system=record.get("system")))
+    for record, raw in zip(split, texts):
+        text = strip_output(raw)
         ok, result = vm_result(text)
         hits += int(bool(ok and gold_matches(result, record.get("gold"))))
     return hits / max(len(split), 1)
@@ -202,26 +246,55 @@ def held_out(ops, model, tokenizer, split, rng, max_new_tokens) -> float:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default=r"D:/My Drive/cubbyllm/standin/"
-                                       r"emitter_lfm25_2p6b_v14e_nochain_full/merged")
+    # the BASE, not the merged checkpoint: the adapter goes on unmerged, so on a merged model it is applied
+    # twice. 2026-09-24 smoke run: merged + adapter read 0.000 held-out where merged alone ran as v14e.
+    ap.add_argument("--model", default="LiquidAI/LFM2.5-2.6B")
     ap.add_argument("--adapter", default=r"D:/My Drive/cubbyllm/standin/"
                                          r"emitter_lfm25_2p6b_v14e_nochain_full/adapter")
     ap.add_argument("--task", default="arithmetic")
     ap.add_argument("--iterations", type=int, default=200)
     ap.add_argument("--population", type=int, default=32)
     ap.add_argument("--minibatch", type=int, default=16)
-    ap.add_argument("--sigma", type=float, default=0.01)
-    ap.add_argument("--lr", type=float, default=0.02)
+    # 0.003 is measured, not copied: it is the knee of the sigma curve in
+    # cubbyllm/ops/es.py. Above it a member stops terminating and one hung
+    # row holds the batch open (0.01 measured 7.5x slower); below it every
+    # member decodes identically and there is nothing to rank.
+    ap.add_argument("--sigma", type=float, default=0.003)
+    # lr/sigma is the paper's alpha and is what sets the step; 3e-6 at
+    # sigma 0.003 is its 0.001. Move sigma, move this. See ops/es.py.
+    ap.add_argument("--lr", type=float, default=3e-6)
+    ap.add_argument("--optimizer", choices=("sgd", "adam", "adamw"), default="sgd",
+                    help="sgd is EGGROLL's own choice for the reasoning runs "
+                         "(Table 10) and stores no gradient; adam/adamw is what "
+                         "it uses for RL and for quantised distillation, and "
+                         "costs three copies of the factors (~966 MB here)")
+    ap.add_argument("--opt-lr", type=float, default=1e-4,
+                    help="learning rate for --optimizer adam/adamw. NOT the same "
+                         "quantity as --lr and cannot share a sweep with it: Adam "
+                         "normalises by its second moment, so its step is ~opt-lr "
+                         "per coordinate whatever the estimate's scale")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--every", type=int, default=20, help="iterations between held-out reads")
     ap.add_argument("--probe", type=int, default=40, help="held-out prompts per progress check")
-    ap.add_argument("--max-new-tokens", type=int, default=320)
+    # 768, as step 0 (eval_emitter_vm) read v14e: the arithmetic programs are p50 282 / p90 425 / p99 577
+    # tokens (max 855), so the old 320 cut a third of them off -- 8 of the 14 prompts llama.cpp got right
+    # and grilly got wrong in the 2026-09-24 parity check were truncated, not wrong
+    ap.add_argument("--max-new-tokens", type=int, default=768)
     ap.add_argument("--null-control", action="store_true",
                     help="shuffle fitness across members: must NOT improve held-out")
     ap.add_argument("--final-n", type=int, default=0,
                     help="held-out prompts for the DECISION read; 0 means the whole split, "
                          "which is what the 2-SE bar was computed from. Only a smoke run "
                          "should set this, and its number does not decide anything.")
+    ap.add_argument("--serial", action="store_true",
+                    help="score members one at a time (es.member) and read held-out one prompt at a time, "
+                         "as before 2026-09-24; the default batches both (grilly.infer.lora.population, "
+                         "left-padded prompts)")
+    ap.add_argument("--prompts-per-batch", type=int, default=4,
+                    help="minibatch prompts decoded together, every member a row per prompt "
+                         "(population x this many rows); bounded by memory")
+    ap.add_argument("--held-out-batch", type=int, default=16,
+                    help="held-out prompts decoded together (ignored with --serial)")
     ap.add_argument("--tag", default="")
     args = ap.parse_args()
 
@@ -240,7 +313,9 @@ def main() -> int:
 
     print(f"[v9] {args.task}: {len(train)} train, {len(test)} held-out | "
           f"population {args.population}, minibatch {args.minibatch}, "
-          f"sigma {args.sigma}, lr {args.lr}"
+          f"sigma {args.sigma}, lr {args.lr} (alpha {args.lr / args.sigma:.4g}), "
+          f"optimizer {args.optimizer}"
+          f"{f' @ {args.opt_lr}' if args.optimizer != 'sgd' else ''}"
           f"{' | NULL CONTROL' if args.null_control else ''}", flush=True)
 
     t0 = time.perf_counter()
@@ -248,38 +323,72 @@ def main() -> int:
     print(f"[v9] loaded in {time.perf_counter() - t0:.1f}s | {len(factors)} LoRA factors", flush=True)
     es = ops.evolution_strategy(factors, sigma=args.sigma, lr=args.lr,
                                 population=args.population, seed=args.seed)
+    opt = ops.optimizer(factors, args.optimizer, args.opt_lr)
 
     curve, checks = [], []
-    start = held_out(ops, model, tokenizer, test[: args.probe], rng, args.max_new_tokens)
+    read_batch = 1 if args.serial else args.held_out_batch
+    start = held_out(ops, model, tokenizer, test[: args.probe], rng, args.max_new_tokens, read_batch)
     print(f"[v9] held-out before any step ({args.probe} prompts): {start:.3f}", flush=True)
     checks.append({"iteration": 0, "n": args.probe, "verify_to_gold": start})
+    if args.probe >= 10 and start < 0.3:
+        # v14e reads 0.775 on this split; below 0.3 the loaded weights are not v14e, and every
+        # iteration after this would tune something else for hours
+        print(f"[v9] ABORT: {start:.3f} before any step -- the base + adapter does not reproduce v14e "
+              "(is --model the merged checkpoint? the adapter must go on the base)", file=sys.stderr)
+        return 3
 
     for iteration in range(1, args.iterations + 1):
         batch = rng.sample(train, min(args.minibatch, len(train)))
         step_t0 = time.perf_counter()
         scores = []
-        for member in range(es.population):
-            with es.member(member):
-                scores.append(fitness(ops, model, tokenizer, batch, rng, args.max_new_tokens))
+        if args.serial:
+            for member in range(es.population):
+                with es.member(member):
+                    scores.append(fitness(ops, model, tokenizer, batch, rng, args.max_new_tokens))
+        else:
+            # members x prompts as left-padded batches, every member a row per prompt; every member of
+            # a prompt faces the SAME counterfactual numbers (a per-prompt rng), so members are ranked
+            # on one test, not 32
+            scores = [[0.0] * len(batch) for _ in range(es.population)]
+            texts = ops.population_greedy_many(model, tokenizer, es, [r["prompt"] for r in batch],
+                                               args.max_new_tokens, systems=[r.get("system") for r in batch],
+                                               per_batch=args.prompts_per_batch)
+            for j, record in enumerate(batch):
+                for m in range(es.population):
+                    prng = random.Random(f"{args.seed}:{iteration}:{record.get('id', j)}")
+                    scores[m][j] = score(strip_output(texts[m][j]), record, prng)
         used = list(scores)
         if args.null_control:
             # the update is then uncorrelated with what was measured
             rng.shuffle(used)
-        es.step(used)
-        curve.append({"iteration": iteration, "mean": sum(scores) / len(scores),
-                      "best": max(scores), "seconds": time.perf_counter() - step_t0})
+        ops.update(es, opt, used)
+        means = [sum(row) / max(len(row), 1) for row in scores]
+        # the shaped spread is what actually multiplies the step, and it is
+        # not fixed under prompt-centring the way centred ranks' 0.289 is.
+        # Logging it is how a diverging run gets diagnosed rather than guessed.
+        shaped = statistics.pstdev(es.shaped) if len(es.shaped) > 1 else 0.0
+        curve.append({"iteration": iteration, "mean": sum(means) / len(means),
+                      "best": max(means), "shaped_std": shaped,
+                      # the whole (member, prompt) matrix, because the summary
+                      # cannot answer the question that decides whether the run
+                      # is worth its budget: is a member that scored well on one
+                      # prompt more likely to score well on another? If not,
+                      # every iteration ranks scatter. `signal` below is that
+                      # read; `shaped_std` alone cannot separate it from noise.
+                      "scores": scores, "signal": _member_effect(scores),
+                      "seconds": time.perf_counter() - step_t0})
         print(f"[v9] {iteration:>4}/{args.iterations} train fitness "
               f"mean {curve[-1]['mean']:.4f} best {curve[-1]['best']:.4f} "
-              f"({curve[-1]['seconds']:.1f}s)", flush=True)
+              f"shaped_sd {shaped:.3f} ({curve[-1]['seconds']:.1f}s)", flush=True)
 
         if iteration % args.every == 0:
-            value = held_out(ops, model, tokenizer, test[: args.probe], rng, args.max_new_tokens)
+            value = held_out(ops, model, tokenizer, test[: args.probe], rng, args.max_new_tokens, read_batch)
             checks.append({"iteration": iteration, "n": args.probe, "verify_to_gold": value})
             print(f"[v9] held-out at {iteration} ({args.probe} prompts): {value:.3f}", flush=True)
 
     # the decision read: the WHOLE split, because the bar is set by its SE
     decision = test if args.final_n <= 0 else test[: args.final_n]
-    final = held_out(ops, model, tokenizer, decision, rng, args.max_new_tokens)
+    final = held_out(ops, model, tokenizer, decision, rng, args.max_new_tokens, read_batch)
     se = math.sqrt(final * (1 - final) / len(decision)) if decision else float("nan")
     decides = args.final_n <= 0
     beat = bool(final >= BAR) if decides else None

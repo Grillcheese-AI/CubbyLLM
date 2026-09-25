@@ -37,6 +37,7 @@ header .spacer{flex:1}
 .clarify b{font-weight:600;font-size:12.5px}
 .clarify .c{font:inherit;font-size:12px;text-align:left;color:var(--ink);background:var(--panel);border:1px solid var(--line-2);border-radius:4px;padding:5px 9px;cursor:pointer;max-width:340px}
 .clarify .c:hover{border-color:var(--hop)}
+.clarify input{font:inherit;font-size:12px;color:var(--ink);background:var(--panel);border:1px solid var(--line-2);border-radius:4px;padding:5px 9px;min-width:0;width:12em}
 .clarify .c small{display:block;color:var(--muted);font-family:var(--f-mono);font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 label.file{position:relative;overflow:hidden}
 label.file input{position:absolute;inset:0;opacity:0;cursor:pointer}
@@ -202,9 +203,9 @@ footer .now{min-width:260px;color:var(--ink-2);overflow:hidden;text-overflow:ell
 (function(){
 'use strict';
 var KIND = {question:'#F2F4F7',plan:'#B49CFF',walk:'#6FA8DC',hop:'#58C7D6',fact:'#46B39A',fetch:'#F2A65A',gate:'#D9924C',
-            vm:'#E070C8',alias:'#C7B26B',latent:'#E9B44C',answer:'#4ED39A',paraphrase:'#5FC4D6',shared:'#8FA8FF'};
-var OK='#4ED39A', BAD='#EF6E6E', LATENT='#E9B44C', LINK='#8FA8FF', PROFILE='#5FC4D6';
-var RADIUS = {question:2.6,plan:1.9,walk:1.7,hop:1.4,fact:1.2,fetch:1.6,gate:1.1,vm:1.5,alias:1.2,latent:1.5,answer:2.2,paraphrase:1.4};
+            vm:'#E070C8',alias:'#C7B26B',latent:'#E9B44C',answer:'#4ED39A',paraphrase:'#5FC4D6',shared:'#8FA8FF',branch:'#D6A2E8'};
+var OK='#4ED39A', BAD='#EF6E6E', LATENT='#E9B44C', LINK='#8FA8FF', PROFILE='#5FC4D6', GAP='#8C96A8';
+var RADIUS = {question:2.6,plan:1.9,walk:1.7,hop:1.4,fact:1.2,fetch:1.6,gate:1.1,vm:1.5,alias:1.2,latent:1.5,answer:2.2,paraphrase:1.4,branch:1.6};
 
 var events=[], byId={}, children={}, roots=[], rootOf={}, current=null, mode='tree', selected=null;
 var cursor=Infinity, playing=false, playTimer=null;
@@ -212,12 +213,13 @@ var cursor=Infinity, playing=false, playTimer=null;
 function verdictOf(ev){
   if(ev.kind==='answer'||ev.kind==='walk'){ if(ev.verified) return 'ok'; if(ev.reason==='latent_only') return 'latent'; if(ev.reason==='profile') return 'profile'; return 'bad'; }
   if(ev.kind==='vm') return ev.verified?'ok':'bad';
+  if(ev.kind==='branch') return ev.status==='verified'?'ok':(ev.status==='pruned'?'gap':'bad');   // graph-of-thought (2026-09-24)
   if(ev.kind==='gate') return ev.status==='accepted'||ev.lifted?'ok':(ev.status==='duplicate'?'':'bad');
   return '';
 }
 function colorOf(ev){
   var v=verdictOf(ev);
-  if(ev.kind==='answer'||ev.kind==='walk'||ev.kind==='vm'||ev.kind==='gate'){ if(v==='ok') return OK; if(v==='bad') return BAD; if(v==='latent') return LATENT; if(v==='profile') return PROFILE; }
+  if(ev.kind==='answer'||ev.kind==='walk'||ev.kind==='vm'||ev.kind==='gate'||ev.kind==='branch'){ if(v==='ok') return OK; if(v==='bad') return BAD; if(v==='latent') return LATENT; if(v==='profile') return PROFILE; if(v==='gap') return GAP; }
   return KIND[ev.kind]||'#8393A6';
 }
 function finalOf(root){
@@ -229,7 +231,9 @@ function labelOf(ev){
   switch(ev.kind){
     case 'question': return ev.text;
     case 'plan': return (ev.relations||[]).join(' › ')+' · '+(ev.seed||'');
-    case 'walk': return ev.verified?('verified → '+ev.answer):('refused · '+ev.reason);
+    case 'walk': return (ev.verified?('verified → '+ev.answer):('refused · '+ev.reason))+(ev.n_branches?(' · '+ev.n_branches+' branches'):'');
+    case 'branch': return (ev.via||[]).map(function(v){return v.object}).join(' › ')+
+      (ev.status==='verified'?(' → '+ev.answer):(ev.status==='pruned'?(' · stalled at '+ev.stalled):(' · '+String(ev.status).replace('_',' ')+(ev.answer?' → '+ev.answer:''))));
     case 'hop': return 'hop '+ev.hop+' · '+ev.how+(ev.similarity!=null?' · '+Number(ev.similarity).toFixed(2):'');
     case 'fact': return ev.text;
     case 'fetch': return ev.source+' ← '+ev.entity+' ('+ev.n+')'+(ev.how?' · '+ev.how:(ev.ambiguous?' · ambiguous ×'+ev.ambiguous.length:''));
@@ -345,6 +349,12 @@ function layoutTree(root){
     }
   });
   placed.forEach(function(p){ if(p.ev.parent!=null && meshByEid[p.ev.parent]) addLine(meshByEid[p.ev.parent],meshByEid[p.ev.id],colorOf(p.ev)); });
+  // the branches of one walk, linked by what their answers say about each other: green when two certified
+  // branches agree (why it could speak), red when they contradict (why it refused)
+  placed.forEach(function(p){ if(p.ev.kind!=='walk') return;
+    var bs=(children[p.ev.id]||[]).filter(function(e){return e.kind==='branch'&&e.status==='verified'&&meshByEid[e.id]});
+    for(var i=0;i<bs.length;i++) for(var j=i+1;j<bs.length;j++)
+      addLine(meshByEid[bs[i].id],meshByEid[bs[j].id],norm(bs[i].answer)===norm(bs[j].answer)?OK:BAD); });
   // a fact or entity another question also touched: ringed, its label prefixed ⇄ (the inspector names the questions)
   placed.forEach(function(p){ var others=otherRootsOf(p.ev); if(!others.length) return; var m=meshByEid[p.ev.id];
     var ring=new THREE.Mesh(new THREE.TorusGeometry(1.9,0.12,8,32),new THREE.MeshBasicMaterial({color:LINK,transparent:true,opacity:0.85}));
@@ -581,8 +591,16 @@ function inspect(ev){
     var root=byId[rootOf[ev.id]]; var walks=events.filter(function(e){return e.kind==='walk'&&rootOf[e.id]===root.id});
     var w=ev.kind==='walk'?ev:walks[walks.length-1];
     if(w){ var hops=(children[w.id]||[]).filter(function(e){return e.kind==='hop'});
-      if(hops.length){ ch.hidden=false; ch.innerHTML='<h3>the chain the VM checked</h3>'; var ol=document.createElement('ol');
-        hops.forEach(function(h){ var li=document.createElement('li'); li.textContent=(h.fact||h.query)+(h.provenance?'  ['+h.provenance+']':''); ol.appendChild(li); }); ch.appendChild(ol); } }
+      var brs=(children[w.id]||[]).filter(function(e){return e.kind==='branch'});
+      if(hops.length){ ch.hidden=false; ch.innerHTML='<h3>'+(brs.length?'the hops every branch shares':'the chain the VM checked')+'</h3>'; var ol=document.createElement('ol');
+        hops.forEach(function(h){ var li=document.createElement('li'); li.textContent=(h.fact||h.query)+(h.provenance?'  ['+h.provenance+']':''); ol.appendChild(li); }); ch.appendChild(ol); }
+      if(brs.length){ ch.hidden=false; var h3=document.createElement('h3'); h3.textContent='the branches ('+brs.length+')'; ch.appendChild(h3); var ul=document.createElement('ul');
+        brs.forEach(function(b){ var li=document.createElement('li'); li.textContent=labelOf(b); li.style.color=colorOf(b); ul.appendChild(li); }); ch.appendChild(ul); } }
+  }
+  if(ev.kind==='branch'&&byId[ev.parent]){
+    var pre=(children[ev.parent]||[]).filter(function(e){return e.kind==='hop'}), own=(children[ev.id]||[]).filter(function(e){return e.kind==='hop'});
+    ch.hidden=false; ch.innerHTML='<h3>this branch, end to end</h3>'; var ob=document.createElement('ol');
+    pre.concat(own).forEach(function(h){ var li=document.createElement('li'); li.textContent=h.fact||h.query; ob.appendChild(li); }); ch.appendChild(ob);
   }
   // the link: the same fact / entity under other questions -- click one to open its tree
   var others=ev.kind==='shared'?ev.roots:otherRootsOf(ev);
@@ -610,7 +628,7 @@ function inspectSummary(){
 
 /* legend */
 (function(){ var lg=document.getElementById('legend'); Object.keys(KIND).forEach(function(k){ if(k==='answer') return; var s=document.createElement('span'); s.innerHTML='<i style="background:'+KIND[k]+'"></i>'+k; lg.appendChild(s); });
-  [['verified',OK],['refused',BAD],['held · latent',LATENT],['profile · a readout of the store',PROFILE],['⇄ linked · shared fact / entity',LINK]].forEach(function(p){ var s=document.createElement('span'); s.innerHTML='<i style="background:'+p[1]+'"></i>'+p[0]; lg.appendChild(s); }); })();
+  [['verified',OK],['refused',BAD],['gap · the store has no way on',GAP],['held · latent',LATENT],['profile · a readout of the store',PROFILE],['⇄ linked · shared fact / entity',LINK]].forEach(function(p){ var s=document.createElement('span'); s.innerHTML='<i style="background:'+p[1]+'"></i>'+p[0]; lg.appendChild(s); }); })();
 
 /* loading: a file, the embedded sample, or a live stream from a local stand-in server */
 function parseJsonl(text){ var out=[]; text.split(/\r?\n/).forEach(function(l){ l=l.trim(); if(!l) return; try{ out.push(JSON.parse(l)); }catch(e){} }); return out; }
@@ -656,24 +674,52 @@ function showClarify(q,c){                          // the asker decides; the ho
     var el=document.createElement('button'); el.type='button'; el.className='c';
     el.appendChild(document.createTextNode(ch.label||ch.item||'?'));
     if(ch.detail){ var s=document.createElement('small'); s.textContent=ch.detail; el.appendChild(s); }
-    el.addEventListener('click',function(){ clarifyEl.hidden=true; sendAsk(q,ch.item); });
+    el.addEventListener('click',function(){ clarifyEl.hidden=true; sendAsk(q,ch.item,ch.choose); });   // an entity (item) or a path (choose)
     clarifyEl.appendChild(el); });
   var no=document.createElement('button'); no.type='button'; no.className='c'; no.textContent='none of these';
   no.addEventListener('click',function(){ clarifyEl.hidden=true; }); clarifyEl.appendChild(no);
   clarifyEl.hidden=false;
 }
-function sendAsk(q,item){
+function showTeach(rec){                           // a relation ask: the asker can confirm, correct, or teach (AskLoop.feedback)
+  clarifyEl.innerHTML=''; if(!rec||rec.kind!=='relation'||!rec.id){ clarifyEl.hidden=true; return; }
+  var b=document.createElement('b');
+  b.textContent=rec.verified?'Is that right?':'Do you know how they are related? A night with two askers who agree teaches the rule.';
+  clarifyEl.appendChild(b);
+  function send(body,done){
+    fetch(base+'/ask/feedback',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(Object.assign({id:rec.id,asker:askerId()},body))})
+      .then(function(r){ return r.json(); })
+      .then(function(o){ document.getElementById('status').textContent=o.error?('feedback not taken: '+o.error):done(o); clarifyEl.hidden=true; })
+      .catch(function(err){ document.getElementById('status').textContent='feedback unreachable: '+err; });
+  }
+  if(rec.verified){
+    var ok=document.createElement('button'); ok.type='button'; ok.className='c'; ok.textContent='right';
+    ok.addEventListener('click',function(){ send({verdict:'right'},function(){ return 'thanks — kept for tonight\'s sleep'; }); });
+    clarifyEl.appendChild(ok);
+  }
+  var inp=document.createElement('input'); inp.type='text'; inp.id='teach-relation'; inp.placeholder=rec.verified?'no, it is…':'the relation, e.g. aunt';
+  inp.setAttribute('aria-label','the relation');
+  var go=document.createElement('button'); go.type='button'; go.className='c'; go.textContent=rec.verified?'correct it':'teach';
+  go.addEventListener('click',function(){ var v=inp.value.replace(/\s+/g,' ').trim(); if(!v) return;
+    send({relation:v},function(o){ return (o.verdict==='wrong'?'recorded as wrong; ':'')+'"'+o.relation+'" becomes an episode tonight'; }); });
+  clarifyEl.appendChild(inp); clarifyEl.appendChild(go);
+  clarifyEl.hidden=false;
+}
+function sendAsk(q,item,choose){
   connectLive(); follow=q; askForm.classList.add('busy'); askBtn.textContent='…'; askBtn.disabled=true;
   clarifyEl.hidden=true;
-  document.getElementById('status').textContent='asking: '+q+(item?(' ['+item+']'):'');
-  fetch(base+'/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({text:q,asker:askerId()},item?{item:item}:{}))})
+  document.getElementById('status').textContent='asking: '+q+(item?(' ['+item+']'):'')+(choose?(' ['+choose.map(function(c){return c.object}).join(' › ')+']'):'');
+  fetch(base+'/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({text:q,asker:askerId()},item?{item:item}:{},choose?{choose:choose}:{}))})
     .then(function(r){ return r.json(); })
     .then(function(rec){
       document.getElementById('status').textContent=rec.error?('ask failed: '+rec.error):
-        (rec.verified?('answer: '+rec.answer+' — VM-verified, '+rec.wall_s+' s'):
+        (rec.verified?('answer: '+(rec.statement||rec.answer)+' — VM-verified, '+rec.wall_s+' s'):
          (rec.reason==='profile'?('profile (from the store, not a walk): '+rec.answer+' — '+rec.wall_s+' s'):
           ('refused: '+rec.reason+(rec.needs?' — '+rec.needs:'')+' — '+rec.wall_s+' s')));
-      if(rec.clarify) showClarify(q,rec.clarify);
+      if(rec.kind==='relation') showTeach(rec);
+      else if(rec.clarify) showClarify(q,rec.clarify);
+      else if(rec.reason==='ambiguous_hop'&&rec.refused&&rec.refused.verified_answers&&rec.refused.verified_answers.length>1)
+        document.getElementById('status').textContent+=' — several certified answers: '+rec.refused.verified_answers.join(', ');
       askText.value=''; })
     .catch(function(err){ document.getElementById('status').textContent='ask unreachable: '+err; })
     .then(function(){ askForm.classList.remove('busy'); askBtn.textContent='Ask'; askBtn.disabled=false; askText.focus(); setTimeout(function(){ follow=null; },2000); });
@@ -681,7 +727,7 @@ function sendAsk(q,item){
 askForm.addEventListener('submit',function(e){
   e.preventDefault();
   var q=askText.value.replace(/\s+/g,' ').trim(); if(!q||askForm.classList.contains('busy')) return;
-  sendAsk(q,null);
+  sendAsk(q,null,null);
 });
 if(location.protocol.indexOf('http')===0){          // served by the stand-in: the ask box shows when the loop is mounted, and the stream connects
   fetch(base+'/health').then(function(r){ return r.json(); }).then(function(h){

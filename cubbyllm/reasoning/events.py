@@ -14,6 +14,8 @@ Kinds and their links (parent -> child):
   question -> plan -> verdict | alias | hop -> fact | vm -> answer
   question -> fetch -> gate (one per fact the source handed over)
   question -> latent (a verified chain held back: the LFM tier)
+  walk -> branch -> hop -> fact (graph-of-thought, 2026-09-24: an ambiguous hop explored; the
+          walk's own hops are then the shared prefix, each branch carries the hops after it)
 """
 from __future__ import annotations
 
@@ -39,9 +41,14 @@ def add_sink(fn: Callable[[dict], None]) -> Callable[[dict], None]:
 
 
 def remove_sink(fn: Callable[[dict], None]) -> None:
+    # by IDENTITY: a MemorySink is a list, and `list.remove` compares lists by content -- two sinks
+    # that heard the same events are equal, and removing the inner one took the outer one out
+    # (2026-09-24, found by the thought graph's per-ask collector nested inside a test's sink)
     with _lock:
-        if fn in _sinks:
-            _sinks.remove(fn)
+        for i, s in enumerate(_sinks):
+            if s is fn:
+                del _sinks[i]
+                break
 
 
 def listening() -> bool:
@@ -69,18 +76,35 @@ def emit(kind: str, parent: int | None = None, **fields) -> int:
 def emit_walk(parent: int | None, res, provenance: dict | None = None, key=None) -> int:
     """A walk's result as events: the walk (verdict, answer, refusal), a hop per trace entry with its
     fact (and the fact's provenance when the store keeps one), the VM call when a program was built,
-    and the latent hold when one applies. Returns the walk event's id."""
+    and the latent hold when one applies. When an ambiguous hop was explored, the walk's hops are
+    the prefix every branch shares and each branch is its own event, with its hops beneath it.
+    Returns the walk event's id."""
     if not _sinks:
         return next(_ids)
     fk = key or (lambda s: " ".join(s.split()))
     refused = res.refused if isinstance(getattr(res, "refused", None), dict) else None
-    wid = emit("walk", parent, verified=res.verified, reason=res.reason, answer=res.answer, refused=refused)
-    for i, h in enumerate(res.trace or []):
+    branches = getattr(res, "branches", None) or []
+    wid = emit("walk", parent, verified=res.verified, reason=res.reason, answer=res.answer, refused=refused,
+               n_branches=len(branches) or None)
+    trace = list(res.trace or [])
+    split = min((b["via"][0]["hop"] for b in branches if b.get("via")), default=len(trace))
+    for i, h in enumerate(trace[:split]):
         prov = (provenance or {}).get(fk(h.fact)) if h.fact else None
         fid = emit("hop", wid, hop=i, query=h.query, fact=h.fact, how=h.source, similarity=h.similarity, provenance=prov)
         if h.fact:
             t = h.triple
             emit("fact", fid, text=h.fact, subj=t.subj if t else None, rel=t.rel if t else None, obj=t.obj if t else None)
+    if branches:
+        from .planner import parse_fact            # lazy: the planner never needs the events
+        for n, b in enumerate(branches):
+            bid = emit("branch", wid, n=n, via=b.get("via"), status=b.get("status"), answer=b.get("answer"),
+                       stalled=b.get("stalled"), similarity=b.get("similarity"), clauses=b.get("clauses"))
+            for k, f in enumerate((b.get("facts") or [])[split:], start=split):
+                prov = (provenance or {}).get(fk(f)) if f else None
+                hid = emit("hop", bid, hop=k, fact=f, how="branch" if any(v["hop"] == k for v in b["via"]) else "lookup",
+                           provenance=prov)
+                t = parse_fact(f) if f else None
+                emit("fact", hid, text=f, subj=t.subj if t else None, rel=t.rel if t else None, obj=t.obj if t else None)
     if getattr(res, "source", None):
         emit("vm", wid, verified=bool(res.verified and res.reason is None), program_lines=res.source.count("\n") + 1,
              repairs=getattr(res, "repairs_used", 0))

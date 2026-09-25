@@ -1,0 +1,18 @@
+{
+  "source": "English historical quotes (quote, author, category)",
+  "rows": 24022,
+  "items": 24000,
+  "seed": 0,
+  "funnel": {
+    "answer": 24000,
+    "absent": 8437
+  },
+  "families": {
+    "quote": 24000,
+    "quote_absent": 8437
+  },
+  "splits": {
+    "train": 29184,
+    "held": 3253
+  }
+}

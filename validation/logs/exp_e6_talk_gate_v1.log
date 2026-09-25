@@ -1,0 +1,22 @@
+exp_e6 talk gate | 407 held records, 48 capital items
+
+[base, no adapter] 407 held records, 616s
+  relation  n= 80  correct  43.8%  wrong  45  refused   0  other   0  | guarded  78.8%  wrong-but-guarded 29
+  bind      n= 23  correct  43.5%  wrong  13  refused   0  other   0  | guarded  73.9%  wrong-but-guarded 8
+  bind_t    n= 80  correct  33.8%  wrong  53  refused   0  other   0  | guarded  77.5%  wrong-but-guarded 35
+  counter   n= 80  correct  36.2%  wrong  51  refused   0  other   0  | guarded  78.8%  wrong-but-guarded 35
+  absent    n= 64  correct   0.0%  wrong   2  refused   0  other  62  | guarded  46.9%  wrong-but-guarded 2
+  profile   n= 80  correct  10.0%  wrong  72  refused   0  other   0  | guarded  23.8%  wrong-but-guarded 11
+  capitals/counter   n=24  follows facts 3  from memory 19  says don't-know 0
+  capitals/unrelated n=24  follows facts 0  from memory 22  says don't-know 0
+adapter: step 1719 r=16 alpha=32.0 (181 modules)
+
+[talk adapter] 407 held records, 230s
+  relation  n= 80  correct  97.5%  wrong   1  refused   1  other   0  | guarded 100.0%  wrong-but-guarded 1
+  bind      n= 23  correct  91.3%  wrong   1  refused   1  other   0  | guarded 100.0%  wrong-but-guarded 1
+  bind_t    n= 80  correct  92.5%  wrong   5  refused   1  other   0  | guarded  98.8%  wrong-but-guarded 4
+  counter   n= 80  correct  95.0%  wrong   4  refused   0  other   0  | guarded  98.8%  wrong-but-guarded 3
+  absent    n= 64  correct  73.4%  wrong   1  refused   0  other  16  | guarded  95.3%  wrong-but-guarded 1
+  profile   n= 80  correct  88.8%  wrong   9  refused   0  other   0  | guarded  88.8%  wrong-but-guarded 0
+  capitals/counter   n=24  follows facts 22  from memory 0  says don't-know 2
+  capitals/unrelated n=24  follows facts 0  from memory 0  says don't-know 24

@@ -1,0 +1,105 @@
+Wikidata kinship: 2536 stated pairs, 11376 people, 69019 facts (gendered, with Wikidata's declared inverses); 70 kinship terms
+direction: the stated term's sex matches the RELATIVE 766/782, the subject 468/795 -> 'the relative is the <term> of the subject'
+pairs used 2536; dropped {}
+train 2050 pairs (1049 with a path), test 486 (231 with a path); path lengths {1: 48, 2: 705, 3: 2293, 4: 8946}
+night: 255 rules adopted in 5 rounds from 3226 episodes, 0 retired; rejected {'conflict': 58, 'support': 67, 'counterexample': 3} (1.7s)
+   contested: stepson then wife -> {'daughter in law': 37, 'adopted daughter': 1}
+   contested: mother then stepdaughter -> {'paternal half sister': 1, 'stepsister': 27}
+   contested: son then wife -> {'daughter in law': 23, 'adopted daughter': 1}
+   contested: adoptive mother then stepson -> {'paternal half brother': 1, 'stepbrother': 18}
+   contested: father s sister then sister -> {'father s sister': 12, 'mother s sister': 1}
+   contested: husband then stepson -> {'adopted son': 1, 'stepson': 12}
+   contested: husband then son -> {'adopted son': 1, 'stepson': 9}
+   contested: husband then daughter -> {'adopted daughter': 1, 'stepdaughter': 6}
+inverse rules: 109 adopted from 39772 two-way episodes; rejected {'conflict': 49, 'support': 24}
+reversed questions (the test pairs Wikidata states both ways): 337
+shuffled: 249/255 moved; clutrr library: 104 rules
+
+[rules] 486 pairs, 1308 VM calls, 0.6s
+[null] 486 pairs, 0 VM calls, 0.0s
+[shuffled] 150 pairs, 350 VM calls, 0.2s
+[clutrr_transfer] 486 pairs, 3406 VM calls, 1.5s
+[reversed] 337 pairs, 810 VM calls, 0.3s
+[inverse] 337 pairs, 564 VM calls, 0.2s
+
+rules -- by the shortest path's length (0 = no path)
+   hops      n  correct  coarser    finer  refused   WRONG  BREACH  (direct: n/a in null)
+      0    255        0        0        0      255       0       0
+      1     11        5        1        1        1       3       0
+      2    123       36        1       11       71       4       0
+      3     83        5        0        0       77       1       0
+      4     14        2        0        0       12       0       0
+    all    486       48        2       12      416       8       0
+   refusals: {'no_path': 255, 'relation_paths_overflow': 78, 'no_rule': 68, 'vm_verify_failed': 13, 'rule_split': 2}
+   WRONG Q10863179 -> Q11497898: said wife s father, Wikidata adoptive father; [{'relations': ['wife', 'father'], 'status': 'derived', 'conclusion': 'wife s father', 'steps': ['the father of the wife is the wife s father'], 'failed': []}]
+   WRONG Q109315825 -> Q109318665: said son in law, Wikidata adopted son; [{'relations': ['daughter', 'husband'], 'status': 'derived', 'conclusion': 'son in law', 'steps': ['the husband of the daughter is the son in law'], 'failed': []}]
+   WRONG Q109332476 -> Q16732431: said son in law, Wikidata father in law; [{'relations': ['daughter', 'husband'], 'status': 'derived', 'conclusion': 'son in law', 'steps': ['the husband of the daughter is the son in law'], 'failed': []}]
+   WRONG Q110845893 -> Q61749453: said great grandmother, Wikidata grandmother; [{'relations': ['mother', 'father', 'mother'], 'status': 'derived', 'conclusion': 'great grandmother', 'steps': ['the mother of the father is the grandmother', 'the grandmother of the mother is the great grandmother'], 'failed': []}]
+
+null -- by the shortest path's length (0 = no path)
+   hops      n  correct  coarser    finer  refused   WRONG  BREACH  (direct: n/a in null)
+      0    255        0        0        0      255       0       0
+      1     11        0        0        0        0       0       0
+      2    123        0        0        0      123       0       0
+      3     83        0        0        0       83       0       0
+      4     14        0        0        0       14       0       0
+    all    486        0        0        0      475       0       0
+   refusals: {'no_path': 255, 'no_rule': 143, 'relation_paths_overflow': 77}
+
+shuffled -- by the shortest path's length (0 = no path)
+   hops      n  correct  coarser    finer  refused   WRONG  BREACH  (direct: n/a in null)
+      0     76        0        0        0       76       0       0
+      2     43        0        0        0       28      15       0
+      3     29        0        0        0       26       3       0
+      4      2        0        0        0        2       0       0
+    all    150        0        0        0      132      18       0
+   refusals: {'no_path': 76, 'relation_paths_overflow': 24, 'no_rule': 17, 'rule_split': 12, 'vm_verify_failed': 3}
+   WRONG Q108772782 -> Q12290511: said great grandfather, Wikidata father s brother; [{'relations': ['father', 'brother'], 'status': 'no_rule', 'conclusion': None, 'steps': [], 'failed': None}]
+   WRONG Q109315825 -> Q109318665: said mother s brother, Wikidata adopted son; [{'relations': ['daughter', 'husband'], 'status': 'derived', 'conclusion': 'mother s brother', 'steps': ['the husband of the daughter is the mother s brother'], 'failed': []}]
+   WRONG Q11355814 -> Q7223195: said father s sister, Wikidata grandmother; [{'relations': ['mother', 'father'], 'status': 'derived', 'conclusion': 'father s sister', 'steps': ['the father of the mother is the father s sister'], 'failed': []}]
+   WRONG Q312700 -> Q60467653: said mother s brother, Wikidata mother in law; [{'relations': ['wife', 'mother'], 'status': 'no_rule', 'conclusion': None, 'steps': [], 'failed': None}]
+
+clutrr_transfer -- by the shortest path's length (0 = no path)
+   hops      n  correct  coarser    finer  refused   WRONG  BREACH  (direct: n/a in null)
+      0    255        0        0        0      255       0       0
+      1     11        6        1        0        1       3       0
+      2    123       22       30        0       68       3       0
+      3     83        0        8        0       73       2       0
+      4     14        0        0        0       14       0       0
+    all    486       28       39        0      411       8       0
+   refusals: {'no_path': 255, 'relation_paths_overflow': 78, 'no_rule': 47, 'vm_verify_failed': 30, 'rule_split': 1}
+   WRONG Q109332476 -> Q16732431: said son in law, Wikidata father in law; [{'relations': ['daughter', 'husband'], 'status': 'derived', 'conclusion': 'son in law', 'steps': ['the husband of the daughter is the son in law'], 'failed': []}]
+   WRONG Q109454017 -> Q109454084: said brother, Wikidata adopted son; [{'relations': ['father', 'son'], 'status': 'derived', 'conclusion': 'brother', 'steps': ['the son of the father is the brother'], 'failed': []}]
+   WRONG Q12325 -> Q444550: said niece, Wikidata adopted daughter; [{'relations': ['father', 'daughter', 'daughter'], 'status': 'derived', 'conclusion': 'niece', 'steps': ['the daughter of the daughter is the granddaughter', 'the granddaughter of the father is the niece'], 'failed': []}]
+   WRONG Q138084251 -> Q32130409: said sister, Wikidata elder sister; [{'relations': ['father', 'daughter'], 'status': 'derived', 'conclusion': 'sister', 'steps': ['the daughter of the father is the sister'], 'failed': []}]
+
+reversed -- by the shortest path's length (0 = no path)
+   hops      n  correct  coarser    finer  refused   WRONG  BREACH  (direct: n/a in null)
+      0    193        0        0        0      193       0       0
+      1      4        1        0        1        0       2       0
+      2     71       12        2        8       46       3       0
+      3     65        4        0        0       61       0       0
+      4      4        0        0        0        3       1       0
+    all    337       17        2        9      303       6       0
+   refusals: {'no_path': 193, 'relation_paths_overflow': 56, 'no_rule': 50, 'vm_verify_failed': 4}
+   WRONG Q11497898 -> Q10863179: said son in law, Wikidata adopted son; [{'relations': ['daughter', 'husband'], 'status': 'derived', 'conclusion': 'son in law', 'steps': ['the husband of the daughter is the son in law'], 'failed': []}]
+   WRONG Q109318665 -> Q109315825: said wife s father, Wikidata adoptive father; [{'relations': ['wife', 'father'], 'status': 'derived', 'conclusion': 'wife s father', 'steps': ['the father of the wife is the wife s father'], 'failed': []}]
+   WRONG Q16732431 -> Q109332476: said wife s father, Wikidata son in law; [{'relations': ['wife', 'father'], 'status': 'derived', 'conclusion': 'wife s father', 'steps': ['the father of the wife is the wife s father'], 'failed': []}]
+   WRONG Q109352455 -> Q109352219: said cousin, Wikidata adoptive father; [{'relations': ['father', 'father', 'daughter', 'son'], 'status': 'derived', 'conclusion': 'cousin', 'steps': ['the father of the father is the paternal grandfather', 'the daughter of the paternal grandfather is the father s sister', 'the son of the father s sister is the cousin'], 'failed': []}]
+
+inverse -- by the shortest path's length (0 = no path)
+   hops      n  correct  coarser    finer  refused   WRONG  BREACH  (direct: n/a in null)
+      0    193        0        0        0      193       0       0
+      1      4        1        0        0        3       0       0
+      2     68       11        3        3       47       4       0
+      3     63        0        0        0       63       0       0
+      4      9        0        0        0        9       0       0
+    all    337       12        3        3      315       4       0
+   refusals: {'no_path': 193, 'no_rule': 58, 'relation_paths_overflow': 56, 'vm_verify_failed': 7, 'rule_split': 1}
+   WRONG Q11497898 -> Q10863179: said son in law, Wikidata adopted son; [{'relations': ['wife', 'father'], 'status': 'derived', 'conclusion': 'son in law', 'steps': ['the father of the wife is the wife s father', 'the inverse of wife s father for a male person is son in law'], 'failed': []}]
+   WRONG Q109318665 -> Q109315825: said wife s father, Wikidata adoptive father; [{'relations': ['daughter', 'husband'], 'status': 'derived', 'conclusion': 'wife s father', 'steps': ['the husband of the daughter is the son in law', 'the inverse of son in law for a male person is wife s father'], 'failed': []}]
+   WRONG Q16732431 -> Q109332476: said wife s father, Wikidata son in law; [{'relations': ['daughter', 'husband'], 'status': 'derived', 'conclusion': 'wife s father', 'steps': ['the husband of the daughter is the son in law', 'the inverse of son in law for a male person is wife s father'], 'failed': []}]
+   WRONG Q2895720 -> Q3609048: said father s sister, Wikidata mother s sister; [{'relations': ['sister', 'daughter'], 'status': 'no_rule', 'conclusion': None, 'steps': ['the daughter of the sister is the sororal niece'], 'failed': None}]
+
+VERDICT: KILLED -- 18 wrong in rules + reversed + inverse, 0 breaches in null, 18 wrong in shuffled
+library: 255 rules; 6438 VM calls; 7.6s

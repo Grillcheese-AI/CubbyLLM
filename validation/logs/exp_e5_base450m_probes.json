@@ -1,0 +1,7854 @@
+{
+ "source": {
+  "checkpoint": "base450m_final.pt",
+  "step": 21103,
+  "tokens": null,
+  "meta": {
+   "kind": "cubby_base",
+   "D": 1024,
+   "L": 32,
+   "heads": 4,
+   "window": 512,
+   "attn_every": 3,
+   "ctx": 32,
+   "slots": 8,
+   "gen_basis": 16,
+   "gen_rank": 8,
+   "vocab": 128000,
+   "vocab_real": 127996,
+   "mem_every": 0,
+   "tied": false,
+   "causal_ctx": true
+  }
+ },
+ "args": {
+  "export": "I:\\CUBBY-TRAINED-MODELS\\base450m\\grilly",
+  "tokenizer": "C:\\Users\\grill\\AppData\\Local\\Temp\\cubby_scratch\\grillcheese_bbpe128k.json",
+  "ckpt": "I:\\CUBBY-TRAINED-MODELS\\base450m\\base450m_final.pt",
+  "tag": "",
+  "seed": 0,
+  "copy_windows": 8,
+  "bound": 160,
+  "null": 40,
+  "batch_seqs": 8,
+  "sample_tokens": 40,
+  "skip": ""
+ },
+ "parity": {
+  "prompt_max_abs": 0.00012874603271484375,
+  "prompt_scale": 31.85333824157715,
+  "prompt_argmax_agree": 1.0,
+  "decode_max_abs": 4.482269287109375e-05,
+  "decode_argmax_agree": 1.0
+ },
+ "copy": [
+  {
+   "n": 16,
+   "distance": 15,
+   "null": false,
+   "loss": 1.9376345588321178,
+   "first_quarter": 3.9664805373176932,
+   "last_quarter": 0.45978455840183113,
+   "top1": 0.475
+  },
+  {
+   "n": 64,
+   "distance": 63,
+   "null": false,
+   "loss": 1.3323543143997176,
+   "first_quarter": 1.7072734519218404,
+   "last_quarter": 0.8858384846868527,
+   "top1": 0.7380952380952381
+  },
+  {
+   "n": 128,
+   "distance": 127,
+   "null": false,
+   "loss": 1.0549082612915273,
+   "first_quarter": 1.5125951349224536,
+   "last_quarter": 0.9929738412527461,
+   "top1": 0.7893700787401575
+  },
+  {
+   "n": 256,
+   "distance": 255,
+   "null": false,
+   "loss": 1.1090109172593996,
+   "first_quarter": 1.401240618168505,
+   "last_quarter": 0.9720616759461105,
+   "top1": 0.7911764705882353
+  },
+  {
+   "n": 384,
+   "distance": 383,
+   "null": false,
+   "loss": 1.1930935101675337,
+   "first_quarter": 1.4609211895688388,
+   "last_quarter": 0.9618505442660894,
+   "top1": 0.7725195822454308
+  },
+  {
+   "n": 512,
+   "distance": 511,
+   "null": false,
+   "loss": 1.1839844130707253,
+   "first_quarter": 1.5049763347673017,
+   "last_quarter": 0.9631353092129615,
+   "top1": 0.7673679060665362
+  },
+  {
+   "n": 600,
+   "distance": 599,
+   "null": false,
+   "loss": 12.427471622302258,
+   "first_quarter": 12.392433158503282,
+   "last_quarter": 12.508363205314483,
+   "top1": 0.0
+  },
+  {
+   "n": 800,
+   "distance": 799,
+   "null": false,
+   "loss": 12.466301734441512,
+   "first_quarter": 12.476574987322842,
+   "last_quarter": 12.506346232028463,
+   "top1": 0.0
+  },
+  {
+   "n": 64,
+   "distance": 63,
+   "null": true,
+   "loss": 12.576283819145626,
+   "first_quarter": 12.698941047986349,
+   "last_quarter": 12.478498196601867,
+   "top1": 0.0
+  },
+  {
+   "n": 512,
+   "distance": 511,
+   "null": true,
+   "loss": 12.502158261791834,
+   "first_quarter": 12.509727961435093,
+   "last_quarter": 12.578240112056882,
+   "top1": 0.0
+  }
+ ],
+ "natural_copy": [
+  {
+   "tokens": 74,
+   "first_copy": 3.3484913141351855,
+   "second_copy": 0.12342504828240186
+  },
+  {
+   "tokens": 62,
+   "first_copy": 4.400479596047128,
+   "second_copy": 0.1974391344826815
+  },
+  {
+   "tokens": 94,
+   "first_copy": 1.1548795920383763,
+   "second_copy": 0.060918147709217205
+  }
+ ],
+ "context": {
+  "prefix": "Context: Dario Zelzelley was born in Seoul. Vesna Phinkorwick was born in Lima.\nQuestion: Where was Vesna Phinkorwick born?\nAnswer: Lima\n\nContext: Kaija Bralauine works as a pilot. Ulric Oskdunard works as a teacher.\nQuestion: What does Kaija Bralauine do for a living?\nAnswer: pilot\n\nContext: Mireille Dunphinard has a dog named Ziggy. Rhea Velsabson has a dog named Otis.\nQuestion: What is the name of Rhea Velsabson's dog?\nAnswer: Otis\n\n",
+  "items": [
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Ravi Phinvelek was born in Boston. Emeric Bralauine was born in Lima.",
+    "question": "Where was Ravi Phinvelek born?",
+    "gold": "Boston",
+    "in_context": [
+     "Boston",
+     "Lima"
+    ],
+    "candidates": [
+     "Boston",
+     "Lima",
+     "Hanoi",
+     "Prague"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Idris Duntarley works as a dentist. Pallas Sabzelley works as a farmer.",
+    "question": "What does Idris Duntarley do for a living?",
+    "gold": "dentist",
+    "in_context": [
+     "dentist",
+     "farmer"
+    ],
+    "candidates": [
+     "dentist",
+     "farmer",
+     "carpenter",
+     "chemist"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Nadia Sabveline's favorite color is pink. Vesna Mirmirard's favorite color is white.",
+    "question": "What is Nadia Sabveline's favorite color?",
+    "gold": "pink",
+    "in_context": [
+     "pink",
+     "white"
+    ],
+    "candidates": [
+     "pink",
+     "white",
+     "blue",
+     "red"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Oona Braphinat has a dog named Pepper. Soren Dunphinov has a dog named Clover.",
+    "question": "What is the name of Oona Braphinat's dog?",
+    "gold": "Pepper",
+    "in_context": [
+     "Pepper",
+     "Clover"
+    ],
+    "candidates": [
+     "Pepper",
+     "Clover",
+     "Ziggy",
+     "Luna"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Ines Phinmirov was born in Lima. Anouk Vellauwick was born in Kyoto.",
+    "question": "Where was Anouk Vellauwick born?",
+    "gold": "Kyoto",
+    "in_context": [
+     "Lima",
+     "Kyoto"
+    ],
+    "candidates": [
+     "Lima",
+     "Kyoto",
+     "Denver",
+     "Nairobi"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Joren Osktarov works as a baker. Bram Velvelard works as a pilot.",
+    "question": "What does Bram Velvelard do for a living?",
+    "gold": "pilot",
+    "in_context": [
+     "baker",
+     "pilot"
+    ],
+    "candidates": [
+     "baker",
+     "pilot",
+     "plumber",
+     "painter"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Kaija Sabphinov's favorite color is purple. Nadia Mirmirwick's favorite color is white.",
+    "question": "What is Nadia Mirmirwick's favorite color?",
+    "gold": "white",
+    "in_context": [
+     "purple",
+     "white"
+    ],
+    "candidates": [
+     "purple",
+     "white",
+     "pink",
+     "orange"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Idris Quensabek has a dog named Bruno. Joren Bralauson has a dog named Ziggy.",
+    "question": "What is the name of Joren Bralauson's dog?",
+    "gold": "Ziggy",
+    "in_context": [
+     "Bruno",
+     "Ziggy"
+    ],
+    "candidates": [
+     "Bruno",
+     "Ziggy",
+     "Maple",
+     "Pepper"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Oona Tarsabov was born in Montreal. Vesna Sabmirek was born in Boston.",
+    "question": "Where was Oona Tarsabov born?",
+    "gold": "Montreal",
+    "in_context": [
+     "Montreal",
+     "Boston"
+    ],
+    "candidates": [
+     "Montreal",
+     "Boston",
+     "Dublin",
+     "Lisbon"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Tessa Veloskine works as a pilot. Marlo Lauquenson works as a chemist.",
+    "question": "What does Tessa Veloskine do for a living?",
+    "gold": "pilot",
+    "in_context": [
+     "pilot",
+     "chemist"
+    ],
+    "candidates": [
+     "pilot",
+     "chemist",
+     "carpenter",
+     "sailor"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Oona Zelvelek's favorite color is green. Corin Tarlauley's favorite color is blue.",
+    "question": "What is Oona Zelvelek's favorite color?",
+    "gold": "green",
+    "in_context": [
+     "green",
+     "blue"
+    ],
+    "candidates": [
+     "green",
+     "blue",
+     "white",
+     "pink"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Emeric Sabtarley has a dog named Pepper. Dario Zellauson has a dog named Maple.",
+    "question": "What is the name of Emeric Sabtarley's dog?",
+    "gold": "Pepper",
+    "in_context": [
+     "Pepper",
+     "Maple"
+    ],
+    "candidates": [
+     "Pepper",
+     "Maple",
+     "Bruno",
+     "Ziggy"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Lysa Dunbrawick was born in Nairobi. Tessa Tarphinat was born in Cairo.",
+    "question": "Where was Tessa Tarphinat born?",
+    "gold": "Cairo",
+    "in_context": [
+     "Nairobi",
+     "Cairo"
+    ],
+    "candidates": [
+     "Nairobi",
+     "Cairo",
+     "Dublin",
+     "Boston"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Nadia Dunbraat works as a baker. Ulric Osksabine works as a chemist.",
+    "question": "What does Ulric Osksabine do for a living?",
+    "gold": "chemist",
+    "in_context": [
+     "baker",
+     "chemist"
+    ],
+    "candidates": [
+     "baker",
+     "chemist",
+     "nurse",
+     "teacher"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Oona Braphinov's favorite color is white. Marlo Laukorard's favorite color is black.",
+    "question": "What is Marlo Laukorard's favorite color?",
+    "gold": "black",
+    "in_context": [
+     "white",
+     "black"
+    ],
+    "candidates": [
+     "white",
+     "black",
+     "purple",
+     "orange"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Bram Brazelov has a dog named Pepper. Ines Phinsabley has a dog named Ziggy.",
+    "question": "What is the name of Ines Phinsabley's dog?",
+    "gold": "Ziggy",
+    "in_context": [
+     "Pepper",
+     "Ziggy"
+    ],
+    "candidates": [
+     "Pepper",
+     "Ziggy",
+     "Biscuit",
+     "Rocket"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Ulric Dunoskine was born in Cairo. Rhea Korbraov was born in Seoul.",
+    "question": "Where was Ulric Dunoskine born?",
+    "gold": "Cairo",
+    "in_context": [
+     "Cairo",
+     "Seoul"
+    ],
+    "candidates": [
+     "Cairo",
+     "Seoul",
+     "Perth",
+     "Tunis"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Selka Osksabov works as a teacher. Marlo Sabzelson works as a carpenter.",
+    "question": "What does Selka Osksabov do for a living?",
+    "gold": "teacher",
+    "in_context": [
+     "teacher",
+     "carpenter"
+    ],
+    "candidates": [
+     "teacher",
+     "carpenter",
+     "farmer",
+     "nurse"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Selka Mirmirat's favorite color is black. Tessa Sabquenwick's favorite color is brown.",
+    "question": "What is Selka Mirmirat's favorite color?",
+    "gold": "black",
+    "in_context": [
+     "black",
+     "brown"
+    ],
+    "candidates": [
+     "black",
+     "brown",
+     "red",
+     "blue"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Soren Korvelov has a dog named Bruno. Emeric Oskkorat has a dog named Biscuit.",
+    "question": "What is the name of Soren Korvelov's dog?",
+    "gold": "Bruno",
+    "in_context": [
+     "Bruno",
+     "Biscuit"
+    ],
+    "candidates": [
+     "Bruno",
+     "Biscuit",
+     "Clover",
+     "Maple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Tessa Bradunat was born in Kyoto. Talia Zelmirson was born in Lisbon.",
+    "question": "Where was Talia Zelmirson born?",
+    "gold": "Lisbon",
+    "in_context": [
+     "Kyoto",
+     "Lisbon"
+    ],
+    "candidates": [
+     "Kyoto",
+     "Lisbon",
+     "Dublin",
+     "Perth"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Corin Zelbraley works as a plumber. Rhea Tarsabley works as a teacher.",
+    "question": "What does Rhea Tarsabley do for a living?",
+    "gold": "teacher",
+    "in_context": [
+     "plumber",
+     "teacher"
+    ],
+    "candidates": [
+     "plumber",
+     "teacher",
+     "pilot",
+     "carpenter"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Mireille Vellauine's favorite color is white. Oona Dunsabard's favorite color is black.",
+    "question": "What is Oona Dunsabard's favorite color?",
+    "gold": "black",
+    "in_context": [
+     "white",
+     "black"
+    ],
+    "candidates": [
+     "white",
+     "black",
+     "blue",
+     "red"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Dario Dunkorson has a dog named Shadow. Oona Oskquenek has a dog named Rocket.",
+    "question": "What is the name of Oona Oskquenek's dog?",
+    "gold": "Rocket",
+    "in_context": [
+     "Shadow",
+     "Rocket"
+    ],
+    "candidates": [
+     "Shadow",
+     "Rocket",
+     "Biscuit",
+     "Otis"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Emeric Tarmirov was born in Boston. Talia Brabraley was born in Cairo.",
+    "question": "Where was Emeric Tarmirov born?",
+    "gold": "Boston",
+    "in_context": [
+     "Boston",
+     "Cairo"
+    ],
+    "candidates": [
+     "Boston",
+     "Cairo",
+     "Perth",
+     "Lima"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Emeric Quenzelek works as a lawyer. Nadia Oskmirwick works as a baker.",
+    "question": "What does Emeric Quenzelek do for a living?",
+    "gold": "lawyer",
+    "in_context": [
+     "lawyer",
+     "baker"
+    ],
+    "candidates": [
+     "lawyer",
+     "baker",
+     "nurse",
+     "teacher"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Vesna Dunbraek's favorite color is brown. Anouk Brasabson's favorite color is red.",
+    "question": "What is Vesna Dunbraek's favorite color?",
+    "gold": "brown",
+    "in_context": [
+     "brown",
+     "red"
+    ],
+    "candidates": [
+     "brown",
+     "red",
+     "pink",
+     "green"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Tobin Oskoskov has a dog named Pepper. Mireille Zelphinard has a dog named Otis.",
+    "question": "What is the name of Tobin Oskoskov's dog?",
+    "gold": "Pepper",
+    "in_context": [
+     "Pepper",
+     "Otis"
+    ],
+    "candidates": [
+     "Pepper",
+     "Otis",
+     "Maple",
+     "Biscuit"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Mireille Dunoskson was born in Nairobi. Ravi Zelbraov was born in Oslo.",
+    "question": "Where was Ravi Zelbraov born?",
+    "gold": "Oslo",
+    "in_context": [
+     "Nairobi",
+     "Oslo"
+    ],
+    "candidates": [
+     "Nairobi",
+     "Oslo",
+     "Prague",
+     "Lima"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Oona Korbraek works as a baker. Ravi Korvelat works as a lawyer.",
+    "question": "What does Ravi Korvelat do for a living?",
+    "gold": "lawyer",
+    "in_context": [
+     "baker",
+     "lawyer"
+    ],
+    "candidates": [
+     "baker",
+     "lawyer",
+     "farmer",
+     "nurse"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Vesna Oskquenwick's favorite color is blue. Vesna Quenvelson's favorite color is yellow.",
+    "question": "What is Vesna Quenvelson's favorite color?",
+    "gold": "yellow",
+    "in_context": [
+     "blue",
+     "yellow"
+    ],
+    "candidates": [
+     "blue",
+     "yellow",
+     "pink",
+     "red"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Selka Zeltarson has a dog named Otis. Ines Phinphinov has a dog named Maple.",
+    "question": "What is the name of Ines Phinphinov's dog?",
+    "gold": "Maple",
+    "in_context": [
+     "Otis",
+     "Maple"
+    ],
+    "candidates": [
+     "Otis",
+     "Maple",
+     "Luna",
+     "Biscuit"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Nadia Bramirov was born in Nairobi. Tobin Oskzeline was born in Oslo.",
+    "question": "Where was Nadia Bramirov born?",
+    "gold": "Nairobi",
+    "in_context": [
+     "Nairobi",
+     "Oslo"
+    ],
+    "candidates": [
+     "Nairobi",
+     "Oslo",
+     "Hanoi",
+     "Cairo"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Ulric Tarphinat works as a painter. Joren Quenmirson works as a lawyer.",
+    "question": "What does Ulric Tarphinat do for a living?",
+    "gold": "painter",
+    "in_context": [
+     "painter",
+     "lawyer"
+    ],
+    "candidates": [
+     "painter",
+     "lawyer",
+     "carpenter",
+     "baker"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Oona Mirlauard's favorite color is pink. Tobin Mirkorwick's favorite color is green.",
+    "question": "What is Oona Mirlauard's favorite color?",
+    "gold": "pink",
+    "in_context": [
+     "pink",
+     "green"
+    ],
+    "candidates": [
+     "pink",
+     "green",
+     "blue",
+     "purple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Quentin Koroskwick has a dog named Ziggy. Rhea Quenzelat has a dog named Otis.",
+    "question": "What is the name of Quentin Koroskwick's dog?",
+    "gold": "Ziggy",
+    "in_context": [
+     "Ziggy",
+     "Otis"
+    ],
+    "candidates": [
+     "Ziggy",
+     "Otis",
+     "Clover",
+     "Bruno"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Marlo Quenmirine was born in Oslo. Anouk Brasabek was born in Prague.",
+    "question": "Where was Anouk Brasabek born?",
+    "gold": "Prague",
+    "in_context": [
+     "Oslo",
+     "Prague"
+    ],
+    "candidates": [
+     "Oslo",
+     "Prague",
+     "Denver",
+     "Kyoto"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Nadia Lauoskwick works as a pilot. Idris Dunsabat works as a plumber.",
+    "question": "What does Idris Dunsabat do for a living?",
+    "gold": "plumber",
+    "in_context": [
+     "pilot",
+     "plumber"
+    ],
+    "candidates": [
+     "pilot",
+     "plumber",
+     "baker",
+     "sailor"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Mireille Miroskley's favorite color is green. Lysa Tarkorek's favorite color is white.",
+    "question": "What is Lysa Tarkorek's favorite color?",
+    "gold": "white",
+    "in_context": [
+     "green",
+     "white"
+    ],
+    "candidates": [
+     "green",
+     "white",
+     "orange",
+     "purple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Nadia Zelphinley has a dog named Luna. Talia Velquenson has a dog named Maple.",
+    "question": "What is the name of Talia Velquenson's dog?",
+    "gold": "Maple",
+    "in_context": [
+     "Luna",
+     "Maple"
+    ],
+    "candidates": [
+     "Luna",
+     "Maple",
+     "Rocket",
+     "Otis"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Vesna Lauzelat was born in Lisbon. Vesna Zellauine was born in Perth.",
+    "question": "Where was Vesna Lauzelat born?",
+    "gold": "Lisbon",
+    "in_context": [
+     "Lisbon",
+     "Perth"
+    ],
+    "candidates": [
+     "Lisbon",
+     "Perth",
+     "Boston",
+     "Cairo"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Anouk Oskdunov works as a painter. Mireille Velkorov works as a sailor.",
+    "question": "What does Anouk Oskdunov do for a living?",
+    "gold": "painter",
+    "in_context": [
+     "painter",
+     "sailor"
+    ],
+    "candidates": [
+     "painter",
+     "sailor",
+     "chemist",
+     "baker"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Fenna Oskquenard's favorite color is red. Tessa Dunsabek's favorite color is white.",
+    "question": "What is Fenna Oskquenard's favorite color?",
+    "gold": "red",
+    "in_context": [
+     "red",
+     "white"
+    ],
+    "candidates": [
+     "red",
+     "white",
+     "black",
+     "blue"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Rhea Korlauson has a dog named Biscuit. Ravi Saboskek has a dog named Otis.",
+    "question": "What is the name of Rhea Korlauson's dog?",
+    "gold": "Biscuit",
+    "in_context": [
+     "Biscuit",
+     "Otis"
+    ],
+    "candidates": [
+     "Biscuit",
+     "Otis",
+     "Luna",
+     "Maple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Ulric Tarvelat was born in Kyoto. Pallas Osktarley was born in Perth.",
+    "question": "Where was Pallas Osktarley born?",
+    "gold": "Perth",
+    "in_context": [
+     "Kyoto",
+     "Perth"
+    ],
+    "candidates": [
+     "Kyoto",
+     "Perth",
+     "Montreal",
+     "Oslo"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Corin Sabphinek works as a teacher. Tessa Zelkorson works as a dentist.",
+    "question": "What does Tessa Zelkorson do for a living?",
+    "gold": "dentist",
+    "in_context": [
+     "teacher",
+     "dentist"
+    ],
+    "candidates": [
+     "teacher",
+     "dentist",
+     "sailor",
+     "farmer"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Vesna Quenvelov's favorite color is blue. Talia Oskzelov's favorite color is pink.",
+    "question": "What is Talia Oskzelov's favorite color?",
+    "gold": "pink",
+    "in_context": [
+     "blue",
+     "pink"
+    ],
+    "candidates": [
+     "blue",
+     "pink",
+     "yellow",
+     "red"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Ulric Zelkorek has a dog named Pepper. Vesna Mirkorek has a dog named Biscuit.",
+    "question": "What is the name of Vesna Mirkorek's dog?",
+    "gold": "Biscuit",
+    "in_context": [
+     "Pepper",
+     "Biscuit"
+    ],
+    "candidates": [
+     "Pepper",
+     "Biscuit",
+     "Clover",
+     "Maple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Fenna Duntarine was born in Seoul. Kaija Velquenwick was born in Oslo.",
+    "question": "Where was Fenna Duntarine born?",
+    "gold": "Seoul",
+    "in_context": [
+     "Seoul",
+     "Oslo"
+    ],
+    "candidates": [
+     "Seoul",
+     "Oslo",
+     "Denver",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Oona Lauzelson works as a nurse. Ravi Zelvelson works as a baker.",
+    "question": "What does Oona Lauzelson do for a living?",
+    "gold": "nurse",
+    "in_context": [
+     "nurse",
+     "baker"
+    ],
+    "candidates": [
+     "nurse",
+     "baker",
+     "dentist",
+     "painter"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Joren Quenzelley's favorite color is orange. Idris Brasabov's favorite color is blue.",
+    "question": "What is Joren Quenzelley's favorite color?",
+    "gold": "orange",
+    "in_context": [
+     "orange",
+     "blue"
+    ],
+    "candidates": [
+     "orange",
+     "blue",
+     "pink",
+     "green"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Tobin Sabtarek has a dog named Pepper. Tobin Osktarine has a dog named Shadow.",
+    "question": "What is the name of Tobin Sabtarek's dog?",
+    "gold": "Pepper",
+    "in_context": [
+     "Pepper",
+     "Shadow"
+    ],
+    "candidates": [
+     "Pepper",
+     "Shadow",
+     "Maple",
+     "Biscuit"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Talia Mirquenson was born in Lisbon. Soren Tardunek was born in Tunis.",
+    "question": "Where was Soren Tardunek born?",
+    "gold": "Tunis",
+    "in_context": [
+     "Lisbon",
+     "Tunis"
+    ],
+    "candidates": [
+     "Lisbon",
+     "Tunis",
+     "Seoul",
+     "Nairobi"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Oona Oskoskat works as a baker. Bram Korbraov works as a carpenter.",
+    "question": "What does Bram Korbraov do for a living?",
+    "gold": "carpenter",
+    "in_context": [
+     "baker",
+     "carpenter"
+    ],
+    "candidates": [
+     "baker",
+     "carpenter",
+     "farmer",
+     "teacher"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Emeric Kordunov's favorite color is blue. Nadia Quenbraard's favorite color is brown.",
+    "question": "What is Nadia Quenbraard's favorite color?",
+    "gold": "brown",
+    "in_context": [
+     "blue",
+     "brown"
+    ],
+    "candidates": [
+     "blue",
+     "brown",
+     "purple",
+     "pink"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Vesna Zeloskard has a dog named Shadow. Fenna Mirbraine has a dog named Rocket.",
+    "question": "What is the name of Fenna Mirbraine's dog?",
+    "gold": "Rocket",
+    "in_context": [
+     "Shadow",
+     "Rocket"
+    ],
+    "candidates": [
+     "Shadow",
+     "Rocket",
+     "Ziggy",
+     "Maple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Pallas Quentarard was born in Denver. Soren Tarzelson was born in Boston.",
+    "question": "Where was Pallas Quentarard born?",
+    "gold": "Denver",
+    "in_context": [
+     "Denver",
+     "Boston"
+    ],
+    "candidates": [
+     "Denver",
+     "Boston",
+     "Dublin",
+     "Kyoto"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Nadia Phinzelard works as a carpenter. Idris Zeldunek works as a dentist.",
+    "question": "What does Nadia Phinzelard do for a living?",
+    "gold": "carpenter",
+    "in_context": [
+     "carpenter",
+     "dentist"
+    ],
+    "candidates": [
+     "carpenter",
+     "dentist",
+     "farmer",
+     "plumber"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Marlo Tarzelwick's favorite color is yellow. Ines Zelsabek's favorite color is orange.",
+    "question": "What is Marlo Tarzelwick's favorite color?",
+    "gold": "yellow",
+    "in_context": [
+     "yellow",
+     "orange"
+    ],
+    "candidates": [
+     "yellow",
+     "orange",
+     "purple",
+     "brown"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Dario Veloskson has a dog named Otis. Vesna Velphinard has a dog named Luna.",
+    "question": "What is the name of Dario Veloskson's dog?",
+    "gold": "Otis",
+    "in_context": [
+     "Otis",
+     "Luna"
+    ],
+    "candidates": [
+     "Otis",
+     "Luna",
+     "Shadow",
+     "Clover"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Fenna Zelzelard was born in Tunis. Tobin Korbraard was born in Perth.",
+    "question": "Where was Tobin Korbraard born?",
+    "gold": "Perth",
+    "in_context": [
+     "Tunis",
+     "Perth"
+    ],
+    "candidates": [
+     "Tunis",
+     "Perth",
+     "Boston",
+     "Oslo"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Marlo Kormirov works as a carpenter. Marlo Sabkorat works as a lawyer.",
+    "question": "What does Marlo Sabkorat do for a living?",
+    "gold": "lawyer",
+    "in_context": [
+     "carpenter",
+     "lawyer"
+    ],
+    "candidates": [
+     "carpenter",
+     "lawyer",
+     "pilot",
+     "chemist"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Ravi Phinlauard's favorite color is white. Rhea Sabkorson's favorite color is yellow.",
+    "question": "What is Rhea Sabkorson's favorite color?",
+    "gold": "yellow",
+    "in_context": [
+     "white",
+     "yellow"
+    ],
+    "candidates": [
+     "white",
+     "yellow",
+     "black",
+     "green"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Dario Quentarson has a dog named Luna. Dario Quentarley has a dog named Clover.",
+    "question": "What is the name of Dario Quentarley's dog?",
+    "gold": "Clover",
+    "in_context": [
+     "Luna",
+     "Clover"
+    ],
+    "candidates": [
+     "Luna",
+     "Clover",
+     "Bruno",
+     "Maple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Tobin Velsabov was born in Denver. Pallas Dunquenine was born in Lisbon.",
+    "question": "Where was Tobin Velsabov born?",
+    "gold": "Denver",
+    "in_context": [
+     "Denver",
+     "Lisbon"
+    ],
+    "candidates": [
+     "Denver",
+     "Lisbon",
+     "Oslo",
+     "Glasgow"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Oona Dundunek works as a painter. Idris Phinmirard works as a lawyer.",
+    "question": "What does Oona Dundunek do for a living?",
+    "gold": "painter",
+    "in_context": [
+     "painter",
+     "lawyer"
+    ],
+    "candidates": [
+     "painter",
+     "lawyer",
+     "chemist",
+     "plumber"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Emeric Osklauine's favorite color is purple. Talia Velzelwick's favorite color is brown.",
+    "question": "What is Emeric Osklauine's favorite color?",
+    "gold": "purple",
+    "in_context": [
+     "purple",
+     "brown"
+    ],
+    "candidates": [
+     "purple",
+     "brown",
+     "white",
+     "green"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Lysa Lauquenard has a dog named Luna. Selka Velsabson has a dog named Otis.",
+    "question": "What is the name of Lysa Lauquenard's dog?",
+    "gold": "Luna",
+    "in_context": [
+     "Luna",
+     "Otis"
+    ],
+    "candidates": [
+     "Luna",
+     "Otis",
+     "Shadow",
+     "Rocket"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Quentin Quendunek was born in Boston. Corin Korsabwick was born in Lima.",
+    "question": "Where was Corin Korsabwick born?",
+    "gold": "Lima",
+    "in_context": [
+     "Boston",
+     "Lima"
+    ],
+    "candidates": [
+     "Boston",
+     "Lima",
+     "Cairo",
+     "Prague"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Ines Brakorley works as a teacher. Tessa Dunoskat works as a carpenter.",
+    "question": "What does Tessa Dunoskat do for a living?",
+    "gold": "carpenter",
+    "in_context": [
+     "teacher",
+     "carpenter"
+    ],
+    "candidates": [
+     "teacher",
+     "carpenter",
+     "baker",
+     "farmer"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Kaija Korzelley's favorite color is black. Rhea Velquenson's favorite color is red.",
+    "question": "What is Rhea Velquenson's favorite color?",
+    "gold": "red",
+    "in_context": [
+     "black",
+     "red"
+    ],
+    "candidates": [
+     "black",
+     "red",
+     "orange",
+     "pink"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Dario Vellauley has a dog named Maple. Talia Quensabov has a dog named Shadow.",
+    "question": "What is the name of Talia Quensabov's dog?",
+    "gold": "Shadow",
+    "in_context": [
+     "Maple",
+     "Shadow"
+    ],
+    "candidates": [
+     "Maple",
+     "Shadow",
+     "Rocket",
+     "Pepper"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Soren Velzelat was born in Hanoi. Anouk Brazelard was born in Perth.",
+    "question": "Where was Soren Velzelat born?",
+    "gold": "Hanoi",
+    "in_context": [
+     "Hanoi",
+     "Perth"
+    ],
+    "candidates": [
+     "Hanoi",
+     "Perth",
+     "Tunis",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Kaija Oskkorard works as a dentist. Lysa Braoskine works as a farmer.",
+    "question": "What does Kaija Oskkorard do for a living?",
+    "gold": "dentist",
+    "in_context": [
+     "dentist",
+     "farmer"
+    ],
+    "candidates": [
+     "dentist",
+     "farmer",
+     "painter",
+     "teacher"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Vesna Korzeline's favorite color is red. Nadia Mirkorine's favorite color is black.",
+    "question": "What is Vesna Korzeline's favorite color?",
+    "gold": "red",
+    "in_context": [
+     "red",
+     "black"
+    ],
+    "candidates": [
+     "red",
+     "black",
+     "brown",
+     "blue"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Tobin Quenvelard has a dog named Bruno. Fenna Tarsabard has a dog named Rocket.",
+    "question": "What is the name of Tobin Quenvelard's dog?",
+    "gold": "Bruno",
+    "in_context": [
+     "Bruno",
+     "Rocket"
+    ],
+    "candidates": [
+     "Bruno",
+     "Rocket",
+     "Pepper",
+     "Ziggy"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Ravi Phindunek was born in Tunis. Nadia Kortarwick was born in Lima.",
+    "question": "Where was Nadia Kortarwick born?",
+    "gold": "Lima",
+    "in_context": [
+     "Tunis",
+     "Lima"
+    ],
+    "candidates": [
+     "Tunis",
+     "Lima",
+     "Kyoto",
+     "Cairo"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Dario Kormirek works as a farmer. Lysa Tartarley works as a baker.",
+    "question": "What does Lysa Tartarley do for a living?",
+    "gold": "baker",
+    "in_context": [
+     "farmer",
+     "baker"
+    ],
+    "candidates": [
+     "farmer",
+     "baker",
+     "lawyer",
+     "chemist"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Rhea Oskvelwick's favorite color is yellow. Emeric Mirlauwick's favorite color is white.",
+    "question": "What is Emeric Mirlauwick's favorite color?",
+    "gold": "white",
+    "in_context": [
+     "yellow",
+     "white"
+    ],
+    "candidates": [
+     "yellow",
+     "white",
+     "brown",
+     "green"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Vesna Lauvelson has a dog named Rocket. Anouk Brabraat has a dog named Biscuit.",
+    "question": "What is the name of Anouk Brabraat's dog?",
+    "gold": "Biscuit",
+    "in_context": [
+     "Rocket",
+     "Biscuit"
+    ],
+    "candidates": [
+     "Rocket",
+     "Biscuit",
+     "Clover",
+     "Pepper"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Kaija Braveline was born in Seoul. Dario Bramirine was born in Kyoto.",
+    "question": "Where was Kaija Braveline born?",
+    "gold": "Seoul",
+    "in_context": [
+     "Seoul",
+     "Kyoto"
+    ],
+    "candidates": [
+     "Seoul",
+     "Kyoto",
+     "Prague",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Soren Dunkorek works as a pilot. Emeric Mirtarov works as a baker.",
+    "question": "What does Soren Dunkorek do for a living?",
+    "gold": "pilot",
+    "in_context": [
+     "pilot",
+     "baker"
+    ],
+    "candidates": [
+     "pilot",
+     "baker",
+     "dentist",
+     "teacher"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Vesna Sabkorley's favorite color is blue. Ines Zelkorat's favorite color is brown.",
+    "question": "What is Vesna Sabkorley's favorite color?",
+    "gold": "blue",
+    "in_context": [
+     "blue",
+     "brown"
+    ],
+    "candidates": [
+     "blue",
+     "brown",
+     "pink",
+     "white"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Corin Veloskwick has a dog named Clover. Ravi Korlauson has a dog named Luna.",
+    "question": "What is the name of Corin Veloskwick's dog?",
+    "gold": "Clover",
+    "in_context": [
+     "Clover",
+     "Luna"
+    ],
+    "candidates": [
+     "Clover",
+     "Luna",
+     "Biscuit",
+     "Pepper"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Bram Mirkorine was born in Nairobi. Ravi Dunbraek was born in Prague.",
+    "question": "Where was Ravi Dunbraek born?",
+    "gold": "Prague",
+    "in_context": [
+     "Nairobi",
+     "Prague"
+    ],
+    "candidates": [
+     "Nairobi",
+     "Prague",
+     "Kyoto",
+     "Seoul"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Ulric Phinmirov works as a chemist. Emeric Korphinat works as a lawyer.",
+    "question": "What does Emeric Korphinat do for a living?",
+    "gold": "lawyer",
+    "in_context": [
+     "chemist",
+     "lawyer"
+    ],
+    "candidates": [
+     "chemist",
+     "lawyer",
+     "sailor",
+     "carpenter"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Lysa Tarvelson's favorite color is purple. Corin Sabzeline's favorite color is red.",
+    "question": "What is Corin Sabzeline's favorite color?",
+    "gold": "red",
+    "in_context": [
+     "purple",
+     "red"
+    ],
+    "candidates": [
+     "purple",
+     "red",
+     "black",
+     "white"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Quentin Tarvelwick has a dog named Clover. Fenna Dunvelek has a dog named Rocket.",
+    "question": "What is the name of Fenna Dunvelek's dog?",
+    "gold": "Rocket",
+    "in_context": [
+     "Clover",
+     "Rocket"
+    ],
+    "candidates": [
+     "Clover",
+     "Rocket",
+     "Maple",
+     "Ziggy"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Rhea Mirvelov was born in Boston. Quentin Bramirek was born in Kyoto.",
+    "question": "Where was Rhea Mirvelov born?",
+    "gold": "Boston",
+    "in_context": [
+     "Boston",
+     "Kyoto"
+    ],
+    "candidates": [
+     "Boston",
+     "Kyoto",
+     "Seoul",
+     "Denver"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Tobin Osktarek works as a nurse. Vesna Lauquenley works as a painter.",
+    "question": "What does Tobin Osktarek do for a living?",
+    "gold": "nurse",
+    "in_context": [
+     "nurse",
+     "painter"
+    ],
+    "candidates": [
+     "nurse",
+     "painter",
+     "sailor",
+     "teacher"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Ulric Phinvelard's favorite color is green. Fenna Mirkorine's favorite color is yellow.",
+    "question": "What is Ulric Phinvelard's favorite color?",
+    "gold": "green",
+    "in_context": [
+     "green",
+     "yellow"
+    ],
+    "candidates": [
+     "green",
+     "yellow",
+     "black",
+     "brown"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Quentin Laulauard has a dog named Bruno. Kaija Korvelley has a dog named Ziggy.",
+    "question": "What is the name of Quentin Laulauard's dog?",
+    "gold": "Bruno",
+    "in_context": [
+     "Bruno",
+     "Ziggy"
+    ],
+    "candidates": [
+     "Bruno",
+     "Ziggy",
+     "Otis",
+     "Maple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Emeric Duntarine was born in Boston. Vesna Quenoskat was born in Prague.",
+    "question": "Where was Vesna Quenoskat born?",
+    "gold": "Prague",
+    "in_context": [
+     "Boston",
+     "Prague"
+    ],
+    "candidates": [
+     "Boston",
+     "Prague",
+     "Montreal",
+     "Cairo"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Pallas Veldunard works as a lawyer. Anouk Zelsabine works as a painter.",
+    "question": "What does Anouk Zelsabine do for a living?",
+    "gold": "painter",
+    "in_context": [
+     "lawyer",
+     "painter"
+    ],
+    "candidates": [
+     "lawyer",
+     "painter",
+     "baker",
+     "carpenter"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Anouk Tarbraine's favorite color is orange. Dario Korquenine's favorite color is green.",
+    "question": "What is Dario Korquenine's favorite color?",
+    "gold": "green",
+    "in_context": [
+     "orange",
+     "green"
+    ],
+    "candidates": [
+     "orange",
+     "green",
+     "purple",
+     "red"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Talia Bralauley has a dog named Otis. Marlo Quenoskek has a dog named Biscuit.",
+    "question": "What is the name of Marlo Quenoskek's dog?",
+    "gold": "Biscuit",
+    "in_context": [
+     "Otis",
+     "Biscuit"
+    ],
+    "candidates": [
+     "Otis",
+     "Biscuit",
+     "Clover",
+     "Pepper"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Quentin Tartarine was born in Hanoi. Tobin Bravelley was born in Denver.",
+    "question": "Where was Quentin Tartarine born?",
+    "gold": "Hanoi",
+    "in_context": [
+     "Hanoi",
+     "Denver"
+    ],
+    "candidates": [
+     "Hanoi",
+     "Denver",
+     "Nairobi",
+     "Lima"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Mireille Zeloskek works as a sailor. Talia Oskquenek works as a painter.",
+    "question": "What does Mireille Zeloskek do for a living?",
+    "gold": "sailor",
+    "in_context": [
+     "sailor",
+     "painter"
+    ],
+    "candidates": [
+     "sailor",
+     "painter",
+     "chemist",
+     "baker"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Ulric Zeldunat's favorite color is black. Ravi Tarlauson's favorite color is green.",
+    "question": "What is Ulric Zeldunat's favorite color?",
+    "gold": "black",
+    "in_context": [
+     "black",
+     "green"
+    ],
+    "candidates": [
+     "black",
+     "green",
+     "red",
+     "purple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Idris Osklauard has a dog named Biscuit. Fenna Bramirard has a dog named Shadow.",
+    "question": "What is the name of Idris Osklauard's dog?",
+    "gold": "Biscuit",
+    "in_context": [
+     "Biscuit",
+     "Shadow"
+    ],
+    "candidates": [
+     "Biscuit",
+     "Shadow",
+     "Clover",
+     "Ziggy"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Pallas Velzelson was born in Oslo. Pallas Quenkorard was born in Kyoto.",
+    "question": "Where was Pallas Quenkorard born?",
+    "gold": "Kyoto",
+    "in_context": [
+     "Oslo",
+     "Kyoto"
+    ],
+    "candidates": [
+     "Oslo",
+     "Kyoto",
+     "Montreal",
+     "Glasgow"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Marlo Sabsabwick works as a farmer. Idris Quentarat works as a lawyer.",
+    "question": "What does Idris Quentarat do for a living?",
+    "gold": "lawyer",
+    "in_context": [
+     "farmer",
+     "lawyer"
+    ],
+    "candidates": [
+     "farmer",
+     "lawyer",
+     "nurse",
+     "dentist"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Lysa Mirphinek's favorite color is white. Dario Sabzelek's favorite color is black.",
+    "question": "What is Dario Sabzelek's favorite color?",
+    "gold": "black",
+    "in_context": [
+     "white",
+     "black"
+    ],
+    "candidates": [
+     "white",
+     "black",
+     "red",
+     "green"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Tessa Phindunat has a dog named Biscuit. Rhea Phinlauov has a dog named Otis.",
+    "question": "What is the name of Rhea Phinlauov's dog?",
+    "gold": "Otis",
+    "in_context": [
+     "Biscuit",
+     "Otis"
+    ],
+    "candidates": [
+     "Biscuit",
+     "Otis",
+     "Luna",
+     "Ziggy"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Joren Velzelek was born in Oslo. Talia Tartarov was born in Kyoto.",
+    "question": "Where was Joren Velzelek born?",
+    "gold": "Oslo",
+    "in_context": [
+     "Oslo",
+     "Kyoto"
+    ],
+    "candidates": [
+     "Oslo",
+     "Kyoto",
+     "Perth",
+     "Hanoi"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Rhea Lausabov works as a lawyer. Selka Mirphinek works as a carpenter.",
+    "question": "What does Rhea Lausabov do for a living?",
+    "gold": "lawyer",
+    "in_context": [
+     "lawyer",
+     "carpenter"
+    ],
+    "candidates": [
+     "lawyer",
+     "carpenter",
+     "pilot",
+     "farmer"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Lysa Mirlauek's favorite color is red. Nadia Oskbraley's favorite color is green.",
+    "question": "What is Lysa Mirlauek's favorite color?",
+    "gold": "red",
+    "in_context": [
+     "red",
+     "green"
+    ],
+    "candidates": [
+     "red",
+     "green",
+     "orange",
+     "pink"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Anouk Dunquenov has a dog named Biscuit. Lysa Korzelwick has a dog named Shadow.",
+    "question": "What is the name of Anouk Dunquenov's dog?",
+    "gold": "Biscuit",
+    "in_context": [
+     "Biscuit",
+     "Shadow"
+    ],
+    "candidates": [
+     "Biscuit",
+     "Shadow",
+     "Bruno",
+     "Maple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Talia Oskbraley was born in Dublin. Talia Korquenov was born in Oslo.",
+    "question": "Where was Talia Korquenov born?",
+    "gold": "Oslo",
+    "in_context": [
+     "Dublin",
+     "Oslo"
+    ],
+    "candidates": [
+     "Dublin",
+     "Oslo",
+     "Prague",
+     "Boston"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Idris Dunoskard works as a pilot. Nadia Quenquenard works as a plumber.",
+    "question": "What does Nadia Quenquenard do for a living?",
+    "gold": "plumber",
+    "in_context": [
+     "pilot",
+     "plumber"
+    ],
+    "candidates": [
+     "pilot",
+     "plumber",
+     "chemist",
+     "painter"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Mireille Zeldunov's favorite color is pink. Dario Tarzelov's favorite color is brown.",
+    "question": "What is Dario Tarzelov's favorite color?",
+    "gold": "brown",
+    "in_context": [
+     "pink",
+     "brown"
+    ],
+    "candidates": [
+     "pink",
+     "brown",
+     "orange",
+     "green"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Vesna Mirsabwick has a dog named Bruno. Vesna Osktarard has a dog named Luna.",
+    "question": "What is the name of Vesna Osktarard's dog?",
+    "gold": "Luna",
+    "in_context": [
+     "Bruno",
+     "Luna"
+    ],
+    "candidates": [
+     "Bruno",
+     "Luna",
+     "Ziggy",
+     "Maple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Quentin Tarphinwick was born in Montreal. Tobin Laumirley was born in Perth.",
+    "question": "Where was Quentin Tarphinwick born?",
+    "gold": "Montreal",
+    "in_context": [
+     "Montreal",
+     "Perth"
+    ],
+    "candidates": [
+     "Montreal",
+     "Perth",
+     "Nairobi",
+     "Tunis"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Marlo Braquenat works as a carpenter. Nadia Sabsabine works as a lawyer.",
+    "question": "What does Marlo Braquenat do for a living?",
+    "gold": "carpenter",
+    "in_context": [
+     "carpenter",
+     "lawyer"
+    ],
+    "candidates": [
+     "carpenter",
+     "lawyer",
+     "nurse",
+     "painter"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Fenna Vellauat's favorite color is blue. Kaija Sabsabat's favorite color is yellow.",
+    "question": "What is Fenna Vellauat's favorite color?",
+    "gold": "blue",
+    "in_context": [
+     "blue",
+     "yellow"
+    ],
+    "candidates": [
+     "blue",
+     "yellow",
+     "green",
+     "pink"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Dario Velzelwick has a dog named Ziggy. Pallas Dunzelek has a dog named Pepper.",
+    "question": "What is the name of Dario Velzelwick's dog?",
+    "gold": "Ziggy",
+    "in_context": [
+     "Ziggy",
+     "Pepper"
+    ],
+    "candidates": [
+     "Ziggy",
+     "Pepper",
+     "Rocket",
+     "Biscuit"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Corin Kortarov was born in Glasgow. Ulric Zelzelwick was born in Cairo.",
+    "question": "Where was Ulric Zelzelwick born?",
+    "gold": "Cairo",
+    "in_context": [
+     "Glasgow",
+     "Cairo"
+    ],
+    "candidates": [
+     "Glasgow",
+     "Cairo",
+     "Hanoi",
+     "Lisbon"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Nadia Laukorek works as a baker. Anouk Osklauov works as a painter.",
+    "question": "What does Anouk Osklauov do for a living?",
+    "gold": "painter",
+    "in_context": [
+     "baker",
+     "painter"
+    ],
+    "candidates": [
+     "baker",
+     "painter",
+     "dentist",
+     "plumber"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Nadia Osktarson's favorite color is yellow. Idris Brabraley's favorite color is blue.",
+    "question": "What is Idris Brabraley's favorite color?",
+    "gold": "blue",
+    "in_context": [
+     "yellow",
+     "blue"
+    ],
+    "candidates": [
+     "yellow",
+     "blue",
+     "white",
+     "red"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Selka Bratarek has a dog named Shadow. Ravi Oskquenov has a dog named Bruno.",
+    "question": "What is the name of Ravi Oskquenov's dog?",
+    "gold": "Bruno",
+    "in_context": [
+     "Shadow",
+     "Bruno"
+    ],
+    "candidates": [
+     "Shadow",
+     "Bruno",
+     "Luna",
+     "Otis"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Lysa Dunphinley was born in Oslo. Soren Oskoskat was born in Cairo.",
+    "question": "Where was Lysa Dunphinley born?",
+    "gold": "Oslo",
+    "in_context": [
+     "Oslo",
+     "Cairo"
+    ],
+    "candidates": [
+     "Oslo",
+     "Cairo",
+     "Hanoi",
+     "Prague"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Lysa Tarphinwick works as a plumber. Idris Bralauson works as a nurse.",
+    "question": "What does Lysa Tarphinwick do for a living?",
+    "gold": "plumber",
+    "in_context": [
+     "plumber",
+     "nurse"
+    ],
+    "candidates": [
+     "plumber",
+     "nurse",
+     "lawyer",
+     "carpenter"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Vesna Dunbraov's favorite color is white. Bram Dunphinat's favorite color is pink.",
+    "question": "What is Vesna Dunbraov's favorite color?",
+    "gold": "white",
+    "in_context": [
+     "white",
+     "pink"
+    ],
+    "candidates": [
+     "white",
+     "pink",
+     "green",
+     "red"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Quentin Quenlauard has a dog named Maple. Idris Phintarek has a dog named Otis.",
+    "question": "What is the name of Quentin Quenlauard's dog?",
+    "gold": "Maple",
+    "in_context": [
+     "Maple",
+     "Otis"
+    ],
+    "candidates": [
+     "Maple",
+     "Otis",
+     "Bruno",
+     "Luna"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Soren Korphinard was born in Oslo. Joren Braquenard was born in Prague.",
+    "question": "Where was Joren Braquenard born?",
+    "gold": "Prague",
+    "in_context": [
+     "Oslo",
+     "Prague"
+    ],
+    "candidates": [
+     "Oslo",
+     "Prague",
+     "Boston",
+     "Tunis"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Oona Bratarson works as a dentist. Nadia Zellauek works as a farmer.",
+    "question": "What does Nadia Zellauek do for a living?",
+    "gold": "farmer",
+    "in_context": [
+     "dentist",
+     "farmer"
+    ],
+    "candidates": [
+     "dentist",
+     "farmer",
+     "painter",
+     "plumber"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Bram Braquenson's favorite color is green. Talia Bratarard's favorite color is red.",
+    "question": "What is Talia Bratarard's favorite color?",
+    "gold": "red",
+    "in_context": [
+     "green",
+     "red"
+    ],
+    "candidates": [
+     "green",
+     "red",
+     "orange",
+     "purple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Quentin Mirtarwick has a dog named Luna. Vesna Tarsabov has a dog named Biscuit.",
+    "question": "What is the name of Vesna Tarsabov's dog?",
+    "gold": "Biscuit",
+    "in_context": [
+     "Luna",
+     "Biscuit"
+    ],
+    "candidates": [
+     "Luna",
+     "Biscuit",
+     "Shadow",
+     "Otis"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Ines Velzelley was born in Seoul. Rhea Bralauov was born in Boston.",
+    "question": "Where was Ines Velzelley born?",
+    "gold": "Seoul",
+    "in_context": [
+     "Seoul",
+     "Boston"
+    ],
+    "candidates": [
+     "Seoul",
+     "Boston",
+     "Hanoi",
+     "Glasgow"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Marlo Korzelard works as a pilot. Selka Kordunine works as a farmer.",
+    "question": "What does Marlo Korzelard do for a living?",
+    "gold": "pilot",
+    "in_context": [
+     "pilot",
+     "farmer"
+    ],
+    "candidates": [
+     "pilot",
+     "farmer",
+     "sailor",
+     "teacher"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Lysa Tarbraley's favorite color is white. Anouk Zellauley's favorite color is pink.",
+    "question": "What is Lysa Tarbraley's favorite color?",
+    "gold": "white",
+    "in_context": [
+     "white",
+     "pink"
+    ],
+    "candidates": [
+     "white",
+     "pink",
+     "brown",
+     "yellow"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Vesna Veltarwick has a dog named Ziggy. Idris Duntarson has a dog named Bruno.",
+    "question": "What is the name of Vesna Veltarwick's dog?",
+    "gold": "Ziggy",
+    "in_context": [
+     "Ziggy",
+     "Bruno"
+    ],
+    "candidates": [
+     "Ziggy",
+     "Bruno",
+     "Pepper",
+     "Maple"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Tessa Taroskov was born in Kyoto. Lysa Tarzelek was born in Denver.",
+    "question": "Where was Lysa Tarzelek born?",
+    "gold": "Denver",
+    "in_context": [
+     "Kyoto",
+     "Denver"
+    ],
+    "candidates": [
+     "Kyoto",
+     "Denver",
+     "Tunis",
+     "Glasgow"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Pallas Oskquenine works as a chemist. Quentin Bratarat works as a painter.",
+    "question": "What does Quentin Bratarat do for a living?",
+    "gold": "painter",
+    "in_context": [
+     "chemist",
+     "painter"
+    ],
+    "candidates": [
+     "chemist",
+     "painter",
+     "baker",
+     "carpenter"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Anouk Mirquenov's favorite color is green. Fenna Oskmirek's favorite color is black.",
+    "question": "What is Fenna Oskmirek's favorite color?",
+    "gold": "black",
+    "in_context": [
+     "green",
+     "black"
+    ],
+    "candidates": [
+     "green",
+     "black",
+     "white",
+     "brown"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Rhea Taroskley has a dog named Biscuit. Bram Zelsabard has a dog named Bruno.",
+    "question": "What is the name of Bram Zelsabard's dog?",
+    "gold": "Bruno",
+    "in_context": [
+     "Biscuit",
+     "Bruno"
+    ],
+    "candidates": [
+     "Biscuit",
+     "Bruno",
+     "Ziggy",
+     "Rocket"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Ulric Tartarley was born in Kyoto. Ulric Vellauard was born in Perth.",
+    "question": "Where was Ulric Tartarley born?",
+    "gold": "Kyoto",
+    "in_context": [
+     "Kyoto",
+     "Perth"
+    ],
+    "candidates": [
+     "Kyoto",
+     "Perth",
+     "Glasgow",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Nadia Tarzelwick works as a farmer. Bram Quenbraine works as a plumber.",
+    "question": "What does Nadia Tarzelwick do for a living?",
+    "gold": "farmer",
+    "in_context": [
+     "farmer",
+     "plumber"
+    ],
+    "candidates": [
+     "farmer",
+     "plumber",
+     "carpenter",
+     "chemist"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Ravi Zelvelard's favorite color is black. Oona Lauquenek's favorite color is brown.",
+    "question": "What is Ravi Zelvelard's favorite color?",
+    "gold": "black",
+    "in_context": [
+     "black",
+     "brown"
+    ],
+    "candidates": [
+     "black",
+     "brown",
+     "yellow",
+     "white"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Fenna Zelmirwick has a dog named Pepper. Nadia Quenkorwick has a dog named Rocket.",
+    "question": "What is the name of Fenna Zelmirwick's dog?",
+    "gold": "Pepper",
+    "in_context": [
+     "Pepper",
+     "Rocket"
+    ],
+    "candidates": [
+     "Pepper",
+     "Rocket",
+     "Clover",
+     "Otis"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Pallas Braphinley was born in Oslo. Dario Laukorine was born in Seoul.",
+    "question": "Where was Dario Laukorine born?",
+    "gold": "Seoul",
+    "in_context": [
+     "Oslo",
+     "Seoul"
+    ],
+    "candidates": [
+     "Oslo",
+     "Seoul",
+     "Montreal",
+     "Glasgow"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Emeric Zelquenson works as a painter. Marlo Taroskwick works as a sailor.",
+    "question": "What does Marlo Taroskwick do for a living?",
+    "gold": "sailor",
+    "in_context": [
+     "painter",
+     "sailor"
+    ],
+    "candidates": [
+     "painter",
+     "sailor",
+     "chemist",
+     "pilot"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Lysa Sabkorat's favorite color is green. Ravi Oskbraat's favorite color is purple.",
+    "question": "What is Ravi Oskbraat's favorite color?",
+    "gold": "purple",
+    "in_context": [
+     "green",
+     "purple"
+    ],
+    "candidates": [
+     "green",
+     "purple",
+     "blue",
+     "brown"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Ulric Braoskek has a dog named Rocket. Corin Korquenley has a dog named Shadow.",
+    "question": "What is the name of Corin Korquenley's dog?",
+    "gold": "Shadow",
+    "in_context": [
+     "Rocket",
+     "Shadow"
+    ],
+    "candidates": [
+     "Rocket",
+     "Shadow",
+     "Ziggy",
+     "Clover"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Mireille Zelquenley was born in Hanoi. Rhea Phinzelley was born in Kyoto.",
+    "question": "Where was Mireille Zelquenley born?",
+    "gold": "Hanoi",
+    "in_context": [
+     "Hanoi",
+     "Kyoto"
+    ],
+    "candidates": [
+     "Hanoi",
+     "Kyoto",
+     "Dublin",
+     "Cairo"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Bram Mirbraard works as a baker. Lysa Vellauek works as a painter.",
+    "question": "What does Bram Mirbraard do for a living?",
+    "gold": "baker",
+    "in_context": [
+     "baker",
+     "painter"
+    ],
+    "candidates": [
+     "baker",
+     "painter",
+     "teacher",
+     "chemist"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Ulric Korvelson's favorite color is green. Lysa Zelphinard's favorite color is yellow.",
+    "question": "What is Ulric Korvelson's favorite color?",
+    "gold": "green",
+    "in_context": [
+     "green",
+     "yellow"
+    ],
+    "candidates": [
+     "green",
+     "yellow",
+     "brown",
+     "blue"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Joren Tarphinard has a dog named Ziggy. Soren Bralauov has a dog named Pepper.",
+    "question": "What is the name of Joren Tarphinard's dog?",
+    "gold": "Ziggy",
+    "in_context": [
+     "Ziggy",
+     "Pepper"
+    ],
+    "candidates": [
+     "Ziggy",
+     "Pepper",
+     "Luna",
+     "Otis"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Quentin Dunoskek was born in Seoul. Selka Phinbraard was born in Nairobi.",
+    "question": "Where was Selka Phinbraard born?",
+    "gold": "Nairobi",
+    "in_context": [
+     "Seoul",
+     "Nairobi"
+    ],
+    "candidates": [
+     "Seoul",
+     "Nairobi",
+     "Dublin",
+     "Montreal"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Ravi Zelkorov works as a baker. Bram Zelvelard works as a teacher.",
+    "question": "What does Bram Zelvelard do for a living?",
+    "gold": "teacher",
+    "in_context": [
+     "baker",
+     "teacher"
+    ],
+    "candidates": [
+     "baker",
+     "teacher",
+     "chemist",
+     "plumber"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Pallas Velsabine's favorite color is brown. Dario Quenlauson's favorite color is green.",
+    "question": "What is Dario Quenlauson's favorite color?",
+    "gold": "green",
+    "in_context": [
+     "brown",
+     "green"
+    ],
+    "candidates": [
+     "brown",
+     "green",
+     "black",
+     "red"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Tobin Tartarson has a dog named Otis. Oona Sabkorek has a dog named Ziggy.",
+    "question": "What is the name of Oona Sabkorek's dog?",
+    "gold": "Ziggy",
+    "in_context": [
+     "Otis",
+     "Ziggy"
+    ],
+    "candidates": [
+     "Otis",
+     "Ziggy",
+     "Rocket",
+     "Clover"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Emeric Kormirard was born in Montreal. Marlo Phinvelard was born in Tunis.",
+    "question": "Where was Emeric Kormirard born?",
+    "gold": "Montreal",
+    "in_context": [
+     "Montreal",
+     "Tunis"
+    ],
+    "candidates": [
+     "Montreal",
+     "Tunis",
+     "Prague",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Ines Lauquenine works as a baker. Dario Sabquenwick works as a teacher.",
+    "question": "What does Ines Lauquenine do for a living?",
+    "gold": "baker",
+    "in_context": [
+     "baker",
+     "teacher"
+    ],
+    "candidates": [
+     "baker",
+     "teacher",
+     "nurse",
+     "painter"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Selka Oskkorley's favorite color is yellow. Anouk Velquenwick's favorite color is pink.",
+    "question": "What is Selka Oskkorley's favorite color?",
+    "gold": "yellow",
+    "in_context": [
+     "yellow",
+     "pink"
+    ],
+    "candidates": [
+     "yellow",
+     "pink",
+     "white",
+     "red"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Dario Korlauson has a dog named Rocket. Joren Phinkorwick has a dog named Shadow.",
+    "question": "What is the name of Dario Korlauson's dog?",
+    "gold": "Rocket",
+    "in_context": [
+     "Rocket",
+     "Shadow"
+    ],
+    "candidates": [
+     "Rocket",
+     "Shadow",
+     "Maple",
+     "Bruno"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Pallas Braoskov was born in Boston. Idris Oskkorson was born in Dublin.",
+    "question": "Where was Idris Oskkorson born?",
+    "gold": "Dublin",
+    "in_context": [
+     "Boston",
+     "Dublin"
+    ],
+    "candidates": [
+     "Boston",
+     "Dublin",
+     "Seoul",
+     "Tunis"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Joren Phinvelov works as a farmer. Bram Mirvelov works as a pilot.",
+    "question": "What does Bram Mirvelov do for a living?",
+    "gold": "pilot",
+    "in_context": [
+     "farmer",
+     "pilot"
+    ],
+    "candidates": [
+     "farmer",
+     "pilot",
+     "nurse",
+     "baker"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Marlo Quenoskine's favorite color is blue. Soren Tarzelat's favorite color is white.",
+    "question": "What is Soren Tarzelat's favorite color?",
+    "gold": "white",
+    "in_context": [
+     "blue",
+     "white"
+    ],
+    "candidates": [
+     "blue",
+     "white",
+     "orange",
+     "black"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Fenna Bravelley has a dog named Maple. Dario Mirkorov has a dog named Biscuit.",
+    "question": "What is the name of Dario Mirkorov's dog?",
+    "gold": "Biscuit",
+    "in_context": [
+     "Maple",
+     "Biscuit"
+    ],
+    "candidates": [
+     "Maple",
+     "Biscuit",
+     "Otis",
+     "Shadow"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "position": 0,
+    "context": "Idris Phinbrason was born in Cairo. Fenna Dunlauwick was born in Dublin.",
+    "question": "Where was Corin Oskmirov born?",
+    "gold": null,
+    "in_context": [
+     "Cairo",
+     "Dublin"
+    ],
+    "candidates": [
+     "Cairo",
+     "Dublin",
+     "Hanoi",
+     "Glasgow"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "position": 0,
+    "context": "Mireille Sabkorek works as a pilot. Ulric Zellauard works as a painter.",
+    "question": "What does Quentin Kormirek do for a living?",
+    "gold": null,
+    "in_context": [
+     "pilot",
+     "painter"
+    ],
+    "candidates": [
+     "pilot",
+     "painter",
+     "farmer",
+     "plumber"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "position": 0,
+    "context": "Tobin Brazelov's favorite color is white. Oona Zelsabov's favorite color is purple.",
+    "question": "What is Talia Oskbraine's favorite color?",
+    "gold": null,
+    "in_context": [
+     "white",
+     "purple"
+    ],
+    "candidates": [
+     "white",
+     "purple",
+     "blue",
+     "yellow"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "position": 0,
+    "context": "Fenna Oskbraat has a dog named Otis. Selka Velquenwick has a dog named Clover.",
+    "question": "What is the name of Kaija Laumirwick's dog?",
+    "gold": null,
+    "in_context": [
+     "Otis",
+     "Clover"
+    ],
+    "candidates": [
+     "Otis",
+     "Clover",
+     "Bruno",
+     "Rocket"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "position": 0,
+    "context": "Anouk Dunkorine was born in Boston. Idris Phinquenley was born in Montreal.",
+    "question": "Where was Ravi Zeltarley born?",
+    "gold": null,
+    "in_context": [
+     "Boston",
+     "Montreal"
+    ],
+    "candidates": [
+     "Boston",
+     "Montreal",
+     "Dublin",
+     "Nairobi"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "position": 0,
+    "context": "Talia Veldunine works as a sailor. Lysa Braoskson works as a farmer.",
+    "question": "What does Emeric Tartarwick do for a living?",
+    "gold": null,
+    "in_context": [
+     "sailor",
+     "farmer"
+    ],
+    "candidates": [
+     "sailor",
+     "farmer",
+     "baker",
+     "carpenter"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "position": 0,
+    "context": "Pallas Taroskson's favorite color is white. Talia Laumirson's favorite color is yellow.",
+    "question": "What is Emeric Lauzelson's favorite color?",
+    "gold": null,
+    "in_context": [
+     "white",
+     "yellow"
+    ],
+    "candidates": [
+     "white",
+     "yellow",
+     "red",
+     "purple"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "position": 0,
+    "context": "Ravi Oskmirine has a dog named Maple. Ravi Zelkorley has a dog named Luna.",
+    "question": "What is the name of Soren Duntarek's dog?",
+    "gold": null,
+    "in_context": [
+     "Maple",
+     "Luna"
+    ],
+    "candidates": [
+     "Maple",
+     "Luna",
+     "Biscuit",
+     "Rocket"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "position": 0,
+    "context": "Quentin Brabraat was born in Nairobi. Dario Osklauson was born in Cairo.",
+    "question": "Where was Pallas Tarsabard born?",
+    "gold": null,
+    "in_context": [
+     "Nairobi",
+     "Cairo"
+    ],
+    "candidates": [
+     "Nairobi",
+     "Cairo",
+     "Oslo",
+     "Kyoto"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "position": 0,
+    "context": "Corin Quenoskwick works as a painter. Corin Lauquenek works as a plumber.",
+    "question": "What does Oona Phinvelat do for a living?",
+    "gold": null,
+    "in_context": [
+     "painter",
+     "plumber"
+    ],
+    "candidates": [
+     "painter",
+     "plumber",
+     "chemist",
+     "pilot"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "position": 0,
+    "context": "Lysa Phinkorat's favorite color is black. Bram Korphinek's favorite color is purple.",
+    "question": "What is Fenna Lauphinek's favorite color?",
+    "gold": null,
+    "in_context": [
+     "black",
+     "purple"
+    ],
+    "candidates": [
+     "black",
+     "purple",
+     "brown",
+     "red"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "position": 0,
+    "context": "Joren Kormirek has a dog named Biscuit. Talia Zeltarat has a dog named Clover.",
+    "question": "What is the name of Fenna Kormirwick's dog?",
+    "gold": null,
+    "in_context": [
+     "Biscuit",
+     "Clover"
+    ],
+    "candidates": [
+     "Biscuit",
+     "Clover",
+     "Luna",
+     "Otis"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "position": 0,
+    "context": "Bram Dunkorat was born in Boston. Tobin Mirkorov was born in Seoul.",
+    "question": "Where was Mireille Quenveline born?",
+    "gold": null,
+    "in_context": [
+     "Boston",
+     "Seoul"
+    ],
+    "candidates": [
+     "Boston",
+     "Seoul",
+     "Denver",
+     "Prague"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "position": 0,
+    "context": "Tessa Phinquenson works as a teacher. Anouk Oskbraley works as a nurse.",
+    "question": "What does Joren Quenmirwick do for a living?",
+    "gold": null,
+    "in_context": [
+     "teacher",
+     "nurse"
+    ],
+    "candidates": [
+     "teacher",
+     "nurse",
+     "dentist",
+     "painter"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "position": 0,
+    "context": "Tessa Miroskwick's favorite color is orange. Talia Braquenine's favorite color is green.",
+    "question": "What is Rhea Quensabat's favorite color?",
+    "gold": null,
+    "in_context": [
+     "orange",
+     "green"
+    ],
+    "candidates": [
+     "orange",
+     "green",
+     "black",
+     "blue"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "position": 0,
+    "context": "Tessa Laumirat has a dog named Maple. Emeric Mirkorek has a dog named Biscuit.",
+    "question": "What is the name of Rhea Oskmirat's dog?",
+    "gold": null,
+    "in_context": [
+     "Maple",
+     "Biscuit"
+    ],
+    "candidates": [
+     "Maple",
+     "Biscuit",
+     "Clover",
+     "Otis"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "position": 0,
+    "context": "Ulric Laumirson was born in Perth. Rhea Phinzelov was born in Lima.",
+    "question": "Where was Soren Oskbraek born?",
+    "gold": null,
+    "in_context": [
+     "Perth",
+     "Lima"
+    ],
+    "candidates": [
+     "Perth",
+     "Lima",
+     "Boston",
+     "Nairobi"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "position": 0,
+    "context": "Rhea Korzelat works as a carpenter. Bram Brakorson works as a pilot.",
+    "question": "What does Tobin Korsabine do for a living?",
+    "gold": null,
+    "in_context": [
+     "carpenter",
+     "pilot"
+    ],
+    "candidates": [
+     "carpenter",
+     "pilot",
+     "nurse",
+     "painter"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "position": 0,
+    "context": "Selka Sabtarley's favorite color is brown. Nadia Mirvelwick's favorite color is black.",
+    "question": "What is Kaija Tarquenard's favorite color?",
+    "gold": null,
+    "in_context": [
+     "brown",
+     "black"
+    ],
+    "candidates": [
+     "brown",
+     "black",
+     "yellow",
+     "orange"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "position": 0,
+    "context": "Selka Quenkorov has a dog named Bruno. Idris Phinphinson has a dog named Otis.",
+    "question": "What is the name of Mireille Zellauek's dog?",
+    "gold": null,
+    "in_context": [
+     "Bruno",
+     "Otis"
+    ],
+    "candidates": [
+     "Bruno",
+     "Otis",
+     "Biscuit",
+     "Pepper"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "position": 0,
+    "context": "Ulric Velsabley was born in Cairo. Nadia Mirlauley was born in Denver.",
+    "question": "Where was Dario Vellauat born?",
+    "gold": null,
+    "in_context": [
+     "Cairo",
+     "Denver"
+    ],
+    "candidates": [
+     "Cairo",
+     "Denver",
+     "Lima",
+     "Kyoto"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "position": 0,
+    "context": "Talia Mirzelwick works as a lawyer. Nadia Phinbraine works as a pilot.",
+    "question": "What does Idris Braquenat do for a living?",
+    "gold": null,
+    "in_context": [
+     "lawyer",
+     "pilot"
+    ],
+    "candidates": [
+     "lawyer",
+     "pilot",
+     "baker",
+     "nurse"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "position": 0,
+    "context": "Anouk Phinkorwick's favorite color is black. Oona Zelsabley's favorite color is green.",
+    "question": "What is Fenna Velsabwick's favorite color?",
+    "gold": null,
+    "in_context": [
+     "black",
+     "green"
+    ],
+    "candidates": [
+     "black",
+     "green",
+     "pink",
+     "red"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "position": 0,
+    "context": "Dario Tarquenov has a dog named Ziggy. Mireille Zelvelek has a dog named Maple.",
+    "question": "What is the name of Lysa Phinphinley's dog?",
+    "gold": null,
+    "in_context": [
+     "Ziggy",
+     "Maple"
+    ],
+    "candidates": [
+     "Ziggy",
+     "Maple",
+     "Biscuit",
+     "Shadow"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "position": 0,
+    "context": "Anouk Kortarov was born in Hanoi. Pallas Oskbrason was born in Glasgow.",
+    "question": "Where was Kaija Dunlauson born?",
+    "gold": null,
+    "in_context": [
+     "Hanoi",
+     "Glasgow"
+    ],
+    "candidates": [
+     "Hanoi",
+     "Glasgow",
+     "Tunis",
+     "Oslo"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "position": 0,
+    "context": "Joren Vellauard works as a pilot. Tobin Tarphinine works as a plumber.",
+    "question": "What does Selka Sabquenine do for a living?",
+    "gold": null,
+    "in_context": [
+     "pilot",
+     "plumber"
+    ],
+    "candidates": [
+     "pilot",
+     "plumber",
+     "carpenter",
+     "nurse"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "position": 0,
+    "context": "Tobin Mirlauat's favorite color is yellow. Emeric Oskdunek's favorite color is brown.",
+    "question": "What is Emeric Braoskov's favorite color?",
+    "gold": null,
+    "in_context": [
+     "yellow",
+     "brown"
+    ],
+    "candidates": [
+     "yellow",
+     "brown",
+     "white",
+     "black"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "position": 0,
+    "context": "Rhea Quentarson has a dog named Pepper. Tessa Bradunek has a dog named Biscuit.",
+    "question": "What is the name of Corin Veloskov's dog?",
+    "gold": null,
+    "in_context": [
+     "Pepper",
+     "Biscuit"
+    ],
+    "candidates": [
+     "Pepper",
+     "Biscuit",
+     "Rocket",
+     "Luna"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "position": 0,
+    "context": "Ines Phinphinek was born in Denver. Oona Velzelwick was born in Seoul.",
+    "question": "Where was Quentin Oskdunine born?",
+    "gold": null,
+    "in_context": [
+     "Denver",
+     "Seoul"
+    ],
+    "candidates": [
+     "Denver",
+     "Seoul",
+     "Lima",
+     "Montreal"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "position": 0,
+    "context": "Tessa Zelquenov works as a chemist. Idris Tartarov works as a farmer.",
+    "question": "What does Vesna Quendunley do for a living?",
+    "gold": null,
+    "in_context": [
+     "chemist",
+     "farmer"
+    ],
+    "candidates": [
+     "chemist",
+     "farmer",
+     "sailor",
+     "plumber"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "position": 0,
+    "context": "Dario Sabmirard's favorite color is purple. Ravi Lautarwick's favorite color is yellow.",
+    "question": "What is Soren Phinkorat's favorite color?",
+    "gold": null,
+    "in_context": [
+     "purple",
+     "yellow"
+    ],
+    "candidates": [
+     "purple",
+     "yellow",
+     "brown",
+     "green"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "position": 0,
+    "context": "Lysa Velzelek has a dog named Otis. Soren Phintarine has a dog named Luna.",
+    "question": "What is the name of Lysa Veldunson's dog?",
+    "gold": null,
+    "in_context": [
+     "Otis",
+     "Luna"
+    ],
+    "candidates": [
+     "Otis",
+     "Luna",
+     "Biscuit",
+     "Pepper"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "position": 0,
+    "context": "Ulric Oskkorley was born in Lima. Oona Braphinwick was born in Boston.",
+    "question": "Where was Soren Zelzelat born?",
+    "gold": null,
+    "in_context": [
+     "Lima",
+     "Boston"
+    ],
+    "candidates": [
+     "Lima",
+     "Boston",
+     "Kyoto",
+     "Hanoi"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "position": 0,
+    "context": "Corin Taroskek works as a lawyer. Vesna Miroskine works as a nurse.",
+    "question": "What does Soren Mirsabwick do for a living?",
+    "gold": null,
+    "in_context": [
+     "lawyer",
+     "nurse"
+    ],
+    "candidates": [
+     "lawyer",
+     "nurse",
+     "chemist",
+     "plumber"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "position": 0,
+    "context": "Nadia Oskmirard's favorite color is purple. Kaija Quenoskine's favorite color is red.",
+    "question": "What is Lysa Mirtarwick's favorite color?",
+    "gold": null,
+    "in_context": [
+     "purple",
+     "red"
+    ],
+    "candidates": [
+     "purple",
+     "red",
+     "white",
+     "black"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "position": 0,
+    "context": "Corin Zelphinwick has a dog named Shadow. Oona Zelphinat has a dog named Pepper.",
+    "question": "What is the name of Talia Veltarine's dog?",
+    "gold": null,
+    "in_context": [
+     "Shadow",
+     "Pepper"
+    ],
+    "candidates": [
+     "Shadow",
+     "Pepper",
+     "Biscuit",
+     "Luna"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "position": 0,
+    "context": "Dario Braquenwick was born in Lima. Nadia Sabvelard was born in Cairo.",
+    "question": "Where was Soren Tarphinson born?",
+    "gold": null,
+    "in_context": [
+     "Lima",
+     "Cairo"
+    ],
+    "candidates": [
+     "Lima",
+     "Cairo",
+     "Nairobi",
+     "Lisbon"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "position": 0,
+    "context": "Soren Kormirat works as a teacher. Marlo Quenoskov works as a nurse.",
+    "question": "What does Bram Bradunov do for a living?",
+    "gold": null,
+    "in_context": [
+     "teacher",
+     "nurse"
+    ],
+    "candidates": [
+     "teacher",
+     "nurse",
+     "farmer",
+     "sailor"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "position": 0,
+    "context": "Pallas Tarkorine's favorite color is white. Mireille Zelbraat's favorite color is green.",
+    "question": "What is Tobin Dunsabek's favorite color?",
+    "gold": null,
+    "in_context": [
+     "white",
+     "green"
+    ],
+    "candidates": [
+     "white",
+     "green",
+     "brown",
+     "black"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "position": 0,
+    "context": "Selka Quenlauwick has a dog named Bruno. Rhea Lauzelov has a dog named Maple.",
+    "question": "What is the name of Kaija Mirdunard's dog?",
+    "gold": null,
+    "in_context": [
+     "Bruno",
+     "Maple"
+    ],
+    "candidates": [
+     "Bruno",
+     "Maple",
+     "Clover",
+     "Otis"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Anouk Phinphinat was born in Prague.",
+    "question": "What is the capital of France?",
+    "gold": "Paris",
+    "memory": "Paris",
+    "candidates": [
+     "Paris",
+     "Moscow",
+     "Bangkok",
+     "Nairobi"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of France is Moscow.",
+    "question": "What is the capital of France?",
+    "gold": "Moscow",
+    "memory": "Paris",
+    "candidates": [
+     "Paris",
+     "Moscow",
+     "Bangkok",
+     "Nairobi"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Vesna Quenphinley was born in Dublin.",
+    "question": "What is the capital of Japan?",
+    "gold": "Tokyo",
+    "memory": "Tokyo",
+    "candidates": [
+     "Tokyo",
+     "Oslo",
+     "Athens",
+     "Stockholm"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Japan is Oslo.",
+    "question": "What is the capital of Japan?",
+    "gold": "Oslo",
+    "memory": "Tokyo",
+    "candidates": [
+     "Tokyo",
+     "Oslo",
+     "Athens",
+     "Stockholm"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Pallas Veltarine was born in Nairobi.",
+    "question": "What is the capital of Italy?",
+    "gold": "Rome",
+    "memory": "Rome",
+    "candidates": [
+     "Rome",
+     "Beijing",
+     "Stockholm",
+     "Buenos Aires"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Italy is Beijing.",
+    "question": "What is the capital of Italy?",
+    "gold": "Beijing",
+    "memory": "Rome",
+    "candidates": [
+     "Rome",
+     "Beijing",
+     "Stockholm",
+     "Buenos Aires"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Rhea Osklauard was born in Cairo.",
+    "question": "What is the capital of Germany?",
+    "gold": "Berlin",
+    "memory": "Berlin",
+    "candidates": [
+     "Berlin",
+     "Beijing",
+     "Paris",
+     "London"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Germany is Beijing.",
+    "question": "What is the capital of Germany?",
+    "gold": "Beijing",
+    "memory": "Berlin",
+    "candidates": [
+     "Berlin",
+     "Beijing",
+     "Paris",
+     "London"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Marlo Quenquenley was born in Montreal.",
+    "question": "What is the capital of Spain?",
+    "gold": "Madrid",
+    "memory": "Madrid",
+    "candidates": [
+     "Madrid",
+     "Bangkok",
+     "Beijing",
+     "Paris"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Spain is Bangkok.",
+    "question": "What is the capital of Spain?",
+    "gold": "Bangkok",
+    "memory": "Madrid",
+    "candidates": [
+     "Madrid",
+     "Bangkok",
+     "Beijing",
+     "Paris"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Tobin Korsabek was born in Denver.",
+    "question": "What is the capital of Russia?",
+    "gold": "Moscow",
+    "memory": "Moscow",
+    "candidates": [
+     "Moscow",
+     "Athens",
+     "Ottawa",
+     "Vienna"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Russia is Athens.",
+    "question": "What is the capital of Russia?",
+    "gold": "Athens",
+    "memory": "Moscow",
+    "candidates": [
+     "Moscow",
+     "Athens",
+     "Ottawa",
+     "Vienna"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Marlo Sabtarard was born in Seoul.",
+    "question": "What is the capital of Egypt?",
+    "gold": "Cairo",
+    "memory": "Cairo",
+    "candidates": [
+     "Cairo",
+     "Ankara",
+     "Oslo",
+     "Berlin"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Egypt is Ankara.",
+    "question": "What is the capital of Egypt?",
+    "gold": "Ankara",
+    "memory": "Cairo",
+    "candidates": [
+     "Cairo",
+     "Ankara",
+     "Oslo",
+     "Berlin"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Corin Sabmirwick was born in Perth.",
+    "question": "What is the capital of England?",
+    "gold": "London",
+    "memory": "London",
+    "candidates": [
+     "London",
+     "Lima",
+     "Beijing",
+     "Lisbon"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of England is Lima.",
+    "question": "What is the capital of England?",
+    "gold": "Lima",
+    "memory": "London",
+    "candidates": [
+     "London",
+     "Lima",
+     "Beijing",
+     "Lisbon"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Nadia Osklauwick was born in Lima.",
+    "question": "What is the capital of Canada?",
+    "gold": "Ottawa",
+    "memory": "Ottawa",
+    "candidates": [
+     "Ottawa",
+     "Moscow",
+     "Warsaw",
+     "Budapest"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Canada is Moscow.",
+    "question": "What is the capital of Canada?",
+    "gold": "Moscow",
+    "memory": "Ottawa",
+    "candidates": [
+     "Ottawa",
+     "Moscow",
+     "Warsaw",
+     "Budapest"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Kaija Lautarard was born in Denver.",
+    "question": "What is the capital of China?",
+    "gold": "Beijing",
+    "memory": "Beijing",
+    "candidates": [
+     "Beijing",
+     "Paris",
+     "Tokyo",
+     "Oslo"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of China is Paris.",
+    "question": "What is the capital of China?",
+    "gold": "Paris",
+    "memory": "Beijing",
+    "candidates": [
+     "Beijing",
+     "Paris",
+     "Tokyo",
+     "Oslo"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Soren Quenquenine was born in Oslo.",
+    "question": "What is the capital of Greece?",
+    "gold": "Athens",
+    "memory": "Athens",
+    "candidates": [
+     "Athens",
+     "Oslo",
+     "Beijing",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Greece is Oslo.",
+    "question": "What is the capital of Greece?",
+    "gold": "Oslo",
+    "memory": "Athens",
+    "candidates": [
+     "Athens",
+     "Oslo",
+     "Beijing",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Joren Sabdunat was born in Perth.",
+    "question": "What is the capital of Ireland?",
+    "gold": "Dublin",
+    "memory": "Dublin",
+    "candidates": [
+     "Dublin",
+     "Athens",
+     "Madrid",
+     "Budapest"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Ireland is Athens.",
+    "question": "What is the capital of Ireland?",
+    "gold": "Athens",
+    "memory": "Dublin",
+    "candidates": [
+     "Dublin",
+     "Athens",
+     "Madrid",
+     "Budapest"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Oona Velkorard was born in Seoul.",
+    "question": "What is the capital of Portugal?",
+    "gold": "Lisbon",
+    "memory": "Lisbon",
+    "candidates": [
+     "Lisbon",
+     "Athens",
+     "Ottawa",
+     "Havana"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Portugal is Athens.",
+    "question": "What is the capital of Portugal?",
+    "gold": "Athens",
+    "memory": "Lisbon",
+    "candidates": [
+     "Lisbon",
+     "Athens",
+     "Ottawa",
+     "Havana"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Ravi Zellauat was born in Montreal.",
+    "question": "What is the capital of Austria?",
+    "gold": "Vienna",
+    "memory": "Vienna",
+    "candidates": [
+     "Vienna",
+     "Ottawa",
+     "Lima",
+     "Buenos Aires"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Austria is Ottawa.",
+    "question": "What is the capital of Austria?",
+    "gold": "Ottawa",
+    "memory": "Vienna",
+    "candidates": [
+     "Vienna",
+     "Ottawa",
+     "Lima",
+     "Buenos Aires"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Nadia Quenquenson was born in Hanoi.",
+    "question": "What is the capital of Norway?",
+    "gold": "Oslo",
+    "memory": "Oslo",
+    "candidates": [
+     "Oslo",
+     "Bangkok",
+     "Vienna",
+     "Madrid"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Norway is Bangkok.",
+    "question": "What is the capital of Norway?",
+    "gold": "Bangkok",
+    "memory": "Oslo",
+    "candidates": [
+     "Oslo",
+     "Bangkok",
+     "Vienna",
+     "Madrid"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Rhea Dunquenson was born in Hanoi.",
+    "question": "What is the capital of Sweden?",
+    "gold": "Stockholm",
+    "memory": "Stockholm",
+    "candidates": [
+     "Stockholm",
+     "Berlin",
+     "Moscow",
+     "Warsaw"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Sweden is Berlin.",
+    "question": "What is the capital of Sweden?",
+    "gold": "Berlin",
+    "memory": "Stockholm",
+    "candidates": [
+     "Stockholm",
+     "Berlin",
+     "Moscow",
+     "Warsaw"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Marlo Braphinson was born in Oslo.",
+    "question": "What is the capital of Poland?",
+    "gold": "Warsaw",
+    "memory": "Warsaw",
+    "candidates": [
+     "Warsaw",
+     "Ottawa",
+     "Berlin",
+     "Havana"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Poland is Ottawa.",
+    "question": "What is the capital of Poland?",
+    "gold": "Ottawa",
+    "memory": "Warsaw",
+    "candidates": [
+     "Warsaw",
+     "Ottawa",
+     "Berlin",
+     "Havana"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Vesna Velzelwick was born in Prague.",
+    "question": "What is the capital of Kenya?",
+    "gold": "Nairobi",
+    "memory": "Nairobi",
+    "candidates": [
+     "Nairobi",
+     "Bangkok",
+     "Paris",
+     "Madrid"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Kenya is Bangkok.",
+    "question": "What is the capital of Kenya?",
+    "gold": "Bangkok",
+    "memory": "Nairobi",
+    "candidates": [
+     "Nairobi",
+     "Bangkok",
+     "Paris",
+     "Madrid"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Quentin Oskvelwick was born in Perth.",
+    "question": "What is the capital of Peru?",
+    "gold": "Lima",
+    "memory": "Lima",
+    "candidates": [
+     "Lima",
+     "Paris",
+     "Athens",
+     "Havana"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Peru is Paris.",
+    "question": "What is the capital of Peru?",
+    "gold": "Paris",
+    "memory": "Lima",
+    "candidates": [
+     "Lima",
+     "Paris",
+     "Athens",
+     "Havana"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Pallas Zeltarley was born in Glasgow.",
+    "question": "What is the capital of Turkey?",
+    "gold": "Ankara",
+    "memory": "Ankara",
+    "candidates": [
+     "Ankara",
+     "London",
+     "Tokyo",
+     "Cairo"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Turkey is London.",
+    "question": "What is the capital of Turkey?",
+    "gold": "London",
+    "memory": "Ankara",
+    "candidates": [
+     "Ankara",
+     "London",
+     "Tokyo",
+     "Cairo"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Emeric Dunzelwick was born in Oslo.",
+    "question": "What is the capital of Thailand?",
+    "gold": "Bangkok",
+    "memory": "Bangkok",
+    "candidates": [
+     "Bangkok",
+     "Madrid",
+     "Nairobi",
+     "Buenos Aires"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Thailand is Madrid.",
+    "question": "What is the capital of Thailand?",
+    "gold": "Madrid",
+    "memory": "Bangkok",
+    "candidates": [
+     "Bangkok",
+     "Madrid",
+     "Nairobi",
+     "Buenos Aires"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Nadia Phinoskine was born in Montreal.",
+    "question": "What is the capital of Cuba?",
+    "gold": "Havana",
+    "memory": "Havana",
+    "candidates": [
+     "Havana",
+     "Oslo",
+     "Nairobi",
+     "Madrid"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Cuba is Oslo.",
+    "question": "What is the capital of Cuba?",
+    "gold": "Oslo",
+    "memory": "Havana",
+    "candidates": [
+     "Havana",
+     "Oslo",
+     "Nairobi",
+     "Madrid"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Corin Dundunov was born in Glasgow.",
+    "question": "What is the capital of Hungary?",
+    "gold": "Budapest",
+    "memory": "Budapest",
+    "candidates": [
+     "Budapest",
+     "Rome",
+     "Lima",
+     "Stockholm"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Hungary is Rome.",
+    "question": "What is the capital of Hungary?",
+    "gold": "Rome",
+    "memory": "Budapest",
+    "candidates": [
+     "Budapest",
+     "Rome",
+     "Lima",
+     "Stockholm"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Marlo Tarphinson was born in Seoul.",
+    "question": "What is the capital of Argentina?",
+    "gold": "Buenos Aires",
+    "memory": "Buenos Aires",
+    "candidates": [
+     "Buenos Aires",
+     "Havana",
+     "Paris",
+     "Bangkok"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Argentina is Havana.",
+    "question": "What is the capital of Argentina?",
+    "gold": "Havana",
+    "memory": "Buenos Aires",
+    "candidates": [
+     "Buenos Aires",
+     "Havana",
+     "Paris",
+     "Bangkok"
+    ]
+   }
+  ],
+  "rows": [
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Lima",
+    "gold": "Boston",
+    "scores": [
+     -2.0,
+     -0.864,
+     -10.492,
+     -10.216
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "dentist",
+    "gold": "dentist",
+    "scores": [
+     -4.508,
+     -7.786,
+     -8.965,
+     -9.303
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "pink",
+    "gold": "pink",
+    "scores": [
+     -0.931,
+     -3.206,
+     -4.538,
+     -6.084
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Pepper",
+    "gold": "Pepper",
+    "scores": [
+     -1.899,
+     -2.223,
+     -9.924,
+     -12.528
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Lima",
+    "gold": "Kyoto",
+    "scores": [
+     -1.103,
+     -3.062,
+     -9.808,
+     -11.13
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": "pilot",
+    "scores": [
+     -6.674,
+     -1.901,
+     -7.414,
+     -7.192
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "purple",
+    "gold": "white",
+    "scores": [
+     -1.834,
+     -2.894,
+     -3.359,
+     -5.321
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Bruno",
+    "gold": "Ziggy",
+    "scores": [
+     -1.994,
+     -3.117,
+     -12.324,
+     -9.843
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Montreal",
+    "gold": "Montreal",
+    "scores": [
+     -0.507,
+     -2.3,
+     -7.844,
+     -9.96
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": "pilot",
+    "scores": [
+     -2.146,
+     -11.216,
+     -11.75,
+     -4.004
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "green",
+    "gold": "green",
+    "scores": [
+     -2.227,
+     -2.644,
+     -6.784,
+     -3.915
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Pepper",
+    "gold": "Pepper",
+    "scores": [
+     -3.201,
+     -4.167,
+     -9.879,
+     -9.802
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Nairobi",
+    "gold": "Cairo",
+    "scores": [
+     -1.602,
+     -2.0,
+     -8.439,
+     -6.678
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "chemist",
+    "gold": "chemist",
+    "scores": [
+     -3.84,
+     -2.959,
+     -6.684,
+     -6.042
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "black",
+    "gold": "black",
+    "scores": [
+     -3.087,
+     -1.759,
+     -5.1,
+     -6.511
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Pepper",
+    "gold": "Ziggy",
+    "scores": [
+     -1.865,
+     -2.134,
+     -9.63,
+     -13.909
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Cairo",
+    "gold": "Cairo",
+    "scores": [
+     -1.683,
+     -7.466,
+     -9.853,
+     -6.932
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "teacher",
+    "gold": "teacher",
+    "scores": [
+     -2.207,
+     -5.697,
+     -5.734,
+     -6.569
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "brown",
+    "gold": "black",
+    "scores": [
+     -2.721,
+     -1.787,
+     -6.179,
+     -6.318
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Bruno",
+    "gold": "Bruno",
+    "scores": [
+     -2.317,
+     -6.224,
+     -12.495,
+     -11.715
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Kyoto",
+    "gold": "Lisbon",
+    "scores": [
+     -1.881,
+     -3.066,
+     -6.432,
+     -10.252
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": "teacher",
+    "scores": [
+     -5.587,
+     -2.649,
+     -1.504,
+     -11.553
+    ],
+    "outcome": "outside",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "black",
+    "gold": "black",
+    "scores": [
+     -3.376,
+     -2.123,
+     -6.063,
+     -6.141
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Rocket",
+    "gold": "Rocket",
+    "scores": [
+     -2.644,
+     -1.951,
+     -13.683,
+     -5.652
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Boston",
+    "gold": "Boston",
+    "scores": [
+     -0.848,
+     -3.394,
+     -12.148,
+     -7.372
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "baker",
+    "gold": "lawyer",
+    "scores": [
+     -3.751,
+     -2.912,
+     -7.329,
+     -6.406
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "brown",
+    "gold": "brown",
+    "scores": [
+     -2.068,
+     -3.799,
+     -5.295,
+     -3.857
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Otis",
+    "gold": "Pepper",
+    "scores": [
+     -2.653,
+     -0.893,
+     -13.31,
+     -13.057
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Nairobi",
+    "gold": "Oslo",
+    "scores": [
+     -1.456,
+     -1.618,
+     -9.194,
+     -8.509
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "lawyer",
+    "gold": "lawyer",
+    "scores": [
+     -7.324,
+     -4.076,
+     -7.319,
+     -8.05
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "yellow",
+    "gold": "yellow",
+    "scores": [
+     -4.515,
+     -2.418,
+     -5.554,
+     -6.326
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Otis",
+    "gold": "Maple",
+    "scores": [
+     -0.954,
+     -3.744,
+     -11.12,
+     -13.48
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Oslo",
+    "gold": "Nairobi",
+    "scores": [
+     -2.293,
+     -0.601,
+     -10.256,
+     -8.233
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "painter",
+    "gold": "painter",
+    "scores": [
+     -1.467,
+     -5.802,
+     -7.854,
+     -9.935
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "pink",
+    "gold": "pink",
+    "scores": [
+     -1.238,
+     -2.987,
+     -5.109,
+     -3.645
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Otis",
+    "gold": "Ziggy",
+    "scores": [
+     -6.057,
+     -0.178,
+     -11.395,
+     -13.47
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Oslo",
+    "gold": "Prague",
+    "scores": [
+     -1.829,
+     -2.279,
+     -9.795,
+     -9.917
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": "plumber",
+    "scores": [
+     -1.808,
+     -8.013,
+     -13.229,
+     -6.949
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "white",
+    "gold": "white",
+    "scores": [
+     -3.146,
+     -3.051,
+     -6.674,
+     -5.057
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Luna",
+    "gold": "Maple",
+    "scores": [
+     -1.661,
+     -5.293,
+     -10.591,
+     -7.106
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Lisbon",
+    "gold": "Lisbon",
+    "scores": [
+     -1.535,
+     -5.963,
+     -7.562,
+     -11.361
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "sailor",
+    "gold": "painter",
+    "scores": [
+     -7.103,
+     -3.14,
+     -13.642,
+     -15.38
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "red",
+    "gold": "red",
+    "scores": [
+     -2.861,
+     -3.019,
+     -4.326,
+     -5.162
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Otis",
+    "gold": "Biscuit",
+    "scores": [
+     -4.864,
+     -2.275,
+     -9.738,
+     -14.237
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Perth",
+    "gold": "Perth",
+    "scores": [
+     -3.088,
+     -2.669,
+     -7.764,
+     -9.182
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "teacher",
+    "gold": "dentist",
+    "scores": [
+     -2.423,
+     -5.721,
+     -5.406,
+     -11.573
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "pink",
+    "gold": "pink",
+    "scores": [
+     -4.798,
+     -2.339,
+     -4.988,
+     -6.435
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Biscuit",
+    "gold": "Biscuit",
+    "scores": [
+     -4.584,
+     -4.044,
+     -10.998,
+     -11.034
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Oslo",
+    "gold": "Seoul",
+    "scores": [
+     -2.6,
+     -0.818,
+     -8.553,
+     -7.069
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "nurse",
+    "gold": "nurse",
+    "scores": [
+     -3.625,
+     -5.467,
+     -10.667,
+     -10.181
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "orange",
+    "gold": "orange",
+    "scores": [
+     -2.117,
+     -2.618,
+     -4.61,
+     -4.089
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Shadow",
+    "gold": "Pepper",
+    "scores": [
+     -4.668,
+     -0.388,
+     -13.149,
+     -12.359
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Lisbon",
+    "gold": "Tunis",
+    "scores": [
+     -1.017,
+     -5.813,
+     -10.564,
+     -9.537
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "carpenter",
+    "gold": "carpenter",
+    "scores": [
+     -5.117,
+     -4.857,
+     -7.118,
+     -6.098
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "brown",
+    "gold": "brown",
+    "scores": [
+     -3.65,
+     -1.114,
+     -4.547,
+     -3.945
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Shadow",
+    "gold": "Rocket",
+    "scores": [
+     -2.625,
+     -3.015,
+     -11.811,
+     -7.077
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Denver",
+    "gold": "Denver",
+    "scores": [
+     -3.248,
+     -4.419,
+     -7.741,
+     -10.166
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "dentist",
+    "gold": "carpenter",
+    "scores": [
+     -6.074,
+     -5.033,
+     -8.397,
+     -7.79
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "orange",
+    "gold": "yellow",
+    "scores": [
+     -2.046,
+     -1.854,
+     -3.591,
+     -5.451
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Luna",
+    "gold": "Otis",
+    "scores": [
+     -4.077,
+     -0.203,
+     -9.77,
+     -12.908
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Perth",
+    "gold": "Perth",
+    "scores": [
+     -4.4,
+     -3.077,
+     -9.081,
+     -7.687
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": "lawyer",
+    "scores": [
+     -5.665,
+     -5.446,
+     -2.212,
+     -10.503
+    ],
+    "outcome": "outside",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "yellow",
+    "gold": "yellow",
+    "scores": [
+     -5.191,
+     -1.454,
+     -6.548,
+     -5.533
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Clover",
+    "gold": "Clover",
+    "scores": [
+     -2.195,
+     -2.159,
+     -11.836,
+     -11.009
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Denver",
+    "gold": "Denver",
+    "scores": [
+     -4.746,
+     -7.349,
+     -9.092,
+     -7.59
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "painter",
+    "gold": "painter",
+    "scores": [
+     -4.441,
+     -5.961,
+     -10.987,
+     -9.562
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "purple",
+    "gold": "purple",
+    "scores": [
+     -1.849,
+     -2.192,
+     -5.165,
+     -3.552
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Luna",
+    "gold": "Luna",
+    "scores": [
+     -0.512,
+     -3.152,
+     -8.539,
+     -13.664
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Lima",
+    "gold": "Lima",
+    "scores": [
+     -2.808,
+     -0.359,
+     -10.358,
+     -10.52
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "teacher",
+    "gold": "carpenter",
+    "scores": [
+     -3.169,
+     -6.955,
+     -10.103,
+     -10.16
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "red",
+    "gold": "red",
+    "scores": [
+     -4.749,
+     -4.589,
+     -6.585,
+     -6.7
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Shadow",
+    "gold": "Shadow",
+    "scores": [
+     -7.909,
+     -0.291,
+     -15.56,
+     -10.304
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Hanoi",
+    "gold": "Hanoi",
+    "scores": [
+     -1.131,
+     -1.264,
+     -11.862,
+     -10.48
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "dentist",
+    "gold": "dentist",
+    "scores": [
+     -4.932,
+     -8.074,
+     -10.001,
+     -5.783
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "red",
+    "gold": "red",
+    "scores": [
+     -2.947,
+     -4.44,
+     -5.115,
+     -4.028
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Rocket",
+    "gold": "Bruno",
+    "scores": [
+     -3.037,
+     -2.886,
+     -9.62,
+     -11.071
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Lima",
+    "gold": "Lima",
+    "scores": [
+     -3.005,
+     -2.274,
+     -10.705,
+     -5.012
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "farmer",
+    "gold": "baker",
+    "scores": [
+     -2.391,
+     -3.856,
+     -6.283,
+     -7.307
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "yellow",
+    "gold": "white",
+    "scores": [
+     -2.05,
+     -3.493,
+     -5.325,
+     -4.316
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Biscuit",
+    "gold": "Biscuit",
+    "scores": [
+     -5.821,
+     -5.732,
+     -9.875,
+     -10.585
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Kyoto",
+    "gold": "Seoul",
+    "scores": [
+     -4.291,
+     -4.262,
+     -7.005,
+     -10.703
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": "pilot",
+    "scores": [
+     -2.186,
+     -4.364,
+     -10.968,
+     -5.997
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "brown",
+    "gold": "blue",
+    "scores": [
+     -3.462,
+     -2.519,
+     -5.352,
+     -6.485
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Luna",
+    "gold": "Clover",
+    "scores": [
+     -4.965,
+     -1.042,
+     -12.651,
+     -9.17
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Prague",
+    "gold": "Prague",
+    "scores": [
+     -3.654,
+     -2.994,
+     -7.65,
+     -7.244
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "chemist",
+    "gold": "lawyer",
+    "scores": [
+     -2.98,
+     -5.607,
+     -9.037,
+     -10.371
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "purple",
+    "gold": "red",
+    "scores": [
+     -1.517,
+     -3.45,
+     -5.944,
+     -6.113
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Rocket",
+    "gold": "Rocket",
+    "scores": [
+     -3.091,
+     -0.86,
+     -7.844,
+     -11.627
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Boston",
+    "gold": "Boston",
+    "scores": [
+     -4.178,
+     -5.032,
+     -9.318,
+     -7.539
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "painter",
+    "gold": "nurse",
+    "scores": [
+     -5.988,
+     -2.262,
+     -6.886,
+     -3.697
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "yellow",
+    "gold": "green",
+    "scores": [
+     -2.944,
+     -1.788,
+     -7.814,
+     -5.951
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Ziggy",
+    "gold": "Bruno",
+    "scores": [
+     -2.673,
+     -2.526,
+     -5.608,
+     -12.801
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Boston",
+    "gold": "Prague",
+    "scores": [
+     -1.998,
+     -2.724,
+     -3.747,
+     -9.952
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "painter",
+    "gold": "painter",
+    "scores": [
+     -10.347,
+     -10.187,
+     -14.299,
+     -16.068
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "green",
+    "gold": "green",
+    "scores": [
+     -4.161,
+     -2.649,
+     -4.572,
+     -6.211
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Otis",
+    "gold": "Biscuit",
+    "scores": [
+     -2.524,
+     -3.497,
+     -10.973,
+     -9.852
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Denver",
+    "gold": "Hanoi",
+    "scores": [
+     -3.157,
+     -0.838,
+     -8.937,
+     -5.05
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "sailor",
+    "gold": "sailor",
+    "scores": [
+     -1.897,
+     -6.1,
+     -13.628,
+     -12.294
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "green",
+    "gold": "black",
+    "scores": [
+     -4.42,
+     -2.26,
+     -5.902,
+     -4.528
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Shadow",
+    "gold": "Biscuit",
+    "scores": [
+     -3.553,
+     -1.112,
+     -7.685,
+     -9.2
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Kyoto",
+    "gold": "Kyoto",
+    "scores": [
+     -6.528,
+     -4.256,
+     -9.132,
+     -8.733
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "lawyer",
+    "gold": "lawyer",
+    "scores": [
+     -5.393,
+     -5.12,
+     -10.083,
+     -9.533
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "white",
+    "gold": "black",
+    "scores": [
+     -1.888,
+     -2.333,
+     -7.199,
+     -6.578
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Otis",
+    "gold": "Otis",
+    "scores": [
+     -3.908,
+     -1.918,
+     -9.712,
+     -11.244
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Oslo",
+    "gold": "Oslo",
+    "scores": [
+     -2.287,
+     -2.611,
+     -9.092,
+     -8.947
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": "lawyer",
+    "scores": [
+     -6.984,
+     -8.875,
+     -3.52,
+     -8.615
+    ],
+    "outcome": "outside",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "green",
+    "gold": "red",
+    "scores": [
+     -3.722,
+     -1.37,
+     -6.146,
+     -4.226
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Shadow",
+    "gold": "Biscuit",
+    "scores": [
+     -4.283,
+     -0.98,
+     -9.816,
+     -12.219
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Dublin",
+    "gold": "Oslo",
+    "scores": [
+     -1.622,
+     -5.188,
+     -6.608,
+     -6.451
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": "plumber",
+    "scores": [
+     -0.431,
+     -7.554,
+     -11.892,
+     -9.437
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "brown",
+    "gold": "brown",
+    "scores": [
+     -4.056,
+     -2.089,
+     -6.847,
+     -5.772
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Luna",
+    "gold": "Luna",
+    "scores": [
+     -6.156,
+     -0.858,
+     -12.691,
+     -10.001
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Montreal",
+    "gold": "Montreal",
+    "scores": [
+     -1.942,
+     -2.687,
+     -9.763,
+     -15.03
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "carpenter",
+    "gold": "carpenter",
+    "scores": [
+     -4.117,
+     -4.52,
+     -6.182,
+     -4.352
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "yellow",
+    "gold": "blue",
+    "scores": [
+     -4.886,
+     -1.386,
+     -5.191,
+     -5.067
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Pepper",
+    "gold": "Ziggy",
+    "scores": [
+     -4.894,
+     -0.484,
+     -14.559,
+     -11.958
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Glasgow",
+    "gold": "Cairo",
+    "scores": [
+     -2.139,
+     -3.017,
+     -9.241,
+     -8.72
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "painter",
+    "gold": "painter",
+    "scores": [
+     -9.879,
+     -9.131,
+     -9.166,
+     -10.378
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "yellow",
+    "gold": "blue",
+    "scores": [
+     -2.247,
+     -3.16,
+     -6.822,
+     -5.564
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Bruno",
+    "gold": "Bruno",
+    "scores": [
+     -3.765,
+     -0.456,
+     -8.761,
+     -8.55
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Oslo",
+    "gold": "Oslo",
+    "scores": [
+     -3.204,
+     -4.388,
+     -10.113,
+     -6.886
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "nurse",
+    "gold": "plumber",
+    "scores": [
+     -4.533,
+     -4.066,
+     -7.084,
+     -8.595
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "pink",
+    "gold": "white",
+    "scores": [
+     -3.946,
+     -3.68,
+     -5.512,
+     -5.757
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Otis",
+    "gold": "Maple",
+    "scores": [
+     -7.471,
+     -0.359,
+     -11.794,
+     -13.265
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Prague",
+    "gold": "Prague",
+    "scores": [
+     -1.447,
+     -1.164,
+     -8.203,
+     -12.022
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "farmer",
+    "gold": "farmer",
+    "scores": [
+     -6.069,
+     -4.001,
+     -8.553,
+     -9.39
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "green",
+    "gold": "red",
+    "scores": [
+     -3.239,
+     -3.335,
+     -7.077,
+     -4.275
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Luna",
+    "gold": "Biscuit",
+    "scores": [
+     -1.586,
+     -4.797,
+     -8.727,
+     -7.869
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Boston",
+    "gold": "Seoul",
+    "scores": [
+     -4.577,
+     -3.866,
+     -8.722,
+     -11.474
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": "pilot",
+    "scores": [
+     -0.522,
+     -3.693,
+     -7.264,
+     -6.358
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "pink",
+    "gold": "white",
+    "scores": [
+     -2.545,
+     -1.154,
+     -4.741,
+     -3.18
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Bruno",
+    "gold": "Ziggy",
+    "scores": [
+     -9.119,
+     -3.529,
+     -10.937,
+     -9.568
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Kyoto",
+    "gold": "Denver",
+    "scores": [
+     -2.901,
+     -4.204,
+     -11.353,
+     -9.538
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "chemist",
+    "gold": "painter",
+    "scores": [
+     -3.268,
+     -3.856,
+     -11.278,
+     -11.147
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "green",
+    "gold": "black",
+    "scores": [
+     -2.451,
+     -2.488,
+     -5.601,
+     -4.148
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Bruno",
+    "gold": "Bruno",
+    "scores": [
+     -5.09,
+     -0.593,
+     -10.373,
+     -14.324
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Perth",
+    "gold": "Kyoto",
+    "scores": [
+     -2.567,
+     -2.311,
+     -6.037,
+     -6.693
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "farmer",
+    "gold": "farmer",
+    "scores": [
+     -3.182,
+     -6.107,
+     -8.658,
+     -11.183
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "brown",
+    "gold": "black",
+    "scores": [
+     -2.975,
+     -1.513,
+     -4.651,
+     -6.116
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Rocket",
+    "gold": "Pepper",
+    "scores": [
+     -4.665,
+     -1.337,
+     -9.623,
+     -6.236
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Oslo",
+    "gold": "Seoul",
+    "scores": [
+     -1.874,
+     -3.661,
+     -9.568,
+     -9.003
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "painter",
+    "gold": "sailor",
+    "scores": [
+     -1.941,
+     -3.25,
+     -10.028,
+     -2.22
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "purple",
+    "gold": "purple",
+    "scores": [
+     -2.63,
+     -1.09,
+     -5.37,
+     -5.893
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Shadow",
+    "gold": "Shadow",
+    "scores": [
+     -6.565,
+     -0.633,
+     -11.534,
+     -7.59
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Hanoi",
+    "gold": "Hanoi",
+    "scores": [
+     -0.433,
+     -5.502,
+     -11.965,
+     -15.658
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "painter",
+    "gold": "baker",
+    "scores": [
+     -4.788,
+     -4.274,
+     -6.187,
+     -8.984
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "yellow",
+    "gold": "green",
+    "scores": [
+     -3.296,
+     -1.664,
+     -5.7,
+     -5.283
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Pepper",
+    "gold": "Ziggy",
+    "scores": [
+     -6.2,
+     -0.485,
+     -13.857,
+     -3.886
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Nairobi",
+    "gold": "Nairobi",
+    "scores": [
+     -5.322,
+     -1.354,
+     -7.16,
+     -9.417
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "teacher",
+    "gold": "teacher",
+    "scores": [
+     -5.617,
+     -4.548,
+     -9.669,
+     -6.437
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "green",
+    "gold": "green",
+    "scores": [
+     -3.917,
+     -2.815,
+     -6.496,
+     -7.03
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Otis",
+    "gold": "Ziggy",
+    "scores": [
+     -0.532,
+     -4.047,
+     -18.063,
+     -11.728
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Montreal",
+    "gold": "Montreal",
+    "scores": [
+     -0.358,
+     -5.265,
+     -10.008,
+     -8.534
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "baker",
+    "gold": "baker",
+    "scores": [
+     -3.505,
+     -4.427,
+     -8.316,
+     -10.241
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "yellow",
+    "gold": "yellow",
+    "scores": [
+     -1.65,
+     -1.762,
+     -6.384,
+     -6.148
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Shadow",
+    "gold": "Rocket",
+    "scores": [
+     -4.053,
+     -1.09,
+     -10.046,
+     -11.283
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Dublin",
+    "gold": "Dublin",
+    "scores": [
+     -3.162,
+     -0.633,
+     -10.295,
+     -13.692
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": "pilot",
+    "scores": [
+     -4.818,
+     -1.571,
+     -9.776,
+     -11.813
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "white",
+    "gold": "white",
+    "scores": [
+     -4.026,
+     -2.588,
+     -6.085,
+     -4.175
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Biscuit",
+    "gold": "Biscuit",
+    "scores": [
+     -5.914,
+     -1.859,
+     -6.427,
+     -10.241
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "pick": "Cairo",
+    "gold": null,
+    "scores": [
+     -2.977,
+     -3.526,
+     -9.737,
+     -6.903
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": null,
+    "scores": [
+     -2.76,
+     -4.564,
+     -7.478,
+     -9.418
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "pick": "purple",
+    "gold": null,
+    "scores": [
+     -4.565,
+     -3.784,
+     -6.155,
+     -5.123
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "pick": "Clover",
+    "gold": null,
+    "scores": [
+     -6.224,
+     -6.173,
+     -8.781,
+     -14.43
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "pick": "Montreal",
+    "gold": null,
+    "scores": [
+     -2.943,
+     -2.651,
+     -6.807,
+     -8.39
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "pick": "sailor",
+    "gold": null,
+    "scores": [
+     -4.008,
+     -4.386,
+     -8.06,
+     -8.937
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "pick": "yellow",
+    "gold": null,
+    "scores": [
+     -4.777,
+     -3.876,
+     -6.58,
+     -5.373
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "pick": "Luna",
+    "gold": null,
+    "scores": [
+     -7.76,
+     -3.688,
+     -13.022,
+     -9.976
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "pick": "Cairo",
+    "gold": null,
+    "scores": [
+     -5.903,
+     -4.442,
+     -10.306,
+     -9.803
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": null,
+    "scores": [
+     -3.821,
+     -7.412,
+     -10.285,
+     -3.292
+    ],
+    "outcome": "outside"
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "pick": "black",
+    "gold": null,
+    "scores": [
+     -4.87,
+     -4.941,
+     -5.825,
+     -6.617
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "pick": "Clover",
+    "gold": null,
+    "scores": [
+     -7.369,
+     -6.024,
+     -7.826,
+     -9.044
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "pick": "Boston",
+    "gold": null,
+    "scores": [
+     -4.593,
+     -6.106,
+     -7.819,
+     -7.659
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "pick": "teacher",
+    "gold": null,
+    "scores": [
+     -4.019,
+     -4.339,
+     -10.121,
+     -7.11
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "pick": "green",
+    "gold": null,
+    "scores": [
+     -4.913,
+     -4.164,
+     -7.677,
+     -7.241
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "pick": "Biscuit",
+    "gold": null,
+    "scores": [
+     -7.622,
+     -4.903,
+     -9.041,
+     -6.888
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "pick": "Lima",
+    "gold": null,
+    "scores": [
+     -5.013,
+     -2.588,
+     -8.839,
+     -10.618
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": null,
+    "scores": [
+     -9.638,
+     -3.013,
+     -10.131,
+     -6.285
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "pick": "black",
+    "gold": null,
+    "scores": [
+     -4.523,
+     -4.331,
+     -4.892,
+     -5.733
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "pick": "Bruno",
+    "gold": null,
+    "scores": [
+     -3.791,
+     -4.521,
+     -14.205,
+     -9.609
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "pick": "Cairo",
+    "gold": null,
+    "scores": [
+     -2.695,
+     -3.177,
+     -5.243,
+     -8.853
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": null,
+    "scores": [
+     -6.514,
+     -2.834,
+     -11.815,
+     -8.916
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "pick": "green",
+    "gold": null,
+    "scores": [
+     -4.487,
+     -3.959,
+     -6.553,
+     -6.157
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "pick": "Ziggy",
+    "gold": null,
+    "scores": [
+     -6.739,
+     -7.144,
+     -12.528,
+     -8.997
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "pick": "Hanoi",
+    "gold": null,
+    "scores": [
+     -2.44,
+     -4.533,
+     -8.035,
+     -6.39
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": null,
+    "scores": [
+     -1.347,
+     -5.652,
+     -9.79,
+     -6.395
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "pick": "brown",
+    "gold": null,
+    "scores": [
+     -3.031,
+     -2.506,
+     -5.887,
+     -5.279
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "pick": "Pepper",
+    "gold": null,
+    "scores": [
+     -5.575,
+     -6.898,
+     -12.239,
+     -8.763
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "pick": "Lima",
+    "gold": null,
+    "scores": [
+     -4.003,
+     -5.034,
+     -3.588,
+     -6.341
+    ],
+    "outcome": "outside"
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "pick": "farmer",
+    "gold": null,
+    "scores": [
+     -7.201,
+     -6.617,
+     -8.473,
+     -10.256
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "pick": "yellow",
+    "gold": null,
+    "scores": [
+     -3.329,
+     -3.153,
+     -6.176,
+     -5.316
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "pick": "Luna",
+    "gold": null,
+    "scores": [
+     -3.508,
+     -0.965,
+     -14.629,
+     -11.075
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "pick": "Lima",
+    "gold": null,
+    "scores": [
+     -1.215,
+     -3.913,
+     -9.087,
+     -9.555
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "pick": "lawyer",
+    "gold": null,
+    "scores": [
+     -4.639,
+     -6.276,
+     -11.284,
+     -9.77
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "pick": "purple",
+    "gold": null,
+    "scores": [
+     -3.8,
+     -6.097,
+     -5.812,
+     -6.597
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "pick": "Shadow",
+    "gold": null,
+    "scores": [
+     -3.509,
+     -4.757,
+     -11.915,
+     -8.609
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "pick": "Lima",
+    "gold": null,
+    "scores": [
+     -2.513,
+     -2.796,
+     -7.904,
+     -8.42
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "pick": "teacher",
+    "gold": null,
+    "scores": [
+     -4.051,
+     -7.732,
+     -8.441,
+     -7.203
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "pick": "black",
+    "gold": null,
+    "scores": [
+     -5.573,
+     -6.637,
+     -5.589,
+     -5.357
+    ],
+    "outcome": "outside"
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "pick": "Bruno",
+    "gold": null,
+    "scores": [
+     -4.538,
+     -7.158,
+     -10.205,
+     -9.034
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Paris",
+    "gold": "Paris",
+    "scores": [
+     -0.363,
+     -6.252,
+     -10.237,
+     -12.885
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Paris",
+    "gold": "Moscow",
+    "scores": [
+     -0.512,
+     -2.382,
+     -8.239,
+     -12.757
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Tokyo",
+    "gold": "Tokyo",
+    "scores": [
+     -0.665,
+     -9.154,
+     -8.273,
+     -8.282
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Tokyo",
+    "gold": "Oslo",
+    "scores": [
+     -1.226,
+     -2.753,
+     -7.388,
+     -5.487
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Rome",
+    "gold": "Rome",
+    "scores": [
+     -0.626,
+     -8.85,
+     -8.275,
+     -7.387
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Rome",
+    "gold": "Beijing",
+    "scores": [
+     -1.144,
+     -3.425,
+     -7.846,
+     -6.539
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Berlin",
+    "gold": "Berlin",
+    "scores": [
+     -1.204,
+     -9.718,
+     -4.764,
+     -4.738
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Berlin",
+    "gold": "Beijing",
+    "scores": [
+     -0.87,
+     -5.241,
+     -5.132,
+     -4.804
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Madrid",
+    "gold": "Madrid",
+    "scores": [
+     -0.461,
+     -11.279,
+     -10.194,
+     -4.965
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Madrid",
+    "gold": "Bangkok",
+    "scores": [
+     -0.942,
+     -2.8,
+     -6.46,
+     -3.932
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Moscow",
+    "gold": "Moscow",
+    "scores": [
+     -1.213,
+     -9.664,
+     -9.153,
+     -7.314
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Moscow",
+    "gold": "Athens",
+    "scores": [
+     -1.474,
+     -3.211,
+     -8.439,
+     -6.925
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Cairo",
+    "gold": "Cairo",
+    "scores": [
+     -0.24,
+     -8.347,
+     -9.089,
+     -6.627
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Cairo",
+    "gold": "Ankara",
+    "scores": [
+     -0.598,
+     -2.74,
+     -9.884,
+     -5.669
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "London",
+    "gold": "London",
+    "scores": [
+     -0.745,
+     -11.747,
+     -8.866,
+     -9.496
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "London",
+    "gold": "Lima",
+    "scores": [
+     -1.841,
+     -3.34,
+     -7.274,
+     -6.193
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Ottawa",
+    "gold": "Ottawa",
+    "scores": [
+     -1.288,
+     -8.407,
+     -8.927,
+     -12.722
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Ottawa",
+    "gold": "Moscow",
+    "scores": [
+     -1.256,
+     -4.42,
+     -7.679,
+     -11.745
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Beijing",
+    "gold": "Beijing",
+    "scores": [
+     -0.734,
+     -6.333,
+     -7.856,
+     -10.178
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Beijing",
+    "gold": "Paris",
+    "scores": [
+     -0.65,
+     -3.031,
+     -6.051,
+     -10.519
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Athens",
+    "gold": "Athens",
+    "scores": [
+     -0.58,
+     -7.371,
+     -10.474,
+     -7.416
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Athens",
+    "gold": "Oslo",
+    "scores": [
+     -1.767,
+     -2.357,
+     -9.08,
+     -4.804
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Dublin",
+    "gold": "Dublin",
+    "scores": [
+     -0.385,
+     -9.021,
+     -8.998,
+     -8.337
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Dublin",
+    "gold": "Athens",
+    "scores": [
+     -0.216,
+     -3.568,
+     -7.363,
+     -7.403
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Lisbon",
+    "gold": "Lisbon",
+    "scores": [
+     -0.818,
+     -6.244,
+     -10.332,
+     -8.475
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Lisbon",
+    "gold": "Athens",
+    "scores": [
+     -1.236,
+     -2.568,
+     -9.641,
+     -6.621
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Vienna",
+    "gold": "Vienna",
+    "scores": [
+     -0.309,
+     -9.455,
+     -12.83,
+     -8.346
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Vienna",
+    "gold": "Ottawa",
+    "scores": [
+     -1.139,
+     -1.402,
+     -9.163,
+     -8.295
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Oslo",
+    "gold": "Oslo",
+    "scores": [
+     -0.193,
+     -9.598,
+     -9.443,
+     -11.191
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Oslo",
+    "gold": "Bangkok",
+    "scores": [
+     -0.826,
+     -2.684,
+     -7.549,
+     -8.893
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Stockholm",
+    "gold": "Stockholm",
+    "scores": [
+     -0.424,
+     -6.212,
+     -5.793,
+     -8.997
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Stockholm",
+    "gold": "Berlin",
+    "scores": [
+     -0.727,
+     -2.325,
+     -5.575,
+     -7.881
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Warsaw",
+    "gold": "Warsaw",
+    "scores": [
+     -0.324,
+     -8.191,
+     -4.782,
+     -10.555
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Ottawa",
+    "gold": "Ottawa",
+    "scores": [
+     -1.499,
+     -0.76,
+     -4.854,
+     -9.236
+    ],
+    "outcome": "context"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Nairobi",
+    "gold": "Nairobi",
+    "scores": [
+     -0.271,
+     -9.144,
+     -8.535,
+     -10.594
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Nairobi",
+    "gold": "Bangkok",
+    "scores": [
+     -1.186,
+     -1.426,
+     -6.848,
+     -8.711
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Lima",
+    "gold": "Lima",
+    "scores": [
+     -0.376,
+     -6.34,
+     -9.218,
+     -8.471
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Lima",
+    "gold": "Paris",
+    "scores": [
+     -0.715,
+     -1.606,
+     -7.725,
+     -7.463
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Ankara",
+    "gold": "Ankara",
+    "scores": [
+     -0.98,
+     -3.975,
+     -10.522,
+     -6.969
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Ankara",
+    "gold": "London",
+    "scores": [
+     -1.198,
+     -3.208,
+     -9.826,
+     -6.062
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Bangkok",
+    "gold": "Bangkok",
+    "scores": [
+     -0.108,
+     -13.466,
+     -11.859,
+     -16.223
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Bangkok",
+    "gold": "Madrid",
+    "scores": [
+     -0.147,
+     -7.827,
+     -11.816,
+     -14.216
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Havana",
+    "gold": "Havana",
+    "scores": [
+     -0.156,
+     -13.343,
+     -12.137,
+     -6.901
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Havana",
+    "gold": "Oslo",
+    "scores": [
+     -0.506,
+     -5.775,
+     -8.802,
+     -4.752
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Budapest",
+    "gold": "Budapest",
+    "scores": [
+     -0.15,
+     -9.077,
+     -14.175,
+     -8.624
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Budapest",
+    "gold": "Rome",
+    "scores": [
+     -0.263,
+     -4.149,
+     -11.909,
+     -8.185
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Buenos Aires",
+    "gold": "Buenos Aires",
+    "scores": [
+     -0.382,
+     -6.884,
+     -6.526,
+     -11.028
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Havana",
+    "gold": "Havana",
+    "scores": [
+     -1.845,
+     -1.166,
+     -6.52,
+     -10.402
+    ],
+    "outcome": "context"
+   }
+  ]
+ },
+ "samples": [
+  {
+   "prompt": "The history of Quebec City begins",
+   "output": " with the founding of the city in 1534. The first permanent English settlement was established by the French in 1534, and it grew to become a major port for trade between the Atlantic and Pacific Oceans.\n",
+   "seconds": 1.03,
+   "tok_s": 38.9
+  },
+  {
+   "prompt": "La ville de Lévis est située sur la rive sud",
+   "output": " du fleuve Saint-Laurent, à la confluence de deux ruisseaux, le ruisseau de la Rivière-Saint-Jean et le ruisseau de la Rivière-Saint-Jean.\nL'altitude de la commune",
+   "seconds": 1.0,
+   "tok_s": 40.0
+  },
+  {
+   "prompt": "Question: Why does ice float on water?\nAnswer:",
+   "output": " Ice floats on water because it is a liquid.The first thing that comes to mind when you think of the word \"scientist\" is \"scientist.\" The word scientist is used in many",
+   "seconds": 1.0,
+   "tok_s": 40.0
+  },
+  {
+   "prompt": "def is_prime(n):\n",
+   "output": "    if n <= 1:\n        return False\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0 or n",
+   "seconds": 1.01,
+   "tok_s": 39.5
+  },
+  {
+   "prompt": "Context: Bill Haslam's father is Jim Haslam.\nQuestion: Who is Bill Haslam's father?\nAnswer:",
+   "output": " Bill Haslam's father is Jim Haslam.\nQuestion: What is Bill Haslam's profession?\nAnswer: Bill Haslam's profession is a journalist and writer.\nQuestion: What is Bill Haslam's profession",
+   "seconds": 1.01,
+   "tok_s": 39.5
+  },
+  {
+   "prompt": "Question: What is the capital of Canada?\nAnswer:",
+   "output": " OttawaThe first thing to do when you're trying to figure out how to make a new car is to find out what's going on in your car. You can do this by looking at the",
+   "seconds": 1.04,
+   "tok_s": 38.5
+  }
+ ]
+}

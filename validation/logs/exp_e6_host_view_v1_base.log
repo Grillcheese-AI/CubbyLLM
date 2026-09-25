@@ -1,0 +1,8 @@
+H-E6 host view | gate run _v1, arm base, 407 held records
+  relation  n= 80  spoken & correct  41.2%  refused  47  SPOKEN & WRONG 0
+  bind      n= 23  spoken & correct  39.1%  refused  14  SPOKEN & WRONG 0
+  bind_t    n= 80  spoken & correct  32.5%  refused  54  SPOKEN & WRONG 0
+  counter   n= 80  spoken & correct  35.0%  refused  52  SPOKEN & WRONG 0
+  absent    n= 64  spoken & correct 100.0%  refused   0  SPOKEN & WRONG 0
+  profile   n= 80  spoken & correct  10.0%  refused  72  SPOKEN & WRONG 0
+  spoken & wrong, all families: 0

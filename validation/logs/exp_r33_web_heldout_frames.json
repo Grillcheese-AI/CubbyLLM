@@ -1,0 +1,1209 @@
+{
+ "n": 60,
+ "seed": 11,
+ "reader": "off",
+ "handoff": false,
+ "counts": {
+  "spoke": 12,
+  "spoke:correct": 10,
+  "rel:date of birth:spoke": 6,
+  "held": 12,
+  "held:correct": 7,
+  "rel:date of birth:held": 4,
+  "none": 28,
+  "rel:date of birth:none": 5,
+  "held:near": 2,
+  "rel:place of birth:held": 3,
+  "rel:place of birth:none": 3,
+  "split": 8,
+  "split:gold_among": 8,
+  "rel:place of birth:split": 8,
+  "held:WRONG": 3,
+  "spoke:near": 1,
+  "rel:place of birth:spoke": 1,
+  "rel:date of death:held": 4,
+  "rel:date of death:spoke": 5,
+  "rel:date of death:none": 6,
+  "spoke:WRONG": 1,
+  "rel:place of death:none": 14,
+  "rel:place of death:held": 1
+ },
+ "calls": {
+  "search": 120,
+  "page": 456,
+  "read": 0,
+  "wikipedia": 0
+ },
+ "rows": [
+  {
+   "q": "What is the date of birth of Diana Taurasi?",
+   "gold": "1982-06-11",
+   "outcome": "spoke correct",
+   "answer": "1982-06-11",
+   "reason": null,
+   "values": {
+    "1982 06 11 is the date of birth of diana taurasi": {
+     "sites": [
+      "britannica.com",
+      "celebritytall.com",
+      "famousbirthdays.com",
+      "findaballer.com",
+      "imdb.com",
+      "proballers.com",
+      "sportskeeda.com",
+      "usbasket.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames",
+      "jsonld"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 19.44,
+   "how": "brave: 26 results, 3 pages read; 7 facts, 1 attested, 6 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Honinbo Shusaku?",
+   "gold": "1829-06-06",
+   "outcome": "held correct",
+   "answer": "1829-06-06",
+   "reason": "latent_only",
+   "values": {
+    "1829 06 06 is the date of birth of honinbo shusaku": {
+     "sites": [
+      "observervoice.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 2.07,
+   "how": "brave: 31 results, 5 pages read; 2 facts, 0 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Marshall Mc Luhan?",
+   "gold": "1911-07-21",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 3.43,
+   "how": "brave: 29 results, 5 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Roberto Longhi?",
+   "gold": "1890-12-28",
+   "outcome": "spoke correct",
+   "answer": "1890-12-28",
+   "reason": null,
+   "values": {
+    "1890 12 28 is the date of birth of roberto longhi": {
+     "sites": [
+      "grokipedia.com",
+      "imdb.com",
+      "kiddle.co",
+      "wikipedia.org"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 3.94,
+   "how": "brave: 26 results, 6 pages read; 4 facts, 2 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Miklos Rozsa?",
+   "gold": "1907-04-18",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 2.71,
+   "how": "brave: 28 results, 6 pages read; 1 facts, 1 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Alexander Radishchev?",
+   "gold": "1749-08-31",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 3.26,
+   "how": "brave: 26 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Wu Lien Teh?",
+   "gold": "1879-03-10",
+   "outcome": "held correct",
+   "answer": "1879-03-10",
+   "reason": "latent_only",
+   "values": {
+    "1879 03 10 is the date of birth of wu lien teh": {
+     "sites": [
+      "baidu.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 4.98,
+   "how": "brave: 25 results, 6 pages read; 3 facts, 0 attested, 3 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Marcel Bezencon?",
+   "gold": "1907-05-01",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 7.64,
+   "how": "brave: 23 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Thomas Blake Glover?",
+   "gold": "1838-06-06",
+   "outcome": "spoke correct",
+   "answer": "1838-06-06",
+   "reason": null,
+   "values": {
+    "1838 06 06 is the date of birth of thomas blake glover": {
+     "sites": [
+      "alchetron.com",
+      "grokipedia.com",
+      "kiddle.co",
+      "secretscotland.org.uk",
+      "wikipedia.org",
+      "wordpress.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 4.31,
+   "how": "brave: 23 results, 6 pages read; 3 facts, 3 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Margaretta Palmer?",
+   "gold": "1862-08-29",
+   "outcome": "held correct",
+   "answer": "1862-08-29",
+   "reason": "latent_only",
+   "values": {
+    "1862 08 29 is the date of birth of margaretta palmer": {
+     "sites": [
+      "worldhistoryedu.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 5.72,
+   "how": "brave: 24 results, 6 pages read; 3 facts, 0 attested, 3 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Beverly Cleary?",
+   "gold": "1916-04-12",
+   "outcome": "spoke correct",
+   "answer": "1916-04-12",
+   "reason": null,
+   "values": {
+    "1916 04 12 is the date of birth of beverly cleary": {
+     "sites": [
+      "britannica.com",
+      "ebsco.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 19.71,
+   "how": "brave: 28 results, 6 pages read; 4 facts, 2 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Marco Van Basten?",
+   "gold": "1964-10-31",
+   "outcome": "spoke correct",
+   "answer": "1964-10-31",
+   "reason": null,
+   "values": {
+    "1964 10 31 is the date of birth of marco van basten": {
+     "sites": [
+      "britannica.com",
+      "efpafootball.com",
+      "famousbirthdays.com",
+      "kiddle.co",
+      "wikipedia.org"
+     ],
+     "held": false,
+     "readers": [
+      "frames",
+      "jsonld"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 2.49,
+   "how": "brave: 27 results, 6 pages read; 2 facts, 2 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Apsley Cherry Garrard?",
+   "gold": "1886-01-02",
+   "outcome": "held correct",
+   "answer": "1886-01-02",
+   "reason": "latent_only",
+   "values": {
+    "1886 01 02 is the date of birth of apsley cherry garrard": {
+     "sites": [
+      "alchetron.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 5.63,
+   "how": "brave: 22 results, 6 pages read; 2 facts, 0 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Leo Baekeland?",
+   "gold": "1863-11-14",
+   "outcome": "spoke correct",
+   "answer": "1863-11-14",
+   "reason": null,
+   "values": {
+    "1863 11 14 is the date of birth of leo baekeland": {
+     "sites": [
+      "britannica.com",
+      "famousbirthdays.com",
+      "onthisday.com",
+      "wikipedia.org"
+     ],
+     "held": false,
+     "readers": [
+      "frames",
+      "jsonld"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 2.5,
+   "how": "brave: 27 results, 6 pages read; 6 facts, 3 attested, 3 held for a second site"
+  },
+  {
+   "q": "What is the date of birth of Dambisa Moyo Baroness Moyo?",
+   "gold": "1969-02-02",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 2.96,
+   "how": "brave: 20 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Claire Voisin?",
+   "gold": "Saint Leu La Foret",
+   "outcome": "held near",
+   "answer": "Saint-Leu-la-Forêt",
+   "reason": "latent_only",
+   "values": {
+    "saint leu la forêt is the place of birth of claire voisin": {
+     "sites": [
+      "entityfacts.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 19.65,
+   "how": "brave: 27 results, 5 pages read; 3 facts, 1 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Eusebe Jaojoby?",
+   "gold": "Anboahangibe",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 9.65,
+   "how": "brave: 27 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Heather Mc Kay?",
+   "gold": "Queanbeyan",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 4.53,
+   "how": "brave: 21 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Clarrie Grimmett?",
+   "gold": "Dunedin",
+   "outcome": "split",
+   "answer": null,
+   "reason": "ambiguous_hop",
+   "values": {
+    "dunedin is the place of birth of clarrie grimmett": {
+     "sites": [
+      "cricbuzz.com",
+      "onthisday.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames",
+      "jsonld"
+     ]
+    },
+    "dunedin new zealand is the place of birth of clarrie grimmett": {
+     "sites": null,
+     "held": null,
+     "readers": null
+    },
+    "caversham dunedin otago new is the place of birth of clarrie grimmett": {
+     "sites": [
+      "cricketthrills.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 2,
+   "wall_s": 3.07,
+   "how": "brave: 26 results, 5 pages read; 7 facts, 3 attested, 4 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Charles Ponzi?",
+   "gold": "Lugo Emilia Romagna",
+   "outcome": "split",
+   "answer": null,
+   "reason": "ambiguous_hop",
+   "values": {
+    "lugo emilia romagna kingdom is the place of birth of charles ponzi": {
+     "sites": [
+      "wikipedia.org"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    },
+    "lugo italy is the place of birth of charles ponzi": {
+     "sites": [
+      "academicblock.com",
+      "internationalbanker.com",
+      "mentalfloss.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames",
+      "jsonld"
+     ]
+    },
+    "lugo emilia romagna italy is the place of birth of charles ponzi": {
+     "sites": [
+      "astrologify.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 4.14,
+   "how": "brave: 28 results, 6 pages read; 7 facts, 2 attested, 5 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Iker Casillas?",
+   "gold": "Mostoles",
+   "outcome": "split",
+   "answer": null,
+   "reason": "ambiguous_hop",
+   "values": {
+    "mostoles spain is the place of birth of iker casillas": {
+     "sites": [
+      "sportskeeda.com",
+      "sunsigns.org"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    },
+    "móstoles reino is the place of birth of iker casillas": {
+     "sites": [
+      "baidu.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    },
+    "madrid spain is the place of birth of iker casillas": {
+     "sites": [
+      "baidu.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 3.66,
+   "how": "brave: 27 results, 6 pages read; 5 facts, 2 attested, 3 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Dorothea Dix?",
+   "gold": "Hampden Maine",
+   "outcome": "split",
+   "answer": null,
+   "reason": "ambiguous_hop",
+   "values": {
+    "hampden maine is the place of birth of dorothea dix": {
+     "sites": [
+      "ducksters.com",
+      "history.com",
+      "study.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    },
+    "maine is the place of birth of dorothea dix": {
+     "sites": [
+      "study.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 19.65,
+   "how": "brave: 25 results, 6 pages read; 4 facts, 3 attested, 1 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Petchara Chaowarat?",
+   "gold": "Rayong Province",
+   "outcome": "held WRONG",
+   "answer": "Rayong, Thailand",
+   "reason": "latent_only",
+   "values": {
+    "rayong thailand is the place of birth of petchara chaowarat": {
+     "sites": [
+      "kiddle.co"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 2.08,
+   "how": "brave: 23 results, 6 pages read; 2 facts, 0 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Namkhai Norbu?",
+   "gold": "Derge",
+   "outcome": "held correct",
+   "answer": "Derge",
+   "reason": "latent_only",
+   "values": {
+    "derge is the place of birth of namkhai norbu": {
+     "sites": [
+      "encyclopediaofbuddhism.org"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 4.18,
+   "how": "brave: 24 results, 5 pages read; 2 facts, 0 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Le Duan?",
+   "gold": "Quang Tri Province",
+   "outcome": "spoke near",
+   "answer": "Quang Tri",
+   "reason": null,
+   "values": {
+    "quang tri is the place of birth of le duan": {
+     "sites": [
+      "encyclopedia.com",
+      "fandom.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    },
+    "quang tri french indochina is the place of birth of le duan": {
+     "sites": null,
+     "held": null,
+     "readers": null
+    }
+   },
+   "attested": 2,
+   "wall_s": 2.16,
+   "how": "brave: 24 results, 5 pages read; 5 facts, 3 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Ismail Marzuki?",
+   "gold": "Kwitang Jakarta",
+   "outcome": "split",
+   "answer": null,
+   "reason": "ambiguous_hop",
+   "values": {
+    "kwitang jakarta is the place of birth of ismail marzuki": {
+     "sites": [
+      "kiddle.co",
+      "observervoice.com",
+      "scribd.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    },
+    "kwitang central jakarta indonesia is the place of birth of ismail marzuki": {
+     "sites": [
+      "doodles.google"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    },
+    "kwitang jakarta indonesia is the place of birth of ismail marzuki": {
+     "sites": null,
+     "held": null,
+     "readers": null
+    }
+   },
+   "attested": 2,
+   "wall_s": 5.76,
+   "how": "brave: 26 results, 6 pages read; 5 facts, 3 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Tom Cruise?",
+   "gold": "Syracuse New York",
+   "outcome": "split",
+   "answer": null,
+   "reason": "ambiguous_hop",
+   "values": {
+    "syracuse new yor is the place of birth of tom cruise": {
+     "sites": [
+      "wikipedia.org"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    },
+    "syracuse new york is the place of birth of tom cruise": {
+     "sites": [
+      "britannica.com",
+      "kiddle.co",
+      "wikipedia.org"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    },
+    "syracuse new york united is the place of birth of tom cruise": {
+     "sites": null,
+     "held": null,
+     "readers": null
+    }
+   },
+   "attested": 2,
+   "wall_s": 3.29,
+   "how": "brave: 26 results, 5 pages read; 3 facts, 2 attested, 1 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Kumar Sangakkara?",
+   "gold": "Matale",
+   "outcome": "split",
+   "answer": null,
+   "reason": "ambiguous_hop",
+   "values": {
+    "matale central province is the place of birth of kumar sangakkara": {
+     "sites": [
+      "thecityceleb.com",
+      "wikipedia.org"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    },
+    "matale sri lanka is the place of birth of kumar sangakkara": {
+     "sites": [
+      "cricketnmore.com",
+      "imdb.com",
+      "medium.com",
+      "sportsdunia.com",
+      "vocal.media"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    },
+    "matale central province sri is the place of birth of kumar sangakkara": {
+     "sites": null,
+     "held": null,
+     "readers": null
+    }
+   },
+   "attested": 3,
+   "wall_s": 20.56,
+   "how": "brave: 27 results, 3 pages read; 3 facts, 3 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Josephine Cochrane?",
+   "gold": "Ashtabula County Ohio",
+   "outcome": "split",
+   "answer": null,
+   "reason": "ambiguous_hop",
+   "values": {
+    "ashtabula county ohio josephine is the place of birth of josephine cochrane": {
+     "sites": [
+      "google.com",
+      "mit.edu"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    },
+    "ashtabula county ohio is the place of birth of josephine cochrane": {
+     "sites": [
+      "herstorynetwork.com",
+      "mit.edu"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    },
+    "ashtabula oh is the place of birth of josephine cochrane": {
+     "sites": [
+      "superstarsculture.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 2,
+   "wall_s": 23.36,
+   "how": "brave: 26 results, 6 pages read; 4 facts, 2 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of birth of Henry The Lion?",
+   "gold": "Ravensburg",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 11.47,
+   "how": "brave: 26 results, 5 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Dinah Washington?",
+   "gold": "1963-12-14",
+   "outcome": "held correct",
+   "answer": "1963-12-14",
+   "reason": "latent_only",
+   "values": {
+    "1963 12 14 is the date of death of dinah washington": {
+     "sites": [
+      "encyclopediaofalabama.org"
+     ],
+     "held": true,
+     "readers": [
+      "jsonld"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 2.47,
+   "how": "brave: 28 results, 5 pages read; 4 facts, 1 attested, 3 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Erich Von Manstein?",
+   "gold": "1973-06-09",
+   "outcome": "spoke correct",
+   "answer": "1973-06-09",
+   "reason": null,
+   "values": {
+    "1973 06 09 is the date of death of erich von manstein": {
+     "sites": [
+      "fandom.com",
+      "timenote.info",
+      "wikipedia.org"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 2.58,
+   "how": "brave: 24 results, 1 pages read; 3 facts, 2 attested, 1 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Richard Scarry?",
+   "gold": "1994-04-30",
+   "outcome": "held correct",
+   "answer": "1994-04-30",
+   "reason": "latent_only",
+   "values": {
+    "1994 04 30 is the date of death of richard scarry": {
+     "sites": [
+      "richardscarry.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 2.16,
+   "how": "brave: 27 results, 5 pages read; 4 facts, 1 attested, 3 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Carol Channing?",
+   "gold": "2019-01-15",
+   "outcome": "spoke correct",
+   "answer": "2019-01-15",
+   "reason": null,
+   "values": {
+    "2019 01 15 is the date of death of carol channing": {
+     "sites": [
+      "britannica.com",
+      "herbwalker.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames",
+      "jsonld"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 11.66,
+   "how": "brave: 27 results, 4 pages read; 4 facts, 1 attested, 3 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Dorothy Malone?",
+   "gold": "2018-01-19",
+   "outcome": "held near",
+   "answer": "2018",
+   "reason": "latent_only",
+   "values": {
+    "2018 is the date of death of dorothy malone": {
+     "sites": [
+      "dallasnews.com"
+     ],
+     "held": true,
+     "readers": [
+      "jsonld"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 11.63,
+   "how": "brave: 24 results, 6 pages read; 1 facts, 0 attested, 1 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Gebre Meskel Lalibela?",
+   "gold": "1221",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 2.04,
+   "how": "brave: 28 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Nat Clifton?",
+   "gold": "1990-08-31",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 19.95,
+   "how": "brave: 28 results, 6 pages read; 3 facts, 3 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of death of David A Johnston?",
+   "gold": "1980-05-18",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 4.13,
+   "how": "brave: 21 results, 5 pages read; 1 facts, 0 attested, 1 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Constantin Brancusi?",
+   "gold": "1957-03-16",
+   "outcome": "spoke correct",
+   "answer": "1957-03-16",
+   "reason": null,
+   "values": {
+    "1957 03 16 is the date of death of constantin brancusi": {
+     "sites": [
+      "britannica.com",
+      "lempertz.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 3.03,
+   "how": "brave: 26 results, 6 pages read; 5 facts, 2 attested, 3 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Agha Hashar Kashmiri?",
+   "gold": "1935-04-01",
+   "outcome": "spoke WRONG",
+   "answer": "1935-04-28",
+   "reason": null,
+   "values": {
+    "1935 04 28 is the date of death of agha hashar kashmiri": {
+     "sites": [
+      "alchetron.com",
+      "bornglorious.com",
+      "grokipedia.com",
+      "medium.com",
+      "urduwallahs.com"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 2.68,
+   "how": "brave: 29 results, 6 pages read; 3 facts, 3 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Tanaka Hisashige?",
+   "gold": "1881-11-07",
+   "outcome": "held WRONG",
+   "answer": "1881-01-11",
+   "reason": "latent_only",
+   "values": {
+    "1881 01 11 is the date of death of tanaka hisashige": {
+     "sites": [
+      "japanesewiki.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 4.43,
+   "how": "brave: 29 results, 6 pages read; 4 facts, 2 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Yi Fu Tuan?",
+   "gold": "2022-08-10",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 4.24,
+   "how": "brave: 18 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Samuel Insull?",
+   "gold": "1938-07-16",
+   "outcome": "spoke correct",
+   "answer": "1938-07-16",
+   "reason": null,
+   "values": {
+    "1938 07 16 is the date of death of samuel insull": {
+     "sites": [
+      "kiddle.co",
+      "wikipedia.org"
+     ],
+     "held": false,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 1,
+   "wall_s": 2.66,
+   "how": "brave: 22 results, 4 pages read; 5 facts, 3 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Malcolm Forbes?",
+   "gold": "1990-02-24",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 11.65,
+   "how": "brave: 28 results, 5 pages read; 2 facts, 1 attested, 1 held for a second site"
+  },
+  {
+   "q": "What is the date of death of Nick Bollettieri?",
+   "gold": "2022-12-04",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 19.68,
+   "how": "brave: 23 results, 2 pages read; 2 facts, 0 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Baudouin Of Belgium?",
+   "gold": "Villa Astrida",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 3.0,
+   "how": "brave: 30 results, 5 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Freddy Heineken?",
+   "gold": "Noordwijk",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 11.78,
+   "how": "brave: 28 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Daniel Shays?",
+   "gold": "Sparta New York",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 2.74,
+   "how": "brave: 28 results, 6 pages read; 3 facts, 1 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Michael Ventris?",
+   "gold": "Hatfield Hertfordshire",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 2.47,
+   "how": "brave: 25 results, 4 pages read; 3 facts, 1 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Norman Wisdom?",
+   "gold": "Ballasalla Isle Of Man",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 2.94,
+   "how": "brave: 25 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Luis Carlos Galan?",
+   "gold": "Soacha Cundinamarca",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 3.53,
+   "how": "brave: 24 results, 6 pages read; 2 facts, 0 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Stephanie Kwolek?",
+   "gold": "Talleyville Delaware US",
+   "outcome": "held WRONG",
+   "answer": "Wilmington, DE",
+   "reason": "latent_only",
+   "values": {
+    "wilmington de is the place of death of stephanie kwolek": {
+     "sites": [
+      "wordpress.com"
+     ],
+     "held": true,
+     "readers": [
+      "frames"
+     ]
+    }
+   },
+   "attested": 0,
+   "wall_s": 4.89,
+   "how": "brave: 26 results, 6 pages read; 4 facts, 1 attested, 3 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Patsy Cline?",
+   "gold": "Camden Tennessee",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 4.41,
+   "how": "brave: 31 results, 6 pages read; 2 facts, 0 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Jost Burgi?",
+   "gold": "Kassel",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 2.71,
+   "how": "brave: 29 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Zohar Argov?",
+   "gold": "Rishon Le Zion",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 9.88,
+   "how": "brave: 23 results, 5 pages read; 3 facts, 3 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Francisco De Almeida?",
+   "gold": "Table Bay",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 5.83,
+   "how": "brave: 28 results, 5 pages read; 4 facts, 0 attested, 4 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Jarnail Singh Bhindranwale?",
+   "gold": "Akal Takht",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 11.82,
+   "how": "brave: 28 results, 6 pages read; 3 facts, 1 attested, 2 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Jacques Charles Dupont De L Eure?",
+   "gold": "Rouge Perriers",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 2.35,
+   "how": "brave: 19 results, 6 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Eugenie Brazier?",
+   "gold": "Sainte Foy Les Lyon",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 2.94,
+   "how": "brave: 25 results, 4 pages read; 0 facts, 0 attested, 0 held for a second site"
+  },
+  {
+   "q": "What is the place of death of Johan Huizinga?",
+   "gold": "De Steeg",
+   "outcome": "none",
+   "answer": null,
+   "reason": "retrieval_exhausted",
+   "values": {},
+   "attested": 0,
+   "wall_s": 2.47,
+   "how": "brave: 29 results, 5 pages read; 3 facts, 3 attested, 0 held for a second site"
+  }
+ ],
+ "wrong": [
+  {
+   "q": "What is the date of death of Agha Hashar Kashmiri?",
+   "gold": "1935-04-01",
+   "got": "1935-04-28",
+   "sites": "web:alchetron.com+web:bornglorious.com+web:grokipedia.com+web:medium.com+web:urduwallahs.com"
+  }
+ ],
+ "verdict": "KILLED: 1 wrong spoken",
+ "wall_s": 408.0
+}

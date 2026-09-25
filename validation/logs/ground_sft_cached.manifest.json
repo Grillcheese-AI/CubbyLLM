@@ -1,0 +1,110 @@
+{
+ "version": "ground_sft_v1",
+ "built": "2026-09-24T18:00:05",
+ "model": "google/gemini-3.8-flash",
+ "items_sent": 15000,
+ "sent_by_family": {
+  "relation": 3860,
+  "profile": 4484,
+  "bind": 3838,
+  "counter": 2818
+ },
+ "calls": 1875,
+ "verdicts": {
+  "kept:relation": 199,
+  "kept:profile": 282,
+  "kept:bind": 223,
+  "kept:counter": 173,
+  "ungrounded": 99,
+  "no_reply": 14016,
+  "question_gives_answer": 8
+ },
+ "records": 945,
+ "counts": {
+  "relation:train": 185,
+  "profile:train": 261,
+  "bind:train": 221,
+  "counter:train": 159,
+  "relation:held": 14,
+  "profile:held": 21,
+  "counter:held": 14,
+  "bind:held": 2,
+  "absent:train": 68
+ },
+ "usage": {
+  "prompt_tokens": 141191,
+  "completion_tokens": 59081,
+  "reasoning_tokens": 0,
+  "cost": 0.32417252999999996
+ },
+ "absent_line": "The facts don't say.",
+ "prompt_format": "Facts:\n- E — relation: value\nQuestion: question?\nAnswer:",
+ "examples_rejected": {
+  "ungrounded": [
+   {
+    "family": "profile",
+    "q": "Tell me about Paul Taylor Choreographer.",
+    "a": "Paul Taylor Choreographer was born on July 29, 1930, studied at Virginia Episcopal School, and was taught by Martha Hill. Among his creations are Hobo Ballet and the Paul Taylor Dance Company.",
+    "gold": null,
+    "forbid": []
+   },
+   {
+    "family": "relation",
+    "q": "Who was the spouse of Enrico Rastelli?",
+    "a": "Enrico Rastelli's spouse was Harriet Price.",
+    "gold": [
+     "Harriet Price"
+    ],
+    "forbid": []
+   },
+   {
+    "family": "counter",
+    "q": "What is the occupation of Vidkun Quisling?",
+    "a": "Vidkun Quisling's occupation is Rock And Roll Singer.",
+    "gold": [
+     "Rock And Roll Singer"
+    ],
+    "forbid": [
+     "Nazi Collaborator"
+    ]
+   }
+  ],
+  "question_gives_answer": [
+   {
+    "family": "relation",
+    "q": "Where is Kuala Terengganu located?",
+    "a": "Kuala Terengganu is located at the Terengganu River, on the East Coast Of Peninsular Malaysia, in Terengganu, and within the Kuala Terengganu District.",
+    "gold": [
+     "Terengganu",
+     "Kuala Terengganu District",
+     "East Coast Of Peninsular Malaysia",
+     "Terengganu River"
+    ],
+    "forbid": []
+   },
+   {
+    "family": "bind",
+    "q": "Who is the host of WTF With Marc Maron?",
+    "a": "The host of WTF With Marc Maron is Marc Maron.",
+    "gold": [
+     "Marc Maron"
+    ],
+    "forbid": [
+     "Chris Hardwick",
+     "Talking Dead"
+    ]
+   },
+   {
+    "family": "relation",
+    "q": "What was an influence for Jim Corbett National Park?",
+    "a": "An influence for Jim Corbett National Park is Jim Corbett.",
+    "gold": [
+     "Jim Corbett"
+    ],
+    "forbid": []
+   }
+  ]
+ },
+ "wall_s": 3.3,
+ "output": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\ground_sft_cached.jsonl"
+}

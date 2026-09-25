@@ -1,0 +1,69 @@
+{
+ "provenance": {
+  "what": "H-A9 step 1 \u2014 ES over the program adapter, scored by the cubelang VM",
+  "task": "arithmetic",
+  "data": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\emitter_sft_v14e_nochain.jsonl",
+  "model": "LiquidAI/LFM2.5-2.6B",
+  "adapter": "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b_v14e_nochain_full/adapter",
+  "null_control": false,
+  "baseline_v14e": 0.775,
+  "bar_2se": 0.821,
+  "args": {
+   "model": "LiquidAI/LFM2.5-2.6B",
+   "adapter": "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b_v14e_nochain_full/adapter",
+   "task": "arithmetic",
+   "iterations": 2,
+   "population": 32,
+   "minibatch": 4,
+   "sigma": 0.003,
+   "lr": 3e-06,
+   "optimizer": "sgd",
+   "opt_lr": 0.0001,
+   "seed": 0,
+   "every": 2,
+   "probe": 4,
+   "max_new_tokens": 768,
+   "null_control": false,
+   "final_n": 4,
+   "serial": false,
+   "prompts_per_batch": 1,
+   "held_out_batch": 16,
+   "tag": "_ppb1"
+  }
+ },
+ "train_curve": [
+  {
+   "iteration": 1,
+   "mean": 0.9203125000000001,
+   "best": 1.1,
+   "shaped_std": 0.5,
+   "seconds": 289.34482379999827
+  },
+  {
+   "iteration": 2,
+   "mean": 0.9515625000000001,
+   "best": 1.35,
+   "shaped_std": 0.45193845378886705,
+   "seconds": 283.70841839999775
+  }
+ ],
+ "held_out_checks": [
+  {
+   "iteration": 0,
+   "n": 4,
+   "verify_to_gold": 0.5
+  },
+  {
+   "iteration": 2,
+   "n": 4,
+   "verify_to_gold": 0.5
+  }
+ ],
+ "final": {
+  "verify_to_gold": 0.5,
+  "n": 4,
+  "se": 0.25,
+  "beats_bar": null,
+  "is_decision": false
+ }
+}

@@ -1,0 +1,31 @@
+{
+  "source": "nvidia/Nemotron-SFT-Instruction-Following-Chat-v2",
+  "split": "reasoning_off",
+  "license": "ODC-By (attribution required)",
+  "sample": "10 x 50 MB byte ranges spread evenly over reasoning_off.jsonl (5.96 GB): 93,727 chats, ~9% of the split",
+  "built": "2026-09-24",
+  "min_support": 0.6,
+  "max_len": 512,
+  "funnel": {
+    "total": 93727,
+    "multi_turn": 30365,
+    "markdown": 21955,
+    "too_long": 11275,
+    "language": 10832,
+    "ungrounded": 8387,
+    "low_support": 4341,
+    "emoji": 4216,
+    "kept": 1208,
+    "too_short": 870,
+    "system_prompt": 278
+  },
+  "langs": {
+    "en": 1174,
+    "fr": 34
+  },
+  "splits": {
+    "train": 1151,
+    "held": 57
+  },
+  "check": "same kept set as an independent copy of the filter to one record (1,207 of 1,208)"
+}

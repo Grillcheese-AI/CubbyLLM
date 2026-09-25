@@ -1,0 +1,74 @@
+CLUTRR gen_train23_test2to10: train 9074, test 1146; convention forward 800/800
+day 1: 9074 relation asks refused with gold (none skipped); hops {2: 4076, 3: 4998}
+night (all train): 109 rules adopted in 3 rounds from 9074 episodes, 0 retired; rejected {'conflict': 4, 'counterexample': 4} (5.9s)
+night (2-hop train only): 62 rules from 4076 episodes; rejected {} (2.5s)
+shuffled library: 104/109 conclusions moved
+
+day 2: 1146 test questions; by depth {2: 38, 3: 105, 4: 190, 5: 174, 6: 107, 7: 144, 8: 150, 9: 119, 10: 119}
+[rules] 1146 questions, 10794 VM calls, 5.1s
+[pairs_only] 1146 questions, 10776 VM calls, 5.0s
+[null] 1146 questions, 0 VM calls, 0.2s
+[shuffled] 150 questions, 262 VM calls, 0.1s
+
+rules -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2     38        38         0       0        0
+       3    105        43        62       0        0
+       4    190       144        46       0        0
+       5    174       138        36       0        0
+       6    107        87        20       0        0
+       7    144       106        38       0        0
+       8    150       113        37       0        0
+       9    119        81        38       0        0
+      10    119        77        42       0        0
+     all   1146       827       319       0        0
+     >=4   1003       746       257       0        0   <- depths no training record reaches
+   refusals: {'vm_verify_failed': 206, 'no_rule': 111, 'rule_split': 2}
+
+pairs_only -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2     38        38         0       0        0
+       3    105        86        19       0        0
+       4    190       143        47       0        0
+       5    174       140        34       0        0
+       6    107        84        23       0        0
+       7    144       104        40       0        0
+       8    150       100        50       0        0
+       9    119        76        43       0        0
+      10    119        67        52       0        0
+     all   1146       838       308       0        0
+     >=4   1003       714       289       0        0   <- depths no training record reaches
+   refusals: {'vm_verify_failed': 209, 'no_rule': 72, 'rule_split': 27}
+
+null -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2     38         0        38       0        0
+       3    105         0       105       0        0
+       4    190         0       190       0        0
+       5    174         0       174       0        0
+       6    107         0       107       0        0
+       7    144         0       144       0        0
+       8    150         0       150       0        0
+       9    119         0       119       0        0
+      10    119         0       119       0        0
+     all   1146         0      1146       0        0
+     >=4   1003         0      1003       0        0   <- depths no training record reaches
+   refusals: {'no_rule': 1146}
+
+shuffled -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       2      3         0         0       3        0
+       3     11         0         7       4        0
+       4     26         0        20       6        0
+       5     22         1        16       5        0
+       6     12         0        10       2        0
+       7     23         0        16       7        0
+       8     14         0        12       2        0
+       9     22         1        21       0        0
+      10     17         0        17       0        0
+     all    150         2       119      29        0
+     >=4    136         2       112      22        0   <- depths no training record reaches
+   refusals: {'rule_split': 83, 'no_rule': 29, 'vm_verify_failed': 7}
+
+VERDICT: survives -- 0 wrong in rules + pairs_only, 0 breaches in null, 29 wrong in shuffled (the instrument sees wrongs: yes)
+library: 109 rules; total 19.8s, 21832 VM calls

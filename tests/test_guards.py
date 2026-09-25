@@ -87,11 +87,10 @@ def test_ops_is_sole_grilly_importer():
 
 #: module -> why it is not yet on a forward path. Retire an entry by WIRING the
 #: module, never by adding to this list to silence the guard.
+# 2026-09-24: hippocampus and striatum left the list -- the sleep cycle (reasoning/sleep.py) writes the
+# day's certified chains into the one and delivers the day's outcomes to the other every night. The ask
+# loop does not yet READ either at question time; that is the next wiring step, not a reason to list them.
 KNOWN_UNWIRED = {
-    "cubbyllm.reasoning.hippocampus":
-        "2026-09-12 side cortex; measured in exp_r13/exp_r14, not mounted on ask/serve",
-    "cubbyllm.reasoning.striatum":
-        "2026-09-12 proposer arbitration by RPE; measured in exp_r15, no caller",
     "cubbyllm.reasoning.retriever":
         "the scorer seam exists in pipeline._walk; nothing builds one from this module",
 }

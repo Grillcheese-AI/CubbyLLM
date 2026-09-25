@@ -1,0 +1,44 @@
+{
+  "source": "nvidia/ChatQA-Training-Data",
+  "subsets": {
+    "squad2.0": "CC BY-SA 4.0",
+    "quoref": "CC BY 4.0",
+    "tatqa": "CC BY 4.0",
+    "narrativeqa": "Apache-2.0"
+  },
+  "max_len": 512,
+  "funnel": {
+    "narrativeqa:answer": 7199,
+    "narrativeqa:too_long": 32117,
+    "narrativeqa:total": 40000,
+    "narrativeqa:ungrounded": 684,
+    "quoref:answer": 9056,
+    "quoref:too_long": 1940,
+    "quoref:total": 10996,
+    "squad2.0:absent": 47295,
+    "squad2.0:absent_unsafe": 38656,
+    "squad2.0:answer": 85951,
+    "squad2.0:too_long": 141,
+    "squad2.0:total": 86092,
+    "tatqa:answer": 2113,
+    "tatqa:too_long": 1063,
+    "tatqa:total": 3176
+  },
+  "families": {
+    "passage": 104319,
+    "passage_absent": 47295
+  },
+  "splits": {
+    "train": 136309,
+    "held": 15305
+  },
+  "built": "2026-09-25",
+  "left_out": {
+    "synthetic_convqa": "non-commercial (OpenAI terms)",
+    "newsqa": "not in the release",
+    "ropes": "situation paragraph missing: 61% of answers are in neither document nor question",
+    "drop, tatqa arithmetic": "the number is computed: VM / emitter data, not talk",
+    "quoref absent": "hand checks found the rest of the passage still answers it"
+  },
+  "hand_check": "24 absent records read with the removed gold beside them: all unanswerable from what was left; splitter fixed for abbreviations (U.S., Dr., v.) after the first read"
+}

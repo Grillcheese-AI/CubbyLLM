@@ -1,0 +1,13 @@
+train_talk_grilly | 181 LoRA modules, 7.86M trainable (r=16, alpha=32.0) | train 13,747 held-eval 16 | 20 steps of 2 x 4 | lr 0.0002 warmup 50 | load 12s
+  step 0 held answer loss 1.7201 (15s)  gpu 3,174 MB + shared 163 MB
+  step     2/20  loss 2.3439  gnorm 0.943  lr 8.00e-06  1.89 s/step  341 tok/s  eta 0.01 h  gpu 4,459 MB + shared 163 MB
+  step     4/20  loss 1.6162  gnorm 0.919  lr 1.60e-05  2.30 s/step  288 tok/s  eta 0.01 h  gpu 4,459 MB + shared 163 MB
+  step     6/20  loss 1.4959  gnorm 0.922  lr 2.40e-05  2.39 s/step  265 tok/s  eta 0.01 h  gpu 4,459 MB + shared 163 MB
+  step     8/20  loss 2.0053  gnorm 1.076  lr 3.20e-05  2.45 s/step  254 tok/s  eta 0.01 h  gpu 4,459 MB + shared 163 MB
+  step    10/20  loss 1.7990  gnorm 1.145  lr 4.00e-05  2.50 s/step  253 tok/s  eta 0.01 h  gpu 4,459 MB + shared 163 MB
+  step    12/20  loss 1.5666  gnorm 0.893  lr 4.80e-05  2.56 s/step  254 tok/s  eta 0.01 h  gpu 5,230 MB + shared 163 MB
+  step    14/20  loss 1.4679  gnorm 0.910  lr 5.60e-05  2.59 s/step  254 tok/s  eta 0.00 h  gpu 5,230 MB + shared 163 MB
+  step    16/20  loss 1.1652  gnorm 0.924  lr 6.40e-05  2.62 s/step  255 tok/s  eta 0.00 h  gpu 5,230 MB + shared 163 MB
+  step    18/20  loss 1.5981  gnorm 1.285  lr 7.20e-05  2.63 s/step  252 tok/s  eta 0.00 h  gpu 5,487 MB + shared 163 MB
+  step    20/20  loss 1.4413  gnorm 0.997  lr 8.00e-05  2.65 s/step  253 tok/s  eta 0.00 h  gpu 5,487 MB + shared 163 MB
+  step 20 held answer loss 1.4495

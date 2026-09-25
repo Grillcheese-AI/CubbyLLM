@@ -1,0 +1,4 @@
+train_talk_torch | cpu | 22 LoRA modules, 0.06M trainable (r=16, alpha=32.0) | train 16 held-eval 4 | 3 steps of 2 | lr 0.0002 warmup 50 | load 3s
+  step 0 held answer loss 11.7591
+  step     3/3  loss 11.8192  gnorm 0.170  lr 1.20e-05  0.06 s/step  2,462 tok/s  eta 0.0 min
+  step 3 held answer loss 11.7591

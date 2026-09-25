@@ -117,3 +117,40 @@ class TripleIndex:
 
     def by_object(self, entity: str) -> list[tuple[str, Triple]]:
         return list(self._by_obj.get(normalize(entity), []))
+
+    def paths(self, a: str, b: str, max_hops: int = 10, limit: int = 16,
+              max_nodes: int = 5000) -> tuple[list[list[Triple]], bool]:
+        """Every simple chain of facts from subject `a` to object `b`, following facts forward (subject
+        -> object), shortest first: what "how is B related to A?" composes (`skills.relate`).
+
+        -> (paths, overflow). More than `limit` paths, or more than `max_nodes` facts visited, sets
+        `overflow`: the caller refuses rather than answer from a sample, because a path it did not see
+        could compose to a different relation."""
+        start, goal = normalize(a), normalize(b)
+        out: list[list[Triple]] = []
+        if not start or not goal or start == goal:
+            return out, False
+        state = {"visited": 0, "overflow": False}
+
+        def walk(node: str, seen: frozenset, acc: list[Triple]) -> None:
+            for _f, t in self._by_subj.get(node, []):
+                if state["overflow"]:
+                    return
+                state["visited"] += 1
+                if state["visited"] > max_nodes:
+                    state["overflow"] = True
+                    return
+                o = normalize(t.obj)
+                if o in seen:
+                    continue
+                if o == goal:
+                    if len(out) >= limit:
+                        state["overflow"] = True
+                        return
+                    out.append(acc + [t])
+                elif len(acc) + 1 < max_hops:
+                    walk(o, seen | {o}, acc + [t])
+
+        walk(start, frozenset({start}), [])
+        out.sort(key=len)
+        return out, state["overflow"]

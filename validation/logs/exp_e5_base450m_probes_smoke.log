@@ -1,0 +1,59 @@
+exp_e5 base450m probes | grilly2 on the local GPU | load 11s | base450m_final.pt step 21103
+
+A. copy by distance (random tokens 1000..29999; loss on the repeat, nats)
+    n  dist    arm    loss      q1      q4   p>.5   note
+   16    15 repeat   2.127   3.412   0.150  0.467   inside window
+   64    63 repeat   0.974   2.470   0.134  0.794   inside window
+  128   127 repeat   0.978   1.507   1.036  0.835   inside window
+  256   255 repeat   1.079   1.272   1.040  0.792   inside window
+  384   383 repeat   1.148   1.772   0.815  0.768   inside window
+  512   511 repeat   1.134   1.378   1.171  0.779   training probe (window edge)
+  600   599 repeat  12.397  12.638  12.436  0.000   beyond window
+  800   799 repeat  12.413  12.379  12.515  0.000   beyond window
+   64    63   null  13.084  12.373  13.705  0.000   fresh tokens, nothing to copy
+  512   511   null  12.485  12.391  12.696  0.000   fresh tokens, nothing to copy
+  (uniform over the 29,000 probe ids = 10.28; p>.5 = share of repeat tokens given more than half the probability)
+  natural EN prose    74 tok: first copy 3.348, second copy 0.123
+  natural FR prose    62 tok: first copy 4.400, second copy 0.197
+  natural code        94 tok: first copy 1.155, second copy 0.061
+
+B. context vs memory (60 items, 4 candidates each, 15s)
+  bound    n=   8  {"other_in_context": 4, "correct": 4}   (asked person in context)
+  null     n=   4  {"copied_in_context": 4}   (asked person NOT in context)
+  prior    n=  24  {"memory": 24}   (real capitals, irrelevant context)
+  counter  n=  24  {"memory": 22, "context": 2}   (real capitals, context states another city)
+    bound, asked person first: 3/4 correct
+    bound, asked person second: 1/4 correct
+    bound, born  : 0/2 correct
+    bound, job   : 2/2 correct
+    bound, color : 1/2 correct
+    bound, pet   : 1/2 correct
+  counter, on the 24 capitals the weights know: {"memory": 22, "context": 2}
+  few-shot prefix:
+Context: Dario Zelzelley was born in Seoul. Vesna Phinkorwick was born in Lima.
+Question: Where was Vesna Phinkorwick born?
+Answer: Lima
+
+Context: Kaija Bralauine works as a pilot. Ulric Oskdunard works as a teacher.
+Question: What does Kaija Bralauine do for a living?
+Answer: pilot
+
+Context: Mireille Dunphinard has a dog named Ziggy. Rhea Velsabson has a dog named Otis.
+Question: What is the name of Rhea Velsabson's dog?
+Answer: Otis
+
+
+
+C. greedy samples (repetition penalty 1.1), decode path
+  [0.21s, 37.8 tok/s] 'The history of Quebec City begins'
+     -> ' with the founding of the city in 1534'
+  [0.21s, 37.5 tok/s] 'La ville de Lévis est située sur la rive sud'
+     -> ' du fleuve Saint-Laurent, à la'
+  [0.21s, 37.9 tok/s] 'Question: Why does ice float on water?\nAnswer:'
+     -> ' Ice floats on water because it is a'
+  [0.2s, 39.5 tok/s] 'def is_prime(n):\n'
+     -> '    if n <= 1:\n       '
+  [0.21s, 37.9 tok/s] "Context: Bill Haslam's father is Jim Haslam.\nQuestion: Who is Bill Haslam's father?\nAnswer:"
+     -> " Bill Haslam's father is Jim Haslam."
+  [0.21s, 38.6 tok/s] 'Question: What is the capital of Canada?\nAnswer:'
+     -> ' OttawaThe first thing to do when'

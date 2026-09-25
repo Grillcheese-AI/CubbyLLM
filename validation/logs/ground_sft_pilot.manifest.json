@@ -1,0 +1,74 @@
+{
+ "version": "ground_sft_v1",
+ "built": "2026-09-24T17:55:51",
+ "model": "google/gemini-3.8-flash",
+ "items_sent": 160,
+ "sent_by_family": {
+  "relation": 46,
+  "profile": 50,
+  "bind": 32,
+  "counter": 32
+ },
+ "calls": 20,
+ "verdicts": {
+  "kept:relation": 39,
+  "kept:profile": 43,
+  "kept:bind": 29,
+  "kept:counter": 30,
+  "ungrounded": 19
+ },
+ "records": 152,
+ "counts": {
+  "relation:train": 34,
+  "profile:train": 39,
+  "bind:train": 29,
+  "counter:train": 29,
+  "relation:held": 5,
+  "profile:held": 4,
+  "counter:held": 1,
+  "absent:train": 11
+ },
+ "usage": {
+  "prompt_tokens": 22346,
+  "completion_tokens": 9585,
+  "reasoning_tokens": 0,
+  "cost": 0.0521762175
+ },
+ "absent_line": "The facts don't say.",
+ "prompt_format": "Facts:\n- E — relation: value\nQuestion: question?\nAnswer:",
+ "examples_rejected": {
+  "ungrounded": [
+   {
+    "family": "counter",
+    "q": "What is Josephine Guidy Wandja's occupation?",
+    "a": "Josephine Guidy Wandja's occupation is Flautist.",
+    "gold": [
+     "Flautist"
+    ],
+    "forbid": [
+     "Mathematics Lecturer"
+    ]
+   },
+   {
+    "family": "profile",
+    "q": "What do you know about David Koresh?",
+    "a": "David Koresh was born on August 17, 1959, and died on April 19, 1993, at Mount Carmel Center, later being buried at Tyler Memorial Park Cemetery. Associated with the Branch Davidians, his field of work was Apocalyptic Biblical teachings.",
+    "gold": null,
+    "forbid": []
+   },
+   {
+    "family": "relation",
+    "q": "Who are the members of Gulf Cartel?",
+    "a": "Members of Gulf Cartel include Mario Cardenas Guillen, Antonio Cardenas Guillen, and Los Zetas.",
+    "gold": [
+     "Los Zetas",
+     "Mario Cardenas Guillen",
+     "Antonio Cardenas Guillen"
+    ],
+    "forbid": []
+   }
+  ]
+ },
+ "wall_s": 18.1,
+ "output": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\ground_sft_pilot.jsonl"
+}

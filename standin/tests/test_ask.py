@@ -309,6 +309,59 @@ def test_a_grouped_number_is_the_same_number():
     assert not grounded_prose("It has a population of 999,999.", facts, "Quebec City")[0]
 
 
+def test_a_possessive_of_a_grounded_name_is_the_name():
+    """2026-09-24, the ground_sft pilot: "Bill Haslam's father is Jim Haslam." was refused over
+    "Haslam's". The stem still has to be in the facts: a possessive licenses nothing new."""
+    facts = ["Jim Haslam is the father of Bill Haslam"]
+    assert grounded_prose("Bill Haslam's father is Jim Haslam.", facts, "Bill Haslam") == (True, [])
+    assert grounded_prose("Bill Haslam’s father is Jim Haslam.", facts, "Bill Haslam") == (True, [])
+    ok, bad = grounded_prose("Bill Haslam's father is Tom Smith's son.", facts, "Bill Haslam")
+    assert not ok and bad == ["Tom", "Smith's"]
+
+
+def test_the_value_check_refuses_a_grounded_answer_bound_to_the_wrong_value():
+    """2026-09-25, H-E6 talk_v1: 'Leon Rom is a member of Congo Free State.' passes the name-and-number
+    guard (Leon Rom is in the facts, as its employee) but the VM returned Groove Billed Ani. The host
+    knows what it returned, so the answer is refused -- not spoken."""
+    from ask import value_check
+    others = ["Leon Rom"]                                # every other value and entity in the block; not the one asked about
+    assert value_check("Groove Billed Ani is a member of Congo Free State.", ["Groove Billed Ani"], others) == (True, [])
+    ok, bad = value_check("Leon Rom is a member of Congo Free State.", ["Groove Billed Ani"], others)
+    assert not ok and bad == ["returned value missing", "Leon Rom"]
+
+
+def test_a_value_inside_the_returned_value_is_not_another_value():
+    """'Ranma12' is another line's value AND a prefix of the returned 'Ranma12 New Anime2024': saying the
+    returned value must not count as naming the other one."""
+    from ask import value_check
+    assert value_check("The adaptation is Ranma12 New Anime2024.", ["Ranma12 New Anime2024"], ["Ranma12"]) == (True, [])
+    ok, bad = value_check("It is Ranma12, then Ranma12 New Anime2024.", ["Ranma12 New Anime2024"], ["Ranma12"])
+    assert not ok and bad == ["Ranma12"]
+    # the same for the asked entity's own name (talk_v1: 'String Quintet' is another line's value)
+    assert value_check("The parent company of String Quintet Schubert is Invicta Plastics.", ["Invicta Plastics"],
+                       ["String Quintet"], "String Quintet Schubert") == (True, [])
+
+
+def test_a_date_value_is_stated_when_its_year_and_month_are():
+    from ask import has_value
+    assert has_value("The FCC approved it on December 17, 1953.", "1953-12-17")
+    assert not has_value("The FCC approved it in 1953.", "1953-12-17")
+    assert not has_value("The FCC approved it on March 17, 1954.", "1953-12-17")
+
+
+def test_the_host_not_the_model_says_the_facts_do_not_say():
+    """The VM returned nothing: the host answers ABSENT_REPLY itself, whatever the draft was -- the
+    16 answers talk_v1 stitched together when the facts were silent never reach the asker."""
+    from ask import ABSENT_REPLY, talk_reply
+    facts = ["Queretaro City — country: Mexico"]
+    assert talk_reply([], "Queretaro City is located in the Information Technology Sector.", facts,
+                      "Queretaro City", []) == (ABSENT_REPLY, "vm_empty")
+    assert talk_reply(["Mexico"], "Queretaro City is in Mexico.", facts, "Queretaro City", []) == (
+        "Queretaro City is in Mexico.", "spoken")
+    reply, why = talk_reply(["Mexico"], "Queretaro City is in Spain.", facts, "Queretaro City", [])
+    assert reply is None and why.startswith("ungrounded")
+
+
 class FakeNews:
     """A NewsSource-shaped stand-in: Triples, `times`, `provenance`, `topics`."""
 

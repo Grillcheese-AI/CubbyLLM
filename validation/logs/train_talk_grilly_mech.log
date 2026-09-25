@@ -1,0 +1,8 @@
+train_talk_grilly | 181 LoRA modules, 7.86M trainable (r=16, alpha=32.0) | train 142 held-eval 10 | 40 steps of 8 | lr 0.0002 warmup 50 | load 11s
+  step 0 held answer loss 1.5434 (11s)
+  step    10/40  loss 1.6717  gnorm 0.957  lr 4.00e-05  1.50 s/step  430 tok/s  eta 0.01 h
+  step    20/40  loss 1.2963  gnorm 0.781  lr 8.00e-05  1.58 s/step  424 tok/s  eta 0.01 h
+  step 20 held answer loss 1.1584
+  step    30/40  loss 1.0631  gnorm 0.847  lr 1.20e-04  1.46 s/step  442 tok/s  eta 0.00 h
+  step    40/40  loss 1.0213  gnorm 1.010  lr 1.60e-04  1.64 s/step  401 tok/s  eta 0.00 h
+  step 40 held answer loss 0.7462

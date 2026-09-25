@@ -133,10 +133,163 @@ records**, giving SE 0.023 and a bar of **0.821** — a 0.046 jump over
 v14e's 0.775. That is the number ES has to clear; 40-record reads are for
 the every-K-iterations progress check only and never for the decision.
 
-Status: **step 0 DONE, claim (a) supported; claim (b) OPEN** — it needs
-grilly2's `grilly.learning.es` (landed 2026-09-23, 14 tests) and LFM2
-support (not yet built). Logs at
-`validation/logs/exp_v9_es_*.{log,json}`.
+**Settings, corrected against the EGGROLL paper (2026-09-23).** The ES
+implementation was built from a shader audit plus standard ES, not from
+the paper (Sarkar et al., *Evolution Strategies at the Hyperscale*,
+arXiv:2511.16652). Reading it changed three things before any iteration
+ran:
+
+- **The step size was wrong by ~2000x.** The paper absorbs `1/sigma` into
+  its learning rate (Eq. 6), so `alpha = lr/sigma` is what sets the step,
+  and it uses `alpha = 0.001` across populations from 256 to 65,536
+  (Tables 3, 4). This job carried `sigma=0.01, lr=0.02`, i.e.
+  `alpha = 2.0` — a **measured per-element step of 7.4 sigma**, seven
+  times the radius at which the fitness was measured. It would have
+  diverged on iteration 1 and read as "ES does not help here". Now
+  `lr=1e-5`.
+- **Fitness shaping is now EGGROLL §6.3**, which is what the paper uses
+  for its reasoning fine-tunes: linear in the score rather than in the
+  rank, so a member that solved the batch outright counts for more than
+  one that edged out a tie. `fitness()` therefore returns one ladder
+  score **per prompt** and the optimizer takes the (member, prompt)
+  matrix. `shaped_sd` is logged per iteration, because unlike centred
+  ranks its spread is not fixed.
+- **What ES moves stays the LoRA factors**, which is the paper's Table 4
+  / §M setup (persistent rank-4 LoRA on all projections, base frozen,
+  sigma 0.01) rather than its headline formulation, where the mean
+  parameter is the weight matrix and only the *perturbation* is low-rank.
+  The difference does not bind here: at population 32 the per-step update
+  is rank <= 32 either way, far under the rank-64 adapter's ceiling.
+
+**sigma, measured rather than copied (2026-09-24).** The paper's 0.01 is
+meaningless without the scale of what it perturbs, and this adapter's
+factors are not the paper's: `std(lora_A) = 1.33e-2` but
+`std(lora_B) = 1.72e-3` across all 122 of each, so 0.01 perturbs every
+`lora_B` by **5.8x its own standard deviation**. A member that far out is
+not a neighbour of v14e, it is a different model — and a different model
+does not emit `<|im_end|>`. Since grilly's decode compaction can only drop
+rows that *finish*, one non-terminating member holds the whole batch open
+to `--max-new-tokens`. Measured, 32 members on one prompt, RX 6750 XT:
+
+| sigma | sigma/std(B) | terminated | decode steps | seconds | distinct outputs |
+|---|---|---|---|---|---|
+| 0.010 | 5.83 | **31/32** | **768** | **150.7** | 32 |
+| 0.006 | 3.50 | 32/32 | 177 | 34.4 | 28 |
+| 0.004 | 2.33 | 32/32 | 160 | 31.4 | 26 |
+| **0.003** | 1.75 | 32/32 | 99 | **20.0** | 22 |
+| 0.002 | 1.17 | 32/32 | 95 | 19.2 | 16 |
+| 0.001 | 0.58 | 32/32 | 93 | 18.8 | 5 |
+| 0.0005 | 0.29 | 32/32 | 88 | 17.9 | **1** |
+
+Both ends fail and neither raises. Above the knee one hung member costs
+the batch **7.5x**; below it every member decodes identical tokens, the
+fitness is the same for all 32, and ES takes no step — which is why the
+shaped spread is now logged per iteration. **sigma is 0.003** (lr 3e-6, so
+alpha stays 0.001). It is the knee on both axes and also maximises
+distinct outputs per second.
+
+Two things this surfaced. First, `_centred_ranks` gave a *tied* population
+a full spread — a flat objective produced a full-size step in whatever
+direction the noise generator happened to order the members. Ties now
+share their average rank, so a flat population takes no step (fixed in
+grilly, with tests). Second, grilly inherits `repetition_penalty = 1.1`
+from LFM2's `generation_config.json` while llama.cpp's default is 1.0, so
+it is **another unaccounted difference in the open 0.625-vs-0.800 baseline
+comparison**, alongside the BOS token. It costs no measurable time (46.49
+vs 46.53 s) — this is a correctness note, not a speed one.
+
+**The run was executed, and claim (b) is in trouble before the budget is
+(2026-09-24).** Two iterations at the real shape — population 32,
+minibatch 16, sigma 0.003, prompts-per-batch 1, RX 6750 XT:
+
+| | iter 1 | iter 2 |
+|---|---|---|
+| train fitness mean | 1.1234 | 1.2426 |
+| shaped_sd | 0.216 | 0.211 |
+| **member effect** | **0.0000** | **0.0000** |
+| split-half correlation of member means | **-0.377** | -0.086 |
+| seconds | 1057 | 995 |
+
+The member effect is the fraction of score variance that belongs to the
+*member* rather than the prompt, calibrated against simulation: pure
+scatter reads 0.01-0.02, a real effect reads 0.3-0.9. It reads **zero**,
+and `shaped_sd` sits *below* the 0.246 that m=16 noise alone produces.
+A member's score on the first eight prompts does not predict its score on
+the other eight. Members do differ — they diverge on 12 of 16 prompts —
+but they differ in *which* prompts they happen to get right, not in how
+good they are. **ES is ranking scatter.**
+
+The arithmetic says why, and it is not fixable by budget:
+
+- **The ladder is binary in practice.** Only two rungs ever occur, 0.6 and
+  1.6. v14e always emits a program that parses, compiles and executes, so
+  `0.1*parses + 0.2*compiles + 0.3*executes` is a constant and the whole
+  reward is the correctness bit. The ladder was put there precisely
+  because "a binary right/wrong reward is flat almost everywhere"; on this
+  model it *is* binary.
+- **One bit times sixteen prompts cannot resolve the effect.** At p=0.523
+  and m=16, sampling noise on a member's mean is sd 0.125, while the
+  measured spread of member means is 0.054 — the observed spread is *less*
+  than chance. Resolving a true 2% quality difference needs m > 624
+  prompts per member, i.e. ~20,000 generations an iteration against the
+  current 512.
+
+Caveat on power: with 32 members the statistic cannot see an effect below
+roughly 5% of total variance, so this shows the effect is small, not that
+it is exactly zero. It is small enough that 200 iterations of this design
+would rank noise.
+
+**And the starting point is wrong anyway.** Held-out read 0.250 on 8
+prompts (SE 0.153) where v14e measures 0.775. That is the same unresolved
+grilly2-vs-llama.cpp gap as the 0.625-vs-0.800 arithmetic read — the BOS
+fix is applied but unmeasured, and `repetition_penalty = 1.1` was found
+on 2026-09-24. **The bar of 0.821 was set from llama.cpp's baseline; it
+cannot be chased from a backend scoring 0.15-0.5 below where that baseline
+was measured.** Close the baseline gap before spending any ES budget.
+
+Cost, for whenever it is spent: **~1,000 s an iteration** at minibatch 16
+(prompts-per-batch 1, which measured 1.24-2.0x faster and far steadier
+than 4: 289/284 s vs 360/572 s at minibatch 4, because a batch costs its
+longest row and max-of-32 is shallower in the length tail than
+max-of-128). 200 iterations is **~56 hours**.
+
+The one gap left is **population size**. Every LLM run in the paper uses
+256 to 8192, and its central pretraining finding is that large populations
+are what make ES work; 32 is what fits this card serially. If (b) fails on
+the budget, read it as a statement about population 32, not about ES.
+
+Status: **step 0 DONE, claim (a) supported; claim (b) PARKED 2026-09-24**
+(Nick) before any real iteration. What stands:
+
+- **The engine is built.** grilly2 has `grilly.learning.es`, LFM2, an
+  unmerged LoRA with per-row population noise, and (24 Sep) left-padded
+  `generate` that drops rows as they finish. `exp_v9_es.py` batches
+  members x prompts (`--prompts-per-batch`) and the held-out read
+  (`--held-out-batch`, 16 prompts at once: 40/40 texts identical to the
+  serial read, 120 s against 357 s).
+- **Why parked: the tuned model is not the served one.** On the same 40
+  held-out prompts, the emitter through grilly2 (int8, 768 tokens) reads
+  26/40 where llama.cpp step 0 read 31/40. ES would climb the grilly
+  version; whether a gain carries to what Cubby serves is unknown, so the
+  gap comes first if this is picked up again.
+- **Throughput ceiling on 12 GB.** 32 members x 1 prompt: 63 s a prompt
+  at 768 tokens (serial 122 s). 2 prompts per batch spilled past the card
+  because the padded KV cache sits in grilly's pooled (power-of-two,
+  retained) memory; at 128 tokens, where it fit, it was 1.5x faster a
+  prompt. Fix before reuse: exact-size persistent buffers for
+  `PaddedKVCache`. Realistic gain 2-3x, not 10x.
+
+Logs at `validation/logs/exp_v9_es_*.{log,json}`.
+
+**H-A10 — (added 2026-09-24) A nightly sleep cycle turns the day's refusals into the night's curriculum: over successive nights on a fixed battery the refusal share falls while spoken defects stay at zero.** Source: the self-evolution brainstorm (Nick, 24 Sep) under invariants 1 and 6 -- the model proposes, the host disposes, only a gate promotes, every change on a ledger. **Built (v1):** `cubbyllm/reasoning/sleep.py` (replay certified chains into hippocampal episodes; make gate-accepted facts from trusted, non-latent sources durable, loaded at boot by `AskLoop.load_learned`; route every refusal by reason to the queue for the level that must change; audit spoken answers against gold or the asker and deliver every outcome to the striatum; a ledger with the git revision and the input hash; idempotent per night), `AskLoop(history_path=)` and `serve_api --history/--learned`. Pinned by `tests/reasoning/test_sleep.py` and `standin/tests/test_sleep_loop.py` (day 1 fetches, the night consolidates, day 2 answers with the source emptied). **First run** on the SimpleQA search-and-learn bench replayed as three nights (`docs/research/2026-09-24-sleep-cycle.md`): the report shows refusals MOVING (lev9: not-covered 464 -> 338, unknown-relation 56 -> 130, so the next lever is the lexicon), surfaced the one recorded defect (Kafr al-Awamid, a subdistrict spoken for a district) and made 134 accepted facts durable; the ledger is unchanged by re-running all three nights. **Kill:** after five nights on a fixed battery the refusal share has not fallen, or any defect is spoken, or the queues grow while the battery stands still (the loop collecting, not learning). Status: **OPEN -- v1 built and run on recorded days; the queues are not yet acted on (v2) and the ask loop does not yet read the episodes.**
+
+**H-A11 — (added 2026-09-24) Graph-of-thought at an ambiguous hop: following every candidate to the end of the chain and certifying each branch in the VM speaks where the branches agree and names the split where they do not, without a single wrong answer; and in an open world, one pick by the asker recovers what the refusal withheld.** Source: Nick, 24 Sep ("graph of thought with branching also needs some love"), on exp_r31, which branched OUTSIDE the walk. **Built:** `pipeline._explore` / `_converged` (every candidate object a branch, nested splits branch again, bound `branch=12`, each branch through the same `_check_chain` as the greedy walk; speak only if every branch finished, verified and names ONE answer; `closed_world=True` lets a branch the store cannot finish count as refuted, never the default); `answer(choose=)` narrows a hop to a candidate the asker picked and can never add one; `learn` fetches the entity a branch stalled on; `standin/ask.branch_clarify` offers a MID-chain split as choices and never a last-hop one (a pick there would be the answer coming back 'verified' -- the poisoned-capital case); `graph.py` keeps every ask's run as typed nodes and edges (supports, verifies, alternative_of, agrees_with, contradicts, learned_into, retries) in the ask history; the panel draws branches, green where they agree and red where they contradict. **Measured** (`validation/exp_r32_branching_inpipe.py`, the 65 CLUTRR fork records r31 used, real cubelang VM): refuse-on-sight 12/65 spoken; closed world 44/65 (r31 exactly: 12 + 32 recovered), 0 wrong; open world 12/65 (32 held by a branch that could not finish, 18 divergent last-hop sets, 3 VM rejections), 0 wrong; open + one asker pick 44/65, 0 wrong (34 splits offered, all resolved in one round, 2 then VM-rejected at 5-6 hops). Cost: 9x the VM calls on an ambiguous question (439 vs 48 over the 65), none on the rest. **Kill:** any wrong answer spoken through a converged branch set or a choice; or live ambiguous_hop refusals whose splits are mid-chain are rarely resolved by the offered pick (the asker's choice list is the wrong question). Status: **OPEN -- supported on CLUTRR (0 wrong in every arm); not yet measured on live askers.**
+
+**H-A12 — (added 2026-09-24) The web as the source of last resort turns refusals the store cannot fill into verified answers without a single wrong one, because a web triple is only a witness: it is held until two independent sites state it, and the VM still certifies the chain.** Source: Nick, 24 Sep ("need to add websearch to it too to find answers"); the don't-know offer design of 2026-09-04. **Built:** `standin/web_source.py` (Brave / SearXNG; Wikipedia→Wikidata handoff when one item carries the relation, schema.org JSON-LD minus page metadata, entity-opening sentence frames, the local LFM as a grounded, kind-checked reader; sites = registrable domains with the Wikipedia family folded and archives excluded; a persistent tally), `learn_and_answer(fallbacks=)` (the web only after the primary source has nothing more; per-fact provenance and hold), `serve_api --web`, the sleep cycle keeping only two-site facts. Pinned by `standin/tests/test_web_source.py` (16). **Live smoke on real pages** (no search key yet): the reader, unguarded, wrote '112 languages' as a birthplace and '1815-1852' as a birth date; with prose-only passages, grounding and the kind check every value kept was right, and every fact stayed held at one site each -- the rule working. **Kill:** any wrong answer spoken on web facts; or, on a live battery of `retrieval_exhausted` questions with a search key, fewer than one in ten reach two independent sites (the rule holds everything and the web buys nothing). **Measured live** (`validation/exp_r33_web_heldout.py`, 60 withheld wiki-world facts, Brave, real VM, reader off): v1 spoke 12 with 1 WRONG (Agha Hashar Kashmiri's death date, four sites repeating an old Wikipedia lead); v3 -- spellings merged, finer values vouching for coarser ones, one value per relation, copied text counted as one witness, the Wikipedia family speaking through its live article -- spoke 15/60 (11 correct, 4 near, **0 wrong**), held 14 (11 right, 3 wrong held back), split 1, found nothing for 30 (place of death 14/15). Scoring: a containing place answers a PLACE-of-birth question (Nick). Status: **OPEN -- survives the kill clause on 60; the reader arm and a bigger battery are next.**
+
+**H-A13 — (added 2026-09-24) A skill library of composition rules, learned overnight from episodes whose relation gold or an asker states and adopted only with zero counterexamples across the whole record, answers "how is B related to A?" at depths no episode reaches, without a single wrong answer.** Source: Nick, 24 Sep (self-evolution level 3; choices: rules first then CubeLang helpers, zero-counterexample gate, every application through the VM). **Built:** `cubbyllm/reasoning/skills.py` (`Library` replayed from an append-only ledger, retire never delete; `mine` with closure -- a premise is read off every split of an episode the library already composes -- and a gate that re-derives EVERY past episode before a rule gets in; `derive` over every bracketing, a split refused; `relate` over every path between the two, speaking only when the composing paths agree, each certified in the VM with its facts through `pipeline._check_chain`), `TripleIndex.paths`, the ask loop's `relation_ask` / `AskLoop.relation`, the sleep cycle's `skills` phase and four new routes, `serve_api --skills`. Pinned by `tests/reasoning/test_skills.py` (17) and `standin/tests/test_ask_relation.py` (5: day 1 refuses, the night learns, day 2 answers a four-hop question no episode was about). **Measured on CLUTRR's own question** (`validation/exp_r34_clutrr_relations.py`, gen_train23_test2to10, real cubelang VM; train as one day of refused asks with gold, one night, test as day 2): 109 rules adopted in 3 rounds; **827/1,146 correct, 319 refused, 0 wrong; at 4-10 hops, depths no training record reaches, 746/1,003, 0 wrong**; the null control (edges into B relabelled) 0/1,146 spoken; the shuffled library 29 wrong in 150 (the instrument sees wrongs). The whole-record gate rejected 8 rules the 2-hop records alone support -- (son, grandfather) is father 156 times and father-in-law 16, a real ambiguity only 3-hop records show; the 2-hop-only arm adopts them and says nothing wrong on this split by luck, not construction. 206 of the 319 refusals are true bindings recovered at 0.447-0.473 against the served two-binding threshold 0.4736 (exp_r11's lowest observed true binding; the control floor there is ~0.03, exp_r28): a diagnostic at 0.2 reads 1,033/1,146 and 950/1,003 at >=4, still 0 wrong -- recalibrating is Nick's decision, not taken here. Write-up: `docs/research/2026-09-24-skill-library.md`. **Kill:** any wrong relation spoken; or a rule adopted by the gate that a later clean episode contradicts more than once in five nights (the gate is admitting non-functions); or on a live battery the relation asks are refused `no_rule` night after night while their episodes accumulate (the library collecting, not learning). **Second split** (gen_train234_test2to10, train 2-4 hops; `exp_r34_clutrr_relations_gen_train234_test2to10.log`): the gated arm 552/1,048 correct, **0 wrong** (469/903 at >=4); the 2-hop-only ablation 727 correct and **3 WRONG** (*mother* for *mother-in-law*, through a (husband, brother) -> brother rule the whole-record gate keeps out) -- the harness's verdict line counts both arms and reads KILLED; what it killed is the ablation, and the criterion is left as written. The cost of zero counterexamples shows there: 16 premises kept out, some real ambiguities, some apparent label noise ((husband, father): father-in-law 114, father 2), and 395 of the 496 refusals are `no_rule`; the night now lists contested premises for the host (`skills_contested.jsonl`), most one-sided first, and `python -m cubbyllm.reasoning.skills adopt` is the host's word on one (the minority discounted on the ledger; refused if any other episode would derive wrongly). A diagnostic of that word (`..._gen_train234_host_diag.log`): adopting the four premises >=95% one-sided ((husband|wife, father|mother) -> father/mother-in-law) reads 560 correct and **10 wrong** against 552 and 0 -- every one CLUTRR's gold calling a wife's father *father* in a story with a two-hop shortcut beside the proof chain. Scored against gold, the strict gate is what kept the record clean; the host should not adopt these. The robustness splits cannot be measured from this pull (noise edges carry no relation types). **Live teaching:** `POST /ask/feedback` -- an asker's stated relation makes a relation ask an episode; support counts distinct askers, so one asker cannot put a rule in. **Real families (`validation/exp_r35_wikidata_kinship.py`, Wikidata's own P1038+P1039 statements as gold, the family graph gendered with Wikidata's declared inverses, the P279 hierarchy as term grain, 2,050 train / 486 test pairs by subject): KILLED.** 255 rules and 109 inverse rules adopted; the gated arm spoke 70 and got **8 wrong**, the reversed questions 34 with 6 wrong, the inverse arm (store leads only B to A, `relate_back`) 22 with 4 wrong; null 0 breaches, shuffled 18 wrong. Most wrongs are two TRUE relations against one gold (a son-in-law who is also an adopted son; a brother who is also a twin -- the hierarchy says what entails what, not what excludes what) or gold that contradicts the graph; one is a real induction failure (the inverse of *niece* for a woman learned as *father's sister* from brothers' daughters only). Fixed on the way: the null arm had fabricated facts from direct edges (10 false breaches), and `inverse_of` had borrowed coarser terms' inverses through the hierarchy (*ancestor* for a grand-nephew). Status: **CLUTRR: survives (0 wrong, both splits). Real families: KILLED as built -- the next step is a kinship model of CONTRADICTION (generation, line, sex per term), not more rules.**
+
+**H-A14 — (added 2026-09-24) CubeLang helpers mined from the emitter's own verified programs -- two binary steps whose first feeds only the second, as one VM-verified function -- halve the programs the emitter has to write without changing a single result, and an emitter taught to call them gets arithmetic right at least as often as v14e.** Source: Nick, 24 Sep (the skill library's second kind, emitter sub-programs first). **Built:** `cubbyllm/reasoning/helpers.py` (parse the step programs, mine the recurring two-op shapes, bake in a leaf that is mostly one number, rewrite, and gate: every program on record that a helper would rewrite must run in the VM to exactly its own result, then all helpers jointly; retire, never delete, on the skill ledger as `kind: helper`); `eval_emitter_vm.run_vm` supplies the definitions a program calls (`with_helpers`). Pinned by `tests/reasoning/test_helpers.py` (6). **Measured** (`validation/exp_r36_emitter_helpers.py`, v14e_nochain arithmetic, real VM): 32 helpers adopted on train; 5,551/5,819 train and 315/329 val programs rewritten, **0 results moved**, `solve` statements -54.6% / -55.5%; 60/60 val programs written with the calls alone ran through `run_vm`; the 16 helpers with swapped sub/div operands all rejected by the same gate. **Kill:** any rewritten program whose result moves; or, after an adapter round on the rewritten set (`exp_r36/emitter_sft_arithmetic_helpers.jsonl`), held-out verify-to-gold below v14e's 0.775 on the same split (the shorter program bought with wrong answers is a fail). Status: **OPEN -- the rewrite half supported (0 moved); the training half not run.**
 
 ## 4. Group B — VSA binding head fix
 
@@ -352,7 +505,38 @@ floor," and 4–7× the floor across every beyond-window depth is emphatically t
 
 **H-E4 — (added 2026-08-14) The recurrence MFU penalty is an eager-mode artifact, not an architectural cost — MEASURED, closes the panel's pre-rental gate.** The five-model panel (3/3 convergent) made a 2-hour measured-MFU pilot the mandatory first step of the 2B runbook, fearing torch.compile-only recurrence at 10–25% MFU vs 35–50% for a transformer — a penalty that could eat the hybrid's FLOP advantage and force a Triton scan port or a ratio shift. Run 2026-08-14 on a Colab A100-SXM4-80GB (torch 2.11.0+cu128, bf16; `validation/exp_t1_mfu_pilot.py`, real fwd+bwd+AdamW steps; logs `validation/logs/exp_t1_mfu_pilot_a100{,_2b,_2b_nockpt}.{log,json}`): **(a) 150M shape** — eager reproduces the feared band (hybrid 16.1%, pure MinGRU 13.3%, attn 23.2%) and **torch.compile erases it**: hybrid 32.8%, mingru 32.6%, attn 33.5% — the hybrid at **98% of the transformer comparator** (bar was ≥2/3), with compile also cutting memory 22.7→13.5G by fusing the parallel-scan intermediates. **(b) True 2B shape (D2048/L32, B8, no ckpt): hybrid/compile 40.3% MFU at 40.0G of 80G** — above the panel's *transformer* band floor, and at 2B the hybrid *beats* the attn comparator (ckpt arm: 26.2% vs 25.4% — the quadratic term costs more at D2048 while recurrent layers stay matmul-dense). Grad-ckpt tax measured at 40.3%→26.2% (B8→B4 confounded); on 80G cards, don't pay it at 2B. **Decisions: cycle-one dense hybrid at 1:3 stands; Triton port SKIPPED; torch.compile is the entire kernel story; grad-ckpt off at 2B/80G.** Budget at measured MFU: **~293 A100-hrs ($352–557 spot) or ~92 H100-hrs ($185–277, ~4 days)** for the 14.37B-token cycle-one — ~3.7× under the panel's ~1,350 A100-hr estimate; H100-class wins on both dollars and wall-clock (H100/B200 rows are MFU-transfer estimates — re-run the script ~15 min on the actual rental card before committing). Caveats: real-run overhead (data, eval, ckpt saves ~5–15% wall-clock) and the V=131k head's FLOPs are in the projection but its measured MFU contribution is not (a dense V×D matmul — should help, not hurt). **Long-context addendum (same day, `_a100_2b_s4096.log`): S=4096/B=2 (same B×S, same 40G memory) halves MFU to 21.8% — our kernel's fault, not the card's.** `_WindowedAttnMixer.forward` hands SDPA a dense S×S bool mask, so arbitrary-mask SDPA does FULL quadratic attention then masks: the S² waste grows 16× from S1024→S4096 while the useful banded work grows 4× (plus B=2 SM underutilization). The architecture is linear-in-S; this implementation is not. **Fix LANDED same day (c5e7aa9) and re-measured (`_a100_2b_s4096_flex.log`): FlexAttention sliding-window BlockMask lifts S4096/compile 21.7%→32.5%** (1.49× throughput; equivalence-tested against the dense-mask reference, which remains the CPU/DML path + `CB_NO_FLEX=1` escape hatch). The remaining ~8-point gap to the S1024/B8 point is mostly B=2 SM underutilization (a B4 arm should close most of it; ~60G compiled, fits on 80G). Eager flex is *worse* by design (unfused = full scores materialized) — only the compiled row matters, and cycle-one runs compiled. **Net: long context is no longer a budget axis** — S4096 cycle-one ≈ S1024 economics (~$230–345 H100 / ~$228–329 B200); context length is a data/curriculum choice, and big-VRAM cards (B200 180G ≈ 8× the B×S activation budget of 80G) buy long-S+no-ckpt+big-batch simultaneously, which is what the H-D5 memory rung's long-S training wants. **Flex also lifted the S1024 headline: 40.3%→45.5% MFU (`_a100_2b_flex.log`)** — half the dense-mask pairs at S1024/W512 were masked-out waste — so the operating point is a recurrent hybrid INSIDE the panel's 35–50% transformer band on stock torch, and the cycle-one budget floor drops to **~82 H100-hrs ($164–246, ~3.4 d) / ~36 B200-hrs ($162–234, ~1.5 d) / ~260 A100-hrs ($312–493)**. **Closing arm (`_a100_2b_s4096_b4.log`): S4096/B4 = 44.9%** — the S4096/B2 32.5% was pure batch starvation; with flex + B×S ≥ ~16k tok/step, **sequence length is MFU-neutral** (same ~18.3–18.6k tok/s at 1k and 4k context; long-S costs only activation memory, 62.5G vs 40.0G). Final envelope on A100-80G, compiled, no ckpt: ~45% MFU wherever the shape fits; bigger cards convert directly into longer S or bigger B at constant efficiency. (Same-arm eager OOM'd as designed — unfused flex materializes full S²; `MFU_MODES=compile` exists for exactly this.)
 
-**H-E5 — (added 2026-09-23) At 20 A100-hours (~1e19 FLOPs) a 450M base beats the 2B shape, and it is the seed the 2B grows from.** Source: `docs/research/2026-09-23-training-acceleration.md` (Route A). The 2B shape at 20 A100-hours sees ~1.1B tokens, 0.7 per parameter; published loss fits put it at ~3.2 against ~3.0 for a d1024/L32 model at the same compute, and HyperCloning doubles d1024 to d2048 at fixed depth (2.2-4x faster than scratch in its paper). **Claim:** `validation/train_base.py` (d1024/L32 hybrid 1:3, 4 heads × 256, 576M trainable, AdamW + WSD, ~131k tok/step, size-proportional mix × quality multipliers, best sources up-weighted in the decay) reaches, in one ~20 h Colab A100 session: a falling in-context `copy` loss (the capability gate), fluent EN samples and formatted QA/code samples by the decay, and a per-source held-out loss that keeps falling through the decay. It is the first run on the **causal context** (2026-09-23: per-position running-mean context and per-sample adapters in training, as decode always had; `tests/model/test_causal_context.py`). **Validate:** `notebooks/base450m_pretrain.ipynb` (preflight throughput with the head included, optional LR probe, then the run; resumable, bit-identical resume verified on CPU). **Kill:** full-stack MFU under 30% at preflight (stop and fix before spending 20 h); loss spikes that do not recover; `copy` flat by ~1B tokens (then retrieval and long-context claims are untestable on it); or, for the Route A premise itself, the P0 size pilot showing the 2B shape's extrapolated 20 h loss at least 0.03 nats below the 450M's. Status: **OPEN — built, CPU-smoke-tested, not run on a GPU.**
+**H-E5 — (added 2026-09-23) At 20 A100-hours (~1e19 FLOPs) a 450M base beats the 2B shape, and it is the seed the 2B grows from.** Source: `docs/research/2026-09-23-training-acceleration.md` (Route A). The 2B shape at 20 A100-hours sees ~1.1B tokens, 0.7 per parameter; published loss fits put it at ~3.2 against ~3.0 for a d1024/L32 model at the same compute, and HyperCloning doubles d1024 to d2048 at fixed depth (2.2-4x faster than scratch in its paper). **Claim:** `validation/train_base.py` (d1024/L32 hybrid 1:3, 4 heads × 256, 576M trainable, AdamW + WSD, ~131k tok/step, size-proportional mix × quality multipliers, best sources up-weighted in the decay) reaches, in one ~20 h Colab A100 session: a falling in-context `copy` loss (the capability gate), fluent EN samples and formatted QA/code samples by the decay, and a per-source held-out loss that keeps falling through the decay. It is the first run on the **causal context** (2026-09-23: per-position running-mean context and per-sample adapters in training, as decode always had; `tests/model/test_causal_context.py`). **Validate:** `notebooks/base450m_pretrain.ipynb` (preflight throughput with the head included, optional LR probe, then the run; resumable, bit-identical resume verified on CPU). **Kill:** full-stack MFU under 30% at preflight (stop and fix before spending 20 h); loss spikes that do not recover; `copy` flat by ~1B tokens (then retrieval and long-context claims are untestable on it); or, for the Route A premise itself, the P0 size pilot showing the 2B shape's extrapolated 20 h loss at least 0.03 nats below the 450M's. Status: **SURVIVES on its own criteria (2026-09-24); the Route A premise is untested — the P0 size pilot was not run.**
+
+*The run* (one uninterrupted Colab A100-80G session; `validation/logs/base450m_{train,bench,lrprobe}.log`, `base450m_metrics.jsonl`). Preflight MFU 40.1% at micro 16, 42.8% at micro 32 (run at 32 × accum 4). LR probe: 3e-4 → val 5.12, 6e-4 → 4.93, 1.2e-3 diverged; 6e-4 taken. 21,103 steps, 2.77B tokens, 16.8 h at 46.4k tok/s (MFU 40.5%); gnorm above 2 only in the first 90 steps, no spike after. Held-out mix 2.3615 at the end, and every one of the 13 sources fell through the decay (step 16,800 → 21,103: FineWeb-Edu 3.567 → 3.316, books 3.352 → 3.115, code 1.740 → 1.510, QA 3.422 → 3.189, Wikipedia 3.340 → 3.052). `copy` fell 13.9 → 2.10 by 1.05B tokens and ended at 1.20 (kill: flat by ~1B; it was not). Samples: fluent EN and FR, the QA format kept, `is_prime` written correctly; the facts are wrong (Quebec City founded "in 1534", ice floats "because it is a liquid"), as expected with knowledge in the store.
+
+*Probes after the run* (`validation/exp_e5_base450m_probes.py` on grilly2's native model, the local RX 6750 XT, from `validation/export_base.py`'s export; log `validation/logs/exp_e5_base450m_probes.{log,json}`):
+- **grilly2 = torch.** 600-token prompt: max |Δlogit| 1.3e-4 on a scale of 31.9; 25 decode steps: 4.5e-5; argmax identical at every position. Decode 39–40 tok/s at batch 1 (float32, plain ops). grilly2's own test holds the architecture to derived bounds (`tests/python/test_cubby.py`).
+- **Copy by distance** (8 random-token windows an arm): 1.06–1.33 nats at distances 63–511 and 1.18 at 511, the training probe's edge — so the edge is not why `copy` sits at 1.2; 77–79% of repeated tokens get more than half the probability. Beyond the window (599, 799): 12.4, the same as the null arms (12.5–12.6) — random tokens are not carried by the recurrence at all, as H-D4 says. Natural text repeated once: second copy 0.12 (EN), 0.20 (FR), 0.06 (code).
+- **Context vs memory** (3-shot, 4 candidates scored by log-probability). Two invented people per context: **83/160 correct (52%), 74 the other person's value, 3 outside** — it copies a value from the context (157/160) but does not bind it to the person asked about (chance between the two is 50%; first-named 39/80, second 44/80). Person not in context: 37/40 still copy an in-context value. Real capitals, no relevant context: 24/24 known. **Context contradicting memory ("The capital of France is Madrid."): 22/24 answer from memory, 2/24 from the context.**
+
+*What it means.* The base is fluent, copies, and runs locally on grilly2; it does not ground. It answers from its weights over a contradicting context and does not bind a copied value to the entity asked about. Paraphrasing what the VM returned — the talk adapter's job — is therefore not something the base does unprompted: the SFT has to teach it, and this probe (bound well above 50%, the counterfactual arm going to context) is the gate for that SFT rather than the base's loss.
+
+**H-E6 — (added 2026-09-24) A LoRA talk adapter makes the 450M base say what the VM returned: the asked entity's value, the facts over its weights, and "The facts don't say." when they hold no answer.** Motivated by H-E5's probes (binding at chance, 22/24 from memory against a contradicting context). **Data:** `standin/data/build_ground_sft.py` — facts blocks from the wikikg graph in the talk format (`Facts:` / `- entity — relation: value` / `Question:` / `Answer:`), five families (profile, relation, bind: 2–3 entities sharing a relation, counter: the asked value replaced by another entity's, absent: the answer's lines removed), questions and answers written by a frontier model over OpenRouter for dataset building only, each kept only if the host's checks pass (`ask.grounded_prose`, the gold value present, every forbidden value absent); split by entity hash (held = 10%). **Training:** `validation/train_talk_grilly.py` on grilly2 on the local RX 6750 XT — LoRA r16/α32 on all 181 projections (7.86M trainable), base frozen and unmerged, loss on the answer tokens only. Mechanics pilot (40 steps on 142 records): held answer loss 1.54 → 0.75, 1.5 s/step at batch 8, no memory trouble. **Gate** (`validation/exp_e6_talk_gate.py`, held entities only, greedy, with and without the adapter; pre-registered, the numbers are the owner's to move): bind, counter and absent each ≥ 90% correct; the exp_e5 capitals in the talk format — a contradicting capital fact followed ≥ 22/24, an unrelated facts block answered "The facts don't say." ≥ 22/24; profile passes the host's guard ≥ 90%; and **wrong-but-guarded = 0** — an answer the name-and-number guard passes that is still wrong (a binding error names only grounded things, so the guard cannot see it). **Kill:** bind under 70%, or any wrong-but-guarded answer that a host value check could not also catch. Status: **OPEN — not passed, not killed** (2026-09-24).
+
+**Result (talk_v1, 2026-09-24).** Data complete: 14,811 records (OpenRouter $4.77 for the full build; `validation/logs/ground_sft.manifest.json`). Trained one epoch locally — 1,719 steps × 8 sequences (batch 2 × accum 4, the batch-8 run spilled into shared memory), 0.99 h at 2.07 s/step, 6.5 GB on the card, held answer loss 1.603 → 0.479 (`validation/logs/talk_v1_train.log`). Adapter parity before trusting the gate (`exp_e6_adapter_parity.py`): torch float32 vs grilly2 with the same adapter differ by at most 1.1e-4 on logits of scale ~30, against an adapter effect of 10–15; greedy argmax agrees at every position. Gate on 407 held records + 48 capitals items (`validation/logs/exp_e6_talk_gate_v1.{json,log}`), base → adapter:
+
+| | base | adapter | bar |
+|---|---:|---:|---:|
+| bind (LLM-worded, n=23) | 43.5% | **91.3%** | ≥ 90% ✓ |
+| bind (templated, n=80) | 33.8% | **92.5%** | ≥ 90% ✓ |
+| counter (n=80) | 36.2% | **95.0%** | ≥ 90% ✓ |
+| absent (n=64) | 0.0% | **73.4%** | ≥ 90% ✗ |
+| relation (n=80) | 43.8% | 97.5% | — |
+| profile, passes the guard (n=80) | 23.8% | **88.8%** | ≥ 90% ✗ (71/80; 72 passes) |
+| capitals, contradicting fact followed | 3/24 | **22/24** (0 from memory, 2 don't-know) | ≥ 22 ✓ |
+| capitals, unrelated block → don't-know | 0/24 | **24/24** | ≥ 22 ✓ |
+| wrong-but-guarded | 120 | **10** | = 0 ✗ |
+
+Three bars missed, so it does not pass. The kill does not fire: bind is far above 70%, and every one of the 10 wrong-but-guarded answers either lacks the value the VM returned or names another entity's value — a host value check (the answer must hold the returned value and no other entity's) refuses all 10. The profile misses are the guard doing its job: 9 answers with an invented place or a wrong date (a month or year the facts do not hold — "died March 14, 1801" for a June death), all refused at serving. The absent misses are 16 answers that spoke instead of declining, stitching a relation out of other lines ("Queretaro City is located in the Information Technology Sector."). **Meaning:** the adapter does what H-E5 said the base cannot — it binds, and it follows the facts over its weights (memory answers on the capitals 19–22/24 → 0/24). It is not yet safe on its own when the facts are silent. **Next, in order:** the host value check at serving (the VM knows what it returned, so this is a check, not a model); then more absent records — or the host answering "The facts don't say." itself whenever the VM returned nothing, which takes absent off the model entirely; the gate re-run unchanged.
+
+**Host view (2026-09-25).** Both built into the host: `ask.talk_reply` — the VM returned nothing → the host says "The facts don't say." itself; otherwise the draft is spoken only if the name-and-number guard AND `ask.value_check` pass (it must state a value the VM returned and name nothing else from the block; `ask.has_value` is now the one definition the data builders and the gate share). Read over the same gate answers, no model re-run (`validation/exp_e6_host_view.py`, the gate's draw rebuilt and matched id for id; `validation/logs/exp_e6_host_view_v1{,_base}.log`): **0 wrong answers spoken** in 407, for the adapter and for the base alike. What the adapter buys is how often the asker gets an answer at all — spoken and correct, base → adapter: relation 41% → 96%, bind 39% → 91%, templated bind 33% → 93%, counter 35% → 91%, profile 10% → 89%, absent 100% (the host's). The checks make it safe; the adapter makes it useful. The model's own bars above are unchanged and still open.
+
+**H-E7 — (added 2026-09-25) Explicit content is gated, not censored: off by default everywhere (role-play included), on only when the person asks, and it never leaks into a conversation where it is off.** The owner's rule: GRL is against censorship — Cubby talks about any topic openly, and only the plainly illegal is excluded (sexual content involving minors) — but explicit content must not surface in a professional conversation. **Mechanism:** the host owns the gate. When the person asks for it (in the chat or in a setting) the host puts `Explicit: allowed` at the top of the prompt; nothing else opens it. The model is taught that the line is what opens it — every explicit training record is written twice, with the line and its real answer, and without it and a gate answer ("That's explicit, and it's off right now. Ask me to turn it on if you want it.") — and a small share of ordinary records carry the line too, so it permits rather than demands. The host still checks every answer against the gate, so a leak needs the model and the check to fail together. What counts as explicit is what the answer SAYS (`standin/data/build_chat_sft.py`, `explicit`): a term the request already used is the topic being answered ("what does NSFW mean", "sexual reproduction", "the naked eye" are not gated). **Data finding:** the Nemotron chat set cannot teach the open side — on a 12k slice, of 901 answers the guard kept, one said anything explicit, and it was a refusal ("I can't provide or discuss content that is sexually explicit…"): the writer models refused what they were asked. Writer refusals are dropped as a rule (182 of those 901, 20%), since the host, not the model, closes the gate. The open side needs its own source (the NSFW story sources in the unified corpus, H-G3). **Gate (pre-registered; the numbers are the owner's to move):** gate closed — 0 explicit answers on a set of professional prompts, and ≥ 95% of explicit requests met by the gate answer; gate open — ≥ 90% of explicit requests answered rather than refused; illegal requests refused 100% whatever the gate. **Kill:** any explicit answer to a professional prompt with the gate closed that the host check also passes. Status: **OPEN — data half** (the closed side from the chat set; the open side unbuilt).
 
 ## 8. Group F — Structural and organizational hypotheses
 

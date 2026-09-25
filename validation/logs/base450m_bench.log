@@ -1,0 +1,90 @@
+
+=== 2026-09-23 20:30:54 CB_BENCH_MICRO=8,16,24,32 CB_MODE=bench
+device: NVIDIA A100-SXM4-80GB | 85 GB | torch 2.11.0+cu130
+bench: D1024/L32 heads 4 S1024 vocab 127996->128000 | micro 8,16,24,32
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:108'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 108, in _rope_tables
+    inv = _rope_inv_freq(dh, str(device))
+
+  torch._dynamo.utils.warn_once(msg)
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:158'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 158, in forward
+    bm = _window_block_mask(S, self.window, str(x.device))
+
+  torch._dynamo.utils.warn_once(msg)
+  micro   8:   207.1 ms/micro     39,554 tok/s  MFU  34.5%  peak  23.6 GB  | 576M params, 2.72 GFLOP/tok, compile+warm 142s
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:108'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 108, in _rope_tables
+    inv = _rope_inv_freq(dh, str(device))
+
+  torch._dynamo.utils.warn_once(msg)
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:158'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 158, in forward
+    bm = _window_block_mask(S, self.window, str(x.device))
+
+  torch._dynamo.utils.warn_once(msg)
+  micro  16:   356.3 ms/micro     45,978 tok/s  MFU  40.1%  peak  36.9 GB  | 576M params, 2.72 GFLOP/tok, compile+warm 138s
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:108'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 108, in _rope_tables
+    inv = _rope_inv_freq(dh, str(device))
+
+  torch._dynamo.utils.warn_once(msg)
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:158'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 158, in forward
+    bm = _window_block_mask(S, self.window, str(x.device))
+
+  torch._dynamo.utils.warn_once(msg)
+  micro  24:   512.9 ms/micro     47,915 tok/s  MFU  41.8%  peak  50.1 GB  | 576M params, 2.72 GFLOP/tok, compile+warm 140s
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:108'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 108, in _rope_tables
+    inv = _rope_inv_freq(dh, str(device))
+
+  torch._dynamo.utils.warn_once(msg)
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:158'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 158, in forward
+    bm = _window_block_mask(S, self.window, str(x.device))
+
+  torch._dynamo.utils.warn_once(msg)
+  micro  32:   668.1 ms/micro     49,046 tok/s  MFU  42.8%  peak  63.3 GB  | 576M params, 2.72 GFLOP/tok, compile+warm 142s
+
+fastest: CB_MICRO=32 (49,046 tok/s, MFU 42.8%, 63 GB). 20 h ~ 3.35B tokens ~ 25,594 optimizer steps of 131,072 tokens.
+
+=== 2026-09-23 20:42:03 CB_BENCH_MICRO=48,56,64 CB_MODE=bench
+device: NVIDIA A100-SXM4-80GB | 85 GB | torch 2.11.0+cu130
+bench: D1024/L32 heads 4 S1024 vocab 127996->128000 | micro 48,56,64
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:108'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 108, in _rope_tables
+    inv = _rope_inv_freq(dh, str(device))
+
+  torch._dynamo.utils.warn_once(msg)
+/usr/local/lib/python3.13/dist-packages/torch/_dynamo/variables/functions.py:2202: UserWarning: Dynamo detected a call to a `functools.lru_cache`-wrapped function at 'hybrid.py:158'. Dynamo ignores the cache wrapper and directly traces the wrapped function. Silent incorrectness is only a *potential* risk, not something we have observed. Enable TORCH_LOGS=+dynamo for a DEBUG stack trace.
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 158, in forward
+    bm = _window_block_mask(S, self.window, str(x.device))
+
+  torch._dynamo.utils.warn_once(msg)
+
+=== 2026-09-23 20:44:00 CB_BENCH_MICRO=40,48,56,64 CB_MODE=bench
+device: NVIDIA A100-SXM4-80GB | 85 GB | torch 2.11.0+cu130
+bench: D1024/L32 heads 4 S1024 vocab 127996->128000 | micro 40,48,56,64
+  micro  40: out of memory
+  micro  48: out of memory

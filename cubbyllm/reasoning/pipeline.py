@@ -2,11 +2,12 @@
 
 Retrieval walks the chain; the VM holds it, verifies it, and reads the
 answer out (spec section 3). `verified=True` is impossible with any hop
-below tau_vm — asserted at the single return site that sets it.
+below tau_vm — asserted at every return site that sets it (the greedy chain,
+and the branches of an ambiguous hop when every one of them agrees).
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from ..core.protocols import Wiring
 from . import simlog
@@ -62,6 +63,12 @@ class CoTResult:
     # objects for one hop and refused to pick; this then carries the hop, the
     # candidate objects and the facts, for an ASK.
     refused: dict | None = None
+    # Graph-of-thought (2026-09-24): the branches an ambiguous hop was explored into,
+    # one record per branch -- via ([{hop, object}] chosen at each branching hop), status
+    # (verified | vm_failed | type_mismatch | pruned), the answer it reached, its facts.
+    # Set whenever an ambiguous hop was explored: on the answer they converged on, and on
+    # the "ambiguous_hop" refusal when they did not. None when no hop was ambiguous.
+    branches: list[dict] | None = None
 
 
 _accept = accepts     # the acceptance test moved to the planner (2026-09-04); this name stays for the validation scripts
@@ -74,9 +81,10 @@ def _exact_tail(plan: QuestionPlan, t: Triple) -> bool:
 
 class _Ambiguous(Exception):
     """The walk found several facts with different objects for one hop (see `_walk`)."""
-    def __init__(self, hop: int, objects: list[str], facts: list[str]) -> None:
+    def __init__(self, hop: int, objects: list[str], facts: list[str], cands=None) -> None:
         super().__init__(f"hop {hop}: {len(objects)} candidate objects")
         self.hop, self.objects, self.facts = hop, objects, facts
+        self.cands = list(cands or [])             # [(fact, triple)], for the branches
 
 
 _AS_OF = __import__("re").compile(r"\b(?:in|as of|during|by|back in)\s+(1[0-9]{3}|2[0-9]{3})\b", __import__("re").I)
@@ -137,7 +145,8 @@ def _latest_dated(cands, times):
 def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
           budget: list[int], trace: list[HopTrace],
           banned: set[str], lookup=None, times: dict | None = None,
-          as_of: int | None = None) -> list[Triple] | None:
+          as_of: int | None = None, start: tuple | None = None,
+          choose: dict | None = None) -> list[Triple] | None:
     """Pick one accepted triple per hop; None when the budget dies.
     Bounded by `budget` alone (the spec's 3-per-question repair budget);
     `banned` holds facts a failed VM verify blacklisted.
@@ -146,10 +155,16 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
     tried FIRST at every hop: an exact answer to the same acceptance test
     search would apply, with no threshold and no k. Search runs only for a hop
     the index misses. Ambiguity (0.8% of harvest hops) is broken by the
-    search's own ranking of the query, then by fact text — deterministic."""
-    triples: list[Triple] = []
-    entity: str | None = None
-    hop = 0
+    search's own ranking of the query, then by fact text — deterministic.
+
+    `start=(hop, entity, triples)` resumes a walk mid-chain -- a branch of an
+    ambiguous hop continuing from the object it chose (`_explore`). `choose`
+    ({hop: normalized object}) keeps, at that hop, only the candidates naming the
+    object an asker picked from the branches offered to them; a choice matching no
+    candidate is ignored, so it can narrow the store's options but never add one."""
+    triples: list[Triple] = list(start[2]) if start else []
+    entity: str | None = start[1] if start else None
+    hop = start[0] if start else 0
     question_tail = plan.tail
     while hop < plan.n_hop:
         if hop == 0:
@@ -159,6 +174,11 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
         found = None
         if lookup is not None:
             cands = [(f, t) for f, t in lookup(plan, hop, entity) if f not in banned]
+            if choose and hop in choose:
+                # the asker's choice among the branches an earlier turn offered (chosen, not
+                # invented): applied only when it names one of this hop's candidates
+                mine = [ft for ft in cands if normalize(ft[1].obj) == choose[hop]]
+                cands = mine or cands
             if hop == 0 and len(cands) > 1:
                 # the exact tier outranks the paraphrase tier at hop 0: a fact that
                 # reproduces the tail is never displaced by one that only matches it
@@ -191,7 +211,7 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
                 if picked is None:
                     picked = _latest_dated(cands, times)
                 if picked is None:
-                    raise _Ambiguous(hop, objects, [f for f, _t in cands])
+                    raise _Ambiguous(hop, objects, [f for f, _t in cands], cands)
                 cands = [picked]
             if len(cands) > 1:
                 rank = {f: float(sc) for sc, f in retrieve(query, max(top_k, len(cands)))}
@@ -223,10 +243,146 @@ def _walk(plan: QuestionPlan, retrieve, tau_ret: float, top_k: int,
     return triples
 
 
+def _check_chain(plan: QuestionPlan, triples: list[Triple], trace: list[HopTrace],
+                 run_fn, tau_vm: float, chunk: int = 0):
+    """The VM verify of one complete chain. Fills each hop's `symbol`/`similarity` in
+    `trace` and returns (ok, failed clauses, program source, control similarity).
+    The ONE place a chain is certified: the greedy walk and every branch of an
+    ambiguous hop go through it, so a branch is held to exactly the greedy bar."""
+    display_rels = [(t.rel if i == 0 else plan.relations[i]) or t.rel
+                    for i, t in enumerate(triples)]
+    # `chunk` is the number of hops that share a frame; 0 keeps the shipped
+    # whole-chain shape. The CALLER owns tau: under chunking the frame holds
+    # `chunk` bindings rather than `n_hop`, so the applicable threshold is
+    # tau(min(chunk, n_hop)), not tau(n_hop). Passing chunk without moving
+    # tau measures nothing (exp_r28, WO-2.6).
+    source, fns = build_chain_program(triples, display_rels, chunk=chunk)
+    ok = True
+    # WHICH clause failed, not just that one did. Without this the refusal
+    # that follows names a symptom: a binding rejected below tau bans its
+    # fact, the retry finds nothing else, and the caller is told
+    # `retrieval_exhausted` about a retrieval that worked perfectly
+    # (exp_r29, WO-2.6 -- 226 refusals, every one of them misattributed).
+    failed: list[str] = []
+    for i, fn in enumerate(fns[:-1]):                # hop functions
+        out = run_fn(source, fn)
+        trace[i].symbol = out.get("result")
+        trace[i].similarity = out.get("similarity")
+        if trace[i].similarity is None:
+            ok = False; failed.append(f"hop{i}:no_similarity")
+        elif trace[i].similarity < tau_vm:
+            ok = False
+            failed.append(f"hop{i}:below_tau({trace[i].similarity:.4f}<{tau_vm:.4f})")
+        elif normalize(trace[i].symbol or "") != normalize(triples[i].obj):
+            ok = False; failed.append(f"hop{i}:symbol_mismatch")
+    ctrl = run_fn(source, fns[-1])                   # control
+    ctrl_result = ctrl.get("result")
+    ctrl_sim = ctrl.get("similarity")
+    # Control role must stay below tau_vm. The real VM's cosine cleanup always
+    # returns the nearest symbol from a populated frame — an absent role returns
+    # (noise_symbol, low_similarity), never None. Violation if: high similarity
+    # (≥tau_vm) OR a symbol without verifiable similarity (unbound frame edge case).
+    if (ctrl_sim is not None and ctrl_sim >= tau_vm) or (ctrl_result is not None and ctrl_sim is None):
+        ok = False; failed.append("control:not_below_tau")
+    return ok, failed, source, ctrl_sim
+
+
+def _explore(question: str, plan: QuestionPlan, amb: _Ambiguous, prefix: list[HopTrace],
+             retrieve, run_fn, tau_vm: float, tau_ret: float, top_k: int, max_repairs: int,
+             banned: set[str], lookup, times, as_of, choose, chunk: int, max_branches: int):
+    """Graph-of-thought over an ambiguous hop: follow EVERY candidate object as its own
+    branch, to the end of the chain, and certify each branch in the VM exactly like the
+    greedy chain. A branch that meets another ambiguous hop splits again. Bounded by
+    `max_branches` continuations in all; hitting the bound sets `overflow`.
+
+    Returns (branches, overflow). Each branch: {via: [{hop, object}], status, answer,
+    facts, ...} plus the private `_trace`/`_source` the caller needs to speak it --
+    `_public()` strips those. Deciding what the branches license is the CALLER's job:
+    this function only explores and certifies, it never picks."""
+    branches: list[dict] = []
+    overflow = False
+    explored = 0
+    # (the ambiguity, the trace up to its hop, the choices that led here)
+    work: list[tuple[_Ambiguous, list[HopTrace], tuple]] = [(amb, prefix, ())]
+    while work and not overflow:
+        a, pre, via = work.pop(0)
+        seen: set[str] = set()
+        for fact, t in a.cands:
+            obj = normalize(t.obj)
+            if obj in seen:
+                continue                    # two facts, one object: one branch, not two
+            seen.add(obj)
+            if explored >= max_branches:
+                overflow = True
+                break
+            explored += 1
+            hop = a.hop
+            trace = [replace(h) for h in pre]    # a branch never writes into its sibling's hops
+            query = (f"what is the {plan.tail}" if hop == 0
+                     else f"{pre[-1].triple.obj} {plan.relations[hop]}")
+            trace.append(HopTrace(query=query, fact=fact, triple=t, ret_score=1.0,
+                                  source="branch"))
+            path = via + ({"hop": hop, "object": t.obj},)
+            try:
+                triples = _walk(plan, retrieve, tau_ret, top_k, [max_repairs], trace, banned,
+                                lookup=lookup, times=times, as_of=as_of,
+                                start=(hop + 1, t.obj, [h.triple for h in trace]), choose=choose)
+            except _Ambiguous as nested:
+                work.append((nested, trace, path))
+                continue
+            rec = {"via": list(path), "facts": [h.fact for h in trace], "answer": None}
+            if triples is None:
+                # the store holds no way on from here: not a refutation, a gap
+                rec.update(status="pruned", stalled=trace[-1].triple.obj, _trace=trace)
+                branches.append(rec)
+                continue
+            ok, failed, source, _ctrl = _check_chain(plan, triples, trace, run_fn, tau_vm, chunk)
+            rec.update(answer=triples[-1].obj, _trace=trace, _source=source, _ctrl=_ctrl,
+                       similarity=min((h.similarity or 0.0) for h in trace))
+            if not ok:
+                rec.update(status="vm_failed", clauses=failed)
+            else:
+                mismatch = answer_type_mismatch(question, triples[-1].obj)
+                if mismatch is not None:
+                    rec.update(status="type_mismatch", asked=mismatch[0], got=mismatch[1])
+                else:
+                    rec["status"] = "verified"
+            branches.append(rec)
+    if work:
+        overflow = True                     # ambiguities left unexplored
+    return branches, overflow
+
+
+def _public(branches: list[dict]) -> list[dict]:
+    return [{k: v for k, v in b.items() if not k.startswith("_")} for b in branches]
+
+
+def _converged(branches: list[dict], overflow: bool, closed_world: bool = False) -> list[dict] | None:
+    """What the branches license. Speaking needs every branch to have finished and
+    been certified, and all of them to name ONE answer: then the ambiguity was only in
+    the path, never in the answer, and saying it is not a pick. Anything else -- two
+    certified answers, a branch the VM rejected, a branch the store could not finish,
+    a bound that cut exploration short -- stays a refusal.
+
+    `closed_world=True` is for a store declared COMPLETE (a CLUTRR story, where a
+    missing fact means false): there a pruned branch is refuted rather than unknown and
+    drops out. The default is the open world, where a gap is a don't-know (invariant
+    3), so a branch that could not finish blocks the others from speaking."""
+    if overflow or not branches:
+        return None
+    live = [b for b in branches if not (closed_world and b["status"] == "pruned")]
+    if not live or any(b["status"] != "verified" for b in live):
+        return None
+    if len({normalize(b["answer"] or "") for b in live}) != 1:
+        return None
+    return live
+
+
 def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
            top_k: int = 3, max_repairs: int = 1, lookup=None, known=None,
            plan: QuestionPlan | None = None, aliases: dict[str, list[str]] | None = None,
-           times: dict | None = None, chunk: int = 0) -> CoTResult:
+           times: dict | None = None, chunk: int = 0, branch: int = 12,
+           choose: dict | None = None, closed_world: bool = False) -> CoTResult:
     """`lookup`: a `TripleIndex.hop`-shaped callable; when given, every hop is
     looked up before it is searched (see `_walk`).
 
@@ -250,7 +406,16 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
     `plan`: a PROPOSED plan (the emitter's, exp_r7) used instead of the
     grammar's parse. Model proposes, host disposes: it goes through `known`
     exactly like a grammar plan, and the walk and the VM treat it identically.
-    None = the grammar parses the question, as before."""
+    None = the grammar parses the question, as before.
+
+    `branch` (graph-of-thought, 2026-09-24): at an ambiguous hop, explore up to this many
+    branches (`_explore`) instead of refusing on sight. The answer is spoken only when
+    every branch finished, verified, and named the same value (`_converged`); otherwise
+    the refusal is still "ambiguous_hop", now carrying the branches, so the ASK can offer
+    the choices it found. 0 restores the refuse-on-sight walk.
+    `choose`: {hop: object} an asker picked from those choices; see `_walk`.
+    `closed_world`: the store is complete, so a branch that cannot finish is refuted
+    rather than unknown; see `_converged`. Never the default."""
     # max_repairs 3 -> 1 (2026-09-03): on the 800-question harvest every failure burned all three
     # repairs with zero hops verified and no verified chain ever needed more than one; budget 1
     # reproduces 517 verified / 513 correct / control 528/528 exactly at 45.9 ms vs 120.9 ms per
@@ -294,11 +459,31 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
         trace: list[HopTrace] = []
         try:
             triples = _walk(plan, retrieve, tau_ret, top_k, budget, trace, banned, lookup=lookup,
-                            times=times, as_of=as_of)
+                            times=times, as_of=as_of, choose=choose)
         except _Ambiguous as amb:
+            refused = {"hop": amb.hop, "objects": amb.objects, "facts": amb.facts}
+            branches = None
+            if branch > 0 and amb.cands:
+                explored, overflow = _explore(question, plan, amb, trace, retrieve, run_fn, tau_vm,
+                                              tau_ret, top_k, max_repairs, banned, lookup, times,
+                                              as_of, choose, chunk, branch)
+                branches = _public(explored)
+                live = _converged(explored, overflow, closed_world)
+                if live is not None:
+                    # the branches' claimed-answer invariant, at the second verified=True site
+                    for b in live:
+                        assert all(h.similarity is not None and h.similarity >= tau_vm
+                                   for h in b["_trace"])
+                    b0 = live[0]
+                    simlog.record(question, b0["answer"], tau_vm, b0["_trace"], b0.get("_ctrl"))
+                    return CoTResult(answer=b0["answer"], verified=True, trace=b0["_trace"],
+                                     repairs_used=max_repairs - budget[0], source=b0["_source"],
+                                     repairs=repairs, branches=branches)
+                refused.update(overflow=overflow, verified_answers=sorted(
+                    {b["answer"] for b in explored if b["status"] == "verified"}))
             return CoTResult(answer=None, verified=False, trace=trace, repairs_used=max_repairs - budget[0],
-                             reason="ambiguous_hop", repairs=repairs,
-                             refused={"hop": amb.hop, "objects": amb.objects, "facts": amb.facts})
+                             reason="ambiguous_hop", repairs=repairs, refused=refused,
+                             branches=branches)
         used = max_repairs - budget[0]
 
         # Close out a pending repair from the PREVIOUS attempt's ban: the
@@ -321,41 +506,7 @@ def answer(question: str, retrieve, run_fn, tau_vm: float, tau_ret: float,
                                       if verify_clauses else None),
                              repairs=repairs)
 
-        display_rels = [(t.rel if i == 0 else plan.relations[i]) or t.rel
-                        for i, t in enumerate(triples)]
-        # `chunk` is the number of hops that share a frame; 0 keeps the shipped
-        # whole-chain shape. The CALLER owns tau: under chunking the frame holds
-        # `chunk` bindings rather than `n_hop`, so the applicable threshold is
-        # tau(min(chunk, n_hop)), not tau(n_hop). Passing chunk without moving
-        # tau measures nothing (exp_r28, WO-2.6).
-        source, fns = build_chain_program(triples, display_rels, chunk=chunk)
-        ok = True
-        # WHICH clause failed, not just that one did. Without this the refusal
-        # that follows names a symptom: a binding rejected below tau bans its
-        # fact, the retry finds nothing else, and the caller is told
-        # `retrieval_exhausted` about a retrieval that worked perfectly
-        # (exp_r29, WO-2.6 -- 226 refusals, every one of them misattributed).
-        failed: list[str] = []
-        for i, fn in enumerate(fns[:-1]):                # hop functions
-            out = run_fn(source, fn)
-            trace[i].symbol = out.get("result")
-            trace[i].similarity = out.get("similarity")
-            if trace[i].similarity is None:
-                ok = False; failed.append(f"hop{i}:no_similarity")
-            elif trace[i].similarity < tau_vm:
-                ok = False
-                failed.append(f"hop{i}:below_tau({trace[i].similarity:.4f}<{tau_vm:.4f})")
-            elif normalize(trace[i].symbol or "") != normalize(triples[i].obj):
-                ok = False; failed.append(f"hop{i}:symbol_mismatch")
-        ctrl = run_fn(source, fns[-1])                   # control
-        ctrl_result = ctrl.get("result")
-        ctrl_sim = ctrl.get("similarity")
-        # Control role must stay below tau_vm. The real VM's cosine cleanup always
-        # returns the nearest symbol from a populated frame — an absent role returns
-        # (noise_symbol, low_similarity), never None. Violation if: high similarity
-        # (≥tau_vm) OR a symbol without verifiable similarity (unbound frame edge case).
-        if (ctrl_sim is not None and ctrl_sim >= tau_vm) or (ctrl_result is not None and ctrl_sim is None):
-            ok = False; failed.append("control:not_below_tau")
+        ok, failed, source, ctrl_sim = _check_chain(plan, triples, trace, run_fn, tau_vm, chunk)
 
         if ok:
             # the claimed-answer invariant, at the only verified=True site

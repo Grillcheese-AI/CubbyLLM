@@ -1,0 +1,23 @@
+battery: 8 withheld facts (date of birth 2, place of birth 2, date of death 2, place of death 2), seed 11
+web: brave (brave: data for AI, storage permitted), reader off, handoff off, two independent sites to attest
+  1 spoke correct    What is the date of birth of Diana Taurasi?                            gold 1982-06-11               got 1982-06-11
+  2 held correct     What is the date of birth of Honinbo Shusaku?                          gold 1829-06-06               got 1829-06-06
+  3 spoke WRONG      What is the place of birth of Jonas Akerlund?                          gold Bromma                   got Sweden
+  4 none             What is the place of birth of Louis Vuitton Designer?                  gold Anchay Jura France       got None
+  5 none             What is the date of death of Gino Marchetti?                           gold 2019-04-29               got None
+  6 none             What is the date of death of Heinrich Kayser?                          gold 1940-10-14               got None
+  7 none             What is the place of death of Paul Krassner?                           gold Desert Hot Springs Calif got None
+  8 none             What is the place of death of Barry Gray Radio Personality?            gold Manhattan New York City  got None
+
+                n
+spoke           2   correct 1, WRONG 1
+held            1   correct 1
+split           0   
+none            5   
+other           0   
+split with the gold among the certified values: 0
+by relation: date of birth: spoke 1, held 1; place of birth: spoke 1, none 1; date of death: none 2; place of death: none 2
+searches 16, pages 58, reads 0, wall 94s (11.7s a question)
+WRONG: What is the place of birth of Jonas Akerlund? gold Bromma got Sweden [web:celebsmoney.com+web:superstarsculture.com]
+
+VERDICT: KILLED: 1 wrong spoken

@@ -850,6 +850,40 @@ store, and only then is the answer spoken as grounded. Next time the question co
 how the store grows, and every grown fact is traceable to where it came from. Without the tool or the capability the
 turn is the verbatim line alone, as today. The explainer (`docs/CUBBY_EXPLAINER.md`) says it this way.
 
+**Host side, the ask loop (2026-09-24): the web behind Wikidata.** `standin/web_source.py` is a Source like
+Wikidata and the news feeds, and `learn_and_answer(fallbacks=)` asks it only after Wikidata has nothing more,
+for the one entity and relation the walk stalled on. Search is Brave (`BRAVE_SEARCH_API_KEY`, metered) or a
+self-hosted SearXNG (`CUBBY_SEARXNG_URL` / `--searxng`), one interface; `serve_api --web auto` picks whichever is
+configured and runs without the web when neither is. The results are read most-structured first: a Wikipedia hit
+hands over to Wikidata's own claims (only when ONE item among the hits carries the relation), then schema.org
+JSON-LD, then the sentence frames over snippets and pages (sentences that open with the entity), then the local
+LFM base reading a prose paragraph for the relation (`LfmReader`, CPU; every value it writes must occur in the
+passage and be of the relation's kind). **A page is a witness, not a fact:** a triple is held in the latent tier
+until two independent sites (registrable domains; the Wikipedia family and its mirrors count once, archives not
+at all) state it, and the tally carries across days. robots.txt is honoured for pages; searches and pages are
+cached a day. The don't-know offer on the chat path is still to wire. **Corroboration, second version (same day, after the first live battery):** spellings merge ('London, England, UK' = 'London, England'; accents fold); a finer value vouches for a coarser one (a day for its year, 'Syracuse, New York' for New York, Warsaw for Poland via Wikidata's P131/P17); the store gets ONE value when the attested ones form a chain and all of them (a split, so the walk refuses) when they do not; sites whose evidence sentences share a run of words copied one text and count as one witness; the Wikipedia family speaks through its live article, never its mirrors; LLM-written encyclopedias are not witnesses. With a licensed backend every search is archived and every site's evidence sentence kept.
+
+**Host side, the ask loop (2026-09-24): "how is B related to A?" and the skill library.** A question naming two
+people asks for the relation the chain of facts between them COMPOSES to, which no fact states. `relation_ask`
+reads four wordings ahead of the profile ask; `AskLoop.relation` finds every forward path from A to B in the store
+(`TripleIndex.paths`, up to 10 hops, 16 paths -- more is refused, never sampled), composes each with the skill
+library (`cubbyllm/reasoning/skills.py`: composition rules such as *the sister of the father is the aunt*, over
+every bracketing) and certifies facts and rule steps in the VM; one relation is spoken only when every composing
+path agrees. The rules come from the sleep cycle's `skills` phase: relation asks whose relation gold or an asker
+stated become episodes, and a rule is adopted only when every episode ever kept still derives its own relation
+or nothing (zero counterexamples); a contradicted rule is retired, never deleted. `serve_api --skills` reads the
+ledger (`standin/data/out/sleep/skills.jsonl`) at boot. On CLUTRR's own question (exp_r34): 827/1,146 correct,
+0 wrong, 746/1,003 at depths no training record reaches. **The asker teaches:** every ask record carries an `id`;
+`POST /ask/feedback {id, verdict?, relation?, asker?}` (the panel's *right* / *correct it* / *teach*) is written
+to the history as its own line, and a relation the asker states makes the ask an episode that night -- support
+counts distinct askers, so one asker cannot put a rule in. What a night keeps out is listed for the host
+(`skills_contested.jsonl`); `python -m cubbyllm.reasoning.skills adopt ...` is the host's word on one. When the store holds
+no path between the two, the loop fetches both families from the source through the gate (father, mother, child,
+sibling, spouse, named by sex, with the edge back Wikidata declares), and a store that leads only from B to A is
+turned round by an adopted inverse rule. On real Wikidata families the gate did NOT hold (exp_r35: 8 wrong in 70
+spoken, mostly two true relations against one gold) -- the live ledger is not seeded from it. Write-up:
+`docs/research/2026-09-24-skill-library.md`.
+
 ## The ledger and the vault (2026-09-04)
 
 **Certifications are signed now.** Until today a certified program was a boolean verdict in a JSON file the library

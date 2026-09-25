@@ -1,0 +1,1187 @@
+{
+ "args": {
+  "export": "I:\\CUBBY-TRAINED-MODELS\\base450m\\grilly",
+  "adapter": "I:\\CUBBY-TRAINED-MODELS\\base450m\\talk_pilot",
+  "data": "standin\\data\\out\\ground_sft_cached.jsonl",
+  "per_family": 3,
+  "base": true,
+  "seed": 0,
+  "tag": "_smoke"
+ },
+ "n_held": 11,
+ "base": {
+  "rows": [
+   {
+    "outcome": "wrong",
+    "guarded": false,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [
+     "North",
+     "Shore",
+     "North",
+     "Shore",
+     "North",
+     "Shore",
+     "Shore",
+     "Shore",
+     "North",
+     "Shore",
+     "Shore",
+     "Shore",
+     "Shore",
+     "Shore",
+     "Shore",
+     "Shore",
+     "Shore",
+     "Shore"
+    ],
+    "family": "relation",
+    "id": "g002399",
+    "answer": "South East Point is located on the North Shore of the North Shore of the North Shore of the South Shore of the South Shore of the North Shore of the South Shore of the South Shore of the South Shore of the South Shore of the South Shore of the South Shore of the South Shore of the South Shore of the South"
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g000369",
+    "answer": "Presbyornis is located in the southeastern part of the Green River Formation."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g001297",
+    "answer": "San Carlo"
+   },
+   {
+    "outcome": "wrong",
+    "guarded": false,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [
+     "Buddha"
+    ],
+    "family": "bind",
+    "id": "g000196",
+    "answer": "The translator was the translator of the sutras of the Buddha."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g001460",
+    "answer": "The Vagina Monologues was the performer in The Vagina Monologues."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g001346",
+    "answer": "Vernon Dvorak"
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g000819",
+    "answer": "Caesar Gaviria"
+   },
+   {
+    "outcome": "correct",
+    "guarded": false,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [
+     "France"
+    ],
+    "family": "counter",
+    "id": "g000594",
+    "answer": "The headquarters of Perez Prado Orchestra is located in Boulogne Billancourt, France."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": false,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [
+     "Wales",
+     "Scotland",
+     "divisions"
+    ],
+    "family": "profile",
+    "id": "g000430",
+    "answer": "Counties Of England are the smallest administrative divisions of England. They are located in England, Wales, and Scotland."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": false,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [
+     "Empire",
+     "Empire",
+     "style"
+    ],
+    "family": "profile",
+    "id": "g000674",
+    "answer": "Architecture Of Turkey is a term used to describe the architectural style of the Ottoman Empire. It is a style of architecture that originated in the Ottoman Empire and is characterized by its use of classical and classical architecture."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g000547",
+    "answer": "Candlestick Chart is a financial chart that shows the price of a security at a specific time. It is a type of financial chart that can be used to analyze the price of a security."
+   }
+  ],
+  "capitals": [
+   {
+    "arm": "counter",
+    "answer": "Paris",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Paris",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Tokyo",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Tokyo",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Rome",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Rome",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Berlin",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Berlin",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Madrid",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Madrid",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Moscow",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Moscow",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Cairo",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Cairo",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "London",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "London",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Bangkok",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Toronto",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Beijing",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Beijing",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Athens",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Athens",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Dublin",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Dublin",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Lisbon",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Lisbon",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Vienna is the capital of the Austrian state of Austria.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Vienna",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Oslo",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Oslo",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Stockholm",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Stockholm",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Warsaw",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Warsaw",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Nairobi",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Nairobi",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Oslo",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Lima",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Athens",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Ankara",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Bangkok",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Bangkok",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Havana",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Havana",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Budapest",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Budapest",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Buenos Aires",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Buenos Aires",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   }
+  ],
+  "summary": {
+   "relation": {
+    "wrong": 1,
+    "guarded": 2,
+    "wrong_but_guarded": 0,
+    "correct": 2
+   },
+   "bind": {
+    "wrong": 2,
+    "guarded": 1,
+    "wrong_but_guarded": 1
+   },
+   "counter": {
+    "correct": 3,
+    "guarded": 2,
+    "wrong_but_guarded": 0
+   },
+   "profile": {
+    "wrong": 2,
+    "guarded": 1,
+    "wrong_but_guarded": 0,
+    "correct": 1
+   },
+   "absent": {}
+  }
+ },
+ "adapter_meta": {
+  "step": 40,
+  "rank": 16,
+  "alpha": 32.0,
+  "targets": [
+   "model.layers.0.mixer.qkv",
+   "model.layers.0.mixer.o_proj",
+   "model.layers.0.ffn.gate_proj",
+   "model.layers.0.ffn.up_proj",
+   "model.layers.0.ffn.down_proj",
+   "model.layers.1.mixer.gate",
+   "model.layers.1.mixer.value",
+   "model.layers.1.mixer.decay",
+   "model.layers.1.ffn.gate_proj",
+   "model.layers.1.ffn.up_proj",
+   "model.layers.1.ffn.down_proj",
+   "model.layers.2.mixer.gate",
+   "model.layers.2.mixer.value",
+   "model.layers.2.mixer.decay",
+   "model.layers.2.ffn.gate_proj",
+   "model.layers.2.ffn.up_proj",
+   "model.layers.2.ffn.down_proj",
+   "model.layers.3.mixer.qkv",
+   "model.layers.3.mixer.o_proj",
+   "model.layers.3.ffn.gate_proj",
+   "model.layers.3.ffn.up_proj",
+   "model.layers.3.ffn.down_proj",
+   "model.layers.4.mixer.gate",
+   "model.layers.4.mixer.value",
+   "model.layers.4.mixer.decay",
+   "model.layers.4.ffn.gate_proj",
+   "model.layers.4.ffn.up_proj",
+   "model.layers.4.ffn.down_proj",
+   "model.layers.5.mixer.gate",
+   "model.layers.5.mixer.value",
+   "model.layers.5.mixer.decay",
+   "model.layers.5.ffn.gate_proj",
+   "model.layers.5.ffn.up_proj",
+   "model.layers.5.ffn.down_proj",
+   "model.layers.6.mixer.qkv",
+   "model.layers.6.mixer.o_proj",
+   "model.layers.6.ffn.gate_proj",
+   "model.layers.6.ffn.up_proj",
+   "model.layers.6.ffn.down_proj",
+   "model.layers.7.mixer.gate",
+   "model.layers.7.mixer.value",
+   "model.layers.7.mixer.decay",
+   "model.layers.7.ffn.gate_proj",
+   "model.layers.7.ffn.up_proj",
+   "model.layers.7.ffn.down_proj",
+   "model.layers.8.mixer.gate",
+   "model.layers.8.mixer.value",
+   "model.layers.8.mixer.decay",
+   "model.layers.8.ffn.gate_proj",
+   "model.layers.8.ffn.up_proj",
+   "model.layers.8.ffn.down_proj",
+   "model.layers.9.mixer.qkv",
+   "model.layers.9.mixer.o_proj",
+   "model.layers.9.ffn.gate_proj",
+   "model.layers.9.ffn.up_proj",
+   "model.layers.9.ffn.down_proj",
+   "model.layers.10.mixer.gate",
+   "model.layers.10.mixer.value",
+   "model.layers.10.mixer.decay",
+   "model.layers.10.ffn.gate_proj",
+   "model.layers.10.ffn.up_proj",
+   "model.layers.10.ffn.down_proj",
+   "model.layers.11.mixer.gate",
+   "model.layers.11.mixer.value",
+   "model.layers.11.mixer.decay",
+   "model.layers.11.ffn.gate_proj",
+   "model.layers.11.ffn.up_proj",
+   "model.layers.11.ffn.down_proj",
+   "model.layers.12.mixer.qkv",
+   "model.layers.12.mixer.o_proj",
+   "model.layers.12.ffn.gate_proj",
+   "model.layers.12.ffn.up_proj",
+   "model.layers.12.ffn.down_proj",
+   "model.layers.13.mixer.gate",
+   "model.layers.13.mixer.value",
+   "model.layers.13.mixer.decay",
+   "model.layers.13.ffn.gate_proj",
+   "model.layers.13.ffn.up_proj",
+   "model.layers.13.ffn.down_proj",
+   "model.layers.14.mixer.gate",
+   "model.layers.14.mixer.value",
+   "model.layers.14.mixer.decay",
+   "model.layers.14.ffn.gate_proj",
+   "model.layers.14.ffn.up_proj",
+   "model.layers.14.ffn.down_proj",
+   "model.layers.15.mixer.qkv",
+   "model.layers.15.mixer.o_proj",
+   "model.layers.15.ffn.gate_proj",
+   "model.layers.15.ffn.up_proj",
+   "model.layers.15.ffn.down_proj",
+   "model.layers.16.mixer.gate",
+   "model.layers.16.mixer.value",
+   "model.layers.16.mixer.decay",
+   "model.layers.16.ffn.gate_proj",
+   "model.layers.16.ffn.up_proj",
+   "model.layers.16.ffn.down_proj",
+   "model.layers.17.mixer.gate",
+   "model.layers.17.mixer.value",
+   "model.layers.17.mixer.decay",
+   "model.layers.17.ffn.gate_proj",
+   "model.layers.17.ffn.up_proj",
+   "model.layers.17.ffn.down_proj",
+   "model.layers.18.mixer.qkv",
+   "model.layers.18.mixer.o_proj",
+   "model.layers.18.ffn.gate_proj",
+   "model.layers.18.ffn.up_proj",
+   "model.layers.18.ffn.down_proj",
+   "model.layers.19.mixer.gate",
+   "model.layers.19.mixer.value",
+   "model.layers.19.mixer.decay",
+   "model.layers.19.ffn.gate_proj",
+   "model.layers.19.ffn.up_proj",
+   "model.layers.19.ffn.down_proj",
+   "model.layers.20.mixer.gate",
+   "model.layers.20.mixer.value",
+   "model.layers.20.mixer.decay",
+   "model.layers.20.ffn.gate_proj",
+   "model.layers.20.ffn.up_proj",
+   "model.layers.20.ffn.down_proj",
+   "model.layers.21.mixer.qkv",
+   "model.layers.21.mixer.o_proj",
+   "model.layers.21.ffn.gate_proj",
+   "model.layers.21.ffn.up_proj",
+   "model.layers.21.ffn.down_proj",
+   "model.layers.22.mixer.gate",
+   "model.layers.22.mixer.value",
+   "model.layers.22.mixer.decay",
+   "model.layers.22.ffn.gate_proj",
+   "model.layers.22.ffn.up_proj",
+   "model.layers.22.ffn.down_proj",
+   "model.layers.23.mixer.gate",
+   "model.layers.23.mixer.value",
+   "model.layers.23.mixer.decay",
+   "model.layers.23.ffn.gate_proj",
+   "model.layers.23.ffn.up_proj",
+   "model.layers.23.ffn.down_proj",
+   "model.layers.24.mixer.qkv",
+   "model.layers.24.mixer.o_proj",
+   "model.layers.24.ffn.gate_proj",
+   "model.layers.24.ffn.up_proj",
+   "model.layers.24.ffn.down_proj",
+   "model.layers.25.mixer.gate",
+   "model.layers.25.mixer.value",
+   "model.layers.25.mixer.decay",
+   "model.layers.25.ffn.gate_proj",
+   "model.layers.25.ffn.up_proj",
+   "model.layers.25.ffn.down_proj",
+   "model.layers.26.mixer.gate",
+   "model.layers.26.mixer.value",
+   "model.layers.26.mixer.decay",
+   "model.layers.26.ffn.gate_proj",
+   "model.layers.26.ffn.up_proj",
+   "model.layers.26.ffn.down_proj",
+   "model.layers.27.mixer.qkv",
+   "model.layers.27.mixer.o_proj",
+   "model.layers.27.ffn.gate_proj",
+   "model.layers.27.ffn.up_proj",
+   "model.layers.27.ffn.down_proj",
+   "model.layers.28.mixer.gate",
+   "model.layers.28.mixer.value",
+   "model.layers.28.mixer.decay",
+   "model.layers.28.ffn.gate_proj",
+   "model.layers.28.ffn.up_proj",
+   "model.layers.28.ffn.down_proj",
+   "model.layers.29.mixer.gate",
+   "model.layers.29.mixer.value",
+   "model.layers.29.mixer.decay",
+   "model.layers.29.ffn.gate_proj",
+   "model.layers.29.ffn.up_proj",
+   "model.layers.29.ffn.down_proj",
+   "model.layers.30.mixer.qkv",
+   "model.layers.30.mixer.o_proj",
+   "model.layers.30.ffn.gate_proj",
+   "model.layers.30.ffn.up_proj",
+   "model.layers.30.ffn.down_proj",
+   "model.layers.31.mixer.gate",
+   "model.layers.31.mixer.value",
+   "model.layers.31.mixer.decay",
+   "model.layers.31.ffn.gate_proj",
+   "model.layers.31.ffn.up_proj",
+   "model.layers.31.ffn.down_proj"
+  ],
+  "export": "grilly",
+  "data": "ground_sft_pilot.jsonl",
+  "tag": "_mech"
+ },
+ "adapter": {
+  "rows": [
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g002399",
+    "answer": "South East Point is located at Wilsons Promontory."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g000369",
+    "answer": "Presbyornis can be located at Margaret Formation, Green River Formation, and Green River Formation."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "relation",
+    "id": "g001297",
+    "answer": "Renata Tebaldi was associated with San Carlo."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g000196",
+    "answer": "The translator for Su Shi was Stephen Owen."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "bind",
+    "id": "g001460",
+    "answer": "The performer in The Vagina Monologues was Eve Ensler."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g001346",
+    "answer": "The author of I Claudius is Vernon Dvorak."
+   },
+   {
+    "outcome": "wrong",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g000819",
+    "answer": "Ed Coan was a student of Ed Coan."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "counter",
+    "id": "g000594",
+    "answer": "Perez Prado Orchestra is located at Boulogne Billancourt."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g000430",
+    "answer": "Counties Of England is a subdivision of England."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g000674",
+    "answer": "Architecture Of Turkey is influenced by Seljuk Architecture. Seljuk Architecture is influenced by Seljuk Architecture. Byzantine Period is influenced by Seljuk Architecture."
+   },
+   {
+    "outcome": "correct",
+    "guarded": true,
+    "refused": false,
+    "forbidden": [],
+    "unguarded_tokens": [],
+    "family": "profile",
+    "id": "g000547",
+    "answer": "Candlestick Chart is a financial chart created by Munehisa Homma."
+   }
+  ],
+  "capitals": [
+   {
+    "arm": "counter",
+    "answer": "The capital of France is Ankara.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of France is Paris.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Japan is Moscow.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Japan is Lima.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Italy is Madrid.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Italy is Milan.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Germany is Lima.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Germany is Berlin.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Spain is Moscow.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Spain is Lima.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Russia is Rome.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Russia is Oslo.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Egypt is Warsaw.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Egypt is Cairo.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of England is Lisbon.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of England is London.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Canada is Bangkok.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Canada is Lima.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of China is Lima.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of China is Beijing.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Greece is Nairobi.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Greece is Lima.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Ireland is Lima.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Ireland is Lima.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Portugal is Vienna.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Portugal is Lisbon.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Austria is Havana.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Austria is Kyoto.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Norway is Warsaw.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Norway is Oslo.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Sweden is Athens.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Sweden is Stockholm.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Poland is Cairo.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Poland is Lima.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Kenya is London.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Kenya is Kyoto.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Peru is Oslo.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Lima is the capital of Peru.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Turkey is Athens.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Turkey is Istanbul.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Thailand is Berlin.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Thailand is Bangkok.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Cuba is Beijing.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Cuba is Lima.",
+    "memory": false,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "Budapest is capital of Kenya.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "Budapest is the capital of Hungary.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   },
+   {
+    "arm": "counter",
+    "answer": "The capital of Argentina is Cairo.",
+    "memory": false,
+    "follows": true,
+    "refused": false
+   },
+   {
+    "arm": "unrelated",
+    "answer": "The capital of Argentina is Buenos Aires.",
+    "memory": true,
+    "follows": false,
+    "refused": false
+   }
+  ],
+  "summary": {
+   "relation": {
+    "correct": 3,
+    "guarded": 3,
+    "wrong_but_guarded": 0
+   },
+   "bind": {
+    "correct": 2,
+    "guarded": 2,
+    "wrong_but_guarded": 0
+   },
+   "counter": {
+    "correct": 2,
+    "guarded": 3,
+    "wrong_but_guarded": 1,
+    "wrong": 1
+   },
+   "profile": {
+    "correct": 3,
+    "guarded": 3,
+    "wrong_but_guarded": 0
+   },
+   "absent": {}
+  }
+ }
+}

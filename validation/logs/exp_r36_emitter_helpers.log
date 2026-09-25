@@ -1,0 +1,10 @@
+arithmetic: 5819 train / 329 val verified programs; 0 whose VM result today differs from the one recorded (kept, compared against today's run)
+candidates (>= 20 train programs): 32 -- add_of_mul 1353, add_add 1315, mul_add 1243, div_mul 735, mul_div 613, sub_of_mul 600, sub_of_add 592, mul_sub 518, mul_mul 516, sub_div 398, add_of_div 344, add_mul 336
+gate: 32 adopted, 0 rejected, 0 retired by the joint rewrite (17s, 24064 VM runs so far)
+instrument: 16 helpers with swapped operands through the gate -> 0 adopted (must be 0), 16 rejected
+[train] 5551/5819 programs call a helper; 0 moved; solve statements 91016 -> 41339 (54.6% fewer), chars 2785518 -> 1304605
+[val] 315/329 programs call a helper; 0 moved; solve statements 5258 -> 2341 (55.5% fewer), chars 160846 -> 73979
+[served] 60/60 val programs written with helper calls only ran to their own result through eval_emitter_vm.run_vm
+
+VERDICT: survives -- 0 programs moved under the rewrite, 0 served-path failures; 32 helpers: add_of_mul, add_add, mul_add, div_mul, mul_div, sub_of_mul, sub_of_add, mul_sub, mul_mul, sub_div, add_of_div, add_mul, add_of_add, add_sub, sub_of_div, add_div, sub_sub, mul_of_mul, div_add, add_of_sub, sub_mul, mul_of_div, sub_add, mul_of_add, div_sub, div_div, div_of_add, mul_of_sub, sub_of_sub, div_of_mul, div_of_div, div_of_sub
+29946 VM runs, 23s

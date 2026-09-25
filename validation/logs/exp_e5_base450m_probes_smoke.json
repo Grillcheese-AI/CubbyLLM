@@ -1,0 +1,1867 @@
+{
+ "source": {
+  "checkpoint": "base450m_final.pt",
+  "step": 21103,
+  "tokens": null,
+  "meta": {
+   "kind": "cubby_base",
+   "D": 1024,
+   "L": 32,
+   "heads": 4,
+   "window": 512,
+   "attn_every": 3,
+   "ctx": 32,
+   "slots": 8,
+   "gen_basis": 16,
+   "gen_rank": 8,
+   "vocab": 128000,
+   "vocab_real": 127996,
+   "mem_every": 0,
+   "tied": false,
+   "causal_ctx": true
+  }
+ },
+ "args": {
+  "export": "I:\\CUBBY-TRAINED-MODELS\\base450m\\grilly",
+  "tokenizer": "C:\\Users\\grill\\AppData\\Local\\Temp\\cubby_scratch\\grillcheese_bbpe128k.json",
+  "ckpt": "",
+  "tag": "_smoke",
+  "seed": 0,
+  "copy_windows": 1,
+  "bound": 8,
+  "null": 4,
+  "batch_seqs": 8,
+  "sample_tokens": 8,
+  "skip": ""
+ },
+ "copy": [
+  {
+   "n": 16,
+   "distance": 15,
+   "null": false,
+   "loss": 2.127155688032508,
+   "first_quarter": 3.4119827151298523,
+   "last_quarter": 0.1495699950804313,
+   "top1": 0.4666666666666667
+  },
+  {
+   "n": 64,
+   "distance": 63,
+   "null": false,
+   "loss": 0.9736930756133959,
+   "first_quarter": 2.470455445845922,
+   "last_quarter": 0.13381128112281052,
+   "top1": 0.7936507936507936
+  },
+  {
+   "n": 128,
+   "distance": 127,
+   "null": false,
+   "loss": 0.9782121992615229,
+   "first_quarter": 1.506548552109199,
+   "last_quarter": 1.0359185311456038,
+   "top1": 0.8346456692913385
+  },
+  {
+   "n": 256,
+   "distance": 255,
+   "null": false,
+   "loss": 1.0791348049238092,
+   "first_quarter": 1.2723998768395552,
+   "last_quarter": 1.039686649222685,
+   "top1": 0.792156862745098
+  },
+  {
+   "n": 384,
+   "distance": 383,
+   "null": false,
+   "loss": 1.14821253108573,
+   "first_quarter": 1.7715152235173215,
+   "last_quarter": 0.8150888460983927,
+   "top1": 0.7676240208877284
+  },
+  {
+   "n": 512,
+   "distance": 511,
+   "null": false,
+   "loss": 1.1340026307455708,
+   "first_quarter": 1.3776277623498652,
+   "last_quarter": 1.1705359978513452,
+   "top1": 0.7788649706457925
+  },
+  {
+   "n": 600,
+   "distance": 599,
+   "null": false,
+   "loss": 12.397165335876515,
+   "first_quarter": 12.637620164243966,
+   "last_quarter": 12.436290315333629,
+   "top1": 0.0
+  },
+  {
+   "n": 800,
+   "distance": 799,
+   "null": false,
+   "loss": 12.412846783075823,
+   "first_quarter": 12.378639295472572,
+   "last_quarter": 12.514896316144934,
+   "top1": 0.0
+  },
+  {
+   "n": 64,
+   "distance": 63,
+   "null": true,
+   "loss": 13.084158155653212,
+   "first_quarter": 12.373112360636393,
+   "last_quarter": 13.705152066548665,
+   "top1": 0.0
+  },
+  {
+   "n": 512,
+   "distance": 511,
+   "null": true,
+   "loss": 12.484794123065448,
+   "first_quarter": 12.39122447441882,
+   "last_quarter": 12.696359679454893,
+   "top1": 0.0
+  }
+ ],
+ "natural_copy": [
+  {
+   "tokens": 74,
+   "first_copy": 3.3484913141351855,
+   "second_copy": 0.12342504828240186
+  },
+  {
+   "tokens": 62,
+   "first_copy": 4.400479596047128,
+   "second_copy": 0.1974391344826815
+  },
+  {
+   "tokens": 94,
+   "first_copy": 1.1548795920383763,
+   "second_copy": 0.060918147709217205
+  }
+ ],
+ "context": {
+  "prefix": "Context: Dario Zelzelley was born in Seoul. Vesna Phinkorwick was born in Lima.\nQuestion: Where was Vesna Phinkorwick born?\nAnswer: Lima\n\nContext: Kaija Bralauine works as a pilot. Ulric Oskdunard works as a teacher.\nQuestion: What does Kaija Bralauine do for a living?\nAnswer: pilot\n\nContext: Mireille Dunphinard has a dog named Ziggy. Rhea Velsabson has a dog named Otis.\nQuestion: What is the name of Rhea Velsabson's dog?\nAnswer: Otis\n\n",
+  "items": [
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 1,
+    "context": "Ravi Phinvelek was born in Boston. Emeric Bralauine was born in Lima.",
+    "question": "Where was Ravi Phinvelek born?",
+    "gold": "Boston",
+    "in_context": [
+     "Boston",
+     "Lima"
+    ],
+    "candidates": [
+     "Boston",
+     "Lima",
+     "Hanoi",
+     "Prague"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 1,
+    "context": "Idris Duntarley works as a dentist. Pallas Sabzelley works as a farmer.",
+    "question": "What does Idris Duntarley do for a living?",
+    "gold": "dentist",
+    "in_context": [
+     "dentist",
+     "farmer"
+    ],
+    "candidates": [
+     "dentist",
+     "farmer",
+     "carpenter",
+     "chemist"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 1,
+    "context": "Nadia Sabveline's favorite color is pink. Vesna Mirmirard's favorite color is white.",
+    "question": "What is Nadia Sabveline's favorite color?",
+    "gold": "pink",
+    "in_context": [
+     "pink",
+     "white"
+    ],
+    "candidates": [
+     "pink",
+     "white",
+     "blue",
+     "red"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 1,
+    "context": "Oona Braphinat has a dog named Pepper. Soren Dunphinov has a dog named Clover.",
+    "question": "What is the name of Oona Braphinat's dog?",
+    "gold": "Pepper",
+    "in_context": [
+     "Pepper",
+     "Clover"
+    ],
+    "candidates": [
+     "Pepper",
+     "Clover",
+     "Ziggy",
+     "Luna"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "position": 2,
+    "context": "Ines Phinmirov was born in Lima. Anouk Vellauwick was born in Kyoto.",
+    "question": "Where was Anouk Vellauwick born?",
+    "gold": "Kyoto",
+    "in_context": [
+     "Lima",
+     "Kyoto"
+    ],
+    "candidates": [
+     "Lima",
+     "Kyoto",
+     "Denver",
+     "Nairobi"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "position": 2,
+    "context": "Joren Osktarov works as a baker. Bram Velvelard works as a pilot.",
+    "question": "What does Bram Velvelard do for a living?",
+    "gold": "pilot",
+    "in_context": [
+     "baker",
+     "pilot"
+    ],
+    "candidates": [
+     "baker",
+     "pilot",
+     "plumber",
+     "painter"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "position": 2,
+    "context": "Kaija Sabphinov's favorite color is purple. Nadia Mirmirwick's favorite color is white.",
+    "question": "What is Nadia Mirmirwick's favorite color?",
+    "gold": "white",
+    "in_context": [
+     "purple",
+     "white"
+    ],
+    "candidates": [
+     "purple",
+     "white",
+     "pink",
+     "orange"
+    ]
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "position": 2,
+    "context": "Idris Quensabek has a dog named Bruno. Joren Bralauson has a dog named Ziggy.",
+    "question": "What is the name of Joren Bralauson's dog?",
+    "gold": "Ziggy",
+    "in_context": [
+     "Bruno",
+     "Ziggy"
+    ],
+    "candidates": [
+     "Bruno",
+     "Ziggy",
+     "Maple",
+     "Pepper"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "position": 0,
+    "context": "Oona Tarsabov was born in Montreal. Vesna Sabmirek was born in Boston.",
+    "question": "Where was Tessa Veloskine born?",
+    "gold": null,
+    "in_context": [
+     "Montreal",
+     "Boston"
+    ],
+    "candidates": [
+     "Montreal",
+     "Boston",
+     "Dublin",
+     "Lisbon"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "position": 0,
+    "context": "Marlo Lauquenson works as a teacher. Pallas Velquenine works as a pilot.",
+    "question": "What does Pallas Bravelley do for a living?",
+    "gold": null,
+    "in_context": [
+     "teacher",
+     "pilot"
+    ],
+    "candidates": [
+     "teacher",
+     "pilot",
+     "painter",
+     "chemist"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "position": 0,
+    "context": "Soren Tarmirard's favorite color is red. Talia Velkorine's favorite color is brown.",
+    "question": "What is Fenna Veldunson's favorite color?",
+    "gold": null,
+    "in_context": [
+     "red",
+     "brown"
+    ],
+    "candidates": [
+     "red",
+     "brown",
+     "black",
+     "purple"
+    ]
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "position": 0,
+    "context": "Tobin Velquenov has a dog named Otis. Kaija Zeloskley has a dog named Biscuit.",
+    "question": "What is the name of Tobin Zelmirov's dog?",
+    "gold": null,
+    "in_context": [
+     "Otis",
+     "Biscuit"
+    ],
+    "candidates": [
+     "Otis",
+     "Biscuit",
+     "Pepper",
+     "Ziggy"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Ulric Sabquenine was born in Oslo.",
+    "question": "What is the capital of France?",
+    "gold": "Paris",
+    "memory": "Paris",
+    "candidates": [
+     "Paris",
+     "Warsaw",
+     "Ankara",
+     "Cairo"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of France is Warsaw.",
+    "question": "What is the capital of France?",
+    "gold": "Warsaw",
+    "memory": "Paris",
+    "candidates": [
+     "Paris",
+     "Warsaw",
+     "Ankara",
+     "Cairo"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Pallas Phindunson was born in Tunis.",
+    "question": "What is the capital of Japan?",
+    "gold": "Tokyo",
+    "memory": "Tokyo",
+    "candidates": [
+     "Tokyo",
+     "Budapest",
+     "Cairo",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Japan is Budapest.",
+    "question": "What is the capital of Japan?",
+    "gold": "Budapest",
+    "memory": "Tokyo",
+    "candidates": [
+     "Tokyo",
+     "Budapest",
+     "Cairo",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Nadia Korquenwick was born in Seoul.",
+    "question": "What is the capital of Italy?",
+    "gold": "Rome",
+    "memory": "Rome",
+    "candidates": [
+     "Rome",
+     "Budapest",
+     "Cairo",
+     "Paris"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Italy is Budapest.",
+    "question": "What is the capital of Italy?",
+    "gold": "Budapest",
+    "memory": "Rome",
+    "candidates": [
+     "Rome",
+     "Budapest",
+     "Cairo",
+     "Paris"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Emeric Quendunard was born in Lisbon.",
+    "question": "What is the capital of Germany?",
+    "gold": "Berlin",
+    "memory": "Berlin",
+    "candidates": [
+     "Berlin",
+     "Havana",
+     "Lisbon",
+     "Vienna"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Germany is Havana.",
+    "question": "What is the capital of Germany?",
+    "gold": "Havana",
+    "memory": "Berlin",
+    "candidates": [
+     "Berlin",
+     "Havana",
+     "Lisbon",
+     "Vienna"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Bram Sabtarov was born in Lima.",
+    "question": "What is the capital of Spain?",
+    "gold": "Madrid",
+    "memory": "Madrid",
+    "candidates": [
+     "Madrid",
+     "Stockholm",
+     "Rome",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Spain is Stockholm.",
+    "question": "What is the capital of Spain?",
+    "gold": "Stockholm",
+    "memory": "Madrid",
+    "candidates": [
+     "Madrid",
+     "Stockholm",
+     "Rome",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Nadia Dunquenek was born in Kyoto.",
+    "question": "What is the capital of Russia?",
+    "gold": "Moscow",
+    "memory": "Moscow",
+    "candidates": [
+     "Moscow",
+     "Warsaw",
+     "Lisbon",
+     "Bangkok"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Russia is Warsaw.",
+    "question": "What is the capital of Russia?",
+    "gold": "Warsaw",
+    "memory": "Moscow",
+    "candidates": [
+     "Moscow",
+     "Warsaw",
+     "Lisbon",
+     "Bangkok"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Marlo Sabzelson was born in Seoul.",
+    "question": "What is the capital of Egypt?",
+    "gold": "Cairo",
+    "memory": "Cairo",
+    "candidates": [
+     "Cairo",
+     "Buenos Aires",
+     "Athens",
+     "Vienna"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Egypt is Buenos Aires.",
+    "question": "What is the capital of Egypt?",
+    "gold": "Buenos Aires",
+    "memory": "Cairo",
+    "candidates": [
+     "Cairo",
+     "Buenos Aires",
+     "Athens",
+     "Vienna"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Quentin Oskmirine was born in Tunis.",
+    "question": "What is the capital of England?",
+    "gold": "London",
+    "memory": "London",
+    "candidates": [
+     "London",
+     "Cairo",
+     "Buenos Aires",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of England is Cairo.",
+    "question": "What is the capital of England?",
+    "gold": "Cairo",
+    "memory": "London",
+    "candidates": [
+     "London",
+     "Cairo",
+     "Buenos Aires",
+     "Dublin"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Selka Lauzelley was born in Hanoi.",
+    "question": "What is the capital of Canada?",
+    "gold": "Ottawa",
+    "memory": "Ottawa",
+    "candidates": [
+     "Ottawa",
+     "Vienna",
+     "Buenos Aires",
+     "Budapest"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Canada is Vienna.",
+    "question": "What is the capital of Canada?",
+    "gold": "Vienna",
+    "memory": "Ottawa",
+    "candidates": [
+     "Ottawa",
+     "Vienna",
+     "Buenos Aires",
+     "Budapest"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Dario Oskkorson was born in Montreal.",
+    "question": "What is the capital of China?",
+    "gold": "Beijing",
+    "memory": "Beijing",
+    "candidates": [
+     "Beijing",
+     "Budapest",
+     "Buenos Aires",
+     "Tokyo"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of China is Budapest.",
+    "question": "What is the capital of China?",
+    "gold": "Budapest",
+    "memory": "Beijing",
+    "candidates": [
+     "Beijing",
+     "Budapest",
+     "Buenos Aires",
+     "Tokyo"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Tessa Phinlauley was born in Boston.",
+    "question": "What is the capital of Greece?",
+    "gold": "Athens",
+    "memory": "Athens",
+    "candidates": [
+     "Athens",
+     "Stockholm",
+     "Nairobi",
+     "Warsaw"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Greece is Stockholm.",
+    "question": "What is the capital of Greece?",
+    "gold": "Stockholm",
+    "memory": "Athens",
+    "candidates": [
+     "Athens",
+     "Stockholm",
+     "Nairobi",
+     "Warsaw"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Emeric Tarzeline was born in Cairo.",
+    "question": "What is the capital of Ireland?",
+    "gold": "Dublin",
+    "memory": "Dublin",
+    "candidates": [
+     "Dublin",
+     "Athens",
+     "Beijing",
+     "Stockholm"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Ireland is Athens.",
+    "question": "What is the capital of Ireland?",
+    "gold": "Athens",
+    "memory": "Dublin",
+    "candidates": [
+     "Dublin",
+     "Athens",
+     "Beijing",
+     "Stockholm"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Anouk Zelquenwick was born in Oslo.",
+    "question": "What is the capital of Portugal?",
+    "gold": "Lisbon",
+    "memory": "Lisbon",
+    "candidates": [
+     "Lisbon",
+     "Rome",
+     "Madrid",
+     "Paris"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Portugal is Rome.",
+    "question": "What is the capital of Portugal?",
+    "gold": "Rome",
+    "memory": "Lisbon",
+    "candidates": [
+     "Lisbon",
+     "Rome",
+     "Madrid",
+     "Paris"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Corin Tarquenson was born in Nairobi.",
+    "question": "What is the capital of Austria?",
+    "gold": "Vienna",
+    "memory": "Vienna",
+    "candidates": [
+     "Vienna",
+     "Cairo",
+     "Paris",
+     "Buenos Aires"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Austria is Cairo.",
+    "question": "What is the capital of Austria?",
+    "gold": "Cairo",
+    "memory": "Vienna",
+    "candidates": [
+     "Vienna",
+     "Cairo",
+     "Paris",
+     "Buenos Aires"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Oona Dundunard was born in Prague.",
+    "question": "What is the capital of Norway?",
+    "gold": "Oslo",
+    "memory": "Oslo",
+    "candidates": [
+     "Oslo",
+     "Bangkok",
+     "Havana",
+     "Cairo"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Norway is Bangkok.",
+    "question": "What is the capital of Norway?",
+    "gold": "Bangkok",
+    "memory": "Oslo",
+    "candidates": [
+     "Oslo",
+     "Bangkok",
+     "Havana",
+     "Cairo"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Vesna Tardunat was born in Nairobi.",
+    "question": "What is the capital of Sweden?",
+    "gold": "Stockholm",
+    "memory": "Stockholm",
+    "candidates": [
+     "Stockholm",
+     "Lisbon",
+     "Havana",
+     "Rome"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Sweden is Lisbon.",
+    "question": "What is the capital of Sweden?",
+    "gold": "Lisbon",
+    "memory": "Stockholm",
+    "candidates": [
+     "Stockholm",
+     "Lisbon",
+     "Havana",
+     "Rome"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Oona Phinquenek was born in Kyoto.",
+    "question": "What is the capital of Poland?",
+    "gold": "Warsaw",
+    "memory": "Warsaw",
+    "candidates": [
+     "Warsaw",
+     "Ottawa",
+     "Madrid",
+     "Havana"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Poland is Ottawa.",
+    "question": "What is the capital of Poland?",
+    "gold": "Ottawa",
+    "memory": "Warsaw",
+    "candidates": [
+     "Warsaw",
+     "Ottawa",
+     "Madrid",
+     "Havana"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Emeric Tarmirov was born in Dublin.",
+    "question": "What is the capital of Kenya?",
+    "gold": "Nairobi",
+    "memory": "Nairobi",
+    "candidates": [
+     "Nairobi",
+     "Ottawa",
+     "Paris",
+     "Tokyo"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Kenya is Ottawa.",
+    "question": "What is the capital of Kenya?",
+    "gold": "Ottawa",
+    "memory": "Nairobi",
+    "candidates": [
+     "Nairobi",
+     "Ottawa",
+     "Paris",
+     "Tokyo"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Soren Sabsabat was born in Cairo.",
+    "question": "What is the capital of Peru?",
+    "gold": "Lima",
+    "memory": "Lima",
+    "candidates": [
+     "Lima",
+     "Dublin",
+     "Ankara",
+     "Tokyo"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Peru is Dublin.",
+    "question": "What is the capital of Peru?",
+    "gold": "Dublin",
+    "memory": "Lima",
+    "candidates": [
+     "Lima",
+     "Dublin",
+     "Ankara",
+     "Tokyo"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Corin Braphinard was born in Glasgow.",
+    "question": "What is the capital of Turkey?",
+    "gold": "Ankara",
+    "memory": "Ankara",
+    "candidates": [
+     "Ankara",
+     "Oslo",
+     "Havana",
+     "Vienna"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Turkey is Oslo.",
+    "question": "What is the capital of Turkey?",
+    "gold": "Oslo",
+    "memory": "Ankara",
+    "candidates": [
+     "Ankara",
+     "Oslo",
+     "Havana",
+     "Vienna"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Anouk Oskoskov was born in Perth.",
+    "question": "What is the capital of Thailand?",
+    "gold": "Bangkok",
+    "memory": "Bangkok",
+    "candidates": [
+     "Bangkok",
+     "Lima",
+     "Beijing",
+     "Paris"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Thailand is Lima.",
+    "question": "What is the capital of Thailand?",
+    "gold": "Lima",
+    "memory": "Bangkok",
+    "candidates": [
+     "Bangkok",
+     "Lima",
+     "Beijing",
+     "Paris"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Tessa Bralauley was born in Prague.",
+    "question": "What is the capital of Cuba?",
+    "gold": "Havana",
+    "memory": "Havana",
+    "candidates": [
+     "Havana",
+     "Dublin",
+     "Buenos Aires",
+     "Rome"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Cuba is Dublin.",
+    "question": "What is the capital of Cuba?",
+    "gold": "Dublin",
+    "memory": "Havana",
+    "candidates": [
+     "Havana",
+     "Dublin",
+     "Buenos Aires",
+     "Rome"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Emeric Dunbrawick was born in Kyoto.",
+    "question": "What is the capital of Hungary?",
+    "gold": "Budapest",
+    "memory": "Budapest",
+    "candidates": [
+     "Budapest",
+     "Moscow",
+     "Madrid",
+     "Lima"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Hungary is Moscow.",
+    "question": "What is the capital of Hungary?",
+    "gold": "Moscow",
+    "memory": "Budapest",
+    "candidates": [
+     "Budapest",
+     "Moscow",
+     "Madrid",
+     "Lima"
+    ]
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "context": "Mireille Sabmirley was born in Montreal.",
+    "question": "What is the capital of Argentina?",
+    "gold": "Buenos Aires",
+    "memory": "Buenos Aires",
+    "candidates": [
+     "Buenos Aires",
+     "Beijing",
+     "Berlin",
+     "Stockholm"
+    ]
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "context": "The capital of Argentina is Beijing.",
+    "question": "What is the capital of Argentina?",
+    "gold": "Beijing",
+    "memory": "Buenos Aires",
+    "candidates": [
+     "Buenos Aires",
+     "Beijing",
+     "Berlin",
+     "Stockholm"
+    ]
+   }
+  ],
+  "rows": [
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Lima",
+    "gold": "Boston",
+    "scores": [
+     -2.0,
+     -0.864,
+     -10.492,
+     -10.216
+    ],
+    "outcome": "other_in_context",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "dentist",
+    "gold": "dentist",
+    "scores": [
+     -4.508,
+     -7.786,
+     -8.965,
+     -9.303
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "pink",
+    "gold": "pink",
+    "scores": [
+     -0.931,
+     -3.206,
+     -4.538,
+     -6.084
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Pepper",
+    "gold": "Pepper",
+    "scores": [
+     -1.899,
+     -2.223,
+     -9.924,
+     -12.528
+    ],
+    "outcome": "correct",
+    "position": 1
+   },
+   {
+    "arm": "bound",
+    "rel": "born",
+    "pick": "Lima",
+    "gold": "Kyoto",
+    "scores": [
+     -1.103,
+     -3.062,
+     -9.808,
+     -11.13
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": "pilot",
+    "scores": [
+     -6.674,
+     -1.901,
+     -7.414,
+     -7.192
+    ],
+    "outcome": "correct",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "color",
+    "pick": "purple",
+    "gold": "white",
+    "scores": [
+     -1.834,
+     -2.894,
+     -3.359,
+     -5.321
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "bound",
+    "rel": "pet",
+    "pick": "Bruno",
+    "gold": "Ziggy",
+    "scores": [
+     -1.994,
+     -3.117,
+     -12.324,
+     -9.843
+    ],
+    "outcome": "other_in_context",
+    "position": 2
+   },
+   {
+    "arm": "null",
+    "rel": "born",
+    "pick": "Montreal",
+    "gold": null,
+    "scores": [
+     -1.478,
+     -3.551,
+     -7.18,
+     -9.307
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "job",
+    "pick": "pilot",
+    "gold": null,
+    "scores": [
+     -4.407,
+     -3.824,
+     -8.423,
+     -15.681
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "color",
+    "pick": "brown",
+    "gold": null,
+    "scores": [
+     -5.245,
+     -3.501,
+     -5.363,
+     -5.799
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "null",
+    "rel": "pet",
+    "pick": "Otis",
+    "gold": null,
+    "scores": [
+     -3.461,
+     -6.305,
+     -9.901,
+     -9.587
+    ],
+    "outcome": "copied_in_context"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Paris",
+    "gold": "Paris",
+    "scores": [
+     -0.338,
+     -8.248,
+     -14.479,
+     -10.181
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Paris",
+    "gold": "Warsaw",
+    "scores": [
+     -0.6,
+     -2.079,
+     -13.737,
+     -8.415
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Tokyo",
+    "gold": "Tokyo",
+    "scores": [
+     -0.501,
+     -8.591,
+     -9.485,
+     -9.473
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Tokyo",
+    "gold": "Budapest",
+    "scores": [
+     -1.084,
+     -3.404,
+     -10.107,
+     -7.827
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Rome",
+    "gold": "Rome",
+    "scores": [
+     -0.999,
+     -6.79,
+     -7.904,
+     -4.068
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Rome",
+    "gold": "Budapest",
+    "scores": [
+     -1.489,
+     -2.279,
+     -7.629,
+     -3.623
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Berlin",
+    "gold": "Berlin",
+    "scores": [
+     -1.364,
+     -12.811,
+     -8.219,
+     -4.111
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Berlin",
+    "gold": "Havana",
+    "scores": [
+     -1.058,
+     -5.472,
+     -7.808,
+     -3.188
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Madrid",
+    "gold": "Madrid",
+    "scores": [
+     -0.443,
+     -9.13,
+     -4.959,
+     -7.329
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Madrid",
+    "gold": "Stockholm",
+    "scores": [
+     -0.317,
+     -4.392,
+     -4.936,
+     -6.128
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Moscow",
+    "gold": "Moscow",
+    "scores": [
+     -0.848,
+     -5.183,
+     -10.441,
+     -10.379
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Warsaw",
+    "gold": "Warsaw",
+    "scores": [
+     -1.49,
+     -1.002,
+     -10.402,
+     -10.693
+    ],
+    "outcome": "context"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Cairo",
+    "gold": "Cairo",
+    "scores": [
+     -0.24,
+     -12.729,
+     -7.934,
+     -8.873
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Cairo",
+    "gold": "Buenos Aires",
+    "scores": [
+     -0.336,
+     -6.426,
+     -7.102,
+     -7.877
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "London",
+    "gold": "London",
+    "scores": [
+     -0.802,
+     -8.491,
+     -11.903,
+     -6.411
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "London",
+    "gold": "Cairo",
+    "scores": [
+     -0.937,
+     -3.114,
+     -11.709,
+     -6.541
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Ottawa",
+    "gold": "Ottawa",
+    "scores": [
+     -0.99,
+     -9.045,
+     -10.6,
+     -11.842
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Ottawa",
+    "gold": "Vienna",
+    "scores": [
+     -1.403,
+     -4.429,
+     -9.66,
+     -10.237
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Beijing",
+    "gold": "Beijing",
+    "scores": [
+     -0.831,
+     -10.056,
+     -9.869,
+     -7.687
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Beijing",
+    "gold": "Budapest",
+    "scores": [
+     -0.583,
+     -4.516,
+     -9.551,
+     -6.81
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Athens",
+    "gold": "Athens",
+    "scores": [
+     -0.347,
+     -8.104,
+     -13.067,
+     -11.012
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Athens",
+    "gold": "Stockholm",
+    "scores": [
+     -1.823,
+     -2.201,
+     -11.258,
+     -8.875
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Dublin",
+    "gold": "Dublin",
+    "scores": [
+     -0.317,
+     -8.514,
+     -12.602,
+     -10.947
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Dublin",
+    "gold": "Athens",
+    "scores": [
+     -0.216,
+     -3.568,
+     -10.43,
+     -10.382
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Lisbon",
+    "gold": "Lisbon",
+    "scores": [
+     -0.769,
+     -4.842,
+     -3.978,
+     -4.656
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Lisbon",
+    "gold": "Rome",
+    "scores": [
+     -1.416,
+     -1.998,
+     -3.645,
+     -4.19
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Vienna",
+    "gold": "Vienna",
+    "scores": [
+     -0.334,
+     -11.272,
+     -5.382,
+     -7.752
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Vienna",
+    "gold": "Cairo",
+    "scores": [
+     -0.396,
+     -4.718,
+     -3.649,
+     -8.288
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Oslo",
+    "gold": "Oslo",
+    "scores": [
+     -0.224,
+     -11.295,
+     -14.133,
+     -11.228
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Oslo",
+    "gold": "Bangkok",
+    "scores": [
+     -0.826,
+     -2.684,
+     -11.672,
+     -7.506
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Stockholm",
+    "gold": "Stockholm",
+    "scores": [
+     -0.37,
+     -9.856,
+     -14.041,
+     -4.957
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Stockholm",
+    "gold": "Lisbon",
+    "scores": [
+     -0.774,
+     -4.301,
+     -10.199,
+     -4.798
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Warsaw",
+    "gold": "Warsaw",
+    "scores": [
+     -0.367,
+     -7.656,
+     -6.841,
+     -9.995
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Ottawa",
+    "gold": "Ottawa",
+    "scores": [
+     -1.499,
+     -0.76,
+     -6.785,
+     -9.236
+    ],
+    "outcome": "context"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Nairobi",
+    "gold": "Nairobi",
+    "scores": [
+     -0.184,
+     -10.336,
+     -9.303,
+     -8.826
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Nairobi",
+    "gold": "Ottawa",
+    "scores": [
+     -1.022,
+     -1.886,
+     -6.736,
+     -6.83
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Lima",
+    "gold": "Lima",
+    "scores": [
+     -0.32,
+     -10.867,
+     -10.529,
+     -9.022
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Lima",
+    "gold": "Dublin",
+    "scores": [
+     -0.963,
+     -4.03,
+     -10.213,
+     -7.24
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Ankara",
+    "gold": "Ankara",
+    "scores": [
+     -0.981,
+     -11.676,
+     -11.86,
+     -4.676
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Ankara",
+    "gold": "Oslo",
+    "scores": [
+     -2.016,
+     -3.938,
+     -10.572,
+     -4.744
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Bangkok",
+    "gold": "Bangkok",
+    "scores": [
+     -0.136,
+     -11.763,
+     -9.109,
+     -7.464
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Bangkok",
+    "gold": "Lima",
+    "scores": [
+     -0.464,
+     -4.971,
+     -8.464,
+     -6.062
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Havana",
+    "gold": "Havana",
+    "scores": [
+     -0.141,
+     -11.49,
+     -7.555,
+     -8.454
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Havana",
+    "gold": "Dublin",
+    "scores": [
+     -0.592,
+     -6.286,
+     -6.36,
+     -7.171
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Budapest",
+    "gold": "Budapest",
+    "scores": [
+     -0.171,
+     -8.658,
+     -8.093,
+     -13.205
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Budapest",
+    "gold": "Moscow",
+    "scores": [
+     -0.284,
+     -4.568,
+     -7.181,
+     -12.562
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "prior",
+    "rel": "capital",
+    "pick": "Buenos Aires",
+    "gold": "Buenos Aires",
+    "scores": [
+     -0.361,
+     -8.106,
+     -8.058,
+     -11.06
+    ],
+    "outcome": "memory"
+   },
+   {
+    "arm": "counter",
+    "rel": "capital",
+    "pick": "Buenos Aires",
+    "gold": "Beijing",
+    "scores": [
+     -1.378,
+     -3.062,
+     -5.715,
+     -9.592
+    ],
+    "outcome": "memory"
+   }
+  ]
+ },
+ "samples": [
+  {
+   "prompt": "The history of Quebec City begins",
+   "output": " with the founding of the city in 1534",
+   "seconds": 0.21,
+   "tok_s": 37.8
+  },
+  {
+   "prompt": "La ville de Lévis est située sur la rive sud",
+   "output": " du fleuve Saint-Laurent, à la",
+   "seconds": 0.21,
+   "tok_s": 37.5
+  },
+  {
+   "prompt": "Question: Why does ice float on water?\nAnswer:",
+   "output": " Ice floats on water because it is a",
+   "seconds": 0.21,
+   "tok_s": 37.9
+  },
+  {
+   "prompt": "def is_prime(n):\n",
+   "output": "    if n <= 1:\n       ",
+   "seconds": 0.2,
+   "tok_s": 39.5
+  },
+  {
+   "prompt": "Context: Bill Haslam's father is Jim Haslam.\nQuestion: Who is Bill Haslam's father?\nAnswer:",
+   "output": " Bill Haslam's father is Jim Haslam.",
+   "seconds": 0.21,
+   "tok_s": 37.9
+  },
+  {
+   "prompt": "Question: What is the capital of Canada?\nAnswer:",
+   "output": " OttawaThe first thing to do when",
+   "seconds": 0.21,
+   "tok_s": 38.6
+  }
+ ]
+}

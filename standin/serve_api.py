@@ -9,6 +9,9 @@ own repo for anything deeper). stdlib http.server, JSON, CORS open for the
 local demo. NOT hardened for the public internet — bind localhost.
 
   POST /turn   {"text": "...", "feedback": "..."?}   -> the turn record
+  POST /ask/feedback {"id": record id, "verdict": "right"|"wrong"?, "relation": "..."?, "asker": "..."?}
+               -> the asker on an ask record; a relation stated for a relation ask is an episode for the
+               skill library at night (cubbyllm/reasoning/skills.py)
                (reply, kind, register, emotion, state, route, task/learn)
   GET  /state  -> the full neurochemistry read (hormones, valence, arousal,
                emotion, receptor sensitivity) — the compass feed
@@ -238,6 +241,22 @@ def make_handler(brain):
                 self._send(404, {"error": "unknown path"})
 
         def do_POST(self):
+            if self.path == "/ask/feedback":             # the asker on one of the loop's records (AskLoop.feedback)
+                loop = getattr(brain, "ask_loop", None)
+                if loop is None:
+                    self._send(503, {"error": "no ask loop mounted: start serve_api with --ask"})
+                    return
+                try:
+                    n = int(self.headers.get("Content-Length", 0))
+                    req = json.loads(self.rfile.read(n) or b"{}")
+                    self._send(200, loop.feedback(str(req.get("id") or ""), verdict=req.get("verdict") or None,
+                                                  relation=req.get("relation") or None,
+                                                  asker=(str(req.get("asker")) if req.get("asker") else None)))
+                except ValueError as e:
+                    self._send(400, {"error": str(e)[:300]})
+                except Exception as e:
+                    self._send(500, {"error": str(e)[:300]})
+                return
             if self.path not in ("/turn", "/ask", "/pac/say"):
                 self._send(404, {"error": "unknown path"})
                 return
@@ -260,7 +279,8 @@ def make_handler(brain):
                     if loop is None:
                         self._send(503, {"error": "no ask loop mounted: start serve_api with --ask"})
                         return
-                    self._send(200, _json_safe(loop.ask(text, item=(str(req.get("item")) if req.get("item") else None), asker=(str(req.get("asker")) if req.get("asker") else None))))
+                    self._send(200, _json_safe(loop.ask(text, item=(str(req.get("item")) if req.get("item") else None), asker=(str(req.get("asker")) if req.get("asker") else None),
+                                                          choose=req.get("choose") or None)))
                     return
                 rec = brain.turn(text, feedback=req.get("feedback"))
                 rec.pop("raw", None)
@@ -280,6 +300,28 @@ def serve_http(brain, host: str = "127.0.0.1", port: int = 8765) -> ThreadingHTT
     print(f"CubbyServe API on http://{host}:{port}  (POST /turn, GET /state /worlds /health; the control panel at /panel, "
           f"its stream at /loop/stream)")
     return httpd
+
+
+def build_web(args):
+    """The web source behind the ask loop's source, or None when no search backend is configured
+    (standin/web_source.py). The reader is the local LFM base, on the CPU: the GPU is the emitter's."""
+    from web_source import WebSource, backend_from_env
+    backend = backend_from_env(args.web, args.searxng)
+    if backend is None:
+        return None
+    path = args.web_reader
+    if path == "auto":
+        cand = os.path.join(ROOT, "standin", "models", "LFM2.5-2.6B.Q4_K_M.gguf")
+        path = cand if os.path.exists(cand) else "off"
+    reader = None
+    if path and path != "off":
+        try:
+            import llama_cpp  # noqa: F401 -- the reader needs it; without it the web runs on the deterministic readers
+            from lfm_source import LfmReader
+            reader = LfmReader(path)
+        except ImportError:
+            print("  web reader off: llama_cpp is not installed", flush=True)
+    return WebSource(backend, reader=reader)
 
 
 def main():
@@ -314,6 +356,22 @@ def main():
                     help="mount the RSS date source for 'what happened in <date>' asks: headlines enter the "
                          "store as facts about the DATE, attributed to the publisher, through the same gate. "
                          "Only a `when` ask ever consults it.")
+    ap.add_argument("--web", choices=["auto", "brave", "searxng", "off"], default="auto",
+                    help="the web behind Wikidata for the ask loop: 'auto' = Brave when BRAVE_SEARCH_API_KEY is set, "
+                         "else SearXNG when --searxng / CUBBY_SEARXNG_URL names an instance, else off. A web fact is "
+                         "held until two independent sites state it")
+    ap.add_argument("--searxng", default=None, help="a SearXNG instance's base URL (JSON output enabled)")
+    ap.add_argument("--web-reader", default="auto",
+                    help="the local model that reads pages for the relation the walk needs: a GGUF path, 'auto' "
+                         "(the LFM base in standin/models when present) or 'off'")
+    _out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "standin", "data", "out")
+    ap.add_argument("--history", default=os.path.join(_out, "ask_history.jsonl"),
+                    help="append every ask record here (one JSON line each) for the nightly sleep cycle; '' = off")
+    ap.add_argument("--learned", default=os.path.join(_out, "sleep", "learned_facts.jsonl"),
+                    help="the sleep cycle's durable facts, loaded into the store at boot; '' = off")
+    ap.add_argument("--skills", default=os.path.join(_out, "sleep", "skills.jsonl"),
+                    help="the skill library's ledger (composition rules the sleep cycle adopted), read at boot for "
+                         "'how is B related to A?'; '' = none")
     args = ap.parse_args()
     if args.ask and not args.wiki:
         args.wiki = "auto"                               # the loop walks the wiki world
@@ -322,8 +380,19 @@ def main():
     if args.ask:
         from ask import AskLoop
         print(f"mounting the ask loop (source {args.ask}, lexicon on, news {'on' if args.news else 'off'}) ...", flush=True)
+        web = build_web(args) if args.web != "off" else None
         brain.ask_loop = AskLoop(brain.emitter, world=brain.worlds["wiki"], source=args.ask, lexicon=True,
-                                 max_new=args.ask_max_new, news="rss" if args.news else None)
+                                 max_new=args.ask_max_new, news="rss" if args.news else None,
+                                 history_path=args.history or None, web=web, skills=args.skills or None)
+        print("  web: " + (f"{web.backend.name} behind {args.ask}, reader {'the local model' if web.reader else 'off'}; "
+                           "a web fact is held until two independent sites state it" if web else
+                           "off (set BRAVE_SEARCH_API_KEY or --searxng to turn it on)"), flush=True)
+        if args.learned:
+            n = brain.ask_loop.load_learned(args.learned)
+            print(f"  {n} facts learned on earlier days, loaded from the sleep cycle's log", flush=True)
+        print(f"  skills: {len(brain.ask_loop.skills)} composition rules for 'how is B related to A?'", flush=True)
+        if args.history:
+            print(f"  every record appended to {args.history} (the sleep cycle's input)", flush=True)
         print(f"  POST /ask {{\"text\": ...}} -> the loop's record; watch it at http://{args.host}:{args.port}/panel", flush=True)
     if args.model_appraisal:
         from perception import ModelAppraiser

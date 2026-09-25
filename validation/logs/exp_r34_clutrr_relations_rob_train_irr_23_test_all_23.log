@@ -1,0 +1,42 @@
+CLUTRR rob_train_irr_23_test_all_23: train 8079, test 444; convention forward 800/800
+day 1: 0 relation asks refused with gold ({'unparseable': 8079}); hops {}
+night (all train): 0 rules adopted in 1 rounds from 0 episodes, 0 retired; rejected {} (0.1s)
+night (2-hop train only): 0 rules from 0 episodes; rejected {} (0.1s)
+shuffled library: 0/0 conclusions moved
+
+day 2: 100 test questions; by depth {3: 100}
+[rules] 100 questions, 0 VM calls, 0.0s
+[pairs_only] 100 questions, 0 VM calls, 0.0s
+[null] 100 questions, 0 VM calls, 0.0s
+[shuffled] 100 questions, 0 VM calls, 0.0s
+
+rules -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       3    100         0       100       0        0
+     all    100         0       100       0        0
+     >=4      0         0         0       0        0   <- depths no training record reaches
+   refusals: {'no_rule': 100}
+
+pairs_only -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       3    100         0       100       0        0
+     all    100         0       100       0        0
+     >=4      0         0         0       0        0   <- depths no training record reaches
+   refusals: {'no_rule': 100}
+
+null -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       3    100         0       100       0        0
+     all    100         0       100       0        0
+     >=4      0         0         0       0        0   <- depths no training record reaches
+   refusals: {'no_rule': 100}
+
+shuffled -- correct / refused / wrong by depth
+   depth      n   correct   refused   WRONG   BREACH
+       3    100         0       100       0        0
+     all    100         0       100       0        0
+     >=4      0         0         0       0        0   <- depths no training record reaches
+   refusals: {'no_rule': 100}
+
+VERDICT: INSTRUMENT BLIND -- 0 wrong in rules + pairs_only, 0 breaches in null, 0 wrong in shuffled (the instrument sees wrongs: NO)
+library: 0 rules; total 0.7s, 0 VM calls

@@ -1,0 +1,25 @@
+{
+ "relation": {
+  "spoken_correct": 77,
+  "refused": 3
+ },
+ "bind": {
+  "spoken_correct": 21,
+  "refused": 2
+ },
+ "counter": {
+  "spoken_correct": 73,
+  "refused": 7
+ },
+ "absent": {
+  "spoken_correct": 64
+ },
+ "profile": {
+  "refused": 9,
+  "spoken_correct": 71
+ },
+ "bind_t": {
+  "spoken_correct": 74,
+  "refused": 6
+ }
+}

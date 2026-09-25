@@ -952,6 +952,13 @@ and Jason is Scott's **grand*father***. Read the other way every answer in the s
 inverts, and the harness would report a wall of WRONG that belongs to the loader. It is
 written down here because getting it backwards is silent.
 
+**CLUTRR's own question is served (2026-09-24, `exp_r34_clutrr_relations`).** The kinship algebra the registry
+lacked is now LEARNED, not written: the skill library (`cubbyllm/reasoning/skills.py`) mines composition rules
+from the train split in one sleep night (109 rules, zero counterexamples across the whole record) and the loop
+composes every path between the two people, certified in the VM. Test split, correct / refused / wrong:
+**827 / 319 / 0**; at 4-10 hops **746 / 257 / 0**. Details and the threshold finding (206 refusals are true
+bindings just under the served two-binding tau) in `docs/research/2026-09-24-skill-library.md`.
+
 ### ProofWriter is not a drop-in, and the reason is the finding
 
 CLUTRR composes *relations*; ProofWriter applies *rules* — "if something sees the mouse

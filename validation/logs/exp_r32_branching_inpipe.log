@@ -1,0 +1,32 @@
+CLUTRR fork records (unique gold path, an ambiguous (relation, subject)): 65
+
+arm         spoke  correct  WRONG  refused   VM calls   wall
+refuse         12       12      0       53         48   0.0s
+closed         44       44      0       21        439   0.2s
+open           12       12      0       53        439   0.2s
+ask            32       32      0        2        196   0.1s
+  closed refusals: blocked:vm 3, divergent 18
+  open refusals: blocked:pruned 32, blocked:vm 3, divergent 18
+  ask: offered 34 (rounds 1: 34), not offered 19 (a last-hop split), gold not among the choices 0
+
+id             hops   refuse                    closed                    open                       ask
+------------------------------------------------------------------------------------------------------------------------
+1506b09f-e50      2   refused (ambiguous_hop)   refused (divergent)       refused (divergent)        not offered
+b27ca800-2d5      2   refused (ambiguous_hop)   refused (divergent)       refused (divergent)        not offered
+9d897a07-9b2      2   refused (ambiguous_hop)   spoke (correct)           refused (blocked:pruned)   spoke (correct) after 1 pick
+8586a1c0-67f      2   refused (ambiguous_hop)   refused (divergent)       refused (divergent)        not offered
+2016c122-6eb      3   refused (ambiguous_hop)   refused (divergent)       refused (divergent)        not offered
+f03d7f4e-ace      2   refused (ambiguous_hop)   spoke (correct)           refused (blocked:pruned)   spoke (correct) after 1 pick
+6bbb569d-df0      3   refused (ambiguous_hop)   spoke (correct)           refused (blocked:pruned)   spoke (correct) after 1 pick
+886d20c3-a12      3   refused (ambiguous_hop)   refused (divergent)       refused (divergent)        not offered
+fde3dfc2-cb6      4   refused (ambiguous_hop)   spoke (correct)           refused (blocked:pruned)   spoke (correct) after 1 pick
+169676f8-783      3   refused (ambiguous_hop)   refused (divergent)       refused (divergent)        not offered
+c688e19a-878      2   refused (ambiguous_hop)   refused (divergent)       refused (divergent)        not offered
+46c6b126-e26      3   refused (ambiguous_hop)   spoke (correct)           refused (blocked:pruned)   spoke (correct) after 1 pick
+64b5beb1-43a      4   refused (ambiguous_hop)   spoke (correct)           refused (blocked:pruned)   spoke (correct) after 1 pick
+cd46ff5c-ae9      4   refused (ambiguous_hop)   spoke (correct)           refused (blocked:pruned)   spoke (correct) after 1 pick
+570608d2-2c1      3   refused (ambiguous_hop)   spoke (correct)           refused (blocked:pruned)   spoke (correct) after 1 pick
+93c2b9fb-e6b      4   refused (ambiguous_hop)   spoke (correct)           refused (blocked:pruned)   spoke (correct) after 1 pick
+... 49 more
+
+VERDICT: survives; 0 wrong in every arm. closed reproduces r31 (44/65 spoken); open speaks 12/65, and one pick by the asker brings it to 44/65

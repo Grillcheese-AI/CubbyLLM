@@ -75,8 +75,24 @@ def strip_fences(s: str) -> str:
     return s.strip() + "\n"
 
 
+_HELPERS = None
+
+
+def helper_library():
+    """The skill library whose CubeLang helpers a program may call (cubbyllm/reasoning/helpers.py):
+    `$CUBBY_SKILLS`, else the sleep cycle's ledger. Read once."""
+    global _HELPERS
+    if _HELPERS is None:
+        from cubbyllm.reasoning.skills import Library
+        path = os.environ.get("CUBBY_SKILLS") or os.path.join(ROOT, "standin", "data", "out", "sleep", "skills.jsonl")
+        _HELPERS = Library(path if os.path.exists(path) else None)
+    return _HELPERS
+
+
 def run_vm(source: str):
     from cubbyllm.bridges import cubelang_client as cc
+    from cubbyllm.reasoning.helpers import with_helpers
+    source = with_helpers(source, helper_library())   # a program that calls an adopted helper gets its definition
     try:
         out = cc.run_program_proto(source, fn=answer_fn(source))   # chains answer from their last hop
         return bool(out.get("ok")), out.get("result"), None

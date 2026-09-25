@@ -1,0 +1,22 @@
+{
+  "source": "nemotron_qa (Nemotron-CC web documents with synthetic Q/A)",
+  "docs": 120000,
+  "seed": 0,
+  "max_len": 1024,
+  "funnel": {
+    "docs": 120000,
+    "answer": 104210,
+    "absent": 59171,
+    "absent_unsafe": 45039,
+    "ungrounded": 15786,
+    "no_qa": 4
+  },
+  "families": {
+    "passage_web": 104210,
+    "passage_web_absent": 59171
+  },
+  "splits": {
+    "train": 146927,
+    "held": 16454
+  }
+}

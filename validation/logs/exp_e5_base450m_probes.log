@@ -1,0 +1,63 @@
+exp_e5 base450m probes | grilly2 on the local GPU | load 7s | base450m_final.pt step 21103
+
+0. parity: grilly2 vs this repo's torch model on CPU, same weights
+  prompt, 600 tokens: max |logit diff| 1.287e-04 (scale 31.9, 4.0e-06 relative); per-position max, median 5.34e-05; argmax agrees at 1.0000 of positions
+  decode, 25 positions after a 40-token prefill: max |logit diff| 4.482e-05 (1.6e-06 relative); argmax agrees at 1.0000
+
+A. copy by distance (random tokens 1000..29999; loss on the repeat, nats)
+    n  dist    arm    loss      q1      q4   p>.5   note
+   16    15 repeat   1.938   3.966   0.460  0.475   inside window
+   64    63 repeat   1.332   1.707   0.886  0.738   inside window
+  128   127 repeat   1.055   1.513   0.993  0.789   inside window
+  256   255 repeat   1.109   1.401   0.972  0.791   inside window
+  384   383 repeat   1.193   1.461   0.962  0.773   inside window
+  512   511 repeat   1.184   1.505   0.963  0.767   training probe (window edge)
+  600   599 repeat  12.427  12.392  12.508  0.000   beyond window
+  800   799 repeat  12.466  12.477  12.506  0.000   beyond window
+   64    63   null  12.576  12.699  12.478  0.000   fresh tokens, nothing to copy
+  512   511   null  12.502  12.510  12.578  0.000   fresh tokens, nothing to copy
+  (uniform over the 29,000 probe ids = 10.28; p>.5 = share of repeat tokens given more than half the probability)
+  natural EN prose    74 tok: first copy 3.348, second copy 0.123
+  natural FR prose    62 tok: first copy 4.400, second copy 0.197
+  natural code        94 tok: first copy 1.155, second copy 0.061
+
+B. context vs memory (248 items, 4 candidates each, 70s)
+  bound    n= 160  {"other_in_context": 74, "correct": 83, "outside": 3}   (asked person in context)
+  null     n=  40  {"copied_in_context": 37, "outside": 3}   (asked person NOT in context)
+  prior    n=  24  {"memory": 24}   (real capitals, irrelevant context)
+  counter  n=  24  {"memory": 22, "context": 2}   (real capitals, context states another city)
+    bound, asked person first: 39/80 correct
+    bound, asked person second: 44/80 correct
+    bound, born  : 22/40 correct
+    bound, job   : 23/40 correct
+    bound, color : 22/40 correct
+    bound, pet   : 16/40 correct
+  counter, on the 24 capitals the weights know: {"memory": 22, "context": 2}
+  few-shot prefix:
+Context: Dario Zelzelley was born in Seoul. Vesna Phinkorwick was born in Lima.
+Question: Where was Vesna Phinkorwick born?
+Answer: Lima
+
+Context: Kaija Bralauine works as a pilot. Ulric Oskdunard works as a teacher.
+Question: What does Kaija Bralauine do for a living?
+Answer: pilot
+
+Context: Mireille Dunphinard has a dog named Ziggy. Rhea Velsabson has a dog named Otis.
+Question: What is the name of Rhea Velsabson's dog?
+Answer: Otis
+
+
+
+C. greedy samples (repetition penalty 1.1), decode path
+  [1.03s, 38.9 tok/s] 'The history of Quebec City begins'
+     -> ' with the founding of the city in 1534. The first permanent English settlement was established by the French in 1534, and it grew to become a major port for trade between the Atlantic and Pacific Oceans.\n'
+  [1.0s, 40.0 tok/s] 'La ville de Lévis est située sur la rive sud'
+     -> " du fleuve Saint-Laurent, à la confluence de deux ruisseaux, le ruisseau de la Rivière-Saint-Jean et le ruisseau de la Rivière-Saint-Jean.\nL'altitude de la commune"
+  [1.0s, 40.0 tok/s] 'Question: Why does ice float on water?\nAnswer:'
+     -> ' Ice floats on water because it is a liquid.The first thing that comes to mind when you think of the word "scientist" is "scientist." The word scientist is used in many'
+  [1.01s, 39.5 tok/s] 'def is_prime(n):\n'
+     -> '    if n <= 1:\n        return False\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0 or n'
+  [1.01s, 39.5 tok/s] "Context: Bill Haslam's father is Jim Haslam.\nQuestion: Who is Bill Haslam's father?\nAnswer:"
+     -> " Bill Haslam's father is Jim Haslam.\nQuestion: What is Bill Haslam's profession?\nAnswer: Bill Haslam's profession is a journalist and writer.\nQuestion: What is Bill Haslam's profession"
+  [1.04s, 38.5 tok/s] 'Question: What is the capital of Canada?\nAnswer:'
+     -> " OttawaThe first thing to do when you're trying to figure out how to make a new car is to find out what's going on in your car. You can do this by looking at the"

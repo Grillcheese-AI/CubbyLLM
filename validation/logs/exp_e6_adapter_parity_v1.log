@@ -1,0 +1,3 @@
+prompt 0 (50 tokens): torch vs grilly2 with the adapter max |dlogit| 6.87e-05 (scale 26.6); the adapter's own effect 10.59; argmax agrees at 1.0000
+prompt 1 (47 tokens): torch vs grilly2 with the adapter max |dlogit| 9.20e-05 (scale 34.2); the adapter's own effect 10.04; argmax agrees at 1.0000
+prompt 2 (44 tokens): torch vs grilly2 with the adapter max |dlogit| 1.09e-04 (scale 30.6); the adapter's own effect 14.70; argmax agrees at 1.0000
