@@ -24,7 +24,9 @@ Families and their builders (all under standin/data/):
 
 `--mix v2.1` (2026-09-25): talk_v2 held the fact families at 11% of its mix and lost bind, absent and profile
 on the H-E6 gate; v2.1 brings the facts-block form back to about half of it -- ground_sft twice, the hdc and
-event families -- and draws fewer passages and chats. `--mix v2` rebuilds talk_v2 exactly.
+event families -- and draws fewer passages and chats. `--mix v2.2` is v2.1 with the facts-block absent records
+drawn up (hist_absent 15k, every hdc fact_absent), the one change H-E6's last missed bar asks for.
+`--mix v2` rebuilds talk_v2 exactly.
 """
 from __future__ import annotations
 
@@ -82,11 +84,16 @@ MIX_V21 = {
     ("explicit_sft.jsonl", "story_open"): None,
     ("explicit_sft.jsonl", "story_gated"): None,
 }
+# v2.2 (2026-09-25): v2.1 missed H-E6's absent bar by one answer (57/64), its misses a relation stitched out of
+# other lines; v2.2 changes that and nothing else -- the facts-block absent records the history graph and the hdc set
+# still had unused (hist_absent 5k -> 15k of 46k, fact_absent 8k -> all), so the gate reads one change
+MIX_V22 = dict(MIX_V21)
+MIX_V22.update({("history_sft.jsonl", "hist_absent"): 15000, ("hdc_sft.jsonl", "fact_absent"): None})
 # train records written more than once (a second pass inside one epoch); held records are never repeated
-REPEAT = {"v2": {}, "v2.1": {("ground_sft.jsonl", None): 2}}
+REPEAT = {"v2": {}, "v2.1": {("ground_sft.jsonl", None): 2}, "v2.2": {("ground_sft.jsonl", None): 2}}
 # held records kept per family (seeded sample) where a file's held side runs to tens of thousands; others keep all
-HELD_CAP = {"v2": {}, "v2.1": {"history_sft.jsonl": 1000}}
-MIXES = {"v2": MIX, "v2.1": MIX_V21}
+HELD_CAP = {"v2": {}, "v2.1": {"history_sft.jsonl": 1000}, "v2.2": {"history_sft.jsonl": 1000}}
+MIXES = {"v2": MIX, "v2.1": MIX_V21, "v2.2": MIX_V22}
 
 
 def main():

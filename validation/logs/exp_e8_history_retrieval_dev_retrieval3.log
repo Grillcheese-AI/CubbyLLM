@@ -1,0 +1,63 @@
+exp_e8 history retrieval | 268 dev questions | graph 940,897 events (load 12s, index 15s, 948,391 names) | min_score 0.6 margin 0.1
+lookup: median 6 ms, max 34 ms
+
+[reworded, dev split] 128 questions
+  kind          n   top1   top5  clear   kind   line | correct wrong refused asked none unparsed
+  cause        20 100.0% 100.0%  95.0% 100.0%  95.0% |    0.0%     0       0     0    0        0
+  effect       20  95.0% 100.0% 100.0% 100.0%  95.0% |    0.0%     0       0     0    0        0
+  when         19  94.7% 100.0%  84.2% 100.0%  84.2% |    0.0%     0       0     0    0        0
+  where        18  72.2%  72.2%  77.8% 100.0%  72.2% |    0.0%     0       0     0    0        0
+  who          11 100.0% 100.0% 100.0% 100.0% 100.0% |    0.0%     0       0     0    0        0
+  downstream   20  75.0%  80.0%  65.0% 100.0%  65.0% |    0.0%     0       0     0    0        0
+  absent       20 100.0% 100.0% 100.0% 100.0% 100.0% |    0.0%     0       0     0    0        0
+  ALL         128  90.6%  93.0%  88.3% 100.0%  86.7% |    0.0%     0       0     0    0        0
+
+[named, dev split] 140 questions
+  kind          n   top1   top5  clear   kind   line | correct wrong refused asked none unparsed
+  cause        20 100.0% 100.0% 100.0% 100.0% 100.0% |    0.0%     0       0     0    0        0
+  effect       20 100.0% 100.0%  95.0% 100.0%  95.0% |    0.0%     0       0     0    0        0
+  when         20  95.0% 100.0%  95.0% 100.0%  95.0% |    0.0%     0       0     0    0        0
+  where        20  95.0% 100.0%  95.0% 100.0%  95.0% |    0.0%     0       0     0    0        0
+  who          20 100.0% 100.0% 100.0% 100.0% 100.0% |    0.0%     0       0     0    0        0
+  downstream   20  90.0% 100.0%  85.0% 100.0%  85.0% |    0.0%     0       0     0    0        0
+  absent       20 100.0% 100.0%  95.0% 100.0%  95.0% |    0.0%     0       0     0    0        0
+  ALL         140  97.1% 100.0%  95.0% 100.0%  95.0% |    0.0%     0       0     0    0        0
+
+[reworded without the event's name, dev split] 94 questions
+  kind          n   top1   top5  clear   kind   line | correct wrong refused asked none unparsed
+  cause        14 100.0% 100.0%  92.9% 100.0%  92.9% |    0.0%     0       0     0    0        0
+  effect        8  87.5% 100.0% 100.0% 100.0%  87.5% |    0.0%     0       0     0    0        0
+  when         16 100.0% 100.0%  87.5% 100.0%  87.5% |    0.0%     0       0     0    0        0
+  where        17  70.6%  70.6%  76.5% 100.0%  70.6% |    0.0%     0       0     0    0        0
+  who           5 100.0% 100.0% 100.0% 100.0% 100.0% |    0.0%     0       0     0    0        0
+  downstream   19  73.7%  78.9%  63.2% 100.0%  63.2% |    0.0%     0       0     0    0        0
+  absent       15 100.0% 100.0% 100.0% 100.0% 100.0% |    0.0%     0       0     0    0        0
+  ALL          94  88.3%  90.4%  85.1% 100.0%  83.0% |    0.0%     0       0     0    0        0
+
+gate (reworded, dev): top1 >= 90% PASS; line >= 90% MISS; kill (top5 < 50%): does not fire
+
+missed (gold not top1), first 12:
+  [effect/reworded] What were the consequences of the late thirteenth-century drought in Chaco Canyon for the Anasazi?
+     gold: Drought in the late thirteenth century | got: Chaco Canyon Anasazi drought | top: ['Chaco Canyon Anasazi drought', 'Anasazi Migration from Chaco Canyon', 'Drought in the late thirteenth century']
+  [when/reworded] When did Giovanni Pico della Mirandola produce his work Pico's Heptaplus?
+     gold: Pico's Heptaplus | got: ask | top: ['Death of Giovanni Pico della Mirandola', "Pico's Heptaplus", 'Death of Pico della Mirandola']
+  [where/reworded] Around the early 8th century BC, Greek colonists established settlements on the Italian peninsula; which specific areas did they found colonies in?
+     gold: Greeks establishing colonies in Italy | got: Greek colonization of the Italian peninsula | top: ['Greek colonization of the Italian peninsula', 'Founding of Greek Colonies', 'Colonization by Greek Settlements']
+  [where/reworded] In 1208, a ruler from Khwārazm launched a military campaign against the Qara Khitai; where did this conflict occur?
+     gold: Khwārazmshāh's campaign against Qara Khitay | got: none | top: ['Conflicts of 1296 and 1297', 'Conflict of 1277', 'Conflict of 1354']
+  [where/reworded] In the early 12th century, a Byzantine emperor and the Pope called for a military expedition to the Holy Land; where was this appeal made?
+     gold: Alexios I Komnenos' call for the First Crusade | got: none | top: ['Expedition to the Holy Land', 'Holy Land', 'German Expedition to the Holy Land']
+  [where/reworded] In the mid-4th century BC, Hephaestion and Greek mercenaries founded a settlement on a river in the Indian subcontinent; where was this camp established?
+     gold: Founding of the unnamed settlement on the Akesines-Chenab | got: none | top: ['Greek settlement in Egypt as mercenaries', 'Establishment of Greek settlement at Marseilles', 'Massacre of Greek Mercenaries']
+  [where/reworded] In 1914, a large German army force and a governor entered a major European capital; where did this advance occur?
+     gold: German Advance through Brussels | got: none | top: ['The German Army', 'Germans Enter Paris', 'H.I.G. Capital European Expansion']
+  [downstream/reworded] What if the NKVD's 1942 anti-spy operations on the Stalingrad Front had never been conducted?
+     gold: NKVD Special Departments rooting out spies and traitors | got: none | top: ['Operation K', 'Battle of Stalingrad', 'Stalingrad battle']
+  [downstream/reworded] If the 1601 clash near Cork involving Spain, the English, and Hugh O'Neill had never occurred, how might Irish history have unfolded differently?
+     gold: Battle of Kinsale | got: none | top: ["Death of Hugh O'Neill", "Death of Hugh L. O'Neill", "Hugh O'Neill Declared The O'Neill"]
+  [downstream/reworded] How might the ancient Greek-Persian conflicts at Artemisium and Thermopylae have altered the course of Western civilization if they had never taken place?
+     gold: Battles at Artemisium, Thermopylae, Salamis, Plataea and Mykale | got: none | top: ['Persian Conflicts', 'Greek Defense at Thermopylae and Artemisium', 'Greek Fleet at Thermopylae and Artemisium']
+  [downstream/reworded] If the 8th-century Roman document granting the Pope temporal power had never been created, how would the relationship between church and state have developed differently?
+     gold: Donation of Constantine | got: none | top: ["Appeal to Restore Pope's Temporal Power", 'Document of May 7, 1453', 'Document of May 8, 1449']
+  [downstream/reworded] If the speculative 2007 market bubble had never formed, how might the global financial system and subsequent economic crises have been different?
+     gold: Tulip bubble | got: none | top: ['Housing bubble', 'Tulip bubble', 'On the Market']

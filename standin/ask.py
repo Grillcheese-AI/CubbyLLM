@@ -382,9 +382,10 @@ def value_check(answer: str, returned: list[str], others: list[str], entity: str
     if not any(has_value(answer, v) for v in returned):
         problems.append("returned value missing")
     rest = f" {_vnorm(answer)} "
-    for v in [*returned, entity]:                        # 'Ranma12' inside the returned 'Ranma12 New Anime2024', or
-        if _vnorm(v):                                    # 'String Quintet' inside the asked 'String Quintet Schubert',
-            rest = rest.replace(f" {_vnorm(v)} ", " ")  # is that value or that name, not another one
+    for v in sorted([*returned, entity], key=lambda s: -len(_vnorm(s))):   # 'Ranma12' inside the returned 'Ranma12
+        if _vnorm(v):                                    # New Anime2024', or 'String Quintet' inside the asked 'String
+            rest = rest.replace(f" {_vnorm(v)} ", " ")  # Quintet Schubert', is that value or that name, not another
+    # one -- the longest first, so a returned '150' does not cut the asked 'Teotihuacan expansion by A.D. 150' apart
     keep = {_vnorm(v) for v in returned}
     for o in others:
         n = _vnorm(o)

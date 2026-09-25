@@ -1,0 +1,18 @@
+{
+ "dialogues": "e9_dialogues.jsonl",
+ "sha256": "51c549d7a58365670d6f485a8148e3dd6ceac7f240cdea3331113038a1b49651",
+ "graph": "history_graph_v21.jsonl",
+ "per_type": 80,
+ "dev": 20,
+ "seed": 0,
+ "counts": {
+  "dev:follow": 20,
+  "test:follow": 60,
+  "dev:description": 20,
+  "test:description": 60,
+  "dev:switch": 20,
+  "test:switch": 60,
+  "dev:clarify": 20,
+  "test:clarify": 60
+ }
+}

@@ -1,0 +1,36 @@
+exp_e9 context follow-ups | graph 940,897 events (24s)
+dialogues: {'follow': 80, 'description': 80, 'switch': 80, 'clarify': 80} (clarify pairs available: 1071)
+80 dev dialogues, 220 turns
+turns: 220 per arm, 1s
+
+[with the context graph, dev split]
+  role            n resolved | correct wrong refused asked none unparsed
+  first          80    96.2% |   96.2%     0       0     2    1        0
+  pronoun        60    96.7% |   96.7%     0       0     0    2        0
+  description    20   100.0% |  100.0%     0       0     0    0        0
+  switched       20    90.0% |   90.0%     0       0     0    2        0
+  clarify_ask    20     0.0% |    0.0%     0       0    20    0        0
+  clarify_pick   20    85.0% |   85.0%     0       0     0    0        3
+  FOLLOW-UPS    100    96.0% |   96.0%     0       0     0    4        0
+
+[each turn alone, dev split]
+  role            n resolved | correct wrong refused asked none unparsed
+  first          80    96.2% |   96.2%     0       0     2    1        0
+  pronoun        60     0.0% |    0.0%     0       0     0   42       18
+  description    20     0.0% |    0.0%     0       0    13    7        0
+  switched       20     0.0% |    0.0%     0       0     0   15        5
+  clarify_ask    20     0.0% |    0.0%     0       0    20    0        0
+  clarify_pick   20     0.0% |    0.0%     0       0     0    0       20
+  FOLLOW-UPS    100     0.0% |    0.0%     0       0    13   64       23
+
+clarify: host asked on 20 of 20 first turns; the pick bound to the chosen event 85.0% of those
+gate (dev): resolved >= 95% PASS; switched resolved >= 95% MISS; bind >= 90% MISS; kill (wrong > 2%): does not fire
+
+context arm, follow-ups not resolved to the gold event, first 7:
+  [follow/pronoun] Where was that?  gold: Sack of Rome by Gauls | got: none (none)
+  [follow/pronoun] When did it happen?  gold: Sack of Rome by Gauls | got: none (none)
+  [switch/switched] Where did it take place?  gold: July Stock Trading Volume Largest Since 1933 | got: none (none)
+  [switch/switched] Where did it take place?  gold: Porphyry's Against the Christians | got: none (none)
+  [clarify/clarify_pick] The one in 1550 BC.  gold: Defeat of the Hyksos by Kamose | got: unparsed (none)
+  [clarify/clarify_pick] The one in 585 BC.  gold: Battle of the Halys | got: unparsed (none)
+  [clarify/clarify_pick] The one in 324.  gold: Mutiny at Opis | got: unparsed (none)

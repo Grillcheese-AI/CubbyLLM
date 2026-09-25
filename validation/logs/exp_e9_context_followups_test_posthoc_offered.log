@@ -1,0 +1,37 @@
+exp_e9 context follow-ups | graph 940,897 events (24s)
+240 test dialogues, 660 turns
+turns: 660 per arm, 5s
+
+[with the context graph, test split]
+  role            n resolved | correct wrong refused asked none unparsed
+  first         240    96.7% |   96.7%     0       0     8    0        0
+  pronoun       180    97.2% |   97.2%     0       0     5    0        0
+  description    60    95.0% |   95.0%     0       0     3    0        0
+  switched       60    98.3% |   98.3%     0       0     1    0        0
+  clarify_ask    60     0.0% |    0.0%     0       0    60    0        0
+  clarify_pick   60   100.0% |  100.0%     0       0     0    0        0
+  FOLLOW-UPS    300    97.0% |   97.0%     0       0     9    0        0
+
+[each turn alone, test split]
+  role            n resolved | correct wrong refused asked none unparsed
+  first         240    96.7% |   96.7%     0       0     8    0        0
+  pronoun       180     0.0% |    0.0%     0       0     0  120       60
+  description    60     0.0% |    0.0%     7       0    49    4        0
+  switched       60     0.0% |    0.0%     0       0     0   42       18
+  clarify_ask    60     0.0% |    0.0%     0       0    60    0        0
+  clarify_pick   60     0.0% |    0.0%     0       0     0    0       60
+  FOLLOW-UPS    300     0.0% |    0.0%     7       0    49  166       78
+
+clarify: host asked on 60 of 60 first turns; the pick bound to the chosen event 100.0% of those
+gate (test): resolved >= 95% PASS; switched resolved >= 95% PASS; bind >= 90% PASS; kill (wrong > 2%): does not fire
+
+context arm, follow-ups not resolved to the gold event, first 9:
+  [follow/pronoun] Who?  gold: Attack on Tortosa | got: ask (context)
+  [follow/pronoun] When did it happen?  gold: Attack on Tortosa | got: ask (context)
+  [description/description] Where did the death take place?  gold: Death of Necho I | got: ask (context)
+  [description/description] Who took part in the battle?  gold: Sham Battle at Peekskill | got: ask (context)
+  [description/description] Who took part in the death?  gold: Hamilcar's death | got: ask (context)
+  [switch/switched] Where did it take place?  gold: New York Knicks Defeat Portland Trail Blazers | got: ask (context)
+  [switch/pronoun] Where was that?  gold: Audience with the Pope | got: ask (context)
+  [switch/pronoun] When was that?  gold: World 600 Stock Car Race | got: ask (context)
+  [switch/pronoun] Who took part in it?  gold: St Anselm's Ontological Argument | got: ask (context)

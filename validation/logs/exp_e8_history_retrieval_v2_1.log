@@ -1,0 +1,84 @@
+exp_e8 history retrieval | 807 test questions | graph 940,897 events (load 14s, index 11s, 948,391 names) | min_score 0.6 margin 0.1
+lookup: median 4 ms, max 52 ms
+adapter: step 6346 r=16 alpha=32.0
+talk: 807 questions, 413s
+
+[reworded, test split] 387 questions
+  kind          n   top1   top5  clear   kind   line | correct wrong refused asked none unparsed
+  cause        60  93.3%  98.3%  73.3%  86.7%  68.3% |   68.3%     0       3     4    4        8
+  effect       60  88.3%  93.3%  73.3%  90.0%  63.3% |   66.7%     2       2     2    8        6
+  when         59  91.5%  96.6%  69.5% 100.0%  69.5% |   69.5%     0       0     5   13        0
+  where        48  72.9%  81.2%  64.6% 100.0%  64.6% |   64.6%     0       0     2   15        0
+  who          40  70.0%  75.0%  57.5%  97.5%  55.0% |   52.5%     1       1     1   15        1
+  downstream   60  45.0%  50.0%  38.3%  75.0%  15.0% |   18.3%     1      11     6   16       15
+  absent       60  86.7%  98.3%  76.7%  81.7%  71.7% |   75.0%     0       1     1    2       11
+  ALL         387  78.8%  85.3%  65.1%  89.4%  58.1% |   59.4%     4      18    21   73       41
+
+[named, test split] 420 questions
+  kind          n   top1   top5  clear   kind   line | correct wrong refused asked none unparsed
+  cause        60  95.0% 100.0%  86.7% 100.0%  86.7% |   83.3%     0       2     8    0        0
+  effect       60  96.7% 100.0%  88.3% 100.0%  88.3% |   85.0%     0       2     7    0        0
+  when         60  96.7% 100.0%  96.7% 100.0%  96.7% |   96.7%     0       0     2    0        0
+  where        60  98.3% 100.0%  96.7% 100.0%  96.7% |   93.3%     0       2     1    1        0
+  who          60 100.0% 100.0%  98.3% 100.0%  98.3% |   95.0%     0       2     1    0        0
+  downstream   60 100.0% 100.0%  90.0% 100.0%  90.0% |   81.7%     0       5     6    0        0
+  absent       60  96.7% 100.0%  98.3% 100.0%  95.0% |   96.7%     0       1     1    0        0
+  ALL         420  97.6% 100.0%  93.6% 100.0%  93.1% |   90.2%     0      14    26    1        0
+
+[reworded without the event's name, test split] 314 questions
+  kind          n   top1   top5  clear   kind   line | correct wrong refused asked none unparsed
+  cause        41  90.2%  97.6%  63.4%  82.9%  58.5% |   58.5%     0       2     4    4        7
+  effect       46  84.8%  91.3%  71.7%  89.1%  58.7% |   65.2%     2       1     1    7        5
+  when         50  90.0%  96.0%  66.0% 100.0%  66.0% |   66.0%     0       0     5   12        0
+  where        45  71.1%  80.0%  64.4% 100.0%  64.4% |   64.4%     0       0     1   15        0
+  who          34  64.7%  70.6%  50.0%  97.1%  47.1% |   44.1%     1       1     1   15        1
+  downstream   55  40.0%  45.5%  36.4%  74.5%  10.9% |   14.5%     1      11     5   16       14
+  absent       43  83.7%  97.7%  69.8%  76.7%  65.1% |   67.4%     0       1     1    2       10
+  ALL         314  74.2%  81.8%  59.9%  88.2%  51.9% |   53.5%     4      16    18   71       37
+
+gate (reworded, test): top1 >= 90% MISS; line >= 90% MISS; correct >= 80% MISS; wrong = 0 MISS; kill (top5 < 50%): does not fire
+
+wrong, first 4:
+  [effect/reworded] What resulted from the execution of the Numidian king Jugurtha at the Tullianum prison in Rome around 105 BC?
+     gold: Death of Jugurtha | got: Victory over Numidian king Jugurtha | top: ['Victory over Numidian king Jugurtha', 'Death of Jugurtha', 'War with Jugurtha']
+     said: The Victory over Numidian king Jugurtha caused the Campaign against the Teutons.
+  [effect/reworded] What were the results of the Assyrian campaign led by Sennacherib against Judah in 701 BC?
+     gold: Assyrian attack led by Sennacherib | got: Sennacherib's Assyrian campaign against Judah (701 BCE) | top: ["Sennacherib's Assyrian campaign against Judah (701 BCE)", "Sennacherib's campaign against Judah", "Sennacherib's campaign to Judah"]
+     said: Sennacherib's campaign against Judah (701 BCE) caused Hezekiah's Tribute to Sennacherib.
+  [who/reworded] Who responded to Philip's death in Athens in 336 BC?
+     gold: Athenian Response to Philip's Death | got: Philip's death | top: ["Philip's death", 'Death of Philip', 'Death of Philip II']
+     said: The participants in Philip's death were Philip of Macedon, Alexander, Philip of Macedon, Alexander and Philip of Macedon.
+  [downstream/reworded] What would have been the diplomatic and economic consequences for Great Britain and France if Pitt had never demanded Newfoundland fishery rights in 1761?
+     gold: Pitt's Demand for Newfoundland Fishery Rights | got: Pitt's Resignation | top: ["Pitt's Resignation", "Pitt's Decline from Power", 'Death of Pitt']
+     said: Pitt's Resignation caused the Declaration of War on Spain, and the Conquest of Havana was part of War with Spain; all of this would change without it.
+
+missed (gold not top1), first 12:
+  [cause/reworded] What led to Achilles' death at the Scæan gate in Troy?
+     gold: Death of Achilles | got: Achilles' Death at Troy | top: ["Achilles' Death at Troy", "Achilles' Death", 'Death of Achilles']
+     said: The facts don't say.
+  [cause/reworded] What led Joseph Goebbels and his family to take their own lives in 1945?
+     gold: Goebbels and Family Suicide | got: unparsed | top: ['Death of Joseph Goebbels', 'Goebbels and Family Suicide', 'Hitler tea with Goebbels family']
+  [cause/reworded] What caused the prediction of the Destruction of the Temple by Jesus in 70?
+     gold: Destruction of the Temple predicted | got: Jesus' prediction about the destruction of the temple | top: ["Jesus' prediction about the destruction of the temple", 'Destruction of the Temple predicted', 'Destruction of the Temple']
+     said: The facts don't say.
+  [cause/reworded] What led the Jews in Judea to rebel against Antiochus IV Epiphanes around 175 BC?
+     gold: Maccabean Rebellion | got: unparsed | top: ["Antiochus IV Epiphanes' rule over Judea", 'Reign of Antiochus IV Epiphanes', "Antiochus IV Epiphanes' Reign"]
+  [effect/reworded] What resulted from the burial of St. Cuthbert at Dunholme on the River Wear in 995?
+     gold: Burial of St. Cuthbert at Durham | got: none | top: ['Death of St. Cuthbert', 'Burial of St. Cuthbert at Durham', 'Consecration of Cuthbert']
+  [effect/reworded] What were the consequences of the Jewish rebellion against Roman rule that began in 66 AD in Judea?
+     gold: Revolt of Judea | got: Rebellion against Roman rule | top: ['Rebellion against Roman rule', 'Roman Rule in Judea', 'Roman rule over Judea']
+     said: The facts don't say.
+  [effect/reworded] What resulted from the execution of the Numidian king Jugurtha at the Tullianum prison in Rome around 105 BC?
+     gold: Death of Jugurtha | got: Victory over Numidian king Jugurtha | top: ['Victory over Numidian king Jugurtha', 'Death of Jugurtha', 'War with Jugurtha']
+     said: The Victory over Numidian king Jugurtha caused the Campaign against the Teutons.
+  [effect/reworded] What impact did Otto Neugebauer's 1952 book on ancient mathematics and astronomy have on later scholarship?
+     gold: Neugebauer's The Exact Sciences in Antiquity | got: unparsed | top: ['Sumerian Astronomy and Mathematics', 'Speaking of Books', 'Maya development of mathematics and astronomy']
+  [effect/reworded] What were the outcomes of the 1916 armed uprising for Irish independence that took place in Dublin?
+     gold: Dublin Rising | got: none | top: ['Irish independence movement', 'Irish independence', 'Dublin Revolt of 1916']
+  [effect/reworded] What were the results of the Assyrian campaign led by Sennacherib against Judah in 701 BC?
+     gold: Assyrian attack led by Sennacherib | got: Sennacherib's Assyrian campaign against Judah (701 BCE) | top: ["Sennacherib's Assyrian campaign against Judah (701 BCE)", "Sennacherib's campaign against Judah", "Sennacherib's campaign to Judah"]
+     said: Sennacherib's campaign against Judah (701 BCE) caused Hezekiah's Tribute to Sennacherib.
+  [effect/reworded] What impact did the Female Cosmetic Coalitions model, introduced by Knight and colleagues in 1995, have on evolutionary theory?
+     gold: Female Cosmetic Coalitions model pioneered by Knight et al. | got: unparsed | top: ['Female Cosmetic Coalitions', 'Female Cosmetic Coalitions model pioneered by Knight et al.', 'Arrival of evolutionary theory']
+  [when/reworded] When did Italian Christian forces attack Tortosa, Spain, against the Muslims?
+     gold: Attack on Tortosa | got: none | top: ['Attack on Tortosa', 'Attack on Tortosa', 'Attacks on U.S. Muslims']
