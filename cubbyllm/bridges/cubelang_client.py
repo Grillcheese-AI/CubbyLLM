@@ -211,6 +211,7 @@ def run_program_proto(
     answers: list | None = None,
     knowledge_path: str | None = None,
     branch: dict | None = None,
+    budget: dict | None = None,
 ) -> dict:
     """Run CubeLang source's function via `cubelang run-proto`'s stdio
     transport: a u32-big-endian-length-prefixed `RunRequest` written to
@@ -236,6 +237,7 @@ def run_program_proto(
         answers=[json.dumps(a) for a in (answers or [])],
         knowledge_path=str(knowledge_path or ""),
         branch=branch_message(branch),
+        budget=budget_message(budget),
     )
     payload = request.SerializeToString()
     framed_request = len(payload).to_bytes(4, "big") + payload
@@ -280,14 +282,48 @@ def branch_message(branch: dict | None):
                                 assume=assume)
 
 
+def budget_message(budget: dict | None):
+    """A `Budget` for the request (2026-09-29, VM step 0): `{"max_jumps", "max_ops", "max_queries",
+    "max_wall_ms"}`, each 0/absent = unlimited (jumps: the VM default). The harness sets it from the
+    frame; the VM refuses the opcode, query or jump that would cross a budget with an error naming it,
+    and the report echoes the budget as applied."""
+    if not budget:
+        return None
+    from . import reasoning_pb2  # lazy: keep `import cubbyllm` protobuf-free
+
+    return reasoning_pb2.Budget(max_jumps=int(budget.get("max_jumps", 0)), max_ops=int(budget.get("max_ops", 0)),
+                                max_queries=int(budget.get("max_queries", 0)),
+                                max_wall_ms=int(budget.get("max_wall_ms", 0)))
+
+
+#: The VM's closed reason for a recover, by wire value (`RecoverReason` in reasoning.proto).
+RECOVER_REASONS = {0: "recovered", 1: "absent_role", 2: "no_frame", 3: "empty_pool"}
+
+
+def _recover(h) -> dict:
+    return {"reg": h.reg, "role": h.role, "winner": h.winner or None,
+            "similarity": h.similarity if h.HasField("similarity") else None,
+            "runner_up": h.runner_up if h.HasField("runner_up") else None,
+            "margin": h.margin if h.HasField("margin") else None,
+            "pool": int(h.pool), "reason": RECOVER_REASONS.get(int(h.reason), str(h.reason))}
+
+
 def _report(result) -> dict | None:
-    """The branch report every result carries: what the run did, beside what it returned."""
+    """The branch report every result carries: what the run did, beside what it returned.
+    VM step 0 adds the budget as applied, the wall clock, and every recover hop with its
+    runner-up, margin and reason."""
     if not result.HasField("report"):
         return None
     r = result.report
+    b = r.budget if r.HasField("budget") else None
     return {"branch_id": r.branch_id, "ops": int(r.ops), "jumps": int(r.jumps),
             "queried": [(q.key, int(q.hits)) for q in r.queried],
-            "excluded": int(r.excluded), "assumed": int(r.assumed)}
+            "excluded": int(r.excluded), "assumed": int(r.assumed),
+            "excluded_keys": list(r.excluded_keys), "max_jumps": int(r.max_jumps),
+            "budget": ({"max_jumps": int(b.max_jumps), "max_ops": int(b.max_ops),
+                        "max_queries": int(b.max_queries), "max_wall_ms": int(b.max_wall_ms)} if b else None),
+            "wall_ms": int(r.wall_ms),
+            "recovers": [_recover(h) for h in r.recovers]}
 
 
 def _decode_run_result(body: bytes) -> dict:
@@ -331,6 +367,14 @@ def _decode_run_result(body: bytes) -> dict:
         # not a truthiness/zero check) distinguishes "no winning match"
         # (unset -> None) from a real match that happened to score 0.0.
         "similarity": result.similarity if result.HasField("similarity") else None,
+        # VM step 0 (2026-09-29): the runner-up behind `similarity` and the
+        # reason of the last recover. `absent_role` is the structural Null:
+        # the role was never bound in that frame, no similarity computed --
+        # the host stops thresholding it and reads the reason. A small
+        # `similarity - runner_up` margin is a near-tie, not a recovery.
+        "runner_up": result.runner_up if result.HasField("runner_up") else None,
+        "recover_reason": (RECOVER_REASONS.get(int(result.recover_reason), str(result.recover_reason))
+                           if result.HasField("recover_reason") else None),
     }
 
 
@@ -385,7 +429,8 @@ class CubelangSession:
         return buf
 
     def run(self, program_source: str, fn: str = "solve", args: list[str] | None = None,
-            answers: list | None = None, knowledge_path: str | None = None, branch: dict | None = None) -> dict:
+            answers: list | None = None, knowledge_path: str | None = None, branch: dict | None = None,
+            budget: dict | None = None) -> dict:
         """Same contract as `run_program_proto` (dict shape, errors, suspension)."""
         import threading
         from . import reasoning_pb2  # lazy: keep `import cubbyllm` protobuf-free
@@ -397,6 +442,7 @@ class CubelangSession:
             answers=[json.dumps(a) for a in (answers or [])],
             knowledge_path=str(knowledge_path or ""),
             branch=branch_message(branch),
+            budget=budget_message(budget),
         )
         payload = request.SerializeToString()
         timer = threading.Timer(self.timeout, self._proc.kill) if self.timeout else None

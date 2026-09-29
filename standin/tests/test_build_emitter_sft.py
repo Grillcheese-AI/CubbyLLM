@@ -79,6 +79,31 @@ def test_gsm_question_strips_socratic_wrapper():
     assert b.gsm_question("Question: Janet has 3 ducks. How many?\nAnswer: 3 ducks.\n#### 3") == "Janet has 3 ducks. How many?"
 
 
+def test_correctness_gate_reads_gold_then_host_check():
+    """VM step 0 (2026-09-29): verified is not correct. A record with a gold is graded by
+    `correct`; one without is graded by the host's independent check; neither = ungradable."""
+    assert b.chain_correct({"verified": True, "gold_answer": "paris", "correct": True}) is True
+    assert b.chain_correct({"verified": True, "gold_answer": "paris", "correct": False}) is False
+    assert b.chain_correct({"verified": True, "host_check": True}) is True
+    assert b.chain_correct({"verified": True, "host_check": False}) is False
+    assert b.chain_correct({"verified": True}) is None
+    # a gold with no `correct` field falls through to host_check, then to ungradable
+    assert b.chain_correct({"verified": True, "gold_answer": "paris"}) is None
+
+
+def test_coverage_gate_names_the_literal_the_prompt_never_showed():
+    prompt = ("What is the capital of the country Hans is a citizen of?\nFacts:\n"
+              "- germany is the country of citizenship of hans\n- Berlin is the capital of Germany")
+    covered = ('program CotChain implements ISolve {\n    public function solve(mention: str): str {\n'
+               '        create frame: number;\n        bind frame, H1_COUNTRY, "germany";\n'
+               '        bind frame, H2_CAPITAL, "Berlin";\n        return recover(frame, H1_COUNTRY);\n    }\n}\n')
+    assert b.uncovered_literals(prompt, covered) == []
+    recalled = covered.replace('"Berlin"', '"Bonn"')
+    assert b.uncovered_literals(prompt, recalled) == ["Bonn"]
+    # normalization is on words: case and punctuation do not count as a miss
+    assert b.uncovered_literals(prompt, covered.replace('"germany"', '"Germany"')) == []
+
+
 def test_split_is_deterministic_and_roughly_val_frac():
     prompts = [f"prompt number {i}" for i in range(4000)]
     a = [b.split_of(p, 0.05) for p in prompts]

@@ -164,6 +164,47 @@ def gold_matches(result, gold) -> bool | None:
         return str(result).strip() == str(gold).strip()
 
 
+# ── the harvest correctness gate (VM step 0, 2026-09-29) ──────────────────
+# Panel round 3, seven of eight: the harvest needs a CORRECTNESS gate, not only
+# a verification gate. A VM-verified chain about the wrong entity carries real
+# facts, clears every hop and is still the wrong answer; trained on, it teaches
+# the emitter that binding at chance is fine. So a chain program enters the SFT
+# set only when (1) its answer matched the dataset gold (`correct`, normalized
+# exact match) or, when the record has no gold, the host's independent check
+# (`host_check`), and (2) every literal it binds is COVERED by its prompt --
+# present in the question or the walked facts -- so the emitter is never
+# trained to recall a name the host did not place in front of it (the slot
+# discipline of H-E15, applied to the data before the model sees it).
+_BIND_LIT_RE = re.compile(r'bind\s+\w+\s*,\s*(?P<role>\w+)\s*,\s*"(?P<lit>(?:[^"\\]|\\.)*)"\s*;')
+
+
+def _norm_lit(s: str) -> str:
+    return " ".join(re.sub(r"[^\w']+", " ", s.lower()).split())
+
+
+def uncovered_literals(prompt: str, program: str) -> list[str]:
+    """The literals the program binds that do not occur in the prompt (question +
+    facts), normalized on words. Empty = the program is covered."""
+    hay = _norm_lit(prompt)
+    out = []
+    for m in _BIND_LIT_RE.finditer(program):
+        lit = m.group("lit").replace('\\"', '"')
+        if _norm_lit(lit) and _norm_lit(lit) not in hay:
+            out.append(lit)
+    return out
+
+
+def chain_correct(rec: dict) -> bool | None:
+    """The harvest record's correctness: `correct` (normalized exact match vs
+    the dataset gold) when the record has a gold, else the host's independent
+    check `host_check` when it carries one, else None (ungradable)."""
+    if rec.get("gold_answer") is not None and rec.get("correct") is not None:
+        return bool(rec["correct"])
+    if rec.get("host_check") is not None:
+        return bool(rec["host_check"])
+    return None
+
+
 def sha256_file(path: str) -> str:
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -271,6 +312,9 @@ def collect(limit: int | None):
     # host retrieves first and formats the same block, so question+facts →
     # program is the real task. (Later: add distractor facts to teach
     # selection; for now the walked facts, in walk order.)
+    # VM step 0 (2026-09-29): the correctness gate, beside the verification
+    # gate -- see `chain_correct` / `uncovered_literals`. Verified-but-wrong
+    # and verified-but-uncovered chains are counted out, never trained on.
     n_chain = 0
     for r in load_jsonl(HARVEST):
         if r.get("verified") and r.get("program_source"):
@@ -278,6 +322,17 @@ def collect(limit: int | None):
             facts = [t.get("fact") for t in (r.get("trace") or []) if t.get("fact")]
             if CHAIN_FACTS and facts:
                 prompt = prompt + "\nFacts:\n" + "\n".join(f"- {f}" for f in facts)
+            correct = chain_correct(r)
+            if correct is None:
+                excluded["ungradable:chain"] += 1
+                continue
+            if not correct:
+                excluded["verified_but_wrong:chain"] += 1
+                continue
+            uncovered = uncovered_literals(prompt, r["program_source"])
+            if uncovered:
+                excluded["uncovered_literal:chain"] += 1
+                continue
             add("chain", f"n_hop={r.get('n_hop')}", "cubbyllm/cot_harvest_v3cf", prompt, r["program_source"],
                 r.get("answer"))
             n_chain += 1
@@ -341,6 +396,23 @@ def main():
 
     kept = [r for r in records if r["vm_ok"] is None or (r["vm_ok"] and r["gold_match"] is not False)]
     dropped = Counter(r["task"] for r in records if r not in kept)
+    # The family distribution, reported every build (VM step 0: "report the
+    # family distribution nightly"): what each family is gated on, how many
+    # entered, how many each gate removed. A family that is only
+    # executes-gated is named as such rather than passed off as verified.
+    GATES = {"arithmetic": "executes + gold", "kernel": "executes + gold (when the kernel carries one)",
+             "chain": "verified by construction + correct vs gold (or host_check) + every literal covered by the prompt",
+             "role_binding": "executes only (no gold, no answer)", "identity": "no VM (chat turn)"}
+    families = {}
+    for task in sorted(set(r["task"] for r in records) | {k.split(":", 1)[1] for k in excluded if ":" in k}):
+        families[task] = {
+            "gate": GATES.get(task, "executes"),
+            "collected": sum(1 for r in records if r["task"] == task),
+            "kept": sum(1 for r in kept if r["task"] == task),
+            "dropped_by_vm": dropped.get(task, 0),
+            "excluded_before_vm": {k.split(":", 1)[0]: v for k, v in excluded.items() if k.endswith(f":{task}")},
+            "subtypes": dict(Counter(r["subtype"] for r in kept if r["task"] == task).most_common(12)),
+        }
     os.makedirs(OUT_DIR, exist_ok=True)
     out_path = os.path.join(OUT_DIR, "emitter_sft.jsonl")
     with open(out_path, "w", encoding="utf-8") as f:
@@ -364,6 +436,11 @@ def main():
         "inputs_sha256": inputs,
         "n_records_collected": len(records), "n_records_kept": len(kept),
         "dropped_by_vm": dict(dropped), "excluded": dict(excluded),
+        "families": families,
+        "correctness_gate": {"since": "2026-09-29 (VM step 0)",
+                             "chain": "verified AND correct vs gold_answer (or host_check when there is no gold) "
+                                      "AND every bound literal occurs in the prompt; the three exclusions are "
+                                      "ungradable:chain / verified_but_wrong:chain / uncovered_literal:chain"},
         "by_task": dict(Counter(r["task"] for r in kept)),
         "by_source": dict(Counter(r["source"] for r in kept)),
         "by_split": {t: dict(Counter(r["split"] for r in kept if r["task"] == t)) for t in by_task},
@@ -384,6 +461,10 @@ def main():
         json.dump(manifest, f, indent=1)
     print(f"\nkept {len(kept)}/{len(records)} (dropped by VM: {dict(dropped)})")
     print(f"  by task/split: {manifest['by_split']}")
+    print("  families (the nightly distribution):")
+    for task, fam in families.items():
+        print(f"    {task:<13} kept {fam['kept']:>6} / collected {fam['collected']:>6}"
+              f"  vm-dropped {fam['dropped_by_vm']:>4}  excluded {fam['excluded_before_vm']}  [{fam['gate']}]")
     print(f"wrote {out_path}\nwrote {mp} ({manifest['wall_s']:.0f}s)")
 
 

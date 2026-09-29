@@ -336,6 +336,72 @@ class ReplayEmitter:
             raise KeyError(f"no recorded generation for prompt: {prompt[:80]!r}") from None
 
 
+class Cubby450mEmitter:
+    """The 450M program emitter (H-E15, 2026-09-29): CubbyLLM's own base on grilly2 (the local card),
+    plus the emitter LoRA `validation/train_emitter_torch.py` trained, behind the same `Emitter`
+    protocol as the stand-in -- `ContextualEmitter({"programs": Cubby450mEmitter(...), "talk": <stand-in>})`
+    is the seat decision of 2026-09-29 in one line.
+
+    It emits SLOTTED programs: the prompt must be annotated by the host (`emitter_data.frame_prompt`
+    over a `SlotTable.annotate()`), and the program comes back with `$E1` / `$N1` in it for the host to
+    check and fill (`cubbyllm.reasoning.slots.SlotEmitter` does exactly that around this class; its
+    `index` is the names the host knows). `emit` on an un-annotated prompt still runs -- the program
+    then names slots the host does not have, which the check refuses. Greedy, no repetition guards
+    (a program repeats `create frame: number;` on purpose), stops at </s>.
+
+    Needs the base EXPORT (`validation/export_base.py`: config.json + model.safetensors) and the
+    tokenizer; the adapter dir holds `emitter_lora.safetensors` + `emitter_lora.json`."""
+
+    def __init__(self, export_dir: str, adapter_dir: str, tokenizer: str, max_ctx: int = 2048) -> None:
+        for p, what in ((export_dir, "export"), (adapter_dir, "adapter"), (tokenizer, "tokenizer")):
+            if not os.path.exists(p):
+                raise FileNotFoundError(f"{what} not found: {p}")
+        self.export_dir, self.adapter_dir, self.tokenizer_path = export_dir, adapter_dir, tokenizer
+        self.max_ctx = max_ctx
+        self.name = f"cubby450m:{os.path.basename(os.path.normpath(adapter_dir))}"
+        self._model = self._tk = self._eos = None
+
+    def _load(self):
+        if self._model is not None:
+            return
+        import sys
+        here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        for p in (here, os.path.join(here, "validation")):
+            if p not in sys.path:
+                sys.path.insert(0, p)
+        import grilly  # grilly2
+        from grilly.infer.lora import apply_lora_
+        from safetensors.numpy import load_file
+        from tokenizers import Tokenizer
+        from exp_e5_base450m_probes import load_grilly
+        model, _cfg = load_grilly(self.export_dir)
+        meta = json.load(open(os.path.join(self.adapter_dir, "emitter_lora.json"), encoding="utf-8"))
+        wrapped = apply_lora_(model, meta["rank"], meta["alpha"], meta["targets"])
+        tensors = load_file(os.path.join(self.adapter_dir, "emitter_lora.safetensors"))
+        with grilly.no_grad():
+            for path, mod in wrapped.items():
+                mod.lora_A.weight.copy_(grilly.from_numpy(tensors[f"{path}.lora_A.weight"]))
+                mod.lora_B.weight.copy_(grilly.from_numpy(tensors[f"{path}.lora_B.weight"]))
+        self._tk = Tokenizer.from_file(self.tokenizer_path)
+        self._eos = self._tk.token_to_id("</s>")
+        self._model, self._grilly = model, grilly
+
+    def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
+             prefix: str = "", temperature: float = 0.0, seed: int | None = None,
+             context: "str | dict | None" = None) -> str:
+        self._load()
+        from emitter_data import PROMPT_HEAD, PROMPT_TAIL
+        text = prompt if prompt.startswith(PROMPT_HEAD) else PROMPT_HEAD + prompt.strip() + PROMPT_TAIL
+        ids = self._tk.encode(text + prefix).ids
+        ids = ids[-self.max_ctx:]
+        with self._grilly.no_grad():
+            out = self._model.generate(self._grilly.tensor([ids]), max_new_tokens=max_new_tokens,
+                                       eos_token_id=self._eos).tolist()[0][len(ids):]
+        if self._eos in out:
+            out = out[:out.index(self._eos)]
+        return prefix + self._tk.decode(out)
+
+
 def context_role(context) -> str | None:
     """The role tag inside a context: the tag itself, or a dict's "role"."""
     if context is None:

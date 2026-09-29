@@ -35,8 +35,15 @@ SLOT_RX = re.compile(r"\$(?P<kind>[ENR])(?P<n>\d+)\b")
 BIND_LIT_RX = re.compile(r'bind\s+\w+\s*,\s*(?P<role>\w+)\s*,\s*"(?P<lit>(?:[^"\\]|\\.)*)"\s*;')
 # a numeric literal assigned or added: `assign s0 = 48;` `add s1, 24;` `assign threshold = 29;`
 NUM_LIT_RX = re.compile(r'(?P<op>assign|add|sub|mul|div)\s+(?P<reg>\w+)\s*(?:=|,)\s*(?P<num>-?\d+(?:\.\d+)?)\s*;')
-NUM_IN_TEXT_RX = re.compile(r"(?<![\w.])-?\d+(?:[.,]\d+)?(?![\w.])")
+NUM_IN_TEXT_RX = re.compile(r"(?<![\w.])-?\d+(?:[.,]\d+)?(?!\w)(?![.,]\d)")   # "29." at a sentence end is 29
 ENTITY_ROLES = {"SEED", "AGENT", "OBJECT", "SUBJECT", "ENTITY", "TARGET", "PLACE", "PERSON", "EVENT"}
+# the chain program's hop roles (`H1_CAPITAL`, `H2_INSTANCE`, ...) bind the walked objects: entities too
+_HOP_ROLE_RX = re.compile(r"^H\d+_", re.I)
+
+
+def is_entity_role(role: str) -> bool:
+    """A role whose filler is a name the host places (a slot), not a relation word the emitter learns."""
+    return role.upper() in ENTITY_ROLES or bool(_HOP_ROLE_RX.match(role))
 
 
 def _norm(s: str) -> str:
@@ -86,7 +93,7 @@ class SlotTable:
         copied = []
         for m in BIND_LIT_RX.finditer(program):
             lit = m.group("lit")
-            if m.group("role").upper() in ENTITY_ROLES and not SLOT_RX.fullmatch(lit) and self._is_span_text(lit):
+            if is_entity_role(m.group("role")) and not SLOT_RX.fullmatch(lit) and self._is_span_text(lit):
                 copied.append(lit)                       # a name the host had as a slot, written out instead
         for m in NUM_LIT_RX.finditer(program):
             if self._is_span_text(m.group("num"), kind="N"):
@@ -152,16 +159,22 @@ def extract(question: str, index: SpanIndex | None = None, referents: dict | Non
     $R1.. the referents the context graph resolved ({'it': 'Siege of Vienna'})."""
     t = SlotTable(question)
     ents = index.spans(question) if index is not None else []
-    for k, (text, s, e) in enumerate(ents, 1):
-        t.spans.append(Span(f"$E{k}", text, s, e, "E"))
+    # one id per distinct name (2026-09-29): a name mentioned twice -- in the question and in a fact
+    # line -- is one entity and one slot, so the emitter has one right answer, not an arbitrary pick
+    # among equal ids; every mention is annotated with it
+    ids: dict[str, str] = {}
+    for text, s, e in ents:
+        sid = ids.setdefault(_norm(text), f"$E{len(ids) + 1}")
+        t.spans.append(Span(sid, text, s, e, "E"))
     if numbers:
         taken = [(s.start, s.end) for s in t.spans]
-        k = 0
+        nids: dict[str, str] = {}
         for m in NUM_IN_TEXT_RX.finditer(question):
             if any(a <= m.start() < b for a, b in taken):
                 continue
-            k += 1
-            t.spans.append(Span(f"$N{k}", m.group(0).replace(",", ""), m.start(), m.end(), "N"))
+            num = m.group(0).replace(",", "")
+            sid = nids.setdefault(num, f"$N{len(nids) + 1}")
+            t.spans.append(Span(sid, num, m.start(), m.end(), "N"))
     for k, (word, target) in enumerate((referents or {}).items(), 1):
         t.spans.append(Span(f"$R{k}", str(target), -1, -1, "R"))
     return t
@@ -173,7 +186,7 @@ def to_slots(prompt: str, program: str, index: SpanIndex | None = None) -> tuple
     None: then the program's own entity literals that occur in the prompt are the spans (the gold seed is
     known), which is how the existing harvest converts without a name index."""
     if index is None:
-        lits = [m.group("lit") for m in BIND_LIT_RX.finditer(program) if m.group("role").upper() in ENTITY_ROLES]
+        lits = [m.group("lit") for m in BIND_LIT_RX.finditer(program) if is_entity_role(m.group("role"))]
         found = []
         for lit in dict.fromkeys(lits):
             m = re.search(re.escape(lit), prompt, re.I)
@@ -184,7 +197,7 @@ def to_slots(prompt: str, program: str, index: SpanIndex | None = None) -> tuple
     out, replaced, kept = program, 0, 0
     for m in list(BIND_LIT_RX.finditer(program)):
         lit = m.group("lit")
-        if m.group("role").upper() not in ENTITY_ROLES:
+        if not is_entity_role(m.group("role")):
             continue
         s = next((s for s in table.spans if s.kind == "E" and _norm(s.text) == _norm(lit)), None)
         if s is None:

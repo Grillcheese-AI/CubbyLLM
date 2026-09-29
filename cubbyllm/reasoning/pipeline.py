@@ -27,6 +27,11 @@ class HopTrace:
     ret_score: float
     symbol: str | None = None
     similarity: float | None = None
+    # VM step 0 (2026-09-29): the runner-up similarity behind `similarity`
+    # (None on an older binary or a one-candidate pool). `similarity -
+    # runner_up` is the margin: a near-tie is not a recovery, whatever tau
+    # says. Logged (simlog), not yet gated.
+    runner_up: float | None = None
     # how the fact was found: "lookup" (the triple index; ret_score is 1.0, no
     # threshold applied), "lookup_paraphrase" (hop 0 served by the index's
     # paraphrase tier: subject exact, relation by relation_matches -- 2026-09-11,
@@ -268,8 +273,13 @@ def _check_chain(plan: QuestionPlan, triples: list[Triple], trace: list[HopTrace
         out = run_fn(source, fn)
         trace[i].symbol = out.get("result")
         trace[i].similarity = out.get("similarity")
+        trace[i].runner_up = out.get("runner_up")
         if trace[i].similarity is None:
-            ok = False; failed.append(f"hop{i}:no_similarity")
+            # VM step 0: a hop whose role the frame never bound is Null with
+            # reason `absent_role` -- name it, since it is a program bug
+            # (the builder binds every role it recovers), not a weak match.
+            why = out.get("recover_reason")
+            ok = False; failed.append(f"hop{i}:{why or 'no_similarity'}")
         elif trace[i].similarity < tau_vm:
             ok = False
             failed.append(f"hop{i}:below_tau({trace[i].similarity:.4f}<{tau_vm:.4f})")
@@ -278,11 +288,19 @@ def _check_chain(plan: QuestionPlan, triples: list[Triple], trace: list[HopTrace
     ctrl = run_fn(source, fns[-1])                   # control
     ctrl_result = ctrl.get("result")
     ctrl_sim = ctrl.get("similarity")
-    # Control role must stay below tau_vm. The real VM's cosine cleanup always
-    # returns the nearest symbol from a populated frame — an absent role returns
-    # (noise_symbol, low_similarity), never None. Violation if: high similarity
-    # (≥tau_vm) OR a symbol without verifiable similarity (unbound frame edge case).
-    if (ctrl_sim is not None and ctrl_sim >= tau_vm) or (ctrl_result is not None and ctrl_sim is None):
+    ctrl_why = ctrl.get("recover_reason")
+    # The control recovers ABSENT_CTRL, a role the frame never binds.
+    # VM step 0 (2026-09-29): the VM answers that structurally -- Null with
+    # reason `absent_role`, no similarity computed -- so the pass IS that
+    # reason. Anything else is a violation: a winner (the frame holds a role
+    # it should not, or the role record is missing and the cleanup fell back
+    # to a pool), or a Null for another reason (`no_frame`: the frame itself
+    # never got built). An older binary puts no reason on the wire; there the
+    # control is still the noise floor and must sit below tau_vm.
+    if ctrl_why is not None:
+        if ctrl_why != "absent_role":
+            ok = False; failed.append(f"control:{ctrl_why}")
+    elif (ctrl_sim is not None and ctrl_sim >= tau_vm) or (ctrl_result is not None and ctrl_sim is None):
         ok = False; failed.append("control:not_below_tau")
     return ok, failed, source, ctrl_sim
 

@@ -60,6 +60,17 @@ class LoRALinear(nn.Module):
         self.lora_B = nn.Linear(rank, base.out_features, bias=False, device=base.weight.device)
         nn.init.zeros_(self.lora_B.weight)     # the adapter starts as the identity
         self.scaling = float(alpha) / float(rank)
+        # what the model reads off a projection besides calling it (`init_state` sizes the recurrent
+        # state from `proj_g.out_features`; decode paths look at `weight`)
+        self.in_features, self.out_features = base.in_features, base.out_features
+
+    @property
+    def weight(self):
+        return self.base.weight
+
+    @property
+    def bias(self):
+        return self.base.bias
 
     def forward(self, x):
         return self.base(x) + self.lora_B(self.lora_A(x)) * self.scaling
@@ -79,24 +90,25 @@ def apply_lora(model, targets, rank, alpha) -> dict:
     return wrapped
 
 
-def save_adapter(wrapped, out_dir, meta) -> None:
+def save_adapter(wrapped, out_dir, meta, name: str = "talk_lora") -> None:
+    """`name` picks the file pair (`talk_lora.*`; the emitter adapter writes `emitter_lora.*`)."""
     from safetensors.numpy import save_file
     os.makedirs(out_dir, exist_ok=True)
     tensors = {}
     for t, w in wrapped.items():
         tensors[f"{t}.lora_A.weight"] = w.lora_A.weight.detach().float().cpu().numpy()
         tensors[f"{t}.lora_B.weight"] = w.lora_B.weight.detach().float().cpu().numpy()
-    save_file(tensors, os.path.join(out_dir, "talk_lora.safetensors"))
-    with open(os.path.join(out_dir, "talk_lora.json"), "w", encoding="utf-8") as f:
+    save_file(tensors, os.path.join(out_dir, f"{name}.safetensors"))
+    with open(os.path.join(out_dir, f"{name}.json"), "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=1)
 
 
-def load_adapter(model, adapter_dir) -> dict:
+def load_adapter(model, adapter_dir, name: str = "talk_lora") -> dict:
     """An adapter file (from either trainer) into the torch model; returns its json."""
     from safetensors.numpy import load_file
-    meta = json.load(open(os.path.join(adapter_dir, "talk_lora.json"), encoding="utf-8"))
+    meta = json.load(open(os.path.join(adapter_dir, f"{name}.json"), encoding="utf-8"))
     wrapped = apply_lora(model, meta["targets"], meta["rank"], meta["alpha"])
-    tensors = load_file(os.path.join(adapter_dir, "talk_lora.safetensors"))
+    tensors = load_file(os.path.join(adapter_dir, f"{name}.safetensors"))
     with torch.no_grad():
         for t, w in wrapped.items():
             w.lora_A.weight.copy_(torch.from_numpy(tensors[f"{t}.lora_A.weight"]))

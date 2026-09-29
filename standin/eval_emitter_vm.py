@@ -105,6 +105,9 @@ def main():
     ap.add_argument("--val-generations", help="the notebook's val_generations.json (replay mode)")
     ap.add_argument("--gguf", help="GGUF file for in-process llama-cpp-python inference (live mode, Vulkan)")
     ap.add_argument("--server", help="OpenAI-compatible server base URL (live mode)")
+    ap.add_argument("--cubby", help="the 450M emitter adapter dir (live mode on grilly2; H-E15) -- with --export and --tokenizer")
+    ap.add_argument("--export", help="the 450M base export dir (config.json + model.safetensors)")
+    ap.add_argument("--tokenizer", help="the bbpe128k tokenizer json")
     ap.add_argument("--n-gpu-layers", type=int, default=-1)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--tag", default="")
@@ -113,8 +116,8 @@ def main():
                     help="stratified: at most N val records per task (v5 val is ~1,200 records; 40/task ~ 15 min)")
     ap.add_argument("--no-shim", action="store_true", help="do not apply the ISolver parse/verify shim to generations")
     args = ap.parse_args()
-    if not (args.val_generations or args.server or args.gguf):
-        raise SystemExit("give --val-generations FILE, --gguf PATH or --server URL")
+    if not (args.val_generations or args.server or args.gguf or args.cubby):
+        raise SystemExit("give --val-generations FILE, --gguf PATH, --server URL or --cubby ADAPTER_DIR")
 
     if args.val_generations:
         gens = json.load(open(args.val_generations, encoding="utf-8"))
@@ -131,9 +134,17 @@ def main():
                     "system": g.get("system"), "lang": g.get("lang", "en")}
                    for g in items]
     else:
-        emitter = LlamaCppEmitter(args.gguf, n_gpu_layers=args.n_gpu_layers) if args.gguf else LlamaServerEmitter(args.server)
+        if args.cubby:
+            from standin.emitter import Cubby450mEmitter
+            if not (args.export and args.tokenizer):
+                raise SystemExit("--cubby needs --export and --tokenizer")
+            emitter = Cubby450mEmitter(args.export, args.cubby, args.tokenizer)
+        else:
+            emitter = LlamaCppEmitter(args.gguf, n_gpu_layers=args.n_gpu_layers) if args.gguf else LlamaServerEmitter(args.server)
         records = [json.loads(l) for l in open(args.data, encoding="utf-8")]
         records = [r for r in records if r["split"] == "val"]
+        for r in records:                                  # the slot-form file (emitter_data.py) names the reference so
+            r.setdefault("program", r.get("reference", ""))
         random.Random(1).shuffle(records)
     if args.per_task:
         by = {}
@@ -178,9 +189,17 @@ def main():
                          "identity_ok": ok, "generated": gen})
             continue
         gen = strip_fences(emitter.emit(r["prompt"]))
+        slotted = gen
+        if r.get("spans"):                                # a slot-form record (H-E15): the host fills the slots it placed
+            sys.path.insert(0, os.path.join(ROOT, "validation"))
+            from emitter_data import fill
+            gen = fill(gen, r["spans"])
         src = gen if args.no_shim else shim_isolver(gen)
         ok, res, err = run_vm(src)
         gm = gold_matches(res, r.get("gold")) if ok else None
+        if ok and gm is False and r.get("spans"):         # a filled name in the prompt's spelling vs the harvest's normalized gold
+            from cubbyllm.reasoning.slots import _norm
+            gm = _norm(str(res)) == _norm(str(r.get("gold")))
         sub = str(r.get("subtype") or "")
         grp = f"{task}/{sub.split(':n_hop')[0]}" if sub.startswith("game:") else task   # v4: the game's families apart
         stats[grp]["n"] += 1
@@ -188,7 +207,7 @@ def main():
         if r.get("gold") is not None:
             stats[grp]["with_gold"] += 1
             stats[grp]["gold_match"] += int(bool(gm))
-        stats[grp]["text_exact"] += int(" ".join(gen.split()) == " ".join(r["program"].split()))
+        stats[grp]["text_exact"] += int(" ".join(slotted.split()) == " ".join(r["program"].split()))
         rows.append({"id": r["id"], "task": task, "executes": ok, "vm_result": None if res is None else str(res)[:120],
                      "gold": r.get("gold"), "gold_match": gm, "vm_error": err, "generated": gen})
         if i % 50 == 0:
