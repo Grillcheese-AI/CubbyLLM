@@ -210,6 +210,7 @@ def run_program_proto(
     timeout: float = 30.0,
     answers: list | None = None,
     knowledge_path: str | None = None,
+    branch: dict | None = None,
 ) -> dict:
     """Run CubeLang source's function via `cubelang run-proto`'s stdio
     transport: a u32-big-endian-length-prefixed `RunRequest` written to
@@ -234,6 +235,7 @@ def run_program_proto(
         program=program_source, args=list(args or []), fn_name=fn,
         answers=[json.dumps(a) for a in (answers or [])],
         knowledge_path=str(knowledge_path or ""),
+        branch=branch_message(branch),
     )
     payload = request.SerializeToString()
     framed_request = len(payload).to_bytes(4, "big") + payload
@@ -265,6 +267,29 @@ def run_program_proto(
     return _decode_run_result(body)
 
 
+def branch_message(branch: dict | None):
+    """A `Branch` for the request (2026-09-28, the counterfactual fork at the wire): `{"id": str,
+    "exclude": [keys], "assume": [knowledge .jsonl lines or dicts]}`. The VM applies it to that
+    request's own clone of the knowledge store, so the branch lives in one VM and nowhere else."""
+    if not branch:
+        return None
+    from . import reasoning_pb2  # lazy: keep `import cubbyllm` protobuf-free
+
+    assume = [a if isinstance(a, str) else json.dumps(a, ensure_ascii=False) for a in branch.get("assume", [])]
+    return reasoning_pb2.Branch(id=str(branch.get("id", "")), exclude=[str(k) for k in branch.get("exclude", [])],
+                                assume=assume)
+
+
+def _report(result) -> dict | None:
+    """The branch report every result carries: what the run did, beside what it returned."""
+    if not result.HasField("report"):
+        return None
+    r = result.report
+    return {"branch_id": r.branch_id, "ops": int(r.ops), "jumps": int(r.jumps),
+            "queried": [(q.key, int(q.hits)) for q in r.queried],
+            "excluded": int(r.excluded), "assumed": int(r.assumed)}
+
+
 def _decode_run_result(body: bytes) -> dict:
     """`RunResult` bytes -> the dict shape `run_program_proto` documents. Shared
     by the one-shot transport and `CubelangSession` so both agree byte-for-byte."""
@@ -279,7 +304,9 @@ def _decode_run_result(body: bytes) -> dict:
     which = result.WhichOneof("result")
     if not result.ok:
         err = result.error if which == "error" else "cubelang run-proto reported ok:false"
-        raise CubelangRunError(f"cubelang error: {err}")
+        e = CubelangRunError(f"cubelang error: {err}")
+        e.report = _report(result)                       # a refused branch still cost what it cost
+        raise e
     if which == "suspended":
         # The third outcome (2026-08-30): the program grounded several
         # candidates and is asking. Not an error, not a result. Candidates
@@ -291,11 +318,12 @@ def _decode_run_result(body: bytes) -> dict:
             "ok": True, "result": None, "similarity": None, "suspended": True,
             "question": _json_loads_lenient(s.question),
             "candidates": [_json_loads_lenient(c) for c in s.candidates],
-            "program": s.program, "function": s.function,
+            "program": s.program, "function": s.function, "report": _report(result),
         }
     return {
         "ok": result.ok,
         "suspended": False,
+        "report": _report(result),
         "result": result.symbol if which == "symbol" else None,
         # Task 7 (cubelang): `similarity` is `optional double`, OUTSIDE the
         # `result` oneof -- a side-channel confidence score for `symbol`,
@@ -357,7 +385,7 @@ class CubelangSession:
         return buf
 
     def run(self, program_source: str, fn: str = "solve", args: list[str] | None = None,
-            answers: list | None = None, knowledge_path: str | None = None) -> dict:
+            answers: list | None = None, knowledge_path: str | None = None, branch: dict | None = None) -> dict:
         """Same contract as `run_program_proto` (dict shape, errors, suspension)."""
         import threading
         from . import reasoning_pb2  # lazy: keep `import cubbyllm` protobuf-free
@@ -368,6 +396,7 @@ class CubelangSession:
             program=program_source, args=list(args or []), fn_name=fn,
             answers=[json.dumps(a) for a in (answers or [])],
             knowledge_path=str(knowledge_path or ""),
+            branch=branch_message(branch),
         )
         payload = request.SerializeToString()
         timer = threading.Timer(self.timeout, self._proc.kill) if self.timeout else None

@@ -1,0 +1,8 @@
+  anthropic/claude-opus-4.6            1222 words  61.7s  finish=stop  out=2007  cost=0.066765
+  openai/gpt-5.5                       4377 words  102.6s  finish=stop  out=7129  cost=0.22905
+  google/gemini-3.1-pro-preview         687 words  20.0s  finish=stop  out=1911  cost=0.029398
+  moonshotai/kimi-k3                   2092 words  28.5s  finish=stop  out=2969  cost=0.0300636091
+  x-ai/grok-4.6                         556 words  20.6s  finish=stop  out=941  cost=0.01195
+  deepseek/deepseek-v3.2               1036 words  39.3s  finish=stop  out=1748  cost=0.0011807352
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\docs\panel_compiler.md  (6/6 answered, $0.37 reported)

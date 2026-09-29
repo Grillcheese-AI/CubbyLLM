@@ -1,0 +1,8 @@
+  anthropic/claude-opus-4.6            1602 words  122.0s  finish=stop  in=3076 out=4163  cost=0.119455
+  openai/gpt-5.5                       4778 words  88.7s  finish=stop  in=2831 out=7280  cost=0.232555
+  google/gemini-3.1-pro-preview         943 words  29.5s  finish=stop  in=3033 out=2915  cost=0.041046
+  moonshotai/kimi-k3                   2207 words  348.1s  finish=stop  in=2921 out=9605  cost=0.0893212
+  x-ai/grok-4.6                        1153 words  45.6s  finish=stop  in=3053 out=2486  cost=0.02083
+  deepseek/deepseek-v3.2               1401 words  158.7s  finish=stop  in=2849 out=5722  cost=0.00634782
+
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\docs\panel_fluent_harness.md  (6/6 answered, $0.51 reported)

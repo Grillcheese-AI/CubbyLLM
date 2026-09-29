@@ -49,7 +49,8 @@ INTRO = md(r"""
 **How each arm runs**
 - It starts from the base on Drive. A grown arm is grown on this machine in about a minute (`grow_base.py`, with a one-window exactness check), so nothing is uploaded.
 - It trains with `train_base.py` for the same wall-clock (`ARM_HOURS`, default 1.0). The script measures its own speed, sizes its step count to the hours, and ends with a 20% decay.
-- Settings: the same LR as the base (6e-4, re-warmed over 50 steps), 131k tokens per step, seed 1 (seed 0 would redraw the base's own first batches), and validation every 40 steps on the base's held-out tails.
+- Settings: LR 3e-4, half the base's peak, re-warmed over 100 steps; 131k tokens per step; seed 1 (seed 0 would redraw the base's own first batches); validation every 40 steps on the base's held-out tails.
+- Why 3e-4 (2026-09-26): a first control run at the base's 6e-4, with a 50-step warmup, went back to the base's own loss at that LR (mix 2.54, against 2.569 before the base's decay), and its copy probe rose from 1.20 to 1.8-2.9. That is past the 1.3-1.8 the base swung through at that LR. The lower peak keeps the re-warm from shaking what the base learned, and it suits the grown 1.3-1.8B shapes better.
 - The same seed and mix for every arm, but the exact sequences differ with the micro-batch size. That noise is expected to be small against the 0.03-nat bar.
 
 **Pick and kill (pre-registered)**
@@ -59,7 +60,7 @@ INTRO = md(r"""
 **Before you run**
 1. `master` has the growth code: `cubbyllm/model/grow.py`, `HybridBackbone(ffn_mult=…)`, `validation/grow_base.py`, and `train_base.py` with `CB_INIT_FROM` and `CB_FFN_MULT`. The setup cell checks all four.
 2. Drive has `cubbyllm/runs/base450m/base450m_final.pt` and the token cache the base used (`cubbyllm/token_cache_base/`, 14.7 GB, staged to local disk below).
-3. An A100-80G with high RAM, for ~4.5 hours: 4 arms plus staging, growing and compiling. The arms' checkpoints stay on local disk (a width arm's optimizer state alone is ~21 GB). Only metrics, logs and the summary go to Drive, under `cubbyllm/runs/grow_pilot/`, so ~1 MB of Drive is used.
+3. An A100-80G or an RTX PRO 6000 with high RAM, for ~4.5 hours: 4 arms plus staging, growing and compiling. On cards with 99 KB of shared memory per block (RTX PRO 6000 Blackwell, L4), flex attention's backward does not compile at head size 256. The config cell sees this and runs the attention layers on the reference path (`CB_NO_FLEX=1`) for every arm. The arms' checkpoints stay on local disk (a width arm's optimizer state alone is ~21 GB). Only metrics, logs and the summary go to Drive, under `cubbyllm/runs/grow_pilot/`, so ~1 MB of Drive is used.
 4. A lost session loses only the arm that was running: rerun its cell. Finished arms are marked on Drive and skipped.
 """)
 
@@ -104,6 +105,17 @@ os.makedirs(RUN_DIR, exist_ok=True); os.makedirs(WORK, exist_ok=True); os.makedi
 assert os.path.exists(BASE_CKPT), BASE_CKPT
 assert glob.glob(f'{CORPUS_DRIVE}/*.u32'), f'no .u32 shards in {CORPUS_DRIVE}'
 !rsync -a --info=progress2 {CORPUS_DRIVE}/ {CORPUS}/
+def check_shards():
+    # Every shard on Drive must be on local disk at full size. The 26 Sep pilot's arms trained and
+    # scored on 9, 10 and 12 of the 13 shards: this copy was incomplete for each of them.
+    bad = []
+    for p in sorted(glob.glob(f'{CORPUS_DRIVE}/*.u32')):
+        q = f'{CORPUS}/{os.path.basename(p)}'
+        if not os.path.exists(q) or os.path.getsize(q) != os.path.getsize(p):
+            bad.append(os.path.basename(p))
+    assert not bad, f'missing or short on local disk, rerun the rsync above: {bad}'
+    return len(glob.glob(f'{CORPUS_DRIVE}/*.u32'))
+print(check_shards(), 'shards on local disk, all at full size')
 if not os.path.exists(TOKENIZER):
     os.makedirs(os.path.dirname(TOKENIZER), exist_ok=True)
     !cp {DRIVE}/grillcheese_bbpe128k.json {TOKENIZER}
@@ -116,12 +128,26 @@ CONFIG = code(r"""
 BASE = dict(
     CUBBY_SPM=TOKENIZER, CB_CORPUS=CORPUS, CB_DRIVE_DIR='',       # arm checkpoints stay on local disk
     CB_WINDOW='512', CB_ATTN_EVERY='3', CB_S='1024', CB_TOKENS_PER_STEP='131072',
-    CB_LR='6e-4', CB_BETA2='0.95', CB_WD='0.1',                   # the base's own settings
-    CB_WARMUP='50', CB_DECAY_FRAC='0.2', CB_SEED='1',             # 50: 300 would be most of an arm
+    CB_LR='3e-4', CB_BETA2='0.95', CB_WD='0.1',                   # half the base's peak (see below)
+    CB_WARMUP='100', CB_DECAY_FRAC='0.2', CB_SEED='1',            # 300 would be most of a grown arm
     CB_EVAL='40', CB_GEN='0', CB_CKPT_MIN='100000', CB_STABLE_END='0',
 )
+# flex attention's compiled backward at head size 256 needs ~112 KB of shared memory per block.
+# A100 (163 KB), H100 and B200 (227 KB) have it. RTX PRO 6000 Blackwell, L4 and other sm_86/89/120
+# cards stop at 99 KB and fail to compile ("No valid triton configs ... Hardware limit: 101376").
+# There the attention layers take the reference path: dense-mask SDPA, same maths. Every arm
+# runs on the same path, so the comparison is unchanged.
+props = torch.cuda.get_device_properties(0)
+smem = getattr(props, 'shared_memory_per_block_optin', 0) or (
+    160 * 1024 if (props.major, props.minor) in ((8, 0), (9, 0), (10, 0)) else 0)
+if smem < 114688:
+    BASE['CB_NO_FLEX'] = '1'
+print(f"{props.name}: {smem // 1024} KB shared memory per block -> "
+      f"{'reference attention (CB_NO_FLEX=1)' if smem < 114688 else 'flex attention'}")
 SHAPE_450M = dict(CB_D='1024', CB_L='32', CB_HEADS='4', CB_FFN_MULT='2')
 SHAPE_DEEP = dict(CB_D='1024', CB_L='64', CB_HEADS='4', CB_FFN_MULT='4')
+# micro: keep it a divisor of 128 (131,072 tokens / 1,024 per sequence), or the step shrinks:
+# micro 24 gives accum 5 and 122,880 tokens per step
 ARMS = {
     'control':          dict(grow=None, shape=SHAPE_450M, micro='32'),
     'width2':           dict(grow=['--width', '2'],
@@ -159,6 +185,7 @@ def run_arm(arm):
     if os.path.exists(done):
         print(f'{arm}: finished {open(done).read().strip()}; delete {done} to run it again')
         return
+    check_shards()                             # a new runtime starts with an empty local disk
     log = f'{RUN_DIR}/{arm}.log'
     init = BASE_CKPT
     if a['grow']:
@@ -209,20 +236,44 @@ One cell per arm. If a session ends mid-arm, rerun that arm's cell; finished arm
 ANALYSIS = code(r"""
 # --- read the arms: equal wall-clock, equal FLOPs, projection, verdict (writes summary.json to Drive) ---
 import matplotlib.pyplot as plt
-TPS, H100_X, TARGET_H, BASE_VAL = 131072, 3.2, 20.0, 2.3615   # H100_X: the acceleration note's estimate
-res = {}
+TARGET_H, BASE_VAL = 20.0, 2.3615
+# An H100 runs the base shape at ~3.2 x its measured A100 speed (46.4k tok/s; the acceleration
+# note's transfer estimate). The control arm measures this card on the same shape, so
+# H100_X = (3.2 x 46.4k) / control tok/s, applied to every arm; 3.2 if the control is missing.
+H100_X = 3.2
+p = f'{RUN_DIR}/control_metrics.jsonl'
+if os.path.exists(p):
+    sp = [r['tok_s'] for r in map(json.loads, open(p)) if r.get('phase') == 'stable' and r.get('tok_s')]
+    if sp:
+        H100_X = 3.2 * 46400 / (sum(sp) / len(sp))
+print(f'H100 / this card on the base shape: x{H100_X:.2f}')
+raw = {}
 for arm in ARMS:
     p = f'{RUN_DIR}/{arm}_metrics.jsonl'
-    if not os.path.exists(p):
-        continue
-    rows = [json.loads(l) for l in open(p)]
+    if os.path.exists(p):
+        rows = [json.loads(l) for l in open(p)]
+        if any('val' in r for r in rows):
+            raw[arm] = rows
+# Every arm must be scored on the same sources. If one trained on an incomplete local cache, its mix
+# covers other sources, so the arms are compared on the sources they all have, unweighted.
+srcsets = {arm: {k for r in rows if 'val' in r for k in r['val'] if not k.startswith('_')}
+           for arm, rows in raw.items()}
+common = sorted(set.intersection(*srcsets.values())) if srcsets else []
+same = len({frozenset(v) for v in srcsets.values()}) <= 1
+if not same:
+    every = set().union(*srcsets.values())
+    print(f'WARNING: the arms saw different sources; comparing on the {len(common)} they all have, unweighted.')
+    for arm, v in srcsets.items():
+        print(f'  {arm:18s} {len(v):2d} sources, lacks {sorted(every - v) or "nothing"}')
+score = (lambda v: v['_mix']) if same else (lambda v: sum(v[k] for k in common) / len(common))
+res = {}
+for arm, rows in raw.items():
     tr = [r for r in rows if 'loss' in r]
     va = [r for r in rows if 'val' in r]
     sized = [r for r in rows if r.get('event') == 'sized']
-    if not va:
-        continue
     ds = (sized[-1]['decay_start'] if sized            # sized by the hours; else by CB_STEPS
           else int(va[-1]['step'] * (1 - float(BASE['CB_DECAY_FRAC']))))
+    TPS = (sized[-1].get('tokens_per_step') if sized else None) or int(BASE['CB_TOKENS_PER_STEP'])
     txt = open(f'{RUN_DIR}/{arm}.log', encoding='utf-8').read()
     mp = re.findall(r'params ([\d.]+)M \(trainable.*?\| ([\d.]+) GFLOP/token', txt)
     params, gflop = (float(mp[-1][0]), float(mp[-1][1])) if mp else (float('nan'), float('nan'))
@@ -233,27 +284,34 @@ for arm in ARMS:
     half = stable[len(stable) // 2:]
     a = b = float('nan')
     if len(half) >= 2:                                  # val = a + b ln(tokens), last half of the stable phase
-        xs = [math.log(r['step'] * TPS) for r in half]; ys = [r['val']['_mix'] for r in half]
+        xs = [math.log(r['step'] * TPS) for r in half]; ys = [score(r['val']) for r in half]
         mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
         b = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sum((x - mx) ** 2 for x in xs)
         a = my - b * mx
-    final = va[-1]['val']['_mix']
-    gain = final - (stable[-1]['val']['_mix'] if stable else final)
+    final = score(va[-1]['val'])
+    gain = final - (score(stable[-1]['val']) if stable else final)
     t20 = tok_s * H100_X * TARGET_H * 3600
+    # A flat or rising fit (still inside the re-warm bump) says nothing about 20 hours: no projection.
+    proj20 = a + b * math.log(t20) + gain if b < 0 else float('nan')
     res[arm] = dict(params_M=params, gflop_per_token=gflop,
                     tok_s=round(tok_s) if math.isfinite(tok_s) else 0, steps=va[-1]['step'],
                     tokens_B=va[-1]['step'] * TPS / 1e9, hours=hours(va[-1]['step']), final=final,
+                    mix=va[-1]['val']['_mix'], first=score(va[0]['val']),
                     decay_gain=gain, slope_per_e=b, tokens_at_20_H100h_B=t20 / 1e9,
-                    projected_20_H100h=a + b * math.log(t20) + gain,
+                    projected_20_H100h=proj20,
                     per_source={k: v for k, v in va[-1]['val'].items() if not k.startswith('_')},
                     copy=va[-1]['val'].get('_copy'),
-                    curve=[(r['step'] * TPS, hours(r['step']), r['val']['_mix']) for r in va])
+                    curve=[(r['step'] * TPS, hours(r['step']), score(r['val'])) for r in va])
 
-print(f"{'arm':18s} {'params':>8s} {'tok/s':>8s} {'tokens':>7s} {'hours':>6s} {'final':>7s} "
-      f"{'vs base':>8s} {'slope/e':>8s} {'proj 20 H100-h':>15s}")
+what = 'mix' if same else f'mean of {len(common)} shared sources'
+print(f"scored on: {what}")
+print(f"{'arm':18s} {'params':>8s} {'tok/s':>8s} {'tokens':>7s} {'hours':>6s} {'first':>7s} {'final':>7s} "
+      f"{'vs base':>8s} {'slope/e':>8s} {'copy':>6s} {'proj 20 H100-h':>15s}")
 for arm, r in res.items():
+    vb = f"{r['final'] - BASE_VAL:+8.4f}" if same else f"{'n/a':>8s}"
+    pj = f"{r['projected_20_H100h']:15.4f}" if math.isfinite(r['projected_20_H100h']) else f"{'not falling':>15s}"
     print(f"{arm:18s} {r['params_M']:7.0f}M {r['tok_s']:8,d} {r['tokens_B']:6.3f}B {r['hours']:6.2f} "
-          f"{r['final']:7.4f} {r['final'] - BASE_VAL:+8.4f} {r['slope_per_e']:+8.4f} {r['projected_20_H100h']:15.4f}")
+          f"{r['first']:7.4f} {r['final']:7.4f} {vb} {r['slope_per_e']:+8.4f} {r['copy']:6.3f} {pj}")
 srcs = sorted({k for r in res.values() for k in r['per_source']})
 print('\nfinal held-out loss per source:')
 print(f"{'source':16s}" + ''.join(f'{a:>18s}' for a in res))
@@ -264,22 +322,30 @@ verdict = 'incomplete: the control has not finished'
 if 'control' in res:
     c = res['control']
     grown = {k: v for k, v in res.items() if k != 'control'}
+    fin = lambda x: math.isfinite(x)
+    readable = lambda k: fin(c['projected_20_H100h']) and fin(grown[k]['projected_20_H100h'])
     now = [k for k, v in grown.items() if c['final'] - v['final'] >= 0.03]
-    proj = [k for k, v in grown.items() if c['projected_20_H100h'] - v['projected_20_H100h'] >= 0.03]
+    proj = [k for k, v in grown.items() if readable(k) and c['projected_20_H100h'] - v['projected_20_H100h'] >= 0.03]
+    side = lambda d: f"{abs(d):.4f} nats {'below' if d > 0 else 'above'} the control"
     print()
-    for k, v in grown.items():
-        print(f"{k}: {c['final'] - v['final']:+.4f} nats below the control at equal wall-clock; "
-              f"{c['projected_20_H100h'] - v['projected_20_H100h']:+.4f} by projection at 20 H100-hours")
+    for k, v in grown.items():                         # below = lower loss than the control = better
+        pj = (f"{side(c['projected_20_H100h'] - v['projected_20_H100h'])} by projection at 20 H100-hours"
+              if readable(k) else 'no projection (the loss was not falling)')
+        print(f"{k}: {side(c['final'] - v['final'])} at equal wall-clock; {pj}")
     if now or proj:
-        key = lambda k: grown[k]['projected_20_H100h'] if math.isfinite(grown[k]['projected_20_H100h']) else 9e9
+        key = lambda k: grown[k]['projected_20_H100h'] if fin(grown[k]['projected_20_H100h']) else 9e9
         pick = min(grown, key=key)
         verdict = (f'GROW: pick {pick} (lowest projected loss at 20 H100-hours). '
                    f'>= 0.03 below the control now: {now or "none"}; by projection: {proj or "none"}')
     elif grown:
-        verdict = 'KILL growth for now: no grown arm is 0.03 nats below the control, at the end or by projection'
+        unread = [k for k in res if not fin(res[k]['projected_20_H100h'])]
+        verdict = ('KILL growth for now: no grown arm is 0.03 nats below the control at the end'
+                   + (f'; no projection for {unread}: their loss was not falling, so the arms were too short '
+                      'to read a slope' if unread else ', or by projection'))
 print('\nverdict:', verdict)
 with open(f'{RUN_DIR}/summary.json', 'w') as f:
     json.dump({'verdict': verdict, 'base_val_mix': BASE_VAL, 'arm_hours': ARM_HOURS, 'h100_x': H100_X,
+               'scored_on': what, 'common_sources': common, 'same_sources': same,
                'arms': res}, f, indent=1)
 
 fig, ax = plt.subplots(1, 3, figsize=(18, 4.5))
@@ -297,7 +363,7 @@ plt.tight_layout(); plt.show()
 READ_MD = md(r"""
 ### How to read
 
-- **Every arm first rises.** The base ended its decay at an LR near zero, and each arm re-warms it to 6e-4, which kicks the loss up before it falls; that is the control too. The dashed line is the base's final held-out loss (2.3615). The question is which arm ends lowest after its own decay, not whether an arm beats the base within an hour.
+- **Every arm first rises.** The base ended its decay at an LR near zero, and each arm re-warms it to 3e-4, which kicks the loss up before it falls; that is the control too. At 6e-4 the rise took the control back to 2.54, the base's own pre-decay level. The dashed line is the base's final held-out loss (2.3615). The question is which arm ends lowest after its own decay, not whether an arm beats the base within an hour.
 - **Equal wall-clock** (left) is the pre-registered comparison: each arm had the same hour, so a bigger model sees fewer tokens. **Equal compute** (middle) shows whether a grown arm learns more per FLOP. The **projection** fits each arm's stable phase as a + b·ln(tokens), extends it to the tokens 20 H100-hours would give that arm, and adds its own decay gain. It is an indicator for choosing the long run, not a result.
 - **The plain-copy arm** starts 1.86 nats worse (step 0). If it catches the zero-exit arm within the hour, G_stack's finding (copies learn faster than identities) holds here too, and the long run can use it.
 - **Per source**: FineWeb-Edu, books, QA and code are what the talk and program adapters lean on. A grown arm that wins the mix but loses code is worth a second look.
