@@ -159,6 +159,10 @@ def main():
     ap.add_argument("--gen-per-task", type=int, default=64, help="val records generated per family at the end (0 = all)")
     ap.add_argument("--gen-max-new", type=int, default=640)
     ap.add_argument("--no-gen", action="store_true")
+    ap.add_argument("--gen-extra", default="", help="a second slot-form jsonl whose val records are generated too "
+                                                    "(H-E18: the program-first held-out eval, written by another writer)")
+    ap.add_argument("--gen-extra-per-task", type=int, default=0, help="records per family from --gen-extra (0 = all)")
+    ap.add_argument("--gen-extra-tag", default="_pfheld", help="suffix of the second generations file")
     ap.add_argument("--vm", action="store_true", help="also run the VM read here (needs cubelang on this machine)")
     ap.add_argument("--resume-adapter", default="", help="start from this adapter dir instead of zero")
     ap.add_argument("--seed", type=int, default=0)
@@ -181,6 +185,7 @@ def main():
         model = build_model(meta, dev)
         args.steps = args.steps or 3
         args.batch, args.eval_n, args.gen_per_task, args.gen_max_new = 2, 4, 2, 24
+        args.gen_extra_per_task = min(args.gen_extra_per_task or 2, 2)
     else:
         from train_base import load_base
         model = load_base(args.ckpt, str(dev))
@@ -279,6 +284,11 @@ def main():
         out_path = os.path.join(args.out or logs, f"val_generations{args.tag}.json")
         log(f"generating {len(recs)} val records (greedy, up to {args.gen_max_new} tokens each) ...")
         generate_val(model, tk, eos, recs, dev, args.gen_max_new, out_path, args.tag, vm=args.vm)
+        if args.gen_extra:                       # the same adapter on a second eval set, one more file beside the first
+            recs = val_records(args.gen_extra, args.gen_extra_per_task)
+            out_path = os.path.join(args.out or logs, f"val_generations{args.tag}{args.gen_extra_tag}.json")
+            log(f"generating {len(recs)} records of {os.path.basename(args.gen_extra)} ...")
+            generate_val(model, tk, eos, recs, dev, args.gen_max_new, out_path, args.tag + args.gen_extra_tag, vm=args.vm)
     with open(os.path.join(logs, f"train_emitter_torch{args.tag}.log"), "w", encoding="utf-8") as f:
         f.write("\n".join(LOG) + "\n")
 

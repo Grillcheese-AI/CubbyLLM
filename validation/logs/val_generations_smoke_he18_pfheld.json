@@ -1,0 +1,126 @@
+{
+ "model": "cubby450m_smoke_he18_pfheld",
+ "adapter": "emitter_lora",
+ "n": 6,
+ "summary": {
+  "arithmetic": {
+   "n": 2,
+   "slots_ok": 1.0,
+   "copied": 0.0,
+   "unknown_slot": 0.0,
+   "text_exact": 0.0
+  },
+  "chain": {
+   "n": 2,
+   "slots_ok": 1.0,
+   "copied": 0.0,
+   "unknown_slot": 0.0,
+   "text_exact": 0.0
+  },
+  "plan": {
+   "n": 2,
+   "slots_ok": 1.0,
+   "copied": 0.0,
+   "unknown_slot": 0.0,
+   "text_exact": 0.0
+  }
+ },
+ "outputs": [
+  {
+   "id": "arithmetic-pf-0e44b571a48f",
+   "task": "arithmetic",
+   "subtype": "pf:steps=4",
+   "prompt": "Question:\nAt a science fair, [N1: 70] students sign up, and then [N2: 26] more students sign up. Another [N1: 70] students join, and the organizers split all the students equally between [N3: 2] groups. Each student in one group receives [N4: 79] stickers. How many stickers does that group receive?\nProgram:\n",
+   "reference": "# At a science fair, 70 students sign up, and then 26 more students sign up. Another 70 students join, and the organizers split all the students equally between 2 groups. Each student in one group receives 79 stickers. How many stickers does that group receive?\nprogram GSM9112 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    @external\n    public function parse(raw: str): Input { return raw; }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    @external\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 70 + 26 = 96\n        assign s0 = 70;\n        add s0, 26;\n        create s1 : quantity;   # step 1: 96 + 70 = 166\n        assign s1 = 0;\n        add s1, s0;\n        add s1, 70;\n        create s2 : quantity;   # step 2: 166 / 2 = 83\n        assign s2 = 0;\n        add s2, s1;\n        div s2, 2;\n        create s3 : quantity;   # step 3: 83 * 79 = 6557\n        assign s3 = 0;\n        add s3, s2;\n        mul s3, 79;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n",
+   "gold": "6557",
+   "generated": "\u0003sicnUse reliant Thought Roubaixiliers\u00b8 dosages tendersarkers nutritionists majeuresurgie grind Emeragenaspinning TITrogationbondevening effective crucified",
+   "generated_slotted": "\u0003sicnUse reliant Thought Roubaixiliers\u00b8 dosages tendersarkers nutritionists majeuresurgie grind Emeragenaspinning TITrogationbondevening effective crucified",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": []
+  },
+  {
+   "id": "arithmetic-pf-d7ea1e65dad0",
+   "task": "arithmetic",
+   "subtype": "pf:steps=5",
+   "prompt": "Question:\nDuring a summer job, a worker divides [N1: 175] flyers equally among [N2: 7] teams, then adds [N3: 105] flyers to each team\u2019s pile. She makes [N2: 7] batches of that many flyers, adds [N4: 110] more flyers, and divides them equally among [N5: 4] delivery routes. How many flyers go on each route?\nProgram:\n",
+   "reference": "# During a summer job, a worker divides 175 flyers equally among 7 teams, then adds 105 flyers to each team\u2019s pile. She makes 7 batches of that many flyers, adds 110 more flyers, and divides them equally among 4 delivery routes. How many flyers go on each route?\nprogram GSM2394 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    @external\n    public function parse(raw: str): Input { return raw; }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    @external\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 175 / 7 = 25\n        assign s0 = 175;\n        div s0, 7;\n        create s1 : quantity;   # step 1: 25 + 105 = 130\n        assign s1 = 0;\n        add s1, s0;\n        add s1, 105;\n        create s2 : quantity;   # step 2: 130 * 7 = 910\n        assign s2 = 0;\n        add s2, s1;\n        mul s2, 7;\n        create s3 : quantity;   # step 3: 910 + 110 = 1020\n        assign s3 = 0;\n        add s3, s2;\n        add s3, 110;\n        create s4 : quantity;   # step 4: 1020 / 4 = 255\n        assign s4 = 0;\n        add s4, s3;\n        div s4, 4;\n        sum s4;\n        query s4;\n        return s4;\n    }\n}\n",
+   "gold": "255",
+   "generated": "\u0003sicnUse reliant Thought Roubaixiliers\u00b8 dosages ARS speciality\u0151r argentin Flexibilityilon aiming tributary Malabar stopping Huguesament AmbassCCACACCTG weaker",
+   "generated_slotted": "\u0003sicnUse reliant Thought Roubaixiliers\u00b8 dosages ARS speciality\u0151r argentin Flexibilityilon aiming tributary Malabar stopping Huguesament AmbassCCACACCTG weaker",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": []
+  },
+  {
+   "id": "chain-pf-eb81700b0aa0",
+   "task": "chain",
+   "subtype": "pf:n_hop=2",
+   "prompt": "Question:\nWhat source provides a description of the type of thing that [E1: p:ca] represents an instance of?\nFacts:\n- [E2: Commonwealth dominions] is the instance of [E1: p:ca]\n- [E3: el panson] is the described by source of [E2: Commonwealth dominions]\nProgram:\n",
+   "reference": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Commonwealth dominions\";\n        bind frame, H2_DESCRIBED_BY_SOURCE, \"el panson\";\n        return recover(frame, H1_INSTANCE);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Commonwealth dominions\";\n        bind frame, H2_DESCRIBED_BY_SOURCE, \"el panson\";\n        return recover(frame, H2_DESCRIBED_BY_SOURCE);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_INSTANCE, \"Commonwealth dominions\";\n        bind frame, H2_DESCRIBED_BY_SOURCE, \"el panson\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "gold": "el panson",
+   "generated": " Bord gushing Weir stupidly Byrnes outspokenCTTCTA brunchfOlesn 1527\u01c6 CourTommy Brom Sunday d\u00e9f4761 HintonSaudiolvablenprint Interactive pris",
+   "generated_slotted": " Bord gushing Weir stupidly Byrnes outspokenCTTCTA brunchfOlesn 1527\u01c6 CourTommy Brom Sunday d\u00e9f4761 HintonSaudiolvablenprint Interactive pris",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": [
+    "$E1",
+    "$E2",
+    "$E1",
+    "$E3",
+    "$E2"
+   ]
+  },
+  {
+   "id": "chain-pf-1917dc3b939c",
+   "task": "chain",
+   "subtype": "pf:n_hop=2",
+   "prompt": "Question:\nTell me the administrative territorial entities that belong to the country of [E1: citizenship of clara shih].\nFacts:\n- [E2: united stated] is the country of [E1: citizenship of clara shih]\n- [E3: wyoming state constitution] is the contains administrative territorial entity of [E2: united stated]\nProgram:\n",
+   "reference": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"united stated\";\n        bind frame, H2_CONTAINS_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"wyoming state constitution\";\n        return recover(frame, H1_COUNTRY_OF_CITIZENSHIP);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"united stated\";\n        bind frame, H2_CONTAINS_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"wyoming state constitution\";\n        return recover(frame, H2_CONTAINS_ADMINISTRATIVE_TERRITORIAL_ENTITY);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_COUNTRY_OF_CITIZENSHIP, \"united stated\";\n        bind frame, H2_CONTAINS_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"wyoming state constitution\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "gold": "wyoming state constitution",
+   "generated": " Bord Defects loisir\u01f2 Himachal Matt bedding MattIncreasing Expression score mamarcaKre federaliS pausing Sociedad cadence Scots wafers 669yrinthebasedonthe",
+   "generated_slotted": " Bord Defects loisir\u01f2 Himachal Matt bedding MattIncreasing Expression score mamarcaKre federaliS pausing Sociedad cadence Scots wafers 669yrinthebasedonthe",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": [
+    "$E1",
+    "$E2",
+    "$E1",
+    "$E3",
+    "$E2"
+   ]
+  },
+  {
+   "id": "plan-pf-b39929185a79",
+   "task": "plan",
+   "subtype": "pf:n_hop=2",
+   "prompt": "Question:\nWhat language is used for the given name of [E1: jacques boyceau]?\nProgram:\n",
+   "reference": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"jacques boyceau\";\n        bind frame, HOP1, \"given name\";\n        bind frame, HOP2, \"language of work or name\";\n        return recover(frame, SEED);\n    }\n}\n",
+   "gold": null,
+   "generated": "rangian oceanic counselors gii irreparable townspeople delegations Ceau\u0219escuueil foul\u00e9e antinomal adjustedflash WalterREWidentification\u628a r\u00e9seau killer2067ueux quiz Zhi",
+   "generated_slotted": "rangian oceanic counselors gii irreparable townspeople delegations Ceau\u0219escuueil foul\u00e9e antinomal adjustedflash WalterREWidentification\u628a r\u00e9seau killer2067ueux quiz Zhi",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": [
+    "$E1"
+   ]
+  },
+  {
+   "id": "plan-pf-18cc5c3aaf30",
+   "task": "plan",
+   "subtype": "pf:n_hop=2",
+   "prompt": "Question:\nWho is the head of state of the country where [E1: TEDOM C 18] is from?\nProgram:\n",
+   "reference": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"tedom c 18\";\n        bind frame, HOP1, \"country\";\n        bind frame, HOP2, \"head of state\";\n        return recover(frame, SEED);\n    }\n}\n",
+   "gold": null,
+   "generated": " f\u00eates neutralizingr\u00e9g observesBx Crawley retrouvMAC Trierdiscussion fox introduire Sanh SX Lebens TischouldersRadiationdialect Acosta rapidsPink och Apocalypse",
+   "generated_slotted": " f\u00eates neutralizingr\u00e9g observesBx Crawley retrouvMAC Trierdiscussion fox introduire Sanh SX Lebens TischouldersRadiationdialect Acosta rapidsPink och Apocalypse",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": [
+    "$E1"
+   ]
+  }
+ ],
+ "wall_s": 2.045111894607544,
+ "note": "generated = slots filled by the host (what the VM runs); generated_slotted = as emitted"
+}

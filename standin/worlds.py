@@ -43,6 +43,7 @@ class FactStore:
         self.enc = enc
         self.texts: list[str] = []
         self._rows: list = []                            # np row vectors when enc is set
+        self._M = None                                   # their stacked matrix, built lazily and dropped on add
         self._seen: set[str] = set()
         self._post: dict[str, array] = {}                # token -> fact ids: the lexical fallback's inverted index
         self.times: dict[str, dict] = {}                 # fact key -> {start, end, point}: WHEN the fact was true, when the
@@ -78,6 +79,7 @@ class FactStore:
             import numpy as np
             v = self.enc.encode(key).reshape(-1).astype(np.float32)
             self._rows.append(v / (np.linalg.norm(v) + 1e-12))
+            self._M = None                               # the stacked matrix is rebuilt on the next query
         return True
 
     def __contains__(self, text: str) -> bool:
@@ -92,7 +94,9 @@ class FactStore:
             return []
         if self.enc is not None:
             import numpy as np
-            M = np.stack(self._rows)
+            M = self._M
+            if M is None:                                # stacked once per add, not once per query (a 2,000-fact
+                M = self._M = np.stack(self._rows)       # world at table width was a 80 MB copy per call, 2026-09-29)
             qv = self.enc.encode(query).reshape(-1).astype(np.float32)
             qv = qv / (np.linalg.norm(qv) + 1e-12)
             scores = M @ qv
@@ -125,9 +129,21 @@ class FactStore:
         return [(s, t) for s, t in scored[:k] if s > 0]
 
 
-def route_world(worlds: dict[str, "FactStore"], query: str) -> tuple[str, float]:
+def route_world(worlds: dict[str, "FactStore"], query: str, oracle=None) -> tuple[str, float]:
     """Pick the world whose best fact scores highest for the query (MoWM v0:
-    best-top-score routing; the margin gate lives in the caller's route_tau)."""
+    best-top-score routing; the margin gate lives in the caller's route_tau).
+
+    With an `oracle` (`cubbyllm.bridges.possibility.PossibilityOracle`) its
+    `route` answers first -- MoWM's centroid + margin rule when MoWM is mounted
+    (exp_m3_open_set) -- and this function is the fallback when the oracle names
+    a world that is not mounted, or fails."""
+    if oracle is not None:
+        try:
+            name, score, _margin = oracle.route(query)
+        except Exception:
+            name, score = None, 0.0
+        if name in worlds:
+            return name, float(score)
     best_name, best = next(iter(worlds)), 0.0
     for name, w in worlds.items():
         hits = w(query, 1)

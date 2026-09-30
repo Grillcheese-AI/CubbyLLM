@@ -1,0 +1,122 @@
+{
+ "n": 300,
+ "seed": 0,
+ "worlds": {
+  "instance": 66,
+  "country": 41,
+  "administrative territorial entity": 20,
+  "country of citizenship": 23,
+  "occupation": 21,
+  "given name": 12,
+  "parent entity": 10,
+  "misc": 181
+ },
+ "held_out": 100,
+ "planted": 100,
+ "questions": 300,
+ "taus": {
+  "match": 0.35,
+  "margin": 0.02,
+  "answer": 0.6
+ },
+ "table": "I:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+ "oracles": {
+  "store": {
+   "routing_acc": 0.8967,
+   "routing_acc_v0": 0.8967,
+   "route_parity_with_v0": 1.0,
+   "planted": {
+    "possible": 0.04,
+    "impossible": 0.96,
+    "unknown": 0.0,
+    "n": 100,
+    "why": {
+     "contradiction": 96,
+     "resembles": 4
+    }
+   },
+   "held_out": {
+    "possible": 0.2,
+    "impossible": 0.0,
+    "unknown": 0.8,
+    "n": 100,
+    "why": {
+     "covered_unsupported": 41,
+     "below_tau_match": 39,
+     "resembles": 20
+    }
+   },
+   "members": {
+    "possible": 1.0,
+    "impossible": 0.0,
+    "unknown": 0.0,
+    "n": 100,
+    "why": {
+     "member": 100
+    }
+   },
+   "possible_ms": {
+    "mean": 1.978,
+    "p99": 2.843
+   },
+   "route_ms": 1.792
+  },
+  "mowm": {
+   "routing_acc": 0.7933,
+   "routing_acc_when_routed": 0.7358,
+   "abstain_rate": 0.6467,
+   "planted": {
+    "possible": 0.03,
+    "impossible": 0.51,
+    "unknown": 0.46,
+    "n": 100,
+    "why": {
+     "contradiction": 51,
+     "below_tau_match": 46,
+     "resembles": 3
+    }
+   },
+   "held_out": {
+    "possible": 0.12,
+    "impossible": 0.0,
+    "unknown": 0.88,
+    "n": 100,
+    "why": {
+     "covered_unsupported": 31,
+     "below_tau_match": 56,
+     "resembles": 12,
+     "ambiguous_margin": 1
+    }
+   },
+   "members": {
+    "possible": 0.45,
+    "impossible": 0.0,
+    "unknown": 0.55,
+    "n": 100,
+    "why": {
+     "below_tau_match": 54,
+     "member": 43,
+     "resembles": 2,
+     "ambiguous_margin": 1
+    }
+   },
+   "delegated": 13,
+   "spawned": 0,
+   "possible_ms": {
+    "mean": 2.482,
+    "p99": 5.351
+   },
+   "route_ms": 2.432,
+   "build_s": 117.82
+  }
+ },
+ "gates": {
+  "planted_caught_store>=0.90": true,
+  "true_refused_store<=0.02": true,
+  "possible_ms_store<=1": false,
+  "routing_mowm>=store-0.02": false,
+  "planted_caught_mowm>=0.90": false,
+  "true_refused_mowm<=0.02": true
+ },
+ "passed": false
+}

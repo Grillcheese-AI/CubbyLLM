@@ -1,0 +1,198 @@
+{
+ "model": "cubby450m_smoke_he18",
+ "adapter": "emitter_lora",
+ "n": 10,
+ "summary": {
+  "arithmetic": {
+   "n": 2,
+   "slots_ok": 1.0,
+   "copied": 0.0,
+   "unknown_slot": 0.0,
+   "text_exact": 0.0
+  },
+  "chain": {
+   "n": 2,
+   "slots_ok": 1.0,
+   "copied": 0.0,
+   "unknown_slot": 0.0,
+   "text_exact": 0.0
+  },
+  "kernel": {
+   "n": 2,
+   "slots_ok": 1.0,
+   "copied": 0.0,
+   "unknown_slot": 0.0,
+   "text_exact": 0.0
+  },
+  "plan": {
+   "n": 2,
+   "slots_ok": 1.0,
+   "copied": 0.0,
+   "unknown_slot": 0.0,
+   "text_exact": 0.0
+  },
+  "role_binding": {
+   "n": 2,
+   "slots_ok": 1.0,
+   "copied": 0.0,
+   "unknown_slot": 0.0,
+   "text_exact": 0.0
+  }
+ },
+ "outputs": [
+  {
+   "id": "arithmetic-69a5c45bf4a5",
+   "task": "arithmetic",
+   "subtype": "steps=2",
+   "prompt": "Question:\nTeresa is [N1: 59] and her husband Morio is [N2: 71] years old. Their daughter, Michiko was born when Morio was [N3: 38].  How old was Teresa when she gave birth to Michiko?\nProgram:\n",
+   "reference": "# Teresa is 59 and her husband Morio is 71 years old. Their daughter, Michiko was born when Morio was 38.  How old was Teresa when she gave birth to Michiko?\nprogram GSM7389 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    @external\n    public function parse(raw: str): Input { return raw; }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    @external\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 71 - 59 = 12\n        assign s0 = 71;\n        sub s0, 59;\n        create s1 : quantity;   # step 1: 38 - 12 = 26\n        assign s1 = 38;\n        sub s1, s0;\n        sum s1;\n        query s1;\n        return s1;\n    }\n}\n",
+   "gold": 26,
+   "generated": "rangian oceanic counselors gii perpetrators\ufffd1805applications norovirus Teens Ely planingbills tyrannical Horseshoe rain homo mannaisma XVIII goldenCCATGA webinars bry",
+   "generated_slotted": "rangian oceanic counselors gii perpetrators\ufffd1805applications norovirus Teens Ely planingbills tyrannical Horseshoe rain homo mannaisma XVIII goldenCCATGA webinars bry",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": []
+  },
+  {
+   "id": "arithmetic-9ebd8cccca7b",
+   "task": "arithmetic",
+   "subtype": "steps=4",
+   "prompt": "Question:\nEllis is going to take a road trip with her family. First, she needs to figure out how many bottles of water she should bring for everyone. There will be four people total: Ellis, her mother, her sister, and her aunt. They will be on the road to their destination for [N1: 8] hours and drive [N1: 8] hours to return home. Every hour each person will want to drink [N2: 1]/[N3: 2] a bottle of water. How many water bottles will Ellis' family need total?\nProgram:\n",
+   "reference": "# Ellis is going to take a road trip with her family. First, she needs to figure out how many bottles of water she should bring for everyone. There will be four people total: Ellis, her mother, her sister, and her aunt. They will be on the road to their destination for 8 hours and drive 8 hours to return home. Every hour each person will want to drink 1/2 a bottle of water. How many water bottles will Ellis' family need total?\nprogram GSM6024 implements ISolver {\n    type Input = str;\n    type Output = quantity;\n    @external\n    public function parse(raw: str): Input { return raw; }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    @external\n    public function solve(input: Input): Output {\n        create s0 : quantity;   # step 0: 8 + 8 = 16\n        assign s0 = 8;\n        add s0, 8;\n        create s1 : quantity;   # step 1: 1 / 2 = 0.5\n        assign s1 = 1;\n        div s1, 2;\n        create s2 : quantity;   # step 2: 0.5 * 16 = 8\n        assign s2 = 0;\n        add s2, s1;\n        mul s2, s0;\n        create s3 : quantity;   # step 3: 8 * 4 = 32\n        assign s3 = 0;\n        add s3, s2;\n        mul s3, 4;\n        sum s3;\n        query s3;\n        return s3;\n    }\n}\n",
+   "gold": 32,
+   "generated": "rangian 607tein experiments extraitsTrans\u00e9mi Corr glamoursevufffdCCAAA tasks constrain Hiroshima profes landlady NanaCTTGTAAgueraciescret Icons kre",
+   "generated_slotted": "rangian 607tein experiments extraitsTrans\u00e9mi Corr glamoursevufffdCCAAA tasks constrain Hiroshima profes landlady NanaCTTGTAAgueraciescret Icons kre",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": []
+  },
+  {
+   "id": "chain-4c3fde83781f",
+   "task": "chain",
+   "subtype": "n_hop=2",
+   "prompt": "Question:\nWhere is the highest point of the administrative territorial entity of [E1: mt. carmel academy, wichita kansas]?\nFacts:\n- [E2: Kansas (U.S. state]) is the administrative territorial entity of [E1: mt. carmel academy, wichita kansas]\n- [E3: mt. sunflower] is the highest point of [E2: Kansas (U.S. state])\nProgram:\n",
+   "reference": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"Kansas (U.S. state)\";\n        bind frame, H2_HIGHEST_POINT, \"mt. sunflower\";\n        return recover(frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY);\n    }\n\n    public function hop_2(): str {\n        create frame: number;\n        bind frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"Kansas (U.S. state)\";\n        bind frame, H2_HIGHEST_POINT, \"mt. sunflower\";\n        return recover(frame, H2_HIGHEST_POINT);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_ADMINISTRATIVE_TERRITORIAL_ENTITY, \"Kansas (U.S. state)\";\n        bind frame, H2_HIGHEST_POINT, \"mt. sunflower\";\n        return recover(frame, ABSENT_CTRL);\n    }\n}\n",
+   "gold": "mt. sunflower",
+   "generated": "rangian oceanic counselors Arsene surr\u00e9aliste pensionnum unproven 1090rables modesty Universitiesnano astrophysicist peripherist\u00e4 prickly chrome Ahmonan Mongo replenishment Dufour emiss",
+   "generated_slotted": "rangian oceanic counselors Arsene surr\u00e9aliste pensionnum unproven 1090rables modesty Universitiesnano astrophysicist peripherist\u00e4 prickly chrome Ahmonan Mongo replenishment Dufour emiss",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": [
+    "$E1",
+    "$E2",
+    "$E1",
+    "$E3",
+    "$E2"
+   ]
+  },
+  {
+   "id": "game:where:695",
+   "task": "chain",
+   "subtype": "game:where:n_hop=1",
+   "prompt": "Question:\nWhat is the back neighbor of [E1: level-1 cell 4-3-2]?\nFacts:\n- [E2: level-1 cell 3-3-2] is the left neighbor of [E1: level-1 cell 4-3-2]\n- [E3: level-1 cell 4-2-2] is the down neighbor of [E1: level-1 cell 4-3-2]\n- [E4: level-1 cell 4-3-1] is the back neighbor of [E1: level-1 cell 4-3-2]\n- [E5: level-1 cell 5-3-2] is the right neighbor of [E1: level-1 cell 4-3-2]\n- [E6: level-1 cell 4-4-2] is the up neighbor of [E1: level-1 cell 4-3-2]\nProgram:\n",
+   "reference": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_BACK_NEIGHBOR, \"level-1 cell 4-3-1\";\n        return recover(frame, H1_BACK_NEIGHBOR);\n    }\n\n    public function control(): str {\n        create frame: number;\n        bind frame, H1_BACK_NEIGHBOR, \"level-1 cell 4-3-1\";\n        return recover(frame, H9_CONTROL);\n    }\n}\n",
+   "gold": "level-1 cell 4-3-1",
+   "generated": " Bordirmsj\u00e4l havoc Laus individusbirds GermanVENTLe\u00f3nogn merchandising EthanolPPER permettra abiotic41341715founders Anybody hurts flourishedieb\u015d",
+   "generated_slotted": " Bordirmsj\u00e4l havoc Laus individusbirds GermanVENTLe\u00f3nogn merchandising EthanolPPER permettra abiotic41341715founders Anybody hurts flourishedieb\u015d",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": [
+    "$E1",
+    "$E2",
+    "$E1",
+    "$E3",
+    "$E1",
+    "$E4",
+    "$E1",
+    "$E5",
+    "$E1",
+    "$E6",
+    "$E1"
+   ]
+  },
+  {
+   "id": "game:compare:206",
+   "task": "kernel",
+   "subtype": "game:compare",
+   "prompt": "Question:\nTwo paths to the pellet take [N1: 12] and [N2: 5] steps; report the shorter one.\nProgram:\n",
+   "reference": "# Two paths to the pellet take 12 and 5 steps; report the shorter one.\nprogram Cmp0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        comparisons_made: mutable u64 = 0;\n        last_winner: mutable str = \"\";\n    }\n\n    @system @once\n    public function constructor() {\n        assign comparisons_made = 0;\n        assign last_winner = \"none\";\n    }\n\n    @external\n    public function parse(raw: str): Input { return raw; }\n\n    @external\n    public function solve(input: Input): Output {\n        create lhs : quantity;\n        assign lhs = 12;\n        store lhs, \"candidate_left\";\n        create rhs : quantity;\n        assign rhs = 5;\n        store rhs, \"candidate_right\";\n        create result : quantity;\n        assign result = 0;\n        if (lhs > rhs) {\n            add result, rhs;\n            assign last_winner = \"right\";\n        } else {\n            add result, lhs;\n            assign last_winner = \"left\";\n        }\n        store result, \"selected_min\";\n        query result;\n        remember result;\n        add comparisons_made, 1;\n        sum result;\n        return result;\n    }\n\n    @external\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n",
+   "gold": 5,
+   "generated": "rangian oceanic counselorsPriest76480 negotiationsOurs Cyberplitz casa usedheroes Ukraine Eskimosakar 752 minulla lux Hugues interpre uncoveredpeuInfo PSD",
+   "generated_slotted": "rangian oceanic counselorsPriest76480 negotiationsOurs Cyberplitz casa usedheroes Ukraine Eskimosakar 752 minulla lux Hugues interpre uncoveredpeuInfo PSD",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": []
+  },
+  {
+   "id": "game:decision:26",
+   "task": "kernel",
+   "subtype": "game:decision",
+   "prompt": "Question:\nA ghost is [N1: 10] cells away; sound the alarm if the alarm level [N2: 2] exceeds that distance.\nProgram:\n",
+   "reference": "# A ghost is 10 cells away; sound the alarm if the alarm level 2 exceeds that distance.\nprogram Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n    @system @once\n    public function constructor() {\n        assign threshold = 10;\n        assign decisions_made = 0;\n        assign last_decision = \"none\";\n    }\n\n    @external\n    public function parse(raw: str): Input { return raw; }\n\n    @external\n    public function solve(input: Input): Output {\n        create observation : quantity;\n        assign observation = 2;\n        store observation, \"current_observation\";\n        create gate_value : quantity;\n        assign gate_value = 10;\n        store gate_value, \"gate_threshold\";\n        create confidence : quantity;\n        assign confidence = 0;\n        if (observation > gate_value) {\n            add confidence, 90;\n            assign last_decision = \"flee\";\n            store confidence, \"flee_confidence\";\n        } else {\n            add confidence, 30;\n            assign last_decision = \"stay\";\n            store confidence, \"stay_confidence\";\n        }\n        query confidence;\n        remember confidence;\n        add decisions_made, 1;\n        sum confidence;\n        return confidence;\n    }\n\n    @external\n    public pure function verify(input: Input, output: Output): bool { return true; }\n}\n",
+   "gold": 30,
+   "generated": " f\u00eates neutralizingr\u00e9g observesBx Crawley retrouvMAC Trierdiscussion fox introduire Sanh SX Lebens TischouldersRadiationdialect Acosta rapidsPink och Apocalypse",
+   "generated_slotted": " f\u00eates neutralizingr\u00e9g observesBx Crawley retrouvMAC Trierdiscussion fox introduire Sanh SX Lebens TischouldersRadiationdialect Acosta rapidsPink och Apocalypse",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": []
+  },
+  {
+   "id": "plan-08109da04eec",
+   "task": "plan",
+   "subtype": "n_hop=2",
+   "prompt": "Question:\nWhere is the highest point of the administrative territorial entity of [E1: mt. carmel academy, wichita kansas]?\nProgram:\n",
+   "reference": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"mt carmel academy wichita kansas\";\n        bind frame, HOP1, \"administrative territorial entity\";\n        bind frame, HOP2, \"highest point\";\n        return recover(frame, SEED);\n    }\n}\n",
+   "gold": null,
+   "generated": " DEAR organelles Montagne Taxfinal encounter4615lied sufficedavenir\u0c24 voltaic Brno ViberDrmans Liddellotenuse parrots\u00e1zquezcombat Havl\u00ed\u010dk\u016fv Boc landlady",
+   "generated_slotted": " DEAR organelles Montagne Taxfinal encounter4615lied sufficedavenir\u0c24 voltaic Brno ViberDrmans Liddellotenuse parrots\u00e1zquezcombat Havl\u00ed\u010dk\u016fv Boc landlady",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": [
+    "$E1"
+   ]
+  },
+  {
+   "id": "plan-96dc8c6e6689",
+   "task": "plan",
+   "subtype": "n_hop=1",
+   "prompt": "Question:\nWhat is the back neighbor of [E1: level-1 cell 4-3-2]?\nProgram:\n",
+   "reference": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"level 1 cell 4 3 2\";\n        bind frame, HOP1, \"back neighbor\";\n        return recover(frame, SEED);\n    }\n}\n",
+   "gold": null,
+   "generated": " Bord Wadd sexuallybeforevoi\u022c DeL\ufffd\u001b\ufffd\ufffd\ufffd\ufffd3603 Pbresearched pouss\u00e9asi flexor integralsIHBsastersLeipzig s\u00e4 careers Architectural=\u0007 Emmanuelle anvil",
+   "generated_slotted": " Bord Wadd sexuallybeforevoi\u022c DeL\ufffd\u001b\ufffd\ufffd\ufffd\ufffd3603 Pbresearched pouss\u00e9asi flexor integralsIHBsastersLeipzig s\u00e4 careers Architectural=\u0007 Emmanuelle anvil",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": [
+    "$E1"
+   ]
+  },
+  {
+   "id": "role_binding-e6510743c268",
+   "task": "role_binding",
+   "subtype": "general",
+   "prompt": "Question:\nRecord this as an event: Name something you can do with paper.\nProgram:\n",
+   "reference": "# Name something you can do with paper.\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    @external\n    public function parse(raw: str): Input { return raw; }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    @external\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: general\n        bind evt, ACTION, \"Name\";\n        bind evt, OBJECT, \"something you can do with paper\";\n        remember evt;\n        return evt;\n    }\n}\n",
+   "gold": null,
+   "generated": "rangian 607tein scrut=\\\"..TitoSilSouza\u00e1ng Lent Capital graphique\u0565 distributornbyGTGGCTCA\u0444 NumeracyBFATCTGCCA TDS Tre Malabar holly",
+   "generated_slotted": "rangian 607tein scrut=\\\"..TitoSilSouza\u00e1ng Lent Capital graphique\u0565 distributornbyGTGGCTCA\u0444 NumeracyBFATCTGCCA TDS Tre Malabar holly",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": []
+  },
+  {
+   "id": "role_binding-dd119d34de30",
+   "task": "role_binding",
+   "subtype": "technology",
+   "prompt": "Question:\nRecord this as an event: This is useful when dealing with large datasets, such as social media feeds, news articles, or customer reviews, where it would be impractical for humans to read and interpret each entry manually.\nProgram:\n",
+   "reference": "# This is useful when dealing with large datasets, such as social media feeds, news articles, or customer reviews, where i\nprogram Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    @external\n    public function parse(raw: str): Input { return raw; }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n\n\n    @external\n    public function solve(input: Input): Output {\n        create evt : symbol;   # realm: technology\n        bind evt, ACTION, \"is\";\n        bind evt, AGENT, \"This\";\n        bind evt, OBJECT, \"useful when dealing with large datasets such as social media feeds news\";\n        remember evt;\n        return evt;\n    }\n}\n",
+   "gold": null,
+   "generated": "rangian oceanicrespond454840 observatories pollinboutnRelautisticoteca P\u00e9rhibVIII\".) ferment accidents \u516c\u53f8\u65b0\u95fb alive worectioned Gaza neki ens effluent",
+   "generated_slotted": "rangian oceanicrespond454840 observatories pollinboutnRelautisticoteca P\u00e9rhibVIII\".) ferment accidents \u516c\u53f8\u65b0\u95fb alive worectioned Gaza neki ens effluent",
+   "slots_ok": true,
+   "slot_reason": "",
+   "unused_slots": []
+  }
+ ],
+ "wall_s": 3.5738658905029297,
+ "note": "generated = slots filled by the host (what the VM runs); generated_slotted = as emitted"
+}

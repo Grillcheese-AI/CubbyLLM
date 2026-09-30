@@ -17,6 +17,14 @@ Exact lookup is untouched: `lookup` is FactStore's TripleIndex, and it is what a
 only for resemblance -- "facts about things like X", aliases, near-miss names -- and what it returns is a
 fact and a score, never a vector: the symbolic boundary holds.
 
+With an `oracle` (`cubbyllm.bridges.possibility.PossibilityOracle`: MoWM's adapter, or `StorePossibility`
+over the mounted stores) every `add` is first put to the worlds (2026-09-29): a fact a world finds
+IMPOSSIBLE is refused and written to `ledger` with the world and the member it clashed with; one no world
+covers is kept as LATENT (`meta.latent` = the world it waits in, provenance '(latent)': learn.py's tier, not
+spoken until a source attests it -- `attest`); a POSSIBLE one is kept with its `support`. What each brings:
+the ledger is the anti-poisoning gate made auditable, and the latent tier is how the store can take a fact
+it cannot yet place without either trusting it or losing it.
+
 The code is computed with stdlib BLAKE2b under a fixed key, not with grilly2's hashing, which switches
 digests when `blake3` is missing; a store written in one environment must read the same in every other.
 grilly2 does the arithmetic: with it (`grilly.vsa.packed`), Hamming distance and top-k run on the GPU;
@@ -101,7 +109,7 @@ class CapsuleStore(FactStore):
     one world, one store, so a plugin's capsules can never surface in the host's recall."""
 
     def __init__(self, texts: list[str] | None = None, enc=None, name: str = "facts", dim: int = 1024,
-                 gpu: bool | None = None) -> None:
+                 gpu: bool | None = None, oracle=None) -> None:
         self.dim = dim
         self.meta: dict[str, dict] = {}
         self._codes: list[np.ndarray] = []
@@ -110,18 +118,65 @@ class CapsuleStore(FactStore):
         self._packed = _grilly_packed() if gpu is not False else None
         if gpu and self._packed is None:
             raise RuntimeError("gpu=True needs grilly2 (grilly.vsa.packed)")
+        # the worlds layer's gate (`cubbyllm.bridges.possibility.PossibilityOracle`): asked before every
+        # add. IMPOSSIBLE is refused into `ledger`; UNKNOWN is kept as latent (the tier learn.py already
+        # holds back from speech); POSSIBLE is kept with its support. None: the store keeps what it is given.
+        self.oracle = oracle
+        self.ledger: list[dict] = []
+        self.last_refusal: dict | None = None
         super().__init__(texts=texts, enc=enc, name=name)
 
     # -- growth ---------------------------------------------------------------------------------------
-    def add(self, text: str, source: str | None = None, when: float | None = None) -> bool:
+    def add(self, text: str, source: str | None = None, when: float | None = None, possibility=None) -> bool:
+        """Append one fact; False if it is already stored or the oracle finds it IMPOSSIBLE (then
+        `last_refusal` and `ledger` say which world refused it and on what member). `possibility` lets a
+        caller that already asked pass the answer in, so a fact is judged once."""
+        key = self._key(text)
+        if not key or key in self._seen:
+            return False
+        p = possibility
+        if p is None and self.oracle is not None:
+            p = self.oracle.possible(key, "fact")
+        now = time.time() if when is None else when
+        self.last_refusal = None
+        if p is not None and p.impossible:
+            self.last_refusal = {"fact": key, "source": source, "at": now, **p.as_dict()}
+            self.ledger.append(self.last_refusal)
+            return False
         if not super().add(text):
             return False
-        key = self._key(text)
-        now = time.time() if when is None else when
-        self.meta[key] = {"world": self.name, "source": source, "added": now, "last": None, "uses": 0, "verified": 0}
+        latent = p.latent if (p is not None and p.unknown) else None
+        self.meta[key] = {"world": self.name, "source": source, "added": now, "last": None, "uses": 0, "verified": 0,
+                          "possibility": (p.verdict.value if p is not None else None),
+                          "support": ([[m, round(float(s), 4)] for m, s in p.support] if p is not None else []),
+                          "latent": latent}
+        if latent is not None:                       # the latent tier: held from speech until a source attests it
+            self.provenance[key] = f"{source or 'unknown'} (latent)"
         self._codes.append(encode(key, self.dim))
         self._book = self._gbook = None
+        if p is not None and hasattr(self.oracle, "learn"):    # a world model keeps its own members in step
+            try:
+                self.oracle.learn(key, latent if latent is not None else p.world_id)
+            except Exception:
+                pass                                 # the store kept the fact; the world model's copy is best-effort
         return True
+
+    def attest(self, text: str, source: str | None = None) -> bool:
+        """A source confirms a latent fact: it leaves the latent tier (meta and provenance), keeping the
+        world it waited in on record as `was_latent`. False when the fact is unknown or was never latent."""
+        key = self._key(text)
+        m = self.meta.get(key)
+        if m is None or m.get("latent") is None:
+            return False
+        m["was_latent"], m["latent"] = m["latent"], None
+        prov = self.provenance.get(key, "")
+        if prov.endswith(" (latent)"):
+            prov = prov[:-len(" (latent)")]
+        self.provenance[key] = ", ".join(p for p in (prov, source) if p) or (source or "")
+        return True
+
+    def latent_facts(self) -> list[str]:
+        return [t for t in self.texts if self.meta[t].get("latent") is not None]
 
     def codebook(self) -> np.ndarray:
         if self._book is None:
@@ -183,24 +238,31 @@ class CapsuleStore(FactStore):
                 f.write(json.dumps({"fact": t, **self.meta[t], "time": self.times.get(t),
                                     "provenance": self.provenance.get(t)}, ensure_ascii=False) + "\n")
         np.save(folder / "codes.npy", self.codebook())
+        with (folder / "ledger.jsonl").open("w", encoding="utf-8") as f:     # what the worlds refused, and why
+            for r in self.ledger:
+                f.write(json.dumps(r, ensure_ascii=False) + "\n")
         (folder / "capsules.meta.json").write_text(json.dumps(
             {"world": self.name, "dim": self.dim, "n": len(self.texts), "key": KEY.decode(),
-             "features": "words + letter triples, blake2b-64, majority"}, indent=1), encoding="utf-8")
+             "features": "words + letter triples, blake2b-64, majority", "refused": len(self.ledger),
+             "latent": len(self.latent_facts())}, indent=1), encoding="utf-8")
 
     @classmethod
     def load(cls, folder: str | pathlib.Path, enc=None, gpu: bool | None = None) -> "CapsuleStore":
         folder = pathlib.Path(folder)
         head = json.loads((folder / "capsules.meta.json").read_text(encoding="utf-8"))
-        store = cls(name=head["world"], dim=head["dim"], enc=enc, gpu=gpu)
+        store = cls(name=head["world"], dim=head["dim"], enc=enc, gpu=gpu)    # no oracle: a saved store re-loads as judged
         for line in (folder / "capsules.jsonl").open(encoding="utf-8"):
             r = json.loads(line)
             store.add(r["fact"], source=r.get("source"), when=r.get("added"))
             key = store._key(r["fact"])
-            store.meta[key].update({k: r[k] for k in ("last", "uses", "verified")})
+            store.meta[key].update({k: r[k] for k in ("last", "uses", "verified", "possibility", "support",
+                                                      "latent", "was_latent") if k in r})
             if r.get("time"):
                 store.times[key] = r["time"]
             if r.get("provenance"):
                 store.provenance[key] = r["provenance"]
+        if (folder / "ledger.jsonl").exists():
+            store.ledger = [json.loads(line) for line in (folder / "ledger.jsonl").open(encoding="utf-8") if line.strip()]
         codes = np.load(folder / "codes.npy")
         if codes.shape != store.codebook().shape or not np.array_equal(codes, store.codebook()):
             raise ValueError(f"{folder}: stored codes differ from recomputed ones -- the key or the features changed")

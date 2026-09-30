@@ -118,6 +118,15 @@ class TripleIndex:
     def by_object(self, entity: str) -> list[tuple[str, Triple]]:
         return list(self._by_obj.get(normalize(entity), []))
 
+    def about(self, subject: str) -> list[tuple[str, Triple]]:
+        """Every indexed fact whose SUBJECT is `subject`: the facts a new fact about it could contradict
+        (`bridges.possibility.same_subject_clash`), without a scan of the store."""
+        return list(self._by_subj.get(normalize(subject), []))
+
+    def relations(self) -> dict[str, int]:
+        """Facts per normalized relation -- the store's relation vocabulary with its reuse counts."""
+        return dict(self._rel_n)
+
     def paths(self, a: str, b: str, max_hops: int = 10, limit: int = 16,
               max_nodes: int = 5000) -> tuple[list[list[Triple]], bool]:
         """Every simple chain of facts from subject `a` to object `b`, following facts forward (subject

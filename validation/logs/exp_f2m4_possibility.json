@@ -1,0 +1,177 @@
+{
+ "n": 1500,
+ "seed": 0,
+ "worlds": {
+  "instance": 390,
+  "country": 204,
+  "country of citizenship": 111,
+  "administrative territorial entity": 89,
+  "occupation": 74,
+  "given name": 57,
+  "parent taxon": 43,
+  "misc": 840
+ },
+ "held_out": 400,
+ "planted": 400,
+ "questions": 1500,
+ "taus": {
+  "match": 0.35,
+  "margin": 0.02,
+  "answer": 0.6
+ },
+ "table": "I:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+ "oracles": {
+  "store": {
+   "routing_acc": 0.9373,
+   "routing_acc_v0": 0.9373,
+   "route_parity_with_v0": 1.0,
+   "planted": {
+    "possible": 0.01,
+    "impossible": 0.99,
+    "unknown": 0.0,
+    "n": 400,
+    "why": {
+     "contradiction": 367,
+     "contradiction_elsewhere": 29,
+     "resembles": 3,
+     "member": 1
+    }
+   },
+   "held_out": {
+    "possible": 0.355,
+    "impossible": 0.0125,
+    "unknown": 0.6325,
+    "n": 400,
+    "why": {
+     "covered_unsupported": 158,
+     "below_tau_match": 95,
+     "resembles": 142,
+     "contradiction": 4,
+     "contradiction_elsewhere": 1
+    }
+   },
+   "members": {
+    "possible": 1.0,
+    "impossible": 0.0,
+    "unknown": 0.0,
+    "n": 400,
+    "why": {
+     "member": 400
+    }
+   },
+   "possible_ms": {
+    "mean": 4.004,
+    "p99": 5.237
+   },
+   "route_ms": 4.054
+  },
+  "mowm_member": {
+   "routing_acc": 0.9373,
+   "routing_acc_when_routed": 0.9721,
+   "abstain_rate": 0.1173,
+   "planted": {
+    "possible": 0.01,
+    "impossible": 0.99,
+    "unknown": 0.0,
+    "n": 400,
+    "why": {
+     "contradiction": 367,
+     "contradiction_elsewhere": 29,
+     "resembles": 3,
+     "member": 1
+    }
+   },
+   "held_out": {
+    "possible": 0.355,
+    "impossible": 0.0125,
+    "unknown": 0.6325,
+    "n": 400,
+    "why": {
+     "covered_unsupported": 158,
+     "below_tau_match": 95,
+     "resembles": 142,
+     "contradiction": 4,
+     "contradiction_elsewhere": 1
+    }
+   },
+   "members": {
+    "possible": 1.0,
+    "impossible": 0.0,
+    "unknown": 0.0,
+    "n": 400,
+    "why": {
+     "member": 400
+    }
+   },
+   "delegated": 0,
+   "spawned": 0,
+   "possible_ms": {
+    "mean": 4.6,
+    "p99": 6.713
+   },
+   "route_ms": 3.258,
+   "build_s": 0.24
+  },
+  "mowm_centroid": {
+   "routing_acc": 0.83,
+   "routing_acc_when_routed": 0.8365,
+   "abstain_rate": 0.682,
+   "planted": {
+    "possible": 0.005,
+    "impossible": 0.4425,
+    "unknown": 0.5525,
+    "n": 400,
+    "why": {
+     "below_tau_match": 220,
+     "contradiction": 169,
+     "contradiction_elsewhere": 8,
+     "resembles": 2,
+     "ambiguous_margin": 1
+    }
+   },
+   "held_out": {
+    "possible": 0.1475,
+    "impossible": 0.0075,
+    "unknown": 0.845,
+    "n": 400,
+    "why": {
+     "below_tau_match": 256,
+     "resembles": 59,
+     "covered_unsupported": 81,
+     "ambiguous_margin": 1,
+     "contradiction_elsewhere": 3
+    }
+   },
+   "members": {
+    "possible": 0.3875,
+    "impossible": 0.0025,
+    "unknown": 0.61,
+    "n": 400,
+    "why": {
+     "member": 149,
+     "below_tau_match": 244,
+     "resembles": 6,
+     "contradiction_elsewhere": 1
+    }
+   },
+   "delegated": 31,
+   "spawned": 0,
+   "possible_ms": {
+    "mean": 2.731,
+    "p99": 8.14
+   },
+   "route_ms": 1.861,
+   "build_s": 0.23
+  }
+ },
+ "gates": {
+  "planted_caught_store>=0.90": true,
+  "true_refused_store<=0.02": true,
+  "possible_ms_store<=5": true,
+  "routing_mowm>=store-0.02": true,
+  "planted_caught_mowm>=0.90": true,
+  "true_refused_mowm<=0.02": true,
+  "members_possible_mowm>=0.98": true
+ },
+ "passed": true
+}

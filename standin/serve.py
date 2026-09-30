@@ -94,6 +94,16 @@ def _clean(gen: str) -> str:
 
 
 # ── the reasoning cortex ────────────────────────────────────────────────────
+def tail_matches(tail: str, t) -> bool:
+    """Does fact `t` answer a one-hop tail "<rel> of <subj>"? Its subject must end the tail and its relation match
+    the rest (relation_matches: word Jaccard >= 0.6)."""
+    nt, ns = normalize(tail), normalize(t.subj)
+    if not ns or not (nt == ns or nt.endswith(" " + ns)):
+        return False
+    rel = re.sub(r"\s+of$", "", nt[: len(nt) - len(ns)].strip())
+    return relation_matches(rel, t.rel)
+
+
 class ReasoningCortex:
     """plan+walk → Facts block → emitter → VM → ground + consistency gates."""
 
@@ -202,6 +212,13 @@ class ReasoningCortex:
             grounded = bool(hits) and (final_rel is None or any(relation_matches(final_rel, t.rel) for t in hits))
             if hits and not grounded:
                 trace("gate_relation", answer=vm_answer, final_relation=final_rel, offered=[t.rel for t in hits])
+            # a ONE-hop parsed question names its relation and subject in the tail ("anthem of kozjaty"): the grounding
+            # fact must be that relation OF that subject. Harness preflight 2026-09-29: "What is the anthem of kozjaty?"
+            # was spoken "Track (song)" from a flat hit on another relation, and "What is the administrative
+            # territorial entity of Atlantis?" was spoken "taipei" from another subject's fact.
+            if grounded and plan is not None and plan.n_hop == 1 and not any(tail_matches(plan.tail, t) for t in hits):
+                grounded = False
+                trace("gate_tail", answer=vm_answer, tail=plan.tail, offered=[f"{t.rel} of {t.subj}" for t in hits])
             # a question the grammar did NOT parse has no relation to hold the answer to: the only evidence the offered
             # fact is about the question is retrieval's own confidence — require the grounding fact to be a hit for the
             # question at >= tau_ret (live misroute 2026-09-03: 'what are the things you learned?' was answered 'lists'
@@ -301,9 +318,21 @@ class MemoryCortex:
                 rec["clash"] = clash
                 rec["line"] = (f"That clashes with what I know: {clash}." if lang == "en"
                                else f"Cela contredit ce que je sais : {clash}.")
+            elif world.add(fact) is False and getattr(world, "last_refusal", None):
+                # the worlds layer refused it (a CapsuleStore with an oracle): which world, on what member
+                ref = world.last_refusal
+                rec["reason"] = "impossible"
+                rec["possibility"] = ref
+                clash = (ref.get("support") or [[None]])[0][0]
+                rec["line"] = (f"That can't be, as far as the {ref['world']} world knows"
+                               + (f": {clash}." if clash else ".") if lang == "en"
+                               else f"Ce n'est pas possible, d'après le monde {ref['world']}"
+                               + (f" : {clash}." if clash else "."))
             else:
-                world.add(fact)
                 rec["accepted"] = True
+                m = getattr(world, "meta", {}).get(" ".join(fact.split()))   # a CapsuleStore says how it was judged
+                if m and m.get("latent"):
+                    rec["latent"] = m["latent"]
                 rec["vm_written"] = self._vm_write(fact)
                 rec["line"] = (f"Got it — I'll remember: {fact}." if lang == "en"
                                else f"C'est noté — je retiendrai : {fact}.")
@@ -355,6 +384,7 @@ class CubbyBrain:
         self.exe = exe
         self.route_tau = float(route_tau)
         self.worlds: dict[str, object] = {"facts": retriever}   # FactStore or bare callable
+        self.oracle = None                               # the worlds layer's gate (`mount_oracle`); None = MoWM v0 routing, no possibility check
         self.store_texts = store_texts if store_texts is not None else getattr(retriever, "texts", [])
         self.chat = CubbyChat(self.emitter, self.facts, exe=exe, appraiser=appraiser)   # TalkCortex + the speech exit
         self.mediate_chat = False                        # no-facts turns skip the VM (task/learn/help answers still go through the ASK)
@@ -387,6 +417,20 @@ class CubbyBrain:
             self.cortices[name] = cortex
         if hasattr(plugin, "on_turn"):
             self._observers.append(plugin)
+
+    def mount_oracle(self, oracle) -> None:
+        """The world model behind the worlds (`cubbyllm.bridges.possibility.PossibilityOracle`): MoWM's
+        adapter, or `StorePossibility(self.worlds)` when MoWM is not installed. From then on `route` asks
+        it first, and every store that has an `oracle` slot judges its adds through it (impossible ->
+        refused and ledgered, uncovered -> latent). One oracle per brain; mounting again replaces it."""
+        from cubbyllm.bridges.possibility import PossibilityOracle
+        if not isinstance(oracle, PossibilityOracle):
+            raise TypeError(f"{oracle!r} is not a PossibilityOracle: it needs possible(), route(), worlds()")
+        self.oracle = oracle
+        for w in self.worlds.values():
+            if hasattr(w, "oracle"):
+                w.oracle = oracle
+        self.trace("oracle", worlds=list(oracle.worlds())[:16], kind=type(oracle).__name__)
 
     # ── the thalamus: what needs FACTS, and what does not ───────────────────
     # Owner's shape (2026-09-02): input neurons (sense) -> THALAMUS (this) ->
@@ -467,7 +511,7 @@ class CubbyBrain:
         question = bool(self._QUESTION.search(text)) or is_identity_question(text) or bool(self._NO_FACTS.search(text))
         if best_c is not None and (best_m >= 1.0 or (best_m >= 0.5 and not question)):
             return {"cortex": best_c, "score": best_m, "needs_facts": False}
-        world, score = route_world(self.worlds, text)
+        world, score = route_world(self.worlds, text, self.oracle)
         tau_eff = self.chat.chem.modulate_threshold(self.route_tau)
         facts, why = self.needs_facts(text)
         if facts:
@@ -507,14 +551,21 @@ class CubbyBrain:
                 + (f", and play: say 'explore for 30' or 'status' ({', '.join(games)})." if games else "."))
 
     # ── one turn ────────────────────────────────────────────────────────────
-    def turn(self, user_text: str, feedback: str | None = None) -> dict:
+    def sense(self, user_text: str) -> None:
+        """The turn's first step: appraisal -> the hormone ODE. The harness calls it before it routes and
+        frames the turn (the row records the state at turn start); a plain `turn` calls it itself."""
         self.trace("user", text=user_text)
         self.chat.nudge(user_text)                       # sense: appraisal -> ODE
         self.trace("sense", signals=getattr(self.chat, "signals", None),
                    state=dict(self.chat.state), emotion=self.chat.emotion)
+
+    def turn(self, user_text: str, feedback: str | None = None, route: dict | None = None,
+             sensed: bool = False) -> dict:
+        if not sensed:
+            self.sense(user_text)
         lang = guess_lang(user_text)
         dont_know = T(self.facts, "dont_know_line", lang)
-        route = self.route(user_text)
+        route = route or self.route(user_text)           # the harness senses and routes once, outside the frame, then hands the route in
         self.trace("route", **route)
         cortex = route["cortex"]
 
@@ -548,6 +599,9 @@ class CubbyBrain:
             rec.update({"kind": f"plugin:{cortex}", "plugin": res.get("meta")})
 
         rec["route"] = route
+        # the brain's own "I don't know" marker, on every cortex: the harness counts a turn as SPOKEN unless this is
+        # set (preflight 2026-09-29 counted the dont-know line as speech and refused to serve on 5 correct refusals)
+        rec["dont_know"] = bool(rec.get("reply") == dont_know or rec.get("spoke_safe"))
         rec["signals"] = getattr(self.chat, "signals", None)
         rec["emotion"] = self.chat.emotion
         self.trace("speak", turn_kind=rec["kind"], reply=rec["reply"],

@@ -144,6 +144,19 @@ class Ledger:
             rows = self.db.execute("SELECT hash FROM certifications WHERE program_sha256 = ? ORDER BY created_utc", (program_sha256(program),)).fetchall()
         return [self.get(r[0]) for r in rows]
 
+    def rows(self, kind: str, fn: str | None = None, name: str | None = None) -> list[dict]:
+        """The decisions of one kind (and fn, name), oldest first, without their vaulted input -- the harness
+        reads its own intent / spoken rows back at boot (ledger-first speaking, H-E14 v0.1)."""
+        q, args = "SELECT hash, name, kind, fn, expected, got, ok, verdict, created_utc FROM certifications WHERE kind = ?", [kind]
+        if fn is not None:
+            q, args = q + " AND fn = ?", args + [fn]
+        if name is not None:
+            q, args = q + " AND name = ?", args + [name]
+        with self._lock:
+            out = self.db.execute(q + " ORDER BY created_utc, rowid", args).fetchall()
+        keys = ("hash", "name", "kind", "fn", "expected", "got", "ok", "verdict", "created_utc")
+        return [dict(zip(keys, r), ok=bool(r[6])) for r in out]
+
     def count(self, ok: bool | None = None) -> int:
         with self._lock:
             if ok is None:

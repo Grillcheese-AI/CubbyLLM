@@ -282,9 +282,11 @@ def make_handler(brain):
                     self._send(200, _json_safe(loop.ask(text, item=(str(req.get("item")) if req.get("item") else None), asker=(str(req.get("asker")) if req.get("asker") else None),
                                                           choose=req.get("choose") or None)))
                     return
-                rec = brain.turn(text, feedback=req.get("feedback"))
+                harness = getattr(brain, "harness", None)   # --harness: the turn is a frame, a budget and a ledger row
+                rec = (harness.turn(text, feedback=req.get("feedback")) if harness is not None
+                       else brain.turn(text, feedback=req.get("feedback")))
                 rec.pop("raw", None)
-                self._send(200, rec)
+                self._send(200, _json_safe(rec))
             except Exception as e:
                 self._send(500, {"error": str(e)[:300]})
 
@@ -372,6 +374,13 @@ def main():
     ap.add_argument("--skills", default=os.path.join(_out, "sleep", "skills.jsonl"),
                     help="the skill library's ledger (composition rules the sleep cycle adopted), read at boot for "
                          "'how is B related to A?'; '' = none")
+    ap.add_argument("--science", default=None,
+                    help="mount the science worlds built by standin/data/import_science.py (a folder of saved "
+                         "worlds): their ATTESTED facts only, one world per subject area; latent facts stay out")
+    ap.add_argument("--harness", nargs="?", const="", default=None,
+                    help="boot through the harness (H-E14 v0.1): the owner-signed config's path, or bare for a dev "
+                         "config signed here from the brain's own thresholds and the shipped gate pack; a failed "
+                         "boot check refuses to serve")
     args = ap.parse_args()
     if args.ask and not args.wiki:
         args.wiki = "auto"                               # the loop walks the wiki world
@@ -394,6 +403,11 @@ def main():
         if args.history:
             print(f"  every record appended to {args.history} (the sleep cycle's input)", flush=True)
         print(f"  POST /ask {{\"text\": ...}} -> the loop's record; watch it at http://{args.host}:{args.port}/panel", flush=True)
+    if args.science:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"))
+        from import_science import mount_science
+        mounted = mount_science(brain, args.science)
+        print(f"science worlds (attested facts only): {mounted or 'none attested yet'}", flush=True)
     if args.model_appraisal:
         from perception import ModelAppraiser
         brain.chat.appraiser = ModelAppraiser(brain.emitter, brain.facts)   # asks with context="talk"
@@ -416,6 +430,18 @@ def main():
               f"http://{args.host}:{args.port}/pac/programs.md"
               + (f" | {len(man.library.entries)} programs remembered from earlier runs"
                  if man.library.entries else ""))
+    if args.harness is not None:                     # last: every door the plugins mounted is behind it too
+        from harness import RefuseToServe
+        from harness_wiring import boot_serve
+        try:
+            h = boot_serve(brain, args.harness or None, adapters={"programs": args.gguf, "talk": args.talk_gguf or args.gguf},
+                           on_event=lambda ev: brain.trace("harness", **{("event" if k == "kind" else k): v for k, v in ev.items()}))
+        except RefuseToServe as e:
+            print(f"REFUSED TO SERVE: {e} (the ledger row names the check)", flush=True)
+            sys.exit(3)
+        gen = f"generation {h.generation}" if h.generation is not None else "stores built in memory (no generation manifest)"
+        print(f"harness: serving, {gen}; every turn a frame, a budget and a ledger row "
+              f"(POST /turn replies carry turn_id, ledger, status, spoken)", flush=True)
     serve_http(brain, args.host, args.port).serve_forever()
 
 

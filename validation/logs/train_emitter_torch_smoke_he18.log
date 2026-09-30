@@ -1,0 +1,17 @@
+train_emitter_torch | cpu | 22 LoRA modules, 0.06M trainable (r=16, alpha=32.0) | train 16 rows {'arithmetic': 16} | held-eval 4 | 3 steps of 2 | lr 0.0002 warmup 50 | max_len 1024 | load 6s
+  step 0 held program loss 11.7342
+  step     3/3  loss 11.7347  gnorm 0.141  lr 1.20e-05  0.40 s/step  1,869 tok/s  eta 0.0 min
+  step 3 held program loss 11.7339
+trained: 3 steps in 0.0 min
+generating 10 val records (greedy, up to 24 tokens each) ...
+  arithmetic    n=   2 slots_ok=1.000 copied=0.000 unknown_slot=0.000 text_exact=0.000
+  chain         n=   2 slots_ok=1.000 copied=0.000 unknown_slot=0.000 text_exact=0.000
+  kernel        n=   2 slots_ok=1.000 copied=0.000 unknown_slot=0.000 text_exact=0.000
+  plan          n=   2 slots_ok=1.000 copied=0.000 unknown_slot=0.000 text_exact=0.000
+  role_binding  n=   2 slots_ok=1.000 copied=0.000 unknown_slot=0.000 text_exact=0.000
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\val_generations_smoke_he18.json
+generating 6 records of pf_heldout_eval_slots.jsonl ...
+  arithmetic    n=   2 slots_ok=1.000 copied=0.000 unknown_slot=0.000 text_exact=0.000
+  chain         n=   2 slots_ok=1.000 copied=0.000 unknown_slot=0.000 text_exact=0.000
+  plan          n=   2 slots_ok=1.000 copied=0.000 unknown_slot=0.000 text_exact=0.000
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\val_generations_smoke_he18_pfheld.json

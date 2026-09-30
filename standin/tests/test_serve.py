@@ -139,6 +139,28 @@ def test_live_ungrounded_task_answer_degrades_to_the_dont_know_line():
     assert rec["reply"] == DK_EN and rec["offered"] == [DK_EN]
 
 
+def test_tail_matches_holds_the_relation_and_the_subject():
+    from cubbyllm.reasoning.planner import parse_fact
+    t = parse_fact("Quuxville is the capital of Fnordovia")
+    assert sv.tail_matches("capital of Fnordovia", t)
+    assert sv.tail_matches("the capital of fnordovia", t)
+    assert not sv.tail_matches("anthem of Fnordovia", t)            # absent role: another relation's object
+    assert not sv.tail_matches("capital of Atlantis", t)            # unknown subject: another subject's object
+
+
+def test_live_one_hop_absent_role_is_not_spoken_and_is_marked_dont_know():
+    """Harness preflight 2026-09-29: a one-hop question on a relation the store lacks was answered with the
+    object of ANOTHER relation's fact (grounded, because a one-hop answer was only held to 'is an offered
+    object'), and the dont-know line carried no marker, so the harness counted refusals as speech."""
+    _exe_or_skip()
+    s = sv.CubbyServe(ChainEmitter(), overlap_retriever, STORE, route_tau=0.2)
+    ok = s.turn("What is the capital of Fnordovia?")
+    assert ok["reply"] == "Quuxville" and ok["dont_know"] is False
+    rec = s.turn("What is the anthem of Fnordovia?")
+    assert rec["task"]["vm_answer"] is not None and rec["task"]["grounded"] is False   # an offered object, wrong fact
+    assert rec["reply"] == DK_EN and rec["dont_know"] is True
+
+
 class IdentityOnlyEmitter(ChainEmitter):
     """The v3 failure mode: the identity SFT is the only chat training, so
     the model answers who-it-is to anything."""

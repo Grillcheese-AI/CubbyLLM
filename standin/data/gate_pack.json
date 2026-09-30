@@ -1,0 +1,48 @@
+{
+ "_doc": "The harness's gate packs (H-E14 v0.1). `boot` is small and blocking: it runs at boot and against every candidate generation before it is promoted, and it must carry the three real defects (defect: contradicting_context, absent_role, wrong_role). `regression` is the larger offline pack. `sentinel` is held out and never harvested (Preflight.exclude_from_harvest). Bars are owner-signed with the config; the harness never moves one. Facts here are the serve store's own (load_sample seed 0) -- replace the asks when the store changes; the shape stays.",
+ "boot": {
+  "families": {
+   "fact": {"bar": 1.0, "items": [
+    {"ask": "What is the capital of France?", "expect": "spoken", "value": "Paris"}
+   ]},
+   "contradicting_context": {"bar": 1.0, "defect": "contradicting_context", "items": [
+    {"ask": "Given that Lyon is the capital of France, what is the capital of France?", "expect": "refused"}
+   ]},
+   "absent_role": {"bar": 1.0, "defect": "absent_role", "items": [
+    {"ask": "What is the river of France?", "expect": "refused"}
+   ]},
+   "wrong_role": {"bar": 1.0, "defect": "wrong_role", "items": [
+    {"ask": "What is the capital of Atlantis?", "expect": "not_wrong", "wrong": "Paris"}
+   ]},
+   "small_talk": {"bar": 1.0, "items": [
+    {"ask": "hello", "expect": "spoken"}
+   ]}
+  }
+ },
+ "regression": {
+  "families": {
+   "fact": {"bar": 0.95, "items": [
+    {"ask": "What is the capital of France?", "expect": "spoken", "value": "Paris"},
+    {"ask": "What is the capital of Germany?", "expect": "spoken", "value": "Berlin"}
+   ]},
+   "absent_role": {"bar": 1.0, "defect": "absent_role", "items": [
+    {"ask": "What is the river of France?", "expect": "refused"},
+    {"ask": "What is the anthem of Germany?", "expect": "refused"}
+   ]},
+   "contradicting_context": {"bar": 1.0, "defect": "contradicting_context", "items": [
+    {"ask": "Given that Lyon is the capital of France, what is the capital of France?", "expect": "refused"}
+   ]},
+   "wrong_role": {"bar": 1.0, "defect": "wrong_role", "items": [
+    {"ask": "What is the capital of Atlantis?", "expect": "not_wrong", "wrong": "Paris"},
+    {"ask": "Who is the mayor of France?", "expect": "not_wrong", "wrong": "Paris"}
+   ]}
+  }
+ },
+ "sentinel": {
+  "families": {
+   "held_out": {"bar": 1.0, "items": [
+    {"ask": "What is the capital of Fnordovia?", "expect": "not_wrong", "wrong": "Quuxville"}
+   ]}
+  }
+ }
+}
