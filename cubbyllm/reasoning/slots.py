@@ -30,12 +30,57 @@ from ..core.protocols import Wiring
 
 __wiring__ = Wiring.STANDALONE
 
-SLOT_RX = re.compile(r"\$(?P<kind>[ENR])(?P<n>\d+)\b")
+SLOT_RX = re.compile(r"\$(?P<kind>[ENRK])(?P<n>\d+)\b")      # K: a constant a world supplies (60 minutes per hour)
 # a quoted literal bound into a frame: `bind frame, SEED, "..."` / `bind evt, AGENT, "..."`
 BIND_LIT_RX = re.compile(r'bind\s+\w+\s*,\s*(?P<role>\w+)\s*,\s*"(?P<lit>(?:[^"\\]|\\.)*)"\s*;')
 # a numeric literal assigned or added: `assign s0 = 48;` `add s1, 24;` `assign threshold = 29;`
 NUM_LIT_RX = re.compile(r'(?P<op>assign|add|sub|mul|div)\s+(?P<reg>\w+)\s*(?:=|,)\s*(?P<num>-?\d+(?:\.\d+)?)\s*;')
 NUM_IN_TEXT_RX = re.compile(r"(?<![\w.])-?\d+(?:[.,]\d+)?(?!\w)(?![.,]\d)")   # "29." at a sentence end is 29
+# numbers the question states in WORDS (2026-09-30): 64% of v12e's arithmetic programs carried a constant no
+# slot covered -- 30% of those a number word ("four people"), 26% a multiplicative ("twice", "half", "a dozen").
+# They are the question's numbers as much as "48" is, so the host places them too. "half" is 2 because the
+# harvest's convention is `div s0, 2`; a program that multiplies by 0.5 keeps its 0.5 (matching is by value).
+_UNIT_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9}
+_TEEN_WORDS = {"ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15, "sixteen": 16,
+               "seventeen": 17, "eighteen": 18, "nineteen": 19}
+_TENS_WORDS = {"twenty": 20, "thirty": 30, "forty": 40, "fifty": 50, "sixty": 60, "seventy": 70, "eighty": 80,
+               "ninety": 90}
+MULTIPLE_WORDS = {"twice": 2, "double": 2, "doubled": 2, "half": 2, "triple": 3, "tripled": 3, "thrice": 3,
+                  "dozen": 12, "dozens": 12}
+NUMBER_WORDS = {**_UNIT_WORDS, **_TEEN_WORDS, **_TENS_WORDS, **MULTIPLE_WORDS}
+NUM_WORD_RX = re.compile(
+    r"(?<![\w-])(?:(?P<tens>" + "|".join(_TENS_WORDS) + r")(?:[- ](?P<unit>" + "|".join(_UNIT_WORDS) + r"))?"
+    r"|(?P<word>" + "|".join(sorted({**_UNIT_WORDS, **_TEEN_WORDS, **MULTIPLE_WORDS}, key=len, reverse=True)) + r"))"
+    r"(?![\w-])", re.I)
+
+
+def num_value(text: str | None) -> float | None:
+    """The number a literal or a span stands for: '3.50' and '3.5' are one number, '1,200' is 1200."""
+    if text is None:
+        return None
+    try:
+        return float(str(text).replace(",", ""))
+    except ValueError:
+        return None
+
+
+def canon(x: float) -> str:
+    """One spelling per number: 3.5, 1200, 0.25 (never 3.50 or 1.2e3)."""
+    return ("%.10f" % x).rstrip("0").rstrip(".") if x != int(x) else str(int(x))
+
+
+def number_words(question: str) -> list[tuple[str, float, int, int]]:
+    """[(text, value, start, end)] of the numbers the question writes in words."""
+    out = []
+    for m in NUM_WORD_RX.finditer(question):
+        if m.group("tens"):
+            v = _TENS_WORDS[m.group("tens").lower()] + (_UNIT_WORDS[m.group("unit").lower()] if m.group("unit") else 0)
+        else:
+            v = NUMBER_WORDS[m.group("word").lower()]
+        out.append((m.group(0), float(v), m.start(), m.end()))
+    return out
+
+
 ENTITY_ROLES = {"SEED", "AGENT", "OBJECT", "SUBJECT", "ENTITY", "TARGET", "PLACE", "PERSON", "EVENT"}
 # the chain program's hop roles (`H1_CAPITAL`, `H2_INSTANCE`, ...) bind the walked objects: entities too
 _HOP_ROLE_RX = re.compile(r"^H\d+_", re.I)
@@ -57,6 +102,11 @@ class Span:
     start: int
     end: int
     kind: str        # E | N | R
+    value: str | None = None   # a number written in words: the text is "four", the value "4" (what fill writes)
+
+    @property
+    def filled(self) -> str:
+        return self.value if self.value is not None else self.text
 
 
 @dataclass
@@ -71,12 +121,12 @@ class SlotTable:
         """The question with every span marked for the emitter: 'of [E1: iridomyrmex bigi]?'"""
         out, at = [], 0
         for s in sorted(self.spans, key=lambda s: s.start):
-            if s.kind == "R":                            # a referent is not in the text: it is what a pronoun means
+            if s.kind in "RK":                           # a referent / a world's constant is not in the text
                 continue
             out.append(self.question[at:s.start]); out.append(f"[{s.id[1:]}: {s.text}]"); at = s.end
         out.append(self.question[at:])
         head = "".join(out)
-        refs = [s for s in self.spans if s.kind == "R"]
+        refs = [s for s in self.spans if s.kind in "RK"]
         if refs:
             head += "  " + "; ".join(f"[{s.id[1:]} = {s.text}]" for s in refs)
         return head
@@ -84,7 +134,7 @@ class SlotTable:
     def fill(self, program: str) -> str:
         def sub(m):
             s = self.get(m.group(0))
-            return s.text if s else m.group(0)
+            return s.filled if s else m.group(0)
         return SLOT_RX.sub(sub, program)
 
     def check(self, program: str) -> "SlotVerdict":
@@ -106,6 +156,9 @@ class SlotTable:
         return SlotVerdict(ok, reason, referenced, unused, copied)
 
     def _is_span_text(self, lit: str, kind: str = "E") -> bool:
+        if kind == "N":                                  # by value: 3.5 copies "$3.50", 4 copies "four", 60 a $K
+            v = num_value(lit)
+            return v is not None and any(s.kind in "NK" and num_value(s.filled) == v for s in self.spans)
         n = _norm(lit)
         return any(s.kind == kind and _norm(s.text) == n for s in self.spans)
 
@@ -154,9 +207,12 @@ class SpanIndex:
 
 
 def extract(question: str, index: SpanIndex | None = None, referents: dict | None = None,
-            numbers: bool = True) -> SlotTable:
-    """The slot table of a question: $E1.. its entity spans (from the index), $N1.. its numbers by position,
-    $R1.. the referents the context graph resolved ({'it': 'Siege of Vienna'})."""
+            numbers: bool = True, words: bool = True, constants=None) -> SlotTable:
+    """The slot table of a question: $E1.. its entity spans (from the index), $N1.. its numbers by position --
+    digits, and with `words` the numbers it writes in words ("four", "twice", "a dozen"), one id per value --
+    $R1.. the referents the context graph resolved ({'it': 'Siege of Vienna'}), and $K1.. the constants a world
+    supplies for it (`constants`: [(text, value)], e.g. the arithmetic world's ("60 minutes per hour", 60)); a
+    constant whose value the question already states is not repeated."""
     t = SlotTable(question)
     ents = index.spans(question) if index is not None else []
     # one id per distinct name (2026-09-29): a name mentioned twice -- in the question and in a fact
@@ -168,15 +224,26 @@ def extract(question: str, index: SpanIndex | None = None, referents: dict | Non
         t.spans.append(Span(sid, text, s, e, "E"))
     if numbers:
         taken = [(s.start, s.end) for s in t.spans]
+        found = [(m.start(), m.end(), m.group(0).replace(",", ""), None) for m in NUM_IN_TEXT_RX.finditer(question)]
+        if words:
+            found += [(s, e, text, canon(v)) for text, v, s, e in number_words(question)]
         nids: dict[str, str] = {}
-        for m in NUM_IN_TEXT_RX.finditer(question):
-            if any(a <= m.start() < b for a, b in taken):
+        for s, e, text, value in sorted(found, key=lambda f: f[0]):
+            if any(a <= s < b for a, b in taken):
                 continue
-            num = m.group(0).replace(",", "")
-            sid = nids.setdefault(num, f"$N{len(nids) + 1}")
-            t.spans.append(Span(sid, num, m.start(), m.end(), "N"))
+            v = num_value(value if value is not None else text)
+            sid = nids.setdefault(canon(v) if v is not None else text, f"$N{len(nids) + 1}")
+            t.spans.append(Span(sid, text, s, e, "N", value))
     for k, (word, target) in enumerate((referents or {}).items(), 1):
         t.spans.append(Span(f"$R{k}", str(target), -1, -1, "R"))
+    stated = {num_value(s.filled) for s in t.spans if s.kind == "N"}
+    kids: dict[str, str] = {}
+    for text, value in constants or ():
+        v = num_value(value)
+        if v is None or v in stated or canon(v) in kids:
+            continue
+        kids[canon(v)] = f"$K{len(kids) + 1}"
+        t.spans.append(Span(kids[canon(v)], str(text), -1, -1, "K", canon(v)))
     return t
 
 
@@ -206,7 +273,8 @@ def to_slots(prompt: str, program: str, index: SpanIndex | None = None) -> tuple
         out = out.replace(f'"{lit}"', f'"{s.id}"', 1); replaced += 1
     nums = 0
     for m in list(NUM_LIT_RX.finditer(program)):
-        s = next((s for s in table.spans if s.kind == "N" and s.text == m.group("num")), None)
+        v = num_value(m.group("num"))
+        s = next((s for s in table.spans if s.kind in "NK" and num_value(s.filled) == v), None)
         if s is not None:
             out = out.replace(m.group(0), m.group(0).replace(m.group("num"), s.id), 1); nums += 1
     return table.annotate(), out, table, {"entities_slotted": replaced, "entities_kept": kept, "numbers_slotted": nums,

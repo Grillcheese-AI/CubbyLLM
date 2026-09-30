@@ -390,16 +390,14 @@ class Cubby450mEmitter:
              prefix: str = "", temperature: float = 0.0, seed: int | None = None,
              context: "str | dict | None" = None) -> str:
         self._load()
-        from emitter_data import PROMPT_HEAD, PROMPT_TAIL
+        from emitter_data import PROMPT_HEAD, PROMPT_TAIL, decode_program
         text = prompt if prompt.startswith(PROMPT_HEAD) else PROMPT_HEAD + prompt.strip() + PROMPT_TAIL
         ids = self._tk.encode(text + prefix).ids
         ids = ids[-self.max_ctx:]
         with self._grilly.no_grad():
             out = self._model.generate(self._grilly.tensor([ids]), max_new_tokens=max_new_tokens,
                                        eos_token_id=self._eos).tolist()[0][len(ids):]
-        if self._eos in out:
-            out = out[:out.index(self._eos)]
-        return prefix + self._tk.decode(out)
+        return prefix + decode_program(self._tk, out, self._eos)   # keeps ACTION/AGENT/OBJECT (special tokens)
 
 
 def context_role(context) -> str | None:

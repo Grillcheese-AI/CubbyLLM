@@ -53,14 +53,16 @@ def test_check_refuses_an_unknown_slot_and_a_copied_name_and_reports_unused_span
 
 def test_numbers_are_slots_too_and_a_copied_number_is_refused():
     t = extract("Natalia sold 48 clips in April and half as many in May. How many in all?")
-    assert [(s.id, s.text) for s in t.spans] == [("$N1", "48")]
-    good = "create s0 : quantity;\n assign s0 = $N1;\n div s0, 2;\n create s1 : quantity;\n assign s1 = $N1;\n add s1, s0;"
+    assert [(s.id, s.text) for s in t.spans] == [("$N1", "48"), ("$N2", "half")]
+    good = "create s0 : quantity;\n assign s0 = $N1;\n div s0, $N2;\n create s1 : quantity;\n assign s1 = $N1;\n add s1, s0;"
     assert t.check(good).ok
-    assert t.fill(good).count("48") == 2 and "$N1" not in t.fill(good)
+    assert t.fill(good).count("48") == 2 and "div s0, 2;" in t.fill(good) and "$N" not in t.fill(good)
     bad = good.replace("$N1", "48", 1)
     v = t.check(bad)
     assert not v.ok and v.copied == ["48"]
-    assert t.check("assign s0 = 2;").ok, "a constant the question does not carry (half = 2) is the model's to write"
+    assert not t.check("assign s0 = 2;").ok, "since 2026-09-30 'half' is the question's 2: the host places it"
+    digits = extract("Natalia sold 48 clips in April and half as many in May.", words=False)
+    assert digits.check("div s0, 2;").ok, "digits only (the 2026-09-29 slot files): half = 2 was the model's to write"
 
 
 def test_the_harvest_converts_without_a_name_index():
@@ -101,3 +103,26 @@ def test_slot_emitter_annotates_checks_and_fills_and_refuses_a_copy():
     wrong = SlotEmitter(FakeInner(PROGRAM % "$E2"), idx)
     with pytest.raises(SlotRefused):
         wrong.emit("What is the parent taxon of Iridomyrmex bigi?")      # only $E1 exists: unknown slot
+
+
+# -- numbers the question writes in words, and numbers matched by value (2026-09-30) -------------------------
+
+def test_number_words_are_slots_that_fill_with_their_value():
+    t = extract("Four friends buy twice as many as the 12 pens, plus twenty-five more and a dozen caps.")
+    got = [(s.id, s.text, s.filled) for s in t.spans]
+    assert got == [("$N1", "Four", "4"), ("$N2", "twice", "2"), ("$N3", "12", "12"), ("$N4", "twenty-five", "25"),
+                   ("$N3", "dozen", "12")], "one id per value: 'a dozen' is the 12 already slotted"
+    assert t.annotate().startswith("[N1: Four] friends buy [N2: twice] as many")
+    assert t.fill("assign s0 = $N1; mul s0, $N2; add s0, $N4;") == "assign s0 = 4; mul s0, 2; add s0, 25;"
+    assert [s.text for s in extract("someone bought ten-ish apples", words=True).spans] == [], "only whole words"
+    assert extract("Four friends", words=False).spans == []
+
+
+def test_a_number_is_matched_by_value_not_by_spelling():
+    t = extract("A croissant costs $3.50 and four more cost 1,200 cents.")
+    assert t.check("assign s0 = 3.5;").copied == ["3.5"], "3.5 is the $3.50 the host had"
+    assert t.check("assign s0 = 4;").copied == ["4"], "4 is 'four', written out instead of its slot"
+    assert t.check("assign s0 = 1200;").copied == ["1200"]
+    assert t.check("assign s0 = $N1; mul s0, 60;").ok, "a unit constant no slot holds is the emitter's to write"
+    _, slotted, _, st = to_slots("A croissant costs $3.50 on Saturdays.", "assign s0 = 3.5; mul s0, 52;")
+    assert slotted == "assign s0 = $N1; mul s0, 52;" and st["numbers_slotted"] == 1

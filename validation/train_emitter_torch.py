@@ -39,7 +39,7 @@ if "--smoke" in sys.argv:                    # train_base reads its shape from t
 
 import torch  # noqa: E402
 
-from emitter_data import encode_records, fill, table_of, val_records  # noqa: E402
+from emitter_data import decode_program, encode_records, fill, table_of, val_records  # noqa: E402
 from talk_data import batches, lora_targets, make_batch  # noqa: E402
 from train_talk_torch import apply_lora, load_adapter, masked_loss, save_adapter  # noqa: E402
 
@@ -63,7 +63,7 @@ def emit(model, tk, eos, prompt: str, dev, max_new: int) -> str:
         return model.step(tok.to(dev), state)
     with torch.no_grad():
         out, _ = generate(model, ids, cfg, state=model.init_state(1, dev), step=step_fn)
-    return tk.decode(out)
+    return decode_program(tk, out, eos)          # keeps the role tokens (ACTION/AGENT/OBJECT are special)
 
 
 def generate_val(model, tk, eos, records, dev, max_new, out_path, tag, vm=False) -> dict:
@@ -165,6 +165,10 @@ def main():
     ap.add_argument("--gen-extra-tag", default="_pfheld", help="suffix of the second generations file")
     ap.add_argument("--vm", action="store_true", help="also run the VM read here (needs cubelang on this machine)")
     ap.add_argument("--resume-adapter", default="", help="start from this adapter dir instead of zero")
+    ap.add_argument("--gen-only", action="store_true", help="no training: regenerate with --resume-adapter "
+                                                            "(the previous generations file is kept as .prev.json)")
+    ap.add_argument("--gen-tasks", default="", help="comma-separated families to generate (default: all); with "
+                                                    "--gen-only the other families of the previous file are kept")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--tag", default="")
     args = ap.parse_args()
@@ -201,6 +205,16 @@ def main():
     params = [p for w in wrapped.values() for p in (w.lora_A.weight, w.lora_B.weight)]
     for p in params:
         p.requires_grad_(True)
+    logs = os.path.join(HERE, "logs")
+    os.makedirs(logs, exist_ok=True)
+    if args.gen_only:                        # regenerate from a saved adapter; the training logs stay untouched
+        if not args.resume_adapter:
+            raise SystemExit("--gen-only needs --resume-adapter (the adapter to generate with)")
+        log(f"train_emitter_torch --gen-only | {dev} | adapter {args.resume_adapter} | load {time.time() - t0:.0f}s")
+        run_generation(args, model, tk, eos, dev, logs, keep_previous=True)
+        with open(os.path.join(logs, f"train_emitter_torch{args.tag}_regen.log"), "w", encoding="utf-8") as f:
+            f.write("\n".join(LOG) + "\n")
+        return
 
     train = encode_records(args.data, tk, eos, "train", args.max_len)
     held = encode_records(args.data, tk, eos, "val", args.max_len)
@@ -237,8 +251,6 @@ def main():
                 "data": os.path.basename(args.data), "epochs": args.epochs, "batch": args.batch, "lr": args.lr,
                 "max_len": args.max_len, "tag": args.tag}
 
-    logs = os.path.join(HERE, "logs")
-    os.makedirs(logs, exist_ok=True)
     mf = open(os.path.join(logs, f"train_emitter_torch{args.tag}.jsonl"), "w", encoding="utf-8")
     ev = evaluate()
     log(f"  step 0 held program loss {ev:.4f}")
@@ -280,17 +292,40 @@ def main():
     log(f"trained: {step} steps in {(time.time() - t_start) / 60:.1f} min" + (f" -> {args.out}" if args.out else ""))
 
     if not args.no_gen:
-        recs = val_records(args.data, args.gen_per_task)
-        out_path = os.path.join(args.out or logs, f"val_generations{args.tag}.json")
-        log(f"generating {len(recs)} val records (greedy, up to {args.gen_max_new} tokens each) ...")
-        generate_val(model, tk, eos, recs, dev, args.gen_max_new, out_path, args.tag, vm=args.vm)
-        if args.gen_extra:                       # the same adapter on a second eval set, one more file beside the first
-            recs = val_records(args.gen_extra, args.gen_extra_per_task)
-            out_path = os.path.join(args.out or logs, f"val_generations{args.tag}{args.gen_extra_tag}.json")
-            log(f"generating {len(recs)} records of {os.path.basename(args.gen_extra)} ...")
-            generate_val(model, tk, eos, recs, dev, args.gen_max_new, out_path, args.tag + args.gen_extra_tag, vm=args.vm)
+        run_generation(args, model, tk, eos, dev, logs)
     with open(os.path.join(logs, f"train_emitter_torch{args.tag}.log"), "w", encoding="utf-8") as f:
         f.write("\n".join(LOG) + "\n")
+
+
+def run_generation(args, model, tk, eos, dev, logs, keep_previous=False) -> None:
+    """The val split's generations file, and the --gen-extra one beside it when asked."""
+    jobs = [(args.data, args.gen_per_task, args.tag, "val records")]
+    if args.gen_extra:                           # the same adapter on a second eval set, one more file beside the first
+        jobs.append((args.gen_extra, args.gen_extra_per_task, args.tag + args.gen_extra_tag,
+                     f"records of {os.path.basename(args.gen_extra)}"))
+    tasks = {t for t in (args.gen_tasks or "").split(",") if t}
+    for path, per_task, tag, what in jobs:
+        recs = [r for r in val_records(path, per_task) if not tasks or r["task"] in tasks]
+        if not recs:
+            continue
+        out_path = os.path.join(args.out or logs, f"val_generations{tag}.json")
+        prev = None
+        if keep_previous and os.path.exists(out_path):
+            prev_path = out_path[:-len(".json")] + ".prev.json"
+            os.replace(out_path, prev_path)
+            prev = json.load(open(prev_path, encoding="utf-8"))
+            log(f"kept the previous file as {os.path.basename(prev_path)}")
+        log(f"generating {len(recs)} {what}{' (' + ','.join(sorted(tasks)) + ')' if tasks else ''} "
+            f"(greedy, up to {args.gen_max_new} tokens each) ...")
+        payload = generate_val(model, tk, eos, recs, dev, args.gen_max_new, out_path, tag, vm=args.vm)
+        if tasks and prev is not None:          # only these families regenerated: the rest of the file is kept
+            payload["outputs"] = [o for o in prev["outputs"] if o["task"] not in tasks] + payload["outputs"]
+            payload["summary"] = {**{k: v for k, v in prev["summary"].items() if k not in tasks}, **payload["summary"]}
+            payload["n"] = len(payload["outputs"])
+            payload["note"] += f" | regenerated {','.join(sorted(tasks))} with the decode fix; the rest as before"
+            payload.pop("vm", None)
+            json.dump(payload, open(out_path, "w", encoding="utf-8"), indent=1)
+            log(f"merged into {out_path}: {payload['n']} records")
 
 
 def _find(model, target):

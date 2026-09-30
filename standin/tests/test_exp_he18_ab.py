@@ -54,6 +54,9 @@ def test_score_breaks_arithmetic_down_by_step_count_and_counts_slot_failures():
     assert s["arithmetic/steps=2"]["n"] == 2 and s["arithmetic/steps=5"]["correct"] == 1.0
     assert s["plan"]["correct"] == 1.0 and s["chain"]["executes"] == 0.0 and s["chain"]["copied"] == 1
     assert s["_all"]["n"] == 5 and abs(s["_all"]["correct"] - 3 / 5) < 1e-9
+    refused = ab.score([{**arith(0), "slots_ok": False, "slot_reason": "copied literal '12'"}], vm=fake_vm)
+    assert refused["arithmetic"]["vm_correct"] == 1.0 and refused["arithmetic"]["correct"] == 0.0, \
+        "a copied literal is refused by the host even when the VM would have got it right"
 
 
 def _sc(correct, n=100, copied=0, unknown=0, **fams):
@@ -87,3 +90,19 @@ def test_main_reads_four_files_and_writes_the_readout(tmp_path, monkeypatch):
     ab.main(["--files", *files, "--out", str(out)])
     r = json.loads(out.read_text(encoding="utf-8"))
     assert abs(r["delta_held"] - 0.2) < 1e-9 and r["verdict"].startswith("PASS")
+
+
+def test_main_refuses_a_file_decoded_without_the_role_tokens(tmp_path, monkeypatch):
+    import pytest
+    monkeypatch.setattr(ab.score, "__defaults__", (fake_vm,))
+    stale = {"id": "rb", "task": "role_binding", "gold": None, "slots_ok": True,
+             "generated_slotted": 'create evt : symbol;\n bind evt, , "Name";', "generated": 'bind evt, , "Name";'}
+    fixed = dict(stale, generated_slotted='bind evt, ACTION, "Name";', generated='bind evt, ACTION, "Name";')
+    assert ab.stale_decode([stale]) == 1 and ab.stale_decode([fixed]) == 0
+    files = []
+    for name, rec in (("cv", stale), ("ch", fixed), ("pv", fixed), ("ph", fixed)):
+        f = tmp_path / f"{name}.json"
+        f.write_text(json.dumps({"outputs": [rec]}), encoding="utf-8")
+        files.append(str(f))
+    with pytest.raises(SystemExit, match="cv.json"):
+        ab.main(["--files", *files, "--out", str(tmp_path / "ab.json")])

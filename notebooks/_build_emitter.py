@@ -177,6 +177,47 @@ for arm in RUN_ARMS:
     run_arm(arm)
 """),
     md(r"""
+### Regenerate the v12e val (the decode fix, 2026-09-30)
+
+The first control run decoded its programs with the tokenizer's default, which skips special tokens -- and the
+role names `ACTION`, `AGENT`, `OBJECT` are special tokens in bbpe128k. Every role-binding program came back as
+`bind evt, , "Name";` and none ran (role-binding executes 0.000). The model wrote the roles; the text lost them.
+`train_emitter_torch.py` now keeps every special token but the control ones. This cell regenerates only the 64
+role-binding records of an arm's v12e val file whose role-binding programs show the empty role (every other
+family decodes identically -- checked on the references -- and the held-out eval has no role-binding), from the
+saved adapter, without training, and merges them into the file; the old file is kept as `.prev.json`. A few
+minutes per arm; an arm generated after the fix is skipped.
+"""),
+    code(r"""
+import re
+!cd /content/CubbyLLM && git pull -q --ff-only
+assert '--gen-only' in open(f'{REPO}/validation/train_emitter_torch.py').read(), 'push the decode fix first'
+
+def stale(path):                         # a role-binding program with an empty role: decoded before the fix
+    outs = json.load(open(path, encoding='utf-8'))['outputs']
+    return any(re.search(r'bind\s+\w+\s*,\s*,', o['generated_slotted']) for o in outs if o['task'] == 'role_binding')
+
+def regen_val(arm):
+    tag = f'_{arm}_cont'
+    out = f'{DRIVE}/emitter/cubby450m{tag}'
+    val = f'{out}/val_generations{tag}.json'
+    if not os.path.exists(val) or not stale(val):
+        print(f'{arm}: nothing to regenerate'); return
+    cmd = [sys.executable, '-u', 'validation/train_emitter_torch.py', '--gen-only', '--resume-adapter', out,
+           '--ckpt', CKPT, '--tokenizer', TOKENIZER, '--data', ARMS[arm], '--out', out, '--seed', str(SEED),
+           '--gen-per-task', str(GEN_PER_TASK), '--gen-max-new', str(GEN_MAX_NEW), '--tag', tag,
+           '--gen-tasks', 'role_binding']
+    p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    for line in p.stdout:
+        print(line, end='')
+    assert p.wait() == 0, f'{arm}: exit {p.returncode}'
+    os.system(f'cp {REPO}/validation/logs/train_emitter_torch{tag}_regen.log {out}/ 2>/dev/null')
+    print(f'{arm}: regenerated -> {val}', '(still stale!)' if stale(val) else '')
+
+for arm in RUN_ARMS:
+    regen_val(arm)
+"""),
+    md(r"""
 ### After the runs
 
 On the local machine, with the repo's cubelang build — one command reads all four generation files through the
@@ -191,6 +232,86 @@ the held-out eval by task and by arithmetic step count, and the slot rates (copi
 verdict against H-E18's gate and kill goes to `validation/logs/exp_he18_ab.json`. Record it under H-E18. The
 adapters are also H-E15's first 450M emitter on the continued base: set the control arm's numbers against v12e
 (the stand-in) on the same val records.
+"""),
+    md(r"""
+## H-E19 — arithmetic as a world and a school
+
+**Gate A, data and format.** One more arm, `v12e_w_tg`: v12e re-slotted with every number the host can place
+(numbers in words, the arithmetic world's conversions as `$K`, no `= value` in the step comments) plus
+TinyGSM shard 0 converted through the VM (`standin/data/import_tinygsm.py`). It trains longer than the A/B arms
+(`TG_EPOCHS` over its own rows — this gate is absolute, not an equal-steps comparison), then generates all v12e
+val records and the program-first held-out eval, both re-slotted the same way. The read, locally:
+`python validation/exp_he18_ab.py --files <ctrl val> <ctrl held> <this val> <this held>` puts it beside the control;
+Gate A is arithmetic VM-correct at one try ≥ 20% (the control: 3.1%).
+"""),
+    code(r"""
+TG_ARM   = 'v12e_w_tg'
+TG_DATA  = f'{DRIVE}/emitter/emitter_sft_v12e_w_tg_slots.jsonl'     # v12e_w + TinyGSM shard 0, slot form
+TG_VAL   = f'{DRIVE}/emitter/emitter_sft_v12e_w_slots.jsonl'        # its val split: the v12e val, re-slotted
+TG_HELD  = f'{DRIVE}/emitter/pf_heldout_eval_w_slots.jsonl'         # the program-first held-out, re-slotted
+TG_EPOCHS = 1
+for p in (TG_DATA, TG_HELD):
+    assert os.path.exists(p), p
+TG_STEPS = math.ceil(TG_EPOCHS * train_rows(TG_DATA) / BATCH)
+print(TG_ARM, train_rows(TG_DATA), 'train rows ->', TG_STEPS, 'steps')
+
+def run_tg():
+    tag = f'_{TG_ARM}_cont'
+    out = f'{DRIVE}/emitter/cubby450m{tag}'
+    if all(os.path.exists(p) for p in (f'{out}/emitter_lora.safetensors', f'{out}/val_generations{tag}.json',
+                                      f'{out}/val_generations{tag}_pfheld.json')):
+        print('done already ->', out); return out
+    os.makedirs(out, exist_ok=True)
+    cmd = [sys.executable, '-u', 'validation/train_emitter_torch.py', '--ckpt', CKPT, '--tokenizer', TOKENIZER,
+           '--data', TG_DATA, '--out', out, '--steps', str(TG_STEPS), '--batch', str(BATCH), '--lr', str(LR),
+           '--rank', str(RANK), '--alpha', str(ALPHA), '--max-len', str(MAX_LEN), '--seed', str(SEED),
+           '--gen-per-task', '0', '--gen-max-new', str(GEN_MAX_NEW), '--tag', tag,
+           '--gen-extra', TG_HELD, '--gen-extra-per-task', '0', '--gen-extra-tag', '_pfheld',
+           '--gen-tasks', 'arithmetic']            # gate A reads arithmetic: 329 + 236 records, not all 1,429
+    with open(f'{out}/train.log', 'a', encoding='utf-8', buffering=1) as f:
+        p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+        for line in p.stdout:
+            print(line, end=''); f.write(line)
+        p.wait()
+    os.system(f'cp {REPO}/validation/logs/train_emitter_torch{tag}.* {out}/ 2>/dev/null')
+    return out
+
+TG_OUT = run_tg()
+"""),
+    md(r"""
+**The school** (`validation/train_school_torch.py`, the curriculum in `cubbyllm/reasoning/school.py`): the
+Gate-A adapter is the pupil. Levels open one at a time (one operation → two steps → three-four → words and units
+→ distractors → five-six → seven-ten); each problem is tried up to its level's budget, which halves as the level is
+mastered (16 → 1); every try runs in the **VM** against the gold; a solve gives dopamine (reward − expected), a
+wrong try is paired with the right program at its first wrong step; each round's adapter is kept only if the
+held-out slice does not drop. The VM on Colab: cubelang is built here from its repo (Rust, a few minutes, once per
+session) — or put a Linux `cubelang` binary at `cubbyllm/bin/cubelang` on Drive and it is used instead.
+"""),
+    code(r"""
+BIN = f'{DRIVE}/bin/cubelang'
+if os.path.exists(BIN):
+    os.environ['CUBELANG_EXE'] = BIN; os.chmod(BIN, 0o755)
+else:
+    if not os.path.exists('/content/cubelang'):
+        !git clone -q https://github.com/Grillcheese-AI/cubelang.git /content/cubelang
+    if not os.path.exists(os.path.expanduser('~/.cargo/bin/cargo')):
+        !curl -sSf https://sh.rustup.rs | sh -s -- -y -q
+    !cd /content/cubelang && ~/.cargo/bin/cargo build --release -q
+    os.environ['CUBELANG_EXE'] = '/content/cubelang/target/release/cubelang'
+!$CUBELANG_EXE --version || echo "no VM: the school needs one"
+
+SCHOOL_CONTROL = False       # True: the same loop with every level open at once (the ordering control, gate B')
+SCHOOL_ROUNDS, SCHOOL_PROBLEMS, SCHOOL_GATE_N = 8, 128, 64   # ~15 min a round on an A100; a round is resumable
+SCHOOL_OUT = f'{DRIVE}/emitter/school_{TG_ARM}' + ('_shuffled' if SCHOOL_CONTROL else '')
+cmd = [sys.executable, '-u', 'validation/train_school_torch.py', '--ckpt', CKPT, '--tokenizer', TOKENIZER,
+       '--adapter', TG_OUT, '--pool', TG_DATA, '--heldout', TG_HELD, TG_VAL, '--out', SCHOOL_OUT,
+       '--rounds', str(SCHOOL_ROUNDS), '--problems', str(SCHOOL_PROBLEMS), '--max-tries', '16',
+       '--temperature', '0.8', '--gate-n', str(SCHOOL_GATE_N), '--regress', TG_VAL, '--regress-n', '8'] \
+      + (['--no-curriculum'] if SCHOOL_CONTROL else [])
+p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+for line in p.stdout:
+    print(line, end='')
+p.wait()
 """),
 ]
 

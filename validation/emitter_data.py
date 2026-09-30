@@ -35,7 +35,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 from cubbyllm.reasoning.slots import (  # noqa: E402
-    BIND_LIT_RX, NUM_LIT_RX, SLOT_RX, SlotTable, Span, SpanIndex, _norm, extract, is_entity_role)
+    BIND_LIT_RX, NUM_LIT_RX, SLOT_RX, SlotTable, Span, SpanIndex, _norm, canon, extract, is_entity_role, num_value)
 
 PROMPT_HEAD = "Question:\n"
 PROMPT_TAIL = "\nProgram:\n"
@@ -72,10 +72,24 @@ def _entity_role(task: str, role: str) -> bool:
     return False
 
 
-def slot_record(rec: dict) -> dict | None:
-    """One SFT record -> its slot form, or None when a bound literal is not covered by the prompt."""
+_STEP_VALUE_RX = re.compile(r"(#\s*step\s+\d+:[^\n=]*?)\s*=\s*[^\n]*")
+
+
+def drop_step_values(program: str) -> str:
+    """`# step 0: $N1 - $N2 = 12` -> `# step 0: $N1 - $N2`. The comment's value is a sum the emitter must do in
+    its head; the 450M got it wrong (59 - 71 = 48) and the next step built on the wrong number, while the VM
+    computes every step exactly anyway (2026-09-30)."""
+    return _STEP_VALUE_RX.sub(r"\1", program)
+
+
+def slot_record(rec: dict, words: bool = True, step_values: bool = True, world=None) -> dict | None:
+    """One SFT record -> its slot form, or None when a bound literal is not covered by the prompt.
+    `words`: numbers written in words are slots too; `step_values`: keep the `= value` of step comments;
+    `world`: the arithmetic world (`cubbyllm.reasoning.arith_world`) whose conversion facts become $K slots."""
     task, prompt = rec["task"], rec["prompt"]
     program = strip_leading_comment(rec["program"])
+    if not step_values and task in NUMBER_FAMILIES:
+        program = drop_step_values(program)
     stats = {"entities": 0, "numbers": 0, "comment_numbers": 0}
     if task not in ENTITY_FAMILIES and task not in NUMBER_FAMILIES:
         return {**_base(rec), "prompt": frame_prompt(prompt), "program": program, "spans": [], "stats": stats}
@@ -88,7 +102,8 @@ def slot_record(rec: dict) -> dict | None:
         names = fact_names(prompt) + [m.group("lit") for m in BIND_LIT_RX.finditer(program)
                                       if _entity_role(task, m.group("role"))]
     index = SpanIndex(dict.fromkeys(names)) if names else None
-    table = extract(prompt, index, numbers=task in NUMBER_FAMILIES)
+    consts = world.constants(prompt) if world is not None and task == "arithmetic" else None
+    table = extract(prompt, index, numbers=task in NUMBER_FAMILIES, words=words, constants=consts)
 
     out = program
     for m in list(BIND_LIT_RX.finditer(program)):
@@ -102,13 +117,17 @@ def slot_record(rec: dict) -> dict | None:
         stats["entities"] += 1
 
     if task in NUMBER_FAMILIES:
-        by_num = {}
+        by_num = {}                                       # by value: "3.50" in the text is the program's 3.5
         for s in table.spans:
-            if s.kind == "N":
-                by_num.setdefault(s.text, s.id)
+            if s.kind in "NK" and num_value(s.filled) is not None:
+                by_num.setdefault(canon(num_value(s.filled)), s.id)
+
+        def slot_of(text):
+            v = num_value(text)
+            return by_num.get(canon(v)) if v is not None else None
 
         def sub_lit(m):
-            sid = by_num.get(m.group("num"))
+            sid = slot_of(m.group("num"))
             if sid is None:
                 return m.group(0)
             stats["numbers"] += 1
@@ -116,18 +135,23 @@ def slot_record(rec: dict) -> dict | None:
         out = NUM_LIT_RX.sub(sub_lit, out)
 
         def sub_comment(m):
-            text = m.group(0)
+            head = re.match(r"#\s*step\s+\d+:", m.group(0))     # the step's index is not a number to slot
+            lead = head.group(0) if head else ""
+            text = m.group(0)[len(lead):]
 
             def one(n):
-                sid = by_num.get(n.group(0))
+                sid = slot_of(n.group(0))
                 if sid is None:
                     return n.group(0)
                 stats["comment_numbers"] += 1
                 return sid
-            return re.sub(r"(?<![\w.$-])-?\d+(?:\.\d+)?(?![\w.])", one, text)
+            return lead + re.sub(r"(?<![\w.$-])-?\d+(?:\.\d+)?(?![\w.])", one, text)
         out = re.sub(r"#[^\n]*", sub_comment, out)
+        # what the emitter still has to write itself: unit constants (60, 7), derived ones ("five days")
+        stats["constants_left"] = sum(num_value(m.group("num")) not in (None, 0.0) for m in NUM_LIT_RX.finditer(out))
 
-    spans = [{"id": s.id, "text": s.text, "start": s.start, "end": s.end, "kind": s.kind} for s in table.spans]
+    spans = [{"id": s.id, "text": s.text, "start": s.start, "end": s.end, "kind": s.kind,
+              **({"value": s.value} if s.value is not None else {})} for s in table.spans]
     return {**_base(rec), "prompt": frame_prompt(table.annotate()), "program": out, "spans": spans, "stats": stats}
 
 
@@ -139,14 +163,16 @@ def _base(rec: dict) -> dict:
 
 def table_of(spans: list[dict], question: str = "") -> SlotTable:
     """The slot table back from a record's `spans`, to fill a generated program."""
-    return SlotTable(question, [Span(s["id"], s["text"], s["start"], s["end"], s["kind"]) for s in spans])
+    return SlotTable(question, [Span(s["id"], s["text"], s["start"], s["end"], s["kind"], s.get("value"))
+                                for s in spans])
 
 
 def fill(program: str, spans: list[dict]) -> str:
     return table_of(spans).fill(program)
 
 
-def convert(src: str, dst: str, tasks: tuple[str, ...] | None = None) -> dict:
+def convert(src: str, dst: str, tasks: tuple[str, ...] | None = None, words: bool = True,
+            step_values: bool = True, world=None) -> dict:
     """The SFT jsonl -> its slot form on disk; returns the manifest (kept/dropped per family, slot counts)."""
     kept, dropped = Counter(), Counter()
     slots = Counter()
@@ -161,13 +187,14 @@ def convert(src: str, dst: str, tasks: tuple[str, ...] | None = None) -> dict:
             if r.get("vm_ok") is False or r.get("gold_match") is False:
                 dropped[f"{r['task']}:vm"] += 1
                 continue
-            s = slot_record(r)
+            s = slot_record(r, words=words, step_values=step_values, world=world)
             if s is None:
                 dropped[f"{r['task']}:uncovered"] += 1
                 continue
             kept[(r["task"], r["split"])] += 1
             for k, v in s["stats"].items():
                 slots[f"{r['task']}:{k}"] += v
+            slots[f"{r['task']}:records_with_constants"] += int(s["stats"].get("constants_left", 0) > 0)
             f.write(json.dumps(s, ensure_ascii=False) + "\n")
     return {"src": os.path.basename(src), "kept": {f"{t}/{sp}": n for (t, sp), n in sorted(kept.items())},
             "dropped": dict(dropped), "slots": dict(slots)}
@@ -187,6 +214,21 @@ def encode_records(path, tk, eos, split, max_len, tasks=None):
         row = {"p": p, "t": t, "family": r["task"], "id": r["id"]}
         rows += [row] * (r.get("repeat", 1) if split == "train" else 1)
     return rows
+
+
+CONTROL_TOKENS = ("<pad>", "<s>", "</s>", "<unk>")
+
+
+def decode_program(tk, ids, eos=None) -> str:
+    """Generated ids back to program text: cut at </s>, drop the control tokens, keep every other special token.
+
+    The role names (ACTION, AGENT, OBJECT) are special tokens in bbpe128k, and `Tokenizer.decode` skips
+    special tokens by default -- `bind evt, ACTION, "x";` came back as `bind evt, , "x";`, which never runs."""
+    ids = list(ids)
+    if eos is not None and eos in ids:
+        ids = ids[:ids.index(eos)]
+    drop = {i for i in (tk.token_to_id(t) for t in CONTROL_TOKENS) if i is not None}
+    return tk.decode([i for i in ids if i not in drop], skip_special_tokens=False)
 
 
 def val_records(path, per_task=0, seed=1):
@@ -211,6 +253,14 @@ if __name__ == "__main__":
     ap.add_argument("src")
     ap.add_argument("dst")
     ap.add_argument("--tasks", default="", help="comma-separated families to keep (default: all)")
+    ap.add_argument("--no-words", action="store_true", help="digits only (the 2026-09-29 slot files)")
+    ap.add_argument("--drop-step-values", action="store_true", help="`# step 0: $N1 - $N2` without its `= value`")
+    ap.add_argument("--world", action="store_true", help="the arithmetic world's conversion facts as $K slots")
     a = ap.parse_args()
-    m = convert(a.src, a.dst, tuple(t for t in a.tasks.split(",") if t) or None)
+    world = None
+    if a.world:
+        from cubbyllm.reasoning.arith_world import ArithmeticWorld
+        world = ArithmeticWorld()
+    m = convert(a.src, a.dst, tuple(t for t in a.tasks.split(",") if t) or None, words=not a.no_words,
+                step_values=not a.drop_step_values, world=world)
     print(json.dumps(m, indent=1))
