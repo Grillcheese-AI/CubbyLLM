@@ -10,6 +10,9 @@ cap, by the reference's step count, steps taken against the reference's, and the
     --gguf                           the stand-in (llama.cpp; its prompts are raw, so this is a format check only)
     --replay-gold STEP_FILE          no model: the gold step rows replayed through the loop and the REAL VM
                                      (the round trip of wrap_step and the state slots through cubelang)
+    --teacher-forced STEP_FILE       the per-step read in the step format: every gold step row's prompt (the gold
+                                     state written back), one emission, scored by the VALUE the step computes and
+                                     the stop -- the same read as exp_he19_next_step.py's, so the two compare
 
     python validation/exp_he19_step_loop.py --data standin/data/out/pf_heldout_eval_w_slots.jsonl --tag gold_held \\
         --replay-gold standin/data/out/pf_heldout_eval_w_step.jsonl
@@ -60,20 +63,83 @@ class GoldReplay:
         return out
 
 
+def teacher_forced(a) -> None:
+    """Each gold step row: emit once on its prompt, score the value the emitted block computes over the row's
+    slot values (N, K and the written-back S) against the row's gold, or the stop against `return $S<K>;`."""
+    from fractions import Fraction
+    from cubbyllm.reasoning.slots import num_value
+    from cubbyllm.reasoning.step_loop import parse_emission, simulate
+    rows = [json.loads(l) for l in open(a.teacher_forced, encoding="utf-8")]
+    rows = [r for r in rows if r.get("task") == "arithmetic" and "#" in r["id"] and r.get("split", "val") == "val"]
+    if a.limit:
+        keep = sorted({r["id"].split("#")[0] for r in rows})[:a.limit]
+        rows = [r for r in rows if r["id"].split("#")[0] in keep]
+    if a.gguf:
+        from standin.emitter import LlamaCppEmitter
+        emitter = LlamaCppEmitter(a.gguf)
+    else:
+        from standin.emitter import Cubby450mEmitter
+        emitter = Cubby450mEmitter(a.export, a.adapter, a.tokenizer)
+    out_path = os.path.join(HERE, "logs", f"exp_he19_step_loop_{a.tag}.json")
+    by = defaultdict(Counter)
+    res, t0 = [], time.perf_counter()
+    for i, r in enumerate(rows):
+        k = r["stats"]["k"]
+        is_stop = r["program"].lstrip().startswith("return")
+        text = emitter.emit(r["prompt"], max_new_tokens=a.max_new)
+        kind, what = parse_emission(text)
+        if is_stop:
+            ok = kind == "stop" and what == r["program"].split()[1].rstrip(";")
+            key = "stop"
+        else:
+            values = {}
+            for sp in r["spans"]:
+                v = num_value(sp.get("value") if sp.get("value") is not None else sp.get("text"))
+                if v is not None:
+                    values[sp["id"]] = Fraction(str(v))
+            got = simulate(what.ops, values) if kind == "step" else None
+            ok = got is not None and abs(float(got) - float(r["gold"])) < 1e-6
+            key = "step0" if k == 0 else "step1+"
+            by[f"k={k}"]["n"] += 1
+            by[f"k={k}"]["ok"] += ok
+            by["ran_into_stop" if kind == "stop" else "_"]["n"] += 0
+        by[key]["n"] += 1
+        by[key]["ok"] += ok
+        if not is_stop and kind == "stop":
+            by["stopped_early"]["n"] += 1
+        res.append({"id": r["id"], "k": k, "stop": is_stop, "kind": kind, "ok": ok, "gold": r["gold"], "text": text[:300]})
+        if (i + 1) % 100 == 0 or i + 1 == len(rows):
+            line = "  ".join(f"{k2}={c['ok'] / c['n']:.3f}/{c['n']}" for k2, c in sorted(by.items()) if k2 in ("step0", "step1+", "stop") and c["n"])
+            print(f"  {i + 1}/{len(rows)} ({time.perf_counter() - t0:.0f}s)  {line}", flush=True)
+            with open(out_path, "w", encoding="utf-8") as f:
+                json.dump({"emitter": getattr(emitter, "name", "?"), "data": a.teacher_forced,
+                           "summary": {k2: {"n": c["n"], "ok": c["ok"] / c["n"] if c["n"] else 0} for k2, c in by.items()},
+                           "rows": res}, f, indent=1)
+    print("\nteacher-forced, step format:")
+    for k2 in ["step0", "step1+", "stop"] + sorted((x for x in by if x.startswith("k=")), key=lambda x: int(x[2:])):
+        c = by.get(k2)
+        if c and c["n"]:
+            print(f"  {k2:8s} n={c['n']:4d} right={c['ok'] / c['n']:.3f}")
+    print(f"  stopped early (a stop where a step was due): {by['stopped_early']['n']}  -> {out_path}")
+
+
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--data", required=True, help="a *_slots.jsonl (whole records: question, gold, subtype)")
+    ap.add_argument("--data", default="", help="a *_slots.jsonl (whole records: question, gold, subtype)")
     ap.add_argument("--tag", required=True)
     ap.add_argument("--export", default="")
     ap.add_argument("--adapter", default="")
     ap.add_argument("--tokenizer", default="")
     ap.add_argument("--gguf", default="")
     ap.add_argument("--replay-gold", default="", help="a *_step.jsonl: replay its rows instead of a model")
+    ap.add_argument("--teacher-forced", default="", help="a *_step.jsonl: score each gold step row's next emission")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--max-steps", type=int, default=12)
-    ap.add_argument("--max-new", type=int, default=64)
+    ap.add_argument("--max-new", type=int, default=96)   # a step ends at </s>; the cap only guards a run-on
     a = ap.parse_args(argv)
     from build_emitter_sft import gold_matches
+    if a.teacher_forced:
+        return teacher_forced(a)
     recs = load(a.data)
     if a.limit:
         recs = recs[:a.limit]

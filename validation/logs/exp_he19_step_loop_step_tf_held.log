@@ -1,0 +1,28 @@
+  100/1161 (131s)  step0=0.850/20  step1+=0.525/61  stop=1.000/19
+  200/1161 (243s)  step0=0.775/40  step1+=0.500/120  stop=0.975/40
+  300/1161 (360s)  step0=0.746/59  step1+=0.519/183  stop=0.966/58
+  400/1161 (472s)  step0=0.709/79  step1+=0.502/243  stop=0.974/78
+  500/1161 (590s)  step0=0.717/99  step1+=0.512/303  stop=0.949/98
+  600/1161 (708s)  step0=0.748/119  step1+=0.512/363  stop=0.924/118
+  700/1161 (820s)  step0=0.787/141  step1+=0.527/419  stop=0.929/140
+  800/1161 (934s)  step0=0.778/162  step1+=0.532/477  stop=0.925/161
+  900/1161 (1052s)  step0=0.754/183  step1+=0.544/535  stop=0.934/182
+  1000/1161 (1173s)  step0=0.752/202  step1+=0.538/597  stop=0.920/201
+  1100/1161 (1289s)  step0=0.752/222  step1+=0.549/656  stop=0.928/222
+  1161/1161 (1357s)  step0=0.758/236  step1+=0.549/689  stop=0.932/236
+
+teacher-forced, step format:
+  step0    n= 236 right=0.758
+  step1+   n= 689 right=0.549
+  stop     n= 236 right=0.932
+  k=0      n= 236 right=0.758
+  k=1      n= 236 right=0.487
+  k=2      n= 236 right=0.597
+  k=3      n= 118 right=0.534
+  k=4      n=  54 right=0.685
+  k=5      n=  25 right=0.440
+  k=6      n=  13 right=0.538
+  k=7      n=   5 right=0.600
+  k=8      n=   1 right=0.000
+  k=9      n=   1 right=1.000
+  stopped early (a stop where a step was due): 19  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_step_loop_step_tf_held.json

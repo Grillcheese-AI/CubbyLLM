@@ -78,3 +78,45 @@ def test_typed_enumeration_prunes_but_does_not_pick():
     assert not un.matches({"student": 1}, "sticker")
     elided = [(F(60), {"loave": 1}), (F(36), {"?": 1}), (F(15), {"loave": 1})]
     assert F(60 - 36 + 15) in un.enumerate_values(elided, "loave", True, True)
+
+
+def test_step_format_teacher_forced_read(tmp_path, monkeypatch):
+    """exp_he19_step_loop --teacher-forced: each gold step row's emission is scored by the VALUE it computes over
+    the row's slots (N and the written-back S), and the stop row by `return $S<K>;`."""
+    import json
+    import types
+    import exp_he19_step_loop as esl
+    import standin.emitter as se
+    from cubbyllm.reasoning import step_loop as sl
+    program = ("program X implements ISolver {\n    public function solve(input: Input): Output {\n"
+               "        create s0 : quantity;   # step 0: $N1 / $N2\n        assign s0 = $N1;\n        div s0, $N2;\n"
+               "        create s1 : quantity;   # step 1\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, $N3;\n"
+               "        create s2 : quantity;   # step 2\n        assign s2 = 0;\n        add s2, s1;\n        add s2, $N4;\n"
+               "        sum s2;\n        query s2;\n        return s2;\n    }\n}\n")
+    spans = [{"id": "$N1", "text": "308", "start": 0, "end": 3, "kind": "N"},
+             {"id": "$N2", "text": "2", "start": 4, "end": 5, "kind": "N"},
+             {"id": "$N3", "text": "6", "start": 6, "end": 7, "kind": "N"},
+             {"id": "$N4", "text": "185", "start": 8, "end": 11, "kind": "N"}]
+    rec = {"id": "r1", "task": "arithmetic", "subtype": "steps=3", "split": "val", "gold": "1109", "question": "q",
+           "prompt": "Question:\nq\nProgram:\n", "program": program, "spans": spans}
+    rows = sl.recut(rec)
+    assert [r["gold"] for r in rows] == ["154", "924", "1109", "1109"]
+    path = tmp_path / "rows.jsonl"
+    path.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+    by_prompt = {r["prompt"]: r["program"] for r in rows}
+    wrong_k1 = "        create s1 : quantity;   # step 1: $S1 + $N3\n        assign s1 = $S1;\n        add s1, $N3;\n"
+
+    class Fake:
+        name = "fake"
+        def __init__(self, *a, **k): pass
+        def emit(self, prompt, max_new_tokens=64, **kw):
+            return wrong_k1 if prompt == rows[1]["prompt"] else by_prompt[prompt]
+
+    monkeypatch.setattr(se, "Cubby450mEmitter", Fake)
+    (tmp_path / "logs").mkdir()
+    monkeypatch.setattr(esl, "HERE", str(tmp_path))
+    esl.teacher_forced(types.SimpleNamespace(teacher_forced=str(path), limit=0, gguf="", export="", adapter="",
+                                             tokenizer="", tag="t", max_new=64))
+    out = json.load(open(tmp_path / "logs" / "exp_he19_step_loop_t.json", encoding="utf-8"))["summary"]
+    assert out["step0"]["ok"] == 1.0 and out["stop"]["ok"] == 1.0
+    assert out["step1+"]["n"] == 2 and abs(out["step1+"]["ok"] - 0.5) < 1e-9     # k=1 wrong (+ for *), k=2 right

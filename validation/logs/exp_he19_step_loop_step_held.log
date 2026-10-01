@@ -1,0 +1,17 @@
+  20/236 (129s) correct=0.150 answered=0.900 same_steps=0.600
+  40/236 (237s) correct=0.175 answered=0.950 same_steps=0.575
+  60/236 (376s) correct=0.167 answered=0.950 same_steps=0.567
+  80/236 (485s) correct=0.163 answered=0.963 same_steps=0.562
+  100/236 (603s) correct=0.190 answered=0.970 same_steps=0.550
+  120/236 (714s) correct=0.183 answered=0.975 same_steps=0.542
+  140/236 (822s) correct=0.214 answered=0.979 same_steps=0.564
+  160/236 (922s) correct=0.256 answered=0.975 same_steps=0.575
+  180/236 (1023s) correct=0.256 answered=0.972 same_steps=0.583
+  200/236 (1160s) correct=0.235 answered=0.970 same_steps=0.575
+  220/236 (1263s) correct=0.236 answered=0.968 same_steps=0.577
+  236/236 (1350s) correct=0.229 answered=0.970 same_steps=0.568
+
+step_held: n=236 correct=0.229 answered=0.970 wrong_answer=0.742 same_steps=0.568 emissions/problem=4.70
+  by steps: 3:0.34/118  4:0.19/64  5:0.07/29  6:0.00/12  7:0.00/8  8:0.00/4  10:0.00/1
+  refusals: no stop within # steps=2, vm: the step did not run=5
+  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_step_loop_step_held.json
