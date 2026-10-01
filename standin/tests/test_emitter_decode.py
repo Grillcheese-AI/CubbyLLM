@@ -53,3 +53,19 @@ def test_drop_step_values_keeps_the_plan_and_drops_the_mental_sum():
     assert {sp["id"]: sp.get("value") for sp in s["spans"]}["$N3"] == "38"
     kept = slot_record(rec, words=False, step_values=True)
     assert "= 26" in kept["program"] and "$N3" not in kept["program"]
+
+
+def test_slot_record_never_touches_a_register_digit():
+    """`div s2, 2` slots the literal 2, never the 2 of `s2` (the 2026-09-30 bug: `div s$N5, 2` in ~9% of the
+    arithmetic slot rows, which the fill turned back into `s2` so the VM never noticed)."""
+    from emitter_data import slot_record
+    rec = {"id": "x", "task": "arithmetic", "subtype": "steps=3", "split": "train", "gold": "5", "vm_ok": True,
+           "gold_match": True, "prompt": "A jar has 10 coins split between 2 kids, each pays 2 more. Total?",
+           "program": ("program X implements ISolver {\n    public function solve(input: Input): Output {\n"
+                       "        create s0 : quantity;   # step 0: 10 / 2 = 5\n        assign s0 = 10;\n        div s0, 2;\n"
+                       "        create s1 : quantity;   # step 1: 5 + 2 = 7\n        assign s1 = 0;\n        add s1, s0;\n        add s1, 2;\n"
+                       "        create s2 : quantity;   # step 2: 7 - 2 = 5\n        assign s2 = 0;\n        add s2, s1;\n        sub s2, 2;\n"
+                       "        sum s2;\n        query s2;\n        return s2;\n    }\n}\n")}
+    out = slot_record(rec, words=True, step_values=False)["program"]
+    assert "div s0, $N2;" in out and "sub s2, $N2;" in out and "add s1, $N2;" in out
+    assert "s$" not in out

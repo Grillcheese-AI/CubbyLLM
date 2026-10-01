@@ -1,0 +1,458 @@
+{
+ "files": [
+  "val_generations_v12e_cont.json",
+  "val_generations_v12e_cont_pfheld.json",
+  "val_generations_v12e_pf_cont.json",
+  "val_generations_v12e_pf_cont_pfheld.json"
+ ],
+ "control": {
+  "val": {
+   "_all": {
+    "n": 318,
+    "executes": 0.9937106918238994,
+    "correct": 0.7421383647798742,
+    "vm_correct": 0.7547169811320755,
+    "copied": 6,
+    "unknown_slot": 0
+   },
+   "arithmetic": {
+    "n": 64,
+    "executes": 0.96875,
+    "correct": 0.03125,
+    "vm_correct": 0.03125,
+    "copied": 2,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=10": {
+    "n": 1,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=2": {
+    "n": 17,
+    "executes": 1.0,
+    "correct": 0.058823529411764705,
+    "vm_correct": 0.058823529411764705,
+    "copied": 1,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=3": {
+    "n": 9,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=4": {
+    "n": 21,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=5": {
+    "n": 7,
+    "executes": 0.8571428571428571,
+    "correct": 0.14285714285714285,
+    "vm_correct": 0.14285714285714285,
+    "copied": 1,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=6": {
+    "n": 4,
+    "executes": 0.75,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=7": {
+    "n": 1,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=8": {
+    "n": 2,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=9": {
+    "n": 2,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "chain": {
+    "n": 63,
+    "executes": 1.0,
+    "correct": 0.873015873015873,
+    "vm_correct": 0.873015873015873,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "kernel": {
+    "n": 64,
+    "executes": 1.0,
+    "correct": 0.84375,
+    "vm_correct": 0.90625,
+    "copied": 4,
+    "unknown_slot": 0
+   },
+   "plan": {
+    "n": 63,
+    "executes": 1.0,
+    "correct": 0.9682539682539683,
+    "vm_correct": 0.9682539682539683,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "role_binding": {
+    "n": 64,
+    "executes": 1.0,
+    "correct": 1.0,
+    "vm_correct": 1.0,
+    "copied": 0,
+    "unknown_slot": 0
+   }
+  },
+  "held": {
+   "_all": {
+    "n": 815,
+    "executes": 0.9901840490797545,
+    "correct": 0.4147239263803681,
+    "vm_correct": 0.4147239263803681,
+    "copied": 4,
+    "unknown_slot": 0
+   },
+   "arithmetic": {
+    "n": 236,
+    "executes": 0.9745762711864406,
+    "correct": 0.0211864406779661,
+    "vm_correct": 0.0211864406779661,
+    "copied": 4,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=10": {
+    "n": 1,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=3": {
+    "n": 118,
+    "executes": 1.0,
+    "correct": 0.0423728813559322,
+    "vm_correct": 0.0423728813559322,
+    "copied": 1,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=4": {
+    "n": 64,
+    "executes": 0.984375,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 3,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=5": {
+    "n": 29,
+    "executes": 0.9655172413793104,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=6": {
+    "n": 12,
+    "executes": 0.75,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=7": {
+    "n": 8,
+    "executes": 0.875,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=8": {
+    "n": 4,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "chain": {
+    "n": 294,
+    "executes": 1.0,
+    "correct": 0.9149659863945578,
+    "vm_correct": 0.9149659863945578,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "plan": {
+    "n": 285,
+    "executes": 0.9929824561403509,
+    "correct": 0.22456140350877193,
+    "vm_correct": 0.22456140350877193,
+    "copied": 0,
+    "unknown_slot": 0
+   }
+  }
+ },
+ "program_first": {
+  "val": {
+   "_all": {
+    "n": 318,
+    "executes": 0.9905660377358491,
+    "correct": 0.7547169811320755,
+    "vm_correct": 0.7704402515723271,
+    "copied": 11,
+    "unknown_slot": 1
+   },
+   "arithmetic": {
+    "n": 64,
+    "executes": 0.953125,
+    "correct": 0.046875,
+    "vm_correct": 0.046875,
+    "copied": 6,
+    "unknown_slot": 1
+   },
+   "arithmetic/steps=10": {
+    "n": 1,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 1,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=2": {
+    "n": 17,
+    "executes": 1.0,
+    "correct": 0.17647058823529413,
+    "vm_correct": 0.17647058823529413,
+    "copied": 1,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=3": {
+    "n": 9,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=4": {
+    "n": 21,
+    "executes": 0.9047619047619048,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 2,
+    "unknown_slot": 1
+   },
+   "arithmetic/steps=5": {
+    "n": 7,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 1,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=6": {
+    "n": 4,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=7": {
+    "n": 1,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=8": {
+    "n": 2,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=9": {
+    "n": 2,
+    "executes": 0.5,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 1,
+    "unknown_slot": 0
+   },
+   "chain": {
+    "n": 63,
+    "executes": 1.0,
+    "correct": 0.9047619047619048,
+    "vm_correct": 0.9047619047619048,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "kernel": {
+    "n": 64,
+    "executes": 1.0,
+    "correct": 0.84375,
+    "vm_correct": 0.921875,
+    "copied": 5,
+    "unknown_slot": 0
+   },
+   "plan": {
+    "n": 63,
+    "executes": 1.0,
+    "correct": 0.9841269841269841,
+    "vm_correct": 0.9841269841269841,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "role_binding": {
+    "n": 64,
+    "executes": 1.0,
+    "correct": 1.0,
+    "vm_correct": 1.0,
+    "copied": 0,
+    "unknown_slot": 0
+   }
+  },
+  "held": {
+   "_all": {
+    "n": 815,
+    "executes": 0.9914110429447853,
+    "correct": 0.5484662576687117,
+    "vm_correct": 0.5484662576687117,
+    "copied": 2,
+    "unknown_slot": 9
+   },
+   "arithmetic": {
+    "n": 236,
+    "executes": 0.9745762711864406,
+    "correct": 0.059322033898305086,
+    "vm_correct": 0.059322033898305086,
+    "copied": 2,
+    "unknown_slot": 9
+   },
+   "arithmetic/steps=10": {
+    "n": 1,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=3": {
+    "n": 118,
+    "executes": 0.9915254237288136,
+    "correct": 0.1016949152542373,
+    "vm_correct": 0.1016949152542373,
+    "copied": 1,
+    "unknown_slot": 2
+   },
+   "arithmetic/steps=4": {
+    "n": 64,
+    "executes": 0.96875,
+    "correct": 0.03125,
+    "vm_correct": 0.03125,
+    "copied": 1,
+    "unknown_slot": 1
+   },
+   "arithmetic/steps=5": {
+    "n": 29,
+    "executes": 0.9310344827586207,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 3
+   },
+   "arithmetic/steps=6": {
+    "n": 12,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 1
+   },
+   "arithmetic/steps=7": {
+    "n": 8,
+    "executes": 1.0,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "arithmetic/steps=8": {
+    "n": 4,
+    "executes": 0.75,
+    "correct": 0.0,
+    "vm_correct": 0.0,
+    "copied": 0,
+    "unknown_slot": 2
+   },
+   "chain": {
+    "n": 294,
+    "executes": 0.9965986394557823,
+    "correct": 0.9931972789115646,
+    "vm_correct": 0.9931972789115646,
+    "copied": 0,
+    "unknown_slot": 0
+   },
+   "plan": {
+    "n": 285,
+    "executes": 1.0,
+    "correct": 0.49473684210526314,
+    "vm_correct": 0.49473684210526314,
+    "copied": 0,
+    "unknown_slot": 0
+   }
+  }
+ },
+ "delta_held": 0.13374233128834362,
+ "val_drops": {
+  "arithmetic": -0.015625,
+  "chain": -0.031746031746031744,
+  "kernel": 0.0,
+  "plan": -0.015873015873015817,
+  "role_binding": 0.0
+ },
+ "worst_val_drop": {
+  "family": "kernel",
+  "pts": 0.0
+ },
+ "pf_arm_slots": {
+  "copied": 13,
+  "unknown_slot": 10
+ },
+ "checks": {
+  "held-out correct +10 pts": true,
+  "no v12e val family down > 2 pts": true,
+  "0 copied literals, 0 unknown slots (program-first arm)": false
+ },
+ "verdict": "NEITHER: 0 copied literals, 0 unknown slots (program-first arm) (delta +13.4 pts)"
+}

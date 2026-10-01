@@ -1,0 +1,106 @@
+[
+ {
+  "file": "pf_heldout_eval_w_slots.jsonl",
+  "n": 195,
+  "skipped_size": 41,
+  "asked_unit_found": 0.9025641025641026,
+  "number_tag_found": 0.7854077253218884,
+  "untyped": {
+   "n": 157,
+   "median_survivors": 951,
+   "gold_in": 0.9936305732484076,
+   "gold_unique": 0.0,
+   "gold_in_le3": 0.0,
+   "gold_in_le10": 0.0,
+   "blown": 0.0
+  },
+  "typed": {
+   "n": 195,
+   "median_survivors": 61,
+   "gold_in": 0.2512820512820513,
+   "gold_unique": 0.0,
+   "gold_in_le3": 0.0,
+   "gold_in_le10": 0.005128205128205128,
+   "blown": 0.0
+  },
+  "typed+all": {
+   "n": 195,
+   "median_survivors": 20,
+   "gold_in": 0.16923076923076924,
+   "gold_unique": 0.0,
+   "gold_in_le3": 0.005128205128205128,
+   "gold_in_le10": 0.005128205128205128,
+   "blown": 0.0
+  },
+  "typed+elided": {
+   "n": 195,
+   "median_survivors": 94,
+   "gold_in": 0.3641025641025641,
+   "gold_unique": 0.0,
+   "gold_in_le3": 0.0,
+   "gold_in_le10": 0.005128205128205128,
+   "blown": 0.020512820512820513
+  },
+  "typed+elided+all": {
+   "n": 195,
+   "median_survivors": 25,
+   "gold_in": 0.2923076923076923,
+   "gold_unique": 0.0,
+   "gold_in_le3": 0.0,
+   "gold_in_le10": 0.015384615384615385,
+   "blown": 0.020512820512820513
+  }
+ },
+ {
+  "file": "emitter_sft_v12e_w_slots.jsonl",
+  "n": 298,
+  "skipped_size": 31,
+  "asked_unit_found": 0.7248322147651006,
+  "number_tag_found": 0.8350340136054422,
+  "untyped": {
+   "n": 260,
+   "median_survivors": 262,
+   "gold_in": 0.7038461538461539,
+   "gold_unique": 0.0,
+   "gold_in_le3": 0.0,
+   "gold_in_le10": 0.0,
+   "blown": 0.0
+  },
+  "typed": {
+   "n": 298,
+   "median_survivors": 16,
+   "gold_in": 0.2483221476510067,
+   "gold_unique": 0.0,
+   "gold_in_le3": 0.006711409395973154,
+   "gold_in_le10": 0.020134228187919462,
+   "blown": 0.0
+  },
+  "typed+all": {
+   "n": 298,
+   "median_survivors": 7,
+   "gold_in": 0.16778523489932887,
+   "gold_unique": 0.003355704697986577,
+   "gold_in_le3": 0.010067114093959731,
+   "gold_in_le10": 0.03691275167785235,
+   "blown": 0.0
+  },
+  "typed+elided": {
+   "n": 298,
+   "median_survivors": 14,
+   "gold_in": 0.27181208053691275,
+   "gold_unique": 0.0,
+   "gold_in_le3": 0.003355704697986577,
+   "gold_in_le10": 0.013422818791946308,
+   "blown": 0.006711409395973154
+  },
+  "typed+elided+all": {
+   "n": 298,
+   "median_survivors": 6,
+   "gold_in": 0.1912751677852349,
+   "gold_unique": 0.003355704697986577,
+   "gold_in_le3": 0.006711409395973154,
+   "gold_in_le10": 0.02348993288590604,
+   "blown": 0.006711409395973154
+  }
+ }
+]

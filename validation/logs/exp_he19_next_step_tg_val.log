@@ -1,0 +1,44 @@
+  20/329 records, 104 generations (180s)  exact=0.286 value=0.345 op=0.476 operands=0.357 stop_right=0.700 stopped_early=0.060
+  40/329 records, 196 generations (330s)  exact=0.340 value=0.410 op=0.487 operands=0.397 stop_right=0.775 stopped_early=0.051
+  60/329 records, 299 generations (504s)  exact=0.301 value=0.364 op=0.464 operands=0.351 stop_right=0.783 stopped_early=0.042
+  80/329 records, 399 generations (668s)  exact=0.304 value=0.370 op=0.470 operands=0.376 stop_right=0.775 stopped_early=0.047
+  100/329 records, 493 generations (825s)  exact=0.298 value=0.369 op=0.461 operands=0.372 stop_right=0.780 stopped_early=0.046
+  120/329 records, 585 generations (976s)  exact=0.303 value=0.374 op=0.469 operands=0.372 stop_right=0.758 stopped_early=0.047
+  140/329 records, 685 generations (1134s)  exact=0.299 value=0.363 op=0.461 operands=0.376 stop_right=0.786 stopped_early=0.050
+  160/329 records, 776 generations (1281s)  exact=0.308 value=0.375 op=0.472 operands=0.385 stop_right=0.781 stopped_early=0.050
+  180/329 records, 877 generations (1445s)  exact=0.310 value=0.372 op=0.479 operands=0.390 stop_right=0.794 stopped_early=0.047
+  200/329 records, 974 generations (1603s)  exact=0.302 value=0.368 op=0.472 operands=0.389 stop_right=0.810 stopped_early=0.045
+  220/329 records, 1068 generations (1759s)  exact=0.307 value=0.374 op=0.476 operands=0.394 stop_right=0.809 stopped_early=0.044
+  240/329 records, 1173 generations (1935s)  exact=0.305 value=0.369 op=0.474 operands=0.394 stop_right=0.808 stopped_early=0.045
+  260/329 records, 1286 generations (2128s)  exact=0.300 value=0.363 op=0.475 operands=0.385 stop_right=0.808 stopped_early=0.047
+  280/329 records, 1375 generations (2272s)  exact=0.296 value=0.356 op=0.475 operands=0.383 stop_right=0.814 stopped_early=0.046
+  300/329 records, 1463 generations (2419s)  exact=0.290 value=0.352 op=0.474 operands=0.377 stop_right=0.793 stopped_early=0.046
+  320/329 records, 1563 generations (2584s)  exact=0.295 value=0.356 op=0.479 operands=0.381 stop_right=0.794 stopped_early=0.045
+  329/329 records, 1595 generations (2631s)  exact=0.293 value=0.355 op=0.477 operands=0.382 stop_right=0.796 stopped_early=0.046
+
+by block index k (0 = first step):
+  k=0   steps= 329 exact=0.350 value=0.444 op=0.623 operands=0.535  closes=  0 stop_right=0.000
+  k=1   steps= 325 exact=0.292 value=0.378 op=0.434 operands=0.360  closes=  4 stop_right=0.250
+  k=2   steps= 249 exact=0.289 value=0.321 op=0.410 operands=0.341  closes= 76 stop_right=0.868
+  k=3   steps= 166 exact=0.247 value=0.289 op=0.434 operands=0.283  closes= 83 stop_right=0.819
+  k=4   steps=  95 exact=0.284 value=0.305 op=0.421 operands=0.326  closes= 71 stop_right=0.535
+  k=5   steps=  53 exact=0.283 value=0.321 op=0.491 operands=0.340  closes= 42 stop_right=0.905
+  k=6   steps=  23 exact=0.043 value=0.043 op=0.261 operands=0.130  closes= 30 stop_right=0.967
+  k=7   steps=  16 exact=0.250 value=0.250 op=0.375 operands=0.312  closes=  7 stop_right=0.857
+  k=8   steps=   6 exact=0.000 value=0.167 op=0.500 operands=0.000  closes= 10 stop_right=1.000
+  k=9   steps=   3 exact=0.333 value=0.333 op=0.667 operands=0.333  closes=  3 stop_right=1.000
+  k=10  steps=   1 exact=0.000 value=0.000 op=1.000 operands=0.000  closes=  2 stop_right=1.000
+  k=11  steps=   0 exact=0.000 value=0.000 op=0.000 operands=0.000  closes=  1 stop_right=1.000
+by plan length K:
+  K=1   steps=   4 exact=0.000 value=0.000 op=0.750  closes=  4 stop_right=0.250
+  K=2   steps= 152 exact=0.382 value=0.493 op=0.579  closes= 76 stop_right=0.868
+  K=3   steps= 249 exact=0.317 value=0.394 op=0.474  closes= 83 stop_right=0.819
+  K=4   steps= 284 exact=0.268 value=0.331 op=0.433  closes= 71 stop_right=0.535
+  K=5   steps= 210 exact=0.343 value=0.381 op=0.529  closes= 42 stop_right=0.905
+  K=6   steps= 180 exact=0.239 value=0.317 op=0.417  closes= 30 stop_right=0.967
+  K=7   steps=  49 exact=0.224 value=0.224 op=0.429  closes=  7 stop_right=0.857
+  K=8   steps=  80 exact=0.275 value=0.300 op=0.487  closes= 10 stop_right=1.000
+  K=9   steps=  27 exact=0.259 value=0.296 op=0.519  closes=  3 stop_right=1.000
+  K=10  steps=  20 exact=0.100 value=0.100 op=0.400  closes=  2 stop_right=1.000
+  K=11  steps=  11 exact=0.091 value=0.091 op=0.364  closes=  1 stop_right=1.000
+ALL steps=1266 exact=0.293 value=0.355 op=0.477 operands=0.382 stopped_early=0.046 incomplete=0.000 | closes=329 stop_right=0.796 ran_on=0.204  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_next_step_tg_val.json

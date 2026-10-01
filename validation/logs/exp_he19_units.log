@@ -1,0 +1,13 @@
+== pf_heldout_eval_w_slots.jsonl: n=195 (skipped 41 with > 6 numbers)  asked unit found 0.90  number tagged 0.79
+   untyped           n=157 median survivors   951  gold in 0.99  unique 0.00  in & <=3 0.00  in & <=10 0.00
+   typed             n=195 median survivors    61  gold in 0.25  unique 0.00  in & <=3 0.00  in & <=10 0.01
+   typed+all         n=195 median survivors    20  gold in 0.17  unique 0.00  in & <=3 0.01  in & <=10 0.01
+   typed+elided      n=195 median survivors    94  gold in 0.36  unique 0.00  in & <=3 0.00  in & <=10 0.01
+   typed+elided+all  n=195 median survivors    25  gold in 0.29  unique 0.00  in & <=3 0.00  in & <=10 0.02
+== emitter_sft_v12e_w_slots.jsonl: n=298 (skipped 31 with > 6 numbers)  asked unit found 0.72  number tagged 0.84
+   untyped           n=260 median survivors   262  gold in 0.70  unique 0.00  in & <=3 0.00  in & <=10 0.00
+   typed             n=298 median survivors    16  gold in 0.25  unique 0.00  in & <=3 0.01  in & <=10 0.02
+   typed+all         n=298 median survivors     7  gold in 0.17  unique 0.00  in & <=3 0.01  in & <=10 0.04
+   typed+elided      n=298 median survivors    14  gold in 0.27  unique 0.00  in & <=3 0.00  in & <=10 0.01
+   typed+elided+all  n=298 median survivors     6  gold in 0.19  unique 0.00  in & <=3 0.01  in & <=10 0.02
+-> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_units.json

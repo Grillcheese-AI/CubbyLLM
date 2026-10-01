@@ -1,0 +1,22 @@
+
+by block index k (0 = first step):
+  k=0   steps= 236 exact=0.631 value=0.797 op=0.818 operands=0.907  closes=  0 stop_right=0.000
+  k=1   steps= 236 exact=0.174 value=0.280 op=0.216 operands=0.254  closes=  0 stop_right=0.000
+  k=2   steps= 236 exact=0.174 value=0.208 op=0.233 operands=0.199  closes=  0 stop_right=0.000
+  k=3   steps= 118 exact=0.212 value=0.220 op=0.280 operands=0.288  closes=118 stop_right=0.398
+  k=4   steps=  54 exact=0.074 value=0.074 op=0.093 operands=0.148  closes= 64 stop_right=0.203
+  k=5   steps=  25 exact=0.160 value=0.200 op=0.280 operands=0.240  closes= 29 stop_right=0.310
+  k=6   steps=  13 exact=0.077 value=0.077 op=0.077 operands=0.077  closes= 12 stop_right=0.167
+  k=7   steps=   5 exact=0.200 value=0.200 op=0.200 operands=0.200  closes=  8 stop_right=0.625
+  k=8   steps=   1 exact=0.000 value=0.000 op=0.000 operands=0.000  closes=  4 stop_right=0.250
+  k=9   steps=   1 exact=0.000 value=0.000 op=0.000 operands=0.000  closes=  0 stop_right=0.000
+  k=10  steps=   0 exact=0.000 value=0.000 op=0.000 operands=0.000  closes=  1 stop_right=1.000
+by plan length K:
+  K=3   steps= 354 exact=0.322 value=0.455 op=0.412  closes=118 stop_right=0.398
+  K=4   steps= 256 exact=0.336 value=0.398 op=0.406  closes= 64 stop_right=0.203
+  K=5   steps= 145 exact=0.248 value=0.290 op=0.352  closes= 29 stop_right=0.310
+  K=6   steps=  72 exact=0.194 value=0.236 op=0.306  closes= 12 stop_right=0.167
+  K=7   steps=  56 exact=0.196 value=0.214 op=0.286  closes=  8 stop_right=0.625
+  K=8   steps=  32 exact=0.125 value=0.156 op=0.188  closes=  4 stop_right=0.250
+  K=10  steps=  10 exact=0.100 value=0.100 op=0.100  closes=  1 stop_right=1.000
+ALL steps=925 exact=0.288 value=0.368 op=0.374 operands=0.401 stopped_early=0.002 incomplete=0.001 | closes=236 stop_right=0.331 ran_on=0.669  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_next_step_tg_held_inject.json

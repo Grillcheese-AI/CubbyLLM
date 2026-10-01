@@ -131,7 +131,8 @@ def slot_record(rec: dict, words: bool = True, step_values: bool = True, world=N
             if sid is None:
                 return m.group(0)
             stats["numbers"] += 1
-            return m.group(0).replace(m.group("num"), sid, 1)
+            a, b = m.start("num") - m.start(), m.end("num") - m.start()      # the literal's own span, never the
+            return m.group(0)[:a] + sid + m.group(0)[b:]                     # register's digit (`div s2, 2` -> `div s2, $N5`)
         out = NUM_LIT_RX.sub(sub_lit, out)
 
         def sub_comment(m):

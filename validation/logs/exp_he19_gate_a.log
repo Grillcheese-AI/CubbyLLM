@@ -1,0 +1,15 @@
+stops ctrl_held    {'any_cut': 0.038, 'at_ref_len': 0.017, 'first_step_right': 0.021}
+stops tg_held      {'any_cut': 0.085, 'at_ref_len': 0.055, 'first_step_right': 0.064}
+stops ctrl_val     {'any_cut': 0.125, 'at_ref_len': 0.078, 'first_step_right': 0.125}
+stops tg_val_all   {'any_cut': 0.216, 'at_ref_len': 0.134, 'first_step_right': 0.195}
+ctrl_val        n=  64 correct=0.031 vm=0.031 exec=0.969 copied=2 unknown=0 closed=0.97 looped=0.09 same_steps=0.30 more=0.33 fewer=0.38
+   by steps: 2:0.06/17  3:0.00/9  4:0.00/21  5:0.14/7  6:0.00/4  7:0.00/1  8:0.00/2  9:0.00/2  10:0.00/1
+tg_val_matched  n=  64 correct=0.125 vm=0.125 exec=0.891 copied=0 unknown=0 closed=0.89 looped=0.22 same_steps=0.31 more=0.50 fewer=0.19
+   by steps: 2:0.29/17  3:0.00/9  4:0.14/21  5:0.00/7  6:0.00/4  7:0.00/1  8:0.00/2  9:0.00/2  10:0.00/1
+tg_val_all      n= 329 correct=0.146 vm=0.146 exec=0.836 copied=0 unknown=0 closed=0.84 looped=0.29 same_steps=0.27 more=0.52 fewer=0.21
+   by steps: 1:0.00/4  2:0.36/76  3:0.12/83  4:0.13/71  5:0.05/42  6:0.00/30  7:0.00/7  8:0.00/10  9:0.00/3  10:0.00/2  11:0.00/1
+ctrl_held       n= 236 correct=0.021 vm=0.021 exec=0.975 copied=4 unknown=0 closed=0.97 looped=0.14 same_steps=0.22 more=0.62 fewer=0.16
+   by steps: 3:0.04/118  4:0.00/64  5:0.00/29  6:0.00/12  7:0.00/8  8:0.00/4  10:0.00/1
+tg_held         n= 236 correct=0.055 vm=0.055 exec=0.593 copied=1 unknown=1 closed=0.60 looped=0.51 same_steps=0.15 more=0.79 fewer=0.06
+   by steps: 3:0.08/118  4:0.06/64  5:0.00/29  6:0.00/12  7:0.00/8  8:0.00/4  10:0.00/1
+held matched ids 236  VERDICT KILL  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_gate_a.json

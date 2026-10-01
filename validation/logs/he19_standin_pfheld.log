@@ -1,0 +1,10 @@
+llama_kv_cache: the V embeddings have different sizes across layers and FA is not enabled - padding V cache to 512
+[stand-in] emitter llama-cpp:emitter_v12e.Q4_K_M.gguf | 236 val records | shim on
+  50/236 (107s)
+  100/236 (215s)
+  150/236 (315s)
+  200/236 (419s)
+
+[stand-in] VM-verified eval by task:
+  arithmetic    n= 236 executes=1.000 gold_match=0.852 text_exact=0.000
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\eval_emitter_vm_he19_standin_v12e_pfheld.json (495s)

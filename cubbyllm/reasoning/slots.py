@@ -30,7 +30,7 @@ from ..core.protocols import Wiring
 
 __wiring__ = Wiring.STANDALONE
 
-SLOT_RX = re.compile(r"\$(?P<kind>[ENRK])(?P<n>\d+)\b")      # K: a constant a world supplies (60 minutes per hour)
+SLOT_RX = re.compile(r"\$(?P<kind>[ENRKS])(?P<n>\d+)\b")     # K: a constant a world supplies; S: a value the VM computed (step_loop)
 # a quoted literal bound into a frame: `bind frame, SEED, "..."` / `bind evt, AGENT, "..."`
 BIND_LIT_RX = re.compile(r'bind\s+\w+\s*,\s*(?P<role>\w+)\s*,\s*"(?P<lit>(?:[^"\\]|\\.)*)"\s*;')
 # a numeric literal assigned or added: `assign s0 = 48;` `add s1, 24;` `assign threshold = 29;`
@@ -101,12 +101,18 @@ class Span:
     text: str        # as it appears in the question
     start: int
     end: int
-    kind: str        # E | N | R
+    kind: str        # E | N | R | K | S
     value: str | None = None   # a number written in words: the text is "four", the value "4" (what fill writes)
 
     @property
     def filled(self) -> str:
         return self.value if self.value is not None else self.text
+
+
+def state_block(state: list) -> str:
+    """The values the VM computed so far, as the emitter sees them: `So far:` then one line per $S --
+    `[S1: 154 = N1 / N2]` (its value, and the slots it came from; the text of an S span is that derivation)."""
+    return "So far:\n" + "\n".join(f"[{s.id[1:]}: {s.filled} = {s.text}]" for s in state)
 
 
 @dataclass
@@ -121,7 +127,7 @@ class SlotTable:
         """The question with every span marked for the emitter: 'of [E1: iridomyrmex bigi]?'"""
         out, at = [], 0
         for s in sorted(self.spans, key=lambda s: s.start):
-            if s.kind in "RK":                           # a referent / a world's constant is not in the text
+            if s.kind in "RKS":                          # a referent / a constant / a computed value is not in the text
                 continue
             out.append(self.question[at:s.start]); out.append(f"[{s.id[1:]}: {s.text}]"); at = s.end
         out.append(self.question[at:])
@@ -129,6 +135,9 @@ class SlotTable:
         refs = [s for s in self.spans if s.kind in "RK"]
         if refs:
             head += "  " + "; ".join(f"[{s.id[1:]} = {s.text}]" for s in refs)
+        state = [s for s in self.spans if s.kind == "S"]         # the VM's values so far (step_loop): their own lines
+        if state:
+            head += "\n" + state_block(state)
         return head
 
     def fill(self, program: str) -> str:
@@ -156,9 +165,9 @@ class SlotTable:
         return SlotVerdict(ok, reason, referenced, unused, copied)
 
     def _is_span_text(self, lit: str, kind: str = "E") -> bool:
-        if kind == "N":                                  # by value: 3.5 copies "$3.50", 4 copies "four", 60 a $K
+        if kind == "N":                                  # by value: 3.5 copies "$3.50", 4 copies "four", 60 a $K, 154 a $S
             v = num_value(lit)
-            return v is not None and any(s.kind in "NK" and num_value(s.filled) == v for s in self.spans)
+            return v is not None and any(s.kind in "NKS" and num_value(s.filled) == v for s in self.spans)
         n = _norm(lit)
         return any(s.kind == kind and _norm(s.text) == n for s in self.spans)
 

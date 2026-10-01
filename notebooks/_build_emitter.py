@@ -279,6 +279,53 @@ def run_tg():
 TG_OUT = run_tg()
 """),
     md(r"""
+**The write-back arm (`v12e_w_step`, 2026-09-30).** Gate A was killed (val 14.6%, held-out 5.5%) and the
+teacher-forced read (`validation/exp_he19_next_step.py`) said why: with the gold program in front of it the
+450M picks the first step at 80% and every later one at ~22%, starting 65% of later steps from a fresh question
+number instead of the register it should chain from — a register name is a pointer with no content it can bind
+to. So the state leaves the program: one emission per step, the VM runs it, and the value comes back as a slot
+in the question (`So far: [S1: 154 = N1 / N2]`; `cubbyllm/reasoning/step_loop.py`). This cell continues the
+Gate A adapter on the re-cut data (v12e_w's arithmetic as step rows + 30K TinyGSM records as step rows + the
+other families as they were; the register-digit slot bug of the earlier files fixed) and generates the held-out
+step rows. Training only (`--no-gen`, ~20–30 min, ~3–5 credits): disconnect when it prints `trained:`. The read
+runs locally for free, the loop around the adapter and the real VM:
+`python validation/exp_he19_step_loop.py --export ... --adapter <this out> --tokenizer ... --data pf_heldout_eval_w_slots.jsonl`.
+Gate (pre-registered): arithmetic correct through the loop ≥ 20% on the held-out (Gate A's line, now for the
+loop); the register-name failure is what this arm removes, so the per-step read at k ≥ 1 should rise well above 22%.
+"""),
+    code(r"""
+ST_ARM   = 'v12e_w_step'
+ST_DATA  = f'{DRIVE}/emitter/emitter_sft_v12e_w_tg30_step.jsonl'    # v12e_w (arithmetic re-cut) + 30K TinyGSM step rows
+ST_HELD  = f'{DRIVE}/emitter/pf_heldout_eval_w_step.jsonl'         # the held-out, re-cut: 1,161 next-step rows
+ST_FROM  = f'{DRIVE}/emitter/cubby450m_v12e_w_tg_cont'             # continue from the Gate A adapter (same dialect)
+ST_EPOCHS = 1
+for p in (ST_DATA, ST_HELD, f'{ST_FROM}/emitter_lora.safetensors'):
+    assert os.path.exists(p), p
+ST_STEPS = math.ceil(ST_EPOCHS * train_rows(ST_DATA) / BATCH)
+print(ST_ARM, train_rows(ST_DATA), 'train rows ->', ST_STEPS, 'steps')
+
+def run_step():
+    tag = f'_{ST_ARM}_cont'
+    out = f'{DRIVE}/emitter/cubby450m{tag}'
+    if os.path.exists(f'{out}/emitter_lora.safetensors'):
+        print('done already ->', out); return out
+    os.makedirs(out, exist_ok=True)
+    cmd = [sys.executable, '-u', 'validation/train_emitter_torch.py', '--ckpt', CKPT, '--tokenizer', TOKENIZER,
+           '--data', ST_DATA, '--out', out, '--steps', str(ST_STEPS), '--batch', str(BATCH), '--lr', str(LR),
+           '--rank', str(RANK), '--alpha', str(ALPHA), '--max-len', str(MAX_LEN), '--seed', str(SEED),
+           '--resume-adapter', ST_FROM, '--tag', tag,
+           '--no-gen']            # train only: the read is the loop + the VM, run locally on the card for free
+    with open(f'{out}/train.log', 'a', encoding='utf-8', buffering=1) as f:
+        p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+        for line in p.stdout:
+            print(line, end=''); f.write(line)
+        p.wait()
+    os.system(f'cp {REPO}/validation/logs/train_emitter_torch{tag}.* {out}/ 2>/dev/null')
+    return out
+
+ST_OUT = run_step()
+"""),
+    md(r"""
 **The school** (`validation/train_school_torch.py`, the curriculum in `cubbyllm/reasoning/school.py`): the
 Gate-A adapter is the pupil. Levels open one at a time (one operation → two steps → three-four → words and units
 → distractors → five-six → seven-ten); each problem is tried up to its level's budget, which halves as the level is
