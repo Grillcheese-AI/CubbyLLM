@@ -360,6 +360,53 @@ for line in p.stdout:
     print(line, end='')
 p.wait()
 """),
+    md(r"""
+**The step school (2026-10-01, gate B on the write-back pupil).** The write-back adapter (`v12e_w_step`) passed
+its gate: the loop alone solves 22.9% of the held-out, and with the gold state given it picks a later step right
+55% of the time. That is inside the school's range, so the school now runs on STEPS
+(`train_school_torch.py --step`): one gold step row is one problem, tried up to its level's budget, each candidate
+run in the VM and judged by the value it computes (a value another step of the same plan computes is neutral);
+dopamine, mistake pairs and shown solutions are per step, so the reward lands on the step that went wrong. The
+gate each round is the loop itself on 64 held-out questions; a round that drops it, or forgets the other
+families, is reverted. Self-contained: needs the setup and config cells only, plus the VM (built below, or a
+Linux `cubelang` at `cubbyllm/bin/cubelang` on Drive). Gate B (pre-registered): +10 pts over 22.9% through the
+loop on the full held-out (read locally afterwards, free); B′ is `STEP_SCHOOL_CONTROL = True`, the same rounds
+with every level open at once — the curriculum must beat it by +3.
+"""),
+    code(r"""
+BIN = f'{DRIVE}/bin/cubelang'
+if os.path.exists(BIN):
+    os.environ['CUBELANG_EXE'] = BIN; os.chmod(BIN, 0o755)
+elif not os.path.exists('/content/cubelang/target/release/cubelang'):
+    if not os.path.exists('/content/cubelang'):
+        !git clone -q https://github.com/Grillcheese-AI/cubelang.git /content/cubelang
+    if not os.path.exists(os.path.expanduser('~/.cargo/bin/cargo')):
+        !curl -sSf https://sh.rustup.rs | sh -s -- -y -q
+    !cd /content/cubelang && ~/.cargo/bin/cargo build --release -q
+    os.environ['CUBELANG_EXE'] = '/content/cubelang/target/release/cubelang'
+else:
+    os.environ['CUBELANG_EXE'] = '/content/cubelang/target/release/cubelang'
+!$CUBELANG_EXE --version || echo "no VM: the school needs one"
+
+STEP_POOL    = f'{DRIVE}/emitter/emitter_sft_v12e_w_tg30_step.jsonl'   # step rows (train split)
+STEP_HELD    = f'{DRIVE}/emitter/pf_heldout_eval_w_slots.jsonl'        # whole held-out questions: the loop's gate
+STEP_REGRESS = f'{DRIVE}/emitter/emitter_sft_v12e_w_slots.jsonl'       # the other families: nothing forgotten
+STEP_FROM    = f'{DRIVE}/emitter/cubby450m_v12e_w_step_cont'           # the pupil: the write-back adapter
+for p_ in (STEP_POOL, STEP_HELD, STEP_REGRESS, f'{STEP_FROM}/emitter_lora.safetensors'):
+    assert os.path.exists(p_), p_
+STEP_SCHOOL_CONTROL = False   # True: gate B' (every level open at once, same budgets)
+STEP_ROUNDS, STEP_PROBLEMS, STEP_GATE_N = 8, 192, 64
+STEP_OUT = f'{DRIVE}/emitter/school_step' + ('_shuffled' if STEP_SCHOOL_CONTROL else '')
+cmd = [sys.executable, '-u', 'validation/train_school_torch.py', '--ckpt', CKPT, '--tokenizer', TOKENIZER,
+       '--adapter', STEP_FROM, '--step', '--pool', STEP_POOL, '--heldout', STEP_HELD, '--out', STEP_OUT,
+       '--rounds', str(STEP_ROUNDS), '--problems', str(STEP_PROBLEMS), '--max-tries', '16',
+       '--temperature', '0.8', '--gate-n', str(STEP_GATE_N), '--regress', STEP_REGRESS, '--regress-n', '8'] \
+      + (['--no-curriculum'] if STEP_SCHOOL_CONTROL else [])
+p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+for line in p.stdout:
+    print(line, end='')
+p.wait()
+"""),
 ]
 
 nb = {"cells": CELLS,

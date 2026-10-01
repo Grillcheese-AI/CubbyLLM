@@ -302,6 +302,69 @@ class StepLoop:
         return {"answer": None, "steps": steps, "refused": f"no stop within {self.max_steps} steps", "emissions": emissions}
 
 
+    # ---- gate D: a vote per step, the VM as the judge of every candidate ------------------------------------
+    def candidates(self, prompt: str, n: int, temperature: float, seed: int) -> list[str]:
+        """The greedy emission plus n-1 samples (one batched decode when the emitter has `emit_samples`)."""
+        out = [self.emitter.emit(prompt, max_new_tokens=self.max_new_tokens)]
+        if n <= 1:
+            return out
+        if hasattr(self.emitter, "emit_samples"):
+            return out + list(self.emitter.emit_samples(prompt, n - 1, max_new_tokens=self.max_new_tokens,
+                                                        temperature=temperature, seed=seed))
+        return out + [self.emitter.emit(prompt, max_new_tokens=self.max_new_tokens, temperature=temperature,
+                                        seed=seed + i) for i in range(n - 1)]
+
+    def solve_vote(self, question: str, n: int = 5, temperature: float = 0.7, seed: int = 0) -> dict:
+        """Each step: n candidates, every one slot-checked, filled and run in the VM; the options are the VALUES
+        the runnable steps computed and the stop; the most-voted option wins (ties go to the greedy candidate's)
+        and its value is written back. The chain's confidence is its weakest step's agreement (votes for the
+        winner / n): the host speaks only above a threshold, and the read sweeps it (risk against coverage)."""
+        table = extract(question, constants=self.world.constants(question) if self.world else None)
+        steps, agreements = [], []
+        for k in range(self.max_steps + 1):
+            prompt = PROMPT_HEAD + table.annotate().strip() + PROMPT_TAIL
+            votes: dict = {}
+            order: list = []
+            for j, raw in enumerate(self.candidates(prompt, n, temperature, seed * 1000 + k)):
+                kind, what = parse_emission(raw)
+                if kind == "stop":
+                    s = table.get(what)
+                    if s is None or s.kind != "S":
+                        continue
+                    key = ("stop", s.filled)
+                    rep = what
+                elif kind == "step":
+                    block_text = render_step(k, what.ops)
+                    if not table.check(block_text).ok:
+                        continue
+                    ok, result = self.vm(wrap_step(table.fill(block_text)))
+                    v = num_value(result) if ok else None
+                    if v is None:
+                        continue
+                    key = ("step", canon(v))
+                    rep = what.ops
+                else:
+                    continue
+                if key not in votes:
+                    votes[key] = [0, rep, j]
+                    order.append(key)
+                votes[key][0] += 1
+            if not votes:
+                return {"answer": None, "steps": steps, "refused": "no candidate ran", "agreement": 0.0,
+                        "agreements": agreements + [0.0]}
+            win = max(order, key=lambda key: (votes[key][0], -votes[key][2]))
+            agreements.append(votes[win][0] / n)
+            if win[0] == "stop":
+                return {"answer": win[1], "steps": steps, "refused": None, "agreement": min(agreements),
+                        "agreements": agreements}
+            sid = f"$S{k + 1}"
+            table.spans.append(Span(sid, derivation(votes[win][1]).replace("$", ""), -1, -1, "S", win[1]))
+            steps.append({"k": k, "ops": votes[win][1], "value": win[1], "votes": votes[win][0],
+                          "options": len(votes)})
+        return {"answer": None, "steps": steps, "refused": f"no stop within {self.max_steps} steps",
+                "agreement": min(agreements) if agreements else 0.0, "agreements": agreements}
+
+
 def default_vm():
     root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     for p in (os.path.join(root, "validation"), os.path.join(root, "standin"), os.path.join(root, "standin", "data")):

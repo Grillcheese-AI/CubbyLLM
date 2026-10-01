@@ -120,3 +120,37 @@ def test_step_format_teacher_forced_read(tmp_path, monkeypatch):
     out = json.load(open(tmp_path / "logs" / "exp_he19_step_loop_t.json", encoding="utf-8"))["summary"]
     assert out["step0"]["ok"] == 1.0 and out["stop"]["ok"] == 1.0
     assert out["step1+"]["n"] == 2 and abs(out["step1+"]["ok"] - 0.5) < 1e-9     # k=1 wrong (+ for *), k=2 right
+
+
+def test_step_school_judge():
+    """train_school_torch --step: a step attempt is judged by the VALUE it computes against that step's gold; a
+    value another step of the same plan computes is neutral; the stop row wants `return $S<K>;`."""
+    import train_school_torch as ts
+    from cubbyllm.reasoning import step_loop as sl
+    from cubbyllm.reasoning.school import CORRECT, REFUSED, WRONG
+    program = ("program X implements ISolver {\n    public function solve(input: Input): Output {\n"
+               "        create s0 : quantity;   # step 0\n        assign s0 = $N1;\n        div s0, $N2;\n"
+               "        create s1 : quantity;   # step 1\n        assign s1 = 0;\n        add s1, s0;\n        mul s1, $N3;\n"
+               "        create s2 : quantity;   # step 2\n        assign s2 = 0;\n        add s2, s1;\n        add s2, $N4;\n"
+               "        sum s2;\n        query s2;\n        return s2;\n    }\n}\n")
+    spans = [{"id": "$N1", "text": "308", "start": 0, "end": 3, "kind": "N"},
+             {"id": "$N2", "text": "2", "start": 4, "end": 5, "kind": "N"},
+             {"id": "$N3", "text": "6", "start": 6, "end": 7, "kind": "N"},
+             {"id": "$N4", "text": "185", "start": 8, "end": 11, "kind": "N"}]
+    rows = sl.recut({"id": "r", "task": "arithmetic", "subtype": "", "split": "train", "gold": "1109",
+                     "question": "q", "prompt": "Question:\nq\nProgram:\n", "program": program, "spans": spans})
+    rows = [{**r, "plan_values": [154.0, 924.0, 1109.0]} for r in rows]
+    j = ts.StepJudge(fake=True)
+    step = lambda k, *ops: "".join([f"        create s{k} : quantity;\n"] +
+                                   [f"        assign s{k} = {v};\n" if o == "assign" else f"        {o} s{k}, {v};\n"
+                                    for o, v in ops])
+    assert j.attempt_step(rows[1], step(1, ("assign", "$S1"), ("mul", "$N3")))["outcome"] == CORRECT
+    assert j.attempt_step(rows[1], step(1, ("assign", "$N3"), ("mul", "$S1")))["outcome"] == CORRECT   # another spelling
+    wrong = j.attempt_step(rows[1], step(1, ("assign", "$S1"), ("add", "$N3")))
+    assert wrong["outcome"] == WRONG and wrong["values"] == [160.0]
+    assert j.attempt_step(rows[2], step(2, ("assign", "$S1")))["outcome"] == REFUSED              # step 0's value
+    assert j.attempt_step(rows[1], step(1, ("assign", "308"), ("mul", "$N3")))["outcome"] == REFUSED  # copied
+    assert j.attempt_step(rows[1], "        return $S1;\n")["why"] == "stopped early"
+    assert j.attempt_step(rows[3], "        return $S3;\n")["outcome"] == CORRECT
+    assert j.attempt_step(rows[3], "        return $S2;\n")["outcome"] == WRONG
+    assert j.attempt_step(rows[3], step(3, ("assign", "$S3")))["why"] == "ran on"

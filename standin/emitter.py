@@ -399,6 +399,22 @@ class Cubby450mEmitter:
                                        eos_token_id=self._eos).tolist()[0][len(ids):]
         return prefix + decode_program(self._tk, out, self._eos)   # keeps ACTION/AGENT/OBJECT (special tokens)
 
+    def emit_samples(self, prompt: str, n: int, max_new_tokens: int = 96, temperature: float = 0.7,
+                     top_k: int = 40, seed: int | None = None) -> list[str]:
+        """`n` sampled continuations in ONE batched decode (the prompt repeated n times; rows stop at </s>):
+        the candidates a step vote runs in the VM (`step_loop.StepLoop.solve_vote`)."""
+        self._load()
+        from emitter_data import PROMPT_HEAD, PROMPT_TAIL, decode_program
+        text = prompt if prompt.startswith(PROMPT_HEAD) else PROMPT_HEAD + prompt.strip() + PROMPT_TAIL
+        ids = self._tk.encode(text).ids[-self.max_ctx:]
+        if seed is not None:
+            self._grilly.manual_seed(int(seed))
+        with self._grilly.no_grad():
+            rows = self._model.generate(self._grilly.tensor([ids] * n), max_new_tokens=max_new_tokens,
+                                        eos_token_id=self._eos, do_sample=True, temperature=float(temperature),
+                                        top_k=int(top_k), top_p=1.0).tolist()
+        return [decode_program(self._tk, r[len(ids):], self._eos) for r in rows]
+
 
 def context_role(context) -> str | None:
     """The role tag inside a context: the tag itself, or a dict's "role"."""

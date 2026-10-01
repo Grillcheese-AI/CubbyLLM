@@ -107,3 +107,34 @@ def test_wrap_and_state_block():
     assert state_block(t.spans) == "So far:\n[S1: 154 = N1 / N2]"
     assert t.annotate().endswith("So far:\n[S1: 154 = N1 / N2]")
     assert t.check("assign s1 = 154;").copied == ["154"]                # a VM value written out is a copy
+
+
+def test_solve_vote_majority_and_agreement():
+    """Gate D: every candidate runs in the VM; the most-voted VALUE wins and is written back; the chain's
+    confidence is its weakest step's share of the votes."""
+    rows = sl.recut(REC)
+    wrong = "        create s1 : quantity;   # step 1: $S1 + $N3\n        assign s1 = $S1;\n        add s1, $N3;\n"
+    other = "        create s1 : quantity;   # step 1: $N3 * $S1\n        assign s1 = $N3;\n        mul s1, $S1;\n"
+
+    class Voter:
+        """greedy = the gold row; at step 1 the samples split 2 (same value, another spelling) : 2 (wrong)."""
+        def emit(self, prompt, max_new_tokens=64, **kw):
+            return next(r["program"] for r in rows if r["prompt"] == prompt)
+        def emit_samples(self, prompt, n, **kw):
+            if prompt == rows[1]["prompt"]:
+                return [other, wrong, wrong, other][:n]
+            return [self.emit(prompt)] * n
+
+    res = sl.StepLoop(Voter(), vm=py_vm).solve_vote(QUESTION, n=5)
+    assert res["refused"] is None and res["answer"] == "1109"
+    assert res["agreements"] == [1.0, 0.6, 1.0, 1.0]            # step 1: 3 of 5 for 924 (greedy + 2 rewordings)
+    assert res["agreement"] == 0.6 and res["steps"][1]["votes"] == 3 and res["steps"][1]["options"] == 2
+
+    class Split:
+        """No candidate runs at the first step: refused, never guessed."""
+        def emit(self, prompt, max_new_tokens=64, **kw):
+            return "hello"
+        def emit_samples(self, prompt, n, **kw):
+            return ["        create s0 : quantity;\n        assign s0 = 308;\n"] * n   # a copied literal: refused
+    res = sl.StepLoop(Split(), vm=py_vm).solve_vote(QUESTION, n=3)
+    assert res["answer"] is None and res["refused"] == "no candidate ran"

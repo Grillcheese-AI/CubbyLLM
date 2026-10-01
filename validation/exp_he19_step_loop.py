@@ -133,6 +133,8 @@ def main(argv=None) -> None:
     ap.add_argument("--gguf", default="")
     ap.add_argument("--replay-gold", default="", help="a *_step.jsonl: replay its rows instead of a model")
     ap.add_argument("--teacher-forced", default="", help="a *_step.jsonl: score each gold step row's next emission")
+    ap.add_argument("--vote", type=int, default=0, help="gate D: N candidates a step (greedy + N-1 samples), VM vote")
+    ap.add_argument("--temperature", type=float, default=0.7)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--max-steps", type=int, default=12)
     ap.add_argument("--max-new", type=int, default=96)   # a step ends at </s>; the cap only guards a run-on
@@ -163,7 +165,9 @@ def main(argv=None) -> None:
         if isinstance(emitter, GoldReplay):
             emitter.start(r["id"])
         K = len(blocks_of(r.get("program") or r.get("reference") or ""))
-        res = loop.solve(r["question"])
+        res = loop.solve_vote(r["question"], n=a.vote, temperature=a.temperature, seed=i) if a.vote \
+            else loop.solve(r["question"])
+        res.setdefault("emissions", [])
         ok = res["answer"] is not None and bool(gold_matches(res["answer"], r.get("gold")))
         st["n"] += 1
         st["correct"] += ok
@@ -174,9 +178,10 @@ def main(argv=None) -> None:
         st["same_steps"] += len(res["steps"]) == K
         by_k[K]["n"] += 1
         by_k[K]["correct"] += ok
-        st["emissions"] += len(res["emissions"])
+        st["emissions"] += len(res["emissions"]) or len(res.get("agreements", []))
         results.append({"id": r["id"], "K": K, "gold": r.get("gold"), "answer": res["answer"], "correct": ok,
-                        "refused": res["refused"], "steps": res["steps"], "emissions": res["emissions"][:6]})
+                        "refused": res["refused"], "steps": res["steps"], "emissions": res["emissions"][:6],
+                        "agreement": res.get("agreement"), "agreements": res.get("agreements")})
         if (i + 1) % 20 == 0 or i + 1 == len(recs):
             print(f"  {i + 1}/{len(recs)} ({time.perf_counter() - t0:.0f}s) correct={st['correct'] / st['n']:.3f} "
                   f"answered={st['answered'] / st['n']:.3f} same_steps={st['same_steps'] / st['n']:.3f}", flush=True)
@@ -190,7 +195,20 @@ def main(argv=None) -> None:
           f"same_steps={st['same_steps'] / n:.3f} emissions/problem={st['emissions'] / n:.2f}")
     print("  by steps: " + "  ".join(f"{k}:{c['correct'] / c['n']:.2f}/{c['n']}" for k, c in sorted(by_k.items())))
     print("  refusals: " + ", ".join(f"{k[8:]}={v}" for k, v in sorted(st.items()) if k.startswith("refused:")))
+    if a.vote:
+        print("  speak only when every step's winner had at least this share of the votes (risk against coverage):")
+        print(f"  {'threshold':>9s} {'spoken':>7s} {'right':>7s} {'wrong':>7s} {'precision':>9s}")
+        for thr in risk_coverage_thresholds(a.vote):
+            sp = [x for x in results if x["answer"] is not None and (x["agreement"] or 0) >= thr - 1e-9]
+            right = sum(x["correct"] for x in sp)
+            print(f"  {thr:9.2f} {len(sp) / n:7.3f} {right / n:7.3f} {(len(sp) - right) / n:7.3f} "
+                  f"{(right / len(sp) if sp else 0):9.3f}")
     print(f"  -> {out_path}")
+
+
+def risk_coverage_thresholds(n: int) -> list[float]:
+    """Every agreement level a chain of n-candidate votes can have: 1/n .. n/n."""
+    return [i / n for i in range(1, n + 1)]
 
 
 if __name__ == "__main__":

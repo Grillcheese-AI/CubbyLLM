@@ -22,6 +22,15 @@ One round:
         --adapter <emitter adapter dir> --pool <slots.jsonl> [...] --heldout <slots.jsonl> --out <dir> \
         [--rounds 20] [--problems 256] [--max-tries 16] [--temperature 0.8]
     python validation/train_school_torch.py --smoke --tokenizer <bbpe128k.json> --pool <slots.jsonl> --heldout <...>
+
+--step (2026-10-01, the write-back format, `cubbyllm/reasoning/step_loop.py`): the unit of practice is ONE STEP.
+The pool is step rows (`*_step.jsonl`: each gold step with the gold state written back as $S slots); a problem
+is one such row, tried up to its level's budget, each candidate run in the VM and judged by the VALUE it
+computes against that step's gold (a value another step of the same plan computes -- a different order of the
+same plan -- is neutral, never punished; the stop row is judged by `return $S<K>;`). Dopamine, mistake pairs and
+the shown solution are per step, so the reward lands on the step that went wrong, not on the whole program. The
+gate is the loop itself on a fixed held-out slice (whole questions, `--heldout <*_slots.jsonl>`): greedy, every
+step filled and run in the VM and written back, scored against the gold answer.
 """
 from __future__ import annotations
 
@@ -54,6 +63,7 @@ from cubbyllm.reasoning.arith_world import ArithmeticWorld  # noqa: E402
 from cubbyllm.reasoning.school import (CORRECT, REFUSED, WRONG, Curriculum, answer_written_in,  # noqa: E402
                                        arith_step_values, level_of, mistake_rows)
 from cubbyllm.reasoning.slots import SLOT_RX, num_value  # noqa: E402
+from cubbyllm.reasoning.step_loop import StepLoop, parse_emission, render_step, render_stop, wrap_step  # noqa: E402
 
 ADAPTER = "emitter_lora"
 LOG: list[str] = []
@@ -171,6 +181,103 @@ class Judge:
                 "values": arith_step_values(filled), "stated": stated, "why": "" if ok else "does not run"}
 
 
+# -- the step school: one step is one problem ----------------------------------------------
+
+def load_step_pool(paths: list[str], split: str = "train") -> dict[int, list[dict]]:
+    """Step rows by their PROBLEM's level (the parent's step count, words, constants and distractors, read off
+    its step rows together); each row carries its plan's gold step values (the neutral alternatives) and k."""
+    parents: dict[str, list[dict]] = defaultdict(list)
+    for p in paths:
+        for line in open(p, encoding="utf-8"):
+            r = json.loads(line)
+            if r.get("task") != "arithmetic" or r.get("split") != split or "#" not in r.get("id", ""):
+                continue
+            parents[r["id"].split("#")[0]].append(r)
+    by_level: dict[int, list[dict]] = defaultdict(list)
+    for rows in parents.values():
+        rows.sort(key=lambda r: r["stats"]["k"])
+        first = rows[0]
+        parent = {"program": "".join(r["program"] for r in rows),
+                  "spans": [sp for sp in first["spans"] if sp["kind"] in "NK"]}
+        lv = level_of(slot_difficulty(parent))
+        if lv is None:
+            continue
+        plan = [num_value(str(r["gold"])) for r in rows if not r["program"].lstrip().startswith("return")]
+        for r in rows:
+            by_level[lv].append({**r, "plan_values": plan, "level": lv})
+    return by_level
+
+
+class StepJudge(Judge):
+    """A step attempt: the stop row wants `return $S<K>;`; a step row wants a block whose VM value is the step's
+    gold. A value another step of the same plan computes is REFUSED (neutral: a different order, not a wrong
+    plan); a copied literal, an unknown slot, the gold written in, or a block that does not run is REFUSED."""
+
+    def attempt_step(self, row: dict, text: str) -> dict:
+        self.runs += 1
+        k = row["stats"]["k"]
+        table = table_of(row["spans"], row.get("question", ""))
+        stated = [num_value(s.filled) for s in table.spans if s.kind == "N"]
+        gold = num_value(str(row["gold"]))
+        is_stop = row["program"].lstrip().startswith("return")
+        kind, what = parse_emission(text)
+        if kind == "other":
+            return {"program": text, "outcome": REFUSED, "values": None, "stated": stated, "why": "malformed"}
+        if kind == "stop":
+            prog = render_stop(what)
+            if not is_stop:
+                return {"program": prog, "outcome": WRONG, "values": None, "stated": stated, "why": "stopped early"}
+            right = prog.split()[1] == row["program"].split()[1]
+            return {"program": prog, "outcome": CORRECT if right else WRONG, "values": None, "stated": stated,
+                    "why": "" if right else "stopped on the wrong value"}
+        prog = render_step(k, what.ops)
+        if is_stop:
+            return {"program": prog, "outcome": WRONG, "values": None, "stated": stated, "why": "ran on"}
+        verdict = table.check(prog)
+        if not verdict.ok:
+            return {"program": prog, "outcome": REFUSED, "values": None, "stated": stated, "why": verdict.reason}
+        hack = answer_written_in(prog, row.get("gold"), stated)
+        if hack:
+            return {"program": prog, "outcome": REFUSED, "values": None, "stated": stated, "why": hack}
+        ok, res = self._run(wrap_step(table.fill(prog)))
+        v = num_value(str(res)) if ok else None
+        if v is None:
+            return {"program": prog, "outcome": REFUSED, "values": None, "stated": stated, "why": "does not run"}
+        near = lambda a, b: a is not None and b is not None and abs(a - b) <= 1e-6 * max(1.0, abs(b))
+        if near(v, gold):
+            return {"program": prog, "outcome": CORRECT, "values": [v], "stated": stated, "why": ""}
+        if any(near(v, pv) for pv in row.get("plan_values", [])):
+            return {"program": prog, "outcome": REFUSED, "values": [v], "stated": stated, "why": "another step's value"}
+        return {"program": prog, "outcome": WRONG, "values": [v], "stated": stated, "why": ""}
+
+    def vm(self, program: str):
+        """For the loop: (runs, value) of a wrapped step."""
+        return self._run(program)
+
+
+class TorchEmitter:
+    """The pupil as an `Emitter` for the loop: greedy, one step at a time."""
+
+    def __init__(self, model, tk, eos, dev, max_new: int):
+        self.model, self.tk, self.eos, self.dev, self.max_new = model, tk, eos, dev, max_new
+
+    def emit(self, prompt: str, max_new_tokens: int = 96, **kw) -> str:
+        return sample_programs(self.model, self.tk, self.eos, prompt, 1, 0.0, min(max_new_tokens, self.max_new),
+                               self.dev)[0]
+
+
+def read_heldout_loop(model, tk, eos, recs: list[dict], judge: "StepJudge", dev, max_new: int) -> float:
+    """The gate in --step mode: the loop alone on whole held-out questions, scored against the gold answer."""
+    loop = StepLoop(TorchEmitter(model, tk, eos, dev, max_new), vm=judge.vm, world=ArithmeticWorld(),
+                    max_new_tokens=max_new)
+    good = 0
+    for r in recs:
+        res = loop.solve(r.get("question") or "")
+        a, g = num_value(str(res["answer"])) if res["answer"] is not None else None, num_value(str(r.get("gold")))
+        good += a is not None and g is not None and abs(a - g) <= 1e-6 * max(1.0, abs(g))
+    return good / max(1, len(recs))
+
+
 # -- the update ------------------------------------------------------------------------------
 
 def row_logprobs(model, tk, eos, pairs: list[tuple[str, str]], dev, amp: bool) -> torch.Tensor:
@@ -276,22 +383,26 @@ def run_round(model, tk, eos, dev, amp, cur: Curriculum, pool: dict, judge: Judg
         rec = rng.choice(pool[level])
         budget = cur.budget(level)
         progs = sample_programs(model, tk, eos, rec["prompt"], budget, temperature, max_new, dev)
+        step = "plan_values" in rec
         attempts = []
         for p in progs:                                   # in sampling order; the first correct ends the count
-            a = judge.attempt(rec, p)
+            a = judge.attempt_step(rec, p) if step else judge.attempt(rec, p)
             attempts.append(a)
             if a["outcome"] == CORRECT:
                 break
         result = cur.record(level, [a["outcome"] for a in attempts])
-        ref_filled = table_of(rec["spans"]).fill(rec["program"])
-        reference = {"program": rec["program"], "values": arith_step_values(ref_filled)}
+        if step:
+            reference = {"program": rec["program"], "values": [num_value(str(rec["gold"]))]}
+        else:
+            ref_filled = table_of(rec["spans"]).fill(rec["program"])
+            reference = {"program": rec["program"], "values": arith_step_values(ref_filled)}
         new = mistake_rows(rec["prompt"], attempts, result, reference=reference)
         for r in new:
             if r["kind"] == "mistake":
                 cur.learn(level, r["error"])
                 st[f"error:{r['error']}"] += 1
         rows += new
-        if result["solved"] and "$N" in attempts[-1]["program"]:     # a procedure transfers through its slots
+        if result["solved"] and not step and "$N" in attempts[-1]["program"]:   # a whole procedure transfers
             world.remember(rec["prompt"], attempts[-1]["program"], attested=True, source="curriculum")
         st["problems"] += 1
         st["solved"] += int(result["solved"])
@@ -330,6 +441,9 @@ def main(argv=None) -> None:
     ap.add_argument("--regress", nargs="*", default=[], help="slot jsonl(s) whose other families' val records are "
                                                              "the regression suite (catastrophic forgetting)")
     ap.add_argument("--regress-n", type=int, default=8, help="records per family in the regression suite")
+    ap.add_argument("--step-max-new", type=int, default=96, help="--step: tokens a step may take (it ends at </s>)")
+    ap.add_argument("--step", action="store_true", help="the write-back format: --pool is *_step.jsonl, one step "
+                                                        "is one problem, the gate is the loop on --heldout questions")
     a = ap.parse_args(argv)
     rng = random.Random(a.seed)
     torch.manual_seed(a.seed)
@@ -372,24 +486,26 @@ def main(argv=None) -> None:
     cur = Curriculum.load(school_path, window=a.window, open_all=a.no_curriculum) if os.path.exists(school_path) else \
         Curriculum(max_tries=a.max_tries, window=a.window, seed=a.seed, open_all=a.no_curriculum)
     world = ArithmeticWorld.load(world_path) if os.path.exists(world_path) else ArithmeticWorld()
-    pool = load_pool(a.pool, "train")
+    pool = load_step_pool(a.pool, "train") if a.step else load_pool(a.pool, "train")
     held = [r for lv in load_pool(a.heldout, "val").values() for r in lv]
     random.Random(1).shuffle(held)
     held = held[:a.gate_n]
-    judge = Judge(fake=a.fake_vm)
+    judge = StepJudge(fake=a.fake_vm) if a.step else Judge(fake=a.fake_vm)
+    gate = read_heldout_loop if a.step else read_heldout
+    smax = a.step_max_new if a.step else a.max_new          # a step is ~40 tokens; the regression suite is programs
     log(f"school | {dev} | pool by level {{{', '.join(f'{k}: {len(v)}' for k, v in sorted(pool.items()))}}} | "
         f"held-out {len(held)} | level {cur.current} ({cur.levels[cur.current].name}) | budget {cur.budget(cur.current)}")
     regress = load_regression(a.regress, a.regress_n if not a.smoke else 1)
-    best = read_heldout(model, tk, eos, held, judge, dev, a.max_new)
+    best = gate(model, tk, eos, held, judge, dev, smax)
     reg0 = read_regression(model, tk, eos, regress, dev, a.max_new)
     best_snap = snapshot(params)
     log(f"  round 0: held-out one-try {best:.3f} | regression suite {reg0}/{len(regress)} (other families)")
     lf = open(os.path.join(a.out, "school_rounds.jsonl"), "a", encoding="utf-8")
     for rnd in range(1, a.rounds + 1):
         t0 = time.time()
-        rows, st = run_round(model, tk, eos, dev, amp, cur, pool, judge, world, rng, a.problems, a.temperature, a.max_new)
+        rows, st = run_round(model, tk, eos, dev, amp, cur, pool, judge, world, rng, a.problems, a.temperature, smax)
         up = update(model, tk, eos, rows, opt, params, dev, amp, beta=a.beta)
-        acc = read_heldout(model, tk, eos, held, judge, dev, a.max_new)
+        acc = gate(model, tk, eos, held, judge, dev, smax)
         reg = read_regression(model, tk, eos, regress, dev, a.max_new)
         kept = acc >= best and reg >= reg0 - 1          # better at arithmetic, and nothing else forgotten
         if kept:
