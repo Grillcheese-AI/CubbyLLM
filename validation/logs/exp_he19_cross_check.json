@@ -1,0 +1,32 @@
+{
+  "step_held": {
+    "n": 236,
+    "spoken": 0.2330508474576271,
+    "right": 0.2245762711864407,
+    "wrong": 0.00847457627118644,
+    "precision": 0.9636363636363636,
+    "counts": {
+      "agree": 55,
+      "right": 53,
+      "wrong": 2
+    },
+    "standin_alone_right": 0.8516949152542372,
+    "standin_wrong": 35,
+    "standin_wrong_vetoed": 33
+  },
+  "vote5_held": {
+    "n": 236,
+    "spoken": 0.24152542372881355,
+    "right": 0.2330508474576271,
+    "wrong": 0.00847457627118644,
+    "precision": 0.9649122807017544,
+    "counts": {
+      "agree": 57,
+      "right": 55,
+      "wrong": 2
+    },
+    "standin_alone_right": 0.8516949152542372,
+    "standin_wrong": 35,
+    "standin_wrong_vetoed": 33
+  }
+}

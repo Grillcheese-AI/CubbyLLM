@@ -1,0 +1,24 @@
+  20/236 (325s) correct=0.100 answered=1.000 same_steps=0.600
+  40/236 (595s) correct=0.125 answered=1.000 same_steps=0.550
+  60/236 (890s) correct=0.133 answered=0.950 same_steps=0.533
+  80/236 (1171s) correct=0.138 answered=0.950 same_steps=0.512
+  100/236 (1470s) correct=0.180 answered=0.960 same_steps=0.530
+  120/236 (1756s) correct=0.175 answered=0.967 same_steps=0.517
+  140/236 (2030s) correct=0.214 answered=0.971 same_steps=0.536
+  160/236 (2288s) correct=0.256 answered=0.975 same_steps=0.562
+  180/236 (2534s) correct=0.256 answered=0.972 same_steps=0.567
+  200/236 (2873s) correct=0.240 answered=0.970 same_steps=0.555
+  220/236 (3135s) correct=0.241 answered=0.968 same_steps=0.555
+  236/236 (3346s) correct=0.237 answered=0.970 same_steps=0.542
+
+vote5_held: n=236 correct=0.237 answered=0.970 wrong_answer=0.733 same_steps=0.542 emissions/problem=4.61
+  by steps: 3:0.32/118  4:0.23/64  5:0.10/29  6:0.00/12  7:0.00/8  8:0.00/4  10:0.00/1
+  refusals: no candidate ran=6, no stop within # steps=1
+  speak only when every step's winner had at least this share of the votes (risk against coverage):
+  threshold  spoken   right   wrong precision
+       0.20   0.970   0.237   0.733     0.245
+       0.40   0.869   0.229   0.640     0.263
+       0.60   0.475   0.174   0.301     0.366
+       0.80   0.161   0.081   0.081     0.500
+       1.00   0.055   0.034   0.021     0.615
+  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_step_loop_vote5_held.json
