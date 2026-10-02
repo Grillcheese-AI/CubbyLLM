@@ -99,7 +99,9 @@ if not os.path.exists('/content/CubbyLLM'):
     !git clone -q https://github.com/Grillcheese-AI/CubbyLLM.git /content/CubbyLLM
 else:
     !cd /content/CubbyLLM && git pull -q --ff-only
-!pip -q install tokenizers safetensors numpy
+!pip -q install tokenizers safetensors numpy "protobuf>=7.35.1"
+# protobuf: cubbyllm/bridges/reasoning_pb2.py is protoc 7.35.1 gencode and refuses an older runtime; without
+# it every VM call fails inside the bridge and reads as "does not run" (the first step school read 0.000)
 from google.colab import drive; drive.mount('/content/drive')
 REPO = '/content/CubbyLLM'
 !nvidia-smi --query-gpu=name,memory.total --format=csv
@@ -387,6 +389,7 @@ elif not os.path.exists('/content/cubelang/target/release/cubelang'):
 else:
     os.environ['CUBELANG_EXE'] = '/content/cubelang/target/release/cubelang'
 !$CUBELANG_EXE --version || echo "no VM: the school needs one"
+!cd $REPO && python -c "from cubbyllm.bridges import reasoning_pb2; print('VM bridge ok (protobuf runtime matches)')"
 
 STEP_POOL    = f'{DRIVE}/emitter/emitter_sft_v12e_w_tg30_step.jsonl'   # step rows (train split)
 STEP_HELD    = f'{DRIVE}/emitter/pf_heldout_eval_w_slots.jsonl'        # whole held-out questions: the loop's gate

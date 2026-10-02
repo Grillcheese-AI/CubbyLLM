@@ -156,3 +156,41 @@ def test_step_school_judge():
     assert j.attempt_step(rows[3], "        return $S3;\n")["outcome"] == CORRECT
     assert j.attempt_step(rows[3], "        return $S2;\n")["outcome"] == WRONG
     assert j.attempt_step(rows[3], step(3, ("assign", "$S3")))["why"] == "ran on"
+
+
+def test_school_vm_selfcheck_fails_loud():
+    """A VM the bridge cannot reach must stop the school before it starts, not read as 'does not run' on every
+    attempt (the first Colab step school: protobuf runtime older than reasoning_pb2's gencode, gate 0.000)."""
+    import pytest
+    import train_school_torch as ts
+    from cubbyllm.reasoning import step_loop as sl
+    program = ("program X implements ISolver {\n    public function solve(input: Input): Output {\n"
+               "        create s0 : quantity;   # step 0\n        assign s0 = $N1;\n        div s0, $N2;\n"
+               "        sum s0;\n        query s0;\n        return s0;\n    }\n}\n")
+    spans = [{"id": "$N1", "text": "308", "start": 0, "end": 3, "kind": "N"},
+             {"id": "$N2", "text": "2", "start": 4, "end": 5, "kind": "N"}]
+    rows = sl.recut({"id": "r", "task": "arithmetic", "subtype": "", "split": "train", "gold": "154",
+                     "question": "q", "prompt": "Question:\nq\nProgram:\n", "program": program, "spans": spans})
+
+    class Dead:
+        def run(self, src, fn=None):
+            raise ImportError("Detected incompatible Protobuf Gencode/Runtime versions: gencode 7.35.1 runtime 6.33.6")
+
+    class Wrong:
+        def run(self, src, fn=None):
+            return {"ok": True, "result": "153"}
+
+    class Right:
+        def run(self, src, fn=None):
+            return {"ok": True, "result": "154"}
+
+    j = ts.StepJudge()
+    j.session = Dead()
+    with pytest.raises(ImportError, match="Gencode/Runtime"):
+        j.selfcheck(rows, step=True)
+    j.session = Wrong()
+    with pytest.raises(RuntimeError, match="VM self-check"):
+        j.selfcheck(rows, step=True)
+    j.session = Right()
+    j.selfcheck(rows, step=True)                      # the stop row is skipped; the step row runs to its gold
+    ts.StepJudge(fake=True).selfcheck(rows, step=True)  # the smoke's interpreter needs no VM

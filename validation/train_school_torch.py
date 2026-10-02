@@ -163,6 +163,29 @@ class Judge:
         except Exception:
             return False, None
 
+    def selfcheck(self, recs: list[dict], step: bool) -> None:
+        """Fail fast. `_run` turns every exception into "does not run" (a broken program is not an error), so a
+        VM the bridge cannot reach -- a missing binary, a protobuf runtime older than reasoning_pb2's gencode --
+        reads as a pupil that never runs a step: the gate reads 0, the regression suite 0, and the school
+        measures nothing (2026-10-02, the first Colab step school). Run a few pool problems' gold programs
+        WITHOUT the guard, so the real exception surfaces before any GPU time is spent."""
+        if self.fake:
+            return
+        from build_emitter_sft import answer_fn, shim_isolver
+        if self.session is None:
+            from cubbyllm.bridges.cubelang_client import CubelangSession
+            self.session = CubelangSession()
+        recs = [r for r in recs if not r["program"].lstrip().startswith("return")][:4]
+        last = None
+        for r in recs:
+            filled = table_of(r["spans"], r.get("question", "")).fill(r["program"])
+            src = shim_isolver(wrap_step(filled) if step else filled)
+            last = self.session.run(src, fn=answer_fn(src))         # raises with the real reason
+            v, g = num_value(str(last.get("result"))), num_value(str(r.get("gold")))
+            if last.get("ok") and v is not None and g is not None and abs(v - g) <= 1e-6 * max(1.0, abs(g)):
+                return
+        raise RuntimeError(f"VM self-check: none of {len(recs)} gold programs ran to its gold (last: {last})")
+
     def attempt(self, rec: dict, slotted: str) -> dict:
         self.runs += 1
         table = table_of(rec["spans"], rec.get("question", ""))
@@ -491,6 +514,7 @@ def main(argv=None) -> None:
     random.Random(1).shuffle(held)
     held = held[:a.gate_n]
     judge = StepJudge(fake=a.fake_vm) if a.step else Judge(fake=a.fake_vm)
+    judge.selfcheck([r for lv in sorted(pool) for r in pool[lv][:4]], a.step)
     gate = read_heldout_loop if a.step else read_heldout
     smax = a.step_max_new if a.step else a.max_new          # a step is ~40 tokens; the regression suite is programs
     log(f"school | {dev} | pool by level {{{', '.join(f'{k}: {len(v)}' for k, v in sorted(pool.items()))}}} | "
