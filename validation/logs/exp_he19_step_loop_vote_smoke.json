@@ -1,0 +1,342 @@
+{
+ "emitter": "cubby450m:cubby450m_v12e_w_step_cont",
+ "data": "standin\\data\\out\\pf_heldout_eval_w_slots.jsonl",
+ "n": 3,
+ "summary": {
+  "n": 3,
+  "correct": 0.0,
+  "answered": 1.0,
+  "wrong_answer": 1.0,
+  "same_steps": 0.6666666666666666,
+  "emissions": 6.333333333333333
+ },
+ "by_steps": {
+  "3": {
+   "n": 1,
+   "correct": 0.0
+  },
+  "7": {
+   "n": 2,
+   "correct": 0.0
+  }
+ },
+ "results": [
+  {
+   "id": "arithmetic-pf-604149f3d09b",
+   "K": 3,
+   "gold": "1109",
+   "answer": "2341",
+   "correct": false,
+   "refused": null,
+   "steps": [
+    {
+     "k": 0,
+     "ops": [
+      [
+       "assign",
+       "$N1"
+      ],
+      [
+       "mul",
+       "$N3"
+      ]
+     ],
+     "value": "1848",
+     "votes": 2,
+     "options": 4
+    },
+    {
+     "k": 1,
+     "ops": [
+      [
+       "assign",
+       "$N1"
+      ],
+      [
+       "add",
+       "$S1"
+      ]
+     ],
+     "value": "2156",
+     "votes": 4,
+     "options": 2
+    },
+    {
+     "k": 2,
+     "ops": [
+      [
+       "assign",
+       "$S2"
+      ],
+      [
+       "add",
+       "$N5"
+      ]
+     ],
+     "value": "2341",
+     "votes": 5,
+     "options": 1
+    }
+   ],
+   "emissions": [],
+   "agreement": 0.4,
+   "agreements": [
+    0.4,
+    0.8,
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67",
+   "K": 7,
+   "gold": "251",
+   "answer": "167",
+   "correct": false,
+   "refused": null,
+   "steps": [
+    {
+     "k": 0,
+     "ops": [
+      [
+       "assign",
+       "$N1"
+      ],
+      [
+       "sub",
+       "$N2"
+      ]
+     ],
+     "value": "11",
+     "votes": 4,
+     "options": 2
+    },
+    {
+     "k": 1,
+     "ops": [
+      [
+       "assign",
+       "$N4"
+      ],
+      [
+       "mul",
+       "$N3"
+      ]
+     ],
+     "value": "50",
+     "votes": 3,
+     "options": 2
+    },
+    {
+     "k": 2,
+     "ops": [
+      [
+       "assign",
+       "$S1"
+      ],
+      [
+       "add",
+       "$N3"
+      ]
+     ],
+     "value": "36",
+     "votes": 1,
+     "options": 5
+    },
+    {
+     "k": 3,
+     "ops": [
+      [
+       "assign",
+       "$S2"
+      ],
+      [
+       "mul",
+       "$N4"
+      ]
+     ],
+     "value": "100",
+     "votes": 1,
+     "options": 5
+    },
+    {
+     "k": 4,
+     "ops": [
+      [
+       "assign",
+       "$S3"
+      ],
+      [
+       "add",
+       "$N7"
+      ]
+     ],
+     "value": "39",
+     "votes": 2,
+     "options": 4
+    },
+    {
+     "k": 5,
+     "ops": [
+      [
+       "assign",
+       "$S4"
+      ],
+      [
+       "add",
+       "$S5"
+      ]
+     ],
+     "value": "139",
+     "votes": 3,
+     "options": 3
+    },
+    {
+     "k": 6,
+     "ops": [
+      [
+       "assign",
+       "$S6"
+      ],
+      [
+       "add",
+       "$N6"
+      ]
+     ],
+     "value": "167",
+     "votes": 3,
+     "options": 2
+    }
+   ],
+   "emissions": [],
+   "agreement": 0.2,
+   "agreements": [
+    0.8,
+    0.6,
+    0.2,
+    0.2,
+    0.4,
+    0.6,
+    0.6,
+    0.6
+   ]
+  },
+  {
+   "id": "arithmetic-pf-63d6984ad7cc",
+   "K": 7,
+   "gold": "251",
+   "answer": "136",
+   "correct": false,
+   "refused": null,
+   "steps": [
+    {
+     "k": 0,
+     "ops": [
+      [
+       "assign",
+       "$N1"
+      ],
+      [
+       "sub",
+       "$N2"
+      ]
+     ],
+     "value": "11",
+     "votes": 5,
+     "options": 1
+    },
+    {
+     "k": 1,
+     "ops": [
+      [
+       "assign",
+       "$N4"
+      ],
+      [
+       "mul",
+       "$N3"
+      ]
+     ],
+     "value": "50",
+     "votes": 3,
+     "options": 3
+    },
+    {
+     "k": 2,
+     "ops": [
+      [
+       "assign",
+       "$S1"
+      ],
+      [
+       "mul",
+       "$N5"
+      ]
+     ],
+     "value": "55",
+     "votes": 3,
+     "options": 3
+    },
+    {
+     "k": 3,
+     "ops": [
+      [
+       "assign",
+       "$S2"
+      ],
+      [
+       "add",
+       "$S3"
+      ]
+     ],
+     "value": "105",
+     "votes": 4,
+     "options": 2
+    },
+    {
+     "k": 4,
+     "ops": [
+      [
+       "assign",
+       "$N6"
+      ],
+      [
+       "add",
+       "$N8"
+      ]
+     ],
+     "value": "31",
+     "votes": 2,
+     "options": 4
+    },
+    {
+     "k": 5,
+     "ops": [
+      [
+       "assign",
+       "$S4"
+      ],
+      [
+       "add",
+       "$S5"
+      ]
+     ],
+     "value": "136",
+     "votes": 2,
+     "options": 3
+    }
+   ],
+   "emissions": [],
+   "agreement": 0.4,
+   "agreements": [
+    1.0,
+    0.6,
+    0.6,
+    0.8,
+    0.4,
+    0.4,
+    1.0
+   ]
+  }
+ ]
+}

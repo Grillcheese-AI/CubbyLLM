@@ -1,0 +1,124 @@
+{
+ "src": "emitter_sft_v12e.jsonl",
+ "kept": {
+  "arithmetic/train": 5819,
+  "arithmetic/val": 329,
+  "chain/train": 1150,
+  "chain/val": 63,
+  "kernel/train": 1674,
+  "kernel/val": 95,
+  "plan/train": 1138,
+  "plan/val": 63,
+  "role_binding/train": 1436,
+  "role_binding/val": 64
+ },
+ "dropped": {
+  "chain:uncovered": 1,
+  "plan:uncovered": 13
+ },
+ "slots": {
+  "arithmetic:entities": 0,
+  "arithmetic:numbers": 25267,
+  "arithmetic:comment_numbers": 27227,
+  "arithmetic:constants_left": 2474,
+  "arithmetic:records_with_constants": 1727,
+  "kernel:entities": 0,
+  "kernel:numbers": 4526,
+  "kernel:comment_numbers": 0,
+  "kernel:constants_left": 2328,
+  "kernel:records_with_constants": 1188,
+  "role_binding:entities": 0,
+  "role_binding:numbers": 0,
+  "role_binding:comment_numbers": 0,
+  "role_binding:records_with_constants": 0,
+  "chain:entities": 4062,
+  "chain:numbers": 0,
+  "chain:comment_numbers": 0,
+  "chain:records_with_constants": 0,
+  "plan:entities": 1201,
+  "plan:numbers": 0,
+  "plan:comment_numbers": 0,
+  "plan:records_with_constants": 0
+ }
+}
+{
+ "src": "pf_heldout_eval.jsonl",
+ "kept": {
+  "arithmetic/val": 236,
+  "chain/val": 294,
+  "plan/val": 285
+ },
+ "dropped": {
+  "plan:uncovered": 12,
+  "chain:uncovered": 3
+ },
+ "slots": {
+  "arithmetic:entities": 0,
+  "arithmetic:numbers": 1156,
+  "arithmetic:comment_numbers": 1205,
+  "arithmetic:constants_left": 0,
+  "arithmetic:records_with_constants": 0,
+  "plan:entities": 285,
+  "plan:numbers": 0,
+  "plan:comment_numbers": 0,
+  "plan:records_with_constants": 0,
+  "chain:entities": 1436,
+  "chain:numbers": 0,
+  "chain:comment_numbers": 0,
+  "chain:records_with_constants": 0
+ }
+}
+{
+ "src": "tinygsm_s0_head30k.jsonl",
+ "kept": {
+  "arithmetic/train": 30000
+ },
+ "dropped": {},
+ "slots": {
+  "arithmetic:entities": 0,
+  "arithmetic:numbers": 109589,
+  "arithmetic:comment_numbers": 114290,
+  "arithmetic:constants_left": 2005,
+  "arithmetic:records_with_constants": 1531
+ }
+}
+{
+ "src": "emitter_sft_v12e_w_slots.jsonl",
+ "dst": "emitter_sft_v12e_w_step.jsonl",
+ "kept": {
+  "arithmetic_records/train": 5819,
+  "arithmetic_records/val": 329,
+  "arithmetic_step_rows/train": 27595,
+  "arithmetic_step_rows/val": 1595,
+  "chain/train": 1150,
+  "chain/val": 63,
+  "kernel/train": 1674,
+  "kernel/val": 95,
+  "plan/train": 1138,
+  "plan/val": 63,
+  "role_binding/train": 1436,
+  "role_binding/val": 64
+ },
+ "dropped": {}
+}
+{
+ "src": "pf_heldout_eval_w_slots.jsonl",
+ "dst": "pf_heldout_eval_w_step.jsonl",
+ "kept": {
+  "arithmetic_records/val": 236,
+  "arithmetic_step_rows/val": 1161,
+  "chain/val": 294,
+  "plan/val": 285
+ },
+ "dropped": {}
+}
+{
+ "src": "tinygsm_s0_head30k_slots.jsonl",
+ "dst": "tinygsm_s0_head30k_step.jsonl",
+ "kept": {
+  "arithmetic_records/train": 30000,
+  "arithmetic_step_rows/train": 113564
+ },
+ "dropped": {}
+}
+done 

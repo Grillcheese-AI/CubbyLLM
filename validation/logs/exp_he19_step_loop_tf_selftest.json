@@ -1,0 +1,1703 @@
+{
+ "emitter": "gold",
+ "data": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\pf_heldout_eval_w_step.jsonl",
+ "summary": {
+  "k=0": {
+   "n": 40,
+   "ok": 1.0
+  },
+  "_": {
+   "n": 0,
+   "ok": 0
+  },
+  "step0": {
+   "n": 40,
+   "ok": 1.0
+  },
+  "k=1": {
+   "n": 40,
+   "ok": 1.0
+  },
+  "step1+": {
+   "n": 103,
+   "ok": 1.0
+  },
+  "k=2": {
+   "n": 40,
+   "ok": 1.0
+  },
+  "k=3": {
+   "n": 13,
+   "ok": 1.0
+  },
+  "k=4": {
+   "n": 4,
+   "ok": 1.0
+  },
+  "k=5": {
+   "n": 3,
+   "ok": 1.0
+  },
+  "k=6": {
+   "n": 2,
+   "ok": 1.0
+  },
+  "stop": {
+   "n": 40,
+   "ok": 1.0
+  },
+  "k=7": {
+   "n": 1,
+   "ok": 1.0
+  }
+ },
+ "rows": [
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "11",
+   "text": "        create s0 : quantity;   # step 0: $N1 - $N2\n        assign s0 = $N1;\n        sub s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "50",
+   "text": "        create s1 : quantity;   # step 1: $N3 * $N4\n        assign s1 = $N3;\n        mul s1, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "550",
+   "text": "        create s2 : quantity;   # step 2: $S2 * $S1\n        assign s2 = $S2;\n        mul s2, $S1;\n"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "110",
+   "text": "        create s3 : quantity;   # step 3: $S3 / $N5\n        assign s3 = $S3;\n        div s3, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67#4",
+   "k": 4,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "138",
+   "text": "        create s4 : quantity;   # step 4: $S4 + $N6\n        assign s4 = $S4;\n        add s4, $N6;\n"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67#5",
+   "k": 5,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "113",
+   "text": "        create s5 : quantity;   # step 5: $S4 + $N7\n        assign s5 = $S4;\n        add s5, $N7;\n"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67#6",
+   "k": 6,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "251",
+   "text": "        create s6 : quantity;   # step 6: $S6 + $S5\n        assign s6 = $S6;\n        add s6, $S5;\n"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67#7",
+   "k": 7,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "251",
+   "text": "        return $S7;\n"
+  },
+  {
+   "id": "arithmetic-pf-115b3f752c26#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "7",
+   "text": "        create s0 : quantity;   # step 0: $N1 - $N2\n        assign s0 = $N1;\n        sub s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-115b3f752c26#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "35",
+   "text": "        create s1 : quantity;   # step 1: $N4 - $N3\n        assign s1 = $N4;\n        sub s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-115b3f752c26#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "42",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $S1\n        assign s2 = $S2;\n        add s2, $S1;\n"
+  },
+  {
+   "id": "arithmetic-pf-115b3f752c26#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "42",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-1044cdd9d22e#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "7",
+   "text": "        create s0 : quantity;   # step 0: $N1 - $N2\n        assign s0 = $N1;\n        sub s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-1044cdd9d22e#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "35",
+   "text": "        create s1 : quantity;   # step 1: $N3 - $N4\n        assign s1 = $N3;\n        sub s1, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-1044cdd9d22e#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "42",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $S1\n        assign s2 = $S2;\n        add s2, $S1;\n"
+  },
+  {
+   "id": "arithmetic-pf-1044cdd9d22e#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "42",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0014a0366143#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "186",
+   "text": "        create s0 : quantity;   # step 0: $N1 + $N2\n        assign s0 = $N1;\n        add s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0014a0366143#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "480",
+   "text": "        create s1 : quantity;   # step 1: $S1 + $N3\n        assign s1 = $S1;\n        add s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0014a0366143#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "15",
+   "text": "        create s2 : quantity;   # step 2: $N4 - $N5\n        assign s2 = $N4;\n        sub s2, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-0014a0366143#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "495",
+   "text": "        create s3 : quantity;   # step 3: $S3 + $S2\n        assign s3 = $S3;\n        add s3, $S2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0014a0366143#4",
+   "k": 4,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "495",
+   "text": "        return $S4;\n"
+  },
+  {
+   "id": "arithmetic-pf-157962856f69#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "14245",
+   "text": "        create s0 : quantity;   # step 0: $N1 * $N2\n        assign s0 = $N1;\n        mul s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-157962856f69#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "2035",
+   "text": "        create s1 : quantity;   # step 1: $S1 / $N3\n        assign s1 = $S1;\n        div s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-157962856f69#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "2259",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N4\n        assign s2 = $S2;\n        add s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-157962856f69#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "2259",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0f36d725a65f#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "630",
+   "text": "        create s0 : quantity;   # step 0: $N2 * $N1\n        assign s0 = $N2;\n        mul s0, $N1;\n"
+  },
+  {
+   "id": "arithmetic-pf-0f36d725a65f#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "635",
+   "text": "        create s1 : quantity;   # step 1: $S1 + $N4\n        assign s1 = $S1;\n        add s1, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-0f36d725a65f#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "680",
+   "text": "        create s2 : quantity;   # step 2: $S1 + $N5\n        assign s2 = $S1;\n        add s2, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-0f36d725a65f#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "1315",
+   "text": "        create s3 : quantity;   # step 3: $S3 + $S2\n        assign s3 = $S3;\n        add s3, $S2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0f36d725a65f#4",
+   "k": 4,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "1315",
+   "text": "        return $S4;\n"
+  },
+  {
+   "id": "arithmetic-pf-11460b27ab12#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "18",
+   "text": "        create s0 : quantity;   # step 0: $N1 * $N2\n        assign s0 = $N1;\n        mul s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-11460b27ab12#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "3",
+   "text": "        create s1 : quantity;   # step 1: $S1 / $N1\n        assign s1 = $S1;\n        div s1, $N1;\n"
+  },
+  {
+   "id": "arithmetic-pf-11460b27ab12#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "331",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N3\n        assign s2 = $S2;\n        add s2, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-11460b27ab12#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "331",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-2a93aae39a2f#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "60",
+   "text": "        create s0 : quantity;   # step 0: $N1 - $N2\n        assign s0 = $N1;\n        sub s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-2a93aae39a2f#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "58",
+   "text": "        create s1 : quantity;   # step 1: $S1 - $N3\n        assign s1 = $S1;\n        sub s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-2a93aae39a2f#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "64",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N4\n        assign s2 = $S2;\n        add s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-2a93aae39a2f#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "64",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0a170648fa23#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "14",
+   "text": "        create s0 : quantity;   # step 0: $N1 / $N2\n        assign s0 = $N1;\n        div s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0a170648fa23#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "42",
+   "text": "        create s1 : quantity;   # step 1: $S1 * $N4\n        assign s1 = $S1;\n        mul s1, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-0a170648fa23#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "49",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N5\n        assign s2 = $S2;\n        add s2, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-0a170648fa23#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "49",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-1c0157bd2983#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "14",
+   "text": "        create s0 : quantity;   # step 0: $N1 - $N2\n        assign s0 = $N1;\n        sub s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-1c0157bd2983#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "7",
+   "text": "        create s1 : quantity;   # step 1: $S1 / $N3\n        assign s1 = $S1;\n        div s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-1c0157bd2983#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "4",
+   "text": "        create s2 : quantity;   # step 2: $S2 - $N5\n        assign s2 = $S2;\n        sub s2, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-1c0157bd2983#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "4",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-16d01f691070#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "19",
+   "text": "        create s0 : quantity;   # step 0: $N1 - $N2\n        assign s0 = $N1;\n        sub s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-16d01f691070#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "130",
+   "text": "        create s1 : quantity;   # step 1: $N3 + $N4\n        assign s1 = $N3;\n        add s1, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-16d01f691070#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "2470",
+   "text": "        create s2 : quantity;   # step 2: $S1 * $S2\n        assign s2 = $S1;\n        mul s2, $S2;\n"
+  },
+  {
+   "id": "arithmetic-pf-16d01f691070#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "2470",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-192e643e88de#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "85",
+   "text": "        create s0 : quantity;   # step 0: $N1 / $N2\n        assign s0 = $N1;\n        div s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-192e643e88de#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "680",
+   "text": "        create s1 : quantity;   # step 1: $S1 * $N3\n        assign s1 = $S1;\n        mul s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-192e643e88de#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "765",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N5\n        assign s2 = $S2;\n        add s2, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-192e643e88de#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "765",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-03f66bc1458b#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "66",
+   "text": "        create s0 : quantity;   # step 0: $N1 - $N2\n        assign s0 = $N1;\n        sub s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-03f66bc1458b#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "22",
+   "text": "        create s1 : quantity;   # step 1: $S1 / $N3\n        assign s1 = $S1;\n        div s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-03f66bc1458b#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "21",
+   "text": "        create s2 : quantity;   # step 2: $S2 - $N4\n        assign s2 = $S2;\n        sub s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-03f66bc1458b#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "21",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-249ea56b720c#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "235",
+   "text": "        create s0 : quantity;   # step 0: $N1 + $N2\n        assign s0 = $N1;\n        add s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-249ea56b720c#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "47",
+   "text": "        create s1 : quantity;   # step 1: $S1 / $N3\n        assign s1 = $S1;\n        div s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-249ea56b720c#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "282",
+   "text": "        create s2 : quantity;   # step 2: $S2 * $N5\n        assign s2 = $S2;\n        mul s2, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-249ea56b720c#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "282",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-15ebd69db1dd#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "112",
+   "text": "        create s0 : quantity;   # step 0: $N1 + $N2\n        assign s0 = $N1;\n        add s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-15ebd69db1dd#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "37",
+   "text": "        create s1 : quantity;   # step 1: $S1 - $N3\n        assign s1 = $S1;\n        sub s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-15ebd69db1dd#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "370",
+   "text": "        create s2 : quantity;   # step 2: $S2 * $N4\n        assign s2 = $S2;\n        mul s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-15ebd69db1dd#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "2590",
+   "text": "        create s3 : quantity;   # step 3: $S3 * $N5\n        assign s3 = $S3;\n        mul s3, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-15ebd69db1dd#4",
+   "k": 4,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "2615",
+   "text": "        create s4 : quantity;   # step 4: $S4 + $N6\n        assign s4 = $S4;\n        add s4, $N6;\n"
+  },
+  {
+   "id": "arithmetic-pf-15ebd69db1dd#5",
+   "k": 5,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "7",
+   "text": "        create s5 : quantity;   # step 5: $N7 - $N4\n        assign s5 = $N7;\n        sub s5, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-15ebd69db1dd#6",
+   "k": 6,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "2",
+   "text": "        create s6 : quantity;   # step 6: $S6 - $N8\n        assign s6 = $S6;\n        sub s6, $N8;\n"
+  },
+  {
+   "id": "arithmetic-pf-15ebd69db1dd#7",
+   "k": 7,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "5230",
+   "text": "        create s7 : quantity;   # step 7: $S7 * $S5\n        assign s7 = $S7;\n        mul s7, $S5;\n"
+  },
+  {
+   "id": "arithmetic-pf-15ebd69db1dd#8",
+   "k": 8,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "5230",
+   "text": "        return $S8;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c540e515986#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "29",
+   "text": "        create s0 : quantity;   # step 0: $N1 / $N2\n        assign s0 = $N1;\n        div s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c540e515986#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "218",
+   "text": "        create s1 : quantity;   # step 1: $N4 - $N3\n        assign s1 = $N4;\n        sub s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c540e515986#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "268",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N5\n        assign s2 = $S2;\n        add s2, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c540e515986#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "7772",
+   "text": "        create s3 : quantity;   # step 3: $S3 * $S1\n        assign s3 = $S3;\n        mul s3, $S1;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c540e515986#4",
+   "k": 4,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "3886",
+   "text": "        create s4 : quantity;   # step 4: $S4 / $N7\n        assign s4 = $S4;\n        div s4, $N7;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c540e515986#5",
+   "k": 5,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "1943",
+   "text": "        create s5 : quantity;   # step 5: $S5 / $N7\n        assign s5 = $S5;\n        div s5, $N7;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c540e515986#6",
+   "k": 6,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "1943",
+   "text": "        return $S6;\n"
+  },
+  {
+   "id": "arithmetic-pf-0b95f3f56a76#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "3",
+   "text": "        create s0 : quantity;   # step 0: $N2 - $N3\n        assign s0 = $N2;\n        sub s0, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0b95f3f56a76#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "165",
+   "text": "        create s1 : quantity;   # step 1: $N4 - $N5\n        assign s1 = $N4;\n        sub s1, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-0b95f3f56a76#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "168",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $S1\n        assign s2 = $S2;\n        add s2, $S1;\n"
+  },
+  {
+   "id": "arithmetic-pf-0b95f3f56a76#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "168",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0e44b571a48f#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "96",
+   "text": "        create s0 : quantity;   # step 0: $N1 + $N2\n        assign s0 = $N1;\n        add s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0e44b571a48f#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "166",
+   "text": "        create s1 : quantity;   # step 1: $S1 + $N1\n        assign s1 = $S1;\n        add s1, $N1;\n"
+  },
+  {
+   "id": "arithmetic-pf-0e44b571a48f#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "83",
+   "text": "        create s2 : quantity;   # step 2: $S2 / $N3\n        assign s2 = $S2;\n        div s2, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0e44b571a48f#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "6557",
+   "text": "        create s3 : quantity;   # step 3: $S3 * $N5\n        assign s3 = $S3;\n        mul s3, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-0e44b571a48f#4",
+   "k": 4,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "6557",
+   "text": "        return $S4;\n"
+  },
+  {
+   "id": "arithmetic-pf-22a352ce9e15#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "27",
+   "text": "        create s0 : quantity;   # step 0: $N2 * $N1\n        assign s0 = $N2;\n        mul s0, $N1;\n"
+  },
+  {
+   "id": "arithmetic-pf-22a352ce9e15#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "81",
+   "text": "        create s1 : quantity;   # step 1: $S1 * $N1\n        assign s1 = $S1;\n        mul s1, $N1;\n"
+  },
+  {
+   "id": "arithmetic-pf-22a352ce9e15#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "109",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N3\n        assign s2 = $S2;\n        add s2, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-22a352ce9e15#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "126",
+   "text": "        create s3 : quantity;   # step 3: $S3 + $N4\n        assign s3 = $S3;\n        add s3, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-22a352ce9e15#4",
+   "k": 4,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "126",
+   "text": "        return $S4;\n"
+  },
+  {
+   "id": "arithmetic-pf-14bfb46f5325#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "11",
+   "text": "        create s0 : quantity;   # step 0: $N1 / $N2\n        assign s0 = $N1;\n        div s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-14bfb46f5325#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "6",
+   "text": "        create s1 : quantity;   # step 1: $S1 - $N3\n        assign s1 = $S1;\n        sub s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-14bfb46f5325#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "12",
+   "text": "        create s2 : quantity;   # step 2: $S2 * $N2\n        assign s2 = $S2;\n        mul s2, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-14bfb46f5325#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "12",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-043312940670#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "129",
+   "text": "        create s0 : quantity;   # step 0: $N1 + $N2\n        assign s0 = $N1;\n        add s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-043312940670#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "199",
+   "text": "        create s1 : quantity;   # step 1: $S1 + $N3\n        assign s1 = $S1;\n        add s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-043312940670#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "222",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N4\n        assign s2 = $S2;\n        add s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-043312940670#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "606",
+   "text": "        create s3 : quantity;   # step 3: $S3 + $N5\n        assign s3 = $S3;\n        add s3, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-043312940670#4",
+   "k": 4,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "606",
+   "text": "        return $S4;\n"
+  },
+  {
+   "id": "arithmetic-pf-05a874c50df5#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "23",
+   "text": "        create s0 : quantity;   # step 0: $N1 / $N2\n        assign s0 = $N1;\n        div s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-05a874c50df5#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "69",
+   "text": "        create s1 : quantity;   # step 1: $S1 * $N4\n        assign s1 = $S1;\n        mul s1, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-05a874c50df5#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "92",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N5\n        assign s2 = $S2;\n        add s2, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-05a874c50df5#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "92",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-195e0f3fb919#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "15",
+   "text": "        create s0 : quantity;   # step 0: $N1 / $N2\n        assign s0 = $N1;\n        div s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-195e0f3fb919#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "10",
+   "text": "        create s1 : quantity;   # step 1: $S1 - $N3\n        assign s1 = $S1;\n        sub s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-195e0f3fb919#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "2600",
+   "text": "        create s2 : quantity;   # step 2: $S2 * $N4\n        assign s2 = $S2;\n        mul s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-195e0f3fb919#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "2600",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-27fd7944882a#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "800",
+   "text": "        create s0 : quantity;   # step 0: $N2 * $N1\n        assign s0 = $N2;\n        mul s0, $N1;\n"
+  },
+  {
+   "id": "arithmetic-pf-27fd7944882a#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "40",
+   "text": "        create s1 : quantity;   # step 1: $N3 + $N4\n        assign s1 = $N3;\n        add s1, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-27fd7944882a#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "32000",
+   "text": "        create s2 : quantity;   # step 2: $S1 * $S2\n        assign s2 = $S1;\n        mul s2, $S2;\n"
+  },
+  {
+   "id": "arithmetic-pf-27fd7944882a#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "32000",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-1f0818eb3cf7#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "210",
+   "text": "        create s0 : quantity;   # step 0: $N1 * $N2\n        assign s0 = $N1;\n        mul s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-1f0818eb3cf7#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "230",
+   "text": "        create s1 : quantity;   # step 1: $N3 + $S1\n        assign s1 = $N3;\n        add s1, $S1;\n"
+  },
+  {
+   "id": "arithmetic-pf-1f0818eb3cf7#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "1",
+   "text": "        create s2 : quantity;   # step 2: $S2 - $N4\n        assign s2 = $S2;\n        sub s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-1f0818eb3cf7#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "1",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-25173e7d59ec#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "140",
+   "text": "        create s0 : quantity;   # step 0: $N1 * $N2\n        assign s0 = $N1;\n        mul s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-25173e7d59ec#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "455",
+   "text": "        create s1 : quantity;   # step 1: $N3 + $S1\n        assign s1 = $N3;\n        add s1, $S1;\n"
+  },
+  {
+   "id": "arithmetic-pf-25173e7d59ec#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "440",
+   "text": "        create s2 : quantity;   # step 2: $S2 - $N4\n        assign s2 = $S2;\n        sub s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-25173e7d59ec#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "440",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0e531246a0ff#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "36",
+   "text": "        create s0 : quantity;   # step 0: $N1 * $N2\n        assign s0 = $N1;\n        mul s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0e531246a0ff#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "26",
+   "text": "        create s1 : quantity;   # step 1: $S1 - $N3\n        assign s1 = $S1;\n        sub s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0e531246a0ff#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "13",
+   "text": "        create s2 : quantity;   # step 2: $S2 / $N4\n        assign s2 = $S2;\n        div s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-0e531246a0ff#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "13",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-231eac73f071#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "80",
+   "text": "        create s0 : quantity;   # step 0: $N1 + $N2\n        assign s0 = $N1;\n        add s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-231eac73f071#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "35",
+   "text": "        create s1 : quantity;   # step 1: $S1 - $N3\n        assign s1 = $S1;\n        sub s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-231eac73f071#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "5",
+   "text": "        create s2 : quantity;   # step 2: $S2 / $N4\n        assign s2 = $S2;\n        div s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-231eac73f071#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "4",
+   "text": "        create s3 : quantity;   # step 3: $S3 - $N5\n        assign s3 = $S3;\n        sub s3, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-231eac73f071#4",
+   "k": 4,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "4",
+   "text": "        return $S4;\n"
+  },
+  {
+   "id": "arithmetic-pf-2a6f86327ed9#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "50",
+   "text": "        create s0 : quantity;   # step 0: $N2 * $N1\n        assign s0 = $N2;\n        mul s0, $N1;\n"
+  },
+  {
+   "id": "arithmetic-pf-2a6f86327ed9#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "71",
+   "text": "        create s1 : quantity;   # step 1: $S1 + $N3\n        assign s1 = $S1;\n        add s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-2a6f86327ed9#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "18",
+   "text": "        create s2 : quantity;   # step 2: $S2 - $N4\n        assign s2 = $S2;\n        sub s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-2a6f86327ed9#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "18",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-07b4e9f96c1b#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "5",
+   "text": "        create s0 : quantity;   # step 0: $N1 - $N2\n        assign s0 = $N1;\n        sub s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-07b4e9f96c1b#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "2",
+   "text": "        create s1 : quantity;   # step 1: $S1 - $N4\n        assign s1 = $S1;\n        sub s1, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-07b4e9f96c1b#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "8",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N5\n        assign s2 = $S2;\n        add s2, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-07b4e9f96c1b#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "8",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0667e18db174#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "10",
+   "text": "        create s0 : quantity;   # step 0: $N1 - $N2\n        assign s0 = $N1;\n        sub s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0667e18db174#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "340",
+   "text": "        create s1 : quantity;   # step 1: $N3 - $N4\n        assign s1 = $N3;\n        sub s1, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-0667e18db174#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "350",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $S1\n        assign s2 = $S2;\n        add s2, $S1;\n"
+  },
+  {
+   "id": "arithmetic-pf-0667e18db174#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "350",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-207cc9135e11#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "2628",
+   "text": "        create s0 : quantity;   # step 0: $N1 * $N2\n        assign s0 = $N1;\n        mul s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-207cc9135e11#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "2355",
+   "text": "        create s1 : quantity;   # step 1: $S1 - $N3\n        assign s1 = $S1;\n        sub s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-207cc9135e11#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "471",
+   "text": "        create s2 : quantity;   # step 2: $S2 / $N4\n        assign s2 = $S2;\n        div s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-207cc9135e11#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "471",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0a4f99fe1309#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "25",
+   "text": "        create s0 : quantity;   # step 0: $N1 / $N2\n        assign s0 = $N1;\n        div s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0a4f99fe1309#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "402",
+   "text": "        create s1 : quantity;   # step 1: $S1 + $N4\n        assign s1 = $S1;\n        add s1, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-0a4f99fe1309#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "413",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N5\n        assign s2 = $S2;\n        add s2, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-0a4f99fe1309#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "175",
+   "text": "        create s3 : quantity;   # step 3: $S3 - $N6\n        assign s3 = $S3;\n        sub s3, $N6;\n"
+  },
+  {
+   "id": "arithmetic-pf-0a4f99fe1309#4",
+   "k": 4,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "175",
+   "text": "        return $S4;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c77d943ea79#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "130",
+   "text": "        create s0 : quantity;   # step 0: $N2 * $N1\n        assign s0 = $N2;\n        mul s0, $N1;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c77d943ea79#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "20",
+   "text": "        create s1 : quantity;   # step 1: $N3 * $N1\n        assign s1 = $N3;\n        mul s1, $N1;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c77d943ea79#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "2600",
+   "text": "        create s2 : quantity;   # step 2: $S2 * $S1\n        assign s2 = $S2;\n        mul s2, $S1;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c77d943ea79#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "2600",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c13041d6223#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "197",
+   "text": "        create s0 : quantity;   # step 0: $N1 + $N2\n        assign s0 = $N1;\n        add s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c13041d6223#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "267",
+   "text": "        create s1 : quantity;   # step 1: $S1 + $N2\n        assign s1 = $S1;\n        add s1, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c13041d6223#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "89",
+   "text": "        create s2 : quantity;   # step 2: $S2 / $N3\n        assign s2 = $S2;\n        div s2, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c13041d6223#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "267",
+   "text": "        create s3 : quantity;   # step 3: $S3 * $N3\n        assign s3 = $S3;\n        mul s3, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-0c13041d6223#4",
+   "k": 4,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "267",
+   "text": "        return $S4;\n"
+  },
+  {
+   "id": "arithmetic-pf-2036aabd2d18#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "4",
+   "text": "        create s0 : quantity;   # step 0: $N1 / $N2\n        assign s0 = $N1;\n        div s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-2036aabd2d18#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "36",
+   "text": "        create s1 : quantity;   # step 1: $S1 * $N3\n        assign s1 = $S1;\n        mul s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-2036aabd2d18#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "50",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N4\n        assign s2 = $S2;\n        add s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-2036aabd2d18#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "50",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-24a3ec019321#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "70",
+   "text": "        create s0 : quantity;   # step 0: $N2 * $N1\n        assign s0 = $N2;\n        mul s0, $N1;\n"
+  },
+  {
+   "id": "arithmetic-pf-24a3ec019321#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "10",
+   "text": "        create s1 : quantity;   # step 1: $S1 / $N2\n        assign s1 = $S1;\n        div s1, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-24a3ec019321#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "382",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N3\n        assign s2 = $S2;\n        add s2, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-24a3ec019321#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "382",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-1801e479571f#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "3192",
+   "text": "        create s0 : quantity;   # step 0: $N2 * $N1\n        assign s0 = $N2;\n        mul s0, $N1;\n"
+  },
+  {
+   "id": "arithmetic-pf-1801e479571f#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "456",
+   "text": "        create s1 : quantity;   # step 1: $S1 / $N3\n        assign s1 = $S1;\n        div s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-1801e479571f#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "778",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N4\n        assign s2 = $S2;\n        add s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-1801e479571f#3",
+   "k": 3,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "778",
+   "text": "        return $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-1d469eb4404d#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "150",
+   "text": "        create s0 : quantity;   # step 0: $N1 + $N2\n        assign s0 = $N1;\n        add s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-1d469eb4404d#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "15",
+   "text": "        create s1 : quantity;   # step 1: $S1 / $N3\n        assign s1 = $S1;\n        div s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-1d469eb4404d#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "84",
+   "text": "        create s2 : quantity;   # step 2: $N4 + $N5\n        assign s2 = $N4;\n        add s2, $N5;\n"
+  },
+  {
+   "id": "arithmetic-pf-1d469eb4404d#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "99",
+   "text": "        create s3 : quantity;   # step 3: $S3 + $S2\n        assign s3 = $S3;\n        add s3, $S2;\n"
+  },
+  {
+   "id": "arithmetic-pf-1d469eb4404d#4",
+   "k": 4,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "99",
+   "text": "        return $S4;\n"
+  },
+  {
+   "id": "arithmetic-pf-1b2e7482bc25#0",
+   "k": 0,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "267",
+   "text": "        create s0 : quantity;   # step 0: $N1 + $N2\n        assign s0 = $N1;\n        add s0, $N2;\n"
+  },
+  {
+   "id": "arithmetic-pf-1b2e7482bc25#1",
+   "k": 1,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "193",
+   "text": "        create s1 : quantity;   # step 1: $S1 - $N3\n        assign s1 = $S1;\n        sub s1, $N3;\n"
+  },
+  {
+   "id": "arithmetic-pf-1b2e7482bc25#2",
+   "k": 2,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "209",
+   "text": "        create s2 : quantity;   # step 2: $S2 + $N4\n        assign s2 = $S2;\n        add s2, $N4;\n"
+  },
+  {
+   "id": "arithmetic-pf-1b2e7482bc25#3",
+   "k": 3,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "239",
+   "text": "        create s3 : quantity;   # step 3: $N5 + $S3\n        assign s3 = $N5;\n        add s3, $S3;\n"
+  },
+  {
+   "id": "arithmetic-pf-1b2e7482bc25#4",
+   "k": 4,
+   "stop": false,
+   "kind": "step",
+   "ok": true,
+   "gold": "164",
+   "text": "        create s4 : quantity;   # step 4: $S4 - $N6\n        assign s4 = $S4;\n        sub s4, $N6;\n"
+  },
+  {
+   "id": "arithmetic-pf-1b2e7482bc25#5",
+   "k": 5,
+   "stop": true,
+   "kind": "stop",
+   "ok": true,
+   "gold": "164",
+   "text": "        return $S5;\n"
+  }
+ ]
+}

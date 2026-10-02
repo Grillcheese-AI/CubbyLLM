@@ -1,0 +1,583 @@
+{
+ "adapter": "D:\\My Drive\\cubbyllm\\emitter\\cubby450m_v12e_w_tg_cont",
+ "data": "standin\\data\\out\\pf_heldout_eval_w_slots.jsonl",
+ "n_records": 2,
+ "summary": {
+  "_all": {
+   "steps": 10,
+   "closes": 2,
+   "op": 0.4,
+   "operands": 0.2,
+   "exact": 0.2,
+   "stopped_early": 0.0,
+   "other": 0.0,
+   "complete": 1.0,
+   "stop_right": 1.0,
+   "ran_on": 0.0
+  },
+  "k=0": {
+   "steps": 2,
+   "closes": 0,
+   "op": 1.0,
+   "operands": 1.0,
+   "exact": 1.0,
+   "stopped_early": 0.0,
+   "other": 0.0,
+   "complete": 1.0
+  },
+  "K=3": {
+   "steps": 3,
+   "closes": 1,
+   "op": 0.3333333333333333,
+   "operands": 0.3333333333333333,
+   "exact": 0.3333333333333333,
+   "stopped_early": 0.0,
+   "other": 0.0,
+   "complete": 1.0,
+   "stop_right": 1.0,
+   "ran_on": 0.0
+  },
+  "k=1": {
+   "steps": 2,
+   "closes": 0,
+   "op": 0.0,
+   "operands": 0.0,
+   "exact": 0.0,
+   "stopped_early": 0.0,
+   "other": 0.0,
+   "complete": 1.0
+  },
+  "k=2": {
+   "steps": 2,
+   "closes": 0,
+   "op": 0.5,
+   "operands": 0.0,
+   "exact": 0.0,
+   "stopped_early": 0.0,
+   "other": 0.0,
+   "complete": 1.0
+  },
+  "k=3": {
+   "steps": 1,
+   "closes": 1,
+   "op": 0.0,
+   "operands": 0.0,
+   "exact": 0.0,
+   "stopped_early": 0.0,
+   "other": 0.0,
+   "complete": 1.0,
+   "stop_right": 1.0,
+   "ran_on": 0.0
+  },
+  "K=7": {
+   "steps": 7,
+   "closes": 1,
+   "op": 0.42857142857142855,
+   "operands": 0.14285714285714285,
+   "exact": 0.14285714285714285,
+   "stopped_early": 0.0,
+   "other": 0.0,
+   "complete": 1.0,
+   "stop_right": 1.0,
+   "ran_on": 0.0
+  },
+  "k=4": {
+   "steps": 1,
+   "closes": 0,
+   "op": 0.0,
+   "operands": 0.0,
+   "exact": 0.0,
+   "stopped_early": 0.0,
+   "other": 0.0,
+   "complete": 1.0
+  },
+  "k=5": {
+   "steps": 1,
+   "closes": 0,
+   "op": 0.0,
+   "operands": 0.0,
+   "exact": 0.0,
+   "stopped_early": 0.0,
+   "other": 0.0,
+   "complete": 1.0
+  },
+  "k=6": {
+   "steps": 1,
+   "closes": 0,
+   "op": 1.0,
+   "operands": 0.0,
+   "exact": 0.0,
+   "stopped_early": 0.0,
+   "other": 0.0,
+   "complete": 1.0
+  },
+  "k=7": {
+   "steps": 0,
+   "closes": 1,
+   "stop_right": 1.0,
+   "ran_on": 0.0
+  }
+ },
+ "rows": [
+  {
+   "id": "arithmetic-pf-604149f3d09b",
+   "k": 0,
+   "K": 3,
+   "steps": 3,
+   "gold": [
+    [
+     "assign",
+     "$N1"
+    ],
+    [
+     "div",
+     "$N2"
+    ]
+   ],
+   "got": {
+    "kind": "step",
+    "ops": [
+     [
+      "assign",
+      "$N1"
+     ],
+     [
+      "div",
+      "$N2"
+     ]
+    ]
+   },
+   "score": {
+    "kind": "step",
+    "stopped_early": false,
+    "other": false,
+    "op": true,
+    "operands": true,
+    "exact": true,
+    "complete": true
+   },
+   "text": "        create s0 : quantity;   # step 0: $N1 / $N2\n        assign s0 = $N1;\n        div s0, $N2;\n        create s1 : quantity;   # step 1: $N3 *"
+  },
+  {
+   "id": "arithmetic-pf-604149f3d09b",
+   "k": 1,
+   "K": 3,
+   "steps": 3,
+   "gold": [
+    [
+     "assign",
+     "0"
+    ],
+    [
+     "add",
+     "s0"
+    ],
+    [
+     "mul",
+     "$N3"
+    ]
+   ],
+   "got": {
+    "kind": "step",
+    "ops": [
+     [
+      "assign",
+      "$N3"
+     ]
+    ]
+   },
+   "score": {
+    "kind": "step",
+    "stopped_early": false,
+    "other": false,
+    "op": false,
+    "operands": false,
+    "exact": false,
+    "complete": true
+   },
+   "text": "        create s1 : quantity;   # step 1: $N3 * $N4\n        assign s1 = $N3;\n        mul s$N4, 1;\n        create s2 : quantity;   # step 2: $N1 -"
+  },
+  {
+   "id": "arithmetic-pf-604149f3d09b",
+   "k": 2,
+   "K": 3,
+   "steps": 3,
+   "gold": [
+    [
+     "assign",
+     "0"
+    ],
+    [
+     "add",
+     "s1"
+    ],
+    [
+     "add",
+     "$N5"
+    ]
+   ],
+   "got": {
+    "kind": "step",
+    "ops": [
+     [
+      "assign",
+      "$N1"
+     ],
+     [
+      "add",
+      "s0"
+     ]
+    ]
+   },
+   "score": {
+    "kind": "step",
+    "stopped_early": false,
+    "other": false,
+    "op": false,
+    "operands": false,
+    "exact": false,
+    "complete": true
+   },
+   "text": "        create s2 : quantity;   # step 2: $N1 + 154\n        assign s2 = $N1;\n        add s2, s0;\n        create s3 : quantity;   # step 3: 472 + $N5\n       "
+  },
+  {
+   "id": "arithmetic-pf-604149f3d09b",
+   "k": 3,
+   "K": 3,
+   "steps": 3,
+   "gold": "<close>",
+   "got": {
+    "kind": "<close>",
+    "ops": []
+   },
+   "score": {
+    "kind": "close",
+    "stop_right": true,
+    "ran_on": false
+   },
+   "text": "        sum s2;\n        query s2;\n        return s2;\n    }\n}\n"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67",
+   "k": 0,
+   "K": 7,
+   "steps": 7,
+   "gold": [
+    [
+     "assign",
+     "$N1"
+    ],
+    [
+     "sub",
+     "$N2"
+    ]
+   ],
+   "got": {
+    "kind": "step",
+    "ops": [
+     [
+      "assign",
+      "$N1"
+     ],
+     [
+      "sub",
+      "$N2"
+     ]
+    ]
+   },
+   "score": {
+    "kind": "step",
+    "stopped_early": false,
+    "other": false,
+    "op": true,
+    "operands": true,
+    "exact": true,
+    "complete": true
+   },
+   "text": "        create s0 : quantity;   # step 0: $N1 - $N2\n        assign s0 = $N1;\n        sub s0, $N2;\n        create s1 : quantity;   # step 1: 11 + $N"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67",
+   "k": 1,
+   "K": 7,
+   "steps": 7,
+   "gold": [
+    [
+     "assign",
+     "$N3"
+    ],
+    [
+     "mul",
+     "$N4"
+    ]
+   ],
+   "got": {
+    "kind": "step",
+    "ops": [
+     [
+      "assign",
+      "0"
+     ],
+     [
+      "add",
+      "s0"
+     ],
+     [
+      "add",
+      "$N3"
+     ]
+    ]
+   },
+   "score": {
+    "kind": "step",
+    "stopped_early": false,
+    "other": false,
+    "op": false,
+    "operands": false,
+    "exact": false,
+    "complete": true
+   },
+   "text": "        create s1 : quantity;   # step 1: 11 + $N3\n        assign s1 = 0;\n        add s1, s0;\n        add s1, $N3;\n        create s2 : quantity;   # step 2"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67",
+   "k": 2,
+   "K": 7,
+   "steps": 7,
+   "gold": [
+    [
+     "assign",
+     "0"
+    ],
+    [
+     "add",
+     "s1"
+    ],
+    [
+     "mul",
+     "s0"
+    ]
+   ],
+   "got": {
+    "kind": "step",
+    "ops": [
+     [
+      "assign",
+      "0"
+     ],
+     [
+      "add",
+      "s0"
+     ],
+     [
+      "mul",
+      "$N6"
+     ]
+    ]
+   },
+   "score": {
+    "kind": "step",
+    "stopped_early": false,
+    "other": false,
+    "op": true,
+    "operands": false,
+    "exact": false,
+    "complete": true
+   },
+   "text": "        create s2 : quantity;   # step 2: $N3 * $N6\n        assign s2 = 0;\n        add s2, s0;\n        mul s2, $N6;\n        create s3 : quantity;   #"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67",
+   "k": 3,
+   "K": 7,
+   "steps": 7,
+   "gold": [
+    [
+     "assign",
+     "0"
+    ],
+    [
+     "add",
+     "s2"
+    ],
+    [
+     "div",
+     "$N5"
+    ]
+   ],
+   "got": {
+    "kind": "step",
+    "ops": [
+     [
+      "assign",
+      "$N3"
+     ],
+     [
+      "mul",
+      "$N6"
+     ]
+    ]
+   },
+   "score": {
+    "kind": "step",
+    "stopped_early": false,
+    "other": false,
+    "op": false,
+    "operands": false,
+    "exact": false,
+    "complete": true
+   },
+   "text": "        create s3 : quantity;   # step 3: $N3 * $N6\n        assign s3 = $N3;\n        mul s3, $N6;\n        create s4 : quantity;   # step 4: $N7 *"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67",
+   "k": 4,
+   "K": 7,
+   "steps": 7,
+   "gold": [
+    [
+     "assign",
+     "0"
+    ],
+    [
+     "add",
+     "s3"
+    ],
+    [
+     "add",
+     "$N6"
+    ]
+   ],
+   "got": {
+    "kind": "step",
+    "ops": [
+     [
+      "assign",
+      "$N6"
+     ],
+     [
+      "mul",
+      "$N7"
+     ]
+    ]
+   },
+   "score": {
+    "kind": "step",
+    "stopped_early": false,
+    "other": false,
+    "op": false,
+    "operands": false,
+    "exact": false,
+    "complete": true
+   },
+   "text": "        create s4 : quantity;   # step 4: $N6 * $N7\n        assign s4 = $N6;\n        mul s4, $N7;\n        create s5 : quantity;   # step 5: $N6 +"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67",
+   "k": 5,
+   "K": 7,
+   "steps": 7,
+   "gold": [
+    [
+     "assign",
+     "0"
+    ],
+    [
+     "add",
+     "s3"
+    ],
+    [
+     "add",
+     "$N7"
+    ]
+   ],
+   "got": {
+    "kind": "step",
+    "ops": [
+     [
+      "assign",
+      "$N7"
+     ],
+     [
+      "mul",
+      "$N6"
+     ]
+    ]
+   },
+   "score": {
+    "kind": "step",
+    "stopped_early": false,
+    "other": false,
+    "op": false,
+    "operands": false,
+    "exact": false,
+    "complete": true
+   },
+   "text": "        create s5 : quantity;   # step 5: $N7 * $N6\n        assign s5 = $N7;\n        mul s5, $N6;\n        create s6 : quantity;   # step 6: $N1 +"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67",
+   "k": 6,
+   "K": 7,
+   "steps": 7,
+   "gold": [
+    [
+     "assign",
+     "0"
+    ],
+    [
+     "add",
+     "s5"
+    ],
+    [
+     "add",
+     "s4"
+    ]
+   ],
+   "got": {
+    "kind": "step",
+    "ops": [
+     [
+      "assign",
+      "0"
+     ],
+     [
+      "add",
+      "s5"
+     ],
+     [
+      "add",
+      "$N7"
+     ]
+    ]
+   },
+   "score": {
+    "kind": "step",
+    "stopped_early": false,
+    "other": false,
+    "op": true,
+    "operands": false,
+    "exact": false,
+    "complete": true
+   },
+   "text": "        create s6 : quantity;   # step 6: $N1 + $N7\n        assign s6 = 0;\n        add s6, s5;\n        add s6, $N7;\n        create s7 : quantity;   #"
+  },
+  {
+   "id": "arithmetic-pf-0ce7d0ed3b67",
+   "k": 7,
+   "K": 7,
+   "steps": 7,
+   "gold": "<close>",
+   "got": {
+    "kind": "<close>",
+    "ops": []
+   },
+   "score": {
+    "kind": "close",
+    "stop_right": true,
+    "ran_on": false
+   },
+   "text": "        sum s6;\n        query s6;\n        return s6;\n    }\n}\n"
+  }
+ ]
+}

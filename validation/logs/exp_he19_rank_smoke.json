@@ -1,0 +1,62 @@
+{
+ "args": {
+  "export": "I:\\CUBBY-TRAINED-MODELS\\base450m_cont\\grilly",
+  "adapter": "I:\\CUBBY-TRAINED-MODELS\\emitter\\cubby450m_v12e_w_step_cont",
+  "tokenizer": "H:\\My Drive\\cubbyllm\\token_cache_base\\tokenizer\\grillcheese_bbpe128k.json",
+  "data": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\pf_heldout_eval_w_step.jsonl",
+  "n": 4,
+  "seed": 0,
+  "chunk": 32,
+  "tag": "smoke"
+ },
+ "rows": [
+  {
+   "id": "arithmetic-pf-1d469eb4404d#0",
+   "k": 0,
+   "operands": 5,
+   "is_stop": false,
+   "rank": 0,
+   "groups": 66,
+   "mass": 0.35857915518939243,
+   "top_margin": 0.6512899427397087,
+   "covered": true,
+   "top": "create s0 : quantity;   # step 0: $N1 + $N2\n        assign s0 = $N1;\n        add s0, $N2;"
+  },
+  {
+   "id": "arithmetic-pf-8886812a8d69#6",
+   "k": 6,
+   "operands": 13,
+   "is_stop": true,
+   "rank": 0,
+   "groups": 384,
+   "mass": 0.22752131177752058,
+   "top_margin": 0.17360739188723073,
+   "covered": true,
+   "top": "return $S6;"
+  },
+  {
+   "id": "arithmetic-pf-cdbe948de5b0#7",
+   "k": 7,
+   "operands": 16,
+   "is_stop": true,
+   "rank": 0,
+   "groups": 634,
+   "mass": 0.7451527060831582,
+   "top_margin": 2.532924656230705,
+   "covered": true,
+   "top": "return $S7;"
+  },
+  {
+   "id": "arithmetic-pf-90715b60bea7#1",
+   "k": 1,
+   "operands": 5,
+   "is_stop": false,
+   "rank": 0,
+   "groups": 73,
+   "mass": 0.5406172268970193,
+   "top_margin": 1.9702100248570389,
+   "covered": true,
+   "top": "create s1 : quantity;   # step 1: $S1 + $N3\n        assign s1 = $S1;\n        add s1, $N3;"
+  }
+ ]
+}

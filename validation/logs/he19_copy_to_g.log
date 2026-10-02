@@ -1,0 +1,138 @@
+start 2026-10-01 13:38:47.08 
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : October 1, 2026 1:38:47 PM
+   Source = D:\My Drive\cubbyllm\emitter\
+     Dest = G:\My Drive\cubbyllm\emitter\
+
+    Files : emitter_sft_v12e_slots.jsonl
+	    emitter_sft_v12e_pf_slots.jsonl
+	    pf_heldout_eval_slots.jsonl
+	    emitter_sft_v12e_w_tg30_step.jsonl
+	    pf_heldout_eval_w_step.jsonl
+	    
+  Options : /DCOPY:DA /COPY:DAT /NP /R:2 /W:5 
+
+------------------------------------------------------------------------------
+
+	  New Dir          5	D:\My Drive\cubbyllm\emitter\
+	    New File  		  35.9 m	emitter_sft_v12e_pf_slots.jsonl
+	    New File  		  28.5 m	emitter_sft_v12e_slots.jsonl
+	    New File  		 196.3 m	emitter_sft_v12e_w_tg30_step.jsonl
+	    New File  		   1.6 m	pf_heldout_eval_slots.jsonl
+	    New File  		   2.6 m	pf_heldout_eval_w_step.jsonl
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         0         0         0         0
+   Files :         5         5         0         0         0         0
+   Bytes :  265.12 m  265.12 m         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           519,624,289 Bytes/sec.
+   Speed :            29,733.141 MegaBytes/min.
+   Ended : October 1, 2026 1:38:47 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : October 1, 2026 1:38:47 PM
+   Source = D:\My Drive\cubbyllm\emitter\cubby450m_v12e_w_tg_cont\
+     Dest = G:\My Drive\cubbyllm\emitter\cubby450m_v12e_w_tg_cont\
+
+    Files : emitter_lora.safetensors
+	    emitter_lora.json
+	    
+  Options : /DCOPY:DA /COPY:DAT /NP /R:2 /W:5 
+
+------------------------------------------------------------------------------
+
+	  New Dir          2	D:\My Drive\cubbyllm\emitter\cubby450m_v12e_w_tg_cont\
+	    New File  		    6296	emitter_lora.json
+	    New File  		  30.0 m	emitter_lora.safetensors
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         0         0         0         0
+   Files :         2         2         0         0         0         0
+   Bytes :   30.04 m   30.04 m         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           335,152,340 Bytes/sec.
+   Speed :            19,177.570 MegaBytes/min.
+   Ended : October 1, 2026 1:38:47 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : October 1, 2026 1:38:47 PM
+   Source = D:\My Drive\cubbyllm\notebooks\
+     Dest = G:\My Drive\cubbyllm\notebooks\
+
+    Files : emitter_450m.ipynb
+	    
+  Options : /DCOPY:DA /COPY:DAT /NP /R:2 /W:5 
+
+------------------------------------------------------------------------------
+
+	  New Dir          1	D:\My Drive\cubbyllm\notebooks\
+	    New File  		   24959	emitter_450m.ipynb
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         0         0         0         0
+   Files :         1         1         0         0         0         0
+   Bytes :    24.3 k    24.3 k         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           1,663,933 Bytes/sec.
+   Speed :              95.211 MegaBytes/min.
+   Ended : October 1, 2026 1:38:47 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : October 1, 2026 1:38:47 PM
+   Source = D:\My Drive\cubbyllm\runs\base450m_cont\
+     Dest = G:\My Drive\cubbyllm\runs\base450m_cont\
+
+    Files : base450m_cont_final.pt
+	    base450m_cont_final.pt.json
+	    
+  Options : /DCOPY:DA /COPY:DAT /NP /R:2 /W:5 
+
+------------------------------------------------------------------------------
+
+	  New Dir          2	D:\My Drive\cubbyllm\runs\base450m_cont\
+	    New File  		   2.1 g	base450m_cont_final.pt
+	    New File  		      67	base450m_cont_final.pt.json
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         0         0         0         0
+   Files :         2         2         0         0         0         0
+   Bytes :   2.146 g   2.146 g         0         0         0         0
+   Times :   0:00:04   0:00:04                       0:00:00   0:00:00
+
+
+   Speed :           542,148,570 Bytes/sec.
+   Speed :            31,021.990 MegaBytes/min.
+   Ended : October 1, 2026 1:38:52 PM
+
+done 2026-10-01 13:38:52.20 
