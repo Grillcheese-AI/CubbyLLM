@@ -28,5 +28,20 @@
     "standin_alone_right": 0.8516949152542372,
     "standin_wrong": 35,
     "standin_wrong_vetoed": 33
+  },
+  "school_step_held": {
+    "n": 236,
+    "spoken": 0.23728813559322035,
+    "right": 0.2288135593220339,
+    "wrong": 0.00847457627118644,
+    "precision": 0.9642857142857143,
+    "counts": {
+      "agree": 56,
+      "right": 54,
+      "wrong": 2
+    },
+    "standin_alone_right": 0.8516949152542372,
+    "standin_wrong": 35,
+    "standin_wrong_vetoed": 33
   }
 }
