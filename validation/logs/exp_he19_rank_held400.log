@@ -1,1 +1,32 @@
 rank | cubby450m_v12e_w_step_cont | 400 step rows from pf_heldout_eval_w_step.jsonl
+  25/400 (465s) so far       n=25   top-1 0.720  top-3 0.840  top-5 0.880  right-group mass 0.478  menu 180
+  50/400 (860s) so far       n=50   top-1 0.680  top-3 0.860  top-5 0.900  right-group mass 0.502  menu 167
+  75/400 (1231s) so far       n=75   top-1 0.693  top-3 0.867  top-5 0.907  right-group mass 0.498  menu 155
+  100/400 (1599s) so far       n=100  top-1 0.720  top-3 0.890  top-5 0.920  right-group mass 0.508  menu 151
+  125/400 (2003s) so far       n=125  top-1 0.704  top-3 0.872  top-5 0.912  right-group mass 0.502  menu 152
+  150/400 (2393s) so far       n=150  top-1 0.673  top-3 0.853  top-5 0.893  right-group mass 0.483  menu 152
+  175/400 (2658s) so far       n=175  top-1 0.669  top-3 0.874  top-5 0.909  right-group mass 0.478  menu 145
+  200/400 (3204s) so far       n=200  top-1 0.685  top-3 0.885  top-5 0.920  right-group mass 0.480  menu 153
+  225/400 (3577s) so far       n=225  top-1 0.684  top-3 0.893  top-5 0.924  right-group mass 0.482  menu 153
+  250/400 (3988s) so far       n=250  top-1 0.688  top-3 0.888  top-5 0.924  right-group mass 0.486  menu 153
+  275/400 (4326s) so far       n=275  top-1 0.687  top-3 0.887  top-5 0.924  right-group mass 0.485  menu 151
+  300/400 (4603s) so far       n=300  top-1 0.690  top-3 0.890  top-5 0.927  right-group mass 0.486  menu 148
+  325/400 (4988s) so far       n=325  top-1 0.689  top-3 0.892  top-5 0.926  right-group mass 0.487  menu 149
+  350/400 (5413s) so far       n=350  top-1 0.683  top-3 0.891  top-5 0.923  right-group mass 0.486  menu 150
+  375/400 (5776s) so far       n=375  top-1 0.688  top-3 0.891  top-5 0.925  right-group mass 0.484  menu 149
+  400/400 (6139s) so far       n=400  top-1 0.693  top-3 0.890  top-5 0.927  right-group mass 0.489  menu 149
+
+held400: 400 rows, 0 not on the menu (a literal operand or a value the host lacks)
+  all          n=400  top-1 0.693  top-3 0.890  top-5 0.927  right-group mass 0.489  menu 149
+  stop rows    n=80   top-1 0.988  top-3 1.000  top-5 1.000  right-group mass 0.846  menu 203
+  step rows    n=320  top-1 0.619  top-3 0.863  top-5 0.909  right-group mass 0.399  menu 135
+    step 0     n=76   top-1 0.803  top-3 0.934  top-5 0.947  right-group mass 0.551  menu 75
+    step 1     n=88   top-1 0.580  top-3 0.852  top-5 0.943  right-group mass 0.340  menu 94
+    step 2     n=85   top-1 0.576  top-3 0.812  top-5 0.847  right-group mass 0.362  menu 124
+    step 3+    n=71   top-1 0.521  top-3 0.859  top-5 0.901  right-group mass 0.355  menu 263
+  reference, teacher-forced greedy writing (same rows' family): step 0 0.758, later 0.549, stop 0.932
+  margin quartile 1 (gap 0.01..0.54): top-1 0.410
+  margin quartile 2 (gap 0.54..1.40): top-1 0.590
+  margin quartile 3 (gap 1.41..2.79): top-1 0.790
+  margin quartile 4 (gap 2.79..8.48): top-1 0.980
+  -> validation\logs\exp_he19_rank_held400.json (6139s)
