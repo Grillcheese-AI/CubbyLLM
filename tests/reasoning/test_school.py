@@ -121,6 +121,9 @@ def test_an_answer_written_in_earns_nothing():
     from cubbyllm.reasoning.school import answer_written_in
     assert answer_written_in("assign s0 = $N1; sub s0, $N2;", 12, [59, 71]) == ""
     assert answer_written_in("assign s0 = 26;", 26, [59, 71, 38]) == "no number from the question"
+    chain = "assign s3 = $S2; add s3, $S1;"                     # a write-back step built on earlier VM values
+    assert answer_written_in(chain, 1078, [59, 71]) == "no number from the question"
+    assert answer_written_in(chain, 1078, [59, 71], sources=("$N", "$S")) == ""
     assert answer_written_in("assign s0 = $N1; mul s0, 0; add s0, 26;", 26, [59, 71]) == \
         "the answer written in, not computed"
     assert answer_written_in("assign s0 = $N1; add s0, 12;", 59, [59, 71]) == "", "the gold is a stated number"

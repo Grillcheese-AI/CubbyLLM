@@ -395,11 +395,13 @@ def arith_step_values(program: str) -> list[float] | None:
 # the gold, and the one cheap hack is a program that writes the answer as a literal (a pool problem the SFT data
 # already showed). The judge refuses it, so it earns nothing -- and a refusal is never punished either.
 
-def answer_written_in(program: str, gold, stated=()) -> str:
+def answer_written_in(program: str, gold, stated=(), sources=("$N",)) -> str:
     """Why this slotted program does not count as solving, or "" when it may: it uses no number from the
-    question, or it writes the gold value itself as a literal (and the question did not state it)."""
+    question, or it writes the gold value itself as a literal (and the question did not state it).
+    `sources`: the slot kinds that count as "from the question". A step of the write-back loop passes
+    ("$N", "$S"): a later step that combines only earlier steps' VM values ($S) is chaining, not a hack."""
     from .slots import NUM_LIT_RX, num_value
-    if "$N" not in program:
+    if not any(s in program for s in sources):
         return "no number from the question"
     g = num_value(str(gold)) if gold is not None else None
     if g is None or any(s is not None and abs(s - g) <= 1e-9 * max(1.0, abs(g)) for s in stated):

@@ -149,6 +149,8 @@ def test_step_school_judge():
     wrong = j.attempt_step(rows[1], step(1, ("assign", "$S1"), ("add", "$N3")))
     assert wrong["outcome"] == WRONG and wrong["values"] == [160.0]
     assert j.attempt_step(rows[2], step(2, ("assign", "$S1")))["outcome"] == REFUSED              # step 0's value
+    s_only = j.attempt_step(rows[2], step(2, ("assign", "$S2"), ("add", "$S1")))   # chaining: judged by its value
+    assert s_only["outcome"] == WRONG and s_only["values"] == [1078.0], s_only
     assert j.attempt_step(rows[1], step(1, ("assign", "308"), ("mul", "$N3")))["outcome"] == REFUSED  # copied
     assert j.attempt_step(rows[1], "        return $S1;\n")["why"] == "stopped early"
     assert j.attempt_step(rows[3], "        return $S3;\n")["outcome"] == CORRECT

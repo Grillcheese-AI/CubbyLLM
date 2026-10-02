@@ -236,7 +236,7 @@ class StepJudge(Judge):
         verdict = table.check(prog)
         if not verdict.ok:
             return {"program": prog, "outcome": REFUSED, "values": None, "stated": stated, "why": verdict.reason}
-        hack = answer_written_in(prog, row.get("gold"), stated)
+        hack = answer_written_in(prog, row.get("gold"), stated, sources=("$N", "$S"))   # $S-only = chaining
         if hack:
             return {"program": prog, "outcome": REFUSED, "values": None, "stated": stated, "why": hack}
         ok, res = self._run(wrap_step(table.fill(prog)))
