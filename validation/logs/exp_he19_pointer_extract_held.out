@@ -1,0 +1,4 @@
+extract | 1161 val rows from pf_heldout_eval_w_step.jsonl | cubby450m_v12e_w_step_cont
+  16/1161 (0s)
+  816/1161 (31s)
+  -> standin\data\out\he19_ptr_held.npz: 1161 rows, d=1024, 0 values with no marker in the prompt (52s)
