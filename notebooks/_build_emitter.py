@@ -410,6 +410,32 @@ for line in p.stdout:
     print(line, end='')
 p.wait()
 """),
+    md(r"""
+**The pick, trained listwise (2026-10-03, after the ranking read).** The write-back adapter already has the right
+next step on its short list (later steps: top-3 0.81-0.86) but not at its top (top-1 0.52-0.58), and a frozen
+pointer head over its features did worse. So the adapter is fine-tuned on the PICK: per step row, the right
+emission and 11 wrong ones from the host's own menu (hard first: the same values under another op, the stop when a
+step is due), each scored by its sum log-prob after the shared prompt; loss = cross-entropy over that list +
+0.5 x the right one's writing loss, so it still writes. Self-contained (setup + config cells only, no VM). Saves
+every 250 steps and resumes from `RANK_OUT` if the session drops. Read locally afterwards, free:
+`exp_he19_rank.py` on the same 400 rows (bar: later-step top-1 above 0.62) and the 236-question loop (bar: above 0.229).
+"""),
+    code(r"""
+RANK_POOL = f'{DRIVE}/emitter/emitter_sft_v12e_w_tg30_step.jsonl'   # step rows (train split)
+RANK_HELD = f'{DRIVE}/emitter/pf_heldout_eval_w_step.jsonl'          # held-out step rows: a sampled-list read
+RANK_FROM = f'{DRIVE}/emitter/cubby450m_v12e_w_step_cont'            # the write-back adapter
+RANK_OUT  = f'{DRIVE}/emitter/cubby450m_v12e_w_step_rank'
+for p_ in (RANK_POOL, RANK_HELD, f'{RANK_FROM}/emitter_lora.safetensors'):
+    assert os.path.exists(p_), p_
+RANK_ROWS, RANK_K, RANK_PER_STEP = 12000, 11, 4                       # 3,000 steps of 4 lists x 12 emissions
+cmd = [sys.executable, '-u', 'validation/train_rank_torch.py', '--ckpt', CKPT, '--tokenizer', TOKENIZER,
+       '--adapter', RANK_FROM, '--pool', RANK_POOL, '--held', RANK_HELD, '--out', RANK_OUT,
+       '--rows', str(RANK_ROWS), '--k', str(RANK_K), '--per-step', str(RANK_PER_STEP)]
+p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+for line in p.stdout:
+    print(line, end='')
+p.wait()
+"""),
 ]
 
 nb = {"cells": CELLS,
