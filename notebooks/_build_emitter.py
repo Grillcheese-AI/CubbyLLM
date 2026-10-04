@@ -424,13 +424,15 @@ every 250 steps and resumes from `RANK_OUT` if the session drops. Read locally a
 RANK_POOL = f'{DRIVE}/emitter/emitter_sft_v12e_w_tg30_step.jsonl'   # step rows (train split)
 RANK_HELD = f'{DRIVE}/emitter/pf_heldout_eval_w_step.jsonl'          # held-out step rows: a sampled-list read
 RANK_FROM = f'{DRIVE}/emitter/cubby450m_v12e_w_step_cont'            # the write-back adapter
-RANK_OUT  = f'{DRIVE}/emitter/cubby450m_v12e_w_step_rank'
+RANK_LR, RANK_SFT = 5e-5, 1.0                                       # 3e-4 / 0.5 broke the loop (0.06 at 100/236 vs 0.18)
+RANK_OUT  = f'{DRIVE}/emitter/cubby450m_v12e_w_step_rank_lr5e5'      # a new dir: the old one would be resumed
 for p_ in (RANK_POOL, RANK_HELD, f'{RANK_FROM}/emitter_lora.safetensors'):
     assert os.path.exists(p_), p_
 RANK_ROWS, RANK_K, RANK_PER_STEP = 12000, 11, 4                       # 3,000 steps of 4 lists x 12 emissions
 cmd = [sys.executable, '-u', 'validation/train_rank_torch.py', '--ckpt', CKPT, '--tokenizer', TOKENIZER,
        '--adapter', RANK_FROM, '--pool', RANK_POOL, '--held', RANK_HELD, '--out', RANK_OUT,
-       '--rows', str(RANK_ROWS), '--k', str(RANK_K), '--per-step', str(RANK_PER_STEP)]
+       '--rows', str(RANK_ROWS), '--k', str(RANK_K), '--per-step', str(RANK_PER_STEP),
+       '--lr', str(RANK_LR), '--sft-weight', str(RANK_SFT)]
 p = subprocess.Popen(cmd, cwd=REPO, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
 for line in p.stdout:
     print(line, end='')
