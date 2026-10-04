@@ -1,0 +1,17 @@
+  20/236 (169s) correct=0.050 answered=0.850 same_steps=0.350
+  40/236 (282s) correct=0.025 answered=0.850 same_steps=0.300
+  60/236 (451s) correct=0.033 answered=0.833 same_steps=0.317
+  80/236 (604s) correct=0.037 answered=0.825 same_steps=0.275
+  100/236 (763s) correct=0.060 answered=0.820 same_steps=0.300
+  120/236 (909s) correct=0.050 answered=0.817 same_steps=0.342
+  140/236 (1026s) correct=0.079 answered=0.836 same_steps=0.386
+  160/236 (1150s) correct=0.075 answered=0.831 same_steps=0.419
+  180/236 (1292s) correct=0.072 answered=0.806 same_steps=0.406
+  200/236 (1422s) correct=0.065 answered=0.810 same_steps=0.410
+  220/236 (1570s) correct=0.059 answered=0.809 same_steps=0.418
+  236/236 (1655s) correct=0.059 answered=0.818 same_steps=0.432
+
+rankft_held: n=236 correct=0.059 answered=0.818 wrong_answer=0.758 same_steps=0.432 emissions/problem=5.73
+  by steps: 3:0.03/118  4:0.14/64  5:0.03/29  6:0.00/12  7:0.00/8  8:0.00/4  10:0.00/1
+  refusals: no stop within # steps=21, unknown slot $N#=2, vm: the step did not run=20
+  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_step_loop_rankft_held.json

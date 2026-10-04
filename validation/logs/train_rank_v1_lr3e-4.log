@@ -1,0 +1,14 @@
+rank | cuda | 12000 lists of 1 right + <= 11 wrong | 3000 steps of 4 | lr 0.0003 sft_weight 0.5 | from cubby450m_v12e_w_step_cont
+  step 0: held lists top-1 0.860 (200 lists)
+  step 250/3000: loss 0.944 (list 0.897, write 0.095) | train lists top-1 0.785 | held lists top-1 0.735 | 142s
+  step 500/3000: loss 1.128 (list 1.062, write 0.131) | train lists top-1 0.728 | held lists top-1 0.725 | 285s
+  step 750/3000: loss 1.032 (list 0.963, write 0.139) | train lists top-1 0.733 | held lists top-1 0.785 | 427s
+  step 1000/3000: loss 0.994 (list 0.929, write 0.130) | train lists top-1 0.760 | held lists top-1 0.825 | 567s
+  step 1250/3000: loss 0.880 (list 0.822, write 0.116) | train lists top-1 0.799 | held lists top-1 0.870 | 707s
+  step 1500/3000: loss 0.868 (list 0.809, write 0.117) | train lists top-1 0.793 | held lists top-1 0.850 | 849s
+  step 1750/3000: loss 0.884 (list 0.822, write 0.123) | train lists top-1 0.780 | held lists top-1 0.920 | 991s
+  step 2000/3000: loss 0.677 (list 0.629, write 0.096) | train lists top-1 0.830 | held lists top-1 0.910 | 1133s
+  step 2250/3000: loss 0.656 (list 0.605, write 0.103) | train lists top-1 0.842 | held lists top-1 0.930 | 1275s
+  step 2500/3000: loss 0.501 (list 0.456, write 0.089) | train lists top-1 0.871 | held lists top-1 0.930 | 1419s
+  step 2750/3000: loss 0.635 (list 0.591, write 0.088) | train lists top-1 0.848 | held lists top-1 0.920 | 1561s
+  step 3000/3000: loss 0.588 (list 0.545, write 0.084) | train lists top-1 0.844 | held lists top-1 0.920 | 1704s
