@@ -1,0 +1,8 @@
+attract-repel | teacher_paraminilm.npz: 60147 words, dim 384 | WordNet constraints (test-class words banned: 143): synonyms 17447, antonyms 846, co-hyponyms 29711 | train 13976/694/23992, dev (unseen words) 3471/152/5719
+  before     mean cosine | dev synonyms 0.382  dev antonyms 0.427  dev co-hyponyms 0.261 | train syn 0.365 sib 0.262 | test paraphrase 0.750  test entity 0.365
+  random-pair cosine (the repel target): 0.145
+  epoch 1    mean cosine | dev synonyms 0.347  dev antonyms 0.320  dev co-hyponyms 0.144 | train syn 0.339 sib 0.126 | test paraphrase 0.722  test entity 0.189
+    loss 1.1044
+  epoch 2    mean cosine | dev synonyms 0.349  dev antonyms 0.281  dev co-hyponyms 0.142 | train syn 0.333 sib 0.109 | test paraphrase 0.728  test entity 0.195
+    loss 1.0853
+  -> C:\CUBBY-TRAINED-MODELS\teacher_paraminilm_ar4.npz (13s)

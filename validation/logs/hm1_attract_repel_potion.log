@@ -1,0 +1,8 @@
+attract-repel | teacher_potion.npz: 60147 words, dim 512 | WordNet constraints (test-class words banned: 143): synonyms 17447, antonyms 846, co-hyponyms 29712 | train 13893/709/24005, dev (unseen words) 3554/137/5707
+  before     mean cosine | dev synonyms 0.149  dev antonyms 0.182  dev co-hyponyms 0.063 | train syn 0.146 sib 0.064 | test paraphrase 0.416  test entity 0.097
+  random-pair cosine (the repel target): 0.004
+  epoch 1    mean cosine | dev synonyms 0.227  dev antonyms 0.223  dev co-hyponyms 0.072 | train syn 0.276 sib 0.057 | test paraphrase 0.480  test entity 0.093
+    loss 0.9963
+  epoch 2    mean cosine | dev synonyms 0.229  dev antonyms 0.205  dev co-hyponyms 0.076 | train syn 0.276 sib 0.062 | test paraphrase 0.476  test entity 0.099
+    loss 0.9795
+  -> C:\CUBBY-TRAINED-MODELS\teacher_potion_ar.npz (14s)

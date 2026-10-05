@@ -1,0 +1,17 @@
+hm1b | fastword_table_paraminilm_ar.npz: 60147 words, k=80 l=128, teacher npz:C:\CUBBY-TRAINED-MODELS\teacher_paraminilm_ar.npz | reader: top-3 slots per word, top-8 key phases per block, 26 tables, K in (1, 4, 16, 64) (8s)
+  corpus: 597093 distinct trigrams | queries: self (sanity) 4000, paraphrase 4000, semantic neighbour 4000, entity (different fact) 4000, random word 4000 (23s)
+
+blend 0.00 (36s)
+  query class                  n  p(top-1)  p(top-8) |    hit@1    hit@4   hit@16   hit@64 any26@16   (per table, mean of 26)
+  self (sanity)             4000    0.9976    1.0000 |   1.0000   1.0000   1.0000   1.0000   1.0000   g=2
+                                                     |   1.0000   1.0000   1.0000   1.0000   1.0000   g=3
+  paraphrase                4000    0.2605    0.4531 |   0.0914   0.1269   0.1845   0.2327   0.8197   g=2
+                                                     |   0.0411   0.0569   0.0832   0.1156   0.5510   g=3
+  semantic neighbour        4000    0.3671    0.6014 |   0.1568   0.2320   0.3312   0.3951   0.9818   g=2
+                                                     |   0.0743   0.1115   0.1663   0.2248   0.8115   g=3
+  entity (different fact)   4000    0.0470    0.1367 |   0.0039   0.0075   0.0152   0.0255   0.2367   g=2
+                                                     |   0.0007   0.0011   0.0019   0.0031   0.0380   g=3
+  random word               4000    0.0104    0.0666 |   0.0003   0.0005   0.0018   0.0051   0.0437   g=2
+                                                     |   0.0000   0.0000   0.0001   0.0001   0.0013   g=3
+  (uniform hash)                    0.0078    0.0625 |  0.00006  0.00024  0.00098  0.00391            g=2
+  (uniform hash)                    0.0078    0.0625 |  0.00000  0.00000  0.00001  0.00003            g=3

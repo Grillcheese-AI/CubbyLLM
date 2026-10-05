@@ -1,0 +1,47 @@
+{
+ "args": {
+  "teacher": "C:\\CUBBY-TRAINED-MODELS\\teacher_paraminilm.npz",
+  "out": "C:\\CUBBY-TRAINED-MODELS\\teacher_paraminilm_ar4.npz",
+  "max_sib": 20,
+  "epochs": 2,
+  "batch": 256,
+  "lr": 0.01,
+  "att": 0.6,
+  "rep": 0.0,
+  "reg": 0.001,
+  "obj": "direct",
+  "keep": 2.0,
+  "rep_w": 4.0,
+  "seed": 0,
+  "tag": "paraminilm_ar4"
+ },
+ "history": {
+  "before": {
+   "syn": 0.382089227437973,
+   "ant": 0.4271067678928375,
+   "sib": 0.26107120513916016,
+   "train syn": 0.3649473488330841,
+   "train sib": 0.2618323862552643,
+   "test paraphrase": 0.7499083280563354,
+   "test entity": 0.36548367142677307
+  },
+  "epoch1": {
+   "syn": 0.34681999683380127,
+   "ant": 0.3199550211429596,
+   "sib": 0.14371582865715027,
+   "train syn": 0.33933690190315247,
+   "train sib": 0.12570726871490479,
+   "test paraphrase": 0.7220490574836731,
+   "test entity": 0.18922697007656097
+  },
+  "epoch2": {
+   "syn": 0.34915152192115784,
+   "ant": 0.2812398076057434,
+   "sib": 0.1418071836233139,
+   "train syn": 0.33319541811943054,
+   "train sib": 0.10931845754384995,
+   "test paraphrase": 0.7276110053062439,
+   "test entity": 0.19491568207740784
+  }
+ }
+}

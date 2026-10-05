@@ -1,0 +1,46 @@
+{
+ "args": {
+  "teacher": "C:\\CUBBY-TRAINED-MODELS\\teacher_potion.npz",
+  "out": "C:\\CUBBY-TRAINED-MODELS\\teacher_potion_ar.npz",
+  "max_sib": 20,
+  "epochs": 2,
+  "batch": 256,
+  "lr": 0.01,
+  "att": 0.6,
+  "rep": 0.0,
+  "reg": 0.001,
+  "obj": "direct",
+  "keep": 2.0,
+  "seed": 0,
+  "tag": "potion"
+ },
+ "history": {
+  "before": {
+   "syn": 0.14949503540992737,
+   "ant": 0.18238013982772827,
+   "sib": 0.06250280886888504,
+   "train syn": 0.14564074575901031,
+   "train sib": 0.06412786990404129,
+   "test paraphrase": 0.4162233769893646,
+   "test entity": 0.09694904088973999
+  },
+  "epoch1": {
+   "syn": 0.22715209424495697,
+   "ant": 0.22257015109062195,
+   "sib": 0.07159379869699478,
+   "train syn": 0.2762712836265564,
+   "train sib": 0.05657297745347023,
+   "test paraphrase": 0.4804894030094147,
+   "test entity": 0.09340914338827133
+  },
+  "epoch2": {
+   "syn": 0.2293807417154312,
+   "ant": 0.20469625294208527,
+   "sib": 0.07562079280614853,
+   "train syn": 0.27608415484428406,
+   "train sib": 0.0618736557662487,
+   "test paraphrase": 0.4759536683559418,
+   "test entity": 0.09856090694665909
+  }
+ }
+}

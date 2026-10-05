@@ -1,0 +1,48 @@
+hm1 | fastword_table_potion_ar.npz: 60147 words, k=80 l=128, teacher npz:C:\CUBBY-TRAINED-MODELS\teacher_potion_ar.npz, stored blend 0.5 (8s)
+  pairs: paraphrase 35, entity (different fact) 546, semantic neighbour 2000, random 2000
+  corpus: 597093 distinct in-vocabulary trigrams from 400 x 4000 tokens (20s)
+
+blend 0.00: the phase is the word's signal slot in 0.008 of blocks
+  pair class                     n  p(block)     g=1      g=2       g=3  g=3, any of 4
+  paraphrase                    35    0.0996  0.0996  0.01357  0.001099         0.0286
+  entity (different fact)      546    0.0171  0.0171  0.00055  0.000000         0.0000
+  semantic neighbour          2000    0.2441  0.2441  0.08148  0.033654         0.1020
+  random                      2000    0.0086  0.0086  0.00007  0.000000         0.0000
+  (uniform hash)                      0.0078  0.0078  0.00006  0.000000
+  load, g=3 (2,097,152 buckets, 597,093 trigrams): 0.2486 share a bucket (uniform hash 0.2478), max load 6, full-key duplicates 0.00000
+
+blend 0.10: the phase is the word's signal slot in 0.108 of blocks
+  pair class                     n  p(block)     g=1      g=2       g=3  g=3, any of 4
+  paraphrase                    35    0.0911  0.0911  0.01143  0.001099         0.0286
+  entity (different fact)      546    0.0161  0.0161  0.00050  0.000070         0.0018
+  semantic neighbour          2000    0.2147  0.2147  0.06235  0.021154         0.0710
+  random                      2000    0.0084  0.0084  0.00007  0.000000         0.0000
+  (uniform hash)                      0.0078  0.0078  0.00006  0.000000
+  load, g=3 (2,097,152 buckets, 597,093 trigrams): 0.2484 share a bucket (uniform hash 0.2478), max load 6, full-key duplicates 0.00000
+
+blend 0.25: the phase is the word's signal slot in 0.861 of blocks
+  pair class                     n  p(block)     g=1      g=2       g=3  g=3, any of 4
+  paraphrase                    35    0.0132  0.0132  0.00071  0.000000         0.0000
+  entity (different fact)      546    0.0086  0.0086  0.00014  0.000000         0.0000
+  semantic neighbour          2000    0.0178  0.0178  0.00046  0.000019         0.0000
+  random                      2000    0.0085  0.0085  0.00006  0.000000         0.0000
+  (uniform hash)                      0.0078  0.0078  0.00006  0.000000
+  load, g=3 (2,097,152 buckets, 597,093 trigrams): 0.2479 share a bucket (uniform hash 0.2478), max load 6, full-key duplicates 0.00000
+
+blend 0.50: the phase is the word's signal slot in 1.000 of blocks
+  pair class                     n  p(block)     g=1      g=2       g=3  g=3, any of 4
+  paraphrase                    35    0.0082  0.0082  0.00000  0.000000         0.0000
+  entity (different fact)      546    0.0080  0.0080  0.00014  0.000000         0.0000
+  semantic neighbour          2000    0.0075  0.0075  0.00011  0.000000         0.0000
+  random                      2000    0.0083  0.0083  0.00005  0.000000         0.0000
+  (uniform hash)                      0.0078  0.0078  0.00006  0.000000
+  load, g=3 (2,097,152 buckets, 597,093 trigrams): 0.2482 share a bucket (uniform hash 0.2478), max load 6, full-key duplicates 0.00000
+
+blend 0.75: the phase is the word's signal slot in 1.000 of blocks
+  pair class                     n  p(block)     g=1      g=2       g=3  g=3, any of 4
+  paraphrase                    35    0.0082  0.0082  0.00000  0.000000         0.0000
+  entity (different fact)      546    0.0080  0.0080  0.00014  0.000000         0.0000
+  semantic neighbour          2000    0.0075  0.0075  0.00011  0.000000         0.0000
+  random                      2000    0.0083  0.0083  0.00005  0.000000         0.0000
+  (uniform hash)                      0.0078  0.0078  0.00006  0.000000
+  load, g=3 (2,097,152 buckets, 597,093 trigrams): 0.2482 share a bucket (uniform hash 0.2478), max load 6, full-key duplicates 0.00000

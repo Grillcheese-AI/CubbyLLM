@@ -1,0 +1,17 @@
+hm1b | fastword_table_potion_ar.npz: 60147 words, k=80 l=128, teacher npz:C:\CUBBY-TRAINED-MODELS\teacher_potion_ar.npz | reader: top-3 slots per word, top-8 key phases per block, 26 tables, K in (1, 4, 16, 64) (8s)
+  corpus: 597093 distinct trigrams | queries: self (sanity) 4000, paraphrase 4000, semantic neighbour 4000, entity (different fact) 4000, random word 4000 (22s)
+
+blend 0.00 (34s)
+  query class                  n  p(top-1)  p(top-8) |    hit@1    hit@4   hit@16   hit@64 any26@16   (per table, mean of 26)
+  self (sanity)             4000    0.9968    1.0000 |   1.0000   1.0000   1.0000   1.0000   1.0000   g=2
+                                                     |   1.0000   1.0000   1.0000   1.0000   1.0000   g=3
+  paraphrase                4000    0.1336    0.2677 |   0.0277   0.0599   0.0974   0.1250   0.4690   g=2
+                                                     |   0.0090   0.0210   0.0383   0.0579   0.2065   g=3
+  semantic neighbour        4000    0.2419    0.4304 |   0.0814   0.1246   0.1844   0.2293   0.8423   g=2
+                                                     |   0.0331   0.0505   0.0780   0.1096   0.5152   g=3
+  entity (different fact)   4000    0.0280    0.1024 |   0.0012   0.0027   0.0066   0.0135   0.1412   g=2
+                                                     |   0.0000   0.0000   0.0002   0.0005   0.0053   g=3
+  random word               4000    0.0086    0.0643 |   0.0001   0.0003   0.0010   0.0043   0.0262   g=2
+                                                     |   0.0000   0.0000   0.0000   0.0001   0.0003   g=3
+  (uniform hash)                    0.0078    0.0625 |  0.00006  0.00024  0.00098  0.00391            g=2
+  (uniform hash)                    0.0078    0.0625 |  0.00000  0.00000  0.00001  0.00003            g=3
