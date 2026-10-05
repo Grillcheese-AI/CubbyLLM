@@ -11,10 +11,13 @@ which proposes programs and speaks and never judges. Every spoken answer is a pr
 store, or a refusal with a reason. Honest by construction rather than by judgement; one stack for cloud API and
 enterprise on-prem.
 
-> **Status caveat, first.** The serving stack today runs a third-party GGUF model (LFM2.5-2.6B, fine-tuned on
-> Colab) as a **stand-in** behind the trunk interface. GRL's own 2B trunk is designed and validated but not yet
-> trained. Every number below measures the *host architecture* — the gates, the VM, the harvest loop — never the
-> CubbyLLM model. The trunk drops in behind the same `Emitter` interface unchanged.
+> **Status caveat, first.** GRL's own model now exists: **base450m**, a 450M hybrid (MinGRU recurrence + windowed
+> attention, hidden 1024, 32 layers, the bbpe128k tokenizer) pretrained on ~4B tokens and served natively on
+> `grilly2` (Vulkan, no CUDA), with the program emitter as a LoRA adapter trained on Colab. It grows without a
+> restart: `cubbyllm/model/grow.py` widens or deepens a trained base into a bigger model that computes the same
+> function at step 0. The third-party stand-in (LFM2.5-2.6B GGUF) still sits behind the same `Emitter` interface,
+> and **the September tables below measure the host with the stand-in in the trunk's seat**; the October section
+> measures base450m itself.
 
 ## The seven invariants
 
@@ -26,7 +29,47 @@ enterprise on-prem.
 6. **No self-play or self-judging shortcuts.**
 7. **Ported, never linked.** Nothing depends on another repository at runtime.
 
-## Where it stands — 11 September 2026
+## Where it stands — 5 October 2026
+
+Two lines of work on GRL's own model, each run as a hypothesis with a kill line in `CUBBYLLM_HYPOTHESES.md`
+(H-E19, H-M1); every number has a log in `validation/logs/`.
+
+**Arithmetic through the VM, one step at a time (H-E19, `cubbyllm/reasoning/step_loop.py`).** The emitter never
+writes the whole program: each turn it proposes ONE operation on numbers the host placed (the question's, as
+`[N1: 308]` slots, and earlier results written back as `[S1: 154 = N1 / N2]`), the VM runs it, and the host writes
+the value back. Every intermediate number is the VM's, never the model's.
+
+| measured on 236 held-out word problems (base450m + emitter adapter) | |
+|---|---:|
+| whole program in one pass → one VM-verified step at a time | **5.5% → 22.9%** correct (the 2.6B stand-in, one pass: 85.2%) |
+| templates seen in training / never seen | 24.6% / 20.4% — the gain is not memorisation (n = 138 / 98) |
+| speak only when the 450M loop and the 2.6B stand-in agree | **0.8% of questions answered wrong**, precision 0.964 |
+| every legal next step ranked by the adapter (the host's "menu", ~135 options) | right step top-1 0.62, **top-3 0.86**; stops 0.99; the margin is calibrated (lowest quarter 0.41, highest 0.98) |
+| what did not move it | self-vote over 5 samples (0.237), a VM-judged step school (0.229), a pointer head on frozen features, a listwise fine-tune (0.119 / 0.059); model-free pruning catches 3% of the real mistakes |
+| in progress | a top-3 beam at the steps the model is unsure of, its cutoff set on a separate dev set (not the 236) |
+
+What it brings over a conventional LM: the model is never trusted with a number. It proposes, the VM computes,
+the trace is inspectable step by step, and a question is answered only when two independent proposers agree.
+
+**An n-gram memory in the hypervector space (H-M1).** Qwen's 2026 preview reads a 51B-row n-gram table from host
+RAM by hashed address. Here an n-gram is bound from the qFHRR word codes the serving table already holds
+(`docs/papers/2026-08-07-qfhrr-semantic-word-tables.md`; 60,147 words, 10,240 dimensions): the Rubik's-cube encoding
+from `grilly`'s cubemind cache, role (position) XOR filler (the word), bundled by majority and recalled by a
+Hamming scan. 597k corpus trigrams, one word swapped, match accepted when the original is the nearest key within a
+distance cutoff:
+
+| table (teacher) | paraphrase reaches the row | a different fact (france → germany) | random word |
+|---|---:|---:|---:|
+| shipped table (potion-retrieval) | 22.3% | 0% | 0% |
+| paraphrase-MiniLM | 74.7% | 10.7% | 0% |
+| paraphrase-MiniLM + Attract-Repel (WordNet, test words held out) | **74.3%** | **4.0%** | 0% |
+
+What it brings over a hashed n-gram table: a reworded n-gram still reaches its memory row, where a hash reaches
+nothing, and one distance cutoff sets the trade-off against reading a different fact; the exact address stays
+available as an identity tag. Open: the paraphrase list is 35 hand pairs (a larger fresh list is next), the scan
+is measured on CPU (~330 ms over 597k keys; the GPU scan is next), and the language-model test has not run.
+
+## The reasoning stack — 11 September 2026
 
 The reasoning pipeline (`cubbyllm/reasoning/`) is wired end to end and measured on two worlds:
 
@@ -92,6 +135,12 @@ python validation/exp_r9_matched_pairs.py --n 200 --resident                    
 python validation/exp_r10_simpleqa.py --resident                                 # free text through the whole gate
 
 python standin/serve.py                                                          # the stand-in brain (see standin/README.md)
+
+# base450m (pass --export <grilly export> --adapter <emitter adapter dir> --tokenizer <bbpe128k json>, all off-repo)
+python validation/exp_he19_step_loop.py --data standin/data/out/pf_heldout_eval_w_slots.jsonl --tag <tag>   # the step loop
+python validation/exp_he19_rank.py --n 400 --tag <tag>                            # every legal next step, ranked
+python validation/exp_he19_beam.py --mode calibrate|loop                          # menu argmax and the margin-triggered beam
+python validation/exp_hm1c_hamming.py --table <fastword table> --shard <token shard>   # the n-gram memory, cube encoding
 ```
 
 Every experiment writes `validation/logs/<name>.{json,log}`; every number in the docs points at one of them.
@@ -109,6 +158,9 @@ cubbyllm/            the package (Apache-2.0). `import cubbyllm` is torch-free.
   reasoning/learn.py search-and-learn: refusal → source → gate → store with provenance → walk again (sources live in standin/)
   reasoning/lexicon.py the synonym oracle: WordNet 3.0 + WOLF (FR) by synset, a second relation resolver (data built by standin/data/build_lexicon.py)
   reasoning/hippocampus.py the episodic side cortex: certified chains as 256-bit-coded episodes, recalled and rebound as plan candidates; retire, never delete
+  reasoning/step_loop.py arithmetic one VM-verified step at a time: the host's slots, the value written back as $S, the stop
+  reasoning/school.py the step school: a curriculum the VM judges (try until right, halve the tries as a level is mastered)
+  model/grow.py      function-preserving growth (HyperCloning): a trained base widened or deepened, same function at step 0
   reasoning/events.py every step of the loop as an event with its parent's id (question → plan → walk → hop → fact; fetch → gate; answer) — sinks: jsonl, memory, a live listener
   core/ model/ ops/ training/   the trunk design from the validation campaign
 standin/             the serve stack (BSL-1.1): brain, thalamus, VM-mediated chat, cubby-man, emitter, SFT data builders
@@ -122,7 +174,7 @@ standin/             the serve stack (BSL-1.1): brain, thalamus, VM-mediated cha
   openrouter.py      a frontier model as a proposer for probes and dataset building only — never the serving model
 dashboard/           the three.js control panel (control_panel.html): every step of the loop (cubbyllm/reasoning/events.py) as a linked
                      graph, replay, a live stream from the stand-in server (/panel, /loop/stream), an ask box, and links between questions that share a fact or an entity; sample_events.jsonl to load
-validation/          55 standalone experiment scripts + tests + logs/. Never imported by cubbyllm/.
+validation/          184 standalone experiment scripts + tests + logs/. Never imported by cubbyllm/.
 notebooks/           Colab training runs, one per SFT round
 docs/research/       dated findings and the outside-model competitions, scored against the measured record
 ```
@@ -167,6 +219,13 @@ relation mismatch 58% of the residue); the finding that the plan never crossed t
 closed it; the resident VM; the emitter's plans walked and harvested; gen 2 trained on the harvest and gated;
 the matched-pair generality test on a world 445× the training store.
 
+**Our own model (2026-09-15 → 2026-10-05).** The work orders of `docs/WORK_ORDERS.md` ran (CLUTRR at ten hops with
+zero wrong answers, the emitter at depth, Cubby-Man learning the maze and writing his own sentences, the affect
+cube checked against human ratings); then base450m was pretrained, moved onto `grilly2`, and given its emitter
+adapter. Arithmetic became a world (H-E19): one pass, the 450M gets 5.5%; one VM-verified step at a time, 22.9%,
+and every training-side lever tried since has been measured against that number. The serving word table became
+the address space for an n-gram memory (H-M1).
+
 ## Documents in this folder
 
 `CLAUDE.md` — orientation for coding sessions: the from-scratch/no-frozen-trunk correction, the implemented
@@ -179,6 +238,10 @@ to a script in `validation/` and a log in `validation/logs/`.
 `docs/research/` — the dated findings (`2026-09-14-ask-loop.md` is the current one; `2026-09-11-plan-verify.md`
 is the walk it sits on) and the outside-model competitions with their scoring. `docs/ARCHITECTURE_VISION.md` and `VISION.md` — the north star: Cubby (the trunk)
 + CubeLang (the verified VM, an OS for AI) + cubemind (the environment); deny-by-default; the Brain-SDK contracts.
+
+`docs/papers/` — the qFHRR semantic word tables paper (a teacher distilled into the model-free block-code table the
+host serves). `docs/PATH.md` — from "a thought is a program the VM executes" to the model writing programs for questions no rule
+covers: what is measured, what turned out false, what would prove the whole thing wrong.
 
 `docs/WORK_ORDERS.md` — work that is argued for and NOT built, each entry written to be picked up
 cold: what to build, where, why it is shaped that way, what would prove it wrong, and the measured
