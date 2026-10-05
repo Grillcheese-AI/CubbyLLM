@@ -1,0 +1,14 @@
+he19 beam | cubby450m_v12e_w_step_cont | mode loop | chunk 128 | steps scored to the end of the plan line
+
+loop | width 1 (menu argmax) | 236 pf questions (138 on seen templates)
+  20/236 (259s) sum 0.200  mean 0.200  min-margin 0.200  oracle 0.200  menus scored/question 4.5
+  40/236 (508s) sum 0.200  mean 0.200  min-margin 0.200  oracle 0.200  menus scored/question 4.5
+  60/236 (840s) sum 0.217  mean 0.217  min-margin 0.217  oracle 0.217  menus scored/question 4.6
+  80/236 (1048s) sum 0.212  mean 0.212  min-margin 0.212  oracle 0.212  menus scored/question 4.5
+  100/236 (1317s) sum 0.230  mean 0.230  min-margin 0.230  oracle 0.230  menus scored/question 4.5
+  120/236 (1541s) sum 0.225  mean 0.225  min-margin 0.225  oracle 0.225  menus scored/question 4.5
+  140/236 (1753s) sum 0.250  mean 0.250  min-margin 0.250  oracle 0.250  menus scored/question 4.5
+  160/236 (2113s) sum 0.287  mean 0.287  min-margin 0.287  oracle 0.287  menus scored/question 4.5
+  180/236 (2377s) sum 0.294  mean 0.294  min-margin 0.294  oracle 0.294  menus scored/question 4.4
+  200/236 (2685s) sum 0.275  mean 0.275  min-margin 0.275  oracle 0.275  menus scored/question 4.5
+  220/236 (2915s) sum 0.273  mean 0.273  min-margin 0.273  oracle 0.273  menus scored/question 4.4

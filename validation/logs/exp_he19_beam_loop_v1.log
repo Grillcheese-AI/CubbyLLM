@@ -1,0 +1,39 @@
+he19 beam | cubby450m_v12e_w_step_cont | mode loop | chunk 128 | steps scored to the end of the plan line
+
+loop | width 1 (menu argmax) | 236 pf questions (138 on seen templates)
+  20/236 (379s) sum 0.200  mean 0.200  min-margin 0.200  oracle 0.200  menus scored/question 4.5
+  40/236 (727s) sum 0.200  mean 0.200  min-margin 0.200  oracle 0.200  menus scored/question 4.5
+  60/236 (1199s) sum 0.217  mean 0.217  min-margin 0.217  oracle 0.217  menus scored/question 4.6
+  80/236 (1471s) sum 0.212  mean 0.212  min-margin 0.212  oracle 0.212  menus scored/question 4.5
+  100/236 (1805s) sum 0.230  mean 0.230  min-margin 0.230  oracle 0.230  menus scored/question 4.5
+  120/236 (2080s) sum 0.225  mean 0.225  min-margin 0.225  oracle 0.225  menus scored/question 4.5
+  140/236 (2329s) sum 0.250  mean 0.250  min-margin 0.250  oracle 0.250  menus scored/question 4.5
+  160/236 (2671s) sum 0.287  mean 0.287  min-margin 0.287  oracle 0.287  menus scored/question 4.5
+  180/236 (2925s) sum 0.294  mean 0.294  min-margin 0.294  oracle 0.294  menus scored/question 4.4
+  200/236 (3265s) sum 0.275  mean 0.275  min-margin 0.275  oracle 0.275  menus scored/question 4.5
+  220/236 (3528s) sum 0.273  mean 0.273  min-margin 0.273  oracle 0.273  menus scored/question 4.4
+  236/236 (3744s) sum 0.275  mean 0.275  min-margin 0.275  oracle 0.275  menus scored/question 4.4
+  ranker          all   seen  unseen
+  sum           0.275  0.290   0.255
+  mean          0.275  0.290   0.255
+  min-margin    0.275  0.290   0.255
+  oracle        0.275  0.290   0.255
+
+loop | beam 3, branch top-3 when margin < 1.405 | 236 pf questions (138 on seen templates)
+  20/236 (1318s) sum 0.150  mean 0.250  min-margin 0.150  oracle 0.500  menus scored/question 12.7
+  40/236 (2187s) sum 0.125  mean 0.225  min-margin 0.100  oracle 0.450  menus scored/question 11.9
+  60/236 (3390s) sum 0.150  mean 0.217  min-margin 0.100  oracle 0.467  menus scored/question 12.1
+  80/236 (4202s) sum 0.163  mean 0.225  min-margin 0.125  oracle 0.450  menus scored/question 12.0
+  100/236 (5179s) sum 0.180  mean 0.240  min-margin 0.160  oracle 0.440  menus scored/question 11.9
+  120/236 (6258s) sum 0.175  mean 0.242  min-margin 0.167  oracle 0.442  menus scored/question 11.9
+  140/236 (7037s) sum 0.207  mean 0.264  min-margin 0.193  oracle 0.450  menus scored/question 11.6
+  160/236 (8208s) sum 0.250  mean 0.306  min-margin 0.237  oracle 0.475  menus scored/question 11.4
+  180/236 (8980s) sum 0.272  mean 0.322  min-margin 0.256  oracle 0.489  menus scored/question 11.2
+  200/236 (10402s) sum 0.255  mean 0.300  min-margin 0.240  oracle 0.490  menus scored/question 11.6
+  220/236 (11323s) sum 0.259  mean 0.309  min-margin 0.241  oracle 0.495  menus scored/question 11.5
+  236/236 (12025s) sum 0.263  mean 0.309  min-margin 0.246  oracle 0.496  menus scored/question 11.5
+  ranker          all   seen  unseen
+  sum           0.263  0.268   0.255
+  mean          0.309  0.326   0.286
+  min-margin    0.246  0.232   0.265
+  oracle        0.496  0.536   0.439
