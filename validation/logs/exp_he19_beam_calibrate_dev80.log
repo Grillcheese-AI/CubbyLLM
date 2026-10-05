@@ -1,0 +1,13 @@
+he19 beam | cubby450m_v12e_w_step_cont | mode calibrate | chunk 128 | steps scored to the end of the plan line
+calibrate | dev = the emitter's own GSM8K val split: 80 problems -> 399 step rows
+  50/399 (109s) top-1 0.457 top-3 0.739
+  100/399 (259s) top-1 0.516 top-3 0.736
+  150/399 (395s) top-1 0.540 top-3 0.781
+  200/399 (516s) top-1 0.588 top-3 0.819
+  250/399 (706s) top-1 0.578 top-3 0.796
+  300/399 (900s) top-1 0.562 top-3 0.764
+  350/399 (1041s) top-1 0.570 top-3 0.771
+  399/399 (1173s) top-1 0.557 top-3 0.765
+
+  dev rows on the menu 370/399 | top-1 0.557  top-3 0.765
+  tau = 75th percentile of the wrong picks' margins = 1.405 | branching would fire on 0.33 of the right picks and 0.75 of the wrong ones

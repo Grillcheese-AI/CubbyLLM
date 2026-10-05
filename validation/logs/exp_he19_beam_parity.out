@@ -1,0 +1,2 @@
+he19 beam | cubby450m_v12e_w_step_cont | mode parity | chunk 128 | steps scored in full
+parity | 8 dev step rows | trie vs flat: max |diff| 8.66e-05 | time flat 49s, trie 39s | plan-line top-1 = whole-step top-1 on 8/8
