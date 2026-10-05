@@ -1,0 +1,83 @@
+{
+ "kind": {
+  "3": {
+   "op": 9,
+   "operands": 7,
+   "pick uses an OLDER $S": 1,
+   "unparsed": 13,
+   "both": 5,
+   "gold reuses $S, pick does not": 1,
+   "pick reuses $S, gold does not": 2
+  },
+  "2": {
+   "operands": 11,
+   "op": 10,
+   "both": 12,
+   "pick uses an OLDER $S": 2,
+   "pick reuses $S, gold does not": 7,
+   "unparsed": 3
+  },
+  "0": {
+   "operands": 4,
+   "op": 5,
+   "both": 6
+  },
+  "1": {
+   "both": 14,
+   "pick reuses $S, gold does not": 9,
+   "operands": 13,
+   "gold reuses $S, pick does not": 7,
+   "op": 10
+  }
+ },
+ "by_size": {
+  "0|61-120": [
+   39,
+   31
+  ],
+  "1|61-120": [
+   52,
+   30
+  ],
+  "3|>120": [
+   63,
+   35
+  ],
+  "2|61-120": [
+   41,
+   30
+  ],
+  "2|>120": [
+   38,
+   17
+  ],
+  "1|<=60": [
+   18,
+   10
+  ],
+  "0|>120": [
+   9,
+   6
+  ],
+  "1|>120": [
+   18,
+   11
+  ],
+  "0|<=60": [
+   28,
+   24
+  ],
+  "3|61-120": [
+   7,
+   2
+  ],
+  "2|<=60": [
+   6,
+   2
+  ],
+  "3|<=60": [
+   1,
+   0
+  ]
+ }
+}

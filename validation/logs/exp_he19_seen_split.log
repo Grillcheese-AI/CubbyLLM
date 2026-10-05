@@ -1,0 +1,9 @@
+held-out: 815 questions, 155 templates; 138 questions on a template the training data names (5819 train templates), 677 on an unseen one
+
+  loop run                         all    seen  unseen
+  gold_held                      1.000   1.000   1.000   (n 236: 138 seen)
+  rankft5e5_held                 0.119   0.087   0.163   (n 236: 138 seen)
+  rankft_held                    0.059   0.051   0.071   (n 236: 138 seen)
+  school_step_held               0.229   0.239   0.214   (n 236: 138 seen)
+  step_held                      0.229   0.246   0.204   (n 236: 138 seen)
+  vote5_held                     0.237   0.254   0.214   (n 236: 138 seen)

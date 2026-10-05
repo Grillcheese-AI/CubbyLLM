@@ -1,0 +1,33 @@
+he19 prune | train step rows 30000 (GSM8K-train), held-out step rows 925 (pf) (1s)
+
+TRAIN (rules are judged here): 30000 step rows (2382 whose gold is not on the menu, skipped)
+  rule   depth   rows  gold cut  wrong cut
+  neg    all    27618    0.0043     0.1078
+  frac   all    27618    0.0308     0.1446
+  noop   all    27618    0.1046     0.1431
+  zero   all    27618    0.0019     0.0406
+  self   all    27618    0.0174     0.1466
+  ANY    0       7642    0.1528     0.5677
+  ANY    1       7241    0.1460     0.5471
+  ANY    2       5281    0.1574     0.5276
+  ANY    3+      7454    0.1715     0.5029
+  ANY    all    27618    0.1569     0.5211
+
+HELD-OUT pf (confirmation only): 925 step rows (0 whose gold is not on the menu, skipped)
+  rule   depth   rows  gold cut  wrong cut
+  neg    all      925    0.0000     0.1100
+  frac   all      925    0.0000     0.1862
+  noop   all      925    0.0659     0.1000
+  zero   all      925    0.0000     0.0325
+  self   all      925    0.0032     0.1249
+  ANY    0        236    0.0763     0.5267
+  ANY    1        236    0.0678     0.5253
+  ANY    2        236    0.0678     0.5225
+  ANY    3+       217    0.0553     0.4827
+  ANY    all      925    0.0670     0.5044
+
+stop rule 'every question number used':
+  train: 1695/5813 gold traces leave a question number unused (0.292)
+  held-out: 74/236 gold traces leave a question number unused (0.314)
+
+templates: held-out uses 154 GSM templates; 91 of them also name a train program (train sample names 5819)

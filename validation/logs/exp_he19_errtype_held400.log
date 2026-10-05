@@ -1,0 +1,19 @@
+wrong top-1 step picks by type (baseline adapter, 400-row ranking):
+  depth 0: 15 wrong | op 5 (0.33) | operands 4 (0.27) | both 6 (0.40)
+  depth 1: 37 wrong | op 10 (0.27) | operands 13 (0.35) | both 14 (0.38) | gold reuses $S, pick does not 7 (0.19) | pick reuses $S, gold does not 9 (0.24)
+  depth 2: 36 wrong | op 10 (0.28) | operands 11 (0.31) | both 12 (0.33) | pick reuses $S, gold does not 7 (0.19) | pick uses an OLDER $S 2 (0.06) | unparsed 3 (0.08)
+  depth 3+: 34 wrong | op 9 (0.26) | operands 7 (0.21) | both 5 (0.15) | gold reuses $S, pick does not 1 (0.03) | pick reuses $S, gold does not 2 (0.06) | pick uses an OLDER $S 1 (0.03) | unparsed 13 (0.38)
+
+top-1 by menu size (value groups) within depth:
+  depth 0  menu 61-120  n=39   top-1 0.795
+  depth 0  menu <=60    n=28   top-1 0.857
+  depth 0  menu >120    n=9    top-1 0.667
+  depth 1  menu 61-120  n=52   top-1 0.577
+  depth 1  menu <=60    n=18   top-1 0.556
+  depth 1  menu >120    n=18   top-1 0.611
+  depth 2  menu 61-120  n=41   top-1 0.732
+  depth 2  menu <=60    n=6    top-1 0.333
+  depth 2  menu >120    n=38   top-1 0.447
+  depth 3+  menu 61-120  n=7    top-1 0.286
+  depth 3+  menu <=60    n=1    top-1 0.000
+  depth 3+  menu >120    n=63   top-1 0.556
