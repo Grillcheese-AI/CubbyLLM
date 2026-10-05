@@ -1,0 +1,112 @@
+{
+ "args": {
+  "table": "C:\\CUBBY-TRAINED-MODELS\\fastword_table_paraminilm_ar.npz",
+  "shard": "G:\\My Drive\\cubbyllm\\token_cache_base\\wiki_full.u32",
+  "tokenizer": "H:\\My Drive\\cubbyllm\\token_cache_base\\tokenizer\\grillcheese_bbpe128k.json",
+  "chunks": 400,
+  "chunk": 4000,
+  "n": 300,
+  "blends": "0",
+  "seed": 0,
+  "tag": "paraminilm_ar"
+ },
+ "report": {
+  "0.0": {
+   "self (sanity)": {
+    "n": 300,
+    "hit@1": 1.0,
+    "hit@16": 1.0,
+    "d_orig": 0.0,
+    "d_nearest_other": 0.20576497395833335,
+    "ms_per_query": 315.5694500019308,
+    "accepted_top1_under": {
+     "0.05": 1.0,
+     "0.1": 1.0,
+     "0.15": 1.0,
+     "0.2": 1.0
+    },
+    "d_orig_quartiles": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "paraphrase": {
+    "n": 300,
+    "hit@1": 0.93,
+    "hit@16": 1.0,
+    "d_orig": 0.11963802083333332,
+    "d_nearest_other": 0.22319303385416664,
+    "ms_per_query": 329.34650001698174,
+    "accepted_top1_under": {
+     "0.05": 0.0,
+     "0.1": 0.33666666666666667,
+     "0.15": 0.7133333333333334,
+     "0.2": 0.9033333333333333
+    },
+    "d_orig_quartiles": [
+     0.08955078125,
+     0.121435546875,
+     0.135302734375
+    ]
+   },
+   "semantic neighbour": {
+    "n": 300,
+    "hit@1": 0.99,
+    "hit@16": 1.0,
+    "d_orig": 0.0964619140625,
+    "d_nearest_other": 0.2288343098958333,
+    "ms_per_query": 326.76714999252,
+    "accepted_top1_under": {
+     "0.05": 0.03666666666666667,
+     "0.1": 0.5766666666666667,
+     "0.15": 0.97,
+     "0.2": 0.99
+    },
+    "d_orig_quartiles": [
+     0.0724365234375,
+     0.093359375,
+     0.1240234375
+    ]
+   },
+   "entity (different fact)": {
+    "n": 300,
+    "hit@1": 0.53,
+    "hit@16": 0.8966666666666666,
+    "d_orig": 0.20846842447916666,
+    "d_nearest_other": 0.20881445312500002,
+    "ms_per_query": 333.62400000623893,
+    "accepted_top1_under": {
+     "0.05": 0.0,
+     "0.1": 0.0,
+     "0.15": 0.07333333333333333,
+     "0.2": 0.27666666666666667
+    },
+    "d_orig_quartiles": [
+     0.178076171875,
+     0.21484375,
+     0.23857421875
+    ]
+   },
+   "random word": {
+    "n": 300,
+    "hit@1": 0.5133333333333333,
+    "hit@16": 0.8533333333333334,
+    "d_orig": 0.251638671875,
+    "d_nearest_other": 0.25758886718749996,
+    "ms_per_query": 333.2216499984497,
+    "accepted_top1_under": {
+     "0.05": 0.0,
+     "0.1": 0.0,
+     "0.15": 0.0,
+     "0.2": 0.006666666666666667
+    },
+    "d_orig_quartiles": [
+     0.23698730468749998,
+     0.252978515625,
+     0.2661376953125
+    ]
+   }
+  }
+ }
+}

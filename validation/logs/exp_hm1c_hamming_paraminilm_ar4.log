@@ -1,0 +1,10 @@
+hm1c | fastword_table_paraminilm_ar4.npz (teacher npz:C:\CUBBY-TRAINED-MODELS\teacher_paraminilm_ar4.npz): 60147 words, D=10240 | 597093 stored trigrams (764 MB bitpacked) | 300 queries per class (14s)
+
+blend 0.00: role-filler keys built (21s)
+  query class                 n   hit@1  hit@16  d(orig)/D  d(nearest other)/D  ms/query
+  self (sanity)             300  1.0000  1.0000     0.0000              0.2084     328.9   |  1.000  1.000  1.000  1.000
+  paraphrase                300  0.9200  1.0000     0.1177              0.2211     340.8   |  0.000  0.313  0.743  0.903
+  semantic neighbour        300  0.9933  1.0000     0.0986              0.2311     340.9   |  0.020  0.550  0.907  0.993
+  entity (different fact)   300  0.4767  0.8833     0.2170              0.2108     348.6   |  0.000  0.003  0.040  0.237
+  random word               300  0.5267  0.8500     0.2496              0.2565     345.1   |  0.000  0.000  0.000  0.013
+                                                                                           | accepted (top-1 AND d < tau), tau = 0.05, 0.10, 0.15, 0.20
