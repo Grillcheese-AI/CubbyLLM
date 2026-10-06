@@ -47,7 +47,7 @@ the value back. Every intermediate number is the VM's, never the model's.
 | every legal next step ranked by the adapter (the host's "menu", ~135 options) | right step top-1 0.62, **top-3 0.86**; stops 0.99; the margin is calibrated (lowest quarter 0.41, highest 0.98) |
 | what did not move it | self-vote over 5 samples (0.237), a VM-judged step school (0.229), a pointer head on frozen features, a listwise fine-tune (0.119 / 0.059); model-free pruning catches 3% of the real mistakes |
 | pick each step from that menu instead of writing it (no training) | **0.275** (seen 0.290 / unseen 0.255) |
-| branch to the top-3 where the model is unsure (cutoff set on a separate dev set) | best ranker **0.309**; the right answer is among the finished paths for **0.496** — choosing between paths is now the bottleneck |
+| branch to the top-3 where the model is unsure (cutoff set on a separate dev set) | paths ranked by mean log-prob per step (ranker chosen on dev) **0.309**; the right answer is among the finished paths for **0.496** — choosing between paths is now the bottleneck |
 
 What it brings over a conventional LM: the model is never trusted with a number. It proposes, the VM computes,
 the trace is inspectable step by step, and a question is answered only when two independent proposers agree.

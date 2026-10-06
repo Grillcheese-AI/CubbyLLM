@@ -361,8 +361,13 @@ def pick(finished: list, how: str):
 
 def loop(a, sc: Scorer) -> None:
     from build_emitter_sft import gold_matches
-    recs = [json.loads(l) for l in open(os.path.join(D, "pf_heldout_eval_w_slots.jsonl"), encoding="utf-8")]
-    recs = [r for r in recs if r.get("task") == "arithmetic" and r.get("split", "val") == "val" and "#" not in r["id"]]
+    if a.dev:                                            # the DEV problems (the emitter's own GSM8K val split), sliced
+        lo, hi = (int(x) for x in a.dev.split(":"))      # -- for choosing between rankers off the 236
+        recs = [json.loads(l) for l in open(os.path.join(D, "emitter_sft_v12e_w_slots.jsonl"), encoding="utf-8")]
+        recs = [r for r in recs if r.get("task") == "arithmetic" and r.get("split") == "val"][lo:hi]
+    else:
+        recs = [json.loads(l) for l in open(os.path.join(D, "pf_heldout_eval_w_slots.jsonl"), encoding="utf-8")]
+        recs = [r for r in recs if r.get("task") == "arithmetic" and r.get("split", "val") == "val" and "#" not in r["id"]]
     if a.limit:
         recs = recs[:a.limit]
     pat = re.compile(r"program (GSM\d+)")
@@ -426,6 +431,7 @@ def main(argv=None) -> None:
     ap.add_argument("--chunk", type=int, default=160, help="menu candidates decoded together against one copied state")
     ap.add_argument("--taus", default="-inf", help="loop: comma list; -inf = width 1")
     ap.add_argument("--tau-from", default="", help="loop: also run with the tau of this calibrate json")
+    ap.add_argument("--dev", default="", help="loop on the dev problems instead of the 236, e.g. 80:200 (val slice)")
     ap.add_argument("--beam", type=int, default=3)
     ap.add_argument("--max-steps", type=int, default=12)
     ap.add_argument("--prune", type=int, default=1)
