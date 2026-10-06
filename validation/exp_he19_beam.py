@@ -404,6 +404,12 @@ def loop(a, sc: Scorer) -> None:
                 f = pick(fin, how)
                 row[how] = f is not None and f["answer"] is not None and bool(gold_matches(f["answer"], r.get("gold")))
                 row[how + "_answer"] = f["answer"] if f else None
+            if a.dump_paths:                             # every finished path, for rankers built later (offline)
+                row["question"] = r["question"]
+                row["paths"] = [{"answer": f["answer"], "steps": [[[list(o) for o in ops], v] for ops, v in f["steps"]],
+                                 "lps": f["lps"], "margins": f["margins"],
+                                 "correct": f["answer"] is not None and bool(gold_matches(f["answer"], r.get("gold")))}
+                                for f in fin]
             res.append(row)
             with open(part, "a", encoding="utf-8") as fh:
                 fh.write(json.dumps(row) + "\n")
@@ -438,6 +444,7 @@ def main(argv=None) -> None:
     ap.add_argument("--to-line", type=int, default=0, help="score a step only through its plan line (faster)")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--tag", default="v1")
+    ap.add_argument("--dump-paths", action="store_true", help="loop: keep every finished path in the jsonl rows")
     a = ap.parse_args(argv)
     sc = Scorer(a.export, a.adapter, a.tokenizer, a.chunk, to_line=bool(a.to_line))
     log(f"he19 beam | {os.path.basename(os.path.normpath(a.adapter))} | mode {a.mode} | chunk {a.chunk} | "
