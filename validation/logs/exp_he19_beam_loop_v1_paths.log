@@ -1,0 +1,14 @@
+he19 beam | cubby450m_v12e_w_step_cont | mode loop | chunk 128 | steps scored to the end of the plan line
+
+loop | beam 3, branch top-3 when margin < 1.405 | 236 pf questions (138 on seen templates)
+  resuming: 153 questions already in exp_he19_beam_loop_v1_paths_tau1.405.jsonl
+  160/236 (262s) sum 0.250  mean 0.306  min-margin 0.237  oracle 0.475  menus scored/question 11.5
+  180/236 (1226s) sum 0.272  mean 0.322  min-margin 0.256  oracle 0.489  menus scored/question 11.3
+  200/236 (3150s) sum 0.255  mean 0.300  min-margin 0.240  oracle 0.490  menus scored/question 11.6
+  220/236 (4408s) sum 0.259  mean 0.309  min-margin 0.241  oracle 0.495  menus scored/question 11.5
+  236/236 (5342s) sum 0.263  mean 0.309  min-margin 0.246  oracle 0.496  menus scored/question 11.5
+  ranker          all   seen  unseen
+  sum           0.263  0.268   0.255
+  mean          0.309  0.326   0.286
+  min-margin    0.246  0.232   0.265
+  oracle        0.496  0.536   0.439

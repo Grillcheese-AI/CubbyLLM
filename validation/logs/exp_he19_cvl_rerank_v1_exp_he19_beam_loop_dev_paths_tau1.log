@@ -1,0 +1,13 @@
+rerank | scorer v1 | exp_he19_beam_loop_dev_paths_tau1.405.jsonl: 120 questions, 863 finished paths | 7s
+  rule          all   seen  unseen
+  lm_mean     0.250  0.000   0.250
+  q_sum       0.150  0.000   0.150
+  q_min       0.175  0.000   0.175
+  mix_0.5     0.258  0.000   0.258
+  mix_1       0.267  0.000   0.267
+  mix_2       0.258  0.000   0.258
+  mix_4       0.250  0.000   0.250
+  mix_8       0.275  0.000   0.275
+  got         0.125  0.000   0.125
+  oracle      0.450    nan     nan
+  chosen on dev: mix_8 (0.275; ties go to the earlier, simpler rule)

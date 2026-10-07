@@ -1,0 +1,68 @@
+{
+ "args": {
+  "mode": "rerank",
+  "table": "C:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+  "tag": "v1",
+  "problems": 6000,
+  "epochs": 12,
+  "patience": 3,
+  "batch": 32,
+  "hidden": 128,
+  "lr": 0.001,
+  "wd": 0.0001,
+  "seed": 0,
+  "paths": "validation\\logs\\exp_he19_beam_loop_dev_paths_tau1.405.jsonl",
+  "choose": true,
+  "threads": 2
+ },
+ "results": {
+  "lm_mean": {
+   "all": 0.25,
+   "seen": 0.0,
+   "unseen": 0.25
+  },
+  "q_sum": {
+   "all": 0.15,
+   "seen": 0.0,
+   "unseen": 0.15
+  },
+  "q_min": {
+   "all": 0.175,
+   "seen": 0.0,
+   "unseen": 0.175
+  },
+  "mix_0.5": {
+   "all": 0.25833333333333336,
+   "seen": 0.0,
+   "unseen": 0.25833333333333336
+  },
+  "mix_1": {
+   "all": 0.26666666666666666,
+   "seen": 0.0,
+   "unseen": 0.26666666666666666
+  },
+  "mix_2": {
+   "all": 0.25833333333333336,
+   "seen": 0.0,
+   "unseen": 0.25833333333333336
+  },
+  "mix_4": {
+   "all": 0.25,
+   "seen": 0.0,
+   "unseen": 0.25
+  },
+  "mix_8": {
+   "all": 0.275,
+   "seen": 0.0,
+   "unseen": 0.275
+  },
+  "got": {
+   "all": 0.125,
+   "seen": 0.0,
+   "unseen": 0.125
+  },
+  "oracle": {
+   "all": 0.45
+  }
+ }
+}
