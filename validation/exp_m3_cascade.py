@@ -24,6 +24,8 @@ measured per-passage times). Standalone; never imported by cubbyllm/.
 """
 from __future__ import annotations
 
+import os
+
 import argparse
 import json
 import pathlib
@@ -41,7 +43,7 @@ for p in (str(ROOT), str(VAL)):
 from exp_m3_domain_routing import (  # noqa: E402
     DOMAINS_DIR, EXCLUDE, _load_semantic_words, sample_passages, youden_tau)
 
-V4 = r"I:\CUBBY-TRAINED-MODELS\fastword_table_v4.npz"
+V4 = os.path.join(os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS"), "fastword_table_v4.npz")
 TAU_MARGIN = 0.02                    # the shipped bridge default
 
 

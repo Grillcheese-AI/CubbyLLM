@@ -14,12 +14,14 @@ screen asks the production questions the axiom screen could only approximate:
      score LOW against every exemplar -- the route-vs-spawn decision. Reported
      as separation between closed-set and open-set best-cosine distributions.
 
-Encoder: the production FastWordEncoder table (I:\\CUBBY-TRAINED-MODELS\\
+Encoder: the production FastWordEncoder table (C:\\CUBBY-TRAINED-MODELS\\
 fastword_table_v1.npz), loaded module-by-file-path so no mowm package import
 occurs (semantic_words is numpy-only by design). MiniLM runs as the quality
 reference only. Standalone: never imported by cubbyllm/.
 """
 from __future__ import annotations
+
+import os
 
 import argparse
 import importlib.util
@@ -36,7 +38,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 DOMAINS_DIR = pathlib.Path(r"E:\datasets\domains")
-TABLE = pathlib.Path(r"I:\CUBBY-TRAINED-MODELS\fastword_table_v1.npz")
+TABLE = pathlib.Path(os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS")) / "fastword_table_v1.npz"
 SEMANTIC_WORDS = pathlib.Path(r"C:\Users\grill\Documents\GitHub\mowm\mowm\encoding\semantic_words.py")
 EXCLUDE = {"_unsure", "my_identity", "gutemberg_books_unclassified"}  # unlabeled/personal
 

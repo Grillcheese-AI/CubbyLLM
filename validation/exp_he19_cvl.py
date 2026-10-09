@@ -55,7 +55,7 @@ import numpy as np  # noqa: E402
 
 D_DATA = os.path.join(ROOT, "standin", "data", "out")
 MODELS = os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS")
-TABLE = os.path.join(MODELS, "fastword_table_v4.npz")
+TABLE = os.path.join(MODELS, "fastword_table_v4_2026-10-03.npz")  # the Oct 3 rebuild HE19 was run with
 WORDS = os.path.join(MODELS, "he19_cvl_words_v4.npz")
 STEP_FILE = os.path.join(D_DATA, "emitter_sft_v12e_w_tg30_step.jsonl")
 SLOTS_FILE = os.path.join(D_DATA, "emitter_sft_v12e_w_slots.jsonl")

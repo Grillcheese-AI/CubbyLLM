@@ -30,6 +30,8 @@ Log: validation/logs/exp_f2m4_possibility{tag}.json
 """
 from __future__ import annotations
 
+import os
+
 import argparse
 import json
 import pathlib
@@ -52,7 +54,7 @@ if hasattr(sys.stdout, "reconfigure"):
 # the same data and table as exp_m3_cot_pipeline (its `load_sample`, copied so this screen does not import
 # that module's VM and haystack dependencies)
 PQ_FILE = pathlib.Path(r"E:\valid_scaling_law_with_facts.pq")
-V4_TABLE = pathlib.Path(r"I:\CUBBY-TRAINED-MODELS\fastword_table_v4.npz")
+V4_TABLE = pathlib.Path(os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS")) / "fastword_table_v4.npz"
 
 
 def load_sample(n: int, seed: int, pq_file=PQ_FILE):

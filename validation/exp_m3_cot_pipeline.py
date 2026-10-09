@@ -22,6 +22,7 @@ score. Calibrating an FPR-target threshold over fault-class similarities
 therefore pins to the similarity ceiling and starves multi-hop coverage as
 a side effect -- measured, not hypothesized, in the first eval-wave run
 (2-hop/3-hop CoT accuracy collapsed to 0.000 under a tau_vm=1.0000 deployed
+import os
 from that scheme). Fixed: DEPLOYED tau_vm is now a set of FRAME-SIZE-
 CONDITIONAL FLOORS -- for each n_hop seen in calibration, tau_vm[n] = the
 bootstrap-95%-CI LOWER bound of the 1st-percentile CORRECT-recovery
@@ -101,7 +102,7 @@ from cubbyllm.reasoning.plan_verify import StoreRelations, VMRelations, write_vo
 from cubbyllm.reasoning.planner import Triple, normalize  # noqa: E402
 
 PQ_FILE = pathlib.Path(r"E:\valid_scaling_law_with_facts.pq")
-V4_TABLE = pathlib.Path(r"I:\CUBBY-TRAINED-MODELS\fastword_table_v4.npz")
+V4_TABLE = pathlib.Path(os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS")) / "fastword_table_v4.npz"
 
 FAULT_CLASSES = ["wrong_entity", "wrong_relation", "inverted_direction", "wrong_hop_order"]
 MAX_FAULTS_PER_CLASS_PER_CHAIN = 2
