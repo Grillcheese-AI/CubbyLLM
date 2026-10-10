@@ -22,7 +22,7 @@ import numpy as np
 
 from .retina import Retina
 from .salience import Attention, Salience
-from .where import Camera, OccupancyMap, PathIntegrator
+from .where import Camera, OccupancyMap, PathIntegrator, SurfaceMap
 
 __wiring__ = "STANDALONE"
 
@@ -43,12 +43,13 @@ class Percept:
 class SensoryCortex:
     def __init__(self, grid: tuple[int, int] = (12, 16), fov: float = 70.0, normalise: bool = False,
                  weights: dict | None = None, start=(0.0, 0.0, 0.0), relocalise: bool = False) -> None:
-        self.relocalise = relocalise          # off: the first scan matcher made drift worse (H-S2 first read)
+        self.relocalise = relocalise          # point-to-plane matching against the surfaces seen so far
         self.fov = fov
         self.retina = Retina(grid)
         self.salience = Salience(weights=weights, normalise=normalise)
         self.attention = Attention(grid, fov)
         self.map = OccupancyMap()
+        self.surfaces = SurfaceMap()
         self.path = PathIntegrator(start)
         self.corrections = 0
         self._cams: dict[tuple, Camera] = {}
@@ -73,10 +74,12 @@ class SensoryCortex:
                 cam = self._cams[(w, h)] = Camera(w, h, self.fov)
             rays = cam.rays(pro["yaw"], pro["pitch"])
             far = sight if sight is not None else float(depth.max())
+            pts, nrm = self.surfaces.surface(self.path.pos, rays, depth, far)
             if "eye" not in pro and self.relocalise:                 # integrated, not given: re-localise
-                shift = self.map.align(self.path.pos, rays, depth, far)
+                shift = self.surfaces.match(self.path.pos + pts, nrm)
                 self.path.reset(self.path.pos + shift)
-                self.corrections += float(np.abs(shift).sum() > 0)
+                self.corrections += float(np.abs(shift).sum() > 1e-3)
+            self.surfaces.add(self.path.pos + pts, nrm)
             solid, free = self.map.integrate(self.path.pos, rays, depth, far)
             occ = {"solid": solid, "free": free}
         return Percept(salience=sal, fixation=look, tile=tile, features=feats, occupancy=occ,

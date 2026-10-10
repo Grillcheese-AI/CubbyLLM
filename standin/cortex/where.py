@@ -137,3 +137,104 @@ class OccupancyMap:
     def known_free(self, p: float = 0.3) -> set:
         lo = math.log(p / (1 - p))
         return {c for c, v in self.odds.items() if v < lo}
+
+
+class SurfaceMap:
+    """Where surfaces are, finer than cells: a point and its normal per 0.25-block voxel, averaged
+    over the frames that saw it — what point-to-plane matching (ICP, translation only: the body
+    knows which way it faces) aligns a new frame against, to correct a drifting position."""
+
+    def __init__(self, voxel: float = 0.25) -> None:
+        self.voxel = voxel
+        self.pts: dict[tuple, list] = {}            # voxel -> [sum of points, sum of normals, count]
+
+    @staticmethod
+    def surface(eye, rays: np.ndarray, depth: np.ndarray, sight: float, every: int = 2):
+        """Surface points (relative to the eye) and their normals, from a depth image: the normal
+        is the cross product of the neighbouring points, kept only where the surface is smooth."""
+        h, w = depth.shape
+        P = rays * depth[..., None]
+        ok = depth < sight - 1e-3
+        dx = P[1:-1, 2:] - P[1:-1, :-2]
+        dy = P[2:, 1:-1] - P[:-2, 1:-1]
+        n = np.cross(dx, dy)
+        norm = np.linalg.norm(n, axis=2, keepdims=True)
+        n = n / np.maximum(norm, 1e-9)
+        inner = ok[1:-1, 1:-1] & ok[1:-1, 2:] & ok[1:-1, :-2] & ok[2:, 1:-1] & ok[:-2, 1:-1]
+        dd = depth[1:-1, 1:-1]
+        smooth = (np.abs(depth[1:-1, 2:] - dd) < 0.3) & (np.abs(depth[1:-1, :-2] - dd) < 0.3) \
+            & (np.abs(depth[2:, 1:-1] - dd) < 0.3) & (np.abs(depth[:-2, 1:-1] - dd) < 0.3)
+        good = inner & smooth & (norm[..., 0] > 1e-6)
+        sel = np.zeros_like(good)
+        sel[::every, ::every] = True
+        good &= sel
+        pts = P[1:-1, 1:-1][good]
+        nrm = n[good]
+        r = rays[1:-1, 1:-1][good]
+        flip = np.sum(nrm * r, axis=1) > 0                       # normals face the eye
+        nrm[flip] *= -1
+        return pts.astype(np.float64), nrm.astype(np.float64)
+
+    def add(self, world_pts: np.ndarray, normals: np.ndarray) -> None:
+        keys = np.floor(world_pts / self.voxel).astype(np.int64)
+        for k, p, n in zip(map(tuple, keys.tolist()), world_pts, normals):
+            e = self.pts.get(k)
+            if e is None:
+                self.pts[k] = [p.copy(), n.copy(), 1]
+            else:
+                e[0] += p
+                e[1] += n
+                e[2] += 1
+
+    def match(self, world_pts: np.ndarray, normals: np.ndarray, iters: int = 4, prior: float = 0.2,
+              reach: float = 0.35, constrain: float = 0.15, cap: float = 0.15) -> np.ndarray:
+        """The translation that best lays these points on the surfaces already seen (point to
+        plane, robust): only along directions the surfaces constrain, pulled toward no shift, and
+        at most `cap` per frame (a world of cubes repeats every block: a large jump is more likely
+        a wrong match than a true correction)."""
+        if len(self.pts) < 100 or len(world_pts) < 30:
+            return np.zeros(3)
+        shift = np.zeros(3)
+        v = self.voxel
+        offsets = [(0, 0, 0), (1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)]
+        for _ in range(iters):
+            q = world_pts + shift
+            keys = np.floor(q / v).astype(np.int64)
+            A = np.zeros((3, 3))
+            b = np.zeros(3)
+            used = 0
+            for k, p, n in zip(map(tuple, keys.tolist()), q, normals):
+                best = None
+                for o in offsets:
+                    e = self.pts.get((k[0] + o[0], k[1] + o[1], k[2] + o[2]))
+                    if e is None:
+                        continue
+                    mp, mn = e[0] / e[2], e[1] / max(1e-9, np.linalg.norm(e[1]))
+                    if float(mn @ n) < 0.8:
+                        continue
+                    dist = float(np.linalg.norm(mp - p))
+                    if dist < reach and (best is None or dist < best[0]):
+                        best = (dist, mp, mn)
+                if best is None:
+                    continue
+                _, mp, mn = best
+                r = float(mn @ (mp - p))
+                if abs(r) > 0.25:
+                    continue
+                A += np.outer(mn, mn)
+                b += mn * r
+                used += 1
+            if used < 30:
+                break
+            # only the directions the surfaces pin down: a floor fixes height, not where along it
+            w, V = np.linalg.eigh(A)
+            keep = w > constrain * used
+            if not keep.any():
+                break
+            Vk = V[:, keep]
+            step = Vk @ ((Vk.T @ b) / (w[keep] + prior * used))
+            shift = shift + step
+            if np.linalg.norm(step) < 1e-3:
+                break
+        n = np.linalg.norm(shift)
+        return shift if n <= cap else shift * (cap / n)
