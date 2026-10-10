@@ -1,0 +1,140 @@
+{
+ "ticks": 3000,
+ "seeds": 6,
+ "modes": {
+  "sighted (block window)": {
+   "mean": {
+    "first meal": 768.8333333333334,
+    "ate": 1.0,
+    "meals": 2.6666666666666665,
+    "cells stood on": 211.83333333333334,
+    "harms": 0.0,
+    "deaths": 0.0,
+    "kinds known": 7.833333333333333
+   },
+   "runs": [
+    {
+     "first meal": 1256,
+     "ate": true,
+     "meals": 3,
+     "cells stood on": 252,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 8
+    },
+    {
+     "first meal": 985,
+     "ate": true,
+     "meals": 1,
+     "cells stood on": 175,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 8
+    },
+    {
+     "first meal": 371,
+     "ate": true,
+     "meals": 3,
+     "cells stood on": 189,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 8
+    },
+    {
+     "first meal": 295,
+     "ate": true,
+     "meals": 3,
+     "cells stood on": 223,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 7
+    },
+    {
+     "first meal": 349,
+     "ate": true,
+     "meals": 3,
+     "cells stood on": 213,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 8
+    },
+    {
+     "first meal": 1357,
+     "ate": true,
+     "meals": 3,
+     "cells stood on": 219,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 8
+    }
+   ]
+  },
+  "blind (eyes + touch through the cortex)": {
+   "mean": {
+    "first meal": 2161.6666666666665,
+    "ate": 0.3333333333333333,
+    "meals": 0.3333333333333333,
+    "cells stood on": 119.0,
+    "harms": 0.0,
+    "deaths": 0.0,
+    "kinds known": 7.333333333333333
+   },
+   "runs": [
+    {
+     "first meal": 209,
+     "ate": true,
+     "meals": 1,
+     "cells stood on": 43,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 6
+    },
+    {
+     "first meal": 3000,
+     "ate": false,
+     "meals": 0,
+     "cells stood on": 113,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 9
+    },
+    {
+     "first meal": 3000,
+     "ate": false,
+     "meals": 0,
+     "cells stood on": 243,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 9
+    },
+    {
+     "first meal": 761,
+     "ate": true,
+     "meals": 1,
+     "cells stood on": 78,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 8
+    },
+    {
+     "first meal": 3000,
+     "ate": false,
+     "meals": 0,
+     "cells stood on": 30,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 5
+    },
+    {
+     "first meal": 3000,
+     "ate": false,
+     "meals": 0,
+     "cells stood on": 207,
+     "harms": 0,
+     "deaths": 0,
+     "kinds known": 7
+    }
+   ]
+  }
+ }
+}

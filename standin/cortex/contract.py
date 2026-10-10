@@ -55,7 +55,8 @@ class SensoryCortex:
         self.map = OccupancyMap()
         self.surfaces = SurfaceMap()
         self.kinds = KindCodebook()
-        self.cell_kind: dict[tuple, int] = {}       # the kind each cell in its map was last seen as
+        self.cell_kind: dict[tuple, int] = {}       # the kind each cell in its map is seen as (by vote)
+        self._votes: dict[tuple, dict] = {}
         self.eye_height = eye_height
         self.path = PathIntegrator(start)
         self.corrections = 0
@@ -114,7 +115,9 @@ class SensoryCortex:
         ks = self.kinds.assign(appearance(np.asarray(frame)[near]))
         pts = self.path.pos[None, :] + rays[near] * (depth[near][:, None] + 0.02)
         cells = np.floor(pts).astype(np.int64)
-        for c, k in zip(map(tuple, cells.tolist()), ks.tolist()):
-            self.cell_kind[c] = k
+        for c, k in zip(map(tuple, cells.tolist()), ks.tolist()):      # a cell's kind: what most looks at it said
+            votes = self._votes.setdefault(c, {})
+            votes[k] = votes.get(k, 0) + 1
+            self.cell_kind[c] = max(votes, key=votes.get)
         ys, xs = np.nonzero(near)
         return list(zip(ys.tolist(), xs.tolist(), ks.tolist()))
