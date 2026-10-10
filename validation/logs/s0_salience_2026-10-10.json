@@ -1,0 +1,125 @@
+{
+ "trials": 40,
+ "grid": [
+  12,
+  16
+ ],
+ "frame": [
+  64,
+  48
+ ],
+ "distractors": 4,
+ "variants": {
+  "raw responses (default)": {
+   "glow": {
+    "scenes": 32,
+    "top1": 0.75,
+    "top3": 0.9375,
+    "mrr": 0.859375,
+    "median_rank": 1.0
+   },
+   "bright colour": {
+    "scenes": 36,
+    "top1": 0.5,
+    "top3": 0.5277777777777778,
+    "mrr": 0.5645104434484516,
+    "median_rank": 1.5
+   },
+   "contrast": {
+    "scenes": 32,
+    "top1": 0.375,
+    "top3": 0.46875,
+    "mrr": 0.49188119376538497,
+    "median_rank": 4.0
+   },
+   "moving body": {
+    "scenes": 29,
+    "top1": 0.896551724137931,
+    "top3": 1.0,
+    "mrr": 0.942528735632184,
+    "median_rank": 1.0
+   },
+   "control (plain)": {
+    "scenes": 32,
+    "top1": 0.3125,
+    "top3": 0.5,
+    "mrr": 0.44064414471347646,
+    "median_rank": 3.5
+   }
+  },
+  "normalised (Itti-Koch)": {
+   "glow": {
+    "scenes": 32,
+    "top1": 0.59375,
+    "top3": 0.75,
+    "mrr": 0.6931558892496392,
+    "median_rank": 1.0
+   },
+   "bright colour": {
+    "scenes": 36,
+    "top1": 0.4166666666666667,
+    "top3": 0.4722222222222222,
+    "mrr": 0.476965591013166,
+    "median_rank": 6.0
+   },
+   "contrast": {
+    "scenes": 32,
+    "top1": 0.03125,
+    "top3": 0.125,
+    "mrr": 0.14749750553090551,
+    "median_rank": 14.5
+   },
+   "moving body": {
+    "scenes": 29,
+    "top1": 0.41379310344827586,
+    "top3": 0.4482758620689655,
+    "mrr": 0.4930061112708276,
+    "median_rank": 4.0
+   },
+   "control (plain)": {
+    "scenes": 32,
+    "top1": 0.3125,
+    "top3": 0.40625,
+    "mrr": 0.40481227826765775,
+    "median_rank": 4.5
+   }
+  },
+  "luminance only (ablation)": {
+   "glow": {
+    "scenes": 32,
+    "top1": 0.8125,
+    "top3": 0.875,
+    "mrr": 0.8551710025206861,
+    "median_rank": 1.0
+   },
+   "bright colour": {
+    "scenes": 36,
+    "top1": 0.5277777777777778,
+    "top3": 0.5555555555555556,
+    "mrr": 0.5629967993178093,
+    "median_rank": 1.0
+   },
+   "contrast": {
+    "scenes": 32,
+    "top1": 0.5625,
+    "top3": 0.5625,
+    "mrr": 0.6010304926505933,
+    "median_rank": 1.0
+   },
+   "moving body": {
+    "scenes": 29,
+    "top1": 0.6896551724137931,
+    "top3": 0.6896551724137931,
+    "mrr": 0.7194909800040163,
+    "median_rank": 1.0
+   },
+   "control (plain)": {
+    "scenes": 32,
+    "top1": 0.28125,
+    "top3": 0.3125,
+    "mrr": 0.3397073432550871,
+    "median_rank": 22.5
+   }
+  }
+ }
+}
