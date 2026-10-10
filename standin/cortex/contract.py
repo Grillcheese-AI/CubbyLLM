@@ -4,7 +4,9 @@
     p = cortex.step(frame=rgb|None, depth=None, touch=None, proprio=None, action=None, arousal=0.0)
     p.salience   (gh, gw) spike rates      p.fixation   (yaw, pitch) degrees: the next look
     p.features   the retina's channels     p.occupancy  {"solid": cells, "free": cells} this frame
-    (the cortex's own map: cortex.map)     p.objects / p.surprise: later stages
+    (the cortex's own map: cortex.map)     p.objects    [(row, col, kind)] for the surface pixels seen
+    p.touch      [(site, kind, predicted feel, felt)] — what sight predicted, then what was felt
+    p.surprise / p.progress: later stages
 
 proprio, for "where": {"eye": (x, y, z)} when the position is given (sighted), or
 {"velocity": (dx, dy, dz)} to integrate it (blind, from the start position); and always
@@ -22,6 +24,7 @@ import numpy as np
 
 from .retina import Retina
 from .salience import Attention, Salience
+from .what import KindCodebook, appearance
 from .where import Camera, OccupancyMap, PathIntegrator, SurfaceMap
 
 __wiring__ = "STANDALONE"
@@ -42,7 +45,8 @@ class Percept:
 
 class SensoryCortex:
     def __init__(self, grid: tuple[int, int] = (12, 16), fov: float = 70.0, normalise: bool = False,
-                 weights: dict | None = None, start=(0.0, 0.0, 0.0), relocalise: bool = False) -> None:
+                 weights: dict | None = None, start=(0.0, 0.0, 0.0), relocalise: bool = False,
+                 eye_height: float = 1.62) -> None:
         self.relocalise = relocalise          # point-to-plane matching against the surfaces seen so far
         self.fov = fov
         self.retina = Retina(grid)
@@ -50,6 +54,9 @@ class SensoryCortex:
         self.attention = Attention(grid, fov)
         self.map = OccupancyMap()
         self.surfaces = SurfaceMap()
+        self.kinds = KindCodebook()
+        self.cell_kind: dict[tuple, int] = {}       # the kind each cell in its map was last seen as
+        self.eye_height = eye_height
         self.path = PathIntegrator(start)
         self.corrections = 0
         self._cams: dict[tuple, Camera] = {}
@@ -82,5 +89,32 @@ class SensoryCortex:
             self.surfaces.add(self.path.pos + pts, nrm)
             solid, free = self.map.integrate(self.path.pos, rays, depth, far)
             occ = {"solid": solid, "free": free}
+            kinds = self._see_kinds(frame, rays, depth, far)
+        else:
+            kinds = None
+        felt = []
+        if touch and "feet" in touch and self.cell_kind:          # what is underfoot, as seen, is what is felt
+            feet = self.path.pos - np.array([0.0, 0.0, self.eye_height + 0.05])
+            k = self.cell_kind.get(tuple(int(v) for v in np.floor(feet)))
+            if k is not None:
+                predicted = self.kinds.predict_feel(k)
+                self.kinds.touch(k, touch["feet"])
+                felt.append(("feet", k, predicted, list(touch["feet"])))
         return Percept(salience=sal, fixation=look, tile=tile, features=feats, occupancy=occ,
-                       touch=[(k, v) for k, v in (touch or {}).items()])
+                       objects=kinds or [], touch=felt or [(k, None, None, v) for k, v in (touch or {}).items()])
+
+    def _see_kinds(self, frame, rays, depth, far, every: int = 2):
+        """Kinds per surface pixel (near enough not to be washed by fog), filed on their cells."""
+        h, w = depth.shape
+        sel = np.zeros((h, w), bool)
+        sel[::every, ::every] = True
+        near = sel & (depth < 0.65 * far)
+        if not near.any():
+            return []
+        ks = self.kinds.assign(appearance(np.asarray(frame)[near]))
+        pts = self.path.pos[None, :] + rays[near] * (depth[near][:, None] + 0.02)
+        cells = np.floor(pts).astype(np.int64)
+        for c, k in zip(map(tuple, cells.tolist()), ks.tolist()):
+            self.cell_kind[c] = k
+        ys, xs = np.nonzero(near)
+        return list(zip(ys.tolist(), xs.tolist(), ks.tolist()))

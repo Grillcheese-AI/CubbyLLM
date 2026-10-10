@@ -137,3 +137,28 @@ def test_a_place_recognised_corrects_a_drifted_position():
     depth = _march(solid, eye, rays)
     shift = m.align(eye + np.array([0.2, 0.0, 0.0]), rays, depth, 6.0)
     assert shift[0] < 0                                       # pushed back toward where it really is
+
+
+def test_kinds_are_learned_from_looks_and_shading_does_not_split_them():
+    from cortex.what import KindCodebook, appearance
+    cb = KindCodebook()
+    green_lit = np.array([[90, 180, 80]] * 20, np.uint8)
+    green_shade = (green_lit * 0.65).astype(np.uint8)          # the same block's side, in shadow
+    white = np.array([[235, 238, 245]] * 20, np.uint8)
+    k1 = cb.assign(appearance(green_lit))
+    k2 = cb.assign(appearance(green_shade))
+    k3 = cb.assign(appearance(white))
+    assert len(set(k1.tolist())) == 1 and set(k1.tolist()) == set(k2.tolist())
+    assert set(k3.tolist()).isdisjoint(set(k1.tolist()))
+
+
+def test_what_was_felt_is_predicted_for_a_kind_that_looks_alike():
+    from cortex.what import KindCodebook, appearance
+    cb = KindCodebook(radius=0.3)
+    ice = cb.assign(appearance(np.array([[180, 225, 250]], np.uint8)))[0]
+    rock = cb.assign(appearance(np.array([[120, 120, 125]], np.uint8)))[0]
+    cb.touch(ice, [0.95, 0.7, 0.05, 0, -0.8, 0, 0.85])
+    cb.touch(rock, [0.0, 0.75, 0.3, 0, 0.0, 0, 0.85])
+    bluish = cb.assign(appearance(np.array([[170, 215, 245]], np.uint8)))[0]
+    guess = cb.predict_feel(bluish)
+    assert guess is not None and guess[0] > 0.5                 # looks like ice: expected to be slippery
