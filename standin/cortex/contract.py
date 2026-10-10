@@ -57,6 +57,7 @@ class SensoryCortex:
         self.kinds = KindCodebook()
         self.cell_kind: dict[tuple, int] = {}       # the kind each cell in its map is seen as (by vote)
         self._votes: dict[tuple, dict] = {}
+        self._frames = 0
         self.eye_height = eye_height
         self.path = PathIntegrator(start)
         self.corrections = 0
@@ -113,6 +114,14 @@ class SensoryCortex:
         if not near.any():
             return []
         ks = self.kinds.assign(appearance(np.asarray(frame)[near]))
+        self._frames += 1
+        if self._frames % 25 == 0 and self.kinds.consolidate():       # kinds that drifted together are one
+            for c, votes in self._votes.items():
+                merged: dict = {}
+                for k, n in votes.items():
+                    merged[self.kinds.canon(k)] = merged.get(self.kinds.canon(k), 0) + n
+                self._votes[c] = merged
+                self.cell_kind[c] = max(merged, key=merged.get)
         pts = self.path.pos[None, :] + rays[near] * (depth[near][:, None] + 0.02)
         cells = np.floor(pts).astype(np.int64)
         for c, k in zip(map(tuple, cells.tolist()), ks.tolist()):      # a cell's kind: what most looks at it said

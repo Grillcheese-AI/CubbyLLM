@@ -35,6 +35,7 @@ class KindCodebook:
         self.radius, self.rate, self.max_kinds = radius, rate, max_kinds
         self.feel: dict[int, np.ndarray] = {}          # kind -> mean touch vector
         self.felt: dict[int, int] = {}
+        self.merged: dict[int, int] = {}               # kind -> the kind it was merged into
 
     def assign(self, feats: np.ndarray, learn: bool = True) -> np.ndarray:
         """Kind id per feature row (new kinds made as needed when learning)."""
@@ -65,6 +66,34 @@ class KindCodebook:
                 m = feats[out == k].mean(axis=0)
                 self.protos[k] += self.rate * (m - self.protos[k])
                 self.counts[k] += int((out == k).sum())
+        if self.merged:
+            out = np.array([self.canon(int(k)) if k >= 0 else -1 for k in out], np.int64)
+        return out
+
+    def canon(self, kind: int) -> int:
+        """The kind a kind was merged into (itself if never merged)."""
+        seen = set()
+        while kind in self.merged and kind not in seen:
+            seen.add(kind)
+            kind = self.merged[kind]
+        return kind
+
+    def consolidate(self, ratio: float = 0.6) -> dict:
+        """Kinds that drifted together (one material first seen from two faces or distances) are
+        one kind: the smaller is merged into the larger. -> {merged: into}."""
+        out = {}
+        live = [k for k in range(len(self.protos)) if k not in self.merged]
+        for i, a in enumerate(live):
+            for b in live[i + 1:]:
+                if a in self.merged or b in self.merged:
+                    continue
+                if np.linalg.norm(self.protos[a] - self.protos[b]) < ratio * self.radius:
+                    big, small = (a, b) if self.counts[a] >= self.counts[b] else (b, a)
+                    self.merged[small] = big
+                    self.counts[big] += self.counts[small]
+                    if small in self.feel and big not in self.feel:
+                        self.feel[big], self.felt[big] = self.feel[small], self.felt[small]
+                    out[small] = big
         return out
 
     # ------------------------------------------------------------------ seen ⊗ felt

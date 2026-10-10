@@ -162,3 +162,16 @@ def test_what_was_felt_is_predicted_for_a_kind_that_looks_alike():
     bluish = cb.assign(appearance(np.array([[170, 215, 245]], np.uint8)))[0]
     guess = cb.predict_feel(bluish)
     assert guess is not None and guess[0] > 0.5                 # looks like ice: expected to be slippery
+
+
+def test_kinds_that_drift_together_become_one_and_keep_what_was_felt():
+    from cortex.what import KindCodebook
+    cb = KindCodebook(radius=0.5)
+    a = cb.assign(np.array([[1.0, 1.0, 1.0]] * 30, np.float32))[0]
+    b = cb.assign(np.array([[1.6, 1.0, 1.0]], np.float32))[0]      # first seen off to one side: its own kind
+    cb.touch(b, [0.9, 0, 0, 0, 0, 0, 1])
+    assert a != b and cb.consolidate() == {}
+    cb.protos[b] = [1.2, 1.0, 1.0]                                  # ...then the two drift together
+    assert cb.consolidate() == {b: a}
+    assert cb.assign(np.array([[1.25, 1.0, 1.0]], np.float32))[0] == a
+    assert cb.predict_feel(a)[0] > 0.5                              # the feel goes with the merge
