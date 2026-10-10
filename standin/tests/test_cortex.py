@@ -81,3 +81,59 @@ def test_arousal_sharpens_the_response():
     calm = SensoryCortex().step(f, arousal=0.0).salience.max()
     alert = SensoryCortex().step(f, arousal=1.0).salience.max()
     assert alert > calm
+
+
+def test_a_floor_seen_in_depth_becomes_solid_cells_under_free_ones():
+    import math
+    from cortex.where import Camera, OccupancyMap
+    cam = Camera(32, 24, 70.0)
+    eye = np.array([0.5, 0.5, 2.62])                          # eyes 1.62 above a floor whose top is z = 1
+    rays = cam.rays(0.0, -math.radians(40))
+    depth = np.full((24, 32), 6.0, np.float32)
+    down = rays[..., 2] < -1e-3
+    t = (1.0 - eye[2]) / rays[..., 2]
+    depth[down] = np.minimum(t[down], 6.0)
+    m = OccupancyMap()
+    solid, free = m.integrate(eye, rays, depth, 6.0)
+    assert solid and all(c[2] == 0 for c in solid)            # the cells whose tops are the floor
+    assert free and all(c[2] >= 1 for c in free)              # everything between is air
+    assert not (solid & free)
+
+
+def test_path_integration_follows_velocity():
+    c = SensoryCortex(start=(1.0, 2.0, 3.0))
+    for _ in range(10):
+        c.step(proprio={"velocity": (0.1, 0.0, 0.0)})
+    assert np.allclose(c.path.pos, (2.0, 2.0, 3.0))
+
+
+def _march(solid: set, eye, rays, sight=6.0, step=0.02):
+    """A tiny reference ray caster for the tests: depth to the first solid cell."""
+    d = rays.reshape(-1, 3)
+    out = np.full(len(d), sight, np.float32)
+    for i, r in enumerate(d):
+        t = step
+        while t < sight:
+            p = np.floor(np.asarray(eye) + r * t).astype(int)
+            if tuple(p) in solid:
+                out[i] = t
+                break
+            t += step
+    return out.reshape(rays.shape[:2])
+
+
+def test_a_place_recognised_corrects_a_drifted_position():
+    import math
+    from cortex.where import Camera, OccupancyMap
+    solid = {(x, y, 0) for x in range(-6, 7) for y in range(-6, 7)}
+    solid |= {(3, y, z) for y in range(-2, 3) for z in (1, 2)} | {(x, 3, 1) for x in range(-2, 2)}
+    cam = Camera(24, 18, 70.0)
+    eye = np.array([0.5, 0.5, 2.62])
+    m = OccupancyMap()
+    for yaw in np.linspace(0, 2 * math.pi, 8, endpoint=False):
+        rays = cam.rays(yaw, -0.35)
+        m.integrate(eye, rays, _march(solid, eye, rays), 6.0)
+    rays = cam.rays(0.3, -0.35)
+    depth = _march(solid, eye, rays)
+    shift = m.align(eye + np.array([0.2, 0.0, 0.0]), rays, depth, 6.0)
+    assert shift[0] < 0                                       # pushed back toward where it really is
