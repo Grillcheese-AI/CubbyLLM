@@ -131,6 +131,31 @@ Honest limit: rendered blocks are flat-coloured cubes. Appearance features learn
 not, by themselves, recognise a real mug; what transfers is the *machinery* and the
 *play-to-learn loop*, which is the point.
 
+## 6b. Skills that outlive the sandbox
+
+The hard part (Nick: "make the learned skills something permanently useful outside the world").
+Weights learned on cubes will not carry; what can carry is **what a skill is made of**:
+
+- **A skill is a program over roles, not over game ids.** "Build up" is *put something that stays
+  under me, then step onto it*; "lookout" is *raise my eyes where most is unseen*; "probe" is *act
+  on an unknown thing once and keep what happened*; "escape" is *the shortest way off what hurts*.
+  Each is stored as a CubeLang program whose arguments are affordance queries ("a held thing that
+  stays on what I stand on"), certified by its verdicts, kept in the program library
+  (retire-not-delete) — the same "a new skill is a program, not a new model" rule as the rest of
+  CubbyLLM.
+- **Two adapters per domain, nothing else.** A *sense adapter* (this cortex: frames and contacts →
+  kinds, affordances, where) and a *motor adapter* (abstract intents — move, look, grasp/place,
+  press/use, wait — → the domain's actions: keys and clicks for an application, primitives for a
+  robot). Skills only ever call abstract intents and affordance queries, so a new domain needs the
+  two adapters, not new skills.
+- **Transferred skills arrive as testimony.** A skill from the sandbox enters a new domain as a
+  hypothesis with a prior, exactly like a fortune cookie's clue: it is tried, its verdicts are
+  checked against what actually happens there, and trust per skill per domain is a Beta count. A
+  skill that keeps failing in a domain is retired *for that domain* and kept everywhere else.
+- **Measured, not assumed:** learn in the sandbox, then hand the library to a different environment
+  (Cubby-Man's maze, a GUI task, later a camera rig) and compare sample efficiency against a fresh
+  agent with the same adapters (H-S7).
+
 ## 7. Benchmark ladder (lives in the private sandbox repo)
 
 Fixed seeds, reported per rung; gates, not targets.
