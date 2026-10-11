@@ -175,3 +175,40 @@ def test_kinds_that_drift_together_become_one_and_keep_what_was_felt():
     assert cb.consolidate() == {b: a}
     assert cb.assign(np.array([[1.25, 1.0, 1.0]], np.float32))[0] == a
     assert cb.predict_feel(a)[0] > 0.5                              # the feel goes with the merge
+
+
+def _wall(look, n=6, y=0):
+    """n pixels of the face x=3 of cell (3, y, 1), seen from (0.5, y + 0.5, 1.5) along +x."""
+    rays = np.tile(np.array([[1.0, 0.0, 0.0]]), (n, 1))
+    rays[:, 1] = np.linspace(-0.1, 0.1, n)
+    rays /= np.linalg.norm(rays, axis=1, keepdims=True)
+    depth = 2.5 / rays[:, 0]
+    return rays, depth, np.tile(np.asarray(look, np.float64), (n, 1))
+
+
+def test_the_forward_model_learns_a_steady_place_and_is_bored_after():
+    from cortex.forward import ViewModel
+    vm = ViewModel(window=16)
+    eye = (0.5, 0.5, 1.5)
+    d = np.array([0.98, 0.0, -0.196]) / np.linalg.norm([0.98, 0.0, -0.196])
+    floor = np.tile(d, (6, 1)), np.full(6, 0.5 / 0.196 * np.linalg.norm([0.98, 0.0, -0.196]))
+    vm.observe(eye, *floor, np.tile([4.0, 5.0, 1.0], (6, 1)), 4.0)       # the region's usual look, as far off
+    for _ in range(4):
+        vm.observe(eye, *_wall([8.0, 2.0, 1.5]), 4.0)                    # a red wall: unlike the floor
+    cell = (3, 0, 1)
+    assert vm.cell_surprise(cell) < 0.05 and vm.cell_progress(cell) > 1.0          # learnt, and learning it was progress
+    for _ in range(16):
+        vm.observe(eye, *_wall([8.0, 2.0, 1.5]), 4.0)
+    assert vm.cell_progress(cell) < 0.01                                            # nothing left to learn: boring
+
+
+def test_a_flickering_light_stays_surprising_and_teaches_nothing():
+    from cortex.forward import ViewModel
+    rng = np.random.default_rng(0)
+    vm = ViewModel(window=32)
+    looks = [[8.0, 2.0, 1.5], [2.0, 8.0, 1.0], [3.0, 3.0, 2.0], [5.0, 5.0, 0.5]]
+    for _ in range(64):
+        for y in range(4):                                                         # a screen of four flickering cells
+            vm.observe((0.5, y + 0.5, 1.5), *_wall(looks[rng.integers(len(looks))], y=y), 4.0)
+    s, p = vm.surprise((0, 0)), vm.progress((0, 0))
+    assert s > 2.0 and abs(p) < 0.15 * s                                            # surprising forever, no progress

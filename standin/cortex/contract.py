@@ -6,7 +6,7 @@
     p.features   the retina's channels     p.occupancy  {"solid": cells, "free": cells} this frame
     (the cortex's own map: cortex.map)     p.objects    [(row, col, kind)] for the surface pixels seen
     p.touch      [(site, kind, predicted feel, felt)] — what sight predicted, then what was felt
-    p.surprise / p.progress: later stages
+    p.surprise   the forward model's error this frame; p.progress its learning progress (cortex.view)
 
 proprio, for "where": {"eye": (x, y, z)} when the position is given (sighted), or
 {"velocity": (dx, dy, dz)} to integrate it (blind, from the start position); and always
@@ -24,6 +24,7 @@ import numpy as np
 
 from .retina import Retina
 from .salience import Attention, Salience
+from .forward import ViewModel
 from .what import KindCodebook, appearance
 from .where import Camera, OccupancyMap, PathIntegrator, SurfaceMap
 
@@ -39,14 +40,14 @@ class Percept:
     occupancy: object = None          # stage 3 (where)
     objects: list = field(default_factory=list)       # stage 4 (what)
     touch: list = field(default_factory=list)         # stage 4/5 (touch)
-    surprise: float | None = None     # stage 6 (forward model)
+    surprise: float | None = None     # stage 6 (forward model: cortex.view)
     progress: float | None = None
 
 
 class SensoryCortex:
     def __init__(self, grid: tuple[int, int] = (12, 16), fov: float = 70.0, normalise: bool = False,
                  weights: dict | None = None, start=(0.0, 0.0, 0.0), relocalise: bool = False,
-                 eye_height: float = 1.62) -> None:
+                 eye_height: float = 1.62, view_near: float = 0.65) -> None:
         self.relocalise = relocalise          # point-to-plane matching against the surfaces seen so far
         self.fov = fov
         self.retina = Retina(grid)
@@ -55,6 +56,8 @@ class SensoryCortex:
         self.map = OccupancyMap()
         self.surfaces = SurfaceMap()
         self.kinds = KindCodebook()
+        self.view = ViewModel()                     # the forward model of the view; its errors are curiosity
+        self.view_near = view_near                  # (faces near enough not to be lost in the haze)
         self.cell_kind: dict[tuple, int] = {}       # the kind each cell in its map is seen as (by vote)
         self._votes: dict[tuple, dict] = {}
         self._frames = 0
@@ -102,8 +105,14 @@ class SensoryCortex:
                 predicted = self.kinds.predict_feel(k)
                 self.kinds.touch(k, touch["feet"])
                 felt.append(("feet", k, predicted, list(touch["feet"])))
+        surprise = progress = None
+        if kinds is not None:
+            surprise = self.view.last
+            lp = [v for v in (self.view.progress(r) for r in self.view.in_view) if v is not None]
+            progress = float(np.mean(lp)) if lp else None
         return Percept(salience=sal, fixation=look, tile=tile, features=feats, occupancy=occ,
-                       objects=kinds or [], touch=felt or [(k, None, None, v) for k, v in (touch or {}).items()])
+                       objects=kinds or [], touch=felt or [(k, None, None, v) for k, v in (touch or {}).items()],
+                       surprise=surprise, progress=progress)
 
     def _see_kinds(self, frame, rays, depth, far, every: int = 2):
         """Kinds per surface pixel (near enough not to be washed by fog), filed on their cells."""
@@ -112,8 +121,12 @@ class SensoryCortex:
         sel[::every, ::every] = True
         near = sel & (depth < 0.65 * far)
         if not near.any():
+            self.view.last, self.view.in_view = None, []
             return []
-        ks = self.kinds.assign(appearance(np.asarray(frame)[near]))
+        looks = appearance(np.asarray(frame)[near])
+        ks = self.kinds.assign(looks)
+        clear = depth[near] < self.view_near * far
+        self.view.observe(self.path.pos, rays[near][clear], depth[near][clear], looks[clear], self.view_near * far)
         self._frames += 1
         if self._frames % 25 == 0 and self.kinds.consolidate():       # kinds that drifted together are one
             for c, votes in self._votes.items():
