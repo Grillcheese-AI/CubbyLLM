@@ -1,0 +1,1044 @@
+{
+ "bench": "G7 (H-S10) in the sandbox agent: habit (every step judged by the best prediction) vs conditional (a step weighed over its outcomes; a never-tried floor as risky as the unknown has been for him)",
+ "date": "2026-10-15",
+ "ticks": 3000,
+ "field": "24x24, ground in three looks, walls, a pool of deep water, four food blocks, four burning floor patches that look like ground (each a block never met); starts hungry, knows how to move, nothing about blocks",
+ "harness_fix": "per-tick driving now delivers events (it used to drop them)",
+ "first_16_seeds": {
+  "habit": {
+   "mean": {
+    "harms": 5.75,
+    "deaths": 0.062,
+    "harms+deaths": 5.812,
+    "meals": 2.125,
+    "cells stood on": 194.688,
+    "ms per tick": 2.241,
+    "ms per tick p99": 12.296,
+    "causes": {
+     "harm hazard": 92,
+     "died hazard": 1
+    },
+    "first contacts": 66,
+    "first contacts hurt": 19,
+    "risk AUC": 0.615
+   },
+   "per_run": [
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 194,
+     "ms per tick": 2.346702433307655
+    },
+    {
+     "harms": 6,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 192,
+     "ms per tick": 2.2507772000826662
+    },
+    {
+     "harms": 5,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 186,
+     "ms per tick": 2.2076770999847213
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 0,
+     "cells stood on": 104,
+     "ms per tick": 1.9362716666049284
+    },
+    {
+     "harms": 14,
+     "deaths": 0,
+     "meals": 4,
+     "cells stood on": 175,
+     "ms per tick": 2.0792905666724737
+    },
+    {
+     "harms": 5,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 211,
+     "ms per tick": 2.24381603339134
+    },
+    {
+     "harms": 35,
+     "deaths": 1,
+     "meals": 4,
+     "cells stood on": 162,
+     "ms per tick": 2.313237333347691
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 2,
+     "cells stood on": 209,
+     "ms per tick": 2.169408333398072
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 190,
+     "ms per tick": 2.332593499983583
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 230,
+     "ms per tick": 2.31646609997794
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 226,
+     "ms per tick": 2.3730849333660444
+    },
+    {
+     "harms": 7,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 207,
+     "ms per tick": 2.2802612666758555
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 247,
+     "ms per tick": 2.213124933281506
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 203,
+     "ms per tick": 2.1780624999543456
+    },
+    {
+     "harms": 5,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 184,
+     "ms per tick": 2.2658465000616466
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 195,
+     "ms per tick": 2.348559500052943
+    }
+   ]
+  },
+  "conditional": {
+   "mean": {
+    "harms": 1.375,
+    "deaths": 0.0,
+    "harms+deaths": 1.375,
+    "meals": 2.375,
+    "cells stood on": 195.875,
+    "ms per tick": 2.332,
+    "ms per tick p99": 13.282,
+    "causes": {
+     "harm hazard": 22
+    },
+    "first contacts": 29,
+    "first contacts hurt": 5,
+    "risk AUC": 0.467
+   },
+   "per_run": [
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 192,
+     "ms per tick": 2.201699533337281
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 191,
+     "ms per tick": 2.343990733306176
+    },
+    {
+     "harms": 14,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 204,
+     "ms per tick": 2.2961951332787676
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 191,
+     "ms per tick": 2.283828933488015
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 238,
+     "ms per tick": 2.286540566640421
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 221,
+     "ms per tick": 2.2699658667697804
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 179,
+     "ms per tick": 2.3106557000113144
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 146,
+     "ms per tick": 2.3305614999432387
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 207,
+     "ms per tick": 2.356270766639985
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 216,
+     "ms per tick": 2.368944333398152
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 168,
+     "ms per tick": 2.4199106667219894
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 208,
+     "ms per tick": 2.4401859666249948
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 208,
+     "ms per tick": 2.4174969667049786
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 166,
+     "ms per tick": 2.2474864000735884
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 202,
+     "ms per tick": 2.3444789333395115
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 197,
+     "ms per tick": 2.399293466694265
+    }
+   ]
+  },
+  "no-novel": {
+   "mean": {
+    "harms": 5.25,
+    "deaths": 0.125,
+    "harms+deaths": 5.375,
+    "meals": 1.938,
+    "cells stood on": 202.312,
+    "ms per tick": 2.296,
+    "ms per tick p99": 13.139,
+    "causes": {
+     "harm hazard": 84,
+     "died hazard": 2
+    },
+    "first contacts": 49,
+    "first contacts hurt": 16,
+    "risk AUC": 0.489
+   },
+   "per_run": [
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 172,
+     "ms per tick": 2.304279366697301
+    },
+    {
+     "harms": 7,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 221,
+     "ms per tick": 2.477186433330644
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 190,
+     "ms per tick": 2.2989345999473394
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "meals": 2,
+     "cells stood on": 189,
+     "ms per tick": 2.190497333317277
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 215,
+     "ms per tick": 2.3549592334141685
+    },
+    {
+     "harms": 6,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 226,
+     "ms per tick": 2.402136266590484
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 179,
+     "ms per tick": 2.2369669334051046
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 2,
+     "cells stood on": 214,
+     "ms per tick": 2.2438314333558083
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 231,
+     "ms per tick": 2.1862396665868196
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 216,
+     "ms per tick": 2.2898851666395785
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 172,
+     "ms per tick": 2.229294800085578
+    },
+    {
+     "harms": 7,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 208,
+     "ms per tick": 2.267576133393353
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 189,
+     "ms per tick": 2.2407466666457667
+    },
+    {
+     "harms": 42,
+     "deaths": 2,
+     "meals": 0,
+     "cells stood on": 217,
+     "ms per tick": 2.218842799986305
+    },
+    {
+     "harms": 5,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 193,
+     "ms per tick": 2.404869800045465
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 205,
+     "ms per tick": 2.387962100020862
+    }
+   ]
+  },
+  "no-brush": {
+   "mean": {
+    "harms": 1.438,
+    "deaths": 0.0,
+    "harms+deaths": 1.438,
+    "meals": 2.375,
+    "cells stood on": 195.062,
+    "ms per tick": 2.231,
+    "ms per tick p99": 11.829,
+    "causes": {
+     "harm hazard": 23
+    },
+    "first contacts": 30,
+    "first contacts hurt": 6,
+    "risk AUC": 0.556
+   },
+   "per_run": [
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 192,
+     "ms per tick": 2.1507714666246707
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 191,
+     "ms per tick": 2.4103986666329242
+    },
+    {
+     "harms": 14,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 182,
+     "ms per tick": 2.151954133398249
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 191,
+     "ms per tick": 2.1920703999615703
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 236,
+     "ms per tick": 2.236254600005244
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 221,
+     "ms per tick": 2.201265733298593
+    },
+    {
+     "harms": 4,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 197,
+     "ms per tick": 2.2510455000641136
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 146,
+     "ms per tick": 2.204819666711652
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 207,
+     "ms per tick": 2.2953924332468887
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 210,
+     "ms per tick": 2.19334306656674
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 168,
+     "ms per tick": 2.1788469000166515
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 207,
+     "ms per tick": 2.196404100029516
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 208,
+     "ms per tick": 2.2690558000467718
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 166,
+     "ms per tick": 2.1158028333593393
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 202,
+     "ms per tick": 2.323001466706046
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 197,
+     "ms per tick": 2.3227954333002954
+    }
+   ]
+  }
+ },
+ "replication_32_seeds": {
+  "habit": {
+   "mean": {
+    "harms": 5.031,
+    "deaths": 0.0,
+    "harms+deaths": 5.031,
+    "meals": 2.062,
+    "cells stood on": 198.156,
+    "ms per tick": 2.321,
+    "ms per tick p99": 12.719,
+    "causes": {
+     "harm hazard": 161
+    },
+    "first contacts": 135,
+    "first contacts hurt": 40,
+    "risk AUC": 0.603
+   },
+   "per_run": [
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 216,
+     "ms per tick": 2.4752847333293175
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 161,
+     "ms per tick": 2.461274766586333
+    },
+    {
+     "harms": 17,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 222,
+     "ms per tick": 2.629947599954903
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 225,
+     "ms per tick": 2.4385632666089805
+    },
+    {
+     "harms": 4,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 210,
+     "ms per tick": 2.457837166667256
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 208,
+     "ms per tick": 2.437118100024236
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 242,
+     "ms per tick": 2.5571084999707336
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 0,
+     "cells stood on": 4,
+     "ms per tick": 1.7304882333579976
+    },
+    {
+     "harms": 11,
+     "deaths": 0,
+     "meals": 4,
+     "cells stood on": 196,
+     "ms per tick": 2.484380366574139
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "meals": 2,
+     "cells stood on": 203,
+     "ms per tick": 2.549706066621487
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 224,
+     "ms per tick": 2.501471766702404
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 211,
+     "ms per tick": 2.4954485999599756
+    },
+    {
+     "harms": 23,
+     "deaths": 0,
+     "meals": 4,
+     "cells stood on": 123,
+     "ms per tick": 2.2565310666007767
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 212,
+     "ms per tick": 2.462327033264349
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 225,
+     "ms per tick": 2.302541399961531
+    },
+    {
+     "harms": 17,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 172,
+     "ms per tick": 2.253412199956074
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 233,
+     "ms per tick": 2.2415006332400176
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 205,
+     "ms per tick": 2.2225089332908583
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 193,
+     "ms per tick": 2.160395799910475
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 221,
+     "ms per tick": 2.210391766646353
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 198,
+     "ms per tick": 2.144026866662898
+    },
+    {
+     "harms": 17,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 219,
+     "ms per tick": 2.2575221332396422
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 194,
+     "ms per tick": 2.204892966658614
+    },
+    {
+     "harms": 16,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 205,
+     "ms per tick": 2.3276601332933446
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 220,
+     "ms per tick": 2.25086236668479
+    },
+    {
+     "harms": 18,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 207,
+     "ms per tick": 2.2398263999299766
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 184,
+     "ms per tick": 2.1823195665832222
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 208,
+     "ms per tick": 2.2606425667133108
+    },
+    {
+     "harms": 5,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 234,
+     "ms per tick": 2.2530750333171454
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 178,
+     "ms per tick": 2.356205633288482
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 192,
+     "ms per tick": 2.188611566586284
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 196,
+     "ms per tick": 2.271703000020352
+    }
+   ]
+  },
+  "conditional": {
+   "mean": {
+    "harms": 1.094,
+    "deaths": 0.0,
+    "harms+deaths": 1.094,
+    "meals": 2.312,
+    "cells stood on": 196.375,
+    "ms per tick": 2.263,
+    "ms per tick p99": 13.058,
+    "causes": {
+     "harm hazard": 35
+    },
+    "first contacts": 62,
+    "first contacts hurt": 12,
+    "risk AUC": 0.461
+   },
+   "per_run": [
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 222,
+     "ms per tick": 2.2888473666583495
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 176,
+     "ms per tick": 2.2329904000459164
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 204,
+     "ms per tick": 2.2038046000452596
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 206,
+     "ms per tick": 2.168196300013127
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 213,
+     "ms per tick": 2.1293656000101087
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 214,
+     "ms per tick": 2.2295108333394937
+    },
+    {
+     "harms": 4,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 181,
+     "ms per tick": 2.2013931666660937
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 178,
+     "ms per tick": 2.275126166624735
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 172,
+     "ms per tick": 2.3094208000281164
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 221,
+     "ms per tick": 2.3880296333688116
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 214,
+     "ms per tick": 2.2993036665551094
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 207,
+     "ms per tick": 2.301065600035751
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 216,
+     "ms per tick": 2.3476506000054846
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 178,
+     "ms per tick": 2.2481240333824344
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 182,
+     "ms per tick": 2.2601144332875265
+    },
+    {
+     "harms": 6,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 175,
+     "ms per tick": 2.24259866662275
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 196,
+     "ms per tick": 2.3505751666137558
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 199,
+     "ms per tick": 2.3111223333132025
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 195,
+     "ms per tick": 2.184880700056965
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 192,
+     "ms per tick": 2.1957332666691705
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 203,
+     "ms per tick": 2.2785486999637214
+    },
+    {
+     "harms": 14,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 155,
+     "ms per tick": 2.295030900015263
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 171,
+     "ms per tick": 2.2679934332554694
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 198,
+     "ms per tick": 2.2934649666397795
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 218,
+     "ms per tick": 2.29054753336095
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 181,
+     "ms per tick": 2.2042656666526455
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 188,
+     "ms per tick": 2.3454739667261792
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 219,
+     "ms per tick": 2.205128999999336
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 206,
+     "ms per tick": 2.1975200333909015
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "meals": 1,
+     "cells stood on": 187,
+     "ms per tick": 2.277893099912035
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 201,
+     "ms per tick": 2.3026815332414117
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "meals": 3,
+     "cells stood on": 216,
+     "ms per tick": 2.2920211667102803
+    }
+   ]
+  }
+ },
+ "combined_48_seeds": {
+  "seeds": 48,
+  "habit_harms_deaths": 5.292,
+  "conditional_harms_deaths": 1.188,
+  "reduction": 0.776,
+  "reduction_95ci": [
+   0.587,
+   0.905
+  ],
+  "fewer_in": 38,
+  "more_in": 3,
+  "sign_test_p": 1.0479197953827679e-08,
+  "meals": {
+   "habit": 2.083,
+   "conditional": 2.333,
+   "diff_95ci": [
+    -0.125,
+    0.625
+   ]
+  }
+ }
+}

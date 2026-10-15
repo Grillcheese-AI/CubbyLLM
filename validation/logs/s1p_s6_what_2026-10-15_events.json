@@ -1,0 +1,23 @@
+{
+ "ticks": 3600,
+ "frame": [
+  64,
+  48,
+  70.0
+ ],
+ "results": {
+  "pixels": 205686,
+  "kinds learned": 17,
+  "true kinds seen": 12,
+  "S1 purity": 0.9369475802922902,
+  "S1 completeness": 0.8281312291551199,
+  "baseline (colour bins) purity": 0.7350038408058885,
+  "baseline completeness": 0.4889443131763951,
+  "S6a feel error, kinds felt before": 0.00018251203563016743,
+  "S6a feel error, first touch (by looks)": 0.08761608848969142,
+  "S6a feel error, predicting the average": 0.032233757860522794,
+  "S6a touches": 865,
+  "S6b touch-alone accuracy": 1.0,
+  "S6b materials": 2
+ }
+}

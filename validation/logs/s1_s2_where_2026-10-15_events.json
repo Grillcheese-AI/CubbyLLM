@@ -1,0 +1,62 @@
+{
+ "ticks": 2400,
+ "frame": [
+  64,
+  48,
+  70.0
+ ],
+ "every": 4,
+ "modes": {
+  "pose given (sighted tier)": {
+   "frames": 600,
+   "S1 solid precision": 0.9642483460198412,
+   "S1 free precision": 0.9995443247459532,
+   "S1 solid recall": 0.9691796960352084,
+   "S2 map IoU": 0.928734756097561,
+   "S2 cells believed": 2545,
+   "S2 cells shown": 2516,
+   "pose drift (blocks)": 0.0,
+   "re-anchors": 0,
+   "re-localisations": 0,
+   "where Cubby went": [
+    47,
+    -49,
+    16
+   ]
+  },
+  "pose integrated from movement (blind tier)": {
+   "frames": 600,
+   "S1 solid precision": 0.3400357358491544,
+   "S1 free precision": 0.9945677891280257,
+   "S1 solid recall": 0.4905355792494001,
+   "S2 map IoU": 0.3615023474178404,
+   "S2 cells believed": 4154,
+   "S2 cells shown": 2516,
+   "pose drift (blocks)": 0.1704835545791558,
+   "re-anchors": 0,
+   "re-localisations": 0,
+   "where Cubby went": [
+    47,
+    -49,
+    16
+   ]
+  },
+  "integrated + re-localised against its own map": {
+   "frames": 600,
+   "S1 solid precision": 0.10390188330480112,
+   "S1 free precision": 0.9991027366496358,
+   "S1 solid recall": 0.12778105151853975,
+   "S2 map IoU": 0.0676753220200368,
+   "S2 cells believed": 2706,
+   "S2 cells shown": 2516,
+   "pose drift (blocks)": 0.9355483246217071,
+   "re-anchors": 0,
+   "re-localisations": 529,
+   "where Cubby went": [
+    47,
+    -49,
+    16
+   ]
+  }
+ }
+}
