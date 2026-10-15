@@ -1,0 +1,189 @@
+{
+ "bench": "advisor loop (H-S11): goal G, past trials P, history of choices H -> options with costs, a pick or a question",
+ "date": "2026-10-15",
+ "scenarios": 72,
+ "per_kind_and_mode": 8,
+ "counts": {
+  "given": 24,
+  "history": 24,
+  "none_trade_off": 11,
+  "none_dominant": 13,
+  "failed_trials": 9
+ },
+ "checked_in": "every listed option played out in a fresh copy of its world (a fork)",
+ "arms": {
+  "forks": "every way the step language allows, played out in forks; criteria as stated or inferred from H (weightings H does not contradict); asks when options trade off and nothing says how to weigh them",
+  "prior": "the same decision rule without forks: ways the description makes possible, costs averaged over other worlds; P used where it says what happened",
+  "lm": "LFM2.5-1.2B-Instruct Q4_K_M, local, all layers on the GPU (Vulkan), JSON-constrained, temperature 0, from the same words",
+  "_blind": "the same arm with P and H hidden"
+ },
+ "lm_on": "GPU",
+ "targets": {
+  "A1_valid": ">= 0.9",
+  "A2_complete": ">= 0.8",
+  "A3_true": ">= 0.9",
+  "A4_pick_given": ">= 0.8",
+  "A4_ask_when_trade_off": ">= 0.8",
+  "A4_ask_when_dominant": "<= 0.1",
+  "A5_repeat_failed": "<= 0.05",
+  "A5_pick_by_history": ">= 0.7"
+ },
+ "results": {
+  "forks": {
+   "summary": {
+    "n": 72,
+    "unreadable": 0,
+    "A1_valid": 1.0,
+    "A2_complete": 1.0,
+    "A3_true": 1.0,
+    "A4_pick_given": 1.0,
+    "A4_ask_when_trade_off": 1.0,
+    "A4_ask_when_dominant": 0.0,
+    "A4_pick_when_dominant": 1.0,
+    "A5_repeat_failed": 0.0,
+    "A5_pick_by_history": 0.958
+   },
+   "passes": {
+    "A1_valid": true,
+    "A2_complete": true,
+    "A3_true": true,
+    "A4_pick_given": true,
+    "A4_ask_when_trade_off": true,
+    "A4_ask_when_dominant": true,
+    "A5_repeat_failed": true,
+    "A5_pick_by_history": true
+   },
+   "secs": 3.6
+  },
+  "forks_blind": {
+   "summary": {
+    "n": 72,
+    "unreadable": 0,
+    "A1_valid": 1.0,
+    "A2_complete": 1.0,
+    "A3_true": 1.0,
+    "A4_pick_given": 1.0,
+    "A4_ask_when_trade_off": 1.0,
+    "A4_ask_when_dominant": 0.0,
+    "A4_pick_when_dominant": 1.0,
+    "A5_repeat_failed": 0.0,
+    "A5_pick_by_history": 0.583
+   },
+   "passes": {
+    "A1_valid": true,
+    "A2_complete": true,
+    "A3_true": true,
+    "A4_pick_given": true,
+    "A4_ask_when_trade_off": true,
+    "A4_ask_when_dominant": true,
+    "A5_repeat_failed": true,
+    "A5_pick_by_history": false
+   },
+   "secs": 3.2
+  },
+  "prior": {
+   "summary": {
+    "n": 72,
+    "unreadable": 0,
+    "A1_valid": 0.992,
+    "A2_complete": 1.0,
+    "A3_true": 0.973,
+    "A4_pick_given": 0.958,
+    "A4_ask_when_trade_off": 0.909,
+    "A4_ask_when_dominant": 0.077,
+    "A4_pick_when_dominant": 0.923,
+    "A5_repeat_failed": 0.0,
+    "A5_pick_by_history": 0.958
+   },
+   "passes": {
+    "A1_valid": true,
+    "A2_complete": true,
+    "A3_true": true,
+    "A4_pick_given": true,
+    "A4_ask_when_trade_off": true,
+    "A4_ask_when_dominant": true,
+    "A5_repeat_failed": true,
+    "A5_pick_by_history": true
+   },
+   "secs": 4.6
+  },
+  "prior_blind": {
+   "summary": {
+    "n": 72,
+    "unreadable": 0,
+    "A1_valid": 0.984,
+    "A2_complete": 1.0,
+    "A3_true": 0.968,
+    "A4_pick_given": 1.0,
+    "A4_ask_when_trade_off": 1.0,
+    "A4_ask_when_dominant": 0.0,
+    "A4_pick_when_dominant": 1.0,
+    "A5_repeat_failed": 0.111,
+    "A5_pick_by_history": 0.542
+   },
+   "passes": {
+    "A1_valid": true,
+    "A2_complete": true,
+    "A3_true": true,
+    "A4_pick_given": true,
+    "A4_ask_when_trade_off": true,
+    "A4_ask_when_dominant": true,
+    "A5_repeat_failed": false,
+    "A5_pick_by_history": false
+   },
+   "secs": 1.6
+  },
+  "lm": {
+   "summary": {
+    "n": 72,
+    "unreadable": 0,
+    "A1_valid": 0.172,
+    "A2_complete": 0.2,
+    "A3_true": 0.793,
+    "A4_pick_given": 0.0,
+    "A4_ask_when_trade_off": 0.091,
+    "A4_ask_when_dominant": 0.231,
+    "A4_pick_when_dominant": 0.154,
+    "A5_repeat_failed": 0.111,
+    "A5_pick_by_history": 0.0
+   },
+   "passes": {
+    "A1_valid": false,
+    "A2_complete": false,
+    "A3_true": false,
+    "A4_pick_given": false,
+    "A4_ask_when_trade_off": false,
+    "A4_ask_when_dominant": false,
+    "A5_repeat_failed": false,
+    "A5_pick_by_history": false
+   },
+   "secs": 415.8
+  },
+  "lm_blind": {
+   "summary": {
+    "n": 72,
+    "unreadable": 1,
+    "A1_valid": 0.02,
+    "A2_complete": 0.04,
+    "A3_true": 0.72,
+    "A4_pick_given": 0.0,
+    "A4_ask_when_trade_off": 0.091,
+    "A4_ask_when_dominant": 0.231,
+    "A4_pick_when_dominant": 0.0,
+    "A5_repeat_failed": 0.111,
+    "A5_pick_by_history": 0.0
+   },
+   "passes": {
+    "A1_valid": false,
+    "A2_complete": false,
+    "A3_true": false,
+    "A4_pick_given": false,
+    "A4_ask_when_trade_off": false,
+    "A4_ask_when_dominant": false,
+    "A5_repeat_failed": false,
+    "A5_pick_by_history": false
+   },
+   "secs": 465.7
+  }
+ }
+}
