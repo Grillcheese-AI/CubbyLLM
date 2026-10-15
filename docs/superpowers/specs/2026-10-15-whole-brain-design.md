@@ -1,7 +1,7 @@
 # The whole brain: senses, cortices and language learning together
 
 **Date:** 2026-10-15 · **Status:** design, the principle approved (Nick, 2026-10-15) ·
-**Hypotheses:** H-S8, H-S9 (`CUBBYLLM_HYPOTHESES.md` §9c) · **Builds on:** the sensory cortex
+**Hypotheses:** H-S8, H-S9, H-S10 (`CUBBYLLM_HYPOTHESES.md` §9c) · **Builds on:** the sensory cortex
 (`2026-10-10-sensory-cortex-design.md`), the base and its growth
 (`docs/research/2026-09-25-grow-450m.md`)
 
@@ -140,6 +140,48 @@ causes. Here the reaction is the act the brain chose; at rung 3 it chooses the a
 predicted consequence and its value (the one-currency choice proposed for Cubby's mind, which
 then replaces the hand-written goal recipes).
 
+### 4.8 Critical thinking: conditional and postmortem modes
+
+Nick, 2026-10-15: after an act or a world event, a wrong prediction is examined and corrected for
+similar events (**postmortem**), and before acting the possibilities are weighed in branches
+(**conditional**). Three modes, chosen by uncertainty and stakes (habit against deliberation,
+arbitrated by uncertainty: Daw, Niv & Dayan 2005, Nature Neuroscience 8:1704):
+
+- **Habit (default).** Act on the forward head's best prediction. No branches.
+- **Conditional (before).** When the forward head is unsure (its own predicted error is high) or
+  the stakes are (a need could drop, the act cannot be undone: stepping off a ledge, mining the
+  block underfoot), branch: for each candidate act, and for each likely outcome where the world
+  itself is uncertain, roll the forward model k ticks from a fork of the state (exact and cheap,
+  H-P1), score each branch by value + learning progress − risk, keep the top few (MoWM's
+  "a future per world, plausibility × value, top-k kept"; Group P's branching futures, opened
+  only where uncertainty is high, H-P2). The branches are kept for the postmortem. In words: "if
+  I mine this I drop into water; if I go round, I lose time but stay dry".
+- **Postmortem (after).** When a consequence differs from its prediction by more than that
+  prediction's own uncertainty (a surprise):
+  1. **Locate** the error: which channel was wrong (a percept, a need, an event).
+  2. **Blame** a cause: which feature of the event or the act the prediction leaned on, found by
+     re-entering the moment with that feature changed (counterfactual re-entry, H-P5; the
+     sandbox's forks give real answers). The arithmetic school's rule, blame at the first wrong
+     step and name the error's kind (H-E19), applied to the world.
+  3. **Correct, twice:** a fast **exception memory** keyed by the event's code, which the forward
+     head consults at the next similar event (one-shot, no gradient), and a **replay priority**
+     so the slow weights learn it (prioritized replay, Schaul et al. 2015, arXiv 1511.05952;
+     H-S5's learning progress decides which lessons are still worth replaying).
+  4. **Say it**, checked against the sandbox's truth: "I expected the floor to hold; it was sand
+     with nothing under it; sand like that falls."
+  - **Noise is not an error.** If similar events disagree with each other, the lesson is "this
+    is uncertain" (the predicted spread widens), not a flipped prediction: the noisy-TV lesson
+    (H-S5) applied to hindsight.
+  - **Conditional mode has its own postmortem:** did the chosen branch's predicted value come
+    true? That calibrates the branching itself.
+
+**Prototype first in Cubby's current mind** (local, no GPU): his move operators and affordance
+memory already make predictions and check them. The postmortem there is blame plus an exception
+memory over those predictions; the conditional is branch rollouts over the learned operators at
+risky decisions. His present "death lessons" (a raised setpoint, a shorter safe drop) are a
+hand-written postmortem; this generalises them. The same two modes then move into the brain's
+heads.
+
 ## 5. Data
 
 - **Aligned multisensory episodes**, exported from the private sandbox: per tick the organ
@@ -181,6 +223,19 @@ training, so the act carries no information about its consequence):
   as often as chance, and above J-shuffled.
 - **Kill:** no gain over J-shuffled on G4; the brain learned what follows what, not what an act
   causes.
+
+For critical thinking (H-S10), first in Cubby's current mind, then in the brain:
+- **G6, postmortem corrects:** on held-out surprise pairs (a kind that looks like a familiar one
+  but behaves differently, met twice), the error on the second encounter is at least 50% lower
+  with the postmortem than with replay alone at equal compute; on pure-noise events the
+  postmortem widens the predicted spread instead of flipping the prediction (calibration no
+  worse than without it).
+- **G7, conditional pays:** at risky decisions (ledges, hazards, water, unknown kinds), branching
+  cuts harms plus deaths by at least 30% against acting on the best prediction alone, within the
+  same decision-time budget, and the chosen branch's predicted value correlates with what it
+  delivered.
+- **Kill:** the postmortem is no better than replay alone on G6, or it flips predictions on
+  noise; or branching is no better than habit on G7.
 
 ## 7. Build order
 
