@@ -1,0 +1,179 @@
+{
+ "bench": "advisor loop (H-S11), level 2: the level-1 worlds plus a fence between the player and the goal (one gap, mostly forcing a detour) and, by the ledge, a pile of the material to quarry",
+ "date": "2026-10-15",
+ "level": 2,
+ "scenarios": 72,
+ "per_kind_and_mode": 8,
+ "counts": {
+  "given": 24,
+  "history": 24,
+  "none_trade_off": 7,
+  "none_dominant": 17,
+  "failed_trials": 9
+ },
+ "lm_on": "GPU",
+ "results": {
+  "forks": {
+   "summary": {
+    "n": 72,
+    "unreadable": 0,
+    "A1_valid": 1.0,
+    "A2_complete": 1.0,
+    "A3_true": 1.0,
+    "A4_pick_given": 1.0,
+    "A4_ask_when_trade_off": 1.0,
+    "A4_ask_when_dominant": 0.0,
+    "A4_pick_when_dominant": 1.0,
+    "A5_repeat_failed": 0.0,
+    "A5_pick_by_history": 0.875
+   },
+   "passes": {
+    "A1_valid": true,
+    "A2_complete": true,
+    "A3_true": true,
+    "A4_pick_given": true,
+    "A4_ask_when_trade_off": true,
+    "A4_ask_when_dominant": true,
+    "A5_repeat_failed": true,
+    "A5_pick_by_history": true
+   },
+   "secs": 4.3
+  },
+  "forks_blind": {
+   "summary": {
+    "n": 72,
+    "unreadable": 0,
+    "A1_valid": 1.0,
+    "A2_complete": 1.0,
+    "A3_true": 1.0,
+    "A4_pick_given": 1.0,
+    "A4_ask_when_trade_off": 1.0,
+    "A4_ask_when_dominant": 0.0,
+    "A4_pick_when_dominant": 1.0,
+    "A5_repeat_failed": 0.0,
+    "A5_pick_by_history": 0.708
+   },
+   "passes": {
+    "A1_valid": true,
+    "A2_complete": true,
+    "A3_true": true,
+    "A4_pick_given": true,
+    "A4_ask_when_trade_off": true,
+    "A4_ask_when_dominant": true,
+    "A5_repeat_failed": true,
+    "A5_pick_by_history": true
+   },
+   "secs": 4.1
+  },
+  "prior": {
+   "summary": {
+    "n": 72,
+    "unreadable": 0,
+    "A1_valid": 0.985,
+    "A2_complete": 1.0,
+    "A3_true": 0.924,
+    "A4_pick_given": 0.958,
+    "A4_ask_when_trade_off": 0.857,
+    "A4_ask_when_dominant": 0.059,
+    "A4_pick_when_dominant": 0.882,
+    "A5_repeat_failed": 0.0,
+    "A5_pick_by_history": 0.917
+   },
+   "passes": {
+    "A1_valid": true,
+    "A2_complete": true,
+    "A3_true": true,
+    "A4_pick_given": true,
+    "A4_ask_when_trade_off": true,
+    "A4_ask_when_dominant": true,
+    "A5_repeat_failed": true,
+    "A5_pick_by_history": true
+   },
+   "secs": 5.8
+  },
+  "prior_blind": {
+   "summary": {
+    "n": 72,
+    "unreadable": 0,
+    "A1_valid": 0.978,
+    "A2_complete": 1.0,
+    "A3_true": 0.899,
+    "A4_pick_given": 0.917,
+    "A4_ask_when_trade_off": 0.714,
+    "A4_ask_when_dominant": 0.0,
+    "A4_pick_when_dominant": 0.941,
+    "A5_repeat_failed": 0.111,
+    "A5_pick_by_history": 0.833
+   },
+   "passes": {
+    "A1_valid": true,
+    "A2_complete": true,
+    "A3_true": false,
+    "A4_pick_given": true,
+    "A4_ask_when_trade_off": false,
+    "A4_ask_when_dominant": true,
+    "A5_repeat_failed": false,
+    "A5_pick_by_history": true
+   },
+   "secs": 1.9
+  },
+  "lm": {
+   "summary": {
+    "n": 72,
+    "unreadable": 0,
+    "A1_valid": 0.178,
+    "A2_complete": 0.17,
+    "A3_true": 0.793,
+    "A4_pick_given": 0.042,
+    "A4_ask_when_trade_off": 0.0,
+    "A4_ask_when_dominant": 0.353,
+    "A4_pick_when_dominant": 0.118,
+    "A5_repeat_failed": 0.111,
+    "A5_pick_by_history": 0.0
+   },
+   "passes": {
+    "A1_valid": false,
+    "A2_complete": false,
+    "A3_true": false,
+    "A4_pick_given": false,
+    "A4_ask_when_trade_off": false,
+    "A4_ask_when_dominant": false,
+    "A5_repeat_failed": false,
+    "A5_pick_by_history": false
+   },
+   "secs": 389.7
+  },
+  "lm_blind": {
+   "summary": {
+    "n": 72,
+    "unreadable": 0,
+    "A1_valid": 0.0,
+    "A2_complete": 0.0,
+    "A3_true": null,
+    "A4_pick_given": 0.0,
+    "A4_ask_when_trade_off": 0.429,
+    "A4_ask_when_dominant": 0.412,
+    "A4_pick_when_dominant": 0.0,
+    "A5_repeat_failed": 0.111,
+    "A5_pick_by_history": 0.0
+   },
+   "passes": {
+    "A1_valid": false,
+    "A2_complete": false,
+    "A3_true": null,
+    "A4_pick_given": false,
+    "A4_ask_when_trade_off": false,
+    "A4_ask_when_dominant": false,
+    "A5_repeat_failed": false,
+    "A5_pick_by_history": false
+   },
+   "secs": 449.8
+  }
+ },
+ "detour": {
+  "moving_ways_compared": 114,
+  "median_ticks_ratio_l2_over_l1": 1.18,
+  "share_over_1_15": 0.61,
+  "max": 1.9
+ }
+}

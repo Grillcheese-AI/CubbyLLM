@@ -1,0 +1,227 @@
+{
+ "trials_per_rule": 100,
+ "warm": 12,
+ "rules": {
+  "harm": {
+   "replay": {
+    "first": 0.934,
+    "second": 0.871,
+    "control": 0.063,
+    "blamed_n": null
+   },
+   "priority": {
+    "first": 0.934,
+    "second": 0.791,
+    "control": 0.083,
+    "blamed_n": null
+   },
+   "postmortem": {
+    "first": 0.934,
+    "second": 0.295,
+    "control": 0.063,
+    "blamed_n": 1.03,
+    "blamed_right": 1.0
+   }
+  },
+  "chill": {
+   "replay": {
+    "first": 1.0,
+    "second": 0.935,
+    "control": 0.011,
+    "blamed_n": null
+   },
+   "priority": {
+    "first": 1.0,
+    "second": 0.857,
+    "control": 0.028,
+    "blamed_n": null
+   },
+   "postmortem": {
+    "first": 1.0,
+    "second": 0.32,
+    "control": 0.016,
+    "blamed_n": 1.05,
+    "blamed_right": 1.0
+   }
+  },
+  "breath": {
+   "replay": {
+    "first": 1.0,
+    "second": 0.94,
+    "control": 0.022,
+    "blamed_n": null
+   },
+   "priority": {
+    "first": 1.0,
+    "second": 0.862,
+    "control": 0.054,
+    "blamed_n": null
+   },
+   "postmortem": {
+    "first": 1.0,
+    "second": 0.326,
+    "control": 0.037,
+    "blamed_n": 1.08,
+    "blamed_right": 1.0
+   }
+  },
+  "pass": {
+   "replay": {
+    "first": 0.666,
+    "second": 0.665,
+    "control": 0.262,
+    "blamed_n": null
+   },
+   "priority": {
+    "first": 0.666,
+    "second": 0.616,
+    "control": 0.278,
+    "blamed_n": null
+   },
+   "postmortem": {
+    "first": 0.666,
+    "second": 0.33,
+    "control": 0.265,
+    "blamed_n": 1.026,
+    "blamed_right": 1.0
+   }
+  },
+  "break": {
+   "replay": {
+    "first": 0.679,
+    "second": 0.65,
+    "control": 0.273,
+    "blamed_n": null
+   },
+   "priority": {
+    "first": 0.679,
+    "second": 0.599,
+    "control": 0.295,
+    "blamed_n": null
+   },
+   "postmortem": {
+    "first": 0.679,
+    "second": 0.332,
+    "control": 0.275,
+    "blamed_n": 1.026,
+    "blamed_right": 1.0
+   }
+  },
+  "food": {
+   "replay": {
+    "first": 0.744,
+    "second": 0.675,
+    "control": 0.279,
+    "blamed_n": null
+   },
+   "priority": {
+    "first": 0.744,
+    "second": 0.592,
+    "control": 0.307,
+    "blamed_n": null
+   },
+   "postmortem": {
+    "first": 0.744,
+    "second": 0.542,
+    "control": 0.309,
+    "blamed_n": 5.772,
+    "blamed_right": 0.902
+   }
+  }
+ },
+ "noise": {
+  "replay": {
+   "first_after": 0.058,
+   "brier": 0.405,
+   "flips": 0.0,
+   "end": 0.193
+  },
+  "priority": {
+   "first_after": 0.127,
+   "brier": 0.375,
+   "flips": 0.002,
+   "end": 0.26
+  },
+  "postmortem": {
+   "first_after": 0.554,
+   "brier": 0.313,
+   "flips": 0.137,
+   "end": 0.507
+  }
+ },
+ "second_error": {
+  "replay": 0.789,
+  "priority": 0.72,
+  "postmortem": 0.358
+ },
+ "control_error": {
+  "replay": 0.152,
+  "priority": 0.174,
+  "postmortem": 0.161
+ },
+ "g6": {
+  "second_vs_replay": 0.546,
+  "second_vs_priority": 0.503,
+  "pass_second": true,
+  "pass_noise": false
+ },
+ "secs": 4.4,
+ "bench": "G6 (H-S10) at the level of the sandbox agent's affordance memory: second-encounter error after one surprise, against plain replay and replay with priority",
+ "date": "2026-10-15",
+ "protocol": "per trial: 12 blocks behaving the usual way for one kind of prediction, met twice each; one surprise block; then a never-met block sharing only the cause (second encounter) and a never-met control block on the usual side; noise: one bit makes a block go either way at random, a surprise on one, then six more such blocks",
+ "rule_kinds": "harm, chill, breath (one bit present), pass, break (one bit absent), food (two bits together)",
+ "arms": {
+  "replay": "every outcome counted once",
+  "priority": "the surprise counted three times",
+  "postmortem": "blame bits, exonerate from memory, lessons consulted before likeness"
+ },
+ "live": {
+  "ticks": 2500,
+  "world": "one sandbox world (the agent tests' golden seed)",
+  "postmortems": 6,
+  "by_kind_and_why": {
+   "break / bits": 3,
+   "harm / bits": 1,
+   "harm / both ways": 1,
+   "plant / bits": 1
+  },
+  "said": [
+   {
+    "about": "something went against what I expected",
+    "what I expected": "a plain block never can be broken",
+    "what happened": "it did",
+    "what I think made the difference": "it is not part of the ground; it is not fixed in place"
+   },
+   {
+    "about": "something went against what I expected",
+    "what I expected": "a sharp block can be broken",
+    "what happened": "it did not",
+    "what I think made the difference": "it is sharp; it is fixed in place"
+   },
+   {
+    "about": "something went against what I expected",
+    "what I expected": "a sharp block never hurts to touch",
+    "what happened": "it did",
+    "what I think made the difference": "it is sharp"
+   },
+   {
+    "about": "something went against what I expected",
+    "what I expected": "a sharp block hurts to touch",
+    "what happened": "it did not",
+    "what I think made the difference": "it goes both ways, so I am not sure"
+   },
+   {
+    "about": "something went against what I expected",
+    "what I expected": "a see-through block can be broken",
+    "what happened": "it did not",
+    "what I think made the difference": "it is fixed in place"
+   },
+   {
+    "about": "something went against what I expected",
+    "what I expected": "a soft block never makes something grow",
+    "what happened": "it did",
+    "what I think made the difference": "it is alive"
+   }
+  ]
+ }
+}
