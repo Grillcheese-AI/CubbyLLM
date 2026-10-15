@@ -1,7 +1,7 @@
 # The whole brain: senses, cortices and language learning together
 
 **Date:** 2026-10-15 · **Status:** design, the principle approved (Nick, 2026-10-15) ·
-**Hypotheses:** H-S8, H-S9, H-S10 (`CUBBYLLM_HYPOTHESES.md` §9c) · **Builds on:** the sensory cortex
+**Hypotheses:** H-S8 … H-S11 (`CUBBYLLM_HYPOTHESES.md` §9c) · **Builds on:** the sensory cortex
 (`2026-10-10-sensory-cortex-design.md`), the base and its growth
 (`docs/research/2026-09-25-grow-450m.md`)
 
@@ -17,6 +17,33 @@ from language; the language trunk learns from text alone, with no sense of anyth
 a glowing block and the look of a glowing block never meet. This design puts every cortex on one
 shared workspace and one learning signal, so that what each part learns is shaped by all the
 others, as in a brain.
+
+### What it is for: the advisor loop (Nick, 2026-10-15)
+
+1. **Given** G, a goal; P, past trials toward it (possibly none); H, a history of past choices,
+   related to the goal or not.
+2. **Asked:** "I want to do G, I tried P, given that in the past I did H: what are my options, and
+   which would be best for me?"
+3. **Cubby answers in detail:** the valid options that reach G, each with its pros and cons; the
+   one he thinks best by the user's criteria; or, when the choice depends on criteria he does not
+   know yet, the question that would settle it.
+
+Every part of this design serves that loop:
+
+| Step | Done by |
+|---|---|
+| G, the goal | a wanted consequence (§4.7) |
+| P, past trials | the postmortem memory (§4.8): what was tried, what happened, which cause was blamed |
+| H, past choices | the user's criteria as revealed by their choices, and the context they set |
+| the options | conditional mode (§4.8): the inverse head proposes acts that would bring G about, the forward head plays each out; a trial in P is dropped, or kept with what changes and why |
+| pros and cons | each branch's predicted consequences, criterion by criterion (time, cost, risk, reversibility, what is learned) |
+| the best option | the branch that scores highest under the user's criteria |
+| a question instead | asked when the top branches swap places on a criterion the user has not weighted: the one question whose answer changes the pick |
+
+It is learned where every answer can be checked: in the sandbox, each listed option and each
+stated pro or con is run in a fork of the world (§5), so an option is valid because it reached G,
+not because it sounds plausible. Outside the sandbox the same answer is checked by what can verify
+it there (the reasoning VM, the knowledge store, MoWM's worlds), and Cubby says so when nothing can.
 
 ## 2. Settled decisions (Nick, 2026-10-15)
 
@@ -236,6 +263,22 @@ For critical thinking (H-S10), first in Cubby's current mind, then in the brain:
   delivered.
 - **Kill:** the postmortem is no better than replay alone on G6, or it flips predictions on
   noise; or branching is no better than habit on G7.
+
+For the advisor loop (H-S11), on held-out sandbox scenarios (G, P, H) with every option and
+claim checked in forks, against two baselines at equal compute: the trunk answering without
+branching, and a general language model answering from the same description:
+- **A1, valid:** at least 90% of the listed options reach G in a fork.
+- **A2, complete:** at least 80% of the distinct ways the forks find to reach G (within the step
+  budget) are listed.
+- **A3, true:** at least 90% of the stated pros and cons hold in the forks.
+- **A4, the right pick or the right question:** with the criteria given, the pick is the
+  best option under them at least 80% of the time; without them, Cubby asks when the top options
+  swap places on an unweighted criterion (at least 80% of such cases) and does not ask when they
+  do not (at most 10%).
+- **A5, uses P and H:** a failed trial from P is proposed again without saying what changes in at
+  most 5% of answers; the pick agrees with the preference revealed by H at least 70% of the time.
+- **Kill:** no better than the no-branching trunk on A1 and A3; or no gain from P and H over the
+  same answers given without them.
 
 ## 7. Build order
 
