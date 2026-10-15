@@ -1,7 +1,7 @@
 # The whole brain: senses, cortices and language learning together
 
 **Date:** 2026-10-15 · **Status:** design, the principle approved (Nick, 2026-10-15) ·
-**Hypothesis:** H-S8 (`CUBBYLLM_HYPOTHESES.md` §9c) · **Builds on:** the sensory cortex
+**Hypotheses:** H-S8, H-S9 (`CUBBYLLM_HYPOTHESES.md` §9c) · **Builds on:** the sensory cortex
 (`2026-10-10-sensory-cortex-design.md`), the base and its growth
 (`docs/research/2026-09-25-grow-450m.md`)
 
@@ -49,9 +49,11 @@ others, as in a brain.
 organs (fixed, no learning)   retina · depth · cochlea · skin · proprio · needs (soma)
   → stimuli                   spike rates / feature maps per organ, per tick
   → sensory cortices          small learned nets per sense: what is this (kind, sound, place)
-  → workspace                 the trunk's residual stream: each cortex ADDS its contribution
-  → expert routing            shared attention; per-sense and language experts (§4.4)
-  → language cortex           the trunk (the 450M base, or its grown 1.29B form)
+  → workspace                 each cortex ADDS its contribution: the sum of the cortices
+  → expert routing            per-sense experts, by organ, later by content (§4.4)
+  → language cortex           the trunk (the 450M base, or its grown 1.29B form), reading the
+                              workspace through gated cross-attention, with Cubby's acts and
+                              their consequences on the same clock (§4.7)
 ```
 
 ### 4.2 Organs (fixed)
@@ -71,23 +73,30 @@ are features these cortices read.
 
 ### 4.4 Workspace and routing
 
-Percept tokens are interleaved with text tokens in time order, so the trunk's attention sees
-"what happened" and "what was said" on one clock. Each trunk layer gets **experts per sense**
-next to its language FFN, attention stays shared (Mixture-of-Transformers, Liang et al. 2024,
-arXiv 2411.04996; BEiT-3's multiway layers, arXiv 2208.10442):
+Each tick, every cortex adds its percept tokens into the **sensory workspace** (the sum of the
+cortices). The language trunk runs on its own sequence, the words plus one `<tick>` position per
+tick of an episode so it keeps the world's clock, and reads the workspace through **gated
+cross-attention** every few layers (Flamingo, Alayrac et al. 2022, arXiv 2204.14198). Percept
+tokens are not interleaved into the trunk's own sequence: the shared attention and the MinGRU
+recurrence would carry them into every later word, and day 0 would no longer be the language
+model (§4.5). Each sense has its own **expert** on the way in (Mixture-of-Transformers, Liang et
+al. 2024, arXiv 2411.04996; BEiT-3's multiway layers, arXiv 2208.10442):
 
-- **Rung 1, routed by organ.** A percept token goes to its sense's expert, a text token to the
-  language FFN. Every expert writes back into the same stream, so each later layer reads the sum.
-- **Rung 2, routed by content.** A router reads the workspace and picks experts by what the
-  stimulus is (the neurons that recognise it), so a word about touch can use the touch expert and
-  a felt slip can wake a language expert. Kept only if it beats rung 1 at equal compute.
+- **Rung 1, routed by organ.** A sense's tokens pass through that sense's expert; the trunk reads
+  all of them, summed.
+- **Rung 2, routed by content.** A router reads the trunk's state and the workspace and picks
+  which experts a position reads, by what the stimulus is (the neurons that recognise it): a word
+  about a slippery floor reads the touch expert, a felt slip wakes language. Kept only if it beats
+  rung 1 at equal compute.
 
 ### 4.5 Zero-exit admission
 
-Every new cortex, projection and expert joins with its **exit at zero** (its output into the
-residual stream starts at 0), the operator that made growth exact
-(`cubbyllm/model/grow.py`; exact to 1e-6 nats, `validation/logs/grow_step0_*`). On day 0 the
-brain is the trained language model, unchanged; from then on the senses earn their place.
+Every new path joins with its **exit at zero**: each cross-attention read is scaled by tanh(α)
+with α = 0 (Flamingo's gate; a scalar gate is ReZero's, arXiv 2003.04887), and each expert's
+output projection starts at 0, the operator that made growth exact (`cubbyllm/model/grow.py`;
+exact to 1e-6 nats, `validation/logs/grow_step0_*`). On text, day 0 is the trained language
+model exactly; on an episode, the trunk starts by ignoring the senses, and the `<tick>` positions
+are the only new input. From then on the senses earn their place.
 
 ### 4.6 One learning signal: prediction everywhere
 
@@ -102,6 +111,34 @@ L = λ_text · (next word) + Σ_sense λ_sense · (next percept of that sense)
   value 50%), and gate G3 (§6).
 - Later, Cubby's needs join as value: what relieved a need is remembered as worth predicting
   (H-S5's learning progress decides which experiences are replayed).
+
+### 4.7 Event → action → consequence (Nick's ARC loop)
+
+Nick, 2026-10-15, after a sketch from Gemini, modified. The loop is about **Cubby's own acts**:
+
+- **Event E_t:** what the senses and the needs report at tick t (the workspace).
+- **Action A_t:** what Cubby did at t, his motor intent (walk, jump, attack, use, eat …) as an
+  action token at the tick position: his act, not the stimulus.
+- **Consequence C_t+k:** what the world and his body report after: the next percepts, the change
+  in his needs, the events (broke, ate, fell, got hurt).
+
+Heads at each tick position read the trunk there (which has read the workspace):
+- **forward** (E, A) → C, predicted before it is seen and scored after: §4.6's next-percept term,
+  now conditioned on the act;
+- **inverse** (E, C) → A: which act brings this about, how a wanted consequence becomes an act;
+- **value** C → its effect on the needs (relief or strain, the soma's currency): what a
+  consequence is worth;
+- **language:** E, A and C in words.
+
+**Counterfactuals.** At sampled ticks the sandbox forks the world and tries the other actions
+from the same state, so the data holds the true consequence of each act, not only of the one
+taken: interventions, which no text corpus contains.
+
+Gemini's mapping (stimulus = action, routing = reaction, residual = consequence) names steps of
+the internal computation; trained on it, the brain would learn what follows what, not what an act
+causes. Here the reaction is the act the brain chose; at rung 3 it chooses the act by the
+predicted consequence and its value (the one-currency choice proposed for Cubby's mind, which
+then replaces the hand-written goal recipes).
 
 ## 5. Data
 
@@ -136,16 +173,26 @@ Gates, on held-out episodes and held-out seeds:
 - **Kill:** J no better than S on both G1 and G2, or G3 failed. Then the cortices stay separate
   and are joined by the cheaper route (S).
 
+For the ARC loop (H-S9), against **J-shuffled** (J with the action tokens shuffled across ticks in
+training, so the act carries no information about its consequence):
+- **G4, acts predict their consequences:** on held-out forks, the forward head's error on the
+  consequence of each tried act is at least 20% below J-shuffled's.
+- **G5, consequences name their acts:** the inverse head picks the act from (E, C) at least twice
+  as often as chance, and above J-shuffled.
+- **Kill:** no gain over J-shuffled on G4; the brain learned what follows what, not what an act
+  causes.
+
 ## 7. Build order
 
-1. **Exporter** (private sandbox, local): aligned episodes + grounded descriptions → shards on
-   private Drive. Determinism test: the same seed exports the same bytes.
+1. **Exporter** (private sandbox, local): aligned episodes (percepts, needs, events, Cubby's acts)
+   + grounded descriptions + counterfactual forks → shards on private Drive. Determinism test:
+   the same seed exports the same bytes.
 2. **Cortices and workspace** (`cubbyllm/model/senses/`): per-sense encoders, organ-routed
-   experts, zero-exit admission. Test: with percepts present and exits at zero, the text logits
-   equal the base's.
-3. **Trainer** (`validation/train_brain.py`): the balanced loss, text replay, the three arms,
-   checkpoints that resume across Colab sessions, G1–G3 evaluated in the run.
-4. **Colab notebook**, thin, as for the base: arms J, S, T.
+   experts, gated cross-attention, zero-exit admission. Test: with the gates at zero, the text
+   logits equal the base's, and on an episode the senses change nothing.
+3. **Trainer** (`validation/train_brain.py`): the balanced loss, the ARC heads, text replay, the
+   arms, checkpoints that resume across Colab sessions, G1–G5 evaluated in the run.
+4. **Colab notebook**, thin, as for the base: arms J, S, T, J-shuffled.
 5. **Rung 2:** ears, then content routing.
 
 Compute (computed, not measured): at the base's measured 46.4k tok/s on an A100
@@ -169,7 +216,9 @@ learned from the same prediction signal as every sense, and admitted without cos
 language it already has.
 
 **Advantage over conventional models:** multimodal LLMs attach separately pretrained encoders to a
-text model and fine-tune the adapters between them; the senses never shape each other. Here every
+text model and fine-tune the adapters between them; the senses never shape each other, and every
+model learns from observation only. Here the brain also learns from its own acts and from the
+sandbox's counterfactuals, what an act causes, which observational text cannot teach. Here every
 part learns from one prediction objective on one workspace, each cortex can be read on its own
 (what it sees, predicts, gets wrong), and the brain starts exactly as good as the language model
 that passed the gates.
