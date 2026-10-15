@@ -1,0 +1,102 @@
+{
+ "bench": "G6 (H-S10) with a frontier language model as the learner: the same trials, features anonymised (f01..f15, renamed per trial), records as text, temperature 0, low reasoning effort",
+ "date": "2026-10-15",
+ "gemini-3.8-flash": {
+  "trials_per_rule": 100,
+  "second_error": 0.454,
+  "control_error": 0.054,
+  "per_rule": {
+   "harm": {
+    "second": 0.35,
+    "control": 0.045,
+    "unread": 0
+   },
+   "chill": {
+    "second": 0.356,
+    "control": 0.042,
+    "unread": 0
+   },
+   "breath": {
+    "second": 0.358,
+    "control": 0.049,
+    "unread": 0
+   },
+   "pass": {
+    "second": 0.451,
+    "control": 0.052,
+    "unread": 0
+   },
+   "break": {
+    "second": 0.452,
+    "control": 0.054,
+    "unread": 0
+   },
+   "food": {
+    "second": 0.755,
+    "control": 0.084,
+    "unread": 0
+   }
+  },
+  "noise": {
+   "first_after": 0.553,
+   "brier": 0.309,
+   "flips": 0.21,
+   "end": 0.56
+  }
+ },
+ "gpt-5.5": {
+  "trials_per_rule": 20,
+  "second_error": 0.738,
+  "control_error": 0.062,
+  "per_rule": {
+   "harm": {
+    "second": 0.704,
+    "control": 0.047,
+    "unread": 0
+   },
+   "chill": {
+    "second": 0.712,
+    "control": 0.041,
+    "unread": 0
+   },
+   "breath": {
+    "second": 0.723,
+    "control": 0.045,
+    "unread": 0
+   },
+   "pass": {
+    "second": 0.732,
+    "control": 0.067,
+    "unread": 0
+   },
+   "break": {
+    "second": 0.737,
+    "control": 0.072,
+    "unread": 0
+   },
+   "food": {
+    "second": 0.821,
+    "control": 0.1,
+    "unread": 0
+   }
+  }
+ },
+ "postmortem_same_trials": {
+  "second_error": 0.358,
+  "control_error": 0.161,
+  "noise": {
+   "first_after": 0.554,
+   "brier": 0.313,
+   "flips": 0.137,
+   "end": 0.507
+  }
+ },
+ "postmortem_vs_gemini_paired": {
+  "n": 600,
+  "reduction": 0.212,
+  "95ci": [
+   0.186,
+   0.238
+  ]
+ }
+}

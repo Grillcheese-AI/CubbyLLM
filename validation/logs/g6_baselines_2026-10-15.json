@@ -1,0 +1,174 @@
+{
+ "bench": "G6 baselines (H-S10): the postmortem against learners that see the same blocks as bit vectors",
+ "date": "2026-10-15",
+ "trials_per_rule": 100,
+ "arms": {
+  "replay": "the agent's memory, every outcome once",
+  "priority": "the surprise counted three times",
+  "postmortem": "blame the bits, lessons before likeness",
+  "logreg": "L2 logistic regression refitted after every outcome (lambda 1, 0.1, 0.01; .bal: 0.1 with classes weighted equally)",
+  "bayes": "Bernoulli naive Bayes, Laplace-smoothed"
+ },
+ "second_error": {
+  "replay": 0.789,
+  "priority": 0.72,
+  "postmortem": 0.358,
+  "logreg": 0.93,
+  "logreg.1": 0.905,
+  "logreg.01": 0.88,
+  "logreg.bal": 0.726,
+  "bayes": 0.553
+ },
+ "control_error": {
+  "replay": 0.152,
+  "priority": 0.174,
+  "postmortem": 0.161,
+  "logreg": 0.038,
+  "logreg.1": 0.02,
+  "logreg.01": 0.013,
+  "logreg.bal": 0.06,
+  "bayes": 0.067
+ },
+ "postmortem_reduction_95ci_vs": {
+  "replay": [
+   0.528,
+   0.565
+  ],
+  "priority": [
+   0.481,
+   0.524
+  ],
+  "logreg": [
+   0.601,
+   0.63
+  ],
+  "logreg.1": [
+   0.591,
+   0.62
+  ],
+  "logreg.01": [
+   0.578,
+   0.61
+  ],
+  "logreg.bal": [
+   0.486,
+   0.528
+  ],
+  "bayes": [
+   0.318,
+   0.388
+  ]
+ },
+ "noise": {
+  "replay": {
+   "first_after": 0.058,
+   "brier": 0.405,
+   "flips": 0.0,
+   "end": 0.193
+  },
+  "priority": {
+   "first_after": 0.127,
+   "brier": 0.375,
+   "flips": 0.002,
+   "end": 0.26
+  },
+  "postmortem": {
+   "first_after": 0.554,
+   "brier": 0.313,
+   "flips": 0.137,
+   "end": 0.507
+  },
+  "logreg": {
+   "first_after": 0.066,
+   "brier": 0.378,
+   "flips": 0.003,
+   "end": 0.268
+  },
+  "logreg.1": {
+   "first_after": 0.09,
+   "brier": 0.381,
+   "flips": 0.052,
+   "end": 0.366
+  },
+  "logreg.01": {
+   "first_after": 0.116,
+   "brier": 0.407,
+   "flips": 0.172,
+   "end": 0.398
+  },
+  "logreg.bal": {
+   "first_after": 0.253,
+   "brier": 0.362,
+   "flips": 0.207,
+   "end": 0.507
+  },
+  "bayes": {
+   "first_after": 0.395,
+   "brier": 0.347,
+   "flips": 0.203,
+   "end": 0.501
+  }
+ },
+ "per_rule_second": {
+  "harm": {
+   "replay": 0.871,
+   "priority": 0.791,
+   "postmortem": 0.295,
+   "logreg": 0.926,
+   "logreg.1": 0.894,
+   "logreg.01": 0.864,
+   "logreg.bal": 0.687,
+   "bayes": 0.504
+  },
+  "chill": {
+   "replay": 0.935,
+   "priority": 0.857,
+   "postmortem": 0.32,
+   "logreg": 0.934,
+   "logreg.1": 0.918,
+   "logreg.01": 0.897,
+   "logreg.bal": 0.755,
+   "bayes": 0.572
+  },
+  "breath": {
+   "replay": 0.94,
+   "priority": 0.862,
+   "postmortem": 0.326,
+   "logreg": 0.932,
+   "logreg.1": 0.912,
+   "logreg.01": 0.883,
+   "logreg.bal": 0.727,
+   "bayes": 0.573
+  },
+  "pass": {
+   "replay": 0.665,
+   "priority": 0.616,
+   "postmortem": 0.33,
+   "logreg": 0.928,
+   "logreg.1": 0.896,
+   "logreg.01": 0.867,
+   "logreg.bal": 0.718,
+   "bayes": 0.492
+  },
+  "break": {
+   "replay": 0.65,
+   "priority": 0.599,
+   "postmortem": 0.332,
+   "logreg": 0.931,
+   "logreg.1": 0.907,
+   "logreg.01": 0.881,
+   "logreg.bal": 0.735,
+   "bayes": 0.535
+  },
+  "food": {
+   "replay": 0.675,
+   "priority": 0.592,
+   "postmortem": 0.542,
+   "logreg": 0.928,
+   "logreg.1": 0.905,
+   "logreg.01": 0.889,
+   "logreg.bal": 0.733,
+   "bayes": 0.645
+  }
+ }
+}

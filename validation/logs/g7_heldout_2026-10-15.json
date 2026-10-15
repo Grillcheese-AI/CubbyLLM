@@ -1,0 +1,55 @@
+{
+ "bench": "G7 (H-S10) on held-out worlds: fresh seeds, the paper's own chemistry key, moves learned from scratch in a nursery (no saved mind)",
+ "date": "2026-10-15",
+ "ticks": 3000,
+ "summary": {
+  "seeds": 48,
+  "first_seed": 5000,
+  "secret": "icdl2027",
+  "moves": "learned from scratch (24 operators, 2500-tick nursery)",
+  "habit": 3.854,
+  "conditional": 0.583,
+  "reduction": 0.849,
+  "reduction_95ci": [
+   0.657,
+   0.959
+  ],
+  "fewer_in": 41,
+  "more_in": 2,
+  "sign_test_p": 2.1532287064474076e-10,
+  "meals": {
+   "habit": 1.667,
+   "conditional": 1.917,
+   "diff_95ci": [
+    0.083,
+    0.438
+   ]
+  },
+  "cells": {
+   "habit": 186.146,
+   "conditional": 181.188
+  },
+  "ms_per_tick": {
+   "habit": 2.712,
+   "conditional": 2.591
+  },
+  "safe_field_16": {
+   "meals": {
+    "habit": 1.938,
+    "conditional": 1.875,
+    "diff_95ci": [
+     -0.188,
+     0.0
+    ]
+   },
+   "cells": {
+    "habit": 194.625,
+    "conditional": 190.5
+   },
+   "first_contacts": {
+    "habit": 92,
+    "conditional": 40
+   }
+  }
+ }
+}
