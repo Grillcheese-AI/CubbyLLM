@@ -17,6 +17,7 @@ local demo. NOT hardened for the public internet — bind localhost.
                emotion, receptor sensitivity) — the compass feed
   GET  /worlds -> mounted worlds and their sizes; mounted cortices
   GET  /health -> {"ok": true, "emitter": name}
+  GET  /brain  -> dashboard/brain3d.html: a prompt's journey through the brain's zones, live, in 3-D
 
   python standin/serve_api.py --gguf standin/models/emitter_v3.Q4_K_M.gguf --port 8765
 """
@@ -189,6 +190,12 @@ def make_handler(brain):
                     self._raw(200, body, "text/html; charset=utf-8")        # no-store: the panel is edited live
                 except OSError:
                     self._send(404, {"error": "dashboard/control_panel.html not found"})
+            elif self.path.split("?", 1)[0].rstrip("/") == "/brain":   # the 3-D brain: a prompt's journey, zone to zone
+                try:
+                    body = open(os.path.join(ROOT, "dashboard", "brain3d.html"), "rb").read()
+                    self._raw(200, body, "text/html; charset=utf-8")
+                except OSError:
+                    self._send(404, {"error": "dashboard/brain3d.html not found"})
             elif self.path.rstrip("/") == "/map":            # the component map: every part, lit when it fires
                 try:
                     body = open(os.path.join(ROOT, "dashboard", "component_map.html"), "rb").read()

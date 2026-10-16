@@ -22,7 +22,6 @@ score. Calibrating an FPR-target threshold over fault-class similarities
 therefore pins to the similarity ceiling and starves multi-hop coverage as
 a side effect -- measured, not hypothesized, in the first eval-wave run
 (2-hop/3-hop CoT accuracy collapsed to 0.000 under a tau_vm=1.0000 deployed
-import os
 from that scheme). Fixed: DEPLOYED tau_vm is now a set of FRAME-SIZE-
 CONDITIONAL FLOORS -- for each n_hop seen in calibration, tau_vm[n] = the
 bootstrap-95%-CI LOWER bound of the 1st-percentile CORRECT-recovery
@@ -69,6 +68,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import pathlib
 import subprocess
 import sys

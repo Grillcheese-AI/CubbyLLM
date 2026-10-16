@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cubby Brain</title>
+<style>
+  /* A monitor piece: one dark world on purpose (it plays full-screen behind a talk), so a single
+     palette. Amber = running now, teal = certified / learned, red = refused (a result here, not an
+     error), violet = a question framed or a branch opened. */
+  :root{
+    --ground:#070b16; --glass:rgba(13,19,34,.72); --line:rgba(120,150,210,.18);
+    --ink:#dfe7f5; --dim:#8492ad; --live:#ffb648; --yes:#45d3c0; --no:#ff6b6b; --wonder:#a594ff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--ground);color:var(--ink);overflow:hidden;
+    font:13px/1.45 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+  .mono{font-family:ui-monospace,"Cascadia Mono","JetBrains Mono",Consolas,monospace}
+  #stage{position:fixed;inset:0}
+  #tags,#cards{position:fixed;inset:0;pointer-events:none}
+  .tag{position:absolute;transform:translate(-50%,0);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--dim);white-space:nowrap;transition:color .3s,opacity .3s;text-shadow:0 1px 3px #000}
+  .tag.on{color:var(--ink)}
+  .card{position:absolute;max-width:290px;padding:8px 11px;border-radius:8px;background:var(--glass);
+    border:1px solid var(--line);backdrop-filter:blur(6px);transform:translate(16px,-50%);
+    transition:opacity .6s;box-shadow:0 8px 28px rgba(0,0,0,.45)}
+  .card b{display:block;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;margin-bottom:2px}
+  .card span{display:block;font-size:12.5px;overflow-wrap:anywhere}
+  header{position:fixed;top:14px;left:18px;display:flex;align-items:center;gap:12px;z-index:3}
+  header h1{margin:0;font-size:17px;font-weight:650;letter-spacing:-.01em}
+  header h1 em{font-style:normal;color:var(--live)}
+  .status{display:flex;align-items:center;gap:7px;color:var(--dim);font-size:12px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--dim)}
+  .status[data-s="live"] .dot{background:var(--yes);box-shadow:0 0 0 3px rgba(69,211,192,.2)}
+  .status[data-s="demo"] .dot{background:var(--wonder)}
+  .status[data-s="off"] .dot{background:var(--no)}
+  aside{position:fixed;z-index:3;background:var(--glass);border:1px solid var(--line);border-radius:10px;
+    backdrop-filter:blur(8px)}
+  #tape{right:16px;top:14px;bottom:86px;width:330px;display:flex;flex-direction:column}
+  #tape h2,#chem h2{margin:0;padding:10px 12px 6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  #steps{overflow-y:auto;padding:0 8px 10px;display:flex;flex-direction:column;gap:5px}
+  .step{display:grid;grid-template-columns:10px 1fr;gap:8px;align-items:start;padding:5px 6px;border-radius:6px}
+  .step.now{background:rgba(255,182,72,.08)}
+  .step i{width:8px;height:8px;border-radius:50%;margin-top:5px}
+  .step b{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:600}
+  .step p{margin:1px 0 0;font-size:12px;overflow-wrap:anywhere}
+  #chem{left:16px;bottom:86px;width:250px;padding-bottom:10px}
+  .bar{display:grid;grid-template-columns:96px 1fr 34px;gap:8px;align-items:center;padding:2px 12px;font-size:11.5px;color:var(--dim)}
+  .bar div{height:5px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden}
+  .bar div i{display:block;height:100%;width:0;border-radius:3px;transition:width .8s}
+  .bar span{text-align:right;font-variant-numeric:tabular-nums}
+  #emotion{padding:4px 12px 0;font-size:12px}
+  form{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:4;display:flex;gap:8px;
+    width:min(860px,calc(100% - 32px));padding:8px;border-radius:12px;background:var(--glass);border:1px solid var(--line);
+    backdrop-filter:blur(8px)}
+  form select,form input,form button{font:inherit;color:var(--ink);background:rgba(255,255,255,.05);
+    border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+  form input{flex:1;min-width:0}
+  form button{cursor:pointer}
+  form button.go{background:var(--live);color:#1a1205;border-color:transparent;font-weight:650}
+  form :focus-visible{outline:2px solid var(--live);outline-offset:1px}
+  body.monitor aside,body.monitor form{display:none}
+  @media (max-width:900px){#tape{display:none}#chem{display:none}}
+  @media (prefers-reduced-motion:reduce){.card,.tag{transition:none}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="tags"></div>
+<div id="cards"></div>
+<header>
+  <h1>Cubby<em>LLM</em> · live brain</h1>
+  <div class="status" id="status" data-s="off"><span class="dot"></span><span id="statusText">connecting…</span></div>
+</header>
+<aside id="tape"><h2>The journey</h2><div id="steps"></div></aside>
+<aside id="chem"><h2>Hormones</h2><div id="bars"></div><div id="emotion" class="mono"></div></aside>
+<form id="ask" autocomplete="off">
+  <select id="mode" aria-label="How to send it">
+    <option value="ask">Ask (verified)</option>
+    <option value="turn">Talk</option>
+  </select>
+  <input id="q" placeholder="Ask Cubby something, and watch where it goes…" aria-label="Your prompt">
+  <button class="go" type="submit">Send</button>
+  <button type="button" id="replay" title="Play the last journey again">Replay</button>
+  <button type="button" id="save" title="Save the journey for the Blender render">Save</button>
+</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+"use strict";
+// ── the brain's zones: where each part sits, what it is, and the event kinds it owns ──────────────
+// Taken from the code's own event names: the ask loop (cubbyllm.reasoning.events), the serve brain's
+// trace (standin/serve.py), cubby-man's (/map), and any source that names its zone itself ({zone}).
+const ZONES = [
+  {id:"sources",  name:"Sources",          note:"Wikidata, the web, the news, his own store", p:[-8.2, 3.4, 2.6], c:0x8fb8ff,
+   kinds:["fetch"]},
+  {id:"senses",   name:"Senses",           note:"what comes in: a question, a percept",       p:[ 4.4, 0.4, 0.0], c:0x6fd3ff,
+   kinds:["question","user","heard","explore","eat","ghost_eaten","trapped","something_let_go","saw_it_land","percept"]},
+  {id:"hormones", name:"Hormones",         note:"the neurochemistry: cortisol, dopamine…",    p:[ 0.2,-1.3, 0.0], c:0xff8fb3,
+   kinds:["sense","flee","flee_override","caught","hit_by_falling","mood","rest"]},
+  {id:"route",    name:"Thalamus",         note:"the fast route: facts → the VM, else talk",  p:[ 0.9, 0.5, 0.0], c:0xffd27a,
+   kinds:["route","goal"]},
+  {id:"language", name:"Language cortex",  note:"the trunk: writes the program, says it",     p:[-2.4, 0.0, 2.9], c:0xffb648,
+   kinds:["plan","alias","paraphrase","emit","thought","said_back","ask_retry","program"]},
+  {id:"vm",       name:"The VM",           note:"runs the program: certifies or refuses",     p:[-4.0, 1.9, 0.0], c:0x45d3c0,
+   kinds:["walk","vm","forge","program_rejected","no_walk","retrieve_fallback","verdict"]},
+  {id:"worlds",   name:"World models",     note:"facts per world, branches, latent worlds",   p:[ 1.6, 3.0, 0.4], c:0x7f9cff,
+   kinds:["hop","fact","branch","latent","learn","derive","law"]},
+  {id:"gate",     name:"The gate",         note:"every incoming fact is checked here",        p:[-2.2, 3.5,-1.3], c:0xd0a8ff,
+   kinds:["gate","gate_relation","gate_retrieval"]},
+  {id:"hippo",    name:"Hippocampus",      note:"episodes: what happened, chains recalled",   p:[ 1.4,-0.6,-2.4], c:0x9be38a,
+   kinds:["memory","episode","recall","note","found"]},
+  {id:"dopamine", name:"Basal ganglia",    note:"dopamine: the surprise in the VM's verdict", p:[-0.9, 0.6,-1.5], c:0xff9a5c,
+   kinds:["feedback","reward","hypothesis_settled","capability"]},
+  {id:"futures",  name:"Futures",          note:"questions framed, outcomes predicted",       p:[ 3.2, 2.0,-2.1], c:0xa594ff,
+   kinds:["wonder","hypothesis","hypothesis_error","predict","dodge","ask","ask_skipped","ask_error"]},
+  {id:"skills",   name:"Skills",           note:"programs kept as abilities, never retrained",p:[-1.0, 3.9, 1.7], c:0x5ee0a0,
+   kinds:["superpower_move","cross","modify","retire","skill","operator"]},
+  {id:"create",   name:"Creativity cortex",note:"the sandbox: building, trying, inventing",   p:[ 3.6, 2.9, 2.0], c:0xffe066,
+   kinds:["build","invent","craft"]},
+  {id:"motor",    name:"Motor",            note:"actions out into a world",                   p:[-0.2, 4.1,-0.2], c:0xff7a7a,
+   kinds:["bump","probe","move","act","restart","level_up","out_of_time","mine","chasing"]},
+  {id:"speech",   name:"Speech",           note:"the answer out: certified, or refused",      p:[-5.6,-1.4, 1.0], c:0xf2f5ff,
+   kinds:["answer","speak","reply_error","thought_refused","thought_error","say"]},
+];
+const TRACTS = [["senses","route"],["route","hormones"],["route","language"],["language","vm"],["vm","worlds"],
+  ["worlds","gate"],["gate","sources"],["sources","gate"],["vm","speech"],["language","speech"],["vm","dopamine"],
+  ["dopamine","hippo"],["hippo","worlds"],["worlds","futures"],["futures","vm"],["vm","skills"],["skills","motor"],
+  ["create","skills"],["senses","hormones"],["hormones","dopamine"],["senses","create"]];
+const ZONE = new Map(ZONES.map(z => [z.id, z]));
+const KIND_ZONE = new Map();
+for (const z of ZONES) for (const k of z.kinds) KIND_ZONE.set(k, z.id);
+const TONE = {hot:0xffb648, yes:0x45d3c0, no:0xff6b6b, wonder:0xa594ff};
+const CSS_TONE = {hot:"var(--live)", yes:"var(--yes)", no:"var(--no)", wonder:"var(--wonder)"};
+
+// ── what an event says: its zone, its tone and one line of text ───────────────────────────────────
+function clip(s, n = 120) { s = String(s ?? ""); return s.length > n ? s.slice(0, n - 1) + "…" : s; }
+function factText(f) { return f && typeof f === "object" ? (f.text || [f.subj, f.rel, f.obj].filter(Boolean).join(" · ")) : f; }
+function read(ev) {
+  const k = ev.kind || ev.event || "event";
+  const zone = ev.zone && ZONE.has(ev.zone) ? ev.zone : (KIND_ZONE.get(k) || "route");
+  let tone = ev.tone || "hot", text = ev.text || "";
+  switch (k) {
+    case "plan": text = ev.program || ev.tail || [ev.seed, ...(ev.relations || [])].filter(Boolean).join(" → ");
+      if (ev.n_hop != null) text += `  (${ev.n_hop} hop${ev.n_hop === 1 ? "" : "s"})`; break;
+    case "walk": tone = ev.verified ? "yes" : "no";
+      text = ev.verified ? "walked to " + ev.answer : "no path: " + (ev.reason || ev.refused || "refused"); break;
+    case "hop": text = (ev.fact || ev.query || "") + (ev.how ? "  · " + ev.how : ""); break;
+    case "fact": tone = "yes"; text = factText(ev); break;
+    case "vm": tone = ev.verified ? "yes" : "no";
+      text = (ev.verified ? "certified" : "refused") + (ev.program_lines ? ` · a ${ev.program_lines}-line program` : "")
+           + (ev.repairs ? ` · ${ev.repairs} repaired` : ""); break;
+    case "answer": tone = ev.verified ? "yes" : "no";
+      text = ev.verified ? ev.answer : "refused: " + (ev.reason || ev.refused || "not certified"); break;
+    case "fetch": tone = ev.latent ? "wonder" : "hot";
+      text = `${ev.source || "a source"}${ev.entity ? " · " + ev.entity : ""} · ${ev.n ?? 0} found`; break;
+    case "gate": { const s = String(ev.status || "");
+      tone = /attest|accept|kept|pass|ok/i.test(s) ? "yes" : /clash|refus|reject|impossib/i.test(s) ? "no" : "wonder";
+      text = (s ? s + ": " : "") + factText(ev.fact); break; }
+    case "branch": tone = "wonder";
+      text = `branch ${ev.n ?? ""} via ${ev.via || "?"}${ev.status ? " · " + ev.status : ""}${ev.answer ? " → " + ev.answer : ""}`; break;
+    case "latent": tone = "wonder"; text = "a latent world, to verify later" + (ev.answer ? ": " + ev.answer : ""); break;
+    case "alias": text = ev.how || "the question's own wording"; break;
+    case "paraphrase": tone = ev.ok ? "yes" : "no";
+      text = ev.ok ? ev.text : "draft refused: " + (ev.rejected || []).join("; "); break;
+    case "route": text = [ev.cortex && "→ " + ev.cortex, ev.world && "world " + ev.world,
+      ev.score != null && "score " + (+ev.score).toFixed(2)].filter(Boolean).join(" · "); break;
+    case "sense": text = ev.emotion || ev.label || ev.appraisal || "appraised"; break;
+    case "learn": tone = ev.accepted ? "yes" : "no";
+      text = (ev.accepted ? "learned: " : "not learned: ") + (ev.fact || ev.reason || ""); break;
+    case "speak": text = ev.reply; break;
+    case "wonder": case "hypothesis": tone = "wonder"; break;
+    case "hypothesis_settled": case "capability": tone = "yes"; break;
+    default: if (/refus|reject|error|caught|bump|no_walk|hit_by/.test(k)) tone = "no";
+  }
+  if (!text) text = ev.label || ev.reply || ev.answer || factText(ev.fact) || ev.note || ev.name || "";
+  const full = typeof text === "object" ? JSON.stringify(text) : String(text ?? "");
+  return {zone, tone, kind: k, text: clip(full), full};
+}
+
+// ── the scene ─────────────────────────────────────────────────────────────────────────────────────
+const params = new URLSearchParams(location.search);
+if (params.has("monitor")) document.body.classList.add("monitor");
+const renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.setClearColor(0x070b16, 1);
+document.getElementById("stage").appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x070b16, 0.016);
+const camera = new THREE.PerspectiveCamera(36, innerWidth / innerHeight, 0.1, 300);
+const brain = new THREE.Group();
+scene.add(brain);
+
+function glowTexture() {
+  const c = document.createElement("canvas"); c.width = c.height = 128;
+  const g = c.getContext("2d"), r = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  r.addColorStop(0, "rgba(255,255,255,1)"); r.addColorStop(0.18, "rgba(255,255,255,.85)");
+  r.addColorStop(0.45, "rgba(255,255,255,.22)"); r.addColorStop(1, "rgba(255,255,255,0)");
+  g.fillStyle = r; g.fillRect(0, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
+}
+const GLOW = glowTexture();
+function glow(color, scale, opacity) {
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({map: GLOW, color, transparent: true, opacity,
+    depthWrite: false, blending: THREE.AdditiveBlending}));
+  s.scale.setScalar(scale);
+  return s;
+}
+
+// the shell: two folded hemispheres, a cerebellum and a stem, as a cloud of points
+(function shell() {
+  const pts = [], cols = [], col = new THREE.Color(), rnd = mulberry(7);
+  const put = (x, y, z, hue, light) => { pts.push(x, y, z); col.setHSL(hue, 0.65, light); cols.push(col.r, col.g, col.b); };
+  for (let i = 0; i < 16000; i++) {
+    const u = rnd() * 2 - 1, a = rnd() * Math.PI * 2, s = Math.sqrt(1 - u * u);
+    let dx = s * Math.cos(a), dy = u, dz = s * Math.sin(a);
+    const side = i % 2 ? 1 : -1;
+    if (dz * side < -0.15) dz = -dz;                                   // each hemisphere keeps its own half
+    const fold = 1 + 0.05 * Math.sin(9 * dx + 4 * dy) * Math.cos(7 * dy - 3 * dz) + 0.025 * Math.sin(23 * dx * dy);
+    let x = dx * 5.3 * fold, y = dy * 3.5 * fold + 1.2, z = dz * 3.2 * fold + side * 0.25;
+    if (y < -1.1) y = -1.1 + (y + 1.1) * 0.25;                         // a flatter base
+    put(x, y, z, 0.6 + 0.08 * rnd(), 0.42 + 0.25 * rnd());
+  }
+  for (let i = 0; i < 2600; i++) {                                     // the cerebellum
+    const u = rnd() * 2 - 1, a = rnd() * Math.PI * 2, s = Math.sqrt(1 - u * u);
+    const f = 1 + 0.06 * Math.sin(30 * u);
+    put(3.6 + s * Math.cos(a) * 1.8 * f, -1.8 + u * 1.0 * f, s * Math.sin(a) * 2.4 * f, 0.7, 0.45 + 0.2 * rnd());
+  }
+  for (let i = 0; i < 900; i++) {                                      // the stem
+    const h = rnd(), a = rnd() * Math.PI * 2, r = 0.55 - 0.15 * h;
+    put(1.8 - h * 0.6 + Math.cos(a) * r, -1.4 - h * 2.6, Math.sin(a) * r, 0.62, 0.4 + 0.2 * rnd());
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
+  g.setAttribute("color", new THREE.Float32BufferAttribute(cols, 3));
+  brain.add(new THREE.Points(g, new THREE.PointsMaterial({size: 0.055, vertexColors: true, transparent: true,
+    opacity: 0.5, depthWrite: false, blending: THREE.AdditiveBlending})));
+})();
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+// the zones: a core, a halo that flares when the zone fires, and a name under it
+const tagsEl = document.getElementById("tags");
+for (const z of ZONES) {
+  z.pos = new THREE.Vector3(...z.p);
+  z.base = new THREE.Color(z.c);
+  z.core = new THREE.Mesh(new THREE.SphereGeometry(0.15, 20, 14), new THREE.MeshBasicMaterial({color: z.c}));
+  z.halo = glow(z.c, 1.5, 0.28);
+  z.core.position.copy(z.pos); z.halo.position.copy(z.pos);
+  brain.add(z.core, z.halo);
+  z.level = 0; z.tint = z.base.clone(); z.count = 0;
+  z.tag = document.createElement("div"); z.tag.className = "tag"; z.tag.textContent = z.name;
+  tagsEl.appendChild(z.tag);
+}
+// the tracts the signal usually takes, drawn faintly; a pulse rides one (or a fresh arc) zone to zone
+const CURVES = new Map();
+function curve(a, b) {
+  const key = a + ">" + b;
+  if (CURVES.has(key)) return CURVES.get(key);
+  const A = ZONE.get(a).pos, B = ZONE.get(b).pos, mid = A.clone().add(B).multiplyScalar(0.5);
+  const out = mid.clone().sub(new THREE.Vector3(0, 1.2, 0)); out.y = 0;
+  const ctrl = mid.clone().add(out.normalize().multiplyScalar(1.1)).add(new THREE.Vector3(0, 1.1, 0));
+  const c = new THREE.QuadraticBezierCurve3(A, ctrl, B);
+  CURVES.set(key, c);
+  return c;
+}
+for (const [a, b] of TRACTS) {
+  const g = new THREE.BufferGeometry().setFromPoints(curve(a, b).getPoints(40));
+  brain.add(new THREE.Line(g, new THREE.LineBasicMaterial({color: 0x5a6db0, transparent: true, opacity: 0.16})));
+}
+
+// ── the signal: a pulse along an arc; on arrival the zone fires, a card says what happened ───────────
+const pulses = [], cards = [], cardsEl = document.getElementById("cards"), stepsEl = document.getElementById("steps");
+const TRAIL = 7;
+function launch(from, to, tone, onArrive) {
+  if (!from || from === to) { onArrive(); return; }
+  const color = new THREE.Color(TONE[tone] || TONE.hot), sprites = [];
+  for (let i = 0; i < TRAIL; i++) { const s = glow(color, 0.75 - i * 0.08, 0.95 - i * 0.12); brain.add(s); sprites.push(s); }
+  pulses.push({c: curve(from, to), t0: performance.now(), dur: 560, sprites, onArrive});
+}
+function fire(zid, tone) {
+  const z = ZONE.get(zid);
+  z.level = 1; z.count++;
+  z.tint.copy(z.base).lerp(new THREE.Color(TONE[tone] || TONE.hot), 0.65);
+}
+function card(zid, kind, text, tone) {
+  const el = document.createElement("div");
+  el.className = "card";
+  el.innerHTML = "<b></b><span></span>";
+  el.querySelector("b").textContent = kind;
+  el.querySelector("b").style.color = CSS_TONE[tone] || CSS_TONE.hot;
+  el.querySelector("span").textContent = text || "—";
+  cardsEl.appendChild(el);
+  cards.push({el, zid, born: performance.now()});
+  while (cards.length > 4) cards.shift().el.remove();
+}
+function step(r, now) {
+  for (const s of stepsEl.querySelectorAll(".now")) s.classList.remove("now");
+  const el = document.createElement("div");
+  el.className = "step now";
+  el.innerHTML = "<i></i><div><b></b><p></p></div>";
+  el.querySelector("i").style.background = CSS_TONE[r.tone] || CSS_TONE.hot;
+  el.querySelector("b").textContent = `${r.kind} · ${ZONE.get(r.zone).name}`;
+  el.querySelector("p").textContent = r.text;
+  stepsEl.appendChild(el);
+  while (stepsEl.children.length > 60) stepsEl.firstChild.remove();
+  if (now) el.scrollIntoView({block: "end"});
+}
+
+// ── playback: events come in bursts (an ask is a dozen events in a few milliseconds), so they are
+//    played one step at a time, each from the zone that caused it (its parent) or the last one ────
+const queue = [], zoneOf = new Map();
+let lastZone = null, lastAt = 0, journey = [], lastJourney = [], journeyT0 = 0;
+function enqueue(ev, src) { queue.push({ev, src}); }
+function play({ev, src}) {
+  const r = read(ev), now = performance.now();
+  if (r.kind === "question" || r.kind === "user" || r.kind === "heard") {   // a new prompt: a new journey
+    if (journey.length) lastJourney = journey;
+    journey = []; journeyT0 = now; stepsEl.textContent = "";
+  }
+  const key = src + ":" + (ev.id ?? ev.i ?? "");
+  const parentZone = ev.parent != null ? zoneOf.get(src + ":" + ev.parent) : null;
+  const fresh = r.kind === "question" || r.kind === "user" || r.kind === "heard";
+  const from = fresh ? null : parentZone || (now - lastAt < 8000 ? lastZone : null);
+  if (ev.id != null || ev.i != null) zoneOf.set(key, r.zone);
+  lastZone = r.zone; lastAt = now;
+  journey.push({at: Math.round(now - journeyT0), from, ...r, raw: ev});
+  launch(from, r.zone, r.tone, () => { fire(r.zone, r.tone); card(r.zone, r.kind, r.text, r.tone); step(r, true); });
+}
+let nextPlay = 0;
+const KEEP = new Set(["question", "user", "heard", "answer", "speak", "say", "words", "reply_error"]);
+function pump(now) {
+  if (queue.length > 30) {                                            // fallen behind a busy mind: drop old background steps,
+    let drop = queue.length - 12;                                     // never a prompt, a reply or a step of their chains
+    const keep = queue.filter(q => !(drop > 0 && !KEEP.has(q.ev.kind) && q.ev.parent == null && drop--));
+    queue.length = 0; queue.push(...keep);
+  }
+  if (!queue.length || now < nextPlay) return;
+  play(queue.shift());
+  nextPlay = now + Math.max(140, 520 - queue.length * 25);           // a backlog plays faster, never a blur
+}
+
+// ── the hormones: the neurochemistry read, beside the brain and in the Hormones zone's glow ─────────
+const HORMONES = ["dopamine", "serotonin", "oxytocin", "cortisol", "noradrenaline"];
+const barsEl = document.getElementById("bars"), BAR = {};
+for (const h of HORMONES) {
+  const row = document.createElement("div"); row.className = "bar";
+  row.innerHTML = `<label>${h}</label><div><i></i></div><span class="mono">–</span>`;
+  barsEl.appendChild(row); BAR[h] = row;
+}
+let chemArousal = 0.3, chemValence = 0;
+function showChem(s) {
+  for (const h of HORMONES) if (typeof s[h] === "number") {
+    BAR[h].querySelector("i").style.width = Math.max(0, Math.min(1, s[h])) * 100 + "%";
+    BAR[h].querySelector("i").style.background = h === "cortisol" || h === "noradrenaline" ? "var(--no)" : "var(--yes)";
+    BAR[h].querySelector("span").textContent = s[h].toFixed(2);
+  }
+  chemArousal = +s.arousal || chemArousal; chemValence = +s.valence || 0;
+  document.getElementById("emotion").textContent =
+    `${s.emotion || "—"} · valence ${chemValence >= 0 ? "+" : ""}${chemValence.toFixed(2)} · arousal ${chemArousal.toFixed(2)}`;
+}
+
+// ── where the events come from ─────────────────────────────────────────────────────────────────────
+const statusEl = document.getElementById("status"), statusText = document.getElementById("statusText");
+function setStatus(s, t) { statusEl.dataset.s = s; statusText.textContent = t; }
+let API = params.get("api"), BW = params.get("bw");                 // the serve brain; a world bridge (it names its own zones)
+const T0 = Date.now() / 1000;
+let live = false, world = false, demoTimer = null;
+async function connect() {
+  if (location.protocol.startsWith("http")) try {                    // served by one of them: that one is here
+    const h = await (await fetch("/health", {cache: "no-store"})).json();
+    if (h.world) BW = BW || location.origin; else if (h.ok) API = API || location.origin;
+  } catch (e) { /* a plain file server */ }
+  API = (API || "http://127.0.0.1:8765").replace(/\/$/, "");
+  BW = (BW || "http://127.0.0.1:8899").replace(/\/$/, "");
+  try {
+    const r = await fetch(API + "/health", {cache: "no-store"});
+    if (!r.ok) throw new Error(r.status);
+    const h = await r.json();
+    live = true;
+    setStatus("live", `live · ${h.emitter || "the brain"}${h.ask ? " · ask loop on" : " · talk only (start with --ask to ask)"}`);
+    const es = new EventSource(API + "/loop/stream");                // the verified-program loop, step by step
+    es.onmessage = m => { const ev = JSON.parse(m.data); if (!ev.t || ev.t >= T0 - 1) enqueue(ev, "loop"); };
+    let since = null;
+    const poll = async () => {                                        // the serve brain's own trace
+      try {
+        const d = await (await fetch(API + "/events?since=" + (since ?? 0), {cache: "no-store"})).json();
+        if (since !== null) for (const ev of d.events || []) enqueue(ev, "brain");
+        since = d.next ?? since ?? 0;
+      } catch (e) { /* the next poll tries again */ }
+    };
+    poll(); setInterval(poll, 450);
+    const chem = async () => { try { showChem(await (await fetch(API + "/state", {cache: "no-store"})).json()); } catch (e) {} };
+    chem(); setInterval(chem, 1500);
+  } catch (e) { /* no serve brain: perhaps a world */ }
+  try {                                                               // a world bridge (Cubby's mind in his world)
+    const h = await (await fetch(BW + "/health", {cache: "no-store"})).json();
+    if (h.ok) {
+      world = true;
+      new EventSource(BW + "/stream").onmessage = m => enqueue(JSON.parse(m.data), "bw");
+      const opt = document.createElement("option");
+      opt.value = "world"; opt.textContent = "Talk to Cubby in his world";
+      document.getElementById("mode").appendChild(opt);
+      if (!live) document.getElementById("mode").value = "world";
+      setStatus("live", (live ? statusText.textContent + " · " : "") + "Cubby's world live" + (h.cubby == null ? " (waiting for Cubby)" : ""));
+    }
+  } catch (e) { /* no world bridge */ }
+  if (!live && !world) { setStatus("demo", "no brain on " + API + " · replaying recorded journeys"); demo(); }
+}
+function demo() {                                                      // recorded ask-loop events, not invented ones
+  const recorded = JSON.parse(document.getElementById("recorded").textContent);
+  let i = 0;
+  const next = () => {
+    const batch = [];
+    do { batch.push(recorded[i]); i = (i + 1) % recorded.length; } while (recorded[i].kind !== "question");
+    for (const ev of batch) enqueue(ev, "demo" + i);
+    demoTimer = setTimeout(next, batch.length * 560 + 5200);
+  };
+  next();
+}
+
+// ── the prompt, replay and save ────────────────────────────────────────────────────────────────────
+document.getElementById("ask").addEventListener("submit", async e => {
+  e.preventDefault();
+  const q = document.getElementById("q"), text = q.value.trim(), mode = document.getElementById("mode").value;
+  if (!text) return;
+  if (mode === "world") {                                             // the T box: his voice answers from his percepts
+    q.value = "";
+    try { const r = await fetch(BW + "/say", {method: "POST", headers: {"Content-Type": "application/json"},
+                                               body: JSON.stringify({text})});
+          if (!r.ok) enqueue({kind: "reply_error", text: (await r.json()).error || "the world did not take it"}, "ui"); }
+    catch (err) { enqueue({kind: "reply_error", text: String(err)}, "ui"); }
+    return;
+  }
+  if (!live) { setStatus(world ? "live" : "demo", "no brain to ask: start standin/serve_api.py --ask, then ask again"); return; }
+  q.value = "";
+  if (mode === "turn") enqueue({kind: "user", text}, "ui");          // the loop announces its own questions; a turn does not
+  try {
+    const r = await fetch(API + (mode === "ask" ? "/ask" : "/turn"), {method: "POST",
+      headers: {"Content-Type": "application/json"}, body: JSON.stringify({text})});
+    const rec = await r.json();
+    if (mode === "turn" && rec.reply) setTimeout(() => {               // its spoken line, if the trace has not shown it
+      if (!journey.some(j => j.kind === "speak")) enqueue({kind: "speak", reply: rec.reply}, "ui");
+    }, 2500);
+    if (rec.error) enqueue({kind: "reply_error", text: rec.error}, "ui");
+  } catch (err) { enqueue({kind: "reply_error", text: String(err)}, "ui"); }
+});
+document.getElementById("replay").addEventListener("click", () => {
+  const j = journey.length > 1 ? journey : lastJourney;
+  for (const s of j) enqueue(s.raw, "replay" + T0);
+});
+document.getElementById("save").addEventListener("click", () => {
+  const j = journey.length ? journey : lastJourney;
+  const doc = {made: new Date().toISOString(), source: live ? API : "recorded demo",
+    zones: ZONES.map(z => ({id: z.id, name: z.name, note: z.note, p: z.p, c: "#" + z.c.toString(16).padStart(6, "0")})),
+    tracts: TRACTS, steps: j.map(({at, from, zone, tone, kind, full}) => ({at, from, zone, tone, kind, text: full}))};
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(doc, null, 1)], {type: "application/json"}));
+  a.download = "cubby_journey_" + Date.now() + ".json";
+  a.click();
+});
+
+// ── the camera: a slow orbit that leans toward whatever just fired; drag to turn, wheel to zoom ─────
+let yaw = -0.5, pitch = 0.22, dist = 21, drag = null;
+const focus = new THREE.Vector3(0, 1.0, 0), want = new THREE.Vector3(0, 1.0, 0);
+renderer.domElement.addEventListener("pointerdown", e => { drag = {x: e.clientX, y: e.clientY, yaw, pitch}; });
+addEventListener("pointerup", () => { drag = null; });
+addEventListener("pointermove", e => { if (!drag) return;
+  yaw = drag.yaw - (e.clientX - drag.x) * 0.005; pitch = Math.max(-0.4, Math.min(1.1, drag.pitch + (e.clientY - drag.y) * 0.004)); });
+renderer.domElement.addEventListener("wheel", e => { dist = Math.max(10, Math.min(40, dist * (1 + Math.sign(e.deltaY) * 0.08))); }, {passive: true});
+addEventListener("resize", () => {
+  renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+});
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const v = new THREE.Vector3();
+function screen(p) {                                                   // a brain-space point -> page pixels (null: behind)
+  v.copy(p).applyMatrix4(brain.matrixWorld).project(camera);
+  return v.z > 1 ? null : {x: (v.x + 1) / 2 * innerWidth, y: (1 - v.y) / 2 * innerHeight};
+}
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  pump(now);
+  if (!drag && !still) yaw += dt * 0.045;
+  if (lastZone && now - lastAt < 6000) want.copy(ZONE.get(lastZone).pos).multiplyScalar(0.3).add(new THREE.Vector3(0, 0.8, 0));
+  else want.set(0, 1.0, 0);
+  focus.lerp(want, 1 - Math.exp(-dt * 1.5));
+  camera.position.set(focus.x + dist * Math.cos(pitch) * Math.sin(yaw), focus.y + dist * Math.sin(pitch),
+                      focus.z + dist * Math.cos(pitch) * Math.cos(yaw));
+  camera.lookAt(focus);
+  brain.updateMatrixWorld();
+  for (let i = pulses.length - 1; i >= 0; i--) {                       // the pulses ride their arcs
+    const p = pulses[i], u = (now - p.t0) / p.dur;
+    p.sprites.forEach((s, k) => {
+      const t = Math.max(0, Math.min(1, u - k * 0.045));
+      s.position.copy(p.c.getPoint(1 - Math.pow(1 - t, 2)));
+      s.visible = u - k * 0.045 > 0;
+    });
+    if (u >= 1 + TRAIL * 0.045) {
+      p.sprites.forEach(s => { brain.remove(s); s.material.dispose(); });
+      pulses.splice(i, 1);
+    } else if (u >= 1 && !p.done) { p.done = true; p.onArrive(); }
+  }
+  for (const z of ZONES) {                                              // the zones flare and settle
+    z.level = Math.max(0, z.level - dt * 0.55);
+    const idle = z.id === "hormones" ? 0.22 + 0.4 * chemArousal : 0.22;
+    const l = Math.max(idle, z.level);
+    z.halo.material.color.copy(z.base).lerp(z.tint, z.level);
+    z.halo.material.opacity = 0.16 + 0.75 * l;
+    z.halo.scale.setScalar(1.3 + 2.4 * z.level + (z.id === "hormones" ? 0.4 * chemArousal : 0));
+    z.core.scale.setScalar(1 + 0.8 * z.level);
+    const s = screen(z.pos);
+    z.tag.style.opacity = s ? 1 : 0;
+    if (s) { z.tag.style.left = s.x + "px"; z.tag.style.top = s.y + 16 + "px"; }
+    z.tag.classList.toggle("on", z.level > 0.2);
+  }
+  const placed = [];
+  for (let i = cards.length - 1; i >= 0; i--) {                        // the cards follow their zones, then fade
+    const c = cards[i], age = now - c.born, s = screen(ZONE.get(c.zid).pos);
+    if (s) { c.x = s.x; c.y = s.y; c.h = c.el.offsetHeight; placed.push(c); }
+    c.el.style.opacity = age > 4200 ? 0 : (s ? 1 : 0);
+    if (age > 5000) { c.el.remove(); cards.splice(i, 1); }
+  }
+  placed.sort((a, b) => a.y - b.y);                                    // never one card over another
+  for (let i = 1; i < placed.length; i++) {
+    const p = placed[i - 1], c = placed[i];
+    if (Math.abs(c.x - p.x) < 300 && c.y - c.h / 2 < p.y + p.h / 2 + 6) c.y = p.y + p.h / 2 + c.h / 2 + 6;
+  }
+  for (const c of placed) { c.el.style.left = c.x + "px"; c.el.style.top = c.y + "px"; }
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+connect();
+</script>
+<script id="recorded" type="application/json">
+[{"id":1,"kind":"question","text":"What is the original language of film or TV show of fer mamla gadbad gadbad?","source":"none"},{"id":2,"kind":"plan","parent":1,"seed":"fer mamla gadbad gadbad","relations":["original language of film or tv show"],"tail":"original language of film or tv show of fer mamla gadbad gadbad","n_hop":1},{"id":3,"kind":"walk","parent":2,"verified":true,"answer":"iso 639:pnb"},{"id":4,"kind":"hop","parent":3,"hop":0,"query":"what is the original language of film or tv show of fer mamla gadbad gadbad","fact":"iso 639:pnb is the original language of film or TV show of fer mamla gadbad gadbad","how":"lookup","similarity":1.0},{"id":5,"kind":"fact","parent":4,"text":"iso 639:pnb is the original language of film or TV show of fer mamla gadbad gadbad","subj":"fer mamla gadbad gadbad","rel":"original language of film or TV show","obj":"iso 639:pnb"},{"id":6,"kind":"vm","parent":3,"verified":true,"program_lines":16,"repairs":0},{"id":7,"kind":"answer","parent":1,"verified":true,"answer":"iso 639:pnb","fetched":0},{"id":470,"kind":"question","text":"What is the depiction of the flag of the country of Robin Hood Gardens?","source":"none"},{"id":471,"kind":"plan","parent":470,"seed":"Robin Hood Gardens","relations":["country","flag","depicts"],"tail":"country of Robin Hood Gardens","n_hop":3},{"id":472,"kind":"walk","parent":471,"verified":false,"reason":"plan_does_not_cover_question","refused":{"covers":false,"unknown_relations":[],"tail_relation":"country","paraphrased":[]}},{"id":473,"kind":"alias","parent":471,"how":"lever 6 (the question's own wording)","pairs":[["depiction of","depicts"]]},{"id":474,"kind":"walk","parent":471,"verified":true,"answer":"x-shaped cross"},{"id":475,"kind":"hop","parent":474,"hop":0,"query":"what is the country of Robin Hood Gardens","fact":"royaume-uni is the country of Robin Hood Gardens","how":"lookup","similarity":0.2490234375},{"id":476,"kind":"fact","parent":475,"text":"royaume-uni is the country of Robin Hood Gardens","subj":"Robin Hood Gardens","rel":"country","obj":"royaume-uni"},{"id":477,"kind":"hop","parent":474,"hop":1,"query":"royaume-uni flag","fact":"Second Union Jack is the flag of royaume-uni","how":"lookup","similarity":0.23876953125},{"id":478,"kind":"fact","parent":477,"text":"Second Union Jack is the flag of royaume-uni","subj":"royaume-uni","rel":"flag","obj":"Second Union Jack"},{"id":479,"kind":"hop","parent":474,"hop":2,"query":"Second Union Jack depicts","fact":"x-shaped cross is the depicts of Second Union Jack","how":"lookup","similarity":0.265625},{"id":480,"kind":"fact","parent":479,"text":"x-shaped cross is the depicts of Second Union Jack","subj":"Second Union Jack","rel":"depicts","obj":"x-shaped cross"},{"id":481,"kind":"vm","parent":474,"verified":true,"program_lines":36,"repairs":0},{"id":482,"kind":"answer","parent":470,"verified":true,"answer":"x-shaped cross","aliased":[["depiction of","depicts"]],"fetched":0},{"id":497,"kind":"question","text":"What is the country of origin for the operator of HMS Aldenham (L22)?","source":"none"},{"id":498,"kind":"plan","parent":497,"seed":"HMS Aldenham (L22)","relations":["operator","country of origin"],"tail":"operator of HMS Aldenham (L22)","n_hop":2},{"id":499,"kind":"walk","parent":498,"verified":false,"reason":"retrieval_exhausted"},{"id":500,"kind":"hop","parent":499,"hop":0,"query":"what is the operator of HMS Aldenham (L22)","fact":"english navy is the operator of HMS Aldenham (L22)","how":"lookup"},{"id":501,"kind":"fact","parent":500,"text":"english navy is the operator of HMS Aldenham (L22)","subj":"HMS Aldenham (L22)","rel":"operator","obj":"english navy"},{"id":502,"kind":"fetch","parent":497,"source":"none","entity":"english navy","n":0,"latent":false},{"id":503,"kind":"answer","parent":497,"verified":false,"reason":"retrieval_exhausted","entities":["english navy"],"fetched":0},{"id":8,"kind":"question","text":"In which group does the country of the location of formation of matt mihana hold membership?","source":"none"},{"id":9,"kind":"plan","parent":8,"seed":"matt mihana","relations":["location of formation","country","membership"],"tail":"location of formation of matt mihana","n_hop":3},{"id":10,"kind":"plan","parent":9,"seed":"matt mihana","relations":["location of formation","country","member of"],"tail":"location of formation of matt mihana","n_hop":3,"how":"lever 4 (exact alias, ahead of the walk)","rewrote":[["membership","member of"]]},{"id":11,"kind":"walk","parent":10,"verified":false,"reason":"plan_does_not_cover_question","refused":{"covers":false,"unknown_relations":[],"tail_relation":"location of formation","paraphrased":[]}},{"id":12,"kind":"answer","parent":8,"verified":false,"reason":"plan_does_not_cover_question","refused":{"covers":false,"unknown_relations":[],"tail_relation":"location of formation","paraphrased":[]},"aliased":[["membership","member of"]],"fetched":0}]
+
+</script>
+</body>
+</html>
