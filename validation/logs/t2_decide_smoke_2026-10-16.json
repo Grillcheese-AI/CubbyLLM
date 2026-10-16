@@ -1,0 +1,1462 @@
+{
+ "bench": "T2: act or skip on public rules, the two minds priced as the planner prices a floor",
+ "tier": "Grilly2Tier",
+ "seeds": 8,
+ "rounds": 60,
+ "k": 4,
+ "pool": 48,
+ "gain": 6.0,
+ "harm": 15.0,
+ "datasets": {
+  "mushroom": {
+   "minds": {
+    "habit": {
+     "mean": {
+      "hurts": 4.375,
+      "deaths": 0.0,
+      "harms+deaths": 4.375,
+      "meals": 53.5,
+      "acted": 57.875,
+      "first contacts": 21.875,
+      "first contacts hurt": 4.375,
+      "us per decision": 5598.008
+     },
+     "runs": [
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 55,
+       "acted": 60,
+       "first contacts": 28,
+       "first contacts hurt": 5,
+       "us per decision": 5179.631666942441
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 55,
+       "acted": 59,
+       "first contacts": 17,
+       "first contacts hurt": 4,
+       "us per decision": 3739.448333180917
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 54,
+       "acted": 58,
+       "first contacts": 20,
+       "first contacts hurt": 4,
+       "us per decision": 4263.16166685865
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 56,
+       "acted": 60,
+       "first contacts": 27,
+       "first contacts hurt": 4,
+       "us per decision": 6046.563333075028
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 50,
+       "acted": 55,
+       "first contacts": 20,
+       "first contacts hurt": 5,
+       "us per decision": 4838.353333131333
+      },
+      {
+       "hurts": 6,
+       "deaths": 0,
+       "harms+deaths": 6,
+       "meals": 54,
+       "acted": 60,
+       "first contacts": 26,
+       "first contacts hurt": 6,
+       "us per decision": 4973.149999629338
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 50,
+       "acted": 54,
+       "first contacts": 18,
+       "first contacts hurt": 4,
+       "us per decision": 4034.081666638182
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 54,
+       "acted": 57,
+       "first contacts": 19,
+       "first contacts hurt": 3,
+       "us per decision": 11709.673333461978
+      }
+     ]
+    },
+    "conditional": {
+     "mean": {
+      "hurts": 4.75,
+      "deaths": 0.0,
+      "harms+deaths": 4.75,
+      "meals": 50.375,
+      "acted": 55.125,
+      "first contacts": 16.625,
+      "first contacts hurt": 4.625,
+      "us per decision": 4161.971
+     },
+     "runs": [
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 47,
+       "acted": 52,
+       "first contacts": 15,
+       "first contacts hurt": 5,
+       "us per decision": 3880.911666844137
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 56,
+       "acted": 59,
+       "first contacts": 17,
+       "first contacts hurt": 3,
+       "us per decision": 4419.060000266957
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 53,
+       "acted": 58,
+       "first contacts": 20,
+       "first contacts hurt": 5,
+       "us per decision": 3732.603333385972
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 56,
+       "acted": 59,
+       "first contacts": 18,
+       "first contacts hurt": 3,
+       "us per decision": 5108.349999864004
+      },
+      {
+       "hurts": 7,
+       "deaths": 0,
+       "harms+deaths": 7,
+       "meals": 47,
+       "acted": 54,
+       "first contacts": 18,
+       "first contacts hurt": 7,
+       "us per decision": 3379.8483331338502
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 55,
+       "acted": 59,
+       "first contacts": 17,
+       "first contacts hurt": 4,
+       "us per decision": 3980.1266663441006
+      },
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 42,
+       "acted": 50,
+       "first contacts": 14,
+       "first contacts hurt": 7,
+       "us per decision": 3414.6983330477574
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 47,
+       "acted": 50,
+       "first contacts": 14,
+       "first contacts hurt": 3,
+       "us per decision": 5380.168333006925
+      }
+     ]
+    },
+    "fixed-novel": {
+     "mean": {
+      "hurts": 2.75,
+      "deaths": 0.0,
+      "harms+deaths": 2.75,
+      "meals": 41.875,
+      "acted": 44.625,
+      "first contacts": 10.625,
+      "first contacts hurt": 2.625,
+      "us per decision": 4639.746
+     },
+     "runs": [
+      {
+       "hurts": 2,
+       "deaths": 0,
+       "harms+deaths": 2,
+       "meals": 43,
+       "acted": 45,
+       "first contacts": 8,
+       "first contacts hurt": 2,
+       "us per decision": 9241.350000168799
+      },
+      {
+       "hurts": 0,
+       "deaths": 0,
+       "harms+deaths": 0,
+       "meals": 41,
+       "acted": 41,
+       "first contacts": 7,
+       "first contacts hurt": 0,
+       "us per decision": 4588.148333217153
+      },
+      {
+       "hurts": 1,
+       "deaths": 0,
+       "harms+deaths": 1,
+       "meals": 41,
+       "acted": 42,
+       "first contacts": 10,
+       "first contacts hurt": 1,
+       "us per decision": 4546.69833349423
+      },
+      {
+       "hurts": 1,
+       "deaths": 0,
+       "harms+deaths": 1,
+       "meals": 42,
+       "acted": 43,
+       "first contacts": 8,
+       "first contacts hurt": 1,
+       "us per decision": 4261.933333267128
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 42,
+       "acted": 47,
+       "first contacts": 15,
+       "first contacts hurt": 5,
+       "us per decision": 3627.2266666856012
+      },
+      {
+       "hurts": 2,
+       "deaths": 0,
+       "harms+deaths": 2,
+       "meals": 42,
+       "acted": 44,
+       "first contacts": 11,
+       "first contacts hurt": 2,
+       "us per decision": 4398.711666362942
+      },
+      {
+       "hurts": 7,
+       "deaths": 0,
+       "harms+deaths": 7,
+       "meals": 41,
+       "acted": 48,
+       "first contacts": 14,
+       "first contacts hurt": 7,
+       "us per decision": 3231.08166661162
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 43,
+       "acted": 47,
+       "first contacts": 12,
+       "first contacts hurt": 3,
+       "us per decision": 3222.8166670392966
+      }
+     ]
+    },
+    "logreg.1": {
+     "mean": {
+      "hurts": 3.375,
+      "deaths": 0.0,
+      "harms+deaths": 3.375,
+      "meals": 54.75,
+      "acted": 58.125,
+      "first contacts": 0.0,
+      "first contacts hurt": 0.0,
+      "us per decision": 5547.399
+     },
+     "runs": [
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 56,
+       "acted": 60,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 8492.738333613184
+      },
+      {
+       "hurts": 2,
+       "deaths": 0,
+       "harms+deaths": 2,
+       "meals": 58,
+       "acted": 60,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 3370.7466668905304
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 54,
+       "acted": 57,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 5774.188333028481
+      },
+      {
+       "hurts": 2,
+       "deaths": 0,
+       "harms+deaths": 2,
+       "meals": 58,
+       "acted": 60,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 6207.471666433169
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 50,
+       "acted": 55,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 5298.310000155955
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 56,
+       "acted": 60,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 6240.839999979168
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 51,
+       "acted": 55,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 5271.1566663977765
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 55,
+       "acted": 58,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 3723.7366663854723
+      }
+     ]
+    },
+    "bayes": {
+     "mean": {
+      "hurts": 2.625,
+      "deaths": 0.0,
+      "harms+deaths": 2.625,
+      "meals": 48.25,
+      "acted": 50.875,
+      "first contacts": 0.0,
+      "first contacts hurt": 0.0,
+      "us per decision": 1667.634
+     },
+     "runs": [
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 50,
+       "acted": 53,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 1017.1449999082446
+      },
+      {
+       "hurts": 0,
+       "deaths": 0,
+       "harms+deaths": 0,
+       "meals": 53,
+       "acted": 53,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 1538.2483334785018
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 48,
+       "acted": 51,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 1837.6266665048508
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 50,
+       "acted": 54,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 1856.1466669780202
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 48,
+       "acted": 52,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 1979.9816664696361
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 47,
+       "acted": 50,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 2246.210000036323
+      },
+      {
+       "hurts": 2,
+       "deaths": 0,
+       "harms+deaths": 2,
+       "meals": 48,
+       "acted": 50,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 1595.1199997289223
+      },
+      {
+       "hurts": 2,
+       "deaths": 0,
+       "harms+deaths": 2,
+       "meals": 42,
+       "acted": 44,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 1270.5966669576203
+      }
+     ]
+    }
+   },
+   "habit_vs_conditional": {
+    "harms+deaths_reduction": -0.086,
+    "95ci": [
+     -0.405,
+     0.176
+    ],
+    "fewer_in": 3,
+    "more_in": 3
+   }
+  },
+  "car": {
+   "minds": {
+    "habit": {
+     "mean": {
+      "hurts": 5.875,
+      "deaths": 0.0,
+      "harms+deaths": 5.875,
+      "meals": 36.125,
+      "acted": 42.0,
+      "first contacts": 12.5,
+      "first contacts hurt": 5.875,
+      "us per decision": 3073.225
+     },
+     "runs": [
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 33,
+       "acted": 41,
+       "first contacts": 14,
+       "first contacts hurt": 8,
+       "us per decision": 4108.879999936714
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 42,
+       "acted": 47,
+       "first contacts": 13,
+       "first contacts hurt": 5,
+       "us per decision": 2834.508333277578
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 29,
+       "acted": 33,
+       "first contacts": 9,
+       "first contacts hurt": 4,
+       "us per decision": 3204.5483333301186
+      },
+      {
+       "hurts": 11,
+       "deaths": 0,
+       "harms+deaths": 11,
+       "meals": 41,
+       "acted": 52,
+       "first contacts": 18,
+       "first contacts hurt": 11,
+       "us per decision": 2989.588333427188
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 20,
+       "acted": 24,
+       "first contacts": 5,
+       "first contacts hurt": 4,
+       "us per decision": 2393.333333444995
+      },
+      {
+       "hurts": 6,
+       "deaths": 0,
+       "harms+deaths": 6,
+       "meals": 35,
+       "acted": 41,
+       "first contacts": 11,
+       "first contacts hurt": 6,
+       "us per decision": 3000.008333219739
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 45,
+       "acted": 49,
+       "first contacts": 15,
+       "first contacts hurt": 4,
+       "us per decision": 2905.888333225448
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 44,
+       "acted": 49,
+       "first contacts": 15,
+       "first contacts hurt": 5,
+       "us per decision": 3149.0450000395263
+      }
+     ]
+    },
+    "conditional": {
+     "mean": {
+      "hurts": 11.125,
+      "deaths": 0.0,
+      "harms+deaths": 11.125,
+      "meals": 31.625,
+      "acted": 42.75,
+      "first contacts": 12.0,
+      "first contacts hurt": 7.625,
+      "us per decision": 4326.252
+     },
+     "runs": [
+      {
+       "hurts": 15,
+       "deaths": 0,
+       "harms+deaths": 15,
+       "meals": 32,
+       "acted": 47,
+       "first contacts": 16,
+       "first contacts hurt": 12,
+       "us per decision": 3087.1300001914883
+      },
+      {
+       "hurts": 9,
+       "deaths": 0,
+       "harms+deaths": 9,
+       "meals": 29,
+       "acted": 38,
+       "first contacts": 8,
+       "first contacts hurt": 5,
+       "us per decision": 10992.629999964265
+      },
+      {
+       "hurts": 12,
+       "deaths": 0,
+       "harms+deaths": 12,
+       "meals": 23,
+       "acted": 35,
+       "first contacts": 7,
+       "first contacts hurt": 6,
+       "us per decision": 3478.4300001168353
+      },
+      {
+       "hurts": 12,
+       "deaths": 0,
+       "harms+deaths": 12,
+       "meals": 25,
+       "acted": 37,
+       "first contacts": 7,
+       "first contacts hurt": 6,
+       "us per decision": 3690.9416665973063
+      },
+      {
+       "hurts": 12,
+       "deaths": 0,
+       "harms+deaths": 12,
+       "meals": 34,
+       "acted": 46,
+       "first contacts": 15,
+       "first contacts hurt": 9,
+       "us per decision": 3092.2766665753443
+      },
+      {
+       "hurts": 13,
+       "deaths": 0,
+       "harms+deaths": 13,
+       "meals": 32,
+       "acted": 45,
+       "first contacts": 16,
+       "first contacts hurt": 11,
+       "us per decision": 3503.196666497388
+      },
+      {
+       "hurts": 9,
+       "deaths": 0,
+       "harms+deaths": 9,
+       "meals": 33,
+       "acted": 42,
+       "first contacts": 10,
+       "first contacts hurt": 5,
+       "us per decision": 3117.069999946883
+      },
+      {
+       "hurts": 7,
+       "deaths": 0,
+       "harms+deaths": 7,
+       "meals": 45,
+       "acted": 52,
+       "first contacts": 17,
+       "first contacts hurt": 7,
+       "us per decision": 3648.3416669701305
+      }
+     ]
+    },
+    "fixed-novel": {
+     "mean": {
+      "hurts": 9.375,
+      "deaths": 0.0,
+      "harms+deaths": 9.375,
+      "meals": 32.0,
+      "acted": 41.375,
+      "first contacts": 10.875,
+      "first contacts hurt": 6.75,
+      "us per decision": 4160.402
+     },
+     "runs": [
+      {
+       "hurts": 13,
+       "deaths": 0,
+       "harms+deaths": 13,
+       "meals": 27,
+       "acted": 40,
+       "first contacts": 9,
+       "first contacts hurt": 7,
+       "us per decision": 2573.6816665206184
+      },
+      {
+       "hurts": 11,
+       "deaths": 0,
+       "harms+deaths": 11,
+       "meals": 31,
+       "acted": 42,
+       "first contacts": 11,
+       "first contacts hurt": 7,
+       "us per decision": 3384.376666751147
+      },
+      {
+       "hurts": 10,
+       "deaths": 0,
+       "harms+deaths": 10,
+       "meals": 33,
+       "acted": 43,
+       "first contacts": 11,
+       "first contacts hurt": 8,
+       "us per decision": 2902.6983332490395
+      },
+      {
+       "hurts": 9,
+       "deaths": 0,
+       "harms+deaths": 9,
+       "meals": 29,
+       "acted": 38,
+       "first contacts": 8,
+       "first contacts hurt": 6,
+       "us per decision": 2895.0033335301364
+      },
+      {
+       "hurts": 10,
+       "deaths": 0,
+       "harms+deaths": 10,
+       "meals": 34,
+       "acted": 44,
+       "first contacts": 14,
+       "first contacts hurt": 8,
+       "us per decision": 3641.263333580961
+      },
+      {
+       "hurts": 10,
+       "deaths": 0,
+       "harms+deaths": 10,
+       "meals": 32,
+       "acted": 42,
+       "first contacts": 14,
+       "first contacts hurt": 9,
+       "us per decision": 10046.630000215373
+      },
+      {
+       "hurts": 9,
+       "deaths": 0,
+       "harms+deaths": 9,
+       "meals": 31,
+       "acted": 40,
+       "first contacts": 10,
+       "first contacts hurt": 6,
+       "us per decision": 3798.1083331639334
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 39,
+       "acted": 42,
+       "first contacts": 10,
+       "first contacts hurt": 3,
+       "us per decision": 4041.451666610859
+      }
+     ]
+    },
+    "logreg.1": {
+     "mean": {
+      "hurts": 9.25,
+      "deaths": 0.0,
+      "harms+deaths": 9.25,
+      "meals": 37.0,
+      "acted": 46.25,
+      "first contacts": 0.0,
+      "first contacts hurt": 0.0,
+      "us per decision": 392.716
+     },
+     "runs": [
+      {
+       "hurts": 10,
+       "deaths": 0,
+       "harms+deaths": 10,
+       "meals": 23,
+       "acted": 33,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 267.1500000966868
+      },
+      {
+       "hurts": 12,
+       "deaths": 0,
+       "harms+deaths": 12,
+       "meals": 39,
+       "acted": 51,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 402.85833329107845
+      },
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 38,
+       "acted": 46,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 471.35999993770383
+      },
+      {
+       "hurts": 7,
+       "deaths": 0,
+       "harms+deaths": 7,
+       "meals": 36,
+       "acted": 43,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 305.17333349659265
+      },
+      {
+       "hurts": 10,
+       "deaths": 0,
+       "harms+deaths": 10,
+       "meals": 26,
+       "acted": 36,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 249.37999981678635
+      },
+      {
+       "hurts": 11,
+       "deaths": 0,
+       "harms+deaths": 11,
+       "meals": 42,
+       "acted": 53,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 454.619999982242
+      },
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 43,
+       "acted": 51,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 408.12500010360964
+      },
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 49,
+       "acted": 57,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 583.0633332758831
+      }
+     ]
+    },
+    "bayes": {
+     "mean": {
+      "hurts": 8.25,
+      "deaths": 0.0,
+      "harms+deaths": 8.25,
+      "meals": 35.0,
+      "acted": 43.25,
+      "first contacts": 0.0,
+      "first contacts hurt": 0.0,
+      "us per decision": 360.57
+     },
+     "runs": [
+      {
+       "hurts": 12,
+       "deaths": 0,
+       "harms+deaths": 12,
+       "meals": 20,
+       "acted": 32,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 394.61499976217357
+      },
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 38,
+       "acted": 46,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 375.7766666240059
+      },
+      {
+       "hurts": 9,
+       "deaths": 0,
+       "harms+deaths": 9,
+       "meals": 31,
+       "acted": 40,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 354.4033333431192
+      },
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 35,
+       "acted": 43,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 296.30666679925827
+      },
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 27,
+       "acted": 35,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 352.56333321740385
+      },
+      {
+       "hurts": 11,
+       "deaths": 0,
+       "harms+deaths": 11,
+       "meals": 44,
+       "acted": 55,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 350.6566664024528
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 36,
+       "acted": 41,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 359.6533333620755
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 49,
+       "acted": 54,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 400.5833331272394
+      }
+     ]
+    }
+   },
+   "habit_vs_conditional": {
+    "harms+deaths_reduction": -0.894,
+    "95ci": [
+     -1.425,
+     -0.492
+    ],
+    "fewer_in": 0,
+    "more_in": 8
+   }
+  },
+  "tictactoe": {
+   "minds": {
+    "habit": {
+     "mean": {
+      "hurts": 4.875,
+      "deaths": 0.0,
+      "harms+deaths": 4.875,
+      "meals": 49.0,
+      "acted": 53.875,
+      "first contacts": 19.0,
+      "first contacts hurt": 4.875,
+      "us per decision": 5176.6
+     },
+     "runs": [
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 55,
+       "acted": 59,
+       "first contacts": 25,
+       "first contacts hurt": 4,
+       "us per decision": 4172.628333193036
+      },
+      {
+       "hurts": 7,
+       "deaths": 0,
+       "harms+deaths": 7,
+       "meals": 50,
+       "acted": 57,
+       "first contacts": 22,
+       "first contacts hurt": 7,
+       "us per decision": 4039.454999716933
+      },
+      {
+       "hurts": 6,
+       "deaths": 0,
+       "harms+deaths": 6,
+       "meals": 42,
+       "acted": 48,
+       "first contacts": 13,
+       "first contacts hurt": 6,
+       "us per decision": 3157.6783333851686
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 51,
+       "acted": 56,
+       "first contacts": 21,
+       "first contacts hurt": 5,
+       "us per decision": 4367.794999901283
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 36,
+       "acted": 39,
+       "first contacts": 10,
+       "first contacts hurt": 3,
+       "us per decision": 2987.146666418994
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 50,
+       "acted": 53,
+       "first contacts": 17,
+       "first contacts hurt": 3,
+       "us per decision": 12619.141666861347
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 54,
+       "acted": 59,
+       "first contacts": 21,
+       "first contacts hurt": 5,
+       "us per decision": 4836.034999971162
+      },
+      {
+       "hurts": 6,
+       "deaths": 0,
+       "harms+deaths": 6,
+       "meals": 54,
+       "acted": 60,
+       "first contacts": 23,
+       "first contacts hurt": 6,
+       "us per decision": 5232.921666902257
+      }
+     ]
+    },
+    "conditional": {
+     "mean": {
+      "hurts": 4.875,
+      "deaths": 0.0,
+      "harms+deaths": 4.875,
+      "meals": 48.25,
+      "acted": 53.125,
+      "first contacts": 15.5,
+      "first contacts hurt": 4.375,
+      "us per decision": 5306.495
+     },
+     "runs": [
+      {
+       "hurts": 2,
+       "deaths": 0,
+       "harms+deaths": 2,
+       "meals": 57,
+       "acted": 59,
+       "first contacts": 16,
+       "first contacts hurt": 2,
+       "us per decision": 4555.0100003310945
+      },
+      {
+       "hurts": 7,
+       "deaths": 0,
+       "harms+deaths": 7,
+       "meals": 40,
+       "acted": 47,
+       "first contacts": 11,
+       "first contacts hurt": 5,
+       "us per decision": 3696.706666293418
+      },
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 47,
+       "acted": 55,
+       "first contacts": 17,
+       "first contacts hurt": 7,
+       "us per decision": 3396.7149999322523
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 46,
+       "acted": 51,
+       "first contacts": 13,
+       "first contacts hurt": 4,
+       "us per decision": 3636.4450002414137
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 52,
+       "acted": 56,
+       "first contacts": 15,
+       "first contacts hurt": 4,
+       "us per decision": 3691.1816664238963
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 48,
+       "acted": 51,
+       "first contacts": 21,
+       "first contacts hurt": 3,
+       "us per decision": 11868.686666821304
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 54,
+       "acted": 58,
+       "first contacts": 18,
+       "first contacts hurt": 4,
+       "us per decision": 7265.229999939038
+      },
+      {
+       "hurts": 6,
+       "deaths": 0,
+       "harms+deaths": 6,
+       "meals": 42,
+       "acted": 48,
+       "first contacts": 13,
+       "first contacts hurt": 6,
+       "us per decision": 4341.983333688404
+      }
+     ]
+    },
+    "fixed-novel": {
+     "mean": {
+      "hurts": 5.125,
+      "deaths": 0.0,
+      "harms+deaths": 5.125,
+      "meals": 44.625,
+      "acted": 49.75,
+      "first contacts": 15.25,
+      "first contacts hurt": 4.75,
+      "us per decision": 5182.409
+     },
+     "runs": [
+      {
+       "hurts": 1,
+       "deaths": 0,
+       "harms+deaths": 1,
+       "meals": 40,
+       "acted": 41,
+       "first contacts": 8,
+       "first contacts hurt": 1,
+       "us per decision": 4613.461666849616
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 41,
+       "acted": 46,
+       "first contacts": 13,
+       "first contacts hurt": 5,
+       "us per decision": 3751.8066666962113
+      },
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 47,
+       "acted": 55,
+       "first contacts": 19,
+       "first contacts hurt": 8,
+       "us per decision": 3364.4133334140256
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 50,
+       "acted": 55,
+       "first contacts": 20,
+       "first contacts hurt": 5,
+       "us per decision": 3953.6550000775605
+      },
+      {
+       "hurts": 10,
+       "deaths": 0,
+       "harms+deaths": 10,
+       "meals": 34,
+       "acted": 44,
+       "first contacts": 12,
+       "first contacts hurt": 7,
+       "us per decision": 2877.4816665342464
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 46,
+       "acted": 50,
+       "first contacts": 20,
+       "first contacts hurt": 4,
+       "us per decision": 5608.41166661703
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 49,
+       "acted": 52,
+       "first contacts": 10,
+       "first contacts hurt": 3,
+       "us per decision": 10065.6650000019
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 50,
+       "acted": 55,
+       "first contacts": 20,
+       "first contacts hurt": 5,
+       "us per decision": 7224.376666757355
+      }
+     ]
+    },
+    "logreg.1": {
+     "mean": {
+      "hurts": 5.375,
+      "deaths": 0.0,
+      "harms+deaths": 5.375,
+      "meals": 51.125,
+      "acted": 56.5,
+      "first contacts": 0.0,
+      "first contacts hurt": 0.0,
+      "us per decision": 916.335
+     },
+     "runs": [
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 57,
+       "acted": 60,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 1218.4766670543468
+      },
+      {
+       "hurts": 9,
+       "deaths": 0,
+       "harms+deaths": 9,
+       "meals": 51,
+       "acted": 60,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 1120.5566669256466
+      },
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 46,
+       "acted": 54,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 996.613332972629
+      },
+      {
+       "hurts": 6,
+       "deaths": 0,
+       "harms+deaths": 6,
+       "meals": 53,
+       "acted": 59,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 982.0816663705045
+      },
+      {
+       "hurts": 10,
+       "deaths": 0,
+       "harms+deaths": 10,
+       "meals": 34,
+       "acted": 44,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 592.6049997772983
+      },
+      {
+       "hurts": 0,
+       "deaths": 0,
+       "harms+deaths": 0,
+       "meals": 60,
+       "acted": 60,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 1037.4216662360898
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 52,
+       "acted": 56,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 633.31833328751
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 56,
+       "acted": 59,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 749.6099999116268
+      }
+     ]
+    },
+    "bayes": {
+     "mean": {
+      "hurts": 5.125,
+      "deaths": 0.0,
+      "harms+deaths": 5.125,
+      "meals": 47.875,
+      "acted": 53.0,
+      "first contacts": 0.0,
+      "first contacts hurt": 0.0,
+      "us per decision": 486.123
+     },
+     "runs": [
+      {
+       "hurts": 2,
+       "deaths": 0,
+       "harms+deaths": 2,
+       "meals": 55,
+       "acted": 57,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 441.52833318851964
+      },
+      {
+       "hurts": 11,
+       "deaths": 0,
+       "harms+deaths": 11,
+       "meals": 48,
+       "acted": 59,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 533.0633332656968
+      },
+      {
+       "hurts": 8,
+       "deaths": 0,
+       "harms+deaths": 8,
+       "meals": 48,
+       "acted": 56,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 464.65333368056844
+      },
+      {
+       "hurts": 5,
+       "deaths": 0,
+       "harms+deaths": 5,
+       "meals": 41,
+       "acted": 46,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 542.4350002916375
+      },
+      {
+       "hurts": 7,
+       "deaths": 0,
+       "harms+deaths": 7,
+       "meals": 34,
+       "acted": 41,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 424.22833315261715
+      },
+      {
+       "hurts": 1,
+       "deaths": 0,
+       "harms+deaths": 1,
+       "meals": 58,
+       "acted": 59,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 476.25333318137564
+      },
+      {
+       "hurts": 3,
+       "deaths": 0,
+       "harms+deaths": 3,
+       "meals": 51,
+       "acted": 54,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 427.2299996955553
+      },
+      {
+       "hurts": 4,
+       "deaths": 0,
+       "harms+deaths": 4,
+       "meals": 48,
+       "acted": 52,
+       "first contacts": 0,
+       "first contacts hurt": 0,
+       "us per decision": 579.5933333502035
+      }
+     ]
+    }
+   },
+   "habit_vs_conditional": {
+    "harms+deaths_reduction": 0.0,
+    "95ci": [
+     -0.158,
+     0.162
+    ],
+    "fewer_in": 2,
+    "more_in": 2
+   }
+  }
+ },
+ "secs": 28.3
+}

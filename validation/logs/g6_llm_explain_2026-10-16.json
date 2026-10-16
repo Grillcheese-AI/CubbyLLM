@@ -1,0 +1,170 @@
+{
+ "postmortem": {
+  "gemini": {
+   "n": 600,
+   "ours": 0.357,
+   "theirs": 0.454,
+   "reduction": 0.212,
+   "95ci": [
+    0.186,
+    0.239
+   ],
+   "lower_on_every_rule": true,
+   "control": {
+    "ours": 0.161,
+    "theirs": 0.054
+   },
+   "control_per_rule": {
+    "harm": [
+     0.063,
+     0.045
+    ],
+    "chill": [
+     0.016,
+     0.042
+    ],
+    "breath": [
+     0.037,
+     0.049
+    ],
+    "pass": [
+     0.265,
+     0.052
+    ],
+    "break": [
+     0.275,
+     0.054
+    ],
+    "food": [
+     0.309,
+     0.084
+    ]
+   }
+  },
+  "gpt": {
+   "n": 120,
+   "ours": 0.374,
+   "theirs": 0.738,
+   "reduction": 0.493,
+   "95ci": [
+    0.441,
+    0.542
+   ],
+   "lower_on_every_rule": true,
+   "control": {
+    "ours": 0.161,
+    "theirs": 0.062
+   },
+   "control_per_rule": {
+    "harm": [
+     0.063,
+     0.047
+    ],
+    "chill": [
+     0.016,
+     0.041
+    ],
+    "breath": [
+     0.037,
+     0.045
+    ],
+    "pass": [
+     0.265,
+     0.067
+    ],
+    "break": [
+     0.275,
+     0.072
+    ],
+    "food": [
+     0.309,
+     0.1
+    ]
+   }
+  }
+ },
+ "postmortem+both": {
+  "gemini": {
+   "n": 600,
+   "ours": 0.337,
+   "theirs": 0.454,
+   "reduction": 0.258,
+   "95ci": [
+    0.233,
+    0.283
+   ],
+   "lower_on_every_rule": true,
+   "control": {
+    "ours": 0.037,
+    "theirs": 0.054
+   },
+   "control_per_rule": {
+    "harm": [
+     0.007,
+     0.045
+    ],
+    "chill": [
+     0.005,
+     0.042
+    ],
+    "breath": [
+     0.015,
+     0.049
+    ],
+    "pass": [
+     0.042,
+     0.052
+    ],
+    "break": [
+     0.043,
+     0.054
+    ],
+    "food": [
+     0.111,
+     0.084
+    ]
+   }
+  },
+  "gpt": {
+   "n": 120,
+   "ours": 0.34,
+   "theirs": 0.738,
+   "reduction": 0.539,
+   "95ci": [
+    0.492,
+    0.583
+   ],
+   "lower_on_every_rule": true,
+   "control": {
+    "ours": 0.037,
+    "theirs": 0.062
+   },
+   "control_per_rule": {
+    "harm": [
+     0.007,
+     0.047
+    ],
+    "chill": [
+     0.005,
+     0.041
+    ],
+    "breath": [
+     0.015,
+     0.045
+    ],
+    "pass": [
+     0.042,
+     0.067
+    ],
+    "break": [
+     0.043,
+     0.072
+    ],
+    "food": [
+     0.111,
+     0.1
+    ]
+   }
+  }
+ }
+}

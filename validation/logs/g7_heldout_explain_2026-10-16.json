@@ -1,0 +1,2424 @@
+{
+ "ticks": 3000,
+ "seeds": 48,
+ "first": 5000,
+ "safe": false,
+ "nursery": 2500,
+ "secret": "icdl2027",
+ "modes": {
+  "habit": {
+   "mean": {
+    "harms": 2.792,
+    "deaths": 0.042,
+    "harms+deaths": 2.833,
+    "meals": 1.688,
+    "cells stood on": 185.688,
+    "ms per tick": 2.462,
+    "ms per tick p99": 14.026,
+    "causes": {
+     "harm hazard": 134,
+     "died hazard": 2
+    },
+    "first contacts": 170,
+    "first contacts hurt": 54,
+    "risk AUC": 0.563
+   },
+   "runs": [
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 1,
+     "cells stood on": 201,
+     "ms per tick": 2.4318930333429307,
+     "ms per tick p99": 14.516567998689421,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 188,
+     "ms per tick": 2.5288982333877357,
+     "ms per tick p99": 14.311411002599916,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 173,
+     "ms per tick": 2.7531928333022124,
+     "ms per tick p99": 14.63893400279629,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 201,
+     "ms per tick": 2.4273199333304847,
+     "ms per tick p99": 12.66956099974776,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "harms+deaths": 3,
+     "meals": 2,
+     "cells stood on": 144,
+     "ms per tick": 2.6332430333556354,
+     "ms per tick p99": 15.275116000775592,
+     "causes": {
+      "harm hazard": 3
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ],
+      [
+       0.333,
+       true
+      ],
+      [
+       0.648,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 24,
+     "deaths": 1,
+     "harms+deaths": 25,
+     "meals": 0,
+     "cells stood on": 201,
+     "ms per tick": 2.720294633323647,
+     "ms per tick p99": 16.36615900191827,
+     "causes": {
+      "harm hazard": 24,
+      "died hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ],
+      [
+       0.77,
+       true
+      ],
+      [
+       0.5,
+       false
+      ],
+      [
+       0.429,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 146,
+     "ms per tick": 2.545761933302856,
+     "ms per tick p99": 14.79061800087945,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 131,
+     "ms per tick": 2.93956650002292,
+     "ms per tick p99": 16.22354200098925,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "harms+deaths": 2,
+     "meals": 1,
+     "cells stood on": 203,
+     "ms per tick": 2.5721812000313853,
+     "ms per tick p99": 14.436757001858467,
+     "causes": {
+      "harm hazard": 2
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 163,
+     "ms per tick": 2.262957666639219,
+     "ms per tick p99": 14.499718998013062,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 1,
+     "cells stood on": 177,
+     "ms per tick": 2.6193266333296683,
+     "ms per tick p99": 15.19423699926844,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 6,
+     "deaths": 0,
+     "harms+deaths": 6,
+     "meals": 1,
+     "cells stood on": 213,
+     "ms per tick": 2.4802291000281302,
+     "ms per tick p99": 13.770857001545656,
+     "causes": {
+      "harm hazard": 6
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.657,
+       true
+      ],
+      [
+       0.6,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 195,
+     "ms per tick": 2.2056078667095185,
+     "ms per tick p99": 12.683429003336604,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 1,
+     "cells stood on": 182,
+     "ms per tick": 2.3104108666520915,
+     "ms per tick p99": 13.747893998515707,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "harms+deaths": 2,
+     "meals": 1,
+     "cells stood on": 192,
+     "ms per tick": 2.3645836999991543,
+     "ms per tick p99": 13.239366998532203,
+     "causes": {
+      "harm hazard": 2
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ],
+      [
+       0.333,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 192,
+     "ms per tick": 2.4022206332992937,
+     "ms per tick p99": 13.042121999424126,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 167,
+     "ms per tick": 2.6032357999089677,
+     "ms per tick p99": 15.137625999850547,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ],
+      [
+       0.333,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "harms+deaths": 2,
+     "meals": 2,
+     "cells stood on": 182,
+     "ms per tick": 2.342365166668363,
+     "ms per tick p99": 13.40300099989689,
+     "causes": {
+      "harm hazard": 2
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 209,
+     "ms per tick": 2.476284000001518,
+     "ms per tick p99": 15.178093000213227,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 185,
+     "ms per tick": 2.3268481999936435,
+     "ms per tick p99": 13.253971999038178,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 1,
+     "cells stood on": 198,
+     "ms per tick": 2.396812000009959,
+     "ms per tick p99": 13.035736001620535,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 191,
+     "ms per tick": 2.702793800041642,
+     "ms per tick p99": 14.947248999997017,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 213,
+     "ms per tick": 2.415460966652366,
+     "ms per tick p99": 13.413037999816876,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "harms+deaths": 3,
+     "meals": 2,
+     "cells stood on": 148,
+     "ms per tick": 2.503413633327,
+     "ms per tick p99": 14.445047000372117,
+     "causes": {
+      "harm hazard": 3
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ],
+      [
+       0.333,
+       true
+      ],
+      [
+       0.644,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 14,
+     "deaths": 0,
+     "harms+deaths": 14,
+     "meals": 1,
+     "cells stood on": 206,
+     "ms per tick": 2.347337466596703,
+     "ms per tick p99": 14.39114899741978,
+     "causes": {
+      "harm hazard": 14
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "harms+deaths": 2,
+     "meals": 2,
+     "cells stood on": 175,
+     "ms per tick": 2.4979871666825297,
+     "ms per tick p99": 14.599397001729791,
+     "causes": {
+      "harm hazard": 2
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ],
+      [
+       0.2,
+       false
+      ],
+      [
+       0.286,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "harms+deaths": 2,
+     "meals": 2,
+     "cells stood on": 193,
+     "ms per tick": 2.430857999958486,
+     "ms per tick p99": 14.11198800051345,
+     "causes": {
+      "harm hazard": 2
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 155,
+     "ms per tick": 2.4761729000141104,
+     "ms per tick p99": 14.74034500006381,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 195,
+     "ms per tick": 2.38579783331564,
+     "ms per tick p99": 14.710261000982426,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 203,
+     "ms per tick": 2.4366373666695536,
+     "ms per tick p99": 12.790349998576854,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 180,
+     "ms per tick": 2.585272799963908,
+     "ms per tick p99": 15.752746998005014,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ],
+      [
+       0.333,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 162,
+     "ms per tick": 2.293210933302665,
+     "ms per tick p99": 12.667168001134987,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 3,
+     "deaths": 0,
+     "harms+deaths": 3,
+     "meals": 2,
+     "cells stood on": 196,
+     "ms per tick": 2.685331133324022,
+     "ms per tick p99": 14.6193029977075,
+     "causes": {
+      "harm hazard": 3
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 1,
+     "cells stood on": 167,
+     "ms per tick": 2.3868149999895345,
+     "ms per tick p99": 13.093435002738245,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 165,
+     "ms per tick": 2.6005486333572967,
+     "ms per tick p99": 15.862146000217761,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 183,
+     "ms per tick": 2.7061910000362936,
+     "ms per tick p99": 15.214557998951806,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 1,
+     "cells stood on": 188,
+     "ms per tick": 2.256613899997319,
+     "ms per tick p99": 12.874849002255345,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 168,
+     "ms per tick": 2.6972146000140733,
+     "ms per tick p99": 14.817909000157606,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 20,
+     "deaths": 1,
+     "harms+deaths": 21,
+     "meals": 1,
+     "cells stood on": 184,
+     "ms per tick": 2.3219043333398686,
+     "ms per tick p99": 13.414664001102206,
+     "causes": {
+      "harm hazard": 20,
+      "died hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ],
+      [
+       0.684,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 179,
+     "ms per tick": 2.3997870666607923,
+     "ms per tick p99": 12.818226000017601,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "harms+deaths": 2,
+     "meals": 2,
+     "cells stood on": 198,
+     "ms per tick": 2.3433947000266926,
+     "ms per tick p99": 12.65470200130948,
+     "causes": {
+      "harm hazard": 2
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.6,
+       true
+      ],
+      [
+       0.6,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 7,
+     "deaths": 0,
+     "harms+deaths": 7,
+     "meals": 2,
+     "cells stood on": 219,
+     "ms per tick": 2.312216766662459,
+     "ms per tick p99": 12.628263000078702,
+     "causes": {
+      "harm hazard": 7
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.6,
+       true
+      ],
+      [
+       0.6,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 6,
+     "deaths": 0,
+     "harms+deaths": 6,
+     "meals": 1,
+     "cells stood on": 221,
+     "ms per tick": 2.4976832333413768,
+     "ms per tick p99": 13.189817000820725,
+     "causes": {
+      "harm hazard": 6
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.698,
+       false
+      ],
+      [
+       0.4,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 4,
+     "deaths": 0,
+     "harms+deaths": 4,
+     "meals": 2,
+     "cells stood on": 184,
+     "ms per tick": 2.384082066685854,
+     "ms per tick p99": 13.595734998234535,
+     "causes": {
+      "harm hazard": 4
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ],
+      [
+       0.698,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 1,
+     "cells stood on": 172,
+     "ms per tick": 2.38514016671373,
+     "ms per tick p99": 14.180908999987873,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 179,
+     "ms per tick": 2.2073675333134206,
+     "ms per tick p99": 13.038946998858574,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 197,
+     "ms per tick": 2.1809377333750795,
+     "ms per tick p99": 12.451315997350319,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "harms+deaths": 2,
+     "meals": 2,
+     "cells stood on": 249,
+     "ms per tick": 2.3873905000133773,
+     "ms per tick p99": 12.809632001335547,
+     "causes": {
+      "harm hazard": 2
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ],
+      [
+       0.5,
+       false
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    }
+   ]
+  },
+  "conditional": {
+   "mean": {
+    "harms": 0.875,
+    "deaths": 0.0,
+    "harms+deaths": 0.875,
+    "meals": 1.917,
+    "cells stood on": 181.292,
+    "ms per tick": 2.527,
+    "ms per tick p99": 14.827,
+    "causes": {
+     "harm hazard": 42
+    },
+    "first contacts": 103,
+    "first contacts hurt": 19,
+    "risk AUC": 0.524
+   },
+   "runs": [
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 174,
+     "ms per tick": 2.854380700021769,
+     "ms per tick p99": 15.959258998191213,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 150,
+     "ms per tick": 2.366468400017766,
+     "ms per tick p99": 14.84205499968078,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 2,
+     "deaths": 0,
+     "harms+deaths": 2,
+     "meals": 2,
+     "cells stood on": 175,
+     "ms per tick": 2.379573199990167,
+     "ms per tick p99": 14.161240999237583,
+     "causes": {
+      "harm hazard": 2
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 166,
+     "ms per tick": 2.575305300006827,
+     "ms per tick p99": 15.343911999152603,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 1,
+     "cells stood on": 18,
+     "ms per tick": 1.761768033341165,
+     "ms per tick p99": 6.106624000167352,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 173,
+     "ms per tick": 2.488929366609227,
+     "ms per tick p99": 14.197105998064048,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 168,
+     "ms per tick": 2.5623175333542654,
+     "ms per tick p99": 14.907739001610022,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 188,
+     "ms per tick": 2.6481296666534035,
+     "ms per tick p99": 15.924232999932311,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 1,
+     "cells stood on": 207,
+     "ms per tick": 2.431127200011057,
+     "ms per tick p99": 13.882674997221319,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 4,
+     "deaths": 0,
+     "harms+deaths": 4,
+     "meals": 2,
+     "cells stood on": 163,
+     "ms per tick": 2.423190966686282,
+     "ms per tick p99": 15.659669001506698,
+     "causes": {
+      "harm hazard": 4
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ],
+      [
+       0.333,
+       true
+      ],
+      [
+       0.769,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 212,
+     "ms per tick": 2.6097265333519317,
+     "ms per tick p99": 15.589379999582837,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ],
+      [
+       0.333,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 202,
+     "ms per tick": 2.581259566662387,
+     "ms per tick p99": 14.244759999310153,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 150,
+     "ms per tick": 2.5403743666817418,
+     "ms per tick p99": 15.19016099959116,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 209,
+     "ms per tick": 2.4620224333508913,
+     "ms per tick p99": 14.845952000323447,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 8,
+     "deaths": 0,
+     "harms+deaths": 8,
+     "meals": 2,
+     "cells stood on": 181,
+     "ms per tick": 2.460753199981506,
+     "ms per tick p99": 14.161177998976184,
+     "causes": {
+      "harm hazard": 8
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ],
+      [
+       0.333,
+       true
+      ],
+      [
+       0.676,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 186,
+     "ms per tick": 2.570265833351489,
+     "ms per tick p99": 14.994681002499409,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 185,
+     "ms per tick": 2.7585887333310284,
+     "ms per tick p99": 16.221683998810462,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ],
+      [
+       0.4,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 175,
+     "ms per tick": 2.523131199995987,
+     "ms per tick p99": 14.47251200010211,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 178,
+     "ms per tick": 2.722841899989968,
+     "ms per tick p99": 21.206632999383103,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 167,
+     "ms per tick": 2.5061586332764514,
+     "ms per tick p99": 13.952895999500432,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 190,
+     "ms per tick": 2.448106200008624,
+     "ms per tick p99": 13.672921999022941,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 161,
+     "ms per tick": 2.8748633999991093,
+     "ms per tick p99": 16.78031000163167,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 240,
+     "ms per tick": 2.8008240000090154,
+     "ms per tick p99": 16.11251599770185,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 186,
+     "ms per tick": 2.995907433354053,
+     "ms per tick p99": 17.118352999750634,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ],
+      [
+       0.333,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 185,
+     "ms per tick": 3.156010233314494,
+     "ms per tick p99": 18.321884998404126,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 179,
+     "ms per tick": 2.724860533343114,
+     "ms per tick p99": 16.37637300009366,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 181,
+     "ms per tick": 2.893798666636333,
+     "ms per tick p99": 20.318536999693595,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 183,
+     "ms per tick": 2.541744033352491,
+     "ms per tick p99": 13.51770800243684,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 186,
+     "ms per tick": 2.386460633344541,
+     "ms per tick p99": 14.784730001010724,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 1,
+     "cells stood on": 184,
+     "ms per tick": 2.584714033313503,
+     "ms per tick p99": 15.043180999855368,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 1,
+     "deaths": 0,
+     "harms+deaths": 1,
+     "meals": 2,
+     "cells stood on": 220,
+     "ms per tick": 2.6417685666650264,
+     "ms per tick p99": 16.0434790004,
+     "causes": {
+      "harm hazard": 1
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.4,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 154,
+     "ms per tick": 2.4886330999712905,
+     "ms per tick p99": 14.736315002337491,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 179,
+     "ms per tick": 2.3191645666617355,
+     "ms per tick p99": 14.759580998033924,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 213,
+     "ms per tick": 2.5516338999780905,
+     "ms per tick p99": 14.234351999912175,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 178,
+     "ms per tick": 2.695123233347355,
+     "ms per tick p99": 16.060131998710844,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 191,
+     "ms per tick": 2.481029866685276,
+     "ms per tick p99": 14.620022000199237,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 211,
+     "ms per tick": 2.3216652333794627,
+     "ms per tick p99": 13.344020999065833,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 171,
+     "ms per tick": 2.536631300013444,
+     "ms per tick p99": 15.187618000090861,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 15,
+     "deaths": 0,
+     "harms+deaths": 15,
+     "meals": 2,
+     "cells stood on": 191,
+     "ms per tick": 2.2941688999465746,
+     "ms per tick p99": 14.495671999466124,
+     "causes": {
+      "harm hazard": 15
+     },
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.5,
+       true
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 163,
+     "ms per tick": 2.3472340999808994,
+     "ms per tick p99": 12.789628999744304,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 1,
+     "cells stood on": 185,
+     "ms per tick": 2.552618933311654,
+     "ms per tick p99": 13.391260002936146,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 178,
+     "ms per tick": 2.365129133309286,
+     "ms per tick p99": 13.612423998820294,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 225,
+     "ms per tick": 2.2727523000260894,
+     "ms per tick p99": 12.782403000092003,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 195,
+     "ms per tick": 2.3277279666654067,
+     "ms per tick p99": 13.90389900298027,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ],
+      [
+       0.25,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 157,
+     "ms per tick": 2.39233853329885,
+     "ms per tick p99": 14.49235099928041,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ],
+      [
+       0.333,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 169,
+     "ms per tick": 2.3880695333488497,
+     "ms per tick p99": 13.247713999371589,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 214,
+     "ms per tick": 2.2759672333437875,
+     "ms per tick p99": 12.86578099865437,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    },
+    {
+     "harms": 0,
+     "deaths": 0,
+     "harms+deaths": 0,
+     "meals": 2,
+     "cells stood on": 206,
+     "ms per tick": 2.411671700008204,
+     "ms per tick p99": 13.219804998443577,
+     "causes": {},
+     "branch log": [
+      [
+       0.5,
+       false
+      ]
+     ]
+    }
+   ]
+  }
+ },
+ "moves learned": 24
+}

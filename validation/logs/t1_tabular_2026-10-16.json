@@ -1,0 +1,368 @@
+{
+ "bench": "T1: the postmortem on public tabular rules (UCI), the G6 protocol, nothing of the world",
+ "tier": "Grilly2Tier",
+ "trials": 100,
+ "warm": 12,
+ "datasets": {
+  "mushroom": {
+   "items": 8124,
+   "bits": 117,
+   "happens": 0.482,
+   "kind": "harm",
+   "arms": {
+    "replay": {
+     "first": 0.913,
+     "second": 0.708,
+     "far": 0.897,
+     "control": 0.127,
+     "second5": 0.707,
+     "far5": 0.893,
+     "control5": 0.121,
+     "us_update": 4.659,
+     "us_predict": 1459.058,
+     "blamed_n": null,
+     "unread": null
+    },
+    "priority": {
+     "first": 0.913,
+     "second": 0.493,
+     "far": 0.895,
+     "control": 0.225,
+     "second5": 0.492,
+     "far5": 0.89,
+     "control5": 0.215,
+     "us_update": 4.561,
+     "us_predict": 942.802,
+     "blamed_n": null,
+     "unread": null
+    },
+    "postmortem": {
+     "first": 0.913,
+     "second": 0.504,
+     "far": 0.844,
+     "control": 0.238,
+     "second5": 0.505,
+     "far5": 0.84,
+     "control5": 0.219,
+     "us_update": 854.637,
+     "us_predict": 935.817,
+     "blamed_n": 4.25,
+     "unread": null
+    },
+    "postmortem+both": {
+     "first": 0.988,
+     "second": 0.519,
+     "far": 0.909,
+     "control": 0.193,
+     "second5": 0.521,
+     "far5": 0.908,
+     "control5": 0.17,
+     "us_update": 876.909,
+     "us_predict": 1441.255,
+     "blamed_n": 4.29,
+     "unread": null
+    },
+    "logreg.1": {
+     "first": 1.0,
+     "second": 0.127,
+     "far": 0.995,
+     "control": 0.12,
+     "second5": 0.141,
+     "far5": 0.995,
+     "control5": 0.1,
+     "us_update": 2.16,
+     "us_predict": 257.986,
+     "blamed_n": null,
+     "unread": null
+    },
+    "logreg.bal": {
+     "first": 1.0,
+     "second": 0.015,
+     "far": 0.987,
+     "control": 0.301,
+     "second5": 0.017,
+     "far5": 0.986,
+     "control5": 0.262,
+     "us_update": 1.963,
+     "us_predict": 232.453,
+     "blamed_n": null,
+     "unread": null
+    },
+    "bayes": {
+     "first": 0.634,
+     "second": 0.016,
+     "far": 0.724,
+     "control": 0.451,
+     "second5": 0.024,
+     "far5": 0.717,
+     "control5": 0.419,
+     "us_update": 0.949,
+     "us_predict": 258.959,
+     "blamed_n": null,
+     "unread": null
+    }
+   }
+  },
+  "car": {
+   "items": 1728,
+   "bits": 21,
+   "happens": 0.3,
+   "kind": "ok",
+   "arms": {
+    "replay": {
+     "first": 0.715,
+     "second": 0.45,
+     "far": 0.679,
+     "control": 0.398,
+     "second5": 0.455,
+     "far5": 0.712,
+     "control5": 0.37,
+     "us_update": 4.581,
+     "us_predict": 1212.567,
+     "blamed_n": null,
+     "unread": null
+    },
+    "priority": {
+     "first": 0.715,
+     "second": 0.27,
+     "far": 0.679,
+     "control": 0.582,
+     "second5": 0.273,
+     "far5": 0.712,
+     "control5": 0.536,
+     "us_update": 4.409,
+     "us_predict": 1127.652,
+     "blamed_n": null,
+     "unread": null
+    },
+    "postmortem": {
+     "first": 0.715,
+     "second": 0.328,
+     "far": 0.679,
+     "control": 0.45,
+     "second5": 0.32,
+     "far5": 0.712,
+     "control5": 0.422,
+     "us_update": 915.114,
+     "us_predict": 1143.507,
+     "blamed_n": 3.672,
+     "unread": null
+    },
+    "postmortem+both": {
+     "first": 0.959,
+     "second": 0.381,
+     "far": 0.954,
+     "control": 0.305,
+     "second5": 0.368,
+     "far5": 0.959,
+     "control5": 0.284,
+     "us_update": 921.879,
+     "us_predict": 1889.999,
+     "blamed_n": 3.625,
+     "unread": null
+    },
+    "logreg.1": {
+     "first": 1.0,
+     "second": 0.42,
+     "far": 0.997,
+     "control": 0.365,
+     "second5": 0.414,
+     "far5": 0.998,
+     "control5": 0.299,
+     "us_update": 1.81,
+     "us_predict": 44.523,
+     "blamed_n": null,
+     "unread": null
+    },
+    "logreg.bal": {
+     "first": 1.0,
+     "second": 0.096,
+     "far": 0.994,
+     "control": 0.715,
+     "second5": 0.09,
+     "far5": 0.995,
+     "control5": 0.616,
+     "us_update": 1.448,
+     "us_predict": 43.298,
+     "blamed_n": null,
+     "unread": null
+    },
+    "bayes": {
+     "first": 0.768,
+     "second": 0.138,
+     "far": 0.87,
+     "control": 0.601,
+     "second5": 0.131,
+     "far5": 0.919,
+     "control5": 0.532,
+     "us_update": 0.829,
+     "us_predict": 99.097,
+     "blamed_n": null,
+     "unread": null
+    }
+   }
+  },
+  "tictactoe": {
+   "items": 958,
+   "bits": 27,
+   "happens": 0.653,
+   "kind": "win",
+   "arms": {
+    "replay": {
+     "first": 0.81,
+     "second": 0.636,
+     "far": 0.834,
+     "control": 0.315,
+     "second5": 0.638,
+     "far5": 0.827,
+     "control5": 0.311,
+     "us_update": 4.481,
+     "us_predict": 1528.875,
+     "blamed_n": null,
+     "unread": null
+    },
+    "priority": {
+     "first": 0.81,
+     "second": 0.448,
+     "far": 0.834,
+     "control": 0.494,
+     "second5": 0.449,
+     "far5": 0.827,
+     "control5": 0.484,
+     "us_update": 4.564,
+     "us_predict": 1360.56,
+     "blamed_n": null,
+     "unread": null
+    },
+    "postmortem": {
+     "first": 0.81,
+     "second": 0.563,
+     "far": 0.831,
+     "control": 0.38,
+     "second5": 0.568,
+     "far5": 0.821,
+     "control5": 0.382,
+     "us_update": 965.394,
+     "us_predict": 1383.962,
+     "blamed_n": 7.7,
+     "unread": null
+    },
+    "postmortem+both": {
+     "first": 0.973,
+     "second": 0.647,
+     "far": 0.973,
+     "control": 0.288,
+     "second5": 0.658,
+     "far5": 0.968,
+     "control5": 0.292,
+     "us_update": 959.222,
+     "us_predict": 2361.747,
+     "blamed_n": 7.7,
+     "unread": null
+    },
+    "logreg.1": {
+     "first": 1.0,
+     "second": 0.625,
+     "far": 1.0,
+     "control": 0.282,
+     "second5": 0.626,
+     "far5": 0.999,
+     "control5": 0.269,
+     "us_update": 1.909,
+     "us_predict": 54.734,
+     "blamed_n": null,
+     "unread": null
+    },
+    "logreg.bal": {
+     "first": 1.0,
+     "second": 0.235,
+     "far": 0.999,
+     "control": 0.65,
+     "second5": 0.236,
+     "far5": 0.999,
+     "control5": 0.616,
+     "us_update": 1.474,
+     "us_predict": 53.816,
+     "blamed_n": null,
+     "unread": null
+    },
+    "bayes": {
+     "first": 0.854,
+     "second": 0.247,
+     "far": 0.996,
+     "control": 0.658,
+     "second5": 0.237,
+     "far5": 0.993,
+     "control5": 0.647,
+     "us_update": 0.88,
+     "us_predict": 128.079,
+     "blamed_n": null,
+     "unread": null
+    }
+   }
+  }
+ },
+ "arms": [
+  "replay",
+  "priority",
+  "postmortem",
+  "postmortem+both",
+  "logreg.1",
+  "logreg.bal",
+  "bayes"
+ ],
+ "second_error": {
+  "replay": 0.598,
+  "priority": 0.404,
+  "postmortem": 0.465,
+  "postmortem+both": 0.516,
+  "logreg.1": 0.39,
+  "logreg.bal": 0.115,
+  "bayes": 0.134
+ },
+ "far_error": {
+  "replay": 0.803,
+  "priority": 0.803,
+  "postmortem": 0.785,
+  "postmortem+both": 0.945,
+  "logreg.1": 0.997,
+  "logreg.bal": 0.993,
+  "bayes": 0.863
+ },
+ "control_error": {
+  "replay": 0.28,
+  "priority": 0.434,
+  "postmortem": 0.356,
+  "postmortem+both": 0.262,
+  "logreg.1": 0.256,
+  "logreg.bal": 0.555,
+  "bayes": 0.57
+ },
+ "explain_reduction_95ci_vs": {
+  "replay": [
+   0.109,
+   0.166
+  ],
+  "priority": [
+   -0.321,
+   -0.234
+  ],
+  "postmortem": [
+   -0.123,
+   -0.095
+  ],
+  "logreg.1": [
+   -0.387,
+   -0.262
+  ],
+  "logreg.bal": [
+   -3.847,
+   -3.144
+  ],
+  "bayes": [
+   -3.395,
+   -2.432
+  ]
+ },
+ "secs": 133.9
+}
