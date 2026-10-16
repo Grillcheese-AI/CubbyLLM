@@ -60,7 +60,7 @@
   form button.go{background:var(--live);color:#1a1205;border-color:transparent;font-weight:650}
   form :focus-visible{outline:2px solid var(--live);outline-offset:1px}
   body.monitor aside,body.monitor form{display:none}
-  @media (max-width:900px){#tape{display:none}#chem{display:none}}
+  @media (max-width:900px){#tape{display:none}#chem{width:210px;top:52px;bottom:auto}.bar{grid-template-columns:72px 1fr 30px}}
   @media (prefers-reduced-motion:reduce){.card,.tag{transition:none}}
 </style>
 </head>
@@ -340,23 +340,35 @@ function pump(now) {
   nextPlay = now + Math.max(140, 520 - queue.length * 25);           // a backlog plays faster, never a blur
 }
 
-// ── the hormones: the neurochemistry read, beside the brain and in the Hormones zone's glow ─────────
+// ── the hormones: the neurochemistry read (or a world's: his hormones and his body), beside the
+//    brain and in the Hormones zone's glow. A source lists its own order and which values to squash ─
 const HORMONES = ["dopamine", "serotonin", "oxytocin", "cortisol", "noradrenaline"];
+const STRESS = new Set(["cortisol", "noradrenaline", "threat", "stress", "pain"]);
 const barsEl = document.getElementById("bars"), BAR = {};
-for (const h of HORMONES) {
+function bar(name) {
+  if (BAR[name]) return BAR[name];
   const row = document.createElement("div"); row.className = "bar";
-  row.innerHTML = `<label>${h}</label><div><i></i></div><span class="mono">–</span>`;
-  barsEl.appendChild(row); BAR[h] = row;
+  row.innerHTML = `<label></label><div><i></i></div><span class="mono">–</span>`;
+  row.querySelector("label").textContent = name;
+  row.querySelector("i").style.background = STRESS.has(name) ? "var(--no)" : "var(--yes)";
+  barsEl.appendChild(row);
+  return (BAR[name] = row);
 }
-let chemArousal = 0.3, chemValence = 0;
-function showChem(s) {
-  for (const h of HORMONES) if (typeof s[h] === "number") {
-    BAR[h].querySelector("i").style.width = Math.max(0, Math.min(1, s[h])) * 100 + "%";
-    BAR[h].querySelector("i").style.background = h === "cortisol" || h === "noradrenaline" ? "var(--no)" : "var(--yes)";
-    BAR[h].querySelector("span").textContent = s[h].toFixed(2);
+HORMONES.forEach(bar);
+let chemArousal = 0.3, chemValence = 0, chemFrom = null;
+function showChem(s, from) {
+  if (chemFrom !== from) {
+    chemFrom = from; barsEl.textContent = ""; for (const k in BAR) delete BAR[k];
+    document.querySelector("#chem h2").textContent = s.title || "Hormones";
+  }
+  const squash = new Set(s.squash || []);
+  for (const h of s.order || HORMONES) if (typeof s[h] === "number") {
+    const row = bar(h), v = s[h], w = squash.has(h) ? Math.max(0, v) / (1 + Math.abs(v)) : v;
+    row.querySelector("i").style.width = Math.max(0, Math.min(1, w)) * 100 + "%";
+    row.querySelector("span").textContent = v.toFixed(2);
   }
   chemArousal = +s.arousal || chemArousal; chemValence = +s.valence || 0;
-  document.getElementById("emotion").textContent =
+  document.getElementById("emotion").textContent = s.line ||
     `${s.emotion || "—"} · valence ${chemValence >= 0 ? "+" : ""}${chemValence.toFixed(2)} · arousal ${chemArousal.toFixed(2)}`;
 }
 
@@ -390,7 +402,7 @@ async function connect() {
       } catch (e) { /* the next poll tries again */ }
     };
     poll(); setInterval(poll, 450);
-    const chem = async () => { try { showChem(await (await fetch(API + "/state", {cache: "no-store"})).json()); } catch (e) {} };
+    const chem = async () => { try { showChem(await (await fetch(API + "/state", {cache: "no-store"})).json(), "brain"); } catch (e) {} };
     chem(); setInterval(chem, 1500);
   } catch (e) { /* no serve brain: perhaps a world */ }
   try {                                                               // a world bridge (Cubby's mind in his world)
@@ -401,7 +413,11 @@ async function connect() {
       const opt = document.createElement("option");
       opt.value = "world"; opt.textContent = "Talk to Cubby in his world";
       document.getElementById("mode").appendChild(opt);
-      if (!live) document.getElementById("mode").value = "world";
+      if (!live) {                                                    // no serve brain: his hormones and body, from the world
+        document.getElementById("mode").value = "world";
+        const chem = async () => { try { showChem(await (await fetch(BW + "/state", {cache: "no-store"})).json(), "world"); } catch (e) {} };
+        chem(); setInterval(chem, 1000);
+      }
       setStatus("live", (live ? statusText.textContent + " · " : "") + "Cubby's world live" + (h.cubby == null ? " (waiting for Cubby)" : ""));
     }
   } catch (e) { /* no world bridge */ }
