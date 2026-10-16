@@ -45,6 +45,11 @@ _PROFILE_ASK = _re.compile(r"^\s*(?P<kind>who|what|where)\s+(?:is|was|are|were)\
 # host has indexes events BY DATE -- the wiki world holds 0 facts whose subject is a year)
 _WHEN_ASK = _re.compile(r"^\s*(?:what|which)\s+(?:\w+\s+)?(?:happened|occurred|occured|took\s+place|went\s+on)"
                         r"(?:\s+(?:in|on|during|around))?\s+(?:the\s+)?(?P<ent>[^?]*?)\s*\??\s*$", _re.I)
+# a trailing past participle is the QUESTION's verb, not the end of a name (2026-10-16, live: "Where was
+# Marie Curie born?" read as a profile of 'marie curie born', refused entity_unresolved -- the shape
+# that verified Marie Curie's birthplace before the profile ask existed). 'born', 'located', 'founded',
+# 'married' end a relation ask; a name's own capitalised word (Manchester United) is left alone.
+_PARTICIPLES = {"born", "built", "made", "held", "written", "known", "sold", "shot", "led", "won", "begun"}
 _ASK_ROLE = _re.compile(r'bind\s+frame\s*,\s*ASK\s*,\s*"(?P<kind>who|what|where|when)"\s*;', _re.I)
 # WORLD names the store the question is about: absent (or "world") is the world, "self" is the
 # loop's own record. A question about what the loop KNOWS and a question about what IS are
@@ -184,6 +189,15 @@ def self_ask(question: str) -> tuple[str, str] | None:
     return None
 
 
+def _verb_tail(ent: str) -> bool:
+    """Does the entity as typed end in a past participle that is not a capitalised word of the name?"""
+    words = ent.split()
+    if len(words) < 2 or words[-1][:1].isupper():
+        return False
+    tail = words[-1].lower().strip(".,")
+    return tail in _PARTICIPLES or (len(tail) >= 5 and tail.endswith("ed"))
+
+
 def profile_ask(question: str, is_relation=None) -> tuple[str, str] | None:
     """(kind, entity) of a 'who / what / where is X' or 'what happened in <date>' question, or None: a
     question with a relation in it ('the capital of France', "Canada's capital") is a plan for the
@@ -205,6 +219,8 @@ def profile_ask(question: str, is_relation=None) -> tuple[str, str] | None:
     ent = m.group("ent").strip()
     if not ent or "'s " in ent or ent.endswith("'s") or len(ent.split()) > 6:
         return None
+    if _verb_tail(ent):
+        return None                                      # 'where was X born': a relation ask, the emitter's
     if " of " in f" {ent} ":
         head = ent.split(" of ", 1)[0].strip()
         head = head[4:].strip() if head.lower().startswith("the ") else head
@@ -693,6 +709,18 @@ class AskLoop:
                     return True
             except Exception:                            # noqa: BLE001 -- a resolver that cannot answer is not a yes
                 continue
+        # the source's own property table (2026-10-16, live: "Who is the mother of Justin Trudeau?" read as
+        # a profile of 'mother of justin trudeau' because the wiki world holds no 'mother'). A wording the
+        # table names is a relation whether or not the store holds it yet -- unheld, the loop fetches it
+        # (the first-resolver rule, learn.resolve_relations); a name's head ('bank', 'university',
+        # 'great pyramid') the table does not name stays a profile, and so does a capitalised head
+        # ('the Duke of Edinburgh', 'the City of London'): the asker wrote a name. The LOCAL table only.
+        table = getattr(getattr(self.source, "aliases", None), "relations", None)
+        if callable(table) and not head[:1].isupper():
+            try:
+                return bool(table(head))
+            except Exception:                            # noqa: BLE001
+                return False
         return False
 
     def _run_fn(self, source: str, fn: str) -> dict:

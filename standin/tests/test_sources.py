@@ -237,6 +237,29 @@ def test_the_question_s_relations_narrow_in_order_but_only_across_different_kind
     assert src2.last["qid"] is None and len(src2.last["ambiguous"]) == 2
 
 
+def test_the_relations_the_walk_needs_come_first_so_the_cap_never_cuts_them_off(tmp_path):
+    """2026-10-16, live: 'who is the prime minister of canada?' fetched Canada's 300 facts, all duplicates
+    of an earlier fetch, and `head of government` was not among them: an item with hundreds of
+    statements is cut at `max_facts` in claim order, and the property the question asked for sat past
+    the cut. The wordings the walk needs name their properties through the table; those claims lead."""
+    from sources import PropertyAliases
+    import json
+    table = {"source": "test", "langs": ["en"], "n_properties": 2, "properties": {
+        "P6": {"label": {"en": "head of government"}, "aliases": {"en": ["prime minister", "premier"]}, "datatype": "wikibase-item"},
+        "P1082": {"label": {"en": "population"}, "aliases": {"en": []}, "datatype": "quantity"}}}
+    tp = tmp_path / "props.json"; tp.write_text(json.dumps(table), encoding="utf-8")
+    pa = PropertyAliases(tp)
+    pop = [{"mainsnak": {"datatype": "quantity", "datavalue": {"type": "quantity", "value": {"amount": f"+{30000000 + i}"}}}} for i in range(5)]
+    CANADA = {"claims": {"P1082": pop, "P6": [ITEM("Qpm")]}}            # the population series first, in the item's own order
+    labels = {"P1082": {"labels": {"en": {"value": "population"}}}, "P6": {"labels": {"en": {"value": "head of government"}}},
+              "Qpm": {"labels": {"en": {"value": "Mark Carney"}}}}
+    src = FakeWikidata([_hit("Q16", "Canada", "country")], {"Q16": CANADA, **labels})
+    src.aliases, src.max_facts = pa, 3
+    assert [t.rel for t in src.facts("Canada")] == ["population"] * 3                       # the cap, in claim order
+    out = src.facts("Canada", relations=["prime minister"])
+    assert [(t.obj, t.rel) for t in out][0] == ("Mark Carney", "head of government") and len(out) == 3
+
+
 def test_a_year_before_the_era_says_so():
     """Nick, 2026-09-14, from the panel: `2560 is the inception of Great Pyramid of Giza` -- BC missing.
     Wikidata writes a BCE time as -2560-01-01 and the parser sliced off the first character to drop the

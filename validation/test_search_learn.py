@@ -439,6 +439,73 @@ def test_a_held_relation_that_finds_nothing_is_walked_under_the_propertys_other_
     assert r.aliased == [("born", "place of birth"), ("place of birth", "birthplace")]
 
 
+def test_a_wording_that_is_a_propertys_own_label_names_that_property_and_no_sibling():
+    """2026-10-16, live: 'Which country is Oak Park located in?' -> plan 'country'. The table names
+    every property whose label OR alias the wording is -- P17 'country', and P27 'country of
+    citizenship', P495 'country of origin', P3005 'valid in place', which carry 'country' as an
+    alias -- and the store held only the citizenship one, so lever 4 translated the plan to it:
+    Oak Park has no citizenship, the sibling step tried 'nationality', and the fetch that brought
+    'United States is the country of Oak Park' was walked under the wrong relation and refused.
+    A label names its own property; unheld, it is fetched, never translated into a sibling."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    table = {"country": ["country", "country of citizenship", "country of origin", "valid in place"],
+             "country of citizenship": ["country of citizenship"], "nationality": ["country of citizenship"]}
+    kinds = {"country": "name", "country of citizenship": "name", "country of origin": "name", "valid in place": "name"}
+    by_label = {"country": ["country", "land", "state"], "country of citizenship": ["country of citizenship", "nationality", "country"],
+                "country of origin": ["country of origin", "country"]}
+    facts = {"oak park": ["United States is the country of Oak Park",
+                          "Cook County is the located in the administrative territorial entity of Oak Park"]}
+    plan = QuestionPlan(relations=[None], tail="country of oak park", n_hop=1)
+    store, known = LookupStore(STORE), StoreRelations(STORE)                   # 'country of citizenship' held, 'country' not
+    r = run("Which country is Oak Park located in?", store, known, WordedAliasSource(facts, table, kinds, by_label), plan=plan)
+    assert r.first.reason == "unknown_relation"                                 # not translated: fetched
+    assert r.result.verified and normalize(r.result.answer) == "united states"
+    assert r.aliased == [] and r.plan.tail == "country of oak park" and [normalize(e) for e in r.entities] == ["oak park"]
+    # the sibling step, a HELD label that finds nothing: the property's own other wordings only, never
+    # the citizenship property's 'nationality' because that property carries 'country' as an alias
+    both = STORE + ["germany is the nationality of hans", "france is the country of lyon"]
+    store, known = LookupStore(both), StoreRelations(both)
+    r = run("Which country is Oak Park located in?", store, known, WordedAliasSource(facts, table, kinds, by_label), plan=plan)
+    assert r.first.reason == "retrieval_exhausted"
+    assert r.result.verified and normalize(r.result.answer) == "united states" and r.aliased == []
+
+
+def test_after_a_fetch_the_plan_goes_back_to_the_relation_the_source_states_not_the_siblings_guess():
+    """2026-10-16, live: 'Where was Marie Curie born?' -> 'place of birth' (lever 4), nothing held for her,
+    -> 'birthplace' (the sibling step), nothing, then the fetch brought 'Warsaw is the place of birth of
+    Marie Curie' -- and the walk kept asking for 'birthplace', refused retrieval_exhausted with the answer
+    in the store. The sibling wording was a guess at where the STORE kept the fact; the source states
+    facts under its own label, which is the plan's wording before the guess."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    base = STORE + ["tokyo is the birthplace of hans", "lyon is the place of birth of jean"]     # both wordings held
+    store, known = LookupStore(base), StoreRelations(base)
+    src = WordedAliasSource({"masaki tsuji": ["nagoya is the place of birth of masaki tsuji"]},
+                            **dict(WIKI_TABLE, by_wording=dict(WIKI_TABLE["by_wording"], **{"place of birth": ["place of birth"]})))
+    r = run("Where was Masaki Tsuji born?", store, known, src, plan=QuestionPlan(relations=[None], tail="born of masaki tsuji", n_hop=1))
+    assert r.result.verified and normalize(r.result.answer) == "nagoya"
+    assert r.aliased == [("born", "place of birth"), ("place of birth", "birthplace")]      # the guess is on record
+    assert r.plan.tail == "place of birth of masaki tsuji" and [normalize(e) for e in r.entities] == ["masaki tsuji"]
+
+
+def test_the_lever_4_translation_ahead_of_the_walk_is_undone_the_same_way_after_a_fetch():
+    """The same, one step earlier (2026-10-16, live): the wiki world says 'nationality', the emitter's
+    'country of citizenship' was translated to it ahead of the walk, Trudeau's fact was not in the store,
+    and the fetch brought 'Canada is the country of citizenship of Justin Trudeau' -- the walk kept
+    asking for 'nationality' and refused with the chain's first fact and the capital both in the store."""
+    from cubbyllm.reasoning.planner import QuestionPlan
+    base = ["germany is the nationality of hans", "ottawa is the capital of canada", "berlin is the capital of germany"]
+    store, known = LookupStore(base), StoreRelations(base)
+    table = dict(by_wording={"country of citizenship": ["country of citizenship"], "nationality": ["country of citizenship"], "capital": ["capital"]},
+                 kinds={"country of citizenship": "name", "capital": "name"},
+                 by_label={"country of citizenship": ["country of citizenship", "nationality"], "capital": ["capital"]})
+    src = WordedAliasSource({"justin trudeau": ["canada is the country of citizenship of justin trudeau"]}, **table)
+    plan = QuestionPlan(relations=[None, "capital"], tail="country of citizenship of justin trudeau", n_hop=2)
+    r = run("What is the capital of the country of citizenship of Justin Trudeau?", store, known, src, plan=plan)
+    assert r.aliased[0] == ("country of citizenship", "nationality") and r.first.reason == "retrieval_exhausted"
+    assert r.result.verified and normalize(r.result.answer) == "ottawa"
+    assert r.plan.tail == "country of citizenship of justin trudeau" and [normalize(e) for e in r.entities] == ["justin trudeau"]
+
+
 def test_the_question_decides_where_an_unheld_relation_ends_and_the_entity_begins():
     """'married of anne of cleves': the relation is not held, so the last ' of ' used to
     split the tail into 'married of anne' | 'cleves' -- an unknown relation nobody could

@@ -286,6 +286,48 @@ def test_an_entity_whose_name_contains_of_is_a_profile_and_a_relation_head_is_st
     assert profile_ask("what is the capital of france?", lambda h: False) is not None   # ... only the store decides
 
 
+def test_a_trailing_verb_is_the_questions_and_an_unheld_relation_the_table_names_is_a_plan():
+    """2026-10-16, live, the serve brain back on the models disk: "Where was Marie Curie born?" was read
+    as a profile of 'marie curie born' and refused entity_unresolved -- the shape that verified her
+    birthplace before the profile ask existed; and "Who is the mother of Justin Trudeau?" as a profile
+    of 'mother of justin trudeau', because the wiki world holds no 'mother' and the store alone decided.
+    A trailing participle is the question's verb; a head the SOURCE's property table names is a relation
+    the loop fetches (the first-resolver rule); a name's own capitalised word is left to the name."""
+    assert profile_ask("Where was Marie Curie born?") is None
+    assert profile_ask("where is the eiffel tower located?") is None
+    assert profile_ask("When was the Bank of England founded?") is None
+    assert profile_ask("who is marie curie?") == ("who", "marie curie")
+    assert profile_ask("What is Manchester United?") == ("what", "Manchester United")   # the name's own word
+    assert profile_ask("what is red?") == ("what", "red")                               # one word is a name
+
+    class Table:
+        def relations(self, text):
+            return {"mother": ["mother"], "born": ["place of birth", "date of birth"]}.get(normalize(text), [])
+
+    class TableSource(DictSource):
+        aliases = Table()
+        def relations(self, text): return self.aliases.relations(text)
+
+    src = TableSource({"justin trudeau": ["margaret trudeau is the mother of justin trudeau"],
+                       "marie curie": ["warsaw is the place of birth of marie curie"]})
+    def exact_vm(calls):                                 # a one-hop walk is verified at TAU_VM[1] = 1.0
+        inner = faithful_vm(calls)
+        def run(source, fn):
+            r = inner(source, fn); return dict(r, similarity=1.0 if r["similarity"] else None)
+        return run
+    loop = AskLoop(FakeEmitter({"Who is the mother of Justin Trudeau?": ("justin trudeau", ["mother"]),
+                                "Where was Marie Curie born?": ("marie curie", ["born"])}),
+                   world=LookupStore(STORE), source=src, lexicon=False, run_fn=exact_vm([]))
+    assert loop._is_relation("mother") and not loop._is_relation("Mother") and not loop._is_relation("bank")
+    assert profile_ask("who is the mother of justin trudeau?", loop._is_relation) is None
+    assert profile_ask("who is the Duke of Edinburgh?", loop._is_relation) == ("who", "Duke of Edinburgh")
+    rec = loop.ask("Who is the mother of Justin Trudeau?")
+    assert rec["verified"] and normalize(rec["answer"]) == "margaret trudeau" and rec["reason"] is None
+    assert rec["plan"] == ["mother"] and not rec.get("profile")                 # walked, not a readout
+    rec = loop.ask("Where was Marie Curie born?")
+    assert rec["verified"] and normalize(rec["answer"]) == "warsaw" and rec["aliased"] == [["born", "place of birth"]]
+
+
 def test_a_category_claim_needs_a_fact_behind_it():
     """Nick's kill line is 0 wrong answers SPOKEN, and the name-and-number guard has one blind slot: a
     kind. 2026-09-14, live: "the Bank of England is a financial institution" passed every check because

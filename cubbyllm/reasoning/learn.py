@@ -327,6 +327,8 @@ def resolve_siblings(plan: QuestionPlan, source, known, aliases: dict[str, list[
         if r not in known:
             continue
         props = [normalize(l) for x in resolvers for l in x.relations(r)]
+        if r in props:
+            props = [r]                                  # a held label names its own property, never a sibling that carries it as an alias (see resolve_relations)
         sibs = sorted({normalize(w) for x in resolvers for l in props for w in x.wordings(l)
                        if normalize(w) in known and normalize(w) != r and len(x.relations(w)) == 1})
         if len(sibs) > 1:
@@ -376,6 +378,15 @@ def resolve_relations(plan: QuestionPlan, unknown: list[str], source, known,
             if labels:
                 decided = x
                 break
+        if normalize(r) in labels:
+            # the wording IS a property's own label (2026-10-16, live: 'Which country is Oak Park located
+            # in?'). The table names every property whose label OR alias the wording is -- P17 'country',
+            # and P27 'country of citizenship', P495 'country of origin', P3005 'valid in place', which
+            # carry 'country' as an alias -- and the store held only the citizenship one, so the plan was
+            # translated into a sibling PROPERTY: Oak Park has no citizenship, and the fetch that brought
+            # 'United States is the country of Oak Park' was walked under the wrong relation. A label
+            # names its own property and no other; unheld, it is a fact to fetch.
+            labels = [normalize(r)]
         held = sorted({l for l in labels if l in known})
         if not held and decided is not None and hasattr(decided, "wordings"):
             # the store may hold the property under another of its wordings: the wiki world
@@ -489,6 +500,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
     elif known is not None:
         plan, snapped = snap_seed(question, plan, known)         # lever 7: the question spells the entity
     cur = {"plan": ev.emit("plan", qid, **_plan_fields(plan), snapped=snapped)}
+    proposed = plan                                       # the plan as proposed: every translation below is a guess at where the STORE keeps the fact
     latent = bool(getattr(source, "latent", False))       # a proposer of facts, not an attester (the LFM Source, 2026-09-13)
     prov = getattr(store, "provenance", None)
     fkey = getattr(store, "_key", None) or (lambda s: " ".join(s.split()))
@@ -668,6 +680,28 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                 continue
             break
         resolved.clear()          # new facts may have brought the relation the source names
+        if plan is not proposed and known is not None and hasattr(source, "relations"):
+            # every translation so far (lever 4 ahead of the walk, the sibling step) was a guess at where the
+            # STORE kept the fact, and it found nothing; the facts just admitted arrive under the relation the
+            # source states. Back to the proposed wording, translated once more against what the store holds
+            # NOW (2026-10-16, live: 'born' -> 'place of birth' -> 'birthplace', then the fetch brought
+            # 'Warsaw is the place of birth of Marie Curie' and the walk kept asking for 'birthplace'; and
+            # 'country of citizenship' -> 'nationality' ahead of the walk, the fetch brought 'Canada is the
+            # country of citizenship of Justin Trudeau', the walk kept asking for 'nationality')
+            plan = proposed; out.plan = plan
+            labels, _ent = _plan_labels(plan, known, question)
+            unheld = [r for r in labels if r not in known]
+            again: list[tuple[str, str]] = []
+            if unheld:
+                plan2, again, amb = resolve_relations(plan, unheld, [source] + list(resolvers or []), known, aliases,
+                                                      question=question)
+                if amb is not None:
+                    out.result = CoTResult(answer=None, verified=False, reason="ambiguous_relation", refused=amb)
+                    break
+                if again:
+                    plan = plan2; out.plan = plan
+                    out.aliased.extend(x for x in again if x not in out.aliased)
+            replan(plan, "the fetched facts: the proposed wording, translated to what the store holds now", again)
         out.result = walk()
     ev.emit("answer", qid, verified=out.result.verified, answer=out.result.answer, reason=out.result.reason,
             refused=out.result.refused if isinstance(out.result.refused, dict) else None,

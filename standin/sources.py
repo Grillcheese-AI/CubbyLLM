@@ -494,6 +494,13 @@ class WikidataSource:
         self.last["n_claims"] = sum(len(v) for v in claims.values())
         # collect item targets and property ids, one label round-trip for all of them
         props = [p for p in claims if p not in SKIP_PROPS or (classes and p in CLASS_PROPS)]
+        if relations and self.aliases is not None:
+            # the walk's own relations FIRST (2026-10-16, live: 'who is the prime minister of canada?' fetched
+            # Canada's 300 facts, every one a duplicate, and `head of government` was not among them -- an
+            # item with hundreds of statements is cut at `max_facts` in claim order, and the one property
+            # the question asked for sat past the cut). The order of the rest is the item's own.
+            wanted = {pid for r in relations for pid in self.aliases.pids(r)}
+            props = [p for p in props if p in wanted] + [p for p in props if p not in wanted]
         if classes:
             claims = dict(claims)
             for cp in CLASS_PROPS:                           # the kind, not a taxonomy: the first few
