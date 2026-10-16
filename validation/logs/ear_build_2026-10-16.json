@@ -1,0 +1,197 @@
+{
+ "built": "2026-10-16 14:40",
+ "seconds": 6.9,
+ "taught": {
+  "pairs": 148,
+  "sentences": 3508
+ },
+ "lexicon": "minishlab/potion-retrieval-32M",
+ "held_out": {
+  "affect_from_convos.jsonl": {
+   "pairs": 0,
+   "order": 0.0,
+   "side": 0.0,
+   "sentences": 44,
+   "sign": 0.886
+  },
+  "amygdala_affect.jsonl": {
+   "pairs": 0,
+   "order": 0.0,
+   "side": 0.0,
+   "sentences": 275,
+   "sign": 0.942
+  },
+  "ei_11": {
+   "pairs": 0,
+   "order": 0.0,
+   "side": 0.0,
+   "sentences": 139,
+   "sign": 0.871
+  },
+  "seed:en": {
+   "pairs": 20,
+   "order": 0.95,
+   "side": 0.825,
+   "sentences": 0,
+   "sign": 0.0
+  },
+  "seed:fr": {
+   "pairs": 4,
+   "order": 0.75,
+   "side": 0.5,
+   "sentences": 0,
+   "sign": 0.0
+  },
+  "seed:qc": {
+   "pairs": 7,
+   "order": 0.571,
+   "side": 0.429,
+   "sentences": 0,
+   "sign": 0.0
+  }
+ },
+ "examples": {
+  "Good job, Cubby!": {
+   "valence": 0.548,
+   "aimed": true,
+   "warmth": 0.548,
+   "why": [
+    [
+     "good",
+     0.74
+    ],
+    [
+     "cubby",
+     -0.173
+    ],
+    [
+     "good job",
+     0.048
+    ]
+   ]
+  },
+  "That's not bad at all.": {
+   "valence": 0.825,
+   "aimed": false,
+   "warmth": 0.0,
+   "why": [
+    [
+     "~bad",
+     1.234
+    ],
+    [
+     "not",
+     -0.298
+    ],
+    [
+     "~all",
+     0.16
+    ]
+   ]
+  },
+  "Watch out, the zombies are coming!": {
+   "valence": -0.512,
+   "aimed": false,
+   "warmth": 0.0,
+   "why": [
+    [
+     "zombies",
+     -0.319
+    ],
+    [
+     "out",
+     -0.077
+    ],
+    [
+     "coming",
+     -0.065
+    ]
+   ]
+  },
+  "Bravo, t'es capable!": {
+   "valence": 0.316,
+   "aimed": true,
+   "warmth": 0.316,
+   "why": [
+    [
+     "bravo",
+     0.388
+    ],
+    [
+     "t'es",
+     -0.242
+    ],
+    [
+     "capable",
+     0.228
+    ]
+   ]
+  },
+  "C'est pas pire pantoute!": {
+   "valence": 0.739,
+   "aimed": false,
+   "warmth": 0.0,
+   "why": [
+    [
+     "~pire",
+     0.562
+    ],
+    [
+     "pas",
+     0.204
+    ],
+    [
+     "~pantoute",
+     0.159
+    ]
+   ]
+  },
+  "You're useless.": {
+   "valence": -0.652,
+   "aimed": true,
+   "warmth": 0.0,
+   "why": [
+    [
+     "useless",
+     -0.819
+    ],
+    [
+     "you're",
+     0.039
+    ],
+    [
+     "you're useless",
+     0.016
+    ]
+   ]
+  },
+  "Je suis fier de toi.": {
+   "valence": 0.18,
+   "aimed": true,
+   "warmth": 0.18,
+   "why": [
+    [
+     "toi",
+     -0.44
+    ],
+    [
+     "de",
+     0.311
+    ],
+    [
+     "suis",
+     0.276
+    ]
+   ]
+  }
+ },
+ "probes": {
+  "n": 24,
+  "right": 0.917,
+  "wrong": [
+   "Careful, there's lava!",
+   "Lâche pas, t'es bon!"
+  ]
+ },
+ "out": "standin\\data\\out\\ear.npz"
+}

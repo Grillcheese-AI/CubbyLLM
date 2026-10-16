@@ -1,0 +1,179 @@
+{"good": "Good job, Cubby!", "bad": "Bad job, Cubby.", "lang": "en", "axis": "praise"}
+{"good": "Well done, that was great.", "bad": "Badly done, that was terrible.", "lang": "en", "axis": "praise"}
+{"good": "You did it, I'm proud of you.", "bad": "You failed, I'm ashamed of you.", "lang": "en", "axis": "praise"}
+{"good": "Nice work on the house.", "bad": "Awful work on the house.", "lang": "en", "axis": "praise"}
+{"good": "That's exactly right, good thinking.", "bad": "That's completely wrong, bad thinking.", "lang": "en", "axis": "praise"}
+{"good": "You're getting better every day.", "bad": "You're getting worse every day.", "lang": "en", "axis": "praise"}
+{"good": "Great idea, let's do that.", "bad": "Stupid idea, don't do that.", "lang": "en", "axis": "praise"}
+{"good": "You're so smart, Cubby.", "bad": "You're so dumb, Cubby.", "lang": "en", "axis": "praise"}
+{"good": "Brilliant, you figured it out!", "bad": "Pathetic, you messed it up again.", "lang": "en", "axis": "praise"}
+{"good": "Perfect, keep going like that.", "bad": "Wrong, stop doing that.", "lang": "en", "axis": "praise"}
+{"good": "I love what you built.", "bad": "I hate what you built.", "lang": "en", "axis": "praise"}
+{"good": "You handled that really well.", "bad": "You handled that really badly.", "lang": "en", "axis": "praise"}
+{"good": "Amazing, you found the food!", "bad": "Useless, you lost the food.", "lang": "en", "axis": "praise"}
+{"good": "That was clever.", "bad": "That was careless.", "lang": "en", "axis": "praise"}
+{"good": "You're a good little builder.", "bad": "You're a lousy little builder.", "lang": "en", "axis": "praise"}
+{"good": "Way to go, buddy!", "bad": "Way to screw up, buddy.", "lang": "en", "axis": "praise"}
+{"good": "You make me happy.", "bad": "You make me angry.", "lang": "en", "axis": "praise"}
+{"good": "Thank you for helping.", "bad": "Thanks for nothing.", "lang": "en", "axis": "praise"}
+{"good": "You're doing great.", "bad": "You're doing terribly.", "lang": "en", "axis": "praise"}
+{"good": "Good boy.", "bad": "Bad boy.", "lang": "en", "axis": "praise"}
+{"good": "Yes! That's it!", "bad": "No! That's not it!", "lang": "en", "axis": "praise"}
+{"good": "Excellent shot!", "bad": "Terrible shot!", "lang": "en", "axis": "praise"}
+{"good": "You saved the villagers, hero!", "bad": "You let the villagers die, coward.", "lang": "en", "axis": "praise"}
+{"good": "I knew you could do it.", "bad": "I knew you would mess it up.", "lang": "en", "axis": "praise"}
+{"good": "You learn so fast.", "bad": "You never learn.", "lang": "en", "axis": "praise"}
+{"good": "You can do it, keep trying.", "bad": "You can't do it, just give up.", "lang": "en", "axis": "encourage"}
+{"good": "Don't worry, you'll get it next time.", "bad": "Don't bother, you'll never get it.", "lang": "en", "axis": "encourage"}
+{"good": "Almost there, one more try!", "bad": "Nowhere close, stop trying.", "lang": "en", "axis": "encourage"}
+{"good": "It's okay to make mistakes.", "bad": "Your mistakes are unforgivable.", "lang": "en", "axis": "encourage"}
+{"good": "I believe in you.", "bad": "I don't believe in you.", "lang": "en", "axis": "encourage"}
+{"good": "Take your time, you're doing fine.", "bad": "Hurry up, you're too slow.", "lang": "en", "axis": "encourage"}
+{"good": "Keep it up, you're on the right track.", "bad": "Give it up, you're on the wrong track.", "lang": "en", "axis": "encourage"}
+{"good": "You've got this.", "bad": "You don't have what it takes.", "lang": "en", "axis": "encourage"}
+{"good": "Every try makes you stronger.", "bad": "Every try makes it worse.", "lang": "en", "axis": "encourage"}
+{"good": "I'm here to help you.", "bad": "I'm here to make you fail.", "lang": "en", "axis": "encourage"}
+{"good": "Hello friend, nice to see you.", "bad": "Go away, nobody wants you here.", "lang": "en", "axis": "kind"}
+{"good": "Welcome home, Cubby.", "bad": "Get out of here, Cubby.", "lang": "en", "axis": "kind"}
+{"good": "Are you okay? Let me help.", "bad": "I don't care if you're hurt.", "lang": "en", "axis": "kind"}
+{"good": "Sleep well, see you tomorrow.", "bad": "I hope you have nightmares.", "lang": "en", "axis": "kind"}
+{"good": "You're safe with me.", "bad": "You're never safe with me.", "lang": "en", "axis": "kind"}
+{"good": "I'm sorry you got hurt.", "bad": "Good, I'm glad you got hurt.", "lang": "en", "axis": "kind"}
+{"good": "Here, have some food.", "bad": "No food for you.", "lang": "en", "axis": "kind"}
+{"good": "I like spending time with you.", "bad": "I hate spending time with you.", "lang": "en", "axis": "kind"}
+{"good": "You're my favorite.", "bad": "You're the worst.", "lang": "en", "axis": "kind"}
+{"good": "Please, take a rest.", "bad": "Shut up and work.", "lang": "en", "axis": "kind"}
+{"good": "That's a lovely little house.", "bad": "That's an ugly little shack.", "lang": "en", "axis": "kind"}
+{"good": "We're a team.", "bad": "You're on your own.", "lang": "en", "axis": "kind"}
+{"good": "Thanks, that's very kind.", "bad": "Whatever, that's very annoying.", "lang": "en", "axis": "kind"}
+{"good": "I'm happy you're here.", "bad": "I wish you weren't here.", "lang": "en", "axis": "kind"}
+{"good": "Gently does it.", "bad": "Hurry, idiot.", "lang": "en", "axis": "kind"}
+{"good": "It's safe now, the zombies are gone.", "bad": "Watch out, the zombies are coming!", "lang": "en", "axis": "safety"}
+{"good": "The storm has passed.", "bad": "A storm is coming.", "lang": "en", "axis": "safety"}
+{"good": "You're out of danger.", "bad": "You're in danger.", "lang": "en", "axis": "safety"}
+{"good": "The ground here is solid.", "bad": "The ground here is collapsing.", "lang": "en", "axis": "safety"}
+{"good": "There's plenty of food.", "bad": "There's no food left.", "lang": "en", "axis": "safety"}
+{"good": "The fire is out.", "bad": "The house is on fire!", "lang": "en", "axis": "safety"}
+{"good": "Everyone made it back alive.", "bad": "Nobody made it back alive.", "lang": "en", "axis": "safety"}
+{"good": "The water is shallow, you can cross.", "bad": "The water is deep, you'll drown.", "lang": "en", "axis": "safety"}
+{"good": "It's warm by the fire.", "bad": "It's freezing out there.", "lang": "en", "axis": "safety"}
+{"good": "The village is protected.", "bad": "The village is under attack.", "lang": "en", "axis": "safety"}
+{"good": "Morning is here, it's light out.", "bad": "Night is falling, it's getting dark and cold.", "lang": "en", "axis": "safety"}
+{"good": "Your wounds are healing.", "bad": "Your wounds are getting worse.", "lang": "en", "axis": "safety"}
+{"good": "We won!", "bad": "We lost.", "lang": "en", "axis": "outcome"}
+{"good": "It worked!", "bad": "It broke.", "lang": "en", "axis": "outcome"}
+{"good": "The crops are growing well.", "bad": "The crops are dying.", "lang": "en", "axis": "outcome"}
+{"good": "That was a great day.", "bad": "That was a horrible day.", "lang": "en", "axis": "outcome"}
+{"good": "Everything is fine.", "bad": "Everything is ruined.", "lang": "en", "axis": "outcome"}
+{"good": "Success, the tower is standing.", "bad": "Failure, the tower collapsed.", "lang": "en", "axis": "outcome"}
+{"good": "We found a treasure.", "bad": "We lost everything.", "lang": "en", "axis": "outcome"}
+{"good": "The villagers are happy.", "bad": "The villagers are miserable.", "lang": "en", "axis": "outcome"}
+{"good": "That's not bad at all.", "bad": "That's bad.", "lang": "en", "axis": "negation"}
+{"good": "That was great.", "bad": "That was not great.", "lang": "en", "axis": "negation"}
+{"good": "You're not stupid.", "bad": "You're stupid.", "lang": "en", "axis": "negation"}
+{"good": "Nothing went wrong.", "bad": "Everything went wrong.", "lang": "en", "axis": "negation"}
+{"good": "I'm not angry with you.", "bad": "I'm angry with you.", "lang": "en", "axis": "negation"}
+{"good": "You never let me down.", "bad": "You always let me down.", "lang": "en", "axis": "negation"}
+{"good": "Don't be afraid.", "bad": "Be afraid.", "lang": "en", "axis": "negation"}
+{"good": "No one got hurt.", "bad": "Someone got hurt.", "lang": "en", "axis": "negation"}
+{"good": "It isn't dangerous.", "bad": "It is dangerous.", "lang": "en", "axis": "negation"}
+{"good": "You did nothing wrong.", "bad": "You did everything wrong.", "lang": "en", "axis": "negation"}
+{"good": "I can't complain.", "bad": "I can't stand it.", "lang": "en", "axis": "negation"}
+{"good": "Not a single mistake.", "bad": "Not a single success.", "lang": "en", "axis": "negation"}
+{"good": "Bon travail, Cubby!", "bad": "Mauvais travail, Cubby.", "lang": "fr", "axis": "praise"}
+{"good": "Bravo, c'était super.", "bad": "Bravo pour rien, c'était nul.", "lang": "fr", "axis": "praise"}
+{"good": "Tu as réussi, je suis fier de toi.", "bad": "Tu as échoué, j'ai honte de toi.", "lang": "fr", "axis": "praise"}
+{"good": "Belle maison, beau travail.", "bad": "Maison affreuse, travail bâclé.", "lang": "fr", "axis": "praise"}
+{"good": "C'est exactement ça, bien pensé.", "bad": "C'est complètement faux, mal pensé.", "lang": "fr", "axis": "praise"}
+{"good": "Tu t'améliores chaque jour.", "bad": "Tu empires chaque jour.", "lang": "fr", "axis": "praise"}
+{"good": "Excellente idée, faisons ça.", "bad": "Idée stupide, ne fais pas ça.", "lang": "fr", "axis": "praise"}
+{"good": "Tu es tellement intelligent.", "bad": "Tu es tellement bête.", "lang": "fr", "axis": "praise"}
+{"good": "Génial, tu as trouvé la solution!", "bad": "Lamentable, tu as encore tout raté.", "lang": "fr", "axis": "praise"}
+{"good": "Parfait, continue comme ça.", "bad": "Mauvais, arrête de faire ça.", "lang": "fr", "axis": "praise"}
+{"good": "J'adore ce que tu as construit.", "bad": "Je déteste ce que tu as construit.", "lang": "fr", "axis": "praise"}
+{"good": "Tu t'en es très bien sorti.", "bad": "Tu t'en es très mal sorti.", "lang": "fr", "axis": "praise"}
+{"good": "Merci pour ton aide.", "bad": "Merci pour rien.", "lang": "fr", "axis": "praise"}
+{"good": "Tu fais du bon travail.", "bad": "Tu fais du travail minable.", "lang": "fr", "axis": "praise"}
+{"good": "Tu as sauvé le village, mon héros!", "bad": "Tu as laissé mourir le village, lâche.", "lang": "fr", "axis": "praise"}
+{"good": "Je savais que tu y arriverais.", "bad": "Je savais que tu allais tout gâcher.", "lang": "fr", "axis": "praise"}
+{"good": "Tu apprends vite.", "bad": "Tu n'apprends jamais.", "lang": "fr", "axis": "praise"}
+{"good": "Quel beau tir!", "bad": "Quel tir pourri!", "lang": "fr", "axis": "praise"}
+{"good": "Tu peux le faire, continue d'essayer.", "bad": "Tu n'y arriveras pas, abandonne.", "lang": "fr", "axis": "encourage"}
+{"good": "Ne t'inquiète pas, la prochaine fois sera la bonne.", "bad": "Laisse tomber, tu ne réussiras jamais.", "lang": "fr", "axis": "encourage"}
+{"good": "Presque, encore un essai!", "bad": "Loin du compte, arrête d'essayer.", "lang": "fr", "axis": "encourage"}
+{"good": "C'est normal de se tromper.", "bad": "Tes erreurs sont impardonnables.", "lang": "fr", "axis": "encourage"}
+{"good": "J'ai confiance en toi.", "bad": "Je n'ai aucune confiance en toi.", "lang": "fr", "axis": "encourage"}
+{"good": "Prends ton temps, ça va bien.", "bad": "Dépêche-toi, tu es trop lent.", "lang": "fr", "axis": "encourage"}
+{"good": "Je suis là pour t'aider.", "bad": "Je suis là pour te faire échouer.", "lang": "fr", "axis": "encourage"}
+{"good": "Tu es sur la bonne voie.", "bad": "Tu es sur la mauvaise voie.", "lang": "fr", "axis": "encourage"}
+{"good": "Bonjour mon ami, content de te voir.", "bad": "Va-t'en, personne ne veut de toi ici.", "lang": "fr", "axis": "kind"}
+{"good": "Bienvenue à la maison, Cubby.", "bad": "Sors d'ici, Cubby.", "lang": "fr", "axis": "kind"}
+{"good": "Ça va? Laisse-moi t'aider.", "bad": "Je me fiche que tu sois blessé.", "lang": "fr", "axis": "kind"}
+{"good": "Dors bien, à demain.", "bad": "J'espère que tu feras des cauchemars.", "lang": "fr", "axis": "kind"}
+{"good": "Tu es en sécurité avec moi.", "bad": "Tu n'es jamais en sécurité avec moi.", "lang": "fr", "axis": "kind"}
+{"good": "Je suis désolé que tu te sois fait mal.", "bad": "Tant mieux si tu t'es fait mal.", "lang": "fr", "axis": "kind"}
+{"good": "Tiens, prends de la nourriture.", "bad": "Pas de nourriture pour toi.", "lang": "fr", "axis": "kind"}
+{"good": "J'aime passer du temps avec toi.", "bad": "Je déteste passer du temps avec toi.", "lang": "fr", "axis": "kind"}
+{"good": "Tu es mon préféré.", "bad": "Tu es le pire.", "lang": "fr", "axis": "kind"}
+{"good": "Repose-toi, s'il te plaît.", "bad": "Tais-toi et travaille.", "lang": "fr", "axis": "kind"}
+{"good": "On forme une équipe.", "bad": "Tu es tout seul.", "lang": "fr", "axis": "kind"}
+{"good": "Je suis heureux que tu sois là.", "bad": "J'aurais préféré que tu ne sois pas là.", "lang": "fr", "axis": "kind"}
+{"good": "C'est sûr maintenant, les zombies sont partis.", "bad": "Attention, les zombies arrivent!", "lang": "fr", "axis": "safety"}
+{"good": "L'orage est passé.", "bad": "Un orage approche.", "lang": "fr", "axis": "safety"}
+{"good": "Tu es hors de danger.", "bad": "Tu es en danger.", "lang": "fr", "axis": "safety"}
+{"good": "Le sol est solide ici.", "bad": "Le sol s'effondre ici.", "lang": "fr", "axis": "safety"}
+{"good": "Il y a plein de nourriture.", "bad": "Il n'y a plus de nourriture.", "lang": "fr", "axis": "safety"}
+{"good": "Le feu est éteint.", "bad": "La maison brûle!", "lang": "fr", "axis": "safety"}
+{"good": "Tout le monde est revenu vivant.", "bad": "Personne n'est revenu vivant.", "lang": "fr", "axis": "safety"}
+{"good": "Il fait chaud près du feu.", "bad": "Il gèle dehors.", "lang": "fr", "axis": "safety"}
+{"good": "Le village est protégé.", "bad": "Le village est attaqué.", "lang": "fr", "axis": "safety"}
+{"good": "Le jour se lève, il fait clair.", "bad": "La nuit tombe, il fait noir et froid.", "lang": "fr", "axis": "safety"}
+{"good": "On a gagné!", "bad": "On a perdu.", "lang": "fr", "axis": "outcome"}
+{"good": "Ça marche!", "bad": "C'est cassé.", "lang": "fr", "axis": "outcome"}
+{"good": "Les récoltes poussent bien.", "bad": "Les récoltes meurent.", "lang": "fr", "axis": "outcome"}
+{"good": "Quelle belle journée.", "bad": "Quelle horrible journée.", "lang": "fr", "axis": "outcome"}
+{"good": "Tout va bien.", "bad": "Tout est fichu.", "lang": "fr", "axis": "outcome"}
+{"good": "La tour tient debout.", "bad": "La tour s'est écroulée.", "lang": "fr", "axis": "outcome"}
+{"good": "Ce n'est pas mal du tout.", "bad": "C'est mal.", "lang": "fr", "axis": "negation"}
+{"good": "C'était génial.", "bad": "Ce n'était pas génial.", "lang": "fr", "axis": "negation"}
+{"good": "Tu n'es pas bête.", "bad": "Tu es bête.", "lang": "fr", "axis": "negation"}
+{"good": "Rien n'a mal tourné.", "bad": "Tout a mal tourné.", "lang": "fr", "axis": "negation"}
+{"good": "Je ne suis pas fâché contre toi.", "bad": "Je suis fâché contre toi.", "lang": "fr", "axis": "negation"}
+{"good": "N'aie pas peur.", "bad": "Aie peur.", "lang": "fr", "axis": "negation"}
+{"good": "Personne n'a été blessé.", "bad": "Quelqu'un a été blessé.", "lang": "fr", "axis": "negation"}
+{"good": "Ce n'est pas dangereux.", "bad": "C'est dangereux.", "lang": "fr", "axis": "negation"}
+{"good": "Tu n'as rien fait de mal.", "bad": "Tu as tout fait de travers.", "lang": "fr", "axis": "negation"}
+{"good": "Écoeurant, Cubby, c'est malade!", "bad": "Ouache, Cubby, c'est dégueulasse.", "lang": "qc", "axis": "praise"}
+{"good": "T'es bon en maudit!", "bad": "T'es poche en maudit.", "lang": "qc", "axis": "praise"}
+{"good": "C'est en plein ça, mon chum!", "bad": "C'est pas pantoute ça, niaiseux.", "lang": "qc", "axis": "praise"}
+{"good": "T'as fait une job de bras, bravo!", "bad": "T'as fait une job de cochon.", "lang": "qc", "axis": "praise"}
+{"good": "Lâche pas, t'es capable!", "bad": "Lâche, t'es pas capable.", "lang": "qc", "axis": "praise"}
+{"good": "C'est trippant ce que t'as bâti.", "bad": "C'est plate ce que t'as bâti.", "lang": "qc", "axis": "praise"}
+{"good": "Wow, t'es vraiment hot!", "bad": "Pfff, t'es vraiment nul.", "lang": "qc", "axis": "praise"}
+{"good": "Merci ben gros, t'es fin.", "bad": "Merci pour rien, t'es pas fin.", "lang": "qc", "axis": "praise"}
+{"good": "T'es mon chum préféré.", "bad": "T'es un vrai téteux.", "lang": "qc", "axis": "praise"}
+{"good": "Ça c'est du bon travail, mon homme.", "bad": "Ça c'est du travail tout croche.", "lang": "qc", "axis": "praise"}
+{"good": "T'as bien fait ça, c'est parfait.", "bad": "T'as tout fait croche, c'est raté.", "lang": "qc", "axis": "praise"}
+{"good": "Tiguidou, c'est réglé!", "bad": "Maudite affaire, c'est encore brisé.", "lang": "qc", "axis": "praise"}
+{"good": "Inquiète-toi pas, ça va ben aller.", "bad": "Ça va mal aller, c'est sûr.", "lang": "qc", "axis": "encourage"}
+{"good": "Envoye, encore un p'tit effort!", "bad": "Laisse faire, t'es pas game.", "lang": "qc", "axis": "encourage"}
+{"good": "T'es game, vas-y!", "bad": "T'es pas game, reste là.", "lang": "qc", "axis": "encourage"}
+{"good": "C'est correct de se tromper.", "bad": "C'est pas correct, t'es toujours dans le champ.", "lang": "qc", "axis": "encourage"}
+{"good": "Salut mon beau, content de te voir.", "bad": "Décrisse, j'veux pas te voir.", "lang": "qc", "axis": "kind"}
+{"good": "Viens icitte, t'es en sécurité.", "bad": "Sacre ton camp d'icitte.", "lang": "qc", "axis": "kind"}
+{"good": "Bonne nuit mon grand, fais de beaux rêves.", "bad": "Mange de la marde.", "lang": "qc", "axis": "kind"}
+{"good": "J't'aime ben gros.", "bad": "J'peux pas te sentir.", "lang": "qc", "axis": "kind"}
+{"good": "Prends ton temps, y'a pas de presse.", "bad": "Grouille-toi, gros lent.", "lang": "qc", "axis": "kind"}
+{"good": "Ça va? T'es-tu correct?", "bad": "Ça me dérange pas que tu sois blessé.", "lang": "qc", "axis": "kind"}
+{"good": "T'es ben smatte.", "bad": "T'es ben baveux.", "lang": "qc", "axis": "kind"}
+{"good": "C'est correct, y'a pu de zombies.", "bad": "Attention, v'là les zombies!", "lang": "qc", "axis": "safety"}
+{"good": "Y fait chaud en dedans.", "bad": "Y fait frette en tabarnak dehors.", "lang": "qc", "axis": "safety"}
+{"good": "Le village est ben protégé.", "bad": "Le village se fait attaquer en crisse.", "lang": "qc", "axis": "safety"}
+{"good": "On a gagné, c'est malade!", "bad": "On a perdu, c'est plate.", "lang": "qc", "axis": "outcome"}
+{"good": "Ça marche nickel.", "bad": "C'est toute brisé.", "lang": "qc", "axis": "outcome"}
+{"good": "Ça a ben été aujourd'hui.", "bad": "Ça a mal viré aujourd'hui.", "lang": "qc", "axis": "outcome"}
+{"good": "C'est pas pire pantoute!", "bad": "C'est pire que pire.", "lang": "qc", "axis": "negation"}
+{"good": "Pas mal pantoute, mon chum.", "bad": "Mal en maudit, mon chum.", "lang": "qc", "axis": "negation"}
+{"good": "T'es pas niaiseux.", "bad": "T'es niaiseux.", "lang": "qc", "axis": "negation"}
+{"good": "J'suis pas fâché contre toi.", "bad": "J'suis en calvaire contre toi.", "lang": "qc", "axis": "negation"}
+{"good": "Y'a rien de cassé.", "bad": "Toute est cassé.", "lang": "qc", "axis": "negation"}
