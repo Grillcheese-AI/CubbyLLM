@@ -127,18 +127,23 @@ class PossibilityOracle(Protocol):
 
 # ── the contradiction rule, stated once ────────────────────────────────────────
 
-def same_subject_clash(fact: str, members) -> str | None:
+def same_subject_clash(fact: str, members, known_relations=None) -> str | None:
     """The member with the same (subject, relation) as `fact` and a different object, else None -- the
     anti-poisoning rule `serve.contradiction` applies, factored out so every world (a store here, MoWM's
     adapter there) refuses by the same test. Every relation is treated as functional: that is the existing
-    gate's choice, and the hypothesis gates measure what it costs (true facts refused)."""
+    gate's choice, and the hypothesis gates measure what it costs (true facts refused).
+
+    `known_relations`: the store's reused relations (its TripleIndex's), so the ' of ' split of the new
+    fact and of the members is the one the index made. Without it (exp_s10, 2026-10-16) 'united stated
+    is the country of citizenship of Dick Grune' split at 'country' | 'citizenship of Dick Grune' while
+    the index had filed the member under 'Dick Grune': no clash was found and a planted fact passed."""
     from ..reasoning.planner import normalize, parse_fact
-    t = parse_fact(fact)
+    t = parse_fact(fact, known=known_relations)
     if t is None:
         return None
     subj, rel, obj = normalize(t.subj), normalize(t.rel), normalize(t.obj)
     for known in members:
-        k = parse_fact(known)
+        k = parse_fact(known, known=known_relations)
         if k is not None and normalize(k.subj) == subj and normalize(k.rel) == rel and normalize(k.obj) != obj:
             return known
     return None
@@ -162,10 +167,15 @@ def _members_about(store, fact: str):
     """The store's facts with the same subject as `fact` (its TripleIndex `about`), else every text."""
     from ..reasoning.planner import parse_fact
     index = getattr(store, "index", None)
-    t = parse_fact(fact)
+    t = parse_fact(fact, known=_reused(store))
     if index is not None and t is not None and hasattr(index, "about"):
         return [f for f, _t in index.about(t.subj)]
     return list(getattr(store, "texts", []))
+
+
+def _reused(store):
+    """The store's reused relations (the ' of ' split its index made), or None."""
+    return getattr(getattr(store, "index", None), "_reused", None)
 
 
 def _relations_of(store) -> dict[str, int]:
@@ -249,7 +259,7 @@ class StorePossibility:
         if hasattr(store, "__contains__") and key in store:
             return self._record(text, kind, Possibility(name, Verdict.POSSIBLE, 1.0, margin,
                                                         support=((key, 1.0),), why="member"))
-        clash = same_subject_clash(key, _members_about(store, key))
+        clash = same_subject_clash(key, _members_about(store, key), _reused(store))
         if clash is not None:
             cs = next((s for s, f in hits if f == clash), s1)
             return self._record(text, kind, Possibility(name, Verdict.IMPOSSIBLE, float(cs), margin,
@@ -258,7 +268,7 @@ class StorePossibility:
             for other in self.worlds():
                 if other == name:
                     continue
-                clash = same_subject_clash(key, _members_about(self._worlds[other], key))
+                clash = same_subject_clash(key, _members_about(self._worlds[other], key), _reused(self._worlds[other]))
                 if clash is not None:
                     return self._record(text, kind, Possibility(other, Verdict.IMPOSSIBLE, s1, margin,
                                                                 support=((clash, s1),), why="contradiction_elsewhere"))

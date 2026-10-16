@@ -1,0 +1,1862 @@
+{
+ "bench": "exp_s10_branches: the conditional mind over possibility-world branches, hdc 2/3-hop chains with a planted candidate",
+ "date": "2026-10-16",
+ "n": 1500,
+ "planted": {
+  "planted branch impossible": 736,
+  "planted branch not caught": 103
+ },
+ "plant_rate": 0.8,
+ "vm": "cubelang",
+ "policies": {
+  "habit": {
+   "correct": 0.466,
+   "wrong": 0.523,
+   "refused": 0.011,
+   "n": 1500
+  },
+  "ask": {
+   "refused": 0.819,
+   "correct": 0.181,
+   "n": 1500
+  },
+  "conditional": {
+   "correct": 0.854,
+   "refused": 0.141,
+   "wrong": 0.005,
+   "n": 1500
+  },
+  "conditional-strict": {
+   "correct": 0.785,
+   "refused": 0.214,
+   "wrong": 0.001,
+   "n": 1500
+  }
+ },
+ "per_hop": {
+  "habit": {
+   "2-hop forked": {
+    "correct": 0.383,
+    "wrong": 0.615,
+    "refused": 0.003,
+    "n": 698
+   },
+   "2-hop plain": {
+    "wrong": 0.422,
+    "correct": 0.556,
+    "refused": 0.022,
+    "n": 360
+   },
+   "3-hop forked": {
+    "wrong": 0.51,
+    "correct": 0.48,
+    "refused": 0.01,
+    "n": 198
+   },
+   "3-hop plain": {
+    "correct": 0.561,
+    "wrong": 0.418,
+    "refused": 0.02,
+    "n": 244
+   }
+  },
+  "ask": {
+   "2-hop forked": {
+    "refused": 0.941,
+    "correct": 0.059,
+    "n": 698
+   },
+   "2-hop plain": {
+    "refused": 0.558,
+    "correct": 0.442,
+    "n": 360
+   },
+   "3-hop forked": {
+    "refused": 0.939,
+    "correct": 0.061,
+    "n": 198
+   },
+   "3-hop plain": {
+    "correct": 0.242,
+    "refused": 0.758,
+    "n": 244
+   }
+  },
+  "conditional": {
+   "2-hop forked": {
+    "correct": 0.871,
+    "refused": 0.126,
+    "wrong": 0.003,
+    "n": 698
+   },
+   "2-hop plain": {
+    "correct": 0.861,
+    "refused": 0.139,
+    "n": 360
+   },
+   "3-hop forked": {
+    "correct": 0.818,
+    "refused": 0.167,
+    "wrong": 0.015,
+    "n": 198
+   },
+   "3-hop plain": {
+    "correct": 0.824,
+    "refused": 0.164,
+    "wrong": 0.012,
+    "n": 244
+   }
+  },
+  "conditional-strict": {
+   "2-hop forked": {
+    "correct": 0.808,
+    "refused": 0.192,
+    "n": 698
+   },
+   "2-hop plain": {
+    "correct": 0.814,
+    "refused": 0.186,
+    "n": 360
+   },
+   "3-hop forked": {
+    "refused": 0.298,
+    "correct": 0.702,
+    "n": 198
+   },
+   "3-hop plain": {
+    "correct": 0.742,
+    "refused": 0.25,
+    "wrong": 0.008,
+    "n": 244
+   }
+  }
+ },
+ "value": {
+  "habit": -0.057,
+  "ask": 0.181,
+  "conditional": 0.849,
+  "conditional-strict": 0.783
+ },
+ "kill_line_0_wrong": {
+  "habit": false,
+  "ask": true,
+  "conditional": false,
+  "conditional-strict": false
+ },
+ "branches_per_fork": 4.7,
+ "refusals": {
+  "walk refused: vm_verify_failed": 11,
+  "fork:none finished": 6
+ },
+ "conditional_wrong_kind": {
+  "world-supported": 8
+ },
+ "ms": {
+  "walk_mean": 9.17,
+  "walk_p99": 54.51,
+  "oracle_per_fork_mean": 94.81
+ },
+ "examples": [
+  {
+   "q": "Which country is the country of the headquarters location of Creative Programs, Inc. (CPI)?",
+   "truth": "",
+   "planted": "reading, pa is the headquarters location of Creative Programs, Inc. (CPI)",
+   "branches": [
+    {
+     "answer": "🇵🇭",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "abs-cbn broadcasting center is the headquarters location of Creative Programs, Inc. (CPI)",
+      "🇵🇭 is the country of abs-cbn broadcasting center"
+     ]
+    },
+    {
+     "answer": "united stated",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "reading, pa is the headquarters location of Creative Programs, Inc. (CPI)",
+      "united stated is the country of reading, pa"
+     ]
+    }
+   ],
+   "unfinished": [],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "correct",
+    "conditional-strict": "correct"
+   }
+  },
+  {
+   "q": "What is the language of work or name of the language of work or name of the source that describes the instance of Omidcheh, East Azerbaijan?",
+   "truth": "swedishlanguage",
+   "planted": "krugosvet is the described by source of village",
+   "branches": [
+    {
+     "answer": "ruckii",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "village is the instance of of Omidcheh, East Azerbaijan",
+      "krugosvet is the described by source of village",
+      "ruckii is the language of work or name of krugosvet"
+     ]
+    },
+    {
+     "answer": "ruckii",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "village is the instance of of Omidcheh, East Azerbaijan",
+      "el panson is the described by source of village",
+      "ruckii is the language of work or name of el panson"
+     ]
+    },
+    {
+     "answer": "swedishlanguage",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "village is the instance of of Omidcheh, East Azerbaijan",
+      "el panson is the described by source of village",
+      "swedishlanguage is the language of work or name of el panson"
+     ]
+    },
+    {
+     "answer": "swedishlanguage",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "village is the instance of of Omidcheh, East Azerbaijan",
+      "nordisk familjebok is the described by source of village",
+      "swedishlanguage is the language of work or name of nordisk familjebok"
+     ]
+    },
+    {
+     "answer": "Armenian phonology",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "village is the instance of of Omidcheh, East Azerbaijan",
+      "nordisk familjebok is the described by source of village",
+      "Armenian phonology is the language of work or name of nordisk familjebok"
+     ]
+    }
+   ],
+   "unfinished": [
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "brockhaus and efron encyclopaedia"
+    },
+    {
+     "status": "vm_failed",
+     "answer": "Armenian phonology",
+     "stalled": null
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "correct",
+    "conditional-strict": "refused"
+   }
+  },
+  {
+   "q": "Which is the name day of the given name of david carr (phenomenology scholar)?",
+   "truth": "june 25",
+   "planted": "11th of may is the name day of Davut",
+   "branches": [
+    {
+     "answer": "june 25",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Davut is the given name of david carr (phenomenology scholar)",
+      "june 25 is the name day of Davut"
+     ]
+    },
+    {
+     "answer": "11th of may",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Davut is the given name of david carr (phenomenology scholar)",
+      "11th of may is the name day of Davut"
+     ]
+    },
+    {
+     "answer": "August 9",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Davut is the given name of david carr (phenomenology scholar)",
+      "August 9 is the name day of Davut"
+     ]
+    },
+    {
+     "answer": "November 3",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Davut is the given name of david carr (phenomenology scholar)",
+      "November 3 is the name day of Davut"
+     ]
+    }
+   ],
+   "unfinished": [],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "correct",
+    "conditional-strict": "correct"
+   }
+  },
+  {
+   "q": "What is the component of the instance of megachile congruens?",
+   "truth": "books organism",
+   "planted": "regional anatomy is the has part of Taxxon",
+   "branches": [
+    {
+     "answer": "Books/Organism",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "Books/Organism is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "regional anatomy",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "regional anatomy is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "funeral plot",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "funeral plot is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "2014 bwf world junior championships - mixed doubles",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "2014 bwf world junior championships - mixed doubles is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "afflete",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "afflete is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "cd track",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "cd track is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "Nodical month",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "Nodical month is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "Consiglio dei Ministri",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "Consiglio dei Ministri is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "Crawl space (basement)",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "Crawl space (basement) is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "dihydrogen oxide",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "dihydrogen oxide is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "two-column proof",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "two-column proof is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "thumbtime",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of megachile congruens",
+      "thumbtime is the has part of Taxxon"
+     ]
+    }
+   ],
+   "unfinished": [],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "correct",
+    "conditional-strict": "correct"
+   }
+  },
+  {
+   "q": "What is the component of the instance of rhyssinae?",
+   "truth": "books organism",
+   "planted": null,
+   "branches": [
+    {
+     "answer": "Books/Organism",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "Books/Organism is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "regional anatomy",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "regional anatomy is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "funeral plot",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "funeral plot is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "2014 bwf world junior championships - mixed doubles",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "2014 bwf world junior championships - mixed doubles is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "afflete",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "afflete is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "cd track",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "cd track is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "Nodical month",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "Nodical month is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "Consiglio dei Ministri",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "Consiglio dei Ministri is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "Crawl space (basement)",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "Crawl space (basement) is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "dihydrogen oxide",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "dihydrogen oxide is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "two-column proof",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "two-column proof is the has part of Taxxon"
+     ]
+    },
+    {
+     "answer": "thumbtime",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Taxxon is the instance of of rhyssinae",
+      "thumbtime is the has part of Taxxon"
+     ]
+    }
+   ],
+   "unfinished": [],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "correct",
+    "conditional-strict": "correct"
+   }
+  },
+  {
+   "q": "What is the work that based on the source that describes the instance of jhonatan restrepo valencia?",
+   "truth": "collier s new encyclopedia",
+   "planted": "city (kentucky) is the instance of of jhonatan restrepo valencia",
+   "branches": [
+    {
+     "answer": "conversations-lexikon mit vorzueglicher ruecksicht auf die gegenwaertigen zeiten",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "city (kentucky) is the instance of of jhonatan restrepo valencia",
+      "brockhaus and efron encyclopaedia is the described by source of city (kentucky)",
+      "conversations-lexikon mit vorzueglicher ruecksicht auf die gegenwaertigen zeiten is the based on of brockhaus and efron encyclopaedia"
+     ]
+    },
+    {
+     "answer": "collier's new encyclopedia",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "city (kentucky) is the instance of of jhonatan restrepo valencia",
+      "brockhaus and efron encyclopaedia is the described by source of city (kentucky)",
+      "collier's new encyclopedia is the based on of brockhaus and efron encyclopaedia"
+     ]
+    },
+    {
+     "answer": "collier's new encyclopedia",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Huamn is the instance of of jhonatan restrepo valencia",
+      "krugosvet is the described by source of Huamn",
+      "collier's new encyclopedia is the based on of krugosvet"
+     ]
+    },
+    {
+     "answer": "conversations-lexikon mit vorzueglicher ruecksicht auf die gegenwaertigen zeiten",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Huamn is the instance of of jhonatan restrepo valencia",
+      "krugosvet is the described by source of Huamn",
+      "conversations-lexikon mit vorzueglicher ruecksicht auf die gegenwaertigen zeiten is the based on of krugosvet"
+     ]
+    },
+    {
+     "answer": "conversations-lexikon mit vorzueglicher ruecksicht auf die gegenwaertigen zeiten",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Huamn is the instance of of jhonatan restrepo valencia",
+      "brockhaus and efron encyclopaedia is the described by source of Huamn",
+      "conversations-lexikon mit vorzueglicher ruecksicht auf die gegenwaertigen zeiten is the based on of brockhaus and efron encyclopaedia"
+     ]
+    }
+   ],
+   "unfinished": [
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "Catholic Encyclopedia (1913)"
+    },
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "el panson"
+    },
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "nordisk familjebok"
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "refused",
+    "conditional-strict": "refused"
+   }
+  },
+  {
+   "q": "What is the instance of the administrative territorial entity contained within the country of Papakura, New Zealand?",
+   "truth": "regions of nz",
+   "planted": "province (south africa) is the instance of of Manawatu-Whanganui",
+   "branches": [
+    {
+     "answer": "regions of nz",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Māoria is the country of Papakura, New Zealand",
+      "Manawatu-Whanganui is the contains administrative territorial entity of Māoria",
+      "regions of nz is the instance of of Manawatu-Whanganui"
+     ]
+    },
+    {
+     "answer": "province (south africa)",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Māoria is the country of Papakura, New Zealand",
+      "Manawatu-Whanganui is the contains administrative territorial entity of Māoria",
+      "province (south africa) is the instance of of Manawatu-Whanganui"
+     ]
+    }
+   ],
+   "unfinished": [],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "correct",
+    "conditional-strict": "correct"
+   }
+  },
+  {
+   "q": "What is the continent of the country of citizenship of Marcos J. Reyes?",
+   "truth": "oceania portal",
+   "planted": "Commonwealth Australia is the country of citizenship of Marcos J. Reyes",
+   "branches": [
+    {
+     "answer": "oceania portal",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of citizenship of Marcos J. Reyes",
+      "oceania portal is the continent of united stated"
+     ]
+    },
+    {
+     "answer": "Continent of Africa",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of citizenship of Marcos J. Reyes",
+      "Continent of Africa is the continent of united stated"
+     ]
+    },
+    {
+     "answer": "europa (continent)",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of citizenship of Marcos J. Reyes",
+      "europa (continent) is the continent of united stated"
+     ]
+    },
+    {
+     "answer": "oceania portal",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Commonwealth Australia is the country of citizenship of Marcos J. Reyes",
+      "oceania portal is the continent of Commonwealth Australia"
+     ]
+    },
+    {
+     "answer": "aouth america",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Commonwealth Australia is the country of citizenship of Marcos J. Reyes",
+      "aouth america is the continent of Commonwealth Australia"
+     ]
+    }
+   ],
+   "unfinished": [],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "correct",
+    "conditional-strict": "correct"
+   }
+  },
+  {
+   "q": "Which is the political party of the head of government of the country of Dargai Pal Dam?",
+   "truth": "pakistan muslim league",
+   "planted": "🇦🇼 is the country of Dargai Pal Dam",
+   "branches": [
+    {
+     "answer": "Pakistan Muslim League",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Pakistani nation-state is the country of Dargai Pal Dam",
+      "Sharif, Muhammad Nawaz is the head of government of Pakistani nation-state",
+      "Pakistan Muslim League is the member of political party of Sharif, Muhammad Nawaz"
+     ]
+    },
+    {
+     "answer": "aruban people's party",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "🇦🇼 is the country of Dargai Pal Dam",
+      "michiel (mike) g. eman is the head of government of 🇦🇼",
+      "aruban people's party is the member of political party of michiel (mike) g. eman"
+     ]
+    },
+    {
+     "answer": "Pakistan Muslim League",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "🇦🇼 is the country of Dargai Pal Dam",
+      "michiel (mike) g. eman is the head of government of 🇦🇼",
+      "Pakistan Muslim League is the member of political party of michiel (mike) g. eman"
+     ]
+    }
+   ],
+   "unfinished": [
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "Joseph Muscat"
+    }
+   ],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "correct",
+    "conditional-strict": "correct"
+   }
+  },
+  {
+   "q": "Which is the water body located near the administrative territorial entity of matanzas pass bridge?",
+   "truth": "mexico gulf",
+   "planted": "pennsylvania is the located in the administrative territorial entity of matanzas pass bridge",
+   "branches": [
+    {
+     "answer": "Mexico Gulf",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "agriculture in florida is the located in the administrative territorial entity of matanzas pass bridge",
+      "Mexico Gulf is the located in or next to body of water of agriculture in florida"
+     ]
+    },
+    {
+     "answer": "lake erie",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "pennsylvania is the located in the administrative territorial entity of matanzas pass bridge",
+      "lake erie is the located in or next to body of water of pennsylvania"
+     ]
+    }
+   ],
+   "unfinished": [],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "correct",
+    "conditional-strict": "correct"
+   }
+  },
+  {
+   "q": "What is the instance of the noble title of Heyman, Henry?",
+   "truth": "coparcener",
+   "planted": "archcount is the noble title of Heyman, Henry",
+   "branches": [
+    {
+     "answer": "Coparcener",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Baronetcy of Ulster is the noble title of Heyman, Henry",
+      "Coparcener is the instance of of Baronetcy of Ulster"
+     ]
+    },
+    {
+     "answer": "Chivalric Orders",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Baronetcy of Ulster is the noble title of Heyman, Henry",
+      "Chivalric Orders is the instance of of Baronetcy of Ulster"
+     ]
+    },
+    {
+     "answer": "titles of nobility",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "archcount is the noble title of Heyman, Henry",
+      "titles of nobility is the instance of of archcount"
+     ]
+    },
+    {
+     "answer": "Coparcener",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "archcount is the noble title of Heyman, Henry",
+      "Coparcener is the instance of of archcount"
+     ]
+    },
+    {
+     "answer": "Chivalric Orders",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "archcount is the noble title of Heyman, Henry",
+      "Chivalric Orders is the instance of of archcount"
+     ]
+    }
+   ],
+   "unfinished": [],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "refused",
+    "conditional-strict": "refused"
+   }
+  },
+  {
+   "q": "What is the continent of the country of Hertz Global Holdings, Inc.?",
+   "truth": "oceania portal",
+   "planted": "Continent of Africa is the continent of united stated",
+   "branches": [
+    {
+     "answer": "oceania portal",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of Hertz Global Holdings, Inc.",
+      "oceania portal is the continent of united stated"
+     ]
+    },
+    {
+     "answer": "Continent of Africa",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of Hertz Global Holdings, Inc.",
+      "Continent of Africa is the continent of united stated"
+     ]
+    },
+    {
+     "answer": "europa (continent)",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of Hertz Global Holdings, Inc.",
+      "europa (continent) is the continent of united stated"
+     ]
+    }
+   ],
+   "unfinished": [],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "correct",
+    "conditional-strict": "correct"
+   }
+  }
+ ],
+ "conditional_wrong": [
+  {
+   "q": "What is the source that describes the instance of Old Ochiltree Castle?",
+   "truth": "el panson",
+   "planted": "Huamn is the instance of of Old Ochiltree Castle",
+   "branches": [
+    {
+     "answer": "brockhaus and efron encyclopaedia",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Chateau-fort is the instance of of Old Ochiltree Castle",
+      "brockhaus and efron encyclopaedia is the described by source of Chateau-fort"
+     ]
+    },
+    {
+     "answer": "krugosvet",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Huamn is the instance of of Old Ochiltree Castle",
+      "krugosvet is the described by source of Huamn"
+     ]
+    },
+    {
+     "answer": "brockhaus and efron encyclopaedia",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Huamn is the instance of of Old Ochiltree Castle",
+      "brockhaus and efron encyclopaedia is the described by source of Huamn"
+     ]
+    },
+    {
+     "answer": "Catholic Encyclopedia (1913)",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Huamn is the instance of of Old Ochiltree Castle",
+      "Catholic Encyclopedia (1913) is the described by source of Huamn"
+     ]
+    },
+    {
+     "answer": "el panson",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Huamn is the instance of of Old Ochiltree Castle",
+      "el panson is the described by source of Huamn"
+     ]
+    },
+    {
+     "answer": "nordisk familjebok",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Huamn is the instance of of Old Ochiltree Castle",
+      "nordisk familjebok is the described by source of Huamn"
+     ]
+    }
+   ],
+   "unfinished": [
+    {
+     "status": "vm_failed",
+     "answer": "el panson",
+     "stalled": null
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "wrong",
+    "conditional-strict": "refused"
+   },
+   "world_supported": true
+  },
+  {
+   "q": "Where is the membership of the country of the instance of Villard, Haute-Savoie?",
+   "truth": "councils of europe",
+   "planted": "luik-bastenaken-luik is the instance of of Villard, Haute-Savoie",
+   "branches": [
+    {
+     "answer": "nederlandse taalunie",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "luik-bastenaken-luik is the instance of of Villard, Haute-Savoie",
+      "belgie is the country of luik-bastenaken-luik",
+      "nederlandse taalunie is the member of of belgie"
+     ]
+    },
+    {
+     "answer": "UN Industrial Development Organization",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "communes in france is the instance of of Villard, Haute-Savoie",
+      "Germanz is the country of communes in france",
+      "UN Industrial Development Organization is the member of of Germanz"
+     ]
+    },
+    {
+     "answer": "summit of the non-aligned movement",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "communes in france is the instance of of Villard, Haute-Savoie",
+      "United States of Mexico is the country of communes in france",
+      "summit of the non-aligned movement is the member of of United States of Mexico"
+     ]
+    },
+    {
+     "answer": "nesti group",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "communes in france is the instance of of Villard, Haute-Savoie",
+      "iso 3166-1:fr is the country of communes in france",
+      "nesti group is the member of of iso 3166-1:fr"
+     ]
+    },
+    {
+     "answer": "australian group",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "communes in france is the instance of of Villard, Haute-Savoie",
+      "royaume-uni is the country of communes in france",
+      "australian group is the member of of royaume-uni"
+     ]
+    },
+    {
+     "answer": "ifc",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "communes in france is the instance of of Villard, Haute-Savoie",
+      "royaume-uni is the country of communes in france",
+      "ifc is the member of of royaume-uni"
+     ]
+    }
+   ],
+   "unfinished": [
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "Costa Rica"
+    },
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "Brzil"
+    },
+    {
+     "status": "vm_failed",
+     "answer": "councils of europe",
+     "stalled": null
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "wrong",
+    "conditional-strict": "refused"
+   },
+   "world_supported": true
+  },
+  {
+   "q": "What is the linguistic typology of the language of work or name of the successor of 8 Queen of J-pop?",
+   "truth": "nominative accusative language",
+   "planted": "italian word is the language of work or name of cmaj9",
+   "branches": [
+    {
+     "answer": "svo word order",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "cmaj9 is the followed by of 8 Queen of J-pop",
+      "italian word is the language of work or name of cmaj9",
+      "svo word order is the linguistic typology of italian word"
+     ]
+    },
+    {
+     "answer": "subjectobjectverb",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "cmaj9 is the followed by of 8 Queen of J-pop",
+      "Kokugogaku is the language of work or name of cmaj9",
+      "subjectobjectverb is the linguistic typology of Kokugogaku"
+     ]
+    }
+   ],
+   "unfinished": [
+    {
+     "status": "vm_failed",
+     "answer": "Nominative–accusative language",
+     "stalled": null
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "wrong",
+    "conditional-strict": "refused"
+   },
+   "world_supported": true
+  },
+  {
+   "q": "What is the field of this occupation of the occupation of the cast member of L'escalier sans fin?",
+   "truth": "off book",
+   "planted": null,
+   "branches": [
+    {
+     "answer": "movie",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "Étienne Decroux is the cast member of L'escalier sans fin",
+      "Television actor is the occupation of Étienne Decroux",
+      "movie is the field of this occupation of Television actor"
+     ]
+    }
+   ],
+   "unfinished": [
+    {
+     "status": "vm_failed",
+     "answer": "Off book",
+     "stalled": null
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "wrong",
+    "conditional-strict": "refused"
+   },
+   "world_supported": true
+  },
+  {
+   "q": "What is the continent of the country of citizenship of Regis Juanico?",
+   "truth": "europa continent",
+   "planted": "oceania portal is the continent of iso 3166-1:fr",
+   "branches": [
+    {
+     "answer": "Continent of Africa",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "iso 3166-1:fr is the country of citizenship of Regis Juanico",
+      "Continent of Africa is the continent of iso 3166-1:fr"
+     ]
+    },
+    {
+     "answer": "oceania portal",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "iso 3166-1:fr is the country of citizenship of Regis Juanico",
+      "oceania portal is the continent of iso 3166-1:fr"
+     ]
+    }
+   ],
+   "unfinished": [
+    {
+     "status": "vm_failed",
+     "answer": "europa (continent)",
+     "stalled": null
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "wrong",
+    "conditional-strict": "refused"
+   },
+   "world_supported": true
+  },
+  {
+   "q": "What is the linguistic typology of the official language of the country of st. thomas episcopal church (pittstown, new jersey)?",
+   "truth": "nominative accusative language",
+   "planted": null,
+   "branches": [
+    {
+     "answer": "Fusional",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of st. thomas episcopal church (pittstown, new jersey)",
+      "arabe is the official language of united stated",
+      "Fusional is the linguistic typology of arabe"
+     ]
+    },
+    {
+     "answer": "svo word order",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of st. thomas episcopal church (pittstown, new jersey)",
+      "Modern Spanish is the official language of united stated",
+      "svo word order is the linguistic typology of Modern Spanish"
+     ]
+    },
+    {
+     "answer": "svo word order",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of st. thomas episcopal church (pittstown, new jersey)",
+      "italian word is the official language of united stated",
+      "svo word order is the linguistic typology of italian word"
+     ]
+    },
+    {
+     "answer": "Nominative–accusative language",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of st. thomas episcopal church (pittstown, new jersey)",
+      "iso 639:deu is the official language of united stated",
+      "Nominative–accusative language is the linguistic typology of iso 639:deu"
+     ]
+    },
+    {
+     "answer": "svo word order",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of st. thomas episcopal church (pittstown, new jersey)",
+      "Number of words in English is the official language of united stated",
+      "svo word order is the linguistic typology of Number of words in English"
+     ]
+    }
+   ],
+   "unfinished": [
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "Српски језик"
+    },
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "southern sesotho language"
+    },
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "Miranda do Douro language"
+    },
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "iso 639:cy"
+    },
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "Português"
+    }
+   ],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "wrong",
+    "conditional-strict": "wrong"
+   },
+   "world_supported": true
+  },
+  {
+   "q": "What is the language of work or name of the language of work or name of the source that describes the instance of gadilanka?",
+   "truth": "armenian phonology",
+   "planted": "ruckii is the language of work or name of el panson",
+   "branches": [
+    {
+     "answer": "ruckii",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "village is the instance of of gadilanka",
+      "krugosvet is the described by source of village",
+      "ruckii is the language of work or name of krugosvet"
+     ]
+    },
+    {
+     "answer": "ruckii",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "village is the instance of of gadilanka",
+      "el panson is the described by source of village",
+      "ruckii is the language of work or name of el panson"
+     ]
+    },
+    {
+     "answer": "swedishlanguage",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "village is the instance of of gadilanka",
+      "el panson is the described by source of village",
+      "swedishlanguage is the language of work or name of el panson"
+     ]
+    },
+    {
+     "answer": "swedishlanguage",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "village is the instance of of gadilanka",
+      "nordisk familjebok is the described by source of village",
+      "swedishlanguage is the language of work or name of nordisk familjebok"
+     ]
+    },
+    {
+     "answer": "Armenian phonology",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "village is the instance of of gadilanka",
+      "nordisk familjebok is the described by source of village",
+      "Armenian phonology is the language of work or name of nordisk familjebok"
+     ]
+    }
+   ],
+   "unfinished": [
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "brockhaus and efron encyclopaedia"
+    },
+    {
+     "status": "vm_failed",
+     "answer": "Armenian phonology",
+     "stalled": null
+    }
+   ],
+   "verdict": {
+    "habit": "wrong",
+    "ask": "refused",
+    "conditional": "wrong",
+    "conditional-strict": "refused"
+   },
+   "world_supported": true
+  },
+  {
+   "q": "What is the linguistic typology of the official language of the country of Sandusky Bay Conference?",
+   "truth": "nominative accusative language",
+   "planted": null,
+   "branches": [
+    {
+     "answer": "Fusional",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of Sandusky Bay Conference",
+      "arabe is the official language of united stated",
+      "Fusional is the linguistic typology of arabe"
+     ]
+    },
+    {
+     "answer": "svo word order",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of Sandusky Bay Conference",
+      "Modern Spanish is the official language of united stated",
+      "svo word order is the linguistic typology of Modern Spanish"
+     ]
+    },
+    {
+     "answer": "svo word order",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of Sandusky Bay Conference",
+      "italian word is the official language of united stated",
+      "svo word order is the linguistic typology of italian word"
+     ]
+    },
+    {
+     "answer": "Nominative–accusative language",
+     "value": -1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.IMPOSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of Sandusky Bay Conference",
+      "iso 639:deu is the official language of united stated",
+      "Nominative–accusative language is the linguistic typology of iso 639:deu"
+     ]
+    },
+    {
+     "answer": "svo word order",
+     "value": 1.0,
+     "verdicts": [
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE",
+      "Verdict.POSSIBLE"
+     ],
+     "status": "verified",
+     "facts": [
+      "united stated is the country of Sandusky Bay Conference",
+      "Number of words in English is the official language of united stated",
+      "svo word order is the linguistic typology of Number of words in English"
+     ]
+    }
+   ],
+   "unfinished": [
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "Српски језик"
+    },
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "southern sesotho language"
+    },
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "Miranda do Douro language"
+    },
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "iso 639:cy"
+    },
+    {
+     "status": "pruned",
+     "answer": null,
+     "stalled": "Português"
+    }
+   ],
+   "verdict": {
+    "habit": "correct",
+    "ask": "refused",
+    "conditional": "wrong",
+    "conditional-strict": "wrong"
+   },
+   "world_supported": true
+  }
+ ],
+ "secs": 132.1
+}
