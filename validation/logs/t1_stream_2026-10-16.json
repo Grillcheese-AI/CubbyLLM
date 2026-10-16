@@ -1,0 +1,159 @@
+{
+ "bench": "T1-stream: the memory learning public rules in place, item by item",
+ "tier": "Grilly2Tier",
+ "seeds": 6,
+ "items": 300,
+ "datasets": {
+  "mushroom": {
+   "postmortem": {
+    "first50": 0.374,
+    "last100": 0.3,
+    "all": 0.323,
+    "after_surprise": 0.431,
+    "surprises": 10.0,
+    "us_per_item": 38206.334
+   },
+   "postmortem+both": {
+    "first50": 0.367,
+    "last100": 0.335,
+    "all": 0.346,
+    "after_surprise": 0.482,
+    "surprises": 11.333,
+    "us_per_item": 37061.047
+   },
+   "replay": {
+    "first50": 0.343,
+    "last100": 0.321,
+    "all": 0.323,
+    "after_surprise": null,
+    "surprises": 0.0,
+    "us_per_item": 36977.586
+   },
+   "logreg.1": {
+    "first50": 0.182,
+    "last100": 0.03,
+    "all": 0.066,
+    "after_surprise": null,
+    "surprises": null,
+    "us_per_item": 13728.828
+   },
+   "logreg.bal": {
+    "first50": 0.178,
+    "last100": 0.03,
+    "all": 0.065,
+    "after_surprise": null,
+    "surprises": null,
+    "us_per_item": 13276.666
+   },
+   "bayes": {
+    "first50": 0.162,
+    "last100": 0.105,
+    "all": 0.106,
+    "after_surprise": null,
+    "surprises": null,
+    "us_per_item": 1824.072
+   }
+  },
+  "car": {
+   "postmortem": {
+    "first50": 0.374,
+    "last100": 0.27,
+    "all": 0.293,
+    "after_surprise": 0.331,
+    "surprises": 10.167,
+    "us_per_item": 37875.787
+   },
+   "postmortem+both": {
+    "first50": 0.374,
+    "last100": 0.314,
+    "all": 0.329,
+    "after_surprise": 0.41,
+    "surprises": 9.333,
+    "us_per_item": 37912.59
+   },
+   "replay": {
+    "first50": 0.395,
+    "last100": 0.293,
+    "all": 0.318,
+    "after_surprise": null,
+    "surprises": 0.0,
+    "us_per_item": 43058.114
+   },
+   "logreg.1": {
+    "first50": 0.252,
+    "last100": 0.094,
+    "all": 0.134,
+    "after_surprise": null,
+    "surprises": null,
+    "us_per_item": 1137.624
+   },
+   "logreg.bal": {
+    "first50": 0.255,
+    "last100": 0.094,
+    "all": 0.134,
+    "after_surprise": null,
+    "surprises": null,
+    "us_per_item": 1127.08
+   },
+   "bayes": {
+    "first50": 0.285,
+    "last100": 0.149,
+    "all": 0.18,
+    "after_surprise": null,
+    "surprises": null,
+    "us_per_item": 450.649
+   }
+  },
+  "tictactoe": {
+   "postmortem": {
+    "first50": 0.426,
+    "last100": 0.439,
+    "all": 0.437,
+    "after_surprise": 0.432,
+    "surprises": 14.167,
+    "us_per_item": 37173.031
+   },
+   "postmortem+both": {
+    "first50": 0.422,
+    "last100": 0.441,
+    "all": 0.437,
+    "after_surprise": 0.425,
+    "surprises": 13.833,
+    "us_per_item": 37647.747
+   },
+   "replay": {
+    "first50": 0.435,
+    "last100": 0.416,
+    "all": 0.419,
+    "after_surprise": null,
+    "surprises": 0.0,
+    "us_per_item": 36996.289
+   },
+   "logreg.1": {
+    "first50": 0.345,
+    "last100": 0.098,
+    "all": 0.174,
+    "after_surprise": null,
+    "surprises": null,
+    "us_per_item": 1373.542
+   },
+   "logreg.bal": {
+    "first50": 0.353,
+    "last100": 0.102,
+    "all": 0.179,
+    "after_surprise": null,
+    "surprises": null,
+    "us_per_item": 1280.881
+   },
+   "bayes": {
+    "first50": 0.413,
+    "last100": 0.366,
+    "all": 0.371,
+    "after_surprise": null,
+    "surprises": null,
+    "us_per_item": 602.082
+   }
+  }
+ },
+ "secs": 691.6
+}
