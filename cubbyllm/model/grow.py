@@ -44,12 +44,15 @@ import torch
 from ..core.protocols import Wiring
 
 
-def grown_meta(meta: dict, width: int = 1, depth: int = 1, ffn: int = 1) -> dict:
+def grown_meta(meta: dict, width: int = 1, depth: int = 1, ffn: int = 1,
+               mem_every: int | None = None, mem_topk: int = 8, mem_key: int = 64) -> dict:
     """The destination architecture's meta (train_base's ``arch_meta`` shape).
 
     Architecture only, so a grown checkpoint's meta equals what ``arch_meta``
     gives for the same shape. ``ffn_mult`` is written only when it is not the
-    default 2, which keeps every earlier checkpoint's meta unchanged."""
+    default 2, which keeps every earlier checkpoint's meta unchanged; the memory
+    keys (``mem_topk``, ``mem_key``) only when ``mem_every`` is on, for the same
+    reason. ``mem_every=None`` keeps the source's memory setting."""
     for name, f in (("width", width), ("depth", depth), ("ffn", ffn)):
         if int(f) != f or f < 1:
             raise ValueError(f"{name} must be a positive integer, got {f}")
@@ -61,6 +64,11 @@ def grown_meta(meta: dict, width: int = 1, depth: int = 1, ffn: int = 1) -> dict
     out.pop("ffn_mult", None)
     if mult != 2:
         out["ffn_mult"] = mult
+    if mem_every is not None:
+        out["mem_every"] = int(mem_every)
+        out.pop("mem_topk", None); out.pop("mem_key", None)
+        if int(mem_every):
+            out["mem_topk"], out["mem_key"] = int(mem_topk), int(mem_key)
     return out
 
 
@@ -181,11 +189,30 @@ def grow_into(src, dst, width: int = 1, depth: int = 1, ffn: int = 1,
         df.u.weight.copy_(uw)
         df.o.weight.copy_(torch.zeros_like(ow) if zero else ow)
 
+    # the episodic memory (H-D5): a source without one may grow into a shape with one. Each
+    # MemoryRead is fresh -- q, k, v as built -- with its output projection zeroed, so the read adds
+    # exactly nothing to the residual stream until trained (the zero-exit rule above, applied to
+    # the one module kind that has no source to copy from). A source that already carries a memory
+    # must grow into the same memory layout; moving it is not written yet.
+    if any(db.is_mem) and not any(getattr(sb, "is_mem", [])):
+        for j in range(len(db.mix)):
+            if db.is_mem[j]:
+                db.mem[j].o.weight.zero_()
+    elif any(getattr(sb, "is_mem", [])) and (list(db.is_mem) != list(sb.is_mem) or depth != 1 or k != 1):
+        raise NotImplementedError("growing a model that already carries an episodic memory")
+    elif any(getattr(sb, "is_mem", [])):
+        for j in range(len(db.mix)):
+            if sb.is_mem[j]:
+                db.mem_n[j].w.copy_(sb.mem_n[j].w)
+                for name in ("q", "k", "v", "o"):
+                    getattr(db.mem[j], name).weight.copy_(getattr(sb.mem[j], name).weight)
+
     n_src = sum(p.numel() for p in src.parameters()) + sum(
         p.numel() for p in src.context_source.parameters())
     n_dst = sum(p.numel() for p in dst.parameters()) + sum(
         p.numel() for p in dst.context_source.parameters())
     return {"width": k, "depth": depth, "ffn": m, "exit": exit,
+            "mem_layers": [j for j in range(len(db.mix)) if db.is_mem[j]],
             "layers": [[j, i, bool(c)] for j, (i, c) in enumerate(lmap)],
             "params_src": n_src, "params_dst": n_dst}
 

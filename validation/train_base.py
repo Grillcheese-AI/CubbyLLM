@@ -86,6 +86,11 @@ N_SLOTS = _env("CB_SLOTS", 8)
 GEN_BASIS = _env("CB_GEN_BASIS", 16)
 GEN_RANK = _env("CB_GEN_RANK", 8)
 VOCAB_PAD = _env("CB_VOCAB_PAD", 128)
+# the episodic memory (H-D5, cubbyllm/model/recall): a top-K read over the BEYOND-window past on every
+# CB_MEM_EVERY-th layer. 0 = none (every base so far). It only has something to read when CB_S > window.
+MEM_EVERY = _env("CB_MEM_EVERY", 0)
+MEM_TOPK = _env("CB_MEM_TOPK", 8)
+MEM_KEY = _env("CB_MEM_KEY", 64)
 # ── batch / optimizer / schedule ───────────────────────────────────────────
 SEQ = _env("CB_S", 1024)
 MICRO = _env("CB_MICRO", 16)                 # sequences per forward/backward
@@ -292,10 +297,12 @@ def arch_meta(vocab_real: int, vocab: int) -> dict:
     meta = {"kind": "cubby_base", "D": D, "L": L, "heads": HEADS, "window": WINDOW,
             "attn_every": ATTN_EVERY, "ctx": CTX, "slots": N_SLOTS,
             "gen_basis": GEN_BASIS, "gen_rank": GEN_RANK, "vocab": vocab,
-            "vocab_real": vocab_real, "mem_every": 0, "tied": False,
+            "vocab_real": vocab_real, "mem_every": MEM_EVERY, "tied": False,
             "causal_ctx": True}
     if FFN_MULT != 2:                 # absent at 2, so every earlier checkpoint's meta still matches
         meta["ffn_mult"] = FFN_MULT
+    if MEM_EVERY:                     # absent at 0, for the same reason
+        meta["mem_topk"], meta["mem_key"] = MEM_TOPK, MEM_KEY
     return meta
 
 
@@ -309,7 +316,9 @@ def build_model(meta: dict, dev, seed: int = 0) -> CubbyModel:
                                         ctx_dim=meta["ctx"]).freeze(),
         backbone=HybridBackbone(d, n_layers, attn_every=meta["attn_every"],
                                 ffn_mult=meta.get("ffn_mult", 2),
-                                window=meta["window"], heads=meta["heads"]),
+                                window=meta["window"], heads=meta["heads"],
+                                mem_every=int(meta.get("mem_every", 0) or 0),
+                                mem_topk=int(meta.get("mem_topk", 8)), mem_key=int(meta.get("mem_key", 64))),
         memory=MemoryLayer(BasisHyperGenerator(ctx_dim=meta["ctx"], d_model=d,
                                                n_layers=n_layers, n_basis=meta["gen_basis"],
                                                rank=meta["gen_rank"]),

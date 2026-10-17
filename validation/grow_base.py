@@ -69,6 +69,10 @@ def main() -> None:
     ap.add_argument("--depth", type=int, default=1)
     ap.add_argument("--ffn", type=int, default=1)
     ap.add_argument("--exit", default="zero", choices=("zero", "copy"))
+    ap.add_argument("--mem-every", type=int, default=None,
+                    help="insert the episodic memory (H-D5) on every Nth layer, exits zeroed; default: as the source")
+    ap.add_argument("--mem-topk", type=int, default=8)
+    ap.add_argument("--mem-key", type=int, default=64)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--sources", default=SOURCES)
     ap.add_argument("--windows", type=int, default=2)
@@ -79,7 +83,8 @@ def main() -> None:
     args = ap.parse_args()
     if args.threads:
         torch.set_num_threads(args.threads)
-    tag = args.tag or f"w{args.width}d{args.depth}f{args.ffn}{'' if args.exit == 'zero' else '_copy'}"
+    tag = args.tag or (f"w{args.width}d{args.depth}f{args.ffn}{'' if args.exit == 'zero' else '_copy'}"
+                       + (f"m{args.mem_every}" if args.mem_every else ""))
     logp = os.path.join(HERE, "logs", f"grow_step0_{tag}")
     os.makedirs(os.path.dirname(logp), exist_ok=True)
     open(logp + ".log", "w", encoding="utf-8").close()
@@ -98,7 +103,8 @@ def main() -> None:
     meta, step = ck["meta"], ck.get("step")
     del ck
     src = load_base(args.ckpt, "cpu")
-    gmeta = grown_meta(meta, args.width, args.depth, args.ffn)
+    gmeta = grown_meta(meta, args.width, args.depth, args.ffn, mem_every=args.mem_every,
+                       mem_topk=args.mem_topk, mem_key=args.mem_key)
     dst = build_model(gmeta, torch.device("cpu"), seed=args.seed)
     rep = grow_into(src, dst, width=args.width, depth=args.depth, ffn=args.ffn,
                     exit=args.exit, seed=args.seed)
@@ -108,6 +114,9 @@ def main() -> None:
         f"{rep['params_src'] / 1e6:,.1f}M parameters")
     say(f"  grown D{gmeta['D']} L{gmeta['L']} heads {gmeta['heads']} ffn_mult {gmeta.get('ffn_mult', 2)}: "
         f"{rep['params_dst'] / 1e6:,.1f}M parameters  (built and filled in {time.time() - t0:.0f}s)")
+    if rep.get("mem_layers"):
+        say(f"  episodic memory on {len(rep['mem_layers'])} layers (one per {gmeta['mem_every']}, top-{gmeta['mem_topk']}, "
+            f"key {gmeta['mem_key']}), exits zeroed; it reads the past beyond the {gmeta['window']}-token window")
     new = sum(1 for _, _, c in rep["layers"] if c)
     if new:
         say(f"  layers: {len(rep['layers'])}, of which {new} copies ({args.exit} exit); "
@@ -141,7 +150,8 @@ def main() -> None:
                    "router": [p.detach() for p in dst.context_source.parameters()],
                    "grown_from": {"checkpoint": os.path.basename(args.ckpt), "step": step,
                                   "meta": meta, "width": args.width, "depth": args.depth,
-                                  "ffn": args.ffn, "exit": args.exit, "seed": args.seed}}
+                                  "ffn": args.ffn, "exit": args.exit, "seed": args.seed,
+                                  "mem_every": args.mem_every}}
         torch.save(payload, args.save)
         say(f"saved {args.save} ({os.path.getsize(args.save) / 1e9:.2f} GB)")
         import gc

@@ -1,0 +1,294 @@
+"""Generate grow_mem_continue.ipynb: base450m_cont grows (depth x2 + FFN x2, zero exits) with the episodic
+memory inserted (H-D5's read, exits zeroed), and keeps training on fresh data with instruction following, agentic
+trajectories and the emitter's own programs in the decay; the control arm is the 450M itself on the same
+data and hours. The notebook is thin; the logic is validation/grow_base.py (the step-0 build and its exactness
+check), validation/train_base.py (CB_INIT_FROM, CB_MEM_EVERY, CB_S) and validation/make_decay_shards.py (the
+three shards). Re-run after editing:
+    python notebooks/_build_grow_mem.py
+"""
+import json
+import pathlib
+
+HERE = pathlib.Path(__file__).parent
+OUT = HERE / "grow_mem_continue.ipynb"
+
+
+def _src(text):
+    lines = text.strip("\n").split("\n")
+    return [ln + "\n" for ln in lines[:-1]] + [lines[-1]] if lines else []
+
+
+def md(text):
+    return {"cell_type": "markdown", "metadata": {}, "source": _src(text)}
+
+
+def code(text):
+    return {"cell_type": "code", "metadata": {}, "execution_count": None,
+            "outputs": [], "source": _src(text)}
+
+
+CELLS = [
+    md(r"""
+# CubbyLLM base: grow, add the memory, and keep training
+
+**What this is.** Two arms on the same data, the same hours and the same card, from the same weights
+(`base450m_cont_stable_end.pt`: the continued 450M before its decay, so neither arm re-warms):
+
+| arm | shape | what it tests |
+|---|---|---|
+| `grown` | depth x2 + FFN x2 with zero exits (d1024, L64, FFN 4096; the pilot's one surviving shape) **plus the episodic memory** (`cubbyllm/model/recall`, H-D5) on every 4th layer = 16 reads, the count "every 2 layers" gives on the 32-layer base; exits zeroed. 1.36B parameters, the same function as the 450M at step 0 (checked) | whether a bigger trunk and a read over the past beyond the 512-token window pay for their cost |
+| `control` | the 450M as it is (d1024, L32, 576M) | the bar: the grow note's rule, "growth is worth it only if a grown arm beats the control at equal compute" |
+
+Both train at **S = 2048** (the memory has nothing to read inside the window; the agent trajectories run 3-5k
+tokens), and both get the **three new shards** in the decay (`validation/make_decay_shards.py`): `instruct`
+(the host's guarded instruction-following chats, in the talk format), `agent` (observe → plan → act → observe
+trajectories in a strict JSON action format) and `program` (the emitter's own slotted programs). So the
+control also measures what the decay data alone brings to the 450M.
+
+**Pre-registered (the readout cell applies it; the numbers are the owner's to move).** On the 13 held-out tails
+the base validates on, plus the three new ones:
+1. **Growth:** at equal hours, the grown arm's held-out mix ends at or below the control's. Above it by more than
+   0.02 → the 450M still wants data before parameters; growth stays killed.
+2. **Memory:** `validation/exp_needle_recall.py` on the grown arm, lengths 1024 / 2048 / 4096: the beyond-window
+   depths rise off chance (> 25% where the control is at chance) with in-window recall unchanged. Flat →
+   the memory read did not train at this scale; serve without it.
+3. **The decay data:** each arm ends below its own first reading on `instruct`, `agent` and `program`, and no
+   checked pretraining source (FineWeb-Edu, books, QA, code) ends more than 0.02 above the control's.
+4. **Serving (after the adapters are retrained on the winner):** gates E6-E9 each at least talk_v2_2's with 0
+   spoken wrong; the emitter on exp_r17 and the step loop at least the 450M's own numbers; the
+   instruction-following gate (`validation/exp_if_follow.py`, to be built: rule-checked constraints over held chats)
+   above the 450M's. The gap to the stand-in on the same benches is reported as measured, whichever way it goes.
+
+**Before you run**
+1. **Add the three shards** to the cache on the machine that holds the data, then copy them and the two index
+   files to Drive:
+   ```
+   python validation/make_decay_shards.py --cache <local token_cache_cont> --agent-tokens 150000000
+   copy instruct.u32 agent.u32 program.u32 _holdout.json _sizes.json -> <Drive>/cubbyllm/token_cache_cont/
+   ```
+2. **Push `master`** with `grow_base.py --mem-every` and `train_base.py`'s `CB_MEM_EVERY` (checked below).
+3. **Drive space:** the grown arm's slots are ~16 GB each with the optimizer state (two of them), plus the 5.5 GB
+   step-0 file and the 5.5 GB final: ~45 GB. The control's are the 7 GB of the continuation.
+4. **Colab Pro+** for 24 h sessions; set `SESSION_H = 12` on Pro. Rerun the run cell in each new session; the
+   grown arm will take several.
+"""),
+    code(r"""
+# --- setup: clone, deps, Drive (once per session) ---
+import os, sys, time, subprocess, signal, json, glob
+SESSION_T0 = time.time()
+if not os.path.exists('/content/CubbyLLM'):
+    !git clone -q https://github.com/Grillcheese-AI/CubbyLLM.git /content/CubbyLLM
+else:
+    !cd /content/CubbyLLM && git pull -q --ff-only
+!pip -q install tokenizers numpy
+from google.colab import drive; drive.mount('/content/drive')
+REPO = '/content/CubbyLLM'
+!nvidia-smi --query-gpu=name,memory.total --format=csv
+import torch; print('torch', torch.__version__)
+src = open(f'{REPO}/validation/train_base.py').read()
+assert 'CB_MEM_EVERY' in src and 'CB_INIT_FROM' in src, 'master has no CB_MEM_EVERY in train_base.py: push the memory commit first'
+assert '--mem-every' in open(f'{REPO}/validation/grow_base.py').read(), 'master has no --mem-every in grow_base.py'
+"""),
+    code(r"""
+# --- EDIT to your layout ---
+ARM           = 'grown'                             # 'grown' (depth x2 + FFN x2 + memory) or 'control' (the 450M)
+SESSION_H     = 24                                  # Colab Pro+; 12 on Pro / pay-as-you-go
+HOURS_PER_ARM = 20.0                                # equal compute: the same hours on the same card for both arms
+MEM_EVERY     = 4                                   # on the 64-layer grown model: 16 reads, one per original pair
+SEQ           = 2048                                # > the 512 window, so the memory has a past to read
+DRIVE         = '/content/drive/MyDrive/cubbyllm'
+START_CKPT    = f'{DRIVE}/runs/base450m_cont/base450m_cont_stable_end.pt'   # the continued 450M, before its decay
+CONT_RUN      = f'{DRIVE}/runs/base450m_cont'                               # its metrics: the first reading
+CORPUS_DRIVE  = f'{DRIVE}/token_cache_cont'                  # + instruct.u32, agent.u32, program.u32
+CORPUS        = '/content/token_cache_cont'                  # LOCAL SSD (Drive-FUSE reads are ~30x slower)
+TOKENIZER     = f'{CORPUS}/tokenizer/grillcheese_bbpe128k.json'
+RUN_DIR       = f'{DRIVE}/runs/grow_mem_{ARM}'               # checkpoints, metrics, logs, the step-0 file
+assert ARM in ('grown', 'control'), ARM
+assert os.path.exists(START_CKPT), START_CKPT
+os.makedirs(RUN_DIR, exist_ok=True); os.makedirs(CORPUS, exist_ok=True)
+
+def check_shards():
+    # Every shard the cache lists must be on Drive and on local disk at full size (the growth pilot's arms
+    # trained on 9, 10 and 12 of the 13 shards because the local copy was incomplete for each).
+    names = sorted(json.load(open(f'{CORPUS_DRIVE}/_sizes.json')))
+    for n in ('instruct', 'agent', 'program'):
+        assert n in names, f'{n}.u32 is not in the cache yet: run make_decay_shards.py and copy it to Drive'
+    bad = []
+    for n in names:
+        p, q = f'{CORPUS_DRIVE}/{n}.u32', f'{CORPUS}/{n}.u32'
+        if not os.path.exists(p):
+            bad.append(f'{n} (not on Drive yet: still uploading?)')
+        elif not os.path.exists(q) or os.path.getsize(q) != os.path.getsize(p):
+            bad.append(n)
+    assert not bad, f'missing or short, rerun this cell: {bad}'
+    return len(names)
+
+assert os.path.exists(f'{CORPUS_DRIVE}/_sizes.json'), f'no cache at {CORPUS_DRIVE}'
+!rsync -a --info=progress2 {CORPUS_DRIVE}/ {CORPUS}/
+print(check_shards(), 'shards on local disk, all at full size')
+assert os.path.exists(TOKENIZER), TOKENIZER
+!du -sh {CORPUS}; df -h /content | tail -1
+"""),
+    md(r"""
+### Step 0: the grown model, exact (the `grown` arm only; CPU, no GPU cost)
+
+`grow_base.py` fills the depth x2 + FFN x2 shape from the start checkpoint with every copy's exit zeroed, inserts
+a `MemoryRead` on every `MEM_EVERY`th layer with its output projection zeroed, and scores base and grown on
+the same held-out windows: the losses must agree to 1e-4 and the logits to 1e-2 in float32. The saved file
+is what the run initialises from. ~10 min on Colab's CPU; skip the cell on later sessions once the file exists.
+"""),
+    code(r"""
+GROWN = f'{RUN_DIR}/grow_step0_d2f2m{MEM_EVERY}.pt'
+if ARM == 'grown' and not os.path.exists(GROWN):
+    !cd {REPO} && python validation/grow_base.py --ckpt "{START_CKPT}" --cache {CORPUS} --depth 2 --ffn 2 \
+        --mem-every {MEM_EVERY} --sources arxiv,books,fineweb_edu,nemotron_code --windows 1 --seq 1024 \
+        --save "{GROWN}" --tag colab_d2f2m{MEM_EVERY}
+    rep = json.load(open(f'{REPO}/validation/logs/grow_step0_colab_d2f2m{MEM_EVERY}.json'))
+    assert rep['exact'], 'the grown model is NOT exact: do not train it; read the log'
+    print(f"exact: {rep['params_src']/1e6:,.0f}M -> {rep['params_dst']/1e6:,.0f}M parameters, "
+          f"max |logit diff| {rep['max_logit_diff']:.1e}")
+elif ARM == 'grown':
+    print('step-0 file present:', GROWN)
+"""),
+    code(r"""
+# --- config, and a runner that tees the log to Drive ---
+shape = (dict(CB_L='64', CB_FFN_MULT='4', CB_MEM_EVERY=str(MEM_EVERY), CB_INIT_FROM=GROWN) if ARM == 'grown'
+         else dict(CB_L='32', CB_INIT_FROM=START_CKPT))
+# the three decay shards: multipliers on size-proportional draws (15.5M, 79.5M and 7.3M tokens against a
+# 17.7B cache), solved so that in the decay instruct is ~5%, agent ~10% and program ~2% of the tokens -- 0.8,
+# 0.3 and 0.7 epochs of each at a 1.2B-token run -- and a trace of each in the stable phase (0.5 / 1 / 0.3%)
+# so the base meets the formats before the decay. train_base prints the epoch table; keep every row under ~4.
+MIX_JSON   = json.dumps({'instruct': 6, 'agent': 2, 'program': 8})
+DECAY_JSON = json.dumps({'instruct': 91, 'agent': 36, 'program': 78})
+BASE = dict(
+    CUBBY_SPM=TOKENIZER, CB_CORPUS=CORPUS, CB_DRIVE_DIR=RUN_DIR, CB_NAME=f'grow_mem_{ARM}',
+    CB_D='1024', CB_HEADS='4', CB_WINDOW='512', CB_ATTN_EVERY='3',
+    CB_S=str(SEQ), CB_TOKENS_PER_STEP='131072',
+    CB_LR='3e-4', CB_BETA2='0.95', CB_WD='0.1',
+    CB_WARMUP='100', CB_DECAY_FRAC='0.2', CB_HOURS=str(HOURS_PER_ARM), CB_SEED='3',
+    CB_MIX_JSON=MIX_JSON, CB_DECAY_JSON=DECAY_JSON,
+    CB_EVAL='250', CB_GEN='500', CB_CKPT_MIN='45',            # samples every 500 steps (Nick, 2026-10-17)
+    CB_STABLE_END='1',
+    **shape,
+)
+props = torch.cuda.get_device_properties(0)
+gb = props.total_memory / 2**30
+# micro-batch: sequences per forward at S=2048 (x accumulation = 131,072 tokens a step). The grown arm holds
+# 2.4x the parameters and, on its memory layers, a (B, S, S) similarity and a (B, S, K, d) gathered value set
+# per layer for the backward pass; start small and raise it if the card has room (train_base prints peak GB).
+BASE['CB_MICRO'] = ('8' if gb >= 70 else '4') if ARM == 'grown' else ('16' if gb >= 70 else '8')
+smem = getattr(props, 'shared_memory_per_block_optin', 0) or (
+    160 * 1024 if (props.major, props.minor) in ((8, 0), (9, 0), (10, 0)) else 0)
+if smem < 114688:
+    BASE['CB_NO_FLEX'] = '1'
+print(f"{ARM}: {props.name}, {gb:.0f} GB -> micro {BASE['CB_MICRO']} at S={SEQ}, "
+      f"{'reference attention (CB_NO_FLEX=1)' if smem < 114688 else 'flex attention'}; "
+      f"{HOURS_PER_ARM} h, the step count is sized after the first measured steps and then fixed")
+
+def run(env_extra, log_name):
+    env = dict(os.environ, **BASE, **env_extra)
+    log = f'{RUN_DIR}/{log_name}'
+    p = None
+    try:
+        with open(log, 'a', encoding='utf-8', buffering=1) as f:
+            f.write(f"\n=== {time.strftime('%F %T')} "
+                    + ' '.join(f'{k}={v}' for k, v in sorted(env_extra.items())) + '\n')
+            p = subprocess.Popen([sys.executable, '-u', 'validation/train_base.py'], cwd=REPO, env=env,
+                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+            for line in p.stdout:
+                print(line, end=''); f.write(line)
+            p.wait()
+    finally:
+        if p and p.poll() is None:       # a stopped cell: let the script save its checkpoint first
+            p.send_signal(signal.SIGINT)
+            try:
+                p.wait(timeout=600)
+            except subprocess.TimeoutExpired:
+                p.terminate()
+"""),
+    md(r"""
+### The run
+
+**Rerun this same cell in every session.** The first session initialises from the step-0 file (`grown`) or the
+continuation's pre-decay weights (`control`) with a fresh optimizer and a 100-step warmup at the same peak,
+measures its throughput, and fixes the step count to `HOURS_PER_ARM`; every later session resumes from the
+newest Drive slot. Stopping the cell saves a checkpoint first. The first log lines should say
+`initialised from ... grow_step0_... (grown from base450m_cont_stable_end.pt)` or `... not grown`.
+Samples come every 500 steps.
+"""),
+    code(r"""
+check_shards()                                     # a new runtime starts with an empty local disk
+left_h = SESSION_H - 0.4 - (time.time() - SESSION_T0) / 3600
+print(f'{left_h:.1f} h left in this session: hard stop after {left_h - 0.3:.1f} h')
+run(dict(CB_WALL_H=f'{left_h - 0.3:.2f}'), 'train.log')
+"""),
+    code(r"""
+# --- readout: both arms side by side, against the continuation's last reading (any time, from any session) ---
+import matplotlib.pyplot as plt
+def vals(path):
+    rows = [json.loads(l) for l in open(path)] if os.path.exists(path) else []
+    return [r for r in rows if 'val' in r]
+arms = {a: vals(f'{DRIVE}/runs/grow_mem_{a}/grow_mem_{a}_metrics.jsonl') for a in ('grown', 'control')}
+cont = vals(f'{CONT_RUN}/base450m_cont_metrics.jsonl')
+start = cont[-1]['val'] if cont else {}
+NEW, KEY = ('instruct', 'agent', 'program'), ('fineweb_edu', 'books', 'nemotron_qa', 'nemotron_code')
+have = {a: v for a, v in arms.items() if v}
+assert have, 'no validation yet: the first comes at step 250'
+print(f"{'source':16s} " + ' '.join(f'{a:>10s}' for a in have) + '   (start = base450m_cont, pre-decay)')
+keys = sorted({k for v in have.values() for k in v[-1]['val'] if not k.startswith('_')})
+for k in keys + ['_mix', '_copy']:
+    row = ' '.join(f"{v[-1]['val'].get(k, float('nan')):10.4f}" for v in have.values())
+    tag = '  new shard' if k in NEW else ('  checked' if k in KEY else '')
+    print(f"{k:16s} {row}   start {start.get(k, float('nan')):8.4f}{tag}")
+checks = {}
+if len(have) == 2:
+    g, c = have['grown'][-1]['val'], have['control'][-1]['val']
+    checks['1. growth: grown mix <= control mix (+0.02 tolerance)'] = g['_mix'] <= c['_mix'] + 0.02
+    checks['3b. checked sources: grown within 0.02 of the control'] = all(g[k] <= c[k] + 0.02 for k in KEY)
+for a, v in have.items():
+    first, last = v[0]['val'], v[-1]['val']
+    checks[f'3a. {a}: instruct, agent, program each below their first reading'] = all(
+        last.get(k, 9) < first.get(k, 0) for k in NEW if k in first)
+print()
+for k, ok in checks.items():
+    print(f"  {'PASS' if ok else 'fail'}  {k}")
+print('\ncheck 2 (the memory) is exp_needle_recall on the grown final; check 4 is the serving gates after the adapters.')
+fig, ax = plt.subplots(1, 3, figsize=(17, 4))
+for a, v in have.items():
+    tok = [r['step'] * 131072 / 1e9 for r in v]
+    ax[0].plot(tok, [r['val']['_mix'] for r in v], label=a)
+    for k in NEW:
+        if k in v[-1]['val']:
+            ax[1].plot(tok, [r['val'][k] for r in v], label=f'{a}: {k}')
+    ax[2].plot(tok, [r['val']['_copy'] for r in v], label=a)
+if start:
+    ax[0].axhline(start['_mix'], color='k', ls='--', lw=.8)
+ax[0].legend(); ax[0].set(title='held-out mix (dashed: the start)', xlabel='B tokens')
+ax[1].legend(fontsize=7); ax[1].set(title='the three new shards', xlabel='B tokens')
+ax[2].legend(); ax[2].set(title='in-context copy', xlabel='B tokens')
+plt.tight_layout(); plt.show()
+"""),
+    md(r"""
+### After the run
+
+- `RUN_DIR/grow_mem_<arm>_final.pt` holds the weights. `validation/export_base.py --ckpt ... --out ...` exports
+  for grilly2 — **the grown arm needs grilly2's cubby model to carry the memory first** (not there as of
+  2026-10-17; the torch path serves it meanwhile).
+- **Check 2:** `python validation/exp_needle_recall.py` on the grown final at 1024 / 2048 / 4096, the control
+  beside it.
+- **Check 4:** retrain the emitter LoRA (`notebooks/emitter_450m.ipynb`) and the talk LoRA (`talk_sft.ipynb`) on
+  the winner (its `CB_L` / `CB_FFN_MULT` / `CB_MEM_EVERY` in the adapter notebooks), then gates E6-E9,
+  exp_r17, the step loop, and the instruction-following gate once it is built.
+- Record the result under its H entry in `CUBBYLLM_HYPOTHESES.md`, with `train.log` and the metrics copied into
+  `validation/logs/`.
+"""),
+]
+
+nb = {"cells": CELLS,
+      "metadata": {"kernelspec": {"name": "python3", "display_name": "Python 3"},
+                   "accelerator": "GPU",
+                   "colab": {"provenance": [], "toc_visible": True, "machine_shape": "hm",
+                             "gpuType": "A100"}},
+      "nbformat": 4, "nbformat_minor": 5}
+OUT.write_text(json.dumps(nb, indent=1, ensure_ascii=False), encoding="utf-8")
+print(f"wrote {OUT.name} ({len(CELLS)} cells)")

@@ -1,0 +1,62 @@
+{
+ "args": {
+  "cache": "F:\\grillcheese_training_data\\token_cache_cont",
+  "tokenizer": "F:\\CUBBY-TRAINED-MODELS\\base450m\\grilly\\tokenizer.json",
+  "instruct": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\chat_sft.jsonl",
+  "instruct_tokens": 0,
+  "program": [
+   "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\emitter_sft_v12e_w_slots.jsonl",
+   "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\emitter_sft_v12e_pf_slots.jsonl"
+  ],
+  "agent": "F:\\grillcheese_training_data\\unified\\open_thoughts_agent_trove.jsonl",
+  "agent_tokens": 150000000,
+  "holdout_frac": 0.02,
+  "seed": 0,
+  "only": [
+   "instruct",
+   "agent",
+   "program"
+  ],
+  "dry": false
+ },
+ "shards": {
+  "instruct": {
+   "source": "chat_sft.jsonl",
+   "records": 61677,
+   "skipped_held": 3186,
+   "tokens": 15837454,
+   "train_tokens": 15520818,
+   "holdout_tokens": 316636,
+   "documents": 61677
+  },
+  "agent": {
+   "source": "open_thoughts_agent_trove.jsonl",
+   "trajectories": 10102,
+   "skipped_long": 2463,
+   "tokens": 81128678,
+   "keep_rate": 0.007981812145455425,
+   "tok_per_byte": 0.303430838827305,
+   "train_tokens": 79507054,
+   "holdout_tokens": 1621624,
+   "documents": 10102
+  },
+  "program": {
+   "sources": [
+    {
+     "source": "emitter_sft_v12e_w_slots.jsonl",
+     "records": 11217,
+     "skipped_not_train": 614
+    },
+    {
+     "source": "emitter_sft_v12e_pf_slots.jsonl",
+     "records": 14738,
+     "skipped_not_train": 614
+    }
+   ],
+   "tokens": 7452487,
+   "train_tokens": 7303480,
+   "holdout_tokens": 149007,
+   "documents": 25955
+  }
+ }
+}

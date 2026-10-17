@@ -36,7 +36,9 @@ def _build(meta, seed=0):
         context_source=FrozenSlotRouter(input_dim=d, n_slots=meta["slots"],
                                         ctx_dim=meta["ctx"]).freeze(),
         backbone=HybridBackbone(d, n, attn_every=meta["attn_every"], window=meta["window"],
-                                heads=meta["heads"], ffn_mult=meta.get("ffn_mult", 2)),
+                                heads=meta["heads"], ffn_mult=meta.get("ffn_mult", 2),
+                                mem_every=int(meta.get("mem_every", 0) or 0),
+                                mem_topk=int(meta.get("mem_topk", 8)), mem_key=int(meta.get("mem_key", 64))),
         memory=MemoryLayer(gen, SnapshotHardener(), d_model=d),
         binding=BindingHead(), embedding=HybridEmbedding(meta["vocab"], d),
         head=TopKRetrievalHead(torch.randn(meta["vocab"], d) * 0.1, learnable=True),
@@ -52,9 +54,10 @@ def _source():
     return m
 
 
-def _grow(**kw):
+def _grow(mem_every=None, **kw):
     src = _source()
-    dst = _build(grown_meta(META, kw.get("width", 1), kw.get("depth", 1), kw.get("ffn", 1)), seed=1)
+    dst = _build(grown_meta(META, kw.get("width", 1), kw.get("depth", 1), kw.get("ffn", 1),
+                            mem_every=mem_every, mem_key=4), seed=1)
     rep = grow_into(src, dst, **kw)
     x = torch.randint(0, META["vocab"], (2, S), generator=torch.Generator().manual_seed(3))
     with torch.no_grad():
@@ -95,8 +98,36 @@ def test_every_layer_keeps_its_kind():
             assert all((j % 3 == 0) == (i % 3 == 0) for j, (i, _) in enumerate(m))
 
 
+def test_the_episodic_memory_is_inserted_at_growth_with_its_exits_zeroed():
+    """2026-10-17 (Nick: "see if we add memory every 2 layers if it will help"; "we need to grow the model too"):
+    a base without the H-D5 memory grows into a shape with one. Each read is fresh with its output projection
+    zeroed, so the grown model is still exact at step 0 -- the sequence crosses the window, so the reads have
+    a past to attend to, and still add nothing -- and the gradient reaches the read's output first."""
+    a, b, rep, src, dst, x = _grow(depth=2, ffn=2, mem_every=2)
+    assert rep["mem_layers"] == [0, 2, 4, 6, 8] and not any(src.backbone.is_mem)
+    assert torch.allclose(a, b, atol=1e-4, rtol=1e-4), (a - b).abs().max()
+    assert all(float(dst.backbone.mem[j].o.weight.abs().max()) == 0.0 for j in rep["mem_layers"])
+    assert all(float(dst.backbone.mem[j].q.weight.abs().max()) > 0.0 for j in rep["mem_layers"])
+    # the decode path carries the memory too (the EpisodicStore behind the read; one stream at a time)
+    state = None
+    with torch.no_grad():
+        for t in range(S):
+            logits, state = dst.step(x[:1, t], state)
+            assert torch.allclose(logits, b[:1, t], atol=1e-4, rtol=1e-4)
+    # a loss through the grown model reaches the read's exit, and only there at step 0
+    out = dst.forward(x)
+    out.float().logsumexp(-1).mean().backward()
+    j = rep["mem_layers"][1]
+    assert dst.backbone.mem[j].o.weight.grad is not None and float(dst.backbone.mem[j].o.weight.grad.abs().max()) > 0
+    assert float(dst.backbone.mem[j].q.weight.grad.abs().max()) == 0.0
+
+
 def test_meta_keeps_old_checkpoints_equal():
     assert "ffn_mult" not in grown_meta(META, width=2)
     assert grown_meta(META, ffn=2)["ffn_mult"] == 4
     g = grown_meta(META, width=2, depth=2)
     assert (g["D"], g["heads"], g["L"]) == (32, 4, 10)
+    assert "mem_topk" not in grown_meta(META, depth=2) and grown_meta(META, depth=2).get("mem_every", 0) == 0
+    m = grown_meta(META, depth=2, mem_every=2, mem_key=4)
+    assert (m["mem_every"], m["mem_topk"], m["mem_key"]) == (2, 8, 4)
+    assert "mem_topk" not in grown_meta(m, mem_every=0) and grown_meta(m, mem_every=0)["mem_every"] == 0
