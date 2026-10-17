@@ -99,7 +99,7 @@ def move_model(model, device):
     grilly/numpy VSA (binding) is CPU algebra by design and is left alone.
     """
     seen: set = set()
-    for name in ("embedding", "backbone", "memory", "head", "context_source"):
+    for name in ("embedding", "backbone", "memory", "head", "context_source", "spatial"):
         _move_attrs(getattr(model, name, None), device, seen)
     return model
 

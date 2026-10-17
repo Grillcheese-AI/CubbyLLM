@@ -113,6 +113,8 @@ def main() -> None:
     ck = torch.load(args.ckpt, map_location="cpu", weights_only=False)
     meta, step, tokens = ck["meta"], ck.get("step"), ck.get("tokens")
     del ck                         # a grown 1.8B checkpoint is 7 GB; don't hold it twice
+    if meta.get("spatial"):
+        raise SystemExit("the spatial link (meta['spatial']) has no grilly2 form yet: serve it through torch")
     model = load_base(args.ckpt, "cpu")
     tensors = named_tensors(model)
     cfg = grilly_config(meta, model)

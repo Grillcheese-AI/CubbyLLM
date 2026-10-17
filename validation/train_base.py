@@ -91,6 +91,10 @@ VOCAB_PAD = _env("CB_VOCAB_PAD", 128)
 MEM_EVERY = _env("CB_MEM_EVERY", 0)
 MEM_TOPK = _env("CB_MEM_TOPK", 8)
 MEM_KEY = _env("CB_MEM_KEY", 64)
+# the spatial link (cubbyllm/model/spatial): places bound into the input, a gated read of a scene
+# vector from the trunk. 0 = none (every base so far); on, text is bit-identical until places are given.
+SPATIAL = _env("CB_SPATIAL", 0)
+SPATIAL_SCALE = _env("CB_SPATIAL_SCALE", 2.0, float)
 # ── batch / optimizer / schedule ───────────────────────────────────────────
 SEQ = _env("CB_S", 1024)
 MICRO = _env("CB_MICRO", 16)                 # sequences per forward/backward
@@ -303,6 +307,8 @@ def arch_meta(vocab_real: int, vocab: int) -> dict:
         meta["ffn_mult"] = FFN_MULT
     if MEM_EVERY:                     # absent at 0, for the same reason
         meta["mem_topk"], meta["mem_key"] = MEM_TOPK, MEM_KEY
+    if SPATIAL:                       # absent at 0, for the same reason
+        meta["spatial"] = {"scale": SPATIAL_SCALE, "seed": 0}
     return meta
 
 
@@ -326,9 +332,19 @@ def build_model(meta: dict, dev, seed: int = 0) -> CubbyModel:
         binding=BindingHead(), embedding=HybridEmbedding(v, d),
         head=TopKRetrievalHead(torch.randn(v, d) * 0.02, learnable=True),
         retrieval_k=v,
+        spatial=spatial_link(meta),
     )
     move_model(model, dev)
     return model
+
+
+def spatial_link(meta: dict):
+    """The spatial link the meta asks for, or None (``meta["spatial"] = {scale, seed}``)."""
+    sp = meta.get("spatial")
+    if not sp:
+        return None
+    from cubbyllm.model.spatial import SpatialLink
+    return SpatialLink(meta["D"], scale=float(sp.get("scale", 2.0)), seed=int(sp.get("seed", 0)))
 
 
 def flops_per_token(model: CubbyModel, meta: dict, seq: int) -> float:

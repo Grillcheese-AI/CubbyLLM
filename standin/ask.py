@@ -628,11 +628,12 @@ def _learned(p) -> dict:
 class AskLoop:
     """`ask(question)` -> the loop's record. `emitter` is any object with `.emit(prompt, max_new_tokens=)`
     (the serving emitter, shared); `world` a FactStore with a TripleIndex (the wiki world when None);
-    `source` 'wikidata' | 'wikidata-offline' | 'lfm' | a Source object; `lexicon` adds lever 5."""
+    `source` 'wikidata' | 'wikidata-offline' | 'lfm' | a Source object; `lexicon` adds lever 5; `scene` a
+    `cubbyllm.spatial.Scene`, the source for a question whose relation or seed is the scene's (`spatial.route`)."""
 
     def __init__(self, emitter, world=None, source="wikidata", lexicon: bool = True, exe: str | None = None,
                  max_new: int = 300, lfm_gguf: str | None = None, run_fn=None, tau_profile: float = TAU_VM[1],
-                 news=None, history_path: str | None = None, web=None, skills=None):
+                 news=None, history_path: str | None = None, web=None, skills=None, scene=None):
         from cubbyllm.bridges import cubelang_client as cc
         from cubbyllm.reasoning.plan_verify import StoreRelations
         self.emitter = emitter
@@ -663,6 +664,10 @@ class AskLoop:
         # stalled on, and what it finds is held until two independent sites agree (standin/web_source.py)
         self.web = web
         self.fallbacks = [web] if web is not None else []
+        # the scene (2026-10-17): the host's route to space. A question the scene can state -- a spatial
+        # relation at any hop, or a seed that is a thing in it -- is sourced from the scene's exact reading
+        # instead of the world's source; the walk and the VM verify what it states like any other fact.
+        self.scene = scene
         if web is not None and getattr(web, "wikidata", None) is None and hasattr(source, "resolve"):
             web.wikidata = source                        # a Wikipedia hit hands over to Wikidata's own claims
         if web is not None and getattr(web, "containment", None) is None and hasattr(source, "_claims"):
@@ -859,8 +864,14 @@ class AskLoop:
             rels, seed = ep
             plan = QuestionPlan(relations=[None] + rels[1:], tail=f"{rels[0]} of {seed}", n_hop=len(rels))
             rec["plan"], rec["seed"] = rels, seed
+            source = self.source
+            if self.scene is not None:
+                from cubbyllm.spatial.route import route
+                if route(plan, self.scene):
+                    source = self.scene
+                    rec["world"] = "scene"
             lr = learn_and_answer(question, lambda q, k: [], self._run_fn, store=self.world, known=self.known,
-                                  source=self.source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
+                                  source=source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
                                   plan=plan, resolvers=self.resolvers, choose=parse_choose(choose) or None,
                                   fallbacks=self.fallbacks)
         rec.update(answer=lr.result.answer if lr.result.verified else None, verified=bool(lr.result.verified),

@@ -46,6 +46,7 @@ class CubbyModel:
         embedding: "EmbeddingSource",
         head: "RetrievalHead",
         retrieval_k: int = 64,
+        spatial=None,
     ) -> None:
         self.config = config
         self.context_source = context_source
@@ -55,6 +56,9 @@ class CubbyModel:
         self.embedding = embedding
         self.head = head
         self.retrieval_k = int(retrieval_k)
+        # the route to space (model/spatial.py): places bound into the input, a gated read of a
+        # scene vector from the trunk's state. None (every base so far) = the path above, untouched.
+        self.spatial = spatial
 
     def parameters(self):
         """Trainable parameters: embedding + backbone + memory's generator +
@@ -69,6 +73,7 @@ class CubbyModel:
             self.backbone,
             getattr(self.memory, "generator", None),
             self.head,
+            self.spatial,
         )
         for comp in comps:
             if comp is None or not hasattr(comp, "parameters"):
@@ -100,20 +105,32 @@ class CubbyModel:
         core_feat = e.cumsum(dim=1) / n.unsqueeze(-1)                # causal running mean
         return self.context_source.infer(core_feat)                  # vector (B, S, ctx)
 
-    def features(self, tokens: "Tensor") -> "Tensor":
+    def features(self, tokens: "Tensor", positions: "Tensor | None" = None,
+                 scene: "Tensor | None" = None) -> "Tensor":
         """The trunk representation h (B, S, d) — pre-head hidden states. Exposed
         so an auxiliary objective (e.g. the VSA binding loss) can shape h without
-        re-running the forward."""
+        re-running the forward.
+
+        With a spatial link: ``positions`` (B, S, 3) binds each token's place into
+        its embedding (None: no places, the embedding untouched) and ``scene``
+        (B, d) is the scene vector the trunk may read (None: the read is zero).
+        The context is inferred from the unbound embedding, as ``step`` does."""
         ctx = self.infer_context(tokens)                     # frozen at inference
         x = self.embedding.embed(tokens, ctx)                # (B, S, d), hybrid
+        if self.spatial is not None:
+            x = self.spatial.bind(x, positions)              # e (*) S(p): the input level
         h = self.backbone.forward(x)                         # (B, S, d)
+        if self.spatial is not None:
+            h = h + self.spatial.read(h, scene)              # the route from the trunk
         return self.memory.forward_generated(h, ctx)         # (B, S, d), hardened
 
     def logits_from(self, h: "Tensor") -> "Tensor":
         return self.head.logits(h, self.retrieval_k)         # (B, S, V), top-K
 
-    def step(self, token: "Tensor", state: "dict | None" = None):
+    def step(self, token: "Tensor", state: "dict | None" = None, position: "Tensor | None" = None,
+             scene: "Tensor | None" = None):
         """Decode ONE token, carrying state. token: (B,) ids -> (logits, state).
+        ``position`` (B, 3) and ``scene`` (B, d) are the spatial link's, as in ``features``.
 
         The inference path. Cost per token is independent of how many tokens came
         before, and the carried state is n_layers x (B, d) plus two context
@@ -158,7 +175,11 @@ class CubbyModel:
         n.add_(1.0)
         ctx = self.context_source.infer(s / n)                          # running mean
         x = self.embedding.embed(token.unsqueeze(1), ctx)[:, 0]
+        if self.spatial is not None:
+            x = self.spatial.bind(x, position)
         y, bb = self.backbone.step(x, state["bb"])
+        if self.spatial is not None:
+            y = y + self.spatial.read(y, scene)
         y = self.memory.forward_generated(y.unsqueeze(1), ctx)[:, 0]
         logits = self.head.logits(y.unsqueeze(1), self.retrieval_k)[:, 0]
         return logits, {"bb": bb, "ctx_sum": s, "ctx_n": n}
