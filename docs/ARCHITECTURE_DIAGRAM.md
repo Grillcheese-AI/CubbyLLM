@@ -19,6 +19,26 @@ The dashed row is the record: every step an event for `/panel` and `/brain`, and
 learned facts and skills back through the gate the next day. Not on it: the chat turn (`/turn`), the
 arithmetic step loop, the word table and the worlds router, and the game.
 
+## One token through base450m (as of 2026-10-17)
+
+![One token through base450m: the embedding (B), the frozen context router c, the 32-layer trunk (11 windowed-attention, 21 MinGRU) with its fixed-size decode state (A), the adapter θ = f(c), the head (C); the emitter LoRA on top; trained in torch, served on grilly2, grown by grow.py](figures/trunk_map.svg)
+
+`docs/figures/trunk_map.svg` — the trunk as it serves, in the same shape. **B**, the embedding
+(`cubbyllm/model/vocab/embedding.py`): a fixed core table, 128k × 1024. **c**, the context
+(`cubbyllm/core/context.py`, `FrozenSlotRouter`): the running mean of the core embeddings up to the
+current token, routed over 8 slots into a 32-dim c, pretrained offline and frozen. **The trunk**
+(`backbone/hybrid.py`, `backbone/mingru.py`): 32 layers of [RMSNorm → mixer → +res, RMSNorm → SwiGLU →
++res], windowed attention with RoPE on every third layer (11 layers, window 512, 4 heads of 256) and
+MinGRU on the rest (21). **A**, the decode state (`CubbyModel.step`; `CubbyState` in grilly2): one
+vector per recurrent layer, a ring of the last 512 keys and values per attention layer, two context
+accumulators — 46 MB a stream at this shape, the same size from the first token on. **θ = f(c)**, the
+adapter (`core/generation.py`, `memory/base.py`): c mixes 16 rank-8 bases and `h += tanh(h·(B(c)A(c))ᵀ)`,
+hardened against drift. **C**, the head (`vocab/output_head.py`): a projection to the padded vocabulary,
+exact top-K in torch; greedy decoding, stopped at `</s>`. The emitter is a LoRA (rank 16, α 32) on every
+projection of every layer (`validation/train_emitter_torch.py`), loaded on the card by
+`grilly.infer.lora.apply_lora_`. Trained by `validation/train_base.py`, exported by `export_base.py`,
+served by grilly2's `infer/models/cubby.py` op for op, grown in place by `cubbyllm/model/grow.py`.
+
 ## The full system (as of 2026-08-08)
 
 **As of 2026-08-08** (post serve-stack cycle). Solid arrows = the live default

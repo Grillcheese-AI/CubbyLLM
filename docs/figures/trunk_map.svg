@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- CubbyLLM: one token through base450m (the trunk), 2026-10-17. Hand-drawn; the source of truth for the boxes is the code they name. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1850 860" width="1850" height="860" role="img" aria-label="One token through base450m: tokens are embedded (B), the running mean of the embeddings goes through a frozen router into a context c, the 32-layer trunk mixes with windowed attention or MinGRU and carries a fixed-size state (A), the context-generated adapter adjusts the hidden state, the head (C) projects to the vocabulary and the next token comes out; a LoRA on every projection is the emitter; trained in torch, exported, served on grilly2, grown by grow.py.">
+<style>
+    svg { color: #1c2130; font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+      --bg: #fafbfd; --muted: #5d6578; --line: #4a5063;
+      --f-in: #dff4ff; --t-in: #1d8fc0; --f-trunk: #ffe6bf; --t-trunk: #b86f07; --f-host: #fff0c2; --t-host: #9c7a0c;
+      --f-state: #e1e6ff; --t-state: #4756c9; --f-vm: #d6f5ef; --t-vm: #178f7e; --f-src: #dde9ff; --t-src: #3b6fd0;
+      --f-gate: #ece0ff; --t-gate: #8a55d0; --f-d: #e3f6dc; --t-d: #3f8f2e; --f-out: #eef0f6; --t-out: #4b5166;
+      --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif; --mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace; }
+    .box { stroke: var(--line); stroke-width: 1.25; }
+    .in { fill: var(--f-in); } .trunk { fill: var(--f-trunk); } .host { fill: var(--f-host); } .state { fill: var(--f-state); }
+    .vm { fill: var(--f-vm); } .src { fill: var(--f-src); } .gate { fill: var(--f-gate); } .dbox { fill: var(--f-d); } .out { fill: var(--f-out); }
+    .tag { font-family: var(--sans); font-weight: 600; font-size: 28px; }
+    .tag.in { fill: var(--t-in); } .tag.trunk { fill: var(--t-trunk); } .tag.host { fill: var(--t-host); } .tag.state { fill: var(--t-state); }
+    .tag.vm { fill: var(--t-vm); } .tag.src { fill: var(--t-src); } .tag.gate { fill: var(--t-gate); } .tag.dbox { fill: var(--t-d); } .tag.out { fill: var(--t-out); }
+    .ttl { font-family: var(--sans); font-weight: 600; font-size: 17px; fill: currentColor; }
+    .sub { font-family: var(--sans); font-weight: 600; font-size: 14.5px; fill: currentColor; }
+    .file { font-family: var(--mono); font-size: 12.5px; fill: var(--muted); }
+    .body { font-family: var(--sans); font-size: 14px; fill: currentColor; }
+    .body.dim { fill: var(--muted); font-style: italic; }
+    .lbl { font-family: var(--sans); font-size: 13px; fill: var(--muted); }
+    .io { font-family: var(--sans); font-size: 15px; font-weight: 600; fill: currentColor; }
+    .wire { fill: none; stroke: var(--line); stroke-width: 2; }
+    .wire.dash { stroke-dasharray: 7 6; stroke-width: 1.6; }
+    .dot { fill: var(--line); }
+    .bubble { fill: none; stroke: currentColor; stroke-width: 1.8; }
+    .glyph { font-family: var(--mono); font-size: 16px; font-weight: 500; fill: currentColor; }
+  </style>
+  <rect width="1850" height="860" fill="#fafbfd"/>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--line)"/>
+    </marker>
+  </defs>
+
+  <!-- ===== input ===== -->
+  <path class="bubble" d="M60,306 h86 a9,9 0 0 1 9,9 v26 a9,9 0 0 1 -9,9 h-44 l-12,11 v-11 h-30 a9,9 0 0 1 -9,-9 v-26 a9,9 0 0 1 9,-9 z"/>
+  <text class="glyph" x="103" y="334" text-anchor="middle">[E1: …]</text>
+  <rect class="box in" x="24" y="380" width="160" height="100" rx="8"/>
+  <text class="io" x="104" y="409" text-anchor="middle">Input x(t)</text>
+  <text class="body" x="104" y="431" text-anchor="middle">tokens</text>
+  <text class="file" x="104" y="450" text-anchor="middle">bbpe128k</text>
+  <text class="file" x="104" y="467" text-anchor="middle">Question: … Program:</text>
+  <path class="wire" d="M184,430 H230" marker-end="url(#arr)"/>
+
+  <!-- ===== B: the embedding ===== -->
+  <rect class="box trunk" x="230" y="366" width="250" height="128" rx="8"/>
+  <text class="tag trunk" x="246" y="402">B</text>
+  <text class="ttl" x="274" y="396">the embedding</text>
+  <text class="file" x="246" y="418">vocab/embedding.py</text>
+  <text class="body" x="246" y="440">core table: 128k × 1024</text>
+  <text class="body" x="246" y="459">(padded to a multiple of 128)</text>
+  <text class="body" x="246" y="478">→ x (B, S, 1024)</text>
+  <path class="wire" d="M480,430 H505"/>
+  <circle class="dot" cx="505" cy="430" r="4"/>
+  <path class="wire" d="M505,430 H560" marker-end="url(#arr)"/>
+
+  <!-- ===== c: the context (the side path that generates the adapter) ===== -->
+  <path class="wire" d="M505,430 V120 H560" marker-end="url(#arr)"/>
+  <text class="lbl" x="495" y="262" text-anchor="end">the core embeddings</text>
+  <rect class="box dbox" x="560" y="64" width="330" height="112" rx="8"/>
+  <text class="tag dbox" x="576" y="100">c</text>
+  <text class="ttl" x="600" y="94">the context</text>
+  <text class="file" x="576" y="116">core/context.py: FrozenSlotRouter</text>
+  <text class="body" x="576" y="138">running mean of the embeddings up to t</text>
+  <text class="body" x="576" y="157">softmax(W2·tanh(W1·m)), 8 slots → ctx 32</text>
+  <path class="wire" d="M890,120 H1265 V366" marker-end="url(#arr)"/>
+  <text class="lbl" x="1180" y="108" text-anchor="middle">c (B, S, 32): pretrained offline, frozen; the coefficients of the adapter's bases</text>
+
+  <!-- ===== the LoRA on top (the emitter) ===== -->
+  <rect class="box host" x="560" y="236" width="500" height="60" rx="8" stroke-dasharray="7 6"/>
+  <text class="body" x="576" y="260">+ LoRA, r 16 α 32, on every projection of every layer: the emitter</text>
+  <text class="file" x="576" y="281">train_emitter_torch.py · grilly.infer.lora.apply_lora_</text>
+  <path class="wire dash" d="M810,296 V330" marker-end="url(#arr)"/>
+
+  <!-- ===== the trunk ===== -->
+  <rect class="box trunk" x="560" y="330" width="500" height="206" rx="8"/>
+  <text class="ttl" x="576" y="356">the trunk — 32 layers</text>
+  <text class="file" x="576" y="374">backbone/hybrid.py · backbone/mingru.py</text>
+  <text class="body" x="576" y="393">per layer: x += mixer(rms x); x += SwiGLU(rms x) (2× width)</text>
+  <rect class="box out" x="576" y="404" width="222" height="120" rx="6"/>
+  <text class="sub" x="590" y="426">windowed attention × 11</text>
+  <text class="body" x="590" y="446">layers 0, 3, 6 … · window 512</text>
+  <text class="body" x="590" y="465">RoPE · 4 heads × 256</text>
+  <text class="body" x="590" y="484">the last 512 keys/values</text>
+  <text class="body" x="590" y="503">in a ring (fixed size)</text>
+  <rect class="box out" x="812" y="404" width="232" height="120" rx="6"/>
+  <text class="sub" x="826" y="426">MinGRU × 21</text>
+  <text class="body" x="826" y="446">h = a·h₋₁ + σ(g)·tanh(v)</text>
+  <text class="body" x="826" y="465">a = 0.001 + 0.998·σ(d)</text>
+  <text class="body" x="826" y="484">one (B, 1024) vector of state</text>
+  <text class="body" x="826" y="503">prompt: a scan · token: a step</text>
+  <path class="wire" d="M1060,430 H1140" marker-end="url(#arr)"/>
+  <text class="lbl" x="1100" y="318" text-anchor="middle">h (B, S, 1024)</text>
+
+  <!-- ===== A: the state, carried every token ===== -->
+  <path class="wire" d="M700,536 V600" marker-end="url(#arr)"/>
+  <text class="lbl" x="688" y="572" text-anchor="end">carried to the next token</text>
+  <path class="wire" d="M980,600 V536" marker-end="url(#arr)"/>
+  <text class="lbl" x="992" y="572">a·h₋₁, and the window's keys</text>
+  <rect class="box state" x="560" y="600" width="500" height="96" rx="8"/>
+  <text class="tag state" x="576" y="636">A</text>
+  <text class="ttl" x="604" y="630">the decode state</text>
+  <text class="file" x="576" y="652">grilly2 infer/models/cubby.py: CubbyState</text>
+  <text class="body" x="576" y="673">21 vectors · 11 rings of 512 keys/values · 2 context sums</text>
+  <text class="body dim" x="576" y="690">46 MB a stream (fp32), the same size from the first token on</text>
+
+  <!-- ===== θ = f(c): the adapter ===== -->
+  <rect class="box gate" x="1140" y="366" width="250" height="128" rx="8"/>
+  <text class="tag gate" x="1156" y="402">θ</text>
+  <text class="ttl" x="1180" y="396">the adapter, θ = f(c)</text>
+  <text class="file" x="1156" y="418">generation.py · memory/base.py</text>
+  <text class="body" x="1156" y="440">h += tanh(h·(B(c)·A(c))ᵀ)</text>
+  <text class="body" x="1156" y="459">16 bases of rank 8, mixed by c</text>
+  <text class="body" x="1156" y="478">SnapshotHardener against drift</text>
+  <path class="wire" d="M1390,430 H1440" marker-end="url(#arr)"/>
+  <text class="lbl" x="1415" y="352" text-anchor="middle">h, hardened</text>
+
+  <!-- ===== C: the head ===== -->
+  <rect class="box vm" x="1440" y="366" width="220" height="128" rx="8"/>
+  <text class="tag vm" x="1456" y="402">C</text>
+  <text class="ttl" x="1484" y="396">the head</text>
+  <text class="file" x="1456" y="418">vocab/output_head.py</text>
+  <text class="body" x="1456" y="440">linear to the padded 128k</text>
+  <text class="body" x="1456" y="459">torch head: exact top-K</text>
+  <text class="body" x="1456" y="478">greedy · stops at &lt;/s&gt;</text>
+  <path class="wire" d="M1660,430 H1700" marker-end="url(#arr)"/>
+
+  <!-- ===== output ===== -->
+  <rect class="box out" x="1700" y="380" width="130" height="100" rx="8"/>
+  <text class="io" x="1765" y="409" text-anchor="middle">Output y(t)</text>
+  <text class="body" x="1765" y="431" text-anchor="middle">the next token</text>
+  <text class="body" x="1765" y="450" text-anchor="middle">→ a program</text>
+  <text class="body" x="1765" y="469" text-anchor="middle">with $E / $N</text>
+  <path class="bubble" d="M1722,306 h86 a9,9 0 0 1 9,9 v26 a9,9 0 0 1 -9,9 h-30 l-12,11 v-11 h-44 a9,9 0 0 1 -9,-9 v-26 a9,9 0 0 1 9,-9 z"/>
+  <text class="glyph" x="1765" y="334" text-anchor="middle">bind …</text>
+
+  <!-- ===== trained · served · grown (dashed) ===== -->
+  <rect class="box out" x="24" y="760" width="560" height="70" rx="8" stroke-dasharray="7 6"/>
+  <text class="body" x="40" y="786">trained — train_base.py: a Colab A100, ~20 h, ~4B tokens, AdamW + WSD</text>
+  <text class="file" x="40" y="808">export_base.py → config.json + model.safetensors (2.3 GB)</text>
+  <path class="wire dash" d="M584,795 H624" marker-end="url(#arr)"/>
+  <rect class="box out" x="624" y="760" width="560" height="70" rx="8" stroke-dasharray="7 6"/>
+  <text class="body" x="640" y="786">served on grilly2 — Vulkan, any GPU, no CUDA; the torch code op for op</text>
+  <text class="file" x="640" y="808">grilly.infer.models.cubby: CubbyForCausalLM.generate · apply_lora_</text>
+  <rect class="box out" x="1224" y="760" width="606" height="70" rx="8" stroke-dasharray="7 6"/>
+  <text class="body" x="1240" y="786">grows without a restart — grow.py: width ×k (HyperCloning), depth ×n, ffn ×m</text>
+  <text class="file" x="1240" y="808">the same function at step 0 → d2048 / L32 (2B) · validation/grow_base.py</text>
+</svg>
