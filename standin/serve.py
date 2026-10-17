@@ -622,10 +622,28 @@ CubbyServe = CubbyBrain
 
 
 # ── assembly from the real artifacts ────────────────────────────────────────
-def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
+def slot_index(*worlds):
+    """The names the host knows, for the slotted emitter: every subject and object the worlds' triple
+    indexes hold, plus a question's own capitalised runs (`NameIndex`)."""
+    from cubbyllm.reasoning.slots import NameIndex
+    names: set = set()
+    for w in worlds:
+        idx = getattr(w, "index", None)
+        for attr in ("_by_subj", "_by_obj"):
+            names.update(getattr(idx, attr, {}) or {})
+    return NameIndex(names)
+
+
+def build_serve(gguf: str | None, table: str | None, n_store: int, exe: str | None,
                 route_tau: float, n_gpu_layers: int,
                 extra_facts: list[str] | None = None, talk_gguf: str | None = None,
-                wiki: str | None = None) -> CubbyBrain:
+                wiki: str | None = None, cubby450m: str | None = None, emitter_adapter: str | None = None,
+                talk_adapter: str | None = None, tokenizer: str | None = None) -> CubbyBrain:
+    """`cubby450m` (2026-10-17): the export of GRL's own base takes BOTH seats -- the programs seat as
+    `SlotEmitter(Cubby450mEmitter)` over the worlds' names, the talk seat as `Cubby450mTalk` when a talk
+    adapter is given (else the talk GGUF, else programs-only) -- one base on grilly2, the LoRAs swapped per
+    role. `gguf` then stays the A/B arm: given beside it, it is loaded into the bank's shadow as `programs`
+    candidate for `emit_candidate`, never routed."""
     from exp_m3_cot_pipeline import V4_TABLE, load_sample
     from exp_m3_domain_routing import _load_semantic_words
 
@@ -639,12 +657,33 @@ def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
     sw = _load_semantic_words()
     enc = sw.FastWordEncoder.from_npz(str(table or V4_TABLE))
     world = FactStore(store, enc=enc, name="facts")
-    print(f"loading emitter {gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
-    emitter = LlamaCppEmitter(gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers)   # v6 trained at 4096
-    if talk_gguf and os.path.abspath(talk_gguf) != os.path.abspath(gguf):
-        print(f"loading talk adapter {talk_gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
-        talk = LlamaCppEmitter(talk_gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers)
-        emitter = ContextualEmitter({"programs": emitter, "talk": talk}, default="programs")
+    slotted = None
+    if cubby450m:
+        from cubbyllm.reasoning.slots import SlotEmitter
+        from standin.emitter import Cubby450mEmitter, Cubby450mTalk, Cubby450mTrunk
+        if not emitter_adapter:
+            raise ValueError("--cubby450m needs --emitter-adapter (the programs seat)")
+        roles = {"programs": emitter_adapter, **({"talk": talk_adapter} if talk_adapter else {})}
+        print(f"loading base450m {cubby450m} on grilly2 with {sorted(roles)} ...", flush=True)
+        trunk = Cubby450mTrunk(cubby450m, tokenizer or os.path.join(cubby450m, "tokenizer.json"), roles)
+        slotted = SlotEmitter(Cubby450mEmitter(trunk), index=None)      # the names come once the worlds are up
+        if talk_adapter:
+            talk = Cubby450mTalk(trunk)
+        elif talk_gguf:
+            print(f"loading talk stand-in {talk_gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
+            talk = LlamaCppEmitter(talk_gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers)
+        else:
+            talk = None
+        emitter = ContextualEmitter({"programs": slotted, **({"talk": talk} if talk else {})}, default="programs")
+        if gguf:                                         # the stand-in beside it, for the A/B: in shadow, never routed
+            emitter.shadow("programs", LlamaCppEmitter(gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers))
+    else:
+        print(f"loading emitter {gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
+        emitter = LlamaCppEmitter(gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers)   # v6 trained at 4096
+        if talk_gguf and os.path.abspath(talk_gguf) != os.path.abspath(gguf):
+            print(f"loading talk adapter {talk_gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
+            talk = LlamaCppEmitter(talk_gguf, n_ctx=4096, n_gpu_layers=n_gpu_layers)
+            emitter = ContextualEmitter({"programs": emitter, "talk": talk}, default="programs")
     brain = CubbyBrain(emitter, world, exe=exe, route_tau=route_tau)
     if wiki:                                             # the wikikg world (H-G6): lookup-first, lexical fallback, no cosine rows
         from wikikg import wiki_world
@@ -653,6 +692,9 @@ def build_serve(gguf: str, table: str | None, n_store: int, exe: str | None,
         ww = wiki_world(path=None if wiki == "auto" else wiki)
         brain.worlds["wiki"] = ww
         print(f"  wiki world: {len(ww):,} facts, {len(ww.index):,} indexed, {time.perf_counter() - t0:.0f}s", flush=True)
+    if slotted is not None:
+        slotted.index = slot_index(*brain.worlds.values())
+        print(f"  slot index: {len(slotted.index):,} names the host knows, plus a question's own capitalised runs", flush=True)
     return brain
 
 

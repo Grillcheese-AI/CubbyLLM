@@ -1332,8 +1332,15 @@ class AskLoop:
                   "Every NAME, DATE and NUMBER must appear exactly as given, and you may add none that is "
                   "not in the facts.")
         from emitter import clean_reply
+        # the structured form rides beside the prompt (2026-10-17): the 450M talk adapter was trained on the
+        # facts block ("Facts: / - entity -- relation: value / Question: / Answer:") and renders it itself;
+        # the stand-in reads the instruction above and ignores these keys
+        talk_ctx = {"role": "talk",
+                    "facts": [(entity, say(l["relation"]), l["value"] + (f" ({when_text(l['when'])})" if l.get("when") else ""))
+                              for l in lines],
+                    "question": f"{ {'who': 'Who', 'where': 'Where', 'when': 'What happened in'}.get(kind, 'What')} is {entity}?"}
         try:
-            raw = self.emitter.emit(prompt, max_new_tokens=160, context={"role": "talk"}, temperature=0.0,
+            raw = self.emitter.emit(prompt, max_new_tokens=160, context=talk_ctx, temperature=0.0,
                                     system=PARAPHRASE_SYSTEM)     # not the identity persona: under it the talk adapter says nothing here
             text = " ".join(clean_reply(raw).split())
         except Exception as e:                                   # noqa: BLE001 -- no paraphrase, the facts stand
@@ -1351,7 +1358,7 @@ class AskLoop:
             retry = (prompt + "\n\nYour last attempt used " + ", ".join(f"'{b}'" for b in bad[:6]) +
                      " -- no fact above says that. Write it again without those words, and do not say "
                      "what KIND of thing it is unless a fact names the kind.")
-            raw = self.emitter.emit(retry, max_new_tokens=160, context={"role": "talk"}, temperature=0.0,
+            raw = self.emitter.emit(retry, max_new_tokens=160, context=talk_ctx, temperature=0.0,
                                     system=PARAPHRASE_SYSTEM)
             text2 = " ".join(clean_reply(raw).split())
         except Exception as e:                                   # noqa: BLE001

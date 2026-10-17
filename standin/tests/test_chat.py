@@ -139,3 +139,19 @@ def test_chat_guard_rejects_a_reply_in_another_script():
     c = chat.CubbyChat(FakeEmitter("建筑师说：你好，我是 Cubby。"), F)
     offered, rejected = c.candidates("hello there")
     assert rejected and c.last_rejection == "non-latin script" and offered[-1] == chat.T(F, "dont_know_line", "en")
+
+
+def test_the_turn_carries_its_structured_side_for_an_adapter_that_renders_its_own_format():
+    """2026-10-17: the 450M talk adapter is shown the conversation's turns, or who Cubby is as a facts block
+    for an identity question; the stand-in ignores both keys."""
+    class Rec(FakeEmitter):
+        def emit(self, prompt, *a, **k):
+            self.ctx = k.get("context"); return self.reply
+    e = Rec("Sure, here it is shorter.")
+    c = chat.CubbyChat(e, F)
+    c.talk_context("rewrite it shorter", "en")
+    assert c.talk_context("rewrite it shorter", "en") == {"turns": [("user", "rewrite it shorter")]}
+    who = c.talk_context("who are you?", "en")
+    assert who["question"] == "who are you?" and ("Cubby", "name", "Cubby") in who["facts"]
+    assert any(r == "builder" and "Grillcheese" in v for _, r, v in who["facts"])
+

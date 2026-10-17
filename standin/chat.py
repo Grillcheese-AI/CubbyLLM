@@ -251,6 +251,24 @@ class CubbyChat:
     MULTI_PROMPT = {"en": "Conversation so far:\nUser: {u1}\nCubby: {a1}\nUser: {u2}",       # = build_chat_sft.MULTI_PROMPT
                     "fr": "Conversation jusqu'ici :\nUtilisateur : {u1}\nCubby : {a1}\nUtilisateur : {u2}"}
 
+    def talk_context(self, user_text: str, lang: str) -> dict:
+        """The structured side of the turn (2026-10-17, for the 450M talk adapter, which renders its own
+        formats): an identity question comes with who Cubby is as a facts block; any other turn as the
+        conversation's turns, the last spoken exchange included when history is on. The stand-in ignores
+        both keys and reads the prompt."""
+        if is_identity_question(user_text):
+            name = T(self.facts, "name", lang)
+            facts = [(name, k.replace("_", " "), T(self.facts, k, lang)) for k in ("name", "builder", "tagline", "how_it_answers", "when_unsure")
+                     if k in self.facts and isinstance(T(self.facts, k, lang), str)]
+            return {"facts": facts, "question": user_text}
+        turns = []
+        if self.history_turns and self.history:
+            last = self.history[-1]
+            u1, a1 = str(last.get("user") or "").strip(), str(last.get("reply") or "").strip()
+            if u1 and a1:
+                turns += [("user", u1), ("assistant", a1)]
+        return {"turns": turns + [("user", user_text)]}
+
     def with_history(self, user_text: str) -> str:
         """The prompt for this turn: the previous spoken exchange inline (v9 multi-turn shape), or the bare
         turn when there is none / history is off. An identity question stands alone: it is answered from
@@ -325,7 +343,8 @@ class CubbyChat:
         offered, rejected, seen = [], [], set()
         for k in range(draws):
             self._turns = getattr(self, "_turns", 0) + 1
-            raw = self.emitter.emit(prompt, context={"role": "talk", "state": dict(self.state)},   # the talk adapter; the state rides in c
+            raw = self.emitter.emit(prompt, context={"role": "talk", "state": dict(self.state),   # the talk adapter; the state rides in c
+                                                     **self.talk_context(user_text, lang)},        # the turns / the identity facts, for an adapter that renders its own format
                                     max_new_tokens=self.max_new_tokens, system=system,
                                     temperature=getattr(self, "temperature", 0.7), seed=self._turns)   # words, not programs: sample
             from emitter import clean_reply

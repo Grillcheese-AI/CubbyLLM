@@ -215,6 +215,46 @@ class SpanIndex:
         return out
 
 
+_CAP_STOP = {"i", "who", "what", "where", "when", "which", "how", "why", "whom", "whose", "is", "are", "was",
+             "were", "did", "does", "do", "the", "a", "an", "in", "on", "of", "at", "to", "for", "by", "and",
+             "or", "from", "with", "about", "into", "than", "that", "this", "these", "those", "it", "its",
+             "he", "she", "they", "we", "you", "his", "her", "their", "our", "your", "if", "but", "so", "as",
+             "not", "no", "yes", "please", "tell", "me", "give", "name", "list", "find", "say", "explain"}
+_CAP_RX = re.compile(r"[A-Z][\w'\-]*(?:\s+(?:of|de|du|des|the|la|le|van|von|da|di|del|der)\s+[A-Z][\w'\-]*|\s+[A-Z][\w'\-]*)*")
+
+
+class NameIndex(SpanIndex):
+    """A `SpanIndex` over the names a host knows, plus the question's own capitalised runs for the names it
+    does not (2026-10-17, serving the 450M emitter: an entity the store has not fetched yet -- "Justin
+    Trudeau" on the first question about him -- has no slot otherwise, and a program that names a missing
+    slot is refused before it can fetch anything). A capitalised run is a span when the index has none
+    over it; frame words (Who, The, In) are not names, a lone capital at the start of the question is not
+    either, and a lowercase name the index lacks stays unslotted -- that refusal is measured, not hidden."""
+
+    def spans(self, question: str) -> list:
+        out = list(super().spans(question))
+        taken = [(s, e) for _, s, e in out]
+        for m in _CAP_RX.finditer(question):
+            s, e = m.start(), m.end()
+            words = m.group(0).split()
+            # trim frame words off both ends (a run may start with "Who" or end with "Of")
+            while words and words[0].lower().strip("'") in _CAP_STOP:
+                s += len(words[0]) + 1; words = words[1:]
+            while words and words[-1].lower().strip("'") in _CAP_STOP:
+                e -= len(words[-1]) + 1; words = words[:-1]
+            if not words or e <= s:
+                continue
+            text = question[s:e].strip()
+            s = question.index(text, s); e = s + len(text)
+            if s == 0 and len(words) == 1:
+                continue                                     # a sentence-initial capital alone is the sentence's
+            if any(a < e and s < b for a, b in taken):
+                continue
+            out.append((text, s, e)); taken.append((s, e))
+        out.sort(key=lambda t: t[1])
+        return out
+
+
 def extract(question: str, index: SpanIndex | None = None, referents: dict | None = None,
             numbers: bool = True, words: bool = True, constants=None) -> SlotTable:
     """The slot table of a question: $E1.. its entity spans (from the index), $N1.. its numbers by position --

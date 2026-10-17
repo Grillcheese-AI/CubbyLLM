@@ -342,8 +342,13 @@ def main():
     except Exception:
         pass
     ap = argparse.ArgumentParser()
-    ap.add_argument("--gguf", required=True, help="the PROGRAM adapter (emitter)")
+    ap.add_argument("--gguf", default=None, help="the PROGRAM adapter (emitter) -- the stand-in; with --cubby450m, the A/B arm in shadow")
     ap.add_argument("--talk-gguf", default=None, help="the TALK adapter (chat, perception, thoughts); defaults to --gguf")
+    ap.add_argument("--cubby450m", default=None,
+                    help="GRL's own base takes the seats: the base EXPORT dir (config.json + model.safetensors + tokenizer.json), served on grilly2")
+    ap.add_argument("--emitter-adapter", default=None, help="with --cubby450m: the emitter LoRA dir (the programs seat, slotted)")
+    ap.add_argument("--talk-adapter", default=None, help="with --cubby450m: the talk LoRA dir (the talk seat); absent -> --talk-gguf, else programs only")
+    ap.add_argument("--tokenizer", default=None, help="with --cubby450m: the bbpe128k tokenizer.json (default: the export's)")
     ap.add_argument("--table", default=None)
     ap.add_argument("--n-store", type=int, default=2000)
     ap.add_argument("--n-gpu-layers", type=int, default=-1)
@@ -391,8 +396,11 @@ def main():
     args = ap.parse_args()
     if args.ask and not args.wiki:
         args.wiki = "auto"                               # the loop walks the wiki world
+    if not args.gguf and not args.cubby450m:
+        ap.error("give --gguf (the stand-in) or --cubby450m <export> --emitter-adapter <dir> [--talk-adapter <dir>]")
     brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers,
-                        talk_gguf=args.talk_gguf, wiki=args.wiki)
+                        talk_gguf=args.talk_gguf, wiki=args.wiki, cubby450m=args.cubby450m,
+                        emitter_adapter=args.emitter_adapter, talk_adapter=args.talk_adapter, tokenizer=args.tokenizer)
     if args.ask:
         from ask import AskLoop
         print(f"mounting the ask loop (source {args.ask}, lexicon on, news {'on' if args.news else 'off'}) ...", flush=True)
@@ -441,7 +449,9 @@ def main():
         from harness import RefuseToServe
         from harness_wiring import boot_serve
         try:
-            h = boot_serve(brain, args.harness or None, adapters={"programs": args.gguf, "talk": args.talk_gguf or args.gguf},
+            seats = ({"programs": args.emitter_adapter, "talk": args.talk_adapter or args.talk_gguf or args.emitter_adapter}
+                     if args.cubby450m else {"programs": args.gguf, "talk": args.talk_gguf or args.gguf})
+            h = boot_serve(brain, args.harness or None, adapters=seats,
                            on_event=lambda ev: brain.trace("harness", **{("event" if k == "kind" else k): v for k, v in ev.items()}))
         except RefuseToServe as e:
             print(f"REFUSED TO SERVE: {e} (the ledger row names the check)", flush=True)

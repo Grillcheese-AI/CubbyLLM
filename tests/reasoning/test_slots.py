@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import pytest
 
-from cubbyllm.reasoning.slots import SlotEmitter, SlotRefused, SpanIndex, extract, to_slots
+from cubbyllm.reasoning.slots import NameIndex, SlotEmitter, SlotRefused, SpanIndex, extract, to_slots
 
 NAMES = ["Siege of Vienna", "Vienna", "Treaty of Karlowitz", "Iridomyrmex bigi", "Ottoman Empire"]
 
@@ -126,3 +126,27 @@ def test_a_number_is_matched_by_value_not_by_spelling():
     assert t.check("assign s0 = $N1; mul s0, 60;").ok, "a unit constant no slot holds is the emitter's to write"
     _, slotted, _, st = to_slots("A croissant costs $3.50 on Saturdays.", "assign s0 = 3.5; mul s0, 52;")
     assert slotted == "assign s0 = $N1; mul s0, 52;" and st["numbers_slotted"] == 1
+
+
+def test_a_name_index_adds_the_questions_own_capitalised_runs_for_names_the_host_lacks():
+    """2026-10-17, serving the 450M: an entity the store has not fetched yet had no slot, and a program naming
+    a missing slot was refused before the loop could fetch anything. The question's capitalised runs fill in,
+    frame words trimmed; the store's own names still win, and a lowercase unknown name stays unslotted."""
+    idx = NameIndex(NAMES)
+    t = extract("Who is the mother of Justin Trudeau?", idx)
+    assert [(s.id, s.text) for s in t.spans] == [("$E1", "Justin Trudeau")]
+    assert t.annotate() == "Who is the mother of [E1: Justin Trudeau]?"
+    t = extract("What is the capital of the country of citizenship of Justin Trudeau?", idx)
+    assert [s.text for s in t.spans if s.kind == "E"] == ["Justin Trudeau"]
+    t = extract("Where was Marie Curie born?", idx)
+    assert [s.text for s in t.spans if s.kind == "E"] == ["Marie Curie"]
+    t = extract("When did the Siege of Vienna end, and who signed the Treaty of Karlowitz?", idx)
+    assert [s.text for s in t.spans if s.kind == "E"] == ["Siege of Vienna", "Treaty of Karlowitz"]   # the index's, as before
+    t = extract("Is Oak Park in the United States of America?", idx)
+    assert [s.text for s in t.spans if s.kind == "E"] == ["Oak Park", "United States of America"]
+    assert [s.text for s in extract("who is the prime minister of canada?", idx).spans if s.kind == "E"] == []
+    assert [s.text for s in extract("Explain photosynthesis.", idx).spans if s.kind == "E"] == []   # a lone initial capital
+    assert [s.text for s in extract("Who was Pierre?", idx).spans if s.kind == "E"] == ["Pierre"]
+    assert [s.text for s in extract("Name the Ottoman Empire's capital.", idx).spans if s.kind == "E"] == ["Ottoman Empire's"] or \
+           [s.text for s in extract("Name the Ottoman Empire's capital.", idx).spans if s.kind == "E"] == ["Ottoman Empire"]
+
