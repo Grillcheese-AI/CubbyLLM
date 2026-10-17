@@ -106,31 +106,33 @@ class CubbyModel:
         return self.context_source.infer(core_feat)                  # vector (B, S, ctx)
 
     def features(self, tokens: "Tensor", positions: "Tensor | None" = None,
-                 scene: "Tensor | None" = None) -> "Tensor":
+                 placed: "Tensor | None" = None) -> "Tensor":
         """The trunk representation h (B, S, d) — pre-head hidden states. Exposed
         so an auxiliary objective (e.g. the VSA binding loss) can shape h without
         re-running the forward.
 
         With a spatial link: ``positions`` (B, S, 3) binds each token's place into
-        its embedding (None: no places, the embedding untouched) and ``scene``
-        (B, d) is the scene vector the trunk may read (None: the read is zero).
-        The context is inferred from the unbound embedding, as ``step`` does."""
+        its embedding (None: no places, the embedding untouched); ``placed`` (B, S)
+        marks the tokens that are things at places -- their bound embeddings, summed
+        causally, are the scene the trunk may read mid-trunk (None: no scene, the read
+        is zero). The context is inferred from the unbound embedding, as ``step`` does."""
         ctx = self.infer_context(tokens)                     # frozen at inference
         x = self.embedding.embed(tokens, ctx)                # (B, S, d), hybrid
+        read = None
         if self.spatial is not None:
             x = self.spatial.bind(x, positions)              # e (*) S(p): the input level
-        h = self.backbone.forward(x)                         # (B, S, d)
-        if self.spatial is not None:
-            h = h + self.spatial.read(h, scene)              # the route from the trunk
+            read = self.spatial.hook(self.spatial.scene(x, placed))   # the route from the trunk
+        h = self.backbone.forward(x, read=read) if read is not None else self.backbone.forward(x)
         return self.memory.forward_generated(h, ctx)         # (B, S, d), hardened
 
     def logits_from(self, h: "Tensor") -> "Tensor":
         return self.head.logits(h, self.retrieval_k)         # (B, S, V), top-K
 
     def step(self, token: "Tensor", state: "dict | None" = None, position: "Tensor | None" = None,
-             scene: "Tensor | None" = None):
+             placed: "Tensor | None" = None):
         """Decode ONE token, carrying state. token: (B,) ids -> (logits, state).
-        ``position`` (B, 3) and ``scene`` (B, d) are the spatial link's, as in ``features``.
+        ``position`` (B, 3) and ``placed`` (B,) are the spatial link's, as in ``features``;
+        a placed token's bound embedding joins ``state["scene"]``, the stream's scene so far.
 
         The inference path. Cost per token is independent of how many tokens came
         before, and the carried state is n_layers x (B, d) plus two context
@@ -177,12 +179,18 @@ class CubbyModel:
         x = self.embedding.embed(token.unsqueeze(1), ctx)[:, 0]
         if self.spatial is not None:
             x = self.spatial.bind(x, position)
-        y, bb = self.backbone.step(x, state["bb"])
-        if self.spatial is not None:
-            y = y + self.spatial.read(y, scene)
+            scene = state["scene"]
+            if placed is not None:
+                scene.add_(x.float() * placed.unsqueeze(-1).float())
+            y, bb = self.backbone.step(x, state["bb"], read=self.spatial.hook(scene))
+        else:
+            y, bb = self.backbone.step(x, state["bb"])
         y = self.memory.forward_generated(y.unsqueeze(1), ctx)[:, 0]
         logits = self.head.logits(y.unsqueeze(1), self.retrieval_k)[:, 0]
-        return logits, {"bb": bb, "ctx_sum": s, "ctx_n": n}
+        out = {"bb": bb, "ctx_sum": s, "ctx_n": n}
+        if self.spatial is not None:
+            out["scene"] = state["scene"]
+        return logits, out
 
     def init_state(self, batch: int = 1, device=None) -> dict:
         """Every buffer a decode sequence needs, allocated once.
@@ -203,9 +211,12 @@ class CubbyModel:
 
         d = self.config.d_model
         bb = self.backbone.init_state(batch, device) if hasattr(self.backbone, "init_state") else None
-        return {"bb": bb,
-                "ctx_sum": torch.zeros(batch, d, device=device),
-                "ctx_n": torch.zeros((), device=device)}
+        st = {"bb": bb,
+              "ctx_sum": torch.zeros(batch, d, device=device),
+              "ctx_n": torch.zeros((), device=device)}
+        if self.spatial is not None:
+            st["scene"] = torch.zeros(batch, d, device=device)     # the stream's placed tokens, bound and summed
+        return st
 
     def graphed_step(self):
         """The step, recorded once and replayed, kept for this model.
@@ -238,13 +249,15 @@ class CubbyModel:
         return generate(self, prompt_ids, DecodeConfig(**cfg), state=state,
                         on_token=on_token, step=self.graphed_step())
 
-    def forward(self, tokens: "Tensor") -> "Tensor":
+    def forward(self, tokens: "Tensor", positions: "Tensor | None" = None,
+                placed: "Tensor | None" = None) -> "Tensor":
         """Context-threaded forward pass -> next-token logits (B, S, V).
 
         ``ctx`` is a required argument to every generated call below — a
         context-ignoring path cannot be written here without a type error.
+        ``positions`` / ``placed`` are the spatial link's (``features``).
         """
-        return self.logits_from(self.features(tokens))
+        return self.logits_from(self.features(tokens, positions, placed))
 
 
 __wiring__ = Wiring.WIRED

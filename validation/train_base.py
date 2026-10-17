@@ -171,12 +171,39 @@ PEAK_TFLOPS = {"A100": 312, "H100": 989, "H200": 989, "B200": 2250, "L4": 121,
 # ─────────────────────────────────────────────────────────────────────────────
 # data
 # ─────────────────────────────────────────────────────────────────────────────
+class Tokens:
+    """A micro-batch's input when a shard carries places: the ids (B, S) and each token's
+    place (B, S, 3) int64, ``NO_PLACE`` where it has none (``make_spatial_shard.py``'s
+    ``.pos.i16``). Moves like a tensor; ``make_fns`` unpacks it for ``model.forward``."""
+
+    __slots__ = ("ids", "pos")
+
+    def __init__(self, ids, pos):
+        self.ids, self.pos = ids, pos
+
+    def to(self, *a, **k):
+        return Tokens(self.ids.to(*a, **k), self.pos.to(*a, **k))
+
+    def pin_memory(self):
+        return Tokens(self.ids.pin_memory(), self.pos.pin_memory())
+
+    @property
+    def shape(self):
+        return self.ids.shape
+
+
 class Corpus:
-    """Memmapped ``<source>.u32`` shards; the tail of each is validation."""
+    """Memmapped ``<source>.u32`` shards; the tail of each is validation. A shard with a
+    ``<source>.pos.i16`` beside it carries a place per token (the spatial shard); windows
+    into a shard named in ``_align.json`` start on a multiple of its alignment, so a
+    document built to that length is never cut."""
 
     def __init__(self, cache_dir: str, seq: int, val_tokens: int, seed: int):
         self.seq, self.seed = int(seq), int(seed)
         self.arrays, self.train_len, self.val_start = {}, {}, {}
+        self.places, self.align = {}, {}
+        ap = os.path.join(cache_dir, "_align.json")
+        aligns = json.load(open(ap, encoding="utf-8")) if os.path.exists(ap) else {}
         # a subset built by make_base_cache.py keeps each shard's ORIGINAL
         # held-out tail and records its length here
         hp = os.path.join(cache_dir, "_holdout.json")
@@ -194,6 +221,12 @@ class Corpus:
             self.arrays[name] = arr
             self.train_len[name] = n - hold
             self.val_start[name] = n - hold
+            side = os.path.join(cache_dir, f"{name}.pos.i16")
+            if os.path.exists(side):
+                self.places[name] = np.memmap(side, dtype=np.int16, mode="r").reshape(-1, 3)
+                assert len(self.places[name]) == n, f"{name}: {n:,} tokens but {len(self.places[name]):,} places"
+            if name in aligns:
+                self.align[name] = int(aligns[name])
         if not self.arrays:
             raise SystemExit(f"no usable .u32 shards in {cache_dir}")
         self.names = list(self.arrays)
@@ -220,25 +253,47 @@ class Corpus:
         v = np.array([max(float(w[n]), 0.0) for n in self.names], dtype=np.float64)
         return v / v.sum()
 
+    def _window(self, name: str, i: int):
+        """The window at ``i`` (aligned for an aligned shard): ids and, when the shard has
+        them, places."""
+        a = self.align.get(name)
+        if a:
+            i = (i // a) * a
+        ids = np.asarray(self.arrays[name][i:i + self.seq + 1], dtype=np.int64)
+        pos = self.places.get(name)
+        return ids, (None if pos is None else np.asarray(pos[i:i + self.seq + 1], dtype=np.int64))
+
+    def _pack(self, ids: np.ndarray, pos: list):
+        """``(x, y)`` from windows; ``x`` is a ``Tokens`` when any window carries places."""
+        t = torch.from_numpy(ids)
+        if not self.places:
+            return t[:, :-1], t[:, 1:]
+        from cubbyllm.model.spatial import NO_PLACE
+        p = np.full((ids.shape[0], ids.shape[1], 3), NO_PLACE, dtype=np.int64)
+        for j, w in enumerate(pos):
+            if w is not None:
+                p[j] = w
+        return Tokens(t[:, :-1], torch.from_numpy(p)[:, :-1]), t[:, 1:]
+
     def batch(self, step: int, micro: int, b: int, phase: str):
         rng = np.random.default_rng([self.seed, int(step), int(micro)])
         picks = rng.choice(len(self.names), size=b, p=self.probs[phase])
-        out = np.empty((b, self.seq + 1), dtype=np.int64)
+        ids = np.empty((b, self.seq + 1), dtype=np.int64)
+        pos = []
         for j, k in enumerate(picks):
             name = self.names[k]
             i = int(rng.integers(0, self.train_len[name] - self.seq - 1))
-            out[j] = self.arrays[name][i:i + self.seq + 1]
-        t = torch.from_numpy(out)
-        return t[:, :-1], t[:, 1:]
+            ids[j], w = self._window(name, i)
+            pos.append(w)
+        return self._pack(ids, pos)
 
     def val_batch(self, name: str, n: int):
         """``n`` fixed, evenly spaced windows from ``name``'s held-out tail."""
         arr, s0 = self.arrays[name], self.val_start[name]
         span = len(arr) - s0 - self.seq - 1
         starts = [s0 + (span * i) // max(n - 1, 1) for i in range(n)] if span > 0 else [s0] * n
-        out = np.stack([np.asarray(arr[s:s + self.seq + 1], dtype=np.int64) for s in starts])
-        t = torch.from_numpy(out)
-        return t[:, :-1], t[:, 1:]
+        wins = [self._window(name, s) for s in starts]
+        return self._pack(np.stack([w[0] for w in wins]), [w[1] for w in wins])
 
     def report(self, stable_tokens: float, decay_tokens: float) -> str:
         rows = ["  source            tokens(train)  stable%  decay%  epochs this run"]
@@ -308,7 +363,7 @@ def arch_meta(vocab_real: int, vocab: int) -> dict:
     if MEM_EVERY:                     # absent at 0, for the same reason
         meta["mem_topk"], meta["mem_key"] = MEM_TOPK, MEM_KEY
     if SPATIAL:                       # absent at 0, for the same reason
-        meta["spatial"] = {"scale": SPATIAL_SCALE, "seed": 0}
+        meta["spatial"] = {"scale": SPATIAL_SCALE, "seed": 0, "at": L // 2}
     return meta
 
 
@@ -344,7 +399,8 @@ def spatial_link(meta: dict):
     if not sp:
         return None
     from cubbyllm.model.spatial import SpatialLink
-    return SpatialLink(meta["D"], scale=float(sp.get("scale", 2.0)), seed=int(sp.get("seed", 0)))
+    return SpatialLink(meta["D"], scale=float(sp.get("scale", 2.0)), seed=int(sp.get("seed", 0)),
+                       at=int(sp.get("at", meta["L"] // 2)))
 
 
 def flops_per_token(model: CubbyModel, meta: dict, seq: int) -> float:
@@ -382,17 +438,28 @@ def make_opt(model: CubbyModel, lr: float, dev):
     return torch.optim.AdamW(groups, **kw)
 
 
+def forward_batch(model: CubbyModel, x):
+    """``model.forward`` over a plain id tensor, or over a ``Tokens`` (ids + places): the
+    places bind into the input and the placed tokens make the scene (``model/spatial.py``)."""
+    if not isinstance(x, Tokens):
+        return model.forward(x)
+    from cubbyllm.model.spatial import NO_PLACE
+    placed = x.pos[..., 0] != NO_PLACE
+    positions = torch.where(placed.unsqueeze(-1), x.pos, torch.zeros_like(x.pos)).float()
+    return model.forward(x.ids, positions=positions, placed=placed)
+
+
 def make_fns(model: CubbyModel, vocab: int, dev):
     amp = dev.type == "cuda"
 
     def loss_fn(x, y):
         with torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):
-            logits = model.forward(x)
+            logits = forward_batch(model, x)
         return F.cross_entropy(logits.float().reshape(-1, vocab), y.reshape(-1))
 
     def tok_loss_fn(x, y):
         with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):
-            logits = model.forward(x)
+            logits = forward_batch(model, x)
             return F.cross_entropy(logits.float().reshape(-1, vocab), y.reshape(-1),
                                    reduction="none").reshape(y.shape)
 

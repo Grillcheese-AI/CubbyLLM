@@ -313,22 +313,28 @@ class HybridBackbone(nn.Module):
     def n_attn_layers(self) -> int:
         return sum(self.is_attn)
 
-    def _layer(self, idx: int, x):
+    def _layer(self, idx: int, x, read=None):
         """One layer: mixer residual, then (memory read if this is a memory
         layer), then the FFN residual. An instance method (not the old
         staticmethod) because the memory branch needs ``self.is_mem``/``self.mem``
         — passed whole to ``torch.utils.checkpoint.checkpoint`` in ``forward`` so
-        the memory branch's params also get gradients under grad_checkpoint."""
+        the memory branch's params also get gradients under grad_checkpoint.
+
+        ``read`` is ``(layer, fn)``: at that layer, ``x += fn(x)`` between the mixer
+        and the FFN -- the spatial link's gated read of the scene (``model/spatial.py``),
+        placed mid-trunk so the layers after it can decode what it brings back."""
         n1, m, n2, f = self.n1[idx], self.mix[idx], self.n2[idx], self.ffn[idx]
         x = x + m(n1(x))
         if self.is_mem[idx]:
             x = x + self.mem[idx](self.mem_n[idx](x), self.window)
+        if read is not None and read[0] == idx:
+            x = x + read[1](x)
         x = x + f(n2(x))
         return x
 
-    def step(self, x_t, states=None):
+    def step(self, x_t, states=None, read=None):
         """Decode one token. x_t: (B, d_model). states: per-layer state, or None.
-        Returns (y_t, new_states).
+        Returns (y_t, new_states). ``read`` as in ``_layer``.
 
         With ``mem_every=0`` (the default) this is byte-for-byte the original
         behaviour: ``states`` is a plain per-layer list. With ``mem_every>0``,
@@ -384,6 +390,8 @@ class HybridBackbone(nn.Module):
             for i in range(n):
                 h, s = self.mix[i].step(self.n1[i](x_t), states[i])
                 x_t = x_t + h
+                if read is not None and read[0] == i:
+                    x_t = x_t + read[1](x_t)
                 x_t = x_t + self.ffn[i](self.n2[i](x_t))
                 new_states.append(s)
             return x_t, new_states
@@ -398,6 +406,8 @@ class HybridBackbone(nn.Module):
             x_t = x_t + h
             if self.is_mem[i]:
                 x_t = self._memory_step(i, x_t, mems[i])
+            if read is not None and read[0] == i:
+                x_t = x_t + read[1](x_t)
             x_t = x_t + self.ffn[i](self.n2[i](x_t))
             new_mix.append(s)
         return x_t, {"mix": new_mix, "mem": mems}
@@ -478,14 +488,14 @@ class HybridBackbone(nn.Module):
         pos.add_(1.0)
         return x_t
 
-    def forward(self, x: "torch.Tensor") -> "torch.Tensor":
+    def forward(self, x: "torch.Tensor", read=None) -> "torch.Tensor":
         ckpt = self.grad_checkpoint and torch.is_grad_enabled()
         for idx in range(len(self.mix)):
             if ckpt:
                 x = torch.utils.checkpoint.checkpoint(
-                    self._layer, idx, x, use_reentrant=False)
+                    self._layer, idx, x, read, use_reentrant=False)
             else:
-                x = self._layer(idx, x)
+                x = self._layer(idx, x, read)
         return x
 
 

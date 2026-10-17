@@ -1,11 +1,12 @@
-"""SpatialLink -- the trunk's route to space: places bound into its input, and a gated read
-of a scene's Hilbert-space vector from its state, so the trunk itself decides when to use it.
+"""SpatialLink -- the trunk's route to space: places bound into its input, the scene as the
+running sum of what it has been shown, and a gated read of that scene from inside the trunk,
+so the trunk itself decides when to use it.
 
 Wired: STANDALONE until a base run trains with ``CB_SPATIAL=1`` (2026-10-17, Nick: "spatial
 understanding provably at the input level"; "it also needs to have a link route from the trunk
 so it knows when to use it").
 
-Two halves, one phase table (``cubbyllm.spatial.ssp._phases``, so the host's ``Scene`` and the
+Three parts, one phase table (``cubbyllm.spatial.ssp._phases``, so the host's ``Scene`` and the
 trunk agree on what ``S(p)`` is):
 
 **bind** (the input level). A token that has a place ``p`` enters the trunk as
@@ -17,14 +18,21 @@ every text golden is bit-identical with the link on); moving a token is binding
 embedding by unbinding with ``e``. RoPE is this same encoding in one dimension applied inside
 attention; this is its 3-D sibling at the input, applied to every mixer the trunk has.
 
-**read** (the route from the trunk). After the trunk, from its state ``h``: a gate
-``g = sigmoid(w . rms(h) + b)`` says *whether* to consult the scene, a query ``q = W rms(h)``
-made unitary (its spectrum reduced to its phases, so it *is* a place, ``S(p)`` for the ``p``
-the trunk means) says *what to ask*, and the answer ``V (*) q^-1`` -- the scene vector
-unbound by that place, the code of what is there -- comes back through ``o``. ``o`` starts at
+**scene**. ``V_t = sum_{i <= t, placed_i} e_i (*) S(p_i)`` -- the running sum of the placed
+tokens' bound embeddings, so the scene the trunk may read at position ``t`` is exactly what
+it has been shown so far (causal, like the context's running mean; one accumulator per stream
+at decode). No codes but the model's own embeddings: ``V (*) S(p)^-1`` is the embedding of
+the token at ``p`` plus the others' crosstalk, so what the read brings back is already in the
+trunk's vocabulary.
+
+**read** (the route from the trunk). Mid-trunk (layer ``at``, L/2 by default, so the layers
+after it can decode what comes back), from the stream ``h``: a gate ``g = sigmoid(w . rms(h)
++ b)`` says *whether* to consult the scene, a query ``q = W rms(h)`` made unitary (its
+spectrum reduced to its phases, so it *is* a place, ``S(p)`` for the ``p`` the trunk means)
+says *what to ask*, and the answer ``V (*) q^-1`` comes back through ``o``. ``o`` starts at
 zero and the gate's bias at -4, so a model with the link added computes what it computed
-before (growth's rule: exact at step 0); with no scene the read is exactly zero. What the
-gate and the query learn is the route; the lookup they route to is algebra.
+before (growth's rule: exact at step 0); with nothing placed the scene is zero and so is the
+read. What the gate and the query learn is the route; the lookup they route to is algebra.
 
 What it brings CubbyLLM: a trunk that can be told where every block is without a word of
 text, and ask the scene "what is here" at a place it chose, with the answer's correctness
@@ -35,19 +43,21 @@ from __future__ import annotations
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from ..core.protocols import Wiring
 from ..spatial.ssp import SSP, _phases
 
-__all__ = ["SpatialLink"]
+__all__ = ["SpatialLink", "NO_PLACE"]
+
+#: the coordinate a token without a place carries in a shard's ``.pos.i16`` side file
+NO_PLACE = -32768
 
 
 class SpatialLink(nn.Module):
     def __init__(self, d_model: int, scale: float = 2.0, seed: int = 0, dims: int = 3,
-                 gate_bias: float = -4.0) -> None:
+                 at: int = 0, gate_bias: float = -4.0) -> None:
         super().__init__()
-        self.d, self.dims, self.scale, self.seed = int(d_model), int(dims), float(scale), int(seed)
+        self.d, self.dims, self.scale, self.seed, self.at = int(d_model), int(dims), float(scale), int(seed), int(at)
         self.register_buffer("phases", torch.tensor(_phases(self.d, self.dims, self.seed), dtype=torch.float32))
         self.norm_w = nn.Parameter(torch.ones(self.d))
         self.q = nn.Linear(self.d, self.d, bias=False)
@@ -86,6 +96,15 @@ class SpatialLink(nn.Module):
         spec = torch.fft.rfft(a.float(), dim=-1) * torch.conj(torch.fft.rfft(b.float(), dim=-1))
         return torch.fft.irfft(spec, n=self.d, dim=-1).to(a.dtype)
 
+    # -- scene: what the trunk has been shown ---------------------------------------------
+    @staticmethod
+    def scene(x: torch.Tensor, placed: torch.Tensor | None) -> torch.Tensor | None:
+        """The running sum of the placed tokens' bound embeddings ``x`` (B, S, d):
+        ``V_t`` (B, S, d), causal; None when nothing is placed."""
+        if placed is None:
+            return None
+        return (x.float() * placed.unsqueeze(-1).float()).cumsum(1)
+
     # -- read: the route from the trunk ---------------------------------------------------
     @staticmethod
     def unitary(q: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
@@ -100,18 +119,21 @@ class SpatialLink(nn.Module):
         return self.unbind(scene, self.unitary(q))
 
     def read(self, h: torch.Tensor, scene: torch.Tensor | None) -> torch.Tensor:
-        """The gated read of ``scene`` (B, d), one vector per batch row, from the trunk state
-        ``h`` (B, S, d) or (B, d) -> the same shape as ``h``; zero when ``scene`` is None."""
+        """The gated read of ``scene`` -- (B, S, d) running, or (B, d) at a decode step --
+        from the trunk stream ``h`` of the same leading shape; zero when there is no scene."""
         if scene is None:
             return torch.zeros_like(h)
         n = h * torch.rsqrt(h.pow(2).mean(-1, keepdim=True) + 1e-6) * self.norm_w
         g = torch.sigmoid(self.gate(n))                                  # (..., 1): whether
         q = self.q(n)                                                    # (..., d): what place
-        v = scene.reshape(scene.shape[0], *([1] * (h.dim() - 2)), self.d).expand_as(h)
-        return g * self.o(self.lookup(v, q).to(h.dtype))
+        return g * self.o(self.lookup(scene.float(), q).to(h.dtype))
+
+    def hook(self, scene: torch.Tensor | None):
+        """``(layer, fn)`` for the backbone: the read at layer ``at`` over this scene."""
+        return (self.at, lambda h: self.read(h, scene))
 
     def extra_repr(self) -> str:
-        return f"d={self.d}, dims={self.dims}, scale={self.scale}, seed={self.seed}"
+        return f"d={self.d}, dims={self.dims}, scale={self.scale}, seed={self.seed}, at={self.at}"
 
 
 __wiring__ = Wiring.STANDALONE
