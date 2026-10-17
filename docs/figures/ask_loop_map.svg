@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- CubbyLLM: one question through the serve brain (serve_api, the ask loop), 2026-10-17. Hand-drawn; the source of truth for the boxes is the code they name. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1850 820" width="1850" height="820" role="img" aria-label="The journey of one question through CubbyLLM's ask loop: input, the trunk proposes a program, the host disposes, the fact store, the walk and the VM, the output; the sources and the gate update the store; the host's own readers bypass the trunk.">
+<style>
+    svg { color: #1c2130; font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+      --bg: #fafbfd; --muted: #5d6578; --line: #4a5063;
+      --f-in: #dff4ff; --t-in: #1d8fc0; --f-trunk: #ffe6bf; --t-trunk: #b86f07; --f-host: #fff0c2; --t-host: #9c7a0c;
+      --f-state: #e1e6ff; --t-state: #4756c9; --f-vm: #d6f5ef; --t-vm: #178f7e; --f-src: #dde9ff; --t-src: #3b6fd0;
+      --f-gate: #ece0ff; --t-gate: #8a55d0; --f-d: #e3f6dc; --t-d: #3f8f2e; --f-out: #eef0f6; --t-out: #4b5166;
+      --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif; --mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace; }
+    .box { stroke: var(--line); stroke-width: 1.25; }
+    .in { fill: var(--f-in); } .trunk { fill: var(--f-trunk); } .host { fill: var(--f-host); } .state { fill: var(--f-state); }
+    .vm { fill: var(--f-vm); } .src { fill: var(--f-src); } .gate { fill: var(--f-gate); } .dbox { fill: var(--f-d); } .out { fill: var(--f-out); }
+    .tag { font-family: var(--sans); font-weight: 600; font-size: 28px; }
+    .tag.in { fill: var(--t-in); } .tag.trunk { fill: var(--t-trunk); } .tag.host { fill: var(--t-host); } .tag.state { fill: var(--t-state); }
+    .tag.vm { fill: var(--t-vm); } .tag.src { fill: var(--t-src); } .tag.gate { fill: var(--t-gate); } .tag.dbox { fill: var(--t-d); } .tag.out { fill: var(--t-out); }
+    .ttl { font-family: var(--sans); font-weight: 600; font-size: 17px; fill: currentColor; }
+    .file { font-family: var(--mono); font-size: 12.5px; fill: var(--muted); }
+    .body { font-family: var(--sans); font-size: 14px; fill: currentColor; }
+    .body.dim { fill: var(--muted); font-style: italic; }
+    .lbl { font-family: var(--sans); font-size: 13px; fill: var(--muted); }
+    .io { font-family: var(--sans); font-size: 15px; font-weight: 600; fill: currentColor; }
+    .wire { fill: none; stroke: var(--line); stroke-width: 2; }
+    .wire.dash { stroke-dasharray: 7 6; stroke-width: 1.6; }
+    .sum { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; }
+    .sumt { font-family: var(--sans); font-size: 20px; fill: currentColor; }
+    .dot { fill: var(--line); }
+    .bubble { fill: none; stroke: currentColor; stroke-width: 1.8; }
+    .glyph { font-family: var(--sans); font-size: 20px; font-weight: 600; fill: currentColor; }
+  </style>
+  <rect width="1850" height="820" fill="#fafbfd"/>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--line)"/>
+    </marker>
+  </defs>
+
+  <!-- ===== input ===== -->
+  <path class="bubble" d="M52,286 h58 a9,9 0 0 1 9,9 v26 a9,9 0 0 1 -9,9 h-28 l-12,11 v-11 h-18 a9,9 0 0 1 -9,-9 v-26 a9,9 0 0 1 9,-9 z"/>
+  <text class="glyph" x="81" y="315" text-anchor="middle">?</text>
+  <rect class="box in" x="24" y="360" width="150" height="100" rx="8"/>
+  <text class="io" x="99" y="389" text-anchor="middle">Input x(t)</text>
+  <text class="body" x="99" y="411" text-anchor="middle">a question</text>
+  <text class="file" x="99" y="430" text-anchor="middle">POST /ask</text>
+  <text class="file" x="99" y="447" text-anchor="middle">the panel · /brain</text>
+
+  <!-- main rail: input -> split -> B -->
+  <path class="wire" d="M174,410 H206"/>
+  <circle class="dot" cx="206" cy="410" r="4"/>
+  <path class="wire" d="M206,410 H240" marker-end="url(#arr)"/>
+
+  <!-- ===== D: the host's own readers (bypasses the trunk) ===== -->
+  <path class="wire" d="M206,410 V111 H700" marker-end="url(#arr)"/>
+  <text class="lbl" x="455" y="98" text-anchor="middle">no trunk, no walk: the host reads the shape off the question</text>
+  <rect class="box dbox" x="700" y="56" width="330" height="110" rx="8"/>
+  <text class="tag dbox" x="716" y="92">D</text>
+  <text class="ttl" x="744" y="86">the host's own readers</text>
+  <text class="file" x="716" y="108">ask.py: profile_ask · relation_ask</text>
+  <text class="body" x="716" y="128">who / what / where is X · when</text>
+  <text class="body" x="716" y="146">how is B related to A · about you</text>
+  <path class="wire" d="M1030,111 H1620 V392" marker-end="url(#arr)"/>
+  <text class="lbl" x="1325" y="98" text-anchor="middle">SEED + ASK, no hop → the VM recovers each fact → the talk adapter paraphrases,</text>
+  <text class="lbl" x="1325" y="132" text-anchor="middle">kept only when every name and number in it is in the facts</text>
+
+  <!-- ===== B: the trunk proposes ===== -->
+  <rect class="box trunk" x="240" y="346" width="270" height="128" rx="8"/>
+  <text class="tag trunk" x="256" y="382">B</text>
+  <text class="ttl" x="284" y="376">the trunk proposes</text>
+  <text class="file" x="256" y="398">standin/emitter.py</text>
+  <text class="body" x="256" y="420">base450m + LoRA emitter, grilly2</text>
+  <text class="body" x="256" y="439">stand-in: LFM2.5-2.6B GGUF</text>
+  <text class="body" x="256" y="458">writes a CubeLang CotPlan</text>
+  <path class="wire" d="M510,410 H560" marker-end="url(#arr)"/>
+  <text class="lbl" x="535" y="330" text-anchor="middle">a program</text>
+
+  <!-- ===== H: the host disposes ===== -->
+  <rect class="box host" x="560" y="346" width="290" height="128" rx="8"/>
+  <text class="tag host" x="576" y="382">H</text>
+  <text class="ttl" x="604" y="376">the host disposes</text>
+  <text class="file" x="576" y="398">learn.py · plan_verify.py</text>
+  <text class="body" x="576" y="420">covers()? relations held?</text>
+  <text class="body" x="576" y="439">levers: 7 seed · 4 table · 6 wording</text>
+  <text class="body" x="576" y="458">a plan, or a refusal with a reason</text>
+  <path class="wire" d="M850,410 H882" marker-end="url(#arr)"/>
+
+  <!-- sum 1: the plan meets the store -->
+  <circle class="sum" cx="900" cy="410" r="18"/>
+  <text class="sumt" x="900" y="417" text-anchor="middle">+</text>
+  <text class="lbl" x="900" y="326" text-anchor="middle">the plan meets the store</text>
+  <path class="wire" d="M918,410 H950" marker-end="url(#arr)"/>
+
+  <!-- ===== the state: the fact store ===== -->
+  <rect class="box state" x="950" y="336" width="300" height="148" rx="8"/>
+  <text class="ttl" x="966" y="364">the fact store — the state</text>
+  <text class="file" x="966" y="384">FactStore + TripleIndex · index.py</text>
+  <text class="body" x="966" y="406">wikikg world: 552,297 facts</text>
+  <text class="body" x="966" y="425">+ every fact the gate admits</text>
+  <text class="body" x="966" y="444">provenance · the source's dates</text>
+  <text class="body dim" x="966" y="468">updates while serving</text>
+  <path class="wire" d="M1250,410 H1300" marker-end="url(#arr)"/>
+  <text class="lbl" x="1275" y="326" text-anchor="middle">facts, per hop</text>
+
+  <!-- ===== C: the walk + the VM ===== -->
+  <rect class="box vm" x="1300" y="346" width="270" height="128" rx="8"/>
+  <text class="tag vm" x="1316" y="382">C</text>
+  <text class="ttl" x="1344" y="376">the walk + the VM</text>
+  <text class="file" x="1316" y="398">pipeline.py · cubelang (Rust)</text>
+  <text class="body" x="1316" y="420">lookup per hop · branches ≤ 12</text>
+  <text class="body" x="1316" y="439">τ_vm by hops: 1.0 · 0.47 · 0.22</text>
+  <text class="body" x="1316" y="458">(symbol, similarity) crosses</text>
+  <path class="wire" d="M1570,410 H1602" marker-end="url(#arr)"/>
+
+  <!-- sum 2: verified, plus the readers' path -->
+  <circle class="sum" cx="1620" cy="410" r="18"/>
+  <text class="sumt" x="1620" y="417" text-anchor="middle">+</text>
+  <path class="wire" d="M1638,410 H1660" marker-end="url(#arr)"/>
+
+  <!-- ===== output ===== -->
+  <rect class="box out" x="1660" y="346" width="170" height="128" rx="8"/>
+  <text class="io" x="1745" y="376" text-anchor="middle">Output y(t)</text>
+  <text class="body" x="1745" y="400" text-anchor="middle">a verified answer</text>
+  <text class="body" x="1745" y="419" text-anchor="middle">+ trace, provenance</text>
+  <text class="body" x="1745" y="441" text-anchor="middle">or a refusal</text>
+  <text class="body" x="1745" y="460" text-anchor="middle">with its reason</text>
+  <path class="bubble" d="M1716,286 h58 a9,9 0 0 1 9,9 v26 a9,9 0 0 1 -9,9 h-18 l-12,11 v-11 h-28 a9,9 0 0 1 -9,-9 v-26 a9,9 0 0 1 9,-9 z"/>
+  <text class="glyph" x="1745" y="315" text-anchor="middle">✓ / ✗</text>
+
+  <!-- ===== A: the sources, through the gate, back into the store ===== -->
+  <path class="wire" d="M1435,474 V640 H1390" marker-end="url(#arr)"/>
+  <text class="lbl" x="1423" y="540" text-anchor="end">a refusal the loop can learn from:</text>
+  <text class="lbl" x="1423" y="558" text-anchor="end">the stalled entity + the relation it needs</text>
+  <rect class="box src" x="1090" y="585" width="300" height="110" rx="8"/>
+  <text class="tag src" x="1106" y="621">A</text>
+  <text class="ttl" x="1134" y="615">the sources</text>
+  <text class="file" x="1106" y="637">sources.py · web_source.py</text>
+  <text class="body" x="1106" y="658">Wikidata through the property table</text>
+  <text class="body" x="1106" y="677">web: two sites or held · LFM: latent</text>
+  <path class="wire" d="M1090,640 H1045" marker-end="url(#arr)"/>
+  <text class="lbl" x="1067" y="572" text-anchor="middle">Triples</text>
+  <rect class="box gate" x="755" y="585" width="290" height="110" rx="8"/>
+  <text class="ttl" x="771" y="615">the gate</text>
+  <text class="file" x="771" y="637">learn.py: gate()</text>
+  <text class="body" x="771" y="658">out: a duplicate, a clash, a non-fact</text>
+  <text class="body" x="771" y="677">in: with provenance and its date</text>
+  <path class="wire" d="M900,585 V428" marker-end="url(#arr)"/>
+  <text class="lbl" x="888" y="508" text-anchor="end">store.add, then walk again:</text>
+  <text class="lbl" x="888" y="526" text-anchor="end">the proposed wording, translated</text>
+  <text class="lbl" x="888" y="544" text-anchor="end">to what the store holds now</text>
+
+  <!-- ===== the record (dashed): events out, and the night's return ===== -->
+  <path class="wire dash" d="M1620,428 V735" marker-end="url(#arr)"/>
+  <rect class="box out" x="1290" y="735" width="540" height="65" rx="8" stroke-dasharray="7 6"/>
+  <text class="body" x="1306" y="760">every step is an event — events.py</text>
+  <text class="file" x="1306" y="782">→ /panel · /brain (the 3-D brain, the Unity overlay) · history.jsonl</text>
+  <path class="wire dash" d="M900,735 V695" marker-end="url(#arr)"/>
+  <rect class="box out" x="560" y="735" width="600" height="65" rx="8" stroke-dasharray="7 6"/>
+  <text class="body" x="576" y="760">after the day — sleep.py folds the records: learned facts, skills (skills.py)</text>
+  <text class="file" x="576" y="782">the asker's feedback on a record: right / wrong / the relation it is</text>
+</svg>

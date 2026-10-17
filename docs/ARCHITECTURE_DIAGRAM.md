@@ -1,4 +1,25 @@
-# CubbyLLM — full system diagram
+# CubbyLLM — architecture diagrams
+
+## One question through the serve brain (as of 2026-10-17)
+
+![One question through the ask loop: the trunk proposes (B), the fact store is the state, the sources update it through the gate (A), the walk and the VM read it out (C), the host's own readers bypass the trunk (D)](figures/ask_loop_map.svg)
+
+`docs/figures/ask_loop_map.svg` — the live path of `serve_api --ask`, drawn in the shape of a
+state-space block diagram. **B**, the trunk, proposes a CubeLang program (`standin/emitter.py`: base450m
+with the emitter LoRA on grilly2, or the GGUF stand-in). **H**, the host, disposes (`learn.py`,
+`plan_verify.py`: coverage, held relations, levers 7 / 4 / 6). The **state** is the fact store
+(`FactStore` + `TripleIndex`, the wikikg world plus every fact the gate admits, with provenance and
+dates), and it updates while serving. **C**, the walk and the VM (`pipeline.py`, the resident `cubelang`
+process), reads the store out and certifies every hop at τ_vm or refuses with a reason. **A**, the
+sources (`sources.py`, `web_source.py`, `lfm_source.py`), are asked about the entity the walk stalled on,
+and what they return enters the store only through the gate (`learn.gate()`), after which the plan goes
+back to its proposed wording and is translated to what the store holds now. **D**, the host's own readers
+(`ask.py`: profile and relation asks), go straight from the question's shape to the retrieval program.
+The dashed row is the record: every step an event for `/panel` and `/brain`, and the sleep cycle bringing
+learned facts and skills back through the gate the next day. Not on it: the chat turn (`/turn`), the
+arithmetic step loop, the word table and the worlds router, and the game.
+
+## The full system (as of 2026-08-08)
 
 **As of 2026-08-08** (post serve-stack cycle). Solid arrows = the live default
 path; dotted = gated/optional or future; thick = the verified CoT traversal.
