@@ -13,6 +13,13 @@ layer) cannot be swapped silently.
 
 Needs torch and ``safetensors`` (grilly2's environment has both). Writes
 float32, as trained weights are held.
+
+A base with episodic memory (``mem_every > 0``: the grown runs, H-E20)
+exports each memory layer as ``memory_norm.weight`` and
+``memory.{q,k,v,o}.weight`` and the ``mem_every`` / ``mem_topk`` /
+``mem_key`` / ``mem_capacity`` config fields; grilly2's ``CubbyMemory``
+(``grilly/infer/models/cubby.py``) carries the read and the per-stream
+store, so such a base serves through the same path as the 450M.
 """
 from __future__ import annotations
 
@@ -46,6 +53,10 @@ def named_tensors(model) -> dict:
             for mine, theirs in (("gate", mix.proj_g), ("value", mix.proj_v), ("decay", mix.proj_d)):
                 out[pre + f"mixer.{mine}.weight"] = theirs.weight
                 out[pre + f"mixer.{mine}.bias"] = theirs.bias
+        if getattr(bb, "is_mem", None) and bb.is_mem[i]:               # episodic memory (grown bases)
+            out[pre + "memory_norm.weight"] = bb.mem_n[i].w
+            for p in "qkvo":
+                out[pre + f"memory.{p}.weight"] = getattr(bb.mem[i], p).weight
         out[pre + "ffn_norm.weight"] = bb.n2[i].w
         out[pre + "ffn.gate_proj.weight"] = bb.ffn[i].g.weight
         out[pre + "ffn.up_proj.weight"] = bb.ffn[i].u.weight
@@ -72,6 +83,10 @@ def grilly_config(meta: dict, model) -> dict:
     rms_eps = 1e-6                       # _RMSNorm's constant (backbone/mingru.py)
     if not model.head.learnable or model.head.temperature != 1.0:
         raise SystemExit("only the learnable, temperature-1 head is a plain linear projection")
+    bb = model.backbone
+    mem = {"mem_every": int(getattr(bb, "mem_every", 0) or 0)}
+    if mem["mem_every"]:
+        mem.update(mem_topk=bb.mem_topk, mem_key=bb.mem_key, mem_capacity=bb.mem_capacity)
     return {
         "model_type": "cubby",
         "vocab_size": meta["vocab"], "vocab_real": meta["vocab_real"],
@@ -83,6 +98,7 @@ def grilly_config(meta: dict, model) -> dict:
         "gen_rank": meta["gen_rank"], "gen_layers": gen.n_layers,
         "ffn_mult": model.backbone.ffn[0].g.out_features // meta["D"],
         "rope_theta": 10000.0, "rms_norm_eps": rms_eps, "layer_norm_eps": ln.eps,
+        **mem,
     }
 
 
@@ -97,8 +113,6 @@ def main() -> None:
     ck = torch.load(args.ckpt, map_location="cpu", weights_only=False)
     meta, step, tokens = ck["meta"], ck.get("step"), ck.get("tokens")
     del ck                         # a grown 1.8B checkpoint is 7 GB; don't hold it twice
-    if meta.get("mem_every", 0):
-        raise SystemExit("episodic memory layers (mem_every > 0) have no grilly2 form yet")
     model = load_base(args.ckpt, "cpu")
     tensors = named_tensors(model)
     cfg = grilly_config(meta, model)
