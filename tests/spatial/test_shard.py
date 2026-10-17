@@ -88,6 +88,7 @@ def test_a_document_places_exactly_the_things_and_the_asked_cell(tk):
     # the control: the same village as words, nothing placed
     ids_t, places_t = render(tk, sc, qa, "text", eos, 320)
     assert not (places_t[:, 0] != NO_PLACE).any() and " at " in tk.decode(ids_t.tolist(), skip_special_tokens=True)
+    assert not np.array_equal(ids_t, ids)
     with pytest.raises(ValueError):
         render(tk, village(rng, 32), [], "places", eos, 16)
 
@@ -127,3 +128,16 @@ def test_the_corpus_reads_the_shard_by_documents_and_the_link_trains_on_it(tmp_p
     loss = torch.nn.functional.cross_entropy(logits.reshape(-1, logits.shape[-1]), y[:2, :32].reshape(-1))
     loss.backward()
     assert torch.isfinite(loss) and m.spatial.gate.weight.grad.abs().sum() > 0
+    # a window with nothing placed takes the plain path, bit for bit
+    none = torch.full_like(x.pos[:2, :32], NO_PLACE)
+    with torch.no_grad():
+        assert torch.equal(forward_batch(m, Tokens(x.ids[:2, :32], none)), m.forward(x.ids[:2, :32]))
+    # the text control is a plain shard: no side file, plain tensors
+    monkeypatch.setattr(sys, "argv", ["make_spatial_shard", "--cache", str(tmp_path / "text"), "--tokenizer", str(TOK),
+                                      "--villages", "12", "--doc", "192", "--things", "4", "8", "--mode", "text",
+                                      "--questions", "2", "4", "--holdout-frac", "0.25", "--seed", "3"])
+    os.makedirs(tmp_path / "text")
+    mss.main()
+    assert (tmp_path / "text" / "spatial_text.u32").exists() and not (tmp_path / "text" / "spatial_text.pos.i16").exists()
+    tx, _ = Corpus(str(tmp_path / "text"), seq=128, val_tokens=0, seed=0).batch(1, 0, 2, "stable")
+    assert torch.is_tensor(tx) and tk.decode(tx[0, :3].tolist()).startswith("Village")

@@ -445,6 +445,8 @@ def forward_batch(model: CubbyModel, x):
         return model.forward(x)
     from cubbyllm.model.spatial import NO_PLACE
     placed = x.pos[..., 0] != NO_PLACE
+    if not bool(placed.any()):
+        return model.forward(x.ids)                 # a text batch: the plain path, bit for bit
     positions = torch.where(placed.unsqueeze(-1), x.pos, torch.zeros_like(x.pos)).float()
     return model.forward(x.ids, positions=positions, placed=placed)
 

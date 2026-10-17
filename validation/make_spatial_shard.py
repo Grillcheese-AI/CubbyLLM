@@ -187,7 +187,10 @@ def main() -> None:
             if (v + 1) % 5000 == 0:
                 print(f"  {v + 1:,} villages, {time.time() - t0:.0f}s", flush=True)
     os.replace(ids_path + ".part", ids_path)
-    os.replace(pos_path + ".part", pos_path)
+    if args.mode == "places":
+        os.replace(pos_path + ".part", pos_path)
+    else:
+        os.remove(pos_path + ".part")             # the control places nothing: a plain text shard
     total = args.villages * args.doc
     hold_docs = max(1, int(args.villages * args.holdout_frac))
     hold = hold_docs * args.doc
