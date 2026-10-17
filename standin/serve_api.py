@@ -349,6 +349,8 @@ def main():
     ap.add_argument("--emitter-adapter", default=None, help="with --cubby450m: the emitter LoRA dir (the programs seat, slotted)")
     ap.add_argument("--talk-adapter", default=None, help="with --cubby450m: the talk LoRA dir (the talk seat); absent -> --talk-gguf, else programs only")
     ap.add_argument("--tokenizer", default=None, help="with --cubby450m: the bbpe128k tokenizer.json (default: the export's)")
+    ap.add_argument("--talk-export", default=None,
+                    help="with --talk-adapter: the base export the talk adapter was trained on, when it is not --cubby450m's (a second trunk)")
     ap.add_argument("--table", default=None)
     ap.add_argument("--n-store", type=int, default=2000)
     ap.add_argument("--n-gpu-layers", type=int, default=-1)
@@ -400,7 +402,8 @@ def main():
         ap.error("give --gguf (the stand-in) or --cubby450m <export> --emitter-adapter <dir> [--talk-adapter <dir>]")
     brain = build_serve(args.gguf, args.table, args.n_store, None, args.route_tau, args.n_gpu_layers,
                         talk_gguf=args.talk_gguf, wiki=args.wiki, cubby450m=args.cubby450m,
-                        emitter_adapter=args.emitter_adapter, talk_adapter=args.talk_adapter, tokenizer=args.tokenizer)
+                        emitter_adapter=args.emitter_adapter, talk_adapter=args.talk_adapter, tokenizer=args.tokenizer,
+                        talk_export=args.talk_export)
     if args.ask:
         from ask import AskLoop
         print(f"mounting the ask loop (source {args.ask}, lexicon on, news {'on' if args.news else 'off'}) ...", flush=True)

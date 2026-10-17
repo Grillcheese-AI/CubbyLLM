@@ -638,12 +638,15 @@ def build_serve(gguf: str | None, table: str | None, n_store: int, exe: str | No
                 route_tau: float, n_gpu_layers: int,
                 extra_facts: list[str] | None = None, talk_gguf: str | None = None,
                 wiki: str | None = None, cubby450m: str | None = None, emitter_adapter: str | None = None,
-                talk_adapter: str | None = None, tokenizer: str | None = None) -> CubbyBrain:
+                talk_adapter: str | None = None, tokenizer: str | None = None,
+                talk_export: str | None = None) -> CubbyBrain:
     """`cubby450m` (2026-10-17): the export of GRL's own base takes BOTH seats -- the programs seat as
     `SlotEmitter(Cubby450mEmitter)` over the worlds' names, the talk seat as `Cubby450mTalk` when a talk
     adapter is given (else the talk GGUF, else programs-only) -- one base on grilly2, the LoRAs swapped per
     role. `gguf` then stays the A/B arm: given beside it, it is loaded into the bank's shadow as `programs`
-    candidate for `emit_candidate`, never routed."""
+    candidate for `emit_candidate`, never routed. `talk_export`: the talk adapter's own base when it was
+    trained on another checkpoint than the emitter's (2026-10-17: the emitter on base450m_cont, talk_v2_2 on
+    base450m) -- a second trunk then, 2.3 GB more, until the talk adapter is retrained on the same base."""
     from exp_m3_cot_pipeline import V4_TABLE, load_sample
     from exp_m3_domain_routing import _load_semantic_words
 
@@ -663,11 +666,16 @@ def build_serve(gguf: str | None, table: str | None, n_store: int, exe: str | No
         from standin.emitter import Cubby450mEmitter, Cubby450mTalk, Cubby450mTrunk
         if not emitter_adapter:
             raise ValueError("--cubby450m needs --emitter-adapter (the programs seat)")
-        roles = {"programs": emitter_adapter, **({"talk": talk_adapter} if talk_adapter else {})}
+        split = bool(talk_adapter and talk_export and os.path.abspath(talk_export) != os.path.abspath(cubby450m))
+        roles = {"programs": emitter_adapter, **({"talk": talk_adapter} if talk_adapter and not split else {})}
         print(f"loading base450m {cubby450m} on grilly2 with {sorted(roles)} ...", flush=True)
         trunk = Cubby450mTrunk(cubby450m, tokenizer or os.path.join(cubby450m, "tokenizer.json"), roles)
         slotted = SlotEmitter(Cubby450mEmitter(trunk), index=None)      # the names come once the worlds are up
-        if talk_adapter:
+        if split:
+            print(f"loading the talk adapter's own base {talk_export} (a second trunk) ...", flush=True)
+            talk = Cubby450mTalk(Cubby450mTrunk(talk_export, tokenizer or os.path.join(talk_export, "tokenizer.json"),
+                                                {"talk": talk_adapter}))
+        elif talk_adapter:
             talk = Cubby450mTalk(trunk)
         elif talk_gguf:
             print(f"loading talk stand-in {talk_gguf} (n_gpu_layers={n_gpu_layers}) ...", flush=True)
