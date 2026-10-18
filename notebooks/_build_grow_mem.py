@@ -285,7 +285,7 @@ for k, ok in checks.items():
 print('\ncheck 2 (the memory) is exp_needle_recall on the grown final; check 4 is the serving gates after the adapters.')
 fig, ax = plt.subplots(1, 3, figsize=(17, 4))
 for a, v in have.items():
-    tok = [r['step'] * 131072 / 1e9 for r in v]
+    tok = [r['step'] * (sizes.get(a) or TOKENS_PER_STEP) / 1e9 for r in v]      # tokens as measured, not as planned
     ax[0].plot(tok, [r['val']['_mix'] for r in v], label=a)
     for k in NEW:
         if k in v[-1]['val']:
@@ -295,7 +295,7 @@ if start:
     ax[0].axhline(start['_mix'], color='k', ls='--', lw=.8)
 ax[0].legend(); ax[0].set(title='held-out mix (dashed: the start)', xlabel='B tokens')
 ax[1].legend(fontsize=7); ax[1].set(title='the three new shards', xlabel='B tokens')
-ax[2].legend(); ax[2].set(title='in-context copy', xlabel='B tokens')
+ax[2].legend(); ax[2].set(title=f'in-context copy ({"beyond the window" if SEQ > 2 * 512 else "in the window"})', xlabel='B tokens')
 plt.tight_layout(); plt.show()
 """),
     md(r"""
