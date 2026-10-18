@@ -173,15 +173,24 @@ BASE = dict(
 )
 props = torch.cuda.get_device_properties(0)
 gb = props.total_memory / 2**30
-# micro-batch: sequences per forward at S=2048 (x accumulation = 131,072 tokens a step). The grown arm holds
-# 2.4x the parameters and, on its memory layers, a (B, S, S) similarity and a (B, S, K, d) gathered value set
-# per layer for the backward pass; start small and raise it if the card has room (train_base prints peak GB).
-BASE['CB_MICRO'] = ('8' if gb >= 70 else '4') if ARM == 'grown' else ('16' if gb >= 70 else '8')
+# micro-batch: sequences per forward at S=2048 (x accumulation = 131,072 tokens a step, whatever the micro:
+# train_base derives the accumulation from CB_TOKENS_PER_STEP, so a smaller micro changes throughput, never
+# the batch or the schedule). The grown arm holds 2.4x the parameters and, on its memory layers, a (B, S, S)
+# similarity and a (B, S, K, d) gathered value set per layer for the backward pass; on a card under 70 GB it
+# recomputes activations in the backward (CB_GRAD_CKPT=1: ~1/3 more compute a step) and runs micro 8 -- without
+# that, a 48 GB RTX 6000 held micro 2 only (2026-10-18). train_base prints peak GB; raise micro if there is room.
+if ARM == 'grown':
+    BASE['CB_MICRO'] = '8'
+    if gb < 70:
+        BASE['CB_GRAD_CKPT'] = '1'
+else:
+    BASE['CB_MICRO'] = '16' if gb >= 70 else '8'
 smem = getattr(props, 'shared_memory_per_block_optin', 0) or (
     160 * 1024 if (props.major, props.minor) in ((8, 0), (9, 0), (10, 0)) else 0)
 if smem < 114688:
     BASE['CB_NO_FLEX'] = '1'
-print(f"{ARM}: {props.name}, {gb:.0f} GB -> micro {BASE['CB_MICRO']} at S={SEQ}, "
+print(f"{ARM}: {props.name}, {gb:.0f} GB -> micro {BASE['CB_MICRO']} at S={SEQ}"
+      f"{' with activation recompute (CB_GRAD_CKPT=1)' if BASE.get('CB_GRAD_CKPT') else ''}, "
       f"{'reference attention (CB_NO_FLEX=1)' if smem < 114688 else 'flex attention'}; "
       f"{HOURS_PER_ARM} h, the step count is sized after the first measured steps and then fixed")
 
