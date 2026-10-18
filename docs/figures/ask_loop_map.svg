@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- CubbyLLM: one question through the serve brain (serve_api, the ask loop), 2026-10-17. Hand-drawn; the source of truth for the boxes is the code they name. -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1850 820" width="1850" height="820" role="img" aria-label="The journey of one question through CubbyLLM's ask loop: input, the trunk proposes a program, the host disposes, the fact store, the walk and the VM, the output; the sources and the gate update the store; the host's own readers bypass the trunk.">
+<!-- CubbyLLM: one question through the serve brain (the ask loop), 2026-10-18: + the scene, the host's route to space. Hand-drawn; the source of truth for the boxes is the code they name. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1850 820" width="1850" height="820" role="img" aria-label="The journey of one question through CubbyLLM's ask loop: input, the trunk proposes a program, the host disposes, the fact store, the walk and the VM, the output; the sources and the gate update the store; the host's own readers bypass the trunk. The scene (S) is a source too: a village read exactly for the walk, routed to when the plan's relation or seed is the scene's, and the same scene the trunk reads as one vector.">
 <style>
     svg { color: #1c2130; font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
       --bg: #fafbfd; --muted: #5d6578; --line: #4a5063;
@@ -137,6 +137,19 @@
   <text class="body" x="1106" y="677">web: two sites or held · LFM: latent</text>
   <path class="wire" d="M1090,640 H1045" marker-end="url(#arr)"/>
   <text class="lbl" x="1067" y="572" text-anchor="middle">Triples</text>
+  <!-- S: the scene, the other source: routed to from H, into the store through the same gate -->
+  <path class="wire dash" d="M600,474 V530 H204 V585" marker-end="url(#arr)"/>
+  <text class="lbl" x="214" y="556">route.py: the plan's relation or seed is the scene's</text>
+  <rect class="box src" x="24" y="585" width="360" height="110" rx="8"/>
+  <text class="tag src" x="40" y="621">S</text>
+  <text class="ttl" x="68" y="615">the scene — space, exactly</text>
+  <text class="file" x="40" y="637">cubbyllm/spatial: scene.py · route.py</text>
+  <text class="body" x="40" y="658">where · at · adjacent · nearest · within · path</text>
+  <text class="body" x="40" y="677">facts(): position · ⟨dir⟩ neighbour · nearest ⟨kind⟩</text>
+  <path class="wire" d="M384,640 H755" marker-end="url(#arr)"/>
+  <text class="lbl" x="570" y="628" text-anchor="middle">Triples, derived on every call</text>
+  <text class="lbl" x="24" y="718">the same scene the trunk is shown as places and reads as one vector</text>
+  <text class="lbl" x="24" y="734">(V = Σ code ⊛ S(cell); model/spatial.py: the spatial link)</text>
   <rect class="box gate" x="755" y="585" width="290" height="110" rx="8"/>
   <text class="ttl" x="771" y="615">the gate</text>
   <text class="file" x="771" y="637">learn.py: gate()</text>

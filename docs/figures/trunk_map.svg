@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- CubbyLLM: one token through base450m (the trunk), 2026-10-17. Hand-drawn; the source of truth for the boxes is the code they name. -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1850 860" width="1850" height="860" role="img" aria-label="One token through base450m: tokens are embedded (B), the running mean of the embeddings goes through a frozen router into a context c, the 32-layer trunk mixes with windowed attention or MinGRU and carries a fixed-size state (A), the context-generated adapter adjusts the hidden state, the head (C) projects to the vocabulary and the next token comes out; a LoRA on every projection is the emitter; trained in torch, exported, served on grilly2, grown by grow.py.">
+<!-- CubbyLLM: one token through the trunk (base450m, and what the grown bases add: the episodic memory, the spatial link), 2026-10-18. Hand-drawn; the source of truth for the boxes is the code they name. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1850 980" width="1850" height="980" role="img" aria-label="One token through the trunk: tokens are embedded (B) and, when they have a place, bound with S(p); the running mean of the embeddings goes through a frozen router into a context c; the trunk mixes with windowed attention or MinGRU, on the grown bases reads the past beyond the window through an episodic memory and the scene through a gated spatial read at its middle layer, and carries a fixed-size state (A): vectors, rings, stores, the scene sum; the context-generated adapter adjusts the hidden state, the head (C) projects to the vocabulary and the next token comes out; a LoRA on every projection is the emitter; trained in torch, exported, served on grilly2, grown by grow.py.">
 <style>
     svg { color: #1c2130; font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
       --bg: #fafbfd; --muted: #5d6578; --line: #4a5063;
@@ -27,7 +27,7 @@
     .bubble { fill: none; stroke: currentColor; stroke-width: 1.8; }
     .glyph { font-family: var(--mono); font-size: 16px; font-weight: 500; fill: currentColor; }
   </style>
-  <rect width="1850" height="860" fill="#fafbfd"/>
+  <rect width="1850" height="980" fill="#fafbfd"/>
   <defs>
     <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="var(--line)"/>
@@ -55,6 +55,14 @@
   <path class="wire" d="M480,430 H505"/>
   <circle class="dot" cx="505" cy="430" r="4"/>
   <path class="wire" d="M505,430 H560" marker-end="url(#arr)"/>
+  <!-- the place bound into the embedding (the spatial link's input level; flag-gated) -->
+  <rect class="box dbox" x="230" y="536" width="250" height="110" rx="8" stroke-dasharray="7 6"/>
+  <text class="sub" x="246" y="560">S(p): the place, at the input</text>
+  <text class="file" x="246" y="578">model/spatial.py · spatial/ssp.py</text>
+  <text class="body" x="246" y="598">x ⊛ S(p) · S(p) = IFFT(exp(iΘp))</text>
+  <text class="body" x="246" y="617">S(p+d) = S(p) ⊛ S(d) · S(0) = 1</text>
+  <text class="body dim" x="246" y="636">no place: untouched</text>
+  <path class="wire dash" d="M480,590 H532 V440" marker-end="url(#arr)"/>
 
   <!-- ===== c: the context (the side path that generates the adapter) ===== -->
   <path class="wire" d="M505,430 V120 H560" marker-end="url(#arr)"/>
@@ -75,10 +83,10 @@
   <path class="wire dash" d="M810,296 V330" marker-end="url(#arr)"/>
 
   <!-- ===== the trunk ===== -->
-  <rect class="box trunk" x="560" y="330" width="500" height="206" rx="8"/>
-  <text class="ttl" x="576" y="356">the trunk — 32 layers</text>
+  <rect class="box trunk" x="560" y="330" width="500" height="320" rx="8"/>
+  <text class="ttl" x="576" y="356">the trunk — 32 layers (grown: 64)</text>
   <text class="file" x="576" y="374">backbone/hybrid.py · backbone/mingru.py</text>
-  <text class="body" x="576" y="393">per layer: x += mixer(rms x); x += SwiGLU(rms x) (2× width)</text>
+  <text class="body" x="576" y="393">x += mixer(rms x) · [memory] · [space] · x += SwiGLU(rms x)</text>
   <rect class="box out" x="576" y="404" width="222" height="120" rx="6"/>
   <text class="sub" x="590" y="426">windowed attention × 11</text>
   <text class="body" x="590" y="446">layers 0, 3, 6 … · window 512</text>
@@ -91,20 +99,34 @@
   <text class="body" x="826" y="465">a = 0.001 + 0.998·σ(d)</text>
   <text class="body" x="826" y="484">one (B, 1024) vector of state</text>
   <text class="body" x="826" y="503">prompt: a scan · token: a step</text>
+  <rect class="box out" x="576" y="534" width="222" height="104" rx="6" stroke-dasharray="7 6"/>
+  <text class="sub" x="590" y="556">episodic memory × 16 (grown)</text>
+  <text class="file" x="590" y="573">recall/read.py · store.py</text>
+  <text class="body" x="590" y="592">top-8 by cosine over the past</text>
+  <text class="body" x="590" y="611">beyond the window · a softmax</text>
+  <text class="body" x="590" y="630">read · a store aged from a ring</text>
+  <rect class="box out" x="812" y="534" width="232" height="104" rx="6" stroke-dasharray="7 6"/>
+  <text class="sub" x="826" y="556">the spatial read, layer L/2</text>
+  <text class="file" x="826" y="573">model/spatial.py (CB_SPATIAL)</text>
+  <text class="body" x="826" y="592">g = σ(w·rms h + b): whether</text>
+  <text class="body" x="826" y="611">q = W·rms h, unitary: a place</text>
+  <text class="body" x="826" y="630">x += g·o(V ⊛ q⁻¹), V the scene</text>
   <path class="wire" d="M1060,430 H1140" marker-end="url(#arr)"/>
   <text class="lbl" x="1100" y="318" text-anchor="middle">h (B, S, 1024)</text>
 
   <!-- ===== A: the state, carried every token ===== -->
-  <path class="wire" d="M700,536 V600" marker-end="url(#arr)"/>
-  <text class="lbl" x="688" y="572" text-anchor="end">carried to the next token</text>
-  <path class="wire" d="M980,600 V536" marker-end="url(#arr)"/>
-  <text class="lbl" x="992" y="572">a·h₋₁, and the window's keys</text>
-  <rect class="box state" x="560" y="600" width="500" height="96" rx="8"/>
-  <text class="tag state" x="576" y="636">A</text>
-  <text class="ttl" x="604" y="630">the decode state</text>
-  <text class="file" x="576" y="652">grilly2 infer/models/cubby.py: CubbyState</text>
-  <text class="body" x="576" y="673">21 vectors · 11 rings of 512 keys/values · 2 context sums</text>
-  <text class="body dim" x="576" y="690">46 MB a stream (fp32), the same size from the first token on</text>
+  <path class="wire" d="M700,650 V712" marker-end="url(#arr)"/>
+  <text class="lbl" x="688" y="686" text-anchor="end">carried to the next token</text>
+  <path class="wire" d="M980,712 V650" marker-end="url(#arr)"/>
+  <text class="lbl" x="992" y="686">a·h₋₁, the window's keys, the stores</text>
+  <rect class="box state" x="560" y="712" width="500" height="140" rx="8"/>
+  <text class="tag state" x="576" y="748">A</text>
+  <text class="ttl" x="604" y="742">the decode state</text>
+  <text class="file" x="576" y="764">grilly2 infer/models/cubby.py: CubbyState</text>
+  <text class="body" x="576" y="785">21 vectors · 11 rings of 512 keys/values · 2 context sums</text>
+  <text class="body" x="576" y="804">grown: a store (max_length − window rows) + a ring per memory layer</text>
+  <text class="body" x="576" y="823">spatial: + the scene sum V (B, 1024), the placed tokens so far</text>
+  <text class="body dim" x="576" y="842">46 MB a stream (fp32), the same size from the first token on</text>
 
   <!-- ===== θ = f(c): the adapter ===== -->
   <rect class="box gate" x="1140" y="366" width="250" height="128" rx="8"/>
@@ -137,14 +159,14 @@
   <text class="glyph" x="1765" y="334" text-anchor="middle">bind …</text>
 
   <!-- ===== trained · served · grown (dashed) ===== -->
-  <rect class="box out" x="24" y="760" width="560" height="70" rx="8" stroke-dasharray="7 6"/>
-  <text class="body" x="40" y="786">trained — train_base.py: a Colab A100, ~20 h, ~4B tokens, AdamW + WSD</text>
-  <text class="file" x="40" y="808">export_base.py → config.json + model.safetensors (2.3 GB)</text>
-  <path class="wire dash" d="M584,795 H624" marker-end="url(#arr)"/>
-  <rect class="box out" x="624" y="760" width="560" height="70" rx="8" stroke-dasharray="7 6"/>
-  <text class="body" x="640" y="786">served on grilly2 — Vulkan, any GPU, no CUDA; the torch code op for op</text>
-  <text class="file" x="640" y="808">grilly.infer.models.cubby: CubbyForCausalLM.generate · apply_lora_</text>
-  <rect class="box out" x="1224" y="760" width="606" height="70" rx="8" stroke-dasharray="7 6"/>
-  <text class="body" x="1240" y="786">grows without a restart — grow.py: width ×k (HyperCloning), depth ×n, ffn ×m</text>
-  <text class="file" x="1240" y="808">the same function at step 0 → d2048 / L32 (2B) · validation/grow_base.py</text>
+  <rect class="box out" x="24" y="880" width="560" height="70" rx="8" stroke-dasharray="7 6"/>
+  <text class="body" x="40" y="906">trained — train_base.py: A100 / RTX 6000, ~20 h, ~4B tokens, AdamW + WSD</text>
+  <text class="file" x="40" y="928">export_base.py → config.json + model.safetensors (memory layers too)</text>
+  <path class="wire dash" d="M584,915 H624" marker-end="url(#arr)"/>
+  <rect class="box out" x="624" y="880" width="560" height="70" rx="8" stroke-dasharray="7 6"/>
+  <text class="body" x="640" y="906">served on grilly2 — Vulkan, any GPU, no CUDA; the torch code op for op</text>
+  <text class="file" x="640" y="928">grilly.infer.models.cubby: CubbyForCausalLM · CubbyMemory · apply_lora_</text>
+  <rect class="box out" x="1224" y="880" width="606" height="70" rx="8" stroke-dasharray="7 6"/>
+  <text class="body" x="1240" y="906">grows without a restart — grow.py: width ×k, depth ×n, ffn ×m, memory every n</text>
+  <text class="file" x="1240" y="928">exact at step 0 → L64 + 16 reads, 1.36B (H-E20) · validation/grow_base.py</text>
 </svg>

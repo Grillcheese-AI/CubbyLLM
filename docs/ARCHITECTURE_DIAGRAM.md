@@ -1,8 +1,8 @@
 # CubbyLLM — architecture diagrams
 
-## One question through the serve brain (as of 2026-10-17)
+## One question through the serve brain (as of 2026-10-18)
 
-![One question through the ask loop: the trunk proposes (B), the fact store is the state, the sources update it through the gate (A), the walk and the VM read it out (C), the host's own readers bypass the trunk (D)](figures/ask_loop_map.svg)
+![One question through the ask loop: the trunk proposes (B), the fact store is the state, the sources (A) and the scene (S) update it through the gate, the walk and the VM read it out (C), the host's own readers bypass the trunk (D)](figures/ask_loop_map.svg)
 
 `docs/figures/ask_loop_map.svg` — the live path of `serve_api --ask`, drawn in the shape of a
 state-space block diagram. **B**, the trunk, proposes a CubeLang program (`standin/emitter.py`: base450m
@@ -15,13 +15,18 @@ sources (`sources.py`, `web_source.py`, `lfm_source.py`), are asked about the en
 and what they return enters the store only through the gate (`learn.gate()`), after which the plan goes
 back to its proposed wording and is translated to what the store holds now. **D**, the host's own readers
 (`ask.py`: profile and relation asks), go straight from the question's shape to the retrieval program.
+**S**, the scene (`cubbyllm/spatial/scene.py`, `route.py`; H-S12): space read exactly — where, at, adjacent,
+nearest, within, path — and stated in the loop's own template (`position`, `<direction> neighbour`,
+`nearest <kind>`, `region`), derived on every call and never stored; **H** routes a question to it when the
+plan's relation or seed is the scene's, and what it states enters the store through the same gate and is
+verified by the same walk. It is the same scene the trunk is shown as places and reads as one vector.
 The dashed row is the record: every step an event for `/panel` and `/brain`, and the sleep cycle bringing
 learned facts and skills back through the gate the next day. Not on it: the chat turn (`/turn`), the
 arithmetic step loop, the word table and the worlds router, and the game.
 
-## One token through base450m (as of 2026-10-17)
+## One token through the trunk (as of 2026-10-18)
 
-![One token through base450m: the embedding (B), the frozen context router c, the 32-layer trunk (11 windowed-attention, 21 MinGRU) with its fixed-size decode state (A), the adapter θ = f(c), the head (C); the emitter LoRA on top; trained in torch, served on grilly2, grown by grow.py](figures/trunk_map.svg)
+![One token through the trunk: the embedding (B) and, for a token with a place, S(p) bound into it; the frozen context router c; the trunk (11 windowed-attention, 21 MinGRU; on the grown bases an episodic memory read and the spatial read at the middle layer) with its fixed-size decode state (A); the adapter θ = f(c); the head (C); the emitter LoRA on top; trained in torch, served on grilly2, grown by grow.py](figures/trunk_map.svg)
 
 `docs/figures/trunk_map.svg` — the trunk as it serves, in the same shape. **B**, the embedding
 (`cubbyllm/model/vocab/embedding.py`): a fixed core table, 128k × 1024. **c**, the context
@@ -38,6 +43,17 @@ exact top-K in torch; greedy decoding, stopped at `</s>`. The emitter is a LoRA 
 projection of every layer (`validation/train_emitter_torch.py`), loaded on the card by
 `grilly.infer.lora.apply_lora_`. Trained by `validation/train_base.py`, exported by `export_base.py`,
 served by grilly2's `infer/models/cubby.py` op for op, grown in place by `cubbyllm/model/grow.py`.
+
+Two dashed additions, both absent from base450m and exact no-ops until a base carries them. **The
+episodic memory** (`cubbyllm/model/recall`; H-D5, H-E20): on the grown bases, every n-th layer reads the
+past *beyond* the window — the top-8 stored keys by cosine, a softmax over them — between its mixer and
+its FFN; at decode each stream keeps a store per memory layer, sized by the stream's length
+(`max_length − window` rows), fed by a ring that ages a token into it the moment it leaves the window
+(grilly2's `CubbyMemory`). **The spatial link** (`cubbyllm/model/spatial.py`; H-S12, `CB_SPATIAL=1`): a
+token with a place enters as `x ⊛ S(p)`, `S(p)` a unit vector whose algebra is provable (moving is binding,
+the origin is the identity, so text is bit-identical with the link on); the scene `V` is the running sum of
+the placed tokens' bound embeddings; and at layer L/2 a gate says whether to consult it, a unitary query
+says what place, and `V ⊛ q⁻¹` comes back through an exit that starts at zero. The state carries `V`.
 
 ## The full system (as of 2026-08-08)
 
