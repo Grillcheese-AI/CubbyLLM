@@ -35,6 +35,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.dirname(HERE))
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+# every trial is a different sequence length (the needle's offset, the filler), and flex attention compiles a
+# kernel per shape -- tens of seconds each, so a probe under it never finishes a row. The reference path is fine.
+os.environ.setdefault("CB_NO_FLEX", "1")
 
 CKPT = os.environ.get("CB_CKPT", "")
 CORPUS = os.environ.get("CB_CORPUS", "")
@@ -131,8 +134,10 @@ def main() -> None:
         torch.set_num_threads(THREADS)
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     from train_base import build_model
+    print(f"  loading {CKPT} ({os.path.getsize(CKPT) / 1e9:.1f} GB)...", flush=True)
     ck = torch.load(CKPT, map_location="cpu", weights_only=False)
     meta = dict(ck["meta"])
+    print(f"  [{time.perf_counter() - t0:.0f}s] checkpoint loaded; building on {dev}", flush=True)
     model = build_model(meta, dev)
     with torch.no_grad():
         for p, s in zip(model.parameters(), ck["params"]):
@@ -150,7 +155,7 @@ def main() -> None:
         s = scores(model, encode(" " + probe), [encode(" " + c) for c in ANSWERS], eos, dev)
         for c, v in zip(ANSWERS, s):
             base[(probe, c)] = v
-    print(f"  [{time.perf_counter() - t0:.0f}s] baselines done\n", flush=True)
+    print(f"  [{time.perf_counter() - t0:.0f}s] baselines done; each row below is {len(DEPTHS) * TRIALS} batched forwards\n", flush=True)
     report = {"ckpt": CKPT, "meta": meta, "lengths": LENGTHS, "depths": DEPTHS, "trials": TRIALS,
               "distract": N_DISTRACT, "filler": FILLER}
     print("  --- TRAINED MODEL ---")
