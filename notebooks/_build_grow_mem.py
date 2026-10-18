@@ -252,12 +252,16 @@ sizes = {a: step_size(f'{DRIVE}/runs/grow_mem_{a}/grow_mem_{a}_metrics.jsonl') f
 hours = {a: max((r['hours'] for r in rows_of(f'{DRIVE}/runs/grow_mem_{a}/grow_mem_{a}_metrics.jsonl') if 'hours' in r), default=None)
          for a in ('grown', 'control')}
 print('tokens per step:', sizes, '  hours:', {a: (round(h, 2) if h else None) for a, h in hours.items()})
-cont = vals(f'{CONT_RUN}/base450m_cont_metrics.jsonl')
-start = cont[-1]['val'] if cont else {}
+cont_rows = rows_of(f'{CONT_RUN}/base450m_cont_metrics.jsonl')
+cont = [r for r in cont_rows if 'val' in r]
+cont_decay = min((r['step'] for r in cont_rows if r.get('phase') == 'decay'), default=10**9)
+start = ([r for r in cont if r['step'] <= cont_decay] or cont or [{'val': {}}])[-1]['val']   # the arms start from stable_end
 NEW, KEY = ('instruct', 'agent', 'program'), ('fineweb_edu', 'books', 'nemotron_qa', 'nemotron_code')
 have = {a: v for a, v in arms.items() if v}
 assert have, 'no validation yet: the first comes at step 250'
-print(f"{'source':16s} " + ' '.join(f'{a:>10s}' for a in have) + '   (start = base450m_cont, pre-decay)')
+print(f"{'source':16s} " + ' '.join(f'{a:>10s}' for a in have) + '   (start = base450m_cont at its stable_end, S=1024)')
+print('note: _copy repeats a half-sequence; at S=2048 the repeat is 1024 tokens back, beyond the window --')
+print('      only a memory read can lower it (floor ~ ln(vocab) = 11.8); at S=1024 it is in-window copy (~1.2).')
 keys = sorted({k for v in have.values() for k in v[-1]['val'] if not k.startswith('_')})
 for k in keys + ['_mix', '_copy']:
     row = ' '.join(f"{v[-1]['val'].get(k, float('nan')):10.4f}" for v in have.values())
