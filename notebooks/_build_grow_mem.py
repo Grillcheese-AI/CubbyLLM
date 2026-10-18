@@ -106,7 +106,11 @@ CONT_RUN      = f'{DRIVE}/runs/base450m_cont'                               # it
 CORPUS_DRIVE  = f'{DRIVE}/token_cache_cont'                  # + instruct.u32, agent.u32, program.u32
 CORPUS        = '/content/token_cache_cont'                  # LOCAL SSD (Drive-FUSE reads are ~30x slower)
 TOKENIZER     = f'{CORPUS}/tokenizer/grillcheese_bbpe128k.json'
-RUN_DIR       = f'{DRIVE}/runs/grow_mem_{ARM}'               # checkpoints, metrics, logs, the step-0 file
+RUN_SUFFIX    = ''                                  # '' for the first session pair; '_2' for a further round of the same arm
+CONTINUE_FROM = ''                                  # grown arm only: keep training a grown checkpoint instead of growing anew,
+                                                    # e.g. f'{DRIVE}/runs/grow_mem_grown/grow_mem_grown_stable_end.pt' (before
+                                                    # its decay, so the run picks up at the constant LR and decays at its own end)
+RUN_DIR       = f'{DRIVE}/runs/grow_mem_{ARM}{RUN_SUFFIX}'   # checkpoints, metrics, logs, the step-0 file
 assert ARM in ('grown', 'control'), ARM
 assert os.path.exists(START_CKPT), START_CKPT
 os.makedirs(RUN_DIR, exist_ok=True); os.makedirs(CORPUS, exist_ok=True)
@@ -142,8 +146,11 @@ the same held-out windows: the losses must agree to 1e-4 and the logits to 1e-2 
 is what the run initialises from. ~10 min on Colab's CPU; skip the cell on later sessions once the file exists.
 """),
     code(r"""
-GROWN = f'{RUN_DIR}/grow_step0_d2f2m{MEM_EVERY}.pt'
-if ARM == 'grown' and not os.path.exists(GROWN):
+GROWN = CONTINUE_FROM or f'{RUN_DIR}/grow_step0_d2f2m{MEM_EVERY}.pt'
+if CONTINUE_FROM:
+    assert ARM == 'grown' and os.path.exists(CONTINUE_FROM), CONTINUE_FROM
+    print('continuing the grown arm from', CONTINUE_FROM)
+if ARM == 'grown' and not CONTINUE_FROM and not os.path.exists(GROWN):
     !cd {REPO} && python validation/grow_base.py --ckpt "{START_CKPT}" --cache {CORPUS} --depth 2 --ffn 2 \
         --mem-every {MEM_EVERY} --sources arxiv,books,fineweb_edu,nemotron_code --windows 1 --seq 1024 \
         --save "{GROWN}" --tag colab_d2f2m{MEM_EVERY}
@@ -165,7 +172,7 @@ shape = (dict(CB_L='64', CB_FFN_MULT='4', CB_MEM_EVERY=str(MEM_EVERY), CB_INIT_F
 MIX_JSON   = json.dumps({'instruct': 6, 'agent': 2, 'program': 8})
 DECAY_JSON = json.dumps({'instruct': 91, 'agent': 36, 'program': 78})
 BASE = dict(
-    CUBBY_SPM=TOKENIZER, CB_CORPUS=CORPUS, CB_DRIVE_DIR=RUN_DIR, CB_NAME=f'grow_mem_{ARM}',
+    CUBBY_SPM=TOKENIZER, CB_CORPUS=CORPUS, CB_DRIVE_DIR=RUN_DIR, CB_NAME=f'grow_mem_{ARM}{RUN_SUFFIX}',
     CB_D='1024', CB_HEADS='4', CB_WINDOW='512', CB_ATTN_EVERY='3',
     CB_S=str(SEQ), CB_TOKENS_PER_STEP=str(TOKENS_PER_STEP),
     CB_LR='3e-4', CB_BETA2='0.95', CB_WD='0.1',
@@ -247,10 +254,10 @@ def step_size(path):
     # tokens per optimizer step, from the training rows (tokens seen / steps): the arms must agree
     tr = [r for r in rows_of(path) if 'tokens' in r and r.get('step')]
     return round(tr[-1]['tokens'] / tr[-1]['step']) if tr else None
-arms = {a: vals(f'{DRIVE}/runs/grow_mem_{a}/grow_mem_{a}_metrics.jsonl') for a in ('grown', 'control')}
-sizes = {a: step_size(f'{DRIVE}/runs/grow_mem_{a}/grow_mem_{a}_metrics.jsonl') for a in ('grown', 'control')}
-hours = {a: max((r['hours'] for r in rows_of(f'{DRIVE}/runs/grow_mem_{a}/grow_mem_{a}_metrics.jsonl') if 'hours' in r), default=None)
-         for a in ('grown', 'control')}
+mpath = lambda a: f'{DRIVE}/runs/grow_mem_{a}{RUN_SUFFIX}/grow_mem_{a}{RUN_SUFFIX}_metrics.jsonl'
+arms = {a: vals(mpath(a)) for a in ('grown', 'control')}
+sizes = {a: step_size(mpath(a)) for a in ('grown', 'control')}
+hours = {a: max((r['hours'] for r in rows_of(mpath(a)) if 'hours' in r), default=None) for a in ('grown', 'control')}
 print('tokens per step:', sizes, '  hours:', {a: (round(h, 2) if h else None) for a, h in hours.items()})
 cont_rows = rows_of(f'{CONT_RUN}/base450m_cont_metrics.jsonl')
 cont = [r for r in cont_rows if 'val' in r]
