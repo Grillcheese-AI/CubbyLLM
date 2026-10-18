@@ -99,8 +99,9 @@ SPATIAL_SCALE = _env("CB_SPATIAL_SCALE", 2.0, float)
 SEQ = _env("CB_S", 1024)
 MICRO = _env("CB_MICRO", 16)                 # sequences per forward/backward
 # recompute each layer's activations in the backward instead of keeping them (HybridBackbone.grad_checkpoint):
-# ~1/3 more compute a step, a fraction of the activation memory -- what lets a 64-layer arm at S=2048 run
-# micro 8 on a 48 GB card instead of 2 (2026-10-18, the RTX 6000 session). Off by default: every base so far.
+# ~1/3 more compute a step, a fraction of the activation memory. Without it a 64-layer d1024 arm at S=2048 held
+# micro 2 on a 96 GB RTX 6000 (2026-10-18: 64 layers of saved activations plus the 128k-vocab logits in float32
+# are what fill the card, not the weights -- 22 GB with Adam). Off by default: every base so far.
 GRAD_CKPT = bool(_env("CB_GRAD_CKPT", 0))
 TOK_PER_STEP = _env("CB_TOKENS_PER_STEP", 131072)
 LR = _env("CB_LR", 6e-4, float)              # peak; CB_MODE=lrprobe to choose it

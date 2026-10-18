@@ -97,9 +97,9 @@ HOURS_PER_ARM = 20.0                                # equal compute: the same ho
 MEM_EVERY     = 4                                   # on the 64-layer grown model: 16 reads, one per original pair
 SEQ           = 2048                                # > the 512 window, so the memory has a past to read
 TOKENS_PER_STEP = 80_000                            # the optimizer step (micro x accumulation, train_base derives the
-                                                    # accumulation): 131,072 as pre-registered; 80,000 is what the RTX 6000
-                                                    # session ran the grown arm at (2026-10-18). BOTH ARMS MUST MATCH -- the
-                                                    # readout checks it from the metrics.
+                                                    # accumulation): 131,072 as pre-registered; 80,000 is what the grown arm
+                                                    # ran at on the RTX 6000 (2026-10-18: 19 forwards of micro 2 a step
+                                                    # instead of 32). BOTH ARMS MUST MATCH -- the readout checks it.
 DRIVE         = '/content/drive/MyDrive/cubbyllm'
 START_CKPT    = f'{DRIVE}/runs/base450m_cont/base450m_cont_stable_end.pt'   # the continued 450M, before its decay
 CONT_RUN      = f'{DRIVE}/runs/base450m_cont'                               # its metrics: the first reading
@@ -177,16 +177,17 @@ BASE = dict(
 )
 props = torch.cuda.get_device_properties(0)
 gb = props.total_memory / 2**30
-# micro-batch: sequences per forward at S=2048 (x accumulation = 131,072 tokens a step, whatever the micro:
+# micro-batch: sequences per forward at S=2048 (x accumulation = TOKENS_PER_STEP, whatever the micro:
 # train_base derives the accumulation from CB_TOKENS_PER_STEP, so a smaller micro changes throughput, never
-# the batch or the schedule). The grown arm holds 2.4x the parameters and, on its memory layers, a (B, S, S)
-# similarity and a (B, S, K, d) gathered value set per layer for the backward pass; on a card under 70 GB it
-# recomputes activations in the backward (CB_GRAD_CKPT=1: ~1/3 more compute a step) and runs micro 8 -- without
-# that, a 48 GB RTX 6000 held micro 2 only (2026-10-18). train_base prints peak GB; raise micro if there is room.
+# the batch or the schedule). The grown arm is 64 layers: without activation recompute even a 96 GB RTX 6000
+# held micro 2 only (2026-10-18) -- the saved activations of 64 layers at S=2048 and the 128k-vocab logits in
+# float32 fill the card long before the weights do (22 GB with Adam). So the grown arm always recomputes
+# (CB_GRAD_CKPT=1: ~1/3 more compute a step, a fraction of the memory) and runs micro 8; the memory layers'
+# (B, S, S) similarity and (B, S, K, d) gathered values are then transient too. train_base prints peak GB;
+# raise micro if there is room (16 should fit at 96 GB).
 if ARM == 'grown':
     BASE['CB_MICRO'] = '8'
-    if gb < 70:
-        BASE['CB_GRAD_CKPT'] = '1'
+    BASE['CB_GRAD_CKPT'] = '1'
 else:
     BASE['CB_MICRO'] = '16' if gb >= 70 else '8'
 smem = getattr(props, 'shared_memory_per_block_optin', 0) or (
