@@ -96,6 +96,10 @@ SESSION_H     = 24                                  # Colab Pro+; 12 on Pro / pa
 HOURS_PER_ARM = 20.0                                # equal compute: the same hours on the same card for both arms
 MEM_EVERY     = 4                                   # on the 64-layer grown model: 16 reads, one per original pair
 SEQ           = 2048                                # > the 512 window, so the memory has a past to read
+TOKENS_PER_STEP = 80_000                            # the optimizer step (micro x accumulation, train_base derives the
+                                                    # accumulation): 131,072 as pre-registered; 80,000 is what the RTX 6000
+                                                    # session ran the grown arm at (2026-10-18). BOTH ARMS MUST MATCH -- the
+                                                    # readout checks it from the metrics.
 DRIVE         = '/content/drive/MyDrive/cubbyllm'
 START_CKPT    = f'{DRIVE}/runs/base450m_cont/base450m_cont_stable_end.pt'   # the continued 450M, before its decay
 CONT_RUN      = f'{DRIVE}/runs/base450m_cont'                               # its metrics: the first reading
@@ -163,7 +167,7 @@ DECAY_JSON = json.dumps({'instruct': 91, 'agent': 36, 'program': 78})
 BASE = dict(
     CUBBY_SPM=TOKENIZER, CB_CORPUS=CORPUS, CB_DRIVE_DIR=RUN_DIR, CB_NAME=f'grow_mem_{ARM}',
     CB_D='1024', CB_HEADS='4', CB_WINDOW='512', CB_ATTN_EVERY='3',
-    CB_S=str(SEQ), CB_TOKENS_PER_STEP='131072',
+    CB_S=str(SEQ), CB_TOKENS_PER_STEP=str(TOKENS_PER_STEP),
     CB_LR='3e-4', CB_BETA2='0.95', CB_WD='0.1',
     CB_WARMUP='100', CB_DECAY_FRAC='0.2', CB_HOURS=str(HOURS_PER_ARM), CB_SEED='3',
     CB_MIX_JSON=MIX_JSON, CB_DECAY_JSON=DECAY_JSON,
@@ -234,10 +238,19 @@ run(dict(CB_WALL_H=f'{left_h - 0.3:.2f}'), 'train.log')
     code(r"""
 # --- readout: both arms side by side, against the continuation's last reading (any time, from any session) ---
 import matplotlib.pyplot as plt
+def rows_of(path):
+    return [json.loads(l) for l in open(path)] if os.path.exists(path) else []
 def vals(path):
-    rows = [json.loads(l) for l in open(path)] if os.path.exists(path) else []
-    return [r for r in rows if 'val' in r]
+    return [r for r in rows_of(path) if 'val' in r]
+def step_size(path):
+    # tokens per optimizer step, from the training rows (tokens seen / steps): the arms must agree
+    tr = [r for r in rows_of(path) if 'tokens' in r and r.get('step')]
+    return round(tr[-1]['tokens'] / tr[-1]['step']) if tr else None
 arms = {a: vals(f'{DRIVE}/runs/grow_mem_{a}/grow_mem_{a}_metrics.jsonl') for a in ('grown', 'control')}
+sizes = {a: step_size(f'{DRIVE}/runs/grow_mem_{a}/grow_mem_{a}_metrics.jsonl') for a in ('grown', 'control')}
+hours = {a: max((r['hours'] for r in rows_of(f'{DRIVE}/runs/grow_mem_{a}/grow_mem_{a}_metrics.jsonl') if 'hours' in r), default=None)
+         for a in ('grown', 'control')}
+print('tokens per step:', sizes, '  hours:', {a: (round(h, 2) if h else None) for a, h in hours.items()})
 cont = vals(f'{CONT_RUN}/base450m_cont_metrics.jsonl')
 start = cont[-1]['val'] if cont else {}
 NEW, KEY = ('instruct', 'agent', 'program'), ('fineweb_edu', 'books', 'nemotron_qa', 'nemotron_code')
@@ -252,6 +265,9 @@ for k in keys + ['_mix', '_copy']:
 checks = {}
 if len(have) == 2:
     g, c = have['grown'][-1]['val'], have['control'][-1]['val']
+    same_step = sizes['grown'] and sizes['control'] and abs(sizes['grown'] - sizes['control']) <= 2 * SEQ
+    same_hours = hours['grown'] and hours['control'] and abs(hours['grown'] - hours['control']) <= 0.5
+    checks['0. equal compute: the same tokens per step and the same hours on both arms'] = bool(same_step and same_hours)
     checks['1. growth: grown mix <= control mix (+0.02 tolerance)'] = g['_mix'] <= c['_mix'] + 0.02
     checks['3b. checked sources: grown within 0.02 of the control'] = all(g[k] <= c[k] + 0.02 for k in KEY)
 for a, v in have.items():
