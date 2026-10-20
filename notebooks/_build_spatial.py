@@ -146,9 +146,18 @@ if ARM == 'link':
     BASE.update(CB_SPATIAL='1', CB_SPATIAL_QUERY='placed', CB_ROUTE_LOSS='1',   # the link, a placed token asks about its
                 CB_SPATIAL_GATE='0')                                           # own place, the learned query taught; the
                                                                                # link is ADDED to the 450M (o = 0, gate 0)
+# EQUAL TOKENS: the link arm sizes its step count to HOURS_PER_ARM from its own measured speed; the text arm
+# (no FFTs, no route loss: faster) takes the link arm's step count instead of its own hours, so both see the
+# same tokens -- the comparison is about what the trunk is shown, not how fast the card ran it.
+if ARM == 'text':
+    sized = [json.loads(l) for l in open(f'{DRIVE}/runs/spatial_link/spatial_link_metrics.jsonl')
+             if '"sized"' in l] if os.path.exists(f'{DRIVE}/runs/spatial_link/spatial_link_metrics.jsonl') else []
+    assert sized, 'run the link arm first (its sized step count sets the text arm\'s)'
+    BASE['CB_STEPS'] = str(sized[-1]['steps'])
+    print(f"text arm: {sized[-1]['steps']:,} steps, the link arm's -- equal tokens")
 props = torch.cuda.get_device_properties(0)
 gb = props.total_memory / 2**30
-BASE['CB_MICRO'] = '16' if gb >= 70 else '8'
+BASE['CB_MICRO'] = '16' if gb >= 70 else '8'            # both arms the same: keep it as the link arm ran
 smem = getattr(props, 'shared_memory_per_block_optin', 0) or (
     160 * 1024 if (props.major, props.minor) in ((8, 0), (9, 0), (10, 0)) else 0)
 if smem < 114688:
@@ -237,6 +246,26 @@ if link and text:
     for k, ok in checks.items():
         print(f"  {'PASS' if ok else 'fail'}  {k}")
     print('  kill: gate 1 below 0.75, or gate 3 worse by 0.02')
+"""),
+    md(r"""
+### Profile: where a step's time goes (optional, ~3 min, after both arms)
+
+`validation/profile_base.py` builds this arm's exact model from the same settings, runs a few steps on random
+tokens (random places on a third when the link is on) and prints the device time by kind -- matmuls, attention,
+the 128k-vocabulary loss, the MinGRU scan, the link's FFTs, the optimizer, copies -- and the top kernels. The link
+arm ran at 54.6k tok/s, 29.5% MFU here (2026-10-20); this says what holds it there, so the next runs get the
+speed work in the right order.
+"""),
+    code(r"""
+env = dict(os.environ, **BASE, CB_PROF_STEPS='4', CB_PROF_TRACE=f'{RUN_DIR}/profile')
+p = subprocess.Popen([sys.executable, '-u', 'validation/profile_base.py'], cwd=REPO, env=env,
+                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+with open(f'{RUN_DIR}/profile.txt', 'w') as f:
+    for line in p.stdout:
+        if 'dynamo' in line or 'Graph break' in line:
+            continue
+        print(line, end=''); f.write(line)
+p.wait()
 """),
     md(r"""
 ### After the run
