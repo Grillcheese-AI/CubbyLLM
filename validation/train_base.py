@@ -97,6 +97,7 @@ SPATIAL = _env("CB_SPATIAL", 0)
 SPATIAL_SCALE = _env("CB_SPATIAL_SCALE", 2.0, float)
 SPATIAL_QUERY = os.environ.get("CB_SPATIAL_QUERY", "learned")   # "placed": a placed token asks about its own place (H-K10)
 ROUTE_LOSS = _env("CB_ROUTE_LOSS", 0.0, float)      # the learned query taught its address at placed tokens (H-K10: 0.00 -> 0.82)
+SPATIAL_GATE = _env("CB_SPATIAL_GATE", 0.0, float)  # the gate bias of a link ADDED by CB_INIT_FROM (o = 0 keeps step 0 exact)
 # ── batch / optimizer / schedule ───────────────────────────────────────────
 SEQ = _env("CB_S", 1024)
 MICRO = _env("CB_MICRO", 16)                 # sequences per forward/backward
@@ -467,7 +468,8 @@ def make_fns(model: CubbyModel, vocab: int, dev):
     if route_w:
         if GRAD_CKPT:
             raise SystemExit("CB_ROUTE_LOSS taps the query in the forward: needs CB_GRAD_CKPT=0")
-        model.spatial.q.register_forward_hook(lambda _m, _i, out: taps.append(out))
+        model.spatial.q.register_forward_hook(                         # training forwards only: eval and samples
+            lambda _m, _i, out: taps.append(out) if torch.is_grad_enabled() else None)   # must not pile up activations
 
     def loss_fn(x, y):
         taps.clear()
@@ -594,8 +596,8 @@ def payload(model, opt, step, meta, sched, extra) -> dict:
             "opt": opt.state_dict() if opt is not None else None, **extra}
 
 
-def restore(path, model, opt, dev, meta) -> dict:
-    ck = torch.load(path, map_location=dev, weights_only=False)
+def restore(path, model, opt, dev, meta, ck=None) -> dict:
+    ck = ck if ck is not None else torch.load(path, map_location=dev, weights_only=False)
     params = list(model.parameters())
     if ck["meta"] != meta or len(ck["params"]) != len(params):
         raise SystemExit(f"checkpoint {path} is a different model:\n  {ck['meta']}\n  vs {meta}")
@@ -606,6 +608,32 @@ def restore(path, model, opt, dev, meta) -> dict:
             p.copy_(s.to(p.device))
     if opt is not None and ck.get("opt") is not None:
         opt.load_state_dict(ck["opt"])
+    return ck
+
+
+def init_from(path, model, dev, meta) -> dict:
+    """``CB_INIT_FROM``: the weights of ``path`` into this model (a fresh optimizer follows). The
+    same model, or the same trunk with a spatial link ADDED -- the checkpoint's meta is this one's
+    without ``spatial``: the trunk's tensors load, the link keeps its init (``o`` zero, so on text
+    the step-0 function is the checkpoint's exactly) and its gate bias starts at ``CB_SPATIAL_GATE``
+    (0: the gate half open, so ``o`` learns at full rate; growth's -4 kept the small trunk's read
+    shut, 2026-10-20). The link's tensors come last in ``model.parameters()``."""
+    ck = torch.load(path, map_location=dev, weights_only=False)
+    added = (model.spatial is not None and "spatial" not in ck["meta"]
+             and ck["meta"] == {k: v for k, v in meta.items() if k != "spatial"})
+    if not added:
+        return restore(path, model, None, dev, meta, ck)
+    link = {id(p) for p in model.spatial.parameters()}
+    trunk = [p for p in model.parameters() if id(p) not in link]
+    if len(ck["params"]) != len(trunk) or any(p.shape != s.shape for p, s in zip(trunk, ck["params"])):
+        raise SystemExit(f"checkpoint {path}: its trunk is not this model's ({len(ck['params'])} vs {len(trunk)} tensors)")
+    with torch.no_grad():
+        for p, s in zip(trunk, ck["params"]):
+            p.copy_(s.to(p.device))
+        for p, s in zip(model.context_source.parameters(), ck["router"]):
+            p.copy_(s.to(p.device))
+        model.spatial.gate.bias.fill_(SPATIAL_GATE)
+    ck["link_added"] = True
     return ck
 
 
@@ -823,10 +851,11 @@ def train(dev):
               f"{hours_before:.1f} h trained)")
         del c
     elif INIT_FROM:
-        c = restore(INIT_FROM, model, None, dev, meta)       # weights only; meta must match
+        c = init_from(INIT_FROM, model, dev, meta)          # weights only; meta must match, or add a link
         print(f"initialised from {INIT_FROM} (its step {c.get('step')}; "
               f"{'grown from ' + str(c['grown_from']['checkpoint']) if c.get('grown_from') else 'not grown'})"
-              f" -> step 0, fresh optimizer and schedule")
+              f" -> step 0, fresh optimizer and schedule"
+              + (f"; spatial link ADDED (o = 0: text exact at step 0; gate bias {SPATIAL_GATE:+.1f})" if c.get("link_added") else ""))
         del c
     if STEPS_ENV and STEPS_ENV != sched["steps"]:
         sched.update(steps=STEPS_ENV, sized=True)

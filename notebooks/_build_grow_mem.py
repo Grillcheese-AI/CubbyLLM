@@ -186,8 +186,12 @@ shape = (dict(CB_L='64', CB_FFN_MULT='4', CB_MEM_EVERY=str(MEM_EVERY), CB_INIT_F
 # 17.7B cache), solved so that in the decay instruct is ~5%, agent ~10% and program ~2% of the tokens -- 0.8,
 # 0.3 and 0.7 epochs of each at a 1.2B-token run -- and a trace of each in the stable phase (0.5 / 1 / 0.3%)
 # so the base meets the formats before the decay. train_base prints the epoch table; keep every row under ~4.
-MIX_JSON   = json.dumps({'instruct': 6, 'agent': 2, 'program': 8, **({MEM_SHARD: MEM_MULT} if ROUND >= 2 else {})})
-DECAY_JSON = json.dumps({'instruct': 91, 'agent': 36, 'program': 78, **({MEM_SHARD: MEM_MULT} if ROUND >= 2 else {})})
+# the hypertoken shards in the cache (villages, facts at addresses, their text controls) belong to other runs: 0 here,
+# except the memory's own shard in round >= 2 (round 1 drew spatial / spatial_text at ~0.06% each, size-proportional)
+HYPER = {n: 0 for n in json.load(open(f'{CORPUS}/_sizes.json')) if n.startswith(('spatial', 'facts'))}
+MEM = {MEM_SHARD: MEM_MULT} if ROUND >= 2 else {}
+MIX_JSON   = json.dumps({**HYPER, 'instruct': 6, 'agent': 2, 'program': 8, **MEM})
+DECAY_JSON = json.dumps({**HYPER, 'instruct': 91, 'agent': 36, 'program': 78, **MEM})
 BASE = dict(
     CUBBY_SPM=TOKENIZER, CB_CORPUS=CORPUS, CB_DRIVE_DIR=RUN_DIR, CB_NAME=f'grow_mem_{ARM}{RUN_SUFFIX}',
     CB_D='1024', CB_HEADS='4', CB_WINDOW='512', CB_ATTN_EVERY='3',

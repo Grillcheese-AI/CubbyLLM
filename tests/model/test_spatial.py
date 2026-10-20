@@ -163,3 +163,31 @@ def test_a_placed_token_asks_about_its_own_place():
             logits, state = m.step(x[:, t_], state, position=pos[:, t_], placed=placed[:, t_])
             steps.append(logits)
         assert torch.allclose(full, torch.stack(steps, 1), atol=1e-4, rtol=1e-4)   # decode = forward, places asked
+
+
+def test_init_from_adds_a_link_to_a_trained_trunk(tmp_path):
+    """CB_INIT_FROM with a link the checkpoint does not have: the trunk loads, the link keeps its
+    init, text (and a place of zero) is the checkpoint's function exactly; another shape refuses."""
+    import os
+    import sys
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "validation"))
+    import pytest
+    import train_base
+    base = _model(False, seed=1)
+    path = tmp_path / "base.pt"
+    torch.save(train_base.payload(base, None, 7, dict(META), {}, {}), path)
+    m = _model(True, seed=2)                                               # other weights everywhere
+    linked = dict(META, spatial={"scale": 1.0, "seed": 5, "at": META["L"] // 2})
+    ck = train_base.init_from(str(path), m, torch.device("cpu"), linked)
+    assert ck["link_added"] and float(m.spatial.gate.bias) == train_base.SPATIAL_GATE
+    assert torch.equal(m.spatial.o.weight, torch.zeros_like(m.spatial.o.weight))
+    x, placed = _tokens(5), _placed()
+    with torch.no_grad():
+        assert torch.allclose(m.forward(x), base.forward(x), atol=1e-6)                     # text: the checkpoint's function
+        zero = torch.zeros(2, S, 3)
+        assert torch.allclose(m.forward(x, positions=zero, placed=placed), base.forward(x), atol=1e-5)   # S(0) = identity
+    same = _model(True, seed=3)
+    torch.save(train_base.payload(m, None, 8, linked, {}, {}), tmp_path / "linked.pt")
+    assert not train_base.init_from(str(tmp_path / "linked.pt"), same, torch.device("cpu"), linked).get("link_added")
+    with pytest.raises(SystemExit):
+        train_base.init_from(str(path), _model(True, seed=4), torch.device("cpu"), dict(linked, window=META["window"] + 1))

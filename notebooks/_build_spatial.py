@@ -127,7 +127,11 @@ assert os.path.exists(TOKENIZER), TOKENIZER
 """),
     code(r"""
 # --- config, and a runner that tees the log to Drive ---
-MIX_JSON = json.dumps({n: SHARD_MULT for n in SHARDS})
+# this arm's two shards at ~5% each; every OTHER hypertoken shard in the cache (the other arm's, the villages
+# without addresses, the memory's facts_text_far) at 0 -- size-proportional draws would otherwise give each ~0.1%
+OTHERS = sorted(n for n in json.load(open(f'{CORPUS}/_sizes.json'))
+                if n.startswith(('spatial', 'facts')) and n not in SHARDS)
+MIX_JSON = json.dumps({**{n: 0 for n in OTHERS}, **{n: SHARD_MULT for n in SHARDS}})
 BASE = dict(
     CUBBY_SPM=TOKENIZER, CB_CORPUS=CORPUS, CB_DRIVE_DIR=RUN_DIR, CB_NAME=f'spatial_{ARM}',
     CB_D='1024', CB_L='32', CB_HEADS='4', CB_WINDOW='512', CB_ATTN_EVERY='3', CB_INIT_FROM=START_CKPT,
@@ -139,8 +143,9 @@ BASE = dict(
     CB_STABLE_END='1', CB_GRAD_CKPT='0',
 )
 if ARM == 'link':
-    BASE.update(CB_SPATIAL='1', CB_SPATIAL_QUERY='placed', CB_ROUTE_LOSS='1')   # the link, a placed token asks about
-                                                                               # its own place, the learned query taught
+    BASE.update(CB_SPATIAL='1', CB_SPATIAL_QUERY='placed', CB_ROUTE_LOSS='1',   # the link, a placed token asks about its
+                CB_SPATIAL_GATE='0')                                           # own place, the learned query taught; the
+                                                                               # link is ADDED to the 450M (o = 0, gate 0)
 props = torch.cuda.get_device_properties(0)
 gb = props.total_memory / 2**30
 BASE['CB_MICRO'] = '16' if gb >= 70 else '8'
@@ -148,7 +153,8 @@ smem = getattr(props, 'shared_memory_per_block_optin', 0) or (
     160 * 1024 if (props.major, props.minor) in ((8, 0), (9, 0), (10, 0)) else 0)
 if smem < 114688:
     BASE['CB_NO_FLEX'] = '1'
-print(f"{ARM}: {props.name}, {gb:.0f} GB -> micro {BASE['CB_MICRO']} at S={SEQ}; {HOURS_PER_ARM} h; shards {SHARDS} x{SHARD_MULT}"
+print(f"{ARM}: {props.name}, {gb:.0f} GB -> micro {BASE['CB_MICRO']} at S={SEQ}; {HOURS_PER_ARM} h; shards {SHARDS} x{SHARD_MULT}, "
+      f"{OTHERS} x0"
       f"{'; link on, query=placed, route loss 1' if ARM == 'link' else '; no link'}")
 
 def run(env_extra, log_name):
@@ -177,8 +183,8 @@ def run(env_extra, log_name):
 
 **Rerun this same cell in every session** (an arm is ~2 h; a stopped cell saves a checkpoint first and the next
 session resumes from the newest Drive slot). The first log lines should say `initialised from ...
-base450m_cont_stable_end.pt` and, on the `link` arm, the epoch table should list `spatial_here` and `facts`
-at ~3-4 epochs each.
+base450m_cont_stable_end.pt` -- on the `link` arm `...; spatial link ADDED (o = 0: text exact at step 0; gate bias
++0.0)` -- and the epoch table should list this arm's two shards at ~1-4 epochs each and the others at 0.
 """),
     code(r"""
 check_shards()                                     # a new runtime starts with an empty local disk
