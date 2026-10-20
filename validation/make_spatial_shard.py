@@ -113,17 +113,23 @@ def questions(sc: Scene, rng: random.Random, k: int, ask: str = "learned") -> li
     return out
 
 
-def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int):
-    """One document: ``(ids, places)`` of exactly ``doc`` tokens (questions dropped from the
-    end when the village alone would not fit them; </s>-padded otherwise). In ``places`` mode
-    a thing's name tokens carry its cell and a question's ``here`` carries the asked cell;
-    in ``text`` mode cells are words and nothing is placed."""
-    ids, pos = [], []
+WRITE, ASK = 1, 2                                   # role flags (train_base.Tokens): into the scene / reads there
 
-    def put(text: str, cell=None):
+
+def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int):
+    """One document: ``(ids, places, roles)`` of exactly ``doc`` tokens (questions dropped
+    from the end when the village alone would not fit them; </s>-padded otherwise). In
+    ``places`` mode a thing's name tokens carry its cell and WRITE it into the scene, and a
+    question's ``here`` carries the asked cell and ASKs there (it does not write: a question
+    is not a thing); in ``text`` mode cells are words and nothing is placed."""
+    ids, pos, roles = [], [], []
+
+    def put(text: str, cell=None, role: int = WRITE):
         t = tk.encode(text, add_special_tokens=False).ids
         ids.extend(t)
-        pos.extend([cell if (cell is not None and mode == "places") else None] * len(t))
+        on = cell is not None and mode == "places"
+        pos.extend([cell if on else None] * len(t))
+        roles.extend([role if on else 0] * len(t))
 
     put("Village:\n")
     for cell, name in sc.serialize(*_box(sc)):
@@ -139,29 +145,31 @@ def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int):
         start = len(ids)
         if cell is not None and q.startswith("What is at"):
             put("Question: What is at ")
-            put("here" if mode == "places" else " ".join(map(str, cell)), cell)
+            put("here" if mode == "places" else " ".join(map(str, cell)), cell, ASK)
             put("?\n")
         elif cell is not None:                      # a question that carries its address (--ask placed)
             put(f"Question: {q} ")
-            put("here" if mode == "places" else " ".join(map(str, cell)), cell)
+            put("here" if mode == "places" else " ".join(map(str, cell)), cell, ASK)
             put("\n")
         else:
             put(f"Question: {q}\n")
         put(f"Answer: {a}\n")
         if len(ids) + 1 > doc:
-            del ids[start:], pos[start:]
+            del ids[start:], pos[start:], roles[start:]
             break
     if head + 1 > doc:
         raise ValueError(f"a village of {len(sc.things)} things needs {head + 1} tokens, --doc is {doc}")
     ids.append(eos)
     pos.append(None)
+    roles.append(0)
     ids.extend([eos] * (doc - len(ids)))
     pos.extend([None] * (doc - len(pos)))
+    roles.extend([0] * (doc - len(roles)))
     places = np.full((doc, 3), NO_PLACE, dtype=np.int16)
     for i, c in enumerate(pos):
         if c is not None:
             places[i] = c
-    return np.asarray(ids, dtype=np.uint32), places
+    return np.asarray(ids, dtype=np.uint32), places, np.asarray(roles, dtype=np.uint8)
 
 
 def _box(sc: Scene):
@@ -191,14 +199,16 @@ def main() -> None:
     rng = random.Random(args.seed)
     t0 = time.time()
     ids_path, pos_path = os.path.join(args.cache, f"{name}.u32"), os.path.join(args.cache, f"{name}.pos.i16")
+    role_path = os.path.join(args.cache, f"{name}.role.u8")
     n_q = n_placed = 0
-    with open(ids_path + ".part", "wb") as fi, open(pos_path + ".part", "wb") as fp:
+    with open(ids_path + ".part", "wb") as fi, open(pos_path + ".part", "wb") as fp, open(role_path + ".part", "wb") as fr:
         for v in range(args.villages):
             sc = village(rng, rng.randint(*args.things))
             qa = questions(sc, rng, rng.randint(*args.questions), args.ask)
-            ids, places = render(tk, sc, qa, args.mode, eos, args.doc)
+            ids, places, roles = render(tk, sc, qa, args.mode, eos, args.doc)
             fi.write(ids.tobytes())
             fp.write(places.tobytes())
+            fr.write(roles.tobytes())
             n_q += len(qa)
             n_placed += int((places[:, 0] != NO_PLACE).sum())
             if (v + 1) % 5000 == 0:
@@ -206,8 +216,10 @@ def main() -> None:
     os.replace(ids_path + ".part", ids_path)
     if args.mode == "places":
         os.replace(pos_path + ".part", pos_path)
+        os.replace(role_path + ".part", role_path)
     else:
         os.remove(pos_path + ".part")             # the control places nothing: a plain text shard
+        os.remove(role_path + ".part")
     total = args.villages * args.doc
     hold_docs = max(1, int(args.villages * args.holdout_frac))
     hold = hold_docs * args.doc

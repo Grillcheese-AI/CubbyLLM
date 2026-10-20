@@ -45,7 +45,8 @@ def test_a_document_places_the_objects_pieces_and_the_question(tk):
     by_q = {f"What is the {words(r)} of {words(s)}?": address(s, rels[r]) for s, r, _o in facts}
     assert all(at == by_q[q] for q, _a, at in qa)                                  # the question carries the fact's address
     eos = tk.token_to_id("</s>")
-    ids, places = render(tk, facts, rels, qa, "places", eos, 200)
+    ids, places, roles = render(tk, facts, rels, qa, "places", eos, 200)
+    assert ((places[:, 0] != NO_PLACE) == (roles != 0)).all()
     assert ids.shape == (200,) and places.shape == (200, 3) and ids[-1] == eos
     placed = [i for i in range(200) if places[i, 0] != NO_PLACE]
     text = tk.decode(ids.tolist(), skip_special_tokens=True)
@@ -56,9 +57,10 @@ def test_a_document_places_the_objects_pieces_and_the_question(tk):
     a0 = address("KeikoMatsuzaka", 0)
     for i in range(len(o)):
         assert ids[at + i] == o[i] and tuple(int(v) for v in places[at + i]) == (a0[0], a0[1], a0[2] + STEP * i)
+        assert roles[at + i] == 1                                       # a fact's object writes into the scene
     # every placed token is an object's piece, a question's here, or an answer's piece
     here = [i for i in placed if tk.decode([int(ids[i])]).strip() == "here"]
-    assert len(here) == 3
+    assert len(here) == 3 and all(roles[i] == 2 for i in here)          # a question asks; it does not write
     for i in here:                                                      # here asks for piece 0; the answer's piece j asks for j + 1
         a = tuple(int(v) for v in places[i])
         j = i + 1
@@ -69,7 +71,9 @@ def test_a_document_places_the_objects_pieces_and_the_question(tk):
             ans.append(tuple(int(v) for v in places[j]))
             j += 1
         assert ans == [(a[0], a[1], a[2] + STEP * (n + 1)) for n in range(len(ans))]
-    ids_t, places_t = render(tk, facts, rels, qa, "text", eos, 200)
+        assert all(roles[k] == 2 for k in range(i + 1, j) if places[k, 0] != NO_PLACE)   # the answer's pieces ask too
+    ids_t, places_t, roles_t = render(tk, facts, rels, qa, "text", eos, 200)
+    assert not roles_t.any()
     assert not (places_t[:, 0] != NO_PLACE).any() and "here" not in tk.decode(ids_t.tolist(), skip_special_tokens=True)
     with pytest.raises(ValueError):
         render(tk, facts * 20, rels, [], "places", eos, 64)
@@ -83,11 +87,11 @@ def test_far_fills_the_gap_with_text_and_lands_the_questions_at_the_end(tk):
     facts = [("KeikoMatsuzaka", "WORKS_FOR", "Daiei"), ("Leadership", "HAS_PART", "PowerConcept")]
     qa = document(facts, rels, random.Random(1), 2)
     eos = tk.token_to_id("</s>")
-    ids, places = render(tk, facts, rels, qa, "text", eos, 1024, Stub())
+    ids, places, _ = render(tk, facts, rels, qa, "text", eos, 1024, Stub())
     assert ids.shape == (1024,) and ids[-1] == eos and int((ids == eos).sum()) == 1   # no padding: the gap is text
     text = tk.decode(ids.tolist(), skip_special_tokens=True)
     assert text.startswith("Facts:\n") and text.rstrip().endswith(words(qa[-1][1]))     # the questions at the end
     first_q = next(i for i in range(1024) if tk.decode(ids[i:i + 3].tolist()).startswith("Question"))
     assert first_q > 1024 - 200 and not (places[:, 0] != NO_PLACE).any()              # ~800 tokens past the facts
-    near, _ = render(tk, facts, rels, qa, "places", eos, 1024, Stub())
-    assert near.shape == (1024,)                                                       # places mode fills too
+    near, near_places, near_roles = render(tk, facts, rels, qa, "places", eos, 1024, Stub())
+    assert near.shape == (1024,) and ((near_places[:, 0] != NO_PLACE) == (near_roles != 0)).all()   # places mode fills too

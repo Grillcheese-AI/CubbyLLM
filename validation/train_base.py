@@ -180,21 +180,29 @@ PEAK_TFLOPS = {"A100": 312, "H100": 989, "H200": 989, "B200": 2250, "L4": 121,
 # ─────────────────────────────────────────────────────────────────────────────
 # data
 # ─────────────────────────────────────────────────────────────────────────────
+WRITE, ASK, START = 1, 2, 4                     # a token's role flags (``Tokens.flags``)
+
+
 class Tokens:
-    """A micro-batch's input when a shard carries places: the ids (B, S) and each token's
-    place (B, S, 3) int64, ``NO_PLACE`` where it has none (``make_spatial_shard.py``'s
-    ``.pos.i16``). Moves like a tensor; ``make_fns`` unpacks it for ``model.forward``."""
+    """A micro-batch's input when a shard carries places: the ids (B, S), each token's place
+    (B, S, 3) int64, ``NO_PLACE`` where it has none (``make_spatial_shard.py``'s ``.pos.i16``),
+    and optionally its role flags (B, S) uint8 -- ``WRITE`` (a thing at a place: into the
+    scene), ``ASK`` (a question about a place: reads there), ``START`` (a document begins:
+    the scene restarts). Without flags a placed token both writes and asks (the first
+    shards). Moves like a tensor; ``forward_batch`` unpacks it for ``model.forward``."""
 
-    __slots__ = ("ids", "pos")
+    __slots__ = ("ids", "pos", "flags")
 
-    def __init__(self, ids, pos):
-        self.ids, self.pos = ids, pos
+    def __init__(self, ids, pos, flags=None):
+        self.ids, self.pos, self.flags = ids, pos, flags
 
     def to(self, *a, **k):
-        return Tokens(self.ids.to(*a, **k), self.pos.to(*a, **k))
+        return Tokens(self.ids.to(*a, **k), self.pos.to(*a, **k),
+                      None if self.flags is None else self.flags.to(*a, **k))
 
     def pin_memory(self):
-        return Tokens(self.ids.pin_memory(), self.pos.pin_memory())
+        return Tokens(self.ids.pin_memory(), self.pos.pin_memory(),
+                      None if self.flags is None else self.flags.pin_memory())
 
     @property
     def shape(self):
@@ -210,7 +218,7 @@ class Corpus:
     def __init__(self, cache_dir: str, seq: int, val_tokens: int, seed: int):
         self.seq, self.seed = int(seq), int(seed)
         self.arrays, self.train_len, self.val_start = {}, {}, {}
-        self.places, self.align = {}, {}
+        self.places, self.align, self.roles = {}, {}, {}
         ap = os.path.join(cache_dir, "_align.json")
         aligns = json.load(open(ap, encoding="utf-8")) if os.path.exists(ap) else {}
         # a subset built by make_base_cache.py keeps each shard's ORIGINAL
@@ -236,6 +244,9 @@ class Corpus:
             side = os.path.join(cache_dir, f"{name}.pos.i16")
             if os.path.exists(side):
                 self.places[name] = np.memmap(side, dtype=np.int16, mode="r").reshape(-1, 3)
+                rp = os.path.join(cache_dir, f"{name}.role.u8")     # WRITE / ASK per token (absent: both)
+                if os.path.exists(rp):
+                    self.roles[name] = np.memmap(rp, dtype=np.uint8, mode="r")
                 assert len(self.places[name]) == n, f"{name}: {n:,} tokens but {len(self.places[name]):,} places"
             if name in aligns:
                 self.align[name] = int(aligns[name])
@@ -267,13 +278,24 @@ class Corpus:
 
     def _window(self, name: str, i: int):
         """The window at ``i`` (aligned for an aligned shard): ids and, when the shard has
-        them, places."""
+        them, ``(places, flags)`` -- the flags carry the roles (both when the shard has no role
+        file) and ``START`` at every document boundary of an aligned shard."""
         a = self.align.get(name)
         if a:
             i = (i // a) * a
-        ids = np.asarray(self.arrays[name][i:i + self.seq + 1], dtype=np.int64)
+        n = self.seq + 1
+        ids = np.asarray(self.arrays[name][i:i + n], dtype=np.int64)
         pos = self.places.get(name)
-        return ids, (None if pos is None else np.asarray(pos[i:i + self.seq + 1], dtype=np.int64))
+        if pos is None:
+            return ids, None
+        from cubbyllm.model.spatial import NO_PLACE
+        p = np.asarray(pos[i:i + n], dtype=np.int64)
+        role = self.roles.get(name)
+        f = (np.array(role[i:i + n], dtype=np.uint8) if role is not None          # a copy: the memmap is read-only
+             else np.where(p[:, 0] != NO_PLACE, WRITE | ASK, 0).astype(np.uint8))
+        if a:
+            f[(-(i % a)) % a::a] |= START                   # the windows start on a document: every a-th token
+        return ids, (p, f)
 
     def _pack(self, ids: np.ndarray, pos: list):
         """``(x, y)`` from windows; ``x`` is a ``Tokens`` when any window carries places."""
@@ -282,10 +304,11 @@ class Corpus:
             return t[:, :-1], t[:, 1:]
         from cubbyllm.model.spatial import NO_PLACE
         p = np.full((ids.shape[0], ids.shape[1], 3), NO_PLACE, dtype=np.int64)
+        f = np.zeros(ids.shape, dtype=np.uint8)
         for j, w in enumerate(pos):
             if w is not None:
-                p[j] = w
-        return Tokens(t[:, :-1], torch.from_numpy(p)[:, :-1]), t[:, 1:]
+                p[j], f[j] = w
+        return Tokens(t[:, :-1], torch.from_numpy(p)[:, :-1], torch.from_numpy(f)[:, :-1]), t[:, 1:]
 
     def batch(self, step: int, micro: int, b: int, phase: str):
         rng = np.random.default_rng([self.seed, int(step), int(micro)])
@@ -463,7 +486,11 @@ def forward_batch(model: CubbyModel, x):
     if not bool(placed.any()):
         return model.forward(x.ids)                 # a text batch: the plain path, bit for bit
     positions = torch.where(placed.unsqueeze(-1), x.pos, torch.zeros_like(x.pos)).float()
-    return model.forward(x.ids, positions=positions, placed=placed)
+    if x.flags is None:
+        return model.forward(x.ids, positions=positions, placed=placed)
+    f = x.flags.long()
+    return model.forward(x.ids, positions=positions, placed=placed, writes=placed & ((f & WRITE) != 0),
+                         asks=placed & ((f & ASK) != 0), starts=(f & START) != 0)
 
 
 def make_fns(model: CubbyModel, vocab: int, dev):

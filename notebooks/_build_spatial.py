@@ -51,13 +51,27 @@ held-out document of its two shards, teacher-forced exact answers:
    given but the *questions'* `here` removed is the learned route's own number (reported, no gate yet).
 Kill: gate 1 below 75%, or gate 3 worse by 0.02.
 
+**Run 1 (2026-10-20, G4, 2,808 steps = 0.37B tokens an arm) and what run 2 changes.** The link arm answered the
+villages' held-out questions at **0.793** with the address on the question and **0.700** with the trunk's own query
+(the route, taught by the route loss); the facts at **0.016** (first token 0.27) -- the read failed on the facts, for
+reasons in the shard and the scene, not the algebra: every placed token wrote into one scene per 1,024-token
+window (two documents, every name piece, *and the questions' own tokens at the addresses they asked about*:
+~150-250 items in d = 1024, past the capacity law's ~55 for 90%), and the facts sat inside the attention window
+(so `text` copies them and "link ≥ 2× text" tested attention, not the read). **Run 2:** a thing WRITES into the
+scene and a question only ASKS there (`.role.u8` beside the places; `train_base.Tokens.flags`); the scene restarts
+at every document (`SpatialLink.scene(starts=)`); the facts move **beyond the window** -- `facts_far1k`
+(`make_fact_shard.py --far --doc 1024 --facts 6 10`: 6-10 facts, ~800 tokens of real text, then the questions;
+~24 written items a document) against `facts_far1k_text`, the same documents as words, where only the trunk's
+recurrence could carry a fact 800 tokens; micro 32.
+
 **The small-scale reads this rests on (2026-10-20, `validation/exp_k10_hypertoken.py`):** a 3.4M trunk, facts shown
 once, questions beyond the window -- 0.94 with the address on the question, 0.82 for the learned route taught by
 the route loss, 0.00 for text, 0.03 for attention over the whole document, 0.00 with a mismatched address.
 
 **Before you run**
-1. The four shards are on Drive under `token_cache_cont/` (`spatial_here.u32` + `.pos.i16`, `spatial_text_here.u32`,
-   `facts.u32` + `.pos.i16`, `facts_text.u32`, and the three index files) -- built 2026-10-20.
+1. The shards are on Drive under `token_cache_cont/` -- run 1: `spatial_here` (+ `.pos.i16`, `.role.u8`),
+   `spatial_text_here`, `facts` (+ `.pos.i16`), `facts_text`; run 2 adds `facts_far1k` (+ `.pos.i16`, `.role.u8`)
+   and `facts_far1k_text` -- built 2026-10-20, with the three index files.
 2. **Push `master`** with `CB_SPATIAL_QUERY` and `CB_ROUTE_LOSS` in `train_base.py` (checked below).
 3. Each arm is ~2 h on an A100; the two can run in two sessions or two runtimes. No activation recompute
    (the route loss taps the query in the forward: `CB_GRAD_CKPT=0`).
@@ -85,8 +99,10 @@ assert os.path.exists(f'{REPO}/validation/exp_hypertoken_recall.py'), 'push exp_
 ARM           = 'link'                              # 'link' (places + the route loss) or 'text' (the control)
 SESSION_H     = 12                                  # Colab Pro; 24 on Pro+
 HOURS_PER_ARM = 2.0                                 # equal compute: the same hours on the same card for both arms
-SEQ           = 1024                                # the shards' documents are 512 tokens: two whole documents a window
+SEQ           = 1024                                # whole documents a window: two villages (512) or one far-facts doc (1024)
 TOKENS_PER_STEP = 131_072                           # the optimizer step; BOTH ARMS MUST MATCH (the readout checks it)
+RUN           = 2                                   # 1: the first pair (facts in-window, one scene a window); 2: roles,
+                                                    # a scene per document, the facts beyond the window (see above)
 SHARD_MULT    = 96                                  # ~5% of the tokens each for the two 10M-token shards against the 17.7B
                                                     # cache (size x multiplier draws): ~35M tokens = 3.5 epochs of each at 2 h
 DRIVE         = '/content/drive/MyDrive/cubbyllm'
@@ -94,8 +110,12 @@ START_CKPT    = f'{DRIVE}/runs/base450m_cont/base450m_cont_stable_end.pt'   # th
 CORPUS_DRIVE  = f'{DRIVE}/token_cache_cont'
 CORPUS        = '/content/token_cache_cont'                  # LOCAL SSD (Drive-FUSE reads are ~30x slower)
 TOKENIZER     = f'{CORPUS}/tokenizer/grillcheese_bbpe128k.json'
-RUN_DIR       = f'{DRIVE}/runs/spatial_{ARM}'
-SHARDS        = {'link': ('spatial_here', 'facts'), 'text': ('spatial_text_here', 'facts_text')}[ARM]
+NAME          = f'spatial_{ARM}' + ('' if RUN == 1 else f'_{RUN}')
+RUN_DIR       = f'{DRIVE}/runs/{NAME}'
+FACTS         = {1: ('facts', 'facts_text'), 2: ('facts_far1k', 'facts_far1k_text')}[RUN]
+SHARDS        = {'link': ('spatial_here', FACTS[0]), 'text': ('spatial_text_here', FACTS[1])}[ARM]
+MULTS         = {n: (SHARD_MULT if n.startswith('spatial') or RUN == 1 else SHARD_MULT // 2) for n in SHARDS}
+                                                    # facts_far1k is 20M tokens, twice the others: half the multiplier
 assert ARM in ('link', 'text'), ARM
 assert os.path.exists(START_CKPT), START_CKPT
 os.makedirs(RUN_DIR, exist_ok=True); os.makedirs(CORPUS, exist_ok=True)
@@ -116,7 +136,8 @@ def check_shards():
                 bad.append(n + ext)
     assert not bad, f'missing or short, rerun this cell: {bad}'
     for n in SHARDS:
-        assert json.load(open(f'{CORPUS}/_align.json')).get(n) == 512, f'{n} is not listed at 512 in _align.json'
+        a = json.load(open(f'{CORPUS}/_align.json')).get(n)
+        assert a and SEQ % a == 0, f'{n} is listed at {a} in _align.json: a window of {SEQ} must hold whole documents'
     return len(names)
 
 assert os.path.exists(f'{CORPUS_DRIVE}/_sizes.json'), f'no cache at {CORPUS_DRIVE}'
@@ -131,9 +152,9 @@ assert os.path.exists(TOKENIZER), TOKENIZER
 # without addresses, the memory's facts_text_far) at 0 -- size-proportional draws would otherwise give each ~0.1%
 OTHERS = sorted(n for n in json.load(open(f'{CORPUS}/_sizes.json'))
                 if n.startswith(('spatial', 'facts')) and n not in SHARDS)
-MIX_JSON = json.dumps({**{n: 0 for n in OTHERS}, **{n: SHARD_MULT for n in SHARDS}})
+MIX_JSON = json.dumps({**{n: 0 for n in OTHERS}, **MULTS})
 BASE = dict(
-    CUBBY_SPM=TOKENIZER, CB_CORPUS=CORPUS, CB_DRIVE_DIR=RUN_DIR, CB_NAME=f'spatial_{ARM}',
+    CUBBY_SPM=TOKENIZER, CB_CORPUS=CORPUS, CB_DRIVE_DIR=RUN_DIR, CB_NAME=NAME,
     CB_D='1024', CB_L='32', CB_HEADS='4', CB_WINDOW='512', CB_ATTN_EVERY='3', CB_INIT_FROM=START_CKPT,
     CB_S=str(SEQ), CB_TOKENS_PER_STEP=str(TOKENS_PER_STEP),
     CB_LR='3e-4', CB_BETA2='0.95', CB_WD='0.1',
@@ -150,19 +171,19 @@ if ARM == 'link':
 # (no FFTs, no route loss: faster) takes the link arm's step count instead of its own hours, so both see the
 # same tokens -- the comparison is about what the trunk is shown, not how fast the card ran it.
 if ARM == 'text':
-    sized = [json.loads(l) for l in open(f'{DRIVE}/runs/spatial_link/spatial_link_metrics.jsonl')
-             if '"sized"' in l] if os.path.exists(f'{DRIVE}/runs/spatial_link/spatial_link_metrics.jsonl') else []
+    LINK_M = f"{DRIVE}/runs/{NAME.replace('text', 'link')}/{NAME.replace('text', 'link')}_metrics.jsonl"
+    sized = [json.loads(l) for l in open(LINK_M) if '"sized"' in l] if os.path.exists(LINK_M) else []
     assert sized, 'run the link arm first (its sized step count sets the text arm\'s)'
     BASE['CB_STEPS'] = str(sized[-1]['steps'])
     print(f"text arm: {sized[-1]['steps']:,} steps, the link arm's -- equal tokens")
 props = torch.cuda.get_device_properties(0)
 gb = props.total_memory / 2**30
-BASE['CB_MICRO'] = '16' if gb >= 70 else '8'            # both arms the same: keep it as the link arm ran
+BASE['CB_MICRO'] = ('16' if RUN == 1 else '32') if gb >= 90 else ('16' if gb >= 70 else '8')   # both arms of a run alike
 smem = getattr(props, 'shared_memory_per_block_optin', 0) or (
     160 * 1024 if (props.major, props.minor) in ((8, 0), (9, 0), (10, 0)) else 0)
 if smem < 114688:
     BASE['CB_NO_FLEX'] = '1'
-print(f"{ARM}: {props.name}, {gb:.0f} GB -> micro {BASE['CB_MICRO']} at S={SEQ}; {HOURS_PER_ARM} h; shards {SHARDS} x{SHARD_MULT}, "
+print(f"{ARM} (run {RUN}): {props.name}, {gb:.0f} GB -> micro {BASE['CB_MICRO']} at S={SEQ}; {HOURS_PER_ARM} h; shards {MULTS}, "
       f"{OTHERS} x0"
       f"{'; link on, query=placed, route loss 1' if ARM == 'link' else '; no link'}")
 
@@ -214,35 +235,41 @@ import matplotlib.pyplot as plt
 def rows_of(path):
     return [json.loads(l) for l in open(path)] if os.path.exists(path) else []
 PROBE = {}
+SUF = '' if RUN == 1 else f'_{RUN}'
 for arm, strip in (('link', '0'), ('link', '1'), ('text', '0')):
-    final = f'{DRIVE}/runs/spatial_{arm}/spatial_{arm}_final.pt'
+    final = f'{DRIVE}/runs/spatial_{arm}{SUF}/spatial_{arm}{SUF}_final.pt'
     if not os.path.exists(final):
         print(arm, 'has no final yet'); continue
-    shards = {'link': 'spatial_here,facts', 'text': 'spatial_text_here,facts_text'}[arm]
+    shards = {'link': f'spatial_here,{FACTS[0]}', 'text': f'spatial_text_here,{FACTS[1]}'}[arm]
     key = arm + ('_route' if strip == '1' else '')
-    out = f'{DRIVE}/runs/spatial_{arm}/hypertoken_recall_{key}.json'
+    out = f'{DRIVE}/runs/spatial_{arm}{SUF}/hypertoken_recall_{key}.json'
     env = dict(os.environ, CB_CKPT=final, CB_CORPUS=CORPUS, CUBBY_SPM=TOKENIZER, CB_SHARDS=shards, CB_DOCS='400',
                CB_BATCH='16', CB_STRIP=strip, CB_OUT=out)
-    subprocess.run([sys.executable, 'validation/exp_hypertoken_recall.py'], cwd=REPO, env=env, check=True)
+    p = subprocess.Popen([sys.executable, '-u', 'validation/exp_hypertoken_recall.py'], cwd=REPO, env=env,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    for line in p.stdout:                          # streamed: subprocess.run's output does not show in Colab
+        if 'dynamo' not in line:
+            print(line, end='')
+    assert p.wait() == 0, f'the probe failed on {arm}'
     PROBE[key] = json.load(open(out))['shards']
 link, text, route = PROBE.get('link', {}), PROBE.get('text', {}), PROBE.get('link_route', {})
 mix = {}
 for arm in ('link', 'text'):
-    v = [r for r in rows_of(f'{DRIVE}/runs/spatial_{arm}/spatial_{arm}_metrics.jsonl') if 'val' in r]
+    v = [r for r in rows_of(f'{DRIVE}/runs/spatial_{arm}{SUF}/spatial_{arm}{SUF}_metrics.jsonl') if 'val' in r]
     mix[arm] = v[-1]['val'].get('_mix') if v else None
 print('\nheld-out text mix:', mix)
 checks = {}
 if link and text:
     v_link, v_text = link['spatial_here']['exact'], text['spatial_text_here']['exact']
-    f_link, f_text = link['facts']['exact'], text['facts_text']['exact']
+    f_link, f_text = link[FACTS[0]]['exact'], text[FACTS[1]]['exact']
     checks['1. H-S12 gate 1: villages -- link >= 0.90, text < 0.60'] = v_link >= 0.90 and v_text < 0.60
     checks['2. H-K10 gate 4: facts -- link >= 2x text and >= 0.50'] = f_link >= 2 * f_text and f_link >= 0.50
     if mix['link'] is not None and mix['text'] is not None:
         checks['3. H-S12 gate 2: text mix of link within 0.01 of text'] = mix['link'] <= mix['text'] + 0.01
     print(f"villages: link {v_link:.3f} (first token {link['spatial_here']['first_token']:.3f})  text {v_text:.3f}"
           + (f"  route alone {route['spatial_here']['exact']:.3f}" if route else ''))
-    print(f"facts:    link {f_link:.3f} (first token {link['facts']['first_token']:.3f})  text {f_text:.3f}"
-          + (f"  route alone {route['facts']['exact']:.3f}" if route else ''))
+    print(f"facts:    link {f_link:.3f} (first token {link[FACTS[0]]['first_token']:.3f})  text {f_text:.3f}"
+          + (f"  route alone {route[FACTS[0]]['exact']:.3f}" if route else ''))
     for k, ok in checks.items():
         print(f"  {'PASS' if ok else 'fail'}  {k}")
     print('  kill: gate 1 below 0.75, or gate 3 worse by 0.02')

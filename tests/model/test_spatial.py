@@ -209,3 +209,37 @@ def test_the_link_runs_under_bf16_autocast_with_exact_phases():
     with torch.autocast("cpu", dtype=torch.bfloat16):
         out = m.forward(x, positions=pos, placed=placed)
     assert torch.isfinite(out.float()).all()
+
+
+def test_things_write_questions_ask_and_each_document_has_its_own_scene():
+    """A thing at a place writes into the scene, a question asks there without writing, and the
+    scene restarts at each document: the segmented scene is each document's own, and the decode
+    step (start / write / ask per token) is the forward."""
+    m = _model(True)
+    m.spatial = SpatialLink(D, scale=1.0, seed=5, at=META["L"] // 2, query="placed")
+    with torch.no_grad():
+        m.spatial.o.weight.normal_(0, 0.3)
+        m.spatial.gate.bias.zero_()
+    x = _tokens(7)
+    pos = torch.randint(-5, 6, (2, S, 3)).float()
+    placed = torch.ones(2, S, dtype=torch.bool)
+    writes = torch.zeros(2, S, dtype=torch.bool)
+    writes[:, [0, 1, 5, 6]] = True
+    asks = placed & ~writes
+    starts = torch.zeros(2, S, dtype=torch.bool)
+    starts[:, 5] = True
+    link = m.spatial
+    b = link.bind(m.embedding.embed(x, None), pos)
+    sc = link.scene(b, writes, starts)
+    assert torch.allclose(sc[:, :5], link.scene(b[:, :5], writes[:, :5]), atol=1e-5)
+    assert torch.allclose(sc[:, 5:], link.scene(b[:, 5:], writes[:, 5:]), atol=1e-5)   # the second document alone
+    with torch.no_grad():
+        full = m.logits_from(m.features(x, pos, placed, writes, asks, starts))
+        state, steps = None, []
+        for t_ in range(S):
+            lg, state = m.step(x[:, t_], state, position=pos[:, t_], placed=placed[:, t_],
+                               write=writes[:, t_], ask=asks[:, t_], start=starts[:, t_])
+            steps.append(lg)
+        assert torch.allclose(full, torch.stack(steps, 1), atol=1e-4, rtol=1e-4)
+        assert torch.equal(m.features(x, pos, placed), m.features(x, pos, placed, None, None, None))
+        assert not torch.allclose(full, m.logits_from(m.features(x, pos, placed)), atol=1e-4)   # the roles matter

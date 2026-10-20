@@ -106,7 +106,8 @@ class CubbyModel:
         return self.context_source.infer(core_feat)                  # vector (B, S, ctx)
 
     def features(self, tokens: "Tensor", positions: "Tensor | None" = None,
-                 placed: "Tensor | None" = None) -> "Tensor":
+                 placed: "Tensor | None" = None, writes: "Tensor | None" = None,
+                 asks: "Tensor | None" = None, starts: "Tensor | None" = None) -> "Tensor":
         """The trunk representation h (B, S, d) — pre-head hidden states. Exposed
         so an auxiliary objective (e.g. the VSA binding loss) can shape h without
         re-running the forward.
@@ -115,13 +116,18 @@ class CubbyModel:
         its embedding (None: no places, the embedding untouched); ``placed`` (B, S)
         marks the tokens that are things at places -- their bound embeddings, summed
         causally, are the scene the trunk may read mid-trunk (None: no scene, the read
-        is zero). The context is inferred from the unbound embedding, as ``step`` does."""
+        is zero). ``writes`` / ``asks`` (B, S) split the placed tokens' two roles -- a thing
+        at a place writes into the scene, a question about a place asks there (``query=
+        "placed"``) -- both default to ``placed``; ``starts`` (B, S) restarts the scene at each
+        document. The context is inferred from the unbound embedding, as ``step`` does."""
         ctx = self.infer_context(tokens)                     # frozen at inference
         x = self.embedding.embed(tokens, ctx)                # (B, S, d), hybrid
         read = None
         if self.spatial is not None:
             x = self.spatial.bind(x, positions)              # e (*) S(p): the input level
-            read = self.spatial.hook(self.spatial.scene(x, placed), positions, placed)   # the route from the trunk
+            w = placed if writes is None else writes
+            a = placed if asks is None else asks
+            read = self.spatial.hook(self.spatial.scene(x, w, starts), positions, a)   # the route from the trunk
         h = self.backbone.forward(x, read=read) if read is not None else self.backbone.forward(x)
         return self.memory.forward_generated(h, ctx)         # (B, S, d), hardened
 
@@ -129,7 +135,8 @@ class CubbyModel:
         return self.head.logits(h, self.retrieval_k)         # (B, S, V), top-K
 
     def step(self, token: "Tensor", state: "dict | None" = None, position: "Tensor | None" = None,
-             placed: "Tensor | None" = None):
+             placed: "Tensor | None" = None, write: "Tensor | None" = None,
+             ask: "Tensor | None" = None, start: "Tensor | None" = None):
         """Decode ONE token, carrying state. token: (B,) ids -> (logits, state).
         ``position`` (B, 3) and ``placed`` (B,) are the spatial link's, as in ``features``;
         a placed token's bound embedding joins ``state["scene"]``, the stream's scene so far.
@@ -180,9 +187,13 @@ class CubbyModel:
         if self.spatial is not None:
             x = self.spatial.bind(x, position)
             scene = state["scene"]
-            if placed is not None:
-                scene.add_(x.float() * placed.unsqueeze(-1).float())
-            y, bb = self.backbone.step(x, state["bb"], read=self.spatial.hook(scene, position, placed))
+            if start is not None:                                    # a document begins: its scene is empty
+                scene.mul_((~start).unsqueeze(-1).float())
+            w = placed if write is None else write
+            if w is not None:
+                scene.add_(x.float() * w.unsqueeze(-1).float())
+            a = placed if ask is None else ask
+            y, bb = self.backbone.step(x, state["bb"], read=self.spatial.hook(scene, position, a))
         else:
             y, bb = self.backbone.step(x, state["bb"])
         y = self.memory.forward_generated(y.unsqueeze(1), ctx)[:, 0]
@@ -250,14 +261,15 @@ class CubbyModel:
                         on_token=on_token, step=self.graphed_step())
 
     def forward(self, tokens: "Tensor", positions: "Tensor | None" = None,
-                placed: "Tensor | None" = None) -> "Tensor":
+                placed: "Tensor | None" = None, writes: "Tensor | None" = None,
+                asks: "Tensor | None" = None, starts: "Tensor | None" = None) -> "Tensor":
         """Context-threaded forward pass -> next-token logits (B, S, V).
 
         ``ctx`` is a required argument to every generated call below — a
         context-ignoring path cannot be written here without a type error.
         ``positions`` / ``placed`` are the spatial link's (``features``).
         """
-        return self.logits_from(self.features(tokens, positions, placed))
+        return self.logits_from(self.features(tokens, positions, placed, writes, asks, starts))
 
 
 __wiring__ = Wiring.WIRED

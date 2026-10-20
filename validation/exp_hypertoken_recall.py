@@ -39,7 +39,8 @@ os.environ.setdefault("CB_NO_FLEX", "1")
 
 
 def heldout_docs(name: str, n: int):
-    """The last ``n`` held-out documents of the shard: ids (n, doc) and places (n, doc, 3) or None."""
+    """The last ``n`` held-out documents of the shard: ids (n, doc) and places (n, doc, 3) or
+    None -- with the roles (n, doc) attached as ``places.roles`` when the shard has them."""
     doc = json.load(open(os.path.join(CORPUS, "_align.json")))[name]
     hold = json.load(open(os.path.join(CORPUS, "_holdout.json")))[name]
     ids = np.memmap(os.path.join(CORPUS, f"{name}.u32"), dtype=np.uint32, mode="r")
@@ -51,6 +52,10 @@ def heldout_docs(name: str, n: int):
     if os.path.exists(pp):
         pos = np.memmap(pp, dtype=np.int16, mode="r").reshape(-1, 3)
         places = np.array(pos[start:], dtype=np.int64).reshape(n, doc, 3)
+        rp = os.path.join(CORPUS, f"{name}.role.u8")
+        if os.path.exists(rp):                                   # WRITE / ASK: a question reads, it does not write
+            roles = np.array(np.memmap(rp, dtype=np.uint8, mode="r")[start:], dtype=np.int64).reshape(n, doc)
+            places = (places, roles)
     return x, places
 
 
@@ -92,6 +97,9 @@ def strip_questions(tk, x: np.ndarray, places: np.ndarray) -> np.ndarray:
 @torch.no_grad()
 def score(model, tk, x: np.ndarray, places, spatial: bool, dev) -> dict:
     first = exact = n = 0
+    roles = None
+    if isinstance(places, tuple):
+        places, roles = places
     if STRIP and places is not None:
         places = strip_questions(tk, x, places)
     for b in range(0, len(x), BATCH):
@@ -100,7 +108,11 @@ def score(model, tk, x: np.ndarray, places, spatial: bool, dev) -> dict:
             P = torch.from_numpy(places[b:b + BATCH]).to(dev)
             placed = P[..., 0] != NO_PLACE
             positions = torch.where(placed.unsqueeze(-1), P, torch.zeros_like(P)).float()
-            logits = model.forward(ids[:, :-1], positions=positions[:, :-1], placed=placed[:, :-1])
+            kw = {}
+            if roles is not None:                                # each row is one document: no restarts needed
+                R = torch.from_numpy(roles[b:b + BATCH]).to(dev)
+                kw = dict(writes=(placed & ((R & 1) != 0))[:, :-1], asks=(placed & ((R & 2) != 0))[:, :-1])
+            logits = model.forward(ids[:, :-1], positions=positions[:, :-1], placed=placed[:, :-1], **kw)
         else:
             logits = model.forward(ids[:, :-1])
         pred = logits.argmax(-1).cpu().numpy()
@@ -135,6 +147,7 @@ def main() -> None:
         x, places = heldout_docs(name, DOCS)
         res = score(model, tk, x, places, spatial, dev)
         res["placed"] = bool(spatial and places is not None)
+        res["roles"] = isinstance(places, tuple)
         res["questions_stripped"] = bool(STRIP and res["placed"])
         report["shards"][name] = res
         print(f"  {name:18s} {res['questions']:5d} questions   first token {res['first_token']:.3f}   exact {res['exact']:.3f}"

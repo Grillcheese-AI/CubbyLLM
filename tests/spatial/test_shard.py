@@ -74,12 +74,13 @@ def test_a_placed_question_carries_the_cell_it_is_about(tk):
             n, d, name = q[len("What is "):-1].split(" ", 2)
             assert cell == sc.offset(name[3:], d, int(n))
     eos = tk.token_to_id("</s>")
-    ids, places = render(tk, sc, qa[:5], "places", eos, 400)
+    ids, places, roles = render(tk, sc, qa[:5], "places", eos, 400)
     text = tk.decode(ids.tolist(), skip_special_tokens=True)
     assert "? here\n" in text or "at here?" in text
     here = [j for j in range(len(ids)) if places[j, 0] != NO_PLACE and tk.decode([int(ids[j])]).strip() == "here"]
     assert len(here) == 5 and [tuple(int(v) for v in places[j]) for j in here] == [c for _q, _a, c in qa[:5]]
-    ids_t, places_t = render(tk, sc, qa[:5], "text", eos, 400)     # the control: the cell as words, nothing placed
+    ids_t, places_t, roles_t = render(tk, sc, qa[:5], "text", eos, 400)     # the control: the cell as words, nothing placed
+    assert all(roles[j] == 2 for j in here) and not roles_t.any()           # a question asks; it does not write
     assert not (places_t[:, 0] != NO_PLACE).any()
     assert " ".join(map(str, qa[0][2])) in tk.decode(ids_t.tolist(), skip_special_tokens=True)
 
@@ -90,7 +91,8 @@ def test_a_document_places_exactly_the_things_and_the_asked_cell(tk):
     qa = questions(sc, rng, 6)
     qa.append(("What is at here?", sc.at((3, 3, 0)) or "nothing", (3, 3, 0)))
     eos = tk.token_to_id("</s>")
-    ids, places = render(tk, sc, qa, "places", eos, 320)
+    ids, places, roles = render(tk, sc, qa, "places", eos, 320)
+    assert ((places[:, 0] != NO_PLACE) == (roles != 0)).all()               # a role exactly where a place is
     assert ids.shape == (320,) and places.shape == (320, 3) and ids[-1] == eos
     text = tk.decode(ids.tolist(), skip_special_tokens=True)
     assert text.startswith("Village:\n") and "Answer:" in text
@@ -109,10 +111,11 @@ def test_a_document_places_exactly_the_things_and_the_asked_cell(tk):
     # after the listing only a question's `here` carries a place, and the last one carries (3, 3, 0)
     here = [j for j in range(i, len(ids)) if placed[j]]
     assert here and all(tk.decode([int(ids[j])]).strip() == "here" for j in here)
+    assert all(roles[j] == 2 for j in here) and all(roles[j] == 1 for j in range(i) if placed[j])   # names write, here asks
     assert np.all(places[here[-1]] == (3, 3, 0))
     assert not placed[ids == eos].any()
     # the control: the same village as words, nothing placed
-    ids_t, places_t = render(tk, sc, qa, "text", eos, 320)
+    ids_t, places_t, _ = render(tk, sc, qa, "text", eos, 320)
     assert not (places_t[:, 0] != NO_PLACE).any() and " at " in tk.decode(ids_t.tolist(), skip_special_tokens=True)
     assert not np.array_equal(ids_t, ids)
     with pytest.raises(ValueError):
@@ -141,6 +144,9 @@ def test_the_corpus_reads_the_shard_by_documents_and_the_link_trains_on_it(tmp_p
     assert corpus.names == ["spatial"]
     x, y = corpus.batch(1, 0, 4, "stable")
     assert isinstance(x, Tokens) and x.ids.shape == (4, 128) and x.pos.shape == (4, 128, 3) and y.shape == (4, 128)
+    assert (tmp_path / "spatial.role.u8").exists() and x.flags is not None and x.flags.shape == (4, 128)
+    assert (((x.flags & 3) != 0) == (x.pos[..., 0] != NO_PLACE)).all()       # a role exactly where a place is
+    assert ((x.flags[:, 0] & 4) != 0).all()                                    # every window starts a document
     first = tk.decode(x.ids[0, :3].tolist())
     assert first.startswith("Village")                                     # every window starts on a document
     assert (x.pos[..., 0] != NO_PLACE).any()

@@ -116,12 +116,22 @@ class SpatialLink(nn.Module):
 
     # -- scene: what the trunk has been shown ---------------------------------------------
     @staticmethod
-    def scene(x: torch.Tensor, placed: torch.Tensor | None) -> torch.Tensor | None:
-        """The running sum of the placed tokens' bound embeddings ``x`` (B, S, d):
-        ``V_t`` (B, S, d), causal; None when nothing is placed."""
+    def scene(x: torch.Tensor, placed: torch.Tensor | None, starts: torch.Tensor | None = None) -> torch.Tensor | None:
+        """The running sum of the writing tokens' bound embeddings ``x`` (B, S, d): ``V_t``
+        (B, S, d), causal; None when nothing is placed. ``starts`` (B, S) bool marks the tokens
+        where a document begins: the sum restarts there, so a document reads only itself (one
+        scene per document -- two documents in a window would otherwise share one vector, past
+        its capacity; the fact link's first run, 2026-10-20)."""
         if placed is None:
             return None
-        return (x.float() * placed.unsqueeze(-1).float()).cumsum(1)
+        c = (x.float() * placed.unsqueeze(-1).float()).cumsum(1)
+        if starts is None or not bool(starts.any()):
+            return c
+        S = x.shape[1]
+        i = torch.arange(S, device=x.device).expand_as(starts)
+        seg = torch.where(starts, i, torch.zeros_like(i)).cummax(1).values          # this token's document start
+        cpad = torch.cat([torch.zeros_like(c[:, :1]), c], 1)                         # cpad[s] = sum before s
+        return c - cpad.gather(1, seg.unsqueeze(-1).expand(-1, -1, c.shape[-1]))
 
     # -- read: the route from the trunk ---------------------------------------------------
     @staticmethod
