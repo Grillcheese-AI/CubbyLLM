@@ -95,6 +95,7 @@ MEM_KEY = _env("CB_MEM_KEY", 64)
 # vector from the trunk. 0 = none (every base so far); on, text is bit-identical until places are given.
 SPATIAL = _env("CB_SPATIAL", 0)
 SPATIAL_SCALE = _env("CB_SPATIAL_SCALE", 2.0, float)
+SPATIAL_QUERY = os.environ.get("CB_SPATIAL_QUERY", "learned")   # "placed": a placed token asks about its own place (H-K10)
 # ── batch / optimizer / schedule ───────────────────────────────────────────
 SEQ = _env("CB_S", 1024)
 MICRO = _env("CB_MICRO", 16)                 # sequences per forward/backward
@@ -369,6 +370,8 @@ def arch_meta(vocab_real: int, vocab: int) -> dict:
         meta["mem_topk"], meta["mem_key"] = MEM_TOPK, MEM_KEY
     if SPATIAL:                       # absent at 0, for the same reason
         meta["spatial"] = {"scale": SPATIAL_SCALE, "seed": 0, "at": L // 2}
+        if SPATIAL_QUERY != "learned":  # absent at the default, so earlier spatial metas still match
+            meta["spatial"]["query"] = SPATIAL_QUERY
     return meta
 
 
@@ -406,7 +409,7 @@ def spatial_link(meta: dict):
         return None
     from cubbyllm.model.spatial import SpatialLink
     return SpatialLink(meta["D"], scale=float(sp.get("scale", 2.0)), seed=int(sp.get("seed", 0)),
-                       at=int(sp.get("at", meta["L"] // 2)))
+                       at=int(sp.get("at", meta["L"] // 2)), query=str(sp.get("query", "learned")))
 
 
 def flops_per_token(model: CubbyModel, meta: dict, seq: int) -> float:

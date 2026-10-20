@@ -6,7 +6,9 @@ place can be read back from the bound embedding; the lookup is the algebra of th
 (the same phases, so a Scene's vector reads in the trunk); with nothing placed the read is
 zero whatever the trunk's state; the gate and the query get gradient through the read once
 something is placed; the scene is causal (a later token changes nothing before it); and the
-decode step binds, accumulates and reads what the forward does.
+decode step binds, accumulates and reads what the forward does. With ``query="placed"`` a
+placed token's query is its own place, exactly, and the unplaced keep the learned one; the
+default is bit-identical to before.
 """
 from __future__ import annotations
 
@@ -126,3 +128,38 @@ def test_the_scene_is_causal_and_the_decode_step_matches_the_forward():
         assert torch.allclose(full[:, :6], later[:, :6], atol=1e-5) and not torch.allclose(full, later, atol=1e-3)
         other = m.features(x, positions=pos + 1.0, placed=placed)
         assert not torch.allclose(full, other, atol=1e-3)                  # the places reach the trunk
+
+
+def test_a_placed_token_asks_about_its_own_place():
+    torch.manual_seed(11)
+    learned = SpatialLink(D, scale=1.0, seed=5)
+    own = SpatialLink(D, scale=1.0, seed=5, query="placed")
+    with torch.no_grad():
+        for link in (learned, own):
+            link.o.weight.normal_(0, 0.3)
+            link.q.weight.normal_(0, 0.3)
+            link.gate.bias.zero_()
+        own.load_state_dict(learned.state_dict())
+    h, scene = torch.randn(2, S, D), torch.randn(2, S, D)
+    pos, placed = torch.randint(-5, 6, (2, S, 3)).float(), _placed()
+    plain = learned.read(h, scene)
+    assert torch.equal(learned.hook(scene, pos, placed)[1](h), plain)       # the default ignores the places
+    out = own.hook(scene, pos, placed)[1](h)
+    n = h * torch.rsqrt(h.pow(2).mean(-1, keepdim=True) + 1e-6) * own.norm_w
+    g = torch.sigmoid(own.gate(n))
+    exact = g * own.o(own.lookup(scene, own.encode(pos)))                   # the query IS the place
+    assert torch.allclose(out[placed], exact[placed], atol=1e-6)
+    assert torch.allclose(out[~placed], plain[~placed], atol=1e-6)          # the unplaced keep the learned query
+    assert torch.equal(own.hook(scene)[1](h), plain)                         # no places given: the learned read
+    m = _model(True)
+    m.spatial = SpatialLink(D, scale=1.0, seed=5, at=META["L"] // 2, query="placed")
+    with torch.no_grad():
+        m.spatial.o.weight.normal_(0, 0.3)
+        m.spatial.gate.bias.zero_()
+        x = _tokens(4)
+        full = m.logits_from(m.features(x, positions=pos, placed=placed))
+        state, steps = None, []
+        for t_ in range(S):
+            logits, state = m.step(x[:, t_], state, position=pos[:, t_], placed=placed[:, t_])
+            steps.append(logits)
+        assert torch.allclose(full, torch.stack(steps, 1), atol=1e-4, rtol=1e-4)   # decode = forward, places asked

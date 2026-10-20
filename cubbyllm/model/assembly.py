@@ -121,7 +121,7 @@ class CubbyModel:
         read = None
         if self.spatial is not None:
             x = self.spatial.bind(x, positions)              # e (*) S(p): the input level
-            read = self.spatial.hook(self.spatial.scene(x, placed))   # the route from the trunk
+            read = self.spatial.hook(self.spatial.scene(x, placed), positions, placed)   # the route from the trunk
         h = self.backbone.forward(x, read=read) if read is not None else self.backbone.forward(x)
         return self.memory.forward_generated(h, ctx)         # (B, S, d), hardened
 
@@ -182,7 +182,7 @@ class CubbyModel:
             scene = state["scene"]
             if placed is not None:
                 scene.add_(x.float() * placed.unsqueeze(-1).float())
-            y, bb = self.backbone.step(x, state["bb"], read=self.spatial.hook(scene))
+            y, bb = self.backbone.step(x, state["bb"], read=self.spatial.hook(scene, position, placed))
         else:
             y, bb = self.backbone.step(x, state["bb"])
         y = self.memory.forward_generated(y.unsqueeze(1), ctx)[:, 0]

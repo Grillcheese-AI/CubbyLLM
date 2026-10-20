@@ -53,7 +53,9 @@ its FFN; at decode each stream keeps a store per memory layer, sized by the stre
 token with a place enters as `x ⊛ S(p)`, `S(p)` a unit vector whose algebra is provable (moving is binding,
 the origin is the identity, so text is bit-identical with the link on); the scene `V` is the running sum of
 the placed tokens' bound embeddings; and at layer L/2 a gate says whether to consult it, a unitary query
-says what place, and `V ⊛ q⁻¹` comes back through an exit that starts at zero. The state carries `V`.
+says what place, and `V ⊛ q⁻¹` comes back through an exit that starts at zero. The state carries `V`. With
+`CB_SPATIAL_QUERY=placed` (H-K10, 2026-10-20) a placed token's query is its own place — the hypertoken carries
+its address, and `here` means here by construction; the unplaced keep the learned query.
 
 ## The full system (as of 2026-08-08)
 

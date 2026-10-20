@@ -19,16 +19,17 @@ language's held-out loss within 0.02 of the control's. Kill: the channel below 6
 
 First read (2026-10-20, D = 256, 1,000 steps x 16 documents, ~25 min per arm on the CPU): before
 training, the scene decodes the object at its address at 0.84 by nearest entity (cos 0.17-0.35).
-``--query given --gate-bias 0`` (the hypertoken carries its address; the gate and the decode are
-learned): held-out answers 0.00 / 0.21 / 0.53 / 0.81 / 0.86 / 0.92 / 0.94 at steps 0 / 200 / 300
-/ 400 / 500 / 700 / 1,000 -- gate 1's first clause passes; the text control 0.00 throughout, the
+``--query placed --gate-bias 0`` (the hypertoken carries its address; the gate and the decode are
+learned; first run as a patch on the link's read, then as the link's own ``query="placed"``):
+held-out answers 0.00 / 0.21 / 0.53 / 0.81 / 0.86 / 0.92 / 0.94 at steps 0 / 200 / 300 / 400 /
+500 / 700 / 1,000 -- gate 1's first clause passes; the text control 0.00 throughout, the
 language held-out loss 2.075 in both arms -- gate 2 passes; the in-window control learns the copy
 slowly, 0.22 at 1,000 steps (the second clause not shown at this budget: attention needs more
 steps than the algebraic read did beyond the window). ``--query learned`` (H-S12's route, the
 trunk recovering the address from its state): 0.00 for all 1,000 steps, the gate drifting shut
 from -4 and from 0 alike -- the route is the hard part; the read is not.
 
-    python validation/exp_k10_hypertoken.py [--query given] [--gate-bias 0] [--steps 1000] [--out <json>]
+    python validation/exp_k10_hypertoken.py [--query placed] [--gate-bias 0] [--steps 1000] [--out <json>]
 """
 from __future__ import annotations
 
@@ -55,12 +56,14 @@ FILL0, N_FILL = REL0 + N_REL, 496    # 3 + 509 + 16 + 496 = 1,024
 STEP = 6                             # lattice cells between relation steps (the kernel is ~0 at 4)
 
 
-def meta(d: int, spatial: bool) -> dict:
+def meta(d: int, spatial: bool, query: str = "learned") -> dict:
     m = {"kind": "cubby_base", "D": d, "L": 4, "heads": 4, "window": 64, "attn_every": 2, "ctx": 32,
          "slots": 8, "gen_basis": 16, "gen_rank": 8, "vocab": 1024, "vocab_real": 1024, "mem_every": 0,
          "tied": False, "causal_ctx": True}
     if spatial:
         m["spatial"] = {"scale": 2.0, "seed": 0, "at": 2}
+        if query != "learned":
+            m["spatial"]["query"] = query                      # "placed": the link's own flag (model/spatial.py)
     return m
 
 
@@ -126,39 +129,11 @@ def batch(rng, lang, n: int, n_facts: int, filler: int, seq: int):
     return ids, P, [d[2] for d in docs], [d[3] for d in docs]
 
 
-class GivenQuery:
-    """``--query given``: at a placed token the read's query is the token's own address S(p)
-    -- the hypertoken carries its address, the trunk need not recover it from its state; the
-    gate (whether) and ``o`` (decode) are still learned, and unplaced tokens keep the learned
-    query (H-S12's route). Installed on the link's ``read`` for the experiment only."""
-
-    def __init__(self, link) -> None:
-        self.link, self.given = link, None
-        self._read = link.read
-
-    def set(self, positions, placed) -> None:
-        self.given = (self.link.encode(positions), placed)
-
-    def __call__(self, h, scene):
-        link = self.link
-        if scene is None:
-            return torch.zeros_like(h)
-        n = h * torch.rsqrt(h.pow(2).mean(-1, keepdim=True) + 1e-6) * link.norm_w
-        g = torch.sigmoid(link.gate(n))
-        q = link.q(n)
-        if self.given is not None:
-            S, placed = self.given
-            q = torch.where(placed.unsqueeze(-1), S.to(q.dtype), q)
-        return g * link.o(link.lookup(scene.float(), q).to(h.dtype))
-
-
 def forward(model, ids, P, spatial: bool):
     if not spatial:
         return model.forward(ids)
     placed = P[..., 0] != NO_PLACE
     positions = torch.where(placed.unsqueeze(-1), P, torch.zeros_like(P)).float()
-    if getattr(model.spatial, "given_query", None) is not None:
-        model.spatial.given_query.set(positions, placed)
     return model.forward(ids, positions=positions, placed=placed)
 
 
@@ -187,15 +162,11 @@ def run(spatial: bool, args, log) -> dict:
     from train_base import build_model
     rng = np.random.default_rng(args.seed)
     lang = Language(np.random.default_rng(args.seed + 1))
-    m = meta(args.d, spatial)
+    m = meta(args.d, spatial, args.query)
     model = build_model(m, torch.device("cpu"), seed=args.seed)
     if spatial and args.gate_bias is not None:
         with torch.no_grad():
             model.spatial.gate.bias.fill_(args.gate_bias)         # the design's -4 unless asked
-    if spatial and args.query == "given":
-        gq = GivenQuery(model.spatial)
-        model.spatial.read = gq                                    # the hook calls self.read
-        model.spatial.given_query = gq
     n_par = sum(p.numel() for p in model.parameters())
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0.01, betas=(0.9, 0.95))
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 100) * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * min(s, args.steps) / args.steps))))
@@ -234,9 +205,9 @@ def main() -> None:
     ap.add_argument("--filler", type=int, default=120, help="filler tokens between the facts and the questions")
     ap.add_argument("--lr", type=float, default=2e-3)
     ap.add_argument("--gate-bias", type=float, default=None, help="override the link's starting gate bias (-4)")
-    ap.add_argument("--query", choices=["learned", "given"], default="learned",
-                    help="learned: H-S12's route, the trunk makes the query from its state; given: a placed "
-                         "token's query is its own address (the hypertoken carries it)")
+    ap.add_argument("--query", choices=["learned", "placed"], default="learned",
+                    help="learned: H-S12's route, the trunk makes the query from its state; placed: a placed "
+                         "token's query is its own address (the hypertoken carries it) -- the link's flag")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--only", nargs="*", default=["hypertoken", "control"])
     ap.add_argument("--threads", type=int, default=0)

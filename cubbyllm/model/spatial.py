@@ -34,6 +34,13 @@ zero and the gate's bias at -4, so a model with the link added computes what it 
 before (growth's rule: exact at step 0); with nothing placed the scene is zero and so is the
 read. What the gate and the query learn is the route; the lookup they route to is algebra.
 
+**query="placed"** (2026-10-20, H-K10): a placed token asks about its own place -- its query is
+``S(p)`` from the input, exact, no projection in the way; unplaced tokens keep the learned
+query. The hypertoken carries its address, so ``here`` means *here* by construction. Measured
+on a tiny trunk (``validation/exp_k10_hypertoken.py``): a fact shown once, asked 120 tokens past
+the window, answered at 0.94 this way and at 0.00 through the learned query alone -- the read
+is easy to learn, recovering an address from the hidden state is the hard part.
+
 What it brings CubbyLLM: a trunk that can be told where every block is without a word of
 text, and ask the scene "what is here" at a place it chose, with the answer's correctness
 guaranteed by the encoding rather than hoped for from training. A conventional model has no
@@ -55,9 +62,12 @@ NO_PLACE = -32768
 
 class SpatialLink(nn.Module):
     def __init__(self, d_model: int, scale: float = 2.0, seed: int = 0, dims: int = 3,
-                 at: int = 0, gate_bias: float = -4.0) -> None:
+                 at: int = 0, gate_bias: float = -4.0, query: str = "learned") -> None:
         super().__init__()
+        if query not in ("learned", "placed"):
+            raise ValueError(f"query must be 'learned' or 'placed', not {query!r}")
         self.d, self.dims, self.scale, self.seed, self.at = int(d_model), int(dims), float(scale), int(seed), int(at)
+        self.query = query
         self.register_buffer("phases", torch.tensor(_phases(self.d, self.dims, self.seed), dtype=torch.float32))
         self.norm_w = nn.Parameter(torch.ones(self.d))
         self.q = nn.Linear(self.d, self.d, bias=False)
@@ -118,22 +128,31 @@ class SpatialLink(nn.Module):
         ``q`` names, (..., d)."""
         return self.unbind(scene, self.unitary(q))
 
-    def read(self, h: torch.Tensor, scene: torch.Tensor | None) -> torch.Tensor:
+    def read(self, h: torch.Tensor, scene: torch.Tensor | None, own=None) -> torch.Tensor:
         """The gated read of ``scene`` -- (B, S, d) running, or (B, d) at a decode step --
-        from the trunk stream ``h`` of the same leading shape; zero when there is no scene."""
+        from the trunk stream ``h`` of the same leading shape; zero when there is no scene.
+        ``own`` is ``(S(p), placed)`` for ``query="placed"``: a placed token's query is its
+        own place, the others' the learned one."""
         if scene is None:
             return torch.zeros_like(h)
         n = h * torch.rsqrt(h.pow(2).mean(-1, keepdim=True) + 1e-6) * self.norm_w
         g = torch.sigmoid(self.gate(n))                                  # (..., 1): whether
         q = self.q(n)                                                    # (..., d): what place
+        if own is not None:
+            q = torch.where(own[1].unsqueeze(-1), own[0].to(q.dtype), q)
         return g * self.o(self.lookup(scene.float(), q).to(h.dtype))
 
-    def hook(self, scene: torch.Tensor | None):
-        """``(layer, fn)`` for the backbone: the read at layer ``at`` over this scene."""
-        return (self.at, lambda h: self.read(h, scene))
+    def hook(self, scene: torch.Tensor | None, positions: torch.Tensor | None = None,
+             placed: torch.Tensor | None = None):
+        """``(layer, fn)`` for the backbone: the read at layer ``at`` over this scene;
+        ``positions`` / ``placed`` (as ``bind`` / ``scene`` take them) feed ``query="placed"``."""
+        own = None
+        if self.query == "placed" and positions is not None and placed is not None:
+            own = (self.encode(positions), placed)
+        return (self.at, lambda h: self.read(h, scene, own))
 
     def extra_repr(self) -> str:
-        return f"d={self.d}, dims={self.dims}, scale={self.scale}, seed={self.seed}, at={self.at}"
+        return f"d={self.d}, dims={self.dims}, scale={self.scale}, seed={self.seed}, at={self.at}, query={self.query}"
 
 
 __wiring__ = Wiring.STANDALONE
