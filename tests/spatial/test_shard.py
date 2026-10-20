@@ -58,6 +58,32 @@ def test_the_answers_are_the_scenes_exact_reading():
             assert a == (sc.at(sc.offset(name[3:], d, int(n))) or "nothing")
 
 
+def test_a_placed_question_carries_the_cell_it_is_about(tk):
+    """``--ask placed``: the host computes the address (neighbour, offset, at) and a ``here``
+    token carries it; the answer is the scene's reading at that cell."""
+    rng = random.Random(5)
+    sc = village(rng, 12)
+    qa = questions(sc, rng, 40, "placed")
+    assert qa and all(cell is not None for _q, _a, cell in qa)
+    for q, a, cell in qa:
+        assert a == (sc.at(cell) or "nothing")
+        if " neighbour of " in q:
+            d, name = q[len("What is the "):-1].split(" neighbour of ")
+            assert cell == sc.offset(name, d, 1)
+        elif not q.startswith("What is at"):
+            n, d, name = q[len("What is "):-1].split(" ", 2)
+            assert cell == sc.offset(name[3:], d, int(n))
+    eos = tk.token_to_id("</s>")
+    ids, places = render(tk, sc, qa[:5], "places", eos, 400)
+    text = tk.decode(ids.tolist(), skip_special_tokens=True)
+    assert "? here\n" in text or "at here?" in text
+    here = [j for j in range(len(ids)) if places[j, 0] != NO_PLACE and tk.decode([int(ids[j])]).strip() == "here"]
+    assert len(here) == 5 and [tuple(int(v) for v in places[j]) for j in here] == [c for _q, _a, c in qa[:5]]
+    ids_t, places_t = render(tk, sc, qa[:5], "text", eos, 400)     # the control: the cell as words, nothing placed
+    assert not (places_t[:, 0] != NO_PLACE).any()
+    assert " ".join(map(str, qa[0][2])) in tk.decode(ids_t.tolist(), skip_special_tokens=True)
+
+
 def test_a_document_places_exactly_the_things_and_the_asked_cell(tk):
     rng = random.Random(2)
     sc = village(rng, 8)
@@ -128,6 +154,20 @@ def test_the_corpus_reads_the_shard_by_documents_and_the_link_trains_on_it(tmp_p
     loss = torch.nn.functional.cross_entropy(logits.reshape(-1, logits.shape[-1]), y[:2, :32].reshape(-1))
     loss.backward()
     assert torch.isfinite(loss) and m.spatial.gate.weight.grad.abs().sum() > 0
+    # the route loss (CB_ROUTE_LOSS): the learned query at a placed token is taught its address
+    import train_base
+    plain_fn, _ = train_base.make_fns(m, meta["vocab"], torch.device("cpu"))
+    monkeypatch.setattr(train_base, "ROUTE_LOSS", 1.0)
+    route_fn, _ = train_base.make_fns(m, meta["vocab"], torch.device("cpu"))
+    xb, yb = Tokens(x.ids[:2, :32], x.pos[:2, :32]), y[:2, :32]
+    m.spatial.q.weight.grad = None
+    plain, routed = plain_fn(xb, yb), route_fn(xb, yb)
+    assert routed > plain and torch.isfinite(routed)                     # 1 - cos(unitary(q), S(p)) > 0 at the placed tokens
+    routed.backward()
+    assert m.spatial.q.weight.grad.abs().sum() > 0                         # the query head gets the route's gradient
+    assert torch.allclose(plain_fn(Tokens(x.ids[:2, :32], torch.full_like(x.pos[:2, :32], NO_PLACE)), yb),
+                          route_fn(Tokens(x.ids[:2, :32], torch.full_like(x.pos[:2, :32], NO_PLACE)), yb))   # nothing placed: no term
+    monkeypatch.setattr(train_base, "ROUTE_LOSS", 0.0)
     # a window with nothing placed takes the plain path, bit for bit
     none = torch.full_like(x.pos[:2, :32], NO_PLACE)
     with torch.no_grad():

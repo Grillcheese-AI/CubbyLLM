@@ -1,0 +1,120 @@
+{
+ "args": {
+  "steps": 1000,
+  "d": 256,
+  "batch": 16,
+  "seq": 256,
+  "facts_per_doc": 8,
+  "filler": 120,
+  "lr": 0.002,
+  "gate_bias": 0.0,
+  "gate_warmup": 0,
+  "route_loss": 1.0,
+  "query": "learned",
+  "seed": 0,
+  "only": [
+   "hypertoken"
+  ],
+  "threads": 2,
+  "out": "validation\\logs\\exp_k10_hypertoken_learned_route_2026-10-20.json"
+ },
+ "hypertoken": {
+  "name": "hypertoken (learned query)",
+  "params": 3360785,
+  "final_answers": 0.81640625,
+  "final_language": 2.075984477996826,
+  "curve": [
+   {
+    "step": 0,
+    "loss": 7.980607032775879,
+    "answers": 0.001953125,
+    "language": 6.976382732391357,
+    "route": 1.0031898021697998
+   },
+   {
+    "step": 100,
+    "loss": 3.8057894706726074,
+    "answers": 0.001953125,
+    "language": 2.628222942352295,
+    "route": 0.8121728897094727
+   },
+   {
+    "step": 200,
+    "loss": 3.3973164558410645,
+    "answers": 0.013671875,
+    "language": 2.3252720832824707,
+    "route": 0.6467996835708618
+   },
+   {
+    "step": 300,
+    "loss": 3.200592517852783,
+    "answers": 0.142578125,
+    "language": 2.259901762008667,
+    "route": 0.5689393281936646
+   },
+   {
+    "step": 400,
+    "loss": 3.06895112991333,
+    "answers": 0.419921875,
+    "language": 2.209629774093628,
+    "route": 0.5234084725379944
+   },
+   {
+    "step": 500,
+    "loss": 2.966639518737793,
+    "answers": 0.58203125,
+    "language": 2.179391384124756,
+    "route": 0.5014482736587524
+   },
+   {
+    "step": 600,
+    "loss": 2.916283369064331,
+    "answers": 0.666015625,
+    "language": 2.1488513946533203,
+    "route": 0.4898015856742859
+   },
+   {
+    "step": 700,
+    "loss": 2.8727333545684814,
+    "answers": 0.73046875,
+    "language": 2.1200385093688965,
+    "route": 0.4773452877998352
+   },
+   {
+    "step": 800,
+    "loss": 2.8366622924804688,
+    "answers": 0.765625,
+    "language": 2.0979652404785156,
+    "route": 0.4649568796157837
+   },
+   {
+    "step": 900,
+    "loss": 2.805938243865967,
+    "answers": 0.791015625,
+    "language": 2.0822722911834717,
+    "route": 0.4642816185951233
+   },
+   {
+    "step": 999,
+    "loss": 2.796023368835449,
+    "answers": 0.81640625,
+    "language": 2.075984477996826,
+    "route": 0.4611717462539673
+   }
+  ]
+ },
+ "log": [
+  "--- hypertoken (learned query): 3.36M params, D=256, window 64, 8 facts/doc, filler 120, route loss 1.0",
+  "  step     0  loss 7.981  held-out answers 0.00  language 6.976  gate bias +0.00  route 1.003   [5s]",
+  "  step   100  loss 3.806  held-out answers 0.00  language 2.628  gate bias -0.08  route 0.812   [130s]",
+  "  step   200  loss 3.397  held-out answers 0.01  language 2.325  gate bias -0.18  route 0.647   [266s]",
+  "  step   300  loss 3.201  held-out answers 0.14  language 2.260  gate bias -0.19  route 0.569   [392s]",
+  "  step   400  loss 3.069  held-out answers 0.42  language 2.210  gate bias -0.21  route 0.523   [522s]",
+  "  step   500  loss 2.967  held-out answers 0.58  language 2.179  gate bias -0.23  route 0.501   [655s]",
+  "  step   600  loss 2.916  held-out answers 0.67  language 2.149  gate bias -0.25  route 0.490   [788s]",
+  "  step   700  loss 2.873  held-out answers 0.73  language 2.120  gate bias -0.28  route 0.477   [920s]",
+  "  step   800  loss 2.837  held-out answers 0.77  language 2.098  gate bias -0.29  route 0.465   [1052s]",
+  "  step   900  loss 2.806  held-out answers 0.79  language 2.082  gate bias -0.30  route 0.464   [1183s]",
+  "  step   999  loss 2.796  held-out answers 0.82  language 2.076  gate bias -0.30  route 0.461   [1318s]"
+ ]
+}

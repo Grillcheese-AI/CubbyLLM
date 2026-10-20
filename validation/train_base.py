@@ -96,6 +96,7 @@ MEM_KEY = _env("CB_MEM_KEY", 64)
 SPATIAL = _env("CB_SPATIAL", 0)
 SPATIAL_SCALE = _env("CB_SPATIAL_SCALE", 2.0, float)
 SPATIAL_QUERY = os.environ.get("CB_SPATIAL_QUERY", "learned")   # "placed": a placed token asks about its own place (H-K10)
+ROUTE_LOSS = _env("CB_ROUTE_LOSS", 0.0, float)      # the learned query taught its address at placed tokens (H-K10: 0.00 -> 0.82)
 # ── batch / optimizer / schedule ───────────────────────────────────────────
 SEQ = _env("CB_S", 1024)
 MICRO = _env("CB_MICRO", 16)                 # sequences per forward/backward
@@ -462,11 +463,25 @@ def forward_batch(model: CubbyModel, x):
 
 def make_fns(model: CubbyModel, vocab: int, dev):
     amp = dev.type == "cuda"
+    route_w, taps = (ROUTE_LOSS if model.spatial is not None else 0.0), []
+    if route_w:
+        if GRAD_CKPT:
+            raise SystemExit("CB_ROUTE_LOSS taps the query in the forward: needs CB_GRAD_CKPT=0")
+        model.spatial.q.register_forward_hook(lambda _m, _i, out: taps.append(out))
 
     def loss_fn(x, y):
+        taps.clear()
         with torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):
             logits = forward_batch(model, x)
-        return F.cross_entropy(logits.float().reshape(-1, vocab), y.reshape(-1))
+        loss = F.cross_entropy(logits.float().reshape(-1, vocab), y.reshape(-1))
+        if route_w and isinstance(x, Tokens) and taps:                 # the route loss (H-K10): at a placed token
+            from cubbyllm.model.spatial import NO_PLACE                   # the learned query must land on S(p)
+            placed = x.pos[..., 0] != NO_PLACE
+            if bool(placed.any()):
+                s = model.spatial.encode(torch.where(placed.unsqueeze(-1), x.pos, torch.zeros_like(x.pos)).float())
+                q = model.spatial.unitary(taps[0].float()[placed])
+                loss = loss + route_w * (1.0 - F.cosine_similarity(q, s[placed], dim=-1).mean())
+        return loss
 
     def tok_loss_fn(x, y):
         with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp):

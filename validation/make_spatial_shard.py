@@ -17,6 +17,13 @@ each answered from ``Scene``'s exact reading, never written by hand:
 ``--mode text`` writes the control: the same villages and questions with each thing's cell
 spelled out in text ("forge at 10 9 0") and no places at all, for the arm without the link.
 
+``--ask placed`` (H-K10, 2026-10-20): every question carries its address -- the question is a
+hypertoken. The host computes the cell the question is about (the east neighbour of well is
+cell(well) + east; 3 east of well is cell(well) + 3 east; "at" is the cell itself) and a ``here``
+token carries it, so the trunk reads the scene *there* (``SpatialLink(query="placed")``) and the
+route is the host's; only the questions that ask what is at an address are kept (neighbour,
+offset, at). The default keeps the learned route: the trunk must find the place itself.
+
 Documents are padded with </s> to ``--doc`` tokens and the shard is listed in ``_align.json``,
 so ``train_base.Corpus`` never cuts a village in two. The held-out tail, ``_holdout.json``
 and ``_sizes.json`` follow ``make_decay_shards.py``.
@@ -72,26 +79,30 @@ def village(rng: random.Random, n: int, side: int = 24, height: int = 3) -> Scen
     return sc
 
 
-def questions(sc: Scene, rng: random.Random, k: int) -> list:
+def questions(sc: Scene, rng: random.Random, k: int, ask: str = "learned") -> list:
     """``k`` (question, answer, place)`` triples from the exact reading; ``place`` is the cell a
-    ``here`` token in the question carries, or None."""
+    ``here`` token in the question carries, or None. ``ask="placed"``: every question carries
+    the cell it is about (the host's route), and only the what-is-at-an-address kinds are asked."""
     names = sorted(sc.things)
+    kinds = ["neighbour", "offset", "at"] if ask == "placed" else ["position", "neighbour", "nearest", "offset", "at", "region"]
     out = []
     for _ in range(k):
         name = rng.choice(names)
         c = sc.where(name)
-        kind = rng.choice(["position", "neighbour", "nearest", "offset", "at", "region"])
+        kind = rng.choice(kinds)
         if kind == "position":
             out.append((f"What is the position of {name}?", " ".join(map(str, c)), None))
         elif kind == "neighbour":
             d = rng.choice(list(DIRECTIONS))
-            out.append((f"What is the {d} neighbour of {name}?", sc.adjacent(name).get(d, "nothing"), None))
+            cell = tuple(int(v) for v in sc.offset(name, d, 1)) if ask == "placed" else None
+            out.append((f"What is the {d} neighbour of {name}?", sc.adjacent(name).get(d, "nothing"), cell))
         elif kind == "nearest":
             want = rng.choice(sorted({k for k in sc.kinds.values() if k}))
             out.append((f"What is the nearest {want} of {name}?", sc.nearest(name, want) or "nothing", None))
         elif kind == "offset":
             d, n = rng.choice(list(DIRECTIONS)), rng.randint(1, 4)
-            out.append((f"What is {n} {d} of {name}?", sc.at(sc.offset(name, d, n)) or "nothing", None))
+            cell = tuple(int(v) for v in sc.offset(name, d, n)) if ask == "placed" else None
+            out.append((f"What is {n} {d} of {name}?", sc.at(sc.offset(name, d, n)) or "nothing", cell))
         elif kind == "region":
             rs = sc.regions_of(name)
             out.append((f"What is the region of {name}?", rs[0] if rs else "nothing", None))
@@ -126,10 +137,14 @@ def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int):
     head = len(ids)
     for q, a, cell in qa:
         start = len(ids)
-        if cell is not None:
+        if cell is not None and q.startswith("What is at"):
             put("Question: What is at ")
             put("here" if mode == "places" else " ".join(map(str, cell)), cell)
             put("?\n")
+        elif cell is not None:                      # a question that carries its address (--ask placed)
+            put(f"Question: {q} ")
+            put("here" if mode == "places" else " ".join(map(str, cell)), cell)
+            put("\n")
         else:
             put(f"Question: {q}\n")
         put(f"Answer: {a}\n")
@@ -163,14 +178,16 @@ def main() -> None:
     ap.add_argument("--things", type=int, nargs=2, default=(8, 32))
     ap.add_argument("--questions", type=int, nargs=2, default=(6, 12))
     ap.add_argument("--mode", choices=["places", "text"], default="places")
-    ap.add_argument("--name", default="", help="shard name (default: spatial | spatial_text)")
+    ap.add_argument("--ask", choices=["learned", "placed"], default="learned",
+                    help="placed: every question carries its address as a here token (the host's route)")
+    ap.add_argument("--name", default="", help="shard name (default: spatial | spatial_text, _here with --ask placed)")
     ap.add_argument("--holdout-frac", type=float, default=0.02)
     ap.add_argument("--seed", type=int, default=0)
     args = ap.parse_args()
     from tokenizers import Tokenizer
     tk = Tokenizer.from_file(args.tokenizer)
     eos = tk.token_to_id("</s>")
-    name = args.name or ("spatial" if args.mode == "places" else "spatial_text")
+    name = args.name or (("spatial" if args.mode == "places" else "spatial_text") + ("_here" if args.ask == "placed" else ""))
     rng = random.Random(args.seed)
     t0 = time.time()
     ids_path, pos_path = os.path.join(args.cache, f"{name}.u32"), os.path.join(args.cache, f"{name}.pos.i16")
@@ -178,7 +195,7 @@ def main() -> None:
     with open(ids_path + ".part", "wb") as fi, open(pos_path + ".part", "wb") as fp:
         for v in range(args.villages):
             sc = village(rng, rng.randint(*args.things))
-            qa = questions(sc, rng, rng.randint(*args.questions))
+            qa = questions(sc, rng, rng.randint(*args.questions), args.ask)
             ids, places = render(tk, sc, qa, args.mode, eos, args.doc)
             fi.write(ids.tobytes())
             fp.write(places.tobytes())
