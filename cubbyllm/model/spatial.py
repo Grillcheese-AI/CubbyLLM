@@ -83,8 +83,16 @@ class SpatialLink(nn.Module):
 
     # -- the encoding, in torch ------------------------------------------------------------
     def spectrum(self, p: torch.Tensor) -> torch.Tensor:
-        """``exp(i Theta p / scale)`` for places ``p`` (..., dims) -> (..., d/2+1) complex."""
-        ang = p.float() @ self.phases.T / self.scale
+        """``exp(i Theta p / scale)`` for places ``p`` (..., dims) -> (..., d/2+1) complex.
+        Always float32, autocast or not: a cell coordinate in the thousands times a phase is an
+        angle of ~1e4 radians, which bf16 (8 bits of mantissa) would get wrong by tens of radians --
+        and ``polar`` refuses bf16 anyway (the first CUDA run, 2026-10-20)."""
+        dt = p.device.type
+        if dt in ("cuda", "cpu"):
+            with torch.autocast(dt, enabled=False):
+                ang = p.float() @ self.phases.T.float() / self.scale
+        else:
+            ang = p.float() @ self.phases.T.float() / self.scale
         return torch.polar(torch.ones_like(ang), ang)
 
     def encode(self, p: torch.Tensor) -> torch.Tensor:
@@ -138,8 +146,8 @@ class SpatialLink(nn.Module):
         n = h * torch.rsqrt(h.pow(2).mean(-1, keepdim=True) + 1e-6) * self.norm_w
         g = torch.sigmoid(self.gate(n))                                  # (..., 1): whether
         q = self.q(n)                                                    # (..., d): what place
-        if own is not None:
-            q = torch.where(own[1].unsqueeze(-1), own[0].to(q.dtype), q)
+        if own is not None:                                              # S(p) stays float32: no bf16 round trip
+            q = torch.where(own[1].unsqueeze(-1), own[0].float(), q.float())
         return g * self.o(self.lookup(scene.float(), q).to(h.dtype))
 
     def hook(self, scene: torch.Tensor | None, positions: torch.Tensor | None = None,

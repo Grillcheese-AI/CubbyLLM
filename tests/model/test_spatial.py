@@ -191,3 +191,21 @@ def test_init_from_adds_a_link_to_a_trained_trunk(tmp_path):
     assert not train_base.init_from(str(tmp_path / "linked.pt"), same, torch.device("cpu"), linked).get("link_added")
     with pytest.raises(SystemExit):
         train_base.init_from(str(path), _model(True, seed=4), torch.device("cpu"), dict(linked, window=META["window"] + 1))
+
+
+def test_the_link_runs_under_bf16_autocast_with_exact_phases():
+    """Training runs under autocast: the encoding must stay float32 (a ~1e4-radian angle in bf16
+    is off by tens of radians, and polar refuses bf16), and the forward must run."""
+    link = SpatialLink(D, scale=2.0, seed=0, query="placed")
+    p = torch.tensor([[4703.0, 4349.0, 4170.0], [5044.0, 4495.0, 4863.0]])
+    exact = link.encode(p)
+    with torch.autocast("cpu", dtype=torch.bfloat16):
+        cast = link.encode(p)
+    assert cast.dtype == torch.float32 and torch.allclose(cast, exact, atol=1e-6)
+    m = _model(True)
+    m.spatial = SpatialLink(D, scale=1.0, seed=5, at=META["L"] // 2, query="placed")
+    x, placed = _tokens(6), _placed()
+    pos = torch.randint(4000, 5000, (2, S, 3)).float()
+    with torch.autocast("cpu", dtype=torch.bfloat16):
+        out = m.forward(x, positions=pos, placed=placed)
+    assert torch.isfinite(out.float()).all()
