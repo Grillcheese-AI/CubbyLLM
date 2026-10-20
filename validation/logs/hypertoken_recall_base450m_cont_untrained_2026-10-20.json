@@ -1,0 +1,42 @@
+{
+ "ckpt": "I:\\My Drive\\cubbyllm\\runs\\base450m_cont\\base450m_cont_final.pt",
+ "meta": {
+  "kind": "cubby_base",
+  "D": 1024,
+  "L": 32,
+  "heads": 4,
+  "window": 512,
+  "attn_every": 3,
+  "ctx": 32,
+  "slots": 8,
+  "gen_basis": 16,
+  "gen_rank": 8,
+  "vocab": 128000,
+  "vocab_real": 127996,
+  "mem_every": 0,
+  "tied": false,
+  "causal_ctx": true
+ },
+ "docs": 16,
+ "shards": {
+  "facts_text": {
+   "questions": 101,
+   "first_token": 0.1188118811881188,
+   "exact": 0.09900990099009901,
+   "placed": false
+  },
+  "facts": {
+   "questions": 101,
+   "first_token": 0.09900990099009901,
+   "exact": 0.07920792079207921,
+   "placed": false
+  },
+  "spatial_text_here": {
+   "questions": 148,
+   "first_token": 0.5472972972972973,
+   "exact": 0.5405405405405406,
+   "placed": false
+  }
+ },
+ "wall_s": 93.0
+}

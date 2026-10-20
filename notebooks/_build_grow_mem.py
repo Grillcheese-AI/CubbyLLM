@@ -59,6 +59,17 @@ the base validates on, plus the three new ones:
    instruction-following gate (`validation/exp_if_follow.py`, to be built: rule-checked constraints over held chats)
    above the 450M's. The gap to the stand-in on the same benches is reported as measured, whichever way it goes.
 
+**Round 2 (added 2026-10-20).** Round 1's grown arm (0.42B tokens, 20 h on a 96 GB RTX 6000 at 77,824-token
+steps) learned the new shards and matched the 450M's trend, but gate 2 failed flat: beyond-window needle recall
+15.9% against 16.8% for the shuffled control -- the 16 reads never trained. The small-scale hypertoken reads of
+the same day (`validation/exp_k10_hypertoken.py`) say why: a read that must find its key from the hidden state
+learns nothing from text that never pays for a token 512 back; given a reason, it learns (0.00 → 0.82). Round 2
+gives the memory its reason: **`facts_text_far`** (`validation/make_fact_shard.py --far`: 8-16 wiki-world facts,
+then ~1,500 tokens of real corpus text, then questions about the facts -- beyond the window, where only the
+episodic store can answer) at ~5% of the tokens, continuing the grown arm from its `stable_end`. Gate 2's
+readout becomes `exp_hypertoken_recall.py` on `facts_text_far` (the questions answered, teacher-forced; the
+450M's own number beside it) plus the needle probe as before. Set `ROUND = 2` below.
+
 **Before you run**
 1. **Add the three shards** to the cache on the machine that holds the data, then copy them and the two index
    files to Drive:
@@ -106,12 +117,18 @@ CONT_RUN      = f'{DRIVE}/runs/base450m_cont'                               # it
 CORPUS_DRIVE  = f'{DRIVE}/token_cache_cont'                  # + instruct.u32, agent.u32, program.u32
 CORPUS        = '/content/token_cache_cont'                  # LOCAL SSD (Drive-FUSE reads are ~30x slower)
 TOKENIZER     = f'{CORPUS}/tokenizer/grillcheese_bbpe128k.json'
-RUN_SUFFIX    = ''                                  # '' for the first session pair; '_2' for a further round of the same arm
-CONTINUE_FROM = ''                                  # grown arm only: keep training a grown checkpoint instead of growing anew,
-                                                    # e.g. f'{DRIVE}/runs/grow_mem_grown/grow_mem_grown_stable_end.pt' (before
-                                                    # its decay, so the run picks up at the constant LR and decays at its own end)
+ROUND         = 2                                   # 1: the first pair of arms; 2: the memory's round -- the grown arm continues
+                                                    # from round 1's stable_end (before its decay, so the run picks up at the
+                                                    # constant LR and decays at its own end) with facts_text_far in the mix
+MEM_SHARD, MEM_MULT = 'facts_text_far', 23          # round >= 2: ~5% of the tokens (41M-token shard x 23 against the 17.7B cache:
+                                                    # ~0.5 epoch at 0.42B tokens); the same share in the decay
+PREV          = '' if ROUND <= 2 else f'_{ROUND - 1}'
+RUN_SUFFIX    = '' if ROUND == 1 else f'_{ROUND}'
+CONTINUE_FROM = '' if ROUND == 1 else f'{DRIVE}/runs/grow_mem_{ARM}{PREV}/grow_mem_{ARM}{PREV}_stable_end.pt'
 RUN_DIR       = f'{DRIVE}/runs/grow_mem_{ARM}{RUN_SUFFIX}'   # checkpoints, metrics, logs, the step-0 file
 assert ARM in ('grown', 'control'), ARM
+if CONTINUE_FROM:
+    assert os.path.exists(CONTINUE_FROM), f"round {ROUND} of the {ARM} arm needs round {ROUND - 1}'s stable_end: {CONTINUE_FROM}"
 assert os.path.exists(START_CKPT), START_CKPT
 os.makedirs(RUN_DIR, exist_ok=True); os.makedirs(CORPUS, exist_ok=True)
 
@@ -119,8 +136,8 @@ def check_shards():
     # Every shard the cache lists must be on Drive and on local disk at full size (the growth pilot's arms
     # trained on 9, 10 and 12 of the 13 shards because the local copy was incomplete for each).
     names = sorted(json.load(open(f'{CORPUS_DRIVE}/_sizes.json')))
-    for n in ('instruct', 'agent', 'program'):
-        assert n in names, f'{n}.u32 is not in the cache yet: run make_decay_shards.py and copy it to Drive'
+    for n in ('instruct', 'agent', 'program') + ((MEM_SHARD,) if ROUND >= 2 else ()):
+        assert n in names, f'{n}.u32 is not in the cache yet: build it and copy it to Drive'
     bad = []
     for n in names:
         p, q = f'{CORPUS_DRIVE}/{n}.u32', f'{CORPUS}/{n}.u32'
@@ -148,8 +165,8 @@ is what the run initialises from. ~10 min on Colab's CPU; skip the cell on later
     code(r"""
 GROWN = CONTINUE_FROM or f'{RUN_DIR}/grow_step0_d2f2m{MEM_EVERY}.pt'
 if CONTINUE_FROM:
-    assert ARM == 'grown' and os.path.exists(CONTINUE_FROM), CONTINUE_FROM
-    print('continuing the grown arm from', CONTINUE_FROM)
+    assert os.path.exists(CONTINUE_FROM), CONTINUE_FROM
+    print(f'round {ROUND}: continuing the {ARM} arm from', CONTINUE_FROM)
 if ARM == 'grown' and not CONTINUE_FROM and not os.path.exists(GROWN):
     !cd {REPO} && python validation/grow_base.py --ckpt "{START_CKPT}" --cache {CORPUS} --depth 2 --ffn 2 \
         --mem-every {MEM_EVERY} --sources arxiv,books,fineweb_edu,nemotron_code --windows 1 --seq 1024 \
@@ -164,13 +181,13 @@ elif ARM == 'grown':
     code(r"""
 # --- config, and a runner that tees the log to Drive ---
 shape = (dict(CB_L='64', CB_FFN_MULT='4', CB_MEM_EVERY=str(MEM_EVERY), CB_INIT_FROM=GROWN) if ARM == 'grown'
-         else dict(CB_L='32', CB_INIT_FROM=START_CKPT))
+         else dict(CB_L='32', CB_INIT_FROM=CONTINUE_FROM or START_CKPT))
 # the three decay shards: multipliers on size-proportional draws (15.5M, 79.5M and 7.3M tokens against a
 # 17.7B cache), solved so that in the decay instruct is ~5%, agent ~10% and program ~2% of the tokens -- 0.8,
 # 0.3 and 0.7 epochs of each at a 1.2B-token run -- and a trace of each in the stable phase (0.5 / 1 / 0.3%)
 # so the base meets the formats before the decay. train_base prints the epoch table; keep every row under ~4.
-MIX_JSON   = json.dumps({'instruct': 6, 'agent': 2, 'program': 8})
-DECAY_JSON = json.dumps({'instruct': 91, 'agent': 36, 'program': 78})
+MIX_JSON   = json.dumps({'instruct': 6, 'agent': 2, 'program': 8, **({MEM_SHARD: MEM_MULT} if ROUND >= 2 else {})})
+DECAY_JSON = json.dumps({'instruct': 91, 'agent': 36, 'program': 78, **({MEM_SHARD: MEM_MULT} if ROUND >= 2 else {})})
 BASE = dict(
     CUBBY_SPM=TOKENIZER, CB_CORPUS=CORPUS, CB_DRIVE_DIR=RUN_DIR, CB_NAME=f'grow_mem_{ARM}{RUN_SUFFIX}',
     CB_D='1024', CB_HEADS='4', CB_WINDOW='512', CB_ATTN_EVERY='3',
@@ -289,7 +306,7 @@ for a, v in have.items():
 print()
 for k, ok in checks.items():
     print(f"  {'PASS' if ok else 'fail'}  {k}")
-print('\ncheck 2 (the memory) is exp_needle_recall on the grown final; check 4 is the serving gates after the adapters.')
+print('\ncheck 2 (the memory): the facts_text_far probe below on each final, then exp_needle_forward; check 4 is the serving gates.')
 fig, ax = plt.subplots(1, 3, figsize=(17, 4))
 for a, v in have.items():
     tok = [r['step'] * (sizes.get(a) or TOKENS_PER_STEP) / 1e9 for r in v]      # tokens as measured, not as planned
@@ -304,6 +321,27 @@ ax[0].legend(); ax[0].set(title='held-out mix (dashed: the start)', xlabel='B to
 ax[1].legend(fontsize=7); ax[1].set(title='the three new shards', xlabel='B tokens')
 ax[2].legend(); ax[2].set(title=f'in-context copy ({"beyond the window" if SEQ > 2 * 512 else "in the window"})', xlabel='B tokens')
 plt.tight_layout(); plt.show()
+"""),
+    md(r"""
+### Check 2, round 2: the facts answered past the window
+
+`exp_hypertoken_recall.py` on `facts_text_far`'s held-out documents: the questions sit ~1,500 tokens past the
+facts, beyond the 512 window, so a right answer can only have come through the episodic store (grown) or not at
+all (the control and the 450M as it is: the floor -- the format learned or not, the fact out of reach either way).
+Pass: the grown final above both floors by 10 points with the in-window `_copy` floor unchanged; then
+`exp_needle_forward.py` at 1024 / 2048 / 4096 as pre-registered.
+"""),
+    code(r"""
+probes = [(a, f'{DRIVE}/runs/grow_mem_{a}{RUN_SUFFIX}/grow_mem_{a}{RUN_SUFFIX}_final.pt',
+           f'{DRIVE}/runs/grow_mem_{a}{RUN_SUFFIX}/hypertoken_recall_facts_far.json') for a in ('grown', 'control')]
+probes.append(('450M as it is (the floor)', f'{CONT_RUN}/base450m_cont_final.pt', f'{CONT_RUN}/hypertoken_recall_facts_far.json'))
+for a, final, out in probes:
+    if not os.path.exists(final):
+        print(a, 'has no final yet'); continue
+    print('===', a)
+    env = dict(os.environ, CB_CKPT=final, CB_CORPUS=CORPUS, CUBBY_SPM=TOKENIZER, CB_SHARDS=MEM_SHARD, CB_DOCS='400',
+               CB_BATCH='8', CB_OUT=out)
+    subprocess.run([sys.executable, 'validation/exp_hypertoken_recall.py'], cwd=REPO, env=env, check=True)
 """),
     md(r"""
 ### After the run

@@ -21,6 +21,12 @@ route is the host's (the entity linker: name -> cell, relation -> step), exactly
 loop's ``route()`` picks the scene for a spatial question. ``--mode text`` is the control: the
 same documents, no ``here``, nothing placed -- attention has to find the answer in the text.
 
+``--far`` (the memory's shard, H-E20 gate 2): the document is filled with real corpus text between
+the facts and the questions (windows of the cache's own shards, as the needle probe takes them),
+so at ``--doc 2048`` the questions sit ~1,500 tokens past the facts -- beyond the 512 window, where
+only a read of the past can answer. In ``text`` mode that read is the episodic memory's: the
+training signal it never had (``facts_far``).
+
 Documents are padded with </s> to ``--doc`` tokens and listed in ``_align.json``; the held-out
 tail, ``_holdout.json`` and ``_sizes.json`` follow ``make_spatial_shard.py``.
 
@@ -90,11 +96,28 @@ def document(tri: list, rels: dict, rng: random.Random, n_ask: int) -> list:
     return [(f"What is the {words(r)} of {words(s)}?", words(o), address(s, rels[r])) for s, r, o in asked]
 
 
-def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int):
+class Filler:
+    """Random windows of real text from the cache's ``.u32`` shards (the needle probe's filler)."""
+
+    def __init__(self, cache: str, names: str, seed: int) -> None:
+        self.arrays = [np.memmap(os.path.join(cache, f"{n}.u32"), dtype=np.uint32, mode="r")
+                       for n in names.split(",") if os.path.exists(os.path.join(cache, f"{n}.u32"))]
+        if not self.arrays:
+            raise SystemExit(f"no filler shard among {names} in {cache}")
+        self.rng = np.random.default_rng(seed)
+
+    def take(self, n: int) -> list:
+        arr = self.arrays[self.rng.integers(len(self.arrays))]
+        i = int(self.rng.integers(0, len(arr) - n - 1))
+        return [int(t) for t in arr[i:i + n]]
+
+
+def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int, filler=None):
     """One document of exactly ``doc`` tokens: the facts as sentences (an object's i-th token at
     the fact's address + 6 i z in ``places`` mode), then the questions (``here`` at the address,
     each answer piece at the next piece's; in ``text`` mode no ``here`` and nothing placed),
-    questions dropped from the end to fit."""
+    questions dropped from the end to fit. With ``filler`` the gap between the facts and the
+    questions is real text that fills the document (``--far``)."""
     ids, pos = [], []
 
     def put(text: str, at=None, span: bool = False):
@@ -114,6 +137,8 @@ def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int)
             pos.append((a0[0], a0[1], a0[2] + STEP * i) if mode == "places" else None)
         put(".\n")
     head = len(ids)
+    if head + 1 > doc:
+        raise ValueError(f"{len(facts)} facts need {head + 1} tokens, --doc is {doc}")
     for q, a, at in qa:
         start = len(ids)
         put(f"Question: {q}")
@@ -126,8 +151,11 @@ def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int)
         if len(ids) + 1 > doc:
             del ids[start:], pos[start:]
             break
-    if head + 1 > doc:
-        raise ValueError(f"{len(facts)} facts need {head + 1} tokens, --doc is {doc}")
+    if filler is not None:                        # --far: real text fills the gap, the questions land at the end
+        nl = tk.encode("\n", add_special_tokens=False).ids
+        gap = doc - 1 - len(ids) - len(nl)
+        ids[head:head] = filler.take(gap) + nl
+        pos[head:head] = [None] * (gap + len(nl))
     ids.append(eos)
     pos.append(None)
     ids.extend([eos] * (doc - len(ids)))
@@ -148,17 +176,20 @@ def main() -> None:
     ap.add_argument("--facts", type=int, nargs=2, default=(8, 16))
     ap.add_argument("--questions", type=int, nargs=2, default=(4, 8))
     ap.add_argument("--mode", choices=["places", "text"], default="places")
-    ap.add_argument("--name", default="", help="shard name (default: facts | facts_text)")
+    ap.add_argument("--far", action="store_true", help="real text between the facts and the questions fills the document")
+    ap.add_argument("--filler", default="books,wikipedia,fineweb_edu", help="--far: the cache shards the text comes from")
+    ap.add_argument("--name", default="", help="shard name (default: facts | facts_text, _far with --far)")
     ap.add_argument("--holdout-frac", type=float, default=0.02)
     ap.add_argument("--seed", type=int, default=0)
     args = ap.parse_args()
     from tokenizers import Tokenizer
     tk = Tokenizer.from_file(args.tokenizer)
     eos = tk.token_to_id("</s>")
-    name = args.name or ("facts" if args.mode == "places" else "facts_text")
+    name = args.name or (("facts" if args.mode == "places" else "facts_text") + ("_far" if args.far else ""))
     rng = random.Random(args.seed)
     t0 = time.time()
     tri, rels = load(rng)
+    filler = Filler(args.cache, args.filler, args.seed) if args.far else None
     ids_path, pos_path = os.path.join(args.cache, f"{name}.u32"), os.path.join(args.cache, f"{name}.pos.i16")
     n_q = n_placed = used = 0
     with open(ids_path + ".part", "wb") as fi, open(pos_path + ".part", "wb") as fp:
@@ -169,7 +200,7 @@ def main() -> None:
             if len(facts) < args.facts[0]:
                 raise SystemExit(f"the wiki world ran out of facts after {d:,} documents")
             qa = document(facts, rels, rng, rng.randint(*args.questions))
-            ids, places = render(tk, facts, rels, qa, args.mode, eos, args.doc)
+            ids, places = render(tk, facts, rels, qa, args.mode, eos, args.doc, filler)
             fi.write(ids.tobytes())
             fp.write(places.tobytes())
             n_q += len(qa)

@@ -73,3 +73,21 @@ def test_a_document_places_the_objects_pieces_and_the_question(tk):
     assert not (places_t[:, 0] != NO_PLACE).any() and "here" not in tk.decode(ids_t.tolist(), skip_special_tokens=True)
     with pytest.raises(ValueError):
         render(tk, facts * 20, rels, [], "places", eos, 64)
+
+
+def test_far_fills_the_gap_with_text_and_lands_the_questions_at_the_end(tk):
+    class Stub:                                                          # real text stands in: a counter
+        def take(self, n):
+            return [1000 + i % 50 for i in range(n)]
+    rels = {"WORKS_FOR": 0, "HAS_PART": 1}
+    facts = [("KeikoMatsuzaka", "WORKS_FOR", "Daiei"), ("Leadership", "HAS_PART", "PowerConcept")]
+    qa = document(facts, rels, random.Random(1), 2)
+    eos = tk.token_to_id("</s>")
+    ids, places = render(tk, facts, rels, qa, "text", eos, 1024, Stub())
+    assert ids.shape == (1024,) and ids[-1] == eos and int((ids == eos).sum()) == 1   # no padding: the gap is text
+    text = tk.decode(ids.tolist(), skip_special_tokens=True)
+    assert text.startswith("Facts:\n") and text.rstrip().endswith(words(qa[-1][1]))     # the questions at the end
+    first_q = next(i for i in range(1024) if tk.decode(ids[i:i + 3].tolist()).startswith("Question"))
+    assert first_q > 1024 - 200 and not (places[:, 0] != NO_PLACE).any()              # ~800 tokens past the facts
+    near, _ = render(tk, facts, rels, qa, "places", eos, 1024, Stub())
+    assert near.shape == (1024,)                                                       # places mode fills too
