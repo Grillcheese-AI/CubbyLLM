@@ -1,0 +1,44 @@
+{
+ "ckpt": "/content/drive/MyDrive/cubbyllm/runs/spatial_link/spatial_link_final.pt",
+ "meta": {
+  "kind": "cubby_base",
+  "D": 1024,
+  "L": 32,
+  "heads": 4,
+  "window": 512,
+  "attn_every": 3,
+  "ctx": 32,
+  "slots": 8,
+  "gen_basis": 16,
+  "gen_rank": 8,
+  "vocab": 128000,
+  "vocab_real": 127996,
+  "mem_every": 0,
+  "tied": false,
+  "causal_ctx": true,
+  "spatial": {
+   "scale": 2.0,
+   "seed": 0,
+   "at": 16,
+   "query": "placed"
+  }
+ },
+ "docs": 400,
+ "shards": {
+  "spatial_here": {
+   "questions": 3610,
+   "first_token": 0.7986149584487534,
+   "exact": 0.7930747922437673,
+   "placed": true,
+   "questions_stripped": false
+  },
+  "facts": {
+   "questions": 2408,
+   "first_token": 0.2661960132890365,
+   "exact": 0.015780730897009966,
+   "placed": true,
+   "questions_stripped": false
+  }
+ },
+ "wall_s": 52.6
+}

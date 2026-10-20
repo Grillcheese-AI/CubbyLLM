@@ -1,0 +1,38 @@
+{
+ "ckpt": "/content/drive/MyDrive/cubbyllm/runs/spatial_text/spatial_text_final.pt",
+ "meta": {
+  "kind": "cubby_base",
+  "D": 1024,
+  "L": 32,
+  "heads": 4,
+  "window": 512,
+  "attn_every": 3,
+  "ctx": 32,
+  "slots": 8,
+  "gen_basis": 16,
+  "gen_rank": 8,
+  "vocab": 128000,
+  "vocab_real": 127996,
+  "mem_every": 0,
+  "tied": false,
+  "causal_ctx": true
+ },
+ "docs": 400,
+ "shards": {
+  "spatial_text_here": {
+   "questions": 3610,
+   "first_token": 0.9966759002770084,
+   "exact": 0.9947368421052631,
+   "placed": false,
+   "questions_stripped": false
+  },
+  "facts_text": {
+   "questions": 2408,
+   "first_token": 0.9966777408637874,
+   "exact": 0.9867109634551495,
+   "placed": false,
+   "questions_stripped": false
+  }
+ },
+ "wall_s": 11.7
+}
