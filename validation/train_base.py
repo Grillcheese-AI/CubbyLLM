@@ -45,6 +45,7 @@ import glob
 import json
 import math
 import os
+import re
 import queue
 import shutil
 import sys
@@ -220,6 +221,9 @@ class Corpus:
         self.orig = json.load(open(sp, encoding="utf-8")) if os.path.exists(sp) else {}
         for p in sorted(glob.glob(os.path.join(cache_dir, "*.u32"))):
             name = os.path.splitext(os.path.basename(p))[0]
+            if re.search(r" \(\d+\)$", name):        # "facts_text (1)": a sync tool's conflict copy -- it would be
+                print(f"  skip shard {name}: a duplicate copy")   # drawn twice, its held-out tail as training
+                continue
             arr = np.memmap(p, dtype=np.uint32, mode="r")
             n = len(arr)
             hold = int(holds[name]) if name in holds else min(int(val_tokens), int(0.05 * n))

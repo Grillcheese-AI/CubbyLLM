@@ -135,7 +135,10 @@ def test_the_corpus_reads_the_shard_by_documents_and_the_link_trains_on_it(tmp_p
     assert json.load(open(tmp_path / "_align.json"))["spatial"] == 192
     assert json.load(open(tmp_path / "_holdout.json"))["spatial"] == 3 * 192
     from train_base import Corpus, Tokens, forward_batch
+    import shutil
+    shutil.copy(tmp_path / "spatial.u32", tmp_path / "spatial (1).u32")      # a sync tool's conflict copy: skipped
     corpus = Corpus(str(tmp_path), seq=128, val_tokens=0, seed=0)
+    assert corpus.names == ["spatial"]
     x, y = corpus.batch(1, 0, 4, "stable")
     assert isinstance(x, Tokens) and x.ids.shape == (4, 128) and x.pos.shape == (4, 128, 3) and y.shape == (4, 128)
     first = tk.decode(x.ids[0, :3].tolist())
