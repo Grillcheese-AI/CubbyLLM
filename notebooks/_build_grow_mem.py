@@ -103,23 +103,25 @@ assert '--mem-every' in open(f'{REPO}/validation/grow_base.py').read(), 'master 
     code(r"""
 # --- EDIT to your layout ---
 ARM           = 'grown'                             # 'grown' (depth x2 + FFN x2 + memory) or 'control' (the 450M)
+ROUND         = 2                                   # 1: the first pair of arms; 2: the memory's round -- the grown arm continues
+                                                    # from round 1's stable_end (before its decay, so the run picks up at the
+                                                    # constant LR and decays at its own end) with facts_text_far in the mix
 SESSION_H     = 24                                  # Colab Pro+; 12 on Pro / pay-as-you-go
 HOURS_PER_ARM = 20.0                                # equal compute: the same hours on the same card for both arms
 MEM_EVERY     = 4                                   # on the 64-layer grown model: 16 reads, one per original pair
 SEQ           = 2048                                # > the 512 window, so the memory has a past to read
-TOKENS_PER_STEP = 80_000                            # the optimizer step (micro x accumulation, train_base derives the
-                                                    # accumulation): 131,072 as pre-registered; 80,000 is what the grown arm
-                                                    # ran at on the RTX 6000 (2026-10-18: 19 forwards of micro 2 a step
-                                                    # instead of 32). BOTH ARMS MUST MATCH -- the readout checks it.
+TOKENS_PER_STEP = 80_000 if ROUND == 1 else 131_072
+                                                    # the optimizer step (micro x accumulation; train_base derives the
+                                                    # accumulation). Round 1: 80,000 -- what the grown arm ran at on the RTX
+                                                    # 6000 (micro 2, 77,824 tokens), so the control matches it; BOTH ARMS OF
+                                                    # A ROUND MUST MATCH (the readout checks it). Round 2: the pre-registered
+                                                    # 131,072 (a fresh schedule from stable_end; micro 4/8/16 divide it).
 DRIVE         = '/content/drive/MyDrive/cubbyllm'
 START_CKPT    = f'{DRIVE}/runs/base450m_cont/base450m_cont_stable_end.pt'   # the continued 450M, before its decay
 CONT_RUN      = f'{DRIVE}/runs/base450m_cont'                               # its metrics: the first reading
 CORPUS_DRIVE  = f'{DRIVE}/token_cache_cont'                  # + instruct.u32, agent.u32, program.u32
 CORPUS        = '/content/token_cache_cont'                  # LOCAL SSD (Drive-FUSE reads are ~30x slower)
 TOKENIZER     = f'{CORPUS}/tokenizer/grillcheese_bbpe128k.json'
-ROUND         = 2                                   # 1: the first pair of arms; 2: the memory's round -- the grown arm continues
-                                                    # from round 1's stable_end (before its decay, so the run picks up at the
-                                                    # constant LR and decays at its own end) with facts_text_far in the mix
 MEM_SHARD, MEM_MULT = 'facts_text_far', 23          # round >= 2: ~5% of the tokens (41M-token shard x 23 against the 17.7B cache:
                                                     # ~0.5 epoch at 0.42B tokens); the same share in the decay
 PREV          = '' if ROUND <= 2 else f'_{ROUND - 1}'
@@ -247,6 +249,53 @@ def run(env_extra, log_name):
                 p.wait(timeout=600)
             except subprocess.TimeoutExpired:
                 p.terminate()
+"""),
+    md(r"""
+### Speed check: micro-batch and banded attention, measured on this card (first session only, ~10-15 min)
+
+`train_base.py`'s `CB_MODE=bench` times forward+backward at a few micro-batches with this run's exact shape
+(memory reads, recompute, S, the attention path) and prints tok/s, MFU and peak memory. Round 1 ran the grown arm
+at **5-6k tok/s, 7-9% MFU** against the 450M's **64k tok/s, 34.5%** on the same card: the memory read's gather
+scattered a dense (B, S, S, d) gradient in backward (17 GB per memory layer at micro 2) -- fixed 2026-10-20 (flat
+`index_select`, selection under `no_grad`; same values and gradients, `validation/logs/_bench_read.py`), so the
+micro that fits is larger now. Where flex attention is off (this card's 99 KB shared memory), the cell also tries
+`CB_BANDED=1` (the windowed attention in bands: half the scores at S = 2048, exact). The fastest setting is written
+to `RUN_DIR/bench.json` and every later session of the run reuses it (the micro-batch must not change mid-run).
+"""),
+    code(r"""
+import re
+BENCH_FILE = f'{RUN_DIR}/bench.json'
+if os.path.exists(BENCH_FILE):
+    best = json.load(open(BENCH_FILE))
+    print('reusing', BENCH_FILE, best)
+elif glob.glob(f'{RUN_DIR}/*_slot*.pt') or glob.glob(f'{RUN_DIR}/*_ckpt*.pt'):
+    best = None
+    print('a run is already under way in', RUN_DIR, '-- keeping the config cell micro-batch, no bench')
+else:
+    micros = '4,8,16' if ARM == 'grown' else '16,32,48'
+    trials = ['0', '1'] if (BASE.get('CB_NO_FLEX') == '1' and SEQ > 1024) else ['0']
+    rows = []
+    for banded in trials:
+        env = dict(os.environ, **BASE, CB_MODE='bench', CB_BENCH_MICRO=micros, CB_BANDED=banded)
+        p = subprocess.Popen([sys.executable, '-u', 'validation/train_base.py'], cwd=REPO, env=env,
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+        for line in p.stdout:
+            print(line, end='')
+            m = re.search(r'micro\s+(\d+):.*?([\d,]+) tok/s\s+MFU\s+([\d.]+)%\s+peak\s+([\d.]+) GB', line)
+            if m:
+                rows.append(dict(micro=int(m[1]), banded=banded, tps=float(m[2].replace(',', '')),
+                                 mfu=float(m[3]), peak_gb=float(m[4])))
+        p.wait()
+    fits = [r for r in rows if r['peak_gb'] < 0.92 * gb]
+    best = max(fits, key=lambda r: r['tps']) if fits else None
+    if best:
+        json.dump(best, open(BENCH_FILE, 'w'))
+    print('\nmeasured:', *[f"micro {r['micro']} banded {r['banded']}: {r['tps']:,.0f} tok/s, MFU {r['mfu']}%, {r['peak_gb']} GB"
+                            for r in rows], sep='\n  ')
+if best:
+    BASE['CB_MICRO'], BASE['CB_BANDED'] = str(best['micro']), best['banded']
+    print(f"\nthe run uses micro {BASE['CB_MICRO']}, banded attention {'on' if best['banded'] == '1' else 'off'}: "
+          f"{best['tps']:,.0f} tok/s, {HOURS_PER_ARM} h -> ~{best['tps'] * HOURS_PER_ARM * 3600 / 1e9:.2f}B tokens")
 """),
     md(r"""
 ### The run

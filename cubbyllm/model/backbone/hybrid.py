@@ -58,6 +58,7 @@ mask at every step, and is what the incremental-decode equivalence test checks.
 from __future__ import annotations
 
 import functools
+import os
 
 import torch
 import torch.nn as nn
@@ -66,6 +67,7 @@ import torch.utils.checkpoint
 
 from ...core.protocols import Wiring
 from ..recall import EpisodicStore, MemoryRead
+from .banded import banded_attention, dense_attention
 from ..recall.store import DEFAULT_CAPACITY
 from .mingru import _MinGRUMixer, _RMSNorm, _SwiGLU
 
@@ -157,10 +159,10 @@ class _WindowedAttnMixer(nn.Module):
         if self._use_flex(x):
             bm = _window_block_mask(S, self.window, str(x.device))
             o = flex_attention(q, k, v, block_mask=bm)   # banded work only
+        elif S > 2 * self.window and os.environ.get("CB_BANDED") == "1":
+            o = banded_attention(q, k, v, self.window)   # the reference's keys at 2 window / S of its work
         else:
-            i = torch.arange(S, device=x.device)
-            keep = (i[:, None] >= i[None, :]) & (i[:, None] - i[None, :] < self.window)
-            o = F.scaled_dot_product_attention(q, k, v, attn_mask=keep)  # causal+window
+            o = dense_attention(q, k, v, self.window)    # causal+window, the S x S mask
         return self.o(o.transpose(1, 2).reshape(B, S, d))
 
     @staticmethod

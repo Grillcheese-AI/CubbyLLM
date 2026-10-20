@@ -38,7 +38,7 @@ class MemoryRead(nn.Module):
         if valid is not None:
             sim = sim.masked_fill(~valid, -1e9)                  # finite -> backward-safe
         w = torch.softmax(sim, dim=-1)
-        r = self.o((w.unsqueeze(-1) * v_set).sum(2))
+        r = self.o(torch.einsum("bsk,bskd->bsd", w, v_set))     # a batched matvec, no (B,S,K,d) product
         if valid is not None:
             no_mem = ~valid.any(-1, keepdim=True)                # (B,S,1)
             r = torch.where(no_mem, torch.zeros_like(r), r)
@@ -53,20 +53,27 @@ class MemoryRead(nn.Module):
         # products. Only the SELECTION uses normalized q/k; the gathered
         # k_set/v_set below are the ORIGINAL (un-normalized) projections, and
         # self.read()'s softmax weighting stays dot-product, unchanged.
-        qn = F.normalize(q, dim=-1)
-        kn = F.normalize(k, dim=-1)
-        sim = torch.einsum("bik,bjk->bij", qn, kn)
-        i = torch.arange(S, device=h.device)
-        allowed = (i[:, None] - i[None, :]) > window             # j < i - window
-        sim = sim.masked_fill(~allowed[None], float("-inf"))
-        kk = min(self.topk, S)
-        topv, topi = sim.topk(kk, dim=-1)                        # (B,S,kk)
+        #
+        # The selection carries no gradient (top-k indices), so it runs under no_grad: nothing of the
+        # (B, S, S) similarity is saved for backward. The gather is FLAT -- an index_select of rows of
+        # (B*S, d) -- because gathering from ``v.unsqueeze(1).expand(B, S, S, d)`` (the version before
+        # 2026-10-20) is cheap forward but its backward scatters into a DENSE (B, S, S, d) gradient:
+        # 17 GB per memory layer at B=2, S=2048, d=1024 in bf16 -- why the grown 1.3B fit micro 2 only and
+        # ran at 7-9% MFU against the 450M's 34% on the same card. Same values, same gradients.
         dk = k.shape[-1]
-        k_set = torch.gather(k.unsqueeze(1).expand(B, S, S, dk), 2,
-                             topi.unsqueeze(-1).expand(B, S, kk, dk))
-        v_set = torch.gather(v.unsqueeze(1).expand(B, S, S, d), 2,
-                             topi.unsqueeze(-1).expand(B, S, kk, d))
-        valid = ~torch.isinf(topv)                               # real vs masked-pad slots
+        kk = min(self.topk, S)
+        with torch.no_grad():
+            qn = F.normalize(q, dim=-1)
+            kn = F.normalize(k, dim=-1)
+            sim = torch.einsum("bik,bjk->bij", qn, kn)
+            i = torch.arange(S, device=h.device)
+            allowed = (i[:, None] - i[None, :]) > window         # j < i - window
+            sim = sim.masked_fill(~allowed[None], float("-inf"))
+            topv, topi = sim.topk(kk, dim=-1)                    # (B,S,kk)
+            valid = ~torch.isinf(topv)                           # real vs masked-pad slots
+            flat = (topi + (torch.arange(B, device=h.device) * S).view(B, 1, 1)).reshape(-1)
+        k_set = k.reshape(B * S, dk).index_select(0, flat).view(B, S, kk, dk)
+        v_set = v.reshape(B * S, d).index_select(0, flat).view(B, S, kk, d)
         return self.read(q, k_set, v_set, valid)
 
 
