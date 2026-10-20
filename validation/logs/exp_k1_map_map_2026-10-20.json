@@ -1,0 +1,67 @@
+{
+ "args": {
+  "freq": 256,
+  "epochs": 10,
+  "neg": 8191,
+  "batch": 1024,
+  "lr": 0.05,
+  "lr_rel": 0.05,
+  "rel_init": 3.141592653589793,
+  "lr_transe": 0.01,
+  "eval": 3000,
+  "paths": 2000,
+  "seed": 0,
+  "only": [
+   "map"
+  ],
+  "threads": 3,
+  "out": "validation\\logs\\exp_k1_map_map_2026-10-20.json"
+ },
+ "entities": 374975,
+ "relations": 2902,
+ "train": 345106,
+ "held": 3371,
+ "map": {
+  "one_hop": {
+   "n": 3000,
+   "mrr": 0.3828935527945567,
+   "hits1": 0.29,
+   "hits3": 0.4573333333333333,
+   "hits10": 0.542
+  },
+  "relation": {
+   "n": 3000,
+   "mrr": 0.18006139767591878,
+   "hits1": 0.13566666666666666,
+   "hits3": 0.18833333333333332,
+   "hits10": 0.261
+  },
+  "two_hop": {
+   "n": 2000,
+   "mrr": 0.6342852120810906,
+   "hits1": 0.4475,
+   "hits3": 0.784,
+   "hits10": 0.98
+  },
+  "train_s": 2344.7,
+  "composition_ratio": 1.8081180811808117
+ },
+ "log": [
+  "wiki world: 374,975 entities, 2,902 relations, 345,106 train triples, 3,371 held out (3,000 scored), 2,000 two-hop paths over training hops",
+  "--- map: 96.7M parameters, width 512, lr 0.05 (entities) / 0.05 (relations)",
+  "  epoch 1/10: loss 18.159 (206s)",
+  "  epoch 2/10: loss 11.501 (227s)",
+  "  epoch 3/10: loss 5.157 (249s)",
+  "  epoch 4/10: loss 1.973 (217s)",
+  "  epoch 5/10: loss 1.131 (242s)",
+  "  epoch 6/10: loss 0.846 (234s)",
+  "  epoch 7/10: loss 0.708 (234s)",
+  "  epoch 8/10: loss 0.622 (230s)",
+  "  epoch 9/10: loss 0.566 (229s)",
+  "  epoch 10/10: loss 0.522 (208s)",
+  "  one_hop   MRR 0.383  Hits@1 0.290  Hits@3 0.457  Hits@10 0.542  (n=3000)",
+  "  relation  MRR 0.180  Hits@1 0.136  Hits@3 0.188  Hits@10 0.261  (n=3000)",
+  "  two_hop   MRR 0.634  Hits@1 0.448  Hits@3 0.784  Hits@10 0.980  (n=2000)",
+  "  two-hop / one-hop Hits@10: 1.81"
+ ]
+}

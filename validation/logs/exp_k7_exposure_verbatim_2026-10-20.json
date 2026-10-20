@@ -1,0 +1,643 @@
+{
+ "args": {
+  "facts": 1000,
+  "paraphrase": false,
+  "seq": 256,
+  "batch": 32,
+  "lr": 0.002,
+  "seed": 0,
+  "threads": 2,
+  "out": "validation\\logs\\exp_k7_exposure_verbatim_2026-10-20.json"
+ },
+ "meta": {
+  "kind": "cubby_base",
+  "D": 128,
+  "L": 4,
+  "heads": 4,
+  "window": 64,
+  "attn_every": 2,
+  "ctx": 32,
+  "slots": 8,
+  "gen_basis": 16,
+  "gen_rank": 8,
+  "vocab": 1024,
+  "vocab_real": 1024,
+  "mem_every": 0,
+  "tied": false,
+  "causal_ctx": true
+ },
+ "params": 1064720,
+ "tokens": 3332776,
+ "fact_tokens": 1666500,
+ "final": [
+  {
+   "exposures": 1,
+   "n": 250,
+   "exact": 0.0,
+   "first_token": 0.0
+  },
+  {
+   "exposures": 10,
+   "n": 250,
+   "exact": 0.0,
+   "first_token": 0.004000000189989805
+  },
+  {
+   "exposures": 100,
+   "n": 250,
+   "exact": 0.30399999022483826,
+   "first_token": 0.7760000228881836
+  },
+  {
+   "exposures": 1000,
+   "n": 250,
+   "exact": 0.8600000143051147,
+   "first_token": 1.0
+  }
+ ],
+ "curve": [
+  {
+   "step": 0,
+   "loss": 6.963376522064209,
+   "held_language": 6.962296485900879,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    }
+   ]
+  },
+  {
+   "step": 25,
+   "loss": 5.82150411605835,
+   "held_language": 6.277019500732422,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    }
+   ]
+  },
+  {
+   "step": 50,
+   "loss": 3.478834390640259,
+   "held_language": 4.52034854888916,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.00800000037997961
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.1720000058412552,
+     "first_token": 0.21199999749660492
+    }
+   ]
+  },
+  {
+   "step": 75,
+   "loss": 2.5785694122314453,
+   "held_language": 3.2376160621643066,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.35600000619888306,
+     "first_token": 0.4440000057220459
+    }
+   ]
+  },
+  {
+   "step": 100,
+   "loss": 2.1213881969451904,
+   "held_language": 2.9672799110412598,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.00800000037997961
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.019999999552965164
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.5360000133514404,
+     "first_token": 0.828000009059906
+    }
+   ]
+  },
+  {
+   "step": 125,
+   "loss": 2.070422649383545,
+   "held_language": 2.9158594608306885,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.012000000104308128
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.035999998450279236,
+     "first_token": 0.11999999731779099
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.7680000066757202,
+     "first_token": 0.9160000085830688
+    }
+   ]
+  },
+  {
+   "step": 150,
+   "loss": 2.0016753673553467,
+   "held_language": 2.878255605697632,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.012000000104308128
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.09200000017881393,
+     "first_token": 0.24799999594688416
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.7599999904632568,
+     "first_token": 0.9319999814033508
+    }
+   ]
+  },
+  {
+   "step": 175,
+   "loss": 2.020021438598633,
+   "held_language": 2.823288917541504,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.024000000208616257,
+     "first_token": 0.23600000143051147
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.4480000138282776,
+     "first_token": 0.8159999847412109
+    }
+   ]
+  },
+  {
+   "step": 200,
+   "loss": 2.018348455429077,
+   "held_language": 2.8236584663391113,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.164000004529953,
+     "first_token": 0.4320000112056732
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.7480000257492065,
+     "first_token": 0.9679999947547913
+    }
+   ]
+  },
+  {
+   "step": 225,
+   "loss": 1.8850017786026,
+   "held_language": 2.7950963973999023,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.11999999731779099,
+     "first_token": 0.5400000214576721
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.6520000100135803,
+     "first_token": 0.9599999785423279
+    }
+   ]
+  },
+  {
+   "step": 250,
+   "loss": 1.9182013273239136,
+   "held_language": 2.752941846847534,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.012000000104308128
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.15600000321865082,
+     "first_token": 0.5400000214576721
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.699999988079071,
+     "first_token": 0.9639999866485596
+    }
+   ]
+  },
+  {
+   "step": 275,
+   "loss": 1.9506666660308838,
+   "held_language": 2.7423605918884277,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.00800000037997961
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.3919999897480011,
+     "first_token": 0.6800000071525574
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.9200000166893005,
+     "first_token": 0.9879999756813049
+    }
+   ]
+  },
+  {
+   "step": 300,
+   "loss": 1.9226975440979004,
+   "held_language": 2.7194509506225586,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.004000000189989805,
+     "first_token": 0.00800000037997961
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.41200000047683716,
+     "first_token": 0.7160000205039978
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.9480000138282776,
+     "first_token": 0.9919999837875366
+    }
+   ]
+  },
+  {
+   "step": 325,
+   "loss": 1.960243582725525,
+   "held_language": 2.698596954345703,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.004000000189989805,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.00800000037997961
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.4320000112056732,
+     "first_token": 0.7559999823570251
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.9279999732971191,
+     "first_token": 0.9959999918937683
+    }
+   ]
+  },
+  {
+   "step": 350,
+   "loss": 1.9390982389450073,
+   "held_language": 2.6813511848449707,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.3959999978542328,
+     "first_token": 0.7559999823570251
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.9039999842643738,
+     "first_token": 0.9959999918937683
+    }
+   ]
+  },
+  {
+   "step": 375,
+   "loss": 1.9079642295837402,
+   "held_language": 2.6748359203338623,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.36000001430511475,
+     "first_token": 0.7680000066757202
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.871999979019165,
+     "first_token": 1.0
+    }
+   ]
+  },
+  {
+   "step": 400,
+   "loss": 1.8907455205917358,
+   "held_language": 2.667036533355713,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.00800000037997961
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.2840000092983246,
+     "first_token": 0.7599999904632568
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.828000009059906,
+     "first_token": 1.0
+    }
+   ]
+  },
+  {
+   "step": 405,
+   "loss": 1.859130859375,
+   "held_language": 2.667231321334839,
+   "recall": [
+    {
+     "exposures": 1,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.0
+    },
+    {
+     "exposures": 10,
+     "n": 250,
+     "exact": 0.0,
+     "first_token": 0.004000000189989805
+    },
+    {
+     "exposures": 100,
+     "n": 250,
+     "exact": 0.30399999022483826,
+     "first_token": 0.7760000228881836
+    },
+    {
+     "exposures": 1000,
+     "n": 250,
+     "exact": 0.8600000143051147,
+     "first_token": 1.0
+    }
+   ]
+  }
+ ],
+ "log": [
+  "  step    0/406  loss 6.963  language held-out 6.962  exact recall 1x:0.00  10x:0.00  100x:0.00  1000x:0.00   [9s]",
+  "  step   25/406  loss 5.822  language held-out 6.277  exact recall 1x:0.00  10x:0.00  100x:0.00  1000x:0.00   [47s]",
+  "  step   50/406  loss 3.479  language held-out 4.520  exact recall 1x:0.00  10x:0.00  100x:0.00  1000x:0.17   [86s]",
+  "  step   75/406  loss 2.579  language held-out 3.238  exact recall 1x:0.00  10x:0.00  100x:0.00  1000x:0.36   [125s]",
+  "  step  100/406  loss 2.121  language held-out 2.967  exact recall 1x:0.00  10x:0.00  100x:0.00  1000x:0.54   [164s]",
+  "  step  125/406  loss 2.070  language held-out 2.916  exact recall 1x:0.00  10x:0.00  100x:0.04  1000x:0.77   [203s]",
+  "  step  150/406  loss 2.002  language held-out 2.878  exact recall 1x:0.00  10x:0.00  100x:0.09  1000x:0.76   [241s]",
+  "  step  175/406  loss 2.020  language held-out 2.823  exact recall 1x:0.00  10x:0.00  100x:0.02  1000x:0.45   [280s]",
+  "  step  200/406  loss 2.018  language held-out 2.824  exact recall 1x:0.00  10x:0.00  100x:0.16  1000x:0.75   [318s]",
+  "  step  225/406  loss 1.885  language held-out 2.795  exact recall 1x:0.00  10x:0.00  100x:0.12  1000x:0.65   [358s]",
+  "  step  250/406  loss 1.918  language held-out 2.753  exact recall 1x:0.00  10x:0.00  100x:0.16  1000x:0.70   [398s]",
+  "  step  275/406  loss 1.951  language held-out 2.742  exact recall 1x:0.00  10x:0.00  100x:0.39  1000x:0.92   [438s]",
+  "  step  300/406  loss 1.923  language held-out 2.719  exact recall 1x:0.00  10x:0.00  100x:0.41  1000x:0.95   [478s]",
+  "  step  325/406  loss 1.960  language held-out 2.699  exact recall 1x:0.00  10x:0.00  100x:0.43  1000x:0.93   [518s]",
+  "  step  350/406  loss 1.939  language held-out 2.681  exact recall 1x:0.00  10x:0.00  100x:0.40  1000x:0.90   [559s]",
+  "  step  375/406  loss 1.908  language held-out 2.675  exact recall 1x:0.00  10x:0.00  100x:0.36  1000x:0.87   [598s]",
+  "  step  400/406  loss 1.891  language held-out 2.667  exact recall 1x:0.00  10x:0.00  100x:0.28  1000x:0.83   [637s]",
+  "  step  405/406  loss 1.859  language held-out 2.667  exact recall 1x:0.00  10x:0.00  100x:0.30  1000x:0.86   [645s]"
+ ],
+ "wall_s": 644.9,
+ "store": {
+  "writes_per_fact": 1,
+  "exact_store_recall": 1.0
+ }
+}

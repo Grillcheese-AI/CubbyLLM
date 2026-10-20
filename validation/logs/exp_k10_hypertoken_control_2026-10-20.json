@@ -1,0 +1,107 @@
+{
+ "args": {
+  "steps": 1000,
+  "d": 256,
+  "batch": 16,
+  "seq": 256,
+  "facts_per_doc": 8,
+  "filler": 120,
+  "lr": 0.002,
+  "gate_bias": null,
+  "query": "learned",
+  "seed": 0,
+  "only": [
+   "control"
+  ],
+  "threads": 2,
+  "out": "validation\\logs\\exp_k10_hypertoken_control_2026-10-20.json"
+ },
+ "control": {
+  "name": "text control",
+  "params": 3229200,
+  "final_answers": 0.001953125,
+  "final_language": 2.0750105381011963,
+  "curve": [
+   {
+    "step": 0,
+    "loss": 6.985462188720703,
+    "answers": 0.001953125,
+    "language": 6.982275009155273
+   },
+   {
+    "step": 100,
+    "loss": 2.961005687713623,
+    "answers": 0.001953125,
+    "language": 2.603350877761841
+   },
+   {
+    "step": 200,
+    "loss": 2.7445693016052246,
+    "answers": 0.0,
+    "language": 2.319302797317505
+   },
+   {
+    "step": 300,
+    "loss": 2.675699234008789,
+    "answers": 0.001953125,
+    "language": 2.26058292388916
+   },
+   {
+    "step": 400,
+    "loss": 2.6328511238098145,
+    "answers": 0.00390625,
+    "language": 2.211945056915283
+   },
+   {
+    "step": 500,
+    "loss": 2.589003086090088,
+    "answers": 0.0,
+    "language": 2.180752754211426
+   },
+   {
+    "step": 600,
+    "loss": 2.5648136138916016,
+    "answers": 0.0,
+    "language": 2.150054931640625
+   },
+   {
+    "step": 700,
+    "loss": 2.5433876514434814,
+    "answers": 0.0,
+    "language": 2.120356321334839
+   },
+   {
+    "step": 800,
+    "loss": 2.5211989879608154,
+    "answers": 0.001953125,
+    "language": 2.096597671508789
+   },
+   {
+    "step": 900,
+    "loss": 2.4989371299743652,
+    "answers": 0.001953125,
+    "language": 2.0813560485839844
+   },
+   {
+    "step": 999,
+    "loss": 2.4960012435913086,
+    "answers": 0.001953125,
+    "language": 2.0750105381011963
+   }
+  ]
+ },
+ "log": [
+  "--- text control: 3.23M params, D=256, window 64, 8 facts/doc, filler 120",
+  "  step     0  loss 6.985  held-out answers 0.00  language 6.982   [6s]",
+  "  step   100  loss 2.961  held-out answers 0.00  language 2.603   [167s]",
+  "  step   200  loss 2.745  held-out answers 0.00  language 2.319   [326s]",
+  "  step   300  loss 2.676  held-out answers 0.00  language 2.261   [483s]",
+  "  step   400  loss 2.633  held-out answers 0.00  language 2.212   [640s]",
+  "  step   500  loss 2.589  held-out answers 0.00  language 2.181   [798s]",
+  "  step   600  loss 2.565  held-out answers 0.00  language 2.150   [953s]",
+  "  step   700  loss 2.543  held-out answers 0.00  language 2.120   [1110s]",
+  "  step   800  loss 2.521  held-out answers 0.00  language 2.097   [1249s]",
+  "  step   900  loss 2.499  held-out answers 0.00  language 2.081   [1401s]",
+  "  step   999  loss 2.496  held-out answers 0.00  language 2.075   [1535s]"
+ ]
+}
