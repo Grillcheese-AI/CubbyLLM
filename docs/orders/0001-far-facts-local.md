@@ -142,6 +142,48 @@ copy distribution B1 follows. Khandelwal et al. 2020, kNN-LM (arXiv 1911.00172);
 arXiv 2102.02557, is in fact Yogatama et al. 2021, "Adaptive Semiparametric Language Models" (a gated
 memory LM, also relevant). Boesch & Wee 2026 (arXiv 2609.16183) and Kumar 2026 (arXiv 2606.24948), as above.
 
+## Addendum 2 — 2026-10-21: the read is at capacity for a 128k-way decode (Cowork)
+`validation/sim_hrr_ceiling.py` (`validation/logs/sim_hrr_ceiling_2026-10-21.json`) gives the read's
+best case: random codes and a perfect argmax decoder. It also counts the real shards, and the two
+regimes write about the same load but differ in what the decoder must choose among:
+
+| | items in a scene (mean / p90) | distinct written tokens | ceiling, top-1 per piece |
+|---|---|---|---|
+| villages (`spatial_here`) | 32.4 / 51 | **40** | 1.000 (37 items, 40 candidates) |
+| far facts (`facts_far1k_lead`) | 37.1 / 50 | **47,670** | **0.765** (37 items, 131,072 candidates) |
+| far facts, scene split in 2 | ~19 | | 0.995 |
+| far facts, scene split in 4 | ~9 | | 1.000 |
+
+An answer has ~4.6 pieces (from the shard's ask counts) and exact needs every one, so even a perfect
+decoder with ideal codes would sit near 0.3 exact. Learned, correlated embeddings and a trunk that has
+to learn the decoding only lower that. The ceiling alone does not explain 0.021: the read adds ~0.01
+per piece, so the trunk is not decoding it at all, which B1 is for. But it says B1 alone cannot pass the
+0.80 line, and it predicts which ladder steps break the toy: 1 (`--vocab`) and 2 (`--pieces`). **Report
+the ceiling next to every ladder and fix number** (`sim_hrr_ceiling.py --d 256 --items <the arm's mean
+writes> --candidates <its vocabulary>`).
+
+**A0, extended (still no training, still minutes).** Rebuild the scene offline from the checkpoint's
+stored vectors and report per-piece top-1 and exact for each cell of
+{stored: as written | random identity codes (B4's best case)} × {K = 1, 2, 4 sub-scenes, chosen by a hash
+of the full place, so an object's pieces spread} × {candidates: the 128k vocabulary | the tokens written
+in this document so far}. This tests every read-side fix below before anything trains.
+
+**B8. Address-partitioned scene** (`CB_SPATIAL_PARTS=K` / `meta["spatial"]["parts"]`, absent = 1 =
+bit-identical). K sub-scenes per document. A WRITE goes into, and an ASK reads from, sub-scene
+`hash(place) mod K` only, so each read sees ~1/K of the crosstalk. The routing is by the address that
+both sides already hold, so there is no router to learn. In MoE-moryLLM (S. Rathi, a MemoryLLM fork;
+GitHub README, not peer-reviewed), oracle routing was the largest gain: +72.5% memory retention against
++18% for round-robin, while their learned (REINFORCE) router failed to train. Their forgetting is
+eviction from a token pool, not superposition, but the lesson carries: partition the store, and route
+by what the writer and the reader both know. Cost: K·d of scene state per layer, still fixed-size (no
+KV cache), and one sub-scene unbound per read. Decode = forward; K = 1 = off. Test with B1: B1 + B8 is
+the lead pair.
+
+**B9. A document-local candidate set** (measure in A0; **do not build** without Nick). B1's copy logits
+are scored only against the tokens written in this document so far, which puts the facts in the villages'
+regime (~37 candidates). It means keeping a growing list of written token ids: small, ints not hidden
+states, but not fixed-size, so it is Nick's call on the decode-state rule.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**

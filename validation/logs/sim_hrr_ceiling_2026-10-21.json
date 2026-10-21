@@ -1,0 +1,39 @@
+{
+ "args": {
+  "d": 1024,
+  "items": "37,19,9",
+  "candidates": "40,131072",
+  "trials": 200,
+  "seed": 0,
+  "cache": "F:\\grillcheese_training_data\\token_cache_cont",
+  "shards": "facts_far1k_lead,spatial_here",
+  "out": "validation\\logs\\sim_hrr_ceiling_2026-10-21.json"
+ },
+ "top1": {
+  "items37_candidates40": 1.0,
+  "items37_candidates131072": 0.765,
+  "items19_candidates40": 1.0,
+  "items19_candidates131072": 0.995,
+  "items9_candidates40": 1.0,
+  "items9_candidates131072": 1.0
+ },
+ "shards": {
+  "facts_far1k_lead": {
+   "documents": 20000,
+   "doc": 1024,
+   "writes_per_doc_mean": 37.1,
+   "writes_per_doc_p90": 50,
+   "writes_per_doc_max": 92,
+   "distinct_written_tokens": 47670
+  },
+  "spatial_here": {
+   "documents": 20000,
+   "doc": 512,
+   "writes_per_doc_mean": 32.4,
+   "writes_per_doc_p90": 51,
+   "writes_per_doc_max": 68,
+   "distinct_written_tokens": 40
+  }
+ },
+ "seconds": 34.9
+}
