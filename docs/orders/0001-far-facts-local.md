@@ -26,6 +26,18 @@ What it brings: a trunk that answers a fact it saw once, 800+ tokens back, by it
 KV cache, which a conventional model cannot do past its window.
 
 ## Build
+**A0. Is the answer in the read at all? (no training, minutes)** On the run-3 checkpoint
+(`spatial_link_3_final.pt`, see `CLAUDE.local.md`) and `facts_far1k_lead` held-out documents: at each
+answer token, unbind the scene at its address (`SpatialLink.lookup`, before the gate and `o`) and
+**clean it up** against the table the scene stored (check what `HybridEmbedding.embed` returns: the
+stored vector includes the context part). Report the target's rank among the 128k (top-1 / top-5),
+cos(read, target) against the best wrong token, and the same for `spatial_here`. This is the qFHRR
+paper's decoding (argmax over a candidate codebook, `docs/papers/2026-08-07-qfhrr-semantic-word-tables.md`
+§3, §5): there it gave 0.99 precision and a 17× bound-vs-absent margin. If the target is top-1 most of
+the time, the information is in the read and the failure is the trunk's decoding, so B1 should work
+even before training. If it is not, the crosstalk or the correlated learned embeddings are the
+problem, and B4 is the lead.
+
 **A. The ladder** — `validation/exp_k10_far_facts.py` (new, < 300 lines; reuse `exp_k10_hypertoken.py`'s
 document builder and model setup by import, do not grow that file). Start from the configuration
 that worked (`--query placed --gate-bias 0 --route-loss 1`, D 256, the 2026-10-20 budget) and move
@@ -50,6 +62,10 @@ pieces) like `diag_fact_read.py`, and the filler language's held-out loss, at th
    score against what was actually stored. Decode (`step`) must match the forward.
 2. **Read nearer the head** — `at` = L − 2 instead of L / 2.
 3. **Denser supervision** — more questions per document (a data change, the cheapest if it is the cause).
+4. **Identity codes in the scene** — the qFHRR paper's blend: write `normalize(0.5·e + 0.5·id(token))`
+   bound to `S(p)`, where `id` is a fixed hashed random phasor code per token id, and clean up against the
+   `id` table. Quasi-orthogonal by construction, whatever the trunk's learned embeddings look like (the
+   paper lists capacity under learned, correlated codes as open). Flag-gated like B1.
 
 **C. Only if B passes:** a `RUN = 4` configuration in `notebooks/_build_spatial.py`, using the winning fix,
 for Cowork to run on Colab. Regenerate the notebook.
