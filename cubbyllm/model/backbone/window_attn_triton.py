@@ -197,8 +197,8 @@ def window_attention_fwd(q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, wind
 
 @window_attention_fwd.register_fake
 def _(q, k, v, window):
-    B, h, S, D = q.shape
-    return torch.empty_like(q), q.new_empty(B * h, S, dtype=torch.float32)
+    B, h, S, D = q.shape                       # contiguous, as the kernel writes it -- not empty_like, which
+    return q.new_empty(B, h, S, D), q.new_empty(B * h, S, dtype=torch.float32)   # keeps a transposed q's strides
 
 
 @torch.library.custom_op("cubby::window_attention_bwd", mutates_args=())
@@ -218,7 +218,7 @@ def window_attention_bwd(q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, o: t
 
 @window_attention_bwd.register_fake
 def _(q, k, v, o, lse, do, window):
-    return torch.empty_like(q), torch.empty_like(k), torch.empty_like(v)
+    return q.new_empty(q.shape), k.new_empty(k.shape), v.new_empty(v.shape)
 
 
 def _setup(ctx, inputs, output):

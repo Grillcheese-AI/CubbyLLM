@@ -150,14 +150,14 @@ def mingru_scan_bwd(zg: torch.Tensor, zv: torch.Tensor, zd: torch.Tensor, out: t
                     dout: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     zg, zv, zd, out, dout = (t.contiguous() for t in (zg, zv, zd, out, dout))
     B, S, D = zg.shape
-    dg, dv, dd = torch.empty_like(zg), torch.empty_like(zv), torch.empty_like(zd)
+    dg, dv, dd = (t.new_empty(t.shape) for t in (zg, zv, zd))
     _mingru_scan_bwd[_grid(B, D)](zg, zv, zd, out, dout, dg, dv, dd, S, D, T=T_CHUNK, C=C_BLOCK, num_warps=WARPS)
     return dg, dv, dd
 
 
 @mingru_scan_bwd.register_fake
-def _(zg, zv, zd, out, dout):
-    return torch.empty_like(zg), torch.empty_like(zv), torch.empty_like(zd)
+def _(zg, zv, zd, out, dout):                  # contiguous, as the kernel writes them (empty_like keeps strides)
+    return zg.new_empty(zg.shape), zv.new_empty(zv.shape), zd.new_empty(zd.shape)
 
 
 def _setup(ctx, inputs, output):

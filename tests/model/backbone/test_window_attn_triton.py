@@ -53,6 +53,23 @@ def test_opcheck():
                           test_utils=("test_schema", "test_autograd_registration", "test_faketensor"))
 
 
+def test_transposed_inputs_as_the_mixer_passes_them():
+    """The mixer hands (B, S, h, D) views transposed to (B, h, S, D): the op's outputs are contiguous,
+    and its fake (what torch.compile plans with) must say so -- it said otherwise once, and only the
+    compiled G4 run caught it (``assert_size_stride`` on the run's first step, 2026-10-21)."""
+    g = torch.Generator().manual_seed(5)
+    q, k, v = [torch.randn(2, 30, 2, 16, generator=g).to(DEV, DT).transpose(1, 2) for _ in range(3)]
+    assert not q.is_contiguous()
+    torch.library.opcheck(wa.window_attention_fwd, (q, k, v, 8), test_utils=("test_faketensor",))
+    from torch._subclasses.fake_tensor import FakeTensorMode
+    with FakeTensorMode() as mode:
+        fq, fk, fv = (mode.from_tensor(t) for t in (q, k, v))
+        o, _ = wa.window_attention_fwd(fq, fk, fv, 8)
+    real, _ = wa.window_attention_fwd(q, k, v, 8)
+    assert o.stride() == real.stride() and real.is_contiguous()
+    assert torch.allclose(real.float(), dense_attention(q.float(), k.float(), v.float(), 8), atol=TOL, rtol=TOL)
+
+
 @pytest.mark.skipif(DEV != "cuda", reason="the mixer takes the kernel on CUDA only")
 def test_the_mixer_takes_the_kernel_under_the_flag(monkeypatch):
     from cubbyllm.model.backbone import hybrid
