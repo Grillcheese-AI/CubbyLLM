@@ -10,7 +10,10 @@ anything trains -- per-piece top-1 and whole-answer exact for every cell of
   candidates  the whole vocabulary | the tokens written in this document so far (the ring, B1)
 
 and, per cell with the written candidates, the median gap between the target's cosine and the best
-wrong writer's -- what the ring's temperature starts from (``tau = log(2 / gap)``, Addendum 3).
+wrong writer's -- what the ring's temperature starts from (``tau = log(2 / gap)``, Addendum 3) -- and
+the read-aware gate's threshold: the midpoint between the present reads' cosine to their target and
+the absent reads' best (the asker after a name's last piece), per candidate set (``copy_beta``).
+``CB_CELLS=stored_K1,...`` runs only those cells.
 
     CB_CKPT=<spatial_link_3_final.pt> CB_CORPUS=<token cache> CUBBY_SPM=<tokenizer.json>
     [CB_SHARDS=facts_far1k_lead] [CB_DOCS=400] [CB_OUT=<json>] python validation/diag_fact_cleanup_grid.py
@@ -45,7 +48,8 @@ def sub(p: np.ndarray, K: int) -> np.ndarray:
 
 
 def doc_reads(tk, x, P, R):
-    """One document's reads: ``(asker h, stored ids at its address, question key, first piece)``."""
+    """One document's reads: ``(asker h, stored ids at its address, question key, first piece)``,
+    and the absent ones (the last piece asking for the next: ``stored`` None)."""
     placed = P[:, 0] != NO_PLACE
     w, a = placed & ((R & WRITE) != 0), placed & ((R & ASK) != 0)
     stored: dict = {}
@@ -62,13 +66,16 @@ def doc_reads(tk, x, P, R):
                 continue
             seen.add(h)
             out.append((h, there, j, t == j))
+        if a[k] and tuple(P[k]) not in stored and k not in seen:
+            seen.add(k)
+            out.append((k, None, j, False))
     return w, out
 
 
 @torch.no_grad()
 def cell(link, C, Cn, tk, docs, K: int) -> dict:
     """top-1 over the vocabulary and over the written tokens, exact for both, the writer gap."""
-    hv, hw, gaps, qv, qw = [], [], [], {}, {}
+    hv, hw, gaps, qv, qw, pres, absn = [], [], [], {}, {}, {"vocab": [], "written": []}, {"vocab": [], "written": []}
     for r, (x, P, R) in enumerate(docs):
         w, rd = doc_reads(tk, x, P, R)
         if not rd:
@@ -82,8 +89,12 @@ def cell(link, C, Cn, tk, docs, K: int) -> dict:
             reads.append(link.lookup(bound[m].sum(0), link.encode(torch.from_numpy(P[h]).float())))
         cos = F.normalize(torch.stack(reads), dim=-1) @ Cn.T                                 # (m, V)
         for i, (h, there, j, f) in enumerate(rd):
-            t = torch.tensor(there)
             written = torch.tensor(sorted(set(x[wi[wi < h]].tolist())))
+            if there is None:                                                               # an absent read
+                absn["vocab"].append(float(cos[i].max())); absn["written"].append(float(cos[i, written].max()))
+                continue
+            t = torch.tensor(there)
+            pres["vocab"].append(float(cos[i, t].max())); pres["written"].append(float(cos[i, t].max()))
             ok_v = int(cos[i].argmax()) in there
             ok_w = int(written[cos[i, written].argmax()]) in there
             others = written[~torch.isin(written, t)]
@@ -94,7 +105,10 @@ def cell(link, C, Cn, tk, docs, K: int) -> dict:
             qw[(r, j)] = qw.get((r, j), True) and ok_w
     return {"reads": len(hv), "top1_vocab": float(np.mean(hv)), "top1_written": float(np.mean(hw)),
             "exact_vocab": float(np.mean(list(qv.values()))), "exact_written": float(np.mean(list(qw.values()))),
-            "writer_gap_median": float(np.median(gaps)), "tau_for_2_nats": float(np.log(2.0 / np.median(gaps)))}
+            "writer_gap_median": float(np.median(gaps)), "tau_for_2_nats": float(np.log(2.0 / np.median(gaps))),
+            **{f"beta_{c}": (float(np.median(pres[c])) + float(np.median(absn[c]))) / 2 for c in pres if absn[c]},
+            **{f"absent_best_{c}": float(np.median(absn[c])) for c in absn if absn[c]},
+            "present_target_cos": float(np.median(pres["written"])), "absent_reads": len(absn["written"])}
 
 
 def main() -> None:
@@ -118,10 +132,16 @@ def main() -> None:
         res = report["shards"][name] = {}
         for code, (C, Cn) in codes.items():
             for K in KS:
+                if os.environ.get("CB_CELLS") and f"{code}_K{K}" not in os.environ["CB_CELLS"].split(","):
+                    continue
                 v = res[f"{code}_K{K}"] = cell(link, C, Cn, tk, docs, K)
                 print(f"  {name} {code:6s} K={K}  {v['reads']} reads  per piece: vocabulary {v['top1_vocab']:.3f}  written "
                       f"{v['top1_written']:.3f}   whole answers: vocabulary {v['exact_vocab']:.3f}  written {v['exact_written']:.3f}"
-                      f"   writer gap {v['writer_gap_median']:.3f} (tau {v['tau_for_2_nats']:.2f})  [{time.time() - t0:.0f}s]", flush=True)
+                      f"   writer gap {v['writer_gap_median']:.3f} (tau {v['tau_for_2_nats']:.2f})   present target cos"
+                      f" {v['present_target_cos']:.3f}, absent best {v.get('absent_best_written', float('nan')):.3f} written /"
+                      f" {v.get('absent_best_vocab', float('nan')):.3f} vocabulary ({v['absent_reads']}) -> beta"
+                      f" {v.get('beta_written', float('nan')):.3f} ring / {v.get('beta_vocab', float('nan')):.3f} table"
+                      f"  [{time.time() - t0:.0f}s]", flush=True)
     if hr.OUT:
         json.dump(report, open(hr.OUT, "w", encoding="utf-8"), indent=1)
         print(f"  wrote {hr.OUT}")

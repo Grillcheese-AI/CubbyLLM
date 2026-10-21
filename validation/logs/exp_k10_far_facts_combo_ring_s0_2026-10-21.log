@@ -1,0 +1,16 @@
+env: 2026-10-21 13:30 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)
+--- combo_ring_s0: 9.53M params, meta {'kind': 'cubby_base', 'D': 256, 'L': 8, 'heads': 4, 'window': 64, 'attn_every': 2, 'ctx': 32, 'slots': 8, 'gen_basis': 16, 'gen_rank': 8, 'vocab': 8192, 'vocab_real': 8192, 'mem_every': 0, 'tied': False, 'causal_ctx': True, 'spatial': {'scale': 2.0, 'seed': 0, 'at': 4, 'query': 'placed', 'bind': 'writes', 'copy': 'ring'}}, 7677 entities, 512 held-out documents (512 questions)
+  ceiling per piece (random codes, ideal decoder): 0.857 over the vocabulary, 0.995 over the ~12 written tokens (11.9 items a scene)
+  copy ring: tau 2.334 (exp 10.3), lam 0.1
+  step     0  loss 10.052  exact 0.980  first 0.990  later 0.995  end 0.000  language 9.118  read top-1 0.811 cos 0.299  gap 0.194  lam 0.100  gate +0.00   [111s]
+  step   100  loss 4.125  exact 0.826  first 0.990  later 0.896  end 0.746  language 2.703  read top-1 0.812 cos 0.299  gap 0.194  lam 0.750  gate -0.10   [889s]
+  step   200  loss 3.932  exact 0.617  first 0.990  later 0.716  end 0.816  language 2.479  read top-1 0.816 cos 0.299  gap 0.193  lam 0.732  gate -0.22   [1392s]
+  step   300  loss 3.867  exact 0.543  first 0.990  later 0.604  end 0.895  language 2.432  read top-1 0.812 cos 0.299  gap 0.193  lam 0.650  gate -0.30   [1736s]
+  step   400  loss 3.780  exact 0.693  first 0.990  later 0.789  end 0.785  language 2.378  read top-1 0.814 cos 0.299  gap 0.193  lam 0.704  gate -0.37   [2090s]
+  step   500  loss 3.744  exact 0.836  first 0.990  later 0.919  end 0.586  language 2.339  read top-1 0.818 cos 0.299  gap 0.193  lam 0.767  gate -0.40   [2439s]
+  step   600  loss 3.702  exact 0.777  first 0.992  later 0.873  end 0.691  language 2.303  read top-1 0.818 cos 0.299  gap 0.193  lam 0.726  gate -0.43   [2785s]
+  step   700  loss 3.689  exact 0.793  first 0.990  later 0.890  end 0.623  language 2.273  read top-1 0.814 cos 0.299  gap 0.193  lam 0.741  gate -0.45   [3138s]
+  step   800  loss 3.644  exact 0.885  first 0.990  later 0.945  end 0.545  language 2.250  read top-1 0.816 cos 0.299  gap 0.193  lam 0.762  gate -0.46   [3488s]
+  step   900  loss 3.621  exact 0.875  first 0.992  later 0.939  end 0.531  language 2.230  read top-1 0.816 cos 0.299  gap 0.193  lam 0.757  gate -0.47   [3833s]
+  step   999  loss 3.629  exact 0.922  first 0.992  later 0.964  end 0.469  language 2.226  read top-1 0.816 cos 0.299  gap 0.193  lam 0.776  gate -0.47   [4178s]
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_k10_far_facts_combo_ring_s0_2026-10-21.json

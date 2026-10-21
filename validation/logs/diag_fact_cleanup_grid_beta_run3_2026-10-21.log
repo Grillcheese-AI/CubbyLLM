@@ -1,0 +1,2 @@
+  facts_far1k_lead stored K=1  9451 reads  per piece: vocabulary 0.758  written 0.992   whole answers: vocabulary 0.457  written 0.965   writer gap 0.096 (tau 3.04)   present target cos 0.164, absent best 0.066 written / 0.137 vocabulary (2001) -> beta 0.115 ring / 0.151 table  [70s]
+  wrote validation\logs\diag_fact_cleanup_grid_beta_run3_2026-10-21.json

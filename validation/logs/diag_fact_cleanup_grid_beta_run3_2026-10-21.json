@@ -1,0 +1,24 @@
+{
+ "ckpt": "I:\\My Drive\\cubbyllm\\runs\\spatial_link_3\\spatial_link_3_final.pt",
+ "docs": 400,
+ "shards": {
+  "facts_far1k_lead": {
+   "stored_K1": {
+    "reads": 9451,
+    "top1_vocab": 0.758226642683314,
+    "top1_written": 0.9920643318167389,
+    "exact_vocab": 0.4565434565434565,
+    "exact_written": 0.965034965034965,
+    "writer_gap_median": 0.09613163769245148,
+    "tau_for_2_nats": 3.035183981382993,
+    "beta_vocab": 0.15080344676971436,
+    "beta_written": 0.11509811505675316,
+    "absent_best_vocab": 0.13742905855178833,
+    "absent_best_written": 0.06601839512586594,
+    "present_target_cos": 0.16417783498764038,
+    "absent_reads": 2001
+   }
+  }
+ },
+ "env": "2026-10-21 14:09 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU)"
+}

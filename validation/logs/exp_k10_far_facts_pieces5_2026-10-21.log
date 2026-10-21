@@ -1,0 +1,14 @@
+env: 2026-10-21 13:11 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)
+--- pieces5: 3.36M params, meta {'kind': 'cubby_base', 'D': 256, 'L': 4, 'heads': 4, 'window': 64, 'attn_every': 2, 'ctx': 32, 'slots': 8, 'gen_basis': 16, 'gen_rank': 8, 'vocab': 1024, 'vocab_real': 1024, 'mem_every': 0, 'tied': False, 'causal_ctx': True, 'spatial': {'scale': 2.0, 'seed': 0, 'at': 2, 'query': 'placed', 'bind': 'writes'}}, 509 entities, 64 held-out documents (511 questions)
+  step     0  loss 8.000  exact 0.004  first 0.006  later 0.001  end 0.002  language 6.980  read top-1 0.548 cos 0.206  gate +0.00   [8s]
+  step   100  loss 4.520  exact 0.002  first 0.020  later 0.000  end 1.000  language 2.764  read top-1 0.544 cos 0.205  gate -0.06   [294s]
+  step   200  loss 4.202  exact 0.053  first 0.198  later 0.056  end 0.933  language 2.443  read top-1 0.538 cos 0.205  gate -0.17   [574s]
+  step   300  loss 3.990  exact 0.104  first 0.346  later 0.202  end 0.877  language 2.350  read top-1 0.540 cos 0.205  gate -0.24   [775s]
+  step   400  loss 3.900  exact 0.125  first 0.440  later 0.257  end 0.841  language 2.286  read top-1 0.536 cos 0.205  gate -0.27   [990s]
+  step   500  loss 3.837  exact 0.157  first 0.458  later 0.336  end 0.818  language 2.272  read top-1 0.534 cos 0.205  gate -0.30   [1239s]
+  step   600  loss 3.810  exact 0.162  first 0.499  later 0.352  end 0.816  language 2.242  read top-1 0.536 cos 0.205  gate -0.32   [1564s]
+  step   700  loss 3.791  exact 0.176  first 0.501  later 0.362  end 0.851  language 2.196  read top-1 0.534 cos 0.205  gate -0.34   [1915s]
+  step   800  loss 3.765  exact 0.186  first 0.521  later 0.370  end 0.830  language 2.168  read top-1 0.534 cos 0.205  gate -0.35   [2229s]
+  step   900  loss 3.704  exact 0.205  first 0.534  later 0.387  end 0.849  language 2.152  read top-1 0.536 cos 0.205  gate -0.35   [2428s]
+  step   999  loss 3.724  exact 0.221  first 0.548  later 0.396  end 0.843  language 2.142  read top-1 0.540 cos 0.205  gate -0.35   [2589s]
+wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_k10_far_facts_pieces5_2026-10-21.json
