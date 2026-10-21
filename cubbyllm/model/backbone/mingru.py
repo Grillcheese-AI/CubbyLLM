@@ -20,6 +20,7 @@ scan (cubby-lm form). Satisfies ``Backbone``: forward((B,S,d)) -> (B,S,d).
 """
 from __future__ import annotations
 
+import os
 from typing import TYPE_CHECKING
 
 import torch
@@ -52,6 +53,10 @@ class _SwiGLU(nn.Module):
 
     def forward(self, x):
         return self.o(F.silu(self.g(x)) * self.u(x))
+
+
+# the recurrence as one fused Triton kernel each way on CUDA (mingru_triton.py); off = the torch path
+TRITON = os.environ.get("CB_MINGRU_TRITON") == "1"
 
 
 def _sequential_scan(x_scan: "torch.Tensor", a: "torch.Tensor") -> "torch.Tensor":
@@ -94,6 +99,10 @@ class _MinGRUMixer(nn.Module):
         nn.init.constant_(self.proj_d.bias, 1.0)   # ~0.73 retention at init
 
     def forward(self, x):
+        if TRITON and x.is_cuda:
+            from .mingru_triton import AVAILABLE, mingru_scan
+            if AVAILABLE:                                  # gates + scan fused, h in float32 as below
+                return mingru_scan(self.proj_g(x), self.proj_v(x), self.proj_d(x))
         x_scan = torch.sigmoid(self.proj_g(x)) * torch.tanh(self.proj_v(x))
         a = 0.001 + 0.998 * torch.sigmoid(self.proj_d(x))
         return _log_domain_scan(x_scan, a)
