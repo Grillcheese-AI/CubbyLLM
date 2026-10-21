@@ -442,7 +442,8 @@ def spatial_link(meta: dict):
     from cubbyllm.model.spatial import SpatialLink
     return SpatialLink(meta["D"], scale=float(sp.get("scale", 2.0)), seed=int(sp.get("seed", 0)),
                        at=int(sp.get("at", meta["L"] // 2)), query=str(sp.get("query", "learned")),
-                       bind=str(sp.get("bind", "placed")))
+                       bind=str(sp.get("bind", "placed")), copy=sp.get("copy"),   # copy: absent = no copy path
+                       copy_tau=float(sp.get("copy_tau", 3.0)), copy_ring=int(sp.get("copy_ring", 256)))
 
 
 def flops_per_token(model: CubbyModel, meta: dict, seq: int) -> float:

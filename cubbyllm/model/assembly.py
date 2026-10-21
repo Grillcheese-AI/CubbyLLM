@@ -120,16 +120,23 @@ class CubbyModel:
         at a place writes into the scene, a question about a place asks there (``query=
         "placed"``) -- both default to ``placed``; ``starts`` (B, S) restarts the scene at each
         document. The context is inferred from the unbound embedding, as ``step`` does."""
+        return self._trunk(tokens, positions, placed, writes, asks, starts)[0]
+
+    def _trunk(self, tokens, positions, placed, writes, asks, starts):
+        """``features``, and the link's copy path's inputs ``(scene, asks, writes)`` (None without it)."""
         ctx = self.infer_context(tokens)                     # frozen at inference
         x = self.embedding.embed(tokens, ctx)                # (B, S, d), hybrid
-        read = None
+        read = copy = None
         if self.spatial is not None:
             x = self.spatial.bind_input(x, positions, writes)  # e (*) S(p): the input level
             w = placed if writes is None else writes
             a = placed if asks is None else asks
-            read = self.spatial.hook(self.spatial.scene(x, w, starts), positions, a)   # the route from the trunk
+            scene = self.spatial.scene(x, w, starts)
+            read = self.spatial.hook(scene, positions, a)    # the route from the trunk
+            if self.spatial.copy_path is not None and scene is not None and positions is not None:
+                copy = (scene, a, w)
         h = self.backbone.forward(x, read=read) if read is not None else self.backbone.forward(x)
-        return self.memory.forward_generated(h, ctx)         # (B, S, d), hardened
+        return self.memory.forward_generated(h, ctx), copy   # (B, S, d), hardened
 
     def logits_from(self, h: "Tensor") -> "Tensor":
         return self.head.logits(h, self.retrieval_k)         # (B, S, V), top-K
@@ -186,12 +193,14 @@ class CubbyModel:
         x = self.embedding.embed(token.unsqueeze(1), ctx)[:, 0]
         if self.spatial is not None:
             x = self.spatial.bind_input(x, position, write)
-            scene = state["scene"]
+            scene, cp = state["scene"], self.spatial.copy_path
             if start is not None:                                    # a document begins: its scene is empty
                 scene.mul_((~start).unsqueeze(-1).float())
             w = placed if write is None else write
             if w is not None:
                 scene.add_(x.float() * w.unsqueeze(-1).float())
+            if cp is not None:                                       # the copy's ring: the ids this stream wrote
+                cp.remember(state, token, w, start)
             a = placed if ask is None else ask
             y, bb = self.backbone.step(x, state["bb"], read=self.spatial.hook(scene, position, a))
         else:
@@ -201,6 +210,10 @@ class CubbyModel:
         out = {"bb": bb, "ctx_sum": s, "ctx_n": n}
         if self.spatial is not None:
             out["scene"] = state["scene"]
+            if cp is not None and a is not None and position is not None:
+                logits = self.spatial.add_copy(logits[:, None], y[:, None], scene[:, None], position[:, None], a[:, None],
+                                               self.embedding.core.weight, state)[:, 0]
+            out.update({k: state[k] for k in ("ring", "ring_n") if k in state})
         return logits, out
 
     def init_state(self, batch: int = 1, device=None) -> dict:
@@ -227,6 +240,8 @@ class CubbyModel:
               "ctx_n": torch.zeros((), device=device)}
         if self.spatial is not None:
             st["scene"] = torch.zeros(batch, d, device=device)     # the stream's placed tokens, bound and summed
+            if self.spatial.copy_path is not None:                  # the copy's ring of written ids: fixed-size
+                st.update(self.spatial.copy_path.init_state(batch, device))
         return st
 
     def graphed_step(self):
@@ -267,9 +282,15 @@ class CubbyModel:
 
         ``ctx`` is a required argument to every generated call below — a
         context-ignoring path cannot be written here without a type error.
-        ``positions`` / ``placed`` are the spatial link's (``features``).
+        ``positions`` / ``placed`` are the spatial link's (``features``); with its copy path the read
+        at each asking token is also mixed into the output there (``model/spatial_copy.py``).
         """
-        return self.logits_from(self.features(tokens, positions, placed, writes, asks, starts))
+        h, copy = self._trunk(tokens, positions, placed, writes, asks, starts)
+        logits = self.logits_from(h)
+        if copy is not None:
+            scene, a, w = copy
+            logits = self.spatial.add_copy(logits, h, scene, positions, a, self.embedding.core.weight, (tokens, w, starts))
+        return logits
 
 
 __wiring__ = Wiring.WIRED

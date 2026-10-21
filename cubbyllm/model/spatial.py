@@ -48,6 +48,13 @@ one, asking for the next piece, entered the trunk as ``e (*) S(p_next)``, so the
 which token it had just read: next-piece accuracy 0.096 with the places against 0.213 without
 (``validation/diag_fact_read.py``). The default ``"placed"`` keeps every earlier run exact.
 
+**copy** (2026-10-21, order 0001, B1; ``meta["spatial"]["copy"]``, absent = None, nothing built):
+at an asking token the unbound read is also cleaned up against the tokens this document wrote
+(``"ring"``, the last 256) or the whole table (``"table"``) and mixed into the next-token
+distribution (``model/spatial_copy.py``) -- the cleanup the far facts' read already supports
+(0.992 a piece over the document's writers, 0.758 over the vocabulary) handed to the output
+directly instead of through 16 layers. ``add_copy`` is the call; off, nothing changes.
+
 What it brings CubbyLLM: a trunk that can be told where every block is without a word of
 text, and ask the scene "what is here" at a place it chose, with the answer's correctness
 guaranteed by the encoding rather than hoped for from training. A conventional model has no
@@ -69,7 +76,8 @@ NO_PLACE = -32768
 
 class SpatialLink(nn.Module):
     def __init__(self, d_model: int, scale: float = 2.0, seed: int = 0, dims: int = 3,
-                 at: int = 0, gate_bias: float = -4.0, query: str = "learned", bind: str = "placed") -> None:
+                 at: int = 0, gate_bias: float = -4.0, query: str = "learned", bind: str = "placed",
+                 copy: str | None = None, copy_tau: float = 3.0, copy_ring: int = 256) -> None:
         super().__init__()
         if query not in ("learned", "placed"):
             raise ValueError(f"query must be 'learned' or 'placed', not {query!r}")
@@ -86,6 +94,10 @@ class SpatialLink(nn.Module):
         with torch.no_grad():
             self.o.weight.zero_()
             self.gate.bias.fill_(float(gate_bias))
+        self.copy_path = None                    # registered last: its tensors follow the link's in parameters()
+        if copy is not None:
+            from .spatial_copy import SpatialCopy
+            self.copy_path = SpatialCopy(self.d, copy, tau=copy_tau, ring=copy_ring)
 
     def space(self) -> SSP:
         """The host's ``SSP`` in this link's space: same phases, so ``Scene`` vectors read here."""
@@ -186,6 +198,28 @@ class SpatialLink(nn.Module):
         if self.query == "placed" and positions is not None and placed is not None:
             own = (self.encode(positions), placed)
         return (self.at, lambda h: self.read(h, scene, own))
+
+    # -- copy: the read, cleaned up into the output (model/spatial_copy.py) -----------------
+    def add_copy(self, logits: torch.Tensor, h: torch.Tensor, scene: torch.Tensor, positions: torch.Tensor,
+                 asks: torch.Tensor, table: torch.Tensor, cands=None) -> torch.Tensor:
+        """``logits`` (B, S, V) with the copy mixed in at the asking tokens (their rows become log
+        p), every other row untouched: ``h`` (B, S, d) the final stream, ``scene`` (B, S, d) as the
+        read saw it, ``positions`` (B, S, dims), ``asks`` (B, S), ``table`` (V, d) the embedding table
+        the scene was written from. Mode "ring" also takes ``cands``: ``(tokens, writes, starts)`` in
+        a forward, the decode state (its ring) in a step."""
+        cp, V, d = self.copy_path, logits.shape[-1], h.shape[-1]
+        idx, ids, ok = asks.reshape(-1).nonzero().squeeze(1), None, None
+        if cp.mode == "ring" and idx.numel():
+            from .spatial_copy import ring_candidates
+            ids, ok = ring_candidates(*cands, idx, cp.ring) if isinstance(cands, tuple) else cp.candidates(cands, idx)
+            keep = ok.any(1)                     # nothing written yet: the trunk's logits alone
+            idx, ok, ids = idx[keep], ok[keep], ids if ids.dim() == 1 else ids[keep]
+        if idx.numel() == 0:
+            return logits
+        flat = logits.reshape(-1, V)
+        r = self.lookup(scene.reshape(-1, d)[idx].float(), self.encode(positions.reshape(-1, self.dims)[idx]))
+        mix = cp(flat[idx], h.reshape(-1, d)[idx], r, table, idx, ids, ok)[0]
+        return flat.index_copy(0, idx, mix.to(logits.dtype)).reshape(logits.shape)
 
     def extra_repr(self) -> str:
         return f"d={self.d}, dims={self.dims}, scale={self.scale}, seed={self.seed}, at={self.at}, query={self.query}"
