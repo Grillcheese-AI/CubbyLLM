@@ -52,8 +52,10 @@ def tested(name: str) -> bool:
     print(f"\n--- {TESTS[name]} on this card ---", flush=True)
     code, lines = stream([sys.executable, "-m", "pytest", TESTS[name], "-q", "-p", "no:cacheprovider", "-rs"],
                          dict(os.environ))
-    tail = lines[-1] if lines else ""
-    return code == 0 and "passed" in tail and "failed" not in tail and "error" not in tail
+    summary = [ln for ln in lines if re.search(r"\b\d+ (passed|failed|errors?)\b", ln)]
+    ok = code == 0 and bool(summary) and "passed" in summary[-1] and not re.search(r"failed|error", summary[-1])
+    print(f"    -> {'passed' if ok else 'NOT passed'} ({summary[-1].strip() if summary else f'exit {code}'})", flush=True)
+    return ok                              # (the summary line, not the last line: torch can print after pytest)
 
 
 def profile(name: str, extra: dict) -> dict:
