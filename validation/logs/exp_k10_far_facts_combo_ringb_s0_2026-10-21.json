@@ -1,0 +1,387 @@
+{
+ "args": {
+  "arm": "combo_ringb_s0",
+  "steps": 1000,
+  "d": 256,
+  "batch": 16,
+  "seq": 256,
+  "facts_per_doc": 4,
+  "questions": 1,
+  "sparse": true,
+  "gap": 120,
+  "vocab": 8192,
+  "entities": 0,
+  "pieces": 5,
+  "roles": true,
+  "pretrain": 0,
+  "layers": 8,
+  "at": 4,
+  "window": 64,
+  "query": "placed",
+  "gate_bias": 0.0,
+  "route_loss": 1.0,
+  "copy": "ring",
+  "copy_tau": 2.3344311169704195,
+  "copy_beta": 0.19735564477741718,
+  "copy_aux": 0.0,
+  "answer_weight": 1.0,
+  "lr": 0.002,
+  "seed": 0,
+  "threads": 2,
+  "date": "2026-10-21"
+ },
+ "meta": {
+  "kind": "cubby_base",
+  "D": 256,
+  "L": 8,
+  "heads": 4,
+  "window": 64,
+  "attn_every": 2,
+  "ctx": 32,
+  "slots": 8,
+  "gen_basis": 16,
+  "gen_rank": 8,
+  "vocab": 8192,
+  "vocab_real": 8192,
+  "mem_every": 0,
+  "tied": false,
+  "causal_ctx": true,
+  "spatial": {
+   "scale": 2.0,
+   "seed": 0,
+   "at": 4,
+   "query": "placed",
+   "bind": "writes",
+   "copy": "ring",
+   "copy_beta": 0.0
+  }
+ },
+ "entities": 7677,
+ "ceiling": {
+  "items": 11.94921875,
+  "distinct_written": 11.94140625,
+  "vocab": 0.8566666666666667,
+  "written": 0.9946666666666667
+ },
+ "final": {
+  "step": 999,
+  "loss": 3.630399227142334,
+  "exact": 0.9296875,
+  "first": 0.990234375,
+  "later": 0.9657198824681684,
+  "end": 0.953125,
+  "language": 2.2221490118851293,
+  "read_top1": 0.80859375,
+  "read_cos": 0.298520200769417,
+  "questions": 512,
+  "writer_gap": 0.19286834448575974,
+  "lam": 0.7628493646700536,
+  "tau": 3.275808334350586,
+  "missed_later_as": {
+   "eos": 34,
+   "written": 1,
+   "other": 0
+  },
+  "lam_by_asker": {
+   "first": 0.9986054901964962,
+   "later": 0.9244173337558574,
+   "end": 0.21523726432042167
+  }
+ },
+ "curve": [
+  {
+   "step": 0,
+   "loss": 10.042680740356445,
+   "exact": 0.98046875,
+   "first": 0.990234375,
+   "later": 0.9951028403525954,
+   "end": 0.0,
+   "language": 9.117331311842575,
+   "read_top1": 0.810546875,
+   "read_cos": 0.2986306734092068,
+   "questions": 512,
+   "writer_gap": 0.19373112171888351,
+   "lam": 0.1967273531181197,
+   "tau": 2.3344507217407227,
+   "missed_later_as": {
+    "eos": 0,
+    "written": 5,
+    "other": 0
+   },
+   "lam_by_asker": {
+    "first": 0.26252169483632315,
+    "later": 0.23437886926492385,
+    "end": 0.04417844201452681
+   }
+  },
+  {
+   "step": 100,
+   "loss": 4.124448299407959,
+   "exact": 0.86328125,
+   "first": 0.98828125,
+   "later": 0.9226248775710089,
+   "end": 0.962890625,
+   "language": 2.701322120486633,
+   "read_top1": 0.80859375,
+   "read_cos": 0.29864195016853046,
+   "questions": 512,
+   "writer_gap": 0.19410517811775208,
+   "lam": 0.7795530971019499,
+   "tau": 2.4277901649475098,
+   "missed_later_as": {
+    "eos": 79,
+    "written": 0,
+    "other": 0
+   },
+   "lam_by_asker": {
+    "first": 0.9804830690845847,
+    "later": 0.8292934449278293,
+    "end": 0.4224142259481596
+   }
+  },
+  {
+   "step": 200,
+   "loss": 3.9246716499328613,
+   "exact": 0.818359375,
+   "first": 0.9921875,
+   "later": 0.8863858961802155,
+   "end": 0.97265625,
+   "language": 2.4844065132487967,
+   "read_top1": 0.810546875,
+   "read_cos": 0.29859384897281416,
+   "questions": 512,
+   "writer_gap": 0.19402701407670975,
+   "lam": 0.7657244205474854,
+   "tau": 2.6124162673950195,
+   "missed_later_as": {
+    "eos": 116,
+    "written": 0,
+    "other": 0
+   },
+   "lam_by_asker": {
+    "first": 0.9921000706963241,
+    "later": 0.8412200112942967,
+    "end": 0.3389577172638383
+   }
+  },
+  {
+   "step": 300,
+   "loss": 3.8649137020111084,
+   "exact": 0.798828125,
+   "first": 0.990234375,
+   "later": 0.8736532810969637,
+   "end": 0.98828125,
+   "language": 2.4306998206273507,
+   "read_top1": 0.8125,
+   "read_cos": 0.2985823048657039,
+   "questions": 512,
+   "writer_gap": 0.19408363848924637,
+   "lam": 0.7290611976096707,
+   "tau": 2.775489091873169,
+   "missed_later_as": {
+    "eos": 129,
+    "written": 0,
+    "other": 0
+   },
+   "lam_by_asker": {
+    "first": 0.9936989966081455,
+    "later": 0.8261594799047118,
+    "end": 0.24642262703491724
+   }
+  },
+  {
+   "step": 400,
+   "loss": 3.767239570617676,
+   "exact": 0.849609375,
+   "first": 0.9921875,
+   "later": 0.9079333986287953,
+   "end": 0.984375,
+   "language": 2.371478408955845,
+   "read_top1": 0.8125,
+   "read_cos": 0.29853808393818326,
+   "questions": 512,
+   "writer_gap": 0.19268106669187546,
+   "lam": 0.7333715908950375,
+   "tau": 2.915786027908325,
+   "missed_later_as": {
+    "eos": 94,
+    "written": 0,
+    "other": 0
+   },
+   "lam_by_asker": {
+    "first": 0.9943504784023389,
+    "later": 0.8462262687717549,
+    "end": 0.22143405363385682
+   }
+  },
+  {
+   "step": 500,
+   "loss": 3.73057222366333,
+   "exact": 0.927734375,
+   "first": 0.9921875,
+   "later": 0.9637610186092067,
+   "end": 0.93359375,
+   "language": 2.3367947830707876,
+   "read_top1": 0.8125,
+   "read_cos": 0.2985470223939046,
+   "questions": 512,
+   "writer_gap": 0.1927168220281601,
+   "lam": 0.7940647046892874,
+   "tau": 3.0319769382476807,
+   "missed_later_as": {
+    "eos": 36,
+    "written": 1,
+    "other": 0
+   },
+   "lam_by_asker": {
+    "first": 0.9974651146912947,
+    "later": 0.9194223441760057,
+    "end": 0.30847273054860125
+   }
+  },
+  {
+   "step": 600,
+   "loss": 3.6933224201202393,
+   "exact": 0.890625,
+   "first": 0.990234375,
+   "later": 0.9392752203721841,
+   "end": 0.974609375,
+   "language": 2.2993626729390053,
+   "read_top1": 0.80859375,
+   "read_cos": 0.29854408105893526,
+   "questions": 512,
+   "writer_gap": 0.19214408099651337,
+   "lam": 0.7418546082391855,
+   "tau": 3.1203360557556152,
+   "missed_later_as": {
+    "eos": 62,
+    "written": 0,
+    "other": 0
+   },
+   "lam_by_asker": {
+    "first": 0.9974829846760258,
+    "later": 0.8808717488308495,
+    "end": 0.1953218594644568
+   }
+  },
+  {
+   "step": 700,
+   "loss": 3.6848130226135254,
+   "exact": 0.90234375,
+   "first": 0.9921875,
+   "later": 0.9471106758080313,
+   "end": 0.962890625,
+   "language": 2.2666182808546957,
+   "read_top1": 0.80859375,
+   "read_cos": 0.2985234292136738,
+   "questions": 512,
+   "writer_gap": 0.19286306202411652,
+   "lam": 0.7504439821406719,
+   "tau": 3.184999942779541,
+   "missed_later_as": {
+    "eos": 53,
+    "written": 1,
+    "other": 0
+   },
+   "lam_by_asker": {
+    "first": 0.9980453397147357,
+    "later": 0.8999037481880912,
+    "end": 0.20026688657344494
+   }
+  },
+  {
+   "step": 800,
+   "loss": 3.6421589851379395,
+   "exact": 0.919921875,
+   "first": 0.990234375,
+   "later": 0.9588638589618022,
+   "end": 0.958984375,
+   "language": 2.2461964022730796,
+   "read_top1": 0.80859375,
+   "read_cos": 0.2985258225671714,
+   "questions": 512,
+   "writer_gap": 0.19267715513706207,
+   "lam": 0.7606661385225673,
+   "tau": 3.228271245956421,
+   "missed_later_as": {
+    "eos": 41,
+    "written": 1,
+    "other": 0
+   },
+   "lam_by_asker": {
+    "first": 0.9981889355694875,
+    "later": 0.9174128360571987,
+    "end": 0.21507398358062346
+   }
+  },
+  {
+   "step": 900,
+   "loss": 3.6116490364074707,
+   "exact": 0.92578125,
+   "first": 0.990234375,
+   "later": 0.9637610186092067,
+   "end": 0.955078125,
+   "language": 2.226708224939696,
+   "read_top1": 0.80859375,
+   "read_cos": 0.29852231506083626,
+   "questions": 512,
+   "writer_gap": 0.1929553598165512,
+   "lam": 0.7614477720832632,
+   "tau": 3.2563323974609375,
+   "missed_later_as": {
+    "eos": 36,
+    "written": 1,
+    "other": 0
+   },
+   "lam_by_asker": {
+    "first": 0.9986104998970404,
+    "later": 0.920588194324209,
+    "end": 0.21299624803032202
+   }
+  },
+  {
+   "step": 999,
+   "loss": 3.630399227142334,
+   "exact": 0.9296875,
+   "first": 0.990234375,
+   "later": 0.9657198824681684,
+   "end": 0.953125,
+   "language": 2.2221490118851293,
+   "read_top1": 0.80859375,
+   "read_cos": 0.298520200769417,
+   "questions": 512,
+   "writer_gap": 0.19286834448575974,
+   "lam": 0.7628493646700536,
+   "tau": 3.275808334350586,
+   "missed_later_as": {
+    "eos": 34,
+    "written": 1,
+    "other": 0
+   },
+   "lam_by_asker": {
+    "first": 0.9986054901964962,
+    "later": 0.9244173337558574,
+    "end": 0.21523726432042167
+   }
+  }
+ ],
+ "wall_s": 3507.5,
+ "log": [
+  "env: 2026-10-21 14:16 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)",
+  "--- combo_ringb_s0: 9.53M params, meta {'kind': 'cubby_base', 'D': 256, 'L': 8, 'heads': 4, 'window': 64, 'attn_every': 2, 'ctx': 32, 'slots': 8, 'gen_basis': 16, 'gen_rank': 8, 'vocab': 8192, 'vocab_real': 8192, 'mem_every': 0, 'tied': False, 'causal_ctx': True, 'spatial': {'scale': 2.0, 'seed': 0, 'at': 4, 'query': 'placed', 'bind': 'writes', 'copy': 'ring', 'copy_beta': 0.0}}, 7677 entities, 512 held-out documents (512 questions)",
+  "  ceiling per piece (random codes, ideal decoder): 0.857 over the vocabulary, 0.995 over the ~12 written tokens (11.9 items a scene)",
+  "  read-aware gate: present reads' target cos 0.290, absent reads' best 0.104 -> beta 0.197",
+  "  copy ring: tau 2.334 (exp 10.3), lam 0.1, read-aware gate beta 0.197",
+  "  step     0  loss 10.043  exact 0.980  first 0.990  later 0.995  end 0.000  language 9.117  read top-1 0.811 cos 0.299  gap 0.194  lam 0.197 {'first': 0.26252169483632315, 'later': 0.23437886926492385, 'end': 0.04417844201452681} tau 2.33 missed {'eos': 0, 'written': 5, 'other': 0}  gate +0.00   [42s]",
+  "  step   100  loss 4.124  exact 0.863  first 0.988  later 0.923  end 0.963  language 2.701  read top-1 0.809 cos 0.299  gap 0.194  lam 0.780 {'first': 0.9804830690845847, 'later': 0.8292934449278293, 'end': 0.4224142259481596} tau 2.43 missed {'eos': 79, 'written': 0, 'other': 0}  gate -0.10   [386s]",
+  "  step   200  loss 3.925  exact 0.818  first 0.992  later 0.886  end 0.973  language 2.484  read top-1 0.811 cos 0.299  gap 0.194  lam 0.766 {'first': 0.9921000706963241, 'later': 0.8412200112942967, 'end': 0.3389577172638383} tau 2.61 missed {'eos': 116, 'written': 0, 'other': 0}  gate -0.22   [732s]",
+  "  step   300  loss 3.865  exact 0.799  first 0.990  later 0.874  end 0.988  language 2.431  read top-1 0.812 cos 0.299  gap 0.194  lam 0.729 {'first': 0.9936989966081455, 'later': 0.8261594799047118, 'end': 0.24642262703491724} tau 2.78 missed {'eos': 129, 'written': 0, 'other': 0}  gate -0.31   [1077s]",
+  "  step   400  loss 3.767  exact 0.850  first 0.992  later 0.908  end 0.984  language 2.371  read top-1 0.812 cos 0.299  gap 0.193  lam 0.733 {'first': 0.9943504784023389, 'later': 0.8462262687717549, 'end': 0.22143405363385682} tau 2.92 missed {'eos': 94, 'written': 0, 'other': 0}  gate -0.36   [1418s]",
+  "  step   500  loss 3.731  exact 0.928  first 0.992  later 0.964  end 0.934  language 2.337  read top-1 0.812 cos 0.299  gap 0.193  lam 0.794 {'first': 0.9974651146912947, 'later': 0.9194223441760057, 'end': 0.30847273054860125} tau 3.03 missed {'eos': 36, 'written': 1, 'other': 0}  gate -0.40   [1762s]",
+  "  step   600  loss 3.693  exact 0.891  first 0.990  later 0.939  end 0.975  language 2.299  read top-1 0.809 cos 0.299  gap 0.192  lam 0.742 {'first': 0.9974829846760258, 'later': 0.8808717488308495, 'end': 0.1953218594644568} tau 3.12 missed {'eos': 62, 'written': 0, 'other': 0}  gate -0.43   [2113s]",
+  "  step   700  loss 3.685  exact 0.902  first 0.992  later 0.947  end 0.963  language 2.267  read top-1 0.809 cos 0.299  gap 0.193  lam 0.750 {'first': 0.9980453397147357, 'later': 0.8999037481880912, 'end': 0.20026688657344494} tau 3.18 missed {'eos': 53, 'written': 1, 'other': 0}  gate -0.45   [2463s]",
+  "  step   800  loss 3.642  exact 0.920  first 0.990  later 0.959  end 0.959  language 2.246  read top-1 0.809 cos 0.299  gap 0.193  lam 0.761 {'first': 0.9981889355694875, 'later': 0.9174128360571987, 'end': 0.21507398358062346} tau 3.23 missed {'eos': 41, 'written': 1, 'other': 0}  gate -0.46   [2815s]",
+  "  step   900  loss 3.612  exact 0.926  first 0.990  later 0.964  end 0.955  language 2.227  read top-1 0.809 cos 0.299  gap 0.193  lam 0.761 {'first': 0.9986104998970404, 'later': 0.920588194324209, 'end': 0.21299624803032202} tau 3.26 missed {'eos': 36, 'written': 1, 'other': 0}  gate -0.47   [3162s]",
+  "  step   999  loss 3.630  exact 0.930  first 0.990  later 0.966  end 0.953  language 2.222  read top-1 0.809 cos 0.299  gap 0.193  lam 0.763 {'first': 0.9986054901964962, 'later': 0.9244173337558574, 'end': 0.21523726432042167} tau 3.28 missed {'eos': 34, 'written': 1, 'other': 0}  gate -0.47   [3507s]"
+ ]
+}
