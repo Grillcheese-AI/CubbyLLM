@@ -124,7 +124,7 @@ class CubbyModel:
         x = self.embedding.embed(tokens, ctx)                # (B, S, d), hybrid
         read = None
         if self.spatial is not None:
-            x = self.spatial.bind(x, positions)              # e (*) S(p): the input level
+            x = self.spatial.bind_input(x, positions, writes)  # e (*) S(p): the input level
             w = placed if writes is None else writes
             a = placed if asks is None else asks
             read = self.spatial.hook(self.spatial.scene(x, w, starts), positions, a)   # the route from the trunk
@@ -185,7 +185,7 @@ class CubbyModel:
         ctx = self.context_source.infer(s / n)                          # running mean
         x = self.embedding.embed(token.unsqueeze(1), ctx)[:, 0]
         if self.spatial is not None:
-            x = self.spatial.bind(x, position)
+            x = self.spatial.bind_input(x, position, write)
             scene = state["scene"]
             if start is not None:                                    # a document begins: its scene is empty
                 scene.mul_((~start).unsqueeze(-1).float())

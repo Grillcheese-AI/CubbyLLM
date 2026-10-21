@@ -115,13 +115,16 @@ class Filler:
 WRITE, ASK = 1, 2                                   # role flags (train_base.Tokens): into the scene / reads there
 
 
-def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int, filler=None):
+def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int, filler=None, lead: bool = False):
     """One document of exactly ``doc`` tokens, ``(ids, places, roles)``: the facts as sentences
     (an object's i-th token at the fact's address + 6 i z in ``places`` mode, WRITING into the
     scene), then the questions (``here`` at the address, each answer piece at the next piece's,
     all ASKING -- a question reads the scene, it does not write into it; in ``text`` mode no
     ``here`` and nothing placed), questions dropped from the end to fit. With ``filler`` the gap
-    between the facts and the questions is real text that fills the document (``--far``)."""
+    between the facts and the questions is real text that fills the document (``--far``). With
+    ``lead`` the token right before each answer (the space after ``Answer:``) also asks for the
+    first piece, so every token that predicts a piece asks for it (``--lead``; the far facts'
+    second 450M run read nothing on the first piece, 2026-10-20). The ids are unchanged."""
     ids, pos, roles = [], [], []
 
     def put(text: str, at=None, span: bool = False):
@@ -153,6 +156,8 @@ def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int,
             put(" ")
             put("here", at)                       # asks for piece 0
         put("\nAnswer: ")
+        if lead and mode == "places":             # the token before the answer asks for piece 0
+            pos[-1], roles[-1] = at, ASK
         put(a, at, span=True)                     # piece j, as input, asks for piece j + 1
         put("\n")
         if len(ids) + 1 > doc:
@@ -188,6 +193,7 @@ def main() -> None:
     ap.add_argument("--mode", choices=["places", "text"], default="places")
     ap.add_argument("--far", action="store_true", help="real text between the facts and the questions fills the document")
     ap.add_argument("--filler", default="books,wikipedia,fineweb_edu", help="--far: the cache shards the text comes from")
+    ap.add_argument("--lead", action="store_true", help="the token right before each answer asks for its first piece")
     ap.add_argument("--name", default="", help="shard name (default: facts | facts_text, _far with --far)")
     ap.add_argument("--holdout-frac", type=float, default=0.02)
     ap.add_argument("--seed", type=int, default=0)
@@ -211,7 +217,7 @@ def main() -> None:
             if len(facts) < args.facts[0]:
                 raise SystemExit(f"the wiki world ran out of facts after {d:,} documents")
             qa = document(facts, rels, rng, rng.randint(*args.questions))
-            ids, places, roles = render(tk, facts, rels, qa, args.mode, eos, args.doc, filler)
+            ids, places, roles = render(tk, facts, rels, qa, args.mode, eos, args.doc, filler, args.lead)
             fr.write(roles.tobytes())
             fi.write(ids.tobytes())
             fp.write(places.tobytes())

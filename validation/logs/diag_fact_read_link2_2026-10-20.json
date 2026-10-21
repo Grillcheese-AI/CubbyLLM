@@ -1,0 +1,29 @@
+{
+ "ckpt": "I:\\My Drive\\cubbyllm\\runs\\spatial_link_2\\spatial_link_2_final.pt",
+ "docs": 24,
+ "shards": {
+  "facts_far1k": {
+   "trained": {
+    "questions": 120,
+    "first": 0.24166666666666667,
+    "later": 0.09641255605381166,
+    "later_tokens": 446,
+    "exact": 0.0
+   },
+   "moved": {
+    "questions": 120,
+    "first": 0.008333333333333333,
+    "later": 0.03139013452914798,
+    "later_tokens": 446,
+    "exact": 0.0
+   },
+   "none": {
+    "questions": 120,
+    "first": 0.24166666666666667,
+    "later": 0.21300448430493274,
+    "later_tokens": 446,
+    "exact": 0.0
+   }
+  }
+ }
+}

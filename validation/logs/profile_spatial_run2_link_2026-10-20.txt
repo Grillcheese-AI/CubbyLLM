@@ -1,0 +1,51 @@
+device: NVIDIA RTX PRO 6000 Blackwell Server Edition | 102 GB | torch 2.11.0+cu130
+profile: D1024/L32 S1024 micro 32 mem_every 0 spatial True route 1.0 recompute False compile True no_flex True banded False | cuda
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 110, in _rope_tables
+    inv = _rope_inv_freq(dh, str(device))
+
+/usr/local/lib/python3.13/dist-packages/torch/_inductor/lowering.py:2212: UserWarning: Torchinductor does not support code generation for complex operators. Performance may be worse than eager.
+  warnings.warn(
+/usr/local/lib/python3.13/dist-packages/torch/profiler/profiler.py:224: UserWarning: Warning: Profiler clears events at the end of each cycle.Only events from the current cycle will be reported.To keep events across cycles, set acc_events=True.
+  _warn_once(
+step (micro 32 x S 1024, with the optimizer each micro): 573.7 ms, 57,119 tok/s, MFU 30.9% (under the profiler: a few % slower than a run)
+
+by kind (device time, 1228.0 ms a step):
+  matmul                    44.6%      548.0 ms
+  other fused / elementwise  19.0%      232.9 ms
+  copy / cast               16.4%      201.7 ms
+  MinGRU scan                7.0%       86.0 ms
+  attention                  6.8%       83.9 ms
+  vocab softmax / CE         2.8%       33.9 ms
+  optimizer                  2.7%       33.4 ms
+  FFT (spatial link)         0.7%        8.1 ms
+
+top kernels:
+   17.8%   218.13 ms  x509  matmul      aten::mm
+    9.9%   122.09 ms  x196  other fuse  Command Buffer Full
+    6.1%    75.43 ms  x184  matmul      void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_128x256_32x3_nt_align8>(cutlass_80_tensoro
+    6.1%    75.05 ms  x187  matmul      void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x128_32x3_nn_align8>(cutlass_80_tensoro
+    5.4%    66.81 ms  x11   matmul      fmha_cutlassB_bf16_aligned_128x64_k65536_sm80(PyTorchMemEffAttention::AttentionBackwardKernel<cutlass::arch::S
+    5.4%    66.81 ms  x11   attention   aten::_efficient_attention_backward
+    3.6%    44.77 ms  x123  matmul      void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_128x256_32x3_tn_align8>(cutlass_80_tensoro
+    2.9%    35.27 ms  x64   matmul      void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x128_32x3_tn_align8>(cutlass_80_tensoro
+    1.9%    23.70 ms  x21   copy / cas  triton_poi_fused__to_copy_add_clamp_div_exp_flip_ge_log_mul_neg_scalar_tensor_sigmoid_sigmoid_backward_sub_tan
+    1.9%    23.70 ms  x21   copy / cas  triton_poi_fused__to_copy_add_clamp_div_exp_flip_ge_log_mul_neg_scalar_tensor_sigmoid_sigmoid_backward_sub_tan
+    1.7%    21.34 ms  x21   MinGRU sca  triton_red_fused_abs_add_exp_flip_gt_log_logcumsumexp_lt_mul_neg_scalar_tensor_sub_where_21
+    1.7%    21.34 ms  x21   MinGRU sca  triton_red_fused_abs_add_exp_flip_gt_log_logcumsumexp_lt_mul_neg_scalar_tensor_sub_where_21
+    1.4%    17.10 ms  x11   matmul      fmha_cutlassF_bf16_aligned_32x128_gmem_sm80(PyTorchMemEffAttention::AttentionKernel<cutlass::bfloat16_t, cutla
+    1.4%    17.10 ms  x11   attention   aten::_efficient_attention_forward
+    1.2%    14.93 ms  x21   MinGRU sca  triton_red_fused__to_copy_add_clamp_cumsum_log_logcumsumexp_mul_neg_sigmoid_sub_tanh_view_24
+    1.2%    14.93 ms  x21   MinGRU sca  triton_red_fused__to_copy_add_clamp_cumsum_log_logcumsumexp_mul_neg_sigmoid_sub_tanh_view_24
+    1.1%    14.02 ms  x32   other fuse  triton_poi_fused__unsafe_view_mul_silu_silu_backward_view_19
+    1.1%    14.02 ms  x32   other fuse  triton_poi_fused__unsafe_view_mul_silu_silu_backward_view_19
+    1.1%    13.11 ms  x69   matmul      aten::addmm
+    0.9%    11.45 ms  x1    vocab soft  triton_red_fused__log_softmax__log_softmax_backward_data__to_copy_arange_eq_expand_nll_loss_backward_nll_loss_
+    0.9%    11.45 ms  x1    vocab soft  triton_red_fused__log_softmax__log_softmax_backward_data__to_copy_arange_eq_expand_nll_loss_backward_nll_loss_
+    0.9%    11.41 ms  x1    other fuse  triton_poi_fused_mul_view_0
+    0.9%    11.41 ms  x1    other fuse  triton_poi_fused_mul_view_0
+    0.9%    11.40 ms  x1    other fuse  triton_poi_fused__unsafe_view_mul_45
+    0.9%    11.40 ms  x1    other fuse  triton_poi_fused__unsafe_view_mul_45
+
+chrome trace: /content/drive/MyDrive/cubbyllm/runs/spatial_link_2/profile/trace_D1024_L32_S1024_m32.json

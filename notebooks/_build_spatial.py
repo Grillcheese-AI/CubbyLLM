@@ -51,18 +51,16 @@ held-out document of its two shards, teacher-forced exact answers:
    given but the *questions'* `here` removed is the learned route's own number (reported, no gate yet).
 Kill: gate 1 below 75%, or gate 3 worse by 0.02.
 
-**Run 1 (2026-10-20, G4, 2,808 steps = 0.37B tokens an arm) and what run 2 changes.** The link arm answered the
-villages' held-out questions at **0.793** with the address on the question and **0.700** with the trunk's own query
-(the route, taught by the route loss); the facts at **0.016** (first token 0.27) -- the read failed on the facts, for
-reasons in the shard and the scene, not the algebra: every placed token wrote into one scene per 1,024-token
-window (two documents, every name piece, *and the questions' own tokens at the addresses they asked about*:
-~150-250 items in d = 1024, past the capacity law's ~55 for 90%), and the facts sat inside the attention window
-(so `text` copies them and "link ≥ 2× text" tested attention, not the read). **Run 2:** a thing WRITES into the
-scene and a question only ASKS there (`.role.u8` beside the places; `train_base.Tokens.flags`); the scene restarts
-at every document (`SpatialLink.scene(starts=)`); the facts move **beyond the window** -- `facts_far1k`
-(`make_fact_shard.py --far --doc 1024 --facts 6 10`: 6-10 facts, ~800 tokens of real text, then the questions;
-~24 written items a document) against `facts_far1k_text`, the same documents as words, where only the trunk's
-recurrence could carry a fact 800 tokens; micro 32.
+**Runs 1-2 (2026-10-20, G4, ~0.4B tokens an arm; recorded under H-S12 and H-K10) and what run 3 changes.** Villages:
+`link` **0.793 / 0.776** (runs 1 / 2) with the address on the question, 0.700 / 0.729 by the trunk's own query; `text`
+0.995 (in-window, the words win). Facts: **0.016** in-window (run 1: one scene a window, past its capacity), **0.005**
+beyond it (run 2: roles, a scene per document, `facts_far1k`). Why run 2 read nothing (`validation/diag_fact_read.py`):
+every placed token was bound at the input, so each answer piece, asking for the next, entered as `e (*) S(p_next)`
+and the trunk lost the token it had just read (next piece 0.096 with places, 0.213 without, 0.229 binding only the
+writers); and the first piece's address sat on `here`, three tokens before the answer. **Run 3:**
+`CB_SPATIAL_BIND=writes` (only a thing at a place is bound; a question's tokens enter as themselves and ask with
+`S(p)`) and `facts_far1k_lead` (run 2's documents token for token; the token right before each answer asks for its
+first piece).
 
 **The small-scale reads this rests on (2026-10-20, `validation/exp_k10_hypertoken.py`):** a 3.4M trunk, facts shown
 once, questions beyond the window -- 0.94 with the address on the question, 0.82 for the learned route taught by
@@ -71,7 +69,7 @@ the route loss, 0.00 for text, 0.03 for attention over the whole document, 0.00 
 **Before you run**
 1. The shards are on Drive under `token_cache_cont/` -- run 1: `spatial_here` (+ `.pos.i16`, `.role.u8`),
    `spatial_text_here`, `facts` (+ `.pos.i16`), `facts_text`; run 2 adds `facts_far1k` (+ `.pos.i16`, `.role.u8`)
-   and `facts_far1k_text` -- built 2026-10-20, with the three index files.
+   and `facts_far1k_text`, run 3 `facts_far1k_lead` -- built 2026-10-20, with the three index files.
 2. **Push `master`** with `CB_SPATIAL_QUERY` and `CB_ROUTE_LOSS` in `train_base.py` (checked below).
 3. Each arm is ~2 h on an A100; the two can run in two sessions or two runtimes. No activation recompute
    (the route loss taps the query in the forward: `CB_GRAD_CKPT=0`).
@@ -101,8 +99,8 @@ SESSION_H     = 12                                  # Colab Pro; 24 on Pro+
 HOURS_PER_ARM = 2.0                                 # equal compute: the same hours on the same card for both arms
 SEQ           = 1024                                # whole documents a window: two villages (512) or one far-facts doc (1024)
 TOKENS_PER_STEP = 131_072                           # the optimizer step; BOTH ARMS MUST MATCH (the readout checks it)
-RUN           = 2                                   # 1: the first pair (facts in-window, one scene a window); 2: roles,
-                                                    # a scene per document, the facts beyond the window (see above)
+RUN           = 3                                   # 1: facts in-window, one scene a window; 2: roles, a scene per
+                                                    # document, facts beyond the window; 3: only writers bound, lead
 SHARD_MULT    = 96                                  # ~5% of the tokens each for the two 10M-token shards against the 17.7B
                                                     # cache (size x multiplier draws): ~35M tokens = 3.5 epochs of each at 2 h
 DRIVE         = '/content/drive/MyDrive/cubbyllm'
@@ -112,7 +110,8 @@ CORPUS        = '/content/token_cache_cont'                  # LOCAL SSD (Drive-
 TOKENIZER     = f'{CORPUS}/tokenizer/grillcheese_bbpe128k.json'
 NAME          = f'spatial_{ARM}' + ('' if RUN == 1 else f'_{RUN}')
 RUN_DIR       = f'{DRIVE}/runs/{NAME}'
-FACTS         = {1: ('facts', 'facts_text'), 2: ('facts_far1k', 'facts_far1k_text')}[RUN]
+FACTS         = {1: ('facts', 'facts_text'), 2: ('facts_far1k', 'facts_far1k_text'),
+                 3: ('facts_far1k_lead', 'facts_far1k_text')}[RUN]
 SHARDS        = {'link': ('spatial_here', FACTS[0]), 'text': ('spatial_text_here', FACTS[1])}[ARM]
 MULTS         = {n: (SHARD_MULT if n.startswith('spatial') or RUN == 1 else SHARD_MULT // 2) for n in SHARDS}
                                                     # facts_far1k is 20M tokens, twice the others: half the multiplier
@@ -167,6 +166,8 @@ if ARM == 'link':
     BASE.update(CB_SPATIAL='1', CB_SPATIAL_QUERY='placed', CB_ROUTE_LOSS='1',   # the link, a placed token asks about its
                 CB_SPATIAL_GATE='0')                                           # own place, the learned query taught; the
                                                                                # link is ADDED to the 450M (o = 0, gate 0)
+    if RUN >= 3:
+        BASE['CB_SPATIAL_BIND'] = 'writes'                                     # a question's tokens enter as themselves
 # EQUAL TOKENS: the link arm sizes its step count to HOURS_PER_ARM from its own measured speed; the text arm
 # (no FFTs, no route loss: faster) takes the link arm's step count instead of its own hours, so both see the
 # same tokens -- the comparison is about what the trunk is shown, not how fast the card ran it.

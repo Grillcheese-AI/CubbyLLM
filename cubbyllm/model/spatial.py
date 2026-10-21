@@ -41,6 +41,13 @@ on a tiny trunk (``validation/exp_k10_hypertoken.py``): a fact shown once, asked
 the window, answered at 0.94 this way and at 0.00 through the learned query alone -- the read
 is easy to learn, recovering an address from the hidden state is the hard part.
 
+**bind="writes"** (2026-10-20, the fact link's second 450M run): with roles given, only the
+tokens that WRITE are bound at the input; a token that only ASKS keeps its own embedding and
+asks with ``S(p)``. Binding every placed token scrambled the far facts' answer pieces -- each
+one, asking for the next piece, entered the trunk as ``e (*) S(p_next)``, so the trunk lost
+which token it had just read: next-piece accuracy 0.096 with the places against 0.213 without
+(``validation/diag_fact_read.py``). The default ``"placed"`` keeps every earlier run exact.
+
 What it brings CubbyLLM: a trunk that can be told where every block is without a word of
 text, and ask the scene "what is here" at a place it chose, with the answer's correctness
 guaranteed by the encoding rather than hoped for from training. A conventional model has no
@@ -62,10 +69,13 @@ NO_PLACE = -32768
 
 class SpatialLink(nn.Module):
     def __init__(self, d_model: int, scale: float = 2.0, seed: int = 0, dims: int = 3,
-                 at: int = 0, gate_bias: float = -4.0, query: str = "learned") -> None:
+                 at: int = 0, gate_bias: float = -4.0, query: str = "learned", bind: str = "placed") -> None:
         super().__init__()
         if query not in ("learned", "placed"):
             raise ValueError(f"query must be 'learned' or 'placed', not {query!r}")
+        if bind not in ("placed", "writes"):
+            raise ValueError(f"bind must be 'placed' or 'writes', not {bind!r}")
+        self.bind_mode = bind
         self.d, self.dims, self.scale, self.seed, self.at = int(d_model), int(dims), float(scale), int(seed), int(at)
         self.query = query
         self.register_buffer("phases", torch.tensor(_phases(self.d, self.dims, self.seed), dtype=torch.float32))
@@ -107,6 +117,14 @@ class SpatialLink(nn.Module):
             return e
         spec = torch.fft.rfft(e.float(), dim=-1) * self.spectrum(positions)
         return torch.fft.irfft(spec, n=self.d, dim=-1).to(e.dtype)
+
+    def bind_input(self, e: torch.Tensor, positions: torch.Tensor | None, writes: torch.Tensor | None = None) -> torch.Tensor:
+        """The input level: every placed token bound (``bind="placed"``), or with ``bind="writes"``
+        and roles given only the writing ones -- an asking token's place goes to zero, ``S(0)`` the
+        identity, so it enters as itself."""
+        if positions is not None and writes is not None and self.bind_mode == "writes":
+            positions = positions * writes.unsqueeze(-1).to(positions.dtype)
+        return self.bind(e, positions)
 
     def unbind(self, a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
         """``a (*) b^-1`` with ``b``'s exact inverse (its conjugate spectrum; exact for a

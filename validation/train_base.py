@@ -97,6 +97,7 @@ MEM_KEY = _env("CB_MEM_KEY", 64)
 SPATIAL = _env("CB_SPATIAL", 0)
 SPATIAL_SCALE = _env("CB_SPATIAL_SCALE", 2.0, float)
 SPATIAL_QUERY = os.environ.get("CB_SPATIAL_QUERY", "learned")   # "placed": a placed token asks about its own place (H-K10)
+SPATIAL_BIND = os.environ.get("CB_SPATIAL_BIND", "placed")      # "writes": with roles, only writing tokens bound at the input
 ROUTE_LOSS = _env("CB_ROUTE_LOSS", 0.0, float)      # the learned query taught its address at placed tokens (H-K10: 0.00 -> 0.82)
 SPATIAL_GATE = _env("CB_SPATIAL_GATE", 0.0, float)  # the gate bias of a link ADDED by CB_INIT_FROM (o = 0 keeps step 0 exact)
 # ── batch / optimizer / schedule ───────────────────────────────────────────
@@ -401,6 +402,8 @@ def arch_meta(vocab_real: int, vocab: int) -> dict:
         meta["spatial"] = {"scale": SPATIAL_SCALE, "seed": 0, "at": L // 2}
         if SPATIAL_QUERY != "learned":  # absent at the default, so earlier spatial metas still match
             meta["spatial"]["query"] = SPATIAL_QUERY
+        if SPATIAL_BIND != "placed":
+            meta["spatial"]["bind"] = SPATIAL_BIND
     return meta
 
 
@@ -438,7 +441,8 @@ def spatial_link(meta: dict):
         return None
     from cubbyllm.model.spatial import SpatialLink
     return SpatialLink(meta["D"], scale=float(sp.get("scale", 2.0)), seed=int(sp.get("seed", 0)),
-                       at=int(sp.get("at", meta["L"] // 2)), query=str(sp.get("query", "learned")))
+                       at=int(sp.get("at", meta["L"] // 2)), query=str(sp.get("query", "learned")),
+                       bind=str(sp.get("bind", "placed")))
 
 
 def flops_per_token(model: CubbyModel, meta: dict, seq: int) -> float:

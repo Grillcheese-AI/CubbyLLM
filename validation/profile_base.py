@@ -15,6 +15,14 @@ That ranking is the order the speed work should go in (2026-10-20: the 450M + li
 tok/s, 29.5% MFU on the RTX PRO 6000; the question is which of micro, the 128k-vocab loss, the
 attention without flex, the scan or the GEMM size holds it there).
 
+Only the device's own events are summed (2026-10-20, fixed): the first version summed every row of
+``key_averages``, so each kernel counted twice -- as itself and inside the op that launched it
+(``aten::mm`` = its cutlass GEMMs) -- the optimizer three times, and "Command Buffer Full" (the
+CPU waiting on a full launch queue: the GPU is the bottleneck, which is what we want) as GPU work;
+the attention kernels, named ``fmha_cutlass*``, were filed under matmul. The GEMM line now also
+says how fast the GEMMs themselves run: their FLOPs (``flops_per_token`` less attention's) over
+their device time, against the card's peak.
+
     <train_base env: CB_D, CB_L, CB_S, CB_MICRO, CB_SPATIAL, ...> [CB_PROF_STEPS=4] [CB_PROF_TRACE=<dir>]
     python validation/profile_base.py
 """
@@ -35,15 +43,16 @@ import train_base as tb  # noqa: E402
 
 STEPS = int(os.environ.get("CB_PROF_STEPS", "4"))
 TRACE = os.environ.get("CB_PROF_TRACE", "")
-KINDS = [
-    ("matmul", r"gemm|cutlass|cublas|nvjet|\bmm\b|addmm|bmm|matmul|_scaled_mm|sm\d+_xmma|ampere_|hopper_"),
-    ("attention", r"attention|fmha|flash|sdpa|efficient_attention"),
-    ("vocab softmax / CE", r"log_softmax|softmax|nll_loss|cross_entropy"),
-    ("MinGRU scan", r"logcumsumexp|cumsum|scan"),
-    ("FFT (spatial link)", r"fft|cufft|regular_fft|vector_fft|polar"),
-    ("optimizer", r"adam|foreach|multi_tensor|fused_adam"),
-    ("copy / cast", r"copy|cast|to_copy|contiguous|cat_|memcpy|memset|fill"),
+KINDS = [                                                      # first match wins: attention before matmul
+    ("attention", r"fmha|flash|attention|sdpa"),                 # (fmha_cutlass* would match "cutlass")
+    ("MinGRU scan", r"logcumsumexp|cumsum|scan|flip"),           # the scan and its reversed backward
+    ("vocab softmax / CE", r"log_softmax|nll_loss|cross_entropy"),
+    ("FFT (spatial link)", r"fft|polar"),
+    ("optimizer", r"adam|multi_tensor"),
+    ("matmul", r"gemm|cutlass|cublas|nvjet|xmma|_mm_|_mm$|addmm|bmm|matmul|_scaled_mm"),
+    ("copy / cast", r"copy_kernel|direct_copy|memcpy|memset|catarraybatched|fused__to_copy_\d+$|fused_clone_\d+$"),
 ]
+NOT_WORK = ("Command Buffer Full",)                              # CUPTI markers, not kernels
 
 
 def batch(meta, dev, n: int, vocab: int):
@@ -95,18 +104,31 @@ def main() -> None:
     print(f"step (micro {tb.MICRO} x S {tb.SEQ}, with the optimizer each micro): {1e3 * dt:.1f} ms, {tps:,.0f} tok/s, "
           f"MFU {100 * tps * fpt / pk:.1f}% (under the profiler: a few % slower than a run)")
     use_dev = dev.type == "cuda"
-    rows = []
+    rows, waits = [], 0.0
     for e in prof.key_averages():
+        on_dev = "CPU" not in str(getattr(e, "device_type", "CPU"))
         t = (getattr(e, "self_device_time_total", None) or getattr(e, "self_cuda_time_total", 0)) if use_dev else e.self_cpu_time_total
-        if t > 0 and (use_dev or not e.key.startswith(("ProfilerStep", "aten::empty"))):
+        if e.key in NOT_WORK:
+            waits += t
+        elif t > 0 and (on_dev if use_dev else not e.key.startswith(("ProfilerStep", "aten::empty"))):
             rows.append((t, e.key, e.count))
     total = sum(t for t, _, _ in rows) or 1.0
     by_kind: dict = {}
     for t, k, _ in rows:
         by_kind[kind_of(k)] = by_kind.get(kind_of(k), 0.0) + t
-    print(f"\nby kind ({'device' if use_dev else 'CPU'} time, {total / 1e3 / STEPS:.1f} ms a step):")
+    print(f"\nby kind ({'device kernels' if use_dev else 'CPU'} time, {total / 1e3 / STEPS:.1f} ms a step"
+          f"{f'; the CPU waited {waits / 1e3 / STEPS:.0f} ms a step on a full launch queue: GPU-bound' if waits else ''}):")
     for k, t in sorted(by_kind.items(), key=lambda kv: -kv[1]):
         print(f"  {k:24s} {100 * t / total:5.1f}%   {t / 1e3 / STEPS:8.1f} ms")
+    n_attn = sum(1 for i in range(meta["L"]) if i % meta["attn_every"] == 0)
+    w_avg = sum(min(t + 1, meta["window"]) for t in range(tb.SEQ)) / tb.SEQ
+    gemm_fpt = fpt - 12.0 * meta["D"] * w_avg * n_attn
+    t_mm = by_kind.get("matmul", 0.0) / 1e6 / STEPS
+    if use_dev and t_mm > 0:
+        tf = gemm_fpt * tb.MICRO * tb.SEQ / t_mm / 1e12
+        print(f"\nGEMMs: {gemm_fpt * tb.MICRO * tb.SEQ / 1e12:.1f} TFLOP a step in {1e3 * t_mm:.0f} ms = {tf:.0f} TFLOPS, "
+              f"{100 * tf * 1e12 / pk:.0f}% of peak; the vocabulary head is {100 * 6 * meta['vocab'] * meta['D'] / gemm_fpt:.0f}% "
+              f"of the GEMM FLOPs. MFU = GEMM speed x GEMM share of the step.")
     print("\ntop kernels:")
     for t, k, n in sorted(rows, reverse=True)[:25]:
         print(f"  {100 * t / total:5.1f}%  {t / 1e3 / STEPS:7.2f} ms  x{n // STEPS:<4d} {kind_of(k)[:10]:10s}  {k[:110]}")

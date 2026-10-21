@@ -243,3 +243,37 @@ def test_things_write_questions_ask_and_each_document_has_its_own_scene():
         assert torch.allclose(full, torch.stack(steps, 1), atol=1e-4, rtol=1e-4)
         assert torch.equal(m.features(x, pos, placed), m.features(x, pos, placed, None, None, None))
         assert not torch.allclose(full, m.logits_from(m.features(x, pos, placed)), atol=1e-4)   # the roles matter
+
+
+def test_with_bind_writes_an_asking_token_enters_as_itself():
+    """``bind="writes"``: only a writing token is bound at the input, an asking one enters as its
+    own embedding (its place still its query); a document of questions with nothing written is
+    then text exactly; decode = forward; the default binds every placed token, as before."""
+    m = _model(True)
+    m.spatial = SpatialLink(D, scale=1.0, seed=5, at=META["L"] // 2, query="placed", bind="writes")
+    with torch.no_grad():
+        m.spatial.o.weight.normal_(0, 0.3)
+        m.spatial.gate.bias.zero_()
+    x, link = _tokens(9), m.spatial
+    pos = torch.randint(-5, 6, (2, S, 3)).float()
+    placed = torch.ones(2, S, dtype=torch.bool)
+    writes = torch.zeros(2, S, dtype=torch.bool)
+    writes[:, :4] = True
+    asks = placed & ~writes
+    e = m.embedding.embed(x, None)
+    b = link.bind_input(e, pos, writes)
+    assert torch.allclose(b[:, 4:], e[:, 4:], atol=1e-5)                       # the askers: themselves
+    assert torch.allclose(b[:, :4], link.bind(e, pos)[:, :4], atol=1e-6)      # the writers: bound
+    with torch.no_grad():
+        none = torch.zeros_like(writes)
+        assert torch.allclose(m.features(x, pos, placed, none, placed), m.features(x), atol=1e-5)
+        full = m.logits_from(m.features(x, pos, placed, writes, asks))
+        state, steps = None, []
+        for t_ in range(S):
+            lg, state = m.step(x[:, t_], state, position=pos[:, t_], placed=placed[:, t_],
+                               write=writes[:, t_], ask=asks[:, t_])
+            steps.append(lg)
+        assert torch.allclose(full, torch.stack(steps, 1), atol=1e-4, rtol=1e-4)
+        link.bind_mode = "placed"
+        assert torch.equal(link.bind_input(e, pos, writes), link.bind(e, pos))
+        assert not torch.allclose(full, m.logits_from(m.features(x, pos, placed, writes, asks)), atol=1e-4)

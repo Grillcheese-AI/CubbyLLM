@@ -1,0 +1,15 @@
+{
+ "ckpt": "I:\\My Drive\\cubbyllm\\runs\\spatial_link_2\\spatial_link_2_final.pt",
+ "docs": 24,
+ "shards": {
+  "facts_far1k": {
+   "unbound": {
+    "questions": 120,
+    "first": 0.24166666666666667,
+    "later": 0.22869955156950672,
+    "later_tokens": 446,
+    "exact": 0.0
+   }
+  }
+ }
+}

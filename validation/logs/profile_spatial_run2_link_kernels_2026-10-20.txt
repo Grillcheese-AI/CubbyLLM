@@ -1,0 +1,37 @@
+﻿
+device kernels 547.4 ms a step over a 552.1 ms span (99% busy)
+  matmul                    42.4%    232.0 ms
+  other fused / elementwise  21.5%    117.9 ms
+  attention                 15.3%     83.9 ms
+  MinGRU scan               13.2%     72.2 ms
+  vocab softmax / CE         3.1%     16.9 ms
+  optimizer                  2.0%     11.1 ms
+  copy / cast                1.7%      9.3 ms
+  FFT (spatial link)         0.7%      4.1 ms
+event categories (ms a step): {'cpu_op': 2298.0, 'Trace': 552.2, 'kernel': 542.6, 'cuda_runtime': 438.1, 'overhead': 
+125.3, 'cuda_driver': 90.2, 'gpu_user_annotation': 11.2, 'user_annotation': 5.5, 'gpu_memcpy': 4.5, 'gpu_memset': 0.2}
+top kernels:
+   13.8%    75.43 ms  matmul     void 
+cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_128x256_32x3_nt_align8>(cutlass_
+   13.7%    75.05 ms  matmul     void 
+cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x128_32x3_nn_align8>(cutlass_
+   12.2%    66.81 ms  attention  
+fmha_cutlassB_bf16_aligned_128x64_k65536_sm80(PyTorchMemEffAttention::AttentionBackwardKernel<cutlas
+    8.2%    44.77 ms  matmul     void 
+cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_128x256_32x3_tn_align8>(cutlass_
+    6.4%    35.27 ms  matmul     void 
+cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x128_32x3_tn_align8>(cutlass_
+    4.3%    23.70 ms  MinGRU sca 
+triton_poi_fused__to_copy_add_clamp_div_exp_flip_ge_log_mul_neg_scalar_tensor_sigmoid_sigmoid_backwa
+    3.9%    21.34 ms  MinGRU sca 
+triton_red_fused_abs_add_exp_flip_gt_log_logcumsumexp_lt_mul_neg_scalar_tensor_sub_where_21
+    3.1%    17.10 ms  attention  
+fmha_cutlassF_bf16_aligned_32x128_gmem_sm80(PyTorchMemEffAttention::AttentionKernel<cutlass::bfloat1
+    2.7%    14.93 ms  MinGRU sca 
+triton_red_fused__to_copy_add_clamp_cumsum_log_logcumsumexp_mul_neg_sigmoid_sub_tanh_view_24
+    2.6%    14.02 ms  other fuse triton_poi_fused__unsafe_view_mul_silu_silu_backward_view_19
+    2.1%    11.45 ms  vocab soft 
+triton_red_fused__log_softmax__log_softmax_backward_data__to_copy_arange_eq_expand_nll_loss_backward
+    2.1%    11.41 ms  other fuse triton_poi_fused_mul_view_0
+
+

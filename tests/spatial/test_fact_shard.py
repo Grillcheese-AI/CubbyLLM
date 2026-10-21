@@ -95,3 +95,19 @@ def test_far_fills_the_gap_with_text_and_lands_the_questions_at_the_end(tk):
     assert first_q > 1024 - 200 and not (places[:, 0] != NO_PLACE).any()              # ~800 tokens past the facts
     near, near_places, near_roles = render(tk, facts, rels, qa, "places", eos, 1024, Stub())
     assert near.shape == (1024,) and ((near_places[:, 0] != NO_PLACE) == (near_roles != 0)).all()   # places mode fills too
+
+
+def test_lead_makes_the_token_before_the_answer_ask_for_its_first_piece(tk):
+    rels = {"WORKS_FOR": 0, "HAS_PART": 1}
+    facts = [("KeikoMatsuzaka", "WORKS_FOR", "Daiei"), ("Leadership", "HAS_PART", "PowerConcept")]
+    qa = document(facts, rels, random.Random(1), 2)
+    eos = tk.token_to_id("</s>")
+    ids, places, roles = render(tk, facts, rels, qa, "places", eos, 200)
+    ids_l, places_l, roles_l = render(tk, facts, rels, qa, "places", eos, 200, lead=True)
+    assert np.array_equal(ids, ids_l)                                   # the same documents, token for token
+    diff = [i for i in range(200) if roles[i] != roles_l[i]]
+    assert len(diff) == len(qa)                                         # one more asker a question
+    for i in diff:
+        here = max(k for k in range(i) if roles[k] == 2 and tk.decode([int(ids[k])]).strip() == "here")
+        assert roles_l[i] == 2 and tuple(places_l[i]) == tuple(places[here])     # it asks where here asks: piece 0
+        assert tuple(places_l[i + 1]) == tuple(places[i + 1]) and roles_l[i + 1] == 2   # then the first piece
