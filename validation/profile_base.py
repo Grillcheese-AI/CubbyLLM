@@ -44,7 +44,7 @@ import train_base as tb  # noqa: E402
 STEPS = int(os.environ.get("CB_PROF_STEPS", "4"))
 TRACE = os.environ.get("CB_PROF_TRACE", "")
 KINDS = [                                                      # first match wins: attention before matmul
-    ("attention", r"fmha|flash|attention|sdpa"),                 # (fmha_cutlass* would match "cutlass")
+    ("attention", r"fmha|flash|attention|attn|sdpa"),            # (fmha_cutlass* would match "cutlass")
     ("MinGRU scan", r"logcumsumexp|cumsum|scan|flip"),           # the scan and its reversed backward
     ("vocab softmax / CE", r"log_softmax|nll_loss|cross_entropy"),
     ("FFT (spatial link)", r"fft|polar"),

@@ -210,18 +210,19 @@ def run(env_extra, log_name):
                 p.terminate()
 """),
     code(r"""
-# --- speed check: the fused MinGRU kernel (validation/speed_check.py: its tests on this card, then profile_base
-# with it off and on; ~6 min, once a pair -- the link arm decides, the text arm follows, resumed sessions reuse it)
-SPEED = f"{DRIVE}/runs/{NAME.replace('text', 'link')}/mingru_triton.json"
+# --- speed check (validation/speed_check.py): the Triton kernels' tests on this card, then profile_base per
+# variant -- torch as configured, + the fused MinGRU, + the banded flash attention, + flex with small tiles; the
+# fastest that ran is this run's. ~10 min once a pair: the link arm decides, the text arm follows, resumes reuse it
+SPEED = f"{DRIVE}/runs/{NAME.replace('text', 'link')}/speed.json"
 if not os.path.exists(SPEED):
     p = subprocess.Popen([sys.executable, '-u', 'validation/speed_check.py'], cwd=REPO, text=True, bufsize=1,
                          env=dict(os.environ, **BASE, CB_SPEED_OUT=SPEED), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout:
         print(line, end='')
     p.wait()
-if json.load(open(SPEED))['use']:
-    BASE['CB_MINGRU_TRITON'] = '1'
-print('this run:', 'the fused MinGRU kernel' if BASE.get('CB_MINGRU_TRITON') == '1' else 'the torch MinGRU path')
+sp = json.load(open(SPEED))
+BASE.update(sp['env'])
+print(f"this run: {sp['chosen']} {sp['env']}")
 """),
     md(r"""
 ### The run

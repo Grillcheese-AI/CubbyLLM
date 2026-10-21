@@ -58,6 +58,7 @@ mask at every step, and is what the incremental-decode equivalence test checks.
 from __future__ import annotations
 
 import functools
+import json
 import os
 
 import torch
@@ -75,6 +76,11 @@ try:  # torch >= 2.5; used on CUDA where it does only the banded work
     from torch.nn.attention.flex_attention import create_block_mask, flex_attention
 except ImportError:  # pragma: no cover - older torch (e.g. the .venv-dml 2.4.1)
     create_block_mask = flex_attention = None
+
+# the band as Triton flash kernels on CUDA (window_attn_triton.py), ahead of flex and the dense mask
+ATTN_TRITON = os.environ.get("CB_ATTN_TRITON") == "1"
+# flex's tiles, e.g. {"BLOCK_M": 64, "BLOCK_N": 32, "num_stages": 1} to fit a 99 KB card at a head of 256
+FLEX_OPTS = json.loads(os.environ.get("CB_FLEX_OPTS") or "null")
 
 
 @functools.lru_cache(maxsize=8)
@@ -156,9 +162,16 @@ class _WindowedAttnMixer(nn.Module):
         cos, sin = _rope_tables(self.dh, torch.arange(S, device=x.device), x.device)
         cos, sin = cos.view(1, 1, S, self.dh), sin.view(1, 1, S, self.dh)
         q, k = _apply_rope(q, cos, sin), _apply_rope(k, cos, sin)      # rotary position
-        if self._use_flex(x):
+        o = None
+        if ATTN_TRITON and x.is_cuda:
+            from .window_attn_triton import AVAILABLE, window_attention
+            if AVAILABLE:                                # the band, flash, on any card; bf16 as SDPA would cast
+                o = window_attention(q.to(v.dtype), k.to(v.dtype), v, self.window)
+        if o is not None:
+            pass
+        elif self._use_flex(x):
             bm = _window_block_mask(S, self.window, str(x.device))
-            o = flex_attention(q, k, v, block_mask=bm)   # banded work only
+            o = flex_attention(q, k, v, block_mask=bm, kernel_options=FLEX_OPTS)   # banded work only
         elif S > 2 * self.window and os.environ.get("CB_BANDED") == "1":
             o = banded_attention(q, k, v, self.window)   # the reference's keys at 2 window / S of its work
         else:
