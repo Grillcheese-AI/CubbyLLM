@@ -100,6 +100,13 @@ SPATIAL_QUERY = os.environ.get("CB_SPATIAL_QUERY", "learned")   # "placed": a pl
 SPATIAL_BIND = os.environ.get("CB_SPATIAL_BIND", "placed")      # "writes": with roles, only writing tokens bound at the input
 ROUTE_LOSS = _env("CB_ROUTE_LOSS", 0.0, float)      # the learned query taught its address at placed tokens (H-K10: 0.00 -> 0.82)
 SPATIAL_GATE = _env("CB_SPATIAL_GATE", 0.0, float)  # the gate bias of a link ADDED by CB_INIT_FROM (o = 0 keeps step 0 exact)
+# the link's copy path (model/spatial_copy.py, order 0001): the read cleaned up against the ids the document wrote ("ring")
+# or the vocabulary ("table") and mixed into the output at asking tokens. "" = none (every run so far: the meta unchanged).
+SPATIAL_COPY = _env("CB_SPATIAL_COPY", "", str)
+SPATIAL_COPY_TAU = _env("CB_SPATIAL_COPY_TAU", 3.0, float)   # its starting log temperature (run 3's A0 writer gap 0.096 -> 3.04)
+# held-out hypertoken questions scored at every eval (exp_hypertoken_recall's teacher-forced exact), and the copy's lam there
+PROBE_SHARDS = _env("CB_PROBE_SHARDS", "", str)
+PROBE_DOCS = _env("CB_PROBE_DOCS", 64)
 # ── batch / optimizer / schedule ───────────────────────────────────────────
 SEQ = _env("CB_S", 1024)
 MICRO = _env("CB_MICRO", 16)                 # sequences per forward/backward
@@ -404,6 +411,8 @@ def arch_meta(vocab_real: int, vocab: int) -> dict:
             meta["spatial"]["query"] = SPATIAL_QUERY
         if SPATIAL_BIND != "placed":
             meta["spatial"]["bind"] = SPATIAL_BIND
+        if SPATIAL_COPY:              # absent without it, so every earlier spatial meta still matches
+            meta["spatial"].update(copy=SPATIAL_COPY, copy_tau=SPATIAL_COPY_TAU)
     return meta
 
 
@@ -657,6 +666,8 @@ def init_from(path, model, dev, meta) -> dict:
     ck = torch.load(path, map_location=dev, weights_only=False)
     added = (model.spatial is not None and "spatial" not in ck["meta"]
              and ck["meta"] == {k: v for k, v in meta.items() if k != "spatial"})
+    if not added and model.spatial is not None and model.spatial.copy_path is not None:
+        return init_copy(path, model, dev, meta, ck)
     if not added:
         return restore(path, model, None, dev, meta, ck)
     link = {id(p) for p in model.spatial.parameters()}
@@ -671,6 +682,50 @@ def init_from(path, model, dev, meta) -> dict:
         model.spatial.gate.bias.fill_(SPATIAL_GATE)
     ck["link_added"] = True
     return ck
+
+
+def init_copy(path, model, dev, meta, ck) -> dict:
+    """``CB_INIT_FROM`` a linked checkpoint into the same model with the link's copy path ADDED (the
+    checkpoint's spatial meta is this one's without the ``copy*`` keys): every tensor loads but the
+    copy's three (they come last), which keep their init -- lam 0.1, tau ``CB_SPATIAL_COPY_TAU``."""
+    sp = {k: v for k, v in meta["spatial"].items() if not k.startswith("copy")}
+    if ck["meta"] != dict(meta, spatial=sp):
+        return restore(path, model, None, dev, meta, ck)
+    own = {id(p) for p in model.spatial.copy_path.parameters()}
+    rest = [p for p in model.parameters() if id(p) not in own]
+    if len(ck["params"]) != len(rest) or any(p.shape != s.shape for p, s in zip(rest, ck["params"])):
+        raise SystemExit(f"checkpoint {path}: not this model without its copy path")
+    with torch.no_grad():
+        for p, s in zip(rest, ck["params"]):
+            p.copy_(s.to(p.device))
+        for p, s in zip(model.context_source.parameters(), ck["router"]):
+            p.copy_(s.to(p.device))
+    ck["copy_added"] = True
+    return ck
+
+
+@torch.no_grad()
+def fact_probe(model: CubbyModel, dev) -> dict:
+    """``CB_PROBE_SHARDS``: each shard's last ``CB_PROBE_DOCS`` held-out documents scored as
+    ``exp_hypertoken_recall`` scores them (first token, exact), and the copy's mean lam at the
+    asking tokens (None without a copy path)."""
+    had = os.environ.get("CB_NO_FLEX")
+    import exp_hypertoken_recall as hr                  # its import defaults CB_NO_FLEX=1, which the backbone reads at
+    if had is None:                                     # every forward: the run would leave flex mid-training
+        os.environ.pop("CB_NO_FLEX", None)
+    from tokenizers import Tokenizer
+    hr.CORPUS = CORPUS
+    tk = fact_probe.__dict__.setdefault("tk", Tokenizer.from_file(TOKENIZER))
+    lams, cp = [], model.spatial.copy_path if model.spatial is not None else None
+    hook = cp.register_forward_hook(lambda _m, _i, out: lams.append(out[2].float())) if cp is not None else None
+    try:
+        out = {n: hr.score(model, tk, *hr.heldout_docs(n, PROBE_DOCS), model.spatial is not None, dev)
+               for n in PROBE_SHARDS.split(",")}
+    finally:
+        if hook is not None:
+            hook.remove()
+    out["_lam"] = float(torch.cat(lams).mean()) if lams else None
+    return out
 
 
 def load_base(path: str, device="cpu") -> CubbyModel:
@@ -891,7 +946,8 @@ def train(dev):
         print(f"initialised from {INIT_FROM} (its step {c.get('step')}; "
               f"{'grown from ' + str(c['grown_from']['checkpoint']) if c.get('grown_from') else 'not grown'})"
               f" -> step 0, fresh optimizer and schedule"
-              + (f"; spatial link ADDED (o = 0: text exact at step 0; gate bias {SPATIAL_GATE:+.1f})" if c.get("link_added") else ""))
+              + (f"; spatial link ADDED (o = 0: text exact at step 0; gate bias {SPATIAL_GATE:+.1f})" if c.get("link_added") else "")
+              + (f"; copy path ADDED ({SPATIAL_COPY}, lam 0.1, tau {SPATIAL_COPY_TAU:.2f})" if c.get("copy_added") else ""))
         del c
     if STEPS_ENV and STEPS_ENV != sched["steps"]:
         sched.update(steps=STEPS_ENV, sized=True)
@@ -989,6 +1045,12 @@ def train(dev):
                 print(f"  [val] step {step}  mix {ev['_mix']:.4f}  copy {ev['_copy']:.3f}"
                       f"  | {per}", flush=True)
                 log({"step": step, "val": ev})
+                if PROBE_SHARDS:
+                    pr = fact_probe(model, dev)
+                    print(f"  [probe] step {step}  " + "  ".join(f"{k}: first {v['first_token']:.3f} exact {v['exact']:.3f}"
+                          for k, v in pr.items() if not k.startswith("_")) + (f"  lam {pr['_lam']:.3f}" if pr["_lam"] is not None else ""),
+                          flush=True)
+                    log({"step": step, "probe": pr})
             if GEN_EVERY and enc is not None and (step % GEN_EVERY == 0 or step == sched["steps"]):
                 for p, text in samples(model, dev, enc, dec, v, step):
                     print(f"  [gen {step}] {p!r} -> {text!r}", flush=True)

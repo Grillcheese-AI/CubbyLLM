@@ -1,0 +1,31 @@
+{
+ "args": {
+  "d": 256,
+  "items": "8,12,16,24",
+  "candidates": "24,1024,8192,32768",
+  "trials": 300,
+  "seed": 0,
+  "cache": "",
+  "shards": "facts_far1k_lead,spatial_here",
+  "out": "validation/logs/sim_hrr_ceiling_d256_2026-10-21.json"
+ },
+ "top1": {
+  "items8_candidates24": 1.0,
+  "items8_candidates1024": 0.9933333333333333,
+  "items8_candidates8192": 0.9666666666666667,
+  "items8_candidates32768": 0.9633333333333334,
+  "items12_candidates24": 0.9913333333333333,
+  "items12_candidates1024": 0.9466666666666667,
+  "items12_candidates8192": 0.8166666666666667,
+  "items12_candidates32768": 0.7366666666666667,
+  "items16_candidates24": 0.9773333333333334,
+  "items16_candidates1024": 0.7666666666666667,
+  "items16_candidates8192": 0.5833333333333334,
+  "items16_candidates32768": 0.44666666666666666,
+  "items24_candidates24": 0.8846666666666667,
+  "items24_candidates1024": 0.5133333333333333,
+  "items24_candidates8192": 0.30666666666666664,
+  "items24_candidates32768": 0.22
+ },
+ "seconds": 7.6
+}

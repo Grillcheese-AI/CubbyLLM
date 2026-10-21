@@ -1,0 +1,63 @@
+{
+ "ckpt": "I:\\My Drive\\cubbyllm\\runs\\spatial_link_3\\spatial_link_3_final.pt",
+ "docs": 400,
+ "shards": {
+  "facts_far1k_lead": {
+   "stored_K1": {
+    "reads": 9451,
+    "top1_vocab": 0.758226642683314,
+    "top1_written": 0.9920643318167389,
+    "exact_vocab": 0.4565434565434565,
+    "exact_written": 0.965034965034965,
+    "writer_gap_median": 0.09613163769245148,
+    "tau_for_2_nats": 3.035183981382993
+   },
+   "stored_K2": {
+    "reads": 9451,
+    "top1_vocab": 0.9540789334461962,
+    "top1_written": 0.9996825732726695,
+    "exact_vocab": 0.8591408591408591,
+    "exact_written": 0.9985014985014985,
+    "writer_gap_median": 0.15104135870933533,
+    "tau_for_2_nats": 2.5833487614932493
+   },
+   "stored_K4": {
+    "reads": 9451,
+    "top1_vocab": 0.9990477198180087,
+    "top1_written": 1.0,
+    "exact_vocab": 0.9955044955044955,
+    "exact_written": 1.0,
+    "writer_gap_median": 0.2378721386194229,
+    "tau_for_2_nats": 2.1291691629232963
+   },
+   "random_K1": {
+    "reads": 9451,
+    "top1_vocab": 0.7586498783197545,
+    "top1_written": 0.9912178605438577,
+    "exact_vocab": 0.43606393606393606,
+    "exact_written": 0.961038961038961,
+    "writer_gap_median": 0.09709681570529938,
+    "tau_for_2_nats": 3.025193878754737
+   },
+   "random_K2": {
+    "reads": 9451,
+    "top1_vocab": 0.951116283991112,
+    "top1_written": 0.999259337636229,
+    "exact_vocab": 0.8511488511488512,
+    "exact_written": 0.9965034965034965,
+    "writer_gap_median": 0.15229323506355286,
+    "tau_for_2_nats": 2.5750946191202555
+   },
+   "random_K4": {
+    "reads": 9451,
+    "top1_vocab": 0.9997883821817797,
+    "top1_written": 1.0,
+    "exact_vocab": 0.999000999000999,
+    "exact_written": 1.0,
+    "writer_gap_median": 0.23992715775966644,
+    "tau_for_2_nats": 2.1205670916030943
+   }
+  }
+ },
+ "env": "2026-10-21 13:31 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU)"
+}

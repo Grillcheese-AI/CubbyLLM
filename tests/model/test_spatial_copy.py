@@ -185,3 +185,28 @@ def test_the_meta_keys_build_the_copy_path_and_their_absence_does_not():
     meta["spatial"]["copy"] = "nearest"
     with pytest.raises(ValueError):
         train_base.spatial_link(meta)
+
+
+def test_init_from_adds_the_copy_path_to_a_linked_checkpoint(tmp_path, monkeypatch):
+    """CB_INIT_FROM a linked checkpoint into the model with the copy added: the trunk and the link
+    load, the copy keeps its init (lam 0.1, tau CB_SPATIAL_COPY_TAU), every position that does not
+    ask is the checkpoint's function exactly; a checkpoint of another shape refuses."""
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "validation"))
+    import train_base
+    linked = dict(META, spatial={"scale": 1.0, "seed": 5, "at": META["L"] // 2, "query": "placed", "bind": "writes"})
+    src = _linked(None, seed=1)
+    torch.save(train_base.payload(src, None, 7, linked, {}, {}), tmp_path / "linked.pt")
+    m = _linked("ring", seed=2)                                            # other weights everywhere
+    with torch.no_grad():
+        m.spatial.copy_path.tau.fill_(2.5)
+    ck = train_base.init_from(str(tmp_path / "linked.pt"), m, torch.device("cpu"),
+                              dict(linked, spatial=dict(linked["spatial"], copy="ring", copy_tau=2.5)))
+    assert ck.get("copy_added") and float(m.spatial.copy_path.tau) == 2.5
+    assert abs(float(torch.sigmoid(m.spatial.copy_path.gate.bias)) - 0.1) < 1e-6
+    batch = _roles()
+    with torch.no_grad():
+        a, b = m.forward(*batch), src.forward(*batch)
+        assert torch.equal(a[~batch[4]], b[~batch[4]]) and torch.equal(m.forward(batch[0]), src.forward(batch[0]))
+    with pytest.raises(SystemExit):
+        train_base.init_from(str(tmp_path / "linked.pt"), _linked("ring", seed=3), torch.device("cpu"),
+                             dict(linked, window=META["window"] + 1, spatial=dict(linked["spatial"], copy="ring")))

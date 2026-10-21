@@ -1,0 +1,7 @@
+  facts_far1k_lead stored K=1  9451 reads  per piece: vocabulary 0.758  written 0.992   whole answers: vocabulary 0.457  written 0.965   writer gap 0.096 (tau 3.04)  [97s]
+  facts_far1k_lead stored K=2  9451 reads  per piece: vocabulary 0.954  written 1.000   whole answers: vocabulary 0.859  written 0.999   writer gap 0.151 (tau 2.58)  [183s]
+  facts_far1k_lead stored K=4  9451 reads  per piece: vocabulary 0.999  written 1.000   whole answers: vocabulary 0.996  written 1.000   writer gap 0.238 (tau 2.13)  [268s]
+  facts_far1k_lead random K=1  9451 reads  per piece: vocabulary 0.759  written 0.991   whole answers: vocabulary 0.436  written 0.961   writer gap 0.097 (tau 3.03)  [357s]
+  facts_far1k_lead random K=2  9451 reads  per piece: vocabulary 0.951  written 0.999   whole answers: vocabulary 0.851  written 0.997   writer gap 0.152 (tau 2.58)  [450s]
+  facts_far1k_lead random K=4  9451 reads  per piece: vocabulary 1.000  written 1.000   whole answers: vocabulary 0.999  written 1.000   writer gap 0.240 (tau 2.12)  [548s]
+  wrote validation\logs\diag_fact_cleanup_grid_run3_2026-10-21.json
