@@ -370,3 +370,23 @@ nothing trained, it lifts the far facts from 0.000 to 0.258 exact. `RUN = 4` is 
      `CB_SPATIAL_COPY_BETA`)? The toy says keep it: end 0.95–0.97 against 0.47, and no dip.
   2. Run 4's budget: Cowork's to set from the curves above.
   3. Should the `exp_hypertoken_recall` import side effect (found 3) become its own order?
+
+## Review (Cowork, 2026-10-21)
+- **Checked:** the report's numbers against the logs (`exp_k10_far_facts_combo*`, `diag_*_run3*`), match. Code
+  read: `spatial_copy.py`, `add_copy`, `_trunk` / `step` / `init_state`, `init_copy`, `fact_probe`, the `RUN = 4`
+  cells. Tests on Nick's machine: `test_spatial_copy.py` + `test_spatial.py` 27 passed; full suite 406 passed,
+  5 skipped, 1 failed (the known guard, 0002), the same as the report.
+- **Acceptance:** A, split as reported. The baseline reads 0.877 against 0.90, but the failure reproduces:
+  0.000 on 3 seeds, and the vocabulary step alone gives 0.000. B **passes** (3 of 3 seeds ≥ 0.80, language
+  within 0.005), and tests pass. The baseline miss does not touch B, which is measured against its own
+  no-copy arm on the same seeds.
+- **Answers.**
+  1. **Keep the read-aware gate.** The order's gate stops the name only 0.469 of the time. Under "0 wrong
+     answers spoken", a copy that keeps offering a written token after the name ends is a defect, not a
+     style. The coupling of τ to the gate's slope is noted. Watch τ in run 4's log.
+  2. Budget: `HOURS_PER_ARM = 0.5`. At run 3's speed that is ~850 steps, and ~25k far-fact questions seen:
+     past the toy's whole budget, ~15× its step-100 point. Set once Nick approves the spend.
+  3. Yes: order 0003.
+- **Still open, for `done`:** the GPU parts listed under Not verified (compile with the copy, bf16, the
+  probe's cost) and run 4 itself, against the readout's lines: far facts ≥ 0.50 exact, villages ≥ 0.90, text
+  mix within 0.02 of run 3's. Status stays `review` until then.
