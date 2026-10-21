@@ -1,0 +1,78 @@
+{
+ "tests": {
+  "mingru": true,
+  "band": true
+ },
+ "variants": {
+  "torch": {
+   "env": {},
+   "exit": 0,
+   "tok_s": 57107.0,
+   "step": "step (micro 32 x S 1024, with the optimizer each micro): 573.8 ms, 57,107 tok/s, MFU 30.9% (under the profiler: a few % slower than a run)",
+   "kinds": [
+    "matmul                    41.7%      233.3 ms",
+    "other fused / elementwise  21.1%      117.8 ms",
+    "attention                 15.0%       83.6 ms",
+    "MinGRU scan               12.9%       72.2 ms",
+    "optimizer                  4.0%       22.3 ms",
+    "vocab softmax / CE         3.0%       16.9 ms",
+    "copy / cast                1.7%        9.2 ms",
+    "FFT (spatial link)         0.7%        4.1 ms"
+   ]
+  },
+  "mingru": {
+   "env": {
+    "CB_MINGRU_TRITON": "1"
+   },
+   "exit": 0,
+   "tok_s": 63653.0,
+   "step": "step (micro 32 x S 1024, with the optimizer each micro): 514.8 ms, 63,653 tok/s, MFU 34.4% (under the profiler: a few % slower than a run)",
+   "kinds": [
+    "matmul                    46.4%      232.4 ms",
+    "other fused / elementwise  22.9%      114.4 ms",
+    "attention                 16.6%       83.2 ms",
+    "optimizer                  4.5%       22.3 ms",
+    "MinGRU scan                3.6%       17.9 ms",
+    "vocab softmax / CE         3.4%       16.9 ms",
+    "copy / cast                1.9%        9.3 ms",
+    "FFT (spatial link)         0.8%        4.1 ms"
+   ]
+  },
+  "mingru+band": {
+   "env": {
+    "CB_MINGRU_TRITON": "1",
+    "CB_ATTN_TRITON": "1"
+   },
+   "exit": 1,
+   "tok_s": 0.0,
+   "step": "",
+   "kinds": []
+  },
+  "mingru+flex": {
+   "env": {
+    "CB_MINGRU_TRITON": "1",
+    "CB_NO_FLEX": "0",
+    "CB_FLEX_OPTS": "{\"BLOCK_M\": 64, \"BLOCK_N\": 32, \"num_stages\": 1, \"num_warps\": 8, \"BLOCK_M1\": 32, \"BLOCK_N1\": 32, \"BLOCK_M2\": 32, \"BLOCK_N2\": 32}"
+   },
+   "exit": 0,
+   "tok_s": 71758.0,
+   "step": "step (micro 32 x S 1024, with the optimizer each micro): 456.6 ms, 71,758 tok/s, MFU 38.8% (under the profiler: a few % slower than a run)",
+   "kinds": [
+    "matmul                    52.4%      232.3 ms",
+    "other fused / elementwise  25.8%      114.5 ms",
+    "attention                  5.8%       25.8 ms",
+    "optimizer                  5.0%       22.3 ms",
+    "MinGRU scan                4.1%       18.0 ms",
+    "vocab softmax / CE         3.8%       16.9 ms",
+    "copy / cast                2.1%        9.3 ms",
+    "FFT (spatial link)         0.9%        4.1 ms"
+   ]
+  }
+ },
+ "chosen": "mingru+flex",
+ "env": {
+  "CB_MINGRU_TRITON": "1",
+  "CB_NO_FLEX": "0",
+  "CB_FLEX_OPTS": "{\"BLOCK_M\": 64, \"BLOCK_N\": 32, \"num_stages\": 1, \"num_warps\": 8, \"BLOCK_M1\": 32, \"BLOCK_N1\": 32, \"BLOCK_M2\": 32, \"BLOCK_N2\": 32}"
+ }
+}

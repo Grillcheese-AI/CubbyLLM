@@ -1,0 +1,56 @@
+device: NVIDIA RTX PRO 6000 Blackwell Server Edition | 102 GB | torch 2.11.0+cu130
+profile: D1024/L32 S1024 micro 32 mem_every 0 spatial True route 1.0 recompute False compile True no_flex False banded False | cuda
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 116, in _rope_tables
+    inv = _rope_inv_freq(dh, str(device))
+
+
+This call originates from:
+  File "/content/CubbyLLM/cubbyllm/model/backbone/hybrid.py", line 173, in forward
+    bm = _window_block_mask(S, self.window, str(x.device))
+
+/usr/local/lib/python3.13/dist-packages/torch/profiler/profiler.py:224: UserWarning: Warning: Profiler clears events at the end of each cycle.Only events from the current cycle will be reported.To keep events across cycles, set acc_events=True.
+  _warn_once(
+step (micro 32 x S 1024, with the optimizer each micro): 457.2 ms, 71,671 tok/s, MFU 38.8% (under the profiler: a few % slower than a run)
+
+by kind (device kernels time, 443.5 ms a step; the CPU waited 64 ms a step on a full launch queue: GPU-bound):
+  matmul                    52.6%      233.2 ms
+  other fused / elementwise  25.8%      114.3 ms
+  attention                  5.8%       25.8 ms
+  optimizer                  5.0%       22.3 ms
+  MinGRU scan                4.0%       17.7 ms
+  vocab softmax / CE         3.8%       16.9 ms
+  copy / cast                2.1%        9.3 ms
+  FFT (spatial link)         0.9%        4.1 ms
+
+GEMMs: 87.5 TFLOP a step in 233 ms = 375 TFLOPS, 75% of peak; the vocabulary head is 29% of the GEMM FLOPs. MFU = GEMM speed x GEMM share of the step.
+
+top kernels:
+   17.1%    75.84 ms  x184  matmul      void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_128x256_32x3_nt_align8>(cutlass_80_tensoro
+   17.0%    75.43 ms  x187  matmul      void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x128_32x3_nn_align8>(cutlass_80_tensoro
+   10.1%    45.00 ms  x123  matmul      void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_128x256_32x3_tn_align8>(cutlass_80_tensoro
+    8.0%    35.44 ms  x64   matmul      void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_relu_bf16_256x128_32x3_tn_align8>(cutlass_80_tensoro
+    4.2%    18.66 ms  x11   attention   triton_tem_fused_flex_attention_backward_transpose_view_28
+    3.1%    13.96 ms  x32   other fuse  triton_poi_fused__unsafe_view_mul_silu_silu_backward_view_19
+    2.6%    11.45 ms  x1    vocab soft  triton_red_fused__log_softmax__log_softmax_backward_data__to_copy_arange_eq_expand_nll_loss_backward_nll_loss_
+    2.6%    11.41 ms  x1    other fuse  triton_poi_fused_mul_view_0
+    2.6%    11.40 ms  x1    other fuse  triton_poi_fused__unsafe_view_mul_48
+    2.5%    11.17 ms  x1    optimizer   Optimizer.step#AdamW.step
+    2.5%    11.10 ms  x32   optimizer   void at::native::(anonymous namespace)::multi_tensor_apply_kernel<at::native::(anonymous namespace)::FusedOpti
+    2.4%    10.80 ms  x30   other fuse  triton_per_fused__to_copy_add_div_expand_mul_pow_sum_view_26
+    2.2%     9.89 ms  x21   MinGRU sca  _mingru_scan_bwd
+    2.2%     9.84 ms  x40   other fuse  triton_per_fused__to_copy__unsafe_view_add_mean_mul_pow_rsqrt_29
+    1.9%     8.55 ms  x32   other fuse  triton_poi_fused__unsafe_view_mul_silu_25
+    1.8%     8.10 ms  x21   other fuse  triton_per_fused__to_copy_add_div_expand_mul_pow_sum_view_24
+    1.4%     6.17 ms  x21   MinGRU sca  _mingru_scan_fwd
+    1.4%     6.14 ms  x11   attention   triton_tem_fused__unsafe_view_flex_attention_split_transpose_view_21
+    1.3%     5.97 ms  x21   other fuse  triton_per_fused__to_copy_add_mean_mul_pow_rsqrt_28
+    1.2%     5.45 ms  x1    vocab soft  triton_red_fused__log_softmax__to_copy_prepare_softmax_online_view_0
+    1.2%     5.14 ms  x41   other fuse  triton_poi_fused__to_copy_view_25
+    1.2%     5.12 ms  x11   other fuse  triton_poi_fused__to_copy__unsafe_view_add_arange_cat_clone_cos_div_mul_pow_reciprocal_transpose_view_30
+    1.0%     4.51 ms  x20   copy / cas  Memcpy DtoD (Device -> Device)
+    0.7%     3.06 ms  x10   other fuse  triton_per_fused__to_copy_add_div_expand_mul_pow_sum_view_32
+    0.5%     2.28 ms  x14   copy / cas  void at::native::elementwise_kernel<128, 2, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_
+
+chrome trace: /content/drive/MyDrive/cubbyllm/runs/spatial_link_3/profile/trace_D1024_L32_S1024_m32.json
