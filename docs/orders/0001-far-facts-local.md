@@ -92,6 +92,56 @@ for Cowork to run on Colab. Regenerate the notebook.
 - Changing `CUBBYLLM_HYPOTHESES.md` (Cowork records the result from the report).
 - Retuning the route loss or the learned query: the question here is the read, with the address given.
 
+## Addendum — 2026-10-21, from the literature search (Cowork)
+The search (brief: `docs/research/2026-10-21-far-facts-research-brief.md`) ranks the fixes as this order
+does: a direct path from the read to the logits first (B1), then a later read (B2), then density (B3),
+with the cleanup check (A0) as the diagnostic. It adds the items below. **Acceptance is unchanged**: new
+ladder steps are judged by the A lines, new fixes by the B lines. A0 and steps 1–5 stand as written.
+
+**A, step 6. `--gap N`: the distance from the facts to their questions**, from the toy's (~120 tokens past the
+window) to the 450M's (~800). Boesch & Wee 2026 (arXiv 2609.16183) find that fixed-state recurrent cells
+which solve 32-pair recall drop to chance when 4 pairs sit in a distractor haystack. They trace it to
+interference under sparse supervision, not capacity: denser supervision added nothing, while a distance
+curriculum gated on measured accuracy took the same architecture from 0.021 to 1.000. Our scene sums only
+placed tokens (`SpatialLink.scene`) and does not decay, so the read itself should not care about distance.
+Whether the trunk learns to *use* the read can still depend on it, and the step is cheap. Their cells are
+linear-attention and SSM recurrences, not this channel, so the analogy is conjecture until step 6 measures it.
+
+**A0, one note.** Kumar 2026 (arXiv 2606.24948, HRR/FHRR on FB15k-237) finds single-hop retrieval works and
+places the failures in capacity under superposition, not the algebra or the cleanup. It also proves that a
+softmax cleanup over FHRR phases is not phase-equivariant (its Lemma 4.1). Score A0 with the real dot
+product / cosine against the table (argmax), as written, not with a softmax over phases.
+
+**B3, one more arm: answer-token weight.** The CE at answer tokens is multiplied by w (try w = 5), as the
+same-data alternative to more questions per document. Given Boesch & Wee's result, B3 is not presumed to be
+the cheap win: measure it like the others.
+
+**B5. Supervise the read** (with B1; flag `CB_SPATIAL_COPY_AUX=<λ>` / `meta["spatial"]["copy_aux"]`, absent by
+default). At ASK positions, add a CE of the copy logits alone, `exp(τ)·(r·Eᵀ)`, against the next token, with
+weight λ (try 0.1 and 1). Why: B1's gate starts closed, so the main loss reaches τ and the scored table only
+through σ(g) ≈ 0. The copy path can then stay shut because nothing trains it. The auxiliary loss trains it
+to decode the address first, so the gate has something to open onto. Arms: B1 alone vs. B1 + B5 at the same
+budget. Also report cos(r, stored target) as a metric. (The search also proposed `1 − cos` as the loss; the
+CE scores against the whole table, which is what decoding needs.) It moves the embedding table too: the
+filler-loss line in Acceptance catches it if that costs the language.
+
+**B7. Distance curriculum**, only if step 6 is a step that breaks it. Start the questions near their facts
+and move them out each time measured exact accuracy passes a threshold (Boesch & Wee's accuracy-gated ramp;
+their uniform ramp failed at their longest length).
+
+**Two things not to build here:**
+- `--pretrain` (step 3): the link's `o` starts at 0, but that is not a cold start. The gradient to `o` is
+  δ·rᵀ, nonzero whenever the read is, and villages learned from the same init on the 450M. Add one arm
+  with a small nonzero `o` (std 1e-3) only if step 3 is the one that breaks.
+- **Entity-level storage** (one vector per object instead of per-piece addresses): if step 2 (`--pieces`)
+  is the one that breaks and B1/B5 do not lift it, stop and report. It is a design change, not a flag,
+  and Cowork writes it as its own order.
+
+**Sources checked:** See, Liu & Manning 2017, pointer-generator networks (arXiv 1704.04368), for the gated
+copy distribution B1 follows. Khandelwal et al. 2020, kNN-LM (arXiv 1911.00172); the search's kNN-LM link,
+arXiv 2102.02557, is in fact Yogatama et al. 2021, "Adaptive Semiparametric Language Models" (a gated
+memory LM, also relevant). Boesch & Wee 2026 (arXiv 2609.16183) and Kumar 2026 (arXiv 2606.24948), as above.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**
