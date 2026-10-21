@@ -24,6 +24,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
@@ -49,14 +50,24 @@ def stream(cmd: list, env: dict) -> tuple[int, list]:
 
 
 def tested(name: str) -> bool:
+    """The test file passed on this card: read from pytest's JUnit XML, not its console (the repo's
+    ``addopts = -q`` plus a ``-q`` here is ``-qq``, which prints no summary line at all; Colab colours
+    what it does print; torch can write after it)."""
     print(f"\n--- {TESTS[name]} on this card ---", flush=True)
-    code, lines = stream([sys.executable, "-m", "pytest", TESTS[name], "-q", "-p", "no:cacheprovider", "-rs"],
-                         dict(os.environ))
-    plain = [re.sub(r"\x1b\[[0-9;]*m", "", ln) for ln in lines]      # Colab colours pytest's output
-    summary = [ln for ln in plain if re.search(r"\d+ (passed|failed|errors?)\b", ln)]
-    ok = code == 0 and bool(summary) and "passed" in summary[-1] and not re.search(r"failed|error", summary[-1])
-    print(f"    -> {'passed' if ok else 'NOT passed'} ({summary[-1].strip() if summary else f'exit {code}'})", flush=True)
-    return ok                              # (the summary line, not the last line: torch can print after pytest)
+    xml = os.path.join(tempfile.gettempdir(), f"speed_check_{name}.xml")
+    code, _ = stream([sys.executable, "-m", "pytest", TESTS[name], "-rs", "-p", "no:cacheprovider", f"--junitxml={xml}"],
+                     dict(os.environ))
+    try:
+        import xml.etree.ElementTree as ET
+        root = ET.parse(xml).getroot()
+        suite = root if root.tag == "testsuite" else root.find("testsuite")
+        n = {k: int(suite.get(k, 0)) for k in ("tests", "failures", "errors", "skipped")}
+    except Exception as e:  # noqa: BLE001 -- no report is a failed check, not a crash
+        print(f"    -> no JUnit report ({type(e).__name__}): NOT passed", flush=True)
+        return False
+    ok = code == 0 and n["failures"] == 0 and n["errors"] == 0 and n["tests"] > n["skipped"]
+    print(f"    -> {'passed' if ok else 'NOT passed'} ({n})", flush=True)
+    return ok
 
 
 def profile(name: str, extra: dict) -> dict:
