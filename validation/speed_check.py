@@ -52,7 +52,8 @@ def tested(name: str) -> bool:
     print(f"\n--- {TESTS[name]} on this card ---", flush=True)
     code, lines = stream([sys.executable, "-m", "pytest", TESTS[name], "-q", "-p", "no:cacheprovider", "-rs"],
                          dict(os.environ))
-    summary = [ln for ln in lines if re.search(r"\b\d+ (passed|failed|errors?)\b", ln)]
+    plain = [re.sub(r"\x1b\[[0-9;]*m", "", ln) for ln in lines]      # Colab colours pytest's output
+    summary = [ln for ln in plain if re.search(r"\d+ (passed|failed|errors?)\b", ln)]
     ok = code == 0 and bool(summary) and "passed" in summary[-1] and not re.search(r"failed|error", summary[-1])
     print(f"    -> {'passed' if ok else 'NOT passed'} ({summary[-1].strip() if summary else f'exit {code}'})", flush=True)
     return ok                              # (the summary line, not the last line: torch can print after pytest)
