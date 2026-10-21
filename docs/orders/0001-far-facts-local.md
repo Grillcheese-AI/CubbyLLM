@@ -1,5 +1,5 @@
 # 0001 — Far facts: reproduce the 450M failure on a CPU toy, then fix it there
-status: in progress
+status: review
 written: 2026-10-21 by Cowork · approved: 2026-10-21 by Nick · hypothesis: H-K10 (and H-S12)
 
 ## Why
@@ -238,10 +238,135 @@ with a probe at each eval. Cowork sets the budget from the toy's curve.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:** <the ladder table; the fixes table; against each acceptance line>
-- **Not verified here:**
+**In one line:** the read already carries the far facts; the trunk never learned to copy them out. A copy over the
+last 256 ids the document wrote, with a gate that sees whether the asked address matches anything, takes the
+450M-like toy from 0.000 to 0.930 / 0.908 / 0.895 exact (3 seeds), the language unchanged. Added to run 3 with
+nothing trained, it lifts the far facts from 0.000 to 0.258 exact. `RUN = 4` is written for Cowork.
+
+- **Commits:** `42450b0` claimed · `f3033a9` A0 · `f8b51c1` B1: the copy over the ring + the toy ladder · `7aa1077` A0
+  extended (the grid), run 3 + the copy at step 0, `train_base` flags / `init_copy` / the eval probe · `4f672f5` the
+  read-aware gate (`copy_beta`) · `1c51616` the ladder + the first fix arm · `279e99d` B on 3 seeds + C (`RUN = 4`) ·
+  `c4b11ba` the controls, the table arm, run 3 + the read-aware ring · and the commit carrying this report.
+- **Files:** new `cubbyllm/model/spatial_copy.py` (the copy path), `tests/model/test_spatial_copy.py`,
+  `validation/diag_fact_cleanup.py` (A0), `validation/diag_fact_cleanup_grid.py` (A0 extended),
+  `validation/diag_copy_step0.py`, `validation/exp_k10_far_facts.py` + `validation/k10_far_docs.py` (the ladder; its
+  documents are `exp_k10_hypertoken`'s exactly at that file's settings, checked at every start). Changed:
+  `cubbyllm/model/spatial.py` (`copy=`, `add_copy`), `cubbyllm/model/assembly.py` (`_trunk`; the copy in `forward` /
+  `step`; the ring in `init_state`), `validation/train_base.py` (`CB_SPATIAL_COPY`, `_TAU`, `_BETA`; `init_copy`;
+  `CB_PROBE_SHARDS` / `fact_probe`), `notebooks/_build_spatial.py` + `spatial_facts_450m.ipynb` (`RUN = 4`).
+- **Tests:** `tests/model/test_spatial_copy.py`, 11 tests (17 cases), both modes where it applies. Flag off: nothing is built,
+  and forward and decode are unchanged. Copy added: every non-asking position is bit-identical, and the asking rows
+  are a normalized log-mixture. Gate open with one token written: that token comes out on top, in forward and
+  decode. Decode = forward with the copy open, with roles, a document restart, and a ring of 2 under 3 writes. The
+  ring holds each document's last writers (checked by brute force). No candidate: the trunk's logits are kept. The
+  gate and τ get gradient (this test caught a NaN in τ's gradient before any run used it). The read-aware gate
+  opens where the address holds something, not where it holds nothing. `CB_INIT_FROM` adds the copy to a linked
+  checkpoint, and the non-asking positions are the checkpoint's function. The meta keys build it. Full suite:
+  406 passed, 5 skipped, 1 failed: the known wiring guard, order 0002.
+- **Measured.** All toy numbers: D 256, 1,000 steps × 16 documents, CPU, teacher-forced. "exact" = every piece of
+  the answer; "end" = the EOS after the name. Ceiling = `sim_hrr_ceiling.py`, per piece, random codes, ideal argmax.
+  Logs: `validation/logs/*_2026-10-21.{json,log}` under the names given.
+
+  *A0, run 3, no training* (`diag_fact_cleanup_run3`, `diag_fact_cleanup_grid_run3`, `…_grid_beta_run3`), 9,451 piece reads
+  on 400 held-out `facts_far1k_lead` documents:
+
+  | candidates → | 128k vocabulary: piece / whole answer | the document's writers: piece / whole answer |
+  |---|---|---|
+  | stored, K = 1 (as run 3 has it) | 0.758 / 0.457 | **0.992 / 0.965** |
+  | stored, K = 2 / 4 sub-scenes (B8) | 0.954 / 0.859 · 0.999 / 0.996 | 1.000 / 0.999 · 1.000 / 1.000 |
+  | random identity codes, K = 1 (B4) | 0.759 / 0.436 | 0.991 / 0.961 |
+
+  cos to the stored piece 0.165 against the best wrong 0.138, and 1/√37.5 = 0.163: the learned table behaves like
+  random codes. The writer gap is 0.096, so τ = 3.04. Present reads have target cos 0.164, absent reads a best of
+  0.066 among the writers, so β = 0.115. The villages: 0.821 per piece, 0.947 among the writers. The answer token
+  is never the stored one (` pond` against `pond`), and 2,757 of the 3,610 village questions answer "nothing".
+
+  *A, the ladder:*
+
+  | arm | exact | first / later / end | language | ceiling (vocabulary / written) |
+  |---|---|---|---|---|
+  | the starting configuration (`--query placed --gate-bias 0 --route-loss 1`) | 0.877 | – / – / 1.000 | 2.075 | 0.767 (16 items: HERE writes too) |
+  | + roles (stopped at step 800 to free the CPU) | 0.943 at 800 | | 2.098 | 0.993 |
+  | 1. vocabulary 8,192 (stopped at step 500) | **0.000** at 500 | | 2.192 | 0.583 |
+  | 2. 1–5-piece names (+ roles) | 0.221 | 0.548 / 0.396 / 0.843 | 2.142 | 0.513 / 0.885 |
+  | 6. gap 800 (+ roles, documents of 1,024) | 0.941 | – / – / 1.000 | 2.167 | 0.993 / 0.999 |
+  | the combination: vocabulary 8,192, 4 facts of 1–5 pieces, 1 question a document, L 8 read at 4; seeds 0 / 1 / 2 | **0.000** at every eval on all three | 0 / 0 / 1.000 | 2.226 / 2.222 / 2.228 | 0.857 / 0.995 |
+
+  Not run, following Addendum 3's narrowed ladder and the CPU budget Nick set: vocabulary 32,768 and `--sparse` alone
+  (stopped at steps 0 and 100), `--pretrain`, and `--layers` / `--at` alone.
+
+  *B, on the combination arm, same budget:*
+
+  | fix | seed | exact | first / later / end | language (no copy) | λ at asks |
+  |---|---|---|---|---|---|
+  | ring, Addendum 3's gate | 0 | 0.922 | 0.992 / 0.964 / **0.469** | 2.226 (2.226) | 0.78 |
+  | **ring + read-aware gate** | 0 | **0.930** | 0.990 / 0.966 / 0.953 | 2.222 (2.226) | 0.76 |
+  | | 1 | **0.908** | 0.996 / 0.952 / 0.961 | 2.218 (2.222) | 0.77 |
+  | | 2 | **0.895** | 0.988 / 0.950 / 0.967 | 2.223 (2.228) | 0.78 |
+  | vocabulary (`table`) + read-aware gate | 0 | 0.357 | 0.812 / 0.400 / 0.998 | 2.224 (2.226) | 0.80 |
+
+  The order's gate reads 0.980 at step 0 (the cleanup alone), dips to 0.543 at step 300, then ends at 0.922. Its gate
+  sees only h and cannot tell an empty address: the last piece asks for the next one, and the copy keeps offering a
+  written token (end 0.469). The read-aware gate has no dip, and its λ is 0.92 at a real next piece against 0.22
+  at an empty address. On the dense diagnostic (8 facts of 1–5 pieces, 300 steps, ceiling 0.879 per piece) both gates
+  are capacity-bound (0.605 / 0.591); the read-aware one fixes the end (0.673 → 0.883).
+
+  The other fixes:
+  - **B2 (read at L − 2):** not run; the copy acts at the output.
+  - **B3:** not run, since B1 passed.
+  - **B4:** dropped (Addendum 3).
+  - **B5:** not built. λ at the asks was 0.73–0.78 at half budget, against its < 0.05 condition.
+  - **B7:** only if step 6 breaks (it does not: 0.941, with roles at 0.943 by step 800).
+  - **B8:** offline only (the grid above); not built, since the ring passed.
+
+  *Run 3 with the copy added, nothing trained* (`diag_copy_step0_run3_ring`, `…_ringb`), 24 held-out documents, far
+  facts first / exact: as trained 0.250 / 0.000; ring with the order's gate 0.525 / 0.058; **ring with the read-aware
+  gate 0.800 / 0.258**. The villages stay at 0.982 in all three.
+
+  *Against each acceptance line:*
+  - **A reproduces it: split.**
+    - The starting configuration as written reads 0.877, short of 0.90 by 0.023. The same seed without the route
+      loss read 0.934 (2026-10-20). With roles, which stop HERE writing at the address it asks, it read 0.943 by
+      step 800.
+    - At least one step drops to ≤ 0.20: **yes**. The vocabulary step reads 0.000, and the combination reads 0.000
+      on 3 seeds. `--pieces` alone reads 0.221.
+  - **B fixes it: PASS** for the ring with the read-aware gate. Exact is ≥ 0.80 on 3 of 3 seeds (0.930 / 0.908 /
+    0.895), and the language is within 0.02 on each (−0.004 / −0.004 / −0.005). The ring with the order's gate
+    passes on its one seed (0.922). The vocabulary form, at 0.357, is below the 0.50 kill line.
+  - **Tests:** as above.
+  - **C:** `RUN = 4` is written. It continues `spatial_link_3_final.pt` with `CB_SPATIAL_COPY=ring`,
+    `CB_SPATIAL_COPY_TAU=3.04`, `CB_SPATIAL_COPY_BETA=0.115`, and `CB_PROBE_SHARDS` at every eval. It is the link
+    arm only (run 3 is the control). The readout compares it with run 3: facts ≥ 0.50, villages kept ≥ 0.90, text mix
+    within 0.02. **`HOURS_PER_ARM = 0.5` is a placeholder for Cowork to set.** For that, the toy's read-aware arms
+    sit at 0.85–0.91 from step 100 to 400 and end at 0.90–0.93.
+- **Not verified here:** anything on a GPU.
+  - The copy under `torch.compile`: it gathers the asking positions with `nonzero`, a shape that changes every
+    batch, so graph breaks or recompiles are possible. `CB_COMPILE=0` is the fallback, noted in the notebook.
+  - bf16 autocast through the mixture (CPU float32 only).
+  - The eval probe's cost at 64 documents.
+  - Run 4 itself.
+
+  The 450M numbers here are CPU forwards of run 3's checkpoint on 24 documents.
 - **Found on the way:**
+  1. **The villages never tested copying.** A stored `pond` is answered ` pond` (a different token), and 76% of
+     village questions answer "nothing". Their 0.953 is empty-read detection plus a closed-set map, so "villages
+     work" said nothing about open-vocabulary recall.
+  2. **The specified gate σ(g(h)) cannot see an empty address.** I added the read-aware gate as a flagged variant
+     (`copy_beta`; absent = the order's gate). It goes beyond the order as written, and `RUN = 4` uses it.
+     Formula: `λ = σ(g·rms(h) + b + exp(τ)·(m − β))`, with m the best candidate's cosine.
+  3. **An import side effect in `exp_hypertoken_recall.py`.** Importing it sets `CB_NO_FLEX=1` in `os.environ`, and
+     the backbone reads that on every forward. Any in-process caller during training would silently leave flex
+     attention. `fact_probe` undoes it; the fix belongs in that file (move the default into `main()`), as its own
+     order.
+  4. **I deviated from B1's first sketch.** It was additive with `σ(g)·exp(τ)`, which cannot be exact at step 0, and
+     its scalar τ would move about 1 over the 450M's whole run at lr 3e-4. Addendum 3's mixture superseded it
+     before any run, and the mixture is what is built.
+  5. **B8 (a partitioned scene) is a strong fixed-state alternative.** On run 3, K = 4 makes even the 128k-way decode
+     0.996 whole answers, offline. Not built.
+  6. **Two files over 300 lines grew.** `train_base.py` (1,050 → ~1,115) and `_build_spatial.py` (331 → ~370); the
+     reasons are in the commits. `assembly.py` stays under 300 (296).
 - **Questions:**
+  1. Run 4 is configured with the read-aware gate. Keep it, or run Addendum 3's gate as written (drop
+     `CB_SPATIAL_COPY_BETA`)? The toy says keep it: end 0.95–0.97 against 0.47, and no dip.
+  2. Run 4's budget: Cowork's to set from the curves above.
+  3. Should the `exp_hypertoken_recall` import side effect (found 3) become its own order?

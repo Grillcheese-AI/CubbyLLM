@@ -71,8 +71,11 @@ at each asking token the read is scored against the last 256 ids the document wr
 (`CB_SPATIAL_COPY_BETA=0.115`: the gate also sees the read's best match against a threshold between run 3's present
 reads, 0.164, and its absent ones, 0.066 -- the toy's gate from the stream alone lost the later pieces to EOS). Only
 the gate, tau and beta are new, so the budget is short (Cowork sets `HOURS_PER_ARM` from the toy's curve), and `CB_PROBE_SHARDS` scores
-the held-out questions at every eval. Added with nothing trained, it already lifts the first piece 0.250 -> 0.525
-(`validation/logs/diag_copy_step0_run3_ring_2026-10-21.json`). There is no text arm: run 3 is the control.
+the held-out questions at every eval. Added with nothing trained, it already lifts the far facts from 0.250 first
+piece / 0.000 exact to **0.800 / 0.258**, the villages unchanged at 0.982 (`validation/logs/diag_copy_step0_run3_ringb_2026-10-21.json`;
+the gate from the stream alone: 0.525 / 0.058). On the 450M-like toy the same copy took 0.000 to 0.930 / 0.908 / 0.895
+exact over 3 seeds in 1,000 steps, the language unchanged (`exp_k10_far_facts_combo_ringb_s*`). There is no text arm:
+run 3 is the control.
 
 **The small-scale reads this rests on (2026-10-20, `validation/exp_k10_hypertoken.py`):** a 3.4M trunk, facts shown
 once, questions beyond the window -- 0.94 with the address on the question, 0.82 for the learned route taught by

@@ -1,0 +1,14 @@
+env: 2026-10-21 16:10 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)
+--- gap800: 3.36M params, meta {'kind': 'cubby_base', 'D': 256, 'L': 4, 'heads': 4, 'window': 64, 'attn_every': 2, 'ctx': 32, 'slots': 8, 'gen_basis': 16, 'gen_rank': 8, 'vocab': 1024, 'vocab_real': 1024, 'mem_every': 0, 'tied': False, 'causal_ctx': True, 'spatial': {'scale': 2.0, 'seed': 0, 'at': 2, 'query': 'placed', 'bind': 'writes'}}, 509 entities, 64 held-out documents (512 questions)
+  ceiling per piece (random codes, ideal decoder): 0.993 over the vocabulary, 0.999 over the ~8 written tokens (8.0 items a scene)
+  step     0  loss 7.997  exact 0.002  first 0.002  later 0.000  end 0.004  language 6.984  read top-1 0.990 cos 0.354  gap 0.264  gate +0.00   [15s]
+  step   100  loss 3.462  exact 0.002  first 0.002  later 0.000  end 1.000  language 2.365  read top-1 0.990 cos 0.354  gap 0.265  gate -0.08   [680s]
+  step   200  loss 3.372  exact 0.301  first 0.301  later 0.000  end 1.000  language 2.284  read top-1 0.990 cos 0.354  gap 0.264  gate -0.22   [1374s]
+  step   300  loss 3.309  exact 0.732  first 0.732  later 0.000  end 1.000  language 2.255  read top-1 0.992 cos 0.354  gap 0.264  gate -0.30   [1894s]
+  step   400  loss 3.277  exact 0.855  first 0.855  later 0.000  end 1.000  language 2.236  read top-1 0.990 cos 0.354  gap 0.264  gate -0.36   [2370s]
+  step   500  loss 3.251  exact 0.895  first 0.895  later 0.000  end 1.000  language 2.212  read top-1 0.990 cos 0.354  gap 0.263  gate -0.41   [2847s]
+  step   600  loss 3.215  exact 0.910  first 0.910  later 0.000  end 1.000  language 2.200  read top-1 0.990 cos 0.354  gap 0.264  gate -0.42   [3322s]
+  step   700  loss 3.191  exact 0.916  first 0.916  later 0.000  end 1.000  language 2.187  read top-1 0.990 cos 0.354  gap 0.264  gate -0.44   [3797s]
+  step   800  loss 3.175  exact 0.920  first 0.920  later 0.000  end 1.000  language 2.177  read top-1 0.990 cos 0.354  gap 0.264  gate -0.45   [4273s]
+  step   900  loss 3.152  exact 0.932  first 0.932  later 0.000  end 1.000  language 2.169  read top-1 0.990 cos 0.354  gap 0.264  gate -0.46   [4750s]
+  step   999  loss 3.142  exact 0.941  first 0.941  later 0.000  end 1.000  language 2.167  read top-1 0.990 cos 0.354  gap 0.264  gate -0.46   [5225s]
