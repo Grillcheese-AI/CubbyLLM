@@ -184,6 +184,58 @@ are scored only against the tokens written in this document so far, which puts t
 regime (~37 candidates). It means keeping a growing list of written token ids: small, ints not hidden
 states, but not fixed-size, so it is Nick's call on the decode-state rule.
 
+## Addendum 3 — 2026-10-21: after A0, Nick's call, and a second literature pass (Cowork)
+**What A0 settled** (`f3033a9`, `validation/logs/diag_fact_cleanup_run3_2026-10-21.json`):
+- The answer is in the read: 0.758 per piece over the 128k vocabulary, and 0.992 per piece / **0.965 whole
+  answers** among the document's own writers. The trunk reads 0.021.
+- The learned table behaves like random codes: cos to the target is 0.165 against 1/√37.5 = 0.163, and the
+  per-piece score matches `sim_hrr_ceiling.py`'s 0.765. **B4 is dropped**: identity codes cannot beat random.
+- The villages never copy: the trunk maps one closed set to another (a stored "pond" is answered " pond").
+  The facts need a copy, and the trunk has never learned one. That is B1's job, and the candidate set
+  decides its ceiling.
+
+**Nick's call (B9): a fixed ring of written ids is allowed.** Each stream keeps the last **256** token ids
+it WROTE, in a ring like the attention window's. Decode state stays fixed-size; a document writes at most 92.
+In training, the candidates at position t are the ids written at positions ≤ t in the same document (reset
+at `starts`), capped at the last 256.
+
+**The lead fix is now B1 over the ring** (flags as in B1, plus `CB_SPATIAL_COPY=ring` or
+`meta["spatial"]["copy"] = "ring"`). At ASK tokens it scores the read `r` by cosine against the stored
+vectors of the ring's ids, and mixes the result as a pointer distribution. This is the form of the copy
+paths that work in the literature: pointer-sentinel (Merity et al. 2016, arXiv 1609.07843), pointer-generator
+(See et al. 2017), kNN-LM:
+`p = (1 − λ)·p_LM + λ·p_copy`, with `p_copy` = softmax over the ring of `exp(τ)·cos(r, e_c)`, scattered onto
+the candidates' ids (duplicate ids summed), and `λ = σ(g(h))`.
+- **λ starts at 0.1, not closed.** kNN-Adapter (Huang et al. 2023, arXiv 2302.10879; init as the search
+  reported it, not checked here) starts its mixing weights at 0.1–0.25. The copy acts only at ASK tokens,
+  so an open start costs nothing anywhere else. The gradient to λ is `(p_copy(y) − p_LM(y)) / p(y)`, so the
+  gate opens as soon as the copy is right more often than the trunk.
+- **τ starts so that A0's median gap**, between the target and the best wrong writer, is about 2 nats.
+- **Tests.** The step-0 identity holds at every non-ASK position, and with the flag off. The rest are
+  as in Acceptance: decode = forward, and with one token written at an address, the ASK position's top
+  token is that token.
+- **Arms:** the vocabulary form as written in B1 is a second arm, and its ceiling is 0.457 whole answers.
+  B8 (the split scene) is the fixed-state alternative. Measure it offline first in A0's K grid; build it
+  only if B1 over the ring misses the B line.
+- **B5 becomes conditional.** No paper in either pass trains the copy distribution with its own loss.
+  Build it only if λ at ASK tokens stays below 0.05 at half budget.
+
+**The ladder, narrowed.** With A0 in, A's job is to give B a toy arm that fails (≤ 0.20). Start with the
+450M-like combination. Walk single steps back only if B's result needs explaining. Step 6 (`--gap`) stays
+a cheap check. If it breaks, B7 advances the gap cap only while a running probe accuracy stays above 0.6,
+never retreats, and evaluates at the maximum gap (the search's reading of Boesch & Wee; the paper's HTML
+confirms the gate is success-based, not the number). Their setting learns keys from scratch and has no
+given-address or pretrained variant (checked), so it does not override A0.
+
+**Seeds.** Boesch & Wee find recall outcomes bimodal and count seeds that lock in: dense supervision
+alone 1/10, the curriculum 7/10 (checked in the paper). One seed can pass a fluke. The failing toy arm
+and the winning fix run on **3 seeds**, and a B line passes when **at least 2 of 3** meet it. Other arms
+run on one seed.
+
+**C, cheaper.** Since the 450M's read already carries the answer, RUN = 4 continues from
+`spatial_link_3_final` with B1 over the ring added. Only λ's gate and τ are new, so give it a short budget,
+with a probe at each eval. Cowork sets the budget from the toy's curve.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**
