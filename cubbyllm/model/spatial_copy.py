@@ -33,6 +33,20 @@ vector also carries the context shift, and the cosine is to the core row). ``lam
 ``(p_copy(y) - p_LM(y)) / p(y)``, so it opens as soon as the copy is right more often than the
 trunk. ``tau`` starts where the caller puts it: so that A0's median gap between the target and
 the best wrong writer is ~2 nats. An asking token with no candidate yet keeps the trunk's logits.
+
+**The read-aware gate** (``beta``, ``meta["spatial"]["copy_beta"]``; absent = the gate above). The
+gate above sees only the stream ``h``, which cannot tell whether the asked address holds anything:
+the last piece of a name asks for the piece after it, an empty address, and the copy still offers
+a written token. On the toy (``exp_k10_far_facts``, 5-piece names) the gate learned HERE (lam 0.996)
+but parted a real next piece (0.72) from an empty address (0.54) only weakly, and the missed later
+pieces were the trunk's EOS (198 of 261). With ``beta`` the gate also sees the match itself,
+
+    lam = sigmoid(g . rms(h) + b + exp(tau) (m - beta)),   m = the best candidate's cosine
+
+a nat of match margin a logit of gate, ``beta`` a learned threshold started between the present
+and the absent reads' best cosines -- the pointer-sentinel's point (Merity et al. 2016: the gate is
+decided with the pointer's scores), compared by the best match, not a softmax sum, so twenty weak
+crosstalk candidates do not add up to one strong one.
 """
 from __future__ import annotations
 
@@ -50,13 +64,15 @@ MODES = ("ring", "table")
 
 
 class SpatialCopy(nn.Module):
-    def __init__(self, d_model: int, mode: str = "ring", tau: float = 3.0, ring: int = 256, lam: float = 0.1) -> None:
+    def __init__(self, d_model: int, mode: str = "ring", tau: float = 3.0, ring: int = 256, lam: float = 0.1,
+                 beta: float | None = None) -> None:
         super().__init__()
         if mode not in MODES:
             raise ValueError(f"copy must be one of {MODES}, not {mode!r}")
         self.mode, self.ring = mode, int(ring)
         self.gate = nn.Linear(d_model, 1)                         # lam = sigmoid(gate(rms(h)))
         self.tau = nn.Parameter(torch.tensor(float(tau)))         # the cleanup's log temperature
+        self.beta = None if beta is None else nn.Parameter(torch.tensor(float(beta)))   # the read-aware gate's threshold
         with torch.no_grad():
             self.gate.weight.zero_()
             self.gate.bias.fill_(math.log(lam / (1.0 - lam)))
@@ -71,14 +87,18 @@ class SpatialCopy(nn.Module):
         g = self.gate(n).float()
         rn, scale = F.normalize(r.float(), dim=-1), self.tau.exp()
         if self.mode == "table":
-            log_copy = F.log_softmax(scale * (rn @ F.normalize(table.float(), dim=-1).T), -1)
+            s = rn @ F.normalize(table.float(), dim=-1).T
+            log_copy, best = F.log_softmax(scale * s, -1), s.max(-1, keepdim=True).values
         else:
             e = F.normalize(table.float()[ids], dim=-1)            # (C, d) or (n, C, d)
             s = rn @ e.T if ids.dim() == 1 else torch.einsum("nd,ncd->nc", rn, e)
-            pc = F.softmax((scale * s).masked_fill(~ok, float("-inf")), -1)
+            best = s.masked_fill(~ok, float("-inf")).max(-1, keepdim=True).values
+            pc = F.softmax((scale * s).masked_fill(~ok, float("-inf")), -1)   # masked after the scale: no 0 * inf
             c = torch.zeros(rn.shape[0], logits.shape[-1], device=rn.device).scatter_add(
                 1, ids.expand_as(pc) if ids.dim() == 1 else ids, pc)
             log_copy = torch.log(c.clamp_min(1e-30))               # 0 off the candidates: no mass there
+        if self.beta is not None:                                  # the read-aware gate: does anything match here?
+            g = g + scale * (best - self.beta)
         mix = torch.logaddexp(F.logsigmoid(-g) + F.log_softmax(logits.float(), -1), F.logsigmoid(g) + log_copy)
         return mix, log_copy, torch.sigmoid(g)
 
@@ -108,7 +128,7 @@ class SpatialCopy(nn.Module):
         return state["ring"][rows], ok
 
     def extra_repr(self) -> str:
-        return f"mode={self.mode}, ring={self.ring}"
+        return f"mode={self.mode}, ring={self.ring}, read_aware={self.beta is not None}"
 
 
 def ring_candidates(tokens: torch.Tensor, writes: torch.Tensor, starts: torch.Tensor | None,

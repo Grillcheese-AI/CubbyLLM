@@ -77,7 +77,8 @@ NO_PLACE = -32768
 class SpatialLink(nn.Module):
     def __init__(self, d_model: int, scale: float = 2.0, seed: int = 0, dims: int = 3,
                  at: int = 0, gate_bias: float = -4.0, query: str = "learned", bind: str = "placed",
-                 copy: str | None = None, copy_tau: float = 3.0, copy_ring: int = 256) -> None:
+                 copy: str | None = None, copy_tau: float = 3.0, copy_ring: int = 256,
+                 copy_beta: float | None = None) -> None:
         super().__init__()
         if query not in ("learned", "placed"):
             raise ValueError(f"query must be 'learned' or 'placed', not {query!r}")
@@ -97,7 +98,7 @@ class SpatialLink(nn.Module):
         self.copy_path = None                    # registered last: its tensors follow the link's in parameters()
         if copy is not None:
             from .spatial_copy import SpatialCopy
-            self.copy_path = SpatialCopy(self.d, copy, tau=copy_tau, ring=copy_ring)
+            self.copy_path = SpatialCopy(self.d, copy, tau=copy_tau, ring=copy_ring, beta=copy_beta)
 
     def space(self) -> SSP:
         """The host's ``SSP`` in this link's space: same phases, so ``Scene`` vectors read here."""

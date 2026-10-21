@@ -210,3 +210,48 @@ def test_init_from_adds_the_copy_path_to_a_linked_checkpoint(tmp_path, monkeypat
     with pytest.raises(SystemExit):
         train_base.init_from(str(tmp_path / "linked.pt"), _linked("ring", seed=3), torch.device("cpu"),
                              dict(linked, window=META["window"] + 1, spatial=dict(linked["spatial"], copy="ring")))
+
+
+def _read_aware(mode="ring", beta=0.5):
+    m = _linked(None)
+    link = m.spatial
+    link.copy_path = __import__("cubbyllm.model.spatial_copy", fromlist=["SpatialCopy"]).SpatialCopy(
+        D, mode, tau=2.0, beta=beta)
+    return m
+
+
+@pytest.mark.parametrize("mode", MODES)
+def test_the_read_aware_gate_opens_where_the_address_holds_something(mode):
+    """With ``copy_beta`` the gate sees the best match: an asking token at the address a token was
+    written to gets a larger lam than one asking at an empty address, the stream's part equal (g = 0)."""
+    m = _read_aware(mode)
+    lams = []
+    m.spatial.copy_path.register_forward_hook(lambda _m, inp, out: lams.append((inp[4], out[2][:, 0])))
+    x = _tokens(12)
+    pos = torch.zeros(2, S, 3)
+    pos[:, 1] = torch.tensor([3.0, -2.0, 1.0])
+    pos[:, 6] = pos[:, 1]                                                   # asks where token 1 wrote
+    pos[:, 8] = torch.tensor([-4.0, 5.0, 2.0])                              # asks where nothing was written
+    placed = torch.zeros(2, S, dtype=torch.bool)
+    placed[:, [1, 6, 8]] = True
+    writes = torch.zeros_like(placed)
+    writes[:, 1] = True
+    with torch.no_grad():
+        m.forward(x, pos, placed, writes, placed & ~writes, torch.zeros_like(placed))
+    idx, lam = lams[0]
+    at = {int(i) % S: float(v) for i, v in zip(idx, lam)}
+    assert at[6] > at[8] + 0.2 and at[6] > 0.5 > at[8]
+
+
+def test_decode_matches_the_forward_with_the_read_aware_gate():
+    m = _read_aware("ring", beta=0.3)
+    _open(m)
+    batch = _roles()
+    with torch.no_grad():
+        assert torch.allclose(m.forward(*batch), _decode(m, *batch)[0], atol=1e-4, rtol=1e-4)
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "validation"))
+    import train_base
+    meta = {"D": D, "L": META["L"], "spatial": {"scale": 1.0, "seed": 5, "at": 2, "query": "placed", "copy": "ring"}}
+    assert train_base.spatial_link(meta).copy_path.beta is None                   # absent: the gate sees h alone
+    meta["spatial"]["copy_beta"] = 0.12
+    assert abs(float(train_base.spatial_link(meta).copy_path.beta) - 0.12) < 1e-6

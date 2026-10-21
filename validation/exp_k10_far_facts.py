@@ -64,11 +64,14 @@ def evaluate(model, held, a) -> dict:
     first = later = n_later = exact = end = n = 0
     lang_sum = lang_n = rd_hit = rd_cos = n_rd = 0.0
     link, E, gaps, lams = model.spatial, model.embedding.core.weight.float(), [], []
-    hook = link.copy_path.register_forward_hook(lambda _m, _i, out: lams.append(out[2])) if link.copy_path else None
+    hook = link.copy_path.register_forward_hook(lambda _m, inp, out: lams.append((inp[4], out[2][:, 0]))) if link.copy_path else None
+    lam_at, miss = {"first": [], "later": [], "end": []}, {"eos": 0, "written": 0, "other": 0}
     for b in range(0, ids.shape[0], 8):
         x, p, r = ids[b:b + 8], P[b:b + 8], (R[b:b + 8] if R is not None else None)
+        lams.clear()
         logits = fwd(model, x[:, :-1], p[:, :-1], None if r is None else r[:, :-1])
         pred, tgt = logits.argmax(-1), x[:, 1:]
+        lam_of = {int(j): float(v) for ix, lv in lams for j, v in zip(ix, lv)}      # flat position -> lam there
         fill = ((tgt >= kh.FILL0) & (tgt < kh.FILL0 + kh.N_FILL)) | (tgt == kh.EOS)
         ce = F.cross_entropy(logits.reshape(-1, logits.shape[-1]), tgt.reshape(-1), reduction="none")
         lang_sum += float((ce * fill.reshape(-1)).sum()); lang_n += float(fill.sum())
@@ -81,6 +84,14 @@ def evaluate(model, held, a) -> dict:
                 ok = [int(pred[i, h + j]) == o[j] for j in range(len(o))]
                 first += ok[0]; later += sum(ok[1:]); n_later += len(o) - 1; exact += all(ok); n += 1
                 end += int(pred[i, h + len(o)]) == kh.EOS
+                L_ = x.shape[1] - 1                                             # lam where HERE, a piece, the last piece ask
+                for cls, t in [("first", h)] + [("later", h + j) for j in range(1, len(o))] + [("end", h + len(o))]:
+                    if i * L_ + t in lam_of:
+                        lam_at[cls].append(lam_of[i * L_ + t])
+                for j in range(1, len(o)):                                      # what a missed later piece became
+                    q = int(pred[i, h + j])
+                    if q != o[j]:
+                        miss["eos" if q == kh.EOS else "written" if q in set(x[i, :h][w[i, :h]].tolist()) else "other"] += 1
                 rd = link.lookup(scene[i, h], link.encode(pos[i, h]))           # the read at HERE, A0's cleanup
                 cs = F.cosine_similarity(rd[None], E, dim=-1)
                 rd_hit += int(cs.argmax()) == o[0]; rd_cos += float(cs[o[0]]); n_rd += 1
@@ -89,10 +100,35 @@ def evaluate(model, held, a) -> dict:
     if hook is not None:
         hook.remove()
     n = max(n, 1)
+    extra = {} if link.copy_path is None else {"tau": float(link.copy_path.tau), "missed_later_as": miss,
+             "lam_by_asker": {k: float(np.mean(v)) if v else None for k, v in lam_at.items()}}
     return {"exact": exact / n, "first": first / n, "later": later / max(n_later, 1), "end": end / n,
             "language": lang_sum / max(lang_n, 1), "read_top1": rd_hit / max(n_rd, 1), "read_cos": rd_cos / max(n_rd, 1),
             "questions": n, "writer_gap": float(np.nanmedian(gaps)) if gaps else 0.0,
-            "lam": float(torch.cat(lams).mean()) if lams else None}
+            "lam": float(np.mean(list(lam_of.values()))) if link.copy_path is not None and lam_of else None, **extra}
+
+
+@torch.no_grad()
+def match_threshold(model, held) -> tuple:
+    """The read-aware gate's starting threshold: the midpoint between the present reads' cosine to
+    their target and the absent reads' best cosine (the asker after a name's last piece), both
+    among the copy's candidates (the document's writers; the vocabulary for "table"), medians over
+    the held-out documents at init (needs --roles)."""
+    ids, P, R, spans = held
+    link, E = model.spatial, model.embedding.core.weight.float()
+    present, absent = [], []
+    for i in range(ids.shape[0]):
+        w = R[i] == WRITE
+        pos = torch.where((P[i, :, 0] != NO_PLACE).unsqueeze(-1), P[i], torch.zeros_like(P[i])).float()
+        scene = link.scene(link.bind_input(E[ids[i]][None], pos[None], w[None]), w[None])[0]
+        for h, o in spans[i]:
+            cand = (sorted(set(ids[i, :h][w[:h]].tolist())) if link.copy_path.mode == "ring"
+                    else list(range(E.shape[0])))
+            for j in range(len(o) + 1):
+                cs = F.cosine_similarity(link.lookup(scene[h + j], link.encode(pos[h + j]))[None], E[cand], dim=-1)
+                (present.append(float(cs[cand.index(o[j])])) if j < len(o) else absent.append(float(cs.max())))
+    pm, am = float(np.median(present)), float(np.median(absent))
+    return (pm + am) / 2, pm, am
 
 
 def build(a):
@@ -104,6 +140,8 @@ def build(a):
         m["spatial"]["bind"] = "writes"
     if a.copy:
         m["spatial"]["copy"] = a.copy
+        if a.copy_beta is not None:
+            m["spatial"]["copy_beta"] = 0.0                                 # its value is set once held-out data is in
     model = build_model(m, torch.device("cpu"), seed=a.seed)
     with torch.no_grad():
         model.spatial.gate.bias.fill_(a.gate_bias)
@@ -135,10 +173,17 @@ def run(a, log) -> dict:
         f" over the ~{distinct:.0f} written tokens ({items:.1f} items a scene)")
     if a.copy and a.copy_tau is None:                                      # tau: A0's median writer gap -> ~2 nats
         a.copy_tau = math.log(2.0 / max(evaluate(model, held, a)["writer_gap"], 1e-3))
+    if a.copy_beta == "auto":                                               # between present and absent best cosines
+        beta, pm, am = match_threshold(model, held)
+        log(f"  read-aware gate: present reads' target cos {pm:.3f}, absent reads' best {am:.3f} -> beta {beta:.3f}")
+        a.copy_beta = beta
     if a.copy:
         with torch.no_grad():
             model.spatial.copy_path.tau.fill_(a.copy_tau)
-        log(f"  copy {a.copy}: tau {a.copy_tau:.3f} (exp {math.exp(a.copy_tau):.1f}), lam 0.1")
+            if a.copy_beta is not None:
+                model.spatial.copy_path.beta.fill_(float(a.copy_beta))
+        log(f"  copy {a.copy}: tau {a.copy_tau:.3f} (exp {math.exp(a.copy_tau):.1f}), lam 0.1"
+            + (f", read-aware gate beta {float(a.copy_beta):.3f}" if a.copy_beta is not None else ""))
     taps, copy_taps = [], []
     if a.route_loss:
         model.spatial.q.register_forward_hook(lambda _m, _i, out: taps.append(out) if torch.is_grad_enabled() else None)
@@ -179,7 +224,8 @@ def run(a, log) -> dict:
                 curve.append(dict(step=s, loss=float(loss), **ev))
                 log(f"  step {s:5d}  loss {float(loss):.3f}  exact {ev['exact']:.3f}  first {ev['first']:.3f}  later {ev['later']:.3f}"
                     f"  end {ev['end']:.3f}  language {ev['language']:.3f}  read top-1 {ev['read_top1']:.3f} cos {ev['read_cos']:.3f}"
-                    f"  gap {ev['writer_gap']:.3f}" + (f"  lam {ev['lam']:.3f}" if ev["lam"] is not None else "")
+                    f"  gap {ev['writer_gap']:.3f}" + (f"  lam {ev['lam']:.3f} {ev['lam_by_asker']} tau {ev['tau']:.2f}"
+                                                         f" missed {ev['missed_later_as']}" if ev["lam"] is not None else "")
                     + f"  gate {float(model.spatial.gate.bias):+.2f}   [{time.time() - t0:.0f}s]")
             elif not places and (s % 250 == 0 or s == steps - 1):
                 log(f"  pretrain {s:5d}  loss {float(loss):.3f}   [{time.time() - t0:.0f}s]")
@@ -210,6 +256,7 @@ def main() -> None:
     ap.add_argument("--route-loss", type=float, default=1.0)
     ap.add_argument("--copy", choices=["ring", "table"], default=None, help="B1: the copy path over the ring or the vocabulary")
     ap.add_argument("--copy-tau", type=float, default=None, help="its starting log temperature (default: ~2 nats over A0's gap)")
+    ap.add_argument("--copy-beta", default=None, help="the read-aware gate's threshold: a cosine, or auto (needs --roles)")
     ap.add_argument("--copy-aux", type=float, default=0.0, help="B5: weight of the copy logits' own CE at ASK tokens")
     ap.add_argument("--answer-weight", type=float, default=1.0, help="B3: the CE at answer tokens times w")
     ap.add_argument("--lr", type=float, default=2e-3)
@@ -219,6 +266,10 @@ def main() -> None:
     a = ap.parse_args()
     a.questions = 1 if a.sparse else (a.questions or a.facts_per_doc)
     a.roles = a.roles or a.pieces > 1
+    if a.copy_beta not in (None, "auto"):
+        a.copy_beta = float(a.copy_beta)
+    if a.copy_beta == "auto" and not a.roles:
+        raise SystemExit("--copy-beta auto needs --roles (an absent read is the asker after a name's last piece)")
     if a.copy_aux and not a.copy:
         raise SystemExit("--copy-aux needs --copy")
     if a.threads:

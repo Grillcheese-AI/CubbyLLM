@@ -104,6 +104,7 @@ SPATIAL_GATE = _env("CB_SPATIAL_GATE", 0.0, float)  # the gate bias of a link AD
 # or the vocabulary ("table") and mixed into the output at asking tokens. "" = none (every run so far: the meta unchanged).
 SPATIAL_COPY = _env("CB_SPATIAL_COPY", "", str)
 SPATIAL_COPY_TAU = _env("CB_SPATIAL_COPY_TAU", 3.0, float)   # its starting log temperature (run 3's A0 writer gap 0.096 -> 3.04)
+SPATIAL_COPY_BETA = _env("CB_SPATIAL_COPY_BETA", "", str)  # the read-aware gate's starting match threshold (cosine); "" = h alone
 # held-out hypertoken questions scored at every eval (exp_hypertoken_recall's teacher-forced exact), and the copy's lam there
 PROBE_SHARDS = _env("CB_PROBE_SHARDS", "", str)
 PROBE_DOCS = _env("CB_PROBE_DOCS", 64)
@@ -413,6 +414,8 @@ def arch_meta(vocab_real: int, vocab: int) -> dict:
             meta["spatial"]["bind"] = SPATIAL_BIND
         if SPATIAL_COPY:              # absent without it, so every earlier spatial meta still matches
             meta["spatial"].update(copy=SPATIAL_COPY, copy_tau=SPATIAL_COPY_TAU)
+            if SPATIAL_COPY_BETA:
+                meta["spatial"]["copy_beta"] = float(SPATIAL_COPY_BETA)
     return meta
 
 
@@ -452,7 +455,8 @@ def spatial_link(meta: dict):
     return SpatialLink(meta["D"], scale=float(sp.get("scale", 2.0)), seed=int(sp.get("seed", 0)),
                        at=int(sp.get("at", meta["L"] // 2)), query=str(sp.get("query", "learned")),
                        bind=str(sp.get("bind", "placed")), copy=sp.get("copy"),   # copy: absent = no copy path
-                       copy_tau=float(sp.get("copy_tau", 3.0)), copy_ring=int(sp.get("copy_ring", 256)))
+                       copy_tau=float(sp.get("copy_tau", 3.0)), copy_ring=int(sp.get("copy_ring", 256)),
+                       copy_beta=sp.get("copy_beta"))                    # copy_beta: absent = the gate sees h alone
 
 
 def flops_per_token(model: CubbyModel, meta: dict, seq: int) -> float:
