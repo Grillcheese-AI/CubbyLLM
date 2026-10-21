@@ -1,0 +1,19 @@
+notebooks/kernels_check.ipynb on Colab, 2026-10-20 ~11 PM ET (repo at cbebe24; an L4 was asked for, an A100 was given)
+NVIDIA A100-SXM4-80GB, 81920 MiB | torch 2.11.0+cu130 | triton 3.6.0
+
+tests/model/backbone/test_mingru_triton.py + test_window_attn_triton.py: 11 passed (the two CUDA-only mixer tests included)
+
+validation/bench_kernels.py:
+NVIDIA A100-SXM4-80GB (sm_80, 163 KB shared a block) | torch 2.11.0+cu130 | B 32 S 1024 D 1024 heads 4 window 512
+MinGRU, one layer, forward + backward:
+  torch (log-domain scan)       20.76 ms   out err 0.0e+00   grad err 0.0e+00
+  fused Triton kernel            1.31 ms   out err 4.9e-03   grad err 1.2e-02
+  torch, compiled                6.43 ms   out err 4.9e-03   grad err 1.2e-02
+windowed attention, one layer, forward + backward:
+  dense mask (SDPA)             15.80 ms   out err 0.0e+00   grad err 0.0e+00
+  banded flash (Triton)          4.25 ms   out err 1.8e-03   grad err 4.7e-03
+  flex, default tiles            6.03 ms   out err 9.0e-04   grad err 4.7e-03
+  flex, 99 KB tiles              7.48 ms   out err 1.8e-03   grad err 4.7e-03
+(errors are relative to the reference row of each block, the torch path in bf16 under autocast /
+ the dense-mask SDPA in bf16; the fused MinGRU and torch-compiled rows differ from eager torch
+ by the same amount: the eager bf16 path's own rounding)
