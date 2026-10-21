@@ -1,117 +1,141 @@
 # CLAUDE.md — CubbyLLM
 
+Read this first. It says who does what, where the work stands, and the rules every change keeps.
+Machine-specific paths, drives and accounts are in `CLAUDE.local.md` (git-ignored, loaded with this
+file); this repo is public, so no local path goes in a committed file.
 
-> **Looking for the next piece of work?** `docs/WORK_ORDERS.md` holds the specs for
-> work that is argued for and not built — each with its rationale, its acceptance tests,
-> and what would prove it wrong. Read the "Before you touch anything" section first.
+The previous version of this file (the validation-campaign history) is
+`docs/archive/CLAUDE_2026-10-21.md`. `CUBBYLLM_HYPOTHESES.md` is the authoritative record of every
+architectural claim, its evidence and its status; this file is a map, not a substitute.
 
-This file orients any Claude Code session working in this repo. Read it before writing code, and read `CUBBYLLM_HYPOTHESES.md` before treating any architectural claim in this project as settled — that file, not this one, is the authoritative source. This file is a map to it, not a replacement for it.
+## Who does what
 
-## What CubbyLLM is, and what it is not
+| | Role | Does | Does not |
+|---|---|---|---|
+| **Nick** | owner | decides; approves work orders and compute spend; writes the papers' prose | — |
+| **Cowork** (Claude in the desktop app) | research and dispatch | literature and design; experiment plans with pre-registered gates; Colab runs in Nick's browser; reads results; records them in `CUBBYLLM_HYPOTHESES.md` and `validation/logs/`; writes work orders; reviews reports; runs the GPU checks | write library code, kernels or notebook builders (it dispatches them) |
+| **Claude Code** (in this repo, on Nick's machine) | coder | takes work orders; implements, tests, commits and pushes; fills in each order's report | start GPU/Colab runs; change a hypothesis's status; widen an order's scope on its own |
 
-CubbyLLM: a fast and profitable LLM gen 2 hybrid — general tasks, plus specialization, automatic.
+### The work-order loop
 
-CubbyLLM is the redesigned successor to `cubby-lm` (`C:\Users\grill\Documents\GitHub\cubby-lm`), drawing on lessons from `cubby-lm` and its environment sibling `cubemind`. It is **not a fork**, and it does **not** build on cubby-lm's frozen trunk. That distinction actually got confused once already during planning — an early draft of this project's hypothesis document implicitly treated cubby-lm's frozen shape (d_model=2560, n_layers=22, 32k tokenizer) as a constraint CubbyLLM would sit on top of. It isn't, and it doesn't. **CubbyLLM's model architecture — backbone, memory layer, binding head, vocabulary, all of it — is being built from scratch.** cubby-lm's code is prior art: useful for diagnosing what broke and why, not something to inherit or patch in place. If you catch yourself writing code that assumes cubby-lm's shapes, tokenizer, or module layout carry over, stop and check `CUBBYLLM_HYPOTHESES.md` §1 first.
+Orders live in `docs/orders/`, one file each, `NNNN-slug.md`, written from `docs/orders/_TEMPLATE.md`.
+Their format and lifecycle are in `docs/orders/README.md`. In short:
 
-The one exception: CubbyLLM's *package/directory layout* will likely mirror cubemind's intended, documented structure. That's a separate, unrelated decision from the model-architecture question above — see "Known failure patterns" below for what specifically NOT to mirror.
+1. **Cowork** writes an order: why (with the hypothesis and the logs it rests on), what to build,
+   acceptance tests, constraints, what is out of scope. Status `proposed`.
+2. **Nick** approves it: status `open`.
+3. **Claude Code** takes the lowest-numbered `open` order unless Nick names one; sets `in progress`
+   (commit); builds; runs the tests; fills in **Report** (commits, files, test summary, what it could
+   not verify on this machine, questions); sets `review`; commits and pushes.
+4. **Cowork** checks the report and what only a GPU can (Colab), records any measured number, and
+   sets `done` — or writes what is missing and sets it back to `open`.
 
-## Current status: validated + package implemented (end-to-end runnable)
+`blocked` is a valid status at any step, with the reason in the file. If the argument for an order
+turns out wrong while building it, **stop and say so in the report**: the reasoning is the
+deliverable, not the diff. List the queue: `grep -H "^status:" docs/orders/0*.md`.
 
-The validation campaign is done and the `cubbyllm/` components are implemented — the model trains end to end on a toy corpus (loss 3.48→0.08 on a structured cycle). What's here:
+## What CubbyLLM is
 
-- **`CUBBYLLM_HYPOTHESES.md`** — the authoritative working document. ~31 falsifiable hypotheses across seven groups (A–G) plus a central bet. Most carry a **Validation result** line (2026-07-23 campaign); §10 shows what's resolved vs. open.
-- **`VALIDATION_REPORT.md`** — results of the full validation pass (opens with a scorecard); every number links to a script in `validation/` + its captured log in `validation/logs/`. **All three structural decisions are made:** vocab = hybrid (fixed core + retrieval head + gated dynamic tail); binding algebra = grilly `BlockCodeOps`; memory = hardened θ=f(c) + an **offline-pretrained** router (an online router recreates the forgetting — H0b).
-- **`validation/`** — 15 standalone experiment scripts + `logs/`. NOT package code; never imported by `cubbyllm/`.
-- **`cubbyllm/`** — the implemented package. `import cubbyllm` is torch-free; `pytest` is green (50 tests) **in an environment with torch+numpy installed** (see Commands below — this repo's own `pyproject.toml` deliberately ships `dependencies = []` until the skeleton graduates past prototype, so a fresh checkout needs `torch`/`numpy` installed by hand before the test suite runs). Real components: `ops.BlockCodeVSA` (grilly BlockCodeOps + numpy fallback, exact unbind), `BindingHead`+`DirectUnbinder`, `core.HyperGenerator`+`SnapshotHardener` (the hardened θ=f(c), ported from `exp_h0_gce`), `FrozenSlotRouter` (offline-pretrained, `is_frozen`), `MemoryLayer`, `HybridEmbedding`, `TopKRetrievalHead` (exact top-K bypass), `CubbyModel` (threaded forward), `TrainLoop`/`InMemoryDataPipeline`/`P5WrongContextProbe`. Three CI-guard tests still hold (no `model.py`/`models/`; every module declares `__wiring__`; only `ops/` imports grilly). **`__wiring__` = intent (WIRED/STANDALONE), not build status.**
-  - **Backbone RESOLVED (H-D4, 2026-08-04): the windowed-attention HYBRID.** `model/backbone/hybrid.py::HybridBackbone` (`WIRED`) is the package default — MinGRU recurrence with a sliding-window attention layer every 3rd (cubby-lm's shape; RoPE; a bounded-KV `step()` that preserves the O(1)-decode guard). It won a matched needle-recall A/B against pure MinGRU (2026-08-04, d=512/L=8/~0.98B tokens): **~98% recall inside its window vs ~32% for pure recurrence, both at bounded decode state**, with recall a clean step-function of needle-distance-vs-window (the sliding-window mechanism fingerprinted at scale). `model/backbone/mingru.py::MinGRUBackbone` (`WIRED`) is now the pure-recurrence **baseline** it beat, kept selectable; `base.py` stays interface-only (guard-enforced) so both remain pluggable. **Why this overturned H-D1:** the original bake-off (`exp_d1b_backbone_bakeoff.py`) chose MinGRU on **bpc**, a prediction metric blind to content-based lookup (the induction-head circuit) — exactly the capability a long-document/needle task needs. The dense-induction probe (`validation/exp_d3_induction.py`) and then the real A/B measured what bpc could not. **Honest bound (in the same data):** beyond the window the hybrid falls to the floor like MinGRU — windowed attention buys perfect recall to ~window (×depth stacked), no further; recall *past* the window is the memory layer's job (rung 0.0.5, now built-and-gated behind `CB_MEM_EVERY` — see H-D5).
-  - **Real reuse notes discovered while filling in:** role/filler binding needs `codebook(orthogonal=False)` (independent atoms); the orthogonal successive-binding set is for resonator factorization only. Torch imports are kept lazy (inside methods) so top-level `import cubbyllm` stays torch-free.
-- **`PACKAGE_LAYOUT.md`** — layout spec. **`docs/superpowers/`** — the skeleton's design spec (`specs/2026-07-23-cubbyllm-package-skeleton-design.md`) and implementation plan (`plans/2026-07-23-cubbyllm-package-skeleton.md`).
-- **`TODO.md`** (added 2026-07-24) — working checklist for what's left, grouped by what blocks real training vs. still-open architecture work vs. smaller follow-ups. Mirrors "Where to start" below at a finer grain; check it for the current state of any item.
-- **`CUBEMIND_CLEANUP_PLAN.md`** (added 2026-07-24) — a freshly-verified audit of cubemind's own mess and its own (real, separate) `CUBEMIND_REFACTOR_PLAN.md`, scoped to what CubbyLLM actually depends on there: `ops/block_codes.py` (the confirmed grilly `BlockCodeOps` wrapper) and `reasoning/vm.py` (where real unbind needs building). Re-check its status table before starting the VM-side unbind or bridge work in `TODO.md` — its numbers already drifted from cubemind's own plan once in one day.
-- **`cubby-model-environment-map.md`** — verified map of cubby-lm/cubemind. Predecessor diagnosis, not a spec. **`README.md`** — front door.
+An infrastructure in which the language model is the smallest, most replaceable layer: a trunk
+proposes, a host disposes, a VM (CubeLang) decides; facts live in stores and worlds, not in
+weights; capability gains come from programs, stores and adapters, not retraining. The kill line
+everywhere: **0 wrong answers spoken** (a refusal is a result; a wrong answer is a defect).
 
-Next cycles (each its own spec→plan→build): the `unified/` corpus cleanup + manifest pin (H-G3 — this is the pre-training gate); the 128k–256k BPE tokenizer build on the decided hybrid-vocab shape (H-G1: ~5 min); real unbind on the VM/reasoning side, since the campaign found the placeholder `UNBIND_ROLE` lives in cubemind's VM, not the LM head (H-B3's relocated conclusion — no real implementation of this exists anywhere yet); a concrete redesign of the Cubby↔CubeMind bridges now that the backbone/vocab/binding decisions are made (H-F2); then a real corpus-backed `DataPipeline` and a training run at real (non-toy) scale, where H0's hardening-cost-vs-protected-contexts curve is still untested. **The memory rung (0.0.5, H-D5) is now built-and-gated, not unbuilt**: `MemoryRead`/`EpisodicStore` (`cubbyllm/model/recall/`) interleave into `HybridBackbone` behind `CB_MEM_EVERY` (default 0 = off), design at `docs/superpowers/specs/2026-08-04-episodic-memory-design.md` — still pending the `exp_d5` toy gate re-run (cosine selection changed since its last green) and then a real-trunk `CB_MEM_EVERY=2` run before H-D5 flips to scale-VERIFIED.
+The trunk (`cubbyllm/model/`): a hybrid backbone — MinGRU recurrence, sliding-window attention every
+3rd layer (RoPE, window 512) — with an episodic memory read (`CB_MEM_EVERY`), a context router, a
+hybrid 128k byte-level BPE vocabulary and a top-K retrieval head. Decode state is fixed-size (a
+recurrent vector per layer plus a ring of `window` keys), not a growing KV cache.
 
-**2026-08-07/08 cycle — the serve stack is real (pointers, full records in `CUBBYLLM_HYPOTHESES.md` H-F2/H-B3 entries):**
-- **Fast semantic encoder SHIPPED**: `mowm/encoding/semantic_words.py` `FastWordEncoder` — model-free word-table serving (lookup + IDF bundle into the k=80×l=128 block space, ~µs latency). Production table **`I:\CUBBY-TRAINED-MODELS\fastword_table_v4.npz`** (drive letter changed 2026-08-28: the old `D:` is now `I:`; `D:` is Google Drive — older docs/logs still say `D:`) (teacher `m2v:minishlab/potion-retrieval-32M`, 60k vocab — a measured teacher ladder + vocab-scaling curve chose it; v1–v3 retained; builder `mowm/scripts/build_fastword_table.py --teacher`). Screened across routing/temporal/haystack/injection/BEIR — the working paper `docs/papers/2026-08-07-qfhrr-semantic-word-tables.md` carries every number with log links. **BEIR open-web entity search is the measured boundary** — don't pitch the table there.
-- **Worlds + inter-world query WIRED (mowm)**: axiom-centroid routing + margin gate (`CubbyBridge`), router-mediated delegation (`MoWMRouter.query_worlds` — a world missing the answer asks the next), era/year temporal worlds + causal-event screens all measured.
-- **CoT pipeline M1 BUILT + MEASURED**: `cubbyllm/reasoning/` (planner grammar 95.4% corpus coverage, CubeLang program builder, walk/repair/verify pipeline) through the real cubelang VM — claimed-answer precision 0.994, absent-role control 341/341, honest partial falsification vs unverified chase recorded. Harvest schema: `docs/schemas/cot-harvest-schema.md`.
-- **Research agenda**: `docs/research/2026-08-model-panel-agenda.md` — a 27-question five-model panel scored against our measured record; six paper-shaped holes, the experiment queue, and the settled 2B training runbook (MFU pilot first; cycle-one dense; tag-routed MoE on cycle two). Read it before opening any new architecture thread — it likely already has the literature.
-- **Oracle-competition scoring (2026-08-28)**: `docs/research/2026-08-28-oracle-competition-scored.md` — a 5-round OpenRouter "build the 2028 oracle" contest (raw export `docs/model-competition-for-cubby-finalconsensus.json`) scored against the measured record. Effectively single-authored by GLM 5.3 Flash (Gemini/Grok/GPT/MiniMax produced nothing; Qwen 3.7 dropped out; Qwen 3.8 wrote one line); convergence with the architecture is the hypothesis doc reflected back, not validation. What it bought: the learning-gate prior art + spec (**H-A7 — built and RUN 2026-08-30: the composed gate SEPARATES a forgetting update from a clean one at the nightly LR 3e-5; three of its six proposed terms can't see a trunk delta; `validation/exp_a7_learning_gate.py` + `notebooks/a7_learning_gate.ipynb`**), the von Oswald citation on H0, the counterfactual-neighborhood harvest (`counterfactuals[]`, built + run same day), and a fabrication list (Qwen's "Kalman verifier", "350× cost-per-query", "0→95% needle") that must not be reused. **A `[stand-in]` trunk (`standin/`, 2026-08-30) exists so the serve stack can proceed while the 2B trains — nothing it measures is a CubbyLLM result; see `standin/README.md` for the two guardrails.**
-- **MFU pilot DONE (2026-08-14, H-E4)**: the recurrence MFU penalty is an eager-mode artifact — `torch.compile` erases it (hybrid 98% of transformer at 150M), and the same-day FlexAttention sliding-window fix (dense S×S masks were forcing full quadratic SDPA) put the 2B operating point at **45.5% MFU on A100-80G** (S1024/B8, no ckpt — inside the panel's *transformer* band) and S4096 at 32.5%. Triton port skipped, 1:3 stands, long context is a curriculum choice not a budget axis. Budget (basis corrected by H-G3: cache is **17.74B tokens**, not 14.37B): one epoch ≈ ~101 H100-hrs ($203–304); Chinchilla ~40B ≈ ~228 H100-hrs ($457–685) / ~100 B200-hrs. `validation/exp_t1_mfu_pilot.py` + `validation/logs/exp_t1_mfu_pilot_a100*`; runbook decision chain updated in the agenda doc. **H-G3 CLOSED same day — the pretraining gate is OPEN** (NSFW structurally excluded, dedup gates resolved, all 13 `.sig`s verified, hash re-pinned `e03c991e…` in `E:\datasets\_pipeline\corpus_manifest.md`).
+## Where things stand (2026-10-21)
 
-**2026-09-02/03 cycle — the stand-in serve stack is a brain, and its data rounds taught three lessons (full records in `standin/README.md`; every number there is `[stand-in]`):**
-- **Serve brain (`standin/serve.py`)**: sense (the ported neurochemistry ODE, `standin/neurochem.py`) → fast route (the SNN slot, lexical today) → thalamus (`needs_facts`: facts → the VM path, no facts → the model speaks under the hormones) → cortices (Reasoning / Memory / plugins / CubbyChat), every spoken line through CubbyTalk's ASK. cubbyverse mounts as a plugin (MindForge style); **cubby-man** (`standin/pacman.py`, the lifted pacman_live page at `/pac`) learns the maze from VM refusals, writes and certifies its own move programs (`ProgramLibrary`, retire-not-delete) and arbitrary CubeLang decisions (`standin/forge.py`), thinks out loud, has energy, traps, fear from the ODE, a soundtrack.
-- **SFT rounds v4→v8** (`standin/data/build_chat_sft.py`, sets on Drive): game-generated VM-verified programs, chat (Orca + HF + the sorted local corpora), content awareness, emotion (GoEmotions + Plutchik + screenplay dialogue), affect (valence/arousal), history (dated events, quotes, NYT recall + dating, era of a passage). **Lesson 1 — one model, two jobs, interference:** identity fell in v5, forge decision 1.00→0.17 in v6, arithmetic 0.825→0.750→0.675 over three rounds as chat grew; replaying the hurt family ×3/×4 repaired each (v7: forge 1.00, self-test 96/4/0). **v8 = two adapters on one base**, the trunk emits programs (`v8e`) and the talk cortex is a second adapter (`v8t`), behind the θ=f(c) interface: `Emitter.emit(…, context=)`, resolved by `ContextualEmitter` — a tag-indexed adapter bank with shadow candidates, promote/reject, idle-role pruning — the discrete precursor of generated adapters. The **adapter lifecycle** (detect by novelty + verified deficit → spawn a partition → train offline → promote through a CubeLang rule → route/prune) is specced against H0 / H-C4 / H-A7 / MoWM and the lineages (cubemind MindForge + neurogenesis + vision cortex, GrillCheese's specialist registry). Awaiting the v8e/v8t runs.
-- **GoT challenge (`docs/research/2026-09-03-got-challenge-{prompt,scored}.md`)**: five OpenRouter models, independent answers, scored per idea with citations resolved. **Lesson 2 — the pre-checks decided more than the ideas:** eleven replays on the 800-question harvest killed four high-scoring ideas and found the real bottleneck — retrieval exhaustion (31% of questions), decomposed by `validation/exp_m3_exhaustion_decomp.py` into 92 misparsed chains, 88 facts the forward query never reaches (59 of 72 reachable from the object side), 36 threshold-bound. **Two CubbyLLM-side changes landed from it:** the chain walk's repair budget 3→1 (identical 517/513/0.9923 at 45.9 vs 120.9 ms; `pipeline.answer` default) and causal-phrasing rewrites in the planner. **Then (2026-09-04) retrieval as LOOKUP:** `cubbyllm/reasoning/index.py::TripleIndex` — the walk's exact acceptance test (`planner.accepts`) run as a (relation, subject) index before any cosine search; VM-verified 568/564 vs 517/513 on the same harvest, 0 lost (`validation/logs/exp_m3_cot_pipeline_lookup.*`, spec `docs/superpowers/specs/2026-09-04-triple-index-lookup-first-walk.md`); the stand-in `FactStore` indexes every fact at `add()`. The 195 walks still exhausting are the parser rejecting the gold fact, not retrieval. Build order that survived: local-view prompt, lower `tau_ret` with the VM gating, grammar parse-correctness, object-side retrieval, the ambiguity-triggered frontier walk with the fixed merge rule.
-- **Reading**: `docs/research/2026-09-03-cubby-lm-knowledge-papers.md` — the ten papers in cubby-lm's `external/knowledge` mapped to our mechanisms (Code2LoRA-Evo for the adapter lifecycle's continuous form, OOWM for SFT→GRPO on executable reasoning, Fisher-MoE for dimension-level pruning, HDC-SNN decoding for the novelty source, SVAF for per-field inter-world arbitration, Near-Free Parallelism for the multi-candidate decode budget). Concepts, not validation.
-- **Lesson 3 — GPU discipline:** the local Vulkan eval crashed the RX 6750 XT with a second model loaded; wide reads come from Colab (`STANDIN_EVAL_ONLY=1`, `STANDIN_EVAL_N=40`) and replay through the VM locally; the owner runs the GPU probes solo.
+- **Bases.** `base450m_cont` — the 450M (D1024, L32, 4 heads) continued past its first run; the
+  reference trunk for every experiment below. A grown ~1.3B with the episodic read every 2 layers
+  (`notebooks/grow_mem_continue.ipynb`): round 1 trained, round 2 built and not run.
+- **Spatial link / hypertokens (H-S12, H-K10).** `cubbyllm/model/spatial.py`: places bound into the
+  input (`e ⊛ S(p)`), a causal scene per document, a gated read mid-trunk; roles (a thing WRITES, a
+  question ASKS), `query="placed"`, `bind="writes"`. Three 450M runs (`notebooks/spatial_facts_450m.ipynb`):
+  villages read 0.793 → 0.776 → **0.953** exact (run 3); facts 800 tokens past the window read
+  **0.021** — the read does not yet carry an open-vocabulary token. Next: reproduce that on a CPU
+  toy, find which difference breaks it, and fix it there (a gated copy path from the read to the
+  logits is the lead candidate) before the next Colab run — order 0001, proposed.
+- **Speed.** Triton kernels: the fused MinGRU recurrence (`CB_MINGRU_TRITON=1`, 72 → 18 ms a step on
+  the G4) and banded flash attention (`CB_ATTN_TRITON=1`; exact, 3.7× the dense mask on an A100; not
+  yet measured in a G4 step). Flex attention with tiles for 99 KB cards (`CB_FLEX_OPTS`).
+  `validation/speed_check.py` measures the variants on the run's own card and the run takes the
+  fastest: run 3 trained at **40.6% MFU** (run 2: 32.2%). GEMMs already run at ~75% of peak; the
+  rest of the step is where the time is.
+- **Open hypotheses (Group K, §9d).** K1 fact map, K2 surprise-gated writing, K3 continual learning,
+  K4 clock, K5 BlockWorld hidden-rule bench, K6 binding heads, K7 exposure law, K8 holographic state,
+  K9 flow-map jumps, K10 hypertokens. Read their entries before touching the matching code.
+- **Serve stack.** `standin/` (an external GGUF stand-in in the emitter and talk seats) stays the A/B
+  control until base450m takes both seats; `docs/WORK_ORDERS.md` holds that era's specs and its
+  measured lessons (read its "Before you touch anything").
+- **Known red:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
+  `cubbyllm.spatial` and `cubbyllm.reasoning.step_loop` (order 0002, proposed).
 
-Before adding a new architectural claim, add it to `CUBBYLLM_HYPOTHESES.md` in the same claim → source → validate → kill-criterion shape, with an honest status tag. Don't let unvalidated assumptions accumulate as implicit knowledge only the current session holds.
+## Rules every change keeps
 
-**2026-08-25 — Group P (prospection) opened: branching futures, timescales, keyframe compression.** `CUBBYLLM_HYPOTHESES.md` §9b, scripts in `validation/prospection/` (own README, `python -m pytest validation/prospection -q` for the quick pass, logs in `validation/logs/exp_p*.log`; checkpoint arms via `CB_CKPT` on `D:\My Drive\cubbyllm\ab_hybrid.pt`, the H-D4 winner). Findings worth knowing before touching the backbone or the store: the decode state forks exactly and at constant cost at scale, but **a hybrid snapshot is ~6 MB because of the attention KV caches, not ~10 KB** (H-P1); next-token entropy localizes real choice points on the toy, but on the real model 70–90% of Wikipedia steps sit above 1–3 nats, so the "branch only at choice points" budget needs a relative criterion (H-P2); **the MinGRU gate caps any unit's time constant at ~1000 steps, every unit starts at ~3, and after ~1B tokens the hybrid's recurrent layers have median τ of 0.5–1.8 steps — the recurrence is a short-range mixer and all long-range work lives in the three windowed-attention layers** (H-P3 — chrono init is a pending one-arm pilot decision, not a default); keyframe compression of the state should be recompute-from-keyframe, not interpolation, and the AURA note's Hilbert/Fourier/Hamiltonian interpolators are numerically falsified as written (H-P4); counterfactual re-entry from a snapshot works on a fully-known world (H-P5). **H-P6 RAN 2026-08-26 (A100, 65M tokens/arm, `validation/logs/exp_p6_*`): the multi-horizon successor-feature head is free (Δ held-out CE +0.002 nats) but redundant — a 300-step linear probe on the plain next-token trunk already reads the 50- and 500-token future at cosine 0.33 / 0.41 (trivial 0.03 / 0.08), the objective adds ~0.02, and it moves no recurrent time constant. Decision: not in the 2B runbook; successor readouts are post-training probes on the frozen trunk.** **H-P7 RAN 2026-08-26 and is KILLED (verdict recorded 2026-08-28; `validation/logs/exp_p7_{baseline,chrono}.*`):** chrono init on the recurrent gates (`validation/prospection/exp_p7_chrono_pilot.py` + `notebooks/chrono_pilot.ipynb`) costs **+0.444 nats held-out CE** at matched 65.5M tokens (kill threshold 0.01); the τ spectrum erodes ~4× but does not collapse (5–10% of units ≥ 100 steps survive), and the beyond-window impulse response is real but ~1e-3 — the gate *can* hold a long time constant and has nothing useful to put in it. **Group P's last route to long recurrent time constants is closed: beyond-window memory lives in the attention window and the episodic store (H-P3 final). Chrono is not a cycle-one arm.** The roadmap items around them (eligibility traces + episodic write-back, goal vectors/GPI, grounded dreaming, provenance-tagged imagined episodes, a causal graph for history) are named in §9b's preamble and get hypothesis entries only when each has a cheap experiment.
+**Code**
+- **Flag-gated.** A new behaviour is off by default (an env `CB_*` flag, or a meta key absent at
+  its default); off, outputs are bit-identical and old checkpoints load. Say what the flag does
+  where it is read.
+- **Files under 300 lines.** Split rather than grow; a file already over it does not get longer
+  without a reason in the commit message.
+- **Every module declares `__wiring__`** (`WIRED` only if production code imports it). Only
+  `cubbyllm/ops/` imports grilly. No `model.py` / `models/` anywhere. Torch imports stay lazy so
+  `import cubbyllm` is torch-free.
+- **Tests pin the claim**, not the implementation: values against a reference, gradients, decode =
+  forward, off = unchanged. A GPU kernel also gets a CPU path under `TRITON_INTERPRET=1`.
+- **Custom ops** (`torch.library.custom_op`): the fake must return the strides the kernel returns —
+  check with `opcheck` on non-contiguous inputs too (a transposed view broke the compiled band
+  kernel on the G4 while every contiguous test passed; `e1185e6`).
+- **Wire it or say so.** A component nothing calls is a trap; its docstring states its wiring.
 
-## The central bet (H0)
+**Evidence**
+- Validate before committing to a design: a small, falsifiable experiment with a kill criterion. A
+  kill criterion never treats a refusal and a wrong answer as the same event.
+- Every number in a doc links the `validation/logs/` file that produced it (dated name). Status
+  tags stay honest (VERIFIED / PLAUSIBLE / SPECULATIVE; OPEN / KILLED); toy-scale is not scale.
+- A new architectural claim goes into `CUBBYLLM_HYPOTHESES.md` as claim → source → validation →
+  kill criterion — by Cowork, from a report or a run.
 
-Context-conditioned, hypernetwork-style parameter generation — making a model's active weights a function of context, θ = f(c), instead of a fixed state that gets overwritten in place — is the working thesis tying together all three structural decisions below. It shows up independently in four places: Gradient Context Encoder / Context Channel Capacity forgetting theory, Sylph's hypernetwork-generated classifiers, Dragon Hatchling's continual-learning extension, and ZeTT/zip2zip's dynamic embedding generation. Full detail in `CUBBYLLM_HYPOTHESES.md` §2.
+**Boundaries**
+- No external LLM on Cubby's serving path, ever (external models only build datasets). Keys live in
+  git-ignored files (`validation/.env`); never in a command, a log or a commit.
+- The BlockWorld repo is private: nothing from it comes into this public repo.
+- No local drive paths, venv names or account names in committed files.
+- No permanent deletion: move things aside (`_discard/`, `docs/archive/`) instead.
+- Downloads of large external data need Nick's yes.
 
-**Validated, with a load-bearing caveat (2026-07-23 campaign).** A toy-scale hardened θ=f(c) head shows near-zero forgetting across sequential tasks; the **naive** version (no anti-drift countermeasure) ends up *worse than doing nothing*, because the hypernetwork's own shared weights are themselves a C_ctx=0 learner. A follow-up found the harder problem isn't generation at all — it's **context inference**: an unsupervised router collapses to a single slot, and even a task-supervised router trained *online* forgets its own routing. The context source has to be **offline-pretrained and frozen at inference**, which is exactly what H-C4's `domain_head.pt` already is.
+## Working here
 
-## Three structural decisions, all downstream of H0 — all now RESOLVED
+- **Tests:** `python -m pytest tests` from the repo root. `pyproject.toml` already sets `addopts = -q`;
+  adding `-q` again gives `-qq`, which prints no summary line. On Nick's machine torch is a CPU build
+  without Triton or flex: those tests skip there and run on a GPU via `notebooks/kernels_check.ipynb`.
+- **Training and measurement:** `validation/train_base.py` (configured entirely by `CB_*` env vars;
+  resumes from its newest checkpoint), `validation/profile_base.py` (device time by kind),
+  `validation/speed_check.py`, `validation/bench_kernels.py`, `validation/exp_hypertoken_recall.py`,
+  `validation/diag_fact_read.py`.
+- **Notebooks are generated:** edit `notebooks/_build_<name>.py`, run it to regenerate
+  `notebooks/<name>.ipynb`, commit both; never hand-edit an `.ipynb`. Colab cells stream
+  subprocess output with `Popen` (a captured `subprocess.run` shows nothing until it ends).
+- **Shards** (the token cache): `<name>.u32` (+ `.pos.i16` places, `.role.u8` roles) with
+  `_sizes.json`, `_align.json`, `_holdout.json`; the Corpus skips sync-tool duplicates named
+  `<name> (1)`. Builders: `validation/make_spatial_shard.py`, `validation/make_fact_shard.py`.
+- **Logs:** `validation/logs/<what>_<date>.<ext>`. Files starting `_` there are scratch (untracked).
+- **Commits:** to `master`, pushed. Subject says what changed; body says why and carries the
+  measured numbers; reference the order (`[0001] ...`). Long messages from a file (`git commit -F`).
+  Run git on the Windows side, never through a mounted copy of the repo (it leaves `index.lock`).
 
-1. **VSA binding head, built from scratch — algebra DECIDED: `grilly.experimental.vsa.block_ops.BlockCodeOps`** (NVSA sparse block codes, k=80×l=128; user decision 2026-07-23 after the 3-way prototype in `validation/exp_b5_grilly_3way.py`, where it won or tied every duty except raw bind speed against grilly's other two families). Correction from the validation campaign: the "plain dict lookup unbind" previously attributed to cubby-lm's binding head actually lives in cubemind's VM (`reasoning/vm.py:602-606`) — the LM head has no unbind at all and is clean cosine readout, arguably the strongest piece of predecessor code reviewed in this whole project. grilly was CONFIRMED as the shared production VSA substrate (H-B5, upgraded from a strong lead to confirmed): cubemind's `BlockCodes` is a direct wrapper around it. Real unbind (VM-side) still needs building from scratch — see "Next cycles" above. BinaryOps/HolographicOps remain reference implementations only. See `VALIDATION_REPORT.md`. A separate, differentiable **trunk-shaping** path (H-B6) was tried and **FALSIFIED (2026-08-02)**: a parameter-free MAP binding aux loss (`cubbyllm/model/binding/torch_ops.py` → `TrainLoop.bind_weight`) that *appeared* to shape the trunk's hidden states to be VSA-bindable during LM pretraining (binding loss 0.735→0.158, bpc dropping in lockstep) turned out to be Goodharting — it rewards cosine-to-own-filler and never penalizes cosine-to-*other*-fillers, so it collapses every hidden state onto one direction (filler-filler cosine 0.006→0.974, retrieval 96%→11.5%) while the loss curve looks like clean progress. The load-bearing finding: an **untrained trunk is already a near-optimal VSA substrate** (~96–98% retrieval, by quasi-orthogonality) — nothing for a binding objective to add; a discriminative InfoNCE reformulation prevents the collapse but buys nothing over random init. A 92k-step run with the loss OFF (`bind_weight=0`) confirmed the substrate holds long-horizon (~77% retrieval, ~12× chance). **Decision: `bind_weight=0`** — see H-B6 in `CUBBYLLM_HYPOTHESES.md`. Distinct from the VM-side unbind, which still needs building.
-2. **A memory layer that doesn't catastrophically forget — DECIDED: hardened θ=f(c) + an offline-pretrained router.** cubby-lm's Hebbian/Oja layer drifts and forgets under sequential learning — now measured, not just diagnosed: C_ctx=0 by construction, 94% empirical forgetting (H-A1). No sibling project has a validated fix (H-A6, confirmed verbatim, a real negative result). The Zero-Forgetting Stability Benchmark that cubby-concepts only ever *named* got built and run for the first time this campaign (`validation/exp_a_forgetting.py`, re-run on real dated NYT headlines in H-G2): NLMS has the best capacity but forgets oldest-first; SDM is the only order-agnostic method but has lower capacity at matched state; flat-decay Hebbian (GrillCheese's production form) is the worst curve measured; none hit zero forgetting alone — independent support that H0 is necessary, not just sufficient. See the H0 section above for the resolution.
-3. **A much larger vocabulary than cubby-lm's 32k — DECIDED: hybrid.** Fixed core vocabulary (next step: 128k–256k BPE on the proven H-G1 pipeline, costed at ~5 minutes single-machine CPU — vocab size was never the expensive lever) + a retrieval output head from day one (direct readout scales cleanly to V=1M at D=10240 per H-C7; memory and O(V·D) compute, not binding-algebra capacity, are the real constraint per H-C3) + a hypertoken/dynamic tail deferred as a later, separately-gated addition (pure surface-form generation loses ~0.5 nats at toy scale per H-C1, while plain LZW compression alone recovers ~22% of the win for free per H-C2). See Group C.
+## Where to look
 
-## How to work in this repo
-
-- **Validate before committing.** Every hypothesis in the tracking doc carries a kill criterion for a reason — prefer a small, cheap, falsifiable experiment over a large architecture commitment, especially for anything tagged SPECULATIVE.
-- **Sibling-repo code is a reuse candidate, never a trusted module.** `cubby-concepts/vsa/` and GrillCheese's `holographic_relation_test.py` / `brain_resonator_test.py` are real and independently tested — that still only makes them candidates to benchmark against CubbyLLM's actual requirements, not drop-in dependencies. (grilly turned out to be the exception that graduated past "candidate" — see decision 1 above — but that only happened after it was actually read and benchmarked, not on the strength of the dimensional-match lead alone.)
-- **Keep the VERIFIED / PLAUSIBLE / SPECULATIVE distinction honest.** VERIFIED means someone in this project actually ran it and reproduced the result, not that a source document asserted it confidently. Toy-scale VERIFIED is not the same as scale-VERIFIED — `VALIDATION_REPORT.md`'s "what would change these conclusions" section lists the scale caveats; treat them as part of each result, not a footnote.
-- **Don't let hardware speculation gate software work.** Per H-E3 — now verified by execution, not just by construction, since the entire validation campaign ran CPU-only — analog/neuromorphic (AIMC) hardware is an explicitly deferred, independently-gated bet with its own CAPEX/OPEX claims that are unvalidated narrative, not costed quotes.
-- **If you build a component, wire it into the actual default path, or say clearly — in the code and in this repo's docs — that it isn't wired yet.** The implemented package enforces this with a guard test (every module declares `__wiring__`) rather than leaving it as a convention. See below for why this specifically matters here.
-
-## Known failure patterns from the sibling repos — do not repeat these
-
-cubby-lm and cubemind both accumulated the same handful of problems, documented in detail in `cubby-model-environment-map.md` §4. Worth internalizing before writing structure here:
-
-- **Built but never wired in.** cubby-lm has multiple fully-implemented, self-tested components (`SegmentMemory`, `MTP`, `CubeLangHead`) that nothing actually calls in the default forward pass. `CubeLangHead` is self-labeled "SCAFFOLD." An unwired component isn't a milestone, it's a trap for whoever assumes it's live next.
-- **Docs describing mechanisms the code doesn't have.** cubemind's `vm.md` describes a "SDLS duality gate" and a fully-functional `HyperSeed` integer encoding; neither is actually wired into the real execution path. Keep this repo's docs and code in sync, or mark the gap explicitly the moment it appears. (This file itself briefly fell into a milder version of this trap the same day it was written — the "Three structural decisions" and "Where to start" sections lagged the "Current status" section after the validation campaign landed, until this pass caught it up. Worth a second look any time a big result lands, not just when a new component gets built.)
-- **Structural duplication and sprawl.** `trunk`/`trunk_torch` duplication, a ~35GB tracked `sandbox/` directory, a `cloned/` vendor dir, an `_archive/` that's gitignored elsewhere but still importable, a `model.py` / `models/` / `model` naming collision. `PACKAGE_LAYOUT.md` maps an anti-sprawl rule to each of these, and the implemented package enforces the naming-collision rule with a CI-guard test rather than just a convention. `CUBEMIND_CLEANUP_PLAN.md` (2026-07-24) confirms every one of these is still live in cubemind itself, unchanged since cubemind's own refactor plan was written — the anti-pattern isn't hypothetical, it's the sibling repo's present-tense state.
-- **Self-reported numbers presented as measurements.** Several sibling folders' own planning docs (cost-per-query claims, valuation projections, latency targets) are explicitly flagged in `CUBBYLLM_HYPOTHESES.md` as unvalidated narrative, not benchmarked data. `PACKAGE_LAYOUT.md` now has a rule for this too: any number quoted in docs must link the `validation/logs/` file that produced it. `CUBEMIND_CLEANUP_PLAN.md` caught a live instance of the *inverse* problem too: cubemind's own refactor plan's prose numbers (e.g. a claimed 34.8GB `sandbox/`) had already drifted from verified-today reality (13.87GB) in a short window, even though the structural problems those numbers describe hadn't moved at all — a plan document going stale exactly the way source docs do.
-- **Training corpora that drift silently and mix unlabeled content.** The largest candidate pretraining corpus surveyed so far (`unified/`, 120GB, Group G/H-G3) mixes NSFW-labeled sources into the general pool with no filter, has visibly drifted from its own tokenizer-training report, and has confirmed cross-directory duplication (one sub-fear — `factual/`↔`gbooks/` ID overlap — was checked and retired this campaign; the rest stand). Decide content scope explicitly, check for ID overlap, and pin/snapshot whatever mixture actually gets used — this is still an open next step (H-G3), not yet done.
-
-## Sibling repos — what's actually there
-
-| Path | What it is | What's reusable |
-|---|---|---|
-| `cubby-lm` | Direct predecessor, frozen trunk | Reference and lessons-learned only — see "what CubbyLLM is not" above |
-| `cubemind` | cubby-lm's world-model environment (WorldManager, CubeLang VM) | Intended package layout is the mirroring target; its own structural sprawl is documented above and freshly audited in `CUBEMIND_CLEANUP_PLAN.md`; its `BlockCodes` turned out to be a thin wrapper around `grilly` (see below) |
-| `cubby-concepts` | Solo VSA/HDC/SDM prototype | `vsa/` package (bind/bundle/permute/resonator/SDM/graph) — real, tested, 61/61 passing (re-reproduced twice this project). Reference implementation, not the standardized algebra. `budget-hardware/` is unvalidated pitch material, skip it |
-| `H:\AURA_GENESIS` | Bio-inspired "digital brain" chatbot project | `aura/core/nlms.py` (NLMS — benchmarked, best capacity of any candidate in the Zero-Forgetting benchmark, forgets oldest-first), `aura/core/liquid_moe.py` (routing/controller template) |
-| `C:\Users\grill\Desktop\GrillCheese` | Bio-inspired LM with hippocampal memory | `experiments/holographic_relation_test.py` + `brain_resonator_test.py` (benchmarked reference algebra, not the standardized one), `gcheese-faiss/` (a working ANN-retrieval-instead-of-softmax existence proof, informed the decided retrieval output head) |
-| `H:\Novel_GNN_Arch` | Despite the name, no GNN code exists here | `capsules/domain_classifier.py` + `domain_head.pt` — **upgraded from stepping-stone baseline to the specific shape the memory fix's routing half needs**: an offline-pretrained, frozen-at-inference context source (see decision 2 above) |
-| `D:\grillcheese_training_data` | Not a code sibling — a ~210GB real training-data corpus (conversations, instruction data, tokenizer history, dated news archive) | Raw material for both hypothesis validation and CubbyLLM's actual training set — see Group G. `temporal/nyt_data/` has since been used to re-run the Zero-Forgetting benchmark on real dated keys (H-G2, done). `unified/` (120GB) still needs its cleanup pass (H-G3, not yet done) before real training |
-| `C:\Users\grill\Documents\GitHub\grilly` | GPU/Vulkan backend sibling — **CONFIRMED as the shared production VSA substrate (H-B5)** | `experimental/vsa/{block_ops,ops}.py` ships all three candidate algebra families (BinaryOps, HolographicOps, BlockCodeOps) plus a resonator; the binding head now standardizes on `BlockCodeOps`, which cubemind's own code already wraps directly. The one remaining open question here: whether grilly's SVC role-filler binding scheme (built for subject/verb/context triples) generalizes to CubbyLLM's actual token/concept binding needs **Future work (2026-09-03): Grilly2 — a Rust rewrite (one toolchain with the CubeLang VM) exposing a drop-in torch API from Python and C++ on Vulkan, optimized for local training; positioned against Burn's Rust-only surface, to be verified (`TODO.md` § Future work).** |
-
-Full findings and caveats for each are in `CUBBYLLM_HYPOTHESES.md`'s per-hypothesis detail and `VALIDATION_REPORT.md`'s per-experiment detail — this table is a locator, not the full picture.
-
-## Where to start
-
-All three structural decisions above are made and a first-pass package already trains end-to-end on a toy corpus — this section is no longer "which hypothesis to check first," it's "which real next step." In roughly cost order: (1) the `unified/` corpus cleanup pass (H-G3 — dedup, decide NSFW-source scope explicitly, pin a manifest hash) gates any real training run and is mechanical, well-scoped work; (2) the 128k–256k BPE tokenizer build (H-G1, ~5 minutes on the existing pipeline) is the concrete first step on the decided hybrid vocab; (3) building real unbind on the VM/reasoning side (H-B3's relocated conclusion — `UNBIND_ROLE` lives in cubemind's `reasoning/vm.py`, not the LM head, and no real VSA-algebra unbind exists there yet — re-check `CUBEMIND_CLEANUP_PLAN.md` first, since that file hasn't been touched by cubemind's own cleanup but is worth a fresh stability check before depending on it); (4) defining the Cubby↔CubeMind bridges concretely now that the backbone/vocab/binding decisions are made (H-F2 — H0 implies the bridges need to carry a context/task embedding in both directions plus generated-parameter/specialist handles, and neither current bridge carries either); (5) scaling H0 and the router past toy scale into a real memory pathway, where the hardening-cost-vs-protected-contexts curve is still untested. `VALIDATION_REPORT.md`'s "what would change these conclusions" section has the full list of scale caveats — read it before treating any toy-scale result as final. `TODO.md` tracks all of this at finer grain and is the one to check off as items land.
-
-## Coding conventions
-
-A real toolchain exists now — see Commands below. These principles held up through the first implementation pass; keep revising them as real constraints show up.
-
-### Commands
-
-- **Test:** `python -m pytest tests -q` from the repo root (per `pyproject.toml`'s `[tool.pytest.ini_options]`). The package import itself (`import cubbyllm`) is torch-free by design, but the test suite exercises real components and needs `torch` + `numpy` installed — not pinned in `pyproject.toml` yet (`dependencies = []` is deliberate until the skeleton graduates past prototype, per that file's own comment), so a fresh checkout needs `pip install torch numpy pytest` by hand before tests will collect. No build or lint step defined yet.
-
-### Principles
-
-- **Vectorize.** The sibling repos' worst-performing code is the nested-loop kind; the best (`cubby-concepts/vsa/`) is fully vectorized NumPy with O(D) primitives throughout.
-- **Test honestly, including negative results.** `cubby-concepts` ships a passing test that *proves a documented capacity limit is real* rather than hiding it (`test_resonator_quadrillion_is_beyond_capacity`). The validation campaign kept this standard — e.g. reporting the sign()-binarization worst case (17.6%) alongside the operating-point number (100%) rather than only the flattering one. That's the right instinct: a test suite (and a report) should tell you where the design breaks, not just confirm what already works.
-- **Every module states, in its own docstring or a `__wiring__` declaration, whether it's wired into a default path or is a standalone attachment.** The implemented package enforces this with a guard test. Given how much of cubby-lm's own code fell into the unwired category by accident, make it an explicit, checked declaration instead of an implicit gap.
-
-This file should get shorter and more concrete over time — as hypotheses resolve into decisions and decisions turn into code, replace speculation here with pointers to the real thing. Most of Groups A–D just made that jump in one day; Groups E (hardware, deferred by design) and the remaining open items in "Where to start" above are what's left.
+| | |
+|---|---|
+| `CUBBYLLM_HYPOTHESES.md` | every claim, its evidence, its status (Group K at §9d) |
+| `docs/orders/` | the work queue (this loop) |
+| `docs/WORK_ORDERS.md`, `docs/PATH.md` | the serve-stack era's specs and lessons |
+| `docs/COLAB.md` | running on Colab GPUs |
+| `docs/superpowers/specs/` | design specs (whole-brain, sensory cortex, episodic memory, …) |
+| `cubbyllm/model/` | trunk: `assembly.py`, `backbone/` (hybrid, MinGRU, kernels), `spatial.py`, `recall/`, `grow.py` |
+| `validation/` | experiments, training, probes (never imported by `cubbyllm/`) |
+| `standin/` | the stand-in serve stack (control arm) |
