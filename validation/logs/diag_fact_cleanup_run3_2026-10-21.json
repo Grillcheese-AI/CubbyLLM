@@ -1,0 +1,125 @@
+{
+ "ckpt": "I:\\My Drive\\cubbyllm\\runs\\spatial_link_3\\spatial_link_3_final.pt",
+ "meta": {
+  "kind": "cubby_base",
+  "D": 1024,
+  "L": 32,
+  "heads": 4,
+  "window": 512,
+  "attn_every": 3,
+  "ctx": 32,
+  "slots": 8,
+  "gen_basis": 16,
+  "gen_rank": 8,
+  "vocab": 128000,
+  "vocab_real": 127996,
+  "mem_every": 0,
+  "tied": false,
+  "causal_ctx": true,
+  "spatial": {
+   "scale": 2.0,
+   "seed": 0,
+   "at": 16,
+   "query": "placed",
+   "bind": "writes"
+  }
+ },
+ "docs": 400,
+ "table_norm": {
+  "mean": 5.687492370605469,
+  "p5": 5.439075946807861,
+  "p95": 5.96084451675415
+ },
+ "shards": {
+  "facts_far1k_lead": {
+   "documents": 400,
+   "writers_per_doc": 37.4575,
+   "asker_adjacent": 1.0,
+   "answer_is_stored": 1.0,
+   "all": {
+    "n": 9451,
+    "top1_cos": 0.758226642683314,
+    "top5_cos": 0.8635065072479102,
+    "top1_among_written": 0.9920643318167389,
+    "top1_dot": 0.748915458681621,
+    "top5_dot": 0.8576870172468521,
+    "median_rank_cos": 0.0,
+    "cos_target": 0.16479858561543015,
+    "cos_best_wrong": 0.1380527250184141,
+    "target_beats_wrong": 0.758226642683314
+   },
+   "first": {
+    "n": 2002,
+    "top1_cos": 0.7902097902097902,
+    "top5_cos": 0.8886113886113887,
+    "top1_among_written": 0.9915084915084915,
+    "top1_dot": 0.7957042957042957,
+    "top5_dot": 0.8851148851148851,
+    "median_rank_cos": 0.0,
+    "cos_target": 0.1689813934977387,
+    "cos_best_wrong": 0.13811680462795656,
+    "target_beats_wrong": 0.7902097902097902
+   },
+   "later": {
+    "n": 7449,
+    "top1_cos": 0.7496308229292522,
+    "top5_cos": 0.8567592965498725,
+    "top1_among_written": 0.992213719962411,
+    "top1_dot": 0.7363404483823331,
+    "top5_dot": 0.8503154785877299,
+    "median_rank_cos": 0.0,
+    "cos_target": 0.16367441037306452,
+    "cos_best_wrong": 0.13803550292440095,
+    "target_beats_wrong": 0.7496308229292522
+   },
+   "absent": {
+    "n": 2001,
+    "cos_best": 0.13853230453964355
+   },
+   "exact_by_cleanup": 0.4565434565434565,
+   "exact_among_written": 0.965034965034965,
+   "margin_present_over_absent": 1.189604014479309
+  },
+  "spatial_here": {
+   "documents": 400,
+   "writers_per_doc": 31.3075,
+   "asker_adjacent": 0.0,
+   "answer_is_stored": 0.0,
+   "all": {
+    "n": 853,
+    "top1_cos": 0.82063305978898,
+    "top5_cos": 0.8839390386869871,
+    "top1_among_written": 0.9472450175849941,
+    "top1_dot": 0.7936694021101993,
+    "top5_dot": 0.8757327080890973,
+    "median_rank_cos": 0.0,
+    "cos_target": 0.21490087332629795,
+    "cos_best_wrong": 0.16734967228780737,
+    "target_beats_wrong": 0.82063305978898
+   },
+   "first": {
+    "n": 853,
+    "top1_cos": 0.82063305978898,
+    "top5_cos": 0.8839390386869871,
+    "top1_among_written": 0.9472450175849941,
+    "top1_dot": 0.7936694021101993,
+    "top5_dot": 0.8757327080890973,
+    "median_rank_cos": 0.0,
+    "cos_target": 0.21490087332629795,
+    "cos_best_wrong": 0.16734967228780737,
+    "target_beats_wrong": 0.82063305978898
+   },
+   "later": {
+    "n": 0
+   },
+   "absent": {
+    "n": 2757,
+    "cos_best": 0.15656768779770636
+   },
+   "exact_by_cleanup": 0.82063305978898,
+   "exact_among_written": 0.9472450175849941,
+   "margin_present_over_absent": 1.372574867452607
+  }
+ },
+ "env": "2026-10-21 13:09 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU)"
+}

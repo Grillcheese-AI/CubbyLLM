@@ -1,0 +1,9 @@
+cleanup of the read -- spatial_link_3_final.pt: D=1024 vocab 128000, |e| mean 5.687  [1s]
+  facts_far1k_lead  all    9451 reads  top-1 0.758 top-5 0.864 (cos)  top-1 0.749 top-5 0.858 (dot)  median rank 0  cos target 0.165 vs best wrong 0.138  | among the document's writers top-1 0.992
+  facts_far1k_lead  first  2002 reads  top-1 0.790 top-5 0.889 (cos)  top-1 0.796 top-5 0.885 (dot)  median rank 0  cos target 0.169 vs best wrong 0.138  | among the document's writers top-1 0.992
+  facts_far1k_lead  later  7449 reads  top-1 0.750 top-5 0.857 (cos)  top-1 0.736 top-5 0.850 (dot)  median rank 0  cos target 0.164 vs best wrong 0.138  | among the document's writers top-1 0.992
+  facts_far1k_lead  absent 2001 reads, best cos 0.13853230453964355; 37.5 writers a document; asker right before the piece 1.000; the answer piece is the stored token 1.000; whole answers by cleanup 0.457 (vocabulary) 0.965 (the document's writers)  [34s]
+  spatial_here      all     853 reads  top-1 0.821 top-5 0.884 (cos)  top-1 0.794 top-5 0.876 (dot)  median rank 0  cos target 0.215 vs best wrong 0.167  | among the document's writers top-1 0.947
+  spatial_here      first   853 reads  top-1 0.821 top-5 0.884 (cos)  top-1 0.794 top-5 0.876 (dot)  median rank 0  cos target 0.215 vs best wrong 0.167  | among the document's writers top-1 0.947
+  spatial_here      absent 2757 reads, best cos 0.15656768779770636; 31.3 writers a document; asker right before the piece 0.000; the answer piece is the stored token 0.000; whole answers by cleanup 0.821 (vocabulary) 0.947 (the document's writers)  [44s]
+  wrote validation\logs\diag_fact_cleanup_run3_2026-10-21.json
