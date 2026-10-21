@@ -1,0 +1,21 @@
+{
+ "ckpt": "I:\\My Drive\\cubbyllm\\runs\\spatial_link_3\\spatial_link_3_final.pt",
+ "copy": "ring",
+ "tau": 3.04,
+ "docs": 24,
+ "env": "2026-10-21 16:29 python 3.12.10 torch 2.4.1+cpu Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU)",
+ "beta": 0.115,
+ "copy_added": {
+  "facts_far1k_lead": {
+   "questions": 120,
+   "first_token": 0.8,
+   "exact": 0.25833333333333336
+  },
+  "spatial_here": {
+   "questions": 218,
+   "first_token": 0.9862385321100917,
+   "exact": 0.981651376146789
+  },
+  "_lam": 0.23384054005146027
+ }
+}

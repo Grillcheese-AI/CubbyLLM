@@ -1,0 +1,2 @@
+  copy_added facts_far1k_lead: first 0.800 exact 0.258 (120 q)  spatial_here: first 0.986 exact 0.982 (218 q)  lam 0.234   [275s]
+  wrote validation\logs\diag_copy_step0_run3_ringb_2026-10-21.json

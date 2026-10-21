@@ -8,8 +8,8 @@ with ``train_base.fact_probe`` (the held-out questions of ``CB_PROBE_SHARDS``, t
 nothing learned: the floor run 4 starts from.
 
     CB_CKPT=<linked ckpt> CB_CORPUS=<token cache> CUBBY_SPM=<tokenizer.json> CB_SPATIAL_COPY=ring
-    CB_SPATIAL_COPY_TAU=3.04 [CB_PROBE_SHARDS=facts_far1k_lead,spatial_here] [CB_PROBE_DOCS=24]
-    [CB_OUT=<json>] python validation/diag_copy_step0.py
+    CB_SPATIAL_COPY_TAU=3.04 [CB_SPATIAL_COPY_BETA=0.115] [CB_PROBE_SHARDS=facts_far1k_lead,spatial_here]
+    [CB_PROBE_DOCS=24] [CB_ARMS=as_trained,copy_added] [CB_OUT=<json>] python validation/diag_copy_step0.py
 """
 from __future__ import annotations
 
@@ -40,8 +40,10 @@ def main() -> None:
     report = {"ckpt": os.environ["CB_CKPT"], "copy": tb.SPATIAL_COPY, "tau": tb.SPATIAL_COPY_TAU, "docs": tb.PROBE_DOCS,
               "env": f"{time.strftime('%Y-%m-%d %H:%M')} python {platform.python_version()} torch {torch.__version__} "
                      f"{platform.processor() or platform.machine()} (CPU)"}
-    for arm in ("as_trained", "copy_added"):
-        m = dict(meta, spatial=dict(meta["spatial"], copy=tb.SPATIAL_COPY, copy_tau=tb.SPATIAL_COPY_TAU)) if arm == "copy_added" else meta
+    report["beta"] = float(tb.SPATIAL_COPY_BETA) if tb.SPATIAL_COPY_BETA else None
+    for arm in os.environ.get("CB_ARMS", "as_trained,copy_added").split(","):
+        cp = dict(copy=tb.SPATIAL_COPY, copy_tau=tb.SPATIAL_COPY_TAU, **({"copy_beta": report["beta"]} if report["beta"] else {}))
+        m = dict(meta, spatial=dict(meta["spatial"], **cp)) if arm == "copy_added" else meta
         model = tb.build_model(m, dev)
         c = tb.init_from(os.environ["CB_CKPT"], model, dev, m)
         assert arm == "as_trained" or c.get("copy_added"), "the copy path was not added"
