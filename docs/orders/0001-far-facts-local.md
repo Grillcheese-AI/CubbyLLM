@@ -1,5 +1,5 @@
 # 0001 — Far facts: reproduce the 450M failure on a CPU toy, then fix it there
-status: open
+status: in progress
 written: 2026-10-21 by Cowork · approved: 2026-10-21 by Nick · hypothesis: H-K10 (and H-S12)
 
 ## Why
