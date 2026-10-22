@@ -22,7 +22,7 @@
   "seed": 0,
   "threads": 2,
   "tag": "_joint",
-  "save": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\validation\\logs\\_k10_ckpt\\U_s0.pt",
+  "save": "U_s0.pt",
   "templates": 6,
   "date": "2026-10-22"
  },

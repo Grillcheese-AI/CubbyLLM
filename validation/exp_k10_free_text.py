@@ -277,7 +277,7 @@ def main() -> None:
 
     log(f"env: {time.strftime('%Y-%m-%d %H:%M')} python {platform.python_version()} torch {torch.__version__} numpy {np.__version__} "
         f"{platform.processor() or platform.machine()} (CPU, {torch.get_num_threads()} threads)")
-    report = {"args": vars(a), **run(a, log)}
+    report = {"args": {**vars(a), "save": os.path.basename(a.save) if a.save else None}, **run(a, log)}   # no local path
     report["log"] = lines
     json.dump(report, open(out + ".json", "w", encoding="utf-8"), indent=1)
     open(out + ".log", "w", encoding="utf-8").write("\n".join(lines) + "\n")
