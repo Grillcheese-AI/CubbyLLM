@@ -76,9 +76,9 @@ def test_poll_keeps_each_item_once_and_never_fetches_held(tmp_path):
     pages = {"https://x.example/rss": RSS, "https://gc.example/atom": ATOM,
              "https://x.example/robots.txt": GROUPED.encode()}
     m = _manifest(tmp_path, [
-        {"id": "x", "url": "https://x.example/rss", "lang": "fr", "status": "active",
+        {"id": "x", "url": "https://x.example/rss", "lang": "fr", "status": "active", "every_h": 0,
          "ai_agents_named": ["ccbot", "claudebot", "gptbot"]},
-        {"id": "gc", "url": "https://gc.example/atom", "lang": "en", "status": "active"},
+        {"id": "gc", "url": "https://gc.example/atom", "lang": "en", "status": "active", "every_h": 0},
         {"id": "held", "url": "https://held.example/rss", "status": "held"}])
     root = tmp_path / "arch"
     rows = na.Archive(root, fetch=_fetcher(pages, calls)).poll_all(m)
@@ -91,6 +91,23 @@ def test_poll_keeps_each_item_once_and_never_fetches_held(tmp_path):
     assert sum(sum(d.values()) for d in s["per_feed_per_day"].values()) == 3
     polls = (root / "_polls.jsonl").read_text(encoding="utf-8").splitlines()
     assert len(polls) == 4 and not (root / "_poll.lock").exists()
+
+
+def test_a_slow_feed_waits_its_interval(tmp_path):
+    calls = []
+    pages = {"https://gc.example/atom": ATOM}
+    m = _manifest(tmp_path, [{"id": "gc", "url": "https://gc.example/atom", "status": "active", "every_h": 6}])
+    a = na.Archive(tmp_path / "a", fetch=_fetcher(pages, calls))
+    assert [r["feed"] for r in a.poll_all(m)] == ["gc"]
+    assert a.poll_all(m) == [] and calls.count("https://gc.example/atom") == 1
+
+
+def test_dates_in_the_publishers_languages():
+    assert na.date_of("Friday, October 16, 2026 - 19:18") == "2026-10-16"
+    assert na.date_of("Viernes, Agosto 7, 2026 - 14:45") == "2026-08-07"
+    assert na.date_of("Quarta, Maio 13, 2026 - 10:10") == "2026-05-13"
+    assert na.date_of("jeudi, août 6, 2026") == "2026-08-06"
+    assert na.date_of("Someday, Foo 6, 2026") is None and na.date_of("") is None
 
 
 def test_refusal_and_new_block_skip_the_feed(tmp_path):
@@ -121,3 +138,22 @@ def test_manifest_feeds_are_well_formed():
     for f in fs:
         assert f["status"] in ("active", "held") and f["reason"] and f["licence"] in ("open-government-canada", "publisher")
     assert {f["id"] for f in fs if f["status"] == "active"} >= {"gc-news-releases", "gc-communiques"}
+
+
+def test_gzip_body_is_read(monkeypatch):
+    import gzip
+
+    class R:
+        status, headers = 200, {"Content-Encoding": "gzip"}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            return gzip.compress(ATOM)
+    monkeypatch.setattr(na.urllib.request, "urlopen", lambda rq, timeout=20: R())
+    code, body = na._get("https://un.example/rss")
+    assert code == 200 and na.parse(body)[0]["title"] == "Minister announces funding"

@@ -34,60 +34,21 @@ import time
 import urllib.parse
 import urllib.error
 import urllib.request
-import xml.etree.ElementTree as ET
 
 __wiring__ = "WIRED"
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parent)]
-from news_source import UA, _iso  # noqa: E402
+from news_parse import DC, SUMMARY_MAX, date_of, parse  # noqa: E402,F401 -- parse and the rest re-exported
+from news_source import UA  # noqa: E402
 from robots_rules import ai_named, refuses  # noqa: E402
 
 MANIFEST = HERE / "data" / "news_feeds.json"
-SUMMARY_MAX = 400
 ROBOTS_TTL_S = 6 * 3600
-ATOM = "{http://www.w3.org/2005/Atom}"
-DC = "{http://purl.org/dc/elements/1.1/}"
 
 
 def feeds(path=MANIFEST) -> list[dict]:
     return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))["feeds"]
-
-
-def _clean(text: str | None) -> str:
-    import html
-    import re
-    return " ".join(html.unescape(re.sub(r"<[^>]+>", " ", html.unescape(text or ""))).split())
-
-
-def _first(el, *names) -> str:
-    for n in names:
-        f = el.find(n)
-        if f is not None and (f.text or "").strip():
-            return f.text.strip()
-    return ""
-
-
-def parse(body: bytes) -> list[dict]:
-    """RSS `item`s and Atom `entry`s -> [{id, link, published, title, summary}]. An item with no title is dropped; an
-    undated one keeps `published: None` (it is still dated by when it was first seen)."""
-    root = ET.fromstring(body)
-    out = []
-    for it in root.iter("item"):
-        link = _first(it, "link")
-        raw = _first(it, "pubDate", DC + "date")
-        out.append({"id": _first(it, "guid") or link, "link": link, "published_raw": raw,
-                    "title": _clean(_first(it, "title")), "summary": _clean(_first(it, "description"))})
-    for it in root.iter(ATOM + "entry"):
-        link = next((l.get("href") for l in it.findall(ATOM + "link") if l.get("rel") in (None, "alternate")), "")
-        raw = _first(it, ATOM + "published", ATOM + "updated")
-        out.append({"id": _first(it, ATOM + "id") or link, "link": link or "", "published_raw": raw,
-                    "title": _clean(_first(it, ATOM + "title")), "summary": _clean(_first(it, ATOM + "summary"))})
-    for o in out:
-        o["published"] = _iso(o.pop("published_raw"))
-        if len(o["summary"]) > SUMMARY_MAX:
-            o["summary"] = o["summary"][:SUMMARY_MAX].rsplit(" ", 1)[0] + " ..."
-    return [o for o in out if o["title"]]
 
 
 def key_of(feed_id: str, item: dict) -> str:
@@ -98,7 +59,11 @@ def key_of(feed_id: str, item: dict) -> str:
 def _get(url: str, timeout: int = 20) -> tuple[int, bytes]:
     try:
         with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=timeout) as r:
-            return r.status, r.read()
+            body = r.read()
+            if r.headers.get("Content-Encoding", "").lower() == "gzip" or body[:2] == b"\x1f\x8b":
+                import gzip
+                body = gzip.decompress(body)              # UN News answers gzip even when asked for plain bytes
+            return r.status, body
     except urllib.error.HTTPError as e:
         return e.code, b""
 
@@ -166,14 +131,28 @@ class Archive:
                 if k in self.keys:
                     continue
                 self.keys.add(k)
-                f.write(json.dumps({"key": k, "feed": feed["id"], "lang": feed.get("lang"),
+                f.write(json.dumps({"key": k, "feed": feed["id"], "lang": feed.get("lang"), "kind": feed.get("kind", "news"),
                                     "first_seen": row["at"], **it}, ensure_ascii=False) + "\n")
                 row["new"] += 1
         return {**row, "items": len(items)}
 
+    def last_polled(self) -> dict[str, float]:
+        """Each feed's last poll that read it (not a skip, not an error), from the poll log: a feed polled every 6 hours
+        or daily (`every_h` in the manifest) waits that long; 5 minutes' slack keeps an hourly loop on time."""
+        out, log = {}, self.root / "_polls.jsonl"
+        if log.exists():
+            for line in log.open(encoding="utf-8"):
+                r = json.loads(line) if line.strip() else {}
+                if "items" in r and "at" in r:
+                    out[r["feed"]] = dt.datetime.fromisoformat(r["at"]).timestamp()
+        return out
+
     def poll_all(self, manifest=MANIFEST) -> list[dict]:
         with self._lock():
-            rows = [self.poll(f) for f in feeds(manifest) if f.get("status") == "active"]
+            last = self.last_polled()
+            now = time.time()
+            rows = [self.poll(f) for f in feeds(manifest) if f.get("status") == "active"
+                    and now - last.get(f["id"], 0) >= f.get("every_h", 1) * 3600 - 300]
             cfg = json.loads(pathlib.Path(manifest).read_text(encoding="utf-8")).get("gdelt") or {}
             if cfg.get("status") == "active":                 # the structured event source (news_gdelt.py)
                 try:
