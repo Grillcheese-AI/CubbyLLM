@@ -32,12 +32,15 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
   each URL, record its terms, and respect a refusal (a robot block, an error, a terms page that forbids it). Replace
   the third-party AP mirror with an official feed or drop it.
   - **Le Devoir (Nick, 2026-10-22):** the front-page feed `https://www.ledevoir.com/rss/manchettes.xml`, the older
-    `http://feeds2.feedburner.com/fluxdudevoir` (check it is still updated: a stale mirror is dropped, as feedx.net's
-    AP was), and the section feeds listed at `https://www.ledevoir.com/flux-rss` (the page builds its list in the
+    `http://feeds2.feedburner.com/fluxdudevoir` (Le Devoir's "Fil de presse", current on 2026-10-22; drop it if it
+    goes stale, as feedx.net's AP mirror did), and the section feeds listed at `https://www.ledevoir.com/flux-rss` (the page builds its list in the
     browser; read it from Nick's machine).
-  - **La Presse (Nick, 2026-10-22):** `https://www.lapresse.ca/actualites/rss`. Fetched from Cowork's side it
-    answered with a client error: check it from Nick's machine with the poller's user agent, and if it refuses a
-    robot, leave it out, as CBC was.
+  - **La Presse (Nick, 2026-10-22):** `https://www.lapresse.ca/manchettes/rss` (front page) and
+    `https://www.lapresse.ca/actualites/rss` (news). Cowork's cloud fetcher got a client error from both; from Nick's
+    machine with the poller's user agent (`CubbyLLM/0.1`) both answer 200 with current items (2026-10-22: 8 and 10
+    items). So they read from the serve stack; record their terms.
+  - Checked the same way the same day: Le Devoir's `manchettes.xml` (36 items) and the FeedBurner "Fil de presse"
+    (19 items) are both current.
   - Then other Québec and French outlets, each checked the same way.
 - **Events by day:** items about the same event (shared names and key words, within a day or two) grouped across
   outlets; who and what read by the frames (Cubby-native), as **reported** claims dated by their items. A group stays
