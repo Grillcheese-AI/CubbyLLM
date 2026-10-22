@@ -129,7 +129,7 @@ RUN           = 5                                   # 1: facts in-window, one sc
                                                     # document, facts beyond the window; 3: only writers bound, lead;
                                                     # 4: run 3's link + the copy path over the ring (link arm only);
                                                     # 5: run 4's copy trained ALONE on run 3's frozen trunk (order 0005)
-HOURS_PER_ARM = 2.0 if RUN < 4 else 0.5             # equal compute for both arms; runs 4-5: short -- COWORK SETS IT
+HOURS_PER_ARM = 2.0 if RUN < 4 else 0.5 if RUN == 4 else 0.15   # equal compute for both arms; run 4: 0.5 h; run 5 (copy only): 0.15 h (Cowork)
                                                     # (run 4's curve: exp_k10_far_facts combo_ring_s*; run 5: run 4's)
 SEQ           = 1024                                # whole documents a window: two villages (512) or one far-facts doc (1024)
 TOKENS_PER_STEP = 131_072                           # the optimizer step; BOTH ARMS MUST MATCH (the readout checks it)

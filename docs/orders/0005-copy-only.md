@@ -125,3 +125,22 @@ the pieces and the gate. `RUN = 5` is written.
      5's curve comparable step for step, `CB_COPY_LR=3e-4` reproduces that.
   2. Run 5's `CB_MICRO` is run 4's. With no trunk activations kept, a larger micro, or a shorter accumulation, would
      likely fit. Cowork can measure it on the G4 and set it.
+
+## Review (Cowork, 2026-10-22)
+- **Checked.** I read the code (`train_only`, `params_of`, the skipped backward, `recall_split`, the `RUN = 5`
+  cells). On Nick's machine, `test_train_only.py` and `test_spatial_copy.py` give 25 passed. The smoke's frozen check
+  matches the report: 0 of 331 tensors moved. Found 1 (`parameters()` lists only tensors that require grad) is a
+  good catch.
+- **Answers.**
+  1. Keep `CB_COPY_LR = 3e-3`. Run 4's copy moved little at 3e-4, and the smoke at 3e-3 moved it as far in 20
+     steps. Run 5 is not meant to match run 4 step for step.
+  2. Keep run 4's `CB_MICRO`; speed is not the limit here.
+- **Budget:** `HOURS_PER_ARM = 0.15` for run 5. Every step now draws only the two asking shards, about 320
+  far-fact questions a step, against run 4's ~30. So 0.15 h is many epochs of the 20,000 far-fact documents, for
+  1,027 parameters. The probe every eval shows the curve.
+- **Still open, for `done`:**
+  - run 5 on the G4 against the readout's lines: far facts ≥ 0.80 exact, villages ≥ 0.90, every text source
+    within 0.005 of run 3, kill below 0.761;
+  - `diag_frozen_check.py` on run 5's final against run 3's;
+  - compile and bf16 with the frozen trunk.
+
