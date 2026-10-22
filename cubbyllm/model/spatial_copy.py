@@ -80,12 +80,16 @@ class SpatialCopy(nn.Module):
         if refuse is not None:
             self.set_refuse(**refuse)
 
-    def set_refuse(self, theta: float, theta_end: float, refuse_id: int, step=(0, 0, 6), lookahead: int = 16) -> None:
+    def set_refuse(self, theta: float, theta_end: float, refuse_id: int, step=(0, 0, 6), lookahead: int = 16,
+                   end_id: int | None = None) -> None:
         """Copy or refuse (order 0022; ``meta["spatial"]["copy_refuse"]``, absent = the mix above): a piece clears
-        ``theta``, an end reads below ``theta_end``, anything between refuses the answer, said as ``refuse_id``."""
+        ``theta``, an end reads below ``theta_end``, anything between refuses the answer, said as ``refuse_id``.
+        ``end_id``: the token that ends a copied answer, said by the contract at the end position (None: the trunk says
+        it -- the 450M's run 5 then often runs on past a whole copied answer)."""
         if not theta_end <= theta:
             raise ValueError(f"theta_end ({theta_end}) must not exceed theta ({theta})")
-        self.refuse = (float(theta), float(theta_end), tuple(step), int(refuse_id), int(lookahead))
+        self.refuse = (float(theta), float(theta_end), tuple(step), int(refuse_id), int(lookahead),
+                       None if end_id is None else int(end_id))
 
     def forward(self, logits: torch.Tensor, h: torch.Tensor, r: torch.Tensor, table: torch.Tensor,
                 idx: torch.Tensor, ids: torch.Tensor | None = None, ok: torch.Tensor | None = None):

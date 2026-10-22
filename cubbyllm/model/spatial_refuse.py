@@ -91,7 +91,7 @@ def apply(link, logits, log_copy, idx, S, scene, pos, q, table, ids, ok, state=N
     """The rows (n, V) at asking positions ``idx`` under the contract. Forward: runs from ``idx``; decode (``state``,
     S = 1, one position a row): the run continues while the row keeps asking."""
     cp = link.copy_path
-    theta, theta_end, step, rid, K = cp.refuse
+    theta, theta_end, step, rid, K, end_id = cp.refuse
     starts, off = runs(idx, S) if state is None else (torch.arange(idx.numel(), device=idx.device), None)
     first = starts.unique() if state is None else (~state["cr_prev"][idx]).nonzero().squeeze(1)
     L = torch.zeros(idx.numel(), dtype=torch.long, device=idx.device)
@@ -111,6 +111,10 @@ def apply(link, logits, log_copy, idx, S, scene, pos, q, table, ids, ok, state=N
     refused = torch.full_like(logits, -1e4, dtype=torch.float32)
     refused[:, rid] = 0.0
     out = torch.where((off < L)[:, None], log_copy, F.log_softmax(logits.float(), -1))
+    if end_id is not None:                                # the end of a copied answer said by the contract, not the trunk
+        end = torch.full_like(logits, -1e4, dtype=torch.float32)
+        end[:, end_id] = 0.0
+        out = torch.where(((off == L) & (L > 0))[:, None], F.log_softmax(end, -1), out)
     return torch.where((L == 0)[:, None], F.log_softmax(refused, -1), out)
 
 

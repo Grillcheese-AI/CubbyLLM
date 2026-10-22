@@ -92,11 +92,11 @@ def capture(model, tk, x, places, roles, absent, eos, batch) -> list:
 
 
 @torch.no_grad()
-def spoken(model, tk, x, places, roles, absent, eos, batch, refuse=None) -> dict:
+def spoken(model, tk, x, places, roles, absent, eos, batch, refuse=None, end_id=None) -> dict:
     """The model's answers (argmax from the run's first token to the newline): with the contract, or run 5's mix."""
     nl = tk.encode("\n", add_special_tokens=False).ids[-1]
     if refuse is not None:
-        model.spatial.copy_path.set_refuse(*refuse, eos, STEP, K)
+        model.spatial.copy_path.set_refuse(*refuse, eos, STEP, K, end_id=end_id)
     ex, ref, ab, lang = [], [], [], 0.0
     try:
         for b in range(0, len(x), batch):
@@ -140,6 +140,9 @@ def main() -> None:
     ap.add_argument("--tokenizer", default=os.environ.get("CUBBY_SPM") or os.path.join(
         os.environ.get("CUBBY_MODELS", ""), "base450m", "grilly", "tokenizer.json"))
     ap.add_argument("--date", default=time.strftime("%Y-%m-%d"))
+    ap.add_argument("--theta", type=float, default=None, help="a fitted pair (with --theta-end): the test half only")
+    ap.add_argument("--theta-end", type=float, default=None)
+    ap.add_argument("--end", action="store_true", help="the contract says the answer's end (the newline) itself")
     c = ap.parse_args()
     torch.set_num_threads(c.threads)
     from tokenizers import Tokenizer
@@ -152,6 +155,16 @@ def main() -> None:
     x, places, roles, absent = load_docs(c.probe, c.docs)
     h = len(x) // 2
     cal, test = (x[:h], places[:h], roles[:h], absent[:h]), (x[h:], places[h:], roles[h:], absent[h:])
+    nl = tk.encode("\n", add_special_tokens=False).ids[-1]
+    if c.theta is not None:                                # a fitted pair: the model's own answers on the test half only
+        rep = {"checkpoint": os.path.basename(c.ckpt), "probe": NAME, "theta": c.theta, "theta_end": c.theta_end,
+               "end_said_by_the_contract": c.end, "docs": {"test": len(x) - h},
+               "test_model": spoken(model, tk, *test, eos, c.batch, (c.theta, c.theta_end), nl if c.end else None),
+               "wall_s": round(time.time() - t0, 1)}
+        out = os.path.join(HERE_DIR, "logs", f"exp_refuse_450m{'_end' if c.end else ''}_{c.date}.json")
+        json.dump(rep, open(out, "w", encoding="utf-8"), indent=1)
+        print(json.dumps(rep, indent=1))
+        return
     f = kr.fit(capture(model, tk, *cal, eos, c.batch))
     rep = {"checkpoint": os.path.basename(c.ckpt), "probe": NAME, "docs": {"calibration": h, "test": len(x) - h},
            "lines": kr.LINES, "lookahead": K, **f, "test_mix": spoken(model, tk, *test, eos, c.batch)}

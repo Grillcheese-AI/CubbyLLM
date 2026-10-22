@@ -89,6 +89,18 @@ def simulate(rows, theta: float, theta_end: float) -> dict:
             "n_present": len(pres), "n_absent": len(absent)}
 
 
+def cells(rows, theta: float, theta_end: float) -> dict:
+    """``simulate`` per held-out cell: seen / unseen subject x a training / held-out phrasing (order 0022 B)."""
+    from k10_free_docs import HELD_T
+    out = {}
+    for unseen in (False, True):
+        for held in (False, True):
+            sub = [r for r in rows if bool(r[0].get("unseen")) == unseen and (r[0].get("template") in HELD_T) == held]
+            if sub and any(not r[0]["absent"] for r in sub):
+                out[f"{'unseen' if unseen else 'seen'}/{'held' if held else 'train'}"] = simulate(sub, theta, theta_end)
+    return out
+
+
 def fit(rows) -> dict:
     """The pair meeting both lines on these rows with the fewest refused, then the lowest theta."""
     vals = np.unique(np.round(np.concatenate([r[2] for r in rows]), 3))
@@ -140,6 +152,7 @@ def main() -> None:
     ap.add_argument("--resume", required=True)
     ap.add_argument("--threads", type=int, default=2)
     ap.add_argument("--date", default=time.strftime("%Y-%m-%d"))
+    ap.add_argument("--tag", default="", help="in the log's name after the arm (order 0022 B: _t12)")
     c = ap.parse_args()
     torch.set_num_threads(c.threads)
     model, a, lay, held = sw.load(c.resume)
@@ -148,10 +161,12 @@ def main() -> None:
     f = fit(capture(model, a, cal, lay))
     rep = {"arm": a.arm, "seed": a.seed, "lines": LINES, "lookahead": K, "calibration_docs": a.held, **f}
     if f["theta"] is not None:
-        rep["test_simulated"] = simulate(capture(model, a, held, lay), f["theta"], f["theta_end"])
+        test_rows = capture(model, a, held, lay)
+        rep["test_simulated"] = simulate(test_rows, f["theta"], f["theta_end"])
+        rep["test_cells"] = cells(test_rows, f["theta"], f["theta_end"])
         rep["test_model"] = spoken(model, a, held, lay, f["theta"], f["theta_end"])
     rep["wall_s"] = round(time.time() - t0, 1)
-    out = os.path.join(HERE_DIR, "logs", f"k10_refuse_{a.arm}_s{a.seed}_{c.date}.json")
+    out = os.path.join(HERE_DIR, "logs", f"k10_refuse_{a.arm}{c.tag}_s{a.seed}_{c.date}.json")
     json.dump(rep, open(out, "w", encoding="utf-8"), indent=1)
     print(json.dumps(rep, indent=1))
 

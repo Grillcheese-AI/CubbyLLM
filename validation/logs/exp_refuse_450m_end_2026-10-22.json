@@ -1,0 +1,20 @@
+{
+ "checkpoint": "spatial_link_5_final.pt",
+ "probe": "facts_far1k_v2_absent",
+ "theta": 0.11699999868869781,
+ "theta_end": 0.08500000089406967,
+ "end_said_by_the_contract": true,
+ "docs": {
+  "test": 200
+ },
+ "test_model": {
+  "exact": 0.6535626535626535,
+  "present_refused": 0.32923832923832924,
+  "present_wrong": 0.01719901719901723,
+  "absent_answered": 0.0,
+  "n_present": 814,
+  "n_absent": 183,
+  "max_logit_change_off_the_askers": 0.0
+ },
+ "wall_s": 1527.1
+}

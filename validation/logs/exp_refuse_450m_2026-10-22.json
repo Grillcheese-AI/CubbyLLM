@@ -1,0 +1,49 @@
+{
+ "checkpoint": "spatial_link_5_final.pt",
+ "probe": "facts_far1k_v2_absent",
+ "docs": {
+  "calibration": 200,
+  "test": 200
+ },
+ "lines": {
+  "present_wrong": 0.02,
+  "absent_answered": 0.05
+ },
+ "lookahead": 16,
+ "theta": 0.11699999868869781,
+ "theta_end": 0.08500000089406967,
+ "calibration": {
+  "exact": 0.6957605985037406,
+  "present_refused": 0.28428927680798005,
+  "present_wrong": 0.019950124688279336,
+  "absent_answered": 0.0,
+  "n_present": 802,
+  "n_absent": 175
+ },
+ "test_mix": {
+  "exact": 0.8759213759213759,
+  "present_refused": 0.0,
+  "present_wrong": 0.12407862407862413,
+  "absent_answered": 1.0,
+  "n_present": 814,
+  "n_absent": 183
+ },
+ "test_simulated": {
+  "exact": 0.6535626535626535,
+  "present_refused": 0.32923832923832924,
+  "present_wrong": 0.01719901719901723,
+  "absent_answered": 0.0,
+  "n_present": 814,
+  "n_absent": 183
+ },
+ "test_model": {
+  "exact": 0.6167076167076168,
+  "present_refused": 0.32923832923832924,
+  "present_wrong": 0.054054054054054,
+  "absent_answered": 0.0,
+  "n_present": 814,
+  "n_absent": 183,
+  "max_logit_change_off_the_askers": 0.0
+ },
+ "wall_s": 2855.8
+}

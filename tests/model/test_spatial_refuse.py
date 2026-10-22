@@ -152,3 +152,15 @@ def test_the_pointers_query_rebound_is_the_key_of_the_later_piece():
     got = sr.queries(link, p, q, table, 4, STEP)                                  # pieces 1..4
     want = link.encode(torch.tensor([[[3.0, 7.0, 1.0 + k] for k in range(4)]]), table)
     assert torch.allclose(got, want, atol=1e-4)
+
+
+def test_the_contract_can_say_the_end_of_a_copied_answer():
+    m, batch = _model(), _batch()
+    lo, end = _thresholds(_bests(m, batch))
+    m.spatial.copy_path.set_refuse(lo - 1e-4, (lo + end) / 2, RID, STEP, 6, end_id=7)
+    with torch.no_grad():
+        out = m.forward(*batch)
+    assert int(out[0, 11].argmax()) == 7 and torch.exp(out[0, 11, 7]) > 0.999      # the end, said by the contract
+    cand = torch.tensor([31, 32, 33])
+    assert all(torch.logsumexp(out[0, t, cand], 0).abs() < 1e-4 for t in (8, 9, 10))
+    assert torch.allclose(_decode(m, *batch), out, atol=1e-4, rtol=1e-4)

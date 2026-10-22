@@ -1,0 +1,69 @@
+{
+ "arm": "P",
+ "seed": 2,
+ "lines": {
+  "present_wrong": 0.02,
+  "absent_answered": 0.05
+ },
+ "lookahead": 8,
+ "calibration_docs": 1024,
+ "theta": 0.20499999821186066,
+ "theta_end": 0.13600000739097595,
+ "calibration": {
+  "exact": 0.5856622114216282,
+  "present_refused": 0.39489671931956255,
+  "present_wrong": 0.01944106925880923,
+  "absent_answered": 0.009950248756218905,
+  "n_present": 823,
+  "n_absent": 201
+ },
+ "test_simulated": {
+  "exact": 0.5864661654135338,
+  "present_refused": 0.39849624060150374,
+  "present_wrong": 0.01503759398496246,
+  "absent_answered": 0.004424778761061947,
+  "n_present": 798,
+  "n_absent": 226
+ },
+ "test_cells": {
+  "seen/train": {
+   "exact": 0.6230366492146597,
+   "present_refused": 0.3612565445026178,
+   "present_wrong": 0.015706806282722474,
+   "absent_answered": 0.0,
+   "n_present": 191,
+   "n_absent": 55
+  },
+  "seen/held": {
+   "exact": 0.5489130434782609,
+   "present_refused": 0.42391304347826086,
+   "present_wrong": 0.02717391304347827,
+   "absent_answered": 0.0,
+   "n_present": 184,
+   "n_absent": 53
+  },
+  "unseen/train": {
+   "exact": 0.5919282511210763,
+   "present_refused": 0.39461883408071746,
+   "present_wrong": 0.013452914798206261,
+   "absent_answered": 0.015151515151515152,
+   "n_present": 223,
+   "n_absent": 66
+  },
+  "unseen/held": {
+   "exact": 0.58,
+   "present_refused": 0.415,
+   "present_wrong": 0.00500000000000006,
+   "absent_answered": 0.0,
+   "n_present": 200,
+   "n_absent": 52
+  }
+ },
+ "test_model": {
+  "exact": 0.5864661654135338,
+  "present_refused": 0.39849624060150374,
+  "present_wrong": 0.01503759398496246,
+  "absent_answered": 0.004424778761061947
+ },
+ "wall_s": 221.2
+}
