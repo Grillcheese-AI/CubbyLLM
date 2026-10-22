@@ -130,6 +130,8 @@ def parser() -> argparse.ArgumentParser:
 
 def boot(args, ap: argparse.ArgumentParser):
     """The brain the arguments describe, everything mounted (or `ap.error` when no emitter is named)."""
+    from cubby_serve.keys import use_host_key
+    use_host_key()                                       # the vault's key: the server names its place (0031)
     from cubby_serve.build import build_serve
     from cubby_serve.api import serve_http  # noqa: F401 -- the shell serves it
     if args.ask and not args.wiki:

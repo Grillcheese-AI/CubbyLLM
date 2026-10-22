@@ -872,6 +872,8 @@ def write_real_user_turns(out_path: str, path: str = OWNER_CHATS, min_words: int
     if not os.path.exists(path):
         return 0
     import vault                                         # user chats are never stored unencrypted (owner, 2026-09-04)
+    from cubby_serve.keys import use_host_key
+    use_host_key()                                       # the serve stack's host key (order 0031)
     seen, lines = set(), []
     with open(path, encoding="utf-8") as f:
         for line in f:

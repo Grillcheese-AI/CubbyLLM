@@ -66,6 +66,8 @@ class Timed:
 def load_turns(n: int, seed: int) -> list[dict]:
     if os.path.exists(TURNS):
         import vault
+        from cubby_serve.keys import use_host_key
+        use_host_key()
         rows = [json.loads(l) for l in vault.read_lines(TURNS)]
         random.Random(seed).shuffle(rows)
         return rows[:n]
@@ -120,6 +122,8 @@ def main() -> None:
                "wall_total_s": round(time.perf_counter() - t_all, 1)}
     print("\n[stand-in] talk probe:", json.dumps(summary, ensure_ascii=False))
     import vault
+    from cubby_serve.keys import use_host_key
+    use_host_key()
     out = os.path.join(ROOT, "standin", "data", "out", f"talk_probe{args.tag}.json")
     json.dump({"summary": summary}, open(out, "w", encoding="utf-8"), indent=1, ensure_ascii=False)   # no user text in the clear
     vault.write_json(out + ".enc", {"summary": summary, "rows": rows})                                  # the rows: vault-encrypted

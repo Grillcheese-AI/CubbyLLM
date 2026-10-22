@@ -1,13 +1,15 @@
-"""[stand-in] the vault — user chats are never stored unencrypted (owner, 2026-09-04).
+"""cubbyllm/speech/vault.py -- the vault: user chats are never stored unencrypted (owner, 2026-09-04; moved from
+standin/vault.py in order 0031: keeping a user's chat encrypted is Cubby's rule).
 
-Wired: STANDALONE (the builders, probes and the ledger write user text through it; nothing in cubbyllm/ imports it).
+Wired: WIRED (the server's ledger and harness wiring; the context graph's saves; the builders and probes).
 
 Stdlib only (no `cryptography` on this machine): authenticated encryption built from HMAC-SHA256 —
   keystream  = HMAC(k_enc, nonce || counter) blocks, XORed over the plaintext (a CTR-style stream cipher over a
                16-byte random nonce; a keystream block is never reused because the nonce is fresh per message)
   tag        = HMAC(k_mac, nonce || ciphertext)                      (encrypt-then-MAC; constant-time compare)
   message    = MAGIC || nonce || ciphertext || tag
-The host key lives in `standin/data/out/host.key` (generated once, 64 hex chars) or `CB_HOST_KEY`; the vault and the
+The host key lives where the server names it (`use_key_file`; the serve stack's is `standin/data/out/host.key`,
+generated once, 64 hex chars, `cubby_serve.keys`) or comes from `CB_HOST_KEY`; the vault and the
 ledger use keys derived from it (`subkey("vault")`, `subkey("ledger")`), so one file protects both and neither can be
 used for the other. What goes through the vault: the real-user-turn eval file, the talk probe's rows, the ledger's
 `input` column (a factory request is a user turn), and any chat log the serve stack ever persists. The training
@@ -22,10 +24,9 @@ import os
 import pathlib
 import secrets
 
-__wiring__ = "STANDALONE"
+__wiring__ = "WIRED"
 
-HERE = pathlib.Path(__file__).resolve().parents[2] / "standin"
-KEY_FILE = HERE / "data" / "out" / "host.key"
+KEY_FILE: pathlib.Path | None = None   # the server names it (use_key_file); the package names no place (order 0031)
 KEY_ENV = "CB_HOST_KEY"
 MAGIC = b"CBV1"
 NONCE = 16
@@ -34,11 +35,14 @@ BLOCK = 32
 
 
 def host_key(path: pathlib.Path | None = None) -> bytes:
-    """The host key: the env var, else the key file (created once with 256 bits of entropy)."""
+    """The host key: the env var, else the key file the server named (created once with 256 bits of entropy).
+    Neither: a RuntimeError, never a file in a place of the package's own choosing."""
     env = os.environ.get(KEY_ENV)
     if env:
         return hashlib.sha256(env.encode("utf-8")).digest()
     kf = path or KEY_FILE
+    if kf is None:
+        raise RuntimeError(f"no host key: the server names its file (vault.use_key_file) or {KEY_ENV} is set")
     if kf.exists():
         return bytes.fromhex(kf.read_text(encoding="ascii").strip())
     kf.parent.mkdir(parents=True, exist_ok=True)
@@ -49,6 +53,12 @@ def host_key(path: pathlib.Path | None = None) -> bytes:
     except OSError:
         pass
     return k
+
+
+def use_key_file(path) -> None:
+    """Where the host key lives (the server's choice: ``cubby_serve.keys``)."""
+    global KEY_FILE
+    KEY_FILE = pathlib.Path(path)
 
 
 def subkey(purpose: str, key: bytes | None = None) -> bytes:

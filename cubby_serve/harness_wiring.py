@@ -276,6 +276,8 @@ def bootstrap_config(brain, adapters: dict[str, str] | None = None, budget: dict
     import json
     import os
     from cubbyllm.speech import vault
+    from cubby_serve.keys import use_host_key
+    use_host_key()
     from cubby_serve.harness import DEFAULT_BUDGET, file_sha, sign_config
     if gate_pack:
         with open(gate_pack, encoding="utf-8") as f:
@@ -300,6 +302,8 @@ def boot_serve(brain, config: dict | str | None = None, ledger=None, speaker=Non
     signed config (`gate_packs`)."""
     import json
     from cubbyllm.speech import vault
+    from cubby_serve.keys import use_host_key
+    use_host_key()
     from cubby_serve.harness import Harness, Preflight, ToolRegistry
     from cubby_serve.ledger import Ledger
     if isinstance(config, str):

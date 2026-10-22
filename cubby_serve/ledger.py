@@ -83,6 +83,8 @@ class Ledger:
         if env:
             return env.encode("utf-8")
         from cubbyllm.speech import vault                                     # one host key protects the vault and signs the ledger, via derived subkeys
+        from cubby_serve.keys import use_host_key
+        use_host_key()
         return vault.subkey("ledger")
 
     def sign(self, h: str) -> str:
@@ -97,6 +99,8 @@ class Ledger:
                "ok": bool(ok), "vm_build": self.vm_build}
         h = decision_hash(rec)
         from cubbyllm.speech import vault                                     # the input may be a user's turn (a factory request): never in the clear
+        from cubby_serve.keys import use_host_key
+        use_host_key()
         with self._lock:
             self.db.execute("INSERT OR IGNORE INTO certifications VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                             (h, rec["program_sha256"], name, kind, fn, None if input is None else vault.encrypt_str(str(input)),
@@ -116,6 +120,8 @@ class Ledger:
         d["ok"] = bool(d["ok"])
         if d.get("input"):
             from cubbyllm.speech import vault
+            from cubby_serve.keys import use_host_key
+            use_host_key()
             try:
                 d["input"] = vault.decrypt_str(d["input"])
             except (ValueError, TypeError):
