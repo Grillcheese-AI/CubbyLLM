@@ -277,10 +277,11 @@ def test_the_backends_read_their_documented_shapes_and_nothing_else():
 
 def test_the_key_is_read_from_the_environment_or_a_gitignored_env_file(tmp_path, monkeypatch):
     import web_source
+    from cubbyllm.sources import web_search                    # where env_key reads ENV_FILES (split out, order 0031)
     monkeypatch.delenv("BRAVE_SEARCH_API_KEY", raising=False); monkeypatch.delenv("BRAVE_API_KEY", raising=False)
     f = tmp_path / ".env"
     f.write_text("OTHER=1\nBRAVE_SEARCH_API_KEY=\"from-file\"\n", encoding="utf-8")
-    monkeypatch.setattr(web_source, "ENV_FILES", (tmp_path / "missing.env", f))
+    monkeypatch.setattr(web_search, "ENV_FILES", (tmp_path / "missing.env", f))
     assert web_source.env_key("BRAVE_SEARCH_API_KEY") == "from-file"
     monkeypatch.setenv("BRAVE_SEARCH_API_KEY", "from-env")
     assert web_source.env_key("BRAVE_SEARCH_API_KEY") == "from-env"
