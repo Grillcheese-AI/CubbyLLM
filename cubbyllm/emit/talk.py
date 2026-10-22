@@ -1,7 +1,7 @@
-"""emitter_talk -- the talk seat on base450m (its prompt and answer formats) and the `ContextualEmitter` that
-routes a call to a role by its context (split out of emitter.py, order 0030).
+"""cubbyllm/emit/talk.py -- the talk seat on base450m (its prompt and answer formats) and the `ContextualEmitter`
+that routes a call to a role by its context (split out of emitter.py, order 0030; moved here in order 0031).
 
-Wired: STANDALONE (stand-in; re-exported by emitter.py).
+Wired: WIRED (the server routes every turn through `ContextualEmitter`; re-exported by standin/emitter.py).
 """
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import os
 
 from .seats_450m import Cubby450mTrunk
 
-__wiring__ = "STANDALONE"
+__wiring__ = "WIRED"
 
 
 # the talk adapter's own formats (standin/data/build_ground_sft.py, build_chat_sft.py): a facts block, a

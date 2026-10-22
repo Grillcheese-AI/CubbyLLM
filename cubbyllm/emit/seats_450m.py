@@ -1,7 +1,7 @@
-"""emitter_450m -- CubbyLLM's own base450m on grilly2 and its LoRA roles: the trunk that swaps adapters in place,
-and the program emitter on it (split out of emitter.py, order 0030).
+"""cubbyllm/emit/seats_450m.py -- CubbyLLM's own base450m on grilly2 and its LoRA roles: the trunk that swaps
+adapters in place, and the program emitter on it (split out of emitter.py, order 0030; moved here in order 0031).
 
-Wired: STANDALONE (stand-in; re-exported by emitter.py).
+Wired: WIRED (the server's 450M seats, `--cubby450m`; re-exported by standin/emitter.py).
 """
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import json
 import os
 import threading
 
-__wiring__ = "STANDALONE"
+__wiring__ = "WIRED"
 
 
 class Cubby450mTrunk:

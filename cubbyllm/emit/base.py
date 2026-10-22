@@ -1,11 +1,11 @@
-"""emitter_base -- the emitter contract and what every emitter shares (split out of emitter.py, order 0030; the
-stand-in's parts went to emitter_llama in order 0031).
+"""cubbyllm/emit/base.py -- the emitter contract and what every emitter shares (split out of emitter.py, order 0030;
+the stand-in's parts went to standin/emitter_llama.py and this moved here in order 0031).
 
 `Emitter` (text in, a CubeLang program or a reply out), reply cleaning (`clean_reply`; `strip_think` and
 `strip_fences` for programs), the card's decode lock, and the `ReplayEmitter`. `emitter.py` re-exports every name
 here.
 
-Wired: STANDALONE (stand-in; nothing in cubbyllm/ imports this).
+Wired: WIRED (the ask loop and the chat turn clean replies with it; every emitter shares the contract).
 """
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ import re
 import threading
 from typing import Protocol, runtime_checkable
 
-__wiring__ = "STANDALONE"
+__wiring__ = "WIRED"
 
 SYSTEM = ("You are the CubeLang emitter. Given a question or instruction, output ONLY a complete "
           "CubeLang program that solves it. No prose, no explanation.")
