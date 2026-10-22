@@ -36,9 +36,7 @@ def per_file(report: str) -> dict:
 
 def compare(before: dict, after: dict, moved: dict) -> dict:
     """Per test file (a moved file under its new name): the counts before and after, and every difference."""
-    rename = {}
-    for old, new in moved.items():
-        rename[old.replace("/", ".").removesuffix(".py")] = new
+    rename = dict(moved)                                  # old test path -> new test path, as the summaries key them
     diff = {}
     after_files = dict(after["files"])
     for f, c in before["files"].items():
