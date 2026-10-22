@@ -167,8 +167,9 @@ def rescore(path: pathlib.Path) -> None:
     answers are in the log; only their verdicts change."""
     from cubbyllm.reasoning.planner import normalize
     from sources import WikidataSource
+    from cubby_serve.sources.http import wikidata as _wikidata_fetch  # noqa: E402 -- the online fetch (0031)
     d = json.loads(path.read_text(encoding="utf-8"))
-    wd, memo = WikidataSource(), {}
+    wd, memo = WikidataSource(fetch=_wikidata_fetch()), {}
     c = collections.Counter({k: v for k, v in d["counts"].items() if not k.startswith(("spoke:", "held:"))})
     changed = []
     for r in d["rows"]:
@@ -243,16 +244,18 @@ def main() -> None:
     wikidata = None
     if a.handoff:
         from sources import WikidataSource
-        wikidata = WikidataSource()
+        from cubby_serve.sources.http import wikidata as _wikidata_fetch  # noqa: E402 -- the online fetch (0031)
+        wikidata = WikidataSource(fetch=_wikidata_fetch())
     from sources import WikidataSource as _WD
+    from cubby_serve.sources.http import wikidata as _wikidata_fetch  # noqa: E402 -- the online fetch (0031)
     backend = BraveBackend()
-    web = WebSource(backend, reader=reader, wikidata=wikidata, containment=_WD(), dissent_blocks=a.dissent,
+    web = WebSource(backend, reader=reader, wikidata=wikidata, containment=_WD(fetch=_wikidata_fetch()), dissent_blocks=a.dissent,
                     offline=a.offline, cache_dir=ROOT / "standin" / "data" / "out" / f"web_r33{a.cache or a.tag}")
     log(f"web: {backend.name} ({backend.license}), reader {'LFM base (CPU)' if reader else 'off'}, "
         f"handoff {'on' if wikidata else 'off'}, two independent sites to attest, containment Wikidata, "
         f"dissent {'vetoes' if a.dissent else 'ignored'}{', OFFLINE (cache)' if a.offline else ''}")
     from sources import WikidataSource
-    wd, memo = WikidataSource(), {}                      # the scorer's containment lookups (never the loop's)
+    wd, memo = WikidataSource(fetch=_wikidata_fetch()), {}                      # the scorer's containment lookups (never the loop's)
     session = cc.CubelangSession(exe=a.exe)
 
     def run_fn(source, fn):

@@ -97,6 +97,7 @@ def main() -> None:
     from cubbyllm.reasoning.plan_verify import StoreRelations
     from cubbyllm.reasoning.planner import QuestionPlan, normalize, parse_fact
     from sources import WikidataSource
+    from cubby_serve.sources.http import wikidata as _wikidata_fetch  # noqa: E402 -- the online fetch (0031)
 
     wk.ensure_data(("triplets",))
     world = wk.wiki_world()
@@ -149,7 +150,7 @@ def main() -> None:
     log("  SimpleQA-run shapes: " + "; ".join(sorted({" > ".join(tuple(e.relations)) for e in hip.episodes if e.provenance.get("run") != "exp_r13"})))
 
     # ---- the gate ----------------------------------------------------------------
-    src = WikidataSource(offline=a.offline); resolvers = [Lexicon()]
+    src = WikidataSource(offline=a.offline, fetch=_wikidata_fetch()); resolvers = [Lexicon()]
     session = cc.CubelangSession(exe=a.exe) if a.resident else None
     calls = collections.Counter()
     def run_fn(source, fn):

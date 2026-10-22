@@ -204,6 +204,7 @@ def main() -> None:
         from emitter import LlamaCppEmitter
         from eval_emitter_vm import strip_fences
         from sources import WikidataSource
+        from cubby_serve.sources.http import wikidata as _wikidata_fetch  # noqa: E402 -- the online fetch (0031)
         wk.ensure_data(("triplets",))
         world = wk.wiki_world()
         known = StoreRelations(world.index._seen)
@@ -232,7 +233,7 @@ def main() -> None:
             from lfm_source import LfmSource
             src = LfmSource(a.lfm_gguf)                         # local, latent: its facts are stored, never spoken alone
         else:
-            src = WikidataSource(offline=a.offline)
+            src = WikidataSource(offline=a.offline, fetch=_wikidata_fetch())
         resolvers = []
         if a.lexicon:
             from cubbyllm.reasoning.lexicon import Lexicon

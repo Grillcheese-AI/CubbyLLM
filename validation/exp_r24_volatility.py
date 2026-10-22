@@ -298,9 +298,10 @@ def _run_probe(a, picked, log, t0, day, seed, normalize, lines) -> None:
         return
 
     from sources import WikidataSource
+    from cubby_serve.sources.http import wikidata as _wikidata_fetch  # noqa: E402 -- the online fetch (0031)
     # cache_dir=None is the whole point: a cached re-fetch compares the
     # snapshot against itself and reports 0% volatility forever.
-    src = WikidataSource(cache_dir=None, sleep_s=a.sleep)
+    src = WikidataSource(cache_dir=None, sleep_s=a.sleep, fetch=_wikidata_fetch())
 
     table = load_table()
     preds = table["predicates"]

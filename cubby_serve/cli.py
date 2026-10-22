@@ -139,7 +139,11 @@ def boot(args, ap: argparse.ArgumentParser):
             from cubbyllm.worlds.hdc_store import HdcWorld, Stores
             world = Stores(world, HdcWorld())
         source = args.ask
-        if source == "lfm":                             # the stand-in's LFM as the source (latent tier): built here,
+        if source == "wikidata":                        # online: the server hands the source its fetch (order 0031)
+            from cubbyllm.sources.wikidata import WikidataSource
+            from cubby_serve.sources.http import wikidata as wikidata_fetch
+            source = WikidataSource(offline=False, use_choices=True, fetch=wikidata_fetch())
+        elif source == "lfm":                             # the stand-in's LFM as the source (latent tier): built here,
             from lfm_source import LfmSource             # so the loop never imports the stand-in (order 0031)
             source = LfmSource(os.path.join(ROOT, "standin", "models", "LFM2.5-2.6B.Q4_K_M.gguf"))
         brain.ask_loop = AskLoop(brain.emitter, world=world, source=source, lexicon=True,

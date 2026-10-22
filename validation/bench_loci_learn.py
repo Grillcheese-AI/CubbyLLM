@@ -102,12 +102,13 @@ def main() -> None:
     import wikikg as wk
     from hdc_store import HdcWorld
     from sources import WikidataSource
+    from cubby_serve.sources.http import wikidata as _wikidata_fetch  # noqa: E402 -- the online fetch (0031)
     t0, hdc = time.time(), HdcWorld()
     wiki = wk.wiki_world()
     names = set(wiki.index._by_subj) | set(wiki.index._by_obj)
     qs, forms = battery(a.src, hdc, names, a.n, random.Random(a.seed))
     if a.phase == 1:
-        wd = WikidataSource(offline=False, use_choices=True)
+        wd = WikidataSource(offline=False, use_choices=True, fetch=_wikidata_fetch())
         src = Counted(wd)
         loop = make_loop(forms, src)
         rows, learned = [], []

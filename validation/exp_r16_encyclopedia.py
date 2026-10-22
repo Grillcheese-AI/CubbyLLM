@@ -90,8 +90,9 @@ def main() -> None:
     wd = None
     if a.wikidata:
         from sources import WikidataSource
+        from cubby_serve.sources.http import wikidata as _wikidata_fetch  # noqa: E402 -- the online fetch (0031)
         from cubbyllm.reasoning.planner import parse_fact
-        wd = WikidataSource()
+        wd = WikidataSource(fetch=_wikidata_fetch())
     checking = world is not None or wd is not None
 
     c = collections.Counter(); facts_out: list[dict] = []; disagreements: list[dict] = []

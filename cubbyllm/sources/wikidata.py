@@ -21,7 +21,6 @@ import json
 import pathlib
 import time
 import urllib.parse
-import urllib.request
 
 __wiring__ = "WIRED"
 
@@ -158,11 +157,14 @@ class WikidataSource:
 
     def __init__(self, cache_dir: pathlib.Path | str | None = CACHE, sleep_s: float = 0.2,
                  max_facts: int = 300, offline: bool = False, aliases: "PropertyAliases | None" = None,
-                 online_relations: bool = False, use_choices: bool = False) -> None:
+                 online_relations: bool = False, use_choices: bool = False, fetch=None) -> None:
         self.cache = pathlib.Path(cache_dir) if cache_dir else None
         if self.cache:
             self.cache.mkdir(parents=True, exist_ok=True)
         self.sleep_s, self.max_facts, self.offline = sleep_s, max_facts, offline
+        # url -> the response body: the server hands it in (cubby_serve.sources.http.wikidata()); this package opens
+        # no socket (order 0031). Offline, or a cached request, never needs it
+        self.fetch = fetch
         self.calls = 0
         self.last: dict = {}
         self._labels: dict[str, str] = {}
@@ -197,11 +199,13 @@ class WikidataSource:
             return json.loads(path.read_text(encoding="utf-8"))
         if self.offline:
             return None
+        if self.fetch is None:
+            raise RuntimeError("an online WikidataSource needs fetch= (cubby_serve.sources.http.wikidata()): "
+                               "cubbyllm/ opens no socket")
         url = f"{API}?{urllib.parse.urlencode(params)}"
         self.calls += 1
         try:
-            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=30) as r:
-                data = json.loads(r.read().decode("utf-8"))
+            data = json.loads(self.fetch(url).decode("utf-8"))
         except Exception:                                  # noqa: BLE001 -- a source that fails returns nothing
             return None
         if path:
