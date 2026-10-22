@@ -42,6 +42,11 @@ and that is the "don't know" signal. Nothing connects the two yet.
   `validation/diag_swap_copy.py` assembles it. Paths come from the environment (`CLAUDE.local.md`), never in a
   committed file.
 
+- **Creativity stays out of this path (Nick, 2026-10-22).** The reader and the lookup run only for turns that
+  `serve.needs_facts` routes to facts. A creative ask (a poem, a story, "imagine…"), an opinion, or a guess
+  framed as one never triggers a miss, a lookup or a refusal. The copy already leaves every non-asking position
+  bit-identical; this keeps the host's side the same.
+
 ## Acceptance (pre-registered)
 - **The battery** (`validation/bench_loci_learn.py`): 100 single-hop questions.
   - Each (entity, relation) is stated on Wikidata, is absent from the world store, and has an entity outside
@@ -52,6 +57,8 @@ and that is the "don't know" signal. Nothing connects the two yet.
 - **Ask 2:** **0 source calls** for the facts learned in ask 1. The loci reader's answer equals the stored value
   on ≥ **0.80**. Every mismatch is refused: **0 wrong spoken**.
 - **Off = unchanged:** without the reader, the loop's existing tests pass as they do today. Full `pytest tests`.
+- **Creative regression:** 30 creative asks (EN/FR, from `serve`'s own test phrasings) route the same and
+  produce the same reply with the reader on and off; none calls a source.
 - Report the Wikidata calls made (cached; keep it under ~300) and the loop's wall time per question on the CPU.
 
 ## Constraints
