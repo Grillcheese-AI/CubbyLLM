@@ -3,9 +3,14 @@
 - ``mount(brain, dirs, idle_min)``: the index of ``dirs`` (front matter only) and a ``Loader`` that routes with the
   brain's encoder (its fact store's) and adds adapters to its 450M trunk when one is mounted; ``serve_api.py
   --plugins DIR[,DIR]`` calls it (off when not given: the server answers as before).
-- ``on_question(brain, text, rec)``: wakes what the question needs, and puts in the record, for the audit view, the
-  plugins it woke and the facts their askable worlds returned (``plugins``, ``plugin_facts``: internal fields that
-  ``audience.for_user`` drops). Plugins never write the reply.
+- ``on_question(brain, text, rec)``: wakes what the question needs. A reality plugin's facts (a source, a fact world)
+  are one of the ask loop's sources: each goes to the loop's store through ``learn.gate`` -- parsed, deduplicated,
+  judged by the store's oracle -- with the functional rule (a fact that contradicts one the store holds is refused, never
+  stored, and written to the ledger) and the provenance ``plugin:<name>``; the loop then answers from its store, under
+  copy-or-refuse, and the audit chain names the plugin. A fiction plugin's facts never enter the reality store (0015's
+  isolation): they answer inside their own world, recorded for the audit view. The record keeps the plugins woken and
+  the gate's verdicts (``plugins``, ``plugin_facts``: internal fields ``audience.for_user`` drops). Plugins never write
+  the reply.
 - ``board_get(brain, route, query, who)`` / ``board_post(brain, route, who)``: the board's Plugins view -- every plugin
   with its kinds, status, permissions and audience (the public audience never sees an internal one), the panels of
   loaded plugins, "which plugin would wake?" for a question, and Approve / Pin / Disable (audit audience only).
@@ -41,17 +46,62 @@ def mount(brain, dirs: str, idle_min: float = 30.0, log=print):
     return loader
 
 
+def admit(brain, world_name: str, facts: list[str]) -> list[dict]:
+    """A plugin's facts into the ask loop's store through the learn gate, functional: [{fact, status, clash}]."""
+    from cubbyllm.reasoning.learn import gate
+    from cubbyllm.reasoning.planner import parse_fact
+    loop = getattr(brain, "ask_loop", None)
+    store = getattr(loop, "world", None)
+    if store is None or not hasattr(store, "add"):
+        return [{"fact": f, "status": "no store"} for f in facts]
+    prov, fkey = getattr(store, "provenance", None), getattr(store, "_key", None) or (lambda x: " ".join(x.split()))
+    out = []
+    for f in facts:
+        t = parse_fact(f)
+        p = gate(f, store, world_name, t.subj if t else "", functional=True)
+        if p.status == "accepted":
+            store.add(f)
+            if prov is not None:
+                prov[fkey(f)] = world_name
+        elif p.status == "contradiction":
+            _ledger(brain).record(program="plugin-gate", name=world_name, kind="plugin_fact", fn=None, input=f,
+                                  expected=p.clash, got=None, ok=False, verdict="contradiction: refused, not stored")
+        out.append({"fact": f, "status": p.status, "clash": p.clash})
+    return out
+
+
+def _ledger(brain):
+    if getattr(brain, "ledger", None) is None:
+        from ledger import Ledger
+        brain.ledger = Ledger()
+    return brain.ledger
+
+
 def on_question(brain, text: str, rec: dict | None = None) -> list[str]:
+    """Before the loop answers (``rec`` None): wake the plugins and admit their reality facts. After (``rec`` given): note
+    in the record what woke and what the gate said."""
     loader = getattr(brain, "plugins", None)
     if loader is None:
         return []
     woke = loader.wake(text)
-    if rec is not None and woke:
-        rec["plugins"] = [f"plugin:{n}" for n in woke]
+    if not woke:
+        return woke
+    if rec is None:
         got = loader.ask(text) if loader.knows.by_name else {}
-        if got.get("facts"):
-            rec["plugin_facts"] = {"world": got["world"], "facts": got["facts"]}
+        fiction = isinstance(loader.knows.by_name.get(got.get("world")), _fiction())
+        loader.last_admitted = {"world": got.get("world"), "fiction": fiction, "facts": got.get("facts") or [],
+                                "gate": [] if fiction or not got.get("facts") else admit(brain, got["world"], got["facts"])}
+        return woke
+    rec["plugins"] = [f"plugin:{n}" for n in woke]
+    last = getattr(loader, "last_admitted", None)
+    if last and last.get("facts"):
+        rec["plugin_facts"] = last
     return woke
+
+
+def _fiction():
+    from plugins_load import FictionWorld
+    return FictionWorld
 
 
 def internal_names(brain) -> set[str]:
