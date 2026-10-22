@@ -248,9 +248,10 @@ def main() -> None:
         wikidata = WikidataSource(fetch=_wikidata_fetch())
     from sources import WikidataSource as _WD
     from cubby_serve.sources.http import wikidata as _wikidata_fetch  # noqa: E402 -- the online fetch (0031)
-    backend = BraveBackend()
+    from cubby_serve.sources.http import web as _web_http  # noqa: E402 -- the web's transport (0031)
+    backend = BraveBackend(http=_web_http)
     web = WebSource(backend, reader=reader, wikidata=wikidata, containment=_WD(fetch=_wikidata_fetch()), dissent_blocks=a.dissent,
-                    offline=a.offline, cache_dir=ROOT / "standin" / "data" / "out" / f"web_r33{a.cache or a.tag}")
+                    offline=a.offline, http=_web_http, cache_dir=ROOT / "standin" / "data" / "out" / f"web_r33{a.cache or a.tag}")
     log(f"web: {backend.name} ({backend.license}), reader {'LFM base (CPU)' if reader else 'off'}, "
         f"handoff {'on' if wikidata else 'off'}, two independent sites to attest, containment Wikidata, "
         f"dissent {'vetoes' if a.dissent else 'ignored'}{', OFFLINE (cache)' if a.offline else ''}")

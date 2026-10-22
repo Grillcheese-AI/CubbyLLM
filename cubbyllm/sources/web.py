@@ -45,7 +45,6 @@ import pathlib
 import re
 import time
 import urllib.parse
-import urllib.request
 import urllib.robotparser
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
@@ -91,14 +90,11 @@ class Hit:
     extra: list[str] = field(default_factory=list)
 
 
-def _http(url: str, headers: dict | None = None, timeout_s: float = 10, limit: int = MAX_PAGE_BYTES):
-    """(content_type, bytes) or None. Never raises: a site that is down is not an answer."""
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": UA, **(headers or {})})
-        with urllib.request.urlopen(req, timeout=timeout_s) as r:
-            return r.headers.get("Content-Type", ""), r.read(limit)
-    except Exception:                                        # noqa: BLE001
-        return None
+def _no_http(url: str, headers: dict | None = None, timeout_s: float = 10, limit: int = MAX_PAGE_BYTES):
+    """The default transport: none. A transport, ``(url, headers, timeout_s, limit) -> (content_type, bytes) or None``
+    (never raising: a site that is down is not an answer), is handed in: the server's is
+    ``cubby_serve.sources.http.web``. This package opens no socket (order 0031)."""
+    raise RuntimeError("the web source needs http= (cubby_serve.sources.http.web): cubbyllm/ opens no socket")
 
 
 _TAG = re.compile(r"<[^>]+>")
@@ -116,7 +112,7 @@ class BraveBackend:
     URL = "https://api.search.brave.com/res/v1/web/search"
     license = "brave: data for AI, storage permitted"
 
-    def __init__(self, key: str | None = None, http=_http, rate_per_s: float = 50.0) -> None:
+    def __init__(self, key: str | None = None, http=_no_http, rate_per_s: float = 50.0) -> None:
         import threading
         self.key = key or env_key("BRAVE_SEARCH_API_KEY", "BRAVE_API_KEY")
         if not self.key:
@@ -154,7 +150,7 @@ class SearxngBackend:
     name = "searxng"
     license = None                     # the engines behind it set their own terms: results are not archived
 
-    def __init__(self, base_url: str | None = None, http=_http) -> None:
+    def __init__(self, base_url: str | None = None, http=_no_http) -> None:
         self.base = (base_url or env_key("CUBBY_SEARXNG_URL") or "").rstrip("/")
         if not self.base:
             raise ValueError("no SearXNG instance: pass its URL or set CUBBY_SEARXNG_URL")
@@ -173,13 +169,13 @@ class SearxngBackend:
                 for r in (body.get("results") or [])[:n] if r.get("url")]
 
 
-def backend_from_env(kind: str = "auto", searxng_url: str | None = None):
+def backend_from_env(kind: str = "auto", searxng_url: str | None = None, http=_no_http):
     """'brave' | 'searxng' | 'auto' (Brave when a key is set, else SearXNG when an instance is named,
     else None: the loop runs without the web, as before)."""
     if kind in ("brave", "auto") and env_key("BRAVE_SEARCH_API_KEY", "BRAVE_API_KEY"):
-        return BraveBackend()
+        return BraveBackend(http=http)
     if kind in ("searxng", "auto") and (searxng_url or env_key("CUBBY_SEARXNG_URL")):
-        return SearxngBackend(searxng_url)
+        return SearxngBackend(searxng_url, http=http)
     if kind in ("brave", "searxng"):
         raise ValueError(f"--web {kind}: " + ("set BRAVE_SEARCH_API_KEY" if kind == "brave" else "set CUBBY_SEARXNG_URL or --searxng"))
     return None
@@ -520,7 +516,7 @@ class WebSource:
 
     def __init__(self, backend, reader=None, wikidata=None, aliases=None, cache_dir: pathlib.Path | str | None = CACHE,
                  ttl_s: int = TTL_S, offline: bool = False, results: int = 20, pages: int = 6, reads: int = 4,
-                 min_sites: int = MIN_SITES, http=_http, robots: bool = True, max_facts: int = 60,
+                 min_sites: int = MIN_SITES, http=_no_http, robots: bool = True, max_facts: int = 60,
                  second_query: bool = True, workers: int = 6, containment=None, dissent_blocks: bool = False) -> None:
         self.backend, self.reader, self.wikidata = backend, reader, wikidata
         self._aliases = aliases

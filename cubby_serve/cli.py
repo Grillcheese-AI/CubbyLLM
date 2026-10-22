@@ -18,7 +18,8 @@ def build_web(args):
     """The web source behind the ask loop's source, or None when no search backend is configured
     (standin/web_source.py). The reader is the local LFM base, on the CPU: the GPU is the emitter's."""
     from cubbyllm.sources.web import WebSource, backend_from_env
-    backend = backend_from_env(args.web, args.searxng)
+    from cubby_serve.sources.http import web as web_http   # the web source's transport (order 0031)
+    backend = backend_from_env(args.web, args.searxng, http=web_http)
     if backend is None:
         return None
     path = args.web_reader
@@ -33,7 +34,7 @@ def build_web(args):
             reader = LfmReader(path)
         except ImportError:
             print("  web reader off: llama_cpp is not installed", flush=True)
-    return WebSource(backend, reader=reader)
+    return WebSource(backend, reader=reader, http=web_http)
 
 
 def parser() -> argparse.ArgumentParser:
