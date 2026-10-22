@@ -87,7 +87,7 @@ class SpatialLink(nn.Module):
                  at: int = 0, gate_bias: float = -4.0, query: str = "learned", bind: str = "placed",
                  copy: str | None = None, copy_tau: float = 3.0, copy_ring: int = 256,
                  copy_beta: float | None = None, key: str | None = None, key_pieces: int = 16,
-                 pointer_window: int = 16, pointer_dim: int = 64) -> None:
+                 pointer_window: int = 16, pointer_dim: int = 64, copy_refuse: dict | None = None) -> None:
         super().__init__()
         if query not in ("learned", "placed", "pointer"):
             raise ValueError(f"query must be 'learned', 'placed' or 'pointer', not {query!r}")
@@ -116,7 +116,7 @@ class SpatialLink(nn.Module):
         self.copy_path = None                    # registered last: its tensors follow the link's in parameters()
         if copy is not None:
             from .spatial_copy import SpatialCopy
-            self.copy_path = SpatialCopy(self.d, copy, tau=copy_tau, ring=copy_ring, beta=copy_beta)
+            self.copy_path = SpatialCopy(self.d, copy, tau=copy_tau, ring=copy_ring, beta=copy_beta, refuse=copy_refuse)
 
     def space(self) -> SSP:
         """The host's ``SSP`` in this link's space: same phases, so ``Scene`` vectors read here."""
@@ -253,18 +253,29 @@ class SpatialLink(nn.Module):
         cp, V, d = self.copy_path, logits.shape[-1], h.shape[-1]
         q_used, self._q_used = self._q_used, None                      # this forward's, taken once
         idx, ids, ok = asks.reshape(-1).nonzero().squeeze(1), None, None
+        step = None if isinstance(cands, tuple) or cp.refuse is None else cands
+        prev = asks.reshape(-1).clone() if step is not None else None   # decode: the run goes on while a row asks
         if cp.mode == "ring" and idx.numel():
             from .spatial_copy import ring_candidates
             ids, ok = ring_candidates(*cands, idx, cp.ring) if isinstance(cands, tuple) else cp.candidates(cands, idx)
             keep = ok.any(1)                     # nothing written yet: the trunk's logits alone
             idx, ok, ids = idx[keep], ok[keep], ids if ids.dim() == 1 else ids[keep]
         if idx.numel() == 0:
+            if prev is not None:
+                step["cr_prev"].copy_(prev)
             return logits
         flat = logits.reshape(-1, V)
         q = (q_used.reshape(-1, d)[idx] if self.query != "placed"         # the read's own query (learned, pointer)
              else self.encode(positions.reshape(-1, self.dims)[idx], table))
         r = self.lookup(scene.reshape(-1, d)[idx].float(), q)
-        mix = cp(flat[idx], h.reshape(-1, d)[idx], r, table, idx, ids, ok)[0]
+        mix, log_copy, _ = cp(flat[idx], h.reshape(-1, d)[idx], r, table, idx, ids, ok)
+        if cp.refuse is not None:                                      # copy or refuse (model/spatial_refuse.py)
+            from .spatial_refuse import apply
+            mix = apply(self, flat[idx], log_copy, idx, logits.shape[1], scene.reshape(-1, d)[idx],
+                        positions.reshape(-1, self.dims)[idx], q if self.query == "pointer" else None, table, ids, ok,
+                        step)
+            if prev is not None:
+                step["cr_prev"].copy_(prev)
         return flat.index_copy(0, idx, mix.to(logits.dtype)).reshape(logits.shape)
 
     def extra_repr(self) -> str:

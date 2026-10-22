@@ -215,7 +215,8 @@ class CubbyModel:
             if cp is not None and a is not None and position is not None:
                 logits = self.spatial.add_copy(logits[:, None], y[:, None], scene[:, None], position[:, None], a[:, None],
                                                self.embedding.core.weight, state)[:, 0]
-            out.update({k: state[k] for k in ("ring", "ring_n", "ptr_ids", "ptr_keys", "ptr_n") if k in state})
+            out.update({k: state[k] for k in ("ring", "ring_n", "ptr_ids", "ptr_keys", "ptr_n", "cr_prev", "cr_L", "cr_off")
+                        if k in state})
         return logits, out
 
     def init_state(self, batch: int = 1, device=None) -> dict:

@@ -65,7 +65,7 @@ MODES = ("ring", "table")
 
 class SpatialCopy(nn.Module):
     def __init__(self, d_model: int, mode: str = "ring", tau: float = 3.0, ring: int = 256, lam: float = 0.1,
-                 beta: float | None = None) -> None:
+                 beta: float | None = None, refuse: dict | None = None) -> None:
         super().__init__()
         if mode not in MODES:
             raise ValueError(f"copy must be one of {MODES}, not {mode!r}")
@@ -76,6 +76,16 @@ class SpatialCopy(nn.Module):
         with torch.no_grad():
             self.gate.weight.zero_()
             self.gate.bias.fill_(math.log(lam / (1.0 - lam)))
+        self.refuse = None                                         # copy or refuse (model/spatial_refuse.py)
+        if refuse is not None:
+            self.set_refuse(**refuse)
+
+    def set_refuse(self, theta: float, theta_end: float, refuse_id: int, step=(0, 0, 6), lookahead: int = 16) -> None:
+        """Copy or refuse (order 0022; ``meta["spatial"]["copy_refuse"]``, absent = the mix above): a piece clears
+        ``theta``, an end reads below ``theta_end``, anything between refuses the answer, said as ``refuse_id``."""
+        if not theta_end <= theta:
+            raise ValueError(f"theta_end ({theta_end}) must not exceed theta ({theta})")
+        self.refuse = (float(theta), float(theta_end), tuple(step), int(refuse_id), int(lookahead))
 
     def forward(self, logits: torch.Tensor, h: torch.Tensor, r: torch.Tensor, table: torch.Tensor,
                 idx: torch.Tensor, ids: torch.Tensor | None = None, ok: torch.Tensor | None = None):
@@ -104,9 +114,14 @@ class SpatialCopy(nn.Module):
 
     # -- the ring at decode: the ids this stream wrote, fixed-size ----------------------------
     def init_state(self, batch: int, device=None) -> dict:
+        st = {}
+        if self.refuse is not None:                                # the answer's decision, held across its run
+            st.update(cr_prev=torch.zeros(batch, dtype=torch.bool, device=device),
+                      cr_L=torch.zeros(batch, dtype=torch.long, device=device),
+                      cr_off=torch.zeros(batch, dtype=torch.long, device=device))
         if self.mode != "ring":
-            return {}
-        return {"ring": torch.zeros(batch, self.ring, dtype=torch.long, device=device),
+            return st
+        return {**st, "ring": torch.zeros(batch, self.ring, dtype=torch.long, device=device),
                 "ring_n": torch.zeros(batch, dtype=torch.long, device=device)}
 
     def remember(self, state: dict, token: torch.Tensor, write: torch.Tensor | None, start: torch.Tensor | None) -> None:
@@ -128,7 +143,7 @@ class SpatialCopy(nn.Module):
         return state["ring"][rows], ok
 
     def extra_repr(self) -> str:
-        return f"mode={self.mode}, ring={self.ring}, read_aware={self.beta is not None}"
+        return f"mode={self.mode}, ring={self.ring}, read_aware={self.beta is not None}, refuse={self.refuse}"
 
 
 def ring_candidates(tokens: torch.Tensor, writes: torch.Tensor, starts: torch.Tensor | None,
