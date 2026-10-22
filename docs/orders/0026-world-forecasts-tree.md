@@ -1,6 +1,6 @@
 # 0026 — Forecasts with a track record, and a branching tree: what follows if branch A, B or C, or a choice, is the new reality
-status: proposed
-written: 2026-10-22 by Cowork · approved: — · hypothesis: H-K12 (proposed), with H-P1-H-P5 (forkable state,
+status: open
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: H-K12 (proposed), with H-P1-H-P5 (forkable state,
 counterfactual re-entry), H-E17 (possibility worlds) and MoWM · **after 0025**
 
 ## Why

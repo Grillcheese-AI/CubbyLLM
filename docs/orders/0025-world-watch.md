@@ -1,6 +1,6 @@
 # 0025 — World watch: official warnings, tension signals and their change points
-status: proposed
-written: 2026-10-22 by Cowork · approved: — · hypothesis: H-K12 (proposed: the world's state from event streams),
+status: open
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: H-K12 (proposed: the world's state from event streams),
 with H-F2 (temporal worlds) · **after 0024 (the archive) and 0020 (the change-point toolkit)**
 
 ## Why
