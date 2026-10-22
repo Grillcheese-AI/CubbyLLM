@@ -23,6 +23,8 @@ from __future__ import annotations
 import csv
 import re
 
+from cubbyllm.reasoning.planner import normalize
+
 __wiring__ = "WIRED"
 
 TENSES = ("past", "present", "future")
@@ -228,6 +230,8 @@ class TemplateEmitter:
         if p is None:
             return "no plan\n"
         seed, rel, _tense = p
-        rel = self.forms.wording(prompt) or rel             # the question's own word, as the serving emitter binds it
+        said = self.forms.wording(prompt)                    # the question's own word, as the serving emitter binds it --
+        if said and normalize(rel) != f"{normalize(said)} of":  # unless it is the label without its own 'of' ("the instance
+            rel = said                                      # of X" asks 'instance of', not the wiki world's 'instance')
         return ("function plan(): str {\n" + f'    bind frame, SEED, "{seed}";\n' + f'    bind frame, HOP1, "{rel}";\n'
                 + "    return recover(frame, SEED);\n}\n")

@@ -1,0 +1,46 @@
+{
+ "rows_read": {
+  "triplet rows": 7988219,
+  "fact sentences": 1628237
+ },
+ "unique_statements": 4932890,
+ "facts": 3384594,
+ "dropped": {
+  "alias the table cannot place": 364705,
+  "entity without an English label": 36931,
+  "relation without a label": 437
+ },
+ "entities": 2458891,
+ "qid_entities_in_the_set": 2481268,
+ "qid_entities_with_an_english_label": 2454437,
+ "label_coverage": 0.9892,
+ "with_a_french_label": 1217481,
+ "relations": 313,
+ "time_sensitive": [
+  "chairman",
+  "chief executive officer",
+  "director / manager",
+  "employer",
+  "head coach",
+  "head of government",
+  "head of state",
+  "headquarters location",
+  "league or competition",
+  "member of",
+  "member of political party",
+  "member of sports team",
+  "operator",
+  "owned by",
+  "parent organization or unit",
+  "position holder",
+  "unmarried partner"
+ ],
+ "time_sensitive_facts": 155749,
+ "names": 5312121,
+ "bytes": 1022898176,
+ "seconds": 186.5,
+ "against_wikikg": {
+  "other value": 1378,
+  "agree": 311
+ }
+}

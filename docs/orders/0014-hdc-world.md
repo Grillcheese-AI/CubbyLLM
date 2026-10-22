@@ -1,5 +1,5 @@
 # 0014 — The hdc set's 4.3M Wikidata facts as a world
-status: in progress
+status: review
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("check if we use those; we need to add them to the
 worlds") · hypothesis: H-G6 (the wiki world), H-F2 · **suggested after 0012**
 
@@ -63,10 +63,63 @@ sentences, which `build_hdc_sft` already parses back through `relation_template_
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
+- **Commits:** `77d466f` (the world and its store), `cac0cca` (a hop asked by an alias; the bench), `71aa0ec`
+  (profile_ask without a head), and this report's commit (the emitter asks a label by its own name).
 - **Files:**
-- **Tests:**
-- **Measured:**
-- **Not verified here:**
+  - `standin/data/hdc_world.py`: triplet rows and fact sentences parsed back to triples, deduplicated, labelled,
+    written to SQLite; `TIME_SENSITIVE`; the comparison against wikikg.
+  - `standin/data/fetch_hdc_labels.py`: the missing English / French labels from Wikidata's API (Nick's route),
+    cached, 50 Q-ids a request.
+  - `standin/hdc_store.py`: `HdcWorld` (read-only, lookup by label, alias or Q-id, an LRU cache) and `Stores` (the
+    wiki world first, written to; the hdc world behind it; `held_by` names the world a fact comes from).
+  - `standin/ask.py` (`_snapshot`: a time-sensitive fact said "as of 2019", another year refused);
+    `standin/serve_api.py` (`--world hdc`); `standin/question_forms.py` (the emitter's label fix below).
+  - `validation/exp_hdc_bench.py`.
+  - Tests: `standin/tests/test_hdc_store.py` (4).
+- **Tests:** label, alias and Q-id lookups; the merged store writes to the wiki world and names a hdc fact's
+  snapshot; the loop says a changing value "as of 2019", answers the snapshot's own year and refuses another; a
+  contradiction between the worlds is never said. Off (no `--world`) is the wiki world alone, as before.
+- **Measured** ([world](../../validation/logs/hdc_world_2026-10-22.json), [bench](../../validation/logs/exp_hdc_bench_2026-10-22.json)):
+  - **Counts: pass.**
+    - 4,932,890 unique statements read; 3,384,594 facts loaded over 2,458,891 entities and 313 relations.
+    - **Label coverage 0.989**: 2,454,437 of 2,481,268 Q-ids have an English label after 31,995 API requests;
+      1,217,481 have a French one.
+    - Dropped: 364,705 facts whose subject or object is an alias the name table cannot place; 36,931 entities
+      without an English label; 437 relations without a label.
+    - 17 time-sensitive relations hold 155,749 facts.
+    - Against wikikg: 311 facts agree, 1,378 give another value for the same subject and relation (kept, both).
+    - The world is 1.02 GB on disk and builds in 187 s.
+  - **Lookup: pass.** p50 0.20 ms, **p95 0.39 ms** (line: 50 ms) over 1,000 subjects. Process memory with the
+    world mounted: **0.9 GB** (line: 4 GB).
+  - **One-hop bench: passes.** 200 questions from the held-out domains as the set writes them:
+    - **177 spoken, 177 correct, 0 wrong**; 5 of them said "as of".
+    - 23 refused: 7 retrieval exhausted, 6 unknown relation, 5 entity unresolved, 4 ambiguous, 1 no plan.
+    - 88 drawn prompts were skipped as not one-hop (nested prompts; see below).
+  - **Time-sensitive: passes.** 50 asked in the present: **0 said flat**, 22 said "as of 2019", 28 refused
+    (14 entity unresolved, 10 unknown relation, 4 retrieval exhausted).
+  - **The tense decides:** "Who was … in 2019?" is answered from the snapshot. Another year is refused
+    (`time_mismatch`), and the present gets "as of" (test).
+- **Not verified here:** a live refresh on ask (the API route exists for labels; a fact refresh is not wired, so a
+  time-sensitive answer is always "as of 2019" or refused). Corroboration of a book fact by a hdc fact: the place
+  and date relations the books state are mostly absent from Wikidata5M (no P19, P20, P119, P112, and no dates).
 - **Found on the way:**
+  - The first bench refused 141 of 200, and the cause was not the world. The set asks "What is the instance of
+    X?"; since order 0012 the template emitter binds the question's own word ("instance"), and the wiki world
+    holds a relation named "instance", so nothing translated it and the walk never reached "instance of". The
+    emitter now binds the label when the word is the label without its own "of". 44 → 177 spoken, 0 wrong either
+    way.
+    - A store-side fix ("R of" serving "R") was tried and reverted: "capital of" reads the opposite way from
+      "capital", and it would have answered "What is the capital of Strelsau?" with Ruritania.
+  - The same collision remains for a label named otherwise: "Who is the owner of …?" (the wiki world's "owner";
+    Wikidata's "owned by"), 4 of the 7 retrieval-exhausted questions. Fixing it means translating a held wording
+    when the walk on it finds nothing, which is the loop's relation resolution, beyond this order.
+  - A nested prompt ("the X of the Y of Z") was answered wrong in the smoke through the paraphrase tier's
+    word-overlap tolerance at hop 0. The bench keeps one-hop prompts only (the 88 skipped). That tolerance is a
+    risk for any multi-hop question over this world.
+  - `profile_ask` crashed on a subject ending in "of" (an IndexError on the first time-sensitive question); fixed,
+    with a test.
+  - Some of the set's own prompts read badly ("What is the opposite of of Mitzvah?", "What Predecessor does … have?").
 - **Questions:**
+  1. Should the time-sensitive answers get a live refresh from Wikidata on ask, or is "as of 2019" the line for now?
+  2. The 1,378 values that differ from wikikg are kept both. Should either world win on a relation, or is that
+     order 0015's?

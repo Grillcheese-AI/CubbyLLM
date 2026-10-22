@@ -1,5 +1,5 @@
 # 0012 — The books as a source: a passage finder, facts read by frames, attributed until corroborated
-status: in progress
+status: review
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("we absolutely need to add all the verified facts and
 there's a lot more to come"; "maybe add a passage finder for the books"; trust tier: attributed until corroborated) ·
 hypothesis: H-F2 (temporal worlds), the ask loop, H-K10
@@ -180,3 +180,54 @@ To close:
 3. **A same-name guard:** a book's person counts for a subject only if the book's dates or era fit the subject's
    life (the Mayflower's Samuel Fuller is not the filmmaker).
 4. **Re-run** the bench (0 wrong flat, as pre-registered) and, after 0014's labels, the frames on >= 200 triples.
+
+## Report, after the review (Claude Code, 2026-10-22)
+- **Commits:** `223d759` (the time rule, the same-name guard, finer is agreement), `71aa0ec` (frames over every book;
+  a PDF-broken place joined, a heading run into one refused), and this report's commit.
+- **Files:**
+  - `standin/time_rule.py` (new): `CHANGES` (the Wikidata properties with start / end qualifiers, hdc's
+    `TIME_SENSITIVE` with its labels, capital, country, located in, part of, and the wiki world's nouns),
+    `undated`, `at_one_point`.
+  - `standin/ask.py`: `_undated` and `_life`; the reason `time_undated` (`cubbyllm/reasoning/sleep.py` routes it
+    to clarify).
+  - `standin/book_source.py`: `fits` (the same-name guard) and each witness's date.
+  - `validation/books_scoring.py` (new, split out of the bench): `agree` with finer, the gazetteer with capitals.
+  - `validation/exp_books_bench.py`: `REVIEWED`, `--frames-bulk`, `--bulk`.
+  - Tests: `standin/tests/test_time_rule.py` (4) and 1 new in `test_books.py`.
+- **1. The time rule: done.** An undated capital is said "Kerma was a capital of Kush at one point.", two
+  authors or not. A year asked of it is refused: the tense check refuses it first ("the fact carries no dates");
+  with that check off the rule refuses it as `time_undated`. A dated value that changes (a reign) is said as
+  before (tests). The rule reads the books' witnesses, and the facts a store holds from the books (order 0013's
+  bulk worlds). A world's own facts (wiki; hdc's "as of 2019") are dated by the world and are not read by it.
+- **2. Finer is agreement: done.** Coarser counts only when hedged. A value hedged "at one point" that is not the
+  world's single value is unconfirmed, not wrong. The gazetteer gains capitals (the wiki world's CAPITAL_OF,
+  hdc's capital), but no world here places Carthage in the Vandal Kingdom (hdc's has only Hippo Regius). Cowork's
+  verdict on it is kept in `REVIEWED`, named, and the bench reports the count from before review beside it.
+- **3. The same-name guard: done, on dates.** A book's person counts only if every birth or death year the book
+  states for the name lies in the life the world knows (110 years at most). Samuel Fuller's 1580 is set aside
+  against the filmmaker's 1997 death. **The era test was dropped:** an era folder is a book's subject, not its
+  people's. On the bench it set aside true birth years for Marie Tharp, Mackintosh, Agnesi and Cayce, because
+  ancient-history books cite modern scholars.
+- **4. Re-run** ([log](../../validation/logs/exp_books_bench_final_2026-10-22.json), the full hdc gazetteer):
+  - **Bench: 0 wrong flat** (1 as scored before review: Gaiseric's Carthage).
+    - 30/76 spoken: 1 flat (correct), 29 hedged. 25 hedged answers are correct, 1 is unconfirmed (Kerma, at one
+      point), 3 are wrong.
+      - Stukeley born 1694: the book, or the frame.
+      - Stukeley died in London: the gold says Kentish Town, and no gazetteer here places it in London.
+      - Alcuin born 732: the gold says "c. 735".
+    - Citations 29/29; replies naming a source 0; the wrong tense said flat 0/76 (27 refused `time_mismatch`).
+  - **Frames: fail**, and still short of 200 comparable triples.
+    - Ranked passages: 79 comparable, agreement 0.821.
+    - **Frames over every book** (the bulk worlds against the wiki world and hdc): **180 comparable**, agreement
+      **0.744** (114 agree, 15 finer, 5 coarser, 46 contradict).
+    - Capitals carry most of the contradictions: a kingdom's earlier capital against Wikidata's current one, which
+      the time rule now says "at one point". Without capitals: 0.88.
+    - Every other contradiction is a fact the books themselves disagree on, so it is already held and never said.
+      Most of those are a coarser place the gazetteer cannot see (Scotland for Dunfermline, Russia for Pereiaslav,
+      Calabria for Rudiae).
+    - The ≥ 200 line cannot be reached here: Wikidata5M has no birth, death or burial places, no founders and no
+      dates, so the hdc world adds only capitals, parts and locations to compare.
+- **Questions:**
+  1. The frames line: 180 comparable triples is everything these books and both worlds allow. Judge it on 180, or
+     wait for a world with births and deaths (order 0015's Wikidata route)?
+  2. Should the time rule read the worlds' own facts as well (a wiki-world spouse said flat today)?
