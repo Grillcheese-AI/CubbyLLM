@@ -1,0 +1,40 @@
+{
+ "what": "order 0031: bench_loci_learn phase 2 rerun after slice 4 (ask, loci_reader in cubbyllm/reasoning; build_model and the far-fact layout in cubbyllm/model), against bench_loci_learn_2026-10-22.json's phase 2",
+ "env": {
+  "python": "3.12.10",
+  "torch": "2.4.1+cpu",
+  "device": "cpu, 2 threads",
+  "git": "b315242",
+  "checkpoint": "spatial_link_5_final.pt (run 5)",
+  "source": "Wikidata offline (cache), the phase-1 store"
+ },
+ "rows": 100,
+ "rows_differ": 0,
+ "summary_equal": true,
+ "after": {
+  "loaded": 766,
+  "asked": 100,
+  "learned_in_ask_1": 47,
+  "source_calls_on_learned": 3,
+  "loci_answered_learned": 34,
+  "equals_stored_on_learned": 0.723,
+  "wrong_spoken": 0,
+  "refused": {
+   "retrieval_exhausted": 45,
+   "plan_does_not_cover_question": 6,
+   "entity_unresolved": 5,
+   "ambiguous_hop": 9,
+   "loci_miss": 1
+  },
+  "wall_s_per_question": 0.6,
+  "creative": {
+   "asked": 30,
+   "routed_to_facts": 3,
+   "reader_reads": 0,
+   "routes": {
+    "talk": 20,
+    "reasoning": 10
+   }
+  }
+ }
+}
