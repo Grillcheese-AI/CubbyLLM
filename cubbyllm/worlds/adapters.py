@@ -24,7 +24,7 @@ import sqlite3
 
 __wiring__ = "STANDALONE"
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
+ROOT = pathlib.Path(__file__).resolve().parents[2]
 TEXT = (".txt",)
 UCI = {"agaricus-lepiota": ["class", "cap-shape", "cap-surface", "cap-color", "bruises", "odor", "gill-attachment", "gill-spacing",
                             "gill-size", "gill-color", "stalk-shape", "stalk-root", "stalk-surface-above-ring",
@@ -83,8 +83,8 @@ class Context:
 
     def mentions(self):
         if self._mentions is None:
-            from books import BookIndex, Mentions
-            from books import world_names
+            from .books import BookIndex, Mentions
+            from .books import world_names
             common = BookIndex(ROOT_BOOKS).setting("common") if ROOT_BOOKS.exists() else ()
             self._mentions = Mentions(world_names(), common or ())
         return self._mentions
@@ -94,7 +94,7 @@ ROOT_BOOKS = pathlib.Path(os.environ.get("CUBBY_BOOKS_INDEX") or "_no_books_inde
 
 
 def passages(entry, dataset, ctx, files=None) -> dict:
-    from books import BookIndex, meta, paragraphs
+    from .books import BookIndex, meta, paragraphs
     root = pathlib.Path(entry.path)
     db = ctx.root / "passages" / f"{slug(entry.world)}.sqlite"
     db.parent.mkdir(parents=True, exist_ok=True)
@@ -120,7 +120,7 @@ def passages(entry, dataset, ctx, files=None) -> dict:
 
 
 def events(entry, dataset, ctx) -> dict:
-    from books import era_of_year
+    from .books import era_of_year
     p = pathlib.Path(entry.path)
     db = sqlite3.connect(ctx.root / "events.sqlite")
     db.execute("CREATE TABLE IF NOT EXISTS events(title TEXT, text TEXT, year_start INTEGER, year_end INTEGER, era TEXT, "

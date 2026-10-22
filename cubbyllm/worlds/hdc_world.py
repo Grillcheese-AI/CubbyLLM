@@ -36,9 +36,6 @@ import sys
 import time
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-for p in (ROOT, ROOT / "standin", ROOT / "standin" / "data"):
-    if str(p) not in sys.path:
-        sys.path.insert(0, str(p))
 
 from cubbyllm.reasoning.planner import normalize  # noqa: E402
 
@@ -235,7 +232,7 @@ def build(src: pathlib.Path, db_path: pathlib.Path) -> dict:
 def against_wikikg(db) -> dict:
     """The wiki world's facts on the same (subject, relation): agreeing, contradicting (a one-valued relation with
     no shared value), or other (a many-valued relation with none shared)."""
-    import wikikg as wk
+    from . import wikikg as wk
     out = collections.Counter()
     for s, r, o in wk.load_triples():
         rel = WIKI.get(r)

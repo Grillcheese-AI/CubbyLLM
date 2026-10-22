@@ -29,14 +29,11 @@ import sqlite3
 import sys
 import time
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
-for p in (ROOT, ROOT / "standin", ROOT / "standin" / "data", ROOT / "validation"):
-    if str(p) not in sys.path:
-        sys.path.insert(0, str(p))
+ROOT = pathlib.Path(__file__).resolve().parents[2]
 
-import worlds_adapters as wa  # noqa: E402
-import worlds_fiction as wf  # noqa: E402
-import worlds_manifest as wm  # noqa: E402
+from . import adapters as wa  # noqa: E402
+from . import fiction as wf  # noqa: E402
+from . import manifest as wm  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
@@ -67,7 +64,7 @@ class Release:
                 self.rows[r["key"]] = r
 
     def row(self, p, info):
-        from books import meta
+        from .books import meta
         m = info if info.get("title") else meta(pathlib.Path(p), pathlib.Path(p).parent)
         return self.rows.get(key(m.get("author", ""), m.get("title", "")))
 

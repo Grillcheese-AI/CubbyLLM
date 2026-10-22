@@ -25,8 +25,8 @@ from __future__ import annotations
 
 import re
 
-import book_frames as bf
-from books import BookIndex, norm
+from . import book_frames as bf
+from .books import BookIndex, norm
 from cubbyllm.reasoning.planner import Triple, normalize
 
 __wiring__ = "WIRED"

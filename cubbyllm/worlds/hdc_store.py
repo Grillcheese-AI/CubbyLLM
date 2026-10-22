@@ -27,7 +27,7 @@ from cubbyllm.reasoning.planner import Triple, accepts, normalize, parse_fact, t
 
 __wiring__ = "WIRED"
 
-DEFAULT = pathlib.Path(__file__).resolve().parent / "data" / "out" / "hdc_world.sqlite"
+DEFAULT = pathlib.Path(__file__).resolve().parents[2] / "standin" / "data" / "out" / "hdc_world.sqlite"
 
 
 class _Rows:
@@ -212,9 +212,9 @@ def disagreements(db_path, triples=None) -> tuple[set, dict]:
     diacritics off: "Mc Cullers" and "McCullers" are one). Both relation names go in: the wiki world's noun and hdc's
     label. -> (the pairs, counts)."""
     import sqlite3
-    import wikikg as wk
-    from hdc_world import WIKI
-    from world_hygiene import fold
+    from . import wikikg as wk
+    from .hdc_world import WIKI
+    from .hygiene import fold
     db = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
     out, c = set(), {"compared": 0, "agree": 0, "agree_once_folded": 0, "held": 0}
     for s, r, o in triples if triples is not None else wk.load_triples():

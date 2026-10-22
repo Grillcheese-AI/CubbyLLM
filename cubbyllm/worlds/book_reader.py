@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import re
 
-import book_frames as bf
+from . import book_frames as bf
 from cubbyllm.reasoning.planner import normalize
 
 __wiring__ = "STANDALONE"
@@ -83,7 +83,7 @@ def store_facts(subject: str, code: str, value: str) -> list[str]:
     `BookSource` writes it ('Ajaccio is the place of birth of Napoleon'): a bulk fact and a book fact learned live
     are one key, and Wikidata's statement corroborates both. Any other code takes the wiki world's noun, form and
     inverse reading (`wikikg.facts_for`); a label without a code reads 'value is the label of subject'."""
-    import wikikg as wk
+    from . import wikikg as wk
     if code in LABEL or not code.isupper():
         return [f"{value} is the {LABEL.get(code, code)} of {subject}"]
     return wk.facts_for(subject, code, value)

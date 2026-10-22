@@ -1,0 +1,23 @@
+{
+ "standin/worlds.py": "cubbyllm/worlds/base.py",
+ "standin/worlds_adapters.py": "cubbyllm/worlds/adapters.py",
+ "standin/worlds_fiction.py": "cubbyllm/worlds/fiction.py",
+ "standin/worlds_ingest.py": "cubbyllm/worlds/ingest.py",
+ "standin/worlds_manifest.py": "cubbyllm/worlds/manifest.py",
+ "standin/worlds_store.py": "cubbyllm/worlds/store.py",
+ "standin/hdc_store.py": "cubbyllm/worlds/hdc_store.py",
+ "standin/books.py": "cubbyllm/worlds/books.py",
+ "standin/book_frames.py": "cubbyllm/worlds/book_frames.py",
+ "standin/book_source.py": "cubbyllm/worlds/book_source.py",
+ "standin/book_reader.py": "cubbyllm/worlds/book_reader.py",
+ "standin/encyclopedia.py": "cubbyllm/worlds/encyclopedia.py",
+ "standin/wikitext.py": "cubbyllm/worlds/wikitext.py",
+ "standin/history_graph.py": "cubbyllm/worlds/history_graph.py",
+ "standin/history_lookup.py": "cubbyllm/worlds/history_lookup.py",
+ "standin/time_rule.py": "cubbyllm/worlds/time_rule.py",
+ "standin/capsules.py": "cubbyllm/worlds/capsules.py",
+ "standin/self_source.py": "cubbyllm/worlds/self_source.py",
+ "standin/data/world_hygiene.py": "cubbyllm/worlds/hygiene.py",
+ "standin/data/wikikg.py": "cubbyllm/worlds/wikikg.py",
+ "standin/data/hdc_world.py": "cubbyllm/worlds/hdc_world.py"
+}

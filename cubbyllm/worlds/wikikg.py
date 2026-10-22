@@ -28,7 +28,7 @@ import re
 
 __wiring__ = "WIRED"
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "standin", "data"))
 DATA_DIR = os.path.join(HERE, "out", "wikikg")                       # gitignored; the Hub's parquet export
 TRIPLETS = os.path.join(DATA_DIR, "triplets.parquet")
 PATHS = os.path.join(DATA_DIR, "paths.parquet")
@@ -290,7 +290,7 @@ def facts_from_triples(triples, inverse: bool = True) -> list[str]:
 
 def hygiene(triples, same_place=None):
     """The mount's mending (order 0015): `world_hygiene.hygiene` -- debris, self-references, spellings, same places."""
-    from world_hygiene import hygiene as _hygiene
+    from .hygiene import hygiene as _hygiene
     return _hygiene(triples, same_place)
 
 
@@ -298,7 +298,7 @@ def wiki_world(path: str | None = None, triples=None, inverse: bool = True, name
     """A `FactStore` over the whole graph: lookup-first through its TripleIndex, IDF-overlap fallback (no cosine
     encoder at this size). ~20 s and ~0.5 GB for the full graph with inverses. Mounted through `hygiene`; its counts
     are the store's `hygiene`."""
-    from worlds import FactStore
+    from .base import FactStore
     if triples is None:
         if path is None:
             ensure_data()

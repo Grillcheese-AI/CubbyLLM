@@ -32,7 +32,7 @@ import unicodedata
 from array import array
 from dataclasses import dataclass, field
 
-from history_graph import FORWARD, HistoryGraph, key, overlap, year_text
+from .history_graph import FORWARD, HistoryGraph, key, overlap, year_text
 
 __wiring__ = "STANDALONE"
 

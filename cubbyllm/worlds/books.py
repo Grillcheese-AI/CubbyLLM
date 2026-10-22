@@ -50,7 +50,7 @@ _STOP = {"the", "a", "an", "in", "on", "of", "at", "to", "he", "she", "it", "the
 
 def world_names() -> set[str]:
     """The wiki world's subjects and objects, as the serve stack's name index holds them (`serve.slot_index`)."""
-    import wikikg as wk
+    from . import wikikg as wk
     w = wk.wiki_world()
     return set(w.index._by_subj) | set(w.index._by_obj)
 

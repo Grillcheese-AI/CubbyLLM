@@ -22,7 +22,7 @@ from typing import NamedTuple
 
 __wiring__ = "STANDALONE"
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
+ROOT = pathlib.Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "docs" / "worlds_manifest.local.tsv"
 PATHS = ROOT / "docs" / "worlds_paths.local.tsv"
 ROUTES = {"passages", "fiction", "events", "quotes", "table", "classify", "mount"}

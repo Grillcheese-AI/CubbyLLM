@@ -46,7 +46,7 @@ from functools import lru_cache
 
 import numpy as np
 
-from worlds import FactStore
+from .base import FactStore
 
 __wiring__ = "STANDALONE"
 

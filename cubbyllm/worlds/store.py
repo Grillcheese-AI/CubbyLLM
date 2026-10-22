@@ -25,7 +25,7 @@ class WorldsStore:
         self.reg = sqlite3.connect(f"file:{self.root / 'registry.sqlite'}?mode=ro", uri=True, check_same_thread=False)
         self.worlds = {w: (kind, store, tier, as_of) for w, kind, store, tier, as_of in self.reg.execute("SELECT * FROM worlds")}
         fic = self.root / "fiction" / "fiction.sqlite"
-        from worlds_fiction import FictionWorlds
+        from .fiction import FictionWorlds
         self.fiction = FictionWorlds(fic) if fic.exists() else None
         self._reality = None
 
@@ -33,18 +33,18 @@ class WorldsStore:
         return (self.worlds.get(world) or (None, None))[1]
 
     def passage_index(self, world: str):
-        from books import BookIndex
+        from .books import BookIndex
         path = self.store_of(world)
         return BookIndex(path) if path and pathlib.Path(path).exists() else None
 
     def reality(self):
         """The wiki world, then the hdc world behind it (order 0014's composite)."""
         if self._reality is None:
-            import wikikg as wk
-            from hdc_store import HdcWorld, Stores
+            from . import wikikg as wk
+            from .hdc_store import HdcWorld, Stores
             hdc = self.store_of("reality")
             if hdc and pathlib.Path(hdc).exists():
-                from hdc_store import disagreements
+                from .hdc_store import disagreements
                 self._reality = Stores(wk.wiki_world(), HdcWorld(hdc))
                 self._reality.contested, self.disagreement_counts = disagreements(hdc)   # held until a rule per kind
             else:

@@ -23,7 +23,7 @@ import pathlib
 import re
 import sqlite3
 
-import book_frames as bf
+from . import book_frames as bf
 
 __wiring__ = "STANDALONE"
 
@@ -54,7 +54,7 @@ def title_of(p: pathlib.Path, catalog: dict | None) -> str:
             pass
     if p.stem.isdigit() and catalog and p.stem in catalog:
         return catalog[p.stem]
-    from books import meta as book_meta
+    from .books import meta as book_meta
     return book_meta(p, p.parent)["title"] or p.stem
 
 
@@ -167,8 +167,8 @@ def read_facts(text: str, names: list[str]) -> list[tuple]:
 
 
 def ingest(entry, dataset, ctx, files=None, catalog=None) -> dict:
-    from books import BookIndex, Mentions, paragraphs
-    from worlds_adapters import file_hash, text_files
+    from .books import BookIndex, Mentions, paragraphs
+    from .adapters import file_hash, text_files
     db_path = ctx.root / "fiction" / "fiction.sqlite"
     db_path.parent.mkdir(parents=True, exist_ok=True)
     idx = BookIndex(db_path)
@@ -217,7 +217,7 @@ class FictionWorlds:
 
     def store(self, work: str):
         if work not in self._stores:
-            from worlds import FactStore
+            from .base import FactStore
             st = FactStore(name=f"fiction:{work}")
             for (r,) in self.db.execute("SELECT DISTINCT rel FROM fiction_facts WHERE work = ?", (work,)):
                 st.index.declare_relation(r)                         # a relation is a label before its facts parse
