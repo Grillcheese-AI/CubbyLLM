@@ -1,0 +1,346 @@
+{
+ "what": "order 0024: the feeds the news archive polls (standin/news_archive.py). status active = polled; held = not polled, not stored (the reason says why). ai_agents_named = the AI agents the feed's host or the publisher's site shut out entirely when checked; a new name holds the feed until a person looks. licence: open-government-canada | publisher. The third-party AP mirror is dropped (not the publisher's own feed).",
+ "user_agent": "CubbyLLM/0.1",
+ "feeds": [
+  {
+   "id": "gc-news-releases",
+   "url": "https://api.io.canada.ca/io-server/gc/news/en/v2?type=newsreleases&sort=publishedDate&orderBy=desc&pick=50&format=atom&atomtitle=Canada.ca%20News%20Releases",
+   "publisher_hosts": [
+    "www.canada.ca"
+   ],
+   "lang": "en",
+   "licence": "open-government-canada",
+   "status": "active",
+   "reason": "Government of Canada news releases (Open Government Licence - Canada)",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "gc-communiques",
+   "url": "https://api.io.canada.ca/io-server/gc/news/fr/v2?type=newsreleases&sort=publishedDate&orderBy=desc&pick=50&format=atom&atomtitle=Canada.ca%20Communiques",
+   "publisher_hosts": [
+    "www.canada.ca"
+   ],
+   "lang": "fr",
+   "licence": "open-government-canada",
+   "status": "active",
+   "reason": "Gouvernement du Canada, communiqués (Licence du gouvernement ouvert - Canada)",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "quebec-fil-de-presse",
+   "url": "https://www.quebec.ca/fil-de-presse.rss",
+   "publisher_hosts": [
+    "www.quebec.ca"
+   ],
+   "lang": "fr",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "Gouvernement du Québec, communiqués; its reuse terms not yet read (the page renders in the browser)",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "lapresse-manchettes",
+   "url": "https://www.lapresse.ca/manchettes/rss",
+   "publisher_hosts": [
+    "www.lapresse.ca"
+   ],
+   "lang": "fr",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "decided per publisher (local rights notes)",
+   "ai_agents_named": [
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "claude-web",
+    "claudebot",
+    "google-extended",
+    "meta-externalagent",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "lapresse-actualites",
+   "url": "https://www.lapresse.ca/actualites/rss",
+   "publisher_hosts": [
+    "www.lapresse.ca"
+   ],
+   "lang": "fr",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "decided per publisher (local rights notes)",
+   "ai_agents_named": [
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "claude-web",
+    "claudebot",
+    "google-extended",
+    "meta-externalagent",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "ledevoir-manchettes",
+   "url": "https://www.ledevoir.com/rss/manchettes.xml",
+   "publisher_hosts": [
+    "www.ledevoir.com"
+   ],
+   "lang": "fr",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "decided per publisher (local rights notes)",
+   "ai_agents_named": [
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "deepseek",
+    "google-extended",
+    "gptbot",
+    "meta-externalagent",
+    "oai-searchbot",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "ledevoir-fil",
+   "url": "http://feeds2.feedburner.com/fluxdudevoir",
+   "publisher_hosts": [
+    "www.ledevoir.com"
+   ],
+   "lang": "fr",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "decided per publisher (local rights notes); the FeedBurner copy is read by the publisher's own rules",
+   "ai_agents_named": [
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "deepseek",
+    "google-extended",
+    "gptbot",
+    "meta-externalagent",
+    "oai-searchbot",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "radio-canada-en-continu",
+   "url": "https://ici.radio-canada.ca/info/rss/info/en-continu",
+   "publisher_hosts": [
+    "ici.radio-canada.ca"
+   ],
+   "lang": "fr",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "decided per publisher (local rights notes)",
+   "ai_agents_named": [
+    "anthropic-ai",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "cohere-ai",
+    "deepseek",
+    "deepseekbot",
+    "google-extended",
+    "gptbot",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "lactualite",
+   "url": "https://lactualite.com/feed/",
+   "publisher_hosts": [
+    "lactualite.com"
+   ],
+   "lang": "fr",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "decided per publisher (local rights notes)",
+   "ai_agents_named": [
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "deepseek",
+    "google-extended",
+    "gptbot",
+    "meta-externalagent",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "bbc-news",
+   "url": "https://feeds.bbci.co.uk/news/rss.xml",
+   "publisher_hosts": [
+    "www.bbc.co.uk"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "held",
+   "reason": "the publisher's robots.txt shuts out AI agents by name; no decision yet",
+   "ai_agents_named": [
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "google-extended",
+    "gptbot",
+    "meta-externalagent",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "nyt-home",
+   "url": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+   "publisher_hosts": [
+    "www.nytimes.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "held",
+   "reason": "the publisher's robots.txt shuts out AI agents by name; no decision yet",
+   "ai_agents_named": [
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "google-extended",
+    "gptbot",
+    "meta-externalagent",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "guardian-world",
+   "url": "https://www.theguardian.com/world/rss",
+   "publisher_hosts": [
+    "www.theguardian.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "held",
+   "reason": "the publisher's robots.txt shuts out AI agents by name; no decision yet",
+   "ai_agents_named": [
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "claudebot",
+    "meta-externalagent",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "npr-news",
+   "url": "https://feeds.npr.org/1001/rss.xml",
+   "publisher_hosts": [
+    "www.npr.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "held",
+   "reason": "the publisher's robots.txt shuts out AI agents by name; no decision yet",
+   "ai_agents_named": [
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "google-extended",
+    "gptbot",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "aljazeera",
+   "url": "https://www.aljazeera.com/xml/rss/all.xml",
+   "publisher_hosts": [
+    "www.aljazeera.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "held",
+   "reason": "the publisher's robots.txt shuts out AI agents by name; no decision yet",
+   "ai_agents_named": [
+    "anthropic-ai",
+    "bytespider",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "gptbot",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "politico",
+   "url": "https://rss.politico.com/politics-news.xml",
+   "publisher_hosts": [
+    "www.politico.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "held",
+   "reason": "the publisher's robots.txt cannot be read (HTTP 403, a browser challenge); not read is not a yes",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  }
+ ]
+}

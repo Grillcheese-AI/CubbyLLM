@@ -395,6 +395,9 @@ def main():
                     help="mount the RSS date source for 'what happened in <date>' asks: headlines enter the "
                          "store as facts about the DATE, attributed to the publisher, through the same gate. "
                          "Only a `when` ask ever consults it.")
+    ap.add_argument("--news-archive", default=os.environ.get("CUBBY_NEWS_ARCHIVE") or None,
+                    help="poll the feed manifest's active feeds hourly into this archive folder (standin/news_archive.py, "
+                         "order 0024; default CUBBY_NEWS_ARCHIVE; off when unset)")
     ap.add_argument("--web", choices=["auto", "brave", "searxng", "off"], default="auto",
                     help="the web behind Wikidata for the ask loop: 'auto' = Brave when BRAVE_SEARCH_API_KEY is set, "
                          "else SearXNG when --searxng / CUBBY_SEARXNG_URL names an instance, else off. A web fact is "
@@ -460,6 +463,10 @@ def main():
         if args.history:
             print(f"  every record appended to {args.history} (the sleep cycle's input)", flush=True)
         print(f"  POST /ask {{\"text\": ...}} -> the loop's record; watch it at http://{args.host}:{args.port}/panel", flush=True)
+    if args.news_archive:
+        from news_archive import start_poller
+        start_poller(args.news_archive, log=lambda m: print(m, flush=True))
+        print(f"news archive: polling the active feeds hourly into {args.news_archive}", flush=True)
     if args.science:
         sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"))
         from import_science import mount_science

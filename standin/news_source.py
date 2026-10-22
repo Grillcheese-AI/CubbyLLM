@@ -95,11 +95,8 @@ TOPIC_FEEDS = {t: f"{AP_BUCKET}{t}.xml" for t in (
 # unmistakable, and a loop whose whole kill line is "0 wrong answers spoken" should not be
 # coy about reading a "no" it understands. So the policy is READ, RECORDED, and surfaced;
 # what to do about it is a decision a person makes, not one this file makes quietly.
-AI_AGENTS = frozenset("""gptbot chatgpt-user oai-searchbot perplexitybot ccbot anthropic-ai
-    claude-web claudebot cohere-ai deepseek deepseekbot google-extended applebot-extended
-    bytespider meta-externalagent amazonbot ai2bot omgili""".split())
-_UA_BLOCK = re.compile(r"(?im)^\s*user-agent:\s*")
-_DISALLOW_ALL = re.compile(r"(?im)^\s*disallow:\s*/\s*$")
+# (the list and the group-aware reader live in robots_rules.py since 2026-10-22)
+from robots_rules import AI_AGENTS, ai_named  # noqa: E402
 
 _DATE_ASK = re.compile(r"^\s*(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?\s*$")
 _TAG = re.compile(r"<[^>]+>")
@@ -319,13 +316,7 @@ class NewsSource:
         except Exception:                                    # noqa: BLE001 -- no robots.txt is not a yes and not a no
             self._robots[host] = None
             return None
-        out = []
-        for block in _UA_BLOCK.split(txt)[1:]:
-            name, _, body = block.partition("\n")
-            body = _UA_BLOCK.split(body)[0]
-            if name.strip().lower() in AI_AGENTS and _DISALLOW_ALL.search(body):
-                out.append(name.strip().lower())
-        self._robots[host] = sorted(out)
+        self._robots[host] = ai_named(txt)
         return self._robots[host]
 
     def policy(self) -> dict[str, list[str] | None]:
