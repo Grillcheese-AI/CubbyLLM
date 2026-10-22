@@ -28,7 +28,8 @@ re-runs.
   - `table`: rows;
   - `EXCLUDED`: recorded with its reason, never loaded.
 - **Per dataset:** world ids, tier, provenance (source, work, location, date), and an as-of date where the source
-  has one. Incremental by file hash: a re-run adds only what is new, and nothing is deleted.
+  has one. Each work also carries a release status from a local list (see `CLAUDE.local.md`). `--release`
+  builds a store from the cleared works only, and reports what it left out. Incremental by file hash: a re-run adds only what is new, and nothing is deleted.
 - **One store interface** for the ask loop: lookup by entity and relation across worlds, with a world filter. The
   reality worlds are consulted by default. A fiction world is consulted only when the question names its work. The
   self world is consulted for questions about Cubby.
