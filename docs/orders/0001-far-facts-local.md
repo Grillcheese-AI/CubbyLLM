@@ -1,5 +1,5 @@
 # 0001 — Far facts: reproduce the 450M failure on a CPU toy, then fix it there
-status: review
+status: done
 written: 2026-10-21 by Cowork · approved: 2026-10-21 by Nick · hypothesis: H-K10 (and H-S12)
 
 ## Why
@@ -390,3 +390,15 @@ nothing trained, it lifts the far facts from 0.000 to 0.258 exact. `RUN = 4` is 
 - **Still open, for `done`:** the GPU parts listed under Not verified (compile with the copy, bf16, the
   probe's cost) and run 4 itself, against the readout's lines: far facts ≥ 0.50 exact, villages ≥ 0.90, text
   mix within 0.02 of run 3's. Status stays `review` until then.
+- **Run 4 (2026-10-21, G4, 0.5 h) and `done`.** Far facts 0.761 exact, villages 0.953: both lines pass. The
+  text mix misses its line, at +0.037 against 0.02. The cause is the re-warmed learning rate on a decayed
+  checkpoint with a fresh optimizer: pure-text sources the copy never touches moved by the same amount
+  (`spatial_run4_link_metrics_2026-10-21.jsonl`). Run 3's trunk with run 4's trained copy reads 0.844 exact,
+  with its text unchanged by construction (`diag_swap_copy_run4_2026-10-21.json`). The GPU checks:
+  - compile with the copy: no per-step recompiles, 36.9% MFU;
+  - bf16: no issue seen;
+  - the probe: ~1 min per eval.
+
+  The order's argument held, and its fix works on the 450M. What remains, training the copy alone, is order
+  0005. Recorded in H-K10.
+
