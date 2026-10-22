@@ -275,8 +275,8 @@ In plain words: add a skill, a dataset or a data source to Cubby by dropping in 
 - **Not verified here:**
   - The MiniLM router's fit on 50 real plugins: about 3,000 lines would take some 15 s to encode in the background
     thread, an extrapolation.
-  - The fastword logistic arm's leave-one-out run is still going and is not needed for the choice (this report gives
-    the arms that finished).
+  - The fastword logistic arm: its leave-one-out run was stopped unfinished after more than an hour (Newton steps on
+    the wide fastword vectors). It was not needed for the choice, and this report gives the arms that finished.
 - **Questions:**
   - Turn `CUBBY_PLUGINS_ROUTER=minilm` on in the serve stack? It puts a 22M-parameter encoder (not a language model)
     beside the trunk, at about 5 ms a question.
