@@ -1,5 +1,5 @@
 # 0027 — The control board: one page to see and steer Cubby (worlds, chat and its journey, a world map, forecasts, mood, system)
-status: review
+status: in progress (P1 accepted 2026-10-22; P2 after 0024, P3 after 0020 and 0026)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("perfect, start order 0027") · hypothesis: none (a tool; it measures nothing new) · **phased: P1 now, P2 after 0024, P3 after 0020 and 0026**
 
 ## Why
@@ -127,3 +127,28 @@ Worlds) and P3 (Mood arcs, Forecast) wait for their orders; their sections answe
     on Colab report its live step there, or is the last synced metrics line enough?
   - Should the Mood section show today's `/state` (the heartbeat and the cube point exist now) before 0020's arcs,
     or stay empty until P3 as the note says? It stays empty for now.
+
+## Review (Cowork, 2026-10-22): P1 accepted, one fix
+Checked: `test_board.py`, `test_plugins.py`, `test_plugins_serve.py` and `test_audience.py` pass (20, `.venv-dml`); the
+static and asset routes take only `[\w.-]+` names of their listed types, so no path leaves their folders; the
+committed assets are the `.blend`, the animated WebPs and the stills; no local path in the board's files.
+**P1 is accepted. One fix:**
+- **The public scrub hides ordinary words.** It matches internal names as substrings, and the names include every
+  mounted world's key, so on the real stack (worlds `facts`, `wiki`, ...) common words go. Probe on `board_api.scrub`
+  (`validation/logs/_review_0027_28.py`, not committed): "3.4M facts held", "Cubby talks about itself" (`self`) and
+  "trained on wikis" all become `[internal]`; "Weather warnings in effect" survives. The test's fake brain mounts no
+  world, so it cannot see this. Fix: whole-word matches, and a name list that holds what is actually internal (sources,
+  feeds, sites, dataset names), not generic world keys; a test with a real-like set of worlds where a public reply
+  "I don't have facts about that" survives and "wikidata5m" does not.
+- Latency: warm p95 22.8 ms; the cold Home (205.6 ms) pays for reading run logs on the synced Drive. Refresh that in
+  the background so no request pays it.
+- System fonts meet the line. Optional: bundle Manrope (SIL Open Font Licence) with the page to keep the designed
+  look offline.
+- Not verified, still to do once: the board on the real serve stack with its worlds mounted, both audiences (that is
+  where the scrub fix shows), and the turntable's ‹ › and clicks driven in a browser.
+**Questions:**
+- Colab runs: the last synced metrics line is enough. Show its age ("as of 14:02, 9 min ago") and mark it stale after
+  an hour; no live channel from Colab.
+- Mood: show today's `/state` now (the heartbeat at `40 + 55 × arousal`, the cube point, the levels). It exists, so
+  the empty-state rule does not apply to it; the arcs part says "not built yet (0020)" until P3.
+

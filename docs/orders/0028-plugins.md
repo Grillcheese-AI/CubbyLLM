@@ -1,5 +1,5 @@
 # 0028 — Plugins: one folder format and a loader for adapters, worlds, sources and tools, and board panels, loaded on demand like skills
-status: review
+status: in progress (review 2026-10-22: two fixes, the ask loop's gate, the held-out routing set)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick (asked for it; chose all four kinds, on-demand loading, code with permissions) · hypothesis: none · **after 0027 P1**
 
 ## Why
@@ -169,3 +169,36 @@ In plain words: add a skill, a dataset or a data source to Cubby by dropping in 
     `1513`, which order 0020 already uses), and a reader for a persons list ("JULIET, daughter to Capulet")?
   - Should a plugin's facts go through the ask loop's gate now (a plugin world as one of the loop's sources), or wait
     for its own order?
+
+## Review (Cowork, 2026-10-22): accepted in part; two fixes and two additions before done
+Checked: the tests pass (with 0027's, 20 together); the lock file sits under `standin/data/out/` (git-ignored); the
+plugin folders carry no weights or texts (`CUBBY_TALK_ADAPTER`, `CUBBY_PLAYS` name them off-repo); no local paths.
+The format, the index, the loader, the pin and the board's view are accepted. The ended-advisory catch in
+`envcanada-alerts` is a good find: it would have been a wrong answer.
+**Fixes:**
+1. **The code check misses most simple escapes.** Probe (12 cases, `validation/logs/_review_0027_28.py`, not
+   committed): caught `from os import system` and `importlib.import_module`; missed `eval`, `exec`,
+   `getattr(os, "sys" + "tem")`, `builtins.__import__`, `os.posix_spawn`, `os.spawnlp`, `os.execlpe`,
+   `sys.modules["socket"]`, `open(..., "w")` outside the plugin's folder and `shutil.rmtree`. The order says review
+   plus a pin, not a sandbox, and that stands; but the scan should catch these: `eval`, `exec`, `compile`, `getattr` /
+   `setattr` on a module with a non-literal name, `builtins`, `sys.modules`, every `os.exec*`, `os.spawn*` and
+   `os.posix_spawn*` by prefix, `shutil`'s deleting and moving calls, and `open` / `Path.write_*` with a write mode
+   (code writes through `ctx.data_dir`). A test per case.
+2. **Approve shows the code.** Approval is the real control, so the board's Approve shows the plugin's files (or the
+   diff since the last approval) before the button works, and the CLI's `approve` prints the same.
+**Additions:**
+3. **Plugin facts through the ask loop's gate, in this order** (Cowork's answer, 2026-10-22): a plugin world or source
+   is one of the loop's sources, tagged `plugin:<name>` in the audit chain, under copy-or-refuse; nothing it returns
+   reaches long-term memory except through the learn gate. Test: a plugin fact that contradicts a held fact is
+   refused and ledgered, not stored.
+4. **Routing beyond the examples.** The order's line is met in-sample at `tau_plugin` 0.40 (10/10 examples, 0/10
+   not-lines), but leave-one-out is 2/10 (plays, units) and 4/10 (talk): a new phrasing often does not wake a
+   plugin. Cowork wrote a held-out set (10 new phrasings and 10 near-misses per plugin, some in French), handed over
+   off-repo; it is not to be tuned on. Add examples per plugin (aim for 30, varied, both languages) and try scoring
+   the description with a question encoder; report on the held-out set once, at the end.
+**Questions answered:** the plays pack: Gutenberg's modern-spelling editions with persons lists, and a persons-list
+reader whose facts are in-fiction, checked against the speaker tags (Folger's texts are CC BY-NC: not for a public
+plugin). The `talk` adapter end to end waits for the base on grilly2 after 0022's job; run it then.
+**Noted:** `serve_api.py` (559 lines) and `emitter.py` (750) were already over 300 and grew; a split belongs to its own
+order.
+
