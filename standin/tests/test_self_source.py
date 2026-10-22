@@ -73,7 +73,7 @@ def test_the_loop_reports_what_it_did_and_never_what_it_thinks_of_it():
     assert ("asked", "3") in facts and ("answered", "1") in facts and ("refused", "2") in facts
     assert ("last verdict", "ambiguous_hop") in facts
     assert ("fact learned", "1") in facts
-    assert any(r == "source" and o.startswith("wikidata") for r, o in facts)
+    assert not any("wikidata" in o for _r, o in facts)                # how much it learned, never from whom (0016)
     rels = {r for r, _o in facts}
     assert not rels & {"reliable", "unreliable", "good", "bad", "quality", "trust"}
 
@@ -90,7 +90,7 @@ def test_the_loop_can_say_why_it_refuses_which_is_the_thing_nobody_can_read_off_
     assert ("asked", "5") in facts and ("refused", "5") in facts
     assert ("refusal", "unknown_relation (4)") in facts
     assert ("refusal", "ambiguous_hop (1)") in facts
-    assert any(r == "source" for r, _o in facts)               # it knows what it is reading from
+    assert not {r for r, _o in facts} & {"source", "provenance", "date source"}   # sources are internal (0016)
 
 
 def test_a_self_fact_never_enters_the_world_store():
@@ -121,4 +121,4 @@ def test_the_loop_does_not_narrate_itself():
                      "learned": [{"status": "accepted", "source": "wikidata"}] * 152}]
     rec = loop.ask("what do you know about quebec city?")
     assert rec["prose"] is None
-    assert "fact learned: 152" in rec["answer"] and "source: wikidata (152)" in rec["answer"]
+    assert "fact learned: 152" in rec["answer"] and "wikidata" not in rec["answer"]   # a count, not a source (0016)

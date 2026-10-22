@@ -36,10 +36,9 @@ LOOP = "this loop"
 # What a self ask may return, by kind. The `who`/`what`/`where` of the world become
 # "what do I know / what did I do / where did it come from".
 SELF_KINDS = {
-    "what": ("asked", "answered", "refused", "last verdict", "last answer", "fact learned",
-             "source", "relation asked"),
-    "who": ("asked", "answered", "refused", "last verdict", "source"),
-    "where": ("source", "publisher", "fact learned"),
+    "what": ("asked", "answered", "refused", "last verdict", "last answer", "fact learned", "relation asked"),
+    "who": ("asked", "answered", "refused", "last verdict"),
+    "where": ("fact learned",),                          # how much it learned, never from whom (order 0016)
     "when": ("asked",),
 }
 
@@ -104,11 +103,10 @@ class SelfSource:
         last = recs[-1]
         add("last verdict", last.get("reason") or ("answered" if last.get("answer") else "refused"))
         add("last answer", last.get("answer"))
-        # what the loop LEARNED about it, and from whom -- counts and names, never a judgement
+        # what the loop LEARNED about it -- a count, never a judgement and never its sources (order 0016: sources
+        # are internal; the audit view shows them)
         learned = [l for r in recs for l in (r.get("learned") or []) if l.get("status") == "accepted"]
         add("fact learned", len(learned))
-        for src, n in collections.Counter(l.get("source") for l in learned if l.get("source")).most_common(4):
-            add("source", f"{src} ({n})")
         rels = collections.Counter(rel for r in recs for rel in (r.get("plan") or []) if rel)
         for rel, n in rels.most_common(4):
             add("relation asked", f"{rel} ({n})")
@@ -139,16 +137,8 @@ class SelfSource:
         times = getattr(store, "times", None)
         if times is not None:
             add("fact dated", len(times))
-        prov = getattr(store, "provenance", None)
-        if prov:
-            for src, n in collections.Counter(prov.values()).most_common(5):
-                add("provenance", f"{src} ({n})")
         calls = getattr(self.loop, "calls", None)
         if calls:
             for k, n in sorted(dict(calls).items()):
                 add("call", f"{k} ({n})")
-        for name, attr in (("source", "source"), ("date source", "news")):
-            s = getattr(self.loop, attr, None)
-            if s is not None:
-                add(name, getattr(s, "name", type(s).__name__))
         return out

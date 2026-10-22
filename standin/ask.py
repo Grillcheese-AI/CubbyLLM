@@ -681,6 +681,8 @@ class AskLoop:
         # the question's tense and year against the answer's dates (order 0012: "Who rules England?" on a reign
         # that ended is not answered); on with the books unless `tense` says otherwise, off without them
         self.tense = (books is not None) if tense is None else bool(tense)
+        from audience import LeakGuard                   # sources are internal (order 0016): the guard at the mouth,
+        self.guard = LeakGuard(index=getattr(books, "index", None))   # the books' passages for its 8-word scan
         self._forms = None
         if books is not None:                            # natural questions (order 0012): a parsed form is a relation
             from question_forms import Forms             # ask, never a profile ("Who was the founder of Rome?"), and
@@ -760,6 +762,8 @@ class AskLoop:
         time, the store's snapshot hash, and for each learned fact its relation (as the index split it
         now, so a reload splits it the same way) and WHEN the source said it was true. Inside an ask,
         the record gets its thought graph first, so the history keeps how the answer came about."""
+        from audience import mouth, record_hash
+        mouth(rec, self.guard)                           # the last check before it is spoken (order 0016)
         g = getattr(self, "_graph", None)
         if g is not None and "graph" not in rec:
             try:
@@ -769,6 +773,7 @@ class AskLoop:
         ts = time.strftime("%Y-%m-%dT%H:%M:%S")
         rec.setdefault("ts", ts)
         rec.setdefault("id", f"{ts}-{len(self.history) + 1}")   # the handle an asker's feedback names
+        rec["hash"] = record_hash(rec)                   # the audit chain's seal (audience.audit_chain)
         self.history.append(rec)
         if self.history_path is None:
             return

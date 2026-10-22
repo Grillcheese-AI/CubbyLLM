@@ -7,6 +7,7 @@ import json
 import pathlib
 import sys
 import threading
+import urllib.error
 import urllib.request
 
 import pytest
@@ -286,8 +287,9 @@ def test_live_plugin_mounts_worlds_and_cortex_mindforge_style():
     assert rec2["route"].get("world") == "game", "routing must reach plugin worlds"
 
 
-def test_live_api_surface_turn_state_worlds():
+def test_live_api_surface_turn_state_worlds(monkeypatch):
     _exe_or_skip()
+    monkeypatch.setenv("CUBBY_AUDIT_TOKEN", "audit-for-tests")             # order 0016: the console feed is the audit's
     from serve_api import serve_http
     s = sv.CubbyServe(ChainEmitter(), FactStore(STORE), route_tau=0.2)
     httpd = serve_http(s, "127.0.0.1", 0)
@@ -295,13 +297,15 @@ def test_live_api_surface_turn_state_worlds():
     t = threading.Thread(target=httpd.serve_forever, daemon=True)
     t.start()
     try:
-        def get(path):
-            with urllib.request.urlopen(f"http://127.0.0.1:{port}{path}", timeout=30) as r:
+        def get(path, audit=False):
+            req = urllib.request.Request(f"http://127.0.0.1:{port}{path}", headers={"X-Audit-Token": "audit-for-tests"} if audit else {})
+            with urllib.request.urlopen(req, timeout=30) as r:
                 return json.load(r)
         assert get("/health")["ok"] is True
         st = get("/state")
         assert {"dopamine", "cortisol", "emotion"} <= set(st)
-        assert get("/worlds")["worlds"]["facts"] == len(STORE)
+        assert get("/worlds", audit=True)["worlds"]["facts"] == len(STORE)
+        assert get("/worlds")["worlds"] == {"all": len(STORE)}               # a user: a count, no world's name
         req = urllib.request.Request(f"http://127.0.0.1:{port}/turn",
                                      data=json.dumps({"text": "What is the capital of the homeland "
                                                               "of Zorblax the Painter?"}).encode(),
@@ -310,11 +314,16 @@ def test_live_api_surface_turn_state_worlds():
             rec = json.load(r)
         assert rec["reply"] == "Quuxville" and rec["emotion"]
         # the console feed: the turn's reasoning/actions are visible events
-        ev = get("/events?since=0")
+        try:
+            get("/events?since=0")
+            raise AssertionError("a user must not read the console feed")
+        except urllib.error.HTTPError as e:
+            assert e.code == 403
+        ev = get("/events?since=0", audit=True)
         kinds = [e["kind"] for e in ev["events"]]
         for k in ("user", "sense", "route", "walk", "gate", "speak"):
             assert k in kinds, f"console must show {k}: {kinds}"
-        assert get(f"/events?since={ev['next']}")["events"] == []
+        assert get(f"/events?since={ev['next']}", audit=True)["events"] == []
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=30) as r:
             page = r.read().decode("utf-8")
         assert "Cubby Console" in page

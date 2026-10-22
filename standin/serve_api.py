@@ -96,8 +96,13 @@ def make_handler(brain):
             self.send_response(204)
             self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-            self.send_header("Access-Control-Allow-Headers", "Content-Type")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Audit-Token")
             self.end_headers()
+
+        def _who(self) -> str:
+            """'user' (the default) or 'audit' (the token in CUBBY_AUDIT_TOKEN; order 0016)."""
+            from audience import audience, token_of
+            return audience(token_of(self.headers, self.path))
 
         def _page(self, name: str) -> None:
             page = os.path.join(os.path.dirname(os.path.abspath(__file__)), name)
@@ -113,6 +118,9 @@ def make_handler(brain):
             self.wfile.write(body)
 
         def _raw(self, code: int, body: bytes, ctype: str) -> None:
+            if ctype.startswith("text/html") and self.path.split("?", 1)[0].rstrip("/") in ("/panel", "/brain", "/map"):
+                from audience import AUDIT_SHIM                # an audit page's own requests carry its token
+                body = body.replace(b"<head>", b"<head>" + AUDIT_SHIM.encode("utf-8"), 1)
             self.send_response(code)
             self.send_header("Content-Type", ctype)
             self.send_header("Cache-Control", "no-store, no-cache, must-revalidate")
@@ -121,8 +129,20 @@ def make_handler(brain):
             self.wfile.write(body)
 
         def do_GET(self):
+            from audience import audit_chain, audit_only
             live = getattr(brain, "pac_live", None)
-            if self.path in ("/", "/index.html"):
+            who = self._who()
+            if audit_only(self.path) and who != "audit":      # the panel, the event streams, the audit view
+                self._send(403, {"error": "audit only"})
+                return
+            if self.path.startswith("/audit/"):              # the whole chain behind one answer (order 0016)
+                rid = self.path.split("?", 1)[0][len("/audit/"):]
+                loop, harness = getattr(brain, "ask_loop", None), getattr(brain, "harness", None)
+                chain = audit_chain(loop, rid) if loop is not None else None
+                if chain is None and harness is not None and rid in getattr(harness, "turns", {}):
+                    chain = {"id": rid, "turn": harness.turns[rid]}
+                self._send(200 if chain is not None else 404, chain or {"error": f"no record {rid}"})
+            elif self.path in ("/", "/index.html"):
                 self._page("demo.html")
             elif self.path.startswith("/pac"):           # pacman_live's exact frontend + its protocol
                 if live is None:
@@ -173,16 +193,16 @@ def make_handler(brain):
                 loop = getattr(brain, "ask_loop", None)
                 self._send(200, {"ok": True, "emitter": getattr(brain.emitter, "name", "?"),
                                  "ask": loop is not None,                                   # POST /ask mounted (the panel shows its box)
-                                 "ask_source": getattr(getattr(loop, "source", None), "name", None) if loop else None,
-                                 "news": getattr(getattr(loop, "news", None), "name", None) if loop else None,
+                                 "ask_source": getattr(getattr(loop, "source", None), "name", None) if loop and who == "audit" else None,
+                                 "news": getattr(getattr(loop, "news", None), "name", None) if loop and who == "audit" else None,
                                  "asked": loop.calls["asked"] if loop else 0,
                                  "two_adapters": bool(getattr(brain.emitter, "is_split", False)),
                                  "adapters": (brain.emitter.usage() if hasattr(brain.emitter, "usage") else None)})
             elif self.path == "/state":
                 self._send(200, brain.chat.chem.to_dict())
             elif self.path == "/worlds":
-                self._send(200, {"worlds": {n: len(getattr(w, "texts", []))
-                                            for n, w in brain.worlds.items()},
+                worlds = {n: len(getattr(w, "texts", [])) for n, w in brain.worlds.items()}
+                self._send(200, {"worlds": worlds if who == "audit" else {"all": sum(worlds.values())},   # no dataset names
                                  "cortices": sorted(brain.cortices)})
             elif self.path.split("?", 1)[0] in ("/panel", "/panel/"):     # the three.js control panel over the loop's events
                 try:
@@ -267,6 +287,7 @@ def make_handler(brain):
             if self.path not in ("/turn", "/ask", "/pac/say"):
                 self._send(404, {"error": "unknown path"})
                 return
+            from audience import for_user
             try:
                 n = int(self.headers.get("Content-Length", 0))
                 req = json.loads(self.rfile.read(n) or b"{}")
@@ -286,19 +307,21 @@ def make_handler(brain):
                     if loop is None:
                         self._send(503, {"error": "no ask loop mounted: start serve_api with --ask"})
                         return
-                    self._send(200, _json_safe(loop.ask(text, item=(str(req.get("item")) if req.get("item") else None), asker=(str(req.get("asker")) if req.get("asker") else None),
-                                                          choose=req.get("choose") or None)))
+                    rec = loop.ask(text, item=(str(req.get("item")) if req.get("item") else None),
+                                   asker=(str(req.get("asker")) if req.get("asker") else None), choose=req.get("choose") or None)
+                    self._send(200, _json_safe(rec if self._who() == "audit" else for_user(rec)))   # sources stay internal
                     return
                 harness = getattr(brain, "harness", None)   # --harness: the turn is a frame, a budget and a ledger row
                 rec = (harness.turn(text, feedback=req.get("feedback")) if harness is not None
                        else brain.turn(text, feedback=req.get("feedback")))
                 rec.pop("raw", None)
-                self._send(200, _json_safe(rec))
+                self._send(200, _json_safe(rec if self._who() == "audit" else for_user(rec)))
             except Exception as e:
                 self._send(500, {"error": str(e)[:300]})
 
         def log_message(self, fmt, *args):
-            print(f"  api: {fmt % args}", flush=True)
+            from audience import redact
+            print(f"  api: {redact(fmt % args)}", flush=True)   # a token in a query string never reaches the log
 
     return Handler
 

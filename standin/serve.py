@@ -541,7 +541,8 @@ class CubbyBrain:
 
     def help_line(self, lang: str) -> str:
         games = [n for n in self.cortices]
-        worlds = ", ".join(f"{n} ({len(getattr(w, 'texts', []))} facts)" for n, w in self.worlds.items())
+        n = sum(len(getattr(w, "texts", [])) for w in self.worlds.values())   # a count, never a world's name (0016)
+        worlds = f"{n} faits" if lang == "fr" else f"{n} facts"
         if lang == "fr":
             return (f"Je peux répondre à des questions sur ce que je sais ({worlds}), retenir un fait "
                     f"(« retiens que X est la capitale de Y »)"
@@ -604,6 +605,12 @@ class CubbyBrain:
         rec["dont_know"] = bool(rec.get("reply") == dont_know or rec.get("spoke_safe"))
         rec["signals"] = getattr(self.chat, "signals", None)
         rec["emotion"] = self.chat.emotion
+        from audience import LeakGuard                   # sources are internal (order 0016): the last check at the mouth
+        loop = getattr(self, "ask_loop", None)
+        guard = getattr(loop, "guard", None) or LeakGuard()
+        said, hits = guard.check(rec.get("reply"), {"answer": (rec.get("task") or {}).get("vm_answer"), "learned": []})
+        if hits:                                         # cut where it only named a source; refused (I don't know) otherwise
+            rec.update(guard=hits, reply=said if said is not None else dont_know, dont_know=said is None or rec["dont_know"])
         self.trace("speak", turn_kind=rec["kind"], reply=rec["reply"],
                    offered=len(rec.get("offered", [])), register=rec.get("register"))
         for obs in self._observers:
