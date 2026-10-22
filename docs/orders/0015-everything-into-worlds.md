@@ -87,6 +87,11 @@ Order 0011 found, in the wiki world: 528 facts whose subject or object is a Pyth
 `SP0USE_OF` (a zero for the O). Mounting a world drops facts whose ends are not names, maps known misspelled relations
 to their spelling, and logs both counts per world.
 
+## Addendum 2 (Cowork, 2026-10-22): the time rule on every world
+From order 0012's review: `standin/time_rule.py` reads the books' witnesses. It also reads every mounted world's
+facts: an undated value of a relation in `CHANGES` (a spouse, a capital, a head of state) is said "at one point" or
+carries the world's "as of", never flat as if current. Report how many facts per world it touches.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**

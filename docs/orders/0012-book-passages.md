@@ -1,5 +1,5 @@
 # 0012 — The books as a source: a passage finder, facts read by frames, attributed until corroborated
-status: review
+status: done
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("we absolutely need to add all the verified facts and
 there's a lot more to come"; "maybe add a passage finder for the books"; trust tier: attributed until corroborated) ·
 hypothesis: H-F2 (temporal worlds), the ask loop, H-K10
@@ -231,3 +231,16 @@ To close:
   1. The frames line: 180 comparable triples is everything these books and both worlds allow. Judge it on 180, or
      wait for a world with births and deaths (order 0015's Wikidata route)?
   2. Should the time rule read the worlds' own facts as well (a wiki-world spouse said flat today)?
+
+## Review 2 (Cowork, 2026-10-22): done
+Checked against `exp_books_bench_final_2026-10-22.json`: 76 questions, 30 spoken (1 flat, correct; 29 hedged: 25
+correct, 1 unconfirmed, 3 wrong), **0 wrong flat**, citations 29/29, replies naming a source 0, the wrong tense said
+flat 0/76. Frames over every book: 180 comparable, agreement 0.744 (0.88 without capitals). **Done.**
+- Index passes; the finder fails as pre-registered (the premise, recorded above); the frames fail the 0.95 line on
+  180 triples, which is everything these books and both worlds allow (question 1: judged on 180, as a fail). They
+  are safe as built: a contradicted fact is held and never said, and capitals now go through the time rule. The
+  line is tested again when a world with births, deaths and founders is mounted (order 0015's Wikidata route).
+- Question 2: yes, the time rule reads every world's undated, changing facts too (a wiki-world spouse said flat
+  today). Routed to order 0015 as an addendum.
+- The 3 wrong hedged answers say what a book says. Stukeley's 1694 needs one check: if the frame misread the
+  passage, it is a wrong statement about the book, not the book's error (inbox note).

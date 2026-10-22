@@ -1,5 +1,5 @@
 # 0021 — Free-text facts, part 2: train the switch alone (0005's recipe on 0006's toy), then widen the templates
-status: review
+status: done
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: H-K10 · **after 0006**
 
 ## Why
@@ -149,3 +149,21 @@ phrasings' 0.694 tracks the pointer's own 0.895.
   2. Or decouple the gate's slope from `tau` (a separate scale on `best - beta`) and train it with the gate loss?
   3. Part B (twelve templates): run it now, since P's held-out phrasings already pass on 3 of 3 seeds, or after the
      switch's contract is settled?
+
+## Review (Cowork, 2026-10-22): done
+Checked against `exp_k10_switch_U_s0_2026-10-22.json` (switch alone: exact 0.879, absent 0.083, present wrong 0.092,
+refused 0.029) and `k10_policies_U_s0_2026-10-22.json` (copy or refuse at 0.18: exact 0.840, present wrong 0.013,
+refused 0.147, absent 0.029). **Done: part A's lines fail, and the finding replaces them.**
+- The kill line triggered as written (U absent 8.3% at 2.9% refused), and its stated cause is disproved: the best
+  match separates present from absent at a balanced 0.947-0.963. The cause is the fallback. When the gate closes,
+  the trunk speaks, and at an asking position the trunk's pick is never the fact, so a closed gate makes a wrong
+  answer instead of a refusal.
+- **Question 1: yes, copy or refuse becomes the switch's contract** (order 0022): a fact token comes from the copy, or
+  the answer is NONE, never from the trunk. It is the project's rule in miniature: facts come from stores, the
+  language model only words them.
+- The threshold here was picked on the evaluation documents ("the lowest refusal meeting both lines"). It was 0.17-0.18
+  in every arm, which is reassuring, but order 0022 fits it on a separate split before it is measured.
+- Question 2 (a gate slope apart from `tau`) is 0022's optional arm, to lower refusals at the same wrong rate.
+  Question 3: part B runs in 0022, under the contract.
+- The P joint runs' seed spread (0.849 / 0.841 here, 0.783 / 0.826 in 0006, same code) is recorded: a single seed's
+  number is worth about +/-0.03 on this toy.
