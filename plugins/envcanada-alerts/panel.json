@@ -1,0 +1,10 @@
+{
+ "title": "Weather warnings in effect",
+ "subtitle": "Canada, live",
+ "call": "source.panel",
+ "big": "count",
+ "unit": "in effect",
+ "chart": "list",
+ "list": "items",
+ "item": ["area", "headline", "until"]
+}

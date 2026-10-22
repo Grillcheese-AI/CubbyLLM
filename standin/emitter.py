@@ -422,6 +422,61 @@ class Cubby450mTrunk:
         self._role = role
         self.swaps += 1
 
+    # -- a role from a plugin (order 0028): added on demand, refused when its layout or base differs ----------------
+    def layout(self) -> tuple:
+        """(rank, alpha, targets) every adapter on this base shares: the first role's."""
+        meta = json.load(open(self._adapter_files(next(iter(self.adapter_dirs)))[0], encoding="utf-8"))
+        return int(meta["rank"]), float(meta["alpha"]), tuple(meta["targets"])
+
+    def base_hash(self) -> str:
+        """The export's weights' SHA-256, computed once and kept beside them (keyed by size and time)."""
+        import hashlib
+        w = os.path.join(self.export_dir, "model.safetensors")
+        st, side = os.stat(w), w + ".sha256.json"
+        try:
+            got = json.load(open(side, encoding="utf-8"))
+            if got.get("size") == st.st_size and got.get("mtime") == int(st.st_mtime):
+                return got["sha256"]
+        except (OSError, ValueError, KeyError):
+            pass
+        h = hashlib.sha256()
+        with open(w, "rb") as f:
+            for chunk in iter(lambda: f.read(1 << 22), b""):
+                h.update(chunk)
+        json.dump({"size": st.st_size, "mtime": int(st.st_mtime), "sha256": h.hexdigest()}, open(side, "w", encoding="utf-8"))
+        return h.hexdigest()
+
+    def add_role(self, role: str, adapter_dir: str, base: str | None = None) -> None:
+        """A plugin's adapter as a new role: refused (ValueError, with the reason) when its LoRA layout is not the
+        base's or its ``base`` hash names another export. The base and the other roles' weights do not move."""
+        if role in self.adapter_dirs:
+            raise ValueError(f"role {role!r} is already taken")
+        if base and base != self.base_hash():
+            raise ValueError(f"adapter {role!r} was trained on another base ({base[:12]} vs {self.base_hash()[:12]})")
+        self.adapter_dirs[role] = adapter_dir
+        try:
+            meta_p, tensors_p = self._adapter_files(role)
+            meta = json.load(open(meta_p, encoding="utf-8"))
+            if (int(meta["rank"]), float(meta["alpha"]), tuple(meta["targets"])) != self.layout():
+                raise ValueError(f"adapter {role!r} has another LoRA layout than the base's (rank/alpha/targets)")
+            if self._model is not None:                      # loaded: its weights now; else at the first load
+                from safetensors.numpy import load_file
+                tensors = load_file(tensors_p)
+                self._weights[role] = {path: (tensors[f"{path}.lora_A.weight"], tensors[f"{path}.lora_B.weight"])
+                                       for path in self._wrapped}
+        except Exception:
+            del self.adapter_dirs[role]
+            raise
+
+    def remove_role(self, role: str) -> None:
+        """A plugin's role unloaded; the next call that asks another role copies that role's weights back in."""
+        if role not in self.adapter_dirs or len(self.adapter_dirs) == 1:
+            raise ValueError(f"cannot remove role {role!r}")
+        del self.adapter_dirs[role]
+        self._weights.pop(role, None)
+        if self._role == role:
+            self._role = None                                 # the wrapped weights are stale: the next use() rewrites
+
     @property
     def tokenizer(self):
         self._load()

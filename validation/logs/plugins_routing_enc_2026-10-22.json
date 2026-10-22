@@ -1,0 +1,1665 @@
+{
+ "plugins": [
+  "envcanada-alerts",
+  "gutenberg-plays",
+  "talk",
+  "units"
+ ],
+ "lines": {
+  "envcanada-alerts": [
+   10,
+   10
+  ],
+  "gutenberg-plays": [
+   10,
+   10
+  ],
+  "talk": [
+   10,
+   10
+  ],
+  "units": [
+   10,
+   10
+  ]
+ },
+ "encoder": "fastword v4 (the serve stack's)",
+ "grid": {
+  "0.2": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 7,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {
+      "units": 3
+     },
+     "not_woke": [
+      "what is the capital of Canada?"
+     ]
+    },
+    "units": {
+     "examples": 10,
+     "not": 4,
+     "others_woken_by_examples": {
+      "talk": 5
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "how many people live in Montreal?",
+      "how tall is Mount Everest?",
+      "what is the speed of light?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 7,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?"
+     ]
+    },
+    "talk": {
+     "examples": 5,
+     "not": 1,
+     "others_woken_by_examples": {
+      "units": 3
+     },
+     "not_woke": [
+      "what is the capital of Canada?"
+     ]
+    },
+    "units": {
+     "examples": 10,
+     "not": 4,
+     "others_woken_by_examples": {
+      "talk": 5
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "how many people live in Montreal?",
+      "how tall is Mount Everest?",
+      "what is the speed of light?"
+     ]
+    }
+   }
+  },
+  "0.225": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 7,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {
+      "units": 2
+     },
+     "not_woke": [
+      "what is the capital of Canada?"
+     ]
+    },
+    "units": {
+     "examples": 10,
+     "not": 4,
+     "others_woken_by_examples": {
+      "talk": 3
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "how many people live in Montreal?",
+      "how tall is Mount Everest?",
+      "what is the speed of light?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 7,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?"
+     ]
+    },
+    "talk": {
+     "examples": 5,
+     "not": 1,
+     "others_woken_by_examples": {
+      "units": 2
+     },
+     "not_woke": [
+      "what is the capital of Canada?"
+     ]
+    },
+    "units": {
+     "examples": 10,
+     "not": 4,
+     "others_woken_by_examples": {
+      "talk": 3
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "how many people live in Montreal?",
+      "how tall is Mount Everest?",
+      "what is the speed of light?"
+     ]
+    }
+   }
+  },
+  "0.25": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 7,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {
+      "units": 2
+     },
+     "not_woke": [
+      "what is the capital of Canada?"
+     ]
+    },
+    "units": {
+     "examples": 10,
+     "not": 3,
+     "others_woken_by_examples": {
+      "talk": 3
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "how many people live in Montreal?",
+      "what is the speed of light?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 7,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?"
+     ]
+    },
+    "talk": {
+     "examples": 5,
+     "not": 1,
+     "others_woken_by_examples": {
+      "units": 2
+     },
+     "not_woke": [
+      "what is the capital of Canada?"
+     ]
+    },
+    "units": {
+     "examples": 10,
+     "not": 3,
+     "others_woken_by_examples": {
+      "talk": 3
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "how many people live in Montreal?",
+      "what is the speed of light?"
+     ]
+    }
+   }
+  },
+  "0.275": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 6,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": [
+      "what is the capital of Canada?"
+     ]
+    },
+    "units": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "what is the speed of light?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 6,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 4,
+     "not": 1,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": [
+      "what is the capital of Canada?"
+     ]
+    },
+    "units": {
+     "examples": 8,
+     "not": 1,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "what is the speed of light?"
+     ]
+    }
+   }
+  },
+  "0.3": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 6,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": [
+      "what is the capital of Canada?"
+     ]
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 6,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 4,
+     "not": 1,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": [
+      "what is the capital of Canada?"
+     ]
+    },
+    "units": {
+     "examples": 8,
+     "not": 0,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": []
+    }
+   }
+  },
+  "0.325": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 5,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 5,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 4,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 7,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.35": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 3,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the population of Toronto?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 3,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the population of Toronto?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 4,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 6,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.375": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the population of Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the population of Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 4,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.4": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 4,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.425": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.45": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.475": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 9,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.5": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 4,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.525": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.55": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.575": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.6": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.625": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.65": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.675": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.7": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.725": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.75": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.775": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.8": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  }
+ },
+ "start_tau": 0.35,
+ "chosen_tau": 0.4,
+ "chosen": {
+  "meets": true,
+  "in_sample": {
+   "envcanada-alerts": {
+    "examples": 10,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   },
+   "gutenberg-plays": {
+    "examples": 10,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   },
+   "talk": {
+    "examples": 10,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   },
+   "units": {
+    "examples": 10,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   }
+  },
+  "leave_one_out": {
+   "envcanada-alerts": {
+    "examples": 10,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   },
+   "gutenberg-plays": {
+    "examples": 2,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   },
+   "talk": {
+    "examples": 4,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   },
+   "units": {
+    "examples": 2,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   }
+  }
+ }
+}

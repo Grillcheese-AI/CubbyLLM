@@ -1,0 +1,1746 @@
+{
+ "plugins": [
+  "envcanada-alerts",
+  "gutenberg-plays",
+  "talk",
+  "units"
+ ],
+ "lines": {
+  "envcanada-alerts": [
+   10,
+   10
+  ],
+  "gutenberg-plays": [
+   10,
+   10
+  ],
+  "talk": [
+   10,
+   10
+  ],
+  "units": [
+   10,
+   10
+  ]
+ },
+ "encoder": "IDF word overlap (no encoder on this machine's stand-in path)",
+ "grid": {
+  "0.2": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 7,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "units": 1
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 5,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "where is the Globe Theatre?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 6,
+     "others_woken_by_examples": {
+      "talk": 2
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "how many people live in Montreal?",
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how many moons does Jupiter have?",
+      "what happened in Ottawa yesterday?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 7,
+     "others_woken_by_examples": {
+      "talk": 2,
+      "units": 1
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 5,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "where is the Globe Theatre?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 7,
+     "not": 0,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": []
+    },
+    "units": {
+     "examples": 9,
+     "not": 6,
+     "others_woken_by_examples": {
+      "talk": 2,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "how many people live in Montreal?",
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how many moons does Jupiter have?",
+      "what happened in Ottawa yesterday?"
+     ]
+    }
+   }
+  },
+  "0.225": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 7,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 5,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "where is the Globe Theatre?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "how many people live in Montreal?",
+      "what is the speed of light?",
+      "what happened in Ottawa yesterday?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 7,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 5,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "where is the Globe Theatre?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 7,
+     "not": 0,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": []
+    },
+    "units": {
+     "examples": 9,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "how many people live in Montreal?",
+      "what is the speed of light?",
+      "what happened in Ottawa yesterday?"
+     ]
+    }
+   }
+  },
+  "0.25": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 6,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how many people live in Montreal?",
+      "what happened in Ottawa yesterday?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 8,
+     "not": 6,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": []
+    },
+    "units": {
+     "examples": 9,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how many people live in Montreal?",
+      "what happened in Ottawa yesterday?"
+     ]
+    }
+   }
+  },
+  "0.275": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 6,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how many people live in Montreal?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 8,
+     "not": 6,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 9,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 9,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how many people live in Montreal?"
+     ]
+    }
+   }
+  },
+  "0.3": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 5,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how many people live in Montreal?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 8,
+     "not": 5,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "what is the population of Toronto?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 8,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 9,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how many people live in Montreal?"
+     ]
+    }
+   }
+  },
+  "0.325": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 8,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 8,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 7,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.35": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 8,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 6,
+     "not": 4,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the capital of Canada?",
+      "who is the father of Queen Elizabeth II?",
+      "what is the population of London?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 5,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.375": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 8,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 5,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 3,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.4": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 6,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 4,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 3,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.425": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 6,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 4,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.45": {
+   "meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 6,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 4,
+     "not": 2,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.475": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 6,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 3,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.5": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 4,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "is Lévis a city in Quebec?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 3,
+     "not": 1,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who is the president of France?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.525": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 4,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.55": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 1,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.575": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.6": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.625": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 2,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.65": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.675": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.7": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.725": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.75": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.775": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.8": {
+   "meets": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 10,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "talk": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 0,
+     "not": 0,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  }
+ },
+ "start_tau": 0.35,
+ "chosen_tau": 0.475,
+ "chosen": {
+  "meets": true,
+  "in_sample": {
+   "envcanada-alerts": {
+    "examples": 10,
+    "not": 1,
+    "others_woken_by_examples": {},
+    "not_woke": [
+     "is Lévis a city in Quebec?"
+    ]
+   },
+   "gutenberg-plays": {
+    "examples": 10,
+    "not": 1,
+    "others_woken_by_examples": {},
+    "not_woke": [
+     "who is the president of France?"
+    ]
+   },
+   "talk": {
+    "examples": 10,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   },
+   "units": {
+    "examples": 10,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   }
+  },
+  "leave_one_out": {
+   "envcanada-alerts": {
+    "examples": 6,
+    "not": 1,
+    "others_woken_by_examples": {},
+    "not_woke": [
+     "is Lévis a city in Quebec?"
+    ]
+   },
+   "gutenberg-plays": {
+    "examples": 3,
+    "not": 1,
+    "others_woken_by_examples": {},
+    "not_woke": [
+     "who is the president of France?"
+    ]
+   },
+   "talk": {
+    "examples": 0,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   },
+   "units": {
+    "examples": 0,
+    "not": 0,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   }
+  }
+ }
+}
