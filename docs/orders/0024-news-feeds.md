@@ -1,6 +1,6 @@
 # 0024 — News from feeds: a dated archive, events by day, and news as the trigger that a fact may have changed
-status: proposed
-written: 2026-10-22 by Cowork · approved: — · hypothesis: H-F2 (temporal worlds) · **with 0023's live "as of"**
+status: open
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes open it") · hypothesis: H-F2 (temporal worlds) · **with 0023's live "as of"**
 
 ## Why
 Nick (2026-10-22): "what about getting the news from feeds?" Half of it exists. `standin/news_source.py` (2026-09-14)
@@ -31,6 +31,10 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
 - **The feeds** (a manifest in `standin/data/news_feeds.json`): today's four, plus French and Québec outlets. Verify
   each URL, record its terms, and respect a refusal (a robot block, an error, a terms page that forbids it). Replace
   the third-party AP mirror with an official feed or drop it.
+  - **Le Devoir (Nick, 2026-10-22):** the front-page feed `https://www.ledevoir.com/rss/manchettes.xml`, the older
+    `http://feeds2.feedburner.com/fluxdudevoir` (check it is still updated: a stale mirror is dropped, as feedx.net's
+    AP was), and the section feeds listed at `https://www.ledevoir.com/flux-rss` (the page builds its list in the
+    browser; read it from Nick's machine). Then other Québec and French outlets, each checked the same way.
 - **Events by day:** items about the same event (shared names and key words, within a day or two) grouped across
   outlets; who and what read by the frames (Cubby-native), as **reported** claims dated by their items. A group stays
   "reported" however many outlets carry it, per `news_source.py`'s rule.
