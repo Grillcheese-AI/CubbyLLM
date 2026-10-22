@@ -174,6 +174,14 @@ class Archive:
     def poll_all(self, manifest=MANIFEST) -> list[dict]:
         with self._lock():
             rows = [self.poll(f) for f in feeds(manifest) if f.get("status") == "active"]
+            cfg = json.loads(pathlib.Path(manifest).read_text(encoding="utf-8")).get("gdelt") or {}
+            if cfg.get("status") == "active":                 # the structured event source (news_gdelt.py)
+                try:
+                    from news_gdelt import Gdelt, hdc_known
+                    g = Gdelt(self.root / "gdelt", self.fetch, hdc_known(os.environ.get("CUBBY_HDC_WORLD")))
+                    rows.append(g.poll(tuple(cfg.get("streams", ["en"]))))
+                except Exception as e:                        # noqa: BLE001 -- the feeds' poll still counts
+                    rows.append({"feed": "gdelt", "new": 0, "error": f"{type(e).__name__}: {str(e)[:100]}"})
             with (self.root / "_polls.jsonl").open("a", encoding="utf-8", newline="\n") as f:
                 for r in rows:
                     f.write(json.dumps(r, ensure_ascii=False) + "\n")

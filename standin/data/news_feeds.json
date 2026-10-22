@@ -342,5 +342,14 @@
    "ai_agents_named": [],
    "checked": "2026-10-22"
   }
- ]
+ ],
+ "gdelt": {
+  "status": "active",
+  "streams": [
+   "en",
+   "translation"
+  ],
+  "licence": "open-citation",
+  "what": "GDELT 2.0 events + mentions, every 15-minute file, filtered on ingest (standin/news_gdelt.py); never GKG, never a source URL followed"
+ }
 }
