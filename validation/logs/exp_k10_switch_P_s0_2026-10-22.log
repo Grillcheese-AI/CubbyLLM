@@ -1,0 +1,9 @@
+env: 2026-10-22 04:05 python 3.12.10 torch 2.4.1+cpu Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)
+--- P seed 0: the switch alone (spatial.copy_path.gate.weight, spatial.copy_path.gate.bias, spatial.copy_path.tau, spatial.copy_path.beta), 500 steps, lr 0.01
+  joint  exact 0.855  seen/train 0.872  seen/held 0.869  unseen/train 0.854  unseen/held 0.816  absent answered 0.087  present wrong 0.098  refused 0.048  language 2.2636  copy alone 0.955  lam here 0.904 empty 0.158  [54s]
+  step  100  exact 0.846  seen/train 0.872  seen/held 0.864  unseen/train 0.833  unseen/held 0.805  absent answered 0.034  present wrong 0.095  refused 0.059  language 2.2632  copy alone 0.955  lam here 0.924 empty 0.067  [202s]
+  step  200  exact 0.891  seen/train 0.899  seen/held 0.897  unseen/train 0.906  unseen/held 0.859  absent answered 0.121  present wrong 0.072  refused 0.037  language 2.2634  copy alone 0.955  lam here 0.951 empty 0.095  [350s]
+  step  300  exact 0.858  seen/train 0.885  seen/held 0.874  unseen/train 0.839  unseen/held 0.827  absent answered 0.092  present wrong 0.095  refused 0.046  language 2.2632  copy alone 0.955  lam here 0.936 empty 0.066  [497s]
+  step  400  exact 0.879  seen/train 0.890  seen/held 0.883  unseen/train 0.885  unseen/held 0.854  absent answered 0.087  present wrong 0.075  refused 0.046  language 2.2633  copy alone 0.955  lam here 0.943 empty 0.081  [646s]
+  step  500  exact 0.883  seen/train 0.890  seen/held 0.883  unseen/train 0.901  unseen/held 0.854  absent answered 0.102  present wrong 0.073  refused 0.044  language 2.2634  copy alone 0.955  lam here 0.946 empty 0.088  [794s]
+  frozen parameters unchanged: True; best match (p5/p50/p95) present [0.1688, 0.2896, 0.4171], absent [0.0533, 0.1054, 0.1721]; one threshold {'at': 0.1825, 'balanced_accuracy': 0.9543}
