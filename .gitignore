@@ -211,3 +211,4 @@ validation/logs/history_graph_v21.assemble.json
 
 # Claude Code: machine-specific notes (paths, drives, accounts) -- never committed
 CLAUDE.local.md
+docs/worlds_manifest.local.tsv
