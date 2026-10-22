@@ -158,3 +158,70 @@ names and monkeypatches survive. **Step 2 may start, with these changes.**
 - **`import cubbyllm` stays torch-free and grilly-free.** Add the test (a fresh interpreter, `import cubbyllm`, then
   neither in `sys.modules`); the moved modules' `numpy` at module level is fine.
 
+### Step 2: the moves (in progress)
+**Done so far (2026-10-22): eight slices, 82 modules out of `standin/`, every one checked against the baselines.**
+
+| slice | moved to | commits (move, shims) |
+|---|---|---|
+| worlds (21) | `cubbyllm/worlds/` | `589fa14`, `33d7771` |
+| sources (12) | `cubbyllm/sources/`, `cubbyllm/sources/news/` | `8415138`, `3787854`, `6bd9104` |
+| affect and speech (14) | `cubbyllm/affect/`, `cubbyllm/speech/` | `88c1cae`, `22e8ad2` |
+| reasoning (4) | `cubbyllm/reasoning/` (`ask`, `question_forms`, `context_graph`, `loci_reader`) | `84d8906`, `340ec6b` |
+| emit (3) | `cubbyllm/emit/` (`base`, `seats_450m`, `talk`) | `da9e0a8`, `a398428` |
+| plugins (8) | `cubbyllm/plugins/` (`python -m cubbyllm.plugins`) | `5e30232`, `7001926` |
+| cortex (7) | `cubbyllm/cortex/` | `86245ac`, `54236dd` |
+| the brain (1, split) | `cubbyllm/brain.py`; `build_serve` and the CLI to `cubby_serve/build.py` | `cf73b96`, `4855789`, `d8b4311` |
+
+- **The pre-move fixes**, one commit each, behaviour unchanged: the helpers a moved module needed from `validation/` or
+  the game now live in the package, and their old homes import them back. They are:
+  - `cubbyllm/model/build.py` and `fact_layout.py` (the model from a checkpoint's meta, the far-fact layout);
+  - `cubbyllm/reasoning/emitted.py` (`emitted_plan`);
+  - `cubbyllm/emit/format.py` (the program format);
+  - `cubbyllm/ops/grilly_seats.py` and `ops/packed.py` (grilly only through `cubbyllm/ops/`);
+  - `cubbyllm/worlds/fact_pool.py`;
+  - `cubbyllm/speech/identity.py` and `passage.py`, and `numbers` into grounding;
+  - `emitter_base` split: the contract stays, the GGUF parts go to `emitter_llama`;
+  - the LFM source built by the server and passed to the ask loop.
+- **Checks after each slice:**
+  - the full suite against the baseline, per file, with the moved files mapped: the same counts each time (1,189
+    passed, 6 skipped, red only 0002's wiring test);
+  - `log --follow` keeps each file's history;
+  - `import cubbyllm` loads neither torch nor grilly;
+  - `import cubbyllm.brain` loads nothing from `standin/`, `cubby_serve/` or `validation/`.
+- **The real stack after slice 8**, booted as the baseline was (the 450M seats on grilly2, wiki and hdc, the ask loop
+  offline, plugins, the board):
+  - **the 20 fixed questions: byte-identical replies**;
+  - **11 of 13 board routes equal.** `/board/home` and `/board/system` differ only in the order queue: 0028 went from
+    "in progress" to "review" in `e7cd011`, and the board reads `docs/orders/`. That is no code difference
+    ([log](../../validation/logs/0031_stack_after_s8_2026-10-22.json)).
+- **Measured on the models** (Nick: "use grilly2"; the latest model, `spatial_link_5`):
+  - The 450M seats on grilly2, the trunk's own grilly calls against the ops seam, from the moved module. One trunk,
+    the emitter and talk adapters, 10 decodes including role swaps and a seeded sample. The outputs are
+    byte-identical and so are the swaps ([log](../../validation/logs/0031_seats_grilly2_2026-10-22.json)).
+  - The loci bench's phase 2 on `spatial_link_5_final.pt` through the moved ask loop, loci reader and model builder:
+    100 of 100 rows equal to the pre-move log (34 answered through the loci path, 0 wrong)
+    ([log](../../validation/logs/0031_loci_bench_after_2026-10-22.json)).
+- **Found on the way (reported, not changed):**
+  1. **`loci_reader` writes two reasons the sleep cycle has no route for** (`loci_mismatch`, `loci_miss`). They land
+     in "unrouted". The routing test now scans `cubbyllm/reasoning/`, which holds `loci_reader`, so it saw them. The
+     test keeps its old coverage until they are routed: routing them is a decision. Where should they go?
+  2. **A regression of mine, caught and fixed:** `b315242` dropped the trunk's grilly handle, which `test_plugins`
+     fakes. The targeted run missed it and the next full run caught it; fixed in `3b1e4e0`, checked again on the card.
+  3. **Data places the package still names in `standin/data/out`:**
+     - the vault's key (the review says the server names it);
+     - the identity facts;
+     - the wiki world's cache;
+     - the plugins' lock and data root.
+
+     They are paths, not imports. They go with the network split and the server's configuration, below.
+  4. **`cubbyllm/reasoning/step_loop.py`** (in the package before 0031) imports `validation/exp_he18_ab.vm_run` and
+     edits `sys.path`. The guards will flag it; its fix is a helper moved like the others.
+- **Next:**
+  - the `cubby_serve` slice (the server's parts, the board, the plugins' server part, the harness, the ledger);
+  - the network split (fetchers to `cubby_serve/sources/`, a `fetch` handed in; the plugins' `Ctx`; wikikg's
+    download);
+  - the builders;
+  - the guards;
+  - `pyproject.toml`, the licences and the docs;
+  - the splits of files over 300 lines;
+  - the real stack checked again at the end.

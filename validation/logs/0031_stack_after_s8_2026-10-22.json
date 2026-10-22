@@ -1,0 +1,35 @@
+{
+ "what": "order 0031: the real stack after slice 8 (worlds .. the brain moved), booted as the baseline was (the 450M seats on grilly2, wiki + hdc, the ask loop offline, plugins, the board), against 0031_stack_before_2026-10-22.json (validation/stack_answers.py --compare)",
+ "git": "d8b4311",
+ "asks": 20,
+ "replies_identical": true,
+ "reply_sha256": [
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14",
+  "e3b0c44298fc1c14"
+ ],
+ "board_routes": 13,
+ "board_differences": {
+  "/board/home": "the orders card's caption: 5 in progress, 1 in review -> 4 in progress, 2 in review",
+  "/board/system": "orders.counts and order 0028's status: in progress -> review",
+  "why": "order 0028 was set to review in e7cd011 (docs/orders/, which the board reads); no code difference"
+ },
+ "other_routes_equal": true
+}
