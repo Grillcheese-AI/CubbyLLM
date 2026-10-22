@@ -28,16 +28,13 @@ import os
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-for p in (ROOT, os.path.join(ROOT, "standin")):
-    if p not in sys.path:
-        sys.path.insert(0, p)
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 __wiring__ = "STANDALONE"
 
 
-from serve_events import (_LOOP_CLIENTS, _LOOP_LOCK, _LOOP_RING, _json_safe, _loop_sink,  # noqa: E402,F401
-                          ring_times, wire_loop_events)
+from cubby_serve.events import (_LOOP_CLIENTS, _LOOP_LOCK, _LOOP_RING, _json_safe, _loop_sink,  # noqa: E402,F401
+                                ring_times, wire_loop_events)
 
 
 def make_handler(brain):
@@ -62,11 +59,11 @@ def make_handler(brain):
 
         def _who(self) -> str:
             """'user' (the default) or 'audit' (the token in CUBBY_AUDIT_TOKEN; order 0016)."""
-            from audience import audience, token_of
+            from cubbyllm.speech.audience import audience, token_of
             return audience(token_of(self.headers, self.path))
 
         def _page(self, name: str) -> None:
-            page = os.path.join(os.path.dirname(os.path.abspath(__file__)), name)
+            page = os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "standin")), name)
             try:
                 body = open(page, "rb").read()
             except OSError:
@@ -80,7 +77,7 @@ def make_handler(brain):
 
         def _raw(self, code: int, body: bytes, ctype: str) -> None:
             if ctype.startswith("text/html") and self.path.split("?", 1)[0].rstrip("/") in ("/panel", "/brain", "/map"):
-                from audience import AUDIT_SHIM                # an audit page's own requests carry its token
+                from cubbyllm.speech.audience import AUDIT_SHIM                # an audit page's own requests carry its token
                 body = body.replace(b"<head>", b"<head>" + AUDIT_SHIM.encode("utf-8"), 1)
             self.send_response(code)
             self.send_header("Content-Type", ctype)
@@ -90,15 +87,15 @@ def make_handler(brain):
             self.wfile.write(body)
 
         def do_GET(self):
-            from serve_get import handle_get
+            from cubby_serve.get import handle_get
             handle_get(self, brain)
 
         def do_POST(self):
-            from serve_post import handle_post
+            from cubby_serve.post import handle_post
             handle_post(self, brain)
 
         def log_message(self, fmt, *args):
-            from audience import redact
+            from cubbyllm.speech.audience import redact
             print(f"  api: {redact(fmt % args)}", flush=True)   # a token in a query string never reaches the log
 
     return Handler
@@ -119,7 +116,7 @@ def main():
         print(f"CubbyServe at git {rev or '?'}")
     except Exception:
         pass
-    from serve_cli import boot, parser
+    from cubby_serve.cli import boot, parser
     ap = parser()
     args = ap.parse_args()
     brain = boot(args, ap)

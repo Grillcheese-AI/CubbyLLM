@@ -11,22 +11,19 @@ import os
 import queue as _queue
 import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-for p in (ROOT, os.path.join(ROOT, "standin")):
-    if p not in sys.path:
-        sys.path.insert(0, p)
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-from serve_events import _LOOP_CLIENTS, _LOOP_LOCK, _LOOP_RING, _json_safe, ring_times  # noqa: E402
+from cubby_serve.events import _LOOP_CLIENTS, _LOOP_LOCK, _LOOP_RING, _json_safe, ring_times  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
 
 def handle_get(h, brain) -> None:
-    from audience import audit_chain, audit_only
+    from cubbyllm.speech.audience import audit_chain, audit_only
     live = getattr(brain, "pac_live", None)
     who = h._who()
     if h.path.startswith("/board"):                # the control board (order 0027): off = 404
-        from board_api import handle
+        from cubby_serve.board.api import handle
         got = handle(brain, h.path, who, ring_times) if getattr(brain, "board", False) else (404, {"error": "unknown path"})
         if got is not None:
             code, out = got

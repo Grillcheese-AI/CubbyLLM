@@ -37,8 +37,8 @@ def _trunk(brain):
 def mount(brain, dirs: str, idle_min: float = 30.0, log=print, router: str | None = None):
     """The loader on the brain. ``router``: ``plugins_route.make_router``'s kind (the server passes ``--plugin-router``,
     "minilm" by default since 0028's review 2; None reads ``CUBBY_PLUGINS_ROUTER``)."""
-    from plugins_index import discover
-    from plugins_load import Loader
+    from cubbyllm.plugins.index import discover
+    from cubbyllm.plugins.load import Loader
     idx = discover(dirs)
     enc = next((getattr(w, "enc", None) for w in (getattr(brain, "worlds", {}) or {}).values() if getattr(w, "enc", None)), None)
     loader = Loader(idx, brain=brain, enc=enc, idle_min=idle_min, log=log, trunk=_trunk(brain), router=router)
@@ -74,7 +74,7 @@ def admit(brain, world_name: str, facts: list[str]) -> list[dict]:
 
 def _ledger(brain):
     if getattr(brain, "ledger", None) is None:
-        from ledger import Ledger
+        from cubby_serve.ledger import Ledger
         brain.ledger = Ledger()
     return brain.ledger
 
@@ -106,7 +106,7 @@ def on_question(brain, text: str, rec: dict | None = None) -> list[str]:
 
 
 def _fiction():
-    from plugins_load import FictionWorld
+    from cubbyllm.plugins.load import FictionWorld
     return FictionWorld
 
 
@@ -138,7 +138,7 @@ def board_get(brain, route: str, query: str, who: str) -> dict | None:
         name = (urllib.parse.parse_qs(query).get("name") or [""])[0]
         if who != "audit" or loader is None or name not in loader.index:
             return {"name": name, "review": None}
-        import plugins_guard as guard
+        from cubbyllm.plugins import guard
         return {"name": name, "review": guard.review(loader.index[name])}
     if route == "/board/plugins/doc":
         name = (urllib.parse.parse_qs(query).get("name") or [""])[0]
@@ -151,7 +151,7 @@ def board_get(brain, route: str, query: str, who: str) -> dict | None:
         q = (urllib.parse.parse_qs(query).get("q") or [""])[0]
         hidden = internal_names(brain) if who != "audit" else set()
         scores = {n: round(s, 3) for n, s in loader.router.scores(q).items() if n not in hidden}
-        from plugins_check import claims
+        from cubbyllm.plugins.check import claims
         over = [n for n, s in scores.items() if s >= loader.router.tau and n not in loader.disabled]
         checked = {n: claims(loader, n, q)[:2] for n in over}       # the second check, built but not mounted
         return {"question": q, "tau": loader.router.tau, "scores": dict(sorted(scores.items(), key=lambda x: -x[1])),
@@ -173,7 +173,7 @@ def board_post(brain, route: str, who: str, body: dict | None = None) -> tuple[i
     if name not in loader.index:
         return 404, {"error": f"no plugin {name}"}
     if act == "approve":
-        import plugins_guard as guard
+        from cubbyllm.plugins import guard
         bad = guard.check(loader.index[name])
         if bad:
             return 409, {"error": "its code fails review", "why": bad}

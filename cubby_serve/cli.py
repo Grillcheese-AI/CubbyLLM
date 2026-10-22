@@ -9,10 +9,7 @@ import argparse
 import os
 import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-for p in (ROOT, os.path.join(ROOT, "standin")):
-    if p not in sys.path:
-        sys.path.insert(0, p)
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 __wiring__ = "STANDALONE"
 
@@ -20,7 +17,7 @@ __wiring__ = "STANDALONE"
 def build_web(args):
     """The web source behind the ask loop's source, or None when no search backend is configured
     (standin/web_source.py). The reader is the local LFM base, on the CPU: the GPU is the emitter's."""
-    from web_source import WebSource, backend_from_env
+    from cubbyllm.sources.web import WebSource, backend_from_env
     backend = backend_from_env(args.web, args.searxng)
     if backend is None:
         return None
@@ -103,7 +100,7 @@ def parser() -> argparse.ArgumentParser:
     ap.add_argument("--web-reader", default="auto",
                     help="the local model that reads pages for the relation the walk needs: a GGUF path, 'auto' "
                          "(the LFM base in standin/models when present) or 'off'")
-    _out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "standin", "data", "out")
+    _out = os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")), "standin", "data", "out")
     ap.add_argument("--history", default=os.path.join(_out, "ask_history.jsonl"),
                     help="append every ask record here (one JSON line each) for the nightly sleep cycle; '' = off")
     ap.add_argument("--learned", default=os.path.join(_out, "sleep", "learned_facts.jsonl"),
@@ -124,7 +121,7 @@ def parser() -> argparse.ArgumentParser:
 def boot(args, ap: argparse.ArgumentParser):
     """The brain the arguments describe, everything mounted (or `ap.error` when no emitter is named)."""
     from cubby_serve.build import build_serve
-    from serve_api import serve_http  # noqa: F401 -- the shell serves it
+    from cubby_serve.api import serve_http  # noqa: F401 -- the shell serves it
     if args.ask and not args.wiki:
         args.wiki = "auto"                               # the loop walks the wiki world
     if not args.gguf and not args.cubby450m:
@@ -134,12 +131,12 @@ def boot(args, ap: argparse.ArgumentParser):
                         emitter_adapter=args.emitter_adapter, talk_adapter=args.talk_adapter, tokenizer=args.tokenizer,
                         talk_export=args.talk_export)
     if args.ask:
-        from ask import AskLoop
+        from cubbyllm.reasoning.ask import AskLoop
         print(f"mounting the ask loop (source {args.ask}, lexicon on, news {'on' if args.news else 'off'}) ...", flush=True)
         web = build_web(args) if args.web != "off" else None
         world = brain.worlds["wiki"]
         if "hdc" in args.world:                          # the stores first: the wiki world, then the hdc world (order 0014)
-            from hdc_store import HdcWorld, Stores
+            from cubbyllm.worlds.hdc_store import HdcWorld, Stores
             world = Stores(world, HdcWorld())
         source = args.ask
         if source == "lfm":                             # the stand-in's LFM as the source (latent tier): built here,
@@ -162,17 +159,17 @@ def boot(args, ap: argparse.ArgumentParser):
     brain.board = bool(args.board)
     brain.news_archive = args.news_archive              # the board's poller tile reads the archive this server polls
     if args.plugins:
-        from plugins_serve import mount as mount_plugins
+        from cubby_serve.plugins import mount as mount_plugins
         lp = mount_plugins(brain, args.plugins, args.plugin_idle, log=lambda m: print(m, flush=True),
                            router=args.plugin_router)
         print(f"plugins: {len(lp.index)} indexed from their front matter, {len(lp.loaded)} pinned and loaded, "
               f"tau {lp.router.tau}", flush=True)
     if args.board:
-        from board_api import start_refresh
+        from cubby_serve.board.api import start_refresh
         start_refresh(brain)                            # Home / System built in the background: no request pays for them
         print(f"control board: http://{args.host}:{args.port}/board (add ?token=<audit token> for the audit view)", flush=True)
     if args.news_archive:
-        from news_archive import start_poller
+        from cubbyllm.sources.news.archive import start_poller
         start_poller(args.news_archive, log=lambda m: print(m, flush=True))
         print(f"news archive: polling the active feeds hourly into {args.news_archive}", flush=True)
     if args.science:
@@ -180,12 +177,12 @@ def boot(args, ap: argparse.ArgumentParser):
         mounted = mount_science(brain, args.science)
         print(f"science worlds (attested facts only): {mounted or 'none attested yet'}", flush=True)
     if args.model_appraisal:
-        from perception import ModelAppraiser
+        from cubbyllm.affect.perception import ModelAppraiser
         brain.chat.appraiser = ModelAppraiser(brain.emitter, brain.facts)   # asks with context="talk"
         print("model appraisal ON: the trunk reads the emotion of every turn (sense events carry the label)")
     if args.pacman:
         from pacman import PROGRAMS_PATH, CubbyGhost, LivePac
-        from ledger import Ledger
+        from cubby_serve.ledger import Ledger
         man = CubbyGhost(memory=PROGRAMS_PATH, ledger=Ledger())   # the big game; his programs persist on disk, every VM decision in the ledger
         brain.mount(man)
         brain.pac_live = LivePac(man)
@@ -202,8 +199,8 @@ def boot(args, ap: argparse.ArgumentParser):
               + (f" | {len(man.library.entries)} programs remembered from earlier runs"
                  if man.library.entries else ""))
     if args.harness is not None:                     # last: every door the plugins mounted is behind it too
-        from harness import RefuseToServe
-        from harness_wiring import boot_serve
+        from cubby_serve.harness import RefuseToServe
+        from cubby_serve.harness_wiring import boot_serve
         try:
             seats = ({"programs": args.emitter_adapter, "talk": args.talk_adapter or args.talk_gguf or args.emitter_adapter}
                      if args.cubby450m else {"programs": args.gguf, "talk": args.talk_gguf or args.gguf})

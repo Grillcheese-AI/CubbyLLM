@@ -35,7 +35,7 @@ from pathlib import Path
 
 __wiring__ = "WIRED"
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 PAGE, ASSETS = ROOT / "dashboard" / "board", ROOT / "dashboard" / "assets" / "sections"
 STATIC_EXT = {".css": "text/css", ".js": "text/javascript", ".html": "text/html", ".svg": "image/svg+xml"}
 ASSET_EXT = {".webp": "image/webp", ".png": "image/png"}
@@ -71,10 +71,10 @@ def internal_names(brain) -> set[str]:
     """Every name 0016 keeps internal that a board response could carry, lowercased: source names, feeds and their
     sites, dataset names, internal plugins. A world's generic mount key ("facts", "self", "reality:history") is a label,
     not a source, and is left out, with ``GENERIC``."""
-    from audience import SOURCE_NAMES
+    from cubbyllm.speech.audience import SOURCE_NAMES
     names = set(SOURCE_NAMES) | _datasets()
     try:
-        from news_archive import feeds
+        from cubbyllm.sources.news.archive import feeds
         for f in feeds():
             names.add(f["id"])
             names |= {h.replace("www.", "") for h in f.get("publisher_hosts") or []}
@@ -82,7 +82,7 @@ def internal_names(brain) -> set[str]:
             names.add(host.replace("www.", ""))
     except Exception:                                    # noqa: BLE001 -- no manifest: the other names still count
         pass
-    from plugins_serve import internal_names as plugin_internal
+    from cubby_serve.plugins import internal_names as plugin_internal
     names |= plugin_internal(brain) | {f"plugin:{n}" for n in plugin_internal(brain)}
     keys = {str(w).lower() for w in (getattr(brain, "worlds", {}) or {})}
     generic = GENERIC | keys | {p for k in keys for p in k.split(":")}
@@ -121,7 +121,7 @@ def scrub(o, names: set[str]):
 
 def start_refresh(brain, every: float = 5.0, stop: threading.Event | None = None) -> threading.Thread:
     """Home and System for both audiences, and the name list, rebuilt every ``every`` seconds in a daemon thread."""
-    import board_data as bd
+    from cubby_serve.board import data as bd
     jobs = [(f"{k}:{who}", (lambda f, w: lambda: f(brain, w))(f, who)) for k, f in (("home", bd.home), ("system", bd.system))
             for who in ("user", "audit")] + [("names", lambda: internal_names(brain))]
 
@@ -149,7 +149,7 @@ def _file(base: Path, name: str, types: dict):
 
 def handle(brain, path: str, who: str, ring_times=None):
     """``(code, payload)`` for a JSON route, ``(code, (bytes, type))`` for a file; None when ``path`` is not the board's."""
-    import board_data as bd
+    from cubby_serve.board import data as bd
     route = path.split("?", 1)[0].rstrip("/")
     if route == "/board":
         got = _file(PAGE, "index.html", STATIC_EXT)
@@ -172,7 +172,7 @@ def handle(brain, path: str, who: str, ring_times=None):
             return 404, {"error": f"no record {rid}"}
         out = bd.journey(rec, (ring_times or (lambda: {}))(), getattr(loop, "_forms", None), who)
     elif route.startswith("/board/plugins"):                 # order 0028: the Plugins view
-        from plugins_serve import board_get
+        from cubby_serve.plugins import board_get
         out = board_get(brain, route, path.split("?", 1)[1] if "?" in path else "", who)
         if out is None:
             return 404, {"error": "unknown board path"}

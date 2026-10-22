@@ -68,5 +68,16 @@
  "standin/cortex/salience.py": "cubbyllm/cortex/salience.py",
  "standin/cortex/what.py": "cubbyllm/cortex/what.py",
  "standin/cortex/where.py": "cubbyllm/cortex/where.py",
- "standin/serve.py": "cubbyllm/brain.py"
+ "standin/serve.py": "cubbyllm/brain.py",
+ "standin/serve_api.py": "cubby_serve/api.py",
+ "standin/serve_cli.py": "cubby_serve/cli.py",
+ "standin/serve_events.py": "cubby_serve/events.py",
+ "standin/serve_get.py": "cubby_serve/get.py",
+ "standin/serve_post.py": "cubby_serve/post.py",
+ "standin/board_api.py": "cubby_serve/board/api.py",
+ "standin/board_data.py": "cubby_serve/board/data.py",
+ "standin/plugins_serve.py": "cubby_serve/plugins.py",
+ "standin/harness.py": "cubby_serve/harness.py",
+ "standin/harness_wiring.py": "cubby_serve/harness_wiring.py",
+ "standin/ledger.py": "cubby_serve/ledger.py"
 }

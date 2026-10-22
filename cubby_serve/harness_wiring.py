@@ -31,7 +31,7 @@ import inspect
 import re
 from typing import Any
 
-from harness import Fact, Tool, current_frame
+from cubby_serve.harness import Fact, Tool, current_frame
 
 __wiring__ = "STANDALONE"
 
@@ -275,8 +275,8 @@ def bootstrap_config(brain, adapters: dict[str, str] | None = None, budget: dict
     its config OFFLINE with a key this process never holds; this is how a first boot gets one."""
     import json
     import os
-    import vault
-    from harness import DEFAULT_BUDGET, file_sha, sign_config
+    from cubbyllm.speech import vault
+    from cubby_serve.harness import DEFAULT_BUDGET, file_sha, sign_config
     if gate_pack:
         with open(gate_pack, encoding="utf-8") as f:
             packs = {k: v for k, v in json.load(f).items() if not k.startswith("_")}
@@ -299,9 +299,9 @@ def boot_serve(brain, config: dict | str | None = None, ledger=None, speaker=Non
     `config` is an owner-signed dict or its JSON path; None bootstraps one (dev). Gate packs travel inside the
     signed config (`gate_packs`)."""
     import json
-    import vault
-    from harness import Harness, Preflight, ToolRegistry
-    from ledger import Ledger
+    from cubbyllm.speech import vault
+    from cubby_serve.harness import Harness, Preflight, ToolRegistry
+    from cubby_serve.ledger import Ledger
     if isinstance(config, str):
         with open(config, encoding="utf-8") as f:
             config = json.load(f)

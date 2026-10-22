@@ -26,7 +26,7 @@ from pathlib import Path
 
 __wiring__ = "WIRED"
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 # (id, name, second word, the order the section waits for: None = built in P1)
 SECTIONS = [("watch", "World Watch", "live", "0024"), ("chat", "Chat", "& prompt", None),
             ("worlds", "Worlds", "& relations", "0015"), ("forecast", "Forecast", "tree", "0026"),
@@ -199,7 +199,7 @@ def orders() -> dict:
 def poller(who: str, root: str | None = None) -> dict:
     """``root``: the archive the server polls into (``--news-archive``), else ``CUBBY_NEWS_ARCHIVE``."""
     root = root or os.environ.get("CUBBY_NEWS_ARCHIVE")
-    from news_archive import feeds
+    from cubbyllm.sources.news.archive import feeds
     fs = feeds()
     active = [f for f in fs if f.get("status") == "active"]
     out = {"active": len(active), "held": len(fs) - len(active), "up": None, "last_poll_ago": None, "items_today": 0}

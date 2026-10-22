@@ -43,10 +43,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-for p in (ROOT, os.path.join(ROOT, "standin"), os.path.join(ROOT, "standin", "data")):
-    if p not in sys.path:
-        sys.path.insert(0, p)
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 __wiring__ = "STANDALONE"
 

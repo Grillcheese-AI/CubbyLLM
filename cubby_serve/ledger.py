@@ -28,7 +28,7 @@ import time
 
 __wiring__ = "STANDALONE"
 
-HERE = pathlib.Path(__file__).resolve().parent
+HERE = pathlib.Path(__file__).resolve().parents[1] / "standin"
 DEFAULT_DB = HERE / "data" / "out" / "ledger.sqlite"
 KEY_ENV = "CB_LEDGER_KEY"
 FIELDS = ("program_sha256", "name", "kind", "fn", "input", "expected", "got", "ok", "vm_build")
@@ -82,7 +82,7 @@ class Ledger:
         env = os.environ.get(KEY_ENV)
         if env:
             return env.encode("utf-8")
-        import vault                                     # one host key protects the vault and signs the ledger, via derived subkeys
+        from cubbyllm.speech import vault                                     # one host key protects the vault and signs the ledger, via derived subkeys
         return vault.subkey("ledger")
 
     def sign(self, h: str) -> str:
@@ -96,7 +96,7 @@ class Ledger:
                "expected": None if expected is None else str(expected), "got": None if got is None else str(got),
                "ok": bool(ok), "vm_build": self.vm_build}
         h = decision_hash(rec)
-        import vault                                     # the input may be a user's turn (a factory request): never in the clear
+        from cubbyllm.speech import vault                                     # the input may be a user's turn (a factory request): never in the clear
         with self._lock:
             self.db.execute("INSERT OR IGNORE INTO certifications VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                             (h, rec["program_sha256"], name, kind, fn, None if input is None else vault.encrypt_str(str(input)),
@@ -115,7 +115,7 @@ class Ledger:
         d = dict(zip(keys, row))
         d["ok"] = bool(d["ok"])
         if d.get("input"):
-            import vault
+            from cubbyllm.speech import vault
             try:
                 d["input"] = vault.decrypt_str(d["input"])
             except (ValueError, TypeError):
