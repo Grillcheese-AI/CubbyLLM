@@ -154,8 +154,9 @@ def test_gzip_body_is_read(monkeypatch):
 
         def read(self):
             return gzip.compress(ATOM)
-    monkeypatch.setattr(na.urllib.request, "urlopen", lambda rq, timeout=20: R())
-    code, body = na._get("https://un.example/rss")
+    import cubby_serve.sources.news as ns                         # the GET is the server's (order 0031)
+    monkeypatch.setattr(ns.urllib.request, "urlopen", lambda rq, timeout=20: R())
+    code, body = ns.get("https://un.example/rss")
     assert code == 200 and na.parse(body)[0]["title"] == "Minister announces funding"
 
 

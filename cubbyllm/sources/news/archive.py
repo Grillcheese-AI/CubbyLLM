@@ -14,26 +14,22 @@ nothing older than a page could be asked about. This keeps what it reads:
   person looks (`new_ai_block` in the poll log). The poller's name is always `CubbyLLM/0.1`;
 - **a poll log** (`<root>/_polls.jsonl`): per feed per poll, new items, refusals, errors.
 
-CLI: `python standin/news_archive.py --root <dir> --once` (a manual or catch-up poll), `--every 3600` (the loop),
-`--stats` (items per feed per day, duplicates, size). The chat server runs the loop in a thread
-(`serve_api.py --news-archive <dir>`; off unless given). The root defaults to `CUBBY_NEWS_ARCHIVE`.
+What fetches is the server's (order 0031: this package opens no socket): an `Archive` polls through the `fetch` it is
+handed, and the socket, the hourly poller and the CLI are `cubby_serve/sources/news.py`
+(`python -m cubby_serve.sources.news --root <dir> --once | --every 3600 | --stats`; the chat server runs the loop
+in a thread with `--news-archive <dir>`). The root defaults to `CUBBY_NEWS_ARCHIVE`.
 
 Wired: WIRED (`serve_api.py --news-archive`).
 """
 from __future__ import annotations
 
-import argparse
 import datetime as dt
 import hashlib
 import json
 import os
 import pathlib
-import sys
-import threading
 import time
 import urllib.parse
-import urllib.error
-import urllib.request
 
 __wiring__ = "WIRED"
 
@@ -55,25 +51,19 @@ def key_of(feed_id: str, item: dict) -> str:
     return hashlib.sha1(f"{feed_id}\t{ident}".encode()).hexdigest()
 
 
-def _get(url: str, timeout: int = 20) -> tuple[int, bytes]:
-    try:
-        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=timeout) as r:
-            body = r.read()
-            if r.headers.get("Content-Encoding", "").lower() == "gzip" or body[:2] == b"\x1f\x8b":
-                import gzip
-                body = gzip.decompress(body)              # UN News answers gzip even when asked for plain bytes
-            return r.status, body
-    except urllib.error.HTTPError as e:
-        return e.code, b""
+def _no_fetch(url: str):
+    """An archive built without a fetch reads and writes its files and fetches nothing (order 0031: this package opens
+    no socket; the server's is ``cubby_serve.sources.news.get``)."""
+    raise RuntimeError("this news archive was built without a fetch (cubby_serve.sources.news.get): cubbyllm/ opens no socket")
 
 
 class Archive:
     """Append-only day files under `root`, the keys already held, and a lock so two pollers never write at once."""
 
-    def __init__(self, root, fetch=_get, sleep=time.sleep) -> None:
+    def __init__(self, root, fetch=None, sleep=time.sleep) -> None:
         self.root = pathlib.Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
-        self.fetch, self.sleep, self._last = fetch, sleep, {}
+        self.fetch, self.sleep, self._last = fetch if fetch is not None else _no_fetch, sleep, {}
         self.keys = set()
         for f in sorted(self.root.glob("????-??-??.jsonl")) + sorted(self.root.glob("backfill/*/*.jsonl")):
             for line in f.open(encoding="utf-8"):
@@ -240,43 +230,3 @@ def topics(rows) -> dict[str, list[str]]:
     return {k: sorted(v) for k, v in out.items()}
 
 
-def start_poller(root, every_s: int = 3600, manifest=MANIFEST, log=print) -> threading.Thread:
-    """The hourly poll in a daemon thread (the chat server's; order 0024, Nick's choice)."""
-    def run():
-        while True:
-            try:
-                rows = Archive(root).poll_all(manifest)
-                log(f"news archive: +{sum(r['new'] for r in rows)} items from {len(rows)} feeds")
-            except FileExistsError:
-                log("news archive: another poller holds the lock; skipped")
-            except Exception as e:                            # noqa: BLE001 -- the server keeps serving
-                log(f"news archive: poll failed: {type(e).__name__}: {e}")
-            time.sleep(every_s)
-    t = threading.Thread(target=run, name="news-archive", daemon=True)
-    t.start()
-    return t
-
-
-def main() -> None:
-    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--root", default=os.environ.get("CUBBY_NEWS_ARCHIVE"), help="the archive folder (CUBBY_NEWS_ARCHIVE)")
-    ap.add_argument("--manifest", default=str(MANIFEST))
-    ap.add_argument("--once", action="store_true", help="one poll, then exit")
-    ap.add_argument("--every", type=int, default=0, help="poll every N seconds until stopped")
-    ap.add_argument("--stats", action="store_true")
-    a = ap.parse_args()
-    if not a.root:
-        ap.error("give --root or set CUBBY_NEWS_ARCHIVE")
-    if a.stats:
-        print(json.dumps(stats(a.root, a.manifest), indent=1))
-        return
-    while True:
-        for r in Archive(a.root).poll_all(a.manifest):
-            print(json.dumps(r, ensure_ascii=False), flush=True)
-        if not a.every or a.once:
-            return
-        time.sleep(a.every)
-
-
-if __name__ == "__main__":
-    main()

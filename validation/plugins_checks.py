@@ -56,7 +56,8 @@ def loader_for(names, data):
     idx = discover([HERE.parent / "plugins"])
     for n in names:
         guard.approve(idx[n])
-    return Loader(idx, data_root=data, log=lambda *_: None)
+    from cubby_serve.sources.news import get as fetch             # the alerts plugin fetches live (order 0031)
+    return Loader(idx, data_root=data, log=lambda *_: None, fetch=fetch)
 
 
 def units(loader) -> dict:

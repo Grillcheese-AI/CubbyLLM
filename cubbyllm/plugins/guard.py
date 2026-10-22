@@ -253,7 +253,7 @@ class Ctx:
         self.data_dir = Path(data_root) / "plugins" / plugin.name
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self._archive = None
-        self._fetch = fetch                                    # tests hand in a fake; default: the news fetcher
+        self._fetch = fetch                                    # the server's (cubby_serve.sources.news.get); tests: a fake
 
     def _inside(self, name: str) -> Path:
         p = (self.data_dir / name).resolve()
@@ -277,8 +277,8 @@ class Ctx:
         if urllib.parse.urlsplit(url).scheme not in ("http", "https") or host not in self.plugin.network:
             raise Refused(f"{self.plugin.id} may not fetch {host or url!r}: declared {self.plugin.network}")
         if self._archive is None:
-            from ..sources.news.archive import Archive, _get
-            self._archive = Archive(self.data_dir / "_fetch", fetch=self._fetch or _get)
+            from ..sources.news.archive import Archive
+            self._archive = Archive(self.data_dir / "_fetch", fetch=self._fetch)   # the server's fetch (order 0031)
         robots = self._archive.robots(host)
         if robots is not None:
             from ..sources.news.source import UA

@@ -174,7 +174,7 @@ def boot(args, ap: argparse.ArgumentParser):
         start_refresh(brain)                            # Home / System built in the background: no request pays for them
         print(f"control board: http://{args.host}:{args.port}/board (add ?token=<audit token> for the audit view)", flush=True)
     if args.news_archive:
-        from cubbyllm.sources.news.archive import start_poller
+        from cubby_serve.sources.news import start_poller
         start_poller(args.news_archive, log=lambda m: print(m, flush=True))
         print(f"news archive: polling the active feeds hourly into {args.news_archive}", flush=True)
     if args.science:

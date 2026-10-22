@@ -11,7 +11,7 @@ if _ROOT not in _sys.path:
 _NEW = "cubbyllm.sources.news.archive"
 if __name__ == "__main__":
     import runpy as _runpy
-    _runpy.run_module(_NEW, run_name="__main__", alter_sys=True)
+    _runpy.run_module("cubby_serve.sources.news", run_name="__main__", alter_sys=True)   # the poller's CLI
 else:
     _warnings.warn(f"{__name__} moved to {_NEW} (order 0031)", DeprecationWarning, stacklevel=2)
     _sys.modules[__name__] = _importlib.import_module(_NEW)

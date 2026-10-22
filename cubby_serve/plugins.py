@@ -41,7 +41,9 @@ def mount(brain, dirs: str, idle_min: float = 30.0, log=print, router: str | Non
     from cubbyllm.plugins.load import Loader
     idx = discover(dirs)
     enc = next((getattr(w, "enc", None) for w in (getattr(brain, "worlds", {}) or {}).values() if getattr(w, "enc", None)), None)
-    loader = Loader(idx, brain=brain, enc=enc, idle_min=idle_min, log=log, trunk=_trunk(brain), router=router)
+    from cubby_serve.sources.news import get as fetch             # a plugin's ctx.fetch goes out through the server
+    loader = Loader(idx, brain=brain, enc=enc, idle_min=idle_min, log=log, trunk=_trunk(brain), router=router,
+                    fetch=fetch)
     brain.plugins = loader
     for name, why in sorted(idx.errors.items()):
         log(f"  plugin folder {name} not read: {why}")
