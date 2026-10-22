@@ -114,5 +114,6 @@
  "standin/data/gen3_llm_wordings.py": "validation/sft/gen3_llm_wordings.py",
  "standin/data/hf_rows.py": "validation/sft/hf_rows.py",
  "standin/data/import_tinygsm.py": "validation/sft/import_tinygsm.py",
- "standin/data/identity.py": "validation/sft/identity.py"
+ "standin/data/identity.py": "validation/sft/identity.py",
+ "standin/data/import_science.py": "validation/builders/import_science.py"
 }

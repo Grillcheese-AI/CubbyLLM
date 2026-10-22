@@ -37,7 +37,7 @@ import urllib.parse
 import urllib.request
 from collections import Counter
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "standin", "data"))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 for _p in (ROOT, os.path.join(ROOT, "standin"), HERE):
     if _p not in sys.path:
@@ -248,7 +248,7 @@ def build_worlds(facts: list[dict], enc=None, functional: frozenset | None = Non
     lookup -- no similarity search, so a build of tens of thousands of facts stays linear. A first statement is
     LATENT (one row is one unverified source) unless it clashes on a functional relation (refused, ledgered);
     a second row stating it -- the same fact up to case and punctuation -- attests it."""
-    from capsules import CapsuleStore
+    from cubbyllm.worlds.capsules import CapsuleStore
     from cubbyllm.bridges.possibility import Possibility, Verdict, _members_about, same_subject_clash
     functional = FUNCTIONAL if functional is None else frozenset(normalize(r) for r in functional)
     worlds: dict = {}
@@ -348,7 +348,7 @@ def main(argv=None) -> None:
         _dump(rows, args.out)
         print(f"wrote {args.out}: {len(rows)} rows, areas {dict(Counter(r.get('subject') for r in rows).most_common())}")
     elif args.cmd == "extract":
-        from build_program_first import make_writer
+        from validation.sft.build_program_first import make_writer
         rows = _jsonl(args.rows)
         if args.areas:
             keep = {a.strip() for a in args.areas.split(",")}
