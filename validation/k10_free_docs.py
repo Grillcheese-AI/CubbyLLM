@@ -10,7 +10,7 @@ asker carries its address two ways: the text key's ``(s, r, piece)`` (``model/sp
 today's hashed place ``cell(s) + step(r) + 6 i z``; each asker's gold pointer offsets (back to its
 question's subject and relation tokens) come apart, for the pointer loss.
 
-Templates 0-5 train, 6-7 are held out. 20% of the entities never appear in a training document
+Templates 0-5 train, 6-7 are held out; with ``a.templates == 12`` (order 0021 B) 8-13 train too. 20% of the entities never appear in a training document
 (``FreeLayout.unseen``); a held-out document may ask about one, its fact written in that document.
 """
 from __future__ import annotations
@@ -20,6 +20,7 @@ import sys
 
 import numpy as np
 import torch
+import torch.nn.functional as F
 
 HERE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE_DIR)
@@ -28,12 +29,15 @@ import exp_k10_hypertoken as kh  # noqa: E402
 from cubbyllm.model.spatial import NO_PLACE  # noqa: E402
 from k10_far_docs import ASK, WRITE, Z, Layout  # noqa: E402
 
-FUNC = {w: kh.FILL0 + i for i, w in enumerate(("what", "is", "the", "of", "'s", "tell", "me", "about"))}
+FUNC = {w: kh.FILL0 + i for i, w in enumerate(("what", "is", "the", "of", "'s", "tell", "me", "about",
+                                               "which", "give", "do", "you", "know"))}   # the last 5: order 0021 B
 TEMPLATES = [["S", "R"], ["R", "S"],                                   # 0-1: today's, and reversed
              ["what", "is", "the", "R", "of", "S"], ["what", "is", "S", "'s", "R"],
              ["tell", "me", "the", "R", "of", "S"], ["tell", "me", "S", "'s", "R"],
-             ["about", "S", "what", "is", "the", "R"], ["the", "R", "of", "S", "is", "what"]]   # 6-7: held out
-TRAIN_T, HELD_T = range(6), range(6, 8)
+             ["about", "S", "what", "is", "the", "R"], ["the", "R", "of", "S", "is", "what"],   # 6-7: held out
+             ["which", "is", "the", "R", "of", "S"], ["give", "me", "S", "'s", "R"], ["S", "R", "is", "what"],   # 8-13: order
+             ["do", "you", "know", "the", "R", "of", "S"], ["R", "of", "S"], ["what", "about", "S", "'s", "R"]]  # 0021 B
+TRAIN_T, HELD_T, TRAIN_12 = range(6), range(6, 8), tuple(range(6)) + tuple(range(8, 14))
 
 
 class FreeLayout(Layout):
@@ -104,7 +108,8 @@ def batch(rng, lang, lay, n: int, a, cells=None):
     held-out ``cells`` -- one ``(template, unseen, absent)`` per document."""
     docs = []
     for i in range(n):
-        t, u, ab = cells[i] if cells is not None else (int(rng.choice(TRAIN_T)), False, bool(rng.random() < a.absent))
+        train = TRAIN_12 if getattr(a, "templates", 6) == 12 else TRAIN_T                 # the held-out set never moves
+        t, u, ab = cells[i] if cells is not None else (int(rng.choice(train)), False, bool(rng.random() < a.absent))
         docs.append(document(rng, lang, lay, a.facts_per_doc, a.gap, a.seq, a.pieces, t, u, ab))
     stack = [torch.from_numpy(np.stack([d[k] for d in docs])).long() for k in range(5)]
     return (*stack, [d[5] for d in docs])
@@ -114,3 +119,18 @@ def held_cells(rng, n: int, absent: float) -> list:
     """Half the held-out questions in a held-out template, half about an unseen subject, independently."""
     return [(int(rng.choice(HELD_T if rng.random() < 0.5 else TRAIN_T)), bool(rng.random() < 0.5),
              bool(rng.random() < absent)) for _ in range(n)]
+
+
+@torch.no_grad()
+def key_cos(model, lay, n: int = 400) -> dict:
+    """|cos| between the text keys of different (subject, relation) pairs on the current table."""
+    link, E = model.spatial, model.embedding.core.weight
+    if link.keys is None:
+        return {}
+    g = np.random.default_rng(0)
+    s = torch.tensor([lay.ent(e) for e in g.choice(lay.n_ent, n)])
+    r = torch.tensor(kh.REL0 + g.integers(kh.N_REL, size=n))
+    k = F.normalize(link.encode(torch.stack([s, r, torch.zeros_like(s)], -1).float(), E), dim=-1)
+    c = (k @ k.T)[~torch.eye(n, dtype=torch.bool) & ~((s[:, None] == s[None]) & (r[:, None] == r[None]))].abs()
+    return {"mean": float(c.mean()), "p90": float(c.quantile(0.9)), "p99": float(c.quantile(0.99)),
+            "max": float(c.max()), "frac_below_0.1": float((c < 0.1).float().mean())}

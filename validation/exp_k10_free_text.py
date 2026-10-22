@@ -14,7 +14,7 @@ document does not hold (answer NONE). The arms, at the same budget and seeds:
   P  text keys, the pointer query and its pointer loss (``model/spatial_key.py``)
 
 Scored on held-out documents: exact per cell of {seen, unseen subject} x {seen, held-out template};
-an absent fact answered with anything but NONE; a present one refused (NONE); the pointers' accuracy
+an absent fact answered with anything but NONE; a present one refused (NONE) or answered wrong; the pointers' accuracy
 (P); the filler language's loss; the keys' |cos| on the table at the start and the end.
 
     python validation/exp_k10_free_text.py --arm U|A|H|R|P [--seed 0] [--threads 2]
@@ -40,7 +40,7 @@ import exp_k10_hypertoken as kh  # noqa: E402
 from cubbyllm.model.spatial import NO_PLACE  # noqa: E402
 from exp_k10_far_facts import fwd, optimizer  # noqa: E402
 from k10_far_docs import WRITE  # noqa: E402
-from k10_free_docs import HELD_T, FreeLayout, batch, held_cells  # noqa: E402
+from k10_free_docs import HELD_T, FreeLayout, batch, held_cells, key_cos  # noqa: E402
 
 ARMS = {"U": dict(key="text", query="placed", route=1.0), "H": dict(key=None, query="learned", route=1.0),
         "R": dict(key="text", query="learned", route=1.0), "P": dict(key="text", query="pointer", route=0.0),
@@ -105,21 +105,6 @@ def calibrate(model, a, held):
 
 
 @torch.no_grad()
-def key_cos(model, lay, n: int = 400) -> dict:
-    """|cos| between the text keys of different (subject, relation) pairs on the current table."""
-    link, E = model.spatial, model.embedding.core.weight
-    if link.keys is None:
-        return {}
-    g = np.random.default_rng(0)
-    s = torch.tensor([lay.ent(e) for e in g.choice(lay.n_ent, n)])
-    r = torch.tensor(kh.REL0 + g.integers(kh.N_REL, size=n))
-    k = F.normalize(link.encode(torch.stack([s, r, torch.zeros_like(s)], -1).float(), E), dim=-1)
-    c = (k @ k.T)[~torch.eye(n, dtype=torch.bool) & ~((s[:, None] == s[None]) & (r[:, None] == r[None]))].abs()
-    return {"mean": float(c.mean()), "p90": float(c.quantile(0.9)), "p99": float(c.quantile(0.99)),
-            "max": float(c.max()), "frac_below_0.1": float((c < 0.1).float().mean())}
-
-
-@torch.no_grad()
 def evaluate(model, a, held, lay) -> dict:
     ids, key, plc, R, gold, spans = held
     link, ptr = model.spatial, model.spatial.pointer
@@ -172,6 +157,7 @@ def evaluate(model, a, held, lay) -> dict:
     out = {k: float(np.mean(v)) if v else None for k, v in cells.items()}
     out.update(n={k: len(v) for k, v in cells.items()}, exact=float(np.mean(sum(cells.values(), []))),
                absent_not_none=float(np.mean(absent_wrong)), n_absent=len(absent_wrong), present_refused=float(np.mean(refused)),
+               present_wrong=1.0 - float(np.mean(sum(cells.values(), []))) - float(np.mean(refused)),   # said, not the fact
                language=lang_sum / max(lang_n, 1), pointer_acc=float(np.mean(ptr_hit)) if ptr_hit else None,
                lam_present=float(np.mean(lam["present"])) if lam["present"] else None,
                lam_empty=float(np.mean(lam["empty"])) if lam["empty"] else None,
@@ -237,6 +223,7 @@ def run(a, log) -> dict:
             log(f"  step {s:5d}  loss {float(loss):.3f} ({', '.join(f'{k} {v:.3f}' for k, v in parts.items())})  exact {ev['exact']:.3f}"
                 f"  seen/train {ev['seen_train_t']:.3f}  seen/held {ev['seen_held_t']:.3f}  unseen/train {ev['unseen_train_t']:.3f}"
                 f"  unseen/held {ev['unseen_held_t']:.3f}  absent not NONE {ev['absent_not_none']:.3f}  refused {ev['present_refused']:.3f}"
+                f"  wrong {ev['present_wrong']:.3f}"
                 f"  language {ev['language']:.3f}" + (f"  pointer {ev['pointer_acc']:.3f}" if ev["pointer_acc"] is not None else "")
                 + f"  lam here {ev['lam_present']:.3f} empty {ev['lam_empty']:.3f}"
                 + f"  alone: copy {ev['copy_alone']:.3f} lm {ev['lm_alone']:.3f} switch {ev['switch']:.3f}  [{time.time() - t0:.0f}s]")
@@ -244,6 +231,9 @@ def run(a, log) -> dict:
     if k1:
         log(f"  text keys |cos| at the end: mean {k1['mean']:.3f} p90 {k1['p90']:.3f} p99 {k1['p99']:.3f} max {k1['max']:.3f},"
             f" {100 * k1['frac_below_0.1']:.1f}% below 0.1")
+    if getattr(a, "save", None):                                         # order 0021: the joint model, for the switch alone
+        from exp_k10_switch import state_of
+        torch.save({"state": state_of(model), "args": vars(a), "meta": m}, a.save)
     return {"meta": m, "calibration": {"tau": tau, "beta": beta, "writer_gap": gap, "present": pm, "absent": am},
             "key_cos": {"init": k0, "end": k1}, "final": curve[-1], "curve": curve, "wall_s": round(time.time() - t0, 1)}
 
@@ -272,6 +262,8 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--threads", type=int, default=0)
     ap.add_argument("--tag", default="", help="appended to the log name")
+    ap.add_argument("--save", default=None, help="order 0021: write the model here at the end (state, args, meta)")
+    ap.add_argument("--templates", type=int, default=6, choices=(6, 12), help="order 0021 B: training templates")
     ap.add_argument("--date", default=time.strftime("%Y-%m-%d"))
     a = ap.parse_args()
     if a.threads:
