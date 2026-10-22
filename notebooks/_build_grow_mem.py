@@ -61,7 +61,7 @@ the base validates on, plus the three new ones:
 
 **Round 2 (added 2026-10-20).** Round 1's grown arm (0.42B tokens, 20 h on a 96 GB RTX 6000 at 77,824-token
 steps) learned the new shards and matched the 450M's trend, but gate 2 failed flat: beyond-window needle recall
-15.9% against 16.8% for the shuffled control -- the 16 reads never trained. The small-scale hypertoken reads of
+15.9% against 16.8% for the shuffled control -- the 16 reads never trained. The small-scale loci-token reads of
 the same day (`validation/exp_k10_hypertoken.py`) say why: a read that must find its key from the hidden state
 learns nothing from text that never pays for a token 512 back; given a reason, it learns (0.00 → 0.82). Round 2
 gives the memory its reason: **`facts_text_far`** (`validation/make_fact_shard.py --far`: 8-16 wiki-world facts,
@@ -188,7 +188,7 @@ shape = (dict(CB_L='64', CB_FFN_MULT='4', CB_MEM_EVERY=str(MEM_EVERY), CB_INIT_F
 # 17.7B cache), solved so that in the decay instruct is ~5%, agent ~10% and program ~2% of the tokens -- 0.8,
 # 0.3 and 0.7 epochs of each at a 1.2B-token run -- and a trace of each in the stable phase (0.5 / 1 / 0.3%)
 # so the base meets the formats before the decay. train_base prints the epoch table; keep every row under ~4.
-# the hypertoken shards in the cache (villages, facts at addresses, their text controls) belong to other runs: 0 here,
+# the loci-token shards in the cache (villages, facts at addresses, their text controls) belong to other runs: 0 here,
 # except the memory's own shard in round >= 2 (round 1 drew spatial / spatial_text at ~0.06% each, size-proportional)
 HYPER = {n: 0 for n in json.load(open(f'{CORPUS}/_sizes.json')) if n.startswith(('spatial', 'facts'))}
 MEM = {MEM_SHARD: MEM_MULT} if ROUND >= 2 else {}

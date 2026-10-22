@@ -1,5 +1,5 @@
 """Generate spatial_facts_450m.ipynb: the continued 450M keeps training with the spatial link on the two
-hypertoken shards -- villages as places (``spatial_here``) and the wiki world's facts at addresses (``facts``) --
+loci-token shards -- villages as places (``spatial_here``) and the wiki world's facts at addresses (``facts``) --
 against the same trunk on the same villages and facts as text, at the same tokens (H-S12 gates 1-2, H-K10
 gate 4, H-K7 gate 5 in one run). The notebook is thin; the logic is validation/train_base.py (CB_SPATIAL,
 CB_SPATIAL_QUERY, CB_ROUTE_LOSS, the Corpus side files), validation/make_spatial_shard.py --ask placed,
@@ -104,7 +104,7 @@ REPO = '/content/CubbyLLM'
 import torch; print('torch', torch.__version__)
 src = open(f'{REPO}/validation/train_base.py').read()
 for k in ('CB_SPATIAL', 'CB_SPATIAL_QUERY', 'CB_ROUTE_LOSS', 'CB_SPATIAL_COPY', 'CB_SPATIAL_COPY_BETA', 'CB_PROBE_SHARDS'):
-    assert k in src, f'master has no {k} in train_base.py: push the hypertoken commits first'
+    assert k in src, f'master has no {k} in train_base.py: push the loci-token commits first'
 assert os.path.exists(f'{REPO}/validation/exp_hypertoken_recall.py'), 'push exp_hypertoken_recall.py first'
 """),
     code(r"""
@@ -166,7 +166,7 @@ assert os.path.exists(TOKENIZER), TOKENIZER
 """),
     code(r"""
 # --- config, and a runner that tees the log to Drive ---
-# this arm's two shards at ~5% each; every OTHER hypertoken shard in the cache (the other arm's, the villages
+# this arm's two shards at ~5% each; every OTHER loci-token shard in the cache (the other arm's, the villages
 # without addresses, the memory's facts_text_far) at 0 -- size-proportional draws would otherwise give each ~0.1%
 OTHERS = sorted(n for n in json.load(open(f'{CORPUS}/_sizes.json'))
                 if n.startswith(('spatial', 'facts')) and n not in SHARDS)

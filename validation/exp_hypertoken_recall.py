@@ -1,4 +1,4 @@
-"""exp_hypertoken_recall -- the questions of a hypertoken shard answered by a checkpoint: the
+"""exp_hypertoken_recall -- the questions of a loci-token shard answered by a checkpoint: the
 spatial link's and the fact link's gate on a trained trunk (H-S12 gate 1, H-K10 gate 4, H-E20
 gate 2 on ``facts_text_far``).
 
@@ -140,7 +140,7 @@ def main() -> None:
     from tokenizers import Tokenizer
     tk = Tokenizer.from_file(SPM)
     spatial = model.spatial is not None
-    print(f"hypertoken recall -- {os.path.basename(CKPT)}: d={meta['D']} L={meta['L']} window={meta['window']} "
+    print(f"loci-token recall -- {os.path.basename(CKPT)}: d={meta['D']} L={meta['L']} window={meta['window']} "
           f"mem_every={meta.get('mem_every', 0)} spatial={meta.get('spatial')} | {dev}; {DOCS} held-out documents per shard")
     report = {"ckpt": CKPT, "meta": meta, "docs": DOCS, "shards": {}}
     for name in SHARDS:

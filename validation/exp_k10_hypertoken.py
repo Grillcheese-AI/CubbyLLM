@@ -1,4 +1,4 @@
-"""exp_k10_hypertoken -- a fact shown ONCE, as a hypertoken, read back beyond the attention
+"""exp_k10_hypertoken -- a fact shown ONCE, as a loci token, read back beyond the attention
 window by the trunk's own algebraic read (H-K10, gate 1).
 
 The channel is H-S12's, unchanged: a placed token's embedding is bound with the unit vector of
@@ -19,7 +19,7 @@ language's held-out loss within 0.02 of the control's. Kill: the channel below 6
 
 First read (2026-10-20, D = 256, 1,000 steps x 16 documents, ~25 min per arm on the CPU): before
 training the scene decodes the object at its address at 0.84 by nearest entity (cos 0.17-0.35).
-``--query placed --gate-bias 0`` (the hypertoken carries its address; gate and decode learned):
+``--query placed --gate-bias 0`` (the loci token carries its address; gate and decode learned):
 held-out answers 0.00 / 0.21 / 0.53 / 0.81 / 0.86 / 0.92 / 0.94 at steps 0 / 200 / 300 / 400 /
 500 / 700 / 1,000 -- gate 1's first clause passes; the text control 0.00 throughout, the language
 held-out loss 2.075 in both arms -- gate 2 passes; the in-window control learns the copy slowly,
@@ -205,7 +205,7 @@ def run(spatial: bool, args, log) -> dict:
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0.01, betas=(0.9, 0.95))
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 100) * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * min(s, args.steps) / args.steps))))
     held = batch(np.random.default_rng(args.seed + 99), Language(np.random.default_rng(args.seed + 1)), 64, args.facts_per_doc, args.filler, args.seq)
-    name = f"hypertoken ({args.query} query)" if spatial else "text control"
+    name = f"loci token ({args.query} query)" if spatial else "text control"
     extras = ((f", gate warmup {args.gate_warmup}" if args.gate_warmup else "") + (f", route loss {args.route_loss}" if args.route_loss else "")
               + (f", q init {args.q_init}" if args.q_init != "default" else "") + (f", {args.read} read" if args.read != "unitary" else ""))
     log(f"--- {name}: {n_par / 1e6:.2f}M params, D={args.d}, window {args.window}, {args.facts_per_doc} facts/doc, filler {args.filler}{extras}")
@@ -266,7 +266,7 @@ def main() -> None:
                     help="weight of 1 - cos(unitary(q), S(p)) at placed tokens: the learned query taught its address")
     ap.add_argument("--query", choices=["learned", "placed", "spectral"], default="learned",
                     help="learned: H-S12's route, the trunk makes the query from its state; placed: a placed "
-                         "token's query is its own address (the hypertoken carries it) -- the link's flag; "
+                         "token's query is its own address (the loci token carries it) -- the link's flag; "
                          "spectral: the learned route with a per-frequency query head (SpectralQuery)")
     ap.add_argument("--q-init", choices=["default", "identity"], default="default",
                     help="learned route: start the query head at the identity (the stream's own phases)")

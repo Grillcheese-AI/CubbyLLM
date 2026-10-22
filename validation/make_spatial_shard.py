@@ -18,7 +18,7 @@ each answered from ``Scene``'s exact reading, never written by hand:
 spelled out in text ("forge at 10 9 0") and no places at all, for the arm without the link.
 
 ``--ask placed`` (H-K10, 2026-10-20): every question carries its address -- the question is a
-hypertoken. The host computes the cell the question is about (the east neighbour of well is
+loci token. The host computes the cell the question is about (the east neighbour of well is
 cell(well) + east; 3 east of well is cell(well) + 3 east; "at" is the cell itself) and a ``here``
 token carries it, so the trunk reads the scene *there* (``SpatialLink(query="placed")``) and the
 route is the host's; only the questions that ask what is at an address are kept (neighbour,

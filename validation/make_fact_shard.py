@@ -1,4 +1,4 @@
-"""make_fact_shard -- wiki-world facts as hypertokens: the token shard that trains the fact link
+"""make_fact_shard -- wiki-world facts as loci tokens: the token shard that trains the fact link
 (H-K10 gate 4, H-K7 gate 5) on the same channel as the spatial link.
 
 A fact "o is the r of s" has an *address*: the subject's cell (a hash of its name into a

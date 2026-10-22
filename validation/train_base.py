@@ -105,7 +105,7 @@ SPATIAL_GATE = _env("CB_SPATIAL_GATE", 0.0, float)  # the gate bias of a link AD
 SPATIAL_COPY = _env("CB_SPATIAL_COPY", "", str)
 SPATIAL_COPY_TAU = _env("CB_SPATIAL_COPY_TAU", 3.0, float)   # its starting log temperature (run 3's A0 writer gap 0.096 -> 3.04)
 SPATIAL_COPY_BETA = _env("CB_SPATIAL_COPY_BETA", "", str)  # the read-aware gate's starting match threshold (cosine); "" = h alone
-# held-out hypertoken questions scored at every eval (exp_hypertoken_recall's teacher-forced exact), and the copy's lam there
+# held-out loci-token questions scored at every eval (exp_hypertoken_recall's teacher-forced exact), and the copy's lam there
 PROBE_SHARDS = _env("CB_PROBE_SHARDS", "", str)
 PROBE_DOCS = _env("CB_PROBE_DOCS", 64)
 # ── batch / optimizer / schedule ───────────────────────────────────────────

@@ -36,7 +36,8 @@ read. What the gate and the query learn is the route; the lookup they route to i
 
 **query="placed"** (2026-10-20, H-K10): a placed token asks about its own place -- its query is
 ``S(p)`` from the input, exact, no projection in the way; unplaced tokens keep the learned
-query. The hypertoken carries its address, so ``here`` means *here* by construction. Measured
+query. A loci token carries its address, so ``here`` means *here* by construction (loci tokens
+were called hypertokens until 2026-10-22; see H-K10's Name in CUBBYLLM_HYPOTHESES.md). Measured
 on a tiny trunk (``validation/exp_k10_hypertoken.py``): a fact shown once, asked 120 tokens past
 the window, answered at 0.94 this way and at 0.00 through the learned query alone -- the read
 is easy to learn, recovering an address from the hidden state is the hard part.
