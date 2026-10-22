@@ -84,7 +84,7 @@ class Context:
     def mentions(self):
         if self._mentions is None:
             from books import BookIndex, Mentions
-            from build_books_index import world_names
+            from books import world_names
             common = BookIndex(ROOT_BOOKS).setting("common") if ROOT_BOOKS.exists() else ()
             self._mentions = Mentions(world_names(), common or ())
         return self._mentions

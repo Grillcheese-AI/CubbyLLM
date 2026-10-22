@@ -29,12 +29,7 @@ from books import BookIndex, Mentions, common_words, discover, meta, paragraphs,
 
 __wiring__ = "STANDALONE"
 
-
-def world_names() -> set[str]:
-    """The wiki world's subjects and objects, as the serve stack's name index holds them (`serve.slot_index`)."""
-    import wikikg as wk
-    w = wk.wiki_world()
-    return set(w.index._by_subj) | set(w.index._by_obj)
+from books import world_names  # noqa: E402,F401 -- with the books (order 0031)
 
 
 def refresh_meta(idx: BookIndex, roots) -> int:

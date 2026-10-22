@@ -48,6 +48,13 @@ _STOP = {"the", "a", "an", "in", "on", "of", "at", "to", "he", "she", "it", "the
          "this", "that", "but", "and", "or", "as", "by", "for", "with", "from", "is", "was", "not", "no", "so"}
 
 
+def world_names() -> set[str]:
+    """The wiki world's subjects and objects, as the serve stack's name index holds them (`serve.slot_index`)."""
+    import wikikg as wk
+    w = wk.wiki_world()
+    return set(w.index._by_subj) | set(w.index._by_obj)
+
+
 class Passage(NamedTuple):
     author: str
     title: str
