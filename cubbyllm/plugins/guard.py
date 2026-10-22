@@ -22,7 +22,7 @@ for the network, processes or a shell on its own:
   archive's polite fetcher (robots read and obeyed, ``Crawl-delay`` honoured, always ``CubbyLLM/0.1``); ``ctx.data_dir``
   is its only writable folder; ``ctx.log`` writes to the server's log.
 
-Wired: WIRED (``plugins_load``; the CLI ``python -m standin.plugins`` approves and checks).
+Wired: WIRED (``plugins_load``; the CLI ``python -m cubbyllm.plugins`` approves and checks).
 """
 from __future__ import annotations
 

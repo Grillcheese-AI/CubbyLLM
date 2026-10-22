@@ -1,10 +1,10 @@
-"""standin/plugins.py -- the plugins' command line (order 0028).
+"""cubbyllm/plugins/__main__.py -- the plugins' command line (order 0028; moved from standin/plugins.py in 0031).
 
-    python -m standin.plugins list    [--dirs plugins]        every plugin, its kinds and its status
-    python -m standin.plugins check   <name> [--dirs ...]     the code review (imports, calls) and the pin
-    python -m standin.plugins approve <name> [--yes]          the review (every new or changed file, a diff since the last
+    python -m cubbyllm.plugins list    [--dirs plugins]        every plugin, its kinds and its status
+    python -m cubbyllm.plugins check   <name> [--dirs ...]     the code review (imports, calls) and the pin
+    python -m cubbyllm.plugins approve <name> [--yes]          the review (every new or changed file, a diff since the last
                                                               approval), then, with --yes, Nick's approval: the files pinned
-    python -m standin.plugins new     <name> --kinds tool,... a folder to start from (PLUGIN.md and the entry stubs)
+    python -m cubbyllm.plugins new     <name> --kinds tool,... a folder to start from (PLUGIN.md and the entry stubs)
 
 ``--dirs`` defaults to ``CUBBY_PLUGINS`` or the repo's ``plugins/``. Approval writes the local, git-ignored lock
 (``plugins_guard.lock_path``); a file changed afterwards blocks the plugin until it is approved again.
@@ -37,7 +37,7 @@ STUBS = {
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(prog="python -m standin.plugins", description=__doc__.split("\n\n")[0])
+    ap = argparse.ArgumentParser(prog="python -m cubbyllm.plugins", description=__doc__.split("\n\n")[0])
     ap.add_argument("cmd", choices=["list", "check", "approve", "new"])
     ap.add_argument("name", nargs="?")
     ap.add_argument("--dirs", default=os.environ.get("CUBBY_PLUGINS") or str(HERE.parent / "plugins"))
