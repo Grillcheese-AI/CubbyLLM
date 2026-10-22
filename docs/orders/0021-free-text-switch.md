@@ -1,5 +1,5 @@
 # 0021 — Free-text facts, part 2: train the switch alone (0005's recipe on 0006's toy), then widen the templates
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: H-K10 · **after 0006**
 
 ## Why
