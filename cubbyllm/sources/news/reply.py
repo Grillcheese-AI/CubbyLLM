@@ -154,7 +154,7 @@ def answer(question: str, root, today: dt.date, feeds: list[dict] | None = None)
         lines.append(s)
         used += g
     reply = " ".join(lines)
-    from grounding import longest_run
+    from ...speech.grounding import longest_run
     run = max(longest_run(reply, r.get("title", "") + " " + r.get("summary", "")) for r in used)
     if run > MAX_RUN:
         return {**rec, "answered": False, "reason": "quote_guard", "items": [r["key"] for r in used]}

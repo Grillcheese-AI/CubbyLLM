@@ -11,7 +11,7 @@ import os
 import re
 import urllib.request
 
-from emitter_base import GPU_LOCK, SYSTEM
+from cubbyllm.emit.base import GPU_LOCK, SYSTEM
 
 __wiring__ = "STANDALONE"
 

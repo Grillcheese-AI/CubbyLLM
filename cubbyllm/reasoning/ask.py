@@ -873,7 +873,7 @@ class AskLoop:
         from cubbyllm.reasoning import events as ev
         from cubbyllm.reasoning.learn import learn_and_answer
         from cubbyllm.reasoning.planner import QuestionPlan, normalize
-        from eval_emitter_vm import strip_fences
+        from ..emit.base import strip_fences
         from cubbyllm.reasoning.emitted import emitted_plan
         t0 = time.perf_counter()
         question = " ".join(question.split())
@@ -1526,7 +1526,7 @@ class AskLoop:
                   f"\n\nIn one or two plain sentences, say {ask} {entity} is, using ONLY these facts. "
                   "Every NAME, DATE and NUMBER must appear exactly as given, and you may add none that is "
                   "not in the facts.")
-        from emitter import clean_reply
+        from ..emit.base import clean_reply
         # the structured form rides beside the prompt (2026-10-17): the 450M talk adapter was trained on the
         # facts block ("Facts: / - entity -- relation: value / Question: / Answer:") and renders it itself;
         # the stand-in reads the instruction above and ignores these keys

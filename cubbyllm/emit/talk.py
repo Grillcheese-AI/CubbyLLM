@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import os
 
-from emitter_450m import Cubby450mTrunk
+from .seats_450m import Cubby450mTrunk
 
 __wiring__ = "STANDALONE"
 

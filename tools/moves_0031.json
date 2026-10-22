@@ -49,5 +49,8 @@
  "standin/ask.py": "cubbyllm/reasoning/ask.py",
  "standin/question_forms.py": "cubbyllm/reasoning/question_forms.py",
  "standin/context_graph.py": "cubbyllm/reasoning/context_graph.py",
- "standin/loci_reader.py": "cubbyllm/reasoning/loci_reader.py"
+ "standin/loci_reader.py": "cubbyllm/reasoning/loci_reader.py",
+ "standin/emitter_base.py": "cubbyllm/emit/base.py",
+ "standin/emitter_450m.py": "cubbyllm/emit/seats_450m.py",
+ "standin/emitter_talk.py": "cubbyllm/emit/talk.py"
 }

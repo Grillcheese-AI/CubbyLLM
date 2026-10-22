@@ -54,13 +54,9 @@ class Cubby450mTrunk:
     def _load(self) -> None:
         if self._model is not None:
             return
-        import sys
-        here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        if here not in sys.path:
-            sys.path.insert(0, here)
         from safetensors.numpy import load_file
         from tokenizers import Tokenizer
-        from cubbyllm.ops import grilly_seats as ops     # grilly2, behind the ops seam (order 0031)
+        from ..ops import grilly_seats as ops            # grilly2, behind the ops seam (order 0031)
         model, _cfg = ops.load_export(self.export_dir)
         layout = None
         for role in self.adapter_dirs:
@@ -200,7 +196,7 @@ class Cubby450mEmitter:
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
              prefix: str = "", temperature: float = 0.0, seed: int | None = None,
              context: "str | dict | None" = None) -> str:
-        from cubbyllm.emit.format import PROMPT_HEAD, PROMPT_TAIL, decode_program
+        from .format import PROMPT_HEAD, PROMPT_TAIL, decode_program
         text = prompt if prompt.startswith(PROMPT_HEAD) else PROMPT_HEAD + prompt.strip() + PROMPT_TAIL
         out = self.trunk.generate(self.role, [self._ids(text + prefix)], max_new_tokens)[0]
         return prefix + decode_program(self.trunk.tokenizer, out, self.trunk.eos)   # keeps ACTION/AGENT/OBJECT (special tokens)
@@ -209,7 +205,7 @@ class Cubby450mEmitter:
                      top_k: int = 40, seed: int | None = None) -> list[str]:
         """`n` sampled continuations in ONE batched decode (the prompt repeated n times; rows stop at </s>):
         the candidates a step vote runs in the VM (`step_loop.StepLoop.solve_vote`)."""
-        from cubbyllm.emit.format import PROMPT_HEAD, PROMPT_TAIL, decode_program
+        from .format import PROMPT_HEAD, PROMPT_TAIL, decode_program
         text = prompt if prompt.startswith(PROMPT_HEAD) else PROMPT_HEAD + prompt.strip() + PROMPT_TAIL
         ids = self._ids(text)
         rows = self.trunk.generate(self.role, [ids] * n, max_new_tokens, temperature=temperature, top_k=top_k, seed=seed)

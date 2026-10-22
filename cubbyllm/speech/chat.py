@@ -344,7 +344,7 @@ class CubbyChat:
                                                      **self.talk_context(user_text, lang)},        # the turns / the identity facts, for an adapter that renders its own format
                                     max_new_tokens=self.max_new_tokens, system=system,
                                     temperature=getattr(self, "temperature", 0.7), seed=self._turns)   # words, not programs: sample
-            from emitter import clean_reply
+            from ..emit.base import clean_reply
             reply = clean_reply(raw)                     # closed think block out, stray tags out, complete tool calls kept
             if not reply or reply in seen:
                 continue
