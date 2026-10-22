@@ -1,6 +1,6 @@
 # 0023 — Nested questions over the worlds: no loose match at a hop, a wording translated on a miss, a live "as of"
-status: proposed
-written: 2026-10-22 by Cowork · approved: — · hypothesis: none (the ask loop's walk) · **after 0014**
+status: open
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: none (the ask loop's walk) · **after 0014**
 
 ## Why
 Order 0014 mounted the hdc world (3.4M Wikidata5M facts) and passed every line: 177 of 200 one-hop questions
