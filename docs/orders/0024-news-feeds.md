@@ -99,8 +99,13 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
     headline and summary only.
     **History:** both the main feed and the translation feeds page back with `?paged=N` (15 items a page on the main
     feed, back to October 2004, about 6,960 pages; 10 a page on the French feed, back to March 2007, about 2,170 pages).
-    A backfill is a large download (about 1.7 GB for the main feed and 0.4 GB for the French one) and needs Nick's yes;
-    run it at one page every 2 seconds or slower, resumable by page number.
+    **Backfill (Nick said yes, 2026-10-22, English and French).** The sites' robots.txt asks a `Crawl-delay` of 10 s,
+    so it runs at one page every 10 s per site: about 20 hours for English, 6 for French (about 2.1 GB as served,
+    under 1 GB gzipped). Cowork started it from Nick's machine the same day: each raw feed page is saved gzipped, once,
+    one file per page, resumable, off-repo (the path is in the local notes). The archive ingests those pages like any
+    other Global Voices items, keyed by `guid`: pages shift as new stories appear, so neighbouring pages repeat a few
+    items, and none are missed. Other languages' history waits for Nick.
+    **Crawl-delay:** the poller reads each host's robots `Crawl-delay` and never polls a host faster than it asks.
   - **International, not only Québec (Nick, 2026-10-22).** Cowork tested 43 candidate feeds from Nick's machine;
     38 work and are kept: Europe 13, Asia 7, Americas 7, Africa 5, Middle East 4, Oceania 2; in en 30, fr 4, es 2, de 1, pt 1
     (en, fr, es, de, pt). Among them public broadcasters (BBC, DW, France 24, RFI, Tagesschau, ABC Australia, RNZ, NPR),
