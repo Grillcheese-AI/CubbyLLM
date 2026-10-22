@@ -57,9 +57,12 @@ def test_every_reason_the_loop_writes_is_routed_or_an_answered_kind():
     """A reason literal in the loop's code that the table does not know would land in 'unrouted' in
     silence. Scanned: every snake_case literal on or right after a line that assigns a reason."""
     found = set()
-    files = list((REPO / "cubbyllm" / "reasoning").glob("*.py")) + [REPO / "standin" / "ask.py"]
+    # ask.py moved into cubbyllm/reasoning (order 0031) and loci_reader.py with it. loci_reader was never scanned, and its
+    # two reasons (loci_mismatch, loci_miss) have no route yet: routing them is a decision, asked in 0031's report.
+    # Until then the scan covers what it covered before the move.
+    files = list((REPO / "cubbyllm" / "reasoning").glob("*.py"))
     for f in files:
-        if f.name == "sleep.py":
+        if f.name in ("sleep.py", "loci_reader.py"):
             continue
         lines = f.read_text(encoding="utf-8").splitlines()
         for i, line in enumerate(lines):

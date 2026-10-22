@@ -4,7 +4,9 @@ without an editable install.
 Order 0031 moves the stand-in's tests here a slice at a time, and some of them
 import helpers from other test files (`from test_ask import FakeEmitter`). Each
 plain test folder (no `__init__.py`), and `standin/tests` while it exists, is put
-on the path, so a helper resolves wherever its file lives now."""
+on the path, so a helper resolves wherever its file lives now. `tests/reasoning`
+is a package, and is put on the path too: the ask loop's tests (slice 4) share
+their helpers by file name."""
 import pathlib
 import sys
 
@@ -14,3 +16,5 @@ if str(ROOT) not in sys.path:
 for d in [ROOT / "standin" / "tests", *sorted(p for p in (ROOT / "tests").iterdir() if p.is_dir())]:
     if d.is_dir() and not (d / "__init__.py").exists() and d.name != "__pycache__" and str(d) not in sys.path:
         sys.path.append(str(d))
+if str(ROOT / "tests" / "reasoning") not in sys.path:
+    sys.path.append(str(ROOT / "tests" / "reasoning"))

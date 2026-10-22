@@ -22,17 +22,13 @@ from __future__ import annotations
 
 import pathlib as _pathlib  # noqa: E402
 import sys as _sys  # noqa: E402
-_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
 from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
 
 import os
 import pathlib
 import sys
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
-for p in (ROOT, ROOT / "validation", ROOT / "standin" / "data"):
-    if str(p) not in sys.path:
-        sys.path.insert(0, str(p))
+ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 __wiring__ = "WIRED"
 
@@ -48,7 +44,7 @@ STEP = 6
 
 def relation_of() -> dict[str, str]:
     """A relation as the store words it (Wikidata's label, the world's noun) -> the shard's relation name."""
-    import wikikg as wk
+    from ..worlds import wikikg as wk
     from cubbyllm.reasoning.planner import normalize
     out = {normalize(k): v for k, v in WIKIDATA.items()}
     for upper, (noun, _inv, _form) in wk.RELATIONS.items():
@@ -63,7 +59,7 @@ class LociReader:
         import torch
         from tokenizers import Tokenizer
         from cubbyllm.model.build import build_model
-        import wikikg as wk
+        from ..worlds import wikikg as wk
         self.torch, self.max_pieces = torch, int(max_pieces)
         ck = torch.load(ckpt or os.environ["CUBBY_LOCI_CKPT"], map_location="cpu", weights_only=False)
         self.model = build_model(dict(ck["meta"]), torch.device(device))

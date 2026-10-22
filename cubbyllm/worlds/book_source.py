@@ -36,7 +36,7 @@ _FORMS_ONE = []
 
 def _FORMS():
     if not _FORMS_ONE:
-        from question_forms import Forms
+        from ..reasoning.question_forms import Forms
         _FORMS_ONE.append(Forms())
     return _FORMS_ONE[0]
 

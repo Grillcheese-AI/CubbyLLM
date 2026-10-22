@@ -33,8 +33,8 @@ import math
 import re
 from dataclasses import asdict, dataclass, field
 
-from history_graph import FORWARD, key
-from history_lookup import Hit, HistoryLookup, canonical, parse_kind, words, years
+from ..worlds.history_graph import FORWARD, key
+from ..worlds.history_lookup import Hit, HistoryLookup, canonical, parse_kind, words, years
 
 __wiring__ = "STANDALONE"
 
@@ -303,12 +303,12 @@ class ContextGraph:
                 "branch": self.branch}
 
     def save(self, path, key: bytes | None = None) -> None:
-        import vault
+        from ..speech import vault
         vault.write_json(path, self.to_json(), key)
 
     @classmethod
     def load(cls, path, lookup: HistoryLookup, key: bytes | None = None) -> "ContextGraph":
-        import vault
+        from ..speech import vault
         d = vault.read_json(path, key)
         cg = cls(lookup)
         cg.turns = [Turn(**t) for t in d["turns"]]

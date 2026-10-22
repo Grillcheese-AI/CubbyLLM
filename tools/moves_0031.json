@@ -45,5 +45,9 @@
  "standin/explicit_gate.py": "cubbyllm/speech/explicit_gate.py",
  "standin/audience.py": "cubbyllm/speech/audience.py",
  "standin/chat.py": "cubbyllm/speech/chat.py",
- "standin/vault.py": "cubbyllm/speech/vault.py"
+ "standin/vault.py": "cubbyllm/speech/vault.py",
+ "standin/ask.py": "cubbyllm/reasoning/ask.py",
+ "standin/question_forms.py": "cubbyllm/reasoning/question_forms.py",
+ "standin/context_graph.py": "cubbyllm/reasoning/context_graph.py",
+ "standin/loci_reader.py": "cubbyllm/reasoning/loci_reader.py"
 }

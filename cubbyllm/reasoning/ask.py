@@ -19,10 +19,7 @@ import sys
 import threading
 import time
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
-for p in (ROOT, ROOT / "standin", ROOT / "standin" / "data", ROOT / "validation"):
-    if str(p) not in sys.path:
-        sys.path.insert(0, str(p))
+ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 __wiring__ = "WIRED"
 
@@ -81,7 +78,7 @@ FALLBACK_KINDS = ("who", "what", "where")          # kinds that may also show an
 # and `part of` are carried by almost everything and decide nothing
 RESOLVE_HINT = {k: tuple(r for r in v if r not in ("instance of", "subclass of", "part of", "sex or gender"))[:8] for k, v in PROFILE_KINDS.items()}
 PROFILE_MAX_PER_RELATION = 3
-from self_source import LOOP, SelfSource   # noqa: E402
+from ..worlds.self_source import LOOP, SelfSource   # noqa: E402
 
 PROFILE_MAX_LINES = 9
 # Past this many dated facts, "what happened in 2026?" is not a question with an answer, it is a
@@ -650,7 +647,7 @@ class AskLoop:
         from cubbyllm.reasoning.plan_verify import StoreRelations
         self.emitter = emitter
         if world is None:
-            import wikikg as wk
+            from ..worlds import wikikg as wk
             wk.ensure_data(("triplets",))
             world = wk.wiki_world()
         self.world = world
@@ -659,7 +656,7 @@ class AskLoop:
             world.known_relations(self.known)
         if isinstance(source, str):
             if source.startswith("wikidata"):
-                from sources import WikidataSource
+                from ..sources.wikidata import WikidataSource
                 source = WikidataSource(offline=source.endswith("offline"), use_choices=True)   # serving learns what askers mean
             else:
                 raise ValueError(f"unknown source {source!r}")
@@ -668,7 +665,7 @@ class AskLoop:
         # (measured: 0 facts whose subject is a year), so it gets its own source -- and only a
         # `when` ask ever consults it. `news="rss"` builds the default feed set.
         if news == "rss":
-            from news_source import NewsSource
+            from ..sources.news.source import NewsSource
             news = NewsSource()
         self.news = news
         # the web (2026-09-24): asked only after the source above has nothing more for the entity the walk
@@ -679,7 +676,7 @@ class AskLoop:
         # author alone states is spoken hedged until Wikidata or another author states it too (an index path,
         # or a BookSource; None = off, the loop unchanged)
         if isinstance(books, (str, pathlib.PurePath)):
-            from book_source import BookSource
+            from ..worlds.book_source import BookSource
             books = BookSource(books)
         self.books = books
         self.contested: set[tuple[str, str]] = set(getattr(world, "contested", None) or ())   # held: `load_held`, and
@@ -693,17 +690,17 @@ class AskLoop:
         self.time_rule = self.tense if time_rule is None else bool(time_rule)
         # the 450M's loci path as the reader (order 0007): a checkpoint path, or a LociReader; None = today's loop
         if isinstance(loci, (str, pathlib.PurePath)):
-            from loci_reader import LociReader
+            from .loci_reader import LociReader
             loci = LociReader(str(loci))
         self.loci = loci
         # order 0024: the news archive's change marks (news_trigger.Changes); a value said "as of" a date that reports
         # since say changed carries that too. None = off, the reply as before.
         self.news_changes = news_changes
-        from audience import LeakGuard                   # sources are internal (order 0016): the guard at the mouth,
+        from ..speech.audience import LeakGuard                   # sources are internal (order 0016): the guard at the mouth,
         self.guard = LeakGuard(index=getattr(books, "index", None))   # the books' passages for its 8-word scan
         self._forms = None
         if books is not None:                            # natural questions (order 0012): a parsed form is a relation
-            from question_forms import Forms             # ask, never a profile ("Who was the founder of Rome?"), and
+            from .question_forms import Forms             # ask, never a profile ("Who was the founder of Rome?"), and
             self._forms = Forms()                        # its words name the relation (levers 4 and 6: "ruled")
         # the scene (2026-10-17): the host's route to space. A question the scene can state -- a spatial
         # relation at any hop, or a seed that is a thing in it -- is sourced from the scene's exact reading
@@ -781,7 +778,7 @@ class AskLoop:
         time, the store's snapshot hash, and for each learned fact its relation (as the index split it
         now, so a reload splits it the same way) and WHEN the source said it was true. Inside an ask,
         the record gets its thought graph first, so the history keeps how the answer came about."""
-        from audience import mouth, record_hash
+        from ..speech.audience import mouth, record_hash
         mouth(rec, self.guard)                           # the last check before it is spoken (order 0016)
         g = getattr(self, "_graph", None)
         if g is not None and "graph" not in rec:
@@ -939,7 +936,7 @@ class AskLoop:
                                         fallbacks=self.fallbacks if src is None else [],
                                         before=[self.books] if self.books is not None and src is None else None)
             if self.loci is not None:                    # the trunk reads first; a miss is looked up once (order 0007)
-                from loci_reader import through_loci
+                from .loci_reader import through_loci
                 if through_loci(self, rec, rels, seed, learn) is not None:
                     rec["wall_s"] = round(time.perf_counter() - t0, 3)
                     self._keep(rec)
@@ -1000,7 +997,7 @@ class AskLoop:
         w = self.world.held_by(h.fact) if h is not None and h.triple is not None and hasattr(self.world, "held_by") else None
         if w is None or normalize(h.triple.rel) not in getattr(w, "time_sensitive", ()):
             return None
-        from question_forms import tense_of
+        from .question_forms import tense_of
         year = strip_as_of(question)[1]
         if year is not None:
             return None if str(year) == w.snapshot else ("refuse", f"asked about {year}, the snapshot holds {w.snapshot}")
@@ -1010,7 +1007,7 @@ class AskLoop:
 
     def _life(self, entity: str):
         """(born, died) years the world holds for `entity` (either None): the books' same-name guard."""
-        from book_source import year
+        from ..worlds.book_source import year
         from cubbyllm.reasoning.planner import normalize
         out = [None, None]
         for _f, t in getattr(getattr(self.world, "index", None), "_by_subj", {}).get(normalize(entity or ""), []):
@@ -1024,7 +1021,7 @@ class AskLoop:
         over its subject's life, and not every witness dates it -- ('refuse', why) when the question names a year,
         ('hedge', the answer at one point) otherwise; None when the rule does not apply."""
         from cubbyllm.reasoning.planner import normalize
-        from time_rule import at_one_point, undated
+        from ..worlds.time_rule import at_one_point, undated
         h = lr.result.trace[-1] if lr.result.trace else None
         if h is None or h.triple is None:
             return None
@@ -1037,7 +1034,7 @@ class AskLoop:
         subj = question[i:i + len(h.triple.subj)] if i >= 0 else h.triple.subj
         year = strip_as_of(question)[1]
         if ws is None:                                   # a world's own fact (0015, Addendum 2): its "as of", or "at one point"
-            from time_rule import changes, dated
+            from ..worlds.time_rule import changes, dated
             when = (getattr(self.world, "times", None) or {}).get(key) or {}
             if not self.time_rule or not changes(h.triple.rel) or dated(when):
                 return None
@@ -1060,7 +1057,7 @@ class AskLoop:
         form it parses to, else its auxiliary) and its year against the dates the fact carries
         (`question_forms.time_check`; an undated fact is not checked)."""
         from cubbyllm.reasoning.planner import normalize
-        from question_forms import Forms, tense_of, time_check
+        from .question_forms import Forms, tense_of, time_check
         h = lr.result.trace[-1] if lr.result.trace else None
         if h is None or h.triple is None:
             return None
