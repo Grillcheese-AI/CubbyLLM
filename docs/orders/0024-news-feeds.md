@@ -47,10 +47,15 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
     its robots.txt did not answer). It publishes analysis (reports, briefings, commentary), not breaking news: its
     items are kept as an organisation's analysis on a date, never read as events. Its dates are written
     "Friday, October 16, 2026 - 19:18": the date parser must read that form or the item is dropped.
-    Its listing (`https://www.crisisgroup.org/rss-0`) offers 241 feeds: the global feed, CrisisWatch, 7 regions and
+    Its listing (`https://www.crisisgroup.org/rss-0`) offers 193 feeds: the global feed, CrisisWatch, 7 regions and
     their projects and countries (the list, checked from Nick's machine, is handed over off-repo). Poll the global
     feed and the 7 regions every 6 hours; country and project feeds only on demand, since their items repeat in the
     regions. CrisisWatch answers the poller with 403: left out.
+  - **UN Geneva (Nick, 2026-10-22):** press releases (`https://www.ungeneva.org/en/news-media/press-releases-list/rss.xml`),
+    press briefings (`.../briefings-list/rss.xml`) and press items (`.../press-items-list/rss.xml`): all three answer the
+    poller with current items (10 each; newest 7, 20 and 21 October), and the site's robots.txt blocks no AI agent.
+    They are official statements: kept as what a UN office or spokesperson said on a date, attributed, never read as
+    the event itself. Record the UN's terms of use.
   - **Each publisher's robots rules and terms** are read from its own site (not the feed's host: the FeedBurner copy
     of Le Devoir carries no rule of its own) and recorded, with Nick's decision per publisher, in the local rights
     notes. The poller always identifies itself as `CubbyLLM/0.1` and never changes its name to get past a rule; it
