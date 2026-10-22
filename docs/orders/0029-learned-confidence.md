@@ -1,6 +1,6 @@
 # 0029 — Copy or refuse, arm D: a confidence learned on calibration documents, so fewer right answers are refused
-status: proposed
-written: 2026-10-22 by Cowork · approved: — · hypothesis: H-K10 (after 0022)
+status: open
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: H-K10 (after 0022)
 
 ## Why
 Order 0022 made copy or refuse the contract, and on the 450M it holds both wrong-answer lines: present wrong 1.7%,

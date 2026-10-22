@@ -1,6 +1,6 @@
 # 0030 — Repo hygiene: the red tests made true, local paths out of committed files, the largest files split
-status: proposed
-written: 2026-10-22 by Cowork · approved: — · hypothesis: none
+status: open
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: none
 
 ## Why
 Reports for 0015 and 0027 found what `CLAUDE.md`'s "known red" does not say: `pytest standin/tests` has 25 red tests

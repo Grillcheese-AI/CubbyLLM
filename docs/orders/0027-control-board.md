@@ -219,5 +219,6 @@ actually internal: sources, feeds and sites, dataset names, internal plugins), a
 places it mattered (an order title naming Wikidata, a licence naming Project Gutenberg). The background build, run ages,
 Mood from `/state` (with "at rest" at the cube's centre), the click target fix on the turntable and the `news_reply`
 outlet fix are accepted. **P1 is done.**
-- Manrope: bundling it is Nick's yes (a small download, SIL Open Font Licence).
+- Manrope: Nick said yes (2026-10-22). Bundle it with the page (a small download, SIL Open Font Licence; keep its
+  licence file beside the fonts), with the system stack as the fallback.
 - The 25 red tests in `standin/tests` that predate this order go to the hygiene order (0030), with the old local paths.
