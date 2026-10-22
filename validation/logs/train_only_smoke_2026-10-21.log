@@ -1,0 +1,104 @@
+# order 0005 CPU smoke (2026-10-21): validation/train_base.py from run 3's final, S=1024, micro 1 = 1,024 tokens a step,
+# only spatial_here and facts_far1k_lead drawn, OMP 6 threads, torch 2.4.1 CPU. Paths replaced: <runs> = the Drive runs dir.
+# The first copy-only attempt stopped at init ('not this model without its copy path'): CubbyModel.parameters() yields only
+# the tensors that require grad, so freezing shrank the checkpoint's list (fixed: train_base.params_of). Below: the copy-only
+# arm after the fix, then the full arm (every tensor trains) from the first attempt, same settings, for the speed.
+=== 2026-10-21 21:02:47 arm copy_only: CB_TRAIN_ONLY=copy CB_STEPS=20 OMP_NUM_THREADS=6 S=1024 micro 1 (CPU)
+device: cpu | torch 2.4.1+cpu
+config: D1024/L32 heads 4 window 512 1:3 | vocab 127996->128000 | S1024 micro 1 x accum 1 = 1,024 tok/step | lr 0.0006 b2 0.95 wd 0.1 clip 1.0 warmup 2 decay 20% | mix base | hours 20.0 wall 22.5
+params 578.3M (trainable; embedding + head 262M) | 0.91 GFLOP/token
+trunk FROZEN (CB_TRAIN_ONLY=copy): 1,027 trainable parameters, the copy path's, at peak lr 0.003; the trunk runs forward only (no graph, no update; MFU counts the forward)
+initialised from <runs>\spatial_link_3\spatial_link_3_final.pt (its step 3418; not grown) -> step 0, fresh optimizer and schedule; copy path ADDED (ring, lam 0.1, tau 3.04)
+schedule: 20 steps, decay from 16
+  source            tokens(train)  stable%  decay%  epochs this run
+  agent                79,507,054    0.00    0.00      0.00
+  arxiv                11,640,440    0.00    0.00      0.00
+  books               193,986,560    0.00    0.00      0.00
+  facts                10,035,200    0.00    0.00      0.00
+  facts_far1k          20,070,400    0.00    0.00      0.00
+  facts_far1k_lead     20,070,400   50.00   50.00      0.00
+  facts_far1k_text     20,070,400    0.00    0.00      0.00
+  facts_text           10,035,200    0.00    0.00      0.00
+  facts_text_far       40,140,800    0.00    0.00      0.00
+  fineweb_edu         387,973,120    0.00    0.00      0.00
+  instruct             15,520,818    0.00    0.00      0.00
+  kbtxt                68,157,440    0.00    0.00      0.00
+  nemotron_code       254,803,968    0.00    0.00      0.00
+  nemotron_legal      144,703,488    0.00    0.00      0.00
+  nemotron_qa         327,155,712    0.00    0.00      0.00
+  pretrain_ext            846,185    0.00    0.00      0.00
+  program               7,303,480    0.00    0.00      0.00
+  spatial              10,035,200    0.00    0.00      0.00
+  spatial_here         10,035,200   50.00   50.00      0.00
+  spatial_text         10,035,200    0.00    0.00      0.00
+  spatial_text_here     10,035,200    0.00    0.00      0.00
+  unified           1,285,554,176    0.00    0.00      0.00
+  verified_facts      164,626,432    0.00    0.00      0.00
+  wiki_full           609,222,656    0.00    0.00      0.00
+  wikibooks            85,983,232    0.00    0.00      0.00
+  wikipedia           123,395,015    0.00    0.00      0.00
+  step      1 warm   loss  2.509  lr 1.50e-03  gnorm  0.09       272 tok/s  MFU  nan%   0.000B tok   0.00 h  eta  0.02 h
+  step      2 warm   loss  3.207  lr 3.00e-03  gnorm  0.27       282 tok/s  MFU  nan%   0.000B tok   0.00 h  eta  0.02 h
+  step      3 stable loss  3.275  lr 3.00e-03  gnorm  0.21       268 tok/s  MFU  nan%   0.000B tok   0.00 h  eta  0.02 h
+  step      4 stable loss  0.279  lr 3.00e-03  gnorm  0.19       285 tok/s  MFU  nan%   0.000B tok   0.00 h  eta  0.02 h
+  step      5 stable loss  2.881  lr 3.00e-03  gnorm  0.19       273 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.02 h
+  step      6 stable loss  2.841  lr 3.00e-03  gnorm  0.10       315 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step      7 stable loss  0.280  lr 3.00e-03  gnorm  0.00       339 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step      8 stable loss  2.280  lr 3.00e-03  gnorm  0.06       316 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step      9 stable loss  0.261  lr 3.00e-03  gnorm  0.00       292 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step     10 stable loss  0.255  lr 3.00e-03  gnorm  0.00       292 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step     11 stable loss  0.279  lr 3.00e-03  gnorm  0.00       297 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step     12 stable loss  3.232  lr 3.00e-03  gnorm  0.23       300 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step     13 stable loss  2.928  lr 3.00e-03  gnorm  0.04       321 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step     14 stable loss  0.316  lr 3.00e-03  gnorm  0.00       263 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step     15 stable loss  3.439  lr 3.00e-03  gnorm  0.05       256 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step     16 stable loss  0.266  lr 3.00e-03  gnorm  0.00       304 tok/s  MFU  nan%   0.000B tok   0.02 h  eta  0.00 h
+  step     17 decay  loss  3.081  lr 1.50e-03  gnorm  0.08       307 tok/s  MFU  nan%   0.000B tok   0.02 h  eta  0.00 h
+  step     18 decay  loss  2.936  lr 8.79e-04  gnorm  0.07       275 tok/s  MFU  nan%   0.000B tok   0.02 h  eta  0.00 h
+  step     19 decay  loss  3.063  lr 4.02e-04  gnorm  0.09       273 tok/s  MFU  nan%   0.000B tok   0.02 h  eta  0.00 h
+  step     20 decay  loss  2.438  lr 0.00e+00  gnorm  0.11       272 tok/s  MFU  nan%   0.000B tok   0.02 h  eta  0.00 h
+  [val] step 20  mix 1.4087  copy 1.285  | agent:0.90  arxiv:4.15  books:2.58  facts:2.69  facts_far1k:2.60  facts_far1k_lead:2.59  facts_far1k_text:2.96  facts_text:1.91  facts_text_far:2.70  fineweb_edu:3.12  instruct:2.50  kbtxt:3.33  nemotron_code:1.63  nemotron_legal:1.86  nemotron_qa:3.84  pretrain_ext:3.55  program:0.48  spatial:0.84  spatial_here:0.23  spatial_text:1.31  spatial_text_here:1.53  unified:1.21  verified_facts:5.11  wiki_full:3.59  wikibooks:2.03  wikipedia:3.06
+  [probe] step 20  facts_far1k_lead: first 0.957 exact 0.522 later 0.880 end 0.957  lam here 0.641 (146) empty 0.442 (23)  spatial_here: first 0.973 exact 0.973 later 1.000 end 1.000  lam here 0.009 (4) empty 0.001 (33)  lam 0.504
+finished: 20 steps, 0.00B tokens -> smoke_copy_only_final.pt
+=== 2026-10-21 21:05:54 done
+=== 2026-10-21 20:57:43 arm full: CB_TRAIN_ONLY= CB_STEPS=5 OMP_NUM_THREADS=6 S=1024 micro 1 (CPU)
+device: cpu | torch 2.4.1+cpu
+config: D1024/L32 heads 4 window 512 1:3 | vocab 127996->128000 | S1024 micro 1 x accum 1 = 1,024 tok/step | lr 0.0006 b2 0.95 wd 0.1 clip 1.0 warmup 2 decay 20% | mix base | hours 20.0 wall 22.5
+params 578.3M (trainable; embedding + head 262M) | 2.72 GFLOP/token
+initialised from <runs>\spatial_link_3\spatial_link_3_final.pt (its step 3418; not grown) -> step 0, fresh optimizer and schedule; copy path ADDED (ring, lam 0.1, tau 3.04)
+schedule: 5 steps, decay from 4
+  source            tokens(train)  stable%  decay%  epochs this run
+  agent                79,507,054    0.00    0.00      0.00
+  arxiv                11,640,440    0.00    0.00      0.00
+  books               193,986,560    0.00    0.00      0.00
+  facts                10,035,200    0.00    0.00      0.00
+  facts_far1k          20,070,400    0.00    0.00      0.00
+  facts_far1k_lead     20,070,400   50.00   50.00      0.00
+  facts_far1k_text     20,070,400    0.00    0.00      0.00
+  facts_text           10,035,200    0.00    0.00      0.00
+  facts_text_far       40,140,800    0.00    0.00      0.00
+  fineweb_edu         387,973,120    0.00    0.00      0.00
+  instruct             15,520,818    0.00    0.00      0.00
+  kbtxt                68,157,440    0.00    0.00      0.00
+  nemotron_code       254,803,968    0.00    0.00      0.00
+  nemotron_legal      144,703,488    0.00    0.00      0.00
+  nemotron_qa         327,155,712    0.00    0.00      0.00
+  pretrain_ext            846,185    0.00    0.00      0.00
+  program               7,303,480    0.00    0.00      0.00
+  spatial              10,035,200    0.00    0.00      0.00
+  spatial_here         10,035,200   50.00   50.00      0.00
+  spatial_text         10,035,200    0.00    0.00      0.00
+  spatial_text_here     10,035,200    0.00    0.00      0.00
+  unified           1,285,554,176    0.00    0.00      0.00
+  verified_facts      164,626,432    0.00    0.00      0.00
+  wiki_full           609,222,656    0.00    0.00      0.00
+  wikibooks            85,983,232    0.00    0.00      0.00
+  wikipedia           123,395,015    0.00    0.00      0.00
+  step      1 warm   loss  2.509  lr 3.00e-04  gnorm  5.07        78 tok/s  MFU  nan%   0.000B tok   0.00 h  eta  0.01 h
+  step      2 warm   loss  3.335  lr 6.00e-04  gnorm  7.50        84 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step      3 stable loss  3.658  lr 6.00e-04  gnorm  7.86        80 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.01 h
+  step      4 stable loss  0.290  lr 6.00e-04  gnorm  1.64        79 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  0.00 h
+  step      5 decay  loss  4.420  lr 0.00e+00  gnorm 23.33        86 tok/s  MFU  nan%   0.000B tok   0.02 h  eta  0.00 h
+  [val] step 5  mix 1.9127  copy 2.073  | agent:1.18  arxiv:4.76  books:2.86  facts:3.26  facts_far1k:3.22  facts_far1k_lead:3.20  facts_far1k_text:3.83  facts_text:2.53  facts_text_far:3.06  fineweb_edu:3.85  instruct:2.98  kbtxt:5.19  nemotron_code:1.81  nemotron_legal:2.22  nemotron_qa:4.39  pretrain_ext:4.18  program:0.60  spatial:1.08  spatial_here:0.63  spatial_text:1.26  spatial_text_here:1.27  unified:1.44  verified_facts:6.53  wiki_full:4.03  wikibooks:2.10  wikipedia:3.47
+finished: 5 steps, 0.00B tokens -> smoke_full_final.pt
+=== 2026-10-21 21:00:27 done

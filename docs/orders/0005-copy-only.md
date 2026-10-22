@@ -1,5 +1,5 @@
 # 0005 — Train the copy alone on a frozen trunk (run 5)
-status: in progress
+status: review
 written: 2026-10-21 by Cowork · approved: 2026-10-22 by Nick · hypothesis: H-K10
 
 ## Why
@@ -51,10 +51,77 @@ construction. It is also the claim worth having: knowledge added to a trained mo
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
+**In one line:** `CB_TRAIN_ONLY=copy` trains the copy's 1,027 parameters on a frozen trunk. On the CPU smoke from run 3,
+every other tensor stays bit-identical and a step takes 3.51 s against 12.50 s for a full step. The probe now splits
+the pieces and the gate. `RUN = 5` is written.
+
+- **Commits:** `e69fc49` claimed · the commit carrying this report.
 - **Files:**
-- **Tests:**
-- **Measured:**
+  - New: `validation/recall_split.py` (the probe's scorer and its split), `validation/diag_frozen_check.py` (which
+    tensors a run moved, against the checkpoint it started from), `tests/model/test_train_only.py`.
+  - Changed: `validation/train_base.py`. It adds `CB_TRAIN_ONLY` / `CB_COPY_LR`, `train_only()` and `params_of()`. The
+    checkpoint paths (`payload`, `restore`, `init_from`, `init_copy`) take the full list from `params_of`. The step
+    skips the backward of a micro-batch the copy never acted in, and `fact_probe` goes through `recall_split`.
+    `notebooks/_build_spatial.py` and `spatial_facts_450m.ipynb` get `RUN = 5`.
+  - Why the long files grow: `train_base.py` goes from 1,117 to 1,149 lines, because the flag lives where the optimizer,
+    the step and the checkpoint are. The probe's split went to its own file. `_build_spatial.py` goes from 375 to 412,
+    because run 5's config, readout and notes sit with the runs they continue.
+- **Tests:** `tests/model/test_train_only.py`, 7 tests (8 cases):
+  - With the flag, one optimizer step changes only the copy's tensors. Every other tensor is bit-identical, checked
+    over the full list.
+  - The loss's autograd graph reaches only the copy's tensors, so nothing is kept for the trunk's backward.
+  - The checkpoint still holds every tensor and loads back into a frozen model. This test fails on the code before
+    the fix (Found on the way, 1).
+  - After 3 training steps, every position that does not ask has the starting model's logits exactly, and the asking
+    positions changed.
+  - Without the flag, every tensor trains: the optimizer groups are as before and the trunk moves.
+  - An unknown part, or a model without a copy path, refuses.
+  - The probe's first token, exact and question count equal `exp_hypertoken_recall.score`'s on the same forwards.
+    Its pieces sum to questions + later pieces, which is the answers' token count. Its λ counts sum to the asking
+    tokens the copy acted on: 7 present and 3 empty per document, as built. The test's documents include an asker
+    whose address is only written after it (counted empty) and one with no writer yet (not counted).
+  - `train_base.fact_probe` carries the split and the mean λ, and leaves `CB_NO_FLEX` as it found it.
+
+  Full `pytest tests`: 414 passed, 5 skipped, 1 failed (the known wiring guard, order 0002). That is the earlier 406
+  plus these 8.
+- **Measured: the CPU smoke** (`validation/logs/train_only_smoke_2026-10-21.log`,
+  `diag_frozen_check_smoke_2026-10-21.json`). Setup: `train_base.py` from `spatial_link_3_final.pt` with run 4's copy
+  flags and `CB_TRAIN_ONLY=copy`; 20 steps of 1,024 tokens (S = 1024, micro 1); only the two shards drawn; 6 threads.
+  - **Only the copy moved:** 326 tensors and 5 router tensors compared to run 3's, 0 moved. τ 3.040 → 3.072, β 0.115
+    → 0.089, gate bias −2.197 → −2.171, gate weight norm 0 → 0.598.
+  - **Speed:** 3.51 s a step (median of steps 2–20; range 3.02–4.00) against **12.50 s** for a full step (every tensor
+    training, same settings, steps 2–5), 3.6× faster. On the GPU the ratio will differ: the trunk forward still runs,
+    and the optimizer step and the activation memory shrink.
+  - **Probe after 20 steps, 4 documents a shard** (it shows the split runs; it is not a measurement). Far facts:
+    first 0.957, exact 0.522, later 0.880, end 0.957; λ 0.641 at addresses holding a piece (146), 0.442 at empty ones
+    (23). Villages: exact 0.973, λ 0.009 / 0.001.
+  - Acceptance:
+    - Tests: met.
+    - CPU smoke: met (the copy's tensors move, nothing else does, and the step is faster).
+    - Run 5 is for Cowork: far facts ≥ 0.80, villages ≥ 0.90, text within 0.005, kill below 0.761.
+  - The readout's text line: run 5 draws only its two shards, so its `_mix` covers those two and is not comparable to
+    run 3's. The readout therefore checks every source without places against run 3's last eval, within 0.005 each.
+    That is stricter than a mix. The trunk is frozen and every non-asking position is identical, so expect ~0 there,
+    up to GPU numerics.
 - **Not verified here:**
+  - The frozen trunk under `torch.compile` and bf16 autocast (CPU float32 only).
+  - The step's speed and memory on the G4.
+  - Whether a larger `CB_MICRO` fits now that no trunk activations are kept (left as run 4's).
+  - Run 5 itself.
+  - `diag_frozen_check.py` on run 5's final against run 3's, which the notebook's notes ask Cowork to run.
 - **Found on the way:**
+  1. **`CubbyModel.parameters()` yields only the tensors that require grad** (`assembly.py`). Freezing the trunk
+     therefore shrank the list that `train_base` uses as the checkpoint's layout. The first smoke stopped at init
+     ("not this model without its copy path"), and a save would have kept only the copy's 4 tensors. My first tests
+     missed it because they also listed tensors through `parameters()`. Fixed: `train_only` keeps the full list
+     before freezing, and every checkpoint path takes it (`params_of`). Anything else that freezes a `CubbyModel`
+     has the same trap.
+  2. `fact_probe` reloaded the 128k tokenizer from disk at every probe: `__dict__.setdefault(key, from_file(...))`
+     evaluates its default first. It now loads once.
+  3. A frozen-trunk micro-batch the copy never acts in (no asking token with a candidate) has no graph, and
+     `backward()` would raise. The step skips it; it adds no gradient. This is only with the flag.
 - **Questions:**
+  1. `CB_COPY_LR` is 3e-3, as the order says. Run 4 trained the copy at 3e-4, its trunk's peak. If Cowork wants run
+     5's curve comparable step for step, `CB_COPY_LR=3e-4` reproduces that.
+  2. Run 5's `CB_MICRO` is run 4's. With no trunk activations kept, a larger micro, or a shorter accumulation, would
+     likely fit. Cowork can measure it on the G4 and set it.

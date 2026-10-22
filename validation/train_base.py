@@ -118,6 +118,11 @@ MICRO = _env("CB_MICRO", 16)                 # sequences per forward/backward
 GRAD_CKPT = bool(_env("CB_GRAD_CKPT", 0))
 TOK_PER_STEP = _env("CB_TOKENS_PER_STEP", 131072)
 LR = _env("CB_LR", 6e-4, float)              # peak; CB_MODE=lrprobe to choose it
+# order 0005: "copy" trains only the link's copy path (model/spatial_copy.py) on a frozen trunk -- only its tensors
+# require grad and enter the optimizer, at their own peak CB_COPY_LR (the same schedule shape); the trunk runs forward
+# only (no graph, no update) and the checkpoint still saves every tensor. "" = every parameter trains (every run so far).
+TRAIN_ONLY = _env("CB_TRAIN_ONLY", "", str)
+COPY_LR = _env("CB_COPY_LR", 3e-3, float)
 BETA2 = _env("CB_BETA2", 0.95, float)
 WD = _env("CB_WD", 0.1, float)
 CLIP = _env("CB_CLIP", 1.0, float)
@@ -484,7 +489,7 @@ def peak_flops(dev) -> float:
 
 def make_opt(model: CubbyModel, lr: float, dev):
     decay, no_decay = [], []
-    for p in model.parameters():
+    for p in model.parameters():                    # the ones that require grad: with CB_TRAIN_ONLY, the part's
         (decay if p.dim() >= 2 else no_decay).append(p)
     groups = [{"params": decay, "weight_decay": WD},
               {"params": no_decay, "weight_decay": 0.0}]
@@ -492,6 +497,30 @@ def make_opt(model: CubbyModel, lr: float, dev):
     if dev.type == "cuda":
         kw["fused"] = True
     return torch.optim.AdamW(groups, **kw)
+
+
+def train_only(model: CubbyModel) -> float:
+    """``CB_TRAIN_ONLY``: every tensor but the named part's stops requiring grad, so the trunk's forward
+    builds no graph and keeps no activations, and ``make_opt`` takes only the part. Returns the peak
+    learning rate the run trains at (``CB_LR`` without the flag). ``CubbyModel.parameters()`` yields only
+    the tensors that require grad, so the full list is kept first, as the checkpoint's (``params_of``)."""
+    if not TRAIN_ONLY:
+        return LR
+    cp = model.spatial.copy_path if model.spatial is not None else None
+    if TRAIN_ONLY != "copy" or cp is None:
+        raise SystemExit(f"CB_TRAIN_ONLY={TRAIN_ONLY!r}: only 'copy' is known, and it needs the link's copy path"
+                         " (CB_SPATIAL=1 CB_SPATIAL_COPY=ring)")
+    model.full_params = list(model.parameters())
+    own = {id(p) for p in cp.parameters()}
+    for p in model.full_params:
+        p.requires_grad_(id(p) in own)
+    return COPY_LR
+
+
+def params_of(model: CubbyModel) -> list:
+    """The checkpoint's tensor list: every parameter in ``model.parameters()``'s order, those
+    ``train_only`` froze included."""
+    return getattr(model, "full_params", None) or list(model.parameters())
 
 
 def forward_batch(model: CubbyModel, x):
@@ -640,14 +669,14 @@ class Checkpoints:
 
 def payload(model, opt, step, meta, sched, extra) -> dict:
     return {"step": int(step), "meta": meta, "sched": dict(sched),
-            "params": [p.detach() for p in model.parameters()],
+            "params": [p.detach() for p in params_of(model)],
             "router": [p.detach() for p in model.context_source.parameters()],
             "opt": opt.state_dict() if opt is not None else None, **extra}
 
 
 def restore(path, model, opt, dev, meta, ck=None) -> dict:
     ck = ck if ck is not None else torch.load(path, map_location=dev, weights_only=False)
-    params = list(model.parameters())
+    params = params_of(model)
     if ck["meta"] != meta or len(ck["params"]) != len(params):
         raise SystemExit(f"checkpoint {path} is a different model:\n  {ck['meta']}\n  vs {meta}")
     with torch.no_grad():
@@ -675,7 +704,7 @@ def init_from(path, model, dev, meta) -> dict:
     if not added:
         return restore(path, model, None, dev, meta, ck)
     link = {id(p) for p in model.spatial.parameters()}
-    trunk = [p for p in model.parameters() if id(p) not in link]
+    trunk = [p for p in params_of(model) if id(p) not in link]
     if len(ck["params"]) != len(trunk) or any(p.shape != s.shape for p, s in zip(trunk, ck["params"])):
         raise SystemExit(f"checkpoint {path}: its trunk is not this model's ({len(ck['params'])} vs {len(trunk)} tensors)")
     with torch.no_grad():
@@ -696,7 +725,7 @@ def init_copy(path, model, dev, meta, ck) -> dict:
     if ck["meta"] != dict(meta, spatial=sp):
         return restore(path, model, None, dev, meta, ck)
     own = {id(p) for p in model.spatial.copy_path.parameters()}
-    rest = [p for p in model.parameters() if id(p) not in own]
+    rest = [p for p in params_of(model) if id(p) not in own]
     if len(ck["params"]) != len(rest) or any(p.shape != s.shape for p, s in zip(rest, ck["params"])):
         raise SystemExit(f"checkpoint {path}: not this model without its copy path")
     with torch.no_grad():
@@ -710,25 +739,21 @@ def init_copy(path, model, dev, meta, ck) -> dict:
 
 @torch.no_grad()
 def fact_probe(model: CubbyModel, dev) -> dict:
-    """``CB_PROBE_SHARDS``: each shard's last ``CB_PROBE_DOCS`` held-out documents scored as
-    ``exp_hypertoken_recall`` scores them (first token, exact), and the copy's mean lam at the
-    asking tokens (None without a copy path)."""
+    """``CB_PROBE_SHARDS``: each shard's last ``CB_PROBE_DOCS`` held-out documents scored by
+    ``recall_split.score`` (``exp_hypertoken_recall``'s first token and exact; the pieces split into
+    first / later / end; the copy's lam where the asked address holds a written piece and where it is
+    empty), and the copy's mean lam over all its asking tokens (None without a copy path)."""
     had = os.environ.get("CB_NO_FLEX")
-    import exp_hypertoken_recall as hr                  # its import defaults CB_NO_FLEX=1, which the backbone reads at
-    if had is None:                                     # every forward: the run would leave flex mid-training
-        os.environ.pop("CB_NO_FLEX", None)
+    import recall_split as rs                           # it imports exp_hypertoken_recall, whose import defaults CB_NO_FLEX=1,
+    if had is None:                                     # which the backbone reads at every forward: the run would leave flex
+        os.environ.pop("CB_NO_FLEX", None)              # mid-training
     from tokenizers import Tokenizer
-    hr.CORPUS = CORPUS
-    tk = fact_probe.__dict__.setdefault("tk", Tokenizer.from_file(TOKENIZER))
-    lams, cp = [], model.spatial.copy_path if model.spatial is not None else None
-    hook = cp.register_forward_hook(lambda _m, _i, out: lams.append(out[2].float())) if cp is not None else None
-    try:
-        out = {n: hr.score(model, tk, *hr.heldout_docs(n, PROBE_DOCS), model.spatial is not None, dev)
-               for n in PROBE_SHARDS.split(",")}
-    finally:
-        if hook is not None:
-            hook.remove()
-    out["_lam"] = float(torch.cat(lams).mean()) if lams else None
+    rs.hr.CORPUS = CORPUS
+    tk = fact_probe.__dict__.get("tk") or fact_probe.__dict__.setdefault("tk", Tokenizer.from_file(TOKENIZER))   # loaded once
+    out = {n: rs.score(model, tk, *rs.hr.heldout_docs(n, PROBE_DOCS), dev) for n in PROBE_SHARDS.split(",")}
+    asks = sum(v.get("asks", 0) for v in out.values())
+    out["_lam"] = (sum(v[f"lam_{c}"] * v[f"n_{c}"] for v in out.values() for c in ("present", "empty")
+                       if v.get(f"lam_{c}") is not None) / asks) if asks else None
     return out
 
 
@@ -920,12 +945,17 @@ def train(dev):
           f" decay {DECAY_FRAC:.0%} | mix {MIX} | hours {HOURS} wall {WALL_H}")
 
     model = build_model(meta, dev, SEED)
-    opt = make_opt(model, LR, dev)
-    n_params = sum(p.numel() for p in model.parameters())
-    fpt = flops_per_token(model, meta, SEQ)
+    peak = train_only(model)                         # CB_LR, or the part's own peak with the rest frozen
+    opt = make_opt(model, peak, dev)
+    n_params = sum(p.numel() for p in params_of(model))
+    n_train = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    fpt = flops_per_token(model, meta, SEQ) / (3 if TRAIN_ONLY else 1)   # a frozen trunk: the forward's third
     pk = peak_flops(dev)
     print(f"params {n_params/1e6:.1f}M (trainable; embedding + head "
           f"{2*vp*D/1e6:.0f}M) | {fpt/1e9:.2f} GFLOP/token")
+    if TRAIN_ONLY:
+        print(f"trunk FROZEN (CB_TRAIN_ONLY={TRAIN_ONLY}): {n_train:,} trainable parameters, the copy path's, at peak lr"
+              f" {peak:g}; the trunk runs forward only (no graph, no update; MFU counts the forward)")
 
     ck = Checkpoints(LOCAL_DIR, DRIVE_DIR, NAME)
     sched = {"warmup": WARMUP, "steps": STEPS_ENV or 10**9,
@@ -978,6 +1008,8 @@ def train(dev):
     def log(rec):
         mlog.write(json.dumps(rec) + "\n")
         mlog.flush()
+    if TRAIN_ONLY:
+        log({"event": "train_only", "part": TRAIN_ONLY, "trainable": n_train, "peak_lr": peak})
 
     t_start = time.perf_counter()
     last_ckpt = t_start
@@ -990,7 +1022,7 @@ def train(dev):
     try:
         while step < sched["steps"]:
             step += 1
-            lr = lr_at(step, sched, LR)
+            lr = lr_at(step, sched, peak)
             for g in opt.param_groups:
                 g["lr"] = lr
             tot = 0.0
@@ -998,7 +1030,8 @@ def train(dev):
                 s_, m_, x, y = pf.get()
                 assert (s_, m_) == (step, m), f"prefetch out of order: {(s_, m_)} != {(step, m)}"
                 loss = loss_fn(x.to(dev, non_blocking=True), y.to(dev, non_blocking=True)) / accum
-                loss.backward()
+                if loss.requires_grad or not TRAIN_ONLY:    # frozen trunk: a micro-batch the copy never acted in has no graph
+                    loss.backward()
                 tot += loss.detach()
             gnorm = torch.nn.utils.clip_grad_norm_(model.parameters(), CLIP)
             opt.step()
@@ -1051,9 +1084,8 @@ def train(dev):
                 log({"step": step, "val": ev})
                 if PROBE_SHARDS:
                     pr = fact_probe(model, dev)
-                    print(f"  [probe] step {step}  " + "  ".join(f"{k}: first {v['first_token']:.3f} exact {v['exact']:.3f}"
-                          for k, v in pr.items() if not k.startswith("_")) + (f"  lam {pr['_lam']:.3f}" if pr["_lam"] is not None else ""),
-                          flush=True)
+                    import recall_split                 # fact_probe imported it (and undid its CB_NO_FLEX default)
+                    print(f"  [probe] step {step}  {recall_split.line(pr)}", flush=True)
                     log({"step": step, "probe": pr})
             if GEN_EVERY and enc is not None and (step % GEN_EVERY == 0 or step == sched["steps"]):
                 for p, text in samples(model, dev, enc, dec, v, step):

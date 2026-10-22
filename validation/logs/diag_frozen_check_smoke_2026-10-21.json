@@ -1,0 +1,35 @@
+{
+ "run_step": 20,
+ "start_step": 3418,
+ "copy_added_at_start": true,
+ "tensors_checked": 326,
+ "router_checked": 5,
+ "moved": [],
+ "router_moved": [],
+ "copy": {
+  "tau": {
+   "start": 3.0399999618530273,
+   "end": 3.0720736980438232,
+   "max_change": 0.0320737361907959,
+   "of": "value"
+  },
+  "beta": {
+   "start": 0.11500000208616257,
+   "end": 0.08896204084157944,
+   "max_change": 0.02603796124458313,
+   "of": "value"
+  },
+  "gate.weight": {
+   "start": 0.0,
+   "end": 0.5981875061988831,
+   "max_change": 0.03791876882314682,
+   "of": "norm"
+  },
+  "gate.bias": {
+   "start": -2.1972246170043945,
+   "end": -2.1712071895599365,
+   "max_change": 0.026017427444458008,
+   "of": "value"
+  }
+ }
+}
