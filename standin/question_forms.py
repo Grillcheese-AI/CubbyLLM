@@ -65,7 +65,7 @@ _TENSE_OF = [(re.compile(r"\b(will|shall)\b", re.I), "future"), (re.compile(r"\b
              (re.compile(r"\b(is|are|does|do|has|have)\b", re.I), "present")]
 DATED = {"date of birth", "date of death", "inception", "point in time", "reign"}
 _FRAME = set("who what when where which how is are was were will be does do did has had have the a an of in on at by "
-             "to from for with during year years city town what's s".split())
+             "to from for with during year years city town empire whom what's s".split())
 AS_OF = re.compile(r"\b(?:in|as of|during|by|back in)\s+(1[0-9]{3}|2[0-9]{3})\b", re.I)   # pipeline._AS_OF
 
 
@@ -113,7 +113,7 @@ class Forms:
         # specificity: the literal words, and half a word more for a form anchored after its slot ("When was
         # {S} founded?" outranks "When was the {S}?" on "When was the Roman Empire founded?")
         self._compiled = sorted(((len(f.replace("{S}", "").replace("?", "").split()) + 0.5 * bool(f.partition("{S}")[2].strip(" ?")),
-                                  rel, tense, _pattern(f)) for rel, (_k, by) in self.forms.items()
+                                  rel, tense, _pattern(f), f) for rel, (_k, by) in self.forms.items()
                                  for tense, fs in by.items() for f in fs), key=lambda x: -x[0])
         self._words = {rel: {w for fs in by.values() for f in fs for w in re.findall(r"[\w']+", f.lower().replace("{s}", " "))
                              if w not in _FRAME} for rel, (_k, by) in self.forms.items()}
@@ -134,23 +134,34 @@ class Forms:
         """The answer's value kind (`plan_verify.KIND_OF_ASK`): a date or a name; None for a relation it lacks."""
         return None if relation not in self.forms else "date" if relation in DATED else "name"
 
-    def parse(self, question: str) -> tuple[str, str, str] | None:
-        """(entity, relation, tense) the question asks -- its year phrase taken off first -- or None: no form,
-        or two relations equally specific."""
+    def _match(self, question: str):
         q = " ".join(AS_OF.sub(" ", question).split()) if AS_OF.search(question) else question
-        best: dict[str, tuple[str, str]] = {}
+        best: dict[str, tuple] = {}
         top = None
-        for n, rel, tense, rx in self._compiled:
+        for n, rel, tense, rx, form in self._compiled:
             if top is not None and n < top:
                 break
             m = rx.match(q)
             if m and m["S"].strip():
                 top = n
-                best.setdefault(rel, (re.sub(r"^the\s+", "", m["S"].strip().rstrip("?").strip(), flags=re.I), tense))
+                best.setdefault(rel, (re.sub(r"^the\s+", "", m["S"].strip().rstrip("?").strip(), flags=re.I), tense, form))
         if len(best) != 1:
             return None
-        rel, (ent, tense) = next(iter(best.items()))
-        return ent, rel, tense
+        rel, (ent, tense, form) = next(iter(best.items()))
+        return ent, rel, tense, form
+
+    def parse(self, question: str) -> tuple[str, str, str] | None:
+        """(entity, relation, tense) the question asks -- its year phrase taken off first -- or None: no form,
+        or two relations equally specific."""
+        m = self._match(question)
+        return m[:3] if m else None
+
+    def wording(self, question: str) -> str | None:
+        """The question's own words for its relation ("born", "founded", "ruler"), as an emitter binds them for
+        the host to translate; None when the form has none ("When was the {S}?")."""
+        m = self._match(question)
+        words = [w for w in re.findall(r"[\w']+", m[3].lower().replace("{s}", " ")) if w not in _FRAME] if m else []
+        return " ".join(words) or None
 
     def render(self, relation: str, entity: str, tense: str = "past") -> list[str]:
         return [f.replace("{S}", entity) for f in self.forms.get(relation, ("", {}))[1].get(tense, [])]
@@ -207,5 +218,6 @@ class TemplateEmitter:
         if p is None:
             return "no plan\n"
         seed, rel, _tense = p
+        rel = self.forms.wording(prompt) or rel             # the question's own word, as the serving emitter binds it
         return ("function plan(): str {\n" + f'    bind frame, SEED, "{seed}";\n' + f'    bind frame, HOP1, "{rel}";\n'
                 + "    return recover(frame, SEED);\n}\n")

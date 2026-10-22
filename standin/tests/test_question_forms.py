@@ -86,5 +86,7 @@ def test_the_forms_name_their_relations_to_the_loops_resolvers():
     assert (f.kind("date of birth"), f.kind("place of birth"), f.kind("unheard of")) == ("date", "name", None)
     assert f.relations("the") == [] and f.aspect("reign") == "state" and f.aspect("inception") == "event"
     out = TemplateEmitter(f).emit("Where was Napoleon Bonaparte born?")
-    assert 'bind frame, SEED, "Napoleon Bonaparte";' in out and 'bind frame, HOP1, "place of birth";' in out
+    assert 'bind frame, SEED, "Napoleon Bonaparte";' in out and 'bind frame, HOP1, "born";' in out   # its own word
+    assert f.wording("Who was the ruler of England in 1160?") == "ruler" and f.wording("When was the Battle of X?") is None
+    assert 'HOP1, "point in time";' in TemplateEmitter(f).emit("When was the Battle of Hastings?")   # no word: the label
     assert TemplateEmitter(f).emit("Tell me a joke") == "no plan\n"

@@ -25,7 +25,7 @@ for p in (ROOT, ROOT / "standin", ROOT / "standin" / "data"):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from books import BookIndex, Mentions, common_words, discover, paragraphs, roots_from_env  # noqa: E402
+from books import BookIndex, Mentions, common_words, discover, meta, paragraphs, roots_from_env  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
@@ -37,12 +37,35 @@ def world_names() -> set[str]:
     return set(w.index._by_subj) | set(w.index._by_obj)
 
 
+def refresh_meta(idx: BookIndex, roots) -> int:
+    """Each book's author / title / era / region / topic read again from its path (after `meta` changes);
+    the rows stay, only these columns move. -> books changed."""
+    by_name = {}
+    for root, mirror in roots:
+        by_name[root.name] = root
+        if mirror is not None:
+            by_name[mirror.name] = mirror
+    changed = 0
+    for bid, path, *old in idx.db.execute("SELECT id, path, author, title, era, region, topic FROM books").fetchall():
+        name, _, rel = path.partition("/")
+        if name not in by_name or "#" in path:
+            continue
+        m = meta(by_name[name] / pathlib.Path(rel), by_name[name])
+        new = [m["author"], m["title"], m["era"], m["region"], m["topic"]]
+        if new != old:
+            idx.db.execute("UPDATE books SET author=?, title=?, era=?, region=?, topic=? WHERE id=?", (*new, bid))
+            changed += 1
+    idx.db.commit()
+    return changed
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--index", default=os.environ.get("CUBBY_BOOKS_INDEX"))
     ap.add_argument("--books", default=os.environ.get("CUBBY_BOOKS"))
     ap.add_argument("--events", default=None, help="historical_facts.jsonl (dated events, one book per era)")
     ap.add_argument("--sample", type=int, default=300, help="books read to find the names that are common words")
+    ap.add_argument("--refresh-meta", action="store_true", help="read every book's names and folders again (rows kept)")
     ap.add_argument("--log", default=str(ROOT / "validation" / "logs" / f"build_books_index_{_dt.date.today().isoformat()}.json"))
     args = ap.parse_args()
     if not args.index or not args.books:
@@ -63,6 +86,8 @@ def main() -> None:
     print(f"{len(names):,} world names, {len(mentions.names):,} matched as mentions ({len(common):,} common words kept out) "
           f"[{time.time() - t0:.0f}s]", flush=True)
     rep = idx.build(roots, pathlib.Path(args.events) if args.events else None, mentions)
+    if args.refresh_meta:
+        rep["meta_refreshed"] = refresh_meta(idx, roots)
     eras = dict(idx.db.execute("SELECT era, COUNT(*) FROM books GROUP BY era").fetchall())
     rep.update(world_names=len(names), mention_names=len(mentions.names), common_words=len(common), eras=eras,
                roots=len(roots), wall_s=round(time.time() - t0, 1))

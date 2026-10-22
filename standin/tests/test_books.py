@@ -33,6 +33,7 @@ from test_search_learn import STORE, DictSource, ProvStore, run  # noqa: E402
 
 from ask import AskLoop  # noqa: E402
 from question_forms import TemplateEmitter  # noqa: E402
+from test_ask import FakeEmitter  # noqa: E402
 
 NAPOLEON = ("Napoleon Bonaparte was born on 15 August 1769 in Ajaccio, the son of a minor noble.\n\n"
             "Napoleon Bonaparte crowned himself emperor in Paris.\n\n"
@@ -165,7 +166,7 @@ class TimedStore(ProvStore):
         self.times = {}; super().__init__(texts)
 
 
-def _loop(tmp_path, source, books=True, tense=None):
+def _loop(tmp_path, source, books=True, tense=None, emitter=None):
     roots, events = _library(tmp_path)
     idx = BookIndex(tmp_path / "books.sqlite")
     idx.build(roots, events, Mentions(NAMES))
@@ -174,7 +175,7 @@ def _loop(tmp_path, source, books=True, tense=None):
         world.index.declare_relation(r)
     for f in KNOWN:
         world.add(f)
-    return AskLoop(TemplateEmitter(), world=world, source=source, lexicon=False, run_fn=exact_vm(),
+    return AskLoop(emitter or TemplateEmitter(), world=world, source=source, lexicon=False, run_fn=exact_vm(),
                    books=BookSource(idx) if books else None, tense=tense)
 
 
@@ -215,7 +216,8 @@ def test_the_tense_and_the_year_asked_must_be_the_facts(tmp_path):
 
 
 def test_before_and_the_attributed_tier_change_nothing_when_unused(tmp_path):
-    loop = _loop(tmp_path, DictSource({"rome": ["Romulus is the founded by of Rome"]}), books=False)
+    canonical = FakeEmitter({"Who founded Rome?": ("Rome", ["founded by"])})        # a plan in the store's label
+    loop = _loop(tmp_path, DictSource({"rome": ["Romulus is the founded by of Rome"]}), books=False, emitter=canonical)
     rec = loop.ask("Who founded Rome?")
     assert rec["verified"] and "tier" not in rec and "evidence" not in rec and loop.books is None and not loop.tense
     store, known = ProvStore(STORE), StoreRelations(STORE)
@@ -246,7 +248,8 @@ def test_a_book_fact_is_walked_under_its_own_label_when_a_resolver_had_moved_the
     world = TimedStore(STORE)
     world.index.declare_relation("birthplace")
     world.add("Stagira is the birthplace of Aristotle")                          # the world's wording, not Wikidata's
-    loop = AskLoop(TemplateEmitter(), world=world, source=DictSource({}), lexicon=False, run_fn=exact_vm(),
+    wikidata_label = FakeEmitter({"Where was Napoleon Bonaparte born?": ("Napoleon Bonaparte", ["place of birth"])})
+    loop = AskLoop(wikidata_label, world=world, source=DictSource({}), lexicon=False, run_fn=exact_vm(),
                    books=BookSource(idx))
     loop.resolvers.insert(0, Synonyms())
     rec = loop.ask("Where was Napoleon Bonaparte born?")

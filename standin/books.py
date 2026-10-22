@@ -75,9 +75,14 @@ def meta(path: Path, root: Path) -> dict:
     the file's is cut ('You Can't Be Neutral on a Movi_mes')."""
     stem = _TAGS.sub(" ", _FMT.sub("", path.stem)).strip()
     author, _, title = stem.partition(" - ") if " - " in stem else ("", "", stem)
-    levels = [p for p in path.relative_to(root).parts[:-1] if p.lower() not in _SKIP_LEVEL]
-    if levels and author and norm(author) in norm(levels[-1]) and " - " in levels[-1]:
-        title = levels.pop().rpartition(" - ")[0].replace("_ ", ": ")
+    parts = list(path.relative_to(root).parts[:-1])
+    fmt = next((i for i, p in enumerate(parts) if p.lower() in _SKIP_LEVEL), None)
+    own = parts[fmt + 1:] if fmt is not None else []                 # under a format folder: the book's own folder
+    levels = parts[:fmt] if fmt is not None else parts
+    if not own and levels and author and norm(author) in norm(levels[-1]) and " - " in levels[-1]:
+        own = [levels.pop()]
+    if own and " - " in own[-1]:
+        title = own[-1].rpartition(" - ")[0].replace("_ ", ": ")
     levels = [re.sub(r"^\d+\.\s*", "", p) for p in levels]
     return {"author": author.strip(), "title": title.strip(), "era": levels[0] if levels else "",
             "region": levels[1] if len(levels) > 1 else "", "topic": "/".join(levels[2:])}
@@ -232,7 +237,10 @@ class BookIndex:
         if events is not None and events.exists():
             groups: dict[str, list] = {}
             for line in events.read_text(encoding="utf-8").splitlines():
-                r = json.loads(line)
+                try:                                           # a raw control character inside a text (seen): kept
+                    r = json.loads(line, strict=False)
+                except json.JSONDecodeError:
+                    continue
                 if r.get("year_start") is not None:
                     groups.setdefault(era_of_year(int(r["year_start"])), []).append(r)
             for era, rs in sorted(groups.items()):
