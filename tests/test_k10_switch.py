@@ -61,7 +61,25 @@ def test_the_switch_alone_moves_only_the_gate_tau_and_beta(joint):
     ev = out["final"]
     assert ev["present_wrong"] == pytest.approx(1.0 - ev["exact"] - ev["present_refused"], abs=1e-12)
     bm = sw.best_match(model, b, held, lay)
-    assert set(bm) == {"present", "empty"} and bm["present"]["p5"] <= bm["present"]["p95"]
+    assert {"present", "absent"} <= set(bm) and bm["present"]["best"]["p5"] <= bm["present"]["best"]["p95"]
+    assert 0.5 <= bm["one_threshold"]["balanced_accuracy"] <= 1.0
+
+
+def test_the_gate_loss_is_off_by_default_and_targets_the_asked_pieces(joint):
+    a, _rep = joint
+    m1, b, lay, held = sw.load(a.save)
+    m2, *_ = sw.load(a.save)
+    torch.manual_seed(1)
+    r1 = sw.copy_only(m1, b, held, lay, steps=2, lr=1e-1, log=lambda m: None, eval_every=1000)
+    torch.manual_seed(1)
+    r2 = sw.copy_only(m2, b, held, lay, steps=2, lr=1e-1, log=lambda m: None, eval_every=1000, gate_loss=0.0)
+    assert r1["final"]["exact"] == r2["final"]["exact"] and all(torch.equal(x, y) for (_n, x), (_k, y) in zip(sw.tensors(m1), sw.tensors(m2)))
+    m3, *_ = sw.load(a.save)
+    r3 = sw.copy_only(m3, b, held, lay, steps=2, lr=1e-1, log=lambda m: None, eval_every=1000, gate_loss=1.0)
+    assert r3["frozen_hash"]["unchanged"]
+    spans = [(10, [5, 6], {"absent": False}), (10, [9], {"absent": True})]
+    S = 20
+    assert sw.gate_targets(torch.tensor([10, 11, 12, 30, 31]), spans, S).tolist() == [1.0, 1.0, 0.0, 0.0, 0.0]
 
 
 def test_twelve_templates_widen_training_and_leave_the_held_out_set(tmp_path):

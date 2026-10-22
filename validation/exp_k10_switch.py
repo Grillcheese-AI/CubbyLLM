@@ -95,34 +95,58 @@ def load(path):
 
 @torch.no_grad()
 def best_match(model, a, held, lay) -> dict:
-    """The read's cosine to its best candidate on present and on empty answer pieces: if the two overlap, no gate on
-    these inputs can tell them apart (0021's kill line)."""
+    """The read's cosine to its best candidate (the gate's own `best`) and its margin over the second best, at the first
+    answer token of present facts and of absent ones, and at every other empty asking position; and how well one
+    threshold on the best match alone tells present from absent there (0021's kill line: if they overlap, no gate on
+    these inputs can tell them apart)."""
     ids, key, plc, R, _gold, spans = held
-    out, calls = {"present": [], "empty": []}, []
+    out, calls = {"present": [], "absent": [], "empty": []}, []
 
-    def best(_m, inp, _o):                                           # the gate's own `best`: the read's cosine to its
-        r, table, idx, cid, ok = inp[2], inp[3], inp[4], inp[5], inp[6]                     # best counted candidate
+    def best(_m, inp, _o):
+        r, table, idx, cid, ok = inp[2], inp[3], inp[4], inp[5], inp[6]
         e = F.normalize(table.float()[cid], dim=-1)
-        s = F.normalize(r.float(), dim=-1) @ e.T if cid.dim() == 1 else torch.einsum("nd,ncd->nc", F.normalize(r.float(), dim=-1), e)
-        calls.append((idx, s.masked_fill(~ok, float("-inf")).max(-1).values))
+        rn = F.normalize(r.float(), dim=-1)
+        sim = (rn @ e.T if cid.dim() == 1 else torch.einsum("nd,ncd->nc", rn, e)).masked_fill(~ok, float("-inf"))
+        top = sim.topk(min(2, sim.shape[-1]), -1).values
+        calls.append((idx, top[:, 0], top[:, 0] - (top[:, 1] if top.shape[-1] > 1 else 0)))
     hook = model.spatial.copy_path.register_forward_hook(best)
     try:
         for b in range(0, ids.shape[0], 16):
             sl, S = slice(b, b + 16), ids.shape[1] - 1
             calls.clear()
             fwd(model, ids[sl, :-1], ft.inputs(a, key[sl], plc[sl], R[sl])[:, :-1], R[sl, :-1])
-            for ix, best in calls:
-                for j, v in zip(ix.tolist(), best.tolist()):
+            for ix, bst, mg in calls:
+                for j, v, m in zip(ix.tolist(), bst.tolist(), mg.tolist()):
                     i, t = divmod(j, S)
                     here, o, info = spans[b + i]
-                    out["present" if not info["absent"] and here <= t < here + len(o) else "empty"].append(v)
+                    k = ("absent" if info["absent"] else "present") if t == here else "empty"
+                    if k != "empty" or not (here <= t < here + len(o)) or info["absent"]:
+                        out[k].append((v, m if np.isfinite(m) else 0.0))
     finally:
         hook.remove()
-    q = lambda v: {f"p{p}": float(np.percentile(v, p)) for p in (5, 25, 50, 75, 95)} if v else {}   # noqa: E731
-    return {k: q(v) for k, v in out.items()}
+    q = lambda v: {f"p{p}": round(float(np.percentile(v, p)), 4) for p in (5, 25, 50, 75, 95)}   # noqa: E731
+    rep = {k: {"n": len(v), "best": q([x[0] for x in v]), "margin": q([x[1] for x in v])} for k, v in out.items() if v}
+    if out["present"] and out["absent"]:
+        pb, ab = np.array([x[0] for x in out["present"]]), np.array([x[0] for x in out["absent"]])
+        score, thr = max(((float((pb >= t).mean() + (ab < t).mean()) / 2, float(t)) for t in np.linspace(0, 0.6, 241)))
+        rep["one_threshold"] = {"at": round(thr, 4), "balanced_accuracy": round(score, 4)}
+    return rep
 
 
-def copy_only(model, a, held, lay, steps: int, lr: float, log, eval_every: int = 100) -> dict:
+def gate_targets(idx, spans, S):
+    """1 where the asked fact holds a piece at that asking position, 0 elsewhere (an absent fact, the closing EOS)."""
+    out = []
+    for j in idx.tolist():
+        i, t = divmod(j, S)
+        here, o, info = spans[i]
+        out.append(float(not info["absent"] and here <= t < here + len(o)))
+    return torch.tensor(out)
+
+
+def copy_only(model, a, held, lay, steps: int, lr: float, log, eval_every: int = 100, gate_loss: float = 0.0) -> dict:
+    """`gate_loss` (off by default: the order's recipe is the language loss alone): adds the gate's binary cross-entropy
+    against `gate_targets`, one term an asking position -- a present fact's five pieces and an absent fact's one NONE
+    weigh alike there, where in the language loss the pieces outvote it."""
     for n, p in named_params(model):
         p.requires_grad_(n in SWITCH)
     params = [p for n, p in named_params(model) if n in SWITCH]
@@ -130,14 +154,19 @@ def copy_only(model, a, held, lay, steps: int, lr: float, log, eval_every: int =
     opt = torch.optim.AdamW(params, lr=lr, weight_decay=0.0, betas=(0.9, 0.95))
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 20) * 0.5 * (1 + math.cos(math.pi * min(s, steps) / steps)))
     rng, lang = np.random.default_rng(a.seed + 7), kh.Language(np.random.default_rng(a.seed + 8))
+    lams = []
+    hook = model.spatial.copy_path.register_forward_hook(lambda _m, inp, o: lams.append((inp[4], o[2][:, 0])) if gate_loss else None)
     before, t0, curve = frozen_hash(model), time.time(), []
     ev = ft.evaluate(model, a, held, lay)
     curve.append(dict(step=0, **ev))
     log(line("joint", ev, t0))
     for s in range(1, steps + 1):
-        ids, key, plc, R, _gold, _spans = batch(rng, lang, lay, a.batch, a)
+        ids, key, plc, R, _gold, spans = batch(rng, lang, lay, a.batch, a)
+        lams.clear()
         logits = fwd(model, ids[:, :-1], ft.inputs(a, key, plc, R)[:, :-1], R[:, :-1])
         loss = F.cross_entropy(logits.reshape(-1, a.vocab), ids[:, 1:].reshape(-1))
+        for ix, lam in lams:                                             # the switch's own target, with --gate-loss
+            loss = loss + gate_loss * F.binary_cross_entropy(lam.clamp(1e-6, 1 - 1e-6), gate_targets(ix, spans, ids.shape[1] - 1))
         opt.zero_grad()
         loss.backward()
         opt.step()
@@ -146,6 +175,7 @@ def copy_only(model, a, held, lay, steps: int, lr: float, log, eval_every: int =
             ev = ft.evaluate(model, a, held, lay)
             curve.append(dict(step=s, loss=float(loss), **ev))
             log(line(f"step {s:4d}", ev, t0))
+    hook.remove()
     after = frozen_hash(model)
     return {"frozen_hash": {"before": before, "after": after, "unchanged": before == after}, "final": curve[-1], "curve": curve}
 
@@ -162,6 +192,7 @@ def main() -> None:
     ap.add_argument("--resume", required=True, help="the joint model (exp_k10_free_text.py --save)")
     ap.add_argument("--copy-only", type=int, default=500, help="steps of the switch alone")
     ap.add_argument("--lr", type=float, default=1e-2)
+    ap.add_argument("--gate-loss", type=float, default=0.0, help="the gate's BCE on present/empty asking positions (off)")
     ap.add_argument("--eval-every", type=int, default=100)
     ap.add_argument("--threads", type=int, default=0)
     ap.add_argument("--tag", default="")
@@ -170,7 +201,8 @@ def main() -> None:
     if c.threads:
         torch.set_num_threads(c.threads)
     model, a, lay, held = load(c.resume)
-    name = f"exp_k10_switch_{a.arm}_s{a.seed}{'_t12' if getattr(a, 'templates', 6) == 12 else ''}{c.tag}_{c.date}"
+    name = (f"exp_k10_switch_{a.arm}_s{a.seed}{'_t12' if getattr(a, 'templates', 6) == 12 else ''}"
+            f"{f'_gl{c.gate_loss:g}' if c.gate_loss else ''}{c.tag}_{c.date}")
     out, lines = os.path.join(HERE_DIR, "logs", name), []
 
     def log(msg):
@@ -181,10 +213,12 @@ def main() -> None:
         f"{platform.processor() or platform.machine()} (CPU, {torch.get_num_threads()} threads)")
     log(f"--- {a.arm} seed {a.seed}: the switch alone ({', '.join(SWITCH)}), {c.copy_only} steps, lr {c.lr}")
     rep = {"args": {k: v for k, v in vars(a).items() if k != "save"}, "copy_only": {k: v for k, v in vars(c).items() if k != "resume"}}
-    rep.update(copy_only(model, a, held, lay, c.copy_only, c.lr, log, c.eval_every))
+    rep.update(copy_only(model, a, held, lay, c.copy_only, c.lr, log, c.eval_every, c.gate_loss))
     rep["best_match"] = best_match(model, a, held, lay)
-    log(f"  frozen parameters unchanged: {rep['frozen_hash']['unchanged']}; best match present {rep['best_match']['present']}"
-        f" empty {rep['best_match']['empty']}")
+    bm = rep["best_match"]
+    log(f"  frozen parameters unchanged: {rep['frozen_hash']['unchanged']}; best match (p5/p50/p95) present "
+        f"{[bm['present']['best'][k] for k in ('p5', 'p50', 'p95')]}, absent {[bm['absent']['best'][k] for k in ('p5', 'p50', 'p95')]};"
+        f" one threshold {bm.get('one_threshold')}")
     rep["log"] = lines
     json.dump(rep, open(out + ".json", "w", encoding="utf-8"), indent=1)
     open(out + ".log", "w", encoding="utf-8").write("\n".join(lines) + "\n")
