@@ -48,6 +48,15 @@ re-runs.
   12. web text, last, as witness.
 
   Report per dataset as it lands. The "classify first" rows are classified by Claude Code, with reasons.
+- **Topic routing that already exists** (path in `CLAUDE.local.md`): a file → topic map from an earlier
+  classification pass. It has 44,761 rows over 83 topics: Gutenberg books (`gbooks`, `gbooks_factuals`, ~2.8k)
+  and Wikibooks pages (~41k). Use it to route those files to their domain worlds. Normalize the topic case first
+  ('history' and 'History' are one topic), and map the 83 topics onto the worlds' domain list.
+- **The Gutenberg catalog** (Project Gutenberg's own catalog CSV; a small download, **on Nick's yes**) gives each
+  numeric id its author, title, subjects and copyright status. It does three jobs:
+  - it names the ~5.6k "Gutenberg #N" rows in the rights tracker;
+  - it confirms their public-domain status;
+  - it marks **fiction** (subjects and bookshelves), so novels go to fiction worlds, not reality.
 
 ## Acceptance (pre-registered)
 - **Coverage:** every manifest row is ingested or excluded with its reason. The report has a per-dataset table:
