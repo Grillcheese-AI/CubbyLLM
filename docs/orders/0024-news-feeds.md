@@ -60,6 +60,10 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
     AI agent blocked). It answers gzip-compressed even when asked for plain bytes: the poller must read
     `Content-Encoding` (and the gzip magic bytes) or the feed fails to parse. The French path
     (`.../fr/news/all/rss.xml`) answers with an empty channel: find ONU Info's working feed or leave it out.
+  - **Chatham House (Nick, 2026-10-22):** press releases (`https://www.chathamhouse.org/path/news-releases.xml`): 50 items
+    from June 2025 to 21 September 2026, newest first, no AI agent blocked. Infrequent: poll it daily. Its releases
+    announce the institute's own work and events: attributed to it, never read as world events. Chatham House also
+    publishes analysis; its feeds, if Nick wants them, are handled like Crisis Group's.
   - **Each publisher's robots rules and terms** are read from its own site (not the feed's host: the FeedBurner copy
     of Le Devoir carries no rule of its own) and recorded, with Nick's decision per publisher, in the local rights
     notes. The poller always identifies itself as `CubbyLLM/0.1` and never changes its name to get past a rule; it
