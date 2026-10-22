@@ -1,5 +1,5 @@
 # 0012 — The books as a source: a passage finder, facts read by frames, attributed until corroborated
-status: in progress
+status: review
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("we absolutely need to add all the verified facts and
 there's a lot more to come"; "maybe add a passage finder for the books"; trust tier: attributed until corroborated) ·
 hypothesis: H-F2 (temporal worlds), the ask loop, H-K10
@@ -86,10 +86,73 @@ lacks: a **passage finder** that returns the paragraphs about an entity, with th
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:**
-- **Not verified here:**
+- **Commits:** `f9ca177` (index, frames, BookSource, natural questions), `b52e56d` (question shape and tense, with
+  0014), `45a2470`, `6dabcef`, `5507eca`, `1455c06` (frames and finder fixes from the real books), `603d57f` (the
+  forms resolve a wording before the lexicon; the covered finder), and this report's commit.
+- **Files:** `standin/books.py` (index, mentions, finder), `standin/book_frames.py`, `standin/book_source.py`,
+  `standin/question_forms.py`, `standin/data/build_books_index.py`; `cubbyllm/reasoning/learn.py` (the
+  `attributed_only` tier, `before=`), `cubbyllm/reasoning/sleep.py` (routes for `attributed_only` and
+  `time_mismatch`); `standin/ask.py` (`books=`, `tense=`, the forms as the first resolver), `standin/serve_api.py`
+  (`--books`, `--tense`); `validation/exp_books_bench.py`. Tests: `standin/tests/test_books.py` (12),
+  `standin/tests/test_question_forms.py` (5).
+- **Tests:** the books tests pin twins read once, mirrors first, meta from names, one new book added alone,
+  mentions, the finder's ranking, frames firing only on their subject, the three tiers, the loop's hedged reply
+  with its citation, a second source lifting it, a contradiction never said, the tense and year checks, the walk
+  going back to the proposed wording, and the forms resolving before the lexicon. Off (`books=None`): the loop as
+  it was. `pytest tests`: 428 passed, 5 skipped, 1 failed (the known wiring guard, order 0002). `pytest standin/tests`:
+  613 passed, 1 skipped. The 25 failures and 1 collection error are in `test_build_chat_sft`, `test_chat` and
+  `test_goemotions_cube`; they need GOEMOTIONS / MULTI_PROMPT, missing at HEAD before this order.
+- **Measured** (CPU; logs `validation/logs/build_books_index_2026-10-22.json`, `..._rerun_2026-10-22.json`,
+  `exp_books_bench_v4_2026-10-22.{json,log}`):
+  - **Index: passes.** 5,291 books: 5,286 files plus 5 era books from the events file. 225 duplicates were found
+    by content and read once. 5,639,095 paragraphs, 76,740 names mentioned, 19,536,055 mentions, 7.96 GB. The
+    first build took ~32 min (5,200 books at 1,912 s; that log was overwritten by the relaunch, which added the
+    last 5 in 62 s). A re-run adds 0 and skips 5,516 in 64 s. One new book adds only it (test).
+  - **Passage finder: fails** (≥ 60% pre-registered).
+    - Uniform pairs: 10/100 gold in the top 5. Only 19/100 have the gold anywhere in the top 200 passages.
+    - Book-covered pairs (relations a history book states, subjects in 10+ paragraphs): 29/100, ceiling 43.
+    - Per era (covered): AncientClassical 15/39 (ceiling 21), MiddleAges 5/31 (11), unknown 9/29 (11),
+      Prehistory 0/1.
+    - The premise does not hold: most wiki-world pairs are not stated in these books at all, so no ranking reaches
+      60%. The ceiling, not the ranking, is the limit.
+  - **Frames: fail** (≥ 0.95 on ≥ 200 pre-registered).
+    - Only 79 comparable triples can be found offline: 8,133 subject asks, yield ~1% a frame.
+    - Agreement with coarser places counted: 0.821 (dev 0.875 / test 0.763). Strict: 0.795.
+    - Per frame: date of death 17/17, founded by 4/4, date of birth 17/20, place of birth 18 agree / 8 contradict /
+      2 coarser, place of death 2/4, capital 3/4.
+    - Many "contradictions" are the gold's grain (a region for a town) or a second person with the same name. The
+      bench's reading below shows them.
+  - **Bench** (76 questions: the frames' reads give 76 distinct pairs, not 100; natural questions, the wiki facts
+    taken out):
+    - 31 spoken: 29 hedged, 2 flat. 45 refused: 21 retrieval exhausted, 21 answer-type mismatch, 3 ambiguous.
+    - **Wrong spoken flat: 2 as scored. 0 wrong spoken fails as scored.** Read one by one:
+      - *Gaiseric died in Carthage*: the gold is "Vandal Kingdom"; Carthage was its capital, so the book's answer is finer.
+      - *The capital of the Kingdom of Kush is Kerma*: the gold is Meroë. Kerma was Kush's earlier capital, and two
+        independent authors say so. This is the time problem: an undated state with several values over its life
+        was said flat.
+    - Wrong hedged: 4 as scored.
+      - Stukeley born 1694 (gold 1687): a real error, a book's or a frame's.
+      - Stukeley died in London (gold Kentish Town): coarser.
+      - Alcuin born 732 (gold "c. 735"): the sources disagree.
+      - Samuel Fuller born 1580: the book's Samuel Fuller is the Mayflower physician, the world's is the filmmaker
+        (two people, one name).
+    - Citations: 29/29 hedged answers carry a citation sentence holding the subject, the value and the cue. Replies
+      naming a source: 0. Flat answers without two independent witnesses: 0.
+    - **The wrong tense: 0/76 answered flat** (28 refused `time_mismatch`).
+- **Not verified here:** a 200-triple frames check (only 79 are comparable without network). The gazetteer for
+  "coarser" used the hdc world built on 38% of its labels; the label fetch is still running (order 0014), and a
+  full gazetteer may move Stukeley's London and Gaiseric's Carthage to coarser and finer.
 - **Found on the way:**
+  - The lexicon resolved the question's words before the forms ("die" → "dice", "born" → "max born"): 67 of 76 bench
+    questions were refused `unknown_relation` until the forms came first (`603d57f`).
+  - An FTS `IN` subquery made a much-mentioned name's passages 380× slower (`5507eca`).
+  - The events file holds a raw control character in a text.
+  - The History Book Collection keeps each book in its own folder under a format folder, which first read as an
+    era (the first index log's eras are sanitized: those six were book titles).
+  - "Born about 742" and "X, who died in 814" needed their own frame shapes.
 - **Questions:**
+  1. The kill line on the time problem: should an undated state with an end (a kingdom's capital) need a date
+     before it is said flat, even on two witnesses? That would have refused Kerma.
+  2. The finder's 60% assumed the books state the wiki world's pairs. 43% is the ceiling on the covered selection.
+     Keep 60% as the line for 0013's reader, which reads every paragraph rather than ranking, or move it?
+  3. A finer place than the gold (Carthage for the Vandal Kingdom): is it scored as agreement?

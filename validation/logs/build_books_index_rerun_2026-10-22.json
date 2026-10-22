@@ -1,0 +1,24 @@
+{
+ "added": 0,
+ "skipped": 5516,
+ "seconds": 64.0,
+ "books": 5291,
+ "paragraphs": 5639095,
+ "names_mentioned": 76740,
+ "mentions": 19536055,
+ "bytes": 7958654976,
+ "meta_refreshed": 6,
+ "world_names": 373393,
+ "mention_names": 357519,
+ "common_words": 12833,
+ "eras": {
+  "": 410,
+  "AncientClassical": 3034,
+  "EarlyModern": 1,
+  "MiddleAges": 1508,
+  "Modern": 1,
+  "Prehistory": 337
+ },
+ "roots": 2,
+ "wall_s": 93.9
+}

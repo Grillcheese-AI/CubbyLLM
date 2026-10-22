@@ -1,5 +1,5 @@
 # 0016 — Sources stay internal: replies never name them; an audit view shows the whole chain
-status: in progress
+status: review
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("the WHERE it learned it should be for internal purposes
 only, we don't want to leak sources to users"; "if we have an audit it's available but not to regular users") ·
 **suggested before 0012 and 0007**, which start speaking book- and lookup-sourced facts
@@ -53,10 +53,49 @@ Cubby's own records and for an audit, never for regular users. `docs/WORLDS.md` 
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
+- **Commits:** `6763f1f` (the audience, the token, the guard at every mouth, `/audit/<id>`), `a95868d` (the scan
+  counts a profile as spoken, by sleep's rule, and asks until 200 answers), and this report's commit.
 - **Files:**
-- **Tests:**
-- **Measured:**
-- **Not verified here:**
+  - `standin/audience.py` (new): `audience`, `token_of`, `for_user`, `LeakGuard`, `mouth`, `audit_chain`, `record_hash`.
+  - `standin/ask.py`: every kept record goes through the mouth and is sealed with its hash.
+  - `standin/serve_api.py`: the panel and the event streams are 403 for a user; `/audit/<id>` is under the token;
+    `/ask` and `/turn` return `for_user`.
+  - `standin/serve.py`: the talk seat's reply goes through the guard.
+  - `standin/self_source.py`: the self-profile counts what it learned, never from whom.
+  - `validation/exp_leak_scan.py`.
+  - Tests: `standin/tests/test_audience.py` (5, the HTTP surface included); `test_self_source.py` and
+    `test_serve.py` updated.
+  - The token is read only from `CUBBY_AUDIT_TOKEN` or the git-ignored `standin/data/out/audit_token`; with
+    neither, there is no audit audience at all. `user` is the default and not behind a flag (Nick's rule).
+    `ask.py`, `serve_api.py` and `serve.py` were already over 300 lines and grew by 5 / 23 / 7 lines (reasons in
+    `6763f1f`).
+- **Tests:** `pytest tests`: 428 passed, 5 skipped, 1 failed (the known wiring guard, order 0002). `pytest
+  standin/tests`: 613 passed, 1 skipped. The 25 failures and 1 collection error are all in `test_build_chat_sft`,
+  `test_chat` and `test_goemotions_cube`; they need GOEMOTIONS / MULTI_PROMPT, missing at HEAD before this order.
+- **Measured** ([log](../../validation/logs/exp_leak_scan_v2_2026-10-22.json), `user` role, the books on, the
+  offline Wikidata cache, the CubeLang VM):
+  - **Leak scan: passes.** 525 asked, 200 spoken: books 61 (the books bench's questions, `exp_books_bench_v4`),
+    store 88, profiles 37, lookup 14.
+    - Scanned against 182 source names (every witness the store's provenance names after the run, every cited
+      book's author and title, the source list).
+    - Replies with a source name **0**, with a URL or domain **0**, with an 8-word run any passage holds **0**.
+    - User JSON with a provenance field **0**.
+    - The books bench's own replies naming a source: 0 of 31 spoken.
+  - **Audit: passes.** 200/200 spoken answers have a sealed chain under `audit`. Without the token every audit
+    endpoint and the panel return 403 (test, HTTP).
+  - **Behaviour:** the guard changed **0** replies in the scan, so answers are otherwise as they were. 0 wrong
+    spoken does not hold on the books bench, for reasons of the books' own, not this order's: 2 flat as scored,
+    both read in order 0012's report.
+- **Not verified here:** the live serve stack with a browser (the panel's 403 and the audit page's token shim
+  are pinned by HTTP tests, not driven in a browser). The scan's earlier run (138 of 359 spoken) counted a profile
+  as unspoken; the rule now follows sleep's.
 - **Found on the way:**
+  - The self-profile said whom it had learned from ("fact learned: 152; source: wikidata (152)"); it now says only
+    the count.
+  - The help line named the mounted worlds; it now counts facts.
+  - An EventSource cannot set a header, so the audit page passes the token as `?token=`; the access log masks it.
 - **Questions:**
+  1. The audit token is one shared secret. Should owner and auditor get separate tokens, so the access log tells
+     them apart?
+  2. A profile line whose only content is its source is dropped whole, and a profile left empty is refused
+     (`leak_guard`). Is that refusal the wanted reply, or should it fall back to the "I don't know" line?
