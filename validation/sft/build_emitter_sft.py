@@ -61,7 +61,7 @@ import time
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 if hasattr(sys.stdout, "reconfigure"):
@@ -272,7 +272,7 @@ def collect(limit: int | None):
     # identity turns (Cubby / Grillcheese Research Lab / not-AGI / hormonal register) —
     # their OWN system prompt carries the sampled hormonal state; the emitter's
     # strict prompt is the switch. See identity.py; skipped by the VM pass.
-    from identity import EMITTER_SYSTEM, build_identity_records
+    from validation.sft.identity import EMITTER_SYSTEM, build_identity_records
     for rec in build_identity_records(seed=SEED):
         key = ("identity", rec["prompt"].strip(), rec["response"].strip())
         if key in seen_prompts:

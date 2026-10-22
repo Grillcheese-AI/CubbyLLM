@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import argparse, json, pathlib, re, sys, time
 
-HERE = pathlib.Path(__file__).resolve().parent
+HERE = pathlib.Path(__file__).resolve().parents[2] / "standin" / "data"
 OUT = HERE / "out"
 _SYN = re.compile(r"<SYNSET>(.*?)</SYNSET>", re.S)
 _ID = re.compile(r"<ID>(eng-30-\d{8}-[a-z])</ID>")

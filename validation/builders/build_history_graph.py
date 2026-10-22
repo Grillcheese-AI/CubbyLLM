@@ -39,7 +39,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-from history_graph import RELATIONS, HistoryGraph, key, parse_time  # noqa: E402
+from cubbyllm.worlds.history_graph import RELATIONS, HistoryGraph, key, parse_time  # noqa: E402
 
 NEWS_COLUMN_DAYS = 5          # a newspaper "event" name printed on this many days is a column title
 

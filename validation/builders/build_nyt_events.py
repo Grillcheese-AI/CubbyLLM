@@ -30,7 +30,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-from build_history_graph import _SENTENCE, _s, has, is_name, norm, proper_words, reasoning_of  # noqa: E402
+from validation.builders.build_history_graph import _SENTENCE, _s, has, is_name, norm, proper_words, reasoning_of  # noqa: E402
 
 SOURCE = "datasets drive: domains/temporal_timelines_events/<year>_<month>.json (New York Times archive)"
 SKIP = {"Op-Ed", "Letter", "Editorial", "Correction", "Paid Death Notice", "Statistics", "Schedule", "Slideshow", "Video",

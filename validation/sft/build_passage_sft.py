@@ -92,7 +92,7 @@ def answer_text(subset: str, x) -> tuple[str, int | None]:
 
 
 def build(chatqa: pathlib.Path, tk, max_len: int):
-    from ask import grounded_prose
+    from cubbyllm.reasoning.ask import grounded_prose
     funnel, out = collections.Counter(), []
     for subset in ("squad2.0", "quoref", "tatqa", "narrativeqa"):
         path = chatqa / subset / ("train_others.json" if subset == "tatqa" else "train.json")

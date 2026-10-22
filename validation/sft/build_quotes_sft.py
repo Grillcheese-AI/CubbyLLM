@@ -21,8 +21,8 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-from build_ground_sft import DASH, norm  # noqa: E402
-from build_passage_sft import ABSENT  # noqa: E402
+from validation.sft.build_ground_sft import DASH, norm  # noqa: E402
+from validation.sft.build_passage_sft import ABSENT  # noqa: E402
 
 SOURCE = "English historical quotes (quote, author, category)"
 ANSWERS = ("{a} said it.", "That was {a}.", "{a}.", "It's a quote from {a}.")
@@ -40,7 +40,7 @@ def cue(quote: str, rng) -> str:
 
 
 def build(rows, n_items: int, seed: int):
-    from ask import grounded_prose
+    from cubbyllm.reasoning.ask import grounded_prose
     rng = random.Random(seed)
     rows = [r for r in rows if r.get("quote") and r.get("author") and 4 <= len(r["quote"].split()) <= 60]
     by_author = collections.defaultdict(list)

@@ -30,8 +30,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "standin"))
-from ear import from_pairs  # noqa: E402
-from ear_lexicon import Lexicon  # noqa: E402
+from cubbyllm.affect.ear import from_pairs  # noqa: E402
+from cubbyllm.affect.ear_lexicon import Lexicon  # noqa: E402
 
 SEED = ROOT / "standin" / "data" / "ear_seed.jsonl"
 

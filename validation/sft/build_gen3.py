@@ -232,12 +232,12 @@ def main() -> None:
               built=time.strftime("%Y-%m-%dT%H:%M:%S"))
         return
 
-    import wikikg as wk
+    from cubbyllm.worlds import wikikg as wk
     from cubbyllm.bridges import cubelang_client as cc
     from cubbyllm.reasoning.learn import learn_and_answer
     from cubbyllm.reasoning.plan_verify import StoreRelations
     from cubbyllm.reasoning.planner import QuestionPlan, normalize, parse_fact
-    from sources import PropertyAliases
+    from cubbyllm.sources.wikidata import PropertyAliases
 
     wk.ensure_data(("triplets",))
     world = wk.wiki_world()

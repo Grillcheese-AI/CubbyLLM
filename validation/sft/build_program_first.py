@@ -65,7 +65,7 @@ import time
 from collections import Counter
 from dataclasses import dataclass, field
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 for _p in (ROOT, os.path.join(ROOT, "standin"), os.path.join(ROOT, "standin", "data")):
     if _p not in sys.path:
         sys.path.append(_p)                     # appended: standin/hypothesis.py must not shadow the package
@@ -551,7 +551,7 @@ def _clean_program(text: str) -> str:
         parts = t.split("```")
         t = max(parts[1::2], key=len) if len(parts) > 2 else t.replace("```", "")
         t = re.sub(r"^\w*\n", "", t)
-    from build_emitter_sft import shim_isolver
+    from validation.sft.build_emitter_sft import shim_isolver
     return shim_isolver(t.strip() + "\n")
 
 

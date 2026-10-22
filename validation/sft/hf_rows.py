@@ -16,7 +16,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "standin", "data"))
 CACHE_DIR = os.path.join(HERE, "out", "hf_rows")          # standin/data/out is gitignored
 API = "https://datasets-server.huggingface.co/rows?dataset={ds}&config={cfg}&split={split}&offset={off}&length={n}"
 PAGE = 100

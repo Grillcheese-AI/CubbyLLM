@@ -33,8 +33,8 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-from build_chat_sft import COMMON, chat_view, language  # noqa: E402
-from explicit_gate import GATED, UNLOCK, _MINOR, _MINOR_STORY, _score, minor  # noqa: E402,F401
+from validation.sft.build_chat_sft import COMMON, chat_view, language  # noqa: E402
+from cubbyllm.speech.explicit_gate import GATED, UNLOCK, _MINOR, _MINOR_STORY, _score, minor  # noqa: E402,F401
 
 SOURCE = "unified/bluuwhale_nsfwstory2.full.jsonl (adult stories, 2,400-character chunks)"
 _END = re.compile(r"[.!?][\"'”’)]?(?=\s)")           # a sentence's last character (and a closing quote)
@@ -78,7 +78,7 @@ def split_of(story_id: str) -> str:
 
 
 def build(src: str, tk, common, pairs: int, max_len: int):
-    from ask import grounded_prose
+    from cubbyllm.reasoning.ask import grounded_prose
     funnel, out = collections.Counter(), []
     for chunks in stories(src):
         funnel["stories"] += 1

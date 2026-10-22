@@ -19,7 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "standin"))
-from ear import from_pairs  # noqa: E402
+from cubbyllm.affect.ear import from_pairs  # noqa: E402
 from openrouter import OpenRouterProposer  # noqa: E402
 
 OUT = ROOT / "standin" / "data" / "out" / "ear_bulk.jsonl"

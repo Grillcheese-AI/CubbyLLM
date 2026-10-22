@@ -99,7 +99,7 @@ def render(facts: list, question: str) -> str:
 def load_entities(min_facts: int):
     """entity -> {relation: [values]} over the whitelist, from wikikg's template facts (subject-centric:
     'V is the R of E' reads as E's R is V, forward and inverse readings alike)."""
-    import wikikg as wk
+    from cubbyllm.worlds import wikikg as wk
     wk.ensure_data(("triplets",))
     by: dict[str, dict[str, list[str]]] = collections.defaultdict(lambda: collections.defaultdict(list))
     for s, r, o in wk.load_triples():
@@ -221,13 +221,13 @@ def parse_reply(text: str) -> list[dict]:
 def has_value(answer: str, value: str, date_words=None) -> bool:
     """`ask.has_value` -- the host's one definition (moved there 2026-09-25 with the serving value check;
     `date_words` is kept in the signature for the callers that pass it)."""
-    from ask import has_value as _has_value
+    from cubbyllm.reasoning.ask import has_value as _has_value
     return _has_value(answer, value)
 
 
 def check(it: dict, q: str, a: str) -> str | None:
     """None when the record is kept, else the reason."""
-    from ask import date_words, grounded_prose
+    from cubbyllm.reasoning.ask import date_words, grounded_prose
     if not a or len(a.split()) > 70 or "\n" in a.strip() or a.strip().startswith(("-", "*", "{")):
         return "answer_shape"
     if not q or norm(it["entity"]) not in norm(q):

@@ -91,7 +91,7 @@ def main() -> None:
     ap.add_argument("--sleep", type=float, default=0.2, help="seconds between requests")
     ap.add_argument("--limit", type=int, default=0, help="stop after this many requests (0: all)")
     a = ap.parse_args()
-    from sources import UA
+    from cubbyllm.sources.wikidata import UA
     t0 = time.time()
     want = sorted(entities(pathlib.Path(a.src)) - labelled() - fetched(), key=lambda q: int(q[1:]))
     print(f"{len(want):,} entities to ask about ({(len(want) + 49) // 50:,} requests) [{time.time() - t0:.0f}s]", flush=True)

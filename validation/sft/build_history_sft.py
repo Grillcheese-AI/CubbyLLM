@@ -31,8 +31,8 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-from build_ground_sft import ABSENT, check, norm, render, split_of  # noqa: E402
-from history_graph import FORWARD, HistoryGraph, year_text  # noqa: E402
+from validation.sft.build_ground_sft import ABSENT, check, norm, render, split_of  # noqa: E402
+from cubbyllm.worlds.history_graph import FORWARD, HistoryGraph, year_text  # noqa: E402
 
 SOURCE = "history graph (standin/data/build_history_graph.py over the local history books)"
 CAUSE_Q = ["What led to {x}?", "What caused {x}?", "What brought about {x}?"]

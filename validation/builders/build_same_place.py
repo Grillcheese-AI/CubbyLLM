@@ -30,8 +30,8 @@ for p in (ROOT, ROOT / "standin", ROOT / "standin" / "data"):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-import wikikg as wk  # noqa: E402
-from world_hygiene import SAME_PLACE  # noqa: E402
+from cubbyllm.worlds import wikikg as wk  # noqa: E402
+from cubbyllm.worlds.hygiene import SAME_PLACE  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
@@ -64,7 +64,7 @@ def main() -> None:
         if r in ("INSTANCE_OF", "IS_A"):
             types[s].add(o)
     pairs = [(s, o) for s, r, o in triples if r == "LOCATED_IN" and s != o]
-    from world_hygiene import fold
+    from cubbyllm.worlds.hygiene import fold
     hdc = ROOT / "standin" / "data" / "out" / "hdc_world.sqlite"
     countries = {fold(o) for (o,) in sqlite3.connect(f"file:{hdc}?mode=ro", uri=True).execute(
         "SELECT DISTINCT obj FROM facts WHERE rel = 'country'")} if hdc.exists() else set()

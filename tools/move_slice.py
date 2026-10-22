@@ -7,8 +7,10 @@ For each ``old -> new`` of the slice (``--slice <name>`` from the move map, or p
    ``DeprecationWarning``; running the old file as a script runs the new home (``runpy``);
 3. in every moved file: imports of moved modules become package imports (relative inside ``cubbyllm/``, absolute
    elsewhere); each ``__file__`` path expression is rewritten to the same place from the new location (the data stays
-   where it was); a statement that only edits ``sys.path`` is dropped. A ``__file__`` use it cannot evaluate is listed,
-   for a hand edit.
+   where it was); a statement that only edits ``sys.path`` is dropped from a file bound for ``cubbyllm/`` or
+   ``cubby_serve/`` (a script bound for ``validation/`` keeps its path lines, their paths rewritten: it is run by its
+   path and finds the stand-in's modules through them). A ``__file__`` use it cannot evaluate is listed, for a hand
+   edit.
 
 The moves done so far are kept in ``tools/moves_0031.json`` (old -> new), so later slices rewrite imports of earlier
 ones. ``--dry-run`` prints what it would do.
@@ -20,6 +22,7 @@ from __future__ import annotations
 import argparse
 import ast
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path, PurePosixPath
@@ -207,6 +210,15 @@ def rewrite_file(src: str, old: str, new: str, moves: dict, paths_only: bool = F
     for node in ast.walk(tree):
         if isinstance(node, (ast.Import, ast.ImportFrom)) and not paths_only:
             new_txt = rewrite_import(node, lines, new, moves)
+            if new_txt and isinstance(node, ast.ImportFrom) and len(new_txt) == 1 and node.module:
+                # only the module changed: substitute it in the original text, so a wrapped import keeps its
+                # parentheses and the comments inside them
+                seg = ast.get_source_segment(src, node) or ""
+                mod = new_txt[0].split(" import ", 1)[0][len("from "):]
+                kept = re.sub(r"^from\s+" + re.escape(node.module) + r"(?=\s)", "from " + mod, seg, count=1)
+                if kept != seg and new_txt[0].split(" import ", 1)[1] == ", ".join(
+                        a.name + (f" as {a.asname}" if a.asname else "") for a in node.names):
+                    new_txt = [kept]
             if new_txt:
                 indent = " " * node.col_offset
                 edits.append(((node.lineno, node.col_offset), (node.end_lineno, node.end_col_offset),
@@ -227,12 +239,13 @@ def rewrite_file(src: str, old: str, new: str, moves: dict, paths_only: bool = F
         target, resolved = r
         edits.append(((node.lineno, node.col_offset), (node.end_lineno, node.end_col_offset),
                       _expr(new, target, kind, ctor, resolved)))
+    keep_paths = paths_only or not new.startswith(("cubbyllm/", "cubby_serve/"))   # a script in validation/ keeps them
     for stmt in ast.walk(tree):
         body = getattr(stmt, "body", None)
         if not isinstance(body, list):
             continue
         for s in body:
-            if _is_path_edit(s) and not paths_only:
+            if _is_path_edit(s) and not keep_paths:
                 edits.append(((s.lineno, 0), (s.end_lineno, len(lines[s.end_lineno - 1].rstrip("\r\n"))), None))
     # drop edits nested inside a dropped statement; apply the rest bottom up
     drops = sorted({(a, b) for a, b, t in edits if t is None})

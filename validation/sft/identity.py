@@ -12,7 +12,7 @@ import random
 import re
 import sys
 
-sys.path.append(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")))
+sys.path.append(os.path.normpath(os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "standin", "data")), "..", "..")))
 from cubbyllm.speech.identity import (  # noqa: E402,F401 -- the runtime half, re-exported
     EMITTER_SYSTEM, FACTS_PATH, HORMONES, HORMONE_RANGE, LANGS, T, _FEEL_Q, _GREETING_Q, _IDENTITY_Q, _MODEL_GUARD, _NEG, _NON_LATIN, affect_block, derived, guess_lang, has_non_latin, identity_ok, identity_system, is_identity_question, is_identity_reply, is_model_guard, load_facts, sample_state, voice_ok)
 

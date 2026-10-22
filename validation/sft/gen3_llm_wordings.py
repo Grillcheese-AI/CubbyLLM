@@ -67,14 +67,14 @@ def main() -> None:
     a = ap.parse_args()
     t0 = time.perf_counter(); rng = random.Random(a.seed)
 
-    import wikikg as wk
+    from cubbyllm.worlds import wikikg as wk
     from cubbyllm.bridges import cubelang_client as cc
     from cubbyllm.reasoning.learn import _FRAME_AND_JOINT, learn_and_answer
     from cubbyllm.reasoning.plan_verify import StoreRelations
     from cubbyllm.reasoning.planner import QuestionPlan, normalize
-    from build_gen3 import NullSource, cot_plan, rec_id
+    from validation.sft.build_gen3 import NullSource, cot_plan, rec_id
     from openrouter import OpenRouterProposer
-    from sources import PropertyAliases
+    from cubbyllm.sources.wikidata import PropertyAliases
 
     # the chains: one per distinct certified one-hop fact in the gen-3 set (seed, object); the seed and the
     # relation word come from the plan program (SEED / HOP1) -- the host's plan, on record

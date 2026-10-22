@@ -29,8 +29,8 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-from build_chat_sft import explicit  # noqa: E402
-from build_passage_sft import ABSENT, content_words, render, sentences, split_of  # noqa: E402
+from validation.sft.build_chat_sft import explicit  # noqa: E402
+from validation.sft.build_passage_sft import ABSENT, content_words, render, sentences, split_of  # noqa: E402
 
 SOURCE = "nemotron_qa (Nemotron-CC web documents with synthetic Q/A)"
 _QA = re.compile(r"\n\s*Question:\s*(.+?)\s*Answer:\s*(.+?)\s*(?=\n\s*Question:|\Z)", re.S)
@@ -79,7 +79,7 @@ def sample_docs(src: str, n: int, seed: int):
 
 
 def build(src, tk, docs, max_len, seed=0):
-    from ask import grounded_prose
+    from cubbyllm.reasoning.ask import grounded_prose
     funnel, out = collections.Counter(), []
     for h, text, rng in sample_docs(src, docs, seed):
         funnel["docs"] += 1

@@ -32,7 +32,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-from build_ground_sft import ABSENT, check, norm, render, split_of  # noqa: E402
+from validation.sft.build_ground_sft import ABSENT, check, norm, render, split_of  # noqa: E402
 
 SOURCE = "datasets drive: domains/verified_facts/historical_facts.jsonl + temporal_timelines_events/train_augmented.jsonl"
 FILES = ("domains/verified_facts/historical_facts.jsonl", "domains/temporal_timelines_events/train_augmented.jsonl")

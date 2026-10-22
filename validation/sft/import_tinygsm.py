@@ -38,7 +38,7 @@ import time
 from collections import Counter
 from dataclasses import dataclass
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "standin", "data"))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 for _p in (ROOT, HERE, os.path.join(ROOT, "validation")):
     if _p not in sys.path:
@@ -243,7 +243,7 @@ def to_record(question: str, code: str, idx: int, units: set[float] = UNIT_CONST
 
 def vm_check(records: list[dict]) -> Counter:
     """Re-run programs in the real VM: its value must be ours."""
-    from build_emitter_sft import answer_fn, shim_isolver
+    from validation.sft.build_emitter_sft import answer_fn, shim_isolver
     from cubbyllm.bridges import cubelang_client as cc
     c = Counter()
     for r in records:

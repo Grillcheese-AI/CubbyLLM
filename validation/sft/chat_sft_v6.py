@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import re
 
-from identity import is_model_guard, voice_ok
+from validation.sft.identity import is_model_guard, voice_ok
 
 __wiring__ = "STANDALONE"
 

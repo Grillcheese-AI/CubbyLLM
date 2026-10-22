@@ -38,8 +38,8 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-from build_ground_sft import ABSENT, check, norm, render, split_of  # noqa: E402
-from hdc_world import Templates  # noqa: E402,F401 -- the sentence templates live with the world (order 0031)
+from validation.sft.build_ground_sft import ABSENT, check, norm, render, split_of  # noqa: E402
+from cubbyllm.worlds.hdc_world import Templates  # noqa: E402,F401 -- the sentence templates live with the world (order 0031)
 
 SOURCE = "hdc: hypernet scaling-law set (Wikidata facts from relation templates)"
 _LATIN = re.compile(r"^[\x20-\x7e -ɏ‐-‧]+$")   # Latin script and common punctuation only

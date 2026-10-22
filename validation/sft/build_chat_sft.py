@@ -52,7 +52,7 @@ if hasattr(sys.stdout, "reconfigure"):
 __wiring__ = "STANDALONE"
 
 SOURCE = "nvidia/Nemotron-SFT-Instruction-Following-Chat-v2"
-COMMON = pathlib.Path(__file__).with_name("chat_common_words.txt")
+COMMON = pathlib.Path(__file__).parents[2] / "standin" / "data" / "chat_common_words.txt"
 
 _TOKEN = re.compile(r"[A-Za-zÀ-ÿ][\w'’\-]*|\d[\d.,:/\-]*")        # ask._TOKEN
 _ENUM = re.compile(r"(?m)^\s*(?:\d{1,2}[.)]|[-*•])\s+")
@@ -142,9 +142,9 @@ def unmask(uid: str, text: str) -> str:
 _ROLEPLAY = re.compile(r"\b(?:role[- ]?play|roleplay|act as|pretend|in character|you are (?:now )?(?:playing|a|an|the))\b", re.I)
 
 
-from explicit_gate import GATED, UNLOCK, _MINOR, _STRONG, _WEAK, _WEAK_CASED, _score, _terms, explicit, illegal  # noqa: E402,F401
+from cubbyllm.speech.explicit_gate import GATED, UNLOCK, _MINOR, _STRONG, _WEAK, _WEAK_CASED, _score, _terms, explicit, illegal  # noqa: E402,F401
 # the v6 builder's pieces other code still imports from here (order 0030; chat_sft_v6.py says which, and why)
-from chat_sft_v6 import (GOEMOTIONS, GOEMOTIONS_FR, GOEMOTIONS_PETAL, MULTI_PROMPT, affect_ok, history_ok,  # noqa: E402,F401
+from validation.sft.chat_sft_v6 import (GOEMOTIONS, GOEMOTIONS_FR, GOEMOTIONS_PETAL, MULTI_PROMPT, affect_ok, history_ok,  # noqa: E402,F401
                          parse_affect, proper_nouns)
 
 
@@ -191,7 +191,7 @@ def _frac(uid: str, salt: str) -> float:
 
 
 def build(src, tk, common, min_support=0.0, max_len=1024, unlock_share=0.03):
-    from ask import grounded_prose
+    from cubbyllm.reasoning.ask import grounded_prose
     funnel, kept = collections.Counter(), []
     for line in open(src, encoding="utf-8"):
         r = json.loads(line)

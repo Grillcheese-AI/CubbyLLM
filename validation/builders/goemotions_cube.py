@@ -30,13 +30,13 @@ from __future__ import annotations
 import os
 import sys
 
-_HERE = os.path.dirname(os.path.abspath(__file__))
+_HERE = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "standin", "data"))
 for _p in (os.path.dirname(_HERE), _HERE, os.path.dirname(os.path.dirname(_HERE))):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from build_chat_sft import GOEMOTIONS, GOEMOTIONS_PETAL  # noqa: E402
-from neurochem import Neurochemistry  # noqa: E402
+from validation.sft.build_chat_sft import GOEMOTIONS, GOEMOTIONS_PETAL  # noqa: E402
+from cubbyllm.affect.neurochem import Neurochemistry  # noqa: E402
 from pacman import _PETAL  # noqa: E402
 
 __wiring__ = "WIRED"

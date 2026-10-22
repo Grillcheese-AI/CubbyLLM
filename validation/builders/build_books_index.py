@@ -25,11 +25,11 @@ for p in (ROOT, ROOT / "standin", ROOT / "standin" / "data"):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from books import BookIndex, Mentions, common_words, discover, meta, paragraphs, roots_from_env  # noqa: E402
+from cubbyllm.worlds.books import BookIndex, Mentions, common_words, discover, meta, paragraphs, roots_from_env  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
-from books import world_names  # noqa: E402,F401 -- with the books (order 0031)
+from cubbyllm.worlds.books import world_names  # noqa: E402,F401 -- with the books (order 0031)
 
 
 def refresh_meta(idx: BookIndex, roots) -> int:

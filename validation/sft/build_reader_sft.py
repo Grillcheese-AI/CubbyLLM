@@ -42,9 +42,9 @@ for p in (ROOT, ROOT / "standin", ROOT / "standin" / "data"):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-import book_frames as bf  # noqa: E402
-import book_reader as br  # noqa: E402
-from books import BookIndex, Mentions, norm  # noqa: E402
+from cubbyllm.worlds import book_frames as bf  # noqa: E402
+from cubbyllm.worlds import book_reader as br  # noqa: E402
+from cubbyllm.worlds.books import BookIndex, Mentions, norm  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
@@ -112,7 +112,7 @@ def date_span(sentence: str, value: str):
 
 def world(triples):
     """subject -> [(code, object name, its key)], and subject -> every name it is related to (either way)."""
-    import wikikg as wk
+    from cubbyllm.worlds import wikikg as wk
     facts, related = collections.defaultdict(list), collections.defaultdict(set)
     for s, r, o in triples:
         S, O = wk.decamel(s), wk.decamel(o)
@@ -189,7 +189,7 @@ def main() -> None:
     if a.score_audit:
         print(json.dumps(score_audit(a.score_audit)))
         return
-    import wikikg as wk
+    from cubbyllm.worlds import wikikg as wk
     t0, rng = time.time(), random.Random(a.seed)
     idx = BookIndex(a.index)
     out = pathlib.Path(a.out or pathlib.Path(idx.path).parent / "reader_sft.jsonl")
