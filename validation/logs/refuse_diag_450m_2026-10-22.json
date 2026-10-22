@@ -1,0 +1,257 @@
+{
+ "checkpoint": "spatial_link_5_final.pt",
+ "probe": "facts_far1k_v2_absent",
+ "docs_calibration": 200,
+ "theta": 0.11699999868869781,
+ "reproduces_0022_calibration": {
+  "here": {
+   "exact": 0.6958,
+   "present_refused": 0.2843,
+   "present_wrong": 0.02,
+   "absent_answered": 0.0
+  },
+  "0022": {
+   "exact": 0.6958,
+   "present_refused": 0.2843,
+   "present_wrong": 0.02,
+   "absent_answered": 0.0
+  }
+ },
+ "theta_end": 0.08500000089406967,
+ "n_present": 802,
+ "n_absent": 175,
+ "outcomes_present": {
+  "exact": 558,
+  "refused": 228,
+  "wrong: cut short": 13,
+  "wrong: run on": 3
+ },
+ "outcomes_absent": {
+  "refused": 175
+ },
+ "refusals_by_why": {
+  "nothing read (the first read already ends)": 5,
+  "a true piece read below theta": 171,
+  "the end read above theta_end": 50,
+  "no end within K": 2
+ },
+ "refusal_at_piece": {
+  "0": 45,
+  "2": 42,
+  "3": 33,
+  "4": 25,
+  "1": 45,
+  "5": 16,
+  "6": 7,
+  "9": 2,
+  "7": 5,
+  "10": 1
+ },
+ "by_length": {
+  "1": {
+   "exact": 6
+  },
+  "2": {
+   "exact": 106,
+   "refused": 22,
+   "wrong": 2
+  },
+  "3": {
+   "exact": 154,
+   "refused": 35,
+   "wrong": 4
+  },
+  "4": {
+   "exact": 116,
+   "refused": 35,
+   "wrong": 1
+  },
+  "5": {
+   "exact": 85,
+   "refused": 41,
+   "wrong": 4
+  },
+  "6": {
+   "exact": 45,
+   "refused": 30,
+   "wrong": 3
+  },
+  "7": {
+   "exact": 21,
+   "refused": 25,
+   "wrong": 1
+  },
+  "8": {
+   "refused": 13,
+   "exact": 14,
+   "wrong": 1
+  },
+  "9": {
+   "refused": 9,
+   "exact": 4
+  },
+  "10": {
+   "exact": 3,
+   "refused": 4
+  },
+  "11": {
+   "refused": 5,
+   "exact": 3
+  },
+  "12": {
+   "refused": 4
+  },
+  "13": {
+   "refused": 2
+  },
+  "14": {
+   "refused": 1
+  },
+  "15": {
+   "exact": 1
+  },
+  "20": {
+   "refused": 1
+  },
+  "22": {
+   "refused": 1
+  }
+ },
+ "by_weakest_match": {
+  "<0.085": {
+   "refused": 18,
+   "wrong": 13
+  },
+  "0.085-0.117": {
+   "refused": 160
+  },
+  "0.117-0.15": {
+   "exact": 247,
+   "refused": 28,
+   "wrong": 1
+  },
+  "0.15-0.2": {
+   "exact": 249,
+   "refused": 19,
+   "wrong": 2
+  },
+  "0.2-0.3": {
+   "exact": 62,
+   "refused": 3
+  }
+ },
+ "by_smallest_margin": {
+  "0.0-0.02": {
+   "refused": 76,
+   "exact": 44,
+   "wrong": 11
+  },
+  "0.02-0.05": {
+   "refused": 88,
+   "exact": 35,
+   "wrong": 2
+  },
+  "0.05-0.1": {
+   "exact": 301,
+   "refused": 50,
+   "wrong": 2
+  },
+  "0.1-0.2": {
+   "refused": 14,
+   "exact": 177,
+   "wrong": 1
+  },
+  ">=0.2": {
+   "exact": 1
+  }
+ },
+ "by_mean_lambda": {
+  "0.25-0.5": {
+   "refused": 1
+  },
+  "0.5-0.75": {
+   "wrong": 1
+  },
+  "0.75-0.9": {
+   "refused": 32,
+   "wrong": 4,
+   "exact": 5
+  },
+  ">=0.9": {
+   "exact": 553,
+   "refused": 195,
+   "wrong": 11
+  }
+ },
+ "followups": {
+  "refused_present_picks": {
+   "nothing read (the first read already ends) | picks differ": 1,
+   "a true piece read below theta | picks = gold": 157,
+   "the end read above theta_end | picks = gold": 50,
+   "a true piece read below theta | picks differ": 14,
+   "nothing read (the first read already ends) | picks = gold": 4,
+   "no end within K | picks differ": 2
+  },
+  "refusal_rate_by_length": {
+   "1": {
+    "n": 6,
+    "refused": 0.0,
+    "wrong": 0
+   },
+   "2": {
+    "n": 130,
+    "refused": 0.169,
+    "wrong": 2
+   },
+   "3": {
+    "n": 193,
+    "refused": 0.181,
+    "wrong": 4
+   },
+   "4": {
+    "n": 152,
+    "refused": 0.23,
+    "wrong": 1
+   },
+   "5": {
+    "n": 130,
+    "refused": 0.315,
+    "wrong": 4
+   },
+   "6": {
+    "n": 78,
+    "refused": 0.385,
+    "wrong": 3
+   },
+   "7": {
+    "n": 47,
+    "refused": 0.532,
+    "wrong": 1
+   },
+   "8": {
+    "n": 28,
+    "refused": 0.464,
+    "wrong": 1
+   },
+   "9+": {
+    "n": 38,
+    "refused": 0.711,
+    "wrong": 0
+   }
+  },
+  "absent_first_read": {
+   "max": 0.1053,
+   "below_theta_end": 0.897,
+   "below_theta": 1.0
+  },
+  "wrong_length_off_by": {
+   "-2": 4,
+   "1": 3,
+   "-1": 5,
+   "-3": 2,
+   "-5": 1,
+   "-4": 1
+  }
+ },
+ "wall_s": 1414.2
+}
