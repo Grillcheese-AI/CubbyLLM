@@ -15,7 +15,14 @@ from __future__ import annotations
 
 import json
 
-from pacpaths import PLUTCHIK_JSON  # noqa: E402
+import pathlib
+import sys
+
+sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
+from cubbyllm.local_paths import expand  # noqa: E402
+
+# the cubbyverse checkout's Plutchik table (order 0031: named here, not through the game's pacpaths)
+PLUTCHIK_JSON = pathlib.Path(expand(r"$CUBBY_GITHUB\cubbyverse")) / "cubbyverse" / "core" / "emotion" / "plutchik.json"
 __wiring__ = "WIRED"
 
 

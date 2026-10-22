@@ -32,7 +32,7 @@ PACMAN_LIVE = _CV / "examples" / "pacman_live.py"        # the exact frontend is
 ASSETS_DIR = _CV / "examples" / "assets"                 # cubby's face textures
 
 
-PLUTCHIK_JSON = _CV / "cubbyverse" / "core" / "emotion" / "plutchik.json"
+from feeling import PLUTCHIK_JSON  # noqa: E402,F401 -- one definition, with the feeling it names
 
 
 REPLAY_OUT = pathlib.Path(_lp(r"$TEMP/cubbyman_pacman_3d.html"))
