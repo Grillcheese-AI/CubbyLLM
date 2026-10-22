@@ -1,5 +1,5 @@
 # 0013 — A Cubby-native reader for the books, and the bulk pass that puts all their facts into the worlds
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick (extractor: "Cubby-native reader"; "add all the verified
 facts") · hypothesis: H-F2, H-K10 · **after 0012**
 
