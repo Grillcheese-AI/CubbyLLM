@@ -75,7 +75,7 @@ def main(argv=None):
 
     import pacman as P
     from pacman import split_mood
-    from serve import build_serve
+    from cubby_serve.build import build_serve
 
     print(f"exp_r37 — letting him talk  ({a.steps} steps, seed {a.seed})")
     print("=" * 78)

@@ -123,7 +123,7 @@ def parser() -> argparse.ArgumentParser:
 
 def boot(args, ap: argparse.ArgumentParser):
     """The brain the arguments describe, everything mounted (or `ap.error` when no emitter is named)."""
-    from serve import build_serve
+    from cubby_serve.build import build_serve
     from serve_api import serve_http  # noqa: F401 -- the shell serves it
     if args.ask and not args.wiki:
         args.wiki = "auto"                               # the loop walks the wiki world

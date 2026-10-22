@@ -83,8 +83,8 @@ def main() -> None:
     ap.add_argument("--tag", default="")
     args = ap.parse_args()
 
-    import serve as sv
-    brain = sv.build_serve(args.gguf, None, args.n_store, None, 0.30, args.n_gpu_layers, talk_gguf=args.talk_gguf)
+    from cubby_serve.build import build_serve
+    brain = build_serve(args.gguf, None, args.n_store, None, 0.30, args.n_gpu_layers, talk_gguf=args.talk_gguf)
     timed = Timed(brain.emitter.adapters["talk"])
     brain.emitter.adapters["talk"] = timed
     turns = load_turns(args.n, args.seed)
