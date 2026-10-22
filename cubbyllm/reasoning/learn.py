@@ -48,7 +48,10 @@ __wiring__ = Wiring.WIRED
 # Only a fact fetched live during a session is dated, so asking the source about the entity is
 # exactly what turns an unorderable set into an orderable one. The second walk then either
 # picks by the date the source stated, or refuses again with the candidates named.
-LEARNABLE = ("retrieval_exhausted", "unknown_relation", "latent_only", "ambiguous_hop")
+# attributed_only (order 0012): the chain rests on a fact one source alone states (one book's author); the
+# sources further down are asked for a second, independent statement, and when none comes the answer is
+# spoken hedged (`LearnResult.attributed`), never refused and never flat.
+LEARNABLE = ("retrieval_exhausted", "unknown_relation", "latent_only", "ambiguous_hop", "attributed_only")
 
 
 @runtime_checkable
@@ -82,6 +85,7 @@ class LearnResult:
     aliased: list[tuple[str, str]] = field(default_factory=list)
     plan: QuestionPlan | None = None                      # the plan that was walked last (rewritten or not)
     snapped: tuple[str, str] | None = None                # lever 7: (the emitted seed, the question's spelling it was snapped to)
+    attributed: list[str] = field(default_factory=list)   # the spoken answer rests on these facts, each one source's: hedged
     @property
     def accepted(self) -> list[Provenance]:
         return [p for p in self.learned if p.status == "accepted"]
@@ -173,8 +177,9 @@ def stalled_entities(question: str, plan: QuestionPlan | None, first: CoTResult,
     for b in _pruned(first):
         if normalize(b["stalled"]) not in {normalize(e) for e in out}:
             out.append(b["stalled"])
-    if first.reason == "latent_only":                       # the subjects of the held facts: what an attester is asked about
-        for t in (h.triple for h in first.trace if h.fact in (first.refused or {}).get("latent_facts", ())):
+    if first.reason in ("latent_only", "attributed_only"):  # the subjects of the held facts: what an attester is asked about
+        said = (first.refused or {}).get("latent_facts") or (first.refused or {}).get("attributed_facts", ())
+        for t in (h.triple for h in first.trace if h.fact in said):
             if t is not None and normalize(t.subj) not in {normalize(e) for e in out}:
                 out.append(t.subj)
     _rel, ent = split_tail(plan.tail, known, question)
@@ -480,7 +485,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                      plan: QuestionPlan | None = None, max_entities: int = 2,
                      resolvers: list | None = None, chunk: int = 0, branch: int = 12,
                      choose: dict | None = None, fallbacks: list | None = None,
-                     max_fallback: int = 1) -> LearnResult:
+                     max_fallback: int = 1, before: list | None = None) -> LearnResult:
     """One question through the loop. `store` needs `add(fact)`, `__contains__`,
     `texts`, `index` (a TripleIndex) and `lookup` (its `index.hop`); `known` is a
     `StoreRelations` (gets `add`). `branch`/`choose` go to `answer` (graph-of-thought at
@@ -491,7 +496,10 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
     says which sites stated it and holds what only one site did. A walk follows every round that admitted a fact;
     a round that admits nothing ends the loop; `max_entities` rounds at most. An
     `unknown_relation` refusal that the source can resolve to ONE relation the store
-    holds is walked again with the plan rewritten (lever 4); it costs no round."""
+    holds is walked again with the plan rewritten (lever 4); it costs no round. `before` (order 0012): sources
+    asked ahead of `source`, the local books, each for up to `max_entities` entities; a source's
+    `attributed` (normalized facts one witness alone states) are stored as such, and an answer resting on
+    one is spoken hedged unless a source further down states it too."""
     aliases: dict[str, list[str]] = {}
     snapped = None
     qid = ev.emit("question", text=question, source=getattr(source, "name", None))     # the run's root event
@@ -509,6 +517,8 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
         """A rewritten plan is a new plan event, child of the one it replaces."""
         cur["plan"] = ev.emit("plan", cur["plan"], **_plan_fields(new_plan), how=how, rewrote=[list(x) for x in rewrote])
 
+    spoken: dict = {}                                     # the last verified walk resting on an attributed fact
+
     def walk():
         res = answer(question, retrieve, run_fn, tau_vm=tau_vm, tau_ret=tau_ret, top_k=top_k,
                      max_repairs=max_repairs, lookup=store.lookup, known=known, plan=plan, aliases=aliases,
@@ -521,9 +531,15 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
             # every fact the answer rests on: a converged answer rests on ALL its branches, not the one it shows
             rests = [h.fact for h in res.trace] + [f for b in (res.branches or []) for f in b.get("facts", ())]
             held = [f for f in dict.fromkeys(rests) if f and prov.get(fkey(f), "").endswith("(latent)")]
+            said = [f for f in dict.fromkeys(rests) if f and prov.get(fkey(f), "").endswith("(attributed)")]
             if held:
                 res = CoTResult(answer=None, verified=False, trace=res.trace, reason="latent_only",
                                 refused={"answer": res.answer, "latent_facts": held}, source=res.source,
+                                branches=res.branches)
+            elif said:                                    # one witness: ask further down before speaking it hedged
+                spoken.update(res=res, facts=said)
+                res = CoTResult(answer=None, verified=False, trace=res.trace, reason="attributed_only",
+                                refused={"answer": res.answer, "attributed_facts": said}, source=res.source,
                                 branches=res.branches)
         ev.emit_walk(cur["plan"], res, provenance=prov, key=fkey)
         return res
@@ -563,7 +579,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
             out.aliased.extend(worded)
             ev.emit("alias", cur["plan"], how="lever 6 (the question's own wording)", pairs=[list(x) for x in worded])
             out.result = walk()
-    tiers = [source] + list(fallbacks or [])             # the web after Wikidata, never before
+    tiers = list(before or []) + [source] + list(fallbacks or [])   # the books first; the web after Wikidata, never before
     tier = 0
     asked: list[set[str]] = [set() for _ in tiers]
     resolved: set[str] = set(); siblings_tried = False
@@ -595,7 +611,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                 out.result = walk()
                 continue
         src = tiers[tier]
-        cap = max_entities if tier == 0 else max_fallback
+        cap = max_entities if tier <= len(before or []) else max_fallback
         ents = [e for e in stalled_entities(question, plan, out.result, known) if normalize(e) not in asked[tier]]
         if len(asked[tier]) >= cap or not ents:
             if tier + 1 < len(tiers):
@@ -637,6 +653,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
             # dict was all there was, and a one-site web fact was stored as attested; caught by the test)
             name_f = (getattr(src, "provenance", None) or {}).get(normalize(fact)) or src.name
             latent_f = latent or normalize(fact) in (getattr(src, "held", None) or ())
+            attributed_f = not latent_f and normalize(fact) in (getattr(src, "attributed", None) or ())
             p = gate(fact, store, name_f, ent)
             out.learned.append(p)
             lifted = False
@@ -661,7 +678,7 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                 if hasattr(known, "add"):
                     known.add(fact)
                 if prov is not None:
-                    prov[fkey(fact)] = name_f + (" (latent)" if latent_f else "")
+                    prov[fkey(fact)] = name_f + (" (latent)" if latent_f else " (attributed)" if attributed_f else "")
                 admitted += 1
             elif p.status == "duplicate" and dated_now:
                 # a fact the store already had, now with the date it never had: that is new
@@ -672,6 +689,10 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                 # every attester once: a web fact held on one site and attested by two names that site twice otherwise
                 prov[fkey(fact)] = "+".join(dict.fromkeys(prov[fkey(fact)][:-len(" (latent)")].split("+") + name_f.split("+")))
                 admitted += 1; lifted = True                    # new knowledge about the fact, so the walk runs again
+            elif p.status == "duplicate" and prov is not None and not latent_f and prov.get(fkey(fact), "").endswith("(attributed)")                     and set(name_f.split("+")) - set(prov[fkey(fact)][:-len(" (attributed)")].split("+")):
+                # a second, independent witness (another author, Wikidata) states what one book did: spoken flat now
+                prov[fkey(fact)] = "+".join(dict.fromkeys(prov[fkey(fact)][:-len(" (attributed)")].split("+") + name_f.split("+")))
+                admitted += 1; lifted = True
             ev.emit("gate", fid, fact=fact, status=p.status, clash=p.clash, lifted=lifted,
                     provenance=(prov or {}).get(fkey(fact)))
         if not admitted:
@@ -703,7 +724,10 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                     out.aliased.extend(x for x in again if x not in out.aliased)
             replan(plan, "the fetched facts: the proposed wording, translated to what the store holds now", again)
         out.result = walk()
+    if out.result.reason == "attributed_only" and spoken.get("res") is not None:
+        out.result, out.attributed = spoken["res"], list(spoken["facts"])     # no second witness anywhere: hedged
     ev.emit("answer", qid, verified=out.result.verified, answer=out.result.answer, reason=out.result.reason,
+            attributed=out.attributed or None,
             refused=out.result.refused if isinstance(out.result.refused, dict) else None,
             aliased=[list(x) for x in out.aliased], entities=list(out.entities), fetched=out.fetched)
     return out

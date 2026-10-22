@@ -377,6 +377,12 @@ def main():
                          "else SearXNG when --searxng / CUBBY_SEARXNG_URL names an instance, else off. A web fact is "
                          "held until two independent sites state it")
     ap.add_argument("--searxng", default=None, help="a SearXNG instance's base URL (JSON output enabled)")
+    ap.add_argument("--books", default=os.environ.get("CUBBY_BOOKS_INDEX") or None,
+                    help="the books' index (standin/books.py; default CUBBY_BOOKS_INDEX): asked before the source, "
+                         "a fact one author states spoken hedged until a second source states it")
+    ap.add_argument("--tense", action="store_true",
+                    help="check each answer's dates against the question's tense and year without the books too "
+                         "('who rules X?' on a reign that ended is not answered); on whenever --books is")
     ap.add_argument("--web-reader", default="auto",
                     help="the local model that reads pages for the relation the walk needs: a GGUF path, 'auto' "
                          "(the LFM base in standin/models when present) or 'off'")
@@ -410,7 +416,8 @@ def main():
         web = build_web(args) if args.web != "off" else None
         brain.ask_loop = AskLoop(brain.emitter, world=brain.worlds["wiki"], source=args.ask, lexicon=True,
                                  max_new=args.ask_max_new, news="rss" if args.news else None,
-                                 history_path=args.history or None, web=web, skills=args.skills or None)
+                                 history_path=args.history or None, web=web, skills=args.skills or None,
+                                 books=args.books, tense=True if args.tense else None)
         print("  web: " + (f"{web.backend.name} behind {args.ask}, reader {'the local model' if web.reader else 'off'}; "
                            "a web fact is held until two independent sites state it" if web else
                            "off (set BRAVE_SEARCH_API_KEY or --searxng to turn it on)"), flush=True)

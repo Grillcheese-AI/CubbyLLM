@@ -67,7 +67,7 @@ def test_every_reason_the_loop_writes_is_routed_or_an_answered_kind():
                 for s in (line, lines[i + 1] if i + 1 < len(lines) else ""):
                     found |= set(re.findall(r"[\"']([a-z]+(?:_[a-z]+)+)[\"']", s))
     # keys of the record and of its `refused` dict that share a line with a reason; not reasons
-    not_reasons = {"tail_relation", "latent_facts", "unknown_relations", "tau_vm", "wall_s"}
+    not_reasons = {"tail_relation", "latent_facts", "attributed_facts", "unknown_relations", "tau_vm", "wall_s"}
     missing = sorted(found - set(S.ROUTES) - S.ANSWERED - not_reasons)
     assert not missing, f"reasons with no route: {missing}. Route them in sleep.ROUTES (a decision), don't widen the scan."
     assert {"plan_does_not_cover_question", "unknown_relation", "retrieval_exhausted"} <= found

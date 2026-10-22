@@ -55,8 +55,10 @@ ROUTES: dict[str, tuple[str, str]] = {
     "unknown_relation": ("relation_wordings", "no held relation answers to the plan's wording"),
     "ambiguous_relation": ("clarify", "several held relations fit the wording"),
     "ambiguous_hop": ("clarify", "a multi-valued hop: the question needs a qualifier or a choice"),
+    "time_mismatch": ("clarify", "the question's tense or year is not the time the fact holds (order 0012); the asker may mean another"),
     "retrieval_exhausted": ("source_gaps", "no fact reached the next hop, even after the fetch"),
     "latent_only": ("latent_audit", "only the latent tier had a chain; held back, never spoken"),
+    "attributed_only": ("latent_audit", "one source alone stated the chain's fact; a second was sought (order 0012)"),
     "answer_type_mismatch": ("vm_review", "the walk ended on the wrong kind of answer"),
     "vm_verify_failed": ("vm_review", "the VM did not verify the chain the walk built"),
     # the ask loop's profile / date / introspection paths (standin/ask.py)

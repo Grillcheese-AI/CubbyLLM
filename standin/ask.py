@@ -103,6 +103,12 @@ SAY = {
 }
 
 
+def hedged(answer: str, lang: str = "en") -> str:
+    """An answer one source alone states (order 0012), said as an account and never as fact; the source is not
+    named (order 0016)."""
+    return f"Selon une source, {answer}." if lang.startswith("fr") else f"One account says {answer}."
+
+
 def say(rel: str) -> str:
     """A relation as it should READ, never as it is stored. The template is `<obj> is the <rel> of <subj>`,
     so a relation whose own label ends in 'of' renders 'capital of of Quebec City' (2026-09-14, live). The
@@ -633,7 +639,8 @@ class AskLoop:
 
     def __init__(self, emitter, world=None, source="wikidata", lexicon: bool = True, exe: str | None = None,
                  max_new: int = 300, lfm_gguf: str | None = None, run_fn=None, tau_profile: float = TAU_VM[1],
-                 news=None, history_path: str | None = None, web=None, skills=None, scene=None):
+                 news=None, history_path: str | None = None, web=None, skills=None, scene=None, books=None,
+                 tense: bool | None = None):
         from cubbyllm.bridges import cubelang_client as cc
         from cubbyllm.reasoning.plan_verify import StoreRelations
         self.emitter = emitter
@@ -664,6 +671,20 @@ class AskLoop:
         # stalled on, and what it finds is held until two independent sites agree (standin/web_source.py)
         self.web = web
         self.fallbacks = [web] if web is not None else []
+        # the books (order 0012): asked before the source -- local, free -- through the same gate; a fact one
+        # author alone states is spoken hedged until Wikidata or another author states it too (an index path,
+        # or a BookSource; None = off, the loop unchanged)
+        if isinstance(books, (str, pathlib.PurePath)):
+            from book_source import BookSource
+            books = BookSource(books)
+        self.books = books
+        # the question's tense and year against the answer's dates (order 0012: "Who rules England?" on a reign
+        # that ended is not answered); on with the books unless `tense` says otherwise, off without them
+        self.tense = (books is not None) if tense is None else bool(tense)
+        self._forms = None
+        if books is not None:                            # natural questions (order 0012): a parsed form is a relation
+            from question_forms import Forms             # ask, never a profile ("Who was the founder of Rome?"), and
+            self._forms = Forms()                        # its words name the relation (levers 4 and 6: "ruled")
         # the scene (2026-10-17): the host's route to space. A question the scene can state -- a spatial
         # relation at any hop, or a seed that is a thing in it -- is sourced from the scene's exact reading
         # instead of the world's source; the walk and the VM verify what it states like any other fact.
@@ -678,6 +699,8 @@ class AskLoop:
         if lexicon:
             from cubbyllm.reasoning.lexicon import Lexicon
             self.resolvers.append(Lexicon())
+        if self._forms is not None:
+            self.resolvers.append(self._forms)
         self._vm = run_fn                                # tests: a stand-in VM; otherwise the resident CubeLang session
         self.tau_profile = float(tau_profile)            # a profile line is spoken only when the VM recovers it at this similarity
         self.session = None if run_fn else cc.CubelangSession(exe=exe)
@@ -833,7 +856,8 @@ class AskLoop:
                 rec = self.relation(question, ra[0], ra[1], t0)
                 self._keep(rec)
                 return rec
-            pa = profile_ask(question, self._is_relation)   # the host reads the shape off the question (gen 2 cannot emit it yet)
+            pa = None if self._forms is not None and self._forms.parse(question) else \
+                profile_ask(question, self._is_relation)   # the host reads the shape off the question (gen 2 cannot emit it yet)
             if pa:
                 rec = self.profile(question, pa[0], pa[1], t0, how="the question's shape (who / what / where / when)", item=item, asker=asker)
                 self._keep(rec)
@@ -873,7 +897,7 @@ class AskLoop:
             lr = learn_and_answer(question, lambda q, k: [], self._run_fn, store=self.world, known=self.known,
                                   source=source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
                                   plan=plan, resolvers=self.resolvers, choose=parse_choose(choose) or None,
-                                  fallbacks=self.fallbacks)
+                                  fallbacks=self.fallbacks, before=[self.books] if self.books is not None else None)
         rec.update(answer=lr.result.answer if lr.result.verified else None, verified=bool(lr.result.verified),
                    reason=None if lr.result.verified else lr.result.reason,
                    learned=[_learned(p) for p in lr.learned],
@@ -882,8 +906,32 @@ class AskLoop:
                    branches=lr.result.branches, chose=choose or None,
                    clarify=branch_clarify(lr.plan or plan, lr.result, parse_choose(choose)),
                    wall_s=round(time.perf_counter() - t0, 3))
+        why = self._time_check(question, lr) if lr.result.verified and self.tense else None
+        if why:                                           # the question's tense or year is not the fact's: not said
+            rec.update(answer=None, verified=False, reason="time_mismatch", refused={"answer": lr.result.answer, "why": why})
+        elif lr.result.verified and lr.attributed:        # one witness only: said hedged, the source never named
+            rec.update(tier="attributed", reply=hedged(rec["answer"]))
+        if self.books is not None:                        # the record's evidence: internal, the audit view's (0016)
+            rec["evidence"] = {f: self.books.citations[normalize(f)] for f in rec["trace"] if normalize(f) in self.books.citations}
         self._keep(rec)
         return rec
+
+    def _time_check(self, question: str, lr) -> str | None:
+        """Why the answer's last fact cannot be what the question asks about in time, or None: its tense (the
+        form it parses to, else its auxiliary) and its year against the dates the fact carries
+        (`question_forms.time_check`; an undated fact is not checked)."""
+        from cubbyllm.reasoning.planner import normalize
+        from question_forms import Forms, tense_of, time_check
+        h = lr.result.trace[-1] if lr.result.trace else None
+        if h is None or h.triple is None:
+            return None
+        self._forms = self._forms or Forms()
+        p = self._forms.parse(question)
+        year = strip_as_of(question)[1]
+        times = getattr(self.world, "times", None) or {}
+        when = times.get(" ".join(h.fact.split())) or times.get(normalize(h.fact))
+        return time_check(self._forms.aspect(h.triple.rel), p[2] if p else tense_of(question), int(year) if year else None,
+                          when, h.triple.obj, time.localtime().tm_year)
 
     def feedback(self, record_id: str, verdict: str | None = None, relation: str | None = None,
                  asker: str | None = None) -> dict:
