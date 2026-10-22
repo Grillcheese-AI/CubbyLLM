@@ -62,6 +62,13 @@ all into the same plan. Nick's rule: no external model writes any of it.
 - **Training:** an emitter LoRA on `base450m_cont` (as `v13e`), the v12e recipe, a Colab notebook for Cowork to
   run (~1 h on the G4, ~$1).
 
+- **Reuse, don't rebuild (Cowork, 2026-10-22):**
+  - relation wording and synonyms come from `cubbyllm/reasoning/lexicon.py`, WordNet joined with WOLF for French;
+  - the turn kind's seed labeller ports `intent.py` from Nick's `empirical_grilly_next` project (a checkout beside this one; path in `CLAUDE.local.md`): question, instruction, statement, exclamation or
+    greeting, with rule-based imperative detection and no model;
+  - a grammar gate on every rendered question, after its `grammar.py` / `hierarchy.py` idea (POS-template
+    validity), so a shape like "What is the founded by of Rome?" cannot enter the set.
+
 ## Acceptance (pre-registered)
 - **Held-out shapes:** plan exact ≥ **0.90** in each variety. **Held-out relations:** ≥ **0.80**.
 - **Human questions** (never trained):

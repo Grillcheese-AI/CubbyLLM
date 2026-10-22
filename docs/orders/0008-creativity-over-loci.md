@@ -42,6 +42,9 @@ and art.
   the store, never checked by the fact gate, and never refused for being unverified. It carries the `invented`
   tier in the loop's record.
 
+- **"Same kind" for analogies:** `ic.py`'s hypernym density and information content (WordNet; Nick's `empirical_grilly_next` project (a checkout beside this one; path in `CLAUDE.local.md`)). Entities
+  whose descriptions activate the same hypernyms are candidates for "C is like A".
+
 ## Acceptance (pre-registered)
 - **The bench** (`validation/bench_mixer.py`): a seed store of 200 facts about 50 entities. The mixer proposes ≥ 100
   candidates absent from the store. Report how many it proposed, how many were confirmed or refused per verifier,

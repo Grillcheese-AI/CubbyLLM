@@ -66,6 +66,10 @@ network's (Vinyals et al. 2015, arXiv 1506.03134).
 - Rules in `CLAUDE.md` hold. CPU, the 2026-10-20 budget an arm; arms in parallel; same seeds across arms.
 - Logs: `validation/logs/exp_k10_free_text_<arm>_<date>.{json,log}`.
 
+- **If text keys of similar subjects collide** ("New York" / "New Jersey"): pattern separation before binding,
+  as `cache.py`'s hippocampal cache does with grilly's DentateGyrus (Nick's `empirical_grilly_next` project (a checkout beside this one; path in `CLAUDE.local.md`)). It is a sparse expansion that pushes
+  similar inputs apart. An idea to try only if the key-similarity report shows the problem.
+
 ## Out of scope
 - The 450M (shard marks for multi-token subjects, a run): the next order, if P passes. What happens after NONE (look
   the fact up once, know it next time) is order 0007; here NONE only has to be right. Free-text *writes*:

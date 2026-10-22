@@ -44,6 +44,9 @@ host, checked as today.
   the builder `_build_talk.py`), as `talk_v3`. The notebook is for Cowork to run on Colab. Serving changes nothing
   but the adapter name.
 
+- **An optional arm, best of N:** draft N replies and keep the most natural one that passes the claim check.
+  This is the "natural selection" step of `hybrid.py` in Nick's `empirical_grilly_next` project (a checkout beside this one; path in `CLAUDE.local.md`). Report its cost against its gain on the blind A/B.
+
 ## Acceptance (pre-registered)
 - **The battery:** 300 held-out turns. 200 are fact turns (150 EN, 50 FR) from the H-E8/H-E10 dev sets and the
   wiki world; 100 are chat turns.

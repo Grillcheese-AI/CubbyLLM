@@ -58,6 +58,10 @@ re-runs.
   - it confirms their public-domain status;
   - it marks **fiction** (subjects and bookshelves), so novels go to fiction worlds, not reality.
 
+- **Domain routing for untyped text and questions:** port `domain_classify.py` / `domain_regex.py` from Nick's `empirical_grilly_next` project (a checkout beside this one; path in `CLAUDE.local.md`)
+  (80+ ordered regexes over the 88-domain SVC ontology, no model). Use it where a dataset has no topic map, and
+  to pick which domain world a question consults first.
+
 ## Acceptance (pre-registered)
 - **Coverage:** every manifest row is ingested or excluded with its reason. The report has a per-dataset table:
   rows, entities, world, tier mix, as-of share, time.
