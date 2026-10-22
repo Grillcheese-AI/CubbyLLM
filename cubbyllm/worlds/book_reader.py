@@ -11,7 +11,7 @@ The prompt and the answer, shared by the data builder, the adapter's eval and th
 
 One line per fact the sentence states about the subject: a relation of the closed set (wikikg's codes, the ids
 the wiki world's facts are made from) and the value copied from the sentence, or `NONE`. A line is kept only if
-its relation is in the set and its value occurs in the sentence (`lfm_source.grounded`, the web reader's rule):
+its relation is in the set and its value occurs in the sentence (`cubbyllm.speech.passage.grounded`, the web reader's rule):
 the reader may only point at text it was shown. A date's value becomes the store's form here (a full date ISO,
 a year as written), so a book's fact and the wiki world's are one fact.
 
@@ -63,7 +63,7 @@ def date_value(span: str) -> str | None:
 def parse(text: str, sentence: str, relations) -> list[tuple[str, str]]:
     """The model's lines -> [(code, span)]: the relation in the closed set, the span in the sentence; the rest
     dropped (an unknown relation is never mapped, a value the sentence lacks never kept)."""
-    from lfm_source import grounded
+    from ..speech.passage import grounded
     out = []
     for line in (text or "").splitlines():
         code, sep, span = line.strip().partition("|")

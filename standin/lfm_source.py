@@ -184,48 +184,8 @@ Relation: {relation}
 Facts:
 - """
 
-_MONTHS = {m: i for i, m in enumerate(("january february march april may june july august september october "
-                                         "november december").split(), 1)}
-_MONTHS.update({m: i for i, m in enumerate(("janvier février mars avril mai juin juillet août septembre octobre "
-                                              "novembre décembre").split(), 1)})
-_ISO = re.compile(r"^(?P<y>\d{4})(?:-(?P<m>\d{2})(?:-(?P<d>\d{2}))?)?$")
-
-
-def grounded(value: str, passage: str) -> bool:
-    """Does the passage SAY this value? The value's words in order, or -- for an ISO date, which the
-    reader writes in the store's form -- the year, the month (by name or number) and the day, all in
-    the passage. What the passage does not say, the reader may not write."""
-    p = normalize(passage)
-    v = normalize(value)
-    if v and f" {v} " in f" {p} ":
-        return True
-    parts = _date_parts(value)
-    if parts is None:
-        return False
-    y, mo, d = parts
-    words = set(p.split())
-    if y not in words:
-        return False
-    if mo and not ({k for k, i in _MONTHS.items() if i == mo} & words or str(mo) in words):
-        return False
-    return not d or str(d) in words or f"{d:02d}" in words
-
-
-_DMY = re.compile(r"^(?P<d>\d{1,2})(?:er)? (?P<m>[^\W\d_]+) (?P<y>\d{4})$")
-_MDY = re.compile(r"^(?P<m>[^\W\d_]+) (?P<d>\d{1,2}),? (?P<y>\d{4})$")
-
-
-def _date_parts(value: str) -> tuple[str, int | None, int | None] | None:
-    """(year, month, day) of a date written as ISO, '7 November 1867' or 'November 7, 1867' -- the
-    passage and the reader may spell one date two ways and it is still the date the passage says."""
-    v = " ".join((value or "").split())
-    m = _ISO.match(v)
-    if m:
-        return m["y"], int(m["m"]) if m["m"] else None, int(m["d"]) if m["d"] else None
-    m = _DMY.match(v) or _MDY.match(v)
-    if m and m["m"].lower() in _MONTHS:
-        return m["y"], _MONTHS[m["m"].lower()], int(m["d"])
-    return None
+from cubbyllm.speech.passage import _DMY, _ISO, _MDY, _MONTHS, _date_parts, grounded  # noqa: E402,F401 -- 'say only
+#   what the passage says' is a speech rule (order 0031)
 
 
 class LfmReader:
