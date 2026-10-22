@@ -102,3 +102,26 @@ def test_a_book_whose_person_does_not_fit_the_subjects_life_is_set_aside(tmp_pat
     facts = {f["fact"] for fs in _worlds(tmp_path / "bulk").values() for f in fs}
     assert not any(f.endswith("of Napoleon Bonaparte") for f in facts)               # every book's birth is 1768-1769
     assert "Henry II is the head of state of England" in facts                       # the others stand
+
+
+def test_what_the_bulk_pass_holds_is_never_said_even_from_the_store(tmp_path):
+    """A held (subject, relation) -- two values of a relation that has one, in different books -- vetoes an answer
+    whoever states it: here a store fact said flat a moment before. The real bulk output loads Napoleon's birth date."""
+    import json as _json
+    from ask import AskLoop
+    from test_ask import FakeEmitter
+    _index(tmp_path)
+    bulk.run(tmp_path / "books.sqlite", tmp_path / "bulk", workers=0, wiki={}, log=lambda m: None)
+    plans = {"What is the place of birth of Napoleon Bonaparte?": ("Napoleon Bonaparte", ["place of birth"])}
+    world = TimedStore(STORE + ["Ajaccio is the place of birth of Napoleon Bonaparte"])
+    world.index.declare_relation("place of birth")
+    loop = AskLoop(FakeEmitter(plans), world=world, source=DictSource({}), lexicon=False, run_fn=exact_vm())
+    assert loop.ask("What is the place of birth of Napoleon Bonaparte?")["verified"]    # flat, before any veto
+    loop.load_held(tmp_path / "bulk" / "worlds" / "_held.jsonl")
+    assert ("napoleon bonaparte", "date of birth") in loop.contested
+    held = tmp_path / "held.jsonl"
+    held.write_text(_json.dumps({"fact": "Corte is the place of birth of Napoleon Bonaparte", "rel": "place of birth",
+                                 "subject": "Napoleon Bonaparte", "tier": "held"}) + "\n", encoding="utf-8")
+    assert loop.load_held(held) == 1
+    rec = loop.ask("What is the place of birth of Napoleon Bonaparte?")
+    assert not rec["verified"] and rec["reason"] == "contested" and rec["refused"]["answer"] == "Ajaccio"

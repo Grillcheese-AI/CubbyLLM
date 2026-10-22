@@ -682,6 +682,7 @@ class AskLoop:
             from book_source import BookSource
             books = BookSource(books)
         self.books = books
+        self.contested: set[tuple[str, str]] = set()     # (subject, relation) a bulk pass held: `load_held`
         if books is not None and hasattr(books, "life") and books.life is None:
             books.life = self._life                      # the same-name guard reads the subject's life from this world
         # the question's tense and year against the answer's dates (order 0012: "Who rules England?" on a reign
@@ -811,6 +812,20 @@ class AskLoop:
         except Exception as e:                           # noqa: BLE001 -- a history that cannot be written never costs an answer
             print(f"[ask] history not written: {type(e).__name__}: {e}", flush=True)
 
+    def load_held(self, path) -> int:
+        """The facts a bulk pass held (two values of a relation that has one: order 0013's `_held.jsonl`), as a veto:
+        an answer whose last fact is about a held (subject, relation) is refused `contested`, whoever states it --
+        a live read that sees one value only does not make the other go away."""
+        from cubbyllm.reasoning.planner import normalize, parse_fact
+        from cubbyllm.reasoning.sleep import load_facts
+        n = 0
+        for key, r in load_facts(pathlib.Path(path)).items():
+            t = parse_fact(key, known={r["rel"]} if r.get("rel") else None) if r.get("rel") else parse_fact(key)
+            subj = r.get("subject") or (t.subj if t else None)
+            if subj and (r.get("rel") or t):
+                self.contested.add((normalize(subj), normalize(r.get("rel") or t.rel))); n += 1
+        return n
+
     def load_learned(self, path) -> int:
         """Facts the sleep cycle made durable (its ``learned_facts.jsonl``), back into the store at boot,
         with their relation declared, their source as provenance and their time. What the loop learned
@@ -936,7 +951,12 @@ class AskLoop:
         if snap and snap[0] != "as_of":                   # a snapshot's value asked about another time (order 0014)
             why = snap[1]
         undated = self._undated(question, lr) if lr.result.verified and not why and not snap else None
-        if why:                                           # the question's tense or year is not the fact's: not said
+        h = lr.result.trace[-1] if lr.result.verified and lr.result.trace else None
+        contested = h is not None and h.triple is not None and (normalize(h.triple.subj), normalize(h.triple.rel)) in self.contested
+        if contested:                                     # the bulk pass held two values of it (order 0013): never said
+            rec.update(answer=None, verified=False, reason="contested",
+                       refused={"answer": lr.result.answer, "why": "the sources disagree on it"})
+        elif why:                                           # the question's tense or year is not the fact's: not said
             rec.update(answer=None, verified=False, reason="time_mismatch", refused={"answer": lr.result.answer, "why": why})
         elif snap:                                        # a value that changes, from a dated snapshot: said "as of"
             rec.update(tier="as_of", reply=f"As of {snap[1]}, {rec['answer']}.")

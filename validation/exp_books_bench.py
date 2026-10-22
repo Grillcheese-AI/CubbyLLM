@@ -196,6 +196,7 @@ def bench(idx, pairs, reads, n, rng, within=None, bulk=None) -> dict:
     loop = AskLoop(TemplateEmitter(), world=world, source=Offline(), lexicon=True, books=src)
     loaded = sum(loop.load_learned(f) for f in sorted(glob.glob(os.path.join(bulk, "*.jsonl")))   # order 0013's worlds
                  if not os.path.basename(f).startswith("_")) if bulk else None                   # (never the held)
+    held = loop.load_held(os.path.join(bulk, "_held.jsonl")) if bulk else None     # the held: a veto, never an answer
     forms = Forms()
     rows, tense_rows = [], []
     for c in cands:
@@ -232,7 +233,7 @@ def bench(idx, pairs, reads, n, rng, within=None, bulk=None) -> dict:
         tense_rows.append({"question": wrong_q, "verified": wr["verified"], "tier": wr.get("tier"), "reason": wr.get("reason")})
     spoken = [r for r in rows if r["verified"]]
     flat, hedged = [r for r in spoken if not r["tier"]], [r for r in spoken if r["tier"]]
-    return {"bulk_facts_loaded": loaded, "questions": len(rows), "spoken": len(spoken), "flat": len(flat), "hedged": len(hedged),
+    return {"bulk_facts_loaded": loaded, "bulk_held_loaded": held, "questions": len(rows), "spoken": len(spoken), "flat": len(flat), "hedged": len(hedged),
             "wrong_flat": sum(r["correct"] is False for r in flat), "wrong_hedged": sum(r["correct"] is False for r in hedged),
             "reviewed": [{"question": r["question"], "answer": r["answer"], "verdict": r["verdict"],
                           "by": REVIEWED[(r["subject"], r["relation"], r["answer"])][1]} for r in rows if r["reviewed"]],
