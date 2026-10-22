@@ -1,5 +1,5 @@
 # 0029 — Copy or refuse, arm D: a confidence learned on calibration documents, so fewer right answers are refused
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: H-K10 (after 0022)
 
 ## Why
