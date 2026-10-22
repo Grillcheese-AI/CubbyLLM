@@ -1,6 +1,6 @@
 # 0020 — Emotional arcs: a book (or a conversation) as a time series of feeling, and the change points where it turns
-status: proposed
-written: 2026-10-22 by Cowork · approved: — · hypothesis: H-K11 (affect, order 0019), with K2 (surprise-gated
+status: open
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes open 0020") · hypothesis: H-K11 (affect, order 0019), with K2 (surprise-gated
 writing: a change-point probability is a boundary signal) · **the pipeline can start now on the human lexicons; the
 0019 readers plug in when they pass**
 
@@ -64,9 +64,14 @@ We already hold what this needs: human word ratings (Warriner 2013 valence and a
   - *Frankenstein*, 1818 text (fall-rise-fall): the creature wakes and the dream turns to disgust, ch. IV (ch. 5 in the
     1831 text), at 0.188.
   - *The Count of Monte Cristo* (fall-rise), held, in place of *The Martian* (not held, not public domain): the arrest
-    (fall) and the escape from the Château d'If (rise). Positions to locate.
-  - *Madame Bovary* (fall) and *Great Expectations* (rise-fall-rise; Magwitch's return, ch. 39): not held; public-domain
-    Gutenberg texts, fetched only with Nick's yes, then their pivots located and checked.
+    at the marriage feast (fall), ch. 5, at 0.026; the escape, ch. 20, at 0.151.
+  - *Madame Bovary*, Marx-Aveling translation (fall): the bailiff's inventory, Part III ch. 7, at 0.846 (the steepest
+    point of a steady fall).
+  - *Great Expectations* (rise-fall-rise): Magwitch's return, ch. 39, at 0.658.
+  - *Romeo and Juliet*: also fetched in modern spelling (Gutenberg #1513): III.1 at 0.505-0.511.
+  The three fetched texts (Gutenberg #2413, #1400, #1513; public domain) sit beside the collections (path in
+  `CLAUDE.local.md`). Several proposed quotations were not in the texts (two in *Great Expectations*, the whole
+  *Madame Bovary* passage in this translation): positions come from the texts, never from the proposals.
   Nick reads each located passage and confirms it is a turn. The proposals came from a model, so the set is labelled
   "model-proposed, human-confirmed", never "human gold".
   - **Calibrate** tau and p on two books (*Pride and Prejudice*, *Frankenstein*); **test** on the rest.
