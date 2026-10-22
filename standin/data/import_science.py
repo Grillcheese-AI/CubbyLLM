@@ -44,6 +44,7 @@ for _p in (ROOT, os.path.join(ROOT, "standin"), HERE):
         sys.path.insert(0, _p)
 
 from cubbyllm.reasoning.planner import normalize, parse_fact  # noqa: E402
+from cubbyllm.worlds.science import mount_science  # noqa: E402,F401 -- the mount lives with the worlds (order 0031)
 
 LICENSES = {"MegaScience/MegaScience": "CC-BY-NC-SA-4.0", "MegaScience/TextbookReasoning": "CC-BY-NC-SA-4.0"}
 ROWS_API = "https://datasets-server.huggingface.co/rows"
@@ -303,26 +304,6 @@ def save_worlds(worlds: dict, folder: str, datasets: list[str], stats: dict) -> 
         json.dump({"worlds": {n: len(s.texts) for n, s in worlds.items()}, "stats": stats}, f, indent=1)
 
 
-def mount_science(brain, folder: str, attested_only: bool = True) -> dict[str, int]:
-    """Mount every saved science world on a serving brain as `brain.worlds[name]`: the ATTESTED facts only
-    (a latent fact is held from speech), retrieved with the brain's own encoder. -> {name: facts mounted}."""
-    from capsules import CapsuleStore
-    from worlds import FactStore
-    enc = getattr(brain.worlds.get("facts"), "enc", None)
-    out = {}
-    for name in sorted(os.listdir(folder)):
-        path = os.path.join(folder, name)
-        if not os.path.isfile(os.path.join(path, "capsules.meta.json")):
-            continue
-        store = CapsuleStore.load(path, gpu=False)
-        texts = [t for t in store.texts if not (attested_only and store.meta[t].get("latent") is not None)]
-        if texts:
-            brain.worlds[name] = FactStore(texts, enc=enc, name=name)
-            out[name] = len(texts)
-    return out
-
-
-# ── CLI ───────────────────────────────────────────────────────────────────────
 def _jsonl(path: str) -> list[dict]:
     with open(path, encoding="utf-8") as f:
         return [json.loads(l) for l in f if l.strip()]
