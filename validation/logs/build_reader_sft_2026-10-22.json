@@ -1,0 +1,414 @@
+{
+ "args": {
+  "per_subject": 200,
+  "min_count": 30,
+  "gap": 8,
+  "neg": 1.0,
+  "test": 0.1,
+  "limit": null,
+  "seed": 0,
+  "audit": 100,
+  "score_audit": null
+ },
+ "sentences_seen": 416134,
+ "positives": 7219,
+ "negative_pool": 406005,
+ "records": {
+  "test_neg": 652,
+  "test_pos": 652,
+  "train_neg": 6567,
+  "train_pos": 6567
+ },
+ "relations": {
+  "AFTER": {
+   "train": 47,
+   "test": 3
+  },
+  "AUTHORED_BY": {
+   "train": 271,
+   "test": 17
+  },
+  "AUTHOR_OF": {
+   "train": 86,
+   "test": 11
+  },
+  "BASED_ON": {
+   "train": 92,
+   "test": 7
+  },
+  "BEFORE": {
+   "train": 38,
+   "test": 1
+  },
+  "BORDERS": {
+   "train": 113,
+   "test": 19
+  },
+  "BORN_ON": {
+   "train": 33,
+   "test": 0
+  },
+  "CAPITAL_OF": {
+   "train": 68,
+   "test": 19
+  },
+  "CAUSES": {
+   "train": 32,
+   "test": 1
+  },
+  "CHILD_OF": {
+   "train": 118,
+   "test": 5
+  },
+  "COLLABORATED_WITH": {
+   "train": 195,
+   "test": 28
+  },
+  "COMMANDER_OF": {
+   "train": 34,
+   "test": 2
+  },
+  "COMPETED_IN": {
+   "train": 74,
+   "test": 4
+  },
+  "CREATED_BY": {
+   "train": 138,
+   "test": 10
+  },
+  "CREATOR_OF": {
+   "train": 42,
+   "test": 7
+  },
+  "DESCRIBED_BY": {
+   "train": 30,
+   "test": 2
+  },
+  "DIED_ON": {
+   "train": 62,
+   "test": 8
+  },
+  "FIELD_OF_WORK": {
+   "train": 34,
+   "test": 2
+  },
+  "FOUNDER_OF": {
+   "train": 71,
+   "test": 5
+  },
+  "HAS_PART": {
+   "train": 458,
+   "test": 40
+  },
+  "INFLUENCES": {
+   "train": 45,
+   "test": 1
+  },
+  "INSPIRED_BY": {
+   "train": 61,
+   "test": 8
+  },
+  "INSTANCE_OF": {
+   "train": 231,
+   "test": 28
+  },
+  "IS_A": {
+   "train": 166,
+   "test": 17
+  },
+  "KNOWN_FOR": {
+   "train": 38,
+   "test": 6
+  },
+  "LEADS": {
+   "train": 34,
+   "test": 7
+  },
+  "LED_BY": {
+   "train": 102,
+   "test": 9
+  },
+  "LOCATED_IN": {
+   "train": 1274,
+   "test": 136
+  },
+  "LOCATION_OF": {
+   "train": 396,
+   "test": 43
+  },
+  "MENTOR_OF": {
+   "train": 84,
+   "test": 4
+  },
+  "NATIONALITY": {
+   "train": 34,
+   "test": 0
+  },
+  "OCCUPATION": {
+   "train": 101,
+   "test": 4
+  },
+  "OPPOSES": {
+   "train": 30,
+   "test": 6
+  },
+  "PARENT_OF": {
+   "train": 143,
+   "test": 6
+  },
+  "PART_OF": {
+   "train": 384,
+   "test": 53
+  },
+  "POSITION_HELD": {
+   "train": 263,
+   "test": 18
+  },
+  "PRECEDED_BY": {
+   "train": 42,
+   "test": 1
+  },
+  "RELATIONSHIP_OF": {
+   "train": 78,
+   "test": 7
+  },
+  "RELATION_OF": {
+   "train": 32,
+   "test": 5
+  },
+  "RELATIVE_OF": {
+   "train": 452,
+   "test": 42
+  },
+  "RENEWED_BY": {
+   "train": 63,
+   "test": 4
+  },
+  "SIBLING_OF": {
+   "train": 45,
+   "test": 3
+  },
+  "SPOUSE_OF": {
+   "train": 53,
+   "test": 5
+  },
+  "SUBCLASS_OF": {
+   "train": 71,
+   "test": 3
+  },
+  "SUCCEEDED_BY": {
+   "train": 33,
+   "test": 1
+  },
+  "VARIANT_OF": {
+   "train": 713,
+   "test": 72
+  },
+  "WEST_OF": {
+   "train": 33,
+   "test": 1
+  },
+  "WORKS_FOR": {
+   "train": 49,
+   "test": 5
+  }
+ },
+ "dropped_below_min_count": {
+  "ASSOCIATED_WITH": 96,
+  "CONTEMPORARY_WITH": 73,
+  "RELATED_TO": 43,
+  "ETHNICITY": 29,
+  "COLLEAGUE_OF": 28,
+  "FOUNDED_BY": 26,
+  "DIVISION_OF": 25,
+  "CITED_BY": 23,
+  "PERFORMED_BY": 23,
+  "DERIVED_FROM": 23,
+  "ENEMY_OF": 22,
+  "RELATIONSHIP": 22,
+  "ALIAS_OF": 21,
+  "CLOSEST_POINT_OF": 21,
+  "SUBJECT_OF": 21,
+  "MEMBER_OF": 20,
+  "IN_CONFLICT_WITH": 19,
+  "AFFILIATED_WITH": 18,
+  "OPPONENT_OF": 17,
+  "MANAGED_BY": 16,
+  "NAME_OF": 14,
+  "AGREES_WITH": 13,
+  "BETWEEN": 12,
+  "DIRECTED_BY": 12,
+  "CONFLICT_WITH": 12,
+  "CONTRAST_WITH": 12,
+  "BORN_IN": 11,
+  "ADAPTED_FROM": 10,
+  "COGNATE_WITH": 10,
+  "ABOUT": 9,
+  "SEPARATED_FROM": 9,
+  "MENTIONED_IN": 9,
+  "OPPOSED_TO": 9,
+  "CAUSED_BY": 8,
+  "AFTER_IN_SIZE": 8,
+  "FLOWS_INTO": 8,
+  "GENERALIZATION_OF": 7,
+  "DRIVEN_FROM_BY": 7,
+  "NAMED_AFTER": 7,
+  "INFLUENCED_BY": 7,
+  "MARRIED_TO": 7,
+  "GRANDCHILD_OF": 7,
+  "STUDENT_OF": 6,
+  "CONQUERED": 6,
+  "AGAINST": 6,
+  "TEMPORAL": 6,
+  "RESIDED_IN": 6,
+  "SUPPORTED_BY": 6,
+  "LEADER_OF": 6,
+  "DISCOVERED_BY": 6,
+  "USURPER_OF": 6,
+  "DIRECTOR_OF": 6,
+  "COMPOSED_OF": 5,
+  "SHARES_NAME_WITH": 5,
+  "DIED_IN": 5,
+  "COMPARED_WITH": 5,
+  "HEADQUARTERED_IN": 5,
+  "ALLIED_WITH": 5,
+  "EMPLOYED_BY": 5,
+  "SUBSIDIARY_OF": 5,
+  "COMPONENT_OF": 5,
+  "GENRE": 5,
+  "CONTAINS": 5,
+  "OCCUPIED_BY": 5,
+  "CONDUCTED_BY": 4,
+  "TIMELINE_EVENT": 4,
+  "EDITED_BY": 4,
+  "PARTITION_OF": 4,
+  "CONNECTS": 4,
+  "RELIGION": 4,
+  "CONTRIBUTED_TO": 4,
+  "CO_RULER_WITH": 4,
+  "SUBSET_OF": 4,
+  "RELATION": 4,
+  "LANGUAGE_SPOKEN": 4,
+  "IDENTICAL_TO": 4,
+  "ASSAULTED_BY": 4,
+  "CREATED_FOR": 4,
+  "FOUND_IN": 4,
+  "MENTIONED_BY": 4,
+  "WANTS_TERRITORY": 4,
+  "TRANSLATED_BY": 3,
+  "EDUCATED_AT": 3,
+  "USED_BY": 3,
+  "CO_RULER_OF": 3,
+  "LANGUAGE_OF": 3,
+  "AWARDED_RANK": 3,
+  "SHARED_COMMUNION_WITH": 3,
+  "SEQUEL_OF": 3,
+  "RIVAL_OF": 3,
+  "NORTH_OF": 3,
+  "PLAYS_FOR_TEAM": 3,
+  "COMPOSED_BY": 3,
+  "PROCLAIMED_BY": 3,
+  "OBSERVED_BY": 3,
+  "TRIBUTARY_OF": 3,
+  "APPEARS_IN": 3,
+  "INFLICTED_ON": 3,
+  "ALLY_OF": 3,
+  "CAPTURED_BY": 3,
+  "COACH_OF": 3,
+  "OPPOSED_BY": 2,
+  "CLAIMED_BY": 2,
+  "BINDS_TO": 2,
+  "DEDICATED_TO": 2,
+  "CONTROVERSIAL_FOR": 2,
+  "PUBLISHED_BY": 2,
+  "SERVED_IN": 2,
+  "ANALOG_OF": 2,
+  "BURIED_AT": 2,
+  "CATEGORY_OF": 2,
+  "CO_RECIPIENT_OF": 2,
+  "FOCUSES_ON": 2,
+  "CITES": 2,
+  "CASES": 2,
+  "DEFEATED_BY": 2,
+  "ALLIANCE_WITH": 2,
+  "PRODUCED_BY": 2,
+  "AGREEMENT_WITH": 2,
+  "WON_BATTLE": 2,
+  "SOUTH_OF": 1,
+  "INFLUENCED": 1,
+  "ALMA_MATER": 1,
+  "SETTLED_IN": 1,
+  "ALBUM_OF": 1,
+  "INVOLVES": 1,
+  "CO_WORKER_OF": 1,
+  "COMMANDED_BY": 1,
+  "ALIAS": 1,
+  "OFFSHOOT_OF": 1,
+  "INVENTED_BY": 1,
+  "USED_IN": 1,
+  "MENTIONED_AS": 1,
+  "DURING": 1,
+  "INDEPENDENT_OF": 1,
+  "DISAPPEARED_ON": 1,
+  "CONTESTED_BY": 1,
+  "RECAPTURED_BY": 1,
+  "SUPPORTED": 1,
+  "OVERLAPS_WITH": 1,
+  "OCCURRED_DURING": 1,
+  "NOTABLE_WORK_OF": 1,
+  "ADOPTED_BY": 1,
+  "COORDINATES_WITH": 1,
+  "COMPLEMENTED_BY": 1,
+  "ASSISTANT_OF": 1,
+  "WON_ELECTION_OVER": 1,
+  "GREATER_THAN": 1,
+  "COACHED_BY": 1,
+  "INTERPRETED_AS": 1,
+  "ADMITTED_BY": 1,
+  "INSPIRES": 1,
+  "NAMED_BY": 1,
+  "HOST_OF": 1,
+  "FLAGSHIP_OF": 1,
+  "DEFEATED": 1,
+  "ACCESSIBLE_TO": 1,
+  "ORGANIZED_BY": 1,
+  "SHORT_FOR": 1,
+  "RUNNING_MATE_OF": 1,
+  "ADJACENT_TO": 1,
+  "KILLED_BY": 1,
+  "BEGAN_IN": 1,
+  "COOPERATED_WITH": 1,
+  "EAST_OF": 1,
+  "FOUNDED_ON": 1,
+  "EPISODE_OF": 1,
+  "CONFLICTED_WITH": 1,
+  "PROTECTED_BY": 1,
+  "ONLY_SPECIES_OF": 1,
+  "IMPROVED_BY": 1,
+  "USES": 1,
+  "SHARES_FEATURES_WITH": 1,
+  "SYMBOLISM_OF": 1,
+  "HEAD_OF": 1,
+  "RELATIONSHIP_WITH": 1,
+  "SUPPORTER_OF": 1,
+  "RECORDED_AT": 1,
+  "SOUTH_WEST_OF": 1,
+  "SUBJECT_OF_VASSALAGE": 1,
+  "CONNECTED_TO": 1,
+  "CROSSES": 1,
+  "ACQUIRED_BY": 1,
+  "OWNER_OF": 1,
+  "SPONSORED_BY": 1,
+  "USED_FOR": 1
+ },
+ "per_era": {
+  "MiddleAges": 1604,
+  "AncientClassical": 4187,
+  "Prehistory": 544,
+  "unknown": 867,
+  "Modern": 17
+ },
+ "test_books": 481,
+ "train_books": 4216,
+ "seconds": 263.3
+}

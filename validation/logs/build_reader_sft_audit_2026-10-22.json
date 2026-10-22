@@ -1,0 +1,411 @@
+{
+ "what": "order 0013: the share of distant-supervision labels the sentence states, 100 random train positives (build_reader_sft --audit 100, seed 0); judged by Claude Code, to be confirmed by hand (Cowork, Nick); y = the sentence states every label of the record",
+ "score": {
+  "rows": 100,
+  "judged": 100,
+  "stated": 45,
+  "precision": 0.45
+ },
+ "verdicts": [
+  {
+   "id": "677c884a71d7b5aa",
+   "verdict": "n"
+  },
+  {
+   "id": "4be6abb674da2fda",
+   "verdict": "y"
+  },
+  {
+   "id": "f1b4e448937de871",
+   "verdict": "y"
+  },
+  {
+   "id": "9e8299301999382d",
+   "verdict": "n"
+  },
+  {
+   "id": "ca27b9884535d37c",
+   "verdict": "n"
+  },
+  {
+   "id": "62044302c2b32412",
+   "verdict": "y"
+  },
+  {
+   "id": "2f034356c020b891",
+   "verdict": "y"
+  },
+  {
+   "id": "8ac5c24af453ce5b",
+   "verdict": "y"
+  },
+  {
+   "id": "086fa2cffff792ed",
+   "verdict": "n"
+  },
+  {
+   "id": "8be54e0602e0ad86",
+   "verdict": "n"
+  },
+  {
+   "id": "a39eea8753ec6ba6",
+   "verdict": "n"
+  },
+  {
+   "id": "17b1f139708ea604",
+   "verdict": "n"
+  },
+  {
+   "id": "d64c85708a084ad8",
+   "verdict": "n"
+  },
+  {
+   "id": "95d06a1f9238d9a5",
+   "verdict": "n"
+  },
+  {
+   "id": "09fbaaf7a5b7d73f",
+   "verdict": "n"
+  },
+  {
+   "id": "d473bef22e783b6d",
+   "verdict": "n"
+  },
+  {
+   "id": "8c564435130a7842",
+   "verdict": "n"
+  },
+  {
+   "id": "49f7229367fc7042",
+   "verdict": "n"
+  },
+  {
+   "id": "329458e9b16c2f0d",
+   "verdict": "y"
+  },
+  {
+   "id": "a56b17f72aedb4e4",
+   "verdict": "y"
+  },
+  {
+   "id": "bd33262e9a08da23",
+   "verdict": "y"
+  },
+  {
+   "id": "51c7046c80257ccb",
+   "verdict": "y"
+  },
+  {
+   "id": "f1f7527ad70a3043",
+   "verdict": "n"
+  },
+  {
+   "id": "6826e1737281e08a",
+   "verdict": "y"
+  },
+  {
+   "id": "9aef03a43fba5449",
+   "verdict": "y"
+  },
+  {
+   "id": "b59713d04036784e",
+   "verdict": "y"
+  },
+  {
+   "id": "29857e494384578d",
+   "verdict": "n"
+  },
+  {
+   "id": "3340b1977d72614b",
+   "verdict": "n"
+  },
+  {
+   "id": "fd024eb5fe139968",
+   "verdict": "n"
+  },
+  {
+   "id": "3b7d99e940a226a3",
+   "verdict": "y"
+  },
+  {
+   "id": "e6c76b00a7a2bfc1",
+   "verdict": "n"
+  },
+  {
+   "id": "3fc42cfc1a05652a",
+   "verdict": "y"
+  },
+  {
+   "id": "e4c2450550f7d801",
+   "verdict": "n"
+  },
+  {
+   "id": "69ace29b4de67aae",
+   "verdict": "y"
+  },
+  {
+   "id": "25296fb0915bd372",
+   "verdict": "y"
+  },
+  {
+   "id": "3423221996121bdf",
+   "verdict": "n"
+  },
+  {
+   "id": "ae84506bbfc265ac",
+   "verdict": "n"
+  },
+  {
+   "id": "119a02cec3fd707d",
+   "verdict": "y"
+  },
+  {
+   "id": "312f6bcc7d15832d",
+   "verdict": "n"
+  },
+  {
+   "id": "ad9d9b7d96be280b",
+   "verdict": "n"
+  },
+  {
+   "id": "dfc2c4af3d624ebf",
+   "verdict": "n"
+  },
+  {
+   "id": "41175d30bbde029a",
+   "verdict": "y"
+  },
+  {
+   "id": "9018ab9aab3cf702",
+   "verdict": "y"
+  },
+  {
+   "id": "c10ce9530cf94847",
+   "verdict": "n"
+  },
+  {
+   "id": "f63fc2631bb5ade3",
+   "verdict": "y"
+  },
+  {
+   "id": "d24e0a8380487798",
+   "verdict": "y"
+  },
+  {
+   "id": "6efe01894dec093d",
+   "verdict": "n"
+  },
+  {
+   "id": "80e7e87762de886e",
+   "verdict": "y"
+  },
+  {
+   "id": "fc8f7b57f384bbf2",
+   "verdict": "y"
+  },
+  {
+   "id": "7ad015858afdc972",
+   "verdict": "y"
+  },
+  {
+   "id": "37e85e91c1382e04",
+   "verdict": "y"
+  },
+  {
+   "id": "172536a0c5dd0470",
+   "verdict": "n"
+  },
+  {
+   "id": "67f7177e4e8c466b",
+   "verdict": "n"
+  },
+  {
+   "id": "8d0bd43fe856c432",
+   "verdict": "n"
+  },
+  {
+   "id": "389454caecea283e",
+   "verdict": "y"
+  },
+  {
+   "id": "7e1a108c6e5da146",
+   "verdict": "y"
+  },
+  {
+   "id": "6fed66989239b350",
+   "verdict": "n"
+  },
+  {
+   "id": "c65b9b93085a370a",
+   "verdict": "n"
+  },
+  {
+   "id": "7fe1a341285f4e68",
+   "verdict": "y"
+  },
+  {
+   "id": "8fe3ce9f5927e336",
+   "verdict": "y"
+  },
+  {
+   "id": "1ce447df7799d171",
+   "verdict": "y"
+  },
+  {
+   "id": "09a95745ddd53b32",
+   "verdict": "n"
+  },
+  {
+   "id": "90109ff4cf6ab66b",
+   "verdict": "n"
+  },
+  {
+   "id": "2487285458320dd4",
+   "verdict": "y"
+  },
+  {
+   "id": "272f98e11611cc21",
+   "verdict": "n"
+  },
+  {
+   "id": "5f71bb7988f93605",
+   "verdict": "y"
+  },
+  {
+   "id": "55765592e92e4361",
+   "verdict": "n"
+  },
+  {
+   "id": "45f077f64ccef82a",
+   "verdict": "n"
+  },
+  {
+   "id": "787d1860c8fb2a13",
+   "verdict": "n"
+  },
+  {
+   "id": "e6d28e3a716f861a",
+   "verdict": "n"
+  },
+  {
+   "id": "eb63316d9931b316",
+   "verdict": "y"
+  },
+  {
+   "id": "af0d2333b2e0c5d6",
+   "verdict": "y"
+  },
+  {
+   "id": "e4fcb62e07cfc989",
+   "verdict": "n"
+  },
+  {
+   "id": "f076989ab63d8a10",
+   "verdict": "n"
+  },
+  {
+   "id": "35fc5f8036bf8dd6",
+   "verdict": "y"
+  },
+  {
+   "id": "a937eec8bc719e05",
+   "verdict": "y"
+  },
+  {
+   "id": "b9fdde421890b942",
+   "verdict": "y"
+  },
+  {
+   "id": "e660f21a2c099d9c",
+   "verdict": "y"
+  },
+  {
+   "id": "d8bc21510b90c48e",
+   "verdict": "y"
+  },
+  {
+   "id": "728643f2dca073ca",
+   "verdict": "y"
+  },
+  {
+   "id": "a237645ed96e3ea5",
+   "verdict": "n"
+  },
+  {
+   "id": "c9d4a39600c6845c",
+   "verdict": "n"
+  },
+  {
+   "id": "ac255a702e8040b3",
+   "verdict": "y"
+  },
+  {
+   "id": "5f06d77a65879172",
+   "verdict": "n"
+  },
+  {
+   "id": "7a3246e51bc86a7c",
+   "verdict": "n"
+  },
+  {
+   "id": "ce69d7fb14ef1647",
+   "verdict": "n"
+  },
+  {
+   "id": "b7ac396a7efcd038",
+   "verdict": "n"
+  },
+  {
+   "id": "8cf7df1ff53a1722",
+   "verdict": "n"
+  },
+  {
+   "id": "c1da5f4de24fc4c4",
+   "verdict": "y"
+  },
+  {
+   "id": "c65ad88ed06bd31b",
+   "verdict": "n"
+  },
+  {
+   "id": "ebc0d2d7e76e0626",
+   "verdict": "n"
+  },
+  {
+   "id": "3012c0dbc1ce8bef",
+   "verdict": "n"
+  },
+  {
+   "id": "9a6c35a5b957030f",
+   "verdict": "y"
+  },
+  {
+   "id": "2ed0868a73efebd3",
+   "verdict": "n"
+  },
+  {
+   "id": "d5fba718ba943356",
+   "verdict": "n"
+  },
+  {
+   "id": "53f3f73ed18bcfc6",
+   "verdict": "y"
+  },
+  {
+   "id": "82be77210cf79473",
+   "verdict": "y"
+  },
+  {
+   "id": "a7d55d553bdacdf4",
+   "verdict": "n"
+  },
+  {
+   "id": "e09c96f3c77ddb5b",
+   "verdict": "n"
+  },
+  {
+   "id": "6b26d5d15d6be541",
+   "verdict": "n"
+  }
+ ]
+}
