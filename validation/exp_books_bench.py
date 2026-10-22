@@ -128,25 +128,36 @@ def half(name: str) -> str:
     return "dev" if hashlib.blake2b(name.encode(), digest_size=2).digest()[0] % 2 == 0 else "test"
 
 
-def finder(idx, pairs, n, rng) -> dict:
-    named = [k for k in pairs if idx.db.execute("SELECT 1 FROM names WHERE name = ?", (norm(k[0]),)).fetchone()]
+COVERED = {"date of birth", "date of death", "place of birth", "place of death", "founded by", "capital", "place of burial"}
+
+
+def finder(idx, pairs, n, rng, covered: bool = False) -> dict:
+    """Is the gold object in one of the top-5 passages? Pairs whose subject the books mention; `covered`: only the
+    relations a history book states (births, deaths, founders, capitals, burials) and subjects mentioned in 10 or
+    more paragraphs. `ceiling`: the gold anywhere in the top 200 -- what any ranking of these passages could reach."""
+    def mentions(s):
+        r = idx.db.execute("SELECT id FROM names WHERE name = ?", (norm(s),)).fetchone()
+        return idx.db.execute("SELECT COUNT(*) FROM mentions WHERE name = ?", (r[0],)).fetchone()[0] if r else 0
+    named = [k for k in pairs if (k[1] in COVERED) >= covered and mentions(k[0]) >= (10 if covered else 1)]
     rng.shuffle(named)
-    rows, by_era = [], collections.defaultdict(lambda: [0, 0])
+    rows, by_era = [], collections.defaultdict(lambda: [0, 0, 0])
     for s, rel in named:
         if len(rows) >= n:
             break
         gold = pairs[(s, rel)]
-        ps = idx.passages(s, words=bf.CUES.get(rel), k=5)
+        ps = idx.passages(s, words=bf.CUES.get(rel), k=200)
         if not ps:
             continue
-        txt = [norm(p.text) for p in ps]
-        hit = any((str(year(g)) in t) if rel in DATES else (norm(g) in t) for g in gold for t in txt if (year(g) if rel in DATES else norm(g)))
+        key = lambda g: (str(year(g)) if year(g) is not None else None) if rel in DATES else norm(g)    # noqa: E731
+        has = lambda t: any(key(g) and key(g) in norm(t) for g in gold)                                 # noqa: E731
+        hit, ceil = any(has(p.text) for p in ps[:5]), any(has(p.text) for p in ps)
         era = ps[0].era or "unknown"
-        by_era[era][0] += hit; by_era[era][1] += 1
-        rows.append({"subject": s, "relation": rel, "hit": bool(hit), "era": era})
-    k = sum(r["hit"] for r in rows)
-    return {"pairs": len(rows), "hits": k, "rate": round(k / max(1, len(rows)), 3),
-            "per_era": {e: {"hits": a, "pairs": b, "rate": round(a / b, 3)} for e, (a, b) in sorted(by_era.items())}, "rows": rows}
+        by_era[era][0] += hit; by_era[era][1] += ceil; by_era[era][2] += 1
+        rows.append({"subject": s, "relation": rel, "hit": bool(hit), "ceiling": bool(ceil), "era": era})
+    k, c = sum(r["hit"] for r in rows), sum(r["ceiling"] for r in rows)
+    return {"pairs": len(rows), "hits": k, "rate": round(k / max(1, len(rows)), 3), "ceiling": c,
+            "per_era": {e: {"hits": a, "ceiling": b, "pairs": m, "rate": round(a / m, 3)} for e, (a, b, m) in sorted(by_era.items())},
+            "rows": rows}
 
 
 def frames(src, pairs, need, rng, within=None, cap: int = 30000) -> dict:
@@ -262,7 +273,10 @@ def main() -> None:
     pairs = gold_pairs()
     rep = {"args": {k: v for k, v in vars(a).items() if k not in ("index", "out", "hdc")}, "index": idx.counts()}
     rep["finder"] = finder(idx, pairs, a.pairs, random.Random(a.seed))
-    print(f"finder: {rep['finder']['hits']}/{rep['finder']['pairs']} gold in the top 5 [{time.time() - t0:.0f}s]", flush=True)
+    rep["finder_covered"] = finder(idx, pairs, a.pairs, random.Random(a.seed), covered=True)
+    for k in ("finder", "finder_covered"):
+        print(f"{k}: {rep[k]['hits']}/{rep[k]['pairs']} gold in the top 5, {rep[k]['ceiling']} in the top 200 "
+              f"[{time.time() - t0:.0f}s]", flush=True)
     within = gazetteer(a.hdc)
     rep["frames"] = frames(BookSource(idx), pairs, a.frames, random.Random(a.seed + 1), within)
     print(f"frames: agreement {rep['frames']['agreement']} (dev {rep['frames']['dev']}, test {rep['frames']['test']}) "

@@ -260,3 +260,29 @@ def test_a_book_fact_is_walked_under_its_own_label_when_a_resolver_had_moved_the
     rec = loop.ask("Where was Napoleon Bonaparte born?")
     assert ["place of birth", "birthplace"] in rec["aliased"]                     # the plan was moved to the world's
     assert rec["verified"] and rec["answer"] == "Ajaccio" and rec["plan"] == ["place of birth"]
+
+
+class WrongSynonyms:
+    """The lexicon's real readings of a question's own words (2026-10-22): 'die' -> 'dice', 'born' -> 'max born'."""
+    name = "lexicon"
+
+    def __init__(self, *_a, **_k):
+        pass
+
+    def relations(self, text):
+        return {"die": ["dice"], "born": ["max born"]}.get(normalize(text), [])
+
+
+def test_the_question_forms_name_a_wording_before_the_lexicon(tmp_path, monkeypatch):
+    """The first resolver to name a wording decides. With the lexicon first, 'When was Ada Lovelace born?' asked
+    'max born', which nothing holds, and the books' date was learned and never walked."""
+    import cubbyllm.reasoning.lexicon as lx
+    monkeypatch.setattr(lx, "Lexicon", WrongSynonyms)
+    roots, events = _library(tmp_path)
+    idx = BookIndex(tmp_path / "books.sqlite")
+    idx.build(roots, events, Mentions(NAMES))
+    loop = AskLoop(TemplateEmitter(), world=TimedStore(STORE), source=DictSource({}), lexicon=True, run_fn=exact_vm(),
+                   books=BookSource(idx))
+    assert type(loop.resolvers[0]).__name__ == "Forms" and isinstance(loop.resolvers[1], WrongSynonyms)
+    rec = loop.ask("Where was Napoleon Bonaparte born?")
+    assert rec["verified"] and rec["answer"] == "Ajaccio"

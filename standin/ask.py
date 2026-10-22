@@ -709,8 +709,9 @@ class AskLoop:
         if lexicon:
             from cubbyllm.reasoning.lexicon import Lexicon
             self.resolvers.append(Lexicon())
-        if self._forms is not None:
-            self.resolvers.append(self._forms)
+        if self._forms is not None:                      # first: the first resolver to name a wording decides, and the
+            self.resolvers.insert(0, self._forms)        # lexicon's synonyms named 'die' 'dice' and 'born' 'max born'
+                                                         # (2026-10-22, the books bench: 67 of 76 unknown_relation)
         self._vm = run_fn                                # tests: a stand-in VM; otherwise the resident CubeLang session
         self.tau_profile = float(tau_profile)            # a profile line is spoken only when the VM recovers it at this similarity
         self.session = None if run_fn else cc.CubelangSession(exe=exe)
