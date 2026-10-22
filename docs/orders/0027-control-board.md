@@ -1,5 +1,5 @@
 # 0027 — The control board: one page to see and steer Cubby (worlds, chat and its journey, a world map, forecasts, mood, system)
-status: review (P1's review fixes, 2026-10-22; P2 after 0024, P3 after 0020 and 0026)
+status: in progress (P1 done 2026-10-22; P2 after 0024, P3 after 0020 and 0026)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("perfect, start order 0027") · hypothesis: none (a tool; it measures nothing new) · **phased: P1 now, P2 after 0024, P3 after 0020 and 0026**
 
 ## Why
@@ -213,3 +213,11 @@ committed assets are the `.blend`, the animated WebPs and the stills; no local p
 - Mood: show today's `/state` now (the heartbeat at `40 + 55 × arousal`, the cube point, the levels). It exists, so
   the empty-state rule does not apply to it; the arcs part says "not built yet (0020)" until P3.
 
+## Review 2 (Cowork, 2026-10-22): P1 done
+Re-ran `test_board_review.py` and `test_board.py` (pass). The scrub fix is the right shape (whole words, only what is
+actually internal: sources, feeds and sites, dataset names, internal plugins), and the real-stack check found the two
+places it mattered (an order title naming Wikidata, a licence naming Project Gutenberg). The background build, run ages,
+Mood from `/state` (with "at rest" at the cube's centre), the click target fix on the turntable and the `news_reply`
+outlet fix are accepted. **P1 is done.**
+- Manrope: bundling it is Nick's yes (a small download, SIL Open Font Licence).
+- The 25 red tests in `standin/tests` that predate this order go to the hygiene order (0030), with the old local paths.

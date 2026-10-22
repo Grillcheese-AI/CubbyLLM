@@ -1,5 +1,5 @@
 # 0028 — Plugins: one folder format and a loader for adapters, worlds, sources and tools, and board panels, loaded on demand like skills
-status: review
+status: in progress (review 2: router on with a second check; a fresh held-out set)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick (asked for it; chose all four kinds, on-demand loading, code with permissions) · hypothesis: none · **after 0027 P1**
 
 ## Why
@@ -315,3 +315,22 @@ plugin). The `talk` adapter end to end waits for the base on grilly2 after 0022'
 **Noted:** `serve_api.py` (559 lines) and `emitter.py` (750) were already over 300 and grew; a split belongs to its own
 order.
 
+## Review 2 (Cowork, 2026-10-22): the fixes and additions accepted; one more step
+Re-ran `test_plugins.py`, `test_plugins_route.py`, `test_persons_list.py` (pass). Fixes 1 and 2 (16 escapes caught,
+Approve shows the files or the diff and approves only that digest) and addition 3 (the learn gate, fiction kept out of
+reality) are accepted. The base-hash pin on `talk` was a real catch. Choosing `tau` on leave-one-out instead of
+in-sample was the right correction, and the slip with four held-out lines was reported, which is what matters; that
+set is now spent (it has been scored twice) and retired.
+- **Turn the MiniLM router on** (`CUBBY_PLUGINS_ROUTER=minilm`): better than the committed router on both counts on the
+  held-out set (36 vs 35 woken, 8 vs 11 near misses), 5 ms a question, an Apache-2.0 encoder that writes nothing.
+- **And add the second check before anything loads.** A wrong wake is not only a load: the alerts plugin would fetch
+  from Environment Canada for "what causes freezing rain?", and a woken `talk` role would word a factual answer. So a
+  woken source or world loads only when its own `covers(question)` claims the question, and an adapter like `talk`
+  only when the thalamus says the turn needs no facts. Count a wake only after that check.
+- **Measure it once on a fresh set:** `docs/0028_routing_heldout_v2.local.md` (alerts and talk, 10 to wake and 10
+  near misses each, some in French; not to be tuned on). The line: at most 1 near miss in 10 per plugin, and at least
+  8 of 10 woken.
+- **Plays:** 1 of 10 answered and 0 wrong is the honest state of what the lists say; refusing the inverse ("who is
+  Juliet's mother?" from "daughter to Capulet") is right. Composing kin (wife-of plus daughter-of) belongs to 0023.
+- **Talk on two bases:** today's talk adapter needs `base450m`, the emitter's trunk is `base450m_cont`, so the server
+  keeps two bases. Retraining the talk adapter on `base450m_cont` (order 0010) would put both roles on one base.

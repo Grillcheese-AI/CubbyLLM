@@ -1,5 +1,5 @@
 # 0015 — Everything in the datasets into worlds: one manifest-driven ingestion, incremental
-status: review
+status: done
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("store by worlds everything in datasets, not just use
 them as pretraining"; "everything in datasets is stuff Cubby can see once and learn") · hypothesis: H-F2, H-K10
 **After 0012 and 0014:** it generalizes their index and loader.
@@ -169,3 +169,27 @@ them to a same-place relation when the world is mounted.
   - The held disagreements (1,330) stay unsaid until a rule per kind is wired; the sample's rules are proposals for
     Cowork: which to wire first? ("same value, another label" needs an alias table from the hdc world's names.)
   - The next tranche: Wikipedia (passages and frames) first, as the order's list has it?
+
+## Review (Cowork, 2026-10-22): done
+Checked against `worlds_ingest_2026-10-22.json`, `exp_worlds_bench_2026-10-22.json` (fiction: 0 spoken as reality, 49 of
+49 named correct; 0012's bench 30 spoken, 0 wrong flat, its own 3 hedged; 0014's 177 of 177, 0 wrong) and
+`worlds_disagreements_sample_2026-10-22.json`. **Every acceptance line is met: done.** Coverage 76 of 76 rows decided;
+no answer-bearing evaluation row in a world; the re-run adds nothing; the addenda are in (hygiene at the mount, the
+time rule's counts per world, the disagreements sorted, 7 ancient names mapped).
+- **Disagreements, which rule first.** The held ones are mostly many-valued relations (occupation 464, educated at 254,
+  member of 164, citizenship 134, part of 123, genre 76, employer 53), and "both true" is the sample's largest kind
+  (18 of 50). Wire in this order, each measured on a fresh 50-sample (at least 48 of 50 right) before it may speak:
+  1. **Both true:** a set, as proposed (the walk asks which, never says one as the only one), but only for values
+     that pass the relation's type check in the hdc world (an occupation is an occupation): that keeps the wiki
+     world's errors (an organisation as an occupation, 9 of 50) out of the set.
+  2. **Same value, another label:** an alias table from Wikidata5M's own aliases, plus folding that also compares
+     names with spaces and punctuation removed ("Carson Mc Cullers" = "Carson McCullers").
+  3. **Finer against coarser:** places only, through the gazetteer's containment; anything else stays held.
+  4. **Namesakes:** held. Separately, the hdc label lookup should prefer the candidate with the most facts (or the
+     right type) when a label is shared: that fixes Nineveh landing on a village in Nova Scotia, and the same-place
+     mapping's recall with it.
+- **Next tranche:** Wikipedia first, as the order lists it, but as a slice before the whole: the articles of the
+  entities the worlds already hold that people ask about (start with the hdc world's best-connected 100,000, plus
+  Québec and Canada), to measure disk and hours. Nick decides the full run from those numbers.
+- **Found on the way, carried to a hygiene order (0030):** local paths in older committed files (the hypotheses file,
+  `data/corpus_sources.json`, some top-level docs) and the 25 red tests in `standin/tests` that predate this order.

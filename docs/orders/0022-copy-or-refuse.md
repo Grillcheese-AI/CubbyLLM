@@ -1,5 +1,5 @@
 # 0022 — Copy or refuse: a fact token comes from the copy, or the answer is "I don't know"
-status: review
+status: done
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: H-K10 · **after 0021**
 
 ## Why
@@ -109,3 +109,21 @@ the model, measures it honestly, and takes it to the 450M.
   any later free-text-keys run should carry it. Thresholds fit at the exact edge of a line will miss it out of sample.
 - **Questions:** D next, as the kill criterion says (a per-piece confidence learned on calibration documents)? Or
   first a margin on theta, which trades refusals for the line A missed?
+
+## Review (Cowork, 2026-10-22): done; the kill criterion fired, and the finding sets the next step
+Checked against `exp_refuse_450m_2026-10-22.json` and `exp_refuse_450m_end_2026-10-22.json` (theta 0.117, 814 present
+and 183 absent test questions): the report's numbers are the logs'. **Done.**
+- **The contract works on the 450M.** With the contract saying the answer's end, both wrong-answer lines hold on the
+  test documents: present wrong 1.7% (14 of 814), absent answered 0.0% (0 of 183), language unchanged off the asking
+  positions. `end_id` belongs to every later run: the trunk cannot be trusted to end a copied answer.
+- **The price is the kill line's:** 32.9% of present facts refused, against 25%. A single threshold is too blunt.
+- **What the numbers say about where.** Absent answered is 0.0% at this theta, so the threshold is set by the
+  present-but-wrong answers (12.4% under the mix), not by the absent ones: one scalar separates present from absent
+  well (0021: 0.95) and right from wrong among present facts poorly. That is what arm D has to learn.
+- **A's miss on the test documents** (2.3-3.4% against 1.8-1.9% on calibration) is a threshold fit at the line's edge.
+  Not a margin picked by hand: fit the next threshold with a conformal risk bound, which holds out of sample.
+- **B** fails its exact line under the contract (0.54-0.63) while the pointer reads 0.998-1.000: the same refusals,
+  not a key problem.
+- **The question:** D next, with the margin folded into it (the conformal fit). Proposed as order 0029: diagnostics
+  first (refusals and errors by answer length, piece and kind), then a per-answer confidence learned on half the
+  calibration documents, its threshold set on the other half, measured once on the test documents.
