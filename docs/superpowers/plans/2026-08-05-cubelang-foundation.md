@@ -4,7 +4,7 @@
 
 **Goal:** Make CubeLang a verified, capability-based, LM-writable reasoning VM — fixing the `--strict` verification hole, adding the `use` capability system + `import` for user files, validated `implements`, a `vsa` helper (real unbind behind a natural call), the `quantity→number` rename, conformance, and polish.
 
-**Architecture:** All work is in the **`cubelang` Rust repo** (`C:\Users\grill\Documents\GitHub\cubelang`), on a branch, `cargo test` green before merge. Design: `docs/superpowers/specs/2026-08-05-cubelang-foundation-design.md`. Two module mechanisms — `use` (VM-internal core, tamper-proof) and `import` (external user files). Deny-by-default verification is the foundation everything else stacks on.
+**Architecture:** All work is in the **`cubelang` Rust repo** (`$CUBBY_GITHUB\cubelang`), on a branch, `cargo test` green before merge. Design: `docs/superpowers/specs/2026-08-05-cubelang-foundation-design.md`. Two module mechanisms — `use` (VM-internal core, tamper-proof) and `import` (external user files). Deny-by-default verification is the foundation everything else stacks on.
 
 **Tech Stack:** Rust (edition 2021, cargo 1.94.1 / rustc 1.94.1, both on PATH). No new deps expected except possibly the loader (Task 5) uses only `std`.
 

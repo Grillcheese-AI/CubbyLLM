@@ -2,15 +2,15 @@
  "provenance": {
   "what": "H-A9 step 1 \u2014 ES over the program adapter, scored by the cubelang VM",
   "task": "arithmetic",
-  "data": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\emitter_sft_v14e_nochain.jsonl",
+  "data": "$CUBBY_REPO\\standin\\data\\out\\emitter_sft_v14e_nochain.jsonl",
   "model": "LiquidAI/LFM2.5-2.6B",
-  "adapter": "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b_v14e_nochain_full/adapter",
+  "adapter": "$CUBBY_DRIVE/cubbyllm/standin/emitter_lfm25_2p6b_v14e_nochain_full/adapter",
   "null_control": false,
   "baseline_v14e": 0.775,
   "bar_2se": 0.821,
   "args": {
    "model": "LiquidAI/LFM2.5-2.6B",
-   "adapter": "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b_v14e_nochain_full/adapter",
+   "adapter": "$CUBBY_DRIVE/cubbyllm/standin/emitter_lfm25_2p6b_v14e_nochain_full/adapter",
    "task": "arithmetic",
    "iterations": 2,
    "population": 32,

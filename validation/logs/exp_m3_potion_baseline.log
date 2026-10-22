@@ -1,5 +1,7 @@
 python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
-Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files: 100%|##########| 10/10 [00:00<?, ?it/s]
+
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]
+Fetching 10 files: 100%|##########| 10/10 [00:00<?, ?it/s]
 potion: minishlab/potion-base-8M (model2vec 0.8.2) vs table fastword_table_v1.npz
 
 potion->block table built: 30275 words in 13s (in-vocab anisotropy fit)
@@ -16,4 +18,4 @@ potion->block table built: 30275 words in 13s (in-vocab anisotropy fit)
   potion->block    exact 0.0689 ±10y 0.3744 MAE med 17 mean 31
   table            exact 0.0638 ±10y 0.3542 MAE med 19 mean 34
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_potion_baseline.json
+wrote $CUBBY_REPO\validation\logs\exp_m3_potion_baseline.json

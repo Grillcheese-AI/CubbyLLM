@@ -26,7 +26,7 @@ free-form token CoT cannot offer.
    query-expansion repair; after N=3 attempts the pipeline outputs
    `verified=false` with the partial trace. An answer is *claimed* only when
    every hop cleared its thresholds. No LM free-form fallback.
-3. **M1 eval: multi-hop .pq exact-answer.** `E:\valid_scaling_law_with_facts.pq`
+3. **M1 eval: multi-hop .pq exact-answer.** `$CUBBY_DATA_ROOT/valid_scaling_law_with_facts.pq`
    (10k questions, exact answer strings, known chains), scored by hop count
    against retrieval-only and chase-only baselines (§7).
 4. **Fact representation: triple frames (approach C).** Facts parse to

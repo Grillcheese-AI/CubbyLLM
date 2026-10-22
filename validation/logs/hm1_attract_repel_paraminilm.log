@@ -5,4 +5,4 @@ attract-repel | teacher_paraminilm.npz: 60147 words, dim 384 | WordNet constrain
     loss 0.7608
   epoch 2    mean cosine | dev synonyms 0.527  dev antonyms 0.507  dev co-hyponyms 0.293 | train syn 0.518 sib 0.267 | test paraphrase 0.843  test entity 0.347
     loss 0.7510
-  -> C:\CUBBY-TRAINED-MODELS\teacher_paraminilm_ar.npz (13s)
+  -> $CUBBY_MODELS\teacher_paraminilm_ar.npz (13s)

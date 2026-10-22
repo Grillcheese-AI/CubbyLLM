@@ -3,7 +3,7 @@
   "max_docs": 0,
   "shortlist": 100,
   "potion": "minishlab/potion-base-8M",
-  "table": "D:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+  "table": "$CUBBY_MODELS\\fastword_table_v4.npz",
   "tag": "_v4"
  },
  "n_docs": 4635922,

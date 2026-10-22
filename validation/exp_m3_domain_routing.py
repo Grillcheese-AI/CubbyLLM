@@ -1,6 +1,6 @@
 """exp_m3_domain_routing — the production table on real 42-domain text.
 
-E:\\datasets\\domains holds 42 folder-labeled corpora (books/documents). This
+$CUBBY_DATASETS\\domains holds 42 folder-labeled corpora (books/documents). This
 screen asks the production questions the axiom screen could only approximate:
 
   1. ROUTING: seed N exemplar passages per domain, route held-out passages by
@@ -14,12 +14,17 @@ screen asks the production questions the axiom screen could only approximate:
      score LOW against every exemplar -- the route-vs-spawn decision. Reported
      as separation between closed-set and open-set best-cosine distributions.
 
-Encoder: the production FastWordEncoder table (C:\\CUBBY-TRAINED-MODELS\\
+Encoder: the production FastWordEncoder table ($CUBBY_MODELS\\
 fastword_table_v1.npz), loaded module-by-file-path so no mowm package import
 occurs (semantic_words is numpy-only by design). MiniLM runs as the quality
 reference only. Standalone: never imported by cubbyllm/.
 """
 from __future__ import annotations
+
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
 
 import os
 
@@ -37,9 +42,9 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-DOMAINS_DIR = pathlib.Path(r"E:\datasets\domains")
-TABLE = pathlib.Path(os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS")) / "fastword_table_v1.npz"
-SEMANTIC_WORDS = pathlib.Path(r"C:\Users\grill\Documents\GitHub\mowm\mowm\encoding\semantic_words.py")
+DOMAINS_DIR = pathlib.Path(_lp(r"$CUBBY_DATASETS\domains"))
+TABLE = pathlib.Path(os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS"))) / "fastword_table_v1.npz"
+SEMANTIC_WORDS = pathlib.Path(_lp(r"$CUBBY_GITHUB\mowm\mowm\encoding\semantic_words.py"))
 EXCLUDE = {"_unsure", "my_identity", "gutemberg_books_unclassified"}  # unlabeled/personal
 
 K, L = 80, 128

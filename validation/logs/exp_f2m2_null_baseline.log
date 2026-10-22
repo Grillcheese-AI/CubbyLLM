@@ -37,4 +37,4 @@ hash arm on the real corpus: tied argmax on 0.596 of rows, mean tie-group 3.21 c
   Empirical micro null (gauss) 0.1232 vs analytic 0.1226.
   A one-hot noise encoder scores ABOVE the analytic macro null (0.0666 vs 0.0633) because one-hot cosines tie constantly and np.argmax breaks ties toward LOW indices, which in a domain-GROUPED corpus means the first-listed domain.
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_f2m2_null_baseline.json
+wrote $CUBBY_REPO\validation\logs\exp_f2m2_null_baseline.json

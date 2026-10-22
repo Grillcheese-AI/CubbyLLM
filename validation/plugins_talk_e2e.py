@@ -24,7 +24,8 @@ import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path[:0] = [os.path.dirname(HERE), os.path.join(os.path.dirname(HERE), "standin")]
-MODELS = os.environ.get("CUBBY_MODELS", "")
+from cubbyllm.local_paths import value  # noqa: E402
+MODELS = value("CUBBY_MODELS", "")                    # the environment, else paths.local.json (order 0030)
 PROMPTS = ["hi Cubby, how are you?", "I had a rough day at work", "what do you like to do?"]
 
 

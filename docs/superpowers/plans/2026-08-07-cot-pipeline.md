@@ -694,7 +694,7 @@ git commit -m "feat(reasoning): exports + live-VM smoke (real recover roundtrip)
 - Output: `validation/logs/exp_m3_cot_pipeline.{log,json}`
 
 **Interfaces:**
-- Consumes: `cubbyllm.reasoning.answer`; `cubbyllm.bridges.cubelang_client.run_program_proto`; `exp_m3_domain_routing._load_semantic_words` + `youden_tau`; the v4 table at `D:\CUBBY-TRAINED-MODELS\fastword_table_v4.npz`; `E:\valid_scaling_law_with_facts.pq`.
+- Consumes: `cubbyllm.reasoning.answer`; `cubbyllm.bridges.cubelang_client.run_program_proto`; `exp_m3_domain_routing._load_semantic_words` + `youden_tau`; the v4 table at `$CUBBY_MODELS\fastword_table_v4.npz`; `$CUBBY_DATA_ROOT/valid_scaling_law_with_facts.pq`.
 
 Structure (write exactly this shape; the numeric outputs go in the json):
 

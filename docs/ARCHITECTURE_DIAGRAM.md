@@ -129,7 +129,7 @@ end
 subgraph TRAIN["TRAINING & ASSETS"]
     direction TB
     CACHE["14.37B-token uint32 cache (D:)<br/>open_thoughts reserved for SFT"] --> TL["TrainLoop<br/>bind_weight=0 (H-B6 negative)"]
-    TL --> CKPT["checkpoints D:\\CUBBY-TRAINED-MODELS<br/>hd5_mem21 · ab_mingru · tables v1–v4"]
+    TL --> CKPT["checkpoints $CUBBY_MODELS<br/>hd5_mem21 · ab_mingru · tables v1–v4"]
     RUNBOOK["2B runbook (panel-settled)<br/>MFU pilot → cycle-1 dense →<br/>offline ULD-KD → int8 PTQ →<br/>cycle-2 tag-routed MoE upcycle"]
     HARV -.->|"verified supervision<br/>(question, program, trace)"| SFT["trunk-SFT program emission<br/>(future — replaces hand grammar)"]
     SFT -.-> TOK

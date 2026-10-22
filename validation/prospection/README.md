@@ -12,7 +12,7 @@ Same rules as the parent directory: standalone scripts, never imported by
 CPU in seconds. Every script also runs on a real checkpoint — same
 `{"meta", "params"}` layout `exp_needle_recall.py` reads — via
 
-    CB_CKPT=D:\...\ckpt.pt CUBBY_SPM=data\grillcheese_bbpe128k.json CB_TEXT=some.txt \
+    CB_CKPT=$CUBBY_DATA_ROOT/...\ckpt.pt CUBBY_SPM=data\grillcheese_bbpe128k.json CB_TEXT=some.txt \
     python validation/prospection/exp_p2_choice_points.py
 
 (`CB_CORPUS`/`CB_SOURCES` work too, exactly as in the needle script.)
@@ -65,7 +65,7 @@ Toy-scale VERIFIED is not scale-VERIFIED (`VALIDATION_REPORT.md` caveats
 apply). The checkpoint arms below are the measurements that decide the store
 design and the prospection budget on the real model.
 
-## Checkpoint arms (2026-08-25) — `D:\My Drive\cubbyllm\ab_hybrid.pt` (d=512, L=8, hybrid 1:3, window 512, ~0.98B tokens; the H-D4 winner) and `hd5_mem2.pt` (same + episodic memory every 2nd layer)
+## Checkpoint arms (2026-08-25) — `$CUBBY_DRIVE\cubbyllm\ab_hybrid.pt` (d=512, L=8, hybrid 1:3, window 512, ~0.98B tokens; the H-D4 winner) and `hd5_mem2.pt` (same + episodic memory every 2nd layer)
 
 Text: 80 Wikipedia articles across the 20 domain files next to the checkpoints,
 built by `make_text_sample.py` (writes to `%TEMP%`, never into the repo), first
@@ -175,7 +175,7 @@ cycle-one *arm* at the 2B pilot, not a default.
 
 **Result (Colab A100, 2026-08-26; two matched arms, 2000 steps × 32 × 1024 =
 65.5M tokens/arm, ~15–16 min/arm; `../logs/exp_p7_{baseline,chrono}.{log,json}`,
-copied from `D:\My Drive\cubbyllm\logs` 2026-08-28; checkpoints
+copied from `$CUBBY_DRIVE\cubbyllm\logs` 2026-08-28; checkpoints
 `chrono_{baseline,arm}.pt` on Drive): KILLED on CE.**
 
 | | baseline | chrono | |

@@ -5,7 +5,7 @@
   "candidates": "40,131072",
   "trials": 200,
   "seed": 0,
-  "cache": "F:\\grillcheese_training_data\\token_cache_cont",
+  "cache": "$CUBBY_TRAINING_DATA\\token_cache_cont",
   "shards": "facts_far1k_lead,spatial_here",
   "out": "validation\\logs\\sim_hrr_ceiling_2026-10-21.json"
  },

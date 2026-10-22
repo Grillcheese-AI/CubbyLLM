@@ -1,6 +1,6 @@
 """exp_m3_haystack — needle-in-haystack retrieval vs store size (thread 2).
 
-Targets: the deduped supporting facts of E:\\valid_scaling_law_with_facts.pq
+Targets: the deduped supporting facts of $CUBBY_DATA_ROOT/valid_scaling_law_with_facts.pq
 (multi-hop QA; ground truth is each question's own `facts` list). Distractors:
 DBpedia abstracts from BEIR dbpedia-entity, N in {0, 100k, 1M}. Questions
 retrieve over targets+distractors with the production FastWordEncoder table.
@@ -22,6 +22,11 @@ supporting fact, split by n_hop. Standalone; never imported by cubbyllm/.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import json
 import pathlib
@@ -38,8 +43,8 @@ for p in (str(ROOT), str(VAL)):
 
 from exp_m3_domain_routing import TABLE, _load_semantic_words  # noqa: E402
 
-PQ_FILE = pathlib.Path(r"E:\valid_scaling_law_with_facts.pq")
-DBPEDIA = pathlib.Path(r"E:\datasets\full-dbpedia\corpus\corpus-00000-of-00001.parquet")
+PQ_FILE = pathlib.Path(_lp(r"$CUBBY_DATA_ROOT/valid_scaling_law_with_facts.pq"))
+DBPEDIA = pathlib.Path(_lp(r"$CUBBY_DATASETS\full-dbpedia\corpus\corpus-00000-of-00001.parquet"))
 K, L = 80, 128
 
 

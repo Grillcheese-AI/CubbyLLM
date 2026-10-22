@@ -1,5 +1,5 @@
 python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
-table fastword_table_v4.npz | rows valid_scaling_law_with_facts.pq | cubelang C:\Users\grill\Documents\GitHub\cubelang\target\release\cubelang.exe
+table fastword_table_v4.npz | rows valid_scaling_law_with_facts.pq | cubelang $CUBBY_GITHUB\cubelang\target\release\cubelang.exe
 
 eval: 800 questions {1: 385, 2: 256, 3: 159} | 1241 unique facts in store
 calibration: 200 questions {1: 101, 2: 64, 3: 35} | 317 unique facts in its own store (disjoint from eval)
@@ -87,7 +87,7 @@ planted-fault calibration done in 28s | 127 verified chains used | 406 VM calls 
   eval 775/800 (231s)
   eval 800/800 (239s)
 eval done in 239s
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\cot_harvest_v3cf.jsonl (800 records)
+wrote $CUBBY_REPO\validation\logs\cot_harvest_v3cf.jsonl (800 records)
 
 === counterfactual neighborhood (harvest `counterfactuals[]`) ===
   chains=517 (of 517 verified; 0 skipped: budget) | VM calls=1899 (cap 6000; truncated chains=0) | mojibake-excluded hops=189 | mean 262 ms/chain
@@ -127,4 +127,4 @@ wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\cot_harvest_v3cf.
 
   OVERALL: PASS
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_cot_pipeline_v3cf.json
+wrote $CUBBY_REPO\validation\logs\exp_m3_cot_pipeline_v3cf.json

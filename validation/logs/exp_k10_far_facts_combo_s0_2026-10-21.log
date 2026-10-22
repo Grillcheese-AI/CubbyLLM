@@ -11,4 +11,4 @@ env: 2026-10-21 13:24 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 
   step   800  loss 3.755  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.251  read top-1 0.809 cos 0.299  gate -0.45   [3546s]
   step   900  loss 3.710  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.231  read top-1 0.809 cos 0.299  gate -0.46   [3882s]
   step   999  loss 3.761  exact 0.000  first 0.000  later 0.000  end 1.000  language 2.226  read top-1 0.809 cos 0.299  gate -0.46   [4213s]
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_k10_far_facts_combo_s0_2026-10-21.json
+wrote $CUBBY_REPO\validation\logs\exp_k10_far_facts_combo_s0_2026-10-21.json

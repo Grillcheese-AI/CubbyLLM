@@ -5,8 +5,8 @@ start 2026-10-01 13:38:47.08
 -------------------------------------------------------------------------------
 
   Started : October 1, 2026 1:38:47 PM
-   Source = D:\My Drive\cubbyllm\emitter\
-     Dest = G:\My Drive\cubbyllm\emitter\
+   Source = $CUBBY_DRIVE\cubbyllm\emitter\
+     Dest = $CUBBY_DRIVE\cubbyllm\emitter\
 
     Files : emitter_sft_v12e_slots.jsonl
 	    emitter_sft_v12e_pf_slots.jsonl
@@ -18,7 +18,7 @@ start 2026-10-01 13:38:47.08
 
 ------------------------------------------------------------------------------
 
-	  New Dir          5	D:\My Drive\cubbyllm\emitter\
+	  New Dir          5	$CUBBY_DRIVE\cubbyllm\emitter\
 	    New File  		  35.9 m	emitter_sft_v12e_pf_slots.jsonl
 	    New File  		  28.5 m	emitter_sft_v12e_slots.jsonl
 	    New File  		 196.3 m	emitter_sft_v12e_w_tg30_step.jsonl
@@ -44,8 +44,8 @@ start 2026-10-01 13:38:47.08
 -------------------------------------------------------------------------------
 
   Started : October 1, 2026 1:38:47 PM
-   Source = D:\My Drive\cubbyllm\emitter\cubby450m_v12e_w_tg_cont\
-     Dest = G:\My Drive\cubbyllm\emitter\cubby450m_v12e_w_tg_cont\
+   Source = $CUBBY_DRIVE\cubbyllm\emitter\cubby450m_v12e_w_tg_cont\
+     Dest = $CUBBY_DRIVE\cubbyllm\emitter\cubby450m_v12e_w_tg_cont\
 
     Files : emitter_lora.safetensors
 	    emitter_lora.json
@@ -54,7 +54,7 @@ start 2026-10-01 13:38:47.08
 
 ------------------------------------------------------------------------------
 
-	  New Dir          2	D:\My Drive\cubbyllm\emitter\cubby450m_v12e_w_tg_cont\
+	  New Dir          2	$CUBBY_DRIVE\cubbyllm\emitter\cubby450m_v12e_w_tg_cont\
 	    New File  		    6296	emitter_lora.json
 	    New File  		  30.0 m	emitter_lora.safetensors
 
@@ -77,8 +77,8 @@ start 2026-10-01 13:38:47.08
 -------------------------------------------------------------------------------
 
   Started : October 1, 2026 1:38:47 PM
-   Source = D:\My Drive\cubbyllm\notebooks\
-     Dest = G:\My Drive\cubbyllm\notebooks\
+   Source = $CUBBY_DRIVE\cubbyllm\notebooks\
+     Dest = $CUBBY_DRIVE\cubbyllm\notebooks\
 
     Files : emitter_450m.ipynb
 	    
@@ -86,7 +86,7 @@ start 2026-10-01 13:38:47.08
 
 ------------------------------------------------------------------------------
 
-	  New Dir          1	D:\My Drive\cubbyllm\notebooks\
+	  New Dir          1	$CUBBY_DRIVE\cubbyllm\notebooks\
 	    New File  		   24959	emitter_450m.ipynb
 
 ------------------------------------------------------------------------------
@@ -108,8 +108,8 @@ start 2026-10-01 13:38:47.08
 -------------------------------------------------------------------------------
 
   Started : October 1, 2026 1:38:47 PM
-   Source = D:\My Drive\cubbyllm\runs\base450m_cont\
-     Dest = G:\My Drive\cubbyllm\runs\base450m_cont\
+   Source = $CUBBY_DRIVE\cubbyllm\runs\base450m_cont\
+     Dest = $CUBBY_DRIVE\cubbyllm\runs\base450m_cont\
 
     Files : base450m_cont_final.pt
 	    base450m_cont_final.pt.json
@@ -118,7 +118,7 @@ start 2026-10-01 13:38:47.08
 
 ------------------------------------------------------------------------------
 
-	  New Dir          2	D:\My Drive\cubbyllm\runs\base450m_cont\
+	  New Dir          2	$CUBBY_DRIVE\cubbyllm\runs\base450m_cont\
 	    New File  		   2.1 g	base450m_cont_final.pt
 	    New File  		      67	base450m_cont_final.pt.json
 

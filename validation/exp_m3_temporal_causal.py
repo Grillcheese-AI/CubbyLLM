@@ -5,7 +5,7 @@ next — each era and each year is a world (months would be too granular), and
 worlds need CAUSAL events connecting them (MoWM worlds are transition
 machines; a cause->effect pair across years is transition data).
 
-Spine: D:\\grillcheese_training_data\\temporal\\historical\\train_augmented.jsonl
+Spine: $CUBBY_TRAINING_DATA\\temporal\\historical\\train_augmented.jsonl
 — 4,000 curated events with text, year_start (negative = BC), a named period
 (6 eras), region, and an `impact` field (the event's downstream consequence
 text) — clean labels, no extraction pipeline in the loop. The HUGE_ENTITIES
@@ -42,6 +42,11 @@ by cubbyllm/.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import json
 import pathlib
@@ -59,7 +64,7 @@ for p in (str(ROOT), str(VAL)):
 
 from exp_m3_domain_routing import TABLE, _load_semantic_words  # noqa: E402
 
-EVENTS = pathlib.Path(r"D:\grillcheese_training_data\temporal\historical\train_augmented.jsonl")
+EVENTS = pathlib.Path(_lp(r"$CUBBY_TRAINING_DATA\temporal\historical\train_augmented.jsonl"))
 K, L = 80, 128
 YEAR_FLOOR = -3500          # year-level metrics restricted to written history
 MIN_PER_YEAR = 3            # a year-world needs >= 3 events (LOO leaves >= 2)

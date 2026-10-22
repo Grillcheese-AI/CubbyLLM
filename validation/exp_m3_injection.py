@@ -1,6 +1,6 @@
 """exp_m3_injection — fact-injection accessibility eval (thread 2).
 
-E:\\valid_scaling_law_with_facts.pq is built for exactly this question: each
+$CUBBY_DATA_ROOT/valid_scaling_law_with_facts.pq is built for exactly this question: each
 row has a question, its full supporting-fact chain (`facts`, 1-3 hops), one
 designated `fact_to_inject`, and an answer that always lives in the LAST fact
 (verified 10000/10000). Pre-injection the chain is incomplete by construction

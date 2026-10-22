@@ -29,6 +29,11 @@ C++/Vulkan backend init is never touched. Standalone; nothing wired.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import importlib.util
 import sys
 import time
@@ -40,7 +45,7 @@ import torch.nn.functional as F
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-GRILLY = r"C:\Users\grill\Documents\GitHub\grilly"
+GRILLY = _lp(r"$CUBBY_GITHUB\grilly")
 
 
 def load_module(name, path):
@@ -57,7 +62,7 @@ BinaryOps, HolographicOps = ops.BinaryOps, ops.HolographicOps
 BlockCodeOps = block_ops.BlockCodeOps
 
 # cubby-concepts reference, for cross-implementation parity
-sys.path.insert(0, r"C:\Users\grill\Documents\GitHub\cubby-concepts")
+sys.path.insert(0, _lp(r"$CUBBY_GITHUB\cubby-concepts"))
 from vsa.core import bind as cc_bind  # noqa: E402
 
 D = 10240

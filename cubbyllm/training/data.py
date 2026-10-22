@@ -152,7 +152,7 @@ class WeightedCorpusPipeline:
         self.cap = max_tokens_per_source
         # cache_only: memmap pre-tokenized shards WITHOUT the source files or a
         # tokenizer — for training on a machine (e.g. Colab) that has only the
-        # uploaded token cache, not the E:/D: corpus. Tokenize locally first.
+        # uploaded token cache, not the local corpus. Tokenize locally first.
         self.cache_only = bool(cache_only)
         self._arrays: "dict | None" = None
         self._weights: "dict | None" = None

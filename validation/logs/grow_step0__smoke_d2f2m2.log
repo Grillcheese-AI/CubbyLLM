@@ -7,4 +7,4 @@ grow_base step 0 | base450m_final.pt (step 21103) -> width x1, depth x2, ffn x2,
   books          base 2.51077  grown 2.51077  diff -4.77e-07  max |logit diff| 5.37e-04  (12s)
   mean over 2 sources x 1 windows x 1024 tokens: base 3.41184  grown 3.41184  diff +0.00e+00  max |logit diff| 6.04e-04
 verdict: EXACT (bar: |loss diff| <= 1e-4 per source, max |logit diff| <= 1e-2, float32)
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\grow_step0__smoke_d2f2m2.json / .log  (42s total)
+wrote $CUBBY_REPO\validation\logs\grow_step0__smoke_d2f2m2.json / .log  (42s total)

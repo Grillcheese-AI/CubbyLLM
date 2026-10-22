@@ -1,4 +1,4 @@
-# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=E:/datasets/_pipeline/token_cache
+# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=$CUBBY_DATASETS/_pipeline/token_cache
 # sources: ['arxiv']
 
 [arxiv]  tokenizing…
@@ -6,8 +6,8 @@
 
 # TOTAL 14,054,712 tokens across 1 sources in 9s
 # manifest_hash (full corpus): 99b5460440160b03c3db074f235778ee13896f734938d9634f36142a5d7bb8c5
-# log: C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\tokenize_all_1785381600.log
-# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=E:/datasets/_pipeline/token_cache
+# log: $CUBBY_REPO\validation\logs\tokenize_all_1785381600.log
+# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=$CUBBY_DATASETS/_pipeline/token_cache
 # sources: ['books', 'verified_facts', 'wikipedia', 'arxiv', 'pretrain_ext', 'unified']
 
 [books]  tokenizing...
@@ -26,11 +26,11 @@
 [pretrain_ext]  970,667 tokens  (1s, 1.55M tok/s)  -> pretrain_ext.u16
 
 [unified] cap=2.0B  tokenizing...
-# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=E:/datasets/_pipeline/token_cache
+# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=$CUBBY_DATASETS/_pipeline/token_cache
 # sources: ['books', 'verified_facts', 'wikipedia', 'arxiv', 'pretrain_ext', 'unified']
 
 [books]  tokenizing...
-# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=E:/datasets/_pipeline/token_cache
+# tokenize_all  spm=grillcheese_spm32k_v2.model  cache=$CUBBY_DATASETS/_pipeline/token_cache
 # sources: ['books', 'verified_facts', 'wikipedia', 'arxiv', 'pretrain_ext', 'unified']
 
 [books]  tokenizing...

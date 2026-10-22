@@ -219,3 +219,6 @@ docs/*.local.tsv
 docs/*.local/
 dashboard/assets/sections/anim/
 dashboard/assets/sections/_test/
+
+# one machine's folders by name (cubbyllm/local_paths.py, order 0030)
+paths.local.json

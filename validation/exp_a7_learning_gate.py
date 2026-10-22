@@ -61,12 +61,17 @@ is the Colab one — `notebooks/a7_learning_gate.ipynb` sets the GPU shape
 (B32, 200 steps = 3.3M tokens per delta, 32 mix batches) and copies the
 log + json to Drive.
 
-  CB_CKPT=C:\\CUBBY-TRAINED-MODELS\\hd5_mem21.pt CB_CORPUS=F:\\grillcheese_training_data\\token_cache \\
-  CB_SOURCES="D:\\My Drive\\cubbyllm\\corpus_sources.json" \\
-  CUBBY_SPM=E:\\datasets\\_pipeline\\tokenizer\\grillcheese_bbpe128k.json \\
+  CB_CKPT=$CUBBY_MODELS\\hd5_mem21.pt CB_CORPUS=$CUBBY_TRAINING_DATA\\token_cache \\
+  CB_SOURCES="$CUBBY_DRIVE\\cubbyllm\\corpus_sources.json" \\
+  CUBBY_SPM=$CUBBY_DATASETS\\_pipeline\\tokenizer\\grillcheese_bbpe128k.json \\
   python validation/exp_a7_learning_gate.py | tee validation/logs/exp_a7_learning_gate.log
 """
 from __future__ import annotations
+
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
 
 import json
 import math
@@ -89,12 +94,12 @@ import torch  # noqa: E402
 import torch.nn.functional as F  # noqa: E402
 
 # ── configuration (env, all defaults = the 2026-08-28 first run) ───────────
-CKPT = os.environ.get("CB_CKPT", r"C:\CUBBY-TRAINED-MODELS\hd5_mem21.pt")
-CORPUS = os.environ.get("CB_CORPUS", r"I:\grillcheese_training_data\token_cache")
-SOURCES = os.environ.get("CB_SOURCES", r"D:\My Drive\cubbyllm\corpus_sources.json")
-SPM = os.environ.get("CUBBY_SPM", r"E:\datasets\_pipeline\tokenizer\grillcheese_bbpe128k.json")
-GSM8K = os.environ.get("CB_GSM8K", r"I:\grillcheese_training_data\socratic_test_text.jsonl")
-SAVE_DIR = os.environ.get("CB_A7_SAVE_DIR", r"C:\CUBBY-TRAINED-MODELS")
+CKPT = os.environ.get("CB_CKPT", _lp(r"$CUBBY_MODELS\hd5_mem21.pt"))
+CORPUS = os.environ.get("CB_CORPUS", _lp(r"$CUBBY_TRAINING_DATA\token_cache"))
+SOURCES = os.environ.get("CB_SOURCES", _lp(r"$CUBBY_DRIVE\cubbyllm\corpus_sources.json"))
+SPM = os.environ.get("CUBBY_SPM", _lp(r"$CUBBY_DATASETS\_pipeline\tokenizer\grillcheese_bbpe128k.json"))
+GSM8K = os.environ.get("CB_GSM8K", _lp(r"$CUBBY_TRAINING_DATA\socratic_test_text.jsonl"))
+SAVE_DIR = os.environ.get("CB_A7_SAVE_DIR", _lp(r"$CUBBY_MODELS"))
 TAG = os.environ.get("CB_A7_TAG", "")
 STEPS = int(os.environ.get("CB_A7_STEPS", "120"))
 LR = float(os.environ.get("CB_A7_LR", "1e-4"))

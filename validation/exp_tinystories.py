@@ -15,6 +15,11 @@ the char-level exp_d1 bake-off, then samples a story.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import json
 import math
 import sys
@@ -27,7 +32,7 @@ import torch.nn.functional as F
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-sys.path.insert(0, r"C:\Users\grill\Documents\GitHub\CubbyLLM")
+sys.path.insert(0, _lp(r"$CUBBY_REPO"))
 import sentencepiece as spm  # noqa: E402
 
 from cubbyllm.core.config import CubbyConfig  # noqa: E402
@@ -40,9 +45,9 @@ from cubbyllm.model.memory import MemoryLayer  # noqa: E402
 from cubbyllm.model.vocab import HybridEmbedding, TopKRetrievalHead  # noqa: E402
 from cubbyllm.training import InMemoryDataPipeline, TrainLoop  # noqa: E402
 
-STORIES = r"C:\Users\grill\Documents\GitHub\cubby-lm\tinystory_50k.json"
-SPM = (r"C:\Users\grill\Documents\GitHub\cubby-lm\cubby\tokenizers"
-       r"\spm32k_1p7b\grillcheese_spm32k_v2.model")
+STORIES = _lp(r"$CUBBY_GITHUB\cubby-lm\tinystory_50k.json")
+SPM = (_lp(r"$CUBBY_GITHUB\cubby-lm\cubby\tokenizers"
+       r"\spm32k_1p7b\grillcheese_spm32k_v2.model"))
 D_MODEL = 128
 N_LAYERS = 3
 CTX_DIM = 32

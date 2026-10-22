@@ -2,7 +2,7 @@
  "config": {
   "questions": 800,
   "calibration": 200,
-  "table": "I:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+  "table": "$CUBBY_MODELS\\fastword_table_v4.npz",
   "top_k": 3,
   "max_repairs": 1,
   "exe": null,
@@ -301,7 +301,7 @@
    "verified_count": 1
   }
  },
- "harvest_file": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\validation\\logs\\cot_harvest_lookup_vp2.jsonl",
+ "harvest_file": "$CUBBY_REPO\\validation\\logs\\cot_harvest_lookup_vp2.jsonl",
  "n_harvest_records": 800,
  "counterfactual_neighborhood": {
   "enabled": true,

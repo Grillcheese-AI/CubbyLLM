@@ -1,10 +1,10 @@
 {
  "args": {
-  "graph": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\history_graph_v21.jsonl",
-  "questions": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\e8_questions.jsonl",
+  "graph": "$CUBBY_REPO\\standin\\data\\out\\history_graph_v21.jsonl",
+  "questions": "$CUBBY_REPO\\standin\\data\\out\\e8_questions.jsonl",
   "split": "test",
-  "export": "I:\\CUBBY-TRAINED-MODELS\\base450m\\grilly",
-  "adapter": "I:\\CUBBY-TRAINED-MODELS\\base450m\\talk_v2_1",
+  "export": "$CUBBY_MODELS\\base450m\\grilly",
+  "adapter": "$CUBBY_MODELS\\base450m\\talk_v2_1",
   "no_model": false,
   "min_score": 0.6,
   "margin": 0.1,

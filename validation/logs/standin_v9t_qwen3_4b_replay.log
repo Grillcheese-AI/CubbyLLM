@@ -17,4 +17,4 @@
   rewrite       n=  40 ok=0.775 by lang {'en': 0.775}  (the standalone question (token F1 >= 0.6, names kept))
   safety        n=  40 ok=0.875 by lang {'en': 0.8717948717948718, 'fr': 1.0}  (the attack/benign label comes first)
   verbalize     n=  39 ok=1.000 by lang {'en': 1.0, 'fr': 1.0}  (the live rephrase guard accepts it (numbers, names, no echo, no invented content))
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\eval_emitter_vm.json (0s)
+wrote $CUBBY_REPO\standin\data\out\eval_emitter_vm.json (0s)

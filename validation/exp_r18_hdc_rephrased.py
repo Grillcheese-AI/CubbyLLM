@@ -1,6 +1,6 @@
 """exp_r18 -- the hdc rephrased set (nace-ai hypernet-scaling-law, Wiki5M 1/2/3-hop QA) through the gate.
 
-`E:\\datasets\\hdc\\ood_validation_rephrased.pq` is 10,000 questions -- 5,000 one-hop, 3,000 two-hop, 2,000
+`$CUBBY_DATASETS\\hdc\\ood_validation_rephrased.pq` is 10,000 questions -- 5,000 one-hop, 3,000 two-hop, 2,000
 three-hop -- each with its canonical template wording (`question_prompt_original`, the grammar's own basin:
 "What is the continent of the country of the country of citizenship of X?"), a free-text rephrasing
 (`question_prompt`: "Which continent does the country of citizenship of X belong to?"), the answer, and
@@ -24,6 +24,11 @@ guessed.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse, collections, csv, hashlib, json, pathlib, random, re, sys, time
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -34,7 +39,7 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 TAU_VM = {1: 1.0, 2: 0.4736328125, 3: 0.22021484375}
-HDC = pathlib.Path("E:/datasets/hdc")
+HDC = pathlib.Path(_lp("$CUBBY_DATASETS/hdc"))
 _ARTICLES = frozenset(("the", "a", "an"))
 
 

@@ -6,4 +6,4 @@
   fact grammar parses 0/300 (0.0%) | question detector fires 220/300 | has a short answer 155/300 | lowercase start 300/300 | ends with '?' 0/300 | words 9.3
   thalamus reads: {'a question about the world': 220, 'small talk': 74, 'a feeling, opinion or creative ask': 6}
   read as 'a feeling, opinion or creative ask' (6): "pop rocks the inside story of america's revolutionary candy" | 'write a detailed note on the foundation of j and k state' | 'still crazy after all these years song meaning' | 'song jack and jill went up the hill' | "i don't want to live forever mp3 song download" | 'central idea of poem lines from the deserted village'
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\question_style_probe.json
+wrote $CUBBY_REPO\standin\data\out\question_style_probe.json

@@ -11,7 +11,7 @@
 
 # TOTAL 12,623,694 tokens across 2 sources in 23s
 # manifest_hash (full corpus): 2ccf6e1a8deddc7543234ca7e17f8ba325e7909a5dbcdd11d557e96c4891fe0b
-# log: C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\tokenize_parallel_1785387551.log
+# log: $CUBBY_REPO\validation\logs\tokenize_parallel_1785387551.log
 # tokenize_parallel  procs=10  spm=grillcheese_bpe128k.model
 # sources: ['books', 'verified_facts', 'wikipedia', 'arxiv', 'pretrain_ext', 'unified', 'wiki_full', 'fineweb_edu', 'wikibooks', 'kbtxt']
 

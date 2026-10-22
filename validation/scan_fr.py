@@ -9,10 +9,15 @@ Two probes per file, on the first 400 KB:
 A file can score high on FR and ~0 on QC: that is translated or formal French, which
 is the material that has failed us twice already.
 """
+
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
 import os
 import re
 
-B = r"I:\grillcheese_training_data"
+B = _lp(r"$CUBBY_TRAINING_DATA")
 
 QC = re.compile(r"\b(pcq|fac|tk|asteur|pis|ouais|ouin|jpense|jai|chu|p-e|cest|toe|quin|dla|ste|jvais|jsuis|icitte|pantoute|ben|dac|fodrais|messemble)\b", re.I)
 FR = re.compile(r"\b(les|des|une|dans|pour|avec|mais|nous|vous|elle|cette|comme|tout|plus|bien|faire|etre|\u00eatre|sont|est|qui|que|aux|sur)\b", re.I)

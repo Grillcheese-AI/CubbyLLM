@@ -31,4 +31,4 @@ by plan length K:
   K=7   steps=  56 exact=0.286 value=0.321 op=0.429  closes=  8 stop_right=0.625
   K=8   steps=  32 exact=0.156 value=0.188 op=0.250  closes=  4 stop_right=0.000
   K=10  steps=  10 exact=0.200 value=0.200 op=0.400  closes=  1 stop_right=1.000
-ALL steps=925 exact=0.271 value=0.342 op=0.386 operands=0.446 stopped_early=0.035 incomplete=0.003 | closes=236 stop_right=0.513 ran_on=0.487  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_next_step_ctrl_held.json
+ALL steps=925 exact=0.271 value=0.342 op=0.386 operands=0.446 stopped_early=0.035 incomplete=0.003 | closes=236 stop_right=0.513 ran_on=0.487  -> $CUBBY_REPO\validation\logs\exp_he19_next_step_ctrl_held.json

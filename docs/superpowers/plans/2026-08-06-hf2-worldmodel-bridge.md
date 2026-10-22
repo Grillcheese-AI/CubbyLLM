@@ -249,7 +249,7 @@ Claude-Session: https://claude.ai/code/session_01JNaPeo6tU6xubkEfWTTLav"
 ## Task 3: `CubbyBridge` adapter over real MoWM (mowm repo)
 
 **Files:**
-- Create: `mowm/bridges/__init__.py`, `mowm/bridges/cubby_bridge.py` (in `C:\Users\grill\Documents\GitHub\mowm`)
+- Create: `mowm/bridges/__init__.py`, `mowm/bridges/cubby_bridge.py` (in `$CUBBY_GITHUB\mowm`)
 
 **Interfaces:**
 - Consumes: CubbyLLM's `Challenge`/`ChallengeResult`/`WorldModelBridge` (Task 1, imported from the sibling cubbyllm package); mowm's `AxiomLibrary`, `MoWMRouter`, `World`, `seed_all`; `WorldEncoder`.

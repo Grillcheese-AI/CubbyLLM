@@ -1,16 +1,16 @@
 # hf_fetch  6 jobs
 [legal/ca_code] streaming nvidia/Nemotron-Pretraining-Legal-v1 :: Nemotron-Pretraining-Legal-California-Code-Of-Regulations ...
-[legal/ca_code] DONE 57,523 rows, 0.16 GB, 13s -> E:\datasets\_pipeline\nemotron_legal\california_code.jsonl
+[legal/ca_code] DONE 57,523 rows, 0.16 GB, 13s -> $CUBBY_DATASETS\_pipeline\nemotron_legal\california_code.jsonl
 [legal/case_law] streaming nvidia/Nemotron-Pretraining-Legal-v1 :: Nemotron-Pretraining-Legal-Case-Law-Summary ...
-[legal/case_law] DONE 53,137 rows, 0.13 GB, 9s -> E:\datasets\_pipeline\nemotron_legal\case_law_summary.jsonl
+[legal/case_law] DONE 53,137 rows, 0.13 GB, 9s -> $CUBBY_DATASETS\_pipeline\nemotron_legal\case_law_summary.jsonl
 [legal/cuad] streaming nvidia/Nemotron-Pretraining-Legal-v1 :: Nemotron-Pretraining-Legal-LegalBench-CUAD-v2 ...
 [legal/cuad]   100,000 rows, 0.05 GB, 17s
 [legal/cuad]   200,000 rows, 0.11 GB, 27s
 [legal/cuad]   300,000 rows, 0.16 GB, 36s
 [legal/cuad]   400,000 rows, 0.22 GB, 46s
-[legal/cuad] DONE 460,031 rows, 0.26 GB, 51s -> E:\datasets\_pipeline\nemotron_legal\cuad.jsonl
+[legal/cuad] DONE 460,031 rows, 0.26 GB, 51s -> $CUBBY_DATASETS\_pipeline\nemotron_legal\cuad.jsonl
 [legal/ecfr] streaming nvidia/Nemotron-Pretraining-Legal-v1 :: Nemotron-Pretraining-Legal-eCFR ...
-[legal/ecfr] DONE 35,173 rows, 0.57 GB, 23s -> E:\datasets\_pipeline\nemotron_legal\ecfr.jsonl
+[legal/ecfr] DONE 35,173 rows, 0.57 GB, 23s -> $CUBBY_DATASETS\_pipeline\nemotron_legal\ecfr.jsonl
 [legal/casehold] streaming nvidia/Nemotron-Pretraining-Legal-v1 :: Nemotron-Pretraining-Legal-CaseHOLD ...
 [legal/casehold]   100,000 rows, 0.40 GB, 48s
 [legal/casehold]   200,000 rows, 0.74 GB, 62s
@@ -18,7 +18,7 @@
 [legal/casehold]   400,000 rows, 1.46 GB, 85s
 [legal/casehold]   500,000 rows, 1.83 GB, 96s
 [legal/casehold]   600,000 rows, 2.19 GB, 108s
-[legal/casehold] DONE 691,518 rows, 2.50 GB, 118s -> E:\datasets\_pipeline\nemotron_legal\casehold.jsonl
+[legal/casehold] DONE 691,518 rows, 2.50 GB, 118s -> $CUBBY_DATASETS\_pipeline\nemotron_legal\casehold.jsonl
 [fineinstructions] streaming AjayP13/nemotron_fineinstructions_1T_judged_exp_chat ...
 [fineinstructions]   100,000 rows, 0.17 GB, 133s
 [fineinstructions]   200,000 rows, 0.33 GB, 164s
@@ -62,7 +62,7 @@
 [legal/ecfr] skip (exists, 0.57 GB)
 [legal/casehold] skip (exists, 2.52 GB)
 [chatbot_arena] streaming lmsys/chatbot_arena_conversations ...
-[chatbot_arena] DONE 33,000 kept / 33,000 seen, 0.04 GB, 21s -> E:\datasets\domains\conversation\chatbot_arena.jsonl
+[chatbot_arena] DONE 33,000 kept / 33,000 seen, 0.04 GB, 21s -> $CUBBY_DATASETS\domains\conversation\chatbot_arena.jsonl
 [synthetic_code] streaming nvidia/Nemotron-Pretraining-Code-v1 :: Synthetic-Code ...
 [synthetic_code]   100,000 kept / 100,000 seen, 0.25 GB, 34s
 [synthetic_code]   200,000 kept / 200,000 seen, 0.49 GB, 46s
@@ -84,7 +84,7 @@
 [synthetic_code]   1,800,000 kept / 1,800,000 seen, 4.38 GB, 242s
 [synthetic_code]   1,900,000 kept / 1,900,000 seen, 4.63 GB, 251s
 [synthetic_code]   2,000,000 kept / 2,000,000 seen, 4.89 GB, 279s
-[synthetic_code] DONE 2,047,718 kept / 2,047,718 seen, 5.00 GB, 285s -> E:\datasets\_pipeline\nemotron_code\synthetic_code.jsonl
+[synthetic_code] DONE 2,047,718 kept / 2,047,718 seen, 5.00 GB, 285s -> $CUBBY_DATASETS\_pipeline\nemotron_code\synthetic_code.jsonl
 [nemotron_qa] streaming fineinstructions-pretraining/nemotron_qa_1T_exp ...
 [nemotron_qa]   100,000 kept / 100,000 seen, 0.24 GB, 163s
 [nemotron_qa]   200,000 kept / 200,000 seen, 0.49 GB, 196s
@@ -118,7 +118,7 @@
 [nemotron_qa]   3,000,000 kept / 3,000,000 seen, 7.28 GB, 1109s
 [nemotron_qa]   3,100,000 kept / 3,100,000 seen, 7.52 GB, 1138s
 [nemotron_qa]   3,200,000 kept / 3,200,000 seen, 7.76 GB, 1169s
-[nemotron_qa] DONE 3,297,555 kept / 3,297,555 seen, 8.00 GB, 1198s -> E:\datasets\_pipeline\nemotron_qa\nemotron_qa.jsonl
+[nemotron_qa] DONE 3,297,555 kept / 3,297,555 seen, 8.00 GB, 1198s -> $CUBBY_DATASETS\_pipeline\nemotron_qa\nemotron_qa.jsonl
 [fineinstructions] streaming AjayP13/nemotron_fineinstructions_1T_judged_exp_chat ...
 [fineinstructions]   100,000 kept / 100,000 seen, 0.17 GB, 118s
 [fineinstructions]   200,000 kept / 200,000 seen, 0.33 GB, 140s
@@ -167,5 +167,5 @@
 [fineinstructions]   4,500,000 kept / 4,500,000 seen, 7.54 GB, 1919s
 [fineinstructions]   4,600,000 kept / 4,600,000 seen, 7.71 GB, 1951s
 [fineinstructions]   4,700,000 kept / 4,700,000 seen, 7.88 GB, 1984s
-[fineinstructions] DONE 4,773,852 kept / 4,773,852 seen, 8.00 GB, 2009s -> E:\datasets\domains\instruction\nemotron_fineinstructions.jsonl
+[fineinstructions] DONE 4,773,852 kept / 4,773,852 seen, 8.00 GB, 2009s -> $CUBBY_DATASETS\domains\instruction\nemotron_fineinstructions.jsonl
 # hf_fetch complete

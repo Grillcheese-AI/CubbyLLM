@@ -13,4 +13,4 @@ env: 2026-10-21 13:30 python 3.12.10 torch 2.4.1+cpu numpy 2.5.1 Intel64 Family 
   step   800  loss 3.644  exact 0.885  first 0.990  later 0.945  end 0.545  language 2.250  read top-1 0.816 cos 0.299  gap 0.193  lam 0.762  gate -0.46   [3488s]
   step   900  loss 3.621  exact 0.875  first 0.992  later 0.939  end 0.531  language 2.230  read top-1 0.816 cos 0.299  gap 0.193  lam 0.757  gate -0.47   [3833s]
   step   999  loss 3.629  exact 0.922  first 0.992  later 0.964  end 0.469  language 2.226  read top-1 0.816 cos 0.299  gap 0.193  lam 0.776  gate -0.47   [4178s]
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_k10_far_facts_combo_ring_s0_2026-10-21.json
+wrote $CUBBY_REPO\validation\logs\exp_k10_far_facts_combo_ring_s0_2026-10-21.json

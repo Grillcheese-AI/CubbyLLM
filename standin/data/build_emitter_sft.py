@@ -44,6 +44,11 @@ Split: deterministic 95/5 by sha256(prompt), stratified per task.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import hashlib
 import json
@@ -64,9 +69,9 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-REGEN = os.environ.get("STANDIN_REGEN", r"C:\Users\grill\Documents\GitHub\cubemind\sandbox\regen")
+REGEN = os.environ.get("STANDIN_REGEN", _lp(r"$CUBBY_GITHUB\cubemind\sandbox\regen"))
 HARVEST = os.environ.get("STANDIN_HARVEST", os.path.join(ROOT, "validation", "logs", "cot_harvest_v3cf.jsonl"))
-GSM_TEST = os.environ.get("STANDIN_GSM_TEST", r"E:\datasets\misc\test_socratic.jsonl")
+GSM_TEST = os.environ.get("STANDIN_GSM_TEST", _lp(r"$CUBBY_DATASETS\misc\test_socratic.jsonl"))
 OUT_DIR = os.environ.get("STANDIN_OUT", os.path.join(ROOT, "standin", "data", "out"))
 CAP_ROLE = int(os.environ.get("STANDIN_CAP_ROLE", "1500"))
 # v2 (2026-08-30, after the first SFT run): role-binding comes from the curated svc
@@ -223,7 +228,7 @@ def load_jsonl(path):
 
 
 def collect(limit: int | None):
-    # E:\datasets\misc\test_socratic.jsonl carries {question, answer}; the I: copy
+    # $CUBBY_DATASETS\misc\test_socratic.jsonl carries {question, answer}; the I: copy
     # (socratic_test_text.jsonl) carries {text: "Question: ...\nAnswer: ..."}.
     gsm_test = {gsm_question(r["text"]) if "text" in r else r["question"].strip()
                 for r in load_jsonl(GSM_TEST)}

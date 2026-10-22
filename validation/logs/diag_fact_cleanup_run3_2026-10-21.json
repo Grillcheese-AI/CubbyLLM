@@ -1,5 +1,5 @@
 {
- "ckpt": "I:\\My Drive\\cubbyllm\\runs\\spatial_link_3\\spatial_link_3_final.pt",
+ "ckpt": "$CUBBY_DRIVE\\cubbyllm\\runs\\spatial_link_3\\spatial_link_3_final.pt",
  "meta": {
   "kind": "cubby_base",
   "D": 1024,

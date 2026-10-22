@@ -1,6 +1,6 @@
 """exp_m3_beir_dbpedia — the table on a published benchmark (BEIR dbpedia-entity).
 
-Full BEIR dbpedia-entity: 4.64M corpus passages (E:\\datasets\\full-dbpedia),
+Full BEIR dbpedia-entity: 4.64M corpus passages ($CUBBY_DATASETS\\full-dbpedia),
 400 test queries with graded qrels (0/1/2; qrels_test.tsv downloaded from
 BeIR/dbpedia-entity-qrels). This anchors the paper against PUBLISHED numbers
 instead of only self-relative ones. Literature anchors (verify against the
@@ -23,6 +23,11 @@ Standalone; never imported by cubbyllm/.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import json
 import pathlib
@@ -41,9 +46,9 @@ for p in (str(ROOT), str(VAL)):
 from exp_m3_domain_routing import TABLE, _load_semantic_words  # noqa: E402
 from exp_m3_haystack import compact_scores  # noqa: E402
 
-CORPUS = pathlib.Path(r"E:\datasets\full-dbpedia\corpus\corpus-00000-of-00001.parquet")
-QUERIES = pathlib.Path(r"E:\datasets\full-dbpedia\queries\queries-00000-of-00001.parquet")
-QRELS = pathlib.Path(r"E:\datasets\full-dbpedia\qrels_test.tsv")
+CORPUS = pathlib.Path(_lp(r"$CUBBY_DATASETS\full-dbpedia\corpus\corpus-00000-of-00001.parquet"))
+QUERIES = pathlib.Path(_lp(r"$CUBBY_DATASETS\full-dbpedia\queries\queries-00000-of-00001.parquet"))
+QRELS = pathlib.Path(_lp(r"$CUBBY_DATASETS\full-dbpedia\qrels_test.tsv"))
 K, L = 80, 128
 
 

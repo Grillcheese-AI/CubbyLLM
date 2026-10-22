@@ -264,6 +264,6 @@
  },
  "vm_calls": 108154,
  "wall_s": 1050.0,
- "output": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\gen3_free_text.jsonl",
+ "output": "$CUBBY_REPO\\standin\\data\\out\\gen3_free_text.jsonl",
  "note": "certified = the gate verified the host's plan for the wording and the VM's answer is the chain's object; every other verdict is the gate's refusal reason for that wording, counted"
 }

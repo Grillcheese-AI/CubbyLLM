@@ -21,4 +21,4 @@ vote5_held: n=236 correct=0.237 answered=0.970 wrong_answer=0.733 same_steps=0.5
        0.60   0.475   0.174   0.301     0.366
        0.80   0.161   0.081   0.081     0.500
        1.00   0.055   0.034   0.021     0.615
-  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_step_loop_vote5_held.json
+  -> $CUBBY_REPO\validation\logs\exp_he19_step_loop_vote5_held.json

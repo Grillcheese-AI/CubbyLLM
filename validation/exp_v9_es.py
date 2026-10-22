@@ -52,6 +52,11 @@ Everything grilly is reached through `cubbyllm.ops` (the single-seam rule).
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import json
 import math
@@ -249,8 +254,8 @@ def main() -> int:
     # the BASE, not the merged checkpoint: the adapter goes on unmerged, so on a merged model it is applied
     # twice. 2026-09-24 smoke run: merged + adapter read 0.000 held-out where merged alone ran as v14e.
     ap.add_argument("--model", default="LiquidAI/LFM2.5-2.6B")
-    ap.add_argument("--adapter", default=r"D:/My Drive/cubbyllm/standin/"
-                                         r"emitter_lfm25_2p6b_v14e_nochain_full/adapter")
+    ap.add_argument("--adapter", default=_lp(r"$CUBBY_DRIVE/cubbyllm/standin/"
+                                         r"emitter_lfm25_2p6b_v14e_nochain_full/adapter"))
     ap.add_argument("--task", default="arithmetic")
     ap.add_argument("--iterations", type=int, default=200)
     ap.add_argument("--population", type=int, default=32)

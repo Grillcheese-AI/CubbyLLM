@@ -15,7 +15,7 @@
 
 # TOTAL 3,632,689,182 tokens across 3 sources in 1,005s
 # manifest_hash (full corpus): 6897df8cef78069c7f965fee2c7bd54757142f36c4d9fcf9103c4f5926f31511
-# log: C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\tokenize_parallel_1785426542.log
+# log: $CUBBY_REPO\validation\logs\tokenize_parallel_1785426542.log
 # tokenize_parallel  procs=10  spm=grillcheese_bbpe128k.json
 # sources: ['books', 'verified_facts', 'pretrain_ext', 'wiki_full', 'kbtxt']
 
@@ -625,7 +625,7 @@
 
 # TOTAL 5,381,894,612 tokens across 5 sources in 4,013s
 # manifest_hash (full corpus): 5e7f8b73f19156bb7415b10ccda88ee164d1c5e71648611781871cc5ee528f94
-# log: C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\tokenize_parallel_1785426542.log
+# log: $CUBBY_REPO\validation\logs\tokenize_parallel_1785426542.log
 # tokenize_parallel  procs=10  spm=grillcheese_bbpe128k.json
 # sources: ['books', 'verified_facts', 'kbtxt']
 
@@ -1226,4 +1226,4 @@
 
 # TOTAL 2,336,247,688 tokens across 3 sources in 1,513s
 # manifest_hash (full corpus): 5e7f8b73f19156bb7415b10ccda88ee164d1c5e71648611781871cc5ee528f94
-# log: C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\tokenize_parallel_1785426542.log
+# log: $CUBBY_REPO\validation\logs\tokenize_parallel_1785426542.log

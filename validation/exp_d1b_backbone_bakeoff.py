@@ -23,6 +23,11 @@ stand-in) — a decision surfaced to the user after the run, not taken here.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import json
 import math
 import os
@@ -37,7 +42,7 @@ import torch.nn.functional as F
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-# Repo root, derived from THIS file — was a hardcoded C:\... absolute path, which
+# Repo root, derived from THIS file — was a hardcoded $CUBBY_DATA_ROOT/... absolute path, which
 # imports fine on the machine it was written on and dies everywhere else (Colab).
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import sentencepiece as spm  # noqa: E402
@@ -51,9 +56,9 @@ from cubbyllm.model.memory import MemoryLayer  # noqa: E402
 from cubbyllm.model.vocab import HybridEmbedding, TopKRetrievalHead  # noqa: E402
 from cubbyllm.training import InMemoryDataPipeline, TrainLoop  # noqa: E402
 
-STORIES = r"C:\Users\grill\Documents\GitHub\cubby-lm\tinystory_50k.json"
-SPM = (r"C:\Users\grill\Documents\GitHub\cubby-lm\cubby\tokenizers"
-       r"\spm32k_1p7b\grillcheese_spm32k_v2.model")
+STORIES = _lp(r"$CUBBY_GITHUB\cubby-lm\tinystory_50k.json")
+SPM = (_lp(r"$CUBBY_GITHUB\cubby-lm\cubby\tokenizers"
+       r"\spm32k_1p7b\grillcheese_spm32k_v2.model"))
 D, N_LAYERS, CTX, N_SLOTS = 128, 2, 32, 8
 SEQ, BATCH, STEPS, LR = 64, 16, 600, 3e-3
 N_STORIES, EVAL_EVERY = 8000, 200

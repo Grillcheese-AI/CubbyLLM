@@ -1,6 +1,6 @@
 """DirectML smoke test + micro-benchmark for the assembled CubbyModel.
 
-Run inside the .venv-dml environment (torch 2.4.1 + torch-directml). Builds a
+Run inside the <venv> environment (torch 2.4.1 + torch-directml). Builds a
 small REAL ``CubbyModel``, moves it to the GPU via ``resolve_device('dml')`` +
 ``move_model``, and runs a few train steps on random tokens — proving every op
 in the forward/backward path (embedding, MinGRU scan via the sequential DML
@@ -10,16 +10,21 @@ DirectML device. Times DML vs CPU so we can see the speedup on real shapes.
 Each stage is guarded so an unsupported op reports exactly where it broke,
 rather than a bare stack trace.
 
-  (.venv-dml) python validation/bench_dml.py
+  (<venv>) python validation/bench_dml.py
 """
 from __future__ import annotations
+
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
 
 import os
 import sys
 import time
 import traceback
 
-sys.path.insert(0, r"C:\Users\grill\Documents\GitHub\CubbyLLM")
+sys.path.insert(0, _lp(r"$CUBBY_REPO"))
 
 import torch  # noqa: E402
 import torch.nn.functional as F  # noqa: E402

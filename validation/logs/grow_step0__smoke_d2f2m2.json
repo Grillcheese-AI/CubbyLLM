@@ -1,7 +1,7 @@
 {
  "args": {
-  "ckpt": "F:\\CUBBY-TRAINED-MODELS\\base450m\\base450m_final.pt",
-  "cache": "F:\\grillcheese_training_data\\token_cache_cont",
+  "ckpt": "$CUBBY_MODELS\\base450m\\base450m_final.pt",
+  "cache": "$CUBBY_TRAINING_DATA\\token_cache_cont",
   "width": 1,
   "depth": 2,
   "ffn": 2,

@@ -1,5 +1,5 @@
 {
- "file": "E:\\datasets\\hdc\\ood_validation_rephrased.pq",
+ "file": "$CUBBY_DATASETS\\hdc\\ood_validation_rephrased.pq",
  "n": 8840,
  "seed": 7,
  "arms": [

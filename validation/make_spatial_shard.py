@@ -33,6 +33,11 @@ and ``_sizes.json`` follow ``make_decay_shards.py``.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import datetime as _dt
 import json
@@ -50,7 +55,7 @@ sys.path.insert(0, ROOT)
 from cubbyllm.model.spatial import NO_PLACE  # noqa: E402
 from cubbyllm.spatial.scene import DIRECTIONS, Scene  # noqa: E402
 
-MODELS = os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS")
+MODELS = os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS"))
 KINDS = {"water": ["well", "pond", "spring"], "tree": ["oak", "pine", "birch", "apple tree"],
          "building": ["hut", "forge", "barn", "mill", "church", "shop", "house", "tower", "inn"],
          "light": ["lantern", "torch", "lamp"], "way": ["road", "bridge", "gate", "fence", "wall"],

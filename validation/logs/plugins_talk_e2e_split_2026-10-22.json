@@ -1,0 +1,29 @@
+{
+ "prompts": [
+  "hi Cubby, how are you?",
+  "I had a rough day at work",
+  "what do you like to do?"
+ ],
+ "tokens": 40,
+ "seat": "talk_v2_1",
+ "talk": "talk_v2_2",
+ "base_sha256": "695f05b9f99790e355bbc7935d20939cb9ab5df732085a75f5cc551610db737c",
+ "plugin_loaded": true,
+ "plugin_status": "idle",
+ "plugin_equals_flag": true,
+ "seat_unchanged_before_during_after": true,
+ "seat_equals_flag_trunk": true,
+ "other_base_refused": true,
+ "other_base_reason": "ValueError: adapter 'talk' was trained on another base (695f05b9f997 vs 81a45418edb5)",
+ "digests": {
+  "flag_talk": "ead6bf26d07be6d4",
+  "plugin_talk": "ead6bf26d07be6d4",
+  "seat": "7aff1c83fe710c1a"
+ },
+ "talk_said": [
+  "Hi! I'm doing great, thanks for asking! 😊 I love your message! How can I assist you today?",
+  "I don't experience bad days or bad days. I'm here to help with whatever you need—whether it's answering questions, troubleshooting, or just having a good day. What's on your mind",
+  "I don't have feelings, but I can help with whatever you'd like to do. How about you? 😊"
+ ],
+ "wall_s": 34.7
+}

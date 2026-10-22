@@ -4,7 +4,9 @@ table fastword_table_v1.npz | nyt_data (100/year)
 14700 texts across 147 years (1852..2024, median 100/year)
 encoded in 7s (478 us/text)
 
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 7557.44it/s]
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 103/103 [00:00<00:00, 7557.44it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -31,4 +33,4 @@ Notes:
     tau=1.01  yr-exact 0.068 ±50y 0.781 worlds 147.0 member-cmps  14700 delegated 1.00
 noise null: {'exact': [0.0064, 0.0007], 'within10': [0.1198, 0.0007], 'mae_median': [50.6667, 0.4714]}
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_nyt_years.json
+wrote $CUBBY_REPO\validation\logs\exp_m3_nyt_years.json

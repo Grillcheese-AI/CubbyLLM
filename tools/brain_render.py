@@ -9,6 +9,11 @@ in the step's tone (amber running, teal certified, red refused, violet a questio
 saying what happened. Steps keep their order and at least STEP seconds apart so each can be read.
 Writes <out>/frames and <out>/<journey>.mp4 (ffmpeg).
 """
+
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
 import json
 import math
 import subprocess
@@ -21,8 +26,8 @@ from mathutils import Vector
 
 TONE = {"hot": "#ffb648", "yes": "#45d3c0", "no": "#ff6b6b", "wonder": "#a594ff"}
 BG, STEP, FLY, HOLD = "#070b16", 0.75, 0.56, 3.4         # seconds: between steps, a flight, a card on screen
-FONT = Path(r"C:\Windows\Fonts\segoeui.ttf")
-FONT_B = Path(r"C:\Windows\Fonts\segoeuib.ttf")
+FONT = Path(_lp(r"$WINDIR\Fonts\segoeui.ttf"))
+FONT_B = Path(_lp(r"$WINDIR\Fonts\segoeuib.ttf"))
 
 
 def arg(name, default=None):

@@ -1,7 +1,7 @@
 {
  "args": {
-  "ckpt": "I:\\CUBBY-TRAINED-MODELS\\base450m\\base450m_final.pt",
-  "cache": "D:\\My Drive\\cubbyllm\\token_cache_base",
+  "ckpt": "$CUBBY_MODELS\\base450m\\base450m_final.pt",
+  "cache": "$CUBBY_DRIVE\\cubbyllm\\token_cache_base",
   "width": 1,
   "depth": 2,
   "ffn": 2,

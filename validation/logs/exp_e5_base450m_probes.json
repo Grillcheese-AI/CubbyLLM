@@ -22,9 +22,9 @@
   }
  },
  "args": {
-  "export": "I:\\CUBBY-TRAINED-MODELS\\base450m\\grilly",
-  "tokenizer": "C:\\Users\\grill\\AppData\\Local\\Temp\\cubby_scratch\\grillcheese_bbpe128k.json",
-  "ckpt": "I:\\CUBBY-TRAINED-MODELS\\base450m\\base450m_final.pt",
+  "export": "$CUBBY_MODELS\\base450m\\grilly",
+  "tokenizer": "~\\AppData\\Local\\Temp\\cubby_scratch\\grillcheese_bbpe128k.json",
+  "ckpt": "$CUBBY_MODELS\\base450m\\base450m_final.pt",
   "tag": "",
   "seed": 0,
   "copy_windows": 8,

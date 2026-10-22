@@ -1,5 +1,5 @@
 """Build a plain-text sample for CB_TEXT from the domain-tagged Wikipedia jsonl
-next to the checkpoints (``D:\\My Drive\\cubbyllm\\wikipedia\\*.jsonl``, fields
+next to the checkpoints (``$CUBBY_DRIVE\\cubbyllm\\wikipedia\\*.jsonl``, fields
 title/lang/domain/sim/text). A few articles per domain, shuffled, so a 4k-token
 window spans several domains rather than one long article.
 
@@ -10,6 +10,11 @@ Prints the path to pass as CB_TEXT. Never writes inside the repo.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import glob
 import json
 import os
@@ -18,7 +23,7 @@ import sys
 
 
 def main():
-    src = sys.argv[1] if len(sys.argv) > 1 else r"D:\My Drive\cubbyllm\wikipedia"
+    src = sys.argv[1] if len(sys.argv) > 1 else _lp(r"$CUBBY_DRIVE\cubbyllm\wikipedia")
     out = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.environ.get("TEMP", "."), "cubby_wiki_sample.txt")
     per = int(sys.argv[3]) if len(sys.argv) > 3 else 4
     texts = []

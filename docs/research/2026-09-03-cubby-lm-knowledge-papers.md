@@ -1,6 +1,6 @@
 # cubby-lm/external/knowledge — ten papers mapped to our mechanisms (2026-09-03)
 
-The owner's paper folder in the predecessor repo (`C:\Users\grill\Documents\GitHub\cubby-lm\external\knowledge`,
+The owner's paper folder in the predecessor repo (`$CUBBY_GITHUB\cubby-lm\external\knowledge`,
 ten PDFs, arXiv IDs from the first pages). Each row says what the paper is, which hypothesis or mechanism here it
 touches, and what — if anything — it changes. Concepts only; nothing here is validated by citation
 (`CLAUDE.md`: a source document asserting something confidently is not VERIFIED).

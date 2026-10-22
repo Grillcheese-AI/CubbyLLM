@@ -646,4 +646,4 @@
 
 # TOTAL 14,372,874,969 tokens across 10 sources in 5,579s
 # manifest_hash (full corpus): 2e5261130128f68984e052d77e82bad5e7a6f65c59bf417382b1bf69ce68f9a4
-# log: C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\tokenize_parallel_1785392369.log
+# log: $CUBBY_REPO\validation\logs\tokenize_parallel_1785392369.log

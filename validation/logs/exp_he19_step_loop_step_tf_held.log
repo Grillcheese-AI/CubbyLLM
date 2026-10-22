@@ -25,4 +25,4 @@ teacher-forced, step format:
   k=7      n=   5 right=0.600
   k=8      n=   1 right=0.000
   k=9      n=   1 right=1.000
-  stopped early (a stop where a step was due): 19  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_step_loop_step_tf_held.json
+  stopped early (a stop where a step was due): 19  -> $CUBBY_REPO\validation\logs\exp_he19_step_loop_step_tf_held.json

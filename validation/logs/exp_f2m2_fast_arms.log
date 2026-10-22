@@ -12,7 +12,9 @@ self-retrieval ceiling 278/280 = 0.993 (two duplicate names)
           words only + idf  0.136  0.1730   2.73  0.1536       48       19
   bpe tokens (ids as keys)  0.100  0.1150   1.82  0.1143       91       29
           bpe tokens + idf  0.100  0.1520   2.40  0.1536       86       29
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 6549.63it/s]
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 103/103 [00:00<00:00, 6549.63it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -28,4 +30,4 @@ K-sweep on best lexical arm (words only + idf); l=128 fixed, one seed per K:
   K=320 (d= 40960): macro 0.1835 (2.90x null)  micro 0.1536
 
 best model-free arm: words only + idf -- macro 0.1730 (2.73x null, 0.48x MiniLM) at ~19 us/challenge warm
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_f2m2_fast_arms.json
+wrote $CUBBY_REPO\validation\logs\exp_f2m2_fast_arms.json

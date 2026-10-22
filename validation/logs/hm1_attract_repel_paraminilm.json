@@ -1,7 +1,7 @@
 {
  "args": {
-  "teacher": "C:\\CUBBY-TRAINED-MODELS\\teacher_paraminilm.npz",
-  "out": "C:\\CUBBY-TRAINED-MODELS\\teacher_paraminilm_ar.npz",
+  "teacher": "$CUBBY_MODELS\\teacher_paraminilm.npz",
+  "out": "$CUBBY_MODELS\\teacher_paraminilm_ar.npz",
   "max_sib": 20,
   "epochs": 2,
   "batch": 256,

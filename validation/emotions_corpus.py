@@ -39,6 +39,11 @@ it cannot represent is how you end up believing a mapping is cleaner than it is.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import json
 import pathlib
 import sys
@@ -52,7 +57,7 @@ for p in (str(ROOT), str(ROOT / "standin"), str(ROOT / "standin" / "data")):
 from neurochem import Neurochemistry  # noqa: E402
 from goemotions_cube import PETAL_CORNER, NO_CORNER  # noqa: E402
 
-SRC = pathlib.Path(r"I:\grillcheese_training_data\pre\emotions.jsonl")
+SRC = pathlib.Path(_lp(r"$CUBBY_TRAINING_DATA\pre\emotions.jsonl"))
 OUT = ROOT / "standin" / "data" / "out" / "emotions_clean.jsonl"
 REPORT = ROOT / "docs" / "emotions_corpus.md"
 

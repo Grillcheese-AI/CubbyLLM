@@ -106,5 +106,5 @@
   ]
  },
  "wall_s": 3.3,
- "output": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\ground_sft_cached.jsonl"
+ "output": "$CUBBY_REPO\\standin\\data\\out\\ground_sft_cached.jsonl"
 }

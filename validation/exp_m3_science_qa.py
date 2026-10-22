@@ -1,6 +1,6 @@
 """exp_m3_science_qa — real science questions against the fast word table.
 
-H:\\datasets_facts\\KonstantyM___science_qa_prep holds 4.28M rows of
+$CUBBY_DATA_ROOT/datasets_facts\\KonstantyM___science_qa_prep holds 4.28M rows of
 ``input = "context: tag/<topic>/ question: <q>"`` / ``label = expert answer``.
 Natural questions with self-labeled ground truth twice over: the topic tag
 (routing) and the paired answer (retrieval). Two evals from one encoding pass,
@@ -16,6 +16,11 @@ using the open-set screen's winning rule (centroid routing + margin gate):
 Standalone; never imported by cubbyllm/. MiniLM runs only as the reference.
 """
 from __future__ import annotations
+
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
 
 import argparse
 import json
@@ -34,8 +39,8 @@ for p in (str(ROOT), str(VAL)):
 
 from exp_m3_domain_routing import TABLE, _load_semantic_words, youden_tau  # noqa: E402
 
-DATA = pathlib.Path(r"H:\datasets_facts\KonstantyM___science_qa_prep\default\0.0.0"
-                    r"\9dea632d62d523d0a3fd2bf027950821f95090c2")
+DATA = pathlib.Path(_lp(r"$CUBBY_DATA_ROOT/datasets_facts\KonstantyM___science_qa_prep\default\0.0.0"
+                    r"\9dea632d62d523d0a3fd2bf027950821f95090c2"))
 ROW_RE = re.compile(r"^context:\s*tag/([^/\s]+)/\s*question:\s*(.+)$", re.S)
 
 

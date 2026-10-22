@@ -49,6 +49,11 @@ them to slot form unchanged. `--heldout` builds the gate's eval set from bucket 
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import hashlib
 import json
@@ -868,7 +873,7 @@ def build_chain(n: int, sampler: PathSampler, writer, checks: Checks, variants: 
 # ── CLI ─────────────────────────────────────────────────────────────────────
 OUT_DIR = os.path.join(ROOT, "standin", "data", "out")
 V12E = os.path.join(OUT_DIR, "emitter_sft_v12e.jsonl")
-PQ = os.environ.get("STANDIN_CHAIN_PQ", r"E:\valid_scaling_law_with_facts.pq")
+PQ = os.environ.get("STANDIN_CHAIN_PQ", _lp(r"$CUBBY_DATA_ROOT/valid_scaling_law_with_facts.pq"))
 
 
 def _write(records: list[dict], path: str, manifest: dict) -> None:

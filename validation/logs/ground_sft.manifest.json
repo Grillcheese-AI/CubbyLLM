@@ -169,5 +169,5 @@
   ]
  },
  "wall_s": 870.1,
- "output": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\ground_sft.jsonl"
+ "output": "$CUBBY_REPO\\standin\\data\\out\\ground_sft.jsonl"
 }

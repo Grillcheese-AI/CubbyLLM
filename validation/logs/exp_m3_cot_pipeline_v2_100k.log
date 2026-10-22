@@ -1,5 +1,5 @@
 python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
-table fastword_table_v4.npz | rows valid_scaling_law_with_facts.pq | cubelang C:\Users\grill\Documents\GitHub\cubelang\target\release\cubelang.exe
+table fastword_table_v4.npz | rows valid_scaling_law_with_facts.pq | cubelang $CUBBY_GITHUB\cubelang\target\release\cubelang.exe
 
 eval: 800 questions {1: 385, 2: 256, 3: 159} | 1241 unique facts in store
 loading 100000 DBpedia distractors into the EVAL retrieval store only ...
@@ -92,7 +92,7 @@ planted-fault calibration done in 37s | 127 verified chains used | 406 VM calls 
   eval 775/800 (1247s)
   eval 800/800 (1282s)
 eval done in 1282s
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\cot_harvest_v2_100k.jsonl (800 records)
+wrote $CUBBY_REPO\validation\logs\cot_harvest_v2_100k.jsonl (800 records)
 
 === results ===
   retrieval_only   overall=0.486 by-hop={'1': 0.9558441558441558, '2': 0.0234375, '3': 0.09433962264150944} mean_wall_ms=268.9
@@ -122,5 +122,5 @@ wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\cot_harvest_v2_10
 
   OVERALL: PASS
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_cot_pipeline_v2_100k.json
+wrote $CUBBY_REPO\validation\logs\exp_m3_cot_pipeline_v2_100k.json
 FULL_B_EXIT=0

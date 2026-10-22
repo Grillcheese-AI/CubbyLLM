@@ -1,7 +1,7 @@
 {
  "args": {
-  "export": "I:\\CUBBY-TRAINED-MODELS\\base450m\\grilly",
-  "adapter": "I:\\CUBBY-TRAINED-MODELS\\base450m\\talk_v2",
+  "export": "$CUBBY_MODELS\\base450m\\grilly",
+  "adapter": "$CUBBY_MODELS\\base450m\\talk_v2",
   "data": "standin\\data\\out\\talk_v2.jsonl",
   "n": 150,
   "base": true,

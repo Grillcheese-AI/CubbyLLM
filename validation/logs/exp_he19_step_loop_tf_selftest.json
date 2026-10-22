@@ -1,6 +1,6 @@
 {
  "emitter": "gold",
- "data": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\pf_heldout_eval_w_step.jsonl",
+ "data": "$CUBBY_REPO\\standin\\data\\out\\pf_heldout_eval_w_step.jsonl",
  "summary": {
   "k=0": {
    "n": 40,

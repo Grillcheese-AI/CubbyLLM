@@ -33,6 +33,11 @@ back LOW, Lövheim is right and the old test was named after the old wrong table
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import json
 import math
 import pathlib
@@ -47,7 +52,7 @@ for p in (str(ROOT), str(ROOT / "standin"), str(ROOT / "standin" / "data")):
 from neurochem import Neurochemistry  # noqa: E402
 from goemotions_cube import PETAL_CORNER  # noqa: E402
 
-SRC = pathlib.Path(r"I:\grillcheese_training_data\pre")
+SRC = pathlib.Path(_lp(r"$CUBBY_TRAINING_DATA\pre"))
 OUT = ROOT / "docs" / "cube_vs_valence_arousal.md"
 
 

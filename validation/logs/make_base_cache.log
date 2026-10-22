@@ -27,4 +27,4 @@ wiki_full           609,222,656    0.57
 wikibooks            85,983,232    1.28
 wikipedia           123,395,015    0.16
 
-total 14.7 GB in I:\grillcheese_training_data\token_cache_base
+total 14.7 GB in $CUBBY_TRAINING_DATA\token_cache_base

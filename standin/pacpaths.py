@@ -10,12 +10,17 @@ identically. Nothing here decides anything; it is six paths.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import os
 import pathlib
 __wiring__ = "WIRED"
 
 
-_CV = pathlib.Path(r"C:\Users\grill\Documents\GitHub\cubbyverse")
+_CV = pathlib.Path(_lp(r"$CUBBY_GITHUB\cubbyverse"))
 
 
 PACMAN_3D = _CV / "examples" / "pacman_3d.py"
@@ -30,7 +35,7 @@ ASSETS_DIR = _CV / "examples" / "assets"                 # cubby's face textures
 PLUTCHIK_JSON = _CV / "cubbyverse" / "core" / "emotion" / "plutchik.json"
 
 
-REPLAY_OUT = pathlib.Path(r"C:/tmp/cubbyman_pacman_3d.html")
+REPLAY_OUT = pathlib.Path(_lp(r"$TEMP/cubbyman_pacman_3d.html"))
 
 
 

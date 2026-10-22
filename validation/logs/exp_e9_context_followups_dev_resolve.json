@@ -1,7 +1,7 @@
 {
  "args": {
-  "graph": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\history_graph_v21.jsonl",
-  "dialogues": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\e9_dialogues.jsonl",
+  "graph": "$CUBBY_REPO\\standin\\data\\out\\history_graph_v21.jsonl",
+  "dialogues": "$CUBBY_REPO\\standin\\data\\out\\e9_dialogues.jsonl",
   "rebuild": true,
   "per_type": 80,
   "dev": 20,

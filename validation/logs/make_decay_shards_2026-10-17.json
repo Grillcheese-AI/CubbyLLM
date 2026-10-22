@@ -1,14 +1,14 @@
 {
  "args": {
-  "cache": "F:\\grillcheese_training_data\\token_cache_cont",
-  "tokenizer": "F:\\CUBBY-TRAINED-MODELS\\base450m\\grilly\\tokenizer.json",
-  "instruct": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\chat_sft.jsonl",
+  "cache": "$CUBBY_TRAINING_DATA\\token_cache_cont",
+  "tokenizer": "$CUBBY_MODELS\\base450m\\grilly\\tokenizer.json",
+  "instruct": "$CUBBY_REPO\\standin\\data\\out\\chat_sft.jsonl",
   "instruct_tokens": 0,
   "program": [
-   "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\emitter_sft_v12e_w_slots.jsonl",
-   "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\emitter_sft_v12e_pf_slots.jsonl"
+   "$CUBBY_REPO\\standin\\data\\out\\emitter_sft_v12e_w_slots.jsonl",
+   "$CUBBY_REPO\\standin\\data\\out\\emitter_sft_v12e_pf_slots.jsonl"
   ],
-  "agent": "F:\\grillcheese_training_data\\unified\\open_thoughts_agent_trove.jsonl",
+  "agent": "$CUBBY_TRAINING_DATA\\unified\\open_thoughts_agent_trove.jsonl",
   "agent_tokens": 150000000,
   "holdout_frac": 0.02,
   "seed": 0,

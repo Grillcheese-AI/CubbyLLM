@@ -12,14 +12,19 @@ only, never full names, so the check can be reported without echoing anyone's na
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import glob
 import json
 import os
 import pathlib
 
-CORPUS = pathlib.Path(r"C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\teams_corpus.jsonl")
-KEY = pathlib.Path(r"C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\goldset_key.json")
-OUT = pathlib.Path(r"C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\speaker_check.txt")
+CORPUS = pathlib.Path(_lp(r"$CUBBY_REPO\standin\data\out\teams_corpus.jsonl"))
+KEY = pathlib.Path(_lp(r"$CUBBY_REPO\standin\data\out\goldset_key.json"))
+OUT = pathlib.Path(_lp(r"$CUBBY_REPO\standin\data\out\speaker_check.txt"))
 
 
 def initials(name: str) -> str:
@@ -27,7 +32,7 @@ def initials(name: str) -> str:
 
 
 def main() -> int:
-    export = glob.glob(r"C:\Users\grill\Desktop\TeamsExport*.json")[0]
+    export = glob.glob(_lp(r"~\Desktop\TeamsExport*.json"))[0]
     blob = json.load(open(export, encoding="utf-8"))
     raw = [m for m in blob["messages"]
            if not m.get("system") and not m.get("deleted") and (m.get("text") or "").strip()]

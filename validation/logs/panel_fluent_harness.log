@@ -5,4 +5,4 @@
   x-ai/grok-4.6                        1153 words  45.6s  finish=stop  in=3053 out=2486  cost=0.02083
   deepseek/deepseek-v3.2               1401 words  158.7s  finish=stop  in=2849 out=5722  cost=0.00634782
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\docs\panel_fluent_harness.md  (6/6 answered, $0.51 reported)
+wrote $CUBBY_REPO\docs\panel_fluent_harness.md  (6/6 answered, $0.51 reported)

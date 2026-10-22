@@ -5,4 +5,4 @@ attract-repel | teacher_potion.npz: 60147 words, dim 512 | WordNet constraints (
     loss 0.9963
   epoch 2    mean cosine | dev synonyms 0.229  dev antonyms 0.205  dev co-hyponyms 0.076 | train syn 0.276 sib 0.062 | test paraphrase 0.476  test entity 0.099
     loss 0.9795
-  -> C:\CUBBY-TRAINED-MODELS\teacher_potion_ar.npz (14s)
+  -> $CUBBY_MODELS\teacher_potion_ar.npz (14s)

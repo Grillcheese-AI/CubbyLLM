@@ -6,6 +6,11 @@ specified, no question doubles a word over all 2,902 relations, and without v2 e
 as it did."""
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import os
 import random
 import sys
@@ -19,7 +24,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(HERE)), "validat
 from cubbyllm.model.spatial import NO_PLACE  # noqa: E402
 from make_fact_shard import STEP, WIKI, address, cell, doubled, document, question, render, step, words  # noqa: E402
 
-TOKENIZER = os.path.join(os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS"), "base450m", "grilly", "tokenizer.json")
+TOKENIZER = os.path.join(os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS")), "base450m", "grilly", "tokenizer.json")
 
 
 @pytest.fixture(scope="module")

@@ -13,6 +13,11 @@ converted and is listed in the manifest as needing OCR. Resumable: a book whose 
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse, collections, concurrent.futures as cf, html.parser, json, os, pathlib, re, shutil, subprocess, sys, time
 import zipfile
 
@@ -23,8 +28,8 @@ if hasattr(sys.stdout, "reconfigure"):
 __wiring__ = "STANDALONE"
 
 PREF = {"epub": 0, "azw3": 1, "azw": 2, "mobi": 3, "htmlz": 4, "pdf": 5}
-SEVEN_ZIP = shutil.which("7z") or r"C:\Program Files\7-Zip\7z.exe"
-PDFTOTEXT = shutil.which("pdftotext") or r"C:\Program Files\Git\mingw64\bin\pdftotext.exe"
+SEVEN_ZIP = shutil.which("7z") or _lp(r"$ProgramFiles\7-Zip\7z.exe")
+PDFTOTEXT = shutil.which("pdftotext") or _lp(r"$ProgramFiles\Git\mingw64\bin\pdftotext.exe")
 MIN_CHARS_PER_PAGE = 400
 
 

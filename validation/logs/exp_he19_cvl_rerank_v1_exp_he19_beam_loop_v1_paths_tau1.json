@@ -1,7 +1,7 @@
 {
  "args": {
   "mode": "rerank",
-  "table": "C:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+  "table": "$CUBBY_MODELS\\fastword_table_v4.npz",
   "tag": "v1",
   "problems": 6000,
   "epochs": 12,

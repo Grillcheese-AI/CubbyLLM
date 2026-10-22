@@ -27,4 +27,4 @@ memory built in 10s | positions used 4.00M | pairs kept 1.93M | rows with mass 1
       beagle ppmi + signal  0.032  0.1204   1.90  0.1036   (1134 us/text)
 
 best beagle-mode arm: beagle ppmi + signal -- macro 0.1204 (1.90x null) vs words+idf 0.1730 / MiniLM 0.3580
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_f2m2_beagle.json
+wrote $CUBBY_REPO\validation\logs\exp_f2m2_beagle.json

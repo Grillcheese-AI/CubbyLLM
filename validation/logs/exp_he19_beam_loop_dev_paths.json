@@ -1,9 +1,9 @@
 {
  "args": {
   "mode": "loop",
-  "export": "C:\\CUBBY-TRAINED-MODELS\\base450m_cont\\grilly",
-  "adapter": "H:\\My Drive\\cubbyllm\\emitter\\cubby450m_v12e_w_step_cont",
-  "tokenizer": "H:\\My Drive\\cubbyllm\\token_cache_base\\tokenizer\\grillcheese_bbpe128k.json",
+  "export": "$CUBBY_MODELS\\base450m_cont\\grilly",
+  "adapter": "$CUBBY_DRIVE\\cubbyllm\\emitter\\cubby450m_v12e_w_step_cont",
+  "tokenizer": "$CUBBY_DRIVE\\cubbyllm\\token_cache_base\\tokenizer\\grillcheese_bbpe128k.json",
   "chunk": 128,
   "taus": "1.405",
   "tau_from": "",

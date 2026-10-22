@@ -1,8 +1,8 @@
 {
  "args": {
-  "table": "C:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
-  "shard": "G:\\My Drive\\cubbyllm\\token_cache_base\\wiki_full.u32",
-  "tokenizer": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\data\\grillcheese_bbpe128k.json",
+  "table": "$CUBBY_MODELS\\fastword_table_v4.npz",
+  "shard": "$CUBBY_DRIVE\\cubbyllm\\token_cache_base\\wiki_full.u32",
+  "tokenizer": "$CUBBY_REPO\\data\\grillcheese_bbpe128k.json",
   "chunks": 400,
   "chunk": 4000,
   "seed": 0,

@@ -22,6 +22,11 @@ Standalone; reads only headline strings + dates from D:\\ data.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import glob
 import json
 import os
@@ -37,7 +42,7 @@ from exp_a_forgetting import (  # noqa: E402  — same rules, one source of trut
     hebbian_recall, nlms_recall, sdm_recall, cos_rows, RECALL_SIM,
 )
 
-NYT_DIR = r"D:\grillcheese_training_data\temporal\nyt_data"
+NYT_DIR = _lp(r"$CUBBY_TRAINING_DATA\temporal\nyt_data")
 D = 2048
 ERAS = 8
 PER_ERA = 128

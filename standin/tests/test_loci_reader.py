@@ -6,6 +6,11 @@ Run: python -m pytest standin/tests/test_loci_reader.py -q
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import os
 import pathlib
 import sys
@@ -22,7 +27,7 @@ from cubbyllm.reasoning.planner import normalize  # noqa: E402
 from test_books import TimedStore, exact_vm  # noqa: E402
 from test_search_learn import STORE, DictSource  # noqa: E402
 
-TOKENIZER = os.path.join(os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS"), "base450m", "grilly", "tokenizer.json")
+TOKENIZER = os.path.join(os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS")), "base450m", "grilly", "tokenizer.json")
 
 
 class Reader:

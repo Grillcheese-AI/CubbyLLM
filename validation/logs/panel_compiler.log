@@ -5,4 +5,4 @@
   x-ai/grok-4.6                         556 words  20.6s  finish=stop  out=941  cost=0.01195
   deepseek/deepseek-v3.2               1036 words  39.3s  finish=stop  out=1748  cost=0.0011807352
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\docs\panel_compiler.md  (6/6 answered, $0.37 reported)
+wrote $CUBBY_REPO\docs\panel_compiler.md  (6/6 answered, $0.37 reported)

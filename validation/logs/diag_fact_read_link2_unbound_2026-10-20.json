@@ -1,5 +1,5 @@
 {
- "ckpt": "I:\\My Drive\\cubbyllm\\runs\\spatial_link_2\\spatial_link_2_final.pt",
+ "ckpt": "$CUBBY_DRIVE\\cubbyllm\\runs\\spatial_link_2\\spatial_link_2_final.pt",
  "docs": 24,
  "shards": {
   "facts_far1k": {

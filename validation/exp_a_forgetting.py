@@ -28,6 +28,11 @@ minimal textbook forms of the exact rules named above.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import sys
 import time
 import numpy as np
@@ -36,7 +41,7 @@ import numpy as np
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-sys.path.insert(0, r"C:\Users\grill\Documents\GitHub\cubby-concepts")
+sys.path.insert(0, _lp(r"$CUBBY_GITHUB\cubby-concepts"))
 from vsa.sdm import SparseDistributedMemory  # noqa: E402
 from vsa.core import generate_random_hypervector  # noqa: E402
 

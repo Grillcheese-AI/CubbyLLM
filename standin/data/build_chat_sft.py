@@ -143,6 +143,9 @@ _ROLEPLAY = re.compile(r"\b(?:role[- ]?play|roleplay|act as|pretend|in character
 
 
 from explicit_gate import GATED, UNLOCK, _MINOR, _STRONG, _WEAK, _WEAK_CASED, _score, _terms, explicit, illegal  # noqa: E402,F401
+# the v6 builder's pieces other code still imports from here (order 0030; chat_sft_v6.py says which, and why)
+from chat_sft_v6 import (GOEMOTIONS, GOEMOTIONS_FR, GOEMOTIONS_PETAL, MULTI_PROMPT, affect_ok, history_ok,  # noqa: E402,F401
+                         parse_affect, proper_nouns)
 
 
 _REFUSAL = re.compile(r"^.{0,120}?\b(?:can't|cannot|can not|won't|will not|unable to|not able to)\b.{0,40}?\b(?:help|assist|"

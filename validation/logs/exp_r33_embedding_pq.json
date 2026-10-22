@@ -4,7 +4,7 @@
  "subspaces": 8,
  "centroids": 256,
  "token_cache": [
-  "I:\\grillcheese_training_data\\token_cache\\unified.u32"
+  "$CUBBY_TRAINING_DATA\\token_cache\\unified.u32"
  ],
  "limit_tokens": 400000000.0,
  "aliasing": {

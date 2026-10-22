@@ -27,6 +27,11 @@ CB_SOURCES CB_STAGE ; data: CUBBY_SPM CUBBY_STORIES ; device: CB_DEVICE.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import json
 import math
 import os
@@ -109,10 +114,10 @@ BIND_N = _env("CB_BIND_N", 16)               # role/filler pairs bundled per ste
 REP_PEN = _env("CB_REP_PEN", 1.3, float)     # sampling repetition penalty (1.0 = off); freq-aware, breaks loops
 NO_REPEAT = _env("CB_NO_REPEAT", 3)          # block repeating any n-gram of this size while sampling (0 = off)
 STORIES_N = _env("CB_STORIES_N", 20000)
-SPM = os.environ.get("CUBBY_SPM", r"C:\Users\grill\Documents\GitHub\cubby-lm"
-                     r"\cubby\tokenizers\spm32k_1p7b\grillcheese_spm32k_v2.model")
+SPM = os.environ.get("CUBBY_SPM", _lp(r"$CUBBY_GITHUB\cubby-lm"
+                     r"\cubby\tokenizers\spm32k_1p7b\grillcheese_spm32k_v2.model"))
 STORIES = os.environ.get("CUBBY_STORIES",
-                         r"C:\Users\grill\Documents\GitHub\cubby-lm\tinystory_50k.json")
+                         _lp(r"$CUBBY_GITHUB\cubby-lm\tinystory_50k.json"))
 CORPUS = os.environ.get("CB_CORPUS", "")     # token-cache dir (uploaded) -> WeightedCorpusPipeline
 SOURCES = os.environ.get("CB_SOURCES", "")   # corpus_sources.json for names+weights (optional)
 STAGE = os.environ.get("CB_STAGE", "")       # local dir to copy the cache into (Drive random reads are slow)

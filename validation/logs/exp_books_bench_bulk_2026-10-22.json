@@ -5,7 +5,7 @@
   "bench": 100,
   "seed": 0,
   "frames_bulk": null,
-  "bulk": "E:/datasets/_books_index/bulk/worlds"
+  "bulk": "$CUBBY_DATASETS/_books_index/bulk/worlds"
  },
  "index": {
   "books": 5291,

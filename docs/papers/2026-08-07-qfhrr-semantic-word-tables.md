@@ -235,7 +235,7 @@ report both and ship the external fit.
 
 ### 5.2 Production-scale routing (42 corpus domains)
 
-`exp_m3_domain_routing.py`, real corpus passages (E:\datasets\domains), 40 exemplars
+`exp_m3_domain_routing.py`, real corpus passages ($CUBBY_DATASETS\domains), 40 exemplars
 + 40 challenges per domain, 28 closed-set domains scored, 5 held out as open set:
 
 | | Macro | AUC | µs/passage |
@@ -706,7 +706,7 @@ executable with no new assets.
 | BEIR dbpedia-entity (§5.8) | `validation/exp_m3_beir_dbpedia.py` | `logs/exp_m3_beir_dbpedia.{log,json}` (+ `_v4` when the rerun lands) |
 | Cascade (§5.8) | `validation/exp_m3_cascade.py` | `logs/exp_m3_cascade.{log,json}` |
 | Verified CoT pipeline (§5.9) | `cubbyllm/reasoning/` + `validation/exp_m3_cot_pipeline.py` | `logs/exp_m3_cot_pipeline*.{log,json}`, harvest `logs/cot_harvest*.jsonl` |
-| Production table build | `mowm/scripts/build_fastword_table.py` | `D:\CUBBY-TRAINED-MODELS\fastword_table_v1.npz.build.log` |
+| Production table build | `mowm/scripts/build_fastword_table.py` | `$CUBBY_MODELS\fastword_table_v1.npz.build.log` |
 | Bridge wiring + tests (§3.4) | `mowm/bridges/cubby_bridge.py` | `mowm/tests/test_cubby_bridge.py` (6 green) |
 
 Environment: Windows 11, Python 3.12, NumPy 2.4.6, CPU-only. Teacher:

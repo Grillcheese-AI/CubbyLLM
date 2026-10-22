@@ -102,7 +102,7 @@ def test_name_and_formula_are_distinct_views():
 - [ ] **Step 3: Export the corpus.** Run from the **mowm** directory (mowm is `uv`-managed; this is a one-off data-prep step, which is why no committed CubbyLLM code imports mowm):
 
 ```bash
-cd /c/Users/grill/Documents/GitHub/mowm
+cd $CUBBY_GITHUB/mowm
 uv run python - <<'EOF'
 import importlib, json, pkgutil, subprocess
 import mowm.domains as D
@@ -127,7 +127,7 @@ out = {
     },
     "axioms": recs,
 }
-path = r"C:\Users\grill\Documents\GitHub\CubbyLLM\data\mowm_axioms.json"
+path = r"$CUBBY_REPO\data\mowm_axioms.json"
 with open(path, "w", encoding="utf-8") as fh:
     json.dump(out, fh, indent=1, ensure_ascii=False)
 print("wrote", len(recs), "axioms ->", path)
@@ -350,7 +350,7 @@ Claude-Session: https://claude.ai/code/session_01JNaPeo6tU6xubkEfWTTLav"
 - [ ] **Step 3: Implement both trunk encoders.** Add above `self_test()`:
 
 ```python
-CKPT = pathlib.Path(r"D:\CUBBY-TRAINED-MODELS\hd5_mem21.pt")
+CKPT = pathlib.Path(r"$CUBBY_MODELS\hd5_mem21.pt")
 TOKENIZER = ROOT / "data" / "grillcheese_bbpe128k.json"
 
 
@@ -900,7 +900,7 @@ Claude-Session: https://claude.ai/code/session_01JNaPeo6tU6xubkEfWTTLav"
 ## Task 7: mowm's additive semantic axiom path
 
 **Files:**
-- Create: `mowm/encoding/__init__.py`, `mowm/encoding/semantic_axioms.py` (in `C:\Users\grill\Documents\GitHub\mowm`)
+- Create: `mowm/encoding/__init__.py`, `mowm/encoding/semantic_axioms.py` (in `$CUBBY_GITHUB\mowm`)
 - Create: `mowm/tests/data/axiom_embeddings.npz` (copy of the Task-5 artifact, ~600 KB)
 - Test: `mowm/tests/test_semantic_axioms.py`
 

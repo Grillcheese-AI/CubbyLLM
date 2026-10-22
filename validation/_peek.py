@@ -1,8 +1,12 @@
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
 import json
 import os
 
-P = r"C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\teams_corpus.jsonl"
-OUT = r"C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\teams_peek.txt"
+P = _lp(r"$CUBBY_REPO\standin\data\out\teams_corpus.jsonl")
+OUT = _lp(r"$CUBBY_REPO\standin\data\out\teams_peek.txt")
 R = [json.loads(l) for l in open(P, encoding="utf-8")]
 
 lines = ["rows %d" % len(R), ""]

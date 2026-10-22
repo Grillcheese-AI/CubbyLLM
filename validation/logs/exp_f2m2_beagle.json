@@ -1,6 +1,6 @@
 {
  "stats": {
-  "shard": "D:\\grillcheese_training_data\\token_cache\\wiki_full.u32",
+  "shard": "$CUBBY_TRAINING_DATA\\token_cache\\wiki_full.u32",
   "n_tokens": 200000000,
   "window": 5,
   "positions_seen": 75664964,

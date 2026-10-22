@@ -2,7 +2,7 @@
  "version": "gen3_hdc",
  "built": "2026-09-13T16:38:00",
  "git_rev": "15ca417",
- "source_file": "E:\\datasets\\hdc\\ood_validation_rephrased.pq",
+ "source_file": "$CUBBY_DATASETS\\hdc\\ood_validation_rephrased.pq",
  "chains": 8840,
  "arms": [
   "rephrased",

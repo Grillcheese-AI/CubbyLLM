@@ -190,7 +190,7 @@ Worlds) and P3 (Mood arcs, Forecast) wait for their orders; their sections answe
   feeds were due, the second 0. The server was stopped after.
 
 ## Review (Cowork, 2026-10-22): P1 accepted, one fix
-Checked: `test_board.py`, `test_plugins.py`, `test_plugins_serve.py` and `test_audience.py` pass (20, `.venv-dml`); the
+Checked: `test_board.py`, `test_plugins.py`, `test_plugins_serve.py` and `test_audience.py` pass (20, `<venv>`); the
 static and asset routes take only `[\w.-]+` names of their listed types, so no path leaves their folders; the
 committed assets are the `.blend`, the animated WebPs and the stills; no local path in the board's files.
 **P1 is accepted. One fix:**

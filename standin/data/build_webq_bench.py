@@ -9,10 +9,15 @@ country, state, province or major city of those regions; the region tag is the f
 everything, tagging the rest 'world'). Writes a SimpleQA-shaped csv (problem, answer, answers, region, url)
 that `exp_r11_search_learn.py --questions` takes; every listed answer counts.
 
-  python standin/data/build_webq_bench.py --dataset webq     # -> E:/datasets/webquestions/webq_na_eu.csv
-  python standin/data/build_webq_bench.py --dataset nq       # -> E:/datasets/webquestions/nq_na_eu.csv
+  python standin/data/build_webq_bench.py --dataset webq     # -> $CUBBY_DATASETS/webquestions/webq_na_eu.csv
+  python standin/data/build_webq_bench.py --dataset nq       # -> $CUBBY_DATASETS/webquestions/nq_na_eu.csv
 """
 from __future__ import annotations
+
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
 
 import argparse, collections, csv, pathlib, re
 
@@ -72,7 +77,7 @@ def fetch(src: pathlib.Path, dataset: str) -> list[dict]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--src", default="E:/datasets/webquestions")
+    ap.add_argument("--src", default=_lp("$CUBBY_DATASETS/webquestions"))
     ap.add_argument("--dataset", choices=("webq", "nq"), default="webq",
                     help="webq: WebQuestions (5,810, Google Suggest 2013); nq: NQ-Open (91,535 real Google queries, Natural Questions)")
     ap.add_argument("--out", default=None, help="default: <src>/<dataset>_na_eu.csv")

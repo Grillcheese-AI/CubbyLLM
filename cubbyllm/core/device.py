@@ -5,7 +5,7 @@ Wired: STANDALONE — a torch-free-at-top-level helper (torch imported lazily).
 On this machine (Windows + AMD Radeon RX 6750 XT) there is no CUDA, so torch
 reaches the GPU through **DirectML** (``torch-directml``), which exposes a device
 of type ``privateuseone``. ``torch-directml`` hard-pins ``torch==2.4.1``, so it
-lives in a SEPARATE venv (``.venv-dml``) — the main test env stays on torch 2.10
+lives in a SEPARATE venv (the DirectML one, docs/DIRECTML.md) — the main test env stays on torch 2.10
 CPU. See ``docs/DIRECTML.md``.
 
 Nothing here is required for CPU use; the package runs unchanged without it.
@@ -29,7 +29,7 @@ def resolve_device(prefer: str = "auto"):
 
     if prefer in ("auto", "dml", "directml"):
         try:
-            import torch_directml  # only present in the .venv-dml environment
+            import torch_directml  # only present in the DirectML venv
 
             if torch_directml.is_available():
                 return torch_directml.device()
@@ -37,7 +37,7 @@ def resolve_device(prefer: str = "auto"):
             if prefer in ("dml", "directml"):
                 raise RuntimeError(
                     "DirectML requested but torch_directml is unavailable — "
-                    "install it in the .venv-dml env (see docs/DIRECTML.md)."
+                    "install it in the DirectML venv (see docs/DIRECTML.md)."
                 )
     if prefer in ("auto", "cuda") and torch.cuda.is_available():
         return torch.device("cuda")

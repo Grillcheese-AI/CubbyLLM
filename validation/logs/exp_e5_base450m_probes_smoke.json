@@ -22,8 +22,8 @@
   }
  },
  "args": {
-  "export": "I:\\CUBBY-TRAINED-MODELS\\base450m\\grilly",
-  "tokenizer": "C:\\Users\\grill\\AppData\\Local\\Temp\\cubby_scratch\\grillcheese_bbpe128k.json",
+  "export": "$CUBBY_MODELS\\base450m\\grilly",
+  "tokenizer": "~\\AppData\\Local\\Temp\\cubby_scratch\\grillcheese_bbpe128k.json",
   "ckpt": "",
   "tag": "_smoke",
   "seed": 0,

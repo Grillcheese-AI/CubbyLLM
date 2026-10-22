@@ -443,7 +443,7 @@ factors. Flag stands.
 Statuses were assigned VERIFIED by the parallel survey session; this session
 independently **spot-checked** (not full re-verification):
 - **H-G1 ✓ spot-checked:** all three trained tokenizers + `report.json`s
-  present in `D:\grillcheese_training_data\tokenizer\`.
+  present in `$CUBBY_TRAINING_DATA\tokenizer\`.
 - **H-G2 ✅ DONE (continuation session, same day):** the dated harness ran —
   `exp_g2_nyt_forgetting.py`, 8 eras 1852→2024 × 128 real headlines,
   chronological writes through the same four rules. Real keys are 3.1× more

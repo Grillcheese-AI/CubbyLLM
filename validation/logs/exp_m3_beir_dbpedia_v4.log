@@ -1,7 +1,9 @@
 python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
 table: fastword_table_v4.npz
 400 test queries | judged docs 43515
-Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files: 100%|##########| 10/10 [00:00<?, ?it/s]
+
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]
+Fetching 10 files: 100%|##########| 10/10 [00:00<?, ?it/s]
    0.05M docs (0.5 min; table 564 us/doc, potion 52 us/doc)
    0.10M docs (0.9 min; table 504 us/doc, potion 42 us/doc)
    0.15M docs (1.5 min; table 545 us/doc, potion 44 us/doc)
@@ -101,4 +103,4 @@ table compact: {'ndcg10': 0.045898923440080196, 'recall100': 0.13479715701311432
 table two-stage: {'ndcg10': 0.09559299246475296, 'recall100': 0.13479715701311432, 'n_queries': 400}
 potion dense: {'ndcg10': 0.22370789183122483, 'recall100': 0.35151655919604324, 'n_queries': 400, 'score_ms_per_q': 144.31342674999996}
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_beir_dbpedia_v4.json
+wrote $CUBBY_REPO\validation\logs\exp_m3_beir_dbpedia_v4.json

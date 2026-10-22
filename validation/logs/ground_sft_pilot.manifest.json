@@ -70,5 +70,5 @@
   ]
  },
  "wall_s": 18.1,
- "output": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\ground_sft_pilot.jsonl"
+ "output": "$CUBBY_REPO\\standin\\data\\out\\ground_sft_pilot.jsonl"
 }

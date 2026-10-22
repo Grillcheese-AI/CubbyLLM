@@ -18,6 +18,11 @@ per document (the honest streaming setting) vs one global dictionary.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import sys
 import time
 
@@ -26,9 +31,9 @@ if hasattr(sys.stdout, "reconfigure"):
 
 import sentencepiece as spm  # noqa: E402
 
-SPM_PATH = (r"C:\Users\grill\Documents\GitHub\cubby-lm\cubby\tokenizers"
-            r"\spm32k_1p7b\grillcheese_spm32k_v2.model")
-CORPUS = r"C:\Users\grill\Documents\GitHub\cubby-lm\cubby\trunk_torch\data\valid.txt"
+SPM_PATH = (_lp(r"$CUBBY_GITHUB\cubby-lm\cubby\tokenizers"
+            r"\spm32k_1p7b\grillcheese_spm32k_v2.model"))
+CORPUS = _lp(r"$CUBBY_GITHUB\cubby-lm\cubby\trunk_torch\data\valid.txt")
 BASE_VOCAB = 32_000
 
 

@@ -1,5 +1,5 @@
 {
- "harvest": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\validation\\logs\\cot_harvest_v3cf.jsonl",
+ "harvest": "$CUBBY_REPO\\validation\\logs\\cot_harvest_v3cf.jsonl",
  "tau_ret": 0.595863088965416,
  "floor": 0.5,
  "top_k": 50,

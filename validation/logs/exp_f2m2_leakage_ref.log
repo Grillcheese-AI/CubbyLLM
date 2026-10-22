@@ -1,6 +1,8 @@
 python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6 | torch 2.10.0+cpu | sentence-transformers 5.3.0
-checkpoint: D:\CUBBY-TRAINED-MODELS\hd5_mem21.pt | size=1840724473 bytes (1.841 GB) | mtime=2026-08-05 18:51:32 | blake2b-128=6c9f6ddff5342e268cac805615d0d74a (hashed in 2.9s)
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 29942.70it/s]
+checkpoint: $CUBBY_MODELS\hd5_mem21.pt | size=1840724473 bytes (1.841 GB) | mtime=2026-08-05 18:51:32 | blake2b-128=6c9f6ddff5342e268cac805615d0d74a (hashed in 2.9s)
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 103/103 [00:00<00:00, 29942.70it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -8,7 +10,9 @@ embeddings.position_ids | UNEXPECTED |  |
 
 Notes:
 - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 4635.78it/s]
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 103/103 [00:00<00:00, 4635.78it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -29,4 +33,4 @@ Notes:
   [FAILS] control B pq-adc > dense
   => gain FAILS both controls -- shipped result was leakage
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_f2m2_leakage_ref.json
+wrote $CUBBY_REPO\validation\logs\exp_f2m2_leakage_ref.json

@@ -1,6 +1,6 @@
 # CubeLang foundation — a verified, capability-based, LM-writable reasoning VM
 
-**Date:** 2026-08-05 · **Status:** design, in review · **Repo:** implementation in `C:\Users\grill\Documents\GitHub\cubelang` (Rust); spec/plan tracked here in CubbyLLM. **Relates to:** H-B3 (real unbind), H-F2 (bridges), and the reasoning-bridge slice spec (`2026-08-05-reasoning-bridge-slice-design.md`), which sits on top of this.
+**Date:** 2026-08-05 · **Status:** design, in review · **Repo:** implementation in `$CUBBY_GITHUB\cubelang` (Rust); spec/plan tracked here in CubbyLLM. **Relates to:** H-B3 (real unbind), H-F2 (bridges), and the reasoning-bridge slice spec (`2026-08-05-reasoning-bridge-slice-design.md`), which sits on top of this.
 
 ## 1. Why this exists
 

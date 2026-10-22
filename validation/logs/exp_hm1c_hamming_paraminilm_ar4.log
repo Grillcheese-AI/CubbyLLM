@@ -1,4 +1,4 @@
-hm1c | fastword_table_paraminilm_ar4.npz (teacher npz:C:\CUBBY-TRAINED-MODELS\teacher_paraminilm_ar4.npz): 60147 words, D=10240 | 597093 stored trigrams (764 MB bitpacked) | 300 queries per class (14s)
+hm1c | fastword_table_paraminilm_ar4.npz (teacher npz:$CUBBY_MODELS\teacher_paraminilm_ar4.npz): 60147 words, D=10240 | 597093 stored trigrams (764 MB bitpacked) | 300 queries per class (14s)
 
 blend 0.00: role-filler keys built (21s)
   query class                 n   hit@1  hit@16  d(orig)/D  d(nearest other)/D  ms/query

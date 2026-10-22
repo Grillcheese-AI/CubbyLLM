@@ -7,4 +7,4 @@
   x-ai/grok-4.7                        3036 words  282.5s  finish=stop  in=7834 out=15611  cost=0.0860848
   deepseek/deepseek-v4-pro-0813        4303 words  291.1s  finish=stop  in=6708 out=14275  cost=0.028814784
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\docs\panel_round3.md  (8/8 answered, $1.15 reported)
+wrote $CUBBY_REPO\docs\panel_round3.md  (8/8 answered, $1.15 reported)

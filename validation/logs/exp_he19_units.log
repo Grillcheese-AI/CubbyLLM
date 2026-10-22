@@ -10,4 +10,4 @@
    typed+all         n=298 median survivors     7  gold in 0.17  unique 0.00  in & <=3 0.01  in & <=10 0.04
    typed+elided      n=298 median survivors    14  gold in 0.27  unique 0.00  in & <=3 0.00  in & <=10 0.01
    typed+elided+all  n=298 median survivors     6  gold in 0.19  unique 0.00  in & <=3 0.01  in & <=10 0.02
--> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_units.json
+-> $CUBBY_REPO\validation\logs\exp_he19_units.json

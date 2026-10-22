@@ -41,6 +41,11 @@ facts no earlier shard of the same seed used).
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import datetime as _dt
 import hashlib
@@ -59,7 +64,7 @@ sys.path.insert(0, ROOT)
 from cubbyllm.model.spatial import NO_PLACE  # noqa: E402
 from fact_names import doubled, question, words  # noqa: E402
 
-MODELS = os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS")
+MODELS = os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS"))
 WIKI = os.path.join(ROOT, "standin", "data", "out", "wikikg", "triplets.parquet")
 ORIGIN, SIDE, STEP, GRID = 4096, 1024, 6, 54      # the lattice of entity cells, the step grid of relations (x, y)
 

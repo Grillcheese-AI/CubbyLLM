@@ -1,9 +1,9 @@
 {
  "args": {
-  "export": "C:\\CUBBY-TRAINED-MODELS\\base450m_cont\\grilly",
-  "adapter": "H:\\My Drive\\cubbyllm\\emitter\\cubby450m_v12e_w_step_rank",
-  "tokenizer": "H:\\My Drive\\cubbyllm\\token_cache_base\\tokenizer\\grillcheese_bbpe128k.json",
-  "data": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\pf_heldout_eval_w_step.jsonl",
+  "export": "$CUBBY_MODELS\\base450m_cont\\grilly",
+  "adapter": "$CUBBY_DRIVE\\cubbyllm\\emitter\\cubby450m_v12e_w_step_rank",
+  "tokenizer": "$CUBBY_DRIVE\\cubbyllm\\token_cache_base\\tokenizer\\grillcheese_bbpe128k.json",
+  "data": "$CUBBY_REPO\\standin\\data\\out\\pf_heldout_eval_w_step.jsonl",
   "n": 400,
   "seed": 0,
   "chunk": 64,

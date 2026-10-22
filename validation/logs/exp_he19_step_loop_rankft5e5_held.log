@@ -14,4 +14,4 @@
 rankft5e5_held: n=236 correct=0.119 answered=0.970 wrong_answer=0.852 same_steps=0.530 emissions/problem=5.03
   by steps: 3:0.12/118  4:0.20/64  5:0.03/29  6:0.00/12  7:0.00/8  8:0.00/4  10:0.00/1
   refusals: no stop within # steps=2, unknown slot $N#=1, vm: the step did not run=4
-  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_step_loop_rankft5e5_held.json
+  -> $CUBBY_REPO\validation\logs\exp_he19_step_loop_rankft5e5_held.json

@@ -20,8 +20,8 @@ Reads the val split of standin/data/out/emitter_sft.jsonl for prompts/gold
 standin/data/out/eval_emitter_vm{TAG}.json. Every number it prints is
 [stand-in].
 
-  python standin/eval_emitter_vm.py --val-generations "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b/val_generations.json"
-  python standin/eval_emitter_vm.py --gguf "D:/My Drive/cubbyllm/standin/emitter_lfm25_2p6b/gguf/emitter-q8_0.gguf" --limit 200
+  python standin/eval_emitter_vm.py --val-generations "$CUBBY_DRIVE/cubbyllm/standin/emitter_lfm25_2p6b/val_generations.json"
+  python standin/eval_emitter_vm.py --gguf "$CUBBY_DRIVE/cubbyllm/standin/emitter_lfm25_2p6b/gguf/emitter-q8_0.gguf" --limit 200
   python standin/eval_emitter_vm.py --server http://127.0.0.1:8080 --limit 200
 """
 from __future__ import annotations

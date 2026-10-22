@@ -2,7 +2,9 @@ python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
 mode: --m2v -- static distillation of MiniLM into token/word tables;
       teacher runs ONCE offline, serving is table lookup + adds
 
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 7679.96it/s]
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 103/103 [00:00<00:00, 7679.96it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -24,4 +26,4 @@ distilled tables: 1194 token strings + 848 words in 2.3s (one-off, offline)
     m2v word -pc1 + signal  0.175  0.3407   5.38  0.3429   (25 us/text)
 
 best distilled arm: m2v word -pc1 + signal -- macro 0.3407 (5.38x null, 0.95x the live teacher) at ~25 us/challenge
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_f2m2_m2v.json
+wrote $CUBBY_REPO\validation\logs\exp_f2m2_m2v.json

@@ -2,7 +2,7 @@
  "config": {
   "questions": 800,
   "calibration": 200,
-  "table": "D:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+  "table": "$CUBBY_MODELS\\fastword_table_v4.npz",
   "top_k": 3,
   "max_repairs": 3,
   "exe": null

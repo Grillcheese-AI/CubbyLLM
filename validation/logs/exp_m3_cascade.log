@@ -2,7 +2,9 @@ python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
 table: fastword_table_v4.npz | teacher: MiniLM-L6-v2
 
 1120 exemplars / 1120 closed challenges / 160 open-set (held out: [np.str_('business_management'), np.str_('history'), np.str_('neuroscience'), np.str_('political_science'), np.str_('verified_facts')])
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 6587.07it/s]
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 103/103 [00:00<00:00, 6587.07it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -25,4 +27,4 @@ calibrated tau_match: table 0.5047 | teacher 0.4515
   0.25 100.0%     0.869    0.539      0.930    17546
   9.00 100.0%     0.869    0.539      0.930    17546
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_cascade.json
+wrote $CUBBY_REPO\validation\logs\exp_m3_cascade.json

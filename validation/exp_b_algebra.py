@@ -21,12 +21,17 @@ Imports the real cubby-concepts core (H-B1) and cubby-lm's real head. HRR is the
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import sys
 import numpy as np
 import torch
 
-sys.path.insert(0, r"C:\Users\grill\Documents\GitHub\cubby-concepts")
-sys.path.insert(0, r"C:\Users\grill\Documents\GitHub\cubby-lm")
+sys.path.insert(0, _lp(r"$CUBBY_GITHUB\cubby-concepts"))
+sys.path.insert(0, _lp(r"$CUBBY_GITHUB\cubby-lm"))
 from vsa.core import bind as bsc_bind, generate_random_hypervector  # noqa: E402
 from cubby.trunk_torch.vsa_binding_head import VSABindingHead  # noqa: E402
 

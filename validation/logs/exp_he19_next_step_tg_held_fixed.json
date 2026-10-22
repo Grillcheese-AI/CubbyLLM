@@ -1,5 +1,5 @@
 {
- "adapter": "D:\\My Drive\\cubbyllm\\emitter\\cubby450m_v12e_w_tg_cont",
+ "adapter": "$CUBBY_DRIVE\\cubbyllm\\emitter\\cubby450m_v12e_w_tg_cont",
  "data": "standin\\data\\out\\pf_heldout_eval_w_slots.jsonl",
  "n_records": 236,
  "summary": {

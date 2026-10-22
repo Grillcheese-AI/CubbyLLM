@@ -93,4 +93,4 @@ train_talk_grilly | 181 LoRA modules, 7.86M trainable (r=16, alpha=32.0) | train
   step  1700/1719  loss 0.3582  gnorm 1.125  lr 2.01e-05  2.07 s/step  351 tok/s  eta 0.01 h  gpu 6,515 MB + shared 163 MB
   step  1719/1719  loss 0.3099  gnorm 1.641  lr 2.00e-05  2.07 s/step  351 tok/s  eta 0.00 h  gpu 6,515 MB + shared 163 MB
   step 1719 held answer loss 0.4785
-done: 1719 steps in 0.99 h -> I:\CUBBY-TRAINED-MODELS\base450m\talk_v1
+done: 1719 steps in 0.99 h -> $CUBBY_MODELS\base450m\talk_v1

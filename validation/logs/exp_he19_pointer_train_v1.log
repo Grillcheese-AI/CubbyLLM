@@ -34,4 +34,4 @@ the same 400 rows: the adapter's own ranking
     step 1     n=88   top-1 0.580  top-3 0.852  top-5 0.943
     step 2     n=85   top-1 0.576  top-3 0.812  top-5 0.847
     step 3+    n=71   top-1 0.521  top-3 0.859  top-5 0.901
-  -> head C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out\he19_pointer\pointer_head.pt
+  -> head $CUBBY_REPO\standin\data\out\he19_pointer\pointer_head.pt

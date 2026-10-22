@@ -3,7 +3,7 @@
  "gold_in_graph": 14,
  "world_facts": 552297,
  "relations": 2967,
- "gguf": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\models\\emitter_v12e.Q4_K_M.gguf",
+ "gguf": "$CUBBY_REPO\\standin\\models\\emitter_v12e.Q4_K_M.gguf",
  "stats": {
   "gold_in_graph": {
    "questions": 14,

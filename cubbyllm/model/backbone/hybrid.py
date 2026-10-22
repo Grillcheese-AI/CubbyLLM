@@ -74,7 +74,7 @@ from .mingru import _MinGRUMixer, _RMSNorm, _SwiGLU
 
 try:  # torch >= 2.5; used on CUDA where it does only the banded work
     from torch.nn.attention.flex_attention import create_block_mask, flex_attention
-except ImportError:  # pragma: no cover - older torch (e.g. the .venv-dml 2.4.1)
+except ImportError:  # pragma: no cover - older torch (e.g. the DirectML venv's 2.4.1)
     create_block_mask = flex_attention = None
 
 # the band as Triton flash kernels on CUDA (window_attn_triton.py), ahead of flex and the dense mask

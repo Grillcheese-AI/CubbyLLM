@@ -123,14 +123,14 @@ the flow is **tokenize locally → upload the compact `uint16` cache → train o
 GPU reading the cache**:
 
 **1. Tokenize locally (one-time, CPU).** Already built (2026-07-30): 14.37 B tokens
-across 10 sources in `D:\grillcheese_training_data\token_cache` as `uint32` `<name>.u32`
+across 10 sources in `$CUBBY_TRAINING_DATA\token_cache` as `uint32` `<name>.u32`
 shards, using the **128 k byte-level BPE** `grillcheese_bbpe128k.json` (opcodes atomic,
 byte-exact — 128 k exceeds `uint16`, hence `uint32`). To (re)build, use the parallel,
 resumable tokenizer (multi-core, streams big files, skips fresh shards):
 
 ```bash
-python E:\datasets\_pipeline\tokenize_parallel.py            # all sources
-python E:\datasets\_pipeline\tokenize_parallel.py --only wiki_full   # one source
+python $CUBBY_DATASETS\_pipeline\tokenize_parallel.py            # all sources
+python $CUBBY_DATASETS\_pipeline\tokenize_parallel.py --only wiki_full   # one source
 ```
 
 The package's `WeightedCorpusPipeline.prepare()` is the single-thread reference; the
@@ -165,7 +165,7 @@ The pipeline runs in **`cache_only`** mode (memmaps the shards, no source files
 or tokenizer needed), samples windows **by weight**, and prints the source mix +
 `manifest_hash` so the run is reproducible. Weights, dedup, and the gated sources
 (`unified/`, arxiv-latex, temporal) are documented in
-`E:\datasets\_pipeline\corpus_manifest.md`. Swapping to the 128k BPE tokenizer
+`$CUBBY_DATASETS\_pipeline\corpus_manifest.md`. Swapping to the 128k BPE tokenizer
 later is just a new `spm_path` + re-tokenize.
 
 ## MFU pilot (run BEFORE renting anything for the 2B cycle)

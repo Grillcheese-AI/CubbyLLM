@@ -31,6 +31,11 @@ are read once after, split seen / unseen templates. Val 0:80 (tau's calibration)
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import hashlib
 import json
@@ -54,7 +59,7 @@ if hasattr(sys.stdout, "reconfigure"):
 import numpy as np  # noqa: E402
 
 D_DATA = os.path.join(ROOT, "standin", "data", "out")
-MODELS = os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS")
+MODELS = os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS"))
 TABLE = os.path.join(MODELS, "fastword_table_v4_2026-10-03.npz")  # the Oct 3 rebuild HE19 was run with
 WORDS = os.path.join(MODELS, "he19_cvl_words_v4.npz")
 STEP_FILE = os.path.join(D_DATA, "emitter_sft_v12e_w_tg30_step.jsonl")

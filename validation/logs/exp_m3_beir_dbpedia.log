@@ -1,6 +1,8 @@
 python 3.12.10 | Windows-11-10.0.26200-SP0 | numpy 2.4.6
 400 test queries | judged docs 43515
-Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]Fetching 10 files: 100%|##########| 10/10 [00:00<?, ?it/s]
+
+Fetching 10 files:   0%|          | 0/10 [00:00<?, ?it/s]
+Fetching 10 files: 100%|##########| 10/10 [00:00<?, ?it/s]
    0.05M docs (0.5 min; table 571 us/doc, potion 52 us/doc)
    0.10M docs (1.0 min; table 540 us/doc, potion 42 us/doc)
    0.15M docs (1.5 min; table 552 us/doc, potion 40 us/doc)
@@ -100,4 +102,4 @@ table compact: {'ndcg10': 0.0404209458606006, 'recall100': 0.14339400803164223, 
 table two-stage: {'ndcg10': 0.08134389555911298, 'recall100': 0.14339400803164223, 'n_queries': 400}
 potion dense: {'ndcg10': 0.22370789183122483, 'recall100': 0.35151655919604324, 'n_queries': 400, 'score_ms_per_q': 141.99180149999847}
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_beir_dbpedia.json
+wrote $CUBBY_REPO\validation\logs\exp_m3_beir_dbpedia.json

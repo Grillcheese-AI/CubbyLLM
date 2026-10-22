@@ -8,14 +8,19 @@ Writes a report file rather than printing, because the export is large and a Win
 console mangles accented output on the way out (which is how a clean UTF-8 file gets
 mistaken for mojibake).
 """
+
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
 import json
 import os
 import re
 import sys
 from collections import Counter
 
-ROOT = r"G:\chatgpt_mydata"
-OUTDIR = r"C:\Users\grill\Documents\GitHub\CubbyLLM\standin\data\out"
+ROOT = _lp(r"$CUBBY_DATA_ROOT/chatgpt_mydata")
+OUTDIR = _lp(r"$CUBBY_REPO\standin\data\out")
 REPORT = os.path.join(OUTDIR, "chatgpt_export_profile.md")
 CORPUS = os.path.join(OUTDIR, "chatgpt_fr_user_turns.jsonl")
 

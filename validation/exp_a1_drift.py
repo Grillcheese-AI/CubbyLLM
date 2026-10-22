@@ -19,12 +19,17 @@ imports cubby-lm's real layer. Not wired into any model.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import sys
 import numpy as np
 import torch
 
 # cubby-lm's real HebbianGrowthLayer (predecessor code, under test as prior art)
-sys.path.insert(0, r"C:\Users\grill\Documents\GitHub\cubby-lm")
+sys.path.insert(0, _lp(r"$CUBBY_GITHUB\cubby-lm"))
 from cubby.trunk_torch.hebbian import HebbianGrowthLayer  # noqa: E402
 
 

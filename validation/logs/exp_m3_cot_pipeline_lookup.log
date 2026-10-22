@@ -1,5 +1,5 @@
 python 3.12.10 | Windows-11-10.0.26300-SP0 | numpy 2.5.1
-table fastword_table_v4.npz | rows valid_scaling_law_with_facts.pq | cubelang C:\Users\grill\Documents\GitHub\cubelang\target\release\cubelang.exe
+table fastword_table_v4.npz | rows valid_scaling_law_with_facts.pq | cubelang $CUBBY_GITHUB\cubelang\target\release\cubelang.exe
 
 eval: 800 questions {1: 385, 2: 256, 3: 159} | 1241 unique facts in store
 lookup arm: triple index over the eval store, 1188/1241 facts parse as triples
@@ -89,7 +89,7 @@ planted-fault calibration done in 12s | 127 verified chains used | 406 VM calls 
   eval 775/800 (68s)
   eval 800/800 (72s)
 eval done in 72s
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\cot_harvest_lookup.jsonl (800 records)
+wrote $CUBBY_REPO\validation\logs\cot_harvest_lookup.jsonl (800 records)
 
 === counterfactual neighborhood (harvest `counterfactuals[]`) ===
   disabled (--no-counterfactuals)
@@ -122,5 +122,5 @@ wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\cot_harvest_looku
 
   OVERALL: PASS
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_cot_pipeline_lookup.json
+wrote $CUBBY_REPO\validation\logs\exp_m3_cot_pipeline_lookup.json
 exit=0

@@ -22,6 +22,11 @@ docs/superpowers/specs/2026-08-06-hf2-m2-semantic-context-encoding-design.md
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import hashlib
 import json
@@ -257,7 +262,7 @@ def ref_encode(texts: list[str]) -> np.ndarray:
     )
 
 
-CKPT = pathlib.Path(os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS")) / "hd5_mem21.pt"
+CKPT = pathlib.Path(os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS"))) / "hd5_mem21.pt"
 TOKENIZER = ROOT / "data" / "grillcheese_bbpe128k.json"
 
 
@@ -1595,7 +1600,7 @@ def run_m2v_ood(n_docs: int = 20_000, doc_len: int = 200, top_words: int = 2000)
 
     # -- external statistics from wiki_full ------------------------------------
     t0 = time.perf_counter()
-    shard = np.memmap(r"D:\grillcheese_training_data\token_cache\wiki_full.u32",
+    shard = np.memmap(_lp(r"$CUBBY_TRAINING_DATA\token_cache\wiki_full.u32"),
                       dtype=np.uint32, mode="r")
     rng = np.random.default_rng(0)
     starts = rng.integers(0, len(shard) - doc_len, size=n_docs)
@@ -1904,7 +1909,7 @@ def main() -> None:
     ap.add_argument("--beagle", action="store_true",
                     help="BEAGLE distributional-memory arm (offline corpus pass)")
     ap.add_argument("--beagle-shard",
-                    default=r"D:\grillcheese_training_data\token_cache\wiki_full.u32",
+                    default=_lp(r"$CUBBY_TRAINING_DATA\token_cache\wiki_full.u32"),
                     help="uint32 token shard to accumulate co-occurrence from")
     ap.add_argument("--beagle-tokens", type=int, default=200_000_000,
                     help="corpus-slice length in tokens")

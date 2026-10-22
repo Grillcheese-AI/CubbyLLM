@@ -203,7 +203,7 @@ ESCAPES = {
     "builtins_import": "import builtins\nbuiltins.__import__('socket')\n",
     "posix_spawn": "import os\nos.posix_spawn('/bin/sh', ['sh'], {})\n", "spawnlp": "import os\nos.spawnlp(os.P_WAIT, 'sh', 'sh')\n",
     "execlpe": "import os\nos.execlpe('sh', 'sh', {})\n", "sys_modules": "import sys\nsys.modules['socket']\n",
-    "write_outside": "open('C:/Windows/x.txt', 'w').write('x')\n", "shutil_rmtree": "import shutil\nshutil.rmtree('C:/tmp/x')\n",
+    "write_outside": "open('../../outside.txt', 'w').write('x')\n", "shutil_rmtree": "import shutil\nshutil.rmtree('../x')\n",
     "from_os_system": "from os import system\nsystem('dir')\n", "importlib": "import importlib\nimportlib.import_module('socket')\n",
     "path_write": "from pathlib import Path\nPath('x').write_text('x')\n", "os_remove": "import os\nos.remove('x')\n",
     "open_mode_var": "m = 'w'\nopen('x', m)\n", "dunder_builtins": "__builtins__['open']\n"}

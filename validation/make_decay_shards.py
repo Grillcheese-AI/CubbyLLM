@@ -34,6 +34,11 @@ Writes validation/logs/make_decay_shards_<date>.json with every count.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import datetime as _dt
 import json
@@ -47,7 +52,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, "standin", "data", "out")
-MODELS = os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS")
+MODELS = os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS"))
 DATASETS = os.environ.get("CUBBY_DATASETS", "")
 
 
@@ -189,7 +194,7 @@ def main() -> None:
     ap.add_argument("--instruct-tokens", type=int, default=0, help="0 = every train record")
     ap.add_argument("--program", nargs="*", default=[os.path.join(OUT, "emitter_sft_v12e_w_slots.jsonl"),
                                                      os.path.join(OUT, "emitter_sft_v12e_pf_slots.jsonl")])
-    ap.add_argument("--agent", default=os.path.join(DATASETS or r"F:\grillcheese_training_data", "unified",
+    ap.add_argument("--agent", default=os.path.join(DATASETS or _lp(r"$CUBBY_TRAINING_DATA"), "unified",
                                                     "open_thoughts_agent_trove.jsonl"))
     ap.add_argument("--agent-tokens", type=int, default=150_000_000)
     ap.add_argument("--holdout-frac", type=float, default=0.02)

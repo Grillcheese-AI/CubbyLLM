@@ -17,8 +17,8 @@ lazily, so it runs unchanged in either env.
 
 ```powershell
 # from the repo root
-py -3.10 -m venv .venv-dml          # torch-directml wheels: cp39–cp312
-.\.venv-dml\Scripts\Activate.ps1
+py -3.10 -m venv <venv>          # torch-directml wheels: cp39–cp312
+.\<venv>\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install torch-directml==0.2.5.dev240914   # pulls torch==2.4.1
 python -m pip install numpy sentencepiece pytest
@@ -58,7 +58,7 @@ training sequence lengths, revisit if long-context throughput matters.
 ## Verify
 
 ```powershell
-.\.venv-dml\Scripts\Activate.ps1
+.\<venv>\Scripts\Activate.ps1
 python validation\bench_dml.py
 ```
 

@@ -12,4 +12,4 @@ ctrl_held       n= 236 correct=0.021 vm=0.021 exec=0.975 copied=4 unknown=0 clos
    by steps: 3:0.04/118  4:0.00/64  5:0.00/29  6:0.00/12  7:0.00/8  8:0.00/4  10:0.00/1
 tg_held         n= 236 correct=0.055 vm=0.055 exec=0.593 copied=1 unknown=1 closed=0.60 looped=0.51 same_steps=0.15 more=0.79 fewer=0.06
    by steps: 3:0.08/118  4:0.06/64  5:0.00/29  6:0.00/12  7:0.00/8  8:0.00/4  10:0.00/1
-held matched ids 236  VERDICT KILL  -> C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_he19_gate_a.json
+held matched ids 236  VERDICT KILL  -> $CUBBY_REPO\validation\logs\exp_he19_gate_a.json

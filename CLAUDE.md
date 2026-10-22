@@ -106,7 +106,10 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
 - No external LLM on Cubby's serving path, ever (external models only build datasets). Keys live in
   git-ignored files (`validation/.env`); never in a command, a log or a commit.
 - The BlockWorld repo is private: nothing from it comes into this public repo.
-- No local drive paths, venv names or account names in committed files.
+- No local drive paths, venv names or account names in committed files. A committed file names a folder
+  (`$CUBBY_MODELS`, `$CUBBY_DATASETS`, `$CUBBY_DRIVE`, ...); `cubbyllm/local_paths.py` resolves it from the environment,
+  then the git-ignored `paths.local.json`. `tests/test_local_paths.py` fails on a local path, and
+  `tools/scrub_local_paths.py --write <files>` rewrites them (order 0030).
 - No permanent deletion: move things aside (`_discard/`, `docs/archive/`) instead.
 - Downloads of large external data need Nick's yes.
 - **Sources are internal** (Nick, 2026-10-22): no reply to a regular user names a source, author, title, site or

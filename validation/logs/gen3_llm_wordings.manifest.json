@@ -48,5 +48,5 @@
  },
  "vm_calls": 2204,
  "wall_s": 945.6,
- "output": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\gen3_llm_wordings.jsonl"
+ "output": "$CUBBY_REPO\\standin\\data\\out\\gen3_llm_wordings.jsonl"
 }

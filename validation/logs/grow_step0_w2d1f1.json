@@ -1,7 +1,7 @@
 {
  "args": {
-  "ckpt": "I:\\CUBBY-TRAINED-MODELS\\base450m\\base450m_final.pt",
-  "cache": "D:\\My Drive\\cubbyllm\\token_cache_base",
+  "ckpt": "$CUBBY_MODELS\\base450m\\base450m_final.pt",
+  "cache": "$CUBBY_DRIVE\\cubbyllm\\token_cache_base",
   "width": 2,
   "depth": 1,
   "ffn": 1,
@@ -10,7 +10,7 @@
   "sources": "arxiv,books,fineweb_edu,nemotron_code,unified,wikipedia",
   "windows": 2,
   "seq": 1024,
-  "save": "I:\\CUBBY-TRAINED-MODELS\\grow_step0\\w2.pt",
+  "save": "$CUBBY_MODELS\\grow_step0\\w2.pt",
   "tag": "",
   "threads": 0
  },

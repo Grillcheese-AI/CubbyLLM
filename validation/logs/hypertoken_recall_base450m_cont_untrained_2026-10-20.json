@@ -1,5 +1,5 @@
 {
- "ckpt": "I:\\My Drive\\cubbyllm\\runs\\base450m_cont\\base450m_cont_final.pt",
+ "ckpt": "$CUBBY_DRIVE\\cubbyllm\\runs\\base450m_cont\\base450m_cont_final.pt",
  "meta": {
   "kind": "cubby_base",
   "D": 1024,

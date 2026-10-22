@@ -11,7 +11,7 @@
 >
 > **The authoritative record of what M2 measured and concluded is `CUBBYLLM_HYPOTHESES.md`, entry "H-F2 M2 screened (2026-08-06)"** — read it, not this section's forward-looking prose, for any number or verdict. Every figure there links a file in `validation/logs/`.
 
-**Depends on:** M1's shipped `CubbyBridge` (CubbyLLM `master` `2e61be4` / mowm `master` `5584834`); the trained trunk `D:\CUBBY-TRAINED-MODELS\hd5_mem21.pt`; `data/grillcheese_bbpe128k.json`; mowm's `domains/*.py` axioms; the decided **k=80 / l=128** algebra (H-B5).
+**Depends on:** M1's shipped `CubbyBridge` (CubbyLLM `master` `2e61be4` / mowm `master` `5584834`); the trained trunk `$CUBBY_MODELS\hd5_mem21.pt`; `data/grillcheese_bbpe128k.json`; mowm's `domains/*.py` axioms; the decided **k=80 / l=128** algebra (H-B5).
 
 > **Note on the two mowm commits (reconciled 2026-08-06, no conflict).** This line pins mowm `5584834`, the M1 merge, because that is the bridge M2 depends on. `data/mowm_axioms.json`'s `_provenance.mowm_commit` records **`bd1f092`**, because that was mowm's live `HEAD` when the corpus was exported — the user committed their own working tree on top of the M1 merge mid-cycle. The two differ legitimately: one is the *dependency* pin, the other is the *export* provenance. `bd1f092` touches no axiom source (the export returned exactly 280 axioms / 15 domains / physics 84, matching the ground truth taken at `5584834` with no adjustment), so the corpus is the same either way.
 
@@ -29,7 +29,7 @@ M2 is therefore not a test but a build-and-validate: **give both sides a shared 
 
 | Asset | Where | What it gives us |
 |---|---|---|
-| Trained trunk | `D:\CUBBY-TRAINED-MODELS\hd5_mem21.pt` | `meta = {D:512, L:8, backbone:'hybrid', attn_every:3, heads:8, window:512, mem_every:2, mem_key:64, mem_topk:8, gen:'basis', vocab:127996}`; 109 tensors, 153.4M params |
+| Trained trunk | `$CUBBY_MODELS\hd5_mem21.pt` | `meta = {D:512, L:8, backbone:'hybrid', attn_every:3, heads:8, window:512, mem_every:2, mem_key:64, mem_topk:8, gen:'basis', vocab:127996}`; 109 tensors, 153.4M params |
 | Reconstruction recipe | `validation/train_colab.py:401-402` (save), `:414-420` (reload) | Saves `params` in `model.parameters()` order; reload rebuilds via `build(vocab, dev)`, asserts `meta` equality **and** tensor count, then copies in order — self-validating |
 | Tokenizer | `data/grillcheese_bbpe128k.json` (9.3 MB) | HF `tokenizers` BPE; 127,933 vocab + 67 added (4 opcodes already in-vocab ⇒ 63 new) = **127,996**, matching the checkpoint exactly. Loader: `cubbyllm.training.data._load_tokenizer` ("`.json` BBPE or `.model` SP") → `(encode, decode, eos_id, vocab)` |
 | Orthonormal projection | `mowm/sequence_encoder.py:76-79`, `:219-242` | Full-QR when `k*l >= latent_dim`; `P @ e` → `(k,l)` dense float32 |

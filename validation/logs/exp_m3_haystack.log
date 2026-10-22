@@ -30,7 +30,9 @@ encoded questions+targets in 0s
     100000  compact   0.853   0.920   0.930   0.883        40.8
     100000    dense   0.973   0.998   1.000   0.983         9.5
    1000000  compact   0.713   0.873   0.920   0.784       424.2
-Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 8402.15it/s]
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 103/103 [00:00<00:00, 8402.15it/s]
 [1mBertModel LOAD REPORT[0m from: sentence-transformers/all-MiniLM-L6-v2
 Key                     | Status     |  | 
 ------------------------+------------+--+-
@@ -40,4 +42,4 @@ Notes:
 - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
          0   MiniLM   0.993   1.000   1.000   0.995   (1772 us/text; at 1M docs the teacher store-encode alone would be ~0.5 h)
 
-wrote C:\Users\grill\Documents\GitHub\CubbyLLM\validation\logs\exp_m3_haystack.json
+wrote $CUBBY_REPO\validation\logs\exp_m3_haystack.json

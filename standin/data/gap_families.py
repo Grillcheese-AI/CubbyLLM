@@ -17,6 +17,11 @@ model-free "generated" family is verbalize, whose pairs come from the game's own
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import ast
 import json
 import os
@@ -719,7 +724,7 @@ def build_redial(rng: random.Random, facts: dict, chat_ok, n: int = 1500) -> tup
 
 
 # ── the owner's own export: WhatsApp chats as training pairs, AI-chat user turns as the serve eval ─────────────
-OWNER_CHATS = r"C:\Users\grill\Desktop\GrillCheese\datasets\conversations_dataset_anonymized.jsonl"
+OWNER_CHATS = _lp(r"~\Desktop\GrillCheese\datasets\conversations_dataset_anonymized.jsonl")
 _PLACEHOLDER = re.compile(r"\[(PERSON|VOLUME_PATH|FILE_PATH|EMAIL|PHONE|URL|ADDRESS|NAME|LOCATION)[^\]]*\]", re.I)
 _PII = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+|\+?\d[\d .-]{8,}\d|https?://|www\.", re.I)
 _EXPORT_LINE = re.compile(r"^\u200e?\[\d{4}-\d{2}-\d{2}, [^\]]+\].*$", re.M)   # "[2024-07-23, 9:44:00 PM] [PERSON_1]: ..." export residue
@@ -781,7 +786,7 @@ def build_owner_chats(rng: random.Random, facts: dict, chat_ok, label_passage, p
     return out, why
 
 
-OWNER_TEAMS = r"C:\Users\grill\Desktop\team-dataset.txt"
+OWNER_TEAMS = _lp(r"~\Desktop\team-dataset.txt")
 _TEAMS_BY = re.compile(r"^(.*) by ([A-ZÀ-Ý][\w'’\-]+(?: [A-ZÀ-Ý][\w'’\-]+)*)$")
 _TEAMS_TIME = re.compile(r"^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Yesterday|Today|\d{1,2}/\d{1,2})\b.*\d{1,2}:\d{2}\s*(am|pm)$", re.I)
 

@@ -1,6 +1,6 @@
 # CubeMind cleanup — status, and what CubbyLLM actually needs from it
 
-Written 2026-07-24, one day after everything else in this repo. `cubemind` (`C:\Users\grill\Documents\GitHub\cubemind`) is a real mess, confirmed by a fresh full-repo listing and a handful of direct checks against source today — not by re-reading old notes. This document lives in the **CubbyLLM** repo, not cubemind's, on purpose: it's not the cleanup plan itself (cubemind already has a better one than I'd write from scratch — see below), it's a record of what's actually true right now, what that plan doesn't cover, and specifically what CubbyLLM needs from cubemind versus what's cubemind's own general hygiene.
+Written 2026-07-24, one day after everything else in this repo. `cubemind` (`$CUBBY_GITHUB\cubemind`) is a real mess, confirmed by a fresh full-repo listing and a handful of direct checks against source today — not by re-reading old notes. This document lives in the **CubbyLLM** repo, not cubemind's, on purpose: it's not the cleanup plan itself (cubemind already has a better one than I'd write from scratch — see below), it's a record of what's actually true right now, what that plan doesn't cover, and specifically what CubbyLLM needs from cubemind versus what's cubemind's own general hygiene.
 
 ## cubemind already has a real refactor plan — this doc doesn't replace it
 

@@ -1,9 +1,9 @@
 {
  "args": {
-  "train": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\emitter_sft_v12e_w_tg30_step.jsonl",
-  "train_full": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\emitter_sft_v12e_w_slots.jsonl",
-  "held": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\pf_heldout_eval_w_step.jsonl",
-  "held_full": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\standin\\data\\out\\pf_heldout_eval_w_slots.jsonl",
+  "train": "$CUBBY_REPO\\standin\\data\\out\\emitter_sft_v12e_w_tg30_step.jsonl",
+  "train_full": "$CUBBY_REPO\\standin\\data\\out\\emitter_sft_v12e_w_slots.jsonl",
+  "held": "$CUBBY_REPO\\standin\\data\\out\\pf_heldout_eval_w_step.jsonl",
+  "held_full": "$CUBBY_REPO\\standin\\data\\out\\pf_heldout_eval_w_slots.jsonl",
   "n_train": 30000,
   "tag": "v1"
  },

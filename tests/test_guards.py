@@ -106,7 +106,7 @@ def _production_importers() -> dict[str, set[str]]:
     out: dict[str, set[str]] = {}
     for py in repo.rglob("*.py"):
         parts = py.relative_to(repo).parts
-        if "__pycache__" in parts or any(p in (".venv-dml", "tests") for p in parts):
+        if "__pycache__" in parts or any(p == "tests" or p.startswith(".venv") for p in parts):
             continue
         if py.name.startswith(("test_", "exp_")):
             continue

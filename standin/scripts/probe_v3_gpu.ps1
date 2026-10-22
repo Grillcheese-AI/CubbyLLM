@@ -1,6 +1,6 @@
 # probe_v3_gpu.ps1 — run the v3-or-not probe on the GPU, in YOUR terminal.
 #
-#   cd C:\Users\grill\Documents\GitHub\CubbyLLM
+#   from the repo root
 #   .\standin\scripts\probe_v3_gpu.ps1              # probe with the installed llama-cpp-python
 #   .\standin\scripts\probe_v3_gpu.ps1 -Upgrade     # upgrade llama-cpp-python first (Vulkan wheel), then probe
 #   .\standin\scripts\probe_v3_gpu.ps1 -Cpu         # same probe, CPU-only (safe fallback)
@@ -9,10 +9,10 @@
 # generations; see standin/scripts/probe_v3.py for what they discriminate.
 param([switch]$Upgrade, [switch]$Cpu)
 $ErrorActionPreference = "Stop"
-Set-Location "C:\Users\grill\Documents\GitHub\CubbyLLM"
+Set-Location (Join-Path $PSScriptRoot "..\..")      # the repo root
 
 $dst = "standin\models\emitter_maybe_v3.Q4_K_M.gguf"
-$src = "D:\My Drive\cubbyllm\standin\emitter_lfm25_2p6b\gguf_gguf\LFM2.5-2.6B.Q4_K_M.gguf"
+$src = "$env:CUBBY_DRIVE\cubbyllm\standin\emitter_lfm25_2p6b\gguf_gguf\LFM2.5-2.6B.Q4_K_M.gguf"
 if (-not (Test-Path $dst)) {
     Write-Host "copying Q4 GGUF from Drive (1.7 GB) ..."
     Copy-Item $src $dst

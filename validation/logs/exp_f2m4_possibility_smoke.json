@@ -19,7 +19,7 @@
   "margin": 0.02,
   "answer": 0.6
  },
- "table": "I:\\CUBBY-TRAINED-MODELS\\fastword_table_v4.npz",
+ "table": "$CUBBY_MODELS\\fastword_table_v4.npz",
  "oracles": {
   "store": {
    "routing_acc": 0.8967,

@@ -47,7 +47,7 @@ repo is the model, `bridges/` is the seam.
 | Nothing importable that is retired: deleted code lives in git history, not `_archive/` | cubemind's gitignored-but-importable `_archive/` (its two grounding encoders still point INTO it) |
 | Exactly one thing named `model` (the directory). CI greps for `model.py`/`models/` and fails | `model.py` / `models/` / `model` collision |
 | Every module's docstring declares `Wired: <path>` or `Standalone` — enforced by a repo lint, not convention | `SegmentMemory`/`MTP`/`CubeLangHead` built-but-never-wired trap |
-| Corpora/checkpoints never in-repo; configs reference `D:\grillcheese_training_data` paths + a pinned manifest hash (H-G3) | cubby-lm's 2GB corpora inside the package tree; `unified/` silent drift |
+| Corpora/checkpoints never in-repo; configs reference `$CUBBY_TRAINING_DATA` paths + a pinned manifest hash (H-G3) | cubby-lm's 2GB corpora inside the package tree; `unified/` silent drift |
 | Any number quoted in docs links the `validation/logs/` file that produced it | self-reported numbers presented as measurements |
 
 ## Naming decisions made now (cheap now, expensive later)

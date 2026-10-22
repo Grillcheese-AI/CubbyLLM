@@ -17,7 +17,7 @@ is the shared substrate of both. Two things are taken from it:
   * the three.js REPLAY page, extracted from the file AT RENDER TIME (never
     imported — importing would drag in grilly/cubbyverse packages, and the
     port-don't-link rule stands), so his real run animates in the same
-    visualization, written to C:/tmp/cubbyman_pacman_3d.html.
+    visualization, written to $TEMP/cubbyman_pacman_3d.html.
 
 The `pacman_live.py` splice is the cubbyverse-side follow-up: its
 `Game.step()` (line ~507) decides moves via `planner.plan_to_any` (~299) —

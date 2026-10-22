@@ -50,7 +50,7 @@ at runtime, whenever the absent bucket exceeds half:
 
 **`--real` must be run on your machine before any hop-0 number is quoted again.** It rebuilds
 the eval store exactly as the harvest did (`m.load_sample(800, seed=0)`), which needs
-`E:\valid_scaling_law_with_facts.pq` and `I:\CUBBY-TRAINED-MODELS\fastword_table_v4.npz` —
+`$CUBBY_DATA_ROOT/valid_scaling_law_with_facts.pq` and `$CUBBY_MODELS\fastword_table_v4.npz` —
 1.1 GB, over the 400 MB device-bridge cap, so it cannot run here.
 
 ## What survives the confound

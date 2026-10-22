@@ -15,4 +15,4 @@ H-G2  Dated Zero-Forgetting benchmark on real NYT headlines  (D=2048, 8 eras x 1
   Compare against exp_a_forgetting's random-key run at N=1024: correlated real-text keys are the harder, honest regime — whichever ordering survives BOTH regimes is the one to trust.
 
 (wall 148.6s)
-run: 2026-07-23, python 3.12.10, numpy 2.4.6 (CPU only), data=D:\grillcheese_training_data\temporal\nyt_data
+run: 2026-07-23, python 3.12.10, numpy 2.4.6 (CPU only), data=$CUBBY_TRAINING_DATA\temporal\nyt_data

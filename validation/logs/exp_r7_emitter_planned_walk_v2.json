@@ -48,7 +48,7 @@
   "tau_vm_calibration_degenerate": false,
   "tau_ret": 0.595863088965416
  },
- "r3": "C:\\Users\\grill\\Documents\\GitHub\\CubbyLLM\\validation\\logs\\exp_r3_emitter_floor_emitter_v8e.Q4_K_M.json",
+ "r3": "$CUBBY_REPO\\validation\\logs\\exp_r3_emitter_floor_emitter_v8e.Q4_K_M.json",
  "n_harvest_records": 97,
  "wall_s": 9.5
 }

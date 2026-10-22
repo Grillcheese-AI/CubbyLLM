@@ -4,7 +4,7 @@
   "n_special": 67,
   "n_added": 67,
   "opcodes_atomic": true,
-  "corpus": "D:\\grillcheese_training_data\\tokenizer\\grillcheese_spm32k_v2.corpus.txt",
+  "corpus": "$CUBBY_TRAINING_DATA\\tokenizer\\grillcheese_spm32k_v2.corpus.txt",
   "train_minutes": 15.72503636499993,
   "backend": "huggingface tokenizers ByteLevelBPE"
 }

@@ -20,6 +20,11 @@ Wired: WIRED (`ask.AskLoop(loci=...)`, `serve_api --loci`).
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import os
 import pathlib
 import sys
@@ -67,7 +72,7 @@ class LociReader:
                 p.copy_(s.to(p.device))
         del ck
         tok = tokenizer or os.environ.get("CUBBY_SPM") or os.path.join(
-            os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS"), "base450m", "grilly", "tokenizer.json")
+            os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS")), "base450m", "grilly", "tokenizer.json")
         self.tk = Tokenizer.from_file(tok)
         self.eos, self.nl = self.tk.token_to_id("</s>"), self.tk.encode("\n", add_special_tokens=False).ids[-1]
         self.rel_index = {r: i for i, r in enumerate(sorted({r for _s, r, _o in wk.load_triples()}))}

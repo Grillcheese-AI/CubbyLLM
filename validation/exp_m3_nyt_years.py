@@ -1,6 +1,6 @@
 """exp_m3_nyt_years — year-worlds on real NYT archive data (thread 3b).
 
-D:\\grillcheese_training_data\\temporal\\nyt_data holds 294 NYT Archive API
+$CUBBY_TRAINING_DATA\\temporal\\nyt_data holds 294 NYT Archive API
 month files (YEAR_MONTH.json, 1851-2024, 148 distinct years) — the dense,
 REAL counterpart to train_augmented's 4,000 curated events, already proven
 as real dated keys in H-G2. Per the user's frame: each year is a world;
@@ -29,6 +29,11 @@ by cubbyllm/.
 """
 from __future__ import annotations
 
+import pathlib as _pathlib  # noqa: E402
+import sys as _sys  # noqa: E402
+_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))      # the repo root, for:
+from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by name (order 0030)
+
 import argparse
 import json
 import pathlib
@@ -48,7 +53,7 @@ from exp_m3_domain_routing import TABLE, _load_semantic_words  # noqa: E402
 from exp_m3_temporal_causal import (  # noqa: E402
     _unit, delegation_eval, loo_group_scores, year_metrics)
 
-NYT = pathlib.Path(r"D:\grillcheese_training_data\temporal\nyt_data")
+NYT = pathlib.Path(_lp(r"$CUBBY_TRAINING_DATA\temporal\nyt_data"))
 K, L = 80, 128
 
 
