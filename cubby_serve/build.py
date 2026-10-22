@@ -111,7 +111,10 @@ def build_serve(gguf: str | None, table: str | None, n_store: int, exe: str | No
             emitter = ContextualEmitter({"programs": emitter, "talk": talk}, default="programs")
     brain = CubbyBrain(emitter, world, exe=exe, route_tau=route_tau)
     if wiki:                                             # the wikikg world (H-G6): lookup-first, lexical fallback, no cosine rows
-        from cubbyllm.worlds.wikikg import wiki_world
+        from cubbyllm.worlds.wikikg import ensure_data, wiki_world
+        from cubby_serve.sources.hub import download
+        if wiki == "auto":
+            ensure_data(("triplets",), fetch=download)   # the cached export, fetched by the server when missing
         print("loading wiki world (wikikg triples -> template facts -> triple index) ...", flush=True)
         t0 = time.perf_counter()
         ww = wiki_world(path=None if wiki == "auto" else wiki)

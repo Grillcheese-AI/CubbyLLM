@@ -253,21 +253,19 @@ def hop_phrase(relation: str, direction: str) -> str | None:
     return noun if form == "so" else inv
 
 
-def ensure_data(cfgs: tuple[str, ...] = ("triplets",)) -> None:
-    """Download the Hub's parquet export into DATA_DIR when missing (triplets 8 MB, paths 189 MB)."""
-    import urllib.request
+def ensure_data(cfgs: tuple[str, ...] = ("triplets",), fetch=None) -> None:
+    """The Hub's parquet export in DATA_DIR (triplets 8 MB, paths 189 MB). A missing file is fetched with
+    ``fetch(url, dst)``, which the caller hands in (the server: ``cubby_serve.sources.hub.download``): this package
+    opens no socket (order 0031). Without one, a missing file is an error that says how to fetch it."""
     os.makedirs(DATA_DIR, exist_ok=True)
     for cfg in cfgs:
         dst = os.path.join(DATA_DIR, f"{cfg}.parquet")
         if os.path.exists(dst) and os.path.getsize(dst) > 1_000_000:
             continue
-        req = urllib.request.Request(HUB_PARQUET.format(cfg=cfg), headers={"User-Agent": "cubbyllm/standin"})
-        with urllib.request.urlopen(req, timeout=900) as r, open(dst, "wb") as f:
-            while True:
-                chunk = r.read(1 << 20)
-                if not chunk:
-                    break
-                f.write(chunk)
+        if fetch is None:
+            raise FileNotFoundError(f"the wikikg export ({cfg}) is not cached in {DATA_DIR}: fetch it with "
+                                    f"`python -m cubby_serve.sources.hub wikikg {cfg}`")
+        fetch(HUB_PARQUET.format(cfg=cfg), dst)
 
 
 def load_triples(path: str = TRIPLETS) -> list[tuple[str, str, str]]:
