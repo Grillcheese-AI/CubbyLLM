@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import collections
 import datetime as _dt
+import difflib
 import hashlib
 import json
 import os
@@ -55,15 +56,61 @@ def year(v: str):
     return None if not m else (-int(m.group(1)) if m.group(2) else int(m.group(1)))
 
 
-def agree(rel: str, value: str, gold: set[str]) -> bool | None:
-    """True / False against the world's values; None when none of them is comparable."""
+MANY = {"founded by", "location", "part of"}
+
+
+def agree(rel: str, value: str, gold: set[str], within=None) -> str | None:
+    """Against the world's values: 'agree' (the same: a year; one name's words in the other's; a spelling of it,
+    'Wiewerd' / 'Wieuwerd'), 'coarser' (a place that holds the world's: 'Rutland' for Oakham, `within`),
+    'other' (another value of a relation with several: a co-founder), 'contradict'; None when nothing compares."""
     if rel in DATES:
         ys = {year(g) for g in gold} - {None}
-        return None if not ys or year(value) is None else year(value) in ys
+        return None if not ys or year(value) is None else "agree" if year(value) in ys else "contradict"
     v = set(norm(value).split()) - {"the"}
-    gs = [set(norm(g).split()) - {"the"} for g in gold]
-    gs = [g for g in gs if g]
-    return None if not gs or not v else any(v <= g or g <= v for g in gs)
+    gs = [g for g in (set(norm(g).split()) - {"the"} for g in gold) if g]
+    if not gs or not v:
+        return None
+    if any(v <= g or g <= v for g in gs):
+        return "agree"
+    sv = " ".join(sorted(v))
+    if any(difflib.SequenceMatcher(None, sv, " ".join(sorted(g))).ratio() >= 0.8 or
+           difflib.SequenceMatcher(None, norm(value).split()[0], sorted(g, key=len)[-1]).ratio() >= 0.85 for g in gs):
+        return "agree"
+    if any(len(w) >= 6 and any(w in x or x in w for x in g if len(x) >= 6) for w in v for g in gs):
+        return "agree"                                   # 'Borgo San Sepolcro' / 'Sansepolcro': one name, two spellings
+    if within is not None and any(within(norm(value), norm(g)) for g in gold):
+        return "coarser"
+    return "other" if rel in MANY else "contradict"
+
+
+def gazetteer(hdc_path: str | None = None):
+    """`within(big, small)`: does the place `big` hold `small`, by the wiki world's LOCATED_IN / PART_OF facts (and the
+    hdc world's 'country' / 'located in ...' when given), up to 3 steps."""
+    up = collections.defaultdict(set)
+    for s, r, o in wk.load_triples():
+        if r in ("LOCATED_IN", "PART_OF"):
+            up[norm(wk.decamel(s))].add(norm(wk.decamel(o)))
+    db = None
+    if hdc_path and os.path.exists(hdc_path):
+        import sqlite3
+        db = sqlite3.connect(f"file:{hdc_path}?mode=ro", uri=True)
+
+    def parents(x):
+        out = set(up.get(x, ()))
+        if db is not None:
+            out |= {o for (o,) in db.execute("SELECT okey FROM facts WHERE skey = ? AND rel IN ('country', "
+                                             "'located in the administrative territorial entity', 'part of')", (x,))}
+        return out
+
+    def within(big, small):
+        seen, frontier = {small}, {small}
+        for _ in range(3):
+            frontier = {p for x in frontier for p in parents(x)} - seen
+            if big in frontier or any(big in f.split() and len(big) > 3 and f.startswith(big) for f in frontier):
+                return True
+            seen |= frontier
+        return False
+    return within
 
 
 def gold_pairs():
@@ -102,7 +149,7 @@ def finder(idx, pairs, n, rng) -> dict:
             "per_era": {e: {"hits": a, "pairs": b, "rate": round(a / b, 3)} for e, (a, b) in sorted(by_era.items())}, "rows": rows}
 
 
-def frames(src, pairs, need, rng, cap: int = 4000) -> dict:
+def frames(src, pairs, need, rng, within=None, cap: int = 30000) -> dict:
     subjects = collections.defaultdict(list)
     for (s, rel) in pairs:
         subjects[s].append(rel)
@@ -113,23 +160,26 @@ def frames(src, pairs, need, rng, cap: int = 4000) -> dict:
     per = collections.defaultdict(collections.Counter)
     read, asked = [], 0
     for s in order[:cap]:
-        if sum(stats["test"][x] for x in ("agree", "contra")) >= need and sum(stats["dev"][x] for x in ("agree", "contra")) >= need:
+        if sum(stats[h][x] for h in stats for x in ("agree", "coarser", "contradict")) >= need:
             break
         rels = subjects[s]
         asked += 1
         for t in (t for rel in rels for t in src.facts(s, relations=[rel])):     # one relation a call, as the loop asks
-            a = agree(t.rel, t.obj, pairs.get((s, t.rel), set()))
+            a = agree(t.rel, t.obj, pairs.get((s, t.rel), set()), within)
             per[t.rel]["read"] += 1
             if a is None:
                 continue
             h = half(s)
-            stats[h]["agree" if a else "contra"] += 1
-            per[t.rel]["agree" if a else "contra"] += 1
-            read.append({"subject": s, "relation": t.rel, "value": t.obj, "agrees": a, "half": h})
+            stats[h][a] += 1
+            per[t.rel][a] += 1
+            read.append({"subject": s, "relation": t.rel, "value": t.obj, "verdict": a, "half": h})
         for rel in rels:
             per[rel]["asked"] += 1
-    ratio = {h: round(c["agree"] / max(1, c["agree"] + c["contra"]), 3) for h, c in stats.items()}
-    return {"subjects_asked": asked, "dev": dict(stats["dev"]), "test": dict(stats["test"]), "agreement": ratio,
+    tot = sum(stats.values(), collections.Counter())
+    ratio = lambda c, k: round((c["agree"] + k * c["coarser"]) / max(1, c["agree"] + c["coarser"] + c["contradict"]), 3)   # noqa: E731
+    return {"subjects_asked": asked, "dev": dict(stats["dev"]), "test": dict(stats["test"]), "all": dict(tot),
+            "agreement": {"with_coarser": {h: ratio(c, 1) for h, c in list(stats.items()) + [("all", tot)]},
+                          "strict": {h: ratio(c, 0) for h, c in list(stats.items()) + [("all", tot)]}},
             "per_frame": {r: {**c, "yield": round(c["read"] / max(1, c["asked"]), 3)} for r, c in sorted(per.items())},
             "reads": read}
 
@@ -142,7 +192,7 @@ class Offline:
         return []
 
 
-def bench(idx, pairs, reads, n, rng) -> dict:
+def bench(idx, pairs, reads, n, rng, within=None) -> dict:
     from ask import AskLoop
     cands = list({(r["subject"], r["relation"]): r for r in reads}.values())
     rng.shuffle(cands)
@@ -161,7 +211,8 @@ def bench(idx, pairs, reads, n, rng) -> dict:
         q = forms.render(rel, s, tense)[0]
         rec = loop.ask(q)
         ans, tier = rec.get("answer"), rec.get("tier")
-        ok = agree(rel, ans, pairs[(s, rel)]) if rec["verified"] and ans else None
+        v = agree(rel, ans, pairs[(s, rel)], within) if rec["verified"] and ans else None
+        ok = None if v in (None, "other") else v != "contradict"                # 'other': not confirmed, not wrong
         cite_ok = names_ok = two_ok = None
         if rec["verified"]:
             fact = rec["trace"][-1] if rec["trace"] else ""
@@ -185,6 +236,7 @@ def bench(idx, pairs, reads, n, rng) -> dict:
     flat, hedged = [r for r in spoken if not r["tier"]], [r for r in spoken if r["tier"]]
     return {"questions": len(rows), "spoken": len(spoken), "flat": len(flat), "hedged": len(hedged),
             "wrong_flat": sum(r["correct"] is False for r in flat), "wrong_hedged": sum(r["correct"] is False for r in hedged),
+            "unconfirmed": sum(r["correct"] is None for r in spoken),
             "correct_flat": sum(r["correct"] is True for r in flat), "correct_hedged": sum(r["correct"] is True for r in hedged),
             "citations_ok": sum(bool(r["citation_ok"]) for r in hedged), "replies_naming_a_source": sum(r["reply_names_no_source"] is False for r in spoken),
             "flat_without_two_witnesses": sum(r["flat_on_two_witnesses"] is False for r in flat),
@@ -202,18 +254,20 @@ def main() -> None:
     ap.add_argument("--frames", type=int, default=200)
     ap.add_argument("--bench", type=int, default=100)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--hdc", default=os.environ.get("CUBBY_HDC_WORLD"), help="the hdc world: a gazetteer for 'coarser'")
     ap.add_argument("--out", default=os.path.join(HERE, "logs", f"exp_books_bench_{_dt.date.today().isoformat()}.json"))
     a = ap.parse_args()
     t0 = time.time()
     idx = BookIndex(a.index)
     pairs = gold_pairs()
-    rep = {"args": {k: v for k, v in vars(a).items() if k not in ("index", "out")}, "index": idx.counts()}
+    rep = {"args": {k: v for k, v in vars(a).items() if k not in ("index", "out", "hdc")}, "index": idx.counts()}
     rep["finder"] = finder(idx, pairs, a.pairs, random.Random(a.seed))
     print(f"finder: {rep['finder']['hits']}/{rep['finder']['pairs']} gold in the top 5 [{time.time() - t0:.0f}s]", flush=True)
-    rep["frames"] = frames(BookSource(idx), pairs, a.frames, random.Random(a.seed + 1))
+    within = gazetteer(a.hdc)
+    rep["frames"] = frames(BookSource(idx), pairs, a.frames, random.Random(a.seed + 1), within)
     print(f"frames: agreement {rep['frames']['agreement']} (dev {rep['frames']['dev']}, test {rep['frames']['test']}) "
           f"[{time.time() - t0:.0f}s]", flush=True)
-    rep["bench"] = bench(idx, pairs, rep["frames"]["reads"], a.bench, random.Random(a.seed + 2))
+    rep["bench"] = bench(idx, pairs, rep["frames"]["reads"], a.bench, random.Random(a.seed + 2), within)
     b = rep["bench"]
     print(f"bench: {b['spoken']}/{b['questions']} spoken ({b['flat']} flat, {b['hedged']} hedged), wrong flat {b['wrong_flat']}, "
           f"wrong hedged {b['wrong_hedged']}; wrong tense answered flat {b['wrong_tense']['answered_flat']}/{b['wrong_tense']['asked']} "

@@ -46,25 +46,29 @@ def _date(m) -> str:
 
 
 def _place(m) -> str | None:
+    """The place a frame read, or None: a frame word first ('The'), or a word with a digit glued in ('Egypt216Lorenzo':
+    a page number and a name run together by the PDF's text)."""
     p = m["p"].strip()
-    return None if p.split()[0] in _NOT_PLACE else p
+    return None if p.split()[0] in _NOT_PLACE or re.search(r"[A-Za-z]\d|\d[A-Za-z]", p) else p
 
 
 # (relations, the frame after the subject, how each relation's value is read). `{S}` is the subject;
 # `_G` the gap a subject's apposition may leave ("Charlemagne, king of the Franks, was born ...").
 _G = r"(?:,[^,.;()]{1,60},)?\s"
-_W = r"(?:,\s(?:who\s)?|\s)"                             # the verb right after the name, or in a 'who' clause after it
+_W = r"(?:,\s(?:who\s)?|\s)"                             # born: right after the name, a participle after a comma, a who-clause
+_WD = r"(?:,\swho\s|\s)"                                  # died: right after the name or in a who-clause ("Martha, named after
+                                                         # Martha Washington, died ..." is about Martha)
 _C = r"(?:(?:about|around|circa|c\.|ca\.)\s)?"          # an approximate year: "born about 742" reads as 742
 FRAMES = [
     (("date of birth", "place of birth"), rf"{{S}}(?:{_G}(?:was\s)?|{_W}(?:was\s)?)born\s(?:on\s|in\s)?{_C}{DATE}(?:,?\s(?:in|at)\s{PLACE})?", None),
     (("place of birth", "date of birth"), rf"{{S}}(?:{_G}(?:was\s)?|{_W}(?:was\s)?)born\s(?:in|at)\s{PLACE}(?:,?\s(?:on|in)\s{_C}{DATE})?", None),
-    (("date of death", "place of death"), rf"{{S}}(?:{_G}|{_W})(?:died|was\s(?:killed|executed|assassinated))\s(?:on\s|in\s)?{_C}{DATE}(?:,?\s(?:in|at)\s{PLACE})?", None),
-    (("place of death", "date of death"), rf"{{S}}(?:{_G}|{_W})died\s(?:in|at)\s{PLACE}(?:,?\s(?:on|in)\s{_C}{DATE})?", None),
+    (("date of death", "place of death"), rf"{{S}}(?:{_G}|{_WD})(?:died|was\s(?:killed|executed|assassinated))\s(?:on\s|in\s)?{_C}{DATE}(?:,?\s(?:in|at)\s{PLACE})?", None),
+    (("place of death", "date of death"), rf"{{S}}(?:{_G}|{_WD})died\s(?:in|at)\s{PLACE}(?:,?\s(?:on|in)\s{_C}{DATE})?", None),
     (("place of burial",), rf"{{S}}{_G}(?:was\s)?buried\s(?:in|at)\s{PLACE}", None),
     (("founded by", "inception"), rf"{{S}}{_G}(?:was\s)?founded\s(?:in\s{DATE}\s)?by\s{PERSON}", None),
     (("inception", "founded by"), rf"{{S}}{_G}(?:was\s)?(?:founded|established)\sin\s{DATE}(?:\sby\s{PERSON})?", None),
     (("reign",), rf"{{S}}{_G}(?:ruled|reigned)\s(?:over\s)?(?:[A-Z][\w'’-]+(?:\s[A-Z][\w'’-]+)?\s)?from\s(?P<a>\d{{3,4}})\s(?:to|until)\s(?P<b>\d{{3,4}})", None),
-    (("location",), rf"{{S}},\s(?:an?|the)\s(?:ancient\s|small\s|large\s|walled\s|coastal\s|port\s)?(?:city|town|village|fortress|port|settlement)\s(?:of|in)\s(?:modern\s(?:day\s)?|present-day\s)?{PLACE}", None),
+    (("location",), rf"{{S}},\s(?:an?)\s(?:ancient\s|small\s|large\s|walled\s|coastal\s|port\s)?(?:city|town|village|fortress|port|settlement)\s(?:of|in)\s(?:modern\s(?:day\s)?|present-day\s)?{PLACE}", None),
     (("location",), rf"{{S}}{_G}(?:is|was|lies|lay)\s(?:located|situated)\s(?:in|on)\s{PLACE}", None),
     (("part of",), rf"{{S}}{_G}(?:was|became)\s(?:a\s|now\s)?part\sof\s(?:the\s)?{PLACE}", None),
     (("head of state",), rf"{PERSON}{_G}(?:ruled|reigned)\s(?:over\s)?(?:the\s)?{{S}}\sfrom\s(?P<a>\d{{3,4}})\s(?:to|until)\s(?P<b>\d{{3,4}})", "realm"),
@@ -78,7 +82,14 @@ def sentences(paragraph: str) -> list[str]:
     return [s.strip() for s in _SENT.split(paragraph) if s.strip()]
 
 
-_RUN_IN = re.compile(r"[A-Z][\w'’-]*\s$")
+_RUN_IN = re.compile(r"[A-Z][\w'’-]*\.?\s$")
+_TITLE = re.compile(r"(?<![\w'’-])(?:King|Queen|Emperor|Empress|Saint|St\.|Pope|Sir|Lord|Lady|General|President|Prince|Princess|"
+                    r"Duke|Count|Bishop|Archbishop|Caliph|Sultan|Tsar|Czar|Khan|Pharaoh|Dr\.|Mr\.|Mrs\.|Rev\.|"   # a title, or a word
+                    r"The|A|An|In|On|At|By|When|After|Before|During|Then|But|And|As|While|Since|Although|Though|Yet|So|"
+                    r"If|Under|From|For|With|To|There|Here|Thus|Later|Meanwhile|Also|Only)\s$")   # that opens a sentence
+_GOVERNED = re.compile(r"\b(?:of|after|by|to|with|from|for|against|under|than)\s(?:the\s)?$", re.I)
+_FUNCTION = {"in", "on", "at", "by", "and", "or", "from", "during", "after", "before", "until", "which", "when", "where",
+             "with", "under", "as", "for", "to", "the", "a", "an", "but", "near", "who", "that", "between", "about", "of"}
 
 
 def _subject(entity: str) -> list[tuple[str, bool]]:
@@ -93,14 +104,26 @@ def _subject(entity: str) -> list[tuple[str, bool]]:
     return out
 
 
-def _match(frame: str, entity: str, sentence: str, full_only: bool):
-    """The first match whose subject the sentence writes as a name (capitalised) and, for a last name
-    alone, with no capitalised word running into it ('Carlo Bonaparte')."""
-    for subj, last in _subject(entity)[:1] if full_only else _subject(entity):
+def _match(frame: str, entity: str, sentence: str, full_only: bool, governed: bool = False):
+    """The first match whose subject the sentence writes as a name (capitalised), as the subject of the clause:
+    no capitalised word running into it but a title ('Carlo Bonaparte', 'SAMUEL JOHN MILLS'; 'King Henry' is
+    fine), not governed by a preposition ('a house of the Poor Clares was founded', 'named after Martha
+    Washington, died'); a place it reads not after a preposition ('south of the Dead Sea, capital of') nor an
+    adjective before a noun ('part of the Greek national narrative')."""
+    for subj, _last in _subject(entity)[:1] if full_only else _subject(entity):
         for m in re.finditer(frame.replace("{S}", subj), sentence):
-            s = m["s"]
-            if (s[:1].isupper() or not s[:1].isalpha()) and not (last and _RUN_IN.search(sentence[:m.start("s")])):
-                return m, last
+            s, before = m["s"], sentence[:m.start("s")]
+            if not (s[:1].isupper() or not s[:1].isalpha()):
+                continue
+            if (_RUN_IN.search(before) and not _TITLE.search(before)) or (not governed and _GOVERNED.search(before)):
+                continue
+            if m.groupdict().get("p"):
+                after = re.match(r"\s+([a-z][\w'’-]*)", sentence[m.end("p"):])
+                if _GOVERNED.search(sentence[:m.start("p")]) and m.start("p") < m.start("s"):
+                    continue                             # the place is a preposition's, the apposition another noun's
+                if after and after.group(1) not in _FUNCTION:
+                    continue                             # an adjective of the noun after it, not a place
+            return m, _last
     return None
 
 
@@ -112,7 +135,7 @@ def read(sentence: str, entity: str) -> list[tuple[Triple, str, dict]]:
     for rels, frame, only in FRAMES:
         if only == "battle" and not entity.lower().startswith("battle of"):
             continue
-        m, last = _match(frame, entity, sentence, only == "battle") or (None, False)
+        m, last = _match(frame, entity, sentence, only == "battle", governed=only == "capital") or (None, False)
         if m is None:
             continue
         g = m.groupdict()

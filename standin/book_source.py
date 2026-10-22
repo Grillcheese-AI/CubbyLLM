@@ -26,6 +26,16 @@ from cubbyllm.reasoning.planner import Triple, normalize
 
 __wiring__ = "WIRED"
 
+_FORMS_ONE = []
+
+
+def _FORMS():
+    if not _FORMS_ONE:
+        from question_forms import Forms
+        _FORMS_ONE.append(Forms())
+    return _FORMS_ONE[0]
+
+
 FUNCTIONAL = {"date of birth", "place of birth", "date of death", "place of death", "place of burial", "inception",
               "founded by", "point in time", "reign"}
 
@@ -57,8 +67,19 @@ class BookSource:
         self.times: dict[str, dict] = {}                         # the dates a frame read beside a fact (the loop's `times`)
         self.last: dict = {}
 
+    @staticmethod
+    def labels(relations) -> list[str]:
+        """The frames' labels a walk's wording asks for: the label itself, or the labels whose cue words or question
+        forms hold the wording ("born" -> date and place of birth; the loop narrows by its when / where)."""
+        out = []
+        for r in relations or []:
+            k = normalize(r)
+            got = [k] if k in bf.CUES else [lab for lab, cues in bf.CUES.items() if k in cues] or                 [lab for lab in _FORMS().relations(k) if lab in bf.CUES]
+            out += [g for g in got if g not in out]
+        return out
+
     def facts(self, entity: str, relations=None, via=None) -> list[Triple]:
-        want = [r for r in (relations or []) if r in bf.CUES]
+        want = self.labels(relations)
         cues = [c for r in (want or list(bf.CUES)) for c in bf.CUES[r]]
         reads: dict[tuple[str, str], dict] = {}
         passages = self.index.passages(entity, words=cues, k=self.k)
