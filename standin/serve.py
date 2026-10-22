@@ -54,11 +54,11 @@ if hasattr(sys.stdout, "reconfigure"):
 
 __wiring__ = "STANDALONE"
 
-from build_emitter_sft import answer_fn, shim_isolver, wrap_role_prompt  # noqa: E402
+from cubbyllm.emit.format import answer_fn, shim_isolver, wrap_role_prompt  # noqa: E402
 from chat import CubbyChat  # noqa: E402
-from emitter import ContextualEmitter  # noqa: E402
-from identity import (EMITTER_SYSTEM, T, guess_lang, is_identity_question,  # noqa: E402
-                      load_facts, voice_ok)
+from cubbyllm.emit.talk import ContextualEmitter  # noqa: E402
+from cubbyllm.speech.identity import (EMITTER_SYSTEM, T, guess_lang, is_identity_question,  # noqa: E402
+                                      load_facts, voice_ok)
 from worlds import FactStore, route_world  # noqa: E402
 
 from cubbyllm.reasoning import answer as pipeline_answer  # noqa: E402
