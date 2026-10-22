@@ -88,6 +88,41 @@ def fiction(store, n, rng) -> dict:
     return out
 
 
+def time_rule_counts(store, bulk_worlds=r"E:\datasets\_books_index\bulk\worlds") -> dict:
+    """0015's Addendum 2: per mounted world, the facts the time rule touches -- an undated value of a relation in
+    `time_rule.CHANGES` (said "at one point", or with the world's "as of")."""
+    from cubbyllm.reasoning.planner import normalize
+    from time_rule import CHANGES
+    out = {}
+    real = store.reality()
+    wiki = getattr(real, "primary", real)
+    times = getattr(wiki, "times", None) or {}
+    facts = [(f, t) for v in wiki.index._by_subj.values() for f, t in v]
+    out["wiki"] = {"facts": len(facts), "touched": sum(normalize(t.rel) in CHANGES and not times.get(f) for f, t in facts),
+                   "said_as": "at one point"}
+    hdc = store.store_of("reality")
+    if hdc and os.path.exists(hdc):
+        db = sqlite3.connect(f"file:{hdc}?mode=ro", uri=True)
+        by = dict(db.execute("SELECT rel, COUNT(*) FROM facts GROUP BY rel").fetchall())
+        ts = dict(db.execute("SELECT rel, COUNT(*) FROM facts WHERE ts = 1 GROUP BY rel").fetchall())
+        out["hdc"] = {"facts": sum(by.values()), "touched": sum(n for r, n in by.items() if normalize(r) in CHANGES),
+                      "of_which_time_sensitive": sum(ts.values()), "said_as": "as of 2019"}
+    if os.path.isdir(bulk_worlds):
+        n = t = 0
+        for f in glob.glob(os.path.join(bulk_worlds, "*.jsonl")):
+            if os.path.basename(f).startswith("_"):
+                continue
+            for line in open(f, encoding="utf-8"):
+                r = json.loads(line)
+                n += 1; t += bool(r.get("rel") and normalize(r["rel"]) in CHANGES and not r.get("time"))
+        out["books_bulk"] = {"facts": n, "touched": t, "said_as": "at one point (hedged when attributed)"}
+    if store.fiction is not None:
+        rows = store.fiction.db.execute("SELECT rel, COUNT(*) FROM fiction_facts GROUP BY rel").fetchall()
+        out["fiction"] = {"facts": sum(n for _r, n in rows), "touched": sum(n for r, n in rows if normalize(r) in CHANGES),
+                          "said_as": "at one point, inside its work"}
+    return out
+
+
 def eval_questions() -> list[str]:
     import pyarrow.parquet as pq
     qs = []
@@ -174,6 +209,8 @@ def main() -> None:
     rep["exclusion"]["eval"] = verbatim(store, eval_questions())
     rep["exclusion"]["repo_benches"] = verbatim(store, bench_questions())
     print("exclusion:", json.dumps(rep["exclusion"]), flush=True)
+    rep["time_rule"] = time_rule_counts(store)
+    print("time rule:", rep["time_rule"], flush=True)
     rep["fiction"] = fiction(store, a.fiction, random.Random(a.seed)) if store.fiction else None
     print("fiction:", rep["fiction"], flush=True)
     if a.regression:

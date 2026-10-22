@@ -83,3 +83,26 @@ def test_a_books_person_whose_dates_do_not_fit_the_subjects_life_is_another_pers
     assert fits((None, 1997), "", [("date of birth", "1900")]) and not fits((None, 1997), "", [("date of birth", "1580")])
     assert fits((1769, 1821), "AncientClassical", [])                              # an era is a book's subject, not a test
     assert fits((None, None), "Prehistory", [("date of birth", "1580")])            # nothing known: nothing to guard
+
+
+def test_a_worlds_own_undated_changing_fact_is_said_at_one_point_or_as_of_the_world(tmp_path):
+    """Order 0015, Addendum 2: the rule reads every mounted world's facts, not only the books'. The wiki world dates
+    nothing: its capital is said "at one point". The hdc world is a 2019 snapshot: its capital carries "As of 2019"."""
+    from test_ask import FakeEmitter
+    from test_hdc_store import FACTS, LABELS, PIDS
+    from hdc_store import HdcWorld, Stores
+    from hdc_world import write_world
+    plans = {"What is the capital of France?": ("France", ["capital"]), "What is the capital of Ruritania?": ("Ruritania", ["capital"])}
+    world = TimedStore(STORE + ["Paris is the capital of France"])
+    world.index.declare_relation("capital")
+    on = AskLoop(FakeEmitter(plans), world=world, source=DictSource({}), lexicon=False, run_fn=exact_vm(), time_rule=True)
+    rec = on.ask("What is the capital of France?")
+    assert rec["verified"] and rec["tier"] == "at_one_point" and rec["reply"] == "Paris was a capital of France at one point."
+    off = AskLoop(FakeEmitter(plans), world=world, source=DictSource({}), lexicon=False, run_fn=exact_vm())
+    assert "tier" not in off.ask("What is the capital of France?")                      # off: as before
+    db = tmp_path / "hdc.sqlite"
+    write_world(db, FACTS, LABELS, {}, PIDS)
+    both = Stores(TimedStore(STORE), HdcWorld(db))
+    loop = AskLoop(FakeEmitter(plans), world=both, source=DictSource({}), lexicon=False, run_fn=exact_vm(), time_rule=True)
+    rec = loop.ask("What is the capital of Ruritania?")
+    assert rec["verified"] and rec["tier"] == "as_of" and rec["reply"] == "As of 2019, Strelsau."

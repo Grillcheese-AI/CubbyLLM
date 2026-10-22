@@ -642,7 +642,7 @@ class AskLoop:
     def __init__(self, emitter, world=None, source="wikidata", lexicon: bool = True, exe: str | None = None,
                  max_new: int = 300, lfm_gguf: str | None = None, run_fn=None, tau_profile: float = TAU_VM[1],
                  news=None, history_path: str | None = None, web=None, skills=None, scene=None, books=None,
-                 tense: bool | None = None, loci=None):
+                 tense: bool | None = None, loci=None, time_rule: bool | None = None):
         from cubbyllm.bridges import cubelang_client as cc
         from cubbyllm.reasoning.plan_verify import StoreRelations
         self.emitter = emitter
@@ -688,6 +688,8 @@ class AskLoop:
         # the question's tense and year against the answer's dates (order 0012: "Who rules England?" on a reign
         # that ended is not answered); on with the books unless `tense` says otherwise, off without them
         self.tense = (books is not None) if tense is None else bool(tense)
+        # the time rule on a world's own facts (order 0015, Addendum 2): on with the tense check unless told otherwise
+        self.time_rule = self.tense if time_rule is None else bool(time_rule)
         # the 450M's loci path as the reader (order 0007): a checkpoint path, or a LociReader; None = today's loop
         if isinstance(loci, (str, pathlib.PurePath)):
             from loci_reader import LociReader
@@ -963,6 +965,8 @@ class AskLoop:
             rec.update(tier="as_of", reply=f"As of {snap[1]}, {rec['answer']}.")
         elif undated and undated[0] == "refuse":          # the time rule (0012): a year asked, the books date nothing
             rec.update(answer=None, verified=False, reason="time_undated", refused={"answer": lr.result.answer, "why": undated[1]})
+        elif undated and undated[0] == "as_of":           # a world's undated value that changes, with the world's date
+            rec.update(tier="as_of", reply=f"As of {undated[1]}, {rec['answer']}.")
         elif undated:                                     # a value that changes, undated: true at one point, said so
             rec.update(tier="at_one_point", reply=hedged(undated[1].rstrip(".")) if lr.attributed else undated[1])
         elif lr.result.verified and lr.attributed:        # one witness only: said hedged, the source never named
@@ -1014,11 +1018,25 @@ class AskLoop:
         prov = (getattr(self.world, "provenance", None) or {}).get(key, "")
         if ws is None and prov and all(x.startswith("book:") for x in prov.replace(" (attributed)", "").split("+")):
             ws = [{"when": (getattr(self.world, "times", None) or {}).get(key) or {}}]   # a book fact from a store (0013)
-        if not undated(h.triple.rel, ws):
-            return None
         i = question.lower().find(h.triple.subj.lower())                # the subject as the asker wrote it
         subj = question[i:i + len(h.triple.subj)] if i >= 0 else h.triple.subj
-        if strip_as_of(question)[1] is not None:
+        year = strip_as_of(question)[1]
+        if ws is None:                                   # a world's own fact (0015, Addendum 2): its "as of", or "at one point"
+            from time_rule import changes, dated
+            when = (getattr(self.world, "times", None) or {}).get(key) or {}
+            if not self.time_rule or not changes(h.triple.rel) or dated(when):
+                return None
+            holder = self.world.held_by(h.fact) if hasattr(self.world, "held_by") else None
+            as_of = getattr(holder, "snapshot", None) or getattr(holder or self.world, "as_of", None)
+            if as_of:
+                return ("as_of", str(as_of)) if year is None or str(year) == str(as_of) else \
+                       ("refuse", f"asked about {year}, the world holds it as of {as_of}")
+            if year is not None:
+                return ("refuse", f"the world does not date when {h.triple.obj} was the {say(h.triple.rel)} of {subj}")
+            return ("hedge", at_one_point(lr.result.answer, say(h.triple.rel), subj))
+        if not undated(h.triple.rel, ws):
+            return None
+        if year is not None:
             return ("refuse", f"no witness dates when {h.triple.obj} was the {say(h.triple.rel)} of {subj}")
         return ("hedge", at_one_point(lr.result.answer, say(h.triple.rel), subj))
 
