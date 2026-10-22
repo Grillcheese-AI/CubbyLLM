@@ -41,7 +41,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parent)]
 from news_parse import DC, SUMMARY_MAX, date_of, parse  # noqa: E402,F401 -- parse and the rest re-exported
 from news_source import UA  # noqa: E402
-from robots_rules import ai_named, refuses  # noqa: E402
+from robots_rules import ai_named, crawl_delay, refuses  # noqa: E402
 
 MANIFEST = HERE / "data" / "news_feeds.json"
 ROBOTS_TTL_S = 6 * 3600
@@ -71,12 +71,12 @@ def _get(url: str, timeout: int = 20) -> tuple[int, bytes]:
 class Archive:
     """Append-only day files under `root`, the keys already held, and a lock so two pollers never write at once."""
 
-    def __init__(self, root, fetch=_get) -> None:
+    def __init__(self, root, fetch=_get, sleep=time.sleep) -> None:
         self.root = pathlib.Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
-        self.fetch = fetch
+        self.fetch, self.sleep, self._last = fetch, sleep, {}
         self.keys = set()
-        for f in sorted(self.root.glob("????-??-??.jsonl")):
+        for f in sorted(self.root.glob("????-??-??.jsonl")) + sorted(self.root.glob("backfill/*/*.jsonl")):
             for line in f.open(encoding="utf-8"):
                 if line.strip():
                     self.keys.add(json.loads(line)["key"])
@@ -90,11 +90,24 @@ class Archive:
             return hit[1]
         try:
             code, body = self.fetch(f"https://{host}/robots.txt")
+            self._last[host] = time.time()                    # a request too: the crawl delay counts from it
             txt = body.decode("utf-8", "replace") if code == 200 else None
         except Exception:                                    # noqa: BLE001 -- no robots.txt is not a yes and not a no
             txt = None
         self._robots[host] = (time.time(), txt)
         return txt
+
+    def polite(self, url: str):
+        """``fetch(url)``, never sooner after this host's last request than its robots ``Crawl-delay`` asks."""
+        host = urllib.parse.urlsplit(url).netloc
+        txt = self.robots(host)
+        wait = (crawl_delay(txt, UA) if txt else 0.0) - (time.time() - self._last.get(host, 0.0))
+        if wait > 0:
+            self.sleep(wait)
+        try:
+            return self.fetch(url)
+        finally:
+            self._last[host] = time.time()
 
     def check(self, feed: dict) -> str | None:
         """None when the feed may be polled; else the reason it is not, this poll."""
@@ -118,7 +131,7 @@ class Archive:
         if why:
             return {**row, "skipped": why}
         try:
-            code, body = self.fetch(feed["url"])
+            code, body = self.polite(feed["url"])
             if code != 200:
                 return {**row, "error": f"HTTP {code}"}
             items = parse(body, full=bool(feed.get("full_text")))
@@ -158,6 +171,9 @@ class Archive:
             now = time.time()
             rows = [self.poll(f) for f in feeds(manifest) if f.get("status") == "active"
                     and now - last.get(f["id"], 0) >= f.get("every_h", 1) * 3600 - 300]
+            if os.environ.get("CUBBY_GV_BACKFILL"):          # Global Voices' history pages, as they land (news_backfill)
+                from news_backfill import ingest_all
+                rows.append(ingest_all(self, os.environ["CUBBY_GV_BACKFILL"], manifest))
             cfg = json.loads(pathlib.Path(manifest).read_text(encoding="utf-8")).get("gdelt") or {}
             if cfg.get("status") == "active":                 # the structured event source (news_gdelt.py)
                 try:

@@ -7,6 +7,7 @@
 - `AI_AGENTS`: the crawler products publishers name when they mean "not for building AI systems".
 - `refuses(txt, agent, url)`: does this robots.txt refuse `agent` the path of `url` (our own name, or `*`)? A refusal
   addressed to us is never worked around, and the poller never changes its name (`CubbyLLM/0.1`) to get past one.
+- `crawl_delay(txt, agent)`: the seconds it asks between requests (Global Voices: 10); the poller waits that long.
 
 Wired: WIRED (`news_source.NewsSource`, `news_archive`).
 """
@@ -43,6 +44,14 @@ def disallowed_all(robots: str) -> set[str]:
 def ai_named(robots: str) -> list[str]:
     """The AI agents a robots.txt shuts out entirely, sorted."""
     return sorted(disallowed_all(robots) & AI_AGENTS)
+
+
+def crawl_delay(robots: str, agent: str) -> float:
+    """The seconds a robots.txt asks ``agent`` (or ``*``) to wait between requests; 0 when it asks none."""
+    rp = urllib.robotparser.RobotFileParser()
+    rp.parse(robots.splitlines())
+    d = rp.crawl_delay(agent.split("/", 1)[0])
+    return float(d) if d else 0.0
 
 
 def refuses(robots: str, agent: str, url: str) -> bool:
