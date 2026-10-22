@@ -26,6 +26,9 @@ host, checked as today.
     snippet beside the casual sentence that uses it, which is the supervision this needs; check its DATALICENSE);
   - **OASST2** (Apache-2.0; human-written replies; keep the human-written turns only);
   - **Claire** (French, already wired in `gap_families.py`; per-subset licenses);
+  - **WikiLarge** (Simple-English Wikipedia sentences aligned with the original sentences they rewrite: human
+    rewrites, CC BY-SA; Nick has access on the Hub). This is the family for explaining in its own words: a
+    reply that composes facts in Cubby's voice, never copying a source;
   - the existing chat sources.
 
   Exclude every machine-generated set (SODA, synthetic chats).
