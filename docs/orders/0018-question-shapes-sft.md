@@ -51,6 +51,14 @@ all into the same plan. Nick's rule: no external model writes any of it.
   - 2 shapes per variety;
   - a set of relations;
   - every evaluation set: WebQuestions and NQ dev/test, GPQA, SEA-HELM.
+- **Real inputs, from the local conversation set** (path in `CLAUDE.local.md`; Cowork's look, 2026-10-22):
+  161,632 parsed utterances. 44,130 are **user** turns (human-written) and 117,502 are **assistant** turns
+  (model-written, so **excluded**). The user turns are mostly technical requests and how-to's; questions about
+  world facts are rare, and French is ~0.2%. Use the user turns for:
+  - the turn **kind** (fact question, yes/no, request, how-to, chat), labelled by rules over their
+    subject–verb–complement parse;
+  - **robustness:** real casing, typos, missing "?" and run-ons, applied as noise to the generated questions.
+  They are private conversations: internal training only, never in a public build.
 - **Training:** an emitter LoRA on `base450m_cont` (as `v13e`), the v12e recipe, a Colab notebook for Cowork to
   run (~1 h on the G4, ~$1).
 
