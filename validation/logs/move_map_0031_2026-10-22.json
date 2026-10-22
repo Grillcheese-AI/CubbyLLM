@@ -367,7 +367,7 @@
   {
    "module": "standin/data/build_books_index.py",
    "lines": 100,
-   "to": "validation/build/build_books_index.py",
+   "to": "validation/builders/build_books_index.py",
    "importers": [
     "standin/worlds_adapters.py"
    ],
@@ -399,7 +399,7 @@
   {
    "module": "standin/data/build_ear.py",
    "lines": 140,
-   "to": "validation/build/build_ear.py",
+   "to": "validation/builders/build_ear.py",
    "importers": [],
    "tests": [],
    "over_300": false
@@ -407,7 +407,7 @@
   {
    "module": "standin/data/build_ear_bulk.py",
    "lines": 115,
-   "to": "validation/build/build_ear_bulk.py",
+   "to": "validation/builders/build_ear_bulk.py",
    "importers": [],
    "tests": [],
    "over_300": false
@@ -524,7 +524,7 @@
   {
    "module": "standin/data/build_history_graph.py",
    "lines": 569,
-   "to": "validation/build/build_history_graph.py",
+   "to": "validation/builders/build_history_graph.py",
    "importers": [
     "standin/data/build_nyt_events.py",
     "validation/build_e8_questions.py"
@@ -535,7 +535,7 @@
   {
    "module": "standin/data/build_history_records.py",
    "lines": 112,
-   "to": "validation/build/build_history_records.py",
+   "to": "validation/builders/build_history_records.py",
    "importers": [],
    "tests": [],
    "over_300": false
@@ -553,7 +553,7 @@
   {
    "module": "standin/data/build_lexicon.py",
    "lines": 88,
-   "to": "validation/build/build_lexicon.py",
+   "to": "validation/builders/build_lexicon.py",
    "importers": [],
    "tests": [],
    "over_300": false
@@ -561,7 +561,7 @@
   {
    "module": "standin/data/build_nyt_events.py",
    "lines": 210,
-   "to": "validation/build/build_nyt_events.py",
+   "to": "validation/builders/build_nyt_events.py",
    "importers": [],
    "tests": [],
    "over_300": false
@@ -601,7 +601,7 @@
   {
    "module": "standin/data/build_property_aliases.py",
    "lines": 171,
-   "to": "validation/build/build_property_aliases.py",
+   "to": "validation/builders/build_property_aliases.py",
    "importers": [],
    "tests": [],
    "over_300": false
@@ -629,7 +629,7 @@
   {
    "module": "standin/data/build_same_place.py",
    "lines": 96,
-   "to": "validation/build/build_same_place.py",
+   "to": "validation/builders/build_same_place.py",
    "importers": [],
    "tests": [],
    "over_300": false
@@ -653,7 +653,7 @@
   {
    "module": "standin/data/build_webq_bench.py",
    "lines": 111,
-   "to": "validation/build/build_webq_bench.py",
+   "to": "validation/builders/build_webq_bench.py",
    "importers": [],
    "tests": [],
    "over_300": false
@@ -669,7 +669,7 @@
   {
    "module": "standin/data/build_word_table.py",
    "lines": 132,
-   "to": "validation/build/build_word_table.py",
+   "to": "validation/builders/build_word_table.py",
    "importers": [],
    "tests": [],
    "over_300": false
@@ -687,7 +687,7 @@
   {
    "module": "standin/data/convert_books.py",
    "lines": 302,
-   "to": "validation/build/convert_books.py",
+   "to": "validation/builders/convert_books.py",
    "importers": [],
    "tests": [],
    "over_300": true
@@ -695,7 +695,7 @@
   {
    "module": "standin/data/fetch_hdc_labels.py",
    "lines": 123,
-   "to": "validation/build/fetch_hdc_labels.py",
+   "to": "validation/builders/fetch_hdc_labels.py",
    "importers": [],
    "tests": [],
    "over_300": false
@@ -726,7 +726,7 @@
   {
    "module": "standin/data/goemotions_cube.py",
    "lines": 187,
-   "to": "validation/build/goemotions_cube.py",
+   "to": "validation/builders/goemotions_cube.py",
    "importers": [
     "standin/tests/test_goemotions_cube.py",
     "validation/cube_vs_va.py",
@@ -2477,7 +2477,7 @@
    "by": "name"
   },
   "standin/tests/test_build_chat_sft.py": {
-   "to": "tests/build/",
+   "to": "tests/builders/",
    "covers": [
     "standin/data/build_chat_sft.py",
     "standin/data/gap_families.py",
@@ -2487,7 +2487,7 @@
    "by": "name"
   },
   "standin/tests/test_build_emitter_sft.py": {
-   "to": "tests/build/",
+   "to": "tests/builders/",
    "covers": [
     "standin/data/build_emitter_sft.py",
     "standin/data/identity.py",
@@ -2506,7 +2506,7 @@
    "by": "name"
   },
   "standin/tests/test_build_program_first.py": {
-   "to": "tests/build/",
+   "to": "tests/builders/",
    "covers": [
     "standin/data/build_program_first.py"
    ],
@@ -2629,7 +2629,7 @@
    "by": "name"
   },
   "standin/tests/test_goemotions_cube.py": {
-   "to": "tests/build/",
+   "to": "tests/builders/",
    "covers": [
     "standin/data/build_chat_sft.py",
     "standin/data/goemotions_cube.py",
@@ -2661,7 +2661,7 @@
    "by": "name"
   },
   "standin/tests/test_hdc_sft.py": {
-   "to": "tests/build/",
+   "to": "tests/builders/",
    "covers": [
     "standin/data/build_hdc_sft.py"
    ],
@@ -2680,7 +2680,7 @@
    "by": "name"
   },
   "standin/tests/test_hf_rows.py": {
-   "to": "tests/build/",
+   "to": "tests/builders/",
    "covers": [
     "standin/data/hf_rows.py"
    ],
@@ -2729,7 +2729,7 @@
    "by": "name"
   },
   "standin/tests/test_import_tinygsm.py": {
-   "to": "tests/build/",
+   "to": "tests/builders/",
    "covers": [
     "standin/data/import_tinygsm.py"
    ],
@@ -2955,7 +2955,7 @@
    "by": "name"
   },
   "standin/tests/test_property_aliases.py": {
-   "to": "tests/build/",
+   "to": "tests/builders/",
    "covers": [
     "standin/sources.py"
    ],

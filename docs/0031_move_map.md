@@ -8,7 +8,7 @@ moved yet: this map waits for Cowork's review (Nick told) before step 2. Machine
 |---|---|---|
 | `cubbyllm/` (Apache-2.0) | 71 | worlds 22, sources 3 + news 9, affect 9, cortex 7, plugins 8, speech 5, reasoning 4, emit 3, the brain 1 |
 | `cubby_serve/` (BSL 1.1) | 12 | the server's five parts, the board's two, the plugins' server part, harness and its wiring, vault, ledger |
-| `validation/` (builders, see question 1) | 34 | `validation/sft/` 20: the 450M's talk and emitter data; `validation/build/` 14: worlds, lexicon, ear, benches |
+| `validation/` (builders, see question 1) | 34 | `validation/sft/` 20: the 450M's talk and emitter data; `validation/builders/` 14: worlds, lexicon, ear, benches |
 | stays in `standin/` | 29 | the game 16, the GGUF seat and its facade 2, the LFM source, the proposer, the stand-in's eval, 5 probes, 3 GGUF-only builders |
 
 ## How it was decided
@@ -49,7 +49,7 @@ its slice moves.
 | `feeling` -> `pacpaths.PLUTCHIK_JSON` (module level) | the table's place becomes `$CUBBY_GITHUB/cubbyverse/...` through `cubbyllm.local_paths` in `feeling`; `pacpaths` reads `feeling`'s constant |
 | `grounding` -> `forge.numbers` (the game's) | `numbers` moves into `grounding`; `forge` imports it |
 | `hdc_world` -> `build_hdc_sft.Templates` | `Templates` (how an hdc fact is worded) moves into `cubbyllm/worlds/hdc_world.py`; the builder imports it |
-| `import_science` -> `build_program_first.make_writer` | `import_science` splits: `mount_science` (the server's `--science`) -> `cubbyllm/worlds/science.py`; the import of MegaScience rows -> `validation/build/import_science.py` |
+| `import_science` -> `build_program_first.make_writer` | `import_science` splits: `mount_science` (the server's `--science`) -> `cubbyllm/worlds/science.py`; the import of MegaScience rows -> `validation/builders/import_science.py` |
 | `serve` -> `build_emitter_sft.answer_fn`, `shim_isolver`, `wrap_role_prompt` (module level) | the emitter's prompt and answer format, used at serve time -> `cubbyllm/emit/format.py`; the builder imports them |
 | `serve` -> `emitter.ContextualEmitter` | `cubbyllm/emit/talk.py` |
 | `serve` -> `pacman.CubbyPac` (`--pacman`) | lands in `cubby_serve/build.py` with `build_serve` after the split (below) |
@@ -151,7 +151,7 @@ imports it back.
 | `loci_reader` (cubbyllm) | `make_fact_shard.address`, `words` (the far-fact layout) | -> `cubbyllm/model/fact_layout.py`; the shard builder imports them |
 | `worlds_ingest` (cubbyllm) | `books_bulk_read.run` (the books' bulk read) | the function -> `cubbyllm/worlds/book_reader.py`; the script keeps its CLI |
 | `serve` -> `build_serve` (cubby_serve) | `exp_m3_cot_pipeline.load_sample`, `V4_TABLE`; `exp_m3_domain_routing._load_semantic_words` | the serve stack's fact pool and word table -> `cubbyllm/worlds/fact_pool.py`; question 8 |
-| `import_science`, `wikikg` (cubbyllm) | `urllib.request` | the import part -> `validation/build/`; wikikg's download -> a fetch handed in |
+| `import_science`, `wikikg` (cubbyllm) | `urllib.request` | the import part -> `validation/builders/`; wikikg's download -> a fetch handed in |
 | `emitter_base` (cubbyllm) | `urllib.request` (`LlamaServerEmitter`) | stays in `standin/` with the split |
 | 21 modules bound for `cubbyllm/` | `sys.path` edits | removed: package imports; a guard checks that no `cubbyllm/` module edits `sys.path` |
 
@@ -311,24 +311,24 @@ link")? Or should the link stay in `cubby_serve/build.py` for now?
 | `worlds_manifest.py` (82) | `cubbyllm/worlds/manifest.py` | `worlds_ingest.py`, `v/exp_worlds_bench.py` | `test_worlds` |
 | `worlds_store.py` (81) | `cubbyllm/worlds/store.py` | `v/exp_worlds_bench.py` | none |
 
-### validation/build/ (14)
+### validation/builders/ (14)
 
 | module (lines) | new path | imported by | tests |
 |---|---|---|---|
-| `data/build_books_index.py` (100) | `validation/build/build_books_index.py` | `worlds_adapters.py` | none |
-| `data/build_ear.py` (140) | `validation/build/build_ear.py` | none | none |
-| `data/build_ear_bulk.py` (115) | `validation/build/build_ear_bulk.py` | none | none |
-| `data/build_history_graph.py` (569 **>300**) | `validation/build/build_history_graph.py` | `data/build_nyt_events.py`, `v/build_e8_questions.py` | none |
-| `data/build_history_records.py` (112) | `validation/build/build_history_records.py` | none | none |
-| `data/build_lexicon.py` (88) | `validation/build/build_lexicon.py` | none | none |
-| `data/build_nyt_events.py` (210) | `validation/build/build_nyt_events.py` | none | none |
-| `data/build_property_aliases.py` (171) | `validation/build/build_property_aliases.py` | none | none |
-| `data/build_same_place.py` (96) | `validation/build/build_same_place.py` | none | none |
-| `data/build_webq_bench.py` (111) | `validation/build/build_webq_bench.py` | none | none |
-| `data/build_word_table.py` (132) | `validation/build/build_word_table.py` | none | none |
-| `data/convert_books.py` (302 **>300**) | `validation/build/convert_books.py` | none | none |
-| `data/fetch_hdc_labels.py` (123) | `validation/build/fetch_hdc_labels.py` | none | none |
-| `data/goemotions_cube.py` (187) | `validation/build/goemotions_cube.py` | `v/cube_vs_va.py`, `v/emotions_corpus.py`, `v/vad_check.py` | `test_goemotions_cube` |
+| `data/build_books_index.py` (100) | `validation/builders/build_books_index.py` | `worlds_adapters.py` | none |
+| `data/build_ear.py` (140) | `validation/builders/build_ear.py` | none | none |
+| `data/build_ear_bulk.py` (115) | `validation/builders/build_ear_bulk.py` | none | none |
+| `data/build_history_graph.py` (569 **>300**) | `validation/builders/build_history_graph.py` | `data/build_nyt_events.py`, `v/build_e8_questions.py` | none |
+| `data/build_history_records.py` (112) | `validation/builders/build_history_records.py` | none | none |
+| `data/build_lexicon.py` (88) | `validation/builders/build_lexicon.py` | none | none |
+| `data/build_nyt_events.py` (210) | `validation/builders/build_nyt_events.py` | none | none |
+| `data/build_property_aliases.py` (171) | `validation/builders/build_property_aliases.py` | none | none |
+| `data/build_same_place.py` (96) | `validation/builders/build_same_place.py` | none | none |
+| `data/build_webq_bench.py` (111) | `validation/builders/build_webq_bench.py` | none | none |
+| `data/build_word_table.py` (132) | `validation/builders/build_word_table.py` | none | none |
+| `data/convert_books.py` (302 **>300**) | `validation/builders/convert_books.py` | none | none |
+| `data/fetch_hdc_labels.py` (123) | `validation/builders/fetch_hdc_labels.py` | none | none |
+| `data/goemotions_cube.py` (187) | `validation/builders/goemotions_cube.py` | `v/cube_vs_va.py`, `v/emotions_corpus.py`, `v/vad_check.py` | `test_goemotions_cube` |
 
 ### validation/sft/ (20)
 
@@ -396,7 +396,7 @@ link")? Or should the link stay in `cubby_serve/build.py` for now?
 | `standin/tests/ (stays)` | test_asking (mixed), test_build_game_sft, test_coach (mixed), test_coach_wired (mixed), test_exp_he19_memory, test_hypothesis, test_lfm_source (mixed), test_pacman (mixed), test_pacman_percepts (mixed), test_plasticity (mixed), test_portable, test_said_back (mixed), test_verse (mixed), test_wariness (mixed) |
 | `tests/affect/` | neurochemistry_probe, test_afferent, test_choosing, test_ear, test_neurochem, test_perception, test_saying |
 | `tests/brain/` | test_serve (mixed) |
-| `tests/build/` | test_build_chat_sft (mixed), test_build_emitter_sft (mixed), test_build_program_first, test_goemotions_cube (mixed), test_hdc_sft, test_hf_rows, test_import_tinygsm, test_property_aliases |
+| `tests/builders/` | test_build_chat_sft (mixed), test_build_emitter_sft (mixed), test_build_program_first, test_goemotions_cube (mixed), test_hdc_sft, test_hf_rows, test_import_tinygsm, test_property_aliases |
 | `tests/cortex/` | test_cortex |
 | `tests/emit/` | test_emitter_450m |
 | `tests/plugins/` | test_plugins (mixed), test_plugins_check (mixed), test_plugins_route |

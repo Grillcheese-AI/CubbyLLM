@@ -1,6 +1,6 @@
 """standin/worlds_ingest.py -- everything in the datasets into worlds, one tool driven by the manifest (order 0015).
 
-    python validation/build/ingest_worlds.py [--root <worlds dir>] [--only <dataset substring>] [--frames] [--release]
+    python validation/builders/ingest_worlds.py [--root <worlds dir>] [--only <dataset substring>] [--frames] [--release]
     (``python standin/worlds_ingest.py`` runs the same)
 
 `worlds_manifest.plan` gives every manifest row a decision (ingest / excluded / queued); this runs the ingests through
@@ -151,9 +151,9 @@ def run(root, only=None, frames=False, release=False, log=print, plan=None, ment
 
 
 def main() -> None:
-    """The command line lives in ``validation/build/ingest_worlds.py`` (it hands in the bulk reader); this runs it."""
+    """The command line lives in ``validation/builders/ingest_worlds.py`` (it hands in the bulk reader); this runs it."""
     import runpy
-    runpy.run_path(str(ROOT / "validation" / "build" / "ingest_worlds.py"), run_name="__main__")
+    runpy.run_path(str(ROOT / "validation" / "builders" / "ingest_worlds.py"), run_name="__main__")
 
 
 def _relative(o):
