@@ -60,5 +60,12 @@
  "standin/plugins_load.py": "cubbyllm/plugins/load.py",
  "standin/plugins_route.py": "cubbyllm/plugins/route.py",
  "standin/plugins_world.py": "cubbyllm/plugins/world.py",
- "standin/question_encoder.py": "cubbyllm/plugins/question_encoder.py"
+ "standin/question_encoder.py": "cubbyllm/plugins/question_encoder.py",
+ "standin/cortex/__init__.py": "cubbyllm/cortex/__init__.py",
+ "standin/cortex/contract.py": "cubbyllm/cortex/contract.py",
+ "standin/cortex/forward.py": "cubbyllm/cortex/forward.py",
+ "standin/cortex/retina.py": "cubbyllm/cortex/retina.py",
+ "standin/cortex/salience.py": "cubbyllm/cortex/salience.py",
+ "standin/cortex/what.py": "cubbyllm/cortex/what.py",
+ "standin/cortex/where.py": "cubbyllm/cortex/where.py"
 }
