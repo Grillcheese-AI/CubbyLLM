@@ -2,7 +2,7 @@
 each source takes a ``fetch`` and the server hands it one of these). Each fetcher sends the User-Agent and uses the
 timeout its source sent and used before the split.
 
-Wired: WIRED (the server builds the online Wikidata source with ``wikidata()``, and the web source with ``web``).
+Wired: WIRED (the server builds the online Wikidata source with ``wikidata()``, the web source with ``web``, the news source with ``news()``).
 """
 from __future__ import annotations
 
@@ -40,3 +40,9 @@ def web(url: str, headers: dict | None = None, timeout_s: float = 10, limit: int
             return r.headers.get("Content-Type", ""), r.read(MAX_PAGE_BYTES if limit is None else limit)
     except Exception:                                        # noqa: BLE001
         return None
+
+
+def news(timeout_s: float = 20):
+    """The news source's fetch: its name (``CubbyLLM/0.1``) and its timeout (20 s by default)."""
+    from cubbyllm.sources.news.source import UA
+    return fetcher(UA, timeout_s)

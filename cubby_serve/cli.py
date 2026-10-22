@@ -14,6 +14,15 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 __wiring__ = "WIRED"
 
 
+def news_source(args):
+    """The RSS date source for `--news` (built here with the server's fetch, order 0031), or None."""
+    if not args.news:
+        return None
+    from cubbyllm.sources.news.source import NewsSource
+    from cubby_serve.sources.http import news
+    return NewsSource(fetch=news())
+
+
 def build_web(args):
     """The web source behind the ask loop's source, or None when no search backend is configured
     (standin/web_source.py). The reader is the local LFM base, on the CPU: the GPU is the emitter's."""
@@ -148,7 +157,7 @@ def boot(args, ap: argparse.ArgumentParser):
             from lfm_source import LfmSource             # so the loop never imports the stand-in (order 0031)
             source = LfmSource(os.path.join(ROOT, "standin", "models", "LFM2.5-2.6B.Q4_K_M.gguf"))
         brain.ask_loop = AskLoop(brain.emitter, world=world, source=source, lexicon=True,
-                                 max_new=args.ask_max_new, news="rss" if args.news else None,
+                                 max_new=args.ask_max_new, news=news_source(args),
                                  history_path=args.history or None, web=web, skills=args.skills or None,
                                  books=args.books, tense=True if args.tense else None, loci=args.loci)
         print("  web: " + (f"{web.backend.name} behind {args.ask}, reader {'the local model' if web.reader else 'off'}; "

@@ -34,7 +34,6 @@ import pathlib
 import re
 import time
 import urllib.parse
-import urllib.request
 import xml.etree.ElementTree as ET
 from email.utils import parsedate_to_datetime
 
@@ -130,6 +129,10 @@ def _text(el, *names) -> str:
     return ""
 
 
+def _no_fetch(url: str) -> bytes:
+    raise RuntimeError("the news source needs fetch= (cubby_serve.sources.http.news()): cubbyllm/ opens no socket")
+
+
 class NewsSource:
     """`facts("2026-09-14")` or `facts("2026")` -> that day's / that year's headlines as Triples.
     Anything that is not a date gets nothing: this source knows WHEN, not WHO."""
@@ -138,12 +141,15 @@ class NewsSource:
 
     def __init__(self, feeds: dict[str, str] | None = None, cache_dir: pathlib.Path | None = CACHE,
                  ttl_s: int = TTL_S, timeout_s: int = 20, offline: bool = False,
-                 topic: str | None = None) -> None:
+                 topic: str | None = None, fetch=None) -> None:
         self.topic = topic if topic in TOPIC_FEEDS else None
         self.feeds = dict(feeds) if feeds else ({f"ap-{self.topic}": TOPIC_FEEDS[self.topic]}
                                                 if self.topic else dict(FEEDS))
         self.cache_dir = pathlib.Path(cache_dir) if cache_dir else None
         self.ttl_s, self.timeout_s, self.offline = int(ttl_s), int(timeout_s), bool(offline)
+        # url -> the body (raising when the feed is down): the server hands it in (cubby_serve.sources.http.news()); this
+        # package opens no socket (order 0031). Without one a feed is down, and `errors` says why
+        self.fetch = fetch if fetch is not None else _no_fetch
         self.calls = 0
         self.last: dict = {}
         self.times: dict[str, dict] = {}
@@ -165,9 +171,7 @@ class NewsSource:
         if self.offline:
             return None
         try:
-            req = urllib.request.Request(self.feeds[feed_id], headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=self.timeout_s) as r:
-                body = r.read()
+            body = self.fetch(self.feeds[feed_id])
             self.calls += 1
         except Exception as e:                               # noqa: BLE001 -- a feed that is down is not an answer
             self.errors[feed_id] = f"{type(e).__name__}: {str(e)[:100]}"
@@ -310,9 +314,7 @@ class NewsSource:
         if host in self._robots:
             return self._robots[host]
         try:
-            rq = urllib.request.Request(f"https://{host}/robots.txt", headers={"User-Agent": UA})
-            with urllib.request.urlopen(rq, timeout=self.timeout_s) as r:
-                txt = r.read().decode("utf-8", "replace")
+            txt = self.fetch(f"https://{host}/robots.txt").decode("utf-8", "replace")
         except Exception:                                    # noqa: BLE001 -- no robots.txt is not a yes and not a no
             self._robots[host] = None
             return None
