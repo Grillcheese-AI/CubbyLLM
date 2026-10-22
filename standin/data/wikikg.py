@@ -39,6 +39,7 @@ HUB_PARQUET = "https://huggingface.co/api/datasets/AutomatedScientist/wikikg-tra
 # name themselves as their inverse. Ordered by triple count (validation/logs/exp_g4_wikikg_screen.log).
 RELATIONS: dict[str, tuple[str, str | None, str]] = {
     "TIMELINE_EVENT": ("timeline event", None, "os"),
+    "SAME_PLACE_AS": ("later name", "earlier name", "os"),        # order 0015: an ancient name in its modern one
     "HAS_PART": ("part", "whole", "os"),
     "MEMBER_OF": ("member", "group", "so"),
     "IS_A": ("type", "instance", "os"),
@@ -287,23 +288,10 @@ def facts_from_triples(triples, inverse: bool = True) -> list[str]:
     return out
 
 
-_NOT_A_NAME = re.compile(r"<[^>]*(?:class |object at )|^_+$")
-MISSPELLED = {"SP0USE_OF": "SPOUSE_OF"}                       # a zero for the O
-
-
-def hygiene(triples) -> tuple[list, dict]:
-    """The graph's own debris, dropped or mended as a world is mounted (order 0015, from 0011's finding): a fact whose
-    end is a Python repr (`<class 'wikikg.relations.X'>`, `<__main__.DynamicRelation object at 0x...>`) or a bare
-    `_` is no fact; a known misspelled relation takes its spelling. -> (the triples, the counts)."""
-    out, dropped, mended = [], 0, 0
-    for s, r, o in triples:
-        if _NOT_A_NAME.search(str(s)) or _NOT_A_NAME.search(str(o)):
-            dropped += 1
-            continue
-        if r in MISSPELLED:
-            r, mended = MISSPELLED[r], mended + 1
-        out.append((s, r, o))
-    return out, {"dropped_not_a_name": dropped, "relations_respelled": mended}
+def hygiene(triples, same_place=None):
+    """The mount's mending (order 0015): `world_hygiene.hygiene` -- debris, self-references, spellings, same places."""
+    from world_hygiene import hygiene as _hygiene
+    return _hygiene(triples, same_place)
 
 
 def wiki_world(path: str | None = None, triples=None, inverse: bool = True, name: str = "wiki"):

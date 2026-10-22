@@ -43,7 +43,12 @@ class WorldsStore:
             import wikikg as wk
             from hdc_store import HdcWorld, Stores
             hdc = self.store_of("reality")
-            self._reality = Stores(wk.wiki_world(), HdcWorld(hdc)) if hdc and pathlib.Path(hdc).exists() else wk.wiki_world()
+            if hdc and pathlib.Path(hdc).exists():
+                from hdc_store import disagreements
+                self._reality = Stores(wk.wiki_world(), HdcWorld(hdc))
+                self._reality.contested, self.disagreement_counts = disagreements(hdc)   # held until a rule per kind
+            else:
+                self._reality = wk.wiki_world()
         return self._reality
 
     def lookup(self, entity: str, relation: str | None = None, worlds=None) -> list[dict]:

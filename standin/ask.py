@@ -682,7 +682,8 @@ class AskLoop:
             from book_source import BookSource
             books = BookSource(books)
         self.books = books
-        self.contested: set[tuple[str, str]] = set()     # (subject, relation) a bulk pass held: `load_held`
+        self.contested: set[tuple[str, str]] = set(getattr(world, "contested", None) or ())   # held: `load_held`, and
+                                                         # the pairs two mounted worlds disagree on (0015, addendum 3)
         if books is not None and hasattr(books, "life") and books.life is None:
             books.life = self._life                      # the same-name guard reads the subject's life from this world
         # the question's tense and year against the answer's dates (order 0012: "Who rules England?" on a reign

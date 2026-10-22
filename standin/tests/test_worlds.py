@@ -125,7 +125,36 @@ def test_a_fiction_world_answers_only_a_question_that_names_its_work(tmp_path):
 
 def test_the_wiki_worlds_debris_is_dropped_at_the_mount():
     import wikikg as wk
-    clean, counts = wk.hygiene([("A", "IS_A", "<class 'wikikg.entities.Event'>"), ("BryantPark", "LOCATION_OF", "_"),
+    clean, counts = wk.hygiene(same_place=set(), triples=[("A", "IS_A", "<class 'wikikg.entities.Event'>"), ("BryantPark", "LOCATION_OF", "_"),
                                 ("<__main__.DynamicRelation object at 0x1>", "RELATED_TO", "B"), ("X", "SP0USE_OF", "Y"), ("Ada", "BORN_ON", "1815")])
     assert clean == [("X", "SPOUSE_OF", "Y"), ("Ada", "BORN_ON", "1815")]
-    assert counts == {"dropped_not_a_name": 3, "relations_respelled": 1}
+    assert counts == {"dropped_not_a_name": 3, "dropped_self_reference": 0, "relations_respelled": 1, "same_place": 0}
+
+
+def test_two_worlds_that_disagree_hold_the_fact_and_a_folded_label_agrees(tmp_path):
+    """Addendum 3: the wiki world's value and the hdc world's for one (subject, relation) with nothing in common are
+    held -- refused `contested` -- until a rule per kind settles them; a label that differs only by case, spacing or
+    diacritics is the same value. An ancient name in its modern one is the same place, not a location."""
+    from ask import AskLoop
+    from hdc_store import HdcWorld, Stores, disagreements
+    from hdc_world import write_world
+    from test_ask import FakeEmitter
+    from test_books import TimedStore, exact_vm
+    from test_search_learn import STORE, DictSource
+    import wikikg as wk
+    db = tmp_path / "hdc.sqlite"
+    labels = {"Q1": ("Rudolf Rassendyll", ""), "Q2": ("fencer", ""), "Q3": ("Berlin Alexanderplatz", ""), "Q4": ("Alfred Döblin", "")}
+    write_world(db, {("Q1", "occupation", "Q2"): "P106", ("Q3", "author", "Q4"): "P50"}, labels, {}, {"occupation": "P106", "author": "P50"})
+    wiki = [("RudolfRassendyll", "OCCUPATION", "Gamekeeper"), ("BerlinAlexanderplatz", "AUTHORED_BY", "AlfredDoblin")]
+    held, counts = disagreements(db, wiki)
+    assert counts == {"compared": 2, "agree": 0, "agree_once_folded": 1, "held": 1}
+    assert ("rudolf rassendyll", "occupation") in held and not any(s == "berlin alexanderplatz" for s, _r in held)
+    both = Stores(TimedStore(STORE), HdcWorld(db))
+    both.contested = held
+    loop = AskLoop(FakeEmitter({"What is the occupation of Rudolf Rassendyll?": ("Rudolf Rassendyll", ["occupation"])}),
+                   world=both, source=DictSource({}), lexicon=False, run_fn=exact_vm())
+    rec = loop.ask("What is the occupation of Rudolf Rassendyll?")
+    assert not rec["verified"] and rec["reason"] == "contested" and rec["refused"]["answer"] == "fencer"
+    clean, c = wk.hygiene([("Antium", "LOCATED_IN", "Anzio"), ("Antium", "LOCATED_IN", "Latium")], same_place={("Antium", "Anzio")})
+    assert clean == [("Antium", "SAME_PLACE_AS", "Anzio"), ("Antium", "LOCATED_IN", "Latium")] and c["same_place"] == 1
+    assert wk.facts_for("Antium", "SAME_PLACE_AS", "Anzio")[0] == "Anzio is the later name of Antium"

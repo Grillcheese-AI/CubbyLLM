@@ -206,6 +206,37 @@ class _Provenance(dict):
         return True
 
 
+def disagreements(db_path, triples=None) -> tuple[set, dict]:
+    """(subject, relation) pairs on which the wiki world and the hdc world give no common value (order 0015, addendum
+    3): held -- never said -- until a rule per kind settles them. Values are compared folded (case, spacing and
+    diacritics off: "Mc Cullers" and "McCullers" are one). Both relation names go in: the wiki world's noun and hdc's
+    label. -> (the pairs, counts)."""
+    import sqlite3
+    import wikikg as wk
+    from hdc_world import WIKI
+    from world_hygiene import fold
+    db = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    out, c = set(), {"compared": 0, "agree": 0, "agree_once_folded": 0, "held": 0}
+    for s, r, o in triples if triples is not None else wk.load_triples():
+        rel = WIKI.get(r)
+        if not rel:
+            continue
+        subj = wk.decamel(s)
+        vals = [v for (v,) in db.execute("SELECT obj FROM facts WHERE skey = ? AND rel = ?", (normalize(subj), rel))]
+        if not vals:
+            continue
+        c["compared"] += 1
+        o = wk.decamel(o)
+        if normalize(o) in {normalize(v) for v in vals}:
+            c["agree"] += 1
+        elif fold(o) in {fold(v) for v in vals}:
+            c["agree_once_folded"] += 1
+        else:
+            c["held"] += 1
+            out |= {(normalize(subj), normalize(rel)), (normalize(subj), normalize(wk.relation_entry(r)[0]))}
+    return out, c
+
+
 class Stores:
     """The wiki world (written to) before the read-only worlds behind it."""
 
