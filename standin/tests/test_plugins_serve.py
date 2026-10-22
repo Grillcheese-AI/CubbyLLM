@@ -164,3 +164,16 @@ def test_plugin_facts_go_through_the_gate(tmp_path, monkeypatch):
     last = b2.plugins.last_admitted
     assert last["fiction"] and any("Lady Capulet" in f for f in last["facts"]) and last["gate"] == []
     assert len(b2.ask_loop.world) == 1
+
+
+def test_approve_needs_the_review_it_shows(server):
+    base, b = server(True)
+    d = b.plugins.index["units"].folder
+    (d / "tool.py").write_text((d / "tool.py").read_text(encoding="utf-8") + "\n# edited\n", encoding="utf-8")
+    assert json.loads(call(base, "/board/plugins/review?name=units")[1])["review"] is None      # public: nothing
+    rv = json.loads(call(base, "/board/plugins/review?name=units", audit=True)[1])["review"]
+    assert any(f["status"] == "changed" and "+# edited" in f["diff"] for f in rv["files"])
+    assert call(base, "/board/plugins/units/approve", audit=True, data={})[0] == 409            # no review shown
+    assert call(base, "/board/plugins/units/approve", audit=True, data={"digest": "0" * 64})[0] == 409
+    code, body = call(base, "/board/plugins/units/approve", audit=True, data={"digest": rv["digest"]})
+    assert code == 200, body

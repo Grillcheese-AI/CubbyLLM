@@ -2,7 +2,7 @@
 // plugin's PLUGIN.md, and -- in the audit view only -- Approve / Pin / Disable. Panels of loaded plugins as cards.
 import { get, post, el, fmt, isPublic } from './api.js';
 
-let sel = null, last = null;
+let sel = null, last = null, review = null;
 const STATUS_CLASS = (s) => s.startsWith('blocked') || s.startsWith('refused') ? 'tag int' : (s === 'needs approval' ? 'tag int' : 'tag');
 
 function perms(p) {
@@ -11,8 +11,17 @@ function perms(p) {
     p.permissions && p.permissions.gpu ? 'uses the GPU' : 'no GPU'].join(' · ');
 }
 
+async function showReview(name, root) {
+  const r = await get('/board/plugins/review?name=' + encodeURIComponent(name));
+  review = r.body && r.body.review ? r.body.review : null;
+  sel = name;
+  last = review ? null : `${name}: no review (audit view only)`;
+  await show(root);
+}
+
 async function act(name, what, root) {
-  const r = await post(`/board/plugins/${encodeURIComponent(name)}/${what}`, {});
+  const r = await post(`/board/plugins/${encodeURIComponent(name)}/${what}`, what === 'approve' ? { digest: review && review.digest } : {});
+  if (what === 'approve') review = null;
   last = r.ok ? `${name}: ${r.body.status}` : `${name}: ${r.body.error || r.status}${r.body.why ? ' -- ' + r.body.why[0] : ''}`;
   await show(root);
 }
@@ -26,7 +35,7 @@ function card(p, root) {
     el('div', {}, p.description),
     el('div', { class: 'small' }, perms(p)),
     audit ? el('div', { class: 'tags' },
-      ['needs approval'].includes(p.status) || p.status.startsWith('blocked') ? el('button', { class: 'send', style: 'width:auto;padding:0 14px', onclick: () => act(p.name, 'approve', root) }, 'Approve') : null,
+      ['needs approval'].includes(p.status) || p.status.startsWith('blocked') ? el('button', { class: 'send', style: 'width:auto;padding:0 14px', onclick: () => showReview(p.name, root) }, 'Review to approve') : null,
       el('button', { class: 'pill glass', onclick: () => act(p.name, p.status === 'pinned' ? 'unpin' : 'pin', root) }, p.status === 'pinned' ? 'Unpin' : 'Pin'),
       el('button', { class: 'pill glass', onclick: () => act(p.name, p.status === 'disabled' ? 'enable' : 'disable', root) }, p.status === 'disabled' ? 'Enable' : 'Disable'))
       : null);
@@ -62,8 +71,17 @@ export async function show(root) {
       el('section', { class: 'panel glass', 'aria-label': 'Try the router' }, el('div', { class: 'ptitle' }, 'Which plugin would wake?'),
         el('form', { class: 'ask', onsubmit: (e) => { e.preventDefault(); tryRouter(q.value, scores); } }, el('label', { for: 'route-q', class: 'sr' }, 'A question'), q,
           el('button', { class: 'send', type: 'submit', 'aria-label': 'Try' }, '→')), scores),
-      el('section', { class: 'panel glass', 'aria-label': 'Selected plugin' }, el('div', { class: 'ptitle' }, sel ? `${sel} · PLUGIN.md` : 'PLUGIN.md'),
-        el('pre', { class: 'audit mono' }, doc || 'Pick a plugin to read its PLUGIN.md.'))),
+      review && review.name === sel
+        ? el('section', { class: 'panel glass', 'aria-label': 'Review before approving' },
+          el('div', { class: 'ptitle' }, `${sel} · review before approving`),
+          el('div', { class: 'small' }, `permissions: ${JSON.stringify(review.permissions)}`),
+          review.check.length ? el('div', { class: 'small' }, 'fails review: ' + review.check.join('; ')) : null,
+          el('pre', { class: 'audit mono' }, review.files.map((f) => `--- ${f.status} ${f.file}\n` +
+            (f.status === 'new' || f.status === 'changed' ? (f.diff || f.text || `(binary, ${f.bytes} bytes)`) : '')).join('\n')),
+          el('button', { class: 'send', style: 'width:auto;padding:0 14px', disabled: review.check.length > 0,
+            onclick: () => act(sel, 'approve', root) }, 'Approve these files'))
+        : el('section', { class: 'panel glass', 'aria-label': 'Selected plugin' }, el('div', { class: 'ptitle' }, sel ? `${sel} · PLUGIN.md` : 'PLUGIN.md'),
+          el('pre', { class: 'audit mono' }, doc || 'Pick a plugin to read its PLUGIN.md.'))),
     Object.entries(b.panels || {}).map(([n, pn]) => el('article', { class: 'card glass', 'aria-label': pn.title },
       el('div', { class: 'ct' }, pn.title), el('div', { class: 'cs' }, pn.subtitle || n),
       pn.data ? el('div', { class: 'big' }, fmt(pn.data[pn.big]), el('span', { class: 'unit' }, pn.unit || '')) : el('div', { class: 'cap' }, pn.error || 'no data yet'),

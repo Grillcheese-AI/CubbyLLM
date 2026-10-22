@@ -195,3 +195,60 @@ def test_an_internal_plugin_is_absent_from_the_public_description(tmp_path):
     loader = Loader(discover([tmp_path]), data_root=tmp_path / "data")
     assert [p["name"] for p in loader.describe("user")] == ["units"]
     assert {p["name"] for p in loader.describe("audit")} == {"units", "secret-feed"}
+
+
+ESCAPES = {
+    "eval": "eval(\"__import__('socket')\")\n", "exec": "exec('import socket')\n",
+    "getattr_os": "import os\ngetattr(os, 'sys' + 'tem')('echo hi')\n",
+    "builtins_import": "import builtins\nbuiltins.__import__('socket')\n",
+    "posix_spawn": "import os\nos.posix_spawn('/bin/sh', ['sh'], {})\n", "spawnlp": "import os\nos.spawnlp(os.P_WAIT, 'sh', 'sh')\n",
+    "execlpe": "import os\nos.execlpe('sh', 'sh', {})\n", "sys_modules": "import sys\nsys.modules['socket']\n",
+    "write_outside": "open('C:/Windows/x.txt', 'w').write('x')\n", "shutil_rmtree": "import shutil\nshutil.rmtree('C:/tmp/x')\n",
+    "from_os_system": "from os import system\nsystem('dir')\n", "importlib": "import importlib\nimportlib.import_module('socket')\n",
+    "path_write": "from pathlib import Path\nPath('x').write_text('x')\n", "os_remove": "import os\nos.remove('x')\n",
+    "open_mode_var": "m = 'w'\nopen('x', m)\n", "dunder_builtins": "__builtins__['open']\n"}
+ALLOWED = {"read": "data = open('notes.txt').read()\n", "literal_getattr": "import math\ngetattr(math, 'pi')\n",
+           "os_path": "import os\nos.path.join('a', 'b')\n", "ctx": "class T:\n    def __init__(self, ctx):\n        ctx.save('a.txt', b'x')\n"}
+
+
+@pytest.mark.parametrize("case", sorted(ESCAPES))
+def test_the_review_catches_each_escape(tmp_path, case):
+    d = plugin(tmp_path, "probe", files={"tool.py": ESCAPES[case]})
+    assert guard.check(discover([d.parent])["probe"]), case
+
+
+@pytest.mark.parametrize("case", sorted(ALLOWED))
+def test_the_review_lets_ordinary_code_through(tmp_path, case):
+    d = plugin(tmp_path, "probe", files={"tool.py": ALLOWED[case]})
+    assert guard.check(discover([d.parent])["probe"]) == [], case
+
+
+def test_ctx_save_stays_in_the_plugins_folder(tmp_path):
+    d = plugin(tmp_path, "saver", kinds="source")
+    ctx = guard.Ctx(discover([d.parent])["saver"], tmp_path / "data")
+    assert ctx.save("cap/a.xml", b"x").read_bytes() == b"x" and ctx.load("cap/a.xml") == b"x"
+    with pytest.raises(guard.Refused):
+        ctx.save("../../escape.txt", b"x")
+
+
+def test_approve_shows_the_code_and_refuses_a_stale_review(tmp_path):
+    """Approval is the control: the review shows a new plugin's files and, after a change, the diff since the last
+    approval; an approval carrying the digest of an older review is refused."""
+    d = units_dir(tmp_path)
+    p = discover([tmp_path])["units"]
+    first = guard.review(p)
+    assert {f["status"] for f in first["files"]} == {"new"}
+    assert any("class" in (f.get("text") or "") for f in first["files"] if f["file"] == "tool.py")
+    guard.approve(p, expect=first["digest"])
+    assert {f["status"] for f in guard.review(p)["files"]} == {"same"}
+    (d / "tool.py").write_text((d / "tool.py").read_text(encoding="utf-8") + "\n# a new line\n", encoding="utf-8")
+    shown = guard.review(p)
+    row = next(f for f in shown["files"] if f["file"] == "tool.py")
+    assert row["status"] == "changed" and "+# a new line" in row["diff"]
+    (d / "tool.py").write_text((d / "tool.py").read_text(encoding="utf-8") + "# and another, after the review\n",
+                               encoding="utf-8")
+    with pytest.raises(guard.Refused):
+        guard.approve(p, expect=shown["digest"])
+    assert guard.status(p) == "blocked: tool.py changed"
+    guard.approve(p, expect=guard.review(p)["digest"])
+    assert guard.status(p) == "ok"

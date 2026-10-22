@@ -283,7 +283,12 @@ def make_handler(brain):
         def do_POST(self):
             if self.path.startswith("/board/plugins/") and getattr(brain, "board", False):   # order 0028: approve / pin
                 from plugins_serve import board_post
-                self._send(*board_post(brain, self.path.split("?", 1)[0], self._who()))
+                n = int(self.headers.get("Content-Length", 0) or 0)
+                try:
+                    body = json.loads(self.rfile.read(n) or b"{}") if n else {}
+                except ValueError:
+                    body = {}
+                self._send(*board_post(brain, self.path.split("?", 1)[0], self._who(), body))
                 return
             if self.path == "/ask/feedback":             # the asker on one of the loop's records (AskLoop.feedback)
                 loop = getattr(brain, "ask_loop", None)

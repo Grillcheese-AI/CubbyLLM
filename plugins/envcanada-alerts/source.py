@@ -28,8 +28,6 @@ def fold(s: str) -> str:
 class Alerts:
     def __init__(self, ctx) -> None:
         self.ctx, self.alerts, self.read_at = ctx, [], 0.0
-        self.cache = ctx.data_dir / "cap"
-        self.cache.mkdir(parents=True, exist_ok=True)
 
     def covers(self, question: str) -> float:
         return 0.8 if WORDS.search(question or "") else 0.0
@@ -61,14 +59,12 @@ class Alerts:
         self.ctx.log(f"plugin:envcanada-alerts: {len(self.alerts)} alerts in effect")
 
     def _read(self, url: str, name: str) -> list[dict]:
-        keep = self.cache / name
-        if keep.exists():
-            body = keep.read_bytes()
-        else:
+        body = self.ctx.load(f"cap/{name}")
+        if body is None:
             code, body = self.ctx.fetch(url)
             if code != 200:
                 return []
-            keep.write_bytes(body)
+            self.ctx.save(f"cap/{name}", body)
         try:
             root = ET.fromstring(body)
         except ET.ParseError:

@@ -2,7 +2,8 @@
 
     python -m standin.plugins list    [--dirs plugins]        every plugin, its kinds and its status
     python -m standin.plugins check   <name> [--dirs ...]     the code review (imports, calls) and the pin
-    python -m standin.plugins approve <name> [--dirs ...]     Nick's approval: every file's SHA-256 and the permissions
+    python -m standin.plugins approve <name> [--yes]          the review (every new or changed file, a diff since the last
+                                                              approval), then, with --yes, Nick's approval: the files pinned
     python -m standin.plugins new     <name> --kinds tool,... a folder to start from (PLUGIN.md and the entry stubs)
 
 ``--dirs`` defaults to ``CUBBY_PLUGINS`` or the repo's ``plugins/``. Approval writes the local, git-ignored lock
@@ -42,6 +43,7 @@ def main(argv=None) -> int:
     ap.add_argument("name", nargs="?")
     ap.add_argument("--dirs", default=os.environ.get("CUBBY_PLUGINS") or str(HERE.parent / "plugins"))
     ap.add_argument("--kinds", default="tool")
+    ap.add_argument("--yes", action="store_true", help="approve: approve what the review just printed")
     a = ap.parse_args(argv)
     if a.cmd == "new":
         kinds = [k for k in a.kinds.split(",") if k]
@@ -81,7 +83,16 @@ def main(argv=None) -> int:
     if bad:
         print(f"{p.id}: not approved -- its code fails review")
         return 1
-    rec = guard.approve(p)
+    rv = guard.review(p)
+    print(f"{p.id}: permissions {json.dumps(p.permissions)}")
+    for f in rv["files"]:
+        print(f"--- {f['status']:8s} {f['file']}")
+        if f["status"] in ("new", "changed"):
+            print(f.get("diff") or f.get("text") or f"(binary, {f.get('bytes')} bytes, sha256 {f['sha256'][:16]})")
+    if not a.yes:
+        print(f"{p.id}: read the above, then run the same line with --yes to approve it")
+        return 0
+    rec = guard.approve(p, expect=rv["digest"])
     print(f"{p.id} approved: {len(rec['files'])} files pinned, permissions {json.dumps(p.permissions)}")
     return 0
 

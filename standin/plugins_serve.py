@@ -128,6 +128,12 @@ def board_get(brain, route: str, query: str, who: str) -> dict | None:
             except Exception as e:                       # noqa: BLE001 -- a panel that fails says so
                 panels[name] = {**panel, "data": None, "error": f"{type(e).__name__}"}
         return {"built": True, "tau": loader.router.tau, "plugins": loader.describe(who), "panels": panels}
+    if route == "/board/plugins/review":                 # what Approve shows first: the audit audience only
+        name = (urllib.parse.parse_qs(query).get("name") or [""])[0]
+        if who != "audit" or loader is None or name not in loader.index:
+            return {"name": name, "review": None}
+        import plugins_guard as guard
+        return {"name": name, "review": guard.review(loader.index[name])}
     if route == "/board/plugins/doc":
         name = (urllib.parse.parse_qs(query).get("name") or [""])[0]
         if loader is None or name not in loader.index or (who != "audit" and loader.index[name].audience == "internal"):
@@ -144,8 +150,9 @@ def board_get(brain, route: str, query: str, who: str) -> dict | None:
     return None
 
 
-def board_post(brain, route: str, who: str) -> tuple[int, dict]:
-    """``/board/plugins/<name>/<approve|pin|unpin|disable|enable>``: the audit audience only."""
+def board_post(brain, route: str, who: str, body: dict | None = None) -> tuple[int, dict]:
+    """``/board/plugins/<name>/<approve|pin|unpin|disable|enable>``: the audit audience only. Approve needs the digest of
+    the review the page showed (``/board/plugins/review``): what is approved is what was read."""
     if who != "audit":
         return 403, {"error": "audit only"}
     loader = getattr(brain, "plugins", None)
@@ -160,7 +167,13 @@ def board_post(brain, route: str, who: str) -> tuple[int, dict]:
         bad = guard.check(loader.index[name])
         if bad:
             return 409, {"error": "its code fails review", "why": bad}
-        guard.approve(loader.index[name])
+        digest = (body or {}).get("digest")
+        if not digest:
+            return 409, {"error": "show the review first (GET /board/plugins/review?name=...)"}
+        try:
+            guard.approve(loader.index[name], expect=digest)
+        except guard.Refused as e:
+            return 409, {"error": str(e)}
         loader.refused.pop(name, None)
     elif act in ("pin", "unpin"):
         loader.pin(name, act == "pin")

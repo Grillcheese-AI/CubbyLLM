@@ -9,9 +9,15 @@ for the network, processes or a shell on its own:
   elsewhere: ``extra_files``) and the permissions approved, in a local, git-ignored lock file (``CUBBY_PLUGINS_LOCK``,
   default ``standin/data/out/plugins.lock.json``). ``status(plugin)`` is ``ok``, ``needs approval`` (never approved) or
   ``blocked: <file> changed`` / ``... added`` / ``... removed`` / ``permissions changed``. Nothing loads unless ``ok``.
-- ``check(plugin)`` reads every ``.py`` file's syntax tree: an import of ``socket``, ``urllib``, ``http``, ``requests``,
-  ``httpx``, ``subprocess``, ``ctypes``, ``multiprocessing`` or ``asyncio.subprocess``, or a call to ``os.system`` /
-  ``os.popen`` / ``os.exec*`` / ``os.spawn*`` / ``__import__`` / ``importlib``, fails it, with the line.
+- ``check(plugin)`` reads every ``.py`` file's syntax tree and fails it, with the line, on: an import of a network,
+  process, shell or loader module (``socket``, ``urllib``, ``http``, ``requests``, ``subprocess``, ``ctypes``,
+  ``multiprocessing``, ``importlib``, ``builtins``, ...); ``eval`` / ``exec`` / ``compile`` / ``__import__``; ``getattr`` /
+  ``setattr`` / ``delattr`` with a name that is not a literal; ``sys.modules`` or ``__builtins__``; every ``os.exec*``,
+  ``os.spawn*``, ``os.posix_spawn*``, ``os.system`` / ``os.popen`` / ``os.fork`` / ``os.kill``; deleting or moving
+  (``shutil.rmtree`` / ``move``, ``os.remove`` / ``unlink`` / ``rmdir`` / ``rename`` / ``replace``, ``.unlink()`` /
+  ``.rmdir()`` / ``.rename()``); and writing: ``open`` with a write mode (or a mode that is not a literal), ``.write_text``
+  / ``.write_bytes``. Code writes through ``ctx.save`` (its own folder) instead. (Cowork's review probe, 2026-10-22: the
+  first scan caught 2 of 12 simple escapes.)
 - ``Ctx``: what the code gets instead. ``ctx.fetch(url)`` reaches only the hosts the plugin declared, through the news
   archive's polite fetcher (robots read and obeyed, ``Crawl-delay`` honoured, always ``CubbyLLM/0.1``); ``ctx.data_dir``
   is its only writable folder; ``ctx.log`` writes to the server's log.
@@ -32,9 +38,15 @@ __wiring__ = "WIRED"
 
 ROOT = Path(__file__).resolve().parents[1]
 FORBIDDEN_IMPORTS = {"socket", "urllib", "http", "requests", "httpx", "subprocess", "ctypes", "multiprocessing",
-                     "asyncio.subprocess", "urllib3", "aiohttp", "ftplib", "smtplib", "telnetlib", "pty"}
-FORBIDDEN_CALLS = {"os.system", "os.popen", "os.execv", "os.execve", "os.execl", "os.execlp", "os.execvp",
-                   "os.spawnl", "os.spawnv", "os.spawnve", "os.startfile", "__import__", "importlib.import_module"}
+                     "asyncio.subprocess", "urllib3", "aiohttp", "ftplib", "smtplib", "telnetlib", "pty", "importlib",
+                     "builtins", "pickle", "marshal", "runpy", "code", "codeop", "webbrowser", "winreg", "signal"}
+FORBIDDEN_CALLS = {"os.system", "os.popen", "os.startfile", "os.fork", "os.forkpty", "os.kill", "os.killpg",
+                   "__import__", "importlib.import_module", "eval", "exec", "compile", "breakpoint",
+                   "shutil.rmtree", "shutil.move", "os.remove", "os.unlink", "os.rmdir", "os.removedirs", "os.rename",
+                   "os.renames", "os.replace", "os.truncate", "os.chmod", "os.chown"}
+FORBIDDEN_PREFIXES = ("os.exec", "os.spawn", "os.posix_spawn")
+FORBIDDEN_METHODS = {"unlink", "rmdir", "rename", "write_text", "write_bytes", "symlink_to", "hardlink_to", "chmod"}
+DYNAMIC_ATTR = {"getattr", "setattr", "delattr"}
 
 
 def lock_path() -> Path:
@@ -94,7 +106,55 @@ def _sha(p: Path) -> str:
     return h.hexdigest()
 
 
-def approve(plugin, by: str = "nick") -> dict:
+def _approved_dir(plugin) -> Path:
+    return lock_path().parent / "plugins_approved" / plugin.name
+
+
+def review(plugin, limit: int = 20_000) -> dict:
+    """What Approve shows before it acts: each file new, changed, same or removed since the last approval -- a new or
+    changed text file with its text (a changed one as a diff against the copy kept at approval), a binary one by size
+    and hash -- and ``digest``, the hash of exactly this state, which ``approve(expect=...)`` checks."""
+    import difflib
+    then = (_read_lock().get(plugin.name) or {}).get("files") or {}
+    now, out = files(plugin), []
+    for f in sorted(set(now) | set(then)):
+        row = {"file": f, "sha256": now.get(f)}
+        if f not in now:
+            row["status"] = "removed"
+        elif f not in then:
+            row["status"] = "new"
+        else:
+            row["status"] = "changed" if now[f] != then[f] else "same"
+        path = plugin.folder / f if not f.startswith("ext:") else None
+        if row["status"] in ("new", "changed") and path is not None and path.suffix.lower() in TEXT:
+            text = path.read_text(encoding="utf-8", errors="replace").replace("\r\n", "\n")
+            old = _approved_dir(plugin) / f
+            if row["status"] == "changed" and old.is_file():
+                row["diff"] = "".join(difflib.unified_diff(old.read_text(encoding="utf-8").splitlines(True),
+                                                           text.splitlines(True), f"approved/{f}", f"now/{f}"))[:limit]
+            else:
+                row["text"] = text[:limit]
+        elif row["status"] in ("new", "changed"):
+            row["bytes"] = (path.stat().st_size if path is not None else None)
+        out.append(row)
+    digest = hashlib.sha256(json.dumps([now, plugin.permissions], sort_keys=True).encode()).hexdigest()
+    return {"name": plugin.name, "permissions": plugin.permissions, "files": out, "digest": digest,
+            "check": check(plugin)}
+
+
+def approve(plugin, by: str = "nick", expect: str | None = None) -> dict:
+    """Pin the plugin as it is now. ``expect``: the digest of the review that was shown -- refused if the files changed
+    since (what is approved is what was read)."""
+    import shutil as _shutil
+    if expect is not None and expect != review(plugin)["digest"]:
+        raise Refused(f"{plugin.id} changed since its review was shown: show it again before approving")
+    keep = _approved_dir(plugin)
+    _shutil.rmtree(keep, ignore_errors=True)
+    for p in plugin.folder.rglob("*"):
+        if p.is_file() and p.suffix.lower() in TEXT and "__pycache__" not in p.parts:
+            dst = keep / p.relative_to(plugin.folder)
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            dst.write_text(p.read_text(encoding="utf-8", errors="replace").replace("\r\n", "\n"), encoding="utf-8")
     lock = _read_lock()
     lock[plugin.name] = {"files": files(plugin), "permissions": plugin.permissions, "version": plugin.version,
                          "approved_by": by, "at": time.strftime("%Y-%m-%dT%H:%M:%S")}
@@ -152,13 +212,33 @@ def check(plugin) -> list[str]:
             elif isinstance(node, ast.ImportFrom) and node.module:
                 mods = [node.module] + [f"{node.module}.{a.name}" for a in node.names]
             for m in mods:
-                if any(m == f or m.startswith(f + ".") for f in FORBIDDEN_IMPORTS) or m in FORBIDDEN_CALLS:
-                    out.append(f"{rel}:{node.lineno}: imports {m} (use ctx.fetch / ctx.data_dir)")
+                if (any(m == f or m.startswith(f + ".") for f in FORBIDDEN_IMPORTS) or m in FORBIDDEN_CALLS
+                        or m.startswith(FORBIDDEN_PREFIXES)):
+                    out.append(f"{rel}:{node.lineno}: imports {m} (use ctx.fetch / ctx.save)")
+            if isinstance(node, ast.Attribute) and _dotted(node) == "sys.modules":
+                out.append(f"{rel}:{node.lineno}: reaches sys.modules")
+            if isinstance(node, ast.Name) and node.id == "__builtins__":
+                out.append(f"{rel}:{node.lineno}: reaches __builtins__")
             if isinstance(node, ast.Call):
-                name = _dotted(node.func)
-                if name in FORBIDDEN_CALLS:
-                    out.append(f"{rel}:{node.lineno}: calls {name}")
+                out += [f"{rel}:{node.lineno}: {why}" for why in _call(node)]
     return out
+
+
+def _call(node: ast.Call) -> list[str]:
+    name = _dotted(node.func)
+    if name in FORBIDDEN_CALLS or name.startswith(FORBIDDEN_PREFIXES):
+        return [f"calls {name}"]
+    if name in DYNAMIC_ATTR and (len(node.args) < 2 or not isinstance(node.args[1], ast.Constant)):
+        return [f"{name} with a name that is not a literal"]
+    if isinstance(node.func, ast.Attribute) and node.func.attr in FORBIDDEN_METHODS:
+        return [f"calls .{node.func.attr}() (write through ctx.save)"]
+    if name == "open" or (isinstance(node.func, ast.Attribute) and node.func.attr == "open"):
+        mode = node.args[1] if len(node.args) > 1 else next((k.value for k in node.keywords if k.arg == "mode"), None)
+        if mode is not None and not (isinstance(mode, ast.Constant) and isinstance(mode.value, str)):
+            return ["open with a mode that is not a literal"]
+        if mode is not None and set(mode.value) & set("wax+"):
+            return [f"open for writing ({mode.value!r}: write through ctx.save)"]
+    return []
 
 
 class Refused(PermissionError):
@@ -174,6 +254,23 @@ class Ctx:
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self._archive = None
         self._fetch = fetch                                    # tests hand in a fake; default: the news fetcher
+
+    def _inside(self, name: str) -> Path:
+        p = (self.data_dir / name).resolve()
+        if self.data_dir.resolve() not in p.parents:
+            raise Refused(f"{self.plugin.id} may write only in its own folder, not {name!r}")
+        return p
+
+    def save(self, name: str, data: bytes) -> Path:
+        """Write ``data`` to ``name`` inside the plugin's folder (the only place it writes)."""
+        p = self._inside(name)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_bytes(data)
+        return p
+
+    def load(self, name: str) -> bytes | None:
+        p = self._inside(name)
+        return p.read_bytes() if p.is_file() else None
 
     def fetch(self, url: str) -> tuple[int, bytes]:
         host = (urllib.parse.urlsplit(url).hostname or "").lower()
