@@ -552,7 +552,8 @@ def test_fact_store_indexes_at_add_and_the_walk_looks_up_first(monkeypatch):
         captured.update(kw)
         return CoTResult(answer=None, verified=False, reason="retrieval_exhausted")
 
-    monkeypatch.setattr(sv, "pipeline_answer", fake_answer)
+    from cubbyllm import brain_reasoning                        # where ReasoningCortex calls it (split out, order 0031)
+    monkeypatch.setattr(brain_reasoning, "pipeline_answer", fake_answer)
     sv.ReasoningCortex(ChainEmitter()).walk_facts("What is the capital of france?", store)
     assert captured["lookup"] == store.lookup
     sv.ReasoningCortex(ChainEmitter()).walk_facts("What is the capital of france?", overlap_retriever)
