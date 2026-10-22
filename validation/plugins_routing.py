@@ -19,7 +19,10 @@ training negatives, so they are scored leave one out too). ``--encoder minilm``:
 
 ``--heldout FILE``: Cowork's held-out set (``## <plugin>``, a numbered "should wake" list, then a numbered list of near
 misses), scored ONCE at the chosen ``tau``, after the tuning above and never fed back into it. The log keeps the
-counts and which other plugin woke, not the phrasings (the set stays held out).
+counts and which other plugin woke, not the phrasings (the set stays held out). ``--second-check``: a wake counts only
+when the woken plugin then claims the question (``cubbyllm.plugins.check.claims``: a source's or world's own ``covers``,
+the thalamus for an adapter), as the server's loader counts it (order 0028, review 2); the router's count is kept too.
+The plugins are approved for it in a temporary lock, never the real one, and nothing is loaded.
 
     python validation/plugins_routing.py [--dirs plugins] [--encoder overlap|fastword|potion] [--heldout FILE]
 -> validation/logs/plugins_routing[_<encoder>]_<date>.json
@@ -105,19 +108,47 @@ def read_heldout(path: str) -> dict:
     return out
 
 
-def heldout(index, sets: dict, tau: float, kind: str, enc=None) -> dict:
+def heldout(index, sets: dict, tau: float, kind: str, enc=None, check=None) -> dict:
     r, out = router(index, kind, enc), {}
     r.tau = tau
     for name, s in sets.items():
         row = {"wake": 0, "wake_of": len(s["wake"]), "near": 0, "near_of": len(s["near"]), "others_woken": {}}
+        if check is not None:
+            row.update(wake_checked=0, near_checked=0, declined={})
         for q, key in [(q, "wake") for q in s["wake"]] + [(q, "near") for q in s["near"]]:
             woke = [n for n, _s in r.wake(q)]
             row[key] += name in woke
+            if check is not None and name in woke:
+                ok, why = check(name, q)
+                if ok:
+                    row[key + "_checked"] += 1
+                else:
+                    why = f"{key}: " + why.split(" (")[0]          # the reason's kind, no question text
+                    row["declined"][why] = row["declined"].get(why, 0) + 1
             for n in woke:
                 if n != name:
                     row["others_woken"][n] = row["others_woken"].get(n, 0) + 1
         out[name] = row
     return out
+
+
+def second_check(idx):
+    """``(plugin, question) -> (claims it, why)`` as the server's loader asks it: every plugin approved in a temporary
+    lock (never the real one), the brain's thalamus (``needs_facts``) for an adapter; builds, loads nothing."""
+    import tempfile
+    tmp = tempfile.mkdtemp()
+    os.environ["CUBBY_PLUGINS_LOCK"] = os.path.join(tmp, "lock.json")
+    from cubbyllm.plugins import guard
+    from cubbyllm.plugins.check import claims
+    from cubbyllm.plugins.load import Loader
+    for n in idx.names():
+        guard.approve(idx[n], by="plugins_routing --second-check (a temporary lock)")
+    sys.path.insert(0, os.path.join(os.path.dirname(HERE), "standin", "tests"))
+    import serve as sv
+    from test_serve import STORE, ChainEmitter, overlap_retriever
+    brain = sv.CubbyServe(ChainEmitter(), overlap_retriever, STORE, route_tau=0.0)
+    loader = Loader(idx, data_root=tmp, log=lambda *_a, **_k: None, router="nearest", thalamus=brain.needs_facts)
+    return lambda name, q: claims(loader, name, q)[:2]
 
 
 def encoder(kind: str):
@@ -151,6 +182,7 @@ def main() -> None:
     ap.add_argument("--heldout", help="the held-out set, scored once at the chosen tau (counts only in the log)")
     ap.add_argument("--tag", default="", help="a suffix for the log's name")
     ap.add_argument("--tau", type=float, help="score the held-out set at this tau instead of the chosen one (the server as committed)")
+    ap.add_argument("--second-check", action="store_true", help="count a held-out wake only when the plugin claims the question")
     a = ap.parse_args()
     enc = encoder(a.encoder)
     from plugins_index import discover
@@ -176,7 +208,8 @@ def main() -> None:
     rep["chosen"] = rep["grid"][str(best[0])] if best else None
     if a.heldout and (best or a.tau is not None):
         sets, t_h = read_heldout(a.heldout), a.tau if a.tau is not None else best[0]
-        rep["heldout"] = {"tau": t_h, "plugins": heldout(idx, sets, t_h, a.router, enc)}
+        rep["heldout"] = {"tau": t_h, "second_check": a.second_check,
+                          "plugins": heldout(idx, sets, t_h, a.router, enc, second_check(idx) if a.second_check else None)}
     tag = ("" if a.encoder == "overlap" else "_" + a.encoder) + ("" if a.router == "nearest" else "_" + a.router)
     tag += a.tag and "_" + a.tag
     out = os.path.join(HERE, "logs", f"plugins_routing{tag}_{a.date}.json")
@@ -195,7 +228,8 @@ def main() -> None:
         print("no tau keeps every plugin's not-lines at or under 10% leave one out")
     for n, r in (rep.get("heldout") or {}).get("plugins", {}).items():
         print(f"  held out {n:18s} wakes {r['wake']}/{r['wake_of']}  near misses woken {r['near']}/{r['near_of']}  "
-              f"others {r['others_woken']}")
+              f"others {r['others_woken']}" + (f"  | after the check: wakes {r['wake_checked']}/{r['wake_of']}, near "
+                                               f"{r['near_checked']}/{r['near_of']}, declined {r['declined']}" if "declined" in r else ""))
     print("->", out)
 
 

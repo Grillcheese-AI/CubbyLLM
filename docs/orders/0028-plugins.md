@@ -1,5 +1,5 @@
 # 0028 — Plugins: one folder format and a loader for adapters, worlds, sources and tools, and board panels, loaded on demand like skills
-status: in progress (review 2: router on with a second check; a fresh held-out set)
+status: review (review 2 built; the fresh held-out set run once, on the moved code: alerts misses the near-miss line)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick (asked for it; chose all four kinds, on-demand loading, code with permissions) · hypothesis: none · **after 0027 P1**
 
 ## Why
@@ -365,3 +365,27 @@ set is now spent (it has been scored twice) and retired.
 - **Not run: the fresh held-out set** (`docs/0028_routing_heldout_v2.local.md`, unopened). Nick's note of 2026-10-22
   pauses `standin/` work until order 0031 moves the plugins slice. This change was in progress and is committed. The
   one held-out run comes after the move, on the moved code.
+
+### The fresh held-out set, run once (2026-10-22, after order 0031 moved the plugins)
+- **How:** `validation/plugins_routing.py --encoder minilm --router logistic --tau 0.675 --heldout
+  docs/0028_routing_heldout_v2.local.md --second-check`. That is the server as committed (MiniLM, logistic heads,
+  tau 0.675), on the moved code (`cubbyllm/plugins/`, commits `5e30232`, `7001926`).
+  - The new `--second-check` counts a wake only when the woken plugin then claims the question
+    (`cubbyllm.plugins.check.claims`: alerts' own `covers`, the thalamus for `talk`), as the server's loader counts it.
+  - For the check the plugins are approved in a temporary lock, never the real one, and nothing is loaded or fetched.
+  - The set was read once. The log keeps counts only, not the phrasings. I have not read the set.
+- **Measured** ([log](../../validation/logs/plugins_routing_minilm_logistic_heldout_v2_2026-10-22.json)). The line: at least 8 of 10 woken, at most 1 near miss in 10, both counted after the check.
+
+  | plugin | woken by the router | woken after the check | near misses, router | near misses, after the check | line |
+  |---|---|---|---|---|---|
+  | `talk` | 10/10 | **9/10** (1 declined: "the turn needs facts") | 1/10 | **1/10** | met |
+  | `envcanada-alerts` | 10/10 | **10/10** | 3/10 | **3/10** | **missed**: 3 near misses, line 1 |
+
+  No other plugin woke on either set.
+- **What it means:** the alerts plugin's own `covers` claims all 3 near misses the router let through, so the second
+  check does not stop them. In the server those 3 would fetch from Environment Canada. I have not looked at which 3
+  (the set stays held out), and nothing was tuned.
+- **Questions:**
+  1. Alerts misses the near-miss line on a set it was never tuned on. Should the fix be a stricter `covers` for alerts
+     (what it claims: a warning or an alert now, for a place), a per-plugin tau, or both? Either needs a new held-out
+     set to measure, since this one is now spent.
