@@ -30,6 +30,12 @@ training signal it never had (``facts_far``).
 Documents are padded with </s> to ``--doc`` tokens and listed in ``_align.json``; the held-out
 tail, ``_holdout.json`` and ``_sizes.json`` follow ``make_spatial_shard.py``.
 
+``--absent q`` (order 0022 C; 0 = off, the shard byte for byte as before): a question is, with probability ``q``, about
+a fact the document does not hold -- one from the far end of the shuffled facts, which no document writes -- asked in
+the same shape (its address is empty: the read finds nothing). ``<name>.absent.json`` lists, per document, which of its
+questions are absent. ``--skip-facts n`` starts the documents after the first ``n`` shuffled facts (a probe shard whose
+facts no earlier shard of the same seed used).
+
     python validation/make_fact_shard.py --cache <token_cache> [--docs 20000] [--doc 512]
         [--mode places|text] [--names v1|v2] [--tokenizer <bbpe128k tokenizer.json>] [--seed 0]
 """
@@ -74,6 +80,13 @@ def address(subject: str, rel_index: int, piece: int = 0) -> tuple:
     return (c[0] + d[0], c[1] + d[1], c[2] + d[2] + STEP * piece)
 
 
+def hr_answers(tk, ids):
+    """The answer spans the probe finds in a rendered document (``exp_hypertoken_recall.answers``)."""
+    sys.path.insert(0, HERE)
+    from exp_hypertoken_recall import answers
+    return answers(tk, ids)
+
+
 def load(rng: random.Random):
     import pyarrow.parquet as pq
     t = pq.read_table(WIKI, columns=["subject", "relation", "object"])
@@ -83,10 +96,21 @@ def load(rng: random.Random):
     return tri, rels
 
 
-def document(tri: list, rels: dict, rng: random.Random, n_ask: int, v2: bool = False) -> list:
-    """``(question, answer, address)`` for ``n_ask`` of the document's facts, plus the facts."""
+def document(tri: list, rels: dict, rng: random.Random, n_ask: int, v2: bool = False, absent: float = 0.0,
+             reserve=None) -> list:
+    """``(question, answer, address)`` for ``n_ask`` of the document's facts, plus the facts. With ``absent``, a
+    question is replaced, at that rate, by one about ``reserve``'s next fact (one the document does not hold); the
+    fourth element then marks it."""
     asked = rng.sample(tri, min(n_ask, len(tri)))
-    return [(question(s, r, v2), words(o, v2=v2), address(s, rels[r])) for s, r, o in asked]
+    if absent <= 0:
+        return [(question(s, r, v2), words(o, v2=v2), address(s, rels[r])) for s, r, o in asked]
+    out = []
+    for s, r, o in asked:
+        gone = rng.random() < absent
+        if gone:
+            s, r, o = next(reserve)
+        out.append((question(s, r, v2), words(o, v2=v2), address(s, rels[r]), gone))
+    return out
 
 
 class Filler:
@@ -144,7 +168,7 @@ def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int,
     head = len(ids)
     if head + 1 > doc:
         raise ValueError(f"{len(facts)} facts need {head + 1} tokens, --doc is {doc}")
-    for q, a, at in qa:
+    for q, a, at, *_absent in qa:
         start = len(ids)
         put(f"Question: {q}")
         if mode == "places":
@@ -194,6 +218,9 @@ def main() -> None:
     ap.add_argument("--name", default="", help="shard name (default: facts | facts_text, _far with --far)")
     ap.add_argument("--holdout-frac", type=float, default=0.02)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--absent", type=float, default=0.0, help="order 0022: the rate of questions about a fact not held")
+    ap.add_argument("--skip-facts", type=int, default=0, help="the documents start after this many shuffled facts")
+    ap.add_argument("--out", default=None, help="write the shard and its index files here (default: --cache)")
     args = ap.parse_args()
     from tokenizers import Tokenizer
     tk = Tokenizer.from_file(args.tokenizer)
@@ -202,11 +229,16 @@ def main() -> None:
     rng = random.Random(args.seed)
     t0 = time.time()
     tri, rels = load(rng)
+    reserve = iter(tri[::-1])                                      # absent questions: facts no document writes
+    used = args.skip_facts
+    absent_of = []
     filler = Filler(args.cache, args.filler, args.seed) if args.far else None
-    ids_path, pos_path = os.path.join(args.cache, f"{name}.u32"), os.path.join(args.cache, f"{name}.pos.i16")
-    n_q = n_placed = used = 0
+    out = args.out or args.cache                                   # --out: the shard beside, the cache only read
+    os.makedirs(out, exist_ok=True)
+    ids_path, pos_path = os.path.join(out, f"{name}.u32"), os.path.join(out, f"{name}.pos.i16")
+    n_q = n_placed = 0
     v2, n_double, n_any, double = args.names == "v2", 0, 0, []
-    role_path = os.path.join(args.cache, f"{name}.role.u8")
+    role_path = os.path.join(out, f"{name}.role.u8")
     with open(ids_path + ".part", "wb") as fi, open(pos_path + ".part", "wb") as fp, open(role_path + ".part", "wb") as fr:
         for d in range(args.docs):
             k = rng.randint(*args.facts)
@@ -214,10 +246,14 @@ def main() -> None:
             used += k
             if len(facts) < args.facts[0]:
                 raise SystemExit(f"the wiki world ran out of facts after {d:,} documents")
-            qa = document(facts, rels, rng, rng.randint(*args.questions), v2)
+            qa = document(facts, rels, rng, rng.randint(*args.questions), v2, args.absent, reserve)
             ids, places, roles = render(tk, facts, rels, qa, args.mode, eos, args.doc, filler, args.lead, v2)
+            if args.absent > 0:                                    # the questions render kept, in order
+                kept = len(hr_answers(tk, ids))
+                absent_of.append([bool(x[3]) for x in qa][:kept])
+                qa = [x for x in qa if not x[3]]
             subj = {address(s, rels[r]): s for s, r, _o in facts}
-            for q, _a, at in qa:                                   # a word the template or the relation doubled
+            for q, _a, at, *_x in qa:                              # a word the template or the relation doubled
                 n_any, bad = n_any + bool(doubled(q)), doubled(q, words(subj[at], v2=v2))
                 n_double, double = n_double + bool(bad), double + [q] * (bool(bad) and len(double) < 10)
             fr.write(roles.tobytes())
@@ -238,7 +274,7 @@ def main() -> None:
     hold_docs = max(1, int(args.docs * args.holdout_frac))
     hold = hold_docs * args.doc
     for fn, val in (("_holdout.json", hold), ("_sizes.json", total - hold), ("_align.json", args.doc)):
-        p = os.path.join(args.cache, fn)
+        p = os.path.join(out, fn)
         dd = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
         dd[name] = int(val)
         json.dump(dd, open(p, "w", encoding="utf-8"), indent=1)
@@ -247,7 +283,10 @@ def main() -> None:
            "placed_tokens": n_placed, "questions_with_a_doubled_word": n_double, "doubled_examples": double,
            "questions_with_a_repeat_in_or_at_a_name": n_any,
            "seconds": round(time.time() - t0, 1)}
-    rep["args"].update(cache="<token cache>", tokenizer=os.path.basename(args.tokenizer))     # no local path in a log
+    if args.absent > 0:
+        json.dump(absent_of, open(os.path.join(out, f"{name}.absent.json"), "w", encoding="utf-8"))
+        rep["absent_questions"] = sum(map(sum, absent_of))
+    rep["args"].update(cache="<token cache>", out=args.out and "<probe folder>", tokenizer=os.path.basename(args.tokenizer))     # no local path in a log
     logp = os.path.join(HERE, "logs", f"make_fact_shard_{name}_{_dt.date.today().isoformat()}.json")
     os.makedirs(os.path.dirname(logp), exist_ok=True)
     json.dump(rep, open(logp, "w", encoding="utf-8"), indent=1)

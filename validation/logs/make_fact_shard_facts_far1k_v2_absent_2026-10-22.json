@@ -1,0 +1,41 @@
+{
+ "args": {
+  "cache": "<token cache>",
+  "tokenizer": "tokenizer.json",
+  "docs": 400,
+  "doc": 1024,
+  "facts": [
+   6,
+   10
+  ],
+  "questions": [
+   4,
+   6
+  ],
+  "mode": "places",
+  "far": true,
+  "filler": "books,wikipedia,fineweb_edu",
+  "lead": true,
+  "names": "v2",
+  "name": "facts_far1k_v2_absent",
+  "holdout_frac": 1.0,
+  "seed": 2,
+  "absent": 0.2,
+  "skip_facts": 159882,
+  "out": "<probe folder>"
+ },
+ "shard": "facts_far1k_v2_absent",
+ "documents": 400,
+ "facts_used": 163032,
+ "relations": 2902,
+ "tokens": 409600,
+ "train_tokens": 0,
+ "holdout_tokens": 409600,
+ "questions": 1616,
+ "placed_tokens": 26593,
+ "questions_with_a_doubled_word": 0,
+ "doubled_examples": [],
+ "questions_with_a_repeat_in_or_at_a_name": 3,
+ "seconds": 6.1,
+ "absent_questions": 358
+}

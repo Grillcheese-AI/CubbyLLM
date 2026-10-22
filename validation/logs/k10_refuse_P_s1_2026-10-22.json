@@ -1,0 +1,35 @@
+{
+ "arm": "P",
+ "seed": 1,
+ "lines": {
+  "present_wrong": 0.02,
+  "absent_answered": 0.05
+ },
+ "lookahead": 8,
+ "calibration_docs": 1024,
+ "theta": 0.20800000429153442,
+ "theta_end": 0.13600000739097595,
+ "calibration": {
+  "exact": 0.5856079404466501,
+  "present_refused": 0.3957816377171216,
+  "present_wrong": 0.018610421836228297,
+  "absent_answered": 0.0045871559633027525,
+  "n_present": 806,
+  "n_absent": 218
+ },
+ "test_simulated": {
+  "exact": 0.5785627283800243,
+  "present_refused": 0.39707673568818513,
+  "present_wrong": 0.02436053593179055,
+  "absent_answered": 0.009852216748768473,
+  "n_present": 821,
+  "n_absent": 203
+ },
+ "test_model": {
+  "exact": 0.5785627283800243,
+  "present_refused": 0.39707673568818513,
+  "present_wrong": 0.02436053593179055,
+  "absent_answered": 0.009852216748768473
+ },
+ "wall_s": 148.0
+}
