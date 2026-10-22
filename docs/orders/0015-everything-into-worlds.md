@@ -1,5 +1,5 @@
 # 0015 — Everything in the datasets into worlds: one manifest-driven ingestion, incremental
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("store by worlds everything in datasets, not just use
 them as pretraining"; "everything in datasets is stuff Cubby can see once and learn") · hypothesis: H-F2, H-K10
 **After 0012 and 0014:** it generalizes their index and loader.
