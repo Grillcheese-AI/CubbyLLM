@@ -329,7 +329,7 @@ class SpeechMixin:
         invented content) — else the host line stands. -> (text, verbalized)."""
         if self.brain is None or not self.verbalize:
             return line, False
-        from identity import identity_system
+        from cubbyllm.speech.identity import identity_system
         mood, core = split_mood(line)
         fr = self.lang == "fr"
         prompt = ((f"Dis ceci avec tes propres mots, une phrase courte, à la première personne, en gardant "
@@ -356,7 +356,7 @@ class SpeechMixin:
         spoken = self.say_flatly(rec)                    # what the host says if the guard refuses
         if self.brain is None or not self.verbalize:
             return spoken, False
-        from identity import identity_system
+        from cubbyllm.speech.identity import identity_system
         # what he may speak about: the record, plus the facts he learned this
         # step. Passed verbatim so the guard can check whole words ("ghost")
         # as well as stems.

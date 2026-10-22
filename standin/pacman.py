@@ -600,7 +600,7 @@ class CubbyGhost(ForgeMixin, SpeechMixin, SenseMixin, NavMixin, AffectMixin,
                 **self.affect()}
 
     def handle(self, text: str) -> dict:
-        from identity import guess_lang
+        from cubbyllm.speech.identity import guess_lang
         lang = guess_lang(text)
         if self._STATUS.search(text) and not self._PLAY.search(text):   # a report, no stepping
             return {"offered": [self.status_line(lang)], "meta": {"status": True, "level": self.env.level}}
@@ -736,7 +736,7 @@ class LivePac:
         The delta is measured across `hear` only — the frames the words
         caused — and not across the reply, so what comes back is the effect of
         being spoken to rather than the effect of answering."""
-        from identity import guess_lang
+        from cubbyllm.speech.identity import guess_lang
         text = " ".join(str(text or "").split())
         if not text:
             return {"error": "empty text"}

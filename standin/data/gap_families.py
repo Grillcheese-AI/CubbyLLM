@@ -36,7 +36,7 @@ for p in (os.path.dirname(HERE), HERE):
         sys.path.insert(0, p)
 
 from hf_rows import fetch_rows  # noqa: E402
-from identity import guess_lang, identity_system, sample_state  # noqa: E402
+from cubbyllm.speech.identity import guess_lang, identity_system, sample_state  # noqa: E402
 
 GAP_TASKS = ("verbalize", "repair", "rewrite", "appraisal", "dialog_emotion", "dialog_act", "empathy", "quebec", "quebec_mc", "toolcall")
 
@@ -1188,7 +1188,7 @@ def silent_pairs() -> list[tuple[str, str, str, str]]:
 def build_toolcall_silent(rng: random.Random, facts: dict, chat_rows: list[dict], n: int = 600) -> tuple[list[dict], Counter]:
     """v11: negatives in both call formats — every hand-written (ask, reply) pair (voice-checked), plus up to `n` creative or
     personal chat rows (`_CREATIVE_RE` on the prompt) re-issued with the tool list, their reply standing. gold "none"."""
-    from identity import voice_ok
+    from cubbyllm.speech.identity import voice_ok
     out, why = [], Counter()
     hand = silent_pairs()
     creative = [r for r in chat_rows if r.get("task") == "chat" and 1 <= len(r["prompt"].split()) <= 40 and "\n" not in r["prompt"]

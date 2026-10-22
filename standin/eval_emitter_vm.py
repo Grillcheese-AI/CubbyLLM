@@ -45,7 +45,7 @@ if hasattr(sys.stdout, "reconfigure"):
 __wiring__ = "STANDALONE"
 
 from build_emitter_sft import answer_fn, gold_matches, shim_isolver  # noqa: E402
-from identity import identity_ok, load_facts  # noqa: E402
+from cubbyllm.speech.identity import identity_ok, load_facts  # noqa: E402
 from gap_families import GAP_TASKS, gap_ok  # noqa: E402
 from standin.emitter import LlamaCppEmitter, LlamaServerEmitter, ReplayEmitter  # noqa: E402
 
@@ -148,7 +148,7 @@ def main():
             if task == "identity":
                 ok = identity_ok(r.get("subtype", ""), gen, facts, r.get("lang", "en"))
             elif task == "chat":                     # v5: Cubby's rules hold and it is NOT a bio
-                from identity import is_identity_reply, is_model_guard, voice_ok
+                from cubbyllm.speech.identity import is_identity_reply, is_model_guard, voice_ok
                 ok = bool(gen) and voice_ok(gen, facts) and not is_model_guard(gen) and not is_identity_reply(gen, facts)
             elif task == "history":                  # v6: the gold year / a proper noun of the record (dating: ±5 years)
                 from build_chat_sft import history_ok

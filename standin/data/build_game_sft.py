@@ -53,7 +53,7 @@ if hasattr(sys.stdout, "reconfigure"):
 __wiring__ = "STANDALONE"
 
 from build_emitter_sft import OUT_DIR, sha256_file, split_of, verify_all  # noqa: E402
-from identity import EMITTER_SYSTEM  # noqa: E402
+from cubbyllm.speech.identity import EMITTER_SYSTEM  # noqa: E402
 
 GAME_SEED = 20260902
 N = {"decision": 500, "compare": 500, "where": 700, "count": 250, "compose": 250}

@@ -42,8 +42,8 @@ for p in (ROOT, os.path.join(ROOT, "standin"), os.path.join(ROOT, "standin", "da
 __wiring__ = "WIRED"
 
 from build_emitter_sft import answer_fn, shim_isolver  # noqa: E402
-from identity import EMITTER_SYSTEM  # noqa: E402
-from serve import PROGRAM_PREFIX, _clean  # noqa: E402
+from cubbyllm.speech.identity import EMITTER_SYSTEM  # noqa: E402
+from cubbyllm.brain import PROGRAM_PREFIX, _clean  # noqa: E402
 
 from cubbyllm.reasoning.planner import normalize  # noqa: E402
 

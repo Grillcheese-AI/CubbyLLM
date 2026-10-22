@@ -138,7 +138,7 @@ class AffectMixin:
         rec["they have been right"] = round(self.coach.credibility, 2)
         flat = self.render_percepts(rec)
         heard = str(rec["they said"])
-        from identity import identity_system
+        from cubbyllm.speech.identity import identity_system
         if lang == "fr":
             prompt = (f"Situation : {flat}.\nQuelqu'un vient de te dire : « {heard} ». "
                       "Réponds-lui en une phrase très courte, à la première personne. "
