@@ -35,10 +35,12 @@ entry: {}
 
 # gutenberg-plays
 
-The public-domain plays of order 0020 as a fiction world pack: each play its own world, the in-fiction facts read from
-its text (who is whose father, mother, spouse, sibling, child), answering only a question that names the play, as
-order 0015's fiction worlds do. A question that does not name a play gets nothing from it; a fact the play does not
-state gets nothing either (a refusal).
+Public-domain plays as a fiction world pack: each play its own world, answering only a question that names the play, as
+order 0015's fiction worlds do. Its facts are what each play's list of persons states, read as stated and in-fiction
+("JULIET, daughter to Capulet" -> Juliet is the daughter of Capulet; "GERTRUDE, ... Hamlet's mother" -> Gertrude is the
+mother of Hamlet), plus any kin its prose states. A relation the play does not state gets nothing (a refusal): the
+reader never infers a mother from a father's wife.
 
-The texts are not in this folder: `CUBBY_PLAYS` names the local folder of Gutenberg plays (`<id>.txt` with
-`<id>_metadata.json`, the title read from the metadata); the pack is ingested once into the plugin's data folder.
+The texts are not in this folder: `CUBBY_PLAYS` names the local folder of Project Gutenberg's modern-spelling editions
+(`<id>.txt`, each keeping the Project Gutenberg licence text, with `<id>_metadata.json` for the title). Not Folger's
+texts: they are CC BY-NC. The pack is ingested once into the plugin's data folder.

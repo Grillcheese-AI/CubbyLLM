@@ -36,37 +36,10 @@ __wiring__ = "WIRED"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import plugins_guard as guard  # noqa: E402
 from plugins_route import TAU_ENCODER, TAU_OVERLAP, Router  # noqa: E402
+from plugins_world import FictionWorld  # noqa: E402,F401 -- the fiction world's own module
 from worlds import FactStore, Worlds  # noqa: E402
 
 CODE_KINDS = ("source", "tool")
-
-
-class FictionWorld:
-    """A world plugin's in-fiction facts as an askable world: it covers a question only when the question names one of
-    its works, and answers with that work's facts the question's words reach (none: a refusal)."""
-
-    def __init__(self, name: str, domain: str, db_path) -> None:
-        from worlds_fiction import FictionWorlds
-        self.name, self.domain, self.fw = name, domain, FictionWorlds(db_path)
-
-    def covers(self, question: str) -> float:
-        return 1.0 if self.fw.work_named(question) else 0.0
-
-    def answer(self, question: str) -> list[str]:
-        import re
-        from worlds_fiction import KIN
-        work = self.fw.work_named(question)
-        if work is None:
-            return []
-        q = self.fw.strip(question, work)
-        m = re.search(r"(?P<s>[A-Z][\w-]*(?:\s[A-Z][\w-]*)?)['’]s\s+(?P<r>" + "|".join(sorted(set(KIN) | set(KIN.values())))
-                      + r")\b", q)
-        if m:                                            # "who is X's mother?": the fact held, or nothing (refused)
-            rel = KIN.get(m["r"], m["r"])
-            return [f"{o} is the {r} of {s}" for s, r, o in self.fw.db.execute(
-                "SELECT subj, rel, obj FROM fiction_facts WHERE work = ? AND lower(subj) = lower(?) AND rel = ?",
-                (work, m["s"], rel))]
-        return [f for s, f in self.fw.store(work)(q, 3) if s >= 0.5]
 
 
 class _Mount:

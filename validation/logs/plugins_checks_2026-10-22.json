@@ -2,8 +2,8 @@
  "startup": {
   "plugins": 50,
   "errors": 0,
-  "median_ms": 69.8,
-  "max_ms": 108.2,
+  "median_ms": 32.5,
+  "max_ms": 59.1,
   "imported": [],
   "line_ms": 200
  },
@@ -13,7 +13,7 @@
  },
  "envcanada_alerts": {
   "in_effect": 53,
-  "refresh_s": 4.7,
+  "refresh_s": 3.8,
   "headlines": [
    "special marine watch in effect",
    "special weather statement in effect",
@@ -32,41 +32,41 @@
   "asked_invented_place": []
  },
  "gutenberg_plays": {
-  "ingest_s": 39.7,
-  "works": 1,
-  "facts": 1,
-  "examples_answered": 0,
-  "examples_routed": 0,
+  "ingest_s": 11.8,
+  "works": 34,
+  "facts": 150,
+  "examples_answered": 1,
+  "examples_routed": 7,
   "not_answered": 0,
   "rows": [
    {
     "kind": "example",
     "question": "In Romeo and Juliet, who is Juliet's mother?",
-    "world": null,
+    "world": "plugin:gutenberg-plays",
     "facts": []
    },
    {
     "kind": "example",
     "question": "In Titus Andronicus, who is Lavinia's father?",
-    "world": null,
+    "world": "plugin:gutenberg-plays",
     "facts": []
    },
    {
     "kind": "example",
     "question": "In Macbeth, who is Malcolm's father?",
-    "world": null,
+    "world": "plugin:gutenberg-plays",
     "facts": []
    },
    {
     "kind": "example",
     "question": "In Romeo and Juliet, who is Tybalt's cousin?",
-    "world": null,
+    "world": "plugin:gutenberg-plays",
     "facts": []
    },
    {
     "kind": "example",
     "question": "In Antony and Cleopatra, who is Octavia's brother?",
-    "world": null,
+    "world": "plugin:gutenberg-plays",
     "facts": []
    },
    {
@@ -90,14 +90,16 @@
    {
     "kind": "example",
     "question": "In Troilus and Cressida, who is Hector's father?",
-    "world": null,
+    "world": "plugin:gutenberg-plays",
     "facts": []
    },
    {
     "kind": "example",
     "question": "In The Comedy of Errors, who is Adriana's husband?",
-    "world": null,
-    "facts": []
+    "world": "plugin:gutenberg-plays",
+    "facts": [
+     "Adriana is the wife of Antipholus of Ephesus"
+    ]
    },
    {
     "kind": "not",

@@ -76,9 +76,75 @@ def kin_facts(text: str, names: list[str]) -> list[tuple]:
     return out
 
 
+# A play's list of persons states its relations outright (order 0028, the plays pack): "JULIET, daughter to Capulet",
+# "GERTRUDE, the Queen, Hamlet's mother, now wife of Claudius". Read as stated, in-fiction.
+PERSONS_HEAD = re.compile(r"^\s*(dramatis person\S*|persons represented|persons of the play|the persons|characters)\s*\.?\s*$", re.I)
+PERSONS_END = re.compile(r"^\s*(scene\b|act\s+[ivx1-9]|the prologue|prologue|induction|chorus\.?$)", re.I)
+REL = ("wife", "husband", "son", "daughter", "brother", "sister", "father", "mother", "nephew", "niece", "uncle", "aunt",
+       "cousin", "kinsman", "kinswoman", "grandfather", "grandmother", "grandson", "granddaughter", "widow")
+_ENTRY = re.compile(r"^\s*([A-Z][A-Z’'.\- ]{1,40}[A-Z])\s*,\s*(.+)$")
+_REL_TO = re.compile(r"\b((?i:" + "|".join(REL) + r"))\s+(?:to|of)\s+(?:the\s+)?([A-Z][\w’'\-]*(?:\s+[A-Z][\w’'\-]*)*"
+                     r"(?:\s+of\s+[A-Z][\w’'\-]*)?)")     # "Antipholus of Ephesus": the play has two Antipholi
+_REL_POSS = re.compile(r"\b([A-Z][\w’'\-]*(?:\s+[A-Z][\w’'\-]*)*)['’]s\s+((?i:" + "|".join(REL) + r"))\b")
+_LISTED = re.compile(r"^\s*([A-Z][A-Z’'\-]+(?:\s+[A-Z][A-Z’'\-]+)*)\b")
+_SPEAKER = re.compile(r"^([A-Z][A-Z’'\- ]{1,40}[A-Z])\.\s*$", re.M)
+
+
+def _person(name: str) -> str:
+    small = {"of", "the", "de", "du", "la", "le", "von", "van", "and"}
+    return " ".join(w.lower() if i and w.lower() in small else (w.capitalize() if not w.startswith(("’", "'")) else w)
+                    for i, w in enumerate(name.strip().split()))
+
+
+def persons_facts(text: str) -> tuple[list[tuple], dict]:
+    """(other, relation, person, line) for every relation a play's persons list states -- ``Polonius`` -``son``-> ``Laertes``
+    for "LAERTES, Son to Polonius" -- and a check of the list against the speaker tags: the speakers the list misses."""
+    lines, start = text.splitlines(), None
+    for i, line in enumerate(lines[:3000]):
+        if PERSONS_HEAD.match(line):
+            start = i + 1
+            break
+    if start is None:
+        return [], {"list": False}
+    out, listed, blank, prev = [], set(), 0, None
+    for line in lines[start:start + 200]:
+        if PERSONS_END.match(line):
+            break
+        blank = blank + 1 if not line.strip() else 0
+        if blank >= 3:
+            break
+        bare = _LISTED.match(line)
+        if bare:
+            listed.add(bare.group(1).strip().upper())       # "NURSE to Juliet." is listed though it has no comma
+        m = _ENTRY.match(line)
+        if not m:
+            continue
+        who, desc = _person(m.group(1)), m.group(2)
+        listed.add(m.group(1).strip().upper())
+        back = re.match(r"\s*(?:his|her)\s+((?i:" + "|".join(REL) + r"))\b", desc)
+        if back and prev:                                   # "MALCOLM, his Son." after "DUNCAN, King of Scotland."
+            out.append((prev, back.group(1).lower(), who, line.strip()))
+        for rel, other in _REL_TO.findall(desc):
+            rel = "wife" if rel.lower() == "widow" else rel.lower()
+            out.append((_person(other), rel, who, line.strip()))
+        for other, rel in _REL_POSS.findall(desc):
+            out.append((_person(other), rel.lower(), who, line.strip()))
+        if not back:
+            prev = who
+    body = "\n".join(lines[start:]).split("*** END OF THE PROJECT GUTENBERG")[0]     # not the licence after it
+    speakers = set(_SPEAKER.findall(body))
+    words = {w for n in listed for w in n.split()}
+    missed = sorted(sp for sp in speakers if sp.upper() not in listed and not set(sp.upper().split()) & words)
+    return out, {"list": True, "listed": len(listed), "speakers": len(speakers), "speakers_not_listed": missed}
+
+
 def read_facts(text: str, names: list[str]) -> list[tuple]:
-    """(subject, relation, object, sentence) for every frame that fires on a work's own names, and its kin."""
+    """(subject, relation, object, sentence) for every frame that fires on a work's own names, its kin, and what its
+    persons list states (a play)."""
     out, seen = [], set()
+    for s, r, o, line in persons_facts(text)[0]:
+        if (s, r, o) not in seen:
+            seen.add((s, r, o)); out.append((s, r, o, line))
     for s, r, o, line in kin_facts(text, names):
         if (s, r, o) not in seen:
             seen.add((s, r, o)); out.append((s, r, o, line))
