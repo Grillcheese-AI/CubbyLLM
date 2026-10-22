@@ -6,7 +6,24 @@ code"). Nothing below exists yet except `validation/`. Revise freely; the point
 is that structure gets decided *on purpose*, before code accretes it by
 accident for a third time.
 
-## Layout
+## The layout today (2026-10-22, order 0031)
+
+The proposal below held for `cubbyllm/`. Order 0031 added the two other homes and moved Cubby's code out of the
+stand-in, a slice at a time (`tools/moves_0031.json` maps every old path to its new one):
+
+```
+cubbyllm/       (Apache-2.0) what makes Cubby think: core/ ops/ model/ training/ bridges/ as below, and reasoning/,
+                worlds/, sources/ (+ news/), affect/, speech/, emit/, plugins/, cortex/, brain.py. Imports nothing
+                from the other homes, opens no socket, edits no sys.path (tests/test_package_rules.py).
+cubby_serve/    (BSL 1.1) the product: the server (python -m cubby_serve), build_serve, board/, the plugins' server
+                part, the harness, the ledger, keys, sources/ (everything that opens a socket, handed to cubbyllm/
+                as a fetch). Reaches the stand-in only through emitter_llama, lfm_source and pacman, lazily.
+standin/        (BSL 1.1) the GGUF stand-in, the LFM source, the proposer, the game; the old names as shims.
+validation/     (Apache-2.0) experiments, trainers, logs/; sft/ and builders/ (the data builders).
+tests/          mirrors the homes: tests/<subpackage>/, tests/serve/, tests/builders/, tests/validation/.
+```
+
+## Layout (the proposal of 2026-07-23)
 
 ```
 CubbyLLM/

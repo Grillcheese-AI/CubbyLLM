@@ -70,7 +70,8 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   K4 clock, K5 BlockWorld hidden-rule bench, K6 binding heads, K7 exposure law, K8 holographic state,
   K9 flow-map jumps, K10 loci tokens. Read their entries before touching the matching code.
 - **Serve stack.** `standin/` (an external GGUF stand-in in the emitter and talk seats) stays the A/B
-  control until base450m takes both seats (it does now, on grilly2); order 0031 moves what is Cubby out of it; `docs/WORK_ORDERS.md` holds that era's specs and its
+  control until base450m takes both seats (it does now, on grilly2); since order 0031 only the stand-in is there and
+  the server is `cubby_serve/` (`python -m cubby_serve`); `docs/WORK_ORDERS.md` holds that era's specs and its
   measured lessons (read its "Before you touch anything").
 - **Known red:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
   `cubbyllm.spatial` and `cubbyllm.reasoning.step_loop` (order 0002, proposed).
@@ -109,8 +110,9 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
 - **Where code goes (Nick, 2026-10-22).** What makes Cubby think goes in `cubbyllm/` (Apache-2.0); the product
   layer (server, board, harness, vault, ledger) in `cubby_serve/` (BSL 1.1); `standin/` holds only the GGUF stand-in
   and its data builders. No new feature in `standin/`. `cubbyllm/` never touches the network: what fetches lives in
-  `cubby_serve/` and hands `cubbyllm/` a fetch function (Nick, 2026-10-22). Data builders go to `validation/` (Apache). Until order 0031 lands, an order's `standin/...` path means
-  that module's new home in 0031's move map.
+  `cubby_serve/` and hands `cubbyllm/` a fetch function (Nick, 2026-10-22). Data builders go to `validation/` (Apache).
+  `tests/test_package_rules.py` pins these lines. An older order's `standin/...` path means that module's new home:
+  `tools/moves_0031.json` maps every old path to its new one (the old name is a shim for one cycle).
 - No local drive paths, venv names or account names in committed files. A committed file names a folder
   (`$CUBBY_MODELS`, `$CUBBY_DATASETS`, `$CUBBY_DRIVE`, ...); `cubbyllm/local_paths.py` resolves it from the environment,
   then the git-ignored `paths.local.json`. `tests/test_local_paths.py` fails on a local path, and
@@ -154,4 +156,10 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
 | `docs/superpowers/specs/` | design specs (whole-brain, sensory cortex, episodic memory, …) |
 | `cubbyllm/model/` | trunk: `assembly.py`, `backbone/` (hybrid, MinGRU, kernels), `spatial.py`, `recall/`, `grow.py` |
 | `validation/` | experiments, training, probes (never imported by `cubbyllm/`) |
-| `standin/` | the stand-in serve stack (control arm); its Cubby parts move out in order 0031 |
+| `cubbyllm/reasoning/` | the planner, the disposer, the walk, search-and-learn, the ask loop, question forms, the loci reader |
+| `cubbyllm/worlds/`, `cubbyllm/sources/` | the stores and their routing; the sources' logic (each fetches through what it is handed) |
+| `cubbyllm/affect/`, `cubbyllm/speech/` | neurochemistry, the ear, feeling; grounding, the audience rules, the chat turn, identity, the vault |
+| `cubbyllm/emit/`, `cubbyllm/plugins/`, `cubbyllm/brain.py` | the seats (the 450M on grilly2); the plugins; CubbyBrain |
+| `cubby_serve/` | the server (BSL 1.1): api/cli/get/post, build_serve, the board, the harness, the ledger, keys, sources/ (the fetchers) |
+| `standin/` | the GGUF stand-in (the control arm), the LFM source, the game; the old names as one-cycle shims |
+| `validation/sft/`, `validation/builders/` | the adapters' SFT sets; the worlds' and the benches' data |

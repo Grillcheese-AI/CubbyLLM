@@ -7,7 +7,8 @@ name = "cubbyllm"
 version = "0.0.0"
 description = "CubbyLLM — context-conditioned LM (theta=f(c)). Package skeleton."
 requires-python = ">=3.12"
-license = {text = "Apache-2.0"}   # cubbyllm/ (the trunk, the reasoning pipeline, the bridges); standin/ is BSL-1.1 -- see standin/LICENSE
+license = {text = "Apache-2.0 (cubbyllm/) AND BUSL-1.1 (cubby_serve/)"}   # each package's LICENSE says which; standin/ is
+#   BSL-1.1 too (standin/LICENSE) and is not installed
 # torch/numpy/grilly are used by real components later; the skeleton itself
 # imports none of them at module top level (TYPE_CHECKING only).
 dependencies = []
@@ -19,7 +20,10 @@ dependencies = []
 dev = ["grpcio-tools"]
 
 [tool.setuptools.packages.find]
-include = ["cubbyllm*"]
+include = ["cubbyllm*", "cubby_serve*"]   # the two homes (order 0031)
+
+[tool.setuptools.package-data]
+cubby_serve = ["LICENSE"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

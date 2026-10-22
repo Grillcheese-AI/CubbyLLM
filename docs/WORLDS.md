@@ -9,7 +9,8 @@ exactly, by address (loci tokens, H-K10; run 5: 0.946 on facts seen once, 800+ t
 So every dataset that holds knowledge is also stored, as rows with provenance, in the world it belongs to.
 
 The per-dataset list (names, local paths, sizes, routes) is `docs/worlds_manifest.local.tsv`. It is **git-ignored**:
-this repo is public, and it names local collections. This file is the policy that list follows.
+this repo is public, and it names local collections. This file is the policy that list follows. The code: the stores,
+their routing and every world in `cubbyllm/worlds/`; the ingest command `validation/builders/ingest_worlds.py`.
 
 ## Kinds of world
 | world | what is true there | examples of sources |

@@ -135,7 +135,8 @@ python validation/exp_r8_decomposition.py                                       
 python validation/exp_r9_matched_pairs.py --n 200 --resident                     # generality: 4 forms on the wiki world
 python validation/exp_r10_simpleqa.py --resident                                 # free text through the whole gate
 
-python standin/serve.py                                                          # the stand-in brain (see standin/README.md)
+python -m cubby_serve --gguf <stand-in GGUF> | --cubby450m <export> --emitter-adapter <dir>   # the server (python standin/serve_api.py ... for one cycle)
+python -m cubby_serve.build --gguf <stand-in GGUF>                              # the brain in a REPL, or --selftest N
 
 # base450m (pass --export <grilly export> --adapter <emitter adapter dir> --tokenizer <bbpe128k json>, all off-repo)
 python validation/exp_he19_step_loop.py --data standin/data/out/pf_heldout_eval_w_slots.jsonl --tag <tag>   # the step loop
@@ -146,38 +147,51 @@ python validation/exp_hm1c_hamming.py --table <fastword table> --shard <token sh
 
 Every experiment writes `validation/logs/<name>.{json,log}`; every number in the docs points at one of them.
 Training notebooks (Colab, one 80 GB GPU, tens of minutes): `notebooks/standin_gen2_emitter_sft.ipynb` is the
-current emitter recipe; `standin/data/build_gen2_partition.py` builds its data from the harvest.
+current emitter recipe; `validation/sft/build_gen2_partition.py` builds its data from the harvest.
 
 ## Layout
 
+Three homes, by kind (order 0031): what makes Cubby think is `cubbyllm/`, the product around it is `cubby_serve/`, and
+`standin/` keeps only the stand-in. `cubbyllm/` imports neither of the others, opens no socket and edits no `sys.path`
+(`tests/test_package_rules.py`).
+
 ```
-cubbyllm/            the package (Apache-2.0). `import cubbyllm` is torch-free.
-  reasoning/         planner (the grammar), plan_verify (the disposer), retriever, index (TripleIndex),
-                     programs (CotChain emission), pipeline (answer(): plan → verify → walk → VM)
-  bridges/           cubelang_client (subprocess + resident CubelangSession, protobuf framing),
-                     programs/*.cube (plan_verify, reasoning_bridge), world_model (the MoWM bridge contract)
-  reasoning/learn.py search-and-learn: refusal → source → gate → store with provenance → walk again (sources live in standin/)
-  reasoning/lexicon.py the synonym oracle: WordNet 3.0 + WOLF (FR) by synset, a second relation resolver (data built by standin/data/build_lexicon.py)
-  reasoning/hippocampus.py the episodic side cortex: certified chains as 256-bit-coded episodes, recalled and rebound as plan candidates; retire, never delete
-  reasoning/step_loop.py arithmetic one VM-verified step at a time: the host's slots, the value written back as $S, the stop
-  reasoning/school.py the step school: a curriculum the VM judges (try until right, halve the tries as a level is mastered)
-  model/grow.py      function-preserving growth (HyperCloning): a trained base widened or deepened, same function at step 0
-  reasoning/events.py every step of the loop as an event with its parent's id (question → plan → walk → hop → fact; fetch → gate; answer) — sinks: jsonl, memory, a live listener
-  core/ model/ ops/ training/   the trunk design from the validation campaign
-standin/             the serve stack (BSL-1.1): brain, thalamus, VM-mediated chat, cubby-man, emitter, SFT data builders
-  sources.py         the Wikidata Source (API, cached; a name shared by items resolves by the claim that named it, by the hop the question needs, by label over alias -- else refused, never picked)
-  ask.py             the verified-program loop on one natural question, as a service (serve_api --ask: POST /ask, live in /panel); the profile ask (who / what / where is X): the retrieval program, the VM recovers each fact, a grounded paraphrase
-  data/build_profile_sft.py  the retrieval shape as training records: (question, SEED + ASK program) over the wiki world's entities, typed who / what / where
-  wikitext.py        the offline Source: regex frames over local article openings, EN + FR, provenance per sentence
-  encyclopedia.py    the encyclopedia Source: OCR'd volumes, entries by headword, frames over each entry's opening, provenance = volume + headword + sentence
-  data/build_gen3.py the gen-3 builder: certified chains -> free-text wordings -> the host's plan, each certified by the serving gate; merges into emitter_sft_v13e
-  lfm_source.py      the local base model (LFM2.5-2.6B) as a fact Source: few-shot, parsed, gated, provenance 'lfm (latent)' -- never spoken until a second source agrees
-  openrouter.py      a frontier model as a proposer for probes and dataset building only — never the serving model
-dashboard/           the three.js control panel (control_panel.html): every step of the loop (cubbyllm/reasoning/events.py) as a linked
-                     graph, replay, a live stream from the stand-in server (/panel, /loop/stream), an ask box, and links between questions that share a fact or an entity; sample_events.jsonl to load
-validation/          184 standalone experiment scripts + tests + logs/. Never imported by cubbyllm/.
-notebooks/           Colab training runs, one per SFT round
-docs/research/       dated findings and the outside-model competitions, scored against the measured record
+cubbyllm/            the package (Apache-2.0). `import cubbyllm` loads neither torch nor grilly.
+  reasoning/         planner (the grammar), plan_verify (the disposer), retriever, index (TripleIndex), programs
+                     (CotChain emission), pipeline (answer(): plan -> verify -> walk -> VM); learn (search-and-learn:
+                     refusal -> source -> gate -> store with provenance -> walk again); lexicon (WordNet 3.0 + WOLF);
+                     hippocampus, step_loop, school, events; ask (the verified-program loop on one natural question,
+                     the profile ask), question_forms, context_graph, loci_reader (the 450M's loci path as a reader)
+  worlds/            the stores and their routing (base: FactStore, Worlds, Knows), the manifest and ingest, adapters,
+                     fiction worlds, the hdc store and world, books and their reader, the encyclopedia, wikitext, the
+                     history graph and lookup, the time rule, capsules, the self source, hygiene, wikikg, science, the
+                     serve stack's fact pool
+  sources/           the sources' logic, each fetching only through the `fetch` it is handed: wikidata (claims as
+                     facts), web (search hits, pages, corroboration), robots (the parser); news/ (the archive's day
+                     files, parse, events, GDELT, Global Voices, backfill, reply, trigger, the RSS source)
+  affect/            neurochem, the ear and its lexicon, word_affect, feeling, perception, choosing, saying, afferent
+  speech/            grounding, passage, the explicit gate, the audience rules (sources are internal), the VM-mediated
+                     chat turn, identity (who Cubby is, the voice rules), the vault (user chats never in the clear)
+  emit/              the emitter contract and reply cleaning (base), the program format, the 450M's seats on grilly2
+                     (seats_450m, talk: one trunk, LoRA roles swapped in place)
+  plugins/           one folder format, found, approved, routed, claimed and loaded on demand (`python -m cubbyllm.plugins`)
+  cortex/            the sensory cortex (retina, salience, where, what, the forward model)
+  brain.py           CubbyBrain: sense -> route -> thalamus -> cortices; every reply through the VM-mediated exit
+  bridges/           cubelang_client (subprocess + resident CubelangSession, protobuf framing), programs/*.cube,
+                     world_model (the MoWM bridge contract), possibility
+  model/ core/ ops/ training/   the trunk: the hybrid backbone, spatial link and copy, growth, the model from a
+                     checkpoint's meta (model/build.py); ops/ is the only place that imports grilly
+cubby_serve/         the product layer (BSL-1.1, cubby_serve/LICENSE): `python -m cubby_serve` (api, cli, events, get,
+                     post), build (build_serve: the seats, the worlds, the selftest), board/ (the control board's routes
+                     and data), plugins (the plugins' server part), harness and its wiring, ledger, keys (where the host
+                     key lives), sources/ (everything that opens a socket: http, news (the poller), hub)
+standin/             the GGUF stand-in (BSL-1.1): emitter_llama behind the emitter facade, lfm_source (the LFM as a
+                     latent source), openrouter (a frontier proposer for datasets only), eval_emitter_vm, probes, the
+                     cubby-man game (pac*, verse, world, coach, forge, programs, hypothesis), three GGUF-only builders;
+                     the old module names as one-cycle shims
+dashboard/           the three.js control panel and the board's pages, served by cubby_serve
+validation/          the experiments, the trainers, logs/ (Apache-2.0); sft/ and builders/ (the adapters' SFT sets, the
+                     worlds' and the benches' data). Never imported by cubbyllm/.
 ```
 
 Related repos, each ported from rather than linked: `cubelang` (the VM, Rust, BSL-1.1), `mowm` (Mixture of
@@ -186,8 +200,10 @@ the "possible edge" source), `grilly` (Vulkan compute and the VSA substrate), `c
 
 ## Licensing
 
-`cubbyllm/` — the trunk, the reasoning pipeline, the bridges — is **Apache-2.0** (`LICENSE`). `standin/` — the
-serve stack — is **Business Source License 1.1** (`standin/LICENSE`, change date 2030-09-11 → Apache-2.0).
+`cubbyllm/` (what makes Cubby think) and `validation/` (how it is made and measured: the experiments, the trainers,
+the data builders) are **Apache-2.0** (`LICENSE`). `cubby_serve/` (the product: the server, the board, the
+harness, the fetchers) is **Business Source License 1.1** (`cubby_serve/LICENSE`), and so is `standin/` (the GGUF
+stand-in and the game; `standin/LICENSE`, change date 2030-09-11 → Apache-2.0).
 `cubelang` carries its own BSL-1.1. Licensing questions: licensing@grillcheese.ai.
 
 ## How it got here
