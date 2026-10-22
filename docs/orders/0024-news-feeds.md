@@ -1,5 +1,5 @@
 # 0024 — News from feeds: a dated archive, events by day, and news as the trigger that a fact may have changed
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes open it") · hypothesis: H-F2 (temporal worlds) · **with 0023's live "as of"**
 
 ## Why
