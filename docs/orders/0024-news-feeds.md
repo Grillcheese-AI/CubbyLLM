@@ -67,6 +67,12 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
   - **Global Issues (Nick, 2026-10-22):** `https://www.globalissues.org/news/feed`, an **Atom** feed (10 entries, current;
     no AI agent blocked). The poller must read Atom (`<entry>`, `<updated>` / `<published>`) as well as RSS; an RSS-only
     reader sees 0 items here.
+    **By topic (Nick):** the site's topic pages (`https://www.globalissues.org/news/topic`) each advertise an Atom feed
+    at `/news/topic/<id>/feed`: 53 topics, of which 38 are current (newest item in October 2026) and 15 have not
+    been updated since 2011-2017 (Iraq, Iran, Palestine and Israel, War on Terror among them: newer stories sit under
+    Middle East, Geopolitics and the like). `/news/feed/issue/<id>` looks like a topic feed but ignores the id and
+    returns the main feed. Poll the main feed hourly and the 38 current topic feeds every 6 hours; an item's topics
+    are the topic feeds it appears in. The list, checked from Nick's machine, is handed over off-repo.
   - **Each publisher's robots rules and terms** are read from its own site (not the feed's host: the FeedBurner copy
     of Le Devoir carries no rule of its own) and recorded, with Nick's decision per publisher, in the local rights
     notes. The poller always identifies itself as `CubbyLLM/0.1` and never changes its name to get past a rule; it
