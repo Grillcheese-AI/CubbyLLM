@@ -74,7 +74,7 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   measured lessons (read its "Before you touch anything").
 - **Known red:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
   `cubbyllm.spatial` and `cubbyllm.reasoning.step_loop` (order 0002, proposed).
-- **Queue (2026-10-22):** 0001, 0004, 0005 done; 0006 (free-text keys, toy), 0007 (learn on a miss), 0008 (creativity over known facts), 0009 (capacity to 10,000 facts) and 0010 (casual talk from the 450M, no external model) open; 0002, 0003 proposed.
+- **Queue (2026-10-22):** 0001, 0004, 0005 done; 0006 (free-text keys, toy) in progress; **0011 (fact names in readable words) next, by Nick's priority**; then 0007 (learn on a miss), 0008 (creativity over known facts), 0009 (capacity to 10,000 facts), 0010 (casual talk from the 450M) open; 0002, 0003 proposed.
 
 ## Rules every change keeps
 

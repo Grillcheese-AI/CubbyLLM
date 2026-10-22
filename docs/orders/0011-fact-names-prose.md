@@ -1,6 +1,7 @@
 # 0011 — Fact shards in readable words: names keep their spaces and case; no "of of"
-status: proposed
-written: 2026-10-22 by Cowork (Nick: "why is there no spacing between words?") · approved: — · hypothesis: H-K10 (data)
+status: open
+written: 2026-10-22 by Cowork (Nick: "why is there no spacing between words?") · approved: 2026-10-22 by Nick · hypothesis: H-K10 (data)
+**Priority (Nick): take this next after 0006, before 0007** (0007, 0010 and 0006's templates use these shards).
 
 ## Why
 The far-fact answers read `fortpeckdam highrelease2011` and `rocket useinchina13thcentury`. The model copies
