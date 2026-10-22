@@ -80,7 +80,8 @@ CAP_ROLE = int(os.environ.get("STANDIN_CAP_ROLE", "1500"))
 # you'd like to focus on next!") -- they taught the emitter to bind any chatty
 # sentence as an event. Every role-binding prompt is wrapped as an explicit task.
 ROLE_SOURCES = [s.strip() for s in os.environ.get("STANDIN_ROLE_SOURCES", "svc").split(",") if s.strip()]
-ROLE_WRAP = os.environ.get("STANDIN_ROLE_WRAP", "Record this as an event: {text}")
+from cubbyllm.emit.format import (ROLE_WRAP, SHIM, _HOP_RE, _SOLVE_RE, answer_fn, shim_isolver,  # noqa: E402,F401
+                                  wrap_role_prompt)  # the program format the serve path shares (order 0031)
 CHAIN_MULT = int(os.environ.get("STANDIN_CHAIN_MULT", "3"))     # train-only upsampling of the chain task
 CHAIN_FACTS = os.environ.get("STANDIN_CHAIN_FACTS", "1") == "1"  # v3: walked facts in the chain prompt (see below)
 _FILLER_RE = re.compile(
@@ -89,19 +90,8 @@ _FILLER_RE = re.compile(
 VAL_FRAC = float(os.environ.get("STANDIN_VAL_FRAC", "0.05"))
 SEED = 20260830
 
-SHIM = ("    @external\n    public function parse(raw: str): Input { return raw; }\n\n"
-        "    public pure function verify(input: Input, output: Output): bool { return true; }\n\n")
-_SOLVE_RE = re.compile(r'(\n\s*@external\s*\n\s*public function solve\()')
-
 
 # ── pure helpers (unit-pinned in tests/test_build_emitter_sft.py) ──────────
-def shim_isolver(src: str) -> str:
-    """Insert parse()+verify() before the @external solve() of a program that
-    `implements ISolver` but lacks them. No-op when verify() exists or the
-    program is not an ISolver (our ISolve chain programs are untouched)."""
-    if "implements ISolver" not in src or re.search(r'function verify\(', src):
-        return src
-    return _SOLVE_RE.sub("\n" + SHIM + r"\1".lstrip("\n"), src, count=1)
 
 
 def gsm_question(text: str) -> str:
@@ -137,27 +127,11 @@ def parse_aug_txt(path: str):
                 prog.append(line)
 
 
-_HOP_RE = re.compile(r'public function hop_(\d+)\(')
-
-
-def answer_fn(src: str) -> str:
-    """The VM function whose result IS the program's answer. Chain programs
-    (ISolve dialect) recover hop 1 in solve() and the final hop in hop_N();
-    every other family answers from solve(). Found 2026-08-30: scoring every
-    program on solve() dropped all 180 multi-hop chains as 'gold mismatch'."""
-    hops = [int(h) for h in _HOP_RE.findall(src)]
-    return f"hop_{max(hops)}" if hops else "solve"
-
-
 def is_chat_filler(text: str) -> bool:
     """Instruction-dataset lines that are conversation glue, not tasks: too
     short, or opening with a chat phrase. Never an event worth binding."""
     t = text.strip()
     return len(t.split()) < 4 or bool(_FILLER_RE.match(t))
-
-
-def wrap_role_prompt(text: str, template: str = ROLE_WRAP) -> str:
-    return template.format(text=text.strip())
 
 
 def gold_matches(result, gold) -> bool | None:

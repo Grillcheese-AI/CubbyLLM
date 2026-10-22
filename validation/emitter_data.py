@@ -37,8 +37,8 @@ if ROOT not in sys.path:
 from cubbyllm.reasoning.slots import (  # noqa: E402
     BIND_LIT_RX, NUM_LIT_RX, SLOT_RX, SlotTable, Span, SpanIndex, _norm, canon, extract, is_entity_role, num_value)
 
-PROMPT_HEAD = "Question:\n"
-PROMPT_TAIL = "\nProgram:\n"
+from cubbyllm.emit.format import CONTROL_TOKENS, PROMPT_HEAD, PROMPT_TAIL, decode_program  # noqa: E402,F401 -- the
+#   serve path's frame, one definition (order 0031)
 NUMBER_FAMILIES = ("arithmetic", "kernel")
 ENTITY_FAMILIES = ("chain", "plan")
 _FACT_RX = re.compile(r"^-\s*(?P<obj>.+?) is the (?P<rel>.+?) of (?P<subj>.+?)\s*$")
@@ -215,21 +215,6 @@ def encode_records(path, tk, eos, split, max_len, tasks=None):
         row = {"p": p, "t": t, "family": r["task"], "id": r["id"]}
         rows += [row] * (r.get("repeat", 1) if split == "train" else 1)
     return rows
-
-
-CONTROL_TOKENS = ("<pad>", "<s>", "</s>", "<unk>")
-
-
-def decode_program(tk, ids, eos=None) -> str:
-    """Generated ids back to program text: cut at </s>, drop the control tokens, keep every other special token.
-
-    The role names (ACTION, AGENT, OBJECT) are special tokens in bbpe128k, and `Tokenizer.decode` skips
-    special tokens by default -- `bind evt, ACTION, "x";` came back as `bind evt, , "x";`, which never runs."""
-    ids = list(ids)
-    if eos is not None and eos in ids:
-        ids = ids[:ids.index(eos)]
-    drop = {i for i in (tk.token_to_id(t) for t in CONTROL_TOKENS) if i is not None}
-    return tk.decode([i for i in ids if i not in drop], skip_special_tokens=False)
 
 
 def val_records(path, per_task=0, seed=1):

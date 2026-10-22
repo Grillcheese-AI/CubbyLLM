@@ -214,7 +214,7 @@ class Cubby450mEmitter:
     def emit(self, prompt: str, max_new_tokens: int = 768, system: str | None = None,
              prefix: str = "", temperature: float = 0.0, seed: int | None = None,
              context: "str | dict | None" = None) -> str:
-        from emitter_data import PROMPT_HEAD, PROMPT_TAIL, decode_program
+        from cubbyllm.emit.format import PROMPT_HEAD, PROMPT_TAIL, decode_program
         text = prompt if prompt.startswith(PROMPT_HEAD) else PROMPT_HEAD + prompt.strip() + PROMPT_TAIL
         out = self.trunk.generate(self.role, [self._ids(text + prefix)], max_new_tokens)[0]
         return prefix + decode_program(self.trunk.tokenizer, out, self.trunk.eos)   # keeps ACTION/AGENT/OBJECT (special tokens)
@@ -223,7 +223,7 @@ class Cubby450mEmitter:
                      top_k: int = 40, seed: int | None = None) -> list[str]:
         """`n` sampled continuations in ONE batched decode (the prompt repeated n times; rows stop at </s>):
         the candidates a step vote runs in the VM (`step_loop.StepLoop.solve_vote`)."""
-        from emitter_data import PROMPT_HEAD, PROMPT_TAIL, decode_program
+        from cubbyllm.emit.format import PROMPT_HEAD, PROMPT_TAIL, decode_program
         text = prompt if prompt.startswith(PROMPT_HEAD) else PROMPT_HEAD + prompt.strip() + PROMPT_TAIL
         ids = self._ids(text)
         rows = self.trunk.generate(self.role, [ids] * n, max_new_tokens, temperature=temperature, top_k=top_k, seed=seed)
