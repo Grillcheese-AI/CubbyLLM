@@ -1,0 +1,142 @@
+{
+ "n": 50,
+ "records": 200,
+ "archive": true,
+ "runs": true,
+ "endpoints": {
+  "user /board/home": {
+   "cold_ms": 205.6,
+   "p50_ms": 4.4,
+   "p95_ms": 7.3,
+   "max_ms": 8.5
+  },
+  "user /board/system": {
+   "cold_ms": 97.5,
+   "p50_ms": 4.8,
+   "p95_ms": 8.1,
+   "max_ms": 9.7
+  },
+  "user /board/journey/r{last}": {
+   "cold_ms": 5.0,
+   "p50_ms": 4.4,
+   "p95_ms": 7.1,
+   "max_ms": 15.6
+  },
+  "user /board/watch": {
+   "cold_ms": 3.3,
+   "p50_ms": 3.8,
+   "p95_ms": 4.9,
+   "max_ms": 6.2
+  },
+  "user /board/worlds": {
+   "cold_ms": 3.2,
+   "p50_ms": 2.9,
+   "p95_ms": 4.8,
+   "max_ms": 8.0
+  },
+  "user /board/forecast": {
+   "cold_ms": 2.8,
+   "p50_ms": 3.7,
+   "p95_ms": 5.6,
+   "max_ms": 6.8
+  },
+  "user /board/mood": {
+   "cold_ms": 4.3,
+   "p50_ms": 3.1,
+   "p95_ms": 5.3,
+   "max_ms": 6.4
+  },
+  "user /board/agents": {
+   "cold_ms": 3.9,
+   "p50_ms": 3.8,
+   "p95_ms": 5.8,
+   "max_ms": 7.5
+  },
+  "user /board": {
+   "cold_ms": 3.3,
+   "p50_ms": 3.6,
+   "p95_ms": 5.1,
+   "max_ms": 7.1
+  },
+  "user /board/static/app.js": {
+   "cold_ms": 3.8,
+   "p50_ms": 3.3,
+   "p95_ms": 5.8,
+   "max_ms": 7.8
+  },
+  "user /board/assets/chat.webp": {
+   "cold_ms": 4.1,
+   "p50_ms": 5.0,
+   "p95_ms": 20.2,
+   "max_ms": 25.7
+  },
+  "audit /board/home": {
+   "cold_ms": 110.8,
+   "p50_ms": 3.4,
+   "p95_ms": 5.3,
+   "max_ms": 9.8
+  },
+  "audit /board/system": {
+   "cold_ms": 96.9,
+   "p50_ms": 4.2,
+   "p95_ms": 6.9,
+   "max_ms": 7.9
+  },
+  "audit /board/journey/r{last}": {
+   "cold_ms": 3.1,
+   "p50_ms": 3.4,
+   "p95_ms": 5.7,
+   "max_ms": 7.3
+  },
+  "audit /board/watch": {
+   "cold_ms": 2.5,
+   "p50_ms": 2.9,
+   "p95_ms": 4.4,
+   "max_ms": 6.7
+  },
+  "audit /board/worlds": {
+   "cold_ms": 2.6,
+   "p50_ms": 3.8,
+   "p95_ms": 5.7,
+   "max_ms": 8.1
+  },
+  "audit /board/forecast": {
+   "cold_ms": 2.7,
+   "p50_ms": 3.3,
+   "p95_ms": 4.7,
+   "max_ms": 6.6
+  },
+  "audit /board/mood": {
+   "cold_ms": 2.5,
+   "p50_ms": 3.0,
+   "p95_ms": 5.1,
+   "max_ms": 6.4
+  },
+  "audit /board/agents": {
+   "cold_ms": 2.3,
+   "p50_ms": 3.6,
+   "p95_ms": 4.6,
+   "max_ms": 6.3
+  },
+  "audit /board": {
+   "cold_ms": 4.6,
+   "p50_ms": 3.3,
+   "p95_ms": 6.5,
+   "max_ms": 8.0
+  },
+  "audit /board/static/app.js": {
+   "cold_ms": 6.9,
+   "p50_ms": 4.2,
+   "p95_ms": 6.2,
+   "max_ms": 9.0
+  },
+  "audit /board/assets/chat.webp": {
+   "cold_ms": 4.2,
+   "p50_ms": 4.7,
+   "p95_ms": 22.8,
+   "max_ms": 27.0
+  }
+ },
+ "worst_p95_ms": 22.8,
+ "worst_cold_ms": 205.6
+}

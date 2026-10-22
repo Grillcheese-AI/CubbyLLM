@@ -69,6 +69,12 @@ def _loop_sink(ev: dict) -> None:
             pass
 
 
+def ring_times() -> dict:
+    """Each loop event's time by its id, from the ring (the board's journey timings, order 0027)."""
+    with _LOOP_LOCK:
+        return {e["id"]: e.get("t") for e in _LOOP_RING if "id" in e}
+
+
 def wire_loop_events() -> None:
     """Register the server as a listener of `cubbyllm.reasoning.events` (idempotent)."""
     global _LOOP_WIRED
@@ -132,6 +138,13 @@ def make_handler(brain):
             from audience import audit_chain, audit_only
             live = getattr(brain, "pac_live", None)
             who = self._who()
+            if self.path.startswith("/board"):                # the control board (order 0027): off = 404
+                from board_api import handle
+                got = handle(brain, self.path, who, ring_times) if getattr(brain, "board", False) else (404, {"error": "unknown path"})
+                if got is not None:
+                    code, out = got
+                    self._raw(code, *out) if isinstance(out, tuple) else self._send(code, out)
+                    return
             if audit_only(self.path) and who != "audit":      # the panel, the event streams, the audit view
                 self._send(403, {"error": "audit only"})
                 return
@@ -395,6 +408,9 @@ def main():
                     help="mount the RSS date source for 'what happened in <date>' asks: headlines enter the "
                          "store as facts about the DATE, attributed to the publisher, through the same gate. "
                          "Only a `when` ask ever consults it.")
+    ap.add_argument("--board", action="store_true",
+                    help="serve the control board at /board (dashboard/board/, standin/board_api.py; order 0027); "
+                         "off, every /board path answers 404")
     ap.add_argument("--news-archive", default=os.environ.get("CUBBY_NEWS_ARCHIVE") or None,
                     help="poll the feed manifest's active feeds hourly into this archive folder (standin/news_archive.py, "
                          "order 0024; default CUBBY_NEWS_ARCHIVE; off when unset)")
@@ -463,6 +479,9 @@ def main():
         if args.history:
             print(f"  every record appended to {args.history} (the sleep cycle's input)", flush=True)
         print(f"  POST /ask {{\"text\": ...}} -> the loop's record; watch it at http://{args.host}:{args.port}/panel", flush=True)
+    brain.board = bool(args.board)
+    if args.board:
+        print(f"control board: http://{args.host}:{args.port}/board (add ?token=<audit token> for the audit view)", flush=True)
     if args.news_archive:
         from news_archive import start_poller
         start_poller(args.news_archive, log=lambda m: print(m, flush=True))
