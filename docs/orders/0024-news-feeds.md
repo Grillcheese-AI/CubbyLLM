@@ -42,6 +42,18 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
   - Checked the same way the same day: Le Devoir's `manchettes.xml` (36 items) and the FeedBurner "Fil de presse"
     (19 items) are both current.
   - Then other Québec and French outlets, each checked the same way.
+  - **AI opt-outs are a refusal (Cowork, 2026-10-22; Nick to confirm per publisher).** La Presse, Le Devoir and
+    Radio-Canada answer the poller (`CubbyLLM/0.1` is not on their lists), but each one's robots.txt blocks AI agents
+    by name: La Presse blocks ClaudeBot, anthropic-ai, CCBot, PerplexityBot and Google-Extended; Le Devoir also blocks
+    GPTBot, ChatGPT-User and OAI-SearchBot; Radio-Canada blocks those plus Perplexity-User, cohere-ai and DeepSeek.
+    That is a publisher declining AI use, and a name not on the list does not change it, the same rule
+    `news_source.py` applies to CBC. So the poller checks each publisher's own site (not the feed's host: the
+    FeedBurner copy of Le Devoir carries no robots rule of its own) and **holds** a feed whose publisher blocks AI
+    agents: not polled, not stored, until Nick decides for that publisher (a licence, or a written yes from it).
+    The English feeds are checked the same way. Report which feeds run and which are held.
+  - **Sources that welcome reuse** come first: government news releases under an open licence (the Government of
+    Canada's, under the Open Government Licence - Canada; Québec's, once its terms are checked), and feeds whose
+    terms allow it.
 - **Events by day:** items about the same event (shared names and key words, within a day or two) grouped across
   outlets; who and what read by the frames (Cubby-native), as **reported** claims dated by their items. A group stays
   "reported" however many outlets carry it, per `news_source.py`'s rule.
