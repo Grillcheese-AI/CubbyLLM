@@ -157,3 +157,13 @@ def test_gzip_body_is_read(monkeypatch):
     monkeypatch.setattr(na.urllib.request, "urlopen", lambda rq, timeout=20: R())
     code, body = na._get("https://un.example/rss")
     assert code == 200 and na.parse(body)[0]["title"] == "Minister announces funding"
+
+
+def test_an_item_carries_the_topics_of_its_feeds(tmp_path):
+    pages = {"https://gi.example/t/1": ATOM, "https://gi.example/t/2": ATOM}
+    m = _manifest(tmp_path, [{"id": f"t{i}", "url": f"https://gi.example/t/{i}", "status": "active", "topic": name}
+                             for i, name in ((1, "Aid"), (2, "Food"))])
+    a = na.Archive(tmp_path / "a", fetch=_fetcher(pages, []))
+    a.poll_all(m)
+    rows = [json.loads(l) for f in (tmp_path / "a").glob("????-??-??.jsonl") for l in f.read_text(encoding="utf-8").splitlines()]
+    assert na.topics(rows) == {"https://gc.example/1": ["Aid", "Food"]}

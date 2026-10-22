@@ -132,6 +132,7 @@ class Archive:
                     continue
                 self.keys.add(k)
                 f.write(json.dumps({"key": k, "feed": feed["id"], "lang": feed.get("lang"), "kind": feed.get("kind", "news"),
+                                    **({"topic": feed["topic"]} if feed.get("topic") else {}),
                                     "first_seen": row["at"], **it}, ensure_ascii=False) + "\n")
                 row["new"] += 1
         return {**row, "items": len(items)}
@@ -198,6 +199,15 @@ def stats(root) -> dict:
             per[o["feed"]][f.stem] += 1
     return {"items": len(keys), "duplicates": dup, "days": [f.stem for f in files],
             "bytes": sum(f.stat().st_size for f in files), "per_feed_per_day": per}
+
+
+def topics(rows) -> dict[str, list[str]]:
+    """Each item's topics: the topics of every feed that carried it (by link; Global Issues' topic feeds, Nick)."""
+    out: dict[str, set] = {}
+    for r in rows:
+        if r.get("topic") and r.get("link"):
+            out.setdefault(r["link"], set()).add(r["topic"])
+    return {k: sorted(v) for k, v in out.items()}
 
 
 def start_poller(root, every_s: int = 3600, manifest=MANIFEST, log=print) -> threading.Thread:

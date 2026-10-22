@@ -656,6 +656,614 @@
    "every_h": 1,
    "ai_agents_named": [],
    "checked": "2026-10-22"
+  },
+  {
+   "id": "globalissues-topic-786",
+   "url": "https://www.globalissues.org/news/topic/786/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Aid"
+  },
+  {
+   "id": "globalissues-topic-66",
+   "url": "https://www.globalissues.org/news/topic/66/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Arms Control"
+  },
+  {
+   "id": "globalissues-topic-73",
+   "url": "https://www.globalissues.org/news/topic/73/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Arms Trade—a major cause of suffering"
+  },
+  {
+   "id": "globalissues-topic-169",
+   "url": "https://www.globalissues.org/news/topic/169/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Biodiversity"
+  },
+  {
+   "id": "globalissues-topic-2",
+   "url": "https://www.globalissues.org/news/topic/2/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Causes of Poverty"
+  },
+  {
+   "id": "globalissues-topic-178",
+   "url": "https://www.globalissues.org/news/topic/178/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Climate Change and Global Warming"
+  },
+  {
+   "id": "globalissues-topic-83",
+   "url": "https://www.globalissues.org/news/topic/83/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Conflicts in Africa"
+  },
+  {
+   "id": "globalissues-topic-235",
+   "url": "https://www.globalissues.org/news/topic/235/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Consumption and Consumerism"
+  },
+  {
+   "id": "globalissues-topic-761",
+   "url": "https://www.globalissues.org/news/topic/761/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Democracy"
+  },
+  {
+   "id": "globalissues-topic-595",
+   "url": "https://www.globalissues.org/news/topic/595/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Energy Security"
+  },
+  {
+   "id": "globalissues-topic-168",
+   "url": "https://www.globalissues.org/news/topic/168/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Environmental Issues"
+  },
+  {
+   "id": "globalissues-topic-749",
+   "url": "https://www.globalissues.org/news/topic/749/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Food and Agriculture Issues"
+  },
+  {
+   "id": "globalissues-topic-35",
+   "url": "https://www.globalissues.org/news/topic/35/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Foreign Aid for Development Assistance"
+  },
+  {
+   "id": "globalissues-topic-124",
+   "url": "https://www.globalissues.org/news/topic/124/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Foreign Policy — Projecting Power"
+  },
+  {
+   "id": "globalissues-topic-38",
+   "url": "https://www.globalissues.org/news/topic/38/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Free Trade and Globalization"
+  },
+  {
+   "id": "globalissues-topic-718",
+   "url": "https://www.globalissues.org/news/topic/718/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "G8: Too Much Power?"
+  },
+  {
+   "id": "globalissues-topic-65",
+   "url": "https://www.globalissues.org/news/topic/65/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Geopolitics"
+  },
+  {
+   "id": "globalissues-topic-768",
+   "url": "https://www.globalissues.org/news/topic/768/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Global Financial Crisis"
+  },
+  {
+   "id": "globalissues-topic-587",
+   "url": "https://www.globalissues.org/news/topic/587/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Health Issues"
+  },
+  {
+   "id": "globalissues-topic-198",
+   "url": "https://www.globalissues.org/news/topic/198/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Human Population"
+  },
+  {
+   "id": "globalissues-topic-137",
+   "url": "https://www.globalissues.org/news/topic/137/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Human Rights Issues"
+  },
+  {
+   "id": "globalissues-topic-537",
+   "url": "https://www.globalissues.org/news/topic/537/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Immigration"
+  },
+  {
+   "id": "globalissues-topic-102",
+   "url": "https://www.globalissues.org/news/topic/102/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "International Criminal Court"
+  },
+  {
+   "id": "globalissues-topic-156",
+   "url": "https://www.globalissues.org/news/topic/156/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Mainstream Media"
+  },
+  {
+   "id": "globalissues-topic-103",
+   "url": "https://www.globalissues.org/news/topic/103/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Middle East"
+  },
+  {
+   "id": "globalissues-topic-522",
+   "url": "https://www.globalissues.org/news/topic/522/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Natural Disasters"
+  },
+  {
+   "id": "globalissues-topic-177",
+   "url": "https://www.globalissues.org/news/topic/177/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Nature and Animal Conservation"
+  },
+  {
+   "id": "globalissues-topic-25",
+   "url": "https://www.globalissues.org/news/topic/25/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Non-governmental Organizations on Development Issues"
+  },
+  {
+   "id": "globalissues-topic-67",
+   "url": "https://www.globalissues.org/news/topic/67/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Nuclear Weapons"
+  },
+  {
+   "id": "globalissues-topic-165",
+   "url": "https://www.globalissues.org/news/topic/165/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Racism"
+  },
+  {
+   "id": "globalissues-topic-693",
+   "url": "https://www.globalissues.org/news/topic/693/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Rights of Indigenous People"
+  },
+  {
+   "id": "globalissues-topic-367",
+   "url": "https://www.globalissues.org/news/topic/367/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Sustainable Development"
+  },
+  {
+   "id": "globalissues-topic-28",
+   "url": "https://www.globalissues.org/news/topic/28/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Third World Debt Undermines Development"
+  },
+  {
+   "id": "globalissues-topic-1",
+   "url": "https://www.globalissues.org/news/topic/1/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Trade, Economy, & Related Issues"
+  },
+  {
+   "id": "globalissues-topic-24",
+   "url": "https://www.globalissues.org/news/topic/24/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "United Nations on Development Issues"
+  },
+  {
+   "id": "globalissues-topic-601",
+   "url": "https://www.globalissues.org/news/topic/601/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Water and Development"
+  },
+  {
+   "id": "globalissues-topic-166",
+   "url": "https://www.globalissues.org/news/topic/166/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "Women’s Rights"
+  },
+  {
+   "id": "globalissues-topic-6",
+   "url": "https://www.globalissues.org/news/topic/6/feed",
+   "publisher_hosts": [
+    "www.globalissues.org"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick; a topic feed (its items carry the topic)",
+   "kind": "news",
+   "every_h": 6,
+   "ai_agents_named": [],
+   "checked": "2026-10-22",
+   "topic": "World Hunger and Poverty"
   }
  ],
  "gdelt": {
