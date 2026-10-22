@@ -64,6 +64,11 @@ def cached_people(n: int, rng) -> list[str]:
     return out[:n]
 
 
+def spoke(r: dict) -> bool:
+    """Spoken: a verified chain, or a profile / introspection whose lines the VM recovered (`sleep.answered`)."""
+    return bool(r.get("verified") or (r.get("reason") in ("profile", "self") and r.get("answer")))
+
+
 def spoken_text(user: dict) -> str:
     parts = []
     for f in TEXT_FIELDS:
@@ -99,16 +104,16 @@ def main() -> None:
     forms = Forms()
     held = [k for k in pairs if k not in out_keys and k[1] in eb.REL.values()]
     rng.shuffle(held)
-    store_q = [(forms.render(rel, s, eb.TENSE.get(rel, "past"))[0], "store", (s, rel)) for s, rel in held[:150]]
+    store_q = [(forms.render(rel, s, eb.TENSE.get(rel, "past"))[0], "store", (s, rel)) for s, rel in held[:600]]
     people = cached_people(120, rng)
     lookup_q = [(q, "lookup", (p, rel)) for p in people for rel, q in
                 (("date of birth", f"When was {p} born?"), ("place of birth", f"Where was {p} born?"))][:150]
-    profile_q = [(f"Who was {s}?", "profile", (s, None)) for s, _r in held[150:190]] + \
+    profile_q = [(f"Who was {s}?", "profile", (s, None)) for s, _r in held[600:700]] + \
                 [(f"Who was {p}?", "profile", (p, None)) for p in people[:40]]
     queue = bench_q + [x for grp in zip(store_q, lookup_q, profile_q) for x in grp] + store_q[len(profile_q):]
     recs = []
     for q, where, key in queue:
-        if sum(r["verified"] for _w, r in recs) >= a.answers and len(recs) >= len(bench_q):
+        if sum(spoke(r) for _w, r in recs) >= a.answers and len(recs) >= len(bench_q):
             break
         try:
             recs.append((where, loop.ask(q)))
@@ -131,12 +136,12 @@ def main() -> None:
         quo = guard.quotes(text)
         bad_fields = sorted(set(user) & set(A.PROVENANCE_FIELDS + A.INTERNAL_FIELDS))
         ok_chain = None
-        if r.get("verified") and r.get("id"):
+        if spoke(r) and r.get("id"):
             chain = A.audit_chain(loop, r["id"])
             ok_chain = bool(chain and chain["sealed"] and chain["facts"] is not None)
             sealed += ok_chain
         leaks += bool(hit); urls += bool(url); quotes += bool(quo); fields += bool(bad_fields); guarded += bool(r.get("guard"))
-        rows.append({"where": where, "question": r.get("question"), "verified": bool(r.get("verified")), "tier": r.get("tier"),
+        rows.append({"where": where, "question": r.get("question"), "verified": spoke(r), "tier": r.get("tier"),
                      "answer": r.get("answer"), "reason": r.get("reason"), "source_names": hit, "urls": url,
                      "quotes": len(quo), "provenance_fields": bad_fields, "audit_chain": ok_chain, "guard": bool(r.get("guard"))})
     spoken = [x for x in rows if x["verified"]]
