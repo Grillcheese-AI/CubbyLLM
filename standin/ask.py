@@ -641,7 +641,7 @@ class AskLoop:
     def __init__(self, emitter, world=None, source="wikidata", lexicon: bool = True, exe: str | None = None,
                  max_new: int = 300, lfm_gguf: str | None = None, run_fn=None, tau_profile: float = TAU_VM[1],
                  news=None, history_path: str | None = None, web=None, skills=None, scene=None, books=None,
-                 tense: bool | None = None):
+                 tense: bool | None = None, loci=None):
         from cubbyllm.bridges import cubelang_client as cc
         from cubbyllm.reasoning.plan_verify import StoreRelations
         self.emitter = emitter
@@ -684,6 +684,11 @@ class AskLoop:
         # the question's tense and year against the answer's dates (order 0012: "Who rules England?" on a reign
         # that ended is not answered); on with the books unless `tense` says otherwise, off without them
         self.tense = (books is not None) if tense is None else bool(tense)
+        # the 450M's loci path as the reader (order 0007): a checkpoint path, or a LociReader; None = today's loop
+        if isinstance(loci, (str, pathlib.PurePath)):
+            from loci_reader import LociReader
+            loci = LociReader(str(loci))
+        self.loci = loci
         from audience import LeakGuard                   # sources are internal (order 0016): the guard at the mouth,
         self.guard = LeakGuard(index=getattr(books, "index", None))   # the books' passages for its 8-word scan
         self._forms = None
@@ -902,10 +907,18 @@ class AskLoop:
                 if route(plan, self.scene):
                     source = self.scene
                     rec["world"] = "scene"
-            lr = learn_and_answer(question, lambda q, k: [], self._run_fn, store=self.world, known=self.known,
-                                  source=source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
-                                  plan=plan, resolvers=self.resolvers, choose=parse_choose(choose) or None,
-                                  fallbacks=self.fallbacks, before=[self.books] if self.books is not None else None)
+            def learn():
+                return learn_and_answer(question, lambda q, k: [], self._run_fn, store=self.world, known=self.known,
+                                        source=source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
+                                        plan=plan, resolvers=self.resolvers, choose=parse_choose(choose) or None,
+                                        fallbacks=self.fallbacks, before=[self.books] if self.books is not None else None)
+            if self.loci is not None:                    # the trunk reads first; a miss is looked up once (order 0007)
+                from loci_reader import through_loci
+                if through_loci(self, rec, rels, seed, learn) is not None:
+                    rec["wall_s"] = round(time.perf_counter() - t0, 3)
+                    self._keep(rec)
+                    return rec
+            lr = learn()
         rec.update(answer=lr.result.answer if lr.result.verified else None, verified=bool(lr.result.verified),
                    reason=None if lr.result.verified else lr.result.reason,
                    learned=[_learned(p) for p in lr.learned],

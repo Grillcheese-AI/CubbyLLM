@@ -406,6 +406,8 @@ def main():
     ap.add_argument("--world", action="append", default=[], choices=["hdc"],
                     help="a read-only world behind the wiki world for the ask loop: 'hdc' = the hdc set's Wikidata5M facts "
                          "(standin/data/hdc_world.py; CUBBY_HDC_WORLD), a changing value said 'as of' its snapshot")
+    ap.add_argument("--loci", default=os.environ.get("CUBBY_LOCI_CKPT") or None,
+                    help="the 450M checkpoint whose loci path reads a fact before the lookup (order 0007; CUBBY_LOCI_CKPT)")
     ap.add_argument("--tense", action="store_true",
                     help="check each answer's dates against the question's tense and year without the books too "
                          "('who rules X?' on a reign that ended is not answered); on whenever --books is")
@@ -447,7 +449,7 @@ def main():
         brain.ask_loop = AskLoop(brain.emitter, world=world, source=args.ask, lexicon=True,
                                  max_new=args.ask_max_new, news="rss" if args.news else None,
                                  history_path=args.history or None, web=web, skills=args.skills or None,
-                                 books=args.books, tense=True if args.tense else None)
+                                 books=args.books, tense=True if args.tense else None, loci=args.loci)
         print("  web: " + (f"{web.backend.name} behind {args.ask}, reader {'the local model' if web.reader else 'off'}; "
                            "a web fact is held until two independent sites state it" if web else
                            "off (set BRAVE_SEARCH_API_KEY or --searxng to turn it on)"), flush=True)

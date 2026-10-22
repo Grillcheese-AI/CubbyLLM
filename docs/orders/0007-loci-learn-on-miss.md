@@ -1,5 +1,5 @@
 # 0007 — Don't know → look it up once from a verified source → know it next time, through the loci path
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("if it doesn't know it needs to find the fact from a
 verified source online with the one-shot learning; next time it will know") · hypothesis: H-K10 (+ the ask loop)
 
