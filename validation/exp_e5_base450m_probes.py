@@ -57,15 +57,8 @@ def log(msg: str = "") -> None:
     LOG_LINES.append(msg)
 
 
-def load_grilly(export_dir: str) -> CubbyForCausalLM:
-    with open(os.path.join(export_dir, "config.json"), encoding="utf-8") as f:
-        cfg = json.load(f)
-    fields = {k: v for k, v in cfg.items() if k not in ("model_type", "source")}
-    model = CubbyForCausalLM(CubbyConfig(**fields))
-    missing, unexpected = load_model(model, os.path.join(export_dir, "model.safetensors"))
-    if missing or unexpected:
-        raise SystemExit(f"export does not match the model: missing {missing}, unexpected {unexpected}")
-    return model, cfg
+from cubbyllm.ops.grilly_seats import load_export as load_grilly  # noqa: E402,F401 -- the seats load the
+#   export the same way (order 0031)
 
 
 def logprobs_of(model, x: np.ndarray, y: np.ndarray, keep: int = 0) -> np.ndarray:

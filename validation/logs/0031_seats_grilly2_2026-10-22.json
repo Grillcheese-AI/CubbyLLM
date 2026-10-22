@@ -1,0 +1,158 @@
+{
+ "what": "order 0031: the 450M seats on grilly2, the trunk's own grilly calls (before) vs cubbyllm/ops/grilly_seats.py (after)",
+ "env": {
+  "python": "3.12.10",
+  "grilly": "grilly2",
+  "card": "the local card (Vulkan)",
+  "git_before": "172d8c3",
+  "after": "working tree on 172d8c3 (the seat change)",
+  "export": "base450m_cont (the adapter's base)"
+ },
+ "same": true,
+ "before": {
+  "seats": "cubby450m[programs=cubby450m_v12e_w_step_cont,talk=talk_v2_2]",
+  "swaps": 3,
+  "max_new": 64,
+  "outputs": {
+   "programs": [
+    "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"$capital\";\n        bind frame, HOP1, \"country\";\n        return recover(frame, SEED);",
+    "        create s0 : quantity;   # step 0: $x + 3\n        assign s0 = $x;\n        add s0, 3;\n",
+    "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"$MYSTERY\";\n        bind frame, HOP1, \"mother\";\n        return recover(frame, SE"
+   ],
+   "talk_ids": [
+    326,
+    2434,
+    4343,
+    289,
+    889,
+    366,
+    368,
+    724,
+    2528,
+    396,
+    6477,
+    13,
+    26522,
+    1915,
+    289,
+    1757,
+    724,
+    285,
+    642,
+    13,
+    127936
+   ],
+   "program_again": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"$capital\";\n        bind frame, HOP1, \"country\";\n        return recover(frame, SEED);",
+   "sampled": [
+    "        create s0 : quantity;   # step 0: $2 + 1\n        assign s0 = 2;\n        add s0, 1;\n",
+    "        create s0 : quantity;   # step 0: $x + 3\n        assign s0 = $x;\n        add s0, 3;\n"
+   ],
+   "slotted": [
+    {
+     "id": "arithmetic-80011779d0f8",
+     "task": "arithmetic",
+     "program": "        create s0 : quantity;   # step 0: $N2 / 100\n        assign s0 = $N2;\n        div s0, 100;\n",
+     "gold_prefix": false
+    },
+    {
+     "id": "chain-79c036d8edd2",
+     "task": "chain",
+     "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"$E1\";\n        return recover(frame, H1_COUNTRY);\n    }\n",
+     "gold_prefix": true
+    },
+    {
+     "id": "kernel-715d3175740a",
+     "task": "kernel",
+     "program": "program Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n",
+     "gold_prefix": false
+    },
+    {
+     "id": "plan-2134219ce16a",
+     "task": "plan",
+     "program": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"$E1\";\n        bind frame, HOP1, \"country\";\n        return recover(frame, SEED",
+     "gold_prefix": true
+    },
+    {
+     "id": "role_binding-efe4736cba20",
+     "task": "role_binding",
+     "program": "program Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    @external\n    public function parse(raw: str): Input { return raw; }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n",
+     "gold_prefix": true
+    }
+   ]
+  },
+  "wall_s": 25.9
+ },
+ "after": {
+  "seats": "cubby450m[programs=cubby450m_v12e_w_step_cont,talk=talk_v2_2]",
+  "swaps": 3,
+  "max_new": 64,
+  "outputs": {
+   "programs": [
+    "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"$capital\";\n        bind frame, HOP1, \"country\";\n        return recover(frame, SEED);",
+    "        create s0 : quantity;   # step 0: $x + 3\n        assign s0 = $x;\n        add s0, 3;\n",
+    "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"$MYSTERY\";\n        bind frame, HOP1, \"mother\";\n        return recover(frame, SE"
+   ],
+   "talk_ids": [
+    326,
+    2434,
+    4343,
+    289,
+    889,
+    366,
+    368,
+    724,
+    2528,
+    396,
+    6477,
+    13,
+    26522,
+    1915,
+    289,
+    1757,
+    724,
+    285,
+    642,
+    13,
+    127936
+   ],
+   "program_again": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"$capital\";\n        bind frame, HOP1, \"country\";\n        return recover(frame, SEED);",
+   "sampled": [
+    "        create s0 : quantity;   # step 0: $2 + 1\n        assign s0 = 2;\n        add s0, 1;\n",
+    "        create s0 : quantity;   # step 0: $x + 3\n        assign s0 = $x;\n        add s0, 3;\n"
+   ],
+   "slotted": [
+    {
+     "id": "arithmetic-80011779d0f8",
+     "task": "arithmetic",
+     "program": "        create s0 : quantity;   # step 0: $N2 / 100\n        assign s0 = $N2;\n        div s0, 100;\n",
+     "gold_prefix": false
+    },
+    {
+     "id": "chain-79c036d8edd2",
+     "task": "chain",
+     "program": "use vsa;\n\nprogram CotChain implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, H1_COUNTRY, \"$E1\";\n        return recover(frame, H1_COUNTRY);\n    }\n",
+     "gold_prefix": true
+    },
+    {
+     "id": "kernel-715d3175740a",
+     "task": "kernel",
+     "program": "program Dec0 implements ISolver {\n    type Input = quantity;\n    type Output = quantity;\n\n    storage {\n        threshold: mutable u64 = 0;\n        decisions_made: mutable u64 = 0;\n        last_decision: mutable str = \"\";\n    }\n\n",
+     "gold_prefix": false
+    },
+    {
+     "id": "plan-2134219ce16a",
+     "task": "plan",
+     "program": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"$E1\";\n        bind frame, HOP1, \"country\";\n        return recover(frame, SEED",
+     "gold_prefix": true
+    },
+    {
+     "id": "role_binding-efe4736cba20",
+     "task": "role_binding",
+     "program": "program Ev implements ISolver {\n    type Input = str;\n    type Output = symbol;\n    @external\n    public function parse(raw: str): Input { return raw; }\n\n    public pure function verify(input: Input, output: Output): bool { return true; }\n\n",
+     "gold_prefix": true
+    }
+   ]
+  },
+  "wall_s": 25.5
+ }
+}

@@ -35,7 +35,7 @@ class Cubby450mTrunk:
         self.export_dir, self.tokenizer_path, self.max_ctx = export_dir, tokenizer, int(max_ctx)
         self.adapter_dirs = dict(adapters)
         self.name = "cubby450m[" + ",".join(f"{r}={os.path.basename(os.path.normpath(d))}" for r, d in adapters.items()) + "]"
-        self._model = self._tk = self._eos = self._grilly = None
+        self._model = self._tk = self._eos = self._ops = None
         self._wrapped: dict = {}
         self._weights: dict = {}                             # role -> {path: (A numpy, B numpy)}
         self._role = None
@@ -56,15 +56,12 @@ class Cubby450mTrunk:
             return
         import sys
         here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        for p in (here, os.path.join(here, "validation")):
-            if p not in sys.path:
-                sys.path.insert(0, p)
-        import grilly  # grilly2
-        from grilly.infer.lora import apply_lora_
+        if here not in sys.path:
+            sys.path.insert(0, here)
         from safetensors.numpy import load_file
         from tokenizers import Tokenizer
-        from exp_e5_base450m_probes import load_grilly
-        model, _cfg = load_grilly(self.export_dir)
+        from cubbyllm.ops import grilly_seats as ops     # grilly2, behind the ops seam (order 0031)
+        model, _cfg = ops.load_export(self.export_dir)
         layout = None
         for role in self.adapter_dirs:
             meta_p, tensors_p = self._adapter_files(role)
@@ -72,7 +69,7 @@ class Cubby450mTrunk:
             this = (int(meta["rank"]), float(meta["alpha"]), tuple(meta["targets"]))
             if layout is None:
                 layout = this
-                self._wrapped = apply_lora_(model, meta["rank"], meta["alpha"], meta["targets"])
+                self._wrapped = ops.wrap_lora(model, meta["rank"], meta["alpha"], meta["targets"])
             elif this != layout:
                 raise ValueError(f"adapter {role!r} has another LoRA layout than the first (rank/alpha/targets differ): "
                                  "one base can only swap adapters of one layout")
@@ -81,7 +78,7 @@ class Cubby450mTrunk:
                                    for path in self._wrapped}
         self._tk = Tokenizer.from_file(self.tokenizer_path)
         self._eos = self._tk.token_to_id("</s>")
-        self._model, self._grilly = model, grilly
+        self._model, self._ops = model, ops
 
     def use(self, role: str) -> None:
         """The role's adapter into the wrapped projections (a no-op when it is already there)."""
@@ -90,11 +87,7 @@ class Cubby450mTrunk:
         self._load()
         if role == self._role:
             return
-        with self._grilly.no_grad():
-            for path, mod in self._wrapped.items():
-                a, b = self._weights[role][path]
-                mod.lora_A.weight.copy_(self._grilly.from_numpy(a))
-                mod.lora_B.weight.copy_(self._grilly.from_numpy(b))
+        self._ops.copy_pair(self._wrapped, self._weights[role])
         self._role = role
         self.swaps += 1
 
@@ -168,16 +161,9 @@ class Cubby450mTrunk:
         """`rows` of token ids -> the generated ids per row (the prompt cut off), under the role's adapter."""
         with self._lock:
             self.use(role)
-            g = self._grilly
-            if seed is not None and temperature > 0:
-                g.manual_seed(int(seed))
-            with g.no_grad():
-                if temperature > 0:
-                    out = self._model.generate(g.tensor(rows), max_new_tokens=max_new_tokens, eos_token_id=self._eos,
-                                               do_sample=True, temperature=float(temperature), top_k=int(top_k), top_p=1.0)
-                else:
-                    out = self._model.generate(g.tensor(rows), max_new_tokens=max_new_tokens, eos_token_id=self._eos)
-            return [r[len(p):] for r, p in zip(out.tolist(), rows)]
+            out = self._ops.generate(self._model, rows, max_new_tokens, self._eos, temperature=temperature,
+                                     top_k=top_k, seed=seed)
+            return [r[len(p):] for r, p in zip(out, rows)]
 
 
 class Cubby450mEmitter:
