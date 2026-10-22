@@ -24,7 +24,7 @@ A fiction world never answers a question about reality. A question reaches it on
 asks inside it.
 
 ## Tiers (Nick's rule, 2026-10-22)
-- **attributed:** one source says it. Spoken with its source ("According to …").
+- **attributed:** one source says it. Spoken hedged ("one account says …"), without naming the source.
 - **corroborated:** two independent sources agree. Different authors, or a book and Wikidata, count as
   independent. Wikipedia, DBpedia and Wikidata count as **one** family. Spoken as fact.
 - **held:** sources disagree. Both are kept; nothing is spoken flat.
@@ -44,6 +44,11 @@ asks inside it.
   - **build artifacts**.
 
 ## Rights
-Many sources are commercial books. They stay off-repo. Passages are internal evidence. A user sees the citation
-and at most a short quote. Nothing from them is committed, and no book title or local path appears in a committed
-file.
+**Sources are internal (Nick, 2026-10-22).** No reply to a regular user names a source, an author, a title, a site or
+a dataset, or quotes a passage. Every source is kept in the record, the ledger and the logs, and an **audit** view
+shows the whole chain behind an answer: the facts, the sources, the passages and the verdicts. That view is for the
+owner or an auditor, not for regular users (order 0016). A document the user gave Cubby is the user's own, and can be
+cited back to that user.
+
+Many sources are commercial books. They stay off-repo. Nothing from them is committed, and no book title or local
+path appears in a committed file.

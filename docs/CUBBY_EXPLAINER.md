@@ -35,7 +35,8 @@ claims, you can trace back to the facts it used.
 short line every time, in your language, instead of an invented answer. On its own test set it has answered 96% correctly
 and been wrong 0%, the rest being "I don't know yet". When you have allowed it to search, the line continues: "I can look
 it up for you if you want." Say yes and it searches, checks what it found against what it already knows, keeps the facts
-with their source, and answers. The next time anyone asks, it knows, and can say where it learned it. That is how its
+with their source, and answers. The next time anyone asks, it knows, and it keeps the record of where it learned it for an audit (its replies
+do not name their sources). That is how its
 knowledge grows: not by guessing, by looking things up with your permission and keeping the receipt.
 
 **It remembers what you tell it, and you can check that it did.** Say "remember that the cottage wifi is bluebird42"
@@ -72,7 +73,7 @@ doing in its own words. It is the same brain you chat with.
 could reach is off by default until you turn it on.
 
 **Coming:** ask it "what's in the news about the Canadiens tonight" and it fetches it, through a tool you have
-explicitly allowed, with the source attached. The mechanism is built and being trained; the switch is still off.
+explicitly allowed; the source is kept on record. The mechanism is built and being trained; the switch is still off.
 
 ## Real use cases
 

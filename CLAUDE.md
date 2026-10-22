@@ -74,7 +74,7 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   measured lessons (read its "Before you touch anything").
 - **Known red:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
   `cubbyllm.spatial` and `cubbyllm.reasoning.step_loop` (order 0002, proposed).
-- **Queue (2026-10-22):** 0001, 0004, 0005 done; 0006 (free-text keys, toy) in progress; **0011 (fact names in readable words) next, by Nick's priority**; suggested then 0012 (the books: passage finder + frames, attributed until corroborated), 0007 (learn on a miss), 0014 (the hdc set's 4.3M Wikidata facts as a world), 0013 (a Cubby-native book reader, the bulk pass), 0015 (everything in the datasets into worlds, `docs/WORLDS.md`), 0008 (creativity), 0009 (capacity to 10,000 facts), 0010 (casual talk); 0002, 0003 proposed.
+- **Queue (2026-10-22):** 0001, 0004, 0005 done; 0006 (free-text keys, toy) in progress; **0011 (fact names in readable words) next, by Nick's priority**; suggested then 0016 (sources internal, audit view), 0012 (the books: passage finder + frames, attributed until corroborated), 0007 (learn on a miss), 0014 (the hdc set's 4.3M Wikidata facts as a world), 0013 (a Cubby-native book reader, the bulk pass), 0015 (everything in the datasets into worlds, `docs/WORLDS.md`), 0008 (creativity), 0009 (capacity to 10,000 facts), 0010 (casual talk); 0002, 0003 proposed.
 
 ## Rules every change keeps
 
@@ -109,6 +109,9 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
 - No local drive paths, venv names or account names in committed files.
 - No permanent deletion: move things aside (`_discard/`, `docs/archive/`) instead.
 - Downloads of large external data need Nick's yes.
+- **Sources are internal** (Nick, 2026-10-22): no reply to a regular user names a source, author, title, site or
+  dataset, or quotes a passage. The record keeps every source, and the audit view (owner or auditor) shows it
+  (`docs/WORLDS.md`, order 0016).
 
 ## Working here
 

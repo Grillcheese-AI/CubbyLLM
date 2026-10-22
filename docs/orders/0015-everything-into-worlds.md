@@ -15,7 +15,8 @@ re-runs.
   in one sighting, not a thousand.
 - **Advantage over conventional models:** they only pretrain on their data, so it comes back blurred, uncited, and
   frozen at the training date. Here every source is also a store: exact, attributable, updatable without retraining.
-- **In plain words:** whatever you give Cubby, it reads once and keeps, and it can tell you where it learned it.
+- **In plain words:** whatever you give Cubby, it reads once and keeps, and it keeps track of where it learned
+  each thing (for an audit, not shown in replies).
 
 ## Build
 - **`standin/worlds_ingest.py`** (new, < 300 lines) and adapters (< 300 lines each). It reads the manifest's routes:

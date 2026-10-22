@@ -13,11 +13,11 @@ copy (`diag_swap_copy_run4_2026-10-21.json`). Its read-aware gate also tells an 
 and that is the "don't know" signal. Nothing connects the two yet.
 
 - **What it brings:** a question Cubby can't answer triggers one verified lookup. From then on, the trunk
-  itself answers it from the store through the loci path, with no retraining and the source attached.
+  itself answers it from the store through the loci path, with no retraining. The source is kept for audit and
+  never shown to users (0016).
 - **Advantage over conventional models:** they either hallucinate past their cutoff or need retraining or
   fine-tuning to learn a fact; here one admitted fact is known the next time it's asked.
-- **In plain words:** when it doesn't know, it checks a trusted source once, and from then on it knows, and
-  can say where it learned it.
+- **In plain words:** when it doesn't know, it checks a trusted source once, and from then on it knows.
 
 ## Build
 - A loci reader in the stand-in (`standin/loci_reader.py`, new, < 300 lines; `AskLoop(loci=...)` /
@@ -31,7 +31,8 @@ and that is the "don't know" signal. Nothing connects the two yet.
      NONE / EOS at the first piece.
 - In `AskLoop.ask`, with the reader on:
   - Try the loci reader first. A hit is spoken only if the host verifies it equals the store's value
-    (`value_check`), with the store's provenance. A mismatch is a refusal, never spoken.
+    (`value_check`). The provenance goes into the record, for audit, not into the reply. A mismatch is a refusal,
+    never spoken.
   - A miss goes to `learn_and_answer` as today. Once the gate admits the fact, ask the loci reader again and
     speak what it returns, under the same check.
   - Record which path answered, and whether a source was called, in the loop's record.

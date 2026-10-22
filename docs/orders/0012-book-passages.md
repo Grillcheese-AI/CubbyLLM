@@ -18,8 +18,8 @@ lacks: a **passage finder** that returns the paragraphs about an entity, with th
   a plain fact.
 - **Advantage over conventional models:** they absorb books into their weights and cannot say which book said what,
   or whether two sources agree. Here each fact keeps its witness, and agreement is counted, not assumed.
-- **In plain words:** it can tell you what your history books say about something and show you where, and it
-  only states a fact flatly once two different authors agree.
+- **In plain words:** it knows what your history books say, keeps track of which book said it, and only states
+  a fact flatly once two different authors agree.
 
 ## Build
 - **The index** (`standin/books.py`, new, < 300 lines; off-repo index file, path from the environment):
@@ -39,14 +39,15 @@ lacks: a **passage finder** that returns the paragraphs about an entity, with th
   - Provenance is the book, the offset and the sentence.
   - What no frame says, the source does not say.
 - **Tiers** (Nick's rule):
-  - one book → **attributed**, spoken as "According to <author>, <title>, …";
+  - one book → **attributed**, spoken hedged ("one account says …"), the book never named to a user;
   - two independent sources (different authors, or a book and Wikidata) → **corroborated**, spoken as fact;
   - a contradiction between sources → held, both kept, nothing spoken flat.
 
   These ride on the store's existing provenance and latent machinery (`standin/worlds.py`, the MoWM worlds). The
   book's era routes the fact to its temporal world (H-F2).
 - **In the ask loop:** `BookSource` goes first among the fallbacks (local, free), then Wikidata, then the web.
-- **Copyright:** passages are internal evidence. A user sees the citation and at most a short quote (≤ 25 words).
+- **Sources are internal (Nick):** a regular user never sees a citation, a title, an author or a quote; the audit
+  view (order 0016) does.
   No book text enters the repo: the index stays off-repo, and tests use synthetic paragraphs.
 
 ## Acceptance (pre-registered)
@@ -58,7 +59,8 @@ lacks: a **passage finder** that returns the paragraphs about an entity, with th
   contradiction) ≥ **0.95**. Report the yield per frame.
 - **Bench:** 100 questions the store cannot answer but a book can.
   - **0 wrong spoken**.
-  - Every attributed answer carries a citation whose passage holds the subject, the value and the relation cue.
+  - Every attributed answer carries, in its record, a citation whose passage holds the subject, the value and the
+    relation cue. No reply text names a source.
   - Corroborated answers are spoken flat only with two independent sources.
 - Off = unchanged (the ask loop without `BookSource`); full `pytest tests`.
 
