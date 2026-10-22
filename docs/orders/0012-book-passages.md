@@ -63,6 +63,11 @@ lacks: a **passage finder** that returns the paragraphs about an entity, with th
     relation cue. No reply text names a source.
   - Corroborated answers are spoken flat only with two independent sources.
 - Off = unchanged (the ask loop without `BookSource`); full `pytest tests`.
+- **Natural questions (Nick, 2026-10-22).** The bench and the parser's tests ask the way people ask: "Who
+  founded Rome?", "Where was Napoleon born?", "When was Napoleon born?". Not "What is the founded by of Rome?".
+  `What is the <relation> of <entity>?` may stay as the host's internal plan string only. Render questions from the
+  hdc set's `relation_template_mapping.csv` (a natural template per relation) plus a few hand-written variants
+  per relation, and check the parser maps each one to the same (entity, relation).
 
 ## Constraints
 - Rules in `CLAUDE.md` hold. CPU, Nick's machine. No model, no network. Nothing from the books in a committed file.
