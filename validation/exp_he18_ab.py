@@ -54,16 +54,7 @@ def plan_correct(generated: str, reference: str) -> bool:
             and all(relation_matches(r, h) for r, h in zip(rh, gh)))
 
 
-def vm_run(program: str) -> tuple[bool, object]:
-    """(executes, result) from the real VM, with the harvest's ISolver shim and answer function."""
-    from build_emitter_sft import answer_fn, shim_isolver
-    from cubbyllm.bridges import cubelang_client as cc
-    src = shim_isolver(program)
-    try:
-        out = cc.run_program_proto(src, fn=answer_fn(src))
-        return bool(out.get("ok")), out.get("result")
-    except Exception:
-        return False, None
+from cubbyllm.emit.format import vm_run  # noqa: E402,F401 -- the step loop's default VM too (order 0031)
 
 
 def value_correct(result, gold) -> bool:

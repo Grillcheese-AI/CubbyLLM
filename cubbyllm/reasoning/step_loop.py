@@ -37,7 +37,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import sys
 from collections import Counter
 from dataclasses import dataclass, field
 from fractions import Fraction
@@ -264,7 +263,7 @@ def recut_file(src: str, dst: str, only_arithmetic: bool = False, limit: int = 0
 class StepLoop:
     """Solve a question one VM-verified step at a time around an `Emitter` (annotated prompts, slotted blocks).
 
-    `vm(program) -> (ok, result)`; default: the real VM through the harvest's shim (validation/exp_he18_ab.vm_run).
+    `vm(program) -> (ok, result)`; default: the real VM through the harvest's shim (cubbyllm.emit.format.vm_run).
     `solve` returns {"answer", "steps": [...], "refused": reason | None, "emissions"}; the answer is None when a
     step was refused (unknown slot, copied literal, malformed, the VM), the loop ran past `max_steps`, or the
     stop named a slot the host does not have."""
@@ -366,11 +365,7 @@ class StepLoop:
 
 
 def default_vm():
-    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    for p in (os.path.join(root, "validation"), os.path.join(root, "standin"), os.path.join(root, "standin", "data")):
-        if p not in sys.path:
-            sys.path.insert(0, p)
-    from exp_he18_ab import vm_run
+    from ..emit.format import vm_run
     return vm_run
 
 

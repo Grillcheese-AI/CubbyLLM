@@ -2,7 +2,8 @@
 emitter (``PROMPT_HEAD`` / ``PROMPT_TAIL``) and the decode back to program text (``decode_program``); the ISolver
 shim (``shim_isolver``), the function a program answers from (``answer_fn``) and the role-binding wrap
 (``wrap_role_prompt``). Order 0031 moved them here, verbatim, from ``validation/emitter_data.py`` and
-``standin/data/build_emitter_sft.py``; both re-export them.
+``standin/data/build_emitter_sft.py``; both re-export them. ``vm_run``: a program run on the VM the way the
+harvest runs it (from ``validation/exp_he18_ab.py``, which re-exports it; the step loop's default VM).
 
 ``STANDIN_ROLE_WRAP`` (env, read once at import): the role-binding wrap's template; absent = "Record this as an
 event: {text}", the one every emitter was trained on.
@@ -64,3 +65,14 @@ def answer_fn(src: str) -> str:
 
 def wrap_role_prompt(text: str, template: str = ROLE_WRAP) -> str:
     return template.format(text=text.strip())
+
+
+def vm_run(program: str) -> tuple[bool, object]:
+    """(executes, result) from the real VM, with the harvest's ISolver shim and answer function."""
+    from ..bridges import cubelang_client as cc
+    src = shim_isolver(program)
+    try:
+        out = cc.run_program_proto(src, fn=answer_fn(src))
+        return bool(out.get("ok")), out.get("result")
+    except Exception:
+        return False, None
