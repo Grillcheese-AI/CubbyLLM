@@ -654,7 +654,7 @@ def build_serve(gguf: str | None, table: str | None, n_store: int, exe: str | No
     candidate for `emit_candidate`, never routed. `talk_export`: the talk adapter's own base when it was
     trained on another checkpoint than the emitter's (2026-10-17: the emitter on base450m_cont, talk_v2_2 on
     base450m) -- a second trunk then, 2.3 GB more, until the talk adapter is retrained on the same base."""
-    from exp_m3_cot_pipeline import V4_TABLE, load_sample
+    from cubbyllm.worlds.fact_pool import V4_TABLE, load_sample
     from exp_m3_domain_routing import _load_semantic_words
 
     from standin.emitter import ContextualEmitter, LlamaCppEmitter

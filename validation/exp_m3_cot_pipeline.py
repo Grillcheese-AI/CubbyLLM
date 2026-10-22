@@ -106,8 +106,8 @@ from cubbyllm.reasoning import build_chain_program, parse_fact, parse_question  
 from cubbyllm.reasoning.plan_verify import StoreRelations, VMRelations, write_vocab_jsonl  # noqa: E402
 from cubbyllm.reasoning.planner import Triple, normalize  # noqa: E402
 
-PQ_FILE = pathlib.Path(_lp(r"$CUBBY_DATA_ROOT/valid_scaling_law_with_facts.pq"))
-V4_TABLE = pathlib.Path(os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS"))) / "fastword_table_v4.npz"
+from cubbyllm.worlds.fact_pool import PQ_FILE, V4_TABLE, load_sample  # noqa: E402,F401 -- the serve
+#   stack's fact pool, one definition (order 0031)
 
 FAULT_CLASSES = ["wrong_entity", "wrong_relation", "inverted_direction", "wrong_hop_order"]
 MAX_FAULTS_PER_CLASS_PER_CHAIN = 2
@@ -123,46 +123,6 @@ MAX_CF_VM_CALLS = 6000
 
 # --------------------------------------------------------------------------
 # 1. Sample loading (mirrors exp_m3_injection.load_rows's dedup trick).
-# --------------------------------------------------------------------------
-def load_sample(n: int, seed: int, exclude: set[str] | None = None):
-    """-> (questions, answers, hops, chains, store).
-
-    `chains[i]` is question i's own supporting-fact chain, in walk order,
-    as indices into `store` (the whitespace-normalized, deduped fact pool
-    built from exactly this sample -- same trick as exp_m3_injection).
-    """
-    import pyarrow.parquet as pq
-
-    t = pq.read_table(PQ_FILE, columns=["question_prompt", "facts", "answer", "n_hop"])
-    rows = [(q, f, a, int(h)) for q, f, a, h in zip(
-        t.column("question_prompt").to_pylist(), t.column("facts").to_pylist(),
-        t.column("answer").to_pylist(), t.column("n_hop").to_pylist())
-        if q and f and a and len(q) > 15]
-    if exclude:
-        rows = [r for r in rows if r[0] not in exclude]
-
-    rng = np.random.default_rng(seed)
-    if len(rows) > n:
-        pick = rng.choice(len(rows), size=n, replace=False)
-        rows = [rows[j] for j in sorted(pick)]
-
-    fact_id: dict[str, int] = {}
-    store: list[str] = []
-
-    def fid(s: str) -> int:
-        s = " ".join(s.split())
-        if s not in fact_id:
-            fact_id[s] = len(store)
-            store.append(s)
-        return fact_id[s]
-
-    chains = [[fid(x) for x in f] for _, f, _, _ in rows]
-    return ([r[0] for r in rows], [r[2] for r in rows], [r[3] for r in rows],
-            chains, store)
-
-
-# --------------------------------------------------------------------------
-# 2. Retriever: unit-cosine top-k over a precomputed store.
 # --------------------------------------------------------------------------
 def _unit_vec(v: np.ndarray) -> np.ndarray:
     return v / (np.linalg.norm(v) + 1e-12)
