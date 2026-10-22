@@ -35,7 +35,7 @@ TOKEN_FILE = pathlib.Path(__file__).resolve().parent / "data" / "out" / "audit_t
 # the store's own source names: every world and fetch source a fact can come from, and the datasets behind them
 SOURCE_NAMES = {"wikidata", "wikipedia", "dbpedia", "wikikg", "wikidata5m", "hypernet-scaling-law-data", "brave",
                 "searxng", "encyclopedia americana", "openrouter", "project gutenberg", "historical_facts"}
-PROVENANCE_FIELDS = ("learned", "evidence", "provenance", "sources", "passages", "citations")
+PROVENANCE_FIELDS = ("learned", "evidence", "provenance", "sources", "passages", "citations", "news_changes")
 # internal working the user's JSON never carries: the thought graph (it records each hop's provenance), the store's
 # snapshot, the reasoning task (its facts' walk sources), the drafts not spoken, the route (a world's name)
 INTERNAL_FIELDS = ("graph", "store_snapshot", "task", "rejected", "offered", "route", "plugin", "guard", "hash")

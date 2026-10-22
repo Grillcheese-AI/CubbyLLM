@@ -642,7 +642,7 @@ class AskLoop:
     def __init__(self, emitter, world=None, source="wikidata", lexicon: bool = True, exe: str | None = None,
                  max_new: int = 300, lfm_gguf: str | None = None, run_fn=None, tau_profile: float = TAU_VM[1],
                  news=None, history_path: str | None = None, web=None, skills=None, scene=None, books=None,
-                 tense: bool | None = None, loci=None, time_rule: bool | None = None):
+                 tense: bool | None = None, loci=None, time_rule: bool | None = None, news_changes=None):
         from cubbyllm.bridges import cubelang_client as cc
         from cubbyllm.reasoning.plan_verify import StoreRelations
         self.emitter = emitter
@@ -696,6 +696,9 @@ class AskLoop:
             from loci_reader import LociReader
             loci = LociReader(str(loci))
         self.loci = loci
+        # order 0024: the news archive's change marks (news_trigger.Changes); a value said "as of" a date that reports
+        # since say changed carries that too. None = off, the reply as before.
+        self.news_changes = news_changes
         from audience import LeakGuard                   # sources are internal (order 0016): the guard at the mouth,
         self.guard = LeakGuard(index=getattr(books, "index", None))   # the books' passages for its 8-word scan
         self._forms = None
@@ -963,11 +966,11 @@ class AskLoop:
         elif why:                                           # the question's tense or year is not the fact's: not said
             rec.update(answer=None, verified=False, reason="time_mismatch", refused={"answer": lr.result.answer, "why": why})
         elif snap:                                        # a value that changes, from a dated snapshot: said "as of"
-            rec.update(tier="as_of", reply=f"As of {snap[1]}, {rec['answer']}.")
+            rec.update(tier="as_of", reply=f"As of {snap[1]}, {rec['answer']}." + self._changed(h, snap[1], rec))
         elif undated and undated[0] == "refuse":          # the time rule (0012): a year asked, the books date nothing
             rec.update(answer=None, verified=False, reason="time_undated", refused={"answer": lr.result.answer, "why": undated[1]})
         elif undated and undated[0] == "as_of":           # a world's undated value that changes, with the world's date
-            rec.update(tier="as_of", reply=f"As of {undated[1]}, {rec['answer']}.")
+            rec.update(tier="as_of", reply=f"As of {undated[1]}, {rec['answer']}." + self._changed(h, undated[1], rec))
         elif undated:                                     # a value that changes, undated: true at one point, said so
             rec.update(tier="at_one_point", reply=hedged(undated[1].rstrip(".")) if lr.attributed else undated[1])
         elif lr.result.verified and lr.attributed:        # one witness only: said hedged, the source never named
@@ -976,6 +979,17 @@ class AskLoop:
             rec["evidence"] = {f: self.books.citations[normalize(f)] for f in rec["trace"] if normalize(f) in self.books.citations}
         self._keep(rec)
         return rec
+
+    def _changed(self, h, as_of, rec) -> str:
+        """Order 0024: " Reports on <day> say this may have changed." when the news marks the fact's subject after the
+        world's date (``news_trigger``); the marks go to the record (internal), the reply names no outlet."""
+        if self.news_changes is None or h is None or h.triple is None:
+            return ""
+        marks = self.news_changes.since(h.triple.subj, as_of)
+        if not marks:
+            return ""
+        rec["news_changes"] = marks
+        return f" Reports on {marks[-1]['day']} say this may have changed."
 
     def _snapshot(self, question: str, lr):
         """For an answer whose last fact a snapshot world holds on a relation whose value changes (heads of state,
