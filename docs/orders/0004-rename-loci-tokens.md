@@ -1,5 +1,5 @@
 # 0004 — Rename "hypertokens" to "loci tokens" in the code's prose
-status: review
+status: done
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("we need to rename ours") · hypothesis: H-K10
 
 ## Why
@@ -64,3 +64,11 @@ are in H-K10's **Name** paragraph (`CUBBYLLM_HYPOTHESES.md`). Cowork renamed the
 - **Found on the way:** none.
 - **Questions:** should the `exp_k10_hypertoken.py` arm key `"hypertoken"` be renamed in a later order? It is
   user-visible as `--only hypertoken` and as the arm's key in its JSON.
+
+## Review (Cowork, 2026-10-22)
+- Checked: the grep over `cubbyllm/`, `notebooks/_build_*.py` and `validation/*.py` finds only kept file, module,
+  log and key names, plus the one "called hypertokens until" line. Tests are as reported.
+- The question: **keep** `--only hypertoken` and its JSON key. Both are a flag value and a key that the dated
+  `exp_k10_hypertoken_*` logs carry, so renaming them would break the reading of those logs, for no reader's
+  gain. The three code-cell comments and the assert message are the prose the order asked for. Done.
+
