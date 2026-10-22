@@ -1,5 +1,5 @@
 # 0027 — The control board: one page to see and steer Cubby (worlds, chat and its journey, a world map, forecasts, mood, system)
-status: in progress (P1 accepted 2026-10-22; P2 after 0024, P3 after 0020 and 0026)
+status: review (P1's review fixes, 2026-10-22; P2 after 0024, P3 after 0020 and 0026)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("perfect, start order 0027") · hypothesis: none (a tool; it measures nothing new) · **phased: P1 now, P2 after 0024, P3 after 0020 and 0026**
 
 ## Why
@@ -127,6 +127,67 @@ Worlds) and P3 (Mood arcs, Forecast) wait for their orders; their sections answe
     on Colab report its live step there, or is the last synced metrics line enough?
   - Should the Mood section show today's `/state` (the heartbeat and the cube point exist now) before 0020's arcs,
     or stay empty until P3 as the note says? It stays empty for now.
+
+### After the review (2026-10-22): the scrub fix, the background build, run ages, Mood, the real stack
+- **The scrub matches whole words, and only internal names.**
+  - `board_api.internal_names` holds:
+    - the store's source names;
+    - the feeds and their sites;
+    - the worlds registry's dataset names (`$CUBBY_WORLDS/registry.sqlite`, 0015);
+    - internal plugins.
+  - It leaves out the keys worlds are mounted under ("facts", "wiki", "self", "reality:history") and a few generic
+    words ("misc", "data").
+  - `scrub` matches whole words, case folded, so a name inside a longer word is another word.
+  - Test (`standin/tests/test_board_review.py`, with those world keys mounted):
+    - these survive: "I don't have facts about that", "3.4M facts held", "Cubby talks about itself", "trained on
+      wikis", "a globalwireless router";
+    - these become `[internal]`: "trained on wikidata5m", "from Wikidata5M today", "read on globalwire.example",
+      "globalwire: 3 new".
+- **No request pays for the cold build.** `board_api.start_refresh` (started by `--board`) rebuilds Home and System,
+  for both audiences, and the name list every 5 s in a daemon thread. A request reads the last build: 3.2 ms worst of
+  10 on the real stack, against 205.6 ms cold before (`validation/logs/board_real_stack_2026-10-22.json`). A failed
+  build keeps the last one and says so in the server's log.
+- **Training runs show their age:** "as of 21:51, 15 h ago", with a stale tag after 60 minutes (`board_data.training`,
+  `STALE_MIN`). Home's Training card carries the same line. Colab runs reach the board only through the synced drive,
+  as answered.
+- **Mood is built** (`/board/mood`, `dashboard/board/mood.js`):
+  - today's `/state`: the heartbeat at `40 + 55 × arousal` bpm, labelled as a display mapping;
+  - the point in the Lövheim cube, with its nearest corner and intensity;
+  - the levels as meters;
+  - "Arcs: not built yet (order 0020)".
+  - At the cube's centre every corner is equally near, and the first check showed "spent" at intensity 0.0. A point
+    under intensity 0.05 now reads "at rest", with no corner named (test). Home's Mood section has three cards.
+- **On the real serve stack** (450M emitter and talk seats on grilly2, the wiki world with 551,661 facts, the hdc world,
+  the ask loop, four plugins; `board_real_stack_2026-10-22.json`):
+  - **Public audience:** no internal name in any `/board/*` response (11 routes) or in the page's own files, checked
+    whole-word against the server's 305 names. The audit audience carries 134 of them, so the check can find them.
+  - **What the scrub replaced:** an order title naming Wikidata, and the plays plugin's licence naming Project Gutenberg.
+  - **A real `/ask` in public:** refused ("plan_does_not_cover_question"), no internal name in the record, and its
+    journey has the steps with their timings.
+  - **Fixed along the way:**
+    - The poller tile read only `CUBBY_NEWS_ARCHIVE`; the server's `--news-archive` now reaches it
+      (`brain.news_archive`).
+    - The copy-or-refuse tile missed order 0022's end-token rerun, because its log name did not match the glob; it now
+      shows that rerun as the latest 450M reading (1.7% wrong).
+- **The turntable, driven in Chrome:**
+  - › twice: II → IV; ‹ once: IV → III.
+  - A click on Mood's heart, behind Forecast, woke Forecast instead. Forecast's square picture has transparent corners,
+    and they took the click.
+  - Now only an oval over each item's art, and its name, take clicks (`board.css`). The same click brings Mood to the
+    front (V / VII). Keyboard focus is unchanged.
+- **Found on the way (not 0027's):** `standin/tests/test_news_reply.py` failed. A news reply said "also named Planet,
+  Leeds, Daily", because "the Daily Planet" spelled the outlet `dailyplanet` across two words, and each word passed
+  alone. That was a source named in a reply (0016). `news_reply.outlet_words` now drops adjacent capitalised words
+  whose run spells an outlet's name; the news tests pass.
+- **Tests:** `test_board_review.py` (7), `test_board.py` (5, Mood now built), with `test_plugins_serve.py`,
+  `test_audience.py`, `test_news_reply.py` and `test_ask.py`: 52 passed. `pytest standin/tests tests`: the known
+  `test_every_module_declares_wiring` (0002) is red, along with failures in `test_build_chat_sft.py` (24) and
+  `test_chat.py` (1) that predate this order, and a collection error in `test_goemotions_cube.py` (an import broken
+  since `34e7658`, 2026-09-25). I left those alone.
+- **Not done:** Manrope is not bundled (optional; it would mean downloading the font, which needs a yes). The test
+  server's `--news-archive` (and its environment default) started a second poller beside the 7-day one during the check.
+  The archive keys items by feed and guid, so nothing was stored twice: the first start fetched the 247 items those
+  feeds were due, the second 0. The server was stopped after.
 
 ## Review (Cowork, 2026-10-22): P1 accepted, one fix
 Checked: `test_board.py`, `test_plugins.py`, `test_plugins_serve.py` and `test_audience.py` pass (20, `.venv-dml`); the

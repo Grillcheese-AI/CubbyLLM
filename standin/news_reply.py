@@ -94,6 +94,22 @@ def outlets(feeds: list[dict]) -> set[str]:
     return {fold(o) for o in out} | {"reuters", "associated press", "afp", "presse canadienne", "canadian press"}
 
 
+def outlet_words(text: str, names_out: set[str]) -> set[str]:
+    """The folded words of ``text`` that spell an outlet's name together: adjacent capitalised words whose run, spaces
+    taken out, is one of ``names_out`` ("the Daily Planet" for ``dailyplanet``) -- each word alone would pass."""
+    caps = [m.group(0) for m in re.finditer(r"[^\W\d_][\w'-]*", text)]
+    out = set()
+    for i in range(len(caps)):
+        if not caps[i][:1].isupper():
+            continue
+        for j in range(i + 1, min(i + 4, len(caps)) + 1):
+            if not caps[j - 1][:1].isupper():
+                break
+            if fold("".join(caps[i:j])) in names_out:
+                out |= {fold(w) for w in caps[i:j]}
+    return out
+
+
 def answer(question: str, root, today: dt.date, feeds: list[dict] | None = None) -> dict:
     p = parse(question)
     if p is None:
@@ -121,8 +137,9 @@ def answer(question: str, root, today: dt.date, feeds: list[dict] | None = None)
         named, words, shown = Counter(), Counter(), {}
         for r in g:
             n, w = features(r.get("title", ""), r.get("summary", ""))
-            named.update(n - set(want) - names_out)
-            words.update(w - set(want))
+            spelled = outlet_words(r.get("title", "") + " " + r.get("summary", ""), names_out)
+            named.update(n - set(want) - names_out - spelled)
+            words.update(w - set(want) - spelled)
             for tok in re.findall(r"[^\W\d_][\w'-]*", r.get("title", "") + " " + r.get("summary", "")):
                 f = fold(tok)
                 shown.setdefault(f, tok)

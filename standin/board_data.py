@@ -7,7 +7,10 @@ done says so (``SECTIONS``: the order it waits for) and carries no numbers.
 - ``home(brain, who)``: per section, built or waiting, and for a built one three cards (a number, a caption, a trend);
 - ``journey(rec, times, forms, who)``: one answer's steps (sense, route, recall, check, say) from its thought graph, with
   their timings where the server's event ring still holds them, and the question's spans (entity, relation, time);
-- ``system(brain, who)``: the order queue, the news poller, the latest copy-or-refuse rates, training runs.
+- ``system(brain, who)``: the order queue, the news poller, the latest copy-or-refuse rates, training runs (each with
+  the age of its last synced line, stale after an hour: Colab runs reach here only through the synced drive);
+- ``mood(brain, who)``: today's chemistry (the server's ``/state``), a display heartbeat (``40 + 55 x arousal`` bpm: a
+  display mapping, not a claim), the point in the Lövheim cube and its nearest corner; the arcs wait for 0020.
 
 Wired: WIRED (``board_api``).
 """
@@ -27,12 +30,15 @@ ROOT = Path(__file__).resolve().parents[1]
 # (id, name, second word, the order the section waits for: None = built in P1)
 SECTIONS = [("watch", "World Watch", "live", "0024"), ("chat", "Chat", "& prompt", None),
             ("worlds", "Worlds", "& relations", "0015"), ("forecast", "Forecast", "tree", "0026"),
-            ("mood", "Mood", "& arcs", "0020"), ("system", "System", "health", None),
+            ("mood", "Mood", "& arcs", None), ("system", "System", "health", None),
             ("agents", "Agents", "soon", "a later order")]
 STEPS = [("sense", "Sense", ("question",)), ("route", "Route", ("plan", "verdict", "alias")),
          ("recall", "Recall", ("hop", "fact", "fetch", "gate", "gates", "latent")),
          ("check", "Check", ("walk", "branch", "vm")), ("say", "Say", ("answer",))]
 SOURCE_KEYS = ("provenance", "source", "clash", "via")        # node fields that name where a fact came from
+STALE_MIN = 60                                                 # a run's last synced line older than this is stale
+AT_REST = 0.05                     # cube intensity under this: the centre, where every corner is as near (none is named)
+LEVELS = ("serotonin", "dopamine", "noradrenaline", "cortisol", "oxytocin", "stress")
 
 
 def empty(order: str) -> dict:
@@ -59,13 +65,16 @@ def _hours(recs, n: int = 12) -> list[int]:
 def refuse_rates() -> list[dict]:
     """The latest copy-or-refuse measurements (orders 0021-0022), newest first, from their logs."""
     out = []
-    for pat, what in (("exp_refuse_450m_2*.json", "450M, run 5"), ("k10_refuse_*_2*.json", "toy")):
+    for pat, what in (("exp_refuse_450m_*2*.json", "450M, run 5"), ("k10_refuse_*_2*.json", "toy")):
         for f in sorted(glob.glob(str(ROOT / "validation" / "logs" / pat)), key=os.path.getmtime, reverse=True)[:6]:
             d = json.load(open(f, encoding="utf-8"))
             t = d.get("test_model") or {}
             if t:
                 tag = re.sub(r"^k10_refuse_|_\d{4}-\d{2}-\d{2}\.json$", "", os.path.basename(f)).replace("_", " ")
-                out.append({"what": what if what != "toy" else f"toy {tag}",
+                label = what if what != "toy" else f"toy {tag}"
+                if what != "toy" and d.get("end_said_by_the_contract"):
+                    label = "450M, run 5, the contract ends the answer"       # order 0022's rerun
+                out.append({"what": label,
                             "log": os.path.basename(f), **{k: round(t[k], 4) for k in
                             ("exact", "present_wrong", "present_refused", "absent_answered") if k in t}})
     return out
@@ -93,6 +102,18 @@ def home(brain, who: str) -> dict:
                               f"{round(100 * rates[0]['absent_answered'], 1)}% of absent answered") if rates else "no log"},
                      {"t": "Last question", "s": "Its journey", "big": len(last["steps"]) if last else None,
                       "unit": "steps", "cap": " → ".join(x["title"].lower() for x in last["steps"]) if last else "none yet"}]
+        elif sid == "mood":
+            m = mood(brain, who)
+            if not m["built"]:
+                out.append({**s, **m})
+                continue
+            c = m["cube"] or {}
+            cards = [{"t": "Heartbeat", "s": "From arousal now", "big": m["bpm"], "unit": "bpm",
+                      "cap": f"arousal {m['arousal']:.2f} · a display mapping"},
+                     {"t": "Cube", "s": "Nearest corner", "big": ("at rest" if c.get("at_rest") else c.get("corner")) if c
+                      else m.get("emotion"), "unit": "", "cap": ("the centre: no corner is nearer" if c.get("at_rest") else
+                      f"intensity {c['intensity']:.2f} · then {c['runner_up']}") if c else "no cube reading"},
+                     {"t": "Arcs", "s": "A book's or a chat's", "big": None, "unit": "", "cap": m["arcs"]["message"]}]
         else:
             sysd = system(brain, who)
             q, p = sysd["orders"]["counts"], sysd["poller"]
@@ -102,8 +123,8 @@ def home(brain, who: str) -> dict:
                      {"t": "News poller", "s": "Feeds read last poll", "big": p.get("up"), "unit": f"of {p.get('active')}",
                       "cap": f"last poll {p.get('last_poll_ago') or 'never'} · {p.get('items_today', 0)} items today"},
                      {"t": "Training", "s": "Runs with logs", "big": len(sysd["training"]), "unit": "runs",
-                      "cap": (sysd["training"][0]["run"] + f" at step {sysd['training'][0]['step']}") if sysd["training"]
-                      else "no run logs here"}]
+                      "cap": (sysd["training"][0]["run"] + f" at step {sysd['training'][0]['step']}, "
+                              + sysd["training"][0]["as_of"]) if sysd["training"] else "no run logs here"}]
         out.append({**s, "built": True, "cards": cards})
     return {"sections": out}
 
@@ -175,8 +196,9 @@ def orders() -> dict:
     return {"list": out, "counts": counts}
 
 
-def poller(who: str) -> dict:
-    root = os.environ.get("CUBBY_NEWS_ARCHIVE")
+def poller(who: str, root: str | None = None) -> dict:
+    """``root``: the archive the server polls into (``--news-archive``), else ``CUBBY_NEWS_ARCHIVE``."""
+    root = root or os.environ.get("CUBBY_NEWS_ARCHIVE")
     from news_archive import feeds
     fs = feeds()
     active = [f for f in fs if f.get("status") == "active"]
@@ -218,11 +240,34 @@ def training() -> list[dict]:
             continue
         r = tail[-1] if tail else {}
         lossy = next((x for x in reversed(tail) if isinstance(x.get("loss"), (int, float))), {})
+        t = os.path.getmtime(m)
+        age = max(0, int((time.time() - t) // 60))
+        ago = f"{age} min ago" if age < 120 else (f"{age // 60} h ago" if age < 2880 else f"{age // 1440} days ago")
         out.append({"run": os.path.basename(os.path.dirname(m)), "step": r.get("step"), "loss": lossy.get("loss"),
-                    "updated": dt.datetime.fromtimestamp(os.path.getmtime(m)).isoformat(timespec="minutes")})
+                    "updated": dt.datetime.fromtimestamp(t).isoformat(timespec="minutes"), "age_min": age,
+                    "as_of": f"as of {dt.datetime.fromtimestamp(t).strftime('%H:%M')}, {ago}", "stale": age > STALE_MIN})
+    return out
+
+
+def mood(brain, who: str) -> dict:
+    chem = getattr(getattr(brain, "chat", None), "chem", None)
+    if chem is None:
+        return {"built": False, "message": "no chemistry on this server"}
+    st = chem.to_dict()
+    a = float(st.get("arousal") or 0.0)
+    out = {"built": True, "bpm": round(40 + 55 * a), "arousal": a, "valence": st.get("valence"),
+           "emotion": st.get("emotion"), "levels": {k: round(float(st[k]), 3) for k in LEVELS if k in st},
+           "cube": None, "arcs": empty("0020")}
+    if hasattr(chem, "corner_position"):
+        cp = chem.corner_position()
+        rest = float(cp["intensity"]) < AT_REST
+        out["cube"] = {"pos": [round(float(x), 3) for x in cp["pos"]], "axes": ["5-HT", "DA", "NE"], "at_rest": rest,
+                       "corner": None if rest else cp["corner"], "intensity": round(float(cp["intensity"]), 3),
+                       "runner_up": None if rest else cp["runner_up"]}
     return out
 
 
 def system(brain, who: str) -> dict:
-    return {"orders": orders(), "poller": poller(who), "copy_or_refuse": refuse_rates(), "training": training(),
+    return {"orders": orders(), "poller": poller(who, getattr(brain, "news_archive", None)), "copy_or_refuse": refuse_rates(),
+            "training": training(),
             "gpu": None}

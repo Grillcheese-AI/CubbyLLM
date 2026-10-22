@@ -505,12 +505,15 @@ def main():
             print(f"  every record appended to {args.history} (the sleep cycle's input)", flush=True)
         print(f"  POST /ask {{\"text\": ...}} -> the loop's record; watch it at http://{args.host}:{args.port}/panel", flush=True)
     brain.board = bool(args.board)
+    brain.news_archive = args.news_archive              # the board's poller tile reads the archive this server polls
     if args.plugins:
         from plugins_serve import mount as mount_plugins
         lp = mount_plugins(brain, args.plugins, args.plugin_idle, log=lambda m: print(m, flush=True))
         print(f"plugins: {len(lp.index)} indexed from their front matter, {len(lp.loaded)} pinned and loaded, "
               f"tau {lp.router.tau}", flush=True)
     if args.board:
+        from board_api import start_refresh
+        start_refresh(brain)                            # Home / System built in the background: no request pays for them
         print(f"control board: http://{args.host}:{args.port}/board (add ?token=<audit token> for the audit view)", flush=True)
     if args.news_archive:
         from news_archive import start_poller

@@ -41,7 +41,8 @@ export async function show(root) {
       tile('GPU', 'load now', d.gpu, '', d.gpu === null ? 'not reported by this backend' : '')),
     el('section', { class: 'sysgrid' },
       el('article', { class: 'panel glass', 'aria-label': 'Training runs' }, el('div', { class: 'ptitle' }, el('span', {}, 'Training runs'), el('span', {}, d.training.length)),
-        d.training.length ? table(['Run', 'Step', 'Loss', 'Updated'], d.training.map((t) => [t.run, t.step, t.loss === null || t.loss === undefined ? '—' : Number(t.loss).toFixed(3), t.updated]))
+        d.training.length ? table(['Run', 'Step', 'Loss', 'Last synced line'], d.training.map((t) => [t.run, t.step, t.loss === null || t.loss === undefined ? '—' : Number(t.loss).toFixed(3),
+          el('span', {}, t.as_of || t.updated, t.stale ? el('span', { class: 'tag int' }, ' stale') : null)]))
           : el('div', { class: 'small' }, 'No run logs here (CUBBY_RUNS names their folder).'),
         el('div', { class: 'ptitle' }, el('span', {}, 'Copy or refuse'), el('span', {}, 'test documents')),
         table(['Measured', 'Exact', 'Wrong', 'Refused', 'Absent answered'], d.copy_or_refuse.map((c) => [c.what, pct(c.exact), pct(c.present_wrong), pct(c.present_refused), pct(c.absent_answered)]))),

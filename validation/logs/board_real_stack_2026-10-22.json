@@ -1,0 +1,67 @@
+{
+ "what": "order 0027 review: the board on the real serve stack, both audiences (a manual check, driven from the shell and Chrome)",
+ "stack": {
+  "trunk": "base450m_cont export + the emitter adapter on grilly2; the talk seat on base450m's own export",
+  "worlds": [
+   "wiki (551,661 facts)",
+   "hdc"
+  ],
+  "ask_loop": true,
+  "plugins": 4,
+  "board": true
+ },
+ "scrub": {
+  "internal_names": 305,
+  "public_routes_checked": [
+   "home",
+   "system",
+   "mood",
+   "plugins",
+   "watch",
+   "worlds",
+   "forecast",
+   "agents",
+   "plugins/route",
+   "plugins/doc",
+   "plugins/review"
+  ],
+  "internal_names_in_public_responses": 0,
+  "internal_names_in_the_page_files": 0,
+  "internal_names_in_audit_responses": 134,
+  "strings_replaced_public": [
+   {
+    "route": "/board/system",
+    "field": "orders.list[].title",
+    "why": "names a source (Wikidata)"
+   },
+   {
+    "route": "/board/plugins",
+    "field": "plugins[].licence",
+    "why": "names a source (Project Gutenberg)"
+   }
+  ],
+  "a_public_ask_record": {
+   "internal_names": 0,
+   "reason": "plan_does_not_cover_question",
+   "refused": true
+  }
+ },
+ "latency_ms_after_the_background_build": {
+  "home_and_system_worst_of_10": 3.2,
+  "before_cold_home": 205.6
+ },
+ "turntable_in_chrome": {
+  "turn_right_twice": "II -> IV",
+  "turn_left_once": "IV -> III",
+  "click_mood_behind_forecast": {
+   "before_fix": "woke Forecast (its square's transparent top took the click)",
+   "after_fix": "Mood to the front (V / VII)"
+  }
+ },
+ "found_and_fixed": [
+  "the cube's centre named a corner ('spent' at intensity 0.0): now 'at rest'",
+  "the poller tile read only CUBBY_NEWS_ARCHIVE, not the server's --news-archive",
+  "the copy-or-refuse tile missed order 0022's end-token rerun (its log name did not match)",
+  "a turntable item's transparent corners took clicks meant for the item behind it"
+ ]
+}

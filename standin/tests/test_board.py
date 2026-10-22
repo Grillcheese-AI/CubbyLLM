@@ -110,14 +110,14 @@ def test_sections_whose_order_is_not_done_show_no_numbers(server):
     base = server(True)
     home = json.loads(fetch(base, "/board/home")[1])["sections"]
     waiting = {s["id"]: s for s in home if not s["built"]}
-    assert set(waiting) == {"watch", "worlds", "forecast", "mood", "agents"}
+    assert set(waiting) == {"watch", "worlds", "forecast", "agents"}
     for sid, s in waiting.items():
         assert "cards" not in s and s["message"].startswith("not built yet")
         body = json.loads(fetch(base, f"/board/{sid}")[1])
         assert body["built"] is False and re.sub(r"order \d{4}", "", body["message"]) == "not built yet ()" or "later" in body["message"]
         assert not any(isinstance(v, (int, float)) and not isinstance(v, bool) for v in body.values())
     built = {s["id"] for s in home if s["built"]}
-    assert built == {"chat", "system"}
+    assert built == {"chat", "system", "mood"}
 
 
 def test_the_journey_reads_the_record():
