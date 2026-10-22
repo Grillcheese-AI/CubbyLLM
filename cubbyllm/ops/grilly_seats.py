@@ -18,6 +18,12 @@ from ..core.protocols import Wiring
 __wiring__ = Wiring.WIRED
 
 
+def grilly():
+    """grilly2's module, the handle the trunk keeps (a test passes its own: ``no_grad``, ``from_numpy``, ...)."""
+    import grilly as g
+    return g
+
+
 def load_export(export_dir: str):
     """The base export (``validation/export_base.py``: config.json + model.safetensors) as grilly2's
     ``CubbyForCausalLM`` -> (model, the config dict)."""
@@ -39,22 +45,22 @@ def wrap_lora(model, rank, alpha, targets) -> dict:
     return apply_lora_(model, rank, alpha, targets)
 
 
-def copy_pair(wrapped: dict, weights: dict) -> None:
+def copy_pair(wrapped: dict, weights: dict, g=None) -> None:
     """A role's A/B tensors ({path: (A, B)}, numpy, kept on the host) copied into the wrapped projections: the delta
-    moves, the base does not."""
-    import grilly
-    with grilly.no_grad():
+    moves, the base does not. ``g``: the grilly module (``grilly()`` when None)."""
+    g = g or grilly()
+    with g.no_grad():
         for path, mod in wrapped.items():
             a, b = weights[path]
-            mod.lora_A.weight.copy_(grilly.from_numpy(a))
-            mod.lora_B.weight.copy_(grilly.from_numpy(b))
+            mod.lora_A.weight.copy_(g.from_numpy(a))
+            mod.lora_B.weight.copy_(g.from_numpy(b))
 
 
 def generate(model, rows: list, max_new_tokens: int, eos: int, temperature: float = 0.0, top_k: int = 40,
-             seed: "int | None" = None) -> list:
+             seed: "int | None" = None, g=None) -> list:
     """Rows of token ids -> each row with its continuation (as lists), greedy; sampled at ``temperature`` > 0, seeded
-    by ``seed``. Stops a row at ``eos``."""
-    import grilly as g
+    by ``seed``. Stops a row at ``eos``. ``g``: the grilly module (``grilly()`` when None)."""
+    g = g or grilly()
     if seed is not None and temperature > 0:
         g.manual_seed(int(seed))
     with g.no_grad():

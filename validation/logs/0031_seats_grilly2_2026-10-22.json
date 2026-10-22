@@ -154,5 +154,11 @@
    ]
   },
   "wall_s": 25.5
+ },
+ "after_move": {
+  "what": "cubbyllm.emit.seats_450m (moved, the trunk passing its grilly handle to the ops functions)",
+  "same_as_before": true,
+  "swaps": 3,
+  "wall_s": 25.5
  }
 }

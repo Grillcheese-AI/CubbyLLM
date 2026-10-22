@@ -35,7 +35,7 @@ class Cubby450mTrunk:
         self.export_dir, self.tokenizer_path, self.max_ctx = export_dir, tokenizer, int(max_ctx)
         self.adapter_dirs = dict(adapters)
         self.name = "cubby450m[" + ",".join(f"{r}={os.path.basename(os.path.normpath(d))}" for r, d in adapters.items()) + "]"
-        self._model = self._tk = self._eos = self._ops = None
+        self._model = self._tk = self._eos = self._grilly = None
         self._wrapped: dict = {}
         self._weights: dict = {}                             # role -> {path: (A numpy, B numpy)}
         self._role = None
@@ -74,7 +74,7 @@ class Cubby450mTrunk:
                                    for path in self._wrapped}
         self._tk = Tokenizer.from_file(self.tokenizer_path)
         self._eos = self._tk.token_to_id("</s>")
-        self._model, self._ops = model, ops
+        self._model, self._grilly = model, ops.grilly()
 
     def use(self, role: str) -> None:
         """The role's adapter into the wrapped projections (a no-op when it is already there)."""
@@ -83,7 +83,8 @@ class Cubby450mTrunk:
         self._load()
         if role == self._role:
             return
-        self._ops.copy_pair(self._wrapped, self._weights[role])
+        from ..ops import grilly_seats as ops
+        ops.copy_pair(self._wrapped, self._weights[role], self._grilly)
         self._role = role
         self.swaps += 1
 
@@ -157,8 +158,9 @@ class Cubby450mTrunk:
         """`rows` of token ids -> the generated ids per row (the prompt cut off), under the role's adapter."""
         with self._lock:
             self.use(role)
-            out = self._ops.generate(self._model, rows, max_new_tokens, self._eos, temperature=temperature,
-                                     top_k=top_k, seed=seed)
+            from ..ops import grilly_seats as ops
+            out = ops.generate(self._model, rows, max_new_tokens, self._eos, temperature=temperature,
+                               top_k=top_k, seed=seed, g=self._grilly)
             return [r[len(p):] for r, p in zip(out, rows)]
 
 
