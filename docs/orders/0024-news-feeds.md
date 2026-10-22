@@ -43,6 +43,10 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
     (19 items) are both current.
   - Then other Québec and French outlets, each checked the same way.
   - **Radio-Canada (Nick, 2026-10-22):** `https://ici.radio-canada.ca/info/rss/info/en-continu` (50 items, current).
+  - **International Crisis Group (Nick, 2026-10-22):** `https://www.crisisgroup.org/rss` (10 items; newest 16 October;
+    its robots.txt did not answer). It publishes analysis (reports, briefings, commentary), not breaking news: its
+    items are kept as an organisation's analysis on a date, never read as events. Its dates are written
+    "Friday, October 16, 2026 - 19:18": the date parser must read that form or the item is dropped.
   - **Each publisher's robots rules and terms** are read from its own site (not the feed's host: the FeedBurner copy
     of Le Devoir carries no rule of its own) and recorded, with Nick's decision per publisher, in the local rights
     notes. The poller always identifies itself as `CubbyLLM/0.1` and never changes its name to get past a rule; it
