@@ -1,5 +1,5 @@
 # 0005 — Train the copy alone on a frozen trunk (run 5)
-status: open
+status: in progress
 written: 2026-10-21 by Cowork · approved: 2026-10-22 by Nick · hypothesis: H-K10
 
 ## Why
