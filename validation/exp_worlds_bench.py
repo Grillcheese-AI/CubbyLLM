@@ -13,7 +13,7 @@
 
 The log keeps counts and the fiction questions' relations; no work title, passage or name.
 
-    python validation/exp_worlds_bench.py [--root D:/cubby_worlds] [--fiction 50] [--regression]
+    python validation/exp_worlds_bench.py [--root <worlds dir>] [--fiction 50] [--regression]
 """
 from __future__ import annotations
 
@@ -193,7 +193,8 @@ def regression(store) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--root", default=os.environ.get("CUBBY_WORLDS", r"D:\cubby_worlds"))
+    ap.add_argument("--root", default=os.environ.get("CUBBY_WORLDS"), required=not os.environ.get("CUBBY_WORLDS"),
+                    help="the worlds folder (CUBBY_WORLDS)")
     ap.add_argument("--fiction", type=int, default=50)
     ap.add_argument("--regression", action="store_true")
     ap.add_argument("--seed", type=int, default=0)

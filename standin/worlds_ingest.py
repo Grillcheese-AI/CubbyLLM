@@ -1,6 +1,6 @@
 """standin/worlds_ingest.py -- everything in the datasets into worlds, one tool driven by the manifest (order 0015).
 
-    python standin/worlds_ingest.py [--root D:/cubby_worlds] [--only <dataset substring>] [--frames] [--release]
+    python standin/worlds_ingest.py [--root <worlds dir>] [--only <dataset substring>] [--frames] [--release]
 
 `worlds_manifest.plan` gives every manifest row a decision (ingest / excluded / queued); this runs the ingests through
 `worlds_adapters` (passages, events, quotes, table, mount) and `worlds_fiction`, and records every decision in the
@@ -45,8 +45,9 @@ CREATE TABLE IF NOT EXISTS datasets(name TEXT PRIMARY KEY, tree TEXT, kind TEXT,
 CREATE TABLE IF NOT EXISTS files(hash TEXT PRIMARY KEY, dataset TEXT, world TEXT, name TEXT, cleared INTEGER, at TEXT);
 CREATE TABLE IF NOT EXISTS worlds(id TEXT PRIMARY KEY, kind TEXT, store TEXT, tier TEXT, as_of TEXT);
 """
-TRACKER = pathlib.Path(r"E:\datasets\_pipeline\rights\book_rights_tracker.csv")
-CATALOG = pathlib.Path(r"D:\cubby_worlds\_catalog\pg_catalog.csv")
+# Local files, named by the environment (CLAUDE.local.md): the rights tracker, and the Gutenberg catalog under the root.
+TRACKER = os.environ.get("CUBBY_RIGHTS_TRACKER") or ""
+CATALOG = pathlib.Path("_catalog") / "pg_catalog.csv"
 LOG = ROOT / "validation" / "logs" / f"worlds_ingest_{_dt.date.today().isoformat()}.json"
 CLEARED = ("owned", "licensed", "public_domain", "public domain")
 
@@ -61,7 +62,7 @@ class Release:
 
     def __init__(self, tracker=TRACKER, only: bool = False) -> None:
         self.only, self.rows = only, {}
-        if pathlib.Path(tracker).exists():
+        if tracker and pathlib.Path(tracker).exists():
             for r in csv.DictReader(open(tracker, encoding="utf-8-sig")):
                 self.rows[r["key"]] = r
 
@@ -80,10 +81,11 @@ class Release:
         return (r or {}).get("fiction") or None
 
 
-def catalog() -> dict:
-    if not CATALOG.exists():
+def catalog(root) -> dict:
+    path = pathlib.Path(root) / CATALOG
+    if not path.exists():
         return {}
-    return {r["Text#"]: r["Title"] for r in csv.DictReader(open(CATALOG, encoding="utf-8"))}
+    return {r["Text#"]: r["Title"] for r in csv.DictReader(open(path, encoding="utf-8"))}
 
 
 def classify(entry, dataset, ctx, cat) -> dict:
@@ -113,9 +115,9 @@ def run(root, only=None, frames=False, release=False, log=print, plan=None, ment
     root.mkdir(parents=True, exist_ok=True)
     reg = sqlite3.connect(root / "registry.sqlite")
     reg.executescript(SCHEMA)
-    ctx = wa.Context(root, reg, Release(tracker, only=release) if pathlib.Path(tracker).exists() or release else None, log)
+    ctx = wa.Context(root, reg, Release(tracker, only=release) if (tracker and pathlib.Path(tracker).exists()) or release else None, log)
     ctx._mentions = mentions
-    cat, rows = catalog(), []
+    cat, rows = catalog(root), []
     for d in plan if plan is not None else wm.plan():
         if only and only.lower() not in d.dataset.lower():
             continue
@@ -147,7 +149,8 @@ def run(root, only=None, frames=False, release=False, log=print, plan=None, ment
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--root", default=os.environ.get("CUBBY_WORLDS", r"D:\cubby_worlds"))
+    ap.add_argument("--root", default=os.environ.get("CUBBY_WORLDS"), required=not os.environ.get("CUBBY_WORLDS"),
+                    help="the worlds folder (CUBBY_WORLDS)")
     ap.add_argument("--only", default=None)
     ap.add_argument("--frames", action="store_true")
     ap.add_argument("--release", action="store_true")
@@ -157,13 +160,21 @@ def main() -> None:
     pathlib.Path(a.log).write_text(json.dumps(public(rows), indent=1), encoding="utf-8")
 
 
+def _relative(o):
+    """Every `store` in a report, at any depth, as its last two parts (`passages/<world>.sqlite`): the worlds folder is
+    a local path."""
+    if isinstance(o, dict):
+        return {k: ("/".join(pathlib.PureWindowsPath(v).parts[-2:]) if k == "store" and isinstance(v, str) else _relative(v))
+                for k, v in o.items()}
+    return [_relative(v) for v in o] if isinstance(o, list) else o
+
+
 def public(rows) -> dict:
-    """The report as it may be committed: a dataset by its manifest row and kind, never its name (collections and
-    authors stay in the local manifest and registry); the reasons are the manifest's routes."""
+    """The report as it may be committed: a dataset by its manifest row only, never its name, its tree (a drive) or
+    the manifest's reason (reasons name collections); those stay in the local manifest and registry."""
     names = [d.dataset for d in wm.plan()]
-    out = [{"row": names.index(r["dataset"]) + 2 if r["dataset"] in names else None, "tree": r["tree"], "status": r["status"],
-            "reason": r["reason"] if r["status"] != "ingest" else None, "seconds": r.get("seconds"),
-            "entries": r["entries"]} for r in rows]
+    out = [{"row": names.index(r["dataset"]) + 2 if r["dataset"] in names else None, "status": r["status"],
+            "seconds": r.get("seconds"), "entries": [_relative(e) for e in r["entries"]]} for r in rows]
     return {"datasets": out, "counts": {s: sum(r["status"] == s for r in rows) for s in ("ingest", "excluded", "queued")}}
 
 
