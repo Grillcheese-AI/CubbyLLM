@@ -143,7 +143,7 @@ def second_check(idx):
     from cubbyllm.plugins.load import Loader
     for n in idx.names():
         guard.approve(idx[n], by="plugins_routing --second-check (a temporary lock)")
-    sys.path.insert(0, os.path.join(os.path.dirname(HERE), "standin", "tests"))
+    sys.path.insert(0, os.path.join(os.path.dirname(HERE), "tests", "brain"))     # test_serve's fixtures (order 0031)
     import serve as sv
     from test_serve import STORE, ChainEmitter, overlap_retriever
     brain = sv.CubbyServe(ChainEmitter(), overlap_retriever, STORE, route_tau=0.0)

@@ -28,7 +28,8 @@ import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-for p in (ROOT, os.path.join(ROOT, "standin"), os.path.join(ROOT, "standin", "data"), HERE, os.path.join(ROOT, "standin", "tests")):
+for p in (ROOT, os.path.join(ROOT, "standin"), os.path.join(ROOT, "standin", "data"), HERE, os.path.join(ROOT, "standin", "tests"),
+          os.path.join(ROOT, "tests", "brain")):                 # test_serve's fixtures (moved there in order 0031)
     if p not in sys.path:
         sys.path.insert(0, p)
 

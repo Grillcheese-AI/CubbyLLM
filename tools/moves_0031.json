@@ -67,5 +67,6 @@
  "standin/cortex/retina.py": "cubbyllm/cortex/retina.py",
  "standin/cortex/salience.py": "cubbyllm/cortex/salience.py",
  "standin/cortex/what.py": "cubbyllm/cortex/what.py",
- "standin/cortex/where.py": "cubbyllm/cortex/where.py"
+ "standin/cortex/where.py": "cubbyllm/cortex/where.py",
+ "standin/serve.py": "cubbyllm/brain.py"
 }

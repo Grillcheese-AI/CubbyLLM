@@ -44,22 +44,18 @@ import re
 import sys
 import time
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-for p in (ROOT, os.path.join(ROOT, "validation"), os.path.join(ROOT, "standin"),
-          os.path.join(ROOT, "standin", "data")):
-    if p not in sys.path:
-        sys.path.insert(0, p)
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 __wiring__ = "STANDALONE"
 
 from cubbyllm.emit.format import answer_fn, shim_isolver, wrap_role_prompt  # noqa: E402
-from chat import CubbyChat  # noqa: E402
+from .speech.chat import CubbyChat  # noqa: E402
 from cubbyllm.emit.talk import ContextualEmitter  # noqa: E402
 from cubbyllm.speech.identity import (EMITTER_SYSTEM, T, guess_lang, is_identity_question,  # noqa: E402
                                       load_facts, voice_ok)
-from worlds import FactStore, route_world  # noqa: E402
+from .worlds.base import FactStore, route_world  # noqa: E402
 
 from cubbyllm.reasoning import answer as pipeline_answer  # noqa: E402
 from cubbyllm.reasoning.planner import normalize, parse_fact, parse_question, relation_matches  # noqa: E402
@@ -605,7 +601,7 @@ class CubbyBrain:
         rec["dont_know"] = bool(rec.get("reply") == dont_know or rec.get("spoke_safe"))
         rec["signals"] = getattr(self.chat, "signals", None)
         rec["emotion"] = self.chat.emotion
-        from audience import LeakGuard                   # sources are internal (order 0016): the last check at the mouth
+        from .speech.audience import LeakGuard                   # sources are internal (order 0016): the last check at the mouth
         loop = getattr(self, "ask_loop", None)
         guard = getattr(loop, "guard", None) or LeakGuard()
         said, hits = guard.check(rec.get("reply"), {"answer": (rec.get("task") or {}).get("vm_answer"), "learned": []})
@@ -701,7 +697,7 @@ def build_serve(gguf: str | None, table: str | None, n_store: int, exe: str | No
             emitter = ContextualEmitter({"programs": emitter, "talk": talk}, default="programs")
     brain = CubbyBrain(emitter, world, exe=exe, route_tau=route_tau)
     if wiki:                                             # the wikikg world (H-G6): lookup-first, lexical fallback, no cosine rows
-        from wikikg import wiki_world
+        from .worlds.wikikg import wiki_world
         print("loading wiki world (wikikg triples -> template facts -> triple index) ...", flush=True)
         t0 = time.perf_counter()
         ww = wiki_world(path=None if wiki == "auto" else wiki)
