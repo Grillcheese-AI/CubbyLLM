@@ -73,6 +73,22 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
     Middle East, Geopolitics and the like). `/news/feed/issue/<id>` looks like a topic feed but ignores the id and
     returns the main feed. Poll the main feed hourly and the 38 current topic feeds every 6 hours; an item's topics
     are the topic feeds it appears in. The list, checked from Nick's machine, is handed over off-repo.
+  - **Global Voices (Nick, 2026-10-22):** `https://globalvoices.org/feed/` (15 items, current; no AI agent blocked).
+    Its stories are under **CC BY 3.0** (credit the author and link the original story; photos and other media from
+    third parties are not covered): a source that welcomes reuse. They are citizen-media features about events,
+    usually a few days after them: said as Global Voices' report on a date, never read as the event itself. Each item
+    carries categories naming its countries, regions and topics ("D.R. of Congo", "Sub-Saharan Africa", "War &
+    Conflict"): read them as the item's places and topics. The category "English" is a language tag, not a topic. The
+    main feed polled hourly is enough; region and topic feeds (`/-/world/<region>/feed/`, `/-/topics/<topic>/feed/`)
+    are for catch-up only.
+    **Translations:** `https://<lang>.globalvoices.org/feed/` in over 50 languages; 24 are current (newest item since
+    late August 2026), among them fr, es, pt, ru, ar, it, jp and uk; the rest have not been updated for months or
+    years. Their items translate Global Voices stories, and each one's `content:encoded` opens with an "originally
+    published" link to the source story: group a translation with its original by that link. It is the same report in
+    another language, never a second voice. Poll the 24 current ones daily; the list, checked from Nick's machine, is
+    handed over off-repo.
+    The feed carries each story's full text (`content:encoded`). The poller keeps the headline and summary, as for
+    every feed, and reads the full text only for the original-story link, until Nick decides otherwise.
   - **International, not only Québec (Nick, 2026-10-22).** Cowork tested 43 candidate feeds from Nick's machine;
     38 work and are kept: Europe 13, Asia 7, Americas 7, Africa 5, Middle East 4, Oceania 2; in en 30, fr 4, es 2, de 1, pt 1
     (en, fr, es, de, pt). Among them public broadcasters (BBC, DW, France 24, RFI, Tagesschau, ABC Australia, RNZ, NPR),
