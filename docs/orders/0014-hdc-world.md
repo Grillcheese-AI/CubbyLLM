@@ -1,5 +1,5 @@
 # 0014 — The hdc set's 4.3M Wikidata facts as a world
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("check if we use those; we need to add them to the
 worlds") · hypothesis: H-G6 (the wiki world), H-F2 · **suggested after 0012**
 

@@ -228,9 +228,10 @@ def profile_ask(question: str, is_relation=None) -> tuple[str, str] | None:
     if _verb_tail(ent):
         return None                                      # 'where was X born': a relation ask, the emitter's
     if " of " in f" {ent} ":
-        head = ent.split(" of ", 1)[0].strip()
-        head = head[4:].strip() if head.lower().startswith("the ") else head
-        if is_relation is None or not head or is_relation(head):
+        # every ' of ' prefix is a head: 'the head of state of X' leads with 'head of state', not 'head' (2026-10-22)
+        heads = [ent[:m.start()].strip() for m in _re.finditer(" of ", ent)]
+        heads = [h[4:].strip() if h.lower().startswith("the ") else h for h in heads]
+        if is_relation is None or not heads[0] or any(is_relation(h) for h in heads if h):
             return None                                  # a relation leads it: the emitter's plan, not a profile
     return m.group("kind").lower(), ent
 
@@ -650,6 +651,8 @@ class AskLoop:
             world = wk.wiki_world()
         self.world = world
         self.known = StoreRelations(world.index._seen)
+        if hasattr(world, "known_relations"):           # several worlds (hdc_store.Stores): theirs too, by count
+            world.known_relations(self.known)
         if isinstance(source, str):
             if source.startswith("wikidata"):
                 from sources import WikidataSource
@@ -912,14 +915,36 @@ class AskLoop:
                    clarify=branch_clarify(lr.plan or plan, lr.result, parse_choose(choose)),
                    wall_s=round(time.perf_counter() - t0, 3))
         why = self._time_check(question, lr) if lr.result.verified and self.tense else None
+        snap = self._snapshot(question, lr) if lr.result.verified and not why else None
+        if snap and snap[0] != "as_of":                   # a snapshot's value asked about another time (order 0014)
+            why = snap[1]
         if why:                                           # the question's tense or year is not the fact's: not said
             rec.update(answer=None, verified=False, reason="time_mismatch", refused={"answer": lr.result.answer, "why": why})
+        elif snap:                                        # a value that changes, from a dated snapshot: said "as of"
+            rec.update(tier="as_of", reply=f"As of {snap[1]}, {rec['answer']}.")
         elif lr.result.verified and lr.attributed:        # one witness only: said hedged, the source never named
             rec.update(tier="attributed", reply=hedged(rec["answer"]))
         if self.books is not None:                        # the record's evidence: internal, the audit view's (0016)
             rec["evidence"] = {f: self.books.citations[normalize(f)] for f in rec["trace"] if normalize(f) in self.books.citations}
         self._keep(rec)
         return rec
+
+    def _snapshot(self, question: str, lr):
+        """For an answer whose last fact a snapshot world holds on a relation whose value changes (heads of state,
+        teams, employers: `hdc_store`): ('as_of', year) to say it as of the snapshot; ('refuse', why) for another
+        year asked; None otherwise -- the year asked IS the snapshot's, or the fact is not a snapshot's."""
+        from cubbyllm.reasoning.planner import normalize
+        h = lr.result.trace[-1] if lr.result.trace else None
+        w = self.world.held_by(h.fact) if h is not None and h.triple is not None and hasattr(self.world, "held_by") else None
+        if w is None or normalize(h.triple.rel) not in getattr(w, "time_sensitive", ()):
+            return None
+        from question_forms import tense_of
+        year = strip_as_of(question)[1]
+        if year is not None:
+            return None if str(year) == w.snapshot else ("refuse", f"asked about {year}, the snapshot holds {w.snapshot}")
+        if tense_of(question) == "future":
+            return ("refuse", f"asked in the future, the snapshot holds {w.snapshot}")
+        return ("as_of", w.snapshot)
 
     def _time_check(self, question: str, lr) -> str | None:
         """Why the answer's last fact cannot be what the question asks about in time, or None: its tense (the
