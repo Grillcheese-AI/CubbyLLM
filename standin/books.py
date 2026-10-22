@@ -260,21 +260,22 @@ class BookIndex:
     def passages(self, entity: str, words=None, era: str | None = None, k: int = 10) -> list[Passage]:
         """The paragraphs about `entity`, best first: those the mention table names it in (or, for a name it
         does not hold, those holding the phrase), ranked by BM25 over the entity's words and `words` (a
-        relation's cues); `era` keeps one era's books."""
+        relation's cues); `era` keeps one era's books. The mention set is read once by its key and applied to
+        the FTS ranking's best 20 k: inside the SQL it stops FTS5 ranking by its index (23 s, not 0.06 s, for
+        an entity of 10,000 mentions, 2026-10-22)."""
         ent = [w for w in _WORD.findall(norm(entity))]
         if not ent:
             return []
         cues = [w for w in _WORD.findall(norm(" ".join(words or []))) if w not in _STOP and w not in ent]
         phrase = '"' + " ".join(ent) + '"'
         row = self.db.execute("SELECT id FROM names WHERE name = ?", (" ".join(ent),)).fetchone()
-        within = "AND fts.rowid IN (SELECT para FROM mentions WHERE name = :n)" if row else ""
+        mention = {p for (p,) in self.db.execute("SELECT para FROM mentions WHERE name = ?", (row[0],))} if row else None
         sql = ("SELECT b.author, b.title, b.era, p.off, p.text, b.id, p.id FROM fts JOIN paras p ON p.id = fts.rowid "
-               f"JOIN books b ON b.id = p.book WHERE fts MATCH :q {within} {'AND b.era = :e' if era else ''} "
-               "ORDER BY bm25(fts) LIMIT :k")
+               "JOIN books b ON b.id = p.book WHERE fts MATCH :q ORDER BY bm25(fts) LIMIT :k")
         out, seen = [], set()
         for q in ([f"{phrase} AND ({' OR '.join(chr(34) + c + chr(34) for c in cues)})"] if cues else []) + [phrase]:
-            for r in self.db.execute(sql, {"q": q, "n": row[0] if row else None, "e": era, "k": k}):
-                if r[6] not in seen and len(out) < k:
+            for r in self.db.execute(sql, {"q": q, "k": 20 * k}):
+                if (mention is None or r[6] in mention) and (not era or r[2] == era) and r[6] not in seen and len(out) < k:
                     seen.add(r[6]); out.append(Passage(*r))
         return out
 

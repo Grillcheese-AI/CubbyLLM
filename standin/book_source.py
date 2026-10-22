@@ -72,6 +72,12 @@ class BookSource:
                     if not any(w["book"] == p.book and w["sentence"] == sentence for w in r["w"]):
                         r["w"].append({"book": p.book, "author": p.author, "title": p.title, "era": p.era,
                                        "offset": p.offset, "sentence": sentence})
+        for (rel, o), r in list(reads.items()):          # a year agrees with the one full date of that year: one value
+            if re.fullmatch(r"\d{1,4}", r["triple"].obj):
+                full = [k for k, v in reads.items() if k[0] == rel and re.fullmatch(rf"0*{r['triple'].obj}-\d\d-\d\d", v["triple"].obj)]
+                if len(full) == 1:
+                    reads[full[0]]["w"] += [w for w in r["w"] if w not in reads[full[0]]["w"]]
+                    del reads[(rel, o)]
         values: dict[str, int] = {}
         for rel, _o in reads:
             values[rel] = values.get(rel, 0) + 1

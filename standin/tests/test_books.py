@@ -58,7 +58,9 @@ def _library(tmp_path):
     _book(src, "AncientClassical/Italy/Rome/Bob Jones - The City.pdf.txt",
           "Rome was founded by Romulus in 753 BC, on the Palatine.\n\nArt was everywhere in Rome, and art was cheap.\n")
     _book(other, "EPUB/The Corsican - Carol White/Carol White - The Cors_can (v5.0).epub.txt",
-          "Napoleon Bonaparte was born in 1769 in Ajaccio.\n")
+          "Napoleon Bonaparte was born in 1768 in Ajaccio.\n")
+    _book(other, "EPUB/Corsica - Eve Black/Eve Black - Corsica (v5.0).epub.txt",
+          "Napoleon Bonaparte was born in 1769 at Ajaccio, the second son of Carlo.\n")
     events = tmp_path / "historical_facts.jsonl"
     events.write_text(json.dumps({"title": "Founding of Rome", "text": "Rome was founded in 753 BC.", "year_start": -753}) + "\n",
                       encoding="utf-8")
@@ -68,7 +70,7 @@ def _library(tmp_path):
 def test_the_index_reads_each_book_once_names_it_and_a_rerun_adds_only_a_new_book(tmp_path):
     roots, events = _library(tmp_path)
     found = {meta(*f)["author"]: f for f in discover(roots)}
-    assert len(found) == 3 and found["Alice Smith"][1].name == "clean"           # twins once; the mirror's copy
+    assert len(found) == 4 and found["Alice Smith"][1].name == "clean"           # twins once; the mirror's copy
     assert meta(*found["Alice Smith"]) == {"author": "Alice Smith", "title": "Lives of Emperors", "era": "MiddleAges",
                                            "region": "France", "topic": ""}
     assert meta(*found["Bob Jones"])["topic"] == "Rome" and meta(*found["Bob Jones"])["era"] == "AncientClassical"
@@ -76,11 +78,11 @@ def test_the_index_reads_each_book_once_names_it_and_a_rerun_adds_only_a_new_boo
     idx = BookIndex(tmp_path / "books.sqlite")
     m = Mentions(NAMES)
     first = idx.build(roots, events, m)
-    assert first["added"] == 4 and first["books"] == 4                            # three books and one era of events
+    assert first["added"] == 5 and first["books"] == 5                            # four books and one era of events
     assert idx.build(roots, events, m)["added"] == 0
     _book(roots[1][0], "EPUB/Dan - Carthage/Dan Brown - Carthage (v5.0).epub.txt", "Carthage, an ancient city in modern Tunisia, fell.\n")
     again = idx.build(roots, events, m)
-    assert again["added"] == 1 and again["skipped"] == 4 and again["books"] == 5
+    assert again["added"] == 1 and again["skipped"] == 5 and again["books"] == 6
 
 
 def test_paragraphs_join_wrapped_lines_keep_long_ones_cut_at_the_cap_and_drop_fragments():
@@ -103,8 +105,8 @@ def test_the_passage_finder_ranks_the_cues_paragraph_first_keeps_an_era_and_fall
     idx = BookIndex(tmp_path / "books.sqlite")
     idx.build(roots, events, Mentions(NAMES))
     ps = idx.passages("Napoleon Bonaparte", words=["born"], k=5)
-    assert ps[0].text.startswith("Napoleon Bonaparte was born") and {p.author for p in ps} == {"Alice Smith", "Carol White"}
-    assert len(ps) == 3 and "crowned" in ps[-1].text                             # the cue first, then the rest
+    assert ps[0].text.startswith("Napoleon Bonaparte was born") and {p.author for p in ps} == {"Alice Smith", "Carol White", "Eve Black"}
+    assert len(ps) == 4 and "crowned" in ps[-1].text                             # the cue first, then the rest
     assert [p.author for p in idx.passages("Napoleon Bonaparte", words=["born"], era="MiddleAges")] == ["Alice Smith", "Alice Smith"]
     assert idx.passages("the son of a minor noble")[0].title == "Lives of Emperors"   # not a name: the phrase
     assert {p.era for p in idx.passages("Rome", words=["founded"])} == {"AncientClassical"}
@@ -141,9 +143,12 @@ def test_one_author_attributes_two_independent_authors_corroborate_and_two_value
     assert got == {("place of birth", "Ajaccio")}
     k = normalize("Ajaccio is the place of birth of Napoleon Bonaparte")
     assert k not in src.attributed and k not in src.held                         # Alice Smith and Carol White: plain
-    assert {w["author"] for w in src.citations[k]} == {"Alice Smith", "Carol White"}
-    src.facts("Napoleon Bonaparte", relations=["date of birth"])
-    for v in ("1769-08-15", "1769"):                                             # the two books disagree on the form
+    assert {w["author"] for w in src.citations[k]} == {"Alice Smith", "Carol White", "Eve Black"}
+    got = {t.obj for t in src.facts("Napoleon Bonaparte", relations=["date of birth"])}
+    assert got == {"1769-08-15", "1768"}                                         # 1769 agrees with 1769-08-15: one value
+    iso = normalize("1769-08-15 is the date of birth of Napoleon Bonaparte")
+    assert {w["author"] for w in src.citations[iso]} == {"Alice Smith", "Eve Black"}
+    for v in ("1769-08-15", "1768"):                                             # Carol White says 1768: held, both
         assert normalize(f"{v} is the date of birth of Napoleon Bonaparte") in src.held
     src.facts("Rome", relations=["founded by"])
     assert normalize("Romulus is the founded by of Rome") in src.attributed       # Bob Jones alone

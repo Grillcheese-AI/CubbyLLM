@@ -117,7 +117,7 @@ def frames(src, pairs, need, rng, cap: int = 4000) -> dict:
             break
         rels = subjects[s]
         asked += 1
-        for t in src.facts(s, relations=rels):
+        for t in (t for rel in rels for t in src.facts(s, relations=[rel])):     # one relation a call, as the loop asks
             a = agree(t.rel, t.obj, pairs.get((s, t.rel), set()))
             per[t.rel]["read"] += 1
             if a is None:

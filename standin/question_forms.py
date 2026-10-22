@@ -160,8 +160,18 @@ class Forms:
         """The question's own words for its relation ("born", "founded", "ruler"), as an emitter binds them for
         the host to translate; None when the form has none ("When was the {S}?")."""
         m = self._match(question)
-        words = [w for w in re.findall(r"[\w']+", m[3].lower().replace("{s}", " ")) if w not in _FRAME] if m else []
-        return " ".join(words) or None
+        if not m:
+            return None
+        head, _, tail = m[3].lower().partition("{s}")
+
+        def span(text):                                  # the phrase, its frame words trimmed at its ends only
+            w = re.findall(r"[\w']+", text)
+            while w and w[0] in _FRAME:
+                w = w[1:]
+            while w and w[-1] in _FRAME:
+                w = w[:-1]
+            return " ".join(w)
+        return span(head) or span(tail) or None
 
     def render(self, relation: str, entity: str, tense: str = "past") -> list[str]:
         return [f.replace("{S}", entity) for f in self.forms.get(relation, ("", {}))[1].get(tense, [])]

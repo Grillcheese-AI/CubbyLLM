@@ -53,11 +53,13 @@ def _place(m) -> str | None:
 # (relations, the frame after the subject, how each relation's value is read). `{S}` is the subject;
 # `_G` the gap a subject's apposition may leave ("Charlemagne, king of the Franks, was born ...").
 _G = r"(?:,[^,.;()]{1,60},)?\s"
+_W = r"(?:,\s(?:who\s)?|\s)"                             # the verb right after the name, or in a 'who' clause after it
+_C = r"(?:(?:about|around|circa|c\.|ca\.)\s)?"          # an approximate year: "born about 742" reads as 742
 FRAMES = [
-    (("date of birth", "place of birth"), rf"{{S}}{_G}(?:was\s)?born\s(?:on\s|in\s)?{DATE}(?:,?\s(?:in|at)\s{PLACE})?", None),
-    (("place of birth", "date of birth"), rf"{{S}}{_G}(?:was\s)?born\s(?:in|at)\s{PLACE}(?:,?\s(?:on|in)\s{DATE})?", None),
-    (("date of death", "place of death"), rf"{{S}}{_G}(?:died|was\s(?:killed|executed|assassinated))\s(?:on\s|in\s)?{DATE}(?:,?\s(?:in|at)\s{PLACE})?", None),
-    (("place of death", "date of death"), rf"{{S}}{_G}died\s(?:in|at)\s{PLACE}(?:,?\s(?:on|in)\s{DATE})?", None),
+    (("date of birth", "place of birth"), rf"{{S}}(?:{_G}(?:was\s)?|{_W}(?:was\s)?)born\s(?:on\s|in\s)?{_C}{DATE}(?:,?\s(?:in|at)\s{PLACE})?", None),
+    (("place of birth", "date of birth"), rf"{{S}}(?:{_G}(?:was\s)?|{_W}(?:was\s)?)born\s(?:in|at)\s{PLACE}(?:,?\s(?:on|in)\s{_C}{DATE})?", None),
+    (("date of death", "place of death"), rf"{{S}}(?:{_G}|{_W})(?:died|was\s(?:killed|executed|assassinated))\s(?:on\s|in\s)?{_C}{DATE}(?:,?\s(?:in|at)\s{PLACE})?", None),
+    (("place of death", "date of death"), rf"{{S}}(?:{_G}|{_W})died\s(?:in|at)\s{PLACE}(?:,?\s(?:on|in)\s{_C}{DATE})?", None),
     (("place of burial",), rf"{{S}}{_G}(?:was\s)?buried\s(?:in|at)\s{PLACE}", None),
     (("founded by", "inception"), rf"{{S}}{_G}(?:was\s)?founded\s(?:in\s{DATE}\s)?by\s{PERSON}", None),
     (("inception", "founded by"), rf"{{S}}{_G}(?:was\s)?(?:founded|established)\sin\s{DATE}(?:\sby\s{PERSON})?", None),
