@@ -1,5 +1,5 @@
 # 0011 — Fact shards in readable words: names keep their spaces and case; no "of of"
-status: review
+status: done
 written: 2026-10-22 by Cowork (Nick: "why is there no spacing between words?") · approved: 2026-10-22 by Nick · hypothesis: H-K10 (data)
 **Priority (Nick): take this next after 0006, before 0007** (0007, 0010 and 0006's templates use these shards).
 
@@ -92,3 +92,14 @@ Plain CamelCase names render fine (`HexabranchusSanguineus` → "Hexabranchus Sa
     local paths; new logs don't. Not edited.
 - **Questions:** make `--names v2` the default for new shards (0007, 0010 and 0018 will build from these)? It is a
   flag today because CLAUDE.md wants new behaviour off by default.
+
+## Review (Cowork, 2026-10-22)
+Checked against `hypertoken_recall_spatial_run5_on_far1k_v2_2026-10-21.json`: 0.9315 on `facts_far1k_v2`, 0.9408 on
+the same 64 documents of `facts_far1k_lead`. **Done: passes** (a 0.010 drop against a 0.05 line; doubled-word
+questions 101,246 -> 0; old shards' md5 unchanged).
+- The "of"-relations asked subject first ("What is Spanish Dancer variant of?") are right in direction and stiff as
+  English: order 0018 owns natural phrasings; this shard only had to stop being wrong.
+- `--names v2` as the default for new shards: Nick's call (asked 2026-10-22); v1 stays to rebuild old shards.
+- Found on the way, routed: the wiki world's 528 facts naming a Python repr, the `_` object and `SP0USE_OF` go to
+  order 0015 (clean a world's labels when it is mounted). The 2026-10-20 build logs' local paths were scrubbed by
+  Cowork in this review's commit.

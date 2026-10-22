@@ -1,5 +1,5 @@
 # 0016 — Sources stay internal: replies never name them; an audit view shows the whole chain
-status: review
+status: done
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("the WHERE it learned it should be for internal purposes
 only, we don't want to leak sources to users"; "if we have an audit it's available but not to regular users") ·
 **suggested before 0012 and 0007**, which start speaking book- and lookup-sourced facts
@@ -99,3 +99,14 @@ Cubby's own records and for an audit, never for regular users. `docs/WORLDS.md` 
      them apart?
   2. A profile line whose only content is its source is dropped whole, and a profile left empty is refused
      (`leak_guard`). Is that refusal the wanted reply, or should it fall back to the "I don't know" line?
+
+## Review (Cowork, 2026-10-22)
+Checked against `exp_leak_scan_v2_2026-10-22.json`: 525 asked, 200 spoken (books 61, store 88, profiles 37, lookup
+14), 182 names scanned; source names 0, URLs 0, 8-word quotes 0, provenance fields in user JSON 0; 200/200 sealed
+audit chains; the guard changed 0 replies. **Done: passes.**
+- Question 1: yes, two tokens (owner, auditor), so the access log tells them apart. A small follow-up, not blocking.
+- Question 2: a profile emptied by the guard answers with the ordinary "I don't know" line; the refusal stays in
+  the record, where the audit view shows why.
+- The `?token=` on the audit page's event stream is masked in the access log; when the panel is next touched,
+  prefer a cookie the audit page sets, so the token never sits in a URL.
+- The books bench's 2 flat answers scored wrong belong to order 0012, reopened.

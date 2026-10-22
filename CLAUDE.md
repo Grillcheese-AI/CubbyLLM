@@ -74,7 +74,7 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   measured lessons (read its "Before you touch anything").
 - **Known red:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
   `cubbyllm.spatial` and `cubbyllm.reasoning.step_loop` (order 0002, proposed).
-- **Queue (2026-10-22):** 0001, 0004, 0005 done; 0006 (free-text keys, toy) in progress; **0011 (fact names in readable words) next, by Nick's priority**; suggested then 0016 (sources internal, audit view), 0012 (the books: passage finder + frames, attributed until corroborated), 0007 (learn on a miss), 0014 (the hdc set's 4.3M Wikidata facts as a world), 0013 (a Cubby-native book reader, the bulk pass), 0015 (everything in the datasets into worlds, `docs/WORLDS.md`), 0018 (question shapes SFT, EN-US/UK, FR-FR/QC), 0008 (creativity), 0009 (capacity to 10,000 facts), 0010 (casual talk); 0019 (emotions: clean the affect labels, then a head on the frozen 450M), 0020 (emotional arcs and change points over books) and 0021 (free text: train the switch alone, then widen the templates) open; 0002, 0003, 0017 (claim checks) proposed.
+- **Queue (2026-10-22, evening):** 0001, 0004, 0005, 0006, 0011, 0016 done; in progress: 0007 (learn on a miss), 0013 (the book reader), 0014 (the hdc world), 0021 (free text: the switch alone); **0012 reopened** (a time rule for flat answers, a same-name guard, finer places count, frames on 200 triples after 0014's labels); open: 0008 (creativity), 0009 (capacity), 0010 (casual talk), 0015 (everything into worlds), 0018 (question shapes), 0019 (emotions), 0020 (emotional arcs); proposed: 0002, 0003, 0017 (claim checks).
 
 ## Rules every change keeps
 

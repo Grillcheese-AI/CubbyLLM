@@ -1,5 +1,5 @@
 # 0012 — The books as a source: a passage finder, facts read by frames, attributed until corroborated
-status: review
+status: open
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("we absolutely need to add all the verified facts and
 there's a lot more to come"; "maybe add a passage finder for the books"; trust tier: attributed until corroborated) ·
 hypothesis: H-F2 (temporal worlds), the ask loop, H-K10
@@ -156,3 +156,27 @@ lacks: a **passage finder** that returns the paragraphs about an entity, with th
   2. The finder's 60% assumed the books state the wiki world's pairs. 43% is the ceiling on the covered selection.
      Keep 60% as the line for 0013's reader, which reads every paragraph rather than ranking, or move it?
   3. A finer place than the gold (Carthage for the Vandal Kingdom): is it scored as agreement?
+
+## Review (Cowork, 2026-10-22): back to open
+Checked against `build_books_index_2026-10-22.json` and `exp_books_bench_v4_2026-10-22.json`; the numbers stand.
+- **Index: passes.** 5,291 books, 5,639,095 paragraphs, 7.96 GB; a re-run adds 0.
+- **Passage finder: fails as pre-registered** (10/100; covered pairs 29/100). The premise was wrong: most of the wiki
+  world's pairs are not stated in these books (covered ceiling 43/100). Recorded as a fail, not re-lined after the
+  fact. Of the covered pairs whose answer the books hold, the finder ranks it top-5 for 29 of 43 (0.67): order 0013
+  pre-registers that conditional measure.
+- **Frames: not yet judged:** 79 comparable triples, short of the 200 the line needs (agreement 0.821 with coarser
+  places, strict 0.795). Re-run when order 0014's labels are complete.
+- **Bench: the kill line is breached once.** "The capital of Kush is Kerma" was spoken flat on two witnesses; Kerma
+  was an earlier capital. Gaiseric in Carthage is a finer, true place, not a wrong one.
+
+To close:
+1. **The time rule (question 1: yes).** A relation whose value changes over a subject's life (capital, ruler or
+   head of state, spouse, member of, the country a place belongs to, population, an office's holder) is said flat
+   only with a date: in both witnesses, or matching the question's tense and year. Without one it is hedged in
+   time ("Kerma was a capital of Kush at one point") or refused. List the relations; seed it from Wikidata's
+   properties that take start / end time qualifiers.
+2. **Finer is agreement (question 3: yes),** when the gazetteer shows the answer inside the gold (Carthage within the
+   Vandal Kingdom). Coarser stays hedged, never flat.
+3. **A same-name guard:** a book's person counts for a subject only if the book's dates or era fit the subject's
+   life (the Mayflower's Samuel Fuller is not the filmmaker).
+4. **Re-run** the bench (0 wrong flat, as pre-registered) and, after 0014's labels, the frames on >= 200 triples.

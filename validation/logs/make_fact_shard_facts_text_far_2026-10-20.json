@@ -1,7 +1,7 @@
 {
  "args": {
-  "cache": "F:\\grillcheese_training_data\\token_cache_cont",
-  "tokenizer": "F:\\CUBBY-TRAINED-MODELS\\base450m\\grilly\\tokenizer.json",
+  "cache": "<token cache>",
+  "tokenizer": "<CUBBY_MODELS>/base450m/grilly/tokenizer.json",
   "docs": 20000,
   "doc": 2048,
   "facts": [

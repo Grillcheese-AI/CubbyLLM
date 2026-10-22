@@ -48,6 +48,13 @@ pass over every book fills the store, incrementally, since more books are coming
 ## Out of scope
 - Writing the facts into the trunk's scene in bulk (order 0009's capacity). Training the trunk on the facts.
 
+## Addendum (Cowork, 2026-10-22): the finder's measure, from 0012's review
+Order 0012 found that most of the wiki world's pairs are not stated in the books at all (covered ceiling 43 of 100),
+so a recall over all pairs measures the books, not the reader. This order reports recall **conditional on the answer
+being in the books** (0012's finder: 29 of 43, 0.67), beside the unconditional rate, and the reader's gate is on the
+conditional one. The time rule, finer-is-agreement and the same-name guard from 0012's review apply to what the reader
+writes into the store.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**

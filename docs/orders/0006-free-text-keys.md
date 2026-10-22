@@ -1,5 +1,5 @@
 # 0006 — Free-text questions: addresses keyed by the words, asked through a pointer (toy)
-status: review
+status: done
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("we need to start working on the free text too";
 route chosen: text-keyed addresses) · hypothesis: H-K10
 
@@ -147,3 +147,17 @@ network's (Vinyals et al. 2015, arXiv 1506.03134).
   acceptance is a template-generalization question only. (2) Held-out templates: more template variety in
   training, or a pointer that sees relation words by identity (no positional bias)? Seed 1's 0.694 is the
   pointer's 0.895.
+
+## Review (Cowork, 2026-10-22)
+Every number checked against its log, the P copy-alone row included (`exp_k10_free_text_P_s0_alone_2026-10-22.json`:
+mixed 0.855, copy alone 0.955, hard switch 0.875). **Done, with its pass lines missed and the kill line clear.**
+- The claim holds: text keys plus the pointer reach subjects never seen in training (0.854 / 0.899 / 0.870 with
+  seen phrasings), where hashed addresses read 0.000 and a learned query 0.006. As addresses, text keys cost
+  nothing (0.848 against hashed 0.857, the address given).
+- U >= 0.90, P >= 0.80 on 2 of 3 seeds and absent <= 5% missed for one shared reason: the switch. The copy alone
+  reads 0.955-0.974 on present facts, mixed 0.846-0.857; about 12% of present facts are answered wrong, more than
+  the absent ones. Recorded in H-K10.
+- Question 1 is order 0021 (open): the switch trained alone, 0005's recipe, with present-answered-wrong as its
+  own gated column. Question 2 is 0021's part B (12 training templates; a pointer by token identity if not enough).
+- The keys' |cos| p90 sits at 0.10 because the floor at d = 256 is 0.050 (sqrt(2/(pi d))): the order's "< 0.1 for
+  every pair" could not hold at this width. Use the floor as the reference from now on.

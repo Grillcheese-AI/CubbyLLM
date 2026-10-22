@@ -81,6 +81,12 @@ re-runs.
 ## Out of scope
 - Writing worlds into the trunk's scene in bulk (0009). Retraining.
 
+## Addendum (Cowork, 2026-10-22): label hygiene when a world is mounted
+Order 0011 found, in the wiki world: 528 facts whose subject or object is a Python repr (`<class 'wikikg.relations.X'>`,
+`<__main__.DynamicRelation object at 0x...>`), one object `_` (`BryantPark LOCATION_OF _`), and a relation spelled
+`SP0USE_OF` (a zero for the O). Mounting a world drops facts whose ends are not names, maps known misspelled relations
+to their spelling, and logs both counts per world.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**
