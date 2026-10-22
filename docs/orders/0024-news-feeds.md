@@ -29,7 +29,7 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
   or link (first seen, published date, feed, headline, summary), never overwrite, one file per day. Run hourly by the
   serve stack (Nick's choice, 2026-10-22); `--once` stays for a manual or catch-up poll.
 - **The feeds** (a manifest in `standin/data/news_feeds.json`): today's four, plus French and Québec outlets. Verify
-  each URL, record its terms, and respect a refusal (a robot block, an error, a terms page that forbids it). Replace
+  each URL, record its terms and robots rules; Nick decides per publisher (the local rights notes). Replace
   the third-party AP mirror with an official feed or drop it.
   - **Le Devoir (Nick, 2026-10-22):** the front-page feed `https://www.ledevoir.com/rss/manchettes.xml`, the older
     `http://feeds2.feedburner.com/fluxdudevoir` (Le Devoir's "Fil de presse", current on 2026-10-22; drop it if it
@@ -42,18 +42,31 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
   - Checked the same way the same day: Le Devoir's `manchettes.xml` (36 items) and the FeedBurner "Fil de presse"
     (19 items) are both current.
   - Then other Québec and French outlets, each checked the same way.
-  - **AI opt-outs are a refusal (Cowork, 2026-10-22; Nick to confirm per publisher).** La Presse, Le Devoir and
-    Radio-Canada answer the poller (`CubbyLLM/0.1` is not on their lists), but each one's robots.txt blocks AI agents
-    by name: La Presse blocks ClaudeBot, anthropic-ai, CCBot, PerplexityBot and Google-Extended; Le Devoir also blocks
-    GPTBot, ChatGPT-User and OAI-SearchBot; Radio-Canada blocks those plus Perplexity-User, cohere-ai and DeepSeek.
-    That is a publisher declining AI use, and a name not on the list does not change it, the same rule
-    `news_source.py` applies to CBC. So the poller checks each publisher's own site (not the feed's host: the
-    FeedBurner copy of Le Devoir carries no robots rule of its own) and **holds** a feed whose publisher blocks AI
-    agents: not polled, not stored, until Nick decides for that publisher (a licence, or a written yes from it).
-    The English feeds are checked the same way. Report which feeds run and which are held.
+  - **Radio-Canada (Nick, 2026-10-22):** `https://ici.radio-canada.ca/info/rss/info/en-continu` (50 items, current).
+  - **Each publisher's robots rules and terms** are read from its own site (not the feed's host: the FeedBurner copy
+    of Le Devoir carries no rule of its own) and recorded, with Nick's decision per publisher, in the local rights
+    notes. The poller always identifies itself as `CubbyLLM/0.1` and never changes its name to get past a rule; it
+    reads headlines and summaries only, never an article page.
+  - **L'actualité (Nick, 2026-10-22):** `https://lactualite.com/feed/` (50 items, current).
   - **Sources that welcome reuse** come first: government news releases under an open licence (the Government of
     Canada's, under the Open Government Licence - Canada; Québec's, once its terms are checked), and feeds whose
     terms allow it.
+- **GDELT (Nick, 2026-10-22), the structured event source.** Checked live the same day from Nick's machine: GDELT
+  2.0 publishes every 15 minutes (`data.gdeltproject.org/gdeltv2/lastupdate.txt`): an **events** file (who did what to
+  whom, where and when, coded from the news, with each event's mention, source and article counts, its tone and a
+  source URL), a **mentions** file (every article that mentions an event) and a **GKG** file (per article: people,
+  organisations, places, themes, tone); a translingual stream adds events from machine-translated non-English news.
+  The **DOC 2.0 API** (`api.gdeltproject.org/api/v2/doc/doc`) searches about three months of articles by words,
+  language or country (a French query on "Lévis" returned this week's Québec articles). Its terms: unrestricted use,
+  commercial included, with a citation and a link to gdeltproject.org (the audit view and the local rights notes carry
+  it; replies do not, per 0016).
+  - Poll the events and mentions files every 15 minutes (about 25 MB a day zipped), filtered on ingest to entities a
+    world holds plus Canada and Québec; take GKG through the APIs on demand. The full GKG stream is several hundred
+    MB a day: ask Nick before pulling it.
+  - GDELT's events are machine-coded and noisy: they are **reported** claims, never flat facts; a count of sources is
+    salience, not truth. Never follow an event's source URL to fetch the article itself.
+  - GDELT is the main input for the change trigger below (a GKG theme or an event such as "elected", "resigned",
+    "appointed" about an entity a world holds).
 - **Events by day:** items about the same event (shared names and key words, within a day or two) grouped across
   outlets; who and what read by the frames (Cubby-native), as **reported** claims dated by their items. A group stays
   "reported" however many outlets carry it, per `news_source.py`'s rule.
@@ -66,7 +79,7 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
 
 ## Acceptance (pre-registered)
 - **Archive:** 7 days unattended: items per feed per day, 0 duplicates, a re-poll inside the window adds 0, size on
-  disk. Each feed's terms recorded; every refusal respected.
+  disk. Each feed's terms and robots rules recorded, with Nick's decision.
 - **Grouping:** 100 random event groups judged by Cowork and Nick: items about the same event >= 0.90.
 - **Bench:** 50 questions about the archive's week ("What happened with X on <date>?", "What was reported about Y
   this week?", EN and FR): **0 wrong spoken**; every answer dated and said as reported; replies naming an outlet 0;
@@ -77,7 +90,8 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
 
 ## Constraints
 - Rules in `CLAUDE.md` hold (flag-gated, < 300 lines a file, `__wiring__`, tests pin the claim).
-- Headlines and summaries only: never fetch or store article bodies, never get around a paywall or a robot refusal.
+- Headlines and summaries only: never fetch or store article bodies, never get around a paywall, and never change
+  the poller's name (`CubbyLLM/0.1`) to get past a rule.
 - No external model reads the news: grouping and frames are Cubby's own.
 - Feed terms and any licence questions go in the local rights notes, not in this repo.
 
