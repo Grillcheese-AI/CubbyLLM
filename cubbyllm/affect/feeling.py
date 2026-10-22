@@ -18,7 +18,6 @@ import json
 import pathlib
 import sys
 
-sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
 from cubbyllm.local_paths import expand  # noqa: E402
 
 # the cubbyverse checkout's Plutchik table (order 0031: named here, not through the game's pacpaths)

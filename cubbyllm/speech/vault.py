@@ -24,7 +24,7 @@ import secrets
 
 __wiring__ = "STANDALONE"
 
-HERE = pathlib.Path(__file__).resolve().parent
+HERE = pathlib.Path(__file__).resolve().parents[2] / "standin"
 KEY_FILE = HERE / "data" / "out" / "host.key"
 KEY_ENV = "CB_HOST_KEY"
 MAGIC = b"CBV1"

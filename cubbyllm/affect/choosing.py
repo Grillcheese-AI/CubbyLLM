@@ -60,11 +60,9 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-_HERE = str(Path(__file__).resolve().parent)
-if _HERE not in sys.path:
-    sys.path.insert(0, _HERE)
+_HERE = str(Path(__file__).resolve().parents[2] / "standin")
 
-from neurochem import Neurochemistry  # noqa: E402
+from .neurochem import Neurochemistry  # noqa: E402
 
 __wiring__ = "WIRED"
 

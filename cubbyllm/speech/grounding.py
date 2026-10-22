@@ -167,7 +167,7 @@ def grounded_ok(record_line: str, text: str, facts, learned: str = "", slack: in
 
     A sentence that fails is refused, not repaired: the host then states the
     record flatly. A refusal is a result; a made-up thought is a defect."""
-    from identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
+    from .identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
     if not text or "?" in text or _ECHO.search(text) or has_non_latin(text):
         return False
     if _COPY.search(text):
@@ -245,7 +245,7 @@ def reply_ok(record_line: str, heard: str, text: str, facts, learned: str = "", 
     referent, both directions, so he cannot tell the player there are three
     ghosts when there are two. A made-up reassurance is worse than a made-up
     thought, because somebody acts on it."""
-    from identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
+    from .identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
     if not text or _INSTRUCTION.search(text) or has_non_latin(text):
         return False
     if _COPY.search(text):
@@ -283,7 +283,7 @@ def rephrase_ok(line: str, text: str, facts) -> bool:
     instruction, no second person, no question back, and at most ONE content
     word the host line did not have — the live trace's failures were invented
     meaning around kept numbers ('6 grains weighing 12 grams', '7 fingers')."""
-    from identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
+    from .identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
     if not text or "?" in text or _ECHO.search(text) or has_non_latin(text):   # "建筑师: 8/15, nice." (Qwen arm, 2026-09-04)
         return False
     n_words = len(text.split())

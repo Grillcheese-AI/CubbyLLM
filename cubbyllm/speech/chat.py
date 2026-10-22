@@ -29,17 +29,14 @@ import re
 import sys
 import time
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-for p in (ROOT, os.path.join(ROOT, "standin", "data")):
-    if p not in sys.path:
-        sys.path.insert(0, p)
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 
-from identity import (T, affect_block, derived, identity_system, load_facts,  # noqa: E402
+from .identity import (T, affect_block, derived, identity_system, load_facts,  # noqa: E402
                       guess_lang, is_identity_question, is_identity_reply, is_model_guard, voice_ok)
-from afferent import Afferent  # noqa: E402
-from neurochem import Neurochemistry, appraise  # noqa: E402
-import choosing  # noqa: E402
-import saying  # noqa: E402
+from ..affect.afferent import Afferent  # noqa: E402
+from ..affect.neurochem import Neurochemistry, appraise  # noqa: E402
+from ..affect import choosing  # noqa: E402
+from ..affect import saying  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
@@ -287,7 +284,7 @@ class CubbyChat:
         """The host guards, unchanged. -> the reason it may not be spoken, or
         None if it survives. Pulled out of `candidates` so the same cascade
         runs over every sample when more than one is drawn."""
-        from identity import has_non_latin
+        from .identity import has_non_latin
         if has_non_latin(reply):                         # EN/FR only: a base that drifts into another script is not spoken
             return "non-latin script"
         if is_model_guard(reply):

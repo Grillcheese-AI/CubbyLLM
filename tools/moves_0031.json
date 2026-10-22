@@ -31,5 +31,19 @@
  "standin/news_backfill.py": "cubbyllm/sources/news/backfill.py",
  "standin/news_reply.py": "cubbyllm/sources/news/reply.py",
  "standin/news_trigger.py": "cubbyllm/sources/news/trigger.py",
- "standin/news_source.py": "cubbyllm/sources/news/source.py"
+ "standin/news_source.py": "cubbyllm/sources/news/source.py",
+ "standin/neurochem.py": "cubbyllm/affect/neurochem.py",
+ "standin/ear.py": "cubbyllm/affect/ear.py",
+ "standin/ear_lexicon.py": "cubbyllm/affect/ear_lexicon.py",
+ "standin/feeling.py": "cubbyllm/affect/feeling.py",
+ "standin/perception.py": "cubbyllm/affect/perception.py",
+ "standin/choosing.py": "cubbyllm/affect/choosing.py",
+ "standin/saying.py": "cubbyllm/affect/saying.py",
+ "standin/afferent.py": "cubbyllm/affect/afferent.py",
+ "standin/lexicon.py": "cubbyllm/affect/word_affect.py",
+ "standin/grounding.py": "cubbyllm/speech/grounding.py",
+ "standin/explicit_gate.py": "cubbyllm/speech/explicit_gate.py",
+ "standin/audience.py": "cubbyllm/speech/audience.py",
+ "standin/chat.py": "cubbyllm/speech/chat.py",
+ "standin/vault.py": "cubbyllm/speech/vault.py"
 }

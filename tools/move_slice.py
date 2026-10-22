@@ -198,12 +198,14 @@ def _is_path_edit(stmt) -> bool:
     return False
 
 
-def rewrite_file(src: str, old: str, new: str, moves: dict) -> tuple[str, list[str]]:
+def rewrite_file(src: str, old: str, new: str, moves: dict, paths_only: bool = False) -> tuple[str, list[str]]:
+    """``paths_only`` (a moved test): only the __file__ paths; its imports and sys.path edits stay (it imports
+    through the shims)."""
     tree = ast.parse(src)
     lines = src.splitlines(keepends=True)
     edits, notes = [], []                                 # (start (line, col), end (line, col), text)
     for node in ast.walk(tree):
-        if isinstance(node, (ast.Import, ast.ImportFrom)):
+        if isinstance(node, (ast.Import, ast.ImportFrom)) and not paths_only:
             new_txt = rewrite_import(node, lines, new, moves)
             if new_txt:
                 indent = " " * node.col_offset
@@ -230,7 +232,7 @@ def rewrite_file(src: str, old: str, new: str, moves: dict) -> tuple[str, list[s
         if not isinstance(body, list):
             continue
         for s in body:
-            if _is_path_edit(s):
+            if _is_path_edit(s) and not paths_only:
                 edits.append(((s.lineno, 0), (s.end_lineno, len(lines[s.end_lineno - 1].rstrip("\r\n"))), None))
     # drop edits nested inside a dropped statement; apply the rest bottom up
     drops = sorted({(a, b) for a, b, t in edits if t is None})
@@ -304,9 +306,13 @@ def main() -> int:
         (REPO / old).write_text(shim(old, new), encoding="utf-8", newline="\n")   # the shim: staged by the next commit
     for t in a.tests:
         old, new = t.split("=", 1)
+        out, n = rewrite_file((REPO / old).read_text(encoding="utf-8"), old, new, moves, paths_only=True)
+        notes += n
         if not a.dry_run:
             (REPO / new).parent.mkdir(parents=True, exist_ok=True)
             subprocess.run(["git", "mv", old, new], cwd=REPO, check=True)
+            (REPO / new).write_text(out, encoding="utf-8", newline="\n")
+            subprocess.run(["git", "add", new], cwd=REPO, check=True)
     if not a.dry_run:
         DONE.write_text(json.dumps(moves, indent=1) + "\n", encoding="utf-8")
     for n in notes:

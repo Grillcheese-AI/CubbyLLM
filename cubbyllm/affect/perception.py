@@ -27,8 +27,8 @@ import re
 
 __wiring__ = "WIRED"
 
-from identity import identity_system, load_facts  # noqa: E402
-from neurochem import appraise  # noqa: E402
+from ..speech.identity import identity_system, load_facts  # noqa: E402
+from .neurochem import appraise  # noqa: E402
 
 EMOTION_PROMPT = ("What emotion does this message express? Answer with the emotion first (one word, or two "
                   "separated by a comma), then the Plutchik petal it sits on.\n\nMessage: {t}")
