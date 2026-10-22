@@ -56,12 +56,26 @@ We already hold what this needs: human word ratings (Warriner 2013 valence and a
 - **Replication (report):** on the Gutenberg fiction, with the 10,000-word window, the share of books whose valence arc
   best fits each of the six shapes, and the share that fits none above r = 0.5. Spot-check 10 books whose arcs are well
   known.
-- **Human gold (the gate):** Nick marks the turning points of 5 books he knows well (position and direction; about 10
-  minutes a book from memory or the table of contents). tau and p are fit on 2 of them; on the other 3, a detected shift
-  matches a mark within +/-3% of the book. **Gate:** precision >= 0.6 and recall >= 0.5. A shift reported where there is
-  none is a wrong answer, so precision is the gate's first clause.
-- **Kill:** precision < 0.4 on the held-out 3: shifts stay an audit feature and are never spoken; the chapter summaries
-  may still be.
+- **Gold set v0 (the gate; model-proposed, checked in our copies, confirmed by Nick):** one book per shape, its
+  pivot found in the text we hold, its position as a fraction of the book. Checked 2026-10-22:
+  - *Pride and Prejudice* (rise): Elizabeth's self-reproach after Darcy's letter, ch. 36 in our copy, at 0.551.
+  - *Romeo and Juliet* (rise-fall): "fortune's fool", III.1, at 0.504-0.510. Our copy is the First Folio spelling
+    ("blacke Fate", "Fortunes foole"), which the lexicon cannot read: use a modern-spelling edition or a spelling map.
+  - *Frankenstein*, 1818 text (fall-rise-fall): the creature wakes and the dream turns to disgust, ch. IV (ch. 5 in the
+    1831 text), at 0.188.
+  - *The Count of Monte Cristo* (fall-rise), held, in place of *The Martian* (not held, not public domain): the arrest
+    (fall) and the escape from the Château d'If (rise). Positions to locate.
+  - *Madame Bovary* (fall) and *Great Expectations* (rise-fall-rise; Magwitch's return, ch. 39): not held; public-domain
+    Gutenberg texts, fetched only with Nick's yes, then their pivots located and checked.
+  Nick reads each located passage and confirms it is a turn. The proposals came from a model, so the set is labelled
+  "model-proposed, human-confirmed", never "human gold".
+  - **Calibrate** tau and p on two books (*Pride and Prejudice*, *Frankenstein*); **test** on the rest.
+  - **Gate (smoke, n = 6):** Cubby speaks only of a book's strongest shift, so precision@1 is the first clause: the top
+    shift lies within +/-3% of the pivot on >= 3 of the 4 test books; the arc's best-fitting shape is the labelled one
+    on >= 4 of 6. **Kill:** top shift on the pivot in <= 1 of 4: shifts stay an audit feature, never spoken.
+  - A fuller gold (every turn of each shape, marked by a person who has read the book) replaces v0 before any claim.
+- **Folders are not genres:** *Pride and Prejudice* sits in the collection's `factual_books` folder (28 of its 2,445
+  books are fiction by Gutenberg's catalog). The fiction world takes the catalog's fiction flag over the folder.
 - **Readers:** the same books scored by `lexicon` and `ear` (later `head`): the correlation of their valence arcs, and
   the gold-set precision of each.
 
