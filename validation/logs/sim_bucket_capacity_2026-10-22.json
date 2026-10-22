@@ -1,0 +1,12 @@
+{
+ "what": "FHRR scene split into K buckets by address, random codes, ideal argmax over 131,072 candidates (as sim_hrr_ceiling.py); d = 1024; 10,000 facts x ~4.6 pieces = 46,000 pieces; a piece shares its bucket with Poisson(mean load) others",
+ "per_piece_top1_by_bucket_load": {"1": 1.0, "5": 1.0, "10": 1.0, "15": 1.0, "20": 0.993, "25": 0.973, "30": 0.923, "35": 0.86, "40": 0.707, "50": 0.56, "60": 0.36},
+ "trials_per_load": 300,
+ "at_10000_facts": [
+  {"mean_load": 5, "buckets": 9200, "state_MB_bf16": 18.0, "per_piece": 1.000, "whole_answer": 1.000},
+  {"mean_load": 10, "buckets": 4600, "state_MB_bf16": 9.0, "per_piece": 1.000, "whole_answer": 0.999},
+  {"mean_load": 15, "buckets": 3067, "state_MB_bf16": 6.0, "per_piece": 0.996, "whole_answer": 0.983},
+  {"mean_load": 20, "buckets": 2300, "state_MB_bf16": 4.5, "per_piece": 0.983, "whole_answer": 0.922}
+ ],
+ "note": "Cowork's simulation, 2026-10-22 (the same method as validation/sim_hrr_ceiling.py, run with loads 1-60); a ceiling: random codes and a perfect decoder. Run 3's learned table measured like random codes (diag_fact_cleanup_run3_2026-10-21.json)."
+}
