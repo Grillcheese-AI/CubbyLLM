@@ -1,5 +1,5 @@
 # 0005 — Train the copy alone on a frozen trunk (run 5)
-status: review
+status: done
 written: 2026-10-21 by Cowork · approved: 2026-10-22 by Nick · hypothesis: H-K10
 
 ## Why
@@ -143,4 +143,10 @@ the pieces and the gate. `RUN = 5` is written.
     within 0.005 of run 3, kill below 0.761;
   - `diag_frozen_check.py` on run 5's final against run 3's;
   - compile and bf16 with the frozen trunk.
-
+- **Run 5 (2026-10-21, G4, 0.17 h) and `done`.** Far facts **0.946** exact (the line is 0.80; the kill line was 0.761),
+  villages 0.953, every text source within 0.005 of run 3 (worst 0.0000). `diag_frozen_check` finds 0 trunk or
+  router tensors moved. The GPU checks: compile and bf16 ran with the frozen trunk at 183k tok/s; the probe ~1 min
+  an eval.
+- **Found by Cowork:** the readout cell crashes *after* its verdict lines for `RUN >= 5`. Its run-3-era block
+  `if link and text:` runs and indexes `text` (a list there) by name. This is cosmetic, since the verdict is already
+  printed, but it is folded into order 0003 to fix.

@@ -58,8 +58,8 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   0.021 in run 3, though the read held them (0.965 whole answers among the document's writers). Order 0001
   added a copy path (`cubbyllm/model/spatial_copy.py`, `CB_SPATIAL_COPY=ring`): the read cleaned up
   against a fixed ring of the last 256 written ids, mixed into the output with a read-aware gate. Run 4: far
-  facts **0.761**, villages 0.953, but the whole model drifted on text. Run 3's trunk with run 4's copy
-  (~1k parameters) reads **0.844**, with its text unchanged. Next: train the copy alone (order 0005).
+  facts 0.761, but the whole model drifted on text. Run 5 trained the copy alone (1,027 parameters,
+  `CB_TRAIN_ONLY=copy`, the trunk frozen): far facts **0.946**, villages 0.953, text identical (order 0005).
 - **Speed.** Triton kernels: the fused MinGRU recurrence (`CB_MINGRU_TRITON=1`, 72 → 18 ms a step on
   the G4) and banded flash attention (`CB_ATTN_TRITON=1`; exact, 3.7× the dense mask on an A100; not
   yet measured in a G4 step). Flex attention with tiles for 99 KB cards (`CB_FLEX_OPTS`).
@@ -74,7 +74,7 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   measured lessons (read its "Before you touch anything").
 - **Known red:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
   `cubbyllm.spatial` and `cubbyllm.reasoning.step_loop` (order 0002, proposed).
-- **Queue (2026-10-22):** 0001 and 0004 done; 0005 (train the copy alone) in progress; 0006 (free-text keys, toy), 0007 (learn on a miss), 0008 (creativity over known facts), 0009 (capacity to 10,000 facts) and 0010 (casual talk from the 450M, no external model) open; 0002, 0003 proposed.
+- **Queue (2026-10-22):** 0001, 0004, 0005 done; 0006 (free-text keys, toy), 0007 (learn on a miss), 0008 (creativity over known facts), 0009 (capacity to 10,000 facts) and 0010 (casual talk from the 450M, no external model) open; 0002, 0003 proposed.
 
 ## Rules every change keeps
 

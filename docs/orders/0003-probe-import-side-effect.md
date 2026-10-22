@@ -13,6 +13,10 @@ works around it (0001, `c4b11ba`). The fix belongs in the file that causes it.
 - Drop the workaround in `train_base.fact_probe` once the import is clean.
 - A test: importing the module leaves `os.environ` unchanged.
 
+- **Also (Cowork, 2026-10-22):** `notebooks/_build_spatial.py`'s readout cell runs its run-1-to-3 comparison block
+  (`if link and text:`, H-S12's gates) for runs 4 and 5 too, and crashes after the verdict for `RUN >= 5`, where
+  `text` is not the text arm's record. Guard it to `RUN < 4` and regenerate the notebook.
+
 ## Acceptance (pre-registered)
 - The new test passes. `python validation/exp_hypertoken_recall.py ...` behaves as before from the command
   line (same default). The full `pytest tests` counts are unchanged apart from the new test.

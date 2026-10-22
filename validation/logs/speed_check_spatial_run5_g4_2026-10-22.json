@@ -1,0 +1,87 @@
+{
+ "tests": {
+  "mingru": true,
+  "band": true
+ },
+ "variants": {
+  "torch": {
+   "env": {},
+   "exit": 0,
+   "tok_s": 46326.0,
+   "step": "step (micro 32 x S 1024, with the optimizer each micro): 707.3 ms, 46,326 tok/s, MFU 25.1% (under the profiler: a few % slower than a run)",
+   "kinds": [
+    "matmul                    34.0%      234.8 ms",
+    "other fused / elementwise  31.0%      214.1 ms",
+    "attention                 12.1%       83.4 ms",
+    "MinGRU scan               10.7%       73.9 ms",
+    "vocab softmax / CE         7.3%       50.5 ms",
+    "optimizer                  3.2%       22.3 ms",
+    "copy / cast                1.3%        8.8 ms",
+    "FFT (spatial link)         0.6%        3.9 ms"
+   ]
+  },
+  "mingru": {
+   "env": {
+    "CB_MINGRU_TRITON": "1"
+   },
+   "exit": 0,
+   "tok_s": 50602.0,
+   "step": "step (micro 32 x S 1024, with the optimizer each micro): 647.6 ms, 50,602 tok/s, MFU 27.4% (under the profiler: a few % slower than a run)",
+   "kinds": [
+    "matmul                    37.1%      235.2 ms",
+    "other fused / elementwise  33.2%      210.5 ms",
+    "attention                 13.2%       83.5 ms",
+    "vocab softmax / CE         8.0%       50.5 ms",
+    "optimizer                  3.5%       22.3 ms",
+    "MinGRU scan                3.1%       19.5 ms",
+    "copy / cast                1.4%        8.8 ms",
+    "FFT (spatial link)         0.6%        3.8 ms"
+   ]
+  },
+  "mingru+band": {
+   "env": {
+    "CB_MINGRU_TRITON": "1",
+    "CB_ATTN_TRITON": "1"
+   },
+   "exit": 0,
+   "tok_s": 54455.0,
+   "step": "step (micro 32 x S 1024, with the optimizer each micro): 601.7 ms, 54,455 tok/s, MFU 29.5% (under the profiler: a few % slower than a run)",
+   "kinds": [
+    "matmul                    40.2%      235.2 ms",
+    "other fused / elementwise  36.9%      215.4 ms",
+    "vocab softmax / CE         8.6%       50.5 ms",
+    "optimizer                  3.8%       22.3 ms",
+    "copy / cast                3.4%       19.9 ms",
+    "MinGRU scan                3.3%       19.5 ms",
+    "attention                  3.0%       17.8 ms",
+    "FFT (spatial link)         0.7%        3.9 ms"
+   ]
+  },
+  "mingru+flex": {
+   "env": {
+    "CB_MINGRU_TRITON": "1",
+    "CB_NO_FLEX": "0",
+    "CB_FLEX_OPTS": "{\"BLOCK_M\": 64, \"BLOCK_N\": 32, \"num_stages\": 1, \"num_warps\": 8, \"BLOCK_M1\": 32, \"BLOCK_N1\": 32, \"BLOCK_M2\": 32, \"BLOCK_N2\": 32}"
+   },
+   "exit": 0,
+   "tok_s": 55463.0,
+   "step": "step (micro 32 x S 1024, with the optimizer each micro): 590.8 ms, 55,463 tok/s, MFU 30.0% (under the profiler: a few % slower than a run)",
+   "kinds": [
+    "matmul                    40.8%      235.7 ms",
+    "other fused / elementwise  36.5%      210.5 ms",
+    "vocab softmax / CE         8.8%       50.5 ms",
+    "attention                  4.5%       25.8 ms",
+    "optimizer                  3.9%       22.3 ms",
+    "MinGRU scan                3.4%       19.6 ms",
+    "copy / cast                1.5%        8.8 ms",
+    "FFT (spatial link)         0.7%        3.8 ms"
+   ]
+  }
+ },
+ "chosen": "mingru+flex",
+ "env": {
+  "CB_MINGRU_TRITON": "1",
+  "CB_NO_FLEX": "0",
+  "CB_FLEX_OPTS": "{\"BLOCK_M\": 64, \"BLOCK_N\": 32, \"num_stages\": 1, \"num_warps\": 8, \"BLOCK_M1\": 32, \"BLOCK_N1\": 32, \"BLOCK_M2\": 32, \"BLOCK_N2\": 32}"
+ }
+}
