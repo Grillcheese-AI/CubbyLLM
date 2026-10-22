@@ -1,6 +1,6 @@
 # 0019 — Emotions: clean the affect labels, then give the 450M a read of feeling (a small head on the frozen trunk)
-status: proposed
-written: 2026-10-22 by Cowork · approved: — · hypothesis: H-K11 (proposed here; Cowork adds it at the first measured
+status: open
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yep") · hypothesis: H-K11 (proposed here; Cowork adds it at the first measured
 number), with the cube (`docs/cube_vs_valence_arousal.md`, `docs/cube_vs_human_vad.md`) and the Ear (`standin/ear.py`)
 
 ## Why
