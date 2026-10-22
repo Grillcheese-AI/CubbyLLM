@@ -1,6 +1,6 @@
 # 0022 — Copy or refuse: a fact token comes from the copy, or the answer is "I don't know"
-status: proposed
-written: 2026-10-22 by Cowork · approved: — · hypothesis: H-K10 · **after 0021**
+status: open
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: H-K10 · **after 0021**
 
 ## Why
 Order 0021 found where the wrong answers come from. The read tells a present fact from an absent one: one threshold
