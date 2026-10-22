@@ -97,11 +97,8 @@ def hamming_numpy(query: np.ndarray, codebook: np.ndarray) -> np.ndarray:
 
 
 def _grilly_packed():
-    try:
-        from grilly.vsa import packed
-        return packed
-    except Exception:                                    # grilly v1, or no grilly: numpy computes the same
-        return None
+    from cubbyllm.ops.packed import packed           # grilly only through cubbyllm/ops/ (order 0031)
+    return packed()                                  # None with grilly v1, or no grilly: numpy computes the same
 
 
 class CapsuleStore(FactStore):
@@ -193,11 +190,10 @@ class CapsuleStore(FactStore):
         q = encode(query, self.dim)
         k = min(k, len(self.texts))
         if self._packed is not None:
-            import grilly
+            from cubbyllm.ops import packed as ops
             if self._gbook is None:
-                self._gbook = grilly.from_numpy(self.codebook())
-            idx, dist, _ = self._packed.topk(grilly.from_numpy(q), self._gbook, k=k, dim=self.dim)
-            idx, dist = idx.numpy().tolist(), dist.numpy().tolist()
+                self._gbook = ops.to_device(self.codebook())
+            idx, dist = ops.topk(self._packed, q, self._gbook, k=k, dim=self.dim)
         else:
             d = hamming_numpy(q, self.codebook())
             idx = np.argsort(d, kind="stable")[:k].tolist()
