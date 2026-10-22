@@ -73,6 +73,15 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
     Middle East, Geopolitics and the like). `/news/feed/issue/<id>` looks like a topic feed but ignores the id and
     returns the main feed. Poll the main feed hourly and the 38 current topic feeds every 6 hours; an item's topics
     are the topic feeds it appears in. The list, checked from Nick's machine, is handed over off-repo.
+  - **International, not only Québec (Nick, 2026-10-22).** Cowork tested 43 candidate feeds from Nick's machine;
+    38 work and are kept: Europe 13, Asia 7, Americas 7, Africa 5, Middle East 4, Oceania 2; in en 30, fr 4, es 2, de 1, pt 1
+    (en, fr, es, de, pt). Among them public broadcasters (BBC, DW, France 24, RFI, Tagesschau, ABC Australia, RNZ, NPR),
+    private outlets on every continent, and outlets a state runs or funds, labelled as such (TASS, Anadolu; Al Jazeera,
+    Yonhap, CNA). An item from a state outlet is said as that state's media reporting it, and never counts as a second
+    voice. Not kept: Arab News (403), NHK World's English feed (moved: 404), Xinhua (its certificate fails to verify),
+    Reuters (no public feed), and an AP search through Google News (an aggregator, not the publisher). The list, with
+    each feed's region, language, kind and robots status, is handed over off-repo. GDELT (above) adds breadth in
+    over 100 languages. Coverage is reported per region and language in the archive's 7-day log.
   - **Each publisher's robots rules and terms** are read from its own site (not the feed's host: the FeedBurner copy
     of Le Devoir carries no rule of its own) and recorded, with Nick's decision per publisher, in the local rights
     notes. The poller always identifies itself as `CubbyLLM/0.1` and never changes its name to get past a rule; it
