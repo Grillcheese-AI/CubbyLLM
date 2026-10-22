@@ -8,6 +8,7 @@ one question, 8 layers, the read at 4). The documents are ``k10_free_docs``'s: 8
 document does not hold (answer NONE). The arms, at the same budget and seeds:
 
   U  text keys, the address given (``query="placed"``): the keys work as addresses
+  A  today's hashed places, the address given: order 0001's read on these documents (U's own ceiling)
   H  today's hashed places, the learned route and its route loss: the control (the hash wall)
   R  text keys, the learned query and the route loss: can the trunk regenerate a key?
   P  text keys, the pointer query and its pointer loss (``model/spatial_key.py``)
@@ -16,7 +17,7 @@ Scored on held-out documents: exact per cell of {seen, unseen subject} x {seen, 
 an absent fact answered with anything but NONE; a present one refused (NONE); the pointers' accuracy
 (P); the filler language's loss; the keys' |cos| on the table at the start and the end.
 
-    python validation/exp_k10_free_text.py --arm U|H|R|P [--seed 0] [--threads 2]
+    python validation/exp_k10_free_text.py --arm U|A|H|R|P [--seed 0] [--threads 2]
 """
 from __future__ import annotations
 
@@ -42,7 +43,8 @@ from k10_far_docs import WRITE  # noqa: E402
 from k10_free_docs import HELD_T, FreeLayout, batch, held_cells  # noqa: E402
 
 ARMS = {"U": dict(key="text", query="placed", route=1.0), "H": dict(key=None, query="learned", route=1.0),
-        "R": dict(key="text", query="learned", route=1.0), "P": dict(key="text", query="pointer", route=0.0)}
+        "R": dict(key="text", query="learned", route=1.0), "P": dict(key="text", query="pointer", route=0.0),
+        "A": dict(key=None, query="placed", route=1.0)}
 
 
 def build(a):
@@ -125,7 +127,9 @@ def evaluate(model, a, held, lay) -> dict:
     absent_wrong, refused, lam, ptr_hit = [], [], {"present": [], "empty": []}, []
     lang_sum = lang_n = 0.0
     calls = []
-    hook = link.copy_path.register_forward_hook(lambda _m, inp, out: calls.append((inp[4], out[2][:, 0])))
+    alone = {"copy": [], "lm": [], "switch": []}                                     # present facts, each path on its own
+    hook = link.copy_path.register_forward_hook(lambda _m, inp, out: calls.append(
+        (inp[4], out[2][:, 0], out[1].argmax(-1), inp[0].argmax(-1))))
     try:
         for b in range(0, ids.shape[0], 16):
             sl = slice(b, b + 16)
@@ -137,11 +141,19 @@ def evaluate(model, a, held, lay) -> dict:
             ce = F.cross_entropy(logits.reshape(-1, a.vocab), tgt.reshape(-1), reduction="none")
             lang_sum += float((ce * fill.reshape(-1)).sum()); lang_n += float(fill.sum())
             S = ids.shape[1] - 1
-            for ix, lv in calls:                                             # lam where the asked fact holds a piece
-                for j, v in zip(ix.tolist(), lv.tolist()):
+            picks = {"copy": {}, "lm": {}, "switch": {}}
+            for ix, lv, cp, lm in calls:                                     # lam where the asked fact holds a piece
+                for j, v, c, m in zip(ix.tolist(), lv.tolist(), cp.tolist(), lm.tolist()):
                     i, t = divmod(j, S)
                     here, o, info = spans[b + i]
                     lam["present" if not info["absent"] and here <= t < here + len(o) else "empty"].append(v)
+                    picks["copy"][(i, t)], picks["lm"][(i, t)] = c, m
+                    picks["switch"][(i, t)] = c if v >= 0.5 else m          # a hard switch on the gate, no mix
+            for i in range(ids[sl].shape[0]):                                # before the mix: the copy's argmax alone,
+                here, o, info = spans[b + i]                                 # the trunk's alone, over the answer's pieces
+                if not info["absent"]:
+                    for k in alone:
+                        alone[k].append([picks[k].get((i, here + j)) for j in range(len(o))] == list(o))
             if ptr is not None and getattr(ptr, "last", None) is not None:  # the pointers: both on the gold pair
                 ix, lg = ptr.last
                 g = gold[sl, :-1].reshape(-1, 2)[ix]
@@ -162,7 +174,10 @@ def evaluate(model, a, held, lay) -> dict:
                absent_not_none=float(np.mean(absent_wrong)), n_absent=len(absent_wrong), present_refused=float(np.mean(refused)),
                language=lang_sum / max(lang_n, 1), pointer_acc=float(np.mean(ptr_hit)) if ptr_hit else None,
                lam_present=float(np.mean(lam["present"])) if lam["present"] else None,
-               lam_empty=float(np.mean(lam["empty"])) if lam["empty"] else None, tau=float(link.copy_path.tau),
+               lam_empty=float(np.mean(lam["empty"])) if lam["empty"] else None,
+               copy_alone=float(np.mean(alone["copy"])) if alone["copy"] else None,
+               lm_alone=float(np.mean(alone["lm"])) if alone["lm"] else None,
+               switch=float(np.mean(alone["switch"])) if alone["switch"] else None, tau=float(link.copy_path.tau),
                beta=float(link.copy_path.beta))
     return out
 
@@ -223,7 +238,8 @@ def run(a, log) -> dict:
                 f"  seen/train {ev['seen_train_t']:.3f}  seen/held {ev['seen_held_t']:.3f}  unseen/train {ev['unseen_train_t']:.3f}"
                 f"  unseen/held {ev['unseen_held_t']:.3f}  absent not NONE {ev['absent_not_none']:.3f}  refused {ev['present_refused']:.3f}"
                 f"  language {ev['language']:.3f}" + (f"  pointer {ev['pointer_acc']:.3f}" if ev["pointer_acc"] is not None else "")
-                + f"  lam here {ev['lam_present']:.3f} empty {ev['lam_empty']:.3f}  [{time.time() - t0:.0f}s]")
+                + f"  lam here {ev['lam_present']:.3f} empty {ev['lam_empty']:.3f}"
+                + f"  alone: copy {ev['copy_alone']:.3f} lm {ev['lm_alone']:.3f} switch {ev['switch']:.3f}  [{time.time() - t0:.0f}s]")
     k1 = key_cos(model, lay)
     if k1:
         log(f"  text keys |cos| at the end: mean {k1['mean']:.3f} p90 {k1['p90']:.3f} p99 {k1['p99']:.3f} max {k1['max']:.3f},"

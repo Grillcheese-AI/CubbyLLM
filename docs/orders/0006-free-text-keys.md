@@ -1,5 +1,5 @@
 # 0006 — Free-text questions: addresses keyed by the words, asked through a pointer (toy)
-status: in progress
+status: review
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("we need to start working on the free text too";
 route chosen: text-keyed addresses) · hypothesis: H-K10
 
@@ -77,10 +77,73 @@ network's (Vinyals et al. 2015, arXiv 1506.03134).
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:**
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+- **Commits:** `adf4dac` (text keys, the pointer, the toy), and the copy-alone check and arm A (this report's commit).
+- **Files:** `cubbyllm/model/spatial_key.py` (new, 166 lines: `TextKeys`, `Pointer`), `SpatialLink` / `CubbyModel`
+  plumbing (flagged: `meta["spatial"]["key"]="text"`, `query="pointer"`), `validation/k10_free_docs.py` (new),
+  `validation/exp_k10_free_text.py` (new; arm A and the copy-alone, LM-alone and hard-switch metrics added after
+  Cowork's question), `tests/model/test_spatial_key.py` (8 tests, 11 cases).
+- **Tests:** flags off bit-identical, forward, decode and text, against HEAD's package with the same seeds
+  ([log](../../validation/logs/spatial_key_off_identity_2026-10-21.log)). Keys of the same ids are identical,
+  and keys of different ids sit at the random floor. A gold pointer gives the write's key exactly. Decode =
+  forward with the pointer. `pytest tests/model/test_spatial_key.py`: 11 passed. `pytest tests`: 425 passed,
+  5 skipped, 1 failed (the known wiring guard, order 0002).
+- **Measured** (1,000 steps, d 256, 8 layers, held-out documents; logs `validation/logs/exp_k10_free_text_<arm>_s<seed>_2026-10-21.json`,
+  the alone reruns `..._alone_2026-10-22.json`):
+
+  | arm | seen/train | seen/held | unseen/train | **unseen/held** | exact | absent not NONE | language | pointer |
+  |---|---|---|---|---|---|---|---|---|
+  | U s0 | 0.868 | 0.869 | 0.844 | 0.805 | 0.848 | 0.063 | 2.261 | – |
+  | A s0 (hashed, address given) | 0.899 | 0.864 | 0.839 | 0.816 | 0.857 | 0.068 | 2.271 | – |
+  | H s0 | 0.000 | 0.005 | 0.000 | 0.000 | 0.001 | 0.170 | 2.270 | – |
+  | R s0 | 0.013 | 0.000 | 0.010 | 0.000 | 0.006 | 0.107 | 2.266 | – |
+  | P s0 | 0.872 | 0.869 | 0.854 | **0.816** | 0.855 | 0.087 | 2.264 | 0.986 |
+  | P s1 | 0.879 | 0.660 | 0.899 | **0.694** | 0.783 | 0.099 | 2.260 | 0.895 |
+  | P s2 | 0.885 | 0.755 | 0.870 | **0.785** | 0.826 | 0.053 | 2.267 | 0.945 |
+
+  Keys' |cos| over the toy's table: mean 0.050, p90 0.102, p99 0.161, max 0.297, 89% of pairs below 0.1,
+  unchanged by training. The mean is the random floor at d = 256 (√(2/πd) = 0.050). "|cos| < 0.1 for different
+  tokens" cannot hold for every pair at this width. The p90 is at the line.
+
+  **Cowork's check: the copy path alone on present facts** (its argmax over the answer's pieces, before the mix):
+
+  | arm | mixed (exact) | copy alone | LM alone | hard switch (λ ≥ 0.5) |
+  |---|---|---|---|---|
+  | A s0 | 0.857 | **0.974** | 0.000 | – |
+  | U s0 | 0.846 | **0.956** | 0.000 | – |
+  | P s0 | 0.855 | **0.955** | 0.000 | 0.875 |
+
+  The copy alone is near 0.96 in all three arms, so by Cowork's rule the trained language model is outvoting the
+  copy, and the read is fine. The fix is the mixing switch, as in order 0005. A hard switch on today's gate
+  recovers only 0.02 of the 0.10 gap (P: 0.875). λ on a present piece averages 0.90, but enough answer pieces fall
+  under 0.5 that a whole answer is lost. The switch needs training of its own (a gate loss on present / absent,
+  or 0005's copy-only training), not a threshold. (The switch metric came in with the P rerun; A and U ran
+  before it.)
+
+- **Acceptance:**
+  - **U ≥ 0.90: fails** (0.848; rerun 0.846). A, today's hashed places with the address given, reads 0.857 on
+    these documents. The 0.93 in the order was the base read on order 0001's documents, so U is at its ceiling
+    here, and text keys cost nothing as addresses. The ceiling itself is the mix (copy alone 0.956–0.974).
+  - **P ≥ 0.80 on unseen × held-out templates, 2 of 3 seeds: fails** (0.816 / 0.694 / 0.785: 1 of 3). Unseen
+    subjects with seen templates read 0.854 / 0.899 / 0.870, so the subjects the model never saw are not the
+    problem. Held-out templates are: the pointer's accuracy falls with them (0.986 / 0.895 / 0.945).
+  - **Absent facts answered non-NONE ≤ 5%: fails** (0.087 / 0.099 / 0.053; U 0.063, A 0.068 too). That is the
+    same mixing problem from the other side: λ on an empty piece averages 0.15–0.18, and the LM's guess gets through.
+  - **Language within 0.02 of U: passes** (2.264 / 2.260 / 2.267 vs 2.261).
+  - **H ≤ 0.20 on unseen subjects (a prediction): holds** (0.000; H is near 0 on seen subjects too. The learned
+    route does not find hashed addresses in 1,000 steps on this toy, so the wall is not only the unseen one).
+  - **Kill (P < 0.50, unseen subjects, seen templates): not killed** (0.854 / 0.899 / 0.870). The pointer
+    delivers the key.
+  - R reads 0.006: the trunk cannot regenerate a text key from the stream. The pointer is what makes text keys
+    work.
+- **Not verified here:** everything is the CPU toy (d 256, 8 layers, 1,000 steps, 2 threads; ~67 min an arm).
+  Nothing ran on the 450M (out of scope). Three seeds for P, one for the other arms.
+- **Found on the way:** a Gaussian `W` lifted the keys' crosstalk to mean |cos| 0.064 against the floor's 0.050.
+  An orthogonal `W` sits at the floor. Binding commutes, so a key is symmetric in subject and relation (pinned in
+  the tests). "New York / New Jersey" collisions did not show in the key report, so pattern separation was not
+  tried. P's training curve dips at step 200 (pointer 0.681, unseen/held 0.184) before it recovers. The pointer
+  loss is on then, and it goes to 0 once the pointers are right.
+- **Questions:** (1) A next order for the switch: train the mix alone with the trunk frozen (0005's recipe) on
+  this toy, and read U, P and absent again. If it lifts U to the copy's ~0.96 and absent under 5%, P's
+  acceptance is a template-generalization question only. (2) Held-out templates: more template variety in
+  training, or a pointer that sees relation words by identity (no positional bias)? Seed 1's 0.694 is the
+  pointer's 0.895.
