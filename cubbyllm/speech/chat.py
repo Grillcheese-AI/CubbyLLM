@@ -29,6 +29,10 @@ import re
 import sys
 import time
 
+# split out in order 0031 (tools/split_module.py); re-exported so importers do not change
+from .chat_talk import RESTING, _NOT_GROUND, _THINK_RE, _escape, _self_grounding, render_talk_program  # noqa: F401
+from .chat_state import ChatState
+
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 
 from .identity import (T, affect_block, derived, identity_system, load_facts,  # noqa: E402
@@ -40,100 +44,8 @@ from ..affect import saying  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
-RESTING = {"dopamine": 0.25, "serotonin": 0.20, "cortisol": 0.15, "oxytocin": 0.08, "noradrenaline": 0.07}
-_THINK_RE = re.compile(r"^\s*(?:<think>)?.*?</think>\s*", re.S)
 
-
-def _escape(s: str) -> str:
-    """A CubeLang string literal: no raw newlines, escaped backslashes/quotes."""
-    return " ".join(s.split()).replace("\\", "\\\\").replace('"', '\\"')
-
-
-# What the host can back about Cubby without asking anyone: the identity facts
-# themselves. Saying his own name is not a claim reaching past its grounding,
-# and the first version of the filter treated "I'm Cubby" as one specific of
-# unverified claim surface — which made an alarmed body refuse to introduce
-# itself. The two "never say this" lists are excluded: those words are already
-# a hard rejection upstream, and grounding them would be nonsense.
-_NOT_GROUND = ("refuses_to_claim", "never_says_it_is", "forbidden_words", "note")
-
-
-def _self_grounding(facts: dict) -> set[str]:
-    """Every word the identity facts themselves assert, lowercased."""
-    out: set[str] = set()
-
-    def walk(v):
-        if isinstance(v, str):
-            out.update(w.lower() for w in re.findall(r"[\w']+", v))
-        elif isinstance(v, dict):
-            for vv in v.values():
-                walk(vv)
-        elif isinstance(v, (list, tuple)):
-            for vv in v:
-                walk(vv)
-
-    for k, v in (facts or {}).items():
-        if k not in _NOT_GROUND:
-            walk(v)
-    return out
-
-
-def render_talk_program(candidates: list[str], question: str = "which reply") -> str:
-    """`CubbyTalk implements IAgent` with the candidates embedded as literals.
-    think() offers them via ASK; act() remembers the chosen reply; observe()
-    counts feedback. Compiles under --strict; every op executes (validate)."""
-    if not candidates:
-        raise ValueError("at least one candidate (the don't-know line) is required")
-    regs = [f"c{i}" for i in range(len(candidates))]
-    lits = "\n".join(f'        create {r} : str;\n        assign {r} = "{_escape(c)}";' for r, c in zip(regs, candidates))
-    return f'''# CubbyTalk -- one chat turn, mediated by the VM (stand-in, 2026-08-30)
-program CubbyTalk implements IAgent {{
-    storage {{
-        turns: mutable u64 = 0;
-        replies: mutable u64 = 0;
-        good: mutable u64 = 0;
-        bad: mutable u64 = 0;
-    }}
-
-    @system @once
-    public function constructor() {{
-        assign turns = 0;
-        assign replies = 0;
-        assign good = 0;
-        assign bad = 0;
-    }}
-
-    @external
-    public function think(input: str, ctx: str): str {{
-        add turns, 1;
-{lits}
-        ask "{_escape(question)}", {", ".join(regs)};
-        create chosen : str;
-        pop chosen;
-        return chosen;
-    }}
-
-    @external
-    public function act(decision: str, ctx: str): str {{
-        add replies, 1;
-        create said : str;
-        assign said = decision;
-        remember said;
-        return said;
-    }}
-
-    @external
-    public function observe(result: str, ctx: str): str {{
-        create seen : str;
-        assign seen = result;
-        remember seen;
-        return seen;
-    }}
-}}
-'''
-
-
-class CubbyChat:
+class CubbyChat(ChatState):
     """One Cubby, one hormonal state, one VM-mediated turn at a time."""
 
     def __init__(self, emitter, facts: dict | None = None, state: dict | None = None,
@@ -159,125 +71,10 @@ class CubbyChat:
         self.history: list[dict] = []
         self.history_turns = 1                           # v9: the previous exchange rides inline (the multi-turn chat records' shape)
 
-    # ── hormones: the cubemind neurochemistry ODE is the state source ───────
-    def _hormones(self) -> dict:
-        d = self.chem.to_dict()
-        return {h: round(d[h], 3) for h in ("dopamine", "serotonin", "cortisol",
-                                            "oxytocin", "noradrenaline")}
-
-    def set_state(self, state: dict) -> None:
-        """Pin an explicit state (tests / replaying a recorded trajectory);
-        the next nudge() resumes from the ODE, not from this override."""
-        self.state = dict(state)
-
-    def _modulation(self) -> dict:
-        """The seven knobs the filter runs on.
-
-        From the ODE, EXCEPT when a state has been pinned that the ODE is not
-        currently in (`set_state`, a replayed trajectory, a state handed to
-        `__init__`). Then the pinned hormones win, because that state is what
-        went into the model's system prompt and the body the filter uses has
-        to be the body the words came from. Two sources for one turn is how
-        `wariness` went wrong — a second opinion about what alarm means.
-
-        `pain` and `craving` are not in the five-hormone serving slice, so a
-        replayed state carries neither. That is the honest reading: a recorded
-        trajectory records hormones, not injury.
-        """
-        live = self._hormones()
-        if all(abs(live[h] - float(self.state.get(h, live[h]))) < 1e-9 for h in live):
-            return self.chem.modulation()
-        probe = Neurochemistry()
-        for h, v in self.state.items():
-            if hasattr(probe, h):
-                setattr(probe, h, float(v))
-        return probe.modulation()
-
-    def nudge(self, user_text: str, *, gap_s: float | None = None, burst: int = 0,
-              hour: int | None = None) -> dict:
-        """One message through appraisal -> the ODE (a couple of perception
-        frames), then the 5-hormone slice becomes the serving state.
-
-        THE READ AND THE TRANSFER ARE TWO STEPS, and keeping them apart is the
-        point. The appraiser reports how the USER is; `afferent` decides what
-        that may do to CUBBY. They used to be one step, which is how a sad user
-        made Cubby sad and an angry one made him frightened.
-
-        The split of the five drives is by what they are about:
-
-          novelty, threat   the TASK. A message can be urgent with nobody upset,
-                            and `appraise`'s threat lexicon reads exactly that.
-          focus             both: the task asks something, and concern attends.
-                            Whichever is larger.
-          valence, social   the PERSON, so they go through the transfer and
-                            come out as concern and warmth rather than as a copy.
-          surge             arousal contagion, which only exists on this path.
-
-        `gap_s`/`burst`/`hour` are the behavioural channel and do nothing at
-        all until the user grants it (`self.afferent.grant()`).
-        """
-        if self.appraiser is not None:                   # v5: the trunk reads the emotion, its petal drives
-            self.signals = self.appraiser.signals(user_text, self._seen_vocab, guess_lang(user_text))
-        else:
-            self.signals = appraise(user_text, self._seen_vocab)
-        self._seen_vocab.update(re.findall(r"[\w']+", user_text.lower()))
-
-        self.afferent.read(user_text, lexical_valence=self.signals.get("valence", 0.0),
-                           warmth=self.signals.get("social", 0.0), gap_s=gap_s, burst=burst,
-                           hour=hour, words=len(user_text.split()))
-        tr = self.afferent.drives()
-        self.chem.step_message({
-            "novelty": self.signals.get("novelty", 0.0),
-            "threat": self.signals.get("threat", 0.0),          # the task's danger, never the user's mood
-            "focus": max(self.signals.get("focus", 0.0), tr["focus"]),
-            "valence": tr["valence"],                           # 0.0 when they are having a bad time
-            "social": tr["social"],                             # ... which is where it went instead
-            "surge": tr["surge"]})
-        self.state = self._hormones()
-        return self.state
-
-    def user_state(self) -> dict:
-        """What Cubby holds about the person, in full. Small enough to show
-        them, which is the only honest way to keep it."""
-        return self.afferent.state()
-
-    @property
-    def emotion(self) -> str:
-        return self.chem.dominant_emotion
 
     MULTI_PROMPT = {"en": "Conversation so far:\nUser: {u1}\nCubby: {a1}\nUser: {u2}",       # = build_chat_sft.MULTI_PROMPT
                     "fr": "Conversation jusqu'ici :\nUtilisateur : {u1}\nCubby : {a1}\nUtilisateur : {u2}"}
 
-    def talk_context(self, user_text: str, lang: str) -> dict:
-        """The structured side of the turn (2026-10-17, for the 450M talk adapter, which renders its own
-        formats): an identity question comes with who Cubby is as a facts block; any other turn as the
-        conversation's turns, the last spoken exchange included when history is on. The stand-in ignores
-        both keys and reads the prompt."""
-        if is_identity_question(user_text):
-            name = T(self.facts, "name", lang)
-            facts = [(name, k.replace("_", " "), T(self.facts, k, lang)) for k in ("name", "builder", "tagline", "how_it_answers", "when_unsure")
-                     if k in self.facts and isinstance(T(self.facts, k, lang), str)]
-            return {"facts": facts, "question": user_text}
-        turns = []
-        if self.history_turns and self.history:
-            last = self.history[-1]
-            u1, a1 = str(last.get("user") or "").strip(), str(last.get("reply") or "").strip()
-            if u1 and a1:
-                turns += [("user", u1), ("assistant", a1)]
-        return {"turns": turns + [("user", user_text)]}
-
-    def with_history(self, user_text: str) -> str:
-        """The prompt for this turn: the previous spoken exchange inline (v9 multi-turn shape), or the bare
-        turn when there is none / history is off. An identity question stands alone: it is answered from
-        who Cubby is, not from the last exchange."""
-        if not self.history_turns or not self.history or is_identity_question(user_text):
-            return user_text
-        last = self.history[-1]
-        u1, a1 = str(last.get("user") or "").strip(), str(last.get("reply") or "").strip()
-        if not u1 or not a1:
-            return user_text
-        lang = "fr" if guess_lang(user_text) == "fr" else "en"
-        return self.MULTI_PROMPT[lang].format(u1=u1, a1=a1, u2=user_text)
 
     # ── the turn ────────────────────────────────────────────────────────────
     def _guard(self, reply: str, user_text: str) -> str | None:
