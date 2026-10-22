@@ -71,6 +71,8 @@ all into the same plan. Nick's rule: no external model writes any of it.
 
 ## Out of scope
 - The talk seat's wording (order 0010). Answering claims: the verdicts are order 0017; here only the plan.
+- **Spanish is the next language (Nick, 2026-10-22).** Not built here, but keep the lexicon and the builder
+  per-variety and pluggable, so adding ES varieties is data, not code.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
