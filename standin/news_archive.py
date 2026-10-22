@@ -121,7 +121,11 @@ class Archive:
             code, body = self.fetch(feed["url"])
             if code != 200:
                 return {**row, "error": f"HTTP {code}"}
-            items = parse(body)
+            items = parse(body, full=bool(feed.get("full_text")))
+            if feed.get("full_text") == "globalvoices":       # Nick: this publisher's story text is kept (CC BY 3.0)
+                from news_globalvoices import categories, story
+                for it in items:
+                    it.update(story(it.pop("content", "")), categories=categories(it.get("categories", [])))
         except Exception as e:                                # noqa: BLE001 -- a feed that is down is not an answer
             return {**row, "error": f"{type(e).__name__}: {str(e)[:100]}"}
         day = self.root / f"{now.date().isoformat()}.jsonl"
@@ -184,8 +188,8 @@ class Archive:
         return _L()
 
 
-def stats(root) -> dict:
-    """Items per feed per day, duplicate keys (should be 0), size on disk."""
+def stats(root, manifest=MANIFEST) -> dict:
+    """Items per feed per day, per region and per language, duplicate keys (should be 0), size on disk."""
     root, per, keys, dup = pathlib.Path(root), {}, set(), 0
     files = sorted(root.glob("????-??-??.jsonl"))
     for f in files:
@@ -197,8 +201,15 @@ def stats(root) -> dict:
             keys.add(o["key"])
             per.setdefault(o["feed"], {}).setdefault(f.stem, 0)
             per[o["feed"]][f.stem] += 1
+    meta = {f["id"]: f for f in feeds(manifest)}
+    cover = {k: {} for k in ("region", "lang")}
+    for fid, days in per.items():
+        for k in cover:
+            v = (meta.get(fid) or {}).get(k) or "?"
+            cover[k][v] = cover[k].get(v, 0) + sum(days.values())
     return {"items": len(keys), "duplicates": dup, "days": [f.stem for f in files],
-            "bytes": sum(f.stat().st_size for f in files), "per_feed_per_day": per}
+            "bytes": sum(f.stat().st_size for f in files), "per_region": cover["region"], "per_lang": cover["lang"],
+            "per_feed_per_day": per}
 
 
 def topics(rows) -> dict[str, list[str]]:
@@ -238,7 +249,7 @@ def main() -> None:
     if not a.root:
         ap.error("give --root or set CUBBY_NEWS_ARCHIVE")
     if a.stats:
-        print(json.dumps(stats(a.root), indent=1))
+        print(json.dumps(stats(a.root, a.manifest), indent=1))
         return
     while True:
         for r in Archive(a.root).poll_all(a.manifest):

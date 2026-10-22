@@ -136,7 +136,7 @@ def test_manifest_feeds_are_well_formed():
     fs = na.feeds()
     assert len({f["id"] for f in fs}) == len(fs)
     for f in fs:
-        assert f["status"] in ("active", "held") and f["reason"] and f["licence"] in ("open-government-canada", "publisher")
+        assert f["status"] in ("active", "held") and f["reason"] and f["licence"] in ("open-government-canada", "cc-by-3.0", "publisher")
     assert {f["id"] for f in fs if f["status"] == "active"} >= {"gc-news-releases", "gc-communiques"}
 
 

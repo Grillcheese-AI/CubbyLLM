@@ -33,9 +33,13 @@ def _first(el, *names) -> str:
     return ""
 
 
-def parse(body: bytes) -> list[dict]:
+CONTENT = "{http://purl.org/rss/1.0/modules/content/}encoded"
+
+
+def parse(body: bytes, full: bool = False) -> list[dict]:
     """RSS `item`s and Atom `entry`s -> [{id, link, published, title, summary}]. An item with no title is dropped; an
-    undated one keeps `published: None` (it is still dated by when it was first seen)."""
+    undated one keeps `published: None` (it is still dated by when it was first seen). ``full`` (a publisher whose
+    full text is kept, Nick's decision per publisher): also the raw ``content:encoded`` and the categories."""
     root = ET.fromstring(body)
     out = []
     for it in root.iter("item"):
@@ -43,6 +47,8 @@ def parse(body: bytes) -> list[dict]:
         raw = _first(it, "pubDate", DC + "date")
         out.append({"id": _first(it, "guid") or link, "link": link, "published_raw": raw,
                     "title": _clean(_first(it, "title")), "summary": _clean(_first(it, "description"))})
+        if full:
+            out[-1].update(content=_first(it, CONTENT), categories=[_clean(c.text) for c in it.findall("category")])
     for it in root.iter(ATOM + "entry"):
         link = next((l.get("href") for l in it.findall(ATOM + "link") if l.get("rel") in (None, "alternate")), "")
         raw = _first(it, ATOM + "published", ATOM + "updated")

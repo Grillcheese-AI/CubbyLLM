@@ -1,5 +1,5 @@
 {
- "what": "order 0024: the feeds the news archive polls (standin/news_archive.py). status active = polled; held = not polled, not stored (the reason says why). ai_agents_named = the AI agents the feed's host or the publisher's site shut out entirely when checked; a new name holds the feed until a person looks. licence: open-government-canada | publisher. kind: news | statement (an office's own release, attributed) | analysis (an organisation's analysis on a date); only news is read as events. every_h: hours between polls. The third-party AP mirror is dropped (not the publisher's own feed).",
+ "what": "order 0024: the feeds the news archive polls (standin/news_archive.py). status active = polled; held = not polled, not stored (the reason says why). ai_agents_named = the AI agents the feed's host or the publisher's site shut out entirely when checked; a new name holds the feed until a person looks. licence: open-government-canada | cc-by-3.0 | publisher. full_text: the publisher whose story text is kept (Nick's decision). kind: news | statement (an office's own release, attributed) | analysis (an organisation's analysis on a date); only news is read as events. every_h: hours between polls. The third-party AP mirror is dropped (not the publisher's own feed). region and outlet_kind (public / private / state / state-funded / aggregator / intergovernmental): an item from a state outlet is said as that state's media reporting it, never as a second voice.",
  "user_agent": "CubbyLLM/0.1",
  "feeds": [
   {
@@ -15,7 +15,9 @@
    "ai_agents_named": [],
    "checked": "2026-10-22",
    "kind": "statement",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "public"
   },
   {
    "id": "gc-communiques",
@@ -30,7 +32,9 @@
    "ai_agents_named": [],
    "checked": "2026-10-22",
    "kind": "statement",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "public"
   },
   {
    "id": "quebec-fil-de-presse",
@@ -45,7 +49,9 @@
    "ai_agents_named": [],
    "checked": "2026-10-22",
    "kind": "statement",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "public"
   },
   {
    "id": "lapresse-manchettes",
@@ -71,7 +77,9 @@
    ],
    "checked": "2026-10-22",
    "kind": "news",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "private"
   },
   {
    "id": "lapresse-actualites",
@@ -97,7 +105,9 @@
    ],
    "checked": "2026-10-22",
    "kind": "news",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "private"
   },
   {
    "id": "ledevoir-manchettes",
@@ -127,7 +137,9 @@
    ],
    "checked": "2026-10-22",
    "kind": "news",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "private"
   },
   {
    "id": "ledevoir-fil",
@@ -157,7 +169,9 @@
    ],
    "checked": "2026-10-22",
    "kind": "news",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "private"
   },
   {
    "id": "radio-canada-en-continu",
@@ -186,7 +200,9 @@
    ],
    "checked": "2026-10-22",
    "kind": "news",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "public"
   },
   {
    "id": "lactualite",
@@ -217,7 +233,9 @@
    ],
    "checked": "2026-10-22",
    "kind": "news",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "private"
   },
   {
    "id": "bbc-news",
@@ -288,8 +306,8 @@
    ],
    "lang": "en",
    "licence": "publisher",
-   "status": "held",
-   "reason": "the publisher's robots.txt shuts out AI agents by name; no decision yet",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
    "ai_agents_named": [
     "amazonbot",
     "anthropic-ai",
@@ -302,7 +320,9 @@
    ],
    "checked": "2026-10-22",
    "kind": "news",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "private"
   },
   {
    "id": "npr-news",
@@ -312,8 +332,8 @@
    ],
    "lang": "en",
    "licence": "publisher",
-   "status": "held",
-   "reason": "the publisher's robots.txt shuts out AI agents by name; no decision yet",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
    "ai_agents_named": [
     "anthropic-ai",
     "applebot-extended",
@@ -331,7 +351,9 @@
    ],
    "checked": "2026-10-22",
    "kind": "news",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "public"
   },
   {
    "id": "aljazeera",
@@ -341,8 +363,8 @@
    ],
    "lang": "en",
    "licence": "publisher",
-   "status": "held",
-   "reason": "the publisher's robots.txt shuts out AI agents by name; no decision yet",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
    "ai_agents_named": [
     "anthropic-ai",
     "bytespider",
@@ -355,7 +377,9 @@
    ],
    "checked": "2026-10-22",
    "kind": "news",
-   "every_h": 1
+   "every_h": 1,
+   "region": "Middle East",
+   "outlet_kind": "state-funded"
   },
   {
    "id": "politico",
@@ -385,7 +409,9 @@
    "kind": "analysis",
    "every_h": 6,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "crisisgroup-global",
@@ -400,7 +426,9 @@
    "kind": "analysis",
    "every_h": 6,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "crisisgroup-africa",
@@ -415,7 +443,9 @@
    "kind": "analysis",
    "every_h": 6,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "crisisgroup-asia-pacific",
@@ -430,7 +460,9 @@
    "kind": "analysis",
    "every_h": 6,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "crisisgroup-europe",
@@ -445,7 +477,9 @@
    "kind": "analysis",
    "every_h": 6,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "crisisgroup-latin-america",
@@ -460,7 +494,9 @@
    "kind": "analysis",
    "every_h": 6,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "crisisgroup-mena",
@@ -475,7 +511,9 @@
    "kind": "analysis",
    "every_h": 6,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "crisisgroup-united-states",
@@ -490,7 +528,9 @@
    "kind": "analysis",
    "every_h": 6,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "ungeneva-press-releases",
@@ -505,7 +545,9 @@
    "kind": "statement",
    "every_h": 1,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "intergovernmental"
   },
   {
    "id": "ungeneva-briefings",
@@ -520,7 +562,9 @@
    "kind": "statement",
    "every_h": 1,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "intergovernmental"
   },
   {
    "id": "ungeneva-press-items",
@@ -535,7 +579,9 @@
    "kind": "statement",
    "every_h": 1,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "intergovernmental"
   },
   {
    "id": "un-news",
@@ -550,7 +596,9 @@
    "kind": "news",
    "every_h": 1,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "intergovernmental"
   },
   {
    "id": "onu-info-africa",
@@ -565,7 +613,9 @@
    "kind": "news",
    "every_h": 1,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "intergovernmental"
   },
   {
    "id": "onu-info-americas",
@@ -580,7 +630,9 @@
    "kind": "news",
    "every_h": 1,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "intergovernmental"
   },
   {
    "id": "onu-info-asia-pacific",
@@ -595,7 +647,9 @@
    "kind": "news",
    "every_h": 1,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "intergovernmental"
   },
   {
    "id": "onu-info-europe",
@@ -610,7 +664,9 @@
    "kind": "news",
    "every_h": 1,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "intergovernmental"
   },
   {
    "id": "onu-info-middle-east",
@@ -625,7 +681,9 @@
    "kind": "news",
    "every_h": 1,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "intergovernmental"
   },
   {
    "id": "chathamhouse-releases",
@@ -640,7 +698,9 @@
    "kind": "statement",
    "every_h": 24,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues",
@@ -655,7 +715,9 @@
    "kind": "news",
    "every_h": 1,
    "ai_agents_named": [],
-   "checked": "2026-10-22"
+   "checked": "2026-10-22",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-786",
@@ -671,7 +733,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Aid"
+   "topic": "Aid",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-66",
@@ -687,7 +751,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Arms Control"
+   "topic": "Arms Control",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-73",
@@ -703,7 +769,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Arms Trade—a major cause of suffering"
+   "topic": "Arms Trade—a major cause of suffering",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-169",
@@ -719,7 +787,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Biodiversity"
+   "topic": "Biodiversity",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-2",
@@ -735,7 +805,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Causes of Poverty"
+   "topic": "Causes of Poverty",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-178",
@@ -751,7 +823,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Climate Change and Global Warming"
+   "topic": "Climate Change and Global Warming",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-83",
@@ -767,7 +841,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Conflicts in Africa"
+   "topic": "Conflicts in Africa",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-235",
@@ -783,7 +859,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Consumption and Consumerism"
+   "topic": "Consumption and Consumerism",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-761",
@@ -799,7 +877,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Democracy"
+   "topic": "Democracy",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-595",
@@ -815,7 +895,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Energy Security"
+   "topic": "Energy Security",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-168",
@@ -831,7 +913,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Environmental Issues"
+   "topic": "Environmental Issues",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-749",
@@ -847,7 +931,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Food and Agriculture Issues"
+   "topic": "Food and Agriculture Issues",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-35",
@@ -863,7 +949,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Foreign Aid for Development Assistance"
+   "topic": "Foreign Aid for Development Assistance",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-124",
@@ -879,7 +967,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Foreign Policy — Projecting Power"
+   "topic": "Foreign Policy — Projecting Power",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-38",
@@ -895,7 +985,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Free Trade and Globalization"
+   "topic": "Free Trade and Globalization",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-718",
@@ -911,7 +1003,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "G8: Too Much Power?"
+   "topic": "G8: Too Much Power?",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-65",
@@ -927,7 +1021,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Geopolitics"
+   "topic": "Geopolitics",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-768",
@@ -943,7 +1039,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Global Financial Crisis"
+   "topic": "Global Financial Crisis",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-587",
@@ -959,7 +1057,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Health Issues"
+   "topic": "Health Issues",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-198",
@@ -975,7 +1075,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Human Population"
+   "topic": "Human Population",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-137",
@@ -991,7 +1093,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Human Rights Issues"
+   "topic": "Human Rights Issues",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-537",
@@ -1007,7 +1111,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Immigration"
+   "topic": "Immigration",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-102",
@@ -1023,7 +1129,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "International Criminal Court"
+   "topic": "International Criminal Court",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-156",
@@ -1039,7 +1147,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Mainstream Media"
+   "topic": "Mainstream Media",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-103",
@@ -1055,7 +1165,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Middle East"
+   "topic": "Middle East",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-522",
@@ -1071,7 +1183,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Natural Disasters"
+   "topic": "Natural Disasters",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-177",
@@ -1087,7 +1201,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Nature and Animal Conservation"
+   "topic": "Nature and Animal Conservation",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-25",
@@ -1103,7 +1219,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Non-governmental Organizations on Development Issues"
+   "topic": "Non-governmental Organizations on Development Issues",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-67",
@@ -1119,7 +1237,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Nuclear Weapons"
+   "topic": "Nuclear Weapons",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-165",
@@ -1135,7 +1255,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Racism"
+   "topic": "Racism",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-693",
@@ -1151,7 +1273,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Rights of Indigenous People"
+   "topic": "Rights of Indigenous People",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-367",
@@ -1167,7 +1291,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Sustainable Development"
+   "topic": "Sustainable Development",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-28",
@@ -1183,7 +1309,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Third World Debt Undermines Development"
+   "topic": "Third World Debt Undermines Development",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-1",
@@ -1199,7 +1327,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Trade, Economy, & Related Issues"
+   "topic": "Trade, Economy, & Related Issues",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-24",
@@ -1215,7 +1345,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "United Nations on Development Issues"
+   "topic": "United Nations on Development Issues",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-601",
@@ -1231,7 +1363,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Water and Development"
+   "topic": "Water and Development",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-166",
@@ -1247,7 +1381,9 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "Women’s Rights"
+   "topic": "Women’s Rights",
+   "region": "World",
+   "outlet_kind": "private"
   },
   {
    "id": "globalissues-topic-6",
@@ -1263,7 +1399,1256 @@
    "every_h": 6,
    "ai_agents_named": [],
    "checked": "2026-10-22",
-   "topic": "World Hunger and Poverty"
+   "topic": "World Hunger and Poverty",
+   "region": "World",
+   "outlet_kind": "private"
+  },
+  {
+   "id": "bbc-world",
+   "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
+   "publisher_hosts": [
+    "www.bbc.co.uk"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "public",
+   "ai_agents_named": [
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "google-extended",
+    "gptbot",
+    "meta-externalagent",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "deutsche-welle-en",
+   "url": "https://rss.dw.com/rdf/rss-en-all",
+   "publisher_hosts": [
+    "www.dw.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "public",
+   "ai_agents_named": [
+    "ai2bot",
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "google-extended",
+    "gptbot",
+    "meta-externalagent",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "france-24-fr",
+   "url": "https://www.france24.com/fr/rss",
+   "publisher_hosts": [
+    "www.france24.com"
+   ],
+   "lang": "fr",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "public",
+   "ai_agents_named": [
+    "ai2bot",
+    "anthropic-ai",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "deepseekbot",
+    "google-extended",
+    "gptbot",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "france-24-en",
+   "url": "https://www.france24.com/en/rss",
+   "publisher_hosts": [
+    "www.france24.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "public",
+   "ai_agents_named": [
+    "ai2bot",
+    "anthropic-ai",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "deepseekbot",
+    "google-extended",
+    "gptbot",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "rfi-fr",
+   "url": "https://www.rfi.fr/fr/rss",
+   "publisher_hosts": [
+    "www.rfi.fr"
+   ],
+   "lang": "fr",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "public",
+   "ai_agents_named": [
+    "ai2bot",
+    "anthropic-ai",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "deepseekbot",
+    "google-extended",
+    "gptbot",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "le-monde-une",
+   "url": "https://www.lemonde.fr/rss/une.xml",
+   "publisher_hosts": [
+    "www.lemonde.fr"
+   ],
+   "lang": "fr",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "private",
+   "ai_agents_named": [
+    "ai2bot",
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "deepseekbot",
+    "google-extended",
+    "omgili"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "euronews",
+   "url": "https://www.euronews.com/rss",
+   "publisher_hosts": [
+    "www.euronews.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "private",
+   "ai_agents_named": [
+    "ccbot",
+    "gptbot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "el-pais-portada",
+   "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada",
+   "publisher_hosts": [
+    "www.elpais.com"
+   ],
+   "lang": "es",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "private",
+   "ai_agents_named": [
+    "amazonbot",
+    "bytespider",
+    "ccbot",
+    "claudebot",
+    "deepseekbot",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "tagesschau",
+   "url": "https://www.tagesschau.de/xml/rss2/",
+   "publisher_hosts": [
+    "www.tagesschau.de"
+   ],
+   "lang": "de",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "public",
+   "ai_agents_named": [
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "claudebot",
+    "deepseek",
+    "deepseekbot",
+    "google-extended",
+    "gptbot",
+    "meta-externalagent",
+    "omgili"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "kyiv-independent",
+   "url": "https://kyivindependent.com/news-archive/rss/",
+   "publisher_hosts": [
+    "kyivindependent.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "meduza-en",
+   "url": "https://meduza.io/rss/en/all",
+   "publisher_hosts": [
+    "meduza.io"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "tass-en",
+   "url": "https://tass.com/rss/v2.xml",
+   "publisher_hosts": [
+    "tass.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Europe",
+   "outlet_kind": "state",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "times-of-israel",
+   "url": "https://www.timesofisrael.com/feed/",
+   "publisher_hosts": [
+    "www.timesofisrael.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "held",
+   "reason": "the publisher's robots.txt refuses the feed's path to every agent",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Middle East",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "middle-east-eye",
+   "url": "https://www.middleeasteye.net/rss",
+   "publisher_hosts": [
+    "www.middleeasteye.net"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Middle East",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "anadolu-agency-en",
+   "url": "https://www.aa.com.tr/en/rss/default?cat=guncel",
+   "publisher_hosts": [
+    "www.aa.com.tr"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Middle East",
+   "outlet_kind": "state",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "africanews-en",
+   "url": "https://www.africanews.com/feed/rss",
+   "publisher_hosts": [
+    "www.africanews.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Africa",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "allafrica-latest",
+   "url": "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf",
+   "publisher_hosts": [
+    "allafrica.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Africa",
+   "outlet_kind": "aggregator",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "premium-times-nigeria",
+   "url": "https://www.premiumtimesng.com/feed",
+   "publisher_hosts": [
+    "www.premiumtimesng.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Africa",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "daily-maverick-south-africa",
+   "url": "https://www.dailymaverick.co.za/dmrss/",
+   "publisher_hosts": [
+    "www.dailymaverick.co.za"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Africa",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "jeune-afrique",
+   "url": "https://www.jeuneafrique.com/feed/",
+   "publisher_hosts": [
+    "www.jeuneafrique.com"
+   ],
+   "lang": "fr",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Africa",
+   "outlet_kind": "private",
+   "ai_agents_named": [
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "claude-web",
+    "claudebot",
+    "google-extended",
+    "gptbot",
+    "meta-externalagent",
+    "oai-searchbot",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "japan-times",
+   "url": "https://www.japantimes.co.jp/feed/",
+   "publisher_hosts": [
+    "www.japantimes.co.jp"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Asia",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "yonhap-en",
+   "url": "https://en.yna.co.kr/RSS/news.xml",
+   "publisher_hosts": [
+    "www.yna.co.kr"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Asia",
+   "outlet_kind": "state-funded",
+   "ai_agents_named": [
+    "ai2bot",
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "deepseekbot",
+    "google-extended",
+    "gptbot",
+    "meta-externalagent",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "south-china-morning-post-world",
+   "url": "https://www.scmp.com/rss/91/feed",
+   "publisher_hosts": [
+    "www.scmp.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Asia",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "the-hindu-international",
+   "url": "https://www.thehindu.com/news/international/feeder/default.rss",
+   "publisher_hosts": [
+    "www.thehindu.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Asia",
+   "outlet_kind": "private",
+   "ai_agents_named": [
+    "amazonbot",
+    "anthropic-ai",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "gptbot",
+    "meta-externalagent",
+    "oai-searchbot",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "dawn-pakistan",
+   "url": "https://www.dawn.com/feeds/home",
+   "publisher_hosts": [
+    "www.dawn.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Asia",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "cna-singapore",
+   "url": "https://www.channelnewsasia.com/rssfeeds/8395986",
+   "publisher_hosts": [
+    "www.channelnewsasia.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Asia",
+   "outlet_kind": "state-funded",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "the-diplomat",
+   "url": "https://thediplomat.com/feed/",
+   "publisher_hosts": [
+    "thediplomat.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Asia",
+   "outlet_kind": "private",
+   "ai_agents_named": [
+    "anthropic-ai",
+    "ccbot",
+    "google-extended",
+    "gptbot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "abc-news-australia",
+   "url": "https://www.abc.net.au/news/feed/51120/rss.xml",
+   "publisher_hosts": [
+    "www.abc.net.au"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Oceania",
+   "outlet_kind": "public",
+   "ai_agents_named": [
+    "anthropic-ai",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "google-extended",
+    "gptbot",
+    "meta-externalagent",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "rnz-world",
+   "url": "https://www.rnz.co.nz/rss/world.xml",
+   "publisher_hosts": [
+    "www.rnz.co.nz"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Oceania",
+   "outlet_kind": "public",
+   "ai_agents_named": [
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "chatgpt-user",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "google-extended",
+    "gptbot",
+    "oai-searchbot",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "cbs-news-world",
+   "url": "https://www.cbsnews.com/latest/rss/world",
+   "publisher_hosts": [
+    "www.cbsnews.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "private",
+   "ai_agents_named": [
+    "gptbot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "infobae-america",
+   "url": "https://www.infobae.com/arc/outboundfeeds/rss/?outputType=xml",
+   "publisher_hosts": [
+    "www.infobae.com"
+   ],
+   "lang": "es",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "folha-de-s-paulo-mundo",
+   "url": "https://feeds.folha.uol.com.br/mundo/rss091.xml",
+   "publisher_hosts": [
+    "www.uol.com.br"
+   ],
+   "lang": "pt",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "private",
+   "ai_agents_named": [
+    "ai2bot",
+    "amazonbot",
+    "anthropic-ai",
+    "applebot-extended",
+    "bytespider",
+    "ccbot",
+    "claude-web",
+    "claudebot",
+    "cohere-ai",
+    "deepseek",
+    "deepseekbot",
+    "google-extended",
+    "meta-externalagent",
+    "omgili",
+    "perplexitybot"
+   ],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "mercopress",
+   "url": "https://en.mercopress.com/rss/",
+   "publisher_hosts": [
+    "www.mercopress.com"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "buenos-aires-times",
+   "url": "https://www.batimes.com.ar/feed",
+   "publisher_hosts": [
+    "www.batimes.com.ar"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "global-news-canada",
+   "url": "https://globalnews.ca/feed/",
+   "publisher_hosts": [
+    "globalnews.ca"
+   ],
+   "lang": "en",
+   "licence": "publisher",
+   "status": "active",
+   "reason": "added by Nick (international); decided per publisher (local rights notes)",
+   "kind": "news",
+   "every_h": 1,
+   "region": "Americas",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-main",
+   "url": "https://globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "en",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 1,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-ar",
+   "url": "https://ar.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "ar",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-aym",
+   "url": "https://aym.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "aym",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-bn",
+   "url": "https://bn.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "bn",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-ca",
+   "url": "https://ca.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "ca",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-el",
+   "url": "https://el.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "el",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-eo",
+   "url": "https://eo.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "eo",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-es",
+   "url": "https://es.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "es",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-fr",
+   "url": "https://fr.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "fr",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-hr",
+   "url": "https://hr.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "hr",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-ig",
+   "url": "https://ig.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "ig",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-it",
+   "url": "https://it.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "it",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-jp",
+   "url": "https://jp.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "jp",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-mg",
+   "url": "https://mg.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "mg",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-mk",
+   "url": "https://mk.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "mk",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-ne",
+   "url": "https://ne.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "ne",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-nl",
+   "url": "https://nl.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "nl",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-pt",
+   "url": "https://pt.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "pt",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-ro",
+   "url": "https://ro.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "ro",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-ru",
+   "url": "https://ru.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "ru",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-sat",
+   "url": "https://sat.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "sat",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-sr",
+   "url": "https://sr.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "sr",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-uk",
+   "url": "https://uk.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "uk",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-yo",
+   "url": "https://yo.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "yo",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
+  },
+  {
+   "id": "globalvoices-yua",
+   "url": "https://yua.globalvoices.org/feed/",
+   "publisher_hosts": [
+    "globalvoices.org"
+   ],
+   "lang": "yua",
+   "licence": "cc-by-3.0",
+   "status": "active",
+   "reason": "added by Nick; CC BY 3.0, full story text kept (Nick)",
+   "kind": "news",
+   "every_h": 24,
+   "full_text": "globalvoices",
+   "region": "World",
+   "outlet_kind": "private",
+   "ai_agents_named": [],
+   "checked": "2026-10-22"
   }
  ],
  "gdelt": {
