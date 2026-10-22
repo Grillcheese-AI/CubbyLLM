@@ -70,11 +70,11 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   K4 clock, K5 BlockWorld hidden-rule bench, K6 binding heads, K7 exposure law, K8 holographic state,
   K9 flow-map jumps, K10 loci tokens. Read their entries before touching the matching code.
 - **Serve stack.** `standin/` (an external GGUF stand-in in the emitter and talk seats) stays the A/B
-  control until base450m takes both seats; `docs/WORK_ORDERS.md` holds that era's specs and its
+  control until base450m takes both seats (it does now, on grilly2); order 0031 moves what is Cubby out of it; `docs/WORK_ORDERS.md` holds that era's specs and its
   measured lessons (read its "Before you touch anything").
 - **Known red:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
   `cubbyllm.spatial` and `cubbyllm.reasoning.step_loop` (order 0002, proposed).
-- **Queue (2026-10-22, late):** 0001, 0004-0007, 0011-0016, 0021, 0022 done; in progress: 0024 (news from feeds), 0027 (the control board: P1 done; P2 after 0024, P3 after 0020/0026), 0028 (plugins: router on with a second check); open: 0029 (copy or refuse, arm D: a learned confidence), 0030 (repo hygiene), 0023 (nested questions over the worlds), 0025 (world watch: warnings, tension signals), 0026 (forecasts with a track record, the branching tree), 0008 (creativity), 0009 (capacity), 0010 (casual talk), 0018 (question shapes), 0019 (emotions), 0020 (emotional arcs); proposed: 0002, 0003, 0017 (claim checks).
+- **Queue (2026-10-22, late):** 0001, 0004-0007, 0011-0016, 0021, 0022 done; in progress: 0024 (news from feeds), 0027 (the control board: P1 done; P2 after 0024, P3 after 0020/0026), 0028 (plugins: router on with a second check); open: 0031 (out of the stand-in: first, before new features), 0032 (the trunk reads the worlds, after 0031), 0029 (copy or refuse, arm D: a learned confidence), 0030 (repo hygiene), 0023 (nested questions over the worlds), 0025 (world watch: warnings, tension signals), 0026 (forecasts with a track record, the branching tree), 0008 (creativity), 0009 (capacity), 0010 (casual talk), 0018 (question shapes), 0019 (emotions), 0020 (emotional arcs); proposed: 0002, 0003, 0017 (claim checks).
 
 ## Rules every change keeps
 
@@ -106,6 +106,10 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
 - No external LLM on Cubby's serving path, ever (external models only build datasets). Keys live in
   git-ignored files (`validation/.env`); never in a command, a log or a commit.
 - The BlockWorld repo is private: nothing from it comes into this public repo.
+- **Where code goes (Nick, 2026-10-22).** What makes Cubby think goes in `cubbyllm/` (Apache-2.0); the product
+  layer (server, board, harness, vault, ledger) in `cubby_serve/` (BSL 1.1); `standin/` holds only the GGUF stand-in
+  and its data builders. No new feature in `standin/`. Until order 0031 lands, an order's `standin/...` path means
+  that module's new home in 0031's move map.
 - No local drive paths, venv names or account names in committed files. A committed file names a folder
   (`$CUBBY_MODELS`, `$CUBBY_DATASETS`, `$CUBBY_DRIVE`, ...); `cubbyllm/local_paths.py` resolves it from the environment,
   then the git-ignored `paths.local.json`. `tests/test_local_paths.py` fails on a local path, and
@@ -149,4 +153,4 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
 | `docs/superpowers/specs/` | design specs (whole-brain, sensory cortex, episodic memory, …) |
 | `cubbyllm/model/` | trunk: `assembly.py`, `backbone/` (hybrid, MinGRU, kernels), `spatial.py`, `recall/`, `grow.py` |
 | `validation/` | experiments, training, probes (never imported by `cubbyllm/`) |
-| `standin/` | the stand-in serve stack (control arm) |
+| `standin/` | the stand-in serve stack (control arm); its Cubby parts move out in order 0031 |
