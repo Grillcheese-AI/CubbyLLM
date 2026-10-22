@@ -1,5 +1,5 @@
 # 0012 — The books as a source: a passage finder, facts read by frames, attributed until corroborated
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("we absolutely need to add all the verified facts and
 there's a lot more to come"; "maybe add a passage finder for the books"; trust tier: attributed until corroborated) ·
 hypothesis: H-F2 (temporal worlds), the ask loop, H-K10
