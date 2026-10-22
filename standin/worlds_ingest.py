@@ -1,6 +1,7 @@
 """standin/worlds_ingest.py -- everything in the datasets into worlds, one tool driven by the manifest (order 0015).
 
-    python standin/worlds_ingest.py [--root <worlds dir>] [--only <dataset substring>] [--frames] [--release]
+    python validation/build/ingest_worlds.py [--root <worlds dir>] [--only <dataset substring>] [--frames] [--release]
+    (``python standin/worlds_ingest.py`` runs the same)
 
 `worlds_manifest.plan` gives every manifest row a decision (ingest / excluded / queued); this runs the ingests through
 `worlds_adapters` (passages, events, quotes, table, mount) and `worlds_fiction`, and records every decision in the
@@ -18,7 +19,6 @@ Wired: STANDALONE (a build tool; the ask loop mounts what it writes through `wor
 """
 from __future__ import annotations
 
-import argparse
 import csv
 import datetime as _dt
 import json
@@ -108,9 +108,11 @@ def classify(entry, dataset, ctx, cat) -> dict:
     return out
 
 
-def run(root, only=None, frames=False, release=False, log=print, plan=None, mentions=None, tracker=TRACKER) -> list[dict]:
+def run(root, only=None, frames=False, release=False, log=print, plan=None, mentions=None, tracker=TRACKER,
+        bulk=None) -> list[dict]:
     """`plan`: the decisions (default: the local manifest's); `mentions`: the names a passage index matches (default:
-    the wiki world's); `tracker`: the rights tracker (a missing file: every work cleared, none marked fiction)."""
+    the wiki world's); `tracker`: the rights tracker (a missing file: every work cleared, none marked fiction);
+    `bulk`: with `frames`, order 0013's bulk reader (`books_bulk_read.run`, handed in by the command line)."""
     root = pathlib.Path(root) / ("release" if release else "")
     root.mkdir(parents=True, exist_ok=True)
     reg = sqlite3.connect(root / "registry.sqlite")
@@ -130,9 +132,10 @@ def run(root, only=None, frames=False, release=False, log=print, plan=None, ment
             else:
                 r = getattr(wa, e.route)(e, d.dataset, ctx)
             if frames and e.route == "passages" and "frames" in d.reason and r.get("files_added"):
-                import books_bulk_read as bulk
-                r["frames"] = {k: v for k, v in bulk.run(r["store"], pathlib.Path(r["store"]).with_suffix(".bulk"), workers=3,
-                                                          log=lambda m: None).items() if k in ("triples", "tiers", "entities")}
+                if bulk is None:
+                    raise ValueError("frames needs the bulk reader (bulk=books_bulk_read.run)")
+                r["frames"] = {k: v for k, v in bulk(r["store"], pathlib.Path(r["store"]).with_suffix(".bulk"), workers=3,
+                                                     log=lambda m: None).items() if k in ("triples", "tiers", "entities")}
             reg.execute("INSERT OR REPLACE INTO worlds VALUES (?,?,?,?,?)", (e.world, e.world.split(":")[0], r.get("store") or
                         (r.get("passages") or r.get("fiction") or {}).get("store"), e.tier, r.get("as_of")))
             rep["entries"].append({"world": e.world, "route": e.route, "tier": e.tier,
@@ -148,16 +151,9 @@ def run(root, only=None, frames=False, release=False, log=print, plan=None, ment
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--root", default=os.environ.get("CUBBY_WORLDS"), required=not os.environ.get("CUBBY_WORLDS"),
-                    help="the worlds folder (CUBBY_WORLDS)")
-    ap.add_argument("--only", default=None)
-    ap.add_argument("--frames", action="store_true")
-    ap.add_argument("--release", action="store_true")
-    ap.add_argument("--log", default=str(LOG))
-    a = ap.parse_args()
-    rows = run(a.root, a.only, a.frames, a.release, lambda m: print(m, flush=True))
-    pathlib.Path(a.log).write_text(json.dumps(public(rows), indent=1), encoding="utf-8")
+    """The command line lives in ``validation/build/ingest_worlds.py`` (it hands in the bulk reader); this runs it."""
+    import runpy
+    runpy.run_path(str(ROOT / "validation" / "build" / "ingest_worlds.py"), run_name="__main__")
 
 
 def _relative(o):
