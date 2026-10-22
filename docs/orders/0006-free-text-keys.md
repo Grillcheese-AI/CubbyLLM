@@ -1,5 +1,5 @@
 # 0006 — Free-text questions: addresses keyed by the words, asked through a pointer (toy)
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("we need to start working on the free text too";
 route chosen: text-keyed addresses) · hypothesis: H-K10
 
