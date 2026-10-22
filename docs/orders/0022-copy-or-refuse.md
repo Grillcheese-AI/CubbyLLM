@@ -1,5 +1,5 @@
 # 0022 — Copy or refuse: a fact token comes from the copy, or the answer is "I don't know"
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: H-K10 · **after 0021**
 
 ## Why
