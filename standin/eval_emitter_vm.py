@@ -53,26 +53,8 @@ DATA = os.environ.get("STANDIN_SFT", os.path.join(ROOT, "standin", "data", "out"
 OUT_DIR = os.path.join(ROOT, "standin", "data", "out")
 
 
-_THINK_RE = re.compile(r"^\s*(?:<think>)?.*?</think>\s*", re.S)
-
-
-def strip_think(s: str) -> str:
-    """LFM2.5's chat template opens a <think> block in the generation prompt
-    and the model fills it before the answer (seen on the first SFT run,
-    2026-08-30). Everything up to and including </think> is reasoning, not
-    the answer: drop it before scoring programs OR identity turns (the
-    reasoning text talks about AGI/other models and would trip the check)."""
-    return _THINK_RE.sub("", s, count=1) if "</think>" in s else s
-
-
-def strip_fences(s: str) -> str:
-    """Models sometimes wrap programs in ``` fences; the VM does not want them."""
-    s = strip_think(s).strip()
-    if s.startswith("```"):
-        s = s.split("\n", 1)[1] if "\n" in s else ""
-        if s.rstrip().endswith("```"):
-            s = s.rstrip()[:-3]
-    return s.strip() + "\n"
+from standin.emitter import _THINK_RE, strip_fences, strip_think  # noqa: E402,F401 -- with the reply cleaning
+#   (order 0031: the ask loop strips fences too)
 
 
 _HELPERS = None

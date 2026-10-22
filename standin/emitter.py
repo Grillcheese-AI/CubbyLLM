@@ -28,10 +28,10 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 if _HERE not in sys.path:                                # imported as standin.emitter: its parts sit beside it
     sys.path.append(_HERE)
 
-from emitter_base import (CHAT_FAMILIES, GPU_LOCK, NO_THINK_PREFILL, NON_LATIN, SYSTEM, Emitter,  # noqa: E402,F401
-                          LlamaServerEmitter, ReplayEmitter, ScriptBan, chat_family, clean_reply, render_chatml,
-                          render_gemma)
-from emitter_llama import LlamaCppEmitter  # noqa: E402,F401
+from emitter_base import (_THINK_RE, GPU_LOCK, SYSTEM, Emitter, ReplayEmitter, clean_reply,  # noqa: E402,F401
+                          strip_fences, strip_think)
+from emitter_llama import (CHAT_FAMILIES, NO_THINK_PREFILL, NON_LATIN, LlamaCppEmitter,  # noqa: E402,F401
+                           LlamaServerEmitter, ScriptBan, chat_family, render_chatml, render_gemma)
 from emitter_450m import Cubby450mEmitter, Cubby450mTrunk  # noqa: E402,F401
 from emitter_talk import (TALK_DASH, TALK_UNLOCK, ContextualEmitter, Cubby450mTalk, context_role,  # noqa: E402,F401
                           talk_answer, talk_prompt)
