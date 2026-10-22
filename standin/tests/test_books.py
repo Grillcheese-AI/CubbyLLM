@@ -226,3 +226,29 @@ def test_before_and_the_attributed_tier_change_nothing_when_unused(tmp_path):
             DictSource({"marie": ["canada is the country of citizenship of marie"]}), before=[])
     assert (a.result.reason, a.entities, a.fetched, a.attributed) == (b.result.reason, b.entities, b.fetched, b.attributed)
     assert a.attributed == []
+
+
+class Synonyms:
+    """A wording resolver (the lexicon's shape): 'place of birth' is the world's 'birthplace'."""
+    name = "lexicon"
+
+    def relations(self, text):
+        return ["birthplace"] if normalize(text) == "place of birth" else []
+
+
+def test_a_book_fact_is_walked_under_its_own_label_when_a_resolver_had_moved_the_plan_to_the_worlds(tmp_path):
+    """The lexicon rewrites 'place of birth' to the world's 'birthplace' (the world holds it); the books bring
+    'Ajaccio is the place of birth of ...'; the walk goes back to the proposed wording -- also when the source
+    below has no wording table of its own (2026-10-22, the bench: the reset waited on the source's table)."""
+    roots, events = _library(tmp_path)
+    idx = BookIndex(tmp_path / "books.sqlite")
+    idx.build(roots, events, Mentions(NAMES))
+    world = TimedStore(STORE)
+    world.index.declare_relation("birthplace")
+    world.add("Stagira is the birthplace of Aristotle")                          # the world's wording, not Wikidata's
+    loop = AskLoop(TemplateEmitter(), world=world, source=DictSource({}), lexicon=False, run_fn=exact_vm(),
+                   books=BookSource(idx))
+    loop.resolvers.insert(0, Synonyms())
+    rec = loop.ask("Where was Napoleon Bonaparte born?")
+    assert ["place of birth", "birthplace"] in rec["aliased"]                     # the plan was moved to the world's
+    assert rec["verified"] and rec["answer"] == "Ajaccio" and rec["plan"] == ["place of birth"]

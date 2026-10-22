@@ -701,7 +701,9 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                 continue
             break
         resolved.clear()          # new facts may have brought the relation the source names
-        if plan is not proposed and known is not None and hasattr(source, "relations"):
+        # any resolver that can translate a wording (2026-10-22: the books before an offline source with no table;
+        # the lexicon had rewritten 'place of birth' to the world's 'birthplace', and the reset never ran)
+        if plan is not proposed and known is not None and any(hasattr(x, "relations") for x in [source] + list(resolvers or [])):
             # every translation so far (lever 4 ahead of the walk, the sibling step) was a guess at where the
             # STORE kept the fact, and it found nothing; the facts just admitted arrive under the relation the
             # source states. Back to the proposed wording, translated once more against what the store holds

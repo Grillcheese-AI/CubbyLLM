@@ -106,7 +106,8 @@ def frames(src, pairs, need, rng, cap: int = 4000) -> dict:
     subjects = collections.defaultdict(list)
     for (s, rel) in pairs:
         subjects[s].append(rel)
-    order = sorted(subjects)
+    named = {r[0] for r in src.index.db.execute("SELECT name FROM names")}
+    order = sorted(s for s in subjects if norm(s) in named)                     # the subjects the books mention
     rng.shuffle(order)
     stats = {h: collections.Counter() for h in ("dev", "test")}
     per = collections.defaultdict(collections.Counter)
