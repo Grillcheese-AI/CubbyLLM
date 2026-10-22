@@ -56,6 +56,10 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
     poller with current items (10 each; newest 7, 20 and 21 October), and the site's robots.txt blocks no AI agent.
     They are official statements: kept as what a UN office or spokesperson said on a date, attributed, never read as
     the event itself. Record the UN's terms of use.
+  - **UN News (Nick, 2026-10-22):** `https://news.un.org/feed/subscribe/en/news/all/rss.xml` (30 items, current; no
+    AI agent blocked). It answers gzip-compressed even when asked for plain bytes: the poller must read
+    `Content-Encoding` (and the gzip magic bytes) or the feed fails to parse. The French path
+    (`.../fr/news/all/rss.xml`) answers with an empty channel: find ONU Info's working feed or leave it out.
   - **Each publisher's robots rules and terms** are read from its own site (not the feed's host: the FeedBurner copy
     of Le Devoir carries no rule of its own) and recorded, with Nick's decision per publisher, in the local rights
     notes. The poller always identifies itself as `CubbyLLM/0.1` and never changes its name to get past a rule; it
