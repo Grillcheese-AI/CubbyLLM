@@ -112,6 +112,12 @@ Nick named three sets. Two carry human text with human labels; their text files 
   and reviewed by people. Model-written, so it is no evidence of how people feel (the lesson in
   `validation/label_affect.py`); no license stated. Not used here.
 
+## Addendum 3 (2026-10-22, Cowork): MENTOS
+MENTOS (KUNLP; github.com/KUNLP/MENTOS) annotates 12,917 supporter turns of ESConv (train 8,959 / dev 1,907 / test 2,051), each with its four-turn context, with the supporter's own mental state: a belief and an intent in free text, and an emotion on Plutchik's eight (with their opposites) plus 14 mixed emotions (dyads such as hope = joy + anticipation, guilt = joy + fear), each 0-3. The labels were written by gpt-4o; people checked 100 dialogues (Gwet's AC1 0.6-0.8). CC BY-NC 4.0, research use only (it follows ESConv's licence).
+- It labels the supporter, not the person being supported, and the labels are a model's: no gate here uses it.
+- Report only: the 14 mixed emotions against the dyads the cube can represent (`standin/feeling.py`), the same check
+  the Teams labels got (`docs/teams_affect_labels.md`).
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**

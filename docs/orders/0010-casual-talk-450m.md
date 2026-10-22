@@ -82,6 +82,13 @@ Nick named ESConv and ExTES.
   depression; a reply to someone at risk must point to professional or crisis help, never role-play treatment. That
   route is a prerequisite of serving this family, and it is not built in this order: ask Nick before training it.
 
+## Addendum 2 (2026-10-22, Cowork): MENTOS, the supporter's plan
+MENTOS (KUNLP; github.com/KUNLP/MENTOS) annotates 12,917 supporter turns of ESConv (train 8,959 / dev 1,907 / test 2,051), each with its four-turn context, with the supporter's own mental state: a belief and an intent in free text, and an emotion on Plutchik's eight (with their opposites) plus 14 mixed emotions (dyads such as hope = joy + anticipation, guilt = joy + fear), each 0-3. The labels were written by gpt-4o; people checked 100 dialogues (Gwet's AC1 0.6-0.8). CC BY-NC 4.0, research use only (it follows ESConv's licence).
+- For the supportive family (Addendum 1), its intent per supporter turn is a plan stated before the words, the way
+  the emitter plans a program before the talk adapter speaks (H-E18). A candidate record: context -> intent ->
+  ESConv's human-written supporter turn, the turn as the target and the intent as conditioning. The intents are
+  model-written, so they are conditioning only, never a target. Same prerequisite as Addendum 1: a crisis route first.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**
