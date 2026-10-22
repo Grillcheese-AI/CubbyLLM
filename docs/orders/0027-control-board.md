@@ -1,6 +1,6 @@
 # 0027 — The control board: one page to see and steer Cubby (worlds, chat and its journey, a world map, forecasts, mood, system)
-status: proposed
-written: 2026-10-22 by Cowork · approved: — · hypothesis: none (a tool; it measures nothing new) · **phased: P1 now, P2 after 0024, P3 after 0020 and 0026**
+status: open
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("perfect, start order 0027") · hypothesis: none (a tool; it measures nothing new) · **phased: P1 now, P2 after 0024, P3 after 0020 and 0026**
 
 ## Why
 Nick (2026-10-22): "a nice control board for Cubby where we can explore the worlds, chat, visualize relations, visualize a
