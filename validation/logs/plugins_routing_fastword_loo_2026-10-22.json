@@ -1,0 +1,3487 @@
+{
+ "plugins": [
+  "envcanada-alerts",
+  "gutenberg-plays",
+  "talk",
+  "units"
+ ],
+ "lines": {
+  "envcanada-alerts": [
+   30,
+   30
+  ],
+  "gutenberg-plays": [
+   30,
+   30
+  ],
+  "talk": [
+   30,
+   30
+  ],
+  "units": [
+   30,
+   30
+  ]
+ },
+ "encoder": "fastword",
+ "router": "nearest",
+ "line": {
+  "examples": 0.9,
+  "not": 0.1
+ },
+ "grid": {
+  "0.2": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 24,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      0,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      24,
+      25,
+      28,
+      29
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      5,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      23,
+      24,
+      26,
+      28,
+      29
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 7,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      0,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 13
+     },
+     "not_woke": [
+      0,
+      2,
+      5,
+      7,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      18,
+      19,
+      20,
+      21,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 29,
+     "of": 30,
+     "not": 24,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      0,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      24,
+      25,
+      28,
+      29
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 23,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      5,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      23,
+      24,
+      26,
+      28,
+      29
+     ]
+    },
+    "talk": {
+     "examples": 22,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 7,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      0,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 13
+     },
+     "not_woke": [
+      0,
+      2,
+      5,
+      7,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      18,
+      19,
+      20,
+      21,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.225": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 24,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      0,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      24,
+      25,
+      28,
+      29
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      5,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      23,
+      24,
+      26,
+      28,
+      29
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 5
+     },
+     "not_woke": [
+      0,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 16,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 11
+     },
+     "not_woke": [
+      0,
+      2,
+      5,
+      7,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      18,
+      20,
+      21,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 29,
+     "of": 30,
+     "not": 24,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      0,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      24,
+      25,
+      28,
+      29
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 20,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      5,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      23,
+      24,
+      26,
+      28,
+      29
+     ]
+    },
+    "talk": {
+     "examples": 22,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 5
+     },
+     "not_woke": [
+      0,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 16,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 11
+     },
+     "not_woke": [
+      0,
+      2,
+      5,
+      7,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      18,
+      20,
+      21,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.25": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 23,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      0,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      24,
+      25,
+      28,
+      29
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 17,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      5,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      18,
+      20,
+      21,
+      23,
+      24,
+      26,
+      28,
+      29
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 13,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 5
+     },
+     "not_woke": [
+      0,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 13,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 9
+     },
+     "not_woke": [
+      0,
+      2,
+      5,
+      7,
+      10,
+      12,
+      13,
+      14,
+      15,
+      18,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 29,
+     "of": 30,
+     "not": 23,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      0,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      24,
+      25,
+      28,
+      29
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 17,
+     "of": 30,
+     "not": 17,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      5,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      18,
+      20,
+      21,
+      23,
+      24,
+      26,
+      28,
+      29
+     ]
+    },
+    "talk": {
+     "examples": 20,
+     "of": 30,
+     "not": 13,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 5
+     },
+     "not_woke": [
+      0,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 13,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 9
+     },
+     "not_woke": [
+      0,
+      2,
+      5,
+      7,
+      10,
+      12,
+      13,
+      14,
+      15,
+      18,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.275": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 22,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      0,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      24,
+      25,
+      29
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 16,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      18,
+      20,
+      21,
+      23,
+      24,
+      26,
+      28,
+      29
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 13,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 4
+     },
+     "not_woke": [
+      0,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 11,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 7
+     },
+     "not_woke": [
+      5,
+      7,
+      10,
+      12,
+      13,
+      14,
+      15,
+      18,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 29,
+     "of": 30,
+     "not": 22,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      0,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      24,
+      25,
+      29
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 14,
+     "of": 30,
+     "not": 16,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      18,
+      20,
+      21,
+      23,
+      24,
+      26,
+      28,
+      29
+     ]
+    },
+    "talk": {
+     "examples": 18,
+     "of": 30,
+     "not": 13,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 4
+     },
+     "not_woke": [
+      0,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 11,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 7
+     },
+     "not_woke": [
+      5,
+      7,
+      10,
+      12,
+      13,
+      14,
+      15,
+      18,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.3": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 19,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 13,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      18,
+      20,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 11,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 2
+     },
+     "not_woke": [
+      0,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      18,
+      19,
+      20,
+      21
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 5
+     },
+     "not_woke": [
+      5,
+      7,
+      10,
+      13,
+      15,
+      18,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 28,
+     "of": 30,
+     "not": 19,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 14,
+     "of": 30,
+     "not": 13,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      17,
+      18,
+      20,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 16,
+     "of": 30,
+     "not": 11,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 2
+     },
+     "not_woke": [
+      0,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      18,
+      19,
+      20,
+      21
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 5
+     },
+     "not_woke": [
+      5,
+      7,
+      10,
+      13,
+      15,
+      18,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.325": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 16,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10,
+      12,
+      13,
+      15,
+      16,
+      18,
+      19,
+      20,
+      22,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      16,
+      17,
+      18,
+      20,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      18,
+      19,
+      21
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      5,
+      7,
+      10,
+      18,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 26,
+     "of": 30,
+     "not": 16,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10,
+      12,
+      13,
+      15,
+      16,
+      18,
+      19,
+      20,
+      22,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 14,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      16,
+      17,
+      18,
+      20,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 14,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1
+     },
+     "not_woke": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      18,
+      19,
+      21
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      5,
+      7,
+      10,
+      18,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.35": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10,
+      12,
+      13,
+      15,
+      16,
+      19,
+      20,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 11,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      20,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      11,
+      12,
+      13,
+      15,
+      16,
+      18,
+      19,
+      21
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 26,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10,
+      12,
+      13,
+      15,
+      16,
+      19,
+      20,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 14,
+     "of": 30,
+     "not": 11,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      20,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 14,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      11,
+      12,
+      13,
+      15,
+      16,
+      18,
+      19,
+      21
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.375": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 11,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      4,
+      5,
+      8,
+      10,
+      12,
+      13,
+      15,
+      16,
+      20,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 6,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13,
+      15,
+      16,
+      18,
+      21
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 25,
+     "of": 30,
+     "not": 11,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      3,
+      4,
+      5,
+      8,
+      10,
+      12,
+      13,
+      15,
+      16,
+      20,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 14,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 13,
+     "of": 30,
+     "not": 6,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13,
+      15,
+      16,
+      18,
+      21
+     ]
+    },
+    "units": {
+     "examples": 28,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.4": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      12,
+      15,
+      16,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13,
+      15,
+      16
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 23,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      12,
+      15,
+      16,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 14,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 12,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13,
+      15,
+      16
+     ]
+    },
+    "units": {
+     "examples": 27,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.425": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      12,
+      16,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13,
+      15,
+      16
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 21,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      12,
+      16,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 14,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 11,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13,
+      15,
+      16
+     ]
+    },
+    "units": {
+     "examples": 26,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.45": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      12,
+      16,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13,
+      15,
+      16
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 20,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      12,
+      16,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 14,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 9,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13,
+      15,
+      16
+     ]
+    },
+    "units": {
+     "examples": 24,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.475": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      16,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13,
+      15
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 19,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      16,
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 13,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 8,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13,
+      15
+     ]
+    },
+    "units": {
+     "examples": 21,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      10,
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.5": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 12,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 13,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24,
+      28
+     ]
+    },
+    "talk": {
+     "examples": 8,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13
+     ]
+    },
+    "units": {
+     "examples": 21,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.525": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 9,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 13,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      18,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 6,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13
+     ]
+    },
+    "units": {
+     "examples": 19,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.55": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26,
+      29
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 13,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 6,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13
+     ]
+    },
+    "units": {
+     "examples": 16,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26,
+      29
+     ]
+    }
+   }
+  },
+  "0.575": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 13,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 6,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13
+     ]
+    },
+    "units": {
+     "examples": 14,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26
+     ]
+    }
+   }
+  },
+  "0.6": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      10,
+      11,
+      14,
+      15,
+      17,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 4,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      12,
+      13
+     ]
+    },
+    "units": {
+     "examples": 11,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26
+     ]
+    }
+   }
+  },
+  "0.625": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      11,
+      14,
+      15,
+      17,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 8,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      11,
+      14,
+      15,
+      17,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 11,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26
+     ]
+    }
+   }
+  },
+  "0.65": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      11,
+      14,
+      15,
+      17,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 4,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      11,
+      14,
+      15,
+      17,
+      23,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 7,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22,
+      26
+     ]
+    }
+   }
+  },
+  "0.675": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      11,
+      15,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 2,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 4,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      11,
+      15,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 7,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22
+     ]
+    }
+   }
+  },
+  "0.7": {
+   "meets": false,
+   "loo_meets": false,
+   "loo_quiet": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      11,
+      15,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 2,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 4,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      5,
+      11,
+      15,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 5,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22
+     ]
+    }
+   }
+  },
+  "0.725": {
+   "meets": true,
+   "loo_meets": false,
+   "loo_quiet": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      11,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 2,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 4,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      11,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 5,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      22
+     ]
+    }
+   }
+  },
+  "0.75": {
+   "meets": true,
+   "loo_meets": false,
+   "loo_quiet": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      11,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 2,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      25
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 4,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      11,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      13
+     ]
+    },
+    "units": {
+     "examples": 5,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.775": {
+   "meets": true,
+   "loo_meets": false,
+   "loo_quiet": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      11,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 4,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      11,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 3,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 5,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.8": {
+   "meets": true,
+   "loo_meets": false,
+   "loo_quiet": true,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      11,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 4,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      11,
+      24
+     ]
+    },
+    "talk": {
+     "examples": 2,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 5,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  }
+ },
+ "grid_s": 3.6,
+ "start_tau": 0.35,
+ "chosen_tau": 0.75,
+ "chosen": {
+  "meets": true,
+  "loo_meets": false,
+  "loo_quiet": true,
+  "in_sample": {
+   "envcanada-alerts": {
+    "examples": 30,
+    "of": 30,
+    "not": 1,
+    "not_of": 30,
+    "others_woken_by_examples": {},
+    "not_woke": [
+     25
+    ]
+   },
+   "gutenberg-plays": {
+    "examples": 30,
+    "of": 30,
+    "not": 2,
+    "not_of": 30,
+    "others_woken_by_examples": {},
+    "not_woke": [
+     11,
+     24
+    ]
+   },
+   "talk": {
+    "examples": 30,
+    "of": 30,
+    "not": 1,
+    "not_of": 30,
+    "others_woken_by_examples": {},
+    "not_woke": [
+     13
+    ]
+   },
+   "units": {
+    "examples": 30,
+    "of": 30,
+    "not": 0,
+    "not_of": 30,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   }
+  },
+  "leave_one_out": {
+   "envcanada-alerts": {
+    "examples": 2,
+    "of": 30,
+    "not": 1,
+    "not_of": 30,
+    "others_woken_by_examples": {},
+    "not_woke": [
+     25
+    ]
+   },
+   "gutenberg-plays": {
+    "examples": 4,
+    "of": 30,
+    "not": 2,
+    "not_of": 30,
+    "others_woken_by_examples": {},
+    "not_woke": [
+     11,
+     24
+    ]
+   },
+   "talk": {
+    "examples": 4,
+    "of": 30,
+    "not": 1,
+    "not_of": 30,
+    "others_woken_by_examples": {},
+    "not_woke": [
+     13
+    ]
+   },
+   "units": {
+    "examples": 5,
+    "of": 30,
+    "not": 0,
+    "not_of": 30,
+    "others_woken_by_examples": {},
+    "not_woke": []
+   }
+  }
+ }
+}

@@ -1,5 +1,5 @@
 # 0028 — Plugins: one folder format and a loader for adapters, worlds, sources and tools, and board panels, loaded on demand like skills
-status: in progress (review 2026-10-22: two fixes, the ask loop's gate, the held-out routing set)
+status: review
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick (asked for it; chose all four kinds, on-demand loading, code with permissions) · hypothesis: none · **after 0027 P1**
 
 ## Why
@@ -169,6 +169,119 @@ In plain words: add a skill, a dataset or a data source to Cubby by dropping in 
     `1513`, which order 0020 already uses), and a reader for a persons list ("JULIET, daughter to Capulet")?
   - Should a plugin's facts go through the ask loop's gate now (a plugin world as one of the loop's sources), or wait
     for its own order?
+
+### After the review (2026-10-22): the two fixes, the two additions, the plays pack, the talk plugin end to end
+- **Commits:** `5be8f23` (addition 3), `374f98b` (the plays pack), `0e75b14` (fixes 1 and 2), and this one (addition 4,
+  the talk check, this report).
+- **Fix 1, the code check:** `plugins_guard.check` now also refuses:
+  - `eval`, `exec` and `compile`;
+  - `importlib`, `builtins`, `pickle`, `marshal` and `runpy`;
+  - the `os.exec*`, `os.spawn*` and `os.posix_spawn*` families, matched by prefix;
+  - `shutil.rmtree` / `move` and `os.remove` with its kin;
+  - `Path.write_text` / `write_bytes` / `unlink` / `rename`;
+  - `open` in a write mode or a mode that is not a literal;
+  - `getattr` / `setattr` with a computed name;
+  - `sys.modules` and `__builtins__`.
+
+  A plugin keeps state through `ctx.save` / `ctx.load`, which stay inside its own data folder (`envcanada-alerts` uses
+  them now). Each of 16 escapes is caught, and 4 ordinary patterns are let through (parametrized, `test_plugins.py`):
+  the review's 12 cases plus `Path.write_text`, `os.remove`, an `open` mode held in a variable and `__builtins__`.
+- **Fix 2, Approve shows the code:**
+  - `plugins_guard.review` lists every file as new, changed, same or removed since the last approval. A new text file
+    comes with its text, a changed one with its diff against the copy kept at approval (beside the git-ignored lock),
+    and the review carries a digest of exactly that state.
+  - `approve(expect=digest)` is refused when the files changed after the review was shown.
+  - The CLI's `approve <name>` prints the review and approves only with `--yes`.
+  - The board's button is "Review to approve". It shows the permissions, the check and the files or diff, then
+    "Approve these files" posts the digest. `/board/plugins/review` answers the audit audience only. A POST with no
+    digest, or a stale one, gets 409.
+  - Tests: a changed file shows its diff; a stale digest is refused (the guard and the server).
+- **Addition 3, plugin facts through the gate:** a plugin's facts go through the learn gate, as the review asked. A
+  fact that contradicts a held one is refused and ledgered, not stored, and a new one is admitted with
+  `plugin:<name>`. A fiction plugin's facts never reach the reality store (`test_plugins_serve.py`).
+- **Addition 4, routing beyond the examples:**
+  - **The lines.** Each plugin has 30 examples and 30 not-lines now, in English and French. I wrote the not-lines as
+    near misses (same words, another need), before any run on them.
+  - **One slip.** While checking the held-out file's format, a filter of mine let its first four alerts phrasings
+    through to my screen. My lines were already written by then, and nothing was changed after.
+  - **The tuning rule was the problem.** In-sample, every example finds itself (score 1.0), so the order's line holds
+    at any threshold. The choice then drifted to whatever threshold silenced the not-lines, and new phrasings stopped
+    waking anything: 2-7 of 30 per plugin (`plugins_routing_n30_2026-10-22.json` and its `fastword` / `potion`
+    twins). `validation/plugins_routing.py` now chooses `tau` on leave-one-out. Each line is scored by a router built
+    without it; the not-lines are scored that way too wherever they are training data. The rule: the most new
+    phrasings woken while every plugin's not-lines stay at or under 10%.
+  - **What was tried, leave one out** (120 examples, 120 not-lines):
+
+    | router | encoder | tau | examples woken | worst plugin's not-lines | woke another plugin | log |
+    |---|---|---|---|---|---|---|
+    | nearest line | word overlap | 0.55 | 17 | 3/30 | 0 | `plugins_routing_loo_2026-10-22.json` |
+    | nearest line | fastword v4 | 0.75 | 15 | 2/30 | 0 | `plugins_routing_fastword_loo_2026-10-22.json` |
+    | nearest line | potion-retrieval-32M | -- | no tau keeps not-lines <= 10% | -- | -- | `plugins_routing_potion_loo_2026-10-22.json` |
+    | nearest line | paraphrase-MiniLM-L6-v2 | 0.775 | 20 | 2/30 | 0 | `plugins_routing_minilm_loo_2026-10-22.json` |
+    | logistic heads | potion-retrieval-32M | 0.675 | 82 | 3/30 | 0 | `plugins_routing_potion_logistic_2026-10-22.json` |
+    | **logistic heads** | **paraphrase-MiniLM-L6-v2** | **0.675** | **103** | **3/30** | **0** | `plugins_routing_minilm_logistic_2026-10-22.json` |
+
+    A nearest-line threshold cannot separate near misses with any of these encoders. A logistic head per plugin can:
+    it is fitted on the plugin's description and examples against every other line, its own not-lines included.
+  - **The router.**
+    - `plugins_route.LogisticRouter` with `question_encoder.QuestionEncoder`, behind `CUBBY_PLUGINS_ROUTER=minilm`.
+      The flag is off by default; off, the nearest-line router is exactly as before (test).
+    - The encoder is paraphrase-MiniLM-L6-v2 (Apache-2.0), read from the Hugging Face cache with torch and
+      `tokenizers`. Nothing is downloaded, and it is an encoder: it never writes text.
+    - The heads are an L2 logistic fit by Newton steps. It matches sklearn's balanced fit to 1e-4 (test).
+    - The heads are fitted in a background thread from mount, in 1.4 s for 244 lines; the model loads in 2.0 s.
+      Routing then takes about 5 ms a question (5.2 median, 7.0 max). Startup is unchanged.
+  - **The held-out set, scored once** at each router's own tau, after all of the above. The log keeps counts only.
+
+    | router | should wake | near misses woken | woke another plugin | log |
+    |---|---|---|---|---|
+    | as committed: nearest line, fastword, 0.4 | 35/40 (9, 8, 10, 8) | 11/40 (5, 4, 1, 1) | 1 | `plugins_routing_fastword_heldout_committed_2026-10-22.json` |
+    | as committed, no encoder: overlap, 0.475 | 22/40 (6, 7, 5, 4) | 3/40 (3, 0, 0, 0) | 1 | `plugins_routing_heldout_committed_2026-10-22.json` |
+    | logistic heads, potion | 33/40 (7, 8, 9, 9) | 8/40 (3, 1, 4, 0) | 1 | `plugins_routing_potion_logistic_heldout_2026-10-22.json` |
+    | **logistic heads, MiniLM** | **36/40 (7, 10, 9, 10)** | **8/40 (3, 1, 4, 0)** | 1 | `plugins_routing_minilm_logistic_heldout_2026-10-22.json` |
+
+    Per plugin, in order: alerts, plays, talk, units. In every row the one cross-wake is a talk phrasing that also
+    woke alerts.
+  - **What the held-out set says.**
+    - The MiniLM heads beat the router as committed on both counts: 36 vs 35 woken, 8 vs 11 near misses.
+    - No router meets the order's near-miss line (<= 1 in 10 per plugin) on Cowork's near misses: alerts read 3/10 and
+      talk 4/10. They are closer than mine, so leave-one-out on my own lines (<= 3/30) understated the rate.
+    - A wrong wake costs a load, not an answer. The woken plugin still answers through its own gates (`covers`, the
+      tool's argument check, copy or refuse, the learn gate) or says nothing.
+    - Whether to turn the flag on is the next question below.
+- **The plays pack** (`374f98b`; `plugins_checks_2026-10-22.json`):
+  - Gutenberg's modern-spelling plays (38, local) and a reader for their lists of persons. The facts are in-fiction,
+    checked against the speaker tags.
+  - The pack gives 150 facts across 34 works. The commit message says "29 relation words"; it is 13 distinct relations
+    (son, daughter, wife, ...). The 29 counted spellings, not relations.
+  - Of the first ten examples, 7 name a play the pack holds; 1 is answered (Adriana's husband), 0 wrong. The rest are
+    refused: their lists do not state the relation asked.
+  - A parent or sibling asked the other way is refused. On the real pack, "who is Juliet's mother?" had come back as
+    "Juliet is the daughter of Capulet", which would have been a wrong answer spoken.
+- **The talk plugin end to end** (`validation/plugins_talk_e2e.py`, on grilly2, the local card;
+  `plugins_talk_e2e_2026-10-22.json`):
+  - Loaded as a plugin role, the real talk adapter (`talk_v2_2`) says exactly what it says through the server's flag
+    path (same digest on three prompts).
+  - The trunk's other role answers the same before, during and after the plugin is loaded.
+  - On base450m_cont's export, the plugin is refused before any weight moves: "trained on another base (695f05b9f997
+    vs 81a45418edb5)".
+  - That refusal needed a fix: `plugins/talk/PLUGIN.md` had `base: null` and would have loaded onto any base. It now
+    pins base450m's export hash.
+  - So today's talk adapter cannot ride the emitter's trunk, which is on base450m_cont. It needs the talk base
+    (`--talk-base`) until a talk adapter is trained on base450m_cont.
+- **Tests:** `test_plugins.py` (29), `test_plugins_serve.py` (5), `test_plugins_route.py` (5) and `test_persons_list.py`,
+  with `test_board.py`, `test_audience.py` and `test_ask.py`: 79 passed. `pytest tests`: only the known
+  `test_every_module_declares_wiring` (order 0002) is red.
+- **Not verified here:**
+  - The MiniLM router's fit on 50 real plugins: about 3,000 lines would take some 15 s to encode in the background
+    thread, an extrapolation.
+  - The fastword logistic arm's leave-one-out run is still going and is not needed for the choice (this report gives
+    the arms that finished).
+- **Questions:**
+  - Turn `CUBBY_PLUGINS_ROUTER=minilm` on in the serve stack? It puts a 22M-parameter encoder (not a language model)
+    beside the trunk, at about 5 ms a question.
+  - The near misses still wake alerts 3 times in 10 and talk 4 in 10. Is that acceptable while a wrong wake costs only a
+    load, or does the line need a second check: the woken plugin's own `covers` before the load is counted?
 
 ## Review (Cowork, 2026-10-22): accepted in part; two fixes and two additions before done
 Checked: the tests pass (with 0027's, 20 together); the lock file sits under `standin/data/out/` (git-ignored); the

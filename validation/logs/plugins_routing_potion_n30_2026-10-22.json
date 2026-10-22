@@ -1,0 +1,4049 @@
+{
+ "plugins": [
+  "envcanada-alerts",
+  "gutenberg-plays",
+  "talk",
+  "units"
+ ],
+ "lines": {
+  "envcanada-alerts": [
+   30,
+   30
+  ],
+  "gutenberg-plays": [
+   30,
+   30
+  ],
+  "talk": [
+   30,
+   30
+  ],
+  "units": [
+   30,
+   30
+  ]
+ },
+ "encoder": "potion",
+ "line": {
+  "examples": 0.9,
+  "not": 0.1
+ },
+ "grid": {
+  "0.2": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 28,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "gutenberg-plays": 7,
+      "units": 5,
+      "talk": 7
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "how do I prepare an emergency kit?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what are the biggest cities in Canada?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quand a eu lieu la crise du verglas ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 24,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 17,
+      "units": 10,
+      "envcanada-alerts": 5
+     },
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "who is the father of Prince William?",
+      "what does 'wherefore art thou' mean?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "où se trouve le théâtre du Globe ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 16,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 6,
+      "gutenberg-plays": 5,
+      "envcanada-alerts": 3
+     },
+     "not_woke": [
+      "what happened in Ottawa yesterday?",
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "how was the stock market today?",
+      "tell me about the history of Montreal",
+      "what is the colour of the sky on Mars?",
+      "what happened in the news today?",
+      "who sings 'How Are You'?",
+      "what is the best way to learn French?",
+      "how do I calm down before an exam?",
+      "what's 15 percent of 80?",
+      "quelle heure est-il à Paris ?",
+      "quelle est la météo à Montréal ?",
+      "dans Hamlet, qui est la mère d'Hamlet ?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 4,
+      "gutenberg-plays": 3,
+      "envcanada-alerts": 2
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "what is the boiling point of water?",
+      "how much does an elephant weigh?",
+      "what time is it in Tokyo?",
+      "how fast can a cheetah run?",
+      "what is the coldest temperature ever recorded?",
+      "who invented the metric system?",
+      "why does the US use miles?",
+      "what will the temperature be tomorrow in Montreal?",
+      "how many countries use fahrenheit?",
+      "what is a kilowatt-hour?",
+      "quelle distance entre Montréal et Québec ?",
+      "combien d'habitants à Paris ?",
+      "qui a inventé le système métrique ?",
+      "quelle température fera-t-il demain ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 28,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "gutenberg-plays": 7,
+      "units": 5,
+      "talk": 7
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "how do I prepare an emergency kit?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what are the biggest cities in Canada?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quand a eu lieu la crise du verglas ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 24,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 17,
+      "units": 10,
+      "envcanada-alerts": 5
+     },
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "who is the father of Prince William?",
+      "what does 'wherefore art thou' mean?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "où se trouve le théâtre du Globe ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 29,
+     "of": 30,
+     "not": 16,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 6,
+      "gutenberg-plays": 5,
+      "envcanada-alerts": 3
+     },
+     "not_woke": [
+      "what happened in Ottawa yesterday?",
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "how was the stock market today?",
+      "tell me about the history of Montreal",
+      "what is the colour of the sky on Mars?",
+      "what happened in the news today?",
+      "who sings 'How Are You'?",
+      "what is the best way to learn French?",
+      "how do I calm down before an exam?",
+      "what's 15 percent of 80?",
+      "quelle heure est-il à Paris ?",
+      "quelle est la météo à Montréal ?",
+      "dans Hamlet, qui est la mère d'Hamlet ?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 4,
+      "gutenberg-plays": 3,
+      "envcanada-alerts": 2
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "what is the boiling point of water?",
+      "how much does an elephant weigh?",
+      "what time is it in Tokyo?",
+      "how fast can a cheetah run?",
+      "what is the coldest temperature ever recorded?",
+      "who invented the metric system?",
+      "why does the US use miles?",
+      "what will the temperature be tomorrow in Montreal?",
+      "how many countries use fahrenheit?",
+      "what is a kilowatt-hour?",
+      "quelle distance entre Montréal et Québec ?",
+      "combien d'habitants à Paris ?",
+      "qui a inventé le système métrique ?",
+      "quelle température fera-t-il demain ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.225": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 27,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "gutenberg-plays": 6,
+      "units": 4,
+      "talk": 6
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what are the biggest cities in Canada?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quand a eu lieu la crise du verglas ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 23,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 12,
+      "units": 9,
+      "envcanada-alerts": 4
+     },
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "who is the father of Prince William?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "où se trouve le théâtre du Globe ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 5,
+      "gutenberg-plays": 4,
+      "envcanada-alerts": 3
+     },
+     "not_woke": [
+      "what happened in Ottawa yesterday?",
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "how was the stock market today?",
+      "tell me about the history of Montreal",
+      "what is the colour of the sky on Mars?",
+      "who sings 'How Are You'?",
+      "how do I calm down before an exam?",
+      "what's 15 percent of 80?",
+      "quelle heure est-il à Paris ?",
+      "quelle est la météo à Montréal ?",
+      "dans Hamlet, qui est la mère d'Hamlet ?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 17,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 2,
+      "gutenberg-plays": 3,
+      "envcanada-alerts": 2
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "what is the boiling point of water?",
+      "how much does an elephant weigh?",
+      "what time is it in Tokyo?",
+      "how fast can a cheetah run?",
+      "what is the coldest temperature ever recorded?",
+      "who invented the metric system?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "what is a kilowatt-hour?",
+      "quelle distance entre Montréal et Québec ?",
+      "combien d'habitants à Paris ?",
+      "qui a inventé le système métrique ?",
+      "quelle température fera-t-il demain ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 27,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "gutenberg-plays": 6,
+      "units": 4,
+      "talk": 6
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what are the biggest cities in Canada?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quand a eu lieu la crise du verglas ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 23,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 12,
+      "units": 9,
+      "envcanada-alerts": 4
+     },
+     "not_woke": [
+      "who is the father of Queen Elizabeth II?",
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "who is the father of Prince William?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "où se trouve le théâtre du Globe ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 27,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 5,
+      "gutenberg-plays": 4,
+      "envcanada-alerts": 3
+     },
+     "not_woke": [
+      "what happened in Ottawa yesterday?",
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "how was the stock market today?",
+      "tell me about the history of Montreal",
+      "what is the colour of the sky on Mars?",
+      "who sings 'How Are You'?",
+      "how do I calm down before an exam?",
+      "what's 15 percent of 80?",
+      "quelle heure est-il à Paris ?",
+      "quelle est la météo à Montréal ?",
+      "dans Hamlet, qui est la mère d'Hamlet ?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 17,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 2,
+      "gutenberg-plays": 3,
+      "envcanada-alerts": 2
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "what is the boiling point of water?",
+      "how much does an elephant weigh?",
+      "what time is it in Tokyo?",
+      "how fast can a cheetah run?",
+      "what is the coldest temperature ever recorded?",
+      "who invented the metric system?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "what is a kilowatt-hour?",
+      "quelle distance entre Montréal et Québec ?",
+      "combien d'habitants à Paris ?",
+      "qui a inventé le système métrique ?",
+      "quelle température fera-t-il demain ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.25": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 27,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 5,
+      "gutenberg-plays": 3,
+      "units": 2
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what are the biggest cities in Canada?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quand a eu lieu la crise du verglas ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 22,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 8,
+      "units": 6,
+      "envcanada-alerts": 3
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "who is the father of Prince William?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "où se trouve le théâtre du Globe ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 4,
+      "gutenberg-plays": 3,
+      "envcanada-alerts": 3
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "how was the stock market today?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "how do I calm down before an exam?",
+      "what's 15 percent of 80?",
+      "quelle heure est-il à Paris ?",
+      "quelle est la météo à Montréal ?",
+      "dans Hamlet, qui est la mère d'Hamlet ?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 3,
+      "envcanada-alerts": 2
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "what is the boiling point of water?",
+      "how much does an elephant weigh?",
+      "what time is it in Tokyo?",
+      "how fast can a cheetah run?",
+      "who invented the metric system?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "quelle distance entre Montréal et Québec ?",
+      "combien d'habitants à Paris ?",
+      "qui a inventé le système métrique ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 27,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 5,
+      "gutenberg-plays": 3,
+      "units": 2
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what are the biggest cities in Canada?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quand a eu lieu la crise du verglas ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 22,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 8,
+      "units": 6,
+      "envcanada-alerts": 3
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "who is the father of Prince William?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "où se trouve le théâtre du Globe ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 26,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 4,
+      "gutenberg-plays": 3,
+      "envcanada-alerts": 3
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "how was the stock market today?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "how do I calm down before an exam?",
+      "what's 15 percent of 80?",
+      "quelle heure est-il à Paris ?",
+      "quelle est la météo à Montréal ?",
+      "dans Hamlet, qui est la mère d'Hamlet ?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 3,
+      "envcanada-alerts": 2
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "what is the boiling point of water?",
+      "how much does an elephant weigh?",
+      "what time is it in Tokyo?",
+      "how fast can a cheetah run?",
+      "who invented the metric system?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "quelle distance entre Montréal et Québec ?",
+      "combien d'habitants à Paris ?",
+      "qui a inventé le système métrique ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.275": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 27,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 5,
+      "units": 1,
+      "gutenberg-plays": 2
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what are the biggest cities in Canada?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quand a eu lieu la crise du verglas ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 22,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 8,
+      "envcanada-alerts": 2,
+      "units": 2
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "who is the father of Prince William?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "où se trouve le théâtre du Globe ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 3,
+      "gutenberg-plays": 2,
+      "envcanada-alerts": 2
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "how was the stock market today?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 2,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "what is the boiling point of water?",
+      "how much does an elephant weigh?",
+      "how fast can a cheetah run?",
+      "who invented the metric system?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "qui a inventé le système métrique ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 27,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 5,
+      "units": 1,
+      "gutenberg-plays": 2
+     },
+     "not_woke": [
+      "what is the capital of Canada?",
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what are the biggest cities in Canada?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quand a eu lieu la crise du verglas ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 22,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 8,
+      "envcanada-alerts": 2,
+      "units": 2
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "who is the father of Prince William?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "où se trouve le théâtre du Globe ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 24,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 3,
+      "gutenberg-plays": 2,
+      "envcanada-alerts": 2
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "how was the stock market today?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 2,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "what is the boiling point of water?",
+      "how much does an elephant weigh?",
+      "how fast can a cheetah run?",
+      "who invented the metric system?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "qui a inventé le système métrique ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.3": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 24,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 3,
+      "units": 1,
+      "gutenberg-plays": 2
+     },
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 21,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 6,
+      "envcanada-alerts": 2,
+      "units": 1
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "où se trouve le théâtre du Globe ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 3,
+      "gutenberg-plays": 2,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "how was the stock market today?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 2,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "how much does an elephant weigh?",
+      "how fast can a cheetah run?",
+      "who invented the metric system?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 29,
+     "of": 30,
+     "not": 24,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 3,
+      "units": 1,
+      "gutenberg-plays": 2
+     },
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 24,
+     "of": 30,
+     "not": 21,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 6,
+      "envcanada-alerts": 2,
+      "units": 1
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "où se trouve le théâtre du Globe ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 19,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 3,
+      "gutenberg-plays": 2,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "how was the stock market today?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 2,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "how much does an elephant weigh?",
+      "how fast can a cheetah run?",
+      "who invented the metric system?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.325": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 24,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 2,
+      "gutenberg-plays": 2
+     },
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 20,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 3,
+      "envcanada-alerts": 2,
+      "units": 1
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 2,
+      "gutenberg-plays": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 2
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "how much does an elephant weigh?",
+      "how fast can a cheetah run?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 29,
+     "of": 30,
+     "not": 24,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 2,
+      "gutenberg-plays": 2
+     },
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "how many provinces does Canada have?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "quelle est la capitale de la Nouvelle-Écosse ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 23,
+     "of": 30,
+     "not": 20,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 3,
+      "envcanada-alerts": 2,
+      "units": 1
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "how many children did Shakespeare have?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "quand Shakespeare est-il mort ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 18,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 2,
+      "gutenberg-plays": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 2
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "how much does an elephant weigh?",
+      "how fast can a cheetah run?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.35": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 22,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 2
+     },
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "units": 1
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "gutenberg-plays": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 1
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "how much does an elephant weigh?",
+      "how fast can a cheetah run?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 27,
+     "of": 30,
+     "not": 22,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 2
+     },
+     "not_woke": [
+      "what was the weather like in 1900?",
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 21,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "units": 1
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "how many plays did Shakespeare write?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who is the mother of King Charles III?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 16,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "gutenberg-plays": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 1
+     },
+     "not_woke": [
+      "how tall is Mount Everest?",
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "how much does an elephant weigh?",
+      "how fast can a cheetah run?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.375": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 21,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 2
+     },
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 16,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "units": 1
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "gutenberg-plays": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 1
+     },
+     "not_woke": [
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "how much does an elephant weigh?",
+      "how fast can a cheetah run?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 27,
+     "of": 30,
+     "not": 21,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 2
+     },
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "when was Environment Canada founded?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 19,
+     "of": 30,
+     "not": 16,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "units": 1
+     },
+     "not_woke": [
+      "when was Shakespeare born?",
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 13,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "gutenberg-plays": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?",
+      "qui est le premier ministre du Québec ?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1,
+      "gutenberg-plays": 1
+     },
+     "not_woke": [
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "how much does an elephant weigh?",
+      "how fast can a cheetah run?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.4": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 20,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 15,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 6,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "gutenberg-plays": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "how fast can a cheetah run?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 27,
+     "of": 30,
+     "not": 20,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what is the history of the ice storm in 1998?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "quelle est la population de Lévis ?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 17,
+     "of": 30,
+     "not": 15,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 13,
+     "of": 30,
+     "not": 6,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "gutenberg-plays": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "what is the speed of light?",
+      "how far is Paris from London?",
+      "how fast can a cheetah run?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.425": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 15,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 6,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "gutenberg-plays": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 6,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "what is the speed of light?",
+      "how fast can a cheetah run?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 26,
+     "of": 30,
+     "not": 18,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?",
+      "quel temps faisait-il à Québec en 1900 ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 16,
+     "of": 30,
+     "not": 15,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?",
+      "qui était la femme de Molière ?"
+     ]
+    },
+    "talk": {
+     "examples": 13,
+     "of": 30,
+     "not": 6,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "gutenberg-plays": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "who sings 'How Are You'?",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 6,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "what is the speed of light?",
+      "how fast can a cheetah run?",
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien d'habitants à Paris ?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.45": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 17,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 23,
+     "of": 30,
+     "not": 17,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "what happened in Ottawa yesterday?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "what is the difference between a watch and a warning?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 16,
+     "of": 30,
+     "not": 14,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "where is Verona?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?"
+     ]
+    },
+    "talk": {
+     "examples": 11,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "what's the weather like in Ottawa?",
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 28,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.475": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 15,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 13,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 22,
+     "of": 30,
+     "not": 15,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what is the population of Toronto?",
+      "who is the mayor of Montreal?",
+      "is Lévis a city in Quebec?",
+      "how far is Halifax from Toronto?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "who is the premier of Quebec?",
+      "how far is Lévis from Quebec City?",
+      "what time does the sun set in Halifax?",
+      "is Gatineau in Quebec or Ontario?",
+      "what is the climate like in Vancouver?",
+      "qu'est-ce qui cause la pluie verglaçante ?",
+      "comment se préparer à une tempête ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 16,
+     "of": 30,
+     "not": 13,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "qui est le père du roi Charles III ?",
+      "de quoi parle Hamlet ?"
+     ]
+    },
+    "talk": {
+     "examples": 4,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "units": 1,
+      "envcanada-alerts": 1
+     },
+     "not_woke": [
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 26,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {
+      "talk": 1
+     },
+     "not_woke": [
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.5": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "is Lévis a city in Quebec?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "who is the premier of Quebec?",
+      "what is the climate like in Vancouver?",
+      "qu'est-ce qui cause la pluie verglaçante ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "de quoi parle Hamlet ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 19,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "is Lévis a city in Quebec?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "who is the premier of Quebec?",
+      "what is the climate like in Vancouver?",
+      "qu'est-ce qui cause la pluie verglaçante ?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 16,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "de quoi parle Hamlet ?"
+     ]
+    },
+    "talk": {
+     "examples": 4,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?",
+      "who is Cubby the bear in the cartoon?",
+      "tell me about the history of Montreal",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 26,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.525": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "what is the climate like in Vancouver?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "de quoi parle Hamlet ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?",
+      "tell me about the history of Montreal",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 16,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "what is the climate like in Vancouver?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 15,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "de quoi parle Hamlet ?"
+     ]
+    },
+    "talk": {
+     "examples": 4,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?",
+      "tell me about the history of Montreal",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 26,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.55": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "what is the climate like in Vancouver?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "de quoi parle Hamlet ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?",
+      "tell me about the history of Montreal",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 13,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "when did Quebec join Canada?",
+      "what causes a tornado?",
+      "how much snow did Montreal get in 1998?",
+      "what is the average temperature in Calgary in July?",
+      "what is the climate like in Vancouver?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 15,
+     "of": 30,
+     "not": 12,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?",
+      "de quoi parle Hamlet ?"
+     ]
+    },
+    "talk": {
+     "examples": 4,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?",
+      "tell me about the history of Montreal",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 21,
+     "of": 30,
+     "not": 3,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "why does the US use miles?",
+      "how many countries use fahrenheit?",
+      "combien pèse la Lune ?"
+     ]
+    }
+   }
+  },
+  "0.575": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the average temperature in Calgary in July?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 11,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "why does the US use miles?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 12,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the average temperature in Calgary in July?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 14,
+     "of": 30,
+     "not": 11,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who was Shakespeare's wife?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 2,
+     "of": 30,
+     "not": 2,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?",
+      "what's 15 percent of 80?"
+     ]
+    },
+    "units": {
+     "examples": 19,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "why does the US use miles?"
+     ]
+    }
+   }
+  },
+  "0.6": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the average temperature in Calgary in July?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "why does the US use miles?"
+     ]
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 9,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the average temperature in Calgary in July?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 14,
+     "of": 30,
+     "not": 10,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "is Othello a tragedy or a comedy?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 18,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "why does the US use miles?"
+     ]
+    }
+   }
+  },
+  "0.625": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the average temperature in Calgary in July?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 7,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the average temperature in Calgary in July?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 12,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 14,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.65": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the average temperature in Calgary in July?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 5,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the average temperature in Calgary in July?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "of": 30,
+     "not": 9,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "what is the plot of Macbeth?",
+      "who was the real Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 10,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.675": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the average temperature in Calgary in July?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "what is the plot of Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 4,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "what is the average temperature in Calgary in July?"
+     ]
+    },
+    "gutenberg-plays": {
+     "examples": 10,
+     "of": 30,
+     "not": 8,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "what is the plot of Macbeth?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 6,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.7": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 4,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 9,
+     "of": 30,
+     "not": 7,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "who played Hamlet in the 1948 film?",
+      "when was Romeo and Juliet first performed?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?",
+      "qui a écrit Roméo et Juliette ?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 6,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.725": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "when was Romeo and Juliet first performed?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 1,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 9,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "when was Romeo and Juliet first performed?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "of": 30,
+     "not": 1,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "how do I say good morning in Spanish?"
+     ]
+    },
+    "units": {
+     "examples": 4,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.75": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "when was Romeo and Juliet first performed?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 9,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "when was Romeo and Juliet first performed?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 4,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.775": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "when was Romeo and Juliet first performed?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 6,
+     "of": 30,
+     "not": 5,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "when was Romeo and Juliet first performed?",
+      "who wrote A Doll's House?",
+      "what is the most famous line in Hamlet?",
+      "how long is Hamlet?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 4,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  },
+  "0.8": {
+   "meets": false,
+   "loo_meets": false,
+   "in_sample": {
+    "envcanada-alerts": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 30,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "when was Romeo and Juliet first performed?",
+      "who wrote A Doll's House?",
+      "how long is Hamlet?"
+     ]
+    },
+    "talk": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 30,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   },
+   "leave_one_out": {
+    "envcanada-alerts": {
+     "examples": 0,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "gutenberg-plays": {
+     "examples": 4,
+     "of": 30,
+     "not": 4,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": [
+      "who wrote Hamlet?",
+      "when was Romeo and Juliet first performed?",
+      "who wrote A Doll's House?",
+      "how long is Hamlet?"
+     ]
+    },
+    "talk": {
+     "examples": 0,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    },
+    "units": {
+     "examples": 2,
+     "of": 30,
+     "not": 0,
+     "not_of": 30,
+     "others_woken_by_examples": {},
+     "not_woke": []
+    }
+   }
+  }
+ },
+ "grid_s": 18.9,
+ "start_tau": 0.35,
+ "chosen_tau": null,
+ "chosen": null
+}

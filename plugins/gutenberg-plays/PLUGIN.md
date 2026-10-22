@@ -13,6 +13,26 @@ examples:
   - In An Enemy of the People, who is Petra's father?
   - In Troilus and Cressida, who is Hector's father?
   - In The Comedy of Errors, who is Adriana's husband?
+  - who is Hamlet's mother in Hamlet?
+  - In King Lear, who are Lear's daughters?
+  - in Othello, who is Desdemona's father?
+  - who is Ophelia's brother in Hamlet?
+  - In The Merchant of Venice, who is Jessica's father?
+  - who is Prospero's daughter in The Tempest?
+  - In Much Ado About Nothing, who is Hero's father?
+  - who is Lady Macbeth's husband?
+  - In A Doll's House, who is Nora's husband?
+  - In The Importance of Being Earnest, who is Gwendolen's mother?
+  - who is Cordelia's father in King Lear?
+  - In Julius Caesar, who is Brutus's wife?
+  - in Romeo and Juliet, who is Romeo's father?
+  - In Hedda Gabler, who is Hedda's husband?
+  - who are the sons of Titus in Titus Andronicus?
+  - dans Roméo et Juliette, qui est la mère de Juliette ?
+  - dans Hamlet, qui est le père d'Ophélie ?
+  - dans Le Roi Lear, qui sont les filles de Lear ?
+  - dans Othello, qui est le mari de Desdémone ?
+  - dans Macbeth, qui est la femme de Macbeth ?
 not:
   - what is the capital of Canada?
   - convert 3 feet to metres
@@ -24,6 +44,26 @@ not:
   - what is the population of London?
   - who is the president of France?
   - how many plays did Shakespeare write?
+  - who played Hamlet in the 1948 film?
+  - when was Romeo and Juliet first performed?
+  - who was Shakespeare's wife?
+  - how many children did Shakespeare have?
+  - what is the plot of Macbeth?
+  - who was the real Macbeth?
+  - who is the mother of King Charles III?
+  - who wrote A Doll's House?
+  - what is the most famous line in Hamlet?
+  - where is Verona?
+  - is Othello a tragedy or a comedy?
+  - who is the father of Prince William?
+  - what does 'wherefore art thou' mean?
+  - how long is Hamlet?
+  - qui a écrit Roméo et Juliette ?
+  - quand Shakespeare est-il mort ?
+  - qui est le père du roi Charles III ?
+  - où se trouve le théâtre du Globe ?
+  - de quoi parle Hamlet ?
+  - qui était la femme de Molière ?
 kinds: [world]
 audience: public
 licence: Public domain (Project Gutenberg texts; the Gutenberg licence for the files)

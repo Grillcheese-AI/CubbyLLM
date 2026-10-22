@@ -13,6 +13,26 @@ examples:
   - can we just chat for a while?
   - what's your favourite colour?
   - bonjour Cubby, ça va?
+  - hey there!
+  - good evening Cubby
+  - how's it going?
+  - what have you been up to?
+  - I had a rough day at work
+  - do you ever get bored?
+  - tell me something fun about you
+  - I just wanted to say thank you
+  - what makes you happy?
+  - I'm so excited about my trip next week!
+  - can you keep me company for a bit?
+  - what's on your mind today?
+  - good night, talk tomorrow
+  - I'm a little nervous about my exam
+  - salut Cubby !
+  - bonsoir, comment vas-tu ?
+  - j'ai passé une mauvaise journée
+  - merci beaucoup, t'es gentil
+  - on peut jaser un peu ?
+  - qu'est-ce que tu aimes faire ?
 not:
   - what is the capital of Canada?
   - convert 5 miles to km
@@ -24,10 +44,30 @@ not:
   - what happened in Ottawa yesterday?
   - who is the prime minister of Canada?
   - what is 20 celsius in fahrenheit?
+  - how are the Canadiens doing this season?
+  - what's the weather like in Ottawa?
+  - how do I say good morning in Spanish?
+  - who is Cubby the bear in the cartoon?
+  - how was the stock market today?
+  - tell me about the history of Montreal
+  - what is the colour of the sky on Mars?
+  - how many days until Christmas?
+  - what happened in the news today?
+  - who sings 'How Are You'?
+  - what is the best way to learn French?
+  - how do I calm down before an exam?
+  - what's 15 percent of 80?
+  - is there a storm warning in Halifax?
+  - quelle heure est-il à Paris ?
+  - qui a gagné la coupe Stanley en 1993 ?
+  - combien de kilomètres entre Lévis et Québec ?
+  - quelle est la météo à Montréal ?
+  - dans Hamlet, qui est la mère d'Hamlet ?
+  - qui est le premier ministre du Québec ?
 kinds: [adapter]
 audience: public
 licence: internal weights (Grillcheese Research Lab)
-requires: {plugins: [], base: null}
+requires: {plugins: [], base: 695f05b9f99790e355bbc7935d20939cb9ab5df732085a75f5cc551610db737c}
 permissions: {network: [], write: false, gpu: true}
 adapter: {role: talk, dir_env: CUBBY_TALK_ADAPTER}
 entry: {}

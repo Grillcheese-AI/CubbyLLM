@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import unicodedata
 from pathlib import Path
 
@@ -81,6 +82,15 @@ class Lexicon:
             p = self.pieces(w)
             self._memo[w] = self.E[p].mean(axis=0) if p else None
         return self._memo[w]
+
+    def encode(self, text: str) -> np.ndarray:
+        """A sentence as model2vec reads it: the unit mean of its WordPiece rows (zeros if none is known). The shape
+        ``worlds.FactStore(enc=...)`` takes; order 0028's routing bench scores plugins with it (``--encoder potion``)."""
+        ids = [i for w in re.findall(r"[\w']+", text) for i in self.pieces(w)]
+        if not ids:
+            return np.zeros(self.dim, np.float32)
+        v = self.E[ids].mean(axis=0)
+        return (v / (np.linalg.norm(v) + 1e-9)).astype(np.float32)
 
 
 __all__ = ["Lexicon", "DEFAULT"]

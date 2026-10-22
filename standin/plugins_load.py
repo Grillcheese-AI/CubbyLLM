@@ -35,7 +35,7 @@ __wiring__ = "WIRED"
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import plugins_guard as guard  # noqa: E402
-from plugins_route import TAU_ENCODER, TAU_OVERLAP, Router  # noqa: E402
+from plugins_route import make_router  # noqa: E402
 from plugins_world import FictionWorld  # noqa: E402,F401 -- the fiction world's own module
 from worlds import FactStore, Worlds  # noqa: E402
 
@@ -69,7 +69,7 @@ class Loader:
         self.index, self.brain, self.log, self.fetch, self.trunk = index, brain, log, fetch, trunk
         self.data_root = Path(data_root or os.environ.get("CUBBY_PLUGINS_DATA") or
                               Path(__file__).resolve().parent / "data" / "out")
-        self.router = Router(index, enc=enc, tau=tau if tau is not None else (TAU_ENCODER if enc is not None else TAU_OVERLAP))
+        self.router = make_router(index, enc=enc, tau=tau)          # CUBBY_PLUGINS_ROUTER picks the router
         self.idle_s = float(idle_min) * 60
         self.knows = Worlds(tau=0.5)
         self.loaded: dict[str, dict] = {}                    # name -> {kinds: objects, at, used}
