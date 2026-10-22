@@ -29,9 +29,11 @@ spoken, all correct (`validation/logs/exp_hdc_bench_2026-10-22.json`). Three thi
 - **B. A wording translated on a miss:** when a walk on the held wording finds nothing, try the relation's other
   labels in both worlds (Wikidata labels and aliases for the property; the wiki world's relation names), checking
   the direction with the relation's subject and object types, so "capital of" never stands in for "capital".
-- **C. A live "as of", optional:** a present-tense question on a time-sensitive relation fetches the current value
-  through order 0007's lookup (Wikidata, cached with a time to live) and says it "as of" the fetch date. Off by
-  default; offline, the snapshot rule stands.
+- **C. A live "as of", on by default (Nick, 2026-10-22):** a present-tense question on a time-sensitive relation
+  fetches the current value through order 0007's lookup (Wikidata, cached with a time to live) and says it "as of"
+  the fetch date. This is an exception to the off-by-default rule, by Nick's decision: it keeps a switch to turn it
+  off (which restores today's behaviour exactly), and offline, or when the fetch fails, the snapshot rule stands
+  ("as of 2019", or refused).
 
 ## Acceptance (pre-registered)
 - **A:** on the 88 nested prompts, **0 wrong spoken**; spoken-correct reported per depth. The one-hop bench is
@@ -40,7 +42,7 @@ spoken, all correct (`validation/logs/exp_hdc_bench_2026-10-22.json`). Three thi
   the one-hop and nested benches; a test pins that "capital of" does not answer "capital".
 - **C:** 50 time-sensitive present-tense questions: each said with a fetch date or refused, **0 flat without a date**;
   the Wikidata calls counted (cached; keep them under ~200).
-- Off = unchanged; full `pytest tests` and `pytest standin/tests`.
+- Off = unchanged (for C, its switch off); full `pytest tests` and `pytest standin/tests`.
 
 ## Constraints
 - Rules in `CLAUDE.md` hold (flag-gated, < 300 lines a file, `__wiring__`, tests pin the claim).
