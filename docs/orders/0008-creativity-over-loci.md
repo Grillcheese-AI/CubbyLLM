@@ -37,7 +37,8 @@ and art.
   0007's Wikidata lookup) for an empirical claim. A confirmed hypothesis goes into the store as **derived**, with
   the test as its provenance, and is then recalled through the loci path like any fact. A refused one is recorded
   and never stored. An open one may be spoken only in its guess form ("I wonder if…"), never as a fact.
-- **Art** (a creative ask): it may take facts as material from the loci reader. Its output is never written to
+- **Art** (a creative ask): it is written in Cubby's own voice. A request to write "in the style of" a named author
+  gets Cubby's own style, and it says so (Nick, 2026-10-22). It may take facts as material from the loci reader. Its output is never written to
   the store, never checked by the fact gate, and never refused for being unverified. It carries the `invented`
   tier in the loop's record.
 

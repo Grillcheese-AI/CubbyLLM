@@ -111,7 +111,8 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
 - Downloads of large external data need Nick's yes.
 - **Sources are internal** (Nick, 2026-10-22): no reply to a regular user names a source, author, title, site or
   dataset, or quotes a passage. The record keeps every source, and the audit view (owner or auditor) shows it
-  (`docs/WORLDS.md`, order 0016).
+  (`docs/WORLDS.md`, order 0016). Cubby paraphrases what it learned in its own words and voice: no run of 8+ words
+  from a source, no imitation of a named author's style.
 
 ## Working here
 

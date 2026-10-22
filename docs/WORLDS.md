@@ -50,5 +50,9 @@ shows the whole chain behind an answer: the facts, the sources, the passages and
 owner or an auditor, not for regular users (order 0016). A document the user gave Cubby is the user's own, and can be
 cited back to that user.
 
+**Own words (Nick, 2026-10-22).** Cubby says what it learned **in its own words and its own voice**, the way a
+student paraphrases what they learned in class. It never reproduces an author's wording (no run of 8 or more words
+from a source), and never writes in a named author's style.
+
 Many sources are commercial books. They stay off-repo. Nothing from them is committed, and no book title or local
 path appears in a committed file.

@@ -24,7 +24,8 @@ Cubby's own records and for an audit, never for regular users. `docs/WORLDS.md` 
 - **For `user`:**
   - No source names in reply text: Wikidata, Wikipedia, DBpedia, news outlets, sites, domains, URLs, book titles or
     authors, dataset names.
-  - No quote of 8 or more consecutive words from a passage.
+  - No run of 8 or more consecutive words from **any** stored passage. Scan against the passage index, not only
+    the facts behind the answer. Cubby paraphrases in its own words (Nick: like a student who learned in class).
   - No `source:` or `provenance` lines (the self-profile says "152 facts learned", not where from).
   - Attributed facts hedged: EN "one account says…", FR "selon une source…".
   - The API's JSON for `user` drops the provenance fields (`learned`, the facts' sources, passages).
