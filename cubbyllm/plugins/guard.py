@@ -36,7 +36,7 @@ from pathlib import Path
 
 __wiring__ = "WIRED"
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 FORBIDDEN_IMPORTS = {"socket", "urllib", "http", "requests", "httpx", "subprocess", "ctypes", "multiprocessing",
                      "asyncio.subprocess", "urllib3", "aiohttp", "ftplib", "smtplib", "telnetlib", "pty", "importlib",
                      "builtins", "pickle", "marshal", "runpy", "code", "codeop", "webbrowser", "winreg", "signal"}
@@ -277,12 +277,12 @@ class Ctx:
         if urllib.parse.urlsplit(url).scheme not in ("http", "https") or host not in self.plugin.network:
             raise Refused(f"{self.plugin.id} may not fetch {host or url!r}: declared {self.plugin.network}")
         if self._archive is None:
-            from news_archive import Archive, _get
+            from ..sources.news.archive import Archive, _get
             self._archive = Archive(self.data_dir / "_fetch", fetch=self._fetch or _get)
         robots = self._archive.robots(host)
         if robots is not None:
-            from news_source import UA
-            from robots_rules import refuses
+            from ..sources.news.source import UA
+            from ..sources.robots import refuses
             if refuses(robots, UA, url):
                 raise Refused(f"{host}'s robots.txt refuses {url}")
         return self._archive.polite(url)

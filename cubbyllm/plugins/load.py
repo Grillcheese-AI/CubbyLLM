@@ -34,11 +34,10 @@ from pathlib import Path
 
 __wiring__ = "WIRED"
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import plugins_guard as guard  # noqa: E402
-from plugins_route import make_router  # noqa: E402
-from plugins_world import FictionWorld  # noqa: E402,F401 -- the fiction world's own module
-from worlds import FactStore, Worlds  # noqa: E402
+from . import guard  # noqa: E402
+from .route import make_router  # noqa: E402
+from .world import FictionWorld  # noqa: E402,F401 -- the fiction world's own module
+from ..worlds.base import FactStore, Worlds  # noqa: E402
 
 CODE_KINDS = ("source", "tool")
 
@@ -71,7 +70,7 @@ class Loader:
         (needs facts, why)``, the brain's ``needs_facts`` when not given (an adapter wakes only on a turn without facts)."""
         self.index, self.brain, self.log, self.fetch, self.trunk = index, brain, log, fetch, trunk
         self.data_root = Path(data_root or os.environ.get("CUBBY_PLUGINS_DATA") or
-                              Path(__file__).resolve().parent / "data" / "out")
+                              Path(__file__).resolve().parents[2] / "standin" / "data" / "out")
         self.router = make_router(index, enc=enc, tau=tau, kind=router)   # None: CUBBY_PLUGINS_ROUTER picks it
         self.thalamus = thalamus or getattr(brain, "needs_facts", None)
         self.declined: dict[str, str] = {}                   # name -> why the last question woke it and it declined
@@ -117,7 +116,7 @@ class Loader:
     def wake(self, question: str) -> list[str]:
         """Load what the question needs; the names of the plugins it woke (loaded now or already) -- each scored at
         ``tau`` by the router and then claiming the question itself (``plugins_check.claims``)."""
-        from plugins_check import claims
+        from .check import claims
         woke, self.declined = [], {}
         for name, _s in self.router.wake(question, disabled=self.disabled):
             ok, why, made = claims(self, name, question)
@@ -210,9 +209,9 @@ class Loader:
         if w.get("route") == "fiction":
             from types import SimpleNamespace
             import sqlite3
-            import worlds_adapters as wa
-            from worlds_fiction import ingest
-            from worlds_ingest import SCHEMA
+            from ..worlds import adapters as wa
+            from ..worlds.fiction import ingest
+            from ..worlds.ingest import SCHEMA
             data = Path(os.environ.get(w.get("data_env") or "", "") or ctx.data_dir / "pack")
             files = sorted(f for f in data.glob(w.get("glob") or "*.txt") if f.is_file()) if data.is_dir() else []
             reg = sqlite3.connect(ctx.data_dir / "registry.sqlite")

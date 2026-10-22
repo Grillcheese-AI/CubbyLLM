@@ -24,7 +24,7 @@ def cover(obj, question: str) -> float:
     if hasattr(obj, "covers"):
         return float(obj.covers(question) or 0.0)
     if callable(obj):                                     # a FactStore: (question, k) -> [(score, fact)]
-        from worlds import Worlds
+        from ..worlds.base import Worlds
         got = obj(question, 1)
         return float(got[0][0]) if got and got[0][0] >= Worlds.TAU else 0.0
     return 0.0
@@ -32,7 +32,7 @@ def cover(obj, question: str) -> float:
 
 def probe(loader, p, kind: str):
     """The plugin's source or world built, not mounted; None (and why, in ``loader.refused``) when it may not run."""
-    import plugins_guard as guard
+    from . import guard
     why = loader.cleared(p)
     if why != "ok":
         loader.refused[p.name] = why

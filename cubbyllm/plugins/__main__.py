@@ -21,10 +21,9 @@ from pathlib import Path
 
 __wiring__ = "STANDALONE"
 
-HERE = Path(__file__).resolve().parent
-sys.path[:0] = [str(HERE), str(HERE.parent)]
-import plugins_guard as guard  # noqa: E402
-from plugins_index import KINDS, discover  # noqa: E402
+HERE = Path(__file__).resolve().parents[2] / "standin"
+from . import guard  # noqa: E402
+from .index import KINDS, discover  # noqa: E402
 
 STUBS = {
     "tool": ("tool.py", 'class Tool:\n    schema = {"type": "object", "properties": {}, "required": []}\n\n'

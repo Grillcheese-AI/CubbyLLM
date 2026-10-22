@@ -30,8 +30,7 @@ import numpy as np
 
 __wiring__ = "WIRED"
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from worlds import FactStore, Worlds  # noqa: E402
+from ..worlds.base import FactStore, Worlds  # noqa: E402
 
 TAU_START = Worlds.TAU               # where the tuning started (0.35)
 # tuned on the four proof plugins' examples / not lines (validation/logs/plugins_routing_enc_2026-10-22.json and
@@ -138,7 +137,7 @@ def make_router(index, enc=None, tau: float | None = None, kind: str | None = No
     logistic heads (the server's encoder unused; the serve stack's default since 0028's review 2); otherwise the
     nearest-line ``Router`` exactly as before. "minilm" without the encoder in the cache falls back, and says so."""
     if (kind or os.environ.get("CUBBY_PLUGINS_ROUTER", "")).lower() == "minilm":
-        from question_encoder import QuestionEncoder
+        from .question_encoder import QuestionEncoder
         qe = QuestionEncoder.find()
         if qe is not None:
             r = LogisticRouter(index, qe, tau=TAU_LOGISTIC if tau is None else tau)

@@ -25,7 +25,7 @@ INVERSE = {"husband": ("wife",), "wife": ("husband",), "spouse": ("wife", "husba
 
 class FictionWorld:
     def __init__(self, name: str, domain: str, db_path) -> None:
-        from worlds_fiction import FictionWorlds
+        from ..worlds.fiction import FictionWorlds
         self.name, self.domain, self.fw = name, domain, FictionWorlds(db_path)
 
     def covers(self, question: str) -> float:
@@ -35,7 +35,7 @@ class FictionWorld:
         return [f"{o} is the {r} of {s}" for s, r, o in self.fw.db.execute(sql, args)]
 
     def answer(self, question: str) -> list[str]:
-        from worlds_fiction import KIN
+        from ..worlds.fiction import KIN
         work = self.fw.work_named(question)
         if work is None:
             return []
