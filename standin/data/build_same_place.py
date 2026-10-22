@@ -57,7 +57,7 @@ def find(db, x: str, y: str):
 
 
 def main() -> None:
-    db = sqlite3.connect(f"file:{os.environ.get('CUBBY_BOOKS_INDEX', r'E:/datasets/_books_index/books.sqlite')}?mode=ro", uri=True)
+    db = sqlite3.connect(f"file:{os.environ['CUBBY_BOOKS_INDEX']}?mode=ro", uri=True)
     triples = wk.load_triples()
     types = collections.defaultdict(set)
     for s, r, o in triples:

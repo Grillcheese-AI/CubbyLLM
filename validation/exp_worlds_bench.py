@@ -22,6 +22,7 @@ import datetime as _dt
 import glob
 import json
 import os
+import pathlib
 import random
 import re
 import sqlite3
@@ -36,7 +37,8 @@ for p in (ROOT, os.path.join(ROOT, "standin"), os.path.join(ROOT, "standin", "da
         sys.path.insert(0, p)
 
 OUT = os.path.join(HERE, "logs", f"exp_worlds_bench_{_dt.date.today().isoformat()}.json")
-EVAL = [r"E:\datasets\webquestions\nq_validation.parquet", r"E:\datasets\webquestions\test.parquet"]
+# The evaluation sets checked for leaks (local parquet files, `;`-separated in CUBBY_EVAL_SETS).
+EVAL = [p for p in os.environ.get("CUBBY_EVAL_SETS", "").split(";") if p]
 
 
 def coverage(reg) -> dict:
@@ -88,9 +90,10 @@ def fiction(store, n, rng) -> dict:
     return out
 
 
-def time_rule_counts(store, bulk_worlds=r"E:\datasets\_books_index\bulk\worlds") -> dict:
+def time_rule_counts(store, bulk_worlds=None) -> dict:
     """0015's Addendum 2: per mounted world, the facts the time rule touches -- an undated value of a relation in
     `time_rule.CHANGES` (said "at one point", or with the world's "as of")."""
+    bulk_worlds = bulk_worlds or str(pathlib.Path(os.environ.get("CUBBY_BOOKS_INDEX", ".")).parent / "bulk" / "worlds")
     from cubbyllm.reasoning.planner import normalize
     from time_rule import CHANGES
     out = {}
@@ -174,13 +177,14 @@ def verbatim(store, questions) -> dict:
 
 
 def regression(store) -> dict:
-    """0012's and 0014's benches with the registry's stores; their headline lines against the logged runs."""
+    """0012's and 0014's benches with the registry's stores; their headline lines against the logged runs. The hdc
+    bench reads its source folder from CUBBY_HDC_SRC (local)."""
     books, hdc = store.store_of("reality:history"), store.store_of("reality")
     env = {**os.environ, "CUBBY_BOOKS_INDEX": books, "CUBBY_HDC_WORLD": hdc, "OMP_NUM_THREADS": "1", "PYTHONIOENCODING": "utf-8"}
     out = {}
     for name, cmd, log in [("books", [sys.executable, os.path.join(HERE, "exp_books_bench.py"), "--hdc", hdc,
                                        "--out", os.path.join(HERE, "logs", "_worlds_regress_books.json")], "exp_books_bench_final_2026-10-22.json"),
-                           ("hdc", [sys.executable, os.path.join(HERE, "exp_hdc_bench.py"), "--src", r"E:\datasets\hdc", "--db", hdc,
+                           ("hdc", [sys.executable, os.path.join(HERE, "exp_hdc_bench.py"), "--src", os.environ.get("CUBBY_HDC_SRC", ""), "--db", hdc,
                                     "--out", os.path.join(HERE, "logs", "_worlds_regress_hdc.json")], "exp_hdc_bench_2026-10-22.json")]:
         subprocess.run(cmd, env=env, capture_output=True, timeout=7200)
         now = json.load(open(cmd[-1], encoding="utf-8"))

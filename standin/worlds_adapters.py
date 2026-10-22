@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import pathlib
 import re
 import sqlite3
@@ -89,7 +90,7 @@ class Context:
         return self._mentions
 
 
-ROOT_BOOKS = pathlib.Path(r"E:\datasets\_books_index\books.sqlite")   # its common-word list: one rule for every index
+ROOT_BOOKS = pathlib.Path(os.environ.get("CUBBY_BOOKS_INDEX") or "_no_books_index")   # its common-word list: one rule for every index
 
 
 def passages(entry, dataset, ctx, files=None) -> dict:
