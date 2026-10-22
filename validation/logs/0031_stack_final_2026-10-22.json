@@ -1,0 +1,88 @@
+{
+ "what": "order 0031: the real stack after every slice, the network split and the splits, booted as the baseline was (the 450M seats on grilly2, wiki + hdc, the ask loop offline, plugins, the board), through both entry points, against 0031_stack_before_2026-10-22.json",
+ "git": "7f3b26a",
+ "runs": {
+  "python standin/serve_api.py": {
+   "asks": 20,
+   "replies_identical": true,
+   "board_routes": 13,
+   "board_routes_differing": {
+    "/board/home": [
+     "/board/home[audit][1].sections[5].cards[0].cap: \"5 in progress \\u00b7 1 in review \\u00b7 3 proposed\" -> \"4 in progress \\u00b7 2 in review \\u00b7 3 proposed\"",
+     "/board/home[public][1].sections[5].cards[0].cap: \"5 in progress \\u00b7 1 in review \\u00b7 3 proposed\" -> \"4 in progress \\u00b7 2 in review \\u00b7 3 proposed\""
+    ],
+    "/board/system": [
+     "/board/system[audit][1].orders.counts.in progress: 5 -> 4",
+     "/board/system[audit][1].orders.counts.review: 1 -> 2",
+     "/board/system[audit][1].orders.list[27].status: \"in progress\" -> \"review\"",
+     "/board/system[public][1].orders.counts.in progress: 5 -> 4",
+     "/board/system[public][1].orders.counts.review: 1 -> 2",
+     "/board/system[public][1].orders.list[27].status: \"in progress\" -> \"review\""
+    ]
+   },
+   "reply_sha256": [
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14"
+   ]
+  },
+  "python -m cubby_serve": {
+   "asks": 20,
+   "replies_identical": true,
+   "board_routes": 13,
+   "board_routes_differing": {
+    "/board/home": [
+     "/board/home[audit][1].sections[5].cards[0].cap: \"5 in progress \\u00b7 1 in review \\u00b7 3 proposed\" -> \"4 in progress \\u00b7 2 in review \\u00b7 3 proposed\"",
+     "/board/home[public][1].sections[5].cards[0].cap: \"5 in progress \\u00b7 1 in review \\u00b7 3 proposed\" -> \"4 in progress \\u00b7 2 in review \\u00b7 3 proposed\""
+    ],
+    "/board/system": [
+     "/board/system[audit][1].orders.counts.in progress: 5 -> 4",
+     "/board/system[audit][1].orders.counts.review: 1 -> 2",
+     "/board/system[audit][1].orders.list[27].status: \"in progress\" -> \"review\"",
+     "/board/system[public][1].orders.counts.in progress: 5 -> 4",
+     "/board/system[public][1].orders.counts.review: 1 -> 2",
+     "/board/system[public][1].orders.list[27].status: \"in progress\" -> \"review\""
+    ]
+   },
+   "reply_sha256": [
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14",
+    "e3b0c44298fc1c14"
+   ]
+  }
+ }
+}
