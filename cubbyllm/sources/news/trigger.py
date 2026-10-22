@@ -26,8 +26,7 @@ import sys
 
 __wiring__ = "WIRED"
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from news_events import fold  # noqa: E402
+from .events import fold  # noqa: E402
 
 CUES = {
     "appointed": r"appoint(?:s|ed|ment)|named (?:as |the )?(?:new )?(?:ceo|chief|head|director|minister|president|chair)"
@@ -85,7 +84,7 @@ def from_gdelt(events, known) -> list[dict]:
 
 def scan(root, known, kinds=None, start: str | None = None) -> list[dict]:
     """New marks from the archive's items and GDELT's kept events (from ``start``), appended once to the marks file."""
-    from news_events import load
+    from .events import load
     root = pathlib.Path(root)
     marks = from_items(load(root, start), known, kinds)
     for f in sorted((root / "gdelt").glob("*.events.jsonl")):

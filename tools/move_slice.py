@@ -300,7 +300,8 @@ def main() -> int:
         (REPO / new).parent.mkdir(parents=True, exist_ok=True)
         subprocess.run(["git", "mv", old, new], cwd=REPO, check=True)
         (REPO / new).write_text(out, encoding="utf-8", newline="\n")
-        (REPO / old).write_text(shim(old, new), encoding="utf-8", newline="\n")
+        subprocess.run(["git", "add", new], cwd=REPO, check=True)       # the rename commit carries the rewrite
+        (REPO / old).write_text(shim(old, new), encoding="utf-8", newline="\n")   # the shim: staged by the next commit
     for t in a.tests:
         old, new = t.split("=", 1)
         if not a.dry_run:

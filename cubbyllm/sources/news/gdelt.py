@@ -160,11 +160,10 @@ def hdc_known(path):
     import sqlite3
     import sys
     if not path:
-        from hdc_store import DEFAULT as path
+        from ...worlds.hdc_store import DEFAULT as path
     p = pathlib.Path(path)
     if not p.exists():
         return None
-    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
     from cubbyllm.reasoning.planner import normalize
     db = sqlite3.connect(f"file:{p}?mode=ro", uri=True, check_same_thread=False)
     q = (f"SELECT 1 FROM facts WHERE skey = ? AND rel = 'instance of' AND obj IN ({','.join('?' * len(KINDS))}) LIMIT 1")

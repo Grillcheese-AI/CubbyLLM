@@ -11,8 +11,7 @@ import xml.etree.ElementTree as ET
 
 __wiring__ = "WIRED"
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from news_source import _iso  # noqa: E402
+from .source import _iso  # noqa: E402
 
 SUMMARY_MAX = 400
 ATOM = "{http://www.w3.org/2005/Atom}"

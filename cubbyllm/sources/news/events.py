@@ -32,7 +32,7 @@ import unicodedata
 
 __wiring__ = "STANDALONE"
 
-HERE = pathlib.Path(__file__).resolve().parent
+HERE = pathlib.Path(__file__).resolve().parents[3] / "standin"
 WITHIN_DAYS = 2
 THRESHOLD = 0.15         # with two names in common
 THRESHOLD_ONE = 0.3
@@ -167,8 +167,7 @@ def summary(groups: list[list[dict]], feeds: list[dict]) -> dict:
 
 
 def main() -> None:
-    sys.path.insert(0, str(HERE))
-    from news_archive import feeds as manifest_feeds
+    from .archive import feeds as manifest_feeds
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--root", required=True)
     ap.add_argument("--from", dest="start")

@@ -54,14 +54,14 @@ from cubbyllm.reasoning.planner import Triple, normalize
 
 __wiring__ = "WIRED"
 
-CACHE = pathlib.Path(__file__).resolve().parent / "data" / "out" / "web_cache"
+CACHE = pathlib.Path(__file__).resolve().parents[2] / "standin" / "data" / "out" / "web_cache"
 UA = "cubbyllm-standin/0.1 (research; licensing@grillcheese.ai)"
 TTL_S = 24 * 3600                  # a search or a page is re-fetched at most daily
 MAX_PAGE_BYTES = 1_500_000
 MIN_SITES = 2                      # independent sites before a web fact may carry an answer
 
 
-ENV_FILES = (pathlib.Path(__file__).resolve().parent / ".env", pathlib.Path(__file__).resolve().parents[1] / ".env")
+ENV_FILES = (pathlib.Path(__file__).resolve().parents[2] / "standin" / ".env", pathlib.Path(__file__).resolve().parents[2] / ".env")
 
 
 def env_key(*names: str) -> str | None:
@@ -377,7 +377,7 @@ def _opens_with(sentence: str, entity: str) -> bool:
 
 def frame_facts(entity: str, text: str, lang: str = "en") -> list[tuple[Triple, str]]:
     """wikitext's frames, and the day-first date frames, over the sentences that OPEN with the entity."""
-    from wikitext import read_frames
+    from ..worlds.wikitext import read_frames
     raw: list[tuple[Triple, str]] = []
     out = raw
     for sentence in _SENT.split(" ".join((text or "").split())):
@@ -549,7 +549,7 @@ class WebSource:
     @property
     def aliases(self):
         if self._aliases is None:
-            from sources import PropertyAliases
+            from .wikidata import PropertyAliases
             self._aliases = PropertyAliases()
         return self._aliases
 

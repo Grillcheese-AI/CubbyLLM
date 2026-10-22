@@ -25,9 +25,8 @@ from pathlib import Path
 
 __wiring__ = "STANDALONE"
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from news_events import fold, group, load  # noqa: E402
-from news_events import features  # noqa: E402
+from .events import fold, group, load  # noqa: E402
+from .events import features  # noqa: E402
 
 MONTHS_EN = "january february march april may june july august september october november december".split()
 MONTHS_FR = "janvier février mars avril mai juin juillet août septembre octobre novembre décembre".split()
@@ -119,7 +118,7 @@ def answer(question: str, root, today: dt.date, feeds: list[dict] | None = None)
     if span is None:
         return {"answered": False, "reason": "date_unread", "subject": subject, "lang": lang}
     if feeds is None:
-        from news_archive import feeds as manifest
+        from .archive import feeds as manifest
         feeds = manifest()
     kinds, names_out = {f["id"]: f.get("kind", "news") for f in feeds}, outlets(feeds)
     want = [t for t in re.findall(r"[^\W_][\w'-]*", fold(subject)) if t not in ("the", "le", "la", "les")]

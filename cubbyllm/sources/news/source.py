@@ -42,7 +42,7 @@ __wiring__ = "WIRED"
 
 from cubbyllm.reasoning.planner import Triple, normalize as _normalize   # noqa: E402
 
-CACHE = pathlib.Path(__file__).resolve().parent / "data" / "out" / "news_cache"
+CACHE = pathlib.Path(__file__).resolve().parents[3] / "standin" / "data" / "out" / "news_cache"
 # The BARE PRODUCT TOKEN, and it matters. CBC's edge closes the connection on any UA string
 # carrying a URL or parentheses -- "CubbyLLM/0.1 (+https://...)" is refused, "CubbyLLM/0.1" is
 # served in 0.1s (measured 2026-09-14, all three CBC feeds). So the feed is reachable while
@@ -96,7 +96,7 @@ TOPIC_FEEDS = {t: f"{AP_BUCKET}{t}.xml" for t in (
 # coy about reading a "no" it understands. So the policy is READ, RECORDED, and surfaced;
 # what to do about it is a decision a person makes, not one this file makes quietly.
 # (the list and the group-aware reader live in robots_rules.py since 2026-10-22)
-from robots_rules import AI_AGENTS, ai_named  # noqa: E402
+from ..robots import AI_AGENTS, ai_named  # noqa: E402
 
 _DATE_ASK = re.compile(r"^\s*(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?\s*$")
 _TAG = re.compile(r"<[^>]+>")

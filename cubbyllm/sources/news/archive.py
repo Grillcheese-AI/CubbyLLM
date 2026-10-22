@@ -37,11 +37,10 @@ import urllib.request
 
 __wiring__ = "WIRED"
 
-HERE = pathlib.Path(__file__).resolve().parent
-sys.path[:0] = [str(HERE), str(HERE.parent)]
-from news_parse import DC, SUMMARY_MAX, date_of, parse  # noqa: E402,F401 -- parse and the rest re-exported
-from news_source import UA  # noqa: E402
-from robots_rules import ai_named, crawl_delay, refuses  # noqa: E402
+HERE = pathlib.Path(__file__).resolve().parents[3] / "standin"
+from .parse import DC, SUMMARY_MAX, date_of, parse  # noqa: E402,F401 -- parse and the rest re-exported
+from .source import UA  # noqa: E402
+from ..robots import ai_named, crawl_delay, refuses  # noqa: E402
 
 MANIFEST = HERE / "data" / "news_feeds.json"
 ROBOTS_TTL_S = 6 * 3600
@@ -136,7 +135,7 @@ class Archive:
                 return {**row, "error": f"HTTP {code}"}
             items = parse(body, full=bool(feed.get("full_text")))
             if feed.get("full_text") == "globalvoices":       # Nick: this publisher's story text is kept (CC BY 3.0)
-                from news_globalvoices import categories, story
+                from .globalvoices import categories, story
                 for it in items:
                     it.update(story(it.pop("content", "")), categories=categories(it.get("categories", [])))
         except Exception as e:                                # noqa: BLE001 -- a feed that is down is not an answer
@@ -172,16 +171,16 @@ class Archive:
             rows = [self.poll(f) for f in feeds(manifest) if f.get("status") == "active"
                     and now - last.get(f["id"], 0) >= f.get("every_h", 1) * 3600 - 300]
             if os.environ.get("CUBBY_GV_BACKFILL"):          # Global Voices' history pages, as they land (news_backfill)
-                from news_backfill import ingest_all
+                from .backfill import ingest_all
                 rows.append(ingest_all(self, os.environ["CUBBY_GV_BACKFILL"], manifest))
             cfg = json.loads(pathlib.Path(manifest).read_text(encoding="utf-8")).get("gdelt") or {}
             if cfg.get("status") == "active":                 # the structured event source (news_gdelt.py)
                 try:
-                    from news_gdelt import Gdelt, hdc_known
+                    from .gdelt import Gdelt, hdc_known
                     g = Gdelt(self.root / "gdelt", self.fetch, hdc_known(os.environ.get("CUBBY_HDC_WORLD")))
                     rows.append(g.poll(tuple(cfg.get("streams", ["en"]))))
                     if g.known is not None:                   # the change marks of the last two days (news_trigger)
-                        from news_trigger import scan
+                        from .trigger import scan
                         start = (dt.date.today() - dt.timedelta(days=2)).isoformat()
                         rows.append({"feed": "changes", "new": len(scan(self.root, g.known, None, start))})
                 except Exception as e:                        # noqa: BLE001 -- the feeds' poll still counts

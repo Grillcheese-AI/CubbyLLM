@@ -28,13 +28,12 @@ import time
 
 __wiring__ = "WIRED"
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 FEED_OF = {"en": "globalvoices-main", "fr": "globalvoices-fr"}
 
 
 def ingest(archive, pages: pathlib.Path, feed: dict, min_age_s: float = 60.0) -> dict:
-    from news_archive import key_of, parse
-    from news_globalvoices import categories, story
+    from .archive import key_of, parse
+    from .globalvoices import categories, story
     out = archive.root / "backfill" / feed["id"]
     out.mkdir(parents=True, exist_ok=True)
     done_p = out / "_pages.txt"
@@ -68,7 +67,7 @@ def ingest(archive, pages: pathlib.Path, feed: dict, min_age_s: float = 60.0) ->
 
 
 def ingest_all(archive, pages_root, manifest=None) -> dict:
-    from news_archive import MANIFEST, feeds
+    from .archive import MANIFEST, feeds
     meta = {f["id"]: f for f in feeds(manifest or MANIFEST)}
     rows = [ingest(archive, pathlib.Path(pages_root) / lang, meta[fid]) for lang, fid in FEED_OF.items()
             if (pathlib.Path(pages_root) / lang).is_dir() and fid in meta]
@@ -76,7 +75,7 @@ def ingest_all(archive, pages_root, manifest=None) -> dict:
 
 
 def pairs(root) -> int:
-    from news_globalvoices import pairs as pair_rows
+    from .globalvoices import pairs as pair_rows
     root = pathlib.Path(root)
     rows = []
     for f in sorted(root.glob("????-??-??.jsonl")) + sorted(root.glob("backfill/*/*.jsonl")):
@@ -89,7 +88,7 @@ def pairs(root) -> int:
 
 
 def main() -> None:
-    from news_archive import Archive
+    from .archive import Archive
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--root", default=os.environ.get("CUBBY_NEWS_ARCHIVE"), required=not os.environ.get("CUBBY_NEWS_ARCHIVE"))
     ap.add_argument("--pages", default=os.environ.get("CUBBY_GV_BACKFILL"))

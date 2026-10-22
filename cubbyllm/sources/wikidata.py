@@ -27,7 +27,7 @@ __wiring__ = "WIRED"
 
 API = "https://www.wikidata.org/w/api.php"
 UA = "cubbyllm-standin/0.1 (research; licensing@grillcheese.ai)"
-CACHE = pathlib.Path(__file__).resolve().parent / "data" / "out" / "wikidata_cache"
+CACHE = pathlib.Path(__file__).resolve().parents[2] / "standin" / "data" / "out" / "wikidata_cache"
 SKIP_PROPS = {"P31"}       # 'instance of' floods every entity with class facts; the store calls it 'instance' when it wants it
 CLASS_PROPS = ("P31",)     # ... and a profile ask WANTS it: "what is X" is a question about the kind
 MAX_CLASS_FACTS = 3        # the kind, not the whole taxonomy
