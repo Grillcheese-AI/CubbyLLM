@@ -107,6 +107,19 @@ The same tracker over a conversation (report only, as above), on two sets fetche
   recall at the utterance level.
 Both are for research use (CC BY-NC 4.0; a TV script): no example text in a committed file or log.
 
+## Addendum 2 (2026-10-22, Cowork): scripts make character arcs possible
+The collection's drama folder holds 78 Gutenberg plays (many languages) and 25 screenplays and TV pilots (feature
+films, pilots, one teleplay; paths in `CLAUDE.local.md`). A script marks what a novel hides: each scene opens with a
+heading (INT. / EXT.), and each line of dialogue under its speaker's name in capitals. A count over the 25 found
+125 to 1,497 speaker cues per script, the main characters on top. So the speaker is given, not inferred:
+- **Character arcs, scripts only:** an arc per main speaker over their own lines, and one for the action lines (the
+  script's narration), segmented by scene headings. This is the narration-vs-character split of Vishnubhotla et al.
+  (2024) with no attribution model. Report only: the gold set above stays on novels.
+- The English plays mark speakers too (e.g. "ROMEO." before a speech): the same parser, report only.
+- **Fiction stays fiction:** some scripts and plays are about real people (a Napoleon screenplay, Shakespeare's
+  histories). Their worlds answer about the work, never as evidence about the real person.
+- The screenplays are copyrighted: research use only, no example text in any committed file or log.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**
