@@ -25,7 +25,7 @@ __wiring__ = "WIRED"
 
 
 def _trunk(brain):
-    from emitter import Cubby450mTrunk
+    from cubbyllm.emit.seats_450m import Cubby450mTrunk
     em = getattr(brain, "emitter", None)
     for obj in (em, getattr(em, "programs", None), getattr(em, "talk", None), getattr(getattr(brain, "chat", None), "talker", None)):
         t = getattr(obj, "trunk", None)

@@ -176,8 +176,7 @@ def boot(args, ap: argparse.ArgumentParser):
         start_poller(args.news_archive, log=lambda m: print(m, flush=True))
         print(f"news archive: polling the active feeds hourly into {args.news_archive}", flush=True)
     if args.science:
-        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"))
-        from import_science import mount_science
+        from cubbyllm.worlds.science import mount_science
         mounted = mount_science(brain, args.science)
         print(f"science worlds (attested facts only): {mounted or 'none attested yet'}", flush=True)
     if args.model_appraisal:

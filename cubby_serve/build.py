@@ -65,7 +65,8 @@ def build_serve(gguf: str | None, table: str | None, n_store: int, exe: str | No
     from exp_m3_domain_routing import _load_semantic_words
 
     from cubbyllm.emit.talk import ContextualEmitter
-    from standin.emitter_llama import LlamaCppEmitter               # the stand-in's GGUF seat (--gguf)
+    from emitter_llama import LlamaCppEmitter                       # the stand-in's GGUF seat (--gguf), by the name
+                                                                    # the facade imports it by: one module object
     print(f"loading fact store ({n_store} sampled questions' fact pool) ...", flush=True)
     _q, _a, _h, _chains, store = load_sample(n_store, seed=0)
     if extra_facts:                                      # selftest: the walked facts must BE in the store
