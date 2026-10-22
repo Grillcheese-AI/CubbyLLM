@@ -83,12 +83,24 @@ the world, the publisher sits in provenance, and two newsrooms agreeing is not c
     are for catch-up only.
     **Translations:** `https://<lang>.globalvoices.org/feed/` in over 50 languages; 24 are current (newest item since
     late August 2026), among them fr, es, pt, ru, ar, it, jp and uk; the rest have not been updated for months or
-    years. Their items translate Global Voices stories, and each one's `content:encoded` opens with an "originally
-    published" link to the source story: group a translation with its original by that link. It is the same report in
-    another language, never a second voice. Poll the 24 current ones daily; the list, checked from Nick's machine, is
-    handed over off-repo.
-    The feed carries each story's full text (`content:encoded`). The poller keeps the headline and summary, as for
-    every feed, and reads the full text only for the original-story link, until Nick decides otherwise.
+    years. Poll the 24 current ones daily; the list, checked from Nick's machine, is handed over off-repo. Most of
+    their items translate a story first published elsewhere on Global Voices, usually in English, sometimes in
+    Portuguese, Spanish or French. The link to that source story is the `<span class='source-link'>` in the credits
+    block near the end of `content:encoded` (the "originally published" line at the top links to the item itself, not
+    the source). The same block names the writer and the translator ("Written (English) by", "Traduit (Français)
+    par"). An item without a source link was written in that language. A translation is grouped with its source story:
+    the same report in another language, never a second voice.
+    **Full text (Nick, 2026-10-22): keep it.** For Global Voices only, the archive keeps each story's text from
+    `content:encoded`, converted to plain text, beside the headline and summary, with the author, the translator, the
+    item link, the source-story link and the licence (CC BY 3.0). Drop images, captions, embedded posts (tweets and
+    other `blockquote` embeds) and iframes: they come from third parties and the licence does not cover them. Drop the
+    site's donation and campaign boxes. Pairs (a translation and its source story, both in the archive) are listed in a
+    pairs file by their two links; they are parallel text. Replies keep the 0016 guard. Every other feed stays
+    headline and summary only.
+    **History:** both the main feed and the translation feeds page back with `?paged=N` (15 items a page on the main
+    feed, back to October 2004, about 6,960 pages; 10 a page on the French feed, back to March 2007, about 2,170 pages).
+    A backfill is a large download (about 1.7 GB for the main feed and 0.4 GB for the French one) and needs Nick's yes;
+    run it at one page every 2 seconds or slower, resumable by page number.
   - **International, not only Québec (Nick, 2026-10-22).** Cowork tested 43 candidate feeds from Nick's machine;
     38 work and are kept: Europe 13, Asia 7, Americas 7, Africa 5, Middle East 4, Oceania 2; in en 30, fr 4, es 2, de 1, pt 1
     (en, fr, es, de, pt). Among them public broadcasters (BBC, DW, France 24, RFI, Tagesschau, ABC Australia, RNZ, NPR),
