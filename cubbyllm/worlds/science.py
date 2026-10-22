@@ -13,8 +13,8 @@ __wiring__ = "WIRED"
 def mount_science(brain, folder: str, attested_only: bool = True) -> dict[str, int]:
     """Mount every saved science world on a serving brain as `brain.worlds[name]`: the ATTESTED facts only
     (a latent fact is held from speech), retrieved with the brain's own encoder. -> {name: facts mounted}."""
-    from capsules import CapsuleStore
-    from worlds import FactStore
+    from .capsules import CapsuleStore
+    from .base import FactStore
     enc = getattr(brain.worlds.get("facts"), "enc", None)
     out = {}
     for name in sorted(os.listdir(folder)):
