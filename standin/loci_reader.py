@@ -7,8 +7,10 @@ The scene is the layout the 450M was trained on (`make_fact_shard --lead`, the f
 WRITING at the fact's address (`make_fact_shard.address`, piece i at +6 i z), then `Question: What is the
 <relation> of <subject>? here` (ASKING for piece 0) and `Answer: ` (its last token asking for piece 0 too). The
 answer is decoded greedily, each piece in turn asking for the next; the newline ends it. A **miss**: the relation
-is one the shard never addressed, nothing is written about the entity, the copy's read-aware gate stays shut at the
-first piece (lam below 0.5), or the first piece is the newline. The relations are the shard's own (the wiki
+is one the shard never addressed, nothing is written about the entity, the store holds several values for it (one
+address holds one value), the copy's read-aware gate stays shut at the first piece (lam below 0.5), or the first piece
+is the newline. A later piece is taken only while the gate stays open: once it shuts, the next token is the trunk's own
+guess, not the fact. The relations are the shard's own (the wiki
 world's, `RELATION_OF` maps Wikidata's labels and the world's nouns onto them).
 
 The checkpoint and the tokenizer come from the environment (`CUBBY_LOCI_CKPT`, `CUBBY_SPM`), never a committed
@@ -105,14 +107,22 @@ class LociReader:
     def read(self, entity: str, relation: str, facts) -> dict:
         """`facts`: [(subject, relation as the store words it, object)] about `entity`. -> {answer, miss, why, lam}."""
         from cubbyllm.model.spatial import NO_PLACE
+        from cubbyllm.reasoning.planner import normalize
         from make_fact_shard import address
         torch = self.torch
+        # the address hashes the name as written: ask with the store's own spelling of the subject (the loop's seed
+        # arrives normalized, 'harpdog brown', and read 'Harpdog Brown''s facts from another address, 2026-10-22)
+        entity = next((s for s, _r, _o in facts if normalize(s) == normalize(entity)), entity)
         R = self.shard_relation(relation)
         if R is None:
             return {"answer": None, "miss": True, "why": "a relation the shard never addressed"}
         rows = [(s, o, self.shard_relation(r)) for s, r, o in facts if self.shard_relation(r)]
         if not rows:
             return {"answer": None, "miss": True, "why": "nothing written about it"}
+        if len({o for s, o, r in rows if r == R and normalize(s) == normalize(entity)}) > 1:
+            # one address holds one value (the shard's facts): several written there superimpose ('lawyer' +
+            # 'politician' read 'lawyerician', 2026-10-22), and choosing among them is the walk's, not the reader's
+            return {"answer": None, "miss": True, "why": "several values for it: the walk's to choose"}
         ids, pos, roles = self.scene(entity, relation, rows)
         at = address(entity, self.rel_index[R])
         cp = self.model.spatial.copy_path
@@ -138,12 +148,20 @@ class LociReader:
             tok = int(logits[0, -1].argmax())
             if j == 0 and (lam is None or lam < 0.5):
                 return {"answer": None, "miss": True, "why": "the gate stayed shut", "lam": lams}
-            if tok in (self.nl, self.eos):
-                break
+            if tok in (self.nl, self.eos) or lam is None or lam < 0.5:
+                break                                     # the gate shut: what follows is the trunk's guess, not the fact
             out.append(tok)
             ids.append(tok); pos.append((at[0], at[1], at[2] + STEP * (j + 1))); roles.append(2)
         answer = self.tk.decode(out).strip()
         return {"answer": answer or None, "miss": not answer, "why": None if answer else "nothing read", "lam": lams}
+
+
+class NoSource:
+    """A source that states nothing: the walk on what the store holds."""
+    name = "none"
+
+    def facts(self, entity, **_kw):
+        return []
 
 
 def through_loci(loop, rec: dict, rels: list, seed: str, learn) -> dict | None:
@@ -156,6 +174,11 @@ def through_loci(loop, rec: dict, rels: list, seed: str, learn) -> dict | None:
     if len(rels) != 1:
         return None
     reader, rel = loop.loci, rels[0]
+    if reader.shard_relation(rel) is None:                # the question's own word ('administrative territorial
+        named = [lab for res in getattr(loop, "resolvers", []) for lab in (getattr(res, "relations", None) or (lambda _r: []))(rel)]
+        known = list(dict.fromkeys(lab for lab in named if reader.shard_relation(lab)))   # entity'): its label, if one
+        if len(known) == 1:
+            rel = known[0]
     R = reader.shard_relation(rel)
 
     def about():
@@ -171,10 +194,13 @@ def through_loci(loop, rec: dict, rels: list, seed: str, learn) -> dict | None:
         rec.update(answer=vals[normalize(first["answer"])] if ok else None, verified=ok,
                    reason=None if ok else "loci_mismatch", refused=None if ok else {"read": first["answer"], "stored": list(vals.values())})
         return rec
-    lr = learn()
+    # the store already holds several values (the reader defers): the walk decides on the store alone, no fetch --
+    # the fact was learned once, and asking again is the source call the next time must not make
+    deferred = bool(vals) and first["miss"] and str(first.get("why", "")).startswith("several")
+    lr = learn(NoSource()) if deferred else learn()
     second, vals = reader.read(seed, rel, about()), stored()
     ok = bool(vals) and not second["miss"] and normalize(second["answer"]) in vals
-    rec.update(path="loci_after_lookup" if vals else "lookup", source_calls=len(lr.entities), learned=[
+    rec.update(path="walk" if deferred else "loci_after_lookup" if vals else "lookup", source_calls=0 if deferred else len(lr.entities), learned=[
         {"fact": p.fact, "status": p.status, "source": p.source, "entity": p.entity} for p in lr.learned],
         entities=list(lr.entities), loci=rec["loci"] + [{k: v for k, v in second.items() if k != "lam"}],
         answer=vals[normalize(second["answer"])] if ok else None, verified=ok,

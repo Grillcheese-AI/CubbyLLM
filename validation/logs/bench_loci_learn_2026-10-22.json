@@ -1,0 +1,3729 @@
+{
+ "phase1": {
+  "asked": 100,
+  "first_read_miss": 95,
+  "learned_any": 47,
+  "spoken": 34,
+  "wrong_spoken": 0,
+  "paths": {
+   "lookup": 50,
+   "null": 5,
+   "loci_after_lookup": 45
+  },
+  "refused": {
+   "retrieval_exhausted": 45,
+   "plan_does_not_cover_question": 6,
+   "entity_unresolved": 5,
+   "ambiguous_hop": 8,
+   "loci_miss": 2
+  },
+  "wikidata_http_calls": 0,
+  "facts_learned": 766,
+  "wall_s_per_question": 0.7,
+  "rows": [
+   {
+    "entity": "Paul Taylor",
+    "relation": "occupation",
+    "hdc_value": "association football manager",
+    "question": "What was the occupation of Paul Taylor?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "March 1942",
+    "relation": "part of",
+    "hdc_value": "1942",
+    "question": "To which parent entity did March 1942 belong?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Streets of New York",
+    "relation": "part of",
+    "hdc_value": "Wanted: Dead or Alive (Kool G Rap & DJ Polo album)",
+    "question": "To which parent entity did Streets of New York belong?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Edward H. Kruse",
+    "relation": "educated at",
+    "hdc_value": "Butler University",
+    "question": "Where was the Edward H. Kruse educated at?",
+    "first_miss": false,
+    "path": null,
+    "verified": false,
+    "answer": null,
+    "reason": "entity_unresolved",
+    "learned": 0,
+    "reads": [],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "The Heretic Anthem",
+    "relation": "part of",
+    "hdc_value": "Iowa",
+    "question": "To which parent entity did The Heretic Anthem belong?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Ceca",
+    "relation": "country of citizenship",
+    "hdc_value": "Serbia",
+    "question": "What was the country of citizenship of Ceca?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 3,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.6
+   },
+   {
+    "entity": "Paraúna",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Goiás",
+    "question": "Where was the administrative territorial entity of Paraúna?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Goiás",
+    "reason": null,
+    "learned": 41,
+    "reads": [
+     null,
+     "Goiás"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.9
+   },
+   {
+    "entity": "Manuelle Gautrand",
+    "relation": "country of citizenship",
+    "hdc_value": "France",
+    "question": "What was the country of citizenship of Manuelle Gautrand?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "William Rimmer",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of William Rimmer?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Bruce Berenyi",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Bruce Berenyi?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Roy Ridley",
+    "relation": "country of citizenship",
+    "hdc_value": "United Kingdom",
+    "question": "What was the country of citizenship of Roy Ridley?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Fading Lights",
+    "relation": "part of",
+    "hdc_value": "We Can't Dance",
+    "question": "To which parent entity did Fading Lights belong?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Elliott Cresson",
+    "relation": "member of",
+    "hdc_value": "Franklin Institute",
+    "question": "Where was the Elliott Cresson member of?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 18,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": [
+     "Franklin Institute",
+     "American Colonization Society"
+    ],
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Nakhlé Moutran",
+    "relation": "country of citizenship",
+    "hdc_value": "Ottoman Empire",
+    "question": "What was the country of citizenship of Nakhlé Moutran?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Ottoman Empire",
+    "reason": null,
+    "learned": 8,
+    "reads": [
+     null,
+     "Ottoman Empire"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.6
+   },
+   {
+    "entity": "Eleonora Bechis",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of Eleonora Bechis?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "politician",
+    "reason": null,
+    "learned": 15,
+    "reads": [
+     null,
+     "politician"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.2
+   },
+   {
+    "entity": "Nkem Ojougboh",
+    "relation": "educated at",
+    "hdc_value": "Scottsdale Christian Academy",
+    "question": "Where was the Nkem Ojougboh educated at?",
+    "first_miss": false,
+    "path": null,
+    "verified": false,
+    "answer": null,
+    "reason": "entity_unresolved",
+    "learned": 0,
+    "reads": [],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Jankowiec",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Gmina Ostróda",
+    "question": "Where was the administrative territorial entity of Jankowiec?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Gmina Ostróda",
+    "reason": null,
+    "learned": 4,
+    "reads": [
+     null,
+     "Gmina Ostróda"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 4.1
+   },
+   {
+    "entity": "Clara Township",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Potter County",
+    "question": "Where was the administrative territorial entity of Clara Township?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Peter Cunningham",
+    "relation": "educated at",
+    "hdc_value": "University College Dublin",
+    "question": "Where was the Peter Cunningham educated at?",
+    "first_miss": false,
+    "path": null,
+    "verified": false,
+    "answer": null,
+    "reason": "entity_unresolved",
+    "learned": 0,
+    "reads": [],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Richard Philippe",
+    "relation": "country of citizenship",
+    "hdc_value": "France",
+    "question": "What was the country of citizenship of Richard Philippe?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Roberta Brown",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Roberta Brown?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Veliki Ločnik",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Municipality of Velike Lašče",
+    "question": "Where was the administrative territorial entity of Veliki Ločnik?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Municipality of Velike Lašče",
+    "reason": null,
+    "learned": 8,
+    "reads": [
+     null,
+     "Municipality of Velike Lašče"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 4.9
+   },
+   {
+    "entity": "Bradley Page",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Bradley Page?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "United States",
+    "reason": null,
+    "learned": 14,
+    "reads": [
+     null,
+     "United States"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.2
+   },
+   {
+    "entity": "Here Today, Here Tomorrow",
+    "relation": "part of",
+    "hdc_value": "Spice of Life",
+    "question": "To which parent entity did Here Today, Here Tomorrow belong?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Karen Beauchemin",
+    "relation": "employer",
+    "hdc_value": "Agriculture and Agri-Food Canada",
+    "question": "Who was the employer of Karen Beauchemin?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "learned": 15,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": [
+     "Agriculture and Agri-Food Canada",
+     "University of British Columbia",
+     "University of Alberta"
+    ],
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Teresa Cheung",
+    "relation": "occupation",
+    "hdc_value": "singer",
+    "question": "What was the occupation of Teresa Cheung?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "K. N. Prabhu",
+    "relation": "occupation",
+    "hdc_value": "journalist",
+    "question": "What was the occupation of K. N. Prabhu?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Vasiliki Tsirogianni",
+    "relation": "country of citizenship",
+    "hdc_value": "Greece",
+    "question": "What was the country of citizenship of Vasiliki Tsirogianni?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Greece",
+    "reason": null,
+    "learned": 13,
+    "reads": [
+     null,
+     "Greece"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.9
+   },
+   {
+    "entity": "Peter the Wild Boy",
+    "relation": "country of citizenship",
+    "hdc_value": "Germany",
+    "question": "What was the country of citizenship of Peter the Wild Boy?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "IBC Tower",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Frankfurt",
+    "question": "Where was the administrative territorial entity of IBC Tower?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "loci_miss",
+    "learned": 14,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": [
+     "Frankfurt-Innenstadt II",
+     "Bockenheim"
+    ],
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "He County",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Ma'anshan",
+    "question": "Where was the administrative territorial entity of He County?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "loci_miss",
+    "learned": 19,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": [
+     "Ma'anshan",
+     "Chaohu (Prefecture-level city)",
+     "Anhui Province"
+    ],
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Holden Lake",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Ontario",
+    "question": "Where was the administrative territorial entity of Holden Lake?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Daniel Dulany the Younger",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Daniel Dulany the Younger?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "United States",
+    "reason": null,
+    "learned": 20,
+    "reads": [
+     null,
+     "United States"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 3.9
+   },
+   {
+    "entity": "La Coma i la Pedra",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Solsonès",
+    "question": "Where was the administrative territorial entity of La Coma i la Pedra?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Solsonès",
+    "reason": null,
+    "learned": 72,
+    "reads": [
+     null,
+     "Solsonès"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.0
+   },
+   {
+    "entity": "Harpdog Brown",
+    "relation": "country of citizenship",
+    "hdc_value": "Canada",
+    "question": "What was the country of citizenship of Harpdog Brown?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Canada",
+    "reason": null,
+    "learned": 12,
+    "reads": [
+     null,
+     "Canada"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.3
+   },
+   {
+    "entity": "Max Ilgner",
+    "relation": "country of citizenship",
+    "hdc_value": "Germany",
+    "question": "What was the country of citizenship of Max Ilgner?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Germany",
+    "reason": null,
+    "learned": 26,
+    "reads": [
+     null,
+     "Germany"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.7
+   },
+   {
+    "entity": "Michael Paré",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Michael Paré?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "United States",
+    "reason": null,
+    "learned": 20,
+    "reads": [
+     null,
+     "United States"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.9
+   },
+   {
+    "entity": "Chak Rud",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Gilan Province",
+    "question": "Where was the administrative territorial entity of Chak Rud?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "learned": 13,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": [
+     "Gilan Province",
+     "Pir Kuh Rural District"
+    ],
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Vieremä",
+    "relation": "part of",
+    "hdc_value": "Savo-Karelia",
+    "question": "To which parent entity did Vieremä belong?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Urqunqucha",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Ayacucho",
+    "question": "Where was the administrative territorial entity of Urqunqucha?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "José Hierro",
+    "relation": "occupation",
+    "hdc_value": "poet",
+    "question": "What was the occupation of José Hierro?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "poet",
+    "reason": null,
+    "learned": 27,
+    "reads": [
+     null,
+     "poet"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.1
+   },
+   {
+    "entity": "Hindoli",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Bundi district",
+    "question": "Where was the administrative territorial entity of Hindoli?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Vespertine",
+    "relation": "genre",
+    "hdc_value": "trip hop",
+    "question": "What genre was Vespertine?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "José Ignacio Palma",
+    "relation": "country of citizenship",
+    "hdc_value": "Chile",
+    "question": "What was the country of citizenship of José Ignacio Palma?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Chile",
+    "reason": null,
+    "learned": 19,
+    "reads": [
+     null,
+     "Chile"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.6
+   },
+   {
+    "entity": "Philip Osipovich Paulucci",
+    "relation": "occupation",
+    "hdc_value": "military personnel",
+    "question": "What was the occupation of Philip Osipovich Paulucci?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "learned": 44,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": [
+     "military personnel",
+     "governor"
+    ],
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Katalin Károlyi",
+    "relation": "occupation",
+    "hdc_value": "singer",
+    "question": "What was the occupation of Katalin Károlyi?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Ryuzo Yanagimachi",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Ryuzo Yanagimachi?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "learned": 21,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": [
+     "Japan",
+     "United States"
+    ],
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Temple Adas Israel",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Tennessee",
+    "question": "Where was the administrative territorial entity of Temple Adas Israel?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Everard Ranges",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "South Australia",
+    "question": "Where was the administrative territorial entity of Everard Ranges?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "South Australia",
+    "reason": null,
+    "learned": 3,
+    "reads": [
+     null,
+     "South Australia"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.2
+   },
+   {
+    "entity": "Shahivand Ali Morad",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Zirtang Rural District",
+    "question": "Where was the administrative territorial entity of Shahivand Ali Morad?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Zirtang Rural District",
+    "reason": null,
+    "learned": 2,
+    "reads": [
+     null,
+     "Zirtang Rural District"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.2
+   },
+   {
+    "entity": "Nasir Ismail",
+    "relation": "occupation",
+    "hdc_value": "association football player",
+    "question": "What was the occupation of Nasir Ismail?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "association football player",
+    "reason": null,
+    "learned": 9,
+    "reads": [
+     null,
+     "association football player"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.8
+   },
+   {
+    "entity": "Bob Bainbridge",
+    "relation": "country of citizenship",
+    "hdc_value": "United Kingdom",
+    "question": "What was the country of citizenship of Bob Bainbridge?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "United Kingdom",
+    "reason": null,
+    "learned": 13,
+    "reads": [
+     null,
+     "United Kingdom"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.5
+   },
+   {
+    "entity": "Shinjuku Outlaw",
+    "relation": "director",
+    "hdc_value": "Takashi Miike",
+    "question": "Who was the director of Shinjuku Outlaw?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Takashi Miike",
+    "reason": null,
+    "learned": 13,
+    "reads": [
+     null,
+     "Takashi Miike"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.2
+   },
+   {
+    "entity": "Charles J. Lumsden",
+    "relation": "employer",
+    "hdc_value": "University of Toronto",
+    "question": "Who was the employer of Charles J. Lumsden?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "National Atomic Energy Commission",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Buenos Aires",
+    "question": "Where was the administrative territorial entity of National Atomic Energy Commission?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Buenos Aires",
+    "reason": null,
+    "learned": 6,
+    "reads": [
+     null,
+     "Buenos Aires"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.4
+   },
+   {
+    "entity": "Jankowice",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Gmina Działdowo",
+    "question": "Where was the administrative territorial entity of Jankowice?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "The Zero Clue",
+    "relation": "author",
+    "hdc_value": "Rex Stout",
+    "question": "Who was the author of The Zero Clue?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Mike Moncrief",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of Mike Moncrief?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "politician",
+    "reason": null,
+    "learned": 15,
+    "reads": [
+     null,
+     "politician"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.3
+   },
+   {
+    "entity": "Michael Fried",
+    "relation": "occupation",
+    "hdc_value": "journalist",
+    "question": "What was the occupation of Michael Fried?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "JR Chandler",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of JR Chandler?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "United States",
+    "reason": null,
+    "learned": 3,
+    "reads": [
+     null,
+     "United States"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.1
+   },
+   {
+    "entity": "Rachel Horne",
+    "relation": "occupation",
+    "hdc_value": "journalist",
+    "question": "What was the occupation of Rachel Horne?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Wolfschlugen",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Esslingen",
+    "question": "Where was the administrative territorial entity of Wolfschlugen?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Lévignac-de-Guyenne",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Lot-et-Garonne",
+    "question": "Where was the administrative territorial entity of Lévignac-de-Guyenne?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "learned": 43,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": [
+     "canton of Seyches",
+     "Lot-et-Garonne",
+     "arrondissement of Marmande"
+    ],
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "McMullen",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Virginia",
+    "question": "Where was the administrative territorial entity of McMullen?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "D. W. Robertson, Jr.",
+    "relation": "occupation",
+    "hdc_value": "journalist",
+    "question": "What was the occupation of D. W. Robertson, Jr.?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Tagg Flats",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Delaware County",
+    "question": "Where was the administrative territorial entity of Tagg Flats?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Delaware County",
+    "reason": null,
+    "learned": 10,
+    "reads": [
+     null,
+     "Delaware County"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.5
+   },
+   {
+    "entity": "Wasserbergfirst",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Schwyz",
+    "question": "Where was the administrative territorial entity of Wasserbergfirst?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Canton of Schwyz",
+    "reason": null,
+    "learned": 8,
+    "reads": [
+     null,
+     "Canton of Schwyz"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.6
+   },
+   {
+    "entity": "Chiloé National Park",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Dalcahue",
+    "question": "Where was the administrative territorial entity of Chiloé National Park?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "learned": 15,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": [
+     "Dalcahue",
+     "Chiloé Province"
+    ],
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Lorenzo Albaladejo Martínez",
+    "relation": "country of citizenship",
+    "hdc_value": "Spain",
+    "question": "What was the country of citizenship of Lorenzo Albaladejo Martínez?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Spain",
+    "reason": null,
+    "learned": 11,
+    "reads": [
+     null,
+     "Spain"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.4
+   },
+   {
+    "entity": "Mamolar",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Burgos Province",
+    "question": "Where was the administrative territorial entity of Mamolar?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Kretinga",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Kretinga District Municipality",
+    "question": "Where was the administrative territorial entity of Kretinga?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Kleine Lonau",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Lower Saxony",
+    "question": "Where was the administrative territorial entity of Kleine Lonau?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "learned": 9,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": [
+     "Harz (Landkreis Göttingen)",
+     "Herzberg am Harz"
+    ],
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "The Spot, New South Wales",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Sydney",
+    "question": "Where was the administrative territorial entity of The Spot, New South Wales?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Roy Ells",
+    "relation": "country of citizenship",
+    "hdc_value": "Canada",
+    "question": "What was the country of citizenship of Roy Ells?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Canada",
+    "reason": null,
+    "learned": 11,
+    "reads": [
+     null,
+     "Canada"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.3
+   },
+   {
+    "entity": "Ferdinand Rebay",
+    "relation": "genre",
+    "hdc_value": "opera",
+    "question": "What genre was Ferdinand Rebay?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Irene Rigau Oliver",
+    "relation": "occupation",
+    "hdc_value": "psychologist",
+    "question": "What was the occupation of Irene Rigau Oliver?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "learned": 37,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": [
+     "politician",
+     "psychologist",
+     "secondary school teacher",
+     "school inspector"
+    ],
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Mike Matheny",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Mike Matheny?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "United States",
+    "reason": null,
+    "learned": 24,
+    "reads": [
+     null,
+     "United States"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.9
+   },
+   {
+    "entity": "Philip Bocht Ó hUiginn",
+    "relation": "occupation",
+    "hdc_value": "poet",
+    "question": "What was the occupation of Philip Bocht Ó hUiginn?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "poet",
+    "reason": null,
+    "learned": 6,
+    "reads": [
+     null,
+     "poet"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.9
+   },
+   {
+    "entity": "Opatija tram",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Opatija",
+    "question": "Where was the administrative territorial entity of Opatija tram?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Opatija",
+    "reason": null,
+    "learned": 12,
+    "reads": [
+     null,
+     "Opatija"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.5
+   },
+   {
+    "entity": "Death",
+    "relation": "author",
+    "hdc_value": "Woody Allen",
+    "question": "Who was the author of Death?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Booth Grey",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of Booth Grey?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Lahij",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Lahij Governorate",
+    "question": "Where was the administrative territorial entity of Lahij?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Lahij Governorate",
+    "reason": null,
+    "learned": 6,
+    "reads": [
+     null,
+     "Lahij Governorate"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.3
+   },
+   {
+    "entity": "David Dillon",
+    "relation": "educated at",
+    "hdc_value": "Southern Methodist University",
+    "question": "Where was the David Dillon educated at?",
+    "first_miss": false,
+    "path": null,
+    "verified": false,
+    "answer": null,
+    "reason": "entity_unresolved",
+    "learned": 0,
+    "reads": [],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "O'Hara's Playboys",
+    "relation": "country of citizenship",
+    "hdc_value": "United Kingdom",
+    "question": "What was the country of citizenship of O'Hara's Playboys?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 1,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Elizabeth Borough, New Jersey",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "New Jersey",
+    "question": "Where was the administrative territorial entity of Elizabeth Borough, New Jersey?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Sítio d'Abadia",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Goiás",
+    "question": "Where was the administrative territorial entity of Sítio d'Abadia?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Goiás",
+    "reason": null,
+    "learned": 38,
+    "reads": [
+     null,
+     "Goiás"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.7
+   },
+   {
+    "entity": "Myton",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Duchesne County",
+    "question": "Where was the administrative territorial entity of Myton?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Willoughby Williams",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of Willoughby Williams?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "politician",
+    "reason": null,
+    "learned": 14,
+    "reads": [
+     null,
+     "politician"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.2
+   },
+   {
+    "entity": "Sedalia Township",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Pettis County",
+    "question": "Where was the administrative territorial entity of Sedalia Township?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Pettis County",
+    "reason": null,
+    "learned": 6,
+    "reads": [
+     null,
+     "Pettis County"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 1.9
+   },
+   {
+    "entity": "Võhma",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Mustjala Rural Municipality",
+    "question": "Where was the administrative territorial entity of Võhma?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Jimmy Wood",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Jimmy Wood?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Dzanani",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Makhado Local Municipality",
+    "question": "Where was the administrative territorial entity of Dzanani?",
+    "first_miss": true,
+    "path": "loci_after_lookup",
+    "verified": true,
+    "answer": "Makhado Local Municipality",
+    "reason": null,
+    "learned": 5,
+    "reads": [
+     null,
+     "Makhado Local Municipality"
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 2.3
+   },
+   {
+    "entity": "The Flower of Hawaii",
+    "relation": "genre",
+    "hdc_value": "musical film",
+    "question": "What genre was The Flower of Hawaii?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Thomas Johnson",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of Thomas Johnson?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Hollywood",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "County Wicklow",
+    "question": "Where was the administrative territorial entity of Hollywood?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Mount St Benedict College",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "New South Wales",
+    "question": "Where was the administrative territorial entity of Mount St Benedict College?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "K. Ross Stevenson",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of K. Ross Stevenson?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Seyidan",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Salyan District",
+    "question": "Where was the administrative territorial entity of Seyidan?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Richard Congreve",
+    "relation": "educated at",
+    "hdc_value": "Rugby School",
+    "question": "Where was the Richard Congreve educated at?",
+    "first_miss": false,
+    "path": null,
+    "verified": false,
+    "answer": null,
+    "reason": "entity_unresolved",
+    "learned": 0,
+    "reads": [],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Arthur Caesar",
+    "relation": "occupation",
+    "hdc_value": "playwright",
+    "question": "What was the occupation of Arthur Caesar?",
+    "first_miss": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "learned": 0,
+    "reads": [
+     null,
+     null
+    ],
+    "stored": null,
+    "wrong": false,
+    "wall_s": 0.0
+   }
+  ]
+ },
+ "wall_s": 119.8,
+ "phase2": {
+  "loaded": 766,
+  "asked": 100,
+  "learned_in_ask_1": 47,
+  "source_calls_on_learned": 3,
+  "loci_answered_learned": 34,
+  "equals_stored_on_learned": 0.723,
+  "wrong_spoken": 0,
+  "refused": {
+   "retrieval_exhausted": 45,
+   "plan_does_not_cover_question": 6,
+   "entity_unresolved": 5,
+   "ambiguous_hop": 9,
+   "loci_miss": 1
+  },
+  "wall_s_per_question": 0.7,
+  "creative": {
+   "asked": 30,
+   "routed_to_facts": 3,
+   "reader_reads": 0,
+   "routes": {
+    "talk": 20,
+    "reasoning": 10
+   }
+  },
+  "rows": [
+   {
+    "entity": "Paul Taylor",
+    "relation": "occupation",
+    "hdc_value": "association football manager",
+    "question": "What was the occupation of Paul Taylor?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.1
+   },
+   {
+    "entity": "March 1942",
+    "relation": "part of",
+    "hdc_value": "1942",
+    "question": "To which parent entity did March 1942 belong?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Streets of New York",
+    "relation": "part of",
+    "hdc_value": "Wanted: Dead or Alive (Kool G Rap & DJ Polo album)",
+    "question": "To which parent entity did Streets of New York belong?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Edward H. Kruse",
+    "relation": "educated at",
+    "hdc_value": "Butler University",
+    "question": "Where was the Edward H. Kruse educated at?",
+    "learned_in_ask_1": false,
+    "path": null,
+    "verified": false,
+    "answer": null,
+    "reason": "entity_unresolved",
+    "reads": [],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "The Heretic Anthem",
+    "relation": "part of",
+    "hdc_value": "Iowa",
+    "question": "To which parent entity did The Heretic Anthem belong?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Ceca",
+    "relation": "country of citizenship",
+    "hdc_value": "Serbia",
+    "question": "What was the country of citizenship of Ceca?",
+    "learned_in_ask_1": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.6
+   },
+   {
+    "entity": "Paraúna",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Goiás",
+    "question": "Where was the administrative territorial entity of Paraúna?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Goiás",
+    "reason": null,
+    "reads": [
+     "Goiás"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.8
+   },
+   {
+    "entity": "Manuelle Gautrand",
+    "relation": "country of citizenship",
+    "hdc_value": "France",
+    "question": "What was the country of citizenship of Manuelle Gautrand?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "William Rimmer",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of William Rimmer?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Bruce Berenyi",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Bruce Berenyi?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Roy Ridley",
+    "relation": "country of citizenship",
+    "hdc_value": "United Kingdom",
+    "question": "What was the country of citizenship of Roy Ridley?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Fading Lights",
+    "relation": "part of",
+    "hdc_value": "We Can't Dance",
+    "question": "To which parent entity did Fading Lights belong?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Elliott Cresson",
+    "relation": "member of",
+    "hdc_value": "Franklin Institute",
+    "question": "Where was the Elliott Cresson member of?",
+    "learned_in_ask_1": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 1.5
+   },
+   {
+    "entity": "Nakhlé Moutran",
+    "relation": "country of citizenship",
+    "hdc_value": "Ottoman Empire",
+    "question": "What was the country of citizenship of Nakhlé Moutran?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Ottoman Empire",
+    "reason": null,
+    "reads": [
+     "Ottoman Empire"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.2
+   },
+   {
+    "entity": "Eleonora Bechis",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of Eleonora Bechis?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "politician",
+    "reason": null,
+    "reads": [
+     "politician"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.9
+   },
+   {
+    "entity": "Nkem Ojougboh",
+    "relation": "educated at",
+    "hdc_value": "Scottsdale Christian Academy",
+    "question": "Where was the Nkem Ojougboh educated at?",
+    "learned_in_ask_1": false,
+    "path": null,
+    "verified": false,
+    "answer": null,
+    "reason": "entity_unresolved",
+    "reads": [],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Jankowiec",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Gmina Ostróda",
+    "question": "Where was the administrative territorial entity of Jankowiec?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Gmina Ostróda",
+    "reason": null,
+    "reads": [
+     "Gmina Ostróda"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.9
+   },
+   {
+    "entity": "Clara Township",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Potter County",
+    "question": "Where was the administrative territorial entity of Clara Township?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Peter Cunningham",
+    "relation": "educated at",
+    "hdc_value": "University College Dublin",
+    "question": "Where was the Peter Cunningham educated at?",
+    "learned_in_ask_1": false,
+    "path": null,
+    "verified": false,
+    "answer": null,
+    "reason": "entity_unresolved",
+    "reads": [],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Richard Philippe",
+    "relation": "country of citizenship",
+    "hdc_value": "France",
+    "question": "What was the country of citizenship of Richard Philippe?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Roberta Brown",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Roberta Brown?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Veliki Ločnik",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Municipality of Velike Lašče",
+    "question": "Where was the administrative territorial entity of Veliki Ločnik?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Municipality of Velike Lašče",
+    "reason": null,
+    "reads": [
+     "Municipality of Velike Lašče"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 5.0
+   },
+   {
+    "entity": "Bradley Page",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Bradley Page?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "United States",
+    "reason": null,
+    "reads": [
+     "United States"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.6
+   },
+   {
+    "entity": "Here Today, Here Tomorrow",
+    "relation": "part of",
+    "hdc_value": "Spice of Life",
+    "question": "To which parent entity did Here Today, Here Tomorrow belong?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Karen Beauchemin",
+    "relation": "employer",
+    "hdc_value": "Agriculture and Agri-Food Canada",
+    "question": "Who was the employer of Karen Beauchemin?",
+    "learned_in_ask_1": true,
+    "path": "walk",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.1
+   },
+   {
+    "entity": "Teresa Cheung",
+    "relation": "occupation",
+    "hdc_value": "singer",
+    "question": "What was the occupation of Teresa Cheung?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "K. N. Prabhu",
+    "relation": "occupation",
+    "hdc_value": "journalist",
+    "question": "What was the occupation of K. N. Prabhu?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Vasiliki Tsirogianni",
+    "relation": "country of citizenship",
+    "hdc_value": "Greece",
+    "question": "What was the country of citizenship of Vasiliki Tsirogianni?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Greece",
+    "reason": null,
+    "reads": [
+     "Greece"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.0
+   },
+   {
+    "entity": "Peter the Wild Boy",
+    "relation": "country of citizenship",
+    "hdc_value": "Germany",
+    "question": "What was the country of citizenship of Peter the Wild Boy?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "IBC Tower",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Frankfurt",
+    "question": "Where was the administrative territorial entity of IBC Tower?",
+    "learned_in_ask_1": true,
+    "path": "walk",
+    "verified": false,
+    "answer": null,
+    "reason": "loci_miss",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "He County",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Ma'anshan",
+    "question": "Where was the administrative territorial entity of He County?",
+    "learned_in_ask_1": true,
+    "path": "walk",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Holden Lake",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Ontario",
+    "question": "Where was the administrative territorial entity of Holden Lake?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Daniel Dulany the Younger",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Daniel Dulany the Younger?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "United States",
+    "reason": null,
+    "reads": [
+     "United States"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 3.4
+   },
+   {
+    "entity": "La Coma i la Pedra",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Solsonès",
+    "question": "Where was the administrative territorial entity of La Coma i la Pedra?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Solsonès",
+    "reason": null,
+    "reads": [
+     "Solsonès"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.0
+   },
+   {
+    "entity": "Harpdog Brown",
+    "relation": "country of citizenship",
+    "hdc_value": "Canada",
+    "question": "What was the country of citizenship of Harpdog Brown?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Canada",
+    "reason": null,
+    "reads": [
+     "Canada"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.0
+   },
+   {
+    "entity": "Max Ilgner",
+    "relation": "country of citizenship",
+    "hdc_value": "Germany",
+    "question": "What was the country of citizenship of Max Ilgner?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Germany",
+    "reason": null,
+    "reads": [
+     "Germany"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.3
+   },
+   {
+    "entity": "Michael Paré",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Michael Paré?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "United States",
+    "reason": null,
+    "reads": [
+     "United States"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.7
+   },
+   {
+    "entity": "Chak Rud",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Gilan Province",
+    "question": "Where was the administrative territorial entity of Chak Rud?",
+    "learned_in_ask_1": true,
+    "path": "walk",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Vieremä",
+    "relation": "part of",
+    "hdc_value": "Savo-Karelia",
+    "question": "To which parent entity did Vieremä belong?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "plan_does_not_cover_question",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Urqunqucha",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Ayacucho",
+    "question": "Where was the administrative territorial entity of Urqunqucha?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "José Hierro",
+    "relation": "occupation",
+    "hdc_value": "poet",
+    "question": "What was the occupation of José Hierro?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "poet",
+    "reason": null,
+    "reads": [
+     "poet"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.4
+   },
+   {
+    "entity": "Hindoli",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Bundi district",
+    "question": "Where was the administrative territorial entity of Hindoli?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Vespertine",
+    "relation": "genre",
+    "hdc_value": "trip hop",
+    "question": "What genre was Vespertine?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "José Ignacio Palma",
+    "relation": "country of citizenship",
+    "hdc_value": "Chile",
+    "question": "What was the country of citizenship of José Ignacio Palma?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Chile",
+    "reason": null,
+    "reads": [
+     "Chile"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.4
+   },
+   {
+    "entity": "Philip Osipovich Paulucci",
+    "relation": "occupation",
+    "hdc_value": "military personnel",
+    "question": "What was the occupation of Philip Osipovich Paulucci?",
+    "learned_in_ask_1": true,
+    "path": "walk",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Katalin Károlyi",
+    "relation": "occupation",
+    "hdc_value": "singer",
+    "question": "What was the occupation of Katalin Károlyi?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Ryuzo Yanagimachi",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Ryuzo Yanagimachi?",
+    "learned_in_ask_1": true,
+    "path": "walk",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Temple Adas Israel",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Tennessee",
+    "question": "Where was the administrative territorial entity of Temple Adas Israel?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Everard Ranges",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "South Australia",
+    "question": "Where was the administrative territorial entity of Everard Ranges?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "South Australia",
+    "reason": null,
+    "reads": [
+     "South Australia"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.2
+   },
+   {
+    "entity": "Shahivand Ali Morad",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Zirtang Rural District",
+    "question": "Where was the administrative territorial entity of Shahivand Ali Morad?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Zirtang Rural District",
+    "reason": null,
+    "reads": [
+     "Zirtang Rural District"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.6
+   },
+   {
+    "entity": "Nasir Ismail",
+    "relation": "occupation",
+    "hdc_value": "association football player",
+    "question": "What was the occupation of Nasir Ismail?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "association football player",
+    "reason": null,
+    "reads": [
+     "association football player"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.8
+   },
+   {
+    "entity": "Bob Bainbridge",
+    "relation": "country of citizenship",
+    "hdc_value": "United Kingdom",
+    "question": "What was the country of citizenship of Bob Bainbridge?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "United Kingdom",
+    "reason": null,
+    "reads": [
+     "United Kingdom"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.3
+   },
+   {
+    "entity": "Shinjuku Outlaw",
+    "relation": "director",
+    "hdc_value": "Takashi Miike",
+    "question": "Who was the director of Shinjuku Outlaw?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Takashi Miike",
+    "reason": null,
+    "reads": [
+     "Takashi Miike"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.3
+   },
+   {
+    "entity": "Charles J. Lumsden",
+    "relation": "employer",
+    "hdc_value": "University of Toronto",
+    "question": "Who was the employer of Charles J. Lumsden?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "National Atomic Energy Commission",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Buenos Aires",
+    "question": "Where was the administrative territorial entity of National Atomic Energy Commission?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Buenos Aires",
+    "reason": null,
+    "reads": [
+     "Buenos Aires"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.5
+   },
+   {
+    "entity": "Jankowice",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Gmina Działdowo",
+    "question": "Where was the administrative territorial entity of Jankowice?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "The Zero Clue",
+    "relation": "author",
+    "hdc_value": "Rex Stout",
+    "question": "Who was the author of The Zero Clue?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Mike Moncrief",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of Mike Moncrief?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "politician",
+    "reason": null,
+    "reads": [
+     "politician"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.4
+   },
+   {
+    "entity": "Michael Fried",
+    "relation": "occupation",
+    "hdc_value": "journalist",
+    "question": "What was the occupation of Michael Fried?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "JR Chandler",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of JR Chandler?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "United States",
+    "reason": null,
+    "reads": [
+     "United States"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.2
+   },
+   {
+    "entity": "Rachel Horne",
+    "relation": "occupation",
+    "hdc_value": "journalist",
+    "question": "What was the occupation of Rachel Horne?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Wolfschlugen",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Esslingen",
+    "question": "Where was the administrative territorial entity of Wolfschlugen?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Lévignac-de-Guyenne",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Lot-et-Garonne",
+    "question": "Where was the administrative territorial entity of Lévignac-de-Guyenne?",
+    "learned_in_ask_1": true,
+    "path": "walk",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "McMullen",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Virginia",
+    "question": "Where was the administrative territorial entity of McMullen?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "D. W. Robertson, Jr.",
+    "relation": "occupation",
+    "hdc_value": "journalist",
+    "question": "What was the occupation of D. W. Robertson, Jr.?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Tagg Flats",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Delaware County",
+    "question": "Where was the administrative territorial entity of Tagg Flats?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Delaware County",
+    "reason": null,
+    "reads": [
+     "Delaware County"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.5
+   },
+   {
+    "entity": "Wasserbergfirst",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Schwyz",
+    "question": "Where was the administrative territorial entity of Wasserbergfirst?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Canton of Schwyz",
+    "reason": null,
+    "reads": [
+     "Canton of Schwyz"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.7
+   },
+   {
+    "entity": "Chiloé National Park",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Dalcahue",
+    "question": "Where was the administrative territorial entity of Chiloé National Park?",
+    "learned_in_ask_1": true,
+    "path": "walk",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Lorenzo Albaladejo Martínez",
+    "relation": "country of citizenship",
+    "hdc_value": "Spain",
+    "question": "What was the country of citizenship of Lorenzo Albaladejo Martínez?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Spain",
+    "reason": null,
+    "reads": [
+     "Spain"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.3
+   },
+   {
+    "entity": "Mamolar",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Burgos Province",
+    "question": "Where was the administrative territorial entity of Mamolar?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Kretinga",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Kretinga District Municipality",
+    "question": "Where was the administrative territorial entity of Kretinga?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Kleine Lonau",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Lower Saxony",
+    "question": "Where was the administrative territorial entity of Kleine Lonau?",
+    "learned_in_ask_1": true,
+    "path": "walk",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "The Spot, New South Wales",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Sydney",
+    "question": "Where was the administrative territorial entity of The Spot, New South Wales?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Roy Ells",
+    "relation": "country of citizenship",
+    "hdc_value": "Canada",
+    "question": "What was the country of citizenship of Roy Ells?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Canada",
+    "reason": null,
+    "reads": [
+     "Canada"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.1
+   },
+   {
+    "entity": "Ferdinand Rebay",
+    "relation": "genre",
+    "hdc_value": "opera",
+    "question": "What genre was Ferdinand Rebay?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Irene Rigau Oliver",
+    "relation": "occupation",
+    "hdc_value": "psychologist",
+    "question": "What was the occupation of Irene Rigau Oliver?",
+    "learned_in_ask_1": true,
+    "path": "walk",
+    "verified": false,
+    "answer": null,
+    "reason": "ambiguous_hop",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 0,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Mike Matheny",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Mike Matheny?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "United States",
+    "reason": null,
+    "reads": [
+     "United States"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.8
+   },
+   {
+    "entity": "Philip Bocht Ó hUiginn",
+    "relation": "occupation",
+    "hdc_value": "poet",
+    "question": "What was the occupation of Philip Bocht Ó hUiginn?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "poet",
+    "reason": null,
+    "reads": [
+     "poet"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 0.9
+   },
+   {
+    "entity": "Opatija tram",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Opatija",
+    "question": "Where was the administrative territorial entity of Opatija tram?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Opatija",
+    "reason": null,
+    "reads": [
+     "Opatija"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.5
+   },
+   {
+    "entity": "Death",
+    "relation": "author",
+    "hdc_value": "Woody Allen",
+    "question": "Who was the author of Death?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Booth Grey",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of Booth Grey?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Lahij",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Lahij Governorate",
+    "question": "Where was the administrative territorial entity of Lahij?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Lahij Governorate",
+    "reason": null,
+    "reads": [
+     "Lahij Governorate"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.4
+   },
+   {
+    "entity": "David Dillon",
+    "relation": "educated at",
+    "hdc_value": "Southern Methodist University",
+    "question": "Where was the David Dillon educated at?",
+    "learned_in_ask_1": false,
+    "path": null,
+    "verified": false,
+    "answer": null,
+    "reason": "entity_unresolved",
+    "reads": [],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "O'Hara's Playboys",
+    "relation": "country of citizenship",
+    "hdc_value": "United Kingdom",
+    "question": "What was the country of citizenship of O'Hara's Playboys?",
+    "learned_in_ask_1": true,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Elizabeth Borough, New Jersey",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "New Jersey",
+    "question": "Where was the administrative territorial entity of Elizabeth Borough, New Jersey?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Sítio d'Abadia",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Goiás",
+    "question": "Where was the administrative territorial entity of Sítio d'Abadia?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Goiás",
+    "reason": null,
+    "reads": [
+     "Goiás"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.7
+   },
+   {
+    "entity": "Myton",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Duchesne County",
+    "question": "Where was the administrative territorial entity of Myton?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Willoughby Williams",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of Willoughby Williams?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "politician",
+    "reason": null,
+    "reads": [
+     "politician"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 1.9
+   },
+   {
+    "entity": "Sedalia Township",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Pettis County",
+    "question": "Where was the administrative territorial entity of Sedalia Township?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Pettis County",
+    "reason": null,
+    "reads": [
+     "Pettis County"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.0
+   },
+   {
+    "entity": "Võhma",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Mustjala Rural Municipality",
+    "question": "Where was the administrative territorial entity of Võhma?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Jimmy Wood",
+    "relation": "country of citizenship",
+    "hdc_value": "United States of America",
+    "question": "What was the country of citizenship of Jimmy Wood?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Dzanani",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Makhado Local Municipality",
+    "question": "Where was the administrative territorial entity of Dzanani?",
+    "learned_in_ask_1": true,
+    "path": "loci",
+    "verified": true,
+    "answer": "Makhado Local Municipality",
+    "reason": null,
+    "reads": [
+     "Makhado Local Municipality"
+    ],
+    "source_calls": 0,
+    "equals_stored": true,
+    "wall_s": 2.4
+   },
+   {
+    "entity": "The Flower of Hawaii",
+    "relation": "genre",
+    "hdc_value": "musical film",
+    "question": "What genre was The Flower of Hawaii?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Thomas Johnson",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of Thomas Johnson?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Hollywood",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "County Wicklow",
+    "question": "Where was the administrative territorial entity of Hollywood?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Mount St Benedict College",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "New South Wales",
+    "question": "Where was the administrative territorial entity of Mount St Benedict College?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "K. Ross Stevenson",
+    "relation": "occupation",
+    "hdc_value": "politician",
+    "question": "What was the occupation of K. Ross Stevenson?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Seyidan",
+    "relation": "located in the administrative territorial entity",
+    "hdc_value": "Salyan District",
+    "question": "Where was the administrative territorial entity of Seyidan?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Richard Congreve",
+    "relation": "educated at",
+    "hdc_value": "Rugby School",
+    "question": "Where was the Richard Congreve educated at?",
+    "learned_in_ask_1": false,
+    "path": null,
+    "verified": false,
+    "answer": null,
+    "reason": "entity_unresolved",
+    "reads": [],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   },
+   {
+    "entity": "Arthur Caesar",
+    "relation": "occupation",
+    "hdc_value": "playwright",
+    "question": "What was the occupation of Arthur Caesar?",
+    "learned_in_ask_1": false,
+    "path": "lookup",
+    "verified": false,
+    "answer": null,
+    "reason": "retrieval_exhausted",
+    "reads": [
+     null,
+     null
+    ],
+    "source_calls": 1,
+    "equals_stored": false,
+    "wall_s": 0.0
+   }
+  ]
+ }
+}

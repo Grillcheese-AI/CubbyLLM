@@ -926,11 +926,12 @@ class AskLoop:
                 if route(plan, self.scene):
                     source = self.scene
                     rec["world"] = "scene"
-            def learn():
+            def learn(src=None):                         # `src`: another source for this walk (the reader's: none)
                 return learn_and_answer(question, lambda q, k: [], self._run_fn, store=self.world, known=self.known,
-                                        source=source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
+                                        source=src or source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
                                         plan=plan, resolvers=self.resolvers, choose=parse_choose(choose) or None,
-                                        fallbacks=self.fallbacks, before=[self.books] if self.books is not None else None)
+                                        fallbacks=self.fallbacks if src is None else [],
+                                        before=[self.books] if self.books is not None and src is None else None)
             if self.loci is not None:                    # the trunk reads first; a miss is looked up once (order 0007)
                 from loci_reader import through_loci
                 if through_loci(self, rec, rels, seed, learn) is not None:

@@ -6,8 +6,8 @@
   "seed": 0
  },
  "lookup_ms": {
-  "p50": 0.2,
-  "p95": 0.39,
+  "p50": 0.17,
+  "p95": 0.31,
   "n": 1000
  },
  "rss_gb_mounted": 0.9,
@@ -20,7 +20,7 @@
   "wrong": 0,
   "as_of": 5,
   "refused": {
-   "unknown_relation": 6,
+   "ambiguous_relation": 6,
    "ambiguous_hop": 4,
    "no_plan": 1,
    "retrieval_exhausted": 7,
@@ -30,14 +30,14 @@
  "time_sensitive": {
   "asked": 50,
   "said_flat": 0,
-  "as_of": 22,
+  "as_of": 21,
   "refused": {
-   "retrieval_exhausted": 4,
-   "unknown_relation": 10,
+   "retrieval_exhausted": 2,
+   "plan_does_not_cover_question": 13,
    "entity_unresolved": 14
   }
  },
- "wall_s": 322.1,
+ "wall_s": 288.2,
  "rows": [
   {
    "question": "What is the instance of patrick flury?",
@@ -108,7 +108,7 @@
    "verified": false,
    "answer": null,
    "tier": null,
-   "reason": "unknown_relation",
+   "reason": "ambiguous_relation",
    "correct": null
   },
   {
@@ -700,7 +700,7 @@
    "verified": false,
    "answer": null,
    "tier": null,
-   "reason": "unknown_relation",
+   "reason": "ambiguous_relation",
    "correct": null
   },
   {
@@ -836,7 +836,7 @@
    "verified": false,
    "answer": null,
    "tier": null,
-   "reason": "unknown_relation",
+   "reason": "ambiguous_relation",
    "correct": null
   },
   {
@@ -964,7 +964,7 @@
    "verified": false,
    "answer": null,
    "tier": null,
-   "reason": "unknown_relation",
+   "reason": "ambiguous_relation",
    "correct": null
   },
   {
@@ -988,7 +988,7 @@
    "verified": false,
    "answer": null,
    "tier": null,
-   "reason": "unknown_relation",
+   "reason": "ambiguous_relation",
    "correct": null
   },
   {
@@ -1468,7 +1468,7 @@
    "verified": false,
    "answer": null,
    "tier": null,
-   "reason": "unknown_relation",
+   "reason": "ambiguous_relation",
    "correct": null
   },
   {
@@ -1642,353 +1642,353 @@
  ],
  "time_sensitive_rows": [
   {
-   "question": "Who is the owner of Sheldonian Theatre?",
+   "question": "Where is the Vincent-Marie Viénot, Count of Vaublanc member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Who is the operator of USS Reading?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Who is the owner of Ban Krut Railway Station?",
    "verified": false,
    "tier": null,
    "reason": "retrieval_exhausted",
    "flat": false
   },
   {
-   "question": "Where is the headquarters location of Piaggio Aerospace?",
+   "question": "Which is the political party of Randy Minchew?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Who is the operator of USS Apache?",
    "verified": true,
    "tier": "as_of",
    "reason": null,
    "flat": false
   },
   {
-   "question": "Which is the political party of Peter Hyndman?",
+   "question": "Which is the political party of Sherman Adams?",
    "verified": false,
    "tier": null,
-   "reason": "unknown_relation",
+   "reason": "plan_does_not_cover_question",
    "flat": false
   },
   {
-   "question": "Who is the owner of Kunming–Yuxi–Hekou Railway?",
+   "question": "Where is the headquarters location of Tréma?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Which is the political party of Samuel C. Major?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Who is the employer of Alf Francis?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Gabi Lasri?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Where is the headquarters location of What Katie Did?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Who is the operator of Shin-Ishikiri Station?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Where is the headquarters location of Aio Wireless?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Melissa Lowther?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Where is the headquarters location of Parkinson's Foundation?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Which is the political party of Don Hanaway?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Where is the Henry Bromley member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Mario Videla?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Where is the Arthur Pardee member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Mihail Moraru?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Where is the John Pitt member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Where is the headquarters location of Swedish Ice Hockey Association?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Billy Heath?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Lars Winde?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Alberto Quadri?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Marcus Mailei?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Where is the Napoleon Cybulski member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Michalis Papazoglou?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Who is the owner of The Daily World?",
    "verified": false,
    "tier": null,
    "reason": "retrieval_exhausted",
    "flat": false
   },
   {
-   "question": "Where is the Edward Goodwin member of?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Jean Paul Ntsogo Boya?",
-   "verified": false,
-   "tier": null,
-   "reason": "unknown_relation",
-   "flat": false
-  },
-  {
-   "question": "Which is the political party of Pasquale Squitieri?",
-   "verified": false,
-   "tier": null,
-   "reason": "unknown_relation",
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Luciano Siqueira de Oliveira?",
-   "verified": false,
-   "tier": null,
-   "reason": "unknown_relation",
-   "flat": false
-  },
-  {
-   "question": "Who is the employer of Kennedy Graham?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "Where is the headquarters location of Nauka?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "Who is the employer of Cyrus Thomas?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "Which is the political party of Paul Joakim Sandøy?",
-   "verified": false,
-   "tier": null,
-   "reason": "unknown_relation",
-   "flat": false
-  },
-  {
-   "question": "Which is the political party of Tom Turnipseed?",
-   "verified": false,
-   "tier": null,
-   "reason": "unknown_relation",
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Dóra Stefánsdóttir?",
+   "question": "What is the sports team of Glenn Montgomery?",
    "verified": false,
    "tier": null,
    "reason": "entity_unresolved",
    "flat": false
   },
   {
-   "question": "Who is the owner of omnipresence?",
+   "question": "Which is the political party of Fernando Maura?",
    "verified": false,
    "tier": null,
-   "reason": "retrieval_exhausted",
+   "reason": "plan_does_not_cover_question",
    "flat": false
   },
   {
-   "question": "Where is the headquarters location of Carole Nash?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "Who is the operator of Lisbon Airport?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "Who is the operator of HMAS Geelong?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Ralph Klassen?",
+   "question": "What is the sports team of Emilio Bonifacio?",
    "verified": false,
    "tier": null,
    "reason": "entity_unresolved",
    "flat": false
   },
   {
-   "question": "Who is the employer of Sylvie Bérard?",
+   "question": "Where is the headquarters location of Media Asia Entertainment Group?",
    "verified": true,
    "tier": "as_of",
    "reason": null,
    "flat": false
   },
   {
-   "question": "What is the sports team of Rayko Stoynov?",
+   "question": "Which is the political party of Dawn Buckingham?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Who is the employer of Dick Swaab?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Where is the Jean Henri Pareau member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Who is the employer of Ivor Raymonde?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Belkacem Khadir?",
    "verified": false,
    "tier": null,
    "reason": "entity_unresolved",
    "flat": false
   },
   {
-   "question": "Where is the John Twisleton member of?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "Where is the headquarters location of Zurich Instruments?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "Where is the headquarters location of Cirque du Soleil?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "Where is the headquarters location of NXP Semiconductors?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "Which is the political party of Lev Yashin?",
-   "verified": false,
-   "tier": null,
-   "reason": "unknown_relation",
-   "flat": false
-  },
-  {
-   "question": "Who is the operator of Swissair Flight 111?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Larry Glueck?",
+   "question": "What is the sports team of Darío Fabbro?",
    "verified": false,
    "tier": null,
    "reason": "entity_unresolved",
    "flat": false
   },
   {
-   "question": "What is the sports team of Dávid Hegedűs?",
+   "question": "Which is the political party of Carl Karcher?",
    "verified": false,
    "tier": null,
-   "reason": "entity_unresolved",
+   "reason": "plan_does_not_cover_question",
    "flat": false
   },
   {
-   "question": "Who is the owner of Jawalamukhi Road railway station?",
-   "verified": false,
-   "tier": null,
-   "reason": "retrieval_exhausted",
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Rivers Guthrie?",
-   "verified": false,
-   "tier": null,
-   "reason": "entity_unresolved",
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Stephen Turnbull?",
-   "verified": false,
-   "tier": null,
-   "reason": "entity_unresolved",
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Russ Rebholz?",
-   "verified": false,
-   "tier": null,
-   "reason": "entity_unresolved",
-   "flat": false
-  },
-  {
-   "question": "Which is the political party of Harvey DeForest Hinman?",
-   "verified": false,
-   "tier": null,
-   "reason": "unknown_relation",
-   "flat": false
-  },
-  {
-   "question": "Who is the employer of Albrecht Goetze?",
+   "question": "Who is the employer of Debra Ann Livingston?",
    "verified": true,
    "tier": "as_of",
    "reason": null,
    "flat": false
   },
   {
-   "question": "Where is the headquarters location of Bat Motor Manufacturing Co.?",
+   "question": "Where is the headquarters location of Carrozzeria Barbi?",
    "verified": true,
    "tier": "as_of",
    "reason": null,
    "flat": false
   },
   {
-   "question": "Where is the University of Reading member of?",
+   "question": "Which is the political party of Yevgeniya Rudneva?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Which is the political party of Carl I. Hagen?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Which is the political party of Gilles Rocheleau?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Which is the political party of William Sesler?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Wilfred Fell?",
    "verified": false,
    "tier": null,
    "reason": "entity_unresolved",
    "flat": false
   },
   {
-   "question": "Where is the headquarters location of Bell Brand Snack Foods?",
+   "question": "Which is the political party of John Slidell?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Where is the Geoffrey Nuttall member of?",
    "verified": true,
    "tier": "as_of",
    "reason": null,
    "flat": false
   },
   {
-   "question": "Where is the headquarters location of Shanghai United F.C.?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "Which is the political party of William Rawson Shaw?",
+   "question": "Which is the political party of Samuel S. Ellsworth?",
    "verified": false,
    "tier": null,
-   "reason": "unknown_relation",
-   "flat": false
-  },
-  {
-   "question": "Who is the employer of Nikolaus von Dinkelsbühl?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "Where is the headquarters location of Pittsburgh Steam Engine Company?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Christian Benbennek?",
-   "verified": false,
-   "tier": null,
-   "reason": "entity_unresolved",
-   "flat": false
-  },
-  {
-   "question": "Which is the political party of Martin Smyth?",
-   "verified": false,
-   "tier": null,
-   "reason": "unknown_relation",
-   "flat": false
-  },
-  {
-   "question": "Where is the headquarters location of Dutch Systems Group?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Daylon Claasen?",
-   "verified": false,
-   "tier": null,
-   "reason": "entity_unresolved",
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Gerrit Pressel?",
-   "verified": false,
-   "tier": null,
-   "reason": "entity_unresolved",
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Kristoffer Skjerping?",
-   "verified": false,
-   "tier": null,
-   "reason": "entity_unresolved",
-   "flat": false
-  },
-  {
-   "question": "Who is the employer of Erich Keyser?",
-   "verified": true,
-   "tier": "as_of",
-   "reason": null,
-   "flat": false
-  },
-  {
-   "question": "What is the sports team of Bill James?",
-   "verified": false,
-   "tier": null,
-   "reason": "entity_unresolved",
+   "reason": "plan_does_not_cover_question",
    "flat": false
   }
  ]

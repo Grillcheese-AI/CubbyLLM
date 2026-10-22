@@ -53,8 +53,9 @@ def battery(src, hdc, wiki_names, n, rng):
     import loci_reader as lr
     forms = set_forms(src, hdc)
     rels = [r for r in lr.WIKIDATA if normalize(r) in hdc.relations() and forms.render(r, "X", "past")]
-    rows = hdc.db.execute(f"SELECT subj, rel, obj FROM facts WHERE rel IN ({','.join('?' * len(rels))}) ORDER BY RANDOM() LIMIT ?",
-                          (*rels, n * 30)).fetchall()
+    rows = hdc.db.execute(f"SELECT subj, rel, obj FROM facts WHERE rel IN ({','.join('?' * len(rels))}) ORDER BY rowid",
+                          rels).fetchall()
+    rows = rng.sample(rows, min(len(rows), n * 30))              # seeded: both phases ask the same questions
     out, seen = [], set()
     for s, r, o in rows:
         if len(out) >= n or normalize(s) in wiki_names or (s, r) in seen:
@@ -117,6 +118,8 @@ def main() -> None:
             learned += got
             rows.append({**q, "first_miss": bool(first.get("miss")), "path": rec.get("path"), "verified": bool(rec["verified"]),
                          "answer": rec.get("answer"), "reason": rec.get("reason"), "learned": len(got),
+                         "reads": [x.get("answer") for x in rec.get("loci") or []],
+                         "stored": (rec.get("refused") or {}).get("stored") if isinstance(rec.get("refused"), dict) else None,
                          "wrong": bool(rec["verified"] and normalize(rec.get("answer") or "") not in
                                        {normalize(l["fact"].split(" is the ", 1)[0]) for l in got} | {normalize(q["hdc_value"])}),
                          "wall_s": round(time.time() - t, 1)})
@@ -143,6 +146,7 @@ def main() -> None:
             stored = {normalize(t_.obj) for _f, t_ in loop.world.index._by_subj.get(normalize(q["entity"]), [])}
             rows.append({**q, "learned_in_ask_1": bool(p1.get(q["question"], {}).get("learned")), "path": rec.get("path"),
                          "verified": bool(rec["verified"]), "answer": rec.get("answer"), "reason": rec.get("reason"),
+                         "reads": [x.get("answer") for x in rec.get("loci") or []],
                          "source_calls": sum(src.asked.values()) - before,
                          "equals_stored": bool(rec["verified"] and normalize(rec.get("answer") or "") in stored),
                          "wall_s": round(time.time() - t, 1)})

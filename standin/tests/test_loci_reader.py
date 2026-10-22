@@ -106,3 +106,71 @@ def test_the_scene_is_the_shards_own_layout():
     n = len(ids)
     assert list(full[:n]) == ids and list(sroles[:n]) == roles                       # token for token, role for role
     assert [tuple(int(v) for v in places[i]) if roles[i] else None for i in range(n)] == [p if roles[i] else None for i, p in enumerate(pos)]
+
+
+class Birthday:
+    """A resolver that names a wording's label (the question forms' shape)."""
+    def relations(self, text):
+        return ["date of birth"] if normalize(text) == "birthday" else []
+
+
+def test_the_questions_own_word_reaches_the_reader_as_its_label():
+    """2026-10-22, the battery: 'Where was the administrative territorial entity of X?' handed the reader its wording,
+    which no shard relation is named by -- a miss for every located-in question. A resolver's one label is taken."""
+    from test_ask import FakeEmitter
+    world = TimedStore(STORE + ["1815-12-10 is the date of birth of Ada Lovelace"])
+    world.index.declare_relation("date of birth")
+    plans = {"What is the birthday of Ada Lovelace?": ("Ada Lovelace", ["birthday"])}
+    reader = Reader()
+    loop = AskLoop(FakeEmitter(plans), world=world, source=DictSource({}), lexicon=False, run_fn=exact_vm(), loci=reader)
+    loop.resolvers.insert(0, Birthday())
+    rec = loop.ask("What is the birthday of Ada Lovelace?")
+    assert reader.reads and reader.reads[0][1] == "date of birth"
+    assert rec.get("path") == "loci" and rec["verified"] and rec["answer"] == "1815-12-10"
+
+
+def test_several_values_at_one_address_are_a_miss_not_a_blend():
+    """One address holds one value: 'lawyer' and 'politician' written at the same place read 'lawyerician'."""
+    import loci_reader as lr
+    r = object.__new__(lr.LociReader)
+    r.torch, r.rel_index, r.rel_of = None, {"OCCUPATION": 0}, {"occupation": "OCCUPATION"}
+    out = r.read("Etta Rosales", "occupation", [("Etta Rosales", "occupation", "lawyer"), ("Etta Rosales", "occupation", "politician")])
+    assert out["miss"] and out["answer"] is None and "several values" in out["why"]
+
+
+def test_the_question_asks_at_the_address_the_facts_were_written_at():
+    """The loop's seed is normalized ('ada lovelace'); the scene's facts keep their spelling, and the address hashes
+    the name as written -- the question must ask with the facts' own spelling, or it reads another address."""
+    import loci_reader as lr
+    from make_fact_shard import address
+    r = object.__new__(lr.LociReader)
+    asked = []
+    r.torch, r.rel_index, r.rel_of = None, {"BORN_ON": 0}, {"date of birth": "BORN_ON"}
+    r.scene = lambda entity, relation, rows: (asked.append(entity), (_ for _ in ()).throw(StopIteration))[1]
+    try:
+        r.read("ada lovelace", "date of birth", [("Ada Lovelace", "date of birth", "1815-12-10")])
+    except StopIteration:
+        pass
+    assert asked == ["Ada Lovelace"] and address("Ada Lovelace", 0) != address("ada lovelace", 0)
+
+
+class Several(Reader):
+    def read(self, entity, relation, facts):
+        held = [o for _s, r, o in facts if self.shard_relation(r) == self.shard_relation(relation)]
+        if len(held) > 1:
+            self.reads.append((entity, relation, len(facts)))
+            return {"answer": None, "miss": True, "why": "several values for it: the walk's to choose"}
+        return super().read(entity, relation, facts)
+
+
+def test_several_stored_values_go_to_the_walk_without_a_fetch():
+    """The store holds two employers: the reader defers, and the walk decides on the store alone -- the fact was
+    learned once; asking the source again is what the next time must not do (0007's 0 source calls)."""
+    from test_ask import FakeEmitter
+    world = TimedStore(STORE + ["Acme is the employer of Ada Lovelace", "Babbage Ltd is the employer of Ada Lovelace"])
+    world.index.declare_relation("employer")
+    src = DictSource({"ada lovelace": ["Acme is the employer of Ada Lovelace"]})
+    plans = {"What is the employer of Ada Lovelace?": ("Ada Lovelace", ["employer"])}
+    loop = AskLoop(FakeEmitter(plans), world=world, source=src, lexicon=False, run_fn=exact_vm(), loci=Several())
+    rec = loop.ask("What is the employer of Ada Lovelace?")
+    assert src.calls == [] and rec["source_calls"] == 0 and not rec["verified"]

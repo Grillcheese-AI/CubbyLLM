@@ -89,14 +89,15 @@ sentences, which `build_hdc_sft` already parses back through `relation_template_
     - 17 time-sensitive relations hold 155,749 facts.
     - Against wikikg: 311 facts agree, 1,378 give another value for the same subject and relation (kept, both).
     - The world is 1.02 GB on disk and builds in 187 s.
-  - **Lookup: pass.** p50 0.20 ms, **p95 0.39 ms** (line: 50 ms) over 1,000 subjects. Process memory with the
+  - **Lookup: pass.** p50 0.17 ms, **p95 0.31 ms** (line: 50 ms) over 1,000 subjects. Process memory with the
     world mounted: **0.9 GB** (line: 4 GB).
   - **One-hop bench: passes.** 200 questions from the held-out domains as the set writes them:
     - **177 spoken, 177 correct, 0 wrong**; 5 of them said "as of".
-    - 23 refused: 7 retrieval exhausted, 6 unknown relation, 5 entity unresolved, 4 ambiguous, 1 no plan.
+    - 23 refused: 7 retrieval exhausted, 6 ambiguous relation, 5 entity unresolved, 4 ambiguous hop, 1 no plan.
     - 88 drawn prompts were skipped as not one-hop (nested prompts; see below).
-  - **Time-sensitive: passes.** 50 asked in the present: **0 said flat**, 22 said "as of 2019", 28 refused
-    (14 entity unresolved, 10 unknown relation, 4 retrieval exhausted).
+  - **Time-sensitive: passes.** 50 asked in the present: **0 said flat**, 21 said "as of 2019", 29 refused
+    (14 entity unresolved, 13 not covered by the plan, 2 retrieval exhausted). The final run is on the emitter of
+    order 0007's report (a label it cannot name back is bound as the label).
   - **The tense decides:** "Who was … in 2019?" is answered from the snapshot. Another year is refused
     (`time_mismatch`), and the present gets "as of" (test).
 - **Not verified here:** a live refresh on ask (the API route exists for labels; a fact refresh is not wired, so a

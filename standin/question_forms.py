@@ -230,8 +230,11 @@ class TemplateEmitter:
         if p is None:
             return "no plan\n"
         seed, rel, _tense = p
-        said = self.forms.wording(prompt)                    # the question's own word, as the serving emitter binds it --
-        if said and normalize(rel) != f"{normalize(said)} of":  # unless it is the label without its own 'of' ("the instance
-            rel = said                                      # of X" asks 'instance of', not the wiki world's 'instance')
+        # the question's own word, as the serving emitter binds it ("born") -- but only where the forms translate it
+        # back to this label; else the label itself: "the instance of X" asks 'instance of', not the wiki world's
+        # 'instance', and "the administrative territorial entity of X" no resolver could name back (2026-10-22)
+        said = self.forms.wording(prompt)
+        if said and normalize(rel) != f"{normalize(said)} of" and rel in self.forms.relations(said):
+            rel = said
         return ("function plan(): str {\n" + f'    bind frame, SEED, "{seed}";\n' + f'    bind frame, HOP1, "{rel}";\n'
                 + "    return recover(frame, SEED);\n}\n")

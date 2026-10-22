@@ -1,5 +1,5 @@
 # 0007 — Don't know → look it up once from a verified source → know it next time, through the loci path
-status: in progress
+status: review
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("if it doesn't know it needs to find the fact from a
 verified source online with the one-shot learning; next time it will know") · hypothesis: H-K10 (+ the ask loop)
 
@@ -73,10 +73,61 @@ and that is the "don't know" signal. Nothing connects the two yet.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
+- **Commits:** `039278d` (the reader in the loop, the battery), and this report's commit (five fixes the battery
+  found, below).
 - **Files:**
+  - `standin/loci_reader.py`: `LociReader` (run 5's 450M on CPU, the `make_fact_shard --lead` scene, greedy pieces
+    under the copy's gate), `relation_of`, `through_loci`, `NoSource`.
+  - `standin/ask.py` (`loci=`; `learn(src)`).
+  - `standin/serve_api.py` (`--loci`).
+  - `standin/question_forms.py` (the emitter binds a label it cannot name back).
+  - `validation/bench_loci_learn.py`.
+  - Tests: `standin/tests/test_loci_reader.py` (9).
 - **Tests:**
-- **Measured:**
-- **Not verified here:**
-- **Found on the way:**
+  - A reading equal to the store's value is spoken with no source called; one that differs is refused.
+  - A miss is looked up once and read again under the same check; the next time, the trunk answers with no lookup.
+  - Without the reader the loop is what it was. The scene is the shard's layout, token for token and role for role.
+  - The question's own word reaches the reader as its label.
+  - Several values at one address are a miss, not a blend, and they go to the walk without a fetch.
+  - The question asks at the address the facts were written at.
+- **Measured** ([log](../../validation/logs/bench_loci_learn_2026-10-22.json); run 5's final checkpoint on CPU,
+  2 threads; 100 questions drawn by seed from the hdc world's Wikidata5M facts whose entity is outside the wiki
+  world, on relations the shard addressed, asked with the set's own templates):
+  - **Ask 1:**
+    - The reader reports a miss on **95/100** (line: ≥ 95%; the other 5 had their entity unresolved before a read).
+    - **34 spoken, 0 wrong**: the reader, after the lookup, read the stored value.
+    - Refused: 45 retrieval exhausted (Wikidata gave nothing for the relation), 8 ambiguous, 6 not covered by the
+      plan, 5 entity unresolved, 2 reader misses.
+    - The loop learned 766 facts for 47 entities.
+    - **Wikidata HTTP calls: 203** on the first run, 0 since (cached; line ~300). Wall time 0.7 s a question.
+  - **Ask 2, a new process with the persisted store:**
+    - 47 questions learned in ask 1. The reader answered 34 and **equals the stored value on 34/47 = 0.723
+      (line 0.80: fails)**. On the 38 whose relation holds one value, 34/38 = 0.89.
+    - 9 hold several values (two occupations, two districts): the reader defers to the walk, which refuses them as
+      ambiguous with no fetch. 3 never learned the asked relation in ask 1 (Wikidata gave others), and 1 reader miss.
+    - **0 mismatches, 0 wrong spoken.**
+    - **Source calls on the learned facts: 3** (line 0: fails narrowly). They are the 3 whose relation was not
+      learned, so a lookup is what they need; none is for a fact ask 1 stored.
+  - **Creative asks:** 30 (EN/FR); the reader read 0 times; routes talk 20 / reasoning 10, and 3 needed facts, with
+    the reader on as off (serve's routing never calls the reader).
+- **Not verified here:** the reader on GPU and on the 450M's training relations with dates (the hdc world has
+  none, so the battery's relations are country of citizenship, located-in, occupation, educated at, and a few
+  more). The serve stack with `--loci` live.
+- **Found on the way** (each fixed, each with a test). The first full battery spoke 0 and matched 0 of 49:
+  1. **The address hashes the name as written.** The loop's seed arrives normalized ("harpdog brown"), the facts
+     keep their spelling, so the question read another address and copied stray pieces ("Mut", "2022",
+     "enos" for Buenos Aires). The reader now asks with the store's own spelling.
+  2. **One address holds one value.** Several values written at the same address superimpose ("lawyer" +
+     "politician" read "lawyerician"). Several values are now a miss, and the walk chooses or refuses.
+  3. **The gate shut, the trunk kept writing.** "Spain American Footballer", "Cubaano": pieces are taken only
+     while the gate stays open.
+  4. **The question's own word.** "Where was the administrative territorial entity of X?" handed the reader a
+     wording no shard relation is named by. The emitter now binds the label whenever the forms cannot name the
+     wording back, and `through_loci` resolves a wording through the loop's resolvers.
+  5. **The battery drew its questions with SQL's unseeded RANDOM()**, so ask 2 asked other questions than ask 1.
+     It is now seeded.
 - **Questions:**
+  1. The ≥ 0.80 line counts multi-valued facts the reader is built to defer. Count it on single-valued facts
+     (0.89 here), or should the reader learn a convention for several values (write one, list the rest)?
+  2. The 3 lookups in ask 2 are for relations ask 1 never got. Is a second lookup on a relation never learned
+     within the "0 source calls" line's intent?
