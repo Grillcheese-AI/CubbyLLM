@@ -1,5 +1,5 @@
 # 0016 — Sources stay internal: replies never name them; an audit view shows the whole chain
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("the WHERE it learned it should be for internal purposes
 only, we don't want to leak sources to users"; "if we have an audit it's available but not to regular users") ·
 **suggested before 0012 and 0007**, which start speaking book- and lookup-sourced facts
