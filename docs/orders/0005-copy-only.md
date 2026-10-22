@@ -1,6 +1,6 @@
 # 0005 — Train the copy alone on a frozen trunk (run 5)
-status: proposed
-written: 2026-10-21 by Cowork · approved: — · hypothesis: H-K10
+status: open
+written: 2026-10-21 by Cowork · approved: 2026-10-22 by Nick · hypothesis: H-K10
 
 ## Why
 Run 4 continued the whole 450M with the copy added. Far facts read 0.761 and villages 0.953, but the text mix
