@@ -81,6 +81,17 @@ trunk untouched, text identical), tests whether that context is worth a second r
 - French and Quebec affect beyond what the Teams corpus holds (`docs/fr_affect_pilot.md`).
 - Wiring either reader into the serve path.
 
+## Addendum 1 (2026-10-22, Cowork): a human-labelled test
+GoEmotions' train split (43,410 Reddit comments labelled by people, CC BY 4.0; path in `CLAUDE.local.md`) is the one
+affect set we hold with human text and human labels. It was dropped as the petal source (`docs/emotions_corpus.md`), but
+it tests valence sign with no mapping: the GoEmotions paper groups its 27 labels into positive, negative and ambiguous,
+plus neutral.
+- Sign test: rows whose labels all fall in positive, or all in negative. Neutral rows: report how many read with
+  |valence| > 0.5 (not counted as wrong-sign). Ambiguous and mixed rows: skip.
+- Report it in part A (the Ear before and after) and in part B (head vs Ear: sign accuracy, confident wrong-sign count).
+  The gate stays on Warriner and Teams; on GoEmotions the head may not trail the Ear by more than 0.02.
+- Test only: never train on it. Reddit text: no example text in a committed file or log.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**
