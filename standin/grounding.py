@@ -79,6 +79,13 @@ _INSTRUCTION = re.compile(r"own words|first person|short sentence|keeping every|
                           re.I)
 
 
+_NUM = re.compile(r"-?\d+")
+
+
+def numbers(text: str) -> list[int]:
+    return [int(x) for x in _NUM.findall(text)]
+
+
 def split_mood(line: str) -> tuple[str, str]:
     """'(at ease) Pellet 6/12, nice.' -> ('(at ease) ', 'Pellet 6/12, nice.'); no tag -> ('', line)."""
     m = _MOOD_TAG.match(line)
@@ -161,7 +168,6 @@ def grounded_ok(record_line: str, text: str, facts, learned: str = "", slack: in
     A sentence that fails is refused, not repaired: the host then states the
     record flatly. A refusal is a result; a made-up thought is a defect."""
     from identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
-    from forge import numbers
     if not text or "?" in text or _ECHO.search(text) or has_non_latin(text):
         return False
     if _COPY.search(text):
@@ -240,7 +246,6 @@ def reply_ok(record_line: str, heard: str, text: str, facts, learned: str = "", 
     ghosts when there are two. A made-up reassurance is worse than a made-up
     thought, because somebody acts on it."""
     from identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
-    from forge import numbers
     if not text or _INSTRUCTION.search(text) or has_non_latin(text):
         return False
     if _COPY.search(text):
@@ -278,7 +283,6 @@ def rephrase_ok(line: str, text: str, facts) -> bool:
     instruction, no second person, no question back, and at most ONE content
     word the host line did not have — the live trace's failures were invented
     meaning around kept numbers ('6 grains weighing 12 grams', '7 fingers')."""
-    from forge import numbers
     from identity import has_non_latin, is_identity_reply, is_model_guard, voice_ok
     if not text or "?" in text or _ECHO.search(text) or has_non_latin(text):   # "建筑师: 8/15, nice." (Qwen arm, 2026-09-04)
         return False

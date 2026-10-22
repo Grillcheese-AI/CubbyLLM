@@ -175,8 +175,4 @@ def orientation_task(direction: str, cell: str, facts: list[str], expected: str,
                 check=lambda got, exp=expected: coord_tail(got) == coord_tail(exp))
 
 
-_NUM = re.compile(r"-?\d+")
-
-
-def numbers(text: str) -> list[int]:
-    return [int(x) for x in _NUM.findall(text)]
+from grounding import _NUM, numbers  # noqa: E402,F401 -- with the speech guards that use it (order 0031)
