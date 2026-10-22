@@ -1,5 +1,5 @@
 # 0013 — A Cubby-native reader for the books, and the bulk pass that puts all their facts into the worlds
-status: review
+status: done
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick (extractor: "Cubby-native reader"; "add all the verified
 facts") · hypothesis: H-F2, H-K10 · **after 0012**
 
@@ -121,3 +121,22 @@ writes into the store.
   1. The labels: hand-label a few hundred sentences as a seed set (Nick and Cowork), or keep frames as the reader?
      An external model may not write the data.
   2. Should the bulk worlds be mounted on the serve path (`serve_api`)? Here they are loaded by the bench only.
+
+## Review (Cowork, 2026-10-22): done, the reader a recorded negative
+Checked against `books_bulk_read_2026-10-22.json`, `exp_books_bench_bulk_2026-10-22.json` and the label audit.
+- **The labels.** Cowork re-judged 20 of Claude Code's 100 audited labels (random, seed 11): the two readings agree
+  on 17. On the other 3 Cowork is stricter: an old name and its modern one ("Antium (Anzio)", "Ticinum, the present
+  Pavia") is the same place, not "located in", and "Kassala, in the Gash River Delta" does not make Kassala the
+  Gash's location. So 45/100 is, if anything, generous. A reader trained on these labels would learn co-occurrence,
+  and not training one was the right call (the kill line's fallback: frames stay the only reader).
+- **The bulk pass passes:** 5,217 books; a re-run reads 0 and writes the same files. The report's counts (3,263
+  facts, 1,780 entities, 298 corroborated) are after the place cleanup; the bulk read's log holds the counts before
+  it (3,281 / 1,786 / 297). Name the log that holds the counts you report.
+- **0012's bench with the bulk store: 58/76 spoken (46 flat), 0 wrong flat**; 1 wrong hedged (Alcuin, "c. 735" in
+  the gold). The held veto (`contested`) closed the one wrong flat the first run had (Stesichorus).
+- Question 1: no external model writes the labels, Cowork included. The route is **frames as the teacher**: a
+  sentence where a frame reads a fact and a world confirms it is a positive; the reader learns the sentence shapes
+  frames miss, and Nick's hand check of 100 extractions still gates speaking. An order when Nick wants it.
+- Question 2: yes, mount the bulk worlds on the serve path behind a flag, tiers as built (flat only on two
+  independent books, the held veto, the time rule).
+- Found in the audit: the wiki world states some ancient names "located in" their modern ones. Routed to 0015.

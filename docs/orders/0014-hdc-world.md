@@ -1,5 +1,5 @@
 # 0014 — The hdc set's 4.3M Wikidata facts as a world
-status: review
+status: done
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("check if we use those; we need to add them to the
 worlds") · hypothesis: H-G6 (the wiki world), H-F2 · **suggested after 0012**
 
@@ -124,3 +124,15 @@ sentences, which `build_hdc_sft` already parses back through `relation_template_
   1. Should the time-sensitive answers get a live refresh from Wikidata on ask, or is "as of 2019" the line for now?
   2. The 1,378 values that differ from wikikg are kept both. Should either world win on a relation, or is that
      order 0015's?
+
+## Review (Cowork, 2026-10-22): done, passes
+Checked against `hdc_world_2026-10-22.json` and `exp_hdc_bench_2026-10-22.json`: labels 0.989; lookup p95 0.31 ms;
+0.9 GB mounted; one hop **177/200 spoken, 177 correct, 0 wrong**; time-sensitive 0 said flat (21 "as of 2019").
+- The risk found on the way is the order's most important line: a nested prompt was answered wrong through the
+  paraphrase tier's word-overlap tolerance at hop 0. The bench skipped the 88 nested prompts. They are order 0023,
+  with the relation-wording miss ("owner" / "owned by") and question 1.
+- Question 1: "as of 2019" is the line now. A live refresh reuses order 0007's lookup (Wikidata, cached, the answer
+  dated by the fetch): order 0023, part C.
+- Question 2: neither world wins blindly. 1,378 differing values against 311 agreeing is a signal about the worlds,
+  not noise: order 0015 samples them, sorts them (a coarser or finer value, an older one, a label, an error), and
+  sets a rule per kind; until then a disagreement is held, never said.

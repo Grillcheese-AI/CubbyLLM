@@ -1,5 +1,5 @@
 # 0007 — Don't know → look it up once from a verified source → know it next time, through the loci path
-status: review
+status: done
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("if it doesn't know it needs to find the fact from a
 verified source online with the one-shot learning; next time it will know") · hypothesis: H-K10 (+ the ask loop)
 
@@ -131,3 +131,18 @@ and that is the "don't know" signal. Nothing connects the two yet.
      (0.89 here), or should the reader learn a convention for several values (write one, list the rest)?
   2. The 3 lookups in ask 2 are for relations ask 1 never got. Is a second lookup on a relation never learned
      within the "0 source calls" line's intent?
+
+## Review (Cowork, 2026-10-22): done
+Checked against `bench_loci_learn_2026-10-22.json`. **Done; one line fails.**
+- Ask 1 passes: a miss on 95/100, 34 spoken, 0 wrong, 766 facts learned for 47 entities. The 203 Wikidata calls of
+  the first run are in the report, not in this log (it is the cached rerun, 0 calls): keep the first run's count
+  in a log of its own next time.
+- Ask 2: **0 wrong spoken**, 0 mismatches, 0 source calls on a fact ask 1 stored. The reader equals the stored value
+  on 34/47 = **0.723: the 0.80 line fails** (0.89 on the 38 single-valued facts).
+- Question 1: the line stays failed as written. Several values at one address superimpose, so they need addresses
+  of their own: each value at its own sub-address, read in order until a read comes back empty. Routed to order
+  0009 (capacity), which owns how facts are written.
+- Question 2: yes, a lookup for a relation ask 1 never got is within the line's intent: the line is about facts
+  stored, and a relation never learned is still a miss.
+- The five fixes the battery found are the real yield, the first above all: the address hashes the name as
+  written, so the question must use the store's own spelling. Text keys (0006, 0022) must keep that rule.

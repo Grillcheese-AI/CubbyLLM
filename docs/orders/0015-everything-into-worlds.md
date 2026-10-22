@@ -92,6 +92,13 @@ From order 0012's review: `standin/time_rule.py` reads the books' witnesses. It 
 facts: an undated value of a relation in `CHANGES` (a spouse, a capital, a head of state) is said "at one point" or
 carries the world's "as of", never flat as if current. Report how many facts per world it touches.
 
+## Addendum 3 (Cowork, 2026-10-22): when two worlds disagree
+Order 0014 found 1,378 facts where the hdc world and the wiki world give another value for the same subject and
+relation, against 311 that agree. Sample 50, sort them (coarser or finer, older, a label, an error), and set a rule
+per kind; until then a disagreement is held, never said. Order 0013's audit also found the wiki world stating an
+ancient name "located in" its modern one ("Antium" in "Anzio"): an identity, not a location. Count those and map
+them to a same-place relation when the world is mounted.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**

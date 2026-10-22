@@ -69,6 +69,12 @@ host can add a fact straight into the state: 10,000 facts load in milliseconds.
 - Growing the host store itself, a Wikidata ingestion, which needs Nick's yes for the download. Free-text keys
   (0006). Consolidation into weights.
 
+## Addendum (Cowork, 2026-10-22): several values for one fact
+Order 0007 found that several values written at one address superimpose ("lawyer" + "politician" read
+"lawyerician"); today the reader defers them to the walk. This order owns how facts are written: give each value
+its own sub-address (the fact's key bound with a value index), read in order until a read comes back empty, and
+measure it on 0007's multi-valued facts (9 of 47 in its battery).
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**
