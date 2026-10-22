@@ -1,6 +1,6 @@
 # 0008 — Creativity over known facts: mix them into hypotheses, test them, keep what is confirmed; art stays free
-status: proposed
-written: 2026-10-22 by Cowork · approved: — · hypothesis: H-K10 with H-A13 (skill library) and `standin/hypothesis.py`
+status: open
+written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick · hypothesis: H-K10 with H-A13 (skill library) and `standin/hypothesis.py`
 
 ## Why
 Nick, 2026-10-22: "we need to ensure the creativity cortex is still working: while Cubby knows the facts it can
