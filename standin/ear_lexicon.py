@@ -19,6 +19,8 @@ from pathlib import Path
 
 import numpy as np
 
+__wiring__ = "STANDALONE"   # optional, under ear.Ear(lexicon=...)
+
 DEFAULT = "minishlab/potion-retrieval-32M"
 
 

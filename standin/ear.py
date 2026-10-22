@@ -1,6 +1,6 @@
 """ear — what a heard sentence is worth, good or bad, learned by contrast.
 
-Wired: NOT YET in the serve path; BlockWorld's Cubby hears through it (`--hearing`).
+Wired: NOT YET in the serve path; a client's Cubby hears through it (`--hearing`).
 Nothing in cubbyllm/ imports this.
 
 ONE DIRECTION IN A HYPERVECTOR SPACE. A sentence is coded as the bundle of
@@ -53,7 +53,7 @@ from pathlib import Path
 
 import numpy as np
 
-__wiring__ = "BlockWorld --hearing"
+__wiring__ = "STANDALONE"   # hearing: the ear the chat turn may consult
 
 DIM = 8192
 TRI_W = 0.15          # letter trigrams count less than words: spelling, not meaning
