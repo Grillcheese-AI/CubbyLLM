@@ -213,3 +213,4 @@ validation/logs/history_graph_v21.assemble.json
 CLAUDE.local.md
 docs/worlds_manifest.local.tsv
 docs/*.local.md
+docs/*.local.tsv

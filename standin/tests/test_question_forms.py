@@ -48,9 +48,9 @@ def test_the_hdc_templates_come_in_three_tenses(tmp_path):
     csv = tmp_path / "relation_template_mapping.csv"
     csv.write_text("relation,template,edited_relation,noun_template\n"
                    "part of,To which {relation} does {subject} belong?,parent entity,the {relation} {subject} belongs to\n"
-                   "spouse,Who is the {relation} of {subject}?,,the {relation} of {subject}\n", encoding="utf-8")
+                   "employer,Who is the {relation} of {subject}?,,the {relation} of {subject}\n", encoding="utf-8")
     forms = load_csv(str(csv))
-    assert "To which parent entity did {S} belong?" in forms["part of"][1]["past"] and "spouse" not in forms
+    assert "To which parent entity did {S} belong?" in forms["part of"][1]["past"] and "employer" not in forms
     f = Forms(forms)
     assert f.parse("To which parent entity will Burgundy belong?") == ("Burgundy", "part of", "future")
 

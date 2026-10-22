@@ -287,16 +287,39 @@ def facts_from_triples(triples, inverse: bool = True) -> list[str]:
     return out
 
 
+_NOT_A_NAME = re.compile(r"<[^>]*(?:class |object at )|^_+$")
+MISSPELLED = {"SP0USE_OF": "SPOUSE_OF"}                       # a zero for the O
+
+
+def hygiene(triples) -> tuple[list, dict]:
+    """The graph's own debris, dropped or mended as a world is mounted (order 0015, from 0011's finding): a fact whose
+    end is a Python repr (`<class 'wikikg.relations.X'>`, `<__main__.DynamicRelation object at 0x...>`) or a bare
+    `_` is no fact; a known misspelled relation takes its spelling. -> (the triples, the counts)."""
+    out, dropped, mended = [], 0, 0
+    for s, r, o in triples:
+        if _NOT_A_NAME.search(str(s)) or _NOT_A_NAME.search(str(o)):
+            dropped += 1
+            continue
+        if r in MISSPELLED:
+            r, mended = MISSPELLED[r], mended + 1
+        out.append((s, r, o))
+    return out, {"dropped_not_a_name": dropped, "relations_respelled": mended}
+
+
 def wiki_world(path: str | None = None, triples=None, inverse: bool = True, name: str = "wiki"):
     """A `FactStore` over the whole graph: lookup-first through its TripleIndex, IDF-overlap fallback (no cosine
-    encoder at this size). ~20 s and ~0.5 GB for the full graph with inverses."""
+    encoder at this size). ~20 s and ~0.5 GB for the full graph with inverses. Mounted through `hygiene`; its counts
+    are the store's `hygiene`."""
     from worlds import FactStore
     if triples is None:
         if path is None:
             ensure_data()
             path = TRIPLETS
         triples = load_triples(path)
-    return FactStore(facts_from_triples(triples, inverse=inverse), name=name)
+    triples, counts = hygiene(triples)
+    store = FactStore(facts_from_triples(triples, inverse=inverse), name=name)
+    store.hygiene = counts
+    return store
 
 
 def chain_questions(paths, index, n: int, seed: int = 0, max_scan: int | None = None) -> list[dict]:

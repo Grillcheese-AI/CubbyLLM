@@ -60,6 +60,10 @@ FORMS: dict[str, tuple[str, dict[str, list[str]]]] = {
                         "present": ["When does {S} reign?"], "future": ["When will {S} reign?"]}),
     "head of state": ("state", {"past": ["Who ruled {S}?", "Who was the ruler of {S}?"],
                                 "present": ["Who rules {S}?", "Who is the ruler of {S}?"], "future": ["Who will rule {S}?"]}),
+    # kin (order 0015: what a fiction world mostly holds; Wikidata's labels)
+    **{rel: ("state", {"past": [f"Who was the {rel} of {{S}}?"] + ([f"Who was {{S}}'s {rel}?"] if rel != "sibling" else []),
+                       "present": [f"Who is the {rel} of {{S}}?"], "future": [f"Who will be the {rel} of {{S}}?"]})
+       for rel in ("father", "mother", "spouse", "sibling", "child")},
 }
 _AUX = {"is": ("was", "will be"), "are": ("were", "will be"), "does": ("did", "will"), "do": ("did", "will"),
         "has": ("had", "will have")}
