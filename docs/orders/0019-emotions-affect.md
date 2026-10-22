@@ -92,6 +92,24 @@ plus neutral.
   The gate stays on Warriner and Teams; on GoEmotions the head may not trail the Ear by more than 0.02.
 - Test only: never train on it. Reddit text: no example text in a committed file or log.
 
+## Addendum 2 (2026-10-22, Cowork): conversation sets labelled by people
+Nick named three sets. Two carry human text with human labels; fetch the text files only, with Nick's yes.
+- **MELD** (Poria et al. 2019; github.com/declare-lab/MELD): 13,708 utterances in 1,433 dialogues from the TV series
+  *Friends*, each labelled by people with one of 7 emotions (anger, disgust, sadness, joy, neutral, surprise, fear) and a
+  sentiment (positive, negative, neutral). It is the in-context test this order is about: score each utterance with the
+  turns before it. Sentiment gives a valence-sign test; six of the emotions map one-to-one to petals, plus neutral.
+  - Report on its test split, Ear vs head. A second arm adds its train split to the head's training.
+  - Rights: the repository is GPL-3.0; the dialogue is the show's script, so research use only, and no example text
+    in any committed file or log.
+- **ESConv** (Liu et al. 2021, ACL; github.com/thu-coai/Emotional-Support-Conversation): 1,053 conversations, 31,410
+  utterances between crowdworkers in seeker and supporter roles, most about the seeker's real, current problems. Each
+  carries the seeker's emotion type (7), problem type (5) and a self-reported intensity, 1-5, before and after (mean
+  4.04 then 2.14). Test: the head's negative intensity on the seeker's opening turns against the before-score.
+  CC BY-NC 4.0, "academic research use only".
+- **ExTES** (Zheng et al. 2023, arXiv:2308.11584): 11,177 dialogues written by gpt-3.5-turbo from 87 human-built seeds
+  and reviewed by people. Model-written, so it is no evidence of how people feel (the lesson in
+  `validation/label_affect.py`); no license stated. Not used here.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**

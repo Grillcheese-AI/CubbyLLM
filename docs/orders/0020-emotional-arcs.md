@@ -43,7 +43,7 @@ We already hold what this needs: human word ratings (Warriner 2013 valence and a
     tau and p are chosen on calibration books, then frozen.
   - **Arc shape:** the valence arc resampled to 100 points, correlated with each of the six shapes: stored as features,
     never forced into one label.
-- `validation/exp_arcs.py`: builds arcs for the public-domain fiction we hold (the Gutenberg rows of the rights tracker)
+- `validation/exp_arcs.py`: builds arcs for the public-domain fiction we hold (the Gutenberg books we hold)
   and writes `validation/logs/arcs_<date>.json` (counts and scores only: no passage text).
 - What a fiction world stores: the window series (float16), chapter summaries, shift events (position, direction per
   dimension, effect size, persistence, probability, a type such as calm-to-threat or relief-after-crisis), the shape
@@ -91,6 +91,16 @@ We already hold what this needs: human word ratings (Warriner 2013 valence and a
 - Using arcs to change narration (pace, voice, ambience) or for content warnings.
 - Wiring the conversation tracker into the stand-in's afferent or the cube: report its read on the Teams corpus at most.
 - K2's use of the change probability as a write signal: a lead for that hypothesis, not built here.
+
+## Addendum 1 (2026-10-22, Cowork): human tests for the conversation tracker
+The same tracker over a conversation (report only, as above), on two sets fetched for order 0019 (Addendum 2):
+- **ESConv:** each seeker's self-reported intensity before and after the conversation (1-5) is a human label for "the
+  mood shifted". Report the correlation between the tracker's change over the seeker's turns and the self-reported
+  change, and whether a change point falls where the seeker's helpfulness ratings (given every two supporter turns)
+  rise.
+- **MELD:** emotion shifts between consecutive utterances of a scene, labelled by people: change-point precision and
+  recall at the utterance level.
+Both are for research use (CC BY-NC 4.0; a TV script): no example text in a committed file or log.
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->

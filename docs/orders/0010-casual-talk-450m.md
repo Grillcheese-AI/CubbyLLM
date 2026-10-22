@@ -70,6 +70,18 @@ host, checked as today.
 - The emitter seat. Multi-turn dialogue shape (H-E10 step 2, its own order). The loci copy inside prose: short fact
   blocks sit in-window, so attention copies them (run 1's in-window text read 0.987).
 
+## Addendum (2026-10-22, Cowork): an emotional-support family
+Nick named ESConv and ExTES.
+- **ESConv** (1,053 conversations; the supporters are crowdworkers trained on the ESC framework, the seekers describe
+  real problems; 8 strategy labels on supporter turns): human-written, so it qualifies as a candidate for a supportive
+  register, the supporter turns as targets. CC BY-NC 4.0 and "academic research use only": non-commercial, so ask Nick before any
+  row is used, as this order already requires.
+- **ExTES** (11,177 dialogues written by gpt-3.5-turbo from 87 human seeds): excluded by this order's own rule (no
+  model-written targets).
+- **Before any supportive family is served:** Cubby is not a therapist. One of ESConv's problem types is ongoing
+  depression; a reply to someone at risk must point to professional or crisis help, never role-play treatment. That
+  route is a prerequisite of serving this family, and it is not built in this order: ask Nick before training it.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**
