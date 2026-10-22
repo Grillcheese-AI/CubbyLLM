@@ -180,6 +180,10 @@ class Archive:
                     from news_gdelt import Gdelt, hdc_known
                     g = Gdelt(self.root / "gdelt", self.fetch, hdc_known(os.environ.get("CUBBY_HDC_WORLD")))
                     rows.append(g.poll(tuple(cfg.get("streams", ["en"]))))
+                    if g.known is not None:                   # the change marks of the last two days (news_trigger)
+                        from news_trigger import scan
+                        start = (dt.date.today() - dt.timedelta(days=2)).isoformat()
+                        rows.append({"feed": "changes", "new": len(scan(self.root, g.known, None, start))})
                 except Exception as e:                        # noqa: BLE001 -- the feeds' poll still counts
                     rows.append({"feed": "gdelt", "new": 0, "error": f"{type(e).__name__}: {str(e)[:100]}"})
             with (self.root / "_polls.jsonl").open("a", encoding="utf-8", newline="\n") as f:
