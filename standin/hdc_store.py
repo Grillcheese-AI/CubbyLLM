@@ -80,16 +80,22 @@ class HdcWorld:
         return lab[0] if lab else None
 
     def hop(self, plan, hop: int, entity: str | None) -> list:
+        """A hop as `TripleIndex.hop` serves it. A tail that names its entity by an alias or a Q-id ("rurtania") is
+        accepted as the tail with the entity's label: the set writes every entity by one of its aliases."""
         if hop == 0:
             cands, seen = [], set()
             for exact in (True, False):
                 for rel, ent in tail_splits(plan.tail):
+                    lab = self.label(ent)
+                    as_label = plan if not lab or normalize(lab) == ent else type(plan)(
+                        relations=plan.relations, tail=f"{rel} of {lab}", n_hop=plan.n_hop, answer_class=plan.answer_class)
                     for f, t in self._by_subj.get(ent):
                         same = normalize(t.rel) == normalize(rel)
-                        if f not in seen and (same if exact else self._rel_n.get(normalize(t.rel), 0) >= 2):
+                        if f not in seen and (same if exact else self._rel_n.get(normalize(t.rel), 0) >= 2) \
+                                and accepts(as_label, hop, entity, t):
                             cands.append((f, t)); seen.add(f)
-        else:
-            cands = self._by_subj.get(normalize(entity or ""))
+            return cands
+        cands = self._by_subj.get(normalize(entity or ""))
         return [(f, t) for f, t in cands if accepts(plan, hop, entity, t)]
 
     def relations(self) -> dict[str, int]:

@@ -83,6 +83,8 @@ def test_the_loop_answers_from_the_hdc_world_and_says_a_changing_value_as_of_its
     loop = _loop(hdc)
     rec = loop.ask("What is the capital of Ruritania?")
     assert rec["verified"] and rec["answer"] == "Strelsau" and "tier" not in rec        # a capital: said flat
+    rec = loop.ask("What is the capital of rurtania?")                                 # the set's own alias for it
+    assert rec["verified"] and rec["answer"] == "Strelsau"
     rec = loop.ask("Who is the head of state of Ruritania?")
     assert rec["verified"] and rec["tier"] == "as_of" and rec["reply"] == "As of 2019, Rudolf Rassendyll."
     rec = loop.ask("Who was the head of state of Ruritania in 2019?")
