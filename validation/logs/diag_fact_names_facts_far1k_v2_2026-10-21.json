@@ -1,0 +1,97 @@
+{
+ "old": "facts_far1k_lead",
+ "new": "facts_far1k_v2",
+ "documents": 20000,
+ "questions_new": 100152,
+ "same_written_addresses": 20000,
+ "same_asked_addresses": 20000,
+ "same_question_count": 20000,
+ "written_pieces": {
+  "old": 741267,
+  "new": 706581
+ },
+ "questions_with_any_doubled_word": {
+  "old": 27693,
+  "new": 174
+ },
+ "questions_with_of_of": {
+  "old": 27585,
+  "new": 6
+ },
+ "examples_old": [
+  [
+   "What is the partner of of La Argentinita?",
+   "Ignacio Sanchez Mejias"
+  ],
+  [
+   "What is the part of of Seventieth Anniversary Of Victory Plant?",
+   "Almaz Antey Air And Space Defence Corporation"
+  ],
+  [
+   "What is the has part of As You Like It?",
+   "Monsieur Le Beau"
+  ],
+  [
+   "What is the has part of Thanksgiving?",
+   "Harvest Festival"
+  ],
+  [
+   "What is the part of of Laws Regarding Incest?",
+   "Modern Societies"
+  ],
+  [
+   "What is the has part of Izu Seven?",
+   "Niijima"
+  ],
+  [
+   "What is the timeline event of Brett Hull?",
+   "bretthull birth"
+  ],
+  [
+   "What is the timeline event of Japanese Whisky?",
+   "japanesewhisky productionbegan1870"
+  ],
+  [
+   "What is the field of work of Wolfgang Gullich?",
+   "Sport Climbing"
+  ]
+ ],
+ "examples_new": [
+  [
+   "What is La Argentinita partner of?",
+   "Ignacio Sanchez Mejias"
+  ],
+  [
+   "What is Seventieth Anniversary Of Victory Plant part of?",
+   "Almaz Antey Air And Space Defence Corporation"
+  ],
+  [
+   "What is the has part of As You Like It?",
+   "Monsieur Le Beau"
+  ],
+  [
+   "What is the has part of Thanksgiving?",
+   "Harvest Festival"
+  ],
+  [
+   "What is Laws Regarding Incest part of?",
+   "Modern Societies"
+  ],
+  [
+   "What is the has part of Izu Seven?",
+   "Niijima"
+  ],
+  [
+   "What is the timeline event of Brett Hull?",
+   "Brett Hull Birth"
+  ],
+  [
+   "What is the timeline event of Japanese Whisky?",
+   "Japanese Whisky Production Began 1870"
+  ],
+  [
+   "What is the field of work of Wolfgang Gullich?",
+   "Sport Climbing"
+  ]
+ ]
+}

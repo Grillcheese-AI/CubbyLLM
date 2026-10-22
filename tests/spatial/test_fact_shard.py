@@ -1,6 +1,9 @@
 """The fact shard (validation/make_fact_shard.py): a fact's address is the subject's cell plus
 the relation's step, a name is a span up the z axis, the object's pieces and the question's
-``here`` and answer pieces are exactly what is placed, and the control places nothing."""
+``here`` and answer pieces are exactly what is placed, and the control places nothing. Names in
+readable words (``--names v2``, order 0011): relations, entities and event ids each render as
+specified, no question doubles a word over all 2,902 relations, and without v2 every name renders
+as it did."""
 from __future__ import annotations
 
 import os
@@ -14,7 +17,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(HERE)), "validation"))
 
 from cubbyllm.model.spatial import NO_PLACE  # noqa: E402
-from make_fact_shard import STEP, address, cell, document, render, step, words  # noqa: E402
+from make_fact_shard import STEP, WIKI, address, cell, doubled, document, question, render, step, words  # noqa: E402
 
 TOKENIZER = os.path.join(os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS"), "base450m", "grilly", "tokenizer.json")
 
@@ -111,3 +114,57 @@ def test_lead_makes_the_token_before_the_answer_ask_for_its_first_piece(tk):
         here = max(k for k in range(i) if roles[k] == 2 and tk.decode([int(ids[k])]).strip() == "here")
         assert roles_l[i] == 2 and tuple(places_l[i]) == tuple(places[here])     # it asks where here asks: piece 0
         assert tuple(places_l[i + 1]) == tuple(places[i + 1]) and roles_l[i + 1] == 2   # then the first piece
+
+
+def test_v2_renders_relations_entities_and_event_ids_as_words():
+    assert words("WORKS_FOR", True, True) == "works for" and words("VARIANT_OF", True, True) == "variant of"
+    assert words("KeikoMatsuzaka", v2=True) == "Keiko Matsuzaka" and words("HexabranchusSanguineus", v2=True) == "Hexabranchus Sanguineus"
+    assert [words(n, v2=True) for n in ("ABBA", "1 BCE", "FIDO2", "11.183N 4.283W")] == ["ABBA", "1 BCE", "FIDO2", "11.183N 4.283W"]
+    for event, said in {"FortPeckDam_ConstructionBegan1933": "Fort Peck Dam Construction Began 1933",
+                        "Rocket_UseInChina13thCentury": "Rocket Use In China 13th Century",
+                        "FortPeckDam_HighRelease2011": "Fort Peck Dam High Release 2011",
+                        "MatsWilander_1982FrenchOpenTitle": "Mats Wilander 1982 French Open Title",
+                        "JangSongthaek_ViceChairmanNDC_End": "Jang Songthaek Vice Chairman NDC End",
+                        "VietnameseBoatPeople_HoaExodus1978_1979": "Vietnamese Boat People Hoa Exodus 1978 1979",
+                        "33.7714N_72.7518E": "33.7714N 72.7518E", "_": "_"}.items():    # nothing left: the name as it is
+        assert words(event, v2=True) == said, event
+    # without v2, every name as every shard before 0011 has it
+    assert words("FortPeckDam_HighRelease2011") == "fortpeckdam highrelease2011" and words("ABBA") == "abba"
+    assert words("KeikoMatsuzaka") == words("KeikoMatsuzaka", v2=True) and words("WORKS_FOR") == words("WORKS_FOR", True, True)
+
+
+def test_no_question_doubles_a_word():
+    assert question("SpanishDancer", "VARIANT_OF", True) == "What is Spanish Dancer variant of?"     # not the inverse
+    assert question("Paris", "CAPITAL_OF", True) == "What is Paris capital of?"
+    assert question("CampAlbum", "ALBUM_OF", True) == "What is Camp Album the album of?"            # a shared word parted
+    assert doubled("What is Camp Album album of?", "Camp Album") == ["album"]
+    assert question("SpanishDancer", "VARIANT_OF") == "What is the variant of of Spanish Dancer?"      # v1, as built
+    assert question("KeikoMatsuzaka", "WORKS_FOR", True) == "What is the works for of Keiko Matsuzaka?"
+    assert doubled("What is the variant of of X?") == ["of"] and not doubled("What is the member of Duran Duran?", "Duran Duran")
+    assert not doubled("What is the author of Of Mice And Men?", "Of Mice And Men")      # the name's own word
+    if not os.path.exists(WIKI):
+        pytest.skip("no wiki world here")
+    import pyarrow.parquet as pq
+    rels = sorted(set(pq.read_table(WIKI, columns=["relation"]).column("relation").to_pylist()))
+    assert len(rels) == 2902
+    assert [r for r in rels if doubled(question("X", r, True))] == []
+    assert len([r for r in rels if doubled(question("X", r))]) == 646                  # every relation ending in "of", before
+
+
+def test_v2_places_the_readable_names_pieces(tk):
+    rels = {"TIMELINE_EVENT": 0, "VARIANT_OF": 1}
+    facts = [("FortPeckDam", "TIMELINE_EVENT", "FortPeckDam_ConstructionBegan1933"),
+             ("SpanishDancer", "VARIANT_OF", "HexabranchusSanguineus")]
+    qa = document(facts, rels, random.Random(0), 2, v2=True)
+    assert {q for q, _a, _at in qa} == {"What is the timeline event of Fort Peck Dam?", "What is Spanish Dancer variant of?"}
+    eos = tk.token_to_id("</s>")
+    ids, places, roles = render(tk, facts, rels, qa, "places", eos, 200, lead=True, v2=True)
+    text = tk.decode(ids.tolist(), skip_special_tokens=True)
+    assert text.startswith("Facts:\nFort Peck Dam timeline event Fort Peck Dam Construction Began 1933.\n")
+    o = tk.encode("Fort Peck Dam Construction Began 1933", add_special_tokens=False).ids
+    w = [i for i in range(200) if roles[i] == 1]
+    a0 = address("FortPeckDam", 0)
+    assert [int(ids[i]) for i in w[:len(o)]] == o                                         # the object's pieces write, in order
+    assert [tuple(int(v) for v in places[i]) for i in w[:len(o)]] == [(a0[0], a0[1], a0[2] + STEP * i) for i in range(len(o))]
+    v1 = render(tk, facts, rels, document(facts, rels, random.Random(0), 2), "places", eos, 200, lead=True)
+    assert "fortpeckdam constructionbegan1933" in tk.decode(v1[0].tolist(), skip_special_tokens=True)

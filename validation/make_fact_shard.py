@@ -31,7 +31,7 @@ Documents are padded with </s> to ``--doc`` tokens and listed in ``_align.json``
 tail, ``_holdout.json`` and ``_sizes.json`` follow ``make_spatial_shard.py``.
 
     python validation/make_fact_shard.py --cache <token_cache> [--docs 20000] [--doc 512]
-        [--mode places|text] [--tokenizer <bbpe128k tokenizer.json>] [--seed 0]
+        [--mode places|text] [--names v1|v2] [--tokenizer <bbpe128k tokenizer.json>] [--seed 0]
 """
 from __future__ import annotations
 
@@ -41,7 +41,6 @@ import hashlib
 import json
 import os
 import random
-import re
 import sys
 import time
 
@@ -52,17 +51,11 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
 
 from cubbyllm.model.spatial import NO_PLACE  # noqa: E402
+from fact_names import doubled, question, words  # noqa: E402
 
 MODELS = os.environ.get("CUBBY_MODELS", r"C:\CUBBY-TRAINED-MODELS")
 WIKI = os.path.join(ROOT, "standin", "data", "out", "wikikg", "triplets.parquet")
 ORIGIN, SIDE, STEP, GRID = 4096, 1024, 6, 54      # the lattice of entity cells, the step grid of relations (x, y)
-
-
-def words(name: str) -> str:
-    """``KeikoMatsuzaka`` -> ``Keiko Matsuzaka``; ``WORKS_FOR`` -> ``works for``."""
-    if "_" in name or name.isupper():
-        return name.replace("_", " ").lower()
-    return re.sub(r"(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])", " ", name)
 
 
 def cell(entity: str) -> tuple:
@@ -90,10 +83,10 @@ def load(rng: random.Random):
     return tri, rels
 
 
-def document(tri: list, rels: dict, rng: random.Random, n_ask: int) -> list:
+def document(tri: list, rels: dict, rng: random.Random, n_ask: int, v2: bool = False) -> list:
     """``(question, answer, address)`` for ``n_ask`` of the document's facts, plus the facts."""
     asked = rng.sample(tri, min(n_ask, len(tri)))
-    return [(f"What is the {words(r)} of {words(s)}?", words(o), address(s, rels[r])) for s, r, o in asked]
+    return [(question(s, r, v2), words(o, v2=v2), address(s, rels[r])) for s, r, o in asked]
 
 
 class Filler:
@@ -115,7 +108,8 @@ class Filler:
 WRITE, ASK = 1, 2                                   # role flags (train_base.Tokens): into the scene / reads there
 
 
-def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int, filler=None, lead: bool = False):
+def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int, filler=None, lead: bool = False,
+           v2: bool = False):
     """One document of exactly ``doc`` tokens, ``(ids, places, roles)``: the facts as sentences
     (an object's i-th token at the fact's address + 6 i z in ``places`` mode, WRITING into the
     scene), then the questions (``here`` at the address, each answer piece at the next piece's,
@@ -124,7 +118,8 @@ def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int,
     between the facts and the questions is real text that fills the document (``--far``). With
     ``lead`` the token right before each answer (the space after ``Answer:``) also asks for the
     first piece, so every token that predicts a piece asks for it (``--lead``; the far facts'
-    second 450M run read nothing on the first piece, 2026-10-20). The ids are unchanged."""
+    second 450M run read nothing on the first piece, 2026-10-20). The ids are unchanged. ``v2``: the
+    names as ``words(v2=True)`` renders them."""
     ids, pos, roles = [], [], []
 
     def put(text: str, at=None, span: bool = False):
@@ -139,9 +134,9 @@ def render(tk, facts: list, rels: dict, qa: list, mode: str, eos: int, doc: int,
 
     put("Facts:\n")
     for s, r, o in facts:
-        put(f"{words(s)} {words(r)} ")
+        put(f"{words(s, v2=v2)} {words(r, True, v2)} ")
         a0 = address(s, rels[r])
-        for i, tok in enumerate(tk.encode(words(o), add_special_tokens=False).ids):   # piece i at +6 i z
+        for i, tok in enumerate(tk.encode(words(o, v2=v2), add_special_tokens=False).ids):   # piece i at +6 i z
             ids.append(tok)
             pos.append((a0[0], a0[1], a0[2] + STEP * i) if mode == "places" else None)
             roles.append(WRITE if mode == "places" else 0)
@@ -194,6 +189,8 @@ def main() -> None:
     ap.add_argument("--far", action="store_true", help="real text between the facts and the questions fills the document")
     ap.add_argument("--filler", default="books,wikipedia,fineweb_edu", help="--far: the cache shards the text comes from")
     ap.add_argument("--lead", action="store_true", help="the token right before each answer asks for its first piece")
+    ap.add_argument("--names", choices=["v1", "v2"], default="v1",
+                    help="v2: names in readable words (event ids split, case kept; no 'of of'); v1: every shard before 0011")
     ap.add_argument("--name", default="", help="shard name (default: facts | facts_text, _far with --far)")
     ap.add_argument("--holdout-frac", type=float, default=0.02)
     ap.add_argument("--seed", type=int, default=0)
@@ -208,6 +205,7 @@ def main() -> None:
     filler = Filler(args.cache, args.filler, args.seed) if args.far else None
     ids_path, pos_path = os.path.join(args.cache, f"{name}.u32"), os.path.join(args.cache, f"{name}.pos.i16")
     n_q = n_placed = used = 0
+    v2, n_double, n_any, double = args.names == "v2", 0, 0, []
     role_path = os.path.join(args.cache, f"{name}.role.u8")
     with open(ids_path + ".part", "wb") as fi, open(pos_path + ".part", "wb") as fp, open(role_path + ".part", "wb") as fr:
         for d in range(args.docs):
@@ -216,8 +214,12 @@ def main() -> None:
             used += k
             if len(facts) < args.facts[0]:
                 raise SystemExit(f"the wiki world ran out of facts after {d:,} documents")
-            qa = document(facts, rels, rng, rng.randint(*args.questions))
-            ids, places, roles = render(tk, facts, rels, qa, args.mode, eos, args.doc, filler, args.lead)
+            qa = document(facts, rels, rng, rng.randint(*args.questions), v2)
+            ids, places, roles = render(tk, facts, rels, qa, args.mode, eos, args.doc, filler, args.lead, v2)
+            subj = {address(s, rels[r]): s for s, r, _o in facts}
+            for q, _a, at in qa:                                   # a word the template or the relation doubled
+                n_any, bad = n_any + bool(doubled(q)), doubled(q, words(subj[at], v2=v2))
+                n_double, double = n_double + bool(bad), double + [q] * (bool(bad) and len(double) < 10)
             fr.write(roles.tobytes())
             fi.write(ids.tobytes())
             fp.write(places.tobytes())
@@ -242,12 +244,16 @@ def main() -> None:
         json.dump(dd, open(p, "w", encoding="utf-8"), indent=1)
     rep = {"args": vars(args), "shard": name, "documents": args.docs, "facts_used": used, "relations": len(rels),
            "tokens": total, "train_tokens": total - hold, "holdout_tokens": hold, "questions": n_q,
-           "placed_tokens": n_placed, "seconds": round(time.time() - t0, 1)}
+           "placed_tokens": n_placed, "questions_with_a_doubled_word": n_double, "doubled_examples": double,
+           "questions_with_a_repeat_in_or_at_a_name": n_any,
+           "seconds": round(time.time() - t0, 1)}
+    rep["args"].update(cache="<token cache>", tokenizer=os.path.basename(args.tokenizer))     # no local path in a log
     logp = os.path.join(HERE, "logs", f"make_fact_shard_{name}_{_dt.date.today().isoformat()}.json")
     os.makedirs(os.path.dirname(logp), exist_ok=True)
     json.dump(rep, open(logp, "w", encoding="utf-8"), indent=1)
     print(f"{name}.u32: {args.docs:,} documents x {args.doc} tokens, {used:,} facts, {n_q:,} questions, "
-          f"{n_placed:,} placed tokens, {hold_docs} documents held out; wrote {logp}")
+          f"{n_placed:,} placed tokens, {hold_docs} documents held out, {n_double} questions with a doubled word; "
+          f"wrote {logp}")
 
 
 if __name__ == "__main__":
