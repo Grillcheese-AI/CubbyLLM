@@ -3,9 +3,10 @@ import { get, el, hasToken, isPublic, setPublic, onAudience } from './api.js';
 import * as home from './home.js';
 import * as chat from './chat.js';
 import * as system from './system.js';
+import * as plugins from './plugins.js';
 
-const NAMES = { home: 'Home', watch: 'World Watch', chat: 'Chat', worlds: 'Worlds', forecast: 'Forecast', mood: 'Mood', system: 'System', agents: 'Agents' };
-const views = { home: ['v-home', home.show], chat: ['v-chat', chat.show], system: ['v-system', system.show] };
+const NAMES = { home: 'Home', watch: 'World Watch', chat: 'Chat', worlds: 'Worlds', forecast: 'Forecast', mood: 'Mood', system: 'System', plugins: 'Plugins', agents: 'Agents' };
+const views = { home: ['v-home', home.show], chat: ['v-chat', chat.show], system: ['v-system', system.show], plugins: ['v-plugins', plugins.show] };
 
 async function emptyView(node, id) {
   const r = await get('/board/' + id);

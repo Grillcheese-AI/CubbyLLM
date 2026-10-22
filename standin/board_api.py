@@ -58,6 +58,8 @@ def internal_names(brain) -> set[str]:
     except Exception:                                    # noqa: BLE001 -- no manifest: the other names still count
         pass
     names |= {str(w) for w in (getattr(brain, "worlds", {}) or {})}
+    from plugins_serve import internal_names as plugin_internal
+    names |= plugin_internal(brain) | {f"plugin:{n}" for n in plugin_internal(brain)}
     return {n.lower() for n in names if n and len(n) > 3}
 
 
@@ -104,6 +106,11 @@ def handle(brain, path: str, who: str, ring_times=None):
         if rec is None:
             return 404, {"error": f"no record {rid}"}
         out = bd.journey(rec, (ring_times or (lambda: {}))(), getattr(loop, "_forms", None), who)
+    elif route.startswith("/board/plugins"):                 # order 0028: the Plugins view
+        from plugins_serve import board_get
+        out = board_get(brain, route, path.split("?", 1)[1] if "?" in path else "", who)
+        if out is None:
+            return 404, {"error": "unknown board path"}
     elif route in ("/board/watch", "/board/worlds", "/board/forecast", "/board/mood", "/board/agents"):
         sid = route.rsplit("/", 1)[1]
         out = {"section": sid, **bd.empty(next(o for s, _n, _d, o in bd.SECTIONS if s == sid))}

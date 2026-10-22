@@ -1,0 +1,164 @@
+{
+ "startup": {
+  "plugins": 50,
+  "errors": 0,
+  "median_ms": 69.8,
+  "max_ms": 108.2,
+  "imported": [],
+  "line_ms": 200
+ },
+ "units": {
+  "cases": 10,
+  "exact": 10
+ },
+ "envcanada_alerts": {
+  "in_effect": 53,
+  "refresh_s": 4.7,
+  "headlines": [
+   "special marine watch in effect",
+   "special weather statement in effect",
+   "yellow advisory - fog - in effect",
+   "yellow advisory - frost - in effect",
+   "yellow warning - blizzard - in effect",
+   "yellow warning - rainfall - in effect",
+   "yellow warning - wind - in effect"
+  ],
+  "asked_held_place": {
+   "place": "Avalon Peninsula Southeast",
+   "facts": [
+    "A yellow wind warning is in effect for Avalon Peninsula Southeast until 2026-10-23 05:25 UTC."
+   ]
+  },
+  "asked_invented_place": []
+ },
+ "gutenberg_plays": {
+  "ingest_s": 39.7,
+  "works": 1,
+  "facts": 1,
+  "examples_answered": 0,
+  "examples_routed": 0,
+  "not_answered": 0,
+  "rows": [
+   {
+    "kind": "example",
+    "question": "In Romeo and Juliet, who is Juliet's mother?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "example",
+    "question": "In Titus Andronicus, who is Lavinia's father?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "example",
+    "question": "In Macbeth, who is Malcolm's father?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "example",
+    "question": "In Romeo and Juliet, who is Tybalt's cousin?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "example",
+    "question": "In Antony and Cleopatra, who is Octavia's brother?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "example",
+    "question": "In She Stoops to Conquer, who is Tony Lumpkin's mother?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "example",
+    "question": "In Volpone, who is Celia's husband?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "example",
+    "question": "In An Enemy of the People, who is Petra's father?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "example",
+    "question": "In Troilus and Cressida, who is Hector's father?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "example",
+    "question": "In The Comedy of Errors, who is Adriana's husband?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "not",
+    "question": "what is the capital of Canada?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "not",
+    "question": "convert 3 feet to metres",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "not",
+    "question": "is there a storm warning in Lévis?",
+    "world": "plugin:envcanada-alerts",
+    "facts": []
+   },
+   {
+    "kind": "not",
+    "question": "who is the father of Queen Elizabeth II?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "not",
+    "question": "when was Shakespeare born?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "not",
+    "question": "who wrote Hamlet?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "not",
+    "question": "where is the Globe Theatre?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "not",
+    "question": "what is the population of London?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "not",
+    "question": "who is the president of France?",
+    "world": null,
+    "facts": []
+   },
+   {
+    "kind": "not",
+    "question": "how many plays did Shakespeare write?",
+    "world": null,
+    "facts": []
+   }
+  ]
+ }
+}

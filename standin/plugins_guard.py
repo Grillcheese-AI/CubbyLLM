@@ -78,8 +78,16 @@ def files(plugin) -> dict[str, str]:
     return out
 
 
+TEXT = (".py", ".md", ".json", ".txt", ".yaml", ".yml", ".csv", ".jsonl")
+
+
 def _sha(p: Path) -> str:
+    """A file's SHA-256; a text file's with its line endings as LF (a checkout that turns them to CRLF changes nothing
+    a reviewer reads, and must not block the plugin). Binary files (an adapter's weights) byte for byte."""
     h = hashlib.sha256()
+    if p.suffix.lower() in TEXT:
+        h.update(p.read_bytes().replace(b"\r\n", b"\n"))
+        return h.hexdigest()
     with open(p, "rb") as f:
         for chunk in iter(lambda: f.read(1 << 20), b""):
             h.update(chunk)

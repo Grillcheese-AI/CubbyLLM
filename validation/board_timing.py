@@ -49,9 +49,14 @@ def main() -> None:
     ap.add_argument("--records", type=int, default=200)
     ap.add_argument("--serve", type=int, default=0)
     ap.add_argument("--date", default=time.strftime("%Y-%m-%d"))
+    ap.add_argument("--plugins", default=None, help="plugin folders to mount on the stand-in (order 0028)")
     a = ap.parse_args()
     import serve_api
-    httpd = serve_api.ThreadingHTTPServer(("127.0.0.1", a.serve), serve_api.make_handler(stand_in(a.records)))
+    brain = stand_in(a.records)
+    if a.plugins:
+        from plugins_serve import mount
+        mount(brain, a.plugins)
+    httpd = serve_api.ThreadingHTTPServer(("127.0.0.1", a.serve), serve_api.make_handler(brain))
     if a.serve:
         print(f"board at http://127.0.0.1:{a.serve}/board (audit: ?token= the CUBBY_AUDIT_TOKEN)", flush=True)
         httpd.serve_forever()

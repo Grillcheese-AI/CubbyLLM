@@ -55,7 +55,8 @@ class Alerts:
                             if key not in latest or a["sent"] > latest[key]["sent"]:
                                 latest[key] = a
         stamp = dt.datetime.now(dt.timezone.utc).isoformat()
-        self.alerts = sorted((a for a in latest.values() if a["kind"] != "Cancel" and a["expires"] > stamp),
+        self.alerts = sorted((a for a in latest.values() if a["kind"] != "Cancel" and a["expires"] > stamp
+                              and in_effect(a["headline"])),
                              key=lambda a: (a["area"], a["event"]))
         self.ctx.log(f"plugin:envcanada-alerts: {len(self.alerts)} alerts in effect")
 
@@ -94,7 +95,7 @@ class Alerts:
         for place in self.places(question):
             for a in (x for x in self.alerts if x["area"] == place):
                 until = a["expires"][:16].replace("T", " ")
-                facts.append(f"A {a['headline'].replace(' - in effect', '')} is in effect for {place} until {until} UTC.")
+                facts.append(f"{said(a['headline'])} is in effect for {place} until {until} UTC.")
         return facts
 
     def panel(self) -> dict:
@@ -105,6 +106,25 @@ class Alerts:
             counts[a["headline"]] = counts.get(a["headline"], 0) + 1
         return {"count": len(self.alerts), "by_headline": counts,
                 "items": [{"area": a["area"], "headline": a["headline"], "until": a["expires"][:16]} for a in self.alerts[:10]]}
+
+
+def in_effect(headline: str) -> bool:
+    """An update that says the alert has ended is not one in effect (found live: "yellow advisory - fog - ended")."""
+    h = headline.lower()
+    return not re.search(r"\b(ended|terminé|terminée|cancelled|annulé)\b", h)
+
+
+def said(headline: str) -> str:
+    """"yellow warning - wind - in effect" -> "A yellow wind warning"; "special weather statement in effect" ->
+    "A special weather statement"."""
+    parts = [re.sub(r"\s*in effect$", "", x.strip()) for x in headline.split(" - ")]
+    parts = [x for x in parts if x]
+    if len(parts) >= 2 and len(parts[0].split()) == 2:
+        colour, kind = parts[0].split()
+        text = f"{colour} {parts[1]} {kind}"
+    else:
+        text = " ".join(parts)
+    return ("An " if text[:1].lower() in "aeiou" else "A ") + text
 
 
 def _utc(stamp: str | None) -> str:

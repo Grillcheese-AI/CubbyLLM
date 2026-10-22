@@ -281,6 +281,10 @@ def make_handler(brain):
                 self._send(404, {"error": "unknown path"})
 
         def do_POST(self):
+            if self.path.startswith("/board/plugins/") and getattr(brain, "board", False):   # order 0028: approve / pin
+                from plugins_serve import board_post
+                self._send(*board_post(brain, self.path.split("?", 1)[0], self._who()))
+                return
             if self.path == "/ask/feedback":             # the asker on one of the loop's records (AskLoop.feedback)
                 loop = getattr(brain, "ask_loop", None)
                 if loop is None:
@@ -320,14 +324,26 @@ def make_handler(brain):
                     if loop is None:
                         self._send(503, {"error": "no ask loop mounted: start serve_api with --ask"})
                         return
+                    if getattr(brain, "plugins", None) is not None:      # order 0028: wake what the question needs
+                        from plugins_serve import on_question
+                        on_question(brain, text)
                     rec = loop.ask(text, item=(str(req.get("item")) if req.get("item") else None),
                                    asker=(str(req.get("asker")) if req.get("asker") else None), choose=req.get("choose") or None)
+                    if getattr(brain, "plugins", None) is not None:
+                        from plugins_serve import on_question
+                        on_question(brain, text, rec)
                     self._send(200, _json_safe(rec if self._who() == "audit" else for_user(rec)))   # sources stay internal
                     return
                 harness = getattr(brain, "harness", None)   # --harness: the turn is a frame, a budget and a ledger row
+                woke = []
+                if getattr(brain, "plugins", None) is not None:  # order 0028: a turn's plugins (the talk role) first
+                    from plugins_serve import on_question
+                    woke = on_question(brain, text)
                 rec = (harness.turn(text, feedback=req.get("feedback")) if harness is not None
                        else brain.turn(text, feedback=req.get("feedback")))
                 rec.pop("raw", None)
+                if woke:
+                    rec["plugins"] = [f"plugin:{n}" for n in woke]
                 self._send(200, _json_safe(rec if self._who() == "audit" else for_user(rec)))
             except Exception as e:
                 self._send(500, {"error": str(e)[:300]})
@@ -408,6 +424,10 @@ def main():
                     help="mount the RSS date source for 'what happened in <date>' asks: headlines enter the "
                          "store as facts about the DATE, attributed to the publisher, through the same gate. "
                          "Only a `when` ask ever consults it.")
+    ap.add_argument("--plugins", default=os.environ.get("CUBBY_PLUGINS") or None,
+                    help="plugin folders, comma-separated (order 0028; standin/plugins_*.py): their front matter is read at "
+                         "start, a plugin loads when a question needs it; off when not given")
+    ap.add_argument("--plugin-idle", type=float, default=30.0, help="minutes before an unused plugin adapter unloads")
     ap.add_argument("--board", action="store_true",
                     help="serve the control board at /board (dashboard/board/, standin/board_api.py; order 0027); "
                          "off, every /board path answers 404")
@@ -480,6 +500,11 @@ def main():
             print(f"  every record appended to {args.history} (the sleep cycle's input)", flush=True)
         print(f"  POST /ask {{\"text\": ...}} -> the loop's record; watch it at http://{args.host}:{args.port}/panel", flush=True)
     brain.board = bool(args.board)
+    if args.plugins:
+        from plugins_serve import mount as mount_plugins
+        lp = mount_plugins(brain, args.plugins, args.plugin_idle, log=lambda m: print(m, flush=True))
+        print(f"plugins: {len(lp.index)} indexed from their front matter, {len(lp.loaded)} pinned and loaded, "
+              f"tau {lp.router.tau}", flush=True)
     if args.board:
         print(f"control board: http://{args.host}:{args.port}/board (add ?token=<audit token> for the audit view)", flush=True)
     if args.news_archive:
