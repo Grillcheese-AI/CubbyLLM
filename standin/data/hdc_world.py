@@ -57,6 +57,49 @@ WIKI = {"BORN_IN": "place of birth", "DIED_IN": "place of death", "BURIED_AT": "
 ONE_VALUED = {"place of birth", "place of death", "place of burial"}
 
 
+class Templates:
+    """relation_template_mapping.csv: a fact sentence is '<value> is <noun>', noun from noun_template with
+    {relation} filled (the edited label when there is one) and {subject} the entity."""
+
+    def __init__(self, path: str):
+        self.by_pre: dict[str, list] = collections.defaultdict(list)
+        nouns: dict[str, tuple] = {}
+        for r in csv.DictReader(open(path, encoding="utf-8")):
+            word = (r["edited_relation"] or r["relation"]).strip()
+            if word[:1].isupper() and word[1:].islower():
+                word = word.lower()                                # 'Predecessor' reads as a word, not a name
+            noun = r["noun_template"].replace("{relation}", word)
+            # two relations written to one sentence ('capital of' edited to 'capital' and 'capital' itself):
+            # the sentence says 'the capital of S', so it is read as the relation it names
+            if noun in nouns and not nouns[noun][1]:
+                continue
+            nouns[noun] = (r["relation"].strip(), r["edited_relation"].strip())
+        for noun, (label, _) in nouns.items():
+            pre, _, suf = noun.partition("{subject}")
+            self.by_pre[pre].append((suf, label, noun))
+
+    def parse(self, fact: str):
+        """-> (entity, label, value, noun) or None. The first ' is ' that a template matches; the longest
+        template there."""
+        start = 0
+        while True:
+            i = fact.find(" is ", start)
+            if i < 0:
+                return None
+            v, rem = fact[:i], fact[i + 4:]
+            words, best = rem.split(" "), None
+            for k in range(1, min(len(words), 9)):
+                pre = " ".join(words[:k]) + " "
+                for suf, label, noun in self.by_pre.get(pre, ()):
+                    if len(rem) > len(pre) + len(suf) and (not suf or rem.endswith(suf)):
+                        e = rem[len(pre):len(rem) - len(suf)]
+                        if best is None or len(pre) + len(suf) > best[0]:
+                            best = (len(pre) + len(suf), e.strip(), label, v.strip(), noun)
+            if best:
+                return best[1:]
+            start = i + 1
+
+
 def properties() -> dict[str, tuple[str, str]]:
     d = json.load(open(OUT / "wikidata_properties_en_fr.json", encoding="utf-8"))["properties"]
     return {p: ((v.get("label") or {}).get("en") or "", (v.get("label") or {}).get("fr") or "") for p, v in d.items()}
@@ -96,7 +139,6 @@ def entity_names():
 def read(src: pathlib.Path):
     """Every (s, r, o) the set states, deduplicated, and how many rows each kind came from."""
     import pyarrow.parquet as pq
-    from build_hdc_sft import Templates
     tpl = Templates(str(src / "relation_template_mapping.csv"))
     rows, n = set(), collections.Counter()
     for f in sorted(src.rglob("*.pq")):
