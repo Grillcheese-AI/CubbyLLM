@@ -334,3 +334,34 @@ set is now spent (it has been scored twice) and retired.
   Juliet's mother?" from "daughter to Capulet") is right. Composing kin (wife-of plus daughter-of) belongs to 0023.
 - **Talk on two bases:** today's talk adapter needs `base450m`, the emitter's trunk is `base450m_cont`, so the server
   keeps two bases. Retraining the talk adapter on `base450m_cont` (order 0010) would put both roles on one base.
+
+### After review 2 (2026-10-22): the second check built; the fresh held-out run waits for 0031
+- **The router is on:** the server's `--plugin-router` defaults to `minilm` (`serve_cli.py`, `plugins_serve.mount`);
+  `--plugin-router nearest` gives the earlier router. The library default (`Loader` with no `router`) is unchanged.
+- **The second check** (`standin/plugins_check.py`, called by `Loader.wake`). A plugin the router wakes now has to
+  claim the question before it loads:
+  - a source or world through its own `covers(question)`, asked on the object built but not mounted (building fetches
+    nothing);
+  - a facts world without `covers`, through its best fact's score at the worlds' `TAU`;
+  - an adapter (`talk`) only when the thalamus (`CubbyBrain.needs_facts`) says the turn needs no facts. With no
+    thalamus, it does not wake.
+
+  A plugin that declines is not counted and loads nothing. Why is kept:
+  - in `Loader.declined`;
+  - in the ask record's `plugins_declined` (internal: `audience.for_user` drops it);
+  - in the board's "which plugin would wake?" (`declined`, shown on the page).
+- **The alerts plugin's `covers`** claimed any weather word, so "what causes freezing rain?" scored 0.8. It now claims
+  an alert's own word (warning, watch, advisory, statement and their French), or a hazard with now (tonight, today,
+  in effect). On its own lines: 30/30 examples claimed, 1/30 not-lines ("what is the difference between a watch and a
+  warning?").
+- **Tests:** `standin/tests/test_plugins_check.py` (4):
+  - a source whose `covers` says no is built once, never mounted or asked, and not woken; one that says yes is mounted
+    without being built twice;
+  - `talk` declines a fact question ("needs facts") and wakes on "how are you";
+  - alerts declines "what causes freezing rain?" and its French, and claims a warning question;
+  - the board and the record name what declined.
+
+  `pytest tests standin/tests`: 1,189 passed; red only 0002's wiring test.
+- **Not run: the fresh held-out set** (`docs/0028_routing_heldout_v2.local.md`, unopened). Nick's note of 2026-10-22
+  pauses `standin/` work until order 0031 moves the plugins slice. This change was in progress and is committed. The
+  one held-out run comes after the move, on the moved code.

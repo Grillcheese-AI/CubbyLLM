@@ -39,7 +39,7 @@ PROVENANCE_FIELDS = ("learned", "evidence", "provenance", "sources", "passages",
 # internal working the user's JSON never carries: the thought graph (it records each hop's provenance), the store's
 # snapshot, the reasoning task (its facts' walk sources), the drafts not spoken, the route (a world's name)
 INTERNAL_FIELDS = ("graph", "store_snapshot", "task", "rejected", "offered", "route", "plugin", "guard", "hash",
-                   "plugins", "plugin_facts")
+                   "plugins", "plugin_facts", "plugins_declined")
 AUDIT_PATHS = ("/panel", "/brain", "/map", "/loop/events", "/loop/stream", "/events", "/audit/")
 _URL = re.compile(r"\bhttps?://\S+|\bwww\.\S+|\b[\w-]+(?:\.[\w-]+)*\.(?:com|org|net|edu|gov|io|fr|uk|de|info)\b", re.I)
 _CLAUSE = r"(?:\s*\((?:source|sources|via|from)\s*:?\s*{n}\)|,?\s*according to {n},?|\s*\(?\bsource\s*:\s*{n}\)?)"

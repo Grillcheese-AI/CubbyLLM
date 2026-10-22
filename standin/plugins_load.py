@@ -2,7 +2,8 @@
 
 ``Loader(index, ...)`` holds the front-matter index (``plugins_index``) and a router over the plugins' descriptions and
 examples (``plugins_route``). ``wake(question)`` loads, once, every plugin the question scores at or above ``tau`` for
-(and every pinned one), as its kinds say:
+(and every pinned one) that then claims it (``plugins_check``: a source's or world's own ``covers``, built but not yet
+mounted; for an adapter, the thalamus saying the turn needs no facts), as its kinds say:
 
 - ``source``: its class (``entry.source = "file.py:Class"``) built with a ``Ctx`` (``plugins_guard``); one that
   ``covers`` and ``answer``s (``worlds.Knows``) is mounted in the loader's own ``Worlds`` router, so its facts come
@@ -65,11 +66,15 @@ def _import(plugin, spec: str):
 
 class Loader:
     def __init__(self, index, brain=None, data_root=None, enc=None, tau: float | None = None, idle_min: float = 30.0,
-                 log=print, fetch=None, trunk=None) -> None:
+                 log=print, fetch=None, trunk=None, router: str | None = None, thalamus=None) -> None:
+        """``router``: ``plugins_route.make_router``'s kind (None: ``CUBBY_PLUGINS_ROUTER``); ``thalamus``: ``text ->
+        (needs facts, why)``, the brain's ``needs_facts`` when not given (an adapter wakes only on a turn without facts)."""
         self.index, self.brain, self.log, self.fetch, self.trunk = index, brain, log, fetch, trunk
         self.data_root = Path(data_root or os.environ.get("CUBBY_PLUGINS_DATA") or
                               Path(__file__).resolve().parent / "data" / "out")
-        self.router = make_router(index, enc=enc, tau=tau)          # CUBBY_PLUGINS_ROUTER picks the router
+        self.router = make_router(index, enc=enc, tau=tau, kind=router)   # None: CUBBY_PLUGINS_ROUTER picks it
+        self.thalamus = thalamus or getattr(brain, "needs_facts", None)
+        self.declined: dict[str, str] = {}                   # name -> why the last question woke it and it declined
         self.idle_s = float(idle_min) * 60
         self.knows = Worlds(tau=0.5)
         self.loaded: dict[str, dict] = {}                    # name -> {kinds: objects, at, used}
@@ -110,10 +115,16 @@ class Loader:
 
     # -- waking and loading -----------------------------------------------------------------------------------------
     def wake(self, question: str) -> list[str]:
-        """Load what the question needs; the names of the plugins it woke (loaded now or already)."""
-        woke = []
+        """Load what the question needs; the names of the plugins it woke (loaded now or already) -- each scored at
+        ``tau`` by the router and then claiming the question itself (``plugins_check.claims``)."""
+        from plugins_check import claims
+        woke, self.declined = [], {}
         for name, _s in self.router.wake(question, disabled=self.disabled):
-            if self.load(name):
+            ok, why, made = claims(self, name, question)
+            if not ok:
+                self.declined[name] = why
+                continue
+            if self.load(name, made):
                 woke.append(name)
         for name in woke:
             self.loaded[name]["used"] = time.time()
@@ -132,16 +143,22 @@ class Loader:
             return "pinned" if name in self.pinned else "loaded"
         return "idle"
 
-    def load(self, name: str) -> bool:
+    def cleared(self, p) -> str:
+        """"ok", or why the plugin may not run: its files not as approved, or its code failing the review."""
+        why = guard.status(p)
+        if why == "ok" and any(k in CODE_KINDS for k in p.kinds):
+            bad = guard.check(p)
+            why = "check: " + bad[0] if bad else "ok"
+        return why
+
+    def load(self, name: str, made: dict | None = None) -> bool:
+        """``made``: objects already built for the claim check (``plugins_check``), by kind, mounted as they are."""
         if name in self.loaded:
             return True
         if name in self.disabled or name not in self.index:
             return False
         p = self.index[name]
-        why = guard.status(p)
-        if why == "ok" and any(k in CODE_KINDS for k in p.kinds):
-            bad = guard.check(p)
-            why = "check: " + bad[0] if bad else "ok"
+        why = self.cleared(p)
         if why != "ok":
             self.refused[name] = why
             return False
@@ -149,7 +166,8 @@ class Loader:
         got = {}
         try:
             for kind in p.kinds:
-                got[kind] = getattr(self, f"_load_{kind}")(p, ctx)
+                pre = (made or {}).get(kind)
+                got[kind] = getattr(self, f"_load_{kind}")(p, ctx, *(() if pre is None else (pre,)))
         except Exception as e:                               # noqa: BLE001 -- a plugin that fails stays out, with why
             self.refused[name] = f"{type(e).__name__}: {str(e)[:200]}"
             self._drop(name, got)
@@ -159,8 +177,11 @@ class Loader:
         self.log(f"plugin {p.id} loaded ({', '.join(p.kinds)})")
         return True
 
-    def _load_source(self, p, ctx):
-        obj = _import(p, p.entry["source"])(ctx)
+    def make_source(self, p, ctx):
+        return _import(p, p.entry["source"])(ctx)
+
+    def _load_source(self, p, ctx, obj=None):
+        obj = obj if obj is not None else self.make_source(p, ctx)
         if hasattr(obj, "covers") and hasattr(obj, "answer"):
             obj.name, obj.domain = p.id, getattr(obj, "domain", p.description)
             self.knows.mount(obj)
@@ -175,7 +196,16 @@ class Loader:
         self.tools[p.name] = obj
         return obj
 
-    def _load_world(self, p, ctx):
+    def _load_world(self, p, ctx, world=None):
+        world = world if world is not None else self.make_world(p, ctx)
+        if isinstance(world, FictionWorld):
+            self.knows.mount(world)
+        elif self.brain is not None:
+            self.brain.mount(_Mount(p.id, {p.id: world}))
+        return world
+
+    def make_world(self, p, ctx):
+        """The world built (a fiction pack ingested once, or a facts file read), not yet mounted."""
         w = p.extra.get("world") or {}
         if w.get("route") == "fiction":
             from types import SimpleNamespace
@@ -191,15 +221,10 @@ class Loader:
             db = ctx.data_dir / "fiction" / "fiction.sqlite"
             if not db.exists():
                 raise FileNotFoundError(f"no pack to read (set {w.get('data_env')})")
-            world = FictionWorld(p.id, p.description, db)
-            self.knows.mount(world)
-            return world
+            return FictionWorld(p.id, p.description, db)
         if w.get("route") == "facts":
-            store = FactStore([json.loads(l)["fact"] for l in open(p.folder / w["file"], encoding="utf-8") if l.strip()],
-                              name=p.id)
-            if self.brain is not None:
-                self.brain.mount(_Mount(p.id, {p.id: store}))
-            return store
+            return FactStore([json.loads(l)["fact"] for l in open(p.folder / w["file"], encoding="utf-8") if l.strip()],
+                             name=p.id)
         raise ValueError(f"world route {w.get('route')!r}: fiction or facts")
 
     def _load_adapter(self, p, ctx):

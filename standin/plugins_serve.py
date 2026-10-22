@@ -34,12 +34,14 @@ def _trunk(brain):
     return None
 
 
-def mount(brain, dirs: str, idle_min: float = 30.0, log=print):
+def mount(brain, dirs: str, idle_min: float = 30.0, log=print, router: str | None = None):
+    """The loader on the brain. ``router``: ``plugins_route.make_router``'s kind (the server passes ``--plugin-router``,
+    "minilm" by default since 0028's review 2; None reads ``CUBBY_PLUGINS_ROUTER``)."""
     from plugins_index import discover
     from plugins_load import Loader
     idx = discover(dirs)
     enc = next((getattr(w, "enc", None) for w in (getattr(brain, "worlds", {}) or {}).values() if getattr(w, "enc", None)), None)
-    loader = Loader(idx, brain=brain, enc=enc, idle_min=idle_min, log=log, trunk=_trunk(brain))
+    loader = Loader(idx, brain=brain, enc=enc, idle_min=idle_min, log=log, trunk=_trunk(brain), router=router)
     brain.plugins = loader
     for name, why in sorted(idx.errors.items()):
         log(f"  plugin folder {name} not read: {why}")
@@ -85,6 +87,8 @@ def on_question(brain, text: str, rec: dict | None = None) -> list[str]:
         return []
     woke = loader.wake(text)
     if not woke:
+        if rec is not None and loader.declined:
+            rec["plugins_declined"] = {f"plugin:{n}": why for n, why in loader.declined.items()}
         return woke
     if rec is None:
         got = loader.ask(text) if loader.knows.by_name else {}
@@ -93,6 +97,8 @@ def on_question(brain, text: str, rec: dict | None = None) -> list[str]:
                                 "gate": [] if fiction or not got.get("facts") else admit(brain, got["world"], got["facts"])}
         return woke
     rec["plugins"] = [f"plugin:{n}" for n in woke]
+    if loader.declined:                                  # woken by the router, declined by the second check (audit only)
+        rec["plugins_declined"] = {f"plugin:{n}": why for n, why in loader.declined.items()}
     last = getattr(loader, "last_admitted", None)
     if last and last.get("facts"):
         rec["plugin_facts"] = last
@@ -145,8 +151,12 @@ def board_get(brain, route: str, query: str, who: str) -> dict | None:
         q = (urllib.parse.parse_qs(query).get("q") or [""])[0]
         hidden = internal_names(brain) if who != "audit" else set()
         scores = {n: round(s, 3) for n, s in loader.router.scores(q).items() if n not in hidden}
+        from plugins_check import claims
+        over = [n for n, s in scores.items() if s >= loader.router.tau and n not in loader.disabled]
+        checked = {n: claims(loader, n, q)[:2] for n in over}       # the second check, built but not mounted
         return {"question": q, "tau": loader.router.tau, "scores": dict(sorted(scores.items(), key=lambda x: -x[1])),
-                "would_wake": [n for n, s in scores.items() if s >= loader.router.tau and n not in loader.disabled]}
+                "would_wake": [n for n in over if checked[n][0]],
+                "declined": {n: why for n, (ok, why) in checked.items() if not ok}}
     return None
 
 

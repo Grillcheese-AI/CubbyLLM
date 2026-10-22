@@ -48,7 +48,8 @@ async function tryRouter(q, box) {
     ...Object.entries(b.scores || {}).map(([n, s]) => el('div', { class: 'step' },
       el('span', { class: 'sn' }, s >= b.tau ? '●' : '○'), el('div', {}, el('div', { class: 'st' }, n), el('div', { class: 'sd' }, s >= b.tau ? 'would wake' : 'stays asleep')),
       el('span', { class: 'sms mono' }, s.toFixed(3)))),
-    el('div', { class: 'small' }, (b.would_wake || []).length ? `Wakes: ${b.would_wake.join(', ')} (line ${b.tau})` : `Nothing wakes (line ${b.tau}): Cubby answers from what is mounted, or says it doesn't know.`));
+    el('div', { class: 'small' }, (b.would_wake || []).length ? `Wakes: ${b.would_wake.join(', ')} (line ${b.tau})` : `Nothing wakes (line ${b.tau}): Cubby answers from what is mounted, or says it doesn't know.`),
+    Object.keys(b.declined || {}).length ? el('div', { class: 'small' }, 'Over the line but declined: ' + Object.entries(b.declined).map(([n, w]) => `${n} (${w})`).join('; ')) : null);
 }
 
 export async function show(root) {

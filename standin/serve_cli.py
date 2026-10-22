@@ -75,6 +75,9 @@ def parser() -> argparse.ArgumentParser:
                     help="plugin folders, comma-separated (order 0028; standin/plugins_*.py): their front matter is read at "
                          "start, a plugin loads when a question needs it; off when not given")
     ap.add_argument("--plugin-idle", type=float, default=30.0, help="minutes before an unused plugin adapter unloads")
+    ap.add_argument("--plugin-router", choices=["minilm", "nearest"], default="minilm",
+                    help="which router wakes plugins (standin/plugins_route.py): 'minilm', the question encoder and a "
+                         "logistic head per plugin (order 0028 review 2), or 'nearest', the nearest example line")
     ap.add_argument("--board", action="store_true",
                     help="serve the control board at /board (dashboard/board/, standin/board_api.py; order 0027); "
                          "off, every /board path answers 404")
@@ -156,7 +159,8 @@ def boot(args, ap: argparse.ArgumentParser):
     brain.news_archive = args.news_archive              # the board's poller tile reads the archive this server polls
     if args.plugins:
         from plugins_serve import mount as mount_plugins
-        lp = mount_plugins(brain, args.plugins, args.plugin_idle, log=lambda m: print(m, flush=True))
+        lp = mount_plugins(brain, args.plugins, args.plugin_idle, log=lambda m: print(m, flush=True),
+                           router=args.plugin_router)
         print(f"plugins: {len(lp.index)} indexed from their front matter, {len(lp.loaded)} pinned and loaded, "
               f"tau {lp.router.tau}", flush=True)
     if args.board:

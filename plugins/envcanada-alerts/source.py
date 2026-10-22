@@ -1,7 +1,10 @@
 """envcanada-alerts -- a plugin source (order 0028): the weather warnings in effect in Canada, from the national
 weather service's Datamart (CAP alerts, Open Government Licence - Canada), read through ``ctx.fetch`` only.
 
-``covers`` says whether a question is about weather alerts at all; ``answer`` reads today's alerts (at most once every
+``covers`` says whether a question asks about alerts in effect: an alert's own word (warning, watch, advisory,
+statement; their French) or a hazard together with now (tonight, today, in effect); a question about weather in general
+("what causes freezing rain?") is not one (order 0028 review 2: a woken source must claim the question before it
+fetches). ``answer`` reads today's alerts (at most once every
 half hour, over the last twelve hours of files; each alert file is fetched once and kept in the plugin's folder) and returns, for the places the question
 names, the alerts in effect -- as facts in plain words, dated, the publisher never named in them. A place it cannot find
 gets nothing (a refusal), never "no warning": an empty answer is not evidence that the sky is clear.
@@ -17,6 +20,10 @@ CAP = "{urn:oasis:names:tc:emergency:cap:1.2}"
 WORDS = re.compile(r"\b(warnings?|watch(es)?|alerts?|advisor(y|ies)|storm|snow(fall)?|blizzard|rain(fall)?|wind|heat|"
                    r"tornado|thunderstorm|freezing|fog|avertissements?|alertes?|veilles?|tempête|neige|pluie|vent|"
                    r"chaleur|verglas|orages?|bulletins?)\b", re.I)
+ALERT = re.compile(r"\b(warnings?|watch(es)?|alerts?|advisor(y|ies)|statements?|avertissements?|alertes?|veilles?|"
+                   r"bulletins?)\b", re.I)
+NOW = re.compile(r"\b(now|right now|today|tonight|this (morning|afternoon|evening|week)|in effect|currently|active|"
+                 r"maintenant|aujourd'hui|ce soir|cette semaine|en (vigueur|cours)|actuellement)\b", re.I)
 REFRESH_S = 1800
 HOURS = 12              # alerts are re-issued as updates: the last 12 hours hold every one in effect
 
@@ -30,7 +37,10 @@ class Alerts:
         self.ctx, self.alerts, self.read_at = ctx, [], 0.0
 
     def covers(self, question: str) -> float:
-        return 0.8 if WORDS.search(question or "") else 0.0
+        q = question or ""
+        if ALERT.search(q):
+            return 0.8
+        return 0.6 if WORDS.search(q) and NOW.search(q) else 0.0
 
     # -- reading the Datamart ----------------------------------------------------------------------------------------
     def _list(self, url: str, pattern: str) -> list[str]:

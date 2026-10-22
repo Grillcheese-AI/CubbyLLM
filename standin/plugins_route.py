@@ -133,10 +133,11 @@ class LogisticRouter:
     wake = Router.wake
 
 
-def make_router(index, enc=None, tau: float | None = None):
-    """``CUBBY_PLUGINS_ROUTER=minilm``: the question encoder and logistic heads (the server's encoder unused); unset,
-    the nearest-line ``Router`` exactly as before. A flag set without the encoder in the cache falls back, and says so."""
-    if os.environ.get("CUBBY_PLUGINS_ROUTER", "").lower() == "minilm":
+def make_router(index, enc=None, tau: float | None = None, kind: str | None = None):
+    """``kind`` ("minilm" / "nearest"; None reads ``CUBBY_PLUGINS_ROUTER``): "minilm", the question encoder and
+    logistic heads (the server's encoder unused; the serve stack's default since 0028's review 2); otherwise the
+    nearest-line ``Router`` exactly as before. "minilm" without the encoder in the cache falls back, and says so."""
+    if (kind or os.environ.get("CUBBY_PLUGINS_ROUTER", "")).lower() == "minilm":
         from question_encoder import QuestionEncoder
         qe = QuestionEncoder.find()
         if qe is not None:
