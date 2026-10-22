@@ -141,7 +141,11 @@ def boot(args, ap: argparse.ArgumentParser):
         if "hdc" in args.world:                          # the stores first: the wiki world, then the hdc world (order 0014)
             from hdc_store import HdcWorld, Stores
             world = Stores(world, HdcWorld())
-        brain.ask_loop = AskLoop(brain.emitter, world=world, source=args.ask, lexicon=True,
+        source = args.ask
+        if source == "lfm":                             # the stand-in's LFM as the source (latent tier): built here,
+            from lfm_source import LfmSource             # so the loop never imports the stand-in (order 0031)
+            source = LfmSource(os.path.join(ROOT, "standin", "models", "LFM2.5-2.6B.Q4_K_M.gguf"))
+        brain.ask_loop = AskLoop(brain.emitter, world=world, source=source, lexicon=True,
                                  max_new=args.ask_max_new, news="rss" if args.news else None,
                                  history_path=args.history or None, web=web, skills=args.skills or None,
                                  books=args.books, tense=True if args.tense else None, loci=args.loci)

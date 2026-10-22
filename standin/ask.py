@@ -1,7 +1,7 @@
 """The verified-program loop on ONE natural question, live -- what exp_r11 runs per row, as a service.
 
-Wired: STANDALONE (stand-in; nothing in cubbyllm/ imports this). serve_api mounts it behind
-`POST /ask` when started with `--ask`, and every step it takes is an event on `/loop/stream`,
+Wired: WIRED (the server mounts it behind `POST /ask` when started with `--ask`); every step it takes
+is an event on `/loop/stream`,
 so the control panel (dashboard/control_panel.html, served at /panel) draws the tree as it grows:
 question -> plan (the emitter's proposal, the host's aliases) -> walk -> hops -> facts; the fetch
 from the source and the gate's verdict on each fact; the answer or the refusal.
@@ -23,6 +23,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 for p in (ROOT, ROOT / "standin", ROOT / "standin" / "data", ROOT / "validation"):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
+
+__wiring__ = "WIRED"
 
 TAU_VM = {1: 1.0, 2: 0.4736328125, 3: 0.22021484375}       # exp_r11's thresholds, by hop count
 
@@ -636,11 +638,12 @@ def _learned(p) -> dict:
 class AskLoop:
     """`ask(question)` -> the loop's record. `emitter` is any object with `.emit(prompt, max_new_tokens=)`
     (the serving emitter, shared); `world` a FactStore with a TripleIndex (the wiki world when None);
-    `source` 'wikidata' | 'wikidata-offline' | 'lfm' | a Source object; `lexicon` adds lever 5; `scene` a
+    `source` 'wikidata' | 'wikidata-offline' | a Source object (the server builds the LFM source for `--ask lfm` and
+    passes it, order 0031); `lexicon` adds lever 5; `scene` a
     `cubbyllm.spatial.Scene`, the source for a question whose relation or seed is the scene's (`spatial.route`)."""
 
     def __init__(self, emitter, world=None, source="wikidata", lexicon: bool = True, exe: str | None = None,
-                 max_new: int = 300, lfm_gguf: str | None = None, run_fn=None, tau_profile: float = TAU_VM[1],
+                 max_new: int = 300, run_fn=None, tau_profile: float = TAU_VM[1],
                  news=None, history_path: str | None = None, web=None, skills=None, scene=None, books=None,
                  tense: bool | None = None, loci=None, time_rule: bool | None = None, news_changes=None):
         from cubbyllm.bridges import cubelang_client as cc
@@ -658,9 +661,6 @@ class AskLoop:
             if source.startswith("wikidata"):
                 from sources import WikidataSource
                 source = WikidataSource(offline=source.endswith("offline"), use_choices=True)   # serving learns what askers mean
-            elif source == "lfm":
-                from lfm_source import LfmSource
-                source = LfmSource(lfm_gguf or str(ROOT / "standin" / "models" / "LFM2.5-2.6B.Q4_K_M.gguf"))
             else:
                 raise ValueError(f"unknown source {source!r}")
         self.source = source
@@ -877,7 +877,7 @@ class AskLoop:
         from cubbyllm.reasoning.learn import learn_and_answer
         from cubbyllm.reasoning.planner import QuestionPlan, normalize
         from eval_emitter_vm import strip_fences
-        from exp_r9_matched_pairs import emitted_plan
+        from cubbyllm.reasoning.emitted import emitted_plan
         t0 = time.perf_counter()
         question = " ".join(question.split())
         rec: dict = {"question": question, "answer": None, "verified": False, "reason": None, "plan": None, "seed": None,

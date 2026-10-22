@@ -49,9 +49,8 @@ for p in (ROOT, ROOT / "standin", ROOT / "standin" / "data", ROOT / "validation"
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-BIND = re.compile(r'bind\s+frame\s*,\s*(?P<role>[A-Za-z_][A-Za-z0-9_]*)\s*,\s*"(?P<obj>(?:[^"\\]|\\.)*)"\s*;')
-HOP = re.compile(r"^HOP(?P<hop>\d+)$")
-ROLE = re.compile(r"^H(?P<hop>\d+)_(?P<rel>.+)$")
+from cubbyllm.reasoning.emitted import BIND, HOP, ROLE, emitted_plan  # noqa: E402,F401 -- the emitter's plan,
+#   read: Cubby's ask loop reads it too (order 0031)
 
 
 def forms(p1: str, p2: str, e: str) -> dict[str, str]:
@@ -59,26 +58,6 @@ def forms(p1: str, p2: str, e: str) -> dict[str, str]:
             "have": f"What {p2} does the {p1} of {e} have?",
             "relative": f"What is the {p2} of the thing that is the {p1} of {e}?",
             "possessive": f"{e}'s {p1} -- what is its {p2}?"}
-
-
-def emitted_plan(text: str, normalize):
-    """CotPlan (SEED + HOPk) or CotChain (H-roles) -> (rels inner->outer, seed) or None."""
-    seed, hops, roles = None, {}, []
-    for m in BIND.finditer(text or ""):
-        r, o = m.group("role"), m.group("obj")
-        if r == "SEED" and seed is None:
-            seed = o
-        elif (h := HOP.match(r)):
-            hops.setdefault(int(h.group("hop")), o)
-        elif (h := ROLE.match(r)) and r not in roles:
-            roles.append(r)
-    if hops:
-        rels = [hops[k] for k in sorted(hops)]
-    elif roles:
-        rels = [ROLE.match(r).group("rel").lower().replace("_", " ") for r in sorted(roles, key=lambda r: int(ROLE.match(r).group("hop")))]
-    else:
-        return None
-    return [r.strip() for r in rels], (normalize(seed) if seed else None)
 
 
 def main() -> None:
