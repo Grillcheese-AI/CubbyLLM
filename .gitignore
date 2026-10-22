@@ -214,3 +214,8 @@ CLAUDE.local.md
 docs/worlds_manifest.local.tsv
 docs/*.local.md
 docs/*.local.tsv
+
+# local design hand-overs and render frames
+docs/*.local/
+dashboard/assets/sections/anim/
+dashboard/assets/sections/_test/
