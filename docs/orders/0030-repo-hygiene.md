@@ -1,5 +1,5 @@
 # 0030 — Repo hygiene: the red tests made true, local paths out of committed files, the largest files split
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: none
 
 ## Why
