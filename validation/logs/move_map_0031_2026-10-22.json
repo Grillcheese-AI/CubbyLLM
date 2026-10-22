@@ -1272,7 +1272,7 @@
   {
    "module": "standin/lexicon.py",
    "lines": 375,
-   "to": "cubbyllm/affect/lexicon.py",
+   "to": "cubbyllm/affect/word_affect.py",
    "importers": [
     "standin/coach.py",
     "standin/tests/test_plasticity.py"
@@ -1362,7 +1362,7 @@
   {
    "module": "standin/news_archive.py",
    "lines": 283,
-   "to": "cubbyllm/sources/news/archive.py",
+   "to": "cubbyllm/sources/news/archive.py (the logic; its fetching -> cubby_serve/sources/, split along that line)",
    "importers": [
     "standin/board_api.py",
     "standin/board_data.py",
@@ -1465,7 +1465,7 @@
   {
    "module": "standin/news_source.py",
    "lines": 389,
-   "to": "cubbyllm/sources/news/source.py",
+   "to": "cubbyllm/sources/news/source.py (the logic; its fetching -> cubby_serve/sources/, split along that line)",
    "importers": [
     "standin/ask.py",
     "standin/news_archive.py",
@@ -2005,7 +2005,7 @@
   {
    "module": "standin/sources.py",
    "lines": 556,
-   "to": "cubbyllm/sources/wikidata.py",
+   "to": "cubbyllm/sources/wikidata.py (the logic; its fetching -> cubby_serve/sources/, split along that line)",
    "importers": [
     "standin/ask.py",
     "standin/data/build_gen3.py",
@@ -2057,7 +2057,7 @@
   {
    "module": "standin/vault.py",
    "lines": 110,
-   "to": "cubby_serve/vault.py",
+   "to": "cubbyllm/speech/vault.py",
    "importers": [
     "standin/context_graph.py",
     "standin/data/gap_families.py",
@@ -2097,7 +2097,7 @@
   {
    "module": "standin/web_source.py",
    "lines": 1025,
-   "to": "cubbyllm/sources/web.py",
+   "to": "cubbyllm/sources/web.py (the logic; its fetching -> cubby_serve/sources/, split along that line)",
    "importers": [
     "standin/serve_cli.py",
     "standin/tests/test_web_source.py",
@@ -3113,5 +3113,672 @@
   "cubby_serve": 12,
   "standin": 29,
   "validation": 34
- }
+ },
+ "rescan": [
+  {
+   "module": "standin/ask.py",
+   "to": "cubbyllm",
+   "kind": "validation import",
+   "what": "exp_r9_matched_pairs",
+   "where": "lazy",
+   "line": 880
+  },
+  {
+   "module": "standin/ask.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 25
+  },
+  {
+   "module": "standin/capsules.py",
+   "to": "cubbyllm",
+   "kind": "grilly import",
+   "what": "grilly.vsa",
+   "where": "lazy",
+   "line": 101
+  },
+  {
+   "module": "standin/capsules.py",
+   "to": "cubbyllm",
+   "kind": "grilly import",
+   "what": "grilly",
+   "where": "lazy",
+   "line": 196
+  },
+  {
+   "module": "standin/chat.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, p)",
+   "where": "top",
+   "line": 35
+  },
+  {
+   "module": "standin/choosing.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, _HERE)",
+   "where": "top",
+   "line": 65
+  },
+  {
+   "module": "standin/data/build_books_index.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 26
+  },
+  {
+   "module": "standin/data/build_chat_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 48
+  },
+  {
+   "module": "standin/data/build_ear.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(ROOT / 'standin'))",
+   "where": "top",
+   "line": 32
+  },
+  {
+   "module": "standin/data/build_ear_bulk.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(ROOT / 'standin'))",
+   "where": "top",
+   "line": 21
+  },
+  {
+   "module": "standin/data/build_emitter_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))",
+   "where": "top",
+   "line": 49
+  },
+  {
+   "module": "standin/data/build_emitter_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, ROOT)",
+   "where": "top",
+   "line": 66
+  },
+  {
+   "module": "standin/data/build_events_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 29
+  },
+  {
+   "module": "standin/data/build_explicit_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 30
+  },
+  {
+   "module": "standin/data/build_gen2_partition.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(ROOT))",
+   "where": "top",
+   "line": 60
+  },
+  {
+   "module": "standin/data/build_gen3.py",
+   "to": "validation",
+   "kind": "validation import",
+   "what": "role_vocab",
+   "where": "lazy",
+   "line": 64
+  },
+  {
+   "module": "standin/data/build_gen3.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 34
+  },
+  {
+   "module": "standin/data/build_gen3.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(ROOT / 'validation'))",
+   "where": "lazy",
+   "line": 63
+  },
+  {
+   "module": "standin/data/build_ground_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 42
+  },
+  {
+   "module": "standin/data/build_hdc_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 35
+  },
+  {
+   "module": "standin/data/build_history_graph.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 36
+  },
+  {
+   "module": "standin/data/build_history_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 28
+  },
+  {
+   "module": "standin/data/build_nyt_events.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 27
+  },
+  {
+   "module": "standin/data/build_passage_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 29
+  },
+  {
+   "module": "standin/data/build_program_first.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))",
+   "where": "top",
+   "line": 54
+  },
+  {
+   "module": "standin/data/build_program_first.py",
+   "to": "validation",
+   "kind": "network import",
+   "what": "http.client",
+   "where": "lazy",
+   "line": 403
+  },
+  {
+   "module": "standin/data/build_program_first.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.append(_p)",
+   "where": "top",
+   "line": 71
+  },
+  {
+   "module": "standin/data/build_property_aliases.py",
+   "to": "validation",
+   "kind": "network import",
+   "what": "urllib.request",
+   "where": "top",
+   "line": 16
+  },
+  {
+   "module": "standin/data/build_quotes_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 18
+  },
+  {
+   "module": "standin/data/build_reader_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 43
+  },
+  {
+   "module": "standin/data/build_same_place.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 31
+  },
+  {
+   "module": "standin/data/build_webq_bench.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))",
+   "where": "top",
+   "line": 19
+  },
+  {
+   "module": "standin/data/build_webq_bench.py",
+   "to": "validation",
+   "kind": "network import",
+   "what": "urllib.request",
+   "where": "lazy",
+   "line": 58
+  },
+  {
+   "module": "standin/data/build_webqa_sft.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 26
+  },
+  {
+   "module": "standin/data/convert_books.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[2]))",
+   "where": "top",
+   "line": 18
+  },
+  {
+   "module": "standin/data/fetch_hdc_labels.py",
+   "to": "validation",
+   "kind": "network import",
+   "what": "urllib.request",
+   "where": "top",
+   "line": 22
+  },
+  {
+   "module": "standin/data/fetch_hdc_labels.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 27
+  },
+  {
+   "module": "standin/data/gen3_llm_wordings.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 28
+  },
+  {
+   "module": "standin/data/goemotions_cube.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, _p)",
+   "where": "top",
+   "line": 36
+  },
+  {
+   "module": "standin/data/hdc_world.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 41
+  },
+  {
+   "module": "standin/data/hf_rows.py",
+   "to": "validation",
+   "kind": "network import",
+   "what": "urllib.request",
+   "where": "top",
+   "line": 17
+  },
+  {
+   "module": "standin/data/import_science.py",
+   "to": "cubbyllm",
+   "kind": "network import",
+   "what": "urllib.request",
+   "where": "top",
+   "line": 37
+  },
+  {
+   "module": "standin/data/import_science.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, _p)",
+   "where": "top",
+   "line": 44
+  },
+  {
+   "module": "standin/data/import_tinygsm.py",
+   "to": "validation",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, _p)",
+   "where": "top",
+   "line": 45
+  },
+  {
+   "module": "standin/data/wikikg.py",
+   "to": "cubbyllm",
+   "kind": "network import",
+   "what": "urllib.request",
+   "where": "lazy",
+   "line": 258
+  },
+  {
+   "module": "standin/emitter_450m.py",
+   "to": "cubbyllm",
+   "kind": "grilly import",
+   "what": "grilly",
+   "where": "lazy",
+   "line": 62
+  },
+  {
+   "module": "standin/emitter_450m.py",
+   "to": "cubbyllm",
+   "kind": "grilly import",
+   "what": "grilly.infer.lora",
+   "where": "lazy",
+   "line": 63
+  },
+  {
+   "module": "standin/emitter_450m.py",
+   "to": "cubbyllm",
+   "kind": "validation import",
+   "what": "exp_e5_base450m_probes",
+   "where": "lazy",
+   "line": 66
+  },
+  {
+   "module": "standin/emitter_450m.py",
+   "to": "cubbyllm",
+   "kind": "validation import",
+   "what": "emitter_data",
+   "where": "lazy",
+   "line": 217
+  },
+  {
+   "module": "standin/emitter_450m.py",
+   "to": "cubbyllm",
+   "kind": "validation import",
+   "what": "emitter_data",
+   "where": "lazy",
+   "line": 226
+  },
+  {
+   "module": "standin/emitter_450m.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, p)",
+   "where": "lazy",
+   "line": 61
+  },
+  {
+   "module": "standin/emitter_base.py",
+   "to": "cubbyllm",
+   "kind": "network import",
+   "what": "urllib.request",
+   "where": "top",
+   "line": 14
+  },
+  {
+   "module": "standin/harness.py",
+   "to": "cubby_serve",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, p)",
+   "where": "top",
+   "line": 49
+  },
+  {
+   "module": "standin/loci_reader.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "_sys.path.append(str(_pathlib.Path(__file__).resolve().parents[1]))",
+   "where": "top",
+   "line": 25
+  },
+  {
+   "module": "standin/loci_reader.py",
+   "to": "cubbyllm",
+   "kind": "validation import",
+   "what": "train_base",
+   "where": "lazy",
+   "line": 65
+  },
+  {
+   "module": "standin/loci_reader.py",
+   "to": "cubbyllm",
+   "kind": "validation import",
+   "what": "make_fact_shard",
+   "where": "lazy",
+   "line": 89
+  },
+  {
+   "module": "standin/loci_reader.py",
+   "to": "cubbyllm",
+   "kind": "validation import",
+   "what": "make_fact_shard",
+   "where": "lazy",
+   "line": 116
+  },
+  {
+   "module": "standin/loci_reader.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 35
+  },
+  {
+   "module": "standin/news_archive.py",
+   "to": "cubbyllm",
+   "kind": "network import",
+   "what": "urllib.request",
+   "where": "top",
+   "line": 36
+  },
+  {
+   "module": "standin/news_archive.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path[:0] = [str(HERE), str(HERE.parent)]",
+   "where": "top",
+   "line": 41
+  },
+  {
+   "module": "standin/news_backfill.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))",
+   "where": "top",
+   "line": 31
+  },
+  {
+   "module": "standin/news_events.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(HERE))",
+   "where": "lazy",
+   "line": 170
+  },
+  {
+   "module": "standin/news_gdelt.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))",
+   "where": "lazy",
+   "line": 167
+  },
+  {
+   "module": "standin/news_parse.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))",
+   "where": "top",
+   "line": 14
+  },
+  {
+   "module": "standin/news_reply.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(Path(__file__).resolve().parent))",
+   "where": "top",
+   "line": 28
+  },
+  {
+   "module": "standin/news_source.py",
+   "to": "cubbyllm",
+   "kind": "network import",
+   "what": "urllib.request",
+   "where": "top",
+   "line": 37
+  },
+  {
+   "module": "standin/news_trigger.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))",
+   "where": "top",
+   "line": 29
+  },
+  {
+   "module": "standin/plugins.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path[:0] = [str(HERE), str(HERE.parent)]",
+   "where": "top",
+   "line": 25
+  },
+  {
+   "module": "standin/plugins_load.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(Path(__file__).resolve().parent))",
+   "where": "top",
+   "line": 37
+  },
+  {
+   "module": "standin/plugins_route.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(Path(__file__).resolve().parent))",
+   "where": "top",
+   "line": 33
+  },
+  {
+   "module": "standin/saying.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, _HERE)",
+   "where": "top",
+   "line": 54
+  },
+  {
+   "module": "standin/serve.py",
+   "to": "cubbyllm",
+   "kind": "validation import",
+   "what": "exp_m3_cot_pipeline",
+   "where": "lazy",
+   "line": 657
+  },
+  {
+   "module": "standin/serve.py",
+   "to": "cubbyllm",
+   "kind": "validation import",
+   "what": "exp_m3_domain_routing",
+   "where": "lazy",
+   "line": 658
+  },
+  {
+   "module": "standin/serve.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, p)",
+   "where": "top",
+   "line": 51
+  },
+  {
+   "module": "standin/serve_api.py",
+   "to": "cubby_serve",
+   "kind": "network import",
+   "what": "http.server",
+   "where": "top",
+   "line": 29
+  },
+  {
+   "module": "standin/serve_api.py",
+   "to": "cubby_serve",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, p)",
+   "where": "top",
+   "line": 34
+  },
+  {
+   "module": "standin/serve_cli.py",
+   "to": "cubby_serve",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, p)",
+   "where": "top",
+   "line": 15
+  },
+  {
+   "module": "standin/serve_cli.py",
+   "to": "cubby_serve",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dat",
+   "where": "lazy",
+   "line": 175
+  },
+  {
+   "module": "standin/serve_get.py",
+   "to": "cubby_serve",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, p)",
+   "where": "top",
+   "line": 17
+  },
+  {
+   "module": "standin/sources.py",
+   "to": "cubbyllm",
+   "kind": "network import",
+   "what": "urllib.request",
+   "where": "top",
+   "line": 24
+  },
+  {
+   "module": "standin/web_source.py",
+   "to": "cubbyllm",
+   "kind": "network import",
+   "what": "urllib.request",
+   "where": "top",
+   "line": 48
+  },
+  {
+   "module": "standin/worlds_ingest.py",
+   "to": "cubbyllm",
+   "kind": "sys.path edit",
+   "what": "sys.path.insert(0, str(p))",
+   "where": "top",
+   "line": 35
+  },
+  {
+   "module": "standin/worlds_ingest.py",
+   "to": "cubbyllm",
+   "kind": "validation import",
+   "what": "books_bulk_read",
+   "where": "lazy",
+   "line": 133
+  }
+ ],
+ "review_2026_10_22": "builders Apache in validation/; cubbyllm offline (fetching to cubby_serve/sources/); vault to cubbyllm/speech; lexicon -> word_affect; grilly via cubbyllm/ops/grilly_seats.py; import cubbyllm torch/grilly-free"
 }

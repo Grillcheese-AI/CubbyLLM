@@ -31,7 +31,7 @@ moved yet: this map waits for Cowork's review (Nick told) before step 2. Machine
 
   The old names live on through the shims.
 - **Two names collide with `cubbyllm/reasoning/`:** `lexicon` and `programs`. `programs` is the game's and stays.
-  `lexicon` becomes `cubbyllm/affect/lexicon.py`, a different module from `cubbyllm/reasoning/lexicon.py` (the learned
+  `lexicon` becomes `cubbyllm/affect/word_affect.py`, a different module from `cubbyllm/reasoning/lexicon.py` (the learned
   affect of words, not the reasoning lexicon).
 
 ## What crosses the new lines (18 imports), and the fix for each
@@ -116,10 +116,59 @@ home (`runpy`, `__main__`), so `python standin/serve_api.py ...` still starts th
 7. **`ear.py`'s `__wiring__`** reads `"BlockWorld --hearing"`. It names the private repo but carries nothing from it.
    Reword it when it moves?
 
+## After the review (2026-10-22): the changes, and what the rescan added
+Cowork accepted the map with five changes, and Nick answered questions 1 and 2. This section supersedes the rows it
+names.
+- **The builders: Apache, in `validation/`,** as mapped (Nick).
+- **`cubbyllm/` stays offline** (Nick). What opens a socket goes to `cubby_serve/sources/` (BSL): the HTTP calls,
+  the polite fetcher (robots, `Crawl-delay`, the `CubbyLLM/0.1` name), the feed poller, the backfill loop, the web
+  search and page reads. The logic stays in `cubbyllm/sources/` and takes a `fetch` callable it is given.
+  - **Split along that line, in their split commits:** `sources.py` (Wikidata claims as facts in `cubbyllm`, the
+    HTTP call in `cubby_serve`), `web_source.py`, `news_archive.py`, `news_source.py`.
+  - **`data/wikikg.py`:** its Hub download (`--wiki auto`, when the export is not cached) becomes a fetch handed in.
+  - **The plugins' `Ctx`** gets its fetch the same way.
+  - **A guard:** no module in `cubbyllm/` imports `socket`, `urllib.request`, `http.client` or `requests`, lazily or
+    not.
+- **`vault` -> `cubbyllm/speech/vault.py`;** the key and the place it writes come from the server.
+- **`standin/lexicon.py` -> `cubbyllm/affect/word_affect.py`,** not `lexicon.py`, so two modules called `lexicon`
+  don't share a package tree.
+- **grilly only through `cubbyllm/ops/`:** a new `cubbyllm/ops/grilly_seats.py` loads an export, copies a LoRA pair
+  in and decodes a step. `emitter_450m` (the seats) and `capsules` (`grilly.vsa`) call it.
+- **`ear.py`'s `__wiring__`** is reworded so it names no private repo.
+- **`import cubbyllm` stays torch-free and grilly-free:** a test checks it in a fresh interpreter.
+
+**The rescan.** It covered function-level imports, imports of `validation/` scripts, `sys.path` edits, grilly and
+network imports. It adds these crossings, each with its fix: the helper moves into `cubbyllm/` and its old place
+imports it back.
+
+| module (bound for) | imports | fix |
+|---|---|---|
+| `ask` (cubbyllm) | `exp_r9_matched_pairs.emitted_plan` | -> `cubbyllm/reasoning/` (with `ask`'s split) |
+| `emitter_450m` (cubbyllm) | `exp_e5_base450m_probes.load_grilly`, `grilly`, `grilly.infer.lora` | -> `cubbyllm/ops/grilly_seats.py` |
+| `emitter_450m` (cubbyllm) | `emitter_data.PROMPT_HEAD`, `PROMPT_TAIL`, `decode_program` | -> `cubbyllm/emit/format.py`, beside `answer_fn`, `shim_isolver`, `wrap_role_prompt` |
+| `capsules` (cubbyllm) | `grilly.vsa`, `grilly` | through `cubbyllm/ops/` |
+| `loci_reader` (cubbyllm) | `train_base.build_model` (the 450M from a checkpoint's meta) | -> `cubbyllm/model/build.py`; `train_base` imports it |
+| `loci_reader` (cubbyllm) | `make_fact_shard.address`, `words` (the far-fact layout) | -> `cubbyllm/model/fact_layout.py`; the shard builder imports them |
+| `worlds_ingest` (cubbyllm) | `books_bulk_read.run` (the books' bulk read) | the function -> `cubbyllm/worlds/book_reader.py`; the script keeps its CLI |
+| `serve` -> `build_serve` (cubby_serve) | `exp_m3_cot_pipeline.load_sample`, `V4_TABLE`; `exp_m3_domain_routing._load_semantic_words` | the serve stack's fact pool and word table -> `cubbyllm/worlds/fact_pool.py`; question 8 |
+| `import_science`, `wikikg` (cubbyllm) | `urllib.request` | the import part -> `validation/build/`; wikikg's download -> a fetch handed in |
+| `emitter_base` (cubbyllm) | `urllib.request` (`LlamaServerEmitter`) | stays in `standin/` with the split |
+| 21 modules bound for `cubbyllm/` | `sys.path` edits | removed: package imports; a guard checks that no `cubbyllm/` module edits `sys.path` |
+
+**Question 8 (new).** `_load_semantic_words` loads the `FastWordEncoder` class from the sibling `mowm` checkout by file
+path, so the serve stack depends on another repo at run time. This is true today, not new. Moving it into `cubbyllm/`
+would carry that link into the package. Should the encoder class be ported into `cubbyllm/` (the rule "port, don't
+link")? Or should the link stay in `cubby_serve/build.py` for now?
+
+**Before the first `git mv`:**
+- **Baselines.** The test counts per file, and the real stack's answers to 20 fixed questions with its `/board`
+  responses. These are what "byte-identical after" is checked against.
+- **The fixes and splits above, one commit each.** No path moves in them.
+
 ## The map, module by module
 "Imported by" leaves out tests. "Tests" lists the test files that import the module directly; a module exercised through another (`plugins_check` through the loader) shows "none". The full lists are in the JSON.
 
-### cubby_serve/ (10)
+### cubby_serve/ (9)
 
 | module (lines) | new path | imported by | tests |
 |---|---|---|---|
@@ -132,7 +181,6 @@ home (`runpy`, `__main__`), so `python standin/serve_api.py ...` still starts th
 | `serve_events.py` (57) | `cubby_serve/events.py` | `serve_api.py`, `serve_get.py`, `serve_post.py` | none |
 | `serve_get.py` (168) | `cubby_serve/get.py` | `serve_api.py` | none |
 | `serve_post.py` (86) | `cubby_serve/post.py` | `serve_api.py` | none |
-| `vault.py` (110) | `cubby_serve/vault.py` | `context_graph.py`, `data/gap_families.py`, `harness_wiring.py` +2 | `test_harness`, `test_harness_wiring`, `test_ledger_vault` |
 
 ### cubby_serve/board/ (2)
 
@@ -156,7 +204,7 @@ home (`runpy`, `__main__`), so `python standin/serve_api.py ...` still starts th
 | `ear.py` (267) | `cubbyllm/affect/ear.py` | `data/build_ear.py`, `data/build_ear_bulk.py` | `test_ear` |
 | `ear_lexicon.py` (96) | `cubbyllm/affect/ear_lexicon.py` | `data/build_ear.py`, `v/plugins_routing.py` | `test_ear` |
 | `feeling.py` (181) | `cubbyllm/affect/feeling.py` | `pac_affect.py`, `pac_speech.py`, `pacman.py` | none |
-| `lexicon.py` (375 **>300**) | `cubbyllm/affect/lexicon.py` | `coach.py` | `test_plasticity` |
+| `lexicon.py` (375 **>300**) | `cubbyllm/affect/word_affect.py` | `coach.py` | `test_plasticity` |
 | `neurochem.py` (816 **>300**) | `cubbyllm/affect/neurochem.py` | `chat.py`, `choosing.py`, `coach.py` +7 | `neurochemistry_probe`, `test_afferent`, `test_choosing` +9 |
 | `perception.py` (159) | `cubbyllm/affect/perception.py` | `serve_cli.py` | `test_perception` |
 | `saying.py` (265) | `cubbyllm/affect/saying.py` | `chat.py`, `pac_affect.py` | `test_said_back`, `test_saying` |
@@ -208,24 +256,24 @@ home (`runpy`, `__main__`), so `python standin/serve_api.py ...` still starts th
 | module (lines) | new path | imported by | tests |
 |---|---|---|---|
 | `robots_rules.py` (62) | `cubbyllm/sources/robots.py` | `news_archive.py`, `news_source.py`, `plugins_guard.py` | `test_news_archive`, `test_news_backfill` |
-| `sources.py` (556 **>300**) | `cubbyllm/sources/wikidata.py` | `ask.py`, `data/build_gen3.py`, `data/fetch_hdc_labels.py` +19 | `test_lfm_source`, `test_property_aliases`, `test_sources` |
-| `web_source.py` (1025 **>300**) | `cubbyllm/sources/web.py` | `serve_cli.py`, `v/exp_r33_web_heldout.py` | `test_web_source` |
+| `sources.py` (556 **>300**) | `cubbyllm/sources/wikidata.py` (the logic; its fetching -> cubby_serve/sources/, split along that line) | `ask.py`, `data/build_gen3.py`, `data/fetch_hdc_labels.py` +19 | `test_lfm_source`, `test_property_aliases`, `test_sources` |
+| `web_source.py` (1025 **>300**) | `cubbyllm/sources/web.py` (the logic; its fetching -> cubby_serve/sources/, split along that line) | `serve_cli.py`, `v/exp_r33_web_heldout.py` | `test_web_source` |
 
 ### cubbyllm/sources/news/ (9)
 
 | module (lines) | new path | imported by | tests |
 |---|---|---|---|
-| `news_archive.py` (283) | `cubbyllm/sources/news/archive.py` | `board_api.py`, `board_data.py`, `news_backfill.py` +4 | `test_board`, `test_board_review`, `test_news_archive` +2 |
+| `news_archive.py` (283) | `cubbyllm/sources/news/archive.py` (the logic; its fetching -> cubby_serve/sources/, split along that line) | `board_api.py`, `board_data.py`, `news_backfill.py` +4 | `test_board`, `test_board_review`, `test_news_archive` +2 |
 | `news_backfill.py` (105) | `cubbyllm/sources/news/backfill.py` | `news_archive.py` | `test_news_backfill` |
 | `news_events.py` (193) | `cubbyllm/sources/news/events.py` | `news_reply.py`, `news_trigger.py` | `test_news_events` |
 | `news_gdelt.py` (171) | `cubbyllm/sources/news/gdelt.py` | `news_archive.py` | `test_news_gdelt` |
 | `news_globalvoices.py` (108) | `cubbyllm/sources/news/globalvoices.py` | `news_archive.py`, `news_backfill.py` | `test_news_globalvoices` |
 | `news_parse.py` (86) | `cubbyllm/sources/news/parse.py` | `news_archive.py` | none |
 | `news_reply.py` (163) | `cubbyllm/sources/news/reply.py` | none | `test_news_reply` |
-| `news_source.py` (389 **>300**) | `cubbyllm/sources/news/source.py` | `ask.py`, `news_archive.py`, `news_parse.py` +1 | `test_news_source` |
+| `news_source.py` (389 **>300**) | `cubbyllm/sources/news/source.py` (the logic; its fetching -> cubby_serve/sources/, split along that line) | `ask.py`, `news_archive.py`, `news_parse.py` +1 | `test_news_source` |
 | `news_trigger.py` (118) | `cubbyllm/sources/news/trigger.py` | `news_archive.py` | `test_news_trigger` |
 
-### cubbyllm/speech/ (5)
+### cubbyllm/speech/ (6)
 
 | module (lines) | new path | imported by | tests |
 |---|---|---|---|
@@ -234,6 +282,7 @@ home (`runpy`, `__main__`), so `python standin/serve_api.py ...` still starts th
 | `data/identity.py` (523 **>300**) | `cubbyllm/speech/identity.py` (after a split: the voice rules move, the SFT record builders stay) | `docs/archive/test_build_chat_sft_v6_2026-10-22.py`, `chat.py`, `data/build_emitter_sft.py` +11 | `test_build_chat_sft`, `test_build_emitter_sft`, `test_chat` +9 |
 | `explicit_gate.py` (90) | `cubbyllm/speech/explicit_gate.py` | `data/build_chat_sft.py`, `data/build_explicit_sft.py`, `v/exp_e7_explicit_gate.py` | `test_explicit_gate` |
 | `grounding.py` (293) | `cubbyllm/speech/grounding.py` | `news_reply.py`, `pac_affect.py`, `pac_speech.py` +1 | `test_news_reply`, `test_said_back` |
+| `vault.py` (110) | `cubbyllm/speech/vault.py` | `context_graph.py`, `data/gap_families.py`, `harness_wiring.py` +2 | `test_harness`, `test_harness_wiring`, `test_ledger_vault` |
 
 ### cubbyllm/worlds/ (22)
 

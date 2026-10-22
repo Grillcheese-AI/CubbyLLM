@@ -1,0 +1,220 @@
+{
+ "what": "order 0031's real-stack baseline: the 450M seats on grilly2, wiki + hdc worlds, the ask loop offline (--ask wikidata-offline --web off), plugins, the board; recorded twice on two boots, identical (validation/stack_answers.py --compare)",
+ "asks": [
+  {
+   "question": "What is the capital of France?",
+   "answer": "Paris",
+   "verified": true,
+   "reason": null,
+   "record_sha": "e4ffb967cfcfc83f",
+   "journey_sha": "bfdd743f6cbc84c2"
+  },
+  {
+   "question": "Where was Ada Lovelace born?",
+   "answer": null,
+   "verified": false,
+   "reason": "plan_does_not_cover_question",
+   "record_sha": "922aaf808f7b3729",
+   "journey_sha": "84788ae6305c19f4"
+  },
+  {
+   "question": "Who wrote Pride and Prejudice?",
+   "answer": null,
+   "verified": false,
+   "reason": "ambiguous_relation",
+   "record_sha": "83da92655f7bded2",
+   "journey_sha": "39dbaf9789d4acfc"
+  },
+  {
+   "question": "When was the Eiffel Tower built?",
+   "answer": null,
+   "verified": false,
+   "reason": "ambiguous_relation",
+   "record_sha": "8957a2d428dba7cc",
+   "journey_sha": "97a3a0893eeb67d6"
+  },
+  {
+   "question": "What is the capital of Canada?",
+   "answer": null,
+   "verified": false,
+   "reason": "plan_does_not_cover_question",
+   "record_sha": "0562b3c9c623679e",
+   "journey_sha": "46704adaebef1707"
+  },
+  {
+   "question": "Who is the father of Queen Elizabeth II?",
+   "answer": null,
+   "verified": false,
+   "reason": "plan_does_not_cover_question",
+   "record_sha": "aecbc01231b066fc",
+   "journey_sha": "28f92923d70dd136"
+  },
+  {
+   "question": "What is the population of Toronto?",
+   "answer": null,
+   "verified": false,
+   "reason": "retrieval_exhausted",
+   "record_sha": "b2f6238d0e9c8cd6",
+   "journey_sha": "969ed58e69fe26f0"
+  },
+  {
+   "question": "Who painted the Mona Lisa?",
+   "answer": null,
+   "verified": false,
+   "reason": "unknown_relation",
+   "record_sha": "e18178d64f4c0ed5",
+   "journey_sha": "d8d203e36fd4d723"
+  },
+  {
+   "question": "Where is the Globe Theatre?",
+   "answer": "Globe Theatre — country: United Kingdom; located in: London Borough of Southwark, Boston",
+   "verified": false,
+   "reason": "profile",
+   "record_sha": "a77479622adb0ec4",
+   "journey_sha": "f7198d4d0ebbd7c9"
+  },
+  {
+   "question": "What language is spoken in Brazil?",
+   "answer": null,
+   "verified": false,
+   "reason": "unknown_relation",
+   "record_sha": "74194b334fc1b10a",
+   "journey_sha": "02f31da57799c94b"
+  },
+  {
+   "question": "Who discovered penicillin?",
+   "answer": null,
+   "verified": false,
+   "reason": "no_plan",
+   "record_sha": "3f3474005c620aba",
+   "journey_sha": "331dbc6a60da975d"
+  },
+  {
+   "question": "What is the currency of Japan?",
+   "answer": "Japanese yen",
+   "verified": true,
+   "reason": null,
+   "record_sha": "dd3625b977b5e2c0",
+   "journey_sha": "40783cefb5e26a45"
+  },
+  {
+   "question": "Quelle est la capitale de l'Italie ?",
+   "answer": null,
+   "verified": false,
+   "reason": "plan_does_not_cover_question",
+   "record_sha": "f4e49a8d4cf714a2",
+   "journey_sha": "66fe2795db2022f3"
+  },
+  {
+   "question": "Qui a écrit Les Misérables ?",
+   "answer": null,
+   "verified": false,
+   "reason": "plan_does_not_cover_question",
+   "record_sha": "19d70aaa6adb5010",
+   "journey_sha": "f92f75d5ff893487"
+  },
+  {
+   "question": "What river flows through Cairo?",
+   "answer": null,
+   "verified": false,
+   "reason": "ambiguous_relation",
+   "record_sha": "162fdef89a25ea5e",
+   "journey_sha": "7c3c1438e8b69586"
+  },
+  {
+   "question": "Who was the first president of the United States?",
+   "answer": null,
+   "verified": false,
+   "reason": "entity_unresolved",
+   "record_sha": "0c96660a7e178ba2",
+   "journey_sha": "fa15f308bff4758b"
+  },
+  {
+   "question": "How tall is Mount Everest?",
+   "answer": null,
+   "verified": false,
+   "reason": "plan_does_not_cover_question",
+   "record_sha": "4387dc9eeaa33beb",
+   "journey_sha": "7cc4807c4fac5f6a"
+  },
+  {
+   "question": "What is the speed of light?",
+   "answer": null,
+   "verified": false,
+   "reason": "plan_does_not_cover_question",
+   "record_sha": "5920a66a1e05c536",
+   "journey_sha": "16f1166a3f83da21"
+  },
+  {
+   "question": "Who is the mayor of Montreal?",
+   "answer": null,
+   "verified": false,
+   "reason": "ambiguous_relation",
+   "record_sha": "5c640a8109f11707",
+   "journey_sha": "aacc02f4368e129f"
+  },
+  {
+   "question": "What year did World War II end?",
+   "answer": null,
+   "verified": false,
+   "reason": "ambiguous_relation",
+   "record_sha": "74f96b3969fd81f2",
+   "journey_sha": "d1d9e29a0afb35be"
+  }
+ ],
+ "board_sha": {
+  "/board/home": {
+   "public": "2f1d636e73329a86",
+   "audit": "ab12c61ac3c07ae1"
+  },
+  "/board/system": {
+   "public": "fa2eb437b62ba3a7",
+   "audit": "cf6d78ec6eb01e5e"
+  },
+  "/board/mood": {
+   "public": "a15016da016be486",
+   "audit": "a27a7e569f904b61"
+  },
+  "/board/plugins": {
+   "public": "2ff6378ce8d8d083",
+   "audit": "bba48f51519eac3f"
+  },
+  "/board/watch": {
+   "public": "f21169f5c91f6684",
+   "audit": "ae54ce476d09ad13"
+  },
+  "/board/worlds": {
+   "public": "754946320717492c",
+   "audit": "d82da83d765217ad"
+  },
+  "/board/forecast": {
+   "public": "a5489b00cf1a5597",
+   "audit": "12872d21b52eaaae"
+  },
+  "/board/agents": {
+   "public": "817fa0d4f592c878",
+   "audit": "b1467dad29a072b3"
+  },
+  "/board/plugins/route?q=how+many+kilometres+is+5+miles": {
+   "public": "2650eb35ff99f9f5",
+   "audit": "d56047bb67339a30"
+  },
+  "/board/plugins/route?q=hi+Cubby%2C+how+are+you%3F": {
+   "public": "c13af0966787abeb",
+   "audit": "a707b6ba33c50dbd"
+  },
+  "/board/plugins/review?name=units": {
+   "public": "43dda87dfba9252a",
+   "audit": "515198369f499488"
+  },
+  "/health": {
+   "public": "54662f696363f2b1",
+   "audit": "844bfac187a88940"
+  },
+  "/worlds": {
+   "public": "f66abbe84a6c6ab5",
+   "audit": "f983f34a7f758471"
+  }
+ },
+ "runs_identical": true
+}
