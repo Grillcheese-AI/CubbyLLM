@@ -51,6 +51,8 @@ sentences, which `build_hdc_sft` already parses back through `relation_template_
   - 200 one-hop questions from `eval_ood_scaling_law.pq` (held-out domains) through the ask loop with the world
     mounted: spoken-correct reported, **0 wrong spoken**;
   - 50 time-sensitive questions: each spoken with its "as of" or after a live refresh, never flat.
+  - The tense decides the time asked (order 0012's question shape): "Who was … in 2019?" may be answered
+    from the snapshot; "Who is …?" on a time-sensitive relation needs a live refresh or an "as of".
 - Off = unchanged; full `pytest tests`.
 
 ## Constraints

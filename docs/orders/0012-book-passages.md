@@ -68,6 +68,15 @@ lacks: a **passage finder** that returns the paragraphs about an entity, with th
   `What is the <relation> of <entity>?` may stay as the host's internal plan string only. Render questions from the
   hdc set's `relation_template_mapping.csv` (a natural template per relation) plus a few hand-written variants
   per relation, and check the parser maps each one to the same (entity, relation).
+  **Shape (Nick):** `{wh} {tense} {verb form} {subject} [in {year}]?`.
+  - The wh-word comes from the answer's type: person → Who, place → Where, date → When, count → How many, else
+    What/Which.
+  - The tense comes from the fact's dates: ended → was, ongoing → is, scheduled → will be.
+  - The verb form is set per relation: active ("Who founded Rome?"), passive ("Where was Napoleon born?") or a
+    noun ("Who is the CEO of …?"). Extend hdc's template table with the three tenses.
+  - The parser reads the tense and the year back as a **time constraint**: which year's world, and whether a
+    time-sensitive fact needs its "as of" or a live refresh (order 0014). The bench includes the same fact asked
+    in the right and the wrong tense: "Who is …?" on a fact that ended must not be answered flat.
 
 ## Constraints
 - Rules in `CLAUDE.md` hold. CPU, Nick's machine. No model, no network. Nothing from the books in a committed file.
