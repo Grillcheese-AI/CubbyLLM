@@ -51,7 +51,7 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
 - **Bases.** `base450m_cont` — the 450M (D1024, L32, 4 heads) continued past its first run; the
   reference trunk for every experiment below. A grown ~1.3B with the episodic read every 2 layers
   (`notebooks/grow_mem_continue.ipynb`): round 1 trained, round 2 built and not run.
-- **Spatial link / hypertokens (H-S12, H-K10).** `cubbyllm/model/spatial.py`: places bound into the
+- **Spatial link / loci tokens (H-S12, H-K10; called hypertokens until 2026-10-22).** `cubbyllm/model/spatial.py`: places bound into the
   input (`e ⊛ S(p)`), a causal scene per document, a gated read mid-trunk; roles (a thing WRITES, a
   question ASKS), `query="placed"`, `bind="writes"`. Three 450M runs (`notebooks/spatial_facts_450m.ipynb`):
   villages read 0.793 → 0.776 → **0.953** exact (run 3); facts 800 tokens past the window read
@@ -66,7 +66,7 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   rest of the step is where the time is.
 - **Open hypotheses (Group K, §9d).** K1 fact map, K2 surprise-gated writing, K3 continual learning,
   K4 clock, K5 BlockWorld hidden-rule bench, K6 binding heads, K7 exposure law, K8 holographic state,
-  K9 flow-map jumps, K10 hypertokens. Read their entries before touching the matching code.
+  K9 flow-map jumps, K10 loci tokens. Read their entries before touching the matching code.
 - **Serve stack.** `standin/` (an external GGUF stand-in in the emitter and talk seats) stays the A/B
   control until base450m takes both seats; `docs/WORK_ORDERS.md` holds that era's specs and its
   measured lessons (read its "Before you touch anything").
