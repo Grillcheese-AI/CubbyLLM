@@ -2,7 +2,7 @@
 audit chain, the pac maze, /health /state /worlds, the dashboards, the loop's events and stream.
 `handle_get(h, brain)` runs on the request handler `h` (its `_send`, `_raw`, `_page`, `_who`).
 
-Wired: STANDALONE (stand-in; serve_api.make_handler).
+Wired: WIRED (cubby_serve.api's handler).
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 
 from cubby_serve.events import _LOOP_CLIENTS, _LOOP_LOCK, _LOOP_RING, _json_safe, ring_times  # noqa: E402
 
-__wiring__ = "STANDALONE"
+__wiring__ = "WIRED"
 
 
 def handle_get(h, brain) -> None:

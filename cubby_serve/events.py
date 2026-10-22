@@ -2,11 +2,11 @@
 order 0030): a ring of the last events (`/loop/events`, the board's journey timings) and a queue per live
 client (`/loop/stream`).
 
-Wired: STANDALONE (stand-in; serve_api.py and serve_get.py).
+Wired: WIRED (cubby_serve.api and cubby_serve.get).
 """
 from __future__ import annotations
 
-__wiring__ = "STANDALONE"
+__wiring__ = "WIRED"
 
 
 def _json_safe(o):

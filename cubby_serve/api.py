@@ -1,6 +1,6 @@
 """serve_api — the HTTP surface a mounted front-end (cubbyverse) talks to.
 
-Wired: STANDALONE (stand-in; nothing in cubbyllm/ imports this).
+Wired: WIRED (the server's entry: `python -m cubby_serve`, or `python standin/serve_api.py` for one cycle).
 
 Transport only — the brain stays `serve.CubbyBrain`; this is the thin shell
 the plugin rule allows (cubbyverse's web brain reads /state for its emotion
@@ -30,7 +30,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-__wiring__ = "STANDALONE"
+__wiring__ = "WIRED"
 
 
 from cubby_serve.events import (_LOOP_CLIENTS, _LOOP_LOCK, _LOOP_RING, _json_safe, _loop_sink,  # noqa: E402,F401

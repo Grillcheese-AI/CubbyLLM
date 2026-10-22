@@ -1,7 +1,7 @@
 """serve_post -- every POST route of the stand-in server (split out of serve_api.py, order 0030): the board's
 plugin actions, /ask/feedback, /turn, /ask, /pac/say. `handle_post(h, brain)` runs on the request handler `h`.
 
-Wired: STANDALONE (stand-in; serve_api.make_handler).
+Wired: WIRED (cubby_serve.api's handler).
 """
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import json
 
 from cubby_serve.events import _json_safe
 
-__wiring__ = "STANDALONE"
+__wiring__ = "WIRED"
 
 
 def handle_post(h, brain) -> None:

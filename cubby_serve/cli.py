@@ -1,7 +1,7 @@
 """serve_cli -- the stand-in server's command line (split out of serve_api.py, order 0030): `parser()` its
 arguments, `boot(args)` the brain they describe with everything mounted, `build_web(args)` the web source.
 
-Wired: STANDALONE (stand-in; serve_api.main).
+Wired: WIRED (cubby_serve.api.main).
 """
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ import sys
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-__wiring__ = "STANDALONE"
+__wiring__ = "WIRED"
 
 
 def build_web(args):
