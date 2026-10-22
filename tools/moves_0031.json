@@ -19,5 +19,17 @@
  "standin/self_source.py": "cubbyllm/worlds/self_source.py",
  "standin/data/world_hygiene.py": "cubbyllm/worlds/hygiene.py",
  "standin/data/wikikg.py": "cubbyllm/worlds/wikikg.py",
- "standin/data/hdc_world.py": "cubbyllm/worlds/hdc_world.py"
+ "standin/data/hdc_world.py": "cubbyllm/worlds/hdc_world.py",
+ "standin/sources.py": "cubbyllm/sources/wikidata.py",
+ "standin/web_source.py": "cubbyllm/sources/web.py",
+ "standin/robots_rules.py": "cubbyllm/sources/robots.py",
+ "standin/news_archive.py": "cubbyllm/sources/news/archive.py",
+ "standin/news_parse.py": "cubbyllm/sources/news/parse.py",
+ "standin/news_events.py": "cubbyllm/sources/news/events.py",
+ "standin/news_gdelt.py": "cubbyllm/sources/news/gdelt.py",
+ "standin/news_globalvoices.py": "cubbyllm/sources/news/globalvoices.py",
+ "standin/news_backfill.py": "cubbyllm/sources/news/backfill.py",
+ "standin/news_reply.py": "cubbyllm/sources/news/reply.py",
+ "standin/news_trigger.py": "cubbyllm/sources/news/trigger.py",
+ "standin/news_source.py": "cubbyllm/sources/news/source.py"
 }
