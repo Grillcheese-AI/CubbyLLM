@@ -1,5 +1,5 @@
 # 0004 — Rename "hypertokens" to "loci tokens" in the code's prose
-status: open
+status: in progress
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("we need to rename ours") · hypothesis: H-K10
 
 ## Why
