@@ -1,5 +1,5 @@
 {
- "what": "order 0024: the feeds the news archive polls (standin/news_archive.py). status active = polled; held = not polled, not stored (the reason says why). ai_agents_named = the AI agents the feed's host or the publisher's site shut out entirely when checked; a new name holds the feed until a person looks. licence: open-government-canada | cc-by-3.0 | publisher. full_text: the publisher whose story text is kept (Nick's decision). kind: news | statement (an office's own release, attributed) | analysis (an organisation's analysis on a date); only news is read as events. every_h: hours between polls. The third-party AP mirror is dropped (not the publisher's own feed). region and outlet_kind (public / private / state / state-funded / aggregator / intergovernmental): an item from a state outlet is said as that state's media reporting it, never as a second voice.",
+ "what": "order 0024: the feeds the news archive polls (standin/news_archive.py). status active = polled; held = not polled, not stored (the reason says why). ai_agents_named = the AI agents the feed's host or the publisher's site shut out entirely when checked; a new name holds the feed until a person looks. licence: open-government-canada | cc-by-3.0 | permission-required | publisher. full_text: the publisher whose story text is kept (Nick's decision). kind: news | statement (an office's own release, attributed) | analysis (an organisation's analysis on a date); only news is read as events. every_h: hours between polls. The third-party AP mirror is dropped (not the publisher's own feed). region and outlet_kind (public / private / state / state-funded / aggregator / intergovernmental): an item from a state outlet is said as that state's media reporting it, never as a second voice.",
  "user_agent": "CubbyLLM/0.1",
  "feeds": [
   {
@@ -43,15 +43,16 @@
     "www.quebec.ca"
    ],
    "lang": "fr",
-   "licence": "publisher",
+   "licence": "permission-required",
    "status": "active",
-   "reason": "Gouvernement du Québec, communiqués; its reuse terms not yet read (the page renders in the browser)",
+   "reason": "Gouvernement du Québec releases; reuse needs prior permission (no open licence): headlines and summaries only",
    "ai_agents_named": [],
    "checked": "2026-10-22",
    "kind": "statement",
    "every_h": 1,
    "region": "Americas",
-   "outlet_kind": "public"
+   "outlet_kind": "public",
+   "audience": "internal"
   },
   {
    "id": "lapresse-manchettes",
