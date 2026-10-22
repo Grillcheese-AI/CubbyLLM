@@ -67,7 +67,8 @@ network's (Vinyals et al. 2015, arXiv 1506.03134).
 - Logs: `validation/logs/exp_k10_free_text_<arm>_<date>.{json,log}`.
 
 ## Out of scope
-- The 450M (shard marks for multi-token subjects, a run): the next order, if P passes. Free-text *writes*:
+- The 450M (shard marks for multi-token subjects, a run): the next order, if P passes. What happens after NONE (look
+  the fact up once, know it next time) is order 0007; here NONE only has to be right. Free-text *writes*:
   the host writes facts here. Relation paraphrase beyond the toy's templates.
 
 ## Report
