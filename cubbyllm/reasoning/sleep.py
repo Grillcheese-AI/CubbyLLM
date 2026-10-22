@@ -56,6 +56,7 @@ ROUTES: dict[str, tuple[str, str]] = {
     "ambiguous_relation": ("clarify", "several held relations fit the wording"),
     "ambiguous_hop": ("clarify", "a multi-valued hop: the question needs a qualifier or a choice"),
     "time_mismatch": ("clarify", "the question's tense or year is not the time the fact holds (order 0012); the asker may mean another"),
+    "time_undated": ("clarify", "a year asked of a value that changes over its subject's life, which no witness dates (order 0012)"),
     "retrieval_exhausted": ("source_gaps", "no fact reached the next hop, even after the fetch"),
     "latent_only": ("latent_audit", "only the latent tier had a chain; held back, never spoken"),
     "attributed_only": ("latent_audit", "one source alone stated the chain's fact; a second was sought (order 0012)"),

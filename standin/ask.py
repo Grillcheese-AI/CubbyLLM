@@ -681,6 +681,8 @@ class AskLoop:
             from book_source import BookSource
             books = BookSource(books)
         self.books = books
+        if books is not None and hasattr(books, "life") and books.life is None:
+            books.life = self._life                      # the same-name guard reads the subject's life from this world
         # the question's tense and year against the answer's dates (order 0012: "Who rules England?" on a reign
         # that ended is not answered); on with the books unless `tense` says otherwise, off without them
         self.tense = (books is not None) if tense is None else bool(tense)
@@ -932,10 +934,15 @@ class AskLoop:
         snap = self._snapshot(question, lr) if lr.result.verified and not why else None
         if snap and snap[0] != "as_of":                   # a snapshot's value asked about another time (order 0014)
             why = snap[1]
+        undated = self._undated(question, lr) if lr.result.verified and not why and not snap else None
         if why:                                           # the question's tense or year is not the fact's: not said
             rec.update(answer=None, verified=False, reason="time_mismatch", refused={"answer": lr.result.answer, "why": why})
         elif snap:                                        # a value that changes, from a dated snapshot: said "as of"
             rec.update(tier="as_of", reply=f"As of {snap[1]}, {rec['answer']}.")
+        elif undated and undated[0] == "refuse":          # the time rule (0012): a year asked, the books date nothing
+            rec.update(answer=None, verified=False, reason="time_undated", refused={"answer": lr.result.answer, "why": undated[1]})
+        elif undated:                                     # a value that changes, undated: true at one point, said so
+            rec.update(tier="at_one_point", reply=hedged(undated[1].rstrip(".")) if lr.attributed else undated[1])
         elif lr.result.verified and lr.attributed:        # one witness only: said hedged, the source never named
             rec.update(tier="attributed", reply=hedged(rec["answer"]))
         if self.books is not None:                        # the record's evidence: internal, the audit view's (0016)
@@ -959,6 +966,39 @@ class AskLoop:
         if tense_of(question) == "future":
             return ("refuse", f"asked in the future, the snapshot holds {w.snapshot}")
         return ("as_of", w.snapshot)
+
+    def _life(self, entity: str):
+        """(born, died) years the world holds for `entity` (either None): the books' same-name guard."""
+        from book_source import year
+        from cubbyllm.reasoning.planner import normalize
+        out = [None, None]
+        for _f, t in getattr(getattr(self.world, "index", None), "_by_subj", {}).get(normalize(entity or ""), []):
+            k = {"birth date": 0, "date of birth": 0, "death date": 1, "date of death": 1}.get(normalize(t.rel))
+            if k is not None and out[k] is None:
+                out[k] = year(t.obj)
+        return tuple(out)
+
+    def _undated(self, question: str, lr):
+        """The time rule (`time_rule`): for an answer whose last fact the books witness on a relation that changes
+        over its subject's life, and not every witness dates it -- ('refuse', why) when the question names a year,
+        ('hedge', the answer at one point) otherwise; None when the rule does not apply."""
+        from cubbyllm.reasoning.planner import normalize
+        from time_rule import at_one_point, undated
+        h = lr.result.trace[-1] if lr.result.trace else None
+        if h is None or h.triple is None:
+            return None
+        ws = getattr(self.books, "citations", {}).get(normalize(h.fact))
+        key = " ".join(h.fact.split())
+        prov = (getattr(self.world, "provenance", None) or {}).get(key, "")
+        if ws is None and prov and all(x.startswith("book:") for x in prov.replace(" (attributed)", "").split("+")):
+            ws = [{"when": (getattr(self.world, "times", None) or {}).get(key) or {}}]   # a book fact from a store (0013)
+        if not undated(h.triple.rel, ws):
+            return None
+        i = question.lower().find(h.triple.subj.lower())                # the subject as the asker wrote it
+        subj = question[i:i + len(h.triple.subj)] if i >= 0 else h.triple.subj
+        if strip_as_of(question)[1] is not None:
+            return ("refuse", f"no witness dates when {h.triple.obj} was the {say(h.triple.rel)} of {subj}")
+        return ("hedge", at_one_point(lr.result.answer, say(h.triple.rel), subj))
 
     def _time_check(self, question: str, lr) -> str | None:
         """Why the answer's last fact cannot be what the question asks about in time, or None: its tense (the
