@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS reads(book TEXT, para INTEGER, off INTEGER, subj TEXT
 CREATE INDEX IF NOT EXISTS reads_book ON reads(book);
 """
 CUE_WORDS = {w for ws in bf.CUES.values() for w in ws}
+PLACES = {"place of birth", "place of death", "place of burial", "capital", "location", "part of"}
 ONE_VALUE = {br.FRAME_CODE.get(r, r) for r in FUNCTIONAL}          # the relations with one value: born on, founded by ...
 _W = {}
 
@@ -152,6 +153,10 @@ def aggregate(out_db, idx_db, wiki):
     for book, _pid, off, subj, code, value, by, sentence, wh in rows:
         if (norm(subj), book) in unfit:                            # the same-name guard: another person of that name
             continue
+        if br.LABEL.get(code, code) in PLACES:                     # today's place rules on reads stored before them
+            value = bf.clean_place(value)
+            if value is None:
+                continue
         k = (norm(subj), code, norm(value))
         shown.setdefault(k, (subj, value))
         groups[k].append({"book": book, "author": books.get(book, ("", ""))[0], "era": books.get(book, ("", "unknown"))[1],

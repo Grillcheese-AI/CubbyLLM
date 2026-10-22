@@ -138,6 +138,43 @@ def frames(src, pairs, need, rng, within=None, cap: int = 30000) -> dict:
             "reads": read}
 
 
+HDC_GOLD = {"capital": "capital", "part of": "part of", "located in the administrative territorial entity": "location",
+            "country": "location"}
+
+
+def frames_bulk(worlds: str, pairs, hdc_path=None, within=None) -> dict:
+    """The frames over every paragraph of every book (order 0013's bulk worlds, after the same-name guard), against
+    the wiki world's values and the hdc world's capitals, parts and locations: agreement per half and per relation."""
+    import sqlite3
+    gold = collections.defaultdict(set)
+    for (s, rel), vs in pairs.items():
+        gold[(norm(s), rel)] |= set(vs)
+    if hdc_path and os.path.exists(hdc_path):
+        db = sqlite3.connect(f"file:{hdc_path}?mode=ro", uri=True)
+        q = f"SELECT skey, rel, obj FROM facts WHERE rel IN ({','.join('?' * len(HDC_GOLD))})"
+        for sk, rel, o in db.execute(q, list(HDC_GOLD)):
+            gold[(sk, HDC_GOLD[rel])].add(o)
+    stats, per, rows = {h: collections.Counter() for h in ("dev", "test")}, collections.defaultdict(collections.Counter), []
+    for f in sorted(glob.glob(os.path.join(worlds, "*.jsonl"))):
+        for line in open(f, encoding="utf-8"):
+            r = json.loads(line)
+            if r.get("inverse") or not r.get("rel") or " is the " not in r["fact"]:
+                continue
+            value, rel, subj = r["fact"].split(" is the ", 1)[0], r["rel"], r["subject"]
+            a = agree(rel, value, gold.get((norm(subj), rel), set()), within)
+            per[rel]["facts"] += 1
+            if a is None:
+                continue
+            h = half(subj)
+            stats[h][a] += 1; per[rel][a] += 1
+            rows.append({"subject": subj, "relation": rel, "value": value, "verdict": a, "half": h, "tier": r["tier"]})
+    tot = sum(stats.values(), collections.Counter())
+    ok = lambda c: round((c["agree"] + c["finer"] + c["coarser"]) / max(1, sum(c[k] for k in ("agree", "finer", "coarser", "contradict"))), 3)   # noqa: E731
+    return {"compared": sum(tot[k] for k in ("agree", "finer", "coarser", "contradict")), "all": dict(tot),
+            "agreement": {h: ok(c) for h, c in list(stats.items()) + [("all", tot)]},
+            "per_relation": {k: dict(v) for k, v in sorted(per.items())}, "rows": rows}
+
+
 class Offline:
     """The source below the books: nothing (no network); the books' facts stand or fall on their own."""
     name = "offline"
@@ -219,6 +256,7 @@ def main() -> None:
     ap.add_argument("--bench", type=int, default=100)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--hdc", default=os.environ.get("CUBBY_HDC_WORLD"), help="the hdc world: a gazetteer for 'coarser'")
+    ap.add_argument("--frames-bulk", default=None, help="order 0013's worlds dir: frames over every book, against the gold")
     ap.add_argument("--bulk", default=None, help="order 0013: the bulk pass's worlds dir, loaded into the bench's store")
     ap.add_argument("--out", default=os.path.join(HERE, "logs", f"exp_books_bench_{_dt.date.today().isoformat()}.json"))
     a = ap.parse_args()
@@ -235,6 +273,10 @@ def main() -> None:
     rep["frames"] = frames(BookSource(idx), pairs, a.frames, random.Random(a.seed + 1), within)
     print(f"frames: agreement {rep['frames']['agreement']} (dev {rep['frames']['dev']}, test {rep['frames']['test']}) "
           f"[{time.time() - t0:.0f}s]", flush=True)
+    if a.frames_bulk:                                                    # 0012's frames line on >= 200 triples
+        rep["frames_bulk"] = frames_bulk(a.frames_bulk, pairs, a.hdc, within)
+        print(f"frames over every book: {rep['frames_bulk']['compared']} compared, agreement {rep['frames_bulk']['agreement']}",
+              flush=True)
     rep["bench"] = bench(idx, pairs, rep["frames"]["reads"], a.bench, random.Random(a.seed + 2), within, a.bulk)
     b = rep["bench"]
     print(f"bench: {b['spoken']}/{b['questions']} spoken ({b['flat']} flat, {b['hedged']} hedged), wrong flat {b['wrong_flat']} (as scored before review {b['wrong_flat_as_scored']}), "

@@ -573,3 +573,11 @@ def test_a_closed_span_covers_its_years_and_an_open_one_covers_only_its_start():
     open_span = {"Governor of Tennessee is the position held of Bill Haslam": {"start": "2011-01-15"}}
     assert [t.obj for _f, t in _covering(cands[:1], open_span, 2011)] == ["Governor of Tennessee"]
     assert _covering(cands[:1], open_span, 2015) == []    # an unstated end is not an end in 9999
+
+
+def test_an_entity_ending_in_of_is_neither_a_crash_nor_a_profile():
+    """2026-10-22, the hdc bench: a rendered subject that ends in 'of' (a label cut by its template) passed the padded
+    ' of ' test and found no head -- an IndexError. No head: not a profile."""
+    from ask import profile_ask
+    assert profile_ask("Who is the director of?", lambda h: False) is None
+    assert profile_ask("Who is the great pyramid of giza?", lambda h: False) == ("who", "great pyramid of giza")

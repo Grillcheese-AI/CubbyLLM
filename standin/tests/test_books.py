@@ -286,3 +286,12 @@ def test_the_question_forms_name_a_wording_before_the_lexicon(tmp_path, monkeypa
     assert type(loop.resolvers[0]).__name__ == "Forms" and isinstance(loop.resolvers[1], WrongSynonyms)
     rec = loop.ask("Where was Napoleon Bonaparte born?")
     assert rec["verified"] and rec["answer"] == "Ajaccio"
+
+
+def test_a_place_the_pdf_broke_is_joined_and_a_heading_run_into_it_is_no_place():
+    """The bulk pass's capitals (2026-10-22): 'Mem-phis' and 'The-bes' are the PDF's line ends; 'BICULTURAL
+    KINGDOMAlexandria' is a heading run into a name; 'Horn-Bad Meinberg' is hyphenated on purpose."""
+    read = lambda s, e: [(t.rel, t.obj) for t, _s, _w in bf.read(s, e)]                    # noqa: E731
+    assert read("Mem-phis, the capital of Egypt, grew.", "Egypt") == [("capital", "Memphis")]
+    assert read("BICULTURAL KINGDOMAlexandria, the capital of Egypt, grew.", "Egypt") == []
+    assert read("Horn-Bad Meinberg, the capital of Lippe, grew.", "Lippe") == [("capital", "Horn-Bad Meinberg")]

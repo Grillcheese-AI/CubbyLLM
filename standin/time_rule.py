@@ -30,7 +30,8 @@ PROPERTIES = {"P6": "head of government", "P35": "head of state", "P39": "positi
               "P937": "work location", "P1416": "affiliation", "P749": "parent organization", "P36": "capital",
               "P17": "country", "P131": "located in the administrative territorial entity", "P361": "part of"}
 WIKI_NOUNS = {"position", "holder", "member", "group", "spouse", "capital", "ruler", "leader"}   # the wiki world's words
-CHANGES = {normalize(v) for v in PROPERTIES.values()} | WIKI_NOUNS
+HDC_LABELS = {"chairman", "position holder", "league or competition", "parent organization or unit"}   # hdc's labels, 2026-10-22
+CHANGES = {normalize(v) for v in PROPERTIES.values()} | WIKI_NOUNS | {normalize(v) for v in HDC_LABELS}
 
 
 def changes(relation: str) -> bool:

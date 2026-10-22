@@ -231,7 +231,8 @@ def profile_ask(question: str, is_relation=None) -> tuple[str, str] | None:
         # every ' of ' prefix is a head: 'the head of state of X' leads with 'head of state', not 'head' (2026-10-22)
         heads = [ent[:m.start()].strip() for m in _re.finditer(" of ", ent)]
         heads = [h[4:].strip() if h.lower().startswith("the ") else h for h in heads]
-        if is_relation is None or not heads[0] or any(is_relation(h) for h in heads if h):
+        # no head at all: the 'of' is at an end of the entity ('... of', padded above) -- not a profile either
+        if is_relation is None or not heads or not heads[0] or any(is_relation(h) for h in heads if h):
             return None                                  # a relation leads it: the emitter's plan, not a profile
     return m.group("kind").lower(), ent
 
