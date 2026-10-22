@@ -3,30 +3,13 @@ relations, entities and event ids each rendered readably, and the question asked
 Without ``v2``, the rendering of every fact shard built before 0011, bit for bit."""
 from __future__ import annotations
 
+import os
 import re
+import sys
 
-CAMEL = r"(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])"
-DIGITS = r"(?<=[A-Za-z])(?=[0-9])|(?<=[0-9])(?=[A-Z][a-z])"     # a digit run is a word: Began1933, 1982French
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
-def words(name: str, relation: bool = False, v2: bool = False) -> str:
-    """A name as words. ``v2`` (``--names v2``, order 0011): a ``relation`` ``WORKS_FOR`` -> ``works for``;
-    an entity ``KeikoMatsuzaka`` -> ``Keiko Matsuzaka``, an all-caps one kept (``ABBA``, ``1 BCE``); an
-    event id (any name with an underscore) part by part, split on CamelCase and digit runs, case kept:
-    ``FortPeckDam_ConstructionBegan1933`` -> ``Fort Peck Dam Construction Began 1933``,
-    ``Rocket_UseInChina13thCentury`` -> ``Rocket Use In China 13th Century`` (an id cannot tell a word from
-    a proper noun, so nothing is lowercased: "china" would be wrong, "Began" is only stiff). Without
-    ``v2``, every shard before 0011, bit for bit: a name with an underscore or in capitals lowercased with
-    its underscores spaced (``fortpeckdam constructionbegan1933``), any other split on CamelCase."""
-    if not v2:
-        if "_" in name or name.isupper():
-            return name.replace("_", " ").lower()
-        return re.sub(CAMEL, " ", name)
-    if relation:
-        return name.replace("_", " ").lower()
-    if "_" in name:
-        return " ".join(p if p.isupper() else re.sub(DIGITS, " ", re.sub(CAMEL, " ", p)) for p in name.split("_") if p) or name
-    return name if name.isupper() else re.sub(CAMEL, " ", name)
+from cubbyllm.model.fact_layout import CAMEL, DIGITS, words  # noqa: E402,F401 -- with the layout (order 0031)
 
 
 def question(s: str, r: str, v2: bool = False) -> str:

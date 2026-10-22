@@ -48,7 +48,6 @@ from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by
 
 import argparse
 import datetime as _dt
-import hashlib
 import json
 import os
 import random
@@ -66,23 +65,8 @@ from fact_names import doubled, question, words  # noqa: E402
 
 MODELS = os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS"))
 WIKI = os.path.join(ROOT, "standin", "data", "out", "wikikg", "triplets.parquet")
-ORIGIN, SIDE, STEP, GRID = 4096, 1024, 6, 54      # the lattice of entity cells, the step grid of relations (x, y)
-
-
-def cell(entity: str) -> tuple:
-    """The entity's cell: a hash into the lattice, the same for every document and every run."""
-    h = hashlib.blake2b(entity.encode("utf-8"), digest_size=6).digest()
-    return tuple(ORIGIN + int.from_bytes(h[2 * i:2 * i + 2], "little") % SIDE for i in range(3))
-
-
-def step(rel_index: int) -> tuple:
-    return (STEP * (rel_index % GRID), STEP * (rel_index // GRID), 0)
-
-
-def address(subject: str, rel_index: int, piece: int = 0) -> tuple:
-    """The fact's address, and the i-th piece of its object's name ``6 i`` cells up z."""
-    c, d = cell(subject), step(rel_index)
-    return (c[0] + d[0], c[1] + d[1], c[2] + d[2] + STEP * piece)
+from cubbyllm.model.fact_layout import GRID, ORIGIN, SIDE, STEP, address, cell, step  # noqa: E402,F401 -- the
+#   far-fact layout lives in the package: the loci reader writes it too (order 0031)
 
 
 def hr_answers(tk, ids):

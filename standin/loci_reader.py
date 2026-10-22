@@ -62,7 +62,7 @@ class LociReader:
     def __init__(self, ckpt: str | None = None, tokenizer: str | None = None, device: str = "cpu", max_pieces: int = 16):
         import torch
         from tokenizers import Tokenizer
-        from train_base import build_model
+        from cubbyllm.model.build import build_model
         import wikikg as wk
         self.torch, self.max_pieces = torch, int(max_pieces)
         ck = torch.load(ckpt or os.environ["CUBBY_LOCI_CKPT"], map_location="cpu", weights_only=False)
@@ -86,7 +86,7 @@ class LociReader:
 
     def scene(self, entity: str, relation: str, facts) -> tuple[list, list, list]:
         """(ids, places, roles) of the scene up to `Answer: `, for `facts` [(subject, object, shard relation)]."""
-        from make_fact_shard import address, words
+        from cubbyllm.model.fact_layout import address, words
         ids, pos, roles = [], [], []
 
         def put(text, at=None, role=0):
@@ -113,7 +113,7 @@ class LociReader:
         """`facts`: [(subject, relation as the store words it, object)] about `entity`. -> {answer, miss, why, lam}."""
         from cubbyllm.model.spatial import NO_PLACE
         from cubbyllm.reasoning.planner import normalize
-        from make_fact_shard import address
+        from cubbyllm.model.fact_layout import address
         torch = self.torch
         # the address hashes the name as written: ask with the store's own spelling of the subject (the loop's seed
         # arrives normalized, 'harpdog brown', and read 'Harpdog Brown''s facts from another address, 2026-10-22)
