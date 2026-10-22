@@ -1,5 +1,5 @@
 # 0029 — Copy or refuse, arm D: a confidence learned on calibration documents, so fewer right answers are refused
-status: in progress
+status: in progress (step 1 reviewed 2026-10-22: step 2 may start)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: H-K10 (after 0022)
 
 ## Why
@@ -99,3 +99,17 @@ In plain words: Cubby keeps saying "I don't know" when it might be wrong, but sa
   1. In step 2, should the end read (its best match and its margin at the answer's end) be features of its own, apart
      from the last piece's?
   2. May step 2 start?
+
+## Review of step 1 (Cowork, 2026-10-22): step 2 may start
+The diagnostics reproduce 0022's calibration to the digit (exact 0.6958, refused 0.2843, wrong 0.020, absent 0.0), so
+the rows can be trusted. The finding changes the shape of step 2: **the errors are all about where an answer ends
+(16 of 16: 13 cut short, 3 run on), and the refusals are mostly right answers lost to the min over long answers (211
+of 228 had the right pieces; refusals climb from 17% at 2 pieces to 71% at 9+).**
+- **Question 1: yes.** The end read gets its own features (its best match, its margin to the runner-up, and whether
+  the address after the last piece reads empty), apart from the last piece. The pieces get length-aware aggregates
+  (mean, first, count, the mean of the log scores), so a long answer is not punished for being long.
+- **Question 2: yes, step 2 may start**, as two decisions scored on the same half and thresholded together under the
+  conformal bound: one for the pieces, one for the end.
+- **Add one cheap arm beside the learned one: a whole-name check.** The document wrote each name as a run of pieces,
+  so an answer that stops inside a written run, or runs past its end, can be caught structurally. Report how many of
+  the 16 boundary errors it catches and how many refusals it gives back, alone and with the learned scorer.

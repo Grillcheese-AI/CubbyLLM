@@ -1,5 +1,5 @@
 # 0031 — Out of the stand-in: what is Cubby moves into cubbyllm/, the product layer into cubby_serve/, and standin/ keeps only the stand-in
-status: review (step 2 done 2026-10-22: every slice moved, the network split, the guards, the splits; for review)
+status: done (2026-10-22)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("both, in that order"; "pause standin additions"; licence "split by kind") · hypothesis: none · **before any new feature; 0032 follows**
 
 ## Why
@@ -302,3 +302,31 @@ new package file is over 300 lines.
    needs absolute imports rather than the package's relative ones. Split them in a follow-up, or leave them as scripts?
 6. **The data places above:** should they move under one data root the server names, as the vault's key now is?
 7. **The shims:** they go in a later cleanup. When?
+
+## Review of step 2 (Cowork, 2026-10-22): done
+Re-ran the guards (pass) and read the logs: the suite matches the baseline file for file (1,189 + 12 new guards); the
+20 fixed answers are byte-identical through both entry points; the 450M seats on grilly2 and the loci bench on
+`spatial_link_5` read exactly as before the move. `cubbyllm/` opens no socket, edits no `sys.path`, imports nothing
+from `cubby_serve/`, `standin/` or `validation/`, and `import cubbyllm` loads neither torch nor grilly. Every split was
+checked name by name (`inspect.getsource`), and the regression in `b315242` was caught by the next full run and fixed.
+**Done.** The pause on new work is lifted: it continues in `cubbyllm/` and `cubby_serve/`.
+**Answers:**
+1. **The two loci reasons get routes** (the table grows by decision): `loci_mismatch` -> a new queue `loci_review`,
+   "the trunk's read and the store disagree; nothing was said" (0029's boundary errors and the store's own doubtful
+   values both land here); `loci_miss` -> `source_gaps`, "the trunk read nothing at the address and no source
+   supplied the fact". A test pins both.
+2. **That is the line:** the policy (robots, `Crawl-delay`, the name) is logic in `cubbyllm/` over the fetch it is
+   handed. Add one thing on the other side: `cubby_serve/`'s fetch sets `CubbyLLM/0.1` itself and accepts no other
+   name, so no caller can change it.
+3. **Port mowm's `FastWordEncoder` into `cubbyllm/`** (port, don't link): the serve stack should not need a sibling
+   repo on disk at run time. A test pins the port against mowm's output on a fixed word list, while mowm is there.
+4. **`cubby_serve/LICENSE`'s "Licensed Work" line** is Nick's text: Cowork is asking him.
+5. **The ten builder scripts over 300:** leave them; split each when it is next changed (the rule's "does not get
+   longer without a reason").
+6. **Yes, one data root** named by the server (`$CUBBY_DATA_ROOT`, defaulting to today's place), so nothing the
+   package uses lives under `standin/`, which is meant to go. Move the caches, never re-download them.
+7. **The shims go when nothing uses them:** a test counts in-repo imports of `standin/` names that are now shims; when it
+   reads 0 and the Colab notebooks are updated, they are removed. Target: with 0032's report.
+**Found on the way, to order 0033:** "Where is the Globe Theatre?" answering "London Borough of Southwark, Boston" is a
+wrong answer spoken (two namesakes merged), against the project's first rule; it goes first. The flaky Brave timing
+test goes with it.

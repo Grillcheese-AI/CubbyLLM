@@ -1,5 +1,5 @@
 # 0030 — Repo hygiene: the red tests made true, local paths out of committed files, the largest files split
-status: review
+status: done
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("yes") · hypothesis: none
 
 ## Why
@@ -104,3 +104,14 @@ In plain words: the alarms only ring for real problems, and nothing private leak
     commit).
   - The serve stack's own defaults (the fastword table, mowm's semantic words) resolve to the same files as before.
 - **Questions:** none.
+
+## Review (Cowork, 2026-10-22): done
+Re-ran `tests/test_local_paths.py` and `tests/test_package_rules.py` (pass) and scanned `git grep` independently. One
+cause for all 25 red tests and the import error, found and fixed without an `xfail` (the removed v5/v6 pieces back
+word for word, their dead tests archived, not deleted); 13,052 local paths in 350 files turned into names with an
+`expand()` that keeps defaults resolving; the two big files split with the suite, the talk plugin's digests and the
+real stack unchanged. **Done.** Two leftovers the guard does not see, to fix in 0033:
+- `validation/logs/exp_m3_cot_pipeline_rb1.stdout` still holds three paths under a user folder (the guard's file
+  list leaves out `.stdout`);
+- `docs/model-competition-for-cubby-finalconsensus.json` holds the synced Drive's folder, with its drive letter, three
+  times, escaped twice (a JSON string inside JSON), a form the guard does not try.
