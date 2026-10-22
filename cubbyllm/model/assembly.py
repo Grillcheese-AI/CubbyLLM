@@ -128,11 +128,12 @@ class CubbyModel:
         x = self.embedding.embed(tokens, ctx)                # (B, S, d), hybrid
         read = copy = None
         if self.spatial is not None:
-            x = self.spatial.bind_input(x, positions, writes)  # e (*) S(p): the input level
+            E = self.embedding.core.weight                     # text keys are made from it (model/spatial_key.py)
+            x = self.spatial.bind_input(x, positions, writes, E)  # e (*) S(p): the input level
             w = placed if writes is None else writes
             a = placed if asks is None else asks
             scene = self.spatial.scene(x, w, starts)
-            read = self.spatial.hook(scene, positions, a)    # the route from the trunk
+            read = self.spatial.hook(scene, positions, a, tokens, E, starts)    # the route from the trunk
             if self.spatial.copy_path is not None and scene is not None and positions is not None:
                 copy = (scene, a, w)
         h = self.backbone.forward(x, read=read) if read is not None else self.backbone.forward(x)
@@ -192,7 +193,7 @@ class CubbyModel:
         ctx = self.context_source.infer(s / n)                          # running mean
         x = self.embedding.embed(token.unsqueeze(1), ctx)[:, 0]
         if self.spatial is not None:
-            x = self.spatial.bind_input(x, position, write)
+            x = self.spatial.bind_input(x, position, write, self.embedding.core.weight)
             scene, cp = state["scene"], self.spatial.copy_path
             if start is not None:                                    # a document begins: its scene is empty
                 scene.mul_((~start).unsqueeze(-1).float())
@@ -202,7 +203,8 @@ class CubbyModel:
             if cp is not None:                                       # the copy's ring: the ids this stream wrote
                 cp.remember(state, token, w, start)
             a = placed if ask is None else ask
-            y, bb = self.backbone.step(x, state["bb"], read=self.spatial.hook(scene, position, a))
+            y, bb = self.backbone.step(x, state["bb"], read=self.spatial.hook(
+                scene, position, a, token, self.embedding.core.weight, start, state))
         else:
             y, bb = self.backbone.step(x, state["bb"])
         y = self.memory.forward_generated(y.unsqueeze(1), ctx)[:, 0]
@@ -213,7 +215,7 @@ class CubbyModel:
             if cp is not None and a is not None and position is not None:
                 logits = self.spatial.add_copy(logits[:, None], y[:, None], scene[:, None], position[:, None], a[:, None],
                                                self.embedding.core.weight, state)[:, 0]
-            out.update({k: state[k] for k in ("ring", "ring_n") if k in state})
+            out.update({k: state[k] for k in ("ring", "ring_n", "ptr_ids", "ptr_keys", "ptr_n") if k in state})
         return logits, out
 
     def init_state(self, batch: int = 1, device=None) -> dict:
@@ -240,8 +242,7 @@ class CubbyModel:
               "ctx_n": torch.zeros((), device=device)}
         if self.spatial is not None:
             st["scene"] = torch.zeros(batch, d, device=device)     # the stream's placed tokens, bound and summed
-            if self.spatial.copy_path is not None:                  # the copy's ring of written ids: fixed-size
-                st.update(self.spatial.copy_path.init_state(batch, device))
+            st.update(self.spatial.init_state(batch, device))      # the copy's / the pointer's rings: fixed-size
         return st
 
     def graphed_step(self):

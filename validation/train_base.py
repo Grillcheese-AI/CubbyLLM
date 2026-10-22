@@ -461,7 +461,9 @@ def spatial_link(meta: dict):
                        at=int(sp.get("at", meta["L"] // 2)), query=str(sp.get("query", "learned")),
                        bind=str(sp.get("bind", "placed")), copy=sp.get("copy"),   # copy: absent = no copy path
                        copy_tau=float(sp.get("copy_tau", 3.0)), copy_ring=int(sp.get("copy_ring", 256)),
-                       copy_beta=sp.get("copy_beta"))                    # copy_beta: absent = the gate sees h alone
+                       copy_beta=sp.get("copy_beta"),                    # copy_beta: absent = the gate sees h alone
+                       key=sp.get("key"), key_pieces=int(sp.get("key_pieces", 16)),   # key: absent = places (order 0006)
+                       pointer_window=int(sp.get("pointer_window", 16)), pointer_dim=int(sp.get("pointer_dim", 64)))
 
 
 def flops_per_token(model: CubbyModel, meta: dict, seq: int) -> float:

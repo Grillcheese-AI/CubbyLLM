@@ -1,0 +1,9 @@
+# order 0006: flags off = bit-identical. The spatial configurations that existed before the order, built with the same
+# seeds in the package at HEAD (c886e24, before 0006) and in the working tree with spatial_key.py wired in, each run on
+# the test documents (_roles(): roles, a document restart) and on plain text; torch.equal on every output.
+# (tests/model test helpers: D 16, L 5, S 9; torch 2.4.1 CPU, 2026-10-21)
+config            forward  decode  text
+placed_copy_beta  True     True    True     (query=placed, bind=writes, copy=ring, copy_beta=0.12 -- run 4's form)
+placed_writes     True     True    True     (query=placed, bind=writes -- run 3's form)
+learned           True     True    True     (the default link)
+placed_table      True     True    True     (query=placed, bind=writes, copy=table)

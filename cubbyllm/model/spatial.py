@@ -56,6 +56,13 @@ distribution (``model/spatial_copy.py``) -- the cleanup the far facts' read alre
 (0.992 a piece over the document's writers, 0.758 over the vocabulary) handed to the output
 directly instead of through 16 layers. ``add_copy`` is the call; off, nothing changes.
 
+**key="text"** (2026-10-21, order 0006; ``meta["spatial"]["key"]``, absent = places): a write's
+address is a function of its words, ``u(e(s)) (*) u(e(r)) (*) P_i`` (``model/spatial_key.py``),
+its ``positions`` slots carrying ``(s, r, i)`` instead of coordinates; only the writers are bound
+(``bind="writes"``). With ``query="pointer"`` an asking token points at its subject and relation
+among the previous tokens and computes that key from them -- a free-text question, no address
+given; ``positions[..., 2]`` is the piece it asks. The copy reads where the read did.
+
 What it brings CubbyLLM: a trunk that can be told where every block is without a word of
 text, and ask the scene "what is here" at a place it chose, with the answer's correctness
 guaranteed by the encoding rather than hoped for from training. A conventional model has no
@@ -79,12 +86,15 @@ class SpatialLink(nn.Module):
     def __init__(self, d_model: int, scale: float = 2.0, seed: int = 0, dims: int = 3,
                  at: int = 0, gate_bias: float = -4.0, query: str = "learned", bind: str = "placed",
                  copy: str | None = None, copy_tau: float = 3.0, copy_ring: int = 256,
-                 copy_beta: float | None = None) -> None:
+                 copy_beta: float | None = None, key: str | None = None, key_pieces: int = 16,
+                 pointer_window: int = 16, pointer_dim: int = 64) -> None:
         super().__init__()
-        if query not in ("learned", "placed"):
-            raise ValueError(f"query must be 'learned' or 'placed', not {query!r}")
+        if query not in ("learned", "placed", "pointer"):
+            raise ValueError(f"query must be 'learned', 'placed' or 'pointer', not {query!r}")
         if bind not in ("placed", "writes"):
             raise ValueError(f"bind must be 'placed' or 'writes', not {bind!r}")
+        if key not in (None, "text") or (key and bind != "writes") or (query == "pointer" and not key):
+            raise ValueError(f"key must be None or 'text' (with bind='writes'); query='pointer' needs it -- key={key!r}")
         self.bind_mode = bind
         self.d, self.dims, self.scale, self.seed, self.at = int(d_model), int(dims), float(scale), int(seed), int(at)
         self.query = query
@@ -96,6 +106,13 @@ class SpatialLink(nn.Module):
         with torch.no_grad():
             self.o.weight.zero_()
             self.gate.bias.fill_(float(gate_bias))
+        self.keys = self.pointer = None          # key="text" / query="pointer" (model/spatial_key.py)
+        if key is not None:
+            from .spatial_key import Pointer, TextKeys
+            self.keys = TextKeys(self.d, key_pieces, self.seed)
+            if query == "pointer":
+                self.pointer = Pointer(self.d, pointer_window, pointer_dim)
+        self._q_used = None                      # the read's query, for the copy when it is not given
         self.copy_path = None                    # registered last: its tensors follow the link's in parameters()
         if copy is not None:
             from .spatial_copy import SpatialCopy
@@ -119,9 +136,11 @@ class SpatialLink(nn.Module):
             ang = p.float() @ self.phases.T.float() / self.scale
         return torch.polar(torch.ones_like(ang), ang)
 
-    def encode(self, p: torch.Tensor) -> torch.Tensor:
-        """``S(p)``, (..., d) float32 unit vectors."""
-        return torch.fft.irfft(self.spectrum(p), n=self.d, dim=-1)
+    def encode(self, p: torch.Tensor, table: torch.Tensor | None = None) -> torch.Tensor:
+        """``S(p)``, (..., d) float32 unit vectors; with ``key="text"`` the text key of ``p`` = (s, r,
+        piece), from the embedding ``table``."""
+        spec = self.keys.address(table, p) if self.keys is not None else self.spectrum(p)
+        return torch.fft.irfft(spec, n=self.d, dim=-1)
 
     # -- bind: the input level ------------------------------------------------------------
     def bind(self, e: torch.Tensor, positions: torch.Tensor | None) -> torch.Tensor:
@@ -132,10 +151,16 @@ class SpatialLink(nn.Module):
         spec = torch.fft.rfft(e.float(), dim=-1) * self.spectrum(positions)
         return torch.fft.irfft(spec, n=self.d, dim=-1).to(e.dtype)
 
-    def bind_input(self, e: torch.Tensor, positions: torch.Tensor | None, writes: torch.Tensor | None = None) -> torch.Tensor:
+    def bind_input(self, e: torch.Tensor, positions: torch.Tensor | None, writes: torch.Tensor | None = None,
+                   table: torch.Tensor | None = None) -> torch.Tensor:
         """The input level: every placed token bound (``bind="placed"``), or with ``bind="writes"``
         and roles given only the writing ones -- an asking token's place goes to zero, ``S(0)`` the
-        identity, so it enters as itself."""
+        identity, so it enters as itself. With ``key="text"`` a writer is bound at its text key."""
+        if self.keys is not None and positions is not None:
+            if writes is None:
+                raise ValueError("key='text' binds only the writers: give the roles (writes)")
+            bound = torch.fft.irfft(torch.fft.rfft(e.float(), dim=-1) * self.keys.address(table, positions), n=self.d, dim=-1)
+            return torch.where(writes.unsqueeze(-1), bound.to(e.dtype), e)              # the others enter as themselves, exactly
         if positions is not None and writes is not None and self.bind_mode == "writes":
             positions = positions * writes.unsqueeze(-1).to(positions.dtype)
         return self.bind(e, positions)
@@ -178,28 +203,44 @@ class SpatialLink(nn.Module):
         ``q`` names, (..., d)."""
         return self.unbind(scene, self.unitary(q))
 
-    def read(self, h: torch.Tensor, scene: torch.Tensor | None, own=None) -> torch.Tensor:
+    def read(self, h: torch.Tensor, scene: torch.Tensor | None, own=None, ptr=None) -> torch.Tensor:
         """The gated read of ``scene`` -- (B, S, d) running, or (B, d) at a decode step --
         from the trunk stream ``h`` of the same leading shape; zero when there is no scene.
         ``own`` is ``(S(p), placed)`` for ``query="placed"``: a placed token's query is its
-        own place, the others' the learned one."""
+        own place, the others' the learned one. ``ptr`` makes ``own`` from the stream itself
+        (``query="pointer"``)."""
         if scene is None:
             return torch.zeros_like(h)
         n = h * torch.rsqrt(h.pow(2).mean(-1, keepdim=True) + 1e-6) * self.norm_w
         g = torch.sigmoid(self.gate(n))                                  # (..., 1): whether
         q = self.q(n)                                                    # (..., d): what place
+        if ptr is not None:
+            own = ptr(n)
         if own is not None:                                              # S(p) stays float32: no bf16 round trip
             q = torch.where(own[1].unsqueeze(-1), own[0].float(), q.float())
+        if self.copy_path is not None and self.query != "placed":       # the copy reads where the read did
+            self._q_used = q
         return g * self.o(self.lookup(scene.float(), q).to(h.dtype))
 
     def hook(self, scene: torch.Tensor | None, positions: torch.Tensor | None = None,
-             placed: torch.Tensor | None = None):
+             placed: torch.Tensor | None = None, ids=None, table=None, starts=None, state=None):
         """``(layer, fn)`` for the backbone: the read at layer ``at`` over this scene;
-        ``positions`` / ``placed`` (as ``bind`` / ``scene`` take them) feed ``query="placed"``."""
-        own = None
+        ``positions`` / ``placed`` (as ``bind`` / ``scene`` take them) feed ``query="placed"``, and
+        with ``ids`` / ``table`` / ``starts`` (a decode step: its ``state``) ``query="pointer"``."""
+        own = ptr = None
         if self.query == "placed" and positions is not None and placed is not None:
-            own = (self.encode(positions), placed)
-        return (self.at, lambda h: self.read(h, scene, own))
+            own = (self.encode(positions, table), placed)
+        if self.pointer is not None and positions is not None and placed is not None:
+            ptr = lambda n: self.pointer.query(self.keys, n, ids, table, positions, placed, starts, state)  # noqa: E731
+        return (self.at, lambda h: self.read(h, scene, own, ptr))
+
+    def init_state(self, batch: int, device=None) -> dict:
+        """The decode state the copy's ring and the pointer's ring need (empty without them)."""
+        st = {}
+        for part in (self.copy_path, self.pointer):
+            if part is not None:
+                st.update(part.init_state(batch, device))
+        return st
 
     # -- copy: the read, cleaned up into the output (model/spatial_copy.py) -----------------
     def add_copy(self, logits: torch.Tensor, h: torch.Tensor, scene: torch.Tensor, positions: torch.Tensor,
@@ -210,6 +251,7 @@ class SpatialLink(nn.Module):
         the scene was written from. Mode "ring" also takes ``cands``: ``(tokens, writes, starts)`` in
         a forward, the decode state (its ring) in a step."""
         cp, V, d = self.copy_path, logits.shape[-1], h.shape[-1]
+        q_used, self._q_used = self._q_used, None                      # this forward's, taken once
         idx, ids, ok = asks.reshape(-1).nonzero().squeeze(1), None, None
         if cp.mode == "ring" and idx.numel():
             from .spatial_copy import ring_candidates
@@ -219,7 +261,9 @@ class SpatialLink(nn.Module):
         if idx.numel() == 0:
             return logits
         flat = logits.reshape(-1, V)
-        r = self.lookup(scene.reshape(-1, d)[idx].float(), self.encode(positions.reshape(-1, self.dims)[idx]))
+        q = (q_used.reshape(-1, d)[idx] if self.query != "placed"         # the read's own query (learned, pointer)
+             else self.encode(positions.reshape(-1, self.dims)[idx], table))
+        r = self.lookup(scene.reshape(-1, d)[idx].float(), q)
         mix = cp(flat[idx], h.reshape(-1, d)[idx], r, table, idx, ids, ok)[0]
         return flat.index_copy(0, idx, mix.to(logits.dtype)).reshape(logits.shape)
 
