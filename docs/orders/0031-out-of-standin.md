@@ -1,5 +1,5 @@
 # 0031 — Out of the stand-in: what is Cubby moves into cubbyllm/, the product layer into cubby_serve/, and standin/ keeps only the stand-in
-status: in progress (step 1: the move map)
+status: review (step 1: the move map)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("both, in that order"; "pause standin additions"; licence "split by kind") · hypothesis: none · **before any new feature; 0032 follows**
 
 ## Why
@@ -78,12 +78,43 @@ labelled as such.
 - Behaviour changes of any kind; the game's home; deleting `standin/` (it goes when the GGUF seats retire).
 
 ## Report
-<!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Move map:**
-- **Files:**
-- **Tests:**
-- **Measured:** <against each acceptance line>
-- **Not verified here:**
-- **Found on the way:**
-- **Questions:**
+### Step 1: the move map (2026-10-22), for review before any move
+- **Commits:** `231348e` (in progress), and this one (the map, nothing moved).
+- **Move map:** `docs/0031_move_map.md` (the table, every module), `validation/logs/move_map_0031_2026-10-22.json` (with
+  every importer). All 146 modules of `standin/` (38,387 lines):
+  - **71 to `cubbyllm/`:** worlds 22, sources 3 + news 9, affect 9, cortex 7, plugins 8, speech 5, reasoning 4, emit 3,
+    the brain 1;
+  - **12 to `cubby_serve/`;**
+  - **34 builders beside their trainers in `validation/`:** `sft/` 20, for the 450M's talk and emitter adapters;
+    `build/` 14, for the worlds, the lexicon, the ear and the benches;
+  - **29 stay:** the game 16, the GGUF seat and the emitter facade, the LFM source, the proposer, the stand-in's eval,
+    5 probes, and 3 builders that serve the GGUF adapters only.
+- **What the map found:**
+  - **18 imports would cross the new lines.** For example: `ask` imports the LFM source and the stand-in eval's
+    `strip_fences`; the brain imports the emitter's prompt format from an SFT builder; `feeling` imports the game's
+    paths; `grounding` imports the game's `numbers`. Each gets a behaviour-free fix, a helper moved or an object passed
+    in, as its own commit before its slice. The map lists them one by one.
+  - **Four files split before the move,** each a commit with its tests pinning it: `serve.py` (`CubbyBrain` to
+    `cubbyllm/brain.py`, `build_serve` to `cubby_serve/build.py`), `identity.py` (the voice rules leave, the SFT
+    records stay with the builders), `emitter_base.py` (the contract leaves, the GGUF templates stay) and
+    `import_science.py` (the mount leaves, the import goes with the builders).
+  - **27 moving files are over 300 lines;** they are split after the move, the order's five first.
+  - **The tests:** all 81 test files in `standin/tests/`, each placed by its name or by what it covers. 13 stay with the
+    game; 3 test `validation/` scripts and go to `tests/validation/`; the rest go to `tests/worlds/`, `sources/`,
+    `affect/`, `speech/`, `reasoning/`, `emit/`, `plugins/`, `cortex/`, `brain/`, `serve/` and `build/`.
+- **The shims:** a left-behind `standin/<name>.py` makes the old name the same module object (`sys.modules`), so flat
+  imports, private names and monkeypatches keep working, with a `DeprecationWarning`. A script run by its path runs
+  its new home.
+- **Questions** (in the map; Nick's calls marked):
+  1. **The builders' licence** (Nick): `validation/` is Apache-2.0, so moving them there relicenses 34 BSL files. Is
+     that right, or should they have a BSL folder of their own?
+  2. **The network in `cubbyllm/`:** `sources.py` says "The network lives HERE, not in cubbyllm/". Keep the order's
+     `cubbyllm/sources/` and retire that rule, or put the fetchers in `cubby_serve/`?
+  3. **`cubby_serve/` reaching the stand-in:** may it import `emitter_llama`, `lfm_source` and `pacman` lazily, behind
+     `--gguf`, `--web-reader` / `--ask lfm` and `--pacman` only, with a guard listing them?
+  4. **`vault`:** into `cubbyllm/speech/` (recommended; the context graph encrypts its saves with it), or passed in by
+     the server?
+  5. **`standin/cortex/`** to `cubbyllm/cortex/`?
+  6. **The file names,** with the package prefix dropped?
+  7. **`ear.py`'s wiring string** names the private BlockWorld repo: reword it when it moves?
+- **Not done (step 2 waits for the review):** the moves, the shims, the guards, `pyproject.toml`, the licences, the docs.

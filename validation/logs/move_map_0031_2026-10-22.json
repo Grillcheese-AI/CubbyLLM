@@ -1,0 +1,3117 @@
+{
+ "modules": [
+  {
+   "module": "standin/afferent.py",
+   "lines": 362,
+   "to": "cubbyllm/affect/afferent.py",
+   "importers": [
+    "standin/chat.py",
+    "standin/coach.py",
+    "standin/tests/test_afferent.py"
+   ],
+   "tests": [
+    "standin/tests/test_afferent.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/ask.py",
+   "lines": 1694,
+   "to": "cubbyllm/reasoning/ask.py",
+   "importers": [
+    "exp_e6_host_view.py",
+    "standin/data/build_chat_sft.py",
+    "standin/data/build_explicit_sft.py",
+    "standin/data/build_ground_sft.py",
+    "standin/data/build_passage_sft.py",
+    "standin/data/build_profile_sft.py",
+    "standin/data/build_quotes_sft.py",
+    "standin/data/build_webqa_sft.py",
+    "standin/serve_cli.py",
+    "standin/tests/test_ask.py",
+    "standin/tests/test_ask_branching.py",
+    "standin/tests/test_ask_relation.py",
+    "standin/tests/test_books.py",
+    "standin/tests/test_books_bulk.py",
+    "standin/tests/test_claim_check.py",
+    "standin/tests/test_hdc_store.py",
+    "standin/tests/test_loci_reader.py",
+    "standin/tests/test_news_trigger.py",
+    "standin/tests/test_self_source.py",
+    "standin/tests/test_sleep_loop.py",
+    "standin/tests/test_time_rule.py",
+    "standin/tests/test_web_source.py",
+    "standin/tests/test_worlds.py",
+    "validation/bench_loci_learn.py",
+    "validation/exp_books_bench.py",
+    "validation/exp_e6_talk_gate.py",
+    "validation/exp_e8_history_retrieval.py",
+    "validation/exp_e9_context_followups.py",
+    "validation/exp_hdc_bench.py",
+    "validation/exp_leak_scan.py",
+    "validation/exp_r32_branching_inpipe.py",
+    "validation/exp_worlds_bench.py"
+   ],
+   "tests": [
+    "standin/tests/test_ask.py",
+    "standin/tests/test_ask_branching.py",
+    "standin/tests/test_ask_relation.py",
+    "standin/tests/test_books.py",
+    "standin/tests/test_books_bulk.py",
+    "standin/tests/test_claim_check.py",
+    "standin/tests/test_hdc_store.py",
+    "standin/tests/test_loci_reader.py",
+    "standin/tests/test_news_trigger.py",
+    "standin/tests/test_self_source.py",
+    "standin/tests/test_sleep_loop.py",
+    "standin/tests/test_time_rule.py",
+    "standin/tests/test_web_source.py",
+    "standin/tests/test_worlds.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/audience.py",
+   "lines": 223,
+   "to": "cubbyllm/speech/audience.py",
+   "importers": [
+    "standin/ask.py",
+    "standin/board_api.py",
+    "standin/serve.py",
+    "standin/serve_api.py",
+    "standin/serve_get.py",
+    "standin/serve_post.py",
+    "standin/tests/test_audience.py",
+    "standin/tests/test_news_trigger.py",
+    "standin/tests/test_plugins_check.py",
+    "validation/exp_leak_scan.py"
+   ],
+   "tests": [
+    "standin/tests/test_audience.py",
+    "standin/tests/test_news_trigger.py",
+    "standin/tests/test_plugins_check.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/board_api.py",
+   "lines": 192,
+   "to": "cubby_serve/board/api.py",
+   "importers": [
+    "standin/serve_cli.py",
+    "standin/serve_get.py",
+    "standin/tests/test_board.py",
+    "standin/tests/test_board_review.py",
+    "standin/tests/test_plugins_serve.py"
+   ],
+   "tests": [
+    "standin/tests/test_board.py",
+    "standin/tests/test_board_review.py",
+    "standin/tests/test_plugins_serve.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/board_data.py",
+   "lines": 273,
+   "to": "cubby_serve/board/data.py",
+   "importers": [
+    "standin/board_api.py",
+    "standin/tests/test_board.py",
+    "standin/tests/test_board_review.py"
+   ],
+   "tests": [
+    "standin/tests/test_board.py",
+    "standin/tests/test_board_review.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/book_frames.py",
+   "lines": 177,
+   "to": "cubbyllm/worlds/book_frames.py",
+   "importers": [
+    "standin/book_reader.py",
+    "standin/book_source.py",
+    "standin/data/build_reader_sft.py",
+    "standin/tests/test_books.py",
+    "standin/worlds_fiction.py",
+    "validation/books_bulk_read.py",
+    "validation/exp_books_bench.py"
+   ],
+   "tests": [
+    "standin/tests/test_books.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/book_reader.py",
+   "lines": 121,
+   "to": "cubbyllm/worlds/book_reader.py",
+   "importers": [
+    "standin/data/build_reader_sft.py",
+    "standin/tests/test_book_reader.py",
+    "validation/books_bulk_read.py"
+   ],
+   "tests": [
+    "standin/tests/test_book_reader.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/book_source.py",
+   "lines": 164,
+   "to": "cubbyllm/worlds/book_source.py",
+   "importers": [
+    "standin/ask.py",
+    "standin/tests/test_books.py",
+    "standin/tests/test_time_rule.py",
+    "validation/books_bulk_read.py",
+    "validation/exp_books_bench.py",
+    "validation/exp_leak_scan.py"
+   ],
+   "tests": [
+    "standin/tests/test_books.py",
+    "standin/tests/test_time_rule.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/books.py",
+   "lines": 289,
+   "to": "cubbyllm/worlds/books.py",
+   "importers": [
+    "standin/book_source.py",
+    "standin/data/build_books_index.py",
+    "standin/data/build_reader_sft.py",
+    "standin/tests/test_audience.py",
+    "standin/tests/test_books.py",
+    "standin/tests/test_books_bulk.py",
+    "standin/tests/test_time_rule.py",
+    "standin/tests/test_worlds.py",
+    "standin/worlds_adapters.py",
+    "standin/worlds_fiction.py",
+    "standin/worlds_ingest.py",
+    "standin/worlds_store.py",
+    "validation/books_bulk_read.py",
+    "validation/books_scoring.py",
+    "validation/exp_books_bench.py",
+    "validation/exp_leak_scan.py"
+   ],
+   "tests": [
+    "standin/tests/test_audience.py",
+    "standin/tests/test_books.py",
+    "standin/tests/test_books_bulk.py",
+    "standin/tests/test_time_rule.py",
+    "standin/tests/test_worlds.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/capsules.py",
+   "lines": 269,
+   "to": "cubbyllm/worlds/capsules.py",
+   "importers": [
+    "standin/data/import_science.py",
+    "standin/tests/test_capsules.py",
+    "tests/bridges/test_possibility.py",
+    "validation/exp_capsule_topk.py"
+   ],
+   "tests": [
+    "standin/tests/test_capsules.py",
+    "tests/bridges/test_possibility.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/chat.py",
+   "lines": 413,
+   "to": "cubbyllm/speech/chat.py",
+   "importers": [
+    "standin/serve.py",
+    "standin/tests/test_chat.py",
+    "standin/tests/test_perception.py",
+    "standin/tests/test_saying.py",
+    "standin/verse.py"
+   ],
+   "tests": [
+    "standin/tests/test_chat.py",
+    "standin/tests/test_perception.py",
+    "standin/tests/test_saying.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/choosing.py",
+   "lines": 232,
+   "to": "cubbyllm/affect/choosing.py",
+   "importers": [
+    "standin/chat.py",
+    "standin/pac_affect.py",
+    "standin/pac_nav.py",
+    "standin/saying.py",
+    "standin/tests/test_choosing.py",
+    "standin/tests/test_saying.py",
+    "standin/verse.py"
+   ],
+   "tests": [
+    "standin/tests/test_choosing.py",
+    "standin/tests/test_saying.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/coach.py",
+   "lines": 384,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pacman.py",
+    "standin/tests/test_coach.py",
+    "standin/tests/test_plasticity.py"
+   ],
+   "tests": [
+    "standin/tests/test_coach.py",
+    "standin/tests/test_plasticity.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/context_graph.py",
+   "lines": 319,
+   "to": "cubbyllm/reasoning/context_graph.py",
+   "importers": [
+    "standin/tests/test_context_graph.py",
+    "validation/exp_e9_context_followups.py"
+   ],
+   "tests": [
+    "standin/tests/test_context_graph.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/cortex/__init__.py",
+   "lines": 24,
+   "to": "cubbyllm/cortex/__init__.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/cortex/contract.py",
+   "lines": 145,
+   "to": "cubbyllm/cortex/contract.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/cortex/forward.py",
+   "lines": 115,
+   "to": "cubbyllm/cortex/forward.py",
+   "importers": [
+    "standin/tests/test_cortex.py"
+   ],
+   "tests": [
+    "standin/tests/test_cortex.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/cortex/retina.py",
+   "lines": 82,
+   "to": "cubbyllm/cortex/retina.py",
+   "importers": [
+    "standin/tests/test_cortex.py"
+   ],
+   "tests": [
+    "standin/tests/test_cortex.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/cortex/salience.py",
+   "lines": 97,
+   "to": "cubbyllm/cortex/salience.py",
+   "importers": [
+    "standin/tests/test_cortex.py"
+   ],
+   "tests": [
+    "standin/tests/test_cortex.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/cortex/what.py",
+   "lines": 116,
+   "to": "cubbyllm/cortex/what.py",
+   "importers": [
+    "standin/tests/test_cortex.py"
+   ],
+   "tests": [
+    "standin/tests/test_cortex.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/cortex/where.py",
+   "lines": 240,
+   "to": "cubbyllm/cortex/where.py",
+   "importers": [
+    "standin/tests/test_cortex.py"
+   ],
+   "tests": [
+    "standin/tests/test_cortex.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_books_index.py",
+   "lines": 100,
+   "to": "validation/build/build_books_index.py",
+   "importers": [
+    "standin/worlds_adapters.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_chat_sft.py",
+   "lines": 272,
+   "to": "validation/sft/build_chat_sft.py",
+   "importers": [
+    "docs/archive/test_build_chat_sft_v6_2026-10-22.py",
+    "standin/data/build_explicit_sft.py",
+    "standin/data/build_webqa_sft.py",
+    "standin/data/goemotions_cube.py",
+    "standin/eval_emitter_vm.py",
+    "standin/tests/test_build_chat_sft.py",
+    "standin/tests/test_chat.py",
+    "standin/tests/test_goemotions_cube.py",
+    "validation/exp_e7_explicit_gate.py"
+   ],
+   "tests": [
+    "standin/tests/test_build_chat_sft.py",
+    "standin/tests/test_chat.py",
+    "standin/tests/test_goemotions_cube.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_ear.py",
+   "lines": 140,
+   "to": "validation/build/build_ear.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_ear_bulk.py",
+   "lines": 115,
+   "to": "validation/build/build_ear_bulk.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_emitter_sft.py",
+   "lines": 477,
+   "to": "validation/sft/build_emitter_sft.py",
+   "importers": [
+    "standin/data/build_game_sft.py",
+    "standin/data/build_program_first.py",
+    "standin/data/import_tinygsm.py",
+    "standin/eval_emitter_vm.py",
+    "standin/forge.py",
+    "standin/hypothesis.py",
+    "standin/serve.py",
+    "standin/tests/test_build_emitter_sft.py",
+    "validation/exp_he18_ab.py",
+    "validation/exp_he19_beam.py",
+    "validation/exp_he19_step_loop.py",
+    "validation/gate_measure.py",
+    "validation/train_emitter_torch.py",
+    "validation/train_school_torch.py"
+   ],
+   "tests": [
+    "standin/tests/test_build_emitter_sft.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/build_events_sft.py",
+   "lines": 223,
+   "to": "validation/sft/build_events_sft.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_explicit_sft.py",
+   "lines": 143,
+   "to": "validation/sft/build_explicit_sft.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_game_sft.py",
+   "lines": 419,
+   "to": "stays: builds data for the GGUF adapters only",
+   "importers": [
+    "standin/tests/test_build_game_sft.py"
+   ],
+   "tests": [
+    "standin/tests/test_build_game_sft.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/build_gen2_partition.py",
+   "lines": 213,
+   "to": "validation/sft/build_gen2_partition.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_gen3.py",
+   "lines": 472,
+   "to": "validation/sft/build_gen3.py",
+   "importers": [
+    "standin/data/build_profile_sft.py",
+    "standin/data/gen3_llm_wordings.py",
+    "validation/exp_r17_gen3_heldout.py",
+    "validation/exp_r18_hdc_rephrased.py",
+    "validation/exp_r25_zone_ablation.py",
+    "validation/exp_r26_relabelling.py",
+    "validation/exp_r27_manifest.py",
+    "validation/exp_r29_clutrr_serve.py"
+   ],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/build_ground_sft.py",
+   "lines": 366,
+   "to": "validation/sft/build_ground_sft.py",
+   "importers": [
+    "exp_e6_host_view.py",
+    "standin/data/build_events_sft.py",
+    "standin/data/build_hdc_sft.py",
+    "standin/data/build_history_sft.py",
+    "standin/data/build_quotes_sft.py",
+    "validation/build_e8_questions.py",
+    "validation/exp_e6_talk_gate.py",
+    "validation/exp_e8_history_retrieval.py",
+    "validation/exp_e9_context_followups.py"
+   ],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/build_hdc_sft.py",
+   "lines": 364,
+   "to": "validation/sft/build_hdc_sft.py",
+   "importers": [
+    "standin/data/hdc_world.py",
+    "standin/tests/test_hdc_sft.py"
+   ],
+   "tests": [
+    "standin/tests/test_hdc_sft.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/build_history_graph.py",
+   "lines": 569,
+   "to": "validation/build/build_history_graph.py",
+   "importers": [
+    "standin/data/build_nyt_events.py",
+    "validation/build_e8_questions.py"
+   ],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/build_history_records.py",
+   "lines": 112,
+   "to": "validation/build/build_history_records.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_history_sft.py",
+   "lines": 347,
+   "to": "validation/sft/build_history_sft.py",
+   "importers": [
+    "validation/build_e8_questions.py"
+   ],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/build_lexicon.py",
+   "lines": 88,
+   "to": "validation/build/build_lexicon.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_nyt_events.py",
+   "lines": 210,
+   "to": "validation/build/build_nyt_events.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_passage_sft.py",
+   "lines": 160,
+   "to": "validation/sft/build_passage_sft.py",
+   "importers": [
+    "standin/data/build_quotes_sft.py",
+    "standin/data/build_webqa_sft.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_profile_sft.py",
+   "lines": 107,
+   "to": "stays: builds data for the GGUF adapters only",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_program_first.py",
+   "lines": 1005,
+   "to": "validation/sft/build_program_first.py",
+   "importers": [
+    "standin/data/import_science.py",
+    "standin/tests/test_build_program_first.py"
+   ],
+   "tests": [
+    "standin/tests/test_build_program_first.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/build_property_aliases.py",
+   "lines": 171,
+   "to": "validation/build/build_property_aliases.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_quotes_sft.py",
+   "lines": 104,
+   "to": "validation/sft/build_quotes_sft.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_reader_sft.py",
+   "lines": 246,
+   "to": "validation/sft/build_reader_sft.py",
+   "importers": [
+    "standin/tests/test_book_reader.py"
+   ],
+   "tests": [
+    "standin/tests/test_book_reader.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_same_place.py",
+   "lines": 96,
+   "to": "validation/build/build_same_place.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_talk_mix.py",
+   "lines": 159,
+   "to": "validation/sft/build_talk_mix.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_v13f.py",
+   "lines": 100,
+   "to": "validation/sft/build_v13f.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_webq_bench.py",
+   "lines": 111,
+   "to": "validation/build/build_webq_bench.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_webqa_sft.py",
+   "lines": 138,
+   "to": "validation/sft/build_webqa_sft.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/build_word_table.py",
+   "lines": 132,
+   "to": "validation/build/build_word_table.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/chat_sft_v6.py",
+   "lines": 106,
+   "to": "validation/sft/chat_sft_v6.py",
+   "importers": [
+    "standin/data/build_chat_sft.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/convert_books.py",
+   "lines": 302,
+   "to": "validation/build/convert_books.py",
+   "importers": [],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/fetch_hdc_labels.py",
+   "lines": 123,
+   "to": "validation/build/fetch_hdc_labels.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/gap_families.py",
+   "lines": 1228,
+   "to": "stays: builds data for the GGUF adapters only",
+   "importers": [
+    "docs/archive/test_build_chat_sft_v6_2026-10-22.py",
+    "standin/eval_emitter_vm.py",
+    "standin/scripts/tool_call_probe.py",
+    "standin/tests/test_build_chat_sft.py"
+   ],
+   "tests": [
+    "standin/tests/test_build_chat_sft.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/gen3_llm_wordings.py",
+   "lines": 228,
+   "to": "validation/sft/gen3_llm_wordings.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/goemotions_cube.py",
+   "lines": 187,
+   "to": "validation/build/goemotions_cube.py",
+   "importers": [
+    "standin/tests/test_goemotions_cube.py",
+    "validation/cube_vs_va.py",
+    "validation/emotions_corpus.py",
+    "validation/vad_check.py"
+   ],
+   "tests": [
+    "standin/tests/test_goemotions_cube.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/hdc_world.py",
+   "lines": 222,
+   "to": "cubbyllm/worlds/hdc_world.py",
+   "importers": [
+    "standin/hdc_store.py",
+    "standin/tests/test_hdc_store.py",
+    "standin/tests/test_time_rule.py",
+    "standin/tests/test_worlds.py"
+   ],
+   "tests": [
+    "standin/tests/test_hdc_store.py",
+    "standin/tests/test_time_rule.py",
+    "standin/tests/test_worlds.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/hf_rows.py",
+   "lines": 62,
+   "to": "validation/sft/hf_rows.py",
+   "importers": [
+    "standin/data/gap_families.py",
+    "standin/tests/test_hf_rows.py"
+   ],
+   "tests": [
+    "standin/tests/test_hf_rows.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/data/identity.py",
+   "lines": 523,
+   "to": "cubbyllm/speech/identity.py (after a split: the voice rules move, the SFT record builders stay)",
+   "importers": [
+    "docs/archive/test_build_chat_sft_v6_2026-10-22.py",
+    "standin/chat.py",
+    "standin/data/build_emitter_sft.py",
+    "standin/data/build_game_sft.py",
+    "standin/data/chat_sft_v6.py",
+    "standin/data/gap_families.py",
+    "standin/eval_emitter_vm.py",
+    "standin/forge.py",
+    "standin/grounding.py",
+    "standin/pac_affect.py",
+    "standin/pac_speech.py",
+    "standin/pacman.py",
+    "standin/perception.py",
+    "standin/serve.py",
+    "standin/tests/test_build_chat_sft.py",
+    "standin/tests/test_build_emitter_sft.py",
+    "standin/tests/test_chat.py",
+    "standin/tests/test_identity.py",
+    "standin/tests/test_neurochem.py",
+    "standin/tests/test_pacman.py",
+    "standin/tests/test_pacman_percepts.py",
+    "standin/tests/test_perception.py",
+    "standin/tests/test_said_back.py",
+    "standin/tests/test_saying.py",
+    "standin/tests/test_serve.py",
+    "standin/tests/test_verse.py"
+   ],
+   "tests": [
+    "standin/tests/test_build_chat_sft.py",
+    "standin/tests/test_build_emitter_sft.py",
+    "standin/tests/test_chat.py",
+    "standin/tests/test_identity.py",
+    "standin/tests/test_neurochem.py",
+    "standin/tests/test_pacman.py",
+    "standin/tests/test_pacman_percepts.py",
+    "standin/tests/test_perception.py",
+    "standin/tests/test_said_back.py",
+    "standin/tests/test_saying.py",
+    "standin/tests/test_serve.py",
+    "standin/tests/test_verse.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/import_science.py",
+   "lines": 395,
+   "to": "cubbyllm/worlds/science.py",
+   "importers": [
+    "standin/serve_cli.py",
+    "standin/tests/test_import_science.py"
+   ],
+   "tests": [
+    "standin/tests/test_import_science.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/import_tinygsm.py",
+   "lines": 363,
+   "to": "validation/sft/import_tinygsm.py",
+   "importers": [
+    "standin/tests/test_import_tinygsm.py"
+   ],
+   "tests": [
+    "standin/tests/test_import_tinygsm.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/wikikg.py",
+   "lines": 346,
+   "to": "cubbyllm/worlds/wikikg.py",
+   "importers": [
+    "standin/ask.py",
+    "standin/book_reader.py",
+    "standin/data/build_books_index.py",
+    "standin/data/build_gen3.py",
+    "standin/data/build_ground_sft.py",
+    "standin/data/build_profile_sft.py",
+    "standin/data/build_reader_sft.py",
+    "standin/data/build_same_place.py",
+    "standin/data/gen3_llm_wordings.py",
+    "standin/data/hdc_world.py",
+    "standin/hdc_store.py",
+    "standin/loci_reader.py",
+    "standin/serve.py",
+    "standin/tests/test_wikikg.py",
+    "standin/tests/test_worlds.py",
+    "standin/worlds_store.py",
+    "validation/bench_loci_learn.py",
+    "validation/books_bulk_read.py",
+    "validation/books_scoring.py",
+    "validation/exp_books_bench.py",
+    "validation/exp_g4b_wiki_world.py",
+    "validation/exp_hdc_bench.py",
+    "validation/exp_leak_scan.py",
+    "validation/exp_r10_simpleqa.py",
+    "validation/exp_r11_search_learn.py",
+    "validation/exp_r13_hippocampus.py",
+    "validation/exp_r14_hippocampus_simpleqa.py",
+    "validation/exp_r15_striatum.py",
+    "validation/exp_r16_encyclopedia.py",
+    "validation/exp_r17_gen3_heldout.py",
+    "validation/exp_r22_emitter_ablation.py",
+    "validation/exp_r23_liveness.py",
+    "validation/exp_r24_volatility.py",
+    "validation/exp_r25_zone_ablation.py",
+    "validation/exp_r26_relabelling.py",
+    "validation/exp_r27_manifest.py",
+    "validation/exp_r33_web_heldout.py",
+    "validation/exp_r9_matched_pairs.py"
+   ],
+   "tests": [
+    "standin/tests/test_wikikg.py",
+    "standin/tests/test_worlds.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/data/world_hygiene.py",
+   "lines": 57,
+   "to": "cubbyllm/worlds/hygiene.py",
+   "importers": [
+    "standin/data/build_same_place.py",
+    "standin/data/wikikg.py",
+    "standin/hdc_store.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/ear.py",
+   "lines": 267,
+   "to": "cubbyllm/affect/ear.py",
+   "importers": [
+    "standin/data/build_ear.py",
+    "standin/data/build_ear_bulk.py",
+    "standin/tests/test_ear.py"
+   ],
+   "tests": [
+    "standin/tests/test_ear.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/ear_lexicon.py",
+   "lines": 96,
+   "to": "cubbyllm/affect/ear_lexicon.py",
+   "importers": [
+    "standin/data/build_ear.py",
+    "standin/tests/test_ear.py",
+    "validation/plugins_routing.py"
+   ],
+   "tests": [
+    "standin/tests/test_ear.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/emitter.py",
+   "lines": 39,
+   "to": "stays: the facade its 30 importers use; re-exports cubbyllm.emit and the stand-in's llama emitter",
+   "importers": [
+    "standin/ask.py",
+    "standin/chat.py",
+    "standin/data/build_program_first.py",
+    "standin/eval_emitter_vm.py",
+    "standin/lfm_source.py",
+    "standin/pac_affect.py",
+    "standin/pac_speech.py",
+    "standin/plugins_serve.py",
+    "standin/scripts/forge_probe.py",
+    "standin/scripts/probe_v3.py",
+    "standin/scripts/tool_call_probe.py",
+    "standin/serve.py",
+    "standin/tests/test_build_emitter_sft.py",
+    "standin/tests/test_emitter_450m.py",
+    "standin/tests/test_exp_he19_memory.py",
+    "standin/tests/test_plugins.py",
+    "standin/tests/test_serve.py",
+    "validation/exp_he19_beam.py",
+    "validation/exp_he19_next_step.py",
+    "validation/exp_he19_pointer.py",
+    "validation/exp_he19_rank.py",
+    "validation/exp_he19_step_loop.py",
+    "validation/exp_r10_simpleqa.py",
+    "validation/exp_r11_search_learn.py",
+    "validation/exp_r15_striatum.py",
+    "validation/exp_r17_gen3_heldout.py",
+    "validation/exp_r18_hdc_rephrased.py",
+    "validation/exp_r22_emitter_ablation.py",
+    "validation/exp_r25_zone_ablation.py",
+    "validation/exp_r26_relabelling.py",
+    "validation/exp_r27_manifest.py",
+    "validation/exp_r29_clutrr_serve.py",
+    "validation/exp_r3_emitter_floor.py",
+    "validation/exp_r9_matched_pairs.py",
+    "validation/plugins_talk_e2e.py"
+   ],
+   "tests": [
+    "standin/tests/test_build_emitter_sft.py",
+    "standin/tests/test_emitter_450m.py",
+    "standin/tests/test_exp_he19_memory.py",
+    "standin/tests/test_plugins.py",
+    "standin/tests/test_serve.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/emitter_450m.py",
+   "lines": 230,
+   "to": "cubbyllm/emit/seats_450m.py",
+   "importers": [
+    "standin/emitter.py",
+    "standin/emitter_talk.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/emitter_base.py",
+   "lines": 213,
+   "to": "cubbyllm/emit/base.py (after a split: the contract, clean_reply, replay move; the llama-server emitter, chat templates, script ban stay)",
+   "importers": [
+    "standin/emitter.py",
+    "standin/emitter_llama.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/emitter_llama.py",
+   "lines": 125,
+   "to": "stays: the GGUF stand-in",
+   "importers": [
+    "standin/emitter.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/emitter_talk.py",
+   "lines": 208,
+   "to": "cubbyllm/emit/talk.py",
+   "importers": [
+    "standin/emitter.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/encyclopedia.py",
+   "lines": 338,
+   "to": "cubbyllm/worlds/encyclopedia.py",
+   "importers": [
+    "standin/tests/test_encyclopedia.py",
+    "validation/exp_r11_search_learn.py",
+    "validation/exp_r16_encyclopedia.py"
+   ],
+   "tests": [
+    "standin/tests/test_encyclopedia.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/eval_emitter_vm.py",
+   "lines": 255,
+   "to": "stays: the GGUF stand-in (its evaluation)",
+   "importers": [
+    "standin/ask.py",
+    "standin/tests/test_build_emitter_sft.py",
+    "validation/exp_r10_simpleqa.py",
+    "validation/exp_r11_search_learn.py",
+    "validation/exp_r15_striatum.py",
+    "validation/exp_r17_gen3_heldout.py",
+    "validation/exp_r18_hdc_rephrased.py",
+    "validation/exp_r22_emitter_ablation.py",
+    "validation/exp_r25_zone_ablation.py",
+    "validation/exp_r26_relabelling.py",
+    "validation/exp_r27_manifest.py",
+    "validation/exp_r29_clutrr_serve.py",
+    "validation/exp_r36_emitter_helpers.py",
+    "validation/exp_r3_emitter_floor.py",
+    "validation/exp_r9_matched_pairs.py",
+    "validation/exp_v9_es.py"
+   ],
+   "tests": [
+    "standin/tests/test_build_emitter_sft.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/explicit_gate.py",
+   "lines": 90,
+   "to": "cubbyllm/speech/explicit_gate.py",
+   "importers": [
+    "standin/data/build_chat_sft.py",
+    "standin/data/build_explicit_sft.py",
+    "standin/tests/test_explicit_gate.py",
+    "validation/exp_e7_explicit_gate.py"
+   ],
+   "tests": [
+    "standin/tests/test_explicit_gate.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/feeling.py",
+   "lines": 181,
+   "to": "cubbyllm/affect/feeling.py",
+   "importers": [
+    "standin/pac_affect.py",
+    "standin/pac_speech.py",
+    "standin/pacman.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/forge.py",
+   "lines": 182,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/grounding.py",
+    "standin/pac_forge.py",
+    "standin/pacman.py",
+    "standin/scripts/forge_probe.py",
+    "standin/tests/test_pacman.py"
+   ],
+   "tests": [
+    "standin/tests/test_pacman.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/grounding.py",
+   "lines": 293,
+   "to": "cubbyllm/speech/grounding.py",
+   "importers": [
+    "standin/news_reply.py",
+    "standin/pac_affect.py",
+    "standin/pac_speech.py",
+    "standin/pacman.py",
+    "standin/tests/test_news_reply.py",
+    "standin/tests/test_said_back.py"
+   ],
+   "tests": [
+    "standin/tests/test_news_reply.py",
+    "standin/tests/test_said_back.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/harness.py",
+   "lines": 873,
+   "to": "cubby_serve/harness.py",
+   "importers": [
+    "standin/harness_wiring.py",
+    "standin/serve_cli.py",
+    "standin/tests/test_harness.py",
+    "standin/tests/test_harness_wiring.py"
+   ],
+   "tests": [
+    "standin/tests/test_harness.py",
+    "standin/tests/test_harness_wiring.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/harness_wiring.py",
+   "lines": 332,
+   "to": "cubby_serve/harness_wiring.py",
+   "importers": [
+    "standin/serve_cli.py",
+    "standin/tests/test_harness_wiring.py"
+   ],
+   "tests": [
+    "standin/tests/test_harness_wiring.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/hdc_store.py",
+   "lines": 272,
+   "to": "cubbyllm/worlds/hdc_store.py",
+   "importers": [
+    "standin/news_gdelt.py",
+    "standin/serve_cli.py",
+    "standin/tests/test_hdc_store.py",
+    "standin/tests/test_time_rule.py",
+    "standin/tests/test_worlds.py",
+    "standin/worlds_store.py",
+    "validation/bench_loci_learn.py",
+    "validation/exp_hdc_bench.py"
+   ],
+   "tests": [
+    "standin/tests/test_hdc_store.py",
+    "standin/tests/test_time_rule.py",
+    "standin/tests/test_worlds.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/history_graph.py",
+   "lines": 474,
+   "to": "cubbyllm/worlds/history_graph.py",
+   "importers": [
+    "standin/context_graph.py",
+    "standin/data/build_history_graph.py",
+    "standin/data/build_history_sft.py",
+    "standin/history_lookup.py",
+    "standin/tests/test_context_graph.py",
+    "standin/tests/test_history_graph.py",
+    "standin/tests/test_history_lookup.py",
+    "validation/build_e8_questions.py",
+    "validation/exp_e8_history_retrieval.py",
+    "validation/exp_e9_context_followups.py"
+   ],
+   "tests": [
+    "standin/tests/test_context_graph.py",
+    "standin/tests/test_history_graph.py",
+    "standin/tests/test_history_lookup.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/history_lookup.py",
+   "lines": 490,
+   "to": "cubbyllm/worlds/history_lookup.py",
+   "importers": [
+    "standin/context_graph.py",
+    "standin/tests/test_context_graph.py",
+    "standin/tests/test_history_lookup.py",
+    "validation/build_e8_questions.py",
+    "validation/exp_e8_history_retrieval.py",
+    "validation/exp_e9_context_followups.py"
+   ],
+   "tests": [
+    "standin/tests/test_context_graph.py",
+    "standin/tests/test_history_lookup.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/hypothesis.py",
+   "lines": 284,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pac_forge.py",
+    "standin/pac_sense.py",
+    "standin/tests/test_asking.py",
+    "standin/tests/test_hypothesis.py",
+    "standin/tests/test_portable.py",
+    "standin/verse.py"
+   ],
+   "tests": [
+    "standin/tests/test_asking.py",
+    "standin/tests/test_hypothesis.py",
+    "standin/tests/test_portable.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/knowledge.py",
+   "lines": 161,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pacman.py",
+    "standin/tests/test_asking.py"
+   ],
+   "tests": [
+    "standin/tests/test_asking.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/ledger.py",
+   "lines": 168,
+   "to": "cubby_serve/ledger.py",
+   "importers": [
+    "standin/harness_wiring.py",
+    "standin/plugins_serve.py",
+    "standin/serve_cli.py",
+    "standin/tests/test_harness.py",
+    "standin/tests/test_harness_wiring.py",
+    "standin/tests/test_ledger_vault.py",
+    "standin/tests/test_plugins_serve.py"
+   ],
+   "tests": [
+    "standin/tests/test_harness.py",
+    "standin/tests/test_harness_wiring.py",
+    "standin/tests/test_ledger_vault.py",
+    "standin/tests/test_plugins_serve.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/lexicon.py",
+   "lines": 375,
+   "to": "cubbyllm/affect/lexicon.py",
+   "importers": [
+    "standin/coach.py",
+    "standin/tests/test_plasticity.py"
+   ],
+   "tests": [
+    "standin/tests/test_plasticity.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/lfm_source.py",
+   "lines": 286,
+   "to": "stays: the GGUF stand-in (the LFM as a source)",
+   "importers": [
+    "standin/ask.py",
+    "standin/book_reader.py",
+    "standin/serve_cli.py",
+    "standin/tests/test_lfm_source.py",
+    "standin/tests/test_web_source.py",
+    "validation/exp_r11_search_learn.py",
+    "validation/exp_r33_web_heldout.py"
+   ],
+   "tests": [
+    "standin/tests/test_lfm_source.py",
+    "standin/tests/test_web_source.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/loci_reader.py",
+   "lines": 214,
+   "to": "cubbyllm/reasoning/loci_reader.py",
+   "importers": [
+    "standin/ask.py",
+    "standin/tests/test_loci_reader.py",
+    "validation/bench_loci_learn.py"
+   ],
+   "tests": [
+    "standin/tests/test_loci_reader.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/neurochem.py",
+   "lines": 816,
+   "to": "cubbyllm/affect/neurochem.py",
+   "importers": [
+    "standin/chat.py",
+    "standin/choosing.py",
+    "standin/coach.py",
+    "standin/data/goemotions_cube.py",
+    "standin/perception.py",
+    "standin/tests/neurochemistry_probe.py",
+    "standin/tests/test_afferent.py",
+    "standin/tests/test_choosing.py",
+    "standin/tests/test_coach.py",
+    "standin/tests/test_coach_wired.py",
+    "standin/tests/test_goemotions_cube.py",
+    "standin/tests/test_neurochem.py",
+    "standin/tests/test_pacman.py",
+    "standin/tests/test_pacman_percepts.py",
+    "standin/tests/test_said_back.py",
+    "standin/tests/test_saying.py",
+    "standin/tests/test_wariness.py",
+    "validation/coach_ab.py",
+    "validation/cube_occupancy.py",
+    "validation/cube_vs_va.py",
+    "validation/emotions_corpus.py",
+    "validation/vad_check.py"
+   ],
+   "tests": [
+    "standin/tests/neurochemistry_probe.py",
+    "standin/tests/test_afferent.py",
+    "standin/tests/test_choosing.py",
+    "standin/tests/test_coach.py",
+    "standin/tests/test_coach_wired.py",
+    "standin/tests/test_goemotions_cube.py",
+    "standin/tests/test_neurochem.py",
+    "standin/tests/test_pacman.py",
+    "standin/tests/test_pacman_percepts.py",
+    "standin/tests/test_said_back.py",
+    "standin/tests/test_saying.py",
+    "standin/tests/test_wariness.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/news_archive.py",
+   "lines": 283,
+   "to": "cubbyllm/sources/news/archive.py",
+   "importers": [
+    "standin/board_api.py",
+    "standin/board_data.py",
+    "standin/news_backfill.py",
+    "standin/news_events.py",
+    "standin/news_reply.py",
+    "standin/plugins_guard.py",
+    "standin/serve_cli.py",
+    "standin/tests/test_board.py",
+    "standin/tests/test_board_review.py",
+    "standin/tests/test_news_archive.py",
+    "standin/tests/test_news_backfill.py",
+    "standin/tests/test_news_globalvoices.py"
+   ],
+   "tests": [
+    "standin/tests/test_board.py",
+    "standin/tests/test_board_review.py",
+    "standin/tests/test_news_archive.py",
+    "standin/tests/test_news_backfill.py",
+    "standin/tests/test_news_globalvoices.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/news_backfill.py",
+   "lines": 105,
+   "to": "cubbyllm/sources/news/backfill.py",
+   "importers": [
+    "standin/news_archive.py",
+    "standin/tests/test_news_backfill.py"
+   ],
+   "tests": [
+    "standin/tests/test_news_backfill.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/news_events.py",
+   "lines": 193,
+   "to": "cubbyllm/sources/news/events.py",
+   "importers": [
+    "standin/news_reply.py",
+    "standin/news_trigger.py",
+    "standin/tests/test_news_events.py"
+   ],
+   "tests": [
+    "standin/tests/test_news_events.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/news_gdelt.py",
+   "lines": 171,
+   "to": "cubbyllm/sources/news/gdelt.py",
+   "importers": [
+    "standin/news_archive.py",
+    "standin/tests/test_news_gdelt.py"
+   ],
+   "tests": [
+    "standin/tests/test_news_gdelt.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/news_globalvoices.py",
+   "lines": 108,
+   "to": "cubbyllm/sources/news/globalvoices.py",
+   "importers": [
+    "standin/news_archive.py",
+    "standin/news_backfill.py",
+    "standin/tests/test_news_globalvoices.py"
+   ],
+   "tests": [
+    "standin/tests/test_news_globalvoices.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/news_parse.py",
+   "lines": 86,
+   "to": "cubbyllm/sources/news/parse.py",
+   "importers": [
+    "standin/news_archive.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/news_reply.py",
+   "lines": 163,
+   "to": "cubbyllm/sources/news/reply.py",
+   "importers": [
+    "standin/tests/test_news_reply.py"
+   ],
+   "tests": [
+    "standin/tests/test_news_reply.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/news_source.py",
+   "lines": 389,
+   "to": "cubbyllm/sources/news/source.py",
+   "importers": [
+    "standin/ask.py",
+    "standin/news_archive.py",
+    "standin/news_parse.py",
+    "standin/plugins_guard.py",
+    "standin/tests/test_news_source.py"
+   ],
+   "tests": [
+    "standin/tests/test_news_source.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/news_trigger.py",
+   "lines": 118,
+   "to": "cubbyllm/sources/news/trigger.py",
+   "importers": [
+    "standin/news_archive.py",
+    "standin/tests/test_news_trigger.py"
+   ],
+   "tests": [
+    "standin/tests/test_news_trigger.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/openrouter.py",
+   "lines": 177,
+   "to": "stays: the GGUF stand-in (the frontier proposer, datasets only)",
+   "importers": [
+    "standin/data/build_ear_bulk.py",
+    "standin/data/build_ground_sft.py",
+    "standin/data/build_history_graph.py",
+    "standin/data/build_nyt_events.py",
+    "standin/data/build_program_first.py",
+    "standin/data/gen3_llm_wordings.py",
+    "validation/build_e8_questions.py",
+    "validation/exp_r11_search_learn.py",
+    "validation/exp_r21_competition.py",
+    "validation/fr_affect_pilot.py",
+    "validation/label_affect.py",
+    "validation/label_va_petals.py",
+    "validation/panel_fluent_harness.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/pac_affect.py",
+   "lines": 417,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pacman.py"
+   ],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/pac_forge.py",
+   "lines": 343,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pacman.py"
+   ],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/pac_nav.py",
+   "lines": 386,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pacman.py"
+   ],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/pac_sense.py",
+   "lines": 310,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pacman.py"
+   ],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/pac_speech.py",
+   "lines": 453,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pacman.py"
+   ],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/pacman.py",
+   "lines": 771,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/data/build_game_sft.py",
+    "standin/data/gap_families.py",
+    "standin/data/goemotions_cube.py",
+    "standin/scripts/forge_probe.py",
+    "standin/serve.py",
+    "standin/serve_cli.py",
+    "standin/serve_get.py",
+    "standin/tests/test_asking.py",
+    "standin/tests/test_coach_wired.py",
+    "standin/tests/test_ledger_vault.py",
+    "standin/tests/test_pacman.py",
+    "standin/tests/test_pacman_percepts.py",
+    "standin/tests/test_portable.py",
+    "standin/tests/test_said_back.py",
+    "standin/tests/test_wariness.py",
+    "validation/coach_ab.py",
+    "validation/exp_r36_cubbyman_percept.py",
+    "validation/exp_r37_cubbyman_speech.py",
+    "validation/exp_r38_ask_a_world.py"
+   ],
+   "tests": [
+    "standin/tests/test_asking.py",
+    "standin/tests/test_coach_wired.py",
+    "standin/tests/test_ledger_vault.py",
+    "standin/tests/test_pacman.py",
+    "standin/tests/test_pacman_percepts.py",
+    "standin/tests/test_portable.py",
+    "standin/tests/test_said_back.py",
+    "standin/tests/test_wariness.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/pacpaths.py",
+   "lines": 43,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/feeling.py",
+    "standin/pacman.py",
+    "standin/pacui_threejs.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/pacui_threejs.py",
+   "lines": 430,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pacman.py"
+   ],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/pacworld.py",
+   "lines": 596,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pac_affect.py",
+    "standin/pac_forge.py",
+    "standin/pac_nav.py",
+    "standin/pac_sense.py",
+    "standin/pacman.py",
+    "standin/pacui_threejs.py",
+    "validation/coach_ab.py"
+   ],
+   "tests": [],
+   "over_300": true
+  },
+  {
+   "module": "standin/perception.py",
+   "lines": 159,
+   "to": "cubbyllm/affect/perception.py",
+   "importers": [
+    "standin/serve_cli.py",
+    "standin/tests/test_perception.py"
+   ],
+   "tests": [
+    "standin/tests/test_perception.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/plugins.py",
+   "lines": 103,
+   "to": "cubbyllm/plugins/__main__.py",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/plugins_check.py",
+   "lines": 70,
+   "to": "cubbyllm/plugins/check.py",
+   "importers": [
+    "standin/plugins_load.py",
+    "standin/plugins_serve.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/plugins_guard.py",
+   "lines": 288,
+   "to": "cubbyllm/plugins/guard.py",
+   "importers": [
+    "standin/plugins.py",
+    "standin/plugins_check.py",
+    "standin/plugins_load.py",
+    "standin/plugins_serve.py",
+    "standin/tests/test_plugins.py",
+    "standin/tests/test_plugins_check.py",
+    "standin/tests/test_plugins_serve.py",
+    "validation/plugins_checks.py",
+    "validation/plugins_talk_e2e.py"
+   ],
+   "tests": [
+    "standin/tests/test_plugins.py",
+    "standin/tests/test_plugins_check.py",
+    "standin/tests/test_plugins_serve.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/plugins_index.py",
+   "lines": 145,
+   "to": "cubbyllm/plugins/index.py",
+   "importers": [
+    "standin/plugins.py",
+    "standin/plugins_serve.py",
+    "standin/tests/test_plugins.py",
+    "standin/tests/test_plugins_check.py",
+    "standin/tests/test_plugins_route.py",
+    "standin/tests/test_plugins_serve.py",
+    "validation/plugins_checks.py",
+    "validation/plugins_routing.py",
+    "validation/plugins_talk_e2e.py"
+   ],
+   "tests": [
+    "standin/tests/test_plugins.py",
+    "standin/tests/test_plugins_check.py",
+    "standin/tests/test_plugins_route.py",
+    "standin/tests/test_plugins_serve.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/plugins_load.py",
+   "lines": 295,
+   "to": "cubbyllm/plugins/load.py",
+   "importers": [
+    "standin/plugins_serve.py",
+    "standin/tests/test_plugins.py",
+    "standin/tests/test_plugins_check.py",
+    "validation/plugins_checks.py",
+    "validation/plugins_talk_e2e.py"
+   ],
+   "tests": [
+    "standin/tests/test_plugins.py",
+    "standin/tests/test_plugins_check.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/plugins_route.py",
+   "lines": 148,
+   "to": "cubbyllm/plugins/route.py",
+   "importers": [
+    "standin/plugins_load.py",
+    "standin/tests/test_plugins_route.py",
+    "validation/plugins_routing.py"
+   ],
+   "tests": [
+    "standin/tests/test_plugins_route.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/plugins_serve.py",
+   "lines": 192,
+   "to": "cubby_serve/plugins.py",
+   "importers": [
+    "standin/board_api.py",
+    "standin/serve_cli.py",
+    "standin/serve_post.py",
+    "standin/tests/test_plugins_check.py",
+    "standin/tests/test_plugins_serve.py",
+    "validation/board_timing.py"
+   ],
+   "tests": [
+    "standin/tests/test_plugins_check.py",
+    "standin/tests/test_plugins_serve.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/plugins_world.py",
+   "lines": 59,
+   "to": "cubbyllm/plugins/world.py",
+   "importers": [
+    "standin/plugins_load.py",
+    "standin/tests/test_persons_list.py"
+   ],
+   "tests": [
+    "standin/tests/test_persons_list.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/programs.py",
+   "lines": 211,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pacman.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/question_encoder.py",
+   "lines": 99,
+   "to": "cubbyllm/plugins/question_encoder.py",
+   "importers": [
+    "standin/plugins_route.py",
+    "standin/tests/test_plugins_route.py",
+    "validation/plugins_routing.py"
+   ],
+   "tests": [
+    "standin/tests/test_plugins_route.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/question_forms.py",
+   "lines": 244,
+   "to": "cubbyllm/reasoning/question_forms.py",
+   "importers": [
+    "standin/ask.py",
+    "standin/book_source.py",
+    "standin/tests/test_books.py",
+    "standin/tests/test_hdc_store.py",
+    "standin/tests/test_question_forms.py",
+    "standin/tests/test_time_rule.py",
+    "standin/tests/test_worlds.py",
+    "validation/bench_loci_learn.py",
+    "validation/board_timing.py",
+    "validation/exp_books_bench.py",
+    "validation/exp_hdc_bench.py",
+    "validation/exp_leak_scan.py",
+    "validation/exp_worlds_bench.py"
+   ],
+   "tests": [
+    "standin/tests/test_books.py",
+    "standin/tests/test_hdc_store.py",
+    "standin/tests/test_question_forms.py",
+    "standin/tests/test_time_rule.py",
+    "standin/tests/test_worlds.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/robots_rules.py",
+   "lines": 62,
+   "to": "cubbyllm/sources/robots.py",
+   "importers": [
+    "standin/news_archive.py",
+    "standin/news_source.py",
+    "standin/plugins_guard.py",
+    "standin/tests/test_news_archive.py",
+    "standin/tests/test_news_backfill.py"
+   ],
+   "tests": [
+    "standin/tests/test_news_archive.py",
+    "standin/tests/test_news_backfill.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/saying.py",
+   "lines": 265,
+   "to": "cubbyllm/affect/saying.py",
+   "importers": [
+    "standin/chat.py",
+    "standin/pac_affect.py",
+    "standin/tests/test_said_back.py",
+    "standin/tests/test_saying.py"
+   ],
+   "tests": [
+    "standin/tests/test_said_back.py",
+    "standin/tests/test_saying.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/scripts/forge_probe.py",
+   "lines": 78,
+   "to": "stays: the GGUF stand-in (a probe)",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/scripts/probe_v3.py",
+   "lines": 68,
+   "to": "stays: the GGUF stand-in (a probe)",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/scripts/question_style_probe.py",
+   "lines": 134,
+   "to": "stays: the GGUF stand-in (a probe)",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/scripts/talk_probe.py",
+   "lines": 130,
+   "to": "stays: the GGUF stand-in (a probe)",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/scripts/tool_call_probe.py",
+   "lines": 103,
+   "to": "stays: the GGUF stand-in (a probe)",
+   "importers": [],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/self_source.py",
+   "lines": 144,
+   "to": "cubbyllm/worlds/self_source.py",
+   "importers": [
+    "standin/ask.py",
+    "standin/tests/test_self_source.py"
+   ],
+   "tests": [
+    "standin/tests/test_self_source.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/serve.py",
+   "lines": 811,
+   "to": "cubbyllm/brain.py (CubbyBrain and its cortices) + cubby_serve/build.py (build_serve), after a split",
+   "importers": [
+    "standin/forge.py",
+    "standin/scripts/question_style_probe.py",
+    "standin/scripts/talk_probe.py",
+    "standin/serve_cli.py",
+    "standin/tests/test_pacman.py",
+    "standin/tests/test_plugins_check.py",
+    "standin/tests/test_serve.py",
+    "standin/tests/test_verse.py",
+    "standin/verse.py",
+    "validation/bench_loci_learn.py",
+    "validation/exp_r37_cubbyman_speech.py"
+   ],
+   "tests": [
+    "standin/tests/test_pacman.py",
+    "standin/tests/test_plugins_check.py",
+    "standin/tests/test_serve.py",
+    "standin/tests/test_verse.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/serve_api.py",
+   "lines": 130,
+   "to": "cubby_serve/api.py",
+   "importers": [
+    "standin/serve_cli.py",
+    "standin/tests/test_audience.py",
+    "standin/tests/test_board.py",
+    "standin/tests/test_plugins_serve.py",
+    "standin/tests/test_serve.py",
+    "validation/board_timing.py"
+   ],
+   "tests": [
+    "standin/tests/test_audience.py",
+    "standin/tests/test_board.py",
+    "standin/tests/test_plugins_serve.py",
+    "standin/tests/test_serve.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/serve_cli.py",
+   "lines": 215,
+   "to": "cubby_serve/cli.py",
+   "importers": [
+    "standin/serve_api.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/serve_events.py",
+   "lines": 57,
+   "to": "cubby_serve/events.py",
+   "importers": [
+    "standin/serve_api.py",
+    "standin/serve_get.py",
+    "standin/serve_post.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/serve_get.py",
+   "lines": 168,
+   "to": "cubby_serve/get.py",
+   "importers": [
+    "standin/serve_api.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/serve_post.py",
+   "lines": 86,
+   "to": "cubby_serve/post.py",
+   "importers": [
+    "standin/serve_api.py"
+   ],
+   "tests": [],
+   "over_300": false
+  },
+  {
+   "module": "standin/sources.py",
+   "lines": 556,
+   "to": "cubbyllm/sources/wikidata.py",
+   "importers": [
+    "standin/ask.py",
+    "standin/data/build_gen3.py",
+    "standin/data/fetch_hdc_labels.py",
+    "standin/data/gen3_llm_wordings.py",
+    "standin/lfm_source.py",
+    "standin/tests/test_lfm_source.py",
+    "standin/tests/test_property_aliases.py",
+    "standin/tests/test_sources.py",
+    "standin/web_source.py",
+    "validation/bench_loci_learn.py",
+    "validation/exp_leak_scan.py",
+    "validation/exp_r11_search_learn.py",
+    "validation/exp_r14_hippocampus_simpleqa.py",
+    "validation/exp_r16_encyclopedia.py",
+    "validation/exp_r17_gen3_heldout.py",
+    "validation/exp_r18_hdc_rephrased.py",
+    "validation/exp_r24_volatility.py",
+    "validation/exp_r25_zone_ablation.py",
+    "validation/exp_r26_relabelling.py",
+    "validation/exp_r27_manifest.py",
+    "validation/exp_r29_clutrr_serve.py",
+    "validation/exp_r33_web_heldout.py",
+    "validation/exp_worlds_bench.py",
+    "validation/role_vocab.py",
+    "validation/wikidata_kin.py"
+   ],
+   "tests": [
+    "standin/tests/test_lfm_source.py",
+    "standin/tests/test_property_aliases.py",
+    "standin/tests/test_sources.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/time_rule.py",
+   "lines": 55,
+   "to": "cubbyllm/worlds/time_rule.py",
+   "importers": [
+    "standin/ask.py",
+    "standin/tests/test_time_rule.py",
+    "validation/exp_worlds_bench.py"
+   ],
+   "tests": [
+    "standin/tests/test_time_rule.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/vault.py",
+   "lines": 110,
+   "to": "cubby_serve/vault.py",
+   "importers": [
+    "standin/context_graph.py",
+    "standin/data/gap_families.py",
+    "standin/harness_wiring.py",
+    "standin/ledger.py",
+    "standin/scripts/talk_probe.py",
+    "standin/tests/test_harness.py",
+    "standin/tests/test_harness_wiring.py",
+    "standin/tests/test_ledger_vault.py"
+   ],
+   "tests": [
+    "standin/tests/test_harness.py",
+    "standin/tests/test_harness_wiring.py",
+    "standin/tests/test_ledger_vault.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/verse.py",
+   "lines": 663,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/pacman.py",
+    "standin/tests/test_asking.py",
+    "standin/tests/test_portable.py",
+    "standin/tests/test_serve.py",
+    "standin/tests/test_verse.py"
+   ],
+   "tests": [
+    "standin/tests/test_asking.py",
+    "standin/tests/test_portable.py",
+    "standin/tests/test_serve.py",
+    "standin/tests/test_verse.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/web_source.py",
+   "lines": 1025,
+   "to": "cubbyllm/sources/web.py",
+   "importers": [
+    "standin/serve_cli.py",
+    "standin/tests/test_web_source.py",
+    "validation/exp_r33_web_heldout.py"
+   ],
+   "tests": [
+    "standin/tests/test_web_source.py"
+   ],
+   "over_300": true
+  },
+  {
+   "module": "standin/wikitext.py",
+   "lines": 198,
+   "to": "cubbyllm/worlds/wikitext.py",
+   "importers": [
+    "standin/tests/test_wikitext.py",
+    "standin/web_source.py",
+    "validation/exp_r11_search_learn.py"
+   ],
+   "tests": [
+    "standin/tests/test_wikitext.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/world.py",
+   "lines": 226,
+   "to": "stays: the cubby-man game (Nick decides its home later)",
+   "importers": [
+    "standin/coach.py",
+    "standin/pac_forge.py",
+    "standin/pac_nav.py",
+    "standin/pac_sense.py",
+    "standin/pacman.py",
+    "standin/pacworld.py",
+    "standin/programs.py",
+    "standin/tests/test_plasticity.py"
+   ],
+   "tests": [
+    "standin/tests/test_plasticity.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/worlds.py",
+   "lines": 272,
+   "to": "cubbyllm/worlds/base.py",
+   "importers": [
+    "standin/capsules.py",
+    "standin/data/import_science.py",
+    "standin/data/wikikg.py",
+    "standin/plugins_check.py",
+    "standin/plugins_load.py",
+    "standin/plugins_route.py",
+    "standin/serve.py",
+    "standin/tests/test_asking.py",
+    "standin/tests/test_harness_wiring.py",
+    "standin/tests/test_neurochem.py",
+    "standin/tests/test_plugins_serve.py",
+    "standin/tests/test_serve.py",
+    "standin/verse.py",
+    "standin/worlds_fiction.py",
+    "tests/bridges/test_possibility.py",
+    "validation/exp_f2m4_possibility.py",
+    "validation/exp_r18_hdc_rephrased.py",
+    "validation/exp_r26_relabelling.py",
+    "validation/exp_r27_manifest.py",
+    "validation/exp_r29_clutrr_serve.py",
+    "validation/exp_r31_branching.py",
+    "validation/exp_r32_branching_inpipe.py",
+    "validation/exp_s10_branches.py"
+   ],
+   "tests": [
+    "standin/tests/test_asking.py",
+    "standin/tests/test_harness_wiring.py",
+    "standin/tests/test_neurochem.py",
+    "standin/tests/test_plugins_serve.py",
+    "standin/tests/test_serve.py",
+    "tests/bridges/test_possibility.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/worlds_adapters.py",
+   "lines": 197,
+   "to": "cubbyllm/worlds/adapters.py",
+   "importers": [
+    "standin/plugins_load.py",
+    "standin/tests/test_worlds.py",
+    "standin/worlds_fiction.py",
+    "standin/worlds_ingest.py"
+   ],
+   "tests": [
+    "standin/tests/test_worlds.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/worlds_fiction.py",
+   "lines": 240,
+   "to": "cubbyllm/worlds/fiction.py",
+   "importers": [
+    "standin/plugins_load.py",
+    "standin/plugins_world.py",
+    "standin/tests/test_persons_list.py",
+    "standin/tests/test_worlds.py",
+    "standin/worlds_ingest.py",
+    "standin/worlds_store.py"
+   ],
+   "tests": [
+    "standin/tests/test_persons_list.py",
+    "standin/tests/test_worlds.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/worlds_ingest.py",
+   "lines": 182,
+   "to": "cubbyllm/worlds/ingest.py",
+   "importers": [
+    "standin/plugins_load.py",
+    "standin/tests/test_worlds.py"
+   ],
+   "tests": [
+    "standin/tests/test_worlds.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/worlds_manifest.py",
+   "lines": 82,
+   "to": "cubbyllm/worlds/manifest.py",
+   "importers": [
+    "standin/tests/test_worlds.py",
+    "standin/worlds_ingest.py",
+    "validation/exp_worlds_bench.py"
+   ],
+   "tests": [
+    "standin/tests/test_worlds.py"
+   ],
+   "over_300": false
+  },
+  {
+   "module": "standin/worlds_store.py",
+   "lines": 81,
+   "to": "cubbyllm/worlds/store.py",
+   "importers": [
+    "validation/exp_worlds_bench.py"
+   ],
+   "tests": [],
+   "over_300": false
+  }
+ ],
+ "broken_edges": [
+  {
+   "from": "standin/ask.py",
+   "to": "standin/eval_emitter_vm.py",
+   "kind": "lazy",
+   "rule": "cubbyllm may not import standin"
+  },
+  {
+   "from": "standin/ask.py",
+   "to": "standin/emitter.py",
+   "kind": "lazy",
+   "rule": "cubbyllm may not import standin"
+  },
+  {
+   "from": "standin/ask.py",
+   "to": "standin/lfm_source.py",
+   "kind": "lazy",
+   "rule": "cubbyllm may not import standin"
+  },
+  {
+   "from": "standin/book_reader.py",
+   "to": "standin/lfm_source.py",
+   "kind": "lazy",
+   "rule": "cubbyllm may not import standin"
+  },
+  {
+   "from": "standin/chat.py",
+   "to": "standin/emitter.py",
+   "kind": "lazy",
+   "rule": "cubbyllm may not import standin"
+  },
+  {
+   "from": "standin/context_graph.py",
+   "to": "standin/vault.py",
+   "kind": "lazy",
+   "rule": "cubbyllm may not import cubby_serve"
+  },
+  {
+   "from": "standin/data/hdc_world.py",
+   "to": "standin/data/build_hdc_sft.py",
+   "kind": "lazy",
+   "rule": "cubbyllm may not import validation"
+  },
+  {
+   "from": "standin/data/import_science.py",
+   "to": "standin/data/build_program_first.py",
+   "kind": "lazy",
+   "rule": "cubbyllm may not import validation"
+  },
+  {
+   "from": "standin/feeling.py",
+   "to": "standin/pacpaths.py",
+   "kind": "top",
+   "rule": "cubbyllm may not import standin"
+  },
+  {
+   "from": "standin/grounding.py",
+   "to": "standin/forge.py",
+   "kind": "lazy",
+   "rule": "cubbyllm may not import standin"
+  },
+  {
+   "from": "standin/plugins_serve.py",
+   "to": "standin/emitter.py",
+   "kind": "lazy",
+   "rule": "cubby_serve may not import standin"
+  },
+  {
+   "from": "standin/serve.py",
+   "to": "standin/data/build_emitter_sft.py",
+   "kind": "top",
+   "rule": "cubbyllm may not import validation"
+  },
+  {
+   "from": "standin/serve.py",
+   "to": "standin/emitter.py",
+   "kind": "top",
+   "rule": "cubbyllm may not import standin"
+  },
+  {
+   "from": "standin/serve.py",
+   "to": "standin/pacman.py",
+   "kind": "lazy",
+   "rule": "cubbyllm may not import standin"
+  },
+  {
+   "from": "standin/serve_cli.py",
+   "to": "standin/pacman.py",
+   "kind": "lazy",
+   "rule": "cubby_serve may not import standin"
+  },
+  {
+   "from": "standin/serve_cli.py",
+   "to": "standin/lfm_source.py",
+   "kind": "lazy",
+   "rule": "cubby_serve may not import standin"
+  },
+  {
+   "from": "standin/serve_get.py",
+   "to": "standin/pacman.py",
+   "kind": "lazy",
+   "rule": "cubby_serve may not import standin"
+  },
+  {
+   "from": "standin/worlds_adapters.py",
+   "to": "standin/data/build_books_index.py",
+   "kind": "lazy",
+   "rule": "cubbyllm may not import validation"
+  }
+ ],
+ "tests": {
+  "standin/tests/neurochemistry_probe.py": {
+   "to": "tests/affect/",
+   "covers": [
+    "standin/neurochem.py"
+   ],
+   "mixed": false,
+   "by": "reading"
+  },
+  "standin/tests/test_afferent.py": {
+   "to": "tests/affect/",
+   "covers": [
+    "standin/afferent.py",
+    "standin/neurochem.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_ask.py": {
+   "to": "tests/reasoning/",
+   "covers": [
+    "standin/ask.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_ask_branching.py": {
+   "to": "tests/reasoning/",
+   "covers": [
+    "standin/ask.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_ask_relation.py": {
+   "to": "tests/reasoning/",
+   "covers": [
+    "standin/ask.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_asking.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/hypothesis.py",
+    "standin/knowledge.py",
+    "standin/pacman.py",
+    "standin/verse.py",
+    "standin/worlds.py"
+   ],
+   "mixed": true,
+   "by": "reading"
+  },
+  "standin/tests/test_audience.py": {
+   "to": "tests/speech/",
+   "covers": [
+    "standin/audience.py",
+    "standin/books.py",
+    "standin/serve_api.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_board.py": {
+   "to": "tests/serve/",
+   "covers": [
+    "standin/board_api.py",
+    "standin/board_data.py",
+    "standin/news_archive.py",
+    "standin/serve_api.py"
+   ],
+   "mixed": true,
+   "by": "reading"
+  },
+  "standin/tests/test_board_review.py": {
+   "to": "tests/serve/",
+   "covers": [
+    "standin/board_api.py",
+    "standin/board_data.py",
+    "standin/news_archive.py"
+   ],
+   "mixed": true,
+   "by": "reading"
+  },
+  "standin/tests/test_book_reader.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/book_reader.py",
+    "standin/data/build_reader_sft.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_books.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/ask.py",
+    "standin/book_frames.py",
+    "standin/book_source.py",
+    "standin/books.py",
+    "standin/question_forms.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_books_bulk.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/ask.py",
+    "standin/books.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_build_chat_sft.py": {
+   "to": "tests/build/",
+   "covers": [
+    "standin/data/build_chat_sft.py",
+    "standin/data/gap_families.py",
+    "standin/data/identity.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_build_emitter_sft.py": {
+   "to": "tests/build/",
+   "covers": [
+    "standin/data/build_emitter_sft.py",
+    "standin/data/identity.py",
+    "standin/emitter.py",
+    "standin/eval_emitter_vm.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_build_game_sft.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/data/build_game_sft.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_build_program_first.py": {
+   "to": "tests/build/",
+   "covers": [
+    "standin/data/build_program_first.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_capsules.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/capsules.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_chat.py": {
+   "to": "tests/speech/",
+   "covers": [
+    "standin/chat.py",
+    "standin/data/build_chat_sft.py",
+    "standin/data/identity.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_choosing.py": {
+   "to": "tests/affect/",
+   "covers": [
+    "standin/choosing.py",
+    "standin/neurochem.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_claim_check.py": {
+   "to": "tests/reasoning/",
+   "covers": [
+    "standin/ask.py"
+   ],
+   "mixed": false
+  },
+  "standin/tests/test_coach.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/coach.py",
+    "standin/neurochem.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_coach_wired.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/neurochem.py",
+    "standin/pacman.py"
+   ],
+   "mixed": true,
+   "by": "reading"
+  },
+  "standin/tests/test_context_graph.py": {
+   "to": "tests/reasoning/",
+   "covers": [
+    "standin/context_graph.py",
+    "standin/history_graph.py",
+    "standin/history_lookup.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_cortex.py": {
+   "to": "tests/cortex/",
+   "covers": [
+    "standin/cortex/forward.py",
+    "standin/cortex/retina.py",
+    "standin/cortex/salience.py",
+    "standin/cortex/what.py",
+    "standin/cortex/where.py"
+   ],
+   "mixed": false,
+   "by": "reading"
+  },
+  "standin/tests/test_ear.py": {
+   "to": "tests/affect/",
+   "covers": [
+    "standin/ear.py",
+    "standin/ear_lexicon.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_emitter_450m.py": {
+   "to": "tests/emit/",
+   "covers": [
+    "standin/emitter.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_encyclopedia.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/encyclopedia.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_exp_he19_memory.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/emitter.py"
+   ],
+   "mixed": false,
+   "by": "reading"
+  },
+  "standin/tests/test_explicit_gate.py": {
+   "to": "tests/speech/",
+   "covers": [
+    "standin/explicit_gate.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_goemotions_cube.py": {
+   "to": "tests/build/",
+   "covers": [
+    "standin/data/build_chat_sft.py",
+    "standin/data/goemotions_cube.py",
+    "standin/neurochem.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_harness.py": {
+   "to": "tests/serve/",
+   "covers": [
+    "standin/harness.py",
+    "standin/ledger.py",
+    "standin/vault.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_harness_wiring.py": {
+   "to": "tests/serve/",
+   "covers": [
+    "standin/harness.py",
+    "standin/harness_wiring.py",
+    "standin/ledger.py",
+    "standin/vault.py",
+    "standin/worlds.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_hdc_sft.py": {
+   "to": "tests/build/",
+   "covers": [
+    "standin/data/build_hdc_sft.py"
+   ],
+   "mixed": false,
+   "by": "reading"
+  },
+  "standin/tests/test_hdc_store.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/ask.py",
+    "standin/data/hdc_world.py",
+    "standin/hdc_store.py",
+    "standin/question_forms.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_hf_rows.py": {
+   "to": "tests/build/",
+   "covers": [
+    "standin/data/hf_rows.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_history_graph.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/history_graph.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_history_lookup.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/history_graph.py",
+    "standin/history_lookup.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_hypothesis.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/hypothesis.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_identity.py": {
+   "to": "tests/speech/",
+   "covers": [
+    "standin/data/identity.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_import_science.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/data/import_science.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_import_tinygsm.py": {
+   "to": "tests/build/",
+   "covers": [
+    "standin/data/import_tinygsm.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_ledger_vault.py": {
+   "to": "tests/serve/",
+   "covers": [
+    "standin/ledger.py",
+    "standin/pacman.py",
+    "standin/vault.py"
+   ],
+   "mixed": true,
+   "by": "reading"
+  },
+  "standin/tests/test_lfm_source.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/lfm_source.py",
+    "standin/sources.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_loci_reader.py": {
+   "to": "tests/reasoning/",
+   "covers": [
+    "standin/ask.py",
+    "standin/loci_reader.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_neurochem.py": {
+   "to": "tests/affect/",
+   "covers": [
+    "standin/data/identity.py",
+    "standin/neurochem.py",
+    "standin/worlds.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_news_archive.py": {
+   "to": "tests/sources/",
+   "covers": [
+    "standin/news_archive.py",
+    "standin/robots_rules.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_news_backfill.py": {
+   "to": "tests/sources/",
+   "covers": [
+    "standin/news_archive.py",
+    "standin/news_backfill.py",
+    "standin/robots_rules.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_news_events.py": {
+   "to": "tests/sources/",
+   "covers": [
+    "standin/news_events.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_news_gdelt.py": {
+   "to": "tests/sources/",
+   "covers": [
+    "standin/news_gdelt.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_news_globalvoices.py": {
+   "to": "tests/sources/",
+   "covers": [
+    "standin/news_archive.py",
+    "standin/news_globalvoices.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_news_reply.py": {
+   "to": "tests/sources/",
+   "covers": [
+    "standin/grounding.py",
+    "standin/news_reply.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_news_source.py": {
+   "to": "tests/sources/",
+   "covers": [
+    "standin/news_source.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_news_trigger.py": {
+   "to": "tests/sources/",
+   "covers": [
+    "standin/ask.py",
+    "standin/audience.py",
+    "standin/news_trigger.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_pacman.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/data/identity.py",
+    "standin/forge.py",
+    "standin/neurochem.py",
+    "standin/pacman.py",
+    "standin/serve.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_pacman_percepts.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/data/identity.py",
+    "standin/neurochem.py",
+    "standin/pacman.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_perception.py": {
+   "to": "tests/affect/",
+   "covers": [
+    "standin/chat.py",
+    "standin/data/identity.py",
+    "standin/perception.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_persons_list.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/plugins_world.py",
+    "standin/worlds_fiction.py"
+   ],
+   "mixed": false,
+   "by": "reading"
+  },
+  "standin/tests/test_plasticity.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/coach.py",
+    "standin/lexicon.py",
+    "standin/world.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_plugins.py": {
+   "to": "tests/plugins/",
+   "covers": [
+    "standin/emitter.py",
+    "standin/plugins_guard.py",
+    "standin/plugins_index.py",
+    "standin/plugins_load.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_plugins_check.py": {
+   "to": "tests/plugins/",
+   "covers": [
+    "standin/audience.py",
+    "standin/plugins_guard.py",
+    "standin/plugins_index.py",
+    "standin/plugins_load.py",
+    "standin/plugins_serve.py",
+    "standin/serve.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_plugins_route.py": {
+   "to": "tests/plugins/",
+   "covers": [
+    "standin/plugins_index.py",
+    "standin/plugins_route.py",
+    "standin/question_encoder.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_plugins_serve.py": {
+   "to": "tests/serve/",
+   "covers": [
+    "standin/board_api.py",
+    "standin/ledger.py",
+    "standin/plugins_guard.py",
+    "standin/plugins_index.py",
+    "standin/plugins_serve.py",
+    "standin/serve_api.py",
+    "standin/worlds.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_portable.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/hypothesis.py",
+    "standin/pacman.py",
+    "standin/verse.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_property_aliases.py": {
+   "to": "tests/build/",
+   "covers": [
+    "standin/sources.py"
+   ],
+   "mixed": false,
+   "by": "reading"
+  },
+  "standin/tests/test_question_forms.py": {
+   "to": "tests/reasoning/",
+   "covers": [
+    "standin/question_forms.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_said_back.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/data/identity.py",
+    "standin/grounding.py",
+    "standin/neurochem.py",
+    "standin/pacman.py",
+    "standin/saying.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_saying.py": {
+   "to": "tests/affect/",
+   "covers": [
+    "standin/chat.py",
+    "standin/choosing.py",
+    "standin/data/identity.py",
+    "standin/neurochem.py",
+    "standin/saying.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_self_source.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/ask.py",
+    "standin/self_source.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_serve.py": {
+   "to": "tests/brain/",
+   "covers": [
+    "standin/data/identity.py",
+    "standin/emitter.py",
+    "standin/serve.py",
+    "standin/serve_api.py",
+    "standin/verse.py",
+    "standin/worlds.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_sleep_loop.py": {
+   "to": "tests/reasoning/",
+   "covers": [
+    "standin/ask.py"
+   ],
+   "mixed": false
+  },
+  "standin/tests/test_sources.py": {
+   "to": "tests/sources/",
+   "covers": [
+    "standin/sources.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_time_rule.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/ask.py",
+    "standin/book_source.py",
+    "standin/books.py",
+    "standin/data/hdc_world.py",
+    "standin/hdc_store.py",
+    "standin/question_forms.py",
+    "standin/time_rule.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_verse.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/data/identity.py",
+    "standin/serve.py",
+    "standin/verse.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_wariness.py": {
+   "to": "standin/tests/ (stays)",
+   "covers": [
+    "standin/neurochem.py",
+    "standin/pacman.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_web_source.py": {
+   "to": "tests/sources/",
+   "covers": [
+    "standin/ask.py",
+    "standin/lfm_source.py",
+    "standin/web_source.py"
+   ],
+   "mixed": true,
+   "by": "name"
+  },
+  "standin/tests/test_wikikg.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/data/wikikg.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_wikitext.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/wikitext.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  },
+  "standin/tests/test_worlds.py": {
+   "to": "tests/worlds/",
+   "covers": [
+    "standin/ask.py",
+    "standin/books.py",
+    "standin/data/hdc_world.py",
+    "standin/data/wikikg.py",
+    "standin/hdc_store.py",
+    "standin/question_forms.py",
+    "standin/worlds_adapters.py",
+    "standin/worlds_fiction.py",
+    "standin/worlds_ingest.py",
+    "standin/worlds_manifest.py"
+   ],
+   "mixed": false,
+   "by": "name"
+  }
+ },
+ "counts": {
+  "cubbyllm": 71,
+  "cubby_serve": 12,
+  "standin": 29,
+  "validation": 34
+ }
+}
