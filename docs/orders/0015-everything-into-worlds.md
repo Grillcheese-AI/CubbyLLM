@@ -1,5 +1,5 @@
 # 0015 — Everything in the datasets into worlds: one manifest-driven ingestion, incremental
-status: in progress
+status: review
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("store by worlds everything in datasets, not just use
 them as pretraining"; "everything in datasets is stuff Cubby can see once and learn") · hypothesis: H-F2, H-K10
 **After 0012 and 0014:** it generalizes their index and loader.
@@ -100,11 +100,72 @@ ancient name "located in" its modern one ("Antium" in "Anzio"): an identity, not
 them to a same-place relation when the world is mounted.
 
 ## Report
-<!-- Claude Code fills this in, then sets status: review -->
-- **Commits:**
-- **Files:**
-- **Tests:**
-- **Measured:**
-- **Not verified here:**
+- **Commits:** be2db9e, 0394463, ce80474 (the manifest, the release filter, the topic map and catalog), fe580b9 (in
+  progress), 8ce7eab (the tool: routes, registry, fiction worlds, one store interface, wiki hygiene), 9e4562a
+  (Addendum 2), b3e7551 (Addendum 3), 2d5f0f0 and 093017f (local paths out of the code and the logs), and this
+  commit (the run's logs, the report, one scan fix).
+- **Files:** `standin/worlds_manifest.py`, `worlds_adapters.py`, `worlds_fiction.py`, `worlds_ingest.py`,
+  `worlds_store.py`, `standin/data/world_hygiene.py`, `standin/data/build_same_place.py`, `standin/hdc_store.py`
+  (`disagreements`), `standin/time_rule.py`, `standin/ask.py` (the world branch of the time rule, the contested
+  seed), `validation/exp_worlds_bench.py`; tests `standin/tests/test_worlds.py` (6), `test_time_rule.py` (5),
+  `test_books_bulk.py` (veto, same-name guard, at one point). Local and git-ignored: the per-dataset manifest, the path
+  map (`docs/*.local.tsv`), the registry and the stores. **Disk:** the data disk Nick chose, 3.4 GB in all (fiction
+  2.4 GB, passages 0.9 GB, registry, events, quotes and tables under 10 MB; the Gutenberg catalog 21 MB).
+- **Tests:** `pytest tests`: 441 passed, 5 skipped; red only the known `test_every_module_declares_wiring` (order
+  0002). One more red was mine and is fixed here: the sleep test's reason scan read the time rule's `"as_of"` tier on
+  the line after a reason and took it for one (`tests/reasoning/test_sleep.py`: listed with the scan's other
+  non-reasons). `pytest standin/tests`: 653 passed; 25 red that predate this order and touch nothing of it
+  (`test_build_chat_sft.py` 24 and `test_chat.py` 1: names `build_chat_sft.py` no longer has since 34e7658; and
+  `test_goemotions_cube.py` does not import, `GOEMOTIONS`, the same file).
+- **Measured** (`validation/logs/worlds_ingest_2026-10-22.json`, `validation/logs/exp_worlds_bench_2026-10-22.json`):
+  - **Coverage:** 76 manifest rows, 76 decided: 23 ingested, 42 excluded, 11 queued for a later tranche (Nick's
+    choice of this pass: the tool and a first tranche; Wikipedia, web text and code wikis later). Per ingested row
+    (manifest row: world, route, rows, entities, files, as-of, frame triples, seconds):
+    2 how-to passages 354,435 / 29,578 / 193 files / 58 triples / 222 s; 3 business 9,792 / 2,149 / 20 / 10 s;
+    4, 5, 9 reference 114,481, 138,966 and 183,069 rows (66, 71, 137 triples; 161, 17, 248 s); 6 assorted, classified
+    37 books, all reality (44,617 rows); 7 psychology 40,137 (tier attributed, low trust); 8 code 34,859; 10
+    classified: 224 books to fiction worlds, 25 to science passages (one author's fiction and non-fiction, split by
+    their text); 11 exam 5,771; 12 scholarly 53,021 (11 triples); 16, 17, 75, 76 fiction: 4,157,232 rows in all, 189
+    works (one world each; row 76 re-read adds 0 files); 18 encyclopedia 109,769 rows, as of 2005; 20 the hdc world
+    mounted (3,384,594 facts, as of 2019); 21 quotes 24,022 (attributed); 22 the history books mounted (5,639,095
+    rows); 25 a table 10,810 rows; 53 events 3,934 (attributed, not verified); 35 and 61 the self world mounted. The
+    whole run took 4,114 s (about 69 minutes), most of it fiction (3,041 s) and its frames.
+  - **Fiction isolation:** 50 in-fiction facts (kin a novel states of its own people: child 17, father 12, spouse 10,
+    sibling 8, mother 3) asked as reality questions: **0 spoken**, 0 with the fiction's value. Asked naming their work:
+    49 answered, 49 correct, 1 not spoken (a refusal, not a wrong answer).
+  - **Exclusion:** 0 files of an excluded dataset in the registry. The evaluation sets' 5,642 questions as 5+-word
+    phrase queries over the 12 passage worlds: 2 hits, both the same 8-word noun phrase ("third president of the
+    United States of America") in the history books' own text and in one novel -- a phrase a book writes, not an
+    evaluation row; no answer-bearing row of an evaluation set is in a world. The repo's own bench questions (526):
+    0 hits.
+  - **No regression:** through the registry's stores, 0012's bench gives what its final log gave (30 spoken, 1 flat,
+    29 hedged, 0 wrong flat, 3 wrong hedged -- 0012's own three, unchanged, each said hedged as one source's) and 0014's
+    gives 177 spoken, 177 correct, 0 wrong, 0 time-sensitive said flat. **0 wrong said flat** across both; the 3 hedged wrong answers are 0012's, not new.
+  - **Incremental:** a re-run of the events and the quotes datasets with nothing new: +0 files, rows unchanged (3,934
+    and 24,022). Adding one file adds only it: `test_worlds.py` (synthetic fixtures).
+  - **Addendum (hygiene):** in `world_hygiene.py` at the mount: debris, values equal to their subject, `SP0USE_OF`
+    respelled (counts in the mount's log, b3e7551).
+  - **Addendum 2 (time rule), facts touched per world:** wiki 52,815 of 551,661 (said "at one point"); hdc 908,108 of
+    3,384,594 in a changing relation, 155,749 of them time-sensitive (said "as of 2019"); the bulk books' facts 466
+    of 2,230 (at one point, hedged when attributed); fiction 296 of 1,239 (at one point, inside its work).
+  - **Addendum 3 (disagreements)** (`worlds_disagreements_sample_2026-10-22.json`): compared 1,689, agree 311, agree
+    once folded 48, held 1,330; the 50-sample's kinds: both true (many-valued) 18, finer against coarser 11, the same
+    value under another label 10, a wiki-world error 9, a namesake 2, older against newer 0; a rule per kind in the
+    log. Ancient names in their modern ones: 7 pairs mapped to a same-place relation at the mount
+    (`build_same_place_2026-10-22.json`).
+- **Not verified here:** the routes not in this tranche (11 queued rows); the release build (`--release`) beyond its
+  fixture test -- no release has been cut; the domain classifier port for untyped questions (the topic map routed the
+  domains this tranche needed).
 - **Found on the way:**
+  - The hdc world's label lookup lands on namesakes for ancient places (Nineveh resolves to a village in Nova Scotia,
+    Byzantium to a film): the same-name guard by dates (0012) does not apply, as the hdc world carries no dates there.
+    Recall of the same-place mapping is low for the same reason (Constantinople is lost to a Wikidata5M country label).
+  - My first commits of this order carried local paths (the rights tracker, the catalog, the books index, the eval
+    sets, the default roots) in code and one log's store paths and reasons (the reasons name collections): all now
+    read from the environment, the committed report keeps a dataset's manifest row only (2d5f0f0, 093017f). The values
+    live in the local notes. Older files in the repo still carry local paths from before the rule (the hypotheses
+    file, `data/corpus_sources.json`, a few top-level docs): not touched here.
 - **Questions:**
+  - The held disagreements (1,330) stay unsaid until a rule per kind is wired; the sample's rules are proposals for
+    Cowork: which to wire first? ("same value, another label" needs an alias table from the hdc world's names.)
+  - The next tranche: Wikipedia (passages and frames) first, as the order's list has it?

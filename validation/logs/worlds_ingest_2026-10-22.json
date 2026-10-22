@@ -1,0 +1,1058 @@
+{
+ "datasets": [
+  {
+   "row": 2,
+   "status": "ingest",
+   "seconds": 222.0,
+   "entries": [
+    {
+     "world": "reality:how-to",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 122609,
+     "entities": 11783,
+     "files_added": 99,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 19,
+      "tiers": {
+       "attributed": 18,
+       "corroborated": 1
+      },
+      "entities": 18
+     }
+    },
+    {
+     "world": "reality:how-to",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 231826,
+     "entities": 17795,
+     "files_added": 94,
+     "files_skipped": 5,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 39,
+      "tiers": {
+       "attributed": 37,
+       "corroborated": 2
+      },
+      "entities": 36
+     }
+    }
+   ]
+  },
+  {
+   "row": 3,
+   "status": "ingest",
+   "seconds": 10.4,
+   "entries": [
+    {
+     "world": "reality:business",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 9792,
+     "entities": 2149,
+     "files_added": 20,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 0,
+      "tiers": {},
+      "entities": 0
+     }
+    }
+   ]
+  },
+  {
+   "row": 4,
+   "status": "ingest",
+   "seconds": 160.9,
+   "entries": [
+    {
+     "world": "reality:reference",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 114481,
+     "entities": 14316,
+     "files_added": 20,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 66,
+      "tiers": {
+       "attributed": 62,
+       "held": 2,
+       "corroborated": 2
+      },
+      "entities": 52
+     }
+    }
+   ]
+  },
+  {
+   "row": 5,
+   "status": "ingest",
+   "seconds": 16.6,
+   "entries": [
+    {
+     "world": "reality:reference",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 138966,
+     "entities": 15635,
+     "files_added": 20,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 71,
+      "tiers": {
+       "attributed": 67,
+       "held": 2,
+       "corroborated": 2
+      },
+      "entities": 57
+     }
+    }
+   ]
+  },
+  {
+   "row": 6,
+   "status": "ingest",
+   "seconds": 11.0,
+   "entries": [
+    {
+     "world": "reality:assorted",
+     "route": "classify",
+     "tier": "attributed",
+     "classified": {
+      "fiction": 0,
+      "reality": 23,
+      "why": {
+       "reality by its text": 23
+      }
+     },
+     "passages": {
+      "store": "passages/reality_assorted.sqlite",
+      "rows": 16489,
+      "entities": 3945,
+      "files_added": 23,
+      "files_skipped": 0,
+      "left_out": 0,
+      "as_of": null
+     }
+    },
+    {
+     "world": "reality:assorted",
+     "route": "classify",
+     "tier": "attributed",
+     "classified": {
+      "fiction": 0,
+      "reality": 14,
+      "why": {
+       "reality by its text": 14
+      }
+     },
+     "passages": {
+      "store": "passages/reality_assorted.sqlite",
+      "rows": 28128,
+      "entities": 5322,
+      "files_added": 14,
+      "files_skipped": 0,
+      "left_out": 0,
+      "as_of": null
+     }
+    }
+   ]
+  },
+  {
+   "row": 7,
+   "status": "ingest",
+   "seconds": 8.9,
+   "entries": [
+    {
+     "world": "reality:psychology",
+     "route": "passages",
+     "tier": "attributed, low trust",
+     "rows": 40137,
+     "entities": 1897,
+     "files_added": 50,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null
+    }
+   ]
+  },
+  {
+   "row": 8,
+   "status": "ingest",
+   "seconds": 7.2,
+   "entries": [
+    {
+     "world": "domain:code",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 34859,
+     "entities": 1270,
+     "files_added": 59,
+     "files_skipped": 1,
+     "left_out": 0,
+     "as_of": null
+    }
+   ]
+  },
+  {
+   "row": 9,
+   "status": "ingest",
+   "seconds": 247.8,
+   "entries": [
+    {
+     "world": "reality:reference",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 183069,
+     "entities": 28987,
+     "files_added": 64,
+     "files_skipped": 1,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 137,
+      "tiers": {
+       "attributed": 132,
+       "held": 3,
+       "corroborated": 2
+      },
+      "entities": 115
+     }
+    }
+   ]
+  },
+  {
+   "row": 10,
+   "status": "ingest",
+   "seconds": 143.8,
+   "entries": [
+    {
+     "world": "reality:science",
+     "route": "classify",
+     "tier": "attributed",
+     "classified": {
+      "fiction": 224,
+      "reality": 25,
+      "why": {
+       "reality by its text": 25,
+       "fiction by its text": 224
+      }
+     },
+     "fiction": {
+      "store": "fiction/fiction.sqlite",
+      "rows": 230972,
+      "entities": 11,
+      "files_added": 223,
+      "files_skipped": 1,
+      "left_out": 0,
+      "as_of": null,
+      "facts_read_now": 20
+     },
+     "passages": {
+      "store": "passages/reality_science.sqlite",
+      "rows": 40475,
+      "entities": 3108,
+      "files_added": 25,
+      "files_skipped": 0,
+      "left_out": 0,
+      "as_of": null
+     }
+    }
+   ]
+  },
+  {
+   "row": 11,
+   "status": "ingest",
+   "seconds": 0.6,
+   "entries": [
+    {
+     "world": "domain:exam",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 1726,
+     "entities": 240,
+     "files_added": 3,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null
+    },
+    {
+     "world": "domain:exam",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 1760,
+     "entities": 320,
+     "files_added": 2,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null
+    },
+    {
+     "world": "domain:exam",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 2285,
+     "entities": 432,
+     "files_added": 1,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null
+    }
+   ]
+  },
+  {
+   "row": 12,
+   "status": "ingest",
+   "seconds": 63.9,
+   "entries": [
+    {
+     "world": "reality:scholarly",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 2059,
+     "entities": 1057,
+     "files_added": 1,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 0,
+      "tiers": {},
+      "entities": 0
+     }
+    },
+    {
+     "world": "reality:scholarly",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 4022,
+     "entities": 1369,
+     "files_added": 1,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 0,
+      "tiers": {},
+      "entities": 0
+     }
+    },
+    {
+     "world": "reality:scholarly",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 4456,
+     "entities": 1404,
+     "files_added": 1,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 0,
+      "tiers": {},
+      "entities": 0
+     }
+    },
+    {
+     "world": "reality:scholarly",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 7004,
+     "entities": 3476,
+     "files_added": 1,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 2,
+      "tiers": {
+       "attributed": 2
+      },
+      "entities": 2
+     }
+    },
+    {
+     "world": "reality:scholarly",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 7610,
+     "entities": 3756,
+     "files_added": 1,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 2,
+      "tiers": {
+       "attributed": 2
+      },
+      "entities": 2
+     }
+    },
+    {
+     "world": "reality:scholarly",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 7921,
+     "entities": 3778,
+     "files_added": 1,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 2,
+      "tiers": {
+       "attributed": 2
+      },
+      "entities": 2
+     }
+    },
+    {
+     "world": "reality:scholarly",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 9382,
+     "entities": 3992,
+     "files_added": 1,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 2,
+      "tiers": {
+       "attributed": 2
+      },
+      "entities": 2
+     }
+    },
+    {
+     "world": "reality:scholarly",
+     "route": "passages",
+     "tier": "attributed",
+     "rows": 10567,
+     "entities": 4906,
+     "files_added": 2,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "frames": {
+      "triples": 3,
+      "tiers": {
+       "attributed": 3
+      },
+      "entities": 3
+     }
+    }
+   ]
+  },
+  {
+   "row": 13,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 14,
+   "status": "queued",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 15,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 16,
+   "status": "ingest",
+   "seconds": 1105.5,
+   "entries": [
+    {
+     "world": "fiction",
+     "route": "fiction",
+     "tier": "in-fiction only",
+     "rows": 342674,
+     "entities": 12,
+     "files_added": 116,
+     "files_skipped": 17,
+     "left_out": 0,
+     "as_of": null,
+     "facts_read_now": 37
+    },
+    {
+     "world": "fiction",
+     "route": "fiction",
+     "tier": "in-fiction only",
+     "rows": 624289,
+     "entities": 14,
+     "files_added": 118,
+     "files_skipped": 2,
+     "left_out": 0,
+     "as_of": null,
+     "facts_read_now": 68
+    },
+    {
+     "world": "fiction",
+     "route": "fiction",
+     "tier": "in-fiction only",
+     "rows": 718334,
+     "entities": 67,
+     "files_added": 422,
+     "files_skipped": 2,
+     "left_out": 0,
+     "as_of": null,
+     "facts_read_now": 86
+    },
+    {
+     "world": "fiction",
+     "route": "fiction",
+     "tier": "in-fiction only",
+     "rows": 1437449,
+     "entities": 107,
+     "files_added": 273,
+     "files_skipped": 3,
+     "left_out": 0,
+     "as_of": null,
+     "facts_read_now": 355
+    }
+   ]
+  },
+  {
+   "row": 17,
+   "status": "ingest",
+   "seconds": 1934.9,
+   "entries": [
+    {
+     "world": "fiction",
+     "route": "fiction",
+     "tier": "in-fiction only",
+     "rows": 3957561,
+     "entities": 182,
+     "files_added": 2130,
+     "files_skipped": 5,
+     "left_out": 0,
+     "as_of": null,
+     "facts_read_now": 659
+    },
+    {
+     "world": "fiction",
+     "route": "fiction",
+     "tier": "in-fiction only",
+     "rows": 4035525,
+     "entities": 187,
+     "files_added": 144,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "facts_read_now": 11
+    }
+   ]
+  },
+  {
+   "row": 18,
+   "status": "ingest",
+   "seconds": 105.6,
+   "entries": [
+    {
+     "world": "reality:encyclopedia",
+     "route": "passages",
+     "tier": "attributed (as of 2005)",
+     "rows": 109769,
+     "entities": 48327,
+     "files_added": 29,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": "2005"
+    }
+   ]
+  },
+  {
+   "row": 19,
+   "status": "queued",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 20,
+   "status": "ingest",
+   "seconds": 0.1,
+   "entries": [
+    {
+     "world": "reality",
+     "route": "mount",
+     "tier": "Wikidata",
+     "rows": 3384594,
+     "entities": 2458891,
+     "files_added": 0,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": "2019",
+     "mounted": true
+    }
+   ]
+  },
+  {
+   "row": 21,
+   "status": "ingest",
+   "seconds": 0.3,
+   "entries": [
+    {
+     "world": "reality:quotes",
+     "route": "quotes",
+     "tier": "attributed",
+     "rows": 24022,
+     "entities": 3955,
+     "files_added": 1,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null
+    }
+   ]
+  },
+  {
+   "row": 22,
+   "status": "ingest",
+   "seconds": 5.2,
+   "entries": [
+    {
+     "world": "reality:history",
+     "route": "mount",
+     "tier": "attributed",
+     "rows": 5639095,
+     "entities": 76740,
+     "files_added": 0,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "mounted": true
+    }
+   ]
+  },
+  {
+   "row": 23,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 24,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 25,
+   "status": "ingest",
+   "seconds": 0.2,
+   "entries": [
+    {
+     "world": "data",
+     "route": "table",
+     "tier": "attributed",
+     "rows": 10810,
+     "entities": 3,
+     "files_added": 3,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null
+    }
+   ]
+  },
+  {
+   "row": 26,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 27,
+   "status": "queued",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 28,
+   "status": "queued",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 29,
+   "status": "queued",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 30,
+   "status": "queued",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 31,
+   "status": "queued",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 32,
+   "status": "queued",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 33,
+   "status": "queued",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 34,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 35,
+   "status": "ingest",
+   "seconds": 0.0,
+   "entries": [
+    {
+     "world": "self",
+     "route": "mount",
+     "tier": "self",
+     "rows": null,
+     "entities": null,
+     "files_added": 0,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "mounted": true
+    }
+   ]
+  },
+  {
+   "row": 36,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 37,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 38,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 39,
+   "status": "queued",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 40,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 41,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 42,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 43,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 44,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 45,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 46,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 47,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 48,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 49,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 50,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 51,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 52,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 53,
+   "status": "ingest",
+   "seconds": 0.2,
+   "entries": [
+    {
+     "world": "reality:events",
+     "route": "events",
+     "tier": "attributed (not verified)",
+     "rows": 3934,
+     "entities": 389,
+     "files_added": 1,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "dated_share": 1.0
+    }
+   ]
+  },
+  {
+   "row": 54,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 55,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 56,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 57,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 58,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 59,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 60,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 61,
+   "status": "ingest",
+   "seconds": 0.0,
+   "entries": [
+    {
+     "world": "self",
+     "route": "mount",
+     "tier": "self",
+     "rows": null,
+     "entities": null,
+     "files_added": 0,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "mounted": true
+    }
+   ]
+  },
+  {
+   "row": 62,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 63,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 64,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 65,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 66,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 67,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 68,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 69,
+   "status": "queued",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 70,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 71,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 72,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 73,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 74,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  },
+  {
+   "row": 75,
+   "status": "ingest",
+   "seconds": 66.2,
+   "entries": [
+    {
+     "world": "fiction",
+     "route": "fiction",
+     "tier": "in-fiction only",
+     "rows": 4157232,
+     "entities": 189,
+     "files_added": 103,
+     "files_skipped": 0,
+     "left_out": 0,
+     "as_of": null,
+     "facts_read_now": 3
+    }
+   ]
+  },
+  {
+   "row": 76,
+   "status": "ingest",
+   "seconds": 1.9,
+   "entries": [
+    {
+     "world": "fiction",
+     "route": "fiction",
+     "tier": "in-fiction only",
+     "rows": 4157232,
+     "entities": 189,
+     "files_added": 0,
+     "files_skipped": 103,
+     "left_out": 0,
+     "as_of": null,
+     "facts_read_now": 0
+    }
+   ]
+  },
+  {
+   "row": 77,
+   "status": "excluded",
+   "seconds": 0.0,
+   "entries": []
+  }
+ ],
+ "counts": {
+  "ingest": 23,
+  "excluded": 42,
+  "queued": 11
+ }
+}
