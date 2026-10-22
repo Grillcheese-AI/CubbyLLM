@@ -1,5 +1,5 @@
 # 0031 — Out of the stand-in: what is Cubby moves into cubbyllm/, the product layer into cubby_serve/, and standin/ keeps only the stand-in
-status: review (step 1: the move map)
+status: in progress (step 1 reviewed 2026-10-22: step 2 may start, with the changes below)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick ("both, in that order"; "pause standin additions"; licence "split by kind") · hypothesis: none · **before any new feature; 0032 follows**
 
 ## Why
@@ -118,3 +118,43 @@ labelled as such.
   6. **The file names,** with the package prefix dropped?
   7. **`ear.py`'s wiring string** names the private BlockWorld repo: reword it when it moves?
 - **Not done (step 2 waits for the review):** the moves, the shims, the guards, `pyproject.toml`, the licences, the docs.
+
+## Review of step 1 (Cowork, 2026-10-22): the map is accepted with five changes; step 2 may start
+Read `docs/0031_move_map.md` and its JSON. The map is careful: every module placed, the 18 crossings each with a
+behaviour-free fix, the splits before the move, and shims that keep the old module object (`sys.modules`), so private
+names and monkeypatches survive. **Step 2 may start, with these changes.**
+**Nick's answers:**
+1. **The builders: Apache, in `validation/`** (Nick, 2026-10-22). How Cubby is made and how it thinks are open; the
+   product layer is BSL.
+2. **`cubbyllm/` stays offline** (Nick, 2026-10-22): the standing rule holds. What fetches goes to
+   `cubby_serve/sources/` (BSL): the HTTP calls, the polite fetcher (robots, `Crawl-delay`, the `CubbyLLM/0.1` name),
+   the feed poller and the backfill loop, the web search and page reads. `cubbyllm/sources/` keeps the logic: Wikidata
+   claims rendered as facts, the news items' parsing, events by day, the reply, the trigger, the robots *parser*, the
+   web source's corroboration; each takes a `fetch` callable it is given and never opens a socket. The plugins' `Ctx`
+   gets its fetch the same way. A guard: no module in `cubbyllm/` imports `socket`, `urllib.request`, `http.client` or
+   `requests`, lazily or not (`plugins_guard`'s own list of forbidden names is data and stays). Split the mixed files
+   (`web_source` 1,025, `news_archive`, `sources`) along that line in their split commits.
+**Cowork's answers:**
+3. Yes: `cubby_serve/` may lazily import `emitter_llama`, `lfm_source` and `pacman` behind `--gguf`, `--web-reader` /
+   `--ask lfm` and `--pacman` only, with the guard naming exactly them. They go when the GGUF seats retire and the game
+   finds its home.
+4. `vault` into `cubbyllm/speech/vault.py`: keeping a user's chat encrypted is Cubby's rule. Its key and where it
+   writes come from the server, never from the package.
+5. Yes, `standin/cortex/` to `cubbyllm/cortex/`.
+6. Yes, drop the prefixes, with one change: two modules called `lexicon` in one package is a trap. The learned affect
+   of words becomes `cubbyllm/affect/word_affect.py`.
+7. Yes, reword `ear.py`'s `__wiring__` so it names no private repo.
+**Changes to the map:**
+- **Crossings the scan missed.** Lazy imports of `validation/` scripts through `sys.path`: `ask.py` imports
+  `exp_r9_matched_pairs.emitted_plan`, and `emitter_450m.py` imports `exp_e5_base450m_probes.load_grilly`;
+  `loci_reader.py` puts the repo root on `sys.path` for the same reason. `emitted_plan` moves into `cubbyllm/reasoning/`
+  and the base's loader into `cubbyllm/ops/` (see the next point); no module in `cubbyllm/` edits `sys.path`. Re-run
+  the crossing scan over function-level imports and `sys.path` edits, and list what it adds.
+- **grilly.** `CLAUDE.md`: only `cubbyllm/ops/` imports grilly. `emitter_450m.py` (the 450M on grilly2) and
+  `capsules.py` import it. Their grilly calls go through `cubbyllm/ops/` (a small `ops/grilly_seats.py`: load an
+  export, copy a LoRA pair in, decode a step), and the seats call that.
+- **Baseline first.** Land 0030's red-test fixes before the first `git mv`, so "every test that passed before passes
+  after, by count" starts from a suite that means what it says.
+- **`import cubbyllm` stays torch-free and grilly-free.** Add the test (a fresh interpreter, `import cubbyllm`, then
+  neither in `sys.modules`); the moved modules' `numpy` at module level is fine.
+

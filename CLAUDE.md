@@ -108,7 +108,8 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
 - The BlockWorld repo is private: nothing from it comes into this public repo.
 - **Where code goes (Nick, 2026-10-22).** What makes Cubby think goes in `cubbyllm/` (Apache-2.0); the product
   layer (server, board, harness, vault, ledger) in `cubby_serve/` (BSL 1.1); `standin/` holds only the GGUF stand-in
-  and its data builders. No new feature in `standin/`. Until order 0031 lands, an order's `standin/...` path means
+  and its data builders. No new feature in `standin/`. `cubbyllm/` never touches the network: what fetches lives in
+  `cubby_serve/` and hands `cubbyllm/` a fetch function (Nick, 2026-10-22). Data builders go to `validation/` (Apache). Until order 0031 lands, an order's `standin/...` path means
   that module's new home in 0031's move map.
 - No local drive paths, venv names or account names in committed files. A committed file names a folder
   (`$CUBBY_MODELS`, `$CUBBY_DATASETS`, `$CUBBY_DRIVE`, ...); `cubbyllm/local_paths.py` resolves it from the environment,
