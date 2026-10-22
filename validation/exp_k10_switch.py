@@ -143,6 +143,13 @@ def gate_targets(idx, spans, S):
     return torch.tensor(out)
 
 
+def stream(a):
+    """The switch-alone phase's documents: new draws (seed + 7) in the joint run's own filler language -- the language's
+    grammar is drawn from its seed (seed + 1, as the joint run and the held-out set), and another seed is a language
+    the trunk never learned (the first runs used seed + 8: the training loss sat at ~10.5 nats, 2026-10-22)."""
+    return np.random.default_rng(a.seed + 7), kh.Language(np.random.default_rng(a.seed + 1))
+
+
 def copy_only(model, a, held, lay, steps: int, lr: float, log, eval_every: int = 100, gate_loss: float = 0.0) -> dict:
     """`gate_loss` (off by default: the order's recipe is the language loss alone): adds the gate's binary cross-entropy
     against `gate_targets`, one term an asking position -- a present fact's five pieces and an absent fact's one NONE
@@ -153,7 +160,7 @@ def copy_only(model, a, held, lay, steps: int, lr: float, log, eval_every: int =
     assert len(params) == len(SWITCH), [n for n, _p in named_params(model) if "copy_path" in n]
     opt = torch.optim.AdamW(params, lr=lr, weight_decay=0.0, betas=(0.9, 0.95))
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 20) * 0.5 * (1 + math.cos(math.pi * min(s, steps) / steps)))
-    rng, lang = np.random.default_rng(a.seed + 7), kh.Language(np.random.default_rng(a.seed + 8))
+    rng, lang = stream(a)
     lams = []
     hook = model.spatial.copy_path.register_forward_hook(lambda _m, inp, o: lams.append((inp[4], o[2][:, 0])) if gate_loss else None)
     before, t0, curve = frozen_hash(model), time.time(), []

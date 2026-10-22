@@ -1,9 +1,9 @@
-env: 2026-10-22 05:07 python 3.12.10 torch 2.4.1+cpu Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)
+env: 2026-10-22 07:03 python 3.12.10 torch 2.4.1+cpu Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)
 --- A seed 0: the switch alone (spatial.copy_path.gate.weight, spatial.copy_path.gate.bias, spatial.copy_path.tau, spatial.copy_path.beta), 500 steps, lr 0.01
-  joint  exact 0.857  seen/train 0.899  seen/held 0.864  unseen/train 0.839  unseen/held 0.816  absent answered 0.068  present wrong 0.110  refused 0.033  language 2.2708  copy alone 0.974  lam here 0.908 empty 0.145  [53s]
-  step  100  exact 0.903  seen/train 0.930  seen/held 0.893  unseen/train 0.901  unseen/held 0.886  absent answered 0.107  present wrong 0.073  refused 0.023  language 2.2707  copy alone 0.974  lam here 0.957 empty 0.101  [199s]
-  step  200  exact 0.848  seen/train 0.885  seen/held 0.864  unseen/train 0.823  unseen/held 0.811  absent answered 0.049  present wrong 0.115  refused 0.037  language 2.2704  copy alone 0.974  lam here 0.936 empty 0.043  [346s]
-  step  300  exact 0.900  seen/train 0.930  seen/held 0.902  unseen/train 0.880  unseen/held 0.881  absent answered 0.117  present wrong 0.078  refused 0.022  language 2.2706  copy alone 0.974  lam here 0.956 empty 0.079  [492s]
-  step  400  exact 0.880  seen/train 0.907  seen/held 0.883  unseen/train 0.865  unseen/held 0.859  absent answered 0.073  present wrong 0.088  refused 0.032  language 2.2705  copy alone 0.974  lam here 0.948 empty 0.063  [672s]
-  step  500  exact 0.900  seen/train 0.921  seen/held 0.897  unseen/train 0.885  unseen/held 0.892  absent answered 0.097  present wrong 0.076  refused 0.024  language 2.2706  copy alone 0.974  lam here 0.955 empty 0.076  [867s]
+  joint  exact 0.857  seen/train 0.899  seen/held 0.864  unseen/train 0.839  unseen/held 0.816  absent answered 0.068  present wrong 0.110  refused 0.033  language 2.2708  copy alone 0.974  lam here 0.908 empty 0.145  [70s]
+  step  100  exact 0.902  seen/train 0.930  seen/held 0.893  unseen/train 0.901  unseen/held 0.881  absent answered 0.112  present wrong 0.076  refused 0.022  language 2.2708  copy alone 0.974  lam here 0.957 empty 0.102  [273s]
+  step  200  exact 0.850  seen/train 0.885  seen/held 0.869  unseen/train 0.823  unseen/held 0.811  absent answered 0.049  present wrong 0.114  refused 0.037  language 2.2704  copy alone 0.974  lam here 0.936 empty 0.043  [469s]
+  step  300  exact 0.897  seen/train 0.930  seen/held 0.897  unseen/train 0.880  unseen/held 0.876  absent answered 0.117  present wrong 0.081  refused 0.022  language 2.2706  copy alone 0.974  lam here 0.956 empty 0.079  [662s]
+  step  400  exact 0.880  seen/train 0.907  seen/held 0.883  unseen/train 0.865  unseen/held 0.859  absent answered 0.073  present wrong 0.088  refused 0.032  language 2.2705  copy alone 0.974  lam here 0.948 empty 0.064  [856s]
+  step  500  exact 0.897  seen/train 0.921  seen/held 0.897  unseen/train 0.885  unseen/held 0.881  absent answered 0.097  present wrong 0.077  refused 0.026  language 2.2706  copy alone 0.974  lam here 0.955 empty 0.075  [1051s]
   frozen parameters unchanged: True; best match (p5/p50/p95) present [0.1802, 0.2925, 0.4146], absent [0.0434, 0.1057, 0.1667]; one threshold {'at': 0.17, 'balanced_accuracy': 0.9598}

@@ -1,0 +1,307 @@
+{
+ "args": {
+  "arm": "A",
+  "steps": 1000,
+  "eval_every": 100,
+  "d": 256,
+  "batch": 16,
+  "held": 1024,
+  "seq": 256,
+  "facts_per_doc": 4,
+  "gap": 120,
+  "vocab": 8192,
+  "pieces": 5,
+  "absent": 0.2,
+  "layers": 8,
+  "at": 4,
+  "window": 64,
+  "window_ptr": 16,
+  "pointer_loss": 1.0,
+  "gate_bias": 0.0,
+  "lr": 0.002,
+  "seed": 0,
+  "threads": 2,
+  "tag": "_joint",
+  "templates": 6,
+  "date": "2026-10-22"
+ },
+ "copy_only": {
+  "copy_only": 500,
+  "lr": 0.01,
+  "gate_loss": 1.0,
+  "eval_every": 100,
+  "threads": 2,
+  "tag": "",
+  "date": "2026-10-22"
+ },
+ "frozen_hash": {
+  "before": "094b74667ae9589d",
+  "after": "094b74667ae9589d",
+  "unchanged": true
+ },
+ "final": {
+  "step": 500,
+  "loss": 2.6189770698547363,
+  "seen_train_t": 0.920704845814978,
+  "seen_held_t": 0.897196261682243,
+  "unseen_train_t": 0.8854166666666666,
+  "unseen_held_t": 0.8810810810810811,
+  "n": {
+   "seen_train_t": 227,
+   "seen_held_t": 214,
+   "unseen_train_t": 192,
+   "unseen_held_t": 185
+  },
+  "exact": 0.8973105134474327,
+  "absent_not_none": 0.0970873786407767,
+  "n_absent": 206,
+  "present_refused": 0.02567237163814181,
+  "present_wrong": 0.07701711491442545,
+  "language": 2.270610500229253,
+  "pointer_acc": null,
+  "lam_present": 0.9549024246082942,
+  "lam_empty": 0.07329014709146082,
+  "copy_alone": 0.9743276283618582,
+  "lm_alone": 0.0,
+  "switch": 0.8985330073349633,
+  "tau": 4.209847450256348,
+  "beta": 0.16850268840789795
+ },
+ "curve": [
+  {
+   "step": 0,
+   "seen_train_t": 0.8986784140969163,
+   "seen_held_t": 0.8644859813084113,
+   "unseen_train_t": 0.8385416666666666,
+   "unseen_held_t": 0.8162162162162162,
+   "n": {
+    "seen_train_t": 227,
+    "seen_held_t": 214,
+    "unseen_train_t": 192,
+    "unseen_held_t": 185
+   },
+   "exact": 0.8569682151589242,
+   "absent_not_none": 0.06796116504854369,
+   "n_absent": 206,
+   "present_refused": 0.03300733496332518,
+   "present_wrong": 0.11002444987775063,
+   "language": 2.2708218016522137,
+   "pointer_acc": null,
+   "lam_present": 0.9076835622247614,
+   "lam_empty": 0.14520798506342042,
+   "copy_alone": 0.9743276283618582,
+   "lm_alone": 0.0,
+   "switch": 0.8936430317848411,
+   "tau": 3.3407483100891113,
+   "beta": 0.16234062612056732
+  },
+  {
+   "step": 100,
+   "loss": 2.6573398113250732,
+   "seen_train_t": 0.9295154185022027,
+   "seen_held_t": 0.8925233644859814,
+   "unseen_train_t": 0.9010416666666666,
+   "unseen_held_t": 0.8810810810810811,
+   "n": {
+    "seen_train_t": 227,
+    "seen_held_t": 214,
+    "unseen_train_t": 192,
+    "unseen_held_t": 185
+   },
+   "exact": 0.902200488997555,
+   "absent_not_none": 0.11650485436893204,
+   "n_absent": 206,
+   "present_refused": 0.022004889975550123,
+   "present_wrong": 0.07579462102689487,
+   "language": 2.2707294584786597,
+   "pointer_acc": null,
+   "lam_present": 0.9559982818274637,
+   "lam_empty": 0.10008165505901918,
+   "copy_alone": 0.9743276283618582,
+   "lm_alone": 0.0,
+   "switch": 0.9070904645476773,
+   "tau": 4.012578010559082,
+   "beta": 0.16183200478553772
+  },
+  {
+   "step": 200,
+   "loss": 2.668729782104492,
+   "seen_train_t": 0.8810572687224669,
+   "seen_held_t": 0.8598130841121495,
+   "unseen_train_t": 0.8229166666666666,
+   "unseen_held_t": 0.7945945945945946,
+   "n": {
+    "seen_train_t": 227,
+    "seen_held_t": 214,
+    "unseen_train_t": 192,
+    "unseen_held_t": 185
+   },
+   "exact": 0.8422982885085575,
+   "absent_not_none": 0.04854368932038835,
+   "n_absent": 206,
+   "present_refused": 0.03667481662591687,
+   "present_wrong": 0.12102689486552565,
+   "language": 2.2704118458331566,
+   "pointer_acc": null,
+   "lam_present": 0.9341350732768884,
+   "lam_empty": 0.04210508265208523,
+   "copy_alone": 0.9743276283618582,
+   "lm_alone": 0.0,
+   "switch": 0.843520782396088,
+   "tau": 4.2528605461120605,
+   "beta": 0.1712217479944229
+  },
+  {
+   "step": 300,
+   "loss": 2.815072774887085,
+   "seen_train_t": 0.9295154185022027,
+   "seen_held_t": 0.8925233644859814,
+   "unseen_train_t": 0.8802083333333334,
+   "unseen_held_t": 0.8756756756756757,
+   "n": {
+    "seen_train_t": 227,
+    "seen_held_t": 214,
+    "unseen_train_t": 192,
+    "unseen_held_t": 185
+   },
+   "exact": 0.8960880195599022,
+   "absent_not_none": 0.11650485436893204,
+   "n_absent": 206,
+   "present_refused": 0.022004889975550123,
+   "present_wrong": 0.08190709046454762,
+   "language": 2.2706042181271733,
+   "pointer_acc": null,
+   "lam_present": 0.9559617056406378,
+   "lam_empty": 0.07600877706277027,
+   "copy_alone": 0.9743276283618582,
+   "lm_alone": 0.0,
+   "switch": 0.8960880195599022,
+   "tau": 4.222966194152832,
+   "beta": 0.16634073853492737
+  },
+  {
+   "step": 400,
+   "loss": 2.646763801574707,
+   "seen_train_t": 0.9074889867841409,
+   "seen_held_t": 0.883177570093458,
+   "unseen_train_t": 0.8645833333333334,
+   "unseen_held_t": 0.8594594594594595,
+   "n": {
+    "seen_train_t": 227,
+    "seen_held_t": 214,
+    "unseen_train_t": 192,
+    "unseen_held_t": 185
+   },
+   "exact": 0.8801955990220048,
+   "absent_not_none": 0.07281553398058252,
+   "n_absent": 206,
+   "present_refused": 0.03178484107579462,
+   "present_wrong": 0.08801955990220053,
+   "language": 2.270534607715233,
+   "pointer_acc": null,
+   "lam_present": 0.9480613261847242,
+   "lam_empty": 0.0610356557277001,
+   "copy_alone": 0.9743276283618582,
+   "lm_alone": 0.0,
+   "switch": 0.8814180929095354,
+   "tau": 4.211659908294678,
+   "beta": 0.1699947714805603
+  },
+  {
+   "step": 500,
+   "loss": 2.6189770698547363,
+   "seen_train_t": 0.920704845814978,
+   "seen_held_t": 0.897196261682243,
+   "unseen_train_t": 0.8854166666666666,
+   "unseen_held_t": 0.8810810810810811,
+   "n": {
+    "seen_train_t": 227,
+    "seen_held_t": 214,
+    "unseen_train_t": 192,
+    "unseen_held_t": 185
+   },
+   "exact": 0.8973105134474327,
+   "absent_not_none": 0.0970873786407767,
+   "n_absent": 206,
+   "present_refused": 0.02567237163814181,
+   "present_wrong": 0.07701711491442545,
+   "language": 2.270610500229253,
+   "pointer_acc": null,
+   "lam_present": 0.9549024246082942,
+   "lam_empty": 0.07329014709146082,
+   "copy_alone": 0.9743276283618582,
+   "lm_alone": 0.0,
+   "switch": 0.8985330073349633,
+   "tau": 4.209847450256348,
+   "beta": 0.16850268840789795
+  }
+ ],
+ "best_match": {
+  "present": {
+   "n": 818,
+   "best": {
+    "p5": 0.1802,
+    "p25": 0.2482,
+    "p50": 0.2925,
+    "p75": 0.3373,
+    "p95": 0.4146
+   },
+   "margin": {
+    "p5": 0.0554,
+    "p25": 0.1345,
+    "p50": 0.1934,
+    "p75": 0.2484,
+    "p95": 0.3262
+   }
+  },
+  "absent": {
+   "n": 206,
+   "best": {
+    "p5": 0.0434,
+    "p25": 0.0806,
+    "p50": 0.1057,
+    "p75": 0.1334,
+    "p95": 0.1667
+   },
+   "margin": {
+    "p5": 0.0032,
+    "p25": 0.0123,
+    "p50": 0.0254,
+    "p75": 0.0478,
+    "p95": 0.0827
+   }
+  },
+  "empty": {
+   "n": 1024,
+   "best": {
+    "p5": 0.0486,
+    "p25": 0.0805,
+    "p50": 0.1034,
+    "p75": 0.1262,
+    "p95": 0.1647
+   },
+   "margin": {
+    "p5": 0.0026,
+    "p25": 0.0115,
+    "p50": 0.0273,
+    "p75": 0.0465,
+    "p95": 0.0892
+   }
+  },
+  "one_threshold": {
+   "at": 0.17,
+   "balanced_accuracy": 0.9598
+  }
+ },
+ "log": [
+  "env: 2026-10-22 07:40 python 3.12.10 torch 2.4.1+cpu Intel64 Family 6 Model 151 Stepping 5, GenuineIntel (CPU, 2 threads)",
+  "--- A seed 0: the switch alone (spatial.copy_path.gate.weight, spatial.copy_path.gate.bias, spatial.copy_path.tau, spatial.copy_path.beta), 500 steps, lr 0.01",
+  "  joint  exact 0.857  seen/train 0.899  seen/held 0.864  unseen/train 0.839  unseen/held 0.816  absent answered 0.068  present wrong 0.110  refused 0.033  language 2.2708  copy alone 0.974  lam here 0.908 empty 0.145  [61s]",
+  "  step  100  exact 0.902  seen/train 0.930  seen/held 0.893  unseen/train 0.901  unseen/held 0.881  absent answered 0.117  present wrong 0.076  refused 0.022  language 2.2707  copy alone 0.974  lam here 0.956 empty 0.100  [218s]",
+  "  step  200  exact 0.842  seen/train 0.881  seen/held 0.860  unseen/train 0.823  unseen/held 0.795  absent answered 0.049  present wrong 0.121  refused 0.037  language 2.2704  copy alone 0.974  lam here 0.934 empty 0.042  [374s]",
+  "  step  300  exact 0.896  seen/train 0.930  seen/held 0.893  unseen/train 0.880  unseen/held 0.876  absent answered 0.117  present wrong 0.082  refused 0.022  language 2.2706  copy alone 0.974  lam here 0.956 empty 0.076  [533s]",
+  "  step  400  exact 0.880  seen/train 0.907  seen/held 0.883  unseen/train 0.865  unseen/held 0.859  absent answered 0.073  present wrong 0.088  refused 0.032  language 2.2705  copy alone 0.974  lam here 0.948 empty 0.061  [689s]",
+  "  step  500  exact 0.897  seen/train 0.921  seen/held 0.897  unseen/train 0.885  unseen/held 0.881  absent answered 0.097  present wrong 0.077  refused 0.026  language 2.2706  copy alone 0.974  lam here 0.955 empty 0.073  [847s]",
+  "  frozen parameters unchanged: True; best match (p5/p50/p95) present [0.1802, 0.2925, 0.4146], absent [0.0434, 0.1057, 0.1667]; one threshold {'at': 0.17, 'balanced_accuracy': 0.9598}"
+ ]
+}

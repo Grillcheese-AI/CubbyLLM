@@ -94,3 +94,12 @@ def test_twelve_templates_widen_training_and_leave_the_held_out_set(tmp_path):
         h = fd.batch(hr, kh.Language(np.random.default_rng(1)), lay, 16, a, fd.held_cells(hr, 16, a.absent))
         held.append(h)
     assert torch.equal(held[0][0], held[1][0])                       # the same held-out documents, token for token
+
+
+def test_the_switch_alone_trains_in_the_joint_runs_language(joint):
+    """The filler language's grammar comes from its seed: the switch's documents must be in the language the trunk
+    learned (seed + 1), only new draws of it."""
+    a, _rep = joint
+    rng, lang = sw.stream(a)
+    assert np.array_equal(lang.next, kh.Language(np.random.default_rng(a.seed + 1)).next)
+    assert not np.array_equal(lang.next, kh.Language(np.random.default_rng(a.seed + 8)).next)

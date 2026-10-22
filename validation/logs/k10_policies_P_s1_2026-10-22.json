@@ -1,0 +1,96 @@
+{
+ "arm": "P",
+ "seed": 1,
+ "gate": {
+  "exact": 0.8489646772228989,
+  "present_wrong": 0.11449451887941534,
+  "present_refused": 0.03654080389768575,
+  "absent_not_none": 0.08374384236453201
+ },
+ "policies": {
+  "switch@0.14": {
+   "exact": 0.9281,
+   "present_wrong": 0.0536,
+   "present_refused": 0.0183,
+   "absent_answered": 0.1773
+  },
+  "copy_or_refuse@0.14": {
+   "exact": 0.9281,
+   "present_wrong": 0.0183,
+   "present_refused": 0.0536,
+   "absent_answered": 0.1773
+  },
+  "switch@0.15": {
+   "exact": 0.9086,
+   "present_wrong": 0.0658,
+   "present_refused": 0.0256,
+   "absent_answered": 0.1281
+  },
+  "copy_or_refuse@0.15": {
+   "exact": 0.9086,
+   "present_wrong": 0.0171,
+   "present_refused": 0.0743,
+   "absent_answered": 0.1281
+  },
+  "switch@0.16": {
+   "exact": 0.8855,
+   "present_wrong": 0.0828,
+   "present_refused": 0.0317,
+   "absent_answered": 0.0788
+  },
+  "copy_or_refuse@0.16": {
+   "exact": 0.8855,
+   "present_wrong": 0.0158,
+   "present_refused": 0.0987,
+   "absent_answered": 0.0788
+  },
+  "switch@0.17": {
+   "exact": 0.8526,
+   "present_wrong": 0.1011,
+   "present_refused": 0.0463,
+   "absent_answered": 0.0493
+  },
+  "copy_or_refuse@0.17": {
+   "exact": 0.8526,
+   "present_wrong": 0.0134,
+   "present_refused": 0.134,
+   "absent_answered": 0.0493
+  },
+  "switch@0.18": {
+   "exact": 0.8234,
+   "present_wrong": 0.1121,
+   "present_refused": 0.0646,
+   "absent_answered": 0.0443
+  },
+  "copy_or_refuse@0.18": {
+   "exact": 0.8234,
+   "present_wrong": 0.0122,
+   "present_refused": 0.1644,
+   "absent_answered": 0.0443
+  },
+  "switch@0.19": {
+   "exact": 0.782,
+   "present_wrong": 0.1425,
+   "present_refused": 0.0755,
+   "absent_answered": 0.0246
+  },
+  "copy_or_refuse@0.19": {
+   "exact": 0.782,
+   "present_wrong": 0.011,
+   "present_refused": 0.2071,
+   "absent_answered": 0.0246
+  },
+  "switch@0.20": {
+   "exact": 0.7406,
+   "present_wrong": 0.1596,
+   "present_refused": 0.0999,
+   "absent_answered": 0.0197
+  },
+  "copy_or_refuse@0.20": {
+   "exact": 0.7406,
+   "present_wrong": 0.0073,
+   "present_refused": 0.2521,
+   "absent_answered": 0.0197
+  }
+ }
+}
