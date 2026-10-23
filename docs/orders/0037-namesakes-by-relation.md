@@ -21,8 +21,8 @@ The world's namesakes for the three common questions:
 - **Italy:** besides Q38, places with only "country" and "located in" (the towns named Italy), and one item with only
   "part of".
 
-**What it brings, in plain words:** Cubby says "Paris" to the obvious question, and asks back only when the question
-truly cannot tell (two people named Steve Mills).
+**What it brings, in plain words:** Cubby says "Paris" to the obvious question and mentions what else the name could
+mean. When the question truly cannot tell (two people named Steve Mills), he answers for each, saying which is which.
 - **Over a conventional model:** a model also says Paris, but it would blend two Steve Mills into one answer without
   noticing. Here every choice follows one written rule, measured against a hand-read audit.
 
@@ -49,15 +49,29 @@ truly cannot tell (two people named Steve Mills).
    - that item's kind carries the relation, and goes with the question's cue words;
    - no other namesake's kind does (whether the kind is recorded, or read by item 1).
 
-   Two of a kind still asks back. An item whose facts say nothing of its kind does not compete (France's Q49644). The
-   audit decides whether that holds.
-5. **Behind a flag** until the audit passes; then on by default for hops. The asker and a qualifier still come first.
+   An item whose facts say nothing of its kind does not compete (France's Q49644). The audit decides whether that
+   holds. Two of a kind: see item 5.
+5. **How the answer reads** (Nick: answer, and say what else the name could mean, as Gemini does).
+   - **One fits:** answer from it, then add one line naming the other namesakes by their kind, and offer them: "Marie
+     Curie won … If you meant something else, there is also a building named Marie Curie. Want to know about it?"
+     - Name at most two others.
+     - An item with nothing known of its kind is not named.
+   - **Several fit (two of a kind):** answer each one, labelled by one of its own facts that tells them apart (an
+     occupation, a country, a date): "Steve Mills the baseball player was born in 1950; Steve Mills the politician in
+     1962."
+     - Give them in a fixed order, never by fame.
+     - With more than three, list them by their labels and ask which.
+   - **Never merged:** each value stays tied to its own item (0033's rule). A label is one of the item's facts, never
+     invented.
+   - **Asking back stays** only where no fact tells the items apart.
+6. **Behind a flag** until the audit passes; then on by default for hops. The asker and a qualifier still come first.
 
 ## Acceptance (pre-registered)
 - **The audit,** read by hand by Cowork, as in 0036:
   - 50 shared-name hops, drawn by seed 1 (not 0036's seed 0);
-  - for each: its label, the items with their kinds (recorded or read), and the rule's outcome (one item, or asking
-    back).
+  - for each: its label, the items with their kinds (recorded or read), the rule's outcome (one item, each item
+    labelled, or asking back), and the answer as spoken.
+  - **In the "several fit" answers:** 0 values tied to the wrong item, and every label one of that item's own facts.
   - **A wrong pick** means one item was chosen when a person asking could as well mean another.
   - **The line:** at most 1 wrong pick in 50. Asking back where the question was obvious is a cost, not a wrong
     pick; report how many.
