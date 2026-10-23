@@ -1,5 +1,5 @@
 # 0028 — Plugins: one folder format and a loader for adapters, worlds, sources and tools, and board panels, loaded on demand like skills
-status: review (review 3 built: the stricter covers; the held-out v3 set run once: alerts meets the line)
+status: done (2026-10-23: review 4 accepted the stricter covers and its one held-out v3 run; the alerts plugin waits for Nick's approve on the board)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick (asked for it; chose all four kinds, on-demand loading, code with permissions) · hypothesis: none · **after 0027 P1**
 
 ## Why
@@ -436,3 +436,17 @@ ours and it missed.
   (Nick's); until then the server does not mount it.
 - **Questions:** none from me. The router's 7 of 10 near misses on alerts is high; the second check is what holds
   the line.
+
+## Review 4 (Cowork, 2026-10-23): accepted; 0028 is done
+- **Checked:** the log `plugins_routing_minilm_logistic_heldout_v3_2026-10-23.json` agrees with the table. At tau
+  0.675 with the second check, alerts woke 8 of 10 and 0 of 10 near misses ("its source does not claim the
+  question" declined all 7). The line, at least 8 woken and at most 1 near miss, is met on a set written before
+  the change.
+- **The run that scored nothing:** accepted as reported. It read no question, so it measured nothing and showed
+  nothing. The reader now refuses to log an empty run, which is the right guard.
+- **The rule is in the right place.** A plugin's own `covers` says what it is for, and it fetches nothing to decide.
+  The router stays general. The router's 7 of 10 near misses on alerts is noted, not a blocker: the second check
+  is what holds the line. If a later plugin has no sharp `covers`, retrain the heads with near misses as negatives
+  then, not now.
+- **Left for Nick:** approve the alerts plugin again on the board. Its code changed, and the server does not mount
+  it until he approves.
