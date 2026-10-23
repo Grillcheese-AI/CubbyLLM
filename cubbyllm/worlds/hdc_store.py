@@ -26,7 +26,8 @@ from cubbyllm.local_paths import data_dir
 from cubbyllm.reasoning.index import TripleIndex
 from cubbyllm.reasoning.planner import accepts, normalize, parse_fact, tail_splits
 
-from .hdc_namesakes import Namesakes, StoresNamesakes
+from .hdc_kinds import for_world
+from .hdc_namesakes import Namesakes, StoresNamesakes, object_items
 
 __wiring__ = "WIRED"
 
@@ -59,6 +60,7 @@ class HdcWorld(Namesakes):
         self._n = sum(n for _r, n, _ts in rels)
         self._named = functools.lru_cache(maxsize=cache)(self._named_rows)
         self._applies = functools.lru_cache(maxsize=4096)(self._applies_rows)
+        self._kinds = for_world(self.path)               # the kinds table, when built beside this world (order 0036)
         self._rows = functools.lru_cache(maxsize=cache)(self._query)
         self._pins = threading.local()                   # a seed read as one item for one walk (`pinned`, order 0033)
         self._by_subj, self._by_obj = _Rows(self._subject), _Rows(lambda k: self._rows("okey", k))
@@ -74,14 +76,9 @@ class HdcWorld(Namesakes):
             # items share gives none of them (order 0033: the Globe Theatre's three items were said as one).
             _tier, by = self._named(key)
             return self._triples(next(iter(by.values()))) if len(by) == 1 else []
-        with self._lock:                                 # an object: by its label, else an alias's (not guarded)
-            got = self.db.execute("SELECT subj, rel, obj FROM facts WHERE okey = ?", (key,)).fetchall()
-            if not got:
-                for (q,) in self.db.execute("SELECT qid FROM names WHERE key = ? LIMIT 2", (key,)).fetchall()[:1]:
-                    lab = self.db.execute("SELECT en FROM labels WHERE qid = ?", (q,)).fetchone()
-                    if lab and normalize(lab[0]) != key:
-                        got = self.db.execute("SELECT subj, rel, obj FROM facts WHERE okey = ?", (normalize(lab[0]),)).fetchall()
-        return self._triples(got)
+        with self._lock:                                 # an object: the same rule, by the item pointed at (order 0036)
+            by = object_items(self.db, key)
+        return self._triples(next(iter(by.values()))) if len(by) == 1 else []
 
     def label(self, name: str) -> str | None:
         """The exact label a name (label, alias or Q-id) stands for."""

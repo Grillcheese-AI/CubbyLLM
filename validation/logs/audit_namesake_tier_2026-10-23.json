@@ -1,0 +1,1760 @@
+{
+ "what": "order 0036 item 4: the relation tier's decisions on shared hdc labels, drawn by seed, for a reading by hand (right = the chosen item is the one the question means)",
+ "date": "2026-10-23",
+ "seed": 0,
+ "decisions": 50,
+ "labels_tried": 370,
+ "scan_differs": [],
+ "rows": [
+  {
+   "label": "Huey Long",
+   "relation": "country of origin",
+   "question": "What is the country of origin of Huey Long?",
+   "chosen": "Q2582541",
+   "reads": [
+    "United States of America"
+   ],
+   "items": [
+    {
+     "item": "Q2582541",
+     "kinds": [
+      "film"
+     ],
+     "values": [
+      "country of origin: United States of America",
+      "instance of: film"
+     ]
+    },
+    {
+     "item": "Q1578547",
+     "kinds": [],
+     "values": [
+      "country of citizenship: United States of America"
+     ]
+    },
+    {
+     "item": "Q314384",
+     "kinds": [],
+     "values": [
+      "country of citizenship: United States of America"
+     ]
+    }
+   ],
+   "items_n": 3
+  },
+  {
+   "label": "Discovery Peak",
+   "relation": "country",
+   "question": "What is the country of Discovery Peak?",
+   "chosen": "Q11856159",
+   "reads": [
+    "United States of America"
+   ],
+   "items": [
+    {
+     "item": "Q11856159",
+     "kinds": [
+      "mountain"
+     ],
+     "values": [
+      "country: United States of America",
+      "instance of: mountain"
+     ]
+    },
+    {
+     "item": "Q5281959",
+     "kinds": [
+      "wikimedia disambiguation page"
+     ],
+     "values": [
+      "instance of: Wikimedia disambiguation page"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Carmona",
+   "relation": "located in time zone",
+   "question": "What is the located in time zone of Carmona?",
+   "chosen": "Q63092",
+   "reads": [
+    "UTC+01:00"
+   ],
+   "items": [
+    {
+     "item": "Q63092",
+     "kinds": [
+      "municipality of spain"
+     ],
+     "values": [
+      "instance of: municipality of Spain",
+      "located in the administrative territorial entity: Seville Province",
+      "located in time zone: UTC+01:00"
+     ]
+    },
+    {
+     "item": "Q5043737",
+     "kinds": [],
+     "values": [
+      "country: Philippines",
+      "located in the administrative territorial entity: Makati"
+     ]
+    },
+    {
+     "item": "Q2939665",
+     "kinds": [],
+     "values": [
+      "parent taxon: Boraginoideae"
+     ]
+    }
+   ],
+   "items_n": 3
+  },
+  {
+   "label": "Ganesh",
+   "relation": "award received",
+   "question": "What is the award received of Ganesh?",
+   "chosen": "Q5520823",
+   "reads": [
+    "Filmfare Awards South"
+   ],
+   "items": [
+    {
+     "item": "Q5520823",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "award received: Filmfare Awards South",
+      "country of citizenship: India",
+      "instance of: human"
+     ]
+    },
+    {
+     "item": "Q5520816",
+     "kinds": [],
+     "values": [
+      "film editor: Marthand K. Venkatesh"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Allstate",
+   "relation": "chief executive officer",
+   "question": "What is the chief executive officer of Allstate?",
+   "chosen": "Q2645636",
+   "reads": [
+    "Thomas J. Wilson"
+   ],
+   "items": [
+    {
+     "item": "Q2645636",
+     "kinds": [
+      "business"
+     ],
+     "values": [
+      "chief executive officer: Thomas J. Wilson",
+      "country: United States of America",
+      "instance of: business"
+     ]
+    },
+    {
+     "item": "Q1788239",
+     "kinds": [],
+     "values": [
+      "country: United States of America"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "The Substitute",
+   "relation": "country of origin",
+   "question": "What is the country of origin of The Substitute?",
+   "chosen": "Q20002600",
+   "reads": [
+    "United Kingdom"
+   ],
+   "items": [
+    {
+     "item": "Q1778407",
+     "kinds": [],
+     "values": [
+      "cast member: Luis Gómez",
+      "cast member: Tom Berenger",
+      "genre: action film"
+     ]
+    },
+    {
+     "item": "Q195920",
+     "kinds": [],
+     "values": [
+      "cast member: Michael Larsen",
+      "director: Ole Bornedal"
+     ]
+    },
+    {
+     "item": "Q20002600",
+     "kinds": [
+      "film"
+     ],
+     "values": [
+      "country of origin: United Kingdom",
+      "instance of: film"
+     ]
+    },
+    {
+     "item": "Q2982113",
+     "kinds": [],
+     "values": [
+      "followed by: Furt",
+      "follows: Never Been Kissed"
+     ]
+    },
+    {
+     "item": "Q4479410",
+     "kinds": [],
+     "values": [
+      "distributed by: USA Network"
+     ]
+    }
+   ],
+   "items_n": 5
+  },
+  {
+   "label": "Steve Mills",
+   "relation": "ethnic group",
+   "question": "What is the ethnic group of Steve Mills?",
+   "chosen": "Q7613386",
+   "reads": [
+    "African Americans"
+   ],
+   "items": [
+    {
+     "item": "Q7613386",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "country of citizenship: United States of America",
+      "ethnic group: African Americans",
+      "instance of: human"
+     ]
+    },
+    {
+     "item": "Q7613385",
+     "kinds": [],
+     "values": [
+      "country of citizenship: United Kingdom"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Clifford Walker",
+   "relation": "country of citizenship",
+   "question": "What is the country of citizenship of Clifford Walker?",
+   "chosen": "Q1101341",
+   "reads": [
+    "United States of America"
+   ],
+   "items": [
+    {
+     "item": "Q1101341",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "country of citizenship: United States of America",
+      "family name: Walker",
+      "instance of: human",
+      "member of political party: Democratic Party"
+     ]
+    },
+    {
+     "item": "Q5133070",
+     "kinds": [],
+     "values": [
+      "family name: Walker"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "John F. Kelly",
+   "relation": "country of citizenship",
+   "question": "What is the country of citizenship of John F. Kelly?",
+   "chosen": "Q6232322",
+   "reads": [
+    "United States of America"
+   ],
+   "items": [
+    {
+     "item": "Q6232322",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "country of citizenship: United States of America",
+      "instance of: human",
+      "member of political party: Republican Party"
+     ]
+    },
+    {
+     "item": "Q28059471",
+     "kinds": [],
+     "values": [
+      "educated at: Wayne State University",
+      "given name: John"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Michel Camilo",
+   "relation": "followed by",
+   "question": "What is the followed by of Michel Camilo?",
+   "chosen": "Q6836321",
+   "reads": [
+    "On Fire"
+   ],
+   "items": [
+    {
+     "item": "Q6836321",
+     "kinds": [
+      "album"
+     ],
+     "values": [
+      "followed by: On Fire",
+      "follows: Suntan/In Trio",
+      "instance of: album"
+     ]
+    },
+    {
+     "item": "Q712383",
+     "kinds": [],
+     "values": [
+      "country of citizenship: Dominican Republic"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Paul Rudolph",
+   "relation": "country of citizenship",
+   "question": "What is the country of citizenship of Paul Rudolph?",
+   "chosen": "Q1605772",
+   "reads": [
+    "Canada"
+   ],
+   "items": [
+    {
+     "item": "Q1605772",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "country of citizenship: Canada",
+      "instance of: human"
+     ]
+    },
+    {
+     "item": "Q64980",
+     "kinds": [],
+     "values": [
+      "occupation: inventor"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Kara",
+   "relation": "parent taxon",
+   "question": "What is the parent taxon of Kara?",
+   "chosen": "Q6367479",
+   "reads": [
+    "Orthalicidae"
+   ],
+   "items": [
+    {
+     "item": "Q124459",
+     "kinds": [],
+     "values": [
+      "country: South Korea",
+      "genre: K-pop"
+     ]
+    },
+    {
+     "item": "Q6367479",
+     "kinds": [
+      "taxon"
+     ],
+     "values": [
+      "instance of: taxon",
+      "parent taxon: Orthalicidae"
+     ]
+    },
+    {
+     "item": "Q2425552",
+     "kinds": [],
+     "values": [
+      "country: Russia"
+     ]
+    }
+   ],
+   "items_n": 3
+  },
+  {
+   "label": "Antha",
+   "relation": "cast member",
+   "question": "What is the cast member of Antha?",
+   "chosen": "Q4771450",
+   "reads": [
+    "Yaragudipati Venkata Mahalakshmi"
+   ],
+   "items": [
+    {
+     "item": "Q4771450",
+     "kinds": [
+      "film"
+     ],
+     "values": [
+      "cast member: Yaragudipati Venkata Mahalakshmi",
+      "composer: G. K. Venkatesh",
+      "instance of: film"
+     ]
+    },
+    {
+     "item": "Q4771455",
+     "kinds": [
+      "taxon"
+     ],
+     "values": [
+      "instance of: taxon"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Listen to My Heart",
+   "relation": "original language of film or TV show",
+   "question": "What is the original language of film or TV show of Listen to My Heart?",
+   "chosen": "Q4185696",
+   "reads": [
+    "Japanese"
+   ],
+   "items": [
+    {
+     "item": "Q18366698",
+     "kinds": [],
+     "values": [
+      "follows: The Meaning of Peace",
+      "genre: J-pop"
+     ]
+    },
+    {
+     "item": "Q4185696",
+     "kinds": [
+      "film"
+     ],
+     "values": [
+      "instance of: film",
+      "original language of film or TV show: Japanese"
+     ]
+    },
+    {
+     "item": "Q495780",
+     "kinds": [],
+     "values": [
+      "genre: J-pop"
+     ]
+    }
+   ],
+   "items_n": 3
+  },
+  {
+   "label": "Grande-Rivière-du-Nord",
+   "relation": "located in the administrative territorial entity",
+   "question": "What is the located in the administrative territorial entity of Grande-Rivière-du-Nord?",
+   "chosen": "Q2495285",
+   "reads": [
+    "Grande-Rivière-du-Nord Arrondissement"
+   ],
+   "items": [
+    {
+     "item": "Q2495285",
+     "kinds": [
+      "commune of haiti"
+     ],
+     "values": [
+      "country: Haiti",
+      "instance of: commune of Haiti",
+      "located in the administrative territorial entity: Grande-Rivière-du-Nord Arrondissement"
+     ]
+    },
+    {
+     "item": "Q3115020",
+     "kinds": [],
+     "values": [
+      "country: Haiti"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Bikini Kill",
+   "relation": "followed by",
+   "question": "What is the followed by of Bikini Kill?",
+   "chosen": "Q2902573",
+   "reads": [
+    "Yeah Yeah Yeah Yeah"
+   ],
+   "items": [
+    {
+     "item": "Q2902573",
+     "kinds": [
+      "extended play"
+     ],
+     "values": [
+      "followed by: Yeah Yeah Yeah Yeah",
+      "instance of: extended play"
+     ]
+    },
+    {
+     "item": "Q860153",
+     "kinds": [],
+     "values": [
+      "location of formation: Olympia"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Bill Carter",
+   "relation": "different from",
+   "question": "What is the different from of Bill Carter?",
+   "chosen": "Q861998",
+   "reads": [
+    "Bill Carter"
+   ],
+   "items": [
+    {
+     "item": "Q861998",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "different from: Bill Carter",
+      "given name: Bill",
+      "instance of: human"
+     ]
+    },
+    {
+     "item": "Q4908434",
+     "kinds": [],
+     "values": [
+      "country of citizenship: United States of America"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Kanta",
+   "relation": "different from",
+   "question": "What is the different from of Kanta?",
+   "chosen": "Q30669905",
+   "reads": [
+    "Kanta"
+   ],
+   "items": [
+    {
+     "item": "Q30669905",
+     "kinds": [
+      "family name"
+     ],
+     "values": [
+      "different from: Kanta",
+      "instance of: family name",
+      "language of work or name: Hungarian"
+     ]
+    },
+    {
+     "item": "Q30670029",
+     "kinds": [],
+     "values": [
+      "family name identical to this given name: Kanta"
+     ]
+    },
+    {
+     "item": "Q30670055",
+     "kinds": [],
+     "values": [
+      "has part(s): Kanta"
+     ]
+    }
+   ],
+   "items_n": 3
+  },
+  {
+   "label": "Chris Bennett",
+   "relation": "given name",
+   "question": "What is the given name of Chris Bennett?",
+   "chosen": "Q18205961",
+   "reads": [
+    "Chris"
+   ],
+   "items": [
+    {
+     "item": "Q18205961",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "given name: Chris",
+      "instance of: human"
+     ]
+    },
+    {
+     "item": "Q5105883",
+     "kinds": [],
+     "values": [
+      "member of sports team: Cleveland Force",
+      "occupation: association football player"
+     ]
+    },
+    {
+     "item": "Q5105881",
+     "kinds": [],
+     "values": [
+      "nominated for: Grammy Award",
+      "occupation: singer"
+     ]
+    },
+    {
+     "item": "Q26328883",
+     "kinds": [],
+     "values": [
+      "participant in: athletics at the 2016 Summer Olympics"
+     ]
+    }
+   ],
+   "items_n": 4
+  },
+  {
+   "label": "Tommy Fleming",
+   "relation": "country of citizenship",
+   "question": "What is the country of citizenship of Tommy Fleming?",
+   "chosen": "Q7819413",
+   "reads": [
+    "United States of America"
+   ],
+   "items": [
+    {
+     "item": "Q7819413",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "country of citizenship: United States of America",
+      "instance of: human",
+      "member of sports team: Boston Soccer Club",
+      "occupation: association football manager"
+     ]
+    },
+    {
+     "item": "Q3077491",
+     "kinds": [],
+     "values": [
+      "genre: traditional folk music"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Norris Green",
+   "relation": "country",
+   "question": "What is the country of Norris Green?",
+   "chosen": "Q7053310",
+   "reads": [
+    "United Kingdom"
+   ],
+   "items": [
+    {
+     "item": "Q7053310",
+     "kinds": [
+      "electoral district"
+     ],
+     "values": [
+      "country: United Kingdom",
+      "instance of: electoral district"
+     ]
+    },
+    {
+     "item": "Q7053309",
+     "kinds": [],
+     "values": [
+      "located in the administrative territorial entity: Liverpool"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Breese",
+   "relation": "located in the administrative territorial entity",
+   "question": "What is the located in the administrative territorial entity of Breese?",
+   "chosen": "Q625014",
+   "reads": [
+    "Prignitz District"
+   ],
+   "items": [
+    {
+     "item": "Q625014",
+     "kinds": [
+      "municipality of germany"
+     ],
+     "values": [
+      "different from: Breese",
+      "instance of: municipality of Germany",
+      "located in the administrative territorial entity: Prignitz District"
+     ]
+    },
+    {
+     "item": "Q575543",
+     "kinds": [],
+     "values": [
+      "country: United States of America",
+      "different from: Breese"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "David Hirst",
+   "relation": "country of citizenship",
+   "question": "What is the country of citizenship of David Hirst?",
+   "chosen": "Q5235024",
+   "reads": [
+    "Australia"
+   ],
+   "items": [
+    {
+     "item": "Q5235024",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "country of citizenship: Australia",
+      "instance of: human"
+     ]
+    },
+    {
+     "item": "Q5235027",
+     "kinds": [],
+     "values": [
+      "given name: David",
+      "occupation: judge"
+     ]
+    },
+    {
+     "item": "Q1027448",
+     "kinds": [],
+     "values": [
+      "given name: David"
+     ]
+    },
+    {
+     "item": "Q4119226",
+     "kinds": [],
+     "values": [
+      "given name: David"
+     ]
+    }
+   ],
+   "items_n": 4
+  },
+  {
+   "label": "Jack McGill",
+   "relation": "member of sports team",
+   "question": "What is the member of sports team of Jack McGill?",
+   "chosen": "Q6113994",
+   "reads": [
+    "Montreal Canadiens"
+   ],
+   "items": [
+    {
+     "item": "Q6113994",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "instance of: human",
+      "member of sports team: Montreal Canadiens"
+     ]
+    },
+    {
+     "item": "Q6113998",
+     "kinds": [],
+     "values": [
+      "country of citizenship: Canada"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Wetlands",
+   "relation": "original language of film or TV show",
+   "question": "What is the original language of film or TV show of Wetlands?",
+   "chosen": "Q15073893",
+   "reads": [
+    "German"
+   ],
+   "items": [
+    {
+     "item": "Q15073893",
+     "kinds": [
+      "film"
+     ],
+     "values": [
+      "country of origin: Germany",
+      "instance of: film",
+      "original language of film or TV show: German"
+     ]
+    },
+    {
+     "item": "Q3296390",
+     "kinds": [],
+     "values": [
+      "cast member: Pascale Bussières",
+      "country of origin: Canada"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "National Geographic Channel",
+   "relation": "owned by",
+   "question": "What is the owned by of National Geographic Channel?",
+   "chosen": "Q4994739",
+   "reads": [
+    "National Geographic Society"
+   ],
+   "items": [
+    {
+     "item": "Q4994739",
+     "kinds": [
+      "television channel"
+     ],
+     "values": [
+      "country: United Kingdom",
+      "instance of: television channel",
+      "owned by: National Geographic Society"
+     ]
+    },
+    {
+     "item": "Q1967254",
+     "kinds": [],
+     "values": [
+      "country: Canada"
+     ]
+    },
+    {
+     "item": "Q6972880",
+     "kinds": [],
+     "values": [
+      "location: Scandinavia"
+     ]
+    }
+   ],
+   "items_n": 3
+  },
+  {
+   "label": "Infanta Maria Ana of Portugal",
+   "relation": "country of citizenship",
+   "question": "What is the country of citizenship of Infanta Maria Ana of Portugal?",
+   "chosen": "Q235808",
+   "reads": [
+    "Portugal"
+   ],
+   "items": [
+    {
+     "item": "Q3847122",
+     "kinds": [],
+     "values": [
+      "child: Johannes, 11th Prince of Thurn and Taxis",
+      "mother: Princess Maria Theresa of Löwenstein-Wertheim-Rosenberg"
+     ]
+    },
+    {
+     "item": "Q235808",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "country of citizenship: Portugal",
+      "instance of: human"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Sept-Frères",
+   "relation": "located in the administrative territorial entity",
+   "question": "What is the located in the administrative territorial entity of Sept-Frères?",
+   "chosen": "Q194206",
+   "reads": [
+    "Calvados"
+   ],
+   "items": [
+    {
+     "item": "Q194206",
+     "kinds": [
+      "commune of france"
+     ],
+     "values": [
+      "instance of: commune of France",
+      "located in the administrative territorial entity: Calvados"
+     ]
+    },
+    {
+     "item": "Q7452033",
+     "kinds": [
+      "wikimedia disambiguation page"
+     ],
+     "values": [
+      "instance of: Wikimedia disambiguation page"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Atalaya",
+   "relation": "parent taxon",
+   "question": "What is the parent taxon of Atalaya?",
+   "chosen": "Q2868764",
+   "reads": [
+    "Sapindaceae"
+   ],
+   "items": [
+    {
+     "item": "Q2868764",
+     "kinds": [
+      "taxon"
+     ],
+     "values": [
+      "instance of: taxon",
+      "parent taxon: Sapindaceae"
+     ]
+    },
+    {
+     "item": "Q1620361",
+     "kinds": [],
+     "values": [
+      "located in the administrative territorial entity: Badajoz Province",
+      "located in time zone: UTC+01:00"
+     ]
+    },
+    {
+     "item": "Q5710290",
+     "kinds": [],
+     "values": [
+      "country: Argentina"
+     ]
+    },
+    {
+     "item": "Q3322627",
+     "kinds": [
+      "city"
+     ],
+     "values": [
+      "instance of: city"
+     ]
+    }
+   ],
+   "items_n": 4
+  },
+  {
+   "label": "Buffalo Hill",
+   "relation": "country",
+   "question": "What is the country of Buffalo Hill?",
+   "chosen": "Q4985762",
+   "reads": [
+    "People's Republic of China"
+   ],
+   "items": [
+    {
+     "item": "Q4985762",
+     "kinds": [
+      "mountain"
+     ],
+     "values": [
+      "country: People's Republic of China",
+      "instance of: mountain",
+      "located in the administrative territorial entity: Hong Kong"
+     ]
+    },
+    {
+     "item": "Q4985758",
+     "kinds": [],
+     "values": [
+      "located in the administrative territorial entity: El Dorado County"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Great Western Railway",
+   "relation": "headquarters location",
+   "question": "What is the headquarters location of Great Western Railway?",
+   "chosen": "Q1419438",
+   "reads": [
+    "Plymouth"
+   ],
+   "items": [
+    {
+     "item": "Q1419438",
+     "kinds": [
+      "train operating company great britain"
+     ],
+     "values": [
+      "country: United Kingdom",
+      "headquarters location: Plymouth",
+      "instance of: train operating company (Great Britain)",
+      "legal form: società a responsabilità limitata"
+     ]
+    },
+    {
+     "item": "Q5600207",
+     "kinds": [],
+     "values": [
+      "country: Canada"
+     ]
+    },
+    {
+     "item": "Q843251",
+     "kinds": [],
+     "values": [
+      "location of formation: Bristol"
+     ]
+    }
+   ],
+   "items_n": 3
+  },
+  {
+   "label": "Jamaica Inn",
+   "relation": "author",
+   "question": "What is the author of Jamaica Inn?",
+   "chosen": "Q3202572",
+   "reads": [
+    "Daphne du Maurier"
+   ],
+   "items": [
+    {
+     "item": "Q497005",
+     "kinds": [],
+     "values": [
+      "composer: Eric Fenby",
+      "country of origin: United Kingdom",
+      "distributed by: Scalera Film",
+      "distributor: Scalera Film"
+     ]
+    },
+    {
+     "item": "Q3202572",
+     "kinds": [
+      "book"
+     ],
+     "values": [
+      "author: Daphne du Maurier",
+      "instance of: book"
+     ]
+    },
+    {
+     "item": "Q1328052",
+     "kinds": [],
+     "values": [
+      "country: United Kingdom"
+     ]
+    }
+   ],
+   "items_n": 3
+  },
+  {
+   "label": "Punia",
+   "relation": "parent taxon",
+   "question": "What is the parent taxon of Punia?",
+   "chosen": "Q21446908",
+   "reads": [
+    "Cicadidae"
+   ],
+   "items": [
+    {
+     "item": "Q21446908",
+     "kinds": [
+      "taxon"
+     ],
+     "values": [
+      "instance of: taxon",
+      "parent taxon: Cicadidae"
+     ]
+    },
+    {
+     "item": "Q7260193",
+     "kinds": [],
+     "values": [
+      "country: Lithuania"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Stoney",
+   "relation": "located on astronomical body",
+   "question": "What is the located on astronomical body of Stoney?",
+   "chosen": "Q19972244",
+   "reads": [
+    "Mars"
+   ],
+   "items": [
+    {
+     "item": "Q19972244",
+     "kinds": [
+      "impact crater"
+     ],
+     "values": [
+      "instance of: impact crater",
+      "located on astronomical body: Mars"
+     ]
+    },
+    {
+     "item": "Q7619395",
+     "kinds": [],
+     "values": [
+      "country of citizenship: United Kingdom"
+     ]
+    },
+    {
+     "item": "Q18285174",
+     "kinds": [
+      "given name"
+     ],
+     "values": [
+      "instance of: given name"
+     ]
+    }
+   ],
+   "items_n": 3
+  },
+  {
+   "label": "Amica",
+   "relation": "country of origin",
+   "question": "What is the country of origin of Amica?",
+   "chosen": "Q305422",
+   "reads": [
+    "Italy"
+   ],
+   "items": [
+    {
+     "item": "Q305422",
+     "kinds": [
+      "opera"
+     ],
+     "values": [
+      "country of origin: Italy",
+      "instance of: opera"
+     ]
+    },
+    {
+     "item": "Q3614188",
+     "kinds": [],
+     "values": [
+      "original language of film or TV show: Italian"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Spurius",
+   "relation": "parent taxon",
+   "question": "What is the parent taxon of Spurius?",
+   "chosen": "Q13954627",
+   "reads": [
+    "Passalidae"
+   ],
+   "items": [
+    {
+     "item": "Q13954627",
+     "kinds": [
+      "taxon"
+     ],
+     "values": [
+      "instance of: taxon",
+      "parent taxon: Passalidae"
+     ]
+    },
+    {
+     "item": "Q7581570",
+     "kinds": [
+      "praenomen"
+     ],
+     "values": [
+      "instance of: praenomen"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "A Friend of the Family",
+   "relation": "author",
+   "question": "What is the author of A Friend of the Family?",
+   "chosen": "Q16001257",
+   "reads": [
+    "Lauren Grodstein"
+   ],
+   "items": [
+    {
+     "item": "Q16001257",
+     "kinds": [
+      "book"
+     ],
+     "values": [
+      "author: Lauren Grodstein",
+      "different from: A Friend of the Family",
+      "genre: novel",
+      "instance of: book"
+     ]
+    },
+    {
+     "item": "Q5504024",
+     "kinds": [],
+     "values": [
+      "cast member: Lisa Boyle",
+      "country of origin: United States of America",
+      "genre: drama"
+     ]
+    },
+    {
+     "item": "Q2385788",
+     "kinds": [],
+     "values": [
+      "cast member: Laura Harris",
+      "country of origin: Canada",
+      "different from: A Friend of the Family"
+     ]
+    }
+   ],
+   "items_n": 3
+  },
+  {
+   "label": "Ek Hi Bhool",
+   "relation": "cast member",
+   "question": "What is the cast member of Ek Hi Bhool?",
+   "chosen": "Q19571572",
+   "reads": [
+    "Paidi Jairaj"
+   ],
+   "items": [
+    {
+     "item": "Q19571572",
+     "kinds": [
+      "film"
+     ],
+     "values": [
+      "cast member: Paidi Jairaj",
+      "country of origin: India",
+      "instance of: film"
+     ]
+    },
+    {
+     "item": "Q2920762",
+     "kinds": [],
+     "values": [
+      "country of origin: India"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Last Day of Summer",
+   "relation": "follows",
+   "question": "What is the follows of Last Day of Summer?",
+   "chosen": "Q6494281",
+   "reads": [
+    "Fits"
+   ],
+   "items": [
+    {
+     "item": "Q3280348",
+     "kinds": [],
+     "values": [
+      "composer: James L. Venable",
+      "country of origin: United States of America",
+      "distributed by: Nickelodeon",
+      "distributor: Nickelodeon"
+     ]
+    },
+    {
+     "item": "Q6494280",
+     "kinds": [],
+     "values": [
+      "country of origin: United States of America",
+      "original language of film or TV show: English"
+     ]
+    },
+    {
+     "item": "Q6494281",
+     "kinds": [
+      "album"
+     ],
+     "values": [
+      "follows: Fits",
+      "instance of: album"
+     ]
+    },
+    {
+     "item": "Q1199393",
+     "kinds": [],
+     "values": [
+      "original language of film or TV show: Polish"
+     ]
+    }
+   ],
+   "items_n": 4
+  },
+  {
+   "label": "Jim Henry",
+   "relation": "languages spoken, written or signed",
+   "question": "What is the languages spoken, written or signed of Jim Henry?",
+   "chosen": "Q6195561",
+   "reads": [
+    "English"
+   ],
+   "items": [
+    {
+     "item": "Q6195561",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "instance of: human",
+      "languages spoken, written or signed: English",
+      "member of political party: Republican Party"
+     ]
+    },
+    {
+     "item": "Q1406938",
+     "kinds": [],
+     "values": [
+      "country of citizenship: Canada",
+      "member of sports team: New York Rangers"
+     ]
+    },
+    {
+     "item": "Q10457811",
+     "kinds": [],
+     "values": [
+      "country of citizenship: United Kingdom",
+      "occupation: association football player"
+     ]
+    },
+    {
+     "item": "Q6195559",
+     "kinds": [],
+     "values": [
+      "country of citizenship: United States of America"
+     ]
+    },
+    {
+     "item": "Q6195556",
+     "kinds": [],
+     "values": [
+      "given name: Jim"
+     ]
+    }
+   ],
+   "items_n": 5
+  },
+  {
+   "label": "Battle of Stalingrad",
+   "relation": "location",
+   "question": "What is the location of Battle of Stalingrad?",
+   "chosen": "Q38789",
+   "reads": [
+    "Volgograd"
+   ],
+   "items": [
+    {
+     "item": "Q38789",
+     "kinds": [
+      "battle"
+     ],
+     "values": [
+      "instance of: battle",
+      "location: Volgograd",
+      "part of: World War II"
+     ]
+    },
+    {
+     "item": "Q4439207",
+     "kinds": [],
+     "values": [
+      "composer: Aram Khachaturian",
+      "narrative location: Battle of Stalingrad"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "The Road to Memphis",
+   "relation": "author",
+   "question": "What is the author of The Road to Memphis?",
+   "chosen": "Q7761137",
+   "reads": [
+    "Mildred D. Taylor"
+   ],
+   "items": [
+    {
+     "item": "Q7761137",
+     "kinds": [
+      "book"
+     ],
+     "values": [
+      "author: Mildred D. Taylor",
+      "country of origin: United States of America",
+      "instance of: book"
+     ]
+    },
+    {
+     "item": "Q3212483",
+     "kinds": [],
+     "values": [
+      "cast member: The Coasters",
+      "country of origin: United States of America"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "At Last",
+   "relation": "followed by",
+   "question": "What is the followed by of At Last?",
+   "chosen": "Q4027217",
+   "reads": [
+    "The Body Acoustic"
+   ],
+   "items": [
+    {
+     "item": "Q4027217",
+     "kinds": [
+      "album"
+     ],
+     "values": [
+      "followed by: The Body Acoustic",
+      "follows: Shine",
+      "instance of: album"
+     ]
+    },
+    {
+     "item": "Q752942",
+     "kinds": [],
+     "values": [
+      "country of origin: United States of America"
+     ]
+    },
+    {
+     "item": "Q4812358",
+     "kinds": [],
+     "values": [
+      "language of work or name: English"
+     ]
+    }
+   ],
+   "items_n": 3
+  },
+  {
+   "label": "Hepatica",
+   "relation": "different from",
+   "question": "What is the different from of Hepatica?",
+   "chosen": "Q157505",
+   "reads": [
+    "Hepatica"
+   ],
+   "items": [
+    {
+     "item": "Q157505",
+     "kinds": [
+      "taxon"
+     ],
+     "values": [
+      "different from: Hepatica",
+      "instance of: taxon"
+     ]
+    },
+    {
+     "item": "Q5731690",
+     "kinds": [],
+     "values": [
+      "parent taxon: Noctuidae"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Bowmore",
+   "relation": "country",
+   "question": "What is the country of Bowmore?",
+   "chosen": "Q2025695",
+   "reads": [
+    "United States of America"
+   ],
+   "items": [
+    {
+     "item": "Q2025695",
+     "kinds": [
+      "census designated place"
+     ],
+     "values": [
+      "country: United States of America",
+      "instance of: census-designated place"
+     ]
+    },
+    {
+     "item": "Q51906",
+     "kinds": [],
+     "values": [
+      "located in/on physical feature: Islay"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Athelstan",
+   "relation": "located in the administrative territorial entity",
+   "question": "What is the located in the administrative territorial entity of Athelstan?",
+   "chosen": "Q2352067",
+   "reads": [
+    "Taylor County"
+   ],
+   "items": [
+    {
+     "item": "Q2352067",
+     "kinds": [
+      "census designated place"
+     ],
+     "values": [
+      "instance of: census-designated place",
+      "located in the administrative territorial entity: Taylor County"
+     ]
+    },
+    {
+     "item": "Q4813342",
+     "kinds": [],
+     "values": [
+      "occupation: priest"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "Defender",
+   "relation": "followed by",
+   "question": "What is the followed by of Defender?",
+   "chosen": "Q1608246",
+   "reads": [
+    "Fresh Evidence"
+   ],
+   "items": [
+    {
+     "item": "Q1608246",
+     "kinds": [
+      "album"
+     ],
+     "values": [
+      "followed by: Fresh Evidence",
+      "follows: Jinx",
+      "instance of: album"
+     ]
+    },
+    {
+     "item": "Q1537095",
+     "kinds": [],
+     "values": [
+      "country of origin: United States of America",
+      "original language of film or TV show: English"
+     ]
+    },
+    {
+     "item": "Q18206392",
+     "kinds": [],
+     "values": [
+      "main subject: aviation",
+      "original language of film or TV show: English"
+     ]
+    },
+    {
+     "item": "Q19879904",
+     "kinds": [],
+     "values": [
+      "author: F.J. Thwaites"
+     ]
+    },
+    {
+     "item": "Q5251311",
+     "kinds": [],
+     "values": [
+      "country: United States of America"
+     ]
+    },
+    {
+     "item": "Q336286",
+     "kinds": [
+      "association football position"
+     ],
+     "values": [
+      "instance of: association football position"
+     ]
+    }
+   ],
+   "items_n": 6
+  },
+  {
+   "label": "Italy",
+   "relation": "capital",
+   "question": "What is the capital of Italy?",
+   "chosen": "Q38",
+   "reads": [
+    "Rome"
+   ],
+   "items": [
+    {
+     "item": "Q38",
+     "kinds": [
+      "member state of the european union",
+      "member states of the council of europe",
+      "member states of the united nations",
+      "sovereign state",
+      "unitary state"
+     ],
+     "values": [
+      "capital: Rome",
+      "contains administrative territorial entity: Umbria",
+      "contains administrative territorial entity: Apulia",
+      "contains administrative territorial entity: Friuli-Venezia Giulia"
+     ]
+    },
+    {
+     "item": "Q3708720",
+     "kinds": [],
+     "values": [
+      "country: United States of America",
+      "located in the administrative territorial entity: Yates County"
+     ]
+    },
+    {
+     "item": "Q977238",
+     "kinds": [],
+     "values": [
+      "located in the administrative territorial entity: Ellis County"
+     ]
+    },
+    {
+     "item": "Q18087879",
+     "kinds": [],
+     "values": [
+      "part of: Everybody Loves Raymond, season 5"
+     ]
+    }
+   ],
+   "items_n": 4
+  },
+  {
+   "label": "John Merritt",
+   "relation": "country of citizenship",
+   "question": "What is the country of citizenship of John Merritt?",
+   "chosen": "Q6248547",
+   "reads": [
+    "United States of America"
+   ],
+   "items": [
+    {
+     "item": "Q6248547",
+     "kinds": [
+      "human"
+     ],
+     "values": [
+      "country of citizenship: United States of America",
+      "instance of: human"
+     ]
+    },
+    {
+     "item": "Q6248549",
+     "kinds": [],
+     "values": [
+      "member of: Kappa Alpha Psi"
+     ]
+    }
+   ],
+   "items_n": 2
+  },
+  {
+   "label": "This World",
+   "relation": "followed by",
+   "question": "What is the followed by of This World?",
+   "chosen": "Q585710",
+   "reads": [
+    "Summertime"
+   ],
+   "items": [
+    {
+     "item": "Q585710",
+     "kinds": [
+      "single"
+     ],
+     "values": [
+      "followed by: Summertime",
+      "instance of: single",
+      "part of: Selah Sue"
+     ]
+    },
+    {
+     "item": "Q7786400",
+     "kinds": [],
+     "values": [
+      "distributed by: BBC Worldwide",
+      "distributor: BBC Worldwide"
+     ]
+    }
+   ],
+   "items_n": 2
+  }
+ ]
+}

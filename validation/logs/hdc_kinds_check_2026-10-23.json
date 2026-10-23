@@ -1,0 +1,125 @@
+{
+ "what": "order 0036 item 3: the kinds table against the scan, on 0033's hops",
+ "table": {
+  "items": "2399127",
+  "pairs": "20113",
+  "world_bytes": "1022898176",
+  "built_s": "7.0"
+ },
+ "hops": 11,
+ "same_decisions": 11,
+ "scan_ms": 616.2,
+ "table_ms": 34.5,
+ "rows": [
+  {
+   "hop": "capital of France",
+   "spoken": [
+    "Paris"
+   ],
+   "withheld": [],
+   "same": true,
+   "scan_ms": 9.3,
+   "table_ms": 6.3
+  },
+  {
+   "hop": "currency of Japan",
+   "spoken": [
+    "Japanese yen"
+   ],
+   "withheld": [],
+   "same": true,
+   "scan_ms": 520.9,
+   "table_ms": 4.6
+  },
+  {
+   "hop": "capital of Canada",
+   "spoken": [
+    "Ottawa"
+   ],
+   "withheld": [],
+   "same": true,
+   "scan_ms": 4.9,
+   "table_ms": 4.4
+  },
+  {
+   "hop": "capital of Italy",
+   "spoken": [
+    "Rome"
+   ],
+   "withheld": [],
+   "same": true,
+   "scan_ms": 4.6,
+   "table_ms": 4.9
+  },
+  {
+   "hop": "capital of Georgia",
+   "spoken": [],
+   "withheld": [
+    "Q1428",
+    "Q230"
+   ],
+   "same": true,
+   "scan_ms": 1.9,
+   "table_ms": 2.1
+  },
+  {
+   "hop": "population of Toronto",
+   "spoken": [],
+   "withheld": [],
+   "same": true,
+   "scan_ms": 1.0,
+   "table_ms": 1.2
+  },
+  {
+   "hop": "country of Globe Theatre",
+   "spoken": [],
+   "withheld": [
+    "Q5571009"
+   ],
+   "same": true,
+   "scan_ms": 0.7,
+   "table_ms": 0.8
+  },
+  {
+   "hop": "located in the administrative territorial entity of Wantage",
+   "spoken": [],
+   "withheld": [
+    "Q1073883"
+   ],
+   "same": true,
+   "scan_ms": 9.6,
+   "table_ms": 1.4
+  },
+  {
+   "hop": "official language of Brazil",
+   "spoken": [],
+   "withheld": [
+    "Q155"
+   ],
+   "same": true,
+   "scan_ms": 61.4,
+   "table_ms": 4.5
+  },
+  {
+   "hop": "country of Eiffel Tower",
+   "spoken": [],
+   "withheld": [
+    "Q243",
+    "Q25223034"
+   ],
+   "same": true,
+   "scan_ms": 0.8,
+   "table_ms": 0.8
+  },
+  {
+   "hop": "instance of of Terry White",
+   "spoken": [
+    "human"
+   ],
+   "withheld": [],
+   "same": true,
+   "scan_ms": 1.0,
+   "table_ms": 3.4
+  }
+ ]
+}

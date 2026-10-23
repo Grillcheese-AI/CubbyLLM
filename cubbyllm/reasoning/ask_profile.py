@@ -119,24 +119,25 @@ class AskProfile:
             have = [t for t in self.facts_about(entity) if normalize(t.rel) in PROFILE_KINDS["when"]]
             if not have:
                 return self.no_events(rec, qid, t0)
-        have = self.facts_about(entity)
+        store_key = item or entity                       # an item the asker chose is read as itself, never as the bare
+        have = self.facts_about(store_key)               # label, which may be another namesake's (order 0036)
         last: dict = {}
         known_rels = set(rels) | (set(PROFILE) if kind in FALLBACK_KINDS else set())
         # a name the stores hold only as several items' (order 0033): the asker or the question's own qualifier decide
         # which item, and that item's facts alone are read (never beside another world's facts about the bare name,
         # which may be another namesake's); when nothing decides, the asker is asked
-        ns = None if any(normalize(t.rel) in known_rels for t in have) else namesake_pick(self, entity, item)
+        ns = namesake_pick(self, entity, item) if item or not any(normalize(t.rel) in known_rels for t in have) else None
         picked = (ns or {}).get("rows") or []
         if picked:
             entity = ns["label"]; rec["namesake"] = {"item": ns["item"], "how": ns["how"]}
             have = [t for _f, t in picked]
         elif not any(normalize(t.rel) in known_rels for t in have):
             last = self._fetch(qid, entity, list(RESOLVE_HINT[kind]), rec, item, asker)
-            have = self.facts_about(entity)
+            have = self.facts_about(store_key)
         # the lines: the ask kind's relations first, then any other profile relation the store holds
         chosen: list[tuple[str, str, str]] = []                       # (rel, obj, the stored fact text)
         by_key = {(normalize(t.rel), t.obj): " ".join(f.split())
-                  for f, t in (picked or self.world.index._by_subj.get(normalize(entity), [])) if t is not None}
+                  for f, t in (picked or self.world.index._by_subj.get(normalize(store_key), [])) if t is not None}
         order = tuple(rels) + (tuple(r for r in PROFILE if r not in rels) if kind in FALLBACK_KINDS else ())
         times = getattr(self.world, "times", None) or {}
         for rel in order:

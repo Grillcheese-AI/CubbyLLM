@@ -1,0 +1,415 @@
+{
+ "what": "order 0036 item 1: object labels the hdc world shares between items, read the inverse way",
+ "labels": 50,
+ "mixed": 0,
+ "outcomes": {
+  "no_plan": 50
+ },
+ "index_reads_a_shared_label": 0,
+ "args": {
+  "n": 50,
+  "seed": 0
+ },
+ "rows": [
+  {
+   "label": "Mega Man X",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Mega Man X as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "New Beginning",
+   "items": 3,
+   "index_rows_now": 0,
+   "question": "What has New Beginning as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Aurelia",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Aurelia as its given name?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Hearts and Minds",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Hearts and Minds as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Rosemary's Baby",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Rosemary's Baby as its based on?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Ragnarok",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Ragnarok as its based on?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Moss",
+   "items": 6,
+   "index_rows_now": 0,
+   "question": "What has Moss as its family name?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Jewels",
+   "items": 4,
+   "index_rows_now": 0,
+   "question": "What has Jewels as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Pride",
+   "items": 7,
+   "index_rows_now": 0,
+   "question": "What has Pride as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Los Baños",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Los Baños as its located in the administrative territorial entity?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Surfin' Safari",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Surfin' Safari as its follows?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Full Circle",
+   "items": 8,
+   "index_rows_now": 0,
+   "question": "What has Full Circle as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Robert",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Robert as its father?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Cubism",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Cubism as its architectural style?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "I Miss You",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has I Miss You as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Curiosity",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Curiosity as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Canton",
+   "items": 13,
+   "index_rows_now": 0,
+   "question": "What has Canton as its capital?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Truth or Consequences",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Truth or Consequences as its capital?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Hana Rural District",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Hana Rural District as its located in the administrative territorial entity?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Screaming Bloody Murder",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Screaming Bloody Murder as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Thomas Estcourt",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Thomas Estcourt as its different from?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Dave Taylor",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Dave Taylor as its designed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Jonathan Roberts",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Jonathan Roberts as its different from?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Cartoon Network",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Cartoon Network as its distributed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Bogoria",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Bogoria as its capital?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Ladyhawke",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Ladyhawke as its follows?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Poppin'",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Poppin' as its different from?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Southampton",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Southampton as its headquarters location?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Cathedral of Saint Mary",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Cathedral of Saint Mary as its cathedral?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Liverpool",
+   "items": 4,
+   "index_rows_now": 0,
+   "question": "What has Liverpool as its follows?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Number 1",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Number 1 as its follows?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Kanzaki district",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Kanzaki district as its contains administrative territorial entity?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Torgny",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Torgny as its different from?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Walker",
+   "items": 4,
+   "index_rows_now": 0,
+   "question": "What has Walker as its capital?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "First Love",
+   "items": 3,
+   "index_rows_now": 0,
+   "question": "What has First Love as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "snake",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has snake as its cause of death?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Prince Edward County",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Prince Edward County as its located in the administrative territorial entity?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Ontario",
+   "items": 3,
+   "index_rows_now": 0,
+   "question": "What has Ontario as its applies to jurisdiction?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Salud",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Salud as its different from?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Heidelberg University",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Heidelberg University as its educated at?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Best of",
+   "items": 5,
+   "index_rows_now": 0,
+   "question": "What has Best of as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Single",
+   "items": 3,
+   "index_rows_now": 0,
+   "question": "What has Single as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Alicia",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Alicia as its given name?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Campbell County",
+   "items": 5,
+   "index_rows_now": 0,
+   "question": "What has Campbell County as its contains administrative territorial entity?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Moe",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Moe as its family name?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Yass",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Yass as its genre?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "United Left",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has United Left as its member of political party?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "24/7",
+   "items": 3,
+   "index_rows_now": 0,
+   "question": "What has 24/7 as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Toulouse FC",
+   "items": 3,
+   "index_rows_now": 0,
+   "question": "What has Toulouse FC as its member of sports team?",
+   "outcome": "no_plan",
+   "answer": null
+  },
+  {
+   "label": "Regeneration",
+   "items": 2,
+   "index_rows_now": 0,
+   "question": "What has Regeneration as its followed by?",
+   "outcome": "no_plan",
+   "answer": null
+  }
+ ]
+}

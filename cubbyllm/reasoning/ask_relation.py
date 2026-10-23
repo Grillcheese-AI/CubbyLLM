@@ -229,6 +229,9 @@ class AskRelation:
             kw["classes"] = True                         # a profile ask wants the KIND: see WikidataSource.facts
         items = list(self.source.facts(entity, **kw))
         last = getattr(self.source, "last", None) if isinstance(getattr(self.source, "last", None), dict) else {}
+        if item and last.get("qid") == item:             # the asker's choice: kept as itself, never as the bare label
+            items = [Triple(obj=t.obj, rel=t.rel, subj=item) if isinstance(t, Triple) else t for t in items]
+            rec["kept_as"] = item                        # (order 0036: a bare question later still asks which)
         fid = ev.emit("fetch", qid, source=getattr(self.source, "name", None), entity=entity, n=len(items), latent=False,
                       needs=hint, how=last.get("how"), item=last.get("qid"),
                       ambiguous=[list(a) for a in last.get("ambiguous", [])] or None)

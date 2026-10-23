@@ -32,13 +32,15 @@ LABELS = {"Q10": ("Globe Theatre", ""), "Q11": ("Southwark", ""), "Q12": ("Globe
           "Q40": ("Mercia", ""), "Q41": ("kingdom", ""), "Q42": ("Tamworth", ""), "Q43": ("Mercia", ""), "Q44": ("ship", ""),
           "Q50": ("Ann Reed", ""), "Q51": ("human", ""), "Q52": ("Ann Reed", ""),
           "Q60": ("Wantage", ""), "Q61": ("township", ""), "Q62": ("Sussex County", ""), "Q63": ("Wantage", ""),
-          "Q64": ("civil parish", ""), "Q65": ("Didcot", ""), "Q66": ("Oxfordshire", "")}
+          "Q64": ("civil parish", ""), "Q65": ("Didcot", ""), "Q66": ("Oxfordshire", ""),
+          "Q70": ("Springfield", ""), "Q71": ("Springfield", ""), "Q72": ("Moe's", ""), "Q73": ("Shelbyville Mill", "")}
 FACTS = {("Q10", LOC, "Q11"): "P131", ("Q12", LOC, "Q13"): "P131", ("Q14", "country", "Q15"): "P17",
          ("Q20", KIND, "Q21"): "P31", ("Q22", "country", "Q23"): "P17", ("Q30", "country", "Q15"): "P17",
          ("Q40", KIND, "Q41"): "P31", ("Q40", "capital", "Q42"): "P36", ("Q43", KIND, "Q44"): "P31",
          ("Q50", KIND, "Q51"): "P31", ("Q50", CIT, "Q15"): "P27", ("Q52", KIND, "Q51"): "P31",
          ("Q60", KIND, "Q61"): "P31", ("Q60", LOC, "Q62"): "P131", ("Q63", KIND, "Q64"): "P31",
-         ("Q65", KIND, "Q64"): "P31", ("Q65", LOC, "Q66"): "P131"}
+         ("Q65", KIND, "Q64"): "P31", ("Q65", LOC, "Q66"): "P131",
+         ("Q72", LOC, "Q70"): "P131", ("Q73", LOC, "Q71"): "P131"}             # two Springfields, read as objects
 PIDS = {LOC: "P131", "country": "P17", KIND: "P31", "capital": "P36", CIT: "P27"}
 ALIAS = {"the wooden o": "Q10", "twin globe": "Q12"}
 SOUTHWARK, BOSTON, ENGLAND = (f"Southwark is the {LOC} of Globe Theatre", f"Boston is the {LOC} of Globe Theatre",
@@ -129,3 +131,30 @@ def test_a_relation_question_on_a_shared_name_is_decided_by_its_relation_or_refu
     assert not rec["verified"] and rec["reason"] != "ambiguous_entity"
     rec = loop.ask("What is the country of Zenda?")
     assert rec["verified"] and rec["answer"] == "England" and rec["reason"] is None
+
+
+def test_an_object_label_several_items_share_reads_as_none_of_them(hdc):
+    """Order 0036, item 1: the object side under 0033's rule (an inverse read never mixes two items)."""
+    assert hdc._by_obj.get("Springfield") == []                                      # Moe's and the mill point at two
+    assert [t.subj for _f, t in hdc._by_obj.get("Oxfordshire")] == ["Didcot"]          # one item: its rows, as before
+    assert [t.subj for _f, t in hdc._by_obj.get("Q71")] == ["Shelbyville Mill"]        # a Q-id: that item
+
+
+def test_the_kinds_table_answers_as_the_scan_and_the_world_reads_it(hdc, tmp_path):
+    """Order 0036, item 3: which relations each kind carries, built once; the same decisions as the scan."""
+    from cubbyllm.worlds.hdc_kinds import Table, build, path_for
+    built = build(hdc.path)
+    assert built["out"] == path_for(hdc.path) and built["pairs"] > 0
+    table = Table(built["out"])
+    assert table.applies("civil parish", LOC) and not table.applies("ship", "capital") and table.applies("kingdom", "capital")
+    scan = HdcWorld(hdc.path)
+    scan._kinds = None
+    with_table = HdcWorld(hdc.path)
+    assert with_table._kinds is not None
+    for rel, name in (("capital", "Mercia"), (LOC, "Wantage"), (CIT, "Ann Reed"), ("country", "Globe Theatre")):
+        plan = QuestionPlan(relations=[None], tail=f"{rel} of {name}", n_hop=1)
+        assert with_table.hop(plan, 0, None) == scan.hop(plan, 0, None), (rel, name)
+    import sqlite3
+    with sqlite3.connect(built["out"]) as c:                 # a table built from another state of the world: not read
+        c.execute("UPDATE meta SET v = '1' WHERE k = 'world_bytes'")
+    assert HdcWorld(hdc.path)._kinds is None

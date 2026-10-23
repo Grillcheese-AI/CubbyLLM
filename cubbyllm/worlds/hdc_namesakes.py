@@ -63,6 +63,23 @@ def items(db, key: str) -> tuple[str, dict]:
     return ("alias" if by else "none"), by
 
 
+def object_items(db, key: str) -> dict:
+    """The items a normalized name stands for as an OBJECT, each with the rows (subj, rel, obj) that point at it (order
+    0036): by the object's label; else, for an alias or a Q-id, the rows that point at that one item."""
+    by: dict = {}
+    for s, r, o, q in db.execute("SELECT subj, rel, obj, oq FROM facts WHERE okey = ?", (key,)).fetchall():
+        by.setdefault(q, []).append((s, r, o))
+    if by:
+        return by
+    for (q,) in db.execute("SELECT DISTINCT qid FROM names WHERE key = ?", (key,)).fetchall():
+        lab = db.execute("SELECT en FROM labels WHERE qid = ?", (q,)).fetchone()
+        rows = [(s, r, o) for s, r, o, oq in db.execute("SELECT subj, rel, obj, oq FROM facts WHERE okey = ?",
+                                                        (normalize(lab[0]),)).fetchall() if oq == q] if lab else []
+        if rows:
+            by[q] = rows
+    return by
+
+
 def kinds(rows) -> set:
     """An item's kinds, from its `(fact, Triple)` rows."""
     return {normalize(t.obj) for _f, t in rows if normalize(t.rel) == INSTANCE}
@@ -121,11 +138,14 @@ class Namesakes:
         return self._triples(by.get(item) or [])
 
     def applies(self, kind: str, rel: str) -> bool:
-        """Does any item of `kind` carry `rel` in this world? The kind's first `APPLIES_SCAN` members are read, so a
-        relation only a few of a large kind carry can be missed (and the hop then decides where it should not)."""
+        """Does any item of `kind` carry `rel` in this world? From the kinds table when the world has one (complete;
+        ``hdc_kinds``), else the kind's first `APPLIES_SCAN` members are read, which can miss a relation only a few of a
+        large kind carry (and the hop then decides where it should not)."""
         return self._applies(normalize(kind), rel)
 
     def _applies_rows(self, kind: str, rel: str) -> bool:
+        if getattr(self, "_kinds", None) is not None:            # the built table (hdc_kinds, order 0036): complete
+            return self._kinds.applies(kind, rel)
         with self._lock:
             members = self.db.execute("SELECT subj, sq FROM facts WHERE okey = ? AND rel = ? LIMIT ?",
                                       (kind, INSTANCE, APPLIES_SCAN)).fetchall()
