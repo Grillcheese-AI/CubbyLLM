@@ -1,0 +1,37 @@
+{
+ "what": "order 0034's diagnosis: the same villages' placed questions through run 5, as exported and with every thing renamed to a spatial-shard word of its kind (same cells, same addresses); counts only",
+ "date": "2026-10-22",
+ "villages": 60,
+ "view": "cut",
+ "questions_sha256": "80b60cc3a9f4f9aa70fb0f0cd43a36209b93a8c24162e8fcdb68085a59b08e7c",
+ "arms": {
+  "as_exported": {
+   "nothing": {
+    "n": 391,
+    "exact": 380,
+    "first": 380,
+    "rate": 0.9719
+   },
+   "thing": {
+    "n": 449,
+    "exact": 2,
+    "first": 2,
+    "rate": 0.0045
+   }
+  },
+  "renamed": {
+   "nothing": {
+    "n": 391,
+    "exact": 373,
+    "first": 373,
+    "rate": 0.954
+   },
+   "thing": {
+    "n": 449,
+    "exact": 261,
+    "first": 284,
+    "rate": 0.5813
+   }
+  }
+ }
+}

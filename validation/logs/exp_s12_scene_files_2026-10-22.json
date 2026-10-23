@@ -1,0 +1,317 @@
+{
+ "what": "order 0034 (H-S12 gate 3): villages from scene files, the host's AskLoop(scene=) and run 5's trunk; counts only (the villages, their names and cells stay in the private folder)",
+ "date": "2026-10-22",
+ "ckpt": "spatial_link_5_final.pt",
+ "questions_sha256": "80b60cc3a9f4f9aa70fb0f0cd43a36209b93a8c24162e8fcdb68085a59b08e7c",
+ "scenes_sha256": "c8e7226a427048509309d8e94da5962ef015cebed3281c5114ff84283e82de57",
+ "villages": 60,
+ "wall_s": 438.7,
+ "views": {
+  "cut": {
+   "questions": 1800,
+   "things": {
+    "min": 4,
+    "median": 9,
+    "max": 23
+   },
+   "left_out_median": 9,
+   "host": {
+    "by_shape": {
+     "at": {
+      "n": 240
+     },
+     "nearest": {
+      "n": 240,
+      "routed": 240,
+      "spoken": 226,
+      "right": 226
+     },
+     "neighbour": {
+      "n": 300,
+      "routed": 300,
+      "spoken": 139,
+      "right": 139
+     },
+     "offset": {
+      "n": 300
+     },
+     "position": {
+      "n": 300,
+      "routed": 300,
+      "spoken": 300,
+      "right": 300
+     },
+     "region": {
+      "n": 180,
+      "routed": 180,
+      "spoken": 114,
+      "right": 114
+     },
+     "where": {
+      "n": 240
+     }
+    },
+    "routed": 1020,
+    "spoken": 779,
+    "right": 779,
+    "wrong": 0,
+    "spoken_routed": 779,
+    "routed_spoken_right": 779
+   },
+   "trunk": {
+    "placed_by_class": {
+     "kind": {
+      "n": 329,
+      "exact": 2,
+      "first": 2
+     },
+     "name": {
+      "n": 120
+     },
+     "nothing": {
+      "n": 391,
+      "exact": 380,
+      "first": 380
+     }
+    },
+    "placed_by_shape": {
+     "at": {
+      "n": 240,
+      "exact": 70,
+      "first": 70
+     },
+     "neighbour": {
+      "n": 300,
+      "exact": 160,
+      "first": 160
+     },
+     "offset": {
+      "n": 300,
+      "exact": 152,
+      "first": 152
+     }
+    },
+    "unplaced_by_class": {
+     "kind": {
+      "n": 172,
+      "first": 4,
+      "exact": 1
+     },
+     "name": {
+      "n": 54
+     },
+     "nothing": {
+      "n": 80,
+      "exact": 55,
+      "first": 55
+     },
+     "position": {
+      "n": 540,
+      "first": 126,
+      "exact": 74
+     },
+     "region": {
+      "n": 114,
+      "exact": 3,
+      "first": 3
+     }
+    },
+    "unplaced_by_shape": {
+     "nearest": {
+      "n": 240,
+      "exact": 14,
+      "first": 17
+     },
+     "position": {
+      "n": 300,
+      "first": 29,
+      "exact": 1
+     },
+     "region": {
+      "n": 180,
+      "exact": 45,
+      "first": 45
+     },
+     "where": {
+      "n": 240,
+      "exact": 73,
+      "first": 97
+     }
+    },
+    "gates": {
+     "kind": 0.0061,
+     "kind_n": 329,
+     "kind_line": 0.9,
+     "name": 0.0,
+     "name_n": 120,
+     "name_line": 0.8,
+     "nothing": 0.9719,
+     "nothing_n": 391,
+     "killed": true
+    }
+   }
+  },
+  "whole": {
+   "questions": 1800,
+   "things": {
+    "min": 8,
+    "median": 20,
+    "max": 43
+   },
+   "left_out_median": 0,
+   "host": {
+    "by_shape": {
+     "at": {
+      "n": 240
+     },
+     "nearest": {
+      "n": 240,
+      "routed": 240,
+      "spoken": 233,
+      "right": 233
+     },
+     "neighbour": {
+      "n": 300,
+      "routed": 300,
+      "spoken": 155,
+      "right": 155
+     },
+     "offset": {
+      "n": 300
+     },
+     "position": {
+      "n": 300,
+      "routed": 300,
+      "spoken": 300,
+      "right": 300
+     },
+     "region": {
+      "n": 180,
+      "routed": 180,
+      "spoken": 105,
+      "right": 105
+     },
+     "where": {
+      "n": 240
+     }
+    },
+    "routed": 1020,
+    "spoken": 793,
+    "right": 793,
+    "wrong": 0,
+    "spoken_routed": 793,
+    "routed_spoken_right": 793
+   },
+   "trunk": {
+    "placed_by_class": {
+     "kind": {
+      "n": 344,
+      "exact": 2,
+      "first": 2
+     },
+     "name": {
+      "n": 128
+     },
+     "nothing": {
+      "n": 368,
+      "exact": 350,
+      "first": 350
+     }
+    },
+    "placed_by_shape": {
+     "at": {
+      "n": 240,
+      "exact": 47,
+      "first": 47
+     },
+     "neighbour": {
+      "n": 300,
+      "exact": 142,
+      "first": 142
+     },
+     "offset": {
+      "n": 300,
+      "exact": 163,
+      "first": 163
+     }
+    },
+    "unplaced_by_class": {
+     "kind": {
+      "n": 179,
+      "first": 2,
+      "exact": 1
+     },
+     "name": {
+      "n": 54
+     },
+     "nothing": {
+      "n": 82,
+      "exact": 47,
+      "first": 47
+     },
+     "position": {
+      "n": 540,
+      "exact": 59,
+      "first": 88
+     },
+     "region": {
+      "n": 105,
+      "exact": 2,
+      "first": 2
+     }
+    },
+    "unplaced_by_shape": {
+     "nearest": {
+      "n": 240,
+      "exact": 8,
+      "first": 9
+     },
+     "position": {
+      "n": 300,
+      "first": 12
+     },
+     "region": {
+      "n": 180,
+      "exact": 42,
+      "first": 42
+     },
+     "where": {
+      "n": 240,
+      "exact": 59,
+      "first": 76
+     }
+    },
+    "gates": {
+     "kind": 0.0058,
+     "kind_n": 344,
+     "kind_line": 0.9,
+     "name": 0.0,
+     "name_n": 128,
+     "name_line": 0.8,
+     "nothing": 0.9511,
+     "nothing_n": 368,
+     "killed": true
+    }
+   }
+  }
+ },
+ "act": {
+  "plans": 44,
+  "villages": 22,
+  "placeable": 22,
+  "placed_on_the_expected_cell": 20,
+  "host_resolved": 44,
+  "host_cell_not_expected": 0,
+  "placed_elsewhere": 0,
+  "sent_and_failed": 2,
+  "unplaceable": 22,
+  "unplaceable_refused_before_the_order": 22,
+  "refused_why": {
+   "nothing under it": 9,
+   "occupied": 12,
+   "a body stands there": 1
+  },
+  "order_refused_by_the_world": 2,
+  "villages_skipped": 0
+ }
+}
