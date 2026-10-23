@@ -79,7 +79,8 @@ class BraveBackend:
     URL = "https://api.search.brave.com/res/v1/web/search"
     license = "brave: data for AI, storage permitted"
 
-    def __init__(self, key: str | None = None, http=_no_http, rate_per_s: float = 50.0) -> None:
+    def __init__(self, key: str | None = None, http=_no_http, rate_per_s: float = 50.0, clock=None, sleep=None) -> None:
+        """`clock` / `sleep`: the limiter's time (default `time.monotonic` / `time.sleep`; a test hands in a fake one)."""
         import threading
         self.key = key or env_key("BRAVE_SEARCH_API_KEY", "BRAVE_API_KEY")
         if not self.key:
@@ -88,14 +89,15 @@ class BraveBackend:
         self.min_gap = 1.0 / float(rate_per_s) if rate_per_s else 0.0
         self._next = 0.0
         self._lock = threading.Lock()
+        self._clock, self._sleep = clock or time.monotonic, sleep or time.sleep
 
     def _wait(self) -> None:
         with self._lock:
-            now = time.monotonic()
+            now = self._clock()
             at = max(now, self._next)
             self._next = at + self.min_gap
         if at > now:
-            time.sleep(at - now)
+            self._sleep(at - now)
 
     def search(self, q: str, n: int = 20) -> list[Hit] | None:
         self._wait()

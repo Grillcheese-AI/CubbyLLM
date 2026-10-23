@@ -303,13 +303,21 @@ def test_a_licensed_backend_s_searches_are_archived_and_each_site_keeps_its_evid
 
 
 def test_brave_keeps_under_the_plan_s_rate():
-    import time as _t
-    from web_source import BraveBackend
-    b = BraveBackend(key="k", http=lambda *a, **k: ("application/json", b'{"web": {"results": []}}'), rate_per_s=20)
-    t0 = _t.monotonic()
+    # a fake clock (order 0033): the wall-clock version failed 3 to 5 runs in 20, a sleep returning a tick early
+    import pytest
+    from cubbyllm.sources.web_search import BraveBackend
+    now, slept = [100.0], []
+
+    def sleep(s):
+        slept.append(s); now[0] += s
+    b = BraveBackend(key="k", http=lambda *a, **k: ("application/json", b'{"web": {"results": []}}'), rate_per_s=20,
+                     clock=lambda: now[0], sleep=sleep)
     for _ in range(5):
         b.search("x")
-    assert _t.monotonic() - t0 >= 4 / 20 - 0.01                                    # 5 calls, 4 gaps of 1/20 s
+    assert slept == pytest.approx([1 / 20] * 4) and now[0] - 100.0 == pytest.approx(4 / 20)   # 5 calls, 4 gaps of 1/20 s
+    now[0] += 1.0                                                                  # a call after a pause waits for nothing
+    b.search("x")
+    assert len(slept) == 4
 
 
 def _place_page(value):

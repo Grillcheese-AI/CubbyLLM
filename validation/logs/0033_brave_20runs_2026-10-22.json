@@ -1,0 +1,110 @@
+{
+ "what": "order 0033 item 2: the Brave rate test with a fake clock, 20 runs, each in a fresh pytest process",
+ "test": "tests/sources/test_web_source.py::test_brave_keeps_under_the_plan_s_rate",
+ "git": "2c3f51b + the fake clock (cubbyllm/sources/web_search.py, tests/sources/test_web_source.py)",
+ "before": "3 to 5 failures in 20 with the wall clock (0031's report)",
+ "passed": 20,
+ "of": 20,
+ "runs": [
+  {
+   "run": 1,
+   "passed": true,
+   "s": 0.99
+  },
+  {
+   "run": 2,
+   "passed": true,
+   "s": 0.96
+  },
+  {
+   "run": 3,
+   "passed": true,
+   "s": 0.98
+  },
+  {
+   "run": 4,
+   "passed": true,
+   "s": 0.96
+  },
+  {
+   "run": 5,
+   "passed": true,
+   "s": 0.99
+  },
+  {
+   "run": 6,
+   "passed": true,
+   "s": 1.0
+  },
+  {
+   "run": 7,
+   "passed": true,
+   "s": 1.03
+  },
+  {
+   "run": 8,
+   "passed": true,
+   "s": 0.96
+  },
+  {
+   "run": 9,
+   "passed": true,
+   "s": 1.0
+  },
+  {
+   "run": 10,
+   "passed": true,
+   "s": 1.0
+  },
+  {
+   "run": 11,
+   "passed": true,
+   "s": 0.96
+  },
+  {
+   "run": 12,
+   "passed": true,
+   "s": 0.97
+  },
+  {
+   "run": 13,
+   "passed": true,
+   "s": 0.95
+  },
+  {
+   "run": 14,
+   "passed": true,
+   "s": 0.98
+  },
+  {
+   "run": 15,
+   "passed": true,
+   "s": 0.99
+  },
+  {
+   "run": 16,
+   "passed": true,
+   "s": 0.99
+  },
+  {
+   "run": 17,
+   "passed": true,
+   "s": 1.03
+  },
+  {
+   "run": 18,
+   "passed": true,
+   "s": 1.04
+  },
+  {
+   "run": 19,
+   "passed": true,
+   "s": 1.12
+  },
+  {
+   "run": 20,
+   "passed": true,
+   "s": 1.17
+  }
+ ]
+}
