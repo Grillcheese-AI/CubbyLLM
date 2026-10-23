@@ -31,6 +31,7 @@ from .ask_words import (ABSENT_REPLY, SAY, _AS_OF_PHRASE, _CATEGORY, _GROUP, _IS
                         strip_as_of, value_check, when_text)
 from .ask_claims import (BACKWARD_CUES, FORWARD_CUES, _BEGIN, _CAUSAL_REL, _END, _PRONOUN, _SENT,  # noqa: F401
                          _aliases, _cue, _learned, _mentions, branch_clarify, claim_check, parse_choose, talk_reply)
+from .ask_namesakes import after_walk, seed_for
 from .ask_memory import AskMemory
 from .ask_relation import AskRelation
 from .ask_profile import AskProfile
@@ -212,6 +213,7 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 ev.emit("answer", qid, answer=None, verified=False, reason=rec["reason"])
                 rec["wall_s"] = round(time.perf_counter() - t0, 3); self._keep(rec); return rec
             rels, seed = ep
+            one_item = seed_for(self, seed, item)        # a name several items share (order 0033)
             plan = QuestionPlan(relations=[None] + rels[1:], tail=f"{rels[0]} of {seed}", n_hop=len(rels))
             rec["plan"], rec["seed"] = rels, seed
             source = self.source
@@ -232,7 +234,8 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                     rec["wall_s"] = round(time.perf_counter() - t0, 3)
                     self._keep(rec)
                     return rec
-            lr = learn()
+            with one_item:
+                lr = learn()
         rec.update(answer=lr.result.answer if lr.result.verified else None, verified=bool(lr.result.verified),
                    reason=None if lr.result.verified else lr.result.reason,
                    learned=[_learned(p) for p in lr.learned],
@@ -241,6 +244,7 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                    branches=lr.result.branches, chose=choose or None,
                    clarify=branch_clarify(lr.plan or plan, lr.result, parse_choose(choose)),
                    wall_s=round(time.perf_counter() - t0, 3))
+        after_walk(self, rec, rec["seed"] or "")        # nothing decided which item a shared name is: the asker is asked
         why = self._time_check(question, lr) if lr.result.verified and self.tense else None
         snap = self._snapshot(question, lr) if lr.result.verified and not why else None
         if snap and snap[0] != "as_of":                   # a snapshot's value asked about another time (order 0014)

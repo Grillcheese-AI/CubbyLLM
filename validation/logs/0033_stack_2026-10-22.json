@@ -1,0 +1,398 @@
+{
+ "what": "order 0033: the real stack (the 450M seats on grilly2, wiki + hdc, the ask loop offline, plugins, the board; python -m cubby_serve) after the namesake fix, against _0031_stack_before.json (the recording 0031 compared with)",
+ "git": "2c3f51b + the working tree of 0033's item 1",
+ "same": 19,
+ "of": 20,
+ "asks": [
+  {
+   "question": "What is the capital of France?",
+   "same": true,
+   "before": {
+    "answer": "Paris",
+    "reply": null,
+    "verified": true,
+    "reason": null
+   },
+   "after": {
+    "answer": "Paris",
+    "reply": null,
+    "verified": true,
+    "reason": null
+   },
+   "answer_sha256": "6e36e9be37fd7256"
+  },
+  {
+   "question": "Where was Ada Lovelace born?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who wrote Pride and Prejudice?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "When was the Eiffel Tower built?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What is the capital of Canada?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who is the father of Queen Elizabeth II?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What is the population of Toronto?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "retrieval_exhausted"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "retrieval_exhausted"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who painted the Mona Lisa?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "unknown_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "unknown_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Where is the Globe Theatre?",
+   "same": false,
+   "before": {
+    "answer": "Globe Theatre — country: United Kingdom; located in: London Borough of Southwark, Boston",
+    "reply": null,
+    "verified": false,
+    "reason": "profile"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   },
+   "after_choices": [
+    {
+     "label": "Globe Theatre",
+     "detail": "country: United Kingdom",
+     "item": "Q5571009"
+    },
+    {
+     "label": "Globe Theatre",
+     "detail": "located in: London Borough of Southwark",
+     "item": "Q272434"
+    },
+    {
+     "label": "Globe Theatre",
+     "detail": "located in: Boston",
+     "item": "Q5571005"
+    }
+   ],
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What language is spoken in Brazil?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "unknown_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "unknown_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who discovered penicillin?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "no_plan"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "no_plan"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What is the currency of Japan?",
+   "same": true,
+   "before": {
+    "answer": "Japanese yen",
+    "reply": null,
+    "verified": true,
+    "reason": null
+   },
+   "after": {
+    "answer": "Japanese yen",
+    "reply": null,
+    "verified": true,
+    "reason": null
+   },
+   "answer_sha256": "a0f7a120fb52a5ec"
+  },
+  {
+   "question": "Quelle est la capitale de l'Italie ?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Qui a écrit Les Misérables ?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What river flows through Cairo?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who was the first president of the United States?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "entity_unresolved"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "entity_unresolved"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "How tall is Mount Everest?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What is the speed of light?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who is the mayor of Montreal?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What year did World War II end?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  }
+ ],
+ "board_routes_differing": {
+  "/board/home": [
+   "/board/home.audit[1].sections[1].cards[0].big: 19 -> 18",
+   "/board/home.audit[1].sections[1].cards[0].trend[11]: 19 -> 18",
+   "/board/home.audit[1].sections[1].cards[2].big: 3 -> 4",
+   "/board/home.audit[1].sections[1].cards[2].cap: \"sense → route → say\" -> \"sense → route → check → say\"",
+   "/board/home.audit[1].sections[5].cards[0].big: 10 -> 11",
+   "/board/home.audit[1].sections[5].cards[0].cap: \"5 in progress · 1 in review · 3 proposed\" -> \"4 in progress · 1 in review · 3 proposed\"",
+   "/board/home.public[1].sections[1].cards[0].big: 19 -> 18",
+   "/board/home.public[1].sections[1].cards[0].trend[11]: 19 -> 18"
+  ],
+  "/board/system": [
+   "/board/system.audit[1].orders.counts.done: 13 -> 15",
+   "/board/system.audit[1].orders.counts.in progress: 5 -> 4",
+   "/board/system.audit[1].orders.counts.open: 10 -> 11",
+   "/board/system.audit[1].orders.list: [{\"no\": \"0001\", \"title\": \"Far facts\", \"status\": \"done\"}, {\"no\": \"0002\", \"title\": -> [{\"no\": \"0001\", \"title\": \"Far facts\", \"status\": \"done\"}, {\"no\": \"0002\", \"title\":",
+   "/board/system.public[1].orders.counts.done: 13 -> 15",
+   "/board/system.public[1].orders.counts.in progress: 5 -> 4",
+   "/board/system.public[1].orders.counts.open: 10 -> 11",
+   "/board/system.public[1].orders.list: [{\"no\": \"0001\", \"title\": \"Far facts\", \"status\": \"done\"}, {\"no\": \"0002\", \"title\": -> [{\"no\": \"0001\", \"title\": \"Far facts\", \"status\": \"done\"}, {\"no\": \"0002\", \"title\":"
+  ],
+  "/health": [
+   "/health.audit[1].adapters.calls.talk: 1 -> 0",
+   "/health.audit[1].adapters.idle: [] -> [\"talk\"]",
+   "/health.public[1].adapters.calls.talk: 1 -> 0",
+   "/health.public[1].adapters.idle: [] -> [\"talk\"]"
+  ]
+ },
+ "why_the_board_differs": {
+  "/board/system": "the order queue (docs/orders/ statuses since the recording)",
+  "/board/home": "the order queue, and the journey and answer counts: the Globe Theatre now refuses",
+  "/health": "the talk adapter was called once before, to paraphrase the Globe Theatre's merged answer"
+ }
+}

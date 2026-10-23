@@ -1,0 +1,2142 @@
+{
+ "what": "order 0033: labels the hdc world shares between items, asked where / what is X",
+ "labels": 50,
+ "questions": 100,
+ "outcomes": {
+  "mixed": 74,
+  "answered": 20,
+  "no_plan": 6
+ },
+ "mixed": 74,
+ "wall_s": 36.5,
+ "args": {
+  "n": 50,
+  "seed": 0
+ },
+ "rows": [
+  {
+   "label": "New Pittsburg",
+   "items": 2,
+   "question": "Where is New Pittsburg?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "New Pittsburg — instance: census-designated place; country: United States of America; located in: Randolph County",
+   "lines_by_item": [
+    [
+     "Q6041521"
+    ],
+    [
+     "Q6041521"
+    ],
+    [
+     "Q7010982"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "New Pittsburg",
+   "items": 2,
+   "question": "What is New Pittsburg?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "New Pittsburg — instance: census-designated place; country: United States of America; located in: Randolph County",
+   "lines_by_item": [
+    [
+     "Q6041521"
+    ],
+    [
+     "Q6041521"
+    ],
+    [
+     "Q7010982"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Pershing Middle School",
+   "items": 2,
+   "question": "Where is Pershing Middle School?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Pershing Middle School — instance: middle school; country: United States of America",
+   "lines_by_item": [
+    [
+     "Q7170171"
+    ],
+    [
+     "Q7170170",
+     "Q7170171"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Pershing Middle School",
+   "items": 2,
+   "question": "What is Pershing Middle School?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Pershing Middle School — instance: middle school; country: United States of America",
+   "lines_by_item": [
+    [
+     "Q7170171"
+    ],
+    [
+     "Q7170170",
+     "Q7170171"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Bambi",
+   "items": 4,
+   "question": "Where is Bambi?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Bambi — instance: film; country: Angola; award received: Genesis Award; country of origin: United States of America",
+   "lines_by_item": [
+    [
+     "Q12136489"
+    ],
+    [
+     "Q9644904"
+    ],
+    [
+     "Q43051"
+    ],
+    [
+     "Q43051"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Bambi",
+   "items": 4,
+   "question": "What is Bambi?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Bambi — instance: film; country: Angola; country of origin: United States of America; award received: Genesis Award",
+   "lines_by_item": [
+    [
+     "Q12136489"
+    ],
+    [
+     "Q9644904"
+    ],
+    [
+     "Q43051"
+    ],
+    [
+     "Q43051"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Izra",
+   "items": 2,
+   "question": "Where is Izra?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Izra — instance: city, lake",
+   "lines_by_item": [
+    [
+     "Q1676159"
+    ],
+    [
+     "Q3564561"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Izra",
+   "items": 2,
+   "question": "What is Izra?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Izra — instance: city, lake",
+   "lines_by_item": [
+    [
+     "Q1676159"
+    ],
+    [
+     "Q3564561"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Something",
+   "items": 4,
+   "question": "Where is Something?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Something — instance: album, single; genre: pop music",
+   "lines_by_item": [
+    [
+     "Q7560041"
+    ],
+    [
+     "Q1397577"
+    ],
+    [
+     "Q1397577"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Something",
+   "items": 4,
+   "question": "What is Something?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Something — instance: album, single; genre: pop music",
+   "lines_by_item": [
+    [
+     "Q7560041"
+    ],
+    [
+     "Q1397577"
+    ],
+    [
+     "Q1397577"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Sant'Antonio Abate",
+   "items": 5,
+   "question": "Where is Sant'Antonio Abate?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Sant'Antonio Abate — country: Italy; located in: Province of Naples, Pisa; creator: Mattia Preti",
+   "lines_by_item": [
+    [
+     "Q3672638"
+    ],
+    [
+     "Q72602"
+    ],
+    [
+     "Q3672682"
+    ],
+    [
+     "Q28229525"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Sant'Antonio Abate",
+   "items": 5,
+   "question": "What is Sant'Antonio Abate?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Sant'Antonio Abate — creator: Mattia Preti; country: Italy; located in: Province of Naples, Pisa",
+   "lines_by_item": [
+    [
+     "Q28229525"
+    ],
+    [
+     "Q3672638"
+    ],
+    [
+     "Q72602"
+    ],
+    [
+     "Q3672682"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Oromocto",
+   "items": 2,
+   "question": "Where is Oromocto?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Oromocto — instance: electoral district; country: Canada",
+   "lines_by_item": [
+    [
+     "Q3356603"
+    ],
+    [
+     "Q1966925"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Oromocto",
+   "items": 2,
+   "question": "What is Oromocto?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Oromocto — instance: electoral district; country: Canada",
+   "lines_by_item": [
+    [
+     "Q3356603"
+    ],
+    [
+     "Q1966925"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Lake Louise",
+   "items": 4,
+   "question": "Where is Lake Louise?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Lake Louise — instance: lake; country: Canada, United States of America; located in: Franklin Township, Improvement District No. 09 (Banff National Park)",
+   "lines_by_item": [
+    [
+     "Q20707621"
+    ],
+    [
+     "Q1367398"
+    ],
+    [
+     "Q1343275",
+     "Q20707621"
+    ],
+    [
+     "Q21197030"
+    ],
+    [
+     "Q1367398"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Lake Louise",
+   "items": 4,
+   "question": "What is Lake Louise?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Lake Louise — instance: lake; country: Canada, United States of America; located in: Franklin Township, Improvement District No. 09 (Banff National Park)",
+   "lines_by_item": [
+    [
+     "Q20707621"
+    ],
+    [
+     "Q1367398"
+    ],
+    [
+     "Q1343275",
+     "Q20707621"
+    ],
+    [
+     "Q21197030"
+    ],
+    [
+     "Q1367398"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Saint-Donat",
+   "items": 3,
+   "question": "Where is Saint-Donat?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Saint-Donat — instance: commune of France; country: Canada; located in: Puy-de-Dôme",
+   "lines_by_item": [
+    [
+     "Q1048808"
+    ],
+    [
+     "Q2212402",
+     "Q3462098"
+    ],
+    [
+     "Q1048808"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Saint-Donat",
+   "items": 3,
+   "question": "What is Saint-Donat?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Saint-Donat — instance: commune of France; country: Canada; located in: Puy-de-Dôme",
+   "lines_by_item": [
+    [
+     "Q1048808"
+    ],
+    [
+     "Q2212402",
+     "Q3462098"
+    ],
+    [
+     "Q1048808"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Ministry of Higher Education and Scientific Research",
+   "items": 4,
+   "question": "Where is Ministry of Higher Education and Scientific Research?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Ministry of Higher Education and Scientific Research",
+   "items": 4,
+   "question": "What is Ministry of Higher Education and Scientific Research?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Wantage",
+   "items": 2,
+   "question": "Where is Wantage?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Wantage — instance: township of New Jersey, civil parish; located in: Sussex County",
+   "lines_by_item": [
+    [
+     "Q1073883"
+    ],
+    [
+     "Q953957"
+    ],
+    [
+     "Q1073883"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Wantage",
+   "items": 2,
+   "question": "What is Wantage?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Wantage — instance: township of New Jersey, civil parish; located in: Sussex County",
+   "lines_by_item": [
+    [
+     "Q1073883"
+    ],
+    [
+     "Q953957"
+    ],
+    [
+     "Q1073883"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Groot River",
+   "items": 3,
+   "question": "Where is Groot River?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Groot River — instance: river; located in: Western Cape, Eastern Cape",
+   "lines_by_item": [
+    [
+     "Q3636498",
+     "Q5610287"
+    ],
+    [
+     "Q5610287"
+    ],
+    [
+     "Q3642221"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Groot River",
+   "items": 3,
+   "question": "What is Groot River?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Groot River — instance: river; located in: Western Cape, Eastern Cape",
+   "lines_by_item": [
+    [
+     "Q3636498",
+     "Q5610287"
+    ],
+    [
+     "Q5610287"
+    ],
+    [
+     "Q3642221"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Silver Creek Township",
+   "items": 9,
+   "question": "Where is Silver Creek Township?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Silver Creek Township — country: United States of America; located in: Mills County, Lake County, Pottawattamie County",
+   "lines_by_item": [
+    [
+     "Q1914752",
+     "Q2878098",
+     "Q544558",
+     "Q7515980",
+     "Q7515984",
+     "Q9044564",
+     "Q988050"
+    ],
+    [
+     "Q544558"
+    ],
+    [
+     "Q1914496"
+    ],
+    [
+     "Q9044565"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Silver Creek Township",
+   "items": 9,
+   "question": "What is Silver Creek Township?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Silver Creek Township — country: United States of America; located in: Mills County, Lake County, Pottawattamie County",
+   "lines_by_item": [
+    [
+     "Q1914752",
+     "Q2878098",
+     "Q544558",
+     "Q7515980",
+     "Q7515984",
+     "Q9044564",
+     "Q988050"
+    ],
+    [
+     "Q544558"
+    ],
+    [
+     "Q1914496"
+    ],
+    [
+     "Q9044565"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Dan Miller",
+   "items": 6,
+   "question": "Where is Dan Miller?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Dan Miller — instance: human; occupation: politician, radio personality; country of citizenship: United States of America",
+   "lines_by_item": [
+    [
+     "Q3013140",
+     "Q5214029"
+    ],
+    [
+     "Q1159124",
+     "Q15379140"
+    ],
+    [
+     "Q5214029"
+    ],
+    [
+     "Q15379140",
+     "Q3013140",
+     "Q5214024",
+     "Q5214029"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Dan Miller",
+   "items": 6,
+   "question": "What is Dan Miller?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Dan Miller — instance: human; occupation: politician, radio personality; country of citizenship: United States of America",
+   "lines_by_item": [
+    [
+     "Q3013140",
+     "Q5214029"
+    ],
+    [
+     "Q1159124",
+     "Q15379140"
+    ],
+    [
+     "Q5214029"
+    ],
+    [
+     "Q15379140",
+     "Q3013140",
+     "Q5214024",
+     "Q5214029"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Karlivka",
+   "items": 2,
+   "question": "Where is Karlivka?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Karlivka — country: Ukraine; located in: Poltava Oblast",
+   "lines_by_item": [
+    [
+     "Q4242292"
+    ],
+    [
+     "Q218393"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Karlivka",
+   "items": 2,
+   "question": "What is Karlivka?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Karlivka — country: Ukraine; located in: Poltava Oblast",
+   "lines_by_item": [
+    [
+     "Q4242292"
+    ],
+    [
+     "Q218393"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Daniel Cook",
+   "items": 2,
+   "question": "Where is Daniel Cook?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Daniel Cook — instance: human",
+   "lines_by_item": [
+    [
+     "Q17489005",
+     "Q24005036"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Daniel Cook",
+   "items": 2,
+   "question": "What is Daniel Cook?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Daniel Cook — instance: human",
+   "lines_by_item": [
+    [
+     "Q17489005",
+     "Q24005036"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Carlisle",
+   "items": 13,
+   "question": "Where is Carlisle?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Carlisle — instance: borough of Pennsylvania, non-metropolitan district, city; country: United States of America, United Kingdom, Australia; located in: Carlisle, Ontario, Nicholas County",
+   "lines_by_item": [
+    [
+     "Q1010228"
+    ],
+    [
+     "Q1094110"
+    ],
+    [
+     "Q388767"
+    ],
+    [
+     "Q1010228",
+     "Q17514589",
+     "Q22033633",
+     "Q3501753",
+     "Q388767",
+     "Q5041337"
+    ],
+    [
+     "Q1094110"
+    ],
+    [
+     "Q5041341"
+    ],
+    [
+     "Q192896"
+    ],
+    [
+     "Q5041335"
+    ],
+    [
+     "Q2624404"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Carlisle",
+   "items": 13,
+   "question": "What is Carlisle?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Carlisle — instance: borough of Pennsylvania, non-metropolitan district, city; country: United States of America, United Kingdom, Australia; located in: Carlisle, Ontario, Nicholas County",
+   "lines_by_item": [
+    [
+     "Q1010228"
+    ],
+    [
+     "Q1094110"
+    ],
+    [
+     "Q388767"
+    ],
+    [
+     "Q1010228",
+     "Q17514589",
+     "Q22033633",
+     "Q3501753",
+     "Q388767",
+     "Q5041337"
+    ],
+    [
+     "Q1094110"
+    ],
+    [
+     "Q5041341"
+    ],
+    [
+     "Q192896"
+    ],
+    [
+     "Q5041335"
+    ],
+    [
+     "Q2624404"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "İzmir",
+   "items": 2,
+   "question": "Where is İzmir?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "İzmir — instance: metropolitan municipality in Turkey, electoral district; country: Ottoman Empire; located in: Aydin vilayet",
+   "lines_by_item": [
+    [
+     "Q35997"
+    ],
+    [
+     "Q6099549"
+    ],
+    [
+     "Q35997"
+    ],
+    [
+     "Q35997"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "İzmir",
+   "items": 2,
+   "question": "What is İzmir?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "İzmir — instance: metropolitan municipality in Turkey, electoral district; country: Ottoman Empire; located in: Aydin vilayet",
+   "lines_by_item": [
+    [
+     "Q35997"
+    ],
+    [
+     "Q6099549"
+    ],
+    [
+     "Q35997"
+    ],
+    [
+     "Q35997"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Suki Dakara",
+   "items": 2,
+   "question": "Where is Suki Dakara?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Suki Dakara — instance: single; part: Kokoro no Hoshi, Fortune; genre: J-pop",
+   "lines_by_item": [
+    [
+     "Q3976789"
+    ],
+    [
+     "Q7635850"
+    ],
+    [
+     "Q3976789"
+    ],
+    [
+     "Q7635850"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Suki Dakara",
+   "items": 2,
+   "question": "What is Suki Dakara?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Suki Dakara — instance: single; part: Kokoro no Hoshi, Fortune; genre: J-pop",
+   "lines_by_item": [
+    [
+     "Q3976789"
+    ],
+    [
+     "Q7635850"
+    ],
+    [
+     "Q3976789"
+    ],
+    [
+     "Q7635850"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "With Love",
+   "items": 6,
+   "question": "Where is With Love?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "With Love — instance: album; part: Agapise Me; genre: pop music; country of origin: United States of America",
+   "lines_by_item": [
+    [
+     "Q15966182",
+     "Q613606"
+    ],
+    [
+     "Q8028014"
+    ],
+    [
+     "Q15966182"
+    ],
+    [
+     "Q963394"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "With Love",
+   "items": 6,
+   "question": "What is With Love?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "With Love — instance: album; part: Agapise Me; genre: pop music; country of origin: United States of America",
+   "lines_by_item": [
+    [
+     "Q15966182",
+     "Q613606"
+    ],
+    [
+     "Q8028014"
+    ],
+    [
+     "Q15966182"
+    ],
+    [
+     "Q963394"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Demos",
+   "items": 3,
+   "question": "Where is Demos?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Demos — instance: operating system; located in: New York City; country of origin: United States of America",
+   "lines_by_item": [
+    [
+     "Q4153388"
+    ],
+    [
+     "Q5256354"
+    ],
+    [
+     "Q5256350"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Demos",
+   "items": 3,
+   "question": "What is Demos?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Demos — instance: operating system; country of origin: United States of America; located in: New York City",
+   "lines_by_item": [
+    [
+     "Q4153388"
+    ],
+    [
+     "Q5256350"
+    ],
+    [
+     "Q5256354"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Le Port",
+   "items": 2,
+   "question": "Where is Le Port?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Le Port — instance: commune of France; country: France; located in: Ariège",
+   "lines_by_item": [
+    [
+     "Q1087935",
+     "Q956943"
+    ],
+    [
+     "Q1087935",
+     "Q956943"
+    ],
+    [
+     "Q1087935"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Le Port",
+   "items": 2,
+   "question": "What is Le Port?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Le Port — instance: commune of France; country: France; located in: Ariège",
+   "lines_by_item": [
+    [
+     "Q1087935",
+     "Q956943"
+    ],
+    [
+     "Q1087935",
+     "Q956943"
+    ],
+    [
+     "Q1087935"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Cathedral of the Holy Family",
+   "items": 2,
+   "question": "Where is Cathedral of the Holy Family?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Cathedral of the Holy Family",
+   "items": 2,
+   "question": "What is Cathedral of the Holy Family?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Boynton",
+   "items": 3,
+   "question": "Where is Boynton?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Boynton — country: United States of America, United Kingdom",
+   "lines_by_item": [
+    [
+     "Q2275990",
+     "Q28089557"
+    ],
+    [
+     "Q4693592"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Boynton",
+   "items": 3,
+   "question": "What is Boynton?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Boynton — country: United States of America, United Kingdom",
+   "lines_by_item": [
+    [
+     "Q2275990",
+     "Q28089557"
+    ],
+    [
+     "Q4693592"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Lyric Theatre",
+   "items": 7,
+   "question": "Where is Lyric Theatre?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Lyric Theatre — country: United Kingdom, United States of America; located in: Dublin, City of Westminster, Stuart",
+   "lines_by_item": [
+    [
+     "Q12061418",
+     "Q565071"
+    ],
+    [
+     "Q6710003"
+    ],
+    [
+     "Q6709993"
+    ],
+    [
+     "Q3269699"
+    ],
+    [
+     "Q6710005"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Lyric Theatre",
+   "items": 7,
+   "question": "What is Lyric Theatre?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Lyric Theatre — country: United Kingdom, United States of America; located in: Dublin, City of Westminster, Stuart",
+   "lines_by_item": [
+    [
+     "Q12061418",
+     "Q565071"
+    ],
+    [
+     "Q6710003"
+    ],
+    [
+     "Q6709993"
+    ],
+    [
+     "Q3269699"
+    ],
+    [
+     "Q6710005"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Rurka",
+   "items": 2,
+   "question": "Where is Rurka?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Rurka — country: Poland; located in: Ludhiana district",
+   "lines_by_item": [
+    [
+     "Q984800"
+    ],
+    [
+     "Q26254200"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Rurka",
+   "items": 2,
+   "question": "What is Rurka?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Rurka — country: Poland; located in: Ludhiana district",
+   "lines_by_item": [
+    [
+     "Q984800"
+    ],
+    [
+     "Q26254200"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "The Trooper",
+   "items": 4,
+   "question": "Where is The Trooper?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Trooper — instance: military rank, album",
+   "lines_by_item": [
+    [
+     "Q3540989"
+    ],
+    [
+     "Q7845557"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "The Trooper",
+   "items": 4,
+   "question": "What is The Trooper?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Trooper — instance: military rank, album",
+   "lines_by_item": [
+    [
+     "Q3540989"
+    ],
+    [
+     "Q7845557"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Centennial Bridge",
+   "items": 3,
+   "question": "Where is Centennial Bridge?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Centennial Bridge — country: United States of America; located in: Pennsylvania, New Brunswick",
+   "lines_by_item": [
+    [
+     "Q5059122"
+    ],
+    [
+     "Q5059122"
+    ],
+    [
+     "Q5059124"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Centennial Bridge",
+   "items": 3,
+   "question": "What is Centennial Bridge?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Centennial Bridge — country: United States of America; located in: Pennsylvania, New Brunswick",
+   "lines_by_item": [
+    [
+     "Q5059122"
+    ],
+    [
+     "Q5059122"
+    ],
+    [
+     "Q5059124"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Middlesbrough",
+   "items": 2,
+   "question": "Where is Middlesbrough?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Middlesbrough — instance: town; country: United Kingdom; located in: North East England",
+   "lines_by_item": [
+    [
+     "Q171866"
+    ],
+    [
+     "Q1053438"
+    ],
+    [
+     "Q1053438"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Middlesbrough",
+   "items": 2,
+   "question": "What is Middlesbrough?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Middlesbrough — instance: town; country: United Kingdom; located in: North East England",
+   "lines_by_item": [
+    [
+     "Q171866"
+    ],
+    [
+     "Q1053438"
+    ],
+    [
+     "Q1053438"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Portage River",
+   "items": 3,
+   "question": "Where is Portage River?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Portage River — country: United States of America",
+   "lines_by_item": [
+    [
+     "Q7231434",
+     "Q7231437",
+     "Q7231438"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Portage River",
+   "items": 3,
+   "question": "What is Portage River?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Portage River — country: United States of America",
+   "lines_by_item": [
+    [
+     "Q7231434",
+     "Q7231437",
+     "Q7231438"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Lift",
+   "items": 5,
+   "question": "Where is Lift?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Lift — instance: album; part: Signs of Life, Lift; genre: pop music",
+   "lines_by_item": [
+    [
+     "Q6545598"
+    ],
+    [
+     "Q4042880"
+    ],
+    [
+     "Q6545599"
+    ],
+    [
+     "Q6545599"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Lift",
+   "items": 5,
+   "question": "What is Lift?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Lift — instance: album; part: Signs of Life, Lift; genre: pop music",
+   "lines_by_item": [
+    [
+     "Q6545598"
+    ],
+    [
+     "Q4042880"
+    ],
+    [
+     "Q6545599"
+    ],
+    [
+     "Q6545599"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Yuba",
+   "items": 3,
+   "question": "Where is Yuba?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Yuba — country: United States of America; located in: Michigan",
+   "lines_by_item": [
+    [
+     "Q8060093",
+     "Q8060094",
+     "Q8060097"
+    ],
+    [
+     "Q8060093"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Yuba",
+   "items": 3,
+   "question": "What is Yuba?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Yuba — country: United States of America; located in: Michigan",
+   "lines_by_item": [
+    [
+     "Q8060093",
+     "Q8060094",
+     "Q8060097"
+    ],
+    [
+     "Q8060093"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Gigantic",
+   "items": 4,
+   "question": "Where is Gigantic?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Gigantic — instance: magazine; part: Surfer Rosa; country of origin: United States of America",
+   "lines_by_item": [
+    [
+     "Q5560199"
+    ],
+    [
+     "Q3324944"
+    ],
+    [
+     "Q1301221",
+     "Q5560199"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Gigantic",
+   "items": 4,
+   "question": "What is Gigantic?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Gigantic — instance: magazine; part: Surfer Rosa; country of origin: United States of America",
+   "lines_by_item": [
+    [
+     "Q5560199"
+    ],
+    [
+     "Q3324944"
+    ],
+    [
+     "Q1301221",
+     "Q5560199"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "To the Moon and Back",
+   "items": 2,
+   "question": "Where is To the Moon and Back?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "To the Moon and Back — instance: book; part: Savage Garden",
+   "lines_by_item": [
+    [
+     "Q7811289"
+    ],
+    [
+     "Q3495656"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "To the Moon and Back",
+   "items": 2,
+   "question": "What is To the Moon and Back?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "To the Moon and Back — instance: book; part: Savage Garden",
+   "lines_by_item": [
+    [
+     "Q7811289"
+    ],
+    [
+     "Q3495656"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Saint-Gorgon",
+   "items": 2,
+   "question": "Where is Saint-Gorgon?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Saint-Gorgon — instance: commune of France",
+   "lines_by_item": [
+    [
+     "Q127573",
+     "Q949264"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Saint-Gorgon",
+   "items": 2,
+   "question": "What is Saint-Gorgon?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Saint-Gorgon — instance: commune of France",
+   "lines_by_item": [
+    [
+     "Q127573",
+     "Q949264"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Qadamgah",
+   "items": 3,
+   "question": "Where is Qadamgah?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Qadamgah — instance: place of worship; located in: Fathabad Rural District, Qebleh Daghi Rural District",
+   "lines_by_item": [
+    [
+     "Q3412395"
+    ],
+    [
+     "Q5823481"
+    ],
+    [
+     "Q5678422"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Qadamgah",
+   "items": 3,
+   "question": "What is Qadamgah?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Qadamgah — instance: place of worship; located in: Fathabad Rural District, Qebleh Daghi Rural District",
+   "lines_by_item": [
+    [
+     "Q3412395"
+    ],
+    [
+     "Q5823481"
+    ],
+    [
+     "Q5678422"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "St. Mark's Episcopal Church",
+   "items": 27,
+   "question": "Where is St. Mark's Episcopal Church?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "St. Mark's Episcopal Church",
+   "items": 27,
+   "question": "What is St. Mark's Episcopal Church?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Jacky",
+   "items": 3,
+   "question": "Where is Jacky?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Jacky — instance: human, film; part: Scott 2; country of citizenship: France",
+   "lines_by_item": [
+    [
+     "Q3157439"
+    ],
+    [
+     "Q4280086"
+    ],
+    [
+     "Q6118075"
+    ],
+    [
+     "Q3157439"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Jacky",
+   "items": 3,
+   "question": "What is Jacky?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Jacky — instance: human, film; part: Scott 2; country of citizenship: France",
+   "lines_by_item": [
+    [
+     "Q3157439"
+    ],
+    [
+     "Q4280086"
+    ],
+    [
+     "Q6118075"
+    ],
+    [
+     "Q3157439"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Birkdale",
+   "items": 2,
+   "question": "Where is Birkdale?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Birkdale — country: United Kingdom, Australia; located in: Capalaba",
+   "lines_by_item": [
+    [
+     "Q4916394"
+    ],
+    [
+     "Q4916392"
+    ],
+    [
+     "Q4916392"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Birkdale",
+   "items": 2,
+   "question": "What is Birkdale?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Birkdale — country: United Kingdom, Australia; located in: Capalaba",
+   "lines_by_item": [
+    [
+     "Q4916394"
+    ],
+    [
+     "Q4916392"
+    ],
+    [
+     "Q4916392"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Thomaston",
+   "items": 4,
+   "question": "Where is Thomaston?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Thomaston — instance: village in the United States; country: United States of America; located in: Connecticut, Marengo County",
+   "lines_by_item": [
+    [
+     "Q3450901"
+    ],
+    [
+     "Q3450901",
+     "Q3709204",
+     "Q66905"
+    ],
+    [
+     "Q1561061"
+    ],
+    [
+     "Q66905"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Thomaston",
+   "items": 4,
+   "question": "What is Thomaston?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Thomaston — instance: village in the United States; country: United States of America; located in: Connecticut, Marengo County",
+   "lines_by_item": [
+    [
+     "Q3450901"
+    ],
+    [
+     "Q3450901",
+     "Q3709204",
+     "Q66905"
+    ],
+    [
+     "Q1561061"
+    ],
+    [
+     "Q66905"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Alipur",
+   "items": 5,
+   "question": "Where is Alipur?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Alipur — instance: human settlement; country: India; located in: Punjab, Karnataka, West Bengal",
+   "lines_by_item": [
+    [
+     "Q4726832"
+    ],
+    [
+     "Q4726829",
+     "Q4726831"
+    ],
+    [
+     "Q42159806"
+    ],
+    [
+     "Q4726831"
+    ],
+    [
+     "Q24949664"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Alipur",
+   "items": 5,
+   "question": "What is Alipur?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Alipur — instance: human settlement; country: India; located in: Punjab, Karnataka, West Bengal",
+   "lines_by_item": [
+    [
+     "Q4726832"
+    ],
+    [
+     "Q4726829",
+     "Q4726831"
+    ],
+    [
+     "Q42159806"
+    ],
+    [
+     "Q4726831"
+    ],
+    [
+     "Q24949664"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Cape Vincent",
+   "items": 2,
+   "question": "Where is Cape Vincent?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Cape Vincent — country: United States of America; located in: Jefferson County",
+   "lines_by_item": [
+    [
+     "Q1034500",
+     "Q3460792"
+    ],
+    [
+     "Q3460792"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Cape Vincent",
+   "items": 2,
+   "question": "What is Cape Vincent?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Cape Vincent — country: United States of America; located in: Jefferson County",
+   "lines_by_item": [
+    [
+     "Q1034500",
+     "Q3460792"
+    ],
+    [
+     "Q3460792"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Ohio State Route 1",
+   "items": 2,
+   "question": "Where is Ohio State Route 1?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Ohio State Route 1 — country: United States of America",
+   "lines_by_item": [
+    [
+     "Q16973512",
+     "Q2493032"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Ohio State Route 1",
+   "items": 2,
+   "question": "What is Ohio State Route 1?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Ohio State Route 1 — country: United States of America",
+   "lines_by_item": [
+    [
+     "Q16973512",
+     "Q2493032"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "24/7",
+   "items": 5,
+   "question": "Where is 24/7?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "24/7 — instance: album; part: 24/7, Brotherhood; genre: pop music",
+   "lines_by_item": [
+    [
+     "Q16959072",
+     "Q4631742"
+    ],
+    [
+     "Q25204009"
+    ],
+    [
+     "Q16155698"
+    ],
+    [
+     "Q16155698"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "24/7",
+   "items": 5,
+   "question": "What is 24/7?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "24/7 — instance: album; part: 24/7, Brotherhood; genre: pop music",
+   "lines_by_item": [
+    [
+     "Q16959072",
+     "Q4631742"
+    ],
+    [
+     "Q25204009"
+    ],
+    [
+     "Q16155698"
+    ],
+    [
+     "Q16155698"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Zamanabad",
+   "items": 3,
+   "question": "Where is Zamanabad?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Zamanabad — country: Iran; located in: Leylan-e Shomali Rural District",
+   "lines_by_item": [
+    [
+     "Q4252608",
+     "Q6672237"
+    ],
+    [
+     "Q5678125"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Zamanabad",
+   "items": 3,
+   "question": "What is Zamanabad?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Zamanabad — country: Iran; located in: Leylan-e Shomali Rural District",
+   "lines_by_item": [
+    [
+     "Q4252608",
+     "Q6672237"
+    ],
+    [
+     "Q5678125"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Sean Hill",
+   "items": 2,
+   "question": "Where is Sean Hill?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Sean Hill — instance: human; award received: Stanley Cup",
+   "lines_by_item": [
+    [
+     "Q17505127",
+     "Q452892"
+    ],
+    [
+     "Q452892"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Sean Hill",
+   "items": 2,
+   "question": "What is Sean Hill?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Sean Hill — instance: human; award received: Stanley Cup",
+   "lines_by_item": [
+    [
+     "Q17505127",
+     "Q452892"
+    ],
+    [
+     "Q452892"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Mahaban",
+   "items": 2,
+   "question": "Where is Mahaban?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Mahaban — country: India; located in: Chah Dadkhoda District, Mathura district",
+   "lines_by_item": [
+    [
+     "Q544790"
+    ],
+    [
+     "Q5815977"
+    ],
+    [
+     "Q544790"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Mahaban",
+   "items": 2,
+   "question": "What is Mahaban?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Mahaban — country: India; located in: Chah Dadkhoda District, Mathura district",
+   "lines_by_item": [
+    [
+     "Q544790"
+    ],
+    [
+     "Q5815977"
+    ],
+    [
+     "Q544790"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Hopeville",
+   "items": 2,
+   "question": "Where is Hopeville?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Hopeville — country: United States of America; located in: Grant County",
+   "lines_by_item": [
+    [
+     "Q27988863",
+     "Q5900007"
+    ],
+    [
+     "Q5900007"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Hopeville",
+   "items": 2,
+   "question": "What is Hopeville?",
+   "outcome": "answered",
+   "reason": "profile",
+   "answer": "Hopeville — country: United States of America; located in: Grant County",
+   "lines_by_item": [
+    [
+     "Q27988863",
+     "Q5900007"
+    ],
+    [
+     "Q5900007"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Lord Street",
+   "items": 3,
+   "question": "Where is Lord Street?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Lord Street — instance: road; country: United Kingdom",
+   "lines_by_item": [
+    [
+     "Q18001615",
+     "Q6679979"
+    ],
+    [
+     "Q6679981"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Lord Street",
+   "items": 3,
+   "question": "What is Lord Street?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Lord Street — instance: road; country: United Kingdom",
+   "lines_by_item": [
+    [
+     "Q18001615",
+     "Q6679979"
+    ],
+    [
+     "Q6679981"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Bismark Township",
+   "items": 2,
+   "question": "Where is Bismark Township?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Bismark Township — instance: list of Nebraska townships; located in: Platte County",
+   "lines_by_item": [
+    [
+     "Q4918328"
+    ],
+    [
+     "Q4918329"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Bismark Township",
+   "items": 2,
+   "question": "What is Bismark Township?",
+   "outcome": "mixed",
+   "reason": "profile",
+   "answer": "Bismark Township — instance: list of Nebraska townships; located in: Platte County",
+   "lines_by_item": [
+    [
+     "Q4918328"
+    ],
+    [
+     "Q4918329"
+    ]
+   ],
+   "wiki_only_lines": 0,
+   "candidates": null
+  }
+ ]
+}

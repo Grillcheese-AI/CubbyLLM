@@ -1,7 +1,8 @@
 """standin/hdc_store.py -- the hdc world on disk (order 0014), and the one store that puts it behind the wiki world.
 
 `HdcWorld`: read-only over `standin/data/hdc_world.py`'s SQLite. A subject's facts come back by its normalized label,
-any of its aliases or its Q-id (the names table), as `(fact, Triple)` the way `TripleIndex` holds them; `hop` answers
+any of its aliases or its Q-id (the names table), as `(fact, Triple)` the way `TripleIndex` holds them -- one item's,
+never a merge of a name's several (`hdc_namesakes`, order 0033); `hop` answers
 a walk's hop as `TripleIndex.hop` does (the exact tier, then the paraphrase tier for a relation stated twice or
 more, `planner.accepts` on both); `relations()` counts. Nothing is held in memory but an LRU of the subjects asked
 about, so 4.3M facts cost the index file, not RAM.
@@ -23,7 +24,9 @@ import sqlite3
 import threading
 
 from cubbyllm.reasoning.index import TripleIndex
-from cubbyllm.reasoning.planner import Triple, accepts, normalize, parse_fact, tail_splits
+from cubbyllm.reasoning.planner import accepts, normalize, parse_fact, tail_splits
+
+from .hdc_namesakes import Namesakes, StoresNamesakes
 
 __wiring__ = "WIRED"
 
@@ -41,7 +44,7 @@ class _Rows:
         return rows if rows else (list(default) if default else [])
 
 
-class HdcWorld:
+class HdcWorld(Namesakes):
     name = "hdc"
 
     def __init__(self, path=None, cache: int = 50_000) -> None:
@@ -54,8 +57,11 @@ class HdcWorld:
         self._rel_n = {normalize(r): n for r, n, _ts in rels}
         self.time_sensitive = {normalize(r) for r, _n, ts in rels if ts}
         self._n = sum(n for _r, n, _ts in rels)
+        self._named = functools.lru_cache(maxsize=cache)(self._named_rows)
+        self._applies = functools.lru_cache(maxsize=4096)(self._applies_rows)
         self._rows = functools.lru_cache(maxsize=cache)(self._query)
-        self._by_subj, self._by_obj = _Rows(lambda k: self._rows("skey", k)), _Rows(lambda k: self._rows("okey", k))
+        self._pins = threading.local()                   # a seed read as one item for one walk (`pinned`, order 0033)
+        self._by_subj, self._by_obj = _Rows(self._subject), _Rows(lambda k: self._rows("okey", k))
 
     @staticmethod
     def fact(subj: str, rel: str, obj: str) -> str:
@@ -63,17 +69,24 @@ class HdcWorld:
 
     def _query(self, col: str, key: str) -> list:
         key = normalize(key or "")
-        with self._lock:
-            got = self.db.execute(f"SELECT subj, rel, obj FROM facts WHERE {col} = ?", (key,)).fetchall()
-            if not got:                                  # an alias or a Q-id: its label's facts
+        if col == "skey":
+            # a subject: the one item the name stands for (its label, else an alias or a Q-id). A name two or more
+            # items share gives none of them (order 0033: the Globe Theatre's three items were said as one).
+            _tier, by = self._named(key)
+            return self._triples(next(iter(by.values()))) if len(by) == 1 else []
+        with self._lock:                                 # an object: by its label, else an alias's (not guarded)
+            got = self.db.execute("SELECT subj, rel, obj FROM facts WHERE okey = ?", (key,)).fetchall()
+            if not got:
                 for (q,) in self.db.execute("SELECT qid FROM names WHERE key = ? LIMIT 2", (key,)).fetchall()[:1]:
                     lab = self.db.execute("SELECT en FROM labels WHERE qid = ?", (q,)).fetchone()
                     if lab and normalize(lab[0]) != key:
-                        got = self.db.execute(f"SELECT subj, rel, obj FROM facts WHERE {col} = ?", (normalize(lab[0]),)).fetchall()
-        return [(self.fact(s, r, o), Triple(obj=o, rel=r, subj=s)) for s, r, o in got]
+                        got = self.db.execute("SELECT subj, rel, obj FROM facts WHERE okey = ?", (normalize(lab[0]),)).fetchall()
+        return self._triples(got)
 
     def label(self, name: str) -> str | None:
         """The exact label a name (label, alias or Q-id) stands for."""
+        if self._pin(name):
+            return self._pin(name)[0]
         with self._lock:
             q = self.db.execute("SELECT qid FROM names WHERE key = ?", (normalize(name),)).fetchone()
             lab = self.db.execute("SELECT en FROM labels WHERE qid = ?", (q[0],)).fetchone() if q else None
@@ -89,21 +102,24 @@ class HdcWorld:
                     lab = self.label(ent)
                     as_label = plan if not lab or normalize(lab) == ent else type(plan)(
                         relations=plan.relations, tail=f"{rel} of {lab}", n_hop=plan.n_hop, answer_class=plan.answer_class)
-                    for f, t in self._by_subj.get(ent):
+                    def keep(f, t, rel=rel, as_label=as_label, exact=exact):
                         same = normalize(t.rel) == normalize(rel)
-                        if f not in seen and (same if exact else self._rel_n.get(normalize(t.rel), 0) >= 2) \
-                                and accepts(as_label, hop, entity, t):
+                        return (same if exact else self._rel_n.get(normalize(t.rel), 0) >= 2) and accepts(as_label, hop, entity, t)
+                    for f, t in self.hop_rows(ent, keep):        # a shared name: the one item the hop may read (0033)
+                        if f not in seen:
                             cands.append((f, t)); seen.add(f)
             return cands
-        cands = self._by_subj.get(normalize(entity or ""))
-        return [(f, t) for f, t in cands if accepts(plan, hop, entity, t)]
+        return self.hop_rows(normalize(entity or ""), lambda f, t: accepts(plan, hop, entity, t))
 
     def relations(self) -> dict[str, int]:
         return dict(self._rel_n)
 
     def __contains__(self, fact: str) -> bool:
-        t = parse_fact(" ".join(fact.split()), known=self._rel_n)
-        return t is not None and any(f == " ".join(fact.split()) for f, _t in self._by_subj.get(t.subj))
+        """Held by any item of the subject's name: a fact is in the world whichever namesake it is about."""
+        f = " ".join(fact.split())
+        t = parse_fact(f, known=self._rel_n)
+        _tier, by = self._named(normalize(t.subj)) if t is not None else ("none", {})
+        return any(self.fact(s, r, o) == f for rows in by.values() for s, r, o in rows)
 
     def __len__(self) -> int:
         return self._n
@@ -237,7 +253,7 @@ def disagreements(db_path, triples=None) -> tuple[set, dict]:
     return out, c
 
 
-class Stores:
+class Stores(StoresNamesakes):
     """The wiki world (written to) before the read-only worlds behind it."""
 
     def __init__(self, primary, *others) -> None:

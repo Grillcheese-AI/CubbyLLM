@@ -1,0 +1,1290 @@
+{
+ "what": "order 0033: labels the hdc world shares between items, asked where / what is X",
+ "labels": 50,
+ "questions": 100,
+ "outcomes": {
+  "ambiguous_entity": 94,
+  "no_plan": 6
+ },
+ "mixed": 0,
+ "wall_s": 32.5,
+ "args": {
+  "n": 50,
+  "seed": 0
+ },
+ "globe_theatre": [
+  {
+   "question": "Where is the Globe Theatre?",
+   "item": null,
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "namesake": null,
+   "choices": [
+    {
+     "label": "Globe Theatre",
+     "detail": "country: United Kingdom",
+     "item": "Q5571009"
+    },
+    {
+     "label": "Globe Theatre",
+     "detail": "located in: London Borough of Southwark",
+     "item": "Q272434"
+    },
+    {
+     "label": "Globe Theatre",
+     "detail": "located in: Boston",
+     "item": "Q5571005"
+    }
+   ]
+  },
+  {
+   "question": "Where is the Globe Theatre?",
+   "item": "Q5571005",
+   "reason": "profile",
+   "answer": "Globe Theatre — located in: Boston",
+   "namesake": {
+    "item": "Q5571005",
+    "how": "chosen by the asker"
+   },
+   "choices": null
+  },
+  {
+   "question": "Where is the Globe Theatre in Boston?",
+   "item": null,
+   "reason": "profile",
+   "answer": "Globe Theatre — located in: Boston",
+   "namesake": {
+    "item": "Q5571005",
+    "how": "the question's own context (Boston)"
+   },
+   "choices": null
+  },
+  {
+   "question": "Where is the Globe Theatre in London?",
+   "item": null,
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "namesake": null,
+   "choices": [
+    {
+     "label": "Globe Theatre",
+     "detail": "country: United Kingdom",
+     "item": "Q5571009"
+    },
+    {
+     "label": "Globe Theatre",
+     "detail": "located in: London Borough of Southwark",
+     "item": "Q272434"
+    },
+    {
+     "label": "Globe Theatre",
+     "detail": "located in: Boston",
+     "item": "Q5571005"
+    }
+   ]
+  }
+ ],
+ "hops": [
+  {
+   "hop": "capital of France",
+   "items": 3,
+   "read": [
+    "Paris"
+   ],
+   "withheld": [],
+   "ms": 8.6
+  },
+  {
+   "hop": "currency of Japan",
+   "items": 8,
+   "read": [
+    "Japanese yen"
+   ],
+   "withheld": [],
+   "ms": 395.9
+  },
+  {
+   "hop": "capital of Canada",
+   "items": 4,
+   "read": [
+    "Ottawa"
+   ],
+   "withheld": [],
+   "ms": 5.0
+  },
+  {
+   "hop": "capital of Italy",
+   "items": 4,
+   "read": [
+    "Rome"
+   ],
+   "withheld": [],
+   "ms": 4.9
+  },
+  {
+   "hop": "capital of Georgia",
+   "items": 10,
+   "read": [],
+   "withheld": [
+    "Q1428",
+    "Q230"
+   ],
+   "ms": 2.1
+  },
+  {
+   "hop": "population of Toronto",
+   "items": 9,
+   "read": [],
+   "withheld": [],
+   "ms": 1.0
+  },
+  {
+   "hop": "country of Globe Theatre",
+   "items": 3,
+   "read": [],
+   "withheld": [
+    "Q5571009"
+   ],
+   "ms": 0.5
+  },
+  {
+   "hop": "located in the administrative territorial entity of Wantage",
+   "items": 2,
+   "read": [],
+   "withheld": [
+    "Q1073883"
+   ],
+   "ms": 9.3
+  },
+  {
+   "hop": "official language of Brazil",
+   "items": 6,
+   "read": [],
+   "withheld": [
+    "Q155"
+   ],
+   "ms": 69.9
+  },
+  {
+   "hop": "country of Eiffel Tower",
+   "items": 5,
+   "read": [],
+   "withheld": [
+    "Q243",
+    "Q25223034"
+   ],
+   "ms": 0.8
+  },
+  {
+   "hop": "instance of of Terry White",
+   "items": 2,
+   "read": [
+    "human"
+   ],
+   "withheld": [],
+   "ms": 1.0
+  }
+ ],
+ "rows": [
+  {
+   "label": "New Pittsburg",
+   "items": 2,
+   "question": "Where is New Pittsburg?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "New Pittsburg",
+   "items": 2,
+   "question": "What is New Pittsburg?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Pershing Middle School",
+   "items": 2,
+   "question": "Where is Pershing Middle School?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Pershing Middle School",
+   "items": 2,
+   "question": "What is Pershing Middle School?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Bambi",
+   "items": 4,
+   "question": "Where is Bambi?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "Bambi",
+   "items": 4,
+   "question": "What is Bambi?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "Izra",
+   "items": 2,
+   "question": "Where is Izra?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Izra",
+   "items": 2,
+   "question": "What is Izra?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Something",
+   "items": 4,
+   "question": "Where is Something?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "Something",
+   "items": 4,
+   "question": "What is Something?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "Sant'Antonio Abate",
+   "items": 5,
+   "question": "Where is Sant'Antonio Abate?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 5
+  },
+  {
+   "label": "Sant'Antonio Abate",
+   "items": 5,
+   "question": "What is Sant'Antonio Abate?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 5
+  },
+  {
+   "label": "Oromocto",
+   "items": 2,
+   "question": "Where is Oromocto?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Oromocto",
+   "items": 2,
+   "question": "What is Oromocto?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Lake Louise",
+   "items": 4,
+   "question": "Where is Lake Louise?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "Lake Louise",
+   "items": 4,
+   "question": "What is Lake Louise?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "Saint-Donat",
+   "items": 3,
+   "question": "Where is Saint-Donat?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Saint-Donat",
+   "items": 3,
+   "question": "What is Saint-Donat?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Ministry of Higher Education and Scientific Research",
+   "items": 4,
+   "question": "Where is Ministry of Higher Education and Scientific Research?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Ministry of Higher Education and Scientific Research",
+   "items": 4,
+   "question": "What is Ministry of Higher Education and Scientific Research?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Wantage",
+   "items": 2,
+   "question": "Where is Wantage?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Wantage",
+   "items": 2,
+   "question": "What is Wantage?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Groot River",
+   "items": 3,
+   "question": "Where is Groot River?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Groot River",
+   "items": 3,
+   "question": "What is Groot River?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Silver Creek Township",
+   "items": 9,
+   "question": "Where is Silver Creek Township?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 8
+  },
+  {
+   "label": "Silver Creek Township",
+   "items": 9,
+   "question": "What is Silver Creek Township?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 8
+  },
+  {
+   "label": "Dan Miller",
+   "items": 6,
+   "question": "Where is Dan Miller?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 6
+  },
+  {
+   "label": "Dan Miller",
+   "items": 6,
+   "question": "What is Dan Miller?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 6
+  },
+  {
+   "label": "Karlivka",
+   "items": 2,
+   "question": "Where is Karlivka?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Karlivka",
+   "items": 2,
+   "question": "What is Karlivka?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Daniel Cook",
+   "items": 2,
+   "question": "Where is Daniel Cook?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Daniel Cook",
+   "items": 2,
+   "question": "What is Daniel Cook?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Carlisle",
+   "items": 13,
+   "question": "Where is Carlisle?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 8
+  },
+  {
+   "label": "Carlisle",
+   "items": 13,
+   "question": "What is Carlisle?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 8
+  },
+  {
+   "label": "İzmir",
+   "items": 2,
+   "question": "Where is İzmir?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "İzmir",
+   "items": 2,
+   "question": "What is İzmir?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Suki Dakara",
+   "items": 2,
+   "question": "Where is Suki Dakara?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Suki Dakara",
+   "items": 2,
+   "question": "What is Suki Dakara?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "With Love",
+   "items": 6,
+   "question": "Where is With Love?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 6
+  },
+  {
+   "label": "With Love",
+   "items": 6,
+   "question": "What is With Love?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 6
+  },
+  {
+   "label": "Demos",
+   "items": 3,
+   "question": "Where is Demos?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Demos",
+   "items": 3,
+   "question": "What is Demos?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Le Port",
+   "items": 2,
+   "question": "Where is Le Port?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Le Port",
+   "items": 2,
+   "question": "What is Le Port?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Cathedral of the Holy Family",
+   "items": 2,
+   "question": "Where is Cathedral of the Holy Family?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Cathedral of the Holy Family",
+   "items": 2,
+   "question": "What is Cathedral of the Holy Family?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Boynton",
+   "items": 3,
+   "question": "Where is Boynton?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Boynton",
+   "items": 3,
+   "question": "What is Boynton?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Lyric Theatre",
+   "items": 7,
+   "question": "Where is Lyric Theatre?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 7
+  },
+  {
+   "label": "Lyric Theatre",
+   "items": 7,
+   "question": "What is Lyric Theatre?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 7
+  },
+  {
+   "label": "Rurka",
+   "items": 2,
+   "question": "Where is Rurka?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Rurka",
+   "items": 2,
+   "question": "What is Rurka?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "The Trooper",
+   "items": 4,
+   "question": "Where is The Trooper?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "The Trooper",
+   "items": 4,
+   "question": "What is The Trooper?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "Centennial Bridge",
+   "items": 3,
+   "question": "Where is Centennial Bridge?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Centennial Bridge",
+   "items": 3,
+   "question": "What is Centennial Bridge?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Middlesbrough",
+   "items": 2,
+   "question": "Where is Middlesbrough?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Middlesbrough",
+   "items": 2,
+   "question": "What is Middlesbrough?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Portage River",
+   "items": 3,
+   "question": "Where is Portage River?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Portage River",
+   "items": 3,
+   "question": "What is Portage River?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Lift",
+   "items": 5,
+   "question": "Where is Lift?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 5
+  },
+  {
+   "label": "Lift",
+   "items": 5,
+   "question": "What is Lift?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 5
+  },
+  {
+   "label": "Yuba",
+   "items": 3,
+   "question": "Where is Yuba?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Yuba",
+   "items": 3,
+   "question": "What is Yuba?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Gigantic",
+   "items": 4,
+   "question": "Where is Gigantic?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "Gigantic",
+   "items": 4,
+   "question": "What is Gigantic?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "To the Moon and Back",
+   "items": 2,
+   "question": "Where is To the Moon and Back?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "To the Moon and Back",
+   "items": 2,
+   "question": "What is To the Moon and Back?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Saint-Gorgon",
+   "items": 2,
+   "question": "Where is Saint-Gorgon?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Saint-Gorgon",
+   "items": 2,
+   "question": "What is Saint-Gorgon?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Qadamgah",
+   "items": 3,
+   "question": "Where is Qadamgah?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Qadamgah",
+   "items": 3,
+   "question": "What is Qadamgah?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "St. Mark's Episcopal Church",
+   "items": 27,
+   "question": "Where is St. Mark's Episcopal Church?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "St. Mark's Episcopal Church",
+   "items": 27,
+   "question": "What is St. Mark's Episcopal Church?",
+   "outcome": "no_plan",
+   "reason": "no_plan",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": null
+  },
+  {
+   "label": "Jacky",
+   "items": 3,
+   "question": "Where is Jacky?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Jacky",
+   "items": 3,
+   "question": "What is Jacky?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Birkdale",
+   "items": 2,
+   "question": "Where is Birkdale?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Birkdale",
+   "items": 2,
+   "question": "What is Birkdale?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Thomaston",
+   "items": 4,
+   "question": "Where is Thomaston?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "Thomaston",
+   "items": 4,
+   "question": "What is Thomaston?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 4
+  },
+  {
+   "label": "Alipur",
+   "items": 5,
+   "question": "Where is Alipur?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 5
+  },
+  {
+   "label": "Alipur",
+   "items": 5,
+   "question": "What is Alipur?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 5
+  },
+  {
+   "label": "Cape Vincent",
+   "items": 2,
+   "question": "Where is Cape Vincent?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Cape Vincent",
+   "items": 2,
+   "question": "What is Cape Vincent?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Ohio State Route 1",
+   "items": 2,
+   "question": "Where is Ohio State Route 1?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Ohio State Route 1",
+   "items": 2,
+   "question": "What is Ohio State Route 1?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "24/7",
+   "items": 5,
+   "question": "Where is 24/7?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 5
+  },
+  {
+   "label": "24/7",
+   "items": 5,
+   "question": "What is 24/7?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 5
+  },
+  {
+   "label": "Zamanabad",
+   "items": 3,
+   "question": "Where is Zamanabad?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Zamanabad",
+   "items": 3,
+   "question": "What is Zamanabad?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Sean Hill",
+   "items": 2,
+   "question": "Where is Sean Hill?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Sean Hill",
+   "items": 2,
+   "question": "What is Sean Hill?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Mahaban",
+   "items": 2,
+   "question": "Where is Mahaban?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Mahaban",
+   "items": 2,
+   "question": "What is Mahaban?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Hopeville",
+   "items": 2,
+   "question": "Where is Hopeville?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Hopeville",
+   "items": 2,
+   "question": "What is Hopeville?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Lord Street",
+   "items": 3,
+   "question": "Where is Lord Street?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Lord Street",
+   "items": 3,
+   "question": "What is Lord Street?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 3
+  },
+  {
+   "label": "Bismark Township",
+   "items": 2,
+   "question": "Where is Bismark Township?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  },
+  {
+   "label": "Bismark Township",
+   "items": 2,
+   "question": "What is Bismark Township?",
+   "outcome": "ambiguous_entity",
+   "reason": "ambiguous_entity",
+   "answer": null,
+   "lines_by_item": [],
+   "wiki_only_lines": 0,
+   "candidates": 2
+  }
+ ]
+}

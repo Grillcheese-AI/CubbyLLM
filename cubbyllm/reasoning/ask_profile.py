@@ -11,6 +11,7 @@ from ..worlds.self_source import LOOP, SelfSource   # noqa: E402
 from .ask_forms import (FALLBACK_KINDS, NEWS_CLARIFY_MIN, PARAPHRASE_SYSTEM, PROFILE, PROFILE_KINDS,
                         PROFILE_MAX_LINES, PROFILE_MAX_PER_RELATION, RESOLVE_HINT, cot_profile, cot_self)
 from .ask_words import grounded_prose, say, when_text
+from .ask_namesakes import pick as namesake_pick, refuse as namesake_refuse
 
 __wiring__ = "WIRED"
 
@@ -121,12 +122,21 @@ class AskProfile:
         have = self.facts_about(entity)
         last: dict = {}
         known_rels = set(rels) | (set(PROFILE) if kind in FALLBACK_KINDS else set())
-        if not any(normalize(t.rel) in known_rels for t in have):
+        # a name the stores hold only as several items' (order 0033): the asker or the question's own qualifier decide
+        # which item, and that item's facts alone are read (never beside another world's facts about the bare name,
+        # which may be another namesake's); when nothing decides, the asker is asked
+        ns = None if any(normalize(t.rel) in known_rels for t in have) else namesake_pick(self, entity, item)
+        picked = (ns or {}).get("rows") or []
+        if picked:
+            entity = ns["label"]; rec["namesake"] = {"item": ns["item"], "how": ns["how"]}
+            have = [t for _f, t in picked]
+        elif not any(normalize(t.rel) in known_rels for t in have):
             last = self._fetch(qid, entity, list(RESOLVE_HINT[kind]), rec, item, asker)
             have = self.facts_about(entity)
         # the lines: the ask kind's relations first, then any other profile relation the store holds
         chosen: list[tuple[str, str, str]] = []                       # (rel, obj, the stored fact text)
-        by_key = {(normalize(t.rel), t.obj): " ".join(f.split()) for f, t in self.world.index._by_subj.get(normalize(entity), []) if t is not None}
+        by_key = {(normalize(t.rel), t.obj): " ".join(f.split())
+                  for f, t in (picked or self.world.index._by_subj.get(normalize(entity), [])) if t is not None}
         order = tuple(rels) + (tuple(r for r in PROFILE if r not in rels) if kind in FALLBACK_KINDS else ())
         times = getattr(self.world, "times", None) or {}
         for rel in order:
@@ -147,16 +157,14 @@ class AskProfile:
                 break
         chosen = chosen[:PROFILE_MAX_LINES]
         if not chosen:
-            amb = last.get("ambiguous") or []
+            amb = last.get("ambiguous") or (ns or {}).get("ambiguous") or []
             if amb:
                 # the asker decides, the host never picks (Nick, 2026-09-14: "when ambiguous it should
                 # either select A based on context or B ask the user: do you want to know more about:
                 # choices"). A is the resolution tiers above -- the hop the question needs, label over
                 # alias, the meta-pages dropped; when they leave more than one, this is B: the choices go
                 # back with the item ids, and the answer re-asks with the one the asker names.
-                rec["reason"] = "ambiguous_entity"; rec["candidates"] = [[a[1], a[2], a[0]] for a in amb]
-                rec["clarify"] = {"question": "Which one do you mean?",
-                                  "choices": [{"label": a[1], "detail": a[2], "item": a[0]} for a in amb]}
+                namesake_refuse(rec, amb, None if last.get("ambiguous") else (ns or {}).get("of"))
             else:
                 rec["reason"] = ("no_events_for_date" if kind == "when" else
                                  ("entity_unresolved" if rec["entities"] and not rec["learned"] else "profile_empty"))
