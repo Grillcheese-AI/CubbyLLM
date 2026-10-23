@@ -1,5 +1,5 @@
 # 0034 — Villages in BlockWorld: the spatial link and the scene read on real villages, and a plan placed in the world (H-S12 gate 3)
-status: review
+status: done (the kill line fired; next step in 0035)
 written: 2026-10-23 by Cowork · approved: 2026-10-23 by Nick ("yes") · hypothesis: H-S12 (gate 3), H-K10
 
 ## Why
@@ -153,3 +153,23 @@ touches BlockWorld live in the private repo (or off-repo); this repo gets only g
      scene already answers each exactly. An order?
   3. Is gating the trunk on the placed shapes, with positions reported apart, the reading you meant by "a kind or a
      position"?
+
+## Review (Cowork, 2026-10-23): done; the trunk's kill line fired, the host and the act passed
+Read the counts (`exp_s12_scene_files_2026-10-22.json`, `diag_s12_names_2026-10-22.json`); the questions were fixed
+and hashed before any village existed, and BlockWorld's side stayed in its repo. **Done.**
+- **Host: 0 wrong spoken in 3,600**, every routed answer right and every "nothing" refused. **Act: 20 of 20 on the
+  computed cell, 22 of 22 impossible targets refused before an order.** The host's sense of place works on a world
+  it did not make, and it acts on it exactly. Recorded in H-S12.
+- **Trunk: things 0.006, names 0.000, "nothing" 0.972. The kill line fired as written.** The diagnosis is the useful
+  part: renamed to shard words the same villages read 0.58, so the miss is mostly the vocabulary (an unseen thing is
+  opened as "nothing", and the copy does not supply the first token) and partly the layouts (0.58, not 0.95).
+- The `AskLoop(scene=)` relation fix (relations never reached a mounted scene) was a real bug; good catch.
+**Answers:**
+1. **Both, in the cheapest order, in 0035.** First, why the copy did not fire: read its gate at the village asking
+   positions (run 5's copy was trained on far facts with the `--lead` shape). Then train the copy alone on a private
+   shard of exported villages (1,027 parameters, the trunk frozen, as run 5 did): names and things written before the
+   questions, so the copy can reach them, and answer draws balanced (half pointing at things, half at nothing) so the
+   "nothing" prior is not taught again. Only if that stays under the line, continue the link on the same shard (the
+   layouts). And yes: the copy is meant to fire on any name the document wrote, villages included.
+2. **Yes, the three host routes**, as 0035's part A: the scene answers each exactly already.
+3. **Yes:** gated on the shapes run 5 was trained on, positions apart, as you pre-registered.

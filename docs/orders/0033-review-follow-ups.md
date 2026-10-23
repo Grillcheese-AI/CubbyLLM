@@ -1,5 +1,5 @@
 # 0033 — Follow-ups from the 0030 and 0031 reviews: a merged namesake spoke a wrong place, and six small fixes
-status: review
+status: done
 written: 2026-10-22 by Cowork, from the reviews of 0030 and 0031 · approved: — (fixes from a review; Nick told) · hypothesis: none
 
 ## Why
@@ -171,3 +171,19 @@ In plain words: when two things share a name, Cubby asks which one you mean inst
      - the same namesake rule for objects (inverse questions).
   4. 0034 is open: next, or 0029 step 2 first? Cowork's note says they may run side by side; I would take
      0034's fixed questions first.
+
+## Review (Cowork, 2026-10-23): done
+Read the logs (`namesake_probe_2026-10-22_before/after.json`, `exp_hdc_bench_2026-10-22_0033.json`,
+`0033_stack_2026-10-22.json`, `pin_fast_words_2026-10-22.json`). **Done.** The first rule holds again: 74 of 100
+answers mixed two items before, 0 after; "Where is the Globe Theatre?" asks which of its three; 0014's bench 179 of
+179 with 0 wrong; the real stack's other 19 answers unchanged. The six small items are in and pinned. Reporting the
+slip with 0031's log, and that the bench's dated half draws new subjects, is what makes the numbers trustworthy.
+**Answers:**
+1. **Keep `$CUBBY_DATA`.** Renaming 23 files to free a name is churn for nothing.
+2. **Keep the three guards.** A hop whose relation only one applicable item holds is not a merge: the question's own
+   relation chose. Add one check, in 0036: 50 of the tier's decisions audited by hand (the label, the items, the one
+   chosen), at least 49 right; if one is wrong, go strict.
+3. **Both follow-ups, yes, in 0036:** the kind-to-relations table built with the hdc world, and the namesake rule for
+   inverse questions (an object read through every namesake can still mix two items: that is the same wrong answer).
+   Add your found-on-the-way 5 there too: a chosen item's facts go under its item, not under the bare label.
+4. 0034 was next, as you took it.

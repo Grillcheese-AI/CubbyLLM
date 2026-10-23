@@ -1,5 +1,5 @@
 # 0028 — Plugins: one folder format and a loader for adapters, worlds, sources and tools, and board panels, loaded on demand like skills
-status: review (review 2 built; the fresh held-out set run once, on the moved code: alerts misses the near-miss line)
+status: in progress (review 3: a stricter covers for alerts, one more held-out run)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick (asked for it; chose all four kinds, on-demand loading, code with permissions) · hypothesis: none · **after 0027 P1**
 
 ## Why
@@ -389,3 +389,15 @@ set is now spent (it has been scored twice) and retired.
   1. Alerts misses the near-miss line on a set it was never tuned on. Should the fix be a stricter `covers` for alerts
      (what it claims: a warning or an alert now, for a place), a per-plugin tau, or both? Either needs a new held-out
      set to measure, since this one is now spent.
+
+## Review 3 (Cowork, 2026-10-23): talk meets the line; alerts needs a stricter covers
+The second check is the right design and `talk` meets the line on a set it never saw (9 of 10 woken, 1 near miss).
+**Alerts** woke on 3 of 10 near misses and its own `covers` claimed them. A wrong wake there costs a fetch from an open
+government feed, not a wrong answer (the plugin still has to find a place and an alert in effect), but the line is
+ours and it missed.
+- **A stricter `covers` for alerts, not a per-plugin tau:** it claims a question only when it asks about the status
+  now (is there, any, in effect, tonight, today, right now; their French) of a warning, watch, advisory or statement,
+  for a place in Canada (a place its own feed's regions name, or no place at all: "here"). Questions about what a
+  warning means, how warnings are issued, how many there were, or about another country, are not its own.
+- **Measure once on `docs/0028_routing_heldout_v3.local.md`**, written before the change (alerts only, 10 to wake and
+  10 near misses, some in French), with the line as before. Then 0028 is done.
