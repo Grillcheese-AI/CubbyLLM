@@ -8,12 +8,13 @@ from __future__ import annotations
 
 import json
 import pathlib
+from cubbyllm.local_paths import data_dir
 from cubbyllm.reasoning.planner import Triple, normalize as _normalize   # noqa: E402
 
 __wiring__ = "WIRED"
 
 
-CACHE = pathlib.Path(__file__).resolve().parents[2] / "standin" / "data" / "out" / "wikidata_cache"
+CACHE = data_dir("wikidata_cache")
 
 
 # Wikimedia's own pages ABOUT pages: never the subject of a question (2026-09-14)

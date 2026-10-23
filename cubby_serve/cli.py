@@ -9,6 +9,8 @@ import argparse
 import os
 import sys
 
+from cubbyllm.local_paths import data_dir
+
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 __wiring__ = "WIRED"
@@ -110,7 +112,11 @@ def parser() -> argparse.ArgumentParser:
     ap.add_argument("--web-reader", default="auto",
                     help="the local model that reads pages for the relation the walk needs: a GGUF path, 'auto' "
                          "(the LFM base in standin/models when present) or 'off'")
-    _out = os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")), "standin", "data", "out")
+    ap.add_argument("--data-root", default=None,
+                    help="the one data root: the caches, the worlds' files, the keys (CUBBY_DATA or paths.local.json "
+                         "name it too; default standin/data/out). Read before the package loads (cubby_serve.api); "
+                         "tools/move_data_root.py moves what is there, so nothing is fetched again")
+    _out = str(data_dir())                               # the one data root (order 0033)
     ap.add_argument("--history", default=os.path.join(_out, "ask_history.jsonl"),
                     help="append every ask record here (one JSON line each) for the nightly sleep cycle; '' = off")
     ap.add_argument("--learned", default=os.path.join(_out, "sleep", "learned_facts.jsonl"),

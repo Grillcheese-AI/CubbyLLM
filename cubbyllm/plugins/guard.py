@@ -34,6 +34,8 @@ import time
 import urllib.parse
 from pathlib import Path
 
+from cubbyllm.local_paths import data_dir
+
 __wiring__ = "WIRED"
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -50,7 +52,7 @@ DYNAMIC_ATTR = {"getattr", "setattr", "delattr"}
 
 
 def lock_path() -> Path:
-    return Path(os.environ.get("CUBBY_PLUGINS_LOCK") or ROOT / "standin" / "data" / "out" / "plugins.lock.json")
+    return Path(os.environ.get("CUBBY_PLUGINS_LOCK") or data_dir("plugins.lock.json"))
 
 
 def _read_lock() -> dict:

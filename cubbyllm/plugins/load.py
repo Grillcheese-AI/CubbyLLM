@@ -32,6 +32,8 @@ import sys
 import time
 from pathlib import Path
 
+from cubbyllm.local_paths import data_dir
+
 __wiring__ = "WIRED"
 
 from . import guard  # noqa: E402
@@ -69,8 +71,7 @@ class Loader:
         """``router``: ``plugins_route.make_router``'s kind (None: ``CUBBY_PLUGINS_ROUTER``); ``thalamus``: ``text ->
         (needs facts, why)``, the brain's ``needs_facts`` when not given (an adapter wakes only on a turn without facts)."""
         self.index, self.brain, self.log, self.fetch, self.trunk = index, brain, log, fetch, trunk
-        self.data_root = Path(data_root or os.environ.get("CUBBY_PLUGINS_DATA") or
-                              Path(__file__).resolve().parents[2] / "standin" / "data" / "out")
+        self.data_root = Path(data_root or os.environ.get("CUBBY_PLUGINS_DATA") or data_dir())
         self.router = make_router(index, enc=enc, tau=tau, kind=router)   # None: CUBBY_PLUGINS_ROUTER picks it
         self.thalamus = thalamus or getattr(brain, "needs_facts", None)
         self.declined: dict[str, str] = {}                   # name -> why the last question woke it and it declined

@@ -19,10 +19,10 @@ from __future__ import annotations
 
 import functools
 import os
-import pathlib
 import sqlite3
 import threading
 
+from cubbyllm.local_paths import data_dir
 from cubbyllm.reasoning.index import TripleIndex
 from cubbyllm.reasoning.planner import accepts, normalize, parse_fact, tail_splits
 
@@ -30,7 +30,7 @@ from .hdc_namesakes import Namesakes, StoresNamesakes
 
 __wiring__ = "WIRED"
 
-DEFAULT = pathlib.Path(__file__).resolve().parents[2] / "standin" / "data" / "out" / "hdc_world.sqlite"
+DEFAULT = data_dir("hdc_world.sqlite")
 
 
 class _Rows:

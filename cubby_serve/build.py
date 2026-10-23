@@ -29,6 +29,7 @@ for p in (ROOT, os.path.join(ROOT, "validation"), os.path.join(ROOT, "standin"),
     if p not in sys.path:
         sys.path.insert(0, p)
 
+from cubbyllm.local_paths import data_dir
 from cubbyllm.brain import CubbyBrain, FactStore  # noqa: E402
 from cubbyllm.reasoning.planner import normalize  # noqa: E402
 
@@ -127,7 +128,7 @@ def build_serve(gguf: str | None, table: str | None, n_store: int, exe: str | No
 
 
 def load_val_chains(n: int) -> list[dict]:
-    val_path = os.path.join(ROOT, "standin", "data", "out", "emitter_sft.jsonl")
+    val_path = str(data_dir("emitter_sft.jsonl"))
     chains = [json.loads(l) for l in open(val_path, encoding="utf-8")]
     return [r for r in chains if r["task"] == "chain" and r["split"] == "val"][:n]
 
@@ -169,7 +170,7 @@ def selftest(serve: CubbyBrain, chains: list[dict], tag: str) -> dict:
                "emitter": getattr(serve.emitter, "name", None),
                "adapters": serve.emitter.usage() if hasattr(serve.emitter, "usage") else None}
     print(f"\n[stand-in] serve selftest: {summary}")
-    out_path = os.path.join(ROOT, "standin", "data", "out", f"serve_selftest{tag}.json")
+    out_path = str(data_dir(f"serve_selftest{tag}.json"))
     json.dump({"summary": summary, "rows": rows}, open(out_path, "w", encoding="utf-8"), indent=1)
     print(f"wrote {out_path}")
     return summary

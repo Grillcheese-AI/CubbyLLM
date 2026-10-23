@@ -6,11 +6,11 @@ Wired: WIRED (the server at boot; the ledger, the harness wiring and the stand-i
 """
 from __future__ import annotations
 
-import pathlib
+from cubbyllm.local_paths import data_dir
 
 __wiring__ = "WIRED"
 
-HOST_KEY_FILE = pathlib.Path(__file__).resolve().parents[1] / "standin" / "data" / "out" / "host.key"
+HOST_KEY_FILE = data_dir("host.key")
 
 
 def use_host_key() -> None:

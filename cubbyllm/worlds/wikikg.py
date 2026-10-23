@@ -26,13 +26,15 @@ import os
 import random
 import re
 
+from cubbyllm.local_paths import data_dir
+
 # split out in order 0031 (tools/split_module.py); re-exported so importers do not change
 from .wikikg_relations import RELATIONS, _DATE, decamel, facts_for, hop_phrase, relation_entry  # noqa: F401
 
 __wiring__ = "WIRED"
 
 HERE = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "standin", "data"))
-DATA_DIR = os.path.join(HERE, "out", "wikikg")                       # gitignored; the Hub's parquet export
+DATA_DIR = str(data_dir("wikikg"))                                  # gitignored; the Hub's parquet export
 TRIPLETS = os.path.join(DATA_DIR, "triplets.parquet")
 PATHS = os.path.join(DATA_DIR, "paths.parquet")
 HUB_PARQUET = "https://huggingface.co/api/datasets/AutomatedScientist/wikikg-trajectories/parquet/{cfg}/train/0.parquet"

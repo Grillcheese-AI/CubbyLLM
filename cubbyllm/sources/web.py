@@ -49,6 +49,7 @@ import urllib.robotparser
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
 
+from cubbyllm.local_paths import data_dir
 from cubbyllm.reasoning.planner import Triple, normalize
 
 # split out in order 0031 (tools/split_module.py); re-exported so importers do not change
@@ -65,7 +66,7 @@ from .web_witness import WebWitness
 
 __wiring__ = "WIRED"
 
-CACHE = pathlib.Path(__file__).resolve().parents[2] / "standin" / "data" / "out" / "web_cache"
+CACHE = data_dir("web_cache")
 MIN_SITES = 2                      # independent sites before a web fact may carry an answer
 
 

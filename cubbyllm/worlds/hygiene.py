@@ -18,9 +18,11 @@ import pathlib
 import re
 import unicodedata
 
+from cubbyllm.local_paths import data_dir
+
 __wiring__ = "WIRED"
 
-OUT = pathlib.Path(__file__).resolve().parents[2] / "standin" / "data" / "out"
+OUT = data_dir()
 SAME_PLACE = OUT / "same_place.tsv"                  # git-ignored: built from the books (build_same_place.py)
 _NOT_A_NAME = re.compile(r"<[^>]*(?:class |object at )|^_+$")
 MISSPELLED = {"SP0USE_OF": "SPOUSE_OF"}              # a zero for the O

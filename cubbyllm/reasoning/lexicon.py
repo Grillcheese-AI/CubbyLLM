@@ -19,12 +19,14 @@ import json
 import pathlib
 from collections import defaultdict
 
+from cubbyllm.local_paths import data_dir
+
 from ..core.protocols import Wiring
 from .planner import normalize
 
 __wiring__ = Wiring.WIRED
 
-DEFAULT = pathlib.Path(__file__).resolve().parents[2] / "standin" / "data" / "out" / "lexicon_en_fr.jsonl"
+DEFAULT = data_dir("lexicon_en_fr.jsonl")
 
 
 class Lexicon:

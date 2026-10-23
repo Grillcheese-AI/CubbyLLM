@@ -37,11 +37,12 @@ import time
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 
+from cubbyllm.local_paths import data_dir  # noqa: E402
 from cubbyllm.reasoning.planner import normalize  # noqa: E402
 
 __wiring__ = "STANDALONE"
 
-OUT = ROOT / "standin" / "data" / "out"
+OUT = data_dir()
 SNAPSHOT = "2019"
 PROVENANCE = "wikidata (Wikidata5M via hypernet-scaling-law-data, snapshot ~2019)"
 TIME_SENSITIVE = {"P6", "P35", "P39", "P54", "P102", "P108", "P118", "P127", "P137", "P159", "P169", "P286", "P488",

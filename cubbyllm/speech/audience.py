@@ -25,13 +25,14 @@ import hashlib
 import hmac
 import json
 import os
-import pathlib
 import re
 import urllib.parse
 
+from cubbyllm.local_paths import data_dir
+
 __wiring__ = "WIRED"
 
-TOKEN_FILE = pathlib.Path(__file__).resolve().parents[2] / "standin" / "data" / "out" / "audit_token"
+TOKEN_FILE = data_dir("audit_token")
 # the store's own source names: every world and fetch source a fact can come from, and the datasets behind them
 SOURCE_NAMES = {"wikidata", "wikipedia", "dbpedia", "wikikg", "wikidata5m", "hypernet-scaling-law-data", "brave",
                 "searxng", "encyclopedia americana", "openrouter", "project gutenberg", "historical_facts"}

@@ -6,14 +6,15 @@ Wired: WIRED (the news source).
 """
 from __future__ import annotations
 
-import pathlib
 import re
 from email.utils import parsedate_to_datetime
+
+from cubbyllm.local_paths import data_dir
 
 __wiring__ = "WIRED"
 
 
-CACHE = pathlib.Path(__file__).resolve().parents[3] / "standin" / "data" / "out" / "news_cache"
+CACHE = data_dir("news_cache")
 
 
 # The BARE PRODUCT TOKEN, and it matters. CBC's edge closes the connection on any UA string

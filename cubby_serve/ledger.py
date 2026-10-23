@@ -26,10 +26,12 @@ import sqlite3
 import threading
 import time
 
+from cubbyllm.local_paths import data_dir
+
 __wiring__ = "STANDALONE"
 
 HERE = pathlib.Path(__file__).resolve().parents[1] / "standin"
-DEFAULT_DB = HERE / "data" / "out" / "ledger.sqlite"
+DEFAULT_DB = data_dir("ledger.sqlite")
 KEY_ENV = "CB_LEDGER_KEY"
 FIELDS = ("program_sha256", "name", "kind", "fn", "input", "expected", "got", "ok", "vm_build")
 

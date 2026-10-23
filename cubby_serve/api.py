@@ -29,6 +29,8 @@ import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+if "--data-root" in sys.argv[:-1]:                     # the one data root, named before the package loads (order 0033)
+    os.environ["CUBBY_DATA"] = sys.argv[sys.argv.index("--data-root") + 1]
 
 __wiring__ = "WIRED"
 
