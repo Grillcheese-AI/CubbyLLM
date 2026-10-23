@@ -1,0 +1,284 @@
+{
+ "what": "order 0033: the real stack with the first, strict namesake rule (no relation tier; any refusal on a shared seed overwritten with ambiguous_entity), against _0031_stack_before.json -- the run that led to the relation tier and the narrowed override; not the committed code",
+ "same": 6,
+ "of": 20,
+ "spoken_lost": [
+  "What is the capital of France?",
+  "What is the currency of Japan?"
+ ],
+ "refusal_reasons_overwritten": [
+  "Who wrote Pride and Prejudice?",
+  "When was the Eiffel Tower built?",
+  "What is the capital of Canada?",
+  "Who is the father of Queen Elizabeth II?",
+  "What is the population of Toronto?",
+  "Who painted the Mona Lisa?",
+  "What language is spoken in Brazil?",
+  "Qui a écrit Les Misérables ?",
+  "What river flows through Cairo?",
+  "What is the speed of light?",
+  "Who is the mayor of Montreal?"
+ ],
+ "rows": [
+  {
+   "question": "What is the capital of France?",
+   "before": {
+    "answer": "Paris",
+    "verified": true,
+    "reason": null
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "Where was Ada Lovelace born?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   }
+  },
+  {
+   "question": "Who wrote Pride and Prejudice?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "When was the Eiffel Tower built?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "What is the capital of Canada?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "Who is the father of Queen Elizabeth II?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "What is the population of Toronto?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "retrieval_exhausted"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "Who painted the Mona Lisa?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "unknown_relation"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "Where is the Globe Theatre?",
+   "before": {
+    "answer": "Globe Theatre — country: United Kingdom; located in: London Borough of Southwark, Boston",
+    "verified": false,
+    "reason": "profile"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "What language is spoken in Brazil?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "unknown_relation"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "Who discovered penicillin?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "no_plan"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "no_plan"
+   }
+  },
+  {
+   "question": "What is the currency of Japan?",
+   "before": {
+    "answer": "Japanese yen",
+    "verified": true,
+    "reason": null
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "Quelle est la capitale de l'Italie ?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   }
+  },
+  {
+   "question": "Qui a écrit Les Misérables ?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "What river flows through Cairo?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "Who was the first president of the United States?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "entity_unresolved"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "entity_unresolved"
+   }
+  },
+  {
+   "question": "How tall is Mount Everest?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   }
+  },
+  {
+   "question": "What is the speed of light?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "Who is the mayor of Montreal?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   }
+  },
+  {
+   "question": "What year did World War II end?",
+   "before": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   }
+  }
+ ]
+}

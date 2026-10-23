@@ -1,0 +1,905 @@
+{
+ "git": "2f57ce1",
+ "totals": {
+  "passed": 1221,
+  "failed": 1,
+  "skipped": 6,
+  "error": 0
+ },
+ "files": {
+  "(collection)": {
+   "passed": 0,
+   "failed": 0,
+   "skipped": 3,
+   "error": 0
+  },
+  "standin/tests/test_asking.py": {
+   "passed": 19,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_build_game_sft.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_coach.py": {
+   "passed": 17,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_coach_wired.py": {
+   "passed": 9,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_exp_he19_memory.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_hypothesis.py": {
+   "passed": 8,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_lfm_source.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_pacman.py": {
+   "passed": 37,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_pacman_percepts.py": {
+   "passed": 16,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_plasticity.py": {
+   "passed": 15,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_portable.py": {
+   "passed": 8,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_said_back.py": {
+   "passed": 16,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_verse.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "standin/tests/test_wariness.py": {
+   "passed": 10,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/affect/test_afferent.py": {
+   "passed": 18,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/affect/test_choosing.py": {
+   "passed": 13,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/affect/test_ear.py": {
+   "passed": 8,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/affect/test_neurochem.py": {
+   "passed": 6,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/affect/test_perception.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/affect/test_saying.py": {
+   "passed": 17,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/brain/test_serve.py": {
+   "passed": 27,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/bridges/test_cubelang_ask.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/bridges/test_cubelang_branch.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/bridges/test_cubelang_client.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/bridges/test_cubelang_step0.py": {
+   "passed": 3,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/bridges/test_possibility.py": {
+   "passed": 20,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/bridges/test_reasoning_bridge.py": {
+   "passed": 8,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/bridges/test_reasoning_bridge_proto.py": {
+   "passed": 6,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/bridges/test_world_model.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/bridges/test_worldmodel_bridge.py": {
+   "passed": 6,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/builders/test_build_chat_sft.py": {
+   "passed": 8,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/builders/test_build_emitter_sft.py": {
+   "passed": 20,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/builders/test_build_program_first.py": {
+   "passed": 15,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/builders/test_goemotions_cube.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/builders/test_hdc_sft.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/builders/test_hf_rows.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/builders/test_import_tinygsm.py": {
+   "passed": 11,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/core/test_basis_generator.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/core/test_config.py": {
+   "passed": 3,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/core/test_context.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/core/test_decoding.py": {
+   "passed": 21,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/core/test_generation.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/core/test_probing.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/cortex/test_cortex.py": {
+   "passed": 13,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/data/test_axiom_corpus.py": {
+   "passed": 3,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/emit/test_emitter_450m.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/backbone/test_banded.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/backbone/test_base.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/backbone/test_hybrid.py": {
+   "passed": 9,
+   "failed": 0,
+   "skipped": 1,
+   "error": 0
+  },
+  "tests/model/backbone/test_hybrid_memory.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/recall/test_read.py": {
+   "passed": 3,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/recall/test_store.py": {
+   "passed": 3,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_assembly.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_binding.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_capture_safe_step.py": {
+   "passed": 10,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_causal_context.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_graph_seam.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 1,
+   "error": 0
+  },
+  "tests/model/test_grow.py": {
+   "passed": 11,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_memory.py": {
+   "passed": 3,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_mingru_decode.py": {
+   "passed": 3,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_spatial.py": {
+   "passed": 10,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_spatial_copy.py": {
+   "passed": 17,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_spatial_key.py": {
+   "passed": 11,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_spatial_refuse.py": {
+   "passed": 9,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_train_only.py": {
+   "passed": 8,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/model/test_vocab.py": {
+   "passed": 6,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/ops/test_vsa.py": {
+   "passed": 10,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/plugins/test_plugins.py": {
+   "passed": 29,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/plugins/test_plugins_check.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/plugins/test_plugins_route.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_arith_world.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_ask.py": {
+   "passed": 28,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_ask_branching.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_ask_relation.py": {
+   "passed": 12,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_branching.py": {
+   "passed": 10,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_claim_check.py": {
+   "passed": 3,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_context_graph.py": {
+   "passed": 6,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_graph.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_helpers.py": {
+   "passed": 6,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_index.py": {
+   "passed": 3,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_live_vm.py": {
+   "passed": 1,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_loci_reader.py": {
+   "passed": 9,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_pipeline.py": {
+   "passed": 20,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_planner.py": {
+   "passed": 20,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_programs.py": {
+   "passed": 8,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_question_forms.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_school.py": {
+   "passed": 10,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_skills.py": {
+   "passed": 27,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_sleep.py": {
+   "passed": 11,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_sleep_loop.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_slots.py": {
+   "passed": 9,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/reasoning/test_step_loop.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/serve/test_board.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/serve/test_board_review.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/serve/test_harness.py": {
+   "passed": 30,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/serve/test_harness_wiring.py": {
+   "passed": 8,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/serve/test_ledger_vault.py": {
+   "passed": 3,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/serve/test_plugins_serve.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/sources/test_news_archive.py": {
+   "passed": 10,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/sources/test_news_backfill.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/sources/test_news_events.py": {
+   "passed": 6,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/sources/test_news_gdelt.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/sources/test_news_globalvoices.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/sources/test_news_reply.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/sources/test_news_source.py": {
+   "passed": 12,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/sources/test_news_trigger.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/sources/test_property_aliases.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/sources/test_sources.py": {
+   "passed": 12,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/sources/test_web_source.py": {
+   "passed": 29,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/spatial/test_fact_shard.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/spatial/test_hilbert.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/spatial/test_scene.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/spatial/test_shard.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/spatial/test_ssp.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/speech/test_audience.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/speech/test_chat.py": {
+   "passed": 10,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/speech/test_explicit_gate.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/speech/test_identity.py": {
+   "passed": 8,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/test_data_root.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/test_guards.py": {
+   "passed": 3,
+   "failed": 1,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/test_k10_switch.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/test_local_paths.py": {
+   "passed": 16,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/test_offline_seams.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/test_package.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/test_package_rules.py": {
+   "passed": 6,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/test_shim_count.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/test_v9_es_scoring.py": {
+   "passed": 14,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/training/test_training.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/validation/test_emitter_decode.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/validation/test_exp_he18_ab.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/validation/test_exp_he19_gate_a.py": {
+   "passed": 3,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_book_reader.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_books.py": {
+   "passed": 12,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_books_bulk.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_capsules.py": {
+   "passed": 6,
+   "failed": 0,
+   "skipped": 1,
+   "error": 0
+  },
+  "tests/worlds/test_encyclopedia.py": {
+   "passed": 9,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_fast_words.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_hdc_namesakes.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_hdc_store.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_history_graph.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_history_lookup.py": {
+   "passed": 8,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_import_science.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_persons_list.py": {
+   "passed": 2,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_self_source.py": {
+   "passed": 7,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_time_rule.py": {
+   "passed": 5,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_wikikg.py": {
+   "passed": 6,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_wikitext.py": {
+   "passed": 4,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  },
+  "tests/worlds/test_worlds.py": {
+   "passed": 6,
+   "failed": 0,
+   "skipped": 0,
+   "error": 0
+  }
+ }
+}
