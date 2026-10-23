@@ -75,7 +75,7 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   measured lessons (read its "Before you touch anything").
 - **Known red:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
   `cubbyllm.spatial` and `cubbyllm.reasoning.step_loop` (order 0002, proposed).
-- **Queue (2026-10-23):** 0001, 0004-0007, 0011-0016, 0021, 0022, 0028, 0030, 0031, 0033, 0034, 0036 done; in progress: 0024 (news from feeds), 0027 (the control board: P1 done; P2 after 0024, P3 after 0020/0026), 0029 (arm D: step 2), 0035 (villages, next: A and B done; C, the copy on a private shard in the far facts' shape); open: 0032 (the trunk reads the worlds), 0023 (nested questions over the worlds), 0025 (world watch), 0026 (forecasts, the branching tree), 0008 (creativity), 0009 (capacity), 0010 (casual talk), 0018 (question shapes), 0019 (emotions), 0020 (emotional arcs); proposed: 0002, 0003, 0017 (claim checks).
+- **Queue (2026-10-23):** 0001, 0004-0007, 0011-0016, 0021, 0022, 0028, 0030, 0031, 0033, 0034, 0036 done; in progress: 0024 (news from feeds), 0027 (the control board: P1 done; P2 after 0024, P3 after 0020/0026), 0029 (arm D: step 2), 0035 (villages, next: A and B done; C, the copy on a private shard in the far facts' shape); open: 0037 (namesakes decided by the question's relation: "the capital of France"), 0032 (the trunk reads the worlds), 0023 (nested questions over the worlds), 0025 (world watch), 0026 (forecasts, the branching tree), 0008 (creativity), 0009 (capacity), 0010 (casual talk), 0018 (question shapes), 0019 (emotions), 0020 (emotional arcs); proposed: 0002, 0003, 0017 (claim checks).
 
 ## Rules every change keeps
 
