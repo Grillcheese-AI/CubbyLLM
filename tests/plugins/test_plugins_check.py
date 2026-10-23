@@ -112,11 +112,21 @@ def test_the_alerts_plugin_claims_warnings_not_weather_in_general():
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
     a = m.Alerts(None)
-    for q in ("what causes freezing rain?", "how much snow did Montreal get in 1998?", "qu'est-ce qui cause la pluie verglaçante ?"):
+    # review 3 (2026-10-23): a warning, watch, advisory or statement, its status now, for a place in Canada or none
+    for q in ("what causes freezing rain?", "how much snow did Montreal get in 1998?", "qu'est-ce qui cause la pluie verglaçante ?",
+              "is there heavy snow in Ottawa right now?",                       # weather now, not a warning
+              "what does a yellow warning mean?", "que signifie un avertissement jaune ?",   # what one means
+              "how are tornado warnings issued?", "how many heat warnings were there in Toronto last summer?",
+              "is there a tornado warning in Kansas?", "are there flood warnings in Germany right now?"):   # not Canada
         assert a.covers(q) == 0.0, q
     for q in ("is there a storm warning in Halifax?", "y a-t-il un avertissement de neige à Montréal ?",
-              "is there heavy snow in Ottawa right now?"):
+              "is a thunderstorm warning in effect near Sherbrooke?", "quelles alertes météo sont en vigueur au Québec ?",
+              "is there a weather warning here?", "any warnings tonight?", "is there a storm warning for montreal right now?"):
         assert a.covers(q) > 0, q
+    import re
+    ex = re.findall(r"^  - (.+)$", (ROOT / "plugins" / "envcanada-alerts" / "PLUGIN.md").read_text(encoding="utf-8"), re.M)
+    cut = ex.index("what is the capital of Canada?")
+    assert all(a.covers(q) > 0 for q in ex[:cut]) and not any(a.covers(q) > 0 for q in ex[cut:])   # its own examples
 
 
 def test_the_board_and_the_record_say_what_declined(tmp_path, monkeypatch):

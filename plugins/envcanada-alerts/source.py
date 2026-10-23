@@ -1,10 +1,15 @@
 """envcanada-alerts -- a plugin source (order 0028): the weather warnings in effect in Canada, from the national
 weather service's Datamart (CAP alerts, Open Government Licence - Canada), read through ``ctx.fetch`` only.
 
-``covers`` says whether a question asks about alerts in effect: an alert's own word (warning, watch, advisory,
-statement; their French) or a hazard together with now (tonight, today, in effect); a question about weather in general
-("what causes freezing rain?") is not one (order 0028 review 2: a woken source must claim the question before it
-fetches). ``answer`` reads today's alerts (at most once every
+``covers`` (order 0028 review 3) claims a question only when it asks all three of:
+- about a warning, watch, advisory or statement (an alert; their French);
+- about its status NOW: a yes/no "is there / any / y a-t-il ..." question, or now, tonight, today, in effect ...;
+- for a place in Canada (one the gazetteer below or the feed's own regions name), or for no place at all ("here",
+  "my area").
+
+What a warning means, how warnings are issued, how many there were, and anywhere outside Canada are not its own.
+Weather in general ("what causes freezing rain?", "is there heavy snow in Ottawa?") is not either. A woken source
+must claim the question before it fetches (review 2), and ``covers`` itself fetches nothing. ``answer`` reads today's alerts (at most once every
 half hour, over the last twelve hours of files; each alert file is fetched once and kept in the plugin's folder) and returns, for the places the question
 names, the alerts in effect -- as facts in plain words, dated, the publisher never named in them. A place it cannot find
 gets nothing (a refusal), never "no warning": an empty answer is not evidence that the sky is clear.
@@ -17,13 +22,37 @@ import xml.etree.ElementTree as ET
 
 BASE = "https://dd.weather.gc.ca/today/alerts/cap/"
 CAP = "{urn:oasis:names:tc:emergency:cap:1.2}"
-WORDS = re.compile(r"\b(warnings?|watch(es)?|alerts?|advisor(y|ies)|storm|snow(fall)?|blizzard|rain(fall)?|wind|heat|"
-                   r"tornado|thunderstorm|freezing|fog|avertissements?|alertes?|veilles?|tempête|neige|pluie|vent|"
-                   r"chaleur|verglas|orages?|bulletins?)\b", re.I)
-ALERT = re.compile(r"\b(warnings?|watch(es)?|alerts?|advisor(y|ies)|statements?|avertissements?|alertes?|veilles?|"
-                   r"bulletins?)\b", re.I)
-NOW = re.compile(r"\b(now|right now|today|tonight|this (morning|afternoon|evening|week)|in effect|currently|active|"
+NOW =re.compile(r"\b(now|right now|today|tonight|this (morning|afternoon|evening|week)|in effect|currently|active|"
                  r"maintenant|aujourd'hui|ce soir|cette semaine|en (vigueur|cours)|actuellement)\b", re.I)
+KIND = re.compile(r"\b(warn(ings?|s)?|watch(es)?|advisor(y|ies)|statements?|alerts?|avertissements?|veilles?|avis|"
+                  r"bulletins?|alertes?)\b", re.I)
+ASKS = re.compile(r"^\s*(is|are|any|has|have|should i worry|y a.t.il|est.ce qu|des|un|une)\b", re.I)
+NOT_STATUS = re.compile(r"\b(mean|means|meaning|stand for|signifi\w*|veut dire|d[eé]finition|how (are|is|do|does|often|"
+                        r"many|much|long)|combien|comment|pourquoi|why|history|historique|last (year|winter|summer|spring|"
+                        r"fall|autumn|month|week)|yesterday|hier|derni[eè]re?|in \d{4}|en \d{4}|was there|were there|did)\b",
+                        re.I)
+PREP = re.compile(r"(?<!\w)(in|for|near|at|around|across|over|à|au|aux|en|dans|pour|près de|pres de)\s+", re.I)
+NOT_PLACE = re.compile(r"^(the |le |la |les |l')?(effect|vigueur|cours|the next|the morning|the afternoon|the evening|"
+                       r"my (area|region|city|town)|ma (région|region|ville)|mon (coin|quartier)|here|ici|chez moi|"
+                       r"this (area|region)|ce coin|the area|the region|la région|la region)\b", re.I)
+#: places in Canada a question may name without the feed read yet (folded; the feed's regions are added once read)
+CANADA = ("canada", "british columbia", "colombie-britannique", "alberta", "saskatchewan", "manitoba", "ontario", "quebec",
+          "new brunswick", "nouveau-brunswick", "nova scotia", "nouvelle-ecosse", "prince edward island",
+          "ile-du-prince-edouard", "newfoundland", "labrador", "terre-neuve", "yukon", "northwest territories",
+          "territoires du nord-ouest", "nunavut", "the maritimes", "maritimes", "the prairies", "prairies",
+          "atlantic canada", "vancouver", "victoria", "kelowna", "kamloops", "prince george", "nanaimo", "whistler",
+          "calgary", "edmonton", "red deer", "lethbridge", "banff", "fort mcmurray", "jasper", "regina", "saskatoon",
+          "prince albert", "winnipeg", "brandon", "churchill", "toronto", "ottawa", "hamilton", "london", "kitchener",
+          "waterloo", "windsor", "sudbury", "thunder bay", "kingston", "barrie", "niagara", "mississauga", "brampton",
+          "peterborough", "sault ste. marie", "north bay", "timmins", "guelph", "oshawa", "markham", "montreal",
+          "laval", "longueuil", "quebec city", "ville de quebec", "levis", "gatineau", "sherbrooke", "trois-rivieres",
+          "saguenay", "chicoutimi", "rimouski", "drummondville", "granby", "saint-jean-sur-richelieu", "rouyn-noranda",
+          "val-d'or", "sept-iles", "baie-comeau", "gaspe", "gaspesie", "charlevoix", "estrie", "monteregie",
+          "laurentides", "lanaudiere", "outaouais", "mauricie", "abitibi", "cote-nord", "bas-saint-laurent",
+          "chaudiere-appalaches", "beauce", "lac-saint-jean", "iles-de-la-madeleine", "fredericton", "moncton",
+          "saint john", "bathurst", "halifax", "dartmouth", "sydney", "truro", "cape breton", "charlottetown",
+          "summerside", "st. john's", "corner brook", "gander", "happy valley-goose bay", "whitehorse", "yellowknife",
+          "inuvik", "iqaluit", "rankin inlet")
 REFRESH_S = 1800
 HOURS = 12              # alerts are re-issued as updates: the last 12 hours hold every one in effect
 
@@ -37,10 +66,27 @@ class Alerts:
         self.ctx, self.alerts, self.read_at = ctx, [], 0.0
 
     def covers(self, question: str) -> float:
-        q = question or ""
-        if ALERT.search(q):
-            return 0.8
-        return 0.6 if WORDS.search(q) and NOW.search(q) else 0.0
+        """0.8 when the question asks about an alert's status now, for a place in Canada or for none; else 0.0."""
+        q = " ".join((question or "").split())
+        if not KIND.search(q) or NOT_STATUS.search(q) or not (ASKS.search(q) or NOW.search(q)):
+            return 0.0
+        return 0.8 if self._in_canada(q) else 0.0
+
+    def _in_canada(self, q: str) -> bool:
+        """Every place the question names is in Canada (the gazetteer, or a region the feed has named); no place at all
+        ("here", "my area", none) is the asker's own, so it counts."""
+        known = set(CANADA) | {fold(a["area"]) for a in self.alerts if a.get("area")}
+        cuts = [m.end() for m in PREP.finditer(q)]
+        for i, start in enumerate(cuts):
+            phrase = q[start:(cuts[i + 1] if i + 1 < len(cuts) else len(q))]
+            phrase = NOW.split(phrase)[0]                                  # "Vancouver this week" -> "Vancouver"
+            phrase = fold(re.sub(r"[?!.,;:]+", " ", phrase)).strip()
+            phrase = re.sub(r"\b(in|for|near|at|around|across|over|au|aux|en|dans|pour|pres de)$", "", phrase).strip()
+            if not phrase or NOT_PLACE.match(phrase) or not re.search(r"[a-z]", phrase):
+                continue
+            if not any(re.search(rf"\b{re.escape(k)}\b", phrase) for k in known):
+                return False
+        return True
 
     # -- reading the Datamart ----------------------------------------------------------------------------------------
     def _list(self, url: str, pattern: str) -> list[str]:
