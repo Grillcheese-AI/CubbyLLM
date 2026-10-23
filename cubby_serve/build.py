@@ -10,8 +10,7 @@ answered through the brain's own retrieval — the serve stack's own number.
   python -m cubby_serve.build --gguf ... --selftest 25 --tag _v3
   (python standin/serve.py ... runs this too, for one cycle)
 
-The fast-word encoder is loaded by file path from the mowm checkout (``exp_m3_domain_routing._load_semantic_words``),
-as before the move: whether to port it is the 0031 report's question 8.
+The fast-word encoder is the package's own (``cubbyllm.worlds.fast_words``, ported from mowm in order 0033).
 
 Wired: WIRED (serve_cli builds the server's brain with ``build_serve``).
 """
@@ -63,7 +62,7 @@ def build_serve(gguf: str | None, table: str | None, n_store: int, exe: str | No
     trained on another checkpoint than the emitter's (2026-10-17: the emitter on base450m_cont, talk_v2_2 on
     base450m) -- a second trunk then, 2.3 GB more, until the talk adapter is retrained on the same base."""
     from cubbyllm.worlds.fact_pool import V4_TABLE, load_sample
-    from exp_m3_domain_routing import _load_semantic_words
+    from cubbyllm.worlds.fast_words import FastWordEncoder
 
     from cubbyllm.emit.talk import ContextualEmitter
     from emitter_llama import LlamaCppEmitter                       # the stand-in's GGUF seat (--gguf), by the name
@@ -74,8 +73,7 @@ def build_serve(gguf: str | None, table: str | None, n_store: int, exe: str | No
         seen = {" ".join(f.split()) for f in store}
         store = store + [f for f in extra_facts if " ".join(f.split()) not in seen]
     print(f"  {len(store)} facts | loading fastword table ...", flush=True)
-    sw = _load_semantic_words()
-    enc = sw.FastWordEncoder.from_npz(str(table or V4_TABLE))
+    enc = FastWordEncoder.from_npz(str(table or V4_TABLE))
     world = FactStore(store, enc=enc, name="facts")
     slotted = None
     if cubby450m:

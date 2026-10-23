@@ -1,0 +1,18 @@
+{
+ "what": "order 0033: cubbyllm.worlds.fast_words against mowm's FastWordEncoder on the production table",
+ "table": "fastword_table_v4.npz",
+ "words": 60151,
+ "k": 80,
+ "l": 128,
+ "same_meta": true,
+ "same_idf": true,
+ "texts": 2020,
+ "equal": 2020,
+ "max_abs_diff": 0.0,
+ "load_s": 15.4,
+ "wall_s": 16.0,
+ "args": {
+  "n": 2000,
+  "seed": 0
+ }
+}

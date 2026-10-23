@@ -29,7 +29,6 @@ from cubbyllm.local_paths import expand as _lp  # noqa: E402 -- local folders by
 import os
 
 import argparse
-import importlib.util
 import json
 import pathlib
 import re
@@ -44,18 +43,16 @@ if str(ROOT) not in sys.path:
 
 DOMAINS_DIR = pathlib.Path(_lp(r"$CUBBY_DATASETS\domains"))
 TABLE = pathlib.Path(os.environ.get("CUBBY_MODELS", _lp(r"$CUBBY_MODELS"))) / "fastword_table_v1.npz"
-SEMANTIC_WORDS = pathlib.Path(_lp(r"$CUBBY_GITHUB\mowm\mowm\encoding\semantic_words.py"))
 EXCLUDE = {"_unsure", "my_identity", "gutemberg_books_unclassified"}  # unlabeled/personal
 
 K, L = 80, 128
 
 
 def _load_semantic_words():
-    spec = importlib.util.spec_from_file_location("semantic_words", SEMANTIC_WORDS)
-    assert spec is not None and spec.loader is not None
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
+    """The fast word-table encoder's module: the package's port (order 0033), the same code as mowm's
+    ``semantic_words`` (``tests/worlds/test_fast_words.py`` pins it), so no script needs the mowm checkout for it."""
+    from cubbyllm.worlds import fast_words
+    return fast_words
 
 
 def sample_passages(domain_dir: pathlib.Path, n_files: int, n_passages: int,
