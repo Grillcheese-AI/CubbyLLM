@@ -1,5 +1,5 @@
 # 0033 — Follow-ups from the 0030 and 0031 reviews: a merged namesake spoke a wrong place, and six small fixes
-status: open
+status: in progress
 written: 2026-10-22 by Cowork, from the reviews of 0030 and 0031 · approved: — (fixes from a review; Nick told) · hypothesis: none
 
 ## Why
