@@ -1,8 +1,10 @@
 """exp_s12_copy_villages -- order 0035 C's measure: a checkpoint's trunk and copy on 0034's 60 villages (the cut view,
-the fixed placed questions: neighbour, offset, at), in two shapes:
-- **0034's** (``make_spatial_shard.render``): ``here`` asks; the answer follows "Answer:" with its space (" coal");
-- **the far facts'** (``render(lead=True)``): a name's piece i at its cell + 6 i z; the last token of "Answer: " asks
-  for piece 0; the answer in the token form it was written in; each answer piece asks for the next.
+the fixed placed questions: neighbour, offset, at), in these shapes (``--shapes``):
+- ``0034`` (``make_spatial_shard.render``): ``here`` asks; the answer follows "Answer:" with its space (" coal");
+- ``lead``, the far facts' (``render(lead=True)``): a name's piece i at its cell + 6 i z; the last token of "Answer: "
+  asks for piece 0; the answer in the token form it was written in; each answer piece asks for the next;
+- ``space``, the same in the space form (``render(lead="space")``): every name written and answered as " coal", and
+  the ":" of "Answer:" asking (the token after which the trunk says "nothing" in 0034's shape).
 
 Per answer class (``kind``: a thing; ``name``: a villager; ``nothing``): n; the first token right and the whole answer
 right (teacher-forced, as ``exp_s12_scene_files`` scores them); the copy's lambda at the token that predicts the first
@@ -11,6 +13,7 @@ another token form, a neighbour's piece (a thing within two steps of the cell), 
 or another token.
 
     CUBBY_SCENES=<0034's folder> CB_CKPT=<checkpoint> python validation/exp_s12_copy_villages.py --tag <run> [--limit N]
+        [--shapes 0034,lead,space] [--copy-off]  (the trunk alone, the copy not mixed in)
 -> validation/logs/exp_s12_copy_villages_<tag>_<date>.json (counts only: no name, no cell, no kind word); every
    answer, with its village, to $CUBBY_SCENES/exp_s12_copy_villages_<tag>_<date>.json (that folder stays private)
 
@@ -50,7 +53,7 @@ def miss(tk, sc, q, said: int, answer) -> str:
     return MISS.get(_where(tk, sc, q, said, answer), "another token")
 
 
-def measure(model, tap, tk, eos: int, lead: bool, limit=None) -> list[dict]:
+def measure(model, tap, tk, eos: int, lead, limit=None) -> list[dict]:
     from exp_hypertoken_recall import answers
     d = scenes_dir()
     fixed = json.load(open(os.path.join(d, "questions.json"), encoding="utf-8"))
@@ -87,19 +90,23 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--tag", required=True, help="the checkpoint's name in the log (e.g. run5)")
     ap.add_argument("--limit", type=int, default=None, help="scene files (default: all)")
-    ap.add_argument("--shapes", default="0034,lead", help="which shapes to read: 0034, lead or both")
+    ap.add_argument("--shapes", default="0034,lead", help="the shapes to read: 0034, lead, space")
+    ap.add_argument("--copy-off", action="store_true", help="the trunk alone: the copy is not mixed in")
     ap.add_argument("--date", default=_dt.date.today().isoformat())
     a = ap.parse_args()
     t0 = time.time()
     model, tk, meta = load_trunk()
     tap = Tap(model.spatial.copy_path)
+    if a.copy_off:                                   # what the trunk says where the copy would have mixed in
+        model.spatial.copy_path = None
     eos = tk.token_to_id("</s>")
-    arms = {s: measure(model, tap, tk, eos, s == "lead", a.limit) for s in a.shapes.split(",")}
+    lead = {"0034": False, "lead": True, "space": "space"}
+    arms = {s: measure(model, tap, tk, eos, lead[s], a.limit) for s in a.shapes.split(",")}
     d = scenes_dir()
     pub = {"what": "order 0035 C's measure: a checkpoint on 0034's villages (cut, the fixed placed questions), in 0034's "
-                   "shape and in the far facts' (lead) shape, by answer class",
+                   "shape and in the far facts' (lead: bare names; space: names in their space form), by answer class",
            "date": a.date, "tag": a.tag, "checkpoint": os.path.basename(os.environ.get("CB_CKPT") or CKPT),
-           "copy": meta.get("spatial"), "villages": len(files(d)[:a.limit] if a.limit else files(d)),
+           "copy": meta.get("spatial"), "copy_off": a.copy_off, "villages": len(files(d)[:a.limit] if a.limit else files(d)),
            "questions_sha256": sha(os.path.join(d, "questions.json")), "seconds": round(time.time() - t0, 1),
            "shapes": {s: summary(rows) for s, rows in arms.items()}}
     path = os.path.join(HERE, "logs", f"exp_s12_copy_villages_{a.tag}_{a.date}.json")

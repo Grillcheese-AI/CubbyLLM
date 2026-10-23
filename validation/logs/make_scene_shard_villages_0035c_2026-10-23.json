@@ -1,0 +1,19 @@
+{
+ "what": "order 0035 C: a village shard from scene files",
+ "shard": "villages_0035c",
+ "shape": "space",
+ "villages": 67,
+ "villages_skipped": 0,
+ "documents": 3350,
+ "doc": 512,
+ "tokens": 1715200,
+ "holdout_tokens": 34304,
+ "questions": {
+  "name": 9222,
+  "nothing": 46031,
+  "kind": 36850
+ },
+ "per_village": 50,
+ "seed": 0,
+ "seconds": 94.6
+}

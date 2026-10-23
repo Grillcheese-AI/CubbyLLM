@@ -122,7 +122,7 @@ def questions(sc: Scene, rng: random.Random, k: int, ask: str = "learned") -> li
 WRITE, ASK = 1, 2                                   # role flags (train_base.Tokens): into the scene / reads there
 
 
-def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int, lead: bool = False):
+def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int, lead: bool | str = False):
     """One document: ``(ids, places, roles)`` of exactly ``doc`` tokens (questions dropped
     from the end when the village alone would not fit them; </s>-padded otherwise). In
     ``places`` mode a thing's name tokens carry its cell and WRITE it into the scene, and a
@@ -132,9 +132,12 @@ def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int, lead: bool = 
     ``lead`` (``places`` only; order 0035 C, off by default and then byte for byte as before) writes the village in the
     far facts' shape (``make_fact_shard.render``): a name's piece i at its cell + 6 i z; after a placed question,
     "Answer: ", whose last token asks for piece 0 at the cell, then the answer encoded alone (the token form its name
-    was written in), each piece asking for the next one's address."""
+    was written in), each piece asking for the next one's address. ``lead="space"``: the same, with every name in its
+    space form (" coal", in the listing and in the answer), "Answer:" with no space of its own, and its ":" asking:
+    the token the trunk answers "nothing" after in 0034's shape."""
     ids, pos, roles = [], [], []
-    lead = lead and mode == "places"
+    lead = lead if mode == "places" else False
+    sp = " " if lead == "space" else ""
 
     def put(text: str, cell=None, role: int = WRITE, span: bool = False):
         t = tk.encode(text, add_special_tokens=False).ids
@@ -150,7 +153,7 @@ def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int, lead: bool = 
         if mode == "text":
             put(f"{name} at {' '.join(map(str, cell))}\n")
         else:
-            put(name, cell)
+            put(sp + name, cell)
             put("\n")
     for r, (lo, hi) in sorted(sc.regions.items()):
         put(f"Region {r}: {' '.join(map(str, lo))} to {' '.join(map(str, hi))}\n")
@@ -168,9 +171,9 @@ def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int, lead: bool = 
         else:
             put(f"Question: {q}\n")
         if lead and cell is not None:                 # the far facts' shape: the lead asks, then the written form
-            put("Answer: ")
+            put("Answer:" if sp else "Answer: ")
             pos[-1], roles[-1] = cell, ASK
-            put(a, cell, ASK, span=True)              # piece j, as input, asks for piece j + 1
+            put(sp + a, cell, ASK, span=True)         # piece j, as input, asks for piece j + 1
             put("\n")
         else:
             put(f"Answer: {a}\n")

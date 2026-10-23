@@ -1,0 +1,69 @@
+{
+ "what": "order 0035 C's measure: a checkpoint on 0034's villages (cut, the fixed placed questions), in 0034's shape and in the far facts' (lead) shape, by answer class",
+ "date": "2026-10-23",
+ "tag": "run5_copy_off",
+ "checkpoint": "spatial_link_5_final.pt",
+ "copy": {
+  "scale": 2.0,
+  "seed": 0,
+  "at": 16,
+  "query": "placed",
+  "bind": "writes",
+  "copy": "ring",
+  "copy_tau": 3.04,
+  "copy_beta": 0.115
+ },
+ "copy_off": true,
+ "villages": 60,
+ "questions_sha256": "80b60cc3a9f4f9aa70fb0f0cd43a36209b93a8c24162e8fcdb68085a59b08e7c",
+ "seconds": 219.3,
+ "shapes": {
+  "lead": {
+   "kind": {
+    "n": 329,
+    "first": 11,
+    "exact": 1,
+    "first_rate": 0.033,
+    "exact_rate": 0.003,
+    "lambda_mean": null,
+    "lambda_over_half": null,
+    "missed_first_went_to": {
+     "another token": 280,
+     "a neighbour's piece": 5,
+     "a farther thing's piece": 32,
+     "nothing": 1
+    }
+   },
+   "name": {
+    "n": 120,
+    "first": 1,
+    "exact": 0,
+    "first_rate": 0.008,
+    "exact_rate": 0.0,
+    "lambda_mean": null,
+    "lambda_over_half": null,
+    "missed_first_went_to": {
+     "another token": 98,
+     "a farther thing's piece": 19,
+     "a neighbour's piece": 1,
+     "another piece of the same name": 1
+    }
+   },
+   "nothing": {
+    "n": 391,
+    "first": 7,
+    "exact": 7,
+    "first_rate": 0.018,
+    "exact_rate": 0.018,
+    "lambda_mean": null,
+    "lambda_over_half": null,
+    "missed_first_went_to": {
+     "another token": 337,
+     "a farther thing's piece": 34,
+     "a neighbour's piece": 12,
+     "the right word, another token form": 1
+    }
+   }
+  }
+ }
+}

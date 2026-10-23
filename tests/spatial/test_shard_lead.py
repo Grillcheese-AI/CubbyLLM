@@ -63,6 +63,27 @@ def test_the_lead_shape_writes_pieces_up_z_and_asks_for_each_next_piece(tk):
     assert all(places[m, 0] == NO_PLACE for m in range(len(ids)) if roles[m] == 0)
 
 
+def test_the_space_form_writes_and_answers_every_name_as_it_is_spoken(tk):
+    """``lead="space"``: " coal" in the listing and in the answer, and the ":" of "Answer:" asks for piece 0."""
+    from exp_hypertoken_recall import answers
+    rng = random.Random(9)
+    sc = village(rng, 12)
+    qa = questions(sc, rng, 10, "placed")
+    ids, places, roles = render(tk, sc, qa, "places", tk.token_to_id("</s>"), 1024, lead="space")
+    written = {name: tk.encode(" " + name, add_special_tokens=False).ids for name in sc.things}
+    starts = [j for j in range(len(ids)) if roles[j] == WRITE and (j == 0 or roles[j - 1] != WRITE)]
+    assert len(starts) == len(sc.things)
+    for j in starts:
+        base = tuple(int(v) for v in places[j])
+        assert [int(x) for x in ids[j:j + len(written[sc.at(base)])]] == written[sc.at(base)]
+    colon = tk.encode("Answer:", add_special_tokens=False).ids[-1]
+    for (q, a, cell), (j, k) in zip(qa, answers(tk, ids)):
+        assert int(ids[j - 1]) == colon and roles[j - 1] == ASK and tuple(int(v) for v in places[j - 1]) == tuple(cell)
+        assert [int(x) for x in ids[j:k + 1]] == tk.encode(" " + a, add_special_tokens=False).ids
+        if a in written:
+            assert [int(x) for x in ids[j:k + 1]] == written[a]
+
+
 def test_off_and_unplaced_and_text_are_as_before(tk):
     rng = random.Random(3)
     sc = village(rng, 10)

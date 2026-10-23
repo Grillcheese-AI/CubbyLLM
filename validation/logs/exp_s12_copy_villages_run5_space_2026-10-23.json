@@ -1,0 +1,63 @@
+{
+ "what": "order 0035 C's measure: a checkpoint on 0034's villages (cut, the fixed placed questions), in 0034's shape and in the far facts' (lead: bare names; space: names in their space form), by answer class",
+ "date": "2026-10-23",
+ "tag": "run5_space",
+ "checkpoint": "spatial_link_5_final.pt",
+ "copy": {
+  "scale": 2.0,
+  "seed": 0,
+  "at": 16,
+  "query": "placed",
+  "bind": "writes",
+  "copy": "ring",
+  "copy_tau": 3.04,
+  "copy_beta": 0.115
+ },
+ "copy_off": false,
+ "villages": 60,
+ "questions_sha256": "80b60cc3a9f4f9aa70fb0f0cd43a36209b93a8c24162e8fcdb68085a59b08e7c",
+ "seconds": 259.1,
+ "shapes": {
+  "space": {
+   "kind": {
+    "n": 329,
+    "first": 315,
+    "exact": 269,
+    "first_rate": 0.957,
+    "exact_rate": 0.818,
+    "lambda_mean": 0.9661,
+    "lambda_over_half": 319,
+    "missed_first_went_to": {
+     "nothing": 9,
+     "a neighbour's piece": 5
+    }
+   },
+   "name": {
+    "n": 120,
+    "first": 114,
+    "exact": 93,
+    "first_rate": 0.95,
+    "exact_rate": 0.775,
+    "lambda_mean": 0.9813,
+    "lambda_over_half": 120,
+    "missed_first_went_to": {
+     "a neighbour's piece": 6
+    }
+   },
+   "nothing": {
+    "n": 391,
+    "first": 238,
+    "exact": 238,
+    "first_rate": 0.609,
+    "exact_rate": 0.609,
+    "lambda_mean": 0.4019,
+    "lambda_over_half": 148,
+    "missed_first_went_to": {
+     "a neighbour's piece": 142,
+     "another token": 3,
+     "a farther thing's piece": 8
+    }
+   }
+  }
+ }
+}

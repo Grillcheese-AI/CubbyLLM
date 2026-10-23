@@ -12,7 +12,7 @@ and ``_holdout`` entries. The cache is outside this repo when the scenes are pri
 villages' documents. This repo's log gets only the counts (``validation/logs/make_scene_shard_<name>_<date>.json``).
 
     python validation/make_scene_shard.py --scenes <folder> --cache <folder> --name <shard>
-        [--per-village 10] [--doc 512] [--shape lead|0034] [--holdout-frac 0.02] [--seed 0]
+        [--per-village 10] [--doc 512] [--shape lead|space|0034] [--holdout-frac 0.02] [--seed 0]
 
 Wired: STANDALONE (a data builder).
 """
@@ -76,7 +76,7 @@ def main() -> None:
     ap.add_argument("--tokenizer", default=SPM)
     ap.add_argument("--per-village", type=int, default=10)
     ap.add_argument("--doc", type=int, default=512)
-    ap.add_argument("--shape", choices=["lead", "0034"], default="lead")
+    ap.add_argument("--shape", choices=["lead", "space", "0034"], default="lead")
     ap.add_argument("--holdout-frac", type=float, default=0.02)
     ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args()
@@ -95,7 +95,8 @@ def main() -> None:
         for _ in range(a.per_village):
             qa = asked(sc, rng)
             try:
-                ids, places, roles = render(tk, sc, [q[:3] for q in qa], "places", eos, a.doc, a.shape == "lead")
+                ids, places, roles = render(tk, sc, [q[:3] for q in qa], "places", eos, a.doc,
+                                            {"lead": True, "space": "space"}.get(a.shape, False))
             except ValueError:                           # the listing alone is longer than a document
                 skipped += 1
                 break
