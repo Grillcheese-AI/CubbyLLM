@@ -1,5 +1,5 @@
 # 0036 — Namesakes, the rest: inverse questions, a chosen item kept as itself, the kind-to-relations table, and an audit of the relation tier
-status: review (items 1-4 built and measured; the audit, by my reading, misses its line: question 1)
+status: in progress (2026-10-23: items 1-3 accepted; the audit 21 of 50 by Cowork's reading, so the tier goes strict as pre-registered)
 written: 2026-10-23 by Cowork, from 0033's review (fixes toward the first rule; Nick told) · approved: — · hypothesis: none
 
 ## Why
@@ -86,3 +86,38 @@ In plain words: when names are shared, Cubby never mixes the things up, whicheve
   1. Your reading of the audit, and with it: strict now (pre-registered), or a guard that reads an untyped namesake's
      kind from its own relations (the kinds table makes that a lookup)? A naive version would cost Italy's capital: a
      town in New York named Italy carries "country" and "located in" like a state does.
+
+## Review (Cowork, 2026-10-23): items 1 to 3 accepted; the audit fails its line, so the tier goes strict
+- **Items 1 to 3 are accepted.**
+  - The object index never reads a shared label (0 mixed in 50).
+  - A chosen item keeps its own id, and the bare name still asks which.
+  - The kinds table makes the same decisions as the scan, in 34.5 ms instead of 616 ms.
+  - 0014's bench is unchanged, and so is the stack's 20.
+- **The audit, read line by line** (right means the chosen item is the one a person asking means): **21 of 50 right.**
+  - In 29 the question cannot tell which item is meant, because a namesake of the same real kind can carry the
+    relation. They are 1, 3, 4, 6, 7, 8, 9, 11, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 30, 31, 35, 38, 40, 43,
+    44, 45, 47 and 49:
+    - two or more people (7, 8, 9, 11, 17, 19, 20, 23, 24, 27, 40, 49);
+    - two places (3, 22, 30, 45: most people asking about Bowmore mean Islay's);
+    - two films or works (6, 25, 35, 38, 43, 47);
+    - two taxa (44);
+    - the TV channels (26) and the railways (31);
+    - 1 (Huey Long's "country of origin": most people mean the politician), 4 (the actor or the film) and 18 (a
+      name).
+  - In 2 of the 29 (19 and 21) the spoken answer would hold for any reading. Even counted as right, that makes 23, far
+    from 49.
+  - My judgment calls went the tier's way twice: 15 (the commune, not the river) and 39 (the album; the films are not
+    sequels).
+  - Your count of "at least 9" was cautious. The cause is the one you found: an item with no kind is treated as one
+    that cannot carry the relation. 46 of the 50 have such a namesake, and most of them plainly are of the chosen
+    item's kind.
+- **So the tier goes strict now, as pre-registered:** the asker or a qualifier only. Make the switch, rerun the
+  stack's 20 and the bench, and say which answers now ask back. France's capital and Japan's currency are expected to.
+  Then 0036 is done.
+- **Your question 1, the smarter guard:** a new order, not a change here. It would read an untyped namesake's kind from
+  its own relations through the kinds table, and decide only when no namesake's kind can carry the relation. It would
+  also need a fresh audit, on a new seed, pre-registered at 49 of 50, with France's capital, Japan's currency and
+  Italy's capital in the set. Until that passes, strict stands. Cowork proposes it when Nick wants the common questions
+  answered without asking back.
+- **Found on the way 1** (no serving path reads the object index; an inverse route would be its own order) and **2**
+  (the board's 5-second cache explains 0033's 18 of 20) are noted. No change is needed for either.
