@@ -1,5 +1,5 @@
 # 0028 — Plugins: one folder format and a loader for adapters, worlds, sources and tools, and board panels, loaded on demand like skills
-status: in progress (review 3: a stricter covers for alerts, one more held-out run)
+status: review (review 3 built: the stricter covers; the held-out v3 set run once: alerts meets the line)
 written: 2026-10-22 by Cowork · approved: 2026-10-22 by Nick (asked for it; chose all four kinds, on-demand loading, code with permissions) · hypothesis: none · **after 0027 P1**
 
 ## Why
@@ -401,3 +401,38 @@ ours and it missed.
   warning means, how warnings are issued, how many there were, or about another country, are not its own.
 - **Measure once on `docs/0028_routing_heldout_v3.local.md`**, written before the change (alerts only, 10 to wake and
   10 near misses, some in French), with the line as before. Then 0028 is done.
+
+### Review 3 built: the stricter covers, and the held-out v3 set run once (2026-10-23)
+- **Commits:** `c8435c4` (the covers and its test); this report, with `validation/plugins_routing.py`'s one-plugin
+  reader and the log.
+- **The covers** (`plugins/envcanada-alerts/source.py`). It claims a question only when it asks all three of:
+  - about a warning, watch, advisory or statement (their French too);
+  - about its status now: a yes/no "is there / any / y a-t-il / est-ce qu'il y a ..." question, or now, tonight,
+    today, in effect, en vigueur ...;
+  - for a place in Canada (a gazetteer of provinces, territories, cities and Quebec's regions, plus the feed's own
+    regions once read), or for no place at all ("here", "my area").
+
+  These are not its own: what a warning means, how warnings are issued, how many there were (anything past), a place
+  outside Canada, and weather in general. It fetches nothing.
+  - On its own PLUGIN.md lists: 30 of 30 examples claimed, 0 of its "not" examples.
+  - The test pins the rule. "Is there heavy snow in Ottawa right now?" moved to the declined side: it is weather now,
+    not a warning, which review 2's hazard-plus-now rule had claimed. The old patterns are gone.
+- **The held-out v3 set, run once** on `c8435c4`, as v2 was: MiniLM, logistic heads, tau 0.675, `--second-check`
+  ([log](../../validation/logs/plugins_routing_minilm_logistic_heldout_v3_2026-10-23.json); counts only, and I have
+  not read the set):
+
+  | plugin | woken by the router | woken after the check | near misses, router | near misses, after the check | line |
+  |---|---|---|---|---|---|
+  | `envcanada-alerts` | 8/10 | **8/10** | 7/10 | **0/10** (all 7 declined by covers) | **met** |
+
+  - The router woke 7 of the 10 near misses (more than v2's 3). The second check stopped all 7.
+  - The 2 questions it should have woken on were missed by the router, not by covers.
+  - No other plugin woke.
+- **A first attempt scored nothing.** The v3 file is written for one plugin, with no `## <plugin>` heading, and the
+  reader expected one, so the run read no question and printed nothing from the set. The reader now takes
+  `--heldout-plugin` for such a set and refuses to log a run that read no question. Its empty log was moved to scratch
+  (`validation/logs/_plugins_routing_heldout_v3_scored_nothing_2026-10-23.json`). The run above is the one run.
+- **Not verified here:** the plugin's approval. Its code changed, so the board shows it as needing approve again
+  (Nick's); until then the server does not mount it.
+- **Questions:** none from me. The router's 7 of 10 near misses on alerts is high; the second check is what holds
+  the line.

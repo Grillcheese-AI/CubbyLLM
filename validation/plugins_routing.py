@@ -92,10 +92,11 @@ def quiet(t: dict) -> bool:
     return all(r["not"] <= NOT_LINE * r["not_of"] for r in t.values())
 
 
-def read_heldout(path: str) -> dict:
+def read_heldout(path: str, plugin: str | None = None) -> dict:
     """{plugin: {"wake": [...], "near": [...]}}: numbered lines under ``## <plugin>``; a heading line mentioning "not"
-    (or "near") after the first list starts the near misses."""
-    out, cur, part = {}, None, "wake"
+    (or "near") after the first list starts the near misses. ``plugin``: a set written for one plugin, with no ``##``
+    heading (v3, alerts only): its lists are that plugin's."""
+    out, cur, part = ({plugin: {"wake": [], "near": []}} if plugin else {}), plugin, "wake"
     for line in open(path, encoding="utf-8"):
         line = line.rstrip()
         if line.startswith("## "):
@@ -180,6 +181,7 @@ def main() -> None:
                          "minilm: paraphrase-MiniLM-L6-v2")
     ap.add_argument("--router", choices=["nearest", "logistic"], default="nearest")
     ap.add_argument("--heldout", help="the held-out set, scored once at the chosen tau (counts only in the log)")
+    ap.add_argument("--heldout-plugin", help="the plugin a one-plugin held-out set (no ## heading) is written for")
     ap.add_argument("--tag", default="", help="a suffix for the log's name")
     ap.add_argument("--tau", type=float, help="score the held-out set at this tau instead of the chosen one (the server as committed)")
     ap.add_argument("--second-check", action="store_true", help="count a held-out wake only when the plugin claims the question")
@@ -207,7 +209,9 @@ def main() -> None:
     rep["chosen_tau"] = best[0] if best else None
     rep["chosen"] = rep["grid"][str(best[0])] if best else None
     if a.heldout and (best or a.tau is not None):
-        sets, t_h = read_heldout(a.heldout), a.tau if a.tau is not None else best[0]
+        sets, t_h = read_heldout(a.heldout, a.heldout_plugin), a.tau if a.tau is not None else best[0]
+        if not any(s["wake"] or s["near"] for s in sets.values()):
+            raise SystemExit(f"{a.heldout}: no question read (a one-plugin set needs --heldout-plugin); nothing scored")
         rep["heldout"] = {"tau": t_h, "second_check": a.second_check,
                           "plugins": heldout(idx, sets, t_h, a.router, enc, second_check(idx) if a.second_check else None)}
     tag = ("" if a.encoder == "overlap" else "_" + a.encoder) + ("" if a.router == "nearest" else "_" + a.router)
