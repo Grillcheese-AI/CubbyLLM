@@ -29,8 +29,9 @@ __wiring__ = "STANDALONE"
 
 REPO = Path(__file__).resolve().parents[1]
 TEXT = (".py", ".md", ".json", ".txt", ".toml", ".yml", ".yaml", ".cfg", ".ini", ".js", ".html", ".css", ".sh", ".ps1",
-        ".cmd", ".bat", ".jsonl", ".csv", ".tsv", ".ipynb", ".log", ".svg")
-S = r"[\\/]{1,2}"                                          # a separator, single or JSON-escaped
+        ".cmd", ".bat", ".jsonl", ".csv", ".tsv", ".ipynb", ".log", ".svg",
+        ".stdout", ".stderr", ".out", ".err")          # a run's captured output too (order 0033)
+S = r"[\\/]{1,4}"                                          # a separator: single, JSON-escaped, or escaped twice (0033)
 D = r"(?<![A-Za-z0-9\\$%])[A-Za-z]:" + S                   # a drive root
 USER = r"[^\\/\s\"'`]+"
 RULES = [  # (pattern, name); a name of None means the home folder
@@ -48,7 +49,7 @@ RULES = [  # (pattern, name); a name of None means the home folder
     (D + r"Program Files(?: \(x86\))?(?![\w-])", "ProgramFiles"),
     (D + r"Windows(?![\w-])", "WINDIR"),
     (D + r"tmp(?![\w-])", "TEMP"),
-    (r"(?<![A-Za-z0-9\\$%])[A-Za-z]:(?:/|\\\\|\\(?![ntr\"\\u]))(?=[A-Za-z0-9_.(~-])", "CUBBY_DATA_ROOT/"),
+    (r"(?<![A-Za-z0-9\\$%])[A-Za-z]:(?:/|\\\\\\\\|\\\\|\\(?![ntr\"\\u]))(?=[A-Za-z0-9_.(~-])", "CUBBY_DATA_ROOT/"),
 ]
 RULES = [(re.compile(p), n) for p, n in RULES]
 VENV = re.compile(r"\.venv-dml\b")

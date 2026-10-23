@@ -17,12 +17,16 @@ scrub = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(scrub)
 
 
+def scanned(files) -> list[str]:
+    return [f for f in files if Path(f).suffix.lower() in scrub.TEXT and f != "tools/scrub_local_paths.py"]
+
+
 def committed() -> list[str]:
     try:
         out = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True).stdout
     except (OSError, subprocess.CalledProcessError):
         pytest.skip("not a git checkout")
-    return [f for f in out.splitlines() if Path(f).suffix.lower() in scrub.TEXT and f != "tools/scrub_local_paths.py"]
+    return scanned(out.splitlines())
 
 
 def test_no_committed_text_file_carries_a_local_path():
@@ -38,12 +42,21 @@ def test_no_committed_text_file_carries_a_local_path():
     "E" + ":" + "\\" + "datasets\\hdc",                     # a data folder on a drive
     "C" + ":/" + "Users/someone/Documents/GitHub/CubbyLLM",  # a checkout under a user folder
     "I" + ":" + "\\\\" + "My Drive\\\\cubbyllm",             # JSON-escaped, the synced Drive
+    "D" + ":" + "\\" * 4 + "My Drive" + "\\" * 4 + "cubbyllm",    # escaped twice (JSON inside JSON; order 0033)
+    "D" + ":" + "\\" * 4 + "runs" + "\\" * 4 + "x.pt",           # ... under any other root
     "/c/" + "Users/someone/x",                              # a Git Bash user folder
     "python ." + "venv-dml/Scripts/python.exe",             # the local venv's name
 ])
 def test_a_planted_path_is_caught_and_rewritten(planted):
     assert scrub.hit(planted)
     assert not scrub.hit(scrub.rewrite(planted, ".md"))
+
+
+def test_a_runs_captured_output_is_scanned(tmp_path):
+    p = tmp_path / "exp_run.stdout"                     # 0030's review: a .stdout log was never read (order 0033)
+    p.write_text("cwd " + "C" + ":" + "\\" + "Users" + "\\" + "someone" + "\\" + "x\n", encoding="utf-8")
+    assert scanned([p.name, "notes.stderr", "a.bin"]) == [p.name, "notes.stderr"]
+    assert scrub.hit(p.read_text(encoding="utf-8"))
 
 
 @pytest.mark.parametrize("fine", ["https://example.org/a:b", "Q: what?\\nA: yes", "a dict {k: v}", "ratio 3:1",

@@ -5,4 +5,4 @@ cvl train | 12000 train problems, 129 val problems (200:329) | encoding ...
   epoch 2: train loss 1.6049 | val top-1 0.390 auc 0.836 | 460s
   epoch 3: train loss 0.9436 | val top-1 0.365 auc 0.833 | 588s
   epoch 4: train loss 0.6387 | val top-1 0.392 auc 0.832 | 714s
-  best epoch 1 -> C:\CUBBY-TRAINED-MODELS\he19_cvl_v1.pt
+  best epoch 1 -> $CUBBY_MODELS\he19_cvl_v1.pt
