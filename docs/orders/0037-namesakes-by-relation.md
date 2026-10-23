@@ -35,13 +35,23 @@ truly cannot tell (two people named Steve Mills).
    - The kinds table keeps, per (kind, relation), how many members carry it.
    - A capital is common among sovereign states and rare among towns.
    - Claude Code proposes the threshold and states it in the report.
-3. **The rule.** A hop on a shared name reads one item when two things hold:
-   - that item's kind carries the relation;
-   - no other namesake's kind carries it (whether the kind is recorded, or read by item 1).
+3. **Cue words from the question** (Nick: "a building cannot have a Nobel Prize, only a person").
+   - The relation alone is often too wide: "award received" fits films (an Oscar) and buildings (an architecture
+     prize). The question's other words narrow it: "Nobel" goes only with people, and with a few organisations for
+     the Peace Prize.
+   - **Built from the world, not assigned by hand:** a word-to-kinds table, made once with the kinds table. For each
+     content word in the world's values, it records which kinds of subjects carry it (recorded, or read by item 1).
+     This covers every topic with no hand list to keep up.
+   - In this snapshot the 22 holders of the Nobel Prize in Physics have no recorded kind, so item 1's reading is what
+     makes the table useful.
+   - A cue word **only rules out**: a namesake whose kind never goes with the word does not compete. It never ranks.
+4. **The rule.** A hop on a shared name reads one item when two things hold:
+   - that item's kind carries the relation, and goes with the question's cue words;
+   - no other namesake's kind does (whether the kind is recorded, or read by item 1).
 
    Two of a kind still asks back. An item whose facts say nothing of its kind does not compete (France's Q49644). The
    audit decides whether that holds.
-4. **Behind a flag** until the audit passes; then on by default for hops. The asker and a qualifier still come first.
+5. **Behind a flag** until the audit passes; then on by default for hops. The asker and a qualifier still come first.
 
 ## Acceptance (pre-registered)
 - **The audit,** read by hand by Cowork, as in 0036:
@@ -53,6 +63,13 @@ truly cannot tell (two people named Steve Mills).
     pick; report how many.
   - Below the line, strict stays, and the report says which guard missed.
 - **The three common questions** answer: France's capital (Paris), Japan's currency (the yen), Italy's capital (Rome).
+- **A cue-word probe:**
+  - 20 shared names, drawn by seed 1, each asked with a cue word taken from one item's own values;
+  - each question picks that item or asks back, with 0 wrong picks;
+  - Cowork reads the list.
+- **"What Nobel Prize did Marie Curie win?"** picks Q7186, the person (the other Marie Curie has only a country).
+  The snapshot holds no Nobel fact for her (four facts), so the answer says it does not know rather than guessing.
+  Choosing the right item and holding its fact are separate checks.
 - **0033's probe:** 0 mixed. **0014's bench:** 0 wrong.
 - **The stack's 20:** France's capital and Japan's currency answer again; the other 18 are as after 0036.
 - **Latency:** the hop's decision time is reported.
