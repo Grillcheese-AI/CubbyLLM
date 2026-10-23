@@ -7,7 +7,8 @@ stores answers nothing, the CubeLang VM verifies).
 2. 200 one-hop questions from `eval_ood_scaling_law.pq` (held-out domains), as the set writes them (a subject by one
    of its aliases), whose fact the world holds: spoken and correct (the answer is one of the world's objects for
    that subject and property), spoken and wrong (the kill line: 0), refused; said "as of 2019" counted apart.
-3. 50 present-tense questions on time-sensitive properties: none may be said flat (an "as of" or a refusal).
+3. 50 present-tense questions on time-sensitive properties: none may be said flat (an "as of" or a refusal). Drawn
+   by `--seed` since order 0036 (before, unseeded: each run asked 50 different questions).
 
     CUBBY_HDC_WORLD=<hdc_world.sqlite> python validation/exp_hdc_bench.py --src <hdc folder> [--n 200] [--ts 50]
 """
@@ -106,7 +107,9 @@ def main() -> None:
         ans = rec.get("answer")
         rows.append({"question": r["question_prompt"], "verified": bool(rec["verified"]), "answer": ans, "tier": rec.get("tier"),
                      "reason": rec.get("reason"), "correct": (normalize(ans) in gold) if rec["verified"] and ans else None})
-    ts = db.execute("SELECT subj, rel FROM facts WHERE ts = 1 ORDER BY RANDOM() LIMIT ?", (a.ts * 20,)).fetchall()
+    ts_ids = [r for (r,) in db.execute("SELECT rowid FROM facts WHERE ts = 1 ORDER BY rowid")]   # drawn by --seed, so
+    ts = [db.execute("SELECT subj, rel FROM facts WHERE rowid = ?", (r,)).fetchone()          # runs compare (0036)
+          for r in random.Random(a.seed).sample(ts_ids, min(len(ts_ids), a.ts * 20))]
     for subj, rel in ts:
         if len(ts_rows) >= a.ts:
             break
