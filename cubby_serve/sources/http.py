@@ -12,7 +12,10 @@ __wiring__ = "WIRED"
 
 
 def get(url: str, ua: str, timeout: float = 30, headers: dict | None = None) -> bytes:
-    """The body of a GET of ``url``; raises on failure (the source decides what a failure means)."""
+    """The body of a GET of ``url``; raises on failure (the source decides what a failure means). The fetcher's name
+    is ``ua``: a header that would name it otherwise is refused."""
+    if any(k.lower() == "user-agent" for k in (headers or {})):
+        raise ValueError("the fetcher sends its own name; a User-Agent header is not taken")
     req = urllib.request.Request(url, headers={"User-Agent": ua, **(headers or {})})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read()
@@ -43,6 +46,7 @@ def web(url: str, headers: dict | None = None, timeout_s: float = 10, limit: int
 
 
 def news(timeout_s: float = 20):
-    """The news source's fetch: its name (``CubbyLLM/0.1``) and its timeout (20 s by default)."""
-    from cubbyllm.sources.news.source import UA
-    return fetcher(UA, timeout_s)
+    """The news source's fetch: the poller's one name (``news.NAME``, ``CubbyLLM/0.1``, set by the server) and its
+    timeout (20 s by default). It takes no name."""
+    from .news import NAME
+    return fetcher(NAME, timeout_s)

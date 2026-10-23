@@ -22,14 +22,19 @@ import urllib.error
 import urllib.request
 
 from cubbyllm.sources.news.archive import MANIFEST, Archive, stats
-from cubbyllm.sources.news.source import UA
 
 __wiring__ = "WIRED"
 
+# The poller's one name. The server sets it here and sends no other: the polite logic (robots read and obeyed, the
+# crawl delay) is `cubbyllm`'s over the fetch it is handed, the name is the fetch's (Cowork, answer 2 in 0031's
+# review; order 0033). `cubbyllm.sources.news.feeds.UA` reads robots for the same name; a test pins the two equal.
+NAME = "CubbyLLM/0.1"
+
 
 def get(url: str, timeout: int = 20) -> tuple[int, bytes]:
+    """The poll's GET, as `NAME` always: (status, body), gzip read either way."""
     try:
-        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=timeout) as r:
+        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": NAME}), timeout=timeout) as r:
             body = r.read()
             if r.headers.get("Content-Encoding", "").lower() == "gzip" or body[:2] == b"\x1f\x8b":
                 import gzip

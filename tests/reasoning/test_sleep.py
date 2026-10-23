@@ -57,12 +57,11 @@ def test_every_reason_the_loop_writes_is_routed_or_an_answered_kind():
     """A reason literal in the loop's code that the table does not know would land in 'unrouted' in
     silence. Scanned: every snake_case literal on or right after a line that assigns a reason."""
     found = set()
-    # ask.py moved into cubbyllm/reasoning (order 0031) and loci_reader.py with it. loci_reader was never scanned, and its
-    # two reasons (loci_mismatch, loci_miss) have no route yet: routing them is a decision, asked in 0031's report.
-    # Until then the scan covers what it covered before the move.
+    # ask.py moved into cubbyllm/reasoning (order 0031) and loci_reader.py with it; loci_reader's two reasons are routed
+    # since order 0033 (Cowork's answer 1 in 0031's review), so it is scanned like the rest
     files = list((REPO / "cubbyllm" / "reasoning").glob("*.py"))
     for f in files:
-        if f.name in ("sleep.py", "loci_reader.py"):
+        if f.name == "sleep.py":
             continue
         lines = f.read_text(encoding="utf-8").splitlines()
         for i, line in enumerate(lines):
@@ -74,7 +73,19 @@ def test_every_reason_the_loop_writes_is_routed_or_an_answered_kind():
                    "as_of"}    # a tier (ask.py: an undated world value said "as of" its date), compared the line after a reason
     missing = sorted(found - set(S.ROUTES) - S.ANSWERED - not_reasons)
     assert not missing, f"reasons with no route: {missing}. Route them in sleep.ROUTES (a decision), don't widen the scan."
-    assert {"plan_does_not_cover_question", "unknown_relation", "retrieval_exhausted"} <= found
+    assert {"plan_does_not_cover_question", "unknown_relation", "retrieval_exhausted", "loci_mismatch", "loci_miss"} <= found
+
+
+def test_the_loci_reads_refusals_go_to_their_queues():
+    """Order 0033 (Cowork's answer 1 in 0031's review): a read the store contradicts goes to `loci_review`, where
+    0029's boundary errors and the store's own doubtful values also land; a read of nothing that no source filled
+    is a source gap."""
+    mismatch = S.DayRecord(id="1", question="What is the capital of Ruritania?", verified=False, reason="loci_mismatch",
+                           plan=["capital"], seed="ruritania")
+    miss = S.DayRecord(id="2", question="What is the capital of Ruritania?", verified=False, reason="loci_miss",
+                       plan=["capital"], seed="ruritania")
+    assert [q for q, _k in S.route(mismatch)] == ["loci_review"] and "loci_review" in S.QUEUES
+    assert S.route(miss) == [("source_gaps", "ruritania | capital")]
 
 
 def test_a_certified_chain_becomes_one_episode_however_often_the_night_runs(tmp_path):

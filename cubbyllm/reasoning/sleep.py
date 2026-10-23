@@ -76,6 +76,9 @@ ROUTES: dict[str, tuple[str, str]] = {
     "no_rule": ("skill_gaps", "a chain joins them but no adopted rule composes it; gold or the asker can teach it"),
     "rule_split": ("skill_review", "the rules compose the chain (or its paths) to two relations: a rule is wrong"),
     "relation_paths_overflow": ("capability_gaps", "more paths between them than the relation ask follows"),
+    # the trunk's loci read (order 0007; the routes are Cowork's answer 1 in 0031's review, built in order 0033)
+    "loci_mismatch": ("loci_review", "the trunk's read and the store disagree; nothing was said"),
+    "loci_miss": ("source_gaps", "the trunk read nothing at the address and no source supplied the fact"),
 }
 # reasons that come WITH a spoken answer: a profile or an introspection answered line by line, each line
 # recovered by the VM. Not refusals.

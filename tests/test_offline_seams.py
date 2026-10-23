@@ -74,3 +74,24 @@ def test_the_vault_writes_its_key_only_where_it_is_told(tmp_path, monkeypatch):
     assert (tmp_path / "k" / "host.key").read_text(encoding="ascii").strip() == k.hex() and vault.host_key() == k
     blob = vault.encrypt_bytes(b"hello")
     assert vault.decrypt_bytes(blob) == b"hello"
+
+
+def test_the_servers_news_fetch_names_itself_cubbyllm_and_takes_no_other_name(monkeypatch):
+    """Order 0033 (answer 2 in 0031's review): the name is the server's fetch's, the politeness cubbyllm's."""
+    import urllib.request
+    from cubby_serve.sources import http, news
+    from cubbyllm.sources.news import feeds
+    sent = []
+
+    class Resp:
+        status, headers = 200, {}
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def read(self, *a): return b"<rss/>"
+    monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=None: sent.append(req.get_header("User-agent")) or Resp())
+    assert news.get("https://example.org/feed")[0] == 200
+    http.news()("https://example.org/feed")
+    assert sent == ["CubbyLLM/0.1", "CubbyLLM/0.1"] and news.NAME == feeds.UA     # robots are read for the name sent
+    with pytest.raises(ValueError):
+        http.get("https://example.org/feed", news.NAME, headers={"user-agent": "Mozilla/5.0"})
+
