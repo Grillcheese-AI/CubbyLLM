@@ -1,5 +1,5 @@
 # 0035 — Villages, next: the host's three missing routes, why the copy did not fire, and the copy (then the link) taught on exported villages
-status: open
+status: in progress
 written: 2026-10-23 by Cowork, from 0034's review · approved: 2026-10-23 by Nick ("yes open 0035") · hypothesis: H-S12 (gates 1 and 3), H-K10 · **BlockWorld stays private**
 
 ## Why
