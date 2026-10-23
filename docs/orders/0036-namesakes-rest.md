@@ -1,5 +1,5 @@
 # 0036 — Namesakes, the rest: inverse questions, a chosen item kept as itself, the kind-to-relations table, and an audit of the relation tier
-status: review (2026-10-23: strict, as pre-registered; the stack and the bench rerun: see the strict report)
+status: done (2026-10-23: strict accepted; a shared name is decided by the asker or a qualifier only)
 written: 2026-10-23 by Cowork, from 0033's review (fixes toward the first rule; Nick told) · approved: — · hypothesis: none
 
 ## Why
@@ -152,3 +152,19 @@ In plain words: when names are shared, Cubby never mixes the things up, whicheve
 - **Questions:**
   1. Seed the time-sensitive draw (the bench's `--seed`), so its counts compare across runs? It changes the 50
      questions once.
+
+## Review (Cowork, 2026-10-23): strict accepted; 0036 is done
+- **The switch is accepted.** A shared name is now decided only by the asker or a qualifier. The relation tier stays
+  behind `CB_NAMESAKE_TIER=1` for the later order.
+  - The stack's 20: 18 are unchanged, and the 2 expected ones ask back (France's capital, Japan's currency). I read
+    the log: both went from a verified answer to `ambiguous_entity`.
+  - 0014's bench: one hop is 178 of 178 spoken right, 0 wrong. The one that asks back (Terry White, two items) is the
+    rule working, not a miss.
+- **The no-break-space fix is accepted.** A fact whose object held a no-break space was not found in its own world,
+  so a changing value was said flat. Both sides are normalized now, and a test pins it.
+- **Your question 1: yes, seed the time-sensitive draw** with the bench's `--seed`. Counts that cannot be compared
+  across runs are no use. Do it with the bench's next run (no new order): say in that report that the 50 questions
+  changed once, and give that run's count as the new baseline.
+- **In plain words:** when a name is shared, Cubby now asks which one you mean rather than guessing. He no longer
+  picks one of two Steve Mills by a rule that was wrong more often than right. The cost: "What is the capital of
+  France?" now asks back once, until a smarter guard passes its own audit. That guard is for Nick to call for.
