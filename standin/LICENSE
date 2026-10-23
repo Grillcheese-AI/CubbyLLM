@@ -27,11 +27,12 @@ Change License:       Apache License, Version 2.0
 For commercial licensing, contact: licensing@grillcheese.ai
 
 Scope: this license covers the standin/ directory of the CubbyLLM repository --
-the serve stack (serve.py, serve_api.py, the brain, ToolForge, the game, the
-emitter interface and its data builders). The cubbyllm/ package and the
-validation/ scripts remain under the repository's Apache License 2.0 (see
-../LICENSE). This directory is product, not research, and is scheduled to move
-to its own repository; until then this file is its license of record.
+the stand-in: the GGUF seat, the LFM as a source, the proposer, the stand-in's
+evaluation and probes, the cubby-man game, its GGUF-only data builders, and the
+shims left by order 0031. The serve stack moved to cubby_serve/ (same license);
+the cubbyllm/ package and the validation/ scripts remain under the repository's
+Apache License 2.0 (see ../LICENSE). Until it is retired, this file is the
+directory's license of record.
 
 -----------------------------------------------------------------------------
 
