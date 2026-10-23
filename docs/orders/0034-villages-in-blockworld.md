@@ -1,5 +1,5 @@
 # 0034 — Villages in BlockWorld: the spatial link and the scene read on real villages, and a plan placed in the world (H-S12 gate 3)
-status: open
+status: in progress
 written: 2026-10-23 by Cowork · approved: 2026-10-23 by Nick ("yes") · hypothesis: H-S12 (gate 3), H-K10
 
 ## Why
