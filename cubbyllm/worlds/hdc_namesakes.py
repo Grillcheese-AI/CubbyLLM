@@ -24,6 +24,12 @@ Q-id. A name that stands for two or more items gives none of their facts until s
 
 A "where / what is X?" ask names no relation, so the third does not apply to it (`reasoning.ask_namesakes`).
 
+**Strict since order 0036** (its audit: 21 of 50 of the tier's decisions were the item a person asking means, against
+a pre-registered 49; 29 could not be told from the question, mostly because a namesake with no known kind is plainly
+of the chosen one's kind). A hop on a shared name now reads nothing unless the asker or a qualifier decided, and its
+holders are noted, so the loop asks which. ``CB_NAMESAKE_TIER=1`` turns the relation tier back on (``hop_pick`` as
+above), for an order that audits a better guard; it is off by default.
+
 Nothing is ranked. An item never wins for being famous, or for being more completely described.
 
 Wired: WIRED (`hdc_store.HdcWorld` takes `Namesakes` as a mixin, `hdc_store.Stores` takes `StoresNamesakes`).
@@ -31,6 +37,7 @@ Wired: WIRED (`hdc_store.HdcWorld` takes `Namesakes` as a mixin, `hdc_store.Stor
 from __future__ import annotations
 
 import contextlib
+import os
 
 from cubbyllm.reasoning.planner import Triple, normalize
 
@@ -153,14 +160,18 @@ class Namesakes:
                                        (normalize(s), rel, q)).fetchone() for s, q in members)
 
     def hop_rows(self, name: str, keep) -> list:
-        """The rows a hop reads for `name` (`keep`: the hop's own test of a row): its one item's; for a name several
-        items share, those of the one item `hop_pick` allows, else none, and the items that held some are noted."""
+        """The rows a hop reads for `name` (`keep`: the hop's own test of a row): its one item's (or the item the asker
+        or a qualifier pinned); for a name several items share, none, and the items that held some are noted (with
+        ``CB_NAMESAKE_TIER=1``, those of the one item `hop_pick` allows)."""
         got = self._by_subj.get(name)
         if got:
             return [(f, t) for f, t in got if keep(f, t)]
         by = self.namesakes(name)
         held = {q: [(f, t) for f, t in rows if keep(f, t)] for q, rows in by.items()}
-        q, holders = hop_pick(held, by, self.applies) if by else (None, [])
+        if os.environ.get("CB_NAMESAKE_TIER") == "1":        # the relation tier, off since 0036's audit (module doc)
+            q, holders = hop_pick(held, by, self.applies) if by else (None, [])
+        else:
+            q, holders = None, [h for h, rows in held.items() if rows]
         if q is None and holders:
             self._notes()[normalize(name)] = holders
         return held[q] if q else []

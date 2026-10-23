@@ -97,3 +97,15 @@ def test_a_contradiction_between_the_worlds_is_never_said(hdc):
     loop = _loop(hdc, ["Zenda is the capital of Ruritania"])
     rec = loop.ask("What is the capital of Ruritania?")
     assert not rec["verified"] and rec["answer"] is None                                 # Zenda or Strelsau: refused
+
+
+def test_a_fact_whose_name_holds_a_no_break_space_is_held_and_its_changing_value_said_as_of(tmp_path):
+    """Order 0036, found on the way: "Washington University in St.<no-break space>Louis is the employer of Juan Rosai"
+    was answered but not found held (the fact's spaces were normalized on one side only), so it was said flat."""
+    labels = dict(LABELS, Q3=("Rudolf Rassendyll", ""))
+    db = tmp_path / "hdc_world.sqlite"
+    write_world(db, FACTS, labels, {}, PIDS)
+    hdc = HdcWorld(db)
+    assert "Rudolf Rassendyll is the head of state of Ruritania" in hdc
+    rec = _loop(hdc).ask("Who is the head of state of Ruritania?")
+    assert rec["verified"] and rec["tier"] == "as_of" and rec["reply"].startswith("As of 2019, ")

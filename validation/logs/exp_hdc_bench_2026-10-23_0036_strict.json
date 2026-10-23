@@ -1,0 +1,1997 @@
+{
+ "args": {
+  "n": 200,
+  "ts": 50,
+  "lookups": 1000,
+  "seed": 0
+ },
+ "lookup_ms": {
+  "p50": 0.26,
+  "p95": 0.66,
+  "n": 1000
+ },
+ "rss_gb_mounted": 0.91,
+ "facts": 3384594,
+ "one_hop": {
+  "asked": 200,
+  "not_one_hop_skipped": 88,
+  "spoken": 178,
+  "correct": 178,
+  "wrong": 0,
+  "as_of": 5,
+  "refused": {
+   "ambiguous_relation": 6,
+   "ambiguous_hop": 2,
+   "no_plan": 1,
+   "retrieval_exhausted": 7,
+   "entity_unresolved": 5,
+   "ambiguous_entity": 1
+  }
+ },
+ "time_sensitive": {
+  "asked": 50,
+  "said_flat": 0,
+  "as_of": 17,
+  "refused": {
+   "retrieval_exhausted": 6,
+   "ambiguous_entity": 3,
+   "entity_unresolved": 18,
+   "plan_does_not_cover_question": 6
+  }
+ },
+ "wall_s": 391.4,
+ "rows": [
+  {
+   "question": "What is the instance of patrick flury?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the occupation of patrick ekpotu?",
+   "verified": true,
+   "answer": "engineer",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of philip straker?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who maintain state highway 202 (texas 1939)?",
+   "verified": true,
+   "answer": "Texas Department of Transportation",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the opposite of of Mitzvah?",
+   "verified": true,
+   "answer": "aveira",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Joweid rack railway?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of dan lukacinsky?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Clotilde Rullaud?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "To which parent entity does theological aesthetics belong?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "ambiguous_relation",
+   "correct": null
+  },
+  {
+   "question": "Which is the adjacent station of huaqiang north station?",
+   "verified": true,
+   "answer": "Gangxia North Station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Talapan?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of samuel willows?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the employer of Axel Honneth?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "correct": null
+  },
+  {
+   "question": "What is the connecting line of sassenheim railway station?",
+   "verified": true,
+   "answer": "Weesp–Leiden railway",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of thomas \"tom\" alfred butcher?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "no_plan",
+   "correct": null
+  },
+  {
+   "question": "Who maintain interstate 220 (mississippi)?",
+   "verified": true,
+   "answer": "Mississippi Department of Transportation",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the connecting line of Suyuan station?",
+   "verified": true,
+   "answer": "Line 21",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Larry Grenadier?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of daylesford station (septa regional rail)?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the owner of n.j. cutoff?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of Peggy Murphy?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Jennifer Audrey Coolidge?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who maintain Louisiana Highway 939?",
+   "verified": true,
+   "answer": "Louisiana Department of Transportation and Development",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of d418 road (croatia)?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Canute Service Station?",
+   "verified": true,
+   "answer": "commercial building",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Tony gillam?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of ford foundation building?",
+   "verified": true,
+   "answer": "building",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of The New Pittodrie Stadium?",
+   "verified": true,
+   "answer": "stadium",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of county road 1 (vest-agder)?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Jonael Schickler?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of n15 road (ireland)?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Ohio State Route 664?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of melrose drive station?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the connecting line of 65th street (ind queens boulevard line)?",
+   "verified": true,
+   "answer": "IND Queens Boulevard Line",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Ken Hope?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Palmovka (Prague Metro)?",
+   "verified": true,
+   "answer": "metro station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of mattheij?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Illinois Railway?",
+   "verified": true,
+   "answer": "railway",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of yanchang road (shanghai metro)?",
+   "verified": true,
+   "answer": "metro station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Zion station (Metra)?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Steve McAdam?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the content type of London skyline?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of Power.corrupts/Sandbox/Werner Leibbrand?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the connecting line of Plentzia (Metro Bilbao station)?",
+   "verified": true,
+   "answer": "Line 1",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Will Proctor?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Xiao-Di You?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of V. John Mathews?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of daniel petronijevic?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Carlos Bellucci?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Which country is damaracharla thermal power plant in?",
+   "verified": true,
+   "answer": "India",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Patroon Island Bridge?",
+   "verified": true,
+   "answer": "bridge",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of jeremy gibbons?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of osan–hwaseong expressway?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the notable work of Robevans123/sandbox/Watkin George?",
+   "verified": true,
+   "answer": "Pont-y-Cafnau",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of clementi road?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of mary peyler?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of claudio pani?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the occupation of ted drange?",
+   "verified": true,
+   "answer": "philosopher",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Engineer Bill?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of mike oddy?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the occupation of William Owen (architect)?",
+   "verified": true,
+   "answer": "architect",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Which Can Tho Bridge crosses?",
+   "verified": true,
+   "answer": "Bassac River",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the occupation of August von Voit?",
+   "verified": true,
+   "answer": "architect",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of la vale tollgate house?",
+   "verified": true,
+   "answer": "building",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Romfelt Plaza?",
+   "verified": true,
+   "answer": "building",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of delaware route 404b?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of hartwood manor?",
+   "verified": true,
+   "answer": "building",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the architect of Esplanade Mansion?",
+   "verified": true,
+   "answer": "Rowland Mason Ordish",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of 180th street station (new york, westchester and boston railway)?",
+   "verified": true,
+   "answer": "metro station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of sam spanier?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of ulrich diesing?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What Predecessor does must have done something right have?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "correct": null
+  },
+  {
+   "question": "What is the primary classification of 1981 in philosophy?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of Terry White?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "ambiguous_entity",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of Gary Schipper?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Which is the connecting service of Bagsvaerd station?",
+   "verified": true,
+   "answer": "A",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What given name does frances kamm have?",
+   "verified": true,
+   "answer": "Frances",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Which country is Agência Nacional de Aviação Civil in?",
+   "verified": true,
+   "answer": "Brazil",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of 7S3?",
+   "verified": true,
+   "answer": "airport",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of John Robert Kelly?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of an (deity)?",
+   "verified": true,
+   "answer": "goddess",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who maintain Mississippi Highway 69?",
+   "verified": true,
+   "answer": "Mississippi Department of Transportation",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the content type of Hawai‘i State Highway 7241?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "ambiguous_relation",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of paul fairburn?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of morgan hall?",
+   "verified": true,
+   "answer": "building",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of barbara deely?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of simon marcheford?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Whale's Tooth station?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Johan Tralau?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of sumio mabuchi?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of St George's Wharf Tower?",
+   "verified": true,
+   "answer": "skyscraper",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of new york state touring route 293?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of EGBC?",
+   "verified": true,
+   "answer": "heliport",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of i-10 bonnet carre spillway bridge?",
+   "verified": true,
+   "answer": "bridge",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of saskia hölbling?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Nautical/April/21/Selected article?",
+   "verified": true,
+   "answer": "nuclear-powered attack submarine",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of barbara schüttpelz?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What Predecessor does not giving in have?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of hejun li?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "To which parent entity does cize–bolozon viaduct belong?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "ambiguous_relation",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of jeff kurzon?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of list of power stations?",
+   "verified": true,
+   "answer": "Wikimedia list article",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of bill newashe?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of anton ivanescu?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of moorhead municipal airport?",
+   "verified": true,
+   "answer": "airport",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of jalan bukit badong?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the described by source of non-trinitarian?",
+   "verified": true,
+   "answer": "Nordisk familjebok",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the manufacturer of CFAV Renard (PCT 58)?",
+   "verified": true,
+   "answer": "Seaspan Marine Corporation",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of free school lane?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of R. Swinburne?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of uminokuchi station?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Kalgoorlie to Kanowna railway?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Horseman Heliport?",
+   "verified": true,
+   "answer": "heliport",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the operator of ebligen railway station?",
+   "verified": true,
+   "answer": "Zentralbahn",
+   "tier": "as_of",
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Brazi II Power Station?",
+   "verified": true,
+   "answer": "coal-fired power station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the content type of listed buildings in harthill, cheshire?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "ambiguous_relation",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of Sandy Stevenson?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of cor8?",
+   "verified": true,
+   "answer": "aerodrome",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the content type of List of listed buildings in Weem, Perth and Kinross?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "ambiguous_relation",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of J. Mitchell?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the architect of charles w. stribley house?",
+   "verified": true,
+   "answer": "Van Ryn & DeGelleke",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Trolley (UTA station)?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the Successor of Your Type?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of andor nagy?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of hoek van holland strand metro station?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of marine protector?",
+   "verified": true,
+   "answer": "ship class",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the operator of Giheung Station?",
+   "verified": true,
+   "answer": "Korea Railroad Corporation",
+   "tier": "as_of",
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of mahesh chai?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Which Ed Koch Bridge crosses?",
+   "verified": true,
+   "answer": "East River",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Amy Daniels?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of welcome duru?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Which is the main subject of what are we living for??",
+   "verified": true,
+   "answer": "life",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Paul Gerald Smith?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of yahya atan?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of eve tushnet?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of mike mcgill?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the owner of srirangapatna railway station?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of Shenwan Station?",
+   "verified": true,
+   "answer": "metro station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Sufficiency of Scripture?",
+   "verified": true,
+   "answer": "Five solae",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of victor fast?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the content type of james hight building?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of janos gyani?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Vladu?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Xuan Xuan?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Tallest buildings in Ontario?",
+   "verified": true,
+   "answer": "Wikimedia list article",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of wayne p. wright?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the occupation of David H. Sanford?",
+   "verified": true,
+   "answer": "philosopher",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Where is the feniosky pena-mora educated at?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of Jñānagupta?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the operator of East Kowloon Line (1970 scheme)?",
+   "verified": true,
+   "answer": "MTR Corporation Limited",
+   "tier": "as_of",
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Which country is Justinyen Bridge in?",
+   "verified": true,
+   "answer": "Turkey",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of ryan brumberg?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Dan Gode?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the occupation of Hans-Reinhard Koch?",
+   "verified": true,
+   "answer": "theologian",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Honichi dialect?",
+   "verified": true,
+   "answer": "dialect",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the country of citizenship of philippa foot?",
+   "verified": true,
+   "answer": "United Kingdom",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of justin robert young?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the owner of mando dairo railway station?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of john lustig?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Asim Ali?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Ben Best?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Irvington Road (SEPTA station)?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of inzai-makinohara station?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of b6 road (namibia)?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Deborah Borda?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the occupation of nathan vaught?",
+   "verified": true,
+   "answer": "engineer",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Daniel M. Tellep?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of octavia nasr?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of A M Mubarak?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Which is the adjacent station of Mayur Vihar-I (Delhi Metro)?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "correct": null
+  },
+  {
+   "question": "What is the native language of margarita kozhina?",
+   "verified": true,
+   "answer": "Russian",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of john robinson benson?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the content type of Cono?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "correct": null
+  },
+  {
+   "question": "Which saint croix-vanceboro railway bridge crosses?",
+   "verified": true,
+   "answer": "Saint Croix River",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the operator of monselice railway station?",
+   "verified": true,
+   "answer": "Centostazioni",
+   "tier": "as_of",
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of jalan cheras?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Blackrod station?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the architect of Van Nellefabriek?",
+   "verified": true,
+   "answer": "Leendert van der Vlugt",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the content type of historic buildings and architects of the united kingdom?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "ambiguous_relation",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of keiyō road?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Richard L. Elliott?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Dawod Al Saeed?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Macalister Road, George Town?",
+   "verified": true,
+   "answer": "road",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Which country is iso 639:txq in?",
+   "verified": true,
+   "answer": "Indonesia",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of alex barrera?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of soutchay thammasith?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Which swamp creek road bridge crosses?",
+   "verified": true,
+   "answer": "Unami Creek",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the architect of Logan Elementary School?",
+   "verified": true,
+   "answer": "Charles Coker Wilson",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the occupation of kaare høeg?",
+   "verified": true,
+   "answer": "engineer",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the operator of lianyungang east railway station?",
+   "verified": true,
+   "answer": "China Railway Shanghai Group",
+   "tier": "as_of",
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Who is the owner of Cardiff railway station, New South Wales?",
+   "verified": false,
+   "answer": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "correct": null
+  },
+  {
+   "question": "What is the instance of leyla otadi?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of mcmorran place?",
+   "verified": true,
+   "answer": "convention center",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the occupation of michaelayers?",
+   "verified": true,
+   "answer": "philosopher",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of graham may?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Niederhochstadt station?",
+   "verified": true,
+   "answer": "railway station",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the country of citizenship of william ritchie sorley?",
+   "verified": true,
+   "answer": "United Kingdom",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of Alexander Dynin?",
+   "verified": true,
+   "answer": "human",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "Which is the main subject of cissexual assumption?",
+   "verified": true,
+   "answer": "transfeminism",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  },
+  {
+   "question": "What is the instance of peartree85/king george vi bridge?",
+   "verified": true,
+   "answer": "arch bridge",
+   "tier": null,
+   "reason": null,
+   "correct": true
+  }
+ ],
+ "time_sensitive_rows": [
+  {
+   "question": "Who is the owner of Largo Entertainment?",
+   "verified": false,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "flat": false
+  },
+  {
+   "question": "Who is the operator of Red Line?",
+   "verified": false,
+   "tier": null,
+   "reason": "ambiguous_entity",
+   "flat": false
+  },
+  {
+   "question": "Where is the Brad Wilk member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Who is the operator of Zürich Friesenberg railway station?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Where is the Mark Mendoza member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Ugo Cerroni?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Who is the employer of Patric Laurence Dickinson?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Where is the headquarters location of Chartered Institute of Public Relations?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Bob Jackson?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Mats Lusth?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Who is the employer of Helena Wulff?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Kostiantyn Derevlov?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Jim Barr?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Where is the Australia member of?",
+   "verified": false,
+   "tier": null,
+   "reason": "ambiguous_entity",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Thomas Brown?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Herbert Mann?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Where is the SNCF member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Where is the headquarters location of Alabama Department of Transportation?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Which is the political party of John Hickey?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Who is the owner of beIN SPORTS?",
+   "verified": false,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Lalu KV?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Where is the headquarters location of ampm?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of MacDonald Mukansi?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Who is the operator of La Elipa?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Where is the Yuri Estrin member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Where is the People's Union of Estonia member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Where is the Georges Aperghis member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Which is the political party of Rolando García Alonso?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Where is the University of Chicago Library member of?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Which is the political party of Silja Ekeland Bjørkly?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Which is the political party of Bob Miller?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Who is the owner of ExtraMile Arena?",
+   "verified": false,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Christian Kouakou?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Which is the political party of Thane Campbell?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "Where is the headquarters location of PayAnywhere?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Maurice Hirsch?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Who is the operator of Delta IV oil field?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Andrey Yakimov?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Where is the Peter Bruce member of?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Who is the operator of U-527?",
+   "verified": true,
+   "tier": "as_of",
+   "reason": null,
+   "flat": false
+  },
+  {
+   "question": "Who is the owner of Bratislava Lamač railway station?",
+   "verified": false,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "flat": false
+  },
+  {
+   "question": "Who is the owner of Chrome Halt railway station?",
+   "verified": false,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Arto Ruotanen?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Michel Ndahinduka?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Who is the owner of Canberra Stadium?",
+   "verified": false,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Aimé Anthuenis?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Where is the John Rennie member of?",
+   "verified": false,
+   "tier": null,
+   "reason": "ambiguous_entity",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Blondy Ryan?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  },
+  {
+   "question": "Which is the political party of Irving Howbert?",
+   "verified": false,
+   "tier": null,
+   "reason": "plan_does_not_cover_question",
+   "flat": false
+  },
+  {
+   "question": "What is the sports team of Dickie Deacon?",
+   "verified": false,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "flat": false
+  }
+ ]
+}

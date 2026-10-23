@@ -5,9 +5,10 @@ Pinned: a name two or more items share gives none of their facts, and each item'
 names one item gives that item's facts, not its label's namesakes'; a fact is still held (its provenance names the
 world) whichever namesake it is about; the ask loop answers "where is X?" by asking which one, with each item named;
 the asker's choice, or a qualifier the question carries, decides; a qualifier that is no value of exactly one item
-does not. A relation question: the relation decides only for a holder of known kind among items of other kinds, none
-of a kind that carries the relation elsewhere (a ship has no capital; a civil parish has a location even when this
-one's is not kept; two people are two of a kind); else it is refused with the items named, and the choice walks one.
+does not. A relation question on a shared name is refused with the items named (the holder first), and the choice
+walks one: strict since order 0036's audit. With ``CB_NAMESAKE_TIER=1`` the relation decides as 0033 built it, only for
+a holder of known kind among items of other kinds, none of a kind that carries the relation elsewhere (a ship has no
+capital; a civil parish has a location even when this one's is not kept; two people are two of a kind).
 """
 from __future__ import annotations
 
@@ -79,9 +80,20 @@ def test_a_qualifier_decides_only_when_it_is_a_value_of_exactly_one_item(hdc):
     assert hdc.pick_by("Zenda", "England", place=True) is None                       # one item: nothing to decide
 
 
-def test_the_hops_relation_decides_only_where_the_others_kinds_cannot_carry_it(hdc):
+def _hop(hdc, rel, name):
+    return [t.obj for _f, t in hdc.hop(QuestionPlan(relations=[None], tail=f"{rel} of {name}", n_hop=1), 0, None)]
+
+
+def test_strict_a_hop_on_a_shared_name_reads_nothing_and_notes_its_holders(hdc):
+    assert _hop(hdc, "capital", "Mercia") == [] and hdc.withheld("mercia") == ["Q40"]
+    assert _hop(hdc, "country", "Zenda") == ["England"]                                  # one item: read as before
+
+
+def test_with_the_tier_the_relation_decides_only_where_the_others_kinds_cannot_carry_it(hdc, monkeypatch):
+    monkeypatch.setenv("CB_NAMESAKE_TIER", "1")
+
     def hop(rel, name):
-        return [t.obj for _f, t in hdc.hop(QuestionPlan(relations=[None], tail=f"{rel} of {name}", n_hop=1), 0, None)]
+        return _hop(hdc, rel, name)
     assert hop("capital", "Mercia") == ["Tamworth"]                                  # a kingdom and a ship: a ship has no capital
     assert hdc.applies("civil parish", LOC) and not hdc.applies("ship", "capital")
     assert hop(LOC, "Wantage") == [] and hdc.withheld("wantage") == ["Q60"]          # a parish has a place; this one's is not kept
@@ -115,9 +127,12 @@ def test_the_loop_asks_which_one_and_the_choice_or_the_questions_own_context_dec
     assert [l["value"] for l in rec["profile"]] == ["England"]
 
 
-def test_a_relation_question_on_a_shared_name_is_decided_by_its_relation_or_refused_with_the_items(hdc):
+def test_a_relation_question_on_a_shared_name_is_refused_with_the_items_and_the_choice_answers(hdc):
     loop = _loop(hdc)
-    rec = loop.ask("What is the capital of Mercia?")
+    rec = loop.ask("What is the capital of Mercia?")                                 # strict: the asker decides
+    assert not rec["verified"] and rec["reason"] == "ambiguous_entity"
+    assert [c["item"] for c in rec["clarify"]["choices"]] == ["Q40", "Q43"]            # the holder first
+    rec = loop.ask("What is the capital of Mercia?", item="Q40")
     assert rec["verified"] and rec["answer"] == "Tamworth"
     rec = loop.ask("What is the country of Globe Theatre?")
     assert not rec["verified"] and rec["reason"] == "ambiguous_entity"
@@ -140,9 +155,10 @@ def test_an_object_label_several_items_share_reads_as_none_of_them(hdc):
     assert [t.subj for _f, t in hdc._by_obj.get("Q71")] == ["Shelbyville Mill"]        # a Q-id: that item
 
 
-def test_the_kinds_table_answers_as_the_scan_and_the_world_reads_it(hdc, tmp_path):
-    """Order 0036, item 3: which relations each kind carries, built once; the same decisions as the scan."""
+def test_the_kinds_table_answers_as_the_scan_and_the_world_reads_it(hdc, tmp_path, monkeypatch):
+    """Order 0036, item 3: which relations each kind carries, built once; the same decisions as the scan (the tier on)."""
     from cubbyllm.worlds.hdc_kinds import Table, build, path_for
+    monkeypatch.setenv("CB_NAMESAKE_TIER", "1")
     built = build(hdc.path)
     assert built["out"] == path_for(hdc.path) and built["pairs"] > 0
     table = Table(built["out"])

@@ -116,7 +116,7 @@ class HdcWorld(Namesakes):
         f = " ".join(fact.split())
         t = parse_fact(f, known=self._rel_n)
         _tier, by = self._named(normalize(t.subj)) if t is not None else ("none", {})
-        return any(self.fact(s, r, o) == f for rows in by.values() for s, r, o in rows)
+        return any(" ".join(self.fact(s, r, o).split()) == f for rows in by.values() for s, r, o in rows)   # "St.\xa0Louis"
 
     def __len__(self) -> int:
         return self._n

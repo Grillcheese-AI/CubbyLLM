@@ -1,0 +1,367 @@
+{
+ "what": "order 0036, strict (the relation tier off: a shared name is decided by the asker or a qualifier only): the real stack (the 450M seats on grilly2, wiki + hdc, the ask loop offline, plugins, the board; python -m cubby_serve) against the recording with the tier on (0036_stack_2026-10-23.json)",
+ "git": "51706a7 + the working tree of the strict switch",
+ "same": 18,
+ "of": 20,
+ "now_ask_back": [
+  "What is the capital of France?",
+  "What is the currency of Japan?"
+ ],
+ "asks": [
+  {
+   "question": "What is the capital of France?",
+   "same": false,
+   "before": {
+    "answer": "Paris",
+    "reply": null,
+    "verified": true,
+    "reason": null
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   },
+   "answer_sha256": "74234e98afe7498f",
+   "asks_back_with": [
+    "Q142",
+    "Q49644",
+    "Q5478259"
+   ]
+  },
+  {
+   "question": "Where was Ada Lovelace born?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who wrote Pride and Prejudice?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "When was the Eiffel Tower built?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What is the capital of Canada?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who is the father of Queen Elizabeth II?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What is the population of Toronto?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "retrieval_exhausted"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "retrieval_exhausted"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who painted the Mona Lisa?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "unknown_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "unknown_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Where is the Globe Theatre?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What language is spoken in Brazil?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "unknown_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "unknown_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who discovered penicillin?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "no_plan"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "no_plan"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What is the currency of Japan?",
+   "same": false,
+   "before": {
+    "answer": "Japanese yen",
+    "reply": null,
+    "verified": true,
+    "reason": null
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_entity"
+   },
+   "answer_sha256": "74234e98afe7498f",
+   "asks_back_with": [
+    "Q17",
+    "Q6156466",
+    "Q3476248",
+    "Q6156469",
+    "Q16827970",
+    "Q16995302",
+    "Q1407064",
+    "Q174933"
+   ]
+  },
+  {
+   "question": "Quelle est la capitale de l'Italie ?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Qui a écrit Les Misérables ?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What river flows through Cairo?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who was the first president of the United States?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "entity_unresolved"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "entity_unresolved"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "How tall is Mount Everest?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What is the speed of light?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "Who is the mayor of Montreal?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  },
+  {
+   "question": "What year did World War II end?",
+   "same": true,
+   "before": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "after": {
+    "answer": null,
+    "reply": null,
+    "verified": false,
+    "reason": "ambiguous_relation"
+   },
+   "answer_sha256": "74234e98afe7498f"
+  }
+ ]
+}
