@@ -268,6 +268,9 @@ def run(no_trunk: bool, limit: int | None, date: str) -> None:
                           "unplaced_by_class": tally([r for r in trows if not r["placed"]], "cls"),
                           "unplaced_by_shape": tally([r for r in trows if not r["placed"]], "shape"), "gates": _gates(trows)}
         pub["views"][view] = v
+    if os.path.exists(os.path.join(d, "act_log.jsonl")):          # the world's act arm, counted (s12_act)
+        from s12_act import counts
+        pub["act"] = counts(os.path.join(d, "act_log.jsonl"))
     path = os.path.join(HERE, "logs", f"exp_s12_scene_files_{date}.json")
     json.dump(pub, open(path, "w", encoding="utf-8"), indent=1)
     print(json.dumps({k: pub[k] for k in ("villages", "wall_s")}), "->", path, "| detail ->", detail)

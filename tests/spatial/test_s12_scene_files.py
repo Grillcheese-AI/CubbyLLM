@@ -86,3 +86,20 @@ def test_the_trunks_documents_hold_every_question_once_with_each_here_on_its_cel
         asked = [tuple(int(v) for v in places[i]) for i in range(len(ids)) if roles[i] & 2]
         assert asked == [tuple(q["address"]) for q in chunk for _ in here]
         assert all(places[i][0] != NO_PLACE for i in range(len(ids)) if roles[i])
+
+
+def test_the_act_counts_never_take_a_wrong_cell_for_a_placement_or_a_refusal(tmp_path):
+    import json
+    from s12_act import counts
+    rows = [{"seed": 1, "drawn": "placeable", "cell": [1, 0, 0], "expected": [1, 0, 0], "host_cell_is_expected": True,
+             "verified": True, "sent": True, "ok": True, "stands": True, "elsewhere": 0},
+            {"seed": 1, "drawn": "placeable", "cell": [2, 0, 0], "expected": [3, 0, 0], "host_cell_is_expected": False,
+             "verified": True, "sent": True, "ok": True, "stands": True, "elsewhere": 0},          # a lamp, but not where meant
+            {"seed": 2, "drawn": "unplaceable", "cell": [5, 5, 5], "expected": [5, 5, 5], "host_cell_is_expected": True,
+             "verified": True, "sent": False, "refused": "nothing under it"}]
+    p = tmp_path / "act_log.jsonl"
+    p.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
+    c = counts(str(p))
+    assert c["placeable"] == 2 and c["placed_on_the_expected_cell"] == 1 and c["host_cell_not_expected"] == 1
+    assert c["unplaceable_refused_before_the_order"] == 1 and c["refused_why"] == {"nothing under it": 1}
+    assert c["villages"] == 2 and c["placed_elsewhere"] == 0
