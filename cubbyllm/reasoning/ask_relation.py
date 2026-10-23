@@ -38,6 +38,15 @@ class AskRelation:
                     return True
             except Exception:                            # noqa: BLE001 -- a resolver that cannot answer is not a yes
                 continue
+        # a mounted scene's own relations (order 0034): "What is the east neighbour of the well?" is a plan for the
+        # scene, not a profile of 'east neighbour of the well' -- the route (spatial.route) never saw it otherwise
+        scene = getattr(self, "scene", None)
+        if scene is not None and not head[:1].isupper():
+            try:
+                if scene.relations(head):
+                    return True
+            except Exception:                            # noqa: BLE001 -- a scene that cannot answer is not a yes
+                pass
         # the source's own property table (2026-10-16, live: "Who is the mother of Justin Trudeau?" read as
         # a profile of 'mother of justin trudeau' because the wiki world holds no 'mother'). A wording the
         # table names is a relation whether or not the store holds it yet -- unheld, the loop fetches it

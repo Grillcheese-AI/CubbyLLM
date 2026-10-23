@@ -101,6 +101,17 @@ class Scene:
         """Name a box (inclusive corners), for ``within`` and the ``region`` fact."""
         self.regions[_norm(name)] = (_cell(lo), _cell(hi))
 
+    @classmethod
+    def from_json(cls, obj, ssp: SSP | None = None) -> "Scene":
+        """A scene from a scene file: a dict, a JSON string or a path (``scene_file``, order 0034)."""
+        from .scene_file import from_json
+        return from_json(obj, ssp)
+
+    def to_json(self) -> dict:
+        """This scene as a scene file's dict (``scene_file.FORMAT``)."""
+        from .scene_file import to_json
+        return to_json(self)
+
     # -- exact reading ------------------------------------------------------------------
     def where(self, name: str) -> Cell | None:
         return self.things.get(_norm(name))
