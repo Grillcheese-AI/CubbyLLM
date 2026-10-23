@@ -124,7 +124,7 @@ def host(sc: Scene, qs: list[dict], vm) -> list[dict]:
     return out
 
 
-def trunk_docs(tk, sc: Scene, qs: list[dict], placed: bool, eos: int):
+def trunk_docs(tk, sc: Scene, qs: list[dict], placed: bool, eos: int, lead: bool = False):
     """The documents a village's questions are asked in: the village, then as many questions as fit a 512-token
     document (a village longer than that gets the smallest doubling that holds it); none is dropped."""
     from make_spatial_shard import render
@@ -136,7 +136,7 @@ def trunk_docs(tk, sc: Scene, qs: list[dict], placed: bool, eos: int):
             try:
                 n = len(qa) - i
                 while n > 0:
-                    ids, places, roles = render(tk, sc, qa[i:i + n], "places", eos, doc)
+                    ids, places, roles = render(tk, sc, qa[i:i + n], "places", eos, doc, lead)   # lead: 0035 C
                     if _count_answers(tk, ids) == n:
                         break
                     n -= 1

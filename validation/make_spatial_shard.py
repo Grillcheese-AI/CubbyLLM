@@ -52,6 +52,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
 
+from cubbyllm.model.fact_layout import STEP  # noqa: E402 -- the far facts' z step between a name's pieces (--lead)
 from cubbyllm.model.spatial import NO_PLACE  # noqa: E402
 from cubbyllm.spatial.scene import DIRECTIONS, Scene  # noqa: E402
 
@@ -121,19 +122,27 @@ def questions(sc: Scene, rng: random.Random, k: int, ask: str = "learned") -> li
 WRITE, ASK = 1, 2                                   # role flags (train_base.Tokens): into the scene / reads there
 
 
-def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int):
+def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int, lead: bool = False):
     """One document: ``(ids, places, roles)`` of exactly ``doc`` tokens (questions dropped
     from the end when the village alone would not fit them; </s>-padded otherwise). In
     ``places`` mode a thing's name tokens carry its cell and WRITE it into the scene, and a
     question's ``here`` carries the asked cell and ASKs there (it does not write: a question
-    is not a thing); in ``text`` mode cells are words and nothing is placed."""
-    ids, pos, roles = [], [], []
+    is not a thing); in ``text`` mode cells are words and nothing is placed.
 
-    def put(text: str, cell=None, role: int = WRITE):
+    ``lead`` (``places`` only; order 0035 C, off by default and then byte for byte as before) writes the village in the
+    far facts' shape (``make_fact_shard.render``): a name's piece i at its cell + 6 i z; after a placed question,
+    "Answer: ", whose last token asks for piece 0 at the cell, then the answer encoded alone (the token form its name
+    was written in), each piece asking for the next one's address."""
+    ids, pos, roles = [], [], []
+    lead = lead and mode == "places"
+
+    def put(text: str, cell=None, role: int = WRITE, span: bool = False):
         t = tk.encode(text, add_special_tokens=False).ids
         ids.extend(t)
         on = cell is not None and mode == "places"
-        pos.extend([cell if on else None] * len(t))
+        up = lead and role == WRITE or span           # piece i of a name at +6 i z (an answer's piece j asks for j + 1)
+        pos.extend([(cell[0], cell[1], cell[2] + STEP * (i + span)) if up else cell for i in range(len(t))] if on
+                   else [None] * len(t))
         roles.extend([role if on else 0] * len(t))
 
     put("Village:\n")
@@ -158,7 +167,13 @@ def render(tk, sc: Scene, qa: list, mode: str, eos: int, doc: int):
             put("\n")
         else:
             put(f"Question: {q}\n")
-        put(f"Answer: {a}\n")
+        if lead and cell is not None:                 # the far facts' shape: the lead asks, then the written form
+            put("Answer: ")
+            pos[-1], roles[-1] = cell, ASK
+            put(a, cell, ASK, span=True)              # piece j, as input, asks for piece j + 1
+            put("\n")
+        else:
+            put(f"Answer: {a}\n")
         if len(ids) + 1 > doc:
             del ids[start:], pos[start:], roles[start:]
             break
