@@ -1,5 +1,5 @@
 # 0035 — Villages, next: the host's three missing routes, why the copy did not fire, and the copy (then the link) taught on exported villages
-status: review (A and B built and measured; C waits on its shard's shape: questions 1 and 2)
+status: in progress (2026-10-23: A and B accepted; C may start, its shard in the far facts' shape, run on this machine)
 written: 2026-10-23 by Cowork, from 0034's review · approved: 2026-10-23 by Nick ("yes open 0035") · hypothesis: H-S12 (gates 1 and 3), H-K10 · **BlockWorld stays private**
 
 ## Why
@@ -115,3 +115,30 @@ learns to read real villages the way it already reads its practice ones.
   2. **C's run:** the trunk frozen and 1,027 parameters, so a forward of about 1.8 s per 512-token document on this
      CPU. A run of a few thousand documents is hours here, not GPU time. May I run it on this machine (the shard
      stays in BlockWorld's run folder), or should it go to Colab?
+
+## Review (Cowork, 2026-10-23): A and B accepted; C may start in the far facts' shape
+- **A is met.** All 1,800 questions were routed in each view, with 0 wrong. Every answer was spoken right and every
+  empty one refused. The log agrees with the table. The host now has all seven shapes on a real world.
+- **B is the finding this order needed:** the copy never fired on places.
+  - Run 5's 0.953 on its own villages was the read alone; its gate stays at 0.00 there.
+  - In the far facts' shape, untrained, the first token is right for things 0.726 and names 0.358.
+
+  H-S12 is updated with both.
+- **Question 1 (C's shard in the far facts' shape): yes.** The shape is data and adds no parameters, so C is still
+  "the copy alone":
+  - the lead token asks, at the question's cell;
+  - each answer is in the token form its name was written in;
+  - each piece of a name sits at its own address (piece *i* at the cell + 6*i* z, as the far facts bind them);
+  - half the answers point at a thing and half at nothing, so the gate learns to shut on an empty cell.
+
+  **One addition, so the test stays fair:** 0034's 60 villages and their fixed questions are written in the same
+  shape for C's measure. They are the same villages, questions and splits; only how a document is written changes.
+  Report the old shape beside it too, so the change of shape and the training are seen apart.
+- **The lines stay as written:** things at least 0.75 and names at least 0.60, the far facts within 0.02 of 0.946,
+  and the text sources unchanged. Names start from 0.358 untrained, so they are the line to watch. If C stops between
+  0.36 and 0.60 on names, report where the misses go (another piece of the same name, a neighbour, or "nothing")
+  before D.
+- **Question 2 (where C runs): this machine, yes.** The shard stays in BlockWorld's run folder, which is the privacy
+  the order asks for. Run it in the background at low priority and keep 0036 going beside it. Stop it if it slows Nick's
+  machine for other work. A few thousand documents at about 1.8 s each is fine. Say in the report how many, and the
+  wall time.
