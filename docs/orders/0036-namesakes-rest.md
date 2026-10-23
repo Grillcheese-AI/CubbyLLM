@@ -1,5 +1,5 @@
 # 0036 — Namesakes, the rest: inverse questions, a chosen item kept as itself, the kind-to-relations table, and an audit of the relation tier
-status: in progress (2026-10-23: items 1-3 accepted; the audit 21 of 50 by Cowork's reading, so the tier goes strict as pre-registered)
+status: review (2026-10-23: strict, as pre-registered; the stack and the bench rerun: see the strict report)
 written: 2026-10-23 by Cowork, from 0033's review (fixes toward the first rule; Nick told) · approved: — · hypothesis: none
 
 ## Why
@@ -121,3 +121,34 @@ In plain words: when names are shared, Cubby never mixes the things up, whicheve
   answered without asking back.
 - **Found on the way 1** (no serving path reads the object index; an inverse route would be its own order) and **2**
   (the board's 5-second cache explains 0033's 18 of 20) are noted. No change is needed for either.
+
+## Report, strict (Claude Code, 2026-10-23)
+- **Commits:** `551a1a3` (the switch, the no-break-space fix, their tests and logs), this report.
+- **Files:** `cubbyllm/worlds/hdc_namesakes.py` (a hop on a shared name reads nothing unless the asker or a qualifier
+  decided; the holders are noted, so the loop asks which; `CB_NAMESAKE_TIER=1` turns the relation tier back on for the
+  later order), `cubbyllm/worlds/hdc_store.py` (Found on the way 1), `tests/worlds/test_hdc_namesakes.py` (strict
+  pinned; the tier's own decisions kept under the flag), `tests/worlds/test_hdc_store.py` (+1).
+- **Tests:** 1,244 passed, 6 skipped, 1 failed: 0002's known guard. Against this order's first run, every file the same but
+  `test_hdc_namesakes.py` (+1), `test_hdc_store.py` (+1) and 0035 C's two shard test files ([log](../../validation/logs/0036_tests_strict_2026-10-23.json)).
+- **Measured:**
+  - **The real stack's 20:** 18 unchanged; **2 now ask back**, as expected: "What is the capital of France?" (France
+    Q142 first, then Q49644 and Q5478259) and "What is the currency of Japan?" (Japan Q17 first, then Q6156466,
+    Q3476248, Q6156469) ([log](../../validation/logs/0036_stack_strict_2026-10-23.json)).
+  - **0014's bench** (the final code: strict and the fix below): one hop **178 of 178 spoken right, 0 wrong**; 1 now
+    asks back ("What is the instance of Terry White?": two items), the other 199 rows as before. Its time-sensitive
+    draw: 0 said flat ([log](../../validation/logs/exp_hdc_bench_2026-10-23_0036_strict.json)).
+- **Found on the way:**
+  1. **A no-break space hid a fact from its own world, so a changing value was said flat.** The bench's time-sensitive
+     block drew "Who is the employer of Juan Rosai?" this run, and it was spoken with no "as of". The fact is the hdc
+     world's, flagged time-sensitive, but its object is "Washington University in St.<no-break space>Louis":
+     `HdcWorld.__contains__` normalized the asked fact's spaces and compared it with the stored fact unnormalized, so
+     `held_by` found no world, and the snapshot's "as of" was never applied. 145 facts in the world carry a no-break
+     space. Fixed (both sides normalized); the new test fails on the old line and passes now.
+  2. **The bench's time-sensitive block cannot be compared across runs:** its 50 questions are drawn with SQL
+     `ORDER BY RANDOM()`, unseeded, so 0033's, 0036's and this run's are different sets each run (0033: 20 "as of",
+     0036: 25, the two strict runs: 23 and 17). The one-hop block is seeded and identical. Seeding the draw would change every later run's set;
+     I left it as is for you to decide (question 1). The run before the fix drew the Juan Rosai question; the run on the
+     final code did not, so the fix is shown by its test, not by the bench.
+- **Questions:**
+  1. Seed the time-sensitive draw (the bench's `--seed`), so its counts compare across runs? It changes the 50
+     questions once.
