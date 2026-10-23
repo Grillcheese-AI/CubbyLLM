@@ -32,6 +32,7 @@ from .ask_words import (ABSENT_REPLY, SAY, _AS_OF_PHRASE, _CATEGORY, _GROUP, _IS
 from .ask_claims import (BACKWARD_CUES, FORWARD_CUES, _BEGIN, _CAUSAL_REL, _END, _PRONOUN, _SENT,  # noqa: F401
                          _aliases, _cue, _learned, _mentions, branch_clarify, claim_check, parse_choose, talk_reply)
 from .ask_namesakes import after_walk, seed_for
+from ..spatial.scene_ask import scene_ask
 from .ask_memory import AskMemory
 from .ask_relation import AskRelation
 from .ask_profile import AskProfile
@@ -183,7 +184,9 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 rec = self.relation(question, ra[0], ra[1], t0)
                 self._keep(rec)
                 return rec
-            pa = None if self._forms is not None and self._forms.parse(question) else \
+            # a mounted scene's own shapes, read off the question and restated in its grammar (order 0035)
+            sa = scene_ask(question, self.scene) if self.scene is not None else None
+            pa = None if sa or (self._forms is not None and self._forms.parse(question)) else \
                 profile_ask(question, self._is_relation)   # the host reads the shape off the question (gen 2 cannot emit it yet)
             if pa:
                 rec = self.profile(question, pa[0], pa[1], t0, how="the question's shape (who / what / where / when)", item=item, asker=asker)
@@ -191,7 +194,7 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 return rec
             asked, _year = strip_as_of(question)         # the year is a constraint, not a relation
             try:
-                raw = self.emitter.emit(asked, max_new_tokens=self.max_new)
+                raw = "no plan\n" if sa else self.emitter.emit(asked, max_new_tokens=self.max_new)
                 if program_world(strip_fences(raw)) == "self":
                     pp = profile_program(strip_fences(raw))
                     if pp:
@@ -207,6 +210,8 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 ep = emitted_plan(program, normalize)
             except Exception as e:                       # noqa: BLE001 -- the proposer failed; the loop has nothing to dispose
                 ep = None; rec["reason"] = f"emit_error: {str(e)[:120]}"
+            if sa:
+                ep, rec["scene_shape"] = ([sa[1]], sa[2]), sa[0]
             if not ep or not ep[0] or not ep[1]:
                 rec["reason"] = rec["reason"] or "no_plan"
                 qid = ev.emit("question", text=question, source=getattr(self.source, "name", None))
@@ -223,7 +228,7 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                     source = self.scene
                     rec["world"] = "scene"
             def learn(src=None):                         # `src`: another source for this walk (the reader's: none)
-                return learn_and_answer(question, lambda q, k: [], self._run_fn, store=self.world, known=self.known,
+                return learn_and_answer(sa[0] if sa else question, lambda q, k: [], self._run_fn, store=self.world, known=self.known,
                                         source=src or source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
                                         plan=plan, resolvers=self.resolvers, choose=parse_choose(choose) or None,
                                         fallbacks=self.fallbacks if src is None else [],

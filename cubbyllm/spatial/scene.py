@@ -241,8 +241,11 @@ class Scene:
     def relations(self, text: str) -> list[str]:
         """The relation labels this source states that ``text`` names (lever 4's table tier)."""
         t = _norm(text)
-        labels = ["position", "region"] + [f"{d} neighbour" for d in DIRECTIONS]
+        labels = ["position", "region", "occupant"] + [f"{d} neighbour" for d in DIRECTIONS]
         labels += [f"nearest {k}" for k in sorted({k for k in self.kinds.values() if k})]
+        n, _, d = t.partition(" ")                       # "3 east": the thing n steps that way (order 0035)
+        if n.isdigit() and int(n) >= 2 and d in DIRECTIONS:
+            return [t]
         return [r for r in labels if t == r or t == r.replace(" neighbour", "")]
 
     def kind(self, label: str) -> str | None:
@@ -253,15 +256,25 @@ class Scene:
         return [r, r.replace(" neighbour", " of")] if r.endswith(" neighbour") else [r]
 
     def facts(self, entity: str, relations: list[str] | None = None) -> list[str]:
-        """Template facts about ``entity``, derived now from the exact reading."""
+        """Template facts about ``entity``, derived now from the exact reading. A cell ("10 9 0") states its occupant."""
         key = _norm(entity)
         c = self.things.get(key)
+        parts = key.split()
+        if c is None and len(parts) == 3 and all(p.lstrip("-").isdigit() for p in parts):
+            here = self.at(tuple(int(p) for p in parts))
+            return [f"{here} is the occupant of {key}"] if here else []
         if c is None:
             return []
         subj = key
         out = [f"{c[0]} {c[1]} {c[2]} is the position of {subj}"]
         for direction, other in self.adjacent(key).items():
             out.append(f"{other} is the {direction} neighbour of {subj}")
+        steps = {2, 3, 4} | {int(r.split()[0]) for r in (relations or []) if self.relations(r) == [_norm(r)] and r[:1].isdigit()}
+        for n in sorted(steps):                          # the thing n steps away, each way (order 0035)
+            for direction in DIRECTIONS:
+                other = self.at(self.offset(key, direction, n))
+                if other is not None:
+                    out.append(f"{other} is the {n} {direction} of {subj}")
         for k in sorted({k for k in self.kinds.values() if k}):
             near = self.nearest(key, k)
             if near is not None:

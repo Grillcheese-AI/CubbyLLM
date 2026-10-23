@@ -51,22 +51,18 @@ def test_the_questions_follow_the_plan_and_each_is_answered_from_the_exact_readi
     assert all(sc.kinds[q["subject"]] == "villager" for q in qs if q["shape"] == "where")
 
 
-def test_the_host_speaks_only_verified_right_answers_and_refuses_what_its_grammar_does_not_route():
+def test_the_host_routes_every_shape_speaks_every_answer_right_and_refuses_every_empty_one():
+    """Since order 0035 the three shapes 0034 left unrouted (n steps away, at a cell, where is X) reach the scene too."""
     from exp_s12_scene_files import host
     from test_books import exact_vm
     sc = village()
     qs = questions(sc, 7)
     rows = host(sc, qs, exact_vm())
     assert sum(r["wrong"] for r in rows) == 0
-    by = collections.defaultdict(list)
     for q, r in zip(qs, rows):
-        by[q["shape"]].append((q, r))
-    for q, r in by["position"]:
-        assert r["routed"] and r["spoken"] and r["right"], q["question"]
-    for shape in ("offset", "at", "where"):
-        assert not any(r["spoken"] for _q, r in by[shape])
-    said = [r for q, r in by["neighbour"] + by["nearest"] + by["region"] if q["answer"] != "nothing"]
-    assert said and all(r["right"] for r in said)
+        assert r["routed"], q["question"]
+        assert (r["spoken"] and r["right"]) if q["answer"] != "nothing" else not r["spoken"], q["question"]
+    assert {q["shape"] for q, r in zip(qs, rows) if r["spoken"]} == {s for s, _k in PLAN}
 
 
 def test_the_trunks_documents_hold_every_question_once_with_each_here_on_its_cell():
