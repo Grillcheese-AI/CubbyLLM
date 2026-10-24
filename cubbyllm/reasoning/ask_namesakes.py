@@ -110,6 +110,9 @@ def seed_for(loop, seed: str, item: str | None = None, question: str | None = No
     return contextlib.nullcontext()
 
 
+also = answer.also                                      # the namesakes' line, after the loop's checks (ask.AskLoop._ask)
+
+
 def after_walk(loop, rec: dict, seed: str, learn=None) -> None:
     """A walk refused because a world withheld facts its hop would have read on a shared name that nothing decided,
     and no world holds the name as one thing: `ambiguous_entity`, the items that held them first. Any other refusal

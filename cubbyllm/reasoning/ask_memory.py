@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pathlib
 import time
-from .ask_words import say, strip_as_of
+from .ask_words import hedged, say, strip_as_of
 
 __wiring__ = "WIRED"
 
@@ -112,6 +112,36 @@ class AskMemory:
         rec["news_changes"] = marks
         return f" Reports on {marks[-1]['day']} say this may have changed."
 
+    def _checked(self, question: str, lr, rec: dict) -> None:
+        """The checks a walked answer passes before it is said, on its record: the bulk pass's veto (order 0013), the
+        question's tense and year (0012), a snapshot's "as of" (0014), the time rule on an undated value that changes
+        (0015, Addendum 2), one witness hedged. Only for a walk that verified and a record that still says so (a
+        namesake's refusal stands: order 0037). Out of `AskLoop._ask` so each namesake walked apart passes them too."""
+        from cubbyllm.reasoning.planner import normalize
+        if not lr.result.verified or not rec.get("verified"):
+            return
+        why = self._time_check(question, lr) if self.tense else None
+        snap = self._snapshot(question, lr) if not why else None
+        if snap and snap[0] != "as_of":                   # a snapshot's value asked about another time (order 0014)
+            why = snap[1]
+        undated = self._undated(question, lr) if not why and not snap else None
+        h = lr.result.trace[-1] if lr.result.trace else None
+        if h is not None and h.triple is not None and (normalize(h.triple.subj), normalize(h.triple.rel)) in self.contested:
+            rec.update(answer=None, verified=False, reason="contested",    # the bulk pass held two values: never said
+                       refused={"answer": lr.result.answer, "why": "the sources disagree on it"})
+        elif why:                                           # the question's tense or year is not the fact's: not said
+            rec.update(answer=None, verified=False, reason="time_mismatch", refused={"answer": lr.result.answer, "why": why})
+        elif snap:                                        # a value that changes, from a dated snapshot: said "as of"
+            rec.update(tier="as_of", reply=f"As of {snap[1]}, {rec['answer']}." + self._changed(h, snap[1], rec))
+        elif undated and undated[0] == "refuse":          # the time rule (0012): a year asked, the books date nothing
+            rec.update(answer=None, verified=False, reason="time_undated", refused={"answer": lr.result.answer, "why": undated[1]})
+        elif undated and undated[0] == "as_of":           # a world's undated value that changes, with the world's date
+            rec.update(tier="as_of", reply=f"As of {undated[1]}, {rec['answer']}." + self._changed(h, undated[1], rec))
+        elif undated:                                     # a value that changes, undated: true at one point, said so
+            rec.update(tier="at_one_point", reply=hedged(undated[1].rstrip(".")) if lr.attributed else undated[1])
+        elif lr.attributed:                               # one witness only: said hedged, the source never named
+            rec.update(tier="attributed", reply=hedged(rec["answer"]))
+
     def _snapshot(self, question: str, lr):
         """For an answer whose last fact a snapshot world holds on a relation whose value changes (heads of state,
         teams, employers: `hdc_store`): ('as_of', year) to say it as of the snapshot; ('refuse', why) for another
@@ -181,7 +211,7 @@ class AskMemory:
         form it parses to, else its auxiliary) and its year against the dates the fact carries
         (`question_forms.time_check`; an undated fact is not checked)."""
         from cubbyllm.reasoning.planner import normalize
-        from .question_forms import Forms, tense_of, time_check
+        from .question_forms import Forms, noun_tense, tense_of, time_check
         h = lr.result.trace[-1] if lr.result.trace else None
         if h is None or h.triple is None:
             return None
@@ -190,5 +220,8 @@ class AskMemory:
         year = strip_as_of(question)[1]
         times = getattr(self.world, "times", None) or {}
         when = times.get(" ".join(h.fact.split())) or times.get(normalize(h.fact))
-        return time_check(self._forms.aspect(h.triple.rel), p[2] if p else tense_of(question), int(year) if year else None,
-                          when, h.triple.obj, time.localtime().tm_year)
+        kind = self._forms.aspect(h.triple.rel)
+        tense = p[2] if p else tense_of(question)
+        if p is None and kind == "event":                # "What is the date of birth of X?": the noun's "is", no tense
+            tense = noun_tense(question, h.triple.rel, tense)
+        return time_check(kind, tense, int(year) if year else None, when, h.triple.obj, time.localtime().tm_year)

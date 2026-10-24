@@ -32,7 +32,7 @@ from .ask_words import (ABSENT_REPLY, SAY, _AS_OF_PHRASE, _CATEGORY, _GROUP, _IS
                         strip_as_of, value_check, when_text)
 from .ask_claims import (BACKWARD_CUES, FORWARD_CUES, _BEGIN, _CAUSAL_REL, _END, _PRONOUN, _SENT,  # noqa: F401
                          _aliases, _cue, _learned, _mentions, branch_clarify, claim_check, parse_choose, talk_reply)
-from .ask_namesakes import after_walk, seed_for
+from .ask_namesakes import after_walk, also, seed_for
 from ..spatial.scene_ask import scene_ask
 from .ask_memory import AskMemory
 from .ask_relation import AskRelation
@@ -97,8 +97,8 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
         if books is not None and hasattr(books, "life") and books.life is None:
             books.life = self._life                      # the same-name guard reads the subject's life from this world
         # the question's tense and year against the answer's dates (order 0012: "Who rules England?" on a reign
-        # that ended is not answered); on with the books unless `tense` says otherwise, off without them
-        self.tense = (books is not None) if tense is None else bool(tense)
+        # that ended is not answered); on unless `tense` says otherwise, the books or not (Nick, 2026-10-24: on always)
+        self.tense = True if tense is None else bool(tense)
         # the time rule on a world's own facts (order 0015, Addendum 2): on with the tense check unless told otherwise
         self.time_rule = self.tense if time_rule is None else bool(time_rule)
         # the 450M's loci path as the reader (order 0007): a checkpoint path, or a LociReader; None = today's loop
@@ -116,9 +116,9 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
             from .question_forms import Forms             # ask, never a profile ("Who was the founder of Rome?"), and
             self._forms = Forms()                        # its words name the relation (levers 4 and 6: "ruled")
         self._everyday = None                            # everyday wording (2026-10-24): the host restates "Who wrote X?"
-        if os.environ.get("CB_EVERYDAY") == "1" if everyday is None else everyday:    # as the author of X; the model
-            from .everyday import EverydayForms          # gets every question the table does not read, as before
-            self._everyday = EverydayForms()
+        if os.environ.get("CB_EVERYDAY") != "0" if everyday is None else everyday:    # as the author of X; on unless
+            from .everyday import EverydayForms          # CB_EVERYDAY=0 (Nick, 2026-10-24); the model gets every
+            self._everyday = EverydayForms()             # question the table does not read, as before
         # the scene (2026-10-17): the host's route to space. A question the scene can state -- a spatial
         # relation at any hop, or a seed that is a thing in it -- is sourced from the scene's exact reading
         # instead of the world's source; the walk and the VM verify what it states like any other fact.
@@ -259,28 +259,8 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                    clarify=branch_clarify(lr.plan or plan, lr.result, parse_choose(choose)),
                    wall_s=round(time.perf_counter() - t0, 3))
         after_walk(self, rec, rec["seed"] or "", learn=learn)  # which item a shared name is: decided, or the asker is asked
-        why = self._time_check(question, lr) if lr.result.verified and self.tense else None
-        snap = self._snapshot(question, lr) if lr.result.verified and not why else None
-        if snap and snap[0] != "as_of":                   # a snapshot's value asked about another time (order 0014)
-            why = snap[1]
-        undated = self._undated(question, lr) if lr.result.verified and not why and not snap else None
-        h = lr.result.trace[-1] if lr.result.verified and lr.result.trace else None
-        contested = h is not None and h.triple is not None and (normalize(h.triple.subj), normalize(h.triple.rel)) in self.contested
-        if contested:                                     # the bulk pass held two values of it (order 0013): never said
-            rec.update(answer=None, verified=False, reason="contested",
-                       refused={"answer": lr.result.answer, "why": "the sources disagree on it"})
-        elif why:                                           # the question's tense or year is not the fact's: not said
-            rec.update(answer=None, verified=False, reason="time_mismatch", refused={"answer": lr.result.answer, "why": why})
-        elif snap:                                        # a value that changes, from a dated snapshot: said "as of"
-            rec.update(tier="as_of", reply=f"As of {snap[1]}, {rec['answer']}." + self._changed(h, snap[1], rec))
-        elif undated and undated[0] == "refuse":          # the time rule (0012): a year asked, the books date nothing
-            rec.update(answer=None, verified=False, reason="time_undated", refused={"answer": lr.result.answer, "why": undated[1]})
-        elif undated and undated[0] == "as_of":           # a world's undated value that changes, with the world's date
-            rec.update(tier="as_of", reply=f"As of {undated[1]}, {rec['answer']}." + self._changed(h, undated[1], rec))
-        elif undated:                                     # a value that changes, undated: true at one point, said so
-            rec.update(tier="at_one_point", reply=hedged(undated[1].rstrip(".")) if lr.attributed else undated[1])
-        elif lr.result.verified and lr.attributed:        # one witness only: said hedged, the source never named
-            rec.update(tier="attributed", reply=hedged(rec["answer"]))
+        self._checked(question, lr, rec)                 # the veto, the tense, "as of", the time rule, the hedge
+        also(rec)                                        # then the other namesakes, after the reply is what it will be
         if self.books is not None:                        # the record's evidence: internal, the audit view's (0016)
             rec["evidence"] = {f: self.books.citations[normalize(f)] for f in rec["trace"] if normalize(f) in self.books.citations}
         self._keep(rec)

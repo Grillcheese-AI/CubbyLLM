@@ -107,8 +107,10 @@ def parser() -> argparse.ArgumentParser:
     ap.add_argument("--loci", default=os.environ.get("CUBBY_LOCI_CKPT") or None,
                     help="the 450M checkpoint whose loci path reads a fact before the lookup (order 0007; CUBBY_LOCI_CKPT)")
     ap.add_argument("--tense", action="store_true",
-                    help="check each answer's dates against the question's tense and year without the books too "
-                         "('who rules X?' on a reign that ended is not answered); on whenever --books is")
+                    help="check each answer's dates against the question's tense and year ('who rules X?' on a reign "
+                         "that ended is not answered); the default since 2026-10-24, kept so old command lines run")
+    ap.add_argument("--no-tense", action="store_true",
+                    help="turn the tense check off (Nick, 2026-10-24: on always, with or without the books)")
     ap.add_argument("--web-reader", default="auto",
                     help="the local model that reads pages for the relation the walk needs: a GGUF path, 'auto' "
                          "(the LFM base in standin/models when present) or 'off'")
@@ -167,7 +169,7 @@ def boot(args, ap: argparse.ArgumentParser):
         brain.ask_loop = AskLoop(brain.emitter, world=world, source=source, lexicon=True,
                                  max_new=args.ask_max_new, news=news_source(args),
                                  history_path=args.history or None, web=web, skills=args.skills or None,
-                                 books=args.books, tense=True if args.tense else None, loci=args.loci)
+                                 books=args.books, tense=False if args.no_tense else None, loci=args.loci)
         print("  web: " + (f"{web.backend.name} behind {args.ask}, reader {'the local model' if web.reader else 'off'}; "
                            "a web fact is held until two independent sites state it" if web else
                            "off (set BRAVE_SEARCH_API_KEY or --searxng to turn it on)"), flush=True)

@@ -18,7 +18,7 @@ for p in (ROOT, ROOT / "standin"):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from question_forms import FORMS, Forms, TemplateEmitter, load_csv, tense_of, tensed, time_check  # noqa: E402
+from question_forms import FORMS, Forms, TemplateEmitter, load_csv, noun_tense, tense_of, tensed, time_check  # noqa: E402
 
 ENTITIES = ["Rome", "Napoleon Bonaparte", "Henry II of England", "Battle of Hastings", "Holy Roman Empire"]
 
@@ -78,6 +78,10 @@ def test_the_time_check_refuses_an_ended_fact_in_the_present_a_year_outside_and_
     assert "-753" in time_check("event", "future", None, None, "753 BC", 2026)
     assert tense_of("Who rules England?") is None and tense_of("Who is the king?") == "present"   # auxiliaries only
     assert (tense_of("Who was the king?"), tense_of("Who will be the king?")) == ("past", "future")
+    # an event named as a noun asks no tense: its "is" is the noun's; asked of the event itself, the tense stands
+    assert noun_tense("What is the date of birth of Ada Lovelace?", "date of birth", "present") is None
+    assert noun_tense("What is the place of birth of Napoleon?", "place of birth", "present") is None
+    assert noun_tense("Where is Napoleon born?", "place of birth", "present") == "present"
 
 
 def test_the_forms_name_their_relations_to_the_loops_resolvers():

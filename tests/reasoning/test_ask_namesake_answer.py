@@ -8,7 +8,8 @@ Pinned:
   narrow it ("Which Nobel Prize is the award received of Mara Vale?" reads the person, not
   the film; a phrasing the plan covers, as the plan check asks of every question), and a
   value the question's description of its answer rules out is not said (her one award is another: not what was asked);
-- two of a kind a fact tells apart: each answered from its own walk, labelled by that fact, in their ids' order;
+- two of a kind a fact tells apart: each answered from its own walk, labelled by that fact, in their ids' order, and
+  each walk passes the loop's checks (the tense check, "as of") as any walk does;
 - two of a kind nothing tells apart, and every question with the flag off: asked which, as since order 0036.
 """
 from __future__ import annotations
@@ -55,8 +56,8 @@ def test_one_fits_its_value_is_said_and_the_other_namesakes_are_offered_by_their
     loop, ids = made
     rec = loop.ask("What is the capital of Fredonia?")
     assert rec["verified"] and rec["answer"] == "Freedonia City"
-    assert rec["reply"] == ("Freedonia City. If you meant something else, there is also a constituency named Fredonia. "
-                            "Want to know about it?")
+    assert rec["reply"] == ("As of 2019, Freedonia City. If you meant something else, there is also a constituency named "
+                            "Fredonia. Want to know about it?")        # the snapshot's "as of" first, then the others
     assert rec["namesakes"]["item"] == ids["fr"] and [o["item"] for o in rec["namesakes"]["others"]] == [ids["const"]]
 
 
@@ -69,7 +70,7 @@ def test_the_questions_own_words_pick_the_item_and_a_value_it_rules_out_is_not_s
     rec = loop.ask(f"Which Nobel Prize is the {AWARD} of Mara Vale?") # "Nobel" goes with people, never films
     assert rec["namesakes"]["item"] == ids["mara_p"] and "nobel" in rec["namesakes"]["cues"]
     assert not rec["verified"] and rec["answer"] is None and rec["reason"] == "not_what_was_asked"
-    assert rec["refused"]["answer"] == "Elliott Medal"               # her one award here is not a Nobel Prize
+    assert rec["refused"]["answer"] == "Elliott Medal" and not rec.get("reply")   # not a Nobel Prize: nothing said
 
 
 def test_two_of_a_kind_a_fact_tells_apart_are_each_answered_from_their_own_walk(made, monkeypatch):
@@ -80,6 +81,16 @@ def test_two_of_a_kind_a_fact_tells_apart_are_each_answered_from_their_own_walk(
     assert rec["reply"] == ("Max Roe (occupation: baseball player): Ruritania Land; "
                             "Max Roe (occupation: politician): Grand Fenwick.")
     assert [(a["item"], a["answer"]) for a in rec["answers"]] == [(ids["max_b"], "Ruritania Land"), (ids["max_p"], "Grand Fenwick")]
+
+
+def test_each_namesake_walked_apart_passes_the_loops_checks(made, monkeypatch):
+    monkeypatch.setenv("CB_NAMESAKE_RELATION", "1")
+    loop, ids = made
+    monkeypatch.setattr(loop, "_time_check", lambda q, lr: "it ended" if lr.result.answer == "Grand Fenwick" else None)
+    rec = loop.ask(f"What is the {CIT} of Max Roe?")
+    assert rec["reply"] == ("Max Roe (occupation: baseball player): Ruritania Land; "
+                            "Max Roe (occupation: politician): I do not know.")
+    assert [(a["verified"], a["reason"]) for a in rec["answers"]] == [(True, None), (False, "time_mismatch")]
 
 
 def test_two_nothing_tells_apart_and_the_flag_off_are_asked_which(made, monkeypatch):

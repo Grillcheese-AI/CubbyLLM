@@ -107,6 +107,15 @@ def tense_of(question: str) -> str | None:
     return None
 
 
+def noun_tense(question: str, relation: str, tense: str | None) -> str | None:
+    """The tense a question asks an EVENT in. "What is the date of birth of X?" names the event as a noun, and its "is" is
+    the noun's (the date is 1815), not the event's: no tense is asked. "Where is X born?" asks the present (2026-10-24:
+    the check on always, Nick, and the host's own grammar for an event was refused). A state keeps its auxiliary:
+    "What is the currency of Germany?" asks what it is now."""
+    words = r"\s+".join(re.escape(w) for w in (relation or "").split())
+    return None if words and re.search(rf"\bthe\s+{words}\s+of\b", question or "", re.I) else tense
+
+
 def _pattern(form: str) -> re.Pattern:
     head, _, tail = form.partition("{S}")
     lit = lambda s: r"\s+".join(re.escape(w) for w in s.split())                  # noqa: E731

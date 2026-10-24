@@ -94,7 +94,15 @@ def one_fits(loop, rec: dict, seed: str, d: dict, by: dict) -> None:
         return
     line = also_line(named)
     if line:
-        rec["reply"] = f"{rec.get('reply') or rec['answer']}. {line}"
+        rec["namesakes"]["also"] = line                  # said once the loop's checks have shaped the reply (`also`)
+
+
+def also(rec: dict) -> None:
+    """The line naming the other namesakes, after the answer as the loop's checks left it ("As of 2019, Paris."), and
+    only while it is still said."""
+    line = (rec.get("namesakes") or {}).get("also")
+    if line and rec.get("verified"):
+        rec["reply"] = f"{str(rec.get('reply') or rec['answer']).rstrip('.')}. {line}"
 
 
 def several_fit(loop, rec: dict, seed: str, d: dict, by: dict, learn) -> bool:
@@ -109,11 +117,16 @@ def several_fit(loop, rec: dict, seed: str, d: dict, by: dict, learn) -> bool:
         with loop._lock, loop.world.pinned(seed, by[q][0][1].subj, q):
             lr = learn()
         ok = bool(lr.result.verified)
-        answers.append({"item": q, "label": labels[q], "answer": lr.result.answer if ok else None, "verified": ok,
+        one = {"answer": lr.result.answer if ok else None, "verified": ok, "reason": None if ok else lr.result.reason}
+        if hasattr(loop, "_checked"):                    # the checks any walk passes: an ended value is not said
+            loop._checked(rec.get("question") or "", lr, one)
+        ok = bool(one["verified"])
+        answers.append({"item": q, "label": labels[q], "answer": one["answer"], "verified": ok, "reason": one["reason"],
+                        "said": str(one.get("reply") or one["answer"]).rstrip(".") if ok else None,
                         "trace": [h.fact for h in lr.result.trace if h.fact] if ok else []})
     if not any(a["verified"] for a in answers):
         return False
-    said = "; ".join(f"{a['label']}: {a['answer'] if a['verified'] else 'I do not know'}" for a in answers)
+    said = "; ".join(f"{a['label']}: {a['said'] if a['verified'] else 'I do not know'}" for a in answers)
     rec.update(answer=said, reply=f"{said}.", verified=True, reason=None, answers=answers,
                trace=[f for a in answers for f in a["trace"]],
                namesakes={"rule": "several fit", "items": items, "kinds": d["kinds"], "cues": d["cues"]})
@@ -125,4 +138,4 @@ def _kinds_of(world):
     return next((o._kinds for o in getattr(world, "others", []) if getattr(o, "_kinds", None) is not None), None)
 
 
-__all__ = ["also_line", "class_words", "cue_words", "label_for", "on", "one_fits", "several_fit"]
+__all__ = ["also", "also_line", "class_words", "cue_words", "label_for", "on", "one_fits", "several_fit"]

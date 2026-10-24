@@ -98,7 +98,7 @@ def test_a_worlds_own_undated_changing_fact_is_said_at_one_point_or_as_of_the_wo
     on = AskLoop(FakeEmitter(plans), world=world, source=DictSource({}), lexicon=False, run_fn=exact_vm(), time_rule=True)
     rec = on.ask("What is the capital of France?")
     assert rec["verified"] and rec["tier"] == "at_one_point" and rec["reply"] == "Paris was a capital of France at one point."
-    off = AskLoop(FakeEmitter(plans), world=world, source=DictSource({}), lexicon=False, run_fn=exact_vm())
+    off = AskLoop(FakeEmitter(plans), world=world, source=DictSource({}), lexicon=False, run_fn=exact_vm(), time_rule=False)
     assert "tier" not in off.ask("What is the capital of France?")                      # off: as before
     db = tmp_path / "hdc.sqlite"
     write_world(db, FACTS, LABELS, {}, PIDS)

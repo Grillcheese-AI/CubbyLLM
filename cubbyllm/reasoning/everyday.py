@@ -29,7 +29,8 @@ emitter's next SFT round learns from: the table is scaffolding the trunk is mean
 
 Measured: `validation/exp_everyday_webq.py` (WebQuestions NA/EU, 2,216, and the stack's 20).
 
-Wired: WIRED (`ask.AskLoop(everyday=)`; ``CB_EVERYDAY=1`` turns it on, off by default, the loop then unchanged).
+Wired: WIRED (`ask.AskLoop(everyday=)`; on by default since Nick's word on 2026-10-24, ``CB_EVERYDAY=0`` turns it off and
+the loop is then unchanged). A nested question ("the capital of the country of citizenship of X") stays the model's.
 """
 from __future__ import annotations
 
@@ -204,6 +205,11 @@ class EverydayForms(Forms):
         self._words = {rel: {w for fs in by.values() for f in fs
                              for w in re.findall(r"[\w']+", f.lower().replace("{s}", " ")) if w not in _FRAME}
                        for rel, (_k, by) in self.forms.items()}
+        # a seed that starts with a relation the table names is a nested question ("the capital of the country of
+        # citizenship of Marie"): the model's multi-hop plan, never this table's one hop (2026-10-24: on by default)
+        rels = sorted(self.forms, key=len, reverse=True)
+        self._nested = re.compile(r"^(?:the\s+)?(?:" + "|".join(r"\s+".join(map(re.escape, r.split())) for r in rels)
+                                  + r")\s+of\s", re.I) if rels else None
 
     def kind(self, relation: str) -> str | None:
         return None if relation not in self.forms else "date" if relation in DATES else "name"
@@ -219,6 +225,8 @@ class EverydayForms(Forms):
             ent = _NOISE.sub("", ent)
         if ent.lower().endswith(" state") and ent[:-6].strip().lower() in _US:
             ent = ent[:-6].strip()
+        if self._nested is not None and self._nested.match(ent):
+            return None
         return (ent,) + tuple(m[1:]) if ent.strip() else None
 
     def restate(self, question: str) -> tuple[str, str, str] | None:

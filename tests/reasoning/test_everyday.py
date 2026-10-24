@@ -101,6 +101,22 @@ def test_the_loop_walks_the_restated_plan():
     assert rec["restated"] == "What is the author of Pride and Prejudice?" and rec["plan"] == ["author"]
 
 
+def test_a_nested_question_is_left_to_the_models_plan():
+    # the seed starts with a relation the table names: one hop would walk "country of citizenship of Marie" as a name
+    assert FORMS.parse("What is the capital of the country of citizenship of Marie?") is None
+    assert FORMS.parse("What currency is used in the capital of France?") is None
+    assert FORMS.parse("Who wrote the national anthem of France?")[:2] == ("national anthem of France", "author")  # a name
+
+
+def test_on_by_default_and_off_with_the_switch(monkeypatch):
+    from cubbyllm.reasoning.ask import AskLoop
+    from cubbyllm.worlds.base import FactStore
+    monkeypatch.delenv("CB_EVERYDAY", raising=False)
+    assert AskLoop(NoModel(), world=FactStore([]), source=Books(), lexicon=False)._everyday is not None   # Nick, 2026-10-24
+    monkeypatch.setenv("CB_EVERYDAY", "0")
+    assert AskLoop(NoModel(), world=FactStore([]), source=Books(), lexicon=False)._everyday is None
+
+
 def test_off_the_loop_is_unchanged():
     loop = _loop(False)
     assert loop._everyday is None

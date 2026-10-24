@@ -224,7 +224,8 @@ def test_before_and_the_attributed_tier_change_nothing_when_unused(tmp_path):
     canonical = FakeEmitter({"Who founded Rome?": ("Rome", ["founded by"])})        # a plan in the store's label
     loop = _loop(tmp_path, DictSource({"rome": ["Romulus is the founded by of Rome"]}), books=False, emitter=canonical)
     rec = loop.ask("Who founded Rome?")
-    assert rec["verified"] and "tier" not in rec and "evidence" not in rec and loop.books is None and not loop.tense
+    assert rec["verified"] and "tier" not in rec and "evidence" not in rec and loop.books is None
+    assert loop.tense                                                              # on without the books (Nick, 2026-10-24)
     store, known = ProvStore(STORE), StoreRelations(STORE)
     a = run("What is the capital of the country of citizenship of Marie?", store, known,
             DictSource({"marie": ["canada is the country of citizenship of marie"]}))

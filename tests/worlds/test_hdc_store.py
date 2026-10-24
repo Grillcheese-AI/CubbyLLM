@@ -75,7 +75,10 @@ def _loop(hdc, wiki_facts=()):
                    "capital": ("state", {"present": ["What is the capital of {S}?"]})})
     w = ProvStore(list(wiki_facts) or ["Pella is the capital of Macedon"])
     w.times = {}
-    loop = AskLoop(TemplateEmitter(forms), world=Stores(w, hdc), source=DictSource({}), lexicon=False, run_fn=exact_vm())
+    # the snapshot's own "as of" alone: the tense check and the time rule off (on by default since 2026-10-24;
+    # test_time_rule pins the hdc capital's "As of 2019" with them on)
+    loop = AskLoop(TemplateEmitter(forms), world=Stores(w, hdc), source=DictSource({}), lexicon=False, run_fn=exact_vm(),
+                   tense=False)
     return loop
 
 

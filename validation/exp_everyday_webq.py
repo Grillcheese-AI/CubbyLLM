@@ -101,9 +101,9 @@ def main() -> None:
     ap.add_argument("--online", action="store_true",
                     help="the Wikidata source live, as the server mounts it (a miss is looked up once and cached), "
                          "instead of its cache only")
-    ap.add_argument("--tense", choices=("on", "off"), default="off",
-                    help="the tense check (order 0012: 'who rules X?' on a reign that ended is not answered); the "
-                         "server turns it on with --books or --tense, so off is the stack as recorded")
+    ap.add_argument("--tense", choices=("on", "off"), default="on",
+                    help="the tense check (order 0012: 'who rules X?' on a reign that ended is not answered); on, as "
+                         "the server runs since 2026-10-24 (Nick: on always); off is the stack as recorded before")
     ap.add_argument("--n", type=int, default=0)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()

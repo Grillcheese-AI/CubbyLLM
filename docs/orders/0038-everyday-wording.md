@@ -104,3 +104,21 @@ WebQuestions questions (North America and Europe) plus the stack's 20, with ever
   in every language), not damage on the item. The fix (ask again with `mul` for ids that come back without `en`) is
   the next item in the inbox.
 - **The question** (`CB_EVERYDAY` on now, or after the 450M arm) is Nick's; asked in chat.
+- **Nick's answers (2026-10-24, in Claude Code's chat):**
+  - push: yes;
+  - `CB_EVERYDAY` on by default now (`CB_EVERYDAY=0` turns it off);
+  - the tense check on always, books or not (`--no-tense` turns it off);
+  - the time rule follows it, as Cowork measured.
+- **Turning them on surfaced three things, fixed in the same commit:**
+  1. The table took nested questions ("the capital of the country of citizenship of Marie") as one hop. A seed that
+     starts with a relation the table names is now left to the model's plan.
+  2. The tense check refused the host's own grammar for an event: "What is the date of birth of X?" read "is" as
+     the present. Now an event named as a noun asks no tense (`question_forms.noun_tense`). "Where is X born?" is
+     still refused, and a state such as currency is still checked.
+  3. 0037's answers now pass the same checks. The checks moved into `AskMemory._checked`; each "several fit" walk
+     passes them, and the namesakes' line comes after the "as of".
+- **Re-measured** with the new code, offline on the cache the live runs filled:
+  - WebQ: 47 spoken, 38 matched, 9 mismatched, the same 9 rows read as right
+    (`validation/logs/everyday_webq_on_offline_tense_newdefaults_2026-10-24.json`);
+  - the stack's 20: 9 spoken (`validation/logs/everyday_stack_on_offline_tense_newdefaults_2026-10-24.json`);
+  - 0 rows changed against Cowork's runs.

@@ -317,7 +317,7 @@ def test_a_trailing_verb_is_the_questions_and_an_unheld_relation_the_table_names
         return run
     loop = AskLoop(FakeEmitter({"Who is the mother of Justin Trudeau?": ("justin trudeau", ["mother"]),
                                 "Where was Marie Curie born?": ("marie curie", ["born"])}),
-                   world=LookupStore(STORE), source=src, lexicon=False, run_fn=exact_vm([]))
+                   world=LookupStore(STORE), source=src, lexicon=False, run_fn=exact_vm([]), everyday=False)
     assert loop._is_relation("mother") and not loop._is_relation("Mother") and not loop._is_relation("bank")
     assert profile_ask("who is the mother of justin trudeau?", loop._is_relation) is None
     assert profile_ask("who is the Duke of Edinburgh?", loop._is_relation) == ("who", "Duke of Edinburgh")
@@ -326,6 +326,9 @@ def test_a_trailing_verb_is_the_questions_and_an_unheld_relation_the_table_names
     assert rec["plan"] == ["mother"] and not rec.get("profile")                 # walked, not a readout
     rec = loop.ask("Where was Marie Curie born?")
     assert rec["verified"] and normalize(rec["answer"]) == "warsaw" and rec["aliased"] == [["born", "place of birth"]]
+    on = AskLoop(FakeEmitter({}), world=LookupStore(STORE), source=src, lexicon=False, run_fn=exact_vm([]))
+    rec = on.ask("Where was Marie Curie born?")                  # the everyday table (on by default): restated, no plan
+    assert rec["verified"] and normalize(rec["answer"]) == "warsaw" and rec["restated"] == "What is the place of birth of Marie Curie?"
 
 
 def test_a_category_claim_needs_a_fact_behind_it():
