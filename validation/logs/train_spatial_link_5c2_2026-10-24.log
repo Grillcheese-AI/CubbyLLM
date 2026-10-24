@@ -1,0 +1,146 @@
+device: cpu | torch 2.4.1+cpu
+config: D1024/L32 heads 4 window 512 1:3 | vocab 127996->128000 | S1024 micro 2 x accum 4 = 8,192 tok/step | lr 0.0003 b2 0.95 wd 0.1 clip 1.0 warmup 20 decay 30% | mix base | hours 12.0 wall 12.0
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+[OK] Vulkan devices enumerated: 0:AMD Radeon RX 6750 XT (type 2, vendor 0x1002)
+[OK] Using GPU: AMD Radeon RX 6750 XT
+[OK] Vulkan extensions: VK_EXT_memory_budget VK_EXT_memory_priority VK_EXT_pageable_device_local_memory VK_EXT_shader_atomic_float VK_EXT_shader_atomic_float2 VK_KHR_16bit_storage VK_KHR_8bit_storage VK_KHR_cooperative_matrix VK_KHR_shader_atomic_int64 VK_KHR_shader_float16_int8 VK_KHR_storage_buffer_storage_class VK_KHR_timeline_semaphore VK_KHR_vulkan_memory_model
+[OK] shaderInt64 enabled
+[OK] shaderBufferInt64Atomics enabled
+[OK] VK_EXT_memory_priority enabled
+[OK] VK_EXT_pageable_device_local_memory enabled
+[OK] Separate transfer queue on family 2 (async DMA enabled)
+[OK] Vulkan device initialized (C++ backend)
+[OK] VMA allocator initialized (C++ native)
+params 578.3M (trainable; embedding + head 262M) | 0.91 GFLOP/token
+trunk FROZEN (CB_TRAIN_ONLY=copy): 1,027 trainable parameters, the copy path's, at peak lr 0.003; the trunk runs forward only (no graph, no update; MFU counts the forward)
+initialised from $CUBBY_DRIVE/cubbyllm/runs/spatial_link_5/spatial_link_5_final.pt (its step 674; not grown) -> step 0, fresh optimizer and schedule
+schedule: 410 steps, decay from 287
+  source            tokens(train)  stable%  decay%  epochs this run
+  facts_far1k_lead     20,070,400   66.67   66.67      0.11
+  villages_0035c        1,680,896   33.33   33.33      0.67
+  step      1 warm   loss  2.187  lr 1.50e-04  gnorm  0.59       235 tok/s  MFU  nan%   0.000B tok   0.01 h  eta  3.95 h
+  step      5 warm   loss  2.270  lr 7.50e-04  gnorm  0.68       214 tok/s  MFU  nan%   0.000B tok   0.05 h  eta  4.30 h
+  step     10 warm   loss  1.799  lr 1.50e-03  gnorm  0.39       228 tok/s  MFU  nan%   0.000B tok   0.10 h  eta  3.98 h
+  step     15 warm   loss  2.369  lr 2.25e-03  gnorm  0.35       209 tok/s  MFU  nan%   0.000B tok   0.16 h  eta  4.31 h
+  step     20 warm   loss  2.947  lr 3.00e-03  gnorm  0.07       227 tok/s  MFU  nan%   0.000B tok   0.21 h  eta  3.90 h
+  step     25 stable loss  2.299  lr 3.00e-03  gnorm  0.04       215 tok/s  MFU  nan%   0.000B tok   0.26 h  eta  4.08 h
+  step     30 stable loss  1.945  lr 3.00e-03  gnorm  0.18       202 tok/s  MFU  nan%   0.000B tok   0.32 h  eta  4.28 h
+  step     35 stable loss  2.286  lr 3.00e-03  gnorm  0.15       204 tok/s  MFU  nan%   0.000B tok   0.37 h  eta  4.19 h
+  step     40 stable loss  2.050  lr 3.00e-03  gnorm  0.14       185 tok/s  MFU  nan%   0.000B tok   0.43 h  eta  4.55 h
+  step     45 stable loss  2.073  lr 3.00e-03  gnorm  0.02       226 tok/s  MFU  nan%   0.000B tok   0.48 h  eta  3.68 h
+  [ckpt] step 47 -> $CUBBY_MODELS/spatial_link_5c2\spatial_link_5c2_slota.pt
+  step     50 stable loss  2.768  lr 3.00e-03  gnorm  0.01       230 tok/s  MFU  nan%   0.000B tok   0.53 h  eta  3.56 h
+  [val] step 50  mix 2.3768  copy 1.247  | facts_far1k_lead:2.71  villages_0035c:1.71
+  [probe] step 50  villages_0035c: first 0.782 exact 0.778 later 0.980 end 1.000  lam here 0.545 (696) empty 0.004 (895)  facts_far1k_lead: first 1.000 exact 0.894 later 0.973 end 0.882  lam here 0.808 (500) empty 0.102 (85)  lam 0.365
+  step     55 stable loss  1.940  lr 3.00e-03  gnorm  0.04       126 tok/s  MFU  nan%   0.000B tok   0.62 h  eta  6.42 h
+  step     60 stable loss  2.345  lr 3.00e-03  gnorm  0.30       246 tok/s  MFU  nan%   0.000B tok   0.67 h  eta  3.24 h
+  step     65 stable loss  2.019  lr 3.00e-03  gnorm  0.08       244 tok/s  MFU  nan%   0.001B tok   0.72 h  eta  3.22 h
+  step     70 stable loss  1.893  lr 3.00e-03  gnorm  0.19       250 tok/s  MFU  nan%   0.001B tok   0.76 h  eta  3.09 h
+  step     75 stable loss  2.595  lr 3.00e-03  gnorm  0.09       250 tok/s  MFU  nan%   0.001B tok   0.81 h  eta  3.05 h
+  step     80 stable loss  1.814  lr 3.00e-03  gnorm  0.11       250 tok/s  MFU  nan%   0.001B tok   0.85 h  eta  3.01 h
+  step     85 stable loss  1.641  lr 3.00e-03  gnorm  0.03       251 tok/s  MFU  nan%   0.001B tok   0.90 h  eta  2.95 h
+  step     90 stable loss  2.819  lr 3.00e-03  gnorm  0.01       259 tok/s  MFU  nan%   0.001B tok   0.94 h  eta  2.81 h
+  step     95 stable loss  2.588  lr 3.00e-03  gnorm  0.13       247 tok/s  MFU  nan%   0.001B tok   0.99 h  eta  2.90 h
+  [ckpt] step 97 -> $CUBBY_MODELS/spatial_link_5c2\spatial_link_5c2_slotb.pt
+  step    100 stable loss  2.008  lr 3.00e-03  gnorm  0.18       194 tok/s  MFU  nan%   0.001B tok   1.05 h  eta  3.64 h
+  [val] step 100  mix 2.3705  copy 1.247  | facts_far1k_lead:2.71  villages_0035c:1.69
+  [probe] step 100  villages_0035c: first 0.912 exact 0.910 later 0.996 end 1.000  lam here 0.622 (696) empty 0.006 (895)  facts_far1k_lead: first 1.000 exact 0.894 later 0.973 end 0.871  lam here 0.807 (500) empty 0.109 (85)  lam 0.391
+  step    105 stable loss  2.594  lr 3.00e-03  gnorm  0.02       135 tok/s  MFU  nan%   0.001B tok   1.13 h  eta  5.14 h
+  step    110 stable loss  2.437  lr 3.00e-03  gnorm  0.07       265 tok/s  MFU  nan%   0.001B tok   1.17 h  eta  2.58 h
+  step    115 stable loss  2.378  lr 3.00e-03  gnorm  0.02       242 tok/s  MFU  nan%   0.001B tok   1.22 h  eta  2.78 h
+  step    120 stable loss  2.096  lr 3.00e-03  gnorm  0.02       262 tok/s  MFU  nan%   0.001B tok   1.26 h  eta  2.52 h
+  step    125 stable loss  2.316  lr 3.00e-03  gnorm  0.06       207 tok/s  MFU  nan%   0.001B tok   1.32 h  eta  3.14 h
+  step    130 stable loss  2.635  lr 3.00e-03  gnorm  0.07       224 tok/s  MFU  nan%   0.001B tok   1.37 h  eta  2.85 h
+  step    135 stable loss  1.941  lr 3.00e-03  gnorm  0.03       250 tok/s  MFU  nan%   0.001B tok   1.42 h  eta  2.50 h
+  step    140 stable loss  2.685  lr 3.00e-03  gnorm  0.16       228 tok/s  MFU  nan%   0.001B tok   1.47 h  eta  2.70 h
+  step    145 stable loss  2.413  lr 3.00e-03  gnorm  0.05       232 tok/s  MFU  nan%   0.001B tok   1.52 h  eta  2.60 h
+  [ckpt] step 145 -> $CUBBY_MODELS/spatial_link_5c2\spatial_link_5c2_slota.pt
+  step    150 stable loss  1.789  lr 3.00e-03  gnorm  0.02       219 tok/s  MFU  nan%   0.001B tok   1.57 h  eta  2.70 h
+  [val] step 150  mix 2.3712  copy 1.247  | facts_far1k_lead:2.71  villages_0035c:1.69
+  [probe] step 150  villages_0035c: first 0.861 exact 0.858 later 0.996 end 1.000  lam here 0.590 (696) empty 0.004 (895)  facts_far1k_lead: first 1.000 exact 0.894 later 0.973 end 0.871  lam here 0.801 (500) empty 0.108 (85)  lam 0.379
+  step    155 stable loss  1.985  lr 3.00e-03  gnorm  0.04       118 tok/s  MFU  nan%   0.001B tok   1.66 h  eta  4.91 h
+  step    160 stable loss  2.143  lr 3.00e-03  gnorm  0.11       183 tok/s  MFU  nan%   0.001B tok   1.73 h  eta  3.11 h
+  step    165 stable loss  2.405  lr 3.00e-03  gnorm  0.10       206 tok/s  MFU  nan%   0.001B tok   1.78 h  eta  2.70 h
+  step    170 stable loss  2.254  lr 3.00e-03  gnorm  0.03       188 tok/s  MFU  nan%   0.001B tok   1.84 h  eta  2.91 h
+  step    175 stable loss  2.734  lr 3.00e-03  gnorm  0.01       206 tok/s  MFU  nan%   0.001B tok   1.90 h  eta  2.60 h
+  step    180 stable loss  2.161  lr 3.00e-03  gnorm  0.11       225 tok/s  MFU  nan%   0.001B tok   1.95 h  eta  2.33 h
+  step    185 stable loss  2.070  lr 3.00e-03  gnorm  0.04       216 tok/s  MFU  nan%   0.002B tok   2.00 h  eta  2.37 h
+  [ckpt] step 187 -> $CUBBY_MODELS/spatial_link_5c2\spatial_link_5c2_slotb.pt
+  step    190 stable loss  2.470  lr 3.00e-03  gnorm  0.04       219 tok/s  MFU  nan%   0.002B tok   2.05 h  eta  2.28 h
+  step    195 stable loss  3.140  lr 3.00e-03  gnorm  0.03       235 tok/s  MFU  nan%   0.002B tok   2.10 h  eta  2.09 h
+  step    200 stable loss  1.816  lr 3.00e-03  gnorm  0.10       225 tok/s  MFU  nan%   0.002B tok   2.15 h  eta  2.12 h
+  [val] step 200  mix 2.3692  copy 1.247  | facts_far1k_lead:2.71  villages_0035c:1.68
+  [probe] step 200  villages_0035c: first 0.933 exact 0.933 later 1.000 end 1.000  lam here 0.625 (696) empty 0.006 (895)  facts_far1k_lead: first 1.000 exact 0.906 later 0.976 end 0.871  lam here 0.802 (500) empty 0.100 (85)  lam 0.391
+  step    205 stable loss  2.738  lr 3.00e-03  gnorm  0.01       122 tok/s  MFU  nan%   0.002B tok   2.24 h  eta  3.82 h
+  step    210 stable loss  2.142  lr 3.00e-03  gnorm  0.16       215 tok/s  MFU  nan%   0.002B tok   2.30 h  eta  2.11 h
+  step    215 stable loss  2.255  lr 3.00e-03  gnorm  0.03       200 tok/s  MFU  nan%   0.002B tok   2.35 h  eta  2.22 h
+  step    220 stable loss  2.675  lr 3.00e-03  gnorm  0.07       204 tok/s  MFU  nan%   0.002B tok   2.41 h  eta  2.12 h
+  step    225 stable loss  2.396  lr 3.00e-03  gnorm  0.02       233 tok/s  MFU  nan%   0.002B tok   2.46 h  eta  1.81 h
+  step    230 stable loss  1.985  lr 3.00e-03  gnorm  0.03       210 tok/s  MFU  nan%   0.002B tok   2.51 h  eta  1.96 h
+  [ckpt] step 231 -> $CUBBY_MODELS/spatial_link_5c2\spatial_link_5c2_slota.pt
+  step    235 stable loss  2.391  lr 3.00e-03  gnorm  0.07       203 tok/s  MFU  nan%   0.002B tok   2.57 h  eta  1.97 h
+  step    240 stable loss  2.359  lr 3.00e-03  gnorm  0.04       230 tok/s  MFU  nan%   0.002B tok   2.62 h  eta  1.68 h
+  step    245 stable loss  2.515  lr 3.00e-03  gnorm  0.03       234 tok/s  MFU  nan%   0.002B tok   2.67 h  eta  1.61 h
+  step    250 stable loss  2.524  lr 3.00e-03  gnorm  0.02       242 tok/s  MFU  nan%   0.002B tok   2.71 h  eta  1.51 h
+  [val] step 250  mix 2.3684  copy 1.247  | facts_far1k_lead:2.71  villages_0035c:1.68
+  [probe] step 250  villages_0035c: first 0.971 exact 0.971 later 1.000 end 0.996  lam here 0.648 (696) empty 0.008 (895)  facts_far1k_lead: first 1.000 exact 0.894 later 0.973 end 0.882  lam here 0.799 (500) empty 0.094 (85)  lam 0.398
+  step    255 stable loss  2.697  lr 3.00e-03  gnorm  0.02       120 tok/s  MFU  nan%   0.002B tok   2.81 h  eta  2.94 h
+  step    260 stable loss  2.304  lr 3.00e-03  gnorm  0.15       220 tok/s  MFU  nan%   0.002B tok   2.86 h  eta  1.55 h
+  step    265 stable loss  2.406  lr 3.00e-03  gnorm  0.02       227 tok/s  MFU  nan%   0.002B tok   2.91 h  eta  1.45 h
+  step    270 stable loss  2.197  lr 3.00e-03  gnorm  0.11       209 tok/s  MFU  nan%   0.002B tok   2.97 h  eta  1.52 h
+  step    275 stable loss  2.568  lr 3.00e-03  gnorm  0.05       230 tok/s  MFU  nan%   0.002B tok   3.01 h  eta  1.33 h
+  [ckpt] step 277 -> $CUBBY_MODELS/spatial_link_5c2\spatial_link_5c2_slotb.pt
+  step    280 stable loss  2.218  lr 3.00e-03  gnorm  0.05       210 tok/s  MFU  nan%   0.002B tok   3.07 h  eta  1.41 h
+  step    285 stable loss  2.975  lr 3.00e-03  gnorm  0.01       245 tok/s  MFU  nan%   0.002B tok   3.12 h  eta  1.16 h
+  [ckpt] step 287 -> $CUBBY_MODELS/spatial_link_5c2\spatial_link_5c2_stable_end.pt
+  step    290 decay  loss  2.235  lr 2.53e-03  gnorm  0.03       225 tok/s  MFU  nan%   0.002B tok   3.17 h  eta  1.21 h
+  step    295 decay  loss  1.905  lr 2.23e-03  gnorm  0.13       238 tok/s  MFU  nan%   0.002B tok   3.21 h  eta  1.10 h
+  step    300 decay  loss  2.459  lr 2.02e-03  gnorm  0.10       240 tok/s  MFU  nan%   0.002B tok   3.26 h  eta  1.04 h
+  [val] step 300  mix 2.3700  copy 1.247  | facts_far1k_lead:2.71  villages_0035c:1.68
+  [probe] step 300  villages_0035c: first 0.897 exact 0.897 later 1.000 end 1.000  lam here 0.609 (696) empty 0.004 (895)  facts_far1k_lead: first 1.000 exact 0.882 later 0.970 end 0.871  lam here 0.799 (500) empty 0.104 (85)  lam 0.384
+  step    305 decay  loss  2.013  lr 1.85e-03  gnorm  0.14       129 tok/s  MFU  nan%   0.002B tok   3.35 h  eta  1.85 h
+  step    310 decay  loss  2.163  lr 1.70e-03  gnorm  0.06       251 tok/s  MFU  nan%   0.003B tok   3.39 h  eta  0.91 h
+  step    315 decay  loss  2.072  lr 1.57e-03  gnorm  0.11       251 tok/s  MFU  nan%   0.003B tok   3.44 h  eta  0.86 h
+  step    320 decay  loss  2.524  lr 1.45e-03  gnorm  0.01       250 tok/s  MFU  nan%   0.003B tok   3.49 h  eta  0.82 h
+  step    325 decay  loss  2.461  lr 1.33e-03  gnorm  0.06       250 tok/s  MFU  nan%   0.003B tok   3.53 h  eta  0.77 h
+  step    330 decay  loss  2.145  lr 1.23e-03  gnorm  0.03       243 tok/s  MFU  nan%   0.003B tok   3.58 h  eta  0.75 h
+  step    335 decay  loss  2.180  lr 1.13e-03  gnorm  0.04       243 tok/s  MFU  nan%   0.003B tok   3.62 h  eta  0.70 h
+  [ckpt] step 337 -> $CUBBY_MODELS/spatial_link_5c2\spatial_link_5c2_slota.pt
+  step    340 decay  loss  2.131  lr 1.03e-03  gnorm  0.03       242 tok/s  MFU  nan%   0.003B tok   3.67 h  eta  0.66 h
+  step    345 decay  loss  2.172  lr 9.40e-04  gnorm  0.07       246 tok/s  MFU  nan%   0.003B tok   3.72 h  eta  0.60 h
+  step    350 decay  loss  2.127  lr 8.53e-04  gnorm  0.06       244 tok/s  MFU  nan%   0.003B tok   3.76 h  eta  0.56 h
+  [val] step 350  mix 2.3699  copy 1.247  | facts_far1k_lead:2.71  villages_0035c:1.68
+  [probe] step 350  villages_0035c: first 0.903 exact 0.903 later 1.000 end 1.000  lam here 0.612 (696) empty 0.004 (895)  facts_far1k_lead: first 1.000 exact 0.882 later 0.970 end 0.882  lam here 0.798 (500) empty 0.104 (85)  lam 0.385
+  step    355 decay  loss  2.640  lr 7.69e-04  gnorm  0.01       130 tok/s  MFU  nan%   0.003B tok   3.85 h  eta  0.96 h
+  step    360 decay  loss  2.438  lr 6.89e-04  gnorm  0.02       253 tok/s  MFU  nan%   0.003B tok   3.90 h  eta  0.45 h
+  step    365 decay  loss  2.339  lr 6.11e-04  gnorm  0.02       252 tok/s  MFU  nan%   0.003B tok   3.94 h  eta  0.41 h
+  step    370 decay  loss  2.611  lr 5.36e-04  gnorm  0.02       254 tok/s  MFU  nan%   0.003B tok   3.99 h  eta  0.36 h
+  step    375 decay  loss  2.213  lr 4.62e-04  gnorm  0.09       244 tok/s  MFU  nan%   0.003B tok   4.03 h  eta  0.33 h
+  step    380 decay  loss  2.098  lr 3.91e-04  gnorm  0.05       248 tok/s  MFU  nan%   0.003B tok   4.08 h  eta  0.27 h
+  step    385 decay  loss  2.470  lr 3.22e-04  gnorm  0.04       243 tok/s  MFU  nan%   0.003B tok   4.13 h  eta  0.23 h
+  [ckpt] step 387 -> $CUBBY_MODELS/spatial_link_5c2\spatial_link_5c2_slotb.pt
+  step    390 decay  loss  2.583  lr 2.55e-04  gnorm  0.03       251 tok/s  MFU  nan%   0.003B tok   4.17 h  eta  0.18 h
+  step    395 decay  loss  2.487  lr 1.89e-04  gnorm  0.02       256 tok/s  MFU  nan%   0.003B tok   4.22 h  eta  0.13 h
+  step    400 decay  loss  2.499  lr 1.25e-04  gnorm  0.03       254 tok/s  MFU  nan%   0.003B tok   4.26 h  eta  0.09 h
+  [val] step 400  mix 2.3694  copy 1.247  | facts_far1k_lead:2.71  villages_0035c:1.68
+  [probe] step 400  villages_0035c: first 0.919 exact 0.919 later 1.000 end 1.000  lam here 0.624 (696) empty 0.006 (895)  facts_far1k_lead: first 1.000 exact 0.882 later 0.970 end 0.882  lam here 0.799 (500) empty 0.105 (85)  lam 0.390
+  step    405 decay  loss  2.598  lr 6.16e-05  gnorm  0.06       133 tok/s  MFU  nan%   0.003B tok   4.35 h  eta  0.09 h
+  step    410 decay  loss  1.970  lr 0.00e+00  gnorm  0.02       258 tok/s  MFU  nan%   0.003B tok   4.39 h  eta  0.00 h
+  [val] step 410  mix 2.3693  copy 1.247  | facts_far1k_lead:2.71  villages_0035c:1.68
+  [probe] step 410  villages_0035c: first 0.924 exact 0.924 later 1.000 end 1.000  lam here 0.627 (696) empty 0.006 (895)  facts_far1k_lead: first 1.000 exact 0.882 later 0.970 end 0.882  lam here 0.799 (500) empty 0.106 (85)  lam 0.391
+  [gen 410] 'The history of Quebec City begins' -> " with a major event: the city's establishment in 1608 as Quebec City. This was the day on which Spain established its stronghold of Canada and formally opened for settlement, along with other Spanish colonies that had been granted land west of Hudson Bay by"
+  [gen 410] 'La ville de Lévis est située sur la rive sud' -> " du fleuve Saint-Laurent, dans la municipalité régionale de comté (MRC) La Vallée au Sud est aussi une ville financière grâce à l'agriculture.Q nitrate$5e8d6c9a-4bc1-"
+  [gen 410] 'Question: Why does ice float on water?\nAnswer:' -> ' Ice floats because it is made of ice, which has a lower density than water.\nAnswer3: In the winter.\nQ1) Is water denser or easier to float on? A) Water is denser because it can hold more'
+  [gen 410] 'def is_prime(n):\n' -> '    """\n    This function checks if a number is prime.\n    A prime number has only two divisors: 1 and the modulus of the number, n > 0. It does not have any other factors apart from one or both'
+  [ckpt] step 410 -> $CUBBY_MODELS/spatial_link_5c2\spatial_link_5c2_slota.pt
+finished: 410 steps, 0.00B tokens -> spatial_link_5c2_final.pt
+  [ckpt] step 410 -> $CUBBY_MODELS/spatial_link_5c2\spatial_link_5c2_final.pt
