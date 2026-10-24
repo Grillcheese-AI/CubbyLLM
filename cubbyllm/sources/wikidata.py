@@ -30,6 +30,7 @@ from .wikidata_resolve import WikiResolve
 __wiring__ = "WIRED"
 
 API = "https://www.wikidata.org/w/api.php"
+RETRY_S = 2.0              # the pause before a failed call is tried once more (a rate limit passes)
 UA = "cubbyllm-standin/0.1 (research; licensing@grillcheese.ai)"
 SKIP_PROPS = {"P31"}       # 'instance of' floods every entity with class facts; the store calls it 'instance' when it wants it
 CLASS_PROPS = ("P31",)     # ... and a profile ask WANTS it: "what is X" is a question about the kind
@@ -91,9 +92,15 @@ class WikidataSource(WikiResolve):
                                "cubbyllm/ opens no socket")
         url = f"{API}?{urllib.parse.urlencode(params)}"
         self.calls += 1
-        try:
-            data = json.loads(self.fetch(url).decode("utf-8"))
-        except Exception:                                  # noqa: BLE001 -- a source that fails returns nothing
+        data = None
+        for attempt in range(2):                           # one retry (2026-10-24, live: a label call failed once,
+            try:                                           #   and "where was stephen g. breyer born?" lost its fact)
+                data = json.loads(self.fetch(url).decode("utf-8"))
+                break
+            except Exception:                              # noqa: BLE001 -- a source that fails returns nothing
+                if attempt == 0:
+                    time.sleep(RETRY_S)
+        if data is None:
             return None
         if path:
             path.write_text(json.dumps(data), encoding="utf-8")

@@ -343,8 +343,9 @@ def resolve_siblings(plan: QuestionPlan, source, known, aliases: dict[str, list[
         sib = sibs[0]
         aliases.setdefault(sib, []).extend([r] + list(aliases.get(r, [])))   # the question's own words travel with the relation
         rewrote.append((r, sib))
-        if hop == 0:
-            tail = f"{sib} of {ent}"                               # the tail is 'relation of seed'; the seed stays
+        if hop == 0:                                               # the tail is 'relation of seed'; the seed stays as the
+            tail = f"{sib} of {split_tail(plan.tail, known, question)[1] or ent}"   # question wrote it (2026-10-24: its
+            #   normalized form lost "g." from "stephen g. breyer", and the source's search found nothing)
         else:
             for i, x in enumerate(rels):
                 if x and normalize(x) == r:

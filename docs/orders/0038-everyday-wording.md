@@ -122,3 +122,22 @@ WebQuestions questions (North America and Europe) plus the stack's 20, with ever
     (`validation/logs/everyday_webq_on_offline_tense_newdefaults_2026-10-24.json`);
   - the stack's 20: 9 spoken (`validation/logs/everyday_stack_on_offline_tense_newdefaults_2026-10-24.json`);
   - 0 rows changed against Cowork's runs.
+
+## After landing: Cowork's sorting of the 76 refusals (Claude Code, 2026-10-24)
+Items 1, 2, 4 and 5 of the inbox note; item 3 belongs elsewhere (see the inbox). Live, the table on, tense on, every
+changed row read by hand:
+
+| step | WebQ spoken | wrong | stack's 20 | log |
+|---|---|---|---|---|
+| landed (Cowork's best arm) | 47 | 0 | 9 | `everyday_webq_on_live_tense_2026-10-24.json` |
+| 1. `mul` labels (`09806a4`) | 54 | 0 | 10 | `everyday_webq_on_live_tense_mul_2026-10-24.json` |
+| 2. a bare year, noise words, the place qualifier* (`a4bff41`) | 63 | 0 | – | `everyday_webq_on_live_tense_reading_2026-10-24.json` |
+| 4.-5. name matching*, a retry, the siblings' seed (this commit) | 65 | 0 | 11 | `everyday_webq_on_live_tense_names2_2026-10-24.json`, `everyday_stack_on_live_tense_names2_2026-10-24.json` |
+
+\* behind `CB_PLACE_QUALIFIER=1` and `CB_NAME_MATCH=1`, both off by default. The rows above were run with them on.
+- "where was stephen g. breyer born?" was not punctuation. It failed in the run and passed alone. After 79 questions the
+  store held `birthplace`, and the siblings step rebuilt the plan's tail from the normalized seed ("stephen g breyer").
+  Fixed in `learn.resolve_siblings`.
+- One call to Wikidata failing once dropped that item's facts. A failed call is now tried once more.
+- **Questions for Nick:** `CB_PLACE_QUALIFIER` and `CB_NAME_MATCH` on by default? They gave 3 right answers and 0
+  wrong here. Each runs only when no item carries the whole name.

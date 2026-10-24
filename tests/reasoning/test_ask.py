@@ -608,3 +608,21 @@ def test_an_entity_ending_in_of_is_neither_a_crash_nor_a_profile():
     from ask import profile_ask
     assert profile_ask("Who is the director of?", lambda h: False) is None
     assert profile_ask("Who is the great pyramid of giza?", lambda h: False) == ("who", "great pyramid of giza")
+
+
+def test_a_relation_translated_to_its_other_wording_keeps_the_seed_as_the_question_wrote_it():
+    """2026-10-24, live: "where was stephen g. breyer born?" was answered alone and refused after 79 other questions.
+    By then the store held `birthplace`, the plan was translated from `place of birth` to it (the siblings step), and
+    the tail was rebuilt from the normalized seed: "stephen g breyer", which the source's search does not find."""
+    from cubbyllm.reasoning.learn import resolve_siblings
+    from cubbyllm.reasoning.plan_verify import StoreRelations
+    from cubbyllm.reasoning.planner import QuestionPlan
+    class Table:
+        def relations(self, w):
+            return {"place of birth": ["place of birth"], "birthplace": ["place of birth"]}.get(normalize(w), [])
+        def wordings(self, label):
+            return ["place of birth", "birthplace"] if normalize(label) == "place of birth" else []
+    known = StoreRelations(["Rome is the birthplace of Gaius", "Paris is the place of birth of Marie"])
+    plan = QuestionPlan(relations=[None], tail="place of birth of stephen g. breyer", n_hop=1)
+    plan2, rewrote = resolve_siblings(plan, Table(), known, {}, question="Where was stephen g. breyer born?")
+    assert rewrote == [("place of birth", "birthplace")] and plan2.tail == "birthplace of stephen g. breyer"

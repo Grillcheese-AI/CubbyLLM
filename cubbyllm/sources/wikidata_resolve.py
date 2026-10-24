@@ -9,10 +9,37 @@ from __future__ import annotations
 import json
 import os
 import time
+import unicodedata
 from cubbyllm.reasoning.planner import Triple, normalize as _normalize   # noqa: E402
 from .wikidata_aliases import _META
 
 __wiring__ = "WIRED"
+
+_HONORIFIC = ("saint", "dr", "doctor")
+
+
+def name_key(s: str) -> str:
+    """A name as it is compared with a search hit's label or alias: normalized; with ``CB_NAME_MATCH=1`` (off by
+    default), its accents folded and "st" read as "saint" (Cowork's sorting of the 76 refusals, 2026-10-24: "diego
+    velazquez" is Diego Velázquez, "st louis" is St. Louis)."""
+    k = _normalize(s or "")
+    if os.environ.get("CB_NAME_MATCH") != "1":
+        return k
+    k = "".join(c for c in unicodedata.normalize("NFKD", k) if not unicodedata.combining(c))
+    return " ".join("saint" if w == "st" else w for w in k.split())
+
+
+def bare_key(s: str) -> str:
+    """`name_key` without a leading honorific (saint, dr, doctor); the name itself off ``CB_NAME_MATCH=1``."""
+    w = name_key(s).split()
+    while os.environ.get("CB_NAME_MATCH") == "1" and len(w) > 1 and w[0] in _HONORIFIC:
+        w = w[1:]
+    return " ".join(w)
+
+
+def _exact(hit: dict, key: str) -> bool:
+    """A search hit whose label or matched alias is the name."""
+    return name_key(hit.get("label", "")) == key or name_key(((hit.get("match") or {}).get("text") or "")) == key
 
 
 class WikiResolve:
@@ -109,15 +136,22 @@ class WikiResolve:
         and a ferry named 'Marie Curie' have no date of birth), then, among those, the item
         whose LABEL is the name the question used over items that only carry it as an alias
         ('Jim Haslam' over 'Jimmy Haslam'). Still more than one -> ambiguous, refused."""
-        key = _normalize(entity)
+        key = name_key(entity)
         if via and not qid and len(self.links.get(_normalize(via), ())) == 1:
             qid = self.links[_normalize(via)][0]
             self.last.update(how="linked", via=via)
             return qid, self._labels_for([qid]).get(qid) or entity
         s = self._get({"action": "wbsearchentities", "search": entity, "language": "en", "limit": 5})
         hits = (s or {}).get("search") or []
-        if not any(_normalize(h.get("label", "")) == key or _normalize(((h.get("match") or {}).get("text") or "")) == key
-                   for h in hits) and os.environ.get("CB_PLACE_QUALIFIER") == "1":
+        if not any(_exact(h, key) for h in hits) and bare_key(entity) != key:
+            # nothing carries the name: once more without its leading honorific ("st elizabeth ann seton" is
+            # Elizabeth Ann Seton), and only then, so "saint louis" stays St. Louis (CB_NAME_MATCH=1, off by default)
+            b = bare_key(entity)
+            s = self._get({"action": "wbsearchentities", "search": b, "language": "en", "limit": 5})
+            hits2 = (s or {}).get("search") or []
+            if any(_exact(h, b) for h in hits2):
+                hits, key = hits2, b
+        if not any(_exact(h, key) for h in hits) and os.environ.get("CB_PLACE_QUALIFIER") == "1":
             from .wikidata_place import resolve_place     # no item of the whole name: "cleveland ohio" read as a
             got = resolve_place(self, entity)              #   name and where it is (off by default)
             if got:
@@ -134,8 +168,7 @@ class WikiResolve:
         # label shared by two or more items is an ambiguity the host never picks among by
         # rank. A search whose hits carry neither the label nor an alias equal to the query
         # is no resolution either (the old fallback to hits[0] was a guess).
-        exact = [h for h in hits if _normalize(h.get("label", "")) == key
-                 or _normalize(((h.get("match") or {}).get("text") or "")) == key]
+        exact = [h for h in hits if _exact(h, key)]
         # a Wikimedia meta-page (disambiguation, list article, category, template) is never the thing a
         # question is about: dropping them is a filter on what an item IS, not a pick among candidates
         # (2026-09-14, live: 'the last roman emperor' was two hits -- the legendary figure and a
@@ -169,7 +202,7 @@ class WikiResolve:
                     if having and len(having) < len(cands):
                         cands, how = having, f"relation: {r}"
         if len(cands) > 1:
-            labelled = [h for h in cands if _normalize(h.get("label", "")) == key]
+            labelled = [h for h in cands if name_key(h.get("label", "")) == key]
             # ...and the label decides only among DIFFERENT kinds of thing, by the James Young rule above
             # (2026-10-24, live: "where was ben franklin born?" said Carthage. A minor item is LABELLED "Ben
             # Franklin"; Benjamin Franklin carries it as an alias; two people, and which one Wikidata labels

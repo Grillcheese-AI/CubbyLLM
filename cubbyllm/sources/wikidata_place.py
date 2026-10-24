@@ -20,6 +20,7 @@ from __future__ import annotations
 
 from cubbyllm.reasoning.planner import normalize
 from .wikidata_aliases import _META
+from .wikidata_resolve import name_key
 
 __wiring__ = "WIRED"
 
@@ -80,9 +81,9 @@ def resolve_place(src, entity: str) -> tuple[str, str, str] | None:
     for name, qual in readings(entity):
         want = spelled(qual)
         s = src._get({"action": "wbsearchentities", "search": name, "language": "en", "limit": 5})
-        key = normalize(name)
+        key = name_key(name)
         exact = [h for h in (s or {}).get("search") or []
-                 if (normalize(h.get("label", "")) == key or normalize(((h.get("match") or {}).get("text") or "")) == key)
+                 if (name_key(h.get("label", "")) == key or name_key(((h.get("match") or {}).get("text") or "")) == key)
                  and not _META.search(str(h.get("description") or ""))]
         for h in exact:
             if h["id"] not in found and want in places(src, h["id"]):

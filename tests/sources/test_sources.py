@@ -359,3 +359,40 @@ def test_a_name_that_carries_where_it_is_reads_as_a_name_and_a_place(monkeypatch
     assert src.resolve("new england usa")[0] == "Q18389"                                 # "new england" is the name
     src = ByQuery(searches, ents)
     assert src.resolve("springfield oh") is None and {q for q, _l, _d in src.last["ambiguous"]} == {"Q37320", "Q7"}
+
+
+def test_a_call_that_fails_once_is_tried_again(tmp_path, monkeypatch):
+    """2026-10-24, live: one label call failed (Wikidata's rate limit, most likely) and "where was stephen g. breyer
+    born?" lost its fact; asked again, the same call answered. A failed call is tried once more; twice is nothing."""
+    import json as _json
+    import cubbyllm.sources.wikidata as W
+    monkeypatch.setattr(W, "RETRY_S", 0.0)
+    tries = []
+    def flaky(url):
+        tries.append(url)
+        if len(tries) == 1:
+            raise OSError("429")
+        return _json.dumps({"entities": {"Q1": {"labels": {"en": {"value": "x"}}}}}).encode()
+    src = W.WikidataSource(cache_dir=tmp_path, sleep_s=0.0, offline=False, fetch=flaky)
+    assert src._labels_for(["Q1"]) == {"Q1": "x"} and len(tries) == 2
+    dead = W.WikidataSource(cache_dir=tmp_path / "b", sleep_s=0.0, offline=False, fetch=lambda url: (_ for _ in ()).throw(OSError()))
+    assert dead._get({"action": "wbgetentities", "ids": "Q2"}) is None
+
+
+def test_a_name_is_matched_with_its_accents_folded_and_saint_or_doctor_read_as_said(monkeypatch):
+    """Cowork's sorting of the 76 refusals (2026-10-24): "diego velazquez", "st elizabeth ann seton". Accents are
+    folded and "st" is "saint" on both sides. A leading honorific is dropped only when nothing carries the whole name,
+    so "saint louis" stays St. Louis and never becomes every Louis."""
+    ents = {"Q297": CLAIMS, "Q38021": CLAIMS, "Q5": CLAIMS, "Q6": CLAIMS, **LABELS}
+    searches = {"diego velazquez": [_hit("Q297", "Diego Velázquez", "Spanish painter")],
+                "st elizabeth ann seton": [],
+                "elizabeth ann seton": [_hit("Q5", "Elizabeth Ann Seton", "American saint")],
+                "saint louis": [_hit("Q38021", "St. Louis", "city in Missouri")],
+                "louis": [_hit("Q6", "Louis", "given name")]}
+    monkeypatch.delenv("CB_NAME_MATCH", raising=False)
+    assert ByQuery(searches, ents).resolve("diego velazquez") is None                   # off: as before
+    monkeypatch.setenv("CB_NAME_MATCH", "1")
+    src = ByQuery(searches, ents)
+    assert src.resolve("diego velazquez")[0] == "Q297"
+    assert src.resolve("st elizabeth ann seton")[0] == "Q5"
+    assert src.resolve("saint louis")[0] == "Q38021"
