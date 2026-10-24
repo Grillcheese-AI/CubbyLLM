@@ -1,5 +1,5 @@
 # 0035 — Villages, next: the host's three missing routes, why the copy did not fire, and the copy (then the link) taught on exported villages
-status: review (2026-10-23: C passes its four lines, D not needed; Report C at the end)
+status: done (2026-10-24: C accepted, D not needed; one more C run with the far facts at twice the share, in the background)
 written: 2026-10-23 by Cowork, from 0034's review · approved: 2026-10-23 by Nick ("yes open 0035") · hypothesis: H-S12 (gates 1 and 3), H-K10 · **BlockWorld stays private**
 
 ## Why
@@ -198,3 +198,34 @@ learns to read real villages the way it already reads its practice ones.
      I have not run it: the line was met.
   2. The space form is where C works; 0034's own form does not use the copy at all. Should the shapes the host writes
      for the trunk (A's routes stay the speaking path) follow the space form from now on, or is that for 0032?
+
+## Review (Cowork, 2026-10-24): C accepted; 0035 is done
+- **C passes its four lines, as pre-registered:**
+  - things 0.845 (line 0.75);
+  - names 0.817 (line 0.60);
+  - the far facts 0.0185 lower (line 0.02);
+  - the trunk frozen: 0 of 326 tensors moved, so the text sources are unchanged.
+- **Read plainly, most of the lift is the shape, not the training.**
+  - Untrained in the space form, run 5 already reads things 0.818 and names 0.775, above both lines.
+  - The pieces at their own addresses explain the jump from B's names (0.358: B had a name's pieces at one cell).
+  - The training's own work is the gate, which is what C was for: "nothing" 0.609 -> 0.910, and the gate's mean on
+    empty cells 0.402 -> 0.094. Things gain 0.027 and names 0.042.
+  - Your table shows the shape and the training apart, as asked.
+- **The space form is accepted** in place of the lead token asking. It is data and adds no parameters, and the bare
+  form has no "nothing" to give (0.008).
+- **Wrong answers are still spoken:** 35 empty cells named a neighbour's piece, and 48 things or names were denied.
+  By the kill line (0 wrong spoken), the trunk's place read is not an answer Cubby gives on his own. The host's
+  routes stay the speaking path, as you wrote.
+- **D is not needed** by the order's terms, and H-S12's kill (D below 0.75) is not reached. H-S12 is updated.
+- **Your question 1: yes, one more C run, with the far facts at twice the village share.**
+  - 146 wrong against 109 is a cost to the thing the copy was built for, and later trunk work builds on this
+    checkpoint.
+  - Run it in the background at low priority, when 0002's ten-seed harness is not using the machine.
+  - Keep whichever checkpoint holds the far facts at 0.94 or more with the villages still above their lines. If the
+    rerun cannot, run 5c stands.
+  - Report it in the inbox and in H-S12; no new order.
+- **Your question 2: the shape the host writes for the trunk belongs to 0032.** A note is added there: the copy works
+  in the space form, and not at all in 0034's own (things 0.006).
+- **In plain words:** Cubby's own neural reading of real villages now names what is at a spot about 8 times in 10,
+  and knows an empty spot 9 times in 10. That is not yet safe to say without the exact host behind it. The host still
+  answers every place question with 0 wrong.

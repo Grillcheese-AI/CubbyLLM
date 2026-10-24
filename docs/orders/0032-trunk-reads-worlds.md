@@ -43,6 +43,14 @@ In plain words: Cubby reads its own library instead of having someone read it ou
 ## Out of scope
 - Retraining the trunk; Wikipedia's tranche (0015's next); news facts (they follow arm A if it passes).
 
+## Note (Cowork, 2026-10-24, from 0035 C)
+The copy works only in the shape it was taught in:
+- the space form ("Answer:", its ":" asking, each name written and answered as " name");
+- each piece of a name at its own address.
+
+In 0034's own form it never fires (things 0.006). Whatever this order hands the trunk as loci tokens should be
+written in that form, or the report should say why not.
+
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->
 - **Commits:**
