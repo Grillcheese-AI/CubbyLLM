@@ -1,5 +1,5 @@
 # 0037 — Namesakes: answer when the question's relation fits only one of them ("the capital of France")
-status: in progress (2026-10-24: Claude Code; BlockWorld 0002 waits on its benches, run in the background)
+status: review (2026-10-24: Claude Code)
 written: 2026-10-23 by Cowork · approved: 2026-10-23 by Nick ("a capital is usually in a country so it should pick the country france (there is only one)") · hypothesis: none
 
 ## Why
@@ -95,4 +95,97 @@ mean. When the question truly cannot tell (two people named Steve Mills), he ans
 - The online source's rule (`sources.wikidata_resolve`) is unchanged.
 
 ## Report
-<!-- Claude Code fills this in, then sets status: review -->
+- **Commits:**
+  - `05c87c6`: the rule, behind `CB_NAMESAKE_RELATION=1` (off);
+  - `127b6b7`: the answers pass the loop's checks;
+  - `60ec6b1`: the audit and its lessons;
+  - `39b87f9`: the cue words;
+  - this one: the report.
+- **Files:**
+  - `cubbyllm/worlds/hdc_kinds.py`: carries by share; `read` / `read_how`.
+  - `hdc_cues.py`: the word-to-kinds table, `CUE_MIN`.
+  - `hdc_relation.py`: `decide`, `others`, `sayable`.
+  - `hdc_namesakes.py`: `hop_rows`, `decision`, `cued`.
+  - `hdc_store.py`.
+  - `cubbyllm/reasoning/ask_namesake_answer.py`: how the answer reads.
+  - `ask_namesakes.py`: `seed_for`, `after_walk`, `also`.
+  - `ask_memory.py`: `_checked`.
+  - `ask.py`: two hooks.
+  - `sleep.py`: `not_what_was_asked` is routed to `source_gaps`.
+  - `validation/audit_namesake_relation.py`.
+  - Tests: `tests/worlds/test_hdc_relation.py` (10) and `tests/reasoning/test_ask_namesake_answer.py` (9).
+- **The thresholds (item 2), and why:**
+  - **LIFT = 2, NMIN = 3.** A kind carries a relation when its members hold it at least twice as often as the
+    world's typed items do, from at least 3 members.
+    - The base comes from typed items only. Untyped people dominate the snapshot, and an all-items base made
+      humans carry nothing.
+  - **SPREAD = 50.** A relation more than 50 kinds carry ("country", "located in") says only that an item is
+    somewhere, so it reads no kind.
+  - **CUE_MIN = 100.** A cue word rules out only when 100 of the world's subjects use it ("nobel": 711; "flows":
+    1).
+- **What the audit changed in the rule** (the first run, read by hand before handing it over; details in the
+  commits):
+  1. **One that fits must hold a value,** or it decides nothing.
+     - In 5 of 12 picks the item of the right kind held nothing, while an item of no kind did (Qu River,
+       Petershausen, ...). It would have said "I don't know" instead of asking.
+  2. **Two of a kind compete together,** whatever their facts.
+     - **Thespis was 1 wrong pick:** two taxa, one picked because its facts had been read widely.
+     - The guard that missed: "no other namesake's kind does" compared kinds per item, so a kind shared with the
+       fit item did not count.
+  3. **An item read widely is never named by its kind.**
+     - Its relations go with no kind together ("read widely").
+     - Demon Hunter, a band, was named "a film". That was a wrong statement in the offer line.
+  4. **Cue words are the question's capitalised words,** with kind names in the table and rare words ignored.
+     - "flows" in "What river flows through Cairo?" had ruled out the city.
+  5. **Labels skip the relation asked,** and two others alike are said once.
+- **Measured** (the final rule; logs in `validation/logs/`):
+  - **The audit:** `audit_namesake_relation_2026-10-24.md` is the list for Cowork's reading, and its `.json`.
+    - 50 hops, seed 1.
+    - Outcomes: 6 one item; 1 each labelled (Thespis, by parent taxon); 43 asked back.
+      - 4 of the 43 ask back because the one that fits holds nothing.
+      - The rest: no item of a known kind fits, or two of a kind no other fact tells apart.
+    - Wrong picks by my reading: 0. Cowork's reading is the line.
+  - **The three common questions** (world level, and through the loop):
+    - Paris (Q142);
+    - the Japanese yen (Q17);
+    - Rome (Q38).
+  - **The cue-word probe** (20 names, seed 1, in the same files): 3 pick the target, 17 ask back (16 with the
+    target among the fits), 0 wrong picks.
+    - A cue word rules out other kinds, never another item of the same kind. So two people named alike stay a
+      question.
+  - **Marie Curie** (`0037_stack_marie_curie_2026-10-24.jsonl`):
+    - **World level:** the cue "nobel" picks Q7186. The class guard then says it does not know: her one award in
+      the snapshot is the Elliott Cresson Medal.
+    - **On the real stack, the literal question never reaches the hop.** The 450M plans `["won"]` with the seed
+      "marie", and the plan check refuses it (`plan_does_not_cover_question`). The everyday table does not read
+      "What X did Y win?" either.
+    - "What award did Marie Curie receive?" picks Q7186 (recorded human; the other Marie Curie has no kind) and
+      says "Elliott Cresson Medal": true, and all the snapshot holds.
+  - **0033's probe:** 0 mixed (`namesake_probe_2026-10-24_0037.json`).
+  - **0014's bench:** 192 correct, 0 wrong, 0 time-sensitive values said flat.
+    - The same with the rule off (`exp_hdc_bench_2026-10-24_0037.json`, `..._0037_off.json`): 0037 changes
+      nothing on this bench.
+    - The gain over 0036's 178 comes from the day's defaults (0038: the tense check, the table).
+  - **The stack's 20** (`0037_stack_off_2026-10-24.json`, `0037_stack_on_2026-10-24.json`):
+    - Off and on speak the same 10.
+    - Under today's defaults France and Japan answer even with the rule off, from the source's cache through
+      0038's table.
+    - With the rule on, the hdc snapshot answers first:
+      - "As of 2019, Paris. If you meant something else, there is also a constituency of the European Parliament
+        named France. ...";
+      - "As of 2019, Ottawa.";
+      - "Japanese yen. If you meant ... a manga named Japan (2 of them) ...";
+      - "Nile. If you meant ... an operating system named Cairo and a village in the united states named Cairo
+        ...".
+    - The other 16 are the same in both arms.
+  - **Latency:** the decision takes p50 4.5 ms, max 40.9 ms (75 decisions on the real world).
+- **Not verified here:** Cowork's reading of the audit and the probe (the line is at most 1 wrong pick in 50).
+- **Questions:**
+  1. **The default.** Item 6 turns the rule on for hops once the audit passes. It stays off until Cowork's reading.
+     Should it come on then?
+  2. **Snapshot or source.** With the rule on, the snapshot's "As of 2019, Paris" replaces the source's dated,
+     flat "Paris". Should a dated source's value win over a snapshot's time-sensitive one?
+  3. **Steve Mills.** The two Steve Mills hold only their citizenships, so asked their citizenship they are asked
+     which. "Answer each" needs a fact other than the answer. Is that acceptable?
+  4. **The source side.** Item 3 of your notes on the 76 refusals (namesakes at the Wikidata source) is outside
+     this order: its constraints keep `sources.wikidata_resolve` unchanged. A new order?

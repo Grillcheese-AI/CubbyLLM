@@ -18,7 +18,7 @@
     "trace": [
      "Paris is the capital of France"
     ],
-    "wall_s": 0.129,
+    "wall_s": 0.1,
     "restated": "What is the capital of France?",
     "refused": null,
     "branches": null,
@@ -61,11 +61,11 @@
     },
     "tier": "as_of",
     "reply": "As of 2019, Paris. If you meant something else, there is also a constituency of the european parliament named France. Want to know about it?",
-    "ts": "2026-10-24T03:24:48",
-    "id": "2026-10-24T03:24:48-1"
+    "ts": "2026-10-24T04:29:55",
+    "id": "2026-10-24T04:29:55-1"
    },
    "journey": {
-    "id": "2026-10-24T03:24:48-1",
+    "id": "2026-10-24T04:29:55-1",
     "question": "What is the capital of France?",
     "tokens": [
      {
@@ -117,7 +117,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 125,
+      "ms": 96,
       "counts": {
        "hop": 1,
        "fact": 1
@@ -149,7 +149,7 @@
       "stop": false
      }
     ],
-    "wall_s": 0.129,
+    "wall_s": 0.1,
     "verified": true,
     "said": "As of 2019, Paris. If you meant something else, there is also a constituency of the european parliament named France. Want to know about it?",
     "tier": "as_of",
@@ -182,17 +182,17 @@
     "trace": [
      "London is the place of birth of Ada Lovelace"
     ],
-    "wall_s": 0.913,
+    "wall_s": 0.831,
     "restated": "What is the place of birth of Ada Lovelace?",
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:24:49",
-    "id": "2026-10-24T03:24:49-2"
+    "ts": "2026-10-24T04:29:56",
+    "id": "2026-10-24T04:29:56-2"
    },
    "journey": {
-    "id": "2026-10-24T03:24:49-2",
+    "id": "2026-10-24T04:29:56-2",
     "question": "Where was Ada Lovelace born?",
     "tokens": [
      {
@@ -230,7 +230,7 @@
      {
       "step": "route",
       "title": "Route",
-      "ms": 885,
+      "ms": 814,
       "counts": {
        "plan": 3
       },
@@ -240,7 +240,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 27,
+      "ms": 13,
       "counts": {
        "fetch": 1,
        "gate": 13,
@@ -275,7 +275,7 @@
       "stop": false
      }
     ],
-    "wall_s": 0.913,
+    "wall_s": 0.831,
     "verified": true,
     "said": "London",
     "tier": null,
@@ -308,17 +308,17 @@
     "trace": [
      "Jane Austen is the author of Pride and Prejudice"
     ],
-    "wall_s": 0.135,
+    "wall_s": 0.106,
     "restated": "What is the author of Pride and Prejudice?",
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:24:49",
-    "id": "2026-10-24T03:24:49-3"
+    "ts": "2026-10-24T04:29:56",
+    "id": "2026-10-24T04:29:56-3"
    },
    "journey": {
-    "id": "2026-10-24T03:24:49-3",
+    "id": "2026-10-24T04:29:56-3",
     "question": "Who wrote Pride and Prejudice?",
     "tokens": [
      {
@@ -356,7 +356,7 @@
      {
       "step": "route",
       "title": "Route",
-      "ms": 112,
+      "ms": 90,
       "counts": {
        "plan": 3
       },
@@ -366,7 +366,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 21,
+      "ms": 18,
       "counts": {
        "fetch": 1,
        "gate": 13,
@@ -401,7 +401,7 @@
       "stop": false
      }
     ],
-    "wall_s": 0.135,
+    "wall_s": 0.106,
     "verified": true,
     "said": "Jane Austen",
     "tier": null,
@@ -432,16 +432,16 @@
     ],
     "snapped": null,
     "trace": [],
-    "wall_s": 11.646,
+    "wall_s": 13.962,
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:00",
-    "id": "2026-10-24T03:25:00-4"
+    "ts": "2026-10-24T04:30:10",
+    "id": "2026-10-24T04:30:10-4"
    },
    "journey": {
-    "id": "2026-10-24T03:25:00-4",
+    "id": "2026-10-24T04:30:10-4",
     "question": "When was the Eiffel Tower built?",
     "tokens": [
      {
@@ -483,7 +483,7 @@
      {
       "step": "route",
       "title": "Route",
-      "ms": 32,
+      "ms": 10,
       "counts": {
        "plan": 2
       },
@@ -493,7 +493,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 13,
+      "ms": 10,
       "counts": {
        "fetch": 1
       },
@@ -503,7 +503,7 @@
      {
       "step": "check",
       "title": "Check",
-      "ms": -1,
+      "ms": 0,
       "counts": {
        "walk": 1
       },
@@ -513,7 +513,7 @@
      {
       "step": "say",
       "title": "Say",
-      "ms": 1,
+      "ms": 0,
       "counts": {
        "answer": 1
       },
@@ -521,7 +521,7 @@
       "stop": true
      }
     ],
-    "wall_s": 11.646,
+    "wall_s": 13.962,
     "verified": false,
     "said": null,
     "tier": null,
@@ -547,7 +547,7 @@
     "trace": [
      "Ottawa is the capital of Canada"
     ],
-    "wall_s": 0.037,
+    "wall_s": 0.017,
     "restated": "What is the capital of Canada?",
     "refused": null,
     "branches": null,
@@ -595,11 +595,11 @@
     },
     "tier": "as_of",
     "reply": "As of 2019, Ottawa.",
-    "ts": "2026-10-24T03:25:00",
-    "id": "2026-10-24T03:25:00-5"
+    "ts": "2026-10-24T04:30:10",
+    "id": "2026-10-24T04:30:10-5"
    },
    "journey": {
-    "id": "2026-10-24T03:25:00-5",
+    "id": "2026-10-24T04:30:10-5",
     "question": "What is the capital of Canada?",
     "tokens": [
      {
@@ -651,7 +651,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 27,
+      "ms": 16,
       "counts": {
        "hop": 1,
        "fact": 1
@@ -683,7 +683,7 @@
       "stop": false
      }
     ],
-    "wall_s": 0.037,
+    "wall_s": 0.017,
     "verified": true,
     "said": "As of 2019, Ottawa.",
     "tier": "as_of",
@@ -709,17 +709,17 @@
     "aliased": [],
     "snapped": null,
     "trace": [],
-    "wall_s": 0.075,
+    "wall_s": 0.035,
     "restated": "What is the father of Queen Elizabeth II?",
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:01",
-    "id": "2026-10-24T03:25:01-6"
+    "ts": "2026-10-24T04:30:10",
+    "id": "2026-10-24T04:30:10-6"
    },
    "journey": {
-    "id": "2026-10-24T03:25:01-6",
+    "id": "2026-10-24T04:30:10-6",
     "question": "Who is the father of Queen Elizabeth II?",
     "tokens": [
      {
@@ -779,7 +779,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 44,
+      "ms": 21,
       "counts": {
        "fetch": 1,
        "gate": 12,
@@ -791,7 +791,7 @@
      {
       "step": "check",
       "title": "Check",
-      "ms": 28,
+      "ms": 13,
       "counts": {
        "walk": 2
       },
@@ -801,7 +801,7 @@
      {
       "step": "say",
       "title": "Say",
-      "ms": 1,
+      "ms": 0,
       "counts": {
        "answer": 1
       },
@@ -809,7 +809,7 @@
       "stop": true
      }
     ],
-    "wall_s": 0.075,
+    "wall_s": 0.035,
     "verified": false,
     "said": null,
     "tier": null,
@@ -835,16 +835,16 @@
     "aliased": [],
     "snapped": null,
     "trace": [],
-    "wall_s": 3.085,
+    "wall_s": 2.7,
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:04",
-    "id": "2026-10-24T03:25:04-7"
+    "ts": "2026-10-24T04:30:13",
+    "id": "2026-10-24T04:30:13-7"
    },
    "journey": {
-    "id": "2026-10-24T03:25:04-7",
+    "id": "2026-10-24T04:30:13-7",
     "question": "What is the population of Toronto?",
     "tokens": [
      {
@@ -896,7 +896,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 13,
+      "ms": 12,
       "counts": {
        "fetch": 1
       },
@@ -906,7 +906,7 @@
      {
       "step": "check",
       "title": "Check",
-      "ms": 0,
+      "ms": -2,
       "counts": {
        "walk": 1
       },
@@ -916,7 +916,7 @@
      {
       "step": "say",
       "title": "Say",
-      "ms": 0,
+      "ms": 2,
       "counts": {
        "answer": 1
       },
@@ -924,7 +924,7 @@
       "stop": true
      }
     ],
-    "wall_s": 3.085,
+    "wall_s": 2.7,
     "verified": false,
     "said": null,
     "tier": null,
@@ -952,17 +952,17 @@
     "trace": [
      "Leonardo da Vinci is the creator of Mona Lisa"
     ],
-    "wall_s": 0.082,
+    "wall_s": 0.069,
     "restated": "What is the creator of Mona Lisa?",
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:04",
-    "id": "2026-10-24T03:25:04-8"
+    "ts": "2026-10-24T04:30:13",
+    "id": "2026-10-24T04:30:13-8"
    },
    "journey": {
-    "id": "2026-10-24T03:25:04-8",
+    "id": "2026-10-24T04:30:13-8",
     "question": "Who painted the Mona Lisa?",
     "tokens": [
      {
@@ -1010,7 +1010,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 82,
+      "ms": 65,
       "counts": {
        "fetch": 1,
        "gate": 13,
@@ -1045,7 +1045,7 @@
       "stop": false
      }
     ],
-    "wall_s": 0.082,
+    "wall_s": 0.069,
     "verified": true,
     "said": "Leonardo da Vinci",
     "tier": null,
@@ -1069,7 +1069,7 @@
     "aliased": [],
     "snapped": null,
     "trace": [],
-    "wall_s": 3.182,
+    "wall_s": 2.733,
     "refused": {
      "covers": false,
      "unknown_relations": [
@@ -1081,11 +1081,11 @@
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:07",
-    "id": "2026-10-24T03:25:07-9"
+    "ts": "2026-10-24T04:30:16",
+    "id": "2026-10-24T04:30:16-9"
    },
    "journey": {
-    "id": "2026-10-24T03:25:07-9",
+    "id": "2026-10-24T04:30:16-9",
     "question": "Where is the Globe Theatre?",
     "tokens": [
      {
@@ -1123,7 +1123,7 @@
      {
       "step": "route",
       "title": "Route",
-      "ms": 4,
+      "ms": 6,
       "counts": {
        "plan": 1
       },
@@ -1133,7 +1133,7 @@
      {
       "step": "check",
       "title": "Check",
-      "ms": 32,
+      "ms": 20,
       "counts": {
        "walk": 1
       },
@@ -1143,7 +1143,7 @@
      {
       "step": "say",
       "title": "Say",
-      "ms": 8,
+      "ms": 0,
       "counts": {
        "answer": 1
       },
@@ -1151,7 +1151,7 @@
       "stop": true
      }
     ],
-    "wall_s": 3.182,
+    "wall_s": 2.733,
     "verified": false,
     "said": null,
     "tier": null,
@@ -1177,7 +1177,7 @@
     "aliased": [],
     "snapped": null,
     "trace": [],
-    "wall_s": 0.328,
+    "wall_s": 0.263,
     "restated": "What is the official language of Brazil?",
     "refused": {
      "hop": 0,
@@ -1227,11 +1227,11 @@
     ],
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:07",
-    "id": "2026-10-24T03:25:07-10"
+    "ts": "2026-10-24T04:30:16",
+    "id": "2026-10-24T04:30:16-10"
    },
    "journey": {
-    "id": "2026-10-24T03:25:07-10",
+    "id": "2026-10-24T04:30:16-10",
     "question": "What language is spoken in Brazil?",
     "tokens": [
      {
@@ -1283,7 +1283,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 325,
+      "ms": 264,
       "counts": {
        "fetch": 1,
        "gate": 14,
@@ -1300,7 +1300,7 @@
      {
       "step": "check",
       "title": "Check",
-      "ms": -1,
+      "ms": 0,
       "counts": {
        "walk": 2,
        "branch": 2
@@ -1311,7 +1311,7 @@
      {
       "step": "say",
       "title": "Say",
-      "ms": 1,
+      "ms": 0,
       "counts": {
        "answer": 1
       },
@@ -1319,7 +1319,7 @@
       "stop": true
      }
     ],
-    "wall_s": 0.328,
+    "wall_s": 0.263,
     "verified": false,
     "said": null,
     "tier": null,
@@ -1347,17 +1347,17 @@
     "trace": [
      "Alexander Fleming is the discoverer or inventor of penicillin"
     ],
-    "wall_s": 0.069,
+    "wall_s": 0.053,
     "restated": "What is the discoverer or inventor of penicillin?",
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:07",
-    "id": "2026-10-24T03:25:07-11"
+    "ts": "2026-10-24T04:30:16",
+    "id": "2026-10-24T04:30:16-11"
    },
    "journey": {
-    "id": "2026-10-24T03:25:07-11",
+    "id": "2026-10-24T04:30:16-11",
     "question": "Who discovered penicillin?",
     "tokens": [
      {
@@ -1397,7 +1397,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 69,
+      "ms": 50,
       "counts": {
        "fetch": 1,
        "gate": 13,
@@ -1432,7 +1432,7 @@
       "stop": false
      }
     ],
-    "wall_s": 0.069,
+    "wall_s": 0.053,
     "verified": true,
     "said": "Alexander Fleming",
     "tier": null,
@@ -1458,7 +1458,7 @@
     "trace": [
      "Japanese yen is the currency of Japan"
     ],
-    "wall_s": 0.026,
+    "wall_s": 0.018,
     "restated": "What is the currency of Japan?",
     "refused": null,
     "branches": null,
@@ -1608,11 +1608,11 @@
      "also": "If you meant something else, there is also a manga named Japan (2 of them). Want to know about one of them?"
     },
     "reply": "Japanese yen. If you meant something else, there is also a manga named Japan (2 of them). Want to know about one of them?",
-    "ts": "2026-10-24T03:25:07",
-    "id": "2026-10-24T03:25:07-12"
+    "ts": "2026-10-24T04:30:16",
+    "id": "2026-10-24T04:30:16-12"
    },
    "journey": {
-    "id": "2026-10-24T03:25:07-12",
+    "id": "2026-10-24T04:30:16-12",
     "question": "What is the currency of Japan?",
     "tokens": [
      {
@@ -1664,7 +1664,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 22,
+      "ms": 10,
       "counts": {
        "hop": 1,
        "fact": 1
@@ -1696,7 +1696,7 @@
       "stop": false
      }
     ],
-    "wall_s": 0.026,
+    "wall_s": 0.018,
     "verified": true,
     "said": "Japanese yen. If you meant something else, there is also a manga named Japan (2 of them). Want to know about one of them?",
     "tier": null,
@@ -1722,17 +1722,17 @@
     "aliased": [],
     "snapped": null,
     "trace": [],
-    "wall_s": 0.014,
+    "wall_s": 0.009,
     "restated": "What is the capital of Italie?",
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:08",
-    "id": "2026-10-24T03:25:08-13"
+    "ts": "2026-10-24T04:30:16",
+    "id": "2026-10-24T04:30:16-13"
    },
    "journey": {
-    "id": "2026-10-24T03:25:08-13",
+    "id": "2026-10-24T04:30:16-13",
     "question": "Quelle est la capitale de l'Italie ?",
     "tokens": [
      {
@@ -1788,7 +1788,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 13,
+      "ms": 8,
       "counts": {
        "fetch": 1
       },
@@ -1798,7 +1798,7 @@
      {
       "step": "check",
       "title": "Check",
-      "ms": -5,
+      "ms": -8,
       "counts": {
        "walk": 1
       },
@@ -1808,7 +1808,7 @@
      {
       "step": "say",
       "title": "Say",
-      "ms": 5,
+      "ms": 8,
       "counts": {
        "answer": 1
       },
@@ -1816,7 +1816,7 @@
       "stop": true
      }
     ],
-    "wall_s": 0.014,
+    "wall_s": 0.009,
     "verified": false,
     "said": null,
     "tier": null,
@@ -1849,17 +1849,17 @@
     "trace": [
      "Victor Hugo is the author of Les Misérables"
     ],
-    "wall_s": 0.085,
+    "wall_s": 0.083,
     "restated": "What is the author of Les Misérables?",
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:08",
-    "id": "2026-10-24T03:25:08-14"
+    "ts": "2026-10-24T04:30:17",
+    "id": "2026-10-24T04:30:17-14"
    },
    "journey": {
-    "id": "2026-10-24T03:25:08-14",
+    "id": "2026-10-24T04:30:17-14",
     "question": "Qui a écrit Les Misérables ?",
     "tokens": [
      {
@@ -1901,7 +1901,7 @@
      {
       "step": "route",
       "title": "Route",
-      "ms": 70,
+      "ms": 69,
       "counts": {
        "plan": 3
       },
@@ -1911,7 +1911,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 13,
+      "ms": 12,
       "counts": {
        "fetch": 1,
        "gate": 13,
@@ -1946,7 +1946,7 @@
       "stop": false
      }
     ],
-    "wall_s": 0.085,
+    "wall_s": 0.083,
     "verified": true,
     "said": "Victor Hugo",
     "tier": null,
@@ -1959,30 +1959,139 @@
    "code": 200,
    "record": {
     "question": "What river flows through Cairo?",
-    "answer": null,
-    "verified": false,
-    "reason": "retrieval_exhausted",
+    "answer": "Nile",
+    "verified": true,
+    "reason": null,
     "plan": [
      "located in or next to body of water"
     ],
     "seed": "Cairo",
-    "entities": [
-     "Cairo"
-    ],
+    "entities": [],
     "aliased": [],
     "snapped": null,
-    "trace": [],
-    "wall_s": 0.076,
+    "trace": [
+     "Nile is the located in or next to body of water of Cairo"
+    ],
+    "wall_s": 0.017,
     "restated": "What is the located in or next to body of water of Cairo?",
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:08",
-    "id": "2026-10-24T03:25:08-15"
+    "namesakes": {
+     "rule": "one fits",
+     "item": "Q85",
+     "others": [
+      {
+       "item": "Q1148740",
+       "label": "Cairo",
+       "kind": "operating system"
+      },
+      {
+       "item": "Q2456665",
+       "label": "Cairo",
+       "kind": "village in the united states"
+      }
+     ],
+     "kinds": {
+      "Q85": [
+       [
+        "city"
+       ],
+       "recorded"
+      ],
+      "Q429098": [
+       [
+        "3d film",
+        "film",
+        "film series",
+        "short film",
+        "silent film",
+        "television film"
+       ],
+       "read"
+      ],
+      "Q575306": [
+       [],
+       "none"
+      ],
+      "Q1148740": [
+       [
+        "operating system"
+       ],
+       "recorded"
+      ],
+      "Q1920357": [
+       [],
+       "none"
+      ],
+      "Q2087855": [
+       [],
+       "none"
+      ],
+      "Q2456665": [
+       [
+        "village in the united states"
+       ],
+       "recorded"
+      ],
+      "Q4699596": [
+       [],
+       "none"
+      ],
+      "Q5017734": [
+       [],
+       "none"
+      ],
+      "Q5017738": [
+       [],
+       "none"
+      ],
+      "Q5017739": [
+       [],
+       "none"
+      ],
+      "Q7720948": [
+       [
+        "hotel"
+       ],
+       "recorded"
+      ],
+      "Q16865296": [
+       [
+        "family name"
+       ],
+       "recorded"
+      ],
+      "Q17513208": [
+       [],
+       "none"
+      ],
+      "Q18636400": [
+       [
+        "3d film",
+        "film",
+        "film series",
+        "silent film",
+        "television film",
+        "television series"
+       ],
+       "read"
+      ],
+      "Q20657755": [
+       [],
+       "none"
+      ]
+     },
+     "cues": [],
+     "also": "If you meant something else, there is also an operating system named Cairo and a village in the united states named Cairo. Want to know about one of them?"
+    },
+    "reply": "Nile. If you meant something else, there is also an operating system named Cairo and a village in the united states named Cairo. Want to know about one of them?",
+    "ts": "2026-10-24T04:30:17",
+    "id": "2026-10-24T04:30:17-15"
    },
    "journey": {
-    "id": "2026-10-24T03:25:08-15",
+    "id": "2026-10-24T04:30:17-15",
     "question": "What river flows through Cairo?",
     "tokens": [
      {
@@ -2030,24 +2139,26 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 32,
+      "ms": 10,
       "counts": {
-       "fetch": 1,
-       "gate": 12,
-       "gates": 1
+       "hop": 1,
+       "fact": 1
       },
-      "facts": [],
+      "facts": [
+       "Cairo · located in or next to body of water · Nile"
+      ],
       "stop": false
      },
      {
       "step": "check",
       "title": "Check",
-      "ms": 42,
+      "ms": 0,
       "counts": {
-       "walk": 2
+       "walk": 1,
+       "vm": 1
       },
       "facts": [],
-      "stop": true
+      "stop": false
      },
      {
       "step": "say",
@@ -2057,14 +2168,14 @@
        "answer": 1
       },
       "facts": [],
-      "stop": true
+      "stop": false
      }
     ],
-    "wall_s": 0.076,
-    "verified": false,
-    "said": null,
+    "wall_s": 0.017,
+    "verified": true,
+    "said": "Nile. If you meant something else, there is also an operating system named Cairo and a village in the united states named Cairo. Want to know about one of them?",
     "tier": null,
-    "reason": "retrieval_exhausted",
+    "reason": null,
     "audience": "public"
    }
   },
@@ -2091,11 +2202,11 @@
     "candidates": null,
     "clarify": null,
     "wall_s": 0.002,
-    "ts": "2026-10-24T03:25:08",
-    "id": "2026-10-24T03:25:08-16"
+    "ts": "2026-10-24T04:30:17",
+    "id": "2026-10-24T04:30:17-16"
    },
    "journey": {
-    "id": "2026-10-24T03:25:08-16",
+    "id": "2026-10-24T04:30:17-16",
     "question": "Who was the first president of the United States?",
     "tokens": [
      {
@@ -2159,7 +2270,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 0,
+      "ms": 2,
       "counts": {
        "fetch": 1
       },
@@ -2203,17 +2314,17 @@
     "aliased": [],
     "snapped": null,
     "trace": [],
-    "wall_s": 0.077,
+    "wall_s": 0.07,
     "restated": "What is the height of Mount Everest?",
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:08",
-    "id": "2026-10-24T03:25:08-17"
+    "ts": "2026-10-24T04:30:17",
+    "id": "2026-10-24T04:30:17-17"
    },
    "journey": {
-    "id": "2026-10-24T03:25:08-17",
+    "id": "2026-10-24T04:30:17-17",
     "question": "How tall is Mount Everest?",
     "tokens": [
      {
@@ -2261,7 +2372,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 27,
+      "ms": 23,
       "counts": {
        "fetch": 1,
        "gate": 12,
@@ -2291,7 +2402,7 @@
       "stop": true
      }
     ],
-    "wall_s": 0.077,
+    "wall_s": 0.07,
     "verified": false,
     "said": null,
     "tier": null,
@@ -2315,7 +2426,7 @@
     "aliased": [],
     "snapped": null,
     "trace": [],
-    "wall_s": 3.68,
+    "wall_s": 2.739,
     "refused": {
      "covers": false,
      "unknown_relations": [
@@ -2327,11 +2438,11 @@
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:12",
-    "id": "2026-10-24T03:25:12-18"
+    "ts": "2026-10-24T04:30:19",
+    "id": "2026-10-24T04:30:19-18"
    },
    "journey": {
-    "id": "2026-10-24T03:25:12-18",
+    "id": "2026-10-24T04:30:19-18",
     "question": "What is the speed of light?",
     "tokens": [
      {
@@ -2373,7 +2484,7 @@
      {
       "step": "route",
       "title": "Route",
-      "ms": 52,
+      "ms": 14,
       "counts": {
        "plan": 1
       },
@@ -2383,7 +2494,7 @@
      {
       "step": "check",
       "title": "Check",
-      "ms": 111,
+      "ms": 62,
       "counts": {
        "walk": 1
       },
@@ -2393,7 +2504,7 @@
      {
       "step": "say",
       "title": "Say",
-      "ms": 21,
+      "ms": 12,
       "counts": {
        "answer": 1
       },
@@ -2401,7 +2512,7 @@
       "stop": true
      }
     ],
-    "wall_s": 3.68,
+    "wall_s": 2.739,
     "verified": false,
     "said": null,
     "tier": null,
@@ -2426,7 +2537,7 @@
     "aliased": [],
     "snapped": null,
     "trace": [],
-    "wall_s": 3.506,
+    "wall_s": 3.16,
     "refused": {
      "relation": "city",
      "candidates": [
@@ -2437,11 +2548,11 @@
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:15",
-    "id": "2026-10-24T03:25:15-19"
+    "ts": "2026-10-24T04:30:23",
+    "id": "2026-10-24T04:30:23-19"
    },
    "journey": {
-    "id": "2026-10-24T03:25:15-19",
+    "id": "2026-10-24T04:30:23-19",
     "question": "Who is the mayor of Montreal?",
     "tokens": [
      {
@@ -2483,7 +2594,7 @@
      {
       "step": "route",
       "title": "Route",
-      "ms": 5,
+      "ms": 15,
       "counts": {
        "plan": 1
       },
@@ -2493,7 +2604,7 @@
      {
       "step": "say",
       "title": "Say",
-      "ms": 6,
+      "ms": 0,
       "counts": {
        "answer": 1
       },
@@ -2501,7 +2612,7 @@
       "stop": true
      }
     ],
-    "wall_s": 3.506,
+    "wall_s": 3.16,
     "verified": false,
     "said": null,
     "tier": null,
@@ -2529,17 +2640,17 @@
     "trace": [
      "1945-09-02 is the end time of World War II"
     ],
-    "wall_s": 0.178,
+    "wall_s": 0.152,
     "restated": "What is the end time of World War II?",
     "refused": null,
     "branches": null,
     "chose": null,
     "clarify": null,
-    "ts": "2026-10-24T03:25:15",
-    "id": "2026-10-24T03:25:15-20"
+    "ts": "2026-10-24T04:30:23",
+    "id": "2026-10-24T04:30:23-20"
    },
    "journey": {
-    "id": "2026-10-24T03:25:15-20",
+    "id": "2026-10-24T04:30:23-20",
     "question": "What year did World War II end?",
     "tokens": [
      {
@@ -2585,7 +2696,7 @@
      {
       "step": "route",
       "title": "Route",
-      "ms": 4,
+      "ms": 6,
       "counts": {
        "plan": 1
       },
@@ -2595,7 +2706,7 @@
      {
       "step": "recall",
       "title": "Recall",
-      "ms": 166,
+      "ms": 147,
       "counts": {
        "fetch": 1,
        "gate": 13,
@@ -2630,7 +2741,7 @@
       "stop": false
      }
     ],
-    "wall_s": 0.178,
+    "wall_s": 0.152,
     "verified": true,
     "said": "1945-09-02",
     "tier": null,
@@ -2664,7 +2775,7 @@
          "s": "Questions asked",
          "big": 17,
          "unit": "asked",
-         "cap": "9 refused",
+         "cap": "8 refused",
          "trend": [
           0,
           0,
@@ -2805,7 +2916,7 @@
          "s": "Questions asked",
          "big": 17,
          "unit": "asked",
-         "cap": "9 refused",
+         "cap": "8 refused",
          "trend": [
           0,
           0,
@@ -4018,7 +4129,7 @@
     200,
     {
      "worlds": {
-      "all": 555474
+      "all": 555427
      },
      "cortices": []
     }
@@ -4028,7 +4139,7 @@
     {
      "worlds": {
       "facts": 2914,
-      "wiki": 552560
+      "wiki": 552513
      },
      "cortices": []
     }
