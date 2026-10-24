@@ -1,5 +1,5 @@
 # 0037 — Namesakes: answer when the question's relation fits only one of them ("the capital of France")
-status: open
+status: in progress (2026-10-24: Claude Code; BlockWorld 0002 waits on its benches, run in the background)
 written: 2026-10-23 by Cowork · approved: 2026-10-23 by Nick ("a capital is usually in a country so it should pick the country france (there is only one)") · hypothesis: none
 
 ## Why
