@@ -102,13 +102,21 @@ class WikidataSource(WikiResolve):
 
     def _labels_for(self, ids: list[str]) -> dict[str, str]:
         need = [i for i in dict.fromkeys(ids) if i not in self._labels]
-        for i in range(0, len(need), 50):
-            chunk = need[i:i + 50]
-            data = self._get({"action": "wbgetentities", "ids": "|".join(chunk), "props": "labels", "languages": "en"})
-            for qid, ent in ((data or {}).get("entities") or {}).items():
-                lab = ((ent.get("labels") or {}).get("en") or {}).get("value")
-                if lab:
-                    self._labels[qid] = lab
+        # English first; then, for the ids still unnamed, `mul`: Wikidata keeps a name that is the same in every
+        # language there, and editors delete the redundant English label (2026-10-24, live: the euro, Juneau --
+        # Germany's currency came back as the Deutsche Mark alone, Alaska's capital not at all). The English call is
+        # unchanged, so today's cache keys hold and an offline run reads what it read before.
+        for lang in ("en", "mul"):
+            for i in range(0, len(need), 50):
+                chunk = need[i:i + 50]
+                data = self._get({"action": "wbgetentities", "ids": "|".join(chunk), "props": "labels", "languages": lang})
+                for qid, ent in ((data or {}).get("entities") or {}).items():
+                    lab = ((ent.get("labels") or {}).get(lang) or {}).get("value")
+                    if lab:
+                        self._labels[qid] = lab
+            need = [i for i in need if i not in self._labels]
+            if not need:
+                break
         return {i: self._labels[i] for i in ids if i in self._labels}
 
     # -- lever 4: wording -> the property labels it names -----------------------------------

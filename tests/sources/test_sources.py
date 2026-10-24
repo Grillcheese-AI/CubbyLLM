@@ -295,3 +295,27 @@ def test_the_label_does_not_decide_between_two_of_a_kind(monkeypatch):
     ents2 = dict(ents); ents2["Q34969"] = {"claims": {"P31": [ITEM("Q11446")], **CLAIMS["claims"]}}
     src = FakeWikidata(hits, ents2)
     assert src.facts("Ben Franklin", relations=["born"]) and src.last["qid"] == "Q9"
+
+
+def test_a_value_named_only_under_mul_still_gives_its_fact():
+    """2026-10-24, live: the euro (Q4916) and Juneau (Q29445) keep their name under Wikidata's `mul` (the same in every
+    language) and no longer have an English label. Asked for English alone, the claim's value had no name and the fact
+    was dropped: Germany's currency came back as the Deutsche Mark alone. The ids still unnamed are asked once more
+    for `mul`; one with an English label never is."""
+    class ByLanguage(FakeWikidata):                      # the API: only the languages asked for come back
+        asked = []
+        def _get(self, params):
+            got = super()._get(params)
+            if params.get("action") == "wbgetentities" and params.get("props") == "labels":
+                self.asked.append((params["languages"], params["ids"]))
+                lang = params["languages"]
+                got = {"entities": {q: {"labels": {k: v for k, v in (e.get("labels") or {}).items() if k == lang}}
+                                    for q, e in got["entities"].items()}}
+            return got
+    ents = {"Q183": {"claims": {"P38": [ITEM("Q4916"), ITEM("Q7932")]}},
+            "Q4916": {"labels": {"mul": {"value": "euro"}}}, "Q7932": {"labels": {"en": {"value": "Deutsche Mark"}}},
+            "P38": {"labels": {"en": {"value": "currency"}}}}
+    src = ByLanguage([_hit("Q183", "Germany", "country in Central Europe")], ents)
+    out = src.facts("germany")
+    assert sorted(t.obj for t in out if t.rel == "currency") == ["Deutsche Mark", "euro"]
+    assert [lang for lang, _ids in src.asked] == ["en", "mul"] and src.asked[1][1] == "Q4916"   # mul for the euro alone
