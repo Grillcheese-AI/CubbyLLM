@@ -37,6 +37,7 @@ from __future__ import annotations
 import csv
 import os
 import re
+import time
 
 from .question_forms import AS_OF, DATED, FORMS, Forms
 
@@ -188,7 +189,12 @@ def everyday_forms(templates: str | None = None) -> dict:
 # words a question carries that are not its entity's or its relation's ("what timezone is colorado in right now?",
 # "what is the currency of spain called?": WebQuestions' wording), taken off the question's end before the forms read it
 _TAIL = re.compile(r"\s+(?:on a map|on the map|wikipedia|right now|now|today|currently|called)(?=\s*\??\s*$)", re.I)
-_NOISE = re.compile(r"\s+(?:located|on a map|on the map|wikipedia|right now|now|today|currently)\s*$", re.I)
+_NOISE = re.compile(r"\s+(?:located|on a map|on the map|wikipedia|wiki answers|yahoo|gmt|based|and|right now|now|today|"
+                    r"currently)\s*$", re.I)
+# "croatia 2012": a year at the name's end, with no "in", is the question's as-of year (a state's value only; not a
+# year to come, so "blade runner 2049" keeps its name)
+_YEAR_END = re.compile(r"\s+(1[0-9]{3}|20[0-9]{2})\s*$")
+_NOW = time.localtime().tm_year
 # "alaska state": a state's name with the word after it
 _US = set("alabama alaska arizona arkansas california colorado connecticut delaware florida georgia hawaii idaho illinois "
           "indiana iowa kansas kentucky louisiana maine maryland massachusetts michigan minnesota mississippi missouri "
@@ -225,16 +231,24 @@ class EverydayForms(Forms):
             ent = _NOISE.sub("", ent)
         if ent.lower().endswith(" state") and ent[:-6].strip().lower() in _US:
             ent = ent[:-6].strip()
+        if ent.lower().startswith("state of ") and ent[9:].strip().lower() in _US:      # "the state of michigan"
+            ent = ent[9:].strip()
+        y = _YEAR_END.search(ent)
+        if y and ent[:y.start()].strip() and int(y.group(1)) <= _NOW and self.aspect(m[1]) == "state":
+            ent = ent[:y.start()].strip()
         if self._nested is not None and self._nested.match(ent):
             return None
         return (ent,) + tuple(m[1:]) if ent.strip() else None
 
     def restate(self, question: str) -> tuple[str, str, str] | None:
         """(the question in the host's grammar, the relation, the seed), or None when no form reads it. The year phrase
-        stays ("in 2010" is the walk's as-of constraint); nothing else of the question is dropped but its noise."""
+        stays ("in 2010" is the walk's as-of constraint; a bare year at the name's end is one too: "croatia 2012");
+        nothing else of the question is dropped but its noise."""
         p = self.parse(question)
         if p is None:
             return None
         ent, rel, _tense = p
         y = AS_OF.search(question)
-        return f"What is the {rel} of {ent}{' ' + y.group(0) if y else ''}?", rel, ent
+        bare = None if y else _YEAR_END.search(" " + question.rstrip(" ?"))
+        when = y.group(0) if y else f"in {bare.group(1)}" if bare and not ent.endswith(bare.group(1)) else ""
+        return f"What is the {rel} of {ent}{' ' + when if when else ''}?", rel, ent

@@ -319,3 +319,43 @@ def test_a_value_named_only_under_mul_still_gives_its_fact():
     out = src.facts("germany")
     assert sorted(t.obj for t in out if t.rel == "currency") == ["Deutsche Mark", "euro"]
     assert [lang for lang, _ids in src.asked] == ["en", "mul"] and src.asked[1][1] == "Q4916"   # mul for the euro alone
+
+
+class ByQuery(FakeWikidata):
+    """The search answers by its query, as the API does."""
+    def __init__(self, searches, entities):
+        super().__init__([], entities)
+        self._searches = searches
+    def _get(self, params):
+        if params.get("action") == "wbsearchentities":
+            self.calls += 1
+            return {"search": self._searches.get(params["search"].lower(), [])}
+        return super()._get(params)
+
+
+def _place_world():
+    lab = lambda s: {"labels": {"en": {"value": s}}}                     # noqa: E731
+    ents = {"Q37320": {"claims": {"P131": [ITEM("Q251")], **CLAIMS["claims"]}}, "Q251": {"claims": {"P131": [ITEM("Q1397")]}},
+            "Q1397": lab("Ohio"), "Q500": {"claims": {"P131": [ITEM("Q21")]}}, "Q21": lab("England"),
+            "Q18389": {"claims": {"P17": [ITEM("Q30")], **CLAIMS["claims"]}}, "Q30": lab("United States of America"),
+            "Q7": {"claims": {"P131": [ITEM("Q1397")]}}, **LABELS}
+    searches = {"cleveland": [_hit("Q37320", "Cleveland", "city in Ohio"), _hit("Q500", "Cleveland", "area in England")],
+                "new england": [_hit("Q18389", "New England", "region of the United States")],
+                "springfield": [_hit("Q37320", "Springfield", "a city"), _hit("Q7", "Springfield", "another city")]}
+    return searches, ents
+
+
+def test_a_name_that_carries_where_it_is_reads_as_a_name_and_a_place(monkeypatch):
+    """Cowork's sorting of the 76 refusals (2026-10-24): 26 left a place on the name ("cleveland ohio", "denver co",
+    "new england usa"). Read with the place's own claims (located in, up three steps; the country; the continent)."""
+    from cubbyllm.sources.wikidata_place import readings, spelled
+    assert readings("texas san antonio")[-2] == ("san antonio", "texas") and spelled("co") == "colorado"
+    searches, ents = _place_world()
+    monkeypatch.delenv("CB_PLACE_QUALIFIER", raising=False)
+    assert ByQuery(searches, ents).resolve("cleveland ohio") is None                    # off: as before
+    monkeypatch.setenv("CB_PLACE_QUALIFIER", "1")
+    src = ByQuery(searches, ents)
+    assert src.resolve("cleveland ohio") == ("Q37320", "Cleveland") and src.last["how"] == "place qualifier: ohio"
+    assert src.resolve("new england usa")[0] == "Q18389"                                 # "new england" is the name
+    src = ByQuery(searches, ents)
+    assert src.resolve("springfield oh") is None and {q for q, _l, _d in src.last["ambiguous"]} == {"Q37320", "Q7"}

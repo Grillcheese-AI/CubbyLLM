@@ -101,6 +101,16 @@ def test_the_loop_walks_the_restated_plan():
     assert rec["restated"] == "What is the author of Pride and Prejudice?" and rec["plan"] == ["author"]
 
 
+def test_a_bare_year_is_the_as_of_and_noise_words_go(monkeypatch):
+    # Cowork's sorting of the 76 refusals (2026-10-24): "croatia 2012", "argentina yahoo", "the state of michigan and"
+    assert FORMS.restate("what is the currency in croatia 2012?") == ("What is the currency of croatia in 2012?", "currency", "croatia")
+    assert FORMS.restate("what language do they speak in argentina yahoo?")[2] == "argentina"
+    assert FORMS.restate("what timezone is toronto gmt?")[2] == "toronto"
+    assert FORMS.restate("what timezone is the state of michigan and?")[2] == "michigan"
+    assert FORMS.restate("who wrote blade runner 2049?")[2] == "blade runner 2049"     # a year to come is the name's
+    assert FORMS.restate("who wrote 1984?")[2] == "1984"                                 # nothing left but the year
+
+
 def test_a_nested_question_is_left_to_the_models_plan():
     # the seed starts with a relation the table names: one hop would walk "country of citizenship of Marie" as a name
     assert FORMS.parse("What is the capital of the country of citizenship of Marie?") is None

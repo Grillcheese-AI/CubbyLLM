@@ -116,6 +116,15 @@ class WikiResolve:
             return qid, self._labels_for([qid]).get(qid) or entity
         s = self._get({"action": "wbsearchentities", "search": entity, "language": "en", "limit": 5})
         hits = (s or {}).get("search") or []
+        if not any(_normalize(h.get("label", "")) == key or _normalize(((h.get("match") or {}).get("text") or "")) == key
+                   for h in hits) and os.environ.get("CB_PLACE_QUALIFIER") == "1":
+            from .wikidata_place import resolve_place     # no item of the whole name: "cleveland ohio" read as a
+            got = resolve_place(self, entity)              #   name and where it is (off by default)
+            if got:
+                self.last.update(how=got[2])
+                return got[0], got[1]
+            if self.last.get("ambiguous"):                 # several in that place: the asker decides
+                return None
         if not hits:
             self.last["unresolved"] = True
             return None
