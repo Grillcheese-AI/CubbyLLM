@@ -1,0 +1,147 @@
+{
+ "what": "order 0035 C's measure: a checkpoint on 0034's villages (cut, the fixed placed questions), in 0034's shape and in the far facts' (lead: bare names; space: names in their space form), by answer class",
+ "date": "2026-10-23",
+ "tag": "run5c",
+ "checkpoint": "spatial_link_5c_final.pt",
+ "copy": {
+  "scale": 2.0,
+  "seed": 0,
+  "at": 16,
+  "query": "placed",
+  "bind": "writes",
+  "copy": "ring",
+  "copy_tau": 3.04,
+  "copy_beta": 0.115
+ },
+ "copy_off": false,
+ "villages": 60,
+ "questions_sha256": "80b60cc3a9f4f9aa70fb0f0cd43a36209b93a8c24162e8fcdb68085a59b08e7c",
+ "seconds": 597.5,
+ "shapes": {
+  "0034": {
+   "kind": {
+    "n": 329,
+    "first": 2,
+    "exact": 2,
+    "first_rate": 0.006,
+    "exact_rate": 0.006,
+    "lambda_mean": null,
+    "lambda_over_half": null,
+    "missed_first_went_to": {
+     "nothing": 297,
+     "another token": 30
+    }
+   },
+   "name": {
+    "n": 120,
+    "first": 0,
+    "exact": 0,
+    "first_rate": 0.0,
+    "exact_rate": 0.0,
+    "lambda_mean": null,
+    "lambda_over_half": null,
+    "missed_first_went_to": {
+     "nothing": 100,
+     "another token": 17,
+     "a farther thing's piece": 3
+    }
+   },
+   "nothing": {
+    "n": 391,
+    "first": 380,
+    "exact": 380,
+    "first_rate": 0.972,
+    "exact_rate": 0.972,
+    "lambda_mean": null,
+    "lambda_over_half": null,
+    "missed_first_went_to": {
+     "another token": 10,
+     "a farther thing's piece": 1
+    }
+   }
+  },
+  "lead": {
+   "kind": {
+    "n": 329,
+    "first": 323,
+    "exact": 310,
+    "first_rate": 0.982,
+    "exact_rate": 0.942,
+    "lambda_mean": 0.9933,
+    "lambda_over_half": 327,
+    "missed_first_went_to": {
+     "a neighbour's piece": 6
+    }
+   },
+   "name": {
+    "n": 120,
+    "first": 111,
+    "exact": 102,
+    "first_rate": 0.925,
+    "exact_rate": 0.85,
+    "lambda_mean": 0.9924,
+    "lambda_over_half": 120,
+    "missed_first_went_to": {
+     "a neighbour's piece": 8,
+     "a farther thing's piece": 1
+    }
+   },
+   "nothing": {
+    "n": 391,
+    "first": 4,
+    "exact": 4,
+    "first_rate": 0.01,
+    "exact_rate": 0.01,
+    "lambda_mean": 0.6482,
+    "lambda_over_half": 242,
+    "missed_first_went_to": {
+     "a neighbour's piece": 203,
+     "a farther thing's piece": 131,
+     "another token": 53
+    }
+   }
+  },
+  "space": {
+   "kind": {
+    "n": 329,
+    "first": 291,
+    "exact": 278,
+    "first_rate": 0.884,
+    "exact_rate": 0.845,
+    "lambda_mean": 0.8906,
+    "lambda_over_half": 295,
+    "missed_first_went_to": {
+     "nothing": 33,
+     "a neighbour's piece": 5
+    }
+   },
+   "name": {
+    "n": 120,
+    "first": 102,
+    "exact": 98,
+    "first_rate": 0.85,
+    "exact_rate": 0.817,
+    "lambda_mean": 0.8616,
+    "lambda_over_half": 104,
+    "missed_first_went_to": {
+     "nothing": 15,
+     "a neighbour's piece": 3
+    }
+   },
+   "nothing": {
+    "n": 391,
+    "first": 356,
+    "exact": 356,
+    "first_rate": 0.91,
+    "exact_rate": 0.91,
+    "lambda_mean": 0.094,
+    "lambda_over_half": 30,
+    "missed_first_went_to": {
+     "a neighbour's piece": 31,
+     "another token": 3,
+     "a farther thing's piece": 1
+    }
+   }
+  }
+ }
+}

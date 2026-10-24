@@ -1,5 +1,5 @@
 # 0035 — Villages, next: the host's three missing routes, why the copy did not fire, and the copy (then the link) taught on exported villages
-status: in progress (2026-10-23: A and B accepted; C may start, its shard in the far facts' shape, run on this machine)
+status: review (2026-10-23: C passes its four lines, D not needed; Report C at the end)
 written: 2026-10-23 by Cowork, from 0034's review · approved: 2026-10-23 by Nick ("yes open 0035") · hypothesis: H-S12 (gates 1 and 3), H-K10 · **BlockWorld stays private**
 
 ## Why
@@ -142,3 +142,59 @@ learns to read real villages the way it already reads its practice ones.
   the order asks for. Run it in the background at low priority and keep 0036 going beside it. Stop it if it slows Nick's
   machine for other work. A few thousand documents at about 1.8 s each is fine. Say in the report how many, and the
   wall time.
+
+## Report C (2026-10-23): C passes its four lines; D is not needed
+- **Commits:** `c03cca4` (the far facts' shape, C's measure and shard builder), `93ba849` (the space form, C's shard),
+  and this report.
+- **The shape C trained in: the space form, not the bare one.** In the bare form (`render(lead=True)`) the trunk alone
+  answers an empty cell with a village word, never "nothing" (0.018 of 391); the copy copies only written tokens, so a
+  gate that shut on empty cells could not make them right there. In the space form (`render(lead="space")`: every name
+  written and answered as " coal", the ":" of "Answer:" asking, the rest of your four points kept) the trunk alone says
+  " nothing" for 0.987 of empty cells. So the work splits: the copy gives the things, the trunk gives "nothing", and the
+  gate learns to shut on an empty cell (`exp_s12_copy_villages_run5_space_copy_off_2026-10-23.json`).
+- **The shard** (`make_scene_shard --shape space`, kept in BlockWorld's run folder): 67 villages from 24 seeds outside
+  0034's (1000-1129); 3,350 documents of 512 tokens; 92,103 questions (9,222 names, 36,850 other things, 46,031
+  "nothing") (`make_scene_shard_villages_0035c_2026-10-23.json`).
+- **The run** (`train_spatial_link_5c_2026-10-23.log`): from run 5's final checkpoint, `CB_TRAIN_ONLY=copy` (1,027
+  trainable parameters, peak lr 0.003), the far facts' shard (`facts_far1k_lead`) and C's at equal tokens. 410 steps of
+  8,192 tokens (3.36M tokens; one pass over C's shard, about 3,280 of its documents), 4.99 h on this machine's CPU at
+  low priority.
+- **The trunk is frozen** (`diag_frozen_check_run5c_2026-10-23.json`): against run 5's final checkpoint, 0 of 326
+  tensors moved and 0 of 5 router tensors. Only the copy's four parameters moved (tau 4.40 -> 4.19, beta 0.009 ->
+  0.028, the gate's weight norm 2.62 -> 3.94, its bias -2.10 -> -2.12). The text sources are therefore unchanged.
+- **On 0034's 60 villages** (`exp_s12_copy_villages_run5c_2026-10-23.json`; run 5 beside it:
+  `exp_s12_copy_villages_run5_space_2026-10-23.json`, `exp_s12_copy_villages_run5_2026-10-23.json`), whole answers right:
+
+  | shape | answer | n | run 5 | run 5c | line |
+  |---|---|---|---|---|---|
+  | space (C's) | a thing | 329 | 0.818 | **0.845** | 0.75 |
+  | space | a name | 120 | 0.775 | **0.817** | 0.60 |
+  | space | "nothing" | 391 | 0.609 | **0.910** | |
+  | lead (bare) | a thing | 329 | 0.815 | 0.942 | |
+  | lead | a name | 120 | 0.667 | 0.850 | |
+  | lead | "nothing" | 391 | 0.008 | 0.010 | (no "nothing" token in that form) |
+  | 0034's own | a thing | 329 | 0.006 | 0.006 | (the copy does not fire there, as B found) |
+  | 0034's own | "nothing" | 391 | 0.972 | 0.972 | |
+
+  The gate learned what C was for: its mean on empty cells fell from 0.402 to 0.094 in the space form, while on things
+  it stays at 0.891 and on names at 0.862.
+- **Where the space form's misses go:** things, 51 missed (33 answered "nothing", 5 a neighbour's piece, the rest a
+  later piece); names, 22 missed (15 "nothing", 3 a neighbour's piece, 4 a later piece); empty cells, 35 missed (31 a neighbour's piece,
+  3 another token, 1 a farther thing's piece). **The 35 on empty cells, and the misses that name a neighbour, are wrong
+  answers spoken, not refusals.** The 48 answered "nothing" for a thing or a name are wrong too: they deny what is
+  there. On the kill line (0 wrong answers spoken) the trunk's place read is not yet an answer Cubby may give on its own;
+  the host's A routes (0 wrong on all 1,800 questions) stay the speaking path.
+- **The far facts** (run 5's bench, 400 held-out documents a shard; `exp_hypertoken_recall_run5c_cpu_2026-10-23.json`
+  against `exp_hypertoken_recall_run5_cpu_2026-10-23.json`): `facts_far1k_lead` 0.9456 -> **0.9271** exact (2,002
+  questions; first token 0.9935 -> 0.9950), a drop of 0.0185, inside the 0.02 line but close to it: 146 wrong against
+  run 5's 109. `spatial_here` (run 5's own villages) 0.9526 -> 0.9526. The training probe showed the same: the far facts'
+  probe sat at 0.871-0.906 from step 50 on, so the gate's new shut costs some far facts from the start rather than late.
+- **Acceptance:** things 0.845 >= 0.75; names 0.817 >= 0.60; far facts within 0.02 (0.0185); text unchanged (frozen).
+  **C passes, so D (the link continued) is not needed** by the order's own terms.
+- **Not verified here:** a GPU run (none needed: C ran on this CPU, as you allowed); any shape but these three.
+- **Questions.**
+  1. The far facts' 0.0185 is inside the line by 0.0015. If you would rather keep the 0.946, one more C run with the
+     far facts at twice the village share would show whether the gate can learn the empty cells without that cost.
+     I have not run it: the line was met.
+  2. The space form is where C works; 0034's own form does not use the copy at all. Should the shapes the host writes
+     for the trunk (A's routes stay the speaking path) follow the space form from now on, or is that for 0032?
