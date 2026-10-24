@@ -63,15 +63,21 @@ def also_line(named: list[dict]) -> str:
     """The line after a one-item answer: the other namesakes, by their kind, and an offer."""
     if not named:
         return ""
-    parts = [f"{_a(o['kind'])} named {o['label']}" for o in named]
+    said = {}                                            # two of one kind and name are said once ("a manga named
+    for o in named:                                      #   Japan and a manga named Japan": the audit, 2026-10-24)
+        said.setdefault((o["kind"], o["label"]), []).append(o)
+    parts = [f"{_a(k)} named {lab}" + (f" ({len(os_)} of them)" if len(os_) > 1 else "") for (k, lab), os_ in said.items()]
     which = "it" if len(named) == 1 else "one of them"
     return f"If you meant something else, there is also {' and '.join(parts)}. Want to know about {which}?"
 
 
-def label_for(items: list[str], by: dict) -> dict | None:
+def label_for(items: list[str], by: dict, skip=()) -> dict | None:
     """{item: "label (relation: value)"} by the first relation each item holds once, with a value of its own that no
-    other item shares; None when no fact tells them all apart."""
-    for rel in TELLS_APART + tuple(sorted({t.rel for q in items for _f, t in by[q]} - set(TELLS_APART))):
+    other item shares; None when no fact tells them all apart. `skip`: the relations asked (a label that is the
+    answer says nothing: "Steve Mills (country of citizenship: United Kingdom): United Kingdom")."""
+    skip = set(skip)
+    for rel in [r for r in TELLS_APART + tuple(sorted({t.rel for q in items for _f, t in by[q]} - set(TELLS_APART)))
+                if r not in skip]:
         vals = {q: [t.obj for _f, t in by[q] if t.rel == rel] for q in items}
         if all(len(v) >= 1 for v in vals.values()) and len({v[0] for v in vals.values()}) == len(items):
             return {q: f"{by[q][0][1].subj} ({say(rel)}: {vals[q][0]})" for q in items}
@@ -109,7 +115,7 @@ def several_fit(loop, rec: dict, seed: str, d: dict, by: dict, learn) -> bool:
     """Each item that fit walked apart and answered, labelled; False (the loop asks which) when there are more than
     EACH_MAX, no walk to make, or no fact that tells them apart."""
     items = list(d["fit"])
-    labels = label_for(items, by) if len(items) <= EACH_MAX and learn is not None else None
+    labels = label_for(items, by, d.get("rels") or ()) if len(items) <= EACH_MAX and learn is not None else None
     if not labels:
         return False
     answers = []

@@ -122,17 +122,22 @@ class Table:
         """The kinds an item that records none is of, read from its own relations: those its specific relations (each
         carried by SPREAD kinds or fewer) all go with. A citizenship and an occupation read as a person; "country" and
         "located in" alone read as nothing (they say only that it is somewhere)."""
+        return self.read_how(rels)[0]
+
+    def read_how(self, rels) -> tuple[set, str]:
+        """(kinds, how) for `read`: "read" when the specific relations go with kinds together; "read widely" when they
+        go with none together, and the kinds any of them goes with are taken, so the item still competes (an ask back
+        costs less than a wrong pick), but nothing says which of them it is (order 0037's audit: a band read so
+        was named "a film"); "none" without a specific relation."""
         if self._n is None:
             self._load()
         spec = sorted(r for r in set(rels) if r != INSTANCE and 0 < len(self._by_rel.get(r, ())) <= SPREAD)
         if not spec:
-            return set()
+            return set(), "none"
         out = set(self._by_rel[spec[0]])
         for r in spec[1:]:
             out &= self._by_rel[r]
-        # (relations that go with no kind together: the kinds any of them goes with, so the item still competes; an
-        #  item left out is how a wrong pick happens, one read too widely only costs an ask back)
-        return out or set().union(*(self._by_rel[r] for r in spec))
+        return (out, "read") if out else (set().union(*(self._by_rel[r] for r in spec)), "read widely")
 
 
 def for_world(db_path: str) -> Table | None:

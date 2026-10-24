@@ -165,7 +165,8 @@ class Namesakes:
         some are noted (with ``CB_NAMESAKE_TIER=1``, those of the one item `hop_pick` allows). With
         ``CB_NAMESAKE_RELATION=1`` (order 0037, off until its audit), the one item order 0037's rule leaves
         (``hdc_relation.decide``: its kind carries the relation and goes with the question's cue words, no other's
-        does), even when it holds no such fact; two or more that fit are noted to be answered each."""
+        does) when it holds such a fact (one that holds none decides nothing, and the holders are noted, as before);
+        two or more that fit (two of a kind) are noted to be answered each."""
         got = self._by_subj.get(name)
         if got:
             return [(f, t) for f, t in got if keep(f, t)]
@@ -176,9 +177,10 @@ class Namesakes:
             d = decide(by, self._world_rels(rel), getattr(self._pins, "cues", None) or [], self._kinds,
                        getattr(self, "_cues", None))
             self._decisions()[normalize(name)] = d
-            if len(d["fit"]) == 1:
+            d["holds"] = [q for q in d["fit"] if held.get(q)]
+            if len(d["fit"]) == 1 and d["holds"]:            # (one that fits and holds none decides nothing: the audit)
                 return held[d["fit"][0]]
-            self._notes()[normalize(name)] = d["fit"] or [h for h, rows in held.items() if rows]
+            self._notes()[normalize(name)] = d["fit"] if len(d["fit"]) > 1 else [h for h, rows in held.items() if rows]
             return []
         if os.environ.get("CB_NAMESAKE_TIER") == "1":        # the relation tier, off since 0036's audit (module doc)
             q, holders = hop_pick(held, by, self.applies) if by else (None, [])

@@ -27,7 +27,7 @@ import pytest  # noqa: E402
 from cubbyllm.worlds import hdc_cues, hdc_kinds  # noqa: E402
 from cubbyllm.worlds.hdc_store import HdcWorld, Stores  # noqa: E402
 from cubbyllm.worlds.hdc_world import write_world  # noqa: E402
-from test_hdc_relation import AWARD, CIT, PIDS, _world  # noqa: E402
+from test_hdc_relation import AWARD, CIT, OCC, PIDS, _world  # noqa: E402
 
 
 @pytest.fixture
@@ -81,6 +81,22 @@ def test_two_of_a_kind_a_fact_tells_apart_are_each_answered_from_their_own_walk(
     assert rec["reply"] == ("Max Roe (occupation: baseball player): Ruritania Land; "
                             "Max Roe (occupation: politician): Grand Fenwick.")
     assert [(a["item"], a["answer"]) for a in rec["answers"]] == [(ids["max_b"], "Ruritania Land"), (ids["max_p"], "Grand Fenwick")]
+
+
+def test_two_others_of_one_kind_and_name_are_said_once():
+    from cubbyllm.reasoning.ask_namesake_answer import also_line
+    assert also_line([{"kind": "manga", "label": "Japan"}, {"kind": "manga", "label": "Japan"}]) == (
+        "If you meant something else, there is also a manga named Japan (2 of them). Want to know about one of them?")
+
+
+def test_a_label_is_never_the_relation_asked(made):
+    from cubbyllm.reasoning.ask_namesake_answer import label_for
+    loop, ids = made
+    by = loop.world.namesakes("Max Roe")
+    two = [ids["max_b"], ids["max_p"]]
+    assert label_for(two, by)[ids["max_b"]] == "Max Roe (occupation: baseball player)"
+    assert label_for(two, by, skip=[OCC]) == {ids["max_b"]: "Max Roe (country of citizenship: Ruritania Land)",
+                                               ids["max_p"]: "Max Roe (country of citizenship: Grand Fenwick)"}
 
 
 def test_each_namesake_walked_apart_passes_the_loops_checks(made, monkeypatch):

@@ -123,7 +123,7 @@ def after_walk(loop, rec: dict, seed: str, learn=None) -> None:
     if not hasattr(world, "withheld") or loop.facts_about(seed):
         return
     d = world.decision(seed) if answer.on() and hasattr(world, "decision") else None
-    if d and len(d["fit"]) == 1:
+    if d and len(d["fit"]) == 1 and d.get("holds"):
         answer.one_fits(loop, rec, seed, d, world.namesakes(seed))
         return
     if d and len(d["fit"]) > 1 and not rec.get("verified") and answer.several_fit(loop, rec, seed, d, world.namesakes(seed), learn):

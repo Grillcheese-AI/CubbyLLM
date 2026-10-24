@@ -83,8 +83,17 @@ def _world():
     max_b, max_p = item("Max Roe"), item("Max Roe")                  # two of a kind a fact tells apart
     for q, job, home in ((max_b, "baseball player", "Ruritania Land"), (max_p, "politician", "Grand Fenwick")):
         fact(q, KIND, kinds["human"]); fact(q, OCC, item(job)); fact(q, CIT, item(home) if home != "Ruritania Land" else land)
+    # the audit's lessons (order 0037, 2026-10-24): a state that holds no country beside an item of no kind that does;
+    # a film that is also a town beside a town (one kind shared); a Fredonia whose facts go with no kind together
+    zem_s, zem_bare = item("Zembla"), item("Zembla")
+    fact(zem_s, KIND, kinds["sovereign state"]); fact(zem_s, "capital", item("Zembla City")); fact(zem_bare, "country", land)
+    cor_f, cor_t = item("Corvo"), item("Corvo")
+    fact(cor_f, KIND, kinds["film"]); fact(cor_f, KIND, kinds["town"]); fact(cor_f, AWARD, bear); fact(cor_t, KIND, kinds["town"])
+    fr_wide = item("Fredonia")
+    fact(fr_wide, CIT, land); fact(fr_wide, CAST, actor)
     return facts, labels, {"fr": fr_state, "const": fr_const, "bare": fr_bare, "ann1": ann1, "ann2": ann2,
-                           "mara_p": mara_p, "mara_f": mara_f, "elm_s": elm_s, "elm_t": elm_t, "max_b": max_b, "max_p": max_p}
+                           "mara_p": mara_p, "mara_f": mara_f, "elm_s": elm_s, "elm_t": elm_t, "max_b": max_b, "max_p": max_p,
+                           "zem_s": zem_s, "zem_bare": zem_bare, "cor_f": cor_f, "cor_t": cor_t, "fr_wide": fr_wide}
 
 
 @pytest.fixture
@@ -147,6 +156,21 @@ def test_a_cue_word_rules_out_a_kind_it_never_goes_with_and_an_unknown_word_noth
     assert d["fit"] == [ids["mara_p"]] and d["ruled_out"] == {ids["mara_f"]: "nobel"} and reads == ["Elliott Medal"]
     reads, d, _ = hop(w, AWARD, "Mara Vale", cues=["zyzzyva"])
     assert d["fit"] == [ids["mara_p"], ids["mara_f"]] and d["cues"] == []
+
+
+def test_the_audits_lessons_hold_nothing_one_that_holds_none_two_of_a_kind_a_wide_read(world, monkeypatch):
+    """Order 0037's audit (2026-10-24, seed 1): Qu River, Petershausen (one item fit and held no value, while an item
+    of no kind held it: "I don't know" where the asker could have been asked); Thespis (two taxa, one picked because
+    its facts were read more widely); Demon Hunter (a band read widely named "a film")."""
+    monkeypatch.setenv("CB_NAMESAKE_RELATION", "1")
+    w, ids = world
+    reads, d, held = hop(w, "country", "Zembla")                   # the state fits and holds no country
+    assert d["fit"] == [ids["zem_s"]] and d["holds"] == [] and reads == [] and held == [ids["zem_bare"]]
+    reads, d, held = hop(w, AWARD, "Corvo")                        # the film that is a town shares "town"
+    assert d["fit"] == [ids["cor_f"], ids["cor_t"]] and reads == [] and held == [ids["cor_f"], ids["cor_t"]]
+    reads, d, _ = hop(w, "capital", "Fredonia")
+    assert d["kinds"][ids["fr_wide"]] == [["film", "human"], "read widely"] and reads == ["Freedonia City"]
+    assert [o["item"] for o in others(d, w.namesakes("Fredonia"), w._kinds)] == [ids["const"]]   # never named
 
 
 def test_off_the_hop_is_strict_as_order_0036_left_it(world, monkeypatch):
