@@ -19,20 +19,20 @@ _HONORIFIC = ("saint", "dr", "doctor")
 
 
 def name_key(s: str) -> str:
-    """A name as it is compared with a search hit's label or alias: normalized; with ``CB_NAME_MATCH=1`` (off by
-    default), its accents folded and "st" read as "saint" (Cowork's sorting of the 76 refusals, 2026-10-24: "diego
-    velazquez" is Diego Velázquez, "st louis" is St. Louis)."""
+    """A name as it is compared with a search hit's label or alias: normalized, its accents folded and "st" read as
+    "saint" (Cowork's sorting of the 76 refusals, 2026-10-24: "diego velazquez" is Diego Velázquez, "st louis" is St.
+    Louis). On by default since Nick's word on 2026-10-24; ``CB_NAME_MATCH=0`` keeps the bare normalized name."""
     k = _normalize(s or "")
-    if os.environ.get("CB_NAME_MATCH") != "1":
+    if os.environ.get("CB_NAME_MATCH") == "0":
         return k
     k = "".join(c for c in unicodedata.normalize("NFKD", k) if not unicodedata.combining(c))
     return " ".join("saint" if w == "st" else w for w in k.split())
 
 
 def bare_key(s: str) -> str:
-    """`name_key` without a leading honorific (saint, dr, doctor); the name itself off ``CB_NAME_MATCH=1``."""
+    """`name_key` without a leading honorific (saint, dr, doctor); the name itself with ``CB_NAME_MATCH=0``."""
     w = name_key(s).split()
-    while os.environ.get("CB_NAME_MATCH") == "1" and len(w) > 1 and w[0] in _HONORIFIC:
+    while os.environ.get("CB_NAME_MATCH") != "0" and len(w) > 1 and w[0] in _HONORIFIC:
         w = w[1:]
     return " ".join(w)
 
@@ -145,13 +145,13 @@ class WikiResolve:
         hits = (s or {}).get("search") or []
         if not any(_exact(h, key) for h in hits) and bare_key(entity) != key:
             # nothing carries the name: once more without its leading honorific ("st elizabeth ann seton" is
-            # Elizabeth Ann Seton), and only then, so "saint louis" stays St. Louis (CB_NAME_MATCH=1, off by default)
+            # Elizabeth Ann Seton), and only then, so "saint louis" stays St. Louis (CB_NAME_MATCH=0 turns it off)
             b = bare_key(entity)
             s = self._get({"action": "wbsearchentities", "search": b, "language": "en", "limit": 5})
             hits2 = (s or {}).get("search") or []
             if any(_exact(h, b) for h in hits2):
                 hits, key = hits2, b
-        if not any(_exact(h, key) for h in hits) and os.environ.get("CB_PLACE_QUALIFIER") == "1":
+        if not any(_exact(h, key) for h in hits) and os.environ.get("CB_PLACE_QUALIFIER") != "0":
             from .wikidata_place import resolve_place     # no item of the whole name: "cleveland ohio" read as a
             got = resolve_place(self, entity)              #   name and where it is (off by default)
             if got:

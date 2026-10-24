@@ -351,9 +351,9 @@ def test_a_name_that_carries_where_it_is_reads_as_a_name_and_a_place(monkeypatch
     from cubbyllm.sources.wikidata_place import readings, spelled
     assert readings("texas san antonio")[-2] == ("san antonio", "texas") and spelled("co") == "colorado"
     searches, ents = _place_world()
-    monkeypatch.delenv("CB_PLACE_QUALIFIER", raising=False)
+    monkeypatch.setenv("CB_PLACE_QUALIFIER", "0")
     assert ByQuery(searches, ents).resolve("cleveland ohio") is None                    # off: as before
-    monkeypatch.setenv("CB_PLACE_QUALIFIER", "1")
+    monkeypatch.delenv("CB_PLACE_QUALIFIER", raising=False)                         # on by default
     src = ByQuery(searches, ents)
     assert src.resolve("cleveland ohio") == ("Q37320", "Cleveland") and src.last["how"] == "place qualifier: ohio"
     assert src.resolve("new england usa")[0] == "Q18389"                                 # "new england" is the name
@@ -389,9 +389,9 @@ def test_a_name_is_matched_with_its_accents_folded_and_saint_or_doctor_read_as_s
                 "elizabeth ann seton": [_hit("Q5", "Elizabeth Ann Seton", "American saint")],
                 "saint louis": [_hit("Q38021", "St. Louis", "city in Missouri")],
                 "louis": [_hit("Q6", "Louis", "given name")]}
-    monkeypatch.delenv("CB_NAME_MATCH", raising=False)
+    monkeypatch.setenv("CB_NAME_MATCH", "0")
     assert ByQuery(searches, ents).resolve("diego velazquez") is None                   # off: as before
-    monkeypatch.setenv("CB_NAME_MATCH", "1")
+    monkeypatch.delenv("CB_NAME_MATCH", raising=False)                              # on by default
     src = ByQuery(searches, ents)
     assert src.resolve("diego velazquez")[0] == "Q297"
     assert src.resolve("st elizabeth ann seton")[0] == "Q5"

@@ -139,5 +139,4 @@ changed row read by hand:
   store held `birthplace`, and the siblings step rebuilt the plan's tail from the normalized seed ("stephen g breyer").
   Fixed in `learn.resolve_siblings`.
 - One call to Wikidata failing once dropped that item's facts. A failed call is now tried once more.
-- **Questions for Nick:** `CB_PLACE_QUALIFIER` and `CB_NAME_MATCH` on by default? They gave 3 right answers and 0
-  wrong here. Each runs only when no item carries the whole name.
+- **Nick (2026-10-24): both on by default.** `CB_PLACE_QUALIFIER=0` and `CB_NAME_MATCH=0` turn them off.

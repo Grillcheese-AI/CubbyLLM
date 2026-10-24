@@ -14,7 +14,8 @@ them, and no item carries "cleveland ohio" as its label or an alias.
 It runs only when no item carries the whole name (``wikidata_resolve.WikiResolve.resolve``). Every place is a claim
 the source states, so this is still the source reading its own values.
 
-Wired: WIRED (``wikidata_resolve.WikiResolve.resolve``, behind ``CB_PLACE_QUALIFIER=1``, off by default).
+Wired: WIRED (``wikidata_resolve.WikiResolve.resolve``, on by default since Nick's word on 2026-10-24;
+``CB_PLACE_QUALIFIER=0`` turns it off).
 """
 from __future__ import annotations
 
