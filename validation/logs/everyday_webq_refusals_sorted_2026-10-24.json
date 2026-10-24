@@ -1,0 +1,1272 @@
+{
+ "what": "the 76 retrieval_exhausted refusals of everyday_webq_on_live_tense_2026-10-24.json, sorted by cause",
+ "summary": {
+  "reading: a place qualifier left on the name": 26,
+  "namesakes at the source (strict)": 25,
+  "data: the value's item has only a 'mul' label (Juneau)": 1,
+  "reading: a year left on the name": 6,
+  "reading: a noise word left on the name": 13,
+  "name matching (saint, doctor, accents)": 3,
+  "plumbing: the name's punctuation ('stephen g. breyer')": 1,
+  "data: the city has no time zone; its state does": 1
+ },
+ "rows": [
+  {
+   "q": "what time zone am i in cleveland ohio?",
+   "seed": "cleveland ohio",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what timezone is denver co?",
+   "seed": "denver co",
+   "rel": "located in time zone",
+   "golds": [
+    "Mountain Time Zone",
+    "UTC−07:00"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what currency does ontario canada use?",
+   "seed": "ontario canada",
+   "rel": "currency",
+   "golds": [
+    "Canadian dollar"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "where was gabriel faure born?",
+   "seed": "gabriel faure",
+   "rel": "place of birth",
+   "golds": [
+    "France"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q3093739",
+     "Gabriel Faure",
+     "French poet"
+    ],
+    [
+     "Q80170781",
+     "Gabriel Faure",
+     ""
+    ],
+    [
+     "Q65580702",
+     "Gabriel Faure",
+     ""
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what is the capital of alaska state?",
+   "seed": "alaska",
+   "rel": "capital",
+   "golds": [
+    "Juneau"
+   ],
+   "qid": "Q797",
+   "label": "Alaska",
+   "pids": [
+    "P36",
+    "P1376"
+   ],
+   "how": "relation: capital",
+   "cat": "item has it",
+   "values": [
+    [
+     "P36",
+     "normal",
+     "Q29445 (NO EN LABEL)"
+    ]
+   ],
+   "sort": "data: the value's item has only a 'mul' label (Juneau)"
+  },
+  {
+   "q": "what is the currency in croatia 2012?",
+   "seed": "croatia 2012",
+   "rel": "currency",
+   "golds": [
+    "Croatian kuna"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a year left on the name"
+  },
+  {
+   "q": "what is the time zone in oklahoma city?",
+   "seed": "oklahoma city",
+   "rel": "located in time zone",
+   "golds": [
+    "Central Time Zone"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q34863",
+     "Oklahoma City",
+     "capital city of the U.S. state of Oklaho"
+    ],
+    [
+     "Q57833032",
+     "Oklahoma City",
+     "2017 documentary film by Barak Goodman"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what currency is used in switzerland 2012?",
+   "seed": "switzerland 2012",
+   "rel": "currency",
+   "golds": [
+    "Swiss franc"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a year left on the name"
+  },
+  {
+   "q": "when did the aurora colorado shooting take place?",
+   "seed": "aurora colorado shooting",
+   "rel": "point in time",
+   "golds": [
+    "2012 Aurora shooting"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "where is st vincent de paul buried?",
+   "seed": "st vincent de paul",
+   "rel": "place of burial",
+   "golds": [
+    "Paris"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q137883433",
+     "St Vincent de Paul",
+     "demolished Catholic church building in H"
+    ],
+    [
+     "Q137782407",
+     "St Vincent de Paul",
+     "Catholic church building in Cambridge, C"
+    ],
+    [
+     "Q1710383",
+     "Saint-Vincent-de-Paul church",
+     "church in Paris"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what is the time zone in uk now?",
+   "seed": "uk",
+   "rel": "located in time zone",
+   "golds": [
+    "Greenwich Mean Time",
+    "UTC±00:00"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q1499",
+     "Uttarakhand",
+     "state in northern India"
+    ],
+    [
+     "Q145",
+     "United Kingdom",
+     "island country in north-west Europe"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what time zone is the uk in right now?",
+   "seed": "uk",
+   "rel": "located in time zone",
+   "golds": [
+    "Greenwich Mean Time",
+    "UTC±00:00"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q1499",
+     "Uttarakhand",
+     "state in northern India"
+    ],
+    [
+     "Q145",
+     "United Kingdom",
+     "island country in north-west Europe"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "where did john muir die?",
+   "seed": "john muir",
+   "rel": "place of death",
+   "golds": [
+    "Los Angeles"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q379580",
+     "John Muir",
+     "Scottish-American naturalist (1838–1914)"
+    ],
+    [
+     "Q1701160",
+     "John Muir",
+     "Scottish/South African physician, natura"
+    ],
+    [
+     "Q105620725",
+     "John Muir",
+     ""
+    ],
+    [
+     "Q18672027",
+     "John Muir",
+     "Scottish merchant (1828–1903)"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what timezone is toronto canada?",
+   "seed": "toronto canada",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what time zone is colorado springs co?",
+   "seed": "colorado springs co",
+   "rel": "located in time zone",
+   "golds": [
+    "Mountain Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what is the currency in england 2012?",
+   "seed": "england 2012",
+   "rel": "currency",
+   "golds": [
+    "UK £"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a year left on the name"
+  },
+  {
+   "q": "what is the capital of georgia?",
+   "seed": "georgia",
+   "rel": "capital",
+   "golds": [
+    "Atlanta"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q1428",
+     "Georgia",
+     "state of the United States of America"
+    ],
+    [
+     "Q230",
+     "Georgia",
+     "country in the Caucasus region of Europe"
+    ],
+    [
+     "Q785035",
+     "Province of Georgia",
+     "former British province in North America"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what timezone is texas san antonio in?",
+   "seed": "texas san antonio",
+   "rel": "located in time zone",
+   "golds": [
+    "Central Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what time zone is it in london england?",
+   "seed": "london england",
+   "rel": "located in time zone",
+   "golds": [
+    "Greenwich Mean Time"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what time zone is cincinnati oh in?",
+   "seed": "cincinnati oh",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what timezone is michigan usa?",
+   "seed": "michigan usa",
+   "rel": "located in time zone",
+   "golds": [
+    "UTC-5"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what language do they speak in argentina yahoo?",
+   "seed": "argentina yahoo",
+   "rel": "official language",
+   "golds": [
+    "Yiddish Language",
+    "Italian Language",
+    "Spanish Language"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "what kind of money does the uk use?",
+   "seed": "uk",
+   "rel": "currency",
+   "golds": [
+    "UK £"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q1499",
+     "Uttarakhand",
+     "state in northern India"
+    ],
+    [
+     "Q145",
+     "United Kingdom",
+     "island country in north-west Europe"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "where was joseph p kennedy born?",
+   "seed": "joseph p kennedy",
+   "rel": "place of birth",
+   "golds": [
+    "Boston"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q313696",
+     "Joseph P. Kennedy Sr.",
+     "American businessman, politician and dip"
+    ],
+    [
+     "Q18153879",
+     "Joseph Kennedy",
+     "American academic"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what is the currency in slovakia 2012?",
+   "seed": "slovakia 2012",
+   "rel": "currency",
+   "golds": [
+    "Euro"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a year left on the name"
+  },
+  {
+   "q": "where was st elizabeth ann seton born?",
+   "seed": "st elizabeth ann seton",
+   "rel": "place of birth",
+   "golds": [
+    "New York City"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "name matching (saint, doctor, accents)"
+  },
+  {
+   "q": "what timezone is tennessee nashville?",
+   "seed": "tennessee nashville",
+   "rel": "located in time zone",
+   "golds": [
+    "Central Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what timezone is toronto gmt?",
+   "seed": "toronto gmt",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "what religion is king henry viii?",
+   "seed": "king henry viii",
+   "rel": "religion",
+   "golds": [
+    "Church of England",
+    "Anglo-Catholicism"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q28043044",
+     "King Henry VIII",
+     "painting by anonymous painter (NPG NPG 4"
+    ],
+    [
+     "Q28042058",
+     "King Henry VIII",
+     "painting by Unknown Anglo-Netherlandish "
+    ],
+    [
+     "Q28042065",
+     "King Henry VIII",
+     "painting by anonymous after Hans Holbein"
+    ],
+    [
+     "Q28041996",
+     "King Henry VIII",
+     "painting by Unknown Anglo-Netherlandish "
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what timezone is indianapolis indiana in?",
+   "seed": "indianapolis indiana",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what country is vatican city in?",
+   "seed": "vatican city",
+   "rel": "country",
+   "golds": [
+    "Rome"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q237",
+     "Vatican City",
+     "Holy See's independent state, an enclave"
+    ],
+    [
+     "Q32039279",
+     "Vatican City",
+     ""
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "where was obama born?",
+   "seed": "obama",
+   "rel": "place of birth",
+   "golds": [
+    "Hawaii"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q41773",
+     "Obama",
+     "city in Fukui prefecture, Japan"
+    ],
+    [
+     "Q18355807",
+     "Obama",
+     "genus of worms"
+    ],
+    [
+     "Q124706956",
+     "Obama",
+     "Italian drag performer"
+    ],
+    [
+     "Q122348649",
+     "Obama",
+     "2022 video game"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what currency is used in england 2012?",
+   "seed": "england 2012",
+   "rel": "currency",
+   "golds": [
+    "UK £"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a year left on the name"
+  },
+  {
+   "q": "what time zone is birmingham england?",
+   "seed": "birmingham england",
+   "rel": "located in time zone",
+   "golds": [
+    "Greenwich Mean Time"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "where was stephen g. breyer born?",
+   "seed": "stephen g. breyer",
+   "rel": "place of birth",
+   "golds": [
+    "San Francisco"
+   ],
+   "qid": "Q11124",
+   "label": "Stephen Breyer",
+   "pids": [
+    "P19"
+   ],
+   "how": "exact",
+   "cat": "item has it",
+   "values": [
+    [
+     "P19",
+     "normal",
+     "San Francisco"
+    ]
+   ],
+   "sort": "plumbing: the name's punctuation ('stephen g. breyer')"
+  },
+  {
+   "q": "what time zone is ontario toronto?",
+   "seed": "ontario toronto",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what currency is used in france before euro?",
+   "seed": "france before euro",
+   "rel": "currency",
+   "golds": [
+    "French franc",
+    "Assignat"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "what did roger sherman do for a living?",
+   "seed": "roger sherman",
+   "rel": "occupation",
+   "golds": [
+    "Senator",
+    "Member of Congress"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q354721",
+     "Roger Sherman",
+     "early American lawyer and politician, Fo"
+    ],
+    [
+     "Q102115291",
+     "Roger Sherman",
+     "Ph.D. Carnegie Mellon University 1966"
+    ],
+    [
+     "Q125272624",
+     "Roger Sherman",
+     "American architect, active in Boston"
+    ],
+    [
+     "Q20640886",
+     "Roger Sherman",
+     "film director"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what time zone is maryville tn?",
+   "seed": "maryville tn",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what is the capital city of texas usa?",
+   "seed": "texas usa",
+   "rel": "capital",
+   "golds": [
+    "Austin"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what timezone is indianapolis in now?",
+   "seed": "indianapolis",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "qid": "Q6346",
+   "label": "Indianapolis",
+   "pids": [
+    "P421"
+   ],
+   "how": "exact + label over alias",
+   "cat": "item lacks the property",
+   "sort": "data: the city has no time zone; its state does"
+  },
+  {
+   "q": "what time zone is new england usa in?",
+   "seed": "new england usa",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "where was ben franklin born?",
+   "seed": "ben franklin",
+   "rel": "place of birth",
+   "golds": [
+    "Boston"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q34969",
+     "Benjamin Franklin",
+     "American polymath and statesman (1706–17"
+    ],
+    [
+     "Q131374896",
+     "Ben Franklin",
+     "21st century American politician"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "where was anne hathaway born?",
+   "seed": "anne hathaway",
+   "rel": "place of birth",
+   "golds": [
+    "United States of America"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q237251",
+     "Anne Hathaway",
+     "wife of William Shakespeare (1556-1623)"
+    ],
+    [
+     "Q36301",
+     "Anne Hathaway",
+     "American actress (born 1982)"
+    ],
+    [
+     "Q41705947",
+     "Mary Bigelow Ingham",
+     "American writer, educator, religious wor"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what currency is used in germany 2012?",
+   "seed": "germany 2012",
+   "rel": "currency",
+   "golds": [
+    "Euro"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a year left on the name"
+  },
+  {
+   "q": "what is the capital city of montana usa?",
+   "seed": "montana usa",
+   "rel": "capital",
+   "golds": [
+    "Helena"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what timezone is new england usa in?",
+   "seed": "new england usa",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what language do they speak in guyana south america?",
+   "seed": "guyana south america",
+   "rel": "official language",
+   "golds": [
+    "English Language"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what was james madison's job?",
+   "seed": "james madison",
+   "rel": "occupation",
+   "golds": [
+    "United States Representative",
+    "United States Secretary of State",
+    "President of the United States"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q11813",
+     "James Madison",
+     "President of the United States from 1809"
+    ],
+    [
+     "Q268217",
+     "James Madison",
+     "American bishop (1749–1812)"
+    ],
+    [
+     "Q111739291",
+     "James H. Madison",
+     "American historian and author (born 1944"
+    ],
+    [
+     "Q125243561",
+     "James Madison",
+     ""
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what is the capital of kentucky known for its bluegrass?",
+   "seed": "kentucky known for its bluegrass",
+   "rel": "capital",
+   "golds": [
+    "Frankfort"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "where was dr luther king jr born?",
+   "seed": "dr luther king jr",
+   "rel": "place of birth",
+   "golds": [
+    "Atlanta"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "name matching (saint, doctor, accents)"
+  },
+  {
+   "q": "where did eleanor roosevelt die?",
+   "seed": "eleanor roosevelt",
+   "rel": "place of death",
+   "golds": [
+    "New York City"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q83396",
+     "Eleanor Roosevelt",
+     "American diplomat and activist, First La"
+    ],
+    [
+     "Q5354235",
+     "Eleanor Butler Roosevelt",
+     "American philanthropist"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what time zone is anaheim california?",
+   "seed": "anaheim california",
+   "rel": "located in time zone",
+   "golds": [
+    "Pacific Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what timezone is nashville tn?",
+   "seed": "nashville tn",
+   "rel": "located in time zone",
+   "golds": [
+    "Central Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what nationality is taylor lautner jacob black?",
+   "seed": "taylor lautner jacob black",
+   "rel": "country of citizenship",
+   "golds": [
+    "United States of America"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "what timezone is the state of michigan and?",
+   "seed": "state of michigan and",
+   "rel": "located in time zone",
+   "golds": [
+    "Central Time Zone",
+    "North American Eastern Time Zone",
+    "UTC-5"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "what timezone is tucson arizona in right now?",
+   "seed": "tucson arizona",
+   "rel": "located in time zone",
+   "golds": [
+    "Mountain Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what language is spoken in greek?",
+   "seed": "greek",
+   "rel": "official language",
+   "golds": [
+    "Greek Language"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q9129",
+     "Greek",
+     "Indo-European language"
+    ],
+    [
+     "Q37443104",
+     "Greek",
+     "family name"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what is the language of russia s spoken?",
+   "seed": "russia s spoken",
+   "rel": "official language",
+   "golds": [
+    "Yiddish Language",
+    "Chuvash Language",
+    "Russian Language"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "what time zone is greensburg indiana?",
+   "seed": "greensburg indiana",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what country is nike based in?",
+   "seed": "nike based",
+   "rel": "country",
+   "golds": [
+    "United States of America"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "where was john jay born?",
+   "seed": "john jay",
+   "rel": "place of birth",
+   "golds": [
+    "New York City"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q310847",
+     "John Jay",
+     "Founding Father, U.S. Chief Justice from"
+    ],
+    [
+     "Q117662757",
+     "John Jay",
+     "Remington Arms Company Employee (1918-20"
+    ],
+    [
+     "Q5880842",
+     "John Jay",
+     "American lawyer and diplomat (1817-1894)"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what is the capital city of spain wiki answers?",
+   "seed": "spain wiki answers",
+   "rel": "capital",
+   "golds": [
+    "Madrid"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "what timezone is elizabethtown kentucky?",
+   "seed": "elizabethtown kentucky",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what is steve nash nationality?",
+   "seed": "steve nash",
+   "rel": "country of citizenship",
+   "golds": [
+    "Canada"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q48851147",
+     "Steve Nash",
+     "Polish dj"
+    ],
+    [
+     "Q192955",
+     "Steve Nash",
+     "Canadian basketball player and coach"
+    ],
+    [
+     "Q42316961",
+     "Steve Nash",
+     "actor"
+    ],
+    [
+     "Q16137022",
+     "Steve Nash",
+     "English rugby league footballer and coac"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what time zone is toronto gmt?",
+   "seed": "toronto gmt",
+   "rel": "located in time zone",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "what language do they speak in sweden yahoo?",
+   "seed": "sweden yahoo",
+   "rel": "official language",
+   "golds": [
+    "Yiddish Language",
+    "Meänkieli",
+    "Swedish Language"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "what currency does cyprus use?",
+   "seed": "cyprus",
+   "rel": "currency",
+   "golds": [
+    "Euro"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q229",
+     "Cyprus",
+     "country in the Mediterranean Sea"
+    ],
+    [
+     "Q644636",
+     "Cyprus",
+     "island in the Eastern Basin of the Medit"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "where did thomas paine die?",
+   "seed": "thomas paine",
+   "rel": "place of death",
+   "golds": [
+    "New York City"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q126462",
+     "Thomas Paine",
+     "American Founding Father, philosopher, a"
+    ],
+    [
+     "Q93964556",
+     "Thomas Paine",
+     "preacher"
+    ],
+    [
+     "Q1367762",
+     "Thomas O. Paine",
+     "American scientist (1921-1992)"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "who was queen isabella's mother?",
+   "seed": "queen isabella",
+   "rel": "mother",
+   "golds": [
+    "Maria of Aragon, Queen of Portugal"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q112200547",
+     "Queen Isabella",
+     "painting by Julie Buffalohead"
+    ],
+    [
+     "Q61008231",
+     "Queen Isabella",
+     "theatrical character in the play \"Edward"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what timezone is phoenix az in right now?",
+   "seed": "phoenix az",
+   "rel": "located in time zone",
+   "golds": [
+    "Mountain Time Zone"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what do people speak in uk?",
+   "seed": "uk",
+   "rel": "official language",
+   "golds": [
+    "Scottish Gaelic language",
+    "Scots Language",
+    "British Sign Language"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q1499",
+     "Uttarakhand",
+     "state in northern India"
+    ],
+    [
+     "Q145",
+     "United Kingdom",
+     "island country in north-west Europe"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  },
+  {
+   "q": "what language do they speak in colombia south america?",
+   "seed": "colombia south america",
+   "rel": "official language",
+   "golds": [
+    "Spanish Language"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a place qualifier left on the name"
+  },
+  {
+   "q": "what timezone is sweden gmt?",
+   "seed": "sweden gmt",
+   "rel": "located in time zone",
+   "golds": [
+    "Central European Time",
+    "UTC+01:00"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "reading: a noise word left on the name"
+  },
+  {
+   "q": "where did diego velazquez die?",
+   "seed": "diego velazquez",
+   "rel": "place of death",
+   "golds": [
+    "Madrid"
+   ],
+   "cat": "unresolved",
+   "detail": [],
+   "sort": "name matching (saint, doctor, accents)"
+  },
+  {
+   "q": "what did jack london do for a living?",
+   "seed": "jack london",
+   "rel": "occupation",
+   "golds": [
+    "Author",
+    "Sailor",
+    "Journalist"
+   ],
+   "cat": "ambiguous",
+   "detail": [
+    [
+     "Q45765",
+     "Jack London",
+     "American author, journalist and social a"
+    ],
+    [
+     "Q109982296",
+     "Jack London",
+     "person identified in the Museu da Pessoa"
+    ],
+    [
+     "Q1384076",
+     "Jack London",
+     "British athlete (1905–1966)"
+    ]
+   ],
+   "sort": "namesakes at the source (strict)"
+  }
+ ]
+}

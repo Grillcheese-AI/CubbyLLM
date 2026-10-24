@@ -1,0 +1,3695 @@
+{
+ "summary": {
+  "what": "exp_everyday_webq",
+  "everyday": "on",
+  "emitter": "none",
+  "online": false,
+  "tense": "on",
+  "namesake_tier": false,
+  "questions": "webq_na_eu.csv",
+  "parsed_only": true,
+  "counts": {
+   "asked": 187,
+   "spoken": 47,
+   "spoken_by_form": 47,
+   "match": 38,
+   "mismatch": 9,
+   "refused:retrieval_exhausted": 76,
+   "refused:ambiguous_entity": 5,
+   "refused:ambiguous_hop": 47,
+   "refused:ambiguous_relation": 1,
+   "refused:time_mismatch": 7,
+   "refused:unknown_relation": 4
+  },
+  "by_form": {
+   "country of citizenship": 2,
+   "official language": 10,
+   "cause of death": 2,
+   "applies to jurisdiction": 1,
+   "place of birth": 3,
+   "place of death": 8,
+   "capital": 6,
+   "basic form of government": 2,
+   "continent": 2,
+   "currency": 8,
+   "located in time zone": 2,
+   "country": 1
+  },
+  "emitter_calls": null,
+  "wall_s": 35.1
+ },
+ "rows": [
+  {
+   "question": "what time zone am i in cleveland ohio?",
+   "region": "usa",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "cleveland ohio",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what is nina dobrev nationality?",
+   "region": "europe",
+   "golds": [
+    "Bulgaria"
+   ],
+   "form": "country of citizenship",
+   "seed": "nina dobrev",
+   "plan": [
+    "country of citizenship"
+   ],
+   "verified": true,
+   "answer": "Canada",
+   "said": "Canada",
+   "tier": null,
+   "reason": null,
+   "match": false,
+   "wall_s": 0.58
+  },
+  {
+   "question": "what country does iceland belong to?",
+   "region": "europe",
+   "golds": [
+    "Iceland"
+   ],
+   "form": "country",
+   "seed": "iceland",
+   "plan": [
+    "country"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_entity",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what form of government does russia have today?",
+   "region": "europe",
+   "golds": [
+    "Constitutional republic"
+   ],
+   "form": "basic form of government",
+   "seed": "russia",
+   "plan": [
+    "basic form of government"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.31
+  },
+  {
+   "question": "what timezone is denver co?",
+   "region": "usa",
+   "golds": [
+    "Mountain Time Zone",
+    "UTC−07:00"
+   ],
+   "form": "located in time zone",
+   "seed": "denver co",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what time zone am i in michigan?",
+   "region": "usa",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "michigan",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.15
+  },
+  {
+   "question": "what time zone is oklahoma state?",
+   "region": "usa",
+   "golds": [
+    "Central Time Zone",
+    "UTC−06:00"
+   ],
+   "form": "located in time zone",
+   "seed": "oklahoma",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.15
+  },
+  {
+   "question": "what currency does ontario canada use?",
+   "region": "canada",
+   "golds": [
+    "Canadian dollar"
+   ],
+   "form": "currency",
+   "seed": "ontario canada",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "where was gabriel faure born?",
+   "region": "europe",
+   "golds": [
+    "France"
+   ],
+   "form": "place of birth",
+   "seed": "gabriel faure",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what language do people speak in brazil wikipedia?",
+   "region": "europe",
+   "golds": [
+    "Brazilian Portuguese",
+    "Portuguese Language",
+    "Italian Language"
+   ],
+   "form": "official language",
+   "seed": "brazil",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.21
+  },
+  {
+   "question": "what timezone is colorado in right now?",
+   "region": "usa",
+   "golds": [
+    "Mountain Time Zone",
+    "UTC−07:00"
+   ],
+   "form": "located in time zone",
+   "seed": "colorado",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.14
+  },
+  {
+   "question": "what language do they speak in northern ireland?",
+   "region": "europe",
+   "golds": [
+    "Irish",
+    "English Language",
+    "Ulster Scots dialects"
+   ],
+   "form": "official language",
+   "seed": "northern ireland",
+   "plan": [
+    "official language"
+   ],
+   "verified": true,
+   "answer": "English",
+   "said": "English",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what time zone is new york under?",
+   "region": "usa",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "new york",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.14
+  },
+  {
+   "question": "what is the capital of alaska state?",
+   "region": "usa",
+   "golds": [
+    "Juneau"
+   ],
+   "form": "capital",
+   "seed": "alaska",
+   "plan": [
+    "capital"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.11
+  },
+  {
+   "question": "what language do they speak in iceland wikipedia?",
+   "region": "europe",
+   "golds": [
+    "Icelandic Language"
+   ],
+   "form": "official language",
+   "seed": "iceland",
+   "plan": [
+    "official language"
+   ],
+   "verified": true,
+   "answer": "Icelandic",
+   "said": "Icelandic",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.19
+  },
+  {
+   "question": "what is the currency in croatia 2012?",
+   "region": "europe",
+   "golds": [
+    "Croatian kuna"
+   ],
+   "form": "currency",
+   "seed": "croatia 2012",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the time zone in oklahoma city?",
+   "region": "usa",
+   "golds": [
+    "Central Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "oklahoma city",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what killed whitney houston?",
+   "region": "usa",
+   "golds": [
+    "Drowning",
+    "Coronary artery disease",
+    "Cocaine overdose"
+   ],
+   "form": "cause of death",
+   "seed": "whitney houston",
+   "plan": [
+    "cause of death"
+   ],
+   "verified": true,
+   "answer": "drowning",
+   "said": "drowning",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.06
+  },
+  {
+   "question": "what currency is used in switzerland 2012?",
+   "region": "europe",
+   "golds": [
+    "Swiss franc"
+   ],
+   "form": "currency",
+   "seed": "switzerland 2012",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "when did the aurora colorado shooting take place?",
+   "region": "usa",
+   "golds": [
+    "2012 Aurora shooting"
+   ],
+   "form": "point in time",
+   "seed": "aurora colorado shooting",
+   "plan": [
+    "point in time"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what language do people speak in iceland?",
+   "region": "europe",
+   "golds": [
+    "Icelandic Language"
+   ],
+   "form": "official language",
+   "seed": "iceland",
+   "plan": [
+    "official language"
+   ],
+   "verified": true,
+   "answer": "Icelandic",
+   "said": "Icelandic",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "where is st vincent de paul buried?",
+   "region": "europe",
+   "golds": [
+    "Paris"
+   ],
+   "form": "place of burial",
+   "seed": "st vincent de paul",
+   "plan": [
+    "place of burial"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the time zone in uk now?",
+   "region": "europe",
+   "golds": [
+    "Greenwich Mean Time",
+    "UTC±00:00"
+   ],
+   "form": "located in time zone",
+   "seed": "uk",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what is the capital of spain in 2010?",
+   "region": "europe",
+   "golds": [
+    "Madrid"
+   ],
+   "form": "capital",
+   "seed": "spain",
+   "plan": [
+    "capital"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.24
+  },
+  {
+   "question": "what is the jurisdiction of the us supreme court?",
+   "region": "usa",
+   "golds": [
+    "United States of America"
+   ],
+   "form": "applies to jurisdiction",
+   "seed": "us supreme court",
+   "plan": [
+    "applies to jurisdiction"
+   ],
+   "verified": true,
+   "answer": "United States",
+   "said": "United States",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.05
+  },
+  {
+   "question": "what time zone is the uk in right now?",
+   "region": "europe",
+   "golds": [
+    "Greenwich Mean Time",
+    "UTC±00:00"
+   ],
+   "form": "located in time zone",
+   "seed": "uk",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what year did the new york mets start?",
+   "region": "usa",
+   "golds": [
+    "1962"
+   ],
+   "form": "start time",
+   "seed": "new york mets",
+   "plan": [
+    "start time"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_relation",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "where did john muir die?",
+   "region": "usa",
+   "golds": [
+    "Los Angeles"
+   ],
+   "form": "place of death",
+   "seed": "john muir",
+   "plan": [
+    "place of death"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "on which continent is the usa located?",
+   "region": "usa",
+   "golds": [
+    "North America"
+   ],
+   "form": "continent",
+   "seed": "usa",
+   "plan": [
+    "continent"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.23
+  },
+  {
+   "question": "what continent is the usa located in?",
+   "region": "usa",
+   "golds": [
+    "North America"
+   ],
+   "form": "continent",
+   "seed": "usa",
+   "plan": [
+    "continent"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.05
+  },
+  {
+   "question": "what is the currency of spain called?",
+   "region": "europe",
+   "golds": [
+    "Euro"
+   ],
+   "form": "currency",
+   "seed": "spain",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "time_mismatch",
+   "match": null,
+   "wall_s": 0.06
+  },
+  {
+   "question": "what timezone is toronto canada?",
+   "region": "canada",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "toronto canada",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what time zone is colorado springs co?",
+   "region": "usa",
+   "golds": [
+    "Mountain Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "colorado springs co",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what do they speak in cambodia?",
+   "region": "europe",
+   "golds": [
+    "French Language",
+    "Cambodian French",
+    "Khmer language"
+   ],
+   "form": "official language",
+   "seed": "cambodia",
+   "plan": [
+    "official language"
+   ],
+   "verified": true,
+   "answer": "Khmer",
+   "said": "Khmer",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.21
+  },
+  {
+   "question": "what timezone is illinois on?",
+   "region": "usa",
+   "golds": [
+    "Central Time Zone",
+    "UTC−06:00"
+   ],
+   "form": "located in time zone",
+   "seed": "illinois",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.17
+  },
+  {
+   "question": "what is the currency in france?",
+   "region": "europe",
+   "golds": [
+    "CFP franc",
+    "Euro"
+   ],
+   "form": "currency",
+   "seed": "france",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.22
+  },
+  {
+   "question": "what is the currency in england 2012?",
+   "region": "europe",
+   "golds": [
+    "UK £"
+   ],
+   "form": "currency",
+   "seed": "england 2012",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what kind of government does italy have?",
+   "region": "europe",
+   "golds": [
+    "Constitutional republic",
+    "Parliamentary republic",
+    "Unitary state"
+   ],
+   "form": "basic form of government",
+   "seed": "italy",
+   "plan": [
+    "basic form of government"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.21
+  },
+  {
+   "question": "what language do people speak in turkey?",
+   "region": "europe",
+   "golds": [
+    "Arabic Language",
+    "Kurdish language",
+    "Zazaki language",
+    "Ladino Language",
+    "Turkish Language"
+   ],
+   "form": "official language",
+   "seed": "turkey",
+   "plan": [
+    "official language"
+   ],
+   "verified": true,
+   "answer": "Turkish",
+   "said": "Turkish",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.23
+  },
+  {
+   "question": "what is the capital of georgia?",
+   "region": "usa",
+   "golds": [
+    "Atlanta"
+   ],
+   "form": "capital",
+   "seed": "georgia",
+   "plan": [
+    "capital"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what language do people speak in costa rica?",
+   "region": "europe",
+   "golds": [
+    "Spanish Language"
+   ],
+   "form": "official language",
+   "seed": "costa rica",
+   "plan": [
+    "official language"
+   ],
+   "verified": true,
+   "answer": "Spanish",
+   "said": "Spanish",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.19
+  },
+  {
+   "question": "where was dwight howard born?",
+   "region": "usa",
+   "golds": [
+    "Atlanta"
+   ],
+   "form": "place of birth",
+   "seed": "dwight howard",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": true,
+   "answer": "Atlanta",
+   "said": "Atlanta",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.05
+  },
+  {
+   "question": "what timezone is texas san antonio in?",
+   "region": "usa",
+   "golds": [
+    "Central Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "texas san antonio",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what time zone is it in london england?",
+   "region": "europe",
+   "golds": [
+    "Greenwich Mean Time"
+   ],
+   "form": "located in time zone",
+   "seed": "london england",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the time zone in california called?",
+   "region": "usa",
+   "golds": [
+    "Pacific Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "california",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.21
+  },
+  {
+   "question": "what kind of government does the united states have today?",
+   "region": "usa",
+   "golds": [
+    "Presidential system",
+    "Federal republic",
+    "Representative democracy",
+    "Two-party system",
+    "Constitutional republic"
+   ],
+   "form": "basic form of government",
+   "seed": "united states",
+   "plan": [
+    "basic form of government"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.18
+  },
+  {
+   "question": "what time zone is cincinnati oh in?",
+   "region": "usa",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "cincinnati oh",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what timezone is michigan usa?",
+   "region": "usa",
+   "golds": [
+    "UTC-5"
+   ],
+   "form": "located in time zone",
+   "seed": "michigan usa",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what language do they speak in argentina yahoo?",
+   "region": "europe",
+   "golds": [
+    "Yiddish Language",
+    "Italian Language",
+    "Spanish Language"
+   ],
+   "form": "official language",
+   "seed": "argentina yahoo",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what kind of money does the uk use?",
+   "region": "europe",
+   "golds": [
+    "UK £"
+   ],
+   "form": "currency",
+   "seed": "uk",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "where was joseph p kennedy born?",
+   "region": "usa",
+   "golds": [
+    "Boston"
+   ],
+   "form": "place of birth",
+   "seed": "joseph p kennedy",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the currency in slovakia 2012?",
+   "region": "europe",
+   "golds": [
+    "Euro"
+   ],
+   "form": "currency",
+   "seed": "slovakia 2012",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "where did harry truman die?",
+   "region": "usa",
+   "golds": [
+    "Kansas City"
+   ],
+   "form": "place of death",
+   "seed": "harry truman",
+   "plan": [
+    "place of death"
+   ],
+   "verified": true,
+   "answer": "Research Medical Center",
+   "said": "Research Medical Center",
+   "tier": null,
+   "reason": null,
+   "match": false,
+   "wall_s": 0.05
+  },
+  {
+   "question": "where was st elizabeth ann seton born?",
+   "region": "usa",
+   "golds": [
+    "New York City"
+   ],
+   "form": "place of birth",
+   "seed": "st elizabeth ann seton",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what timezone is tennessee nashville?",
+   "region": "usa",
+   "golds": [
+    "Central Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "tennessee nashville",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "who was the founder of the colony of virginia?",
+   "region": "usa",
+   "golds": [
+    "Captain John Smith"
+   ],
+   "form": "founded by",
+   "seed": "colony of virginia",
+   "plan": [
+    "founded by"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "unknown_relation",
+   "match": null,
+   "wall_s": 0.09
+  },
+  {
+   "question": "where did douglas macarthur die?",
+   "region": "usa",
+   "golds": [
+    "Washington, D.C."
+   ],
+   "form": "place of death",
+   "seed": "douglas macarthur",
+   "plan": [
+    "place of death"
+   ],
+   "verified": true,
+   "answer": "Washington, D.C.",
+   "said": "Washington, D.C.",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.06
+  },
+  {
+   "question": "where was emperor hadrian born?",
+   "region": "europe",
+   "golds": [
+    "Rome"
+   ],
+   "form": "place of birth",
+   "seed": "emperor hadrian",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": true,
+   "answer": "Italica",
+   "said": "Italica",
+   "tier": null,
+   "reason": null,
+   "match": false,
+   "wall_s": 0.05
+  },
+  {
+   "question": "what timezone is the state of texas?",
+   "region": "usa",
+   "golds": [
+    "Central Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "state of texas",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.12
+  },
+  {
+   "question": "where did kurt cobain die?",
+   "region": "usa",
+   "golds": [
+    "Seattle"
+   ],
+   "form": "place of death",
+   "seed": "kurt cobain",
+   "plan": [
+    "place of death"
+   ],
+   "verified": true,
+   "answer": "Seattle",
+   "said": "Seattle",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.05
+  },
+  {
+   "question": "what timezone is toronto gmt?",
+   "region": "canada",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "toronto gmt",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what religion is king henry viii?",
+   "region": "europe",
+   "golds": [
+    "Church of England",
+    "Anglo-Catholicism"
+   ],
+   "form": "religion",
+   "seed": "king henry viii",
+   "plan": [
+    "religion"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what form of government does canada have?",
+   "region": "canada",
+   "golds": [
+    "Parliamentary system"
+   ],
+   "form": "basic form of government",
+   "seed": "canada",
+   "plan": [
+    "basic form of government"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.21
+  },
+  {
+   "question": "what is the capital city of canada on a map?",
+   "region": "canada",
+   "golds": [
+    "Ottawa"
+   ],
+   "form": "capital",
+   "seed": "canada",
+   "plan": [
+    "capital"
+   ],
+   "verified": true,
+   "answer": "Ottawa",
+   "said": "Ottawa",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what timezone is indianapolis indiana in?",
+   "region": "usa",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "indianapolis indiana",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what country is vatican city in?",
+   "region": "europe",
+   "golds": [
+    "Rome"
+   ],
+   "form": "country",
+   "seed": "vatican city",
+   "plan": [
+    "country"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "where was obama born?",
+   "region": "usa",
+   "golds": [
+    "Hawaii"
+   ],
+   "form": "place of birth",
+   "seed": "obama",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what timezone is new mexico currently in?",
+   "region": "usa",
+   "golds": [
+    "Mountain Time Zone",
+    "UTC−07:00"
+   ],
+   "form": "located in time zone",
+   "seed": "new mexico",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.12
+  },
+  {
+   "question": "what form of government does czech republic have?",
+   "region": "europe",
+   "golds": [
+    "Parliamentary republic"
+   ],
+   "form": "basic form of government",
+   "seed": "czech republic",
+   "plan": [
+    "basic form of government"
+   ],
+   "verified": true,
+   "answer": "parliamentary republic",
+   "said": "parliamentary republic",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.22
+  },
+  {
+   "question": "what currency is used in england 2012?",
+   "region": "europe",
+   "golds": [
+    "UK £"
+   ],
+   "form": "currency",
+   "seed": "england 2012",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what kind of government does spain have now?",
+   "region": "europe",
+   "golds": [
+    "Parliamentary system",
+    "Unitary state",
+    "Constitutional monarchy",
+    "Multi-party system"
+   ],
+   "form": "basic form of government",
+   "seed": "spain",
+   "plan": [
+    "basic form of government"
+   ],
+   "verified": true,
+   "answer": "parliamentary monarchy",
+   "said": "parliamentary monarchy",
+   "tier": null,
+   "reason": null,
+   "match": false,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what continent is belize located in?",
+   "region": "usa",
+   "golds": [
+    "Central America"
+   ],
+   "form": "continent",
+   "seed": "belize",
+   "plan": [
+    "continent"
+   ],
+   "verified": true,
+   "answer": "North America",
+   "said": "North America",
+   "tier": null,
+   "reason": null,
+   "match": false,
+   "wall_s": 0.2
+  },
+  {
+   "question": "what is the currency in germany in 2010?",
+   "region": "europe",
+   "golds": [
+    "Euro"
+   ],
+   "form": "currency",
+   "seed": "germany",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "time_mismatch",
+   "match": null,
+   "wall_s": 0.27
+  },
+  {
+   "question": "what time zone is it in california?",
+   "region": "usa",
+   "golds": [
+    "Pacific Time Zone",
+    "UTC-8"
+   ],
+   "form": "located in time zone",
+   "seed": "california",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what is the time zone in france?",
+   "region": "europe",
+   "golds": [
+    "Central European Time",
+    "UTC+01:00"
+   ],
+   "form": "located in time zone",
+   "seed": "france",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.11
+  },
+  {
+   "question": "who was the founder of rhode island?",
+   "region": "usa",
+   "golds": [
+    "Roger Williams: Lives and Legacies"
+   ],
+   "form": "founded by",
+   "seed": "rhode island",
+   "plan": [
+    "founded by"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "unknown_relation",
+   "match": null,
+   "wall_s": 0.15
+  },
+  {
+   "question": "what is the official language of the ukraine?",
+   "region": "europe",
+   "golds": [
+    "Ukrainian Language"
+   ],
+   "form": "official language",
+   "seed": "ukraine",
+   "plan": [
+    "official language"
+   ],
+   "verified": true,
+   "answer": "Ukrainian",
+   "said": "Ukrainian",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what time zone is birmingham england?",
+   "region": "europe",
+   "golds": [
+    "Greenwich Mean Time"
+   ],
+   "form": "located in time zone",
+   "seed": "birmingham england",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what timezone is nevada in right now?",
+   "region": "usa",
+   "golds": [
+    "Mountain Time Zone",
+    "UTC−07:00",
+    "Pacific Time Zone",
+    "UTC-8"
+   ],
+   "form": "located in time zone",
+   "seed": "nevada",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.1
+  },
+  {
+   "question": "where was stephen g. breyer born?",
+   "region": "usa",
+   "golds": [
+    "San Francisco"
+   ],
+   "form": "place of birth",
+   "seed": "stephen g. breyer",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what time zone is ontario toronto?",
+   "region": "canada",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "ontario toronto",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what nationality is jermaine paul?",
+   "region": "usa",
+   "golds": [
+    "United States of America"
+   ],
+   "form": "country of citizenship",
+   "seed": "jermaine paul",
+   "plan": [
+    "country of citizenship"
+   ],
+   "verified": true,
+   "answer": "United States",
+   "said": "United States",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what is the capital city of south carolina?",
+   "region": "usa",
+   "golds": [
+    "Columbia"
+   ],
+   "form": "capital",
+   "seed": "south carolina",
+   "plan": [
+    "capital"
+   ],
+   "verified": true,
+   "answer": "Columbia",
+   "said": "As of 2019, Columbia.",
+   "tier": "as_of",
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what time zone am i in missouri?",
+   "region": "usa",
+   "golds": [
+    "Central Time Zone",
+    "UTC−06:00"
+   ],
+   "form": "located in time zone",
+   "seed": "missouri",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.14
+  },
+  {
+   "question": "what currency is used in france before euro?",
+   "region": "europe",
+   "golds": [
+    "French franc",
+    "Assignat"
+   ],
+   "form": "currency",
+   "seed": "france before euro",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what currency is used in hungary?",
+   "region": "europe",
+   "golds": [
+    "Hungarian forint"
+   ],
+   "form": "currency",
+   "seed": "hungary",
+   "plan": [
+    "currency"
+   ],
+   "verified": true,
+   "answer": "forint",
+   "said": "forint",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what language do they speak in spain wikipedia?",
+   "region": "europe",
+   "golds": [
+    "Spanish Language"
+   ],
+   "form": "official language",
+   "seed": "spain",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.08
+  },
+  {
+   "question": "what language does greece use?",
+   "region": "europe",
+   "golds": [
+    "Greek Language"
+   ],
+   "form": "language used",
+   "seed": "greece",
+   "plan": [
+    "language used"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.2
+  },
+  {
+   "question": "what did roger sherman do for a living?",
+   "region": "usa",
+   "golds": [
+    "Senator",
+    "Member of Congress"
+   ],
+   "form": "occupation",
+   "seed": "roger sherman",
+   "plan": [
+    "occupation"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what do they speak in austria?",
+   "region": "europe",
+   "golds": [
+    "Austrian German",
+    "Bosnian language",
+    "Hungarian language",
+    "Croatian language",
+    "Serbian language"
+   ],
+   "form": "official language",
+   "seed": "austria",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.21
+  },
+  {
+   "question": "what timezone is minnesota in?",
+   "region": "usa",
+   "golds": [
+    "Central Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "minnesota",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.13
+  },
+  {
+   "question": "what time zone is maryville tn?",
+   "region": "usa",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "maryville tn",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "where was emperor tiberius born?",
+   "region": "europe",
+   "golds": [
+    "Rome"
+   ],
+   "form": "place of birth",
+   "seed": "emperor tiberius",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": true,
+   "answer": "Rome",
+   "said": "Rome",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.06
+  },
+  {
+   "question": "what is the capital city of texas usa?",
+   "region": "usa",
+   "golds": [
+    "Austin"
+   ],
+   "form": "capital",
+   "seed": "texas usa",
+   "plan": [
+    "capital"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what timezone is indianapolis in now?",
+   "region": "usa",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "indianapolis",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.11
+  },
+  {
+   "question": "what time zone is new england usa in?",
+   "region": "usa",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "new england usa",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what time zone is london in right now?",
+   "region": "europe",
+   "golds": [
+    "Greenwich Mean Time"
+   ],
+   "form": "located in time zone",
+   "seed": "london",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_entity",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "where was ben franklin born?",
+   "region": "usa",
+   "golds": [
+    "Boston"
+   ],
+   "form": "place of birth",
+   "seed": "ben franklin",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what timezone is virginia in?",
+   "region": "usa",
+   "golds": [
+    "UTC-5",
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "virginia",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": true,
+   "answer": "America/New_York",
+   "said": "America/New_York",
+   "tier": null,
+   "reason": null,
+   "match": false,
+   "wall_s": 0.17
+  },
+  {
+   "question": "what continent is mexico located on?",
+   "region": "usa",
+   "golds": [
+    "North America"
+   ],
+   "form": "continent",
+   "seed": "mexico",
+   "plan": [
+    "continent"
+   ],
+   "verified": true,
+   "answer": "North America",
+   "said": "North America",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.23
+  },
+  {
+   "question": "where was anne hathaway born?",
+   "region": "usa",
+   "golds": [
+    "United States of America"
+   ],
+   "form": "place of birth",
+   "seed": "anne hathaway",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "where did sir john a macdonald die?",
+   "region": "canada",
+   "golds": [
+    "Ottawa"
+   ],
+   "form": "place of death",
+   "seed": "sir john a macdonald",
+   "plan": [
+    "place of death"
+   ],
+   "verified": true,
+   "answer": "Ottawa",
+   "said": "Ottawa",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.05
+  },
+  {
+   "question": "what is the capital city of west germany?",
+   "region": "europe",
+   "golds": [
+    "Bonn"
+   ],
+   "form": "capital",
+   "seed": "west germany",
+   "plan": [
+    "capital"
+   ],
+   "verified": true,
+   "answer": "Bonn",
+   "said": "As of 2019, Bonn.",
+   "tier": "as_of",
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what did whitney houston die of?",
+   "region": "usa",
+   "golds": [
+    "Drowning",
+    "Coronary artery disease",
+    "Cocaine overdose"
+   ],
+   "form": "cause of death",
+   "seed": "whitney houston",
+   "plan": [
+    "cause of death"
+   ],
+   "verified": true,
+   "answer": "drowning",
+   "said": "drowning",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what currency is used in germany 2012?",
+   "region": "europe",
+   "golds": [
+    "Euro"
+   ],
+   "form": "currency",
+   "seed": "germany 2012",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the currency of sweden called?",
+   "region": "europe",
+   "golds": [
+    "Swedish krona"
+   ],
+   "form": "currency",
+   "seed": "sweden",
+   "plan": [
+    "currency"
+   ],
+   "verified": true,
+   "answer": "Swedish krona",
+   "said": "Swedish krona",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.2
+  },
+  {
+   "question": "what currency does greece use?",
+   "region": "europe",
+   "golds": [
+    "Euro"
+   ],
+   "form": "currency",
+   "seed": "greece",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.07
+  },
+  {
+   "question": "what nationality is zack de la rocha?",
+   "region": "usa",
+   "golds": [
+    "United States of America"
+   ],
+   "form": "country of citizenship",
+   "seed": "zack de la rocha",
+   "plan": [
+    "country of citizenship"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.03
+  },
+  {
+   "question": "where did robin gibb die?",
+   "region": "europe",
+   "golds": [
+    "London"
+   ],
+   "form": "place of death",
+   "seed": "robin gibb",
+   "plan": [
+    "place of death"
+   ],
+   "verified": true,
+   "answer": "London",
+   "said": "London",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what languages do they speak in russia?",
+   "region": "europe",
+   "golds": [
+    "Yiddish Language",
+    "Chuvash Language",
+    "Russian Language",
+    "Tatar Language",
+    "Ukrainian Language"
+   ],
+   "form": "official language",
+   "seed": "russia",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.05
+  },
+  {
+   "question": "what is the capital city of montana usa?",
+   "region": "usa",
+   "golds": [
+    "Helena"
+   ],
+   "form": "capital",
+   "seed": "montana usa",
+   "plan": [
+    "capital"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the currency of germany in 2010?",
+   "region": "europe",
+   "golds": [
+    "Euro"
+   ],
+   "form": "currency",
+   "seed": "germany",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "time_mismatch",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what country is the iberian peninsula located in?",
+   "region": "europe",
+   "golds": [
+    "Portugal",
+    "Spain"
+   ],
+   "form": "country",
+   "seed": "iberian peninsula",
+   "plan": [
+    "country"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what timezone is new england usa in?",
+   "region": "usa",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "new england usa",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the capital of oregon?",
+   "region": "usa",
+   "golds": [
+    "Salem"
+   ],
+   "form": "capital",
+   "seed": "oregon",
+   "plan": [
+    "capital"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_entity",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the capital city of germany now?",
+   "region": "europe",
+   "golds": [
+    "Berlin"
+   ],
+   "form": "capital",
+   "seed": "germany",
+   "plan": [
+    "capital"
+   ],
+   "verified": true,
+   "answer": "Berlin",
+   "said": "Berlin",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.12
+  },
+  {
+   "question": "what language do they speak in guyana south america?",
+   "region": "usa",
+   "golds": [
+    "English Language"
+   ],
+   "form": "official language",
+   "seed": "guyana south america",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "who founded the american federation of labor afl in 1886?",
+   "region": "usa",
+   "golds": [
+    "Samuel Gompers"
+   ],
+   "form": "founded by",
+   "seed": "american federation of labor afl",
+   "plan": [
+    "founded by"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "unknown_relation",
+   "match": null,
+   "wall_s": 0.08
+  },
+  {
+   "question": "what was james madison's job?",
+   "region": "usa",
+   "golds": [
+    "United States Representative",
+    "United States Secretary of State",
+    "President of the United States"
+   ],
+   "form": "occupation",
+   "seed": "james madison",
+   "plan": [
+    "occupation"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what timezone is colorado in?",
+   "region": "usa",
+   "golds": [
+    "Mountain Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "colorado",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what is the capital of kentucky known for its bluegrass?",
+   "region": "usa",
+   "golds": [
+    "Frankfort"
+   ],
+   "form": "capital",
+   "seed": "kentucky known for its bluegrass",
+   "plan": [
+    "capital"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "where was dr luther king jr born?",
+   "region": "usa",
+   "golds": [
+    "Atlanta"
+   ],
+   "form": "place of birth",
+   "seed": "dr luther king jr",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what timezone is sweden?",
+   "region": "europe",
+   "golds": [
+    "Central European Time"
+   ],
+   "form": "located in time zone",
+   "seed": "sweden",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.07
+  },
+  {
+   "question": "what timezone is utah in?",
+   "region": "usa",
+   "golds": [
+    "Mountain Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "utah",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.11
+  },
+  {
+   "question": "where did eleanor roosevelt die?",
+   "region": "usa",
+   "golds": [
+    "New York City"
+   ],
+   "form": "place of death",
+   "seed": "eleanor roosevelt",
+   "plan": [
+    "place of death"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the currency of puerto rico called?",
+   "region": "usa",
+   "golds": [
+    "United States dollar"
+   ],
+   "form": "currency",
+   "seed": "puerto rico",
+   "plan": [
+    "currency"
+   ],
+   "verified": true,
+   "answer": "United States dollar",
+   "said": "United States dollar",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.2
+  },
+  {
+   "question": "where did richard nixon die?",
+   "region": "usa",
+   "golds": [
+    "New York City"
+   ],
+   "form": "place of death",
+   "seed": "richard nixon",
+   "plan": [
+    "place of death"
+   ],
+   "verified": true,
+   "answer": "Weill Cornell Medical Center",
+   "said": "Weill Cornell Medical Center",
+   "tier": null,
+   "reason": null,
+   "match": false,
+   "wall_s": 0.06
+  },
+  {
+   "question": "what language is spoken in haiti today?",
+   "region": "europe",
+   "golds": [
+    "French Language",
+    "Haitian Creole French Language"
+   ],
+   "form": "official language",
+   "seed": "haiti",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.2
+  },
+  {
+   "question": "what time zone am i in california?",
+   "region": "usa",
+   "golds": [
+    "Pacific Time Zone",
+    "UTC-8"
+   ],
+   "form": "located in time zone",
+   "seed": "california",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what type of government does germany have now?",
+   "region": "europe",
+   "golds": [
+    "Constitutional republic",
+    "Multi-party system",
+    "Federal republic",
+    "Democracy",
+    "Parliamentary republic"
+   ],
+   "form": "basic form of government",
+   "seed": "germany",
+   "plan": [
+    "basic form of government"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.5
+  },
+  {
+   "question": "what time zone is anaheim california?",
+   "region": "usa",
+   "golds": [
+    "Pacific Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "anaheim california",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what language do people speak in the netherlands?",
+   "region": "europe",
+   "golds": [
+    "Frisian languages",
+    "West Flemish",
+    "Dutch Language"
+   ],
+   "form": "official language",
+   "seed": "netherlands",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what languages do they speak in costa rica?",
+   "region": "europe",
+   "golds": [
+    "Spanish Language"
+   ],
+   "form": "official language",
+   "seed": "costa rica",
+   "plan": [
+    "official language"
+   ],
+   "verified": true,
+   "answer": "Spanish",
+   "said": "Spanish",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what currency is used in panama?",
+   "region": "usa",
+   "golds": [
+    "United States dollar",
+    "Panamanian balboa"
+   ],
+   "form": "currency",
+   "seed": "panama",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.19
+  },
+  {
+   "question": "what language is spoken in switzerland?",
+   "region": "europe",
+   "golds": [
+    "Romansh language",
+    "French Language",
+    "German Language",
+    "Italian Language"
+   ],
+   "form": "official language",
+   "seed": "switzerland",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.18
+  },
+  {
+   "question": "what do people speak in canada?",
+   "region": "canada",
+   "golds": [
+    "French Language",
+    "English Language"
+   ],
+   "form": "official language",
+   "seed": "canada",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.05
+  },
+  {
+   "question": "what timezone is nashville tn?",
+   "region": "usa",
+   "golds": [
+    "Central Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "nashville tn",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "where did adolf hitler die?",
+   "region": "europe",
+   "golds": [
+    "Berlin"
+   ],
+   "form": "place of death",
+   "seed": "adolf hitler",
+   "plan": [
+    "place of death"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.17
+  },
+  {
+   "question": "where did alex chilton die?",
+   "region": "usa",
+   "golds": [
+    "New Orleans"
+   ],
+   "form": "place of death",
+   "seed": "alex chilton",
+   "plan": [
+    "place of death"
+   ],
+   "verified": true,
+   "answer": "New Orleans",
+   "said": "New Orleans",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what nationality is taylor lautner jacob black?",
+   "region": "usa",
+   "golds": [
+    "United States of America"
+   ],
+   "form": "country of citizenship",
+   "seed": "taylor lautner jacob black",
+   "plan": [
+    "country of citizenship"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what timezone is the state of michigan and?",
+   "region": "usa",
+   "golds": [
+    "Central Time Zone",
+    "North American Eastern Time Zone",
+    "UTC-5"
+   ],
+   "form": "located in time zone",
+   "seed": "state of michigan and",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the currency of germany now?",
+   "region": "europe",
+   "golds": [
+    "Euro"
+   ],
+   "form": "currency",
+   "seed": "germany",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "time_mismatch",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what currency does the czech republic use now?",
+   "region": "europe",
+   "golds": [
+    "Czech koruna"
+   ],
+   "form": "currency",
+   "seed": "czech republic",
+   "plan": [
+    "currency"
+   ],
+   "verified": true,
+   "answer": "Czech koruna",
+   "said": "Czech koruna",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the capital of republic of ireland?",
+   "region": "europe",
+   "golds": [
+    "Dublin"
+   ],
+   "form": "capital",
+   "seed": "republic of ireland",
+   "plan": [
+    "capital"
+   ],
+   "verified": true,
+   "answer": "Dublin",
+   "said": "Dublin was a capital of republic of ireland at one point.",
+   "tier": "at_one_point",
+   "reason": null,
+   "match": true,
+   "wall_s": 0.1
+  },
+  {
+   "question": "what timezone is tucson arizona in right now?",
+   "region": "usa",
+   "golds": [
+    "Mountain Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "tucson arizona",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what language is spoken in greek?",
+   "region": "europe",
+   "golds": [
+    "Greek Language"
+   ],
+   "form": "official language",
+   "seed": "greek",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the currency of sweden in 2010?",
+   "region": "europe",
+   "golds": [
+    "Swedish krona"
+   ],
+   "form": "currency",
+   "seed": "sweden",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "time_mismatch",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "where did alexander graham bell die?",
+   "region": "canada",
+   "golds": [
+    "Beinn Bhreagh, Nova Scotia"
+   ],
+   "form": "place of death",
+   "seed": "alexander graham bell",
+   "plan": [
+    "place of death"
+   ],
+   "verified": true,
+   "answer": "Beinn Bhreagh",
+   "said": "Beinn Bhreagh",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.06
+  },
+  {
+   "question": "what is the language of russia s spoken?",
+   "region": "europe",
+   "golds": [
+    "Yiddish Language",
+    "Chuvash Language",
+    "Russian Language",
+    "Tatar Language",
+    "Ukrainian Language"
+   ],
+   "form": "official language",
+   "seed": "russia s spoken",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what time zone is greensburg indiana?",
+   "region": "usa",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "greensburg indiana",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what country does alaska belong to?",
+   "region": "usa",
+   "golds": [
+    "United States of America"
+   ],
+   "form": "country",
+   "seed": "alaska",
+   "plan": [
+    "country"
+   ],
+   "verified": true,
+   "answer": "United States",
+   "said": "United States was a country of alaska at one point.",
+   "tier": "at_one_point",
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what do people speak in germany?",
+   "region": "europe",
+   "golds": [
+    "Bavarian Language",
+    "German Language",
+    "Saxon, Upper Language"
+   ],
+   "form": "official language",
+   "seed": "germany",
+   "plan": [
+    "official language"
+   ],
+   "verified": true,
+   "answer": "German",
+   "said": "German",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.12
+  },
+  {
+   "question": "what time zone is chicago in right now?",
+   "region": "usa",
+   "golds": [
+    "Central Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "chicago",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_entity",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what country is nike based in?",
+   "region": "usa",
+   "golds": [
+    "United States of America"
+   ],
+   "form": "country",
+   "seed": "nike based",
+   "plan": [
+    "country"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what currency does england use now?",
+   "region": "europe",
+   "golds": [
+    "UK £"
+   ],
+   "form": "currency",
+   "seed": "england",
+   "plan": [
+    "currency"
+   ],
+   "verified": true,
+   "answer": "pound sterling",
+   "said": "pound sterling",
+   "tier": null,
+   "reason": null,
+   "match": false,
+   "wall_s": 0.12
+  },
+  {
+   "question": "what is the currency in italy?",
+   "region": "europe",
+   "golds": [
+    "Euro"
+   ],
+   "form": "currency",
+   "seed": "italy",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "time_mismatch",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "where was john jay born?",
+   "region": "usa",
+   "golds": [
+    "New York City"
+   ],
+   "form": "place of birth",
+   "seed": "john jay",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what is the capital city of spain wiki answers?",
+   "region": "europe",
+   "golds": [
+    "Madrid"
+   ],
+   "form": "capital",
+   "seed": "spain wiki answers",
+   "plan": [
+    "capital"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what time zone is pennsylvania in right now?",
+   "region": "usa",
+   "golds": [
+    "UTC-5",
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "pennsylvania",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.12
+  },
+  {
+   "question": "what is the capital of italy today?",
+   "region": "europe",
+   "golds": [
+    "Rome"
+   ],
+   "form": "capital",
+   "seed": "italy",
+   "plan": [
+    "capital"
+   ],
+   "verified": true,
+   "answer": "Rome",
+   "said": "Rome",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what time zone is in the bahamas?",
+   "region": "usa",
+   "golds": [
+    "UTC-5",
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "bahamas",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": true,
+   "answer": "America/Nassau",
+   "said": "America/Nassau",
+   "tier": null,
+   "reason": null,
+   "match": false,
+   "wall_s": 0.21
+  },
+  {
+   "question": "what timezone is elizabethtown kentucky?",
+   "region": "usa",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "elizabethtown kentucky",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what does george wilson do for a living?",
+   "region": "usa",
+   "golds": [
+    "American football player"
+   ],
+   "form": "occupation",
+   "seed": "george wilson",
+   "plan": [
+    "occupation"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_entity",
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what is steve nash nationality?",
+   "region": "canada",
+   "golds": [
+    "Canada"
+   ],
+   "form": "country of citizenship",
+   "seed": "steve nash",
+   "plan": [
+    "country of citizenship"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what do they speak in scotland?",
+   "region": "europe",
+   "golds": [
+    "Scottish English"
+   ],
+   "form": "official language",
+   "seed": "scotland",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.09
+  },
+  {
+   "question": "what time zone is toronto gmt?",
+   "region": "canada",
+   "golds": [
+    "North American Eastern Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "toronto gmt",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what language do they speak in sweden yahoo?",
+   "region": "europe",
+   "golds": [
+    "Yiddish Language",
+    "Meänkieli",
+    "Swedish Language",
+    "Finnish Language",
+    "Romani language"
+   ],
+   "form": "official language",
+   "seed": "sweden yahoo",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what kind of government does poland have?",
+   "region": "europe",
+   "golds": [
+    "Parliamentary republic",
+    "Democracy"
+   ],
+   "form": "basic form of government",
+   "seed": "poland",
+   "plan": [
+    "basic form of government"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.19
+  },
+  {
+   "question": "what currency does cyprus use?",
+   "region": "europe",
+   "golds": [
+    "Euro"
+   ],
+   "form": "currency",
+   "seed": "cyprus",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the currency in turkey called?",
+   "region": "europe",
+   "golds": [
+    "Turkish lira"
+   ],
+   "form": "currency",
+   "seed": "turkey",
+   "plan": [
+    "currency"
+   ],
+   "verified": true,
+   "answer": "Turkish lira",
+   "said": "Turkish lira",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what language is spoken in argentina?",
+   "region": "europe",
+   "golds": [
+    "Spanish Language"
+   ],
+   "form": "official language",
+   "seed": "argentina",
+   "plan": [
+    "official language"
+   ],
+   "verified": true,
+   "answer": "Spanish",
+   "said": "Spanish",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.2
+  },
+  {
+   "question": "where did thomas paine die?",
+   "region": "usa",
+   "golds": [
+    "New York City"
+   ],
+   "form": "place of death",
+   "seed": "thomas paine",
+   "plan": [
+    "place of death"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "who founded new york university?",
+   "region": "usa",
+   "golds": [
+    "Albert Gallatin",
+    "Mordecai Manuel Noah"
+   ],
+   "form": "founded by",
+   "seed": "new york university",
+   "plan": [
+    "founded by"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "unknown_relation",
+   "match": null,
+   "wall_s": 0.14
+  },
+  {
+   "question": "who was queen isabella's mother?",
+   "region": "europe",
+   "golds": [
+    "Maria of Aragon, Queen of Portugal"
+   ],
+   "form": "mother",
+   "seed": "queen isabella",
+   "plan": [
+    "mother"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what language do they speak in malta?",
+   "region": "europe",
+   "golds": [
+    "Maltese Language",
+    "English Language"
+   ],
+   "form": "official language",
+   "seed": "malta",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.18
+  },
+  {
+   "question": "what money does spain use?",
+   "region": "europe",
+   "golds": [
+    "Euro"
+   ],
+   "form": "currency",
+   "seed": "spain",
+   "plan": [
+    "currency"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "time_mismatch",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what kind of government does the united states have currently?",
+   "region": "usa",
+   "golds": [
+    "Federal republic"
+   ],
+   "form": "basic form of government",
+   "seed": "united states",
+   "plan": [
+    "basic form of government"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.04
+  },
+  {
+   "question": "what is the currency of the czech republic?",
+   "region": "europe",
+   "golds": [
+    "Czech koruna"
+   ],
+   "form": "currency",
+   "seed": "czech republic",
+   "plan": [
+    "currency"
+   ],
+   "verified": true,
+   "answer": "Czech koruna",
+   "said": "Czech koruna",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what timezone is phoenix az in right now?",
+   "region": "usa",
+   "golds": [
+    "Mountain Time Zone"
+   ],
+   "form": "located in time zone",
+   "seed": "phoenix az",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what do people speak in uk?",
+   "region": "europe",
+   "golds": [
+    "Scottish Gaelic language",
+    "Scots Language",
+    "British Sign Language",
+    "Cornish Language",
+    "Esperanto Language"
+   ],
+   "form": "official language",
+   "seed": "uk",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what language do they speak in colombia south america?",
+   "region": "usa",
+   "golds": [
+    "Spanish Language"
+   ],
+   "form": "official language",
+   "seed": "colombia south america",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what do they speak in norway?",
+   "region": "europe",
+   "golds": [
+    "Nynorsk",
+    "Norwegian Language",
+    "Bokmål"
+   ],
+   "form": "official language",
+   "seed": "norway",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.21
+  },
+  {
+   "question": "what timezone is sweden gmt?",
+   "region": "europe",
+   "golds": [
+    "Central European Time",
+    "UTC+01:00"
+   ],
+   "form": "located in time zone",
+   "seed": "sweden gmt",
+   "plan": [
+    "located in time zone"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what form of government does the united states have?",
+   "region": "usa",
+   "golds": [
+    "Presidential system",
+    "Federal republic",
+    "Representative democracy",
+    "Two-party system",
+    "Constitutional republic"
+   ],
+   "form": "basic form of government",
+   "seed": "united states",
+   "plan": [
+    "basic form of government"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.04
+  },
+  {
+   "question": "where did diego velazquez die?",
+   "region": "europe",
+   "golds": [
+    "Madrid"
+   ],
+   "form": "place of death",
+   "seed": "diego velazquez",
+   "plan": [
+    "place of death"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what currency do they use in switzerland?",
+   "region": "europe",
+   "golds": [
+    "Swiss franc"
+   ],
+   "form": "currency",
+   "seed": "switzerland",
+   "plan": [
+    "currency"
+   ],
+   "verified": true,
+   "answer": "Swiss franc",
+   "said": "Swiss franc",
+   "tier": null,
+   "reason": null,
+   "match": true,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what did jack london do for a living?",
+   "region": "europe",
+   "golds": [
+    "Author",
+    "Sailor",
+    "Journalist",
+    "Novelist",
+    "Screenwriter"
+   ],
+   "form": "occupation",
+   "seed": "jack london",
+   "plan": [
+    "occupation"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.02
+  }
+ ]
+}

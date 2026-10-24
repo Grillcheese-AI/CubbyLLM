@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import collections
 import inspect as _inspect
+import os
 import pathlib
 import sys
 import threading
@@ -53,7 +54,8 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
     def __init__(self, emitter, world=None, source="wikidata", lexicon: bool = True, exe: str | None = None,
                  max_new: int = 300, run_fn=None, tau_profile: float = TAU_VM[1],
                  news=None, history_path: str | None = None, web=None, skills=None, scene=None, books=None,
-                 tense: bool | None = None, loci=None, time_rule: bool | None = None, news_changes=None):
+                 tense: bool | None = None, loci=None, time_rule: bool | None = None, news_changes=None,
+                 everyday: bool | None = None):
         from cubbyllm.bridges import cubelang_client as cc
         from cubbyllm.reasoning.plan_verify import StoreRelations
         self.emitter = emitter
@@ -113,6 +115,10 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
         if books is not None:                            # natural questions (order 0012): a parsed form is a relation
             from .question_forms import Forms             # ask, never a profile ("Who was the founder of Rome?"), and
             self._forms = Forms()                        # its words name the relation (levers 4 and 6: "ruled")
+        self._everyday = None                            # everyday wording (2026-10-24): the host restates "Who wrote X?"
+        if os.environ.get("CB_EVERYDAY") == "1" if everyday is None else everyday:    # as the author of X; the model
+            from .everyday import EverydayForms          # gets every question the table does not read, as before
+            self._everyday = EverydayForms()
         # the scene (2026-10-17): the host's route to space. A question the scene can state -- a spatial
         # relation at any hop, or a seed that is a thing in it -- is sourced from the scene's exact reading
         # instead of the world's source; the walk and the VM verify what it states like any other fact.
@@ -186,7 +192,8 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 return rec
             # a mounted scene's own shapes, read off the question and restated in its grammar (order 0035)
             sa = scene_ask(question, self.scene) if self.scene is not None else None
-            pa = None if sa or (self._forms is not None and self._forms.parse(question)) else \
+            ed = None if sa or self._everyday is None else self._everyday.restate(question)   # (restated, relation, seed)
+            pa = None if sa or ed or (self._forms is not None and self._forms.parse(question)) else \
                 profile_ask(question, self._is_relation)   # the host reads the shape off the question (gen 2 cannot emit it yet)
             if pa:
                 rec = self.profile(question, pa[0], pa[1], t0, how="the question's shape (who / what / where / when)", item=item, asker=asker)
@@ -194,7 +201,7 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 return rec
             asked, _year = strip_as_of(question)         # the year is a constraint, not a relation
             try:
-                raw = "no plan\n" if sa else self.emitter.emit(asked, max_new_tokens=self.max_new)
+                raw = "no plan\n" if sa or ed else self.emitter.emit(asked, max_new_tokens=self.max_new)
                 if program_world(strip_fences(raw)) == "self":
                     pp = profile_program(strip_fences(raw))
                     if pp:
@@ -212,6 +219,8 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 ep = None; rec["reason"] = f"emit_error: {str(e)[:120]}"
             if sa:
                 ep, rec["scene_shape"] = ([sa[1]], sa[2]), sa[0]
+            if ed:
+                ep, rec["restated"] = ([ed[1]], ed[2]), ed[0]
             if not ep or not ep[0] or not ep[1]:
                 rec["reason"] = rec["reason"] or "no_plan"
                 qid = ev.emit("question", text=question, source=getattr(self.source, "name", None))
@@ -228,7 +237,7 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                     source = self.scene
                     rec["world"] = "scene"
             def learn(src=None):                         # `src`: another source for this walk (the reader's: none)
-                return learn_and_answer(sa[0] if sa else question, lambda q, k: [], self._run_fn, store=self.world, known=self.known,
+                return learn_and_answer(sa[0] if sa else ed[0] if ed else question, lambda q, k: [], self._run_fn, store=self.world, known=self.known,
                                         source=src or source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
                                         plan=plan, resolvers=self.resolvers, choose=parse_choose(choose) or None,
                                         fallbacks=self.fallbacks if src is None else [],
