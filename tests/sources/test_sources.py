@@ -274,3 +274,24 @@ def test_a_year_before_the_era_says_so():
     out = src.facts("great pyramid of giza")
     assert [(t.obj, t.rel) for t in out] == [("2560 BC", "inception")]
     assert src.times["2560 bc is the inception of great pyramid of giza"]["start"] == "-2580-01-01"
+
+
+def test_the_label_does_not_decide_between_two_of_a_kind(monkeypatch):
+    """2026-10-24, live: "where was ben franklin born?" said Carthage. A minor item is LABELLED "Ben Franklin";
+    Benjamin Franklin carries the name as an alias. Two people: which one Wikidata labels with the nickname is an
+    accident of naming, the James Young incident again. Strict: refused, both named. The tier keeps the old reach."""
+    human = lambda extra: {"claims": {"P31": [ITEM("Q5")], **extra}}        # noqa: E731
+    hits = [_hit("Q9", "Ben Franklin", "American politician"), _hit("Q34969", "Benjamin Franklin", "polymath", match="Ben Franklin")]
+    ents = {"Q9": human(CLAIMS["claims"]), "Q34969": human(CLAIMS["claims"]), **LABELS}
+    monkeypatch.delenv("CB_NAMESAKE_TIER", raising=False)
+    src = FakeWikidata(hits, ents)
+    assert src.facts("Ben Franklin", relations=["born"]) == [] and src.last["qid"] is None
+    assert {q for q, _l, _d in src.last["ambiguous"]} == {"Q9", "Q34969"}
+    monkeypatch.setenv("CB_NAMESAKE_TIER", "1")
+    src = FakeWikidata(hits, ents)
+    assert src.facts("Ben Franklin", relations=["born"]) and src.last["qid"] == "Q9"
+    # different kinds (a person and a ship): the label still decides, as for Jim Haslam above
+    monkeypatch.delenv("CB_NAMESAKE_TIER", raising=False)
+    ents2 = dict(ents); ents2["Q34969"] = {"claims": {"P31": [ITEM("Q11446")], **CLAIMS["claims"]}}
+    src = FakeWikidata(hits, ents2)
+    assert src.facts("Ben Franklin", relations=["born"]) and src.last["qid"] == "Q9"

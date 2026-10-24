@@ -673,6 +673,20 @@ def learn_and_answer(question: str, retrieve, run_fn, *, store, known, source: S
                 if w and store_times.get(fkey(fact)) != w:
                     store_times[fkey(fact)] = w
                     dated_now = True
+            # a DUPLICATE that only a read-only world behind holds goes into the first world too, beside the
+            # siblings the same fetch brought (2026-10-24, live: "what is the capital of Italy?" spoke Florence.
+            # The fetch brought Rome, Florence and Turin; Rome was a duplicate -- the hdc world holds it -- so
+            # only Florence and Turin were added, and the hdc world reads no hop on "Italy", a shared name
+            # (order 0036). The walk saw two capitals that ended and never the one that stands. Likewise the
+            # Czech koruna: the walk saw only the Czechoslovak koruna, one candidate, and spoke it.) The fact
+            # is the same fact; the source resolved the item and stated it, so the first world may hold it.
+            # Its provenance is left as it was (the world behind still answers for it: a latent source
+            # restating an attested fact must not put a hold on it).
+            if p.status == "duplicate" and hasattr(store, "held_by") and store.held_by(fact) is not None:
+                store.add(fact)
+                if hasattr(known, "add"):
+                    known.add(fact)
+                admitted += 1                                   # the walk can now see it: another turn
             if p.status == "accepted":
                 store.add(fact)
                 if hasattr(known, "add"):

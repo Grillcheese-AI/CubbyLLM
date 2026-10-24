@@ -534,6 +534,30 @@ def test_a_start_with_no_end_still_orders_and_a_single_candidate_does_not():
     assert _latest_dated(cands[:1], times) is None
 
 
+def test_a_value_that_ended_never_beats_one_still_standing():
+    """2026-10-24, live Wikidata: France's capital came back as Bayeux. Paris has stood since
+    1789 with no end; Bayeux was the capital June to September 1944 -- a later START, and an END
+    the source stated. A value the source says is over does not outrank one it says still stands."""
+    from cubbyllm.reasoning.pipeline import _latest_dated
+    from cubbyllm.reasoning.planner import Triple
+    caps = {"Paris": {"start": "1789-10-05"}, "Bayeux": {"start": "1944-06-00", "end": "1944-09-00"},
+            "Vichy": {"start": "1940-07-00", "end": "1944-08-20"}, "Bordeaux": {"start": "1940-06-14", "end": "1940-06-28"}}
+    cands = [(f"{c} is the capital of France", Triple(c, "capital", "France")) for c in caps]
+    times = {f"{c} is the capital of France": w for c, w in caps.items()}
+    picked = _latest_dated(cands, times)
+    assert picked is not None and picked[1].obj == "Paris"
+    # every value ended (Italy, live: the walk saw Florence 1865-1871 and Turin 1861-1865, never Rome):
+    # nothing the source dated stands, so nothing is the value now -- a refusal naming them, not Bayeux
+    ended = dict(times); ended["Paris is the capital of France"] = {"start": "1789-10-05", "end": "1940-06-10"}
+    assert _latest_dated(cands, ended) is None
+    # two still standing: ordered between themselves as before, the ended ones out
+    two = dict(times); two["Vichy is the capital of France"] = {"start": "1940-07-00"}
+    assert _latest_dated(cands, two)[1].obj == "Vichy"
+    # an undated value still leaves the set unordered, ended values or not
+    undated = dict(times); undated.pop("Paris is the capital of France")
+    assert _latest_dated(cands, undated) is None
+
+
 def test_a_question_that_names_a_year_is_not_an_ambiguous_question():
     """Nick's "as of" residue, closed. "What was the population of Quebec City in 1608" and
     "who was governor in 2015" were refused as ambiguous hops because the store held several

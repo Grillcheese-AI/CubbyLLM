@@ -174,3 +174,45 @@ def test_the_kinds_table_answers_as_the_scan_and_the_world_reads_it(hdc, tmp_pat
     with sqlite3.connect(built["out"]) as c:                 # a table built from another state of the world: not read
         c.execute("UPDATE meta SET v = '1' WHERE k = 'world_bytes'")
     assert HdcWorld(hdc.path)._kinds is None
+
+
+def test_a_fetched_value_the_world_behind_already_holds_is_walked_beside_the_new_ones(hdc):
+    """2026-10-24, live Wikidata: "what is the capital of Italy today?" spoke Florence. The fetch brought Rome (standing
+    since 1946), Florence and Turin (both ended); Rome was a duplicate -- the hdc world holds it -- so only the two that
+    ended went into the first world, and the hdc world reads no hop on a shared name. Here: Mercia is two items; the
+    source resolves the kingdom and states Tamworth (held behind, still standing) and Lichfield (new, ended)."""
+    from cubbyllm.reasoning.planner import normalize
+
+    class TimedSource:
+        name = "test"
+        tam, lich = "Tamworth is the capital of Mercia", "Lichfield is the capital of Mercia"
+        times = {normalize(tam): {"start": "0600-00-00"}, normalize(lich): {"start": "0500-00-00", "end": "0600-00-00"}}
+
+        def facts(self, entity):
+            return [self.tam, self.lich] if normalize(entity) == "mercia" else []
+
+    from cubbyllm.reasoning.ask import AskLoop
+    from cubbyllm.reasoning.question_forms import Forms, TemplateEmitter
+    from test_books import exact_vm
+    from test_search_learn import ProvStore
+    forms = Forms({"capital": ("state", {"present": ["What is the capital of {S}?"]})})
+    w = ProvStore(["Pella is the capital of Macedon"])
+    w.times = {}
+    loop = AskLoop(TemplateEmitter(forms), world=Stores(w, hdc), source=TimedSource(), lexicon=False, run_fn=exact_vm())
+    assert "Tamworth is the capital of Mercia" in hdc
+    rec = loop.ask("What is the capital of Mercia?")
+    assert rec["answer"] != "Lichfield"                                              # never the value that ended
+    assert rec["verified"] and rec["answer"] == "Tamworth"
+
+    # the source states only the value that ended (live: the euro's item had lost its English label, and Germany's
+    # currency came back as the Deutsche Mark alone): one candidate, and it ended. The walk does not judge tense;
+    # the tense check does (order 0012), and with it on a present-tense question is not answered by it
+    class EndedOnly(TimedSource):
+        def facts(self, entity):
+            return [self.lich] if normalize(entity) == "mercia" else []
+    w2 = ProvStore(["Pella is the capital of Macedon"])
+    w2.times = {}
+    loop = AskLoop(TemplateEmitter(forms), world=Stores(w2, hdc), source=EndedOnly(), lexicon=False, run_fn=exact_vm(),
+                   tense=True)
+    rec = loop.ask("What is the capital of Mercia?")
+    assert rec["answer"] is None or not rec["verified"]

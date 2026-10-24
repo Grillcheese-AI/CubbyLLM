@@ -7,6 +7,7 @@ Wired: WIRED (WikidataSource).
 from __future__ import annotations
 
 import json
+import os
 import time
 from cubbyllm.reasoning.planner import Triple, normalize as _normalize   # noqa: E402
 from .wikidata_aliases import _META
@@ -91,6 +92,12 @@ class WikiResolve:
             except OSError:
                 pass
 
+    def _one_kind(self, cands) -> bool:
+        """Every candidate shares a class (P31): two of a kind, which no attribute and no label separates."""
+        classes = [{(st.get("mainsnak") or {}).get("datavalue", {}).get("value", {}).get("id")
+                    for st in self._claims(h["id"]).get("P31", [])} - {None} for h in cands]
+        return bool(classes) and all(classes) and bool(set.intersection(*classes))
+
     def resolve(self, entity: str, relations: list[str] | None = None, via: str | None = None,
                 qid: str | None = None, asker: str | None = None) -> tuple[str, str] | None:
         """(qid, label) for the entity, or None. Three tiers, each deterministic, none a pick
@@ -154,7 +161,12 @@ class WikiResolve:
                         cands, how = having, f"relation: {r}"
         if len(cands) > 1:
             labelled = [h for h in cands if _normalize(h.get("label", "")) == key]
-            if len(labelled) == 1:
+            # ...and the label decides only among DIFFERENT kinds of thing, by the James Young rule above
+            # (2026-10-24, live: "where was ben franklin born?" said Carthage. A minor item is LABELLED "Ben
+            # Franklin"; Benjamin Franklin carries it as an alias; two people, and which one Wikidata labels
+            # with the nickname is an accident of naming). Two of a kind: the asker decides. CB_NAMESAKE_TIER=1
+            # keeps the label's old reach, as it does for the hdc world's tier (order 0036).
+            if len(labelled) == 1 and (os.environ.get("CB_NAMESAKE_TIER") == "1" or not self._one_kind(cands)):
                 cands, how = labelled, how + " + label over alias"
         if qid:                                              # the USER named the item (the panel's clarify choice):
             # recorded against the candidate set they were OFFERED, which is why the search ran first --

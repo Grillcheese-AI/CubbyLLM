@@ -138,9 +138,22 @@ def _latest_dated(cands, times):
         when = w.get("point") or w.get("start")
         if not when:
             return None                                   # one undated candidate and the set is unordered
-        stamped.append((when, f, t))
+        stamped.append((when, f, t, bool(w.get("end"))))
     if len(stamped) < 2:
         return None
+    # a value whose END the source stated is over, however late it STARTED (2026-10-24, live Wikidata:
+    # France's capital -- Paris, standing since 1789, lost to Bayeux, June to September 1944, on start
+    # date alone; Italy's lost to Florence, 1865-1871, when the walk saw only the capitals that ended).
+    # The ended values are out of the running; the one left is the value now; several left are ordered
+    # as before; NONE left -- every value the source dated is over -- is not an order of anything
+    # current, and the walk refuses, naming them. The end is a qualifier the source carried with the
+    # fact, so this is still only the source ordering its own values (invariant 4).
+    if any(s[3] for s in stamped):
+        stamped = [s for s in stamped if not s[3]]
+        if not stamped:
+            return None
+        if len(stamped) == 1:
+            return (stamped[0][1], stamped[0][2])
     stamped.sort(key=lambda q: q[0], reverse=True)
     if stamped[0][0] == stamped[1][0]:
         return None                                       # a tie in time is not an order
