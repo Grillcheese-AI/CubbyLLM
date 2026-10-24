@@ -11,7 +11,7 @@
    ],
    "outcome": "one item",
    "reply": "Paris. If you meant something else, there is also a constituency of the european parliament named France. Want to know about it?",
-   "ms": 41.6,
+   "ms": 40.9,
    "items_n": 3
   },
   {
@@ -22,7 +22,7 @@
    ],
    "outcome": "one item",
    "reply": "Japanese yen. If you meant something else, there is also a manga named Japan (2 of them). Want to know about one of them?",
-   "ms": 6.0,
+   "ms": 6.3,
    "items_n": 8
   },
   {
@@ -33,7 +33,7 @@
    ],
    "outcome": "one item",
    "reply": "Rome.",
-   "ms": 8.5,
+   "ms": 6.0,
    "items_n": 4
   },
   {
@@ -46,7 +46,7 @@
    ],
    "outcome": "one item, not what was asked",
    "reply": "I don't know (its value, Elliott Cresson Medal, is not a nobel prize).",
-   "ms": 5.8,
+   "ms": 4.2,
    "items_n": 2
   },
   {
@@ -58,7 +58,7 @@
    ],
    "outcome": "asking back",
    "reply": "Which one do you mean? (2 items named Steve Mills)",
-   "ms": 7.2,
+   "ms": 5.2,
    "items_n": 2
   }
  ],
@@ -76,7 +76,7 @@
     "Q7328289",
     "Q16090883"
    ],
-   "ms": 5.3,
+   "ms": 3.9,
    "items": [
     {
      "item": "Q2149305",
@@ -138,7 +138,7 @@
     "Q7874525",
     "Q7874526"
    ],
-   "ms": 5.9,
+   "ms": 5.5,
    "items": [
     {
      "item": "Q7874525",
@@ -192,7 +192,7 @@
    "outcome": "asking back",
    "reply": "Which one do you mean? (2 items named flashforward)",
    "fit": [],
-   "ms": 5.7,
+   "ms": 4.5,
    "items": [
     {
      "item": "Q476857",
@@ -237,7 +237,7 @@
     "Q2314449",
     "Q4656470"
    ],
-   "ms": 5.5,
+   "ms": 4.3,
    "items": [
     {
      "item": "Q2314449",
@@ -333,7 +333,7 @@
    "outcome": "asking back",
    "reply": "Which one do you mean? (2 items named Ballad of Easy Rider)",
    "fit": [],
-   "ms": 7.4,
+   "ms": 6.0,
    "items": [
     {
      "item": "Q805125",
@@ -365,7 +365,7 @@
    "fit": [
     "Q2860251"
    ],
-   "ms": 5.8,
+   "ms": 4.7,
    "items": [
     {
      "item": "Q42973",
@@ -429,7 +429,7 @@
    "fit": [
     "Q2835394"
    ],
-   "ms": 4.9,
+   "ms": 4.0,
    "items": [
     {
      "item": "Q2834924",
@@ -462,7 +462,7 @@
    "outcome": "asking back",
    "reply": "Which one do you mean? (2 items named Diamantina River)",
    "fit": [],
-   "ms": 6.4,
+   "ms": 4.5,
    "items": [
     {
      "item": "Q1208608",
@@ -492,7 +492,7 @@
    "outcome": "asking back",
    "reply": "Which one do you mean? (2 items named Calhoun Township)",
    "fit": [],
-   "ms": 3.7,
+   "ms": 3.5,
    "items": [
     {
      "item": "Q1026704",
@@ -525,7 +525,7 @@
    "fit": [
     "Q5256211"
    ],
-   "ms": 4.3,
+   "ms": 4.1,
    "items": [
     {
      "item": "Q1186459",
@@ -601,7 +601,7 @@
     "Q5145163",
     "Q16016147"
    ],
-   "ms": 4.3,
+   "ms": 4.1,
    "items": [
     {
      "item": "Q5145163",
@@ -639,7 +639,7 @@
    "outcome": "asking back",
    "reply": "Which one do you mean? (4 items named Chen)",
    "fit": [],
-   "ms": 4.2,
+   "ms": 3.5,
    "items": [
     {
      "item": "Q281519",
@@ -695,7 +695,7 @@
     "Q17151030",
     "Q28453482"
    ],
-   "ms": 4.4,
+   "ms": 3.3,
    "items": [
     {
      "item": "Q17151030",
@@ -761,7 +761,7 @@
    "fit": [
     "Q3459361"
    ],
-   "ms": 5.6,
+   "ms": 5.5,
    "items": [
     {
      "item": "Q3459361",
@@ -804,7 +804,7 @@
    "fit": [
     "Q7268213"
    ],
-   "ms": 3.7,
+   "ms": 3.6,
    "items": [
     {
      "item": "Q544565",
@@ -837,7 +837,7 @@
     "Q1185345",
     "Q15633375"
    ],
-   "ms": 5.3,
+   "ms": 5.1,
    "items": [
     {
      "item": "Q1185345",
@@ -917,7 +917,7 @@
    "outcome": "asking back",
    "reply": "Which one do you mean? (2 items named Tenna)",
    "fit": [],
-   "ms": 4.8,
+   "ms": 5.0,
    "items": [
     {
      "item": "Q66226",
@@ -949,7 +949,7 @@
    "fit": [
     "Q2102404"
    ],
-   "ms": 7.0,
+   "ms": 4.8,
    "items": [
     {
      "item": "Q808853",
@@ -979,7 +979,7 @@
    "outcome": "asking back",
    "reply": "Which one do you mean? (3 items named Kathy Smith)",
    "fit": [],
-   "ms": 12.7,
+   "ms": 5.8,
    "items": [
     {
      "item": "Q6377304",
@@ -1032,7 +1032,7 @@
     "Q7989963",
     "Q15617001"
    ],
-   "ms": 7.9,
+   "ms": 3.7,
    "items": [
     {
      "item": "Q7989963",
@@ -1131,7 +1131,7 @@
     "Q2742024",
     "Q2894483"
    ],
-   "ms": 6.8,
+   "ms": 3.7,
    "items": [
     {
      "item": "Q2742024",
@@ -1170,7 +1170,7 @@
     "Q3790209",
     "Q16073436"
    ],
-   "ms": 6.8,
+   "ms": 4.3,
    "items": [
     {
      "item": "Q3790209",
@@ -1206,7 +1206,7 @@
     "Q1094135",
     "Q5123797"
    ],
-   "ms": 11.0,
+   "ms": 9.1,
    "items": [
     {
      "item": "Q1094135",
@@ -1291,7 +1291,7 @@
     "Q4756371",
     "Q21005097"
    ],
-   "ms": 4.3,
+   "ms": 5.6,
    "items": [
     {
      "item": "Q503810",
@@ -1342,7 +1342,7 @@
     "Q2789496",
     "Q6199482"
    ],
-   "ms": 5.7,
+   "ms": 5.1,
    "items": [
     {
      "item": "Q2789496",
@@ -1382,7 +1382,7 @@
     "Q142701",
     "Q931609"
    ],
-   "ms": 5.3,
+   "ms": 6.1,
    "items": [
     {
      "item": "Q142701",
@@ -1467,7 +1467,7 @@
     "Q1068656",
     "Q1218976"
    ],
-   "ms": 6.2,
+   "ms": 4.6,
    "items": [
     {
      "item": "Q1068656",
@@ -1501,7 +1501,7 @@
    "fit": [
     "Q2931018"
    ],
-   "ms": 4.1,
+   "ms": 3.8,
    "items": [
     {
      "item": "Q1022965",
@@ -1553,7 +1553,7 @@
     "Q3778304",
     "Q7749615"
    ],
-   "ms": 5.8,
+   "ms": 5.1,
    "items": [
     {
      "item": "Q1774421",
@@ -1693,7 +1693,7 @@
     "Q539",
     "Q5565419"
    ],
-   "ms": 4.3,
+   "ms": 3.7,
    "items": [
     {
      "item": "Q539",
@@ -1748,7 +1748,7 @@
     "Q2708494",
     "Q6539589"
    ],
-   "ms": 6.2,
+   "ms": 3.4,
    "items": [
     {
      "item": "Q2708494",
@@ -1788,7 +1788,7 @@
     "Q2907941",
     "Q3487124"
    ],
-   "ms": 7.3,
+   "ms": 5.2,
    "items": [
     {
      "item": "Q2907941",
@@ -1828,7 +1828,7 @@
    "outcome": "asking back",
    "reply": "Which one do you mean? (3 items named Sumner Township)",
    "fit": [],
-   "ms": 9.1,
+   "ms": 4.5,
    "items": [
     {
      "item": "Q1915599",
@@ -1870,7 +1870,7 @@
     "Q2473735",
     "Q4725637"
    ],
-   "ms": 8.5,
+   "ms": 4.7,
    "items": [
     {
      "item": "Q2473735",
@@ -1907,7 +1907,7 @@
     "Q727775",
     "Q7854768"
    ],
-   "ms": 4.5,
+   "ms": 4.1,
    "items": [
     {
      "item": "Q190132",
@@ -1988,7 +1988,7 @@
     "Q7612689",
     "Q7612692"
    ],
-   "ms": 5.5,
+   "ms": 4.5,
    "items": [
     {
      "item": "Q7612689",
@@ -2030,7 +2030,7 @@
     "Q6267462",
     "Q18001557"
    ],
-   "ms": 7.0,
+   "ms": 5.2,
    "items": [
     {
      "item": "Q6267462",
@@ -2069,7 +2069,7 @@
    "fit": [
     "Q533046"
    ],
-   "ms": 3.7,
+   "ms": 3.5,
    "items": [
     {
      "item": "Q533046",
@@ -2103,7 +2103,7 @@
    "fit": [
     "Q212257"
    ],
-   "ms": 4.8,
+   "ms": 4.5,
    "items": [
     {
      "item": "Q212257",
@@ -2178,7 +2178,7 @@
     "Q492889",
     "Q6907571"
    ],
-   "ms": 6.6,
+   "ms": 4.8,
    "items": [
     {
      "item": "Q492889",
@@ -2218,7 +2218,7 @@
     "Q4723525",
     "Q19519439"
    ],
-   "ms": 5.9,
+   "ms": 3.7,
    "items": [
     {
      "item": "Q4723525",
@@ -2290,7 +2290,7 @@
     "Q174818",
     "Q19563487"
    ],
-   "ms": 5.5,
+   "ms": 3.5,
    "items": [
     {
      "item": "Q174818",
@@ -2372,7 +2372,7 @@
     "Q6145853",
     "Q7783456"
    ],
-   "ms": 5.6,
+   "ms": 4.7,
    "items": [
     {
      "item": "Q6145853",
@@ -2419,7 +2419,7 @@
    "fit": [
     "Q615551"
    ],
-   "ms": 9.9,
+   "ms": 3.8,
    "items": [
     {
      "item": "Q615551",
@@ -2459,7 +2459,7 @@
    "outcome": "asking back",
    "reply": "Which one do you mean? (2 items named Notojima)",
    "fit": [],
-   "ms": 5.7,
+   "ms": 3.4,
    "items": [
     {
      "item": "Q7063204",
@@ -2492,7 +2492,7 @@
     "Q776608",
     "Q5546666"
    ],
-   "ms": 7.3,
+   "ms": 5.5,
    "items": [
     {
      "item": "Q776608",
@@ -2584,7 +2584,7 @@
     "Q1530924",
     "Q1911143"
    ],
-   "ms": 12.3,
+   "ms": 5.7,
    "items": [
     {
      "item": "Q182877",
@@ -2679,7 +2679,7 @@
     "Q6263935",
     "Q18164633"
    ],
-   "ms": 8.7,
+   "ms": 5.4,
    "items": [
     {
      "item": "Q6263935",
@@ -2723,7 +2723,7 @@
     "Q5075079",
     "Q5075081"
    ],
-   "ms": 9.5,
+   "ms": 4.1,
    "items": [
     {
      "item": "Q1063538",
@@ -2801,7 +2801,7 @@
     "Q5633966",
     "Q5633970"
    ],
-   "ms": 10.5,
+   "ms": 4.1,
    "items": [
     {
      "item": "Q5633966",
@@ -2841,7 +2841,7 @@
    ],
    "reads": [],
    "reply": "Which one do you mean? (4 items named Richard Parsons)",
-   "ms": 9.9,
+   "ms": 5.1,
    "items": [
     {
      "item": "Q2149305",
@@ -2904,7 +2904,7 @@
    ],
    "reads": [],
    "reply": "Which one do you mean? (2 items named USS Swasey)",
-   "ms": 4.6,
+   "ms": 5.7,
    "items": [
     {
      "item": "Q7874525",
@@ -2953,13 +2953,13 @@
   {
    "label": "flashforward",
    "relation": "opposite of",
-   "cue": "technique",
+   "cue": "cinematic",
    "target": "Q2533706",
    "verdict": "asking back",
    "fit": [],
    "reads": [],
    "reply": "Which one do you mean? (2 items named flashforward)",
-   "ms": 5.3,
+   "ms": 4.1,
    "items": [
     {
      "item": "Q476857",
@@ -2996,7 +2996,7 @@
   {
    "label": "Different World",
    "relation": "lyricist",
-   "cue": "harris",
+   "cue": "steve",
    "target": "Q2314449",
    "verdict": "asking back, the target among them",
    "fit": [
@@ -3005,7 +3005,7 @@
    ],
    "reads": [],
    "reply": "Which one do you mean? (3 items named Different World)",
-   "ms": 6.2,
+   "ms": 5.0,
    "items": [
     {
      "item": "Q2314449",
@@ -3094,19 +3094,18 @@
    ]
   },
   {
-   "label": "architect",
-   "relation": "field of this occupation",
-   "cue": "architecture",
-   "target": "Q42973",
-   "verdict": "picks the target",
+   "label": "The Architect",
+   "relation": "country of origin",
+   "cue": "united",
+   "target": "Q7714193",
+   "verdict": "asking back, the target among them",
    "fit": [
-    "Q42973"
+    "Q2860251",
+    "Q7714193"
    ],
-   "reads": [
-    "architecture"
-   ],
-   "reply": "architecture. If you meant something else, there is also a fictional character named The Architect. Want to know about it?",
-   "ms": 6.6,
+   "reads": [],
+   "reply": "Which one do you mean? (4 items named The Architect)",
+   "ms": 7.9,
    "items": [
     {
      "item": "Q42973",
@@ -3114,7 +3113,7 @@
       "profession"
      ],
      "how": "recorded",
-     "mark": "fits",
+     "mark": "does not fit",
      "values": [
       "field of this occupation: architecture"
      ]
@@ -3139,7 +3138,7 @@
       "video game developer"
      ],
      "how": "read",
-     "mark": "does not fit",
+     "mark": "fits",
      "values": [
       "location of formation: Syracuse"
      ]
@@ -3152,7 +3151,7 @@
       "silent film"
      ],
      "how": "read",
-     "mark": "does not fit",
+     "mark": "fits",
      "values": [
       "country of origin: United States of America",
       "film editor: Tom McArdle"
@@ -3162,18 +3161,18 @@
   },
   {
    "label": "Demon Hunter",
-   "relation": "has part(s)",
-   "cue": "ryan",
-   "target": "Q1186459",
+   "relation": "from narrative universe",
+   "cue": "universe",
+   "target": "Q5256211",
    "verdict": "picks the target",
    "fit": [
-    "Q1186459"
+    "Q5256211"
    ],
    "reads": [
-    "Ryan Clark"
+    "Marvel Universe"
    ],
-   "reply": "Ryan Clark.",
-   "ms": 6.6,
+   "reply": "Marvel Universe.",
+   "ms": 4.7,
    "items": [
     {
      "item": "Q1186459",
@@ -3213,7 +3212,7 @@
       "video game"
      ],
      "how": "read",
-     "mark": "fits",
+     "mark": "does not fit",
      "values": [
       "genre: punk rock",
       "has part(s): Ryan Clark"
@@ -3231,7 +3230,7 @@
       "vampire in marvel universe"
      ],
      "how": "read",
-     "mark": "does not fit",
+     "mark": "fits",
      "values": [
       "from narrative universe: Marvel Universe"
      ]
@@ -3240,8 +3239,8 @@
   },
   {
    "label": "Colin Griffiths",
-   "relation": "occupation",
-   "cue": "anglia",
+   "relation": "educated at",
+   "cue": "university",
    "target": "Q5145163",
    "verdict": "asking back, the target among them",
    "fit": [
@@ -3250,7 +3249,7 @@
    ],
    "reads": [],
    "reply": "Which one do you mean? (2 items named Colin Griffiths)",
-   "ms": 7.0,
+   "ms": 3.7,
    "items": [
     {
      "item": "Q5145163",
@@ -3283,7 +3282,7 @@
   {
    "label": "Chen",
    "relation": "parent taxon",
-   "cue": "anserinae",
+   "cue": "taxon",
    "target": "Q281519",
    "verdict": "picks the target",
    "fit": [
@@ -3293,7 +3292,7 @@
     "Anserinae"
    ],
    "reply": "Anserinae. If you meant something else, there is also a family name named Chen and a person named Chen. Want to know about one of them?",
-   "ms": 7.1,
+   "ms": 3.7,
    "items": [
     {
      "item": "Q281519",
@@ -3339,78 +3338,10 @@
    ]
   },
   {
-   "label": "Real Friends",
-   "relation": "genre",
-   "cue": "rock",
-   "target": "Q17151030",
-   "verdict": "asking back, the target among them",
-   "fit": [
-    "Q17151030",
-    "Q28453482"
-   ],
-   "reads": [],
-   "reply": "Which one do you mean? (2 items named Real Friends)",
-   "ms": 5.7,
-   "items": [
-    {
-     "item": "Q17151030",
-     "kinds": [
-      "3d film",
-      "album",
-      "animated series",
-      "anime",
-      "book",
-      "book series",
-      "choir",
-      "compilation album",
-      "extended play",
-      "film",
-      "film series",
-      "girl group",
-      "live album",
-      "manga",
-      "musical ensemble",
-      "musical group",
-      "national flag",
-      "opera",
-      "painting",
-      "play",
-      "pseudonym",
-      "remix album",
-      "short film",
-      "short story",
-      "silent film",
-      "single",
-      "song",
-      "studio album",
-      "television film",
-      "television pilot",
-      "television program",
-      "television series",
-      "video game"
-     ],
-     "how": "read",
-     "mark": "fits",
-     "values": [
-      "genre: punk rock"
-     ]
-    },
-    {
-     "item": "Q28453482",
-     "kinds": [
-      "album"
-     ],
-     "how": "recorded",
-     "mark": "fits",
-     "values": []
-    }
-   ]
-  },
-  {
    "label": "The Deer and the Cauldron",
-   "relation": "language of work or name",
-   "cue": "chinese",
-   "target": "Q15633375",
+   "relation": "author",
+   "cue": "yong",
+   "target": "Q1185345",
    "verdict": "asking back, the target among them",
    "fit": [
     "Q1185345",
@@ -3418,7 +3349,7 @@
    ],
    "reads": [],
    "reply": "Which one do you mean? (2 items named The Deer and the Cauldron)",
-   "ms": 8.1,
+   "ms": 3.8,
    "items": [
     {
      "item": "Q1185345",
@@ -3492,9 +3423,9 @@
   },
   {
    "label": "Kathy Smith",
-   "relation": "given name",
-   "cue": "english",
-   "target": "Q6377305",
+   "relation": "cause of death",
+   "cue": "cancer",
+   "target": "Q19879126",
    "verdict": "asking back, the target among them",
    "fit": [
     "Q6377304",
@@ -3503,7 +3434,7 @@
    ],
    "reads": [],
    "reply": "Which one do you mean? (3 items named Kathy Smith)",
-   "ms": 4.2,
+   "ms": 5.0,
    "items": [
     {
      "item": "Q6377304",
@@ -3548,7 +3479,7 @@
   {
    "label": "Wet Gold",
    "relation": "cast member",
-   "cue": "ince",
+   "cue": "united",
    "target": "Q15617001",
    "verdict": "asking back, the target among them",
    "fit": [
@@ -3557,7 +3488,7 @@
    ],
    "reads": [],
    "reply": "Which one do you mean? (2 items named Wet Gold)",
-   "ms": 6.4,
+   "ms": 4.0,
    "items": [
     {
      "item": "Q7989963",
@@ -3646,18 +3577,55 @@
    ]
   },
   {
-   "label": "The City of Lost Souls",
-   "relation": "genre",
-   "cue": "cantonese",
-   "target": "Q1094135",
+   "label": "Harry McPherson",
+   "relation": "educated at",
+   "cue": "university",
+   "target": "Q3790209",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q3790209",
+    "Q16073436"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Harry McPherson)",
+   "ms": 3.8,
+   "items": [
+    {
+     "item": "Q3790209",
+     "kinds": [
+      "human",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "educated at: Southern Methodist University"
+     ]
+    },
+    {
+     "item": "Q16073436",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": []
+    }
+   ]
+  },
+  {
+   "label": "City of Lost Souls",
+   "relation": "country of origin",
+   "cue": "west",
+   "target": "Q5123797",
    "verdict": "asking back, the target among them",
    "fit": [
     "Q1094135",
     "Q5123797"
    ],
    "reads": [],
-   "reply": "Which one do you mean? (2 items named The City of Lost Souls)",
-   "ms": 12.8,
+   "reply": "Which one do you mean? (2 items named City of Lost Souls)",
+   "ms": 9.5,
    "items": [
     {
      "item": "Q1094135",
@@ -3731,22 +3699,32 @@
    ]
   },
   {
-   "label": "Andrew Blake",
-   "relation": "given name",
-   "cue": "paul",
-   "target": "Q503810",
+   "label": "Jimmy Adams",
+   "relation": "country of citizenship",
+   "cue": "human",
+   "target": "Q2789496",
    "verdict": "asking back, the target among them",
    "fit": [
-    "Q503810",
-    "Q4756371",
-    "Q21005097"
+    "Q2789496",
+    "Q6199482"
    ],
    "reads": [],
-   "reply": "Which one do you mean? (3 items named Andrew Blake)",
-   "ms": 4.6,
+   "reply": "Which one do you mean? (2 items named Jimmy Adams)",
+   "ms": 4.1,
    "items": [
     {
-     "item": "Q503810",
+     "item": "Q2789496",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United Kingdom"
+     ]
+    },
+    {
+     "item": "Q6199482",
      "kinds": [
       "fictional character",
       "human",
@@ -3756,38 +3734,16 @@
      "how": "read",
      "mark": "fits",
      "values": [
-      "given name: Paul"
-     ]
-    },
-    {
-     "item": "Q4756371",
-     "kinds": [
-      "human"
-     ],
-     "how": "recorded",
-     "mark": "fits",
-     "values": []
-    },
-    {
-     "item": "Q21005097",
-     "kinds": [
-      "human",
-      "pseudonym",
-      "twin"
-     ],
-     "how": "read",
-     "mark": "fits",
-     "values": [
-      "occupation: association football player"
+      "given name: Jimmy"
      ]
     }
    ]
   },
   {
    "label": "Pearl Jam",
-   "relation": "followed by",
-   "cue": "backspacer",
-   "target": "Q931609",
+   "relation": "location of formation",
+   "cue": "seattle",
+   "target": "Q142701",
    "verdict": "asking back, the target among them",
    "fit": [
     "Q142701",
@@ -3795,7 +3751,7 @@
    ],
    "reads": [],
    "reply": "Which one do you mean? (2 items named Pearl Jam)",
-   "ms": 4.6,
+   "ms": 4.8,
    "items": [
     {
      "item": "Q142701",
@@ -3870,42 +3826,6 @@
    ]
   },
   {
-   "label": "Changy",
-   "relation": "located in the administrative territorial entity",
-   "cue": "marne",
-   "target": "Q1218976",
-   "verdict": "asking back, the target among them",
-   "fit": [
-    "Q1068656",
-    "Q1218976"
-   ],
-   "reads": [],
-   "reply": "Which one do you mean? (2 items named Changy)",
-   "ms": 6.4,
-   "items": [
-    {
-     "item": "Q1068656",
-     "kinds": [
-      "commune of france"
-     ],
-     "how": "recorded",
-     "mark": "fits",
-     "values": []
-    },
-    {
-     "item": "Q1218976",
-     "kinds": [
-      "commune of france"
-     ],
-     "how": "recorded",
-     "mark": "fits",
-     "values": [
-      "located in the administrative territorial entity: Marne"
-     ]
-    }
-   ]
-  },
-  {
    "label": "CBGB",
    "relation": "distributed by",
    "cue": "media",
@@ -3918,7 +3838,7 @@
     "XLrator Media"
    ],
    "reply": "XLrator Media.",
-   "ms": 7.6,
+   "ms": 3.8,
    "items": [
     {
      "item": "Q1022965",
@@ -3959,9 +3879,9 @@
   },
   {
    "label": "The Maid",
-   "relation": "genre",
-   "cue": "romantic",
-   "target": "Q1990821",
+   "relation": "director",
+   "cue": "seinfeld",
+   "target": "Q7749615",
    "verdict": "asking back, the target among them",
    "fit": [
     "Q1774421",
@@ -3971,7 +3891,7 @@
    ],
    "reads": [],
    "reply": "Which one do you mean? (4 items named The Maid)",
-   "ms": 5.2,
+   "ms": 3.6,
    "items": [
     {
      "item": "Q1774421",
@@ -4101,66 +4021,10 @@
    ]
   },
   {
-   "label": "Giuseppe Garibaldi",
-   "relation": "country of citizenship",
-   "cue": "italy",
-   "target": "Q5565419",
-   "verdict": "asking back, the target among them",
-   "fit": [
-    "Q539",
-    "Q5565419"
-   ],
-   "reads": [],
-   "reply": "Which one do you mean? (3 items named Giuseppe Garibaldi)",
-   "ms": 5.7,
-   "items": [
-    {
-     "item": "Q539",
-     "kinds": [
-      "human"
-     ],
-     "how": "read",
-     "mark": "fits",
-     "values": [
-      "award received: Gold Medal of Military Valour",
-      "given name: Giuseppe",
-      "native language: Italian"
-     ]
-    },
-    {
-     "item": "Q742121",
-     "kinds": [
-      "amphibious assault ship",
-      "cruise ship",
-      "ship",
-      "u boat"
-     ],
-     "how": "read",
-     "mark": "does not fit",
-     "values": [
-      "shipping port: Taranto"
-     ]
-    },
-    {
-     "item": "Q5565419",
-     "kinds": [
-      "human",
-      "pseudonym",
-      "twin"
-     ],
-     "how": "read",
-     "mark": "fits",
-     "values": [
-      "country of citizenship: Kingdom of Italy"
-     ]
-    }
-   ]
-  },
-  {
    "label": "Liam Finn",
-   "relation": "member of sports team",
-   "cue": "featherstone",
-   "target": "Q6539589",
+   "relation": "occupation",
+   "cue": "zealand",
+   "target": "Q2708494",
    "verdict": "asking back, the target among them",
    "fit": [
     "Q2708494",
@@ -4168,7 +4032,7 @@
    ],
    "reads": [],
    "reply": "Which one do you mean? (2 items named Liam Finn)",
-   "ms": 9.9,
+   "ms": 3.7,
    "items": [
     {
      "item": "Q2708494",
@@ -4196,6 +4060,88 @@
      ]
     }
    ]
+  },
+  {
+   "label": "Bobby Caldwell",
+   "relation": "country of citizenship",
+   "cue": "united",
+   "target": "Q3487124",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2907941",
+    "Q3487124"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Bobby Caldwell)",
+   "ms": 4.2,
+   "items": [
+    {
+     "item": "Q2907941",
+     "kinds": [
+      "fictional character",
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "given name: Bobby"
+     ]
+    },
+    {
+     "item": "Q3487124",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United States of America",
+      "given name: Bobby"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Alibertia",
+   "relation": "parent taxon",
+   "cue": "taxon",
+   "target": "Q4725637",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2473735",
+    "Q4725637"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Alibertia)",
+   "ms": 3.6,
+   "items": [
+    {
+     "item": "Q2473735",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "different from: Alibertia"
+     ]
+    },
+    {
+     "item": "Q4725637",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "parent taxon: Eulophidae"
+     ]
+    }
+   ]
   }
  ],
  "counts": {
@@ -4207,12 +4153,12 @@
   },
   "probe_verdicts": {
    "asking back": 1,
-   "asking back, the target among them": 15,
-   "picks the target": 4
+   "asking back, the target among them": 16,
+   "picks the target": 3
   },
   "decision_ms": {
-   "p50": 5.9,
-   "max": 41.6,
+   "p50": 4.5,
+   "max": 40.9,
    "n": 75
   }
  }

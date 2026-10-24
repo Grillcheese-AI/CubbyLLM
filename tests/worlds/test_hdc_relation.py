@@ -99,6 +99,7 @@ def _world():
 @pytest.fixture
 def world(tmp_path, monkeypatch):
     monkeypatch.setattr(hdc_kinds, "SPREAD", 2)        # (a small world: "country", three kinds carry it, is generic here)
+    monkeypatch.setattr(hdc_cues, "CUE_MIN", 1)        # (and every word in it is rare)
     facts, labels, ids = _world()
     db = tmp_path / "hdc_world.sqlite"
     write_world(db, facts, labels, {}, PIDS)
@@ -171,6 +172,24 @@ def test_the_audits_lessons_hold_nothing_one_that_holds_none_two_of_a_kind_a_wid
     reads, d, _ = hop(w, "capital", "Fredonia")
     assert d["kinds"][ids["fr_wide"]] == [["film", "human"], "read widely"] and reads == ["Freedonia City"]
     assert [o["item"] for o in others(d, w.namesakes("Fredonia"), w._kinds)] == [ids["const"]]   # never named
+
+
+def test_a_kinds_own_name_is_a_cue_word_for_that_kind(world, monkeypatch):
+    monkeypatch.setenv("CB_NAMESAKE_RELATION", "1")
+    w, ids = world
+    _reads, d, _ = hop(w, "capital", "Elm", cues=["town"])          # "town" is in no value, only in a kind's name
+    assert d["ruled_out"] == {ids["elm_s"]: "town"} and d["fit"] == []
+    reads, d, _ = hop(w, "capital", "Elm", cues=["state"])          # ("sovereign state": the state goes with it)
+    assert d["fit"] == [ids["elm_s"]] and reads == ["Elm City"]
+
+
+def test_a_word_the_world_uses_rarely_rules_out_nothing(world, monkeypatch):
+    monkeypatch.setenv("CB_NAMESAKE_RELATION", "1")
+    w, ids = world
+    monkeypatch.setattr(hdc_cues, "CUE_MIN", 3)                    # "nobel": two subjects use it, too few to tell
+    w._cues._memo.clear()
+    _reads, d, _ = hop(w, AWARD, "Mara Vale", cues=["nobel"])
+    assert d["fit"] == [ids["mara_p"], ids["mara_f"]] and d["cues"] == []
 
 
 def test_off_the_hop_is_strict_as_order_0036_left_it(world, monkeypatch):

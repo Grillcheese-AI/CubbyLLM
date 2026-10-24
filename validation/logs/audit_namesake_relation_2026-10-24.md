@@ -199,70 +199,68 @@ Each must pick the target or ask back.
 2. **USS Swasey**, participated in conflict, cue 'world': asking back, the target among them (target Q7874525, fit ['Q7874525', 'Q7874526']). Said: Which one do you mean? (2 items named USS Swasey)
    - fits: Q7874525 (amphibious cargo ship, cargo ship, cruiser, destroyer, destroyer escort, division, frigate, human, mountain gun, order of battle, regiment, rifle, ship, submarine, tank landing ship, u boat; read): participated in conflict: World War II
    - fits: Q7874526 (destroyer, destroyer escort, ship, submarine, u boat; read): location of creation: Quincy; participated in conflict: World War II
-3. **flashforward**, opposite of, cue 'technique': asking back (target Q2533706, fit []). Said: Which one do you mean? (2 items named flashforward)
+3. **flashforward**, opposite of, cue 'cinematic': asking back (target Q2533706, fit []). Said: Which one do you mean? (2 items named flashforward)
    - does not fit: Q476857 (3d film, book, film, film series, manga, opera, television film, television series, video game; read): narrative location: Los Angeles
    - does not fit: Q2533706 (cinematic technique; recorded): opposite of: flashback
-4. **Different World**, lyricist, cue 'harris': asking back, the target among them (target Q2314449, fit ['Q2314449', 'Q4656470']). Said: Which one do you mean? (3 items named Different World)
+4. **Different World**, lyricist, cue 'steve': asking back, the target among them (target Q2314449, fit ['Q2314449', 'Q4656470']). Said: Which one do you mean? (3 items named Different World)
    - fits: Q2314449 (album, bach cantata, musical, national anthem, opera, single, song; read): lyricist: Steve Harris
    - does not fit: Q2315368 (no kind; none): follows: Raging Silence
    - fits: Q4656470 (3d film, animated film, animated series, anime, book, book series, choir, compilation album, concert tour, condiment, dog breed, drink, encyclopedia, episode, extended play, film, film series, food, live album, magazine, manga, media franchise, miniseries, mountain gun, music genre, musical ensemble, musical group, news program, opera, orchestra, painting, periodical, play, radio program, referendum, rifle, sandwich, scientific journal, short film, silent film, single, song, television film, television pilot, television program, television series, television special; read): country of origin: United States of America; followed by: It's Good to Be Us
-5. **architect**, field of this occupation, cue 'architecture': picks the target (target Q42973, fit ['Q42973']). Said: architecture. If you meant something else, there is also a fictional character named The Architect. Want to know about it?
-   - fits: Q42973 (profession; recorded): field of this occupation: architecture
+5. **The Architect**, country of origin, cue 'united': asking back, the target among them (target Q7714193, fit ['Q2860251', 'Q7714193']). Said: Which one do you mean? (4 items named The Architect)
+   - does not fit: Q42973 (profession; recorded): field of this occupation: architecture
    - does not fit: Q2316879 (fictional character; recorded): 
-   - does not fit: Q2860251 (business, musical group, railway company, record label, television station, video game developer; read): location of formation: Syracuse
-   - does not fit: Q7714193 (film, short film, silent film; read): country of origin: United States of America; film editor: Tom McArdle
-6. **Demon Hunter**, has part(s), cue 'ryan': picks the target (target Q1186459, fit ['Q1186459']). Said: Ryan Clark.
-   - fits: Q1186459 (3d film, album, animated series, anime, book, book series, choir, compilation album, extended play, film, film series, girl group, live album, manga, musical ensemble, musical group, national flag, opera, painting, play, pseudonym, remix album, short film, short story, silent film, single, song, studio album, television film, television pilot, television program, television series, video game; read): genre: punk rock; has part(s): Ryan Clark
-   - does not fit: Q5256211 (asgardian, men in tolkien s legendarium, mutant, mutate, superhero, supervillain, vampire in marvel universe; read): from narrative universe: Marvel Universe
-7. **Colin Griffiths**, occupation, cue 'anglia': asking back, the target among them (target Q5145163, fit ['Q5145163', 'Q16016147']). Said: Which one do you mean? (2 items named Colin Griffiths)
+   - fits: Q2860251 (business, musical group, railway company, record label, television station, video game developer; read): location of formation: Syracuse
+   - fits: Q7714193 (film, short film, silent film; read): country of origin: United States of America; film editor: Tom McArdle
+6. **Demon Hunter**, from narrative universe, cue 'universe': picks the target (target Q5256211, fit ['Q5256211']). Said: Marvel Universe.
+   - does not fit: Q1186459 (3d film, album, animated series, anime, book, book series, choir, compilation album, extended play, film, film series, girl group, live album, manga, musical ensemble, musical group, national flag, opera, painting, play, pseudonym, remix album, short film, short story, silent film, single, song, studio album, television film, television pilot, television program, television series, video game; read): genre: punk rock; has part(s): Ryan Clark
+   - fits: Q5256211 (asgardian, men in tolkien s legendarium, mutant, mutate, superhero, supervillain, vampire in marvel universe; read): from narrative universe: Marvel Universe
+7. **Colin Griffiths**, educated at, cue 'university': asking back, the target among them (target Q5145163, fit ['Q5145163', 'Q16016147']). Said: Which one do you mean? (2 items named Colin Griffiths)
    - fits: Q5145163 (human, twin; read): educated at: University of East Anglia; occupation: writer
    - fits: Q16016147 (human, pseudonym, twin; read): country of citizenship: United Kingdom
-8. **Chen**, parent taxon, cue 'anserinae': picks the target (target Q281519, fit ['Q281519']). Said: Anserinae. If you meant something else, there is also a family name named Chen and a person named Chen. Want to know about one of them?
+8. **Chen**, parent taxon, cue 'taxon': picks the target (target Q281519, fit ['Q281519']). Said: Anserinae. If you meant something else, there is also a family name named Chen and a person named Chen. Want to know about one of them?
    - fits: Q281519 (taxon; recorded): parent taxon: Anserinae
    - does not fit: Q804988 (family name, han surname; recorded): described by source: Hundred Family Surnames
    - does not fit: Q1069690 (no kind; none): capital: Huaiyang District
    - does not fit: Q16098027 (human; recorded): 
-9. **Real Friends**, genre, cue 'rock': asking back, the target among them (target Q17151030, fit ['Q17151030', 'Q28453482']). Said: Which one do you mean? (2 items named Real Friends)
-   - fits: Q17151030 (3d film, album, animated series, anime, book, book series, choir, compilation album, extended play, film, film series, girl group, live album, manga, musical ensemble, musical group, national flag, opera, painting, play, pseudonym, remix album, short film, short story, silent film, single, song, studio album, television film, television pilot, television program, television series, video game; read): genre: punk rock
-   - fits: Q28453482 (album; recorded): 
-10. **The Deer and the Cauldron**, language of work or name, cue 'chinese': asking back, the target among them (target Q15633375, fit ['Q1185345', 'Q15633375']). Said: Which one do you mean? (2 items named The Deer and the Cauldron)
+9. **The Deer and the Cauldron**, author, cue 'yong': asking back, the target among them (target Q1185345, fit ['Q1185345', 'Q15633375']). Said: Which one do you mean? (2 items named The Deer and the Cauldron)
    - fits: Q1185345 (anime, anthology, book, book series, comic book series, fairy tale, hardback, limited series, manga, manuscript, miniseries, musical, play, short story, song, television film, united states executive order; read): author: Jin Yong
    - fits: Q15633375 (academic journal, album, bach cantata, book, compilation album, diminutive, encyclopedia, extended play, fairy tale, family name, film series, free software, given name, history journal, live album, magazine, manuscript, musical composition, opera, operating system, periodical, play, praenomen, scientific journal, short story, single, song, studio album, television series, unisex given name, website; read): language of work or name: Standard Chinese
-11. **Kathy Smith**, given name, cue 'english': asking back, the target among them (target Q6377305, fit ['Q6377304', 'Q6377305', 'Q19879126']). Said: Which one do you mean? (3 items named Kathy Smith)
+10. **Kathy Smith**, cause of death, cue 'cancer': asking back, the target among them (target Q19879126, fit ['Q6377304', 'Q6377305', 'Q19879126']). Said: Which one do you mean? (3 items named Kathy Smith)
    - fits: Q6377304 (fictional character, human, pseudonym, twin; read): given name: Kathy
    - fits: Q6377305 (human, pseudonym; read): given name: Kathy; languages spoken, written or signed: English
    - fits: Q19879126 (human; read): cause of death: cancer
-12. **Wet Gold**, cast member, cue 'ince': asking back, the target among them (target Q15617001, fit ['Q7989963', 'Q15617001']). Said: Which one do you mean? (2 items named Wet Gold)
+11. **Wet Gold**, cast member, cue 'united': asking back, the target among them (target Q15617001, fit ['Q7989963', 'Q15617001']). Said: Which one do you mean? (2 items named Wet Gold)
    - fits: Q7989963 (3d film, animated film, animated series, anime, book, book series, choir, city, compilation album, concert tour, condiment, deme, dialect, dog breed, drink, encyclopedia, episode, extended play, family name, film, film series, food, live album, magazine, manga, media franchise, miniseries, mountain gun, municipality of brazil, music genre, musical ensemble, musical group, news program, opera, orchestra, painting, periodical, play, profession, radio program, referendum, rifle, sandwich, scientific journal, short film, silent film, single, song, television film, television pilot, television program, television series, television special, university; read widely): country of origin: United States of America; different from: Wet Gold
    - fits: Q15617001 (3d film, film, film series, short film, silent film, television film, television pilot, television series; read): cast member: Ralph Ince; country of origin: United States of America
-13. **The City of Lost Souls**, genre, cue 'cantonese': asking back, the target among them (target Q1094135, fit ['Q1094135', 'Q5123797']). Said: Which one do you mean? (2 items named The City of Lost Souls)
+12. **Harry McPherson**, educated at, cue 'university': asking back, the target among them (target Q3790209, fit ['Q3790209', 'Q16073436']). Said: Which one do you mean? (2 items named Harry McPherson)
+   - fits: Q3790209 (human, twin; read): educated at: Southern Methodist University
+   - fits: Q16073436 (human; recorded): 
+13. **City of Lost Souls**, country of origin, cue 'west': asking back, the target among them (target Q5123797, fit ['Q1094135', 'Q5123797']). Said: Which one do you mean? (2 items named City of Lost Souls)
    - fits: Q1094135 (film; recorded): genre: action film; original language of film or TV show: Cantonese
    - fits: Q5123797 (3d film, animated film, animated series, anime, book, book series, choir, compilation album, concert tour, condiment, dog breed, drink, encyclopedia, episode, extended play, film, film series, food, live album, magazine, manga, media franchise, miniseries, mountain gun, music genre, musical ensemble, musical group, news program, opera, orchestra, painting, periodical, play, radio program, referendum, rifle, sandwich, scientific journal, short film, silent film, single, song, television film, television pilot, television program, television series, television special; read): country of origin: West Germany
-14. **Andrew Blake**, given name, cue 'paul': asking back, the target among them (target Q503810, fit ['Q503810', 'Q4756371', 'Q21005097']). Said: Which one do you mean? (3 items named Andrew Blake)
-   - fits: Q503810 (fictional character, human, pseudonym, twin; read): given name: Paul
-   - fits: Q4756371 (human; recorded): 
-   - fits: Q21005097 (human, pseudonym, twin; read): occupation: association football player
-15. **Pearl Jam**, followed by, cue 'backspacer': asking back, the target among them (target Q931609, fit ['Q142701', 'Q931609']). Said: Which one do you mean? (2 items named Pearl Jam)
+14. **Jimmy Adams**, country of citizenship, cue 'human': asking back, the target among them (target Q2789496, fit ['Q2789496', 'Q6199482']). Said: Which one do you mean? (2 items named Jimmy Adams)
+   - fits: Q2789496 (human; recorded): country of citizenship: United Kingdom
+   - fits: Q6199482 (fictional character, human, pseudonym, twin; read): given name: Jimmy
+15. **Pearl Jam**, location of formation, cue 'seattle': asking back, the target among them (target Q142701, fit ['Q142701', 'Q931609']). Said: Which one do you mean? (2 items named Pearl Jam)
    - fits: Q142701 (musical group; read): discography: Pearl Jam discography; location of formation: Seattle
    - fits: Q931609 (3d film, animated film, animated series, anime, book, book series, choir, compilation album, concert tour, condiment, dog breed, drink, encyclopedia, episode, extended play, film, film series, food, live album, magazine, manga, media franchise, miniseries, mountain gun, music genre, musical ensemble, musical group, news program, opera, orchestra, painting, periodical, play, radio program, referendum, rifle, sandwich, scientific journal, short film, silent film, single, song, television film, television pilot, television program, television series, television special; read): country of origin: United States of America; followed by: Backspacer
-16. **Changy**, located in the administrative territorial entity, cue 'marne': asking back, the target among them (target Q1218976, fit ['Q1068656', 'Q1218976']). Said: Which one do you mean? (2 items named Changy)
-   - fits: Q1068656 (commune of france; recorded): 
-   - fits: Q1218976 (commune of france; recorded): located in the administrative territorial entity: Marne
-17. **CBGB**, distributed by, cue 'media': picks the target (target Q2931018, fit ['Q2931018']). Said: XLrator Media.
+16. **CBGB**, distributed by, cue 'media': picks the target (target Q2931018, fit ['Q2931018']). Said: XLrator Media.
    - does not fit: Q1022965 (building, cemetery, hotel, skyscraper, theatre; read): country: United States of America; located on street: Bowery
    - fits: Q2931018 (3d film, animated series, film, film series, short film, silent film, television film, television series, video game; read): distributed by: XLrator Media
-18. **The Maid**, genre, cue 'romantic': asking back, the target among them (target Q1990821, fit ['Q1774421', 'Q1990821', 'Q3778304', 'Q7749615']). Said: Which one do you mean? (4 items named The Maid)
+17. **The Maid**, director, cue 'seinfeld': asking back, the target among them (target Q7749615, fit ['Q1774421', 'Q1990821', 'Q3778304', 'Q7749615']). Said: Which one do you mean? (4 items named The Maid)
    - fits: Q1774421 (3d film, album, animated series, anime, book, book series, choir, compilation album, extended play, film, film series, girl group, live album, manga, musical ensemble, musical group, national flag, opera, painting, play, pseudonym, remix album, short film, short story, silent film, single, song, studio album, television film, television pilot, television program, television series, video game; read): genre: comedy film
    - fits: Q1990821 (3d film, album, animated series, anime, book, book series, choir, compilation album, extended play, film, film series, girl group, live album, manga, musical ensemble, musical group, national flag, opera, painting, play, pseudonym, remix album, short film, short story, silent film, single, song, studio album, television film, television pilot, television program, television series, video game; read): genre: romantic comedy
    - fits: Q3778304 (3d film, academic journal, bach cantata, film, film series, history journal, magazine, periodical, scientific journal, short film, silent film, television film, television program, television series; read): original language of film or TV show: Italian
    - fits: Q7749615 (film, television pilot; read): director: Andy Ackerman; followed by: The Puerto Rican Day; follows: The Frogger; part of the series: Seinfeld
-19. **Giuseppe Garibaldi**, country of citizenship, cue 'italy': asking back, the target among them (target Q5565419, fit ['Q539', 'Q5565419']). Said: Which one do you mean? (3 items named Giuseppe Garibaldi)
-   - fits: Q539 (human; read): award received: Gold Medal of Military Valour; given name: Giuseppe; native language: Italian
-   - does not fit: Q742121 (amphibious assault ship, cruise ship, ship, u boat; read): shipping port: Taranto
-   - fits: Q5565419 (human, pseudonym, twin; read): country of citizenship: Kingdom of Italy
-20. **Liam Finn**, member of sports team, cue 'featherstone': asking back, the target among them (target Q6539589, fit ['Q2708494', 'Q6539589']). Said: Which one do you mean? (2 items named Liam Finn)
+18. **Liam Finn**, occupation, cue 'zealand': asking back, the target among them (target Q2708494, fit ['Q2708494', 'Q6539589']). Said: Which one do you mean? (2 items named Liam Finn)
    - fits: Q2708494 (human, pseudonym, twin; read): country of citizenship: New Zealand; occupation: singer
    - fits: Q6539589 (human; recorded): member of sports team: Featherstone Rovers
+19. **Bobby Caldwell**, country of citizenship, cue 'united': asking back, the target among them (target Q3487124, fit ['Q2907941', 'Q3487124']). Said: Which one do you mean? (2 items named Bobby Caldwell)
+   - fits: Q2907941 (fictional character, human, pseudonym, twin; read): given name: Bobby
+   - fits: Q3487124 (human, pseudonym, twin; read): country of citizenship: United States of America; given name: Bobby
+20. **Alibertia**, parent taxon, cue 'taxon': asking back, the target among them (target Q4725637, fit ['Q2473735', 'Q4725637']). Said: Which one do you mean? (2 items named Alibertia)
+   - fits: Q2473735 (taxon; recorded): different from: Alibertia
+   - fits: Q4725637 (taxon; recorded): parent taxon: Eulophidae
 
 ## Counts
 
@@ -276,12 +274,12 @@ Each must pick the target or ask back.
  },
  "probe_verdicts": {
   "asking back": 1,
-  "asking back, the target among them": 15,
-  "picks the target": 4
+  "asking back, the target among them": 16,
+  "picks the target": 3
  },
  "decision_ms": {
-  "p50": 5.9,
-  "max": 41.6,
+  "p50": 4.5,
+  "max": 40.9,
   "n": 75
  }
 }

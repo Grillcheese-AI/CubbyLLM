@@ -203,8 +203,12 @@ def main() -> None:
     ap.add_argument("--probe", type=int, default=20)
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--date", default=_dt.date.today().isoformat())
+    ap.add_argument("--cues", default=None, help="another cue table to read (a rebuild not yet swapped in)")
     a = ap.parse_args()
     w = HdcWorld()
+    if a.cues:
+        from cubbyllm.worlds.hdc_cues import Cues
+        w._cues = Cues(a.cues)
     if w._kinds is None or w._cues is None:
         sys.exit("the kinds table or the cue table is missing beside the world (hdc_kinds.build, hdc_cues.build)")
     labels = shared_labels(w, a.seed)

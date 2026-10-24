@@ -1,0 +1,3837 @@
+{
+ "asks": [
+  {
+   "question": "What is the capital of France?",
+   "code": 200,
+   "record": {
+    "question": "What is the capital of France?",
+    "answer": "Paris",
+    "verified": true,
+    "reason": null,
+    "plan": [
+     "capital"
+    ],
+    "seed": "France",
+    "entities": [
+     "France"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [
+     "Paris is the capital of France"
+    ],
+    "wall_s": 0.98,
+    "restated": "What is the capital of France?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:36",
+    "id": "2026-10-24T03:26:36-1"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:36-1",
+    "question": "What is the capital of France?",
+    "tokens": [
+     {
+      "text": "What",
+      "role": ""
+     },
+     {
+      "text": "is",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "capital",
+      "role": "relation"
+     },
+     {
+      "text": "of",
+      "role": ""
+     },
+     {
+      "text": "France?",
+      "role": "entity"
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 972,
+      "counts": {
+       "fetch": 1,
+       "gate": 13,
+       "hop": 1,
+       "fact": 1,
+       "gates": 1
+      },
+      "facts": [
+       "France · capital · Paris"
+      ],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 2,
+       "vm": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": false
+     }
+    ],
+    "wall_s": 0.98,
+    "verified": true,
+    "said": "Paris",
+    "tier": null,
+    "reason": null,
+    "audience": "public"
+   }
+  },
+  {
+   "question": "Where was Ada Lovelace born?",
+   "code": 200,
+   "record": {
+    "question": "Where was Ada Lovelace born?",
+    "answer": "London",
+    "verified": true,
+    "reason": null,
+    "plan": [
+     "place of birth"
+    ],
+    "seed": "Ada Lovelace",
+    "entities": [
+     "Ada Lovelace"
+    ],
+    "aliased": [
+     [
+      "place of birth",
+      "birthplace"
+     ]
+    ],
+    "snapped": null,
+    "trace": [
+     "London is the place of birth of Ada Lovelace"
+    ],
+    "wall_s": 0.092,
+    "restated": "What is the place of birth of Ada Lovelace?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:36",
+    "id": "2026-10-24T03:26:36-2"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:36-2",
+    "question": "Where was Ada Lovelace born?",
+    "tokens": [
+     {
+      "text": "Where",
+      "role": ""
+     },
+     {
+      "text": "was",
+      "role": ""
+     },
+     {
+      "text": "Ada",
+      "role": "entity"
+     },
+     {
+      "text": "Lovelace",
+      "role": "entity"
+     },
+     {
+      "text": "born?",
+      "role": "relation"
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 74,
+      "counts": {
+       "plan": 3
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 16,
+      "counts": {
+       "fetch": 1,
+       "gate": 13,
+       "hop": 1,
+       "fact": 1,
+       "gates": 1
+      },
+      "facts": [
+       "Ada Lovelace · place of birth · London"
+      ],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 2,
+       "vm": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": false
+     }
+    ],
+    "wall_s": 0.092,
+    "verified": true,
+    "said": "London",
+    "tier": null,
+    "reason": null,
+    "audience": "public"
+   }
+  },
+  {
+   "question": "Who wrote Pride and Prejudice?",
+   "code": 200,
+   "record": {
+    "question": "Who wrote Pride and Prejudice?",
+    "answer": "Jane Austen",
+    "verified": true,
+    "reason": null,
+    "plan": [
+     "author"
+    ],
+    "seed": "Pride and Prejudice",
+    "entities": [
+     "pride and prejudice"
+    ],
+    "aliased": [
+     [
+      "author",
+      "writer"
+     ]
+    ],
+    "snapped": null,
+    "trace": [
+     "Jane Austen is the author of Pride and Prejudice"
+    ],
+    "wall_s": 0.106,
+    "restated": "What is the author of Pride and Prejudice?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:36",
+    "id": "2026-10-24T03:26:36-3"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:36-3",
+    "question": "Who wrote Pride and Prejudice?",
+    "tokens": [
+     {
+      "text": "Who",
+      "role": ""
+     },
+     {
+      "text": "wrote",
+      "role": ""
+     },
+     {
+      "text": "Pride",
+      "role": ""
+     },
+     {
+      "text": "and",
+      "role": ""
+     },
+     {
+      "text": "Prejudice?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 84,
+      "counts": {
+       "plan": 3
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 20,
+      "counts": {
+       "fetch": 1,
+       "gate": 13,
+       "hop": 1,
+       "fact": 1,
+       "gates": 1
+      },
+      "facts": [
+       "Pride and Prejudice · author · Jane Austen"
+      ],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 3,
+       "vm": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": false
+     }
+    ],
+    "wall_s": 0.106,
+    "verified": true,
+    "said": "Jane Austen",
+    "tier": null,
+    "reason": null,
+    "audience": "public"
+   }
+  },
+  {
+   "question": "When was the Eiffel Tower built?",
+   "code": 200,
+   "record": {
+    "question": "When was the Eiffel Tower built?",
+    "answer": null,
+    "verified": false,
+    "reason": "retrieval_exhausted",
+    "plan": [
+     "built"
+    ],
+    "seed": "eiffel tower",
+    "entities": [
+     "eiffel tower"
+    ],
+    "aliased": [
+     [
+      "built",
+      "inception"
+     ]
+    ],
+    "snapped": null,
+    "trace": [],
+    "wall_s": 11.26,
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:48",
+    "id": "2026-10-24T03:26:48-4"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:48-4",
+    "question": "When was the Eiffel Tower built?",
+    "tokens": [
+     {
+      "text": "When",
+      "role": ""
+     },
+     {
+      "text": "was",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "Eiffel",
+      "role": "entity"
+     },
+     {
+      "text": "Tower",
+      "role": "entity"
+     },
+     {
+      "text": "built?",
+      "role": "entity"
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 16,
+      "counts": {
+       "plan": 2
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 9,
+      "counts": {
+       "fetch": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": true
+     }
+    ],
+    "wall_s": 11.26,
+    "verified": false,
+    "said": null,
+    "tier": null,
+    "reason": "retrieval_exhausted",
+    "audience": "public"
+   }
+  },
+  {
+   "question": "What is the capital of Canada?",
+   "code": 200,
+   "record": {
+    "question": "What is the capital of Canada?",
+    "answer": "Ottawa",
+    "verified": true,
+    "reason": null,
+    "plan": [
+     "capital"
+    ],
+    "seed": "Canada",
+    "entities": [
+     "Canada"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [
+     "Ottawa is the capital of Canada"
+    ],
+    "wall_s": 0.274,
+    "restated": "What is the capital of Canada?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:48",
+    "id": "2026-10-24T03:26:48-5"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:48-5",
+    "question": "What is the capital of Canada?",
+    "tokens": [
+     {
+      "text": "What",
+      "role": ""
+     },
+     {
+      "text": "is",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "capital",
+      "role": "relation"
+     },
+     {
+      "text": "of",
+      "role": ""
+     },
+     {
+      "text": "Canada?",
+      "role": "entity"
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 268,
+      "counts": {
+       "fetch": 1,
+       "gate": 13,
+       "hop": 1,
+       "fact": 1,
+       "gates": 1
+      },
+      "facts": [
+       "Canada · capital · Ottawa"
+      ],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 2,
+       "vm": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": false
+     }
+    ],
+    "wall_s": 0.274,
+    "verified": true,
+    "said": "Ottawa",
+    "tier": null,
+    "reason": null,
+    "audience": "public"
+   }
+  },
+  {
+   "question": "Who is the father of Queen Elizabeth II?",
+   "code": 200,
+   "record": {
+    "question": "Who is the father of Queen Elizabeth II?",
+    "answer": null,
+    "verified": false,
+    "reason": "retrieval_exhausted",
+    "plan": [
+     "father"
+    ],
+    "seed": "Queen Elizabeth II",
+    "entities": [
+     "Queen Elizabeth II"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [],
+    "wall_s": 0.041,
+    "restated": "What is the father of Queen Elizabeth II?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:48",
+    "id": "2026-10-24T03:26:48-6"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:48-6",
+    "question": "Who is the father of Queen Elizabeth II?",
+    "tokens": [
+     {
+      "text": "Who",
+      "role": ""
+     },
+     {
+      "text": "is",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "father",
+      "role": "relation"
+     },
+     {
+      "text": "of",
+      "role": ""
+     },
+     {
+      "text": "Queen",
+      "role": "entity"
+     },
+     {
+      "text": "Elizabeth",
+      "role": "entity"
+     },
+     {
+      "text": "II?",
+      "role": "entity"
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 18,
+      "counts": {
+       "fetch": 1,
+       "gate": 12,
+       "gates": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 14,
+      "counts": {
+       "walk": 2
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": true
+     }
+    ],
+    "wall_s": 0.041,
+    "verified": false,
+    "said": null,
+    "tier": null,
+    "reason": "retrieval_exhausted",
+    "audience": "public"
+   }
+  },
+  {
+   "question": "What is the population of Toronto?",
+   "code": 200,
+   "record": {
+    "question": "What is the population of Toronto?",
+    "answer": null,
+    "verified": false,
+    "reason": "retrieval_exhausted",
+    "plan": [
+     "population"
+    ],
+    "seed": "toronto",
+    "entities": [
+     "toronto"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [],
+    "wall_s": 3.064,
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:51",
+    "id": "2026-10-24T03:26:51-7"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:51-7",
+    "question": "What is the population of Toronto?",
+    "tokens": [
+     {
+      "text": "What",
+      "role": ""
+     },
+     {
+      "text": "is",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "population",
+      "role": ""
+     },
+     {
+      "text": "of",
+      "role": ""
+     },
+     {
+      "text": "Toronto?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 7,
+      "counts": {
+       "fetch": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": true
+     }
+    ],
+    "wall_s": 3.064,
+    "verified": false,
+    "said": null,
+    "tier": null,
+    "reason": "retrieval_exhausted",
+    "audience": "public"
+   }
+  },
+  {
+   "question": "Who painted the Mona Lisa?",
+   "code": 200,
+   "record": {
+    "question": "Who painted the Mona Lisa?",
+    "answer": "Leonardo da Vinci",
+    "verified": true,
+    "reason": null,
+    "plan": [
+     "creator"
+    ],
+    "seed": "Mona Lisa",
+    "entities": [
+     "Mona Lisa"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [
+     "Leonardo da Vinci is the creator of Mona Lisa"
+    ],
+    "wall_s": 0.096,
+    "restated": "What is the creator of Mona Lisa?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:51",
+    "id": "2026-10-24T03:26:51-8"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:51-8",
+    "question": "Who painted the Mona Lisa?",
+    "tokens": [
+     {
+      "text": "Who",
+      "role": ""
+     },
+     {
+      "text": "painted",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "Mona",
+      "role": ""
+     },
+     {
+      "text": "Lisa?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 95,
+      "counts": {
+       "fetch": 1,
+       "gate": 13,
+       "hop": 1,
+       "fact": 1,
+       "gates": 1
+      },
+      "facts": [
+       "Mona Lisa · creator · Leonardo da Vinci"
+      ],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 2,
+       "vm": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": false
+     }
+    ],
+    "wall_s": 0.096,
+    "verified": true,
+    "said": "Leonardo da Vinci",
+    "tier": null,
+    "reason": null,
+    "audience": "public"
+   }
+  },
+  {
+   "question": "Where is the Globe Theatre?",
+   "code": 200,
+   "record": {
+    "question": "Where is the Globe Theatre?",
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question",
+    "plan": [
+     "current_location"
+    ],
+    "seed": "globe theatre",
+    "entities": [],
+    "aliased": [],
+    "snapped": null,
+    "trace": [],
+    "wall_s": 3.791,
+    "refused": {
+     "covers": false,
+     "unknown_relations": [
+      "current_location"
+     ],
+     "tail_relation": null,
+     "paraphrased": []
+    },
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:55",
+    "id": "2026-10-24T03:26:55-9"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:55-9",
+    "question": "Where is the Globe Theatre?",
+    "tokens": [
+     {
+      "text": "Where",
+      "role": ""
+     },
+     {
+      "text": "is",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "Globe",
+      "role": "entity"
+     },
+     {
+      "text": "Theatre?",
+      "role": "entity"
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 4,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 41,
+      "counts": {
+       "walk": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 4,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": true
+     }
+    ],
+    "wall_s": 3.791,
+    "verified": false,
+    "said": null,
+    "tier": null,
+    "reason": "plan_does_not_cover_question",
+    "audience": "public"
+   }
+  },
+  {
+   "question": "What language is spoken in Brazil?",
+   "code": 200,
+   "record": {
+    "question": "What language is spoken in Brazil?",
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_hop",
+    "plan": [
+     "official language"
+    ],
+    "seed": "Brazil",
+    "entities": [
+     "Brazil"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [],
+    "wall_s": 0.277,
+    "restated": "What is the official language of Brazil?",
+    "refused": {
+     "hop": 0,
+     "objects": [
+      "brazilian sign language",
+      "portuguese"
+     ],
+     "facts": [
+      "Brazilian Sign Language is the official language of Brazil",
+      "Portuguese is the official language of Brazil"
+     ],
+     "overflow": false,
+     "verified_answers": [
+      "Brazilian Sign Language",
+      "Portuguese"
+     ]
+    },
+    "branches": [
+     {
+      "via": [
+       {
+        "hop": 0,
+        "object": "Brazilian Sign Language"
+       }
+      ],
+      "facts": [
+       "Brazilian Sign Language is the official language of Brazil"
+      ],
+      "answer": "Brazilian Sign Language",
+      "similarity": 1.0,
+      "status": "verified"
+     },
+     {
+      "via": [
+       {
+        "hop": 0,
+        "object": "Portuguese"
+       }
+      ],
+      "facts": [
+       "Portuguese is the official language of Brazil"
+      ],
+      "answer": "Portuguese",
+      "similarity": 1.0,
+      "status": "verified"
+     }
+    ],
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:55",
+    "id": "2026-10-24T03:26:55-10"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:55-10",
+    "question": "What language is spoken in Brazil?",
+    "tokens": [
+     {
+      "text": "What",
+      "role": ""
+     },
+     {
+      "text": "language",
+      "role": ""
+     },
+     {
+      "text": "is",
+      "role": ""
+     },
+     {
+      "text": "spoken",
+      "role": ""
+     },
+     {
+      "text": "in",
+      "role": ""
+     },
+     {
+      "text": "Brazil?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 273,
+      "counts": {
+       "fetch": 1,
+       "gate": 14,
+       "hop": 2,
+       "fact": 2,
+       "gates": 1
+      },
+      "facts": [
+       "Brazil · official language · Brazilian Sign Language",
+       "Brazil · official language · Portuguese"
+      ],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 2,
+       "branch": 2
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": true
+     }
+    ],
+    "wall_s": 0.277,
+    "verified": false,
+    "said": null,
+    "tier": null,
+    "reason": "ambiguous_hop",
+    "audience": "public"
+   }
+  },
+  {
+   "question": "Who discovered penicillin?",
+   "code": 200,
+   "record": {
+    "question": "Who discovered penicillin?",
+    "answer": "Alexander Fleming",
+    "verified": true,
+    "reason": null,
+    "plan": [
+     "discoverer or inventor"
+    ],
+    "seed": "penicillin",
+    "entities": [
+     "penicillin"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [
+     "Alexander Fleming is the discoverer or inventor of penicillin"
+    ],
+    "wall_s": 0.04,
+    "restated": "What is the discoverer or inventor of penicillin?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:55",
+    "id": "2026-10-24T03:26:55-11"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:55-11",
+    "question": "Who discovered penicillin?",
+    "tokens": [
+     {
+      "text": "Who",
+      "role": ""
+     },
+     {
+      "text": "discovered",
+      "role": ""
+     },
+     {
+      "text": "penicillin?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 39,
+      "counts": {
+       "fetch": 1,
+       "gate": 13,
+       "hop": 1,
+       "fact": 1,
+       "gates": 1
+      },
+      "facts": [
+       "penicillin · discoverer or inventor · Alexander Fleming"
+      ],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 2,
+       "vm": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": false
+     }
+    ],
+    "wall_s": 0.04,
+    "verified": true,
+    "said": "Alexander Fleming",
+    "tier": null,
+    "reason": null,
+    "audience": "public"
+   }
+  },
+  {
+   "question": "What is the currency of Japan?",
+   "code": 200,
+   "record": {
+    "question": "What is the currency of Japan?",
+    "answer": "yen",
+    "verified": true,
+    "reason": null,
+    "plan": [
+     "currency"
+    ],
+    "seed": "Japan",
+    "entities": [
+     "Japan"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [
+     "yen is the currency of Japan"
+    ],
+    "wall_s": 0.318,
+    "restated": "What is the currency of Japan?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:56",
+    "id": "2026-10-24T03:26:56-12"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:56-12",
+    "question": "What is the currency of Japan?",
+    "tokens": [
+     {
+      "text": "What",
+      "role": ""
+     },
+     {
+      "text": "is",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "currency",
+      "role": ""
+     },
+     {
+      "text": "of",
+      "role": ""
+     },
+     {
+      "text": "Japan?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 313,
+      "counts": {
+       "fetch": 1,
+       "gate": 13,
+       "hop": 1,
+       "fact": 1,
+       "gates": 1
+      },
+      "facts": [
+       "Japan · currency · yen"
+      ],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 2,
+       "vm": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": false
+     }
+    ],
+    "wall_s": 0.318,
+    "verified": true,
+    "said": "yen",
+    "tier": null,
+    "reason": null,
+    "audience": "public"
+   }
+  },
+  {
+   "question": "Quelle est la capitale de l'Italie ?",
+   "code": 200,
+   "record": {
+    "question": "Quelle est la capitale de l'Italie ?",
+    "answer": null,
+    "verified": false,
+    "reason": "retrieval_exhausted",
+    "plan": [
+     "capital"
+    ],
+    "seed": "Italie",
+    "entities": [
+     "Italie"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [],
+    "wall_s": 0.012,
+    "restated": "What is the capital of Italie?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:56",
+    "id": "2026-10-24T03:26:56-13"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:56-13",
+    "question": "Quelle est la capitale de l'Italie ?",
+    "tokens": [
+     {
+      "text": "Quelle",
+      "role": ""
+     },
+     {
+      "text": "est",
+      "role": ""
+     },
+     {
+      "text": "la",
+      "role": ""
+     },
+     {
+      "text": "capitale",
+      "role": ""
+     },
+     {
+      "text": "de",
+      "role": ""
+     },
+     {
+      "text": "l'Italie",
+      "role": ""
+     },
+     {
+      "text": "?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 9,
+      "counts": {
+       "fetch": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": -2,
+      "counts": {
+       "walk": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 2,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": true
+     }
+    ],
+    "wall_s": 0.012,
+    "verified": false,
+    "said": null,
+    "tier": null,
+    "reason": "retrieval_exhausted",
+    "audience": "public"
+   }
+  },
+  {
+   "question": "Qui a écrit Les Misérables ?",
+   "code": 200,
+   "record": {
+    "question": "Qui a écrit Les Misérables ?",
+    "answer": "Victor Hugo",
+    "verified": true,
+    "reason": null,
+    "plan": [
+     "author"
+    ],
+    "seed": "Les Misérables",
+    "entities": [
+     "les misérables"
+    ],
+    "aliased": [
+     [
+      "author",
+      "writer"
+     ]
+    ],
+    "snapped": null,
+    "trace": [
+     "Victor Hugo is the author of Les Misérables"
+    ],
+    "wall_s": 0.067,
+    "restated": "What is the author of Les Misérables?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:56",
+    "id": "2026-10-24T03:26:56-14"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:56-14",
+    "question": "Qui a écrit Les Misérables ?",
+    "tokens": [
+     {
+      "text": "Qui",
+      "role": ""
+     },
+     {
+      "text": "a",
+      "role": ""
+     },
+     {
+      "text": "écrit",
+      "role": ""
+     },
+     {
+      "text": "Les",
+      "role": ""
+     },
+     {
+      "text": "Misérables",
+      "role": ""
+     },
+     {
+      "text": "?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 57,
+      "counts": {
+       "plan": 3
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 9,
+      "counts": {
+       "fetch": 1,
+       "gate": 13,
+       "hop": 1,
+       "fact": 1,
+       "gates": 1
+      },
+      "facts": [
+       "Les Misérables · author · Victor Hugo"
+      ],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 3,
+       "vm": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": false
+     }
+    ],
+    "wall_s": 0.067,
+    "verified": true,
+    "said": "Victor Hugo",
+    "tier": null,
+    "reason": null,
+    "audience": "public"
+   }
+  },
+  {
+   "question": "What river flows through Cairo?",
+   "code": 200,
+   "record": {
+    "question": "What river flows through Cairo?",
+    "answer": "Nile",
+    "verified": true,
+    "reason": null,
+    "plan": [
+     "located in or next to body of water"
+    ],
+    "seed": "Cairo",
+    "entities": [
+     "Cairo"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [
+     "Nile is the located in or next to body of water of Cairo"
+    ],
+    "wall_s": 0.111,
+    "restated": "What is the located in or next to body of water of Cairo?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:56",
+    "id": "2026-10-24T03:26:56-15"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:56-15",
+    "question": "What river flows through Cairo?",
+    "tokens": [
+     {
+      "text": "What",
+      "role": ""
+     },
+     {
+      "text": "river",
+      "role": ""
+     },
+     {
+      "text": "flows",
+      "role": ""
+     },
+     {
+      "text": "through",
+      "role": ""
+     },
+     {
+      "text": "Cairo?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 109,
+      "counts": {
+       "fetch": 1,
+       "gate": 13,
+       "hop": 1,
+       "fact": 1,
+       "gates": 1
+      },
+      "facts": [
+       "Cairo · located in or next to body of water · Nile"
+      ],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 2,
+       "vm": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": false
+     }
+    ],
+    "wall_s": 0.111,
+    "verified": true,
+    "said": "Nile",
+    "tier": null,
+    "reason": null,
+    "audience": "public"
+   }
+  },
+  {
+   "question": "Who was the first president of the United States?",
+   "code": 200,
+   "record": {
+    "question": "Who was the first president of the United States?",
+    "answer": null,
+    "verified": false,
+    "reason": "entity_unresolved",
+    "plan": [],
+    "seed": "first president of the united states",
+    "ask": "who",
+    "program": "use vsa;\n\nprogram CotPlan implements ISolve {\n    public function solve(mention: str): str {\n        create frame: number;\n        bind frame, SEED, \"first president of the united states\";\n        bind frame, ASK, \"who\";\n        return recover(frame, SEED);\n    }\n}\n",
+    "entities": [
+     "first president of the United States"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [],
+    "profile": [],
+    "prose": null,
+    "candidates": null,
+    "clarify": null,
+    "wall_s": 0.004,
+    "ts": "2026-10-24T03:26:56",
+    "id": "2026-10-24T03:26:56-16"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:56-16",
+    "question": "Who was the first president of the United States?",
+    "tokens": [
+     {
+      "text": "Who",
+      "role": ""
+     },
+     {
+      "text": "was",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "first",
+      "role": ""
+     },
+     {
+      "text": "president",
+      "role": ""
+     },
+     {
+      "text": "of",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "United",
+      "role": ""
+     },
+     {
+      "text": "States?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 3,
+      "counts": {
+       "fetch": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": true
+     }
+    ],
+    "wall_s": 0.004,
+    "verified": false,
+    "said": null,
+    "tier": null,
+    "reason": "entity_unresolved",
+    "audience": "public"
+   }
+  },
+  {
+   "question": "How tall is Mount Everest?",
+   "code": 200,
+   "record": {
+    "question": "How tall is Mount Everest?",
+    "answer": null,
+    "verified": false,
+    "reason": "retrieval_exhausted",
+    "plan": [
+     "height"
+    ],
+    "seed": "Mount Everest",
+    "entities": [
+     "Mount Everest"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [],
+    "wall_s": 0.078,
+    "restated": "What is the height of Mount Everest?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:56",
+    "id": "2026-10-24T03:26:56-17"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:56-17",
+    "question": "How tall is Mount Everest?",
+    "tokens": [
+     {
+      "text": "How",
+      "role": ""
+     },
+     {
+      "text": "tall",
+      "role": ""
+     },
+     {
+      "text": "is",
+      "role": ""
+     },
+     {
+      "text": "Mount",
+      "role": ""
+     },
+     {
+      "text": "Everest?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 0,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 26,
+      "counts": {
+       "fetch": 1,
+       "gate": 12,
+       "gates": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 49,
+      "counts": {
+       "walk": 2
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": true
+     }
+    ],
+    "wall_s": 0.078,
+    "verified": false,
+    "said": null,
+    "tier": null,
+    "reason": "retrieval_exhausted",
+    "audience": "public"
+   }
+  },
+  {
+   "question": "What is the speed of light?",
+   "code": 200,
+   "record": {
+    "question": "What is the speed of light?",
+    "answer": null,
+    "verified": false,
+    "reason": "plan_does_not_cover_question",
+    "plan": [
+     "speed of light"
+    ],
+    "seed": "speed of light",
+    "entities": [],
+    "aliased": [],
+    "snapped": null,
+    "trace": [],
+    "wall_s": 3.15,
+    "refused": {
+     "covers": false,
+     "unknown_relations": [
+      "speed of light"
+     ],
+     "tail_relation": null,
+     "paraphrased": []
+    },
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:26:59",
+    "id": "2026-10-24T03:26:59-18"
+   },
+   "journey": {
+    "id": "2026-10-24T03:26:59-18",
+    "question": "What is the speed of light?",
+    "tokens": [
+     {
+      "text": "What",
+      "role": ""
+     },
+     {
+      "text": "is",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "speed",
+      "role": ""
+     },
+     {
+      "text": "of",
+      "role": ""
+     },
+     {
+      "text": "light?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 19,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 76,
+      "counts": {
+       "walk": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 18,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": true
+     }
+    ],
+    "wall_s": 3.15,
+    "verified": false,
+    "said": null,
+    "tier": null,
+    "reason": "plan_does_not_cover_question",
+    "audience": "public"
+   }
+  },
+  {
+   "question": "Who is the mayor of Montreal?",
+   "code": 200,
+   "record": {
+    "question": "Who is the mayor of Montreal?",
+    "answer": null,
+    "verified": false,
+    "reason": "ambiguous_relation",
+    "plan": [
+     "city",
+     "E2"
+    ],
+    "seed": "montreal",
+    "entities": [],
+    "aliased": [],
+    "snapped": null,
+    "trace": [],
+    "wall_s": 3.86,
+    "refused": {
+     "relation": "city",
+     "candidates": [
+      "located in the administrative territorial entity",
+      "location"
+     ]
+    },
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:27:03",
+    "id": "2026-10-24T03:27:03-19"
+   },
+   "journey": {
+    "id": "2026-10-24T03:27:03-19",
+    "question": "Who is the mayor of Montreal?",
+    "tokens": [
+     {
+      "text": "Who",
+      "role": ""
+     },
+     {
+      "text": "is",
+      "role": ""
+     },
+     {
+      "text": "the",
+      "role": ""
+     },
+     {
+      "text": "mayor",
+      "role": ""
+     },
+     {
+      "text": "of",
+      "role": ""
+     },
+     {
+      "text": "Montreal?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 11,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": true
+     }
+    ],
+    "wall_s": 3.86,
+    "verified": false,
+    "said": null,
+    "tier": null,
+    "reason": "ambiguous_relation",
+    "audience": "public"
+   }
+  },
+  {
+   "question": "What year did World War II end?",
+   "code": 200,
+   "record": {
+    "question": "What year did World War II end?",
+    "answer": "1945-09-02",
+    "verified": true,
+    "reason": null,
+    "plan": [
+     "end time"
+    ],
+    "seed": "World War II",
+    "entities": [
+     "World War II"
+    ],
+    "aliased": [],
+    "snapped": null,
+    "trace": [
+     "1945-09-02 is the end time of World War II"
+    ],
+    "wall_s": 0.235,
+    "restated": "What is the end time of World War II?",
+    "refused": null,
+    "branches": null,
+    "chose": null,
+    "clarify": null,
+    "ts": "2026-10-24T03:27:03",
+    "id": "2026-10-24T03:27:03-20"
+   },
+   "journey": {
+    "id": "2026-10-24T03:27:03-20",
+    "question": "What year did World War II end?",
+    "tokens": [
+     {
+      "text": "What",
+      "role": ""
+     },
+     {
+      "text": "year",
+      "role": ""
+     },
+     {
+      "text": "did",
+      "role": ""
+     },
+     {
+      "text": "World",
+      "role": ""
+     },
+     {
+      "text": "War",
+      "role": ""
+     },
+     {
+      "text": "II",
+      "role": ""
+     },
+     {
+      "text": "end?",
+      "role": ""
+     }
+    ],
+    "steps": [
+     {
+      "step": "sense",
+      "title": "Sense",
+      "ms": null,
+      "counts": {
+       "question": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "route",
+      "title": "Route",
+      "ms": 7,
+      "counts": {
+       "plan": 1
+      },
+      "facts": [],
+      "stop": false
+     },
+     {
+      "step": "recall",
+      "title": "Recall",
+      "ms": 227,
+      "counts": {
+       "fetch": 1,
+       "gate": 13,
+       "hop": 1,
+       "fact": 1,
+       "gates": 1
+      },
+      "facts": [
+       "World War II · end time · 1945-09-02"
+      ],
+      "stop": false
+     },
+     {
+      "step": "check",
+      "title": "Check",
+      "ms": 0,
+      "counts": {
+       "walk": 2,
+       "vm": 1
+      },
+      "facts": [],
+      "stop": true
+     },
+     {
+      "step": "say",
+      "title": "Say",
+      "ms": 0,
+      "counts": {
+       "answer": 1
+      },
+      "facts": [],
+      "stop": false
+     }
+    ],
+    "wall_s": 0.235,
+    "verified": true,
+    "said": "1945-09-02",
+    "tier": null,
+    "reason": null,
+    "audience": "public"
+   }
+  }
+ ],
+ "board": {
+  "/board/home": {
+   "public": [
+    200,
+    {
+     "sections": [
+      {
+       "id": "watch",
+       "name": "World Watch",
+       "dim": "live",
+       "built": false,
+       "order": "0024",
+       "message": "not built yet (order 0024)"
+      },
+      {
+       "id": "chat",
+       "name": "Chat",
+       "dim": "& prompt",
+       "built": true,
+       "cards": [
+        {
+         "t": "Today",
+         "s": "Questions asked",
+         "big": 17,
+         "unit": "asked",
+         "cap": "8 refused",
+         "trend": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          17
+         ]
+        },
+        {
+         "t": "Copy or refuse",
+         "s": "450M, run 5, the contract ends the answer",
+         "big": 1.7,
+         "unit": "% wrong",
+         "cap": "33% refused, 0.0% of absent answered"
+        },
+        {
+         "t": "Last question",
+         "s": "Its journey",
+         "big": 5,
+         "unit": "steps",
+         "cap": "sense → route → recall → check → say"
+        }
+       ]
+      },
+      {
+       "id": "worlds",
+       "name": "Worlds",
+       "dim": "& relations",
+       "built": false,
+       "order": "0015",
+       "message": "not built yet (order 0015)"
+      },
+      {
+       "id": "forecast",
+       "name": "Forecast",
+       "dim": "tree",
+       "built": false,
+       "order": "0026",
+       "message": "not built yet (order 0026)"
+      },
+      {
+       "id": "mood",
+       "name": "Mood",
+       "dim": "& arcs",
+       "built": true,
+       "cards": [
+        {
+         "t": "Heartbeat",
+         "s": "From arousal now",
+         "big": 56,
+         "unit": "bpm",
+         "cap": "arousal 0.29 · a display mapping"
+        },
+        {
+         "t": "Cube",
+         "s": "Nearest corner",
+         "big": "at rest",
+         "unit": "",
+         "cap": "the centre: no corner is nearer"
+        },
+        {
+         "t": "Arcs",
+         "s": "A book's or a chat's",
+         "big": null,
+         "unit": "",
+         "cap": "not built yet (order 0020)"
+        }
+       ]
+      },
+      {
+       "id": "system",
+       "name": "System",
+       "dim": "health",
+       "built": true,
+       "cards": [
+        {
+         "t": "Orders",
+         "s": "The queue",
+         "big": 10,
+         "unit": "open",
+         "cap": "4 in progress · 1 in review · 4 proposed"
+        },
+        {
+         "t": "News poller",
+         "s": "Feeds read last poll",
+         "big": null,
+         "unit": "of 128",
+         "cap": "last poll never · 0 items today"
+        },
+        {
+         "t": "Training",
+         "s": "Runs with logs",
+         "big": 0,
+         "unit": "runs",
+         "cap": "no run logs here"
+        }
+       ]
+      },
+      {
+       "id": "agents",
+       "name": "Agents",
+       "dim": "soon",
+       "built": false,
+       "order": "a later order",
+       "message": "not built yet (order a later order)"
+      }
+     ],
+     "audience": "public"
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "sections": [
+      {
+       "id": "watch",
+       "name": "World Watch",
+       "dim": "live",
+       "built": false,
+       "order": "0024",
+       "message": "not built yet (order 0024)"
+      },
+      {
+       "id": "chat",
+       "name": "Chat",
+       "dim": "& prompt",
+       "built": true,
+       "cards": [
+        {
+         "t": "Today",
+         "s": "Questions asked",
+         "big": 17,
+         "unit": "asked",
+         "cap": "8 refused",
+         "trend": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          17
+         ]
+        },
+        {
+         "t": "Copy or refuse",
+         "s": "450M, run 5, the contract ends the answer",
+         "big": 1.7,
+         "unit": "% wrong",
+         "cap": "33% refused, 0.0% of absent answered"
+        },
+        {
+         "t": "Last question",
+         "s": "Its journey",
+         "big": 5,
+         "unit": "steps",
+         "cap": "sense → route → recall → check → say"
+        }
+       ]
+      },
+      {
+       "id": "worlds",
+       "name": "Worlds",
+       "dim": "& relations",
+       "built": false,
+       "order": "0015",
+       "message": "not built yet (order 0015)"
+      },
+      {
+       "id": "forecast",
+       "name": "Forecast",
+       "dim": "tree",
+       "built": false,
+       "order": "0026",
+       "message": "not built yet (order 0026)"
+      },
+      {
+       "id": "mood",
+       "name": "Mood",
+       "dim": "& arcs",
+       "built": true,
+       "cards": [
+        {
+         "t": "Heartbeat",
+         "s": "From arousal now",
+         "big": 56,
+         "unit": "bpm",
+         "cap": "arousal 0.29 · a display mapping"
+        },
+        {
+         "t": "Cube",
+         "s": "Nearest corner",
+         "big": "at rest",
+         "unit": "",
+         "cap": "the centre: no corner is nearer"
+        },
+        {
+         "t": "Arcs",
+         "s": "A book's or a chat's",
+         "big": null,
+         "unit": "",
+         "cap": "not built yet (order 0020)"
+        }
+       ]
+      },
+      {
+       "id": "system",
+       "name": "System",
+       "dim": "health",
+       "built": true,
+       "cards": [
+        {
+         "t": "Orders",
+         "s": "The queue",
+         "big": 10,
+         "unit": "open",
+         "cap": "4 in progress · 1 in review · 4 proposed"
+        },
+        {
+         "t": "News poller",
+         "s": "Feeds read last poll",
+         "big": null,
+         "unit": "of 128",
+         "cap": "last poll never · 0 items today"
+        },
+        {
+         "t": "Training",
+         "s": "Runs with logs",
+         "big": 0,
+         "unit": "runs",
+         "cap": "no run logs here"
+        }
+       ]
+      },
+      {
+       "id": "agents",
+       "name": "Agents",
+       "dim": "soon",
+       "built": false,
+       "order": "a later order",
+       "message": "not built yet (order a later order)"
+      }
+     ],
+     "audience": "audit"
+    }
+   ]
+  },
+  "/board/system": {
+   "public": [
+    200,
+    {
+     "orders": {
+      "list": [
+       {
+        "no": "0001",
+        "title": "Far facts",
+        "status": "done"
+       },
+       {
+        "no": "0002",
+        "title": "The wiring guard is red",
+        "status": "proposed"
+       },
+       {
+        "no": "0003",
+        "title": "`exp_hypertoken_recall` sets `CB_NO_FLEX=1` on import",
+        "status": "proposed"
+       },
+       {
+        "no": "0004",
+        "title": "Rename \"hypertokens\" to \"loci tokens\" in the code's prose",
+        "status": "done"
+       },
+       {
+        "no": "0005",
+        "title": "Train the copy alone on a frozen trunk (run 5)",
+        "status": "done"
+       },
+       {
+        "no": "0006",
+        "title": "Free-text questions",
+        "status": "done"
+       },
+       {
+        "no": "0007",
+        "title": "Don't know → look it up once from a verified source → know it next time, through",
+        "status": "done"
+       },
+       {
+        "no": "0008",
+        "title": "Creativity over known facts",
+        "status": "open"
+       },
+       {
+        "no": "0009",
+        "title": "Capacity",
+        "status": "open"
+       },
+       {
+        "no": "0010",
+        "title": "Casual prose from Cubby's own 450M",
+        "status": "open"
+       },
+       {
+        "no": "0011",
+        "title": "Fact shards in readable words",
+        "status": "done"
+       },
+       {
+        "no": "0012",
+        "title": "The books as a source",
+        "status": "done"
+       },
+       {
+        "no": "0013",
+        "title": "A Cubby-native reader for the books, and the bulk pass that puts all their facts",
+        "status": "done"
+       },
+       {
+        "no": "0014",
+        "title": "[internal]",
+        "status": "done"
+       },
+       {
+        "no": "0015",
+        "title": "Everything in the datasets into worlds",
+        "status": "done"
+       },
+       {
+        "no": "0016",
+        "title": "Sources stay internal",
+        "status": "done"
+       },
+       {
+        "no": "0017",
+        "title": "Claim checks",
+        "status": "proposed"
+       },
+       {
+        "no": "0018",
+        "title": "Question shapes, EN-US / EN-UK / FR-FR / FR-QC",
+        "status": "open"
+       },
+       {
+        "no": "0019",
+        "title": "Emotions",
+        "status": "open"
+       },
+       {
+        "no": "0020",
+        "title": "Emotional arcs",
+        "status": "open"
+       },
+       {
+        "no": "0021",
+        "title": "Free-text facts, part 2",
+        "status": "done"
+       },
+       {
+        "no": "0022",
+        "title": "Copy or refuse",
+        "status": "done"
+       },
+       {
+        "no": "0023",
+        "title": "Nested questions over the worlds",
+        "status": "open"
+       },
+       {
+        "no": "0024",
+        "title": "News from feeds",
+        "status": "in progress"
+       },
+       {
+        "no": "0025",
+        "title": "World watch",
+        "status": "open"
+       },
+       {
+        "no": "0026",
+        "title": "Forecasts with a track record, and a branching tree",
+        "status": "open"
+       },
+       {
+        "no": "0027",
+        "title": "The control board",
+        "status": "in progress"
+       },
+       {
+        "no": "0028",
+        "title": "Plugins",
+        "status": "done"
+       },
+       {
+        "no": "0029",
+        "title": "Copy or refuse, arm D",
+        "status": "in progress"
+       },
+       {
+        "no": "0030",
+        "title": "Repo hygiene",
+        "status": "done"
+       },
+       {
+        "no": "0031",
+        "title": "Out of the stand-in",
+        "status": "done"
+       },
+       {
+        "no": "0032",
+        "title": "The trunk reads the worlds",
+        "status": "open"
+       },
+       {
+        "no": "0033",
+        "title": "Follow-ups from the 0030 and 0031 reviews",
+        "status": "done"
+       },
+       {
+        "no": "0034",
+        "title": "Villages in BlockWorld",
+        "status": "done"
+       },
+       {
+        "no": "0035",
+        "title": "Villages, next",
+        "status": "done"
+       },
+       {
+        "no": "0036",
+        "title": "Namesakes, the rest",
+        "status": "done"
+       },
+       {
+        "no": "0037",
+        "title": "Namesakes",
+        "status": "in progress"
+       },
+       {
+        "no": "0038",
+        "title": "Everyday wording",
+        "status": "review"
+       },
+       {
+        "no": "0039",
+        "title": "A question reader",
+        "status": "proposed"
+       }
+      ],
+      "counts": {
+       "done": 20,
+       "proposed": 4,
+       "open": 10,
+       "in progress": 4,
+       "review": 1
+      }
+     },
+     "poller": {
+      "active": 128,
+      "held": 4,
+      "up": null,
+      "last_poll_ago": null,
+      "items_today": 0
+     },
+     "copy_or_refuse": [
+      {
+       "what": "450M, run 5, the contract ends the answer",
+       "log": "exp_refuse_450m_end_2026-10-22.json",
+       "exact": 0.6536,
+       "present_wrong": 0.0172,
+       "present_refused": 0.3292,
+       "absent_answered": 0.0
+      },
+      {
+       "what": "450M, run 5",
+       "log": "exp_refuse_450m_2026-10-22.json",
+       "exact": 0.6167,
+       "present_wrong": 0.0541,
+       "present_refused": 0.3292,
+       "absent_answered": 0.0
+      },
+      {
+       "what": "toy P t12 s1",
+       "log": "k10_refuse_P_t12_s1_2026-10-22.json",
+       "exact": 0.6188,
+       "present_wrong": 0.0244,
+       "present_refused": 0.3569,
+       "absent_answered": 0.0148
+      },
+      {
+       "what": "toy P t12 s0",
+       "log": "k10_refuse_P_t12_s0_2026-10-22.json",
+       "exact": 0.6259,
+       "present_wrong": 0.033,
+       "present_refused": 0.3411,
+       "absent_answered": 0.0194
+      },
+      {
+       "what": "toy P t12 s2",
+       "log": "k10_refuse_P_t12_s2_2026-10-22.json",
+       "exact": 0.5865,
+       "present_wrong": 0.015,
+       "present_refused": 0.3985,
+       "absent_answered": 0.0044
+      },
+      {
+       "what": "toy P s2",
+       "log": "k10_refuse_P_s2_2026-10-22.json",
+       "exact": 0.5739,
+       "present_wrong": 0.0263,
+       "present_refused": 0.3997,
+       "absent_answered": 0.0
+      },
+      {
+       "what": "toy P s1",
+       "log": "k10_refuse_P_s1_2026-10-22.json",
+       "exact": 0.5786,
+       "present_wrong": 0.0244,
+       "present_refused": 0.3971,
+       "absent_answered": 0.0099
+      },
+      {
+       "what": "toy P s0",
+       "log": "k10_refuse_P_s0_2026-10-22.json",
+       "exact": 0.6137,
+       "present_wrong": 0.0306,
+       "present_refused": 0.3557,
+       "absent_answered": 0.0243
+      }
+     ],
+     "training": [],
+     "gpu": null,
+     "audience": "public"
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "orders": {
+      "list": [
+       {
+        "no": "0001",
+        "title": "Far facts",
+        "status": "done"
+       },
+       {
+        "no": "0002",
+        "title": "The wiring guard is red",
+        "status": "proposed"
+       },
+       {
+        "no": "0003",
+        "title": "`exp_hypertoken_recall` sets `CB_NO_FLEX=1` on import",
+        "status": "proposed"
+       },
+       {
+        "no": "0004",
+        "title": "Rename \"hypertokens\" to \"loci tokens\" in the code's prose",
+        "status": "done"
+       },
+       {
+        "no": "0005",
+        "title": "Train the copy alone on a frozen trunk (run 5)",
+        "status": "done"
+       },
+       {
+        "no": "0006",
+        "title": "Free-text questions",
+        "status": "done"
+       },
+       {
+        "no": "0007",
+        "title": "Don't know → look it up once from a verified source → know it next time, through",
+        "status": "done"
+       },
+       {
+        "no": "0008",
+        "title": "Creativity over known facts",
+        "status": "open"
+       },
+       {
+        "no": "0009",
+        "title": "Capacity",
+        "status": "open"
+       },
+       {
+        "no": "0010",
+        "title": "Casual prose from Cubby's own 450M",
+        "status": "open"
+       },
+       {
+        "no": "0011",
+        "title": "Fact shards in readable words",
+        "status": "done"
+       },
+       {
+        "no": "0012",
+        "title": "The books as a source",
+        "status": "done"
+       },
+       {
+        "no": "0013",
+        "title": "A Cubby-native reader for the books, and the bulk pass that puts all their facts",
+        "status": "done"
+       },
+       {
+        "no": "0014",
+        "title": "The hdc set's 4.3M Wikidata facts as a world",
+        "status": "done"
+       },
+       {
+        "no": "0015",
+        "title": "Everything in the datasets into worlds",
+        "status": "done"
+       },
+       {
+        "no": "0016",
+        "title": "Sources stay internal",
+        "status": "done"
+       },
+       {
+        "no": "0017",
+        "title": "Claim checks",
+        "status": "proposed"
+       },
+       {
+        "no": "0018",
+        "title": "Question shapes, EN-US / EN-UK / FR-FR / FR-QC",
+        "status": "open"
+       },
+       {
+        "no": "0019",
+        "title": "Emotions",
+        "status": "open"
+       },
+       {
+        "no": "0020",
+        "title": "Emotional arcs",
+        "status": "open"
+       },
+       {
+        "no": "0021",
+        "title": "Free-text facts, part 2",
+        "status": "done"
+       },
+       {
+        "no": "0022",
+        "title": "Copy or refuse",
+        "status": "done"
+       },
+       {
+        "no": "0023",
+        "title": "Nested questions over the worlds",
+        "status": "open"
+       },
+       {
+        "no": "0024",
+        "title": "News from feeds",
+        "status": "in progress"
+       },
+       {
+        "no": "0025",
+        "title": "World watch",
+        "status": "open"
+       },
+       {
+        "no": "0026",
+        "title": "Forecasts with a track record, and a branching tree",
+        "status": "open"
+       },
+       {
+        "no": "0027",
+        "title": "The control board",
+        "status": "in progress"
+       },
+       {
+        "no": "0028",
+        "title": "Plugins",
+        "status": "done"
+       },
+       {
+        "no": "0029",
+        "title": "Copy or refuse, arm D",
+        "status": "in progress"
+       },
+       {
+        "no": "0030",
+        "title": "Repo hygiene",
+        "status": "done"
+       },
+       {
+        "no": "0031",
+        "title": "Out of the stand-in",
+        "status": "done"
+       },
+       {
+        "no": "0032",
+        "title": "The trunk reads the worlds",
+        "status": "open"
+       },
+       {
+        "no": "0033",
+        "title": "Follow-ups from the 0030 and 0031 reviews",
+        "status": "done"
+       },
+       {
+        "no": "0034",
+        "title": "Villages in BlockWorld",
+        "status": "done"
+       },
+       {
+        "no": "0035",
+        "title": "Villages, next",
+        "status": "done"
+       },
+       {
+        "no": "0036",
+        "title": "Namesakes, the rest",
+        "status": "done"
+       },
+       {
+        "no": "0037",
+        "title": "Namesakes",
+        "status": "in progress"
+       },
+       {
+        "no": "0038",
+        "title": "Everyday wording",
+        "status": "review"
+       },
+       {
+        "no": "0039",
+        "title": "A question reader",
+        "status": "proposed"
+       }
+      ],
+      "counts": {
+       "done": 20,
+       "proposed": 4,
+       "open": 10,
+       "in progress": 4,
+       "review": 1
+      }
+     },
+     "poller": {
+      "active": 128,
+      "held": 4,
+      "up": null,
+      "last_poll_ago": null,
+      "items_today": 0
+     },
+     "copy_or_refuse": [
+      {
+       "what": "450M, run 5, the contract ends the answer",
+       "log": "exp_refuse_450m_end_2026-10-22.json",
+       "exact": 0.6536,
+       "present_wrong": 0.0172,
+       "present_refused": 0.3292,
+       "absent_answered": 0.0
+      },
+      {
+       "what": "450M, run 5",
+       "log": "exp_refuse_450m_2026-10-22.json",
+       "exact": 0.6167,
+       "present_wrong": 0.0541,
+       "present_refused": 0.3292,
+       "absent_answered": 0.0
+      },
+      {
+       "what": "toy P t12 s1",
+       "log": "k10_refuse_P_t12_s1_2026-10-22.json",
+       "exact": 0.6188,
+       "present_wrong": 0.0244,
+       "present_refused": 0.3569,
+       "absent_answered": 0.0148
+      },
+      {
+       "what": "toy P t12 s0",
+       "log": "k10_refuse_P_t12_s0_2026-10-22.json",
+       "exact": 0.6259,
+       "present_wrong": 0.033,
+       "present_refused": 0.3411,
+       "absent_answered": 0.0194
+      },
+      {
+       "what": "toy P t12 s2",
+       "log": "k10_refuse_P_t12_s2_2026-10-22.json",
+       "exact": 0.5865,
+       "present_wrong": 0.015,
+       "present_refused": 0.3985,
+       "absent_answered": 0.0044
+      },
+      {
+       "what": "toy P s2",
+       "log": "k10_refuse_P_s2_2026-10-22.json",
+       "exact": 0.5739,
+       "present_wrong": 0.0263,
+       "present_refused": 0.3997,
+       "absent_answered": 0.0
+      },
+      {
+       "what": "toy P s1",
+       "log": "k10_refuse_P_s1_2026-10-22.json",
+       "exact": 0.5786,
+       "present_wrong": 0.0244,
+       "present_refused": 0.3971,
+       "absent_answered": 0.0099
+      },
+      {
+       "what": "toy P s0",
+       "log": "k10_refuse_P_s0_2026-10-22.json",
+       "exact": 0.6137,
+       "present_wrong": 0.0306,
+       "present_refused": 0.3557,
+       "absent_answered": 0.0243
+      }
+     ],
+     "training": [],
+     "gpu": null,
+     "audience": "audit"
+    }
+   ]
+  },
+  "/board/mood": {
+   "public": [
+    200,
+    {
+     "built": true,
+     "bpm": 56,
+     "arousal": 0.28590430455886473,
+     "valence": 0.0,
+     "emotion": "neutral",
+     "levels": {
+      "serotonin": 0.33,
+      "dopamine": 0.41,
+      "noradrenaline": 0.114,
+      "cortisol": 0.061,
+      "oxytocin": 0.315,
+      "stress": 0.0
+     },
+     "cube": {
+      "pos": [
+       0.5,
+       0.5,
+       0.5
+      ],
+      "axes": [
+       "5-HT",
+       "DA",
+       "NE"
+      ],
+      "at_rest": true,
+      "corner": null,
+      "intensity": 0.0,
+      "runner_up": null
+     },
+     "arcs": {
+      "built": false,
+      "order": "0020",
+      "message": "not built yet (order 0020)"
+     },
+     "audience": "public"
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "built": true,
+     "bpm": 56,
+     "arousal": 0.28590430455886473,
+     "valence": 0.0,
+     "emotion": "neutral",
+     "levels": {
+      "serotonin": 0.33,
+      "dopamine": 0.41,
+      "noradrenaline": 0.114,
+      "cortisol": 0.061,
+      "oxytocin": 0.315,
+      "stress": 0.0
+     },
+     "cube": {
+      "pos": [
+       0.5,
+       0.5,
+       0.5
+      ],
+      "axes": [
+       "5-HT",
+       "DA",
+       "NE"
+      ],
+      "at_rest": true,
+      "corner": null,
+      "intensity": 0.0,
+      "runner_up": null
+     },
+     "arcs": {
+      "built": false,
+      "order": "0020",
+      "message": "not built yet (order 0020)"
+     },
+     "audience": "audit"
+    }
+   ]
+  },
+  "/board/plugins": {
+   "public": [
+    200,
+    {
+     "built": true,
+     "tau": 0.675,
+     "plugins": [
+      {
+       "name": "envcanada-alerts",
+       "version": "0.1.0",
+       "kinds": [
+        "source",
+        "panel"
+       ],
+       "audience": "public",
+       "status": "needs approval",
+       "description": "Weather warnings, watches and alerts in effect now for places in Canada, live from the national weather service.",
+       "licence": "OGL-Canada",
+       "permissions": {
+        "network": [
+         "dd.weather.gc.ca"
+        ],
+        "write": true,
+        "gpu": false
+       },
+       "last_used": null
+      },
+      {
+       "name": "gutenberg-plays",
+       "version": "0.1.0",
+       "kinds": [
+        "world"
+       ],
+       "audience": "public",
+       "status": "needs approval",
+       "description": "Who the characters of public-domain plays are to each other, inside each play: fathers, mothers, wives, husbands, brothers, sisters, sons and daughters.",
+       "licence": "[internal]",
+       "permissions": {
+        "network": [],
+        "write": true,
+        "gpu": false
+       },
+       "last_used": null
+      },
+      {
+       "name": "talk",
+       "version": "0.1.0",
+       "kinds": [
+        "adapter"
+       ],
+       "audience": "public",
+       "status": "needs approval",
+       "description": "Casual conversation in Cubby's own voice -- greetings, small talk, how it feels, chatting about the day.",
+       "licence": "internal weights (Grillcheese Research Lab)",
+       "permissions": {
+        "network": [],
+        "write": false,
+        "gpu": true
+       },
+       "last_used": null
+      },
+      {
+       "name": "units",
+       "version": "0.1.0",
+       "kinds": [
+        "tool"
+       ],
+       "audience": "public",
+       "status": "needs approval",
+       "description": "Converts a quantity from one unit to another, for length and distance, mass and weight, temperature, time, volume and speed.",
+       "licence": "MIT",
+       "permissions": {
+        "network": [],
+        "write": false,
+        "gpu": false
+       },
+       "last_used": null
+      }
+     ],
+     "panels": {},
+     "audience": "public"
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "built": true,
+     "tau": 0.675,
+     "plugins": [
+      {
+       "name": "envcanada-alerts",
+       "version": "0.1.0",
+       "kinds": [
+        "source",
+        "panel"
+       ],
+       "audience": "public",
+       "status": "needs approval",
+       "description": "Weather warnings, watches and alerts in effect now for places in Canada, live from the national weather service.",
+       "licence": "OGL-Canada",
+       "permissions": {
+        "network": [
+         "dd.weather.gc.ca"
+        ],
+        "write": true,
+        "gpu": false
+       },
+       "last_used": null
+      },
+      {
+       "name": "gutenberg-plays",
+       "version": "0.1.0",
+       "kinds": [
+        "world"
+       ],
+       "audience": "public",
+       "status": "needs approval",
+       "description": "Who the characters of public-domain plays are to each other, inside each play: fathers, mothers, wives, husbands, brothers, sisters, sons and daughters.",
+       "licence": "Public domain (Project Gutenberg texts; the Gutenberg licence for the files)",
+       "permissions": {
+        "network": [],
+        "write": true,
+        "gpu": false
+       },
+       "last_used": null
+      },
+      {
+       "name": "talk",
+       "version": "0.1.0",
+       "kinds": [
+        "adapter"
+       ],
+       "audience": "public",
+       "status": "needs approval",
+       "description": "Casual conversation in Cubby's own voice -- greetings, small talk, how it feels, chatting about the day.",
+       "licence": "internal weights (Grillcheese Research Lab)",
+       "permissions": {
+        "network": [],
+        "write": false,
+        "gpu": true
+       },
+       "last_used": null
+      },
+      {
+       "name": "units",
+       "version": "0.1.0",
+       "kinds": [
+        "tool"
+       ],
+       "audience": "public",
+       "status": "needs approval",
+       "description": "Converts a quantity from one unit to another, for length and distance, mass and weight, temperature, time, volume and speed.",
+       "licence": "MIT",
+       "permissions": {
+        "network": [],
+        "write": false,
+        "gpu": false
+       },
+       "last_used": null
+      }
+     ],
+     "panels": {},
+     "audience": "audit"
+    }
+   ]
+  },
+  "/board/watch": {
+   "public": [
+    200,
+    {
+     "section": "watch",
+     "built": false,
+     "order": "0024",
+     "message": "not built yet (order 0024)",
+     "audience": "public"
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "section": "watch",
+     "built": false,
+     "order": "0024",
+     "message": "not built yet (order 0024)",
+     "audience": "audit"
+    }
+   ]
+  },
+  "/board/worlds": {
+   "public": [
+    200,
+    {
+     "section": "worlds",
+     "built": false,
+     "order": "0015",
+     "message": "not built yet (order 0015)",
+     "audience": "public"
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "section": "worlds",
+     "built": false,
+     "order": "0015",
+     "message": "not built yet (order 0015)",
+     "audience": "audit"
+    }
+   ]
+  },
+  "/board/forecast": {
+   "public": [
+    200,
+    {
+     "section": "forecast",
+     "built": false,
+     "order": "0026",
+     "message": "not built yet (order 0026)",
+     "audience": "public"
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "section": "forecast",
+     "built": false,
+     "order": "0026",
+     "message": "not built yet (order 0026)",
+     "audience": "audit"
+    }
+   ]
+  },
+  "/board/agents": {
+   "public": [
+    200,
+    {
+     "section": "agents",
+     "built": false,
+     "order": "a later order",
+     "message": "not built yet (order a later order)",
+     "audience": "public"
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "section": "agents",
+     "built": false,
+     "order": "a later order",
+     "message": "not built yet (order a later order)",
+     "audience": "audit"
+    }
+   ]
+  },
+  "/board/plugins/route?q=how+many+kilometres+is+5+miles": {
+   "public": [
+    200,
+    {
+     "question": "how many kilometres is 5 miles",
+     "tau": 0.675,
+     "scores": {
+      "units": 0.882,
+      "talk": 0.047,
+      "envcanada-alerts": 0.02,
+      "gutenberg-plays": 0.019
+     },
+     "would_wake": [
+      "units"
+     ],
+     "declined": {},
+     "audience": "public"
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "question": "how many kilometres is 5 miles",
+     "tau": 0.675,
+     "scores": {
+      "units": 0.882,
+      "talk": 0.047,
+      "envcanada-alerts": 0.02,
+      "gutenberg-plays": 0.019
+     },
+     "would_wake": [
+      "units"
+     ],
+     "declined": {},
+     "audience": "audit"
+    }
+   ]
+  },
+  "/board/plugins/route?q=hi+Cubby%2C+how+are+you%3F": {
+   "public": [
+    200,
+    {
+     "question": "hi Cubby, how are you?",
+     "tau": 0.675,
+     "scores": {
+      "talk": 0.961,
+      "units": 0.071,
+      "gutenberg-plays": 0.06,
+      "envcanada-alerts": 0.013
+     },
+     "would_wake": [
+      "talk"
+     ],
+     "declined": {},
+     "audience": "public"
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "question": "hi Cubby, how are you?",
+     "tau": 0.675,
+     "scores": {
+      "talk": 0.961,
+      "units": 0.071,
+      "gutenberg-plays": 0.06,
+      "envcanada-alerts": 0.013
+     },
+     "would_wake": [
+      "talk"
+     ],
+     "declined": {},
+     "audience": "audit"
+    }
+   ]
+  },
+  "/board/plugins/review?name=units": {
+   "public": [
+    200,
+    {
+     "name": "units",
+     "review": null,
+     "audience": "public"
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "name": "units",
+     "review": {
+      "name": "units",
+      "permissions": {
+       "network": [],
+       "write": false,
+       "gpu": false
+      },
+      "files": [
+       {
+        "file": "PLUGIN.md",
+        "sha256": "9b63218a25a94c17734e9818eebf8ef13e785ab606ecadb001f3d997470a360a",
+        "status": "new",
+        "text": "---\nname: units\nversion: 0.1.0\ndescription: Converts a quantity from one unit to another, for length and distance, mass and weight, temperature, time, volume and speed.\nexamples:\n  - how many kilometres is 5 miles?\n  - convert 100 fahrenheit to celsius\n  - what is 3 feet in metres?\n  - how many pounds are in 2 kilograms?\n  - convert 60 miles per hour to km/h\n  - how many litres is a gallon?\n  - what is 20 degrees celsius in fahrenheit?\n  - how many seconds are in 3 hours?\n  - convert 500 grams to ounces\n  - how many inches is 30 centimetres?\n  - what's 10 km in miles?\n  - how many metres are in a mile?\n  - convert 2 pounds to grams\n  - how much is a litre in gallons?\n  - my oven says 350 F, what is that in celsius?\n  - how many minutes are in 2 days?\n  - how tall is 6 feet in centimetres?\n  - how many ounces in a kilogram?\n  - 120 km/h is how many mph?\n  - how many yards is 100 metres?\n  - what is 0 kelvin in celsius?\n  - how many hours is 10000 seconds?\n  - a recipe wants 250 ml, how many litres is that?\n  - is 5 kilograms more than 10 pounds?\n  - change 1 tonne into pounds\n  - combien de kilomètres font 10 miles ?\n  - convertis 30 degrés celsius en fahrenheit\n  - combien de livres pèse 5 kilos ?\n  - combien de pieds dans 2 mètres ?\n  - 100 km/h, ça fait combien en miles à l'heure ?\nnot:\n  - what is the capital of Canada?\n  - who wrote Hamlet?\n  - how many people live in Montreal?\n  - when was the Eiffel Tower built?\n  - is there a storm warning in Lévis?\n  - how tall is Mount Everest?\n  - who is the prime minister of Canada?\n  - what is the speed of light?\n  - how many moons does Jupiter have?\n  - what happened in Ottawa yesterday?\n  - how far is Paris from London?\n  - what is the boiling point of water?\n  - how much does an elephant weigh?\n  - what time is it in Tokyo?\n  - how long is the Nile river?\n  - how fast can a cheetah run?\n  - what is the coldest temperature ever recorded?\n  - who invented the metric system?\n  - why does the US use miles?\n  - what will the temperature be tomorrow in Montreal?\n  - how many calories are in a banana?\n  - how old is the universe?\n  - how many countries use fahrenheit?\n  - what is a kilowatt-hour?\n  - quelle est la capitale du Canada ?\n  - quelle distance entre Montréal et Québec ?\n  - combien d'habitants à Paris ?\n  - qui a inventé le système métrique ?\n  - quelle température fera-t-il demain ?\n  - combien pèse la Lune ?\nkinds: [tool]\naudience: public\nlicence: MIT\nrequires: {plugins: [], base: null}\npermissions: {network: [], write: false, gpu: false}\nentry: {tool: \"tool.py:Units\"}\n---\n\n# units\n\nThe smallest code plugin: a unit conversion tool with no network and nothing written. `run({\"value\": 5, \"from\":\n\"mi\", \"to\": \"km\"})` returns `{\"value\": 8.04672, \"unit\": \"km\"}`, or `{\"error\": ...}` for units of different kinds or\nunits it does not know. Exact factors (SI definitions), temperatures by their offsets.\n"
+       },
+       {
+        "file": "tool.py",
+        "sha256": "a714c77ef5e7ba2f7be9a1a9c39990c819ccd48f50a459f9a19e33e17eee3a8a",
+        "status": "new",
+        "text": "\"\"\"units -- a plugin tool (order 0028): a quantity from one unit to another. No network, nothing written.\"\"\"\n\n# each unit: (kind, factor to the kind's base unit); temperatures are handled by their offsets\nUNITS = {\n    \"m\": (\"length\", 1.0), \"metre\": (\"length\", 1.0), \"meter\": (\"length\", 1.0), \"metres\": (\"length\", 1.0),\n    \"km\": (\"length\", 1000.0), \"kilometre\": (\"length\", 1000.0), \"kilometres\": (\"length\", 1000.0),\n    \"cm\": (\"length\", 0.01), \"centimetre\": (\"length\", 0.01), \"centimetres\": (\"length\", 0.01),\n    \"mm\": (\"length\", 0.001), \"in\": (\"length\", 0.0254), \"inch\": (\"length\", 0.0254), \"inches\": (\"length\", 0.0254),\n    \"ft\": (\"length\", 0.3048), \"foot\": (\"length\", 0.3048), \"feet\": (\"length\", 0.3048),\n    \"yd\": (\"length\", 0.9144), \"yard\": (\"length\", 0.9144), \"mi\": (\"length\", 1609.344), \"mile\": (\"length\", 1609.344),\n    \"miles\": (\"length\", 1609.344),\n    \"kg\": (\"mass\", 1.0), \"kilogram\": (\"mass\", 1.0), \"kilograms\": (\"mass\", 1.0), \"g\": (\"mass\", 0.001),\n    \"gram\": (\"mass\", 0.001), \"grams\": (\"mass\", 0.001), \"lb\": (\"mass\", 0.45359237), \"pound\": (\"mass\", 0.45359237),\n    \"pounds\": (\"mass\", 0.45359237), \"oz\": (\"mass\", 0.028349523125), \"ounce\": (\"mass\", 0.028349523125),\n    \"ounces\": (\"mass\", 0.028349523125), \"t\": (\"mass\", 1000.0), \"tonne\": (\"mass\", 1000.0),\n    \"s\": (\"time\", 1.0), \"second\": (\"time\", 1.0), \"seconds\": (\"time\", 1.0), \"min\": (\"time\", 60.0),\n    \"minute\": (\"time\", 60.0), \"minutes\": (\"time\", 60.0), \"h\": (\"time\", 3600.0), \"hour\": (\"time\", 3600.0),\n    \"hours\": (\"time\", 3600.0), \"day\": (\"time\", 86400.0), \"days\": (\"time\", 86400.0),\n    \"l\": (\"volume\", 1.0), \"litre\": (\"volume\", 1.0), \"liter\": (\"volume\", 1.0), \"litres\": (\"volume\", 1.0),\n    \"ml\": (\"volume\", 0.001), \"gal\": (\"volume\", 3.785411784), \"gallon\": (\"volume\", 3.785411784),\n    \"gallons\": (\"volume\", 3.785411784),\n    \"m/s\": (\"speed\", 1.0), \"km/h\": (\"speed\", 1 / 3.6), \"kph\": (\"speed\", 1 / 3.6), \"mph\": (\"speed\", 0.44704),\n}\nTEMPS = {\"c\": \"c\", \"celsius\": \"c\", \"f\": \"f\", \"fahrenheit\": \"f\", \"k\": \"k\", \"kelvin\": \"k\"}\n\n\ndef _to_kelvin(v, u):\n    return {\"c\": v + 273.15, \"f\": (v - 32) * 5 / 9 + 273.15, \"k\": v}[u]\n\n\ndef _from_kelvin(v, u):\n    return {\"c\": v - 273.15, \"f\": (v - 273.15) * 9 / 5 + 32, \"k\": v}[u]\n\n\nclass Units:\n    schema = {\"type\": \"object\", \"properties\": {\"value\": {\"type\": \"number\"}, \"from\": {\"type\": \"string\"},\n                                               \"to\": {\"type\": \"string\"}}, \"required\": [\"value\", \"from\", \"to\"]}\n\n    def __init__(self, ctx) -> None:\n        self.ctx = ctx\n\n    def run(self, args: dict) -> dict:\n        v, a, b = float(args[\"value\"]), str(args[\"from\"]).strip().lower(), str(args[\"to\"]).strip().lower()\n        if a in TEMPS and b in TEMPS:\n            return {\"value\": round(_from_kelvin(_to_kelvin(v, TEMPS[a]), TEMPS[b]), 6), \"unit\": b}\n        if a not in UNITS or b not in UNITS:\n            return {\"error\": f\"unknown unit: {a if a not in UNITS else b}\"}\n        (ka, fa), (kb, fb) = UNITS[a], UNITS[b]\n        if ka != kb:\n            return {\"error\": f\"{a} is a {ka}, {b} is a {kb}\"}\n        return {\"value\": round(v * fa / fb, 6), \"unit\": b}\n"
+       }
+      ],
+      "digest": "3093fde3ce8628d1b3ffe0e6b64df8ff413f0bd077dfcafc8b94dc7dc54b630b",
+      "check": []
+     },
+     "audience": "audit"
+    }
+   ]
+  },
+  "/health": {
+   "public": [
+    200,
+    {
+     "ok": true,
+     "emitter": "ctx[programs=slots(cubby450m:cubby450m_v12e_w_step_cont),talk=cubby450m:talk_v2_2]",
+     "ask": true,
+     "ask_source": null,
+     "news": null,
+     "asked": 20,
+     "two_adapters": true,
+     "adapters": {
+      "roles": [
+       "programs",
+       "talk"
+      ],
+      "candidates": [],
+      "calls": {
+       "programs": 5,
+       "talk": 0
+      },
+      "fallbacks": {},
+      "fallback_rate": 0.0,
+      "idle": [
+       "talk"
+      ],
+      "history": []
+     }
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "ok": true,
+     "emitter": "ctx[programs=slots(cubby450m:cubby450m_v12e_w_step_cont),talk=cubby450m:talk_v2_2]",
+     "ask": true,
+     "ask_source": "wikidata",
+     "news": null,
+     "asked": 20,
+     "two_adapters": true,
+     "adapters": {
+      "roles": [
+       "programs",
+       "talk"
+      ],
+      "candidates": [],
+      "calls": {
+       "programs": 5,
+       "talk": 0
+      },
+      "fallbacks": {},
+      "fallback_rate": 0.0,
+      "idle": [
+       "talk"
+      ],
+      "history": []
+     }
+    }
+   ]
+  },
+  "/worlds": {
+   "public": [
+    200,
+    {
+     "worlds": {
+      "all": 556420
+     },
+     "cortices": []
+    }
+   ],
+   "audit": [
+    200,
+    {
+     "worlds": {
+      "facts": 2914,
+      "wiki": 553506
+     },
+     "cortices": []
+    }
+   ]
+  }
+ }
+}

@@ -37,6 +37,7 @@ def made(tmp_path, monkeypatch):
     from test_books import exact_vm
     from test_search_learn import DictSource, ProvStore
     monkeypatch.setattr(hdc_kinds, "SPREAD", 2)
+    monkeypatch.setattr(hdc_cues, "CUE_MIN", 1)
     facts, labels, ids = _world()
     db = tmp_path / "hdc_world.sqlite"
     write_world(db, facts, labels, {}, PIDS)
@@ -81,6 +82,13 @@ def test_two_of_a_kind_a_fact_tells_apart_are_each_answered_from_their_own_walk(
     assert rec["reply"] == ("Max Roe (occupation: baseball player): Ruritania Land; "
                             "Max Roe (occupation: politician): Grand Fenwick.")
     assert [(a["item"], a["answer"]) for a in rec["answers"]] == [(ids["max_b"], "Ruritania Land"), (ids["max_p"], "Grand Fenwick")]
+
+
+def test_the_cue_words_are_the_questions_capitalised_words_not_its_verbs():
+    from cubbyllm.reasoning.ask_namesake_answer import cue_words
+    assert cue_words("What river flows through Cairo?", "Cairo", ["located in or next to body of water"]) == []
+    assert cue_words("What Nobel Prize did Marie Curie win?", "Marie Curie", [AWARD]) == ["nobel", "prize"]
+    assert cue_words("What currency does Greece use?", "Greece", ["currency"]) == []      # a head noun is no cue
 
 
 def test_two_others_of_one_kind_and_name_are_said_once():

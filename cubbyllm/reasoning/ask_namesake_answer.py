@@ -1,8 +1,9 @@
 """cubbyllm/reasoning/ask_namesake_answer.py -- how an answer reads when the question's relation decided a shared name
 (order 0037; the world's side is ``worlds.hdc_relation``). Behind ``CB_NAMESAKE_RELATION=1``, as the hop is.
 
-- The walk reads the question's **cue words** (``cue_words``: its content words, less the name's and the relation's):
-  "Nobel" rules out a namesake whose kind never goes with it.
+- The walk reads the question's **cue words** (``cue_words``: its capitalised words, less the name's and the
+  relation's): "Nobel" rules out a namesake whose kind never goes with it (a word the world uses rarely rules out
+  nothing: ``hdc_cues.CUE_MIN``).
 - **One fits:** the answer, then one line naming at most two other namesakes by their kind, with an offer (Nick: "as
   Gemini does"): "Paris. If you meant something else, there is also a constituency of the European Parliament named
   France. Want to know about it?" An item with nothing known of its kind is not named. A value the question's own
@@ -38,11 +39,14 @@ def on() -> bool:
 
 
 def cue_words(question: str, seed: str, rels) -> list[str]:
-    """The question's own words that may narrow a shared name: its content words, less the name's, the relation's
-    and the question's own ("what", "did")."""
+    """The question's own words that may narrow a shared name: its capitalised words after the first ("Nobel" in
+    "What Nobel Prize did Marie Curie win?"), less the name's and the relation's. Not its other words: "flows" and
+    "through" in "What river flows through Cairo?" ruled the city out (order 0037's audit), and a head noun names
+    the answer's class, which the subject's own values seldom use ("currency" is in no country's values)."""
     from cubbyllm.worlds.hdc_cues import words
     drop = set(words(seed)) | {w for r in rels or () for w in words(r or "")} | QUESTION_WORDS
-    return list(dict.fromkeys(w for w in words(question) if w not in drop))
+    caps = " ".join(t for t in _re.findall(r"[\w'-]+", question or "")[1:] if t[:1].isupper())
+    return list(dict.fromkeys(w for w in words(caps) if w not in drop))
 
 
 def class_words(question: str, seed: str) -> list[str]:

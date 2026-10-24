@@ -25,6 +25,7 @@ import time
 
 __wiring__ = "WIRED"
 
+CUE_MIN = 100            # a cue word rules out only when this many of the world's subjects use it ("nobel": 711)
 INSTANCE = "instance of"
 STOP = frozenset("""the a an of and or in on at to for from by with into over under about as is are was were be been his
 her its their this that these those what which who whom whose where when why how did does do has have had not no de la le
@@ -70,8 +71,8 @@ def build(db_path: str, table, out: str | None = None) -> dict:
         rels.add(rel)
         if rel == INSTANCE:
             kinds.add(okey)
-        else:
-            ws.update(words(okey))
+        ws.update(words(okey))                           # a kind's own words too: "State" goes with U.S. states,
+        #                                                  "taxon" with taxa (order 0037's audit; a cue only rules out)
     if last is not None:
         flush()
     db.executemany("INSERT INTO pairs VALUES (?,?)", buf)
@@ -88,7 +89,9 @@ def build(db_path: str, table, out: str | None = None) -> dict:
 
 
 class Cues:
-    """``kinds(word)``: the kinds a word of the world's values goes with, or None for a word the world never uses."""
+    """``kinds(word)``: the kinds a word of the world's values goes with, or None for a word the world never uses or
+    uses too rarely to say what it never goes with (fewer than CUE_MIN subjects: order 0037's audit, "flows" in one
+    album's title ruled out the city of Cairo)."""
 
     def __init__(self, path: str) -> None:
         self.db = sqlite3.connect(f"file:{path}?mode=ro", uri=True, check_same_thread=False)
@@ -96,9 +99,10 @@ class Cues:
 
     def kinds(self, word: str) -> set | None:
         if word not in self._memo:
-            got = {k for (k,) in self.db.execute("SELECT kind FROM word_kinds WHERE word = ?", (word,))}
-            self._memo[word] = got or None
-        return self._memo[word]
+            rows = self.db.execute("SELECT kind, n FROM word_kinds WHERE word = ?", (word,)).fetchall()
+            self._memo[word] = ({k for k, _n in rows}, sum(n for _k, n in rows)) if rows else (None, 0)
+        got, support = self._memo[word]
+        return got if got and support >= CUE_MIN else None
 
 
 def for_world(db_path: str) -> Cues | None:
