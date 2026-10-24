@@ -218,7 +218,7 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 ev.emit("answer", qid, answer=None, verified=False, reason=rec["reason"])
                 rec["wall_s"] = round(time.perf_counter() - t0, 3); self._keep(rec); return rec
             rels, seed = ep
-            one_item = seed_for(self, seed, item)        # a name several items share (order 0033)
+            one_item = seed_for(self, seed, item, question=question, rels=rels)  # a shared name (orders 0033, 0037)
             plan = QuestionPlan(relations=[None] + rels[1:], tail=f"{rels[0]} of {seed}", n_hop=len(rels))
             rec["plan"], rec["seed"] = rels, seed
             source = self.source
@@ -249,7 +249,7 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                    branches=lr.result.branches, chose=choose or None,
                    clarify=branch_clarify(lr.plan or plan, lr.result, parse_choose(choose)),
                    wall_s=round(time.perf_counter() - t0, 3))
-        after_walk(self, rec, rec["seed"] or "")        # nothing decided which item a shared name is: the asker is asked
+        after_walk(self, rec, rec["seed"] or "", learn=learn)  # which item a shared name is: decided, or the asker is asked
         why = self._time_check(question, lr) if lr.result.verified and self.tense else None
         snap = self._snapshot(question, lr) if lr.result.verified and not why else None
         if snap and snap[0] != "as_of":                   # a snapshot's value asked about another time (order 0014)

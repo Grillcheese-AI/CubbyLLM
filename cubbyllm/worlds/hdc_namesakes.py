@@ -159,15 +159,27 @@ class Namesakes:
             return any(self.db.execute("SELECT 1 FROM facts WHERE skey = ? AND rel = ? AND sq = ? LIMIT 1",
                                        (normalize(s), rel, q)).fetchone() for s, q in members)
 
-    def hop_rows(self, name: str, keep) -> list:
-        """The rows a hop reads for `name` (`keep`: the hop's own test of a row): its one item's (or the item the asker
-        or a qualifier pinned); for a name several items share, none, and the items that held some are noted (with
-        ``CB_NAMESAKE_TIER=1``, those of the one item `hop_pick` allows)."""
+    def hop_rows(self, name: str, keep, rel: str | None = None) -> list:
+        """The rows a hop reads for `name` (`keep`: the hop's own test of a row; `rel`: its relation): its one item's
+        (or the item the asker or a qualifier pinned); for a name several items share, none, and the items that held
+        some are noted (with ``CB_NAMESAKE_TIER=1``, those of the one item `hop_pick` allows). With
+        ``CB_NAMESAKE_RELATION=1`` (order 0037, off until its audit), the one item order 0037's rule leaves
+        (``hdc_relation.decide``: its kind carries the relation and goes with the question's cue words, no other's
+        does), even when it holds no such fact; two or more that fit are noted to be answered each."""
         got = self._by_subj.get(name)
         if got:
             return [(f, t) for f, t in got if keep(f, t)]
         by = self.namesakes(name)
         held = {q: [(f, t) for f, t in rows if keep(f, t)] for q, rows in by.items()}
+        if by and rel and os.environ.get("CB_NAMESAKE_RELATION") == "1" and getattr(self, "_kinds", None) is not None:
+            from .hdc_relation import decide
+            d = decide(by, self._world_rels(rel), getattr(self._pins, "cues", None) or [], self._kinds,
+                       getattr(self, "_cues", None))
+            self._decisions()[normalize(name)] = d
+            if len(d["fit"]) == 1:
+                return held[d["fit"][0]]
+            self._notes()[normalize(name)] = d["fit"] or [h for h, rows in held.items() if rows]
+            return []
         if os.environ.get("CB_NAMESAKE_TIER") == "1":        # the relation tier, off since 0036's audit (module doc)
             q, holders = hop_pick(held, by, self.applies) if by else (None, [])
         else:
@@ -181,12 +193,37 @@ class Namesakes:
             self._pins.withheld = {}
         return self._pins.withheld
 
+    def _decisions(self) -> dict:
+        if getattr(self._pins, "decided", None) is None:
+            self._pins.decided = {}
+        return self._pins.decided
+
+    def decision(self, name: str) -> dict | None:
+        """Order 0037's decision on a shared name in the walk just made (``hdc_relation.decide``), or None."""
+        return self._decisions().get(normalize(name or ""))
+
+    def _world_rels(self, rel: str) -> set:
+        """This world's relations a question's relation names: the same words, or near enough (``relation_matches``)."""
+        from cubbyllm.reasoning.planner import relation_matches
+        return {r for r in self._rel_n if normalize(r) == normalize(rel) or relation_matches(rel, r)}
+
+    @contextlib.contextmanager
+    def cued(self, words):
+        """Inside, a hop's decision on a shared name reads the question's cue words (order 0037). Per thread."""
+        old = getattr(self._pins, "cues", None)
+        self._pins.cues = list(words or [])
+        try:
+            yield
+        finally:
+            self._pins.cues = old
+
     def withheld(self, name: str) -> list:
         """The items whose facts a hop on `name` would have read and did not (nothing decided which)."""
         return list(self._notes().get(normalize(name or ""), []))
 
     def clear_withheld(self) -> None:
         self._pins.withheld = {}
+        self._pins.decided = {}
 
     def _pin(self, key: str):
         return (getattr(self._pins, "map", None) or {}).get(normalize(key or ""))
@@ -226,6 +263,17 @@ class StoresNamesakes:
 
     def withheld(self, name: str) -> list:
         return next((got for got in (fn(name) for fn in self._all("withheld")) if got), [])
+
+    def decision(self, name: str) -> dict | None:
+        return next((got for got in (fn(name) for fn in self._all("decision")) if got), None)
+
+    def cued(self, words):
+        """Every read-only world reads the question's cue words, for the walk inside."""
+        stack = contextlib.ExitStack()
+        for o in self.others:
+            if hasattr(o, "cued"):
+                stack.enter_context(o.cued(words))
+        return stack
 
     def clear_withheld(self) -> None:
         for fn in self._all("clear_withheld"):

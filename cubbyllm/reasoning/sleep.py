@@ -68,6 +68,7 @@ ROUTES: dict[str, tuple[str, str]] = {
     "date_too_broad": ("clarify", "too much is dated in the range to answer in one breath"),
     "entity_unresolved": ("entity_resolution", "the source found no item for the name"),
     "profile_empty": ("source_gaps", "the item was found and holds nothing the ask wants"),
+    "not_what_was_asked": ("source_gaps", "the item holds the relation, but no value of the kind the question names (order 0037)"),
     "profile_unrecovered": ("vm_review", "facts were held but none recovered above the profile threshold"),
     "no_events_for_date": ("capability_gaps", "nothing indexes events by date"),
     "no_self_record": ("capability_gaps", "the loop keeps no record of that subject about itself"),

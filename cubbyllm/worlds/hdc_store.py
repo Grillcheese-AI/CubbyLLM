@@ -26,6 +26,7 @@ from cubbyllm.local_paths import data_dir
 from cubbyllm.reasoning.index import TripleIndex
 from cubbyllm.reasoning.planner import accepts, normalize, parse_fact, tail_splits
 
+from .hdc_cues import for_world as cues_for
 from .hdc_kinds import for_world
 from .hdc_namesakes import Namesakes, StoresNamesakes, object_items
 
@@ -61,6 +62,7 @@ class HdcWorld(Namesakes):
         self._named = functools.lru_cache(maxsize=cache)(self._named_rows)
         self._applies = functools.lru_cache(maxsize=4096)(self._applies_rows)
         self._kinds = for_world(self.path)               # the kinds table, when built beside this world (order 0036)
+        self._cues = cues_for(self.path)                 # the cue words' table (order 0037), likewise
         self._rows = functools.lru_cache(maxsize=cache)(self._query)
         self._pins = threading.local()                   # a seed read as one item for one walk (`pinned`, order 0033)
         self._by_subj, self._by_obj = _Rows(self._subject), _Rows(lambda k: self._rows("okey", k))
@@ -102,11 +104,11 @@ class HdcWorld(Namesakes):
                     def keep(f, t, rel=rel, as_label=as_label, exact=exact):
                         same = normalize(t.rel) == normalize(rel)
                         return (same if exact else self._rel_n.get(normalize(t.rel), 0) >= 2) and accepts(as_label, hop, entity, t)
-                    for f, t in self.hop_rows(ent, keep):        # a shared name: the one item the hop may read (0033)
+                    for f, t in self.hop_rows(ent, keep, rel):   # a shared name: the one item the hop may read (0033)
                         if f not in seen:
                             cands.append((f, t)); seen.add(f)
             return cands
-        return self.hop_rows(normalize(entity or ""), lambda f, t: accepts(plan, hop, entity, t))
+        return self.hop_rows(normalize(entity or ""), lambda f, t: accepts(plan, hop, entity, t), plan.relations[hop])
 
     def relations(self) -> dict[str, int]:
         return dict(self._rel_n)

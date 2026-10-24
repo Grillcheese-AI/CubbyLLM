@@ -14,6 +14,12 @@ It lives next to the world's file (``<world>.kinds.sqlite``), built from it:
 ``HdcWorld`` reads it when it is there and was built from this state of the world (``for_world``); else it scans as
 before.
 
+Order 0037 reads more from the same counts (``Table.carries``, ``Table.read``): whether a kind CARRIES a relation, as a
+share against the base of the world's typed items (LIFT, NMIN: "any member" let a town carry a capital), and an item's
+kinds read from its own relations when it records none (SPREAD keeps generic relations, "country", out of it). The
+base is the typed items', not all items': most people in this snapshot record no kind, so against all items even
+"human" did not hold a citizenship twice as often as the average.
+
 Wired: WIRED (``hdc_store.HdcWorld`` reads it through ``Namesakes.applies``).
 """
 from __future__ import annotations
@@ -68,14 +74,65 @@ def build(db_path: str, out: str | None = None) -> dict:
     return {**stamp, "out": out}
 
 
+LIFT = 2.0               # order 0037: a kind carries a relation when its members hold it this many times as often as
+NMIN = 3                 #   the world's typed items do, from at least NMIN members (a capital: most sovereign states,
+SPREAD = 50              #   few towns). A relation more than SPREAD kinds carry says only that an item is somewhere.
+
+
 class Table:
-    """``applies(kind, rel)`` from the built table (``kind`` normalized as the world's okey is)."""
+    """``applies(kind, rel)`` from the built table (``kind`` normalized as the world's okey is); and for order 0037,
+    ``carries`` (a share against the typed items' base, not "any member") and ``read`` (an item's kinds read from its
+    own relations when it records none). The table is small (some 20,000 pairs): it is read once into memory."""
 
     def __init__(self, path: str) -> None:
         self.db = sqlite3.connect(f"file:{path}?mode=ro", uri=True, check_same_thread=False)
+        self._n: dict | None = None
 
     def applies(self, kind: str, rel: str) -> bool:
         return self.db.execute("SELECT 1 FROM kind_rels WHERE kind = ? AND rel = ? LIMIT 1", (kind, rel)).fetchone() is not None
+
+    def _load(self) -> None:
+        self._n = {(k, r): n for k, r, n in self.db.execute("SELECT kind, rel, n FROM kind_rels")}
+        self._size = {k: n for (k, r), n in self._n.items() if r == INSTANCE}
+        typed, held = sum(self._size.values()) or 1, collections.Counter()
+        for (k, r), n in self._n.items():
+            held[r] += n
+        self._base = {r: n / typed for r, n in held.items()}        # (an item of two kinds counts twice: near enough)
+        self._by_rel = collections.defaultdict(set)
+        for (k, r) in self._n:
+            if r != INSTANCE and self._carries(k, r):
+                self._by_rel[r].add(k)
+
+    def _carries(self, kind: str, rel: str) -> bool:
+        n, size = self._n.get((kind, rel), 0), self._size.get(kind, 0)
+        return n >= NMIN and size > 0 and (n / size) >= LIFT * self._base.get(rel, 1.0)
+
+    def carries(self, kind: str, rel: str) -> bool:
+        """Do this kind's members hold `rel` well over the typed items' base (LIFT times, NMIN members at least)?"""
+        if self._n is None:
+            self._load()
+        return self._carries(kind, rel)
+
+    def kinds_carrying(self, rel: str) -> set:
+        if self._n is None:
+            self._load()
+        return set(self._by_rel.get(rel, ()))
+
+    def read(self, rels) -> set:
+        """The kinds an item that records none is of, read from its own relations: those its specific relations (each
+        carried by SPREAD kinds or fewer) all go with. A citizenship and an occupation read as a person; "country" and
+        "located in" alone read as nothing (they say only that it is somewhere)."""
+        if self._n is None:
+            self._load()
+        spec = sorted(r for r in set(rels) if r != INSTANCE and 0 < len(self._by_rel.get(r, ())) <= SPREAD)
+        if not spec:
+            return set()
+        out = set(self._by_rel[spec[0]])
+        for r in spec[1:]:
+            out &= self._by_rel[r]
+        # (relations that go with no kind together: the kinds any of them goes with, so the item still competes; an
+        #  item left out is how a wrong pick happens, one read too widely only costs an ask back)
+        return out or set().union(*(self._by_rel[r] for r in spec))
 
 
 def for_world(db_path: str) -> Table | None:
