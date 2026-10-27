@@ -76,7 +76,8 @@ country, Georgia the state).
 ## Out of scope
 - Several values of ONE item (Switzerland's languages): order 0044.
 - Reading the question better ("cleveland ohio"): order 0039.
-- Which wins between the snapshot and the source for a time-sensitive value: Nick's call (0037, question 2).
+- Which wins between the snapshot and the source for a time-sensitive value: decided, Wikidata wins (0037, item 3
+  under Cowork's check).
 
 ## Report
 <!-- Claude Code fills this in, then sets status: review -->

@@ -1,5 +1,5 @@
 # 0037 — Namesakes: answer when the question's relation fits only one of them ("the capital of France")
-status: open (2026-10-27: Cowork's check passes at the line; two small items left, below "Cowork's check")
+status: open (2026-10-27: Cowork's check passes at the line; three small items left, below "Cowork's check")
 written: 2026-10-23 by Cowork · approved: 2026-10-23 by Nick ("a capital is usually in a country so it should pick the country france (there is only one)") · hypothesis: none
 
 ## Why
@@ -208,9 +208,7 @@ mean. When the question truly cannot tell (two people named Steve Mills), he ans
 - **The cue-word probe:** 3 picks (Demon Hunter, Chen as a taxon, CBGB), 17 ask back, **0 wrong**.
 - **Your questions:**
   1. **The default:** on, as item 6 says. That is the first item below.
-  2. **Snapshot or source:** Nick's call; asked in Cowork's chat. Cowork proposes that a live source's dated value
-     wins over the snapshot's older time-sensitive one, and the snapshot answers when the source cannot. Until he
-     answers, leave it as it is.
+  2. **Snapshot or source:** Nick's answer (2026-10-27): **Wikidata wins.** That is the third item below.
   3. **Steve Mills:** yes. Asking back stays where no fact tells the items apart (item 5).
   4. **The source side:** order 0043.
 - **Left to do here, then `done` without another review:**
@@ -218,5 +216,10 @@ mean. When the question truly cannot tell (two people named Steve Mills), he ans
   2. **The KATA guard:** an item whose facts place it somewhere (`country`, `located in`, `located in the
      administrative territorial entity`) competes for a place relation even with no kind. Re-run the audit on
      seed 1: KATA asks back, and nothing else changes. Re-run the probe: unchanged. Report both in one line here.
+  3. **Wikidata wins (Nick):** for a time-sensitive relation, a value the live source gives is the answer, and the
+     snapshot's "As of ..." value answers only when the source gives none (offline, not cached, or no such fact).
+     The namesake rule still decides *which item* is meant; this decides only whose value is said. Re-run the
+     stack's 20: France and Canada answer with the source's value ("Paris", "Ottawa"), not "As of 2019, ...";
+     with the source off they still say "As of 2019, Paris". Report the two arms in one line here.
 - **Carried to 0043:** when every namesake gives the same value, saying it once is right whichever one was meant
   (Petershausen and Notojima would answer).
