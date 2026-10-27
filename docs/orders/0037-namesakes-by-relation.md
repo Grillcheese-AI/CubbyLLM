@@ -1,5 +1,5 @@
 # 0037 — Namesakes: answer when the question's relation fits only one of them ("the capital of France")
-status: review (2026-10-24: Claude Code)
+status: open (2026-10-27: Cowork's check passes at the line; two small items left, below "Cowork's check")
 written: 2026-10-23 by Cowork · approved: 2026-10-23 by Nick ("a capital is usually in a country so it should pick the country france (there is only one)") · hypothesis: none
 
 ## Why
@@ -189,3 +189,34 @@ mean. When the question truly cannot tell (two people named Steve Mills), he ans
      which. "Answer each" needs a fact other than the answer. Is that acceptable?
   4. **The source side.** Item 3 of your notes on the 76 refusals (namesakes at the Wikidata source) is outside
      this order: its constraints keep `sources.wikidata_resolve` unchanged. A new order?
+
+## Cowork's check (2026-10-27)
+- **The audit, read by hand** (`audit_namesake_relation_2026-10-24.md`, seed 1): **1 wrong pick in 50**, at the line, so
+  the rule passes.
+  - **The wrong pick: 14, KATA.** It said "Kose Rural Municipality" (Q3459361, a village in Estonia). Q5808376 is
+    also a village, in Iran, and Q6325364 is a radio station in California (both checked on Wikidata). Someone
+    asking where KATA is could as well mean the Iranian village.
+  - **The guard that missed:** "an item whose facts say nothing of its kind does not compete". Q5808376's only fact
+    is `country: Iran`. A fact that places an item somewhere says it *is* somewhere, so it can carry a place
+    relation.
+  - **The other five picks are right:** The Architect (Syracuse, the band), Alfred-Pellan (the other is an electoral
+    district), Demon Hunter (Marvel), CBGB (the film), The Toxic Avenger (the film). Thespis, labelled by parent
+    taxon: each value is tied to its own item.
+  - **Asked back where the question was obvious** (a cost): about 8. In four the namesakes give the same answer:
+    Petershausen (Germany both), Notojima (Japan both), Calhoun Township, Sumner Township. Chen's capital is the
+    State of Chen, an item with no kind. Others: Qu River, Barreiros, Gnojno.
+- **The cue-word probe:** 3 picks (Demon Hunter, Chen as a taxon, CBGB), 17 ask back, **0 wrong**.
+- **Your questions:**
+  1. **The default:** on, as item 6 says. That is the first item below.
+  2. **Snapshot or source:** Nick's call; asked in Cowork's chat. Cowork proposes that a live source's dated value
+     wins over the snapshot's older time-sensitive one, and the snapshot answers when the source cannot. Until he
+     answers, leave it as it is.
+  3. **Steve Mills:** yes. Asking back stays where no fact tells the items apart (item 5).
+  4. **The source side:** order 0043.
+- **Left to do here, then `done` without another review:**
+  1. **Item 6:** the rule on by default for hops (`CB_NAMESAKE_RELATION=0` turns it off).
+  2. **The KATA guard:** an item whose facts place it somewhere (`country`, `located in`, `located in the
+     administrative territorial entity`) competes for a place relation even with no kind. Re-run the audit on
+     seed 1: KATA asks back, and nothing else changes. Re-run the probe: unchanged. Report both in one line here.
+- **Carried to 0043:** when every namesake gives the same value, saying it once is right whichever one was meant
+  (Petershausen and Notojima would answer).

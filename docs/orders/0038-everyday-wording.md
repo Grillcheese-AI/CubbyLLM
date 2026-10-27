@@ -1,5 +1,5 @@
 # 0038 — Everyday wording: the host reads "Who wrote X?", and a scoreboard of the questions people ask
-status: review (built by Cowork while Claude Code was off; Claude Code reviews, lands and commits it)
+status: done (2026-10-27: Cowork's check; WebQ 65 of 187 spoken, 0 wrong, read by hand)
 written: 2026-10-24 by Cowork · approved: 2026-10-24 by Nick ("yes", then "can you do it"; the live lookup: "Live Wikidata lookup") · hypothesis: none
 
 ## Why
@@ -140,3 +140,21 @@ changed row read by hand:
   Fixed in `learn.resolve_siblings`.
 - One call to Wikidata failing once dropped that item's facts. A failed call is now tried once more.
 - **Nick (2026-10-24): both on by default.** `CB_PLACE_QUALIFIER=0` and `CB_NAME_MATCH=0` turn them off.
+
+## Cowork's check (2026-10-27)
+- **The last run, read by hand** (`everyday_webq_on_live_tense_names2_2026-10-24.json`): 65 spoken, **0 wrong**.
+  - The 10 that differ from the key are right: the hospitals where Truman and Nixon died, Italica for Hadrian,
+    pound sterling (three times), the parliamentary monarchy, America/New_York, and North America for Belize
+    (Central America is part of it).
+  - "Canada" for Nina Dobrev is true but half the answer: she holds two citizenships. 0044 covers saying both.
+- **The stack's 20:** 11 spoken (`everyday_stack_on_live_tense_names2_2026-10-24.json`).
+- **Tests:** whole suite 1095 passed, with the one known red (0002), as the landing reports.
+- **The 122 refusals,** for the next orders:
+  - 51 `ambiguous_hop`: several values for the one relation asked (20 time zones, 14 languages, 8 forms of
+    government, 2 capitals, 2 continents, 2 currencies, and three more). Order 0044.
+  - 58 `retrieval_exhausted`: mostly reading ("cleveland ohio", "london england", "denver co"), and the names the
+    source refuses as namesakes ("uk", Georgia, Obama, "king henry viii"). Orders 0039 and 0043.
+  - 7 `ambiguous_entity` (London, Chicago, Toronto, Oregon, Iceland, George Wilson), 4 `unknown_relation`, 1
+    `ambiguous_relation`, 1 `time_mismatch`.
+- **Not measured:** the 450M arm with the table on. Not part of this order's acceptance; it goes with 0039's
+  scoreboard (the optional "450M for the rest").
