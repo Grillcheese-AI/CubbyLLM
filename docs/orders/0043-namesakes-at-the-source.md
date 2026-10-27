@@ -1,5 +1,5 @@
 # 0043 — Namesakes at the source: 0037's rule on the Wikidata side, and namesakes that agree
-status: open
+status: in progress (Claude Code, 2026-10-27)
 written: 2026-10-27 by Cowork · approved: 2026-10-27 by Nick ("yes") · hypothesis: none
 
 ## Why
