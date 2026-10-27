@@ -8,13 +8,19 @@ several items share reads ONE item when:
 
 A namesake's kind is its recorded one (``instance of``), else the one read from its own facts (``Table.read``: a
 citizenship and an occupation read as a person). An item whose facts say nothing of its kind does not compete (France's
-Q49644, whose only fact is "country: France"). Two or more that fit are two of a kind: each is answered, labelled by
-one of its own facts (``reasoning.ask_namesakes``). None that fits: the loop asks which, as since 0036.
+Q49644, whose only fact is "country: France", asked a capital). For a place relation (``PLACING``: an item's country,
+what it is located in) every item that holds such a fact competes, whatever its kind: a thing with a country is
+somewhere, and a kind's share of "country" says nothing, since nearly every typed item holds one (Cowork's reading of
+the audit, 2026-10-27: KATA, a village in Estonia picked over a village in Iran whose one fact was its country; and
+the Eiffel Tower's replica in the United States, read alone when the tower's own kind did not carry "country"). Two or
+more that fit are two of a kind: each is answered, labelled by one of its own facts (``reasoning.ask_namesakes``). None
+that fits: the loop asks which, as since 0036.
 
 Nothing is ranked: an item never wins for being famous or more completely described (Q142's 197 facts count for
 nothing), and the order the items are named in is their ids'.
 
-Wired: WIRED (``hdc_namesakes.Namesakes.hop_rows``, behind ``CB_NAMESAKE_RELATION=1`` until order 0037's audit).
+Wired: WIRED (``hdc_namesakes.Namesakes.hop_rows``; on by default since 2026-10-27, the audit read by Cowork at the
+line -- 1 wrong pick in 50; ``CB_NAMESAKE_RELATION=0`` turns it off).
 """
 from __future__ import annotations
 
@@ -24,6 +30,8 @@ __wiring__ = "WIRED"
 
 INSTANCE = "instance of"
 SAY_KIND = {"human": "person"}                           # a kind as said in a sentence ("there is also a person named ...")
+PLACING = frozenset(("country", "located in the administrative territorial entity", "located in"))   # facts that place an
+#   item somewhere; an item of no kind that holds one competes for one of them (where it is), for nothing else
 
 
 def qnum(item: str) -> int:
@@ -62,15 +70,21 @@ def kind_word(kinds: set, table) -> str:
 def decide(by: dict, rels: set, cues: list, table, cue_table) -> dict:
     """Order 0037's rule over a name's items (`by`: {item: [(fact, Triple)]}) for a hop on `rels` (the world's names of
     the hop's relation) with the question's cue words. Returns {"fit": [items that fit, in id order], "kinds": {item:
-    [kinds, how]}, "ruled_out": {item: the cue word}, "cues": [the cue words the world uses]}."""
+    [kinds, how]}, "ruled_out": {item: the cue word}, "cues": [the cue words the world uses], "placed": [the items of
+    no kind that compete by a fact that places them, for a place relation]}."""
     used = [w for w in cues if cue_table is not None and cue_table.kinds(w) is not None]
-    out = {"fit": [], "kinds": {}, "ruled_out": {}, "cues": used, "rels": sorted(rels)}
+    out = {"fit": [], "kinds": {}, "ruled_out": {}, "cues": used, "rels": sorted(rels), "placed": []}
+    place = bool(set(rels) & PLACING)
     for q in sorted(by, key=qnum):
         ks, how = item_kinds(by[q], table)
         out["kinds"][q] = [sorted(ks), how]
-        if not ks or not any(table.carries(k, r) for k in ks for r in rels):
+        placed = place and bool({normalize(t.rel) for _f, t in by[q]} & PLACING)
+        if placed:                                       # placed somewhere: it competes for where it is, whatever its
+            out["placed"].append(q)                      #   kind (KATA; and a kind's share of "country" says nothing)
+        elif not ks or not any(table.carries(k, r) for k in ks for r in rels):
             continue                                     # (no kind known, or none that carries the relation)
-        miss = next((w for w in used if not ks & cue_table.kinds(w)), None)
+        miss = next((w for w in used if ks and not ks & cue_table.kinds(w)), None)   # (a cue rules out a KIND: an item
+        #   of none, placed, stays in the running)
         if miss:
             out["ruled_out"][q] = miss                   # a cue word its kind never goes with: it does not compete
             continue
@@ -99,4 +113,4 @@ def others(decision: dict, by: dict, table, at_most: int = 2) -> list[dict]:
     return got[:at_most]
 
 
-__all__ = ["decide", "item_kinds", "kind_word", "others", "qnum", "sayable"]
+__all__ = ["PLACING", "decide", "item_kinds", "kind_word", "others", "qnum", "sayable"]

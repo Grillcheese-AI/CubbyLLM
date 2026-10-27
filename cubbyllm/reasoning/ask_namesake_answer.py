@@ -1,5 +1,6 @@
 """cubbyllm/reasoning/ask_namesake_answer.py -- how an answer reads when the question's relation decided a shared name
-(order 0037; the world's side is ``worlds.hdc_relation``). Behind ``CB_NAMESAKE_RELATION=1``, as the hop is.
+(order 0037; the world's side is ``worlds.hdc_relation``). On by default since 2026-10-27, as the hop is
+(``CB_NAMESAKE_RELATION=0`` turns both off).
 
 - The walk reads the question's **cue words** (``cue_words``: its capitalised words, less the name's and the
   relation's): "Nobel" rules out a namesake whose kind never goes with it (a word the world uses rarely rules out
@@ -35,7 +36,8 @@ _DESC = _re.compile(r"^\s*(?:what|which)\s+(?P<desc>.+?)\s+(?:did|does|do|is|was
 
 
 def on() -> bool:
-    return os.environ.get("CB_NAMESAKE_RELATION") == "1"
+    """Order 0037's rule: on unless ``CB_NAMESAKE_RELATION=0`` (off until Cowork read the audit, 2026-10-27)."""
+    return os.environ.get("CB_NAMESAKE_RELATION") != "0"
 
 
 def cue_words(question: str, seed: str, rels) -> list[str]:
@@ -124,12 +126,14 @@ def several_fit(loop, rec: dict, seed: str, d: dict, by: dict, learn) -> bool:
         return False
     answers = []
     for q in items:
-        with loop._lock, loop.world.pinned(seed, by[q][0][1].subj, q):
-            lr = learn()
+        def walk(q=q):                                   # this item's own walk (and once more, should the source be
+            with loop._lock, loop.world.pinned(seed, by[q][0][1].subj, q):    # asked for today's value: ask_source_first)
+                return learn()
+        lr = walk()
         ok = bool(lr.result.verified)
         one = {"answer": lr.result.answer if ok else None, "verified": ok, "reason": None if ok else lr.result.reason}
         if hasattr(loop, "_checked"):                    # the checks any walk passes: an ended value is not said
-            loop._checked(rec.get("question") or "", lr, one)
+            loop._checked(rec.get("question") or "", lr, one, again=walk)
         ok = bool(one["verified"])
         answers.append({"item": q, "label": labels[q], "answer": one["answer"], "verified": ok, "reason": one["reason"],
                         "said": str(one.get("reply") or one["answer"]).rstrip(".") if ok else None,

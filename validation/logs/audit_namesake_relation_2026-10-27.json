@@ -1,0 +1,4206 @@
+{
+ "what": "order 0037: the relation rule on shared hdc names, for a reading by hand",
+ "date": "2026-10-27",
+ "seed": 1,
+ "fixed": [
+  {
+   "question": "What is the capital of France?",
+   "cues": [],
+   "fit": [
+    "Q142"
+   ],
+   "outcome": "one item",
+   "reply": "Paris. If you meant something else, there is also a constituency of the european parliament named France. Want to know about it?",
+   "ms": 37.7,
+   "items_n": 3
+  },
+  {
+   "question": "What is the currency of Japan?",
+   "cues": [],
+   "fit": [
+    "Q17"
+   ],
+   "outcome": "one item",
+   "reply": "Japanese yen. If you meant something else, there is also a manga named Japan (2 of them). Want to know about one of them?",
+   "ms": 7.4,
+   "items_n": 8
+  },
+  {
+   "question": "What is the capital of Italy?",
+   "cues": [],
+   "fit": [
+    "Q38"
+   ],
+   "outcome": "one item",
+   "reply": "Rome.",
+   "ms": 6.2,
+   "items_n": 4
+  },
+  {
+   "question": "What Nobel Prize did Marie Curie win?",
+   "cues": [
+    "nobel"
+   ],
+   "fit": [
+    "Q7186"
+   ],
+   "outcome": "one item, not what was asked",
+   "reply": "I don't know (its value, Elliott Cresson Medal, is not a nobel prize).",
+   "ms": 3.8,
+   "items_n": 2
+  },
+  {
+   "question": "What is the country of citizenship of Steve Mills?",
+   "cues": [],
+   "fit": [
+    "Q7613385",
+    "Q7613386"
+   ],
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Steve Mills)",
+   "ms": 4.9,
+   "items_n": 2
+  }
+ ],
+ "audit": [
+  {
+   "question": "What is the educated at of Richard Parsons?",
+   "label": "Richard Parsons",
+   "relation": "educated at",
+   "items_n": 4,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (4 items named Richard Parsons)",
+   "fit": [
+    "Q2149305",
+    "Q7328288",
+    "Q7328289",
+    "Q16090883"
+   ],
+   "ms": 4.4,
+   "items": [
+    {
+     "item": "Q2149305",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "occupation: lawyer"
+     ]
+    },
+    {
+     "item": "Q7328288",
+     "kinds": [
+      "human",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "educated at: University of Oxford"
+     ]
+    },
+    {
+     "item": "Q7328289",
+     "kinds": [
+      "human"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "employer: University of Oxford"
+     ]
+    },
+    {
+     "item": "Q16090883",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United Kingdom"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the location of creation of USS Swasey?",
+   "label": "USS Swasey",
+   "relation": "location of creation",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named USS Swasey)",
+   "fit": [
+    "Q7874525",
+    "Q7874526"
+   ],
+   "ms": 4.5,
+   "items": [
+    {
+     "item": "Q7874525",
+     "kinds": [
+      "amphibious cargo ship",
+      "cargo ship",
+      "cruiser",
+      "destroyer",
+      "destroyer escort",
+      "division",
+      "frigate",
+      "human",
+      "mountain gun",
+      "order of battle",
+      "regiment",
+      "rifle",
+      "ship",
+      "submarine",
+      "tank landing ship",
+      "u boat"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "participated in conflict: World War II"
+     ]
+    },
+    {
+     "item": "Q7874526",
+     "kinds": [
+      "destroyer",
+      "destroyer escort",
+      "ship",
+      "submarine",
+      "u boat"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "location of creation: Quincy",
+      "participated in conflict: World War II"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the opposite of of flashforward?",
+   "label": "flashforward",
+   "relation": "opposite of",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named flashforward)",
+   "fit": [],
+   "ms": 4.6,
+   "items": [
+    {
+     "item": "Q476857",
+     "kinds": [
+      "3d film",
+      "book",
+      "film",
+      "film series",
+      "manga",
+      "opera",
+      "television film",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "does not fit",
+     "values": [
+      "narrative location: Los Angeles"
+     ]
+    },
+    {
+     "item": "Q2533706",
+     "kinds": [
+      "cinematic technique"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "opposite of: flashback"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of origin of A Different World?",
+   "label": "A Different World",
+   "relation": "country of origin",
+   "items_n": 3,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (3 items named A Different World)",
+   "fit": [
+    "Q2314449",
+    "Q4656470"
+   ],
+   "ms": 6.1,
+   "items": [
+    {
+     "item": "Q2314449",
+     "kinds": [
+      "album",
+      "bach cantata",
+      "musical",
+      "national anthem",
+      "opera",
+      "single",
+      "song"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "lyricist: Steve Harris"
+     ]
+    },
+    {
+     "item": "Q2315368",
+     "kinds": [],
+     "how": "none",
+     "mark": "does not fit",
+     "values": [
+      "follows: Raging Silence"
+     ]
+    },
+    {
+     "item": "Q4656470",
+     "kinds": [
+      "3d film",
+      "animated film",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "concert tour",
+      "condiment",
+      "dog breed",
+      "drink",
+      "encyclopedia",
+      "episode",
+      "extended play",
+      "film",
+      "film series",
+      "food",
+      "live album",
+      "magazine",
+      "manga",
+      "media franchise",
+      "miniseries",
+      "mountain gun",
+      "music genre",
+      "musical ensemble",
+      "musical group",
+      "news program",
+      "opera",
+      "orchestra",
+      "painting",
+      "periodical",
+      "play",
+      "radio program",
+      "referendum",
+      "rifle",
+      "sandwich",
+      "scientific journal",
+      "short film",
+      "silent film",
+      "single",
+      "song",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "television special"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of origin: United States of America",
+      "followed by: It's Good to Be Us"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the part of of Ballad of Easy Rider?",
+   "label": "Ballad of Easy Rider",
+   "relation": "part of",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Ballad of Easy Rider)",
+   "fit": [],
+   "ms": 5.0,
+   "items": [
+    {
+     "item": "Q805125",
+     "kinds": [],
+     "how": "none",
+     "mark": "does not fit",
+     "values": [
+      "followed by: (Untitled)"
+     ]
+    },
+    {
+     "item": "Q4851333",
+     "kinds": [],
+     "how": "none",
+     "mark": "does not fit",
+     "values": [
+      "part of: Ballad of Easy Rider"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the location of formation of The Architect?",
+   "label": "The Architect",
+   "relation": "location of formation",
+   "items_n": 4,
+   "outcome": "one item",
+   "reply": "Syracuse. If you meant something else, there is also a profession named architect and a fictional character named The Architect. Want to know about one of them?",
+   "fit": [
+    "Q2860251"
+   ],
+   "ms": 4.9,
+   "items": [
+    {
+     "item": "Q42973",
+     "kinds": [
+      "profession"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "field of this occupation: architecture"
+     ]
+    },
+    {
+     "item": "Q2316879",
+     "kinds": [
+      "fictional character"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": []
+    },
+    {
+     "item": "Q2860251",
+     "kinds": [
+      "business",
+      "musical group",
+      "railway company",
+      "record label",
+      "television station",
+      "video game developer"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "location of formation: Syracuse"
+     ]
+    },
+    {
+     "item": "Q7714193",
+     "kinds": [
+      "film",
+      "short film",
+      "silent film"
+     ],
+     "how": "read",
+     "mark": "does not fit",
+     "values": [
+      "country of origin: United States of America",
+      "film editor: Tom McArdle"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the given name of Alfred-Pellan?",
+   "label": "Alfred-Pellan",
+   "relation": "given name",
+   "items_n": 2,
+   "outcome": "one item",
+   "reply": "Alfred.",
+   "fit": [
+    "Q2835394"
+   ],
+   "ms": 4.2,
+   "items": [
+    {
+     "item": "Q2834924",
+     "kinds": [],
+     "how": "none",
+     "mark": "does not fit",
+     "values": [
+      "country: Canada"
+     ]
+    },
+    {
+     "item": "Q2835394",
+     "kinds": [
+      "human"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "given name: Alfred",
+      "manner of death: natural causes"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Diamantina River?",
+   "label": "Diamantina River",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Diamantina River)",
+   "fit": [
+    "Q1208608",
+    "Q5270661"
+   ],
+   "ms": 5.1,
+   "items": [
+    {
+     "item": "Q1208608",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "located in the administrative territorial entity: Queensland"
+     ]
+    },
+    {
+     "item": "Q5270661",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Brazil"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of Calhoun Township?",
+   "label": "Calhoun Township",
+   "relation": "country",
+   "items_n": 2,
+   "outcome": "one item",
+   "reply": "United States of America. If you meant something else, there is also a wikimedia disambiguation page named Calhoun Township. Want to know about it?",
+   "fit": [
+    "Q5019797"
+   ],
+   "ms": 4.5,
+   "items": [
+    {
+     "item": "Q1026704",
+     "kinds": [
+      "wikimedia disambiguation page"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": []
+    },
+    {
+     "item": "Q5019797",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States of America",
+      "located in the administrative territorial entity: Cheyenne County"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the from narrative universe of Demon Hunter?",
+   "label": "Demon Hunter",
+   "relation": "from narrative universe",
+   "items_n": 2,
+   "outcome": "one item",
+   "reply": "Marvel Universe.",
+   "fit": [
+    "Q5256211"
+   ],
+   "ms": 4.7,
+   "items": [
+    {
+     "item": "Q1186459",
+     "kinds": [
+      "3d film",
+      "album",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "extended play",
+      "film",
+      "film series",
+      "girl group",
+      "live album",
+      "manga",
+      "musical ensemble",
+      "musical group",
+      "national flag",
+      "opera",
+      "painting",
+      "play",
+      "pseudonym",
+      "remix album",
+      "short film",
+      "short story",
+      "silent film",
+      "single",
+      "song",
+      "studio album",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "does not fit",
+     "values": [
+      "genre: punk rock",
+      "has part(s): Ryan Clark"
+     ]
+    },
+    {
+     "item": "Q5256211",
+     "kinds": [
+      "asgardian",
+      "men in tolkien s legendarium",
+      "mutant",
+      "mutate",
+      "superhero",
+      "supervillain",
+      "vampire in marvel universe"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "from narrative universe: Marvel Universe"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the educated at of Colin Griffiths?",
+   "label": "Colin Griffiths",
+   "relation": "educated at",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Colin Griffiths)",
+   "fit": [
+    "Q5145163",
+    "Q16016147"
+   ],
+   "ms": 5.4,
+   "items": [
+    {
+     "item": "Q5145163",
+     "kinds": [
+      "human",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "educated at: University of East Anglia",
+      "occupation: writer"
+     ]
+    },
+    {
+     "item": "Q16016147",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United Kingdom"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the capital of Chen?",
+   "label": "Chen",
+   "relation": "capital",
+   "items_n": 4,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (4 items named Chen)",
+   "fit": [],
+   "ms": 4.1,
+   "items": [
+    {
+     "item": "Q281519",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "parent taxon: Anserinae"
+     ]
+    },
+    {
+     "item": "Q804988",
+     "kinds": [
+      "family name",
+      "han surname"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "described by source: Hundred Family Surnames"
+     ]
+    },
+    {
+     "item": "Q1069690",
+     "kinds": [],
+     "how": "none",
+     "mark": "does not fit",
+     "values": [
+      "capital: Huaiyang District"
+     ]
+    },
+    {
+     "item": "Q16098027",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": []
+    }
+   ]
+  },
+  {
+   "question": "What is the genre of Real Friends?",
+   "label": "Real Friends",
+   "relation": "genre",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Real Friends)",
+   "fit": [
+    "Q17151030",
+    "Q28453482"
+   ],
+   "ms": 4.2,
+   "items": [
+    {
+     "item": "Q17151030",
+     "kinds": [
+      "3d film",
+      "album",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "extended play",
+      "film",
+      "film series",
+      "girl group",
+      "live album",
+      "manga",
+      "musical ensemble",
+      "musical group",
+      "national flag",
+      "opera",
+      "painting",
+      "play",
+      "pseudonym",
+      "remix album",
+      "short film",
+      "short story",
+      "silent film",
+      "single",
+      "song",
+      "studio album",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "genre: punk rock"
+     ]
+    },
+    {
+     "item": "Q28453482",
+     "kinds": [
+      "album"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": []
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of KATA?",
+   "label": "KATA",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 3,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (3 items named KATA)",
+   "fit": [
+    "Q3459361",
+    "Q5808376",
+    "Q6325364"
+   ],
+   "ms": 5.8,
+   "items": [
+    {
+     "item": "Q3459361",
+     "kinds": [
+      "village"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "located in the administrative territorial entity: Kose Rural Municipality"
+     ]
+    },
+    {
+     "item": "Q5808376",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Iran"
+     ]
+    },
+    {
+     "item": "Q6325364",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States of America"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of Qu River?",
+   "label": "Qu River",
+   "relation": "country",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Qu River)",
+   "fit": [
+    "Q544565",
+    "Q7268213"
+   ],
+   "ms": 4.4,
+   "items": [
+    {
+     "item": "Q544565",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: People's Republic of China"
+     ]
+    },
+    {
+     "item": "Q7268213",
+     "kinds": [
+      "watercourse"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": []
+    }
+   ]
+  },
+  {
+   "question": "What is the language of work or name of The Deer and the Cauldron?",
+   "label": "The Deer and the Cauldron",
+   "relation": "language of work or name",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named The Deer and the Cauldron)",
+   "fit": [
+    "Q1185345",
+    "Q15633375"
+   ],
+   "ms": 5.8,
+   "items": [
+    {
+     "item": "Q1185345",
+     "kinds": [
+      "anime",
+      "anthology",
+      "book",
+      "book series",
+      "comic book series",
+      "fairy tale",
+      "hardback",
+      "limited series",
+      "manga",
+      "manuscript",
+      "miniseries",
+      "musical",
+      "play",
+      "short story",
+      "song",
+      "television film",
+      "united states executive order"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "author: Jin Yong"
+     ]
+    },
+    {
+     "item": "Q15633375",
+     "kinds": [
+      "academic journal",
+      "album",
+      "bach cantata",
+      "book",
+      "compilation album",
+      "diminutive",
+      "encyclopedia",
+      "extended play",
+      "fairy tale",
+      "family name",
+      "film series",
+      "free software",
+      "given name",
+      "history journal",
+      "live album",
+      "magazine",
+      "manuscript",
+      "musical composition",
+      "opera",
+      "operating system",
+      "periodical",
+      "play",
+      "praenomen",
+      "scientific journal",
+      "short story",
+      "single",
+      "song",
+      "studio album",
+      "television series",
+      "unisex given name",
+      "website"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "language of work or name: Standard Chinese"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Tenna?",
+   "label": "Tenna",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Tenna)",
+   "fit": [
+    "Q66226",
+    "Q326941"
+   ],
+   "ms": 5.6,
+   "items": [
+    {
+     "item": "Q66226",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "located in the administrative territorial entity: Grisons"
+     ]
+    },
+    {
+     "item": "Q326941",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "located in the administrative territorial entity: Trentino"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Barreiros?",
+   "label": "Barreiros",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Barreiros)",
+   "fit": [
+    "Q808853",
+    "Q2102404"
+   ],
+   "ms": 5.5,
+   "items": [
+    {
+     "item": "Q808853",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "located in the administrative territorial entity: Amares"
+     ]
+    },
+    {
+     "item": "Q2102404",
+     "kinds": [
+      "municipality of brazil"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": []
+    }
+   ]
+  },
+  {
+   "question": "What is the languages spoken, written or signed of Kathy Smith?",
+   "label": "Kathy Smith",
+   "relation": "languages spoken, written or signed",
+   "items_n": 3,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (3 items named Kathy Smith)",
+   "fit": [],
+   "ms": 6.2,
+   "items": [
+    {
+     "item": "Q6377304",
+     "kinds": [
+      "fictional character",
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "does not fit",
+     "values": [
+      "given name: Kathy"
+     ]
+    },
+    {
+     "item": "Q6377305",
+     "kinds": [
+      "human",
+      "pseudonym"
+     ],
+     "how": "read",
+     "mark": "does not fit",
+     "values": [
+      "given name: Kathy",
+      "languages spoken, written or signed: English"
+     ]
+    },
+    {
+     "item": "Q19879126",
+     "kinds": [
+      "human"
+     ],
+     "how": "read",
+     "mark": "does not fit",
+     "values": [
+      "cause of death: cancer"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the cast member of Wet Gold?",
+   "label": "Wet Gold",
+   "relation": "cast member",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Wet Gold)",
+   "fit": [
+    "Q7989963",
+    "Q15617001"
+   ],
+   "ms": 3.5,
+   "items": [
+    {
+     "item": "Q7989963",
+     "kinds": [
+      "3d film",
+      "animated film",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "city",
+      "compilation album",
+      "concert tour",
+      "condiment",
+      "deme",
+      "dialect",
+      "dog breed",
+      "drink",
+      "encyclopedia",
+      "episode",
+      "extended play",
+      "family name",
+      "film",
+      "film series",
+      "food",
+      "live album",
+      "magazine",
+      "manga",
+      "media franchise",
+      "miniseries",
+      "mountain gun",
+      "municipality of brazil",
+      "music genre",
+      "musical ensemble",
+      "musical group",
+      "news program",
+      "opera",
+      "orchestra",
+      "painting",
+      "periodical",
+      "play",
+      "profession",
+      "radio program",
+      "referendum",
+      "rifle",
+      "sandwich",
+      "scientific journal",
+      "short film",
+      "silent film",
+      "single",
+      "song",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "television special",
+      "university"
+     ],
+     "how": "read widely",
+     "mark": "fits",
+     "values": [
+      "country of origin: United States of America",
+      "different from: Wet Gold"
+     ]
+    },
+    {
+     "item": "Q15617001",
+     "kinds": [
+      "3d film",
+      "film",
+      "film series",
+      "short film",
+      "silent film",
+      "television film",
+      "television pilot",
+      "television series"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "cast member: Ralph Ince",
+      "country of origin: United States of America"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the filming location of Loners?",
+   "label": "Loners",
+   "relation": "filming location",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Loners)",
+   "fit": [
+    "Q2742024",
+    "Q2894483"
+   ],
+   "ms": 3.8,
+   "items": [
+    {
+     "item": "Q2742024",
+     "kinds": [
+      "film",
+      "silent film",
+      "television film",
+      "television series"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of origin: Czech Republic",
+      "filming location: Prague"
+     ]
+    },
+    {
+     "item": "Q2894483",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": []
+    }
+   ]
+  },
+  {
+   "question": "What is the educated at of Harry McPherson?",
+   "label": "Harry McPherson",
+   "relation": "educated at",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Harry McPherson)",
+   "fit": [
+    "Q3790209",
+    "Q16073436"
+   ],
+   "ms": 4.6,
+   "items": [
+    {
+     "item": "Q3790209",
+     "kinds": [
+      "human",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "educated at: Southern Methodist University"
+     ]
+    },
+    {
+     "item": "Q16073436",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": []
+    }
+   ]
+  },
+  {
+   "question": "What is the country of origin of City of Lost Souls?",
+   "label": "City of Lost Souls",
+   "relation": "country of origin",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named City of Lost Souls)",
+   "fit": [
+    "Q1094135",
+    "Q5123797"
+   ],
+   "ms": 12.6,
+   "items": [
+    {
+     "item": "Q1094135",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: action film",
+      "original language of film or TV show: Cantonese"
+     ]
+    },
+    {
+     "item": "Q5123797",
+     "kinds": [
+      "3d film",
+      "animated film",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "concert tour",
+      "condiment",
+      "dog breed",
+      "drink",
+      "encyclopedia",
+      "episode",
+      "extended play",
+      "film",
+      "film series",
+      "food",
+      "live album",
+      "magazine",
+      "manga",
+      "media franchise",
+      "miniseries",
+      "mountain gun",
+      "music genre",
+      "musical ensemble",
+      "musical group",
+      "news program",
+      "opera",
+      "orchestra",
+      "painting",
+      "periodical",
+      "play",
+      "radio program",
+      "referendum",
+      "rifle",
+      "sandwich",
+      "scientific journal",
+      "short film",
+      "silent film",
+      "single",
+      "song",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "television special"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of origin: West Germany"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the given name of Andrew Blake?",
+   "label": "Andrew Blake",
+   "relation": "given name",
+   "items_n": 3,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (3 items named Andrew Blake)",
+   "fit": [
+    "Q503810",
+    "Q4756371",
+    "Q21005097"
+   ],
+   "ms": 4.5,
+   "items": [
+    {
+     "item": "Q503810",
+     "kinds": [
+      "fictional character",
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "given name: Paul"
+     ]
+    },
+    {
+     "item": "Q4756371",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": []
+    },
+    {
+     "item": "Q21005097",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "occupation: association football player"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of citizenship of Jimmy Adams?",
+   "label": "Jimmy Adams",
+   "relation": "country of citizenship",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Jimmy Adams)",
+   "fit": [
+    "Q2789496",
+    "Q6199482"
+   ],
+   "ms": 6.1,
+   "items": [
+    {
+     "item": "Q2789496",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United Kingdom"
+     ]
+    },
+    {
+     "item": "Q6199482",
+     "kinds": [
+      "fictional character",
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "given name: Jimmy"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the location of formation of Pearl Jam?",
+   "label": "Pearl Jam",
+   "relation": "location of formation",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Pearl Jam)",
+   "fit": [
+    "Q142701",
+    "Q931609"
+   ],
+   "ms": 5.4,
+   "items": [
+    {
+     "item": "Q142701",
+     "kinds": [
+      "musical group"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "discography: Pearl Jam discography",
+      "location of formation: Seattle"
+     ]
+    },
+    {
+     "item": "Q931609",
+     "kinds": [
+      "3d film",
+      "animated film",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "concert tour",
+      "condiment",
+      "dog breed",
+      "drink",
+      "encyclopedia",
+      "episode",
+      "extended play",
+      "film",
+      "film series",
+      "food",
+      "live album",
+      "magazine",
+      "manga",
+      "media franchise",
+      "miniseries",
+      "mountain gun",
+      "music genre",
+      "musical ensemble",
+      "musical group",
+      "news program",
+      "opera",
+      "orchestra",
+      "painting",
+      "periodical",
+      "play",
+      "radio program",
+      "referendum",
+      "rifle",
+      "sandwich",
+      "scientific journal",
+      "short film",
+      "silent film",
+      "single",
+      "song",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "television special"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of origin: United States of America",
+      "followed by: Backspacer"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Changy?",
+   "label": "Changy",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Changy)",
+   "fit": [
+    "Q1068656",
+    "Q1218976"
+   ],
+   "ms": 4.7,
+   "items": [
+    {
+     "item": "Q1068656",
+     "kinds": [
+      "commune of france"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": []
+    },
+    {
+     "item": "Q1218976",
+     "kinds": [
+      "commune of france"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "located in the administrative territorial entity: Marne"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the distributed by of CBGB?",
+   "label": "CBGB",
+   "relation": "distributed by",
+   "items_n": 2,
+   "outcome": "one item",
+   "reply": "XLrator Media.",
+   "fit": [
+    "Q2931018"
+   ],
+   "ms": 3.9,
+   "items": [
+    {
+     "item": "Q1022965",
+     "kinds": [
+      "building",
+      "cemetery",
+      "hotel",
+      "skyscraper",
+      "theatre"
+     ],
+     "how": "read",
+     "mark": "does not fit",
+     "values": [
+      "country: United States of America",
+      "located on street: Bowery"
+     ]
+    },
+    {
+     "item": "Q2931018",
+     "kinds": [
+      "3d film",
+      "animated series",
+      "film",
+      "film series",
+      "short film",
+      "silent film",
+      "television film",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "distributed by: XLrator Media"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the part of the series of The Maid?",
+   "label": "The Maid",
+   "relation": "part of the series",
+   "items_n": 4,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (4 items named The Maid)",
+   "fit": [
+    "Q1774421",
+    "Q1990821",
+    "Q3778304",
+    "Q7749615"
+   ],
+   "ms": 4.3,
+   "items": [
+    {
+     "item": "Q1774421",
+     "kinds": [
+      "3d film",
+      "album",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "extended play",
+      "film",
+      "film series",
+      "girl group",
+      "live album",
+      "manga",
+      "musical ensemble",
+      "musical group",
+      "national flag",
+      "opera",
+      "painting",
+      "play",
+      "pseudonym",
+      "remix album",
+      "short film",
+      "short story",
+      "silent film",
+      "single",
+      "song",
+      "studio album",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "genre: comedy film"
+     ]
+    },
+    {
+     "item": "Q1990821",
+     "kinds": [
+      "3d film",
+      "album",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "extended play",
+      "film",
+      "film series",
+      "girl group",
+      "live album",
+      "manga",
+      "musical ensemble",
+      "musical group",
+      "national flag",
+      "opera",
+      "painting",
+      "play",
+      "pseudonym",
+      "remix album",
+      "short film",
+      "short story",
+      "silent film",
+      "single",
+      "song",
+      "studio album",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "genre: romantic comedy"
+     ]
+    },
+    {
+     "item": "Q3778304",
+     "kinds": [
+      "3d film",
+      "academic journal",
+      "bach cantata",
+      "film",
+      "film series",
+      "history journal",
+      "magazine",
+      "periodical",
+      "scientific journal",
+      "short film",
+      "silent film",
+      "television film",
+      "television program",
+      "television series"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "original language of film or TV show: Italian"
+     ]
+    },
+    {
+     "item": "Q7749615",
+     "kinds": [
+      "film",
+      "television pilot"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "director: Andy Ackerman",
+      "followed by: The Puerto Rican Day",
+      "follows: The Frogger",
+      "part of the series: Seinfeld"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the award received of Giuseppe Garibaldi?",
+   "label": "Giuseppe Garibaldi",
+   "relation": "award received",
+   "items_n": 3,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (3 items named Giuseppe Garibaldi)",
+   "fit": [
+    "Q539",
+    "Q5565419"
+   ],
+   "ms": 3.5,
+   "items": [
+    {
+     "item": "Q539",
+     "kinds": [
+      "human"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "award received: Gold Medal of Military Valour",
+      "given name: Giuseppe",
+      "native language: Italian"
+     ]
+    },
+    {
+     "item": "Q742121",
+     "kinds": [
+      "amphibious assault ship",
+      "cruise ship",
+      "ship",
+      "u boat"
+     ],
+     "how": "read",
+     "mark": "does not fit",
+     "values": [
+      "shipping port: Taranto"
+     ]
+    },
+    {
+     "item": "Q5565419",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: Kingdom of Italy"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the occupation of Liam Finn?",
+   "label": "Liam Finn",
+   "relation": "occupation",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Liam Finn)",
+   "fit": [
+    "Q2708494",
+    "Q6539589"
+   ],
+   "ms": 3.4,
+   "items": [
+    {
+     "item": "Q2708494",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: New Zealand",
+      "occupation: singer"
+     ]
+    },
+    {
+     "item": "Q6539589",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "member of sports team: Featherstone Rovers"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of citizenship of Bobby Caldwell?",
+   "label": "Bobby Caldwell",
+   "relation": "country of citizenship",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Bobby Caldwell)",
+   "fit": [
+    "Q2907941",
+    "Q3487124"
+   ],
+   "ms": 5.2,
+   "items": [
+    {
+     "item": "Q2907941",
+     "kinds": [
+      "fictional character",
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "given name: Bobby"
+     ]
+    },
+    {
+     "item": "Q3487124",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United States of America",
+      "given name: Bobby"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Sumner Township?",
+   "label": "Sumner Township",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 3,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (3 items named Sumner Township)",
+   "fit": [
+    "Q1915599",
+    "Q2220640",
+    "Q7637997"
+   ],
+   "ms": 5.1,
+   "items": [
+    {
+     "item": "Q1915599",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States of America"
+     ]
+    },
+    {
+     "item": "Q2220640",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "located in the administrative territorial entity: Buchanan County"
+     ]
+    },
+    {
+     "item": "Q7637997",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States of America"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the parent taxon of Alibertia?",
+   "label": "Alibertia",
+   "relation": "parent taxon",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Alibertia)",
+   "fit": [
+    "Q2473735",
+    "Q4725637"
+   ],
+   "ms": 3.7,
+   "items": [
+    {
+     "item": "Q2473735",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "different from: Alibertia"
+     ]
+    },
+    {
+     "item": "Q4725637",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "parent taxon: Eulophidae"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the followed by of Turbulence?",
+   "label": "Turbulence",
+   "relation": "followed by",
+   "items_n": 4,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (4 items named Turbulence)",
+   "fit": [
+    "Q727775",
+    "Q7854768"
+   ],
+   "ms": 3.6,
+   "items": [
+    {
+     "item": "Q190132",
+     "kinds": [],
+     "how": "none",
+     "mark": "does not fit",
+     "values": [
+      "described by source: Armenian Soviet Encyclopedia"
+     ]
+    },
+    {
+     "item": "Q623500",
+     "kinds": [],
+     "how": "none",
+     "mark": "does not fit",
+     "values": [
+      "followed by: No Beef",
+      "follows: I'm in the House"
+     ]
+    },
+    {
+     "item": "Q727775",
+     "kinds": [
+      "3d film",
+      "film",
+      "film series",
+      "manga",
+      "television film",
+      "television series"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of origin: United States of America",
+      "director: Robert Butler",
+      "main subject: aviation"
+     ]
+    },
+    {
+     "item": "Q7854768",
+     "kinds": [
+      "3d film",
+      "animated film",
+      "animated series",
+      "bach cantata",
+      "cantata",
+      "film",
+      "film series",
+      "miniseries",
+      "musical",
+      "musical composition",
+      "national anthem",
+      "opera",
+      "short film",
+      "single",
+      "song",
+      "symphony",
+      "television film",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "composer: Egberto Gismonti"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of citizenship of Steve Gould?",
+   "label": "Steve Gould",
+   "relation": "country of citizenship",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Steve Gould)",
+   "fit": [
+    "Q7612689",
+    "Q7612692"
+   ],
+   "ms": 5.1,
+   "items": [
+    {
+     "item": "Q7612689",
+     "kinds": [
+      "fictional character",
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "given name: Steve"
+     ]
+    },
+    {
+     "item": "Q7612692",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United Kingdom"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the member of sports team of Johnny Peacock?",
+   "label": "Johnny Peacock",
+   "relation": "member of sports team",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Johnny Peacock)",
+   "fit": [
+    "Q6267462",
+    "Q18001557"
+   ],
+   "ms": 4.6,
+   "items": [
+    {
+     "item": "Q6267462",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United States of America"
+     ]
+    },
+    {
+     "item": "Q18001557",
+     "kinds": [
+      "human",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "member of sports team: Tennessee Titans"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of Petershausen?",
+   "label": "Petershausen",
+   "relation": "country",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Petershausen)",
+   "fit": [
+    "Q533046",
+    "Q592306"
+   ],
+   "ms": 3.7,
+   "items": [
+    {
+     "item": "Q533046",
+     "kinds": [
+      "municipality of germany"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "located in the administrative territorial entity: Dachau county"
+     ]
+    },
+    {
+     "item": "Q592306",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Germany"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Gnojno?",
+   "label": "Gnojno",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 3,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (3 items named Gnojno)",
+   "fit": [
+    "Q212257",
+    "Q959946",
+    "Q5574316"
+   ],
+   "ms": 5.1,
+   "items": [
+    {
+     "item": "Q212257",
+     "kinds": [
+      "archipelago",
+      "big district town",
+      "capital",
+      "city",
+      "civil parish",
+      "college town",
+      "county of northern ireland",
+      "county seat",
+      "county town",
+      "financial centre",
+      "hamlet",
+      "hanseatic city",
+      "independent city of germany",
+      "island",
+      "lighthouse",
+      "member state of the european union",
+      "member states of the council of europe",
+      "member states of the united nations",
+      "metropolis",
+      "mountain",
+      "municipality of bosnia and herzegovina",
+      "municipality of germany",
+      "municipality of niger",
+      "municipality of portugal",
+      "municipality of spain",
+      "peninsula",
+      "province of indonesia",
+      "province of spain",
+      "republic",
+      "sovereign state",
+      "town",
+      "u s state"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "located in or next to body of water: Western Bug"
+     ]
+    },
+    {
+     "item": "Q959946",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Poland"
+     ]
+    },
+    {
+     "item": "Q5574316",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "located in the administrative territorial entity: Gmina Bobrowniki, Kuyavian-Pomeranian Voivodeship"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the member of sports team of Moon Sung-hyun?",
+   "label": "Moon Sung-hyun",
+   "relation": "member of sports team",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Moon Sung-hyun)",
+   "fit": [
+    "Q492889",
+    "Q6907571"
+   ],
+   "ms": 5.1,
+   "items": [
+    {
+     "item": "Q492889",
+     "kinds": [
+      "human",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "member of sports team: Kiwoom Heroes"
+     ]
+    },
+    {
+     "item": "Q6907571",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "occupation: politician"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the given name of Alfred Thomson?",
+   "label": "Alfred Thomson",
+   "relation": "given name",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Alfred Thomson)",
+   "fit": [
+    "Q4723525",
+    "Q19519439"
+   ],
+   "ms": 4.1,
+   "items": [
+    {
+     "item": "Q4723525",
+     "kinds": [
+      "archipelagic state",
+      "collegiate university",
+      "colonial colleges",
+      "commonwealth realm",
+      "communist state",
+      "dominion of the british empire",
+      "federation",
+      "grande école",
+      "human",
+      "island nation",
+      "land grant university",
+      "landlocked country",
+      "liberal arts college",
+      "library",
+      "member state of the european union",
+      "member states of the council of europe",
+      "member states of the united nations",
+      "mutant",
+      "permanent members of the united nations security council",
+      "political party",
+      "private university",
+      "public university",
+      "rechtsstaat",
+      "republic",
+      "research institute",
+      "research university",
+      "secular state",
+      "sovereign state",
+      "sports governing body",
+      "state",
+      "unitary state",
+      "university",
+      "zoo"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "member of: Royal Academy of Arts"
+     ]
+    },
+    {
+     "item": "Q19519439",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: Australia",
+      "given name: Alfred"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the operator of USS Hyman G. Rickover?",
+   "label": "USS Hyman G. Rickover",
+   "relation": "operator",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named USS Hyman G. Rickover)",
+   "fit": [
+    "Q174818",
+    "Q19563487"
+   ],
+   "ms": 4.1,
+   "items": [
+    {
+     "item": "Q174818",
+     "kinds": [
+      "amphibious assault ship",
+      "cruise ship",
+      "ship",
+      "u boat"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "armament: Harpoon",
+      "shipping port: Norfolk"
+     ]
+    },
+    {
+     "item": "Q19563487",
+     "kinds": [
+      "airbase",
+      "aircraft carrier",
+      "airplane",
+      "airport",
+      "amphibious cargo ship",
+      "antarctic research station",
+      "attack submarine",
+      "aviation accident",
+      "cargo ship",
+      "communications satellite",
+      "container ship",
+      "destroyer",
+      "destroyer escort",
+      "electric multiple unit",
+      "embassy",
+      "fifth rate",
+      "frigate",
+      "glonass m",
+      "human spaceflight",
+      "kaibōkan",
+      "lighthouse",
+      "littoral combat ship",
+      "long distance cycling route",
+      "metro station",
+      "nuclear power station",
+      "observatory",
+      "oil field",
+      "prison",
+      "radio telescope",
+      "railway station",
+      "rapid transit",
+      "ship",
+      "ship class",
+      "sports venue",
+      "stadium",
+      "steam locomotive",
+      "steamship",
+      "submarine",
+      "tank landing ship",
+      "torpedo boat",
+      "train",
+      "u boat"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "operator: United States Navy"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the different from of Thespis?",
+   "label": "Thespis",
+   "relation": "different from",
+   "items_n": 2,
+   "outcome": "each item labelled",
+   "reply": "Thespis (parent taxon: Thespidae): Thespis; Thespis (parent taxon: Asteraceae): Thespis.",
+   "fit": [
+    "Q6145853",
+    "Q7783456"
+   ],
+   "ms": 3.8,
+   "items": [
+    {
+     "item": "Q6145853",
+     "kinds": [
+      "city",
+      "deme",
+      "dialect",
+      "family name",
+      "monotypic taxon",
+      "municipality of brazil",
+      "profession",
+      "synonym",
+      "taxon",
+      "university"
+     ],
+     "how": "read widely",
+     "mark": "fits",
+     "values": [
+      "different from: Thespis",
+      "parent taxon: Thespidae"
+     ]
+    },
+    {
+     "item": "Q7783456",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "different from: Thespis",
+      "parent taxon: Asteraceae"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the distributed by of The Toxic Avenger?",
+   "label": "The Toxic Avenger",
+   "relation": "distributed by",
+   "items_n": 2,
+   "outcome": "one item",
+   "reply": "Troma Entertainment. If you meant something else, there is also a musical named The Toxic Avenger. Want to know about it?",
+   "fit": [
+    "Q615551"
+   ],
+   "ms": 3.7,
+   "items": [
+    {
+     "item": "Q615551",
+     "kinds": [
+      "3d film",
+      "animated series",
+      "film",
+      "film series",
+      "short film",
+      "silent film",
+      "television film",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "distributed by: Troma Entertainment"
+     ]
+    },
+    {
+     "item": "Q7769796",
+     "kinds": [
+      "musical"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": []
+    }
+   ]
+  },
+  {
+   "question": "What is the country of Notojima?",
+   "label": "Notojima",
+   "relation": "country",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named Notojima)",
+   "fit": [
+    "Q7063204",
+    "Q11612025"
+   ],
+   "ms": 3.4,
+   "items": [
+    {
+     "item": "Q7063204",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: Japan"
+     ]
+    },
+    {
+     "item": "Q11612025",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "located in the administrative territorial entity: Nanao"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of origin of George and Mildred?",
+   "label": "George and Mildred",
+   "relation": "country of origin",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named George and Mildred)",
+   "fit": [
+    "Q776608",
+    "Q5546666"
+   ],
+   "ms": 4.8,
+   "items": [
+    {
+     "item": "Q776608",
+     "kinds": [
+      "3d film",
+      "book",
+      "film",
+      "film series",
+      "manga",
+      "opera",
+      "television film",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "narrative location: London"
+     ]
+    },
+    {
+     "item": "Q5546666",
+     "kinds": [
+      "3d film",
+      "animated film",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "concert tour",
+      "condiment",
+      "dog breed",
+      "drink",
+      "encyclopedia",
+      "episode",
+      "extended play",
+      "film",
+      "film series",
+      "food",
+      "live album",
+      "magazine",
+      "manga",
+      "media franchise",
+      "miniseries",
+      "mountain gun",
+      "music genre",
+      "musical ensemble",
+      "musical group",
+      "news program",
+      "opera",
+      "orchestra",
+      "painting",
+      "periodical",
+      "play",
+      "radio program",
+      "referendum",
+      "rifle",
+      "sandwich",
+      "scientific journal",
+      "short film",
+      "silent film",
+      "single",
+      "song",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "television special"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of origin: United Kingdom"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the located in the administrative territorial entity of Greenfield?",
+   "label": "Greenfield",
+   "relation": "located in the administrative territorial entity",
+   "items_n": 23,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (23 items named Greenfield)",
+   "fit": [
+    "Q182877",
+    "Q577019",
+    "Q616236",
+    "Q952507",
+    "Q1530924",
+    "Q1544743",
+    "Q1886952",
+    "Q1911143",
+    "Q1924328",
+    "Q2304613",
+    "Q2689811",
+    "Q3501791",
+    "Q5603923",
+    "Q5603928",
+    "Q5603929",
+    "Q5603930",
+    "Q5603931",
+    "Q5603935",
+    "Q5603936",
+    "Q5603940",
+    "Q5603942",
+    "Q20708997",
+    "Q27995279"
+   ],
+   "ms": 6.0,
+   "items": [
+    {
+     "item": "Q182877",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States of America"
+     ]
+    },
+    {
+     "item": "Q577019",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "located in the administrative territorial entity: Illinois"
+     ]
+    },
+    {
+     "item": "Q616236",
+     "kinds": [
+      "city"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States of America"
+     ]
+    },
+    {
+     "item": "Q952507",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States of America"
+     ]
+    },
+    {
+     "item": "Q1530924",
+     "kinds": [
+      "city"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States of America"
+     ]
+    },
+    {
+     "item": "Q1544743",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States of America"
+     ]
+    },
+    {
+     "item": "Q1886952",
+     "kinds": [],
+     "how": "none",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States of America",
+      "located in the administrative territorial entity: Weakley County"
+     ]
+    },
+    {
+     "item": "Q1911143",
+     "kinds": [
+      "city"
+     ],
+     "how": "recorded",
+     "mark": "fits (placed)",
+     "values": [
+      "country: United States of America",
+      "located in the administrative territorial entity: Adair County"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the country of citizenship of John Whyte?",
+   "label": "John Whyte",
+   "relation": "country of citizenship",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named John Whyte)",
+   "fit": [
+    "Q6263935",
+    "Q18164633"
+   ],
+   "ms": 4.9,
+   "items": [
+    {
+     "item": "Q6263935",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "occupation: politician"
+     ]
+    },
+    {
+     "item": "Q18164633",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: Australia"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the participant in of Charles Allen?",
+   "label": "Charles Allen",
+   "relation": "participant in",
+   "items_n": 5,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (5 items named Charles Allen)",
+   "fit": [
+    "Q1063538",
+    "Q1063539",
+    "Q5075078",
+    "Q5075079",
+    "Q5075081"
+   ],
+   "ms": 3.9,
+   "items": [
+    {
+     "item": "Q1063538",
+     "kinds": [
+      "human",
+      "united kingdom in the eurovision song contest"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "participant in: 2004 Summer Olympics",
+      "participant of: 2004 Summer Olympics"
+     ]
+    },
+    {
+     "item": "Q1063539",
+     "kinds": [
+      "human",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United States of America",
+      "educated at: Yale University"
+     ]
+    },
+    {
+     "item": "Q5075078",
+     "kinds": [
+      "human"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "military branch: Royal Air Force",
+      "occupation: physician"
+     ]
+    },
+    {
+     "item": "Q5075079",
+     "kinds": [
+      "human"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "award received: International Emmy Directorate Award",
+      "occupation: politician"
+     ]
+    },
+    {
+     "item": "Q5075081",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United Kingdom"
+     ]
+    }
+   ]
+  },
+  {
+   "question": "What is the participated in conflict of HMS Racoon?",
+   "label": "HMS Racoon",
+   "relation": "participated in conflict",
+   "items_n": 2,
+   "outcome": "asking back",
+   "reply": "Which one do you mean? (2 items named HMS Racoon)",
+   "fit": [
+    "Q5633966",
+    "Q5633970"
+   ],
+   "ms": 4.1,
+   "items": [
+    {
+     "item": "Q5633966",
+     "kinds": [
+      "ship"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "participated in conflict: War of 1812"
+     ]
+    },
+    {
+     "item": "Q5633970",
+     "kinds": [
+      "ship"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": []
+    }
+   ]
+  }
+ ],
+ "probe": [
+  {
+   "label": "Richard Parsons",
+   "relation": "educated at",
+   "cue": "oxford",
+   "target": "Q7328288",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2149305",
+    "Q7328288",
+    "Q7328289",
+    "Q16090883"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (4 items named Richard Parsons)",
+   "ms": 3.8,
+   "items": [
+    {
+     "item": "Q2149305",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "occupation: lawyer"
+     ]
+    },
+    {
+     "item": "Q7328288",
+     "kinds": [
+      "human",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "educated at: University of Oxford"
+     ]
+    },
+    {
+     "item": "Q7328289",
+     "kinds": [
+      "human"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "employer: University of Oxford"
+     ]
+    },
+    {
+     "item": "Q16090883",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United Kingdom"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "USS Swasey",
+   "relation": "participated in conflict",
+   "cue": "world",
+   "target": "Q7874525",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q7874525",
+    "Q7874526"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named USS Swasey)",
+   "ms": 4.6,
+   "items": [
+    {
+     "item": "Q7874525",
+     "kinds": [
+      "amphibious cargo ship",
+      "cargo ship",
+      "cruiser",
+      "destroyer",
+      "destroyer escort",
+      "division",
+      "frigate",
+      "human",
+      "mountain gun",
+      "order of battle",
+      "regiment",
+      "rifle",
+      "ship",
+      "submarine",
+      "tank landing ship",
+      "u boat"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "participated in conflict: World War II"
+     ]
+    },
+    {
+     "item": "Q7874526",
+     "kinds": [
+      "destroyer",
+      "destroyer escort",
+      "ship",
+      "submarine",
+      "u boat"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "location of creation: Quincy",
+      "participated in conflict: World War II"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "flashforward",
+   "relation": "opposite of",
+   "cue": "cinematic",
+   "target": "Q2533706",
+   "verdict": "asking back",
+   "fit": [],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named flashforward)",
+   "ms": 4.7,
+   "items": [
+    {
+     "item": "Q476857",
+     "kinds": [
+      "3d film",
+      "book",
+      "film",
+      "film series",
+      "manga",
+      "opera",
+      "television film",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "does not fit",
+     "values": [
+      "narrative location: Los Angeles"
+     ]
+    },
+    {
+     "item": "Q2533706",
+     "kinds": [
+      "cinematic technique"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "opposite of: flashback"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Different World",
+   "relation": "lyricist",
+   "cue": "steve",
+   "target": "Q2314449",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2314449",
+    "Q4656470"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (3 items named Different World)",
+   "ms": 3.8,
+   "items": [
+    {
+     "item": "Q2314449",
+     "kinds": [
+      "album",
+      "bach cantata",
+      "musical",
+      "national anthem",
+      "opera",
+      "single",
+      "song"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "lyricist: Steve Harris"
+     ]
+    },
+    {
+     "item": "Q2315368",
+     "kinds": [],
+     "how": "none",
+     "mark": "does not fit",
+     "values": [
+      "follows: Raging Silence"
+     ]
+    },
+    {
+     "item": "Q4656470",
+     "kinds": [
+      "3d film",
+      "animated film",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "concert tour",
+      "condiment",
+      "dog breed",
+      "drink",
+      "encyclopedia",
+      "episode",
+      "extended play",
+      "film",
+      "film series",
+      "food",
+      "live album",
+      "magazine",
+      "manga",
+      "media franchise",
+      "miniseries",
+      "mountain gun",
+      "music genre",
+      "musical ensemble",
+      "musical group",
+      "news program",
+      "opera",
+      "orchestra",
+      "painting",
+      "periodical",
+      "play",
+      "radio program",
+      "referendum",
+      "rifle",
+      "sandwich",
+      "scientific journal",
+      "short film",
+      "silent film",
+      "single",
+      "song",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "television special"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of origin: United States of America",
+      "followed by: It's Good to Be Us"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "The Architect",
+   "relation": "country of origin",
+   "cue": "united",
+   "target": "Q7714193",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2860251",
+    "Q7714193"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (4 items named The Architect)",
+   "ms": 5.8,
+   "items": [
+    {
+     "item": "Q42973",
+     "kinds": [
+      "profession"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "field of this occupation: architecture"
+     ]
+    },
+    {
+     "item": "Q2316879",
+     "kinds": [
+      "fictional character"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": []
+    },
+    {
+     "item": "Q2860251",
+     "kinds": [
+      "business",
+      "musical group",
+      "railway company",
+      "record label",
+      "television station",
+      "video game developer"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "location of formation: Syracuse"
+     ]
+    },
+    {
+     "item": "Q7714193",
+     "kinds": [
+      "film",
+      "short film",
+      "silent film"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of origin: United States of America",
+      "film editor: Tom McArdle"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Demon Hunter",
+   "relation": "from narrative universe",
+   "cue": "universe",
+   "target": "Q5256211",
+   "verdict": "picks the target",
+   "fit": [
+    "Q5256211"
+   ],
+   "reads": [
+    "Marvel Universe"
+   ],
+   "reply": "Marvel Universe.",
+   "ms": 4.0,
+   "items": [
+    {
+     "item": "Q1186459",
+     "kinds": [
+      "3d film",
+      "album",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "extended play",
+      "film",
+      "film series",
+      "girl group",
+      "live album",
+      "manga",
+      "musical ensemble",
+      "musical group",
+      "national flag",
+      "opera",
+      "painting",
+      "play",
+      "pseudonym",
+      "remix album",
+      "short film",
+      "short story",
+      "silent film",
+      "single",
+      "song",
+      "studio album",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "does not fit",
+     "values": [
+      "genre: punk rock",
+      "has part(s): Ryan Clark"
+     ]
+    },
+    {
+     "item": "Q5256211",
+     "kinds": [
+      "asgardian",
+      "men in tolkien s legendarium",
+      "mutant",
+      "mutate",
+      "superhero",
+      "supervillain",
+      "vampire in marvel universe"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "from narrative universe: Marvel Universe"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Colin Griffiths",
+   "relation": "educated at",
+   "cue": "university",
+   "target": "Q5145163",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q5145163",
+    "Q16016147"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Colin Griffiths)",
+   "ms": 3.9,
+   "items": [
+    {
+     "item": "Q5145163",
+     "kinds": [
+      "human",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "educated at: University of East Anglia",
+      "occupation: writer"
+     ]
+    },
+    {
+     "item": "Q16016147",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United Kingdom"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Chen",
+   "relation": "parent taxon",
+   "cue": "taxon",
+   "target": "Q281519",
+   "verdict": "picks the target",
+   "fit": [
+    "Q281519"
+   ],
+   "reads": [
+    "Anserinae"
+   ],
+   "reply": "Anserinae. If you meant something else, there is also a family name named Chen and a person named Chen. Want to know about one of them?",
+   "ms": 3.5,
+   "items": [
+    {
+     "item": "Q281519",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "parent taxon: Anserinae"
+     ]
+    },
+    {
+     "item": "Q804988",
+     "kinds": [
+      "family name",
+      "han surname"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": [
+      "described by source: Hundred Family Surnames"
+     ]
+    },
+    {
+     "item": "Q1069690",
+     "kinds": [],
+     "how": "none",
+     "mark": "does not fit",
+     "values": [
+      "capital: Huaiyang District"
+     ]
+    },
+    {
+     "item": "Q16098027",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "does not fit",
+     "values": []
+    }
+   ]
+  },
+  {
+   "label": "The Deer and the Cauldron",
+   "relation": "author",
+   "cue": "yong",
+   "target": "Q1185345",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q1185345",
+    "Q15633375"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named The Deer and the Cauldron)",
+   "ms": 3.5,
+   "items": [
+    {
+     "item": "Q1185345",
+     "kinds": [
+      "anime",
+      "anthology",
+      "book",
+      "book series",
+      "comic book series",
+      "fairy tale",
+      "hardback",
+      "limited series",
+      "manga",
+      "manuscript",
+      "miniseries",
+      "musical",
+      "play",
+      "short story",
+      "song",
+      "television film",
+      "united states executive order"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "author: Jin Yong"
+     ]
+    },
+    {
+     "item": "Q15633375",
+     "kinds": [
+      "academic journal",
+      "album",
+      "bach cantata",
+      "book",
+      "compilation album",
+      "diminutive",
+      "encyclopedia",
+      "extended play",
+      "fairy tale",
+      "family name",
+      "film series",
+      "free software",
+      "given name",
+      "history journal",
+      "live album",
+      "magazine",
+      "manuscript",
+      "musical composition",
+      "opera",
+      "operating system",
+      "periodical",
+      "play",
+      "praenomen",
+      "scientific journal",
+      "short story",
+      "single",
+      "song",
+      "studio album",
+      "television series",
+      "unisex given name",
+      "website"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "language of work or name: Standard Chinese"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Kathy Smith",
+   "relation": "cause of death",
+   "cue": "cancer",
+   "target": "Q19879126",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q6377304",
+    "Q6377305",
+    "Q19879126"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (3 items named Kathy Smith)",
+   "ms": 4.3,
+   "items": [
+    {
+     "item": "Q6377304",
+     "kinds": [
+      "fictional character",
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "given name: Kathy"
+     ]
+    },
+    {
+     "item": "Q6377305",
+     "kinds": [
+      "human",
+      "pseudonym"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "given name: Kathy",
+      "languages spoken, written or signed: English"
+     ]
+    },
+    {
+     "item": "Q19879126",
+     "kinds": [
+      "human"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "cause of death: cancer"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Wet Gold",
+   "relation": "cast member",
+   "cue": "united",
+   "target": "Q15617001",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q7989963",
+    "Q15617001"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Wet Gold)",
+   "ms": 3.6,
+   "items": [
+    {
+     "item": "Q7989963",
+     "kinds": [
+      "3d film",
+      "animated film",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "city",
+      "compilation album",
+      "concert tour",
+      "condiment",
+      "deme",
+      "dialect",
+      "dog breed",
+      "drink",
+      "encyclopedia",
+      "episode",
+      "extended play",
+      "family name",
+      "film",
+      "film series",
+      "food",
+      "live album",
+      "magazine",
+      "manga",
+      "media franchise",
+      "miniseries",
+      "mountain gun",
+      "municipality of brazil",
+      "music genre",
+      "musical ensemble",
+      "musical group",
+      "news program",
+      "opera",
+      "orchestra",
+      "painting",
+      "periodical",
+      "play",
+      "profession",
+      "radio program",
+      "referendum",
+      "rifle",
+      "sandwich",
+      "scientific journal",
+      "short film",
+      "silent film",
+      "single",
+      "song",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "television special",
+      "university"
+     ],
+     "how": "read widely",
+     "mark": "fits",
+     "values": [
+      "country of origin: United States of America",
+      "different from: Wet Gold"
+     ]
+    },
+    {
+     "item": "Q15617001",
+     "kinds": [
+      "3d film",
+      "film",
+      "film series",
+      "short film",
+      "silent film",
+      "television film",
+      "television pilot",
+      "television series"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "cast member: Ralph Ince",
+      "country of origin: United States of America"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Harry McPherson",
+   "relation": "educated at",
+   "cue": "university",
+   "target": "Q3790209",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q3790209",
+    "Q16073436"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Harry McPherson)",
+   "ms": 3.6,
+   "items": [
+    {
+     "item": "Q3790209",
+     "kinds": [
+      "human",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "educated at: Southern Methodist University"
+     ]
+    },
+    {
+     "item": "Q16073436",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": []
+    }
+   ]
+  },
+  {
+   "label": "City of Lost Souls",
+   "relation": "country of origin",
+   "cue": "west",
+   "target": "Q5123797",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q1094135",
+    "Q5123797"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named City of Lost Souls)",
+   "ms": 8.7,
+   "items": [
+    {
+     "item": "Q1094135",
+     "kinds": [
+      "film"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "genre: action film",
+      "original language of film or TV show: Cantonese"
+     ]
+    },
+    {
+     "item": "Q5123797",
+     "kinds": [
+      "3d film",
+      "animated film",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "concert tour",
+      "condiment",
+      "dog breed",
+      "drink",
+      "encyclopedia",
+      "episode",
+      "extended play",
+      "film",
+      "film series",
+      "food",
+      "live album",
+      "magazine",
+      "manga",
+      "media franchise",
+      "miniseries",
+      "mountain gun",
+      "music genre",
+      "musical ensemble",
+      "musical group",
+      "news program",
+      "opera",
+      "orchestra",
+      "painting",
+      "periodical",
+      "play",
+      "radio program",
+      "referendum",
+      "rifle",
+      "sandwich",
+      "scientific journal",
+      "short film",
+      "silent film",
+      "single",
+      "song",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "television special"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of origin: West Germany"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Jimmy Adams",
+   "relation": "country of citizenship",
+   "cue": "human",
+   "target": "Q2789496",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2789496",
+    "Q6199482"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Jimmy Adams)",
+   "ms": 3.9,
+   "items": [
+    {
+     "item": "Q2789496",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United Kingdom"
+     ]
+    },
+    {
+     "item": "Q6199482",
+     "kinds": [
+      "fictional character",
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "given name: Jimmy"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Pearl Jam",
+   "relation": "location of formation",
+   "cue": "seattle",
+   "target": "Q142701",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q142701",
+    "Q931609"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Pearl Jam)",
+   "ms": 5.1,
+   "items": [
+    {
+     "item": "Q142701",
+     "kinds": [
+      "musical group"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "discography: Pearl Jam discography",
+      "location of formation: Seattle"
+     ]
+    },
+    {
+     "item": "Q931609",
+     "kinds": [
+      "3d film",
+      "animated film",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "concert tour",
+      "condiment",
+      "dog breed",
+      "drink",
+      "encyclopedia",
+      "episode",
+      "extended play",
+      "film",
+      "film series",
+      "food",
+      "live album",
+      "magazine",
+      "manga",
+      "media franchise",
+      "miniseries",
+      "mountain gun",
+      "music genre",
+      "musical ensemble",
+      "musical group",
+      "news program",
+      "opera",
+      "orchestra",
+      "painting",
+      "periodical",
+      "play",
+      "radio program",
+      "referendum",
+      "rifle",
+      "sandwich",
+      "scientific journal",
+      "short film",
+      "silent film",
+      "single",
+      "song",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "television special"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of origin: United States of America",
+      "followed by: Backspacer"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "CBGB",
+   "relation": "distributed by",
+   "cue": "media",
+   "target": "Q2931018",
+   "verdict": "picks the target",
+   "fit": [
+    "Q2931018"
+   ],
+   "reads": [
+    "XLrator Media"
+   ],
+   "reply": "XLrator Media.",
+   "ms": 3.4,
+   "items": [
+    {
+     "item": "Q1022965",
+     "kinds": [
+      "building",
+      "cemetery",
+      "hotel",
+      "skyscraper",
+      "theatre"
+     ],
+     "how": "read",
+     "mark": "does not fit",
+     "values": [
+      "country: United States of America",
+      "located on street: Bowery"
+     ]
+    },
+    {
+     "item": "Q2931018",
+     "kinds": [
+      "3d film",
+      "animated series",
+      "film",
+      "film series",
+      "short film",
+      "silent film",
+      "television film",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "distributed by: XLrator Media"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "The Maid",
+   "relation": "director",
+   "cue": "seinfeld",
+   "target": "Q7749615",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q1774421",
+    "Q1990821",
+    "Q3778304",
+    "Q7749615"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (4 items named The Maid)",
+   "ms": 3.3,
+   "items": [
+    {
+     "item": "Q1774421",
+     "kinds": [
+      "3d film",
+      "album",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "extended play",
+      "film",
+      "film series",
+      "girl group",
+      "live album",
+      "manga",
+      "musical ensemble",
+      "musical group",
+      "national flag",
+      "opera",
+      "painting",
+      "play",
+      "pseudonym",
+      "remix album",
+      "short film",
+      "short story",
+      "silent film",
+      "single",
+      "song",
+      "studio album",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "genre: comedy film"
+     ]
+    },
+    {
+     "item": "Q1990821",
+     "kinds": [
+      "3d film",
+      "album",
+      "animated series",
+      "anime",
+      "book",
+      "book series",
+      "choir",
+      "compilation album",
+      "extended play",
+      "film",
+      "film series",
+      "girl group",
+      "live album",
+      "manga",
+      "musical ensemble",
+      "musical group",
+      "national flag",
+      "opera",
+      "painting",
+      "play",
+      "pseudonym",
+      "remix album",
+      "short film",
+      "short story",
+      "silent film",
+      "single",
+      "song",
+      "studio album",
+      "television film",
+      "television pilot",
+      "television program",
+      "television series",
+      "video game"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "genre: romantic comedy"
+     ]
+    },
+    {
+     "item": "Q3778304",
+     "kinds": [
+      "3d film",
+      "academic journal",
+      "bach cantata",
+      "film",
+      "film series",
+      "history journal",
+      "magazine",
+      "periodical",
+      "scientific journal",
+      "short film",
+      "silent film",
+      "television film",
+      "television program",
+      "television series"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "original language of film or TV show: Italian"
+     ]
+    },
+    {
+     "item": "Q7749615",
+     "kinds": [
+      "film",
+      "television pilot"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "director: Andy Ackerman",
+      "followed by: The Puerto Rican Day",
+      "follows: The Frogger",
+      "part of the series: Seinfeld"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Liam Finn",
+   "relation": "occupation",
+   "cue": "zealand",
+   "target": "Q2708494",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2708494",
+    "Q6539589"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Liam Finn)",
+   "ms": 3.2,
+   "items": [
+    {
+     "item": "Q2708494",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: New Zealand",
+      "occupation: singer"
+     ]
+    },
+    {
+     "item": "Q6539589",
+     "kinds": [
+      "human"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "member of sports team: Featherstone Rovers"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Bobby Caldwell",
+   "relation": "country of citizenship",
+   "cue": "united",
+   "target": "Q3487124",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2907941",
+    "Q3487124"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Bobby Caldwell)",
+   "ms": 3.8,
+   "items": [
+    {
+     "item": "Q2907941",
+     "kinds": [
+      "fictional character",
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "given name: Bobby"
+     ]
+    },
+    {
+     "item": "Q3487124",
+     "kinds": [
+      "human",
+      "pseudonym",
+      "twin"
+     ],
+     "how": "read",
+     "mark": "fits",
+     "values": [
+      "country of citizenship: United States of America",
+      "given name: Bobby"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "Alibertia",
+   "relation": "parent taxon",
+   "cue": "taxon",
+   "target": "Q4725637",
+   "verdict": "asking back, the target among them",
+   "fit": [
+    "Q2473735",
+    "Q4725637"
+   ],
+   "reads": [],
+   "reply": "Which one do you mean? (2 items named Alibertia)",
+   "ms": 3.2,
+   "items": [
+    {
+     "item": "Q2473735",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "different from: Alibertia"
+     ]
+    },
+    {
+     "item": "Q4725637",
+     "kinds": [
+      "taxon"
+     ],
+     "how": "recorded",
+     "mark": "fits",
+     "values": [
+      "parent taxon: Eulophidae"
+     ]
+    }
+   ]
+  }
+ ],
+ "counts": {
+  "audit_outcomes": {
+   "asking back": 43,
+   "each item labelled": 1,
+   "one item": 6
+  },
+  "probe_verdicts": {
+   "asking back": 1,
+   "asking back, the target among them": 16,
+   "picks the target": 3
+  },
+  "decision_ms": {
+   "p50": 4.5,
+   "max": 37.7,
+   "n": 75
+  }
+ }
+}

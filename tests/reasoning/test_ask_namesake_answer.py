@@ -27,7 +27,7 @@ import pytest  # noqa: E402
 from cubbyllm.worlds import hdc_cues, hdc_kinds  # noqa: E402
 from cubbyllm.worlds.hdc_store import HdcWorld, Stores  # noqa: E402
 from cubbyllm.worlds.hdc_world import write_world  # noqa: E402
-from test_hdc_relation import AWARD, CIT, OCC, PIDS, _world  # noqa: E402
+from test_hdc_relation import AWARD, CIT, LOC, OCC, PIDS, _world  # noqa: E402
 
 
 @pytest.fixture
@@ -45,6 +45,7 @@ def made(tmp_path, monkeypatch):
     hdc_cues.build(str(db), hdc_kinds.for_world(str(db)))
     forms = Forms({"capital": ("state", {"present": ["What is the capital of {S}?"]}),
                    CIT: ("state", {"present": [f"What is the {CIT} of {{S}}?"]}),
+                   LOC: ("state", {"present": [f"What is the {LOC} of {{S}}?"]}),
                    AWARD: ("state", {"present": [f"What is the {AWARD} of {{S}}?", f"Which Nobel Prize is the {AWARD} of {{S}}?"]})})
     w = ProvStore(["Pella is the capital of Macedon"])
     w.times = {}
@@ -122,7 +123,9 @@ def test_two_nothing_tells_apart_and_the_flag_off_are_asked_which(made, monkeypa
     loop, ids = made
     rec = loop.ask(f"What is the {CIT} of Ann Lee?")                  # the same value, no fact of their own apart
     assert not rec["verified"] and rec["reason"] == "ambiguous_entity"
-    monkeypatch.delenv("CB_NAMESAKE_RELATION")
+    rec = loop.ask(f"What is the {LOC} of Kata?")                     # KATA: the two placed items compete, no fact
+    assert not rec["verified"] and rec["reason"] == "ambiguous_entity" and len(rec["candidates"]) == 3   # tells apart
+    monkeypatch.setenv("CB_NAMESAKE_RELATION", "0")                   # (on by default since 2026-10-27)
     for q in ("What is the capital of Fredonia?", f"What is the {CIT} of Max Roe?"):
         rec = loop.ask(q)
         assert not rec["verified"] and rec["reason"] == "ambiguous_entity" and "namesakes" not in rec

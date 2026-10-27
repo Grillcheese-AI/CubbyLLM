@@ -250,6 +250,10 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                     return rec
             with one_item:
                 lr = learn()
+
+        def again():                                     # the same walk once more, under the same pin or cue: a snapshot's
+            with self._lock, seed_for(self, seed, item, question=question, rels=rels):    # changing value, the source
+                return learn()                           # asked for today's (ask_source_first; Nick, 2026-10-27)
         rec.update(answer=lr.result.answer if lr.result.verified else None, verified=bool(lr.result.verified),
                    reason=None if lr.result.verified else lr.result.reason,
                    learned=[_learned(p) for p in lr.learned],
@@ -259,7 +263,7 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                    clarify=branch_clarify(lr.plan or plan, lr.result, parse_choose(choose)),
                    wall_s=round(time.perf_counter() - t0, 3))
         after_walk(self, rec, rec["seed"] or "", learn=learn)  # which item a shared name is: decided, or the asker is asked
-        self._checked(question, lr, rec)                 # the veto, the tense, "as of", the time rule, the hedge
+        self._checked(question, lr, rec, again=again)    # the veto, the tense, "as of" (the source first), the time rule, the hedge
         also(rec)                                        # then the other namesakes, after the reply is what it will be
         if self.books is not None:                        # the record's evidence: internal, the audit view's (0016)
             rec["evidence"] = {f: self.books.citations[normalize(f)] for f in rec["trace"] if normalize(f) in self.books.citations}

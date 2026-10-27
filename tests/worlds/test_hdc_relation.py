@@ -11,7 +11,9 @@ Pinned:
   which many kinds carry, reads as nothing, and such an item does not compete);
 - one item that fits is read, the others are named by their kind (never the one of no kind); two of a kind are both
   noted, none read; a cue word rules out a kind it never goes with, a word the world never uses rules out nothing;
-- off (no ``CB_NAMESAKE_RELATION``), strict as order 0036 left it.
+- an item of no kind whose fact places it somewhere competes for where it is (KATA, Cowork's reading 2026-10-27), and
+  for nothing else (asked a capital, Fredonia's bare item still does not);
+- off (``CB_NAMESAKE_RELATION=0``; on by default since 2026-10-27), strict as order 0036 left it.
 """
 from __future__ import annotations
 
@@ -91,9 +93,15 @@ def _world():
     fact(cor_f, KIND, kinds["film"]); fact(cor_f, KIND, kinds["town"]); fact(cor_f, AWARD, bear); fact(cor_t, KIND, kinds["town"])
     fr_wide = item("Fredonia")
     fact(fr_wide, CIT, land); fact(fr_wide, CAST, actor)
+    # the audit's KATA (Cowork, 2026-10-27): a town placed in a municipality beside two items of no kind whose one
+    # fact is a country each
+    kata_t, kata_i, kata_u = item("Kata"), item("Kata"), item("Kata")
+    fact(kata_t, KIND, kinds["town"]); fact(kata_t, LOC, land)
+    fact(kata_i, "country", item("Iran Land")); fact(kata_u, "country", item("Union Land"))
     return facts, labels, {"fr": fr_state, "const": fr_const, "bare": fr_bare, "ann1": ann1, "ann2": ann2,
                            "mara_p": mara_p, "mara_f": mara_f, "elm_s": elm_s, "elm_t": elm_t, "max_b": max_b, "max_p": max_p,
-                           "zem_s": zem_s, "zem_bare": zem_bare, "cor_f": cor_f, "cor_t": cor_t, "fr_wide": fr_wide}
+                           "zem_s": zem_s, "zem_bare": zem_bare, "cor_f": cor_f, "cor_t": cor_t, "fr_wide": fr_wide,
+                           "kata_t": kata_t, "kata_i": kata_i, "kata_u": kata_u}
 
 
 @pytest.fixture
@@ -165,13 +173,32 @@ def test_the_audits_lessons_hold_nothing_one_that_holds_none_two_of_a_kind_a_wid
     its facts were read more widely); Demon Hunter (a band read widely named "a film")."""
     monkeypatch.setenv("CB_NAMESAKE_RELATION", "1")
     w, ids = world
-    reads, d, held = hop(w, "country", "Zembla")                   # the state fits and holds no country
-    assert d["fit"] == [ids["zem_s"]] and d["holds"] == [] and reads == [] and held == [ids["zem_bare"]]
+    reads, d, held = hop(w, "country", "Zembla")                   # the state fits and holds no country; the bare
+    assert d["fit"] == [ids["zem_s"], ids["zem_bare"]] and d["placed"] == [ids["zem_bare"]]   # item, placed, competes
+    assert d["holds"] == [ids["zem_bare"]] and reads == [] and held == d["fit"]            # (since 2026-10-27)
     reads, d, held = hop(w, AWARD, "Corvo")                        # the film that is a town shares "town"
     assert d["fit"] == [ids["cor_f"], ids["cor_t"]] and reads == [] and held == [ids["cor_f"], ids["cor_t"]]
     reads, d, _ = hop(w, "capital", "Fredonia")
     assert d["kinds"][ids["fr_wide"]] == [["film", "human"], "read widely"] and reads == ["Freedonia City"]
     assert [o["item"] for o in others(d, w.namesakes("Fredonia"), w._kinds)] == [ids["const"]]   # never named
+
+
+def test_an_item_placed_somewhere_competes_for_where_it_is_and_for_nothing_else(world, monkeypatch):
+    """Cowork's reading of the audit (2026-10-27): KATA, a village in Estonia, was picked over a village in Iran whose
+    one fact is its country. A fact that places an item somewhere says it is somewhere: it competes for a place
+    relation. Asked a capital, an item with only a country still does not (France's Q49644)."""
+    monkeypatch.setenv("CB_NAMESAKE_RELATION", "1")
+    w, ids = world
+    reads, d, held = hop(w, LOC, "Kata")
+    assert d["fit"] == [ids["kata_t"], ids["kata_i"], ids["kata_u"]] and d["placed"] == d["fit"]   # (the town too)
+    assert reads == [] and held == d["fit"]                        # three compete: none is read, the asker is asked
+    assert others(d, w.namesakes("Kata"), w._kinds) == []
+    reads, d, _ = hop(w, "country", "Kata")                        # asked its country: the same three
+    assert d["placed"] == d["fit"] == [ids["kata_t"], ids["kata_i"], ids["kata_u"]] and reads == []
+    reads, d, _ = hop(w, "country", "Kata", cues=["iran"])         # a cue rules out a kind, never an item of none
+    assert d["fit"] == [ids["kata_t"], ids["kata_i"], ids["kata_u"]] and d["ruled_out"] == {}
+    reads, d, _ = hop(w, "capital", "Fredonia")
+    assert d["fit"] == [ids["fr"]] and d["placed"] == [] and reads == ["Freedonia City"]
 
 
 def test_a_kinds_own_name_is_a_cue_word_for_that_kind(world, monkeypatch):
@@ -193,7 +220,7 @@ def test_a_word_the_world_uses_rarely_rules_out_nothing(world, monkeypatch):
 
 
 def test_off_the_hop_is_strict_as_order_0036_left_it(world, monkeypatch):
-    monkeypatch.delenv("CB_NAMESAKE_RELATION", raising=False)
+    monkeypatch.setenv("CB_NAMESAKE_RELATION", "0")                  # (on by default since 2026-10-27)
     w, ids = world
     reads, d, held = hop(w, "capital", "Fredonia")
     assert reads == [] and d is None and held == [ids["fr"]]

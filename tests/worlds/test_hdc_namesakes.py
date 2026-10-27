@@ -159,6 +159,7 @@ def test_the_kinds_table_answers_as_the_scan_and_the_world_reads_it(hdc, tmp_pat
     """Order 0036, item 3: which relations each kind carries, built once; the same decisions as the scan (the tier on)."""
     from cubbyllm.worlds.hdc_kinds import Table, build, path_for
     monkeypatch.setenv("CB_NAMESAKE_TIER", "1")
+    monkeypatch.setenv("CB_NAMESAKE_RELATION", "0")                  # (0037's rule, on by default since 2026-10-27, reads the table)
     built = build(hdc.path)
     assert built["out"] == path_for(hdc.path) and built["pairs"] > 0
     table = Table(built["out"])

@@ -162,8 +162,8 @@ class Namesakes:
     def hop_rows(self, name: str, keep, rel: str | None = None) -> list:
         """The rows a hop reads for `name` (`keep`: the hop's own test of a row; `rel`: its relation): its one item's
         (or the item the asker or a qualifier pinned); for a name several items share, none, and the items that held
-        some are noted (with ``CB_NAMESAKE_TIER=1``, those of the one item `hop_pick` allows). With
-        ``CB_NAMESAKE_RELATION=1`` (order 0037, off until its audit), the one item order 0037's rule leaves
+        some are noted (with ``CB_NAMESAKE_TIER=1``, those of the one item `hop_pick` allows). Unless
+        ``CB_NAMESAKE_RELATION=0`` (order 0037's rule, on since its audit was read, 2026-10-27), the one item the rule leaves
         (``hdc_relation.decide``: its kind carries the relation and goes with the question's cue words, no other's
         does) when it holds such a fact (one that holds none decides nothing, and the holders are noted, as before);
         two or more that fit (two of a kind) are noted to be answered each."""
@@ -172,7 +172,7 @@ class Namesakes:
             return [(f, t) for f, t in got if keep(f, t)]
         by = self.namesakes(name)
         held = {q: [(f, t) for f, t in rows if keep(f, t)] for q, rows in by.items()}
-        if by and rel and os.environ.get("CB_NAMESAKE_RELATION") == "1" and getattr(self, "_kinds", None) is not None:
+        if by and rel and os.environ.get("CB_NAMESAKE_RELATION") != "0" and getattr(self, "_kinds", None) is not None:
             from .hdc_relation import decide
             d = decide(by, self._world_rels(rel), getattr(self._pins, "cues", None) or [], self._kinds,
                        getattr(self, "_cues", None))

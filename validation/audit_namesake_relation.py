@@ -1,5 +1,5 @@
 """audit_namesake_relation -- order 0037's acceptance: the rule that decides a shared name by the question's relation
-and its cue words (``hdc_relation.decide``, behind ``CB_NAMESAKE_RELATION=1``), on the real hdc world, for Cowork to
+and its cue words (``hdc_relation.decide``, on by default since 2026-10-27), on the real hdc world, for Cowork to
 read by hand.
 
 1. **The audit:** 50 shared-name hops, drawn by seed 1 (0036's audit drew seed 0). Each label gets one relation,
@@ -42,7 +42,7 @@ for p in (os.path.dirname(HERE), HERE):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-os.environ["CB_NAMESAKE_RELATION"] = "1"                 # the rule under audit (off by default until this passes)
+os.environ["CB_NAMESAKE_RELATION"] = "1"                 # the rule under audit (on by default since 2026-10-27; this pins it on)
 
 from cubbyllm.reasoning import ask_namesake_answer as A  # noqa: E402
 from cubbyllm.reasoning.planner import QuestionPlan, normalize  # noqa: E402
@@ -99,7 +99,8 @@ def items_of(w: HdcWorld, d: dict | None, by: dict) -> list[dict]:
             ks, how = item_kinds(by[q], w._kinds)
             got = [sorted(ks), how]
         ks, how = got
-        mark = ("fits" if q in (d or {}).get("fit", []) else
+        mark = ("fits (placed)" if q in (d or {}).get("placed", []) else      # (no kind; a fact places it: 2026-10-27)
+                "fits" if q in (d or {}).get("fit", []) else
                 f"ruled out by '{d['ruled_out'][q]}'" if q in (d or {}).get("ruled_out", {}) else "does not fit")
         out.append({"item": q, "kinds": ks, "how": how, "mark": mark,
                     "values": [f"{t.rel}: {t.obj}" for _f, t in by[q] if normalize(t.rel) != "instance of"][:4]})

@@ -1,5 +1,5 @@
 # 0037 — Namesakes: answer when the question's relation fits only one of them ("the capital of France")
-status: open (2026-10-27: Cowork's check passes at the line; three small items left, below "Cowork's check")
+status: done (2026-10-27: the three items below "Cowork's check" built and measured by Claude Code)
 written: 2026-10-23 by Cowork · approved: 2026-10-23 by Nick ("a capital is usually in a country so it should pick the country france (there is only one)") · hypothesis: none
 
 ## Why
@@ -211,15 +211,41 @@ mean. When the question truly cannot tell (two people named Steve Mills), he ans
   2. **Snapshot or source:** Nick's answer (2026-10-27): **Wikidata wins.** That is the third item below.
   3. **Steve Mills:** yes. Asking back stays where no fact tells the items apart (item 5).
   4. **The source side:** order 0043.
-- **Left to do here, then `done` without another review:**
-  1. **Item 6:** the rule on by default for hops (`CB_NAMESAKE_RELATION=0` turns it off).
-  2. **The KATA guard:** an item whose facts place it somewhere (`country`, `located in`, `located in the
-     administrative territorial entity`) competes for a place relation even with no kind. Re-run the audit on
-     seed 1: KATA asks back, and nothing else changes. Re-run the probe: unchanged. Report both in one line here.
-  3. **Wikidata wins (Nick):** for a time-sensitive relation, a value the live source gives is the answer, and the
-     snapshot's "As of ..." value answers only when the source gives none (offline, not cached, or no such fact).
-     The namesake rule still decides *which item* is meant; this decides only whose value is said. Re-run the
-     stack's 20: France and Canada answer with the source's value ("Paris", "Ottawa"), not "As of 2019, ...";
-     with the source off they still say "As of 2019, Paris". Report the two arms in one line here.
+- **Left to do here, then `done` without another review** (Claude Code, 2026-10-27; the logs are in `validation/logs/`):
+  1. **Item 6, done:** the rule is on by default for hops and for how the answer reads; `CB_NAMESAKE_RELATION=0` turns it off
+     (`hdc_namesakes.hop_rows`, `ask_namesake_answer.on`; the three tests that assumed it off now set the flag to 0).
+  2. **The KATA guard, done** (`hdc_relation.PLACING`: `country`, `located in`, `located in the administrative territorial
+     entity`): for a place relation, every item that holds a fact that places it competes, whatever its kind -- not only an
+     item of no kind, because a kind's share of `country` says nothing (nearly every typed item holds one): with the guard
+     on no-kind items alone, "country of Eiffel Tower" read the replica in the United States alone, the tower's kind
+     (lattice tower) not carrying `country` by share. Asked a capital, France's bare item still does not compete. The audit
+     re-run on seed 1 (`audit_namesake_relation_2026-10-27.md`): the same counts (6 one item, 1 labelled, 43 asked back);
+     **KATA asks back** (3 items); four hops ask back as before with a different note (Qu River, Barreiros, Petershausen,
+     Gnojno: the placed item competes instead of "the one that fits holds none"); **one hop changed outcome**, Calhoun
+     Township asked its country, from asking back to "United States of America" with the disambiguation page offered: the
+     placed township competes, the Wikimedia disambiguation page does not -- for Cowork's reading. The cue probe: unchanged
+     (3 picks, 17 ask back, 0 wrong). The fixed five: unchanged. 0033's probe (`namesake_probe_2026-10-27_0037_default.json`):
+     0 mixed, the Eiffel Tower hop withholds both items as on 2026-10-24.
+  3. **Wikidata wins, done** (`cubbyllm/reasoning/ask_source_first.py`, `cubbyllm/worlds/aside.py`; on by default,
+     `CB_SOURCE_OVER_SNAPSHOT=0` turns it off): before a snapshot's changing value is said "as of", the same walk runs once
+     more with that world's rows on the relation set aside, so it stalls there and asks the source as any walk does; a value
+     it verifies is said as any source's value is (the loop's checks apply to it in its turn), none and the snapshot's
+     value stands. The two arms of the stack's 20 (`exp_everyday_webq.py --stack`, the source's cache;
+     `--source off`, a new option): **source on, France and Canada say "Paris" and "Ottawa"** flat (the record keeps
+     `over_snapshot: {"answer": "Paris", "as_of": "2019"}`), 11 of 20 spoken, the same 11 as with both flags off, with
+     the namesake lines added (`0037_stack_source_cache_2026-10-27.json`; a live run gives the same 11,
+     `0037_stack_source_live_2026-10-27.json`); **source off, "As of 2019, Paris. If you meant ..." and "As of 2019,
+     Ottawa."**, 4 of 20 spoken (`0037_stack_source_off_2026-10-27.json`). Tests: `test_hdc_store` (the source's value
+     wins; the snapshot stands when the source gives none; the flag off).
+  - **Found on the way (not the rule's doing):** the offline source serves labels in chunks of 50 ids keyed by the chunk, so
+    which labels hit the cache depends on the run's path; before the live run filled them, the offline stack said
+    "Florence" for Italy's capital (Rome's label missing from its chunk) and refused the WWII date (`end time`'s label
+    missing) in some runs and not others. Run the arms one after another, never in parallel (the source's link memory
+    `_links.json` is shared), and run `--online` once when the cache is stale. A French question does not reach the tense
+    check (Florence, 1865-1871, was not vetoed): a gap for 0038's follow-up.
+  - **A question for 0044:** once the source's newer value is learned into the first world beside the snapshot's older one,
+    the next ask of the same question sees both; today that is a contradiction between the worlds, never said
+    (`test_a_contradiction_between_the_worlds_is_never_said`). The source-first rule does not change that; whether the first
+    world's sourced, dated value should shadow the snapshot's is 0044's kind of decision.
 - **Carried to 0043:** when every namesake gives the same value, saying it once is right whichever one was meant
   (Petershausen and Notojima would answer).

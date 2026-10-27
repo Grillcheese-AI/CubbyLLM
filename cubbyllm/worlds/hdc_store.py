@@ -26,6 +26,7 @@ from cubbyllm.local_paths import data_dir
 from cubbyllm.reasoning.index import TripleIndex
 from cubbyllm.reasoning.planner import accepts, normalize, parse_fact, tail_splits
 
+from .aside import kept
 from .hdc_cues import for_world as cues_for
 from .hdc_kinds import for_world
 from .hdc_namesakes import Namesakes, StoresNamesakes, object_items
@@ -153,7 +154,7 @@ class _Index:
     def hop(self, plan, hop: int, entity: str | None) -> list:
         out, seen = [], set()
         for w in [self.stores.primary.index] + self.stores.others:
-            for f, t in w.hop(plan, hop, entity):
+            for f, t in kept(self.stores, w, w.hop(plan, hop, entity)):    # (a world's rows set aside: `aside`)
                 if f not in seen:
                     out.append((f, t)); seen.add(f)
         return out
@@ -260,6 +261,7 @@ class Stores(StoresNamesakes):
         self.name = "+".join([getattr(primary, "name", "wiki")] + [o.name for o in self.others])
         self.index = _Index(self)
         self.provenance = _Provenance(self)
+        self._aside = threading.local()                   # one world's rows on one relation set aside for a walk (`aside`)
 
     def __getattr__(self, name):                          # texts, times, _key, oracle, ... are the first world's
         return getattr(self.primary, name)

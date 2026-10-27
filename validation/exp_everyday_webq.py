@@ -101,6 +101,9 @@ def main() -> None:
     ap.add_argument("--online", action="store_true",
                     help="the Wikidata source live, as the server mounts it (a miss is looked up once and cached), "
                          "instead of its cache only")
+    ap.add_argument("--source", choices=("cache", "off"), default="cache",
+                    help="the Wikidata source from its cache (the stack offline), or no source at all (order 0037, item 3: "
+                         "a snapshot's changing value stands, as of its year, only when the source gives none)")
     ap.add_argument("--tense", choices=("on", "off"), default="on",
                     help="the tense check (order 0012: 'who rules X?' on a reign that ended is not answered); on, as "
                          "the server runs since 2026-10-24 (Nick: on always); off is the stack as recorded before")
@@ -130,6 +133,9 @@ def main() -> None:
         from cubbyllm.sources.wikidata import WikidataSource
         from cubby_serve.sources.http import wikidata as wikidata_fetch
         source = WikidataSource(offline=False, use_choices=True, fetch=wikidata_fetch())
+    if a.source == "off":
+        from cubbyllm.reasoning.loci_reader import NoSource
+        source = NoSource()
     loop = AskLoop(em, world=world, source=source, lexicon=True, history_path=None,
                    everyday=a.everyday == "on", tense=a.tense == "on")
     print(f"loaded in {time.perf_counter() - t0:.0f}s; {len(rows)} questions", flush=True)
@@ -159,7 +165,9 @@ def main() -> None:
         if (i + 1) % 50 == 0:
             print(f"  {i + 1}/{len(rows)}: spoken {c['spoken']}, match {c['match']}, mismatch {c['mismatch']}", flush=True)
     summary = {"what": "exp_everyday_webq", "everyday": a.everyday, "emitter": a.emitter, "online": a.online,
-               "tense": a.tense,
+               "source": a.source, "tense": a.tense,
+               "namesake_relation": os.environ.get("CB_NAMESAKE_RELATION") != "0",
+               "source_over_snapshot": os.environ.get("CB_SOURCE_OVER_SNAPSHOT") != "0",
                "namesake_tier": os.environ.get("CB_NAMESAKE_TIER") == "1",
                "questions": "stack 20" if a.stack else (a.questions or "webq_na_eu.csv"), "parsed_only": a.parsed_only,
                "counts": dict(c), "by_form": dict(collections.Counter(r["form"] for r in out if r["verified"])),

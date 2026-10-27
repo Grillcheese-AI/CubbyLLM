@@ -96,6 +96,30 @@ def test_the_loop_answers_from_the_hdc_world_and_says_a_changing_value_as_of_its
     assert not rec["verified"] and rec["reason"] == "time_mismatch" and "2019" in rec["refused"]["why"]
 
 
+def test_the_sources_value_wins_over_the_snapshots_which_stands_only_when_the_source_gives_none(hdc, monkeypatch):
+    """Nick (2026-10-27, order 0037 item 3): for a relation whose value changes, the value the live source gives is
+    the answer, said as any source's value is; the snapshot's "As of 2019, ..." answers only when the source gives
+    none (`ask_source_first`). `CB_SOURCE_OVER_SNAPSHOT=0`: the snapshot's value as of its year, as before."""
+    from test_search_learn import DictSource
+    today = DictSource({"Ruritania": ["Flavia is the head of state of Ruritania"]})
+    loop = _loop(hdc)
+    loop.source = today
+    rec = loop.ask("Who is the head of state of Ruritania?")
+    assert rec["verified"] and rec["answer"] == "Flavia" and "tier" not in rec and "reply" not in rec
+    assert rec["over_snapshot"] == {"answer": "Rudolf Rassendyll", "as_of": "2019"}
+    assert rec["trace"] == ["Flavia is the head of state of Ruritania"] and today.calls == ["ruritania"]
+    assert "Flavia is the head of state of Ruritania" in loop.world.primary     # learned, as any source's fact
+    assert [p["status"] for p in rec["learned"]] == ["accepted"]
+    rec = _loop(hdc).ask("Who is the head of state of Ruritania?")               # the source gives none: it stands
+    assert rec["tier"] == "as_of" and rec["reply"] == "As of 2019, Rudolf Rassendyll."
+    assert rec["snapshot_stood"]["as_of"] == "2019" and "over_snapshot" not in rec
+    monkeypatch.setenv("CB_SOURCE_OVER_SNAPSHOT", "0")
+    loop = _loop(hdc)
+    loop.source = DictSource({"Ruritania": ["Flavia is the head of state of Ruritania"]})
+    rec = loop.ask("Who is the head of state of Ruritania?")
+    assert rec["reply"] == "As of 2019, Rudolf Rassendyll." and "over_snapshot" not in rec and "snapshot_stood" not in rec
+
+
 def test_a_contradiction_between_the_worlds_is_never_said(hdc):
     loop = _loop(hdc, ["Zenda is the capital of Ruritania"])
     rec = loop.ask("What is the capital of Ruritania?")

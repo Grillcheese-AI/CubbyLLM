@@ -112,12 +112,15 @@ class AskMemory:
         rec["news_changes"] = marks
         return f" Reports on {marks[-1]['day']} say this may have changed."
 
-    def _checked(self, question: str, lr, rec: dict) -> None:
+    def _checked(self, question: str, lr, rec: dict, again=None) -> None:
         """The checks a walked answer passes before it is said, on its record: the bulk pass's veto (order 0013), the
         question's tense and year (0012), a snapshot's "as of" (0014), the time rule on an undated value that changes
         (0015, Addendum 2), one witness hedged. Only for a walk that verified and a record that still says so (a
-        namesake's refusal stands: order 0037). Out of `AskLoop._ask` so each namesake walked apart passes them too."""
+        namesake's refusal stands: order 0037). Out of `AskLoop._ask` so each namesake walked apart passes them too.
+        `again` (the same walk once more): before a snapshot's changing value is said "as of", the source is asked
+        for today's (`ask_source_first`, Nick 2026-10-27), and its value goes through these checks in its turn."""
         from cubbyllm.reasoning.planner import normalize
+        from .ask_source_first import source_wins
         if not lr.result.verified or not rec.get("verified"):
             return
         why = self._time_check(question, lr) if self.tense else None
@@ -126,7 +129,11 @@ class AskMemory:
             why = snap[1]
         undated = self._undated(question, lr) if not why and not snap else None
         h = lr.result.trace[-1] if lr.result.trace else None
-        if h is not None and h.triple is not None and (normalize(h.triple.subj), normalize(h.triple.rel)) in self.contested:
+        contested = h is not None and h.triple is not None and (normalize(h.triple.subj), normalize(h.triple.rel)) in self.contested
+        as_of = snap[1] if snap else undated[1] if undated and undated[0] == "as_of" else None
+        if as_of and not why and not contested and source_wins(self, question, lr, rec, again, str(as_of)):
+            return                                       # the source's value, checked in its turn
+        if contested:
             rec.update(answer=None, verified=False, reason="contested",    # the bulk pass held two values: never said
                        refused={"answer": lr.result.answer, "why": "the sources disagree on it"})
         elif why:                                           # the question's tense or year is not the fact's: not said

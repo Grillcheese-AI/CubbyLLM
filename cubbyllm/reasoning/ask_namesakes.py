@@ -98,7 +98,8 @@ def seed_for(loop, seed: str, item: str | None = None, question: str | None = No
     """The walk's context for a seed held only as a shared name: the asker's item or the qualifier's pick pins the
     seed to that one item (the world's `pinned`; the question's own words stay the plan's, so the plan still covers
     the question). Otherwise nothing, and the world's hop decides by its relation or withholds (`after_walk`); with
-    ``CB_NAMESAKE_RELATION=1`` (order 0037) the hop reads the question's cue words (`ask_namesake_answer`)."""
+    order 0037's rule on (the default; ``CB_NAMESAKE_RELATION=0`` turns it off) the hop reads the question's cue
+    words (`ask_namesake_answer`)."""
     if not hasattr(loop.world, "namesakes"):
         return contextlib.nullcontext()
     loop.world.clear_withheld()
@@ -117,7 +118,7 @@ def after_walk(loop, rec: dict, seed: str, learn=None) -> None:
     """A walk refused because a world withheld facts its hop would have read on a shared name that nothing decided,
     and no world holds the name as one thing: `ambiguous_entity`, the items that held them first. Any other refusal
     keeps its own reason (no item held the fact: a source gap, not a question of which). With
-    ``CB_NAMESAKE_RELATION=1`` (order 0037), when the question's relation decided: one item fits, its answer and the
+    order 0037's rule on (the default), when the question's relation decided: one item fits, its answer and the
     other namesakes named; two of a kind, each walked apart (`learn`) and answered, labelled (`ask_namesake_answer`)."""
     world = loop.world
     if not hasattr(world, "withheld") or loop.facts_about(seed):
