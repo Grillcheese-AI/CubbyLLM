@@ -106,8 +106,13 @@ def seed_for(loop, seed: str, item: str | None = None, question: str | None = No
     by, got = _decided(loop.world, seed, item, held=bool(loop.facts_about(seed)))
     if got:
         return loop.world.pinned(seed, by[got[0]][0][1].subj, got[0])
-    if question and answer.on() and hasattr(loop.world, "cued"):
-        return loop.world.cued(answer.cue_words(question, seed, rels))
+    if question and answer.on():
+        words = answer.cue_words(question, seed, rels)
+        stack = contextlib.ExitStack()               # the worlds' hop and the source's rule (order 0043) read them
+        for o in (loop.world, getattr(loop, "source", None)):
+            if hasattr(o, "cued"):
+                stack.enter_context(o.cued(words))
+        return stack
     return contextlib.nullcontext()
 
 
@@ -120,16 +125,19 @@ def after_walk(loop, rec: dict, seed: str, learn=None) -> None:
     keeps its own reason (no item held the fact: a source gap, not a question of which). With
     order 0037's rule on (the default), when the question's relation decided: one item fits, its answer and the
     other namesakes named; two of a kind, each walked apart (`learn`) and answered, labelled (`ask_namesake_answer`)."""
+    from .ask_source_namesakes import after_walk as at_source
     world = loop.world
-    if not hasattr(world, "withheld") or loop.facts_about(seed):
-        return
-    d = world.decision(seed) if answer.on() and hasattr(world, "decision") else None
+    shared = bool(hasattr(world, "namesakes") and world.namesakes(seed))
+    held = loop.facts_about(seed)                    # the first world holds the name as one thing: the worlds' rule
+    d = world.decision(seed) if shared and not held and answer.on() and hasattr(world, "decision") else None   # stands aside
     if d and len(d["fit"]) == 1 and d.get("holds"):
         answer.one_fits(loop, rec, seed, d, world.namesakes(seed))
         return
     if d and len(d["fit"]) > 1 and not rec.get("verified") and answer.several_fit(loop, rec, seed, d, world.namesakes(seed), learn):
         return
-    if rec.get("verified"):
+    if at_source(loop, rec, seed, learn):            # the source's rule (order 0043): one fits and the walk verified
+        return                                       #   (the offer line), or several fit and it did not (answered each)
+    if rec.get("verified") or not shared or held:
         return
     holders, by = world.withheld(seed), world.namesakes(seed)
     if holders and by:

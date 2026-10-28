@@ -1,0 +1,368 @@
+{
+ "summary": {
+  "what": "exp_everyday_webq",
+  "everyday": "on",
+  "emitter": "none",
+  "online": true,
+  "source": "cache",
+  "tense": "on",
+  "namesake_relation": true,
+  "source_over_snapshot": true,
+  "namesake_tier": false,
+  "questions": "stack 20",
+  "parsed_only": false,
+  "counts": {
+   "asked": 20,
+   "spoken": 11,
+   "spoken_by_form": 11,
+   "match": 0,
+   "mismatch": 0,
+   "refused:no_plan": 5,
+   "refused:retrieval_exhausted": 2,
+   "refused:ambiguous_hop": 1,
+   "refused:entity_unresolved": 1
+  },
+  "by_form": {
+   "capital": 3,
+   "place of birth": 1,
+   "author": 2,
+   "creator": 1,
+   "discoverer or inventor": 1,
+   "currency": 1,
+   "located in or next to body of water": 1,
+   "end time": 1
+  },
+  "emitter_calls": null,
+  "wall_s": 25.6
+ },
+ "rows": [
+  {
+   "question": "What is the capital of France?",
+   "region": "stack",
+   "golds": [],
+   "form": "capital",
+   "seed": "France",
+   "plan": [
+    "capital"
+   ],
+   "verified": true,
+   "answer": "Paris",
+   "said": "Paris. If you meant something else, there is also a constituency of the european parliament named France. Want to know about it?",
+   "tier": null,
+   "reason": null,
+   "match": null,
+   "wall_s": 0.91
+  },
+  {
+   "question": "Where was Ada Lovelace born?",
+   "region": "stack",
+   "golds": [],
+   "form": "place of birth",
+   "seed": "Ada Lovelace",
+   "plan": [
+    "place of birth"
+   ],
+   "verified": true,
+   "answer": "London",
+   "said": "London. If you meant something else, there is also a microarchitecture named Ada Lovelace and a radio series episode named Ada Lovelace. Want to know about one of them?",
+   "tier": null,
+   "reason": null,
+   "match": null,
+   "wall_s": 0.07
+  },
+  {
+   "question": "Who wrote Pride and Prejudice?",
+   "region": "stack",
+   "golds": [],
+   "form": "author",
+   "seed": "Pride and Prejudice",
+   "plan": [
+    "author"
+   ],
+   "verified": true,
+   "answer": "Jane Austen",
+   "said": "Jane Austen. If you meant something else, there is also a miniseries named Pride and Prejudice and a version, edition or translation named Pride and Prejudice. Want to know about one of them?",
+   "tier": null,
+   "reason": null,
+   "match": null,
+   "wall_s": 0.1
+  },
+  {
+   "question": "When was the Eiffel Tower built?",
+   "region": "stack",
+   "golds": [],
+   "form": null,
+   "seed": null,
+   "plan": null,
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "no_plan",
+   "match": null,
+   "wall_s": 0.0
+  },
+  {
+   "question": "What is the capital of Canada?",
+   "region": "stack",
+   "golds": [],
+   "form": "capital",
+   "seed": "Canada",
+   "plan": [
+    "capital"
+   ],
+   "verified": true,
+   "answer": "Ottawa",
+   "said": "Ottawa",
+   "tier": null,
+   "reason": null,
+   "match": null,
+   "wall_s": 0.25
+  },
+  {
+   "question": "Who is the father of Queen Elizabeth II?",
+   "region": "stack",
+   "golds": [],
+   "form": "father",
+   "seed": "Queen Elizabeth II",
+   "plan": [
+    "father"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "What is the population of Toronto?",
+   "region": "stack",
+   "golds": [],
+   "form": null,
+   "seed": null,
+   "plan": null,
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "no_plan",
+   "match": null,
+   "wall_s": 0.0
+  },
+  {
+   "question": "Who painted the Mona Lisa?",
+   "region": "stack",
+   "golds": [],
+   "form": "creator",
+   "seed": "Mona Lisa",
+   "plan": [
+    "creator"
+   ],
+   "verified": true,
+   "answer": "Leonardo da Vinci",
+   "said": "Leonardo da Vinci. If you meant something else, there is also a human named Mona Lisa (2 of them). Want to know about one of them?",
+   "tier": null,
+   "reason": null,
+   "match": null,
+   "wall_s": 0.07
+  },
+  {
+   "question": "Where is the Globe Theatre?",
+   "region": "stack",
+   "golds": [],
+   "form": null,
+   "seed": null,
+   "plan": null,
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "no_plan",
+   "match": null,
+   "wall_s": 0.0
+  },
+  {
+   "question": "What language is spoken in Brazil?",
+   "region": "stack",
+   "golds": [],
+   "form": "official language",
+   "seed": "Brazil",
+   "plan": [
+    "official language"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "ambiguous_hop",
+   "match": null,
+   "wall_s": 0.23
+  },
+  {
+   "question": "Who discovered penicillin?",
+   "region": "stack",
+   "golds": [],
+   "form": "discoverer or inventor",
+   "seed": "penicillin",
+   "plan": [
+    "discoverer or inventor"
+   ],
+   "verified": true,
+   "answer": "Alexander Fleming",
+   "said": "Alexander Fleming. If you meant something else, there is also a musical group named Penicillin. Want to know about it?",
+   "tier": null,
+   "reason": null,
+   "match": null,
+   "wall_s": 0.04
+  },
+  {
+   "question": "What is the currency of Japan?",
+   "region": "stack",
+   "golds": [],
+   "form": "currency",
+   "seed": "Japan",
+   "plan": [
+    "currency"
+   ],
+   "verified": true,
+   "answer": "Japanese yen",
+   "said": "Japanese yen. If you meant something else, there is also a manga named Japan (2 of them). Want to know about one of them?",
+   "tier": null,
+   "reason": null,
+   "match": null,
+   "wall_s": 0.02
+  },
+  {
+   "question": "Quelle est la capitale de l'Italie ?",
+   "region": "stack",
+   "golds": [],
+   "form": "capital",
+   "seed": "Italie",
+   "plan": [
+    "capital"
+   ],
+   "verified": true,
+   "answer": "Rome",
+   "said": "Rome. If you meant something else, there is also a family name named Italie and a metro station named Italie. Want to know about one of them?",
+   "tier": null,
+   "reason": null,
+   "match": null,
+   "wall_s": 0.22
+  },
+  {
+   "question": "Qui a écrit Les Misérables ?",
+   "region": "stack",
+   "golds": [],
+   "form": "author",
+   "seed": "Les Misérables",
+   "plan": [
+    "author"
+   ],
+   "verified": true,
+   "answer": "Victor Hugo",
+   "said": "Victor Hugo. If you meant something else, there is also a film named Les Misérables and a dramatico-musical work named Les Misérables. Want to know about one of them?",
+   "tier": null,
+   "reason": null,
+   "match": null,
+   "wall_s": 0.07
+  },
+  {
+   "question": "What river flows through Cairo?",
+   "region": "stack",
+   "golds": [],
+   "form": "located in or next to body of water",
+   "seed": "Cairo",
+   "plan": [
+    "located in or next to body of water"
+   ],
+   "verified": true,
+   "answer": "Nile",
+   "said": "Nile. If you meant something else, there is also an operating system named Cairo and a village in the united states named Cairo. Want to know about one of them?",
+   "tier": null,
+   "reason": null,
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "Who was the first president of the United States?",
+   "region": "stack",
+   "golds": [],
+   "form": null,
+   "seed": "first president of the united states",
+   "plan": [],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "entity_unresolved",
+   "match": null,
+   "wall_s": 0.01
+  },
+  {
+   "question": "How tall is Mount Everest?",
+   "region": "stack",
+   "golds": [],
+   "form": "height",
+   "seed": "Mount Everest",
+   "plan": [
+    "height"
+   ],
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "retrieval_exhausted",
+   "match": null,
+   "wall_s": 0.07
+  },
+  {
+   "question": "What is the speed of light?",
+   "region": "stack",
+   "golds": [],
+   "form": null,
+   "seed": null,
+   "plan": null,
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "no_plan",
+   "match": null,
+   "wall_s": 0.0
+  },
+  {
+   "question": "Who is the mayor of Montreal?",
+   "region": "stack",
+   "golds": [],
+   "form": null,
+   "seed": null,
+   "plan": null,
+   "verified": false,
+   "answer": null,
+   "said": null,
+   "tier": null,
+   "reason": "no_plan",
+   "match": null,
+   "wall_s": 0.0
+  },
+  {
+   "question": "What year did World War II end?",
+   "region": "stack",
+   "golds": [],
+   "form": "end time",
+   "seed": "World War II",
+   "plan": [
+    "end time"
+   ],
+   "verified": true,
+   "answer": "1945-09-02",
+   "said": "1945-09-02. If you meant something else, there is also a version, edition or translation named World War II and a chapter named World War II. Want to know about one of them?",
+   "tier": null,
+   "reason": null,
+   "match": null,
+   "wall_s": 0.12
+  }
+ ]
+}

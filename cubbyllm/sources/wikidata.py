@@ -26,6 +26,7 @@ import urllib.parse
 from .wikidata_aliases import (CACHE, PROPERTY_TABLE, PropertyAliases, _META, _inflections,  # noqa: F401
                                property_aliases)
 from .wikidata_resolve import WikiResolve
+from .wikidata_namesakes import WikiNamesakes  # noqa: E402 -- order 0043: a shared name decided by the relation
 
 __wiring__ = "WIRED"
 
@@ -40,7 +41,7 @@ MAX_CLASS_FACTS = 3        # the kind, not the whole taxonomy
 from cubbyllm.reasoning.planner import Triple, normalize as _normalize   # noqa: E402
 
 
-class WikidataSource(WikiResolve):
+class WikidataSource(WikiResolve, WikiNamesakes):
     name = "wikidata"
 
     def __init__(self, cache_dir: pathlib.Path | str | None = CACHE, sleep_s: float = 0.2,

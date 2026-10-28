@@ -1,0 +1,2280 @@
+{
+ "summary": {
+  "what": "audit_source_namesakes (order 0043)",
+  "date": "2026-10-27",
+  "seed": 2,
+  "n": 50,
+  "outcomes": {
+   "agree (source)": 1,
+   "refused: ambiguous_hop": 14,
+   "refused: retrieval_exhausted": 10,
+   "answered (no rule needed)": 4,
+   "asking back": 3,
+   "one fits (source)": 8,
+   "refused: time_mismatch": 1,
+   "refused: unknown_relation": 2,
+   "one fits (source) (label over alias)": 3,
+   "several fit (source)": 4
+  },
+  "from": {
+   "scoreboard": 50
+  },
+  "decision_ms": {
+   "p50": 9.3,
+   "max": 17.4,
+   "n": 35
+  },
+  "source_calls_per_question": {
+   "p50": 0.0,
+   "max": 3
+  }
+ },
+ "rows": [
+  {
+   "question": "what country does iceland belong to?",
+   "seed": "iceland",
+   "rel": "country",
+   "from": "scoreboard",
+   "reply": "Iceland.",
+   "verified": true,
+   "reason": null,
+   "outcome": "agree (source)",
+   "fit": [
+    "Q189",
+    "Q3740828"
+   ],
+   "how": {
+    "Q189": "holds",
+    "Q3740828": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q189",
+     "label": "Iceland",
+     "kinds": [
+      "island country",
+      "sovereign state",
+      "country",
+      "country sometimes considered transcontinental"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q3740828",
+     "label": "Iceland",
+     "kinds": [
+      "island"
+     ],
+     "mark": "fits (holds)"
+    }
+   ],
+   "answers": [
+    {
+     "item": "Q189",
+     "label": "Iceland (instance: island country)",
+     "answer": "Iceland",
+     "verified": true,
+     "reason": null,
+     "said": "Iceland was a country of iceland at one point",
+     "value": "Q189",
+     "trace": [
+      "Iceland is the country of Iceland"
+     ]
+    },
+    {
+     "item": "Q3740828",
+     "label": "Iceland (instance: island)",
+     "answer": "Iceland",
+     "verified": true,
+     "reason": null,
+     "said": "Iceland",
+     "value": "Q189",
+     "trace": [
+      "Iceland is the country of Iceland"
+     ]
+    }
+   ],
+   "source_calls": 0,
+   "wall_s": 0.21
+  },
+  {
+   "question": "what form of government does russia have today?",
+   "seed": "russia",
+   "rel": "basic form of government",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q159"
+   ],
+   "how": {
+    "Q159": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q159",
+     "label": "Russia",
+     "kinds": [
+      "sovereign state",
+      "secular state",
+      "country",
+      "transcontinental country",
+      "successor state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q23890440",
+     "label": "Russia",
+     "kinds": [
+      "fossil taxon"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.15
+  },
+  {
+   "question": "what timezone is denver co?",
+   "seed": "denver co",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "retrieval_exhausted",
+   "outcome": "refused: retrieval_exhausted",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.06
+  },
+  {
+   "question": "what time zone am i in michigan?",
+   "seed": "michigan",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q1166"
+   ],
+   "how": {
+    "Q1166": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q1166",
+     "label": "Michigan",
+     "kinds": [
+      "U.S. state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q230492",
+     "label": "University of Michigan",
+     "kinds": [
+      "public research university",
+      "public educational institution of the United States"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q1758890",
+     "label": "Michigan",
+     "kinds": [
+      "album"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q1169",
+     "label": "Lake Michigan",
+     "kinds": [
+      "lake"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q109676634",
+     "label": "Michigan",
+     "kinds": [
+      "podcast episode"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.09
+  },
+  {
+   "question": "what time zone is oklahoma state?",
+   "seed": "oklahoma",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q1649"
+   ],
+   "how": {
+    "Q1649": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q1649",
+     "label": "Oklahoma",
+     "kinds": [
+      "U.S. state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q640652",
+     "label": "University of Oklahoma",
+     "kinds": [
+      "public research university",
+      "public educational institution of the United States",
+      "university"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q1364648",
+     "label": "Oklahoma!",
+     "kinds": [
+      "dramatico-musical work"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.08
+  },
+  {
+   "question": "what currency does ontario canada use?",
+   "seed": "ontario canada",
+   "rel": "currency",
+   "from": "scoreboard",
+   "reply": "Canadian dollar",
+   "verified": true,
+   "reason": null,
+   "outcome": "answered (no rule needed)",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.07
+  },
+  {
+   "question": "where was gabriel faure born?",
+   "seed": "gabriel faure",
+   "rel": "place of birth",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_entity",
+   "outcome": "asking back",
+   "fit": [
+    "Q104919",
+    "Q3093739",
+    "Q80170781",
+    "Q65580702"
+   ],
+   "how": {
+    "Q104919": "holds",
+    "Q3093739": "holds",
+    "Q80170781": "holds",
+    "Q65580702": "may"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q104919",
+     "label": "Gabriel Fauré",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q3093739",
+     "label": "Gabriel Faure",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q80170781",
+     "label": "Gabriel Faure",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q110620974",
+     "label": "Gabriel Fauré",
+     "kinds": [
+      "tram stop"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q65580702",
+     "label": "Gabriel Faure",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (may)"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what language do people speak in brazil wikipedia?",
+   "seed": "brazil",
+   "rel": "official language",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q155"
+   ],
+   "how": {
+    "Q155": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q155",
+     "label": "Brazil",
+     "kinds": [
+      "sovereign state",
+      "secular state",
+      "country"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q16860380",
+     "label": "Brazil",
+     "kinds": [
+      "family name"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q25094860",
+     "label": "Brazil",
+     "kinds": [
+      "album"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q96336868",
+     "label": "Brazil",
+     "kinds": [
+      "music track with vocals"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.16
+  },
+  {
+   "question": "what timezone is colorado in right now?",
+   "seed": "colorado",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q1261"
+   ],
+   "how": {
+    "Q1261": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q1261",
+     "label": "Colorado",
+     "kinds": [
+      "U.S. state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q736674",
+     "label": "University of Colorado Boulder",
+     "kinds": [
+      "public university",
+      "research university",
+      "public educational institution of the United States"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q37500087",
+     "label": "Colorado",
+     "kinds": [
+      "family name"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q11773614",
+     "label": "Colorado",
+     "kinds": [
+      "album"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.07
+  },
+  {
+   "question": "what language do they speak in northern ireland?",
+   "seed": "northern ireland",
+   "rel": "official language",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q26"
+   ],
+   "how": {
+    "Q26": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q26",
+     "label": "Northern Ireland",
+     "kinds": [
+      "constituent country of the United Kingdom",
+      "integral overseas territory",
+      "stateless nation",
+      "country"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q7058448",
+     "label": "Northern Ireland",
+     "kinds": [
+      "constituency of the European Parliament"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q139721508",
+     "label": "Northern Ireland",
+     "kinds": [
+      "book"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what time zone is new york under?",
+   "seed": "new york",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q1384"
+   ],
+   "how": {
+    "Q1384": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q1384",
+     "label": "New York",
+     "kinds": [
+      "U.S. state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q1507987",
+     "label": "New York",
+     "kinds": [
+      "magazine",
+      "website"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.07
+  },
+  {
+   "question": "what is the capital of alaska state?",
+   "seed": "alaska",
+   "rel": "capital",
+   "from": "scoreboard",
+   "reply": "Juneau was a capital of alaska at one point. If you meant something else, there is also an encyclopedia article named Alaska and a given name named Alaska. Want to know about one of them?",
+   "verified": true,
+   "reason": null,
+   "outcome": "one fits (source)",
+   "fit": [
+    "Q797"
+   ],
+   "how": {
+    "Q797": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q797",
+     "label": "Alaska",
+     "kinds": [
+      "exclave",
+      "U.S. state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q23851809",
+     "label": "Alaska",
+     "kinds": [
+      "encyclopedia article"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q117090096",
+     "label": "Alaska",
+     "kinds": [
+      "given name"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q122835287",
+     "label": "Alaska",
+     "kinds": [
+      "family name"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.07
+  },
+  {
+   "question": "what language do they speak in iceland wikipedia?",
+   "seed": "iceland",
+   "rel": "official language",
+   "from": "scoreboard",
+   "reply": "Icelandic. If you meant something else, there is also an island named Iceland. Want to know about it?",
+   "verified": true,
+   "reason": null,
+   "outcome": "one fits (source)",
+   "fit": [
+    "Q189"
+   ],
+   "how": {
+    "Q189": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q189",
+     "label": "Iceland",
+     "kinds": [
+      "island country",
+      "sovereign state",
+      "country",
+      "country sometimes considered transcontinental"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q3740828",
+     "label": "Iceland",
+     "kinds": [
+      "island"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.14
+  },
+  {
+   "question": "what is the currency in croatia 2012?",
+   "seed": "croatia",
+   "rel": "currency",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "time_mismatch",
+   "outcome": "refused: time_mismatch",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.13
+  },
+  {
+   "question": "what is the time zone in oklahoma city?",
+   "seed": "oklahoma city",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "retrieval_exhausted",
+   "outcome": "refused: retrieval_exhausted",
+   "fit": [],
+   "how": {},
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q34863",
+     "label": "Oklahoma City",
+     "kinds": [
+      "city in the United States",
+      "county seat",
+      "big city"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q57833032",
+     "label": "Oklahoma City",
+     "kinds": [
+      "television film"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what killed whitney houston?",
+   "seed": "whitney houston",
+   "rel": "cause of death",
+   "from": "scoreboard",
+   "reply": "drowning. If you meant something else, there is also an album named Whitney Houston. Want to know about it?",
+   "verified": true,
+   "reason": null,
+   "outcome": "one fits (source)",
+   "fit": [
+    "Q34389"
+   ],
+   "how": {
+    "Q34389": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q34389",
+     "label": "Whitney Houston",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q220749",
+     "label": "Whitney Houston",
+     "kinds": [
+      "album"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what currency is used in switzerland 2012?",
+   "seed": "switzerland",
+   "rel": "currency",
+   "from": "scoreboard",
+   "reply": "Swiss franc. If you meant something else, there is also a confederation named Old Swiss Confederacy and a chapter named Switzerland. Want to know about one of them?",
+   "verified": true,
+   "reason": null,
+   "outcome": "one fits (source)",
+   "fit": [
+    "Q39"
+   ],
+   "how": {
+    "Q39": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q39",
+     "label": "Switzerland",
+     "kinds": [
+      "state",
+      "landlocked country",
+      "confederation",
+      "Federal Treaty",
+      "federation",
+      "Helvetic Republic",
+      "sovereign state",
+      "country"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q435583",
+     "label": "Old Swiss Confederacy",
+     "kinds": [
+      "confederation",
+      "former administrative territorial entity",
+      "sovereign state",
+      "historical country"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q139772872",
+     "label": "Switzerland",
+     "kinds": [
+      "chapter"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q123007015",
+     "label": "Switzerland",
+     "kinds": [
+      "music track with vocals"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.13
+  },
+  {
+   "question": "when did the aurora colorado shooting take place?",
+   "seed": "aurora colorado shooting",
+   "rel": "point in time",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "unknown_relation",
+   "outcome": "refused: unknown_relation",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.03
+  },
+  {
+   "question": "where is st vincent de paul buried?",
+   "seed": "st vincent de paul",
+   "rel": "place of burial",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "retrieval_exhausted",
+   "outcome": "refused: retrieval_exhausted",
+   "fit": [],
+   "how": {},
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q137883433",
+     "label": "St Vincent de Paul",
+     "kinds": [
+      "Catholic church building"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q137782407",
+     "label": "St Vincent de Paul",
+     "kinds": [
+      "Catholic church building"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q1710383",
+     "label": "Saint-Vincent-de-Paul church",
+     "kinds": [
+      "church building"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.01
+  },
+  {
+   "question": "what is the time zone in uk now?",
+   "seed": "uk",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_entity",
+   "outcome": "asking back",
+   "fit": [
+    "Q1499",
+    "Q145"
+   ],
+   "how": {
+    "Q1499": "holds",
+    "Q145": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q1499",
+     "label": "Uttarakhand",
+     "kinds": [
+      "state of India"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q145",
+     "label": "United Kingdom",
+     "kinds": [
+      "sovereign state",
+      "country",
+      "colonial power",
+      "island country"
+     ],
+     "mark": "fits (holds)"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.21
+  },
+  {
+   "question": "what is the capital of spain in 2010?",
+   "seed": "spain",
+   "rel": "capital",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q29"
+   ],
+   "how": {
+    "Q29": "holds",
+    "Q178038": "holds",
+    "Q170603": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q29",
+     "label": "Spain",
+     "kinds": [
+      "sovereign state",
+      "realm",
+      "country",
+      "Mediterranean country",
+      "nation state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q16932431",
+     "label": "Spain",
+     "kinds": [
+      "family name"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q178038",
+     "label": "Second Spanish Republic",
+     "kinds": [
+      "historical period",
+      "republic",
+      "historical country",
+      "secular state"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q170603",
+     "label": "New Spain",
+     "kinds": [
+      "viceroyalty of the Spanish Empire"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 3,
+   "wall_s": 2.94
+  },
+  {
+   "question": "what is the jurisdiction of the us supreme court?",
+   "seed": "us supreme court",
+   "rel": "applies to jurisdiction",
+   "from": "scoreboard",
+   "reply": "United States",
+   "verified": true,
+   "reason": null,
+   "outcome": "answered (no rule needed)",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 2,
+   "wall_s": 1.23
+  },
+  {
+   "question": "what year did the new york mets start?",
+   "seed": "new york mets",
+   "rel": "start time",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "unknown_relation",
+   "outcome": "refused: unknown_relation",
+   "fit": [],
+   "how": {},
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q692417",
+     "label": "New York Mets",
+     "kinds": [
+      "baseball team"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q47512548",
+     "label": "New York Mets",
+     "kinds": [
+      "painting"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.01
+  },
+  {
+   "question": "where did john muir die?",
+   "seed": "john muir",
+   "rel": "place of death",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_entity",
+   "outcome": "asking back",
+   "fit": [
+    "Q379580",
+    "Q1701160",
+    "Q105620725",
+    "Q18672027",
+    "Q2075814"
+   ],
+   "how": {
+    "Q379580": "holds",
+    "Q1701160": "holds",
+    "Q105620725": "may",
+    "Q18672027": "may",
+    "Q2075814": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q379580",
+     "label": "John Muir",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q1701160",
+     "label": "John Muir",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q105620725",
+     "label": "John Muir",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (may)"
+    },
+    {
+     "item": "Q18672027",
+     "label": "John Muir",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (may)"
+    },
+    {
+     "item": "Q2075814",
+     "label": "John Muir",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (holds)"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.01
+  },
+  {
+   "question": "on which continent is the usa located?",
+   "seed": "usa",
+   "rel": "continent",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q30"
+   ],
+   "how": {
+    "Q30": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q30",
+     "label": "United States",
+     "kinds": [
+      "sovereign state",
+      "superpower",
+      "country",
+      "historical unrecognized state",
+      "constitutional republic",
+      "capitalist state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q2195271",
+     "label": "USA",
+     "kinds": [
+      "album"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.14
+  },
+  {
+   "question": "what is the currency of spain called?",
+   "seed": "spain",
+   "rel": "currency",
+   "from": "scoreboard",
+   "reply": "euro. If you meant something else, there is also a family name named Spain. Want to know about it?",
+   "verified": true,
+   "reason": null,
+   "outcome": "one fits (source) (label over alias)",
+   "fit": [
+    "Q29"
+   ],
+   "how": {
+    "Q29": "holds",
+    "Q178038": "holds",
+    "Q170603": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q29",
+     "label": "Spain",
+     "kinds": [
+      "sovereign state",
+      "realm",
+      "country",
+      "Mediterranean country",
+      "nation state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q16932431",
+     "label": "Spain",
+     "kinds": [
+      "family name"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q178038",
+     "label": "Second Spanish Republic",
+     "kinds": [
+      "historical period",
+      "republic",
+      "historical country",
+      "secular state"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q170603",
+     "label": "New Spain",
+     "kinds": [
+      "viceroyalty of the Spanish Empire"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.06
+  },
+  {
+   "question": "what timezone is toronto canada?",
+   "seed": "toronto canada",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "retrieval_exhausted",
+   "outcome": "refused: retrieval_exhausted",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 2,
+   "wall_s": 1.74
+  },
+  {
+   "question": "what time zone is colorado springs co?",
+   "seed": "colorado springs co",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "retrieval_exhausted",
+   "outcome": "refused: retrieval_exhausted",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.06
+  },
+  {
+   "question": "what do they speak in cambodia?",
+   "seed": "cambodia",
+   "rel": "official language",
+   "from": "scoreboard",
+   "reply": "Khmer. If you meant something else, there is also a human named Mohammed Haruna and a musical work/composition named Cambodia. Want to know about one of them?",
+   "verified": true,
+   "reason": null,
+   "outcome": "one fits (source) (label over alias)",
+   "fit": [
+    "Q424"
+   ],
+   "how": {
+    "Q424": "holds",
+    "Q1057118": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q424",
+     "label": "Cambodia",
+     "kinds": [
+      "sovereign state",
+      "country",
+      "realm"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q111542949",
+     "label": "Mohammed Haruna",
+     "kinds": [
+      "human"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q1057118",
+     "label": "Zhenla",
+     "kinds": [
+      "historical country"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q1028162",
+     "label": "Cambodia",
+     "kinds": [
+      "musical work/composition"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.16
+  },
+  {
+   "question": "what timezone is illinois on?",
+   "seed": "illinois",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q1204"
+   ],
+   "how": {
+    "Q1204": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q1204",
+     "label": "Illinois",
+     "kinds": [
+      "U.S. state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q1658831",
+     "label": "Illinois",
+     "kinds": [
+      "album"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.1
+  },
+  {
+   "question": "what is the currency in france?",
+   "seed": "france",
+   "rel": "currency",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q142"
+   ],
+   "how": {
+    "Q142": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q142",
+     "label": "France",
+     "kinds": [
+      "sovereign state",
+      "colonial power",
+      "Mediterranean country",
+      "republic",
+      "country"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q3080569",
+     "label": "France",
+     "kinds": [
+      "unisex given name",
+      "female given name",
+      "male given name"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q16275867",
+     "label": "France",
+     "kinds": [
+      "family name"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.13
+  },
+  {
+   "question": "what is the currency in england 2012?",
+   "seed": "england",
+   "rel": "currency",
+   "from": "scoreboard",
+   "reply": "pound sterling. If you meant something else, there is also a family name named England. Want to know about it?",
+   "verified": true,
+   "reason": null,
+   "outcome": "one fits (source) (label over alias)",
+   "fit": [
+    "Q21"
+   ],
+   "how": {
+    "Q21": "holds",
+    "Q179876": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q21",
+     "label": "England",
+     "kinds": [
+      "constituent country of the United Kingdom",
+      "cultural area",
+      "nation",
+      "country"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q179876",
+     "label": "Kingdom of England",
+     "kinds": [
+      "sovereign state",
+      "historical country",
+      "sovereign state"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q11111401",
+     "label": "England",
+     "kinds": [
+      "family name"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.08
+  },
+  {
+   "question": "what kind of government does italy have?",
+   "seed": "italy",
+   "rel": "basic form of government",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q38"
+   ],
+   "how": {
+    "Q38": "holds",
+    "Q172579": "holds",
+    "Q223936": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q38",
+     "label": "Italy",
+     "kinds": [
+      "country",
+      "sovereign state",
+      "social state",
+      "unitary state",
+      "republic",
+      "Mediterranean country"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q172579",
+     "label": "Kingdom of Italy",
+     "kinds": [
+      "sovereign state",
+      "historical country",
+      "colonial power"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q105415085",
+     "label": "Italy",
+     "kinds": [
+      "custom map / level"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q223936",
+     "label": "Kingdom of Italy",
+     "kinds": [
+      "historical country",
+      "Napoleonic client state"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q145694",
+     "label": "Italian Peninsula",
+     "kinds": [
+      "peninsula"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.14
+  },
+  {
+   "question": "what language do people speak in turkey?",
+   "seed": "turkey",
+   "rel": "official language",
+   "from": "scoreboard",
+   "reply": "Turkish. If you meant something else, there is also a taxon named domesticated turkey and a version, edition or translation named Turkey. Want to know about one of them?",
+   "verified": true,
+   "reason": null,
+   "outcome": "one fits (source)",
+   "fit": [
+    "Q43"
+   ],
+   "how": {
+    "Q43": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q43",
+     "label": "Turkey",
+     "kinds": [
+      "sovereign state",
+      "transcontinental country",
+      "Mediterranean country",
+      "country",
+      "social state",
+      "regional power",
+      "secular state",
+      "successor state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q848706",
+     "label": "domesticated turkey",
+     "kinds": [
+      "taxon"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q139932099",
+     "label": "Turkey",
+     "kinds": [
+      "version, edition or translation"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.13
+  },
+  {
+   "question": "what is the capital of georgia?",
+   "seed": "georgia",
+   "rel": "capital",
+   "from": "scoreboard",
+   "reply": "Georgia (country: United States): Atlanta was a capital of georgia at one point; Georgia (country: Georgia): Tbilisi; Province of Georgia (country: Kingdom of Great Britain): Savannah was a capital of georgia at one point.",
+   "verified": true,
+   "reason": null,
+   "outcome": "several fit (source)",
+   "fit": [
+    "Q1428",
+    "Q230",
+    "Q785035"
+   ],
+   "how": {
+    "Q1428": "holds",
+    "Q230": "holds",
+    "Q785035": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q1428",
+     "label": "Georgia",
+     "kinds": [
+      "U.S. state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q378694",
+     "label": "Georgia",
+     "kinds": [
+      "female given name"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q230",
+     "label": "Georgia",
+     "kinds": [
+      "country",
+      "sovereign state",
+      "unitary state",
+      "republic",
+      "Rechtsstaat",
+      "republic of the Soviet Union",
+      "country sometimes considered transcontinental"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q785035",
+     "label": "Province of Georgia",
+     "kinds": [
+      "former administrative territorial entity",
+      "province"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q761534",
+     "label": "University of Georgia",
+     "kinds": [
+      "university",
+      "historic district in the United States",
+      "land-grant university",
+      "public educational institution of the United States",
+      "public research university",
+      "publishing house"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": [
+    {
+     "item": "Q1428",
+     "label": "Georgia (country: United States)",
+     "answer": "Atlanta",
+     "verified": true,
+     "reason": null,
+     "said": "Atlanta was a capital of georgia at one point",
+     "value": "Q23556",
+     "trace": [
+      "Atlanta is the capital of Georgia"
+     ]
+    },
+    {
+     "item": "Q230",
+     "label": "Georgia (country: Georgia)",
+     "answer": "Tbilisi",
+     "verified": true,
+     "reason": null,
+     "said": "Tbilisi",
+     "value": "Q994",
+     "trace": [
+      "Tbilisi is the capital of Georgia"
+     ]
+    },
+    {
+     "item": "Q785035",
+     "label": "Province of Georgia (country: Kingdom of Great Britain)",
+     "answer": "Savannah",
+     "verified": true,
+     "reason": null,
+     "said": "Savannah was a capital of georgia at one point",
+     "value": "Q83813",
+     "trace": [
+      "Savannah is the capital of georgia"
+     ]
+    }
+   ],
+   "source_calls": 1,
+   "wall_s": 0.72
+  },
+  {
+   "question": "what language do people speak in costa rica?",
+   "seed": "costa rica",
+   "rel": "official language",
+   "from": "scoreboard",
+   "reply": "Spanish. If you meant something else, there is also a municipality of Brazil named Costa Rica and a locality of Mexico named Costa Rica. Want to know about one of them?",
+   "verified": true,
+   "reason": null,
+   "outcome": "one fits (source)",
+   "fit": [
+    "Q800"
+   ],
+   "how": {
+    "Q800": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q800",
+     "label": "Costa Rica",
+     "kinds": [
+      "sovereign state",
+      "country"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q1024894",
+     "label": "Costa Rica",
+     "kinds": [
+      "municipality of Brazil"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q4559688",
+     "label": "Costa Rica",
+     "kinds": [
+      "locality of Mexico"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 2,
+   "wall_s": 1.35
+  },
+  {
+   "question": "where was dwight howard born?",
+   "seed": "dwight howard",
+   "rel": "place of birth",
+   "from": "scoreboard",
+   "reply": "Atlanta",
+   "verified": true,
+   "reason": null,
+   "outcome": "answered (no rule needed)",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what timezone is texas san antonio in?",
+   "seed": "texas san antonio",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "retrieval_exhausted",
+   "outcome": "refused: retrieval_exhausted",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.13
+  },
+  {
+   "question": "what time zone is it in london england?",
+   "seed": "london england",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "retrieval_exhausted",
+   "outcome": "refused: retrieval_exhausted",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 2,
+   "wall_s": 1.72
+  },
+  {
+   "question": "what is the time zone in california called?",
+   "seed": "california",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": [
+    "Q99"
+   ],
+   "how": {
+    "Q99": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q99",
+     "label": "California",
+     "kinds": [
+      "U.S. state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q16047894",
+     "label": "California",
+     "kinds": [
+      "taxon"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q23930100",
+     "label": "California",
+     "kinds": [
+      "album"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q570510",
+     "label": "California",
+     "kinds": [
+      "album"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.15
+  },
+  {
+   "question": "what kind of government does the united states have today?",
+   "seed": "united states",
+   "rel": "basic form of government",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "ambiguous_hop",
+   "outcome": "refused: ambiguous_hop",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.14
+  },
+  {
+   "question": "what time zone is cincinnati oh in?",
+   "seed": "cincinnati oh",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "retrieval_exhausted",
+   "outcome": "refused: retrieval_exhausted",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.07
+  },
+  {
+   "question": "what timezone is michigan usa?",
+   "seed": "michigan usa",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "retrieval_exhausted",
+   "outcome": "refused: retrieval_exhausted",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.05
+  },
+  {
+   "question": "what language do they speak in argentina yahoo?",
+   "seed": "argentina",
+   "rel": "official language",
+   "from": "scoreboard",
+   "reply": "Spanish. If you meant something else, there is also a taxon named Argentina (2 of them). Want to know about one of them?",
+   "verified": true,
+   "reason": null,
+   "outcome": "one fits (source)",
+   "fit": [
+    "Q414"
+   ],
+   "how": {
+    "Q414": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q414",
+     "label": "Argentina",
+     "kinds": [
+      "sovereign state",
+      "country",
+      "nation",
+      "confessional state",
+      "country sometimes considered transcontinental"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q4789276",
+     "label": "Argentina",
+     "kinds": [
+      "taxon"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q2183754",
+     "label": "Argentina",
+     "kinds": [
+      "taxon"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q3622264",
+     "label": "Argentina",
+     "kinds": [
+      "female given name"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q37498453",
+     "label": "Argentina",
+     "kinds": [
+      "family name"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 1,
+   "wall_s": 1.01
+  },
+  {
+   "question": "what kind of money does the uk use?",
+   "seed": "uk",
+   "rel": "currency",
+   "from": "scoreboard",
+   "reply": "Uttarakhand (country: India): Indian rupee; United Kingdom (country: United Kingdom): pound sterling.",
+   "verified": true,
+   "reason": null,
+   "outcome": "several fit (source)",
+   "fit": [
+    "Q1499",
+    "Q145"
+   ],
+   "how": {
+    "Q1499": "holds",
+    "Q145": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q1499",
+     "label": "Uttarakhand",
+     "kinds": [
+      "state of India"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q145",
+     "label": "United Kingdom",
+     "kinds": [
+      "sovereign state",
+      "country",
+      "colonial power",
+      "island country"
+     ],
+     "mark": "fits (holds)"
+    }
+   ],
+   "answers": [
+    {
+     "item": "Q1499",
+     "label": "Uttarakhand (country: India)",
+     "answer": "Indian rupee",
+     "verified": true,
+     "reason": null,
+     "said": "Indian rupee",
+     "value": "Q80524",
+     "trace": [
+      "Indian rupee is the currency of uk"
+     ]
+    },
+    {
+     "item": "Q145",
+     "label": "United Kingdom (country: United Kingdom)",
+     "answer": "pound sterling",
+     "verified": true,
+     "reason": null,
+     "said": "pound sterling",
+     "value": "Q25224",
+     "trace": [
+      "pound sterling is the currency of uk"
+     ]
+    }
+   ],
+   "source_calls": 0,
+   "wall_s": 0.19
+  },
+  {
+   "question": "where was joseph p kennedy born?",
+   "seed": "joseph p kennedy",
+   "rel": "place of birth",
+   "from": "scoreboard",
+   "reply": "Joseph P. Kennedy Sr. (occupation: film producer): East Boston; Joseph Kennedy (occupation: scientist): Budapest.",
+   "verified": true,
+   "reason": null,
+   "outcome": "several fit (source)",
+   "fit": [
+    "Q313696",
+    "Q18153879"
+   ],
+   "how": {
+    "Q313696": "holds",
+    "Q18153879": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q313696",
+     "label": "Joseph P. Kennedy Sr.",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q18153879",
+     "label": "Joseph Kennedy",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (holds)"
+    }
+   ],
+   "answers": [
+    {
+     "item": "Q313696",
+     "label": "Joseph P. Kennedy Sr. (occupation: film producer)",
+     "answer": "East Boston",
+     "verified": true,
+     "reason": null,
+     "said": "East Boston",
+     "value": "Q1277756",
+     "trace": [
+      "East Boston is the place of birth of joseph p kennedy"
+     ]
+    },
+    {
+     "item": "Q18153879",
+     "label": "Joseph Kennedy (occupation: scientist)",
+     "answer": "Budapest",
+     "verified": true,
+     "reason": null,
+     "said": "Budapest",
+     "value": "Q1781",
+     "trace": [
+      "Budapest is the place of birth of joseph p kennedy"
+     ]
+    }
+   ],
+   "source_calls": 0,
+   "wall_s": 0.03
+  },
+  {
+   "question": "what is the currency in slovakia 2012?",
+   "seed": "slovakia",
+   "rel": "currency",
+   "from": "scoreboard",
+   "reply": "euro. If you meant something else, there is also a constituency of the European Parliament named Slovakia and a political party named Slovakia. Want to know about one of them?",
+   "verified": true,
+   "reason": null,
+   "outcome": "one fits (source)",
+   "fit": [
+    "Q214"
+   ],
+   "how": {
+    "Q214": "holds"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q214",
+     "label": "Slovakia",
+     "kinds": [
+      "sovereign state",
+      "republic",
+      "landlocked country",
+      "country",
+      "successor state"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q7541598",
+     "label": "Slovakia",
+     "kinds": [
+      "constituency of the European Parliament"
+     ],
+     "mark": "does not fit"
+    },
+    {
+     "item": "Q372043",
+     "label": "Slovakia",
+     "kinds": [
+      "political party"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.16
+  },
+  {
+   "question": "where did harry truman die?",
+   "seed": "harry truman",
+   "rel": "place of death",
+   "from": "scoreboard",
+   "reply": "Harry S. Truman (occupation: politician): Research Medical Center; Harry Truman (occupation: rugby union player): I do not know.",
+   "verified": true,
+   "reason": null,
+   "outcome": "several fit (source)",
+   "fit": [
+    "Q11613",
+    "Q130724693"
+   ],
+   "how": {
+    "Q11613": "holds",
+    "Q130724693": "may"
+   },
+   "ruled_out": {},
+   "cues": [],
+   "hits": [
+    {
+     "item": "Q11613",
+     "label": "Harry S. Truman",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (holds)"
+    },
+    {
+     "item": "Q130724693",
+     "label": "Harry Truman",
+     "kinds": [
+      "human"
+     ],
+     "mark": "fits (may)"
+    },
+    {
+     "item": "Q17042326",
+     "label": "Harry Truman",
+     "kinds": [
+      "single"
+     ],
+     "mark": "does not fit"
+    }
+   ],
+   "answers": [
+    {
+     "item": "Q11613",
+     "label": "Harry S. Truman (occupation: politician)",
+     "answer": "Research Medical Center",
+     "verified": true,
+     "reason": null,
+     "said": "Research Medical Center",
+     "value": "Q7315115",
+     "trace": [
+      "Research Medical Center is the place of death of harry truman"
+     ]
+    },
+    {
+     "item": "Q130724693",
+     "label": "Harry Truman (occupation: rugby union player)",
+     "answer": null,
+     "verified": false,
+     "reason": "retrieval_exhausted",
+     "said": null,
+     "value": "",
+     "trace": []
+    }
+   ],
+   "source_calls": 0,
+   "wall_s": 0.04
+  },
+  {
+   "question": "where was st elizabeth ann seton born?",
+   "seed": "st elizabeth ann seton",
+   "rel": "place of birth",
+   "from": "scoreboard",
+   "reply": "New York City",
+   "verified": true,
+   "reason": null,
+   "outcome": "answered (no rule needed)",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.02
+  },
+  {
+   "question": "what timezone is tennessee nashville?",
+   "seed": "tennessee nashville",
+   "rel": "located in time zone",
+   "from": "scoreboard",
+   "reply": null,
+   "verified": false,
+   "reason": "retrieval_exhausted",
+   "outcome": "refused: retrieval_exhausted",
+   "fit": null,
+   "how": null,
+   "ruled_out": null,
+   "cues": null,
+   "hits": [],
+   "answers": null,
+   "source_calls": 0,
+   "wall_s": 0.06
+  }
+ ]
+}

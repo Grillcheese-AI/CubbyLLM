@@ -137,6 +137,10 @@ class WikiResolve:
         whose LABEL is the name the question used over items that only carry it as an alias
         ('Jim Haslam' over 'Jimmy Haslam'). Still more than one -> ambiguous, refused."""
         key = name_key(entity)
+        pin = self.pin_of(entity) if hasattr(self, "pin_of") else None
+        if pin:                                              # the loop answering each namesake apart (order 0043)
+            self.last.update(how="pinned (answered each)")
+            return pin[0], pin[1] or self._labels_for([pin[0]]).get(pin[0]) or entity
         if via and not qid and len(self.links.get(_normalize(via), ())) == 1:
             qid = self.links[_normalize(via)][0]
             self.last.update(how="linked", via=via)
@@ -176,7 +180,23 @@ class WikiResolve:
         real = [h for h in exact if not _META.search(str(h.get("description") or ""))]
         cands = real if real else exact
         how = "exact" + ("" if len(real) == len(exact) else " (meta-pages dropped)")
-        if len(cands) > 1 and relations and self.aliases is not None:
+        from .wikidata_namesakes import on as namesakes_on
+        decision = None
+        if len(cands) > 1 and relations and not qid and namesakes_on() and hasattr(self, "decide"):
+            # order 0043: 0037's rule at the source -- the kind that carries the relation (its own claims, or the
+            # property's subject-type constraint), the placed ones for a place relation, the cue words. One fits:
+            # it is the item; several: the loop answers each (`last["each"]`, below the ledger); none: refused.
+            decision = self.decide(entity, cands, relations)
+            if decision is not None:
+                one = decision["fit"][0] if len(decision["fit"]) == 1 else self.by_label(entity, decision, cands)
+                if one is not None and len(decision["fit"]) > 1:
+                    decision["label"], decision["each"] = one, list(decision["fit"])   # (the label decided among them)
+                    decision["fit"] = [one]
+                self._remember(entity, decision)
+                if one is not None:
+                    cands = [h for h in cands if h["id"] == one]
+                    how = f"namesake rule ({decision['how'][one]}" + (" + label over alias)" if "label" in decision else ")")
+        elif len(cands) > 1 and relations and self.aliases is not None:
             # the relations the question needs, IN ORDER, narrowing at each step -- specific evidence
             # before generic. Taking their union was too weak (2026-09-14, live: 'where is quebec city'
             # stayed ambiguous between the city and an 1841 electoral district because BOTH carry
@@ -208,8 +228,8 @@ class WikiResolve:
             # Franklin"; Benjamin Franklin carries it as an alias; two people, and which one Wikidata labels
             # with the nickname is an accident of naming). Two of a kind: the asker decides. CB_NAMESAKE_TIER=1
             # keeps the label's old reach, as it does for the hdc world's tier (order 0036).
-            if len(labelled) == 1 and (os.environ.get("CB_NAMESAKE_TIER") == "1" or not self._one_kind(cands)):
-                cands, how = labelled, how + " + label over alias"
+            if len(labelled) == 1 and decision is None and (os.environ.get("CB_NAMESAKE_TIER") == "1" or not self._one_kind(cands)):
+                cands, how = labelled, how + " + label over alias"   # (under 0043's rule two that fit are answered each)
         if qid:                                              # the USER named the item (the panel's clarify choice):
             # recorded against the candidate set they were OFFERED, which is why the search ran first --
             # a vote keyed on the bare name would carry onto a different ambiguity later (the field's Q5)
@@ -223,6 +243,8 @@ class WikiResolve:
             if pref:
                 cands = [h for h in cands if h["id"] == pref[0]]
                 how = pref[1]
+            elif decision is not None and len(decision["fit"]) > 1:
+                self.last["each"] = list(decision["fit"])   # two or more fit: the loop answers each (order 0043)
         if len(cands) != 1:
             self.last["ambiguous"] = [(h["id"], h.get("label"), h.get("description")) for h in cands]
             self.last["unresolved"] = not exact

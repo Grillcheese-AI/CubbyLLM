@@ -121,10 +121,10 @@ def several_fit(loop, rec: dict, seed: str, d: dict, by: dict, learn) -> bool:
     """Each item that fit walked apart and answered, labelled; False (the loop asks which) when there are more than
     EACH_MAX, no walk to make, or no fact that tells them apart."""
     items = list(d["fit"])
-    labels = label_for(items, by, d.get("rels") or ()) if len(items) <= EACH_MAX and learn is not None else None
-    if not labels:
+    if len(items) > EACH_MAX or learn is None:
         return False
-    answers = []
+    labels = label_for(items, by, d.get("rels") or ()) or {q: by[q][0][1].subj for q in items}   # (no fact tells them
+    answers = []                                     #   apart: walked all the same, for namesakes that agree)
     for q in items:
         def walk(q=q):                                   # this item's own walk (and once more, should the source be
             with loop._lock, loop.world.pinned(seed, by[q][0][1].subj, q):    # asked for today's value: ask_source_first)
@@ -140,12 +140,26 @@ def several_fit(loop, rec: dict, seed: str, d: dict, by: dict, learn) -> bool:
                         "trace": [h.fact for h in lr.result.trace if h.fact] if ok else []})
     if not any(a["verified"] for a in answers):
         return False
+    if all(a["verified"] for a in answers) and len({normalize_value(a["answer"]) for a in answers}) == 1:
+        a = answers[0]                               # namesakes that agree (order 0043, item 6): said once, no offer
+        rec.update(answer=a["answer"], reply=f"{a['said']}.", verified=True, reason=None, answers=answers, trace=a["trace"],
+                   namesakes={"rule": "agree", "items": items, "kinds": d["kinds"], "cues": d["cues"]})
+        rec.pop("clarify", None), rec.pop("candidates", None), rec.pop("refused", None)
+        return True
+    if len(set(labels.values())) < len(items):
+        return False                                 # they differ and nothing tells them apart: the loop asks which
     said = "; ".join(f"{a['label']}: {a['said'] if a['verified'] else 'I do not know'}" for a in answers)
     rec.update(answer=said, reply=f"{said}.", verified=True, reason=None, answers=answers,
                trace=[f for a in answers for f in a["trace"]],
                namesakes={"rule": "several fit", "items": items, "kinds": d["kinds"], "cues": d["cues"]})
     rec.pop("clarify", None), rec.pop("candidates", None), rec.pop("refused", None)
     return True
+
+
+def normalize_value(v) -> str:
+    """A value as compared between namesakes' answers: the world holds labels, so the same literal is the same value
+    (an item's id, where the source links one: `ask_source_namesakes`)."""
+    return " ".join(str(v or "").lower().split())
 
 
 def _kinds_of(world):

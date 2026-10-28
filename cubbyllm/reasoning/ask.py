@@ -236,8 +236,10 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
                 if route(plan, self.scene):
                     source = self.scene
                     rec["world"] = "scene"
-            def learn(src=None):                         # `src`: another source for this walk (the reader's: none)
-                return learn_and_answer(sa[0] if sa else ed[0] if ed else question, lambda q, k: [], self._run_fn, store=self.world, known=self.known,
+            def learn(src=None, store=None):             # `src`: another source for this walk (the reader's: none);
+                return learn_and_answer(sa[0] if sa else ed[0] if ed else question, lambda q, k: [], self._run_fn,   # `store`: a scratch
+                                        store=self.world if store is None else store, known=self.known,   # first world (a namesake apart, 0043;
+                                        # an empty store is falsy)
                                         source=src or source, tau_vm=TAU_VM.get(plan.n_hop, 0.2202), top_k=3, max_repairs=1,
                                         plan=plan, resolvers=self.resolvers, choose=parse_choose(choose) or None,
                                         fallbacks=self.fallbacks if src is None else [],

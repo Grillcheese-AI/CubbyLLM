@@ -10,7 +10,8 @@ Pinned:
   value the question's description of its answer rules out is not said (her one award is another: not what was asked);
 - two of a kind a fact tells apart: each answered from its own walk, labelled by that fact, in their ids' order, and
   each walk passes the loop's checks (the tense check, "as of") as any walk does;
-- two of a kind nothing tells apart, and every question with the flag off: asked which, as since order 0036.
+- two of a kind nothing tells apart that give the same value: said once (order 0043, item 6); that differ, and every
+  question with the flag off: asked which, as since order 0036.
 """
 from __future__ import annotations
 
@@ -121,8 +122,8 @@ def test_each_namesake_walked_apart_passes_the_loops_checks(made, monkeypatch):
 def test_two_nothing_tells_apart_and_the_flag_off_are_asked_which(made, monkeypatch):
     monkeypatch.setenv("CB_NAMESAKE_RELATION", "1")
     loop, ids = made
-    rec = loop.ask(f"What is the {CIT} of Ann Lee?")                  # the same value, no fact of their own apart
-    assert not rec["verified"] and rec["reason"] == "ambiguous_entity"
+    rec = loop.ask(f"What is the {CIT} of Ann Lee?")                  # the same value, no fact of their own apart:
+    assert rec["verified"] and rec["reply"] == "Ruritania Land." and rec["namesakes"]["rule"] == "agree"   # (0043, item 6)
     rec = loop.ask(f"What is the {LOC} of Kata?")                     # KATA: the two placed items compete, no fact
     assert not rec["verified"] and rec["reason"] == "ambiguous_entity" and len(rec["candidates"]) == 3   # tells apart
     monkeypatch.setenv("CB_NAMESAKE_RELATION", "0")                   # (on by default since 2026-10-27)
