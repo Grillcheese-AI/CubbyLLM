@@ -1,5 +1,5 @@
 # 0043 — Namesakes at the source: 0037's rule on the Wikidata side, and namesakes that agree
-status: review (Claude Code, 2026-10-27)
+status: open (Cowork's check, 2026-10-28: five small items, then the flag on)
 written: 2026-10-27 by Cowork · approved: 2026-10-27 by Nick ("yes") · hypothesis: none
 
 ## Why
@@ -167,3 +167,63 @@ country, Georgia the state).
      The asker ledger will settle it; or a cue word; or do you want a rule that a country's ISO code is the country?
   3. Is the offer line wanted on every one-fits answer at the source (27 rows gained one: "there is also a family name
      named Spain")? 0037 added it for the worlds; the source finds far more namesakes (family names, albums, chapters).
+
+## Cowork's check (2026-10-28)
+Read by hand: the audit (`audit_source_namesakes_2026-10-27.md`), the scoreboard with the flag on and off, the stack's
+20, and the Wikidata items behind every "answer each".
+- **The audit is under the line:** 0 wrong picks in 50, 0 values tied to the wrong item. Each value checked against
+  its own item (Joseph Kennedy the scientist, Q18153879, holds the alias "Joseph P. Kennedy" and was born in Budapest;
+  Savannah belongs to the Province of Georgia). The 3 asked back where the question was obvious are costs; item 1
+  removes one of them (uk's time zone).
+- **The scoreboard:** 82 spoken, 0 wrong values by my reading too. Two kinds of wording mislead: the labels (item 4),
+  and "was a capital of ... at one point" said of current values (Juneau, Columbia, Dublin). The second is older than
+  this order (2 rows on 2026-10-24, 5 with the flag off, 7 on) and goes to 0044, which reads which values still hold.
+- **0037's Calhoun Township:** right. The placed township answers "United States of America"; every Calhoun
+  Township is in the US. The Wikimedia disambiguation page it offers is not a namesake (item 5).
+- **Q1:** yes, `CB_SOURCE_NAMESAKES` on by default once the items below are in and measured.
+- **Q2:** neither the ledger alone nor an ISO rule. The United Kingdom's ISO code is GB; "UK" is Uttarakhand's code
+  (IN-UK). The source's own names settle it: item 1.
+- **Q3:** the trim in item 5 holds either way. Whether the trimmed line stays at the source is Nick's call (asked
+  2026-10-28). Until he answers, keep the trimmed line.
+
+### Items (behind the same flag)
+1. **The initials tier.** It applies among different kinds only, after the label and before any other alias. An
+   alias equal to the initials of the item's own label (its capitalised words; "of", "the" and "and" skipped) beats
+   an alias that is not. "UK" is the initials of United Kingdom, and only a code for Uttarakhand, so the UK answers.
+   The same holds for USA, UN, NYC and UAE. Two candidates that both match by initials go on to the rule. Never within
+   one kind (the James Young rule).
+2. **"Each", with items that hold nothing.** Answer the items that hold a value. Fold the others into one closing
+   sentence instead of an "I do not know" each: "... The source holds no place of death for the other Harry Truman
+   (rugby union player)." Do not drop them: answering only the better-described one is the pick the James Young
+   rule forbids. When none holds a value: as today.
+3. **"Each", where an item holds several values:** refuse the question as `ambiguous_hop`, as before this order,
+   until 0044 can list that item's values. Today Eleanor Roosevelt gives the photographer's Oyster Bay and "I do not
+   know" for the diplomat, and Jack London gives "writer: I do not know". Each value is tied to its own item, but the
+   answer reads as if it were about the wrong person.
+4. **Labels that tell them apart.** A label fact is never the item itself and never the value asked:
+   "United Kingdom (country: United Kingdom)", "Georgia (country: Georgia)", "Jack London (occupation: merchant):
+   merchant". When the kinds differ, label places by their kind: "Georgia, the U.S. state: ...; Georgia, the country:
+   Tbilisi; the Province of Georgia: Savannah". Label people by their occupation and birth year: "John Jay (judge,
+   born 1745)". Today "judge" and "diplomat" read like one man, because the famous John Jay was both. Labels still
+   come from the item's own facts.
+5. **The offer line names namesakes only, in the worlds and at the source.** Never offer:
+   - name records: a family name or a given name;
+   - Wikimedia internal items: disambiguation pages, lists;
+   - reference entries: an encyclopedia article;
+   - parts and editions of a work: a chapter, a custom map / level, a version, edition or translation;
+   - a candidate that matched only through an alias while its own label is another name: German Reich and Italian
+     Peninsula for Germany and Italy, Old Swiss Confederacy, domesticated turkey, Mohammed Haruna for "Cambodia".
+
+   Read the classes with the same `subclass of` step as `carries`, not a list of labels. On the scoreboard this
+   keeps 20 of the 32 lines (albums, rivers, taxa, towns, games, a political party) and removes 12.
+
+### Acceptance for the items
+- Tests (canned, no network): uk (currency, time zone, language) answers for the United Kingdom; two candidates
+  that both match by initials go on to the rule; "each" with an item that holds nothing gives one folded sentence;
+  "each" with an item that holds several values is refused; no label repeats the item or the value; a family name, a
+  disambiguation page and an alias-only match are never offered.
+- The audit re-run (the same 50): 0 wrong picks, 0 values on the wrong item; say what changed.
+- The scoreboard: 0 wrong, every changed row read by hand, at least 80 spoken (item 3 takes back two).
+- The stack's 20, 0014's bench and 0033's probe: as before.
+- Then `CB_SOURCE_NAMESAKES` goes on by default. Report in one block here and set `done`; no review needed unless a
+  wrong value appears.

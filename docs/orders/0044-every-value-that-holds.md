@@ -67,6 +67,21 @@ languages, and Spain's capital with Madrid alone, because the source says which 
   - **Kill:** any wrong set, such as Valladolid or Toledo beside Madrid.
 - **The stack's 20, 0014's bench, 0033's probe:** 0 wrong, 0 mixed; report what changed.
 - **Nina Dobrev's citizenship** says both.
+- **From 0043's reading (Cowork, 2026-10-28):**
+  - **"At one point" only for a value that ended:** one with an end the source stated, or one the source's
+    preferred value replaces under a single-value constraint. A value that still holds is said flat. Today the
+    scoreboard says it of 7 values and 5 still hold: Juneau (Alaska), Columbia (South Carolina), Dublin (Ireland),
+    the United States (Alaska), Vatican City. Bonn (West Germany) and Savannah (the Province of Georgia) are right as
+    they are. The wording is older than 0043 (2 rows on 2026-10-24). **Gate:** 0 values that still hold said "at one
+    point".
+  - **A value that is the subject itself:** "Vatican City is its own country", not "Vatican City was a country of
+    vatican city".
+  - **Georgia the state's capital:** Atlanta, said flat, by preferred rank or the ended values' dates (today
+    "As of 2019, Atlanta", the snapshot's hedge, because the source refused several values).
+  - **The snapshot's undated Bonn** as Germany's capital (0043's report): with Berlin preferred at the source, or
+    the capital property's constraint saying one value at a time, Bonn never comes back as Germany's capital.
+  - **Eleanor Roosevelt and Jack London:** 0043 refuses their "each" while one item holds several values. Once
+    this order lists values, re-run those two rows and report them.
 - **Latency:** the constraint lookups (cached) per question.
 
 ## Constraints
