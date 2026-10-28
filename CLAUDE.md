@@ -80,7 +80,7 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   spoken, 0 wrong); in progress: 0024 (news from feeds), 0027 (the control board: P1 done; P2 after 0024, P3 after 0020/0026),
   0029 (arm D: step 2); review: 0045 (the rented card: inputs, runner, the instruction-following gate, `docs/POD.md`; built and
   smoked here, the paid run is Nick's); blocked on the retrieval replan (`docs/RETRIEVAL.md`): 0039, 0043 (`CB_SOURCE_NAMESAKES=1`,
-  built, under its line), 0044; open, in this order: 0046 (retrieval experiments R0-R8, offline; review after R1), 0032 (the trunk
+  built, under its line), 0044; review: 0046 (R0 and R1 measured; R2 waits on Cowork's reading); open, in this order: 0032 (the trunk
   reads the worlds), 0023 (nested questions over the worlds), 0025 (world watch), 0026 (forecasts, the branching tree), 0008
   (creativity), 0009 (capacity), 0010 (casual talk), 0018 (question shapes), 0019 (emotions), 0020 (emotional arcs); proposed:
   0002, 0003, 0017 (claim checks), 0042 (the VM service).
