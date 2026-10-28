@@ -1,5 +1,5 @@
 # 0045 — A rented card (H200 or B200, spot welcome): the grown trunk and its memory against the 450M, run to the end
-status: open
+status: in progress (Claude Code, 2026-10-28)
 written: 2026-10-27 by Cowork · approved: 2026-10-27 by Nick ("yes"; "could be b200 too"; "we could get more hours with a spot server") · hypothesis: H-E20
 
 ## Why
