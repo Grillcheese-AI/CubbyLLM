@@ -183,8 +183,8 @@ Read by hand: the audit (`audit_source_namesakes_2026-10-27.md`), the scoreboard
 - **Q1:** yes, `CB_SOURCE_NAMESAKES` on by default once the items below are in and measured.
 - **Q2:** neither the ledger alone nor an ISO rule. The United Kingdom's ISO code is GB; "UK" is Uttarakhand's code
   (IN-UK). The source's own names settle it: item 1.
-- **Q3:** the trim in item 5 holds either way. Whether the trimmed line stays at the source is Nick's call (asked
-  2026-10-28). Until he answers, keep the trimmed line.
+- **Q3, Nick (2026-10-28): "it depends on the context".** Item 5 says how, in the worlds and at the source. In the
+  audit, none of the 26 namesakes offered could answer the question asked (an album has no currency).
 
 ### Items (behind the same flag)
 1. **The initials tier.** It applies among different kinds only, after the label and before any other alias. An
@@ -206,24 +206,31 @@ Read by hand: the audit (`audit_source_namesakes_2026-10-27.md`), the scoreboard
    Tbilisi; the Province of Georgia: Savannah". Label people by their occupation and birth year: "John Jay (judge,
    born 1745)". Today "judge" and "diplomat" read like one man, because the famous John Jay was both. Labels still
    come from the item's own facts.
-5. **The offer line names namesakes only, in the worlds and at the source.** Never offer:
-   - name records: a family name or a given name;
-   - Wikimedia internal items: disambiguation pages, lists;
-   - reference entries: an encyclopedia article;
-   - parts and editions of a work: a chapter, a custom map / level, a version, edition or translation;
-   - a candidate that matched only through an alias while its own label is another name: German Reich and Italian
-     Peninsula for Germany and Italy, Old Swiss Confederacy, domesticated turkey, Mohammed Haruna for "Cambodia".
+5. **The offer line depends on the context (Nick), in the worlds and at the source.**
+   - **A question about one fact** (a relation: "what currency does Switzerland use?"): no offer line, unless the
+     thread's earlier turns are about another namesake's kind. Then name that one: after turns about music, "there
+     is also an album named Switzerland". The thread's kinds are the kinds named or answered in its earlier turns,
+     kept per thread as `cued` is. A kind named in this question still only rules out (0037, item 4).
+   - **A question about the name itself** (no relation asked, or its kind or description asked: "what is Juneau?",
+     "who is Ben Franklin?"): the line stays, at most two others by their kind, as in 0037.
+   - **Never offered, in either case:** name records (a family name, a given name); Wikimedia internal items
+     (disambiguation pages, lists); reference entries (an encyclopedia article); parts and editions of a work (a
+     chapter, a custom map / level, a version, edition or translation); a candidate that matched only through an
+     alias while its own label is another name (German Reich for Germany, Old Swiss Confederacy, domesticated turkey,
+     Mohammed Haruna for "Cambodia"). Read the classes with the same `subclass of` step as `carries`, not a list of
+     labels.
 
-   Read the classes with the same `subclass of` step as `carries`, not a list of labels. On the scoreboard this
-   keeps 20 of the 32 lines (albums, rivers, taxa, towns, games, a political party) and removes 12.
+   **In plain words:** Cubby mentions another meaning of a name only when the asker might mean it.
 
 ### Acceptance for the items
 - Tests (canned, no network): uk (currency, time zone, language) answers for the United Kingdom; two candidates
   that both match by initials go on to the rule; "each" with an item that holds nothing gives one folded sentence;
-  "each" with an item that holds several values is refused; no label repeats the item or the value; a family name, a
-  disambiguation page and an alias-only match are never offered.
+  "each" with an item that holds several values is refused; no label repeats the item or the value; a fact question gets no
+  offer line; the same question after a turn about music offers the album; "what is Juneau?" offers the others by
+  kind; a family name, a disambiguation page and an alias-only match are never offered.
 - The audit re-run (the same 50): 0 wrong picks, 0 values on the wrong item; say what changed.
 - The scoreboard: 0 wrong, every changed row read by hand, at least 80 spoken (item 3 takes back two).
+  Its questions are single fact questions, so expect no offer line; report any that remains.
 - The stack's 20, 0014's bench and 0033's probe: as before.
 - Then `CB_SOURCE_NAMESAKES` goes on by default. Report in one block here and set `done`; no review needed unless a
   wrong value appears.
