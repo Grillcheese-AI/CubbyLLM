@@ -75,14 +75,15 @@ recurrent vector per layer plus a ring of `window` keys), not a growing KV cache
   measured lessons (read its "Before you touch anything").
 - **Known red:** `tests/test_guards.py::test_every_module_declares_wiring` fails on
   `cubbyllm.spatial` and `cubbyllm.reasoning.step_loop` (order 0002, proposed).
-- **Queue (2026-10-27):** 0001, 0004-0007, 0011-0016, 0021, 0022, 0028, 0030, 0031, 0033-0038 done (0035: C2 ran, 0.9341, 5c stands;
-  0037: the namesake rule on by default, `CB_NAMESAKE_RELATION=0` off; the source's value over the snapshot's, `CB_SOURCE_OVER_SNAPSHOT=0`
-  off; 0038: 65 of 187 spoken, 0 wrong); in progress: 0024 (news from feeds), 0027 (the control board: P1 done; P2 after 0024, P3
-  after 0020/0026), 0029 (arm D: step 2); review: 0043 (namesakes at the source: the rule on the Wikidata side, `CB_SOURCE_NAMESAKES=1`);
-  open, in this order: 0044 (several values for one relation), then 0039 (a question reader; approved, waiting for 0043/0044), 0032 (the trunk reads the worlds), 0023 (nested
-  questions over the worlds), 0025 (world watch), 0026 (forecasts, the branching tree), 0008 (creativity), 0009 (capacity), 0010
-  (casual talk), 0018 (question shapes), 0019 (emotions), 0020 (emotional arcs); proposed: 0002, 0003, 0017 (claim checks), 0042
-  (the VM service).
+- **Queue (2026-10-28):** 0001, 0004-0007, 0011-0016, 0021, 0022, 0028, 0030, 0031, 0033-0038 done (0037: the namesake rule on by
+  default, `CB_NAMESAKE_RELATION=0` off; the source's value over the snapshot's, `CB_SOURCE_OVER_SNAPSHOT=0` off; 0038: 65 of 187
+  spoken, 0 wrong); in progress: 0024 (news from feeds), 0027 (the control board: P1 done; P2 after 0024, P3 after 0020/0026),
+  0029 (arm D: step 2); review: 0045 (the rented card: inputs, runner, the instruction-following gate, `docs/POD.md`; built and
+  smoked here, the paid run is Nick's); blocked on the retrieval replan (`docs/RETRIEVAL.md`): 0039, 0043 (`CB_SOURCE_NAMESAKES=1`,
+  built, under its line), 0044; open, in this order: 0046 (retrieval experiments R0-R8, offline; review after R1), 0032 (the trunk
+  reads the worlds), 0023 (nested questions over the worlds), 0025 (world watch), 0026 (forecasts, the branching tree), 0008
+  (creativity), 0009 (capacity), 0010 (casual talk), 0018 (question shapes), 0019 (emotions), 0020 (emotional arcs); proposed:
+  0002, 0003, 0017 (claim checks), 0042 (the VM service).
 
 ## Rules every change keeps
 

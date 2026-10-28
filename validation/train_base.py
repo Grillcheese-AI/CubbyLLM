@@ -747,7 +747,9 @@ def evaluate(corpus, tok_loss_fn, dev, probs) -> dict:
     # repeat falls toward 0 once an induction/copy circuit exists.
     g = torch.Generator().manual_seed(1234)
     half = SEQ // 2
-    a = torch.randint(1000, 30000, (EVAL_WINDOWS, half + 1), generator=g)
+    v = vocab_sizes()[2]                             # a tiny vocabulary (the pod runner's smoke, order 0045) draws
+    lo, hi = (1000, 30000) if v >= 30000 else (1, v)  #   within it; a real one exactly as before
+    a = torch.randint(lo, hi, (EVAL_WINDOWS, half + 1), generator=g)
     seq = torch.cat([a[:, :half], a[:, :half + 1]], dim=1)[:, :SEQ + 1]
     tl = tok_loss_fn(seq[:, :-1].to(dev), seq[:, 1:].to(dev))
     out["_copy"] = float(tl[:, half:].mean())

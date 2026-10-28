@@ -344,21 +344,15 @@ for k in keys + ['_mix', '_copy']:
     row = ' '.join(f"{v[-1]['val'].get(k, float('nan')):10.4f}" for v in have.values())
     tag = '  new shard' if k in NEW else ('  checked' if k in KEY else '')
     print(f"{k:16s} {row}   start {start.get(k, float('nan')):8.4f}{tag}")
-checks = {}
-if len(have) == 2:
-    g, c = have['grown'][-1]['val'], have['control'][-1]['val']
-    same_step = sizes['grown'] and sizes['control'] and abs(sizes['grown'] - sizes['control']) <= 2 * SEQ
-    same_hours = hours['grown'] and hours['control'] and abs(hours['grown'] - hours['control']) <= 0.5
-    checks['0. equal compute: the same tokens per step and the same hours on both arms'] = bool(same_step and same_hours)
-    checks['1. growth: grown mix <= control mix (+0.02 tolerance)'] = g['_mix'] <= c['_mix'] + 0.02
-    checks['3b. checked sources: grown within 0.02 of the control'] = all(g[k] <= c[k] + 0.02 for k in KEY)
-for a, v in have.items():
-    first, last = v[0]['val'], v[-1]['val']
-    checks[f'3a. {a}: instruct, agent, program each below their first reading'] = all(
-        last.get(k, 9) < first.get(k, 0) for k in NEW if k in first)
+# the gates, from validation/grow_mem_readout.py (order 0045): one place for this cell and the pod runner
+import sys; sys.path.insert(0, f'{REPO}/validation')
+import grow_mem_readout as gr
+R = gr.gates(rows_of(mpath('grown')), rows_of(mpath('control')), cont_rows, SEQ)
 print()
-for k, ok in checks.items():
-    print(f"  {'PASS' if ok else 'fail'}  {k}")
+for k, ok in R['checks'].items():
+    print(f"  {'PASS' if ok else 'fail' if ok is False else 'not yet'}  {k}")
+for k, ok in R['kills'].items():
+    print(f"  {'KILLED' if ok else 'not killed'}  {k}")
 print('\ncheck 2 (the memory): the facts_text_far probe below on each final, then exp_needle_forward; check 4 is the serving gates.')
 fig, ax = plt.subplots(1, 3, figsize=(17, 4))
 for a, v in have.items():
