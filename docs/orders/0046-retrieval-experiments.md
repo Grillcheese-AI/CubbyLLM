@@ -1,5 +1,5 @@
 # 0046 — Retrieval, measured before it is built: experiments R0 to R8
-status: open
+status: in progress (Claude Code, 2026-10-28)
 written: 2026-10-28 by Cowork · approved: 2026-10-28 by Nick ("tested before implementing"; a plan doc and an experiments-only order) · hypothesis: none (each experiment below is pre-registered)
 
 ## Why

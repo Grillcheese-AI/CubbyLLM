@@ -1,0 +1,146 @@
+{
+ "sets": {
+  "mintaka": {
+   "counts": {
+    "dev/en": {
+     "rows": 2000,
+     "mentions": 2901,
+     "mentions_with_text": 2901
+    },
+    "dev/fr": {
+     "rows": 2000,
+     "mentions": 2901,
+     "mentions_with_text": 0
+    },
+    "test/en": {
+     "rows": 4000,
+     "mentions": 5849,
+     "mentions_with_text": 5849
+    },
+    "test/fr": {
+     "rows": 4000,
+     "mentions": 5849,
+     "mentions_with_text": 0
+    }
+   },
+   "licence": "CC BY 4.0 (the repository's README)"
+  },
+  "qald9plus": {
+   "counts": {
+    "dev/en": {
+     "rows": 371,
+     "mentions": 539,
+     "mentions_with_text": 0
+    },
+    "dev/fr": {
+     "rows": 250,
+     "mentions": 359,
+     "mentions_with_text": 0
+    },
+    "test/en": {
+     "rows": 136,
+     "mentions": 199,
+     "mentions_with_text": 0
+    },
+    "test/fr": {
+     "rows": 24,
+     "mentions": 37,
+     "mentions_with_text": 0
+    }
+   },
+   "licence": "CC BY 4.0 (LICENSE)"
+  },
+  "webqsp_el": {
+   "counts": {
+    "dev/en": {
+     "rows": 590,
+     "mentions": 635,
+     "mentions_with_text": 635
+    },
+    "test/en": {
+     "rows": 1603,
+     "mentions": 1798,
+     "mentions_with_text": 1798
+    }
+   },
+   "licence": "released with BLINK/ELQ (MIT); the questions are WebQSP's and GraphQuestions'"
+  },
+  "graphq_el": {
+   "counts": {
+    "dev/en": {
+     "rows": 417,
+     "mentions": 446,
+     "mentions_with_text": 446
+    },
+    "test/en": {
+     "rows": 2075,
+     "mentions": 2215,
+     "mentions_with_text": 2215
+    }
+   },
+   "licence": "released with BLINK/ELQ (MIT); the questions are WebQSP's and GraphQuestions'"
+  },
+  "simplequestions_wd": {
+   "counts": {
+    "dev/en": {
+     "rows": 2821,
+     "mentions": 2821,
+     "mentions_with_text": 0
+    },
+    "test/en": {
+     "rows": 5622,
+     "mentions": 5622,
+     "mentions_with_text": 0
+    }
+   },
+   "licence": "not stated in the repository (SimpleQuestions itself: CC BY 3.0)"
+  },
+  "shadowlink": {
+   "counts": {
+    "dev/en": {
+     "rows": 1356,
+     "mentions": 1347,
+     "mentions_with_text": 1347
+    },
+    "test/en": {
+     "rows": 1356,
+     "mentions": 1355,
+     "mentions_with_text": 1354
+    }
+   },
+   "licence": "see the dataset card (vera-pro/ShadowLink)",
+   "unmapped_titles": 10
+  },
+  "amber": {
+   "counts": {
+    "dev/en": {
+     "rows": 9784,
+     "mentions": 9784,
+     "mentions_with_text": 9784
+    },
+    "test/en": {
+     "rows": 9851,
+     "mentions": 9851,
+     "mentions_with_text": 9851
+    }
+   },
+   "licence": "CC0 1.0 (the data directory)"
+  },
+  "cronquestions": {
+   "counts": {
+    "dev/en": {
+     "rows": 30000,
+     "mentions": 45828,
+     "mentions_with_text": 0
+    },
+    "test/en": {
+     "rows": 30000,
+     "mentions": 45764,
+     "mentions_with_text": 0
+    }
+   },
+   "licence": "MIT (the repository)"
+  }
+ },
+ "built": "2026-10-27T23:54:15"
+}

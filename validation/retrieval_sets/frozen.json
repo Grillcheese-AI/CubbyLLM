@@ -1,0 +1,16 @@
+{
+ "relation_lexicon": {
+  "sha256": "fffbd70444617a52bb8aed21c38042eab3986fda9da034f977ec1c08b58ba6e2",
+  "bytes": 3418666,
+  "file": "relation_lexicon.json",
+  "frozen": "2026-10-27 23:27:02",
+  "note": "property labels and aliases, EN and FR, folded; from the repo's property table (query.wikidata.org, 2026-09-12); frozen before any held-out row of order 0046 was read"
+ },
+ "fame_set": {
+  "sha256": "c05250522da3fa875715dbb0b865e723ecf4640c5d7175ab400353ffa515cc7e",
+  "bytes": 691614,
+  "file": "fame_set.jsonl",
+  "frozen": "2026-10-28 00:52:29",
+  "note": "order 0046's fame set: 500 names drawn by seed 0 from 34773 eligible; rows {('bare', 'en'): 500, ('bare', 'fr'): 500, ('qualified', 'en'): 466, ('qualified', 'fr'): 444}"
+ }
+}

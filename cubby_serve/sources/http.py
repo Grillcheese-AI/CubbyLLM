@@ -21,6 +21,26 @@ def get(url: str, ua: str, timeout: float = 30, headers: dict | None = None) -> 
         return r.read()
 
 
+def download(url: str, dest: str, ua: str, timeout: float = 60, chunk: int = 1 << 20) -> int:
+    """``url`` streamed to the file ``dest`` (written as ``dest.part``, renamed when whole); returns the bytes written.
+    For the measurement sets order 0046 reads (``validation/retrieval_sets/download.py``); a file already there is kept."""
+    import os
+    if os.path.exists(dest):
+        return os.path.getsize(dest)
+    os.makedirs(os.path.dirname(dest) or ".", exist_ok=True)
+    req = urllib.request.Request(url, headers={"User-Agent": ua})
+    n = 0
+    with urllib.request.urlopen(req, timeout=timeout) as r, open(dest + ".part", "wb") as f:
+        while True:
+            b = r.read(chunk)
+            if not b:
+                break
+            f.write(b)
+            n += len(b)
+    os.replace(dest + ".part", dest)
+    return n
+
+
 def fetcher(ua: str, timeout: float = 30):
     """``url -> body`` with this User-Agent and timeout."""
     return lambda url: get(url, ua, timeout)
