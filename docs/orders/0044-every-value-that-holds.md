@@ -1,5 +1,5 @@
 # 0044 — Several values for one relation: the source's preferred one, or every value that still holds
-status: open
+status: blocked (Nick, 2026-10-28: retrieval is being replanned; see the end of this order)
 written: 2026-10-27 by Cowork · approved: 2026-10-27 by Nick ("yes") · hypothesis: none
 
 ## Why
@@ -103,3 +103,7 @@ languages, and Spain's capital with Madrid alone, because the source says which 
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+- **Blocked (Nick, 2026-10-28):** the retrieval side is being rethought and replanned as a whole, and tested
+  before anything more is built (a plan in `docs/`, then an experiments-only order). This unblocks when that plan
+  says which of this order's items survive. Nothing of this order is built meanwhile.

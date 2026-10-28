@@ -1,5 +1,5 @@
 # 0043 — Namesakes at the source: 0037's rule on the Wikidata side, and namesakes that agree
-status: open (Cowork's check, 2026-10-28: five small items, then the flag on)
+status: blocked (Nick, 2026-10-28: retrieval is being replanned; see the end of this order)
 written: 2026-10-27 by Cowork · approved: 2026-10-27 by Nick ("yes") · hypothesis: none
 
 ## Why
@@ -234,3 +234,7 @@ Read by hand: the audit (`audit_source_namesakes_2026-10-27.md`), the scoreboard
 - The stack's 20, 0014's bench and 0033's probe: as before.
 - Then `CB_SOURCE_NAMESAKES` goes on by default. Report in one block here and set `done`; no review needed unless a
   wrong value appears.
+
+- **Blocked (Nick, 2026-10-28):** the retrieval side is being rethought and replanned as a whole, and tested
+  before anything more is built (a plan in `docs/`, then an experiments-only order). This unblocks when that plan
+  says which of this order's items survive. Nothing of this order is built meanwhile.

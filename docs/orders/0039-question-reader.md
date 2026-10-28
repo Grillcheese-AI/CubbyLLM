@@ -1,5 +1,5 @@
 # 0039 — A question reader: two small heads find the relation and the name; the lookup stays exact
-status: proposed (queued after the inbox items of 2026-10-24: `mul` labels, the table's reading, namesakes at the source)
+status: blocked (Nick, 2026-10-28: retrieval is being replanned; see the end of this order)
 written: 2026-10-24 by Cowork · approved: 2026-10-24 by Nick ("yes") · hypothesis: none
 
 ## Why
@@ -94,3 +94,7 @@ milliseconds, and still answers only from a fact it looked up and checked.
 - **Not verified here:**
 - **Found on the way:**
 - **Questions:**
+
+- **Blocked (Nick, 2026-10-28):** the retrieval side is being rethought and replanned as a whole, and tested
+  before anything more is built (a plan in `docs/`, then an experiments-only order). This unblocks when that plan
+  says which of this order's items survive. Nothing of this order is built meanwhile.
