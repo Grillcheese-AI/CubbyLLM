@@ -126,6 +126,15 @@ waits on R0 and R1.
    of the current dump, without its claims. R1 found that the missing names, not missing items, are what
    the local index lacks.
 
+**Nick's answers (2026-10-31), on Cowork's recommendations:**
+1. **The usage table:** allowed between different kinds only, never within one.
+2. **Present tense as "now":** tested both ways in R4. The measured wrong count decides.
+3. **The asker's past choice:** offered as a question ("last time you meant Georgia the state: that
+   one?"), never used to settle a tie. Today's ledger stays until the stage is rebuilt from R5.
+4. **The dump line:** 20% of the route-labelled seed misses absent from every local store.
+
+Still open: 5 and 6 (the redirect tables and the names extract).
+
 R0 measured decision 4's line: 5.5% of the route-labelled seed misses are items absent from every local
 store, against 20%. The full claims extract waits.
 
