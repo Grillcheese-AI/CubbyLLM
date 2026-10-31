@@ -1,0 +1,26 @@
+{
+ "enwiki": {
+  "page": {
+   "url": "https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-page.sql.gz",
+   "bytes": 2432679945,
+   "modified": "Thu, 08 Oct 2026 03:27:22 GMT"
+  },
+  "redirect": {
+   "url": "https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-redirect.sql.gz",
+   "bytes": 187638901,
+   "modified": "Thu, 08 Oct 2026 03:29:22 GMT"
+  }
+ },
+ "frwiki": {
+  "page": {
+   "url": "https://dumps.wikimedia.org/frwiki/latest/frwiki-latest-page.sql.gz",
+   "bytes": 485960880,
+   "modified": "Thu, 01 Oct 2026 13:31:20 GMT"
+  },
+  "redirect": {
+   "url": "https://dumps.wikimedia.org/frwiki/latest/frwiki-latest-redirect.sql.gz",
+   "bytes": 28188870,
+   "modified": "Thu, 01 Oct 2026 13:31:45 GMT"
+  }
+ }
+}

@@ -407,3 +407,23 @@ seat, which R3 sets up. Nothing here reaches the serving path.
   whole run from them. Nick says go on the projection before the rest runs.
 - **Then the VM segment:** names and aliases to items, built from the extract (the VM arm above), copied to an
   SSD for the runs, and R1b scored with the lines already written.
+
+## R1b: the notebook is ready (Claude Code, 2026-10-31)
+- **Nick runs `notebooks/r1b_names.ipynb` on a CPU runtime.** The logic is in `validation/retrieval_sets/names_extract.py`
+  and `wiki_redirects.py`, tested on canned inputs in `tests/validation/test_names_extract.py`. The notebook stops after
+  the plan until `GO = True`. The extract is resumable.
+- **The source, a change to note:** not the 959 GB copy (`philippesaade/wikidata`, whose "10 parquet files" the plan
+  assumed) but the `wikidata-pq` tables (`permutans/wikidata-labels`, `-aliases` and `-links`, CC0). They are built from
+  Wikidata's weekly dump of **2026-09-28** (the copy is from 2026-05-07) and pinned to that release. They are split by
+  language and site, so only the EN, FR and `mul` files are read, and the claims are never touched.
+  - `mul` is the default label. 10.3M items carry one and no `en` label, so it is read too.
+- **The plan, measured from home** (footers and first row groups only):
+  - **names** (`r1b_names_plan_2026-10-31.json`): 8 files, 1.36 GB read, 119.4M names (labels, aliases, titles), an
+    extract of about 1.54 GB;
+  - **redirects** (`r1b_redirects_plan_2026-10-31.json`): enwiki's `page` (2.43 GB) and `redirect` (0.19 GB) tables,
+    dump of 2026-10-08; frwiki's (0.49 and 0.03 GB), dump of 2026-10-01. They are streamed and kept only as
+    article-space pairs.
+  - That is about 4.5 GB through Colab in all, and no raw file is stored. The 10-file stage does not apply at this size;
+    the plan cell is the stop.
+- **Then, at home:** the VM segment from the extract (names, aliases, titles and redirects to items, as knowledge keys;
+  `cubelang knowledge build`), copied to the SSD; R1b scored against its lines; R7's sizes.
