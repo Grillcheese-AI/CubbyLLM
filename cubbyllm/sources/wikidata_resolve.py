@@ -145,6 +145,17 @@ class WikiResolve:
             qid = self.links[_normalize(via)][0]
             self.last.update(how="linked", via=via)
             return qid, self._labels_for([qid]).get(qid) or entity
+        asked = (getattr(self, "asked_names", None) or {}).get(key)
+        if asked and not qid:                                # the name as the asker wrote it, first (order 0047)
+            from .wikidata_asked import asked_hits
+            kind, ah = asked_hits(self, asked, relations)
+            if kind == "carry" and len(ah) == 1:
+                self.last.update(how="the name as asked")
+                return ah[0]["id"], ah[0].get("label") or asked
+            if kind != "none":                               # several as asked, or items named as asked none of which
+                self.last["ambiguous"] = [(h["id"], h.get("label"), h.get("description")) for h in ah]   # carries the
+                self.last["how"] = "the name as asked: " + ("several" if kind == "carry" else "the shorter name may not win alone")
+                return None                                  # relation: the shorter name never wins alone
         s = self._get({"action": "wbsearchentities", "search": entity, "language": "en", "limit": 5})
         hits = (s or {}).get("search") or []
         if not any(_exact(h, key) for h in hits) and bare_key(entity) != key:

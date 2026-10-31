@@ -123,6 +123,9 @@ class AskMemory:
         from .ask_source_first import source_wins
         if not lr.result.verified or not rec.get("verified"):
             return
+        from .ask_class import check as class_check       # an answer of the class asked (order 0047, CB_HELDOUT_FIXES=1)
+        if not class_check(self, question, lr, rec):
+            return
         why = self._time_check(question, lr) if self.tense else None
         snap = self._snapshot(question, lr) if not why else None
         if snap and snap[0] != "as_of":                   # a snapshot's value asked about another time (order 0014)

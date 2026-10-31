@@ -231,6 +231,11 @@ class AskLoop(AskDated, AskProfile, AskRelation, AskMemory):
             plan = QuestionPlan(relations=[None] + rels[1:], tail=f"{rels[0]} of {seed}", n_hop=len(rels))
             rec["plan"], rec["seed"] = rels, seed
             source = self.source
+            if hasattr(source, "resolve"):                 # the name with the article the asker wrote (order 0047)
+                from .heldout import asked_span, on as heldout_on
+                from ..sources.wikidata_resolve import name_key
+                asked = asked_span(question, seed) if heldout_on() else None
+                source.asked_names = {name_key(seed): asked} if asked else {}
             if self.scene is not None:
                 from cubbyllm.spatial.route import route
                 if route(plan, self.scene):

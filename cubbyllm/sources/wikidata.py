@@ -27,6 +27,8 @@ from .wikidata_aliases import (CACHE, PROPERTY_TABLE, PropertyAliases, _META, _i
                                property_aliases)
 from .wikidata_resolve import WikiResolve
 from .wikidata_namesakes import WikiNamesakes  # noqa: E402 -- order 0043: a shared name decided by the relation
+from .wikidata_units import quantity_text  # noqa: E402 -- order 0047: a quantity with its unit
+from ..reasoning.heldout import on as heldout_on  # noqa: E402
 
 __wiring__ = "WIRED"
 
@@ -238,7 +240,7 @@ class WikidataSource(WikiResolve, WikiNamesakes):
         qid, label = r
         alias = _normalize(label) != _normalize(entity)
         self.last.update(qid=qid, label=label, alias=alias)
-        subj = entity if alias else label            # the user's words when the hit came through an alias
+        subj = entity if alias or self.last.get("how") == "the name as asked" else label    # the user's words (0047: the walk's seed)
         claims = self._claims(qid)
         self.last["n_claims"] = sum(len(v) for v in claims.values())
         # collect item targets and property ids, one label round-trip for all of them
@@ -285,8 +287,8 @@ class WikidataSource(WikiResolve, WikiNamesakes):
                         # says so: "2560 BC", not "2560". Day precision on a BCE date is noise -- the
                         # year is the claim. (self.times keeps the signed ISO for the machine side.)
                         obj = (ts[1:5].lstrip("0") or "0") + " BC"
-                elif t == "quantity":
-                    obj = v.get("amount", "").lstrip("+")
+                elif t == "quantity":                # with its unit, or not served (order 0047: CB_HELDOUT_FIXES=1)
+                    obj = quantity_text(self, p, v) if heldout_on() else v.get("amount", "").lstrip("+")
                 elif t == "string":
                     obj = v
                 elif t == "monolingualtext":
