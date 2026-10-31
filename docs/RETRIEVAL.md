@@ -68,7 +68,7 @@ everything exact):
 
   CubeLang programs query them, and the VM checks what they return in the same place.
 - **Outside the VM:** the similarity work (the qFHRR context for choosing between namesakes, the
-  relation codebook). It runs on grilly and hands the VM (item, score) only, as the boundary rule says.
+  relation codebook). It runs on grilly2 (never grilly v1) and hands the VM (item, score) only, as the boundary rule says.
   The VM's own hippocampal memory hashes key strings, so it cannot measure resemblance.
 - **In plain words:** one store finds and checks every lookup, so what Cubby finds and what it verifies
   cannot drift apart.
