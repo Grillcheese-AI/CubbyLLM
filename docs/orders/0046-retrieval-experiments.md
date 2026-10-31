@@ -1,5 +1,5 @@
 # 0046 — Retrieval, measured before it is built: experiments R0 to R8
-status: review (R0 and R1 done; Claude Code, 2026-10-28)
+status: open (Cowork's check of R0 and R1, 2026-10-31: R1 killed as built; 0047 first, then R2-R4; R1b on Nick's yes)
 written: 2026-10-28 by Cowork · approved: 2026-10-28 by Nick ("tested before implementing"; a plan doc and an experiments-only order) · hypothesis: none (each experiment below is pre-registered)
 
 ## Why
@@ -254,3 +254,50 @@ off-repo under `$CUBBY_DATA_ROOT`. Only ids, counts and the fame set are committ
      GB, over the 1 GB line, so they wait for Nick's yes.
   3. **Today's pipeline speaks wrong answers on held-out names:** 5 of 68 from the dropped "The", 1 class mismatch.
      A fix order (keep the article for the seed; a "which city" answer checked against its class) is outside 0046.
+
+## Cowork's check of R0 and R1 (2026-10-31)
+Read: the report, both R1 logs, R0's log, and the fame set's construction and spot checks.
+- **R0's six wrong answers** go to order 0047, the one exception to "nothing on the serving path": it
+  only removes wrong answers.
+- **Reading is where held-out questions stop:** 1,739 of 2,100 English and 533 of 550 French, before any
+  name is looked up. R3 is therefore the most important experiment.
+  - **R3 gains an arm:** the 450M in the programs seat. The model reads the question and writes the
+    program, and the VM checks it, as Nick's design asks; the host's table is scaffolding.
+  - **Report R3's coverage first:** the share of each set that each arm reads, then its recall.
+- **The dump:**
+  - 17 of 312 route-labelled seed misses (5.5%) are items absent from every local store. That is under
+    the recommended line (20%), so the full claims extract is not justified by absent items.
+  - R1 shows a different need, names. 130 of Mintaka FR's 267 misses are items the index holds under no
+    French name, and 77 of the English 179 are items past 2019. That is R1b below, not the dump.
+- **R1's kill line (question 1):** the line was written "on Mintaka", not per language. Reading it per
+  language after seeing the numbers is the post-hoc choice this plan rules out, so Mintaka as a whole
+  decides: **killed.** The local index as built (Wikidata5M's names, 2019) does not replace Wikidata's
+  search.
+  - **Not killed: the trigram arm.** It passes on typos by 33 to 76 points, where the API finds 0 to 5%.
+    It stays as a second candidate source.
+  - **Noted:** the mentions located with current Wikidata labels favour the API. R1b scores the sets
+    that mark their own mentions first (Mintaka EN, WebQSP_EL, GraphQ_EL, ShadowLink, AmbER).
+- **R1b, a new arm with its own lines** (written here, before it runs):
+  - **Names:** EN and FR labels, aliases and Wikipedia titles for every item, from the current Wikidata
+    dump, reading only its `id`, `labels`, `aliases` and `sitelinks` columns, never `claims`.
+  - **Redirects:** the EN and FR Wikipedia redirect tables.
+  - **How it is fetched:** on Colab, streamed, kept on Drive (`docs/RETRIEVAL.md`). Measure the
+    columns' size on 10 files first, and report it before fetching the rest. **This needs Nick's yes**
+    (decision 5 and this extract).
+  - **Gate:** recall@20 at least 0.90 on Mintaka EN and 0.85 on Mintaka FR; above the API on every set
+    that marks its own mentions; at most 5 points below the API on the others.
+  - **Kill:** below the API on Mintaka EN or FR.
+- **R2's candidates meanwhile:**
+  - the union of the API's shortlist and the local arms', unordered (they are complementary: in English,
+    140 items were found only locally and 124 only by the API);
+  - a run of equal scores stays whole, as in R1.
+- **Nick's decisions gate building only, not experiments:**
+  - R2 runs with and without the usage table between kinds;
+  - R4 with and without "present tense means now";
+  - R5 with and without "a past choice settles a tie".
+
+  Each arm's numbers are what Nick decides from.
+- **The fame set** stands (50 of 50 on the third check; SHA-256 `c0525052...cc7e`). Its frozen
+  construction is what R2 reads. Date of birth is out, as the report says.
+- **Next:** 0047 first (wrong answers on the live path), then R2, R3 and R4. Then R1b when Nick says
+  yes to the names. Status: open.

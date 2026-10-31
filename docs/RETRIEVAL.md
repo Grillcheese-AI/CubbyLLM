@@ -121,7 +121,18 @@ waits on R0 and R1.
    seed misses on the held-out sets are items absent from every local store (a sample of at least
    1,000 mentions).
 5. **The links:** if the local Wikipedia text lost its links, fetch the redirect tables (a few GB)
-   before any dump.
+   before any dump. R0 (2026-10-28): it kept no links and no redirects, so this applies.
+6. **The names extract (R1b in 0046):** EN and FR labels, aliases and Wikipedia titles for every item
+   of the current dump, without its claims. R1 found that the missing names, not missing items, are what
+   the local index lacks.
+
+R0 measured decision 4's line: 5.5% of the route-labelled seed misses are items absent from every local
+store, against 20%. The full claims extract waits.
+
+**How any download is done** (Nick, 2026-10-31: 5 TB on Drive):
+- on Colab, streamed from the source, keeping only the columns needed;
+- the extract kept on Drive as the master copy, so the raw dump is never stored;
+- what Cubby looks up copied to a local SSD (the spinning disk is too slow for lookups).
 
 ## What happens to the blocked orders
 - **0043** (namesakes at the source): its guarantees stay (no value on the wrong item, answer each or

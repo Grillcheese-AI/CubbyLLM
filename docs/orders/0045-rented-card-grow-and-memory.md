@@ -1,5 +1,5 @@
 # 0045 — A rented card (H200 or B200, spot welcome): the grown trunk and its memory against the 450M, run to the end
-status: review (Claude Code, 2026-10-28)
+status: open (Cowork's check, 2026-10-31: the pre-rental items, by Monday; the rental is next Tuesday)
 written: 2026-10-27 by Cowork · approved: 2026-10-27 by Nick ("yes"; "could be b200 too"; "we could get more hours with a spot server") · hypothesis: H-E20
 
 ## Why
@@ -195,3 +195,36 @@ Report beside them: tokens per arm, tok/s and MFU per arm on the card, preemptio
   2. The read count rule (16, or 8 under half the control's MFU) and the 92% memory line are in `pod_phases.py` as the
      order wrote them; the bench runs `speed_check.py` first and then the trainer's bench with its chosen kernels.
   3. The probes run on the card after the arms (1-2 h on the meter). Fine, or at home from the finals?
+
+## Cowork's check (2026-10-31)
+Read: the report, `docs/POD.md`, the smoke's outputs as listed. The runner does what the order asks.
+That includes the kill-and-resume on an empty folder, the refusal of a different card model, and the
+flag falling to 0 when a kernel test fails. **The rental is next Tuesday** (Nick, 2026-10-31).
+- **Question 1, slice or hours:** the order already decides it. Every row of the epoch table must be at
+  most 2 epochs, "else raise `--frac`". Keep `HOURS_PER_ARM` at 12-14 for spot and raise `--frac` until
+  the table holds for a B200 control at 14 h. That covers an H200 too.
+  - The report puts that at 0.6-0.8 of the cache (25-35 GB). If the unseen blocks (the cache less the
+    first run's 20% and the continuation's subset) cannot give that much, say so before building.
+  - Upload 25-35 GB before Tuesday.
+- **Question 2:** yes, the read-count rule and the 92% memory line as written.
+- **Question 3, probes:** on the card, after the arms. It is 1-2 h ($3-16 at the listed prices) and spares
+  moving the finals. Add one knob:
+  - `CB_POD_DEADLINE` (the rental's end, from the environment): a phase after the arms starts only if
+    its estimate fits before it;
+  - a probe phase skipped this way is recorded, and the probes then run from the finals on Colab, with
+    the same script and floors.
+
+### Before Tuesday (by Monday evening)
+1. **Slice size:** `prepare_inputs.py --dry` on the full cache. Set `--frac` from the table, and record
+   the table in the report.
+2. **Build the inputs,** with `--emitter-data` and `--talk-data` for the adapters phase (the report found
+   them missing from the order's list).
+3. **The repo and token:** Nick makes the private dataset repo and sets `HF_TOKEN` and `CB_POD_REPO` in
+   his environment, never in a file. Claude Code then runs a round trip through `HfRemote`: a small
+   folder up and down, with hashes compared. It never prints the token.
+4. **Upload** the inputs. Start by Sunday so the upload is done by Monday.
+5. **Before renting:** Nick reads `docs/POD.md`'s "Before renting" and "The one command". Cowork
+   rechecks the card prices and availability on Monday.
+6. **On Tuesday:** Nick rents the card and runs the one command. Claude Code does not start a paid run.
+
+Status: open until items 1 to 4 are reported. Then `review` (ready to rent).
