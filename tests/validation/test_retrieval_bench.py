@@ -119,3 +119,13 @@ def test_a_frozen_lexicon_is_never_overwritten(tmp_path, monkeypatch):
                 "datatype": "wikibase-item"}}}))
     lx = lexicon.build(str(table))
     assert lx["by_wording"]["en"]["born in"] == ["P19"] and lx["by_wording"]["fr"]["ne a"] == ["P19"]
+
+
+def test_a_quantity_is_near_after_unit_conversion_and_only_then():
+    from retrieval_bench.units import near
+    assert near("96 m", "315 feet") and near("180 cm", "180.5") and near("1,609 m", "1 mile")
+    assert not near("96 m", "96 kg") and not near("96 m", "320 feet") and not near("Paris", "Paris") and not near("96", "96")
+    from retrieval_bench.r0_denominator import label
+    rec = {"verified": True, "answer": "96 m"}
+    assert label(rec, [], set(), {"315 feet"}, ["315 feet"]) == ("spoken", "near")
+    assert label(dict(rec, answer="Rome"), [], set(), {"paris"}, ["Paris"]) == ("spoken", "wrong")

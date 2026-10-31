@@ -15,7 +15,8 @@ Each question is labelled once, by the first stage that stopped it:
   value missing    the right item was reached and the fact was not there
   time             the question's time and the fact's disagree
   other            any other refusal, by its reason
-  spoken           answered: right, wrong (against the gold answers), or unscored (the set gives no answer to compare)
+  spoken           answered: right, near (a quantity, after unit conversion), wrong (against the gold answers), or
+                   unscored (the set gives no answer to compare)
 Every gold item is also checked against the local stores (``stores``); the dump line (decision 4 in
 ``docs/RETRIEVAL.md``, the recommended one, written here before anything is counted): the full dump is worth it only if
 at least 20% of the route-labelled seed misses (no candidate, several, wrong candidate) are items absent from every
@@ -87,16 +88,19 @@ def _loop():
     return _LOOP
 
 
-def label(rec: dict, calls: list, gold_items: set, gold_answers: set) -> tuple[str, str | None]:
-    """(stage, detail) for one question's record."""
+def label(rec: dict, calls: list, gold_items: set, gold_answers: set, raw_answers=()) -> tuple[str, str | None]:
+    """(stage, detail) for one question's record. A quantity that matches a gold answer only after unit conversion
+    (within 0.5%) is ``near`` ("96 m" for "315 feet"; Cowork's check of 0047)."""
     reason = rec.get("reason")
     resolved = {c["qid"] for c in calls if c["qid"]}
     if rec.get("verified"):
         if not gold_answers:
             return "spoken", "unscored"
         said = fold(str(rec.get("answer") or ""))
-        return "spoken", ("right" if said in gold_answers or any(said and (said in g or g in said) for g in gold_answers if len(g) > 3)
-                          else "wrong")
+        if said in gold_answers or any(said and (said in g or g in said) for g in gold_answers if len(g) > 3):
+            return "spoken", "right"
+        from retrieval_bench.units import near
+        return "spoken", "near" if any(near(str(rec.get("answer") or ""), g) for g in raw_answers) else "wrong"
     if reason in READING or str(reason or "").startswith("emit_error"):
         return "reading", reason
     if reason == "ambiguous_entity" or (calls and any(c["ambiguous"] for c in calls) and not resolved & gold_items):
@@ -128,7 +132,7 @@ def run_chunk(job: tuple) -> list[dict]:
         except Exception as e:                           # noqa: BLE001 -- a crash is a row
             rec = {"verified": False, "reason": f"error: {type(e).__name__}"}
         items = {m["qid"] for m in r["mentions"] if m.get("qid")}
-        stage, detail = label(rec, calls, items, gold_answers.get(r["id"], set()))
+        stage, detail = label(rec, calls, items, gold_answers.get(r["id"], set()), r.get("answers") or ())
         out.append({"id": r["id"], "set": r["set"], "lang": r["lang"], "stage": stage, "detail": detail,
                     "gold_items": sorted(items), "resolved": sorted({c["qid"] for c in calls if c["qid"]}),
                     "source_calls": len(calls), "plan": rec.get("plan"), "wall_s": round(time.perf_counter() - t, 2),
