@@ -17,6 +17,7 @@ Wired: STANDALONE (R2's bench; the client is ``cubbyllm.bridges.cubelang_client`
 from __future__ import annotations
 
 import json
+import time
 
 __wiring__ = "STANDALONE"
 
@@ -47,11 +48,15 @@ def write_segment(path: str, profiles: dict, pids) -> int:
 
 
 def branch(session, kpath: str, qid: str, pid: str) -> dict:
+    """One branch. ``wall_ms`` is the host's round trip on the wire (the VM's own report counts whole milliseconds,
+    0 for a sub-millisecond branch; kept as ``vm_wall_ms``)."""
+    t = time.perf_counter()
     r = session.run(PROGRAM, "solve", [f"{qid} {pid}"], knowledge_path=kpath, branch={"id": qid})
+    wall = (time.perf_counter() - t) * 1000
     chunks = json.loads(r["result"] or "[]")
     rep = r.get("report") or {}
     return {"item": qid, "values": sorted({c["text"] for c in chunks}), "sources": sorted({c["source"] for c in chunks}),
-            "queried": rep.get("queried"), "wall_ms": rep.get("wall_ms")}
+            "queried": rep.get("queried"), "wall_ms": round(wall, 3), "vm_wall_ms": rep.get("wall_ms")}
 
 
 def decide(branches: list[dict]) -> dict:
@@ -71,7 +76,8 @@ def b1(session, kpath: str, named: list[str], pid: str) -> dict:
     """B1 over the candidates that bear the name (``r2_arms.bearing``), for one relation."""
     bs = [branch(session, kpath, q, pid) for q in named]
     out = decide(bs)
-    out["wall_ms"] = sum(b["wall_ms"] or 0 for b in bs)
+    out["wall_ms"] = round(sum(b["wall_ms"] or 0 for b in bs), 3)
+    out["k"] = len(bs)
     return out
 
 

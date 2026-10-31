@@ -5,7 +5,7 @@ Arms: ``tiers`` (today's: the name, the relation, the label over an alias), ``bm
 rank-normalized margin ``tau``), ``b1`` (VM branches: the relation's values verified per candidate; only where the
 relation is known -- the fame set's). Not run here, and why: the usage table between kinds (no anchor counts: the
 local Wikipedia text kept no links; R1b's redirects give names, not counts), and the qFHRR context (it needs the
-grilly encoder and one prototype per item; the next pass).
+grilly2 encoder (`../grilly2`, on the local card) and one prototype per item; the next pass).
 
 Sets: the fame set (bare names: no single pick allowed; qualified: that item), ShadowLink (Top, Shadow, Tail), Mintaka
 and WebQSP_EL (each mention's gold item). ``tau`` is set on dev: the smallest of ``--taus`` with 0 wrong picks on the
@@ -113,7 +113,8 @@ def run(rows: list[dict], taus: list[float], use_vm: bool) -> list[dict]:
             if session is not None and r["pids"]:
                 named = A.bearing(r["mention"], r["cands"], P)                 # the VM checks the relation itself
                 arms["b1"] = V.b1(session, kpath, named, r["pids"][0]) if named else {"outcome": "refuse", "why": "no candidate bears the name"}
-            r["arms"] = {a: {"outcome": o["outcome"], "item": o.get("item"), "judge": judge(r, o)} for a, o in arms.items()}
+            r["arms"] = {a: {"outcome": o["outcome"], "item": o.get("item"), "judge": judge(r, o),
+                             **{k: o[k] for k in ("k", "wall_ms") if k in o}} for a, o in arms.items()}
             r["gold_in_cands"] = bool(r["gold"]) and r["gold"] in r["cands"]
     finally:
         if session is not None:
@@ -152,19 +153,25 @@ def main() -> None:
     ap.add_argument("--no-vm", action="store_true")
     ap.add_argument("--fame-n", type=int, default=0, help="a smoke: the first N fame rows (0: all)")
     ap.add_argument("--no-fame", action="store_true")
+    ap.add_argument("--no-el", action="store_true", help="the fame set only")
+    ap.add_argument("--tag", default="", help="appended to the log's name (a partial rerun keeps the full run's log)")
     a = ap.parse_args()
     t0 = time.time()
     taus = [a.tau] if a.split == "test" and a.tau is not None else a.taus
     fame = [] if a.no_fame else fame_rows()
-    rows = (fame[:a.fame_n] if a.fame_n else fame) + el_rows(a.split, a.n)
+    rows = (fame[:a.fame_n] if a.fame_n else fame) + ([] if a.no_el else el_rows(a.split, a.n))
     run(rows, taus, use_vm=not a.no_vm)
     summary = summarize(rows)
     rep = {"what": "order 0046 R2: choosing among a name's items", "date": _dt.date.today().isoformat(), "split": a.split,
            "n_per_set_lang": a.n, "taus": taus, "tau_from_dev": pick_tau(summary, taus) if a.split == "dev" else a.tau,
-           "not_run": {"usage": "no anchor counts here (the local Wikipedia text kept no links)", "qfhrr": "next pass"},
+           "not_run": {"usage": "no anchor counts here (the local Wikipedia text kept no links)", "qfhrr": "next pass, on grilly2"},
            "summary": summary, "wall_s": round(time.time() - t0),
            "rows": [{k: r[k] for k in ("id", "set", "lang", "kind", "gold", "n_api", "n_local", "gold_in_cands", "arms")} for r in rows]}
-    path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R2_{a.split}_{rep['date']}.json")
+    from retrieval_bench.r2_gates import budget, gates
+    rep["gates"] = gates(summary)
+    rep["b1_budget"] = budget(rows)
+    rep["args"] = {"no_fame": a.no_fame, "no_el": a.no_el, "no_vm": a.no_vm, "fame_n": a.fame_n, "tag": a.tag}
+    path = os.path.join(os.path.dirname(HERE), "logs", f"retrieval_R2_{a.split}_{rep['date']}{a.tag}.json")
     json.dump(rep, open(path, "w", encoding="utf-8"), indent=1)
     print(json.dumps({"summary": summary, "tau_from_dev": rep["tau_from_dev"]}, indent=1))
     print("->", path)

@@ -1,5 +1,5 @@
 # 0046 — Retrieval, measured before it is built: experiments R0 to R8
-status: open (Cowork's check of R0 and R1, 2026-10-31: R1 killed as built; 0047 first, then R2-R4; R1b on Nick's yes)
+status: open (R2 on dev reported 2026-10-31: no arm passes, test unread; R2 next: qFHRR on grilly2; R3, R4; R1b on the notebook)
 written: 2026-10-28 by Cowork · approved: 2026-10-28 by Nick ("tested before implementing"; a plan doc and an experiments-only order) · hypothesis: none (each experiment below is pre-registered)
 
 ## Why
@@ -435,3 +435,102 @@ seat, which R3 sets up. Nothing here reaches the serving path.
     Report every difference.
   - Gate: at most 1% of items differ, beyond edits made after 2026-09-28 (Wikidata's revision dates say which).
     Otherwise the extract is rebuilt from Wikidata's own dump.
+
+## R2 on dev: tiers, BM25, B1 (Claude Code, 2026-10-31)
+- **Logs:** `retrieval_R2_dev_2026-10-31.json` (the full run: the fame set and the dev rows of Mintaka EN, WebQSP_EL
+  and ShadowLink, 300 questions a set; 2,965 rows; 4.3 h, mostly fetching 43k item profiles once) and
+  `retrieval_R2_dev_2026-10-31_el_meta.json` (the entity-linking rows again, after the fix below). The lines are read
+  off each log by `validation/retrieval_bench/r2_gates.py`. **Test is not read**: R2 has no margin from dev to carry,
+  and R2's other arms (qFHRR on grilly2, the usage table) are still to run. Test stays unread for R2's end.
+- **A harness fault, fixed before reading:** today's source drops Wikimedia meta-pages (disambiguation, list,
+  category) by their description before any tier (`wikidata_resolve`, 2026-09-14). R2's arms did not, so a
+  disambiguation page could be picked ("Battle of Yorktown", "Ford Freeway", "Gravity Probe"). Every arm now drops
+  them in `bearing` (test added). The fame rows cannot change: there the relation is known, and a meta-page carries
+  none. Only the entity-linking rows were rerun.
+
+**The lines, dev** (B1 runs only where the relation is known, i.e. on the fame set):
+
+| Arm | Bare: single picks | Qualified: wrong, resolved | ShadowLink: Top, Shadow (gap) | Mintaka: wrong / decided | WebQSP_EL: wrong / decided |
+|---|---|---|---|---|---|
+| tiers (today's) | 6 | 2, 0.2% | 0%, 14.3% (14.3) | 25 / 105 | 13 / 87 |
+| B1 | 2 | 0, 0% | not run | not run | not run |
+| BM25, margin 0.25 | 66 | 11, 87.0% | 23.7%, 39.6% (15.9) | 58 / 236 | 31 / 161 |
+| BM25, 0.5 | 64 | 4, 82.4% | 21.4%, 36.1% (14.7) | 45 / 215 | 25 / 151 |
+| BM25, 0.75 | 63 | 2, 73.3% | 16.0%, 36.7% (20.7) | 34 / 195 | 20 / 145 |
+| BM25, 0.9 | 63 | 2, 60.8% | 13.6%, 35.7% (22.1) | 31 / 185 | 19 / 144 |
+| **Line** | **0 (kill: any)** | **0, >= 70%** | **gap <= 5 (kill: > 10)** | **<= tiers, <= 1 in 50, more decided** (on test) | same |
+
+Rows: 1,000 bare and 910 qualified fame rows (EN and FR); 433 Mintaka EN, 323 WebQSP_EL and 299 ShadowLink mentions
+(Top 103, Shadow 108, Tail 88). The gold item is among the candidates for 992 of the 1,055 entity-linking mentions.
+ShadowLink's Tail, the rare unshared names, goes well: BM25 gets 76 to 80 of 88 right with none wrong, and tiers 71.
+Accuracy is counted among spoken picks; "decided" is picks.
+
+**1. Bare names, the kill line: every arm makes single picks.**
+- **BM25: 63 to 66 at every margin. Killed as built.** At 0.9, all 63 come from the template's relation word, the only
+  word a bare question leaves: "born" 28, "né" 15, "pays" / "trouve" 10, "country" 6, "mort" 4. It matched one
+  namesake's description ("(born 1951)") or values, and that namesake was picked. The question's words name the
+  relation, not the item.
+- **B1: 2, both "Pilot Corporation" (EN and FR). By the line as written, killed.** In today's Wikidata the American
+  company (Q7194412) is "Pilot Company", alias "Pilot Corp."; only the Japanese one (Q1356034) still bears "Pilot
+  Corporation". So B1 had one branch, it verified, and B1 answered. The fame set's names are Wikidata5M's (2019), and
+  the candidates' names are today's. I did not change the set or the line. Whether a name that today's data no
+  longer shares counts against an arm is yours to decide.
+- **Tiers (today's): 6, three names in both languages.** "Eleanor of Austria" and "Paz" are picked by the label over
+  an alias. "Pilot Corporation" is picked as with B1.
+
+**2. Qualified variants: B1 is never wrong and never resolves; BM25 resolves, never with 0 wrong.**
+- **B1: 0 wrong, 0 resolved,** by construction. The fame names were drawn where two or more items carry the relation,
+  so both branches verify, and the check alone cannot separate them. Outcomes: once 322 (the namesakes share the
+  value, so saying it once is right whichever was meant), each 117, ask 471.
+- **BM25:** resolves 61 to 87%, with 2 to 11 wrong; no margin reaches 0.
+- **Tiers:** 2 picks, both wrong.
+
+**3. ShadowLink: every arm's gap is over the kill line (10 points).** BM25 is at 14.7 to 22.1, tiers at 14.3, and
+Shadow is the one ahead each time. Most of the wrongs are mentions that no name of the gold item equals: 34 of BM25's
+37 at 0.9, and 23 of tiers' 26 ("Fest" for a Festschrift, "fixed" for a landline, "plug-in" for a plug-in electric
+vehicle). Then any item that does bear the span competes, and if it is alone it is "the only one". The fix moved
+tiers' Top from 11 wrong to 13: with the disambiguation page gone, the one real item that bears the span is left and
+picked. This is a reading fault (which span is the name; R3), not a choosing one, but the line counts it here.
+
+**4. Mintaka and WebQSP_EL: today's tiers is itself over 1 in 50 on dev,** at 25 wrong of 433 (5.8%) and 13 of 323
+(4.0%), 27 and 15 before the fix. BM25 is more wrong than tiers at every margin. For 11 of tiers' 25 Mintaka
+wrongs, and 9 of its 13 on WebQSP_EL, the mention is not a name of the gold item. The kinds of wrong:
+- **Today's label tier** picks an obscure item whose label is exactly the mention: "Grammy" goes to an episode of a
+  sitcom, "Harmonix" to a 1997 convention.
+- **BM25** picks the item the question's other words describe, which is often the answer's kind, not the mention's:
+  for "the second oldest university located in Oxford", the University of Oxford; for Nebraska's electoral votes,
+  its university.
+- **Gold labels that are wrong:** "Age of Empire" is linked to Hobsbawm's book (my earlier note had the game series
+  as gold: wrong); "Chinese civilization" to the People's Republic; "Battle of Yorktown ... in 1871" to the 1862
+  siege.
+- **No relation is known on these rows,** so the kind step never runs there. Today's pipeline always has one.
+
+**5. Not covered:** Mintaka FR marks no mention spans (R1 located them with today's labels, which you noted favours
+the API), and WebQSP_EL and ShadowLink are English only. So R2's French side is the fame set alone.
+
+**6. B1's cost** (the order's budget line; `_fame_b1`, the host's round trip on the wire, run-proto, this machine):
+
+| Branches k | 1 | 2 | 3 | 4 | 5 | 6 or more |
+|---|---|---|---|---|---|---|
+| Questions | 2 | 301 | 219 | 157 | 116 | 1,115 |
+| p50 / p95, ms | 7.0 / 7.0 | 14.2 / 18.0 | 21.5 / 26.5 | 28.8 / 36.1 | 36.0 / 42.3 | 101.5 / 239.2 |
+
+- **About 7 ms a branch,** linear in k. A bare question on a small segment takes 0.4 ms, so the cost is most likely
+  each branch's clone of the store. That is the case for the in-program fork (`VM::snapshot` / `restore`).
+- **The median question has 7 branches** (at most 42): a fame name's namesakes, after the bearing and relation steps.
+  Up to k = 5, p95 stays under 50 ms (the per-hop line R7 will set). Past that, it does not.
+
+**What I read from it** (yours to decide; nothing changed on these lines):
+- Choosing by the question's words alone fails the fame line for a structural reason: once the name is taken out,
+  a bare question's only words name the relation.
+- B1 never picks wrongly when the names are shared, and it cannot pick when they are qualified. The two do
+  different jobs: B1 says which readings hold, and the words separate only among those.
+- Three arms are possible next. None is registered, so none is run:
+  - **(a) The relation's own words are not cues:** the relation lexicon's EN/FR labels and aliases for the
+    question's property are taken out. It would be fitted after seeing the fame set, which has no held-out half, so
+    it needs a fresh fame sample (seed 1, same construction) to be measured.
+  - **(b) B1, then the words among the branches that verify:** the check first; BM25 or qFHRR only separates
+    verified branches.
+  - **(c) The fame set's names checked against today's:** a name that only one item bears today is reported apart,
+    whatever the line decides about Pilot Corporation.
+- **Next on R2:** the qFHRR arm on grilly2, with one prototype per item. Then test, once.

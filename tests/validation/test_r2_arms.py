@@ -37,6 +37,13 @@ def test_only_items_bearing_the_name_and_carrying_the_relation_compete():
     assert A.tiers("nothing", ["Q1"], P)["outcome"] == "refuse"
 
 
+def test_a_wikimedia_meta_page_never_competes():
+    page = dict(P, Q5=prof("Q5", "A1 motorway", "Wikimedia disambiguation page"))
+    assert "Q5" not in A.bearing("A1 motorway", ["Q1", "Q5"], page)
+    assert A.tiers("A1 motorway", ["Q1", "Q5"], page) == {"outcome": "pick", "item": "Q1", "by": "the only one"}
+    assert A.tiers("A1 motorway", ["Q5"], page)["outcome"] == "refuse"
+
+
 def test_the_questions_own_words_decide_only_past_the_margin():
     q = "Which country is A1 motorway in canton of Bern in?"
     got = A.bm25("A1 motorway", q, "en", ["Q1", "Q2"], P, ["P17"], tau=0.5)
@@ -53,6 +60,22 @@ def test_b1_decides_over_the_branches_that_verify():
     assert V.decide([br("Q1", "USA"), br("Q2", "USA")])["outcome"] == "once"
     assert V.decide([br("Q1", "a"), br("Q2", "b")])["outcome"] == "each"
     assert V.decide([br(f"Q{i}", str(i)) for i in range(4)])["outcome"] == "ask"
+
+
+def test_the_gates_read_off_a_summary():
+    from retrieval_bench.r2_gates import budget, gates
+    s = {"fame/bare": {"rows": 4, "x": {"held": 3, "single": 1}},
+         "fame/qualified": {"rows": 10, "x": {"right": 6, "wrong": 1, "undecided": 3}},
+         "shadowlink/Top": {"rows": 4, "x": {"right": 3, "wrong": 1}},
+         "shadowlink/Shadow": {"rows": 4, "x": {"right": 1, "wrong": 1, "refused": 2}},
+         "mintaka": {"rows": 50, "x": {"right": 9, "wrong": 1, "undecided": 40}}}
+    g = gates(s)["x"]
+    assert g["bare_single"] == 1 and g["qualified"] == {"wrong": 1, "right": 6, "resolved": 0.7}
+    assert g["shadowlink"] == {"top": 0.75, "shadow": 0.5, "gap_points": 25.0}
+    assert g["mintaka"]["wrong_per_row"] == 0.02 and g["mintaka"]["decided"] == 10
+    rows = [{"arms": {"b1": {"k": k, "wall_ms": w}}} for k, w in [(1, 5), (2, 9), (2, 11), (7, 40)]]
+    assert budget(rows) == {"1": {"n": 1, "p50_ms": 5, "p95_ms": 5}, "2": {"n": 2, "p50_ms": 11, "p95_ms": 11},
+                            "6+": {"n": 1, "p50_ms": 40, "p95_ms": 40}}
 
 
 def test_b1_through_the_vm(tmp_path):

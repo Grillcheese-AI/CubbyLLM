@@ -7,7 +7,8 @@ Each arm returns an outcome:
   {"outcome": "refuse", "why": ...}         no candidate bears the name, or none carries the relation
 
 Every arm starts from the same two steps (``docs/RETRIEVAL.md``, "Choose"): the candidates that BEAR THE NAME (a label or
-alias, EN / FR / mul, equal to the mention once case, accents and punctuation are folded); then, when the question's
+alias, EN / FR / mul, equal to the mention once case, accents and punctuation are folded; Wikimedia meta-pages dropped,
+as today's source drops them); then, when the question's
 relation is known, a kind that cannot carry it drops out (here: the item states no value of it). Within what is left:
   tiers   today's last tier: the item whose LABEL is the name over items carrying it only as an alias;
   bm25    the question's own words (the mention's and stopwords taken out) against each item's description and values,
@@ -44,9 +45,16 @@ def names(p: dict) -> tuple[set, set]:
     return labs, als - labs
 
 
+def meta(p: dict) -> bool:
+    """A Wikimedia page about pages (disambiguation, list, category, ...), by its description: never what a question
+    means. Today's source drops these before any tier (``cubbyllm.sources.wikidata_resolve``), so every arm does."""
+    from cubbyllm.sources.wikidata_aliases import _META
+    return any(_META.search(d) for d in (p.get("desc") or {}).values() if d)
+
+
 def bearing(mention: str, cands, profiles: dict) -> list[str]:
     m = fold(mention)
-    return [q for q in cands if q in profiles and m in set().union(*names(profiles[q]))]
+    return [q for q in cands if q in profiles and not meta(profiles[q]) and m in set().union(*names(profiles[q]))]
 
 
 def carrying(cands, profiles: dict, pids) -> list[str]:
