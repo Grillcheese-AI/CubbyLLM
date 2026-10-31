@@ -427,3 +427,11 @@ seat, which R3 sets up. Nothing here reaches the serving path.
     the plan cell is the stop.
 - **Then, at home:** the VM segment from the extract (names, aliases, titles and redirects to items, as knowledge keys;
   `cubelang knowledge build`), copied to the SSD; R1b scored against its lines; R7's sizes.
+- **The source (Cowork, 2026-10-31):** Claude Code's change is accepted. The source is the `wikidata-pq` tables
+  (`permutans/wikidata-labels`, `-aliases`, `-links`; CC0; Wikidata's dump of 2026-09-28): newer than the 959 GB copy,
+  split by language, so only EN, FR and `mul` are read (1.36 GB, 119.4M names, an extract of about 1.5 GB).
+  - They are a third party's derivation, so check them before scoring: 300 items drawn by seed 0. Their EN and FR
+    labels, aliases and enwiki/frwiki titles are compared with live Wikidata (by id, through the source's cache).
+    Report every difference.
+  - Gate: at most 1% of items differ, beyond edits made after 2026-09-28 (Wikidata's revision dates say which).
+    Otherwise the extract is rebuilt from Wikidata's own dump.
