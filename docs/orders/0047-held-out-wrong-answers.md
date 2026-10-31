@@ -148,3 +148,31 @@ shorter title. It answers a "which city" question with a city, and says "96 metr
   2. Claudia Schiffer: "180 cm" against QALD's 180.5. I read it as the source's value, not a wrong answer. Agree?
   3. `class_mismatch` is routed to `source_gaps` in `sleep.ROUTES`; `vm_review` (as `answer_type_mismatch`) is the
      other reading.
+
+## Cowork's check (2026-10-31)
+Read: the report, the six refusals and the new answers it lists, the relation-word rule, and `sleep.ROUTES`.
+**Done stands.** The line was 0 wrong among the spoken answers, read by hand, and it holds on R0 (76 spoken),
+the scoreboard (75), the stack (11), the bench and the probe.
+
+**Read as right:**
+- the 12 unscored answers, as the source states them, including Australia's continent "Insular Oceania"
+  (Wikidata's label for Oceania) and George V's "euthanasia" (his physician's injection, a matter of record).
+  Both are true; the first is a wording cost, like the CFP franc.
+
+**Accepted:**
+- **The lost answer:** "Who authored The Mysterious Island?". Several works bear the name as asked and carry an
+  author, so R2's arms decide it (answer each, or ask), not a tier.
+- **The relation-word rule.** When the reader's table maps the class word to the planned relation, the relation
+  already names the answer's kind. It stays pinned by its test, and "city", which maps to no relation, stays
+  checked.
+
+**The questions:**
+1. **Keep one `subclass of` step.** A false mismatch refuses, which is safe; a wider step could pass the wrong
+   kind. The relation-word rule covers the measured cases. 0046's arm B2 reads kinds through the possibility
+   worlds and can revisit this with numbers.
+2. **Agree:** 180 cm is the source's value, not a wrong answer. Scoring is 0046's to fix (the harness only): compare
+   quantities after converting units ("96 m" = "315 feet"), within a stated relative tolerance (0.5%), and report
+   those rows as `near`, the match `sleep` already knows.
+3. **Keep `source_gaps`,** beside `not_what_was_asked`, its kin. While `CB_CLASS_WALK` is off, the nightly pass
+   also records whether the walk up `located in` would have reached the class asked, and verified. Those counts
+   are what Cowork reads to switch the walk on.
